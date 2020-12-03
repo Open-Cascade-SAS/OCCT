@@ -52,7 +52,7 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GProp_GProps.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
@@ -119,7 +119,7 @@ static Standard_Boolean IsSurfaceUVInfinite(const Handle(Geom_Surface)& theSurf)
           Precision::IsInfinite(VMax)   );
 }
 
-static Standard_Boolean IsSurfaceUVPeriodic(const Handle(GeomAdaptor_HSurface)& theSurf)
+static Standard_Boolean IsSurfaceUVPeriodic(const Handle(GeomAdaptor_Surface)& theSurf)
 {
 	return ( (theSurf->IsUPeriodic() && theSurf->IsVPeriodic()) || theSurf->GetType() == GeomAbs_Sphere);
 }

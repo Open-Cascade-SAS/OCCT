@@ -14,10 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomAdaptor.hxx>
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -40,7 +39,6 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor.hxx>
 
 //=======================================================================
 //function : MakeCurve
@@ -138,16 +136,16 @@ Handle(Geom_Surface) GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
 
   case GeomAbs_SurfaceOfRevolution:
     S = new Geom_SurfaceOfRevolution
-      (GeomAdaptor::MakeCurve(HS.BasisCurve()->Curve()),HS.AxeOfRevolution());
+      (GeomAdaptor::MakeCurve(*HS.BasisCurve()),HS.AxeOfRevolution());
     break;
 
   case GeomAbs_SurfaceOfExtrusion:
     S = new Geom_SurfaceOfLinearExtrusion
-      (GeomAdaptor::MakeCurve(HS.BasisCurve()->Curve()),HS.Direction());
+      (GeomAdaptor::MakeCurve(*HS.BasisCurve()),HS.Direction());
     break;
 
   case GeomAbs_OffsetSurface:
-    S = new Geom_OffsetSurface(GeomAdaptor::MakeSurface(HS.BasisSurface()->Surface()),
+    S = new Geom_OffsetSurface(GeomAdaptor::MakeSurface (*HS.BasisSurface()),
                                HS.OffsetValue());
     break;
 

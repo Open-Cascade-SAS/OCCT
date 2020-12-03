@@ -22,10 +22,11 @@
 #include <ElSLib.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <GeomInt_WLApprox.hxx>
 #include <GeomLib_Check2dBSplineCurve.hxx>
@@ -56,8 +57,8 @@
 #include <gp_Elips.hxx>
 
 static 
-  void Parameters(const Handle(GeomAdaptor_HSurface)&,
-                  const Handle(GeomAdaptor_HSurface)&,
+  void Parameters(const Handle(GeomAdaptor_Surface)&,
+                  const Handle(GeomAdaptor_Surface)&,
                   const gp_Pnt&,
                   Standard_Real&,
                   Standard_Real&,
@@ -90,8 +91,8 @@ static
   Standard_Boolean  ApproxWithPCurves(const gp_Cylinder& theCyl, 
                                       const gp_Sphere& theSph);
 
-static void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
-                           const Handle(GeomAdaptor_HSurface)& theS2,
+static void  PerformPlanes(const Handle(GeomAdaptor_Surface)& theS1,
+                           const Handle(GeomAdaptor_Surface)& theS2,
                            const Standard_Real TolF1,
                            const Standard_Real TolF2,
                            const Standard_Real TolAng,
@@ -101,22 +102,22 @@ static void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
                            IntTools_SequenceOfCurves& theSeqOfCurve,
                            Standard_Boolean& theTangentFaces);
 
-static Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS, 
+static Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS, 
                                       const gp_Lin2d& theLin2d, 
                                       const Standard_Real theTol,
                                       Standard_Real& theP1, 
                                       Standard_Real& theP2);
 //
 static
-  void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
-                        const Handle(GeomAdaptor_HSurface)& aHS2,
+  void ApproxParameters(const Handle(GeomAdaptor_Surface)& aHS1,
+                        const Handle(GeomAdaptor_Surface)& aHS2,
                         Standard_Integer& iDegMin,
                         Standard_Integer& iNbIter,
                         Standard_Integer& iDegMax);
 
 static
-  void Tolerances(const Handle(GeomAdaptor_HSurface)& aHS1,
-                  const Handle(GeomAdaptor_HSurface)& aHS2,
+  void Tolerances(const Handle(GeomAdaptor_Surface)& aHS1,
+                  const Handle(GeomAdaptor_Surface)& aHS2,
                   Standard_Real& aTolTang);
 
 static
@@ -165,8 +166,8 @@ IntTools_FaceFace::IntTools_FaceFace()
   myIsDone=Standard_False;
   myTangentFaces=Standard_False;
   //
-  myHS1 = new GeomAdaptor_HSurface ();
-  myHS2 = new GeomAdaptor_HSurface ();
+  myHS1 = new GeomAdaptor_Surface ();
+  myHS2 = new GeomAdaptor_Surface ();
   myTolF1 = 0.;
   myTolF2 = 0.;
   myTol = 0.;
@@ -425,10 +426,10 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     Standard_Real umin, umax, vmin, vmax;
     //
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
-    myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
+    myHS1->Load(S1, umin, umax, vmin, vmax);
     //
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
-    myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
+    myHS2->Load(S2, umin, umax, vmin, vmax);
     //
     Standard_Real TolAng = 1.e-8;
     //
@@ -462,11 +463,11 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     // F1
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax); 
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
-    myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
+    myHS1->Load(S1, umin, umax, vmin, vmax);
     // F2
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
-    myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
+    myHS2->Load(S2, umin, umax, vmin, vmax);
   }
   else if ((aType2==GeomAbs_Plane) && isFace1Quad)
   {
@@ -474,21 +475,21 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     //F1
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
-    myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
+    myHS1->Load(S1, umin, umax, vmin, vmax);
     // F2
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectPlaneBoundaries(umin, umax, vmin, vmax);
-    myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
+    myHS2->Load(S2, umin, umax, vmin, vmax);
   }
   else
   {
     Standard_Real umin, umax, vmin, vmax;
     myContext->UVBounds(myFace1, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace1, myTol * 2., umin, umax, vmin, vmax);
-    myHS1->ChangeSurface().Load(S1, umin, umax, vmin, vmax);
+    myHS1->Load(S1, umin, umax, vmin, vmax);
     myContext->UVBounds(myFace2, umin, umax, vmin, vmax);
     CorrectSurfaceBoundaries(myFace2, myTol * 2., umin, umax, vmin, vmax);
-    myHS2->ChangeSurface().Load(S2, umin, umax, vmin, vmax);
+    myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
   const Handle(IntTools_TopolTool) dom1 = new IntTools_TopolTool(myHS1);
@@ -633,8 +634,8 @@ void IntTools_FaceFace::ComputeTolReached3d()
   // Minimal tangential tolerance for the curve
   Standard_Real aTolFMax = Max(myTolF1, myTolF2);
   //
-  const Handle(Geom_Surface)& aS1 = myHS1->ChangeSurface().Surface();
-  const Handle(Geom_Surface)& aS2 = myHS2->ChangeSurface().Surface();
+  const Handle(Geom_Surface)& aS1 = myHS1->Surface();
+  const Handle(Geom_Surface)& aS2 = myHS2->Surface();
   //
   for (i = 1; i <= aNbLin; ++i)
   {
@@ -819,7 +820,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         if(myApprox1) { 
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
-                myHS1->ChangeSurface().Surface(), newc, C2d);
+                myHS1->Surface(), newc, C2d);
 
           if (C2d.IsNull())
             continue;
@@ -830,7 +831,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
         if(myApprox2) { 
           Handle (Geom2d_Curve) C2d;
           GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
-                    myHS2->ChangeSurface().Surface(), newc, C2d);
+                    myHS2->Surface(), newc, C2d);
 
           if (C2d.IsNull())
             continue;
@@ -987,14 +988,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
           if(myApprox1) { 
             Handle (Geom2d_Curve) C2d;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, 
-                        myHS1->ChangeSurface().Surface(), newc, C2d);
+                        myHS1->Surface(), newc, C2d);
             aCurve.SetFirstCurve2d(C2d);
           }
 
           if(myApprox2) { 
             Handle (Geom2d_Curve) C2d;
             GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
-                    myHS2->ChangeSurface().Surface(),newc,C2d);
+                    myHS2->Surface(),newc,C2d);
             aCurve.SetSecondCurve2d(C2d);
           }
         }
@@ -1018,14 +1019,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
             if(myApprox1) { 
               Handle (Geom2d_Curve) C2d;
               GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
-                    myHS1->ChangeSurface().Surface(),newc,C2d);
+                    myHS1->Surface(),newc,C2d);
               aCurve.SetFirstCurve2d(C2d);
             }
 
             if(myApprox2) { 
               Handle (Geom2d_Curve) C2d;
               GeomInt_IntSS::BuildPCurves(fprm,lprm,Tolpc,
-                    myHS2->ChangeSurface().Surface(),newc,C2d);
+                    myHS2->Surface(),newc,C2d);
               aCurve.SetSecondCurve2d(C2d);
             }
             //
@@ -1056,14 +1057,14 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
               if(myApprox1) { 
                 Handle (Geom2d_Curve) C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, 
-                        myHS1->ChangeSurface().Surface(), newc, C2d);
+                        myHS1->Surface(), newc, C2d);
                 aCurve.SetFirstCurve2d(C2d);
               }
 
               if(myApprox2) { 
                 Handle (Geom2d_Curve) C2d;
                 GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc,
-                        myHS2->ChangeSurface().Surface(), newc, C2d);
+                        myHS2->Surface(), newc, C2d);
                 aCurve.SetSecondCurve2d(C2d);
               }
             }//  end of if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
@@ -1142,17 +1143,17 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
       tol2d = myTolApprox;
 
       GeomAbs_SurfaceType typs1, typs2;
-      typs1 = myHS1->Surface().GetType();
-      typs2 = myHS2->Surface().GetType();
+      typs1 = myHS1->GetType();
+      typs2 = myHS2->GetType();
       Standard_Boolean anWithPC = Standard_True;
 
       if(typs1 == GeomAbs_Cylinder && typs2 == GeomAbs_Sphere) {
         anWithPC = 
-          ApproxWithPCurves(myHS1->Surface().Cylinder(), myHS2->Surface().Sphere());
+          ApproxWithPCurves(myHS1->Cylinder(), myHS2->Sphere());
       }
       else if (typs1 == GeomAbs_Sphere && typs2 == GeomAbs_Cylinder) {
         anWithPC = 
-          ApproxWithPCurves(myHS2->Surface().Cylinder(), myHS1->Surface().Sphere());
+          ApproxWithPCurves(myHS2->Cylinder(), myHS1->Sphere());
       }
       //
       if(!anWithPC) {
@@ -1297,7 +1298,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
               TColgp_Array1OfPnt   tpoles(1,nbpoles);
               
               mbspc.Curve(1,tpoles2d);
-              const gp_Pln&  Pln = myHS1->Surface().Plane();
+              const gp_Pln&  Pln = myHS1->Plane();
               //
               Standard_Integer ik; 
               for(ik = 1; ik<= nbpoles; ik++) { 
@@ -1376,7 +1377,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
               TColgp_Array1OfPnt2d tpoles2d(1,nbpoles);
               TColgp_Array1OfPnt   tpoles(1,nbpoles);
               mbspc.Curve((myApprox1==Standard_True)? 2 : 1,tpoles2d);
-              const gp_Pln&  Pln = myHS2->Surface().Plane();
+              const gp_Pln&  Pln = myHS2->Plane();
               //
               Standard_Integer ik; 
               for(ik = 1; ik<= nbpoles; ik++) { 
@@ -1522,7 +1523,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   Handle(Geom2d_Curve) C2d;
                   Standard_Real aTol = myTolApprox;
                   GeomInt_IntSS::BuildPCurves(fprm, lprm, aTol,
-                            myHS1->ChangeSurface().Surface(), BS, C2d);
+                            myHS1->Surface(), BS, C2d);
                   BS1 = Handle(Geom2d_BSplineCurve)::DownCast(C2d);
                   aCurve.SetFirstCurve2d(BS1);
                 }
@@ -1553,7 +1554,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
                   Handle(Geom2d_Curve) C2d;
                   Standard_Real aTol = myTolApprox;
                   GeomInt_IntSS::BuildPCurves(fprm, lprm, aTol,
-                            myHS2->ChangeSurface().Surface(), BS, C2d);
+                            myHS2->Surface(), BS, C2d);
                   BS2 = Handle(Geom2d_BSplineCurve)::DownCast(C2d);
                   aCurve.SetSecondCurve2d(BS2);
                 }
@@ -1682,8 +1683,8 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
 //function : Parameters
 //purpose  : 
 //=======================================================================
- void Parameters(const Handle(GeomAdaptor_HSurface)& HS1,
-                 const Handle(GeomAdaptor_HSurface)& HS2,
+ void Parameters(const Handle(GeomAdaptor_Surface)& HS1,
+                 const Handle(GeomAdaptor_Surface)& HS2,
                  const gp_Pnt& Ptref,
                  Standard_Real& U1,
                  Standard_Real& V1,
@@ -1692,44 +1693,44 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
 {
 
   IntSurf_Quadric quad1,quad2;
-  GeomAbs_SurfaceType typs = HS1->Surface().GetType();
+  GeomAbs_SurfaceType typs = HS1->GetType();
 
   switch (typs) {
   case GeomAbs_Plane:
-    quad1.SetValue(HS1->Surface().Plane());
+    quad1.SetValue(HS1->Plane());
     break;
   case GeomAbs_Cylinder:
-    quad1.SetValue(HS1->Surface().Cylinder());
+    quad1.SetValue(HS1->Cylinder());
     break;
   case GeomAbs_Cone:
-    quad1.SetValue(HS1->Surface().Cone());
+    quad1.SetValue(HS1->Cone());
     break;
   case GeomAbs_Sphere:
-    quad1.SetValue(HS1->Surface().Sphere());
+    quad1.SetValue(HS1->Sphere());
     break;
   case GeomAbs_Torus:
-    quad1.SetValue(HS1->Surface().Torus());
+    quad1.SetValue(HS1->Torus());
     break;
   default:
     throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
   }
   
-  typs = HS2->Surface().GetType();
+  typs = HS2->GetType();
   switch (typs) {
   case GeomAbs_Plane:
-    quad2.SetValue(HS2->Surface().Plane());
+    quad2.SetValue(HS2->Plane());
     break;
   case GeomAbs_Cylinder:
-    quad2.SetValue(HS2->Surface().Cylinder());
+    quad2.SetValue(HS2->Cylinder());
     break;
   case GeomAbs_Cone:
-    quad2.SetValue(HS2->Surface().Cone());
+    quad2.SetValue(HS2->Cone());
     break;
   case GeomAbs_Sphere:
-    quad2.SetValue(HS2->Surface().Sphere());
+    quad2.SetValue(HS2->Sphere());
     break;
   case GeomAbs_Torus:
-    quad2.SetValue(HS2->Surface().Torus());
+    quad2.SetValue(HS2->Torus());
     break;
   default:
     throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
@@ -2178,8 +2179,8 @@ Standard_Boolean ApproxWithPCurves(const gp_Cylinder& theCyl,
 //function : PerformPlanes
 //purpose  : 
 //=======================================================================
-void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
-                    const Handle(GeomAdaptor_HSurface)& theS2,
+void  PerformPlanes(const Handle(GeomAdaptor_Surface)& theS1,
+                    const Handle(GeomAdaptor_Surface)& theS2,
                     const Standard_Real TolF1,
                     const Standard_Real TolF2,
                     const Standard_Real TolAng,
@@ -2190,8 +2191,8 @@ void  PerformPlanes(const Handle(GeomAdaptor_HSurface)& theS1,
                     Standard_Boolean& theTangentFaces)
 {
 
-  gp_Pln aPln1 = theS1->Surface().Plane();
-  gp_Pln aPln2 = theS2->Surface().Plane();
+  gp_Pln aPln1 = theS1->Plane();
+  gp_Pln aPln2 = theS2->Plane();
 
   IntAna_QuadQuadGeo aPlnInter(aPln1, aPln2, TolAng, TolTang);
 
@@ -2309,7 +2310,7 @@ static inline Standard_Boolean COINC(const Standard_Real d1,
 {
   return (d1 <= tol && d1 >= -tol) && (d2 <= tol && d2 >= -tol);
 }
-Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS, 
+Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_Surface)& theS, 
                                const gp_Lin2d& theLin2d, 
                                const Standard_Real theTol,
                                Standard_Real& theP1, 
@@ -2320,10 +2321,10 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS,
   Standard_Real par[2];
   Standard_Integer nbi = 0;
 
-  xmin = theS->Surface().FirstUParameter();
-  xmax = theS->Surface().LastUParameter();
-  ymin = theS->Surface().FirstVParameter();
-  ymax = theS->Surface().LastVParameter();
+  xmin = theS->FirstUParameter();
+  xmax = theS->LastUParameter();
+  ymin = theS->FirstVParameter();
+  ymax = theS->LastVParameter();
 
   theLin2d.Coefficients(A, B, C);
 
@@ -2444,8 +2445,8 @@ Standard_Boolean ClassifyLin2d(const Handle(GeomAdaptor_HSurface)& theS,
 //function : ApproxParameters
 //purpose  : 
 //=======================================================================
-void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
-                      const Handle(GeomAdaptor_HSurface)& aHS2,
+void ApproxParameters(const Handle(GeomAdaptor_Surface)& aHS1,
+                      const Handle(GeomAdaptor_Surface)& aHS2,
                       Standard_Integer& iDegMin,
                       Standard_Integer& iDegMax,
                       Standard_Integer& iNbIter)
@@ -2458,8 +2459,8 @@ void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
   iDegMin=4;
   iDegMax=8;
   //
-  aTS1=aHS1->Surface().GetType();
-  aTS2=aHS2->Surface().GetType();
+  aTS1=aHS1->GetType();
+  aTS2=aHS2->GetType();
   //
   // Cylinder/Torus
   if ((aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Torus) ||
@@ -2470,8 +2471,8 @@ void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
     //
     aPC=Precision::Confusion();
     //
-    aCylinder=(aTS1==GeomAbs_Cylinder)? aHS1->Surface().Cylinder() : aHS2->Surface().Cylinder();
-    aTorus=(aTS1==GeomAbs_Torus)? aHS1->Surface().Torus() : aHS2->Surface().Torus();
+    aCylinder=(aTS1==GeomAbs_Cylinder)? aHS1->Cylinder() : aHS2->Cylinder();
+    aTorus=(aTS1==GeomAbs_Torus)? aHS1->Torus() : aHS2->Torus();
     //
     aRC=aCylinder.Radius();
     aRT=aTorus.MinorRadius();
@@ -2492,14 +2493,14 @@ void ApproxParameters(const Handle(GeomAdaptor_HSurface)& aHS1,
 //function : Tolerances
 //purpose  : 
 //=======================================================================
-void Tolerances(const Handle(GeomAdaptor_HSurface)& aHS1,
-                const Handle(GeomAdaptor_HSurface)& aHS2,
+void Tolerances(const Handle(GeomAdaptor_Surface)& aHS1,
+                const Handle(GeomAdaptor_Surface)& aHS2,
                 Standard_Real& aTolTang)
 {
   GeomAbs_SurfaceType aTS1, aTS2;
   //
-  aTS1=aHS1->Surface().GetType();
-  aTS2=aHS2->Surface().GetType();
+  aTS1=aHS1->GetType();
+  aTS2=aHS2->GetType();
   //
   // Cylinder/Torus
   if ((aTS1==GeomAbs_Cylinder && aTS2==GeomAbs_Torus) ||
@@ -2510,8 +2511,8 @@ void Tolerances(const Handle(GeomAdaptor_HSurface)& aHS1,
     //
     aPC=Precision::Confusion();
     //
-    aCylinder=(aTS1==GeomAbs_Cylinder)? aHS1->Surface().Cylinder() : aHS2->Surface().Cylinder();
-    aTorus=(aTS1==GeomAbs_Torus)? aHS1->Surface().Torus() : aHS2->Surface().Torus();
+    aCylinder=(aTS1==GeomAbs_Cylinder)? aHS1->Cylinder() : aHS2->Cylinder();
+    aTorus=(aTS1==GeomAbs_Torus)? aHS1->Torus() : aHS2->Torus();
     //
     aRC=aCylinder.Radius();
     aRT=aTorus.MinorRadius();

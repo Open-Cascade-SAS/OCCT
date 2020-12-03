@@ -14,7 +14,7 @@
 #ifndef _StdPrs_WFRestrictedFace_H__
 #define _StdPrs_WFRestrictedFace_H__
 
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
@@ -33,7 +33,7 @@ public:
 
   Standard_EXPORT static void Add
                 (const Handle (Prs3d_Presentation)&  thePresentation,
-                 const Handle(BRepAdaptor_HSurface)& theFace,
+                 const Handle(BRepAdaptor_Surface)& theFace,
                  const Standard_Boolean              theDrawUIso,
                  const Standard_Boolean              theDrawVIso,
                  const Standard_Integer              theNbUIso,
@@ -43,7 +43,7 @@ public:
 
   Standard_EXPORT static void Add
                  (const Handle (Prs3d_Presentation)&  thePresentation,
-                  const Handle(BRepAdaptor_HSurface)& theFace,
+                  const Handle(BRepAdaptor_Surface)& theFace,
                   const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean Match
@@ -51,7 +51,7 @@ public:
                    const Standard_Real               theY,
                    const Standard_Real               theZ,
                    const Standard_Real               theDistance,
-                   const Handle(BRepAdaptor_HSurface)& theFace,
+                   const Handle(BRepAdaptor_Surface)& theFace,
                    const Standard_Boolean              theDrawUIso,
                    const Standard_Boolean              theDrawVIso,
                    const Standard_Real               theDeflection,
@@ -64,7 +64,7 @@ public:
                     const Standard_Real               theY,
                     const Standard_Real               theZ,
                     const Standard_Real               theDistance,
-                    const Handle(BRepAdaptor_HSurface)& theFace,
+                    const Handle(BRepAdaptor_Surface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean MatchUIso
@@ -72,7 +72,7 @@ public:
                     const Standard_Real               theY,
                     const Standard_Real               theZ,
                     const Standard_Real               theDistance,
-                    const Handle(BRepAdaptor_HSurface)& theFace,
+                    const Handle(BRepAdaptor_Surface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static Standard_Boolean MatchVIso
@@ -80,17 +80,17 @@ public:
                     const Standard_Real               theY,
                     const Standard_Real               theZ,
                     const Standard_Real               theDistance,
-                    const Handle(BRepAdaptor_HSurface)& theFace,
+                    const Handle(BRepAdaptor_Surface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
   
   Standard_EXPORT static void AddUIso
                    (const Handle (Prs3d_Presentation)&  thePresentation,
-                    const Handle(BRepAdaptor_HSurface)& theFace,
+                    const Handle(BRepAdaptor_Surface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
   Standard_EXPORT static void AddVIso
                    (const Handle (Prs3d_Presentation)&  thePresentation,
-                    const Handle(BRepAdaptor_HSurface)& theFace,
+                    const Handle(BRepAdaptor_Surface)& theFace,
                     const Handle (Prs3d_Drawer)&        theDrawer);
 
 };

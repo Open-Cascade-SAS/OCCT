@@ -12,7 +12,6 @@
 #include "ISession_Direction.h"
 #include "..\res\resource.h"
 
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <AIS_ColoredShape.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -4660,14 +4659,14 @@ void CModelingDoc::OnStopStop()
 
 			BRepAdaptor_Surface S(F);
 			GeomAdaptor_Surface aGAS = S.Surface();
-			Handle(GeomAdaptor_HSurface) aHGAS = new GeomAdaptor_HSurface(aGAS);
+			Handle(GeomAdaptor_Surface) aHGAS = new GeomAdaptor_Surface(aGAS);
 
-			Handle(BRepAdaptor_HCurve2d) C = new BRepAdaptor_HCurve2d();
-			C->ChangeCurve2d().Initialize(E,F);
+			Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+			C->Initialize(E,F);
 
 			Adaptor3d_CurveOnSurface ConS(C,aHGAS);
 
-			Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+			Handle (Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
 			Fronts->SetValue(i,HConS);
 		}
 		GeomPlate_BuildPlateSurface abuildplate(NbPtsCur,Fronts,Tang,3);

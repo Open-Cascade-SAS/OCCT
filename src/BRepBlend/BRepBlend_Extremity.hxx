@@ -32,7 +32,6 @@ class Standard_DomainError;
 class Standard_OutOfRange;
 class gp_Pnt;
 class gp_Vec;
-class Adaptor2d_HCurve2d;
 class IntSurf_Transition;
 class BRepBlend_PointOnRst;
 
@@ -90,7 +89,7 @@ public:
   
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
-  Standard_EXPORT void AddArc (const Handle(Adaptor2d_HCurve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
+  Standard_EXPORT void AddArc (const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
   
   //! This method returns the parameters of the point
   //! on the concerned surface.

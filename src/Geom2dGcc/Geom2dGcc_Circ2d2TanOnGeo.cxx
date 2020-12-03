@@ -37,7 +37,7 @@
 #include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BHyper.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #include <gp_Circ2d.hxx>
@@ -95,7 +95,7 @@ Geom2dGcc_Circ2d2TanOnGeo (const GccEnt_QualifiedCirc&     Qualified1 ,
   if (Bis.IsDone()) {
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve Cu2(HCu2,0.);
     firstparam = Max(Cu2.FirstParameter(),thefirst);
     lastparam  = Min(Cu2.LastParameter(),thelast);
@@ -323,7 +323,7 @@ parcen3(1, aNbSolMAX)
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve C2(HCu2,0.);
     firstparam = Max(C2.FirstParameter(),thefirst);
     lastparam  = Min(C2.LastParameter(),thelast);
@@ -501,7 +501,7 @@ parcen3(1, aNbSolMAX)
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve C2(HCu2,0.);
     firstparam = Max(C2.FirstParameter(),thefirst);
     lastparam  = Min(C2.LastParameter(),thelast);
@@ -649,7 +649,7 @@ parcen3(1, aNbSolMAX)
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     Standard_Integer nbsolution = Bis.NbSolutions();
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve C2(HCu2,0.);
     firstparam = Max(C2.FirstParameter(),thefirst);
     lastparam  = Min(C2.LastParameter(),thelast);
@@ -810,7 +810,7 @@ parcen3(1, aNbSolMAX)
     Standard_Real Tol1 = Abs(Tolerance);
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve C2(HCu2,0.);
     firstparam = Max(C2.FirstParameter(),thefirst);
     lastparam  = Min(C2.LastParameter(),thelast);
@@ -938,7 +938,7 @@ parcen3(1, aNbSolMAX)
     Standard_Real Tol1 = Abs(Tolerance);
     Standard_Real Tol2 = Tol1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(OnCurv); 
+    Handle(Geom2dAdaptor_Curve) HCu2 = new Geom2dAdaptor_Curve(OnCurv); 
     Adaptor2d_OffsetCurve Cu2(HCu2,0.);
     firstparam = Max(Cu2.FirstParameter(),thefirst);
     lastparam  = Min(Cu2.LastParameter(),thelast);

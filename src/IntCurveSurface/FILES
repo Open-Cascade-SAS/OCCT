@@ -11,7 +11,6 @@ IntCurveSurface_IntersectionPoint.lxx
 IntCurveSurface_IntersectionSegment.cxx
 IntCurveSurface_IntersectionSegment.hxx
 IntCurveSurface_Polygon.gxx
-IntCurveSurface_Polygon.lxx
 IntCurveSurface_PolygonTool.gxx
 IntCurveSurface_PolygonTool.lxx
 IntCurveSurface_Polyhedron.gxx

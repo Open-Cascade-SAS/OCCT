@@ -11,14 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntTools_BeanFaceIntersector.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
@@ -40,7 +39,6 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
 #include <IntTools.hxx>
-#include <IntTools_BeanFaceIntersector.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
@@ -582,8 +580,8 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 {
   IntCurveSurface_HInter anExactIntersector;
   
-  Handle(BRepAdaptor_HCurve) aCurve     = new BRepAdaptor_HCurve(myCurve);
-  Handle(BRepAdaptor_HSurface) aSurface = new BRepAdaptor_HSurface(mySurface);
+  Handle(BRepAdaptor_Curve) aCurve     = new BRepAdaptor_Curve(myCurve);
+  Handle(BRepAdaptor_Surface) aSurface = new BRepAdaptor_Surface(mySurface);
   
   anExactIntersector.Perform(aCurve, aSurface);
 
@@ -1768,7 +1766,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized() {
   
   Bnd_Box EBox;
   
-  BndLib_Add3dCurve::Add(myCurve.Trim(myFirstParameter, myLastParameter, Precision::PConfusion())->Curve(), myBeanTolerance, EBox);
+  BndLib_Add3dCurve::Add (*myCurve.Trim(myFirstParameter, myLastParameter, Precision::PConfusion()), myBeanTolerance, EBox);
   
   if(EBox.IsOut(FBox)) {
     for(Standard_Integer i = 1; i <= myRangeManager.Length(); i++) {

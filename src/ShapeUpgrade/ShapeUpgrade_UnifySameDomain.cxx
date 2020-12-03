@@ -40,7 +40,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
@@ -1224,8 +1224,8 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
   if (S1->IsKind(STANDARD_TYPE(Geom_ElementarySurface)) &&
       S2->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
   {
-    Handle(GeomAdaptor_HSurface) aGA1 = new GeomAdaptor_HSurface(S1);
-    Handle(GeomAdaptor_HSurface) aGA2 = new GeomAdaptor_HSurface(S2);
+    Handle(GeomAdaptor_Surface) aGA1 = new GeomAdaptor_Surface(S1);
+    Handle(GeomAdaptor_Surface) aGA2 = new GeomAdaptor_Surface(S2);
 
     Handle(BRepTopAdaptor_TopolTool) aTT1 = new BRepTopAdaptor_TopolTool();
     Handle(BRepTopAdaptor_TopolTool) aTT2 = new BRepTopAdaptor_TopolTool();

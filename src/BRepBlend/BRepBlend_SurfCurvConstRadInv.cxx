@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BRepBlend_SurfCurvConstRadInv.hxx>
 #include <math_Matrix.hxx>
 
@@ -26,9 +26,9 @@
 //purpose  : 
 //=======================================================================
 BRepBlend_SurfCurvConstRadInv::BRepBlend_SurfCurvConstRadInv
-(const Handle(Adaptor3d_HSurface)& S,
- const Handle(Adaptor3d_HCurve)& C,
- const Handle(Adaptor3d_HCurve)& Cg)
+(const Handle(Adaptor3d_Surface)& S,
+ const Handle(Adaptor3d_Curve)& C,
+ const Handle(Adaptor3d_Curve)& Cg)
 : surf(S),
   curv(C),
   guide(Cg),
@@ -274,7 +274,7 @@ Standard_Boolean BRepBlend_SurfCurvConstRadInv::Values(const math_Vector& X,
 //purpose  : 
 //=======================================================================
 
-void BRepBlend_SurfCurvConstRadInv::Set(const Handle(Adaptor2d_HCurve2d)& Rst) 
+void BRepBlend_SurfCurvConstRadInv::Set(const Handle(Adaptor2d_Curve2d)& Rst) 
 {
   rst = Rst;
 }

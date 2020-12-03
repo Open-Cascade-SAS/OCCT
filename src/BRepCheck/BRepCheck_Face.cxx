@@ -20,7 +20,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_Face.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>

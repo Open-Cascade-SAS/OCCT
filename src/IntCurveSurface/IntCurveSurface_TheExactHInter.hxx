@@ -17,24 +17,13 @@
 #ifndef _IntCurveSurface_TheExactHInter_HeaderFile
 #define _IntCurveSurface_TheExactHInter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntCurveSurface_TheCSFunctionOfHInter.hxx>
-#include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_DomainError;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_HSurfaceTool;
-class Adaptor3d_HCurve;
 class IntCurveSurface_TheHCurveTool;
 class IntCurveSurface_TheCSFunctionOfHInter;
 class math_FunctionSetRoot;
-class gp_Pnt;
-
-
 
 class IntCurveSurface_TheExactHInter 
 {

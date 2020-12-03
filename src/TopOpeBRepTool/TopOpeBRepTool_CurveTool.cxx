@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepApprox_Approx.hxx>
 #include <BRepApprox_ApproxLine.hxx>
@@ -38,7 +37,6 @@
 #include <Geom_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <GeomLib_Check2dBSplineCurve.hxx>
 #include <GeomLib_CheckBSplineCurve.hxx>
 #include <GeomTools_Curve2dSet.hxx>
@@ -897,8 +895,8 @@ Handle(Geom2d_Curve) TopOpeBRepTool_CurveTool::MakePCurveOnFace
   GeomAdaptor_Curve GAC;
   if (trim) GAC.Load(C3D,first,last);
   else      GAC.Load(C3D);
-  Handle(BRepAdaptor_HSurface) BAHS = new BRepAdaptor_HSurface(BAS);
-  Handle(GeomAdaptor_HCurve) BAHC = new GeomAdaptor_HCurve(GAC);
+  Handle(BRepAdaptor_Surface) BAHS = new BRepAdaptor_Surface(BAS);
+  Handle(GeomAdaptor_Curve) BAHC = new GeomAdaptor_Curve(GAC);
   ProjLib_ProjectedCurve projcurv(BAHS,BAHC);
   Handle(Geom2d_Curve) C2D = ::MakePCurve(projcurv);
   TolReached2d = projcurv.GetTolerance();

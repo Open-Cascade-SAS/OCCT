@@ -16,7 +16,6 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <gp_Circ2d.hxx>
@@ -30,6 +29,8 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_Curve2d, Standard_Transient)
 
 //=======================================================================
 //function : ~Adaptor2d_Curve2d
@@ -103,10 +104,10 @@ void Adaptor2d_Curve2d::Intervals(TColStd_Array1OfReal& ,
 //purpose  : 
 //=======================================================================
 
-//Handle(Adaptor2d_HCurve2d) Adaptor2d_Curve2d::Trim(const Standard_Real First,
+//Handle(Adaptor2d_Curve2d) Adaptor2d_Curve2d::Trim(const Standard_Real First,
 //					       const Standard_Real Last ,
 //					       const Standard_Real Tol) const 
-Handle(Adaptor2d_HCurve2d) Adaptor2d_Curve2d::Trim(const Standard_Real ,
+Handle(Adaptor2d_Curve2d) Adaptor2d_Curve2d::Trim(const Standard_Real ,
 					       const Standard_Real ,
 					       const Standard_Real ) const 
 {

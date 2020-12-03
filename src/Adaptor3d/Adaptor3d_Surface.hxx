@@ -17,33 +17,24 @@
 #ifndef _Adaptor3d_Surface_HeaderFile
 #define _Adaptor3d_Surface_HeaderFile
 
+#include <Adaptor3d_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class Adaptor3d_HSurface;
-class gp_Pnt;
-class gp_Vec;
-class gp_Pln;
-class gp_Cylinder;
-class gp_Cone;
-class gp_Sphere;
-class gp_Torus;
+
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
-class gp_Ax1;
-class gp_Dir;
-class Adaptor3d_HCurve;
 
+DEFINE_STANDARD_HANDLE(Adaptor3d_Surface, Standard_Transient)
 
 //! Root class for surfaces on which geometric algorithms work.
 //! An adapted surface is an interface between the
@@ -65,13 +56,11 @@ class Adaptor3d_HCurve;
 //! Polynomial coefficients of BSpline surfaces used for their evaluation are
 //! cached for better performance. Therefore these evaluations are not
 //! thread-safe and parallel evaluations need to be prevented.
-class Adaptor3d_Surface 
+class Adaptor3d_Surface : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT virtual Standard_Real FirstUParameter() const;
   
   Standard_EXPORT virtual Standard_Real LastUParameter() const;
@@ -105,13 +94,13 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor3d_HSurface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
   
   //! Returns    a  surface trimmed in the V direction  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor3d_HSurface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
   
   Standard_EXPORT virtual Standard_Boolean IsUClosed() const;
   
@@ -204,34 +193,13 @@ public:
   
   Standard_EXPORT virtual gp_Dir Direction() const;
   
-  Standard_EXPORT virtual Handle(Adaptor3d_HCurve) BasisCurve() const;
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) BasisCurve() const;
   
-  Standard_EXPORT virtual Handle(Adaptor3d_HSurface) BasisSurface() const;
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) BasisSurface() const;
   
   Standard_EXPORT virtual Standard_Real OffsetValue() const;
   Standard_EXPORT virtual ~Adaptor3d_Surface();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Adaptor3d_Surface_HeaderFile

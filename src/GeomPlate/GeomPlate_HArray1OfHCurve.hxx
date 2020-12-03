@@ -17,7 +17,7 @@
 #ifndef GeomPlate_HArray1OfHCurve_HeaderFile
 #define GeomPlate_HArray1OfHCurve_HeaderFile
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GeomPlate_Array1OfHCurve.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

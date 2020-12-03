@@ -17,16 +17,10 @@
 #ifndef _BlendFunc_EvolRad_HeaderFile
 #define _BlendFunc_EvolRad_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <BlendFunc_Tensor.hxx>
@@ -40,17 +34,11 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
+
 class Law_Function;
 class math_Matrix;
-class gp_Pnt;
-class gp_Vec;
-class gp_Vec2d;
 class gp_Circ;
 class Blend_Point;
-
-
 
 class BlendFunc_EvolRad  : public Blend_Function
 {
@@ -59,7 +47,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BlendFunc_EvolRad(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_HCurve)& C, const Handle(Law_Function)& Law);
+  Standard_EXPORT BlendFunc_EvolRad(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_Curve)& C, const Handle(Law_Function)& Law);
   
   //! returns the number of equations of the function.
   Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
@@ -188,10 +176,10 @@ private:
   Standard_EXPORT Standard_Boolean ComputeValues (const math_Vector& X, const Standard_Integer Order, const Standard_Boolean ByParam = Standard_False, const Standard_Real Param = 0);
 
 
-  Handle(Adaptor3d_HSurface) surf1;
-  Handle(Adaptor3d_HSurface) surf2;
-  Handle(Adaptor3d_HCurve) curv;
-  Handle(Adaptor3d_HCurve) tcurv;
+  Handle(Adaptor3d_Surface) surf1;
+  Handle(Adaptor3d_Surface) surf2;
+  Handle(Adaptor3d_Curve) curv;
+  Handle(Adaptor3d_Curve) tcurv;
   Handle(Law_Function) fevol;
   Handle(Law_Function) tevol;
   gp_Pnt pts1;

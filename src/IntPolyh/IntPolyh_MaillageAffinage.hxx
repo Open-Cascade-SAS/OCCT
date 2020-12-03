@@ -17,29 +17,19 @@
 #ifndef _IntPolyh_MaillageAffinage_HeaderFile
 #define _IntPolyh_MaillageAffinage_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <IntPolyh_ArrayOfPoints.hxx>
 #include <IntPolyh_ArrayOfEdges.hxx>
 #include <IntPolyh_ArrayOfTriangles.hxx>
 #include <IntPolyh_ListOfCouples.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <IntPolyh_ArrayOfPointNormal.hxx>
 #include <IntPolyh_ArrayOfSectionLines.hxx>
 #include <IntPolyh_ArrayOfTangentZones.hxx>
-class Adaptor3d_HSurface;
-class Bnd_Box;
-class IntPolyh_Point;
-class IntPolyh_StartPoint;
-class IntPolyh_Triangle;
-class IntPolyh_SectionLine;
 
+class Bnd_Box;
+class IntPolyh_StartPoint;
 
 //! Low-level algorithm to compute intersection of the surfaces
 //! by computing the intersection of their triangulations.
@@ -50,9 +40,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT IntPolyh_MaillageAffinage(const Handle(Adaptor3d_HSurface)& S1, const Standard_Integer NbSU1, const Standard_Integer NbSV1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Integer NbSU2, const Standard_Integer NbSV2, const Standard_Integer PRINT);
+  Standard_EXPORT IntPolyh_MaillageAffinage(const Handle(Adaptor3d_Surface)& S1, const Standard_Integer NbSU1, const Standard_Integer NbSV1, const Handle(Adaptor3d_Surface)& S2, const Standard_Integer NbSU2, const Standard_Integer NbSV2, const Standard_Integer PRINT);
   
-  Standard_EXPORT IntPolyh_MaillageAffinage(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Integer PRINT);
+  Standard_EXPORT IntPolyh_MaillageAffinage(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Standard_Integer PRINT);
   
 
   //! Makes the sampling of the surface -
@@ -204,8 +194,8 @@ protected:
 private:
 
 
-  Handle(Adaptor3d_HSurface) MaSurface1;
-  Handle(Adaptor3d_HSurface) MaSurface2;
+  Handle(Adaptor3d_Surface) MaSurface1;
+  Handle(Adaptor3d_Surface) MaSurface2;
   Bnd_Box MyBox1;
   Bnd_Box MyBox2;
   Standard_Integer NbSamplesU1;

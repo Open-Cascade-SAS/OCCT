@@ -21,7 +21,7 @@
 #include <DrawTrSurf_BSplineCurve.hxx>
 #include <DrawTrSurf_BSplineSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Type.hxx>
@@ -124,8 +124,8 @@ void DrawTrSurf_BSplineSurface::DrawOn (Draw_Display& dis) const {
 
   if (knotsIsos) {
     Standard_Integer first, last;
-    Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
-    HS->ChangeSurface().Load(surf);
+    Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface();
+    HS->Load(surf);
     
     Adaptor3d_IsoCurve C(HS);
 

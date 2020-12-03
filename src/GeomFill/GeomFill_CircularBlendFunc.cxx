@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GeomFill.hxx>
 #include <GeomFill_CircularBlendFunc.hxx>
@@ -29,7 +29,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc,Approx_SweepFunction)
 
 #if DRAW
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <DrawTrSurf.hxx>
 static Standard_Integer NbSections = 0;
@@ -108,9 +108,9 @@ static void GeomFillFusInt(const TColStd_Array1OfReal& I1,
 
 
 GeomFill_CircularBlendFunc::
-GeomFill_CircularBlendFunc(const Handle(Adaptor3d_HCurve)& Path,
-			   const Handle(Adaptor3d_HCurve)& Curve1,
-			   const Handle(Adaptor3d_HCurve)& Curve2,
+GeomFill_CircularBlendFunc(const Handle(Adaptor3d_Curve)& Path,
+			   const Handle(Adaptor3d_Curve)& Curve1,
+			   const Handle(Adaptor3d_Curve)& Curve2,
 			   const Standard_Real Radius,
 			   const Standard_Boolean Polynomial) 
                            : maxang(RealFirst()), 
@@ -145,7 +145,7 @@ void GeomFill_CircularBlendFunc::Discret()
   Standard_Real TLast =  myPath->LastParameter(), T;
   Standard_Integer ii;
   Standard_Real L1, L2, L;
-  Handle(Adaptor3d_HCurve) C;
+  Handle(Adaptor3d_Curve) C;
   gp_Pnt P1, P2, P3, Center;
   gp_Vec DCenter;
  
@@ -171,7 +171,7 @@ void GeomFill_CircularBlendFunc::Discret()
   Standard_Real Fleche = 1.e-2 * L;
   Standard_Real Angle, Cosa, Percent;
   GCPnts_QuasiUniformDeflection Samp;
-  Samp.Initialize(C->GetCurve(), Fleche);
+  Samp.Initialize (*C, Fleche);
   myBary.SetCoord(0.,0.,0.);
   gp_Vec ns1, ns2;
 

@@ -23,7 +23,7 @@
 //  Modified by skv - Thu Sep 25 17:42:42 2003 OCC567
 //  modified by ofv Thu Apr  8 14:58:13 2004 fip
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
@@ -122,14 +122,14 @@ static
                                        const Standard_Boolean Prepend=Standard_False); 
 
 static
-  Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
+  Standard_Boolean IsDegenerated(const Handle(Adaptor3d_Surface)& aS,
                                  const Standard_Integer aIndex,
                                  const Standard_Real aTol2,
                                  Standard_Real& aDegX);
 static
   void DegeneratedIndex(const TColStd_Array1OfReal& Xpars,
                         const Standard_Integer aNbX,
-                        const Handle(Adaptor3d_HSurface)& aS,
+                        const Handle(Adaptor3d_Surface)& aS,
                         const Standard_Integer aIsoDirection,
                         Standard_Integer& aI1,
                         Standard_Integer& aI2);
@@ -281,8 +281,8 @@ static
 //purpose  : 
 //=======================================================================
 IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
-  (const Handle(Adaptor3d_HSurface)& Surface1,
-   const Handle(Adaptor3d_HSurface)& Surface2,
+  (const Handle(Adaptor3d_Surface)& Surface1,
+   const Handle(Adaptor3d_Surface)& Surface2,
    const Standard_Integer )
 :
   MaSurface1(Surface1), 
@@ -303,10 +303,10 @@ IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
 //purpose  : 
 //=======================================================================
 IntPolyh_MaillageAffinage::IntPolyh_MaillageAffinage
-  (const Handle(Adaptor3d_HSurface)& Surface1,
+  (const Handle(Adaptor3d_Surface)& Surface1,
    const Standard_Integer NbSU1,
    const Standard_Integer NbSV1,
-   const Handle(Adaptor3d_HSurface)& Surface2,
+   const Handle(Adaptor3d_Surface)& Surface2,
    const Standard_Integer NbSU2,
    const Standard_Integer NbSV2,
    const Standard_Integer )
@@ -385,7 +385,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   aNbU=(SurfID==1)? NbSamplesU1 : NbSamplesU2;
   aNbV=(SurfID==1)? NbSamplesV1 : NbSamplesV2;
   Bnd_Box& aBox = (SurfID==1) ? MyBox1 : MyBox2;
-  Handle(Adaptor3d_HSurface)& aS=(SurfID==1)? MaSurface1:MaSurface2;
+  Handle(Adaptor3d_Surface)& aS=(SurfID==1)? MaSurface1:MaSurface2;
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   //
   aJD1=0;
@@ -441,7 +441,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt(const Standard_Integer SurfID,
                                                const TColStd_Array1OfReal& theVPars,
                                                const Standard_Real theDeflTol)
 {
-  Handle(Adaptor3d_HSurface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
+  Handle(Adaptor3d_Surface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
   IntPolyh_ArrayOfPoints& TPoints = (SurfID == 1) ? TPoints1 : TPoints2;
   Standard_Integer aNbU = (SurfID == 1) ? NbSamplesU1 : NbSamplesU2;
   Standard_Integer aNbV = (SurfID == 1) ? NbSamplesV1 : NbSamplesV2;
@@ -505,7 +505,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
    const TColStd_Array1OfReal& Vpars,
    const Standard_Real *theDeflTol)
 {
-  Handle(Adaptor3d_HSurface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
+  Handle(Adaptor3d_Surface) aS = (SurfID == 1) ? MaSurface1 : MaSurface2;
   // Compute the tolerance
   Standard_Real aTol = theDeflTol != NULL ? * theDeflTol :
     IntPolyh_Tools::ComputeDeflection(aS, Upars, Vpars);
@@ -934,7 +934,7 @@ void IntPolyh_MaillageAffinage::LocalSurfaceRefinement(const Standard_Integer Su
 void IntPolyh_MaillageAffinage::ComputeDeflections
   (const Standard_Integer SurfID)
 {
-  Handle(Adaptor3d_HSurface) aSurface=(SurfID==1)? MaSurface1:MaSurface2;
+  Handle(Adaptor3d_Surface) aSurface=(SurfID==1)? MaSurface1:MaSurface2;
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   IntPolyh_ArrayOfTriangles &TTriangles=(SurfID==1)? TTriangles1:TTriangles2;
   Standard_Real &FlecheMin=(SurfID==1)? FlecheMin1:FlecheMin2;
@@ -959,12 +959,12 @@ void IntPolyh_MaillageAffinage::ComputeDeflections
 //purpose  : Refinement of the triangles depending on the deflection
 //=======================================================================
 static
-  void TrianglesDeflectionsRefinement(const Handle(Adaptor3d_HSurface)& theS1,
+  void TrianglesDeflectionsRefinement(const Handle(Adaptor3d_Surface)& theS1,
                                       IntPolyh_ArrayOfTriangles& theTriangles1,
                                       IntPolyh_ArrayOfEdges& theEdges1,
                                       IntPolyh_ArrayOfPoints& thePoints1,
                                       const Standard_Real theFlecheCritique1,
-                                      const Handle(Adaptor3d_HSurface)& theS2,
+                                      const Handle(Adaptor3d_Surface)& theS2,
                                       IntPolyh_ArrayOfTriangles& theTriangles2,
                                       IntPolyh_ArrayOfEdges& theEdges2,
                                       IntPolyh_ArrayOfPoints& thePoints2,
@@ -1027,7 +1027,7 @@ static
 //           much smaller then the other.
 //=======================================================================
 static
-  void LargeTrianglesDeflectionsRefinement(const Handle(Adaptor3d_HSurface)& theS,
+  void LargeTrianglesDeflectionsRefinement(const Handle(Adaptor3d_Surface)& theS,
                                            IntPolyh_ArrayOfTriangles& theTriangles,
                                            IntPolyh_ArrayOfEdges& theEdges,
                                            IntPolyh_ArrayOfPoints& thePoints,
@@ -2912,7 +2912,7 @@ Standard_Real IntPolyh_MaillageAffinage::GetMaxDeflection(const Standard_Integer
 //=======================================================================
 void DegeneratedIndex(const TColStd_Array1OfReal& aXpars,
                       const Standard_Integer aNbX,
-                      const Handle(Adaptor3d_HSurface)& aS,
+                      const Handle(Adaptor3d_Surface)& aS,
                       const Standard_Integer aIsoDirection,
                       Standard_Integer& aI1,
                       Standard_Integer& aI2)
@@ -2959,7 +2959,7 @@ void DegeneratedIndex(const TColStd_Array1OfReal& aXpars,
 //function : IsDegenerated
 //purpose  : 
 //=======================================================================
-Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HSurface)& aS,
+Standard_Boolean IsDegenerated(const Handle(Adaptor3d_Surface)& aS,
                                const Standard_Integer aIndex,
                                const Standard_Real aTol2,
                                Standard_Real& aDegX)

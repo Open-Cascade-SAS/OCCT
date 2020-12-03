@@ -16,18 +16,12 @@
 #ifndef _LProp3d_CLProps_HeaderFile
 #define _LProp3d_CLProps_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
-#include <Standard_Boolean.hxx>
-class Adaptor3d_HCurve;
+
 class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -55,12 +49,12 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_HCurve)& C, const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_Curve)& C, const Standard_Integer N, const Standard_Real Resolution);
   
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_HCurve)& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
+  Standard_EXPORT LProp3d_CLProps(const Handle(Adaptor3d_Curve)& C, const Standard_Real U, const Standard_Integer N, const Standard_Real Resolution);
   
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -76,7 +70,7 @@ public:
   
   //! Initializes the local properties of the curve
   //! for the new curve.
-  Standard_EXPORT void SetCurve (const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT void SetCurve (const Handle(Adaptor3d_Curve)& C);
   
   //! Returns the Point.
   Standard_EXPORT const gp_Pnt& Value() const;
@@ -123,7 +117,7 @@ private:
 
 
 
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myCurve;
   Standard_Real myU;
   Standard_Integer myDerOrder;
   Standard_Real myCN;

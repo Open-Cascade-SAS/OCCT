@@ -17,10 +17,7 @@
 #include <BRepExtrema_ExtPC.hxx>
 
 #include <BRep_Tool.hxx>
-//#include <StdFail_NotDone.hxx>
-//#include <Standard_Failure.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
 
 
 //=======================================================================
@@ -44,12 +41,11 @@ void BRepExtrema_ExtPC::Initialize(const TopoDS_Edge& E)
   if (!BRep_Tool::IsGeometric(E))
     return;  // protect against non-geometric type (e.g. polygon)
   Standard_Real U1, U2;
-  BRepAdaptor_Curve Curv(E);
-  myHC = new BRepAdaptor_HCurve(Curv);
+  myHC = new BRepAdaptor_Curve(E);
   Standard_Real Tol = Min(BRep_Tool::Tolerance(E), Precision::Confusion());
-  Tol = Max(Curv.Resolution(Tol), Precision::PConfusion());
+  Tol = Max(myHC->Resolution(Tol), Precision::PConfusion());
   BRep_Tool::Range(E,U1,U2);
-  myExtPC.Initialize(myHC->Curve(),U1,U2,Tol);
+  myExtPC.Initialize (*myHC, U1, U2, Tol);
 }
 
 //=======================================================================

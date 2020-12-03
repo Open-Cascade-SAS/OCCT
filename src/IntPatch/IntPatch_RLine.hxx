@@ -28,7 +28,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_Situation.hxx>
 #include <IntSurf_TypeTrans.hxx>
-class Adaptor2d_HCurve2d;
+
 class Standard_DomainError;
 class Standard_OutOfRange;
 class IntPatch_Point;
@@ -86,19 +86,19 @@ public:
   //! the second patch.
     Standard_Boolean IsArcOnS2() const;
   
-  Standard_EXPORT void SetArcOnS1 (const Handle(Adaptor2d_HCurve2d)& A);
+  Standard_EXPORT void SetArcOnS1 (const Handle(Adaptor2d_Curve2d)& A);
   
-  Standard_EXPORT void SetArcOnS2 (const Handle(Adaptor2d_HCurve2d)& A);
+  Standard_EXPORT void SetArcOnS2 (const Handle(Adaptor2d_Curve2d)& A);
   
   Standard_EXPORT void SetParamOnS1 (const Standard_Real p1, const Standard_Real p2);
   
   Standard_EXPORT void SetParamOnS2 (Standard_Real& p1, Standard_Real& p2);
   
   //! Returns the concerned arc.
-    const Handle(Adaptor2d_HCurve2d)& ArcOnS1() const;
+    const Handle(Adaptor2d_Curve2d)& ArcOnS1() const;
   
   //! Returns the concerned arc.
-    const Handle(Adaptor2d_HCurve2d)& ArcOnS2() const;
+    const Handle(Adaptor2d_Curve2d)& ArcOnS2() const;
   
   Standard_EXPORT void ParamOnS1 (Standard_Real& p1, Standard_Real& p2) const;
   
@@ -199,8 +199,8 @@ protected:
 private:
 
 
-  Handle(Adaptor2d_HCurve2d) theArcOnS1;
-  Handle(Adaptor2d_HCurve2d) theArcOnS2;
+  Handle(Adaptor2d_Curve2d) theArcOnS1;
+  Handle(Adaptor2d_Curve2d) theArcOnS2;
   Standard_Boolean onS1;
   Standard_Boolean onS2;
   Standard_Real ParamInf1;

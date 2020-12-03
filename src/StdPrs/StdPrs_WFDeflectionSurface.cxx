@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
@@ -28,7 +28,7 @@
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_WFDeflectionSurface.hxx>
 
-static void FindLimits(const Handle(Adaptor3d_HSurface)& surf ,
+static void FindLimits(const Handle(Adaptor3d_Surface)& surf ,
 		       const Standard_Real    aLimit,
 		       Standard_Real&         UFirst,
 		       Standard_Real&         ULast,
@@ -131,7 +131,7 @@ static void FindLimits(const Handle(Adaptor3d_HSurface)& surf ,
 
 void StdPrs_WFDeflectionSurface::Add (
 			      const Handle (Prs3d_Presentation)& aPresentation,
-			      const Handle(Adaptor3d_HSurface)&    aSurface,
+			      const Handle(Adaptor3d_Surface)&    aSurface,
 			      const Handle (Prs3d_Drawer)&       aDrawer)
 {
     Standard_Real  U1, U2, V1, V2;
@@ -146,7 +146,7 @@ void StdPrs_WFDeflectionSurface::Add (
     if (TOD == Aspect_TOD_RELATIVE) {
 // On calcule la fleche en fonction des min max globaux de la piece:
        Bnd_Box Total;
-       BndLib_AddSurface::Add(aSurface->Surface(),U1, U2, V1, V2, 0.,Total);
+       BndLib_AddSurface::Add (*aSurface, U1, U2, V1, V2, 0., Total);
        Standard_Real m = aDrawer->MaximalChordialDeviation()/
 	 aDrawer->DeviationCoefficient();
        Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;

@@ -47,7 +47,6 @@
 #include <Geom2d_OffsetCurve.hxx>
 
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 

@@ -17,15 +17,12 @@
 #ifndef _StdPrs_ToolRFace_HeaderFile
 #define _StdPrs_ToolRFace_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <TopAbs_Orientation.hxx>
-class BRepAdaptor_HSurface;
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Face.hxx>
+
 class TopoDS_Edge;
 
 //! Iterator over 2D curves restricting a face (skipping internal/external edges).
@@ -40,7 +37,7 @@ public:
   Standard_EXPORT StdPrs_ToolRFace();
 
   //! Constructor with initialization.
-  Standard_EXPORT StdPrs_ToolRFace(const Handle(BRepAdaptor_HSurface)& aSurface);
+  Standard_EXPORT StdPrs_ToolRFace(const Handle(BRepAdaptor_Surface)& aSurface);
   
   //! Return TRUE indicating that iterator looks only for oriented edges.
   Standard_Boolean IsOriented() const { return Standard_True; }

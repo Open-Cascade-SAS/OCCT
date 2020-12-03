@@ -16,15 +16,14 @@
 
 //  Modified by skv - Thu Sep 30 15:21:07 2004 OCC593
 
+#include <Extrema_GenExtPS.hxx>
+
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Bnd_Array1OfSphere.hxx>
 #include <Bnd_HArray1OfSphere.hxx>
 #include <Bnd_Sphere.hxx>
 #include <Extrema_ExtFlag.hxx>
-#include <Extrema_GenExtPS.hxx>
 #include <Extrema_HUBTreeOfSphere.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Extrema_POnSurfParams.hxx>
@@ -363,8 +362,10 @@ void Extrema_GenExtPS::GetGridPoints( const Adaptor3d_Surface& theSurf)
 {
   //creation parametric points for BSpline and Bezier surfaces
   //with taking into account of Degree and NbKnots of BSpline or Bezier geometry
-  if(theSurf.GetType() == GeomAbs_OffsetSurface)
-    GetGridPoints(theSurf.BasisSurface()->Surface());
+  if (theSurf.GetType() == GeomAbs_OffsetSurface)
+  {
+    GetGridPoints (*theSurf.BasisSurface());
+  }
   //parametric points for BSpline surfaces
   else if( theSurf.GetType() == GeomAbs_BSplineSurface) 
   {
@@ -399,9 +400,9 @@ void Extrema_GenExtPS::GetGridPoints( const Adaptor3d_Surface& theSurf)
   {
     Handle(TColStd_HArray1OfReal) anArrKnots;
     Standard_Integer aDegree = 0;
-    if(theSurf.BasisCurve()->Curve().GetType() == GeomAbs_BSplineCurve)
+    if(theSurf.BasisCurve()->GetType() == GeomAbs_BSplineCurve)
     {
-      Handle(Geom_BSplineCurve) aBspl = theSurf.BasisCurve()->Curve().BSpline();
+      Handle(Geom_BSplineCurve) aBspl = theSurf.BasisCurve()->BSpline();
       if(!aBspl.IsNull())
       {
         anArrKnots = new TColStd_HArray1OfReal(1,aBspl->NbKnots());
@@ -411,9 +412,9 @@ void Extrema_GenExtPS::GetGridPoints( const Adaptor3d_Surface& theSurf)
       }
 
     }
-    if(theSurf.BasisCurve()->Curve().GetType() == GeomAbs_BezierCurve)
+    if(theSurf.BasisCurve()->GetType() == GeomAbs_BezierCurve)
     {
-      Handle(Geom_BezierCurve) aBez = theSurf.BasisCurve()->Curve().Bezier();
+      Handle(Geom_BezierCurve) aBez = theSurf.BasisCurve()->Bezier();
       if(!aBez.IsNull())
       {
         anArrKnots = new TColStd_HArray1OfReal(1,2);

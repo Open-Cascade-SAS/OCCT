@@ -17,25 +17,18 @@
 #ifndef _BRepBlend_CSWalking_HeaderFile
 #define _BRepBlend_CSWalking_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Blend_Point.hxx>
-#include <Standard_Integer.hxx>
 #include <BRepBlend_SequenceOfPointOnRst.hxx>
 #include <math_Vector.hxx>
 #include <Blend_Status.hxx>
+
 class BRepBlend_Line;
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
 class Adaptor3d_TopolTool;
 class StdFail_NotDone;
 class Adaptor3d_HVertex;
-class Adaptor2d_HCurve2d;
 class BRepBlend_HCurve2dTool;
 class Adaptor3d_HSurfaceTool;
 class BRepBlend_HCurveTool;
@@ -49,8 +42,6 @@ class gp_Pnt2d;
 class gp_Vec;
 class gp_Vec2d;
 
-
-
 class BRepBlend_CSWalking 
 {
 public:
@@ -58,7 +49,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_CSWalking(const Handle(Adaptor3d_HCurve)& Curv, const Handle(Adaptor3d_HSurface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain);
+  Standard_EXPORT BRepBlend_CSWalking(const Handle(Adaptor3d_Curve)& Curv, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain);
   
   Standard_EXPORT void Perform (Blend_CSFunction& F, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
@@ -68,21 +59,12 @@ public:
   
     const Handle(BRepBlend_Line)& Line() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
   
   Standard_EXPORT void InternalPerform (Blend_CSFunction& F, math_Vector& Sol, const Standard_Real Bound);
   
-  Standard_EXPORT void Transition (const Handle(Adaptor2d_HCurve2d)& A, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
+  Standard_EXPORT void Transition (const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
   
   Standard_EXPORT void MakeExtremity (BRepBlend_Extremity& Extrem, const Standard_Integer Index, const Standard_Real Param, const Standard_Boolean IsVtx, const Handle(Adaptor3d_HVertex)& Vtx);
   
@@ -95,8 +77,8 @@ private:
 
   Standard_Boolean done;
   Handle(BRepBlend_Line) line;
-  Handle(Adaptor3d_HSurface) surf;
-  Handle(Adaptor3d_HCurve) curv;
+  Handle(Adaptor3d_Surface) surf;
+  Handle(Adaptor3d_Curve) curv;
   Handle(Adaptor3d_TopolTool) domain;
   Standard_Real tolesp;
   Standard_Real tolgui;
@@ -116,12 +98,12 @@ private:
 
 #define TheVertex Handle(Adaptor3d_HVertex)
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_HCurve2d)
-#define TheArc_hxx <Adaptor2d_HCurve2d.hxx>
-#define TheSurface Handle(Adaptor3d_HSurface)
-#define TheSurface_hxx <Adaptor3d_HSurface.hxx>
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
+#define TheArc Handle(Adaptor2d_Curve2d)
+#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
+#define TheSurface Handle(Adaptor3d_Surface)
+#define TheSurface_hxx <Adaptor3d_Surface.hxx>
+#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheVertexTool Standard_Integer
 #define TheVertexTool_hxx <Standard_Integer.hxx>
 #define TheArcTool BRepBlend_HCurve2dTool

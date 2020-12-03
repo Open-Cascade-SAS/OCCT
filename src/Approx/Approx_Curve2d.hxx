@@ -17,14 +17,9 @@
 #ifndef _Approx_Curve2d_HeaderFile
 #define _Approx_Curve2d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor2d_Curve2d.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-
-class Adaptor2d_HCurve2d;
 
 //! Makes  an  approximation  for  HCurve2d  from  Adaptor3d
 class Approx_Curve2d 
@@ -34,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT Approx_Curve2d(const Handle(Adaptor2d_HCurve2d)& C2D, const Standard_Real First, const Standard_Real Last, const Standard_Real TolU, const Standard_Real TolV, const GeomAbs_Shape Continuity, const Standard_Integer MaxDegree, const Standard_Integer MaxSegments);
+  Standard_EXPORT Approx_Curve2d(const Handle(Adaptor2d_Curve2d)& C2D, const Standard_Real First, const Standard_Real Last, const Standard_Real TolU, const Standard_Real TolV, const GeomAbs_Shape Continuity, const Standard_Integer MaxDegree, const Standard_Integer MaxSegments);
   
   Standard_EXPORT Standard_Boolean IsDone() const;
   

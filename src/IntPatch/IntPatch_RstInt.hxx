@@ -17,17 +17,11 @@
 #ifndef _IntPatch_RstInt_HeaderFile
 #define _IntPatch_RstInt_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Adaptor3d_Surface.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Standard_DomainError;
 class IntPatch_Line;
-class Adaptor3d_HSurface;
 class Adaptor3d_TopolTool;
-
 
 //! trouver les points d intersection entre la ligne de
 //! cheminement et les arcs de restriction
@@ -39,9 +33,9 @@ public:
 
   
   Standard_EXPORT static void PutVertexOnLine (const Handle(IntPatch_Line)& L,
-                                               const Handle(Adaptor3d_HSurface)& Surf,
+                                               const Handle(Adaptor3d_Surface)& Surf,
                                                const Handle(Adaptor3d_TopolTool)& Domain,
-                                               const Handle(Adaptor3d_HSurface)& OtherSurf,
+                                               const Handle(Adaptor3d_Surface)& OtherSurf,
                                                const Standard_Boolean OnFirst,
                                                const Standard_Real Tol);
 

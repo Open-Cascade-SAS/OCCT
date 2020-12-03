@@ -17,27 +17,17 @@
 #ifndef _TopOpeBRep_FacesIntersector_HeaderFile
 #define _TopOpeBRep_FacesIntersector_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <IntPatch_Intersection.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <TopOpeBRep_HArray1OfLineInter.hxx>
-#include <TopOpeBRep_LineInter.hxx>
-#include <Standard_Integer.hxx>
-#include <TopoDS_Face.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopoDS_Shape.hxx>
+#include <IntPatch_Intersection.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class BRepAdaptor_HSurface;
-class BRepTopAdaptor_TopolTool;
-class TopoDS_Shape;
-class Bnd_Box;
-class TopOpeBRep_LineInter;
+#include <TopOpeBRep_LineInter.hxx>
+#include <TopOpeBRep_HArray1OfLineInter.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
+class BRepTopAdaptor_TopolTool;
+class Bnd_Box;
 
 //! Describes the intersection of two faces.
 class TopOpeBRep_FacesIntersector 
@@ -148,8 +138,8 @@ private:
   Standard_Integer myLineNb;
   TopoDS_Face myFace1;
   TopoDS_Face myFace2;
-  Handle(BRepAdaptor_HSurface) mySurface1;
-  Handle(BRepAdaptor_HSurface) mySurface2;
+  Handle(BRepAdaptor_Surface) mySurface1;
+  Handle(BRepAdaptor_Surface) mySurface2;
   GeomAbs_SurfaceType mySurfaceType1;
   GeomAbs_SurfaceType mySurfaceType2;
   Standard_Boolean mySurfacesSameOriented;

@@ -25,8 +25,8 @@
 //--      - Pour rester coherent avec cette facon de faire, 
 //--      Chercher(Nbvtx++). 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Intf_SectionPoint.hxx>
@@ -109,7 +109,7 @@ inline Standard_Real Tol3d (const Handle(Adaptor3d_HVertex)& vtx,
 	  : tolDef);
 }
 
-inline Standard_Real Tol3d (const Handle(Adaptor2d_HCurve2d)& arc,
+inline Standard_Real Tol3d (const Handle(Adaptor2d_Curve2d)& arc,
 			    const Handle(Adaptor3d_TopolTool)& Domain,
 			    const Standard_Real tolDef = 0.)
 {
@@ -119,8 +119,8 @@ inline Standard_Real Tol3d (const Handle(Adaptor2d_HCurve2d)& arc,
 }
 
 static Standard_Boolean CoincideOnArc(const gp_Pnt& Ptsommet,
-				      const Handle(Adaptor2d_HCurve2d)& A,
-				      const Handle(Adaptor3d_HSurface)& Surf,
+				      const Handle(Adaptor2d_Curve2d)& A,
+				      const Handle(Adaptor3d_Surface)& Surf,
 				      const Standard_Real Toler,
 				      const Handle(Adaptor3d_TopolTool)& Domain,
 				      Handle(Adaptor3d_HVertex)& Vtx)
@@ -235,7 +235,7 @@ static void GetLinePoint2d (const Handle(IntPatch_Line)& L,
 }
 
 static Standard_Boolean FindParameter(const Handle(IntPatch_Line)& L,
-				      const Handle(Adaptor3d_HSurface)& OtherSurf,
+				      const Handle(Adaptor3d_Surface)& OtherSurf,
 				      const Standard_Real Tol,
 				      const gp_Pnt& Ptsom,
 				      const gp_Pnt2d& Ptsom2d,
@@ -366,9 +366,9 @@ inline Standard_Boolean ArePnt2dEqual(const gp_Pnt2d& p1, const gp_Pnt2d& p2,
 //=======================================================================
 
 void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
-                                       const Handle(Adaptor3d_HSurface)& Surf,
+                                       const Handle(Adaptor3d_Surface)& Surf,
                                        const Handle(Adaptor3d_TopolTool)& Domain,
-                                       const Handle(Adaptor3d_HSurface)& OtherSurf,
+                                       const Handle(Adaptor3d_Surface)& OtherSurf,
                                        const Standard_Boolean OnFirst,
                                        const Standard_Real Tol)
  {
@@ -404,7 +404,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 
   IntPatch_Point Sommet, ptline;
   Handle(Adaptor3d_HVertex) vtxarc,vtxline;
-  Handle(Adaptor2d_HCurve2d) arc;
+  Handle(Adaptor2d_Curve2d) arc;
   Standard_Boolean VtxOnArc, duplicate, found;
   IntSurf_Transition transarc,transline;
 
@@ -447,8 +447,8 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
   //-- il faut dans ce cas considerer la restriction                      --
   //--                                la restriction decalee de +-2PI     --
   //------------------------------------------------------------------------
-  const Handle(Adaptor3d_HSurface)& Surf1 = (OnFirst ? Surf : OtherSurf);
-  const Handle(Adaptor3d_HSurface)& Surf2 = (OnFirst ? OtherSurf : Surf);
+  const Handle(Adaptor3d_Surface)& Surf1 = (OnFirst ? Surf : OtherSurf);
+  const Handle(Adaptor3d_Surface)& Surf2 = (OnFirst ? OtherSurf : Surf);
   GeomAbs_SurfaceType TypeS1 = Surf1->GetType();
   GeomAbs_SurfaceType TypeS2 = Surf2->GetType();
   Standard_Boolean SurfaceIsPeriodic   = Standard_False;
@@ -509,7 +509,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
           
           Standard_Real aXmin, aYmin, aXmax, aYmax;
           BPLin.Get(aXmin, aYmin, aXmax, aYmax);
-          gp_Lin2d aLin = arc->Curve2d().Line();
+          gp_Lin2d aLin = arc->Line();
           const gp_Pnt2d& aLoc = aLin.Location();
           const gp_Dir2d& aDir = aLin.Direction();
 

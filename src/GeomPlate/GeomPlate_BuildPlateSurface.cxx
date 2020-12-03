@@ -14,8 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <GeomPlate_BuildPlateSurface.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -31,11 +33,9 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <GeomPlate_BuildAveragePlane.hxx>
-#include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <GeomPlate_HArray1OfSequenceOfReal.hxx>
 #include <GeomPlate_MakeApprox.hxx>
@@ -257,25 +257,25 @@ static void TrierTab(Handle(TColStd_HArray1OfInteger)& Tab)
 //---------------------------------------------------------
 // Function : ProjectCurve
 //---------------------------------------------------------
-Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Adaptor3d_HCurve)& Curv) 
+Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Adaptor3d_Curve)& Curv) 
 {
  // Project a curve on a plane
  Handle(Geom2d_Curve) Curve2d ;
- Handle(GeomAdaptor_HSurface) hsur = new GeomAdaptor_HSurface(mySurfInit);
+ Handle(GeomAdaptor_Surface) hsur = new GeomAdaptor_Surface(mySurfInit);
  gp_Pnt2d P2d;
 
- ProjLib_CompProjectedCurve Projector(hsur, Curv, myTol3d/10, myTol3d/10);
+ Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur, Curv, myTol3d/10, myTol3d/10);
 
  Standard_Real UdebCheck, UfinCheck, ProjUdeb, ProjUfin;
  UdebCheck = Curv->FirstParameter();
  UfinCheck = Curv->LastParameter();
- Projector.Bounds( 1, ProjUdeb, ProjUfin );
+ HProjector->Bounds( 1, ProjUdeb, ProjUfin );
 
- if (Projector.NbCurves() != 1 ||
+ if (HProjector->NbCurves() != 1 ||
      Abs( UdebCheck -ProjUdeb ) > Precision::PConfusion() ||
      Abs( UfinCheck -ProjUfin ) > Precision::PConfusion())
    {
-     if (Projector.IsSinglePnt(1, P2d))
+     if (HProjector->IsSinglePnt(1, P2d))
        {
 	 // solution in a point
 	 TColgp_Array1OfPnt2d poles(1, 2);
@@ -294,10 +294,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
    GeomAbs_Shape Continuity = GeomAbs_C1;
    Standard_Integer MaxDegree = 10, MaxSeg;
    Standard_Real Udeb, Ufin;
-   Handle(ProjLib_HCompProjectedCurve) HProjector = 
-     new ProjLib_HCompProjectedCurve();
-   HProjector->Set(Projector);
-   Projector.Bounds(1, Udeb, Ufin);
+   HProjector->Bounds(1, Udeb, Ufin);
    
    MaxSeg = 20 + HProjector->NbIntervals(GeomAbs_C3);
    Approx_CurveOnSurface appr(HProjector, hsur, Udeb, Ufin, myTol3d);
@@ -317,18 +314,15 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
 //---------------------------------------------------------
 // Function : ProjectedCurve
 //---------------------------------------------------------
-Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(Adaptor3d_HCurve)& Curv) 
+Handle(Adaptor2d_Curve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(Adaptor3d_Curve)& Curv) 
 {
  // Projection of a curve on the initial surface
 
- Handle(GeomAdaptor_HSurface) hsur = new GeomAdaptor_HSurface(mySurfInit);
+ Handle(GeomAdaptor_Surface) hsur = new GeomAdaptor_Surface(mySurfInit);
 
- ProjLib_CompProjectedCurve Projector(hsur, Curv, myTolU/10, myTolV/10);
- Handle(ProjLib_HCompProjectedCurve) HProjector = 
-     new ProjLib_HCompProjectedCurve();
-
- if (Projector.NbCurves() != 1) {
-     
+ Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur, Curv, myTolU/10, myTolV/10);
+ if (HProjector->NbCurves() != 1)
+ {
      HProjector.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
      std::cout << "BuildPlateSurace :: No continuous projection" << std::endl;
@@ -339,15 +333,12 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      Standard_Real First1,Last1,First2,Last2;
      First1=Curv->FirstParameter();
      Last1 =Curv->LastParameter();
-     Projector.Bounds(1,First2,Last2);
+     HProjector->Bounds(1,First2,Last2);
 
      if (Abs(First1-First2) <= Max(myTolU,myTolV) && 
          Abs(Last1-Last2) <= Max(myTolU,myTolV))
      {    
-
-         HProjector->Set(Projector);
-         HProjector = Handle(ProjLib_HCompProjectedCurve)::
-	   DownCast(HProjector->Trim(First2,Last2,Precision::PConfusion()));
+         HProjector = Handle(ProjLib_HCompProjectedCurve)::DownCast(HProjector->Trim(First2,Last2,Precision::PConfusion()));
      }
      else
      {
@@ -1608,8 +1599,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
 	(Handle( Geom_RectangularTrimmedSurface )::DownCast(mySurfInit))->BasisSurface();
       
       Standard_Real Ratio = 0., R1 = 2., R2 = 0.6; //R1 = 3, R2 = 0.5;//R1 = 1.4, R2 = 0.8; //R1 = 5., R2 = 0.2; 
-      Handle( GeomAdaptor_HSurface ) hsur = 
-	new GeomAdaptor_HSurface( InitPlane );
+      Handle( GeomAdaptor_Surface ) hsur = 
+	new GeomAdaptor_Surface( InitPlane );
       Standard_Integer NbPoint = 20;
 //      gp_Pnt P;
 //      gp_Vec DerC, DerCproj, DU, DV;
@@ -1623,11 +1614,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
 	  Standard_Real LastPar  = myLinCont->Value(i)->LastParameter();
 	  Standard_Real Uif = (LastPar - FirstPar)/(NbPoint);
 	  
-	  Handle( Adaptor3d_HCurve ) Curve = myLinCont->Value(i)->Curve3d();
-	  ProjLib_CompProjectedCurve Projector( hsur, Curve, myTol3d, myTol3d );
-	  Handle( ProjLib_HCompProjectedCurve ) ProjCurve = 
-	    new ProjLib_HCompProjectedCurve();
-	  ProjCurve->Set( Projector );
+	  Handle( Adaptor3d_Curve ) Curve = myLinCont->Value(i)->Curve3d();
+	  Handle( ProjLib_HCompProjectedCurve ) ProjCurve = new ProjLib_HCompProjectedCurve (hsur, Curve, myTol3d, myTol3d);
           Adaptor3d_CurveOnSurface AProj(ProjCurve, hsur);
 	  
 	  gp_Pnt P;
@@ -1890,13 +1878,13 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 			  gp_Vec vec, vecU, vecV, N;
 			  if (myLinCont->Value(i)->Order() == 0)
 			    {
-			      Handle( Adaptor3d_HCurve ) theCurve = myLinCont->Value(i)->Curve3d();
+			      Handle( Adaptor3d_Curve ) theCurve = myLinCont->Value(i)->Curve3d();
 			      theCurve->D1( int2d.ParamOnFirst(), P1, vec );
 			      myLinCont->Value(j)->D1( int2d.ParamOnSecond(), P2, vecU, vecV );
 			    }
 			  else
 			    {
-			      Handle( Adaptor3d_HCurve ) theCurve = myLinCont->Value(j)->Curve3d();
+			      Handle( Adaptor3d_Curve ) theCurve = myLinCont->Value(j)->Curve3d();
 			      theCurve->D1( int2d.ParamOnSecond(), P2, vec );
 			      myLinCont->Value(i)->D1( int2d.ParamOnFirst(), P1, vecU, vecV );
 			    }

@@ -2815,7 +2815,7 @@ static Standard_Integer OCC29531(Draw_Interpretor&, Standard_Integer, const char
 //function : OCC29807
 //purpose  : 
 //=======================================================================
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <IntPatch_PointLine.hxx>
 #include <IntSurf_PntOn2S.hxx>
 static Standard_Integer OCC29807(Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgV)
@@ -2840,8 +2840,8 @@ static Standard_Integer OCC29807(Draw_Interpretor& theDI, Standard_Integer theNA
   const Standard_Real aU2 = Draw::Atof(theArgV[5]);
   const Standard_Real aV2 = Draw::Atof(theArgV[6]);
 
-  const Handle(GeomAdaptor_HSurface) anAS1 = new GeomAdaptor_HSurface(aS1);
-  const Handle(GeomAdaptor_HSurface) anAS2 = new GeomAdaptor_HSurface(aS2);
+  const Handle(GeomAdaptor_Surface) anAS1 = new GeomAdaptor_Surface(aS1);
+  const Handle(GeomAdaptor_Surface) anAS2 = new GeomAdaptor_Surface(aS2);
 
   const gp_Pnt aP1 = anAS1->Value(aU1, aV1);
   const gp_Pnt aP2 = anAS2->Value(aU2, aV2);
@@ -3226,15 +3226,15 @@ static Standard_Integer QAEndsWith(Draw_Interpretor& di, Standard_Integer n, con
 
 //Class is used in OCC30435
 #include <AppCont_Function.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 class CurveEvaluator : public AppCont_Function
 
 {
 
 public:
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myCurve;
 
-  CurveEvaluator(const Handle(Adaptor3d_HCurve)& C)
+  CurveEvaluator(const Handle(Adaptor3d_Curve)& C)
     : myCurve(C)
   {
     myNbPnt = 1;
@@ -3269,7 +3269,7 @@ public:
   }
 };
 
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
 static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const char** a)
@@ -3298,7 +3298,7 @@ static Standard_Integer OCC30435(Draw_Interpretor& di, Standard_Integer, const c
 
   Standard_Integer maxit = atoi(a[4]);
 
-  Handle(GeomAdaptor_HCurve) aGAC = new GeomAdaptor_HCurve(GC);
+  Handle(GeomAdaptor_Curve) aGAC = new GeomAdaptor_Curve(GC);
 
   CurveEvaluator aCE(aGAC);
 

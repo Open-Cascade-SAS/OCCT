@@ -31,7 +31,6 @@ class GeomFill_LocationLaw;
 class Geom_Curve;
 class StdFail_NotDone;
 class Geom_Geometry;
-class Adaptor3d_HCurve;
 class gp_Trsf;
 class gp_Mat;
 class gp_Vec;
@@ -52,7 +51,7 @@ public:
   
   Standard_EXPORT void Perform (const Standard_Real Tol);
   
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& Path, const Standard_Real Tol);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Curve)& Path, const Standard_Real Tol);
   
   Standard_EXPORT void Perform (const Standard_Real ParamOnPath, const Standard_Real Tol);
   

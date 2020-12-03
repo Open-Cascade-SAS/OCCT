@@ -26,11 +26,11 @@
 #include <BRepLib_MakeWire.hxx>
 #include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
@@ -424,8 +424,8 @@ void ShapeUpgrade_WireDivide::Perform ()
       else if(myEdgeDivide->HasCurve2d() && !Surf.IsNull()) {
 	Handle(Geom2d_Curve) c2d;
 	sae.PCurve ( E, myFace, c2d, af, al, Standard_False); 
-	Handle(Adaptor3d_HSurface) AdS = new GeomAdaptor_HSurface(Surf);
-	Handle(Adaptor2d_HCurve2d) AC2d  = new Geom2dAdaptor_HCurve(c2d,af,al);
+	Handle(Adaptor3d_Surface) AdS = new GeomAdaptor_Surface(Surf);
+	Handle(Adaptor2d_Curve2d) AC2d  = new Geom2dAdaptor_Curve(c2d,af,al);
 	AdCS.Load(AC2d);
 	AdCS.Load(AdS);
       }

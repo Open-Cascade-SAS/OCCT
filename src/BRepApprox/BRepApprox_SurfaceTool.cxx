@@ -14,11 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepApprox_SurfaceTool.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <gp_Pnt.hxx>

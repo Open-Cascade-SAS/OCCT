@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <IntPatch_ArcFunction.hxx>
 #include <IntPatch_HInterTool.hxx>

@@ -13,10 +13,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
 #include <gp_Pnt.hxx>
@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_HVertex,Adaptor3d_HVertex)
 
 BRepTopAdaptor_HVertex::BRepTopAdaptor_HVertex
   (const TopoDS_Vertex& V,
-   const Handle(BRepAdaptor_HCurve2d)& C):
+   const Handle(BRepAdaptor_Curve2d)& C):
        myVtx(V),myCurve(C)
 {}
 
@@ -41,28 +41,21 @@ gp_Pnt2d BRepTopAdaptor_HVertex::Value ()
 }
 
 Standard_Real BRepTopAdaptor_HVertex::Parameter 
-  (const Handle(Adaptor2d_HCurve2d)& C)
+  (const Handle(Adaptor2d_Curve2d)& C)
 {
-  Handle(BRepAdaptor_HCurve2d) brhc = 
-    Handle(BRepAdaptor_HCurve2d)::DownCast(C);
-  return BRep_Tool::Parameter(myVtx,
-			      ((BRepAdaptor_Curve2d *)&(brhc->Curve2d()))->Edge(),
-			      ((BRepAdaptor_Curve2d *)&(brhc->Curve2d()))->Face());
+  Handle(BRepAdaptor_Curve2d) brhc =  Handle(BRepAdaptor_Curve2d)::DownCast(C);
+  return BRep_Tool::Parameter (myVtx, brhc->Edge(), brhc->Face());
 }
 
 
 Standard_Real BRepTopAdaptor_HVertex::Resolution 
-  (const Handle(Adaptor2d_HCurve2d)& C)
+  (const Handle(Adaptor2d_Curve2d)& C)
 {
-  Handle(BRepAdaptor_HCurve2d) brhc = 
-    Handle(BRepAdaptor_HCurve2d)::DownCast(C);
-  const TopoDS_Face& F = ((BRepAdaptor_Curve2d *)&(brhc->Curve2d()))->Face();
+  Handle(BRepAdaptor_Curve2d) brhc = Handle(BRepAdaptor_Curve2d)::DownCast(C);
+  const TopoDS_Face& F = brhc->Face();
   BRepAdaptor_Surface S(F,0);
   Standard_Real tv = BRep_Tool::Tolerance(myVtx);
-  Standard_Real pp, p = BRep_Tool::Parameter
-    (myVtx,
-     ((BRepAdaptor_Curve2d *)&(brhc->Curve2d()))->Edge(),
-     ((BRepAdaptor_Curve2d *)&(brhc->Curve2d()))->Face());
+  Standard_Real pp, p = BRep_Tool::Parameter (myVtx, brhc->Edge(), brhc->Face());
   TopAbs_Orientation Or = Orientation();
   gp_Pnt2d p2d; gp_Vec2d v2d;
   C->D1(p,p2d,v2d);

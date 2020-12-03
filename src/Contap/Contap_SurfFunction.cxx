@@ -16,7 +16,7 @@
 
 // jag 940616 Tolpetit = 1.e-16
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Contap_HContTool.hxx>
 #include <Contap_SurfFunction.hxx>
@@ -46,7 +46,7 @@ Contap_SurfFunction::Contap_SurfFunction ():
 {
 }
 
-void Contap_SurfFunction::Set(const Handle(Adaptor3d_HSurface)& S)
+void Contap_SurfFunction::Set(const Handle(Adaptor3d_Surface)& S)
 {
   mySurf = S;
   Standard_Integer i;

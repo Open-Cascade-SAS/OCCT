@@ -17,10 +17,9 @@
 //  Modified by skv - Mon Jun  7 18:38:57 2004 OCC5898
 //  Modified by skv - Thu Aug 21 11:55:58 2008 OCC20222
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
@@ -34,9 +33,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBlend_Line.hxx>
@@ -50,7 +46,7 @@
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Map.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
@@ -69,7 +65,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedCurve.hxx>
@@ -83,8 +79,8 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomInt_IntSS.hxx>
@@ -183,9 +179,9 @@ static Standard_Real recadre(const Standard_Real p,
 //           parameter in FaceInterference.
 //=======================================================================
 
-static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
-			       const Handle(Adaptor2d_HCurve2d)& pcfb,
-			       const Handle(Adaptor3d_HSurface)& surf,
+static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& fb,
+			       const Handle(Adaptor2d_Curve2d)& pcfb,
+			       const Handle(Adaptor3d_Surface)& surf,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       gp_Pnt2d&                 p2dbout,
@@ -196,7 +192,7 @@ static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
 {
   Adaptor3d_CurveOnSurface c1(pcfb,fb);
   Handle(Geom2d_Curve) pc = fi.PCurveOnSurf();
-  Handle(Geom2dAdaptor_HCurve) hpc = new Geom2dAdaptor_HCurve(pc);
+  Handle(Geom2dAdaptor_Curve) hpc = new Geom2dAdaptor_Curve(pc);
   Adaptor3d_CurveOnSurface c2(hpc,surf);
   Extrema_LocateExtCC ext(c1,c2,pared,wop);
   if (ext.IsDone()) {
@@ -225,8 +221,8 @@ static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
 //           and <p2dbout>
 //=======================================================================
 
-static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
-			       const Handle(Adaptor3d_HCurve)&   ct,
+static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& fb,
+			       const Handle(Adaptor3d_Curve)&   ct,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       gp_Pnt2d&                 p2dbout,
@@ -308,8 +304,8 @@ static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& fb,
 //           <Vtx> is a corner vertex
 //=======================================================================
 
-static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
-					   Handle(BRepAdaptor_HSurface)& HBs,
+static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_Surface)& HGs,
+					   Handle(BRepAdaptor_Surface)& HBs,
 					   const Handle(Geom_Curve)&     c3dFI,
 					   const TopoDS_Face&            Fop,
 					   const TopoDS_Face&            Fprol,
@@ -327,9 +323,9 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
   // extended end or if the end is sharp.
   Standard_Real uf = FIop.FirstParameter();
   Standard_Real ul = FIop.LastParameter();
-  Handle(GeomAdaptor_HCurve) Hc3df;
-  if (c3dFI->IsPeriodic()) Hc3df = new GeomAdaptor_HCurve(c3dFI);
-  else                     Hc3df = new GeomAdaptor_HCurve(c3dFI,uf,ul);
+  Handle(GeomAdaptor_Curve) Hc3df;
+  if (c3dFI->IsPeriodic()) Hc3df = new GeomAdaptor_Curve(c3dFI);
+  else                     Hc3df = new GeomAdaptor_Curve(c3dFI,uf,ul);
 
   if ( Update(HBs,Hc3df,FIop,CPop,FprolUV,isFirst,c3dU) )
     return Standard_True;
@@ -338,7 +334,7 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
     return Standard_False;
 
   Handle(Geom2d_Curve) gpcprol = BRep_Tool::CurveOnSurface(Eprol,Fprol,uf,ul);
-  Handle(Geom2dAdaptor_HCurve) pcprol = new Geom2dAdaptor_HCurve(gpcprol);
+  Handle(Geom2dAdaptor_Curve) pcprol = new Geom2dAdaptor_Curve(gpcprol);
   Standard_Real partemp = BRep_Tool::Parameter(Vtx,Eprol);
 
   return
@@ -352,9 +348,9 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
 //           face at end.
 //=======================================================================
 
-static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& face,
-			       const Handle(Adaptor2d_HCurve2d)& edonface,
-			       const Handle(Adaptor3d_HSurface)& surf,
+static Standard_Boolean Update(const Handle(Adaptor3d_Surface)& face,
+			       const Handle(Adaptor2d_Curve2d)& edonface,
+			       const Handle(Adaptor3d_Surface)& surf,
 			       ChFiDS_FaceInterference&  fi,
 			       ChFiDS_CommonPoint&       cp,
 			       const Standard_Boolean    isfirst)
@@ -369,7 +365,7 @@ static Standard_Boolean Update(const Handle(Adaptor3d_HSurface)& face,
   Standard_Real delta = 0.1 * ( l - f );
   f = Max(f-delta,pc->FirstParameter());
   l = Min(l+delta,pc->LastParameter());
-  Handle(Geom2dAdaptor_HCurve) hpc = new Geom2dAdaptor_HCurve(pc,f,l);
+  Handle(Geom2dAdaptor_Curve) hpc = new Geom2dAdaptor_Curve(pc,f,l);
   Adaptor3d_CurveOnSurface c2(hpc,surf);
 
   Extrema_LocateExtCC ext(c1,c2,pared,parltg);
@@ -615,12 +611,12 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   else         Arcspine = spine->Edges(spine->NbEdges());
   TopAbs_Orientation OArcprolv = TopAbs_FORWARD, OArcprolop = TopAbs_FORWARD;
   Standard_Integer ICurve;
-  Handle(BRepAdaptor_HSurface) HBs  = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HBad = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HBop = new BRepAdaptor_HSurface();
-  BRepAdaptor_Surface& Bs  = HBs->ChangeSurface();
-  BRepAdaptor_Surface& Bad = HBad->ChangeSurface();
-  BRepAdaptor_Surface& Bop = HBop->ChangeSurface();
+  Handle(BRepAdaptor_Surface) HBs  = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HBad = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HBop = new BRepAdaptor_Surface();
+  BRepAdaptor_Surface& Bs  = *HBs;
+  BRepAdaptor_Surface& Bad = *HBad;
+  BRepAdaptor_Surface& Bop = *HBop;
   Handle(Geom_Curve) Cc;
   Handle(Geom2d_Curve) Pc,Ps;
   Standard_Real Ubid,Vbid;//,mu,Mu,mv,Mv;
@@ -757,8 +753,8 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
   //its opposite (point on arc).
   Standard_Real wop = Fd->ChangeInterference(IFadArc).Parameter(isfirst);
   Handle(Geom_Curve) c3df;
-  Handle(GeomAdaptor_HSurface)
-    HGs = new GeomAdaptor_HSurface(DStr.Surface(Fd->Surf()).Surface());
+  Handle(GeomAdaptor_Surface)
+    HGs = new GeomAdaptor_Surface(DStr.Surface(Fd->Surf()).Surface());
   gp_Pnt2d p2dbout;
 
   if (onsame) {
@@ -769,8 +765,8 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     inters = IntersUpdateOnSame (HGs,HBs,c3df,Fop,Fv,Arcprol,Vtx,isfirst,10*tolesp, // in
 				 FiopArc,CPopArc,p2dbout,wop);   // out
 
-    Handle(BRepAdaptor_HCurve2d) pced = new BRepAdaptor_HCurve2d();
-    pced->ChangeCurve2d().Initialize(CPadArc.Arc(),Fv);
+    Handle(BRepAdaptor_Curve2d) pced = new BRepAdaptor_Curve2d();
+    pced->Initialize(CPadArc.Arc(),Fv);
     // in the case of degenerated Fi, parameter difference can be even negative (eap, occ293)
     if ((FiadArc.LastParameter() - FiadArc.FirstParameter()) > 10*tolesp)
       Update(HBs,pced,HGs,FiadArc,CPadArc,isfirst);
@@ -789,10 +785,10 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
       return;
     }
     Bs.Initialize(Fv);
-    Handle(BRepAdaptor_HCurve2d) pced = new BRepAdaptor_HCurve2d();
-    pced->ChangeCurve2d().Initialize(CV1.Arc(),Fv);
+    Handle(BRepAdaptor_Curve2d) pced = new BRepAdaptor_Curve2d();
+    pced->Initialize(CV1.Arc(),Fv);
     Update(HBs,pced,HGs,Fd->ChangeInterferenceOnS1(),CV1,isfirst);
-    pced->ChangeCurve2d().Initialize(CV2.Arc(),Fv);
+    pced->Initialize(CV2.Arc(),Fv);
     Update(HBs,pced,HGs,Fd->ChangeInterferenceOnS2(),CV2,isfirst);
   }
 
@@ -1692,12 +1688,12 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     PerformMoreThreeCorner (Index,1);
     return;
   }
-  Handle(GeomAdaptor_HSurface) HGs = ChFi3d_BoundSurf(DStr,Fd,1,2);
+  Handle(GeomAdaptor_Surface) HGs = ChFi3d_BoundSurf(DStr,Fd,1,2);
   ChFiDS_FaceInterference Fi1 = Fd->InterferenceOnS1();
   ChFiDS_FaceInterference Fi2 = Fd->InterferenceOnS2();
-  GeomAdaptor_Surface& Gs = HGs->ChangeSurface();
-  Handle(BRepAdaptor_HSurface) HBs  = new BRepAdaptor_HSurface();
-  BRepAdaptor_Surface& Bs  = HBs->ChangeSurface();
+  GeomAdaptor_Surface& Gs = *HGs;
+  Handle(BRepAdaptor_Surface) HBs  = new BRepAdaptor_Surface();
+  BRepAdaptor_Surface& Bs  = *HBs;
   Handle(Geom_Curve) Cc;
   Handle(Geom2d_Curve) Pc,Ps;
   Standard_Real Ubid,Vbid;
@@ -2236,9 +2232,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
         Ubid=Utrim;
         Vbid=Vtrim;
       }
-      Handle(GeomAdaptor_HCurve) HC =
-        new GeomAdaptor_HCurve(C,Ubid,Vbid);
-      GeomAdaptor_Curve & Cad =HC->ChangeCurve();
+      Handle(GeomAdaptor_Curve) HC =
+        new GeomAdaptor_Curve(C,Ubid,Vbid);
+      GeomAdaptor_Curve & Cad = *HC;
       inters.Perform(HC, HGs);
       if ( !prolface[nn] && ( !inters.IsDone() || (inters.NbPoints()==0) )) {
 	// extend surface of conge
@@ -2309,8 +2305,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
               inters.Perform(HC, HGs);
               trouve=inters.IsDone()&&inters.NbPoints()!=0;
 	      // eap occ293, eval tolex on finally trimmed curves
-//               Handle(GeomAdaptor_HSurface) H1=new GeomAdaptor_HSurface(Sfacemoins1);
-//               Handle(GeomAdaptor_HSurface) H2=new GeomAdaptor_HSurface(Sface);
+//               Handle(GeomAdaptor_Surface) H1=new GeomAdaptor_Surface(Sfacemoins1);
+//               Handle(GeomAdaptor_Surface) H2=new GeomAdaptor_Surface(Sface);
 //              tolex=ChFi3d_EvalTolReached(H1,C2dint1,H2,C2dint2,cint);
 	      tolex = InterSS.TolReached3d();
             }
@@ -2739,12 +2735,12 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
         Ct=new Geom_TrimmedCurve (csau,par1,par2);
         if (oneintersection1||oneintersection2) tolex=10*BRep_Tool::Tolerance(edgesau);
         if (extend) {
-	  Handle(GeomAdaptor_HSurface) H1, H2;
-          H1=new GeomAdaptor_HSurface(Sfacemoins1);
+	  Handle(GeomAdaptor_Surface) H1, H2;
+          H1=new GeomAdaptor_Surface(Sfacemoins1);
 	  if (Sface.IsNull()) 
 	    tolex = Max (tolex, ChFi3d_EvalTolReached(H1,C2dint1,H1,C2dint1,Ct));
 	  else {
-	    H2=new GeomAdaptor_HSurface(Sface);
+	    H2=new GeomAdaptor_Surface(Sface);
 	    tolex = Max (tolex, ChFi3d_EvalTolReached(H1,C2dint1,H2,C2dint2,Ct));
 	  }
         }
@@ -3145,8 +3141,8 @@ void ChFi3d_Builder::PerformMoreSurfdata(const Standard_Integer Index)
   Handle(Geom_Curve)           aCint1;
   Handle(Geom2d_Curve)         aPCint11;
   Handle(Geom2d_Curve)         aPCint12;
-  Handle(GeomAdaptor_HSurface) H1 = new GeomAdaptor_HSurface(aSurfPrev);
-  Handle(GeomAdaptor_HSurface) H2 = new GeomAdaptor_HSurface(aSurf);
+  Handle(GeomAdaptor_Surface) H1 = new GeomAdaptor_Surface(aSurfPrev);
+  Handle(GeomAdaptor_Surface) H2 = new GeomAdaptor_Surface(aSurf);
   Standard_Real                aTolex1=0.;
   Standard_Integer             i;
   gp_Pnt                       aPext1;
@@ -3254,8 +3250,8 @@ void ChFi3d_Builder::PerformMoreSurfdata(const Standard_Integer Index)
     if (!anInterSS2.IsDone())
       return;
 
-    H1 = new GeomAdaptor_HSurface(aSurfPrev);
-    H2 = new GeomAdaptor_HSurface(aSurf);
+    H1 = new GeomAdaptor_Surface(aSurfPrev);
+    H2 = new GeomAdaptor_Surface(aSurf);
 
     isFound = Standard_False;
 
@@ -3809,12 +3805,12 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   TopAbs_Orientation OArcprolbis = TopAbs_FORWARD;
   TopAbs_Orientation OArcprolv = TopAbs_FORWARD, OArcprolop = TopAbs_FORWARD;
   Standard_Integer ICurve;
-  Handle(BRepAdaptor_HSurface) HBs  = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HBad = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HBop = new BRepAdaptor_HSurface();
-  BRepAdaptor_Surface& Bs  = HBs->ChangeSurface();
-  BRepAdaptor_Surface& Bad = HBad->ChangeSurface();
-  BRepAdaptor_Surface& Bop = HBop->ChangeSurface();
+  Handle(BRepAdaptor_Surface) HBs  = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HBad = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HBop = new BRepAdaptor_Surface();
+  BRepAdaptor_Surface& Bs  = *HBs;
+  BRepAdaptor_Surface& Bad = *HBad;
+  BRepAdaptor_Surface& Bop = *HBop;
   Handle(Geom_Curve) Cc;
   Handle(Geom2d_Curve) Pc,Ps;
   Standard_Real Ubid,Vbid;//,mu,Mu,mv,Mv;
@@ -3949,8 +3945,8 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   // of its opposing vertex (point on arc).
   Standard_Real wop = Fd->ChangeInterference(IFadArc).Parameter(isfirst);
   Handle(Geom_Curve) c3df;
-  Handle(GeomAdaptor_HSurface)
-    HGs = new GeomAdaptor_HSurface(DStr.Surface(Fd->Surf()).Surface());
+  Handle(GeomAdaptor_Surface)
+    HGs = new GeomAdaptor_Surface(DStr.Surface(Fd->Surf()).Surface());
   gp_Pnt2d p2dbout;
   {
 
@@ -3960,12 +3956,12 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     c3df = DStr.Curve(FiopArc.LineIndex()).Curve();
     Standard_Real uf = FiopArc.FirstParameter();
     Standard_Real ul = FiopArc.LastParameter();
-      Handle(GeomAdaptor_HCurve) Hc3df;
+      Handle(GeomAdaptor_Curve) Hc3df;
     if(c3df->IsPeriodic()){
-      Hc3df = new GeomAdaptor_HCurve(c3df);
+      Hc3df = new GeomAdaptor_Curve(c3df);
     }
     else{
-      Hc3df = new GeomAdaptor_HCurve(c3df,uf,ul);
+      Hc3df = new GeomAdaptor_Curve(c3df,uf,ul);
     }
     inters = Update(HBs,Hc3df,FiopArc,CPopArc,p2dbout,isfirst,wop);
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:08:27 2001 Begin
@@ -3975,13 +3971,13 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
       // Arcprol is an edge of tangency, ultimate adjustment by an extrema curve/curve is attempted.
       Standard_Real ff,ll;
       Handle(Geom2d_Curve) gpcprol = BRep_Tool::CurveOnSurface(Arcprol,Fv,ff,ll);
-      Handle(Geom2dAdaptor_HCurve) pcprol = new Geom2dAdaptor_HCurve(gpcprol);
+      Handle(Geom2dAdaptor_Curve) pcprol = new Geom2dAdaptor_Curve(gpcprol);
       Standard_Real partemp = BRep_Tool::Parameter(Vtx,Arcprol);
       inters = Update(HBs,pcprol,HGs,FiopArc,CPopArc,p2dbout,
 		      isfirst,partemp,wop,10*tolesp);
     }
-    Handle(BRepAdaptor_HCurve2d) pced = new BRepAdaptor_HCurve2d();
-    pced->ChangeCurve2d().Initialize(CPadArc.Arc(),Fv);
+    Handle(BRepAdaptor_Curve2d) pced = new BRepAdaptor_Curve2d();
+    pced->Initialize(CPadArc.Arc(),Fv);
     Update(HBs,pced,HGs,FiadArc,CPadArc,isfirst);
   }
 #ifdef OCCT_DEBUG

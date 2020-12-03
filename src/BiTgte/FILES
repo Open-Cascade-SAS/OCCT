@@ -5,7 +5,3 @@ BiTgte_CurveOnEdge.cxx
 BiTgte_CurveOnEdge.hxx
 BiTgte_CurveOnVertex.cxx
 BiTgte_CurveOnVertex.hxx
-BiTgte_HCurveOnEdge.hxx
-BiTgte_HCurveOnEdge_0.cxx
-BiTgte_HCurveOnVertex.hxx
-BiTgte_HCurveOnVertex_0.cxx

@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BRepBlend_SurfRstEvolRad.hxx>
@@ -115,10 +115,10 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 //purpose  : Contructor
 //=======================================================================
 BRepBlend_SurfRstEvolRad::BRepBlend_SurfRstEvolRad
-(const Handle(Adaptor3d_HSurface)& Surf,
- const Handle(Adaptor3d_HSurface)& SurfRst,
- const Handle(Adaptor2d_HCurve2d)& Rst,
- const Handle(Adaptor3d_HCurve)& CGuide,
+(const Handle(Adaptor3d_Surface)& Surf,
+ const Handle(Adaptor3d_Surface)& SurfRst,
+ const Handle(Adaptor2d_Curve2d)& Rst,
+ const Handle(Adaptor3d_Curve)& CGuide,
  const Handle(Law_Function)& Evol):
  surf(Surf), surfrst(SurfRst), 
  rst(Rst), cons(Rst,SurfRst), 
@@ -309,8 +309,8 @@ Standard_Boolean BRepBlend_SurfRstEvolRad::Values
 //purpose  : 
 //=======================================================================
 void BRepBlend_SurfRstEvolRad::Set
-(const Handle(Adaptor3d_HSurface)& SurfRef,
-const Handle(Adaptor2d_HCurve2d)& RstRef) 
+(const Handle(Adaptor3d_Surface)& SurfRef,
+const Handle(Adaptor2d_Curve2d)& RstRef) 
 {
   surfref = SurfRef;
   rstref = RstRef;

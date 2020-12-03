@@ -25,7 +25,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <IntSurf_Transition.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 
 class Adaptor3d_HVertex;
 class Standard_DomainError;
@@ -81,7 +81,7 @@ public:
   //! If OnFirst is True, the point is on the domain of the
   //! first patch, otherwise the point is on the domain of the
   //! second surface.
-  Standard_EXPORT void SetArc (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
+  Standard_EXPORT void SetArc (const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, const IntSurf_Transition& TLine, const IntSurf_Transition& TArc);
   
   //! Sets (or unsets) the point as a point on several
   //! intersection line.
@@ -133,7 +133,7 @@ public:
   //! vertex.
   //! The exception DomainError is raised if
   //! IsOnDomS1 returns False.
-    const Handle(Adaptor2d_HCurve2d)& ArcOnS1() const;
+    const Handle(Adaptor2d_Curve2d)& ArcOnS1() const;
   
   //! Returns the transition of the point on the
   //! intersection line with the arc on S1.
@@ -172,7 +172,7 @@ public:
   //! vertex.
   //! The exception DomainError is raised if
   //! IsOnDomS2 returns False.
-    const Handle(Adaptor2d_HCurve2d)& ArcOnS2() const;
+    const Handle(Adaptor2d_Curve2d)& ArcOnS2() const;
   
   //! Returns the transition of the point on the
   //! intersection line with the arc on S2.
@@ -229,14 +229,14 @@ private:
   Standard_Boolean onS1;
   Standard_Boolean vtxonS1;
   Handle(Adaptor3d_HVertex) vS1;
-  Handle(Adaptor2d_HCurve2d) arcS1;
+  Handle(Adaptor2d_Curve2d) arcS1;
   IntSurf_Transition traline1;
   IntSurf_Transition tra1;
   Standard_Real prm1;
   Standard_Boolean onS2;
   Standard_Boolean vtxonS2;
   Handle(Adaptor3d_HVertex) vS2;
-  Handle(Adaptor2d_HCurve2d) arcS2;
+  Handle(Adaptor2d_Curve2d) arcS2;
   IntSurf_Transition traline2;
   IntSurf_Transition tra2;
   Standard_Real prm2;

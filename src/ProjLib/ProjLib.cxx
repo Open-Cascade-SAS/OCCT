@@ -48,7 +48,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 
 //=======================================================================
 //function : Project
@@ -287,7 +287,7 @@ void  ProjLib::MakePCurveOfType
 //purpose  : 
 //=======================================================================
 Standard_Boolean  ProjLib::IsAnaSurf
-  (const Handle(Adaptor3d_HSurface)& theAS) 
+  (const Handle(Adaptor3d_Surface)& theAS) 
 { 
   switch (theAS->GetType()) 
   {

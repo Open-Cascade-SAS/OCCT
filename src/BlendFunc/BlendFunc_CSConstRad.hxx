@@ -17,17 +17,11 @@
 #ifndef _BlendFunc_CSConstRad_HeaderFile
 #define _BlendFunc_CSConstRad_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_Integer.hxx>
 #include <BlendFunc_SectionShape.hxx>
 #include <Convert_ParameterisationType.hxx>
 #include <Blend_CSFunction.hxx>
@@ -39,17 +33,10 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
+
 class math_Matrix;
-class gp_Pnt;
-class gp_Pnt2d;
-class gp_Vec;
-class gp_Vec2d;
 class gp_Circ;
 class Blend_Point;
-
-
 
 class BlendFunc_CSConstRad  : public Blend_CSFunction
 {
@@ -58,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BlendFunc_CSConstRad(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C, const Handle(Adaptor3d_HCurve)& CGuide);
+  Standard_EXPORT BlendFunc_CSConstRad(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C, const Handle(Adaptor3d_Curve)& CGuide);
   
   //! returns the number of equations of the function (3).
   Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
@@ -185,9 +172,9 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surf;
-  Handle(Adaptor3d_HCurve) curv;
-  Handle(Adaptor3d_HCurve) guide;
+  Handle(Adaptor3d_Surface) surf;
+  Handle(Adaptor3d_Curve) curv;
+  Handle(Adaptor3d_Curve) guide;
   gp_Pnt pts;
   gp_Pnt ptc;
   gp_Pnt2d pt2d;

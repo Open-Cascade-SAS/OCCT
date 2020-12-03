@@ -20,10 +20,9 @@
 //! (such as apex of cone, pole of sphere,
 //! point on surface boundary etc.) in the intersection line.
 
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_SpecPntType.hxx>
-#include <Standard_Handle.hxx>
 
-class Adaptor3d_HSurface;
 class gp_Cone;
 class gp_Vec;
 class gp_XYZ;
@@ -41,8 +40,8 @@ public:
   //! second (otherwise, the first) surface while forming
   //! intersection point IntSurf_PntOn2S.
   Standard_EXPORT static Standard_Boolean 
-                      AddCrossUVIsoPoint(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                         const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddCrossUVIsoPoint(const Handle(Adaptor3d_Surface)& theQSurf,
+                                         const Handle(Adaptor3d_Surface)& thePSurf,
                                          const IntSurf_PntOn2S& theRefPt,
                                          const Standard_Real theTol3d,
                                          IntSurf_PntOn2S& theAddedPoint,
@@ -61,8 +60,8 @@ public:
   //!   [3] - U- (if V-isoline is considered) or V-parameter
   //!         (if U-isoline is considered) of theQSurf.
   Standard_EXPORT static Standard_Boolean
-                      AddPointOnUorVIso(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                        const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddPointOnUorVIso(const Handle(Adaptor3d_Surface)& theQSurf,
+                                        const Handle(Adaptor3d_Surface)& thePSurf,
                                         const IntSurf_PntOn2S& theRefPt,
                                         const Standard_Boolean theIsU,
                                         const Standard_Real theIsoParameter,
@@ -86,8 +85,8 @@ public:
   //! ATTENTION!!!
   //!   theVertex must be initialized before calling the method .
   Standard_EXPORT static Standard_Boolean
-                      AddSingularPole(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                      const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddSingularPole(const Handle(Adaptor3d_Surface)& theQSurf,
+                                      const Handle(Adaptor3d_Surface)& thePSurf,
                                       const IntSurf_PntOn2S& thePtIso,
                                       IntPatch_Point& theVertex,
                                       IntSurf_PntOn2S& theAddedPoint,                                      
@@ -103,8 +102,8 @@ public:
   //!   theNewPoint is not only Output parameter. It is Input/Output one. I.e. 
   //! theNewPoint is reference point together with theRefPt.
   Standard_EXPORT static Standard_Boolean
-                    ContinueAfterSpecialPoint(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                              const Handle(Adaptor3d_HSurface)& thePSurf,
+                    ContinueAfterSpecialPoint(const Handle(Adaptor3d_Surface)& theQSurf,
+                                              const Handle(Adaptor3d_Surface)& thePSurf,
                                               const IntSurf_PntOn2S& theRefPt,
                                               const IntPatch_SpecPntType theSPType,
                                               const Standard_Real theTol2D,

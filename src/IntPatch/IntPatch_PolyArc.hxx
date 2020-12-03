@@ -28,7 +28,6 @@
 #include <IntPatch_Polygo.hxx>
 #include <Standard_Integer.hxx>
 class Standard_ConstructionError;
-class Adaptor2d_HCurve2d;
 class Bnd_Box2d;
 class gp_Pnt2d;
 
@@ -44,7 +43,7 @@ public:
   //! Creates the polygon of the arc A on the surface S.
   //! The arc is limited by the parameters Pfirst and Plast.
   //! None of these parameters can be infinite.
-  Standard_EXPORT IntPatch_PolyArc(const Handle(Adaptor2d_HCurve2d)& A, const Standard_Integer NbSample, const Standard_Real Pfirst, const Standard_Real Plast, const Bnd_Box2d& BoxOtherPolygon);
+  Standard_EXPORT IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& A, const Standard_Integer NbSample, const Standard_Real Pfirst, const Standard_Real Plast, const Bnd_Box2d& BoxOtherPolygon);
   
   Standard_EXPORT virtual Standard_Boolean Closed() const Standard_OVERRIDE;
   

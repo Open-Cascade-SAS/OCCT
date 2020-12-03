@@ -26,7 +26,7 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class Adaptor3d_HCurve;
+
 class gp_Pnt;
 class gp_Vec;
 
@@ -39,7 +39,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomFill_PlanFunc(const gp_Pnt& P, const gp_Vec& V, const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT GeomFill_PlanFunc(const gp_Pnt& P, const gp_Vec& V, const Handle(Adaptor3d_Curve)& C);
   
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
@@ -81,7 +81,7 @@ private:
   gp_XYZ myVec;
   gp_XYZ V;
   gp_Pnt G;
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myCurve;
 
 
 };

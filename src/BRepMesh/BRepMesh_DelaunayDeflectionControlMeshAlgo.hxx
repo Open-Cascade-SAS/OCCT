@@ -357,8 +357,7 @@ private:
                                                     const gp_XY& /*theMidPoint*/)
   {
     gp_Dir aNorm1, aNorm2;
-    const Handle(Geom_Surface)& aSurf = 
-      this->getDFace()->GetSurface()->ChangeSurface().Surface().Surface();
+    const Handle(Geom_Surface)& aSurf = this->getDFace()->GetSurface()->Surface().Surface();
     
     if ((GeomLib::NormEstim(aSurf, theNodeInfo1.Point2d, Precision::Confusion(), aNorm1) == 0) &&
         (GeomLib::NormEstim(aSurf, theNodeInfo2.Point2d, Precision::Confusion(), aNorm2) == 0))

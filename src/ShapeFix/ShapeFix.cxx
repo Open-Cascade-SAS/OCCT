@@ -42,7 +42,7 @@
 #include <gp_Pnt.hxx>
 #include <Geom_Plane.hxx>
 #include <ShapeFix_Edge.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <ShapeAnalysis_Surface.hxx>
@@ -52,7 +52,7 @@
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Face.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepLib.hxx>
 
@@ -192,7 +192,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
            continue;
       }
 
-      Handle(GeomAdaptor_HSurface) AS = new GeomAdaptor_HSurface ( plane );
+      Handle(GeomAdaptor_Surface) AS = new GeomAdaptor_Surface ( plane );
       for ( TopExp_Explorer ed ( face, TopAbs_EDGE ); ed.More(); ed.Next() ) {
         TopoDS_Edge edge = TopoDS::Edge ( ed.Current() );
         Standard_Real f, l;
@@ -202,7 +202,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   	
         Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface ( edge, face, f, l );
         if ( c2d.IsNull() ) continue;
-        Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve ( c2d, f, l );
+        Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve ( c2d, f, l );
         Adaptor3d_CurveOnSurface ACS(GHPC,AS);
   	
         Standard_Real tol0 = BRep_Tool::Tolerance(edge);

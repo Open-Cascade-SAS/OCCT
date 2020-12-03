@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <Extrema_ExtCC.hxx>
@@ -30,7 +30,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_SectionPlacement.hxx>
 #include <GeomLib.hxx>
@@ -402,7 +402,7 @@ SetLocation(const Handle(GeomFill_LocationLaw)& L)
 //===============================================================
 void GeomFill_SectionPlacement::Perform(const Standard_Real Tol) 
 {
-  Handle(Adaptor3d_HCurve) Path;
+  Handle(Adaptor3d_Curve) Path;
   Path = myLaw->GetCurve();
   Perform(Path, Tol);
 }
@@ -411,7 +411,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Tol)
 // Function :Perform
 // Purpose : Recherche automatique
 //===============================================================
-void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
+void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
 					const Standard_Real Tol) 
 {
   Standard_Real IntTol = 1.e-5;
@@ -419,8 +419,8 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 
   if (myIsPoint)
     {
-      Extrema_ExtPC Projector(myPoint, Path->Curve(), Precision::Confusion());
-      DistMini( Projector, Path->Curve(), Dist, PathParam );
+      Extrema_ExtPC Projector(myPoint, *Path, Precision::Confusion());
+      DistMini( Projector, *Path, Dist, PathParam );
       AngleMax = M_PI/2;
     }
   else
@@ -433,7 +433,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
       gp_Vec VRef, dp1;
       VRef.SetXYZ(TheAxe.Direction().XYZ());
       
-      Tangente( Path->Curve(), PathParam, PonPath, dp1);
+      Tangente (*Path, PathParam, PonPath, dp1);
       PonSec = myAdpSection.Value(SecParam);
       Dist =  PonPath.Distance(PonSec);
       if (Dist > Tol) { // On Cherche un meilleur point sur la section
@@ -474,8 +474,8 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	// (1.2) Intersection Plan-courbe
 	gp_Ax3 axe (TheAxe.Location(), TheAxe.Direction());
 	Handle(Geom_Plane) plan = new (Geom_Plane)(axe);
-	Handle(GeomAdaptor_HSurface) adplan = 
-	  new (GeomAdaptor_HSurface)(plan);
+	Handle(GeomAdaptor_Surface) adplan = 
+	  new (GeomAdaptor_Surface)(plan);
 	IntCurveSurface_HInter Intersector;
 	Intersector.Perform(Path, adplan);
 	if (Intersector.IsDone())
@@ -514,7 +514,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	    else
 	      {
 		PathParam = Path->LastParameter();
-		Tangente( Path->Curve(), PathParam, PonPath, dp1);
+		Tangente (*Path, PathParam, PonPath, dp1);
 		PonSec = myAdpSection.Value(SecParam);
 		Dist =  PonPath.Distance(PonSec);
 		if (Dist > Tol) { // On Cherche un meilleur point sur la section
@@ -561,8 +561,8 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	   // (1.2) Intersection Plan-courbe
 	   gp_Ax3 axe (TheAxe.Location(), TheAxe.Direction());
 	   Handle(Geom_Plane) plan = new (Geom_Plane)(axe);
-	   Handle(GeomAdaptor_HSurface) adplan = 
-	   new (GeomAdaptor_HSurface)(plan);
+	   Handle(GeomAdaptor_Surface) adplan = 
+	   new (GeomAdaptor_Surface)(plan);
 	   IntCurveSurface_HInter Intersector;
 	   Intersector.Perform(Path, adplan);
 	   if (Intersector.IsDone()) {
@@ -618,7 +618,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	}
 	Trouve = (Dist <= Tol);
 	if (!Trouve) {
-	  Tangente( Path->Curve(), Path->LastParameter(), P, dp1);
+	  Tangente (*Path, Path->LastParameter(), P, dp1);
 	  alpha = EvalAngle(VRef, dp1);
 	  myExt.Perform(P);     
 	  if ( myExt.IsDone() ) {
@@ -638,7 +638,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	
 	// (2.2) Distance courbe-courbe
 	if (!Trouve) {
-	  Extrema_ExtCC Ext(Path->Curve(), myAdpSection, 
+	  Extrema_ExtCC Ext(*Path, myAdpSection, 
 			    Path->FirstParameter(), Path->LastParameter(),
 			    myAdpSection.FirstParameter(), 
 			    myAdpSection.LastParameter(),
@@ -649,7 +649,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	    for (ii=1; ii<=Ext.NbExt(); ii++) {
 	      distaux = sqrt (Ext.SquareDistance(ii));
 	      Ext.Points(ii, P1, P2);
-	      Tangente(Path->Curve(), P1.Parameter(), P, dp1);
+	      Tangente (*Path, P1.Parameter(), P, dp1);
 	      alpha =  EvalAngle(VRef, dp1);
 	      if (Choix(distaux, alpha)) {
 		Trouve = Standard_True;
@@ -666,7 +666,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	    // Si l'on a toujours rien, on essai une distance point/path
 	    // c'est la derniere chance.
 	    Extrema_ExtPC PExt;
-	    PExt.Initialize(Path->Curve(), 
+	    PExt.Initialize (*Path,
 			    Path->FirstParameter(),  
 			    Path->LastParameter(),
 			    Precision::Confusion());
@@ -674,9 +674,9 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_HCurve)& Path,
 	    if ( PExt.IsDone() ) {
 	      // modified for OCC13595  Tue Oct 17 15:00:08 2006.BEGIN
 	      // 	      DistMini(PExt, myAdpSection, distaux, taux);
-	      DistMini(PExt, Path->Curve(), distaux, taux);
+	      DistMini(PExt, *Path, distaux, taux);
 	      // modified for OCC13595  Tue Oct 17 15:00:11 2006.END
-	      Tangente(Path->Curve(), taux, P, dp1);
+	      Tangente (*Path, taux, P, dp1);
 	      alpha = EvalAngle(VRef, dp1);
 	      if (Choix(distaux, alpha)) {
 		Dist = distaux;
@@ -702,7 +702,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param,
 					const Standard_Real Tol) 
 {
   done = Standard_True;
-  Handle(Adaptor3d_HCurve) Path;
+  Handle(Adaptor3d_Curve) Path;
   Path = myLaw->GetCurve();
 
   PathParam = Param;
@@ -722,7 +722,7 @@ void GeomFill_SectionPlacement::Perform(const Standard_Real Param,
       gp_Vec VRef, dp1;
       VRef.SetXYZ(TheAxe.Direction().XYZ()); 
       
-      Tangente( Path->Curve(), PathParam, PonPath, dp1);
+      Tangente (*Path, PathParam, PonPath, dp1);
       PonSec = myAdpSection.Value(SecParam);
       Dist =  PonPath.Distance(PonSec);
       if (Dist > Tol) { // On Cherche un meilleur point sur la section

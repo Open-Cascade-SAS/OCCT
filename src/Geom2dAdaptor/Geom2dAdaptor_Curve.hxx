@@ -17,27 +17,19 @@
 #ifndef _Geom2dAdaptor_Curve_HeaderFile
 #define _Geom2dAdaptor_Curve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <GeomAbs_CurveType.hxx>
-#include <Standard_Real.hxx>
-#include <BSplCLib_Cache.hxx>
 #include <Adaptor2d_Curve2d.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
+#include <BSplCLib_Cache.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Geom2dEvaluator_Curve.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp_Pnt2d.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
-class Geom2d_Curve;
-class Adaptor2d_HCurve2d;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
 class Standard_OutOfRange;
 class Standard_DomainError;
-class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Lin2d;
 class gp_Circ2d;
@@ -46,7 +38,6 @@ class gp_Hypr2d;
 class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
-
 
 //! An interface between the services provided by any
 //! curve from the package Geom2d and those required
@@ -57,32 +48,39 @@ class Geom2d_BSplineCurve;
 //! thread-safe and parallel evaluations need to be prevented.
 class Geom2dAdaptor_Curve  : public Adaptor2d_Curve2d
 {
+  DEFINE_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT Geom2dAdaptor_Curve();
   
   Standard_EXPORT Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C);
   
-  //! ConstructionError is raised if Ufirst>Ulast
+  //! Standard_ConstructionError is raised if Ufirst>Ulast
   Standard_EXPORT Geom2dAdaptor_Curve(const Handle(Geom2d_Curve)& C, const Standard_Real UFirst, const Standard_Real ULast);
 
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 
-    void Load (const Handle(Geom2d_Curve)& C);
-  
-  //! ConstructionError is raised if Ufirst>Ulast
-    void Load (const Handle(Geom2d_Curve)& C, const Standard_Real UFirst, const Standard_Real ULast);
-  
-    const Handle(Geom2d_Curve)& Curve() const;
-  
-    Standard_Real FirstParameter() const Standard_OVERRIDE;
-  
-    Standard_Real LastParameter() const Standard_OVERRIDE;
-  
+  void Load (const Handle(Geom2d_Curve)& theCurve)
+  {
+    if (theCurve.IsNull()) { throw Standard_NullObject(); } 
+    load (theCurve, theCurve->FirstParameter(), theCurve->LastParameter());
+  }
+
+  //! Standard_ConstructionError is raised if theUFirst>theULast
+  void Load (const Handle(Geom2d_Curve)& theCurve, const Standard_Real theUFirst, const Standard_Real theULast)
+  {
+    if (theCurve.IsNull()) { throw Standard_NullObject(); }
+    if (theUFirst > theULast) { throw Standard_ConstructionError(); }
+    load (theCurve, theUFirst, theULast);
+  }
+
+  const Handle(Geom2d_Curve)& Curve() const { return myCurve; }
+
+  virtual Standard_Real FirstParameter() const Standard_OVERRIDE { return myFirst; }
+
+  virtual Standard_Real LastParameter() const Standard_OVERRIDE { return myLast; }
+
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! If necessary,  breaks the  curve in  intervals  of
@@ -101,7 +99,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor2d_HCurve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
@@ -145,9 +143,9 @@ public:
   
   //! returns the parametric resolution
   Standard_EXPORT Standard_Real Resolution (const Standard_Real Ruv) const Standard_OVERRIDE;
-  
-    GeomAbs_CurveType GetType() const Standard_OVERRIDE;
-  
+
+  virtual GeomAbs_CurveType GetType() const Standard_OVERRIDE { return myTypeCurve; }
+
   Standard_EXPORT gp_Lin2d Line() const Standard_OVERRIDE;
   
   Standard_EXPORT gp_Circ2d Circle() const Standard_OVERRIDE;
@@ -172,15 +170,6 @@ public:
   
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
   Standard_EXPORT GeomAbs_Shape LocalContinuity (const Standard_Real U1, const Standard_Real U2) const;
@@ -194,6 +183,7 @@ private:
   //! \param theParameter the value on the knot axis which identifies the caching span
   void RebuildCache (const Standard_Real theParameter) const;
 
+private:
 
   Handle(Geom2d_Curve) myCurve;
   GeomAbs_CurveType myTypeCurve;
@@ -204,14 +194,8 @@ private:
   mutable Handle(BSplCLib_Cache) myCurveCache; ///< Cached data for B-spline or Bezier curve
   Handle(Geom2dEvaluator_Curve) myNestedEvaluator; ///< Calculates value of offset curve
 
-
 };
 
-
-#include <Geom2dAdaptor_Curve.lxx>
-
-
-
-
+DEFINE_STANDARD_HANDLE(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
 #endif // _Geom2dAdaptor_Curve_HeaderFile

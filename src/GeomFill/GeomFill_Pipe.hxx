@@ -17,25 +17,17 @@
 #ifndef _GeomFill_Pipe_HeaderFile
 #define _GeomFill_Pipe_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GeomFill_Trihedron.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-class Adaptor3d_HCurve;
+#include <TColGeom_SequenceOfCurve.hxx>
+
 class Geom_Surface;
 class GeomFill_LocationLaw;
 class GeomFill_SectionLaw;
-class Standard_ConstructionError;
 class Geom_Curve;
 class Geom2d_Curve;
 class gp_Dir;
-
 
 //! Describes functions to construct pipes. A pipe is built by
 //! sweeping a curve (the section) along another curve (the path).
@@ -134,7 +126,7 @@ public:
   
   //! Create  a pipe  with  a constant  radius with  2
   //! guide-line.
-  Standard_EXPORT GeomFill_Pipe(const Handle(Adaptor3d_HCurve)& Path, const Handle(Adaptor3d_HCurve)& Curve1, const Handle(Adaptor3d_HCurve)& Curve2, const Standard_Real Radius);
+  Standard_EXPORT GeomFill_Pipe(const Handle(Adaptor3d_Curve)& Path, const Handle(Adaptor3d_Curve)& Curve1, const Handle(Adaptor3d_Curve)& Curve2, const Standard_Real Radius);
   
   //! Create a pipe with a constant section and  with 1
   //! guide-line.
@@ -174,7 +166,7 @@ public:
   //! obtained by applying to the curve Si the geometric
   //! transformation which transforms coordinate system
   //! T1 into coordinate system Ti.
-  Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Handle(Adaptor3d_HCurve)& Guide, const Handle(Geom_Curve)& FirstSect, const Standard_Boolean ByACR, const Standard_Boolean rotat);
+  Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Handle(Adaptor3d_Curve)& Guide, const Handle(Geom_Curve)& FirstSect, const Standard_Boolean ByACR, const Standard_Boolean rotat);
   
   Standard_EXPORT void Init (const Handle(Geom_Curve)& Path, const Standard_Real Radius);
   
@@ -190,7 +182,7 @@ public:
   
   //! Create  a pipe  with  a constant  radius with  2
   //! guide-line.
-  Standard_EXPORT void Init (const Handle(Adaptor3d_HCurve)& Path, const Handle(Adaptor3d_HCurve)& Curve1, const Handle(Adaptor3d_HCurve)& Curve2, const Standard_Real Radius);
+  Standard_EXPORT void Init (const Handle(Adaptor3d_Curve)& Path, const Handle(Adaptor3d_Curve)& Curve1, const Handle(Adaptor3d_Curve)& Curve2, const Standard_Real Radius);
   
 
   //! Initializes this pipe algorithm to build the following surface:
@@ -201,7 +193,7 @@ public:
   //! LastSect along the path Path.
   //! Use the function Perform to build the surface.
   //! Note: a description of the resulting surface is given under Constructors.
-  Standard_EXPORT void Init (const Handle(Geom_Curve)& Path, const Handle(Adaptor3d_HCurve)& Guide, const Handle(Geom_Curve)& FirstSect, const Standard_Boolean ByACR, const Standard_Boolean rotat);
+  Standard_EXPORT void Init (const Handle(Geom_Curve)& Path, const Handle(Adaptor3d_Curve)& Guide, const Handle(Geom_Curve)& FirstSect, const Standard_Boolean ByACR, const Standard_Boolean rotat);
   
   //! Builds the pipe defined at the time of initialization of this
   //! algorithm. A description of the resulting surface is given under Constructors.
@@ -283,9 +275,9 @@ private:
   Standard_Boolean myIsDone;
   Standard_Real myRadius;
   Standard_Real myError;
-  Handle(Adaptor3d_HCurve) myAdpPath;
-  Handle(Adaptor3d_HCurve) myAdpFirstSect;
-  Handle(Adaptor3d_HCurve) myAdpLastSect;
+  Handle(Adaptor3d_Curve) myAdpPath;
+  Handle(Adaptor3d_Curve) myAdpFirstSect;
+  Handle(Adaptor3d_Curve) myAdpLastSect;
   Handle(Geom_Surface) mySurface;
   Handle(GeomFill_LocationLaw) myLoc;
   Handle(GeomFill_SectionLaw) mySec;

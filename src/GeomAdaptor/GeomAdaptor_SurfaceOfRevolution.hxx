@@ -17,20 +17,13 @@
 #ifndef _GeomAdaptor_SurfaceOfRevolution_HeaderFile
 #define _GeomAdaptor_SurfaceOfRevolution_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <GeomAdaptor_Surface.hxx>
 
-class Adaptor3d_HCurve;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class gp_Ax1;
-class Adaptor3d_HSurface;
 class gp_Pnt;
 class gp_Vec;
 class gp_Pln;
@@ -40,9 +33,9 @@ class gp_Sphere;
 class gp_Torus;
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
-class gp_Ax3;
 class gp_Dir;
 
+DEFINE_STANDARD_HANDLE(GeomAdaptor_SurfaceOfRevolution, GeomAdaptor_Surface)
 
 //! This class defines a complete surface of revolution.
 //! The surface is obtained by rotating a curve a complete revolution
@@ -62,21 +55,19 @@ class gp_Dir;
 //! the degree of continuity of the referenced curve.
 class GeomAdaptor_SurfaceOfRevolution  : public GeomAdaptor_Surface
 {
+  DEFINE_STANDARD_RTTIEXT(GeomAdaptor_SurfaceOfRevolution, GeomAdaptor_Surface)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT GeomAdaptor_SurfaceOfRevolution();
   
   //! The Curve is loaded.
-  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_Curve)& C);
   
   //! The Curve and the Direction are loaded.
-  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& C, const gp_Ax1& V);
+  Standard_EXPORT GeomAdaptor_SurfaceOfRevolution(const Handle(Adaptor3d_Curve)& C, const gp_Ax1& V);
   
   //! Changes the Curve
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT void Load (const Handle(Adaptor3d_Curve)& C);
   
   //! Changes the Direction
   Standard_EXPORT void Load (const gp_Ax1& V);
@@ -117,13 +108,13 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HSurface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   //! Returns    a  surface trimmed in the V direction  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HSurface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
   
@@ -179,28 +170,13 @@ public:
   
   Standard_EXPORT const gp_Ax3& Axis() const;
   
-  Standard_EXPORT Handle(Adaptor3d_HCurve) BasisCurve() const Standard_OVERRIDE;
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
 
 private:
-  Handle(Adaptor3d_HCurve) myBasisCurve; ///< revolved curve
+  Handle(Adaptor3d_Curve) myBasisCurve; ///< revolved curve
   gp_Ax1                   myAxis;       ///< axis of revolution
   Standard_Boolean         myHaveAxis;   ///< whether axis of revolution is initialized
   gp_Ax3                   myAxeRev;     ///< auxiliary trihedron according to the curve position
 };
-
-
-
-
-
-
 
 #endif // _GeomAdaptor_SurfaceOfRevolution_HeaderFile

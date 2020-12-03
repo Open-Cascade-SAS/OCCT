@@ -17,9 +17,7 @@
 #ifndef _ProjLib_HeaderFile
 #define _ProjLib_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 
 class gp_Pnt2d;
@@ -55,7 +53,6 @@ class ProjLib_Cylinder;
 class ProjLib_Cone;
 class ProjLib_Sphere;
 class ProjLib_Torus;
-class Adaptor3d_HSurface;
 
 //! The  projLib package  first provides projection of
 //! curves on a   plane along a  given Direction.  The
@@ -136,7 +133,7 @@ public:
   //! Plane, Cylinder, Cone, Sphere, Torus.
   //! For all other types of surface method returns "false".
   Standard_EXPORT static Standard_Boolean IsAnaSurf
-                                           (const Handle(Adaptor3d_HSurface)& theAS);
+                                           (const Handle(Adaptor3d_Surface)& theAS);
 
 
 

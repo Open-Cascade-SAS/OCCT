@@ -17,8 +17,8 @@
 // Modified 10/09/1996 PMN Ajout de (Nb)Intervalles, IsRationnal 
 //                       + Utilisation de GeomFill::GetCircle dans Section.
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_CSConstRad.hxx>
@@ -40,9 +40,9 @@
 //function : BlendFunc_CSConstRad
 //purpose  : 
 //=======================================================================
-BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_HSurface)& S,
-                                           const Handle(Adaptor3d_HCurve)& C,
-                                           const Handle(Adaptor3d_HCurve)& CG) :
+BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_Surface)& S,
+                                           const Handle(Adaptor3d_Curve)& C,
+                                           const Handle(Adaptor3d_Curve)& CG) :
 
        surf(S),curv(C),guide(CG), prmc(0.0), 
        istangent(Standard_True), ray(0.0),

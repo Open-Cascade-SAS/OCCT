@@ -16,8 +16,8 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_SupportType.hxx>
 #include <BRepFill_LocationLaw.hxx>
@@ -27,7 +27,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_SectionPlacement.hxx>
@@ -288,8 +288,8 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   }
   SuperKnot(1) = 0;
   
-  Handle(BRepAdaptor_HCompCurve) adpPath = 
-    new (BRepAdaptor_HCompCurve) (myLaw->Wire());
+  Handle(BRepAdaptor_CompCurve) adpPath = 
+    new (BRepAdaptor_CompCurve) (myLaw->Wire());
   
   Place.Perform(adpPath, Precision::Confusion());
   

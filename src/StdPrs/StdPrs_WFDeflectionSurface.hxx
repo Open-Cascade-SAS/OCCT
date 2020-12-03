@@ -17,10 +17,9 @@
 #ifndef _StdPrs_WFDeflectionSurface_HeaderFile
 #define _StdPrs_WFDeflectionSurface_HeaderFile
 
+#include <Adaptor3d_Surface.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-
-class Adaptor3d_HSurface;
 
 //! Draws a surface by drawing the isoparametric curves with respect to
 //! a maximal chordial deviation.
@@ -42,7 +41,7 @@ public:
   //! Adaptor, and provides data from a Geom surface.
   //! This makes it possible to use the surface in a geometric algorithm.
   //! Note that this surface object is manipulated by handles.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Adaptor3d_HSurface)& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Adaptor3d_Surface)& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
 
 
 

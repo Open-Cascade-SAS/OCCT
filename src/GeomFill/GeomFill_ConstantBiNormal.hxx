@@ -32,7 +32,6 @@ class Standard_OutOfRange;
 class Standard_ConstructionError;
 class gp_Dir;
 class GeomFill_TrihedronLaw;
-class Adaptor3d_HCurve;
 class gp_Vec;
 
 
@@ -50,7 +49,7 @@ public:
   
   Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
   //! Computes Triedrhon on curve at parameter <Param>
   Standard_EXPORT virtual Standard_Boolean D0 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& BiNormal) Standard_OVERRIDE;

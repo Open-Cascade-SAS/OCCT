@@ -17,25 +17,13 @@
 #ifndef _IntPatch_Intersection_HeaderFile
 #define _IntPatch_Intersection_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
-#include <Standard_Real.hxx>
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_TopolTool;
-class IntPatch_Point;
-class IntPatch_Line;
 
 
 //! This class provides a generic algorithm to intersect
@@ -49,9 +37,9 @@ public:
   
   Standard_EXPORT IntPatch_Intersection();
   
-  Standard_EXPORT IntPatch_Intersection(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang);
+  Standard_EXPORT IntPatch_Intersection(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang);
   
-  Standard_EXPORT IntPatch_Intersection(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
+  Standard_EXPORT IntPatch_Intersection(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
   
   //! Set the tolerances used by the algorithms:
   //! --- Implicit   - Parametric
@@ -84,7 +72,7 @@ public:
   //! after deleting TopOpeBRep.
   //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
   //! obtained after intersection algorithm directly (wothout any post-processing). 
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
   //! If isGeomInt == Standard_False, then method
   //! Param-Param intersection will be used.
@@ -99,13 +87,13 @@ public:
   //! after deleting TopOpeBRep.
   //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
   //! obtained after intersection algorithm directly (without any post-processing). 
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
   //! Perform with start point
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Real TolArc, const Standard_Real TolTang);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Real TolArc, const Standard_Real TolTang);
   
   //! Uses for finding self-intersected surfaces.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Standard_Real TolArc, const Standard_Real TolTang);
   
   //! Returns True if the calculus was successful.
     Standard_Boolean IsDone() const;
@@ -143,7 +131,7 @@ public:
   
   //! Dump of each result line.
   //! Mode for more accurate dumps.
-  Standard_EXPORT void Dump (const Standard_Integer Mode, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2) const;
+  Standard_EXPORT void Dump (const Standard_Integer Mode, const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2) const;
 
 
 
@@ -157,7 +145,7 @@ protected:
 private:
 
   
-  Standard_EXPORT void ParamParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
+  Standard_EXPORT void ParamParamPerfom (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
   
   //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
@@ -165,9 +153,9 @@ private:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void GeomGeomPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine);
+  Standard_EXPORT void GeomGeomPerfom (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, IntSurf_ListOfPntOn2S& LOfPnts, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2, const Standard_Boolean theIsReqToKeepRLine);
   
-  Standard_EXPORT void GeomParamPerfom (const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Boolean isNotAnalitical, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
+  Standard_EXPORT void GeomParamPerfom (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Boolean isNotAnalitical, const GeomAbs_SurfaceType typs1, const GeomAbs_SurfaceType typs2);
 
 
   Standard_Boolean done;

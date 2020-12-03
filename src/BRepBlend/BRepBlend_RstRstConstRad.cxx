@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepBlend_RstRstConstRad.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
-#include <BRepBlend_RstRstConstRad.hxx>
 #include <ElCLib.hxx>
 #include <GeomFill.hxx>
 #include <gp.hxx>
@@ -60,11 +60,11 @@ static void t3dto2d(Standard_Real& a,
 //=======================================================================
 
 BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad
-(const Handle(Adaptor3d_HSurface)& Surf1,
- const Handle(Adaptor2d_HCurve2d)& Rst1,
- const Handle(Adaptor3d_HSurface)& Surf2,
- const Handle(Adaptor2d_HCurve2d)& Rst2,
- const Handle(Adaptor3d_HCurve)&   CGuide):
+(const Handle(Adaptor3d_Surface)& Surf1,
+ const Handle(Adaptor2d_Curve2d)& Rst1,
+ const Handle(Adaptor3d_Surface)& Surf2,
+ const Handle(Adaptor2d_Curve2d)& Rst2,
+ const Handle(Adaptor3d_Curve)&   CGuide):
  surf1(Surf1), surf2(Surf2), rst1(Rst1), rst2(Rst2),
  cons1(Rst1, Surf1), cons2(Rst2, Surf2), 
  guide(CGuide), tguide(CGuide),
@@ -155,10 +155,10 @@ Standard_Boolean BRepBlend_RstRstConstRad::Values(const math_Vector& X,
 //purpose  : 
 //=======================================================================
 
-void BRepBlend_RstRstConstRad::Set(const Handle(Adaptor3d_HSurface)& SurfRef1,
-				   const Handle(Adaptor2d_HCurve2d)& RstRef1,
-                                   const Handle(Adaptor3d_HSurface)& SurfRef2,
-                                   const Handle(Adaptor2d_HCurve2d)& RstRef2)
+void BRepBlend_RstRstConstRad::Set(const Handle(Adaptor3d_Surface)& SurfRef1,
+				   const Handle(Adaptor2d_Curve2d)& RstRef1,
+                                   const Handle(Adaptor3d_Surface)& SurfRef2,
+                                   const Handle(Adaptor2d_Curve2d)& RstRef2)
 {
   surfref1 = SurfRef1;
   surfref2 = SurfRef2;

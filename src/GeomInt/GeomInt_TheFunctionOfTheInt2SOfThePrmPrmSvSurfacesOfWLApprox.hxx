@@ -17,29 +17,18 @@
 #ifndef _GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox_HeaderFile
 #define _GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Address.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Vec.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
-class StdFail_UndefinedDerivative;
-class Standard_ConstructionError;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_HSurfaceTool;
 class math_Matrix;
-
-
 
 class GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox  : public math_FunctionSetWithDerivatives
 {
@@ -47,7 +36,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2);
+  Standard_EXPORT GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2);
   
   Standard_EXPORT Standard_Integer NbVariables() const;
   
@@ -74,9 +63,9 @@ public:
   
     gp_Dir2d DirectionOnS2() const;
   
-    const Handle(Adaptor3d_HSurface)& AuxillarSurface1() const;
+    const Handle(Adaptor3d_Surface)& AuxillarSurface1() const;
   
-    const Handle(Adaptor3d_HSurface)& AuxillarSurface2() const;
+    const Handle(Adaptor3d_Surface)& AuxillarSurface2() const;
 
 
 
@@ -118,8 +107,8 @@ private:
 
 };
 
-#define ThePSurface Handle(Adaptor3d_HSurface)
-#define ThePSurface_hxx <Adaptor3d_HSurface.hxx>
+#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
 #define IntImp_ZerParFunc GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox

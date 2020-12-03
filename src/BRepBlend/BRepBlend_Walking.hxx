@@ -17,27 +17,19 @@
 #ifndef _BRepBlend_Walking_HeaderFile
 #define _BRepBlend_Walking_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
-#include <math_Vector.hxx>
 #include <Blend_SequenceOfPoint.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <BRepBlend_SequenceOfPointOnRst.hxx>
-#include <TopAbs_State.hxx>
 #include <Blend_Status.hxx>
+#include <BRepBlend_SequenceOfPointOnRst.hxx>
+#include <ChFiDS_ElSpine.hxx>
+#include <math_Vector.hxx>
+#include <TopAbs_State.hxx>
+
 class BRepBlend_Line;
-class Adaptor3d_HSurface;
 class Adaptor3d_TopolTool;
-class ChFiDS_HElSpine;
 class StdFail_NotDone;
 class Adaptor3d_HVertex;
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HCurve;
 class BRepBlend_HCurve2dTool;
 class Adaptor3d_HSurfaceTool;
 class BRepBlend_HCurveTool;
@@ -51,8 +43,6 @@ class gp_Pnt;
 class gp_Pnt2d;
 class IntSurf_Transition;
 
-
-
 class BRepBlend_Walking 
 {
 public:
@@ -60,7 +50,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_Walking(const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_TopolTool)& Domain2, const Handle(ChFiDS_HElSpine)& HGuide);
+  Standard_EXPORT BRepBlend_Walking(const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_TopolTool)& Domain2, const Handle(ChFiDS_ElSpine)& HGuide);
   
   //! To define different domains for control and clipping.
   Standard_EXPORT void SetDomainsToRecadre (const Handle(Adaptor3d_TopolTool)& RecDomain1, const Handle(Adaptor3d_TopolTool)& RecDomain2);
@@ -116,7 +106,7 @@ private:
   
   Standard_EXPORT Standard_Boolean Recadre (Blend_FuncInv& FInv, const Standard_Boolean OnFirst, const math_Vector& Sol, math_Vector& Solrst, Standard_Integer& Indexsol, Standard_Boolean& IsVtx, Handle(Adaptor3d_HVertex)& Vtx, const Standard_Real Extrap = 0.0);
   
-  Standard_EXPORT void Transition (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& A, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
+  Standard_EXPORT void Transition (const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& A, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
   
   Standard_EXPORT void MakeExtremity (BRepBlend_Extremity& Extrem, const Standard_Boolean OnFirst, const Standard_Integer Index, const Standard_Real Param, const Standard_Boolean IsVtx, const Handle(Adaptor3d_HVertex)& Vtx);
   
@@ -131,13 +121,13 @@ private:
   Handle(BRepBlend_Line) line;
   math_Vector sol;
   Blend_SequenceOfPoint jalons;
-  Handle(Adaptor3d_HSurface) surf1;
-  Handle(Adaptor3d_HSurface) surf2;
+  Handle(Adaptor3d_Surface) surf1;
+  Handle(Adaptor3d_Surface) surf2;
   Handle(Adaptor3d_TopolTool) domain1;
   Handle(Adaptor3d_TopolTool) domain2;
   Handle(Adaptor3d_TopolTool) recdomain1;
   Handle(Adaptor3d_TopolTool) recdomain2;
-  Handle(ChFiDS_HElSpine) hguide;
+  Handle(ChFiDS_ElSpine) hguide;
   Standard_Boolean ToCorrectOnRst1;
   Standard_Boolean ToCorrectOnRst2;
   Standard_Real CorrectedParam;
@@ -163,12 +153,12 @@ private:
 
 #define TheVertex Handle(Adaptor3d_HVertex)
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_HCurve2d)
-#define TheArc_hxx <Adaptor2d_HCurve2d.hxx>
-#define TheSurface Handle(Adaptor3d_HSurface)
-#define TheSurface_hxx <Adaptor3d_HSurface.hxx>
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
+#define TheArc Handle(Adaptor2d_Curve2d)
+#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
+#define TheSurface Handle(Adaptor3d_Surface)
+#define TheSurface_hxx <Adaptor3d_Surface.hxx>
+#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheVertexTool Standard_Integer
 #define TheVertexTool_hxx <Standard_Integer.hxx>
 #define TheArcTool BRepBlend_HCurve2dTool

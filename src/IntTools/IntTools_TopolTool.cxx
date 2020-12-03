@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <ElSLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -50,7 +50,7 @@ IntTools_TopolTool::IntTools_TopolTool()
 // function: Constructor
 // purpose:
 // =====================================================================================
-IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_HSurface)& theSurface)
+IntTools_TopolTool::IntTools_TopolTool(const Handle(Adaptor3d_Surface)& theSurface)
 {
   Initialize(theSurface);
   myNbSmplU = 0;
@@ -72,7 +72,7 @@ void IntTools_TopolTool::Initialize()
 // function: Initialize
 // purpose:
 // =====================================================================================
-void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_HSurface)& theSurface) 
+void IntTools_TopolTool::Initialize(const Handle(Adaptor3d_Surface)& theSurface) 
 {
   Adaptor3d_TopolTool::Initialize(theSurface);
   //myS = theSurface;

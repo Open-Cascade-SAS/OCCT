@@ -14,7 +14,7 @@
 
 #include <IntPolyh_Tools.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Precision.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 
@@ -22,7 +22,7 @@
 //function : IsEnlargePossible
 //purpose  :
 //=======================================================================
-void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_HSurface)& theSurf,
+void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_Surface)& theSurf,
                                        Standard_Boolean& theUEnlarge,
                                        Standard_Boolean& theVEnlarge)
 {
@@ -62,7 +62,7 @@ void IntPolyh_Tools::IsEnlargePossible(const Handle(Adaptor3d_HSurface)& theSurf
 //function : EnlargeZone
 //purpose  : Enlarges the sampling zone of the surface
 //=======================================================================
-static void EnlargeZone(const Handle(Adaptor3d_HSurface)& theSurf,
+static void EnlargeZone(const Handle(Adaptor3d_Surface)& theSurf,
                         Standard_Real &u0,
                         Standard_Real &u1,
                         Standard_Real &v0,
@@ -90,7 +90,7 @@ static void EnlargeZone(const Handle(Adaptor3d_HSurface)& theSurf,
 //function : MakeSampling
 //purpose  :
 //=======================================================================
-void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_HSurface)& theSurf,
+void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_Surface)& theSurf,
                                   const Standard_Integer theNbSU,
                                   const Standard_Integer theNbSV,
                                   const Standard_Boolean theEnlargeZone,
@@ -141,7 +141,7 @@ void IntPolyh_Tools::MakeSampling(const Handle(Adaptor3d_HSurface)& theSurf,
 //function : ComputeDeflection
 //purpose  : 
 //=======================================================================
-Standard_Real IntPolyh_Tools::ComputeDeflection(const Handle(Adaptor3d_HSurface)& theSurf,
+Standard_Real IntPolyh_Tools::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurf,
                                                 const TColStd_Array1OfReal& theUPars,
                                                 const TColStd_Array1OfReal& theVPars)
 {
@@ -154,7 +154,7 @@ Standard_Real IntPolyh_Tools::ComputeDeflection(const Handle(Adaptor3d_HSurface)
 //function : FillArrayOfPointNormal
 //purpose  : 
 //=======================================================================
-void IntPolyh_Tools::FillArrayOfPointNormal(const Handle(Adaptor3d_HSurface)& theSurf,
+void IntPolyh_Tools::FillArrayOfPointNormal(const Handle(Adaptor3d_Surface)& theSurf,
                                             const TColStd_Array1OfReal& theUPars,
                                             const TColStd_Array1OfReal& theVPars,
                                             IntPolyh_ArrayOfPointNormal& thePoints)

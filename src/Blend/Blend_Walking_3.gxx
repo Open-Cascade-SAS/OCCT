@@ -90,7 +90,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
 
   math_Vector toler(1,4),infb(1,4),supb(1,4),valsol(1,4);
 
-  Handle(Adaptor2d_HCurve2d) thecur;
+  Handle(Adaptor2d_Curve2d) thecur;
   Handle(TheTopolTool) Iter;
 
   if (OnFirst) Iter = recdomain1;
@@ -220,7 +220,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
 
     // Recadrage eventuelle pour le cas periodique
     if (periodic) {
-      Handle(Adaptor3d_HSurface) surf;
+      Handle(Adaptor3d_Surface) surf;
       if (OnFirst) surf = surf2;
       else surf = surf1;
 
@@ -409,7 +409,7 @@ void Blend_Walking::Transition(const Standard_Boolean OnFirst,
   CSLib::Normal(d1u, d1v, 1.e-9, stat, thenormal);
   if (stat ==  CSLib_Defined) normale.SetXYZ(thenormal.XYZ());
   else {
-    Handle(Adaptor3d_HSurface) surf;
+    Handle(Adaptor3d_Surface) surf;
     if (OnFirst) surf = surf1;
     else         surf = surf2;
     Standard_Integer iu, iv;

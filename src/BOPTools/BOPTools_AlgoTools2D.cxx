@@ -21,7 +21,6 @@
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepTools.hxx>
@@ -40,8 +39,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
 #include <GeomLib.hxx>
@@ -554,8 +551,8 @@ void BOPTools_AlgoTools2D::MakePCurveOnFace
     pBAS = &aBASTmp;
   }
   //
-  Handle(BRepAdaptor_HSurface) aBAHS = new BRepAdaptor_HSurface(*pBAS);
-  Handle(GeomAdaptor_HCurve) aBAHC = new GeomAdaptor_HCurve(aC3D, aT1, aT2);
+  Handle(BRepAdaptor_Surface) aBAHS = new BRepAdaptor_Surface(*pBAS);
+  Handle(GeomAdaptor_Curve) aBAHC = new GeomAdaptor_Curve(aC3D, aT1, aT2);
   //
   Standard_Real aTolR;
   Standard_Real aTR = Precision::Confusion();//1.e-7;

@@ -22,8 +22,8 @@
 #include <ElCLib.hxx>
 
 
-void ChFiKPart_CornerSpine(const Handle(Adaptor3d_HSurface)& S1, 
-			   const Handle(Adaptor3d_HSurface)& S2,
+void ChFiKPart_CornerSpine(const Handle(Adaptor3d_Surface)& S1, 
+			   const Handle(Adaptor3d_Surface)& S2,
 			   const gp_Pnt2d& P1S1,
 			   const gp_Pnt2d& /*P2S1*/,
 			   const gp_Pnt2d& P1S2,

@@ -28,7 +28,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_Situation.hxx>
 #include <IntSurf_TypeTrans.hxx>
-class Adaptor2d_HCurve2d;
+
 class Standard_OutOfRange;
 class Standard_DomainError;
 class IntPatch_Point;
@@ -165,17 +165,17 @@ public:
   
   Standard_EXPORT Standard_Real V2Period() const;
   
-  Standard_EXPORT void SetArcOnS1 (const Handle(Adaptor2d_HCurve2d)& A);
+  Standard_EXPORT void SetArcOnS1 (const Handle(Adaptor2d_Curve2d)& A);
   
   Standard_EXPORT Standard_Boolean HasArcOnS1() const;
   
-  Standard_EXPORT const Handle(Adaptor2d_HCurve2d)& GetArcOnS1() const;
+  Standard_EXPORT const Handle(Adaptor2d_Curve2d)& GetArcOnS1() const;
   
-  Standard_EXPORT void SetArcOnS2 (const Handle(Adaptor2d_HCurve2d)& A);
+  Standard_EXPORT void SetArcOnS2 (const Handle(Adaptor2d_Curve2d)& A);
   
   Standard_EXPORT Standard_Boolean HasArcOnS2() const;
   
-  Standard_EXPORT const Handle(Adaptor2d_HCurve2d)& GetArcOnS2() const;
+  Standard_EXPORT const Handle(Adaptor2d_Curve2d)& GetArcOnS2() const;
   
   //! Removes vertices from the line (i.e. cleans svtx member)
   virtual void ClearVertexes() Standard_OVERRIDE;
@@ -237,9 +237,9 @@ private:
   Standard_Real u2period;
   Standard_Real v2period;
   Standard_Boolean hasArcOnS1;
-  Handle(Adaptor2d_HCurve2d) theArcOnS1;
+  Handle(Adaptor2d_Curve2d) theArcOnS1;
   Standard_Boolean hasArcOnS2;
-  Handle(Adaptor2d_HCurve2d) theArcOnS2;
+  Handle(Adaptor2d_Curve2d) theArcOnS2;
   Standard_Boolean myIsPurgerAllowed;
 
   //! identifies the way of <*this> creation

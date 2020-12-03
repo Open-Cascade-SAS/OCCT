@@ -18,7 +18,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <OSD_Parallel.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_Isolines.hxx>

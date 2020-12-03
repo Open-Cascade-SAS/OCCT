@@ -16,7 +16,7 @@
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib.hxx>
@@ -322,8 +322,8 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
     }
   case GeomAbs_OffsetSurface: 
     {
-      Handle(Adaptor3d_HSurface) HS = S.BasisSurface();
-      Add (HS->Surface(),UMin,UMax,VMin,VMax,Tol,B);
+      Handle(Adaptor3d_Surface) HS = S.BasisSurface();
+      Add (*HS,UMin,UMax,VMin,VMax,Tol,B);
       B.Enlarge(S.OffsetValue());
       B.Enlarge(Tol);
       break;

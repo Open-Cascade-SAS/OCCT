@@ -308,7 +308,7 @@ void BRepMesh_EdgeDiscret::Tessellate2d(
     BRepMesh_EdgeParameterProvider<IMeshData::ICurveArrayAdaptorHandle> aProvider(
       theDEdge, aPCurve->GetOrientation(), aDFace, aCurveArray);
 
-    const Handle(Adaptor2d_HCurve2d)& aGeomPCurve = aProvider.GetPCurve();
+    const Handle(Adaptor2d_Curve2d)& aGeomPCurve = aProvider.GetPCurve();
 
     Standard_Integer aParamIdx, aParamNb;
     if (theUpdateEnds)

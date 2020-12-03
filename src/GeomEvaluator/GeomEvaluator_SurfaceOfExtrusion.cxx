@@ -14,7 +14,7 @@
 
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfExtrusion,GeomEvaluator_Surface)
 
@@ -27,7 +27,7 @@ GeomEvaluator_SurfaceOfExtrusion::GeomEvaluator_SurfaceOfExtrusion(
 }
 
 GeomEvaluator_SurfaceOfExtrusion::GeomEvaluator_SurfaceOfExtrusion(
-        const Handle(Adaptor3d_HCurve)& theBase, const gp_Dir& theExtrusionDir)
+        const Handle(Adaptor3d_Curve)& theBase, const gp_Dir& theExtrusionDir)
   : GeomEvaluator_Surface(),
     myBaseAdaptor(theBase),
     myDirection(theExtrusionDir)

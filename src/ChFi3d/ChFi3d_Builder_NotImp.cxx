@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
@@ -26,13 +26,13 @@
 #include <Blend_SurfCurvFuncInv.hxx>
 #include <Blend_SurfPointFuncInv.hxx>
 #include <Blend_SurfRstFunction.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFiDS_CommonPoint.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -54,16 +54,16 @@
 //purpose  : 
 //=======================================================================
 void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      , 
+				const Handle(ChFiDS_ElSpine)&      , 
 				const Handle(ChFiDS_Spine)&         , 
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
 				const TopAbs_Orientation            ,
 				const Standard_Real                 ,
@@ -87,17 +87,17 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 //=======================================================================
 
 void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      , 
+				const Handle(ChFiDS_ElSpine)&      , 
 				const Handle(ChFiDS_Spine)&         , 
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
 				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const Standard_Real                 ,
 				const Standard_Real                 ,
@@ -121,21 +121,21 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 //=======================================================================
 
 void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      ,
+				const Handle(ChFiDS_ElSpine)&      ,
 				const Handle(ChFiDS_Spine)&         ,
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const TopAbs_Orientation            ,
 				const Standard_Real                 ,
@@ -162,16 +162,16 @@ void  ChFi3d_Builder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 //=======================================================================
 
 void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      , 
+				  const Handle(ChFiDS_ElSpine)&      , 
 				  const Handle(ChFiDS_Spine)&         , 
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
 				  const TopAbs_Orientation            ,
 				  const Standard_Real                 ,
@@ -196,17 +196,17 @@ void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 //=======================================================================
 
 void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      , 
+				  const Handle(ChFiDS_ElSpine)&      , 
 				  const Handle(ChFiDS_Spine)&         , 
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
 				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const Standard_Real                 ,
 				  const Standard_Real                 ,
@@ -235,21 +235,21 @@ void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 //=======================================================================
 
 void  ChFi3d_Builder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      ,
+				  const Handle(ChFiDS_ElSpine)&      ,
 				  const Handle(ChFiDS_Spine)&         ,
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const TopAbs_Orientation            ,
 				  const Standard_Real                 ,

@@ -15,12 +15,12 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -37,7 +37,7 @@
 class GeomConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
 {
  public:
-  GeomConvert_ApproxCurve_Eval (const Handle(Adaptor3d_HCurve)& theFunc, 
+  GeomConvert_ApproxCurve_Eval (const Handle(Adaptor3d_Curve)& theFunc, 
                                 Standard_Real First, Standard_Real Last)
     : fonct(theFunc) { StartEndSav[0] = First; StartEndSav[1] = Last; }
   
@@ -49,7 +49,7 @@ class GeomConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
                          Standard_Integer *ErrorCode);
   
  private:
-  Handle(Adaptor3d_HCurve) fonct;
+  Handle(Adaptor3d_Curve) fonct;
   Standard_Real StartEndSav[2];
 };
 
@@ -106,17 +106,17 @@ void GeomConvert_ApproxCurve_Eval::Evaluate (Standard_Integer *Dimension,
 
 GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const Handle(Geom_Curve)& Curve,const Standard_Real Tol3d,const GeomAbs_Shape Order,const Standard_Integer MaxSegments,const Standard_Integer MaxDegree)
 {
-  Handle(GeomAdaptor_HCurve) HCurve = new GeomAdaptor_HCurve (Curve);
+  Handle(GeomAdaptor_Curve) HCurve = new GeomAdaptor_Curve (Curve);
   Approximate(HCurve, Tol3d, Order, MaxSegments, MaxDegree);
 }
 
-GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const Handle(Adaptor3d_HCurve)& Curve,const Standard_Real Tol3d,const GeomAbs_Shape Order,const Standard_Integer MaxSegments,const Standard_Integer MaxDegree)
+GeomConvert_ApproxCurve::GeomConvert_ApproxCurve(const Handle(Adaptor3d_Curve)& Curve,const Standard_Real Tol3d,const GeomAbs_Shape Order,const Standard_Integer MaxSegments,const Standard_Integer MaxDegree)
 {
   Approximate(Curve, Tol3d, Order, MaxSegments, MaxDegree);
 }
 
 void GeomConvert_ApproxCurve::Approximate(
-    const Handle(Adaptor3d_HCurve)& theCurve,
+    const Handle(Adaptor3d_Curve)& theCurve,
     const Standard_Real             theTol3d,
     const GeomAbs_Shape             theOrder,
     const Standard_Integer          theMaxSegments,

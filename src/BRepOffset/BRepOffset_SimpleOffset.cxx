@@ -24,8 +24,8 @@
 #include <BRepOffset.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <NCollection_Vector.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <TopExp.hxx>
@@ -291,8 +291,8 @@ void BRepOffset_SimpleOffset::FillEdgeData(const TopoDS_Edge& theEdge,
 
     // Create offset curve on surface.
     const Handle(Geom2d_Curve) aC2dNew = BRep_Tool::CurveOnSurface(theEdge, aCurFace, aF, aL);
-    const Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2dNew, aF, aL);
-    const Handle(Adaptor3d_HSurface) aHSurface = new GeomAdaptor_HSurface(myFaceInfo.Find(aCurFace).myOffsetS);
+    const Handle(Adaptor2d_Curve2d) aHCurve2d = new Geom2dAdaptor_Curve(aC2dNew, aF, aL);
+    const Handle(Adaptor3d_Surface) aHSurface = new GeomAdaptor_Surface(myFaceInfo.Find(aCurFace).myOffsetS);
     Adaptor3d_CurveOnSurface aCurveOnSurf(aHCurve2d, aHSurface);
 
     // Extract 3d-curve (it is not null).

@@ -17,15 +17,9 @@
 #ifndef _BlendFunc_Chamfer_HeaderFile
 #define _BlendFunc_Chamfer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc_Corde.hxx>
 #include <BlendFunc_GenChamfer.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -34,16 +28,13 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
+
 class math_Matrix;
 class gp_Pnt;
 class gp_Vec;
 class gp_Vec2d;
 class gp_Lin;
 class Blend_Point;
-
-
 
 //! Class for a function used to compute a "ordinary" chamfer:
 //! when distances from spine to surfaces are constant
@@ -54,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BlendFunc_Chamfer(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_HCurve)& CG);
+  Standard_EXPORT BlendFunc_Chamfer(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_Curve)& CG);
   
   //! computes the values <F> of the Functions for the
   //! variable <X>.

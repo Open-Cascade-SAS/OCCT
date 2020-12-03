@@ -17,15 +17,9 @@
 #ifndef _HLRBRep_BSurfaceTool_HeaderFile
 #define _HLRBRep_BSurfaceTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -36,16 +30,12 @@
 #include <gp_Sphere.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
-class Standard_NoSuchObject;
-class Standard_OutOfRange;
+
 class BRepAdaptor_Surface;
-class Adaptor3d_HSurface;
 class gp_Pnt;
 class gp_Vec;
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
-class Adaptor3d_HCurve;
-
 
 
 class HLRBRep_BSurfaceTool 
@@ -72,10 +62,10 @@ public:
     static void VIntervals (const BRepAdaptor_Surface& S, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
   
   //! If <First> >= <Last>
-    static Handle(Adaptor3d_HSurface) UTrim (const BRepAdaptor_Surface& S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+    static Handle(Adaptor3d_Surface) UTrim (const BRepAdaptor_Surface& S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   
   //! If <First> >= <Last>
-    static Handle(Adaptor3d_HSurface) VTrim (const BRepAdaptor_Surface& S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+    static Handle(Adaptor3d_Surface) VTrim (const BRepAdaptor_Surface& S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   
     static Standard_Boolean IsUClosed (const BRepAdaptor_Surface& S);
   
@@ -145,7 +135,7 @@ public:
   
     static gp_Dir Direction (const BRepAdaptor_Surface& S);
   
-    static Handle(Adaptor3d_HCurve) BasisCurve (const BRepAdaptor_Surface& S);
+    static Handle(Adaptor3d_Curve) BasisCurve (const BRepAdaptor_Surface& S);
   
     static gp_Ax1 Axis (const BRepAdaptor_Surface& S);
   

@@ -17,19 +17,12 @@
 #ifndef _GeomInt_LineTool_HeaderFile
 #define _GeomInt_LineTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
-class IntPatch_Line;
+
 class IntPatch_Point;
 class IntPatch_WLine;
-class GeomAdaptor_HSurface;
-
 
 class GeomInt_LineTool 
 {
@@ -48,8 +41,8 @@ public:
 
   Standard_EXPORT static Standard_Boolean 
         DecompositionOfWLine( const Handle(IntPatch_WLine)& theWLine,
-                              const Handle(GeomAdaptor_HSurface)& theSurface1,
-                              const Handle(GeomAdaptor_HSurface)& theSurface2,
+                              const Handle(GeomAdaptor_Surface)& theSurface1,
+                              const Handle(GeomAdaptor_Surface)& theSurface2,
                               const Standard_Real aTolSum,
                               const GeomInt_LineConstructor& theLConstructor,
                               IntPatch_SequenceOfLine& theNewLines);

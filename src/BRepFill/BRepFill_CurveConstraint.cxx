@@ -15,18 +15,18 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepFill_CurveConstraint.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <Precision.hxx>
@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepFill_CurveConstraint,GeomPlate_CurveConstraint)
 //---------------------------------------------------------
 //         Constructeurs avec courbe sur surface
 //---------------------------------------------------------
-BRepFill_CurveConstraint :: BRepFill_CurveConstraint (const Handle(Adaptor3d_HCurveOnSurface)& Boundary,
+BRepFill_CurveConstraint :: BRepFill_CurveConstraint (const Handle(Adaptor3d_CurveOnSurface)& Boundary,
 						const Standard_Integer Tang,
 						const Standard_Integer NPt,
 						const Standard_Real TolDist,
@@ -64,15 +64,15 @@ myConstG2=Standard_True;
  if (myFrontiere.IsNull())
     throw Standard_Failure("BRepFill_CurveConstraint : Curve must be on a Surface");
   Handle(Geom_Surface) Surf;
-  Handle(GeomAdaptor_HSurface) GS1;
-  GS1 = Handle(GeomAdaptor_HSurface)::DownCast(myFrontiere->ChangeCurve().GetSurface());
+  Handle(GeomAdaptor_Surface) GS1;
+  GS1 = Handle(GeomAdaptor_Surface)::DownCast(myFrontiere->GetSurface());
   if (!GS1.IsNull()) {
-    Surf=GS1->ChangeSurface().Surface();
+    Surf = GS1->Surface();
   }
   else {
-    Handle(BRepAdaptor_HSurface) BS1;
-    BS1=Handle(BRepAdaptor_HSurface)::DownCast(myFrontiere->ChangeCurve().GetSurface());
-    Surf = BRep_Tool::Surface(BS1->ChangeSurface().Face());
+    Handle(BRepAdaptor_Surface) BS1;
+    BS1=Handle(BRepAdaptor_Surface)::DownCast(myFrontiere->GetSurface());
+    Surf = BRep_Tool::Surface(BS1->Face());
   }
   myLProp.SetSurface(Surf);
 }
@@ -80,7 +80,7 @@ myConstG2=Standard_True;
 //---------------------------------------------------------
 //    Constructeurs avec courbe 3d (pour continuite G0 G-1)
 //---------------------------------------------------------
-BRepFill_CurveConstraint :: BRepFill_CurveConstraint (const Handle(Adaptor3d_HCurve)& Boundary,
+BRepFill_CurveConstraint :: BRepFill_CurveConstraint (const Handle(Adaptor3d_Curve)& Boundary,
 						const Standard_Integer Tang, 
 						const Standard_Integer NPt,
 						const Standard_Real TolDist) 

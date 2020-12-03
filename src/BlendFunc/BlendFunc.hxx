@@ -17,19 +17,13 @@
 #ifndef _BlendFunc_HeaderFile
 #define _BlendFunc_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc_SectionShape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Convert_ParameterisationType.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
-class Adaptor3d_HSurface;
+
 class gp_Pnt2d;
 class gp_Vec;
 class BlendFunc_ConstRad;
@@ -69,9 +63,9 @@ public:
   //! Used  to obtain the next level of continuity.
   Standard_EXPORT static GeomAbs_Shape NextShape (const GeomAbs_Shape S);
   
-  Standard_EXPORT static Standard_Boolean ComputeNormal (const Handle(Adaptor3d_HSurface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal);
+  Standard_EXPORT static Standard_Boolean ComputeNormal (const Handle(Adaptor3d_Surface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal);
   
-  Standard_EXPORT static Standard_Boolean ComputeDNormal (const Handle(Adaptor3d_HSurface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal, gp_Vec& DNu, gp_Vec& DNv);
+  Standard_EXPORT static Standard_Boolean ComputeDNormal (const Handle(Adaptor3d_Surface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal, gp_Vec& DNu, gp_Vec& DNv);
 
 
 

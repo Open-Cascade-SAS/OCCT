@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Bnd_Box2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_PolyArc.hxx>
@@ -32,7 +32,7 @@ inline void MinMax (const Standard_Real a1, const Standard_Real a2,
   }
 }
 
-IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_HCurve2d)& Line ,
+IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_Curve2d)& Line ,
 				   const Standard_Integer NbSample,
 				   const Standard_Real aPdeb,
 				   const Standard_Real aPfin,

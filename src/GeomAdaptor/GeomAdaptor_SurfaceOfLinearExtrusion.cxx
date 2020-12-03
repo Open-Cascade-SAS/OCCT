@@ -16,10 +16,13 @@
 
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
-#include <GeomAdaptor_HSurfaceOfLinearExtrusion.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <gp_Ax3.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <Standard_NoSuchObject.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_SurfaceOfLinearExtrusion, GeomAdaptor_Surface)
 
 //=======================================================================
 //function : GeomAdaptor_SurfaceOfLinearExtrusion
@@ -35,7 +38,7 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion()
 //=======================================================================
 
 GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion
-(const Handle(Adaptor3d_HCurve)& C)
+(const Handle(Adaptor3d_Curve)& C)
   : myHaveDir(Standard_False)
 {
   Load(C);
@@ -47,7 +50,7 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion
 //=======================================================================
 
 GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion
-(const Handle(Adaptor3d_HCurve)& C,
+(const Handle(Adaptor3d_Curve)& C,
  const gp_Dir&        V)
   : myHaveDir(Standard_False)
 {
@@ -60,7 +63,7 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion
 //purpose  : 
 //=======================================================================
 
-void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const Handle(Adaptor3d_HCurve)& C)
+void GeomAdaptor_SurfaceOfLinearExtrusion::Load(const Handle(Adaptor3d_Curve)& C)
 {
   myBasisCurve = C;
   if (myHaveDir)
@@ -191,13 +194,13 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::VIntervals
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::VTrim
+Handle(Adaptor3d_Surface)  GeomAdaptor_SurfaceOfLinearExtrusion::VTrim
 (const Standard_Real First,
  const Standard_Real Last,
  const Standard_Real Tol) const 
 {
-  Handle(Adaptor3d_HCurve) HC = BasisCurve()->Trim(First,Last,Tol);
-  Handle(GeomAdaptor_HSurfaceOfLinearExtrusion) HR = new GeomAdaptor_HSurfaceOfLinearExtrusion(
+  Handle(Adaptor3d_Curve) HC = BasisCurve()->Trim(First,Last,Tol);
+  Handle(GeomAdaptor_SurfaceOfLinearExtrusion) HR = new GeomAdaptor_SurfaceOfLinearExtrusion(
       GeomAdaptor_SurfaceOfLinearExtrusion(HC, myDirection));
   return HR;
 }
@@ -207,12 +210,12 @@ Handle(Adaptor3d_HSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::VTrim
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface)  GeomAdaptor_SurfaceOfLinearExtrusion::UTrim
+Handle(Adaptor3d_Surface)  GeomAdaptor_SurfaceOfLinearExtrusion::UTrim
 (const Standard_Real ,
  const Standard_Real ,
  const Standard_Real ) const 
 {
-  Handle(GeomAdaptor_HSurfaceOfLinearExtrusion) HR = new GeomAdaptor_HSurfaceOfLinearExtrusion(
+  Handle(GeomAdaptor_SurfaceOfLinearExtrusion) HR = new GeomAdaptor_SurfaceOfLinearExtrusion(
       GeomAdaptor_SurfaceOfLinearExtrusion(myBasisCurve, myDirection));
   return HR;
 }
@@ -530,7 +533,7 @@ gp_Dir GeomAdaptor_SurfaceOfLinearExtrusion::Direction() const
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) GeomAdaptor_SurfaceOfLinearExtrusion::BasisCurve() const 
+Handle(Adaptor3d_Curve) GeomAdaptor_SurfaceOfLinearExtrusion::BasisCurve() const 
 {
   return myBasisCurve;
 }

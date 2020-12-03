@@ -17,21 +17,14 @@
 #ifndef _BRepBlend_SurfRstLineBuilder_HeaderFile
 #define _BRepBlend_SurfRstLineBuilder_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Real.hxx>
 #include <Blend_Point.hxx>
-#include <Standard_Integer.hxx>
 #include <Blend_Status.hxx>
 #include <TopAbs_State.hxx>
+
 class BRepBlend_Line;
-class Adaptor3d_HSurface;
 class Adaptor3d_TopolTool;
-class Adaptor2d_HCurve2d;
 class Blend_SurfRstFunction;
 class Blend_FuncInv;
 class Blend_SurfPointFuncInv;
@@ -41,7 +34,6 @@ class Adaptor3d_HVertex;
 class IntSurf_Transition;
 class BRepBlend_Extremity;
 class Blend_Point;
-
 
 //! This  class processes data  resulting  from
 //! Blend_CSWalking  taking  in consideration the Surface
@@ -78,7 +70,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_SurfRstLineBuilder(const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(Adaptor2d_HCurve2d)& Rst, const Handle(Adaptor3d_TopolTool)& Domain2);
+  Standard_EXPORT BRepBlend_SurfRstLineBuilder(const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor2d_Curve2d)& Rst, const Handle(Adaptor3d_TopolTool)& Domain2);
   
   Standard_EXPORT void Perform (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
@@ -110,15 +102,15 @@ private:
   
   Standard_EXPORT void InternalPerform (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Bound);
   
-  Standard_EXPORT Standard_Boolean Recadre (Blend_SurfCurvFuncInv& FinvC, math_Vector& Solinv, Handle(Adaptor2d_HCurve2d)& Arc, Standard_Boolean& IsVtx, Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT Standard_Boolean Recadre (Blend_SurfCurvFuncInv& FinvC, math_Vector& Solinv, Handle(Adaptor2d_Curve2d)& Arc, Standard_Boolean& IsVtx, Handle(Adaptor3d_HVertex)& Vtx);
   
   Standard_EXPORT Standard_Boolean Recadre (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, math_Vector& Solinv, Standard_Boolean& IsVtx, Handle(Adaptor3d_HVertex)& Vtx);
   
   Standard_EXPORT Standard_Boolean Recadre (Blend_SurfPointFuncInv& FinvP, math_Vector& Solinv, Standard_Boolean& IsVtx, Handle(Adaptor3d_HVertex)& Vtx);
   
-  Standard_EXPORT void Transition (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& Arc, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
+  Standard_EXPORT void Transition (const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& Arc, const Standard_Real Param, IntSurf_Transition& TLine, IntSurf_Transition& TArc);
   
-  Standard_EXPORT void MakeExtremity (BRepBlend_Extremity& Extrem, const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& Arc, const Standard_Real Param, const Standard_Boolean IsVtx, const Handle(Adaptor3d_HVertex)& Vtx);
+  Standard_EXPORT void MakeExtremity (BRepBlend_Extremity& Extrem, const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& Arc, const Standard_Real Param, const Standard_Boolean IsVtx, const Handle(Adaptor3d_HVertex)& Vtx);
   
   Standard_EXPORT Blend_Status CheckDeflectionOnSurf (const Blend_Point& CurPoint);
   
@@ -132,10 +124,10 @@ private:
   Standard_Boolean done;
   Handle(BRepBlend_Line) line;
   math_Vector sol;
-  Handle(Adaptor3d_HSurface) surf1;
+  Handle(Adaptor3d_Surface) surf1;
   Handle(Adaptor3d_TopolTool) domain1;
-  Handle(Adaptor3d_HSurface) surf2;
-  Handle(Adaptor2d_HCurve2d) rst;
+  Handle(Adaptor3d_Surface) surf2;
+  Handle(Adaptor2d_Curve2d) rst;
   Handle(Adaptor3d_TopolTool) domain2;
   Standard_Real tolesp;
   Standard_Real tolgui;

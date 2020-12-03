@@ -15,7 +15,7 @@
 
 #include <LProp3d_SLProps.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -26,8 +26,8 @@
 #include <gp_Dir.hxx>
  
 
-#define Surface Handle(Adaptor3d_HSurface)
-#define Surface_hxx <Adaptor3d_HSurface.hxx>
+#define Surface Handle(Adaptor3d_Surface)
+#define Surface_hxx <Adaptor3d_Surface.hxx>
 #define Tool LProp3d_SurfaceTool
 #define Tool_hxx <LProp3d_SurfaceTool.hxx>
 #define LProp_SLProps LProp3d_SLProps

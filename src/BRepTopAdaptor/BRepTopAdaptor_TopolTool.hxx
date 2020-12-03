@@ -17,28 +17,21 @@
 #ifndef _BRepTopAdaptor_TopolTool_HeaderFile
 #define _BRepTopAdaptor_TopolTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Address.hxx>
 #include <TColStd_ListOfTransient.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <Standard_Real.hxx>
 #include <Adaptor3d_TopolTool.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Integer.hxx>
-class BRepAdaptor_HCurve2d;
+
 class Standard_DomainError;
-class Adaptor3d_HSurface;
-class Adaptor2d_HCurve2d;
 class Adaptor3d_HVertex;
 class gp_Pnt2d;
 class gp_Pnt;
-
 
 class BRepTopAdaptor_TopolTool;
 DEFINE_STANDARD_HANDLE(BRepTopAdaptor_TopolTool, Adaptor3d_TopolTool)
@@ -52,19 +45,19 @@ public:
   
   Standard_EXPORT BRepTopAdaptor_TopolTool();
   
-  Standard_EXPORT BRepTopAdaptor_TopolTool(const Handle(Adaptor3d_HSurface)& Surface);
+  Standard_EXPORT BRepTopAdaptor_TopolTool(const Handle(Adaptor3d_Surface)& Surface);
   
   Standard_EXPORT virtual void Initialize() Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Initialize (const Handle(Adaptor3d_HSurface)& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Initialize (const Handle(Adaptor3d_Surface)& S) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Initialize (const Handle(Adaptor2d_HCurve2d)& Curve) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Initialize (const Handle(Adaptor2d_Curve2d)& Curve) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean More() Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Adaptor2d_HCurve2d) Value() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) Value() Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Next() Standard_OVERRIDE;
   
@@ -88,7 +81,7 @@ public:
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT virtual TopAbs_Orientation Orientation (const Handle(Adaptor2d_HCurve2d)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual TopAbs_Orientation Orientation (const Handle(Adaptor2d_Curve2d)& C) Standard_OVERRIDE;
   
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
@@ -108,7 +101,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Has3d() const Standard_OVERRIDE;
   
   //! returns 3d tolerance of the arc C
-  Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor2d_HCurve2d)& C) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor2d_Curve2d)& C) const Standard_OVERRIDE;
   
   //! returns 3d tolerance of the vertex V
   Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor3d_HVertex)& V) const Standard_OVERRIDE;
@@ -146,7 +139,7 @@ private:
   TopExp_Explorer myVIterator;
   TopoDS_Face myFace;
   Standard_Address myFClass2d;
-  Handle(BRepAdaptor_HCurve2d) myCurve;
+  Handle(BRepAdaptor_Curve2d) myCurve;
   TColStd_ListOfTransient myCurves;
   TColStd_ListIteratorOfListOfTransient myCIterator;
   Standard_Real myU0;

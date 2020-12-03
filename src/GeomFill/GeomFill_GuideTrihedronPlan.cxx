@@ -14,15 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomFill_GuideTrihedronPlan.hxx>
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HCurve.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Plane.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_Frenet.hxx>
-#include <GeomFill_GuideTrihedronPlan.hxx>
 #include <GeomFill_PlanFunc.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <gp_Pnt.hxx>
@@ -78,7 +77,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 //function : GuideTrihedronPlan
 //purpose  : Constructor
 //=======================================================================
-GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d_HCurve)& theGuide) :
+GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d_Curve)& theGuide) :
 							  X(1,1),  
 							  XTol(1,1),
 							  Inf(1,1), Sup(1,1),
@@ -113,7 +112,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
 
 
   Handle(Geom_Plane) Plan;
-  Handle(GeomAdaptor_HSurface) Pl;
+  Handle(GeomAdaptor_Surface) Pl;
   IntCurveSurface_IntersectionPoint PInt;
   IntCurveSurface_HInter Int;
   frenet->SetCurve(myCurve);
@@ -139,7 +138,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
       myCurve->D0(t, P); 
       frenet->D0(t, Tangent, Normal, BiNormal);
       Plan = new (Geom_Plane) (P, Tangent);
-      Pl = new(GeomAdaptor_HSurface) (Plan);
+      Pl = new(GeomAdaptor_Surface) (Plan);
 
       Int.Perform(myTrimG, Pl); // intersection plan / guide 
       if (Int.NbPoints() == 0) {
@@ -198,7 +197,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
 //function : SetCurve
 //purpose  : calculation of trihedron
 //=======================================================================
-void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
+void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_Curve)& C)
 {
   myCurve = C;
   if (!myCurve.IsNull()) Init();
@@ -209,7 +208,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
 //purpose  : calculation of trihedron
 //=======================================================================
 
- Handle(Adaptor3d_HCurve) GeomFill_GuideTrihedronPlan::Guide()const
+ Handle(Adaptor3d_Curve) GeomFill_GuideTrihedronPlan::Guide()const
 {
   return myGuide;
 }
@@ -394,7 +393,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
 /*
   // plan ortho a Tangent pour trouver la pt Pprime sur le guide
   Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent); 
-  Handle(GeomAdaptor_HSurface) Pl= new(GeomAdaptor_HSurface)(Plan);
+  Handle(GeomAdaptor_Surface) Pl= new(GeomAdaptor_Surface)(Plan);
   
 
   Standard_Integer Iter = 50;

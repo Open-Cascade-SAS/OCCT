@@ -21,6 +21,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Curve2d, Geom2dAdaptor_Curve)
+
 //=======================================================================
 //function : BRepAdaptor_Curve2d
 //purpose  : 

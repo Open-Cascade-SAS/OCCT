@@ -44,7 +44,7 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <Geom2dAdaptor_GHCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Message.hxx>
 
 #include <memory>

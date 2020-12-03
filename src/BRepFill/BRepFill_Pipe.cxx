@@ -30,12 +30,12 @@
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepTools_Substitution.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_CorrectedFrenet.hxx>
 #include <GeomFill_CurveAndTrihedron.hxx>
 #include <GeomFill_DiscreteTrihedron.hxx>
@@ -115,9 +115,9 @@ static void UpdateTolFromTopOrBottomPCurve(const TopoDS_Face& aFace,
   if (aCurve.IsNull())
     return;
 
-  Handle(Geom2dAdaptor_HCurve) GAHC2d = new Geom2dAdaptor_HCurve(aPCurve, fpar, lpar);
+  Handle(Geom2dAdaptor_Curve) GAHC2d = new Geom2dAdaptor_Curve(aPCurve, fpar, lpar);
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace);
-  Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aSurf);
+  Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(aSurf);
   Adaptor3d_CurveOnSurface ConS(GAHC2d, GAHS);
 
   Standard_Real Tol = BRep_Tool::Tolerance(anEdge);

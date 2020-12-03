@@ -50,7 +50,6 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 
 #include <GeomLib.hxx>
 #include <GeomConvert.hxx>
@@ -101,17 +100,14 @@
 #include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom2d_Curve.hxx>
 
-#include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Approx_CurvilinearParameter.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 
 #include <AppCont_Function.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
 
@@ -125,9 +121,9 @@ class CurveEvaluator : public AppCont_Function
 {
 
 public:
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myCurve;
 
-  CurveEvaluator(const Handle(Adaptor3d_HCurve)& C)
+  CurveEvaluator(const Handle(Adaptor3d_Curve)& C)
     : myCurve(C)
   {
     myNbPnt = 1;
@@ -1549,8 +1545,8 @@ static Standard_Integer approxcurveonsurf(Draw_Interpretor& di, Standard_Integer
   Handle(Geom2d_Curve) curve2d = DrawTrSurf::GetCurve2d(a[2]);
   Handle(Geom_Surface) Surf = DrawTrSurf::GetSurface(a[3]);
 
-  Handle(Geom2dAdaptor_HCurve) A2d = new (Geom2dAdaptor_HCurve)(curve2d);
-  Handle(GeomAdaptor_HSurface) AS = new (GeomAdaptor_HSurface)(Surf);
+  Handle(Geom2dAdaptor_Curve) A2d = new (Geom2dAdaptor_Curve)(curve2d);
+  Handle(GeomAdaptor_Surface) AS = new (GeomAdaptor_Surface)(Surf);
 
   Approx_CurveOnSurface App(A2d, AS, A2d->FirstParameter(), A2d->LastParameter(), Tol);
   App.Perform(MaxSeg, MaxDeg, Continuity, Standard_True, Standard_False);
@@ -1681,7 +1677,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   }    
 
   else if (Case == 3) {
-    Handle(Adaptor3d_HCurve) HACur = new GeomAdaptor_HCurve(curve);
+    Handle(Adaptor3d_Curve) HACur = new GeomAdaptor_Curve(curve);
     Approx_CurvilinearParameter appr(HACur, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
       //appr.Dump(std::cout);
@@ -1693,8 +1689,8 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
     }
 }    
   else if (Case == 4) {
-    Handle(Adaptor2d_HCurve2d) HACur2d = new Geom2dAdaptor_HCurve(curve2d);
-    Handle(Adaptor3d_HSurface) HASur = new GeomAdaptor_HSurface(surface);
+    Handle(Adaptor2d_Curve2d) HACur2d = new Geom2dAdaptor_Curve(curve2d);
+    Handle(Adaptor3d_Surface) HASur = new GeomAdaptor_Surface(surface);
     Approx_CurvilinearParameter appr(HACur2d, HASur, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
       //appr.Dump(std::cout);
@@ -1707,10 +1703,10 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   }
 
   else if (Case == 5) {
-    Handle(Adaptor2d_HCurve2d) HACur2d = new Geom2dAdaptor_HCurve(curve2d);
-    Handle(Adaptor3d_HSurface) HASur = new GeomAdaptor_HSurface(surface);
-    Handle(Adaptor2d_HCurve2d) HACur2d2 = new Geom2dAdaptor_HCurve(curve2d2);
-    Handle(Adaptor3d_HSurface) HASur2 = new GeomAdaptor_HSurface(surface2);
+    Handle(Adaptor2d_Curve2d) HACur2d = new Geom2dAdaptor_Curve(curve2d);
+    Handle(Adaptor3d_Surface) HASur = new GeomAdaptor_Surface(surface);
+    Handle(Adaptor2d_Curve2d) HACur2d2 = new Geom2dAdaptor_Curve(curve2d2);
+    Handle(Adaptor3d_Surface) HASur2 = new GeomAdaptor_Surface(surface2);
     Approx_CurvilinearParameter appr(HACur2d, HASur, HACur2d2, HASur2, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
       //appr.Dump(std::cout);
@@ -1769,7 +1765,7 @@ static Standard_Integer fitcurve(Draw_Interpretor& di, Standard_Integer n, const
     }
   }
 
-  Handle(GeomAdaptor_HCurve) aGAC = new GeomAdaptor_HCurve(GC);
+  Handle(GeomAdaptor_Curve) aGAC = new GeomAdaptor_Curve(GC);
 
   CurveEvaluator aCE(aGAC);
 

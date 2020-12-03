@@ -23,7 +23,7 @@
 #include <GeomFill_Boundary.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class Adaptor3d_HCurve;
+
 class Law_Function;
 class gp_Pnt;
 class gp_Vec;
@@ -57,17 +57,17 @@ public:
   //! The adapted curve is created in one of the following ways:
   //! -   First sequence:
   //! Handle(Geom_Curve) myCurve = ... ;
-  //! Handle(GeomAdaptor_HCurve)
+  //! Handle(GeomAdaptor_Curve)
   //! Curve = new
-  //! GeomAdaptor_HCurve(myCurve);
+  //! GeomAdaptor_Curve(myCurve);
   //! -   Second sequence:
   //! // Step 1
   //! Handle(Geom_Curve) myCurve = ... ;
   //! GeomAdaptor_Curve Crv (myCurve);
   //! // Step 2
-  //! Handle(GeomAdaptor_HCurve)
+  //! Handle(GeomAdaptor_Curve)
   //! Curve = new
-  //! GeomAdaptor_HCurve(Crv);
+  //! GeomAdaptor_Curve(Crv);
   //! You use the second part of this sequence if you already
   //! have the adapted curve Crv.
   //! The boundary is then constructed with the Curve object:
@@ -75,7 +75,7 @@ public:
   //! Standard_Real dummy = 0. ;
   //! myBoundary = GeomFill_SimpleBound
   //! (Curve,Tol,dummy);
-  Standard_EXPORT GeomFill_SimpleBound(const Handle(Adaptor3d_HCurve)& Curve, const Standard_Real Tol3d, const Standard_Real Tolang);
+  Standard_EXPORT GeomFill_SimpleBound(const Handle(Adaptor3d_Curve)& Curve, const Standard_Real Tol3d, const Standard_Real Tolang);
   
   Standard_EXPORT gp_Pnt Value (const Standard_Real U) const Standard_OVERRIDE;
   
@@ -100,7 +100,7 @@ protected:
 private:
 
 
-  Handle(Adaptor3d_HCurve) myC3d;
+  Handle(Adaptor3d_Curve) myC3d;
   Handle(Law_Function) myPar;
 
 

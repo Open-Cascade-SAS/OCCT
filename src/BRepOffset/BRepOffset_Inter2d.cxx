@@ -16,9 +16,11 @@
 
 //  Modified by skv - Wed Dec 24 18:08:39 2003 OCC4455
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <BRepOffset_Inter2d.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -35,7 +37,6 @@
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepOffset_Analyse.hxx>
-#include <BRepOffset_Inter2d.hxx>
 #include <BRepOffset_Offset.hxx>
 #include <BRepOffset_Tool.hxx>
 #include <BRepTools.hxx>
@@ -44,7 +45,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -54,7 +55,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
@@ -810,8 +810,8 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 
 static Standard_Integer evaluateMaxSegment(const Adaptor3d_CurveOnSurface& aCurveOnSurface)
 {
-  Handle(Adaptor3d_HSurface) aSurf   = aCurveOnSurface.GetSurface();
-  Handle(Adaptor2d_HCurve2d) aCurv2d = aCurveOnSurface.GetCurve();
+  Handle(Adaptor3d_Surface) aSurf   = aCurveOnSurface.GetSurface();
+  Handle(Adaptor2d_Curve2d) aCurv2d = aCurveOnSurface.GetCurve();
 
   Standard_Real aNbSKnots = 0, aNbC2dKnots = 0;
   
@@ -1202,8 +1202,8 @@ Standard_Boolean BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge
             {
               Geom2dAdaptor_Curve AC2d( MinPC, FirstParOnPC, LastParOnPC );
               GeomAdaptor_Surface GAsurf( MinSurf );
-              Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
-              Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
+              Handle(Geom2dAdaptor_Curve) HC2d  = new Geom2dAdaptor_Curve( AC2d );
+              Handle(GeomAdaptor_Surface) HSurf = new GeomAdaptor_Surface( GAsurf );
               Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
               Standard_Real /*max_deviation,*/ average_deviation;
               GeomAbs_Shape Continuity = GeomAbs_C1;

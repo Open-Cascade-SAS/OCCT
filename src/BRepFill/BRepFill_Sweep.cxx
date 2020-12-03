@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <Approx_SameParameter.hxx>
 #include <Bnd_Box.hxx>
@@ -27,9 +27,9 @@
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepCheck_Edge.hxx>
 #include <BRepFill_CurveConstraint.hxx>
@@ -48,7 +48,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
@@ -56,8 +56,8 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_SectionLaw.hxx>
@@ -271,9 +271,9 @@ static Handle(Geom2d_Curve) Couture(const TopoDS_Edge& E,
 //=======================================================================
 
 static Standard_Boolean CheckSameParameter 
-(const Handle(Adaptor3d_HCurve)&   C3d,
+(const Handle(Adaptor3d_Curve)&   C3d,
  const Handle(Geom2d_Curve)&           Pcurv,
- const Handle(Adaptor3d_HSurface)& S,
+ const Handle(Adaptor3d_Surface)& S,
  const Standard_Real             tol3d,
  Standard_Real&                  tolreached)
 {
@@ -315,13 +315,13 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
 				      const Standard_Real          tol3d,
 				      Standard_Real&               tolreached)
 {
-  //Handle(BRepAdaptor_HCurve) C3d = new (BRepAdaptor_HCurve)(E);
+  //Handle(BRepAdaptor_Curve) C3d = new (BRepAdaptor_Curve)(E);
   Standard_Real f, l;
   Handle(Geom_Curve) C3d = BRep_Tool::Curve( E, f, l );
   GeomAdaptor_Curve GAC3d( C3d, f, l );
-  Handle(GeomAdaptor_HCurve) HC3d = new GeomAdaptor_HCurve( GAC3d );
+  Handle(GeomAdaptor_Curve) HC3d = new GeomAdaptor_Curve( GAC3d );
 
-  Handle(GeomAdaptor_HSurface) S = new (GeomAdaptor_HSurface)(Surf);
+  Handle(GeomAdaptor_Surface) S = new (GeomAdaptor_Surface)(Surf);
   Standard_Real ResTol;
 
   if(CheckSameParameter( HC3d, Pcurv, S, tol3d, tolreached )) 
@@ -329,7 +329,7 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
 
   if (!HasPCurves(E))
     {
-      Handle(Geom2dAdaptor_HCurve) HC2d = new Geom2dAdaptor_HCurve( Pcurv );
+      Handle(Geom2dAdaptor_Curve) HC2d = new Geom2dAdaptor_Curve( Pcurv );
       Approx_CurveOnSurface AppCurve(HC2d, S, HC2d->FirstParameter(), HC2d->LastParameter(), 
                                      Precision::Confusion());
       AppCurve.Perform(10, 10, GeomAbs_C1, Standard_True);
@@ -343,7 +343,7 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
 	}
     }
 
-  const Handle(Adaptor3d_HCurve)& aHCurve = HC3d; // to avoid ambiguity
+  const Handle(Adaptor3d_Curve)& aHCurve = HC3d; // to avoid ambiguity
   Approx_SameParameter sp (aHCurve, Pcurv, S, tol3d );
   if(sp.IsDone() && !sp.IsSameParameter()) Pcurv = sp.Curve2d();
   else if(!sp.IsDone() && !sp.IsSameParameter()){
@@ -951,9 +951,9 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
 // Deform the surface of revolution.
   GeomPlate_BuildPlateSurface BPS;
 
-  Handle(BRepAdaptor_HSurface) AS;
-  Handle(BRepAdaptor_HCurve2d) AC2d;
-  Handle(Adaptor3d_HCurveOnSurface) HConS;
+  Handle(BRepAdaptor_Surface) AS;
+  Handle(BRepAdaptor_Curve2d) AC2d;
+  Handle(Adaptor3d_CurveOnSurface) HConS;
 */
   Handle(Geom2d_Line) L;
   gp_Pnt2d P2d(0.,0.);
@@ -1009,10 +1009,10 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   // Determine the constraints and  
   // their parametric localisation.
   if (!E1.IsNull()) {
-     AS = new BRepAdaptor_HSurface(TopoDS::Face(F1));
-     AC2d = new BRepAdaptor_HCurve2d();
+     AS = new BRepAdaptor_Surface(TopoDS::Face(F1));
+     AC2d = new BRepAdaptor_Curve2d();
      AC2d->ChangeCurve2d().Initialize(E1,TopoDS::Face(F1));
-     HConS = new (Adaptor3d_HCurveOnSurface)();
+     HConS = new (Adaptor3d_CurveOnSurface)();
      HConS->ChangeCurve().Load(AC2d);
      HConS->ChangeCurve().Load(AS);
 
@@ -1025,10 +1025,10 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
    }
 
   if (!E2.IsNull()) {
-    AS = new BRepAdaptor_HSurface(TopoDS::Face(F2));
-    AC2d = new BRepAdaptor_HCurve2d();
+    AS = new BRepAdaptor_Surface(TopoDS::Face(F2));
+    AC2d = new BRepAdaptor_Curve2d();
     AC2d->ChangeCurve2d().Initialize(E2,TopoDS::Face(F2));
-    HConS = new (Adaptor3d_HCurveOnSurface);
+    HConS = new (Adaptor3d_CurveOnSurface);
 
     HConS->ChangeCurve().Load(AC2d);
     HConS->ChangeCurve().Load(AS);
@@ -1040,7 +1040,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   }
 
   if (WithE3) {
-    Handle(BRepAdaptor_HCurve) AC = new (BRepAdaptor_HCurve) (E3);
+    Handle(BRepAdaptor_Curve) AC = new (BRepAdaptor_Curve) (E3);
     Handle(BRepFill_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(AC, 0);
     Cont->SetCurve2dOnSurf(C3);
@@ -1061,7 +1061,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
 
 
   if (WithE4) {
-    Handle(BRepAdaptor_HCurve) AC = new (BRepAdaptor_HCurve) (E4);
+    Handle(BRepAdaptor_Curve) AC = new (BRepAdaptor_Curve) (E4);
     Handle(BRepFill_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(AC, 0);
     Cont->SetCurve2dOnSurf(C4);
@@ -1236,7 +1236,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
     //  C1 = BT.CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
     C1 = BRep_Tool::CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
     C1->D0(aPrm[i], P2d);
-    Handle(BRepAdaptor_HSurface) AS = new BRepAdaptor_HSurface(TopoDS::Face(F1));
+    Handle(BRepAdaptor_Surface) AS = new BRepAdaptor_Surface(TopoDS::Face(F1));
     AS->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
     N2 = D1U^D1V;
 
@@ -1555,9 +1555,9 @@ static TopoDS_Edge BuildEdge(const Handle(Geom_Surface)& S,
   Standard_Real MaxTol = 1.e-4;
   Standard_Real theTol;
   GeomAdaptor_Curve GAiso(Iso);
-  Handle(GeomAdaptor_HCurve) GAHiso = new GeomAdaptor_HCurve(GAiso);
+  Handle(GeomAdaptor_Curve) GAHiso = new GeomAdaptor_Curve(GAiso);
   GeomAdaptor_Surface GAsurf(S);
-  Handle(GeomAdaptor_HSurface) GAHsurf = new GeomAdaptor_HSurface(GAsurf);
+  Handle(GeomAdaptor_Surface) GAHsurf = new GeomAdaptor_Surface(GAsurf);
   CheckSameParameter( GAHiso, L, GAHsurf, MaxTol, theTol);
   B.UpdateEdge(E, theTol);
 

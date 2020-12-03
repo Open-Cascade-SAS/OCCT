@@ -14,10 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor3d_HCurve.hxx>
 #include <BiTgte_CurveOnVertex.hxx>
-#include <BiTgte_HCurveOnVertex.hxx>
+
+#include <Adaptor3d_Curve.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -34,6 +33,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(BiTgte_CurveOnVertex, Adaptor3d_Curve)
 
 //=======================================================================
 //function : BiTgte_CurveOnVertex
@@ -132,7 +133,7 @@ void BiTgte_CurveOnVertex::Intervals(TColStd_Array1OfReal&,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) BiTgte_CurveOnVertex::Trim(const Standard_Real,
+Handle(Adaptor3d_Curve) BiTgte_CurveOnVertex::Trim(const Standard_Real,
                                                     const Standard_Real,
                                                     const Standard_Real) 
 const

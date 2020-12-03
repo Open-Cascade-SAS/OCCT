@@ -17,15 +17,14 @@
 #ifndef _IntPatch_PointLine_HeaderFile
 #define _IntPatch_PointLine_HeaderFile
 
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_Line.hxx>
-#include <Standard_Type.hxx>
 
 class gp_Pnt;
 class gp_Pnt2d;
 class IntSurf_PntOn2S;
 class IntSurf_LineOn2S;
 class IntPatch_Point;
-class Adaptor3d_HSurface;
 
 DEFINE_STANDARD_HANDLE(IntPatch_PointLine, IntPatch_Line)
 
@@ -84,8 +83,8 @@ public:
   //! the intersection line in given point.
   //! Returns negative value if computation is not possible.
   Standard_EXPORT static Standard_Real
-            CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_HSurface)& theS1,
-                                        const Handle(Adaptor3d_HSurface)& theS2,
+            CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_Surface)& theS1,
+                                        const Handle(Adaptor3d_Surface)& theS2,
                                         const IntSurf_PntOn2S& theUVPoint);
 
   DEFINE_STANDARD_RTTIEXT(IntPatch_PointLine,IntPatch_Line)

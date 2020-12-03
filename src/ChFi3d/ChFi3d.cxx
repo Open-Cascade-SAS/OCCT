@@ -31,7 +31,7 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepTools.hxx>
 #include <IntTools_Tools.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
@@ -174,8 +174,8 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge& theEdge,
   // Computation of the number of samples on the edge.
   BRepAdaptor_Surface              aBAS1(theFace1);
   BRepAdaptor_Surface              aBAS2(theFace2);
-  Handle(BRepAdaptor_HSurface)     aBAHS1 = new BRepAdaptor_HSurface(aBAS1);
-  Handle(BRepAdaptor_HSurface)     aBAHS2 = new BRepAdaptor_HSurface(aBAS2);
+  Handle(BRepAdaptor_Surface)     aBAHS1 = new BRepAdaptor_Surface(aBAS1);
+  Handle(BRepAdaptor_Surface)     aBAHS2 = new BRepAdaptor_Surface(aBAS2);
   Handle(BRepTopAdaptor_TopolTool) aTool1 = new BRepTopAdaptor_TopolTool(aBAHS1);
   Handle(BRepTopAdaptor_TopolTool) aTool2 = new BRepTopAdaptor_TopolTool(aBAHS2);
   Standard_Integer                 aNbSamples1 = aTool1->NbSamples();

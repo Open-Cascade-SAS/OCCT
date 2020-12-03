@@ -16,7 +16,7 @@
 
 
 #include <ChFiDS_FilSpine.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfHElSpine.hxx>
 #include <ElCLib.hxx>
 #include <gp_XY.hxx>
@@ -186,7 +186,7 @@ void  ChFiDS_FilSpine::SetRadius(const gp_XY&           UandR,
   if (splitdone) {
     ChFiDS_ListIteratorOfListOfHElSpine It(elspines);
     Law_ListIteratorOfLaws Itl(laws);
-    Handle(ChFiDS_HElSpine) Els = It.Value();
+    Handle(ChFiDS_ElSpine) Els = It.Value();
     if (Els->IsPeriodic()) Itl.Value() = ComputeLaw(Els);
     else{
       for (; It.More(); It.Next(), Itl.Next()) {
@@ -357,7 +357,7 @@ Standard_Real  ChFiDS_FilSpine::Radius()const
 //purpose  : 
 //=======================================================================
 
-void ChFiDS_FilSpine::AppendElSpine(const Handle(ChFiDS_HElSpine)& Els)
+void ChFiDS_FilSpine::AppendElSpine(const Handle(ChFiDS_ElSpine)& Els)
 {
   ChFiDS_Spine::AppendElSpine(Els);
   AppendLaw(Els);
@@ -368,7 +368,7 @@ void ChFiDS_FilSpine::AppendElSpine(const Handle(ChFiDS_HElSpine)& Els)
 //purpose  : 
 //=======================================================================
 
-void ChFiDS_FilSpine::AppendLaw(const Handle(ChFiDS_HElSpine)& Els)
+void ChFiDS_FilSpine::AppendLaw(const Handle(ChFiDS_ElSpine)& Els)
 {
   Handle(Law_Composite) l = ComputeLaw(Els);
   laws.Append(l);
@@ -484,7 +484,7 @@ static void mklaw(Law_Laws&                  res,
 //=======================================================================
 
 Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
-(const Handle(ChFiDS_HElSpine)& Els)
+(const Handle(ChFiDS_ElSpine)& Els)
 {
   Standard_Real tol3d = Precision::Confusion();
   Standard_Real deb,fin,curdeb,curfin;
@@ -709,7 +709,7 @@ Handle(Law_Composite) ChFiDS_FilSpine::ComputeLaw
 //purpose  : 
 //=======================================================================
 
-Handle(Law_Composite) ChFiDS_FilSpine::Law(const Handle(ChFiDS_HElSpine)& Els) const 
+Handle(Law_Composite) ChFiDS_FilSpine::Law(const Handle(ChFiDS_ElSpine)& Els) const 
 {
   ChFiDS_ListIteratorOfListOfHElSpine Itsp(elspines);
   Law_ListIteratorOfLaws Itl(laws);
@@ -735,7 +735,7 @@ Handle(Law_Function)& ChFiDS_FilSpine::ChangeLaw(const TopoDS_Edge& E)
   if (IsConstant(IE)) {
     throw Standard_DomainError("ChFiDS_FilSpine::ChangeLaw : no law on constant edges");
   }
-  Handle(ChFiDS_HElSpine) hsp = ElSpine(IE);
+  Handle(ChFiDS_ElSpine) hsp = ElSpine(IE);
   Standard_Real w = 0.5*(FirstParameter(IE) + LastParameter(IE));
   Handle(Law_Composite) lc = Law(hsp);
   return lc->ChangeElementaryLaw(w);

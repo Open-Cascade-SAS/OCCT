@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepOffset_Tool.hxx>
 
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add3dCurve.hxx>
@@ -28,8 +29,6 @@
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_AsDes.hxx>
 #include <BRepAlgo_Image.hxx>
@@ -43,7 +42,6 @@
 #include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_Interval.hxx>
 #include <BRepOffset_ListOfInterval.hxx>
-#include <BRepOffset_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_Modifier.hxx>
 #include <BRepTools_TrsfModification.hxx>
@@ -424,8 +422,8 @@ static void BuildPCurves (const TopoDS_Edge&  E,
 	}
     } // if (typS == ...
 
-  Handle(BRepAdaptor_HSurface) HS = new BRepAdaptor_HSurface(AS);
-  Handle(BRepAdaptor_HCurve)   HC = new BRepAdaptor_HCurve(AC);
+  Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(AS);
+  Handle(BRepAdaptor_Curve)   HC = new BRepAdaptor_Curve(AC);
 
   ProjLib_ProjectedCurve Proj(HS,HC,Tolerance);
   

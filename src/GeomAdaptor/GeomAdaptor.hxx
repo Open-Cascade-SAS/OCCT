@@ -25,13 +25,6 @@ class Geom_Curve;
 class Adaptor3d_Curve;
 class Geom_Surface;
 class Adaptor3d_Surface;
-class GeomAdaptor_Curve;
-class GeomAdaptor_Surface;
-class GeomAdaptor_GHSurface;
-class GeomAdaptor_HSurface;
-class GeomAdaptor_GHCurve;
-class GeomAdaptor_HCurve;
-
 
 //! this package contains the  geometric definition of
 //! curve and surface necessary to use algorithmes.
@@ -54,33 +47,6 @@ public:
   Standard_EXPORT static Handle(Geom_Surface) MakeSurface (const Adaptor3d_Surface& theS,
                                                            const Standard_Boolean theTrimFlag = Standard_True);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class GeomAdaptor_Curve;
-friend class GeomAdaptor_Surface;
-friend class GeomAdaptor_GHSurface;
-friend class GeomAdaptor_HSurface;
-friend class GeomAdaptor_GHCurve;
-friend class GeomAdaptor_HCurve;
-
 };
-
-
-
-
-
-
 
 #endif // _GeomAdaptor_HeaderFile

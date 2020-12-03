@@ -16,12 +16,12 @@
 
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
@@ -35,7 +35,7 @@
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
@@ -50,14 +50,14 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
@@ -397,7 +397,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   // ----------------------------------------------------------
   
   TopAbs_Orientation OFac = face[pivot].Orientation();
-  Handle(BRepAdaptor_HSurface) Fac = new BRepAdaptor_HSurface(face[pivot]);
+  Handle(BRepAdaptor_Surface) Fac = new BRepAdaptor_Surface(face[pivot]);
   gp_Pnt2d ppp1,ppp2;
   const ChFiDS_FaceInterference& bid1 = CD[pivot]->SetOfSurfData()->
     Value(i[pivot][deb])->InterferenceOnS1();
@@ -432,12 +432,12 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 			      Value(i[pivot][deb])->Surf())).Surface());
   }
   
-  Handle(GeomAdaptor_HSurface) Surf = new GeomAdaptor_HSurface(gasurf);
+  Handle(GeomAdaptor_Surface) Surf = new GeomAdaptor_Surface(gasurf);
   //  Handle(BRepTopAdaptor_TopolTool) IFac = new BRepTopAdaptor_TopolTool(Fac);
   // Try to not classify on the face for cases of reentering fillets which naturally depass 
   // the border.  
-  Handle(GeomAdaptor_HSurface) 
-    bidsurf = new GeomAdaptor_HSurface(Fac->ChangeSurface().Surface());
+  Handle(GeomAdaptor_Surface) 
+    bidsurf = new GeomAdaptor_Surface(Fac->ChangeSurface().Surface());
   Handle(Adaptor3d_TopolTool) 
     IFac = new Adaptor3d_TopolTool(bidsurf);
   // end of the attempt.
@@ -554,10 +554,10 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       }
       else locfleche = radpondere * (WLast - WFirst) * fleche;
       Standard_Real pasmax = (WLast-WFirst)*0.05;
-      Handle(ChFiDS_HElSpine) cornerspine = new ChFiDS_HElSpine();
-      cornerspine->ChangeCurve().SetCurve(spinecoin);
-      cornerspine->ChangeCurve().FirstParameter(WFirst - pasmax);
-      cornerspine->ChangeCurve().LastParameter(WLast + pasmax);
+      Handle(ChFiDS_ElSpine) cornerspine = new ChFiDS_ElSpine();
+      cornerspine->SetCurve(spinecoin);
+      cornerspine->FirstParameter(WFirst - pasmax);
+      cornerspine->LastParameter(WLast + pasmax);
       // Just to confuse Compute that should not require this 
       // in this exact case ...
       Handle(ChFiDS_Spine) NullSpine;

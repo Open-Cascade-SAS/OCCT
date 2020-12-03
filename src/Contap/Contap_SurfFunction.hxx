@@ -17,22 +17,15 @@
 #ifndef _Contap_SurfFunction_HeaderFile
 #define _Contap_SurfFunction_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Contap_TFunction.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
-class Adaptor3d_HSurface;
-class StdFail_UndefinedDerivative;
+
 class gp_Pnt;
 class gp_Dir;
 class math_Matrix;
@@ -53,7 +46,7 @@ public:
   
   Standard_EXPORT Contap_SurfFunction();
   
-  Standard_EXPORT void Set (const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT void Set (const Handle(Adaptor3d_Surface)& S);
   
     void Set (const gp_Pnt& Eye);
   
@@ -104,10 +97,10 @@ public:
   
     Standard_Real Angle() const;
   
-    const Handle(Adaptor3d_HSurface)& Surface() const;
+    const Handle(Adaptor3d_Surface)& Surface() const;
 
   //! Method is entered for compatibility with IntPatch_TheSurfFunction.
-  const Handle(Adaptor3d_HSurface)& PSurface() const
+  const Handle(Adaptor3d_Surface)& PSurface() const
   {
     return Surface();
   }
@@ -123,7 +116,7 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) mySurf;
+  Handle(Adaptor3d_Surface) mySurf;
   Standard_Real myMean;
   Contap_TFunction myType;
   gp_Dir myDir;

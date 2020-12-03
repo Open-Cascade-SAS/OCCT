@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
@@ -192,7 +192,7 @@ static TopAbs_ShapeEnum ShapeType(const TopoDS_Shape& theShape) {
 //=====================================================================
 static Standard_Boolean IsValidSurfType(const TopoDS_Face& theFace) {
   BRepAdaptor_Surface anAdapt(theFace);
-  Handle( Adaptor3d_HCurve ) aBasisCurve;
+  Handle( Adaptor3d_Curve ) aBasisCurve;
   const GeomAbs_SurfaceType& aType = anAdapt.GetType();
   if(aType == GeomAbs_Sphere)
     return Standard_True;

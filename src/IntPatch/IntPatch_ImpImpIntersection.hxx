@@ -17,25 +17,12 @@
 #ifndef _IntPatch_ImpImpIntersection_HeaderFile
 #define _IntPatch_ImpImpIntersection_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Adaptor3d_HSurface;
-class Adaptor3d_TopolTool;
-class IntPatch_Point;
-class IntPatch_Line;
 
+class Adaptor3d_TopolTool;
 
 //! Implementation of the intersection between two
 //! quadric patches : Plane, Cone, Cylinder or Sphere.
@@ -69,7 +56,7 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT IntPatch_ImpImpIntersection(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
+  Standard_EXPORT IntPatch_ImpImpIntersection(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean theIsReqToKeepRLine = Standard_False);
   
   //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
@@ -77,9 +64,9 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& S1,
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1,
                                 const Handle(Adaptor3d_TopolTool)& D1,
-                                const Handle(Adaptor3d_HSurface)& S2,
+                                const Handle(Adaptor3d_Surface)& S2,
                                 const Handle(Adaptor3d_TopolTool)& D2,
                                 const Standard_Real TolArc,
                                 const Standard_Real TolTang,

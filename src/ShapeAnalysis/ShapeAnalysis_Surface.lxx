@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 
 //=======================================================================
 //function : Surface
@@ -30,7 +30,7 @@ inline const Handle(Geom_Surface)& ShapeAnalysis_Surface::Surface() const
 //purpose  : 
 //=======================================================================
 
-inline const Handle(GeomAdaptor_HSurface)& ShapeAnalysis_Surface::TrueAdaptor3d() const
+inline const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::TrueAdaptor3d() const
 {
   return myAdSur;
 }

@@ -17,26 +17,20 @@
 #ifndef _ChFiDS_Spine_HeaderFile
 #define _ChFiDS_Spine_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <BRepAdaptor_Curve.hxx>
-#include <Standard_Integer.hxx>
-#include <ChFiDS_State.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <ChFiDS_ListOfHElSpine.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <ChFiDS_ErrorStatus.hxx>
-#include <Standard_Transient.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <ChFiDS_ChamfMode.hxx>
+#include <ChFiDS_ErrorStatus.hxx>
+#include <ChFiDS_ListOfHElSpine.hxx>
+#include <ChFiDS_State.hxx>
 #include <ChFiDS_TypeOfConcavity.hxx>
+#include <ChFiDS_ElSpine.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
 class TopoDS_Edge;
-class ChFiDS_HElSpine;
 class gp_Lin;
 class gp_Circ;
 class TopoDS_Vertex;
@@ -108,15 +102,15 @@ public:
   //! section of free border or forms  a closed contour
     void SetLastStatus (const ChFiDS_State S);
   
-  Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_HElSpine)& Els);
+  Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_ElSpine)& Els);
   
-  Standard_EXPORT virtual void AppendOffsetElSpine (const Handle(ChFiDS_HElSpine)& Els);
+  Standard_EXPORT virtual void AppendOffsetElSpine (const Handle(ChFiDS_ElSpine)& Els);
   
-  Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const Standard_Integer IE) const;
+  Standard_EXPORT Handle(ChFiDS_ElSpine) ElSpine (const Standard_Integer IE) const;
   
-  Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const TopoDS_Edge& E) const;
+  Standard_EXPORT Handle(ChFiDS_ElSpine) ElSpine (const TopoDS_Edge& E) const;
   
-  Standard_EXPORT Handle(ChFiDS_HElSpine) ElSpine (const Standard_Real W) const;
+  Standard_EXPORT Handle(ChFiDS_ElSpine) ElSpine (const Standard_Real W) const;
   
   Standard_EXPORT ChFiDS_ListOfHElSpine& ChangeElSpines();
   

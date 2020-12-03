@@ -17,24 +17,14 @@
 #ifndef _Contap_TheSearchInside_HeaderFile
 #define _Contap_TheSearchInside_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntSurf_SequenceOfInteriorPoint.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_HSurfaceTool;
 class Adaptor3d_TopolTool;
 class Contap_HContTool;
 class Contap_SurfFunction;
 class IntSurf_InteriorPoint;
-
-
 
 class Contap_TheSearchInside 
 {
@@ -45,11 +35,11 @@ public:
   
   Standard_EXPORT Contap_TheSearchInside();
   
-  Standard_EXPORT Contap_TheSearchInside(Contap_SurfFunction& F, const Handle(Adaptor3d_HSurface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
+  Standard_EXPORT Contap_TheSearchInside(Contap_SurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
   
-  Standard_EXPORT void Perform (Contap_SurfFunction& F, const Handle(Adaptor3d_HSurface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
+  Standard_EXPORT void Perform (Contap_SurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& T, const Standard_Real Epsilon);
   
-  Standard_EXPORT void Perform (Contap_SurfFunction& F, const Handle(Adaptor3d_HSurface)& Surf, const Standard_Real UStart, const Standard_Real VStart);
+  Standard_EXPORT void Perform (Contap_SurfFunction& F, const Handle(Adaptor3d_Surface)& Surf, const Standard_Real UStart, const Standard_Real VStart);
   
     Standard_Boolean IsDone() const;
   
@@ -84,8 +74,8 @@ private:
 
 };
 
-#define ThePSurface Handle(Adaptor3d_HSurface)
-#define ThePSurface_hxx <Adaptor3d_HSurface.hxx>
+#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
 #define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)

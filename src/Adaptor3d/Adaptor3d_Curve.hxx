@@ -17,31 +17,28 @@
 #ifndef _Adaptor3d_Curve_HeaderFile
 #define _Adaptor3d_Curve_HeaderFile
 
+#include <gp_Lin.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Parab.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
+
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class Adaptor3d_HCurve;
 class gp_Pnt;
 class gp_Vec;
-class gp_Lin;
-class gp_Circ;
-class gp_Elips;
-class gp_Hypr;
-class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
 class Geom_OffsetCurve;
 
+DEFINE_STANDARD_HANDLE(Adaptor3d_Curve, Standard_Transient)
 
 //! Root class for 3D curves on which geometric
 //! algorithms work.
@@ -56,13 +53,11 @@ class Geom_OffsetCurve;
 //! Polynomial coefficients of BSpline curves used for their evaluation are
 //! cached for better performance. Therefore these evaluations are not
 //! thread-safe and parallel evaluations need to be prevented.
-class Adaptor3d_Curve 
+class Adaptor3d_Curve : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_Curve, Standard_Transient)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT virtual Standard_Real FirstParameter() const;
   
   Standard_EXPORT virtual Standard_Real LastParameter() const;
@@ -84,7 +79,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor3d_HCurve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
   
   Standard_EXPORT virtual Standard_Boolean IsClosed() const;
   
@@ -161,27 +156,6 @@ public:
 
   Standard_EXPORT virtual ~Adaptor3d_Curve();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Adaptor3d_Curve_HeaderFile

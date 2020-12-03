@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Contap_HCurve2dTool.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -26,7 +26,7 @@
 #include <Standard_OutOfRange.hxx>
 
 //============================================================
-Standard_Integer Contap_HCurve2dTool::NbSamples (const Handle(Adaptor2d_HCurve2d)& C,
+Standard_Integer Contap_HCurve2dTool::NbSamples (const Handle(Adaptor2d_Curve2d)& C,
                                                  const Standard_Real U0,
                                                  const Standard_Real U1)
 {

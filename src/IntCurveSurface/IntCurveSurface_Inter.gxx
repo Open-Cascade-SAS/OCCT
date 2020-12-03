@@ -66,8 +66,8 @@
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <gp_Hypr2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 
 
 #include <TColgp_Array2OfPnt.hxx>
@@ -872,7 +872,7 @@ void IntCurveSurface_Inter::InternalPerform(const TheCurve&       curve,
       InternalPerform(curve,polygon,surface,polyhedron,U1,V1,U2,V2); 
     }
     else {
-      Handle(Adaptor3d_HSurface) aS = TheSurfaceTool::UTrim(surface, U1, U2, 1.e-9);
+      Handle(Adaptor3d_Surface) aS = TheSurfaceTool::UTrim(surface, U1, U2, 1.e-9);
       aS = aS->VTrim(V1, V2, 1.e-9);
       Handle(Adaptor3d_TopolTool) aTopTool = new Adaptor3d_TopolTool(aS);
       Standard_Real defl = 0.1;
@@ -1515,7 +1515,7 @@ void EstLimForInfExtr(const gp_Lin&   Line,
 
   NoIntersection = Standard_False;
 
-  Handle(Adaptor3d_HSurface) aBasSurf; 
+  Handle(Adaptor3d_Surface) aBasSurf; 
 
   if(IsOffSurf) aBasSurf = TheSurfaceTool::BasisSurface(surface);
 
@@ -1581,7 +1581,7 @@ void EstLimForInfExtr(const gp_Lin&   Line,
     TheSurfaceTool::D0(surface, u0, v0, aP);
     gp_Pln aRefPln(aP, aDirOfExt);
 
-    Handle(Adaptor3d_HCurve) aBasCurv;
+    Handle(Adaptor3d_Curve) aBasCurv;
 
     if(IsOffSurf) aBasCurv = aBasSurf->BasisCurve();
     else aBasCurv = TheSurfaceTool::BasisCurve(surface);
@@ -1787,7 +1787,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
     if (! V1inf && !V2inf) return;
   }
 
-  Handle(Adaptor3d_HCurve) aBasisCurve = TheSurfaceTool::BasisCurve(surface);
+  Handle(Adaptor3d_Curve) aBasisCurve = TheSurfaceTool::BasisCurve(surface);
   gp_Ax1 aRevAx = TheSurfaceTool::AxeOfRevolution(surface);
   gp_Vec aXVec = aRevAx.Direction();
   Standard_Real aTolAng = Precision::Angular();
@@ -1884,7 +1884,7 @@ void EstLimForInfOffs(const gp_Lin&   Line,
 
   NoIntersection = Standard_False;
 
-  const Handle(Adaptor3d_HSurface)& aBasSurf = TheSurfaceTool::BasisSurface(surface);
+  const Handle(Adaptor3d_Surface)& aBasSurf = TheSurfaceTool::BasisSurface(surface);
   Standard_Real anOffVal = TheSurfaceTool::OffsetValue(surface);
 
   GeomAbs_SurfaceType aTypeOfBasSurf = aBasSurf->GetType();

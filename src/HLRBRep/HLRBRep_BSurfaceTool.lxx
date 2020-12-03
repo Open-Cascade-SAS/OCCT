@@ -24,8 +24,8 @@
 #include <gp_Dir.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
 //=======================================================================
@@ -112,7 +112,7 @@ HLRBRep_BSurfaceTool::VIntervals(const BRepAdaptor_Surface& Surf,
 //purpose  : 
 //=======================================================================
 
-inline Handle(Adaptor3d_HSurface)
+inline Handle(Adaptor3d_Surface)
 HLRBRep_BSurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
 			    const Standard_Real F,
 			    const Standard_Real L,
@@ -124,7 +124,7 @@ HLRBRep_BSurfaceTool::UTrim(const BRepAdaptor_Surface& Surf,
 //purpose  : 
 //=======================================================================
 
-inline Handle(Adaptor3d_HSurface)
+inline Handle(Adaptor3d_Surface)
 HLRBRep_BSurfaceTool::VTrim(const BRepAdaptor_Surface& Surf,
 			    const Standard_Real F,
 			    const Standard_Real L,
@@ -388,7 +388,7 @@ HLRBRep_BSurfaceTool::Direction(const BRepAdaptor_Surface& S)
 //purpose  : 
 //=======================================================================
 
-inline Handle(Adaptor3d_HCurve)
+inline Handle(Adaptor3d_Curve)
      HLRBRep_BSurfaceTool::BasisCurve(const BRepAdaptor_Surface& S)
 { return(S.BasisCurve()); }
 

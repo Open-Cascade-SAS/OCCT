@@ -11,9 +11,7 @@ ProjLib_Cone.hxx
 ProjLib_Cylinder.cxx
 ProjLib_Cylinder.hxx
 ProjLib_HCompProjectedCurve.hxx
-ProjLib_HCompProjectedCurve_0.cxx
 ProjLib_HProjectedCurve.hxx
-ProjLib_HProjectedCurve_0.cxx
 ProjLib_HSequenceOfHSequenceOfPnt.hxx
 ProjLib_Plane.cxx
 ProjLib_Plane.hxx

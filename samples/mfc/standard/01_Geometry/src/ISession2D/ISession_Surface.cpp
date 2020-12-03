@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "..\\GeometryApp.h"
 #include "ISession_Surface.h"
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <StdPrs_ShadedSurface.hxx>
 #include <StdPrs_WFPoleSurface.hxx>
 #include <StdPrs_WFSurface.hxx>
@@ -23,7 +23,7 @@ void ISession_Surface::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
                                 const Standard_Integer theMode)
 {
   GeomAdaptor_Surface anAdaptorSurface (mySurface);
-  Handle(GeomAdaptor_HSurface) anAdaptorHSurface = new GeomAdaptor_HSurface (mySurface);
+  Handle(GeomAdaptor_Surface) anAdaptorHSurface = new GeomAdaptor_Surface (mySurface);
 
   Handle(Prs3d_Drawer) aPoleDrawer = new Prs3d_Drawer();
   aPoleDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_YELLOW3, Aspect_TOL_SOLID, 1.0));

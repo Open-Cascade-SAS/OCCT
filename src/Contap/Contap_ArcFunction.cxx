@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Contap_ArcFunction.hxx>
 #include <Contap_HContTool.hxx>
 #include <Contap_HCurve2dTool.hxx>
@@ -34,7 +34,7 @@ myCosAng(0.0)
 }
 
 
-void Contap_ArcFunction::Set(const Handle(Adaptor3d_HSurface)& S)
+void Contap_ArcFunction::Set(const Handle(Adaptor3d_Surface)& S)
 {
   mySurf = S;
   Standard_Integer i;

@@ -16,11 +16,11 @@
 
 #include <algorithm>
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <ElCLib.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <GeomInt_LineTool.hxx>
@@ -87,13 +87,13 @@ private:
 };
 
 //------------
-static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
+static void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
                        const gp_Pnt& Ptref,
                        Standard_Real& U1,
                        Standard_Real& V1);
 
-static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-                       const Handle(GeomAdaptor_HSurface)& myHS2,
+static void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
+                       const Handle(GeomAdaptor_Surface)& myHS2,
                        const gp_Pnt& Ptref,
                        Standard_Real& U1,
                        Standard_Real& V1,
@@ -105,8 +105,8 @@ static void GLinePoint(const IntPatch_IType typl,
                        const Standard_Real aT,
                        gp_Pnt& aP);
 
-static void AdjustPeriodic(const Handle(GeomAdaptor_HSurface)& myHS1,
-                           const Handle(GeomAdaptor_HSurface)& myHS2,
+static void AdjustPeriodic(const Handle(GeomAdaptor_Surface)& myHS1,
+                           const Handle(GeomAdaptor_Surface)& myHS2,
                            Standard_Real& u1,
                            Standard_Real& v1,
                            Standard_Real& u2,
@@ -273,8 +273,8 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     if (aNbParts > 1) {  
       Standard_Boolean bCond;
       GeomAbs_SurfaceType aST1, aST2;
-      aST1 = myHS1->Surface().GetType();
-      aST2 = myHS2->Surface().GetType();
+      aST1 = myHS1->GetType();
+      aST2 = myHS2->GetType();
       //
       bCond=Standard_False;
       if (aST1==GeomAbs_Plane) {
@@ -659,8 +659,8 @@ void GeomInt_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& theLine,
 //function : AdjustPeriodic
 //purpose  : 
 //=======================================================================
-void AdjustPeriodic(const Handle(GeomAdaptor_HSurface)& myHS1,
-                    const Handle(GeomAdaptor_HSurface)& myHS2,
+void AdjustPeriodic(const Handle(GeomAdaptor_Surface)& myHS1,
+                    const Handle(GeomAdaptor_Surface)& myHS2,
                     Standard_Real& u1,
                     Standard_Real& v1,
                     Standard_Real& u2,
@@ -750,8 +750,8 @@ void AdjustPeriodic(const Handle(GeomAdaptor_HSurface)& myHS1,
 //function : Parameters
 //purpose  : 
 //=======================================================================
-void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-                const Handle(GeomAdaptor_HSurface)& myHS2,
+void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
+                const Handle(GeomAdaptor_Surface)& myHS2,
                 const gp_Pnt& Ptref,
                 Standard_Real& U1,
                 Standard_Real& V1,
@@ -766,29 +766,29 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
 //function : Parameter
 //purpose  : 
 //=======================================================================
-void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
+void Parameters(const Handle(GeomAdaptor_Surface)& myHS1,
                 const gp_Pnt& Ptref,
                 Standard_Real& U1,
                 Standard_Real& V1)
 {
   IntSurf_Quadric quad1;
   //
-  switch (myHS1->Surface().GetType())
+  switch (myHS1->GetType())
   {
     case GeomAbs_Plane:
-      quad1.SetValue(myHS1->Surface().Plane());
+      quad1.SetValue(myHS1->Plane());
       break;
     case GeomAbs_Cylinder:
-      quad1.SetValue(myHS1->Surface().Cylinder());
+      quad1.SetValue(myHS1->Cylinder());
       break;
     case GeomAbs_Cone:
-      quad1.SetValue(myHS1->Surface().Cone());
+      quad1.SetValue(myHS1->Cone());
       break;
     case GeomAbs_Sphere:
-      quad1.SetValue(myHS1->Surface().Sphere());
+      quad1.SetValue(myHS1->Sphere());
       break;
     case GeomAbs_Torus:
-      quad1.SetValue(myHS1->Surface().Torus());
+      quad1.SetValue(myHS1->Torus());
       break;
     default:
       throw Standard_ConstructionError("GeomInt_LineConstructor::Parameters");

@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Circ.hxx>
@@ -23,8 +23,8 @@
 #define ChFiKPart_ComputeData_CS_HeaderFile
 
 
-void ChFiKPart_CornerSpine(const Handle(Adaptor3d_HSurface)& S1, 
-			   const Handle(Adaptor3d_HSurface)& S2,
+void ChFiKPart_CornerSpine(const Handle(Adaptor3d_Surface)& S1, 
+			   const Handle(Adaptor3d_Surface)& S2,
 			   const gp_Pnt2d& P1S1,
 			   const gp_Pnt2d& P2S1,
 			   const gp_Pnt2d& P1S2,

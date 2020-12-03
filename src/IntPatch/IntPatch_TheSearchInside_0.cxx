@@ -18,7 +18,7 @@
 
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <IntPatch_HInterTool.hxx>
@@ -26,8 +26,8 @@
 #include <IntSurf_InteriorPoint.hxx>
  
 
-#define ThePSurface Handle(Adaptor3d_HSurface)
-#define ThePSurface_hxx <Adaptor3d_HSurface.hxx>
+#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
 #define Handle_TheTopolTool Handle(Adaptor3d_TopolTool)

@@ -17,14 +17,14 @@
 #include <IntCurveSurface_ThePolygonOfHInter.hxx>
 
 #include <Standard_OutOfRange.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <IntCurveSurface_TheHCurveTool.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
  
 
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
+#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheCurveTool IntCurveSurface_TheHCurveTool
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
 #define IntCurveSurface_Polygon IntCurveSurface_ThePolygonOfHInter

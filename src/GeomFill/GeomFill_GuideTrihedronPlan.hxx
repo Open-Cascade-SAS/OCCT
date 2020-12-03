@@ -29,7 +29,7 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Adaptor3d_HCurve;
+
 class GeomFill_Frenet;
 class Standard_OutOfRange;
 class Standard_ConstructionError;
@@ -48,9 +48,9 @@ class GeomFill_GuideTrihedronPlan : public GeomFill_TrihedronWithGuide
 public:
 
   
-  Standard_EXPORT GeomFill_GuideTrihedronPlan(const Handle(Adaptor3d_HCurve)& theGuide);
+  Standard_EXPORT GeomFill_GuideTrihedronPlan(const Handle(Adaptor3d_Curve)& theGuide);
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& thePath) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& thePath) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
   
@@ -58,7 +58,7 @@ public:
   //! Returns PipeOk (default implementation)
   Standard_EXPORT virtual GeomFill_PipeError ErrorStatus() const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Adaptor3d_HCurve) Guide() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) Guide() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean D0 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& BiNormal) Standard_OVERRIDE;
   
@@ -115,8 +115,8 @@ private:
   
   Standard_EXPORT void InitX (const Standard_Real Param);
 
-  Handle(Adaptor3d_HCurve) myTrimmed;
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myTrimmed;
+  Handle(Adaptor3d_Curve) myCurve;
   Handle(TColgp_HArray2OfPnt2d) Pole;
   math_Vector X;
   math_Vector XTol;

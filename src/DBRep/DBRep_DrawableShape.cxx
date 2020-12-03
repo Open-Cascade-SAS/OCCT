@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -35,7 +35,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Trsf.hxx>
@@ -666,7 +666,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 	l = f + mySize;
       }
       
-      Handle(Adaptor3d_HCurve) HC = C.Trim(f, l, Precision::Confusion());
+      Handle(Adaptor3d_Curve) HC = C.Trim(f, l, Precision::Confusion());
       GeomAbs_CurveType CurvType = HC->GetType();
 
       Standard_Integer intrv, nbintv = HC->NbIntervals(GeomAbs_CN);
@@ -706,7 +706,7 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 	  for (j = 1; j <= myDiscret/2; j++) {
 	    Handle(DBRep_Edge) aLocaLEdge(E);
 	    PlotCount = 0;
-	    PlotEdge (dis, aLocaLEdge , HC->Curve(), t, step*2., halt);
+	    PlotEdge (dis, aLocaLEdge, *HC, t, step*2., halt);
 	    t += step*2.;
 	  }
 	  break;

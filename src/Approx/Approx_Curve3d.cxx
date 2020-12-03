@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Approx_Curve3d.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
-#include <Approx_Curve3d.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
@@ -36,7 +36,7 @@
 class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
 {
  public:
-  Approx_Curve3d_Eval (const Handle(Adaptor3d_HCurve)& theFunc, 
+  Approx_Curve3d_Eval (const Handle(Adaptor3d_Curve)& theFunc, 
                        Standard_Real First, Standard_Real Last)
     : fonct(theFunc) { StartEndSav[0] = First; StartEndSav[1] = Last; }
   
@@ -48,7 +48,7 @@ class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
                          Standard_Integer *ErrorCode);
   
  private:
-  Handle(Adaptor3d_HCurve) fonct;
+  Handle(Adaptor3d_Curve) fonct;
   Standard_Real StartEndSav[2];
 };
 
@@ -103,7 +103,7 @@ void Approx_Curve3d_Eval::Evaluate (Standard_Integer *Dimension,
   }
 }
 
-Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_HCurve)& Curve,
+Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_Curve)& Curve,
 						 const Standard_Real Tol3d,
 						 const GeomAbs_Shape Order,
 						 const Standard_Integer MaxSegments,

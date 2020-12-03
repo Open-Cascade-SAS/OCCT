@@ -17,26 +17,13 @@
 #ifndef _Approx_CurvlinFunc_HeaderFile
 #define _Approx_CurvlinFunc_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Transient.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-class Adaptor3d_HCurve;
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HSurface;
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Adaptor3d_Curve;
+#include <TColStd_HArray1OfReal.hxx>
 
-
-class Approx_CurvlinFunc;
 DEFINE_STANDARD_HANDLE(Approx_CurvlinFunc, Standard_Transient)
 
 //! defines an abstract curve with
@@ -47,11 +34,11 @@ class Approx_CurvlinFunc : public Standard_Transient
 public:
 
   
-  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor3d_HCurve)& C, const Standard_Real Tol);
+  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tol);
   
-  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor2d_HCurve2d)& C2D, const Handle(Adaptor3d_HSurface)& S, const Standard_Real Tol);
+  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D, const Handle(Adaptor3d_Surface)& S, const Standard_Real Tol);
   
-  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor2d_HCurve2d)& C2D1, const Handle(Adaptor2d_HCurve2d)& C2D2, const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Standard_Real Tol);
+  Standard_EXPORT Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D1, const Handle(Adaptor2d_Curve2d)& C2D2, const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Standard_Real Tol);
   
   //! ---Purpose Update the tolerance to used
   Standard_EXPORT void SetTol (const Standard_Real Tol);
@@ -121,11 +108,11 @@ private:
   
   Standard_EXPORT Standard_Boolean EvalCurOnSur (const Standard_Real S, const Standard_Integer Order, TColStd_Array1OfReal& Result, const Standard_Integer NumberOfCurve) const;
 
-  Handle(Adaptor3d_HCurve) myC3D;
-  Handle(Adaptor2d_HCurve2d) myC2D1;
-  Handle(Adaptor2d_HCurve2d) myC2D2;
-  Handle(Adaptor3d_HSurface) mySurf1;
-  Handle(Adaptor3d_HSurface) mySurf2;
+  Handle(Adaptor3d_Curve) myC3D;
+  Handle(Adaptor2d_Curve2d) myC2D1;
+  Handle(Adaptor2d_Curve2d) myC2D2;
+  Handle(Adaptor3d_Surface) mySurf1;
+  Handle(Adaptor3d_Surface) mySurf2;
   Standard_Integer myCase;
   Standard_Real myFirstS;
   Standard_Real myLastS;

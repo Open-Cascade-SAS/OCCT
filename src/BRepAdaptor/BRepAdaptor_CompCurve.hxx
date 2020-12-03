@@ -31,13 +31,13 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
+
 class Standard_NullObject;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class TopoDS_Wire;
 class TopoDS_Edge;
-class Adaptor3d_HCurve;
 class gp_Pnt;
 class gp_Vec;
 class gp_Lin;
@@ -48,6 +48,7 @@ class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
 
+DEFINE_STANDARD_HANDLE(BRepAdaptor_CompCurve, Adaptor3d_Curve)
 
 //! The Curve from BRepAdaptor allows to use a Wire
 //! of the BRep topology like a 3D curve.
@@ -61,11 +62,9 @@ class Geom_BSplineCurve;
 //! connected to each other to make a chain.
 class BRepAdaptor_CompCurve  : public Adaptor3d_Curve
 {
+  DEFINE_STANDARD_RTTIEXT(BRepAdaptor_CompCurve, Adaptor3d_Curve)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! Creates an undefined Curve with no Wire loaded.
   Standard_EXPORT BRepAdaptor_CompCurve();
   
@@ -109,7 +108,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   

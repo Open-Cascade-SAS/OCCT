@@ -19,8 +19,6 @@
 #include <Approx_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepAlgoAPI_Section.hxx>
@@ -32,7 +30,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAdaptor.hxx>
 #include <Precision.hxx>
@@ -212,7 +210,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
   InitChron(chr_total);
 #endif
   myIsDone = Standard_False;
-  ProjLib_CompProjectedCurve Projector;
+
   Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
   Handle(TopTools_HSequenceOfShape) Faces = new TopTools_HSequenceOfShape();
   TopTools_ListOfShape DescenList;
@@ -251,14 +249,10 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
   
   for(i = 1; i <= NbEdges; i++){
     DescenList.Clear();
-    BRepAdaptor_Curve cur(TopoDS::Edge(Edges->Value(i)));
-    Handle(BRepAdaptor_HCurve) hcur = new BRepAdaptor_HCurve();
-    hcur->Set(cur);
-    Elementary = IsElementary(cur);
+    Handle(BRepAdaptor_Curve) hcur = new BRepAdaptor_Curve (TopoDS::Edge(Edges->Value(i)));
+    Elementary = IsElementary(*hcur);
     for(j = 1; j <= NbFaces; j++){
-      BRepAdaptor_Surface sur(TopoDS::Face(Faces->Value(j)));
-      Handle(BRepAdaptor_HSurface) hsur = new BRepAdaptor_HSurface();
-      hsur->Set(sur);
+      Handle(BRepAdaptor_Surface) hsur = new BRepAdaptor_Surface (TopoDS::Face(Faces->Value(j)));
       
       // computation of  TolU and TolV
       
@@ -270,32 +264,28 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 #ifdef OCCT_DEBUG_CHRONO
       InitChron(chr_init);
 #endif
-      Projector = 
-	ProjLib_CompProjectedCurve(hsur, hcur, TolU, TolV, myMaxDist);
+      Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur, hcur, TolU, TolV, myMaxDist);
 #ifdef OCCT_DEBUG_CHRONO
       ResultChron(chr_init,t_init);
       init_count++;
 #endif
       //
-      Handle(ProjLib_HCompProjectedCurve) HProjector = 
-	new ProjLib_HCompProjectedCurve();
-      HProjector->Set(Projector);
       TopoDS_Shape prj;
       Standard_Boolean Degenerated = Standard_False;
       gp_Pnt2d P2d, Pdeb, Pfin;
       gp_Pnt P;
       Standard_Real UIso, VIso;
       
-      Handle(Adaptor2d_HCurve2d) HPCur;
+      Handle(Adaptor2d_Curve2d) HPCur;
       Handle(Geom2d_Curve) PCur2d; // Only for isoparametric projection
       
-      for(k = 1; k <= Projector.NbCurves(); k++){
-	if(Projector.IsSinglePnt(k, P2d)){
+      for(k = 1; k <= HProjector->NbCurves(); k++){
+	if(HProjector->IsSinglePnt(k, P2d)){
 #ifdef OCCT_DEBUG
 	  std::cout << "Projection of edge "<<i<<" on face "<<j;
 	  std::cout << " is punctual"<<std::endl<<std::endl;
 #endif
-	  Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
+	  HProjector->GetSurface()->D0(P2d.X(), P2d.Y(), P);
 	  prj = BRepLib_MakeVertex(P).Shape();
 	  DescenList.Append(prj);
 	  BB.Add(VertexRes, prj);
@@ -305,16 +295,16 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	}
 	else {
 	  Only2d = Only3d = Standard_False;
-	  Projector.Bounds(k, Udeb, Ufin);
+	  HProjector->Bounds(k, Udeb, Ufin);
 	  
 	  /**************************************************************/
-	  if (Projector.IsUIso(k, UIso)) {
+	  if (HProjector->IsUIso(k, UIso)) {
 #ifdef OCCT_DEBUG
 	    std::cout << "Projection of edge "<<i<<" on face "<<j;
 	    std::cout << " is U-isoparametric"<<std::endl<<std::endl;
 #endif
-	    Projector.D0(Udeb, Pdeb);
-	    Projector.D0(Ufin, Pfin);
+	    HProjector->D0(Udeb, Pdeb);
+	    HProjector->D0(Ufin, Pfin);
 	    Poles(1) = Pdeb;
 	    Poles(2) = Pfin;
 	    Knots(1) = Udeb;
@@ -322,16 +312,16 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	    Handle(Geom2d_BSplineCurve) BS2d = 
 	      new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
 	    PCur2d = new Geom2d_TrimmedCurve( BS2d, Udeb, Ufin);
-	    HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+	    HPCur = new Geom2dAdaptor_Curve(PCur2d);
 	    Only3d = Standard_True;
 	  }
-	  else if (Projector.IsVIso(k, VIso)) {
+	  else if (HProjector->IsVIso(k, VIso)) {
 #ifdef OCCT_DEBUG
 	    std::cout << "Projection of edge "<<i<<" on face "<<j;
 	    std::cout << " is V-isoparametric"<<std::endl<<std::endl;
 #endif
-	    Projector.D0(Udeb, Pdeb);
-	    Projector.D0(Ufin, Pfin);
+	    HProjector->D0(Udeb, Pdeb);
+	    HProjector->D0(Ufin, Pfin);
 	    Poles(1) = Pdeb;
 	    Poles(2) = Pfin;
 	    Knots(1) = Udeb;
@@ -339,13 +329,13 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	    Handle(Geom2d_BSplineCurve) BS2d = 
 	      new Geom2d_BSplineCurve(Poles, Knots, Mults, Deg);
 	    PCur2d = new Geom2d_TrimmedCurve(BS2d, Udeb, Ufin);
-	    HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+	    HPCur = new Geom2dAdaptor_Curve(PCur2d);
 	    Only3d = Standard_True;
 	  }
 	  else HPCur = HProjector;
 	  
 	  if((myWith3d == Standard_False || Elementary) && 
-	     (Projector.MaxDistance(k) <= myTol3d)        )
+	     (HProjector->MaxDistance(k) <= myTol3d)        )
 	    Only2d = Standard_True;
 	  
 	  if(Only2d && Only3d) {

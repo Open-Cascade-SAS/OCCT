@@ -29,8 +29,8 @@
 
 #include <Standard_NotImplemented.hxx>
 
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 
 
 
@@ -88,8 +88,8 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve& Cg,
 		     Handle(Geom2d_Curve)& Pcurv) 
 {
   if (Sg.GetType() < GeomAbs_BezierSurface) {
-    Handle(GeomAdaptor_HCurve)   HCg = new GeomAdaptor_HCurve(Cg);
-    Handle(GeomAdaptor_HSurface) HSg = new GeomAdaptor_HSurface(Sg);
+    Handle(GeomAdaptor_Curve)   HCg = new GeomAdaptor_Curve(Cg);
+    Handle(GeomAdaptor_Surface) HSg = new GeomAdaptor_Surface(Sg);
     ProjLib_ProjectedCurve Projc (HSg,HCg);
     switch (Projc.GetType()) {
     case GeomAbs_Line : 

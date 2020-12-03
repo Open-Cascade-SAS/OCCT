@@ -17,21 +17,12 @@
 #ifndef _Approx_CurveOnSurface_HeaderFile
 #define _Approx_CurveOnSurface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-class Geom2d_BSplineCurve;
-class Geom_BSplineCurve;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HSurface;
 
+class Geom_BSplineCurve;
+class Geom2d_BSplineCurve;
 
 //! Approximation of   curve on surface
 class Approx_CurveOnSurface 
@@ -42,7 +33,7 @@ public:
 
   //! This constructor calls perform method. This constructor is deprecated.
   Standard_DEPRECATED("This constructor is deprecated. Use other constructor and perform method instead.")
-  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_HCurve2d)& C2D, const Handle(Adaptor3d_HSurface)& Surf, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol, const GeomAbs_Shape Continuity, const Standard_Integer MaxDegree, const Standard_Integer MaxSegments, const Standard_Boolean Only3d = Standard_False, const Standard_Boolean Only2d = Standard_False);
+  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2D, const Handle(Adaptor3d_Surface)& Surf, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol, const GeomAbs_Shape Continuity, const Standard_Integer MaxDegree, const Standard_Integer MaxSegments, const Standard_Boolean Only3d = Standard_False, const Standard_Boolean Only2d = Standard_False);
 
   //! This constructor does not call perform method.
   //! @param theC2D   2D Curve to be approximated in 3D.
@@ -50,8 +41,8 @@ public:
   //! @param theFirst First parameter of resulting curve.
   //! @param theFirst Last parameter of resulting curve.
   //! @param theTol   Computation tolerance.
-  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_HCurve2d)& theC2D,
-                                        const Handle(Adaptor3d_HSurface)& theSurf,
+  Standard_EXPORT Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& theC2D,
+                                        const Handle(Adaptor3d_Surface)& theSurf,
                                         const Standard_Real               theFirst,
                                         const Standard_Real               theLast,
                                         const Standard_Real               theTol);
@@ -94,7 +85,7 @@ protected:
   //! @param theParam     Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 2d curve is a line and Standard_False otherwise.
-  Standard_Boolean isIsoLine(const Handle(Adaptor2d_HCurve2d) theC2D,
+  Standard_Boolean isIsoLine(const Handle(Adaptor2d_Curve2d) theC2D,
                              Standard_Boolean&                theIsU,
                              Standard_Real&                   theParam,
                              Standard_Boolean&                theIsForward) const;
@@ -106,7 +97,7 @@ protected:
   //! @param theParam Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 3d curve is built and Standard_False otherwise.
-  Standard_Boolean buildC3dOnIsoLine(const Handle(Adaptor2d_HCurve2d) theC2D,
+  Standard_Boolean buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d) theC2D,
                                      const Standard_Boolean           theIsU,
                                      const Standard_Real              theParam,
                                      const Standard_Boolean           theIsForward);
@@ -117,10 +108,10 @@ private:
 private:
 
   //! Input curve.
-  const Handle(Adaptor2d_HCurve2d) myC2D;
+  const Handle(Adaptor2d_Curve2d) myC2D;
 
   //! Input surface.
-  const Handle(Adaptor3d_HSurface) mySurf;
+  const Handle(Adaptor3d_Surface) mySurf;
 
   //! First parameter of the result.
   const Standard_Real myFirst;
@@ -139,13 +130,6 @@ private:
   Standard_Real myError2dU;
   Standard_Real myError2dV;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Approx_CurveOnSurface_HeaderFile

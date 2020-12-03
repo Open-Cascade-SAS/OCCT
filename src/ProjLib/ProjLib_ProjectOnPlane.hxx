@@ -17,21 +17,15 @@
 #ifndef _ProjLib_ProjectOnPlane_HeaderFile
 #define _ProjLib_ProjectOnPlane_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Curve.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Adaptor3d_HCurve;
-class GeomAdaptor_HCurve;
+
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
@@ -48,7 +42,6 @@ class gp_Hypr;
 class gp_Parab;
 class Geom_BezierCurve;
 class Geom_BSplineCurve;
-
 
 //! Class  used  to project  a 3d curve   on a plane.  The
 //! result will be a 3d curve.
@@ -84,15 +77,15 @@ public:
   //! the parametrization of the initial  curve <C>.  It
   //! meens: proj(C(u)) = PC(u) for  each u.  Otherwize,
   //! the parametrization may change.
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C, const Standard_Real Tolerance, const Standard_Boolean KeepParametrization = Standard_True);
+  Standard_EXPORT void Load (const Handle(Adaptor3d_Curve)& C, const Standard_Real Tolerance, const Standard_Boolean KeepParametrization = Standard_True);
   
   Standard_EXPORT const gp_Ax3& GetPlane() const;
   
   Standard_EXPORT const gp_Dir& GetDirection() const;
   
-  Standard_EXPORT const Handle(Adaptor3d_HCurve)& GetCurve() const;
+  Standard_EXPORT const Handle(Adaptor3d_Curve)& GetCurve() const;
   
-  Standard_EXPORT const Handle(GeomAdaptor_HCurve)& GetResult() const;
+  Standard_EXPORT const Handle(GeomAdaptor_Curve)& GetResult() const;
   
   Standard_EXPORT Standard_Real FirstParameter() const Standard_OVERRIDE;
   
@@ -116,7 +109,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
@@ -212,7 +205,7 @@ private:
 
 
 
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Curve) myCurve;
   gp_Ax3 myPlane;
   gp_Dir myDirection;
   Standard_Boolean myKeepParam;
@@ -220,7 +213,7 @@ private:
   Standard_Real myLastPar;
   Standard_Real myTolerance;
   GeomAbs_CurveType myType;
-  Handle(GeomAdaptor_HCurve) myResult;
+  Handle(GeomAdaptor_Curve) myResult;
   Standard_Boolean myIsApprox;
 
 

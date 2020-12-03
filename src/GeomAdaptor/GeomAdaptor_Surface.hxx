@@ -17,38 +17,15 @@
 #ifndef _GeomAdaptor_Surface_HeaderFile
 #define _GeomAdaptor_Surface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Real.hxx>
-#include <BSplSLib_Cache.hxx>
 #include <Adaptor3d_Surface.hxx>
+#include <BSplSLib_Cache.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomEvaluator_Surface.hxx>
-class Geom_Surface;
-class Standard_NoSuchObject;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class Standard_DomainError;
-class Adaptor3d_HSurface;
-class gp_Pnt;
-class gp_Vec;
-class gp_Pln;
-class gp_Cylinder;
-class gp_Cone;
-class gp_Sphere;
-class gp_Torus;
-class Geom_BezierSurface;
-class Geom_BSplineSurface;
-class gp_Ax1;
-class gp_Dir;
-class Adaptor3d_HCurve;
+#include <Geom_Surface.hxx>
+#include <Standard_NullObject.hxx>
+#include <TColStd_Array1OfReal.hxx>
 
+DEFINE_STANDARD_HANDLE(GeomAdaptor_Surface, Adaptor3d_Surface)
 
 //! An interface between the services provided by any
 //! surface from the package Geom and those required
@@ -60,33 +37,61 @@ class Adaptor3d_HCurve;
 //! thread-safe and parallel evaluations need to be prevented.
 class GeomAdaptor_Surface  : public Adaptor3d_Surface
 {
+  DEFINE_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 public:
 
-  DEFINE_STANDARD_ALLOC
+  GeomAdaptor_Surface()
+  : myUFirst(0.), myULast(0.),
+    myVFirst(0.), myVLast (0.),
+    myTolU(0.),   myTolV(0.),
+    mySurfaceType (GeomAbs_OtherSurface) {}
 
-  
-    GeomAdaptor_Surface();
-  
-    GeomAdaptor_Surface(const Handle(Geom_Surface)& S);
-  
-  //! ConstructionError is raised if UFirst>ULast or VFirst>VLast
-    GeomAdaptor_Surface(const Handle(Geom_Surface)& S, const Standard_Real UFirst, const Standard_Real ULast, const Standard_Real VFirst, const Standard_Real VLast, const Standard_Real TolU = 0.0, const Standard_Real TolV = 0.0);
-  
-    void Load (const Handle(Geom_Surface)& S);
-  
-  //! ConstructionError is raised if UFirst>ULast or VFirst>VLast
-    void Load (const Handle(Geom_Surface)& S, const Standard_Real UFirst, const Standard_Real ULast, const Standard_Real VFirst, const Standard_Real VLast, const Standard_Real TolU = 0.0, const Standard_Real TolV = 0.0);
-  
-    const Handle(Geom_Surface)& Surface() const;
-  
-    Standard_Real FirstUParameter() const Standard_OVERRIDE;
-  
-    Standard_Real LastUParameter() const Standard_OVERRIDE;
-  
-    Standard_Real FirstVParameter() const Standard_OVERRIDE;
-  
-    Standard_Real LastVParameter() const Standard_OVERRIDE;
-  
+  GeomAdaptor_Surface(const Handle(Geom_Surface)& theSurf)
+  : myTolU(0.), myTolV(0.)
+  {
+    Load (theSurf);
+  }
+
+  //! Standard_ConstructionError is raised if UFirst>ULast or VFirst>VLast
+  GeomAdaptor_Surface (const Handle(Geom_Surface)& theSurf,
+                       const Standard_Real theUFirst, const Standard_Real theULast,
+                       const Standard_Real theVFirst, const Standard_Real theVLast,
+                       const Standard_Real theTolU = 0.0, const Standard_Real theTolV = 0.0)
+  {
+    Load (theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
+  }
+
+  void Load (const Handle(Geom_Surface)& theSurf)
+  {
+    if (theSurf.IsNull()) { throw Standard_NullObject("GeomAdaptor_Surface::Load"); }
+
+    Standard_Real aU1, aU2, aV1, aV2;
+    theSurf->Bounds (aU1, aU2, aV1, aV2);
+    load (theSurf, aU1, aU2, aV1, aV2);
+  }
+
+  //! Standard_ConstructionError is raised if theUFirst>theULast or theVFirst>theVLast
+  void Load (const Handle(Geom_Surface)& theSurf,
+             const Standard_Real theUFirst, const Standard_Real theULast,
+             const Standard_Real theVFirst, const Standard_Real theVLast,
+             const Standard_Real theTolU = 0.0, const Standard_Real theTolV = 0.0)
+  {
+    if (theSurf.IsNull()) { throw Standard_NullObject("GeomAdaptor_Surface::Load"); }
+    if (theUFirst > theULast || theVFirst > theVLast) { throw Standard_ConstructionError("GeomAdaptor_Surface::Load"); }
+
+    load (theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
+  }
+
+  const Handle(Geom_Surface)& Surface() const { return mySurface; }
+
+  virtual Standard_Real FirstUParameter() const Standard_OVERRIDE { return myUFirst; }
+
+  virtual Standard_Real LastUParameter() const Standard_OVERRIDE { return myULast; }
+
+  virtual Standard_Real FirstVParameter() const Standard_OVERRIDE { return myVFirst; }
+
+  virtual Standard_Real LastVParameter() const Standard_OVERRIDE { return myVLast; }
+
   Standard_EXPORT GeomAbs_Shape UContinuity() const Standard_OVERRIDE;
   
   Standard_EXPORT GeomAbs_Shape VContinuity() const Standard_OVERRIDE;
@@ -112,13 +117,13 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HSurface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   //! Returns    a  surface trimmed in the V direction  between
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HSurface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) VTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsUClosed() const Standard_OVERRIDE;
   
@@ -187,8 +192,8 @@ public:
   //! Cone,      Sphere,        Torus,    BezierSurface,
   //! BSplineSurface,               SurfaceOfRevolution,
   //! SurfaceOfExtrusion, OtherSurface
-    GeomAbs_SurfaceType GetType() const Standard_OVERRIDE;
-  
+  virtual GeomAbs_SurfaceType GetType() const Standard_OVERRIDE { return mySurfaceType; }
+
   Standard_EXPORT gp_Pln Plane() const Standard_OVERRIDE;
   
   Standard_EXPORT gp_Cylinder Cylinder() const Standard_OVERRIDE;
@@ -233,24 +238,14 @@ public:
   
   Standard_EXPORT gp_Dir Direction() const Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Adaptor3d_HCurve) BasisCurve() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) BasisCurve() const Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Adaptor3d_HSurface) BasisSurface() const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Surface) BasisSurface() const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Real OffsetValue() const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
   Standard_EXPORT void Span (const Standard_Integer Side, const Standard_Integer Ideb, const Standard_Integer Ifin, Standard_Integer& OutIdeb, Standard_Integer& OutIfin, const Standard_Integer FKIndx, const Standard_Integer LKIndx) const;
   
   Standard_EXPORT Standard_Boolean IfUVBound (const Standard_Real U, const Standard_Real V, Standard_Integer& Ideb, Standard_Integer& Ifin, Standard_Integer& IVdeb, Standard_Integer& IVfin, const Standard_Integer USide, const Standard_Integer VSide) const;
@@ -262,6 +257,7 @@ private:
   //! \param theV second parameter to identify the span for caching
   Standard_EXPORT void RebuildCache (const Standard_Real theU, const Standard_Real theV) const;
 
+private:
 
   Handle(Geom_Surface) mySurface;
   Standard_Real myUFirst;
@@ -278,12 +274,5 @@ protected:
   GeomAbs_SurfaceType mySurfaceType;
   Handle(GeomEvaluator_Surface) myNestedEvaluator; ///< Calculates values of nested complex surfaces (offset surface, surface of extrusion or revolution)
 };
-
-
-#include <GeomAdaptor_Surface.lxx>
-
-
-
-
 
 #endif // _GeomAdaptor_Surface_HeaderFile

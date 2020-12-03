@@ -50,7 +50,7 @@ static BRepOffsetAPI_ThruSections* Generator = 0;
 
 #include <stdio.h>
 #include <Geom_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_Pipe.hxx>
 #include <Geom_Surface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -225,7 +225,7 @@ static Standard_Integer geompipe(Draw_Interpretor&,
   Standard_Real aSpFirst, aSpLast, aPrFirst, aPrLast;
   Handle(Geom_Curve) SpineCurve = BRep_Tool::Curve(TopoDS::Edge(Spine), aSpFirst, aSpLast);
   Handle(Geom_Curve) ProfileCurve = BRep_Tool::Curve(TopoDS::Edge(Profile), aPrFirst, aPrLast);
-  Handle(GeomAdaptor_HCurve) aAdaptCurve = new GeomAdaptor_HCurve(SpineCurve, aSpFirst, aSpLast);
+  Handle(GeomAdaptor_Curve) aAdaptCurve = new GeomAdaptor_Curve(SpineCurve, aSpFirst, aSpLast);
   Standard_Boolean ByACR = Standard_False;
   Standard_Boolean rotate = Standard_False;
   Standard_Real Radius = Draw::Atof(a[4]);

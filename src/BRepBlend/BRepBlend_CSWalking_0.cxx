@@ -17,12 +17,12 @@
 #include <BRepBlend_CSWalking.hxx>
 
 #include <BRepBlend_Line.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Adaptor3d_HVertex.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <BRepBlend_HCurve2dTool.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <BRepBlend_HCurveTool.hxx>
@@ -39,12 +39,12 @@
 
 #define TheVertex Handle(Adaptor3d_HVertex)
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>
-#define TheArc Handle(Adaptor2d_HCurve2d)
-#define TheArc_hxx <Adaptor2d_HCurve2d.hxx>
-#define TheSurface Handle(Adaptor3d_HSurface)
-#define TheSurface_hxx <Adaptor3d_HSurface.hxx>
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
+#define TheArc Handle(Adaptor2d_Curve2d)
+#define TheArc_hxx <Adaptor2d_Curve2d.hxx>
+#define TheSurface Handle(Adaptor3d_Surface)
+#define TheSurface_hxx <Adaptor3d_Surface.hxx>
+#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheVertexTool Standard_Integer
 #define TheVertexTool_hxx <Standard_Integer.hxx>
 #define TheArcTool BRepBlend_HCurve2dTool

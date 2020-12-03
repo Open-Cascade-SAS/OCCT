@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ChamfInv.hxx>
 #include <math_Matrix.hxx>
@@ -28,9 +28,9 @@
 //purpose  : 
 //=======================================================================
 
-BlendFunc_ChamfInv::BlendFunc_ChamfInv(const Handle(Adaptor3d_HSurface)& S1,
-                                       const Handle(Adaptor3d_HSurface)& S2,
-                                       const Handle(Adaptor3d_HCurve)&   C)
+BlendFunc_ChamfInv::BlendFunc_ChamfInv(const Handle(Adaptor3d_Surface)& S1,
+                                       const Handle(Adaptor3d_Surface)& S2,
+                                       const Handle(Adaptor3d_Curve)&   C)
   : BlendFunc_GenChamfInv(S1,S2,C),
     corde1(surf1,curv),corde2(surf2,curv)
 {

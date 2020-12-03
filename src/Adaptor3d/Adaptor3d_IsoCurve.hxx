@@ -17,33 +17,11 @@
 #ifndef _Adaptor3d_IsoCurve_HeaderFile
 #define _Adaptor3d_IsoCurve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <GeomAbs_IsoType.hxx>
-#include <Standard_Real.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_CurveType.hxx>
-class Adaptor3d_HSurface;
-class Standard_NoSuchObject;
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Adaptor3d_HCurve;
-class gp_Pnt;
-class gp_Vec;
-class gp_Lin;
-class gp_Circ;
-class gp_Elips;
-class gp_Hypr;
-class gp_Parab;
-class Geom_BezierCurve;
-class Geom_BSplineCurve;
+#include <Adaptor3d_Surface.hxx>
+#include <GeomAbs_IsoType.hxx>
 
+DEFINE_STANDARD_HANDLE(Adaptor3d_IsoCurve, Adaptor3d_Curve)
 
 //! Defines an isoparametric curve on  a surface.  The
 //! type  of isoparametric curve  (U  or V) is defined
@@ -51,48 +29,46 @@ class Geom_BSplineCurve;
 //! NoneIso is given an error is raised.
 class Adaptor3d_IsoCurve  : public Adaptor3d_Curve
 {
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_IsoCurve, Adaptor3d_Curve)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! The iso is set to NoneIso.
   Standard_EXPORT Adaptor3d_IsoCurve();
   
   //! The surface is loaded. The iso is set to NoneIso.
-  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S);
   
   //! Creates  an  IsoCurve curve.   Iso  defines the
   //! type (isoU or  isoU) Param defines the value of
   //! the iso. The bounds  of  the iso are the bounds
   //! of the surface.
-  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S, const GeomAbs_IsoType Iso, const Standard_Real Param);
+  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S, const GeomAbs_IsoType Iso, const Standard_Real Param);
   
   //! Create an IsoCurve curve.  Iso defines the type
   //! (isoU or isov).  Param defines the value of the
   //! iso. WFirst,WLast define the bounds of the iso.
-  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S, const GeomAbs_IsoType Iso, const Standard_Real Param, const Standard_Real WFirst, const Standard_Real WLast);
+  Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S, const GeomAbs_IsoType Iso, const Standard_Real Param, const Standard_Real WFirst, const Standard_Real WLast);
   
   //! Changes  the surface.  The  iso  is  reset  to
   //! NoneIso.
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT void Load (const Handle(Adaptor3d_Surface)& S);
   
   //! Changes the iso on the current surface.
   Standard_EXPORT void Load (const GeomAbs_IsoType Iso, const Standard_Real Param);
   
   //! Changes the iso on the current surface.
   Standard_EXPORT void Load (const GeomAbs_IsoType Iso, const Standard_Real Param, const Standard_Real WFirst, const Standard_Real WLast);
-  
-    const Handle(Adaptor3d_HSurface)& Surface() const;
-  
-    GeomAbs_IsoType Iso() const;
-  
-    Standard_Real Parameter() const;
-  
-    Standard_Real FirstParameter() const Standard_OVERRIDE;
-  
-    Standard_Real LastParameter() const Standard_OVERRIDE;
-  
+
+  const Handle(Adaptor3d_Surface)& Surface() const { return mySurface; }
+
+  GeomAbs_IsoType Iso() const { return myIso; }
+
+  Standard_Real Parameter() const { return myParameter; }
+
+  virtual Standard_Real FirstParameter() const Standard_OVERRIDE { return myFirst; }
+
+  virtual Standard_Real LastParameter() const Standard_OVERRIDE { return myLast; }
+
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
   //! Returns  the number  of  intervals for  continuity
@@ -110,7 +86,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
@@ -183,33 +159,14 @@ public:
   
   Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-
-
-  Handle(Adaptor3d_HSurface) mySurface;
+  Handle(Adaptor3d_Surface) mySurface;
   GeomAbs_IsoType myIso;
   Standard_Real myFirst;
   Standard_Real myLast;
   Standard_Real myParameter;
 
-
 };
-
-
-#include <Adaptor3d_IsoCurve.lxx>
-
-
-
-
 
 #endif // _Adaptor3d_IsoCurve_HeaderFile

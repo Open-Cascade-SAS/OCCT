@@ -17,18 +17,10 @@
 #ifndef _BRepBlend_SurfCurvConstRadInv_HeaderFile
 #define _BRepBlend_SurfCurvConstRadInv_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_SurfCurvFuncInv.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
-class Adaptor2d_HCurve2d;
+
 class math_Matrix;
 
 
@@ -50,7 +42,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_SurfCurvConstRadInv(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C, const Handle(Adaptor3d_HCurve)& Cg);
+  Standard_EXPORT BRepBlend_SurfCurvConstRadInv(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C, const Handle(Adaptor3d_Curve)& Cg);
   
   Standard_EXPORT void Set (const Standard_Real R, const Standard_Integer Choix);
   
@@ -76,7 +68,7 @@ public:
   Standard_EXPORT Standard_Boolean Values (const math_Vector& X, math_Vector& F, math_Matrix& D);
   
   //! Set the restriction on which a solution has to be found.
-  Standard_EXPORT void Set (const Handle(Adaptor2d_HCurve2d)& Rst);
+  Standard_EXPORT void Set (const Handle(Adaptor2d_Curve2d)& Rst);
   
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 3 variables;
@@ -106,10 +98,10 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surf;
-  Handle(Adaptor3d_HCurve) curv;
-  Handle(Adaptor3d_HCurve) guide;
-  Handle(Adaptor2d_HCurve2d) rst;
+  Handle(Adaptor3d_Surface) surf;
+  Handle(Adaptor3d_Curve) curv;
+  Handle(Adaptor3d_Curve) guide;
+  Handle(Adaptor2d_Curve2d) rst;
   Standard_Real ray;
   Standard_Integer choix;
 

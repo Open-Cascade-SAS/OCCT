@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BRepBlend_SurfPointConstRadInv.hxx>
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
@@ -26,8 +26,8 @@
 //purpose  : 
 //=======================================================================
 BRepBlend_SurfPointConstRadInv::BRepBlend_SurfPointConstRadInv
-(const Handle(Adaptor3d_HSurface)& S,
- const Handle(Adaptor3d_HCurve)&   C)
+(const Handle(Adaptor3d_Surface)& S,
+ const Handle(Adaptor3d_Curve)&   C)
 : surf(S),
   curv(C),
   ray(0.0),

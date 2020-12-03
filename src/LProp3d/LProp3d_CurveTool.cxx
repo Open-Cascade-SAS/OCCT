@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <LProp3d_CurveTool.hxx>
@@ -24,7 +24,7 @@
 //function : Value
 //purpose  : 
 //=======================================================================
-void LProp3d_CurveTool::Value(const Handle(Adaptor3d_HCurve)& C, 
+void LProp3d_CurveTool::Value(const Handle(Adaptor3d_Curve)& C, 
                               const Standard_Real U, 
                               gp_Pnt& P)
 {
@@ -37,7 +37,7 @@ void LProp3d_CurveTool::Value(const Handle(Adaptor3d_HCurve)& C,
 //purpose  : 
 //=======================================================================
 
-void LProp3d_CurveTool::D1(const Handle(Adaptor3d_HCurve)& C, 
+void LProp3d_CurveTool::D1(const Handle(Adaptor3d_Curve)& C, 
                            const Standard_Real U, 
                            gp_Pnt& P, 
                            gp_Vec& V1)
@@ -51,7 +51,7 @@ void LProp3d_CurveTool::D1(const Handle(Adaptor3d_HCurve)& C,
 //purpose  : 
 //=======================================================================
 
-void LProp3d_CurveTool::D2(const Handle(Adaptor3d_HCurve)& C, 
+void LProp3d_CurveTool::D2(const Handle(Adaptor3d_Curve)& C, 
                            const Standard_Real U, 
                            gp_Pnt& P, 
                            gp_Vec& V1, 
@@ -66,7 +66,7 @@ void LProp3d_CurveTool::D2(const Handle(Adaptor3d_HCurve)& C,
 //purpose  : 
 //=======================================================================
 
-void LProp3d_CurveTool::D3(const Handle(Adaptor3d_HCurve)& C, 
+void LProp3d_CurveTool::D3(const Handle(Adaptor3d_Curve)& C, 
                            const Standard_Real U, 
                            gp_Pnt& P, 
                            gp_Vec& V1, 
@@ -83,7 +83,7 @@ void LProp3d_CurveTool::D3(const Handle(Adaptor3d_HCurve)& C,
 //=======================================================================
 
 Standard_Integer LProp3d_CurveTool::Continuity
-  (const Handle(Adaptor3d_HCurve)& C)
+  (const Handle(Adaptor3d_Curve)& C)
 {
   GeomAbs_Shape s = C->Continuity();
   switch (s) {
@@ -112,7 +112,7 @@ Standard_Integer LProp3d_CurveTool::Continuity
 //=======================================================================
 
 Standard_Real LProp3d_CurveTool::FirstParameter
-  (const Handle(Adaptor3d_HCurve)& C)
+  (const Handle(Adaptor3d_Curve)& C)
 {
   return C->FirstParameter();
 }
@@ -124,7 +124,7 @@ Standard_Real LProp3d_CurveTool::FirstParameter
 //=======================================================================
 
 Standard_Real LProp3d_CurveTool::LastParameter
-  (const Handle(Adaptor3d_HCurve)& C)
+  (const Handle(Adaptor3d_Curve)& C)
 {
   return C->LastParameter();
 }

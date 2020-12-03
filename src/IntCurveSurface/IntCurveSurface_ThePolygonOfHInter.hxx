@@ -17,24 +17,15 @@
 #ifndef _IntCurveSurface_ThePolygonOfHInter_HeaderFile
 #define _IntCurveSurface_ThePolygonOfHInter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_OutOfRange;
-class Adaptor3d_HCurve;
 class IntCurveSurface_TheHCurveTool;
 class Bnd_Box;
 class gp_Pnt;
-
-
 
 class IntCurveSurface_ThePolygonOfHInter 
 {
@@ -43,62 +34,57 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_HCurve)& Curve, const Standard_Integer NbPnt);
+  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_Curve)& Curve, const Standard_Integer NbPnt);
   
-  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_HCurve)& Curve, const Standard_Real U1, const Standard_Real U2, const Standard_Integer NbPnt);
+  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_Curve)& Curve, const Standard_Real U1, const Standard_Real U2, const Standard_Integer NbPnt);
   
-  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_HCurve)& Curve, const TColStd_Array1OfReal& Upars);
+  Standard_EXPORT IntCurveSurface_ThePolygonOfHInter(const Handle(Adaptor3d_Curve)& Curve, const TColStd_Array1OfReal& Upars);
   
   //! Give the bounding box of the polygon.
-    const Bnd_Box& Bounding() const;
-  
-    Standard_Real DeflectionOverEstimation() const;
-  
-    void SetDeflectionOverEstimation (const Standard_Real x);
-  
-    void Closed (const Standard_Boolean clos);
-  
-    Standard_Boolean Closed() const;
-  
+  const Bnd_Box& Bounding() const { return TheBnd; }
+
+  Standard_Real DeflectionOverEstimation() const { return TheDeflection; }
+
+  void SetDeflectionOverEstimation (const Standard_Real x)
+  {
+    TheDeflection = x;
+    TheBnd.Enlarge (TheDeflection);
+  }
+
+  void Closed (const Standard_Boolean flag) { ClosedPolygon = flag; }
+
+  Standard_Boolean Closed() const { return Standard_False; } // -- Voir si le cas Closed est traitable
+
   //! Give the number of Segments in the polyline.
-    Standard_Integer NbSegments() const;
-  
+  Standard_Integer NbSegments() const { return NbPntIn - 1; }
+
   //! Give the point of range Index in the Polygon.
-    const gp_Pnt& BeginOfSeg (const Standard_Integer Index) const;
-  
+  const gp_Pnt& BeginOfSeg (const Standard_Integer theIndex) const { return ThePnts (theIndex); }
+
   //! Give the point of range Index in the Polygon.
-    const gp_Pnt& EndOfSeg (const Standard_Integer Index) const;
-  
+  const gp_Pnt& EndOfSeg (const Standard_Integer theIndex) const { return ThePnts (theIndex + 1); }
+
   //! Returns the parameter (On the curve)
   //! of the first point of the Polygon
-    Standard_Real InfParameter() const;
+  Standard_Real InfParameter() const { return Binf; }
   
   //! Returns the parameter (On the curve)
   //! of the last point of the Polygon
-    Standard_Real SupParameter() const;
-  
+  Standard_Real SupParameter() const { return Bsup; }
+
   //! Give an approximation of the parameter on the curve
   //! according to the discretization of the Curve.
   Standard_EXPORT Standard_Real ApproxParamOnCurve (const Standard_Integer Index, const Standard_Real ParamOnLine) const;
   
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
 
+  Standard_EXPORT void Init (const Handle(Adaptor3d_Curve)& Curve);
   
-  Standard_EXPORT void Init (const Handle(Adaptor3d_HCurve)& Curve);
-  
-  Standard_EXPORT void Init (const Handle(Adaptor3d_HCurve)& Curve, const TColStd_Array1OfReal& Upars);
-
-
-
+  Standard_EXPORT void Init (const Handle(Adaptor3d_Curve)& Curve, const TColStd_Array1OfReal& Upars);
 
 private:
-
-
 
   Bnd_Box TheBnd;
   Standard_Real TheDeflection;
@@ -109,26 +95,6 @@ private:
   Standard_Real Bsup;
   Handle(TColStd_HArray1OfReal) myParams;
 
-
 };
-
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
-#define TheCurveTool IntCurveSurface_TheHCurveTool
-#define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
-#define IntCurveSurface_Polygon IntCurveSurface_ThePolygonOfHInter
-#define IntCurveSurface_Polygon_hxx <IntCurveSurface_ThePolygonOfHInter.hxx>
-
-#include <IntCurveSurface_Polygon.lxx>
-
-#undef TheCurve
-#undef TheCurve_hxx
-#undef TheCurveTool
-#undef TheCurveTool_hxx
-#undef IntCurveSurface_Polygon
-#undef IntCurveSurface_Polygon_hxx
-
-
-
 
 #endif // _IntCurveSurface_ThePolygonOfHInter_HeaderFile

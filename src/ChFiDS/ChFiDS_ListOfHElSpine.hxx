@@ -17,11 +17,11 @@
 #ifndef ChFiDS_ListOfHElSpine_HeaderFile
 #define ChFiDS_ListOfHElSpine_HeaderFile
 
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<Handle(ChFiDS_HElSpine)> ChFiDS_ListOfHElSpine;
-typedef NCollection_List<Handle(ChFiDS_HElSpine)>::Iterator ChFiDS_ListIteratorOfListOfHElSpine;
+typedef NCollection_List<Handle(ChFiDS_ElSpine)> ChFiDS_ListOfHElSpine;
+typedef NCollection_List<Handle(ChFiDS_ElSpine)>::Iterator ChFiDS_ListIteratorOfListOfHElSpine;
 
 
 #endif

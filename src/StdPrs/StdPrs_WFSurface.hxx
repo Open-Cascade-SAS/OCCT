@@ -17,10 +17,9 @@
 #ifndef _StdPrs_WFSurface_HeaderFile
 #define _StdPrs_WFSurface_HeaderFile
 
+#include <Adaptor3d_Surface.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
-
-class Adaptor3d_HSurface;
 
 //! Computes the wireframe presentation of surfaces
 //! by displaying a given number of U and/or V isoparametric
@@ -37,7 +36,7 @@ public:
   //! a fixed number of points given by the Drawer.
   //! The number of isoparametric curves to be drawn and their color are
   //! controlled by the furnished Drawer.
-  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Adaptor3d_HSurface)& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
+  Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Adaptor3d_Surface)& aSurface, const Handle(Prs3d_Drawer)& aDrawer);
 
 
 

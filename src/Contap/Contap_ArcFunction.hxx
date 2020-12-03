@@ -17,26 +17,13 @@
 #ifndef _Contap_ArcFunction_HeaderFile
 #define _Contap_ArcFunction_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Contap_TFunction.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HSurface;
-class gp_Dir;
-class gp_Pnt;
-class IntSurf_Quadric;
-
-
 
 class Contap_ArcFunction  : public math_FunctionWithDerivative
 {
@@ -47,7 +34,7 @@ public:
   
   Standard_EXPORT Contap_ArcFunction();
   
-  Standard_EXPORT void Set (const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT void Set (const Handle(Adaptor3d_Surface)& S);
   
     void Set (const gp_Dir& Direction);
   
@@ -57,7 +44,7 @@ public:
   
     void Set (const gp_Pnt& Eye, const Standard_Real Angle);
   
-    void Set (const Handle(Adaptor2d_HCurve2d)& A);
+    void Set (const Handle(Adaptor2d_Curve2d)& A);
   
   Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
   
@@ -74,7 +61,7 @@ public:
   Standard_EXPORT const IntSurf_Quadric& Quadric() const;
 
   //! Returns mySurf field
-  const Handle(Adaptor3d_HSurface)& Surface() const;
+  const Handle(Adaptor3d_Surface)& Surface() const;
 
   //! Returns the point, which has been computed
   //! while the last calling Value() method
@@ -91,8 +78,8 @@ private:
 
 
 
-  Handle(Adaptor2d_HCurve2d) myArc;
-  Handle(Adaptor3d_HSurface) mySurf;
+  Handle(Adaptor2d_Curve2d) myArc;
+  Handle(Adaptor3d_Surface) mySurf;
   Standard_Real myMean;
   Contap_TFunction myType;
   gp_Dir myDir;

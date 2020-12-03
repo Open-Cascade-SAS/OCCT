@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GeomFill_ConstantBiNormal.hxx>
 #include <GeomFill_Frenet.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
@@ -66,7 +66,7 @@ GeomFill_ConstantBiNormal::GeomFill_ConstantBiNormal(const gp_Dir& BiNormal) : B
   return copy;
 }
 
- void GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
+ void GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   GeomFill_TrihedronLaw::SetCurve(C);
     if (! C.IsNull()) { 

@@ -14,23 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Approx_CurvilinearParameter.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
-#include <Approx_CurvilinearParameter.hxx>
 #include <Approx_CurvlinFunc.hxx>
 #include <CPnts_AbscissaPoint.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -128,7 +127,7 @@ void Approx_CurvilinearParameter_EvalCurv::Evaluate (Standard_Integer * Dimensio
     Result[i] = Res(i);  
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_HCurve)& C3D,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_Curve)& C3D,
 							 const Standard_Real Tol,
 							 const GeomAbs_Shape Order,
 							 const Standard_Integer MaxDegree,
@@ -267,8 +266,8 @@ void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate (Standard_Integer * Di
     Result[i] = Res(i);  
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_HCurve2d)& C2D,
-							 const Handle(Adaptor3d_HSurface)& Surf,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_Curve2d)& C2D,
+							 const Handle(Adaptor3d_Surface)& Surf,
 							 const Standard_Real Tol,
 							 const GeomAbs_Shape Order,
 							 const Standard_Integer MaxDegree,
@@ -428,10 +427,10 @@ void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate (Standard_Integer * D
     Result[i] = Res(i);  
 }
 
-Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_HCurve2d)& C2D1,
-							 const Handle(Adaptor3d_HSurface)& Surf1,
-							 const Handle(Adaptor2d_HCurve2d)& C2D2,
-							 const Handle(Adaptor3d_HSurface)& Surf2,
+Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_Curve2d)& C2D1,
+							 const Handle(Adaptor3d_Surface)& Surf1,
+							 const Handle(Adaptor2d_Curve2d)& C2D2,
+							 const Handle(Adaptor3d_Surface)& Surf2,
 							 const Standard_Real Tol,
 							 const GeomAbs_Shape Order,
 							 const Standard_Integer MaxDegree,
@@ -643,8 +642,8 @@ void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 //purpose  : 
 //=======================================================================
 
-void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_HCurve2d) &C2D,
-						       const Handle(Adaptor3d_HSurface) &S, 
+void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_Curve2d) &C2D,
+						       const Handle(Adaptor3d_Surface) &S, 
 						       const Standard_Integer MaxNumber, 
 						       const Standard_Real Tol,
 						       Standard_Real &TolV, Standard_Real &TolW)

@@ -124,7 +124,7 @@ inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS1 () const
 }
 
 
-inline const Handle(Adaptor2d_HCurve2d)& IntPatch_Point::ArcOnS1 () const
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS1 () const
 {
   if (!onS1) {throw Standard_DomainError();}
   return arcS1;
@@ -171,7 +171,7 @@ inline const Handle(Adaptor3d_HVertex)& IntPatch_Point::VertexOnS2 () const
 }
 
 
-inline const Handle(Adaptor2d_HCurve2d)& IntPatch_Point::ArcOnS2 () const
+inline const Handle(Adaptor2d_Curve2d)& IntPatch_Point::ArcOnS2 () const
 {
   if (!onS2) {throw Standard_DomainError();}
   return arcS2;

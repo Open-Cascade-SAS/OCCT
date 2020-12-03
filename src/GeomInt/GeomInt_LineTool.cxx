@@ -14,11 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <vector>
 #include <GeomInt_LineTool.hxx>
 
 #include <Extrema_ExtPS.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_Surface.hxx>
 #include <IntPatch_ALine.hxx>
@@ -30,6 +28,8 @@
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_StdAllocator.hxx>
 #include <TColStd_Array1OfListOfInteger.hxx>
+
+#include <vector>
 
 namespace
 {
@@ -409,8 +409,8 @@ Standard_Real GeomInt_LineTool::LastParameter (const Handle(IntPatch_Line)& L)
 //=======================================================================
 Standard_Boolean GeomInt_LineTool::
             DecompositionOfWLine( const Handle(IntPatch_WLine)& theWLine,
-                                  const Handle(GeomAdaptor_HSurface)& theSurface1,
-                                  const Handle(GeomAdaptor_HSurface)& theSurface2,
+                                  const Handle(GeomAdaptor_Surface)& theSurface1,
+                                  const Handle(GeomAdaptor_Surface)& theSurface2,
                                   const Standard_Real aTolSum,
                                   const GeomInt_LineConstructor& theLConstructor,
                                   IntPatch_SequenceOfLine& theNewLines)
@@ -455,11 +455,11 @@ Standard_Boolean GeomInt_LineTool::
   nblines = 0;
   aTol = Precision::Confusion();
   //
-  aSurf1 = theSurface1->ChangeSurface().Surface();
+  aSurf1 = theSurface1->Surface();
   aSurf1->Bounds(umin, umax, vmin, vmax);
   aPrj1.Init(aSurf1, umin, umax, vmin, vmax);
   //
-  aSurf2 = theSurface2->ChangeSurface().Surface();
+  aSurf2 = theSurface2->Surface();
   aSurf2->Bounds(umin, umax, vmin, vmax);
   aPrj2.Init(aSurf2, umin, umax, vmin, vmax);
   //
@@ -472,8 +472,8 @@ Standard_Boolean GeomInt_LineTool::
     // whether aPoint is on boundary or not
     //
     for(i=0; i<2; i++) {// exploration Surface 1,2 
-      Handle(GeomAdaptor_HSurface) aGASurface = (!i) ? theSurface1 : theSurface2;
-      aGASurface->ChangeSurface().Surface()->Bounds(umin, umax, vmin, vmax);
+      Handle(GeomAdaptor_Surface) aGASurface = (!i) ? theSurface1 : theSurface2;
+      aGASurface->Surface()->Bounds(umin, umax, vmin, vmax);
       //
       for(j=0; j<2; j++) {// exploration of coordinate U,V
 	Standard_Boolean isperiodic;
@@ -585,7 +585,7 @@ Standard_Boolean GeomInt_LineTool::
       //
       for(surfit = 0; surfit < 2; ++surfit) {
 
-	Handle(GeomAdaptor_HSurface) aGASurface = (!surfit) ? theSurface1 : theSurface2;
+	Handle(GeomAdaptor_Surface) aGASurface = (!surfit) ? theSurface1 : theSurface2;
 	
         umin = aGASurface->FirstUParameter();
         umax = aGASurface->LastUParameter();
@@ -778,7 +778,7 @@ Standard_Boolean GeomInt_LineTool::
 	    Standard_Real aCriteria =aTolSum;// BRep_Tool::Tolerance(theFace1) + BRep_Tool::Tolerance(theFace2);
 	    //GeomAPI_ProjectPointOnSurf& aProjector = (surfit == 0) ? aPrj2 : aPrj1;
 	    ProjectPointOnSurf& aProjector = (surfit == 0) ? aPrj2 : aPrj1;
-	    Handle(GeomAdaptor_HSurface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
+	    Handle(GeomAdaptor_Surface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
 
 	    gp_Pnt aP3d = aSurface->Value(anewpoint.X(), anewpoint.Y());
 	    aProjector.Perform(aP3d);

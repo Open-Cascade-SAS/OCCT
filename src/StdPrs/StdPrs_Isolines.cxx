@@ -355,7 +355,7 @@ void StdPrs_Isolines::AddOnSurface (const TopoDS_Face&          theFace,
                    aUmin, aUmax, aVmin, aVmax);
 
   BRepAdaptor_Surface aSurface (theFace);
-  addOnSurface (new BRepAdaptor_HSurface (aSurface),
+  addOnSurface (new BRepAdaptor_Surface (aSurface),
                 theDrawer,
                 theDeflection,
                 aUIsoParams,
@@ -369,7 +369,7 @@ void StdPrs_Isolines::AddOnSurface (const TopoDS_Face&          theFace,
 // purpose  :
 //==================================================================
 void StdPrs_Isolines::AddOnSurface (const Handle(Prs3d_Presentation)&   thePresentation,
-                                    const Handle(BRepAdaptor_HSurface)& theSurface,
+                                    const Handle(BRepAdaptor_Surface)& theSurface,
                                     const Handle(Prs3d_Drawer)&         theDrawer,
                                     const Standard_Real                 theDeflection,
                                     const TColStd_SequenceOfReal&       theUIsoParams,
@@ -385,7 +385,7 @@ void StdPrs_Isolines::AddOnSurface (const Handle(Prs3d_Presentation)&   thePrese
 // function : addOnSurface
 // purpose  :
 //==================================================================
-void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_HSurface)& theSurface,
+void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_Surface)& theSurface,
                                     const Handle(Prs3d_Drawer)&         theDrawer,
                                     const Standard_Real                 theDeflection,
                                     const TColStd_SequenceOfReal&       theUIsoParams,

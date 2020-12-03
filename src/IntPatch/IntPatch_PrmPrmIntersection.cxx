@@ -17,7 +17,7 @@
 // modified by Edward AGAPOV (eap) Tue Jan 22 12:29:55 2002
 // modified by Oleg FEDYAED  (ofv) Fri Nov 29 16:08:02 2002
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -53,8 +53,8 @@ static void SectionPointToParameters(const Intf_SectionPoint& Sp,
 
 
 static 
-void AdjustOnPeriodic(const Handle(Adaptor3d_HSurface)& Surf1,
-                      const Handle(Adaptor3d_HSurface)& Surf2,
+void AdjustOnPeriodic(const Handle(Adaptor3d_Surface)& Surf1,
+                      const Handle(Adaptor3d_Surface)& Surf2,
                       IntPatch_SequenceOfLine& aSLin);
 
 static
@@ -70,8 +70,8 @@ static void AddWLine(IntPatch_SequenceOfLine      &theLines,
                      const Handle(IntPatch_WLine) &theWLine,
                      const Standard_Real           Deflection);
 
-static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
-                                    const Handle(Adaptor3d_HSurface)& theSurf2,
+static void SeveralWlinesProcessing(const Handle(Adaptor3d_Surface)& theSurf1,
+                                    const Handle(Adaptor3d_Surface)& theSurf2,
                                     const IntPatch_SequenceOfLine& theSLin,
                                     const Standard_Real* const thePeriodsArr,
                                     const IntSurf_TypeTrans theTrans1,
@@ -114,10 +114,10 @@ static void SeveralWlinesProcessing(const Handle(Adaptor3d_HSurface)& theSurf1,
         const gp_Pnt2d aPTS1(aU1, aV1), aPTS2(aU2, aV2);
 
         Standard_Real tDistance = cPV.Distance(tPV);
-        Standard_Real uRs1 = theSurf1->Surface().UResolution(tDistance);
-        Standard_Real vRs1 = theSurf1->Surface().VResolution(tDistance);
-        Standard_Real uRs2 = theSurf2->Surface().UResolution(tDistance);
-        Standard_Real vRs2 = theSurf2->Surface().VResolution(tDistance);
+        Standard_Real uRs1 = theSurf1->UResolution(tDistance);
+        Standard_Real vRs1 = theSurf1->VResolution(tDistance);
+        Standard_Real uRs2 = theSurf2->UResolution(tDistance);
+        Standard_Real vRs2 = theSurf2->VResolution(tDistance);
         Standard_Real RmaxS1 = Max(uRs1,vRs1);
         Standard_Real RmaxS2 = Max(uRs2,vRs2);
         
@@ -312,7 +312,7 @@ IntPatch_PrmPrmIntersection::IntPatch_PrmPrmIntersection()
 // function : Perform
 // purpose  : 
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&   Surf1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
                                            const Standard_Real  TolTangency,
                                            const Standard_Real  Epsilon,
@@ -327,10 +327,10 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   S
 // function : Perform
 // purpose  : 
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&   Surf1,
                                            const IntPatch_Polyhedron& Poly1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_HSurface)&   Surf2,
+                                           const Handle(Adaptor3d_Surface)&   Surf2,
                                            const Handle(Adaptor3d_TopolTool)& D2,
                                            const Standard_Real  TolTangency,
                                            const Standard_Real  Epsilon,
@@ -345,9 +345,9 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   S
 // function : Perform
 // purpose  : 
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&   Surf1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_HSurface)&   Surf2,
+                                           const Handle(Adaptor3d_Surface)&   Surf2,
                                            const IntPatch_Polyhedron& Poly2,
                                            const Handle(Adaptor3d_TopolTool)& D2,
                                            const Standard_Real  TolTangency,
@@ -363,10 +363,10 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&   S
 // function : Perform
 // purpose  : 
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&    Surf1,
                                            const IntPatch_Polyhedron&  Poly1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_HSurface)&    Surf2,
+                                           const Handle(Adaptor3d_Surface)&    Surf2,
                                            const IntPatch_Polyhedron&  Poly2,
                                            const Handle(Adaptor3d_TopolTool)& D2,
                                            const Standard_Real   TolTangency,
@@ -787,7 +787,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 // function : Perform
 // purpose  : 
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&    Surf1,
                                            const IntPatch_Polyhedron&  Poly1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
                                            const Standard_Real   TolTangency,
@@ -1236,8 +1236,8 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 // function : NewLine
 // purpose  : 
 //==================================================================================
-Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor3d_HSurface)&    Surf1,
-                                                           const Handle(Adaptor3d_HSurface)&    Surf2,
+Handle(IntPatch_Line) IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor3d_Surface)&    Surf1,
+                                                           const Handle(Adaptor3d_Surface)&    Surf2,
                                                            const Standard_Integer NumLine,
                                                            const Standard_Integer Low,
                                                            const Standard_Integer High,
@@ -1557,9 +1557,9 @@ void IntPatch_PrmPrmIntersection::Remplit(const Standard_Integer a,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&    Surf1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_HSurface)&    Surf2,
+                                           const Handle(Adaptor3d_Surface)&    Surf2,
                                            const Handle(Adaptor3d_TopolTool)& D2,
                                            const Standard_Real   TolTangency,
                                            const Standard_Real   Epsilon,
@@ -1847,9 +1847,9 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 //function : Perform
 //purpose  : 
 //=======================================================================
-void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    Surf1,
+void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_Surface)&    Surf1,
                                           const Handle(Adaptor3d_TopolTool)& D1,
-                                          const Handle(Adaptor3d_HSurface)&    Surf2,
+                                          const Handle(Adaptor3d_Surface)&    Surf2,
                                           const Handle(Adaptor3d_TopolTool)& D2,
                                           const Standard_Real   U1Depart,
                                           const Standard_Real   V1Depart,
@@ -1994,8 +1994,8 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
 // function : AdjustOnPeriodic
 // purpose  : 
 //==================================================================================
-void AdjustOnPeriodic(const Handle(Adaptor3d_HSurface)& Surf1,
-                      const Handle(Adaptor3d_HSurface)& Surf2,
+void AdjustOnPeriodic(const Handle(Adaptor3d_Surface)& Surf1,
+                      const Handle(Adaptor3d_Surface)& Surf2,
                       IntPatch_SequenceOfLine& aSLin)
 {
   Standard_Boolean bIsPeriodic[4], bModified, bIsNull, bIsPeriod;
@@ -2134,9 +2134,9 @@ IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
 // function : Perform
 // purpose  : base SS Int. function
 //==================================================================================
-void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Surf1,
+void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)& Surf1,
                                            const Handle(Adaptor3d_TopolTool)& D1,
-                                           const Handle(Adaptor3d_HSurface)& Surf2,
+                                           const Handle(Adaptor3d_Surface)& Surf2,
                                            const Handle(Adaptor3d_TopolTool)& D2,
                                            const Standard_Real   TolTangency,
                                            const Standard_Real   Epsilon,
@@ -3050,10 +3050,10 @@ private:
 // purpose  : 
 //==================================================================================
 void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S,
-                                              const Handle(Adaptor3d_HSurface)& S1,
+                                              const Handle(Adaptor3d_Surface)& S1,
                                               const Standard_Integer SU_1,
                                               const Standard_Integer SV_1,
-                                              const Handle(Adaptor3d_HSurface)& S2,
+                                              const Handle(Adaptor3d_Surface)& S2,
                                               const Standard_Integer SU_2,
                                               const Standard_Integer SV_2) const 
 { 

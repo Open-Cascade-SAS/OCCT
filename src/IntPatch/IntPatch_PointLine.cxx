@@ -16,7 +16,7 @@
 
 #include <IntPatch_PointLine.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <Precision.hxx>
 
@@ -45,8 +45,8 @@ IntPatch_PointLine::IntPatch_PointLine (const Standard_Boolean Tang) :
 //            Returns negative value if computation is not possible
 //=======================================================================
 Standard_Real IntPatch_PointLine::
-                CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_HSurface)& theS1,
-                                            const Handle(Adaptor3d_HSurface)& theS2,
+                CurvatureRadiusOfIntersLine(const Handle(Adaptor3d_Surface)& theS1,
+                                            const Handle(Adaptor3d_Surface)& theS2,
                                             const IntSurf_PntOn2S& theUVPoint)
 {
   const Standard_Real aSmallValue = 1.0/Precision::Infinite();

@@ -17,24 +17,12 @@
 #ifndef _IntPatch_CurvIntSurf_HeaderFile
 #define _IntPatch_CurvIntSurf_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_CSFunction.hxx>
-#include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_DomainError;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_HSurfaceTool;
-class Adaptor2d_HCurve2d;
 class IntPatch_HCurve2dTool;
-class IntPatch_CSFunction;
 class math_FunctionSetRoot;
-class gp_Pnt;
-
-
 
 class IntPatch_CurvIntSurf 
 {

@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Contap_HContTool.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
@@ -27,7 +27,7 @@
 static Standard_Real uinf,vinf,usup,vsup;
 
 Standard_Integer Contap_HContTool::NbSamplesV
-(const Handle(Adaptor3d_HSurface)& S,
+(const Handle(Adaptor3d_Surface)& S,
  const Standard_Real ,
  const Standard_Real )
 {
@@ -74,7 +74,7 @@ Standard_Integer Contap_HContTool::NbSamplesV
 }
 
 Standard_Integer Contap_HContTool::NbSamplesU
-(const Handle(Adaptor3d_HSurface)& S,
+(const Handle(Adaptor3d_Surface)& S,
  const Standard_Real ,
  const Standard_Real )
 {
@@ -125,7 +125,7 @@ Standard_Integer Contap_HContTool::NbSamplesU
 }
 
 Standard_Integer Contap_HContTool::NbSamplePoints
-(const Handle(Adaptor3d_HSurface)& S)
+(const Handle(Adaptor3d_Surface)& S)
 {
   uinf = S->FirstUParameter();
   usup = S->LastUParameter();
@@ -172,7 +172,7 @@ Standard_Integer Contap_HContTool::NbSamplePoints
     return 5;
 }
 
-void Contap_HContTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
+void Contap_HContTool::SamplePoint (const Handle(Adaptor3d_Surface)& S,
                                     const Standard_Integer Index,
                                     Standard_Real& U,
                                     Standard_Real& V )
@@ -219,7 +219,7 @@ void Contap_HContTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
 
 
 Standard_Integer Contap_HContTool::NbSamplesOnArc
-(const Handle(Adaptor2d_HCurve2d)& A) { 
+(const Handle(Adaptor2d_Curve2d)& A) { 
 
   GeomAbs_CurveType CurveType  = A->GetType();
 
@@ -249,7 +249,7 @@ Standard_Integer Contap_HContTool::NbSamplesOnArc
 }
 
 
-void Contap_HContTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
+void Contap_HContTool::Bounds(const Handle(Adaptor2d_Curve2d)& A,
                               Standard_Real& Ufirst,
                               Standard_Real& Ulast)
 {
@@ -258,7 +258,7 @@ void Contap_HContTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
 }
 
 
-Standard_Boolean Contap_HContTool::Project (const Handle(Adaptor2d_HCurve2d)& C,
+Standard_Boolean Contap_HContTool::Project (const Handle(Adaptor2d_Curve2d)& C,
                                             const gp_Pnt2d& P,
                                             Standard_Real& Paramproj,
                                             gp_Pnt2d& Ptproj)
@@ -270,7 +270,7 @@ Standard_Boolean Contap_HContTool::Project (const Handle(Adaptor2d_HCurve2d)& C,
   Standard_Real Tol = 1.e-5;
   Standard_Real Dist2;
 
-  Extrema_EPCOfExtPC2d extrema(P,C->Curve2d(),Nbu,epsX,Tol);
+  Extrema_EPCOfExtPC2d extrema (P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone()) {
     return Standard_False;
   }
@@ -293,14 +293,14 @@ Standard_Boolean Contap_HContTool::Project (const Handle(Adaptor2d_HCurve2d)& C,
 
 
 Standard_Real Contap_HContTool::Tolerance (const Handle(Adaptor3d_HVertex)& V,
-                                           const Handle(Adaptor2d_HCurve2d)& C)
+                                           const Handle(Adaptor2d_Curve2d)& C)
 {
   //  return BRepAdaptor2d_Curve2dTool::Resolution(C,BRep_Tool::Tolerance(V));
   return V->Resolution(C);
 }
 
 Standard_Real Contap_HContTool::Parameter (const Handle(Adaptor3d_HVertex)& V,
-                                           const Handle(Adaptor2d_HCurve2d)& C)
+                                           const Handle(Adaptor2d_Curve2d)& C)
 {
   //  return BRep_Tool::Parameter(V,C.Edge());
   return V->Parameter(C);
@@ -309,17 +309,17 @@ Standard_Real Contap_HContTool::Parameter (const Handle(Adaptor3d_HVertex)& V,
 
 
 Standard_Boolean Contap_HContTool::HasBeenSeen
-(const Handle(Adaptor2d_HCurve2d)&)
+(const Handle(Adaptor2d_Curve2d)&)
 {
   return Standard_False;
 }
 
-Standard_Integer Contap_HContTool::NbPoints(const Handle(Adaptor2d_HCurve2d)&)
+Standard_Integer Contap_HContTool::NbPoints(const Handle(Adaptor2d_Curve2d)&)
 {
   return 0;
 }
 
-void Contap_HContTool::Value(const Handle(Adaptor2d_HCurve2d)&,
+void Contap_HContTool::Value(const Handle(Adaptor2d_Curve2d)&,
                              const Standard_Integer,
                              gp_Pnt&,
                              Standard_Real&,
@@ -328,26 +328,26 @@ void Contap_HContTool::Value(const Handle(Adaptor2d_HCurve2d)&,
   throw Standard_OutOfRange();
 }
 
-Standard_Boolean Contap_HContTool::IsVertex(const Handle(Adaptor2d_HCurve2d)&,
+Standard_Boolean Contap_HContTool::IsVertex(const Handle(Adaptor2d_Curve2d)&,
                                             const Standard_Integer)
 {
   return Standard_False;
 }
 
-void Contap_HContTool::Vertex(const Handle(Adaptor2d_HCurve2d)&,
+void Contap_HContTool::Vertex(const Handle(Adaptor2d_Curve2d)&,
                               const Standard_Integer,
                               Handle(Adaptor3d_HVertex)&)
 {
   throw Standard_OutOfRange();
 }
 
-Standard_Integer Contap_HContTool::NbSegments(const Handle(Adaptor2d_HCurve2d)&)
+Standard_Integer Contap_HContTool::NbSegments(const Handle(Adaptor2d_Curve2d)&)
 {
   return 0;
 }
 
 Standard_Boolean Contap_HContTool::HasFirstPoint
-(const Handle(Adaptor2d_HCurve2d)&,
+(const Handle(Adaptor2d_Curve2d)&,
  const Standard_Integer,
  Standard_Integer&)
 {
@@ -355,7 +355,7 @@ Standard_Boolean Contap_HContTool::HasFirstPoint
 }
 
 Standard_Boolean Contap_HContTool::HasLastPoint
-(const Handle(Adaptor2d_HCurve2d)&,
+(const Handle(Adaptor2d_Curve2d)&,
  const Standard_Integer,
  Standard_Integer&)
 {
@@ -363,7 +363,7 @@ Standard_Boolean Contap_HContTool::HasLastPoint
 }
 
 Standard_Boolean Contap_HContTool::IsAllSolution
-(const Handle(Adaptor2d_HCurve2d)&)
+(const Handle(Adaptor2d_Curve2d)&)
 
 {
   return Standard_False;

@@ -17,29 +17,17 @@
 #ifndef _ShapeAnalysis_Surface_HeaderFile
 #define _ShapeAnalysis_Surface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Extrema_ExtPS.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Bnd_Box.hxx>
-#include <Standard_Transient.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
+
 class Geom_Surface;
-class GeomAdaptor_HSurface;
 class Geom_Curve;
-class gp_Pnt2d;
-class gp_Pnt;
-class Bnd_Box;
 
-
-class ShapeAnalysis_Surface;
 DEFINE_STANDARD_HANDLE(ShapeAnalysis_Surface, Standard_Transient)
 
 //! Complements standard tool Geom_Surface by providing additional
@@ -90,10 +78,10 @@ public:
   
   //! Returns the Adaptor.
   //! Creates it if not yet done.
-  Standard_EXPORT const Handle(GeomAdaptor_HSurface)& Adaptor3d();
+  Standard_EXPORT const Handle(GeomAdaptor_Surface)& Adaptor3d();
   
   //! Returns the Adaptor (may be Null if method Adaptor() was not called)
-    const Handle(GeomAdaptor_HSurface)& TrueAdaptor3d() const;
+    const Handle(GeomAdaptor_Surface)& TrueAdaptor3d() const;
   
   //! Returns 3D distance found by one of the following methods.
   //! IsDegenerated, DegeneratedValues, ProjectDegenerated
@@ -323,7 +311,7 @@ protected:
 
 
   Handle(Geom_Surface) mySurf;
-  Handle(GeomAdaptor_HSurface) myAdSur;
+  Handle(GeomAdaptor_Surface) myAdSur;
   Extrema_ExtPS myExtPS;
   Standard_Boolean myExtOK;
   Standard_Integer myNbDeg;

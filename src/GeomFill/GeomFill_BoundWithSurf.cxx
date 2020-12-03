@@ -14,11 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
 #include <GeomFill_BoundWithSurf.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -94,8 +94,8 @@ gp_Vec GeomFill_BoundWithSurf::Norm(const Standard_Real U) const
   if (!HasNormals()) 
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
 
-//  Handle(Adaptor3d_HSurface)& S = myConS.GetSurface();
-//  Handle(Adaptor2d_HCurve2d)& C2d = myConS.GetCurve();
+//  Handle(Adaptor3d_Surface)& S = myConS.GetSurface();
+//  Handle(Adaptor2d_Curve2d)& C2d = myConS.GetCurve();
   Standard_Real x,y;
   Standard_Real w = U;
   if(!myPar.IsNull()) w = myPar->Value(U);
@@ -120,8 +120,8 @@ void GeomFill_BoundWithSurf::D1Norm(const Standard_Real U,
 {
   if (!HasNormals()) 
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
-//  Handle(Adaptor3d_HSurface)& S = myConS.GetSurface();
-//  Handle(Adaptor2d_HCurve2d)& C2d = myConS.GetCurve();
+//  Handle(Adaptor3d_Surface)& S = myConS.GetSurface();
+//  Handle(Adaptor2d_Curve2d)& C2d = myConS.GetCurve();
   gp_Pnt2d P2d;
   gp_Vec2d V2d;
   Standard_Real x,y,dx,dy;

@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
@@ -28,15 +28,15 @@
 #include <Blend_SurfRstFunction.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -48,7 +48,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Hatcher.hxx>
 #include <Geom2dHatch_Intersector.hxx>
 #include <Geom_Curve.hxx>
@@ -57,7 +57,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir2d.hxx>
@@ -260,8 +260,8 @@ static Standard_Real ParamOnSpine(const TopOpeBRepDS_DataStructure& DStr,
     
     gp_Pln nlp(PP,gp_Dir(VV));
     Handle(Geom_Plane) pln = new Geom_Plane(nlp);
-    Handle(GeomAdaptor_HSurface) 
-      plan = new GeomAdaptor_HSurface(GeomAdaptor_Surface(pln));
+    Handle(GeomAdaptor_Surface) 
+      plan = new GeomAdaptor_Surface(GeomAdaptor_Surface(pln));
     
     // intersection plane spine.
     Standard_Boolean found = Standard_False;
@@ -277,8 +277,8 @@ static Standard_Real ParamOnSpine(const TopOpeBRepDS_DataStructure& DStr,
       pok = 1;
       return Nl;
     }
-    Handle(BRepAdaptor_HCurve) HE = new BRepAdaptor_HCurve();
-    BRepAdaptor_Curve& CE = HE->ChangeCurve();
+    Handle(BRepAdaptor_Curve) HE = new BRepAdaptor_Curve();
+    BRepAdaptor_Curve& CE = *HE;
     
     while (!found && !fini) {
       TopAbs_Orientation O = Spine->Edges(ii).Orientation();
@@ -346,8 +346,8 @@ static Standard_Boolean YaUnVoisin(const Handle(ChFiDS_Spine)& Spine,
 
 void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
 			   const Handle(ChFiDS_Spine)&       Spine,
-			   const Handle(Adaptor3d_HSurface)&   S1, 
-			   const Handle(Adaptor3d_HSurface)&   S2, 
+			   const Handle(Adaptor3d_Surface)&   S1, 
+			   const Handle(Adaptor3d_Surface)&   S2, 
 			   const Standard_Integer            iedge,
 			   const Standard_Boolean            isfirst,
 			   const Standard_Integer            cntlFiOnS)
@@ -400,17 +400,17 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
   if(dis1 >= 0.1*dis2) tron = Standard_True;
   Standard_Integer ivois;
   if(!tron && YaUnVoisin(Spine,iedge,ivois,isfirst)) {
-    Handle(BRepAdaptor_HSurface) BS1 = Handle(BRepAdaptor_HSurface)::DownCast(S1);
-    Handle(BRepAdaptor_HSurface) BS2 = Handle(BRepAdaptor_HSurface)::DownCast(S2);
+    Handle(BRepAdaptor_Surface) BS1 = Handle(BRepAdaptor_Surface)::DownCast(S1);
+    Handle(BRepAdaptor_Surface) BS2 = Handle(BRepAdaptor_Surface)::DownCast(S2);
     if(!BS1.IsNull() && !BS2.IsNull()) {
       TopoDS_Face FBID;
-      TopoDS_Face F1 = BS1->ChangeSurface().Face();
-      TopoDS_Face F2 = BS2->ChangeSurface().Face();
+      TopoDS_Face F1 = BS1->Face();
+      TopoDS_Face F2 = BS2->Face();
       const ChFiDS_CommonPoint& cp1 = SD->Vertex(isfirst,1);
       const ChFiDS_CommonPoint& cp2 = SD->Vertex(isfirst,2);
       if(!((cp1.IsOnArc() && SearchFace(Spine,cp1,F1,FBID)) ||
            (cp2.IsOnArc() && SearchFace(Spine,cp2,F2,FBID)))) { 
-        tron = ChFi3d_KParticular(Spine,ivois,BS1->ChangeSurface(),BS2->ChangeSurface());
+        tron = ChFi3d_KParticular (Spine, ivois, *BS1, *BS2);
       }
     }
   }
@@ -603,9 +603,9 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
       for(;trouve;) {
 	const HatchGen_PointOnElement& PEtemp = pPH->Point(LeType);
 	IE = PEtemp.Index();
-	Handle(BRepAdaptor_HCurve2d) HE = Handle(BRepAdaptor_HCurve2d)::DownCast(M(IE));
+	Handle(BRepAdaptor_Curve2d) HE = Handle(BRepAdaptor_Curve2d)::DownCast(M(IE));
 	if(!HE.IsNull()) {
-	  const TopoDS_Edge& Etemp = HE->ChangeCurve2d().Edge();
+	  const TopoDS_Edge& Etemp = HE->Edge();
 	  TopExp::Vertices(Etemp,V1,V2);
 	}
 	else {
@@ -628,10 +628,10 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
     }
     const HatchGen_PointOnElement& PE = pPH->Point(LeType);
     Standard_Integer IE = PE.Index();
-    Handle(BRepAdaptor_HCurve2d) 
-      HE = Handle(BRepAdaptor_HCurve2d)::DownCast(M(IE));
+    Handle(BRepAdaptor_Curve2d) 
+      HE = Handle(BRepAdaptor_Curve2d)::DownCast(M(IE));
     if(HE.IsNull()) return;
-    const TopoDS_Edge& E = HE->ChangeCurve2d().Edge();
+    const TopoDS_Edge& E = HE->Edge();
     
     if (PE.Position() != TopAbs_INTERNAL) {
       TopAbs_Orientation O = CD->Interference(ons).Transition();
@@ -665,9 +665,9 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
    ChFiDS_SequenceOfSurfData&       SetData, 
    const Handle(ChFiDS_Spine)&      Spine,
    const Standard_Integer           Iedge,
-   const Handle(Adaptor3d_HSurface)&  S1, 
+   const Handle(Adaptor3d_Surface)&  S1, 
    const Handle(Adaptor3d_TopolTool)& I1, 
-   const Handle(Adaptor3d_HSurface)&  S2,
+   const Handle(Adaptor3d_Surface)&  S2,
    const Handle(Adaptor3d_TopolTool)& I2, 
    Standard_Boolean&                intf,
    Standard_Boolean&                intl)
@@ -689,13 +689,12 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   if (!C1.IsNull()) {
     ll1.Load(C1);
     for(I1->Init(); I1->More(); I1->Next()) {
-      Handle(BRepAdaptor_HCurve2d) 
-	Bc = Handle(BRepAdaptor_HCurve2d)::DownCast(I1->Value());
-      Handle(Geom2dAdaptor_HCurve) 
-	Gc = Handle(Geom2dAdaptor_HCurve)::DownCast(I1->Value());
-      if(Bc.IsNull()) ie = H1.AddElement(Gc->ChangeCurve2d(),TopAbs_FORWARD);
-      else ie = H1.AddElement(Bc->ChangeCurve2d(),
-			      Bc->ChangeCurve2d().Edge().Orientation());
+      Handle(BRepAdaptor_Curve2d) 
+	Bc = Handle(BRepAdaptor_Curve2d)::DownCast(I1->Value());
+      Handle(Geom2dAdaptor_Curve) 
+	Gc = Handle(Geom2dAdaptor_Curve)::DownCast(I1->Value());
+      if(Bc.IsNull()) ie = H1.AddElement (*Gc, TopAbs_FORWARD);
+      else ie = H1.AddElement (*Bc, Bc->Edge().Orientation());
       M1.Bind(ie,I1->Value());
     }
     iH1 = H1.Trim(ll1);
@@ -715,13 +714,12 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   if (!C2.IsNull()) {
     ll2.Load(C2);
     for(I2->Init(); I2->More(); I2->Next()) {
-      Handle(BRepAdaptor_HCurve2d) 
-	Bc = Handle(BRepAdaptor_HCurve2d)::DownCast(I2->Value());
-      Handle(Geom2dAdaptor_HCurve) 
-	Gc = Handle(Geom2dAdaptor_HCurve)::DownCast(I2->Value());
-      if(Bc.IsNull()) ie = H2.AddElement(Gc->ChangeCurve2d(),TopAbs_FORWARD);
-      else ie = H2.AddElement(Bc->ChangeCurve2d(),
-			      Bc->ChangeCurve2d().Edge().Orientation());
+      Handle(BRepAdaptor_Curve2d) 
+	Bc = Handle(BRepAdaptor_Curve2d)::DownCast(I2->Value());
+      Handle(Geom2dAdaptor_Curve) 
+	Gc = Handle(Geom2dAdaptor_Curve)::DownCast(I2->Value());
+      if(Bc.IsNull()) ie = H2.AddElement (*Gc, TopAbs_FORWARD);
+      else ie = H2.AddElement (*Bc, Bc->Edge().Orientation());
       M2.Bind(ie,I2->Value());
     }
     iH2 = H2.Trim(ll2);
@@ -749,11 +747,11 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   
   // Return faces.
   TopoDS_Face F1, F2;
-  Handle(BRepAdaptor_HSurface) 
-    bhs = Handle(BRepAdaptor_HSurface)::DownCast(S1);
-  if(!bhs.IsNull()) F1 = bhs->ChangeSurface().Face();
-  bhs = Handle(BRepAdaptor_HSurface)::DownCast(S2);
-  if(!bhs.IsNull()) F2 = bhs->ChangeSurface().Face();
+  Handle(BRepAdaptor_Surface) 
+    bhs = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  if(!bhs.IsNull()) F1 = bhs->Face();
+  bhs = Handle(BRepAdaptor_Surface)::DownCast(S2);
+  if(!bhs.IsNull()) F2 = bhs->Face();
   TopoDS_Face FBID;
   
   // Restriction of SurfDatas by cut lines.

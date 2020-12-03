@@ -19,8 +19,8 @@
 //  modified by Edward AGAPOV (eap) Fri Feb  8 2002 (bug occ67 == BUC61052)
 //  ComputeData(), case where BRepBlend_Walking::Continu() can't get up to Target
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Approx_SweepFunction.hxx>
@@ -35,8 +35,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_AppFunc.hxx>
 #include <BRepBlend_AppFuncRst.hxx>
@@ -59,7 +57,7 @@
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -72,8 +70,8 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
@@ -111,7 +109,7 @@
 #include <Draw_Marker3D.hxx>
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 static Standard_Integer IndexOfConge = 0;
 #endif
 
@@ -425,9 +423,9 @@ static void UpdateLine(Handle(BRepBlend_Line)& Line,
 Standard_Boolean ChFi3d_Builder::CompleteData
 (Handle(ChFiDS_SurfData)&        Data,
  const Handle(Geom_Surface)&     Surfcoin,
- const Handle(Adaptor3d_HSurface)& S1,
+ const Handle(Adaptor3d_Surface)& S1,
  const Handle(Geom2d_Curve)&     PC1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S2,
  const Handle(Geom2d_Curve)&     PC2,
  const TopAbs_Orientation        Or,
  const Standard_Boolean          On1,
@@ -469,7 +467,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   Handle(Geom2d_Curve) c2dtrim;
   Standard_Real tolreached = 1.e-5;
   if(!PC1.IsNull()){
-    Handle(GeomAdaptor_HCurve) hcS1 = new GeomAdaptor_HCurve(Crv3d1);
+    Handle(GeomAdaptor_Curve) hcS1 = new GeomAdaptor_Curve(Crv3d1);
     c2dtrim = new Geom2d_TrimmedCurve(PC1,UFirst,ULast);
     ChFi3d_SameParameter(hcS1,c2dtrim,S1,tolapp3d,tolreached);
     c2dtrim->Value(w).Coord(x,y);
@@ -494,7 +492,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   PCurveOnSurf = new Geom2d_Line(lfil2);
   TopAbs_Orientation tra2 = TopAbs_FORWARD;
   if(!PC2.IsNull()){
-    Handle(GeomAdaptor_HCurve) hcS2 = new GeomAdaptor_HCurve(Crv3d2);
+    Handle(GeomAdaptor_Curve) hcS2 = new GeomAdaptor_Curve(Crv3d2);
     c2dtrim = new Geom2d_TrimmedCurve(PC2,UFirst,ULast);
     ChFi3d_SameParameter(hcS2,c2dtrim,S2,tolapp3d,tolreached);
     c2dtrim->Value(w).Coord(x,y);
@@ -530,8 +528,8 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 (Handle(ChFiDS_SurfData)& Data,
  Blend_Function& Func,
  Handle(BRepBlend_Line)& lin,
- const Handle(Adaptor3d_HSurface)& S1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S1,
+ const Handle(Adaptor3d_Surface)& S2,
  const TopAbs_Orientation Or1,
  const Standard_Boolean Gd1,
  const Standard_Boolean Gd2,
@@ -572,8 +570,8 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 (Handle(ChFiDS_SurfData)&        Data,
  Blend_SurfRstFunction&          Func,
  Handle(BRepBlend_Line)&         lin,
- const Handle(Adaptor3d_HSurface)& S1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S1,
+ const Handle(Adaptor3d_Surface)& S2,
  const TopAbs_Orientation        Or,
  const Standard_Boolean          Reversed)
 {
@@ -610,8 +608,8 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 (Handle(ChFiDS_SurfData)&        Data,
  Blend_RstRstFunction&           Func,
  Handle(BRepBlend_Line)&         lin,
- const Handle(Adaptor3d_HSurface)& S1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S1,
+ const Handle(Adaptor3d_Surface)& S2,
  const TopAbs_Orientation        Or)
 {
   Handle(BRepBlend_AppFuncRstRst) TheFunc 
@@ -646,8 +644,8 @@ Standard_Boolean ChFi3d_Builder::CompleteData
 Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 					   const AppBlend_Approx& approx,
 					   const Handle(BRepBlend_Line)& lin,
-					   const Handle(Adaptor3d_HSurface)& S1,
-					   const Handle(Adaptor3d_HSurface)& S2,
+					   const Handle(Adaptor3d_Surface)& S1,
+					   const Handle(Adaptor3d_Surface)& S2,
 					   const TopAbs_Orientation Or1,
 					   const Standard_Boolean Gd1,
 					   const Standard_Boolean Gd2,
@@ -656,9 +654,9 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 					   const Standard_Boolean Reversed)
 {
   // Small control tools.
-  static Handle(GeomAdaptor_HCurve) checkcurve;
-  if(checkcurve.IsNull()) checkcurve = new GeomAdaptor_HCurve();
-  GeomAdaptor_Curve& chc = checkcurve->ChangeCurve();
+  static Handle(GeomAdaptor_Curve) checkcurve;
+  if(checkcurve.IsNull()) checkcurve = new GeomAdaptor_Curve();
+  GeomAdaptor_Curve& chc = *checkcurve;
   Standard_Real tolget3d, tolget2d, tolaux, tolC1,  tolcheck;
   Standard_Real  tolC2 = 0.;
   approx.TolReached(tolget3d, tolget2d);
@@ -751,10 +749,10 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   Surf->Bounds(UFirst,ULast,VFirst,VLast);
   BRepAdaptor_Curve2d brc;
   BRepAdaptor_Curve CArc;
-  Handle(BRepAdaptor_HSurface) 
-    BS1 = Handle(BRepAdaptor_HSurface)::DownCast(S1);
-  Handle(BRepAdaptor_HSurface) 
-    BS2 = Handle(BRepAdaptor_HSurface)::DownCast(S2);
+  Handle(BRepAdaptor_Surface) 
+    BS1 = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  Handle(BRepAdaptor_Surface) 
+    BS2 = Handle(BRepAdaptor_Surface)::DownCast(S2);
   Geom2dAPI_ProjectPointOnCurve projector;
 
   Standard_Real Uon1 = UFirst, Uon2 = ULast;
@@ -787,7 +785,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   
   Standard_Real uarc,utg;
   if(Gd1){
-    TopoDS_Face forwfac = BS1->ChangeSurface().Face();
+    TopoDS_Face forwfac = BS1->Face();
     forwfac.Orientation(TopAbs_FORWARD);
     brc.Initialize(Data->VertexFirstOnS1().Arc(),forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexFirstOnS1();
@@ -799,7 +797,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   }
   else pppdeb = VFirst;
   if(Gf1){
-    TopoDS_Face forwfac = BS1->ChangeSurface().Face();
+    TopoDS_Face forwfac = BS1->Face();
     forwfac.Orientation(TopAbs_FORWARD);
     ChFiDS_CommonPoint& V = Data->ChangeVertexLastOnS1();
     brc.Initialize(V.Arc(),forwfac);
@@ -839,7 +837,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   Standard_Integer Index2OfCurve = 
     DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2,tolC2));
   if(Gd2){
-    TopoDS_Face forwfac = BS2->ChangeSurface().Face();
+    TopoDS_Face forwfac = BS2->Face();
     forwfac.Orientation(TopAbs_FORWARD);
     brc.Initialize(Data->VertexFirstOnS2().Arc(),forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexFirstOnS2();
@@ -851,7 +849,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   }
   else pppdeb = VFirst;
   if(Gf2){
-    TopoDS_Face forwfac = BS2->ChangeSurface().Face();
+    TopoDS_Face forwfac = BS2->Face();
     forwfac.Orientation(TopAbs_FORWARD);
     brc.Initialize(Data->VertexLastOnS2().Arc(),forwfac);
     ChFiDS_CommonPoint& V = Data->ChangeVertexLastOnS2();
@@ -879,7 +877,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 
   // the orientation of the fillet in relation to the faces is evaluated,
 
-  Handle(Adaptor3d_HSurface) Sref = S1;
+  Handle(Adaptor3d_Surface) Sref = S1;
   PCurveOnFace = Fint1.PCurveOnFace();
   if(Reversed){ Sref = S2; PCurveOnFace = Fint2.PCurveOnFace(); }
   
@@ -961,12 +959,12 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
 
 Standard_Boolean ChFi3d_Builder::ComputeData
 (Handle(ChFiDS_SurfData)&         Data,
- const Handle(ChFiDS_HElSpine)&   HGuide,
+ const Handle(ChFiDS_ElSpine)&   HGuide,
  Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_HSurface)&  S1,
+ const Handle(Adaptor3d_Surface)&  S1,
  const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_HSurface)&  S2,
- const Handle(Adaptor2d_HCurve2d)&  PC2,
+ const Handle(Adaptor3d_Surface)&  S2,
+ const Handle(Adaptor2d_Curve2d)&  PC2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Standard_Boolean&                Decroch,
  Blend_SurfRstFunction&           Func,
@@ -1089,14 +1087,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
 Standard_Boolean ChFi3d_Builder::ComputeData
 (Handle(ChFiDS_SurfData)&         Data,
- const Handle(ChFiDS_HElSpine)&   HGuide,
+ const Handle(ChFiDS_ElSpine)&   HGuide,
  Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_HSurface)&  S1,
- const Handle(Adaptor2d_HCurve2d)&  PC1,
+ const Handle(Adaptor3d_Surface)&  S1,
+ const Handle(Adaptor2d_Curve2d)&  PC1,
  const Handle(Adaptor3d_TopolTool)& I1,
  Standard_Boolean&                Decroch1,
- const Handle(Adaptor3d_HSurface)&  S2,
- const Handle(Adaptor2d_HCurve2d)&  PC2,
+ const Handle(Adaptor3d_Surface)&  S2,
+ const Handle(Adaptor2d_Curve2d)&  PC2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Standard_Boolean&                Decroch2,
  Blend_RstRstFunction&            Func,
@@ -1226,12 +1224,12 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
 Standard_Boolean ChFi3d_Builder::SimulData
 (Handle(ChFiDS_SurfData)&         /*Data*/,
- const Handle(ChFiDS_HElSpine)&   HGuide,
+ const Handle(ChFiDS_ElSpine)&   HGuide,
  Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_HSurface)&  S1,
+ const Handle(Adaptor3d_Surface)&  S1,
  const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_HSurface)&  S2,
- const Handle(Adaptor2d_HCurve2d)&  PC2,
+ const Handle(Adaptor3d_Surface)&  S2,
+ const Handle(Adaptor2d_Curve2d)&  PC2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Standard_Boolean&                Decroch,
  Blend_SurfRstFunction&           Func,
@@ -1348,14 +1346,14 @@ Standard_Boolean ChFi3d_Builder::SimulData
 
 Standard_Boolean ChFi3d_Builder::SimulData
 (Handle(ChFiDS_SurfData)&         /*Data*/,
- const Handle(ChFiDS_HElSpine)&   HGuide,
+ const Handle(ChFiDS_ElSpine)&   HGuide,
  Handle(BRepBlend_Line)&          Lin,
- const Handle(Adaptor3d_HSurface)&  S1,
- const Handle(Adaptor2d_HCurve2d)&  PC1,
+ const Handle(Adaptor3d_Surface)&  S1,
+ const Handle(Adaptor2d_Curve2d)&  PC1,
  const Handle(Adaptor3d_TopolTool)& I1,
  Standard_Boolean&                Decroch1,
- const Handle(Adaptor3d_HSurface)&  S2,
- const Handle(Adaptor2d_HCurve2d)&  PC2,
+ const Handle(Adaptor3d_Surface)&  S2,
+ const Handle(Adaptor2d_Curve2d)&  PC2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Standard_Boolean&                Decroch2,
  Blend_RstRstFunction&            Func,
@@ -1482,12 +1480,12 @@ Standard_Boolean ChFi3d_Builder::SimulData
 
 Standard_Boolean ChFi3d_Builder::ComputeData
 (Handle(ChFiDS_SurfData)& Data,
- const Handle(ChFiDS_HElSpine)& HGuide,
+ const Handle(ChFiDS_ElSpine)& HGuide,
  const Handle(ChFiDS_Spine)& Spine,
  Handle(BRepBlend_Line)& Lin,
- const Handle(Adaptor3d_HSurface)& S1,
+ const Handle(Adaptor3d_Surface)& S1,
  const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Blend_Function& Func,
  Blend_FuncInv& FInv,
@@ -1511,7 +1509,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
  const Standard_Boolean RecOnS2)
 {
   //Get offset guide if exists
-  Handle(ChFiDS_HElSpine) OffsetHGuide;
+  Handle(ChFiDS_ElSpine) OffsetHGuide;
   if (!Spine.IsNull() &&
       Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
@@ -1520,7 +1518,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
     for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
     {
-      const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+      const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
       if (aHElSpine == HGuide)
         OffsetHGuide = ILES_offset.Value();
     }
@@ -1533,10 +1531,10 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
   //The eventual faces are restored to test the jump of edge.
   TopoDS_Face F1, F2;
-  Handle(BRepAdaptor_HSurface) HS = Handle(BRepAdaptor_HSurface)::DownCast(S1); 
-  if(!HS.IsNull()) F1 = HS->ChangeSurface().Face();
-  HS = Handle(BRepAdaptor_HSurface)::DownCast(S2); 
-  if(!HS.IsNull()) F2 = HS->ChangeSurface().Face();
+  Handle(BRepAdaptor_Surface) HS = Handle(BRepAdaptor_Surface)::DownCast(S1); 
+  if(!HS.IsNull()) F1 = HS->Face();
+  HS = Handle(BRepAdaptor_Surface)::DownCast(S2); 
+  if(!HS.IsNull()) F2 = HS->Face();
   
   // Path framing variables
   Standard_Real TolGuide=tolguide, TolEsp = tolesp;
@@ -1652,14 +1650,14 @@ Standard_Boolean ChFi3d_Builder::ComputeData
     if(HGuide->IsPeriodic() && Inside) {
       SpFirst = Lin->Point(1).Parameter();
       SpLast  = SpFirst + HGuide->Period();
-      HGuide->ChangeCurve().FirstParameter(SpFirst);
-      HGuide->ChangeCurve().LastParameter (SpLast );
-      HGuide->ChangeCurve().SetOrigin(SpFirst);
+      HGuide->FirstParameter(SpFirst);
+      HGuide->LastParameter (SpLast );
+      HGuide->SetOrigin(SpFirst);
       if (!OffsetHGuide.IsNull())
       {
-        OffsetHGuide->ChangeCurve().FirstParameter(SpFirst);
-        OffsetHGuide->ChangeCurve().LastParameter (SpLast );
-        OffsetHGuide->ChangeCurve().SetOrigin(SpFirst);
+        OffsetHGuide->FirstParameter(SpFirst);
+        OffsetHGuide->LastParameter (SpLast );
+        OffsetHGuide->SetOrigin(SpFirst);
       }
     }
     Standard_Boolean complmnt = Standard_True;
@@ -2119,12 +2117,12 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 
 Standard_Boolean ChFi3d_Builder::SimulData
 (Handle(ChFiDS_SurfData)& /*Data*/,
- const Handle(ChFiDS_HElSpine)& HGuide,
- const Handle(ChFiDS_HElSpine)& AdditionalHGuide,
+ const Handle(ChFiDS_ElSpine)& HGuide,
+ const Handle(ChFiDS_ElSpine)& AdditionalHGuide,
  Handle(BRepBlend_Line)& Lin,
- const Handle(Adaptor3d_HSurface)& S1,
+ const Handle(Adaptor3d_Surface)& S1,
  const Handle(Adaptor3d_TopolTool)& I1,
- const Handle(Adaptor3d_HSurface)& S2,
+ const Handle(Adaptor3d_Surface)& S2,
  const Handle(Adaptor3d_TopolTool)& I2,
  Blend_Function& Func,
  Blend_FuncInv& FInv,
@@ -2201,12 +2199,12 @@ Standard_Boolean ChFi3d_Builder::SimulData
       if(HGuide->IsPeriodic()) {
 	SpFirst = Lin->Point(1).Parameter();
 	SpLast  = SpFirst + HGuide->Period();
-	HGuide->ChangeCurve().FirstParameter(SpFirst);
-	HGuide->ChangeCurve().LastParameter (SpLast );
+	HGuide->FirstParameter(SpFirst);
+	HGuide->LastParameter (SpLast );
         if (!AdditionalHGuide.IsNull())
         {
-          AdditionalHGuide->ChangeCurve().FirstParameter(SpFirst);
-          AdditionalHGuide->ChangeCurve().LastParameter (SpLast );
+          AdditionalHGuide->FirstParameter(SpFirst);
+          AdditionalHGuide->LastParameter (SpLast );
         }
       }
       Standard_Boolean complmnt = Standard_True;

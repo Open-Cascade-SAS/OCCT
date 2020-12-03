@@ -19,7 +19,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <DrawTrSurf_Surface.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomTools_SurfaceSet.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
@@ -170,8 +170,8 @@ void DrawTrSurf_Surface::DrawOn (Draw_Display& dis,
   }
 
 
-  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
-  HS->ChangeSurface().Load(surf,UFirst,ULast,VFirst,VLast);
+  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface();
+  HS->Load(surf,UFirst,ULast,VFirst,VLast);
 
   Adaptor3d_IsoCurve C(HS);
   

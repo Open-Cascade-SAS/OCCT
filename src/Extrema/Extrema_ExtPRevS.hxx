@@ -17,24 +17,11 @@
 #ifndef _Extrema_ExtPRevS_HeaderFile
 #define _Extrema_ExtPRevS_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <gp_Ax2.hxx>
 #include <Extrema_GenExtPS.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <Standard_Transient.hxx>
-class GeomAdaptor_HSurfaceOfRevolution;
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class gp_Pnt;
-class Extrema_POnSurf;
 
-
-class Extrema_ExtPRevS;
 DEFINE_STANDARD_HANDLE(Extrema_ExtPRevS, Standard_Transient)
 
 //! It calculates all the extremum (minimum and
@@ -50,13 +37,13 @@ public:
   
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt& P, const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real TolU, const Standard_Real TolV);
   
-  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT void Initialize (const Handle(GeomAdaptor_SurfaceOfRevolution)& S, const Standard_Real Umin, const Standard_Real Usup, const Standard_Real Vmin, const Standard_Real Vsup, const Standard_Real TolU, const Standard_Real TolV);
   
   Standard_EXPORT void Perform (const gp_Pnt& P);
   
@@ -85,7 +72,7 @@ protected:
 private:
 
 
-  Handle(GeomAdaptor_HSurfaceOfRevolution) myS;
+  Handle(GeomAdaptor_SurfaceOfRevolution) myS;
   Standard_Real myvinf;
   Standard_Real myvsup;
   Standard_Real mytolv;

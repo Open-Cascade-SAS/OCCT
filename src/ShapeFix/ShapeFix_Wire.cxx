@@ -43,6 +43,8 @@
 //                one pcurve we make replace pcurve)
 // PTV 26.06.2002  Remove regressions after fix OCC450
 
+#include <ShapeFix_Wire.hxx>
+
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Bnd_Array1OfBox2d.hxx>
 #include <Bnd_Box2d.hxx>
@@ -60,7 +62,6 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
@@ -71,7 +72,6 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -99,7 +99,6 @@
 #include <ShapeFix_Edge.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <ShapeFix_SplitTool.hxx>
-#include <ShapeFix_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
@@ -1967,8 +1966,8 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   //:q1
   TopLoc_Location L;
   Handle(Geom_Surface) S = BRep_Tool::Surface(face, L);
-  Handle(Geom2dAdaptor_HCurve) AC = new Geom2dAdaptor_HCurve(c2d);
-  Handle(GeomAdaptor_HSurface) AS = new GeomAdaptor_HSurface(S);
+  Handle(Geom2dAdaptor_Curve) AC = new Geom2dAdaptor_Curve(c2d);
+  Handle(GeomAdaptor_Surface) AS = new GeomAdaptor_Surface(S);
   
   Adaptor3d_CurveOnSurface ACS(AC,AS);
   gp_Pnt P1(ACS.Value(t1));
@@ -2098,8 +2097,8 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
 
   TopLoc_Location L;
   Handle (Geom_Surface) S = BRep_Tool::Surface(face, L);
-  Handle (Geom2dAdaptor_HCurve) AC = new Geom2dAdaptor_HCurve(c2d);
-  Handle (GeomAdaptor_HSurface) AS = new GeomAdaptor_HSurface(S); 
+  Handle (Geom2dAdaptor_Curve) AC = new Geom2dAdaptor_Curve(c2d);
+  Handle (GeomAdaptor_Surface) AS = new GeomAdaptor_Surface(S); 
   
   Adaptor3d_CurveOnSurface ACS(AC,AS);
   gp_Pnt P1(ACS.Value(t1));

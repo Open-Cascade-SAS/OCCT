@@ -24,10 +24,11 @@
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
 #include <GeomInt_LineTool.hxx>
 #include <GeomInt_WLApprox.hxx>
@@ -95,15 +96,15 @@
 //function : GetQuadric
 //purpose  : 
 //=======================================================================
- static void GetQuadric(const Handle(GeomAdaptor_HSurface)& HS1, IntSurf_Quadric& quad1)
+ static void GetQuadric(const Handle(GeomAdaptor_Surface)& HS1, IntSurf_Quadric& quad1)
 {
-  switch (HS1->Surface().GetType())
+  switch (HS1->GetType())
   {
-    case GeomAbs_Plane:    quad1.SetValue(HS1->Surface().Plane()); break;
-    case GeomAbs_Cylinder: quad1.SetValue(HS1->Surface().Cylinder()); break;
-    case GeomAbs_Cone:     quad1.SetValue(HS1->Surface().Cone()); break;
-    case GeomAbs_Sphere:   quad1.SetValue(HS1->Surface().Sphere()); break;
-    case GeomAbs_Torus:    quad1.SetValue(HS1->Surface().Torus()); break;
+    case GeomAbs_Plane:    quad1.SetValue(HS1->Plane()); break;
+    case GeomAbs_Cylinder: quad1.SetValue(HS1->Cylinder()); break;
+    case GeomAbs_Cone:     quad1.SetValue(HS1->Cone()); break;
+    case GeomAbs_Sphere:   quad1.SetValue(HS1->Sphere()); break;
+    case GeomAbs_Torus:    quad1.SetValue(HS1->Torus()); break;
     default: throw Standard_ConstructionError("GeomInt_IntSS::MakeCurve");
   }
 }
@@ -112,8 +113,8 @@
 //function : Parameters
 //purpose  : 
 //=======================================================================
- static void Parameters(  const Handle(GeomAdaptor_HSurface)& HS1,
-                         const Handle(GeomAdaptor_HSurface)& HS2,
+ static void Parameters(  const Handle(GeomAdaptor_Surface)& HS1,
+                         const Handle(GeomAdaptor_Surface)& HS2,
                          const gp_Pnt& Ptref,
                          Standard_Real& U1,
                          Standard_Real& V1,
@@ -225,8 +226,8 @@ static void IntersectCurveAndBoundary(const Handle(Geom2d_Curve)& theC2d,
 //function : isDegenerated
 //purpose  : Check if theAHC2d corresponds to a degenerated edge.
 //=======================================================================
-static Standard_Boolean isDegenerated(const Handle(GeomAdaptor_HSurface)& theGAHS,
-                                      const Handle(Adaptor2d_HCurve2d)& theAHC2d,
+static Standard_Boolean isDegenerated(const Handle(GeomAdaptor_Surface)& theGAHS,
+                                      const Handle(Adaptor2d_Curve2d)& theAHC2d,
                                       const Standard_Real theFirstPar,
                                       const Standard_Real theLastPar)
 {
@@ -277,8 +278,8 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
   myApprox2=ApproxS2;
   myTolApprox=0.0000001;
   //
-  aS1=myHS1->ChangeSurface().Surface();
-  aS2=myHS2->ChangeSurface().Surface();
+  aS1=myHS1->Surface();
+  aS2=myHS2->Surface();
   //
   Handle(IntPatch_Line) L = myIntersector.Line(Index);
   typl = L->ArcType();
@@ -330,7 +331,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
           //
           if(myApprox1) { 
             Handle (Geom2d_Curve) C2d;
-            BuildPCurves(fprm, lprm, Tolpc, myHS1->ChangeSurface().Surface(), newc, C2d);
+            BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
             if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
               myTolReached2d=Tolpc;
             }
@@ -342,7 +343,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
           //
           if(myApprox2) { 
             Handle (Geom2d_Curve) C2d;
-            BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
+            BuildPCurves(fprm,lprm,Tolpc,myHS2->Surface(),newc,C2d);
             if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
               myTolReached2d=Tolpc;
             }
@@ -355,8 +356,8 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
       } // if (!Precision::IsNegativeInfinite(fprm) &&  !Precision::IsPositiveInfinite(lprm))
 
       else {
-        GeomAbs_SurfaceType typS1 = myHS1->Surface().GetType();
-        GeomAbs_SurfaceType typS2 = myHS2->Surface().GetType();
+        GeomAbs_SurfaceType typS1 = myHS1->GetType();
+        GeomAbs_SurfaceType typS2 = myHS2->GetType();
         if( typS1 == GeomAbs_SurfaceOfExtrusion ||
           typS1 == GeomAbs_OffsetSurface ||
           typS1 == GeomAbs_SurfaceOfRevolution ||
@@ -438,7 +439,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
         //// 	
         if(myApprox1) { 
           Handle (Geom2d_Curve) C2d;
-          BuildPCurves(fprm,lprm,Tolpc,myHS1->ChangeSurface().Surface(),newc,C2d);
+          BuildPCurves(fprm,lprm,Tolpc,myHS1->Surface(),newc,C2d);
           if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
             myTolReached2d=Tolpc;
           }
@@ -450,7 +451,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
         //
         if(myApprox2) { 
           Handle (Geom2d_Curve) C2d;
-          BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
+          BuildPCurves(fprm,lprm,Tolpc,myHS2->Surface(),newc,C2d);
           if(Tolpc>myTolReached2d || myTolReached2d==0) { 
             myTolReached2d=Tolpc;
           }
@@ -474,7 +475,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 
             if(myApprox1) { 
               Handle (Geom2d_Curve) C2d;
-              BuildPCurves(fprm,lprm,Tolpc,myHS1->ChangeSurface().Surface(),newc,C2d);
+              BuildPCurves(fprm,lprm,Tolpc,myHS1->Surface(),newc,C2d);
               if(Tolpc>myTolReached2d || myTolReached2d==0) { 
                 myTolReached2d=Tolpc;
               }
@@ -486,7 +487,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 
             if(myApprox2) { 
               Handle (Geom2d_Curve) C2d;
-              BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
+              BuildPCurves(fprm,lprm,Tolpc,myHS2->Surface(),newc,C2d);
               if(Tolpc>myTolReached2d || myTolReached2d==0) { 
                 myTolReached2d=Tolpc;
               }
@@ -517,7 +518,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
             //==============================================
             if(myApprox1) { 
               Handle (Geom2d_Curve) C2d;
-              BuildPCurves(fprm, lprm, Tolpc, myHS1->ChangeSurface().Surface(), newc, C2d);
+              BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
               if(Tolpc>myTolReached2d || myTolReached2d==0) { 
                 myTolReached2d=Tolpc;
               }
@@ -529,7 +530,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 
             if(myApprox2) { 
               Handle (Geom2d_Curve) C2d;
-              BuildPCurves(fprm, lprm, Tolpc,myHS2->ChangeSurface().Surface(), newc, C2d);
+              BuildPCurves(fprm, lprm, Tolpc,myHS2->Surface(), newc, C2d);
               if(Tolpc>myTolReached2d || myTolReached2d==0) { 
                 myTolReached2d=Tolpc;
               }	
@@ -626,8 +627,8 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
         //-- Si une des surfaces est un plan , on approxime en 2d
         //-- sur cette surface et on remonte les points 2d en 3d.
         GeomAbs_SurfaceType typs1, typs2;
-        typs1 = myHS1->Surface().GetType();
-        typs2 = myHS2->Surface().GetType();
+        typs1 = myHS1->GetType();
+        typs2 = myHS2->GetType();
         //
         if(typs1 == GeomAbs_Plane) { 
           theapp3d.Perform(myHS1, myHS2, WL, Standard_False,
@@ -701,7 +702,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
               TColgp_Array1OfPnt   tpoles(1,nbpoles);
 
               mbspc.Curve(1,tpoles2d);
-              const gp_Pln&  Pln = myHS1->Surface().Plane();
+              const gp_Pln&  Pln = myHS1->Plane();
               //
               Standard_Integer ik; 
               for(ik = 1; ik<= nbpoles; ik++) { 
@@ -764,7 +765,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
               TColgp_Array1OfPnt2d tpoles2d(1,nbpoles);
               TColgp_Array1OfPnt   tpoles(1,nbpoles);
               mbspc.Curve((myApprox1==Standard_True)? 2 : 1,tpoles2d);
-              const gp_Pln&  Pln = myHS2->Surface().Plane();
+              const gp_Pln&  Pln = myHS2->Plane();
               //
               Standard_Integer ik; 
               for(ik = 1; ik<= nbpoles; ik++) { 
@@ -984,15 +985,15 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
 //purpose  : Approx of Restriction line
 //=======================================================================
 void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL, 
-                const Handle(GeomAdaptor_HSurface)& theHS1, 
-                const Handle(GeomAdaptor_HSurface)& theHS2, 
+                const Handle(GeomAdaptor_Surface)& theHS1, 
+                const Handle(GeomAdaptor_Surface)& theHS2, 
                 Handle(Geom_Curve)& theC3d,
                 Handle(Geom2d_Curve)& theC2d1, 
                 Handle(Geom2d_Curve)& theC2d2, 
                 Standard_Real& theTolReached)
 {
-  Handle(GeomAdaptor_HSurface) aGAHS;
-  Handle(Adaptor2d_HCurve2d) anAHC2d;
+  Handle(GeomAdaptor_Surface) aGAHS;
+  Handle(Adaptor2d_Curve2d) anAHC2d;
   Standard_Real tf, tl;
   gp_Lin2d aL;
   // It is assumed that 2d curve is 2d line (rectangular surface domain)
@@ -1001,7 +1002,7 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL,
     aGAHS = theHS1;
     anAHC2d = theRL->ArcOnS1();
     theRL->ParamOnS1(tf, tl);
-    theC2d1 = Geom2dAdaptor::MakeCurve(anAHC2d->Curve2d());
+    theC2d1 = Geom2dAdaptor::MakeCurve (*anAHC2d);
     tf = Max(tf, theC2d1->FirstParameter());
     tl = Min(tl, theC2d1->LastParameter());
     theC2d1 = new Geom2d_TrimmedCurve(theC2d1, tf, tl);
@@ -1011,7 +1012,7 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL,
     aGAHS = theHS2;
     anAHC2d = theRL->ArcOnS2();
     theRL->ParamOnS2(tf, tl);
-    theC2d2 = Geom2dAdaptor::MakeCurve(anAHC2d->Curve2d());
+    theC2d2 = Geom2dAdaptor::MakeCurve (*anAHC2d);
     tf = Max(tf, theC2d2->FirstParameter());
     tl = Min(tl, theC2d2->LastParameter());
     theC2d2 = new Geom2d_TrimmedCurve(theC2d2, tf, tl);
@@ -1041,13 +1042,13 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL,
   Standard_Real aTol = Precision::Confusion();
   if(theRL->IsArcOnS1())
   {
-    Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface(theHS2->Surface());
+    Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface (*theHS2);
     BuildPCurves (tf, tl, aTol, 
                   aS, theC3d, theC2d2);
   }
   if(theRL->IsArcOnS2())
   {
-    Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface(theHS1->Surface());
+    Handle(Geom_Surface) aS = GeomAdaptor::MakeSurface (*theHS1);
     BuildPCurves (tf, tl, aTol, 
                   aS, theC3d, theC2d1);
   }

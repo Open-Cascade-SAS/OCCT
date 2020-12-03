@@ -36,7 +36,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <gp.hxx>
@@ -368,8 +368,8 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
       //----------------------------------------------------------
       Handle(Geom_SurfaceOfRevolution) GSRev = 
         Handle(Geom_SurfaceOfRevolution)::DownCast(GS);
-      Handle(GeomAdaptor_HCurve) HC = 
-        new GeomAdaptor_HCurve(GSRev->BasisCurve());
+      Handle(GeomAdaptor_Curve) HC = 
+        new GeomAdaptor_Curve(GSRev->BasisCurve());
       GeomAdaptor_SurfaceOfRevolution ASRev(HC,GAS.AxeOfRevolution());
       Axis  = ASRev.Axis();       
       Phase = EvalPhase(Edge,Face,GAS,Axis);

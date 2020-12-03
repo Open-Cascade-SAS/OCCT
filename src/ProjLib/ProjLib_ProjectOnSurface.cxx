@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <AppCont_Function.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <Approx_FitAndDivide.hxx>
@@ -37,7 +37,7 @@
 //purpose  : Evaluate current point of the projected curve
 //=======================================================================
 static gp_Pnt OnSurface_Value(const Standard_Real U,
-			      const Handle(Adaptor3d_HCurve)& myCurve,
+			      const Handle(Adaptor3d_Curve)& myCurve,
 			      Extrema_ExtPS * myExtPS)
 {
   // on essaie de rendre le point solution le plus proche.
@@ -69,7 +69,7 @@ static gp_Pnt OnSurface_Value(const Standard_Real U,
 static Standard_Boolean OnSurface_D1(const Standard_Real , // U,
 				     gp_Pnt& ,       // P,
 				     gp_Vec&       , // V,
-				     const  Handle(Adaptor3d_HCurve)& , //  myCurve,
+				     const  Handle(Adaptor3d_Curve)& , //  myCurve,
 				     Extrema_ExtPS *) // myExtPS)
 {
   return Standard_False;
@@ -86,8 +86,8 @@ class ProjLib_OnSurface : public AppCont_Function
 {
 public:
 
-  ProjLib_OnSurface(const Handle(Adaptor3d_HCurve)   & C, 
-                    const Handle(Adaptor3d_HSurface) & S)
+  ProjLib_OnSurface(const Handle(Adaptor3d_Curve)   & C, 
+                    const Handle(Adaptor3d_Surface) & S)
  : myCurve(C)
   {
     myNbPnt = 1;
@@ -95,7 +95,7 @@ public:
     Standard_Real U = myCurve->FirstParameter();
     gp_Pnt P = myCurve->Value(U);
     Standard_Real Tol = Precision::PConfusion();
-    myExtPS = new Extrema_ExtPS(P,S->Surface(),Tol,Tol);
+    myExtPS = new Extrema_ExtPS (P, *S, Tol, Tol);
   }
 
   ~ProjLib_OnSurface() { delete myExtPS; }
@@ -127,7 +127,7 @@ private:
   ProjLib_OnSurface& operator= (const ProjLib_OnSurface&);
 
 private:
-  Handle(Adaptor3d_HCurve)       myCurve;
+  Handle(Adaptor3d_Curve)       myCurve;
   Extrema_ExtPS*                 myExtPS;
 };
 
@@ -158,14 +158,14 @@ myIsDone(Standard_False)
 //=======================================================================
 
 ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface
-(const Handle(Adaptor3d_HSurface)& S ) :
+(const Handle(Adaptor3d_Surface)& S ) :
 myTolerance(0.0),
 myIsDone(Standard_False)
 {
   mySurface = S;
 }
 
-void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_HCurve)& C,
+void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C,
 				    const Standard_Real  Tolerance) 
 {
   myTolerance = Tolerance ;

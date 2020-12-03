@@ -30,13 +30,13 @@
 #include <Extrema_LocateExtPC.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -866,8 +866,8 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
       DownCast(aS->Transformed(aLoc.Transformation()));
 
     // Compute deviation between curves
-    Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(aPC, f, l);
-    Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aST);
+    Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(aPC, f, l);
+    Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(aST);
 
     Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
     if (!ComputeDeviation(aGAC, ACS, SameParameter, maxdev, NbControl - 1))
@@ -884,11 +884,11 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
     Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnPlane(edge, aFaceSurf, aFaceLoc, f, l);
     if (!aPC.IsNull())
     {
-      Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(aPC, aFirst, aLast);
+      Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(aPC, aFirst, aLast);
 
       Handle(Geom_Surface) aST =
         Handle(Geom_Surface)::DownCast(aFaceSurf->Transformed(aFaceLoc.Transformation()));
-      Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(aST);
+      Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(aST);
 
       Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
 

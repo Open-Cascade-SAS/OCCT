@@ -16,7 +16,7 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <TopoDS.hxx>
 
 //=======================================================================
@@ -32,8 +32,8 @@ StdPrs_ToolRFace::StdPrs_ToolRFace()
 //function : StdPrs_ToolRFace
 //purpose  :
 //=======================================================================
-StdPrs_ToolRFace::StdPrs_ToolRFace (const Handle(BRepAdaptor_HSurface)& theSurface)
-: myFace (theSurface->ChangeSurface().Face()),
+StdPrs_ToolRFace::StdPrs_ToolRFace (const Handle(BRepAdaptor_Surface)& theSurface)
+: myFace (theSurface->Face()),
   myHasNullCurves (Standard_False)
 {
   myFace.Orientation(TopAbs_FORWARD);

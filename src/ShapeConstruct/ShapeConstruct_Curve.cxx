@@ -20,14 +20,14 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomConvert.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
@@ -189,7 +189,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle(G
   if ( ! bspl.IsNull() ) { newc = bspl; bspl.Nullify(); }
   try {
     OCC_CATCH_SIGNALS
-    Approx_Curve3d Conv ( new GeomAdaptor_HCurve(newc,first,last),
+    Approx_Curve3d Conv ( new GeomAdaptor_Curve(newc,first,last),
 			  prec, GeomAbs_C1, 9, 1000 );
     if ( Conv.IsDone() || Conv.HasResult() ) 
       bspl = Conv.Curve();
@@ -262,7 +262,7 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct_Curve::ConvertToBSpline (const Handle
   if ( ! bspl.IsNull() ) { newc = bspl; bspl.Nullify(); }
   try {
     OCC_CATCH_SIGNALS
-    Approx_Curve2d Conv ( new Geom2dAdaptor_HCurve(newc,first,last),
+    Approx_Curve2d Conv ( new Geom2dAdaptor_Curve(newc,first,last),
 			  first, last,
 			  prec, prec, GeomAbs_C1, 9, 1000 );
     if ( Conv.IsDone() || Conv.HasResult() ) 

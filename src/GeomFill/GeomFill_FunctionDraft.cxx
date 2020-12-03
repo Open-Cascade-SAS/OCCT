@@ -15,10 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_FunctionDraft.hxx>
 #include <GeomFill_Tensor.hxx>
 #include <gp_Pnt.hxx>
@@ -37,7 +37,7 @@
 // Purpose : Initialisation de la section et de la surface d'arret
 //*******************************************************
 GeomFill_FunctionDraft::GeomFill_FunctionDraft
-  (const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C)
+  (const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C)
 {
   TheCurve = C ;
   TheSurface = S;
@@ -131,7 +131,7 @@ GeomFill_FunctionDraft::GeomFill_FunctionDraft
 // Function : DerivT
 // Purpose : calcul of the first derivative from t 
 //*******************************************************
- Standard_Boolean GeomFill_FunctionDraft::DerivT(const Handle(Adaptor3d_HCurve)& C,
+ Standard_Boolean GeomFill_FunctionDraft::DerivT(const Handle(Adaptor3d_Curve)& C,
 						const Standard_Real Param,
 						const Standard_Real W,
 						const gp_Vec & dN,
@@ -155,7 +155,7 @@ GeomFill_FunctionDraft::GeomFill_FunctionDraft
 // Function : Deriv2T
 // Purpose : calcul of the second derivatice from t
 //*******************************************************
- Standard_Boolean GeomFill_FunctionDraft::Deriv2T(const Handle(Adaptor3d_HCurve)& C,
+ Standard_Boolean GeomFill_FunctionDraft::Deriv2T(const Handle(Adaptor3d_Curve)& C,
 						 const Standard_Real Param,
 						 const Standard_Real W,
 						 const gp_Vec & d2N,

@@ -15,15 +15,9 @@
 #ifndef _BlendFunc_GenChamfer_HeaderFile
 #define _BlendFunc_GenChamfer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc_Corde.hxx>
 #include <Blend_Function.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -32,16 +26,10 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
+
 class math_Matrix;
-class gp_Pnt;
-class gp_Vec;
-class gp_Vec2d;
 class gp_Lin;
 class Blend_Point;
-
-
 
 //! Deferred class for a function used to compute a general chamfer
 class BlendFunc_GenChamfer  : public Blend_Function
@@ -50,9 +38,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BlendFunc_GenChamfer(const Handle(Adaptor3d_HSurface)& S1,
-                                       const Handle(Adaptor3d_HSurface)& S2,
-                                       const Handle(Adaptor3d_HCurve)& CG);
+  Standard_EXPORT BlendFunc_GenChamfer(const Handle(Adaptor3d_Surface)& S1,
+                                       const Handle(Adaptor3d_Surface)& S2,
+                                       const Handle(Adaptor3d_Curve)& CG);
   
   //! returns the number of equations of the function.
   Standard_EXPORT Standard_Integer NbEquations() const Standard_OVERRIDE;
@@ -178,9 +166,9 @@ public:
 
 protected:
 
-  Handle(Adaptor3d_HSurface) surf1;
-  Handle(Adaptor3d_HSurface) surf2;
-  Handle(Adaptor3d_HCurve) curv;
+  Handle(Adaptor3d_Surface) surf1;
+  Handle(Adaptor3d_Surface) surf2;
+  Handle(Adaptor3d_Curve) curv;
   Standard_Integer choix;
   Standard_Real tol;
   Standard_Real distmin;

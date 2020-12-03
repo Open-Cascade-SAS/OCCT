@@ -15,10 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -62,8 +61,8 @@ void TopOpeBRep_VPointInter::SetPoint(const IntPatch_Point& P)
 //=======================================================================
 const TopoDS_Shape&  TopOpeBRep_VPointInter::ArcOnS1() const
 {
-  const Handle(Adaptor2d_HCurve2d)& HAHC2 = myPPOI->ArcOnS1();
-  const BRepAdaptor_Curve2d& BRAC2P = *((BRepAdaptor_Curve2d*)&(HAHC2->Curve2d()));
+  const Handle(Adaptor2d_Curve2d)& HAHC2 = myPPOI->ArcOnS1();
+  const BRepAdaptor_Curve2d& BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
   return BRAC2P.Edge();
 }
 
@@ -73,8 +72,8 @@ const TopoDS_Shape&  TopOpeBRep_VPointInter::ArcOnS1() const
 //=======================================================================
 const TopoDS_Shape&  TopOpeBRep_VPointInter::ArcOnS2() const
 {
-  const Handle(Adaptor2d_HCurve2d)& HAHC2 = myPPOI->ArcOnS2();
-  const BRepAdaptor_Curve2d& BRAC2P = *((BRepAdaptor_Curve2d*)&(HAHC2->Curve2d()));
+  const Handle(Adaptor2d_Curve2d)& HAHC2 = myPPOI->ArcOnS2();
+  const BRepAdaptor_Curve2d& BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
   return BRAC2P.Edge();
 }
 

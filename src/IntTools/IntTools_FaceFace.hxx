@@ -16,25 +16,16 @@
 #ifndef _IntTools_FaceFace_HeaderFile
 #define _IntTools_FaceFace_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <IntPatch_Intersection.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <IntTools_SequenceOfCurves.hxx>
-#include <TopoDS_Face.hxx>
-#include <IntTools_SequenceOfPntOn2Faces.hxx>
+#include <IntPatch_Intersection.hxx>
 #include <IntSurf_ListOfPntOn2S.hxx>
-class GeomAdaptor_HSurface;
-class IntTools_Context;
-class StdFail_NotDone;
-class TopoDS_Face;
-class Adaptor3d_TopolTool;
+#include <IntTools_SequenceOfCurves.hxx>
+#include <IntTools_SequenceOfPntOn2Faces.hxx>
+#include <TopoDS_Face.hxx>
 
+class IntTools_Context;
+class Adaptor3d_TopolTool;
 
 //! This class provides the intersection of
 //! face's underlying surfaces.
@@ -125,8 +116,8 @@ protected:
   Standard_Boolean myIsDone;
   IntPatch_Intersection myIntersector;
   GeomInt_LineConstructor myLConstruct;
-  Handle(GeomAdaptor_HSurface) myHS1;
-  Handle(GeomAdaptor_HSurface) myHS2;
+  Handle(GeomAdaptor_Surface) myHS1;
+  Handle(GeomAdaptor_Surface) myHS2;
   Standard_Integer myNbrestr;
   Standard_Boolean myApprox;
   Standard_Boolean myApprox1;

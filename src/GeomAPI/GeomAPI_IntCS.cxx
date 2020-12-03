@@ -18,8 +18,8 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_IntCS.hxx>
 #include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
@@ -58,10 +58,10 @@ void GeomAPI_IntCS::Perform(const Handle(Geom_Curve)&   C,
 {
   myCurve = C;
 
-  Handle(GeomAdaptor_HCurve) HC = 
-    new GeomAdaptor_HCurve(C);
-  Handle(GeomAdaptor_HSurface) HS = 
-    new GeomAdaptor_HSurface(S);
+  Handle(GeomAdaptor_Curve) HC = 
+    new GeomAdaptor_Curve(C);
+  Handle(GeomAdaptor_Surface) HS = 
+    new GeomAdaptor_Surface(S);
 
   myIntCS.Perform(HC, HS);
 }

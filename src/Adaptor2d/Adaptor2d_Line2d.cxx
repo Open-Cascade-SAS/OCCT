@@ -11,10 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor2d_HLine2d.hxx>
 #include <Adaptor2d_Line2d.hxx>
+
 #include <ElCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -30,6 +28,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_Line2d, Adaptor2d_Curve2d)
 
 //=======================================================================
 //function : Adaptor2d_Line2d
@@ -136,13 +136,13 @@ void Adaptor2d_Line2d::Intervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor2d_HCurve2d) Adaptor2d_Line2d::Trim
+Handle(Adaptor2d_Curve2d) Adaptor2d_Line2d::Trim
 (const Standard_Real First,
  const Standard_Real Last,
  const Standard_Real) const 
 {
-  Handle(Adaptor2d_HLine2d) HL = new Adaptor2d_HLine2d();
-  HL->ChangeCurve2d().Load(gp_Lin2d(myAx2d),First,Last);
+  Handle(Adaptor2d_Line2d) HL = new Adaptor2d_Line2d();
+  HL->Load(gp_Lin2d(myAx2d),First,Last);
   return HL;
 }
 

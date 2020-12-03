@@ -17,10 +17,7 @@
 #ifndef _BRepAdaptor_Curve_HeaderFile
 #define _BRepAdaptor_Curve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <gp_Trsf.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <TopoDS_Edge.hxx>
@@ -31,7 +28,7 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
-class Adaptor3d_HCurveOnSurface;
+
 class Standard_NullObject;
 class Standard_DomainError;
 class Standard_OutOfRange;
@@ -41,7 +38,6 @@ class TopoDS_Face;
 class gp_Trsf;
 class GeomAdaptor_Curve;
 class Adaptor3d_CurveOnSurface;
-class Adaptor3d_HCurve;
 class gp_Pnt;
 class gp_Vec;
 class gp_Lin;
@@ -53,6 +49,7 @@ class Geom_BezierCurve;
 class Geom_BSplineCurve;
 class Geom_OffsetCurve;
 
+DEFINE_STANDARD_HANDLE(BRepAdaptor_Curve, Adaptor3d_Curve)
 
 //! The Curve from BRepAdaptor  allows to use  an Edge
 //! of the BRep topology like a 3D curve.
@@ -68,11 +65,9 @@ class Geom_OffsetCurve;
 //! an Edge and a Face.
 class BRepAdaptor_Curve  : public Adaptor3d_Curve
 {
+  DEFINE_STANDARD_RTTIEXT(BRepAdaptor_Curve, Adaptor3d_Curve)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   //! Creates an undefined Curve with no Edge loaded.
   Standard_EXPORT BRepAdaptor_Curve();
   
@@ -145,7 +140,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
@@ -226,30 +221,13 @@ public:
 
   Standard_EXPORT Handle(Geom_OffsetCurve) OffsetCurve() const Standard_OVERRIDE;
 
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   gp_Trsf myTrsf;
   GeomAdaptor_Curve myCurve;
-  Handle(Adaptor3d_HCurveOnSurface) myConSurf;
+  Handle(Adaptor3d_CurveOnSurface) myConSurf;
   TopoDS_Edge myEdge;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepAdaptor_Curve_HeaderFile

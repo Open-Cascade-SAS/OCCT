@@ -19,7 +19,7 @@
 #include <BRep_Builder.hxx>
 #include <Font_FTFont.hxx>
 #include <Font_TextFormatter.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_XY.hxx>
@@ -245,7 +245,7 @@ protected: //! @name Protected fields
 protected: //! @name Shared temporary variables for glyph construction
 
   Adaptor3d_CurveOnSurface myCurvOnSurf;
-  Handle(Geom2dAdaptor_HCurve) myCurve2dAdaptor;
+  Handle(Geom2dAdaptor_Curve) myCurve2dAdaptor;
   Geom2dConvert_CompCurveToBSplineCurve myConcatMaker;
   TColgp_Array1OfPnt2d     my3Poles;
   TColgp_Array1OfPnt2d     my4Poles;

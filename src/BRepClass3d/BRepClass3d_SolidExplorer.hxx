@@ -17,29 +17,20 @@
 #ifndef _BRepClass3d_SolidExplorer_HeaderFile
 #define _BRepClass3d_SolidExplorer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Bnd_Box.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <TopExp_Explorer.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepClass3d_BndBoxTree.hxx>
 #include <BRepClass3d_MapOfInter.hxx>
 #include <TopAbs_State.hxx>
-#include <BRepClass3d_BndBoxTree.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-class TopoDS_Shape;
 class gp_Pnt;
 class TopoDS_Face;
 class gp_Vec;
-class BRepAdaptor_HSurface;
 class TopoDS_Shell;
 class gp_Lin;
-class Bnd_Box;
 class IntCurvesFace_Intersector;
 
 //! Provide an exploration of a BRep Shape for the classification.
@@ -79,11 +70,11 @@ public:
   
   Standard_EXPORT Standard_Boolean PointInTheFace (const TopoDS_Face& F, gp_Pnt& P, Standard_Real& u, Standard_Real& v, Standard_Real& Param, Standard_Integer& Index) const;
   
-  Standard_EXPORT Standard_Boolean PointInTheFace (const TopoDS_Face& F, gp_Pnt& P, Standard_Real& u, Standard_Real& v, Standard_Real& Param, Standard_Integer& Index, const Handle(BRepAdaptor_HSurface)& surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2) const;
+  Standard_EXPORT Standard_Boolean PointInTheFace (const TopoDS_Face& F, gp_Pnt& P, Standard_Real& u, Standard_Real& v, Standard_Real& Param, Standard_Integer& Index, const Handle(BRepAdaptor_Surface)& surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2) const;
   
   //! <Index> gives point index  to  search from and returns
   //! point index of succeseful search
-  Standard_EXPORT Standard_Boolean PointInTheFace (const TopoDS_Face& F, gp_Pnt& P, Standard_Real& u, Standard_Real& v, Standard_Real& Param, Standard_Integer& Index, const Handle(BRepAdaptor_HSurface)& surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec& theVecD1U, gp_Vec& theVecD1V) const;
+  Standard_EXPORT Standard_Boolean PointInTheFace (const TopoDS_Face& F, gp_Pnt& P, Standard_Real& u, Standard_Real& v, Standard_Real& Param, Standard_Integer& Index, const Handle(BRepAdaptor_Surface)& surf, const Standard_Real u1, const Standard_Real v1, const Standard_Real u2, const Standard_Real v2, gp_Vec& theVecD1U, gp_Vec& theVecD1V) const;
   
   //! Starts an exploration of the shells.
   Standard_EXPORT void InitShell();
@@ -157,7 +148,7 @@ protected:
 
   Standard_EXPORT TopAbs_State ClassifyUVPoint
                    (const IntCurvesFace_Intersector& theIntersector,
-                    const Handle(BRepAdaptor_HSurface)& theSurf,
+                    const Handle(BRepAdaptor_Surface)& theSurf,
                     const gp_Pnt2d& theP2d) const;
 
 private:

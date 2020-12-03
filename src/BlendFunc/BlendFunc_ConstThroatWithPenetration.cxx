@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ConstThroatWithPenetration.hxx>
@@ -36,9 +36,9 @@
 //=======================================================================
 
 BlendFunc_ConstThroatWithPenetration::
-BlendFunc_ConstThroatWithPenetration(const Handle(Adaptor3d_HSurface)& S1,
-                                     const Handle(Adaptor3d_HSurface)& S2,
-                                     const Handle(Adaptor3d_HCurve)& C)
+BlendFunc_ConstThroatWithPenetration(const Handle(Adaptor3d_Surface)& S1,
+                                     const Handle(Adaptor3d_Surface)& S2,
+                                     const Handle(Adaptor3d_Curve)& C)
   : BlendFunc_ConstThroat(S1,S2,C)
 {
 }

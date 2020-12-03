@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ChAsym.hxx>
@@ -35,9 +35,9 @@
 //function : BlendFunc_ChAsym
 //purpose  : 
 //=======================================================================
-BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_HSurface)& S1,
-                                   const Handle(Adaptor3d_HSurface)& S2,
-                                   const Handle(Adaptor3d_HCurve)& C) :
+BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_Surface)& S1,
+                                   const Handle(Adaptor3d_Surface)& S2,
+                                   const Handle(Adaptor3d_Curve)& C) :
     surf1(S1),surf2(S2),
     curv(C), tcurv(C),
     param(0),

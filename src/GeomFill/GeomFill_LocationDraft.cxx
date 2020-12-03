@@ -14,16 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomFill_LocationDraft.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_DraftTrihedron.hxx>
 #include <GeomFill_FunctionDraft.hxx>
-#include <GeomFill_LocationDraft.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_Tensor.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
@@ -105,7 +105,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 //Purpose : Calcul des poles sur la surfaces d'arret (intersection 
 // entre la generatrice et la surface en myNbPts points de la section)
 //==================================================================
- void GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
+ void GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
   myTrimmed = C;
@@ -118,7 +118,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 //Function: SetStopSurf
 //Purpose : 
 //==================================================================
- void GeomFill_LocationDraft::SetStopSurf(const Handle(Adaptor3d_HSurface)& Surf) 
+ void GeomFill_LocationDraft::SetStopSurf(const Handle(Adaptor3d_Surface)& Surf) 
 {
   mySurf = Surf;
   Prepare();
@@ -171,7 +171,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
       L = new (Geom_Line) (P, D);
    
       IntCurveSurface_HInter Int; // intersection surface / generatrice
-      Handle(GeomAdaptor_HCurve) AC = new (GeomAdaptor_HCurve) (L);
+      Handle(GeomAdaptor_Curve) AC = new (GeomAdaptor_Curve) (L);
       Int.Perform(AC, mySurf); // calcul de l'intersection
 
       if (Int.NbPoints() > 0) // il y a au moins 1 intersection
@@ -201,7 +201,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 //Function: GetCurve
 //Purpose : return the path
 //==================================================================
- const Handle(Adaptor3d_HCurve)& GeomFill_LocationDraft::GetCurve() const
+ const Handle(Adaptor3d_Curve)& GeomFill_LocationDraft::GetCurve() const
 {
   return myCurve;
 }
@@ -263,7 +263,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
     D = Cos(myAngle)*B + Sin(myAngle)*N; 
     
     Handle(Geom_Line) L = new (Geom_Line) (P, D);
-    Handle(GeomAdaptor_HCurve) G = new (GeomAdaptor_HCurve) (L); 
+    Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve) (L); 
     
     Standard_Real t1,t2,Paramt1,t2Param;
     Standard_Real U0=0,V0=0,W0=0;
@@ -375,7 +375,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
       D = Cos(myAngle)*B + Sin(myAngle)*N; 
 
       Handle(Geom_Line) L = new (Geom_Line) (P, D);
-      Handle(GeomAdaptor_HCurve) G = new (GeomAdaptor_HCurve) (L); 
+      Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve) (L); 
   
       Standard_Real t1,t2,Paramt1,t2Param;
       Standard_Real U0=0,V0=0,W0=0;
@@ -513,7 +513,7 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
       D = Cos(myAngle) * B + Sin(myAngle) * N; 
 
       Handle(Geom_Line) L = new (Geom_Line) (P, D);
-      Handle(GeomAdaptor_HCurve) G = new (GeomAdaptor_HCurve) (L); 
+      Handle(GeomAdaptor_Curve) G = new (GeomAdaptor_Curve) (L); 
   
       Standard_Real t1,t2,Paramt1,t2Param;
       Standard_Real U0=0,V0=0,W0=0;

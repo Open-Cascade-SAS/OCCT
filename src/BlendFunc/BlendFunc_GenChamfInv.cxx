@@ -13,9 +13,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ChamfInv.hxx>
 #include <math_Matrix.hxx>
@@ -26,9 +26,9 @@
 //function : BlendFunc_GenChamfInv
 //purpose  : 
 //=======================================================================
-BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const Handle(Adaptor3d_HSurface)& S1,
-                                             const Handle(Adaptor3d_HSurface)& S2,
-                                             const Handle(Adaptor3d_HCurve)&   C)
+BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const Handle(Adaptor3d_Surface)& S1,
+                                             const Handle(Adaptor3d_Surface)& S2,
+                                             const Handle(Adaptor3d_Curve)&   C)
 : surf1(S1),
   surf2(S2),
   curv(C),
@@ -52,7 +52,7 @@ Standard_Integer BlendFunc_GenChamfInv::NbEquations () const
 //purpose  : 
 //=======================================================================
 
-void BlendFunc_GenChamfInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& C)
+void BlendFunc_GenChamfInv::Set(const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& C)
 {
   first = OnFirst;
   csurf = C;

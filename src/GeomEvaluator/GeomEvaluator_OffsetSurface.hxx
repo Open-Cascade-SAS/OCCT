@@ -15,12 +15,10 @@
 #ifndef _GeomEvaluator_OffsetSurface_HeaderFile
 #define _GeomEvaluator_OffsetSurface_HeaderFile
 
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomEvaluator_Surface.hxx>
-
 #include <Geom_OsculatingSurface.hxx>
 #include <Geom_Surface.hxx>
-
-class GeomAdaptor_HSurface;
 
 //! Allows to calculate values and derivatives for offset surfaces
 class GeomEvaluator_OffsetSurface : public GeomEvaluator_Surface
@@ -33,7 +31,7 @@ public:
       const Handle(Geom_OsculatingSurface)& theOscSurf = Handle(Geom_OsculatingSurface)());
   //! Initialize evaluator by surface adaptor
   Standard_EXPORT GeomEvaluator_OffsetSurface(
-      const Handle(GeomAdaptor_HSurface)& theBase,
+      const Handle(GeomAdaptor_Surface)& theBase,
       const Standard_Real theOffset,
       const Handle(Geom_OsculatingSurface)& theOscSurf = Handle(Geom_OsculatingSurface)());
 
@@ -119,7 +117,7 @@ private:
 
 private:
   Handle(Geom_Surface)       myBaseSurf;
-  Handle(GeomAdaptor_HSurface) myBaseAdaptor;
+  Handle(GeomAdaptor_Surface) myBaseAdaptor;
 
   Standard_Real myOffset; ///< offset value
   Handle(Geom_OsculatingSurface) myOscSurf; ///< auxiliary osculating surface

@@ -32,7 +32,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class GeomFill_TrihedronLaw;
-class Adaptor3d_HCurve;
 class Standard_OutOfRange;
 class gp_Mat;
 class GeomFill_LocationLaw;
@@ -58,9 +57,9 @@ public:
   
   Standard_EXPORT GeomFill_CurveAndTrihedron(const Handle(GeomFill_TrihedronLaw)& Trihedron);
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual const Handle(Adaptor3d_HCurve)& GetCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
   
   //! Set a transformation Matrix like   the law M(t) become
   //! Mat * M(t)
@@ -144,8 +143,8 @@ private:
 
   Standard_Boolean WithTrans;
   Handle(GeomFill_TrihedronLaw) myLaw;
-  Handle(Adaptor3d_HCurve) myCurve;
-  Handle(Adaptor3d_HCurve) myTrimmed;
+  Handle(Adaptor3d_Curve) myCurve;
+  Handle(Adaptor3d_Curve) myTrimmed;
   gp_Pnt Point;
   gp_Vec V1;
   gp_Vec V2;

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <ElCLib.hxx>
@@ -34,6 +34,8 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_ElSpine, Adaptor3d_Curve)
 
 //=======================================================================
 //function : ChFiDS_ElSpine
@@ -126,7 +128,7 @@ void ChFiDS_ElSpine::Intervals(TColStd_Array1OfReal& T,const GeomAbs_Shape S) co
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) ChFiDS_ElSpine::Trim(const Standard_Real First,
+Handle(Adaptor3d_Curve) ChFiDS_ElSpine::Trim(const Standard_Real First,
 					    const Standard_Real Last,
 					    const Standard_Real Tol) const
 {

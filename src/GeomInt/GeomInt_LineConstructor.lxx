@@ -34,8 +34,8 @@ inline GeomInt_LineConstructor::GeomInt_LineConstructor ()
 
 inline void GeomInt_LineConstructor::Load (const Handle(Adaptor3d_TopolTool)& D1,
                                            const Handle(Adaptor3d_TopolTool)& D2,
-                                           const Handle(GeomAdaptor_HSurface)& S1,
-                                           const Handle(GeomAdaptor_HSurface)& S2)
+                                           const Handle(GeomAdaptor_Surface)& S1,
+                                           const Handle(GeomAdaptor_Surface)& S2)
 {
   myDom1 = D1;
   myDom2 = D2;

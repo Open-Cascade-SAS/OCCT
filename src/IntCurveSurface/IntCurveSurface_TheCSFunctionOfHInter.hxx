@@ -17,24 +17,15 @@
 #ifndef _IntCurveSurface_TheCSFunctionOfHInter_HeaderFile
 #define _IntCurveSurface_TheCSFunctionOfHInter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
+
 class Adaptor3d_HSurfaceTool;
 class IntCurveSurface_TheHCurveTool;
 class math_Matrix;
-class gp_Pnt;
-
-
 
 class IntCurveSurface_TheCSFunctionOfHInter  : public math_FunctionSetWithDerivatives
 {
@@ -43,7 +34,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT IntCurveSurface_TheCSFunctionOfHInter(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C);
   
   Standard_EXPORT Standard_Integer NbVariables() const;
   
@@ -59,9 +50,9 @@ public:
   
   Standard_EXPORT Standard_Real Root() const;
   
-  Standard_EXPORT const Handle(Adaptor3d_HSurface)& AuxillarSurface() const;
+  Standard_EXPORT const Handle(Adaptor3d_Surface)& AuxillarSurface() const;
   
-  Standard_EXPORT const Handle(Adaptor3d_HCurve)& AuxillarCurve() const;
+  Standard_EXPORT const Handle(Adaptor3d_Curve)& AuxillarCurve() const;
 
 
 
@@ -76,8 +67,8 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surface;
-  Handle(Adaptor3d_HCurve) curve;
+  Handle(Adaptor3d_Surface) surface;
+  Handle(Adaptor3d_Curve) curve;
   gp_Pnt p;
   Standard_Real f;
 

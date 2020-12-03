@@ -161,9 +161,7 @@
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ExtremaSurfaceSurface.hxx>
 #include <GeomAPI_IntCS.hxx>

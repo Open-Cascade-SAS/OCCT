@@ -17,21 +17,17 @@
 #ifndef _BRepOffset_Inter2d_HeaderFile
 #define _BRepOffset_Inter2d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+
 class BRepAlgo_AsDes;
-class TopoDS_Face;
 class BRepOffset_Analyse;
 class BRepOffset_Offset;
+class TopoDS_Edge;
+class TopoDS_Face;
 
-
-//! Computes the intersections betwwen edges on a face
+//! Computes the intersections between edges on a face
 //! stores result is SD as AsDes from BRepOffset.
 class BRepOffset_Inter2d 
 {
@@ -93,10 +89,6 @@ public:
   Standard_EXPORT static Standard_Boolean ExtentEdge (const TopoDS_Edge& E,
                                                       TopoDS_Edge& NE,
                                                       const Standard_Real theOffset);
-
-protected:
-
-private:
 
 };
 

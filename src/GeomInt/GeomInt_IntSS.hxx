@@ -17,22 +17,15 @@
 #ifndef _GeomInt_IntSS_HeaderFile
 #define _GeomInt_IntSS_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <IntPatch_Intersection.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <Standard_Integer.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
 #include <GeomInt_VectorOfReal.hxx>
-class GeomAdaptor_HSurface;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
@@ -41,8 +34,6 @@ class IntPatch_RLine;
 class Bnd_Box2d;
 class Adaptor3d_TopolTool;
 class IntPatch_WLine;
-
-
 
 class GeomInt_IntSS 
 {
@@ -60,13 +51,13 @@ public:
   Standard_EXPORT void Perform (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real Tol, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
   
   //! intersection of adapted surfaces
-    void Perform (const Handle(GeomAdaptor_HSurface)& HS1, const Handle(GeomAdaptor_HSurface)& HS2, const Standard_Real Tol, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
+    void Perform (const Handle(GeomAdaptor_Surface)& HS1, const Handle(GeomAdaptor_Surface)& HS2, const Standard_Real Tol, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
   
   //! general intersection using a starting point
   Standard_EXPORT void Perform (const Handle(Geom_Surface)& S1, const Handle(Geom_Surface)& S2, const Standard_Real Tol, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
   
   //! intersection of adapted surfaces using a starting point
-    void Perform (const Handle(GeomAdaptor_HSurface)& HS1, const Handle(GeomAdaptor_HSurface)& HS2, const Standard_Real Tol, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
+    void Perform (const Handle(GeomAdaptor_Surface)& HS1, const Handle(GeomAdaptor_Surface)& HS2, const Standard_Real Tol, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Boolean Approx = Standard_True, const Standard_Boolean ApproxS1 = Standard_False, const Standard_Boolean ApproxS2 = Standard_False);
   
     Standard_Boolean IsDone() const;
   
@@ -101,7 +92,7 @@ public:
   Standard_EXPORT void TolFixTangents (Standard_Real& aTolCheck, Standard_Real& aTolAngCheck);
   
   //! converts RLine to Geom(2d)_Curve.
-  Standard_EXPORT static void TreatRLine (const Handle(IntPatch_RLine)& theRL, const Handle(GeomAdaptor_HSurface)& theHS1, const Handle(GeomAdaptor_HSurface)& theHS2, Handle(Geom_Curve)& theC3d, Handle(Geom2d_Curve)& theC2d1, Handle(Geom2d_Curve)& theC2d2, Standard_Real& theTolReached);
+  Standard_EXPORT static void TreatRLine (const Handle(IntPatch_RLine)& theRL, const Handle(GeomAdaptor_Surface)& theHS1, const Handle(GeomAdaptor_Surface)& theHS2, Handle(Geom_Curve)& theC3d, Handle(Geom2d_Curve)& theC2d1, Handle(Geom2d_Curve)& theC2d2, Standard_Real& theTolReached);
   
   //! creates 2D-curve on given surface from given 3D-curve
   Standard_EXPORT static void BuildPCurves (const Standard_Real f, const Standard_Real l, Standard_Real& Tol, const Handle(Geom_Surface)& S, const Handle(Geom_Curve)& C, Handle(Geom2d_Curve)& C2d);
@@ -132,8 +123,8 @@ private:
 
   IntPatch_Intersection myIntersector;
   GeomInt_LineConstructor myLConstruct;
-  Handle(GeomAdaptor_HSurface) myHS1;
-  Handle(GeomAdaptor_HSurface) myHS2;
+  Handle(GeomAdaptor_Surface) myHS1;
+  Handle(GeomAdaptor_Surface) myHS2;
   Standard_Integer myNbrestr;
   TColGeom_SequenceOfCurve sline;
   TColGeom2d_SequenceOfCurve slineS1;

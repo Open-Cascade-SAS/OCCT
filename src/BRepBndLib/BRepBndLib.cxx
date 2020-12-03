@@ -34,8 +34,8 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BRepTools.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -402,7 +402,7 @@ Standard_Boolean CanUseEdges(const Adaptor3d_Surface& BS)
   }
   else if(aST == GeomAbs_SurfaceOfRevolution)
   {
-    const Handle(Adaptor3d_HCurve)& aBC = BS.BasisCurve();
+    const Handle(Adaptor3d_Curve)& aBC = BS.BasisCurve();
     if(aBC->GetType() == GeomAbs_Line)
     {
       return Standard_True;
@@ -414,8 +414,8 @@ Standard_Boolean CanUseEdges(const Adaptor3d_Surface& BS)
   }
   else if(aST == GeomAbs_OffsetSurface)
   {
-    const Handle(Adaptor3d_HSurface)& aS = BS.BasisSurface();
-    return CanUseEdges(aS->Surface());
+    const Handle(Adaptor3d_Surface)& aS = BS.BasisSurface();
+    return CanUseEdges (*aS);
   }
   else if(aST == GeomAbs_BSplineSurface)
   {

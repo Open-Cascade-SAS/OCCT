@@ -27,7 +27,7 @@
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2dTanOnRadGeo.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_QCurve.hxx>
@@ -124,7 +124,7 @@ parcen3(1,aNbSolMAX)
     IntRes2d_Domain D1;
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
-      Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
+      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       //Adaptor2d_OffsetCurve C2(HCu1,Coef(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -Coef(jcote1));
       firstparam = Max(C2.FirstParameter(),thefirst);
@@ -238,7 +238,7 @@ parcen3(1,aNbSolMAX)
     D1.SetEquivalentParameters(0.,2.*M_PI);
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
-      Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
+      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       //Adaptor2d_OffsetCurve C2(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C2(HCu1, -cote1(jcote1));
       firstparam = Max(C2.FirstParameter(),thefirst);
@@ -594,14 +594,14 @@ parcen3(1,aNbSolMAX)
     }
     Geom2dInt_GInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
-      Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
+      Handle(Geom2dAdaptor_Curve) HCu1 = new Geom2dAdaptor_Curve(Cu1);
       //Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
       firstparam = Max(C1.FirstParameter(),thefirst);
       lastparam  = Min(C1.LastParameter(),thelast);
       IntRes2d_Domain D1(C1.Value(firstparam), firstparam, Tol,
                          C1.Value(lastparam), lastparam, Tol);
-      Handle(Geom2dAdaptor_HCurve) HOnCurv = new Geom2dAdaptor_HCurve(OnCurv);
+      Handle(Geom2dAdaptor_Curve) HOnCurv = new Geom2dAdaptor_Curve(OnCurv);
       Adaptor2d_OffsetCurve C2(HOnCurv);
       firstparam = Max(C2.FirstParameter(),thefirst);
       lastparam  = Min(C2.LastParameter(),thelast);

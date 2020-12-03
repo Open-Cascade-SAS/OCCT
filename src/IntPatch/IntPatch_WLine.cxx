@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_Point.hxx>
@@ -945,12 +945,12 @@ Standard_Boolean IntPatch_WLine::HasArcOnS1() const  {
   return(hasArcOnS1);
 }
 
-void IntPatch_WLine::SetArcOnS1(const Handle(Adaptor2d_HCurve2d)& A) { 
+void IntPatch_WLine::SetArcOnS1(const Handle(Adaptor2d_Curve2d)& A) { 
   hasArcOnS1=Standard_True;
   theArcOnS1=A;
 }
 
-const Handle(Adaptor2d_HCurve2d)& IntPatch_WLine::GetArcOnS1() const  { 
+const Handle(Adaptor2d_Curve2d)& IntPatch_WLine::GetArcOnS1() const  { 
   return(theArcOnS1);
 }
 
@@ -958,12 +958,12 @@ Standard_Boolean IntPatch_WLine::HasArcOnS2() const  {
   return(hasArcOnS2);
 }
 
-void IntPatch_WLine::SetArcOnS2(const Handle(Adaptor2d_HCurve2d)& A) { 
+void IntPatch_WLine::SetArcOnS2(const Handle(Adaptor2d_Curve2d)& A) { 
   hasArcOnS2=Standard_True;
   theArcOnS2=A;
 }
 
-const Handle(Adaptor2d_HCurve2d)& IntPatch_WLine::GetArcOnS2() const  { 
+const Handle(Adaptor2d_Curve2d)& IntPatch_WLine::GetArcOnS2() const  { 
   return(theArcOnS2);
 }
 

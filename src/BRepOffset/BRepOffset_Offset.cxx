@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepOffset_Offset.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
@@ -28,7 +28,6 @@
 #include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <BRepOffset.hxx>
-#include <BRepOffset_Offset.hxx>
 #include <BRepOffset_Tool.hxx>
 #include <BRepTools.hxx>
 #include <ElSLib.hxx>
@@ -37,7 +36,6 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -50,8 +48,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
@@ -1057,11 +1053,11 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
   Handle(Geom_Curve) CP = BRep_Tool::Curve(Path,Loc,f[0],l[0]);
   CP = new Geom_TrimmedCurve(CP,f[0], l[0]);
   CP->Transform(Loc.Transformation());
-  Handle(GeomAdaptor_HCurve) HCP = new GeomAdaptor_HCurve(CP);
+  Handle(GeomAdaptor_Curve) HCP = new GeomAdaptor_Curve(CP);
 
   Handle(Geom_Curve) C1 = BRep_Tool::Curve(Edge1,Loc,f[1],l[1]);
 
-  Handle(Adaptor3d_HCurve) HEdge1;
+  Handle(Adaptor3d_Curve) HEdge1;
   Standard_Boolean C1is3D = Standard_True;
   if (C1.IsNull()) {
     C1is3D = Standard_False;
@@ -1070,15 +1066,15 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     BRep_Tool::CurveOnSurface(Edge1,C12d,S1,Loc,f[1],l[1]);
     S1 = Handle(Geom_Surface)::DownCast(S1->Transformed(Loc.Transformation()));
     C12d = new Geom2d_TrimmedCurve(C12d,f[1],l[1]);
-    Handle(GeomAdaptor_HSurface) HS1 = new GeomAdaptor_HSurface(S1);
-    Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C12d);
+    Handle(GeomAdaptor_Surface) HS1 = new GeomAdaptor_Surface(S1);
+    Handle(Geom2dAdaptor_Curve) HC1 = new Geom2dAdaptor_Curve(C12d);
     Adaptor3d_CurveOnSurface Cons(HC1,HS1);
-    HEdge1 = new Adaptor3d_HCurveOnSurface(Cons);
+    HEdge1 = new Adaptor3d_CurveOnSurface(Cons);
   }
   else {
     C1 = new Geom_TrimmedCurve(C1, f[1], l[1]);
     C1->Transform(Loc.Transformation());
-    HEdge1 = new GeomAdaptor_HCurve(C1);
+    HEdge1 = new GeomAdaptor_Curve(C1);
     GeomAdaptor_Curve AC1(C1);
     if ( AC1.GetType() == GeomAbs_Circle) {
       C1Denerated = (AC1.Circle().Radius() < Precision::Confusion());
@@ -1087,7 +1083,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
 
   Handle(Geom_Curve) C2 = BRep_Tool::Curve(Edge2,Loc,f[2],l[2]);
 
-  Handle(Adaptor3d_HCurve) HEdge2;
+  Handle(Adaptor3d_Curve) HEdge2;
   Standard_Boolean C2is3D = Standard_True;
   if (C2.IsNull()) {
     C2is3D = Standard_False;
@@ -1096,15 +1092,15 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
     BRep_Tool::CurveOnSurface(Edge2,C12d,S1,Loc,f[2],l[2]);
     S1 = Handle(Geom_Surface)::DownCast(S1->Transformed(Loc.Transformation()));
     C12d = new Geom2d_TrimmedCurve(C12d,f[2],l[2]);
-    Handle(GeomAdaptor_HSurface) HS1 = new GeomAdaptor_HSurface(S1);
-    Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C12d);
+    Handle(GeomAdaptor_Surface) HS1 = new GeomAdaptor_Surface(S1);
+    Handle(Geom2dAdaptor_Curve) HC1 = new Geom2dAdaptor_Curve(C12d);
     Adaptor3d_CurveOnSurface Cons(HC1,HS1);
-    HEdge2 = new Adaptor3d_HCurveOnSurface(Cons);
+    HEdge2 = new Adaptor3d_CurveOnSurface(Cons);
   }
   else {
     C2 = new Geom_TrimmedCurve(C2, f[2], l[2]);
     C2->Transform(Loc.Transformation());
-    HEdge2 = new GeomAdaptor_HCurve(C2);
+    HEdge2 = new GeomAdaptor_Curve(C2);
     GeomAdaptor_Curve AC2(C2);
     if ( AC2.GetType() == GeomAbs_Circle) {
       C2Denerated = (AC2.Circle().Radius() < Precision::Confusion());

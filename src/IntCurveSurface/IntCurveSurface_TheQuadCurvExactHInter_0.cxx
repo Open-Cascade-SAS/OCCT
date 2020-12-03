@@ -16,19 +16,19 @@
 
 #include <IntCurveSurface_TheQuadCurvExactHInter.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <IntCurveSurface_TheHCurveTool.hxx>
 #include <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
  
 
-#define TheSurface Handle(Adaptor3d_HSurface)
-#define TheSurface_hxx <Adaptor3d_HSurface.hxx>
+#define TheSurface Handle(Adaptor3d_Surface)
+#define TheSurface_hxx <Adaptor3d_Surface.hxx>
 #define TheSurfaceTool Adaptor3d_HSurfaceTool
 #define TheSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
-#define TheCurve Handle(Adaptor3d_HCurve)
-#define TheCurve_hxx <Adaptor3d_HCurve.hxx>
+#define TheCurve Handle(Adaptor3d_Curve)
+#define TheCurve_hxx <Adaptor3d_Curve.hxx>
 #define TheCurveTool IntCurveSurface_TheHCurveTool
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
 #define IntCurveSurface_TheQuadCurvFunc IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter

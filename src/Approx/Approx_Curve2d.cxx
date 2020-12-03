@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 #include <Approx_Curve2d.hxx>
@@ -30,7 +30,7 @@
 class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
 {
  public:
-  Approx_Curve2d_Eval (const Handle(Adaptor2d_HCurve2d)& theFunc, 
+  Approx_Curve2d_Eval (const Handle(Adaptor2d_Curve2d)& theFunc, 
                        Standard_Real First, Standard_Real Last)
     : fonct(theFunc) { StartEndSav[0] = First; StartEndSav[1] = Last; }
   
@@ -42,7 +42,7 @@ class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
                          Standard_Integer *ErrorCode);
   
  private:
-  Handle(Adaptor2d_HCurve2d) fonct;
+  Handle(Adaptor2d_Curve2d) fonct;
   Standard_Real StartEndSav[2];
 };
 
@@ -96,7 +96,7 @@ void Approx_Curve2d_Eval::Evaluate (Standard_Integer *Dimension,
   }
 }
 
- Approx_Curve2d::Approx_Curve2d(const Handle(Adaptor2d_HCurve2d)& C2D,const Standard_Real First,const Standard_Real Last,const Standard_Real TolU,const Standard_Real TolV,const GeomAbs_Shape Continuity,const Standard_Integer MaxDegree,const Standard_Integer MaxSegments)
+ Approx_Curve2d::Approx_Curve2d(const Handle(Adaptor2d_Curve2d)& C2D,const Standard_Real First,const Standard_Real Last,const Standard_Real TolU,const Standard_Real TolV,const GeomAbs_Shape Continuity,const Standard_Integer MaxDegree,const Standard_Integer MaxSegments)
 {
   C2D->Trim(First,Last,Precision::PConfusion());
 

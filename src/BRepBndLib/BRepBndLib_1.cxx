@@ -11,9 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
 #include <GProp_GProps.hxx>
 #include <TopoDS_Shape.hxx>
@@ -33,7 +33,7 @@
 #include <Geom_Line.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -80,12 +80,12 @@ static Standard_Boolean IsPlanar(const Adaptor3d_Surface& theS)
   const GeomAbs_SurfaceType aST = theS.GetType();
   if(aST == GeomAbs_OffsetSurface)
   {
-    return IsPlanar(theS.BasisSurface()->Surface());
+    return IsPlanar (*theS.BasisSurface());
   }
 
   if(aST == GeomAbs_SurfaceOfExtrusion)
   {
-    return IsLinear(theS.BasisCurve()->Curve());
+    return IsLinear (*theS.BasisCurve());
   }
 
   if((aST == GeomAbs_BSplineSurface) || (aST == GeomAbs_BezierSurface))

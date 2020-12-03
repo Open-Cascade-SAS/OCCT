@@ -17,22 +17,16 @@
 #ifndef _ChFiDS_FilSpine_HeaderFile
 #define _ChFiDS_FilSpine_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TColgp_SequenceOfXY.hxx>
-#include <Law_Laws.hxx>
 #include <ChFiDS_Spine.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
+#include <ChFiDS_ElSpine.hxx>
+#include <Law_Laws.hxx>
+#include <TColgp_SequenceOfXY.hxx>
+
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class gp_XY;
 class Law_Function;
 class Law_Composite;
-class ChFiDS_HElSpine;
-
 
 class ChFiDS_FilSpine;
 DEFINE_STANDARD_HANDLE(ChFiDS_FilSpine, ChFiDS_Spine)
@@ -92,9 +86,9 @@ public:
   //! all along the edge E.
   Standard_EXPORT Standard_Real Radius (const TopoDS_Edge& E) const;
   
-  Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_HElSpine)& Els) Standard_OVERRIDE;
+  Standard_EXPORT virtual void AppendElSpine (const Handle(ChFiDS_ElSpine)& Els) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Law_Composite) Law (const Handle(ChFiDS_HElSpine)& Els) const;
+  Standard_EXPORT Handle(Law_Composite) Law (const Handle(ChFiDS_ElSpine)& Els) const;
   
   //! returns the elementary law
   Standard_EXPORT Handle(Law_Function)& ChangeLaw (const TopoDS_Edge& E);
@@ -115,9 +109,9 @@ protected:
 private:
 
   
-  Standard_EXPORT Handle(Law_Composite) ComputeLaw (const Handle(ChFiDS_HElSpine)& Els);
+  Standard_EXPORT Handle(Law_Composite) ComputeLaw (const Handle(ChFiDS_ElSpine)& Els);
   
-  Standard_EXPORT void AppendLaw (const Handle(ChFiDS_HElSpine)& Els);
+  Standard_EXPORT void AppendLaw (const Handle(ChFiDS_ElSpine)& Els);
 
   TColgp_SequenceOfXY parandrad;
   Law_Laws laws;

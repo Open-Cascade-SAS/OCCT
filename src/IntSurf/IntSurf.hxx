@@ -17,10 +17,8 @@
 #ifndef _IntSurf_HeaderFile
 #define _IntSurf_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Adaptor3d_Surface.hxx>
 
-class Adaptor3d_HSurface;
 class IntSurf_Transition;
 class gp_Dir;
 class gp_Vec;
@@ -53,8 +51,8 @@ public:
   //!
   //! If surface is not periodic in correspond direction then
   //! its period is considered to be equal to 0.
-  Standard_EXPORT static void SetPeriod(const Handle(Adaptor3d_HSurface)& theFirstSurf,
-                                        const Handle(Adaptor3d_HSurface)& theSecondSurf,
+  Standard_EXPORT static void SetPeriod(const Handle(Adaptor3d_Surface)& theFirstSurf,
+                                        const Handle(Adaptor3d_Surface)& theSecondSurf,
                                         Standard_Real theArrOfPeriod[4]);
 
 

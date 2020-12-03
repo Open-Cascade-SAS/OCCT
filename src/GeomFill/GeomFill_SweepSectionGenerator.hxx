@@ -17,14 +17,8 @@
 #ifndef _GeomFill_SweepSectionGenerator_HeaderFile
 #define _GeomFill_SweepSectionGenerator_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Curve.hxx>
 #include <gp_Ax1.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <GeomFill_SequenceOfTrsf.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -32,8 +26,8 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
+
 class Geom_BSplineCurve;
-class Adaptor3d_HCurve;
 class Standard_RangeError;
 class Geom_Curve;
 class gp_Trsf;
@@ -66,7 +60,7 @@ public:
   
   //! Create  a pipe  with  a constant  radius with  2
   //! guide-line.
-  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Adaptor3d_HCurve)& Path, const Handle(Adaptor3d_HCurve)& Curve1, const Handle(Adaptor3d_HCurve)& Curve2, const Standard_Real Radius);
+  Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Adaptor3d_Curve)& Path, const Handle(Adaptor3d_Curve)& Curve1, const Handle(Adaptor3d_Curve)& Curve2, const Standard_Real Radius);
   
   Standard_EXPORT void Init (const Handle(Geom_Curve)& Path, const Standard_Real Radius);
   
@@ -76,7 +70,7 @@ public:
   
   Standard_EXPORT void Init (const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& Curve1, const Handle(Geom_Curve)& Curve2, const Standard_Real Radius);
   
-  Standard_EXPORT void Init (const Handle(Adaptor3d_HCurve)& Path, const Handle(Adaptor3d_HCurve)& Curve1, const Handle(Adaptor3d_HCurve)& Curve2, const Standard_Real Radius);
+  Standard_EXPORT void Init (const Handle(Adaptor3d_Curve)& Path, const Handle(Adaptor3d_Curve)& Curve1, const Handle(Adaptor3d_Curve)& Curve2, const Standard_Real Radius);
   
   Standard_EXPORT void Perform (const Standard_Boolean Polynomial = Standard_False);
   
@@ -118,9 +112,9 @@ private:
   Handle(Geom_BSplineCurve) myPath;
   Handle(Geom_BSplineCurve) myFirstSect;
   Handle(Geom_BSplineCurve) myLastSect;
-  Handle(Adaptor3d_HCurve) myAdpPath;
-  Handle(Adaptor3d_HCurve) myAdpFirstSect;
-  Handle(Adaptor3d_HCurve) myAdpLastSect;
+  Handle(Adaptor3d_Curve) myAdpPath;
+  Handle(Adaptor3d_Curve) myAdpFirstSect;
+  Handle(Adaptor3d_Curve) myAdpLastSect;
   gp_Ax1 myCircPathAxis;
   Standard_Real myRadius;
   Standard_Boolean myIsDone;

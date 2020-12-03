@@ -22,7 +22,7 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_HArray1OfLocationLaw.hxx>
 #include <GeomFill_LocationGuide.hxx>
 #include <GeomFill_LocationLaw.hxx>
@@ -56,7 +56,7 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire& Path,
 //  BRep_Tool B;
   TopoDS_Edge E;
   Handle(Geom_Curve) C;
-  Handle(GeomAdaptor_HCurve) AC;
+  Handle(GeomAdaptor_Curve) AC;
   Standard_Real First, Last;
 
 // return ACR of edges of the trajectory
@@ -82,7 +82,7 @@ BRepFill_ACRLaw::BRepFill_ACRLaw(const TopoDS_Wire& Path,
         First =  C->FirstParameter();
 	Last  =  C->LastParameter();
       }
-      AC = new  (GeomAdaptor_HCurve) (C, First, Last);
+      AC = new  (GeomAdaptor_Curve) (C, First, Last);
 
       // Set the parameters for the case multi-edges
       Standard_Real t1 = OrigParam->Value(ipath-1);

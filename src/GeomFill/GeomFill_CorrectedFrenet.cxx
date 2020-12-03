@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomFill_CorrectedFrenet.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <GeomFill_CorrectedFrenet.hxx>
 #include <GeomFill_Frenet.hxx>
 #include <GeomFill_SnglrFunc.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
@@ -96,7 +96,7 @@ static void draw(const Handle(Law_Function)& law)
 
 
 static Standard_Real ComputeTorsion(const Standard_Real Param,
-                                    const Handle(Adaptor3d_HCurve)& aCurve)
+                                    const Handle(Adaptor3d_Curve)& aCurve)
 {
   Standard_Real Torsion;
   
@@ -200,7 +200,7 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
 // Function : FindPlane
 // Purpose : 
 //===============================================================
-static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& theC,
+static Standard_Boolean FindPlane ( const Handle(Adaptor3d_Curve)& theC,
 				    Handle( Geom_Plane )& theP )
 {
   Standard_Boolean found = Standard_True;
@@ -337,7 +337,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   return copy;
 }
 
- void GeomFill_CorrectedFrenet::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
+ void GeomFill_CorrectedFrenet::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
  
   GeomFill_TrihedronLaw::SetCurve(C);

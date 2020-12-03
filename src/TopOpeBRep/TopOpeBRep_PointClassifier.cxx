@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <gp_Pnt2d.hxx>
@@ -28,7 +27,7 @@
 //=======================================================================
 TopOpeBRep_PointClassifier::TopOpeBRep_PointClassifier()
 {
-  myHSurface = new BRepAdaptor_HSurface();
+  myHSurface = new BRepAdaptor_Surface();
   Init();
 }
 
@@ -52,7 +51,7 @@ void TopOpeBRep_PointClassifier::Load(const TopoDS_Face& F)
 {
   Standard_Boolean found = myTopolToolMap.IsBound(F);
   if ( ! found ) {
-    myHSurface->ChangeSurface().Initialize(F);
+    myHSurface->Initialize(F);
     myTopolTool = new BRepTopAdaptor_TopolTool(myHSurface);
     myTopolToolMap.Bind(F,myTopolTool);
   }

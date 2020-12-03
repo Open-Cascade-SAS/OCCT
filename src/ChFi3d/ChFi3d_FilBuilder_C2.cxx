@@ -16,14 +16,14 @@
 
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_CSCircular.hxx>
 #include <BRepBlend_Line.hxx>
@@ -37,7 +37,7 @@
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
@@ -49,13 +49,13 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_ConstrainedFilling.hxx>
 #include <GeomFill_SimpleBound.hxx>
@@ -342,25 +342,25 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
   if(CP1.IsOnArc()&& CP2.IsOnArc()){
     yapiv = (pivot.IsSame(CP2.Arc()));
   }
-  Handle(BRepAdaptor_HCurve) Hpivot;
+  Handle(BRepAdaptor_Curve) Hpivot;
   Standard_Boolean sameparam = Standard_False;
   Standard_Real parCP1 = 0., parCP2 = 0.;
   if(yapiv) {
-    Hpivot = new BRepAdaptor_HCurve(pivot);
+    Hpivot = new BRepAdaptor_Curve(pivot);
     parCP1 = CP1.ParameterOnArc();
     parCP2 = CP2.ParameterOnArc();
     gp_Pnt tst1 = Hpivot->Value(parCP1);
     gp_Pnt tst2 = Hpivot->Value(parCP2);
     sameparam = tst1.Distance(tst2) <= tolesp;
   }
-  Handle(BRepAdaptor_HSurface) HFaCo = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HFaPiv;
-  Handle(BRepAdaptor_HSurface) HBRS1 = new BRepAdaptor_HSurface();
-  Handle(BRepAdaptor_HSurface) HBRS2 = new BRepAdaptor_HSurface();
+  Handle(BRepAdaptor_Surface) HFaCo = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HFaPiv;
+  Handle(BRepAdaptor_Surface) HBRS1 = new BRepAdaptor_Surface();
+  Handle(BRepAdaptor_Surface) HBRS2 = new BRepAdaptor_Surface();
   
-  BRepAdaptor_Surface& BRS1 = HBRS1->ChangeSurface();
-  BRepAdaptor_Surface& BRS2 = HBRS2->ChangeSurface();
-  BRepAdaptor_Surface& BRFaCo = HFaCo->ChangeSurface();
+  BRepAdaptor_Surface& BRS1 = *HBRS1;
+  BRepAdaptor_Surface& BRS2 = *HBRS2;
+  BRepAdaptor_Surface& BRFaCo = *HFaCo;
   BRFaCo.Initialize(FaCo);
   
   TopoDS_Face FF1,FF2,F,FaPiv;
@@ -517,8 +517,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 	  fil.Init(Bfac,B2,B1,1);
 	}
 	else {
-	  Handle(Adaptor3d_HCurve) HPivTrim = Hpivot->ChangeCurve().
-	    Trim(Min(parCP1,parCP2),Max(parCP1,parCP2),tolesp);
+	  Handle(Adaptor3d_Curve) HPivTrim = Hpivot->Trim(Min(parCP1,parCP2),Max(parCP1,parCP2),tolesp);
 	  Bpiv = new GeomFill_SimpleBound(HPivTrim,tolesp,2.e-4);
 	  fil.Init(Bfac,B2,Bpiv,B1,1);
 	  BRepAdaptor_Curve2d pcpivot;
@@ -761,7 +760,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       gp_Pnt2d ppcosam = 
 	sdsam->Interference(ifacosam).PCurveOnSurf()->Value(uintpcsam);
       Handle(Geom_Surface) surfsam = DStr.Surface(sdsam->Surf()).Surface();
-      Handle(GeomAdaptor_HSurface) Hsurfsam = new GeomAdaptor_HSurface(surfsam);
+      Handle(GeomAdaptor_Surface) Hsurfsam = new GeomAdaptor_Surface(surfsam);
       Handle(Geom2d_Curve) pcsurfsam;
       Bsam = ChFi3d_mkbound(Hsurfsam,pcsurfsam,ppopsam,ppcosam,tolesp,2.e-4);
       Standard_Real upcopdif = sddif->Interference(ifaopdif).Parameter(isfirstdif);
@@ -770,7 +769,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       gp_Pnt2d ppcodif = 
 	sddif->Interference(ifacodif).PCurveOnSurf()->Value(uintpcdif);
       Handle(Geom_Surface) surfdif = DStr.Surface(sddif->Surf()).Surface();
-      Handle(GeomAdaptor_HSurface) Hsurfdif = new GeomAdaptor_HSurface(surfdif);
+      Handle(GeomAdaptor_Surface) Hsurfdif = new GeomAdaptor_Surface(surfdif);
       Handle(Geom2d_Curve) pcsurfdif;
       Bdif = ChFi3d_mkbound(Hsurfdif,pcsurfdif,ppcodif,ppopdif,tolesp,2.e-4);
       gp_Pnt2d ppfacsam,ppfacdif;
@@ -798,8 +797,8 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
       //////////////////
       BRepAdaptor_Curve CArcFac(Arcopdif);
       CArcFac.D1(cpopdif.ParameterOnArc(),PPfacdif,VVfacdif);
-      Handle(BRepAdaptor_HSurface) HBRFopsam = new BRepAdaptor_HSurface();
-      BRepAdaptor_Surface& BRFopsam = HBRFopsam->ChangeSurface();
+      Handle(BRepAdaptor_Surface) HBRFopsam = new BRepAdaptor_Surface();
+      BRepAdaptor_Surface& BRFopsam = *HBRFopsam;
       BRFopsam.Initialize(Fopsam,Standard_False);
       Handle(Geom2d_Curve) pcFopsam = ChFi3d_BuildPCurve(HBRFopsam,
 							 ppfacsam,VVfacsam,
@@ -860,7 +859,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 			  corner->ChangeFirstPCurve(),P1deb,P2deb,
 			  tolesp,tol2d,tolreached,0);
       Standard_Real tolr1;
-      Handle(GeomAdaptor_HCurve) HC3d = new GeomAdaptor_HCurve(C3d);
+      Handle(GeomAdaptor_Curve) HC3d = new GeomAdaptor_Curve(C3d);
       ChFi3d_SameParameter(HC3d,pcFopsam,HBRFopsam,tolesp,tolr1);
       tolreached = Max(tolreached,tolr1);
       TopOpeBRepDS_Curve Tcurv1(C3d,tolreached);
@@ -891,7 +890,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 			  corner->ChangeLastPCurve(),P1fin,P2fin,
 			  tolesp,tol2d,tolreached,0);
       Standard_Real tolr2;
-      HC3d->ChangeCurve().Load(C3d);
+      HC3d->Load(C3d);
       ChFi3d_SameParameter(HC3d,pcsurfdif,Hsurfdif,tolesp,tolr2);
       tolreached = Max(tolreached,tolr2);
       TopOpeBRepDS_Curve Tcurv2(C3d,tolreached);

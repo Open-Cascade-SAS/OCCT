@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_Spine.hxx>
@@ -84,7 +84,7 @@
 #include <TopOpeBRepDS_Surface.hxx>
 
 //#include <BRepAdaptor_Curve2d.hxx>
-//#include <BRepAdaptor_HCurve2d.hxx>
+//#include <BRepAdaptor_Curve2d.hxx>
 //=======================================================================
 //function : Compute
 //purpose  : 
@@ -92,8 +92,8 @@
  Standard_Boolean ChFiKPart_ComputeData::Compute
  (TopOpeBRepDS_DataStructure&    DStr, 
   Handle(ChFiDS_SurfData)&       Data, 
-  const Handle(Adaptor3d_HSurface)& S1, 
-  const Handle(Adaptor3d_HSurface)& S2, 
+  const Handle(Adaptor3d_Surface)& S1, 
+  const Handle(Adaptor3d_Surface)& S2, 
   const TopAbs_Orientation       Or1, 
   const TopAbs_Orientation       Or2, 
   const Handle(ChFiDS_Spine)&    Sp, 
@@ -115,10 +115,10 @@
 
   // Return orientations.
   TopAbs_Orientation OrFace1 = TopAbs_FORWARD, OrFace2 = TopAbs_FORWARD;
-  Handle(BRepAdaptor_HSurface) HS = Handle(BRepAdaptor_HSurface)::DownCast(S1);
-  if (!HS.IsNull()) OrFace1 = HS->ChangeSurface().Face().Orientation();
-  HS = Handle(BRepAdaptor_HSurface)::DownCast(S2);
-  if (!HS.IsNull()) OrFace2 = HS->ChangeSurface().Face().Orientation();
+  Handle(BRepAdaptor_Surface) HS = Handle(BRepAdaptor_Surface)::DownCast(S1);
+  if (!HS.IsNull()) OrFace1 = HS->Face().Orientation();
+  HS = Handle(BRepAdaptor_Surface)::DownCast(S2);
+  if (!HS.IsNull()) OrFace2 = HS->Face().Orientation();
   
   if(!Spine.IsNull()){
     Standard_Real Radius = Spine->Radius(Iedge);
@@ -343,8 +343,8 @@
 Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
   (TopOpeBRepDS_DataStructure& DStr,
    const Handle(ChFiDS_SurfData)& Data, 
-   const Handle(Adaptor3d_HSurface)& S1, 
-   const Handle(Adaptor3d_HSurface)& S2,
+   const Handle(Adaptor3d_Surface)& S1, 
+   const Handle(Adaptor3d_Surface)& S2,
    const TopAbs_Orientation OrFace1,
    const TopAbs_Orientation,
    const TopAbs_Orientation Or1,
@@ -408,8 +408,8 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
 Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
   (TopOpeBRepDS_DataStructure& DStr,
    const Handle(ChFiDS_SurfData)& Data, 
-   const Handle(Adaptor3d_HSurface)& S1, 
-   const Handle(Adaptor3d_HSurface)& S2,
+   const Handle(Adaptor3d_Surface)& S1, 
+   const Handle(Adaptor3d_Surface)& S2,
    const TopAbs_Orientation OrFace1,
    const TopAbs_Orientation OrFace2,
    const TopAbs_Orientation Or1,
@@ -430,9 +430,9 @@ Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
 Standard_Boolean ChFiKPart_ComputeData::ComputeCorner
   (TopOpeBRepDS_DataStructure& DStr,
    const Handle(ChFiDS_SurfData)& Data, 
-   const Handle(Adaptor3d_HSurface)& S, 
-   const Handle(Adaptor3d_HSurface)& S1, 
-   const Handle(Adaptor3d_HSurface)& S2,
+   const Handle(Adaptor3d_Surface)& S, 
+   const Handle(Adaptor3d_Surface)& S1, 
+   const Handle(Adaptor3d_Surface)& S2,
    const TopAbs_Orientation OfS,
    const TopAbs_Orientation OS,
    const TopAbs_Orientation OS1,

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Contap_Line.hxx>
 #include <Contap_Point.hxx>
 #include <gp_Circ.hxx>
@@ -79,7 +79,7 @@ void Contap_Line::SetValue(const gp_Circ& C)
   typL = Contap_Circle;
 }
 
-void Contap_Line::SetValue(const Handle(Adaptor2d_HCurve2d)& A)
+void Contap_Line::SetValue(const Handle(Adaptor2d_Curve2d)& A)
 {
   thearc = A;
   typL = Contap_Restriction;
@@ -98,7 +98,7 @@ IntSurf_TypeTrans Contap_Line::TransitionOnS() const {
   return(Trans);
 }
 
-const Handle(Adaptor2d_HCurve2d)& Contap_Line::Arc () const
+const Handle(Adaptor2d_Curve2d)& Contap_Line::Arc () const
 {
   if (typL != Contap_Restriction) {throw Standard_DomainError();}
   return thearc;

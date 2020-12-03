@@ -3036,13 +3036,13 @@ void GeomSources::gpTest39(CGeometryDoc* aDoc)
   Handle(Geom_BSplineCurve) SPL2 = GeomAPI_PointsToBSpline(array2).Curve();
   Handle(Geom_BSplineCurve) SPL3 = GeomAPI_PointsToBSpline(array3).Curve();
 
-  Handle(GeomAdaptor_HCurve) SPL1Adaptor = new GeomAdaptor_HCurve(SPL1);
+  Handle(GeomAdaptor_Curve) SPL1Adaptor = new GeomAdaptor_Curve(SPL1);
   Handle(GeomFill_SimpleBound) B1 =
   new GeomFill_SimpleBound(SPL1Adaptor,Precision::Approximation(),Precision::Angular());
-  Handle(GeomAdaptor_HCurve) SPL2Adaptor = new GeomAdaptor_HCurve(SPL2);
+  Handle(GeomAdaptor_Curve) SPL2Adaptor = new GeomAdaptor_Curve(SPL2);
   Handle(GeomFill_SimpleBound) B2 =
   new GeomFill_SimpleBound(SPL2Adaptor,Precision::Approximation(),Precision::Angular());
-  Handle(GeomAdaptor_HCurve) SPL3Adaptor = new GeomAdaptor_HCurve(SPL3);
+  Handle(GeomAdaptor_Curve) SPL3Adaptor = new GeomAdaptor_Curve(SPL3);
   Handle(GeomFill_SimpleBound) B3 =
   new GeomFill_SimpleBound(SPL3Adaptor,Precision::Approximation(),Precision::Angular());
   Standard_Boolean NoCheck= Standard_False;
@@ -3064,13 +3064,13 @@ Handle(Geom_BSplineCurve) SPL1 = GeomAPI_PointsToBSpline(array1).Curve();       
 Handle(Geom_BSplineCurve) SPL2 = GeomAPI_PointsToBSpline(array2).Curve();                  \n\
 Handle(Geom_BSplineCurve) SPL3 = GeomAPI_PointsToBSpline(array3).Curve();                  \n\
                                                                                            \n\
-Handle(GeomAdaptor_HCurve) SPL1Adaptor = new GeomAdaptor_HCurve(SPL1);                     \n\
+Handle(GeomAdaptor_Curve) SPL1Adaptor = new GeomAdaptor_Curve(SPL1);                       \n\
 Handle(GeomFill_SimpleBound) B1 =                                                          \n\
    new GeomFill_SimpleBound(SPL1Adaptor,Precision::Approximation(),Precision::Angular());  \n\
-Handle(GeomAdaptor_HCurve) SPL2Adaptor = new GeomAdaptor_HCurve(SPL2);                     \n\
+Handle(GeomAdaptor_Curve) SPL2Adaptor = new GeomAdaptor_Curve(SPL2);                       \n\
 Handle(GeomFill_SimpleBound) B2 =                                                          \n\
    new GeomFill_SimpleBound(SPL2Adaptor,Precision::Approximation(),Precision::Angular());  \n\
-Handle(GeomAdaptor_HCurve) SPL3Adaptor = new GeomAdaptor_HCurve(SPL3);                     \n\
+Handle(GeomAdaptor_Curve) SPL3Adaptor = new GeomAdaptor_Curve(SPL3);                       \n\
 Handle(GeomFill_SimpleBound) B3 =                                                          \n\
    new GeomFill_SimpleBound(SPL3Adaptor,Precision::Approximation(),Precision::Angular());  \n\
 Standard_Boolean NoCheck= Standard_False;                                                  \n\

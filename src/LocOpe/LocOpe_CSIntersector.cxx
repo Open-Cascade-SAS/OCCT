@@ -16,7 +16,7 @@
 
 
 #include <Geom_Circle.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <IntCurvesFace_Intersector.hxx>
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_PntFace.hxx>
@@ -127,7 +127,7 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
     (LocOpe_SequenceOfPntFace *) new LocOpe_SequenceOfPntFace[myNbelem];
 
   TopExp_Explorer exp(myShape,TopAbs_FACE);
-  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve ();
+  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve ();
   Standard_Real binf = 0.;
   Standard_Real bsup = 2.*M_PI;
 
@@ -137,7 +137,7 @@ void LocOpe_CSIntersector::Perform(const LocOpe_SequenceOfCirc& Scir)
     IntCurvesFace_Intersector theInt(theface,0.);
     for (Standard_Integer i = 1; i<=myNbelem; i++) {
 
-      HC->ChangeCurve().Load(new Geom_Circle(Scir(i)));
+      HC->Load(new Geom_Circle(Scir(i)));
       theInt.Perform(HC,binf,bsup);
       if (theInt.IsDone()) {
 	AddPoints(theInt,(((LocOpe_SequenceOfPntFace*)myPoints)[i-1]),theface);
@@ -169,7 +169,7 @@ void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
     (LocOpe_SequenceOfPntFace *) new LocOpe_SequenceOfPntFace[myNbelem];
 
   TopExp_Explorer exp(myShape,TopAbs_FACE);
-  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve ();
+  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve ();
   for (; exp.More(); exp.Next()) {
     const TopoDS_Face& theface = TopoDS::Face(exp.Current());
     IntCurvesFace_Intersector theInt(theface,0.);
@@ -177,7 +177,7 @@ void LocOpe_CSIntersector::Perform(const TColGeom_SequenceOfCurve& Scur)
       if (Scur(i).IsNull()) {
 	continue;
       }
-      HC->ChangeCurve().Load(Scur(i));
+      HC->Load(Scur(i));
       Standard_Real binf = HC->FirstParameter();
       Standard_Real bsup = HC->LastParameter();
       theInt.Perform(HC,binf,bsup);

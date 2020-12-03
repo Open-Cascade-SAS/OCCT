@@ -14,11 +14,10 @@
 #define No_Standard_OutOfRange
 
 
-#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_InterFunc.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
@@ -57,6 +56,8 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_CurveOnSurface, Adaptor3d_Curve)
 
 static gp_Pnt to3d(const gp_Pln& Pl, const gp_Pnt2d& P)
 {
@@ -697,7 +698,7 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface()
 //=======================================================================
 
 Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface
-(const Handle(Adaptor3d_HSurface)& S) 
+(const Handle(Adaptor3d_Surface)& S) 
      : myType(GeomAbs_OtherCurve), myIntCont(GeomAbs_CN)
 {
   Load(S);
@@ -709,8 +710,8 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface
 //=======================================================================
 
 Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface
-(const Handle(Adaptor2d_HCurve2d)& C,
- const Handle(Adaptor3d_HSurface)& S)
+(const Handle(Adaptor2d_Curve2d)& C,
+ const Handle(Adaptor3d_Surface)& S)
      : myType(GeomAbs_OtherCurve), myIntCont(GeomAbs_CN)
 {
   Load(S);
@@ -722,7 +723,7 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_HSurface)& S) 
+void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_Surface)& S) 
 {
   mySurface = S;
   if (!myCurve.IsNull()) EvalKPart();
@@ -733,7 +734,7 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor3d_HSurface)& S)
 //purpose  :
 //=======================================================================
 
-void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_HCurve2d)& C)
+void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_Curve2d)& C)
 {
   myCurve = C;
   if (mySurface.IsNull())
@@ -762,8 +763,8 @@ void Adaptor3d_CurveOnSurface::Load(const Handle(Adaptor2d_HCurve2d)& C)
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_CurveOnSurface::Load (const Handle(Adaptor2d_HCurve2d)& C,
-                                     const Handle(Adaptor3d_HSurface)& S) 
+void Adaptor3d_CurveOnSurface::Load (const Handle(Adaptor2d_Curve2d)& C,
+                                     const Handle(Adaptor3d_Surface)& S) 
 {
   Load (C);
   Load (S);
@@ -926,14 +927,14 @@ void Adaptor3d_CurveOnSurface::Intervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) Adaptor3d_CurveOnSurface::Trim
+Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::Trim
 (const Standard_Real First, 
  const Standard_Real Last, 
  const Standard_Real Tol) const 
 {
-  Handle(Adaptor3d_HCurveOnSurface) HCS = new Adaptor3d_HCurveOnSurface();
-  HCS->ChangeCurve().Load(mySurface);
-  HCS->ChangeCurve().Load(myCurve->Trim(First,Last,Tol));
+  Handle(Adaptor3d_CurveOnSurface) HCS = new Adaptor3d_CurveOnSurface();
+  HCS->Load(mySurface);
+  HCS->Load(myCurve->Trim(First,Last,Tol));
   return HCS;
 }
 
@@ -1398,7 +1399,7 @@ Handle(Geom_BSplineCurve) Adaptor3d_CurveOnSurface::BSpline() const
 //purpose  : 
 //=======================================================================
 
-const Handle(Adaptor2d_HCurve2d)& Adaptor3d_CurveOnSurface::GetCurve() const
+const Handle(Adaptor2d_Curve2d)& Adaptor3d_CurveOnSurface::GetCurve() const
 {
   return myCurve;
 }
@@ -1408,7 +1409,7 @@ const Handle(Adaptor2d_HCurve2d)& Adaptor3d_CurveOnSurface::GetCurve() const
 //purpose  : 
 //=======================================================================
 
-const Handle(Adaptor3d_HSurface)& Adaptor3d_CurveOnSurface::GetSurface() const 
+const Handle(Adaptor3d_Surface)& Adaptor3d_CurveOnSurface::GetSurface() const 
 {
   return mySurface;
 }
@@ -1418,7 +1419,7 @@ const Handle(Adaptor3d_HSurface)& Adaptor3d_CurveOnSurface::GetSurface() const
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor2d_HCurve2d)& Adaptor3d_CurveOnSurface::ChangeCurve() 
+Handle(Adaptor2d_Curve2d)& Adaptor3d_CurveOnSurface::ChangeCurve() 
 {
   return myCurve;
 }
@@ -1428,7 +1429,7 @@ Handle(Adaptor2d_HCurve2d)& Adaptor3d_CurveOnSurface::ChangeCurve()
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface)& Adaptor3d_CurveOnSurface::ChangeSurface() {
+Handle(Adaptor3d_Surface)& Adaptor3d_CurveOnSurface::ChangeSurface() {
   return mySurface;
 }
 
@@ -1705,11 +1706,11 @@ void Adaptor3d_CurveOnSurface::EvalFirstLastSurf()
 
 Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d& UV, 
 							   const gp_Vec2d& DUV,
-							   const Handle(Adaptor3d_HSurface)& S,
+							   const Handle(Adaptor3d_Surface)& S,
 							   gp_Pnt2d& LeftBot, 
 							   gp_Pnt2d& RightTop) const
 { 
-  Handle(Adaptor3d_HCurve) AHC = S->BasisCurve();
+  Handle(Adaptor3d_Curve) AHC = S->BasisCurve();
 
   if (AHC->GetType() == GeomAbs_BSplineCurve) {
     Handle( Geom_BSplineCurve) BSplC;
@@ -1743,11 +1744,11 @@ Standard_Boolean Adaptor3d_CurveOnSurface::LocatePart_RevExt(const gp_Pnt2d& UV,
 
 Standard_Boolean Adaptor3d_CurveOnSurface::
    LocatePart_Offset(const gp_Pnt2d& UV, const gp_Vec2d& DUV,
-		     const Handle(Adaptor3d_HSurface)& S,
+		     const Handle(Adaptor3d_Surface)& S,
 		     gp_Pnt2d& LeftBot, gp_Pnt2d& RightTop) const
 {
   Standard_Boolean Ok = Standard_True;
-  Handle( Adaptor3d_HSurface) AHS;
+  Handle( Adaptor3d_Surface) AHS;
   Handle( Geom_BSplineSurface) BSplS;
   AHS = S->BasisSurface();
   GeomAbs_SurfaceType  BasisSType = AHS->GetType();
@@ -1773,7 +1774,7 @@ Standard_Boolean Adaptor3d_CurveOnSurface::
 //=======================================================================
 
 void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d& UV, const gp_Vec2d& DUV,
-					const Handle(Adaptor3d_HSurface)& S,
+					const Handle(Adaptor3d_Surface)& S,
 					gp_Pnt2d& LeftBot, gp_Pnt2d& RightTop) const
 {
   Handle( Geom_BSplineSurface) BSplS;

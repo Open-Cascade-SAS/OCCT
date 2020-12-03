@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -440,7 +440,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 
     for (ii=1, Length=0.; ii<=NbE; ii++) {
       myLaws->Value(ii)->GetDomain(f, l);
-      Length += AbsC.Length(myLaws->Value(ii)->GetCurve()->GetCurve(), myTol);
+      Length += AbsC.Length(*myLaws->Value(ii)->GetCurve(), myTol);
       myLength->SetValue(ii+1, Length);
     }
 
@@ -585,7 +585,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
     else {
       GCPnts_AbscissaPoint 
 	AbsC(myTol, 
-	     myLaws->Value(iedge)->GetCurve()->GetCurve(), 
+	     *myLaws->Value(iedge)->GetCurve(),
 	     Abcissa-myLength->Value(iedge), f);
       U =  AbsC.Parameter();
     }
@@ -645,7 +645,7 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
     CurvilinearBounds(Index, bid, Length);
   }
  
-  Length += AbsC.Length(myLaws->Value(Index)->GetCurve()->GetCurve(),
+  Length += AbsC.Length(*myLaws->Value(Index)->GetCurve(),
 			myLaws->Value(Index)->GetCurve()->FirstParameter(),
 			Param, myTol);
   return Length;

@@ -18,7 +18,7 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -36,7 +36,7 @@
 // function: GetDeflection
 // purpose:
 //==================================================================
-static Standard_Real GetDeflection(const Handle(BRepAdaptor_HSurface)& aFace,
+static Standard_Real GetDeflection(const Handle(BRepAdaptor_Surface)& aFace,
 				   const Handle (VrmlConverter_Drawer)& aDrawer) {
 
   Standard_Real theRequestedDeflection;
@@ -76,7 +76,7 @@ static Standard_Real GetDeflection(const Handle(BRepAdaptor_HSurface)& aFace,
 //=========================================================================
 void VrmlConverter_WFDeflectionRestrictedFace::Add
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Standard_Boolean              DrawUIso,
    const Standard_Boolean              DrawVIso,
    const Standard_Real               Deflection,
@@ -312,7 +312,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
 //=========================================================================
 void VrmlConverter_WFDeflectionRestrictedFace::Add
   (Standard_OStream&                          anOStream,
-   const Handle(BRepAdaptor_HSurface)&        aFace,
+   const Handle(BRepAdaptor_Surface)&        aFace,
    const Handle (VrmlConverter_Drawer)&       aDrawer){
 
   Standard_Real Deflection = GetDeflection(aFace, aDrawer);
@@ -339,7 +339,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
 //=========================================================================
 void VrmlConverter_WFDeflectionRestrictedFace::AddUIso
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
   Standard_Real Deflection = GetDeflection(aFace, aDrawer);
@@ -364,7 +364,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::AddUIso
 //=========================================================================
 void VrmlConverter_WFDeflectionRestrictedFace::AddVIso
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
   Standard_Real Deflection = GetDeflection(aFace, aDrawer);

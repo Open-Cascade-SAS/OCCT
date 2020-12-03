@@ -16,16 +16,16 @@
 #include <QABugs.hxx>
 
 #include <Draw_Interpretor.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <DrawTrSurf.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
 #include <TopoDS.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <TopoDS_Edge.hxx>
@@ -44,10 +44,10 @@ static Standard_Integer OCC6001 (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
   const char *name = argv[1];
-  Handle(Adaptor3d_HCurve) hcurve;
+  Handle(Adaptor3d_Curve) hcurve;
   Handle(Geom_Curve) curve = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
-    hcurve = new GeomAdaptor_HCurve(curve);
+    hcurve = new GeomAdaptor_Curve(curve);
   else
   {
     TopoDS_Shape wire = DBRep::Get(argv[2]);
@@ -57,10 +57,10 @@ static Standard_Integer OCC6001 (Draw_Interpretor& di, Standard_Integer argc, co
       return 1;
     }
     BRepAdaptor_CompCurve comp_curve(TopoDS::Wire(wire));
-    hcurve = new BRepAdaptor_HCompCurve(comp_curve);
+    hcurve = new BRepAdaptor_CompCurve(comp_curve);
   }
   Handle(Geom_Surface) surf = DrawTrSurf::GetSurface(argv[3]);
-  Handle(GeomAdaptor_HSurface) hsurf = new GeomAdaptor_HSurface(surf);
+  Handle(GeomAdaptor_Surface) hsurf = new GeomAdaptor_Surface(surf);
   IntCurveSurface_HInter inter;
   inter.Perform(hcurve, hsurf);
   int nb = inter.NbPoints();

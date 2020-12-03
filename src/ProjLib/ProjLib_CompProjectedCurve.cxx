@@ -17,9 +17,9 @@
 
 #include <algorithm>
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Extrema_ExtCS.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
@@ -42,11 +42,13 @@
 #include <TColgp_HSequenceOfPnt.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <NCollection_Vector.hxx>
 
 #define FuncTol 1.e-10
+
+IMPLEMENT_STANDARD_RTTIEXT(ProjLib_CompProjectedCurve, Adaptor2d_Curve2d)
 
 #ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>
@@ -76,8 +78,8 @@ static void ResultChron( OSD_Chronometer & ch, Standard_Real & time)
 // myPeriodicDir - 0 for U periodicity and 1 for V periodicity.
 struct SplitDS
 {
-  SplitDS(const Handle(Adaptor3d_HCurve)   &theCurve,
-          const Handle(Adaptor3d_HSurface) &theSurface,
+  SplitDS(const Handle(Adaptor3d_Curve)   &theCurve,
+          const Handle(Adaptor3d_Surface) &theSurface,
           NCollection_Vector<Standard_Real> &theSplits)
   : myCurve(theCurve),
     mySurface(theSurface),
@@ -92,8 +94,8 @@ struct SplitDS
   // Assignment operator is forbidden.
   void operator=(const SplitDS &theSplitDS);
 
-  const Handle(Adaptor3d_HCurve) myCurve;
-  const Handle(Adaptor3d_HSurface) mySurface;
+  const Handle(Adaptor3d_Curve) myCurve;
+  const Handle(Adaptor3d_Surface) mySurface;
   NCollection_Vector<Standard_Real> &mySplits;
 
   Standard_Real myPerMinParam;
@@ -105,8 +107,8 @@ struct SplitDS
 };
 
   //! Compute split points in the parameter space of the curve.
-  static void BuildCurveSplits(const Handle(Adaptor3d_HCurve)   &theCurve,
-                               const Handle(Adaptor3d_HSurface) &theSurface,
+  static void BuildCurveSplits(const Handle(Adaptor3d_Curve)   &theCurve,
+                               const Handle(Adaptor3d_Surface) &theSurface,
                                const Standard_Real theTolU,
                                const Standard_Real theTolV,
                                NCollection_Vector<Standard_Real> &theSplits);
@@ -139,8 +141,8 @@ static void d1(const Standard_Real t,
   const Standard_Real u,
   const Standard_Real v,
   gp_Vec2d& V, 
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
   gp_Pnt S, C;
   gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DC1_t;
@@ -172,8 +174,8 @@ static void d2(const Standard_Real t,
   const Standard_Real u,
   const Standard_Real v,
   gp_Vec2d& V1, gp_Vec2d& V2,
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
   gp_Pnt S, C;
   gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, 
@@ -247,8 +249,8 @@ static void d1CurvOnSurf(const Standard_Real t,
   const Standard_Real u,
   const Standard_Real v,
   gp_Vec& V, 
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
   gp_Pnt S, C;
   gp_Vec2d V2d;
@@ -285,8 +287,8 @@ static void d2CurvOnSurf(const Standard_Real t,
   const Standard_Real u,
   const Standard_Real v,
   gp_Vec& V1 , gp_Vec& V2 ,
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
   gp_Pnt S, C;
   gp_Vec2d V12d,V22d;
@@ -369,8 +371,8 @@ static Standard_Boolean ExactBound(gp_Pnt& Sol,
   const Standard_Real Tol, 
   const Standard_Real TolU, 
   const Standard_Real TolV,  
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
   Standard_Real U0, V0, t, t1, t2, FirstU, LastU, FirstV, LastV;
   gp_Pnt2d POnS;
@@ -442,9 +444,7 @@ static Standard_Boolean ExactBound(gp_Pnt& Sol,
     gp_Pnt P;
     P = Seq.Last ();
     Seq.Remove (Seq.Length ());
-    ProjLib_PrjResolve aPrjPS (Curve->Curve (),
-      Surface->Surface (),
-      Standard_Integer (P.Z ()));
+    ProjLib_PrjResolve aPrjPS (*Curve, *Surface, Standard_Integer (P.Z ()));
     if (Standard_Integer (P.Z ()) == 2)
     {
       aPrjPS.Perform (t, P.X (), V0, gp_Pnt2d (Tol, TolV),
@@ -482,8 +482,8 @@ static void DichExactBound(gp_Pnt& Sol,
   const Standard_Real Tol, 
   const Standard_Real TolU, 
   const Standard_Real TolV,  
-  const Handle(Adaptor3d_HCurve)& Curve, 
-  const Handle(Adaptor3d_HSurface)& Surface)
+  const Handle(Adaptor3d_Curve)& Curve, 
+  const Handle(Adaptor3d_Surface)& Surface)
 {
 #ifdef OCCT_DEBUG_CHRONO
   InitChron(chr_dicho_bound);
@@ -493,7 +493,7 @@ static void DichExactBound(gp_Pnt& Sol,
   gp_Pnt2d POnS;
   U0 = Sol.Y();
   V0 = Sol.Z();
-  ProjLib_PrjResolve aPrjPS(Curve->Curve(), Surface->Surface(), 1);
+  ProjLib_PrjResolve aPrjPS (*Curve, *Surface, 1);
 
   Standard_Real aNotSol = NotSol;
   while (fabs(Sol.X() - aNotSol) > Tol) 
@@ -526,18 +526,18 @@ static void DichExactBound(gp_Pnt& Sol,
 
 static Standard_Boolean InitialPoint(const gp_Pnt& Point, 
   const Standard_Real t,
-  const Handle(Adaptor3d_HCurve)& C,
-  const Handle(Adaptor3d_HSurface)& S, 
+  const Handle(Adaptor3d_Curve)& C,
+  const Handle(Adaptor3d_Surface)& S, 
   const Standard_Real TolU, 
   const Standard_Real TolV, 
   Standard_Real& U, 
   Standard_Real& V)
 {
 
-  ProjLib_PrjResolve aPrjPS(C->Curve(), S->Surface(), 1);
+  ProjLib_PrjResolve aPrjPS (*C, *S, 1);
   Standard_Real ParU,ParV;
   Extrema_ExtPS aExtPS;
-  aExtPS.Initialize(S->Surface(), S->FirstUParameter(), 
+  aExtPS.Initialize (*S, S->FirstUParameter(), 
     S->LastUParameter(), S->FirstVParameter(), 
     S->LastVParameter(), TolU, TolV);
 
@@ -588,8 +588,8 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve()
 //=======================================================================
 
 ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
-                           (const Handle(Adaptor3d_HSurface)& theSurface,
-                            const Handle(Adaptor3d_HCurve)&   theCurve,
+                           (const Handle(Adaptor3d_Surface)& theSurface,
+                            const Handle(Adaptor3d_Curve)&   theCurve,
                             const Standard_Real               theTolU,
                             const Standard_Real               theTolV)
 : mySurface (theSurface),
@@ -609,8 +609,8 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
 //=======================================================================
 
 ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
-                           (const Handle(Adaptor3d_HSurface)& theSurface,
-                            const Handle(Adaptor3d_HCurve)&   theCurve,
+                           (const Handle(Adaptor3d_Surface)& theSurface,
+                            const Handle(Adaptor3d_Curve)&   theCurve,
                             const Standard_Real               theTolU,
                             const Standard_Real               theTolV,
                             const Standard_Real               theMaxDist)
@@ -642,7 +642,7 @@ void ProjLib_CompProjectedCurve::Init()
                    isSplitsComputed = Standard_False;
 
   const Standard_Real aTolExt = Precision::PConfusion();
-  Extrema_ExtCS CExt(myCurve->Curve(), mySurface->Surface(), aTolExt, aTolExt);
+  Extrema_ExtCS CExt (*myCurve, *mySurface, aTolExt, aTolExt);
   if (CExt.IsDone() && CExt.NbExt())
   {
     // Search for the minimum solution.
@@ -680,7 +680,7 @@ void ProjLib_CompProjectedCurve::Init()
   gp_Pnt2d aLowBorder(mySurface->FirstUParameter(),mySurface->FirstVParameter());
   gp_Pnt2d aUppBorder(mySurface->LastUParameter(), mySurface->LastVParameter());
   gp_Pnt2d aTol(myTolU, myTolV);
-  ProjLib_PrjResolve aPrjPS(myCurve->Curve(), mySurface->Surface(), 1);
+  ProjLib_PrjResolve aPrjPS (*myCurve, *mySurface, 1);
 
   t = FirstU;
   Standard_Boolean new_part; 
@@ -1133,7 +1133,7 @@ void ProjLib_CompProjectedCurve::Init()
 //purpose  : 
 //=======================================================================
 
-void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_HSurface)& S) 
+void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_Surface)& S) 
 {
   mySurface = S;
 }
@@ -1143,7 +1143,7 @@ void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_HSurface)& S)
 //purpose  : 
 //=======================================================================
 
-void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C) 
+void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
 }
@@ -1153,7 +1153,7 @@ void ProjLib_CompProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
 //purpose  : 
 //=======================================================================
 
-const Handle(Adaptor3d_HSurface)& ProjLib_CompProjectedCurve::GetSurface() const
+const Handle(Adaptor3d_Surface)& ProjLib_CompProjectedCurve::GetSurface() const
 {
   return mySurface;
 }
@@ -1164,7 +1164,7 @@ const Handle(Adaptor3d_HSurface)& ProjLib_CompProjectedCurve::GetSurface() const
 //purpose  : 
 //=======================================================================
 
-const Handle(Adaptor3d_HCurve)& ProjLib_CompProjectedCurve::GetCurve() const
+const Handle(Adaptor3d_Curve)& ProjLib_CompProjectedCurve::GetCurve() const
 {
   return myCurve;
 }
@@ -1337,7 +1337,7 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
   }
   //End of cubic interpolation
 
-  ProjLib_PrjResolve aPrjPS(myCurve->Curve(), mySurface->Surface(), 1);
+  ProjLib_PrjResolve aPrjPS (*myCurve, *mySurface, 1);
   aPrjPS.Perform(U, U0, V0, gp_Pnt2d(myTolU, myTolV), 
     gp_Pnt2d(mySurface->FirstUParameter(), mySurface->FirstVParameter()), 
     gp_Pnt2d(mySurface->LastUParameter(), mySurface->LastVParameter()));
@@ -1346,7 +1346,7 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
   else
   {
     gp_Pnt thePoint = myCurve->Value(U);
-    Extrema_ExtPS aExtPS(thePoint, mySurface->Surface(), myTolU, myTolV);
+    Extrema_ExtPS aExtPS(thePoint, *mySurface, myTolU, myTolV);
     if (aExtPS.IsDone() && aExtPS.NbExt()) 
     {
       Standard_Integer k, Nend, imin = 1;
@@ -1571,7 +1571,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           Standard_Real V;
           V = (mySequence->Value(i)->Value(j).Z() 
             + mySequence->Value(i)->Value(j +1).Z())/2;
-          ProjLib_PrjResolve Solver(myCurve->Curve(), mySurface->Surface(), 2);
+          ProjLib_PrjResolve Solver (*myCurve, *mySurface, 2);
 
           gp_Vec2d D;
           gp_Pnt Triple;
@@ -1637,7 +1637,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           Standard_Real U;
           U = (mySequence->Value(i)->Value(j).Y() 
             + mySequence->Value(i)->Value(j +1).Y())/2;
-          ProjLib_PrjResolve Solver(myCurve->Curve(), mySurface->Surface(), 3);
+          ProjLib_PrjResolve Solver (*myCurve, *mySurface, 3);
 
           gp_Vec2d D;
           gp_Pnt Triple;
@@ -1734,15 +1734,15 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor2d_HCurve2d) ProjLib_CompProjectedCurve::Trim
+Handle(Adaptor2d_Curve2d) ProjLib_CompProjectedCurve::Trim
   (const Standard_Real First,
   const Standard_Real Last,
   const Standard_Real Tol) const 
 {
   Handle(ProjLib_HCompProjectedCurve) HCS = 
     new ProjLib_HCompProjectedCurve(*this);
-  HCS->ChangeCurve2d().Load(mySurface);
-  HCS->ChangeCurve2d().Load(myCurve->Trim(First,Last,Tol));
+  HCS->Load(mySurface);
+  HCS->Load(myCurve->Trim(First,Last,Tol));
   return HCS;
 }
 
@@ -1819,8 +1819,8 @@ void ProjLib_CompProjectedCurve::UpdateTripleByTrapCriteria(gp_Pnt &thePoint) co
 //function : BuildCurveSplits
 //purpose  : 
 //=======================================================================
-void BuildCurveSplits(const Handle(Adaptor3d_HCurve)   &theCurve,
-                      const Handle(Adaptor3d_HSurface) &theSurface,
+void BuildCurveSplits(const Handle(Adaptor3d_Curve)   &theCurve,
+                      const Handle(Adaptor3d_Surface) &theSurface,
                       const Standard_Real theTolU,
                       const Standard_Real theTolV,
                       NCollection_Vector<Standard_Real> &theSplits)
@@ -1828,7 +1828,7 @@ void BuildCurveSplits(const Handle(Adaptor3d_HCurve)   &theCurve,
   SplitDS aDS(theCurve, theSurface, theSplits);
 
   Extrema_ExtPS anExtPS;
-  anExtPS.Initialize(theSurface->Surface(),
+  anExtPS.Initialize(*theSurface,
                      theSurface->FirstUParameter(), theSurface->LastUParameter(),
                      theSurface->FirstVParameter(), theSurface->LastVParameter(),
                      theTolU, theTolV);
@@ -1874,12 +1874,12 @@ void SplitOnDirection(SplitDS & theSplitDS)
 
   // Create line which is represent periodic border.
   Handle(Geom2d_Curve) aC2GC = new Geom2d_Line(aStartPnt, aDir);
-  Handle(Geom2dAdaptor_HCurve) aC = new Geom2dAdaptor_HCurve(aC2GC, 0, aLast2DParam);
+  Handle(Geom2dAdaptor_Curve) aC = new Geom2dAdaptor_Curve(aC2GC, 0, aLast2DParam);
   Adaptor3d_CurveOnSurface  aCOnS(aC, theSplitDS.mySurface);
 
   Extrema_ExtCC anExtCC;
   anExtCC.SetCurve(1, aCOnS);
-  anExtCC.SetCurve(2, theSplitDS.myCurve->Curve());
+  anExtCC.SetCurve(2, *theSplitDS.myCurve);
   anExtCC.SetSingleSolutionFlag(Standard_True); // Search only one solution since multiple invocations are needed.
   anExtCC.SetRange(1, 0, aLast2DParam);
   theSplitDS.myExtCC = &anExtCC;

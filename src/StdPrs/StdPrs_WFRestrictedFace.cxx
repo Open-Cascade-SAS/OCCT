@@ -36,7 +36,7 @@
 
 void StdPrs_WFRestrictedFace::Add
                 (const Handle (Prs3d_Presentation)&  thePresentation,
-                 const Handle(BRepAdaptor_HSurface)& theFace,
+                 const Handle(BRepAdaptor_Surface)& theFace,
                  const Standard_Boolean              theDrawUIso,
                  const Standard_Boolean              theDrawVIso,
                  const Standard_Integer              theNbUIso,
@@ -148,7 +148,7 @@ void StdPrs_WFRestrictedFace::Add
   Adaptor3d_IsoCurve anIsoCurve;
   anIsoCurve.Load(theFace);
   Handle(Geom_Curve) aBCurve;
-  const BRepAdaptor_Surface& aBSurface = *(BRepAdaptor_Surface*)&(theFace->Surface());
+  const BRepAdaptor_Surface& aBSurface = *theFace;
   GeomAbs_SurfaceType aFaceType = theFace->GetType();
 
   Standard_Integer aNbLines = anIsoBuild.NbLines();
@@ -218,7 +218,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
                    const Standard_Real               theY,
                    const Standard_Real               theZ,
                    const Standard_Real               theDistance,
-                   const Handle(BRepAdaptor_HSurface)& theFace,
+                   const Handle(BRepAdaptor_Surface)& theFace,
                    const Standard_Boolean              theDrawUIso,
                    const Standard_Boolean              theDrawVIso,
                    const Standard_Real               theDeflection,
@@ -383,7 +383,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
 
 void StdPrs_WFRestrictedFace::Add
     (const Handle (Prs3d_Presentation)&  thePresentation,
-     const Handle(BRepAdaptor_HSurface)& theFace,
+     const Handle(BRepAdaptor_Surface)& theFace,
      const Handle (Prs3d_Drawer)&        theDrawer)
 {
   Prs3d_NListOfSequenceOfPnt aCurves;
@@ -405,7 +405,7 @@ void StdPrs_WFRestrictedFace::Add
 
 void StdPrs_WFRestrictedFace::AddUIso
     (const Handle (Prs3d_Presentation)&  thePresentation,
-     const Handle(BRepAdaptor_HSurface)& theFace,
+     const Handle(BRepAdaptor_Surface)& theFace,
      const Handle (Prs3d_Drawer)&        theDrawer)
 {
   Prs3d_NListOfSequenceOfPnt aCurves;
@@ -427,7 +427,7 @@ void StdPrs_WFRestrictedFace::AddUIso
 
 void StdPrs_WFRestrictedFace::AddVIso
     (const Handle (Prs3d_Presentation)&  thePresentation,
-     const Handle(BRepAdaptor_HSurface)& theFace,
+     const Handle(BRepAdaptor_Surface)& theFace,
      const Handle (Prs3d_Drawer)&        theDrawer)
 {
   Prs3d_NListOfSequenceOfPnt aCurves;
@@ -452,7 +452,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::Match
                  const Standard_Real               theY,
                  const Standard_Real               theZ,
                  const Standard_Real               theDistance,
-                 const Handle(BRepAdaptor_HSurface)& theFace,
+                 const Handle(BRepAdaptor_Surface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match (
@@ -477,7 +477,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::MatchUIso
                  const Standard_Real               theY,
                  const Standard_Real               theZ,
                  const Standard_Real               theDistance,
-                 const Handle(BRepAdaptor_HSurface)& theFace,
+                 const Handle(BRepAdaptor_Surface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match (
@@ -502,7 +502,7 @@ Standard_Boolean StdPrs_WFRestrictedFace::MatchVIso
                  const Standard_Real               theY,
                  const Standard_Real               theZ,
                  const Standard_Real               theDistance,
-                 const Handle(BRepAdaptor_HSurface)& theFace,
+                 const Handle(BRepAdaptor_Surface)& theFace,
                  const Handle (Prs3d_Drawer)&        theDrawer)
 {
   return StdPrs_WFRestrictedFace::Match (

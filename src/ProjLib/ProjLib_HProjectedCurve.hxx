@@ -17,77 +17,9 @@
 #ifndef _ProjLib_HProjectedCurve_HeaderFile
 #define _ProjLib_HProjectedCurve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <ProjLib_ProjectedCurve.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class ProjLib_ProjectedCurve;
-class Adaptor2d_Curve2d;
 
-
-class ProjLib_HProjectedCurve;
-DEFINE_STANDARD_HANDLE(ProjLib_HProjectedCurve, Adaptor2d_HCurve2d)
-
-
-class ProjLib_HProjectedCurve : public Adaptor2d_HCurve2d
-{
-
-public:
-
-  
-  //! Creates an empty GenHCurve2d.
-  Standard_EXPORT ProjLib_HProjectedCurve();
-  
-  //! Creates a GenHCurve2d from a Curve
-  Standard_EXPORT ProjLib_HProjectedCurve(const ProjLib_ProjectedCurve& C);
-  
-  //! Sets the field of the GenHCurve2d.
-  Standard_EXPORT void Set (const ProjLib_ProjectedCurve& C);
-  
-  //! Returns the curve used to create the GenHCurve2d.
-  //! This is redefined from HCurve2d, cannot be inline.
-  Standard_EXPORT const Adaptor2d_Curve2d& Curve2d() const Standard_OVERRIDE;
-  
-  //! Returns the curve used to create the GenHCurve.
-    ProjLib_ProjectedCurve& ChangeCurve2d();
-
-
-
-
-  DEFINE_STANDARD_RTTI_INLINE(ProjLib_HProjectedCurve,Adaptor2d_HCurve2d)
-
-protected:
-
-
-  ProjLib_ProjectedCurve myCurve;
-
-
-private:
-
-
-
-
-};
-
-#define TheCurve ProjLib_ProjectedCurve
-#define TheCurve_hxx <ProjLib_ProjectedCurve.hxx>
-#define Adaptor2d_GenHCurve2d ProjLib_HProjectedCurve
-#define Adaptor2d_GenHCurve2d_hxx <ProjLib_HProjectedCurve.hxx>
-#define Handle_Adaptor2d_GenHCurve2d Handle(ProjLib_HProjectedCurve)
-
-#include <Adaptor2d_GenHCurve2d.lxx>
-
-#undef TheCurve
-#undef TheCurve_hxx
-#undef Adaptor2d_GenHCurve2d
-#undef Adaptor2d_GenHCurve2d_hxx
-#undef Handle_Adaptor2d_GenHCurve2d
-
-
-
+// alias for porting old code
+typedef ProjLib_ProjectedCurve ProjLib_HProjectedCurve;
 
 #endif // _ProjLib_HProjectedCurve_HeaderFile

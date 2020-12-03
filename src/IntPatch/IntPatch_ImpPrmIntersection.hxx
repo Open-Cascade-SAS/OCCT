@@ -17,26 +17,13 @@
 #ifndef _IntPatch_ImpPrmIntersection_HeaderFile
 #define _IntPatch_ImpPrmIntersection_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
 #include <IntPatch_TheSearchInside.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Adaptor3d_HSurface;
-class Adaptor3d_TopolTool;
-class IntPatch_Point;
-class IntPatch_Line;
 
+class Adaptor3d_TopolTool;
 
 //! Implementation of the intersection between a natural
 //! quadric patch : Plane, Cone, Cylinder or Sphere and
@@ -50,12 +37,12 @@ public:
   
   Standard_EXPORT IntPatch_ImpPrmIntersection();
   
-  Standard_EXPORT IntPatch_ImpPrmIntersection(const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real Fleche, const Standard_Real Pas);
+  Standard_EXPORT IntPatch_ImpPrmIntersection(const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real Fleche, const Standard_Real Pas);
   
   //! to search for solution from the given point
   Standard_EXPORT void SetStartPoint (const Standard_Real U, const Standard_Real V);
   
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real Fleche, const Standard_Real Pas);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real Fleche, const Standard_Real Pas);
   
   //! Returns true if the calculus was succesfull.
     Standard_Boolean IsDone() const;

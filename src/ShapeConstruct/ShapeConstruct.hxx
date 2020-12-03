@@ -38,7 +38,6 @@ class TopoDS_Edge;
 class ShapeConstruct_Curve;
 class ShapeConstruct_ProjectCurveOnSurface;
 class ShapeConstruct_CompBezierCurvesToBSplineCurve;
-class ShapeConstruct_CompBezierCurves2dToBSplineCurve2d;
 class ShapeConstruct_MakeTriangulation;
 
 
@@ -92,32 +91,6 @@ public:
   //! else - False.
   Standard_EXPORT static Standard_Boolean JoinCurves (const Handle(Geom2d_Curve)& c2d1, const Handle(Geom2d_Curve)& ac2d2, const TopAbs_Orientation Orient1, const TopAbs_Orientation Orient2, Standard_Real& first1, Standard_Real& last1, Standard_Real& first2, Standard_Real& last2, Handle(Geom2d_Curve)& c2dOut, Standard_Boolean& isRev1, Standard_Boolean& isRev2, const Standard_Boolean isError = Standard_False);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ShapeConstruct_Curve;
-friend class ShapeConstruct_ProjectCurveOnSurface;
-friend class ShapeConstruct_CompBezierCurvesToBSplineCurve;
-friend class ShapeConstruct_CompBezierCurves2dToBSplineCurve2d;
-friend class ShapeConstruct_MakeTriangulation;
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeConstruct_HeaderFile

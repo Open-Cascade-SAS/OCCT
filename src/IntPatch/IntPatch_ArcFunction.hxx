@@ -17,23 +17,10 @@
 #ifndef _IntPatch_ArcFunction_HeaderFile
 #define _IntPatch_ArcFunction_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <IntSurf_Quadric.hxx>
-#include <gp_Pnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HSurface;
-class IntSurf_Quadric;
-class gp_Pnt;
-
-
 
 class IntPatch_ArcFunction  : public math_FunctionWithDerivative
 {
@@ -46,9 +33,9 @@ public:
   
     void SetQuadric (const IntSurf_Quadric& Q);
   
-    void Set (const Handle(Adaptor2d_HCurve2d)& A);
+    void Set (const Handle(Adaptor2d_Curve2d)& A);
   
-    void Set (const Handle(Adaptor3d_HSurface)& S);
+    void Set (const Handle(Adaptor3d_Surface)& S);
   
   Standard_EXPORT Standard_Boolean Value (const Standard_Real X, Standard_Real& F) Standard_OVERRIDE;
   
@@ -64,9 +51,9 @@ public:
   
     const IntSurf_Quadric& Quadric() const;
   
-    const Handle(Adaptor2d_HCurve2d)& Arc() const;
+    const Handle(Adaptor2d_Curve2d)& Arc() const;
   
-    const Handle(Adaptor3d_HSurface)& Surface() const;
+    const Handle(Adaptor3d_Surface)& Surface() const;
 
     //! Returns the point, which has been computed
     //! while the last calling Value() method
@@ -84,8 +71,8 @@ private:
 
 
 
-  Handle(Adaptor2d_HCurve2d) myArc;
-  Handle(Adaptor3d_HSurface) mySurf;
+  Handle(Adaptor2d_Curve2d) myArc;
+  Handle(Adaptor3d_Surface) mySurf;
   IntSurf_Quadric myQuad;
   gp_Pnt ptsol;
   TColgp_SequenceOfPnt seqpt;

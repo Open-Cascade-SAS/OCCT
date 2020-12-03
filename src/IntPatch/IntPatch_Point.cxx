@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <IntPatch_Point.hxx>
@@ -53,7 +53,7 @@ void IntPatch_Point::SetVertex(const Standard_Boolean OnFirst, const Handle(Adap
 }
 
 void IntPatch_Point::SetArc (const Standard_Boolean OnFirst,
-                             const Handle(Adaptor2d_HCurve2d)& A,
+                             const Handle(Adaptor2d_Curve2d)& A,
                              const Standard_Real Param,
                              const IntSurf_Transition& TLine,
                              const IntSurf_Transition& TArc)

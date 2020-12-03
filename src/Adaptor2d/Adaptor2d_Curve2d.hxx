@@ -17,30 +17,27 @@
 #ifndef _Adaptor2d_Curve2d_HeaderFile
 #define _Adaptor2d_Curve2d_HeaderFile
 
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Parab2d.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_CurveType.hxx>
+
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class Adaptor2d_HCurve2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-class gp_Lin2d;
-class gp_Circ2d;
-class gp_Elips2d;
-class gp_Hypr2d;
-class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
 
+DEFINE_STANDARD_HANDLE(Adaptor2d_Curve2d, Standard_Transient)
 
 //! Root class for 2D curves on which geometric
 //! algorithms work.
@@ -53,12 +50,10 @@ class Geom2d_BSplineCurve;
 //! Polynomial coefficients of BSpline curves used for their evaluation are
 //! cached for better performance. Therefore these evaluations are not
 //! thread-safe and parallel evaluations need to be prevented.
-class Adaptor2d_Curve2d 
+class Adaptor2d_Curve2d : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Adaptor2d_Curve2d, Standard_Transient)
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   Standard_EXPORT virtual Standard_Real FirstParameter() const;
   
@@ -82,7 +77,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT virtual Handle(Adaptor2d_HCurve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const;
   
   Standard_EXPORT virtual Standard_Boolean IsClosed() const;
   
@@ -158,27 +153,6 @@ public:
   Standard_EXPORT virtual Handle(Geom2d_BSplineCurve) BSpline() const;
   Standard_EXPORT virtual ~Adaptor2d_Curve2d();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Adaptor2d_Curve2d_HeaderFile

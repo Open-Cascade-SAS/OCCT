@@ -17,19 +17,15 @@
 #ifndef _BRepCheck_HeaderFile
 #define _BRepCheck_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
 #include <BRepCheck_Status.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
+
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Edge;
 class Adaptor3d_Curve;
-class Adaptor3d_HSurface;
 class BRepCheck_Result;
 class BRepCheck_Vertex;
 class BRepCheck_Edge;
@@ -59,7 +55,7 @@ public:
   Standard_EXPORT static Standard_Real PrecCurve(const Adaptor3d_Curve& aAC3D);
 
   //! Returns the resolution on the surface
-  Standard_EXPORT static Standard_Real PrecSurface(const Handle(Adaptor3d_HSurface)& aAHSurf);
+  Standard_EXPORT static Standard_Real PrecSurface(const Handle(Adaptor3d_Surface)& aAHSurf);
 
 
 

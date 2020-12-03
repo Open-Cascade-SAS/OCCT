@@ -18,7 +18,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <CSLib_Class2d.hxx>
@@ -113,8 +113,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace,
   Toluv=TolUV;
   Face=aFace;
   Face.Orientation(TopAbs_FORWARD);
-  Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
-  surf->ChangeSurface().Initialize(aFace, Standard_False);
+  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
+  surf->Initialize(aFace, Standard_False);
   //
   Tole = 0.;
   Tol=0.;
@@ -583,8 +583,8 @@ TopAbs_State IntTools_FClass2d::Perform
   Standard_Real vv = v;
   TopAbs_State aStatus = TopAbs_UNKNOWN;
 
-  Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
-  surf->ChangeSurface().Initialize( Face, Standard_False );
+  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
+  surf->Initialize( Face, Standard_False );
   
   const Standard_Boolean IsUPer  = surf->IsUPeriodic();
   const Standard_Boolean IsVPer  = surf->IsVPeriodic();
@@ -727,8 +727,8 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction
   Standard_Real v=_Puv.Y();
   Standard_Real uu = u, vv = v;
 
-  Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
-  surf->ChangeSurface().Initialize( Face, Standard_False );
+  Handle(BRepAdaptor_Surface) surf = new BRepAdaptor_Surface();
+  surf->Initialize( Face, Standard_False );
   const Standard_Boolean IsUPer  = surf->IsUPeriodic();
   const Standard_Boolean IsVPer  = surf->IsVPeriodic();
   const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;

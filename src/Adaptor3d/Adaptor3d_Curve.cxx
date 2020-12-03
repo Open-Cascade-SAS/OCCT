@@ -14,9 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HCurve.hxx>
+
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -31,6 +30,8 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Curve, Standard_Transient)
 
 //=======================================================================
 //function : ~Adaptor3d_Curve
@@ -100,8 +101,8 @@ void Adaptor3d_Curve::Intervals(TColStd_Array1OfReal& , const GeomAbs_Shape ) co
 //purpose  : 
 //=======================================================================
 
-//Handle(Adaptor3d_HCurve) Adaptor3d_Curve::Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const 
-Handle(Adaptor3d_HCurve) Adaptor3d_Curve::Trim(const Standard_Real , const Standard_Real , const Standard_Real ) const 
+//Handle(Adaptor3d_Curve) Adaptor3d_Curve::Trim(const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const 
+Handle(Adaptor3d_Curve) Adaptor3d_Curve::Trim(const Standard_Real , const Standard_Real , const Standard_Real ) const 
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::Trim");
 }

@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor3d_HCurve.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <GeomFill_DiscreteTrihedron.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <GeomFill_Frenet.hxx>
 #include <GeomFill_HSequenceOfAx2.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
@@ -61,7 +61,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_DiscreteTrihedron::Copy() const
 //purpose  : 
 //=======================================================================
 
-void GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_HCurve)& C) 
+void GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   GeomFill_TrihedronLaw::SetCurve(C);
   if (! C.IsNull()) {

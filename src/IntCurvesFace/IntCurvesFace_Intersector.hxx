@@ -17,31 +17,22 @@
 #ifndef _IntCurvesFace_Intersector_HeaderFile
 #define _IntCurvesFace_Intersector_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_SequenceOfPnt.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Address.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <TopAbs_State.hxx>
+
 class BRepTopAdaptor_TopolTool;
-class BRepAdaptor_HSurface;
 class TopoDS_Face;
 class gp_Lin;
-class Adaptor3d_HCurve;
 class gp_Pnt;
 class IntCurveSurface_HInter;
 class gp_Pnt2d;
 class Bnd_Box;
-
-
 
 class IntCurvesFace_Intersector 
 {
@@ -78,7 +69,7 @@ public:
   
   //! same method for a HCurve from Adaptor3d.
   //! PInf an PSup can also be - and + INF.
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HCurve)& HCu, const Standard_Real PInf, const Standard_Real PSup);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Curve)& HCu, const Standard_Real PInf, const Standard_Real PSup);
   
   //! Return the surface type
   Standard_EXPORT GeomAbs_SurfaceType SurfaceType() const;
@@ -155,7 +146,7 @@ private:
 
 
   Handle(BRepTopAdaptor_TopolTool) myTopolTool;
-  Handle(BRepAdaptor_HSurface) Hsurface;
+  Handle(BRepAdaptor_Surface) Hsurface;
   Standard_Real Tol;
   IntCurveSurface_SequenceOfPnt SeqPnt;
   TColStd_SequenceOfInteger mySeqState;

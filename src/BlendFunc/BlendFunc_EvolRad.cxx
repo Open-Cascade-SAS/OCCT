@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_EvolRad.hxx>
@@ -102,9 +102,9 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 //purpose  : 
 //=======================================================================
 
-BlendFunc_EvolRad::BlendFunc_EvolRad(const Handle(Adaptor3d_HSurface)& S1,
-				     const Handle(Adaptor3d_HSurface)& S2,
-				     const Handle(Adaptor3d_HCurve)& C,
+BlendFunc_EvolRad::BlendFunc_EvolRad(const Handle(Adaptor3d_Surface)& S1,
+				     const Handle(Adaptor3d_Surface)& S2,
+				     const Handle(Adaptor3d_Curve)& C,
 				     const Handle(Law_Function)& Law)
                                  :
 				  surf1(S1),surf2(S2),

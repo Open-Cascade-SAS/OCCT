@@ -23,10 +23,6 @@
 
 class Geom2d_Curve;
 class Adaptor2d_Curve2d;
-class Geom2dAdaptor_Curve;
-class Geom2dAdaptor_GHCurve;
-class Geom2dAdaptor_HCurve;
-
 
 //! this package  contains the geometric definition of
 //! 2d  curves compatible  with  the  Adaptor  package
@@ -44,30 +40,6 @@ public:
   //! cannot process the OtherCurves.
   Standard_EXPORT static Handle(Geom2d_Curve) MakeCurve (const Adaptor2d_Curve2d& HC);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Geom2dAdaptor_Curve;
-friend class Geom2dAdaptor_GHCurve;
-friend class Geom2dAdaptor_HCurve;
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dAdaptor_HeaderFile

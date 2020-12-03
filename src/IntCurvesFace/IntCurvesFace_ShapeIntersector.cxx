@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntCurvesFace_ShapeIntersector.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <ElCLib.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <IntCurvesFace_Intersector.hxx>
-#include <IntCurvesFace_ShapeIntersector.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopExp_Explorer.hxx>
@@ -159,7 +159,7 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& L,
   SortResult();
 }
 //-- ================================================================================
-void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_HCurve)& HCu,
+void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
 					     const Standard_Real ParMin,
 					     const Standard_Real ParMax) { 
   done = Standard_False;

@@ -16,6 +16,8 @@
 
 //  Modified by skv - Wed Aug 11 17:26:03 2004 OCC6272
 
+#include <GeomProjLib.hxx>
+
 #include <Approx_CurveOnSurface.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -38,10 +40,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomProjLib.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <Precision.hxx>
@@ -97,8 +96,8 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)& C,
 			 VDeb,
 			 VFin);
   
-  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface(AS);
-  Handle(GeomAdaptor_HCurve)   HC = new GeomAdaptor_HCurve(AC);
+  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(AS);
+  Handle(GeomAdaptor_Curve)   HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectedCurve Proj(HS,HC,Tolerance);
 
@@ -281,7 +280,7 @@ Handle(Geom_Curve) GeomProjLib::Project( const Handle(Geom_Curve)& C,
 
   if ( AS.GetType() == GeomAbs_Plane) {
     ProjLib_ProjectOnPlane Proj( AS.Plane().Position());
-    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve(AC);
+    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(AC);
     Proj.Load(HC,Precision::PApproximation());
 
     switch ( Proj.GetType()) {
@@ -327,8 +326,8 @@ Handle(Geom_Curve) GeomProjLib::Project( const Handle(Geom_Curve)& C,
     
   }
   else {
-    Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface(AS);
-    Handle(GeomAdaptor_HCurve)   HC = new GeomAdaptor_HCurve(AC);
+    Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(AS);
+    Handle(GeomAdaptor_Curve)   HC = new GeomAdaptor_Curve(AC);
 //    Standard_Real Tol  = Precision::Approximation();
 //    Standard_Real TolU = Precision::PApproximation();
 //    Standard_Real TolV = Precision::PApproximation();
@@ -339,7 +338,7 @@ Handle(Geom_Curve) GeomProjLib::Project( const Handle(Geom_Curve)& C,
     
     Standard_Real f,l;
     Proj.Bounds(1,f,l);
-    Handle(Adaptor2d_HCurve2d) HC2d = Proj.Trim(f,l,TolU);
+    Handle(Adaptor2d_Curve2d) HC2d = Proj.Trim(f,l,TolU);
     Approx_CurveOnSurface Approx(HC2d, HS, f, l, Tol);
     Approx.Perform(16, 14, GeomAbs_C2, Standard_True);
 
@@ -363,7 +362,7 @@ Handle(Geom_Curve) GeomProjLib::ProjectOnPlane
  const Standard_Boolean KeepParametrization)
 {
   GeomAdaptor_Curve   AC(Curve);
-  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve(AC);
+  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectOnPlane Proj(Plane->Position(), Dir);
   Proj.Load(HC,Precision::Approximation(), KeepParametrization);

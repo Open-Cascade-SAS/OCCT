@@ -19,8 +19,8 @@
 #include <Blend_Point.hxx>
 #include <BlendFunc_SectionShape.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Chamfer.hxx>
 #include <BRepBlend_ChamfInv.hxx>
@@ -39,7 +39,7 @@
 #include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_CircSection.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_ListIteratorOfRegularities.hxx>
 #include <ChFiDS_ListOfStripe.hxx>
@@ -50,7 +50,7 @@
 #include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -729,12 +729,12 @@ void  ChFi3d_ChBuilder::SimulKPart(const Handle(ChFiDS_SurfData)& SD ) const
 
 Standard_Boolean
 ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
-			    const Handle(ChFiDS_HElSpine)&      HGuide,
+			    const Handle(ChFiDS_ElSpine)&      HGuide,
 			    const Handle(ChFiDS_Spine)&         Spine,
 			    const Standard_Integer              Choix,
-			    const Handle(BRepAdaptor_HSurface)& S1,
+			    const Handle(BRepAdaptor_Surface)& S1,
 			    const Handle(Adaptor3d_TopolTool)&    I1,
-			    const Handle(BRepAdaptor_HSurface)& S2,
+			    const Handle(BRepAdaptor_Surface)& S2,
 			    const Handle(Adaptor3d_TopolTool)&    I2,
 			    const Standard_Real                 TolGuide,
 			    Standard_Real&                      First,
@@ -781,7 +781,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   if(intl) Last = chsp->LastParameter(chsp->NbEdges());
 
 
-  Handle(ChFiDS_HElSpine) OffsetHGuide;
+  Handle(ChFiDS_ElSpine) OffsetHGuide;
 
   if (chsp->IsChamfer() == ChFiDS_Sym) {
     Standard_Real dis;
@@ -850,14 +850,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if(cp1.IsOnArc()){
-	TopoDS_Face F1 = S1->ChangeSurface().Face();
+	TopoDS_Face F1 = S1->Face();
 	TopoDS_Face bid;
 	intf = !SearchFace(Spine,cp1,F1,bid);
 	ok = intf != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
       if(cp2.IsOnArc() && !ok){
-	TopoDS_Face F2 = S2->ChangeSurface().Face();
+	TopoDS_Face F2 = S2->Face();
 	TopoDS_Face bid;
 	intf = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -866,14 +866,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if(cp1.IsOnArc()){
-	TopoDS_Face F1 = S1->ChangeSurface().Face();
+	TopoDS_Face F1 = S1->Face();
 	TopoDS_Face bid;
 	intl = !SearchFace(Spine,cp1,F1,bid);
 	ok = intl != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
       if(cp2.IsOnArc() && !ok){
-	TopoDS_Face F2 = S2->ChangeSurface().Face();
+	TopoDS_Face F2 = S2->Face();
 	TopoDS_Face bid;
 	intl = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -907,7 +907,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
       for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
       {
-        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -965,14 +965,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if(cp1.IsOnArc()){
-	TopoDS_Face F1 = S1->ChangeSurface().Face();
+	TopoDS_Face F1 = S1->Face();
 	TopoDS_Face bid;
 	intf = !SearchFace(Spine,cp1,F1,bid);
 	ok = intf != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
       if(cp2.IsOnArc() && !ok){
-	TopoDS_Face F2 = S2->ChangeSurface().Face();
+	TopoDS_Face F2 = S2->Face();
 	TopoDS_Face bid;
 	intf = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -981,14 +981,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if(cp1.IsOnArc()){
-	TopoDS_Face F1 = S1->ChangeSurface().Face();
+	TopoDS_Face F1 = S1->Face();
 	TopoDS_Face bid;
 	intl = !SearchFace(Spine,cp1,F1,bid);
 	ok = intl != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
       if(cp2.IsOnArc() && !ok){
-	TopoDS_Face F2 = S2->ChangeSurface().Face();
+	TopoDS_Face F2 = S2->Face();
 	TopoDS_Face bid;
 	intl = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -1050,14 +1050,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if(cp1.IsOnArc()){
-        TopoDS_Face F1 = S1->ChangeSurface().Face();
+        TopoDS_Face F1 = S1->Face();
         TopoDS_Face bid;
         intf = !SearchFace(Spine,cp1,F1,bid);
         ok = intf != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexFirstOnS2();
       if(cp2.IsOnArc() && !ok){
-        TopoDS_Face F2 = S2->ChangeSurface().Face();
+        TopoDS_Face F2 = S2->Face();
         TopoDS_Face bid;
         intf = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -1067,14 +1067,14 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       Standard_Boolean ok = Standard_False;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if(cp1.IsOnArc()){
-        TopoDS_Face F1 = S1->ChangeSurface().Face();
+        TopoDS_Face F1 = S1->Face();
         TopoDS_Face bid;
         intl = !SearchFace(Spine,cp1,F1,bid);
         ok = intl != 0;
       }
       const ChFiDS_CommonPoint& cp2 = Data->VertexLastOnS2();
       if(cp2.IsOnArc() && !ok){
-        TopoDS_Face F2 = S2->ChangeSurface().Face();
+        TopoDS_Face F2 = S2->Face();
         TopoDS_Face bid;
         intl = !SearchFace(Spine,cp2,F2,bid);
       }
@@ -1084,16 +1084,16 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 }
 
 void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      , 
+				const Handle(ChFiDS_ElSpine)&      , 
 				const Handle(ChFiDS_Spine)&         , 
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
 				const TopAbs_Orientation            ,
 				const Standard_Real                 ,
@@ -1111,17 +1111,17 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      , 
+				const Handle(ChFiDS_ElSpine)&      , 
 				const Handle(ChFiDS_Spine)&         , 
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
 				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const Standard_Real                 ,
 				const Standard_Real                 ,
@@ -1138,21 +1138,21 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
   throw Standard_Failure("SimulSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
-				const Handle(ChFiDS_HElSpine)&      ,
+				const Handle(ChFiDS_ElSpine)&      ,
 				const Handle(ChFiDS_Spine)&         ,
 				const Standard_Integer              ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const TopAbs_Orientation            ,
-				const Handle(BRepAdaptor_HSurface)& ,
+				const Handle(BRepAdaptor_Surface)& ,
 				const Handle(Adaptor3d_TopolTool)&    ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
-				const Handle(BRepAdaptor_HSurface)& ,
-				const Handle(BRepAdaptor_HCurve2d)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
+				const Handle(BRepAdaptor_Surface)& ,
+				const Handle(BRepAdaptor_Curve2d)& ,
 				Standard_Boolean&                   ,
 				const TopAbs_Orientation            ,
 				const Standard_Real                 ,
@@ -1178,10 +1178,10 @@ void  ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            ,
 
 Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
 (const Handle(ChFiDS_Spine)&         Spine,
- const Handle(ChFiDS_HElSpine)&      HGuide,
+ const Handle(ChFiDS_ElSpine)&      HGuide,
  const Standard_Integer              Choix,
- Handle(BRepAdaptor_HSurface)&       S1,
- Handle(BRepAdaptor_HSurface)&       S2,
+ Handle(BRepAdaptor_Surface)&       S1,
+ Handle(BRepAdaptor_Surface)&       S2,
  const Handle(Adaptor3d_TopolTool)&    I1,
  const Handle(Adaptor3d_TopolTool)&    I2,
  const Standard_Real                 Par,
@@ -1223,8 +1223,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     gp_Pnt pt1, pt2, ptgui;
     gp_XYZ temp;
     
-    ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
-    //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
+    HGuide->D1(Par,ptgui,d1gui);
+    //  ptgui = S1->Value(SolDep(1),SolDep(2));
     
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
@@ -1255,9 +1255,9 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     Standard_Real tol = tolesp*1.e2;
 //    Standard_Real u,v;
-    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
-    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj2(*S2, tol, tol);
     proj2.Perform(pt2, SolDep(3), SolDep(4));
 
     if( proj1.IsDone() ){
@@ -1286,13 +1286,13 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     }
     else
     {
-      Handle(ChFiDS_HElSpine) OffsetHGuide;
+      Handle(ChFiDS_ElSpine) OffsetHGuide;
       ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
       ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
       ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
       for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
       {
-        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -1313,8 +1313,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     gp_Pnt pt1, pt2, ptgui;
     gp_XYZ temp;
     
-    ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
-    //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
+    HGuide->D1(Par,ptgui,d1gui);
+    //  ptgui = S1->Value(SolDep(1),SolDep(2));
     
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
@@ -1362,9 +1362,9 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Standard_Real tol = tolesp*1.e2;
 //    Standard_Real u,v;
 
-    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
-    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj2(*S2, tol, tol);
     proj2.Perform(pt2, SolDep(3), SolDep(4));
 
     if( proj1.IsDone() ){
@@ -1392,8 +1392,8 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     gp_Pnt pt1, pt2, ptgui;
     gp_XYZ temp;
     
-    ( HGuide->Curve() ).D1(Par,ptgui,d1gui);
-    //  ptgui = (S1->Surface()).Value(SolDep(1),SolDep(2));
+    HGuide->D1(Par,ptgui,d1gui);
+    //  ptgui = S1->Value(SolDep(1),SolDep(2));
     
     Func.Set(Par);
     Func.Tangent(SolDep(1),SolDep(2),SolDep(3),SolDep(4),TgF,TgL,tmp1,tmp2);
@@ -1431,9 +1431,9 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     
     Standard_Real tol = tolesp*1.e2;
     //      Standard_Real u,v;
-    Extrema_GenLocateExtPS proj1(S1->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj1(*S1, tol, tol);
     proj1.Perform(pt1, SolDep(1), SolDep(2));
-    Extrema_GenLocateExtPS proj2(S2->Surface(), tol, tol);
+    Extrema_GenLocateExtPS proj2(*S2, tol, tol);
     proj2.Perform(pt2, SolDep(3), SolDep(4));
     if( proj1.IsDone() ){
       (proj1.Point()).Parameter(SolDep(1),SolDep(2)); 
@@ -1455,12 +1455,12 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
 
 Standard_Boolean  
 ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
-			      const Handle(ChFiDS_HElSpine)&      HGuide,
+			      const Handle(ChFiDS_ElSpine)&      HGuide,
 			      const Handle(ChFiDS_Spine)&         Spine,
 			      const Standard_Integer              Choix,
-			      const Handle(BRepAdaptor_HSurface)& S1,
+			      const Handle(BRepAdaptor_Surface)& S1,
 			      const Handle(Adaptor3d_TopolTool)&    I1,
-			      const Handle(BRepAdaptor_HSurface)& S2,
+			      const Handle(BRepAdaptor_Surface)& S2,
 			      const Handle(Adaptor3d_TopolTool)&    I2,
 			      const Standard_Real                 MaxStep,
 			      const Standard_Real                 Fleche,
@@ -1486,7 +1486,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
   
   Standard_Boolean gd1,gd2,gf1,gf2;
   Handle(BRepBlend_Line) lin;
-  TopAbs_Orientation Or = S1->ChangeSurface().Face().Orientation();
+  TopAbs_Orientation Or = S1->Face().Orientation();
   Standard_Real PFirst = First;
   if(intf) First = chsp->FirstParameter(1);
   if(intl) Last = chsp->LastParameter(chsp->NbEdges());
@@ -1543,13 +1543,13 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
     }
     else
     {
-      Handle(ChFiDS_HElSpine) OffsetHGuide;
+      Handle(ChFiDS_ElSpine) OffsetHGuide;
       ChFiDS_ListOfHElSpine& ll = Spine->ChangeElSpines();
       ChFiDS_ListOfHElSpine& ll_offset = Spine->ChangeOffsetElSpines();
       ChFiDS_ListIteratorOfListOfHElSpine ILES(ll), ILES_offset(ll_offset);
       for ( ; ILES.More(); ILES.Next(),ILES_offset.Next())
       {
-        const Handle(ChFiDS_HElSpine)& aHElSpine = ILES.Value();
+        const Handle(ChFiDS_ElSpine)& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
           OffsetHGuide = ILES_offset.Value();
       }
@@ -1599,16 +1599,16 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 }
 
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      , 
+				  const Handle(ChFiDS_ElSpine)&      , 
 				  const Handle(ChFiDS_Spine)&         , 
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
 				  const TopAbs_Orientation            ,
 				  const Standard_Real                 ,
@@ -1627,17 +1627,17 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
   throw Standard_Failure("PerformSurf Not Implemented");
 }
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      , 
+				  const Handle(ChFiDS_ElSpine)&      , 
 				  const Handle(ChFiDS_Spine)&         , 
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
 				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const Standard_Real                 ,
 				  const Standard_Real                 ,
@@ -1656,21 +1656,21 @@ void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
 
 }
 void  ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          ,
-				  const Handle(ChFiDS_HElSpine)&      ,
+				  const Handle(ChFiDS_ElSpine)&      ,
 				  const Handle(ChFiDS_Spine)&         ,
 				  const Standard_Integer              ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const TopAbs_Orientation            ,
-				  const Handle(BRepAdaptor_HSurface)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
 				  const Handle(Adaptor3d_TopolTool)&    ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
-				  const Handle(BRepAdaptor_HSurface)& ,
-				  const Handle(BRepAdaptor_HCurve2d)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
+				  const Handle(BRepAdaptor_Surface)& ,
+				  const Handle(BRepAdaptor_Curve2d)& ,
 				  Standard_Boolean&                   ,
 				  const TopAbs_Orientation            ,
 				  const Standard_Real                 ,

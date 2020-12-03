@@ -15,12 +15,10 @@
 #ifndef _GeomEvaluator_SurfaceOfExtrusion_HeaderFile
 #define _GeomEvaluator_SurfaceOfExtrusion_HeaderFile
 
+#include <Adaptor3d_Curve.hxx>
 #include <GeomEvaluator_Surface.hxx>
-
 #include <Geom_Curve.hxx>
 #include <gp_Dir.hxx>
-
-class Adaptor3d_HCurve;
 
 //! Allows to calculate values and derivatives for surfaces of linear extrusion
 class GeomEvaluator_SurfaceOfExtrusion : public GeomEvaluator_Surface
@@ -30,7 +28,7 @@ public:
   Standard_EXPORT GeomEvaluator_SurfaceOfExtrusion(const Handle(Geom_Curve)& theBase,
                                                    const gp_Dir& theExtrusionDir);
   //! Initialize evaluator by surface adaptor
-  Standard_EXPORT GeomEvaluator_SurfaceOfExtrusion(const Handle(Adaptor3d_HCurve)& theBase,
+  Standard_EXPORT GeomEvaluator_SurfaceOfExtrusion(const Handle(Adaptor3d_Curve)& theBase,
                                                    const gp_Dir& theExtrusionDir);
 
   ///! Changes the direction of extrusion
@@ -72,7 +70,7 @@ private:
 
 private:
   Handle(Geom_Curve)       myBaseCurve;
-  Handle(Adaptor3d_HCurve) myBaseAdaptor;
+  Handle(Adaptor3d_Curve) myBaseAdaptor;
 
   gp_Dir myDirection;
 };

@@ -28,7 +28,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
-class Adaptor3d_HCurve;
+
 class Standard_OutOfRange;
 class Standard_DomainError;
 class gp_Pnt;
@@ -43,7 +43,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomFill_SnglrFunc(const Handle(Adaptor3d_HCurve)& HC);
+  Standard_EXPORT GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC);
   
   Standard_EXPORT void SetRatio (const Standard_Real Ratio);
   
@@ -120,7 +120,7 @@ private:
 
 
 
-  Handle(Adaptor3d_HCurve) myHCurve;
+  Handle(Adaptor3d_Curve) myHCurve;
   Standard_Real ratio;
 
 

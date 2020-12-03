@@ -26,7 +26,7 @@
 #include <Extrema_ExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
@@ -36,7 +36,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
@@ -120,10 +120,8 @@ static Standard_Boolean Project(const Handle(Geom2d_Curve)& C,
   Standard_Real Eps2 = BRep_Tool::Tolerance(V);
   Eps2 *= Eps2;
   
-  Handle(Geom2dAdaptor_HCurve) HG2AHC = new Geom2dAdaptor_HCurve();
-  HG2AHC->Set(C);
-  Handle(GeomAdaptor_HSurface) HGAHS = new GeomAdaptor_HSurface();
-  HGAHS->Set(S);
+  Handle(Geom2dAdaptor_Curve) HG2AHC = new Geom2dAdaptor_Curve (C);
+  Handle(GeomAdaptor_Surface) HGAHS = new GeomAdaptor_Surface (S);
   Adaptor3d_CurveOnSurface ACOS(HG2AHC,HGAHS);
 
   Standard_Real D1,D2;

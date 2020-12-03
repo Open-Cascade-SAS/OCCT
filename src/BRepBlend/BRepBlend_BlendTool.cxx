@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepBlend_BlendTool.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBlend_BlendTool.hxx>
 #include <BRepBlend_HCurve2dTool.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
@@ -40,8 +40,8 @@
 // pmn 8/10/98 : On retourne toujours une distance. (BUC60360)
 //=======================================================================
 Standard_Boolean BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
-                                              const Handle(Adaptor3d_HSurface)&,
-                                              const Handle(Adaptor2d_HCurve2d)& C,
+                                              const Handle(Adaptor3d_Surface)&,
+                                              const Handle(Adaptor2d_Curve2d)& C,
                                               Standard_Real& Paramproj,
                                               Standard_Real& Dist)
 {
@@ -60,7 +60,7 @@ Standard_Boolean BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
   const Standard_Real epsX = 1.e-8;
   const Standard_Integer Nbu = 20;
   const Standard_Real Tol = 1.e-5;
-  Extrema_EPCOfExtPC2d extrema(P, C->Curve2d(), Nbu, epsX, Tol);
+  Extrema_EPCOfExtPC2d extrema(P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone())
     return Standard_True;
 
@@ -83,8 +83,8 @@ Standard_Boolean BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
 //=======================================================================
 Standard_Boolean BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
                                              const gp_Pnt2d& P2,
-                                             const Handle(Adaptor3d_HSurface)&,
-                                             const Handle(Adaptor2d_HCurve2d)& C,
+                                             const Handle(Adaptor3d_Surface)&,
+                                             const Handle(Adaptor2d_Curve2d)& C,
                                              Standard_Real& Param,
                                              Standard_Real& Dist)
 {
@@ -97,7 +97,7 @@ Standard_Boolean BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
   Handle(Geom2d_Line) bid = new Geom2d_Line(P1,d);
   Geom2dAdaptor_Curve seg(bid,-0.01*mag,1.01*mag);
 
-  Geom2dInt_GInter inter(seg,C->Curve2d(),Tol,Tol);
+  Geom2dInt_GInter inter (seg, *C, Tol, Tol);
   if (!inter.IsDone())
     return Standard_False;
 
@@ -112,7 +112,7 @@ Standard_Boolean BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
 }
 
 Standard_Integer BRepBlend_BlendTool::NbSamplesV
-  (const Handle(Adaptor3d_HSurface)&,
+  (const Handle(Adaptor3d_Surface)&,
    const Standard_Real,
    const Standard_Real)
 {
@@ -120,14 +120,14 @@ Standard_Integer BRepBlend_BlendTool::NbSamplesV
 }
 
 Standard_Integer BRepBlend_BlendTool::NbSamplesU
-  (const Handle(Adaptor3d_HSurface)&,
+  (const Handle(Adaptor3d_Surface)&,
    const Standard_Real,
    const Standard_Real)
 {
   return 10;
 }
 
-void BRepBlend_BlendTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
+void BRepBlend_BlendTool::Bounds(const Handle(Adaptor2d_Curve2d)& A,
                                  Standard_Real& Ufirst,
                                  Standard_Real& Ulast)
 {

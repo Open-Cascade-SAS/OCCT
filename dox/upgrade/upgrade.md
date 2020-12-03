@@ -2159,6 +2159,15 @@ Existing message files containing 8-bit characters (previously interpreted as ch
 
 @section upgrade_occt760 Upgrade to OCCT 7.6.0
 
+@subsection upgrade_760_handle_adaptors Simplification of surface/curve adaptor
+
+Interfaces *Adaptor2d_Curve2d*, *Adaptor3d_Curve* and *Adaptor3d_Surface* now inherit Standard_Transient and can be Handle-managed.
+No more necessary parallel hiererchy of classes *Adaptor2d_HCurve2d*, *Adaptor3d_HCurve* and *Adaptor3d_HSurface* (generated from generic templates by WOK) has been eliminated.
+Existing code using old Handle classes should be updated to:
+* Rename occurrences of old names (remove H suffix); upgrade.bat could be used for that purpose.
+* Replace redundant calls to previously declared methods .GetCurve2d()/.GetCurve()/.GetSurface() with the common operator->() syntax.
+* Pay attention on code calling GetSurface()/GetCurve() methods of removed handle classes. Such places should be replaced with Handle dereference.
+
 @subsection upgrade_760_extendedstring_cout Output of TCollection_ExtendedString to stream
 
 Behavior of the method TCollection_ExtendedString::Print(Standard_OStream&) and corresponding operator << has changed.

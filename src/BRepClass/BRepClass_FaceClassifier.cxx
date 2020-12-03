@@ -12,10 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceExplorer.hxx>
 #include <BRepTools.hxx>
 #include <Extrema_ExtPS.hxx>

@@ -24,8 +24,7 @@
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepTools_Quilt.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepOffset_SimpleOffset.hxx>
 #include <BRepTools_Modifier.hxx>
@@ -238,10 +237,10 @@ static void tgtfaces(const TopoDS_Edge& Ed,
   BRepAdaptor_Surface aBAS1(F1,Standard_False);
   BRepAdaptor_Surface aBAS2(F2,Standard_False);
 
-  Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface (aBAS1);
-  Handle(BRepAdaptor_HSurface) HS2;
+  Handle(BRepAdaptor_Surface) HS1 = new BRepAdaptor_Surface (aBAS1);
+  Handle(BRepAdaptor_Surface) HS2;
   if(couture) HS2 = HS1;
-  else HS2 = new BRepAdaptor_HSurface(aBAS2);
+  else HS2 = new BRepAdaptor_Surface(aBAS2);
   //case when edge lies on the one face
   
   E.Orientation(TopAbs_FORWARD);

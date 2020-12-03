@@ -18,8 +18,8 @@
 //                         Optimisation, use of GetCircle
 // Modified 20/02/1998 PMN Singular surfaces management
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ConstRad.hxx>
@@ -47,9 +47,9 @@
 //purpose  : 
 //=======================================================================
 
-BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_HSurface)& S1,
-                                       const Handle(Adaptor3d_HSurface)& S2,
-                                       const Handle(Adaptor3d_HCurve)& C)
+BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_Surface)& S1,
+                                       const Handle(Adaptor3d_Surface)& S2,
+                                       const Handle(Adaptor3d_Curve)& C)
                                  :
                   surf1(S1),surf2(S2),
                   curv(C), tcurv(C),

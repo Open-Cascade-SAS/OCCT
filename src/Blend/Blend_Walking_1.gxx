@@ -16,7 +16,7 @@ Blend_Walking::Blend_Walking(const TheSurface& Surf1,
 			     const TheSurface& Surf2,
 			     const Handle(TheTopolTool)& Domain1,
 			     const Handle(TheTopolTool)& Domain2,
-                             const Handle(ChFiDS_HElSpine)& HGuide):
+                             const Handle(ChFiDS_ElSpine)& HGuide):
        sol(1,4),surf1(Surf1),surf2(Surf2),
        ToCorrectOnRst1(Standard_False),ToCorrectOnRst2(Standard_False),
        done(Standard_False),

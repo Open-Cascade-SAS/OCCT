@@ -40,7 +40,7 @@ inline void Contap_Point::SetVertex(const Handle(Adaptor3d_HVertex)& V) {
   vtx   = V;
 }
 
-inline void Contap_Point::SetArc (const Handle(Adaptor2d_HCurve2d)& A,
+inline void Contap_Point::SetArc (const Handle(Adaptor2d_Curve2d)& A,
 				  const Standard_Real Param,
 				  const IntSurf_Transition& TLine,
 				  const IntSurf_Transition& TArc) {
@@ -94,7 +94,7 @@ inline Standard_Boolean Contap_Point::IsOnArc () const{
   return onarc;
 }
 
-inline const Handle(Adaptor2d_HCurve2d)& Contap_Point::Arc () const {
+inline const Handle(Adaptor2d_Curve2d)& Contap_Point::Arc () const {
 
   if (!onarc) {throw Standard_DomainError();}
   return arc;

@@ -17,15 +17,9 @@
 #ifndef _Approx_SameParameter_HeaderFile
 #define _Approx_SameParameter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HCurve;
-class Adaptor3d_HSurface;
+#include <Adaptor3d_Surface.hxx>
+
 class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
@@ -46,15 +40,15 @@ public:
                                        const Standard_Real Tol);
 
   //! Warning: the C3D and C2D must have the same parametric domain.
-  Standard_EXPORT Approx_SameParameter(const Handle(Adaptor3d_HCurve)& C3D,
+  Standard_EXPORT Approx_SameParameter(const Handle(Adaptor3d_Curve)& C3D,
                                        const Handle(Geom2d_Curve)& C2D,
-                                       const Handle(Adaptor3d_HSurface)& S,
+                                       const Handle(Adaptor3d_Surface)& S,
                                        const Standard_Real Tol);
 
   //! Warning: the C3D and C2D must have the same parametric domain.
-  Standard_EXPORT Approx_SameParameter(const Handle(Adaptor3d_HCurve)& C3D,
-                                       const Handle(Adaptor2d_HCurve2d)& C2D,
-                                       const Handle(Adaptor3d_HSurface)& S,
+  Standard_EXPORT Approx_SameParameter(const Handle(Adaptor3d_Curve)& C3D,
+                                       const Handle(Adaptor2d_Curve2d)& C2D,
+                                       const Handle(Adaptor3d_Surface)& S,
                                        const Standard_Real Tol);
 
   //!@Returns .false. if calculations failed,
@@ -179,9 +173,9 @@ private:
   Standard_Boolean myDone;
   Standard_Real myTolReached;
   Handle(Geom2d_Curve) myCurve2d;
-  Handle(Adaptor2d_HCurve2d) myHCurve2d;
-  Handle(Adaptor3d_HCurve) myC3d;
-  Handle(Adaptor3d_HSurface) mySurf;
+  Handle(Adaptor2d_Curve2d) myHCurve2d;
+  Handle(Adaptor3d_Curve) myC3d;
+  Handle(Adaptor3d_Surface) mySurf;
 };
 
 #endif // _Approx_SameParameter_HeaderFile

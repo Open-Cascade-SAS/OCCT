@@ -16,16 +16,16 @@
 
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepFill_CurveConstraint.hxx>
 #include <BRepFill_EdgeFaceAndOrder.hxx>
 #include <BRepFill_FaceAndOrder.hxx>
@@ -40,9 +40,9 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <GeomPlate_MakeApprox.hxx>
@@ -298,10 +298,10 @@ Standard_Integer BRepFill_Filling::Add( const Standard_Real U,
 				        const TopoDS_Face& Support,
 				        const GeomAbs_Shape Order )
 {
-  Handle( BRepAdaptor_HSurface ) HSurf = new BRepAdaptor_HSurface();
-  HSurf->ChangeSurface().Initialize( Support );
+  Handle( BRepAdaptor_Surface ) HSurf = new BRepAdaptor_Surface();
+  HSurf->Initialize( Support );
   Handle( GeomPlate_PointConstraint ) aPC = 
-    new GeomPlate_PointConstraint( U, V, BRep_Tool::Surface( HSurf->ChangeSurface().Face() ), Order,
+    new GeomPlate_PointConstraint( U, V, BRep_Tool::Surface( HSurf->Face() ), Order,
 				   myTol3d, myTolAng, myTolCurv );
   myPoints.Append( aPC );
   return (myBoundary.Length() + myFreeConstraints.Length() + myConstraints.Length() + myPoints.Length());
@@ -328,9 +328,9 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
       
       if (CurFace.IsNull()) {
 	if (CurOrder == GeomAbs_C0) {
-	  Handle( BRepAdaptor_HCurve ) HCurve = new BRepAdaptor_HCurve();
-	  HCurve->ChangeCurve().Initialize( CurEdge );
-	  const Handle(Adaptor3d_HCurve)& aHCurve = HCurve; // to avoid ambiguity
+	  Handle( BRepAdaptor_Curve ) HCurve = new BRepAdaptor_Curve();
+	  HCurve->Initialize( CurEdge );
+	  const Handle(Adaptor3d_Curve)& aHCurve = HCurve; // to avoid ambiguity
 	  Constr = new BRepFill_CurveConstraint(aHCurve,
 						CurOrder,
 						myNbPtsOnCur,
@@ -349,11 +349,11 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
 	  }
 	  Surface = Handle(Geom_Surface)::DownCast(Surface->Copy());
 	  Surface->Transform(loc.Transformation());
-	  Handle( GeomAdaptor_HSurface ) Surf = new GeomAdaptor_HSurface(Surface);
-	  Handle( Geom2dAdaptor_HCurve ) Curve2d = new Geom2dAdaptor_HCurve(C2d);
+	  Handle( GeomAdaptor_Surface ) Surf = new GeomAdaptor_Surface(Surface);
+	  Handle( Geom2dAdaptor_Curve ) Curve2d = new Geom2dAdaptor_Curve(C2d);
 	  
 	  Adaptor3d_CurveOnSurface CurvOnSurf( Curve2d, Surf );
-	  Handle (Adaptor3d_HCurveOnSurface) HCurvOnSurf = new Adaptor3d_HCurveOnSurface( CurvOnSurf );
+	  Handle (Adaptor3d_CurveOnSurface) HCurvOnSurf = new Adaptor3d_CurveOnSurface( CurvOnSurf );
 	  
 	  Constr = new GeomPlate_CurveConstraint(HCurvOnSurf,
 						 CurOrder,
@@ -365,15 +365,15 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
       }
       else
 	{
-	  Handle( BRepAdaptor_HSurface ) Surf = new BRepAdaptor_HSurface();
-	  Surf->ChangeSurface().Initialize( CurFace );
-	  Handle( BRepAdaptor_HCurve2d ) Curve2d = new BRepAdaptor_HCurve2d();
-	  Curve2d->ChangeCurve2d().Initialize( CurEdge, CurFace );
+	  Handle( BRepAdaptor_Surface ) Surf = new BRepAdaptor_Surface();
+	  Surf->Initialize( CurFace );
+	  Handle( BRepAdaptor_Curve2d ) Curve2d = new BRepAdaptor_Curve2d();
+	  Curve2d->Initialize( CurEdge, CurFace );
 	  // If CurEdge has no 2d representation on CurFace,
 	  // there will be exception "Attempt to access to null object"
 	  // in this initialization (null pcurve).
 	  Adaptor3d_CurveOnSurface CurvOnSurf( Curve2d, Surf );
-	  Handle (Adaptor3d_HCurveOnSurface) HCurvOnSurf = new Adaptor3d_HCurveOnSurface( CurvOnSurf );
+	  Handle (Adaptor3d_CurveOnSurface) HCurvOnSurf = new Adaptor3d_CurveOnSurface( CurvOnSurf );
 
 	  Constr = new BRepFill_CurveConstraint( HCurvOnSurf,
 						 CurOrder,
@@ -597,9 +597,9 @@ void BRepFill_Filling::Build()
       Standard_Real U1, V1, U2, V2;
 
       CurFace = myFreeConstraints(j).myFace;
-      Handle( BRepAdaptor_HSurface ) HSurf = new BRepAdaptor_HSurface();
-      HSurf->ChangeSurface().Initialize( CurFace );
-      Handle( Geom_Surface ) CurSurface = BRep_Tool::Surface( HSurf->ChangeSurface().Face() );
+      Handle( BRepAdaptor_Surface ) HSurf = new BRepAdaptor_Surface();
+      HSurf->Initialize( CurFace );
+      Handle( Geom_Surface ) CurSurface = BRep_Tool::Surface( HSurf->Face() );
       //BRepTopAdaptor_FClass2d Classifier( CurFace, Precision::Confusion() );
 	  
       for (i = 1; i <= VerSeq.Length(); i += 2)
@@ -648,9 +648,9 @@ void BRepFill_Filling::Build()
   //Load initial surface to myBuilder if it is given
   if (myIsInitFaceGiven)
     {
-      Handle( BRepAdaptor_HSurface ) HSurfInit = new BRepAdaptor_HSurface();
-      HSurfInit->ChangeSurface().Initialize( myInitFace );
-      myBuilder.LoadInitSurface( BRep_Tool::Surface( HSurfInit->ChangeSurface().Face() ) );
+      Handle( BRepAdaptor_Surface ) HSurfInit = new BRepAdaptor_Surface();
+      HSurfInit->Initialize( myInitFace );
+      myBuilder.LoadInitSurface( BRep_Tool::Surface( HSurfInit->Face() ) );
     }
 
   //Adding constraints to myBuilder

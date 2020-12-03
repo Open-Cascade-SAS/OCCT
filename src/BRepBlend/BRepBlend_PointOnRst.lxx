@@ -14,7 +14,7 @@
 
 #include <Standard_DomainError.hxx>
 
-inline const Handle(Adaptor2d_HCurve2d)& BRepBlend_PointOnRst::Arc () const
+inline const Handle(Adaptor2d_Curve2d)& BRepBlend_PointOnRst::Arc () const
 {
   return arc;
 }

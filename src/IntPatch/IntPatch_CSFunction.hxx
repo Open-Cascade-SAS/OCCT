@@ -17,22 +17,12 @@
 #ifndef _IntPatch_CSFunction_HeaderFile
 #define _IntPatch_CSFunction_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Address.hxx>
-#include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class Adaptor3d_HSurface;
-class Adaptor2d_HCurve2d;
-class math_Matrix;
-class gp_Pnt;
 
+class math_Matrix;
 
 //! this function is associated to the intersection between
 //! a curve on surface and a surface  .
@@ -45,7 +35,7 @@ public:
   
   //! S1 is the surface on which the intersection is searched.
   //! C is a curve on the surface S2.
-  Standard_EXPORT IntPatch_CSFunction(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor2d_HCurve2d)& C, const Handle(Adaptor3d_HSurface)& S2);
+  Standard_EXPORT IntPatch_CSFunction(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor2d_Curve2d)& C, const Handle(Adaptor3d_Surface)& S2);
   
   Standard_EXPORT Standard_Integer NbVariables() const;
   
@@ -61,9 +51,9 @@ public:
   
   Standard_EXPORT Standard_Real Root() const;
   
-  Standard_EXPORT const Handle(Adaptor3d_HSurface)& AuxillarSurface() const;
+  Standard_EXPORT const Handle(Adaptor3d_Surface)& AuxillarSurface() const;
   
-  Standard_EXPORT const Handle(Adaptor2d_HCurve2d)& AuxillarCurve() const;
+  Standard_EXPORT const Handle(Adaptor2d_Curve2d)& AuxillarCurve() const;
 
 
 

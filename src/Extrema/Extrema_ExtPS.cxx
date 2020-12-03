@@ -14,8 +14,8 @@
 
 //-----------------------------------------------------------------
 
-#include <GeomAdaptor_HSurfaceOfLinearExtrusion.hxx>
-#include <GeomAdaptor_HSurfaceOfRevolution.hxx>
+#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPExtS.hxx>
@@ -301,7 +301,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
     {
       if (myExtPExtS.IsNull())
       {
-        Handle(GeomAdaptor_HSurfaceOfLinearExtrusion) aS (new GeomAdaptor_HSurfaceOfLinearExtrusion (
+        Handle(GeomAdaptor_SurfaceOfLinearExtrusion) aS (new GeomAdaptor_SurfaceOfLinearExtrusion (
           GeomAdaptor_SurfaceOfLinearExtrusion (myS->BasisCurve(), myS->Direction())));
 
         myExtPExtS = new Extrema_ExtPExtS (thePoint, aS, myuinf, myusup, myvinf, myvsup, mytolu, mytolv);
@@ -327,7 +327,7 @@ void Extrema_ExtPS::Perform(const gp_Pnt& thePoint)
     {
       if (myExtPRevS.IsNull())
       {
-        Handle(GeomAdaptor_HSurfaceOfRevolution) aS (new GeomAdaptor_HSurfaceOfRevolution (
+        Handle(GeomAdaptor_SurfaceOfRevolution) aS (new GeomAdaptor_SurfaceOfRevolution (
           GeomAdaptor_SurfaceOfRevolution (myS->BasisCurve(), myS->AxeOfRevolution())));
 
         myExtPRevS = new Extrema_ExtPRevS (thePoint, aS, myuinf, myusup, myvinf, myvsup, mytolu, mytolv);

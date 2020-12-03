@@ -15,8 +15,7 @@
 
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
@@ -30,15 +29,14 @@
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -133,7 +131,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
   // 
   // 1. Minimum of conditions to Perform
   Handle (BRep_CurveRepresentation) myCref;
-  Handle (Adaptor3d_HCurve) myHCurve;
+  Handle (Adaptor3d_Curve) myHCurve;
 
   myCref.Nullify();
 
@@ -199,16 +197,16 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
         Handle(Geom_Curve) C3d = Handle(Geom_Curve)::DownCast
           (myCref->Curve3D()->Transformed (myCref->Location().Transformation()));
         GeomAdaptor_Curve GAC3d(C3d,First,Last);
-        myHCurve = new GeomAdaptor_HCurve(GAC3d);
+        myHCurve = new GeomAdaptor_Curve(GAC3d);
       }
       else { // curve on surface
         Handle(Geom_Surface) Sref = myCref->Surface();
         Sref = Handle(Geom_Surface)::DownCast(Sref->Transformed(myCref->Location().Transformation()));
         const  Handle(Geom2d_Curve)& PCref = myCref->PCurve();
-        Handle(GeomAdaptor_HSurface) GAHSref = new GeomAdaptor_HSurface(Sref);
-        Handle(Geom2dAdaptor_HCurve) GHPCref = new Geom2dAdaptor_HCurve(PCref, First, Last);
+        Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
+        Handle(Geom2dAdaptor_Curve) GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
         Adaptor3d_CurveOnSurface ACSref(GHPCref,GAHSref);
-        myHCurve = new Adaptor3d_HCurveOnSurface(ACSref);
+        myHCurve = new Adaptor3d_CurveOnSurface(ACSref);
       }
     }
   }
@@ -248,10 +246,10 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
         Handle(Geom_Surface) Sb = cr->Surface();
         Sb = Handle(Geom_Surface)::DownCast (Su->Transformed(L.Transformation()));
         Handle(Geom2d_Curve) PC = cr->PCurve();
-        Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(Sb);
-        Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(PC,f,l);
+        Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(Sb);
+        Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(PC,f,l);
         Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
-        ok = Validate(myHCurve->Curve(), ACS, Tol, SameParameter, aNewTol);
+        ok = Validate (*myHCurve, ACS, Tol, SameParameter, aNewTol);
         if (ok) {
           // printf("(Edge,1) Tolerance=%15.10lg\n", aNewTol);
           if (aNewTol<aMaxTol)
@@ -259,9 +257,9 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
         }
         if (cr->IsCurveOnClosedSurface()) {
           // checkclosed = Standard_True;
-          GHPC->ChangeCurve2d().Load(cr->PCurve2(),f,l); // same bounds
+          GHPC->Load(cr->PCurve2(),f,l); // same bounds
           ACS.Load(GHPC, GAHS); // sans doute inutile
-          ok = Validate(myHCurve->Curve(),ACS,Tol,SameParameter, aNewTol);
+          ok = Validate (*myHCurve, ACS, Tol, SameParameter, aNewTol);
           if (ok) {
             if (aNewTol<aMaxTol)
               TE->UpdateTolerance(aNewTol); 
@@ -288,24 +286,24 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
       { // on fait la projection a la volee, comme BRep_Tool
         P = Handle(Geom_Plane)::DownCast(P->Transformed(L.Transformation()));
         //on projette Cref sur ce plan
-        Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(P);
+        Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(P);
         
-        // Dub - Normalement myHCurve est une GeomAdaptor_HCurve
-        GeomAdaptor_Curve& Gac = Handle(GeomAdaptor_HCurve)::DownCast(myHCurve)->ChangeCurve();
-        Handle(Geom_Curve) C3d = Gac.Curve();
+        // Dub - Normalement myHCurve est une GeomAdaptor_Curve
+        Handle(GeomAdaptor_Curve) Gac = Handle(GeomAdaptor_Curve)::DownCast(myHCurve);
+        Handle(Geom_Curve) C3d = Gac->Curve();
         Handle(Geom_Curve) ProjOnPlane = GeomProjLib::ProjectOnPlane
           (new Geom_TrimmedCurve(C3d,First,Last), P, P->Position().Direction(), Standard_True);
 
-        Handle(GeomAdaptor_HCurve) aHCurve = new GeomAdaptor_HCurve(ProjOnPlane);
+        Handle(GeomAdaptor_Curve) aHCurve = new GeomAdaptor_Curve(ProjOnPlane);
         
         ProjLib_ProjectedCurve proj(GAHS,aHCurve);
         Handle(Geom2d_Curve) PC = Geom2dAdaptor::MakeCurve(proj);
-        Handle(Geom2dAdaptor_HCurve) GHPC = 
-          new Geom2dAdaptor_HCurve(PC, myHCurve->FirstParameter(), myHCurve->LastParameter());
+        Handle(Geom2dAdaptor_Curve) GHPC = 
+          new Geom2dAdaptor_Curve(PC, myHCurve->FirstParameter(), myHCurve->LastParameter());
         
         Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
         
-        ok = Validate(myHCurve->Curve(),ACS,
+        ok = Validate (*myHCurve, ACS,
                             Tol,Standard_True, aNewTol); // voir dub...
         if (ok) 
         {

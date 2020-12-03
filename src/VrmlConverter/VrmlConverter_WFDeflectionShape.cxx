@@ -15,7 +15,7 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
@@ -90,7 +90,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	  }
 	  if (isoU || isoV) {
 	    S.Initialize(Tool.GetFace());
-	    Handle(BRepAdaptor_HSurface) HS = new BRepAdaptor_HSurface(S);
+	    Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
 	    VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
 							  isoU, isoV,
 							  theRequestedDeflection,
@@ -113,7 +113,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	  if (Tool.IsPlanarFace()) isoU = aDrawer->IsoOnPlane();
 	  if (isoU) {
 	    S.Initialize(Tool.GetFace());
-	    Handle(BRepAdaptor_HSurface) HS = new BRepAdaptor_HSurface(S);
+	    Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
 	    VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
 							  isoU, Standard_False,
 							  theRequestedDeflection,
@@ -134,7 +134,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	  if (Tool.IsPlanarFace()) isoV = aDrawer->IsoOnPlane();
 	  if (isoV) {
 	    S.Initialize(Tool.GetFace());
-	    Handle(BRepAdaptor_HSurface) HS = new BRepAdaptor_HSurface(S);
+	    Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(S);
 	    VrmlConverter_WFDeflectionRestrictedFace::Add(anOStream, HS,
 							  Standard_False, isoV,
 							  theRequestedDeflection,

@@ -50,55 +50,50 @@ public:
   Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin& Curve, const TColStd_Array1OfReal& Upars);
   
   //! Give the bounding box of the polygon.
-    const Bnd_Box& Bounding() const;
-  
-    Standard_Real DeflectionOverEstimation() const;
-  
-    void SetDeflectionOverEstimation (const Standard_Real x);
-  
-    void Closed (const Standard_Boolean clos);
-  
-    Standard_Boolean Closed() const;
-  
+  const Bnd_Box& Bounding() const { return TheBnd; }
+
+  Standard_Real DeflectionOverEstimation() const { return TheDeflection; }
+
+  void SetDeflectionOverEstimation (const Standard_Real x)
+  {
+    TheDeflection = x;
+    TheBnd.Enlarge (TheDeflection);
+  }
+
+  void Closed (const Standard_Boolean flag) { ClosedPolygon = flag; }
+
+  Standard_Boolean Closed() const { return Standard_False; } // -- Voir si le cas Closed est traitable
+
   //! Give the number of Segments in the polyline.
-    Standard_Integer NbSegments() const;
-  
+  Standard_Integer NbSegments() const { return NbPntIn - 1; }
+
   //! Give the point of range Index in the Polygon.
-    const gp_Pnt& BeginOfSeg (const Standard_Integer Index) const;
-  
+  const gp_Pnt& BeginOfSeg (const Standard_Integer theIndex) const { return ThePnts (theIndex); }
+
   //! Give the point of range Index in the Polygon.
-    const gp_Pnt& EndOfSeg (const Standard_Integer Index) const;
-  
+  const gp_Pnt& EndOfSeg (const Standard_Integer theIndex) const { return ThePnts (theIndex + 1); }
+
   //! Returns the parameter (On the curve)
   //! of the first point of the Polygon
-    Standard_Real InfParameter() const;
-  
+  Standard_Real InfParameter() const { return Binf; }
+
   //! Returns the parameter (On the curve)
   //! of the last point of the Polygon
-    Standard_Real SupParameter() const;
-  
+  Standard_Real SupParameter() const { return Bsup; }
+
   //! Give an approximation of the parameter on the curve
   //! according to the discretization of the Curve.
   Standard_EXPORT Standard_Real ApproxParamOnCurve (const Standard_Integer Index, const Standard_Real ParamOnLine) const;
   
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
 
-  
   Standard_EXPORT void Init (const gp_Lin& Curve);
-  
+
   Standard_EXPORT void Init (const gp_Lin& Curve, const TColStd_Array1OfReal& Upars);
 
-
-
-
 private:
-
-
 
   Bnd_Box TheBnd;
   Standard_Real TheDeflection;
@@ -109,26 +104,6 @@ private:
   Standard_Real Bsup;
   Handle(TColStd_HArray1OfReal) myParams;
 
-
 };
-
-#define TheCurve gp_Lin
-#define TheCurve_hxx <gp_Lin.hxx>
-#define TheCurveTool HLRBRep_LineTool
-#define TheCurveTool_hxx <HLRBRep_LineTool.hxx>
-#define IntCurveSurface_Polygon HLRBRep_ThePolygonOfInterCSurf
-#define IntCurveSurface_Polygon_hxx <HLRBRep_ThePolygonOfInterCSurf.hxx>
-
-#include <IntCurveSurface_Polygon.lxx>
-
-#undef TheCurve
-#undef TheCurve_hxx
-#undef TheCurveTool
-#undef TheCurveTool_hxx
-#undef IntCurveSurface_Polygon
-#undef IntCurveSurface_Polygon_hxx
-
-
-
 
 #endif // _HLRBRep_ThePolygonOfInterCSurf_HeaderFile

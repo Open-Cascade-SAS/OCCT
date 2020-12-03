@@ -17,49 +17,33 @@
 #ifndef _ProjLib_CompProjectedCurve_HeaderFile
 #define _ProjLib_CompProjectedCurve_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Integer.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <ProjLib_HSequenceOfHSequenceOfPnt.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Adaptor2d_Curve2d.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class Standard_NotImplemented;
+
 class gp_Pnt2d;
 class gp_Vec2d;
-class Adaptor2d_HCurve2d;
-
-
 
 class ProjLib_CompProjectedCurve  : public Adaptor2d_Curve2d
 {
+  DEFINE_STANDARD_RTTIEXT(ProjLib_CompProjectedCurve, Adaptor2d_Curve2d)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT ProjLib_CompProjectedCurve();
   
   //! try to find all solutions
-  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C, const Standard_Real TolU, const Standard_Real TolV);
   
   //! this constructor tries to optimize the search using the
   //! assumption that maximum distance between surface and curve less or
   //! equal then MaxDist.
   //! if MaxDist < 0 then algorithm works as above.
-  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C, const Standard_Real TolU, const Standard_Real TolV, const Standard_Real MaxDist);
+  Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C, const Standard_Real TolU, const Standard_Real TolV, const Standard_Real MaxDist);
   
   //! computes a set of projected point and determine the
   //! continuous parts of the projected  curves. The  points
@@ -68,14 +52,14 @@ public:
   Standard_EXPORT void Init();
   
   //! Changes the surface.
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT void Load (const Handle(Adaptor3d_Surface)& S);
   
   //! Changes the  curve.
-  Standard_EXPORT void Load (const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT void Load (const Handle(Adaptor3d_Curve)& C);
   
-  Standard_EXPORT const Handle(Adaptor3d_HSurface)& GetSurface() const;
+  Standard_EXPORT const Handle(Adaptor3d_Surface)& GetSurface() const;
   
-  Standard_EXPORT const Handle(Adaptor3d_HCurve)& GetCurve() const;
+  Standard_EXPORT const Handle(Adaptor3d_Curve)& GetCurve() const;
   
   Standard_EXPORT void GetTolerance (Standard_Real& TolU, Standard_Real& TolV) const;
   
@@ -136,7 +120,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 2d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor2d_HCurve2d) Trim (const Standard_Real FirstParam, const Standard_Real LastParam, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim (const Standard_Real FirstParam, const Standard_Real LastParam, const Standard_Real Tol) const Standard_OVERRIDE;
   
   //! Returns  the  parameters  corresponding  to
   //! S  discontinuities.
@@ -156,15 +140,6 @@ public:
   //! Parabola, BezierCurve, BSplineCurve, OtherCurve.
   Standard_EXPORT GeomAbs_CurveType GetType() const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
   //! This method performs check possibility of optimization traps and tries to go out from them.
@@ -173,9 +148,10 @@ private:
 
   Standard_EXPORT void BuildIntervals (const GeomAbs_Shape S) const;
 
+private:
 
-  Handle(Adaptor3d_HSurface) mySurface;
-  Handle(Adaptor3d_HCurve) myCurve;
+  Handle(Adaptor3d_Surface) mySurface;
+  Handle(Adaptor3d_Curve) myCurve;
   Standard_Integer myNbCurves;
   Handle(ProjLib_HSequenceOfHSequenceOfPnt) mySequence;
   Standard_Real myTolU;
@@ -188,10 +164,6 @@ private:
   Handle(TColStd_HArray1OfReal) myTabInt;
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(ProjLib_CompProjectedCurve, Adaptor2d_Curve2d)
 
 #endif // _ProjLib_CompProjectedCurve_HeaderFile

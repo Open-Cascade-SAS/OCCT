@@ -20,7 +20,7 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_HArray1OfLocationLaw.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <Standard_Type.hxx>
@@ -44,7 +44,7 @@ BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire& Path,
 //  BRep_Tool B;
   TopoDS_Edge E;
   Handle(Geom_Curve) C;
-  Handle(GeomAdaptor_HCurve) AC;
+  Handle(GeomAdaptor_Curve) AC;
   Standard_Real First, Last;
 
   for (ipath=0, wexp.Init(myPath); 
@@ -65,7 +65,7 @@ BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire& Path,
 	Last  =  C->LastParameter();
       }
 
-      AC = new  (GeomAdaptor_HCurve) (C,First, Last);
+      AC = new  (GeomAdaptor_Curve) (C,First, Last);
       myLaws->SetValue(ipath, Law->Copy());
       myLaws->ChangeValue(ipath)->SetCurve(AC);
     }  

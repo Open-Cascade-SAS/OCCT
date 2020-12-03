@@ -17,20 +17,14 @@
 #ifndef _BRepIntCurveSurface_Inter_HeaderFile
 #define _BRepIntCurveSurface_Inter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <IntCurveSurface_HInter.hxx>
-#include <Standard_Integer.hxx>
 #include <TopAbs_State.hxx>
 #include <Bnd_Box.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <Bnd_HArray1OfBox.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
-class GeomAdaptor_HCurve;
+
 class BRepTopAdaptor_TopolTool;
 class StdFail_NotDone;
 class TopoDS_Shape;
@@ -142,7 +136,7 @@ private:
 
 
   Standard_Real myTolerance;
-  Handle(GeomAdaptor_HCurve) myCurve;
+  Handle(GeomAdaptor_Curve) myCurve;
   IntCurveSurface_HInter myIntcs;
   Standard_Integer myCurrentindex;
   Standard_Integer myCurrentnbpoints;

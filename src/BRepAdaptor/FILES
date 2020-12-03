@@ -6,14 +6,5 @@ BRepAdaptor_Curve.hxx
 BRepAdaptor_Curve2d.cxx
 BRepAdaptor_Curve2d.hxx
 BRepAdaptor_HArray1OfCurve.hxx
-BRepAdaptor_HCompCurve.hxx
-BRepAdaptor_HCompCurve_0.cxx
-BRepAdaptor_HCurve.hxx
-BRepAdaptor_HCurve2d.hxx
-BRepAdaptor_HCurve2d_0.cxx
-BRepAdaptor_HCurve_0.cxx
-BRepAdaptor_HSurface.hxx
-BRepAdaptor_HSurface_0.cxx
 BRepAdaptor_Surface.cxx
 BRepAdaptor_Surface.hxx
-BRepAdaptor_Surface.lxx

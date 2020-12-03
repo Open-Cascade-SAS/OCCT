@@ -19,7 +19,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -31,8 +31,8 @@
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <gp_Pln.hxx>
@@ -49,9 +49,9 @@ Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C,
 				   const gp_Pln& P)
 {
   Handle(Geom2d_Curve) result;
-  Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve(C);
+  Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(C);
   Handle(Geom_Plane) Plane = new Geom_Plane(P);
-  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface(Plane);
+  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface(Plane);
 
   ProjLib_ProjectedCurve Proj(HS,HC);
 
@@ -73,10 +73,10 @@ Handle(Geom2d_Curve) GeomAPI::To2d(const Handle(Geom_Curve)& C,
 Handle(Geom_Curve) GeomAPI::To3d(const Handle(Geom2d_Curve)& C,
 				 const gp_Pln& P)
 {
-  Handle(Geom2dAdaptor_HCurve) AHC  = new Geom2dAdaptor_HCurve(C);
+  Handle(Geom2dAdaptor_Curve) AHC  = new Geom2dAdaptor_Curve(C);
 
   Handle(Geom_Plane) ThePlane = new Geom_Plane(P);
-  Handle(GeomAdaptor_HSurface) AHS = new GeomAdaptor_HSurface(ThePlane);
+  Handle(GeomAdaptor_Surface) AHS = new GeomAdaptor_Surface(ThePlane);
 
   Adaptor3d_CurveOnSurface COS(AHC,AHS);
   return GeomAdaptor::MakeCurve(COS);

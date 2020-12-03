@@ -18,7 +18,7 @@
 // 30/12/1996 PMN Ajout de GetMinimalWeight
 // 23/09/1997 PMN Supprimme GetCircle et GetTol (passe dans GeomFill)
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
@@ -166,7 +166,7 @@ GeomAbs_Shape BlendFunc::NextShape (const GeomAbs_Shape S)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean BlendFunc::ComputeNormal (const Handle(Adaptor3d_HSurface)& Surf,
+Standard_Boolean BlendFunc::ComputeNormal (const Handle(Adaptor3d_Surface)& Surf,
                                            const gp_Pnt2d& p2d, gp_Vec& Normal)
 {
   const Standard_Integer MaxOrder=3;
@@ -210,7 +210,7 @@ Standard_Boolean BlendFunc::ComputeNormal (const Handle(Adaptor3d_HSurface)& Sur
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean BlendFunc::ComputeDNormal (const Handle(Adaptor3d_HSurface)& Surf,
+Standard_Boolean BlendFunc::ComputeDNormal (const Handle(Adaptor3d_Surface)& Surf,
                                             const gp_Pnt2d& p2d, gp_Vec& Normal,
                                             gp_Vec& DNu, gp_Vec& DNv)
 {

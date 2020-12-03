@@ -12,8 +12,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
 #include <ElCLib.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
@@ -39,12 +40,12 @@ gp_Pnt2d Adaptor3d_HVertex::Value ()
   return myPnt;
 }
 
-Standard_Real Adaptor3d_HVertex::Parameter (const Handle(Adaptor2d_HCurve2d)& C)
+Standard_Real Adaptor3d_HVertex::Parameter (const Handle(Adaptor2d_Curve2d)& C)
 {
   return ElCLib::Parameter(C->Line(),myPnt);
 }
 
-Standard_Real Adaptor3d_HVertex::Resolution (const Handle(Adaptor2d_HCurve2d)&)
+Standard_Real Adaptor3d_HVertex::Resolution (const Handle(Adaptor2d_Curve2d)&)
 {
   return myTol;
 }

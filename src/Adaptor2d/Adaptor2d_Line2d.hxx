@@ -35,7 +35,6 @@ class Standard_DomainError;
 class gp_Pnt2d;
 class gp_Dir2d;
 class gp_Lin2d;
-class Adaptor2d_HCurve2d;
 class gp_Vec2d;
 class gp_Circ2d;
 class gp_Elips2d;
@@ -48,11 +47,9 @@ class Geom2d_BSplineCurve;
 
 class Adaptor2d_Line2d  : public Adaptor2d_Curve2d
 {
+  DEFINE_STANDARD_RTTIEXT(Adaptor2d_Line2d, Adaptor2d_Curve2d)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT Adaptor2d_Line2d();
   
   Standard_EXPORT Adaptor2d_Line2d(const gp_Pnt2d& P, const gp_Dir2d& D, const Standard_Real UFirst, const Standard_Real ULast);
@@ -83,7 +80,7 @@ public:
   //! parameters <First>  and <Last>. <Tol>  is used  to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
-  Standard_EXPORT Handle(Adaptor2d_HCurve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
+  Standard_EXPORT Handle(Adaptor2d_Curve2d) Trim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const Standard_OVERRIDE;
   
   Standard_EXPORT Standard_Boolean IsClosed() const Standard_OVERRIDE;
   
@@ -129,30 +126,14 @@ public:
   
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Real myUfirst;
   Standard_Real myUlast;
   gp_Ax2d myAx2d;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(Adaptor2d_Line2d, Adaptor2d_Curve2d)
 
 #endif // _Adaptor2d_Line2d_HeaderFile

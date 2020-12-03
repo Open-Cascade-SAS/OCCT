@@ -17,7 +17,7 @@
 #include <GeomInt_IntSS.hxx>
 
 #include <Adaptor3d_TopolTool.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 
 //=======================================================================
 //function : Perform
@@ -30,11 +30,11 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
                               const Standard_Boolean ApproxS1,
                               const Standard_Boolean ApproxS2)
 {
-  myHS1 = new GeomAdaptor_HSurface(S1);
+  myHS1 = new GeomAdaptor_Surface(S1);
   if (S1==S2)
     myHS2 = myHS1;
   else
-    myHS2 = new GeomAdaptor_HSurface(S2);
+    myHS2 = new GeomAdaptor_Surface(S2);
   InternalPerform(Tol,Approx,ApproxS1,ApproxS2,Standard_False,0.,0.,0.,0.);
 }
 
@@ -51,11 +51,11 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
                               const Standard_Boolean ApproxS1,
                               const Standard_Boolean ApproxS2)
 {
-  myHS1 = new GeomAdaptor_HSurface(S1);
+  myHS1 = new GeomAdaptor_Surface(S1);
   if (S1==S2)
     myHS2 = myHS1;
   else
-    myHS2 = new GeomAdaptor_HSurface(S2);
+    myHS2 = new GeomAdaptor_Surface(S2);
   InternalPerform(Tol,Approx,ApproxS1,ApproxS2,Standard_True,U1,V1,U2,V2);
 }
 

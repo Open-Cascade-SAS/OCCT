@@ -33,7 +33,7 @@
 #include <TColgp_Array1OfVec2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
-class Adaptor3d_HCurve;
+
 class Standard_OutOfRange;
 class gp_Pnt;
 
@@ -58,7 +58,7 @@ public:
   //! parameterisation  matches  the  circle  one.  --
   //! ChFi3d_Polynomial corresponds to a polynomial --
   //! representation of circles.
-  Standard_EXPORT GeomFill_CircularBlendFunc(const Handle(Adaptor3d_HCurve)& Path, const Handle(Adaptor3d_HCurve)& Curve1, const Handle(Adaptor3d_HCurve)& Curve2, const Standard_Real Radius, const Standard_Boolean Polynomial = Standard_False);
+  Standard_EXPORT GeomFill_CircularBlendFunc(const Handle(Adaptor3d_Curve)& Path, const Handle(Adaptor3d_Curve)& Curve1, const Handle(Adaptor3d_Curve)& Curve2, const Standard_Real Radius, const Standard_Boolean Polynomial = Standard_False);
   
   //! compute the section for v = param
   Standard_EXPORT virtual Standard_Boolean D0 (const Standard_Real Param, const Standard_Real First, const Standard_Real Last, TColgp_Array1OfPnt& Poles, TColgp_Array1OfPnt2d& Poles2d, TColStd_Array1OfReal& Weigths) Standard_OVERRIDE;
@@ -149,12 +149,12 @@ private:
   Standard_Real maxang;
   Standard_Real minang;
   Standard_Real distmin;
-  Handle(Adaptor3d_HCurve) myPath;
-  Handle(Adaptor3d_HCurve) myCurve1;
-  Handle(Adaptor3d_HCurve) myCurve2;
-  Handle(Adaptor3d_HCurve) myTPath;
-  Handle(Adaptor3d_HCurve) myTCurve1;
-  Handle(Adaptor3d_HCurve) myTCurve2;
+  Handle(Adaptor3d_Curve) myPath;
+  Handle(Adaptor3d_Curve) myCurve1;
+  Handle(Adaptor3d_Curve) myCurve2;
+  Handle(Adaptor3d_Curve) myTPath;
+  Handle(Adaptor3d_Curve) myTCurve1;
+  Handle(Adaptor3d_Curve) myTCurve2;
   Standard_Integer myDegree;
   Standard_Integer myNbKnots;
   Standard_Integer myNbPoles;

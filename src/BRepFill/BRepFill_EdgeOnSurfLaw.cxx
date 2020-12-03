@@ -14,16 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepFill_EdgeOnSurfLaw.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepFill_EdgeOnSurfLaw.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomFill_CurveAndTrihedron.hxx>
 #include <GeomFill_Darboux.hxx>
 #include <GeomFill_HArray1OfLocationLaw.hxx>
@@ -53,9 +52,9 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 //  BRep_Tool B;
   TopoDS_Edge E;
   Handle(Geom2d_Curve) C;
-  Handle(Geom2dAdaptor_HCurve) AC2d;
-  Handle(Adaptor3d_HCurveOnSurface) AC;
-  Handle(BRepAdaptor_HSurface) AS;
+  Handle(Geom2dAdaptor_Curve) AC2d;
+  Handle(Adaptor3d_CurveOnSurface) AC;
+  Handle(BRepAdaptor_Surface) AS;
   Standard_Real First = 0., Last = 0.;
   Handle(GeomFill_Darboux) TLaw = new (GeomFill_Darboux)() ;
   Handle(GeomFill_CurveAndTrihedron) Law = 
@@ -74,7 +73,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 	C = BRep_Tool::CurveOnSurface(E, F, First, Last);
 	if (!C.IsNull()) {
 	  Trouve=Standard_True;
-	  AS =  new  (BRepAdaptor_HSurface) (F);
+	  AS =  new  (BRepAdaptor_Surface) (F);
 	}
       }
       if (!Trouve) { // Impossible to construct the law.
@@ -93,8 +92,8 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
 	Last  =  C->LastParameter();
       }
 
-      AC2d = new  (Geom2dAdaptor_HCurve) (C,First, Last);
-      AC   = new  (Adaptor3d_HCurveOnSurface) 
+      AC2d = new  (Geom2dAdaptor_Curve) (C,First, Last);
+      AC   = new  (Adaptor3d_CurveOnSurface) 
 	(Adaptor3d_CurveOnSurface(AC2d, AS));
       myLaws->SetValue(ipath, Law->Copy());
       myLaws->ChangeValue(ipath)->SetCurve(AC);

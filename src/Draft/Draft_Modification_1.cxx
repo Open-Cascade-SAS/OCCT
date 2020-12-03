@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
@@ -36,7 +36,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
@@ -57,8 +57,8 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -590,7 +590,7 @@ Standard_Boolean Draft_Modification::Propagate ()
             }
             if (Vinf.MoreEdge()) {
               Handle(Geom_Curve) C2 = BRep_Tool::Curve(Vinf.Edge(), Loc,f,l);
-              Handle(GeomAdaptor_HCurve) HCur;
+              Handle(GeomAdaptor_Curve) HCur;
               gp_Vec Direc;
               C2 = Handle(Geom_Curve)::DownCast
                 (C2->Transformed(Loc.Transformation()));
@@ -599,12 +599,12 @@ Standard_Boolean Draft_Modification::Propagate ()
               }
               if (C->DynamicType() == STANDARD_TYPE(Geom_Line)) {
                 Direc = Handle(Geom_Line)::DownCast(C)->Lin().Direction();
-                HCur = new GeomAdaptor_HCurve(C2);
+                HCur = new GeomAdaptor_Curve(C2);
 
               }
               else if (C2->DynamicType() == STANDARD_TYPE(Geom_Line)) {
                 Direc = Handle(Geom_Line)::DownCast(C2)->Lin().Direction();
-                HCur = new GeomAdaptor_HCurve(C);
+                HCur = new GeomAdaptor_Curve(C);
               }
               else {
                 badShape = EK;
@@ -626,9 +626,7 @@ Standard_Boolean Draft_Modification::Propagate ()
                 break;
               default :
                 {
-                  S2 = new Geom_SurfaceOfLinearExtrusion(HCur->ChangeCurve().
-                    Curve(),
-                    Direc);
+                  S2 = new Geom_SurfaceOfLinearExtrusion (HCur->Curve(), Direc);
                 }
                 break;
               }
@@ -1335,13 +1333,13 @@ void Draft_Modification::Perform ()
 
     // Calculate new vertices.
 
-    Handle(GeomAdaptor_HCurve)   HAC = new GeomAdaptor_HCurve;
-    Handle(GeomAdaptor_HSurface) HAS = new GeomAdaptor_HSurface;
+    Handle(GeomAdaptor_Curve)   HAC = new GeomAdaptor_Curve;
+    Handle(GeomAdaptor_Surface) HAS = new GeomAdaptor_Surface;
 
     for (Standard_Integer ii = 1; ii <= myVMap.Extent(); ii++)
     {
-      GeomAdaptor_Curve    AC;
-      GeomAdaptor_Surface  AS;
+      GeomAdaptor_Curve&   AC = *HAC;
+      GeomAdaptor_Surface& AS = *HAS;
 
       const TopoDS_Vertex& TVV = myVMap.FindKey(ii);
       Draft_VertexInfo& Vinf = myVMap.ChangeFromIndex(ii);
@@ -1424,12 +1422,7 @@ void Draft_Modification::Perform ()
       }
 
       IntCurveSurface_HInter myintcs;
-      HAC->Set(AC);
-      HAS->Set(AS);
-
       myintcs.Perform(HAC,HAS);
-
-
       if (!myintcs.IsDone()) {
         errStat = Draft_VertexRecomputation;
         badShape = TVV;
@@ -2158,16 +2151,14 @@ static Standard_Real SmartParameter(Draft_EdgeInfo& Einf,
     NewC2d = BCurve;
   }
   Einf.ChangeFirstPC() = NewC2d;
-  Handle( Geom2dAdaptor_HCurve ) hcur = new Geom2dAdaptor_HCurve( NewC2d );
-  Handle( GeomAdaptor_HSurface ) hsur = new GeomAdaptor_HSurface( S1 );
+  Handle( Geom2dAdaptor_Curve ) hcur = new Geom2dAdaptor_Curve( NewC2d );
+  Handle( GeomAdaptor_Surface ) hsur = new GeomAdaptor_Surface( S1 );
   Adaptor3d_CurveOnSurface cons( hcur, hsur );
-  Handle( Adaptor3d_HCurveOnSurface ) hcons = new Adaptor3d_HCurveOnSurface( cons );
-  Handle( GeomAdaptor_HSurface ) hsur2 = new GeomAdaptor_HSurface( S2 );
-  ProjLib_CompProjectedCurve ProjCurve( hsur2, hcons, Tol, Tol );
-  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve();
-  HProjector->Set( ProjCurve );
+  Handle( Adaptor3d_CurveOnSurface ) hcons = new Adaptor3d_CurveOnSurface( cons );
+  Handle( GeomAdaptor_Surface ) hsur2 = new GeomAdaptor_Surface( S2 );
+  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur2, hcons, Tol, Tol);
   Standard_Real Udeb, Ufin;
-  ProjCurve.Bounds(1, Udeb, Ufin);
+  HProjector->Bounds(1, Udeb, Ufin);
   Standard_Integer MaxSeg = 20 + HProjector->NbIntervals(GeomAbs_C3);
   Approx_CurveOnSurface appr(HProjector, hsur2, Udeb, Ufin, Tol);
   appr.Perform(MaxSeg, 10, GeomAbs_C1, Standard_False, Standard_False);

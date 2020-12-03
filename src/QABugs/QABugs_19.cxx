@@ -3128,7 +3128,6 @@ static Standard_Integer OCC25545 (Draw_Interpretor& di,
 #include <BRepAdaptor_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 static Standard_Integer OCC25547(
   Draw_Interpretor& theDI, 
@@ -3155,7 +3154,7 @@ static Standard_Integer OCC25547(
   // Test static methods.
   TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(gp::Origin(), gp::DZ()));
   BRepAdaptor_Surface aSurf(aFace);
-  Handle(BRepAdaptor_HSurface) aHSurf = new BRepAdaptor_HSurface(aSurf);
+  Handle(BRepAdaptor_Surface) aHSurf = new BRepAdaptor_Surface(aSurf);
 
   gp_Pnt aPnt;
   gp_Dir aNormal;
@@ -4329,8 +4328,8 @@ static Standard_Integer OCC26313(Draw_Interpretor& di,Standard_Integer n,const c
 //=======================================================================
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_HInter.hxx>
 Standard_Integer OCC26525 (Draw_Interpretor& di, 
                            Standard_Integer n, 
@@ -4381,8 +4380,8 @@ Standard_Integer OCC26525 (Draw_Interpretor& di,
   aBAC.Initialize(aE);
   aBAS.Initialize(aF);
 
-  Handle(BRepAdaptor_HCurve) aHBAC=new BRepAdaptor_HCurve(aBAC);
-  Handle(BRepAdaptor_HSurface) aHBAS = new BRepAdaptor_HSurface(aBAS);
+  Handle(BRepAdaptor_Curve) aHBAC=new BRepAdaptor_Curve(aBAC);
+  Handle(BRepAdaptor_Surface) aHBAS = new BRepAdaptor_Surface(aBAS);
 
   aHInter.Perform(aHBAC, aHBAS);
   bIsDone=aHInter.IsDone();

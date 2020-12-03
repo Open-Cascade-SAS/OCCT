@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
@@ -30,9 +30,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
@@ -42,7 +39,7 @@
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
 #include <ChFiDS_Spine.hxx>
@@ -50,13 +47,13 @@
 #include <ChFiDS_SurfData.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Ax3.hxx>
@@ -97,11 +94,11 @@
 
 static void Reduce(const Standard_Real& p1,
 		   const Standard_Real& p2,
-		   Handle(GeomAdaptor_HSurface)& hs1,
-		   Handle(GeomAdaptor_HSurface)& hs2)
+		   Handle(GeomAdaptor_Surface)& hs1,
+		   Handle(GeomAdaptor_Surface)& hs2)
 {
-  GeomAdaptor_Surface& s1 = hs1->ChangeSurface();
-  GeomAdaptor_Surface& s2 = hs2->ChangeSurface();
+  GeomAdaptor_Surface& s1 = *hs1;
+  GeomAdaptor_Surface& s2 = *hs2;
   const Handle(Geom_Surface)& surf = s1.Surface();
   Standard_Real ud,uf,vd,vf;
   surf->Bounds(ud,uf,vd,vf);
@@ -118,9 +115,9 @@ static void Reduce(const Standard_Real& p1,
 
 static void Reduce(const Standard_Real& p1,
 		   const Standard_Real& p2,
-		   Handle(GeomAdaptor_HCurve)& hc)
+		   Handle(GeomAdaptor_Curve)& hc)
 {
-  GeomAdaptor_Curve& c = hc->ChangeCurve();
+  GeomAdaptor_Curve& c = *hc;
   Standard_Real f = c.FirstParameter();
   Standard_Real l = c.LastParameter();
   Standard_Real milmoins = 0.51*f+0.49*l, milplus = 0.49*f+0.51*l;
@@ -249,7 +246,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   pivot = CP1.Arc();
   Standard_Real parCP1 = CP1.ParameterOnArc();
   Standard_Real parCP2 = CP2.ParameterOnArc();
-  Handle(BRepAdaptor_HCurve) Hpivot = new BRepAdaptor_HCurve(pivot);
+  Handle(BRepAdaptor_Curve) Hpivot = new BRepAdaptor_Curve(pivot);
   if (!pivot.IsSame(CP2.Arc())){ 
     Handle(Geom_Curve) csau;
     Standard_Real ubid,vbid;
@@ -288,7 +285,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     return done;
   }
 
-  Handle(GeomAdaptor_HSurface) HS1, HS2;
+  Handle(GeomAdaptor_Surface) HS1, HS2;
   HS1 = ChFi3d_BoundSurf (DStr,Fd1,IFaCo1,IFaArc1);
   HS2 = ChFi3d_BoundSurf (DStr,Fd2,IFaCo2,IFaArc2);
   
@@ -307,7 +304,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     Pardeb(1)= UV.X(); Pardeb(2)=UV.Y();
     UV = Fd2->Interference(IFaCo2).PCurveOnSurf()->Value(UIntPC2);
     Pardeb(3)= UV.X(); Pardeb(4)=UV.Y();
-    gp_Pnt PFaCo = HS1->Surface().Value(Pardeb(1),Pardeb(2));
+    gp_Pnt PFaCo = HS1->Value(Pardeb(1),Pardeb(2));
     
     // Side arc, calculation of Parfin.
     Standard_Real UIntArc1 = Fd1->Interference(IFaArc1).Parameter(isfirst1);
@@ -410,7 +407,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     }
     Handle(ChFiDS_Stripe) BigCD, SmaCD;
     Handle(ChFiDS_SurfData) BigFD, SmaFD;
-    Handle(GeomAdaptor_HSurface) BigHS, SmaHS;
+    Handle(GeomAdaptor_Surface) BigHS, SmaHS;
     Standard_Integer IFaCoBig, IFaCoSma, IFaArcBig, IFaArcSma;
     Standard_Boolean isfirstBig, isfirstSma;
     Standard_Real UIntPCBig, UIntPCSma;
@@ -452,8 +449,8 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       // Parfin (parameters of point PMil)
     const ChFiDS_FaceInterference& FiArcSma = SmaFD->Interference(IFaArcSma);
     Handle(Geom_Curve) ctg = DStr.Curve(FiArcSma.LineIndex()).Curve();
-    Handle(GeomAdaptor_HCurve) Hctg = new GeomAdaptor_HCurve();
-    GeomAdaptor_Curve& bid = Hctg->ChangeCurve();
+    Handle(GeomAdaptor_Curve) Hctg = new GeomAdaptor_Curve();
+    GeomAdaptor_Curve& bid = *Hctg;
     Standard_Real temp,wi;
 
     if (isfirstSma) {
@@ -560,7 +557,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     // The intersection curve surface is tried again, now with representation
     // pcurve on face of the curve to be sure.
     TopoDS_Face F = TopoDS::Face(DStr.Shape(SmaFD->Index(IFaArcSma)));
-    Handle(BRepAdaptor_HSurface) HF = new BRepAdaptor_HSurface(F);
+    Handle(BRepAdaptor_Surface) HF = new BRepAdaptor_Surface(F);
     Standard_Real fsma = FiArcSma.FirstParameter();
     Standard_Real lsma = FiArcSma.LastParameter();
     Standard_Real deltSma = 0.05 * (lsma - fsma);
@@ -571,10 +568,10 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
        done=Standard_False;
        return done;
     }
-    Handle(Geom2dAdaptor_HCurve) c2df = 
-      new Geom2dAdaptor_HCurve(SmaFD->Interference(IFaArcSma).PCurveOnFace(),fsma,lsma);
+    Handle(Geom2dAdaptor_Curve) c2df = 
+      new Geom2dAdaptor_Curve(SmaFD->Interference(IFaArcSma).PCurveOnFace(),fsma,lsma);
     Adaptor3d_CurveOnSurface consf(c2df,HF);
-    Handle(Adaptor3d_HCurveOnSurface) Hconsf = new Adaptor3d_HCurveOnSurface(consf);
+    Handle(Adaptor3d_CurveOnSurface) Hconsf = new Adaptor3d_CurveOnSurface(consf);
     if(!ChFi3d_IntCS(BigHS,Hconsf,UVi,wi)) {
 #ifdef OCCT_DEBUG
       std::cout<<"bevel : failed inter C S"<<std::endl;
@@ -605,7 +602,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     // for the case when two chamfers are on two edges OnSame,
     // it is necessary to extend the surface carrying F, or at least
     // not to limit it.
-    ChFi3d_BoundFac(HF->ChangeSurface(),uu1,uu2,vv1,vv2,Standard_True);
+    ChFi3d_BoundFac (*HF, uu1, uu2, vv1, vv2, Standard_True);
 
     if (!ChFi3d_ComputeCurves(HF,BigHS,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {

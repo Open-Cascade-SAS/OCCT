@@ -52,8 +52,8 @@
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <GeomProjLib.hxx>
@@ -437,8 +437,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   try
   {
     OCC_CATCH_SIGNALS
-    Handle(GeomAdaptor_HSurface) GAS = mySurf->Adaptor3d();
-    Handle(GeomAdaptor_HCurve) GAC = new GeomAdaptor_HCurve (c3d,First,Last);
+    Handle(GeomAdaptor_Surface) GAS = mySurf->Adaptor3d();
+    Handle(GeomAdaptor_Curve) GAC = new GeomAdaptor_Curve (c3d,First,Last);
     ProjLib_ProjectedCurve Projector(GAS, GAC);
 
     switch (Projector.GetType())
@@ -520,7 +520,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     Handle(Geom_Curve) ProjOnPlane = 
       GeomProjLib::ProjectOnPlane (c3d, Plane, 
 				   Plane->Position().Direction(), Standard_True);
-    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve ( ProjOnPlane );
+    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve ( ProjOnPlane );
     ProjLib_ProjectedCurve Proj ( mySurf->Adaptor3d(), HC );
 
     result = Geom2dAdaptor::MakeCurve(Proj);

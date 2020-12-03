@@ -17,21 +17,12 @@
 #ifndef _BRepBlend_SurfPointConstRadInv_HeaderFile
 #define _BRepBlend_SurfPointConstRadInv_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Blend_SurfPointFuncInv.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
-class math_Matrix;
-class gp_Pnt;
 
+class math_Matrix;
 
 //! Function of reframing between a point and a surface.
 //! This function  is used  to find a  solution on  a done
@@ -49,7 +40,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_SurfPointConstRadInv(const Handle(Adaptor3d_HSurface)& S, const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT BRepBlend_SurfPointConstRadInv(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C);
   
   Standard_EXPORT void Set (const Standard_Real R, const Standard_Integer Choix);
   
@@ -105,8 +96,8 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surf;
-  Handle(Adaptor3d_HCurve) curv;
+  Handle(Adaptor3d_Surface) surf;
+  Handle(Adaptor3d_Curve) curv;
   gp_Pnt point;
   Standard_Real ray;
   Standard_Integer choix;

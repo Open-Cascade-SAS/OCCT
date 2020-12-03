@@ -17,21 +17,13 @@
 #ifndef _GeomInt_WLApprox_HeaderFile
 #define _GeomInt_WLApprox_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <NCollection_Vector.hxx>
 #include <GeomInt_TheComputeLineOfWLApprox.hxx>
 #include <GeomInt_TheComputeLineBezierOfWLApprox.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Approx_ParametrizationType.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class Adaptor3d_HSurface;
+
 class Adaptor3d_HSurfaceTool;
 class IntSurf_Quadric;
 class IntSurf_QuadricTool;
@@ -79,7 +71,7 @@ public:
   
   Standard_EXPORT GeomInt_WLApprox();
   
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Surf1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ = Standard_True, const Standard_Boolean ApproxU1V1 = Standard_True, const Standard_Boolean ApproxU2V2 = Standard_True, const Standard_Integer indicemin = 0, const Standard_Integer indicemax = 0);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ = Standard_True, const Standard_Boolean ApproxU1V1 = Standard_True, const Standard_Boolean ApproxU2V2 = Standard_True, const Standard_Integer indicemin = 0, const Standard_Integer indicemax = 0);
   
   Standard_EXPORT void Perform (const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ = Standard_True, const Standard_Boolean ApproxU1V1 = Standard_True, const Standard_Boolean ApproxU2V2 = Standard_True, const Standard_Integer indicemin = 0, const Standard_Integer indicemax = 0);
   
@@ -114,7 +106,7 @@ protected:
 
 
 private:
-  Standard_EXPORT void Perform (const IntSurf_Quadric& Surf1, const Handle(Adaptor3d_HSurface)& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ, const Standard_Boolean ApproxU1V1, const Standard_Boolean ApproxU2V2, const Standard_Integer indicemin, const Standard_Integer indicemax, const Standard_Boolean isTheQuadFirst);
+  Standard_EXPORT void Perform (const IntSurf_Quadric& Surf1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(IntPatch_WLine)& aLine, const Standard_Boolean ApproxXYZ, const Standard_Boolean ApproxU1V1, const Standard_Boolean ApproxU2V2, const Standard_Integer indicemin, const Standard_Integer indicemax, const Standard_Boolean isTheQuadFirst);
   
   Standard_EXPORT void UpdateTolReached();
 

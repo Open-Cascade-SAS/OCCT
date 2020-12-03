@@ -17,17 +17,12 @@
 #ifndef _IntPolyh_Triangle_HeaderFile
 #define _IntPolyh_Triangle_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <IntPolyh_ArrayOfPoints.hxx>
 #include <IntPolyh_ArrayOfTriangles.hxx>
 #include <IntPolyh_ArrayOfEdges.hxx>
-class Adaptor3d_HSurface;
+
 class IntPolyh_StartPoint;
 
 //! The class represents the triangle built from three IntPolyh points
@@ -227,7 +222,7 @@ public:
   }
 
   //! Computes the deflection for the triangle
-  Standard_EXPORT Standard_Real ComputeDeflection(const Handle(Adaptor3d_HSurface)& theSurface,
+  Standard_EXPORT Standard_Real ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurface,
                                                   const IntPolyh_ArrayOfPoints& thePoints);
 
   //! Gets the adjacent triangle
@@ -237,7 +232,7 @@ public:
 
   //! Splits the triangle on two to decrease its deflection
   Standard_EXPORT void MiddleRefinement(const Standard_Integer theTriangleNumber,
-                                        const Handle(Adaptor3d_HSurface)& theSurface,
+                                        const Handle(Adaptor3d_Surface)& theSurface,
                                         IntPolyh_ArrayOfPoints& TPoints,
                                         IntPolyh_ArrayOfTriangles& TTriangles,
                                         IntPolyh_ArrayOfEdges& TEdges);
@@ -247,7 +242,7 @@ public:
   Standard_EXPORT void MultipleMiddleRefinement(const Standard_Real theRefineCriterion,
                                                 const Bnd_Box& theBox,
                                                 const Standard_Integer theTriangleNumber,
-                                                const Handle(Adaptor3d_HSurface)& theSurface,
+                                                const Handle(Adaptor3d_Surface)& theSurface,
                                                 IntPolyh_ArrayOfPoints& TPoints,
                                                 IntPolyh_ArrayOfTriangles& TTriangles,
                                                 IntPolyh_ArrayOfEdges& TEdges);

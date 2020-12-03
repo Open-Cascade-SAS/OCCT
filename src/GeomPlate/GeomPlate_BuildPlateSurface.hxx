@@ -44,9 +44,6 @@ class GeomPlate_PointConstraint;
 class gp_Pnt2d;
 class gp_Pnt;
 class Geom2d_Curve;
-class Adaptor3d_HCurve;
-class Adaptor2d_HCurve2d;
-
 
 
 //! This class provides an algorithm for constructing such a plate surface that
@@ -213,9 +210,9 @@ private:
   
   Standard_EXPORT gp_Pnt2d ProjectPoint (const gp_Pnt& P);
   
-  Standard_EXPORT Handle(Geom2d_Curve) ProjectCurve (const Handle(Adaptor3d_HCurve)& Curv);
+  Standard_EXPORT Handle(Geom2d_Curve) ProjectCurve (const Handle(Adaptor3d_Curve)& Curv);
   
-  Standard_EXPORT Handle(Adaptor2d_HCurve2d) ProjectedCurve (Handle(Adaptor3d_HCurve)& Curv);
+  Standard_EXPORT Handle(Adaptor2d_Curve2d) ProjectedCurve (Handle(Adaptor3d_Curve)& Curv);
   
   Standard_EXPORT void ComputeSurfInit(const Message_ProgressRange& theProgress);
   

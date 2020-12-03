@@ -36,15 +36,11 @@
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
-#include <BRepAdaptor_HSurface.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HCurve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Curve.hxx>  
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <BRep_Tool.hxx>
@@ -62,7 +58,7 @@
 #include <GeomPlate_PlateG1Criterion.hxx>
 #include <BRepFill_CurveConstraint.hxx>
 #include <GeomPlate_PointConstraint.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <Geom_Surface.hxx>
 
 #include <TopoDS_Wire.hxx>
@@ -86,8 +82,8 @@
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 
-#include <BRepAdaptor_HCurve.hxx>
-#include <Adaptor3d_HIsoCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <Adaptor3d_IsoCurve.hxx>
 
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
@@ -158,12 +154,12 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
     Standard_Integer T = Draw::Atoi(a[3*i+3]);
     Tang->SetValue(i,T);
     NbPtsCur->SetValue(i,Draw::Atoi(a[2]));
-    Handle(BRepAdaptor_HSurface) S = new BRepAdaptor_HSurface();
-    S->ChangeSurface().Initialize(F);
-    Handle(BRepAdaptor_HCurve2d) C = new BRepAdaptor_HCurve2d();
-    C->ChangeCurve2d().Initialize(E,F);
+    Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+    S->Initialize(F);
+    Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+    C->Initialize(E,F);
     Adaptor3d_CurveOnSurface ConS(C,S);
-    Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+    Handle (Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i,HConS);
     Handle(GeomPlate_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(HConS,
@@ -239,9 +235,9 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
   if(SI.IsNull()) 
     Indice--;
   else
-    { Handle(BRepAdaptor_HSurface) HSI = new BRepAdaptor_HSurface();
-      HSI->ChangeSurface().Initialize(SI);
-      Henri.LoadInitSurface( BRep_Tool::Surface(HSI->ChangeSurface().Face()));
+    { Handle(BRepAdaptor_Surface) HSI = new BRepAdaptor_Surface();
+      HSI->Initialize(SI);
+      Henri.LoadInitSurface( BRep_Tool::Surface(HSI->Face()));
     }
   for (i=1; i<=NbCurFront ; i++) { 
     TopoDS_Shape aLocalShape(DBRep::Get(a[Indice++],TopAbs_EDGE));
@@ -250,9 +246,9 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
     if(E.IsNull()) return 1;
     Conti=Draw::Atoi(a[Indice++]);
     if ((Conti==0)||(Conti==-1))
-      { Handle(BRepAdaptor_HCurve) C = new BRepAdaptor_HCurve();
-	C->ChangeCurve().Initialize(E);
-        const Handle(Adaptor3d_HCurve)& aC = C; // to avoid ambiguity
+      { Handle(BRepAdaptor_Curve) C = new BRepAdaptor_Curve();
+	C->Initialize(E);
+        const Handle(Adaptor3d_Curve)& aC = C; // to avoid ambiguity
 	Handle(GeomPlate_CurveConstraint) Cont= new BRepFill_CurveConstraint(aC,Conti);
 	Henri.Add(Cont);
      }
@@ -263,12 +259,12 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 //	TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
 	if(F.IsNull()) 
 	  return 1;
-	Handle(BRepAdaptor_HSurface) S = new BRepAdaptor_HSurface();
-	S->ChangeSurface().Initialize(F);
-	Handle(BRepAdaptor_HCurve2d) C = new BRepAdaptor_HCurve2d();
-	C->ChangeCurve2d().Initialize(E,F);
+	Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+	S->Initialize(F);
+	Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+	C->Initialize(E,F);
 	Adaptor3d_CurveOnSurface ConS(C,S);
-	Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+	Handle (Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
 	Handle(GeomPlate_CurveConstraint) Cont= new BRepFill_CurveConstraint(HConS,Conti);
 	Henri.Add(Cont);
       }
@@ -296,9 +292,9 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 //	  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[Indice++],TopAbs_FACE));
 	  if(F.IsNull()) 
 	    return 1;	
-	  Handle(BRepAdaptor_HSurface) HF = new BRepAdaptor_HSurface();
-	  HF->ChangeSurface().Initialize(F);
-	  Handle(GeomPlate_PointConstraint) PCont= new GeomPlate_PointConstraint(u,v,BRep_Tool::Surface(HF->ChangeSurface().Face()),Conti,0.001,0.001,0.001);
+	  Handle(BRepAdaptor_Surface) HF = new BRepAdaptor_Surface();
+	  HF->Initialize(F);
+	  Handle(GeomPlate_PointConstraint) PCont= new GeomPlate_PointConstraint(u,v,BRep_Tool::Surface(HF->Face()),Conti,0.001,0.001,0.001);
 	  Henri.Add(PCont);
 	}
     }    
@@ -358,12 +354,12 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     Standard_Integer T = Draw::Atoi(a[3*i+3]);
     Tang->SetValue(i,T);
     NbPtsCur->SetValue(i,NbMedium);
-    Handle(BRepAdaptor_HSurface) S = new BRepAdaptor_HSurface();
-    S->ChangeSurface().Initialize(F);
-    Handle(BRepAdaptor_HCurve2d) C = new BRepAdaptor_HCurve2d();
-    C->ChangeCurve2d().Initialize(E,F);
+    Handle(BRepAdaptor_Surface) S = new BRepAdaptor_Surface();
+    S->Initialize(F);
+    Handle(BRepAdaptor_Curve2d) C = new BRepAdaptor_Curve2d();
+    C->Initialize(E,F);
     Adaptor3d_CurveOnSurface ConS(C,S);
-    Handle (Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+    Handle (Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i,HConS);
     Handle(GeomPlate_CurveConstraint) Cont
       = new BRepFill_CurveConstraint(HConS,

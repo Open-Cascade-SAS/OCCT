@@ -16,12 +16,12 @@
 
 #include <PrsDim.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -780,7 +780,7 @@ Standard_Boolean PrsDim::GetPlaneFromFace (const TopoDS_Face& aFace,
 {
   Standard_Boolean Result = Standard_False;
   BRepAdaptor_Surface surf1( aFace );
-  Handle( Adaptor3d_HSurface ) surf2;
+  Handle( Adaptor3d_Surface ) surf2;
   Standard_Boolean isOffset = Standard_False;
   Offset = 0.0;
 
@@ -791,7 +791,7 @@ Standard_Boolean PrsDim::GetPlaneFromFace (const TopoDS_Face& aFace,
     isOffset = Standard_True;
   }
   else
-    surf2 = new BRepAdaptor_HSurface( surf1 );
+    surf2 = new BRepAdaptor_Surface( surf1 );
 
   aSurf = surf1.Surface().Surface();
   //  aSurf->Transform(surf1.Trsf()) ;
@@ -805,7 +805,7 @@ Standard_Boolean PrsDim::GetPlaneFromFace (const TopoDS_Face& aFace,
   }
   else if (surf2->GetType() == GeomAbs_SurfaceOfExtrusion)
   {
-    Handle( Adaptor3d_HCurve ) BasisCurve = surf2->BasisCurve();
+    Handle( Adaptor3d_Curve ) BasisCurve = surf2->BasisCurve();
     gp_Dir ExtrusionDir = surf2->Direction();
     if (BasisCurve->GetType() == GeomAbs_Line)
     {

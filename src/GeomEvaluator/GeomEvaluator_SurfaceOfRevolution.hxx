@@ -15,14 +15,12 @@
 #ifndef _GeomEvaluator_SurfaceOfRevolution_HeaderFile
 #define _GeomEvaluator_SurfaceOfRevolution_HeaderFile
 
+#include <Adaptor3d_Curve.hxx>
 #include <GeomEvaluator_Surface.hxx>
-
 #include <Geom_Curve.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Ax1.hxx>
-
-class Adaptor3d_HCurve;
 
 //! Allows to calculate values and derivatives for surfaces of revolution
 class GeomEvaluator_SurfaceOfRevolution : public GeomEvaluator_Surface
@@ -33,7 +31,7 @@ public:
                                                     const gp_Dir& theRevolDir,
                                                     const gp_Pnt& theRevolLoc);
   //! Initialize evaluator by adaptor of the revolved curve, the axis of revolution and the location
-  Standard_EXPORT GeomEvaluator_SurfaceOfRevolution(const Handle(Adaptor3d_HCurve)& theBase,
+  Standard_EXPORT GeomEvaluator_SurfaceOfRevolution(const Handle(Adaptor3d_Curve)& theBase,
                                                     const gp_Dir& theRevolDir,
                                                     const gp_Pnt& theRevolLoc);
 
@@ -77,7 +75,7 @@ public:
 
 private:
   Handle(Geom_Curve)       myBaseCurve;
-  Handle(Adaptor3d_HCurve) myBaseAdaptor;
+  Handle(Adaptor3d_Curve) myBaseAdaptor;
   gp_Ax1 myRotAxis;
 };
 

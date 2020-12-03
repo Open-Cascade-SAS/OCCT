@@ -13,9 +13,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ConstThroatInv.hxx>
 #include <math_Matrix.hxx>
@@ -26,9 +26,9 @@
 //purpose  : 
 //=======================================================================
 
-BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const Handle(Adaptor3d_HSurface)& S1,
-                                                   const Handle(Adaptor3d_HSurface)& S2,
-                                                   const Handle(Adaptor3d_HCurve)&   C)
+BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const Handle(Adaptor3d_Surface)& S1,
+                                                   const Handle(Adaptor3d_Surface)& S2,
+                                                   const Handle(Adaptor3d_Curve)&   C)
 : BlendFunc_GenChamfInv(S1,S2,C),
   Throat(0.0),
   param(0.0),

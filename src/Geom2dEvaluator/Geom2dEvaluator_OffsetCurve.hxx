@@ -16,9 +16,8 @@
 #define _Geom2dEvaluator_OffsetCurve_HeaderFile
 
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dEvaluator_Curve.hxx>
-
-class Geom2dAdaptor_HCurve;
 
 //! Allows to calculate values and derivatives for offset curves in 2D
 class Geom2dEvaluator_OffsetCurve : public Geom2dEvaluator_Curve
@@ -30,7 +29,7 @@ public:
       const Standard_Real theOffset);
   //! Initialize evaluator by curve adaptor
   Standard_EXPORT Geom2dEvaluator_OffsetCurve(
-      const Handle(Geom2dAdaptor_HCurve)& theBase,
+      const Handle(Geom2dAdaptor_Curve)& theBase,
       const Standard_Real theOffset);
 
   //! Change the offset value
@@ -85,7 +84,7 @@ private:
 
 private:
   Handle(Geom2d_Curve)         myBaseCurve;
-  Handle(Geom2dAdaptor_HCurve) myBaseAdaptor;
+  Handle(Geom2dAdaptor_Curve) myBaseAdaptor;
 
   Standard_Real myOffset;    ///< offset value
 };

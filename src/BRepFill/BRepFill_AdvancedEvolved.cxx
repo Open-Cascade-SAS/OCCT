@@ -33,8 +33,8 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <math_Matrix.hxx>
@@ -1149,8 +1149,8 @@ public:
 
   gp_Pnt GetPoint(const Standard_Real theX)
   {
-    const Handle(Adaptor2d_HCurve2d) &aC = myCOnS.GetCurve();
-    const Handle(Adaptor3d_HSurface) &aS = myCOnS.GetSurface();
+    const Handle(Adaptor2d_Curve2d) &aC = myCOnS.GetCurve();
+    const Handle(Adaptor3d_Surface) &aS = myCOnS.GetSurface();
     const gp_Pnt2d aP2d(aC->Value(theX));
     return aS->Value(aP2d.X(), aP2d.Y());
   }
@@ -1174,8 +1174,8 @@ private:
 //=======================================================================
 Standard_Boolean NormalFunc::Value(const math_Vector& theX, Standard_Real& theF)
 {
-  const Handle(Adaptor2d_HCurve2d) &aC = myCOnS.GetCurve();
-  const Handle(Adaptor3d_HSurface) &aS = myCOnS.GetSurface();
+  const Handle(Adaptor2d_Curve2d) &aC = myCOnS.GetCurve();
+  const Handle(Adaptor3d_Surface) &aS = myCOnS.GetSurface();
 
   const gp_Pnt2d aP2d(aC->Value(theX(1)));
   gp_Pnt aP3d;
@@ -1213,8 +1213,8 @@ Standard_Boolean NormalFunc::Value(const math_Vector& theX, Standard_Real& theF)
 //=======================================================================
 Standard_Boolean NormalFunc::Gradient(const math_Vector& theX, math_Vector& theG)
 {
-  const Handle(Adaptor2d_HCurve2d) &aC = myCOnS.GetCurve();
-  const Handle(Adaptor3d_HSurface) &aS = myCOnS.GetSurface();
+  const Handle(Adaptor2d_Curve2d) &aC = myCOnS.GetCurve();
+  const Handle(Adaptor3d_Surface) &aS = myCOnS.GetSurface();
 
   gp_Pnt2d aP2d;
   gp_Vec2d aDc;

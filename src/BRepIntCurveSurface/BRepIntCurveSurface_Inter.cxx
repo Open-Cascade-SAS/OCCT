@@ -14,17 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepIntCurveSurface_Inter.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepIntCurveSurface_Inter.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
@@ -118,9 +116,11 @@ void BRepIntCurveSurface_Inter::Init(const GeomAdaptor_Curve& theCurve )
   myCurveBox.SetVoid();
   Standard_Real aFirst =  theCurve.FirstParameter();
   Standard_Real aLast =   theCurve.LastParameter();
-  myCurve = new GeomAdaptor_HCurve(theCurve );
+  myCurve = new GeomAdaptor_Curve(theCurve );
   if( !Precision::IsInfinite(aFirst) && !Precision::IsInfinite(aLast) )
-    BndLib_Add3dCurve::Add(myCurve->Curve(),0., myCurveBox);
+  {
+    BndLib_Add3dCurve::Add (*myCurve, 0., myCurveBox);
+  }
   Find();
 }
 
@@ -172,13 +172,13 @@ void BRepIntCurveSurface_Inter::Find()
       ( !myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox ) : Standard_False ) );
     if(isOut )
       continue;
-    Handle(BRepAdaptor_HSurface) aSurfForFastClass = new BRepAdaptor_HSurface(TopoDS::Face(aCurface));
+    Handle(BRepAdaptor_Surface) aSurfForFastClass = new BRepAdaptor_Surface(TopoDS::Face(aCurface));
     myIntcs.Perform(myCurve,aSurfForFastClass);
     myCurrentnbpoints = myIntcs.NbPoints();
     if( !myCurrentnbpoints)
       continue;
 
-    const Handle(Adaptor3d_HSurface)& aSurf = aSurfForFastClass; // to avoid ambiguity
+    const Handle(Adaptor3d_Surface)& aSurf = aSurfForFastClass; // to avoid ambiguity
     myFastClass->Initialize(aSurf);
     myIndFace = i;
     if(FindPoint())

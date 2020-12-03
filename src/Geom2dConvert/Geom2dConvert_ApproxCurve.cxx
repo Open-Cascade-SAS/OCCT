@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dConvert_ApproxCurve.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
-#include <Geom2dConvert_ApproxCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
@@ -36,7 +36,7 @@
 class Geom2dConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
 {
  public:
-  Geom2dConvert_ApproxCurve_Eval (const Handle(Adaptor2d_HCurve2d)& theFunc, 
+  Geom2dConvert_ApproxCurve_Eval (const Handle(Adaptor2d_Curve2d)& theFunc, 
                                   Standard_Real First, Standard_Real Last)
     : fonct(theFunc) { StartEndSav[0] = First; StartEndSav[1] = Last; }
   
@@ -48,7 +48,7 @@ class Geom2dConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
                          Standard_Integer *ErrorCode);
   
  private:
-  Handle(Adaptor2d_HCurve2d) fonct;
+  Handle(Adaptor2d_Curve2d) fonct;
   Standard_Real StartEndSav[2];
 };
 
@@ -105,11 +105,11 @@ void Geom2dConvert_ApproxCurve_Eval::Evaluate (Standard_Integer *Dimension,
 
 Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Geom2d_Curve)& Curve,const Standard_Real Tol2d,const GeomAbs_Shape Order,const Standard_Integer MaxSegments,const Standard_Integer MaxDegree)
 {
-  Handle(Geom2dAdaptor_HCurve) HCurve = new Geom2dAdaptor_HCurve (Curve);
+  Handle(Geom2dAdaptor_Curve) HCurve = new Geom2dAdaptor_Curve (Curve);
   Approximate(HCurve, Tol2d, Order, MaxSegments, MaxDegree);
 }
 
-Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_HCurve2d)& Curve,
+Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_Curve2d)& Curve,
                                                      const Standard_Real               Tol2d,
                                                      const GeomAbs_Shape               Order,
                                                      const Standard_Integer            MaxSegments,
@@ -118,7 +118,7 @@ Geom2dConvert_ApproxCurve::Geom2dConvert_ApproxCurve(const Handle(Adaptor2d_HCur
   Approximate(Curve, Tol2d, Order, MaxSegments, MaxDegree);
 }
 
-void Geom2dConvert_ApproxCurve::Approximate(const Handle(Adaptor2d_HCurve2d)& theCurve,
+void Geom2dConvert_ApproxCurve::Approximate(const Handle(Adaptor2d_Curve2d)& theCurve,
                                             const Standard_Real               theTol2d,
                                             const GeomAbs_Shape               theOrder,
                                             const Standard_Integer            theMaxSegments,

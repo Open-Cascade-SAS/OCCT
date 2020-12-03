@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepSweep_Rotation.hxx>
 
 #include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepSweep_Rotation.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_Quilt.hxx>
 #include <ElCLib.hxx>
@@ -38,7 +38,6 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
@@ -345,8 +344,8 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyFace
     //////////////////////////////////
     C->Transform(Tr);
 
-    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
-    HC->ChangeCurve().Load(C,First,Last);
+    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+    HC->Load(C,First,Last);
     GeomAdaptor_SurfaceOfRevolution AS(HC,myAxe);
     switch(AS.GetType()){
     case GeomAbs_Plane :

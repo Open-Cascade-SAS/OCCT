@@ -45,7 +45,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
@@ -105,7 +105,7 @@ ShapeAnalysis_Surface::ShapeAnalysis_Surface(const Handle(Geom_Surface)& S) :
   myGap(0.), myUDelt(0.01), myVDelt(0.01), myUCloseVal(-1), myVCloseVal(-1)
 {
   mySurf->Bounds(myUF, myUL, myVF, myVL);
-  myAdSur = new GeomAdaptor_HSurface(mySurf);
+  myAdSur = new GeomAdaptor_Surface(mySurf);
 }
 
 //=======================================================================
@@ -121,7 +121,7 @@ void ShapeAnalysis_Surface::Init(const Handle(Geom_Surface)& S)
   myNbDeg = -1;
   myUCloseVal = myVCloseVal = -1;  myGap = 0.;
   mySurf->Bounds(myUF, myUL, myVF, myVL);
-  myAdSur = new GeomAdaptor_HSurface(mySurf);
+  myAdSur = new GeomAdaptor_Surface(mySurf);
   myIsos = Standard_False;
   myIsoBoxes = Standard_False;
   myIsoUF.Nullify(); myIsoUL.Nullify(); myIsoVF.Nullify(); myIsoVL.Nullify();
@@ -147,7 +147,7 @@ void ShapeAnalysis_Surface::Init(const Handle(ShapeAnalysis_Surface)& other)
 //purpose  :
 //=======================================================================
 
-const Handle(GeomAdaptor_HSurface)& ShapeAnalysis_Surface::Adaptor3d()
+const Handle(GeomAdaptor_Surface)& ShapeAnalysis_Surface::Adaptor3d()
 {
   return myAdSur;
 }
@@ -478,7 +478,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsDegenerated(const gp_Pnt2d &p2d1,
     Max(pm.Distance(p1), pm.Distance(p2)));
   if (max3d > tol) return Standard_False;
 
-  GeomAdaptor_Surface& SA = Adaptor3d()->ChangeSurface();
+  GeomAdaptor_Surface& SA = *Adaptor3d();
   Standard_Real RU = SA.UResolution(1.);
   Standard_Real RV = SA.VResolution(1.);
 
@@ -583,7 +583,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsUClosed(const Standard_Real preci)
 
     //Calculs adaptes
     //#67 rln S4135
-    GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
+    GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
     GeomAbs_SurfaceType surftype = SurfAdapt.GetType();
     if (mySurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
@@ -796,7 +796,7 @@ Standard_Boolean ShapeAnalysis_Surface::IsVClosed(const Standard_Real preci)
 
     //    Calculs adaptes
     //#67 rln S4135
-    GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
+    GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
     GeomAbs_SurfaceType surftype = SurfAdapt.GetType();
     if (mySurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
@@ -982,7 +982,7 @@ Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
   const Standard_Real preci,
   gp_Pnt2d &sol)
 {
-  GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
+  GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
   Standard_Real uf, ul, vf, vl;
   Bounds(uf, ul, vf, vl);
   Standard_Real du = SurfAdapt.UResolution(preci);
@@ -1062,7 +1062,7 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d &p2dPrev,
   const Standard_Real preci,
   const Standard_Real maxpreci)
 {
-  GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
+  GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
   GeomAbs_SurfaceType surftype = SurfAdapt.GetType();
 
   switch (surftype) {
@@ -1135,7 +1135,7 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d &p2dPrev,
 
 gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real preci)
 {
-  GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
+  GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
   Standard_Real S = 0., T = 0.;
   myGap = -1.;    // devra etre calcule
   Standard_Boolean computed = Standard_True;  // a priori
@@ -1412,7 +1412,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
     for (Standard_Integer num = 0; num < 6; num++) {
 
       UV = (num < 3);  // 0-1-2 : iso-U  3-4-5 : iso-V
-      if (!(Adaptor3d()->Surface().GetType() == GeomAbs_OffsetSurface)) {
+      if (!(Adaptor3d()->GetType() == GeomAbs_OffsetSurface)) {
         const Bnd_Box *anIsoBox = 0;
         switch (num) {
         case 0: par = myUF; iso = myIsoUF;  anIsoBox = &myBndUF; break;
@@ -1470,7 +1470,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
     //added by rln on 04/12/97 iterational process
     Standard_Real PrevU = U, PrevV = V;
     Standard_Integer MaxIters = 5, Iters = 0;
-    if (!(Adaptor3d()->Surface().GetType() == GeomAbs_OffsetSurface)) {
+    if (!(Adaptor3d()->GetType() == GeomAbs_OffsetSurface)) {
       while (((PrevU != UU) || (PrevV != VV)) && (Iters < MaxIters) && (theMin > preci)) {
         PrevU = UU; PrevV = VV;
         if (UV) { par = UU; iso = UIso(UU); }

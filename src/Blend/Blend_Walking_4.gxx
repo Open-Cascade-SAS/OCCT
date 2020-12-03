@@ -331,7 +331,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
           const Standard_Real TolProd = 1.e-5;
           Standard_Real SavedParams [2];
           Standard_Boolean SameDirs [2] = {Standard_False, Standard_False};
-          ChFiDS_ElSpine& theElSpine = hguide->ChangeCurve();
+          ChFiDS_ElSpine& theElSpine = *hguide;
           SavedParams[0] = theElSpine.GetSavedFirstParameter();
           SavedParams[1] = theElSpine.GetSavedLastParameter();
           for (Standard_Integer ind = 0; ind < 2; ind++)
@@ -767,7 +767,7 @@ Standard_Boolean Blend_Walking::CorrectExtremityOnOneRst(const Standard_Integer 
 {
   const Standard_Real TolAng = 0.001; //bug OCC25701
   
-  ChFiDS_ElSpine& theElSpine = hguide->ChangeCurve();
+  ChFiDS_ElSpine& theElSpine = *hguide;
   if (theElSpine.NbVertices() == 0)
     return Standard_False;
   
@@ -866,7 +866,7 @@ Standard_Boolean Blend_Walking::CorrectExtremityOnOneRst(const Standard_Integer 
   ////////////////////////////////////////////////////////////////////////
   
   //Project the point <PntOnPlane> on the surface 2
-  Extrema_ExtPS projonsurf(PntOnPlane, AnotherSurf->Surface(),
+  Extrema_ExtPS projonsurf(PntOnPlane, *AnotherSurf,
                            Precision::PConfusion(), Precision::PConfusion(),
                            Extrema_ExtFlag_MIN);
   if (projonsurf.IsDone())

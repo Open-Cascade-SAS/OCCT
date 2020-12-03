@@ -17,16 +17,10 @@
 #ifndef _HLRBRep_SurfaceTool_HeaderFile
 #define _HLRBRep_SurfaceTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Integer.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -37,16 +31,11 @@
 #include <gp_Sphere.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
-class Standard_NoSuchObject;
-class Standard_OutOfRange;
-class Adaptor3d_HSurface;
+
 class gp_Pnt;
 class gp_Vec;
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
-class Adaptor3d_HCurve;
-
-
 
 class HLRBRep_SurfaceTool 
 {
@@ -72,10 +61,10 @@ public:
     static void VIntervals (const Standard_Address S, TColStd_Array1OfReal& T, const GeomAbs_Shape Sh);
   
   //! If <First> >= <Last>
-    static Handle(Adaptor3d_HSurface) UTrim (const Standard_Address S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+    static Handle(Adaptor3d_Surface) UTrim (const Standard_Address S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   
   //! If <First> >= <Last>
-    static Handle(Adaptor3d_HSurface) VTrim (const Standard_Address S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
+    static Handle(Adaptor3d_Surface) VTrim (const Standard_Address S, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   
     static Standard_Boolean IsUClosed (const Standard_Address S);
   
@@ -125,9 +114,9 @@ public:
   
     static gp_Dir Direction (const Standard_Address S);
   
-    static Handle(Adaptor3d_HCurve) BasisCurve (const Standard_Address S);
+    static Handle(Adaptor3d_Curve) BasisCurve (const Standard_Address S);
   
-    static Handle(Adaptor3d_HSurface) BasisSurface (const Standard_Address S);
+    static Handle(Adaptor3d_Surface) BasisSurface (const Standard_Address S);
   
     static Standard_Real OffsetValue (const Standard_Address S);
   

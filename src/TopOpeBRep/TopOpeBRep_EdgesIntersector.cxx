@@ -34,7 +34,6 @@ static void CurveToString(const GeomAbs_CurveType t, TCollection_AsciiString& N)
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
@@ -95,8 +94,8 @@ Standard_EXPORT TOPKRO KRO_DSFILLER_INTEE("intersection edge/edge");
 //=======================================================================
 TopOpeBRep_EdgesIntersector::TopOpeBRep_EdgesIntersector()
 {
-  mySurface1 = new BRepAdaptor_HSurface();
-  mySurface2 = new BRepAdaptor_HSurface();
+  mySurface1 = new BRepAdaptor_Surface();
+  mySurface2 = new BRepAdaptor_Surface();
   mySurfacesSameOriented = Standard_False;
   myFacesSameOriented = Standard_False;
   myTol1 = 0.; // Precision::PConfusion();
@@ -146,11 +145,11 @@ void TopOpeBRep_EdgesIntersector::SetFaces(const TopoDS_Shape& F1,const TopoDS_S
   myFacesSameOriented = Standard_True;
   
   myFace1 = TopoDS::Face(F1);
-  BRepAdaptor_Surface& S1 = mySurface1->ChangeSurface(); S1.Initialize(myFace1,computerestriction);
+  BRepAdaptor_Surface& S1 = *mySurface1; S1.Initialize(myFace1,computerestriction);
   mySurfaceType1 = S1.GetType();
   
   myFace2 = TopoDS::Face(F2);
-  BRepAdaptor_Surface& S2 = mySurface2->ChangeSurface(); S2.Initialize(myFace2,computerestriction);
+  BRepAdaptor_Surface& S2 = *mySurface2; S2.Initialize(myFace2,computerestriction);
   mySurfaceType2 = S2.GetType();
   
   TopoDS_Face face1forward = myFace1;
@@ -887,8 +886,8 @@ const TopoDS_Shape& TopOpeBRep_EdgesIntersector::Face(const Standard_Integer Ind
 //=======================================================================
 const BRepAdaptor_Surface& TopOpeBRep_EdgesIntersector::Surface(const Standard_Integer Index) const 
 {
-  if      ( Index == 1 ) return mySurface1->ChangeSurface();
-  else if ( Index == 2 ) return mySurface2->ChangeSurface();
+  if      ( Index == 1 ) return *mySurface1;
+  else if ( Index == 2 ) return *mySurface2;
   else throw Standard_Failure("TopOpeBRep_EdgesIntersector::Surface");
 }
 

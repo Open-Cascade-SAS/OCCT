@@ -45,8 +45,8 @@ public:
   //! of the points is less than 2.
   Standard_EXPORT static
     Handle(IntPatch_WLine) ComputePurgedWLine(const Handle(IntPatch_WLine)       &theWLine,
-                                              const Handle(Adaptor3d_HSurface) &theS1,
-                                              const Handle(Adaptor3d_HSurface) &theS2,
+                                              const Handle(Adaptor3d_Surface) &theS1,
+                                              const Handle(Adaptor3d_Surface) &theS2,
                                               const Handle(Adaptor3d_TopolTool)  &theDom1,
                                               const Handle(Adaptor3d_TopolTool)  &theDom2);
 
@@ -59,8 +59,8 @@ public:
   //! this point will be deleted.
   Standard_EXPORT static void JoinWLines(IntPatch_SequenceOfLine& theSlin,
                                          IntPatch_SequenceOfPoint& theSPnt,
-                                         Handle(Adaptor3d_HSurface) theS1,
-                                         Handle(Adaptor3d_HSurface) theS2,
+                                         Handle(Adaptor3d_Surface) theS1,
+                                         Handle(Adaptor3d_Surface) theS2,
                                          const Standard_Real theTol3D);
 
   //! Extends every line from theSlin (if it is possible) to be started/finished
@@ -76,8 +76,8 @@ public:
   //! theListOfCriticalPoints must contain 3D-points where joining is disabled.
   Standard_EXPORT static void
             ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
-                            const Handle(Adaptor3d_HSurface)& theS1,
-                            const Handle(Adaptor3d_HSurface)& theS2,
+                            const Handle(Adaptor3d_Surface)& theS1,
+                            const Handle(Adaptor3d_Surface)& theS2,
                             const Standard_Real theToler3D,
                             const Standard_Real* const theArrPeriods,
                             const Bnd_Box2d& theBoxS1,

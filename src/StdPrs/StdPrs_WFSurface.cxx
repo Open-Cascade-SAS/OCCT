@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
@@ -31,7 +31,7 @@
 #include <StdPrs_WFSurface.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 
-static void FindLimits(const Handle(Adaptor3d_HSurface)& surf ,
+static void FindLimits(const Handle(Adaptor3d_Surface)& surf ,
 		       const Standard_Real             aLimit,
 		       Standard_Real&                  UFirst,
 		       Standard_Real&                  ULast,
@@ -130,7 +130,7 @@ static void FindLimits(const Handle(Adaptor3d_HSurface)& surf ,
 //=======================================================================
 
 void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
-			    const Handle(Adaptor3d_HSurface)&   aSurface,
+			    const Handle(Adaptor3d_Surface)&   aSurface,
 			    const Handle(Prs3d_Drawer)&       aDrawer)
 {
   

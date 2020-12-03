@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -29,7 +29,7 @@
 #include <TColStd_Array1OfReal.hxx>
 
 //============================================================
-Standard_Integer IntPatch_HCurve2dTool::NbSamples (const Handle(Adaptor2d_HCurve2d)& C,
+Standard_Integer IntPatch_HCurve2dTool::NbSamples (const Handle(Adaptor2d_Curve2d)& C,
                                                    const Standard_Real U0,
                                                    const Standard_Real U1)
 {

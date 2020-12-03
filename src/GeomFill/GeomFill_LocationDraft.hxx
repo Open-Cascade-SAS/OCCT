@@ -17,9 +17,7 @@
 #ifndef _GeomFill_LocationDraft_HeaderFile
 #define _GeomFill_LocationDraft_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Dir.hxx>
 #include <Standard_Real.hxx>
@@ -31,21 +29,11 @@
 #include <TColgp_Array1OfVec2d.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
+
 class GeomFill_DraftTrihedron;
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
-class Standard_NotImplemented;
-class Standard_OutOfRange;
-class gp_Dir;
-class gp_Mat;
 class GeomFill_LocationLaw;
-class gp_Vec;
-class gp_Pnt;
 
-
-class GeomFill_LocationDraft;
 DEFINE_STANDARD_HANDLE(GeomFill_LocationDraft, GeomFill_LocationLaw)
-
 
 class GeomFill_LocationDraft : public GeomFill_LocationLaw
 {
@@ -55,13 +43,13 @@ public:
   
   Standard_EXPORT GeomFill_LocationDraft(const gp_Dir& Direction, const Standard_Real Angle);
   
-  Standard_EXPORT void SetStopSurf (const Handle(Adaptor3d_HSurface)& Surf);
+  Standard_EXPORT void SetStopSurf (const Handle(Adaptor3d_Surface)& Surf);
   
   Standard_EXPORT void SetAngle (const Standard_Real Angle);
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual const Handle(Adaptor3d_HCurve)& GetCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void SetTrsf (const gp_Mat& Transfo) Standard_OVERRIDE;
   
@@ -173,9 +161,9 @@ private:
 
   gp_Mat Trans;
   Handle(GeomFill_DraftTrihedron) myLaw;
-  Handle(Adaptor3d_HSurface) mySurf;
-  Handle(Adaptor3d_HCurve) myCurve;
-  Handle(Adaptor3d_HCurve) myTrimmed;
+  Handle(Adaptor3d_Surface) mySurf;
+  Handle(Adaptor3d_Curve) myCurve;
+  Handle(Adaptor3d_Curve) myTrimmed;
   gp_Dir myDir;
   Standard_Real myAngle;
   Standard_Integer myNbPts;

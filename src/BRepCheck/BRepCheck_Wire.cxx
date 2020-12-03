@@ -26,7 +26,6 @@
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepCheck.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -36,7 +35,6 @@
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Lin.hxx>
@@ -954,7 +952,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   Standard_Real first1,last1,first2,last2, tolint;
   gp_Pnt2d pfirst1,plast1,pfirst2,plast2;
   gp_Pnt P3d, P3d2;
-  Handle(BRepAdaptor_HSurface) HS;
+  Handle(BRepAdaptor_Surface) HS;
   Geom2dAdaptor_Curve C1, C2;
   Geom2dInt_GInter      Inter;
   IntRes2d_Domain myDomain1;
@@ -964,8 +962,8 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   //-- check with proper tolerances if there is no 
   //-- point in the tolerance of a vertex.
   tolint = 1.e-10; 
-  HS = new BRepAdaptor_HSurface();
-  HS->ChangeSurface().Initialize(F,Standard_False);
+  HS = new BRepAdaptor_Surface();
+  HS->Initialize(F,Standard_False);
   //
   for (TopoDS_Iterator Iter1(myShape);Iter1.More();Iter1.Next()) {
     if (Iter1.Value().ShapeType() == TopAbs_EDGE) {

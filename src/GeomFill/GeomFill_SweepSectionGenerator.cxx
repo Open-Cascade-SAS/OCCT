@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -106,9 +106,9 @@ GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator
 //=======================================================================
 
 GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator
-  (const Handle(Adaptor3d_HCurve)& Path,
-   const Handle(Adaptor3d_HCurve)& Curve1,
-   const Handle(Adaptor3d_HCurve)& Curve2,
+  (const Handle(Adaptor3d_Curve)& Path,
+   const Handle(Adaptor3d_Curve)& Curve1,
+   const Handle(Adaptor3d_Curve)& Curve2,
    const Standard_Real       Radius)
 {
   Init(Path,Curve1,Curve2,Radius);
@@ -245,16 +245,16 @@ void GeomFill_SweepSectionGenerator::Init
 //=======================================================================
 
 void GeomFill_SweepSectionGenerator::Init
-  (const Handle(Adaptor3d_HCurve)& Path,
-   const Handle(Adaptor3d_HCurve)& Curve1,
-   const Handle(Adaptor3d_HCurve)& Curve2,
+  (const Handle(Adaptor3d_Curve)& Path,
+   const Handle(Adaptor3d_Curve)& Curve1,
+   const Handle(Adaptor3d_Curve)& Curve2,
    const Standard_Real       Radius)
 {
   myIsDone = Standard_False;
   myRadius = Radius;
   myType   = 0;
 
-  Handle(Geom_Curve) CC = GeomAdaptor::MakeCurve(Path->Curve());
+  Handle(Geom_Curve) CC = GeomAdaptor::MakeCurve(*Path);
   myPath         = GeomConvert::CurveToBSplineCurve(CC);
   myAdpPath      = Path;
   myAdpFirstSect = Curve1;

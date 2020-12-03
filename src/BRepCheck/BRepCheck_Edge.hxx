@@ -17,18 +17,13 @@
 #ifndef _BRepCheck_Edge_HeaderFile
 #define _BRepCheck_Edge_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRepCheck_Result.hxx>
-#include <Standard_Real.hxx>
 #include <BRepCheck_Status.hxx>
+
 class BRep_CurveRepresentation;
-class Adaptor3d_HCurve;
 class TopoDS_Edge;
 class TopoDS_Shape;
-
 
 class BRepCheck_Edge;
 DEFINE_STANDARD_HANDLE(BRepCheck_Edge, BRepCheck_Result)
@@ -61,30 +56,15 @@ public:
   //! is out of 3D-curve of this edge.
   Standard_EXPORT BRepCheck_Status CheckPolygonOnTriangulation (const TopoDS_Edge& theEdge);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Edge,BRepCheck_Result)
-
-protected:
-
-
-
 
 private:
 
 
   Handle(BRep_CurveRepresentation) myCref;
-  Handle(Adaptor3d_HCurve) myHCurve;
+  Handle(Adaptor3d_Curve) myHCurve;
   Standard_Boolean myGctrl;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepCheck_Edge_HeaderFile

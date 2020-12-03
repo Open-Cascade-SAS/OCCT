@@ -15,7 +15,7 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <Precision.hxx>
@@ -33,7 +33,7 @@
 //=========================================================================
 void VrmlConverter_WFRestrictedFace::Add
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Standard_Boolean              DrawUIso,
    const Standard_Boolean              DrawVIso,
    const Standard_Integer              NBUiso,
@@ -288,7 +288,7 @@ void VrmlConverter_WFRestrictedFace::Add
 //=========================================================================
 void VrmlConverter_WFRestrictedFace::Add
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)&    aFace,
+   const Handle(BRepAdaptor_Surface)&    aFace,
    const Handle (VrmlConverter_Drawer)&       aDrawer){
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();
@@ -312,7 +312,7 @@ void VrmlConverter_WFRestrictedFace::Add
 //=========================================================================
 void VrmlConverter_WFRestrictedFace::AddUIso
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();
@@ -335,7 +335,7 @@ void VrmlConverter_WFRestrictedFace::AddUIso
 //=========================================================================
 void VrmlConverter_WFRestrictedFace::AddVIso
   (Standard_OStream&                   anOStream,
-   const Handle(BRepAdaptor_HSurface)& aFace,
+   const Handle(BRepAdaptor_Surface)& aFace,
    const Handle (VrmlConverter_Drawer)& aDrawer) {
 
   Standard_Integer finu = aDrawer->UIsoAspect()->Number();

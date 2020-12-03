@@ -17,15 +17,15 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFi3d_ChBuilder.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
 #include <ChFiDS_Spine.hxx>
@@ -37,7 +37,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -46,8 +46,8 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomInt_IntSS.hxx>
@@ -120,12 +120,12 @@ static Standard_Boolean CoPlanar(const gp_Pnt  PntA,
 //           it to allow the intersection computation
 //=======================================================================
 
-static Handle(GeomAdaptor_HSurface) BoundSurf(const Handle(Geom_Surface)& S,
+static Handle(GeomAdaptor_Surface) BoundSurf(const Handle(Geom_Surface)& S,
 					      const gp_Pnt2d& Pdeb,
 					      const gp_Pnt2d& Pfin)
 {
-  Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
-  GeomAdaptor_Surface& GAS = HS->ChangeSurface();
+  Handle(GeomAdaptor_Surface) HS = new GeomAdaptor_Surface();
+  GeomAdaptor_Surface& GAS = *HS;
   GAS.Load(S);
 
   Standard_Real uu1,uu2,vv1,vv2;
@@ -174,7 +174,7 @@ static Standard_Boolean ComputeIntersection(TopOpeBRepDS_DataStructure&    DStr,
 
     // take the surface of the pivot SurfData and trim it to allow
     // the intersection computation if it's an analytic surface
-  Handle(GeomAdaptor_HSurface) HS1;
+  Handle(GeomAdaptor_Surface) HS1;
   HS1 = ChFi3d_BoundSurf(DStr,SD,1,2);
 
   const Handle(Geom_Surface)& gpl = DStr.Surface(SDCoin->Surf()).Surface();
@@ -211,7 +211,7 @@ static Standard_Boolean ComputeIntersection(TopOpeBRepDS_DataStructure&    DStr,
   // Trims the chamfer surface to allow the intersection computation
   // and computes a GeomAdaptor_Surface for using the ComputeCurves
   // function
-  Handle(GeomAdaptor_HSurface) HS2;
+  Handle(GeomAdaptor_Surface) HS2;
   HS2 = BoundSurf(gpl,ptcoindeb,cpf2);
   
   // compute the intersection curves and pcurves
@@ -351,12 +351,12 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   // On construit les HSurfaces et autres outils qui vont bien.
   // ----------------------------------------------------------
 
-  Handle(BRepAdaptor_HSurface) Fac = new BRepAdaptor_HSurface(face[pivot]);
-  Handle(GeomAdaptor_HSurface) 
-    bidsurf = new GeomAdaptor_HSurface(Fac->ChangeSurface().Surface());
+  Handle(BRepAdaptor_Surface) Fac = new BRepAdaptor_Surface(face[pivot]);
+  Handle(GeomAdaptor_Surface) 
+    bidsurf = new GeomAdaptor_Surface(Fac->Surface());
   Handle(Adaptor3d_TopolTool)  IFac = new Adaptor3d_TopolTool(bidsurf);
 
-  Handle(GeomAdaptor_HSurface) Surf = ChFi3d_BoundSurf (DStr,fdpiv,jf[pivot][deb],jf[pivot][fin]);
+  Handle(GeomAdaptor_Surface) Surf = ChFi3d_BoundSurf (DStr,fdpiv,jf[pivot][deb],jf[pivot][fin]);
   Handle(Adaptor3d_TopolTool) ISurf = new Adaptor3d_TopolTool(Surf);
  
   // Creation of a new Stripe for the corner
@@ -368,12 +368,12 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 
   // Pour plus de surete, on verifie les intersections des pcurves des chanfreins sur leur
   // face commune
-  Handle(GeomAdaptor_HSurface) HSdeb
-    = new GeomAdaptor_HSurface( GeomAdaptor_Surface(DStr.Surface(fddeb->Surf()).Surface()) );
-  Handle(GeomAdaptor_HSurface) HSfin
-    = new GeomAdaptor_HSurface( GeomAdaptor_Surface(DStr.Surface(fdfin->Surf()).Surface()) );
-  Handle(GeomAdaptor_HSurface) HSpiv
-    = new GeomAdaptor_HSurface( GeomAdaptor_Surface(DStr.Surface(fdpiv->Surf()).Surface()) );
+  Handle(GeomAdaptor_Surface) HSdeb
+    = new GeomAdaptor_Surface( GeomAdaptor_Surface(DStr.Surface(fddeb->Surf()).Surface()) );
+  Handle(GeomAdaptor_Surface) HSfin
+    = new GeomAdaptor_Surface( GeomAdaptor_Surface(DStr.Surface(fdfin->Surf()).Surface()) );
+  Handle(GeomAdaptor_Surface) HSpiv
+    = new GeomAdaptor_Surface( GeomAdaptor_Surface(DStr.Surface(fdpiv->Surf()).Surface()) );
 
   gp_Pnt2d p2d[4];
   gp_Pnt p3d[4], PSom;
@@ -557,12 +557,12 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	else if (nbl == 1) {
 	  ChFi3d_TrimCurve(inter.Line(1),p3d[pivot],p3dface,gcface);
 	  
-	  Handle(GeomAdaptor_HCurve) gac = new GeomAdaptor_HCurve();
-	  gac->ChangeCurve().Load(gcface);
-	  Handle(GeomAdaptor_HSurface) gas = new GeomAdaptor_HSurface;
-	  gas->ChangeSurface().Load(gpl);
-	  Handle(BRepAdaptor_HSurface) gaf = new BRepAdaptor_HSurface;
-	  gaf->ChangeSurface().Initialize(face[pivot]);
+	  Handle(GeomAdaptor_Curve) gac = new GeomAdaptor_Curve();
+	  gac->Load(gcface);
+	  Handle(GeomAdaptor_Surface) gas = new GeomAdaptor_Surface;
+	  gas->Load(gpl);
+	  Handle(BRepAdaptor_Surface) gaf = new BRepAdaptor_Surface;
+	  gaf->Initialize(face[pivot]);
 	  
 	  Standard_Real tolr;
 	  ChFi3d_ProjectPCurv(gac,gaf,facepc1,tolesp,tolr);

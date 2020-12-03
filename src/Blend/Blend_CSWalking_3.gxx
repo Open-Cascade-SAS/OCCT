@@ -75,7 +75,7 @@ Standard_Boolean Blend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
   }
 
   TheArc thearc = Iter->Value();
-  Handle(Adaptor2d_HCurve2d) thecur;
+  Handle(Adaptor2d_Curve2d) thecur;
   if (OnFirst) {
     thecur = TheBlendTool::CurveOnSurf(thearc,surf1);
   }

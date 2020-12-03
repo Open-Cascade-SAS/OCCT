@@ -16,8 +16,8 @@
 
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -36,7 +36,7 @@
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -44,8 +44,8 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
@@ -216,7 +216,7 @@ void BRepCheck_Edge::Minimum()
           {
             GeomAdaptor_Curve GAC3d(C3d, C3d->TransformedParameter(First, L.Transformation()),
                                        C3d->TransformedParameter(Last, L.Transformation()));
-            myHCurve = new GeomAdaptor_HCurve(GAC3d);
+            myHCurve = new GeomAdaptor_Curve(GAC3d);
           }
         }
         else { // curve on surface
@@ -254,11 +254,11 @@ void BRepCheck_Edge::Minimum()
           }
           else
           {
-            Handle(GeomAdaptor_HSurface) GAHSref = new GeomAdaptor_HSurface(Sref);
-            Handle(Geom2dAdaptor_HCurve) GHPCref = 
-              new Geom2dAdaptor_HCurve(PCref,First,Last);
+            Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
+            Handle(Geom2dAdaptor_Curve) GHPCref = 
+              new Geom2dAdaptor_Curve(PCref,First,Last);
             Adaptor3d_CurveOnSurface ACSref(GHPCref,GAHSref);
-            myHCurve = new Adaptor3d_HCurveOnSurface(ACSref);
+            myHCurve = new Adaptor3d_CurveOnSurface(ACSref);
           }
         }
       }
@@ -395,11 +395,10 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
               //	      (Su->Transformed(L.Transformation()));
               (Su->Transformed(/*L*/(Floc * TFloc).Transformation()));
             Handle(Geom2d_Curve) PC = cr->PCurve();
-            Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(Sb);
-            Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve(PC,f,l);
+            Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(Sb);
+            Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(PC,f,l);
             Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
-            Standard_Boolean ok = 
-              Validate(myHCurve->Curve() ,ACS,Tol,SameParameter);
+            Standard_Boolean ok = Validate (*myHCurve, ACS, Tol, SameParameter);
             if (!ok) {
               if (cr->IsCurveOnClosedSurface()) {
                 BRepCheck::Add(lst,BRepCheck_InvalidCurveOnClosedSurface);
@@ -415,9 +414,9 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
               //  Modified by skv - Tue Apr 27 11:53:01 2004 End
             }
             if (cr->IsCurveOnClosedSurface()) {
-              GHPC->ChangeCurve2d().Load(cr->PCurve2(),f,l); // same bounds
+              GHPC->Load(cr->PCurve2(),f,l); // same bounds
               ACS.Load(GHPC, GAHS); // sans doute inutile
-              ok = Validate(myHCurve->Curve(),ACS,Tol,SameParameter);
+              ok = Validate(*myHCurve,ACS,Tol,SameParameter);
               if (!ok) {
                 BRepCheck::Add(lst,BRepCheck_InvalidCurveOnClosedSurface);
                 //  Modified by skv - Tue Apr 27 11:53:20 2004 Begin
@@ -452,30 +451,28 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             P = Handle(Geom_Plane)::
               DownCast(P->Transformed(/*L*/(Floc * TFloc).Transformation()));// eap occ332
             //on projette Cref sur ce plan
-            Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(P);
+            Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(P);
 
-            // Dub - Normalement myHCurve est une GeomAdaptor_HCurve
-            GeomAdaptor_Curve& Gac = 
-              Handle(GeomAdaptor_HCurve)::DownCast(myHCurve)->ChangeCurve();
-            Handle(Geom_Curve) C3d = Gac.Curve();
+            // Dub - Normalement myHCurve est une GeomAdaptor_Curve
+            Handle(GeomAdaptor_Curve) Gac = Handle(GeomAdaptor_Curve)::DownCast(myHCurve);
+            Handle(Geom_Curve) C3d = Gac->Curve();
             Handle(Geom_Curve) ProjOnPlane = 
               GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d,First,Last),
               P, P->Position().Direction(),
               Standard_True);
-            Handle(GeomAdaptor_HCurve) aHCurve = 
-              new GeomAdaptor_HCurve(ProjOnPlane);
+            Handle(GeomAdaptor_Curve) aHCurve = 
+              new GeomAdaptor_Curve(ProjOnPlane);
 
             ProjLib_ProjectedCurve proj(GAHS,aHCurve);
             Handle(Geom2d_Curve) PC = Geom2dAdaptor::MakeCurve(proj);
-            Handle(Geom2dAdaptor_HCurve) GHPC = 
-              new Geom2dAdaptor_HCurve(PC,
+            Handle(Geom2dAdaptor_Curve) GHPC = 
+              new Geom2dAdaptor_Curve(PC,
               myHCurve->FirstParameter(),
               myHCurve->LastParameter());
 
             Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
 
-            Standard_Boolean ok = Validate(myHCurve->Curve(),ACS,
-              Tol,Standard_True); // voir dub...
+            Standard_Boolean ok = Validate (*myHCurve, ACS, Tol,Standard_True); // voir dub...
             if (!ok) {
               BRepCheck::Add(lst,BRepCheck_InvalidCurveOnSurface);
             }
@@ -602,7 +599,7 @@ Standard_Real BRepCheck_Edge::Tolerance()
         theRep(iRep)=theRep(1);
         it=1;
       }
-      theRep(it) = new GeomAdaptor_HCurve(GAC3d);
+      theRep(it) = new GeomAdaptor_Curve(GAC3d);
       iRep++;
     }
     else if (cr->IsCurveOnSurface()) {
@@ -614,11 +611,11 @@ Standard_Real BRepCheck_Edge::Tolerance()
           (Sref->Transformed( Loc.Transformation() ));
         ///////////////////////////////////
         const Handle(Geom2d_Curve)& PCref = cr->PCurve();
-        Handle(GeomAdaptor_HSurface) GAHSref = new GeomAdaptor_HSurface(Sref);
-        Handle(Geom2dAdaptor_HCurve) GHPCref = 
-          new Geom2dAdaptor_HCurve(PCref,First,Last);
+        Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
+        Handle(Geom2dAdaptor_Curve) GHPCref = 
+          new Geom2dAdaptor_Curve(PCref,First,Last);
         Adaptor3d_CurveOnSurface ACSref(GHPCref,GAHSref);
-        theRep(iRep) = new Adaptor3d_HCurveOnSurface(ACSref);
+        theRep(iRep) = new Adaptor3d_CurveOnSurface(ACSref);
         iRep++;
       }
       if (cr->IsCurveOnClosedSurface()) {
@@ -626,11 +623,11 @@ Standard_Real BRepCheck_Edge::Tolerance()
         Sref = Handle(Geom_Surface)::DownCast
           (Sref->Transformed(cr->Location().Transformation()));
         const Handle(Geom2d_Curve)& PCref = cr->PCurve2();
-        Handle(GeomAdaptor_HSurface) GAHSref = new GeomAdaptor_HSurface(Sref);
-        Handle(Geom2dAdaptor_HCurve) GHPCref = 
-          new Geom2dAdaptor_HCurve(PCref,First,Last);
+        Handle(GeomAdaptor_Surface) GAHSref = new GeomAdaptor_Surface(Sref);
+        Handle(Geom2dAdaptor_Curve) GHPCref = 
+          new Geom2dAdaptor_Curve(PCref,First,Last);
         Adaptor3d_CurveOnSurface ACSref(GHPCref,GAHSref);
-        theRep(iRep) = new Adaptor3d_HCurveOnSurface(ACSref);
+        theRep(iRep) = new Adaptor3d_CurveOnSurface(ACSref);
         iRep++;
         nbRep++;
       }
@@ -646,14 +643,14 @@ Standard_Real BRepCheck_Edge::Tolerance()
   for (i= 0; i< NCONTROL; i++) {
     prm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
     tol2=dist2=0.;
-    center=(*(Handle(Adaptor3d_HCurve)*)&theRep(1))->Value(prm);
+    center=(*(Handle(Adaptor3d_Curve)*)&theRep(1))->Value(prm);
     if(Precision::IsInfinite(center.X()) || Precision::IsInfinite(center.Y()) 
        || Precision::IsInfinite(center.Z()))
     {
       return Precision::Infinite();
     }
     for (iRep=2; iRep<=nbRep; iRep++) {
-      othP=(*(Handle(Adaptor3d_HCurve)*)&theRep(iRep))->Value(prm);
+      othP=(*(Handle(Adaptor3d_Curve)*)&theRep(iRep))->Value(prm);
       if(Precision::IsInfinite(othP.X()) || Precision::IsInfinite(othP.Y()) 
         || Precision::IsInfinite(othP.Z()))
       {
@@ -903,7 +900,7 @@ Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
                    const Adaptor3d_CurveOnSurface& aACS)
 {
   Standard_Real aXEmax, aXC, aXS;
-  const Handle(Adaptor3d_HSurface)& aAHS = aACS.GetSurface();
+  const Handle(Adaptor3d_Surface)& aAHS = aACS.GetSurface();
   //
   aXC = BRepCheck::PrecCurve(aAC3D);
   aXS = BRepCheck::PrecSurface(aAHS);

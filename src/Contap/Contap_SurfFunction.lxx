@@ -80,7 +80,7 @@ inline const gp_Dir2d& Contap_SurfFunction::Direction2d()
   return d2d;
 }
 
-inline const Handle(Adaptor3d_HSurface)& Contap_SurfFunction::Surface() const
+inline const Handle(Adaptor3d_Surface)& Contap_SurfFunction::Surface() const
 {
   return mySurf;
 }

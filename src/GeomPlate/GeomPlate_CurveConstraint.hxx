@@ -17,24 +17,15 @@
 #ifndef _GeomPlate_CurveConstraint_HeaderFile
 #define _GeomPlate_CurveConstraint_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <GeomLProp_SLProps.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Transient.hxx>
-class Adaptor3d_HCurveOnSurface;
-class Adaptor3d_HCurve;
+
 class Geom2d_Curve;
-class Adaptor2d_HCurve2d;
 class Law_Function;
 class Standard_ConstructionError;
 class GeomLProp_SLProps;
 class gp_Pnt;
 class gp_Vec;
-
 
 class GeomPlate_CurveConstraint;
 DEFINE_STANDARD_HANDLE(GeomPlate_CurveConstraint, Standard_Transient)
@@ -60,7 +51,7 @@ public:
   //! TolCurv is the maximum error to satisfy for G2 constraints
   //! These errors can be replaced by laws of criterion.
   //! Raises    ConstructionError if Order is not -1 , 0,  1,  2
-  Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_HCurve)& Boundary, const Standard_Integer Order, const Standard_Integer NPt = 10, const Standard_Real TolDist = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1);
+  Standard_EXPORT GeomPlate_CurveConstraint(const Handle(Adaptor3d_Curve)& Boundary, const Standard_Integer Order, const Standard_Integer NPt = 10, const Standard_Real TolDist = 0.0001, const Standard_Real TolAng = 0.01, const Standard_Real TolCurv = 0.1);
   
   //! Allows you to set the order of continuity required for
   //! the constraints: G0, G1, and G2, controlled
@@ -132,7 +123,7 @@ public:
   
   Standard_EXPORT void D2 (const Standard_Real U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3, gp_Vec& V4, gp_Vec& V5) const;
   
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Curve3d() const;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Curve3d() const;
   
   //! loads a 2d curve associated the surface resulting of the constraints
   Standard_EXPORT void SetCurve2dOnSurf (const Handle(Geom2d_Curve)& Curve2d);
@@ -142,11 +133,11 @@ public:
   
   //! loads a 2d curve  resulting from the normal projection of
   //! the curve on the initial surface
-  Standard_EXPORT void SetProjectedCurve (const Handle(Adaptor2d_HCurve2d)& Curve2d, const Standard_Real TolU, const Standard_Real TolV);
+  Standard_EXPORT void SetProjectedCurve (const Handle(Adaptor2d_Curve2d)& Curve2d, const Standard_Real TolU, const Standard_Real TolV);
   
   //! Returns the projected curve resulting from the normal projection of the
   //! curve on the initial surface
-  Standard_EXPORT Handle(Adaptor2d_HCurve2d) ProjectedCurve() const;
+  Standard_EXPORT Handle(Adaptor2d_Curve2d) ProjectedCurve() const;
 
 
 
@@ -156,13 +147,13 @@ public:
 protected:
 
 
-  Handle(Adaptor3d_HCurveOnSurface) myFrontiere;
+  Handle(Adaptor3d_CurveOnSurface) myFrontiere;
   Standard_Integer myNbPoints;
   Standard_Integer myOrder;
-  Handle(Adaptor3d_HCurve) my3dCurve;
+  Handle(Adaptor3d_Curve) my3dCurve;
   Standard_Integer myTang;
   Handle(Geom2d_Curve) my2dCurve;
-  Handle(Adaptor2d_HCurve2d) myHCurve2d;
+  Handle(Adaptor2d_Curve2d) myHCurve2d;
   Handle(Law_Function) myG0Crit;
   Handle(Law_Function) myG1Crit;
   Handle(Law_Function) myG2Crit;
@@ -176,18 +167,6 @@ protected:
   Standard_Real myTolU;
   Standard_Real myTolV;
 
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _GeomPlate_CurveConstraint_HeaderFile

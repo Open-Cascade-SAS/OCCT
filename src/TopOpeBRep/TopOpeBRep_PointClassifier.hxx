@@ -17,19 +17,13 @@
 #ifndef _TopOpeBRep_PointClassifier_HeaderFile
 #define _TopOpeBRep_PointClassifier_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
 #include <TopOpeBRep_DataMapOfTopolTool.hxx>
 #include <TopAbs_State.hxx>
-#include <Standard_Real.hxx>
+
 class BRepTopAdaptor_TopolTool;
-class BRepAdaptor_HSurface;
 class TopoDS_Face;
 class gp_Pnt2d;
-
-
 
 class TopOpeBRep_PointClassifier 
 {
@@ -63,7 +57,7 @@ private:
 
 
   Handle(BRepTopAdaptor_TopolTool) myTopolTool;
-  Handle(BRepAdaptor_HSurface) myHSurface;
+  Handle(BRepAdaptor_Surface) myHSurface;
   TopOpeBRep_DataMapOfTopolTool myTopolToolMap;
   TopAbs_State myState;
 

@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <LocOpe_FindEdgesInFace.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ElCLib.hxx>
@@ -29,7 +29,6 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <LocOpe_FindEdgesInFace.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NoMoreObject.hxx>
@@ -77,7 +76,7 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh,
     return; // pour le moment
   }
 
-  Handle(BRepAdaptor_HSurface) HS = new BRepAdaptor_HSurface(myFace);
+  Handle(BRepAdaptor_Surface) HS = new BRepAdaptor_Surface(myFace);
   BRepTopAdaptor_TopolTool TPT(HS);
 
   for (exp.Init(myShape,TopAbs_EDGE); exp.More(); exp.Next()) {

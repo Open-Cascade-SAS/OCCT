@@ -26,7 +26,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
 #include <BRepApprox_Approx.hxx>
 #include <BRepApprox_ApproxLine.hxx>
 #include <BRepExtrema_ExtPC.hxx>
@@ -86,7 +85,7 @@ void  HLRTopoBRep_DSFiller::Insert (const TopoDS_Shape& S,
       TopoDS_Face S1 = TopoDS::Face(ex.Current());
       S1.Orientation(TopAbs_FORWARD);
       Handle(BRepTopAdaptor_TopolTool) Domain; 
-      Handle(Adaptor3d_HSurface)         Surface;
+      Handle(Adaptor3d_Surface)         Surface;
       if(MST.IsBound(S1)) {  
 	BRepTopAdaptor_Tool& BRT = MST.ChangeFind(S1);
 	Domain  = BRT.GetTopolTool();
@@ -152,7 +151,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
     if (Line.TypeContour() == Contap_Restriction)
     {
       // OutLine on restriction
-      TopoDS_Edge E = (*(BRepAdaptor_Curve2d*)&(Line.Arc()->Curve2d())).Edge();
+      TopoDS_Edge E = (*(BRepAdaptor_Curve2d*)(Line.Arc().get())).Edge();
       OutL.Append(E);
       TopExp::Vertices(E,VF,VL);
       // insert the Internal points.
@@ -510,8 +509,7 @@ HLRTopoBRep_DSFiller::MakeVertex (const Contap_Point& P,
   else {
     // if on arc, insert in the DS
     if (P.IsOnArc()) {
-      const TopoDS_Edge& E = 
-	(*(BRepAdaptor_Curve2d*)&((P.Arc())->Curve2d())).Edge();
+      const TopoDS_Edge& E = (*(BRepAdaptor_Curve2d*)(P.Arc().get())).Edge();
       Standard_Real Par = P.ParameterOnArc();
       const gp_Pnt& P3d = P.Value();
 

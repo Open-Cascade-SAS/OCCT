@@ -12,10 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HVertex.hxx>
 #include <BRepBlend_Extremity.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_HVertex.hxx>
 #include <BRepBlend_PointOnRst.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -122,7 +122,7 @@ void BRepBlend_Extremity::SetVertex (const Handle(Adaptor3d_HVertex)& V)
   vtx   = V;
 }
 
-void BRepBlend_Extremity::AddArc (const Handle(Adaptor2d_HCurve2d)& A,
+void BRepBlend_Extremity::AddArc (const Handle(Adaptor2d_Curve2d)& A,
 			      const Standard_Real Param,
 			      const IntSurf_Transition& TLine,
 			      const IntSurf_Transition& TArc)

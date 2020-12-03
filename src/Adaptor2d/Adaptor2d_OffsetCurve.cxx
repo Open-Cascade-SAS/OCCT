@@ -11,9 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor2d_HOffsetCurve.hxx>
 #include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -36,6 +33,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_TypeMismatch.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_OffsetCurve, Adaptor2d_Curve2d)
+
 //=======================================================================
 //function : Adaptor2d_OffsetCurve
 //purpose  : 
@@ -52,7 +51,7 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve()
 //purpose  : 
 //=======================================================================
 
-Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& theCurve)
+Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& theCurve)
 : myCurve (theCurve),
   myOffset(0.0),
   myFirst (0.0),
@@ -66,7 +65,7 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(const Handle(Adaptor2d_HCurve2d)& t
 //=======================================================================
 
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve
-  (const Handle(Adaptor2d_HCurve2d)& theCurve, const Standard_Real theOffset)
+  (const Handle(Adaptor2d_Curve2d)& theCurve, const Standard_Real theOffset)
 : myCurve (theCurve),
   myOffset(theOffset),
   myFirst (theCurve->FirstParameter()),
@@ -80,7 +79,7 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve
 //=======================================================================
 
 Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(
-                              const Handle(Adaptor2d_HCurve2d)& theCurve,
+                              const Handle(Adaptor2d_Curve2d)& theCurve,
                               const Standard_Real theOffset,
                               const Standard_Real theWFirst,
                               const Standard_Real theWLast )
@@ -96,7 +95,7 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(
 //purpose  : 
 //=======================================================================
 
-void Adaptor2d_OffsetCurve::Load(const Handle(Adaptor2d_HCurve2d)& C ) 
+void Adaptor2d_OffsetCurve::Load(const Handle(Adaptor2d_Curve2d)& C ) 
 {
   myCurve = C;
   myOffset = 0.;
@@ -226,13 +225,13 @@ void Adaptor2d_OffsetCurve::Intervals(TColStd_Array1OfReal& TI,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor2d_HCurve2d) Adaptor2d_OffsetCurve::Trim
+Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::Trim
 (const Standard_Real First, 
  const Standard_Real Last,
  const Standard_Real) const 
 {
-  Handle(Adaptor2d_HOffsetCurve) HO = new Adaptor2d_HOffsetCurve(*this);
-  HO->ChangeCurve2d().Load(myOffset,First,Last);
+  Handle(Adaptor2d_OffsetCurve) HO = new Adaptor2d_OffsetCurve(*this);
+  HO->Load(myOffset,First,Last);
   return HO;
 }
 
@@ -610,7 +609,7 @@ Handle(Geom2d_BSplineCurve) Adaptor2d_OffsetCurve::BSpline() const
   return myCurve->BSpline();
 }
 
-static Standard_Integer nbPoints(const Handle(Adaptor2d_HCurve2d)& theCurve)
+static Standard_Integer nbPoints(const Handle(Adaptor2d_Curve2d)& theCurve)
 {
 
   Standard_Integer nbs = 20;

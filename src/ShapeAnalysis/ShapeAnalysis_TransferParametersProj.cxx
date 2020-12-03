@@ -30,11 +30,11 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
@@ -103,9 +103,9 @@ void ShapeAnalysis_TransferParametersProj::Init(const TopoDS_Edge& E,
   ShapeAnalysis_Edge sae;
   if(sae.PCurve (E, F, myCurve2d, f2d, l2d, Standard_False)) {
       
-    Handle(Geom2dAdaptor_HCurve) AC2d  = new Geom2dAdaptor_HCurve(myCurve2d,f2d,l2d);
+    Handle(Geom2dAdaptor_Curve) AC2d  = new Geom2dAdaptor_Curve(myCurve2d,f2d,l2d);
     Handle(Geom_Surface) aSurface = BRep_Tool::Surface(F,myLocation);
-    Handle(GeomAdaptor_HSurface) AdS = new GeomAdaptor_HSurface(aSurface);
+    Handle(GeomAdaptor_Surface) AdS = new GeomAdaptor_Surface(aSurface);
     
     Adaptor3d_CurveOnSurface Ad1(AC2d,AdS);
     myAC3d = Ad1;//new Adaptor3d_CurveOnSurface(AC2d,AdS);
@@ -190,8 +190,8 @@ Standard_Real ShapeAnalysis_TransferParametersProj::PreformSegment(const Standar
   Standard_Real ppar;
   if(To2d) {
     gp_Pnt p1 = myCurve->Value(Param).Transformed(myLocation.Inverted());
-    Handle(Adaptor3d_HSurface) AdS = myAC3d.GetSurface();
-    Handle(Geom2dAdaptor_HCurve) AC2d  = new Geom2dAdaptor_HCurve(myCurve2d,First,Last);
+    Handle(Adaptor3d_Surface) AdS = myAC3d.GetSurface();
+    Handle(Geom2dAdaptor_Curve) AC2d  = new Geom2dAdaptor_Curve(myCurve2d,First,Last);
     Adaptor3d_CurveOnSurface Ad1(AC2d,AdS);
     projDev = sac.Project(Ad1,p1,myPrecision,pproj,ppar);//pdn
     linDev = p1.Distance(Ad1.Value(linPar));
@@ -407,8 +407,8 @@ void ShapeAnalysis_TransferParametersProj::TransferRange(TopoDS_Edge& newEdge,
       Standard_Real first = toGC->First();
       Standard_Real last  = toGC->Last();
       Standard_Real len = last -first;
-      Handle(Geom2dAdaptor_HCurve) AC2d  = new Geom2dAdaptor_HCurve(toGC->PCurve(),first,last);
-      Handle(GeomAdaptor_HSurface) AdS = new GeomAdaptor_HSurface( toGC->Surface());
+      Handle(Geom2dAdaptor_Curve) AC2d  = new Geom2dAdaptor_Curve(toGC->PCurve(),first,last);
+      Handle(GeomAdaptor_Surface) AdS = new GeomAdaptor_Surface( toGC->Surface());
       Adaptor3d_CurveOnSurface Ad1(AC2d,AdS);
       ShapeAnalysis_Curve sac1;
       

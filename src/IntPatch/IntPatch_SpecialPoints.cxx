@@ -15,7 +15,7 @@
 
 #include <IntPatch_SpecialPoints.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
@@ -34,8 +34,8 @@
 class FuncPreciseSeam: public math_FunctionSetWithDerivatives
 {
 public:
-  FuncPreciseSeam(const Handle(Adaptor3d_HSurface)& theQSurf, // quadric
-                  const Handle(Adaptor3d_HSurface)& thePSurf, // another surface
+  FuncPreciseSeam(const Handle(Adaptor3d_Surface)& theQSurf, // quadric
+                  const Handle(Adaptor3d_Surface)& thePSurf, // another surface
                   const Standard_Boolean isTheUSeam,
                   const Standard_Real theIsoParameter): 
         myQSurf(theQSurf),
@@ -131,8 +131,8 @@ protected:
   FuncPreciseSeam operator=(FuncPreciseSeam&);
 
 private:
-  const Handle(Adaptor3d_HSurface)& myQSurf;
-  const Handle(Adaptor3d_HSurface)& myPSurf;
+  const Handle(Adaptor3d_Surface)& myQSurf;
+  const Handle(Adaptor3d_Surface)& myPSurf;
 
   //! 1 for U-coordinate, 0 - for V one. 
   const Standard_Integer mySeamCoordInd;
@@ -164,7 +164,7 @@ static inline void GetTangent(const Standard_Real theConeSemiAngle,
 //            Returns the foot of projection (theProjPt) and its parameters
 //           on theSurf.
 //=======================================================================
-static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_HSurface)& theSurf,
+static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_Surface)& theSurf,
                                          const gp_Pnt& thePt,
                                          const Standard_Real theTol,
                                          gp_Pnt& theProjPt,
@@ -183,7 +183,7 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_HSurface)& theSu
   case GeomAbs_SurfaceOfExtrusion:
   case GeomAbs_SurfaceOfRevolution:
     {
-      Extrema_ExtPS anExtr(thePt, theSurf->Surface(), theSurf->UResolution(theTol),
+      Extrema_ExtPS anExtr(thePt, *theSurf, theSurf->UResolution(theTol),
                               theSurf->VResolution(theTol), Extrema_ExtFlag_MIN);
       if(!anExtr.IsDone() || (anExtr.NbExt() < 1))
       {
@@ -218,7 +218,7 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_HSurface)& theSu
     break;
   default:
     {
-      Extrema_GenLocateExtPS anExtr(theSurf->Surface());
+      Extrema_GenLocateExtPS anExtr (*theSurf);
       anExtr.Perform(thePt, theUpar, theVpar);
       if(!anExtr.IsDone() || (anExtr.SquareDistance() > theTol*theTol))
       {
@@ -243,8 +243,8 @@ static Standard_Boolean IsPointOnSurface(const Handle(Adaptor3d_HSurface)& theSu
 //            thePSurf is another surface to intersect.
 //=======================================================================
 Standard_Boolean IntPatch_SpecialPoints::
-                      AddCrossUVIsoPoint(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                         const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddCrossUVIsoPoint(const Handle(Adaptor3d_Surface)& theQSurf,
+                                         const Handle(Adaptor3d_Surface)& thePSurf,
                                          const IntSurf_PntOn2S& theRefPt,
                                          const Standard_Real theTol,
                                          IntSurf_PntOn2S& theAddedPoint,
@@ -268,7 +268,7 @@ Standard_Boolean IntPatch_SpecialPoints::
 
   theQSurf->D0(aUquad, aVquad, aPQuad);
 
-  Extrema_GenLocateExtPS anExtr(thePSurf->Surface());
+  Extrema_GenLocateExtPS anExtr (*thePSurf);
   anExtr.Perform(aPQuad, aU0, aV0);
 
   if(!anExtr.IsDone())
@@ -300,8 +300,8 @@ Standard_Boolean IntPatch_SpecialPoints::
 //            thePSurf is another surface to intersect.
 //=======================================================================
 Standard_Boolean IntPatch_SpecialPoints::
-                      AddPointOnUorVIso(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                        const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddPointOnUorVIso(const Handle(Adaptor3d_Surface)& theQSurf,
+                                        const Handle(Adaptor3d_Surface)& thePSurf,
                                         const IntSurf_PntOn2S& theRefPt,
                                         const Standard_Boolean theIsU,
                                         const Standard_Real theIsoParameter,
@@ -780,8 +780,8 @@ Standard_Integer IntPatch_SpecialPoints::GetTangentToIntLineForCone(const Standa
 //           Returns TRUE, if the pole is an intersection point.
 //=======================================================================
 Standard_Boolean IntPatch_SpecialPoints::
-                      AddSingularPole(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                      const Handle(Adaptor3d_HSurface)& thePSurf,
+                      AddSingularPole(const Handle(Adaptor3d_Surface)& theQSurf,
+                                      const Handle(Adaptor3d_Surface)& thePSurf,
                                       const IntSurf_PntOn2S& thePtIso,
                                       IntPatch_Point& theVertex,
                                       IntSurf_PntOn2S& theAddedPoint,
@@ -951,8 +951,8 @@ to the inters. curve. In this case @U_{q}@ must be recomputed.
 */
 //=======================================================================
 Standard_Boolean IntPatch_SpecialPoints::
-                  ContinueAfterSpecialPoint(const Handle(Adaptor3d_HSurface)& theQSurf,
-                                            const Handle(Adaptor3d_HSurface)& thePSurf,
+                  ContinueAfterSpecialPoint(const Handle(Adaptor3d_Surface)& theQSurf,
+                                            const Handle(Adaptor3d_Surface)& thePSurf,
                                             const IntSurf_PntOn2S& theRefPt,
                                             const IntPatch_SpecPntType theSPType,
                                             const Standard_Real theTol2D,

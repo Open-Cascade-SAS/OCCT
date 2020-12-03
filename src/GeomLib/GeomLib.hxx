@@ -17,25 +17,18 @@
 #ifndef _GeomLib_HeaderFile
 #define _GeomLib_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+
 class Geom_Curve;
 class gp_Ax2;
 class Geom2d_Curve;
 class gp_GTrsf2d;
 class Adaptor3d_CurveOnSurface;
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HSurface;
 class Geom_BoundedCurve;
 class gp_Pnt;
 class gp_Vec;
@@ -56,6 +49,7 @@ class GeomLib_Tool;
 class GeomLib_PolyFunc;
 class GeomLib_LogSample;
 
+typedef class Adaptor2d_Curve2d Adaptor2d_Curve2d;
 
 //! Geom    Library.    This   package   provides   an
 //! implementation of  functions for basic computation
@@ -232,7 +226,7 @@ public:
   //! @param theParam     Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 2d curve is a line and Standard_False otherwise.
-  Standard_EXPORT static Standard_Boolean isIsoLine (const Handle(Adaptor2d_HCurve2d) theC2D,
+  Standard_EXPORT static Standard_Boolean isIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
                                                      Standard_Boolean&                theIsU,
                                                      Standard_Real&                   theParam,
                                                      Standard_Boolean&                theIsForward);
@@ -244,8 +238,8 @@ public:
   //! @param theParam Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 3d curve is built and Standard_False otherwise.
-  Standard_EXPORT static Handle(Geom_Curve) buildC3dOnIsoLine (const Handle(Adaptor2d_HCurve2d) theC2D,
-                                                               const Handle(Adaptor3d_HSurface) theSurf,
+  Standard_EXPORT static Handle(Geom_Curve) buildC3dOnIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
+                                                               const Handle(Adaptor3d_Surface) theSurf,
                                                                const Standard_Real              theFirst,
                                                                const Standard_Real              theLast,
                                                                const Standard_Real              theTolerance,

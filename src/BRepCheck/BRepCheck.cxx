@@ -24,7 +24,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Elips.hxx>
@@ -99,7 +99,7 @@ Standard_Real BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
 //function : PrecSurface
 //purpose  : 
 //=======================================================================
-Standard_Real BRepCheck::PrecSurface(const Handle(Adaptor3d_HSurface)& aAHSurf)
+Standard_Real BRepCheck::PrecSurface(const Handle(Adaptor3d_Surface)& aAHSurf)
 {
   Standard_Real aXEmax = RealEpsilon(); 
   //

@@ -17,22 +17,16 @@
 #ifndef _Adaptor3d_TopolTool_HeaderFile
 #define _Adaptor3d_TopolTool_HeaderFile
 
+#include <Adaptor2d_Line2d.hxx>
+#include <Adaptor3d_HVertex.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <Adaptor3d_HVertex.hxx>
 
-class Adaptor2d_HLine2d;
 class Adaptor3d_HVertex;
-class Adaptor3d_HSurface;
-class Standard_DomainError;
-class Adaptor2d_HCurve2d;
-class gp_Pnt2d;
-class gp_Pnt;
 
-
-class Adaptor3d_TopolTool;
 DEFINE_STANDARD_HANDLE(Adaptor3d_TopolTool, Standard_Transient)
 
 //! This class provides a default topological tool,
@@ -50,19 +44,19 @@ public:
   
   Standard_EXPORT Adaptor3d_TopolTool();
   
-  Standard_EXPORT Adaptor3d_TopolTool(const Handle(Adaptor3d_HSurface)& Surface);
+  Standard_EXPORT Adaptor3d_TopolTool(const Handle(Adaptor3d_Surface)& Surface);
   
   Standard_EXPORT virtual void Initialize();
   
-  Standard_EXPORT virtual void Initialize (const Handle(Adaptor3d_HSurface)& S);
+  Standard_EXPORT virtual void Initialize (const Handle(Adaptor3d_Surface)& S);
   
-  Standard_EXPORT virtual void Initialize (const Handle(Adaptor2d_HCurve2d)& Curve);
+  Standard_EXPORT virtual void Initialize (const Handle(Adaptor2d_Curve2d)& Curve);
   
   Standard_EXPORT virtual void Init();
   
   Standard_EXPORT virtual Standard_Boolean More();
   
-  Standard_EXPORT virtual Handle(Adaptor2d_HCurve2d) Value();
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) Value();
   
   Standard_EXPORT virtual void Next();
   
@@ -83,7 +77,7 @@ public:
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT virtual TopAbs_Orientation Orientation (const Handle(Adaptor2d_HCurve2d)& C);
+  Standard_EXPORT virtual TopAbs_Orientation Orientation (const Handle(Adaptor2d_Curve2d)& C);
   
   //! Returns the orientation of the vertex V.
   //! The vertex has been found with an exploration on
@@ -101,7 +95,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Has3d() const;
   
   //! returns 3d tolerance of the arc C
-  Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor2d_HCurve2d)& C) const;
+  Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor2d_Curve2d)& C) const;
   
   //! returns 3d tolerance of the vertex V
   Standard_EXPORT virtual Standard_Real Tol3d (const Handle(Adaptor3d_HVertex)& V) const;
@@ -159,7 +153,7 @@ public:
 protected:
 
 
-  Handle(Adaptor3d_HSurface) myS;
+  Handle(Adaptor3d_Surface) myS;
   Standard_Integer myNbSamplesU;
   Standard_Integer myNbSamplesV;
   Handle(TColStd_HArray1OfReal) myUPars;
@@ -175,7 +169,7 @@ private:
   Standard_Real Usup;
   Standard_Real Vinf;
   Standard_Real Vsup;
-  Handle(Adaptor2d_HLine2d) myRestr[4];
+  Handle(Adaptor2d_Line2d) myRestr[4];
   Standard_Integer nbVtx;
   Standard_Integer idVtx;
   Handle(Adaptor3d_HVertex) myVtx[2];

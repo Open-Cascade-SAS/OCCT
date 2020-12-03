@@ -41,10 +41,8 @@ class TopoDS_Face;
 //! Geom2dAdaptor.
 class BRepAdaptor_Curve2d  : public Geom2dAdaptor_Curve
 {
+  DEFINE_STANDARD_RTTIEXT(BRepAdaptor_Curve2d, Geom2dAdaptor_Curve)
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   //! Creates an uninitialized curve2d.
   Standard_EXPORT BRepAdaptor_Curve2d();
@@ -61,29 +59,13 @@ public:
   //! Returns the Face.
   Standard_EXPORT const TopoDS_Face& Face() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TopoDS_Edge myEdge;
   TopoDS_Face myFace;
 
-
 };
 
-
-
-
-
-
+DEFINE_STANDARD_HANDLE(BRepAdaptor_Curve2d, Geom2dAdaptor_Curve)
 
 #endif // _BRepAdaptor_Curve2d_HeaderFile

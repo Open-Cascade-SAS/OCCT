@@ -14,15 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomFill_FunctionGuide.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomFill_FunctionGuide.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_SectionLaw.hxx>
 #include <GeomTools.hxx>
 #include <gp_Ax1.hxx>
@@ -50,7 +50,7 @@
 //==============================================
 GeomFill_FunctionGuide::GeomFill_FunctionGuide
      (const Handle(GeomFill_SectionLaw)& S, 
-      const Handle(Adaptor3d_HCurve)& C,
+      const Handle(Adaptor3d_Curve)& C,
       const Standard_Real Param)
 : TheGuide(C),
   TheLaw(S),

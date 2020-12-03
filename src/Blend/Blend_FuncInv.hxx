@@ -27,8 +27,6 @@
 #include <math_Vector.hxx>
 #include <Standard_Real.hxx>
 class math_Matrix;
-class Adaptor2d_HCurve2d;
-
 
 //! Deferred class for a function used to compute a blending
 //! surface between two surfaces, using a guide line.
@@ -75,7 +73,7 @@ public:
   //! to be found. If <OnFirst> is set to Standard_True,
   //! the curve will be on the first surface, otherwise the
   //! curve is on the second one.
-  Standard_EXPORT virtual void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& COnSurf) = 0;
+  Standard_EXPORT virtual void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& COnSurf) = 0;
   
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 4 variables;

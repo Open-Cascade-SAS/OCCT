@@ -61,8 +61,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 #include <stdio.h>
 static Standard_Integer tolerance
@@ -269,8 +269,8 @@ static Standard_Integer projpcurve
   }
 
   Adaptor3d_CurveOnSurface aCOnS =
-    Adaptor3d_CurveOnSurface(new BRepAdaptor_HCurve2d(BRepAdaptor_Curve2d(aEdge, aFace)),
-    new BRepAdaptor_HSurface(BRepAdaptor_Surface(aFace, Standard_False)));
+    Adaptor3d_CurveOnSurface(new BRepAdaptor_Curve2d(BRepAdaptor_Curve2d(aEdge, aFace)),
+    new BRepAdaptor_Surface(BRepAdaptor_Surface(aFace, Standard_False)));
 
   gp_Pnt aPnt;
   Standard_Real aParam;

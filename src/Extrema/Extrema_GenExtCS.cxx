@@ -17,9 +17,9 @@
 
 #include <Extrema_GenExtCS.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_GlobOptFuncConicS.hxx>
@@ -90,15 +90,15 @@ static void GetSurfMaxParamVals (const Adaptor3d_Surface& theS,
 
   if (theS.GetType() == GeomAbs_SurfaceOfExtrusion)
   {
-    theUmax = GetCurvMaxParamVal (theS.BasisCurve()->Curve());
+    theUmax = GetCurvMaxParamVal (*theS.BasisCurve());
   }
   else if (theS.GetType() == GeomAbs_SurfaceOfRevolution)
   {
-    theVmax = GetCurvMaxParamVal (theS.BasisCurve()->Curve());
+    theVmax = GetCurvMaxParamVal (*theS.BasisCurve());
   }
   else if (theS.GetType() == GeomAbs_OffsetSurface)
   {
-    GetSurfMaxParamVals (theS.BasisSurface()->Surface(), theUmax, theVmax);
+    GetSurfMaxParamVals (*theS.BasisSurface(), theUmax, theVmax);
   }
 }
 

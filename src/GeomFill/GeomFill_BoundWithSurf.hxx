@@ -67,12 +67,12 @@ public:
   //! Handle(Geom_Surface) mySurface = ... ;
   //! Handle(Geom2d_Curve) myParamCurve = ... ;
   //! // where myParamCurve is a 2D curve in the parametric space of the surface mySurface
-  //! Handle(GeomAdaptor_HSurface)
+  //! Handle(GeomAdaptor_Surface)
   //! Surface = new
-  //! GeomAdaptor_HSurface(mySurface);
-  //! Handle(Geom2dAdaptor_HCurve)
+  //! GeomAdaptor_Surface(mySurface);
+  //! Handle(Geom2dAdaptor_Curve)
   //! ParamCurve = new
-  //! Geom2dAdaptor_HCurve(myParamCurve);
+  //! Geom2dAdaptor_Curve(myParamCurve);
   //! CurveOnSurf = Adaptor3d_CurveOnSurface(ParamCurve,Surface);
   //! The boundary is then constructed with the CurveOnSurf object:
   //! Standard_Real Tol = ... ;

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <LProp3d_SurfaceTool.hxx>
@@ -24,7 +24,7 @@
 //function : Value
 //purpose  : 
 //=======================================================================
-void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_HSurface)& S, 
+void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_Surface)& S, 
                                 const Standard_Real U, 
                                 const Standard_Real V, 
                                 gp_Pnt& P)
@@ -38,7 +38,7 @@ void LProp3d_SurfaceTool::Value(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-void LProp3d_SurfaceTool::D1(const Handle(Adaptor3d_HSurface)& S, 
+void LProp3d_SurfaceTool::D1(const Handle(Adaptor3d_Surface)& S, 
                              const Standard_Real U, 
                              const Standard_Real V, 
                              gp_Pnt& P, 
@@ -54,7 +54,7 @@ void LProp3d_SurfaceTool::D1(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-void LProp3d_SurfaceTool::D2(const Handle(Adaptor3d_HSurface)& S, 
+void LProp3d_SurfaceTool::D2(const Handle(Adaptor3d_Surface)& S, 
                              const Standard_Real U, 
                              const Standard_Real V, 
                              gp_Pnt& P, 
@@ -71,7 +71,7 @@ void LProp3d_SurfaceTool::D2(const Handle(Adaptor3d_HSurface)& S,
 //function : DN
 //purpose  : 
 //=======================================================================
-gp_Vec LProp3d_SurfaceTool::DN(const Handle(Adaptor3d_HSurface)& S, 
+gp_Vec LProp3d_SurfaceTool::DN(const Handle(Adaptor3d_Surface)& S, 
                                const Standard_Real U, 
                                const Standard_Real V,
                                const Standard_Integer IU,
@@ -87,7 +87,7 @@ gp_Vec LProp3d_SurfaceTool::DN(const Handle(Adaptor3d_HSurface)& S,
 //=======================================================================
 
 Standard_Integer LProp3d_SurfaceTool::Continuity
-  (const Handle(Adaptor3d_HSurface)& S)
+  (const Handle(Adaptor3d_Surface)& S)
 {
   GeomAbs_Shape s = (GeomAbs_Shape) Min(S->UContinuity(),S->VContinuity());
   switch (s) {
@@ -115,7 +115,7 @@ Standard_Integer LProp3d_SurfaceTool::Continuity
 //purpose  : 
 //=======================================================================
 
-void LProp3d_SurfaceTool::Bounds(const Handle(Adaptor3d_HSurface)& S, 
+void LProp3d_SurfaceTool::Bounds(const Handle(Adaptor3d_Surface)& S, 
                                  Standard_Real& U1, 
                                  Standard_Real& V1, 
                                  Standard_Real& U2, 

@@ -52,7 +52,7 @@ void BRepMesh_DefaultRangeSplitter::AddPoint(const gp_Pnt2d& thePoint)
 //=======================================================================
 void BRepMesh_DefaultRangeSplitter::AdjustRange()
 {
-  const Handle(BRepAdaptor_HSurface)& aSurface = GetSurface();
+  const Handle(BRepAdaptor_Surface)& aSurface = GetSurface();
   updateRange(aSurface->FirstUParameter(), aSurface->LastUParameter(),
               aSurface->IsUPeriodic(), myRangeU.first, myRangeU.second);
 
@@ -165,7 +165,7 @@ Standard_Real BRepMesh_DefaultRangeSplitter::computeLengthU()
   Standard_Real dfucur;
   Standard_Integer i1;
 
-  const Handle(BRepAdaptor_HSurface)& gFace = GetSurface();
+  const Handle(BRepAdaptor_Surface)& gFace = GetSurface();
   gFace->D0(myRangeU.first, myRangeV.first,  P11);
   gFace->D0(myRangeU.first, dfvave,          P21);
   gFace->D0(myRangeU.first, myRangeV.second, P31);
@@ -197,7 +197,7 @@ Standard_Real BRepMesh_DefaultRangeSplitter::computeLengthV()
   Standard_Real dfvcur;
   Standard_Integer i1;
 
-  const Handle(BRepAdaptor_HSurface)& gFace = GetSurface();
+  const Handle(BRepAdaptor_Surface)& gFace = GetSurface();
   gFace->D0(myRangeU.first,  myRangeV.first, P11);
   gFace->D0(dfuave,          myRangeV.first, P21);
   gFace->D0(myRangeU.second, myRangeV.first, P31);

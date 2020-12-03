@@ -17,22 +17,10 @@
 #ifndef _BlendFunc_ChAsymInv_HeaderFile
 #define _BlendFunc_ChAsymInv_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <Blend_FuncInv.hxx>
-class Adaptor3d_HSurface;
-class Adaptor3d_HCurve;
-class Adaptor2d_HCurve2d;
-class math_Matrix;
-
-
 
 class BlendFunc_ChAsymInv  : public Blend_FuncInv
 {
@@ -41,9 +29,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BlendFunc_ChAsymInv(const Handle(Adaptor3d_HSurface)& S1, const Handle(Adaptor3d_HSurface)& S2, const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT BlendFunc_ChAsymInv(const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_Curve)& C);
   
-  Standard_EXPORT void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_HCurve2d)& COnSurf) Standard_OVERRIDE;
+  Standard_EXPORT void Set (const Standard_Boolean OnFirst, const Handle(Adaptor2d_Curve2d)& COnSurf) Standard_OVERRIDE;
   
   Standard_EXPORT void GetTolerance (math_Vector& Tolerance, const Standard_Real Tol) const Standard_OVERRIDE;
   
@@ -93,13 +81,13 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surf1;
-  Handle(Adaptor3d_HSurface) surf2;
+  Handle(Adaptor3d_Surface) surf1;
+  Handle(Adaptor3d_Surface) surf2;
   Standard_Real dist1;
   Standard_Real angle;
   Standard_Real tgang;
-  Handle(Adaptor3d_HCurve) curv;
-  Handle(Adaptor2d_HCurve2d) csurf;
+  Handle(Adaptor3d_Curve) curv;
+  Handle(Adaptor2d_Curve2d) csurf;
   Standard_Integer choix;
   Standard_Boolean first;
   math_Vector FX;

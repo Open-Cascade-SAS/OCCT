@@ -15,8 +15,6 @@ ChFiDS_FaceInterference.lxx
 ChFiDS_FilSpine.cxx
 ChFiDS_FilSpine.hxx
 ChFiDS_HData.hxx
-ChFiDS_HElSpine.hxx
-ChFiDS_HElSpine_0.cxx
 ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx
 ChFiDS_ListIteratorOfListOfHElSpine.hxx
 ChFiDS_ListIteratorOfListOfStripe.hxx

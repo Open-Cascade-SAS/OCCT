@@ -64,7 +64,7 @@
 #include <gce_MakeDir.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -73,7 +73,7 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomFill_Generator.hxx>
 #include <GeomLib.hxx>
@@ -2994,8 +2994,8 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
           Standard_Real FirstPar = 0., LastPar = fp2d.Distance(fp2dOE);
           Geom2dAdaptor_Curve AC2d( aLine2d2, FirstPar, LastPar );
           GeomAdaptor_Surface GAsurf( theSurf );
-          Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
-          Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
+          Handle(Geom2dAdaptor_Curve) HC2d  = new Geom2dAdaptor_Curve( AC2d );
+          Handle(GeomAdaptor_Surface) HSurf = new GeomAdaptor_Surface( GAsurf );
           Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
           Standard_Real max_deviation = 0., average_deviation;
           GeomLib::BuildCurve3d(Precision::Confusion(),
@@ -3015,8 +3015,8 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
           Standard_Real FirstPar = 0., LastPar = lp2d.Distance(lp2dOE);
           Geom2dAdaptor_Curve AC2d( aLine2d, FirstPar, LastPar );
           GeomAdaptor_Surface GAsurf( theSurf );
-          Handle(Geom2dAdaptor_HCurve) HC2d  = new Geom2dAdaptor_HCurve( AC2d );
-          Handle(GeomAdaptor_HSurface) HSurf = new GeomAdaptor_HSurface( GAsurf );
+          Handle(Geom2dAdaptor_Curve) HC2d  = new Geom2dAdaptor_Curve( AC2d );
+          Handle(GeomAdaptor_Surface) HSurf = new GeomAdaptor_Surface( GAsurf );
           Adaptor3d_CurveOnSurface ConS( HC2d, HSurf );
           Standard_Real max_deviation = 0., average_deviation;
           GeomLib::BuildCurve3d(Precision::Confusion(),

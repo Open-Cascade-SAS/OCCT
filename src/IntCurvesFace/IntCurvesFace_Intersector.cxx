@@ -16,20 +16,20 @@
 
 #define OPTIMISATION 1 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <IntCurvesFace_Intersector.hxx>
+
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IntCurvesFace_Intersector.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_SequenceOfPnt.hxx>
@@ -44,7 +44,7 @@
 #include <TopoDS.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 //
-static void ComputeSamplePars(const Handle(Adaptor3d_HSurface)& Hsurface, 
+static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface, 
                               const Standard_Integer nbsu,
                               const Standard_Integer nbsv,
                               Handle(TColStd_HArray1OfReal)& UPars, 
@@ -142,7 +142,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
   BRepAdaptor_Surface surface;
   face = Face;
   surface.Initialize(Face, aRestr);
-  Hsurface = new BRepAdaptor_HSurface(surface);
+  Hsurface = new BRepAdaptor_Surface(surface);
   myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
   
   GeomAbs_SurfaceType SurfaceType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
@@ -356,7 +356,7 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
   IntCurveSurface_HInter HICS; 
   Handle(Geom_Line) geomline = new Geom_Line(L);
   GeomAdaptor_Curve LL(geomline);
-  Handle(GeomAdaptor_HCurve) HLL  = new GeomAdaptor_HCurve(LL);
+  Handle(GeomAdaptor_Curve) HLL  = new GeomAdaptor_Curve(LL);
   Standard_Real parinf=ParMin;
   Standard_Real parsup=ParMax;
   //
@@ -422,7 +422,7 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_HCurve)& HCu,
+void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
 					const Standard_Real ParMin,
 					const Standard_Real ParMax) 
 { 

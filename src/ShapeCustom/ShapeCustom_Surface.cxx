@@ -14,6 +14,8 @@
 //abv 06.01.99 fix of misprint
 //:p6 abv 26.02.99: make ConvertToPeriodic() return Null if nothing done
 
+#include <ShapeCustom_Surface.hxx>
+
 #include <ElSLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -25,7 +27,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Cylinder.hxx>
@@ -34,7 +35,6 @@
 #include <gp_Vec.hxx>
 #include <ShapeAnalysis_Geom.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <ShapeCustom_Surface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -316,8 +316,8 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
   //                 verification
   //---------------------------------------------------------------------
   
-  Handle(GeomAdaptor_HSurface) NHS = new GeomAdaptor_HSurface (newSurf);
-  GeomAdaptor_Surface& SurfAdapt = NHS->ChangeSurface();
+  Handle(GeomAdaptor_Surface) NHS = new GeomAdaptor_Surface (newSurf);
+  GeomAdaptor_Surface& SurfAdapt = *NHS;
 
   const Standard_Integer NP = 21;
   Standard_Real S = 0., T = 0.;  // U,V deja fait

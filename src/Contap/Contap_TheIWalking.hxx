@@ -17,13 +17,8 @@
 #ifndef _Contap_TheIWalking_HeaderFile
 #define _Contap_TheIWalking_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntSurf_SequenceOfPathPoint.hxx>
-#include <Standard_Real.hxx>
 #include <math_Vector.hxx>
 #include <IntWalk_VectorOfWalkingData.hxx>
 #include <IntWalk_VectorOfInteger.hxx>
@@ -34,21 +29,17 @@
 #include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <Contap_SequenceOfIWLineOfTheIWalking.hxx>
 #include <IntSurf_SequenceOfInteriorPoint.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <IntWalk_StatusDeflection.hxx>
 #include <Bnd_Range.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class IntSurf_PathPoint;
 class IntSurf_PathPointTool;
 class IntSurf_InteriorPoint;
 class IntSurf_InteriorPointTool;
-class Adaptor3d_HSurface;
 class Adaptor3d_HSurfaceTool;
 class Contap_SurfFunction;
 class Contap_TheIWLineOfTheIWalking;
-class IntSurf_PntOn2S;
 class math_FunctionSetRoot;
 
 class Contap_TheIWalking 
@@ -81,11 +72,11 @@ public:
   //! Searches a set of polylines starting on a point of Pnts1
   //! or Pnts2.
   //! Each point on a resulting polyline verifies F(u,v)=0
-  Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, const IntSurf_SequenceOfInteriorPoint& Pnts2, Contap_SurfFunction& Func, const Handle(Adaptor3d_HSurface)& S, const Standard_Boolean Reversed = Standard_False);
+  Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, const IntSurf_SequenceOfInteriorPoint& Pnts2, Contap_SurfFunction& Func, const Handle(Adaptor3d_Surface)& S, const Standard_Boolean Reversed = Standard_False);
   
   //! Searches a set of polylines starting on a point of Pnts1.
   //! Each point on a resulting polyline verifies F(u,v)=0
-  Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, Contap_SurfFunction& Func, const Handle(Adaptor3d_HSurface)& S, const Standard_Boolean Reversed = Standard_False);
+  Standard_EXPORT void Perform (const IntSurf_SequenceOfPathPoint& Pnts1, Contap_SurfFunction& Func, const Handle(Adaptor3d_Surface)& S, const Standard_Boolean Reversed = Standard_False);
   
   //! Returns true if the calculus was successful.
     Standard_Boolean IsDone() const;
@@ -203,8 +194,8 @@ private:
 #define ThePointOfLoopTool_hxx <IntSurf_InteriorPointTool.hxx>
 #define ThePOLIterator IntSurf_SequenceOfInteriorPoint
 #define ThePOLIterator_hxx <IntSurf_SequenceOfInteriorPoint.hxx>
-#define ThePSurface Handle(Adaptor3d_HSurface)
-#define ThePSurface_hxx <Adaptor3d_HSurface.hxx>
+#define ThePSurface Handle(Adaptor3d_Surface)
+#define ThePSurface_hxx <Adaptor3d_Surface.hxx>
 #define ThePSurfaceTool Adaptor3d_HSurfaceTool
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
 #define TheIWFunction Contap_SurfFunction

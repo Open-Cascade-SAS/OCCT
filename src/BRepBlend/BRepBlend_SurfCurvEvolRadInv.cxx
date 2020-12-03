@@ -15,9 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BRepBlend_SurfCurvEvolRadInv.hxx>
 #include <Law_Function.hxx>
 #include <math_Matrix.hxx>
@@ -27,9 +27,9 @@
 //purpose  : 
 //=======================================================================
 BRepBlend_SurfCurvEvolRadInv::BRepBlend_SurfCurvEvolRadInv
-(const Handle(Adaptor3d_HSurface)& S,
-const Handle(Adaptor3d_HCurve)& C,
-const Handle(Adaptor3d_HCurve)& Cg,
+(const Handle(Adaptor3d_Surface)& S,
+const Handle(Adaptor3d_Curve)& C,
+const Handle(Adaptor3d_Curve)& Cg,
  const Handle(Law_Function)& Evol): surf(S),curv(C),guide(Cg)
 { tevol=Evol;
 }
@@ -276,7 +276,7 @@ const Handle(Adaptor3d_HCurve)& Cg,
 //function :
 //purpose  : 
 //=======================================================================
- void BRepBlend_SurfCurvEvolRadInv::Set(const Handle(Adaptor2d_HCurve2d)& Rst) 
+ void BRepBlend_SurfCurvEvolRadInv::Set(const Handle(Adaptor2d_Curve2d)& Rst) 
 {
   rst = Rst;
 }

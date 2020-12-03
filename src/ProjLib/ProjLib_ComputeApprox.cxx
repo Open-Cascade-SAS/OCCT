@@ -33,8 +33,8 @@
 #include <Precision.hxx>
 #include <Approx_FitAndDivide2d.hxx>
 #include <AppParCurves_MultiCurve.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -70,8 +70,8 @@ static inline Standard_Boolean IsEqual(Standard_Real Check,Standard_Real With,St
 //=======================================================================
 
 static gp_Pnt2d Function_Value(const Standard_Real U,
-			       const Handle(Adaptor3d_HCurve)&   myCurve,
-			       const Handle(Adaptor3d_HSurface)& mySurface,
+			       const Handle(Adaptor3d_Curve)&   myCurve,
+			       const Handle(Adaptor3d_Surface)& mySurface,
 			       const Standard_Real U1,
 			       const Standard_Real U2, 
 			       const Standard_Real V1,
@@ -149,8 +149,8 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
 static Standard_Boolean Function_D1( const Standard_Real U, 
 				    gp_Pnt2d&            P,
 				    gp_Vec2d&            D,
-				    const Handle(Adaptor3d_HCurve)&   myCurve,
-				    const Handle(Adaptor3d_HSurface)& mySurface,
+				    const Handle(Adaptor3d_Curve)&   myCurve,
+				    const Handle(Adaptor3d_Surface)& mySurface,
 				    const Standard_Real U1,
 				    const Standard_Real U2, 
 				    const Standard_Real V1,
@@ -202,14 +202,14 @@ static Standard_Boolean Function_D1( const Standard_Real U,
 //purpose  : 
 //=======================================================================
 static Standard_Real Function_ComputeStep(
-  const Handle(Adaptor3d_HCurve)&   myCurve,
+  const Handle(Adaptor3d_Curve)&   myCurve,
   const Standard_Real R)
 {
   Standard_Real Step0 = .1;
   Standard_Real W1, W2;
   W1 = myCurve->FirstParameter();
   W2 = myCurve->LastParameter();
-  Standard_Real L = GCPnts_AbscissaPoint::Length(myCurve->Curve());
+  Standard_Real L = GCPnts_AbscissaPoint::Length (*myCurve);
   Standard_Integer nbp = RealToInt(L / (R*M_PI_4)) + 1;
   nbp = Max(nbp, 3);
   Standard_Real Step = (W2 - W1) / (nbp - 1);
@@ -234,8 +234,8 @@ static void Function_SetUVBounds(Standard_Real& myU1,
 				 Standard_Real& myV2,
 				 Standard_Boolean& UCouture,
 				 Standard_Boolean& VCouture,
-				 const Handle(Adaptor3d_HCurve)&   myCurve,
-				 const Handle(Adaptor3d_HSurface)& mySurface) 
+				 const Handle(Adaptor3d_Curve)&   myCurve,
+				 const Handle(Adaptor3d_Surface)& mySurface) 
 {
   Standard_Real W1, W2, W;
   gp_Pnt P1, P2, P;
@@ -844,8 +844,8 @@ static void Function_SetUVBounds(Standard_Real& myU1,
 //=======================================================================
 class ProjLib_Function : public AppCont_Function
 {
-  Handle(Adaptor3d_HCurve)   myCurve;
-  Handle(Adaptor3d_HSurface) mySurface;
+  Handle(Adaptor3d_Curve)   myCurve;
+  Handle(Adaptor3d_Surface) mySurface;
   Standard_Boolean myIsPeriodic[2];
   Standard_Real myPeriod[2];
   public :
@@ -853,8 +853,8 @@ class ProjLib_Function : public AppCont_Function
   Standard_Real    myU1,myU2,myV1,myV2;
   Standard_Boolean UCouture,VCouture;
 
-  ProjLib_Function(const Handle(Adaptor3d_HCurve)&   C, 
-                   const Handle(Adaptor3d_HSurface)& S)
+  ProjLib_Function(const Handle(Adaptor3d_Curve)&   C, 
+                   const Handle(Adaptor3d_Surface)& S)
 : myCurve(C),
   mySurface(S),
   myU1(0.0),
@@ -929,7 +929,7 @@ class ProjLib_Function : public AppCont_Function
 //purpose  : 
 //=======================================================================
 
-static Standard_Real ComputeTolU(const Handle(Adaptor3d_HSurface)& theSurf,
+static Standard_Real ComputeTolU(const Handle(Adaptor3d_Surface)& theSurf,
                                  const Standard_Real theTolerance)
 {
   Standard_Real aTolU = theSurf->UResolution(theTolerance);
@@ -946,7 +946,7 @@ static Standard_Real ComputeTolU(const Handle(Adaptor3d_HSurface)& theSurf,
 //purpose  : 
 //=======================================================================
 
-static Standard_Real ComputeTolV(const Handle(Adaptor3d_HSurface)& theSurf,
+static Standard_Real ComputeTolV(const Handle(Adaptor3d_Surface)& theSurf,
                                  const Standard_Real theTolerance)
 {
   Standard_Real aTolV = theSurf->VResolution(theTolerance);
@@ -976,8 +976,8 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox():
 //=======================================================================
 
 ProjLib_ComputeApprox::ProjLib_ComputeApprox
-  (const Handle(Adaptor3d_HCurve)   & C,
-   const Handle(Adaptor3d_HSurface) & S,
+  (const Handle(Adaptor3d_Curve)   & C,
+   const Handle(Adaptor3d_Surface) & S,
    const Standard_Real              Tol):
   myTolerance(Max(Tol, Precision::PApproximation())),
   myDegMin(-1), myDegMax(-1),
@@ -993,8 +993,8 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
 //=======================================================================
 
 void ProjLib_ComputeApprox::Perform
-  (const Handle(Adaptor3d_HCurve)   & C,
-   const Handle(Adaptor3d_HSurface) & S )
+  (const Handle(Adaptor3d_Curve)   & C,
+   const Handle(Adaptor3d_Surface) & S )
 {
   // if the surface is a plane and the curve a BSpline or a BezierCurve,
   // don`t make an Approx but only the projection of the poles.

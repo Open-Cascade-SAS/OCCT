@@ -21,7 +21,6 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
 #include <GeomInt_LineConstructor.hxx>
@@ -234,8 +233,8 @@ Standard_Boolean IntTools_WLineTool::NotUseSurfacesForApprox(const TopoDS_Face& 
 //purpose  : static subfunction in ComputeTangentZones
 //=======================================================================
 static
-Standard_Boolean CheckTangentZonesExist(const Handle(GeomAdaptor_HSurface)& theSurface1,
-                                        const Handle(GeomAdaptor_HSurface)& theSurface2)
+Standard_Boolean CheckTangentZonesExist(const Handle(GeomAdaptor_Surface)& theSurface1,
+                                        const Handle(GeomAdaptor_Surface)& theSurface2)
 {
   if ( ( theSurface1->GetType() != GeomAbs_Torus ) ||
        ( theSurface2->GetType() != GeomAbs_Torus ) )
@@ -264,8 +263,8 @@ Standard_Boolean CheckTangentZonesExist(const Handle(GeomAdaptor_HSurface)& theS
 //purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
 static
-Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_HSurface)& theSurface1,
-                                     const Handle(GeomAdaptor_HSurface)&  theSurface2,
+Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_Surface)& theSurface1,
+                                     const Handle(GeomAdaptor_Surface)&  theSurface2,
                                      const TopoDS_Face&                   theFace1,
                                      const TopoDS_Face&                   theFace2,
                                      Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
@@ -466,7 +465,7 @@ static
 Standard_Boolean IsInsideTanZone(const gp_Pnt2d&     thePoint,
                                  const gp_Pnt2d&     theTanZoneCenter,
                                  const Standard_Real theZoneRadius,
-                                 Handle(GeomAdaptor_HSurface) theGASurface)
+                                 Handle(GeomAdaptor_Surface) theGASurface)
 {
   Standard_Real aUResolution = theGASurface->UResolution( theZoneRadius );
   Standard_Real aVResolution = theGASurface->VResolution( theZoneRadius );
@@ -485,7 +484,7 @@ Standard_Boolean IsInsideTanZone(const gp_Pnt2d&     thePoint,
 static
 gp_Pnt2d AdjustByNeighbour(const gp_Pnt2d&     theaNeighbourPoint,
                            const gp_Pnt2d&     theOriginalPoint,
-                           Handle(GeomAdaptor_HSurface) theGASurface)
+                           Handle(GeomAdaptor_Surface) theGASurface)
 {
   gp_Pnt2d ap1 = theaNeighbourPoint;
   gp_Pnt2d ap2 = theOriginalPoint;
@@ -666,7 +665,7 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
                            const Standard_Real theVmax,
                            const gp_Pnt2d&     theTanZoneCenter,
                            const Standard_Real theZoneRadius,
-                           Handle(GeomAdaptor_HSurface) theGASurface,
+                           Handle(GeomAdaptor_Surface) theGASurface,
                            gp_Pnt2d&           theNewPoint) {
   theNewPoint = theLastPoint;
 
@@ -724,8 +723,8 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
 //=======================================================================
 Standard_Boolean IntTools_WLineTool::
   DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
-                       const Handle(GeomAdaptor_HSurface)&            theSurface1, 
-                       const Handle(GeomAdaptor_HSurface)&            theSurface2,
+                       const Handle(GeomAdaptor_Surface)&            theSurface1, 
+                       const Handle(GeomAdaptor_Surface)&            theSurface2,
                        const TopoDS_Face&                             theFace1,
                        const TopoDS_Face&                             theFace2,
                        const GeomInt_LineConstructor&                 theLConstructor,
@@ -786,8 +785,8 @@ Standard_Boolean IntTools_WLineTool::
     //
     // Surface
     for(i = 0; i < 2; ++i) {
-      Handle(GeomAdaptor_HSurface) aGASurface = (!i) ? theSurface1 : theSurface2;
-      aGASurface->ChangeSurface().Surface()->Bounds(umin, umax, vmin, vmax);
+      Handle(GeomAdaptor_Surface) aGASurface = (!i) ? theSurface1 : theSurface2;
+      aGASurface->Surface()->Bounds(umin, umax, vmin, vmax);
       if(!i) {
         aPoint.ParametersOnS1(U, V);
       }
@@ -919,9 +918,9 @@ Standard_Boolean IntTools_WLineTool::
       //
       for(Standard_Integer surfit = 0; surfit < 2; surfit++) {
 
-        Handle(GeomAdaptor_HSurface) aGASurface = (surfit == 0) ? theSurface1 : theSurface2;
+        Handle(GeomAdaptor_Surface) aGASurface = (surfit == 0) ? theSurface1 : theSurface2;
         Standard_Real umin=0., umax=0., vmin=0., vmax=0.;
-        aGASurface->ChangeSurface().Surface()->Bounds(umin, umax, vmin, vmax);
+        aGASurface->Surface()->Bounds(umin, umax, vmin, vmax);
         Standard_Real U=0., V=0.;
 
         if(surfit == 0)
@@ -1210,9 +1209,9 @@ Standard_Boolean IntTools_WLineTool::
             Standard_Real aCriteria = theTol;
             GeomAPI_ProjectPointOnSurf& aProjector = 
               (surfit == 0) ? aContext->ProjPS(theFace2) : aContext->ProjPS(theFace1);
-            Handle(GeomAdaptor_HSurface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
+            Handle(GeomAdaptor_Surface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
 
-            Handle(GeomAdaptor_HSurface) aSurfaceOther = (surfit == 0) ? theSurface2 : theSurface1;
+            Handle(GeomAdaptor_Surface) aSurfaceOther = (surfit == 0) ? theSurface2 : theSurface1;
 
             gp_Pnt aP3d = aSurface->Value(anewpoint.X(), anewpoint.Y());
             aProjector.Perform(aP3d);

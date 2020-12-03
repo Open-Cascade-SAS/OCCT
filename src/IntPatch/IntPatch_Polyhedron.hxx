@@ -17,22 +17,9 @@
 #ifndef _IntPatch_Polyhedron_HeaderFile
 #define _IntPatch_Polyhedron_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class Adaptor3d_HSurface;
-class gp_Pnt;
-class Bnd_Box;
-class gp_XYZ;
-
 
 //! This class provides a linear approximation of the PSurface.
 //! preview a constructor on a zone of  a surface
@@ -45,9 +32,9 @@ public:
   
   //! MaTriangle constructor with an double array of pnt for the
   //! representation of a double array of triangles.
-  Standard_EXPORT IntPatch_Polyhedron(const Handle(Adaptor3d_HSurface)& Surface, const Standard_Integer nbdU, const Standard_Integer nbdV);
+  Standard_EXPORT IntPatch_Polyhedron(const Handle(Adaptor3d_Surface)& Surface, const Standard_Integer nbdU, const Standard_Integer nbdV);
   
-  Standard_EXPORT IntPatch_Polyhedron(const Handle(Adaptor3d_HSurface)& Surface);
+  Standard_EXPORT IntPatch_Polyhedron(const Handle(Adaptor3d_Surface)& Surface);
   
   Standard_EXPORT void Destroy();
 ~IntPatch_Polyhedron()
@@ -55,11 +42,11 @@ public:
   Destroy();
 }
   
-  Standard_EXPORT void Perform (const Handle(Adaptor3d_HSurface)& Surface, const Standard_Integer nbdU, const Standard_Integer nbdV);
+  Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surface, const Standard_Integer nbdU, const Standard_Integer nbdV);
   
   Standard_EXPORT void DeflectionOverEstimation (const Standard_Real flec);
   
-  Standard_EXPORT Standard_Real DeflectionOnTriangle (const Handle(Adaptor3d_HSurface)& Surface, const Standard_Integer Index) const;
+  Standard_EXPORT Standard_Real DeflectionOnTriangle (const Handle(Adaptor3d_Surface)& Surface, const Standard_Integer Index) const;
   
   Standard_EXPORT void UMinSingularity (const Standard_Boolean Sing);
   

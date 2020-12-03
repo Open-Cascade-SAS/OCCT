@@ -14,7 +14,7 @@
 
 #include <GeomEvaluator_OffsetCurve.hxx>
 
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Standard_NullValue.hxx>
 
 
@@ -32,7 +32,7 @@ GeomEvaluator_OffsetCurve::GeomEvaluator_OffsetCurve(
 }
 
 GeomEvaluator_OffsetCurve::GeomEvaluator_OffsetCurve(
-        const Handle(GeomAdaptor_HCurve)& theBase,
+        const Handle(GeomAdaptor_Curve)& theBase,
         const Standard_Real theOffset,
         const gp_Dir& theDirection)
   : GeomEvaluator_Curve(),

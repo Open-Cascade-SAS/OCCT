@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRepBlend_CurvPointRadInv.hxx>
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
@@ -25,8 +25,8 @@
 //purpose  : 
 //=======================================================================
 BRepBlend_CurvPointRadInv::BRepBlend_CurvPointRadInv
-(const Handle(Adaptor3d_HCurve)& C1,
- const Handle(Adaptor3d_HCurve)& C2)
+(const Handle(Adaptor3d_Curve)& C1,
+ const Handle(Adaptor3d_Curve)& C2)
 : curv1(C1),
   curv2(C2),
   choix(0)

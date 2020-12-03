@@ -35,7 +35,6 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 class GeomFill_TrihedronWithGuide;
 class GeomFill_SectionLaw;
-class Adaptor3d_HCurve;
 class Standard_NotImplemented;
 class Standard_ConstructionError;
 class Standard_OutOfRange;
@@ -62,9 +61,9 @@ public:
   
   Standard_EXPORT void EraseRotation();
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& C) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual const Handle(Adaptor3d_HCurve)& GetCurve() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void SetTrsf (const gp_Mat& Transfo) Standard_OVERRIDE;
   
@@ -164,7 +163,7 @@ public:
   
   Standard_EXPORT Handle(Geom_Curve) Section() const;
   
-  Standard_EXPORT Handle(Adaptor3d_HCurve) Guide() const;
+  Standard_EXPORT Handle(Adaptor3d_Curve) Guide() const;
   
   Standard_EXPORT void SetOrigine (const Standard_Real Param1, const Standard_Real Param2);
   
@@ -190,9 +189,9 @@ private:
 
   Handle(GeomFill_TrihedronWithGuide) myLaw;
   Handle(GeomFill_SectionLaw) mySec;
-  Handle(Adaptor3d_HCurve) myCurve;
-  Handle(Adaptor3d_HCurve) myGuide;
-  Handle(Adaptor3d_HCurve) myTrimmed;
+  Handle(Adaptor3d_Curve) myCurve;
+  Handle(Adaptor3d_Curve) myGuide;
+  Handle(Adaptor3d_Curve) myTrimmed;
   Standard_Integer myNbPts;
   Standard_Boolean rotation;
   Standard_Real OrigParam1;

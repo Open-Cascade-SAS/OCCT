@@ -13,7 +13,7 @@
 
 #include <IntPatch_WLineTool.hxx>
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <Bnd_Range.hxx>
 #include <ElCLib.hxx>
@@ -191,7 +191,7 @@ static Handle(IntPatch_WLine) MakeNewWLine(const Handle(IntPatch_WLine)         
 //            because walking algorithm should care for closeness to the param space.
 //            Static subfunction in ComputePurgedWLine.
 //=========================================================================
-static void MovePoint(const Handle(Adaptor3d_HSurface)   &theS1,
+static void MovePoint(const Handle(Adaptor3d_Surface)   &theS1,
                       Standard_Real &U1, Standard_Real &V1)
 {
   if (U1 < theS1->FirstUParameter())
@@ -214,8 +214,8 @@ static void MovePoint(const Handle(Adaptor3d_HSurface)   &theS1,
 //=========================================================================
 static Handle(IntPatch_WLine)
   DeleteOuterPoints(const Handle(IntPatch_WLine)       &theWLine,
-                    const Handle(Adaptor3d_HSurface)   &theS1,
-                    const Handle(Adaptor3d_HSurface)   &theS2,
+                    const Handle(Adaptor3d_Surface)   &theS1,
+                    const Handle(Adaptor3d_Surface)   &theS2,
                     const Handle(Adaptor3d_TopolTool)  &theDom1,
                     const Handle(Adaptor3d_TopolTool)  &theDom2)
 {
@@ -392,8 +392,8 @@ static const Standard_Integer aNbSingleBezier = 30;
 //=========================================================================
 static Handle(IntPatch_WLine)
   DeleteByTube(const Handle(IntPatch_WLine)       &theWLine,
-               const Handle(Adaptor3d_HSurface)   &theS1,
-               const Handle(Adaptor3d_HSurface)   &theS2)
+               const Handle(Adaptor3d_Surface)   &theS1,
+               const Handle(Adaptor3d_Surface)   &theS2)
 {
   // III: Check points for tube criteria:
   // Workaround to handle case of small amount points after purge.
@@ -656,8 +656,8 @@ static Standard_Boolean IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
 //            will be recomputed and returned.
 //=======================================================================
 static Standard_Boolean IsIntersectionPoint(const gp_Pnt& thePmid,
-                                            const Handle(Adaptor3d_HSurface)& theS1,
-                                            const Handle(Adaptor3d_HSurface)& theS2,
+                                            const Handle(Adaptor3d_Surface)& theS1,
+                                            const Handle(Adaptor3d_Surface)& theS2,
                                             const IntSurf_PntOn2S& theRefPt,
                                             const Standard_Real theTol,
                                             const Standard_Real* const theArrPeriods,
@@ -837,8 +837,8 @@ static Standard_Boolean IsOutOfDomain(const Bnd_Box2d& theBoxS1,
 //            (see IntPatch_WLineTool::ExtendTwoWLines)
 //=======================================================================
 static IntPatchWT_WLsConnectionType
-                    CheckArgumentsToExtend(const Handle(Adaptor3d_HSurface)& theS1,
-                                           const Handle(Adaptor3d_HSurface)& theS2,
+                    CheckArgumentsToExtend(const Handle(Adaptor3d_Surface)& theS1,
+                                           const Handle(Adaptor3d_Surface)& theS2,
                                            const IntSurf_PntOn2S& thePtWL1,
                                            const IntSurf_PntOn2S& thePtWL2,
                                            IntSurf_PntOn2S& theNewPoint,
@@ -994,8 +994,8 @@ static IntPatchWT_WLsConnectionType
 //purpose  : Check if joining is possible
 //            (see IntPatch_WLineTool::JoinWLines(...))
 //=======================================================================
-Standard_Boolean CheckArgumentsToJoin(const Handle(Adaptor3d_HSurface)& theS1,
-                                      const Handle(Adaptor3d_HSurface)& theS2,
+Standard_Boolean CheckArgumentsToJoin(const Handle(Adaptor3d_Surface)& theS1,
+                                      const Handle(Adaptor3d_Surface)& theS2,
                                       const IntSurf_PntOn2S& thePnt,
                                       const gp_Pnt& theP1,
                                       const gp_Pnt& theP2,
@@ -1045,8 +1045,8 @@ Standard_Boolean CheckArgumentsToJoin(const Handle(Adaptor3d_HSurface)& theS1,
 //purpose  : Performs extending theWLine1 and theWLine2 through their
 //            respecting start point.
 //=======================================================================
-static void ExtendTwoWLFirstFirst(const Handle(Adaptor3d_HSurface)& theS1,
-                                  const Handle(Adaptor3d_HSurface)& theS2,
+static void ExtendTwoWLFirstFirst(const Handle(Adaptor3d_Surface)& theS1,
+                                  const Handle(Adaptor3d_Surface)& theS2,
                                   const Handle(IntPatch_WLine)& theWLine1,
                                   const Handle(IntPatch_WLine)& theWLine2,
                                   const IntSurf_PntOn2S& thePtWL1,
@@ -1119,8 +1119,8 @@ static void ExtendTwoWLFirstFirst(const Handle(Adaptor3d_HSurface)& theS1,
 //purpose  : Performs extending theWLine1 through its start point and theWLine2
 //            through its end point.
 //=======================================================================
-static void ExtendTwoWLFirstLast(const Handle(Adaptor3d_HSurface)& theS1,
-                                 const Handle(Adaptor3d_HSurface)& theS2,
+static void ExtendTwoWLFirstLast(const Handle(Adaptor3d_Surface)& theS1,
+                                 const Handle(Adaptor3d_Surface)& theS2,
                                  const Handle(IntPatch_WLine)& theWLine1,
                                  const Handle(IntPatch_WLine)& theWLine2,
                                  const IntSurf_PntOn2S& thePtWL1,
@@ -1191,8 +1191,8 @@ static void ExtendTwoWLFirstLast(const Handle(Adaptor3d_HSurface)& theS1,
 //purpose  : Performs extending theWLine1 through its end point and theWLine2
 //            through its start point.
 //=======================================================================
-static void ExtendTwoWLLastFirst(const Handle(Adaptor3d_HSurface)& theS1,
-                                 const Handle(Adaptor3d_HSurface)& theS2,
+static void ExtendTwoWLLastFirst(const Handle(Adaptor3d_Surface)& theS1,
+                                 const Handle(Adaptor3d_Surface)& theS2,
                                  const Handle(IntPatch_WLine)& theWLine1,
                                  const Handle(IntPatch_WLine)& theWLine2,
                                  const IntSurf_PntOn2S& thePtWL1,
@@ -1259,8 +1259,8 @@ static void ExtendTwoWLLastFirst(const Handle(Adaptor3d_HSurface)& theS1,
 //function : ExtendTwoWLLastLast
 //purpose  : 
 //=======================================================================
-static void ExtendTwoWLLastLast(const Handle(Adaptor3d_HSurface)& theS1,
-                                const Handle(Adaptor3d_HSurface)& theS2,
+static void ExtendTwoWLLastLast(const Handle(Adaptor3d_Surface)& theS1,
+                                const Handle(Adaptor3d_Surface)& theS2,
                                 const Handle(IntPatch_WLine)& theWLine1,
                                 const Handle(IntPatch_WLine)& theWLine2,
                                 const IntSurf_PntOn2S& thePtWL1,
@@ -1327,8 +1327,8 @@ static void ExtendTwoWLLastLast(const Handle(Adaptor3d_HSurface)& theS1,
 //=========================================================================
 Handle(IntPatch_WLine) IntPatch_WLineTool::
   ComputePurgedWLine(const Handle(IntPatch_WLine)       &theWLine,
-                     const Handle(Adaptor3d_HSurface)   &theS1,
-                     const Handle(Adaptor3d_HSurface)   &theS2,
+                     const Handle(Adaptor3d_Surface)   &theS1,
+                     const Handle(Adaptor3d_Surface)   &theS2,
                      const Handle(Adaptor3d_TopolTool)  &theDom1,
                      const Handle(Adaptor3d_TopolTool)  &theDom2)
 {
@@ -1455,8 +1455,8 @@ Handle(IntPatch_WLine) IntPatch_WLineTool::
 //=======================================================================
 void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
                                     IntPatch_SequenceOfPoint& theSPnt,
-                                    Handle(Adaptor3d_HSurface) theS1,
-                                    Handle(Adaptor3d_HSurface) theS2,
+                                    Handle(Adaptor3d_Surface) theS1,
+                                    Handle(Adaptor3d_Surface) theS2,
                                     const Standard_Real theTol3D)
 {
   if(theSlin.Length() == 0)
@@ -1683,8 +1683,8 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
 //=======================================================================
 void IntPatch_WLineTool::
         ExtendTwoWLines(IntPatch_SequenceOfLine& theSlin,
-                        const Handle(Adaptor3d_HSurface)& theS1,
-                        const Handle(Adaptor3d_HSurface)& theS2,
+                        const Handle(Adaptor3d_Surface)& theS1,
+                        const Handle(Adaptor3d_Surface)& theS2,
                         const Standard_Real theToler3D,
                         const Standard_Real* const theArrPeriods,
                         const Bnd_Box2d& theBoxS1,

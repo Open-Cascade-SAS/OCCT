@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_GLine.hxx>
@@ -46,8 +46,8 @@
 //purpose  : 
 //=======================================================================
 
-static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
-		    const Handle(Adaptor3d_HSurface)& myHS2,
+static void Recadre(const Handle(Adaptor3d_Surface)& myHS1,
+		    const Handle(Adaptor3d_Surface)& myHS2,
 		    Standard_Real& u1,
 		    Standard_Real& v1,
 		    Standard_Real& u2,
@@ -136,8 +136,8 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
 //purpose  : 
 //=======================================================================
 
-static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
-                       const Handle(Adaptor3d_HSurface)& myHS2,
+static void Parameters(const Handle(Adaptor3d_Surface)& myHS1,
+                       const Handle(Adaptor3d_Surface)& myHS2,
                        const gp_Pnt& Ptref,
                        Standard_Real& U1,
                        Standard_Real& V1,
@@ -145,43 +145,43 @@ static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
                        Standard_Real& V2)
 {
   IntSurf_Quadric quad1,quad2;
-  GeomAbs_SurfaceType typs = myHS1->Surface().GetType();
+  GeomAbs_SurfaceType typs = myHS1->GetType();
   switch (typs) {
   case GeomAbs_Plane:
-    quad1.SetValue(myHS1->Surface().Plane());
+    quad1.SetValue(myHS1->Plane());
     break;
   case GeomAbs_Cylinder:
-    quad1.SetValue(myHS1->Surface().Cylinder());
+    quad1.SetValue(myHS1->Cylinder());
     break;
   case GeomAbs_Cone:
-    quad1.SetValue(myHS1->Surface().Cone());
+    quad1.SetValue(myHS1->Cone());
     break;
   case GeomAbs_Sphere:
-    quad1.SetValue(myHS1->Surface().Sphere());
+    quad1.SetValue(myHS1->Sphere());
     break;
   case GeomAbs_Torus:
-    quad1.SetValue(myHS1->Surface().Torus());
+    quad1.SetValue(myHS1->Torus());
     break;
   default:
     throw Standard_ConstructionError("IntPatch_IntSS::MakeCurve");
   }
   
-  typs = myHS2->Surface().GetType();
+  typs = myHS2->GetType();
   switch (typs) {
   case GeomAbs_Plane:
-    quad2.SetValue(myHS2->Surface().Plane());
+    quad2.SetValue(myHS2->Plane());
     break;
   case GeomAbs_Cylinder:
-    quad2.SetValue(myHS2->Surface().Cylinder());
+    quad2.SetValue(myHS2->Cylinder());
     break;
   case GeomAbs_Cone:
-    quad2.SetValue(myHS2->Surface().Cone());
+    quad2.SetValue(myHS2->Cone());
     break;
   case GeomAbs_Sphere:
-    quad2.SetValue(myHS2->Surface().Sphere());
+    quad2.SetValue(myHS2->Sphere());
     break;
   case GeomAbs_Torus:
-    quad2.SetValue(myHS2->Surface().Torus());
+    quad2.SetValue(myHS2->Torus());
     break;
   default:
     throw Standard_ConstructionError("IntPatch_IntSS::MakeCurve");
@@ -824,7 +824,7 @@ static Standard_Boolean TestWLineIsARLine(const IntPatch_SequenceOfLine& slinref
       for (Standard_Integer is=0; is<2; is++) {
         Standard_Boolean onFirst = is==0;
         if((onFirst && rlin->IsArcOnS1()) || (!onFirst && rlin->IsArcOnS2())) {
-          Handle(Adaptor2d_HCurve2d) arc;
+          Handle(Adaptor2d_Curve2d) arc;
           Standard_Real u,v,u1,v1;
           if (onFirst) {
             arc = rlin->ArcOnS1();
@@ -840,7 +840,7 @@ static Standard_Boolean TestWLineIsARLine(const IntPatch_SequenceOfLine& slinref
             u = (u+u1)*0.5;
             v = (v+v1)*0.5;
           }
-          const Adaptor2d_Curve2d& C2d=arc->Curve2d();
+          const Adaptor2d_Curve2d& C2d = *arc;
           gp_Pnt2d PObt,P2d(u,v);
           Standard_Real par= Geom2dInt_TheProjPCurOfGInter::FindParameter(C2d,P2d,1e-7);
           PObt=C2d.Value(par);
@@ -861,9 +861,9 @@ static Standard_Boolean TestWLineIsARLine(const IntPatch_SequenceOfLine& slinref
 
 static Standard_Boolean TestIfWLineIsRestriction(const IntPatch_SequenceOfLine& slinref,
 					  const Handle(IntPatch_WLine)& wlin,
-					  const Handle(Adaptor3d_HSurface)& S1,
+					  const Handle(Adaptor3d_Surface)& S1,
 					  const Handle(Adaptor3d_TopolTool)&D1,
-					  const Handle(Adaptor3d_HSurface)& S2,
+					  const Handle(Adaptor3d_Surface)& S2,
 					  const Handle(Adaptor3d_TopolTool)&D2,
 					  Standard_Real TolArc) { 
 
@@ -914,8 +914,8 @@ static Standard_Boolean TestIfWLineIsRestriction(const IntPatch_SequenceOfLine& 
 
 static Standard_Boolean ProjectOnArc(const Standard_Real u,
 				     const Standard_Real v,
-				     const Handle(Adaptor2d_HCurve2d)& arc,
-				     const Handle(Adaptor3d_HSurface)& surf,
+				     const Handle(Adaptor2d_Curve2d)& arc,
+				     const Handle(Adaptor3d_Surface)& surf,
 				     const Standard_Real TolArc,
 				     Standard_Real& par,
 				     Standard_Real& dist)
@@ -924,7 +924,7 @@ static Standard_Boolean ProjectOnArc(const Standard_Real u,
   gp_Vec ad1u, ad1v;
   surf->D1(u,v,aPbid,ad1u,ad1v);
   Standard_Real tol2d = ComputeParametricTolerance(TolArc,ad1u,ad1v);
-  const Adaptor2d_Curve2d& C2d=arc->Curve2d();
+  const Adaptor2d_Curve2d& C2d = *arc;
   gp_Pnt2d aP(u,v),aPprj;
   par=Geom2dInt_TheProjPCurOfGInter::FindParameter(C2d,aP,1e-7);
   aPprj=C2d.Value(par);
@@ -939,9 +939,9 @@ static Standard_Boolean ProjectOnArc(const Standard_Real u,
 
 static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 		      IntPatch_SequenceOfLine& slin,
-		      const Handle(Adaptor3d_HSurface)& mySurf1,
+		      const Handle(Adaptor3d_Surface)& mySurf1,
 		      const Handle(Adaptor3d_TopolTool)& myDom1,
-		      const Handle(Adaptor3d_HSurface)& mySurf2,
+		      const Handle(Adaptor3d_Surface)& mySurf2,
 		      const Handle(Adaptor3d_TopolTool)& myDom2,
 		      const Standard_Real TolArc) { 
 
@@ -967,7 +967,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 
   typedef void (IntSurf_PntOn2S::* PiParOnS)(Standard_Real&,Standard_Real&) const;
   typedef Standard_Boolean (IntPatch_Point::* PQuery)() const;
-  typedef const Handle(Adaptor2d_HCurve2d)& (IntPatch_Point::* PArcOnS)() const;
+  typedef const Handle(Adaptor2d_Curve2d)& (IntPatch_Point::* PArcOnS)() const;
   typedef Standard_Real (IntPatch_Point::* PParOnArc)() const;
 
   // cycle for both surfaces
@@ -980,7 +980,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
       PQuery pIsOnDomS;
       PArcOnS pArcOnS;
       PParOnArc pParOnArc;
-      Handle(Adaptor3d_HSurface) surf;
+      Handle(Adaptor3d_Surface) surf;
       Handle(Adaptor3d_TopolTool) aDomain;
       if (onFirst) {
 	piParOnS = &IntSurf_PntOn2S::ParametersOnS1;
@@ -1003,14 +1003,14 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
       Standard_Real utst,vtst;
       TColStd_Array1OfReal paramsResolved(1,nbvtx);
       TColStd_Array1OfTransient arcsResolved(1,nbvtx);
-      arcsResolved.Init(Handle(Adaptor2d_HCurve2d)());
+      arcsResolved.Init(Handle(Adaptor2d_Curve2d)());
       for (iv=1; iv <= nbvtx; iv++) {
 	if (!(WLine->Vertex(iv).*pIsOnDomS)()) {
 	  Standard_Integer ip = (Standard_Integer) WLine->Vertex(iv).ParameterOnLine();
 	  (WLine->Point(ip).*piParOnS)(utst,vtst);
 	  Standard_Real distmin=RealLast();
 	  for (aDomain->Init(); aDomain->More(); aDomain->Next()) {
-	    const Handle(Adaptor2d_HCurve2d)& arc = aDomain->Value();
+	    const Handle(Adaptor2d_Curve2d)& arc = aDomain->Value();
 	    Standard_Real par,dist;
 	    if (ProjectOnArc(utst,vtst,arc,surf,TolArc,par,dist) && dist < distmin) {
 	      arcsResolved(iv) = arc;
@@ -1026,36 +1026,36 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
       Standard_Integer i;
       for (i=1; i <= indicesV1.Length(); i++) {
 	iv = indicesV1(i);
-	Handle(Adaptor2d_HCurve2d) arc;
+	Handle(Adaptor2d_Curve2d) arc;
 	if ((WLine->Vertex(iv).*pIsOnDomS)()) arc = (WLine->Vertex(iv).*pArcOnS)();
-	else arc = Handle(Adaptor2d_HCurve2d)::DownCast (arcsResolved(iv));
+	else arc = Handle(Adaptor2d_Curve2d)::DownCast (arcsResolved(iv));
 	if (!arc.IsNull()) mapArcsV1.Add(arc);
       }
       for (i=1; i <= indicesV2.Length(); i++) {
 	iv = indicesV2(i);
-	Handle(Adaptor2d_HCurve2d) arc;
+	Handle(Adaptor2d_Curve2d) arc;
 	if ((WLine->Vertex(iv).*pIsOnDomS)()) arc = (WLine->Vertex(iv).*pArcOnS)();
-	else arc = Handle(Adaptor2d_HCurve2d)::DownCast (arcsResolved(iv));
+	else arc = Handle(Adaptor2d_Curve2d)::DownCast (arcsResolved(iv));
 	if (!arc.IsNull() && mapArcsV1.Contains(arc)) mapArcs.Add(arc);
       }
 
       // for each common arc
       for (Standard_Integer ia=1; ia <= mapArcs.Extent(); ia++) {
-	const Handle(Adaptor2d_HCurve2d) arc (Handle(Adaptor2d_HCurve2d)::DownCast (mapArcs(ia)));
+	const Handle(Adaptor2d_Curve2d) arc (Handle(Adaptor2d_Curve2d)::DownCast (mapArcs(ia)));
 	// get end vertices of wline linked with this arc
 	Standard_Integer iv1=0,iv2=0;
 	for (i=1; i <= indicesV1.Length() && iv1==0; i++) {
 	  iv = indicesV1(i);
-	  Handle(Adaptor2d_HCurve2d) arc1;
+	  Handle(Adaptor2d_Curve2d) arc1;
 	  if ((WLine->Vertex(iv).*pIsOnDomS)()) arc1 = (WLine->Vertex(iv).*pArcOnS)();
-	  else arc1 = Handle(Adaptor2d_HCurve2d)::DownCast (arcsResolved(iv));
+	  else arc1 = Handle(Adaptor2d_Curve2d)::DownCast (arcsResolved(iv));
 	  if (!arc1.IsNull() && arc1 == arc) iv1 = iv;
 	}
 	for (i=1; i <= indicesV2.Length() && iv2==0; i++) {
 	  iv = indicesV2(i);
-	  Handle(Adaptor2d_HCurve2d) arc1;
+	  Handle(Adaptor2d_Curve2d) arc1;
 	  if ((WLine->Vertex(iv).*pIsOnDomS)()) arc1 = (WLine->Vertex(iv).*pArcOnS)();
-	  else arc1 = Handle(Adaptor2d_HCurve2d)::DownCast (arcsResolved(iv));
+	  else arc1 = Handle(Adaptor2d_Curve2d)::DownCast (arcsResolved(iv));
 	  if (!arc1.IsNull() && arc1 == arc) iv2 = iv;
 	}
 	if (!iv1 || !iv2) {
@@ -1182,9 +1182,9 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 
 void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 				       const Handle(IntPatch_Line)& L,
-				       const Handle(Adaptor3d_HSurface)& mySurf1,
+				       const Handle(Adaptor3d_Surface)& mySurf1,
 				       const Handle(Adaptor3d_TopolTool)& myDom1,
-				       const Handle(Adaptor3d_HSurface)& mySurf2,
+				       const Handle(Adaptor3d_Surface)& mySurf2,
 				       const Handle(Adaptor3d_TopolTool)& myDom2,
 				       const Standard_Real TolArc)  {
 

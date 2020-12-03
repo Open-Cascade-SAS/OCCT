@@ -14,8 +14,9 @@
 
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <gp_Trsf.hxx>
+#include <Precision.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEvaluator_SurfaceOfRevolution,GeomEvaluator_Surface)
 
@@ -30,7 +31,7 @@ GeomEvaluator_SurfaceOfRevolution::GeomEvaluator_SurfaceOfRevolution(
 }
 
 GeomEvaluator_SurfaceOfRevolution::GeomEvaluator_SurfaceOfRevolution(
-        const Handle(Adaptor3d_HCurve)& theBase,
+        const Handle(Adaptor3d_Curve)& theBase,
         const gp_Dir& theRevolDir,
         const gp_Pnt& theRevolLoc)
   : GeomEvaluator_Surface(),

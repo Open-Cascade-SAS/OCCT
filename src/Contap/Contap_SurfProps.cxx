@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Contap_SurfProps.hxx>
 #include <ElSLib.hxx>
@@ -26,7 +26,7 @@
 //function : Normale
 //purpose  : 
 //=======================================================================
-void Contap_SurfProps::Normale(const Handle(Adaptor3d_HSurface)& S, 
+void Contap_SurfProps::Normale(const Handle(Adaptor3d_Surface)& S, 
                                const Standard_Real U, 
                                const Standard_Real V,
                                gp_Pnt& P,
@@ -131,7 +131,7 @@ void Contap_SurfProps::Normale(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-void Contap_SurfProps::DerivAndNorm(const Handle(Adaptor3d_HSurface)& S, 
+void Contap_SurfProps::DerivAndNorm(const Handle(Adaptor3d_Surface)& S, 
                                     const Standard_Real U, 
                                     const Standard_Real V,
                                     gp_Pnt& P,
@@ -231,7 +231,7 @@ void Contap_SurfProps::DerivAndNorm(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-void Contap_SurfProps::NormAndDn(const Handle(Adaptor3d_HSurface)& S, 
+void Contap_SurfProps::NormAndDn(const Handle(Adaptor3d_Surface)& S, 
                                  const Standard_Real U, 
                                  const Standard_Real V,
                                  gp_Pnt& P,

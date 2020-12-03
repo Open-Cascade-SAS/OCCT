@@ -17,7 +17,6 @@
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_HSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>

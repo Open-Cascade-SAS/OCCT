@@ -18,7 +18,7 @@
 
 #include <Standard_Type.hxx>
 #include <gp_Pnt2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <IMeshData_Types.hxx>
 #include <IMeshData_Face.hxx>
 
@@ -91,7 +91,7 @@ public:
   }
 
   //! Returns surface.
-  const Handle(BRepAdaptor_HSurface)& GetSurface() const
+  const Handle(BRepAdaptor_Surface)& GetSurface() const
   {
     return myDFace->GetSurface();
   }

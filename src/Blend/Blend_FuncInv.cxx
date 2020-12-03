@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Blend_FuncInv.hxx>
 #include <math_Matrix.hxx>
 

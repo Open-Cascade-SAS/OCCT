@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS.hxx>
@@ -52,12 +52,12 @@ void TopOpeBRep_Hctxff2d::SetFaces(const TopoDS_Face& F1,const TopoDS_Face& F2)
 
   Standard_Boolean computerestriction = Standard_False;
   if (newf1) {
-    if (mySurface1.IsNull()) mySurface1 = new BRepAdaptor_HSurface();
-    mySurface1->ChangeSurface().Initialize(F1,computerestriction);
+    if (mySurface1.IsNull()) mySurface1 = new BRepAdaptor_Surface();
+    mySurface1->Initialize(F1,computerestriction);
   }
   if (newf2) {
-    if (mySurface2.IsNull()) mySurface2 = new BRepAdaptor_HSurface();
-    mySurface2->ChangeSurface().Initialize(F2,computerestriction);
+    if (mySurface2.IsNull()) mySurface2 = new BRepAdaptor_Surface();
+    mySurface2->Initialize(F2,computerestriction);
   }
   SetHSurfacesPrivate();
 } // SetFaces
@@ -67,12 +67,12 @@ void TopOpeBRep_Hctxff2d::SetFaces(const TopoDS_Face& F1,const TopoDS_Face& F2)
 //function : SetHSurfaces
 //purpose  : 
 //=======================================================================
-void TopOpeBRep_Hctxff2d::SetHSurfaces(const Handle(BRepAdaptor_HSurface)& HS1,
-				       const Handle(BRepAdaptor_HSurface)& HS2)
+void TopOpeBRep_Hctxff2d::SetHSurfaces(const Handle(BRepAdaptor_Surface)& HS1,
+				       const Handle(BRepAdaptor_Surface)& HS2)
 {
   Standard_Boolean newf1 = Standard_False; Standard_Boolean newf2 = Standard_False;
-  if (!HS1.IsNull()) newf1 = !HS1->ChangeSurface().Face().IsEqual(myFace1);
-  if (!HS2.IsNull()) newf2 = !HS2->ChangeSurface().Face().IsEqual(myFace2);
+  if (!HS1.IsNull()) newf1 = !HS1->Face().IsEqual(myFace1);
+  if (!HS2.IsNull()) newf2 = !HS2->Face().IsEqual(myFace2);
   Standard_Boolean yaduneuf = (newf1 || newf2); if (!yaduneuf) return;
   
   mySurface1 = HS1;
@@ -86,11 +86,11 @@ void TopOpeBRep_Hctxff2d::SetHSurfaces(const Handle(BRepAdaptor_HSurface)& HS1,
 //=======================================================================
 void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
 {
-  BRepAdaptor_Surface& S1 = mySurface1->ChangeSurface();
+  BRepAdaptor_Surface& S1 = *mySurface1;
   myFace1 = S1.Face();
   mySurfaceType1 = S1.GetType();
 
-  BRepAdaptor_Surface& S2 = mySurface2->ChangeSurface(); 
+  BRepAdaptor_Surface& S2 = *mySurface2; 
   myFace2 = S2.Face(); 
   mySurfaceType2 = S2.GetType();
   
@@ -170,7 +170,7 @@ const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const Standard_Integer Index) const
 //function : Surface
 //purpose  : 
 //=======================================================================
-Handle(BRepAdaptor_HSurface) TopOpeBRep_Hctxff2d::HSurface(const Standard_Integer Index) const 
+Handle(BRepAdaptor_Surface) TopOpeBRep_Hctxff2d::HSurface(const Standard_Integer Index) const 
 {
   if      ( Index == 1 ) return mySurface1;
   else if ( Index == 2 ) return mySurface2;

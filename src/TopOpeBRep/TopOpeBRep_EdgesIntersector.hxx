@@ -17,28 +17,21 @@
 #ifndef _TopOpeBRep_EdgesIntersector_HeaderFile
 #define _TopOpeBRep_EdgesIntersector_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <TopoDS_Face.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Boolean.hxx>
-#include <IntRes2d_Domain.hxx>
-#include <TopoDS_Edge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Standard_Real.hxx>
 #include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_Domain.hxx>
 #include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <IntRes2d_SequenceOfIntersectionSegment.hxx>
-#include <Standard_Integer.hxx>
+#include <TopAbs_Orientation.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRep_SequenceOfPoint2d.hxx>
 #include <TopOpeBRep_P2Dstatus.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TopOpeBRepDS_Config.hxx>
-class BRepAdaptor_HSurface;
-class TopoDS_Shape;
+
 class Bnd_Box;
 class Geom2dAdaptor_Curve;
 class BRepAdaptor_Surface;
@@ -48,7 +41,6 @@ class IntRes2d_IntersectionSegment;
 class IntRes2d_IntersectionPoint;
 class TopOpeBRepDS_Transition;
 class gp_Pnt;
-
 
 //! Describes the intersection of two edges on the same surface
 class TopOpeBRep_EdgesIntersector 
@@ -180,8 +172,8 @@ private:
 
   TopoDS_Face myFace1;
   TopoDS_Face myFace2;
-  Handle(BRepAdaptor_HSurface) mySurface1;
-  Handle(BRepAdaptor_HSurface) mySurface2;
+  Handle(BRepAdaptor_Surface) mySurface1;
+  Handle(BRepAdaptor_Surface) mySurface2;
   GeomAbs_SurfaceType mySurfaceType1;
   GeomAbs_SurfaceType mySurfaceType2;
   Standard_Boolean mySurfacesSameOriented;

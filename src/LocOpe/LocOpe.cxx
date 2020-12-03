@@ -14,17 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <LocOpe.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <LocOpe.hxx>
 #include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -142,13 +141,13 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
 
   TopoDS_Edge e = E;
 
-  Handle(BRepAdaptor_HSurface) HS1 = new BRepAdaptor_HSurface(F1);
-  Handle(BRepAdaptor_HSurface) HS2 = new BRepAdaptor_HSurface(F2);
+  Handle(BRepAdaptor_Surface) HS1 = new BRepAdaptor_Surface(F1);
+  Handle(BRepAdaptor_Surface) HS2 = new BRepAdaptor_Surface(F2);
   e.Orientation(TopAbs_FORWARD);
-  Handle(BRepAdaptor_HCurve2d) HC2d = new BRepAdaptor_HCurve2d();
-  Handle(BRepAdaptor_HCurve2d) HC2d2 = new BRepAdaptor_HCurve2d();
-  HC2d->ChangeCurve2d().Initialize(e,F1);
-  HC2d2->ChangeCurve2d().Initialize(e,F2);
+  Handle(BRepAdaptor_Curve2d) HC2d = new BRepAdaptor_Curve2d();
+  Handle(BRepAdaptor_Curve2d) HC2d2 = new BRepAdaptor_Curve2d();
+  HC2d->Initialize(e,F1);
+  HC2d2->Initialize(e,F2);
   
 
 //  Adaptor3d_CurveOnSurface C1(HC2d,HS1);

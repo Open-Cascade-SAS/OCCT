@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepSweep_Translation.hxx>
 
 #include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -22,7 +23,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepSweep_Translation.hxx>
 #include <BRepTools.hxx>
 #include <ElSLib.hxx>
 #include <Geom2d_Line.hxx>
@@ -34,7 +34,6 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
@@ -265,7 +264,7 @@ TopoDS_Shape  BRepSweep_Translation::MakeEmptyFace
     D.Reverse();
 
     if (myCanonize) {
-      Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve(C,First,Last);
+      Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve(C,First,Last);
       GeomAdaptor_SurfaceOfLinearExtrusion AS(HC,D);
       switch(AS.GetType()){
 

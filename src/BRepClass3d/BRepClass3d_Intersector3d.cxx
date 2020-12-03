@@ -15,12 +15,12 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_Intersector3d.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -65,8 +65,8 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
   Standard_Real V2 = surface.LastVParameter();
   
   //--
-  Handle(GeomAdaptor_HCurve) HLL  = new GeomAdaptor_HCurve(LL);
-  Handle(BRepAdaptor_HSurface) Hsurface = new BRepAdaptor_HSurface(surface);
+  Handle(GeomAdaptor_Curve) HLL  = new GeomAdaptor_Curve(LL);
+  Handle(BRepAdaptor_Surface) Hsurface = new BRepAdaptor_Surface(surface);
   //-- 
   HICS.Perform(HLL,Hsurface);
   

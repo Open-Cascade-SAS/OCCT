@@ -23,8 +23,8 @@
 #include <TopExp_Explorer.hxx>
 #include <Geom_Plane.hxx>
 #include <TopExp.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Standard_Failure.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
@@ -108,7 +108,7 @@ void BRepMesh_CurveTessellator::init()
   if (myCurve.IsCurveOnSurface())
   {
     const Adaptor3d_CurveOnSurface& aCurve = myCurve.CurveOnSurface();
-    const Handle(Adaptor3d_HSurface)& aSurface = aCurve.GetSurface();
+    const Handle(Adaptor3d_Surface)& aSurface = aCurve.GetSurface();
 
     const Standard_Real aTol = Precision::Confusion();
     const Standard_Real aDu = aSurface->UResolution(aTol);
@@ -238,7 +238,7 @@ Standard_Boolean BRepMesh_CurveTessellator::Value (
     // If point coordinates are out of surface range, 
     // it is necessary to re-project point.
     const Adaptor3d_CurveOnSurface& aCurve = myCurve.CurveOnSurface();
-    const Handle(Adaptor3d_HSurface)& aSurface = aCurve.GetSurface();
+    const Handle(Adaptor3d_Surface)& aSurface = aCurve.GetSurface();
     if (aSurface->GetType() != GeomAbs_BSplineSurface &&
         aSurface->GetType() != GeomAbs_BezierSurface  &&
         aSurface->GetType() != GeomAbs_OtherSurface)

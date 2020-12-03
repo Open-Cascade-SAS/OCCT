@@ -52,7 +52,6 @@
 #include <Geom_SphericalSurface.hxx> //S4135
 #include <Geom2d_BSplineCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>  
 #include <TopTools_Array1OfShape.hxx>
 #include <BRepTools.hxx>
@@ -75,7 +74,7 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <Geom2dAPI_ExtremaCurveCurve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Approx_Curve2d.hxx>
 #include <Geom2dConvert.hxx>
 
@@ -87,7 +86,7 @@
 #include <Geom_OffsetCurve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Approx_Curve3d.hxx>
 #include <GeomConvert.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -348,7 +347,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       }
       else if (c->IsKind(STANDARD_TYPE(Geom_Conic))) 
       {
-	Approx_Curve3d Conv(new GeomAdaptor_HCurve(c,first,last),
+	Approx_Curve3d Conv(new GeomAdaptor_Curve(c,first,last),
 			    myAnalyzer->Precision(),GeomAbs_C1,9,1000);
 	if (Conv.IsDone() || Conv.HasResult()) bsp = Conv.Curve();
       }
@@ -927,10 +926,10 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
       }
       else if (pc->IsKind(STANDARD_TYPE(Geom2d_Conic))) 
       {
-	GeomAdaptor_Surface& AS = myAnalyzer->Surface()->Adaptor3d()->ChangeSurface();
+	GeomAdaptor_Surface& AS = *myAnalyzer->Surface()->Adaptor3d();
 	Standard_Real tolu = AS.UResolution(myAnalyzer->Precision()),
 	tolv = AS.VResolution(myAnalyzer->Precision());
-	Approx_Curve2d Conv(new Geom2dAdaptor_HCurve(pc,first,last),
+	Approx_Curve2d Conv(new Geom2dAdaptor_Curve(pc,first,last),
 			    first,last,tolu,tolv,GeomAbs_C1,9,1000);
 	if (Conv.IsDone() || Conv.HasResult()) bsp = Conv.Curve();
       }

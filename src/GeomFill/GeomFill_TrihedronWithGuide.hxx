@@ -23,7 +23,7 @@
 #include <gp_Pnt.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
-class Adaptor3d_HCurve;
+
 class Standard_OutOfRange;
 class Standard_NotImplemented;
 class gp_Pnt;
@@ -39,7 +39,7 @@ class GeomFill_TrihedronWithGuide : public GeomFill_TrihedronLaw
 public:
 
   
-  Standard_EXPORT virtual Handle(Adaptor3d_HCurve) Guide() const = 0;
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) Guide() const = 0;
   
   Standard_EXPORT virtual void Origine (const Standard_Real Param1, const Standard_Real Param2) = 0;
   
@@ -55,8 +55,8 @@ public:
 protected:
 
 
-  Handle(Adaptor3d_HCurve) myGuide;
-  Handle(Adaptor3d_HCurve) myTrimG;
+  Handle(Adaptor3d_Curve) myGuide;
+  Handle(Adaptor3d_Curve) myTrimG;
   gp_Pnt myCurPointOnGuide;
 
 

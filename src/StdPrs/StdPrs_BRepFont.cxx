@@ -33,7 +33,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <GeomAPI.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pln.hxx>
 #include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
@@ -138,8 +138,8 @@ StdPrs_BRepFont::StdPrs_BRepFont ()
 void StdPrs_BRepFont::init()
 {
   mySurface        = new Geom_Plane (gp_Pln (gp::XOY()));
-  myCurve2dAdaptor = new Geom2dAdaptor_HCurve();
-  Handle(Adaptor3d_HSurface) aSurfAdaptor = new GeomAdaptor_HSurface (mySurface);
+  myCurve2dAdaptor = new Geom2dAdaptor_Curve();
+  Handle(Adaptor3d_Surface) aSurfAdaptor = new GeomAdaptor_Surface (mySurface);
   myCurvOnSurf.Load (aSurfAdaptor);
 }
 
@@ -291,8 +291,8 @@ bool StdPrs_BRepFont::to3d (const Handle(Geom2d_Curve)& theCurve2d,
 {
   Standard_Real aMaxDeviation   = 0.0;
   Standard_Real anAverDeviation = 0.0;
-  myCurve2dAdaptor->ChangeCurve2d().Load (theCurve2d);
-  const Handle(Adaptor2d_HCurve2d)& aCurve = myCurve2dAdaptor; // to avoid ambiguity
+  myCurve2dAdaptor->Load (theCurve2d);
+  const Handle(Adaptor2d_Curve2d)& aCurve = myCurve2dAdaptor; // to avoid ambiguity
   myCurvOnSurf.Load (aCurve);
   GeomLib::BuildCurve3d (myPrecision, myCurvOnSurf,
                          myCurve2dAdaptor->FirstParameter(), myCurve2dAdaptor->LastParameter(),

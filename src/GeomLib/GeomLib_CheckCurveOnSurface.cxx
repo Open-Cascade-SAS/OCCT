@@ -12,18 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <GeomLib_CheckCurveOnSurface.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_GHCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomLib_CheckCurveOnSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
@@ -261,8 +262,8 @@ public:
     //identificator of the current interval in mySubIntervals array) cell of 
     //myArrOfDist and myArrOfParam arrays.
     const GeomAdaptor_Curve anAC(myCurve3D);
-    const Handle(Adaptor2d_HCurve2d) anAd2dC = new Geom2dAdaptor_GHCurve(myCurve2D);
-    const Handle(Adaptor3d_HSurface) anAdS = new GeomAdaptor_HSurface(mySurface);
+    const Handle(Adaptor2d_Curve2d) anAd2dC = new Geom2dAdaptor_Curve(myCurve2D);
+    const Handle(Adaptor3d_Surface) anAdS = new GeomAdaptor_Surface(mySurface);
 
     const Adaptor3d_CurveOnSurface anACS(anAd2dC, anAdS);
 

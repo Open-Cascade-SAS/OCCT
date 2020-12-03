@@ -17,9 +17,9 @@
 #include <TopoDS_Edge.hxx>
 #include <Geom_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurveOnSurface.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom_Line.hxx>
@@ -36,7 +36,7 @@
 #include <gp_Lin.hxx>
 
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
 #include <Extrema_ExtCC.hxx>
 //#include <Extrema_ExtCS.hxx>
@@ -68,7 +68,7 @@
 #endif
 
 
-static Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HCurveOnSurface)& theCurve);
+static Standard_Boolean IsDegenerated(const Handle(Adaptor3d_CurveOnSurface)& theCurve);
 static Standard_Boolean IsDegenerated(const IntSurf_Quadric& theQuadric);
 
 static void FindVertex (const TheArc&,
@@ -174,7 +174,7 @@ void FindVertex (const TheArc& A,
   }
 }
 
-Standard_Boolean IsDegenerated(const Handle(Adaptor3d_HCurveOnSurface)& theCurve)
+Standard_Boolean IsDegenerated(const Handle(Adaptor3d_CurveOnSurface)& theCurve)
 {
   if (theCurve->GetType() == GeomAbs_Circle)
   {
@@ -389,7 +389,7 @@ void BoundedArc (const TheArc& A,
     if (TypeQuad != GeomAbs_OtherSurface) //intersection of boundary curve and quadric surface
     {
       //Exact solution
-      Handle(Adaptor3d_HSurface) aSurf = Func.Surface();
+      Handle(Adaptor3d_Surface) aSurf = Func.Surface();
       Adaptor3d_CurveOnSurface ConS(A, aSurf);
       GeomAbs_CurveType TypeConS = ConS.GetType();
 #ifdef OCCT_DEBUG
@@ -440,7 +440,7 @@ void BoundedArc (const TheArc& A,
         }
       }
 #endif
-      Handle(Adaptor3d_HCurveOnSurface) HConS = new Adaptor3d_HCurveOnSurface(ConS);
+      Handle(Adaptor3d_CurveOnSurface) HConS = new Adaptor3d_CurveOnSurface(ConS);
       Handle(Geom_Surface) QuadSurf;
       switch (TypeQuad)
       {
@@ -472,7 +472,7 @@ void BoundedArc (const TheArc& A,
       default:
         break;
       }
-      Handle(GeomAdaptor_HSurface) GAHsurf = new GeomAdaptor_HSurface(QuadSurf);
+      Handle(GeomAdaptor_Surface) GAHsurf = new GeomAdaptor_Surface(QuadSurf);
       
       if ((TypeConS == GeomAbs_Line ||
            TypeConS == GeomAbs_Circle ||

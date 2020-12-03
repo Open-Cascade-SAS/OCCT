@@ -11,11 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HIsoCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <ElCLib.hxx>
@@ -41,6 +40,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_IsoCurve, Adaptor3d_Curve)
+
 //=======================================================================
 //function : Adaptor3d_IsoCurve
 //purpose  : 
@@ -58,7 +59,7 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve()
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S)
 : mySurface  (S),
   myIso      (GeomAbs_NoneIso),
   myFirst    (0.0),
@@ -72,7 +73,7 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S)
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S,
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S,
                                        const GeomAbs_IsoType theIso,
                                        const Standard_Real theParam)
 : mySurface  (S),
@@ -89,7 +90,7 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S,
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& theS,
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& theS,
                                        const GeomAbs_IsoType theIso,
                                        const Standard_Real theParam,
                                        const Standard_Real theWFirst,
@@ -108,7 +109,7 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& theS,
 //purpose  : 
 //=======================================================================
 
-void Adaptor3d_IsoCurve::Load(const Handle(Adaptor3d_HSurface)& S ) 
+void Adaptor3d_IsoCurve::Load(const Handle(Adaptor3d_Surface)& S ) 
 {
   mySurface = S;
   myIso = GeomAbs_NoneIso;
@@ -310,13 +311,13 @@ void Adaptor3d_IsoCurve::Intervals(TColStd_Array1OfReal& TI,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) Adaptor3d_IsoCurve::Trim
+Handle(Adaptor3d_Curve) Adaptor3d_IsoCurve::Trim
  (const Standard_Real First,
   const Standard_Real Last,
   const Standard_Real) const 
 {
-  Handle(Adaptor3d_HIsoCurve) HI = new Adaptor3d_HIsoCurve(*this);
-  ((Adaptor3d_IsoCurve *)&(HI->Curve()))->Load(myIso,myParameter,First,Last);
+  Handle(Adaptor3d_IsoCurve) HI = new Adaptor3d_IsoCurve(*this);
+  HI->Load(myIso,myParameter,First,Last);
   return HI;
 }
 

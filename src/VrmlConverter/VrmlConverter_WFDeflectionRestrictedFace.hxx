@@ -17,16 +17,10 @@
 #ifndef _VrmlConverter_WFDeflectionRestrictedFace_HeaderFile
 #define _VrmlConverter_WFDeflectionRestrictedFace_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <BRepAdaptor_Surface.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class BRepAdaptor_HSurface;
-class VrmlConverter_Drawer;
 
+class VrmlConverter_Drawer;
 
 //! WFDeflectionRestrictedFace    -    computes    the
 //! wireframe   presentation   of  faces       with
@@ -45,13 +39,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
   
-  Standard_EXPORT static void AddUIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void AddUIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
   
-  Standard_EXPORT static void AddVIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void AddVIso (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Handle(VrmlConverter_Drawer)& aDrawer);
   
-  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_HSurface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(VrmlConverter_Drawer)& aDrawer);
+  Standard_EXPORT static void Add (Standard_OStream& anOStream, const Handle(BRepAdaptor_Surface)& aFace, const Standard_Boolean DrawUIso, const Standard_Boolean DrawVIso, const Standard_Real Deflection, const Standard_Integer NBUiso, const Standard_Integer NBViso, const Handle(VrmlConverter_Drawer)& aDrawer);
 
 };
 

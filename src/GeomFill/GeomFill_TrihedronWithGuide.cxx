@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GeomFill_TrihedronWithGuide.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronWithGuide,GeomFill_TrihedronLaw)
 
-Handle(Adaptor3d_HCurve) GeomFill_TrihedronWithGuide::Guide()const
+Handle(Adaptor3d_Curve) GeomFill_TrihedronWithGuide::Guide()const
 {
   return myGuide;
 }

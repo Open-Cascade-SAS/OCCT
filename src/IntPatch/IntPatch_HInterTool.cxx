@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
@@ -35,7 +35,7 @@ IntPatch_HInterTool::IntPatch_HInterTool() :
 {
 }
 
-Standard_Integer IntPatch_HInterTool::NbSamplesV (const Handle(Adaptor3d_HSurface)& S,
+Standard_Integer IntPatch_HInterTool::NbSamplesV (const Handle(Adaptor3d_Surface)& S,
                                                   const Standard_Real, const Standard_Real)
 {
   switch (S->GetType())
@@ -64,7 +64,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplesV (const Handle(Adaptor3d_HSurfac
   return 10;
 }
 
-Standard_Integer IntPatch_HInterTool::NbSamplesU (const Handle(Adaptor3d_HSurface)& S,
+Standard_Integer IntPatch_HInterTool::NbSamplesU (const Handle(Adaptor3d_Surface)& S,
                                                   const Standard_Real, const Standard_Real)
 {
   switch (S->GetType())
@@ -92,7 +92,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplesU (const Handle(Adaptor3d_HSurfac
   return 10;
 }
 
-Standard_Integer IntPatch_HInterTool::NbSamplePoints (const Handle(Adaptor3d_HSurface)& S)
+Standard_Integer IntPatch_HInterTool::NbSamplePoints (const Handle(Adaptor3d_Surface)& S)
 {
   uinf = S->FirstUParameter();
   usup = S->LastUParameter();
@@ -134,7 +134,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplePoints (const Handle(Adaptor3d_HSu
   return(m);
 }
 
-void IntPatch_HInterTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
+void IntPatch_HInterTool::SamplePoint (const Handle(Adaptor3d_Surface)& S,
                                        const Standard_Integer Index,
                                        Standard_Real& U,
                                        Standard_Real& V ) const
@@ -192,7 +192,7 @@ void IntPatch_HInterTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
 }
 
 
-Standard_Integer IntPatch_HInterTool::NbSamplesOnArc (const Handle(Adaptor2d_HCurve2d)& A)
+Standard_Integer IntPatch_HInterTool::NbSamplesOnArc (const Handle(Adaptor2d_Curve2d)& A)
 {
   GeomAbs_CurveType CurveType  = A->GetType();
 
@@ -222,7 +222,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplesOnArc (const Handle(Adaptor2d_HCu
   return(nbsOnC);
 }
 
-void IntPatch_HInterTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
+void IntPatch_HInterTool::Bounds(const Handle(Adaptor2d_Curve2d)& A,
                                  Standard_Real& Ufirst,
                                  Standard_Real& Ulast)
 {
@@ -230,7 +230,7 @@ void IntPatch_HInterTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
   Ulast  = A->LastParameter();
 }
 
-Standard_Boolean IntPatch_HInterTool::Project (const Handle(Adaptor2d_HCurve2d)& C,
+Standard_Boolean IntPatch_HInterTool::Project (const Handle(Adaptor2d_Curve2d)& C,
                                                const gp_Pnt2d& P,
                                                Standard_Real& Paramproj,
                                                gp_Pnt2d& Ptproj)
@@ -240,7 +240,7 @@ Standard_Boolean IntPatch_HInterTool::Project (const Handle(Adaptor2d_HCurve2d)&
   Standard_Real Tol = 1.e-5;
   Standard_Real Dist2;
 
-  Extrema_EPCOfExtPC2d extrema(P,C->Curve2d(),Nbu,epsX,Tol);
+  Extrema_EPCOfExtPC2d extrema(P,*C,Nbu,epsX,Tol);
   if (!extrema.IsDone()) {
     return Standard_False;
   }
@@ -262,28 +262,28 @@ Standard_Boolean IntPatch_HInterTool::Project (const Handle(Adaptor2d_HCurve2d)&
 }
 
 Standard_Real IntPatch_HInterTool::Tolerance (const Handle(Adaptor3d_HVertex)& V,
-                                              const Handle(Adaptor2d_HCurve2d)& C)
+                                              const Handle(Adaptor2d_Curve2d)& C)
 {
   return V->Resolution(C);
 }
 
 Standard_Real IntPatch_HInterTool::Parameter (const Handle(Adaptor3d_HVertex)& V,
-                                              const Handle(Adaptor2d_HCurve2d)& C)
+                                              const Handle(Adaptor2d_Curve2d)& C)
 {
   return V->Parameter(C);
 }
 
-Standard_Boolean IntPatch_HInterTool::HasBeenSeen(const Handle(Adaptor2d_HCurve2d)&)
+Standard_Boolean IntPatch_HInterTool::HasBeenSeen(const Handle(Adaptor2d_Curve2d)&)
 {
   return Standard_False;
 }
 
-Standard_Integer IntPatch_HInterTool::NbPoints(const Handle(Adaptor2d_HCurve2d)&)
+Standard_Integer IntPatch_HInterTool::NbPoints(const Handle(Adaptor2d_Curve2d)&)
 {
   return 0;
 }
 
-void IntPatch_HInterTool::Value(const Handle(Adaptor2d_HCurve2d)&,
+void IntPatch_HInterTool::Value(const Handle(Adaptor2d_Curve2d)&,
                                 const Standard_Integer,
                                 gp_Pnt&,
                                 Standard_Real&,
@@ -292,39 +292,39 @@ void IntPatch_HInterTool::Value(const Handle(Adaptor2d_HCurve2d)&,
   throw Standard_OutOfRange();
 }
 
-Standard_Boolean IntPatch_HInterTool::IsVertex(const Handle(Adaptor2d_HCurve2d)&,
+Standard_Boolean IntPatch_HInterTool::IsVertex(const Handle(Adaptor2d_Curve2d)&,
                                                const Standard_Integer)
 {
   return Standard_False;
 }
 
-void IntPatch_HInterTool::Vertex(const Handle(Adaptor2d_HCurve2d)&,
+void IntPatch_HInterTool::Vertex(const Handle(Adaptor2d_Curve2d)&,
                                  const Standard_Integer,
                                  Handle(Adaptor3d_HVertex)&)
 {
   throw Standard_OutOfRange();
 }
 
-Standard_Integer IntPatch_HInterTool::NbSegments(const Handle(Adaptor2d_HCurve2d)&)
+Standard_Integer IntPatch_HInterTool::NbSegments(const Handle(Adaptor2d_Curve2d)&)
 {
   return 0;
 }
 
-Standard_Boolean IntPatch_HInterTool::HasFirstPoint (const Handle(Adaptor2d_HCurve2d)&,
+Standard_Boolean IntPatch_HInterTool::HasFirstPoint (const Handle(Adaptor2d_Curve2d)&,
                                                      const Standard_Integer,
                                                      Standard_Integer&)
 {
   throw Standard_OutOfRange();
 }
 
-Standard_Boolean IntPatch_HInterTool::HasLastPoint (const Handle(Adaptor2d_HCurve2d)&,
+Standard_Boolean IntPatch_HInterTool::HasLastPoint (const Handle(Adaptor2d_Curve2d)&,
                                                     const Standard_Integer,
                                                     Standard_Integer&)
 {
   throw Standard_OutOfRange();
 }
 
-Standard_Boolean IntPatch_HInterTool::IsAllSolution (const Handle(Adaptor2d_HCurve2d)&)
+Standard_Boolean IntPatch_HInterTool::IsAllSolution (const Handle(Adaptor2d_Curve2d)&)
 {
   return Standard_False;
 }

@@ -14,13 +14,12 @@
 
 #include <GeomEvaluator_OffsetSurface.hxx>
 
-#include <GeomAdaptor_HSurface.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_UndefinedValue.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_NumericError.hxx>
@@ -44,7 +43,7 @@ const Standard_Real the_D1MagTol = 1.e-9;
 static Standard_Boolean shiftPoint (const Standard_Real theUStart, const Standard_Real theVStart,
                                     Standard_Real& theU, Standard_Real& theV, 
                                     const Handle(Geom_Surface)& theSurf,
-                                    const Handle(GeomAdaptor_HSurface)& theAdaptor,
+                                    const Handle(GeomAdaptor_Surface)& theAdaptor,
                                     const gp_Vec& theD1U, const gp_Vec& theD1V)
 {
   // Get parametric bounds and closure status
@@ -249,7 +248,7 @@ GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
 }
 
 GeomEvaluator_OffsetSurface::GeomEvaluator_OffsetSurface(
-        const Handle(GeomAdaptor_HSurface)& theBase,
+        const Handle(GeomAdaptor_Surface)& theBase,
         const Standard_Real theOffset,
         const Handle(Geom_OsculatingSurface)& theOscSurf)
   : GeomEvaluator_Surface(),
@@ -891,11 +890,11 @@ Standard_Boolean GeomEvaluator_OffsetSurface::ReplaceDerivative(
 
     // Calculate step along non-zero derivative
     Standard_Real aStep;
-    Handle(Adaptor3d_HSurface) aSurfAdapt;
+    Handle(Adaptor3d_Surface) aSurfAdapt;
     if (!myBaseAdaptor.IsNull())
       aSurfAdapt = myBaseAdaptor;
     else
-      aSurfAdapt = new GeomAdaptor_HSurface(myBaseSurf);
+      aSurfAdapt = new GeomAdaptor_Surface(myBaseSurf);
     if (isReplaceDV)
     {
       aStep = Precision::Confusion() * theDU.Magnitude();

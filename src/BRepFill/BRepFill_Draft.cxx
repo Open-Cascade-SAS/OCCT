@@ -14,8 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepFill_Draft.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
@@ -31,7 +32,6 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
-#include <BRepFill_Draft.hxx>
 #include <BRepFill_DraftLaw.hxx>
 #include <BRepFill_SectionLaw.hxx>
 #include <BRepFill_ShapeLaw.hxx>
@@ -47,7 +47,6 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_LocationDraft.hxx>
 #include <GeomLProp_SLProps.hxx>
@@ -189,7 +188,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   Nb++; // Number of points
 
   TColgp_Array1OfPnt Pnts(1, Nb);
-  Handle(Adaptor3d_HCurve) AC;
+  Handle(Adaptor3d_Curve) AC;
   gp_XYZ Bary(0.,0.,0.);
   
   for (ii=1; ii<=Nb; ii++) {

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <IntPolyh_Edge.hxx>
 #include <IntPolyh_Point.hxx>
@@ -40,7 +40,7 @@ static
 		   const Standard_Integer P2,
 		   const Standard_Integer P3,
 		   IntPolyh_ArrayOfTriangles &TTriangles,
-		   const Handle(Adaptor3d_HSurface)& MySurface,
+		   const Handle(Adaptor3d_Surface)& MySurface,
 		   IntPolyh_ArrayOfPoints &TPoints);
 static
   void NewEdge(const Standard_Integer P1,
@@ -61,7 +61,7 @@ static
 //           barycenter of the triangle in UV space.
 //=======================================================================
 Standard_Real
-  IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_HSurface)& theSurface,
+  IntPolyh_Triangle::ComputeDeflection(const Handle(Adaptor3d_Surface)& theSurface,
                                        const IntPolyh_ArrayOfPoints& TPoints)
 {
   myDeflection = 0.;
@@ -218,7 +218,7 @@ void NewTriangle(const Standard_Integer P1,
 		 const Standard_Integer P2,
 		 const Standard_Integer P3,
 		 IntPolyh_ArrayOfTriangles &TTriangles,
-		 const Handle(Adaptor3d_HSurface)& MySurface,
+		 const Handle(Adaptor3d_Surface)& MySurface,
 		 IntPolyh_ArrayOfPoints &TPoints) {
   const Standard_Integer FinTT = TTriangles.NbItems();
   TTriangles[FinTT].SetFirstPoint(P1);
@@ -270,7 +270,7 @@ void OldEdge(const Standard_Integer EdgeN,
 //purpose  : 
 //=======================================================================
 void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
-                                         const Handle(Adaptor3d_HSurface)& MySurface,
+                                         const Handle(Adaptor3d_Surface)& MySurface,
                                          IntPolyh_ArrayOfPoints &TPoints,
                                          IntPolyh_ArrayOfTriangles &TTriangles,
                                          IntPolyh_ArrayOfEdges & TEdges)
@@ -567,7 +567,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
 void IntPolyh_Triangle::MultipleMiddleRefinement(const Standard_Real theRefineCriterion,
                                                  const Bnd_Box& theBox,
                                                  const Standard_Integer theTriangleNumber,
-                                                 const Handle(Adaptor3d_HSurface)& theSurface,
+                                                 const Handle(Adaptor3d_Surface)& theSurface,
                                                  IntPolyh_ArrayOfPoints& TPoints,
                                                  IntPolyh_ArrayOfTriangles& TTriangles,
                                                  IntPolyh_ArrayOfEdges& TEdges)

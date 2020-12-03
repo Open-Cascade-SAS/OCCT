@@ -17,18 +17,12 @@
 #ifndef _BRepBlend_SurfRstConstRad_HeaderFile
 #define _BRepBlend_SurfRstConstRad_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_Integer.hxx>
 #include <BlendFunc_SectionShape.hxx>
 #include <Convert_ParameterisationType.hxx>
 #include <Blend_SurfRstFunction.hxx>
@@ -40,14 +34,8 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-class Adaptor3d_HSurface;
-class Adaptor2d_HCurve2d;
-class Adaptor3d_HCurve;
+
 class math_Matrix;
-class gp_Pnt;
-class gp_Pnt2d;
-class gp_Vec;
-class gp_Vec2d;
 class gp_Circ;
 class Blend_Point;
 
@@ -61,7 +49,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT BRepBlend_SurfRstConstRad(const Handle(Adaptor3d_HSurface)& Surf, const Handle(Adaptor3d_HSurface)& SurfRst, const Handle(Adaptor2d_HCurve2d)& Rst, const Handle(Adaptor3d_HCurve)& CGuide);
+  Standard_EXPORT BRepBlend_SurfRstConstRad(const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_Surface)& SurfRst, const Handle(Adaptor2d_Curve2d)& Rst, const Handle(Adaptor3d_Curve)& CGuide);
   
   //! Returns 3.
   Standard_EXPORT Standard_Integer NbVariables() const Standard_OVERRIDE;
@@ -87,7 +75,7 @@ public:
   //! False otherwise.
   Standard_EXPORT Standard_Boolean Values (const math_Vector& X, math_Vector& F, math_Matrix& D) Standard_OVERRIDE;
   
-  Standard_EXPORT void Set (const Handle(Adaptor3d_HSurface)& SurfRef, const Handle(Adaptor2d_HCurve2d)& RstRef);
+  Standard_EXPORT void Set (const Handle(Adaptor3d_Surface)& SurfRef, const Handle(Adaptor2d_Curve2d)& RstRef);
   
   Standard_EXPORT void Set (const Standard_Real Param) Standard_OVERRIDE;
   
@@ -203,12 +191,12 @@ private:
 
 
 
-  Handle(Adaptor3d_HSurface) surf;
-  Handle(Adaptor3d_HSurface) surfrst;
-  Handle(Adaptor2d_HCurve2d) rst;
+  Handle(Adaptor3d_Surface) surf;
+  Handle(Adaptor3d_Surface) surfrst;
+  Handle(Adaptor2d_Curve2d) rst;
   Adaptor3d_CurveOnSurface cons;
-  Handle(Adaptor3d_HCurve) guide;
-  Handle(Adaptor3d_HCurve) tguide;
+  Handle(Adaptor3d_Curve) guide;
+  Handle(Adaptor3d_Curve) tguide;
   gp_Pnt pts;
   gp_Pnt ptrst;
   gp_Pnt2d pt2ds;
@@ -227,8 +215,8 @@ private:
   gp_Vec nplan;
   Standard_Real normtg;
   Standard_Real theD;
-  Handle(Adaptor3d_HSurface) surfref;
-  Handle(Adaptor2d_HCurve2d) rstref;
+  Handle(Adaptor3d_Surface) surfref;
+  Handle(Adaptor2d_Curve2d) rstref;
   Standard_Real maxang;
   Standard_Real minang;
   Standard_Real distmin;

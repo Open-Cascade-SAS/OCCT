@@ -21,8 +21,10 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
 #include <BSplSLib_Cache.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -40,9 +42,6 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomEvaluator_OffsetSurface.hxx>
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
@@ -69,6 +68,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion()*0.5;
+
+IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 
 //=======================================================================
 //function : LocalContinuity
@@ -161,7 +162,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
           Handle(Geom_SurfaceOfRevolution)::DownCast(mySurface);
       // Create nested adaptor for base curve
       Handle(Geom_Curve) aBaseCurve = myRevSurf->BasisCurve();
-      Handle(Adaptor3d_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      Handle(Adaptor3d_Curve) aBaseAdaptor = new GeomAdaptor_Curve(aBaseCurve);
       // Create corresponding evaluator
       myNestedEvaluator = 
         new GeomEvaluator_SurfaceOfRevolution (aBaseAdaptor, myRevSurf->Direction(), myRevSurf->Location());
@@ -173,7 +174,7 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
           Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(mySurface);
       // Create nested adaptor for base curve
       Handle(Geom_Curve) aBaseCurve = myExtSurf->BasisCurve();
-      Handle(Adaptor3d_HCurve) aBaseAdaptor = new GeomAdaptor_HCurve(aBaseCurve);
+      Handle(Adaptor3d_Curve) aBaseAdaptor = new GeomAdaptor_Curve(aBaseCurve);
       // Create corresponding evaluator
       myNestedEvaluator =
         new GeomEvaluator_SurfaceOfExtrusion (aBaseAdaptor, myExtSurf->Direction());
@@ -192,8 +193,8 @@ void GeomAdaptor_Surface::load(const Handle(Geom_Surface)& S,
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
       // Create nested adaptor for base surface
       Handle(Geom_Surface) aBaseSurf = myOffSurf->BasisSurface();
-      Handle(GeomAdaptor_HSurface) aBaseAdaptor =
-          new GeomAdaptor_HSurface(aBaseSurf, myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
+      Handle(GeomAdaptor_Surface) aBaseAdaptor =
+          new GeomAdaptor_Surface(aBaseSurf, myUFirst, myULast, myVFirst, myVLast, myTolU, myTolV);
       myNestedEvaluator = new GeomEvaluator_OffsetSurface(
           aBaseAdaptor, myOffSurf->Offset(), myOffSurf->OsculatingSurface());
     }
@@ -555,12 +556,12 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) GeomAdaptor_Surface::UTrim(const Standard_Real First,
+Handle(Adaptor3d_Surface) GeomAdaptor_Surface::UTrim(const Standard_Real First,
                                                       const Standard_Real Last ,
                                                       const Standard_Real Tol   ) const
 {
-  return Handle(GeomAdaptor_HSurface)
-    (new GeomAdaptor_HSurface(mySurface,First,Last,myVFirst,myVLast,Tol,myTolV));
+  return Handle(GeomAdaptor_Surface)
+    (new GeomAdaptor_Surface(mySurface,First,Last,myVFirst,myVLast,Tol,myTolV));
 }
 
 //=======================================================================
@@ -568,12 +569,12 @@ Handle(Adaptor3d_HSurface) GeomAdaptor_Surface::UTrim(const Standard_Real First,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) GeomAdaptor_Surface::VTrim(const Standard_Real First,
+Handle(Adaptor3d_Surface) GeomAdaptor_Surface::VTrim(const Standard_Real First,
                                                       const Standard_Real Last ,
                                                       const Standard_Real Tol   ) const
 {
-  return Handle(GeomAdaptor_HSurface)
-    (new GeomAdaptor_HSurface(mySurface,myUFirst,myULast,First,Last,myTolU,Tol));
+  return Handle(GeomAdaptor_Surface)
+    (new GeomAdaptor_Surface(mySurface,myUFirst,myULast,First,Last,myTolU,Tol));
 }
 
 //=======================================================================
@@ -1333,7 +1334,7 @@ gp_Dir GeomAdaptor_Surface::Direction() const
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) GeomAdaptor_Surface::BasisCurve() const 
+Handle(Adaptor3d_Curve) GeomAdaptor_Surface::BasisCurve() const 
 {
   Handle(Geom_Curve) C;
   if (mySurfaceType == GeomAbs_SurfaceOfExtrusion)
@@ -1342,7 +1343,7 @@ Handle(Adaptor3d_HCurve) GeomAdaptor_Surface::BasisCurve() const
     C = Handle(Geom_SurfaceOfRevolution)::DownCast (mySurface)->BasisCurve();
   else
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisCurve");
-  return Handle(GeomAdaptor_HCurve)(new GeomAdaptor_HCurve(C));
+  return Handle(GeomAdaptor_Curve)(new GeomAdaptor_Curve(C));
 }
 
 //=======================================================================
@@ -1350,11 +1351,11 @@ Handle(Adaptor3d_HCurve) GeomAdaptor_Surface::BasisCurve() const
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HSurface) GeomAdaptor_Surface::BasisSurface() const 
+Handle(Adaptor3d_Surface) GeomAdaptor_Surface::BasisSurface() const 
 {
   if (mySurfaceType != GeomAbs_OffsetSurface) 
     throw Standard_NoSuchObject("GeomAdaptor_Surface::BasisSurface");
-  return new GeomAdaptor_HSurface
+  return new GeomAdaptor_Surface
     (Handle(Geom_OffsetSurface)::DownCast (mySurface)->BasisSurface(),
      myUFirst,myULast,myVFirst,myVLast);
 }

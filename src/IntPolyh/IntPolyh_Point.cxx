@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <IntPolyh_Point.hxx>
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 //function : Middle
 //purpose  : 
 //=======================================================================
-void IntPolyh_Point::Middle(const Handle(Adaptor3d_HSurface)& MySurface,
+void IntPolyh_Point::Middle(const Handle(Adaptor3d_Surface)& MySurface,
 				      const IntPolyh_Point & Point1, 
 				      const IntPolyh_Point & Point2){
   myU = (Point1.U()+Point2.U())*0.5;

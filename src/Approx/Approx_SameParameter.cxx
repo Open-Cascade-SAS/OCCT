@@ -14,24 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
 #include <Approx_SameParameter.hxx>
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <AdvApprox_ApproxAFunction.hxx>
 #include <BSplCLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_MakeCurvefromApprox.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -48,7 +48,7 @@ class Approx_SameParameter_Evaluator : public AdvApprox_EvaluatorFunction
 public:
   Approx_SameParameter_Evaluator (const TColStd_Array1OfReal& theFlatKnots,
                                   const TColStd_Array1OfReal& thePoles,
-                                  const Handle(Adaptor2d_HCurve2d)& theHCurve2d)
+                                  const Handle(Adaptor2d_Curve2d)& theHCurve2d)
     : FlatKnots(theFlatKnots),
       Poles(thePoles),
       HCurve2d(theHCurve2d) {}
@@ -63,7 +63,7 @@ public:
 private:
   const TColStd_Array1OfReal& FlatKnots;
   const TColStd_Array1OfReal& Poles;
-  Handle(Adaptor2d_HCurve2d) HCurve2d;
+  Handle(Adaptor2d_Curve2d) HCurve2d;
 };
 
 //=======================================================================
@@ -162,7 +162,7 @@ static void ProjectPointOnCurve(const Standard_Real      InitValue,
 //function : ComputeTolReached
 //purpose  :
 //=======================================================================
-static Standard_Real ComputeTolReached(const Handle(Adaptor3d_HCurve)& c3d,
+static Standard_Real ComputeTolReached(const Handle(Adaptor3d_Curve)& c3d,
                                        const Adaptor3d_CurveOnSurface& cons,
                                        const Standard_Integer        nbp)
 {
@@ -199,7 +199,7 @@ static Standard_Boolean Check(const TColStd_Array1OfReal& FlatKnots,
                               const TColStd_Array1OfReal& Poles,
                               const Standard_Integer nbp,
                               const Standard_Real *pc3d,
-                              const Handle(Adaptor3d_HCurve)& c3d,
+                              const Handle(Adaptor3d_Curve)& c3d,
                               const Adaptor3d_CurveOnSurface& cons,
                               Standard_Real& tol,
                               const Standard_Real oldtol)
@@ -276,9 +276,9 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Geom_Curve)&   C3D,
   mySameParameter(Standard_True),
   myDone(Standard_False)
 {
-  myHCurve2d = new Geom2dAdaptor_HCurve(C2D);
-  myC3d      = new GeomAdaptor_HCurve(C3D);
-  mySurf     = new GeomAdaptor_HSurface(S);
+  myHCurve2d = new Geom2dAdaptor_Curve(C2D);
+  myC3d      = new GeomAdaptor_Curve(C3D);
+  mySurf     = new GeomAdaptor_Surface(S);
   Build(Tol);
 }
 
@@ -286,9 +286,9 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Geom_Curve)&   C3D,
 //function : Approx_SameParameter
 //purpose  : 
 //=======================================================================
-Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D,
+Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_Curve)&   C3D,
                                            const Handle(Geom2d_Curve)&       C2D,
-                                           const Handle(Adaptor3d_HSurface)& S,
+                                           const Handle(Adaptor3d_Surface)& S,
                                            const Standard_Real               Tol)
 : myDeltaMin(Precision::PConfusion()),
   mySameParameter(Standard_True),
@@ -296,7 +296,7 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D
 {
   myC3d = C3D;
   mySurf = S;
-  myHCurve2d = new Geom2dAdaptor_HCurve(C2D);
+  myHCurve2d = new Geom2dAdaptor_Curve(C2D);
   Build(Tol);
 }
 
@@ -304,9 +304,9 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D
 //function : Approx_SameParameter
 //purpose  : 
 //=======================================================================
-Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_HCurve)&   C3D,
-                                           const Handle(Adaptor2d_HCurve2d)& C2D,
-                                           const Handle(Adaptor3d_HSurface)& S,
+Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_Curve)&   C3D,
+                                           const Handle(Adaptor2d_Curve2d)& C2D,
+                                           const Handle(Adaptor3d_Surface)& S,
                                            const Standard_Real               Tol)
 : myDeltaMin(Precision::PConfusion()),
   mySameParameter(Standard_True),
@@ -374,7 +374,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     if(aData.myNbPnt < aNbPnt )
     {
       myTolReached = ComputeTolReached(myC3d,aData.myCOnS, 2 * myNbSamples);
-      myCurve2d = Geom2dAdaptor::MakeCurve(myHCurve2d->Curve2d());
+      myCurve2d = Geom2dAdaptor::MakeCurve (*myHCurve2d);
       myDone = Standard_False;
       return;
     }
@@ -445,7 +445,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         Adaptor3d_CurveOnSurface ACS = aData.myCOnS;
         GeomLib_MakeCurvefromApprox  aCurveBuilder(anApproximator);
         Handle(Geom2d_BSplineCurve) aC2d = aCurveBuilder.Curve2dFromTwo1d(1,2);
-        Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2d);
+        Handle(Adaptor2d_Curve2d) aHCurve2d = new Geom2dAdaptor_Curve(aC2d);
         aData.myCOnS.Load(aHCurve2d);
         myTolReached = ComputeTolReached(myC3d,aData.myCOnS, 2 * myNbSamples);
 
@@ -482,7 +482,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     // Original 2d curve.
     aData.myCOnS.Load(myHCurve2d);
     myTolReached = ComputeTolReached(myC3d,aData.myCOnS, 2 * myNbSamples);
-    myCurve2d = Geom2dAdaptor::MakeCurve(myHCurve2d->Curve2d());
+    myCurve2d = Geom2dAdaptor::MakeCurve (*myHCurve2d);
 
     // Approximation curve.
     Standard_Integer num_knots = aData.myNbPnt + 7;
@@ -512,7 +512,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     GeomLib_MakeCurvefromApprox  aCurveBuilder(anApproximator);
     Handle(Geom2d_BSplineCurve) aC2d = aCurveBuilder.Curve2dFromTwo1d(1,2);
-    Handle(Adaptor2d_HCurve2d) aHCurve2d = new Geom2dAdaptor_HCurve(aC2d);
+    Handle(Adaptor2d_Curve2d) aHCurve2d = new Geom2dAdaptor_Curve(aC2d);
     aData.myCOnS.Load(aHCurve2d);
 
     Standard_Real anApproxTol = ComputeTolReached(myC3d,aData.myCOnS,2 * myNbSamples);
@@ -650,7 +650,7 @@ Standard_Boolean Approx_SameParameter::CheckSameParameter(Approx_SameParameter_D
   dmax2 = Max(dmax2, dist2);
 
   Extrema_LocateExtPC Projector;
-  Projector.Initialize(myC3d->Curve(), theData.myC3dPF, theData.myC3dPL, theData.myTol);
+  Projector.Initialize (*myC3d, theData.myC3dPF, theData.myC3dPL, theData.myTol);
 
   Standard_Integer count = 1;
   Standard_Real previousp = theData.myC3dPF, initp=0, curp;
@@ -688,7 +688,7 @@ Standard_Boolean Approx_SameParameter::CheckSameParameter(Approx_SameParameter_D
     }
     else
     {
-      ProjectPointOnCurve(initp,Pcons,theData.myTol,30,myC3d->Curve(),isProjOk,curp);
+      ProjectPointOnCurve(initp,Pcons,theData.myTol,30, *myC3d,isProjOk,curp);
     }
     isProjOk = isProjOk && // Good projection.
                curp > previousp + myDeltaMin && // Point is separated from previous.
@@ -702,7 +702,7 @@ Standard_Boolean Approx_SameParameter::CheckSameParameter(Approx_SameParameter_D
     }
 
     // Whole parameter space search using general extrema.
-    Extrema_ExtPC PR(Pcons,myC3d->Curve(),theData.myC3dPF, theData.myC3dPL,theData.myTol);
+    Extrema_ExtPC PR(Pcons, *myC3d, theData.myC3dPF, theData.myC3dPL, theData.myTol);
     if (!PR.IsDone() || PR.NbExt() == 0) // Lazy evaluation is used.
       continue;
 
@@ -830,7 +830,7 @@ Standard_Boolean Approx_SameParameter::IncreaseNbPoles(const TColStd_Array1OfRea
                                                        Standard_Real &theBestSqTol) const
 {
   Extrema_LocateExtPC Projector;
-  Projector.Initialize(myC3d->Curve(), myC3d->FirstParameter(), myC3d->LastParameter(), theData.myTol);
+  Projector.Initialize (*myC3d, myC3d->FirstParameter(), myC3d->LastParameter(), theData.myTol);
   Standard_Real curp = 0.0;
   Standard_Boolean projok = Standard_False;
 
@@ -869,7 +869,7 @@ Standard_Boolean Approx_SameParameter::IncreaseNbPoles(const TColStd_Array1OfRea
       }
       else
       {
-        ProjectPointOnCurve(uc3d,Pcons,theData.myTol,30,myC3d->Curve(),projok,curp);
+        ProjectPointOnCurve(uc3d,Pcons,theData.myTol,30, *myC3d,projok,curp);
       }
       if(projok)
       {
@@ -917,7 +917,7 @@ Standard_Boolean Approx_SameParameter::IncreaseNbPoles(const TColStd_Array1OfRea
     }
     else 
     {
-      ProjectPointOnCurve(uc3d,Pcons,theData.myTol,30,myC3d->Curve(),projok,curp);
+      ProjectPointOnCurve(uc3d,Pcons,theData.myTol,30, *myC3d,projok,curp);
     }
     if(projok)
     {

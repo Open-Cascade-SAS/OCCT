@@ -17,8 +17,8 @@
 // Modified : 20/08/96 PMN Ajout des methodes (Nb)Intervals et IsRationnal
 // Modified : 30/12/96 PMN Ajout GetMinimalWeight, GetSectionSize;
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_Chamfer.hxx>
@@ -36,9 +36,9 @@
 //purpose  : 
 //=======================================================================
 
-BlendFunc_Chamfer::BlendFunc_Chamfer(const Handle(Adaptor3d_HSurface)& S1,
-                                     const Handle(Adaptor3d_HSurface)& S2,
-                                     const Handle(Adaptor3d_HCurve)&   CG)
+BlendFunc_Chamfer::BlendFunc_Chamfer(const Handle(Adaptor3d_Surface)& S1,
+                                     const Handle(Adaptor3d_Surface)& S2,
+                                     const Handle(Adaptor3d_Curve)&   CG)
   : BlendFunc_GenChamfer(S1,S2,CG),
     corde1(S1,CG),corde2(S2,CG)
 {

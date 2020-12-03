@@ -13,8 +13,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -30,13 +30,13 @@
 #endif
 
 
-#define SURFACE1 (*((Handle(Adaptor3d_HSurface) *)(surface1)))
-#define SURFACE2 (*((Handle(Adaptor3d_HSurface) *)(surface2)))
-#define CURVE    (*((Handle(Adaptor2d_HCurve2d) *)(curve)))
+#define SURFACE1 (*((Handle(Adaptor3d_Surface) *)(surface1)))
+#define SURFACE2 (*((Handle(Adaptor3d_Surface) *)(surface2)))
+#define CURVE    (*((Handle(Adaptor2d_Curve2d) *)(curve)))
 
-IntPatch_CSFunction::IntPatch_CSFunction(const Handle(Adaptor3d_HSurface)& S1,
-					       const Handle(Adaptor2d_HCurve2d)& C,
-					       const Handle(Adaptor3d_HSurface)& S2)
+IntPatch_CSFunction::IntPatch_CSFunction(const Handle(Adaptor3d_Surface)& S1,
+					       const Handle(Adaptor2d_Curve2d)& C,
+					       const Handle(Adaptor3d_Surface)& S2)
 {
   surface1 = (Standard_Address)(&S1);
   surface2 = (Standard_Address)(&S2);
@@ -124,10 +124,10 @@ const gp_Pnt& IntPatch_CSFunction::Point() const { return p;}
 
 Standard_Real IntPatch_CSFunction::Root() const { return f;}
 
-const Handle(Adaptor3d_HSurface)& IntPatch_CSFunction::AuxillarSurface() const { 
+const Handle(Adaptor3d_Surface)& IntPatch_CSFunction::AuxillarSurface() const { 
   return SURFACE1;}
 
-const Handle(Adaptor2d_HCurve2d)& IntPatch_CSFunction::AuxillarCurve() const { 
+const Handle(Adaptor2d_Curve2d)& IntPatch_CSFunction::AuxillarCurve() const { 
   return CURVE;}
 
 #undef SURFACE1

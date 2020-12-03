@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_HCurve2d.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
@@ -28,8 +28,7 @@
 #include <Blend_SurfRstFunction.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HCurve2d.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepLProp_SLProps.hxx>
@@ -41,7 +40,7 @@
 #include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_HElSpine.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_ListIteratorOfRegularities.hxx>
 #include <ChFiDS_Regul.hxx>
@@ -627,15 +626,15 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
 //=======================================================================
 static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
 					 const TopoDS_Edge&                  E,
-					 const Handle(BRepAdaptor_HSurface)& hs1,
-					 const Handle(BRepAdaptor_HSurface)& hs2,
+					 const Handle(BRepAdaptor_Surface)& hs1,
+					 const Handle(BRepAdaptor_Surface)& hs2,
 //					 const Standard_Real                 t3d,
 					 const Standard_Real                 tang)
 {
-  TopoDS_Face f1 = hs1->ChangeSurface().Face();
+  TopoDS_Face f1 = hs1->Face();
   TopAbs_Orientation O1 = f1.Orientation();
   f1.Orientation(TopAbs_FORWARD);
-  TopoDS_Face f2 = hs2->ChangeSurface().Face();
+  TopoDS_Face f2 = hs2->Face();
   TopAbs_Orientation O2 = f2.Orientation();
   f2.Orientation(TopAbs_FORWARD);
   TopoDS_Edge e1 = E, e2 = E;
@@ -649,7 +648,7 @@ static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
   gp_Vec n1, n2;//   gp_Pnt pt1,pt2;
   Handle(Geom2d_Curve) pc1 = BRep_Tool::CurveOnSurface(e1,f1,f,l);
   pc1->Value(p1).Coord(u,v);
-  BRepLProp_SLProps theProp1(hs1->ChangeSurface(), u, v, 1, Eps);
+  BRepLProp_SLProps theProp1 (*hs1, u, v, 1, Eps);
   if  (theProp1.IsNormalDefined()) {
     n1.SetXYZ(theProp1.Normal().XYZ());
     if (O1 == TopAbs_REVERSED) n1.Reverse();
@@ -659,7 +658,7 @@ static Standard_Boolean TangentExtremity(const TopoDS_Vertex&                V,
  
   Handle(Geom2d_Curve) pc2 = BRep_Tool::CurveOnSurface(e2,f2,f,l);
   pc2->Value(p2).Coord(u,v);
-  BRepLProp_SLProps theProp2(hs2->ChangeSurface(), u, v, 1, Eps);
+  BRepLProp_SLProps theProp2 (*hs2, u, v, 1, Eps);
   if  (theProp2.IsNormalDefined()) {
     n2.SetXYZ(theProp2.Normal().XYZ());
     if(O2 == TopAbs_REVERSED) n2.Reverse();
@@ -681,8 +680,8 @@ static Standard_Boolean TangentOnVertex(const TopoDS_Vertex&    V,
   TopoDS_Face ff1,ff2;
   ChFi3d_conexfaces(E,ff1,ff2,EFMap);
   if(ff1.IsNull() || ff2.IsNull()) return 0;
-  Handle(BRepAdaptor_HSurface) S1 = new (BRepAdaptor_HSurface)(ff1);
-  Handle(BRepAdaptor_HSurface) S2 = new (BRepAdaptor_HSurface)(ff2);
+  Handle(BRepAdaptor_Surface) S1 = new (BRepAdaptor_Surface)(ff1);
+  Handle(BRepAdaptor_Surface) S2 = new (BRepAdaptor_Surface)(ff2);
   return TangentExtremity(V, E, S1, S2, tang);
 }
 
@@ -702,7 +701,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     TopoDS_Vertex V;
     ChFiDS_State sst;
     Standard_Integer iedge;
-    Handle(BRepAdaptor_HSurface) hs1,hs2;
+    Handle(BRepAdaptor_Surface) hs1,hs2;
     if(ii == 1){
       sst = Spine->FirstStatus();
       iedge = 1;

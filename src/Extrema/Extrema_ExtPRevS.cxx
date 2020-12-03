@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_HCurve.hxx>
-#include <GeomAdaptor_HSurfaceOfRevolution.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_ExtPRevS.hxx>
@@ -39,7 +39,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Extrema_ExtPRevS,Standard_Transient)
 
 static gp_Ax2 GetPosition (const GeomAdaptor_SurfaceOfRevolution& S)//const Handle(Adaptor_HCurve)& C)
 {
-  Handle(Adaptor3d_HCurve) C = S.BasisCurve();
+  Handle(Adaptor3d_Curve) C = S.BasisCurve();
   
   switch (C->GetType()) {
     
@@ -81,7 +81,7 @@ static gp_Ax2 GetPosition (const GeomAdaptor_SurfaceOfRevolution& S)//const Hand
 static Standard_Boolean HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S) 
 {
 
-  const Handle(Adaptor3d_HCurve) C = S.BasisCurve();
+  const Handle(Adaptor3d_Curve) C = S.BasisCurve();
   gp_Dir N = S.AxeOfRevolution().Direction();
   gp_Pnt P = S.AxeOfRevolution().Location();
 
@@ -102,7 +102,7 @@ static Standard_Boolean HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S)
 
 static void PerformExtPElC (Extrema_ExtPElC& E,
 			    const gp_Pnt& P,
-			    const Handle(Adaptor3d_HCurve)& C,
+			    const Handle(Adaptor3d_Curve)& C,
 			    const Standard_Real Tol)
 {
   switch (C->GetType()) {
@@ -227,7 +227,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS()
 //=======================================================================
 
 Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
-                                    const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
+                                    const Handle(GeomAdaptor_SurfaceOfRevolution)& theS,
                                     const Standard_Real                           theUmin,
                                     const Standard_Real                           theUsup,
                                     const Standard_Real                           theVmin,
@@ -251,7 +251,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                               
 //=======================================================================
 
 Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                                 theP,
-                                    const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
+                                    const Handle(GeomAdaptor_SurfaceOfRevolution)& theS,
                                     const Standard_Real                           theTolU,
                                     const Standard_Real                           theTolV)
 {
@@ -270,7 +270,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS (const gp_Pnt&                               
 //purpose  : 
 //=======================================================================
 
-void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution)& theS,
+void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_SurfaceOfRevolution)& theS,
                                    const Standard_Real                           theUmin,
                                    const Standard_Real                           theUsup,
                                    const Standard_Real                           theVmin,
@@ -286,12 +286,12 @@ void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution
   myNbExt = 0;
   myIsAnalyticallyComputable = Standard_False;
 
-  Handle(Adaptor3d_HCurve) anACurve = theS->BasisCurve();
+  Handle(Adaptor3d_Curve) anACurve = theS->BasisCurve();
   
   if (myS != theS)
   {
     myS = theS;
-    myPosition = GetPosition (theS->ChangeSurface());
+    myPosition = GetPosition (*theS);
     myIsAnalyticallyComputable =
       IsCaseAnalyticallyComputable (anACurve->GetType(), myPosition, theS->AxeOfRevolution());
   }
@@ -300,12 +300,12 @@ void Extrema_ExtPRevS::Initialize (const Handle(GeomAdaptor_HSurfaceOfRevolution
   {
     Standard_Integer aNbu = 32, aNbv = 32;
 
-    if (HasSingularity (theS->ChangeSurface()))
+    if (HasSingularity (*theS))
     {
       aNbv = 100;
     }
 
-    myExtPS.Initialize (theS->ChangeSurface(),
+    myExtPS.Initialize (*theS,
                         aNbu,
                         aNbv,
                         theUmin,
@@ -334,7 +334,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
     return;
   }
   
-  Handle(Adaptor3d_HCurve) anACurve = myS->BasisCurve();
+  Handle(Adaptor3d_Curve) anACurve = myS->BasisCurve();
 
   gp_Ax1 Ax = myS->AxeOfRevolution();
   gp_Vec Dir = Ax.Direction(), Z = myPosition.Direction();
@@ -406,7 +406,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
+	if ( !IsExtremum (U, V, P, myS.get(), E, Dist2,
 			   Standard_True, anExt.IsMin(i))) {
 	  continue;
 	}
@@ -432,7 +432,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
+	if ( !IsExtremum (U, V, P, myS.get(), E, Dist2,
 			  Standard_False, anExt.IsMin(i))) continue;
       } else {
 	E = myS->Value(U,V);
@@ -479,7 +479,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 	
-	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
+	if ( !IsExtremum (U, V, P, myS.get(), E, Dist2,
 			   Standard_True, anExt.IsMin(i))) continue;
       } else if (V < myvinf) {
 	// 	if ( !IsExtremum (U, V = myvinf, P, myS, E, Dist2,
@@ -502,7 +502,7 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	}
 	V = newV;
 
-	if ( !IsExtremum (U, V, P, &(myS->ChangeSurface()), E, Dist2,
+	if ( !IsExtremum (U, V, P, myS.get(), E, Dist2,
 			  Standard_False, anExt.IsMin(i))) continue;
       } else {
 	E = myS->Value(U,V);

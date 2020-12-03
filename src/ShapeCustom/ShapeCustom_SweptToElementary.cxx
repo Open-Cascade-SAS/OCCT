@@ -33,7 +33,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <GeomAdaptor_HCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>
@@ -112,8 +112,8 @@ Standard_Boolean ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face& F,
     Handle(Geom_SurfaceOfRevolution) SR = Handle(Geom_SurfaceOfRevolution)::DownCast(SS);
     Handle(Geom_Curve) bc = SR->BasisCurve();
     gp_Ax1 ax1 = SR->Axis();
-    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
-    HC->ChangeCurve().Load(bc,bc->FirstParameter(),bc->LastParameter());
+    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+    HC->Load(bc,bc->FirstParameter(),bc->LastParameter());
     GeomAdaptor_SurfaceOfRevolution AS(HC,ax1);
     switch(AS.GetType()){
     // skl 18.12.2003 - plane not used, problems in PRO14665.igs
@@ -150,8 +150,8 @@ Standard_Boolean ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face& F,
       Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(SS);
     Handle(Geom_Curve) bc = SLE->BasisCurve();
     gp_Dir dir = SLE->Direction();
-    Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
-    HC->ChangeCurve().Load(bc,bc->FirstParameter(),bc->LastParameter());
+    Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
+    HC->Load(bc,bc->FirstParameter(),bc->LastParameter());
     GeomAdaptor_SurfaceOfLinearExtrusion AS(HC,dir);
     switch(AS.GetType()){
     // skl 18.12.2003 - plane not used, problems in ims013.igs

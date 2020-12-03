@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <LocOpe_SplitDrafts.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -29,8 +30,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_Pipe.hxx>
 #include <GeomInt_IntSS.hxx>
@@ -46,7 +45,6 @@
 #include <IntCurveSurface_IntersectionSegment.hxx>
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_FindEdges.hxx>
-#include <LocOpe_SplitDrafts.hxx>
 #include <LocOpe_Spliter.hxx>
 #include <LocOpe_SplitShape.hxx>
 #include <LocOpe_WiresOnShape.hxx>
@@ -189,10 +187,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
   GeomInt_IntSS i2s(NewSg,NewSd,Precision::Confusion());
 
   TopTools_MapOfShape theMap;
-  Handle(GeomAdaptor_HCurve) HAC = new GeomAdaptor_HCurve;
-  GeomAdaptor_Curve AC;
-  Handle(GeomAdaptor_HSurface) HAS = new GeomAdaptor_HSurface;
-  GeomAdaptor_Surface AS;
+  Handle(GeomAdaptor_Curve) HAC = new GeomAdaptor_Curve;
+  Handle(GeomAdaptor_Surface) HAS = new GeomAdaptor_Surface;
   IntCurveSurface_HInter intcs;
 
   TopoDS_Wire theW = W;
@@ -207,8 +203,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
       throw Standard_ConstructionError("GeomFill_Pipe : Cannot make a surface");
 
     Handle(Geom_Surface) Spl = thePipe.Surface();
-    AS.Load(Spl);
-    HAS->Set(AS);
+    HAS->Load(Spl);
     
     LocOpe_SplitShape splw(W);
 
@@ -218,8 +213,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	TopLoc_Location Loc;
 	Standard_Real f,l;
 	Handle(Geom_Curve) C = BRep_Tool::Curve(edg,f,l);
-	AC.Load(C);
-	HAC->Set(AC);
+	HAC->Load(C);
 	intcs.Perform(HAC,HAS);
 	if (!intcs.IsDone()) {
 	  continue; // voir ce qu`on peut faire de mieux
@@ -629,8 +623,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
       // Determination des vertex par intersection sur Plg ou/et Pld
 
-      AC.Load(Newc);
-      HAC->Set(AC);
+      HAC->Load(Newc);
       Standard_Integer nbfois = 2;
       TopoDS_Vertex vtx1,vtx2;
       Standard_Real p1=0,p2=0;
@@ -643,11 +636,11 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	for (itl.Initialize(theMapEF(indedgf)); itl.More(); itl.Next()) {
 	  if (Contains(myMap(F),itl.Value())) {
 	    if (Contains(theLeft,itl.Value())) {
-	      AS.Load(NewSg);
+        HAS->Load(NewSg);
 	      IsLeft = Standard_True;
 	    }
 	    else {
-	      AS.Load(NewSd);
+        HAS->Load(NewSd);
 	      IsLeft = Standard_False;
 	    }
 	    
@@ -664,14 +657,13 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
       }
       else {
-	AS.Load(NewSg);
+	HAS->Load(NewSg);
       }
 
       for (Standard_Integer it = 1; it<=nbfois; it++) {
 	if (it == 2) {
-	  AS.Load(NewSd);
+    HAS->Load(NewSd);
 	}
-	HAS->Set(AS);
 
 	intcs.Perform(HAC,HAS);
 	if (!intcs.IsDone()) {

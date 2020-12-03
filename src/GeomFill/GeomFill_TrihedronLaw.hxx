@@ -17,17 +17,11 @@
 #ifndef _GeomFill_TrihedronLaw_HeaderFile
 #define _GeomFill_TrihedronLaw_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Transient.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <GeomFill_PipeError.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Adaptor3d_HCurve;
+
 class Standard_OutOfRange;
 class Standard_NotImplemented;
 class gp_Vec;
@@ -43,7 +37,7 @@ class GeomFill_TrihedronLaw : public Standard_Transient
 public:
 
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_HCurve)& C);
+  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C);
   
   Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const = 0;
   
@@ -106,8 +100,8 @@ public:
 protected:
 
 
-  Handle(Adaptor3d_HCurve) myCurve;
-  Handle(Adaptor3d_HCurve) myTrimmed;
+  Handle(Adaptor3d_Curve) myCurve;
+  Handle(Adaptor3d_Curve) myTrimmed;
 
 
 private:

@@ -81,14 +81,14 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-#include <Adaptor3d_HCurve.hxx>
-#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 
-#include <GeomAdaptor_HCurve.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -103,7 +103,7 @@
 #include <Precision.hxx>
 
 #include <Geom_Surface.hxx>
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <stdio.h>
 #include <BSplCLib.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -115,7 +115,7 @@
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <gce_MakeLin.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
-#include <GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -128,7 +128,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
@@ -284,8 +284,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
   Handle(Geom_Surface) Sur = DrawTrSurf::GetSurface(a[ONE+1]);
   if (Cur.IsNull() || Sur.IsNull()) return 1;
 
-  Handle(GeomAdaptor_HCurve) hcur = new GeomAdaptor_HCurve(Cur);
-  Handle(GeomAdaptor_HSurface) hsur = new GeomAdaptor_HSurface(Sur);
+  Handle(GeomAdaptor_Curve) hcur = new GeomAdaptor_Curve(Cur);
+  Handle(GeomAdaptor_Surface) hsur = new GeomAdaptor_Surface(Sur);
 
 
   Standard_Real myTol3d = 1.e-6;
@@ -293,16 +293,15 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
   Standard_Integer myMaxDegree = 14, myMaxSeg = 16;
 
 
-  ProjLib_CompProjectedCurve Projector(hsur, hcur, myTol3d/10, myTol3d/10);
-  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve();
-  HProjector->Set(Projector);
+  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur, hcur, myTol3d/10, myTol3d/10);
+  ProjLib_CompProjectedCurve& Projector = *HProjector;
 
   Standard_Integer k;
   Standard_Real Udeb, Ufin, UIso, VIso;
   Standard_Boolean Only2d, Only3d;
   gp_Pnt2d P2d, Pdeb, Pfin;
   gp_Pnt P;
-  Handle(Adaptor2d_HCurve2d) HPCur;
+  Handle(Adaptor2d_Curve2d) HPCur;
   Handle(Geom2d_Curve) PCur2d; // Only for isoparametric projection
 
   for(k = 1; k <= Projector.NbCurves(); k++){
@@ -334,7 +333,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         }
         else Dir = gp_Dir2d(0, 1);
         PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(UIso, 0), Dir), Udeb, Ufin);
-        HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+        HPCur = new Geom2dAdaptor_Curve(PCur2d);
         Only3d = Standard_True;
       }
       else if(Projector.IsVIso(k, VIso)) {
@@ -350,7 +349,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         }
         else Dir = gp_Dir2d(1, 0);
         PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0, VIso), Dir), Udeb, Ufin);
-        HPCur = new Geom2dAdaptor_HCurve(PCur2d);
+        HPCur = new Geom2dAdaptor_Curve(PCur2d);
         Only3d = Standard_True;
       }
       else HPCur = HProjector;
@@ -359,7 +358,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         Only2d = Standard_True;
       
       if(Only2d && Only3d) {
-        Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve(GeomAdaptor::MakeCurve(hcur->Curve()), Ufin, Udeb);
+        Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve (GeomAdaptor::MakeCurve (*hcur), Ufin, Udeb);
         DrawTrSurf::Set(temp, OutCur);
         DrawTrSurf::Set(temp1, PCur2d);
         di<<temp<<" is 3d projected curve\n";
@@ -375,9 +374,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
 	       << ";  "  << appr.MaxError2dV() << "\n"; 
 	}
         if(Only2d) {
-          Handle(Geom_Curve) OutCur = 
-	    new Geom_TrimmedCurve(GeomAdaptor::MakeCurve(hcur->Curve()), 
-				  Ufin, Udeb);
+          Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve (GeomAdaptor::MakeCurve (*hcur), Ufin, Udeb);
           DrawTrSurf::Set(temp, OutCur);
           }
         else {
@@ -936,7 +933,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Integer i, nbp;
   Standard_Real defl;
 
-  Handle(Adaptor3d_HCurve) aHCurve;
+  Handle(Adaptor3d_Curve) aHCurve;
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
   if (C.IsNull())
   {
@@ -948,16 +945,16 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);
-    aHCurve = new BRepAdaptor_HCompCurve(aCompCurve);
+    aHCurve = new BRepAdaptor_CompCurve(aCompCurve);
   }
   else
   {
-    aHCurve = new GeomAdaptor_HCurve(C);
+    aHCurve = new GeomAdaptor_Curve(C);
   }
 
   defl = Draw::Atof(a[3]);
 
-  GCPnts_QuasiUniformDeflection PntGen(aHCurve->Curve(), defl);
+  GCPnts_QuasiUniformDeflection PntGen (*aHCurve, defl);
     
   if(!PntGen.IsDone()) {
     di << "Points generation failed\n";
@@ -994,7 +991,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
   Standard_Integer imax = 0;
 
   //check deviation
-  ComputeDeviation(aHCurve->Curve(), aPnts, dmax, ufmax, ulmax, imax);
+  ComputeDeviation (*aHCurve, aPnts, dmax, ufmax, ulmax, imax);
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
   return 0;
@@ -1010,7 +1007,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   Standard_Integer i, nbp, aMinPntsNb = 2;
   Standard_Real defl, angle = Precision::Angular();
 
-  Handle(Adaptor3d_HCurve) aHCurve;
+  Handle(Adaptor3d_Curve) aHCurve;
   Handle(Geom_Curve) C = DrawTrSurf::GetCurve(a[2]);
   if (C.IsNull())
   {
@@ -1022,11 +1019,11 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);
-    aHCurve = new BRepAdaptor_HCompCurve(aCompCurve);
+    aHCurve = new BRepAdaptor_CompCurve(aCompCurve);
   }
   else
   {
-    aHCurve = new GeomAdaptor_HCurve(C);
+    aHCurve = new GeomAdaptor_Curve(C);
   }
   defl = Draw::Atof(a[3]);
 
@@ -1036,7 +1033,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   if(n > 5)
     aMinPntsNb = Draw::Atoi (a[5]);
 
-  GCPnts_TangentialDeflection PntGen(aHCurve->Curve(), angle, defl, aMinPntsNb);
+  GCPnts_TangentialDeflection PntGen (*aHCurve, angle, defl, aMinPntsNb);
   
   nbp = PntGen.NbPoints();
   di << "Nb points : " << nbp << "\n";
@@ -1068,7 +1065,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   Standard_Integer imax = 0;
 
   //check deviation
-  ComputeDeviation(aHCurve->Curve(), aPnts, dmax, ufmax, ulmax, imax);
+  ComputeDeviation (*aHCurve, aPnts, dmax, ufmax, ulmax, imax);
   //
   di << "Max defl: " << dmax << " " << ufmax << " " << ulmax << " " << imax << "\n"; 
 
@@ -1457,7 +1454,7 @@ static Standard_Integer surfpoints (Draw_Interpretor& /*di*/, Standard_Integer /
   Handle(Geom_Surface) S = DrawTrSurf::GetSurface(a[2]);
   defl = Draw::Atof(a[3]);
 
-  Handle(GeomAdaptor_HSurface) AS = new GeomAdaptor_HSurface(S);
+  Handle(GeomAdaptor_Surface) AS = new GeomAdaptor_Surface(S);
 
   Handle(Adaptor3d_TopolTool) aTopTool = new Adaptor3d_TopolTool(AS);
 
@@ -1558,7 +1555,7 @@ static Standard_Integer intersection (Draw_Interpretor& di,
       Standard_Boolean useStart = Standard_True, useBnd = Standard_True;
       Standard_Integer ista1=0,ista2=0,ibnd1=0,ibnd2=0;
       Standard_Real UVsta[4];
-      Handle(GeomAdaptor_HSurface) AS1,AS2;
+      Handle(GeomAdaptor_Surface) AS1,AS2;
 
       //
       if (n <= 9)          // user starting point
@@ -1592,8 +1589,8 @@ static Standard_Integer intersection (Draw_Interpretor& di,
         for (Standard_Integer i=ibnd1; i <= ibnd2; i++)
           UVbnd[i-ibnd1] = Draw::Atof(a[i]);
 
-        AS1 = new GeomAdaptor_HSurface(GS1,UVbnd[0],UVbnd[1],UVbnd[2],UVbnd[3]);
-        AS2 = new GeomAdaptor_HSurface(GS2,UVbnd[4],UVbnd[5],UVbnd[6],UVbnd[7]);
+        AS1 = new GeomAdaptor_Surface(GS1,UVbnd[0],UVbnd[1],UVbnd[2],UVbnd[3]);
+        AS2 = new GeomAdaptor_Surface(GS2,UVbnd[4],UVbnd[5],UVbnd[6],UVbnd[7]);
       }
 
       //

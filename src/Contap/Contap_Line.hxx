@@ -31,7 +31,6 @@
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 class IntSurf_LineOn2S;
-class Adaptor2d_HCurve2d;
 class Standard_DomainError;
 class Standard_OutOfRange;
 class IntSurf_PntOn2S;
@@ -64,7 +63,7 @@ public:
   
   Standard_EXPORT void SetValue (const gp_Circ& C);
   
-  Standard_EXPORT void SetValue (const Handle(Adaptor2d_HCurve2d)& A);
+  Standard_EXPORT void SetValue (const Handle(Adaptor2d_Curve2d)& A);
   
   Standard_EXPORT void Add (const Contap_Point& P);
   
@@ -85,7 +84,7 @@ public:
   
     gp_Circ Circle() const;
   
-  Standard_EXPORT const Handle(Adaptor2d_HCurve2d)& Arc() const;
+  Standard_EXPORT const Handle(Adaptor2d_Curve2d)& Arc() const;
   
   //! Set The Tansition of the line.
   Standard_EXPORT void SetTransitionOnS (const IntSurf_TypeTrans T);
@@ -110,7 +109,7 @@ private:
   IntSurf_TypeTrans Trans;
   Handle(IntSurf_LineOn2S) curv;
   Handle(Contap_TheHSequenceOfPoint) svtx;
-  Handle(Adaptor2d_HCurve2d) thearc;
+  Handle(Adaptor2d_Curve2d) thearc;
   Contap_IType typL;
   gp_Pnt pt;
   gp_Dir dir1;

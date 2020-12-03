@@ -21,8 +21,9 @@
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
 
+#include <Geom2dAdaptor_Curve.hxx>
 
-#include <Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
 #include <Geom2d_BezierCurve.hxx>
@@ -37,8 +38,6 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
 #include <Geom2d_UndefinedValue.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom2dEvaluator_OffsetCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp.hxx>
@@ -64,6 +63,7 @@
 //#include <Geom2dConvert_BSplineCurveKnotSplitting.hxx>
 static const Standard_Real PosTol = Precision::PConfusion() / 2;
 
+IMPLEMENT_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
 //=======================================================================
 //function : LocalContinuity
@@ -233,7 +233,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
       Handle(Geom2d_OffsetCurve) anOffsetCurve = Handle(Geom2d_OffsetCurve)::DownCast(myCurve);
       // Create nested adaptor for base curve
       Handle(Geom2d_Curve) aBaseCurve = anOffsetCurve->BasisCurve();
-      Handle(Geom2dAdaptor_HCurve) aBaseAdaptor = new Geom2dAdaptor_HCurve(aBaseCurve);
+      Handle(Geom2dAdaptor_Curve) aBaseAdaptor = new Geom2dAdaptor_Curve(aBaseCurve);
       myNestedEvaluator = new Geom2dEvaluator_OffsetCurve(aBaseAdaptor, anOffsetCurve->Offset());
     }
     else {
@@ -508,13 +508,13 @@ void Geom2dAdaptor_Curve::Intervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor2d_HCurve2d) Geom2dAdaptor_Curve::Trim
+Handle(Adaptor2d_Curve2d) Geom2dAdaptor_Curve::Trim
 (const Standard_Real First,
  const Standard_Real Last,
 // const Standard_Real Tol) const 
  const Standard_Real ) const 
 {
-  Handle(Geom2dAdaptor_HCurve) HE = new Geom2dAdaptor_HCurve(myCurve,First,Last);
+  Handle(Geom2dAdaptor_Curve) HE = new Geom2dAdaptor_Curve(myCurve,First,Last);
   return HE;
 }
 

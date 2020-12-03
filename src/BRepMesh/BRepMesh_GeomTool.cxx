@@ -22,16 +22,16 @@
 #include <CSLib.hxx>
 #include <Precision.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Adaptor3d_HCurve.hxx>
+#include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <BRep_Tool.hxx>
 
 namespace
 {
   void ComputeErrFactors (const Standard_Real               theDeflection,
-                          const Handle(Adaptor3d_HSurface)& theFace,
+                          const Handle(Adaptor3d_Surface)& theFace,
                           Standard_Real&                    theErrFactorU,
                           Standard_Real&                    theErrFactorV)
   {
@@ -49,7 +49,7 @@ namespace
     case GeomAbs_SurfaceOfExtrusion:
     case GeomAbs_SurfaceOfRevolution:
       {
-        Handle(Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+        Handle(Adaptor3d_Curve) aCurve = theFace->BasisCurve ();
         if (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () > 2)
         {
           theErrFactorV /= (aCurve->Degree () * aCurve->NbKnots ());
@@ -87,7 +87,7 @@ namespace
     }
   }
 
-  void AdjustCellsCounts (const Handle(Adaptor3d_HSurface)& theFace,
+  void AdjustCellsCounts (const Handle(Adaptor3d_Surface)& theFace,
                           const Standard_Integer            theNbVertices,
                           Standard_Integer&                 theCellsCountU,
                           Standard_Integer&                 theCellsCountV)
@@ -111,7 +111,7 @@ namespace
     }
     else if (aType == GeomAbs_SurfaceOfExtrusion || aType == GeomAbs_SurfaceOfRevolution)
     {
-      Handle (Adaptor3d_HCurve) aCurve = theFace->BasisCurve ();
+      Handle (Adaptor3d_Curve) aCurve = theFace->BasisCurve ();
       if (aCurve->GetType () == GeomAbs_Line ||
          (aCurve->GetType () == GeomAbs_BSplineCurve && aCurve->Degree () < 2))
       {
@@ -169,7 +169,7 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
 //purpose  :
 //=======================================================================
 BRepMesh_GeomTool::BRepMesh_GeomTool(
-  const Handle(BRepAdaptor_HSurface)& theSurface,
+  const Handle(BRepAdaptor_Surface)& theSurface,
   const GeomAbs_IsoType               theIsoType,
   const Standard_Real                 theParamIso,
   const Standard_Real                 theFirstParam,
@@ -195,7 +195,7 @@ BRepMesh_GeomTool::BRepMesh_GeomTool(
 //=======================================================================
 Standard_Boolean BRepMesh_GeomTool::Value(
   const Standard_Integer              theIndex,
-  const Handle(BRepAdaptor_HSurface)& theSurface,
+  const Handle(BRepAdaptor_Surface)& theSurface,
   Standard_Real&                      theParam,
   gp_Pnt&                             thePoint,
   gp_Pnt2d&                           theUV) const
@@ -209,7 +209,7 @@ Standard_Boolean BRepMesh_GeomTool::Value(
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
 
-  const TopoDS_Face& aFace = ((BRepAdaptor_Surface*)&(theSurface->Surface()))->Face();
+  const TopoDS_Face& aFace = theSurface->Face();
 
   Standard_Real aFirst, aLast;
   Handle(Geom2d_Curve) aCurve = 
@@ -250,7 +250,7 @@ Standard_Boolean BRepMesh_GeomTool::Value(
 //purpose  :
 //=======================================================================
 Standard_Boolean BRepMesh_GeomTool::Normal(
-  const Handle(BRepAdaptor_HSurface)& theSurface,
+  const Handle(BRepAdaptor_Surface)& theSurface,
   const Standard_Real                 theParamU,
   const Standard_Real                 theParamV,
   gp_Pnt&                             thePoint,
@@ -275,7 +275,7 @@ Standard_Boolean BRepMesh_GeomTool::Normal(
   if (!isOK)
     return Standard_False;
 
-  const TopoDS_Face& aFace = ((BRepAdaptor_Surface*)&(theSurface->Surface()))->Face();
+  const TopoDS_Face& aFace = theSurface->Face();
   TopAbs_Orientation aOri = aFace.Orientation();
   if (aOri == TopAbs_REVERSED)
     theNormal.Reverse();
@@ -428,7 +428,7 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
 //purpose  :
 //=============================================================================
 std::pair<Standard_Integer, Standard_Integer> BRepMesh_GeomTool::CellsCount (
-  const Handle (Adaptor3d_HSurface)&   theSurface,
+  const Handle (Adaptor3d_Surface)&   theSurface,
   const Standard_Integer               theVerticesNb,
   const Standard_Real                  theDeflection,
   const BRepMesh_DefaultRangeSplitter* theRangeSplitter)
