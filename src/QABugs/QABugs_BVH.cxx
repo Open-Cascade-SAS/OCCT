@@ -26,6 +26,7 @@
 #include <BVH_BoxSet.hxx>
 #include <BVH_DistanceField.hxx>
 #include <BVH_Geometry.hxx>
+#include <BVH_IndexedBoxSet.hxx>
 #include <BVH_LinearBuilder.hxx>
 #include <BVH_PairDistance.hxx>
 #include <BVH_Traverse.hxx>
@@ -207,8 +208,9 @@ static Standard_Integer QABVH_ShapeSelect (Draw_Interpretor& theDI,
       new BVH_LinearBuilder <Standard_Real, 3>();
 
   // Create the ShapeSet
-  opencascade::handle <BVH_BoxSet <Standard_Real, 3, TopoDS_Shape> > aShapeBoxSet =
-    new BVH_BoxSet <Standard_Real, 3, TopoDS_Shape> (aLBuilder);
+  opencascade::handle <BVH_BoxSet <Standard_Real, 3, TopoDS_Shape> > aShapeBoxSet = !useVoidSelector ?
+    new BVH_BoxSet <Standard_Real, 3, TopoDS_Shape> (aLBuilder) :
+    new BVH_IndexedBoxSet <Standard_Real, 3, TopoDS_Shape> (aLBuilder);
 
   // Add elements into BVH
 

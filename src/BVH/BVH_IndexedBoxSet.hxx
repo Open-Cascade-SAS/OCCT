@@ -84,7 +84,7 @@ public: //! @name Necessary overrides for BVH construction
   //! Returns the bounding box with the given index.
   virtual BVH_Box <NumType, Dimension> Box (const Standard_Integer theIndex) const Standard_OVERRIDE
   {
-    return myBoxes[myIndices[theIndex]];
+    return this->myBoxes[myIndices[theIndex]];
   }
 
   //! Swaps indices of two specified boxes.
@@ -95,9 +95,9 @@ public: //! @name Necessary overrides for BVH construction
   }
 
   //! Returns the Element with the index theIndex.
-  virtual DataType Element (const Standard_Integer theIndex) const
+  virtual DataType Element (const Standard_Integer theIndex) const Standard_OVERRIDE
   {
-    return myElements[myIndices[theIndex]];
+    return this->myElements[myIndices[theIndex]];
   }
 
 protected: //! @name Fields
