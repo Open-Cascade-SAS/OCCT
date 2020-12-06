@@ -373,34 +373,25 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
   
   myMap.Clear();
   myMapSpine.Clear();
+
   //------------------------------------------------------------------
   // cut the spine for bissectors.
   //------------------------------------------------------------------
-  //  Modified by Sergey KHROMOV - Tue Nov 26 17:39:03 2002 Begin
-  static BRepMAT2d_Explorer Exp;
-
+  BRepMAT2d_Explorer Exp;
   Exp.Perform(mySpine);
-
-  //  TopoDS_Face anOldSpine = mySpine;
-
   mySpine = TopoDS::Face(Exp.ModifiedShape(mySpine));
   PrepareSpine  ();
 
-  //  Modified by Sergey KHROMOV - Tue Nov 26 17:39:03 2002 End
   TopoDS_Shape aShape;
   BRepFill_IndexedDataMapOfOrientedShapeListOfShape aMap;
   Standard_Boolean Done;
   if (KPartCircle(myWorkSpine,1.,myIsOpenResult,0.,aShape,aMap,Done)) return;
-
 
   //-----------------------------------------------------
   // Calculate the map of bissectors to the left.  
   // and Links Topology -> base elements of the map.
   //-----------------------------------------------------
   
-  //  Modified by Sergey KHROMOV - Tue Nov 26 17:39:03 2002 Begin
-  //   static BRepMAT2d_Explorer Exp;
-  //  Modified by Sergey KHROMOV - Tue Nov 26 17:39:03 2002 End
   Exp.Perform(myWorkSpine);
   myBilo.Compute(Exp, 1 ,MAT_Left, myJoinType, myIsOpenResult);
   myLink.Perform(Exp,myBilo);
