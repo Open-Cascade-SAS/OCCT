@@ -107,30 +107,26 @@ void StdPrs_WFDeflectionRestrictedFace::Add
    const Standard_Integer NBUiso,
    const Standard_Integer NBViso,
    const Handle(Prs3d_Drawer)& aDrawer,
-   Prs3d_NListOfSequenceOfPnt& Curves) {
+   Prs3d_NListOfSequenceOfPnt& Curves)
+{
 
 #ifdef OCCT_DEBUG_MESH
   FFaceTimer1.Start();
 #endif
 
   StdPrs_ToolRFace ToolRst (aFace);
-  Standard_Real UF, UL, VF, VL;
-  UF = aFace->FirstUParameter();
-  UL = aFace->LastUParameter();
-  VF = aFace->FirstVParameter();
-  VL = aFace->LastVParameter();
+  const Standard_Real UF = aFace->FirstUParameter();
+  const Standard_Real UL = aFace->LastUParameter();
+  const Standard_Real VF = aFace->FirstVParameter();
+  const Standard_Real VL = aFace->LastVParameter();
 
-  Standard_Real aLimit = aDrawer->MaximalParameterValue();
+  const Standard_Real aLimit = aDrawer->MaximalParameterValue();
 
   // compute bounds of the restriction
-  Standard_Real UMin,UMax,VMin,VMax;
-  //Standard_Real u,v,step;
-  Standard_Integer i;//,nbPoints = 10;
-
-  UMin = Max(UF, -aLimit);
-  UMax = Min(UL, aLimit);
-  VMin = Max(VF, -aLimit);
-  VMax = Min(VL, aLimit);
+  Standard_Real UMin = Max (UF, -aLimit);
+  Standard_Real UMax = Min (UL,  aLimit);
+  Standard_Real VMin = Max (VF, -aLimit);
+  Standard_Real VMax = Min (VL,  aLimit);
 
 
   // update min max for the hatcher.
@@ -144,96 +140,112 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   UMin = VMin = 1.e100;
   UMax = VMax = -1.e100;
   
-  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next()) {
-    TopAbs_Orientation Orient = ToolRst.Orientation();
-      const Adaptor2d_Curve2d* TheRCurve = &ToolRst.Value();
-      if (TheRCurve->GetType() != GeomAbs_Line) {
-        GCPnts_QuasiUniformDeflection UDP(*TheRCurve, ddefle);
-	if (UDP.IsDone()) {
-	  Standard_Integer NumberOfPoints = UDP.NbPoints();
-	  if ( NumberOfPoints >= 2 ) {
-	    dummypnt = UDP.Value(1);
-	    P2.SetCoord(dummypnt.X(), dummypnt.Y());
-	    UMin = Min(P2.X(), UMin);
-	    UMax = Max(P2.X(), UMax);
-	    VMin = Min(P2.Y(), VMin);
-	    VMax = Max(P2.Y(), VMax);
-	    for (i = 2; i <= NumberOfPoints; i++) {
-	      P1 = P2;
-	      dummypnt = UDP.Value(i);
-	      P2.SetCoord(dummypnt.X(), dummypnt.Y());
-	      UMin = Min(P2.X(), UMin);
-	      UMax = Max(P2.X(), UMax);
-	      VMin = Min(P2.Y(), VMin);
-	      VMax = Max(P2.Y(), VMax);
-              aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
+  for (ToolRst.Init(); ToolRst.More(); ToolRst.Next())
+  {
+    const TopAbs_Orientation anOrient = ToolRst.Orientation();
+    const Adaptor2d_Curve2d* TheRCurve = &ToolRst.Value();
+    if (TheRCurve->GetType() != GeomAbs_Line)
+    {
+      GCPnts_QuasiUniformDeflection UDP (*TheRCurve, ddefle);
+      if (UDP.IsDone())
+      {
+        const Standard_Integer aNumberOfPoints = UDP.NbPoints();
+        if (aNumberOfPoints >= 2)
+        {
+          dummypnt = UDP.Value (1);
+          P2.SetCoord (dummypnt.X(), dummypnt.Y());
+          UMin = Min(P2.X(), UMin);
+          UMax = Max(P2.X(), UMax);
+          VMin = Min(P2.Y(), VMin);
+          VMax = Max(P2.Y(), VMax);
+          for (Standard_Integer i = 2; i <= aNumberOfPoints; i++)
+          {
+            P1 = P2;
+            dummypnt = UDP.Value(i);
+            P2.SetCoord(dummypnt.X(), dummypnt.Y());
+            UMin = Min(P2.X(), UMin);
+            UMax = Max(P2.X(), UMax);
+            VMin = Min(P2.Y(), VMin);
+            VMax = Max(P2.Y(), VMax);
+            aHatchingTol = Min (P1.SquareDistance (P2), aHatchingTol);
 
-	      if(Orient == TopAbs_FORWARD ) {
-		//isobuild.Trim(P1,P2);
-		tabP.Append(P1);
-		tabP.Append(P2);
-	      }
-	      else {
-		//isobuild.Trim(P2,P1);
-		tabP.Append(P2);
-		tabP.Append(P1);
-	      }
-	    }
-	}
-#ifdef OCCT_DEBUG
-	else {
-	  std::cout << "Cannot evaluate curve on surface"<<std::endl;
-	}
-#endif
-      }
-      else {
-	U1 = TheRCurve->FirstParameter();
-	U2 = TheRCurve->LastParameter();
-        // MSV 17.08.06 OCC13144: U2 occured less than U1, to overcome it
-        // ensure that distance U2-U1 is not greater than aLimit*2,
-        // if greater then choose an origin and use aLimit to define
-        // U1 and U2 anew
-        Standard_Real aOrigin = 0.;
-        if (!Precision::IsNegativeInfinite(U1) || !Precision::IsPositiveInfinite(U2)) {
-          if (Precision::IsNegativeInfinite(U1))
-            aOrigin = U2 - aLimit;
-          else if (Precision::IsPositiveInfinite(U2))
-            aOrigin = U1 + aLimit;
-          else
-            aOrigin = (U1 + U2) * 0.5;
+            if (anOrient == TopAbs_FORWARD)
+            {
+              //isobuild.Trim (P1, P2);
+              tabP.Append (P1);
+              tabP.Append (P2);
+            }
+            else
+            {
+              //isobuild.Trim (P2, P1);
+              tabP.Append (P2);
+              tabP.Append (P1);
+            }
+          }
         }
-	U1 = Max(aOrigin - aLimit, U1);
-	U2 = Min(aOrigin + aLimit, U2);
-	P1 = TheRCurve->Value(U1);
-	P2 = TheRCurve->Value(U2);
-	UMin = Min(P1.X(), UMin);
-	UMax = Max(P1.X(), UMax);
-	VMin = Min(P1.Y(), VMin);
-	VMax = Max(P1.Y(), VMax);
-	UMin = Min(P2.X(), UMin);
-	UMax = Max(P2.X(), UMax);
-	VMin = Min(P2.Y(), VMin);
-	VMax = Max(P2.Y(), VMax);
-        aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
+      }
+      else
+      {
+      #ifdef OCCT_DEBUG
+        std::cout << "Cannot evaluate curve on surface" << std::endl;
+      #endif
+      }
+    }
+    else
+    {
+      U1 = TheRCurve->FirstParameter();
+      U2 = TheRCurve->LastParameter();
+      // MSV 17.08.06 OCC13144: U2 occurred less than U1,
+      // to overcome it ensure that distance U2-U1 is not greater than aLimit*2,
+      // if greater then choose an origin and use aLimit to define U1 and U2 anew
+      Standard_Real aOrigin = 0.;
+      if (!Precision::IsNegativeInfinite (U1)
+       || !Precision::IsPositiveInfinite (U2))
+      {
+        if (Precision::IsNegativeInfinite (U1))
+        {
+          aOrigin = U2 - aLimit;
+        }
+        else if (Precision::IsPositiveInfinite (U2))
+        {
+          aOrigin = U1 + aLimit;
+        }
+        else
+        {
+          aOrigin = (U1 + U2) * 0.5;
+        }
+      }
+      U1 = Max(aOrigin - aLimit, U1);
+      U2 = Min(aOrigin + aLimit, U2);
+      P1 = TheRCurve->Value(U1);
+      P2 = TheRCurve->Value(U2);
+      UMin = Min(P1.X(), UMin);
+      UMax = Max(P1.X(), UMax);
+      VMin = Min(P1.Y(), VMin);
+      VMax = Max(P1.Y(), VMax);
+      UMin = Min(P2.X(), UMin);
+      UMax = Max(P2.X(), UMax);
+      VMin = Min(P2.Y(), VMin);
+      VMax = Max(P2.Y(), VMax);
+      aHatchingTol = Min(P1.SquareDistance(P2), aHatchingTol);
 
-	if(Orient == TopAbs_FORWARD ) {
-	 // isobuild.Trim(P1,P2);
-	  tabP.Append(P1);
-	  tabP.Append(P2);
-	}
-	else {
-	  //isobuild.Trim(P2,P1);
-	  tabP.Append(P2);
-	  tabP.Append(P1);
-	}
+      if (anOrient == TopAbs_FORWARD)
+      {
+        // isobuild.Trim (P1, P2);
+        tabP.Append (P1);
+        tabP.Append (P2);
+      }
+      else
+      {
+        //isobuild.Trim (P2, P1);
+        tabP.Append (P2);
+        tabP.Append (P1);
       }
     }
   }
 
-
 #ifdef OCCT_DEBUG_MESH
   FFaceTimer1.Stop();
-
   FFaceTimer2.Start();
 #endif
 
@@ -243,35 +255,41 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   aHatchingTol = Min(1.e-5, aHatchingTol);
 
   // load the isos
-  Hatch_Hatcher isobuild(aHatchingTol, ToolRst.IsOriented());
-  Standard_Boolean UClosed = aFace->IsUClosed();
-  Standard_Boolean VClosed = aFace->IsVClosed();
-
-  if ( ! UClosed ) {
-    UMin = UMin + ( UMax - UMin) /1000.;
-    UMax = UMax - ( UMax - UMin) /1000.; 
+  Hatch_Hatcher isobuild (aHatchingTol, ToolRst.IsOriented());
+  Standard_Boolean isUClosed = aFace->IsUClosed();
+  Standard_Boolean isVClosed = aFace->IsVClosed();
+  if (!isUClosed)
+  {
+    UMin = UMin + (UMax - UMin) / 1000.;
+    UMax = UMax - (UMax - UMin) / 1000.;
+  }
+  if (!isVClosed)
+  {
+    VMin = VMin + (VMax - VMin) / 1000.;
+    VMax = VMax - (VMax - VMin) / 1000.;
   }
 
-  if ( ! VClosed ) {
-    VMin = VMin + ( VMax - VMin) /1000.;
-    VMax = VMax - ( VMax - VMin) /1000.; 
-  }
-
-  if (DrawUIso){
-    if (NBUiso > 0) {
-      UClosed = Standard_False; // En attendant un hatcher de course.
-      Standard_Real du= UClosed ? (UMax-UMin)/NBUiso : (UMax-UMin)/(1+NBUiso);
-      for (i=1; i<=NBUiso;i++){
-	isobuild.AddXLine(UMin+du*i);
+  if (DrawUIso)
+  {
+    if (NBUiso > 0)
+    {
+      isUClosed = Standard_False; // En attendant un hatcher de course.
+      Standard_Real du= isUClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
+      for (Standard_Integer i = 1; i <= NBUiso; i++)
+      {
+        isobuild.AddXLine (UMin + du * i);
       }
     }
   }
-  if (DrawVIso){
-    if ( NBViso > 0) {
-      VClosed = Standard_False;
-      Standard_Real dv= VClosed ?(VMax-VMin)/NBViso : (VMax-VMin)/(1+NBViso);
-      for (i=1; i<=NBViso;i++){
-	isobuild.AddYLine(VMin+dv*i);
+  if (DrawVIso)
+  {
+    if (NBViso > 0)
+    {
+      isVClosed = Standard_False;
+      Standard_Real dv= isVClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
+      for (Standard_Integer i = 1; i <= NBViso; i++)
+      {
+        isobuild.AddYLine (VMin + dv * i);
       }
     }
   }
@@ -283,10 +301,10 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 
   
   Standard_Integer ll = tabP.Length();
-  for (i = 1; i <= ll; i+=2) {
-    isobuild.Trim(tabP(i),tabP(i+1));
+  for (Standard_Integer i = 1; i <= ll; i+=2)
+  {
+    isobuild.Trim (tabP(i), tabP(i+1));
   }
-
 
 #ifdef OCCT_DEBUG_MESH  
   FFaceTimer3.Stop();
@@ -301,50 +319,65 @@ void StdPrs_WFDeflectionRestrictedFace::Add
   const BRepAdaptor_Surface& BS = *(BRepAdaptor_Surface*)&(aFace->Surface());
   GeomAbs_SurfaceType thetype = aFace->GetType();
 
-  Standard_Integer NumberOfLines = isobuild.NbLines();
   Handle(Geom_Surface) GB;
-  if (thetype == GeomAbs_BezierSurface) {
+  if (thetype == GeomAbs_BezierSurface)
+  {
     GB = BS.Bezier();
   }
-  else if (thetype == GeomAbs_BSplineSurface){
+  else if (thetype == GeomAbs_BSplineSurface)
+  {
     GB = BS.BSpline();
   }
 
-  Standard_Real anAngle = aDrawer->DeviationAngle();
-
-  for (i = 1; i <= NumberOfLines; i++) {
+  const Standard_Real anAngle = aDrawer->DeviationAngle();
+  const Standard_Integer aNumberOfLines = isobuild.NbLines();
+  for (Standard_Integer i = 1; i <= aNumberOfLines; i++)
+  {
     Standard_Integer NumberOfIntervals = isobuild.NbIntervals(i);
     Standard_Real Coord = isobuild.Coordinate(i);
-    for (Standard_Integer j = 1; j <= NumberOfIntervals; j++) {
-      Standard_Real b1=isobuild.Start(i,j),b2=isobuild.End(i,j);
+    for (Standard_Integer j = 1; j <= NumberOfIntervals; j++)
+    {
+      Standard_Real b1 = isobuild.Start (i, j), b2 = isobuild.End (i, j);
+      if (!GB.IsNull())
+      {
+        if (isobuild.IsXLine (i))
+        {
+          BC = GB->UIso (Coord);
+        }
+        else
+        {
+          BC = GB->VIso (Coord);
+        }
 
-
-      if (!GB.IsNull()) {
-	if (isobuild.IsXLine(i))
-	  BC = GB->UIso(Coord);
-	else 
-	  BC = GB->VIso(Coord);
-	GeomAdaptor_Curve GC(BC);
-	FindLimits(GC, aLimit,b1, b2);
-	if (b2-b1>Precision::Confusion()) {
-	  Handle(TColgp_HSequenceOfPnt) Points = new TColgp_HSequenceOfPnt;
-	  StdPrs_DeflectionCurve::Add (aPresentation, GC, b1, b2, Deflection, 
-                                       Points->ChangeSequence(), anAngle, Standard_False);
-	  Curves.Append(Points);
-	}
+        GeomAdaptor_Curve GC (BC);
+        FindLimits (GC, aLimit,b1, b2);
+        if (b2 - b1 > Precision::Confusion())
+        {
+          Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+          StdPrs_DeflectionCurve::Add (aPresentation, GC, b1, b2, Deflection,
+                                       aPoints->ChangeSequence(), anAngle, Standard_False);
+          Curves.Append (aPoints);
+        }
       }
-      else {
-	if (isobuild.IsXLine(i))
-	  anIso.Load(GeomAbs_IsoU,Coord,b1,b2);
-	else
-	  anIso.Load(GeomAbs_IsoV,Coord,b1,b2);
-	FindLimits(anIso, aLimit,b1, b2);
-	if (b2-b1>Precision::Confusion()) {
-	  Handle(TColgp_HSequenceOfPnt) Points = new TColgp_HSequenceOfPnt;
-	  StdPrs_DeflectionCurve::Add (aPresentation, anIso, b1, b2, Deflection, 
-                                       Points->ChangeSequence(), anAngle, Standard_False);
-	  Curves.Append(Points);
-	}
+      else
+      {
+        if (isobuild.IsXLine (i))
+        {
+          anIso.Load (GeomAbs_IsoU,Coord,b1,b2);
+        }
+        else
+        {
+          anIso.Load (GeomAbs_IsoV,Coord,b1,b2);
+        }
+
+        FindLimits (anIso, aLimit, b1, b2);
+        if (b2 - b1 > Precision::Confusion())
+        {
+          Handle(TColgp_HSequenceOfPnt) aPoints = new TColgp_HSequenceOfPnt();
+          StdPrs_DeflectionCurve::Add (aPresentation, anIso, b1, b2, Deflection,
+                                       aPoints->ChangeSequence(), anAngle, Standard_False);
+          Curves.Append (aPoints);
+        }
       }
     }
   }
