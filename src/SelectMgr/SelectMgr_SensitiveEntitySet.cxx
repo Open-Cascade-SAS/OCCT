@@ -41,7 +41,12 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
     theEntity->ResetSelectionActiveStatus();
     return;
   }
-  mySensitives.Add (theEntity);
+
+  const Standard_Integer anExtent = mySensitives.Extent();
+  if (mySensitives.Add (theEntity) > anExtent)
+  {
+    addOwner (theEntity->BaseSensitive()->OwnerId());
+  }
   MarkDirty();
 }
 
@@ -59,7 +64,12 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
       aSelEntIter.Value()->ResetSelectionActiveStatus();
       continue;
     }
-    mySensitives.Add (aSelEntIter.Value());
+
+    const Standard_Integer anExtent = mySensitives.Extent();
+    if (mySensitives.Add (aSelEntIter.Value()) > anExtent)
+    {
+      addOwner (aSelEntIter.Value()->BaseSensitive()->OwnerId());
+    }
   }
   MarkDirty();
 }
@@ -85,6 +95,7 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
     }
 
     mySensitives.RemoveLast();
+    removeOwner (aSelEntIter.Value()->BaseSensitive()->OwnerId());
   }
 
   MarkDirty();
@@ -143,4 +154,38 @@ const Handle(SelectMgr_SensitiveEntity)& SelectMgr_SensitiveEntitySet::GetSensit
   (const Standard_Integer theIndex) const
 {
   return mySensitives.FindKey (theIndex + 1);
+}
+
+//=======================================================================
+// function : addOwner
+// purpose  :
+//=======================================================================
+void SelectMgr_SensitiveEntitySet::addOwner (const Handle(SelectMgr_EntityOwner)& theOwner)
+{
+  if (!theOwner.IsNull())
+  {
+    if (Standard_Integer* aNumber = myOwnersMap.ChangeSeek (theOwner))
+    {
+      ++(*aNumber);
+    }
+    else
+    {
+      myOwnersMap.Bind (theOwner, 1);
+    }
+  }
+}
+
+//=======================================================================
+// function : removeOwner
+// purpose  :
+//=======================================================================
+void SelectMgr_SensitiveEntitySet::removeOwner (const Handle(SelectMgr_EntityOwner)& theOwner)
+{
+  if (Standard_Integer* aNumber = !theOwner.IsNull() ? myOwnersMap.ChangeSeek (theOwner) : NULL)
+  {
+    if (--(*aNumber) == 0)
+    {
+      myOwnersMap.UnBind (theOwner);
+    }
+  }
 }

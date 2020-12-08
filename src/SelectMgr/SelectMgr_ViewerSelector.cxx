@@ -581,19 +581,10 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     const SelectMgr_SortCriterion& aCriterion = mystored.FindFromIndex (aStoredIter);
     const Handle(SelectMgr_EntityOwner)& anOwner = aCriterion.Entity->OwnerId();
     Standard_Integer aNbOwnerEntities = 0;
-    for (SelectMgr_IndexedMapOfHSensitive::Iterator aSensIter (anEntitySet->Sensitives()); aSensIter.More(); aSensIter.Next())
+    anEntitySet->Owners().Find (anOwner, aNbOwnerEntities);
+    if (aNbOwnerEntities > aCriterion.NbOwnerMatches)
     {
-      if (aSensIter.Value()->BaseSensitive()->OwnerId() == anOwner)
-      {
-        if (++aNbOwnerEntities > aCriterion.NbOwnerMatches)
-        {
-          // Remove from index map.
-          // Considering NCollection_IndexedDataMap implementation, the values for lower indexes will not be modified.
-          // Hence, just keep iterating in backward direction.
-          mystored.RemoveFromIndex (aStoredIter);
-          break;
-        }
-      }
+      mystored.RemoveFromIndex (aStoredIter);
     }
   }
 }

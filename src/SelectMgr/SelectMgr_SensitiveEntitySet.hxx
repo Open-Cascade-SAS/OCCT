@@ -17,13 +17,16 @@
 #define _SelectMgr_SensitiveEntitySet_HeaderFile
 
 #include <BVH_PrimitiveSet3d.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Select3D_BndBox3d.hxx>
 #include <Select3D_BVHBuilder3d.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_Selection.hxx>
 
 typedef NCollection_IndexedMap<Handle(SelectMgr_SensitiveEntity)> SelectMgr_IndexedMapOfHSensitive;
+typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer> SelectMgr_MapOfOwners;
 
 //! This class is used to store all calculated sensitive entites of one selectable
 //! object. It provides an interface for building BVH tree which is used to speed-up
@@ -73,9 +76,21 @@ public:
   //! Returns map of entities.
   const SelectMgr_IndexedMapOfHSensitive& Sensitives() const { return mySensitives; }
 
+  //! Returns map of owners.
+  const SelectMgr_MapOfOwners& Owners() const { return myOwnersMap; }
+
+protected:
+
+  //! Adds entity owner to the map of owners (or increases its counter if it is already there).
+  Standard_EXPORT void addOwner (const Handle(SelectMgr_EntityOwner)& theOwner);
+
+  //! Decreases counter of owner in the map of owners (or removes it from the map if counter == 0).
+  Standard_EXPORT void removeOwner (const Handle(SelectMgr_EntityOwner)& theOwner);
+
 private:
 
   SelectMgr_IndexedMapOfHSensitive mySensitives;     //!< Map of entities and its corresponding index in BVH
+  SelectMgr_MapOfOwners myOwnersMap;                 //!< Map of entity owners and its corresponding number of sensitives
 };
 
 #endif // _SelectMgr_SensitiveEntitySet_HeaderFile
