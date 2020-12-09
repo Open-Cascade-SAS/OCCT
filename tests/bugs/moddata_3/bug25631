@@ -13,12 +13,12 @@ bounding result -save Xmin Ymin Zmin Xmax Ymax Zmax
 set tol_abs 1.0e-4
 set tol_rel 1.0e-4
 
-checkreal "Xmin" [dval Xmin]  102.04999989999993 ${tol_abs} ${tol_rel}
-checkreal "Ymin" [dval Ymin] -12.576503364721431 ${tol_abs} ${tol_rel}
-checkreal "Zmin" [dval Zmin] -12.267407382031644 ${tol_abs} ${tol_rel}
-checkreal "Xmax" [dval Xmax] 145.65000009999983 ${tol_abs} ${tol_rel}
-checkreal "Ymax" [dval Ymax] 1.0883692081680807 ${tol_abs} ${tol_rel}
-checkreal "Zmax" [dval Zmax] 1.4146362604116396 ${tol_abs} ${tol_rel}
+checkreal "Xmin" [dval Xmin]  107.49999989999992 ${tol_abs} ${tol_rel}
+checkreal "Ymin" [dval Ymin] -12.487307730633276 ${tol_abs} ${tol_rel}
+checkreal "Zmin" [dval Zmin] -12.135364833115547 ${tol_abs} ${tol_rel}
+checkreal "Xmax" [dval Xmax]  140.20000009999987 ${tol_abs} ${tol_rel}
+checkreal "Ymax" [dval Ymax] -0.8336837432205401 ${tol_abs} ${tol_rel}
+checkreal "Zmax" [dval Zmax] -0.5631589698265231 ${tol_abs} ${tol_rel}
 
 smallview
 fit

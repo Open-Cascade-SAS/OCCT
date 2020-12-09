@@ -12,6 +12,6 @@ vdisplay result
 vviewparams -scale 8.46292 -proj 0.653203 -0.644806 0.396926 -up -0.0109833 0.51609 0.856464 -at 347.559 1026.89 219.262 -eye 2080.75 -684.022 1272.45
 
 tricheck result
-checktrinfo result -tri 11826 -nod 7310 -defl 7.6167024939147652
+checktrinfo result -tri 11800 -nod 7301 -defl 7.6167024939147652
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

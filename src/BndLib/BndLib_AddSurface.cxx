@@ -60,6 +60,17 @@ static Standard_Real  AdjustExtr(const Adaptor3d_Surface& S,
                                  const Standard_Real Tol, 
                                  const Standard_Boolean IsMin);
 
+
+static void ComputePolesIndexes(const TColStd_Array1OfReal &theKnots,
+  const TColStd_Array1OfInteger &theMults,
+  const Standard_Integer theDegree,
+  const Standard_Real theMin,
+  const Standard_Real theMax,
+  const Standard_Integer theMaxPoleIdx,
+  const Standard_Boolean theIsPeriodic,
+  Standard_Integer &theOutMinIdx,
+  Standard_Integer &theOutMaxIdx);
+
 //=======================================================================
 //function : Add
 //purpose  : 
@@ -212,35 +223,31 @@ static void TreatInfinitePlane(const gp_Pln        &aPlane,
 // theShiftCoeff - shift between flatknots array and poles array.
 // This vaule should be equal to 1 in case of non periodic BSpline,
 // and (degree + 1) - mults(the lowest index).
-void ComputePolesIndexes(const TColStd_Array1OfReal &theFlatKnots,
-                         const Standard_Integer theDegree,
-                         const Standard_Real theMin,
-                         const Standard_Real theMax,
-                         const Standard_Integer theMinIdx,
-                         const Standard_Integer theMaxIdx,
-                         const Standard_Integer theShiftCoeff,
-                         Standard_Integer &theOutMinIdx,
-                         Standard_Integer &theOutMaxIdx)
+
+void ComputePolesIndexes(const TColStd_Array1OfReal &theKnots,
+  const TColStd_Array1OfInteger &theMults,
+  const Standard_Integer theDegree,
+  const Standard_Real theMin,
+  const Standard_Real theMax,
+  const Standard_Integer theMaxPoleIdx,
+  const Standard_Boolean theIsPeriodic,
+  Standard_Integer &theOutMinIdx,
+  Standard_Integer &theOutMaxIdx)
 {
-  // Set initial values for the result indexes to handle situation when requested parameter space
-  // is slightly greater than B-spline parameter space.
-  theOutMinIdx = theFlatKnots.Lower();
-  theOutMaxIdx = theFlatKnots.Upper();
+  BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
+  theOutMinIdx = Max(theOutMinIdx, theKnots.Lower());
 
-  // Compute first and last used flat knots.
-  for(Standard_Integer aKnotIdx = theFlatKnots.Lower();
-      aKnotIdx < theFlatKnots.Upper();
-      aKnotIdx++)
-  {
-    if (theFlatKnots(aKnotIdx) <= theMin)
-      theOutMinIdx = aKnotIdx;
+  BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
+  theOutMaxIdx++;
+  theOutMaxIdx = Min(theOutMaxIdx, theKnots.Upper());
+  Standard_Integer mult = theMults(theOutMaxIdx);
 
-    if (theFlatKnots(theFlatKnots.Upper() - aKnotIdx + theFlatKnots.Lower()) >= theMax)
-      theOutMaxIdx = theFlatKnots.Upper() - aKnotIdx + theFlatKnots.Lower();
-  }
-
-  theOutMinIdx = Max(theOutMinIdx - 2 * theDegree + 2 - theShiftCoeff, theMinIdx);
-  theOutMaxIdx = Min(theOutMaxIdx - 2 + theDegree + 1 - theShiftCoeff, theMaxIdx);
+  theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
+  theOutMinIdx = Max(theOutMinIdx, 1);
+  theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
+  theOutMaxIdx += theDegree - mult;
+  if (!theIsPeriodic)
+    theOutMaxIdx = Min(theOutMaxIdx, theMaxPoleIdx);
 }
 
 //  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503 End
@@ -336,6 +343,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       // Borders of underlying geometry.
       Standard_Real anUMinParam = UMin, anUMaxParam = UMax,// BSpline case.
                      aVMinParam = VMin,  aVMaxParam = VMax;
+      Handle(Geom_BSplineSurface) aBS;
       if (Type == GeomAbs_BezierSurface)
       {
         // Bezier surface:
@@ -358,8 +366,8 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         // use convex hull algorithm,
         // if Umin, VMin, Umax, Vmax lies outside then:
         // use grid algorithm on analytic continuation (default case).
-        S.BSpline()->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
-
+        aBS = S.BSpline();
+        aBS->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
         if ( (UMin - anUMinParam) < -PTol ||
              (VMin -  aVMinParam) < -PTol ||
              (UMax - anUMaxParam) >  PTol ||
@@ -372,94 +380,87 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
 
       if (isUseConvexHullAlgorithm)
       {
-          TColgp_Array2OfPnt Tp(1,S.NbUPoles(),1,S.NbVPoles());
-          Standard_Integer UMinIdx = 0, UMaxIdx = 0;
-          Standard_Integer VMinIdx = 0, VMaxIdx = 0;
-          if (Type == GeomAbs_BezierSurface)
+        Standard_Integer aNbUPoles = S.NbUPoles(), aNbVPoles = S.NbVPoles();
+        TColgp_Array2OfPnt Tp(1, aNbUPoles, 1, aNbVPoles);
+        Standard_Integer UMinIdx = 0, UMaxIdx = 0;
+        Standard_Integer VMinIdx = 0, VMaxIdx = 0;
+        Standard_Boolean isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
+        if (Type == GeomAbs_BezierSurface)
+        {
+          S.Bezier()->Poles(Tp);
+          UMinIdx = 1; UMaxIdx = aNbUPoles;
+          VMinIdx = 1; VMaxIdx = aNbVPoles;
+        }
+        else
+        {
+          aBS->Poles(Tp);
+
+          UMinIdx = 1;
+          UMaxIdx = aNbUPoles;
+          VMinIdx = 1;
+          VMaxIdx = aNbVPoles;
+
+          if (UMin > anUMinParam ||
+              UMax < anUMaxParam)
           {
-            S.Bezier()->Poles(Tp);
+            TColStd_Array1OfInteger aMults(1, aBS->NbUKnots());
+            TColStd_Array1OfReal aKnots(1, aBS->NbUKnots());
+            aBS->UKnots(aKnots);
+            aBS->UMultiplicities(aMults);
 
-            UMinIdx = Tp.LowerRow();
-            UMaxIdx = Tp.UpperRow();
-            VMinIdx = Tp.LowerCol();
-            VMaxIdx = Tp.UpperCol();
-          }
-          else
-          {
-            S.BSpline()->Poles(Tp);
-
-            UMinIdx = Tp.LowerRow();
-            UMaxIdx = Tp.UpperRow();
-            VMinIdx = Tp.LowerCol();
-            VMaxIdx = Tp.UpperCol();
-
-            if (UMin > anUMinParam ||
-                UMax < anUMaxParam)
-            {
-              Standard_Integer anUFlatKnotsCount = S.BSpline()->NbUPoles() + S.BSpline()->UDegree() + 1;
-              Standard_Integer aShift = 1;
-
-              if (S.BSpline()->IsUPeriodic())
-              {
-                TColStd_Array1OfInteger aMults(1, S.BSpline()->NbUKnots());
-                S.BSpline()->UMultiplicities(aMults);
-                anUFlatKnotsCount = BSplCLib::KnotSequenceLength(aMults, S.BSpline()->UDegree(), Standard_True);
-
-                aShift = S.BSpline()->UDegree() + 1 - S.BSpline()->UMultiplicity(1);
-              }
-
-              TColStd_Array1OfReal anUFlatKnots(1, anUFlatKnotsCount);
-              S.BSpline()->UKnotSequence(anUFlatKnots);
-
-              ComputePolesIndexes(anUFlatKnots,
-                                  S.BSpline()->UDegree(),
-                                  UMin, UMax,
-                                  UMinIdx, UMaxIdx,  // Min and Max Indexes
-                                  aShift,
-                                  UMinIdx, UMaxIdx); // the Output indexes
-            }
-
-            if (VMin > aVMinParam ||
-                VMax < aVMaxParam)
-            {
-              Standard_Integer anVFlatKnotsCount = S.BSpline()->NbVPoles() + S.BSpline()->VDegree() + 1;
-              Standard_Integer aShift = 1;
-
-              if (S.BSpline()->IsVPeriodic())
-              {
-                TColStd_Array1OfInteger aMults(1, S.BSpline()->NbVKnots());
-                S.BSpline()->VMultiplicities(aMults);
-                anVFlatKnotsCount = BSplCLib::KnotSequenceLength(aMults, S.BSpline()->VDegree(), Standard_True);
-
-                aShift = S.BSpline()->VDegree() + 1 - S.BSpline()->VMultiplicity(1);
-              }
-
-              TColStd_Array1OfReal anVFlatKnots(1, anVFlatKnotsCount);
-              S.BSpline()->VKnotSequence(anVFlatKnots);
-
-              ComputePolesIndexes(anVFlatKnots,
-                                  S.BSpline()->VDegree(),
-                                  VMin, VMax,
-                                  VMinIdx, VMaxIdx,  // Min and Max Indexes
-                                  aShift,
-                                  VMinIdx, VMaxIdx); // the Output indexes
-            }
+            ComputePolesIndexes(aKnots,
+              aMults,
+              aBS->UDegree(),
+              UMin, UMax,
+              aNbUPoles,
+              isUPeriodic,
+              UMinIdx, UMaxIdx); // the Output indexes
 
           }
 
-          // Use poles to build convex hull.
-          for (Standard_Integer i = UMinIdx; i <= UMaxIdx; i++)
+          if (VMin > aVMinParam ||
+            VMax < aVMaxParam)
           {
-            for (Standard_Integer j = VMinIdx; j <= VMaxIdx; j++)
-            {
-              B.Add(Tp(i,j));
-            }
+            TColStd_Array1OfInteger aMults(1, aBS->NbVKnots());
+            TColStd_Array1OfReal aKnots(1, aBS->NbVKnots());
+            aBS->VKnots(aKnots);
+            aBS->VMultiplicities(aMults);
+
+            ComputePolesIndexes(aKnots,
+              aMults,
+              aBS->VDegree(),
+              VMin, VMax,
+              aNbVPoles,
+              isVPeriodic,
+              VMinIdx, VMaxIdx); // the Output indexes
           }
 
-          B.Enlarge(Tol);
-          break;
+        }
+
+        // Use poles to build convex hull.
+        Standard_Integer ip, jp;
+        for (Standard_Integer i = UMinIdx; i <= UMaxIdx; i++)
+        {
+          ip = i;
+          if (isUPeriodic && ip > aNbUPoles)
+          {
+            ip = ip - aNbUPoles;
+          }
+          for (Standard_Integer j = VMinIdx; j <= VMaxIdx; j++)
+          {
+            jp = j;
+            if (isVPeriodic && jp > aNbVPoles)
+            {
+              jp = jp - aNbVPoles;
+            }
+            B.Add(Tp(ip, jp));
+          }
+        }
+
+        B.Enlarge(Tol);
+        break;
       }
-    }
+  }
     Standard_FALLTHROUGH
   default: 
     {
@@ -961,7 +962,7 @@ Standard_Integer NbVSamples(const Adaptor3d_Surface& S,
     {
       const Handle(Geom_BSplineSurface)& BS = S.BSpline();
       N = 2*(BS->VDegree() + 1)*(BS->NbVKnots() - 1) ;
-     Standard_Real umin, umax, vmin, vmax;
+      Standard_Real umin, umax, vmin, vmax;
       BS->Bounds(umin, umax, vmin, vmax);
       Standard_Real dv = (Vmax - Vmin) / (vmax - vmin);
       if(dv < .9)
