@@ -88,7 +88,7 @@ public:
   //! In the first case the result is at the distance
   //! <Dist> to the plane <Pln> in the direction of the
   //! normal to <Pln>.
-  //! Otherwize it is in the opposite direction.
+  //! Otherwise it is in the opposite direction.
   Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const Standard_Real Dist);
   
   //! Make a Pln from gp <ThePln> passing through 3

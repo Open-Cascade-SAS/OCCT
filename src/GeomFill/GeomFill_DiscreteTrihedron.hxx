@@ -61,14 +61,14 @@ public:
   
   //! compute Trihedron and  derivative Trihedron  on curve
   //! at parameter <Param>
-  //! Warning : It used only for C1 or C2 aproximation
+  //! Warning : It used only for C1 or C2 approximation
   //! For the moment it returns null values for DTangent, DNormal
   //! and DBiNormal.
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& DTangent, gp_Vec& Normal, gp_Vec& DNormal, gp_Vec& BiNormal, gp_Vec& DBiNormal) Standard_OVERRIDE;
   
   //! compute  Trihedron on curve
   //! first and seconde  derivatives.
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   //! For the moment it returns null values for DTangent, DNormal
   //! DBiNormal, D2Tangent, D2Normal, D2BiNormal.
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& DTangent, gp_Vec& D2Tangent, gp_Vec& Normal, gp_Vec& DNormal, gp_Vec& D2Normal, gp_Vec& BiNormal, gp_Vec& DBiNormal, gp_Vec& D2BiNormal) Standard_OVERRIDE;

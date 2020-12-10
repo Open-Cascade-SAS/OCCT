@@ -1,7 +1,7 @@
 ﻿Contribution {#contribution}
 ============
 
-This chapter contains the detailed infomation about contribution procedure:
+This chapter contains the detailed information about contribution procedure:
 
 * @subpage occt_contribution__contribution_workflow
 * @subpage occt_contribution__git_guide

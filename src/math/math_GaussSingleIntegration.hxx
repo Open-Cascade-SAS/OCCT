@@ -74,7 +74,7 @@ protected:
 private:
 
   
-  //! perfoms  actual  computation
+  //! performs  actual  computation
   Standard_EXPORT void Perform (math_Function& F, const Standard_Real Lower, const Standard_Real Upper, const Standard_Integer Order);
 
 

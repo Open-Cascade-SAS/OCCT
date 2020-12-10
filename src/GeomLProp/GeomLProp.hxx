@@ -49,7 +49,7 @@ public:
   //! compare the derivative.
   Standard_EXPORT static GeomAbs_Shape Continuity (const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Standard_Real u1, const Standard_Real u2, const Standard_Boolean r1, const Standard_Boolean r2, const Standard_Real tl, const Standard_Real ta);
   
-  //! The  same  as  preciding   but   using  the   standard
+  //! The  same  as  preceding   but   using  the   standard
   //! tolerances from package Precision.
   Standard_EXPORT static GeomAbs_Shape Continuity (const Handle(Geom_Curve)& C1, const Handle(Geom_Curve)& C2, const Standard_Real u1, const Standard_Real u2, const Standard_Boolean r1, const Standard_Boolean r2);
 

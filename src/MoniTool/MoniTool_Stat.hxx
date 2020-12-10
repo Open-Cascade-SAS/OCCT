@@ -86,7 +86,7 @@ public:
   //! Adds more items to be counted by Add... on current level
   Standard_EXPORT void OpenMore (const Standard_Integer id, const Standard_Integer nb);
   
-  //! Directly addes items
+  //! Directly adds items
   Standard_EXPORT void Add (const Standard_Integer nb = 1);
   
   //! Declares a count of items to be added later. If a sub-counter

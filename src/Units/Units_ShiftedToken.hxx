@@ -43,7 +43,7 @@ DEFINE_STANDARD_HANDLE(Units_ShiftedToken, Units_Token)
 //! the mutiplicative factor, and <b> the gap relative
 //! to the ordinate axis.
 //!
-//! An example is the  tranlation between the  Celsius
+//! An example is the  translation between the  Celsius
 //! and Fahrenheit degree of temperature.
 class Units_ShiftedToken : public Units_Token
 {

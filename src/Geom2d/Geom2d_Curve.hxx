@@ -153,7 +153,7 @@ public:
   //! curve  if you want the curve to be periodic.
   Standard_EXPORT virtual Standard_Boolean IsPeriodic() const = 0;
   
-  //! Returns thne period of this curve.
+  //! Returns the period of this curve.
   //! raises if the curve is not periodic
   Standard_EXPORT virtual Standard_Real Period() const;
   

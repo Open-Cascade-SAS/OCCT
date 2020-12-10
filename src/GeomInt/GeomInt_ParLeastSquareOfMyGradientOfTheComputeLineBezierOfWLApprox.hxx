@@ -174,17 +174,17 @@ public:
 protected:
 
   
-  //! is used by the constuctors above.
+  //! is used by the constructors above.
   Standard_EXPORT void Init (const GeomInt_TheMultiLineOfWLApprox& SSP, const Standard_Integer FirstPoint, const Standard_Integer LastPoint);
   
   //! returns the number of second member columns.
   //! Is used internally to initialize the fields.
   Standard_EXPORT Standard_Integer NbBColumns (const GeomInt_TheMultiLineOfWLApprox& SSP) const;
   
-  //! returns the first point beeing fitted.
+  //! returns the first point being fitted.
   Standard_EXPORT Standard_Integer TheFirstPoint (const AppParCurves_Constraint FirstCons, const Standard_Integer FirstPoint) const;
   
-  //! returns the last point beeing fitted.
+  //! returns the last point being fitted.
   Standard_EXPORT Standard_Integer TheLastPoint (const AppParCurves_Constraint LastCons, const Standard_Integer LastPoint) const;
   
   //! Affects the fields in the case of a constraint point.

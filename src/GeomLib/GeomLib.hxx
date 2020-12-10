@@ -135,7 +135,7 @@ public:
   //! Tol is used to determine singular cases.
   Standard_EXPORT static void AxeOfInertia (const TColgp_Array1OfPnt& Points, gp_Ax2& Axe, Standard_Boolean& IsSingular, const Standard_Real Tol = 1.0e-7);
   
-  //! Compute principale axes  of  inertia, and dispertion
+  //! Compute principale axes  of  inertia, and dispersion
   //! value  of some  points.
   Standard_EXPORT static void Inertia (const TColgp_Array1OfPnt& Points, gp_Pnt& Bary, gp_Dir& XDir, gp_Dir& YDir, Standard_Real& Xgap, Standard_Real& YGap, Standard_Real& ZGap);
   
@@ -146,7 +146,7 @@ public:
   //!
   //! This  method makes uniform NumPoints segments S1,...SNumPoints out
   //! of the segment defined by the first parameter and the
-  //! last  parameter ofthe  InParameter ; keeps   only one
+  //! last  parameter of the  InParameter ; keeps   only one
   //! point of the InParameters set of parameter in each of
   //! the uniform segments taking care of the first and the
   //! last   parameters. For the ith segment the element of
@@ -172,13 +172,13 @@ public:
   //! the maximum of the evaluated distance
   Standard_EXPORT static void EvalMaxParametricDistance (const Adaptor3d_Curve& Curve, const Adaptor3d_Curve& AReferenceCurve, const Standard_Real Tolerance, const TColStd_Array1OfReal& Parameters, Standard_Real& MaxDistance);
   
-  //! this will compute the maximum distancef at the parameters
+  //! this will compute the maximum distance at the parameters
   //! given in the Parameters array by projecting from the Curve
   //! to the reference curve and taking the minimum distance
   //! Than the maximum will be taken on those minimas.
   Standard_EXPORT static void EvalMaxDistanceAlongParameter (const Adaptor3d_Curve& Curve, const Adaptor3d_Curve& AReferenceCurve, const Standard_Real Tolerance, const TColStd_Array1OfReal& Parameters, Standard_Real& MaxDistance);
   
-  //! Cancel,on the boudaries,the denominator  first derivative
+  //! Cancel,on the boundaries,the denominator  first derivative
   //! in  the directions wished by the user and set its value to 1.
   Standard_EXPORT static void CancelDenominatorDerivative (Handle(Geom_BSplineSurface)& BSurf, const Standard_Boolean UDirection, const Standard_Boolean VDirection);
   

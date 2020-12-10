@@ -61,7 +61,7 @@ public:
   
   //! Specific action of Transfer. The Result is stored in
   //! the returned Binder, or a Null Handle for "No result"
-  //! (Default defined as doing nothing; should be deffered)
+  //! (Default defined as doing nothing; should be deferred)
   //! "mutable" allows the Actor to record intermediate
   //! information, in addition to those of TransferProcess
   Standard_EXPORT virtual Handle(Transfer_Binder) Transferring

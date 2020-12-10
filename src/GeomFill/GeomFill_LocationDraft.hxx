@@ -63,12 +63,12 @@ public:
   
   //! compute location 2d  points and  associated
   //! first derivatives.
-  //! Warning : It used only for C1 or C2 aproximation
+  //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, gp_Mat& M, gp_Vec& V, gp_Mat& DM, gp_Vec& DV, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d) Standard_OVERRIDE;
   
   //! compute location 2d  points and associated
   //! first and seconde  derivatives.
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, gp_Mat& M, gp_Vec& V, gp_Mat& DM, gp_Vec& DV, gp_Mat& D2M, gp_Vec& D2V, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d, TColgp_Array1OfVec2d& D2Poles2d) Standard_OVERRIDE;
   
   //! Say if the first restriction is defined in this class.

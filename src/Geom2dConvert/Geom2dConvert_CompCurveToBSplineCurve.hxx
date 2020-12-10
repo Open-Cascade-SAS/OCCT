@@ -48,7 +48,7 @@ public:
   //! Return False if the curve is not G0 with the BSplineCurve.
   //! Tolerance is used to check continuity and decrease
   //! Multiplicty at the common Knot
-  //! After is usefull if BasisCurve is a closed curve .
+  //! After is useful if BasisCurve is a closed curve .
   Standard_EXPORT Standard_Boolean Add (const Handle(Geom2d_BoundedCurve)& NewCurve, const Standard_Real Tolerance, const Standard_Boolean After = Standard_False);
   
   Standard_EXPORT Handle(Geom2d_BSplineCurve) BSplineCurve() const;

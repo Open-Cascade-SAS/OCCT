@@ -122,7 +122,7 @@ public:
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(const TColGeom_Array2OfBezierSurface& Beziers);
   
   //! Build an Ci uniform (Rational) BSpline surface
-  //! The higest Continuity Ci is imposed, like the
+  //! The highest Continuity Ci is imposed, like the
   //! maximal deformation is lower than <Tolerance>.
   //! Warning:  The Continuity C0 is imposed without any check.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(const TColGeom_Array2OfBezierSurface& Beziers, const Standard_Real Tolerance, const Standard_Boolean RemoveKnots = Standard_True);

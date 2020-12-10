@@ -346,7 +346,7 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
 }
   
   //! Matrixes are copied through assignement.
-  //! An exception is raised if the dimensions are differents.
+  //! An exception is raised if the dimensions are different.
   Standard_EXPORT math_Matrix& Initialized (const math_Matrix& Other);
 math_Matrix& operator= (const math_Matrix& Other)
 {

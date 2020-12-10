@@ -31,7 +31,7 @@ class Graphic3d_AspectText3d;
 class gp_Vec;
 
 
-//! This class provides auxiliary methods to create differents aspects
+//! This class provides auxiliary methods to create different aspects
 class MeshVS_Tool 
 {
 public:

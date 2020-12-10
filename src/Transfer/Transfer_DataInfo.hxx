@@ -26,7 +26,7 @@
 class Standard_Transient;
 
 
-//! Gives informations on an object
+//! Gives information on an object
 //! Used as template to instantiate Mapper and SimpleBinder
 //! This class is for Transient
 class Transfer_DataInfo 

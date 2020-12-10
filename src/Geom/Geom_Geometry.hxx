@@ -84,7 +84,7 @@ public:
   Standard_EXPORT void Scale (const gp_Pnt& P, const Standard_Real S);
   
 
-  //! Translates a Geometry.  V is the vector of the tanslation.
+  //! Translates a Geometry.  V is the vector of the translation.
   Standard_EXPORT void Translate (const gp_Vec& V);
   
 

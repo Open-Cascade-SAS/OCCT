@@ -78,7 +78,7 @@ public:
   //! Scales a Geometry. S is the scaling value.
   Standard_EXPORT void Scale (const gp_Pnt2d& P, const Standard_Real S);
   
-  //! Translates a Geometry.  V is the vector of the tanslation.
+  //! Translates a Geometry.  V is the vector of the translation.
   Standard_EXPORT void Translate (const gp_Vec2d& V);
   
   //! Translates a Geometry from the point P1 to the point P2.

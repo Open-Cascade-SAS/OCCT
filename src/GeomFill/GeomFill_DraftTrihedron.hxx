@@ -51,12 +51,12 @@ public:
   
   //! compute Triedrhon and derivative Trihedron on curve at
   //! parameter <Param>
-  //! Warning : It used  only for C1 or C2 aproximation
+  //! Warning : It used  only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D0 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& BiNormal) Standard_OVERRIDE;
   
   //! compute Trihedron on curve
   //! first and seconde  derivatives.
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& DTangent, gp_Vec& Normal, gp_Vec& DNormal, gp_Vec& BiNormal, gp_Vec& DBiNormal) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, gp_Vec& Tangent, gp_Vec& DTangent, gp_Vec& D2Tangent, gp_Vec& Normal, gp_Vec& DNormal, gp_Vec& D2Normal, gp_Vec& BiNormal, gp_Vec& DBiNormal, gp_Vec& D2BiNormal) Standard_OVERRIDE;
@@ -73,7 +73,7 @@ public:
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   
-  //! Get average value of Tangent(t) and Normal(t) it is usefull to
+  //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational  surfaces.
   Standard_EXPORT virtual void GetAverageLaw (gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal) Standard_OVERRIDE;
   

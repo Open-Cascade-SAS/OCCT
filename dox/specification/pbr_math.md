@@ -424,7 +424,7 @@ Anyway that is good starting point and lets generate \f$h\f$ vectors first.
 
 Frankly speaking \f$D(h)\f$ is called normal distribution but cannot be directly used as hemisphere distribution.
 Originally it is statistical factor used to define total area of micro faces \f$\mathrm{d}A_h\f$
-whose normals lie withing given infinitesimal solid angle \f$\mathrm{d}h\f$ centered on \f$h\f$ direction using the original small enough area of macro surface \f$\mathrm{d}A\f$ [@ref Walter07]:
+whose normals lie within given infinitesimal solid angle \f$\mathrm{d}h\f$ centered on \f$h\f$ direction using the original small enough area of macro surface \f$\mathrm{d}A\f$ [@ref Walter07]:
 
 \f[dA_h = D(h)\,\mathrm{d}h\, \mathrm{d}A\f]
 

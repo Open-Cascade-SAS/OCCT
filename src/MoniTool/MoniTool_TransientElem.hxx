@@ -37,8 +37,8 @@ DEFINE_STANDARD_HANDLE(MoniTool_TransientElem, MoniTool_Element)
 //!
 //! Transient from Standard defines the class to be keyed
 //! MapTransientHasher from TColStd is the associated Hasher
-//! DataInfo from MoniTool   is an additionnal class which helps to provide
-//! informations on the value (template : see DataInfo)
+//! DataInfo from MoniTool   is an additional class which helps to provide
+//! information on the value (template : see DataInfo)
 class MoniTool_TransientElem : public MoniTool_Element
 {
 
@@ -53,7 +53,7 @@ public:
   //! Returns the contained value
   Standard_EXPORT const Handle(Standard_Transient)& Value() const;
   
-  //! Specific testof equallity : defined as False if <other> has
+  //! Specific testof equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
   Standard_EXPORT Standard_Boolean Equates (const Handle(MoniTool_Element)& other) const Standard_OVERRIDE;

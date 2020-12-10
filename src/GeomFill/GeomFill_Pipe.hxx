@@ -62,7 +62,7 @@ class gp_Dir;
 //! along the sweep surface.
 //! 2.c) Define the path by a surface and a 2dcurve,
 //! the surface is used to define the trihedron's normal.
-//! It is usefull to keep a constant angle between
+//! It is useful to keep a constant angle between
 //! input surface and the pipe.                           --
 //! 3) give a  path and two sections. The section
 //! evoluate from First to Last Section.

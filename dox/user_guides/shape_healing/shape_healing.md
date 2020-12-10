@@ -1091,7 +1091,7 @@ sdc.SetPCurveCriterion (GeomAbs_C2); // for Curves 2D
 sdc.SetSurfaceCriterion (GeomAbs_C2); // for Surfaces 
 sdc.Perform (); 
 TopoDS_Shape bshape = sdc.Result(); 
-//.. to also get the correspondances before/after 
+//.. to also get the correspondences before/after
 Handle(ShapeBuild_ReShape) ctx = sdc.Context(); 
 //.. on a given shape 
 if (ctx.IsRecorded (sh)) { 

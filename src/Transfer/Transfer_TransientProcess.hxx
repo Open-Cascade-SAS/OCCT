@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(Transfer_TransientProcess, Transfer_ProcessForTransient)
 //! TransientProcess is intended to work from an InterfaceModel
 //! to a set of application objects.
 //!
-//! Hence, some informations about starting entities can be gotten
+//! Hence, some information about starting entities can be gotten
 //! from the model : for Trace, CheckList, Integrity Status
 class Transfer_TransientProcess : public Transfer_ProcessForTransient
 {
@@ -53,7 +53,7 @@ public:
   Standard_EXPORT Transfer_TransientProcess(const Standard_Integer nb = 10000);
   
   //! Sets an InterfaceModel, used by StartTrace, CheckList, queries
-  //! on Integrity, to give informations significant for each norm.
+  //! on Integrity, to give information significant for each norm.
   Standard_EXPORT void SetModel (const Handle(Interface_InterfaceModel)& model);
   
   //! Returns the Model used for StartTrace

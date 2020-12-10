@@ -47,7 +47,7 @@ public:
   Standard_EXPORT Units_UnitsSystem();
   
   //! Returns an instance of UnitsSystem initialized to the
-  //! S.I. units system upgraded by the base system units decription
+  //! S.I. units system upgraded by the base system units description
   //! file.
   //! Attempts to find the four following files:
   //! $CSF_`aName`Defaults/.aName
@@ -60,7 +60,7 @@ public:
   //! Returns the sequence of refined quantities.
   Standard_EXPORT Handle(Units_QuantitiesSequence) QuantitiesSequence() const;
   
-  //! Returns a sequence of integer in correspondance with
+  //! Returns a sequence of integer in correspondence with
   //! the sequence of quantities, which indicates, for each
   //! redefined quantity, the index into the sequence of
   //! units, of the active unit.

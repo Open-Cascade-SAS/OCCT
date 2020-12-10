@@ -900,7 +900,7 @@ buseobb 1
 # perform intersection
 bfillds
 
-# perform GF operaton
+# perform GF operation
 bbuild result
 ~~~~
 
@@ -2878,7 +2878,7 @@ Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Boundin
 @subsubsection specification__boolean_11a_5_obb_1 Usage
 
 #### API level
-To enable/disable the usage of OBB in the operation it is necessary to call the *SetUseOBB()* method with the approriate value:
+To enable/disable the usage of OBB in the operation it is necessary to call the *SetUseOBB()* method with the appropriate value:
 ~~~~
 BOPAlgo_Builder aGF;
 //
@@ -2890,7 +2890,7 @@ aGF.SetUseOBB(Standard_True);
 ~~~~
 
 #### TCL level
-To enable/disable the usage of OBB in the operation in DRAW it is necessary to call the *buseobb* command with the approriate value: 
+To enable/disable the usage of OBB in the operation in DRAW it is necessary to call the *buseobb* command with the appropriate value:
 * 0 - disabling the usage of OBB;
 * 1 - enabling the usage of OBB.
 ~~~~

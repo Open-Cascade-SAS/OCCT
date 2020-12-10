@@ -104,7 +104,7 @@ const Convert_ConicToBSplineCurve&  Convert
 
    gp_Ax22d Axis = TheConic->Position();
    if ( ( Axis.XDirection() ^ Axis.YDirection()) < 0.) {
-     // Then the axis is left-handed, apply a symetry to the curve.
+     // Then the axis is left-handed, apply a symmetry to the curve.
      gp_Trsf2d Sym;
      Sym.SetMirror(gp::OX2d());
      TheCurve->Transform(Sym);

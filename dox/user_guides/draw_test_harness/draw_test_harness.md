@@ -14,7 +14,8 @@ Draw is a test harness for Open CASCADE Technology. It provides a flexible and e
 
 Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes. 
 
-Scripts may be written to customize Draw and perform tests. New types of objects and new commands may be added using the C++ programing language. 
+Scripts may be written to customize Draw and perform tests.
+New types of objects and new commands may be added using the C++ programming language.
 
 Draw consists of: 
 
@@ -153,7 +154,7 @@ The evaluation of a command by TCL is done in two steps. In the first step, the 
 
 The following substitutions are performed by TCL: 
 
-Variable substitution is triggered by the $ character (as with csh), the content of the variable is substitued; { } may be used as in csh to enclose the name of the variable. 
+Variable substitution is triggered by the $ character (as with csh), the content of the variable is substituted; { } may be used as in csh to enclose the name of the variable.
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -1269,7 +1270,8 @@ foreach var [directory c_*] {erase $var}
 
 @subsubsection occt_draw_4_1_14_1 disp, don, era
 
-These commands have the same meaning as correspondingly display, donly and erase, but with the difference that they evaluate the arguments using glob pattern rules. For example, to display all objects with names d_1, d_2, d_3, etc. it is enouth to run the command:
+These commands have the same meaning as correspondingly display, donly and erase, but with the difference that they evaluate the arguments using glob pattern rules.
+For example, to display all objects with names d_1, d_2, d_3, etc. it is enough to run the command:
 ~~~~~{.cpp}
 disp d_*
 ~~~~~
@@ -1510,7 +1512,7 @@ vhlrtype  algo_type={algo|polyalgo} [shape_1 ... shape_n]
 Changes the type of HLR algorithm used for shapes.
 If the algo_type is algo, the exact HLR algorithm is used, otherwise the polygonal algorithm is used for defined shapes. 
 
-If no shape is specified through the command arguments, the given HLR algorithm_type is applied to all *AIS_Shape* isntances in the current context, and the command also changes the default HLR algorithm type.
+If no shape is specified through the command arguments, the given HLR algorithm_type is applied to all *AIS_Shape* instances in the current context, and the command also changes the default HLR algorithm type.
 
 **Note** that this command works with instances of *AIS_Shape* or derived classes only, other interactive object types are ignored.
 
@@ -5291,7 +5293,7 @@ For 2d points or curves, use the **2dtranslate** command.
 
 **Example:** 
 ~~~~~
-# 3d tranlation 
+# 3d translation 
 point p 10 20 30 
 circle c 10 20 30 5 
 torus t 10 20 30 5 2 
@@ -5635,7 +5637,7 @@ is used.
 Both command use for fitting approximation algorithm.
 **surfint** uses interpolation algorithm and can take array of point only from other input surface.
 Optional parameter **periodic_flag** allows to get correct periodical surfaces in U direction.
-U direction of result surface corresponds colums of initial array of points.
+U direction of result surface corresponds columns of initial array of points.
 If **periodic_flag** = 1, algorithm uses first row of array as last row and builds periodical surface.
 
 **Example:** 
@@ -7386,7 +7388,7 @@ vprops shape [epsilon] [c[losed]] [x y z] [-skip] [-full] [-tri]
 * **sprops** of all faces with a surface density of 1;
 * **vprops** of all solids with a density of 1. 
 
-For computation of properties of the shape, exact geomery (curves, surfaces) or
+For computation of properties of the shape, exact geometry (curves, surfaces) or
 some discrete data (polygons, triangulations) can be used for calculations.
 The epsilon, if given, defines relative precision of computation.
 The **closed** flag, if present, forces computation only closed shells of the shape.
@@ -7434,11 +7436,11 @@ bounding {-s shape | -c xmin ymin zmin xmax ymax zmax} [-obb] [-shape name] [-du
 ~~~~~
 
 Computes and displays the bounding box (BndBox) of a shape. The bounding box is a cuboid that circumscribes the source shape.
-Generaly, bounding boxes can be divided into two main types:
+Generally, bounding boxes can be divided into two main types:
   - axis-aligned BndBox (AABB). I.e. the box whose edges are parallel to an axis of World Coordinate System (WCS);
   - oriented BndBox (OBB). I.e. not AABB.
 
-Detailed information about this command is availabe in DRAW help-system (enter "help bounding" in DRAW application).
+Detailed information about this command is available in DRAW help-system (enter "help bounding" in DRAW application).
   
 **Example 1: Creation of AABB with given corners** 
 ~~~~~
@@ -8045,7 +8047,9 @@ Syntax:
 nurbsconvert result name [result name] 
 ~~~~~
 
-Changes the NURBS curve definition of a shape to a Bspline curve definition. This conversion is required for assymetric deformation and prepares the arguments for other commands such as **deform**. The conversion can be necessary when transferring shape data to other applications. 
+Changes the NURBS curve definition of a shape to a Bspline curve definition.
+This conversion is required for asymmetric deformation and prepares the arguments for other commands such as **deform**.
+The conversion can be necessary when transferring shape data to other applications. 
 
 
 @subsubsection occt_draw_7_11_6 edgestofaces
@@ -8694,7 +8698,7 @@ The command is applicable for all commands in the component.
 
 @subsubsection occt_draw_bop_options_obb OBB usage
 
-**buseobb** commannd enables/disables the usage of OBB in BOP algorithms.
+**buseobb** command enables/disables the usage of OBB in BOP algorithms.
 
 Syntax:
 ~~~~
@@ -9183,7 +9187,7 @@ Writes an OCCT shape to an IGES file.
 brepiges aa /disk1/tmp/aaa.igs 
 == unit (write) : MM 
 == mode  write  : Faces 
-==   To modifiy : command  param 
+==    To modify : command  param 
 == 1 Shapes written, giving 345 Entities 
 ==  Now, to write a file, command : writeall filename 
 ==  Output on file : /disk1/tmp/aaa.igs 
@@ -9785,7 +9789,7 @@ XWdump <document> <filename>
 ~~~~~
 
 Saves the contents of the viewer window as an image (XWD, png or BMP file). 
-<i>\<filename\></i> must have a corresponding extention. 
+<i>\<filename\></i> must have a corresponding extension. 
 
 **Example:**
 ~~~~~
@@ -10754,7 +10758,7 @@ projpcurve <edge> <face>  <Tol> <X> <Y> <Z> [<start_param>]
 
 **projpcurve** returns the projection of a given point on a given curve on surface.
 The curve on surface is defined by giving the edge and face names.
-Edge must have curve 2D repesentation on the face.
+Edge must have curve 2D representation on the face.
 Optional parameter <i>\<start_param\></i> is any parameter of pcurve, which is used by algorithm as start point for searching projection of given point with help of local Extrema algorithm.
 If this parameter is not set, algorithm uses whole parametric interval of pcurve for searching projection.
 

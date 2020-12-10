@@ -26,7 +26,7 @@
 class TopoDS_Shape;
 
 
-//! Gives informations on an object, see template DataInfo
+//! Gives information on an object, see template DataInfo
 //! This class is for Shape
 class TransferBRep_ShapeInfo 
 {

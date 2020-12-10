@@ -66,7 +66,7 @@ public:
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1, const Geom2dGcc_QualifiedCurve& Qualified2, const Standard_Real Tolang);
   
   //! This class implements the algorithms used to create 2d
-  //! lines passing thrue a point and tangent to a curve.
+  //! lines passing through a point and tangent to a curve.
   //! Tolang is used to determine the tolerance for the tangency points.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1, const gp_Pnt2d& ThePoint, const Standard_Real Tolang);
   
@@ -78,7 +78,7 @@ public:
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1, const Geom2dGcc_QualifiedCurve& Qualified2, const Standard_Real Tolang, const Standard_Real Param1, const Standard_Real Param2);
   
   //! This class implements the algorithms used to create 2d
-  //! lines passing thrue a point and tangent to a curve.
+  //! lines passing through a point and tangent to a curve.
   //! Tolang is used to determine the tolerance for the tangency points.
   //! Param2 is used for the initial guess on the curve.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1, const gp_Pnt2d& ThePoint, const Standard_Real Tolang, const Standard_Real Param1);

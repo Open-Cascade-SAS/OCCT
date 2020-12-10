@@ -346,7 +346,7 @@ void GeomLib::DensifyArray1OfReal(const Standard_Integer MinNumPoints,
  if (MinNumPoints > InParameters.Length()) {
 
    //
-   // checks the paramaters are in increasing order
+   // checks the parameters are in increasing order
    // 
    for (ii = InParameters.Lower() ; ii < InParameters.Upper() ; ii++) {
      if (InParameters(ii) > InParameters(ii+1)) {
@@ -892,7 +892,7 @@ void GeomLib::SameRange(const Standard_Real         Tolerance,
       return;
   }
 
-  // the parametrisation lentgh  must at least be the same.
+  // the parametrisation length  must at least be the same.
   if (Abs(LastOnCurve - FirstOnCurve - RequestedLast + RequestedFirst) 
       <= Tolerance)
   { 
@@ -2019,7 +2019,7 @@ static Standard_Boolean CanBeTreated(Handle(Geom_BSplineSurface)& BSurf)
 
 //=======================================================================
 //class   : law_evaluator
-//purpose : usefull to estimate the value of a function of 2 variables
+//purpose : useful to estimate the value of a function of 2 variables
 //=======================================================================
 
 class law_evaluator : public BSplSLib_EvaluatorFunction
@@ -2759,8 +2759,8 @@ Standard_Boolean GeomLib::IsBzVClosed (const Handle(Geom_BezierSurface)& S,
 //function : CompareWeightPoles
 //purpose  : Checks if thePoles1(i)*theW1(i) is equal to thePoles2(i)*theW2(i)
 //            with tolerance theTol.
-//           It is necessary for not rational B-splines and Bezier curves
-//            to set theW1 and theW2 adresses to zero.
+//           It is necessary for non-rational B-splines and Bezier curves
+//            to set theW1 and theW2 addresses to zero.
 //=======================================================================
 static Standard_Boolean CompareWeightPoles(const TColgp_Array1OfPnt& thePoles1, 
                                            const TColStd_Array1OfReal* const theW1,

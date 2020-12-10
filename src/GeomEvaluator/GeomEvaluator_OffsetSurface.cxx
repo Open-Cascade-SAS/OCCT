@@ -910,7 +910,7 @@ Standard_Boolean GeomEvaluator_OffsetSurface::ReplaceDerivative(
 
     gp_Pnt aP;
     gp_Vec aDU, aDV;
-    // Step away from currect parametric coordinates and calculate derivatives once again.
+    // Step away from current parametric coordinates and calculate derivatives once again.
     // Replace zero derivative by the obtained.
     for (Standard_Real aStepSign = -1.0; aStepSign <= 1.0 && !isReplaced; aStepSign += 2.0)
     {

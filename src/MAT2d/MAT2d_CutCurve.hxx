@@ -59,7 +59,7 @@ public:
   Standard_EXPORT Standard_Boolean UnModified() const;
   
   //! Returns the number of curves.
-  //! it's allways greatest than 2.
+  //! it's always greatest than 2.
   //!
   //! raises if the Curve is UnModified;
   Standard_EXPORT Standard_Integer NbCurves() const;

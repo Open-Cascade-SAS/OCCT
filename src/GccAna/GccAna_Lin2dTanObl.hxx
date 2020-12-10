@@ -77,7 +77,7 @@ public:
   
   //! Returns the solution number Index.
   //! Be careful: the Index is only a way to get all the
-  //! solutions, but is not associated to theses outside the
+  //! solutions, but is not associated to these outside the
   //! context of the algorithm-object.
   //! raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the   number of solutions.

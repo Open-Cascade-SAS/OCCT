@@ -370,7 +370,7 @@ void Geom2d_BezierCurve::Segment
 {
   closed =  (Abs(Value(U1).Distance (Value(U2))) <= gp::Resolution());
 //
-//   WARNING : when calling trimming be carefull that the cache
+//   WARNING : when calling trimming be careful that the cache
 //   is computed regarding 0.0e0 and not 1.0e0 
 //
   TColStd_Array1OfReal bidflatknots(BSplCLib::FlatBezierKnots(Degree()), 1, 2 * (Degree() + 1));

@@ -64,7 +64,7 @@ class StdFail_NotDone;
 //! Centripetal type can get better result for irregular distances between points.
 //!
 //! Approximation and interpolation algorithms can build periodical surface along U
-//! direction, which corresponds colums of array Points(i, j), 
+//! direction, which corresponds columns of array Points(i, j), 
 //! if corresponding parameter (thePeriodic, see comments below) of called 
 //! methods is set to True. Algorithm uses first row Points(1, *) as periodic boundary,
 //! so to avoid getting wrong surface it is necessary to keep distance between 

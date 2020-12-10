@@ -26,7 +26,7 @@
 class Standard_Transient;
 
 
-//! Gives informations on an object
+//! Gives information on an object
 //! Used as template to instantiate Elem, etc
 //! This class is for Transient
 class MoniTool_DataInfo 

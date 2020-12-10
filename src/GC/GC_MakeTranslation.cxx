@@ -22,7 +22,7 @@
 #include <StdFail_NotDone.hxx>
 
 //=========================================================================
-//   Creation of a 3D Geom translation of tanslation vector Vec.  +
+//   Creation of a 3D Geom translation of translation vector Vec.  +
 //=========================================================================
 GC_MakeTranslation::GC_MakeTranslation(const gp_Vec&  Vec ) {
   TheTranslation = new Geom_Transformation();

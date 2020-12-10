@@ -858,7 +858,7 @@ public:
   //! C3 : continuity of the third derivative all along the Surface,
   //! CN : the order of continuity is infinite.
   //! A B-spline surface is infinitely continuously differentiable
-  //! for the couple of parameters U, V such thats U != UKnots(i)
+  //! for the couple of parameters U, V such that U != UKnots(i)
   //! and V != VKnots(i). The continuity of the surface at a knot
   //! value depends on the multiplicity of this knot.
   //! Example :

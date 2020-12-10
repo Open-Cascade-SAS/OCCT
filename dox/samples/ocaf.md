@@ -176,7 +176,7 @@ public:
   //! The method defines a scale type of transformation. 
   Standard_EXPORT void SetScale (const gp_Pnt& thePoint, Standard_Real theScale); 
 
-  //! The method defines a complex type of transformation from one co-ordinate system to another. 
+  //! The method defines a complex type of transformation from one coordinate system to another.
   Standard_EXPORT void SetTransformation (const gp_Ax3& theCoordinateSystem1, const gp_Ax3& theCoordinateSystem2); 
 
   //!@ name Overridden methods from TDF_Attribute 
@@ -202,7 +202,7 @@ public:
 
   //!@ name Constructor 
 
-  //! The C++ constructor of this atribute class. 
+  //! The C++ constructor of this attribute class.
   //! Usually it is never called outside this class. 
   Standard_EXPORT MyPackage_Transformation();
 
@@ -389,7 +389,7 @@ void MyPackage_Transformation::SetScale(const gp_Pnt& thePoint, const Standard_R
 //======================================================================= 
 //function : SetTransformation 
 //purpose  : The method defines a complex type of transformation 
-//           from one co-ordinate system to another. 
+//           from one coordinate system to another.
 //======================================================================= 
 void MyPackage_Transformation::SetTransformation(const gp_Ax3& theCoordinateSystem1,   
                                                                          const gp_Ax3& theCoordinateSystem2) 

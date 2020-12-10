@@ -251,7 +251,7 @@ public:
   //! QuasiAngular,
   //! here t is a rational function that approximates
   //! theta ----> tan(theta/2).
-  //! Neverthless the composing with above function yields exact
+  //! Nevetheless the composing with above function yields exact
   //! functions whose square sum up to 1
   //! RationalC1 ;
   //! t is replaced by a polynomial function of u so as to grant
@@ -353,7 +353,7 @@ public:
   //! multiplicities of  the  knots of  the BSpline BS.(keeping  the
   //! geometry).  It returns a new BSpline which  could still be C0.
   //! tolerance is a  geometrical tolerance.
-  //! The  Angular toleranceis in radians  and mesures  the angle of
+  //! The  Angular toleranceis in radians  and measures  the angle of
   //! the tangents  on  the left and on  the right  to decide if  the
   //! curve is G1 or not at a given point
   Standard_EXPORT static void C0BSplineToC1BSplineCurve (Handle(Geom_BSplineCurve)& BS,
@@ -371,7 +371,7 @@ public:
   //! multiplicities of  the  knots of  the  BSpline BS.(keeping the
   //! geometry).  It returns an array of BSpline C1.  tolerance is a
   //! geometrical tolerance : it  allows for the maximum deformation
-  //! The  Angular tolerance is in  radians and mesures the angle of
+  //! The  Angular tolerance is in  radians and measures the angle of
   //! the tangents on the left and on the right to decide if the curve
   //! is C1 or not at a given point
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve (const Handle(Geom_BSplineCurve)& BS,

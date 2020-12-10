@@ -905,7 +905,7 @@ The following steps are performed:
     while (expFace.More()) { 
       //Draw the current face. 
       DrawFaceIsos(TopoDS::Face(expFace.Current()),nbIsos,FaceIsoColor); 
-      // Explore the edges ofthe face. 
+      // Explore the edges of the face.
       TopExp_Explorer expEdge(expFace.Current(),TopAbs_EDGE); 
       while (expEdge.More()) { 
         //Increment the face count for this edge. 

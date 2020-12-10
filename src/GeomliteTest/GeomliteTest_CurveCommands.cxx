@@ -633,7 +633,7 @@ static Standard_Integer cmovetangent (Draw_Interpretor& di, Standard_Integer n, 
 	Draw::Repaint();
 	}
       else {
-	di << "Not enought degree of freedom increase degree please\n";
+	di << "Not enough degree of freedom increase degree please\n";
       }
       
       return 0;
@@ -664,7 +664,7 @@ static Standard_Integer cmovetangent (Draw_Interpretor& di, Standard_Integer n, 
 	Draw::Repaint();
 	}
       else {
-	di << "Not enought degree of freedom increase degree please\n";
+	di << "Not enough degree of freedom increase degree please\n";
       }
       
       return 0;
@@ -1587,7 +1587,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   if(n < 2) return 1;
 
   if (!strcmp(a[1],"-L")) {
-// aproximation with curvilinear abscissa reparametrization
+// approximation with curvilinear abscissa reparametrization
     if (n > 11 || n < 4) return 1;
     Tol = 1.e-4;
     curve = DrawTrSurf::GetCurve(a[3]);
@@ -1623,7 +1623,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
     }
   }
   else {
-// aproximation without reparamitrization
+// approximation without reparamitrization
     if ( n>7 || n<3) return 1;
     shift = 3;
     curve = DrawTrSurf::GetCurve(a[2]);

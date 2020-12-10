@@ -114,7 +114,7 @@ public:
   //! by their parameters on <abisector>.
   Standard_EXPORT Standard_Real Distance (const Handle(MAT_Bisector)& abisector, const Standard_Real param1, const Standard_Real param2) const;
   
-  //! displays informations about the bisector defined by
+  //! displays information about the bisector defined by
   //! <bisector>.
   Standard_EXPORT void Dump (const Standard_Integer bisector, const Standard_Integer erease) const;
   

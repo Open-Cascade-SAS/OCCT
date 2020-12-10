@@ -61,7 +61,7 @@ public:
   //! Constructs bisecting lines between the two lines Lin1 and Lin2.
   Standard_EXPORT GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2);
   
-  //! Returns True when the algorithm succeded.
+  //! Returns True when the algorithm succeeded.
   Standard_EXPORT Standard_Boolean IsDone() const;
   
   //! Returns the number of solutions and raise NotDone if

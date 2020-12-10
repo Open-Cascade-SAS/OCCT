@@ -50,7 +50,7 @@ public:
   //! Set parametric information
   //! [<First>, <Last>] Sets the parametric bound of the
   //! sweeping surface to build.
-  //! <SectionFirst>, <SectionLast> gives coresponding
+  //! <SectionFirst>, <SectionLast> gives corresponding
   //! bounds parameter on the section law of <First> and <Last>
   //!
   //! V-Iso on Sweeping Surface S(u,v) is defined by
@@ -65,7 +65,7 @@ public:
   //! Set Approximation Tolerance
   //! Tol3d : Tolerance to surface approximation
   //! Tol2d : Tolerance used to perform curve approximation
-  //! Normaly the 2d curve are approximated with a
+  //! Normally the 2d curve are approximated with a
   //! tolerance given by the resolution method define in
   //! <LocationLaw> but if this tolerance is too large Tol2d
   //! is used.

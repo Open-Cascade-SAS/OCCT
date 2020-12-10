@@ -370,7 +370,7 @@ public:
   
   //! Set the origin of a periodic curve at Knot U. If U
   //! is  not a  knot  of  the  BSpline  a  new knot  is
-  //! inseted. KnotVector and poles are modified.
+  //! inserted. KnotVector and poles are modified.
   //! Raised if the curve is not periodic
   Standard_EXPORT void SetOrigin (const Standard_Real U, const Standard_Real Tol);
   
@@ -440,7 +440,7 @@ public:
   //! StartingCondition = 1 means the first point and tangent cannot move
   //! EndingCondition   = 1 means the last point and tangent cannot move
   //! and so forth
-  //! ErrorStatus != 0 means that there are not enought degree of freedom
+  //! ErrorStatus != 0 means that there are not enough degree of freedom
   //! with the constrain to deform the curve accordingly
   Standard_EXPORT void MovePointAndTangent (const Standard_Real U, const gp_Pnt& P, const gp_Vec& Tangent, const Standard_Real Tolerance, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, Standard_Integer& ErrorStatus);
   
@@ -453,7 +453,7 @@ public:
   //! Check if curve has at least G1 continuity in interval [theTf, theTl]
   //! Returns true if IsCN(1)
   //! or
-  //! angle betweem "left" and "right" first derivatives at
+  //! angle between "left" and "right" first derivatives at
   //! knots with C0 continuity is less then theAngTol
   //! only knots in interval [theTf, theTl] is checked
   Standard_EXPORT Standard_Boolean IsG1 (const Standard_Real theTf, const Standard_Real theTl, const Standard_Real theAngTol) const;

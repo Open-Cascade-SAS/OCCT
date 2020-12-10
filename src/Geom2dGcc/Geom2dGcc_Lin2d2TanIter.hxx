@@ -51,7 +51,7 @@ public:
 
   
   //! This class implements the algorithms used to create 2d
-  //! lines passing thrue a point and tangent to a curve.
+  //! lines passing through a point and tangent to a curve.
   //! Tolang is used to determine the tolerance for the
   //! tangency points.
   //! Param2 is used for the initial guess on the curve.

@@ -49,14 +49,14 @@ class GeomAPI_IntCS;
 //! *    Keeping   an   access  on    the    low-level
 //! implementation of high-level calls.
 //!
-//! The API  provides classes to  call the algorithmes
+//! The API  provides classes to  call the algorithms
 //! of the Geometry
 //!
 //! * The  constructors  of the classes  provides  the
 //! different constructions methods.
 //!
 //! * The  class keeps as fields the   different tools
-//! used by the algorithmes
+//! used by the algorithms
 //!
 //! *   The class  provides  a  casting  method to get
 //! automatically the  result  with  a   function-like

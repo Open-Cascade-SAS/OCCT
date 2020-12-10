@@ -577,7 +577,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 
 
   // calculate all the real roots of a function within the range 
-  // A..B. whitout condition on A and B
+  // A..B. without condition on A and B
   // a solution X is found when
   //   abs(Xi - Xi-1) <= EpsX and abs(F(Xi)-K) <= Epsf.
   // The function is considered as null between A and B if

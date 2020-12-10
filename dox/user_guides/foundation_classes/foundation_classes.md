@@ -916,7 +916,7 @@ Once it has been loaded, the call to the services provided by the plug-in is dir
 #### C++ Plug-In Implementation
 
 The C++ plug-in implements a service as an object with functions defined in an abstract class (this abstract class and its parent classes with the GUID are the only information about the plug-in implemented in the client application).
-The plug-in consists of a sharable library including a method named Factory which creates the C++ object (the client cannot instantiate this object because the plug-in implementation is not visible).
+The plug-in consists of a shareable library including a method named Factory which creates the C++ object (the client cannot instantiate this object because the plug-in implementation is not visible).
 Foundation classes provide in the package *Plugin* a method named *Load()*, which enables the client to access the required service through a library.
 
 That method reads the information regarding available plug-ins and their locations from the resource file *Plugin* found by environment variable *CSF_PluginDefaults*:
@@ -1201,7 +1201,7 @@ This is a map used to bind pairs of keys (Key1,Key2) and retrieve them in linear
 
 An entry of a *NCollection_DoubleMap* is composed of a pair of two keys: the first key and the second key.
 
-*NCollection_DoubleMap* is a teamplate class which depends on four parameters:
+*NCollection_DoubleMap* is a template class which depends on four parameters:
   * *Key1* is the type of the first key for an entry in the map,
   * *Key2* is the type of the second key for an entry in the map,
   * *Hasher1* is the type of hasher on first keys,

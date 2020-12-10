@@ -173,13 +173,13 @@ public:
   //! curves prior to computation.
   Standard_EXPORT Handle(TColStd_HArray1OfInteger) Order() const;
   
-  //! Returns the max distance betwen the result and the constraints
+  //! Returns the max distance between the result and the constraints
   Standard_EXPORT Standard_Real G0Error() const;
   
-  //! Returns  the max angle betwen the result and the constraints
+  //! Returns  the max angle between the result and the constraints
   Standard_EXPORT Standard_Real G1Error() const;
   
-  //! Returns  the max difference of curvature betwen the result and the constraints
+  //! Returns  the max difference of curvature between the result and the constraints
   Standard_EXPORT Standard_Real G2Error() const;
   
   //! Returns   the max distance between the result and the constraint Index
@@ -204,7 +204,7 @@ private:
 
   
   //! Evaluates the distance, the angle between normals, and the "courbure"
-  //! on middle points of contraints an corresponding points on the GeomPlate_Surface
+  //! on middle points of constraints and corresponding points on the GeomPlate_Surface
   //! the results are given for a curve c
   Standard_EXPORT void EcartContraintesMil (const Standard_Integer c, Handle(TColStd_HArray1OfReal)& d, Handle(TColStd_HArray1OfReal)& an, Handle(TColStd_HArray1OfReal)& courb);
   

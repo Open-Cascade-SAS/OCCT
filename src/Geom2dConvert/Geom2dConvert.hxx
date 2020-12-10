@@ -38,7 +38,7 @@ class Geom2dConvert_ApproxCurve;
 
 
 
-//! This package provides an implementation of algorithmes to do
+//! This package provides an implementation of algorithms to do
 //! the conversion between equivalent geometric entities from
 //! package Geom2d.
 //! It gives the possibility :
@@ -148,7 +148,7 @@ public:
   //! QuasiAngular,
   //! here t is a rational function that approximates
   //! theta ----> tan(theta/2).
-  //! Neverthless the composing with above function yields exact
+  //! Nevetheless the composing with above function yields exact
   //! functions whose square sum up to 1
   //! RationalC1 ;
   //! t is replaced by a polynomial function of u so as to grant

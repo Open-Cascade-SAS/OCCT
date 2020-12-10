@@ -210,7 +210,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
   //              - Uniform if all multiplicities are 1.
   //              -  Quasi-uniform if  all multiplicities are  1
   //              but the first and the last which are Degree+1.
-  //              -   PiecewiseBezier if  all multiplicites  are
+  //              -   PiecewiseBezier if  all multiplicities are
   //              Degree but the   first and the  last which are
   //              Degree+1. 
   //              
@@ -277,7 +277,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomSurface::TransferSurface(const Handle
     if (Vmax - Vmin > V1 - V0)
       Vmax = Vmin + (V1 - V0);
   }
-  //unperiodize surface to get neccessary for IGES standard number of knots and mults
+  //unperiodize surface to get necessary for IGES standard number of knots and mults
   if ( mysurface->IsUPeriodic() ) {
     // set new origin for periodic BSpline surfaces for synchronization of pcurves ranges
     // and surface bounds (issue 26138)

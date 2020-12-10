@@ -43,7 +43,7 @@ public:
   
   //! Creates an empty SimpleBinderOfTransient
   //! Returns True if a starting object is bound with SEVERAL
-  //! results : Here, returns allways False
+  //! results : Here, returns always False
   //! See Binder itself
   Standard_EXPORT Transfer_SimpleBinderOfTransient();
   

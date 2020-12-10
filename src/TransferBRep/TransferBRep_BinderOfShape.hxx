@@ -52,7 +52,7 @@ public:
   
   //! constructor which in the same time defines the result
   //! Returns True if a starting object is bound with SEVERAL
-  //! results : Here, returns allways False
+  //! results : Here, returns always False
   //! But it can have next results
   Standard_EXPORT TransferBRep_BinderOfShape(const TopoDS_Shape& res);
   

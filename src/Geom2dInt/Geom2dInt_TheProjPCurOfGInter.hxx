@@ -47,7 +47,7 @@ public:
   //! Tol is the tolerance on the distance between a point
   //! and the parametrised curve.
   //! In that case, no bounds are given. The research of
-  //! the rigth parameter has to be made on the natural
+  //! the right parameter has to be made on the natural
   //! parametric domain of the curve.
   Standard_EXPORT static Standard_Real FindParameter (const Adaptor2d_Curve2d& C, const gp_Pnt2d& Pnt, const Standard_Real Tol);
   

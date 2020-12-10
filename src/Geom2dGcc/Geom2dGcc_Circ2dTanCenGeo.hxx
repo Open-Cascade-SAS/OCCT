@@ -78,8 +78,8 @@ public:
   
   //! Returns the solution number Index and raises OutOfRange
   //! exception if Index is greater than the number of solutions.
-  //! Be carefull: the Index is only a way to get all the
-  //! solutions, but is not associated to theses outside the
+  //! Be careful: the Index is only a way to get all the
+  //! solutions, but is not associated to these outside the
   //! context of the algorithm-object.
   //! It raises NotDone if the construction algorithm
   //! didn't succeed.

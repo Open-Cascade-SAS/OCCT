@@ -61,11 +61,11 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Contructs a non-initialized vector in the range [theLower..theUpper]
+  //! Constructs a non-initialized vector in the range [theLower..theUpper]
   //! "theLower" and "theUpper" are the indexes of the lower and upper bounds of the constructed vector.
   Standard_EXPORT math_Vector(const Standard_Integer theLower, const Standard_Integer theUpper);
 
-  //! Contructs a vector in the range [theLower..theUpper]
+  //! Constructs a vector in the range [theLower..theUpper]
   //! whose values are all initialized with the value "theInitialValue"
   Standard_EXPORT math_Vector(const Standard_Integer theLower, const Standard_Integer theUpper, const Standard_Real theInitialValue);
 
@@ -265,7 +265,7 @@ public:
   }
 
   //! Initialises a vector by copying "theOther".
-  //! An exception is raised if the Lengths are differents.
+  //! An exception is raised if the Lengths are different.
   Standard_EXPORT math_Vector& Initialized(const math_Vector& theOther);
 
   math_Vector& operator=(const math_Vector& theOther)

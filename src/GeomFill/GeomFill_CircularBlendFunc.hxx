@@ -115,17 +115,17 @@ public:
   Standard_EXPORT virtual void SetTolerance (const Standard_Real Tol3d, const Standard_Real Tol2d) Standard_OVERRIDE;
   
   //! Get    the   barycentre of   Surface.   An   very  poor
-  //! estimation is sufficent. This information is usefull
+  //! estimation is sufficient. This information is useful
   //! to perform well conditioned rational approximation.
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
   
   //! Returns the   length of the maximum section. This
-  //! information is usefull to perform well conditioned rational
+  //! information is useful to perform well conditioned rational
   //! approximation.
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
   
   //! Compute the minimal value of weight for each poles
-  //! of all  sections.  This information is  usefull to
+  //! of all  sections.  This information is  useful to
   //! perform well conditioned rational approximation.
   Standard_EXPORT virtual void GetMinimalWeight (TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;
 

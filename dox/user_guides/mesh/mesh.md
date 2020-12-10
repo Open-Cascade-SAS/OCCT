@@ -189,7 +189,8 @@ BRepMesh provides user a way to switch default triangulation algorithm to a cust
 * *BRepMesh_CustomBaseMeshAlgo* provides the entry point for generic algorithms without support of constraints and supposed for generation of base mesh only. Constraint edges are processed using standard functionality provided by the component itself upon background mesh produced by 3rd-party solver;
 * *BRepMesh_CustomDelaunayBaseMeshAlgo* contains initialization part for tools used by BRepMesh for checks or optimizations using results of 3rd-party algorithm.
 
-Meshing algorithms could be provided by implemeting *IMeshTools_MeshAlgoFactory* with related interfaces and passing it to *BRepMesh_Context::SetFaceDiscret()*. OCCT comes with two base 2D meshing algorithms: *BRepMesh_MeshAlgoFactory* (used by default) and *BRepMesh_DelabellaMeshAlgoFactory*.
+Meshing algorithms could be provided by implementing *IMeshTools_MeshAlgoFactory* with related interfaces and passing it to *BRepMesh_Context::SetFaceDiscret()*.
+OCCT comes with two base 2D meshing algorithms: *BRepMesh_MeshAlgoFactory* (used by default) and *BRepMesh_DelabellaMeshAlgoFactory*.
 
 The following example demonstrates how it could be done from *Draw* environment:
 

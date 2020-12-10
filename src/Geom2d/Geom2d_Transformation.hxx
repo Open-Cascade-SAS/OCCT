@@ -151,7 +151,7 @@ public:
   Standard_EXPORT gp_Trsf2d Trsf2d() const;
   
 
-  //! Returns the coefficients of the global matrix of tranformation.
+  //! Returns the coefficients of the global matrix of transformation.
   //! It is a 2 rows X 3 columns matrix.
   //!
   //! Raised if  Row < 1 or Row > 2  or  Col < 1 or Col > 2

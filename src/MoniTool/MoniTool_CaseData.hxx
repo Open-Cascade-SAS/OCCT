@@ -197,7 +197,7 @@ public:
   
   //! Returns the kind of a data :
   //! KIND TYPE      MEANING
-  //! 0  ANY       any (not one of the followings)
+  //! 0  ANY       any (not one of the following)
   //! 1  EX        raised exception
   //! 2  EN        entity
   //! 3  G         geom
@@ -219,7 +219,7 @@ public:
   Standard_EXPORT const TCollection_AsciiString& Name (const Standard_Integer nd) const;
   
   //! Returns the first suitable data rank for a given name
-  //! Exact maching (exact case, no completion) is required
+  //! Exact matching (exact case, no completion) is required
   //! Firstly checks the recorded names
   //! If not found, considers the name as follows :
   //! Name = "TYPE" : search for the first item with this TYPE

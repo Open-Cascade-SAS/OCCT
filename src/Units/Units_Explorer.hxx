@@ -41,7 +41,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Empty contructor of the class.
+  //! Empty constructor of the class.
   Standard_EXPORT Units_Explorer();
   
   //! Creates a new instance of the class, initialized with

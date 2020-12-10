@@ -359,7 +359,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
       }
      default :
        { 
-	 // We have to search singulaties
+	 // We have to search singularities
 	 isFrenet = Standard_True;
 	 Init(); 
        }
@@ -653,7 +653,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
     };
     if(HArrPoles->Value(iC) == Param || Param == HArrPoles->Value(iC+1)) return TLaw->Value(Param);
   };
-  //  Calculate differenciation between apporoximated and local values of AngleAT
+  //  Calculate differentiation between approximated and local values of AngleAT
   Standard_Real AngP = TLaw->Value(Param), AngPo = HArrAngle->Value(iC), dAng = AngP - AngPo;
   gp_Vec Tangent, Normal, BN;
   frenet->D0(Param, Tangent, Normal, BN);

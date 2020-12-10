@@ -43,7 +43,7 @@ public:
   
 
   //! The Gauss-Legendre integration with Order = points of
-  //! integration for each unknow, is done on the function F
+  //! integration for each unknown, is done on the function F
   //! between the bounds Lower and Upper.
   Standard_EXPORT math_GaussSetIntegration(math_FunctionSet& F, const math_Vector& Lower, const math_Vector& Upper, const math_IntegerVector& Order);
   

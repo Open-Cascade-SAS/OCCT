@@ -40,7 +40,7 @@ Standard_EXPORT Standard_Integer  LU_Decompose(math_Matrix& a,
 // Given a matrix a(1..n, 1..n), this routine computes its LU decomposition, 
 // The matrix a is replaced by this LU decomposition and the vector indx(1..n)
 // is an output which records the row permutation effected by the partial
-// pivoting; d is output as +1 or -1 depending on wether the number of row
+// pivoting; d is output as +1 or -1 depending on whether the number of row
 // interchanges was even or odd.
 
 Standard_EXPORT Standard_Integer LU_Decompose(math_Matrix& a, 

@@ -27,7 +27,7 @@ class Geom_Surface;
 class Adaptor3d_Surface;
 
 //! this package contains the  geometric definition of
-//! curve and surface necessary to use algorithmes.
+//! curve and surface necessary to use algorithms.
 class GeomAdaptor 
 {
 public:

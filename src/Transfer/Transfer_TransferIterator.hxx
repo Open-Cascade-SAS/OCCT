@@ -39,7 +39,7 @@ class Interface_Check;
 
 //! Defines an Iterator on the result of a Transfer
 //! Available for Normal Results or not (Erroneous Transfer)
-//! It gives several kinds of Informations, and allows to consider
+//! It gives several kinds of Information, and allows to consider
 //! various criteria (criteria are cumulative)
 class Transfer_TransferIterator 
 {
@@ -93,7 +93,7 @@ public:
   
   //! Returns True if current Item brings a Result, Transient
   //! (Handle) or not or Multiple. That is to say, if it corresponds
-  //! to a normally acheived Transfer, Transient Result is read by
+  //! to a normally achieved Transfer, Transient Result is read by
   //! specific TransientResult below.
   //! Other kind of Result must be read specifically from its Binder
   Standard_EXPORT Standard_Boolean HasResult() const;
@@ -102,7 +102,7 @@ public:
   Standard_EXPORT Standard_Boolean HasUniqueResult() const;
   
   //! Returns the Type of the Result of the current Item, if Unique.
-  //! If No Unique Result (Error Transfert or Multiple Result),
+  //! If No Unique Result (Error Transfer or Multiple Result),
   //! returns a Null Handle
   //! The Type is : the Dynamic Type for a Transient Result,
   //! the Type defined by the Binder Class else

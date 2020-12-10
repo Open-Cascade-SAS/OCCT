@@ -152,7 +152,7 @@ void Units_Sentence::SetConstants()
 
 //=======================================================================
 //function : CalculateLocal
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aSeq)
 {

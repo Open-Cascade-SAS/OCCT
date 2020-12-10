@@ -48,7 +48,7 @@ public:
   //! International System of Units, and <amove>  is the gap
   //! in relation to another unit.
   //!
-  //! For  example Celcius   dregee   of temperature  is  an
+  //! For  example Celsius   degree   of temperature  is  an
   //! instance of ShiftedUnit  with <avalue> equal to 1. and
   //! <amove> equal to 273.15.
   Standard_EXPORT Units_ShiftedUnit(const Standard_CString aname, const Standard_CString asymbol, const Standard_Real avalue, const Standard_Real amove, const Handle(Units_Quantity)& aquantity);

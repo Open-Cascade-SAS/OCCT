@@ -174,8 +174,8 @@ public:
   //! Empty string if out of range or not an Enum
   Standard_EXPORT Standard_CString EnumVal (const Standard_Integer num) const;
   
-  //! Returns the case number which cooresponds to a string value
-  //! Works with main and additionnal values
+  //! Returns the case number which corresponds to a string value
+  //! Works with main and additional values
   //! Returns (StartEnum - 1) if not OK, -1 if not an Enum
   Standard_EXPORT Standard_Integer EnumCase (const Standard_CString val) const;
   
@@ -197,7 +197,7 @@ public:
   //! Sets a specific Satisfies function : it is added to the
   //! already defined criteria
   //! It must match the form :
-  //! statisfies (val : HAsciiString) returns Boolean
+  //! satisfies (val : HAsciiString) returns Boolean
   Standard_EXPORT void SetSatisfies (const MoniTool_ValueSatisfies func, const Standard_CString name);
   
   //! Returns name of specific satisfy, empty string if none

@@ -367,7 +367,7 @@ The  example record is interpreted as a parabola in plane which passes through a
     <3D hyperbola Ky> = <real>;  
 ~~~~
  
-**Descripton**  
+**Description**
  
 \<3D curve record 5\> describes a hyperbola. The  hyperbola data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and non-negative reals *k<sub>x</sub>* and *k<sub>y</sub>*. The hyperbola is  located in plane which passes through the point *P* and has the normal *N*. The hyperbola is defined by  the following parametric equation:  
  

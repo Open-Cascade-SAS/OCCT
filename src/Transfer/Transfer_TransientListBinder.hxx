@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(Transfer_TransientListBinder, Transfer_Binder)
 //! This binder binds several (a list of) Transients with a starting
 //! entity, when this entity itself corresponds to a simple list
 //! of Transients. Each part is not seen as a sub-result of an
-//! independant componant, but as an item of a built-in list
+//! independent component, but as an item of a built-in list
 class Transfer_TransientListBinder : public Transfer_Binder
 {
 

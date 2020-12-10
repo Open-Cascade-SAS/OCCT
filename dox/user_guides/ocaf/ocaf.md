@@ -1106,9 +1106,9 @@ All attributes inherit class *TDF_Attribute*, so, each attribute has its own GUI
 
 ### Attributes supporting several attributes of the same type on the same label
 
-By default only one attribute of the same type on the same lable is supported. For example, you can set only one TDataStd_Real attribute
-on the same label.  This limitation was removed for some predefined sub-set of standard attributes by adding so called 'user defined ID' 
-feature to the attribute. 
+By default only one attribute of the same type on the same label is supported.
+For example, you can set only one TDataStd_Real attribute on the same label.
+This limitation was removed for some predefined sub-set of standard attributes by adding so called 'user defined ID' feature to the attribute.
 The listed below attributes received this new feature:
 
   * **TDataStd_AsciiString**
@@ -1175,8 +1175,10 @@ It is possible to describe any model by means of standard OCAF attributes.
   one is based on standard OCAF attributes and the other is based 
   on the creation of a new attribute possessing all data of the model.  
    
-  A load is distributed through the shape. The measurements are taken at particular points defined by (x, y and z) co-ordinates. The load is represented as a projection onto X, Y and Z axes of the local co-ordinate system at each point of measurement. A matrix of transformation is needed 
-  to convert the local co-ordinate system to the global one, but this is optional.   
+  A load is distributed through the shape.
+  The measurements are taken at particular points defined by (x, y and z) coordinates.
+  The load is represented as a projection onto X, Y and Z axes of the local co-ordinate system at each point of measurement.
+  A matrix of transformation is needed to convert the local co-ordinate system to the global one, but this is optional.
    
   So, we have 15 double values at each point  of measurement. 
   If the number of such points is 100 000, for example, it means 
@@ -1210,8 +1212,7 @@ It is possible to describe any model by means of standard OCAF attributes.
 @figure{ocaf_tree_wp_image004.png,"Allocation of data of each  measurement point as arrays of double values",288}
  
   Now edition of data is safer as far as  memory usage is concerned. 
-  Change of value for one measurement point (any  value: point co-ordinates, load, and so on) 
-  backs-up only one small array of double values. 
+  Change of value for one measurement point (any  value: point coordinates, load, and so on) backs-up only one small array of double values.
   But this structure (tree) requires more memory space (additional  labels and attributes).  
    
   Besides, access to the values is still difficult and it is necessary 
@@ -2059,8 +2060,8 @@ of the method *SetName* of the object registers the new name automatically
     void UnRegisterName (const Handle(TCollection_HExtendedString)& theName, const Handle(TObj_TNameContainer)& theDictionary ) const; 
 ~~~~~
 
-Unregisters the name from the dictionary. Ther names of *TObj* model 
-objects are removed from the dictionary when the objects are deleted from the model. 
+Unregisters the name from the dictionary.
+The names of *TObj* model objects are removed from the dictionary when the objects are deleted from the model.
 
 ~~~~~{.cpp}
     Handle(TObj_TNameContainer) GetDictionary() const;

@@ -361,17 +361,17 @@ public:
   
   //! Returns, as an iterator, the log of root transfer, i.e. the
   //! created objects and Binders bound to starting roots
-  //! If withstart is given True, Starting Objets are also returned
+  //! If withstart is given True, Starting Objects are also returned
   Standard_EXPORT Transfer_IteratorOfProcessForFinder RootResult (const Standard_Boolean withstart = Standard_False) const;
   
   //! Returns, as an Iterator, the entire log of transfer (list of
   //! created objects and Binders which can bring errors)
-  //! If withstart is given True, Starting Objets are also returned
+  //! If withstart is given True, Starting Objects are also returned
   Standard_EXPORT Transfer_IteratorOfProcessForFinder CompleteResult (const Standard_Boolean withstart = Standard_False) const;
   
   //! Returns Binders which are neither "Done" nor "Initial",
   //! that is Error,Loop or Run (abnormal states at end of Transfer)
-  //! Starting Objects are given in correspondance in the iterator
+  //! Starting Objects are given in correspondence in the iterator
   Standard_EXPORT Transfer_IteratorOfProcessForFinder AbnormalResult() const;
   
   //! Returns a CheckList as a list of Check : each one is for a
@@ -433,7 +433,7 @@ private:
   //! without ErrorHandle. It invokes the Actor to work (set by
   //! SetActor), and tries its Nexts if no result is produced,
   //! until a Non Null Binder is produced.
-  //! But keep in mind that a Null Binder can allways be returned
+  //! But keep in mind that a Null Binder can always be returned
   //! if a Starting Entity has not been recognized at all.
   Standard_EXPORT Handle(Transfer_Binder) TransferProduct (const Handle(Transfer_Finder)& start,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());

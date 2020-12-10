@@ -52,7 +52,7 @@ public:
   //! Given an input matrix Cont, two input vectors Secont
   //! and StartingPoint, it solves Cont*X = Secont (only
   //! = equations) with a minimization of Norme(X-X0).
-  //! The maximun iterations number allowed is fixed to
+  //! The maximum iterations number allowed is fixed to
   //! NbIterations.
   //! The tolerance EpsLic is fixed for the dual variable
   //! convergence. The tolerance EpsLix is used for the
@@ -66,7 +66,7 @@ public:
   //! first equations are equal equations and the Nci last
   //! equations are inequalities <) with a minimization
   //! of Norme(X-X0).
-  //! The maximun iterations number allowed is fixed to
+  //! The maximum iterations number allowed is fixed to
   //! NbIterations.
   //! The tolerance EpsLic is fixed for the dual variable
   //! convergence. The tolerance EpsLix is used for the

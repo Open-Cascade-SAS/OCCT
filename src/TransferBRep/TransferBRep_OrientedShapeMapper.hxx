@@ -49,7 +49,7 @@ public:
   //! Returns the contained value
   Standard_EXPORT const TopoDS_Shape& Value() const;
   
-  //! Specific testof equallity : defined as False if <other> has
+  //! Specific testof equality : defined as False if <other> has
   //! not the same true Type, else contents are compared (by
   //! C++ operator ==)
   Standard_EXPORT Standard_Boolean Equates (const Handle(Transfer_Finder)& other) const Standard_OVERRIDE;

@@ -77,12 +77,12 @@ public:
   
   //! compute location 2d  points and  associated
   //! first derivatives.
-  //! Warning : It used only for C1 or C2 aproximation
+  //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, gp_Mat& M, gp_Vec& V, gp_Mat& DM, gp_Vec& DV, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d) Standard_OVERRIDE;
   
   //! compute location 2d  points and associated
   //! first and seconde  derivatives.
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, gp_Mat& M, gp_Vec& V, gp_Mat& DM, gp_Vec& DV, gp_Mat& D2M, gp_Vec& D2V, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d, TColgp_Array1OfVec2d& D2Poles2d) Standard_OVERRIDE;
   
   //! Say if the first restriction is defined in this class.
@@ -132,7 +132,7 @@ public:
   //! SetValue method
   Standard_EXPORT virtual void GetDomain (Standard_Real& First, Standard_Real& Last) const Standard_OVERRIDE;
   
-  //! Is usefull, if (me) have to run numerical
+  //! Is useful, if (me) have to run numerical
   //! algorithm to perform D0, D1 or D2
   //! The default implementation make nothing.
   Standard_EXPORT virtual void SetTolerance (const Standard_Real Tol3d, const Standard_Real Tol2d) Standard_OVERRIDE;

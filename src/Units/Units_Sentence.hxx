@@ -55,7 +55,7 @@ public:
   Standard_EXPORT Handle(Units_Token) Evaluate();
   
   //! Return True if number of created tokens > 0
-  //! (i.e creation of sentence is succesfull)
+  //! (i.e creation of sentence is successful)
     Standard_Boolean IsDone() const;
   
   //! Useful for debugging.

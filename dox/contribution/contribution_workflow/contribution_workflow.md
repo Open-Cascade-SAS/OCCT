@@ -148,7 +148,8 @@ The changes should comply with the OCCT @ref occt_contribution__coding_rules "Co
 It is especially important to comment the code properly so that other people can understand it easier.
 
 The modification should be tested by running OCCT tests (on the platform and scope available to **Developer**) and ensuring absence of regressions.
-In case if modification affects results of some existing test case and the new result is correct, such test case should be updated to report OK (or BAD), as descibed in @ref testmanual_details_results "Automated Test System / Interpretation of Test Results".
+In case if modification affects results of some existing test case and the new result is correct,
+such test case should be updated to report OK (or BAD), as described in @ref testmanual_details_results "Automated Test System / Interpretation of Test Results".
       
 @subsubsection occt_contribution_workflow_fix_test Providing a test case
 

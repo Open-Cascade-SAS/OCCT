@@ -74,7 +74,7 @@ void GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C)
     case GeomAbs_Parabola:
     case GeomAbs_Line:
       {
-	// No probleme
+	// No problem
 	myUseFrenet = Standard_True;
         myFrenet->SetCurve(C);
         break;

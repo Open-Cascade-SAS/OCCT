@@ -112,7 +112,7 @@ public:
   //! (for StatusError, rather use SetError, below)
   Standard_EXPORT void SetStatusExec (const Transfer_StatusExec stat);
   
-  //! Used to declare an individual transfer as beeing erroneous
+  //! Used to declare an individual transfer as being erroneous
   //! (Status is set to Void, StatusExec is set to Error, <errmess>
   //! is added to Check's list of Fails)
   //! It is possible to record several messages of error

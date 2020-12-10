@@ -1228,8 +1228,8 @@ Management of highlight attributes has been revised and might require modificati
 Most AIS_InteractiveContext methods are defined with a flag to update viewer immediately or not.
 Within previous version of OCCT, this argument had default value TRUE.
 While immediate viewer updates are useful for beginners (the result is displayed as soon as possible),
-this approach is inefficent for batch viewer updates, and having default value as TRUE
-leaded to non-intended accidential updates which are difficult to find.
+this approach is inefficient for batch viewer updates, and having default value as TRUE
+lead to non-intended accidental updates which are difficult to find.
 
 To avoid such issues, the interface has been modified and default value has been removed.
 Therefore, old application code should be updated to set the flag theToUpdateViewer explicitly
@@ -2028,7 +2028,7 @@ The following guidance can be used to update such code:
   API more close to old one, and can be still used to reduce porting efforts.
 - Each Message_ProgressScope should take the next Range object to work with.
   Within old API, Message_ProgressSentry received the root Progress Indicator 
-  object which mantained the sequence of ranges internally.
+  object which maintained the sequence of ranges internally.
   Message_ProgressScope in new API takes Message_ProgressRange, which should be
   returned by Message_ProgressScope::Next() method of the parent scope.
   Do not use the same Range passed to the algorithm for all sub-Scopes like 
@@ -2130,7 +2130,7 @@ Class *CDF_Session* has been removed.
 That class was used to store global instance of OCAF application (object of class *CDM_Application* or descendant, typically *TDataStd_Application*).
 Global directory of all opened OCAF documents has been removed as well; such directory is maintained now by each instance of the *CDM_Application* class.
 
-This allows creating programs that work with different OCAF documents concurrently in paralel threads,
+This allows creating programs that work with different OCAF documents concurrently in parallel threads,
 provided that each thread deals with its own instance of *TDataStd_Application* and documents managed by this instance.
 
 Note that neither *TDataStd_Application* nor *TDocStd_Document* is protected from concurrent access from several threads.
@@ -2171,7 +2171,7 @@ Existing code using old Handle classes should be updated to:
 @subsection upgrade_760_extendedstring_cout Output of TCollection_ExtendedString to stream
 
 Behavior of the method TCollection_ExtendedString::Print(Standard_OStream&) and corresponding operator << has changed.
-Previously it printed all Latin-1 symbols (those in range 0x80-0xff) as '\0' (effectively loosing them); symbols above 0xff were converted to hex representation (formatted like XML Numeric Character Reference).
+Previously it printed all Latin-1 symbols (those in range 0x80-0xff) as '\0' (effectively losing them); symbols above 0xff were converted to hex representation (formatted like XML Numeric Character Reference).
 Now all symbols are sent to stream as UTF-8 byte sequences.
 Existing code relying on old behavior, if any, shall be rewritten.
 
@@ -2190,7 +2190,7 @@ After modification ST1 - surface trimmed along U and V, U trim is kept.
 @subsection upgrade_760_storageformatversion Storage format version of OCAF document
 
 The methods *XmlLDrivers::StorageVersion()* and *BinLDrivers::StorageVersion()* were removed.
-Since now *TDocStd_Document* manupulates the storage format version of a document for both XML and binary file formats.
+Since now *TDocStd_Document* manipulates the storage format version of a document for both XML and binary file formats.
 For this the methods *StorageFormatVersion()* and *ChangeStorageFormatVersion()* were moved from *CDM_Document* to *TDocStd_Document*.
 The methods are used to get and set the storage format version of a document.
 A new enumeration *TDocStd_FormatVersion* lists the storage format versions of a document. By default, the document uses the latest (current) storage format version.

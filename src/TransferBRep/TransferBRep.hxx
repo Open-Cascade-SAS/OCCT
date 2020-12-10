@@ -125,10 +125,10 @@ public:
   Standard_EXPORT static void PrintResultInfo (const Handle(Message_Printer)& Printer, const Message_Msg& Header, const Handle(TransferBRep_TransferResultInfo)& ResultInfo, const Standard_Boolean printEmpty = Standard_True);
   
   //! Performs a heavy check by calling the Analyser from BRepCheck
-  //! This tool computes a lot of informations about integrity of a
+  //! This tool computes a lot of information about integrity of a
   //! Shape. This method uses it and converts its internal result
   //! to a classic check-list.
-  //! <lev> allows to get more informations :
+  //! <lev> allows to get more information :
   //! 0 : BRepCheck only
   //! 1(D) + Curves/Surfaces not C0  ;  2 + SameParameter on Edges
   //! Warning : entities to which checks are bound are the Shapes themselves,

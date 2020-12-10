@@ -66,18 +66,18 @@ public:
   //! It can be redefined in a sub-class to implement a specific test.
     virtual Standard_Boolean IsConverged() const;
   
-  //! Tests if an error has occured.
+  //! Tests if an error has occurred.
     Standard_Boolean IsDone() const;
   
   //! Tests if the Function is convexe during optimization.
     Standard_Boolean IsConvex() const;
   
   //! returns the location vector of the minimum.
-  //! Exception NotDone is raised if an error has occured.
+  //! Exception NotDone is raised if an error has occurred.
     const math_Vector& Location() const;
   
   //! outputs the location vector of the minimum in Loc.
-  //! Exception NotDone is raised if an error has occured.
+  //! Exception NotDone is raised if an error has occurred.
   //! Exception DimensionError is raised if the range of Loc is not
   //! equal to the range of the StartingPoint.
     void Location (math_Vector& Loc) const;
@@ -90,7 +90,8 @@ public:
     Standard_Real Minimum() const;
   
   //! returns the gradient vector at the minimum.
-  //! Exception NotDone is raised if an error has occured.the minimum was not found.
+  //! Exception NotDone is raised if an error has occurred.
+  //! The minimum was not found.
     const math_Vector& Gradient() const;
   
   //! outputs the gradient vector at the minimum in Grad.
@@ -101,11 +102,11 @@ public:
   
   //! returns the number of iterations really done in the
   //! calculation of the minimum.
-  //! The exception NotDone is raised if an error has occured.
+  //! The exception NotDone is raised if an error has occurred.
     Standard_Integer NbIterations() const;
 
   //! Returns the Status of computation.
-  //! The exception NotDone is raised if an error has occured.
+  //! The exception NotDone is raised if an error has occurred.
     math_Status GetStatus() const;
 
   

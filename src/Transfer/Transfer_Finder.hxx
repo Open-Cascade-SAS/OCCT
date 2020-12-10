@@ -52,7 +52,7 @@ public:
   //! sub-classes, the result is the same)
   Standard_EXPORT Standard_Integer GetHashCode() const;
   
-  //! Specific testof equallity : to be defined by each sub-class,
+  //! Specific testof equality : to be defined by each sub-class,
   //! must be False if Finders have not the same true Type, else
   //! their contents must be compared
   Standard_EXPORT virtual Standard_Boolean Equates (const Handle(Transfer_Finder)& other) const = 0;

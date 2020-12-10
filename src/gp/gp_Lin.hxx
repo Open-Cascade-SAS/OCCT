@@ -93,7 +93,7 @@ public:
     const gp_Pnt& Location() const;
   
 
-  //! Returns the axis placement one axis whith the same
+  //! Returns the axis placement one axis with the same
   //! location and direction as <me>.
     const gp_Ax1& Position() const;
   

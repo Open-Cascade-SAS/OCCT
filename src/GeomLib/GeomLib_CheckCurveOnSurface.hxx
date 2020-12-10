@@ -30,10 +30,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Default contructor
+  //! Default constructor
   Standard_EXPORT GeomLib_CheckCurveOnSurface(void);
   
-  //! Contructor
+  //! Constructor
   Standard_EXPORT
     GeomLib_CheckCurveOnSurface(const Handle(Geom_Curve)& theCurve, 
                                 const Handle(Geom_Surface)& theSurface, 

@@ -234,7 +234,7 @@ public:
   
   //! Computes the V isoparametric curve.
   //!
-  //! Te followings methods compute value and derivatives.
+  //! The following methods compute value and derivatives.
   //!
   //! Warnings
   //! An exception is raised if a unique normal vector is
@@ -251,7 +251,7 @@ public:
   //! normal direction of the basis surface. Pbasis, D1Ubasis,
   //! D1Vbasis are the point and the first derivatives on the basis
   //! surface.
-  //! If Ndir is undefined this method computes an approched normal
+  //! If Ndir is undefined this method computes an approached normal
   //! direction using the following limited development :
   //! Ndir = N0 + DNdir/DU + DNdir/DV + Eps with Eps->0 which
   //! requires to compute the second derivatives on the basis surface.

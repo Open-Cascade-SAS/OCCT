@@ -75,12 +75,12 @@ public:
   
   //! compute the first  derivative in v direction  of the
   //! section for v =  param
-  //! Warning : It used only for C1 or C2 aproximation
+  //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, TColgp_Array1OfPnt& Poles, TColgp_Array1OfVec& DPoles, TColStd_Array1OfReal& Weigths, TColStd_Array1OfReal& DWeigths) Standard_OVERRIDE;
   
   //! compute the second derivative  in v direction of the
   //! section  for v = param
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, TColgp_Array1OfPnt& Poles, TColgp_Array1OfVec& DPoles, TColgp_Array1OfVec& D2Poles, TColStd_Array1OfReal& Weigths, TColStd_Array1OfReal& DWeigths, TColStd_Array1OfReal& D2Weigths) Standard_OVERRIDE;
   
   //! Sets the reference surface
@@ -147,20 +147,20 @@ public:
   Standard_EXPORT virtual void GetTolerance (const Standard_Real BoundTol, const Standard_Real SurfTol, const Standard_Real AngleTol, TColStd_Array1OfReal& Tol3d) const Standard_OVERRIDE;
   
   //! Get the barycentre of Surface.
-  //! An   very  poor estimation is sufficent.
-  //! This information is usefull to perform well
+  //! An   very  poor estimation is sufficient.
+  //! This information is useful to perform well
   //! conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const Standard_OVERRIDE;
   
   //! Returns the   length of the greater section. This
-  //! information is usefull to G1's control.
+  //! information is useful to G1's control.
   //! Warning: With an little value, approximation can be slower.
   Standard_EXPORT virtual Standard_Real MaximalSection() const Standard_OVERRIDE;
   
   //! Compute the minimal value of weight for each poles
   //! in all  sections.
-  //! This information is  usefull to control error
+  //! This information is  useful to control error
   //! in rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight (TColStd_Array1OfReal& Weigths) const Standard_OVERRIDE;

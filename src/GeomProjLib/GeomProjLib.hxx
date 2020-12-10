@@ -98,7 +98,7 @@ public:
   
   //! Constructs   the  3d-curve  from the normal
   //! projection  of the  Curve <C> on  the surface <S>.
-  //! WARNING : if the  projection has failes returns  a
+  //! WARNING : if the  projection has failed, returns  a
   //! null Handle.
   Standard_EXPORT static Handle(Geom_Curve) Project (const Handle(Geom_Curve)& C, const Handle(Geom_Surface)& S);
   
@@ -108,8 +108,8 @@ public:
   //! If <KeepParametrization> is true, the parametrization
   //! of the Projected Curve <PC> will be  the same as  the
   //! parametrization of the initial curve <C>.
-  //! It meens: proj(C(u)) = PC(u) for each u.
-  //! Otherwize, the parametrization may change.
+  //! It means: proj(C(u)) = PC(u) for each u.
+  //! Otherwise, the parametrization may change.
   Standard_EXPORT static Handle(Geom_Curve) ProjectOnPlane (const Handle(Geom_Curve)& Curve, const Handle(Geom_Plane)& Plane, const gp_Dir& Dir, const Standard_Boolean KeepParametrization);
 
 

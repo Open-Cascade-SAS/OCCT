@@ -58,10 +58,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! contructs an IntegerVector in the range [Lower..Upper]
+  //! constructs an IntegerVector in the range [Lower..Upper]
   Standard_EXPORT math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast);
 
-  //! contructs an IntegerVector in the range [Lower..Upper]
+  //! constructs an IntegerVector in the range [Lower..Upper]
   //! with all the elements set to theInitialValue.
   Standard_EXPORT math_IntegerVector(const Standard_Integer theFirst, const Standard_Integer theLast, const Standard_Integer theInitialValue);
 

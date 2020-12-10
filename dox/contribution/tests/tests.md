@@ -591,7 +591,7 @@ When the test needs to produce some snapshots or other artefacts, use Tcl variab
 * Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. 
 * Command *test* by default creates a dedicated temporary directory in the system temporary folder (normally the one specified by environment variable *TempDir*, *TEMP*, or *TMP*) for each execution, and sets *imagedir* to that location. 
 
-However if variable *imagedir* is defined on the top level of Tcl interpretor, command *test* will use it instead of creating a new directory.
+However if variable *imagedir* is defined on the top level of Tcl interpreter, command *test* will use it instead of creating a new directory.
 
 Use Tcl variable *casename* to prefix all files produced by the test. 
 This variable is set to the name of the test case.

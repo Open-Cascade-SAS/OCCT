@@ -677,7 +677,7 @@ Default value is "Faces" (0).
 * *write.iges.unit:* allows choosing the unit. The default unit for Open CASCADE Technology is "MM" (millimeter). You can  choose to write a file into any unit accepted by IGES.  
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.unit")*; 
  * Modify this parameter  with *Interface_Static::SetCVal ("write.iges.unit", "INCH");* 
-* *write.iges.header.autor:* gives the name of the  author of the file.  The default value is the system name of the user.  
+* *write.iges.header.author:* gives the name of the  author of the file. The default value is the system name of the user.
  * Read this parameter  with  *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.author")*; 
  * Modify this value with  *Interface_Static::SetCVal  ("write.iges.header.author", "name")*; 
 * *write.iges.header.company:* gives the name of the  sending company.  The default value is  "" (empty).
@@ -688,7 +688,7 @@ Default value is "Faces" (0).
  * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
 * *write.iges.header.receiver:* -- gives the name of the  receiving company.  The default value is  "" (empty).
  * Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.receiver");* 
- * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "reciever name");* 
+ * Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "receiver name");*
 * *write.precision.mode:* specifies the mode of  writing the resolution value into the IGES file.  
  * "Least" (-1):       resolution value is  set to the minimum tolerance of all edges and all vertices in an OCCT shape.  
  * "Average" (0):    resolution value is  set to average between the average tolerance of all edges and the average  tolerance of all vertices in an OCCT shape. This is the default value.  

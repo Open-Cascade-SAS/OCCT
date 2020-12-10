@@ -173,14 +173,14 @@ public:
   
   //! Checks the Result of last Transfer (individual or roots, no
   //! cumulation on several transfers). Returns True if NO fail
-  //! occured during Transfer (queries the TransientProcess)
+  //! occurred during Transfer (queries the TransientProcess)
   Standard_EXPORT Standard_Boolean CheckStatusResult (const Standard_Boolean withprints) const;
   
   //! Checks the Result of last Transfer (individual or roots, no
   //! cumulation on several transfers) and returns the produced list
   Standard_EXPORT Interface_CheckIterator CheckListResult() const;
   
-  //! Returns the TransientProcess. It records informations about
+  //! Returns the TransientProcess. It records information about
   //! the very last transfer done. Null if no transfer yet done.
   //! Can be used for queries more accurate than the default ones.
   Standard_EXPORT Handle(Transfer_TransientProcess) TransientProcess() const;

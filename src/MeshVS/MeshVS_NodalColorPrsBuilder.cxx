@@ -341,7 +341,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
               // Transform texture coordinate in accordance with number of colors specified
               // by upper level and real size of OpenGL texture. The OpenGL texture has border
-              // colors interpolated with the colors from the color map, thats why we need to
+              // colors interpolated with the colors from the color map, that's why we need to
               // shrink texture coordinates around the middle point to exclude areas where the
               // map colors are interpolated with the borders color
               aFaceTriangles->AddVertex (aPnt, aNorm, gp_Pnt2d (

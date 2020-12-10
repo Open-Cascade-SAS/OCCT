@@ -44,7 +44,7 @@ public:
 
   
   //! Calculates all the real roots of a function F-K within the range
-  //! A..B. whithout conditions on A and B
+  //! A..B. without conditions on A and B
   //! A solution X is found when
   //! abs(Xi - Xi-1) <= Epsx and abs(F(Xi)-K) <= EpsF.
   //! The function is considered as null between A and B if

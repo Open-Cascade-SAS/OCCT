@@ -177,7 +177,8 @@ During the configuration process the related variables (*3RDPARTY_FREETYPE_DLL_D
 
 @subsubsection build_cmake_gen Projects generation
 
-Once the configuration process is done, the "Generate" button is used to prepare project files for the target IDE. In our exercise the Visual Studio solution will be automatically created in the buid directory.
+Once the configuration process is done, the "Generate" button is used to prepare project files for the target IDE.
+In our exercise the Visual Studio solution will be automatically created in the build directory.
 
 @subsubsection build_cmake_build Building
 

@@ -478,7 +478,7 @@ Handle(Geom_BSplineCurve)  GeomConvert::CurveToBSplineCurve
 
 //=======================================================================
 //class : law_evaluator
-//purpose  : usefull to estimate the value of a function
+//purpose  : useful to estimate the value of a function
 //=======================================================================
 
 class GeomConvert_law_evaluator : public BSplCLib_EvaluatorFunction

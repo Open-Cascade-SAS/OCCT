@@ -29,8 +29,8 @@ class MAT_Arc;
 class MAT_BasicElt;
 DEFINE_STANDARD_HANDLE(MAT_BasicElt, Standard_Transient)
 
-//! A    BasicELt  is  associated   to  each  elemtary
-//! constituant of  the figure.
+//! A    BasicELt  is  associated   to  each  elementary
+//! constituent of  the figure.
 class MAT_BasicElt : public Standard_Transient
 {
 

@@ -505,7 +505,7 @@ The scripts are located in the OCCT root folder.
     they will be allocated in the C heap by malloc();
   * **CSF_LANGUAGE** (optional) defines default language of messages;
   * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
-  * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occured in Boolean operations will be saved;
+  * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occurred in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
   * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
   * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;

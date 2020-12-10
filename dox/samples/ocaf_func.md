@@ -212,7 +212,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
     // A virtual method  ::Arguments() returns a list of arguments of the function.  
     CylinderDriver::Arguments( TDF_LabelList&amp; args )  
     {  
-      // The direct arguments, located at sub-leaves of  the fucntion, are collected (see picture 2).  
+      // The direct arguments, located at sub-leaves of  the function, are collected (see picture 2).
       TDF_ChildIterator  cIterator( Label(), false );  
       for (;  cIterator.More(); cIterator.Next() )  
       {  

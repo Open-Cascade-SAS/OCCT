@@ -819,7 +819,7 @@ static Standard_Integer movelaw (Draw_Interpretor& di, Standard_Integer n, const
       Draw::Repaint();
     }
     else {
-      di << "Not enought degree of freedom increase degree please\n";
+      di << "Not enough degree of freedom increase degree please\n";
     }
 
 

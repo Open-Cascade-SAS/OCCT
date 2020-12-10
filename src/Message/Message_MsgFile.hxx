@@ -32,12 +32,12 @@ class TCollection_ExtendedString;
 //! Each message is identified by its keyword (string).
 //!
 //! All lines in the file starting with the exclamation sign
-//! (perhaps preceeding by spaces and/or tabs) are ignored as comments.
+//! (perhaps preceding by spaces and/or tabs) are ignored as comments.
 //!
 //! Each line in the file starting with the dot character "."
-//! (perhaps preceeding by spaces and/or tabs) defines the keyword.
+//! (perhaps preceding by spaces and/or tabs) defines the keyword.
 //! The keyword is a string starting from the next symbol after dot
-//! and ending at the symbol preceeding ending newline character "\n".
+//! and ending at the symbol preceding ending newline character "\n".
 //!
 //! All the lines in the file after the keyword and before next
 //! keyword (and which are not comments) define the message for that

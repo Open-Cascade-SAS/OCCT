@@ -62,7 +62,7 @@ public:
   Standard_EXPORT Transfer_MultipleBinder();
   
   //! Returns True if a starting object is bound with SEVERAL
-  //! results : Here, returns allways True
+  //! results : Here, returns always True
   Standard_EXPORT virtual Standard_Boolean IsMultiple() const Standard_OVERRIDE;
   
   //! Returns the Type permitted for Results, i.e. here Transient

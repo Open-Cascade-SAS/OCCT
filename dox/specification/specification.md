@@ -1,7 +1,7 @@
 Specifications {#specification}
 =============
 
-This chapter contains the detailed specifications infomation:
+This chapter contains the detailed specifications information:
 
 * @subpage specification__boolean_operations "Boolean Operations"
 * @subpage specification__brep_format "BRep Format"

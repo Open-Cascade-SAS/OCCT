@@ -97,7 +97,7 @@ void Geom2d_TrimmedCurve::Reverse ()
 }
 
 //=======================================================================
-//function : ReversedParamater
+//function : ReversedParameter
 //purpose  : 
 //=======================================================================
 
