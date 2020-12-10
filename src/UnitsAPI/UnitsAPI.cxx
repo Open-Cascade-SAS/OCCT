@@ -118,7 +118,7 @@ void UnitsAPI::CheckLoading (const UnitsAPI_SystemUnits aSystemUnits)
           MDTVLocalSystemUnits.Specify("MOLAR VOLUME","mm\xB3/mol");
           MDTVLocalSystemUnits.Specify("CONCENTRATION","kg/mm\xB3");
           MDTVLocalSystemUnits.Specify("MOLAR CONCENTRATION","mol/mm\xB3");
-          MDTVLocalSystemUnits.Specify("ACCOUSTIC INTENSITY","mm/A\xB2");
+          MDTVLocalSystemUnits.Specify("ACOUSTIC INTENSITY","mm/A\xB2");
           MDTVLocalSystemUnits.Specify("DOSE EQUIVALENT","mm\xB2/s\xB2");
           MDTVLocalSystemUnits.Specify("ABSORBED DOSE","mm\xB2/s\xB2");
           MDTVLocalSystemUnits.Specify("FLUX OF MAGNETIC INDUCTION","kg*mm\xB2/(s\xB2*A)");
