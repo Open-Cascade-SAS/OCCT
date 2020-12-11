@@ -7,6 +7,8 @@ puts ""
 ############################################################
 
 pload QAcommands
+set aTestFileBin $imagedir/${casename}.cbf
+set aTestFileXml $imagedir/${casename}.xml
 
 vertex v 1 2 3
 box b 10 20 30
@@ -21,9 +23,9 @@ if { [regexp "SOLID" $info] != 1 } {
 } else {
     puts "OK: order of shapes is correct"
 }
-SaveAs D1 test.cbf
+SaveAs D1 ${aTestFileBin}
 Close D1
-Open test.cbf D2
+Open ${aTestFileBin} D2
 GetNewShapes D2 0:1 s
 set info [whatis s_1]
 if { [regexp "SOLID" $info] != 1 } {
@@ -43,9 +45,9 @@ if { [regexp "SOLID" $info] != 1 } {
 } else {
     puts "OK: order of shapes is correct"
 }
-SaveAs D1 test.xml
+SaveAs D1 ${aTestFileXml}
 Close D1
-Open test.xml D2
+Open ${aTestFileXml} D2
 GetNewShapes D2 0:1 s
 set info [whatis s_1]
 if { [regexp "SOLID" $info] != 1 } {

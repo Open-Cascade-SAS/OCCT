@@ -213,6 +213,102 @@ Standard_Boolean TObj_Model::Load (const TCollection_ExtendedString& theFile)
 }
 
 //=======================================================================
+//function : Load
+//purpose  : Load the OCAF model from a stream. If case of failure,
+//           it initializes the model by empty data.
+//=======================================================================
+
+Standard_Boolean TObj_Model::Load (Standard_IStream& theIStream)
+{
+  Handle(TDocStd_Document) aDoc;
+  Standard_Boolean aStatus = Standard_True, isFileLoaded = Standard_False;
+  const Handle(TObj_Application) anApplication = GetApplication();
+
+  // Current model
+  const Handle(TObj_Model) me = this;
+  TObj_Assistant::SetCurrentModel (me);
+  TObj_Assistant::ClearTypeMap();
+
+  // Retrieve TDocStd_Document from the stream.
+  Messenger()->Send (Message_Msg ("TObj_M_LoadDocument"), Message_Info);
+  aStatus = anApplication->LoadDocument (theIStream, aDoc);
+  if (aStatus)
+  {
+    // Check for validity of the model read:
+    // if it had wrong type, it has not been not properly restored
+    TDF_Label aLabel = GetLabel();
+    Standard_Boolean isValid = (!aLabel.IsNull() && !aDoc.IsNull());
+    try
+    {
+      isValid = (isValid && aLabel.Data() == aDoc->GetData());
+    }
+    catch (Standard_Failure const&)
+    {
+      isValid = Standard_False;
+    }
+    if (!isValid)
+    {
+      if (!aDoc.IsNull())
+        CloseDocument (aDoc);
+      myLabel.Nullify();
+      Messenger()->Send (Message_Msg ("TObj_M_WrongFile"), Message_Alarm);
+      aStatus = Standard_False;
+    }
+    isFileLoaded = isValid;
+  }
+  else
+  {
+    // release document from session
+    // no message is needed as it has been put in anApplication->LoadDocument()
+    if (!aDoc.IsNull()) 
+      CloseDocument (aDoc);
+    myLabel.Nullify();
+
+    aStatus = anApplication->CreateNewDocument (aDoc, GetFormat());
+    if (aStatus)
+    {
+      // Put model in a new attribute on root label
+      TDF_Label aLabel = aDoc->Main();
+      Handle(TObj_TModel) anAtr = new TObj_TModel;
+      aLabel.AddAttribute (anAtr);
+      anAtr->Set (me);
+      // Record that label in the model object, and initialise the new model
+      SetLabel (aLabel);
+    }
+  }
+
+  // Initialise the new model
+  if (aStatus)
+  {
+    Standard_Boolean isInitOk = Standard_False;
+    try
+    {
+      isInitOk = initNewModel (!isFileLoaded);
+    }
+    catch (Standard_Failure const& anException) {
+#ifdef OCCT_DEBUG
+      TCollection_ExtendedString aString(anException.DynamicType()->Name());
+      aString = aString + ": " + anException.GetMessageString();
+      Messenger()->Send (Message_Msg ("TObj_Appl_Exception") << aString);
+#endif
+      (void) anException;
+      Messenger()->Send (Message_Msg ("TObj_M_WrongFile"), Message_Alarm);
+    }
+    if (!isInitOk)
+    {
+      if (!aDoc.IsNull()) 
+        CloseDocument (aDoc);
+      myLabel.Nullify();
+      aStatus = Standard_False;
+    }
+  }
+
+  TObj_Assistant::UnSetCurrentModel();
+  TObj_Assistant::ClearTypeMap();
+  return aStatus;
+}
+
+//=======================================================================
 //function : GetFile
 //purpose  : Returns the full file name this model is to be saved to, 
 //           or null if the model was not saved yet
@@ -298,6 +394,40 @@ Standard_Boolean TObj_Model::SaveAs (const TCollection_ExtendedString& theFile)
 
   TObj_Assistant::ClearTypeMap();
   return aStatus;
+}
+
+//=======================================================================
+//function : SaveAs
+//purpose  : Save the model to a stream
+//=======================================================================
+
+Standard_Boolean TObj_Model::SaveAs (Standard_OStream& theOStream)
+{
+    TObj_Assistant::ClearTypeMap();
+    // OCAF document
+    Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
+    if (aDoc.IsNull())
+        return Standard_False;
+
+    // store transaction mode
+    Standard_Boolean aTrMode = aDoc->ModificationMode();
+    aDoc->SetModificationMode(Standard_False);
+    // store all trancienmt fields of object in OCAF document if any
+    Handle(TObj_ObjectIterator) anIterator;
+    for (anIterator = GetObjects(); anIterator->More(); anIterator->Next())
+    {
+        Handle(TObj_Object) anOCAFObj = anIterator->Value();
+        if (anOCAFObj.IsNull())
+            continue;
+        anOCAFObj->BeforeStoring();
+    } // end of for(anIterator = ...)
+      // set transaction mode back
+    aDoc->SetModificationMode(aTrMode);
+
+    // call Application->SaveAs()
+    Standard_Boolean aStatus = GetApplication()->SaveDocument(aDoc, theOStream);
+    TObj_Assistant::ClearTypeMap();
+    return aStatus;
 }
 
 //=======================================================================

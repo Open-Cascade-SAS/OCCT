@@ -44,13 +44,23 @@ public:
 
   //! Saving the OCAF document to a file
   Standard_EXPORT virtual Standard_Boolean SaveDocument
-                         (const Handle(TDocStd_Document)&   theSourceDoc,
-                          const TCollection_ExtendedString& theTargetFile);
+                        (const Handle(TDocStd_Document)&   theSourceDoc,
+                         const TCollection_ExtendedString& theTargetFile);
+
+  //! Saving the OCAF document to a stream
+  Standard_EXPORT virtual Standard_Boolean SaveDocument
+                        (const Handle(TDocStd_Document)&   theSourceDoc,
+                         Standard_OStream&                 theOStream);
 
   //! Loading the OCAF document from a file
   Standard_EXPORT virtual Standard_Boolean LoadDocument
                          (const TCollection_ExtendedString& theSourceFile,
                           Handle(TDocStd_Document)&         theTargetDoc);
+
+  //! Loading the OCAF document from a stream
+  Standard_EXPORT virtual Standard_Boolean LoadDocument
+                        (Standard_IStream&                 theIStream,
+                         Handle(TDocStd_Document)&         theTargetDoc);
 
   //! Create the OCAF document from scratch
   virtual Standard_EXPORT Standard_Boolean CreateNewDocument
@@ -98,6 +108,12 @@ public:
   //! Constructor is protected. Use method GetInstance() method to obtain 
   //! the static instance of the object (or derive your own application)
   Standard_EXPORT TObj_Application();
+
+  //! Sets an error occured on storage of a document.
+  void SetError (const PCDM_StoreStatus theStatus, const TCollection_ExtendedString& theInfo);
+
+  //! Sets an error occured on reading of a document.
+  void SetError (const PCDM_ReaderStatus theStatus, const TCollection_ExtendedString& theInfo);
 
  private:
   /**

@@ -1,0 +1,46 @@
+puts "============"
+puts "0029901: Support save to and restore from Stream interface in TObj package"
+puts "============"
+
+set status 0
+set BugNumber 29901
+pload TOBJ
+
+# Create a new document
+TObjNew TD1
+TObjAddObj TD1 obj1
+TObjSetVal TD1 obj1 ${BugNumber}
+
+# Save the document
+set aFile $imagedir/${test_image}-[file tail [info script]].cbf
+catch {[file delete ${aFile}]}
+catch {TObjSave TD1 ${aFile} -stream}
+if { ![file exists ${aFile}] } {
+   set status 1
+   puts "There is not ${aFile} file; TObjSave command: Error"
+   puts "bug${BugNumber}: ERROR"
+} else {
+   puts "Save the document to ${aFile} file"
+}
+
+TObjClose TD1
+unset TD1
+
+# Restore the document
+if [catch { TObjLoad TD2 ${aFile} -stream} catch_result] {
+   puts "bug${BugNumber}: ERROR"
+}
+
+# check stored single integer value
+set retInt [TObjGetVal TD2 obj1 -i]
+if { $retInt != ${BugNumber} } {
+    set status 1
+    puts "bug${BugNumber}: check stored single integer value; ERROR"
+}
+
+if { ${status} != 0 } {
+   puts "Faulty bug${BugNumber}"
+} else {
+   puts "OK bug${BugNumber}"
+}
+

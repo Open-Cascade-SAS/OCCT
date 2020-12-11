@@ -83,13 +83,20 @@ class TObj_Model : public Standard_Transient
   /**
   * Implementation of Load/Save for OCAF based models
   */
-  
+
   //! Load the OCAF model from a file. If the filename is empty or file does
   //! not exists, it just initializes model by empty data.
   Standard_EXPORT virtual Standard_Boolean Load (const TCollection_ExtendedString& theFile);
 
+  //! Load the OCAF model from a stream. If case of failure,
+  //! it initializes the model by empty data.
+  Standard_EXPORT virtual Standard_Boolean Load (Standard_IStream& theIStream);
+
   //! Save the model to a file
   Standard_EXPORT virtual Standard_Boolean SaveAs (const TCollection_ExtendedString& theFile);
+
+  //! Save the model to a stream
+  Standard_EXPORT virtual Standard_Boolean SaveAs (Standard_OStream& theOStream);
 
   //! Save the model to the same file
   Standard_EXPORT Standard_Boolean Save ();

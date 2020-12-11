@@ -37,6 +37,7 @@
 
 #include <BinTObjDrivers.hxx>
 #include <XmlTObjDrivers.hxx>
+#include <OSD_OpenFile.hxx>
 
 #include <stdio.h>
 
@@ -188,13 +189,31 @@ static Handle(TObj_Model) getModelByName( const char* theName )
 //=======================================================================
 static Standard_Integer saveModel (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 2) {di<<"Use "<< argv[0] << "nameDoc [fileName]\n";return 1;}
+  if (argc < 2) {di<<"Use "<< argv[0] << "nameDoc [fileName] [-stream]\n";return 1;}
   
   Handle(TObj_Model) aModel = getModelByName(argv[1]);
   if ( aModel.IsNull() ) return 1;
   Standard_Boolean isSaved = Standard_False; 
   if (argc > 2 )
-    isSaved = aModel->SaveAs( TCollection_ExtendedString (argv[2], Standard_True) );
+  {
+    Standard_Boolean anUseStream(Standard_False);
+    for (Standard_Integer i = 3; i < argc && !anUseStream; i++)
+    {
+      if (!strcmp(argv[i], "-stream"))
+      {
+        di << "standard SEEKABLE stream is used\n";
+        anUseStream = Standard_True;
+      }
+    }
+    if (anUseStream)
+    {
+      std::ofstream aFileStream;
+      OSD_OpenStream (aFileStream, argv[2], std::ios::out | std::ios::binary);
+      isSaved = aModel->SaveAs (aFileStream);
+    }
+    else
+      isSaved = aModel->SaveAs ( TCollection_ExtendedString (argv[2], Standard_True) );
+  }
   else
     isSaved = aModel->Save();
   
@@ -211,8 +230,18 @@ static Standard_Integer saveModel (Draw_Interpretor& di, Standard_Integer argc, 
 //=======================================================================
 static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) {di<<"Use "<< argv[0] << "nameDoc fileName\n";return 1;}
-  
+  if (argc < 3) {di<<"Use "<< argv[0] << "nameDoc fileName [-stream]\n";return 1;}
+
+  Standard_Boolean anUseStream = Standard_False;
+  for (Standard_Integer i = 3; i < argc && !anUseStream; i++)
+  {
+    if (!strcmp(argv[i], "-stream"))
+    {
+      di << "standard SEEKABLE stream is used\n";
+      anUseStream = Standard_True;
+    }
+  }
+
   Standard_Boolean isLoaded = Standard_False;
   Handle(TObj_Model) aModel = getModelByName(argv[1]);
   TCollection_ExtendedString aPath(argv[2], Standard_True);
@@ -220,11 +249,19 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
   {
     // create new
     aModel = new TObjDRAW_Model();
-    isLoaded = aModel->Load(aPath);
+    if (anUseStream)
+    {
+      std::ifstream aFileStream;
+      OSD_OpenStream (aFileStream, aPath, std::ios::in | std::ios::binary);
+      isLoaded = aModel->Load (aFileStream);
+    }
+    else
+      isLoaded = aModel->Load (aPath);
+
     if ( isLoaded )
     {
       Handle(TDocStd_Document) D = aModel->GetDocument();
-      Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
+      Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument (D);
     
       TDataStd_Name::Set(D->GetData()->Root(),argv[1]);
       Draw::Set(argv[1],DD);
@@ -234,8 +271,7 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
   {
     isLoaded = aModel->Load(aPath);
   }
-  
-  
+
   if (!isLoaded) {
     di << "Error: Document not loaded\n";
     return 1;
@@ -506,10 +542,10 @@ void TObjDRAW::Init(Draw_Interpretor& di)
   di.Add ("TObjNew","DocName \t: Create new TObj model with document named DocName",
 		   __FILE__, newModel, g);
 
-  di.Add ("TObjSave","DocName [Path] \t: Save Model with DocName",
+  di.Add ("TObjSave","DocName [Path] [-stream] \t: Save Model with DocName [by file path] [into a file stream]",
 		   __FILE__, saveModel, g);
 
-  di.Add ("TObjLoad","DocName Path \t: Load model DocName from file Path",
+  di.Add ("TObjLoad","DocName Path [-stream] \t: Load model DocName from file Path [file stream]",
 		   __FILE__, loadModel, g);
 
   di.Add ("TObjClose","DocName\t: Close model DocName",
