@@ -4610,16 +4610,28 @@ void OpenGl_Context::DisableFeatures() const
 }
 
 // =======================================================================
+// function : SetColorMaskRGBA
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetColorMaskRGBA (const NCollection_Vec4<bool>& theVal)
+{
+  glColorMask (theVal.r() ? GL_TRUE : GL_FALSE,
+               theVal.g() ? GL_TRUE : GL_FALSE,
+               theVal.b() ? GL_TRUE : GL_FALSE,
+               theVal.a() ? GL_TRUE : GL_FALSE);
+  myColorMask = theVal;
+}
+
+// =======================================================================
 // function : SetColorMask
 // purpose  :
 // =======================================================================
 bool OpenGl_Context::SetColorMask (bool theToWriteColor)
 {
+  const bool anOldValue = myColorMask.r();
+  myColorMask.SetValues (theToWriteColor, theToWriteColor, theToWriteColor, caps->buffersOpaqueAlpha ? false : theToWriteColor);
   const GLboolean toWrite = theToWriteColor ? GL_TRUE : GL_FALSE;
-  glColorMask (toWrite, toWrite, toWrite, toWrite);
-
-  const bool anOldValue = myColorMask;
-  myColorMask = theToWriteColor;
+  glColorMask (toWrite, toWrite, toWrite, myColorMask.a() ? GL_TRUE : GL_FALSE);
   return anOldValue;
 }
 

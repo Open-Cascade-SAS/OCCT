@@ -922,20 +922,17 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection,
   myWorkspace->UseZBuffer()    = Standard_True;
   myWorkspace->UseDepthWrite() = Standard_True;
   GLbitfield toClear = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
-  glDepthFunc (GL_LEQUAL);
-  glDepthMask (GL_TRUE);
-  glEnable (GL_DEPTH_TEST);
+  aCtx->core11fwd->glDepthFunc (GL_LEQUAL);
+  aCtx->core11fwd->glDepthMask (GL_TRUE);
+  aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
 
-#if !defined(GL_ES_VERSION_2_0)
-  glClearDepth (1.0);
-#else
-  glClearDepthf (1.0f);
-#endif
+  aCtx->core11fwd->glClearDepth (1.0);
 
   const OpenGl_Vec4 aBgColor = aCtx->Vec4FromQuantityColor (myBgColor);
-  glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), 0.0f);
-
-  glClear (toClear);
+  aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+  aCtx->core11fwd->glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), aCtx->caps->buffersOpaqueAlpha ? 1.0f : 0.0f);
+  aCtx->core11fwd->glClear (toClear);
+  aCtx->SetColorMask (true); // restore default alpha component write state
 
   render (theProjection, theReadDrawFbo, theOitAccumFbo, Standard_False);
 }
@@ -1487,12 +1484,10 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
   const Standard_Integer aViewport[4] = { 0, 0, aDrawSizeX, aDrawSizeY };
   aCtx->ResizeViewport (aViewport);
 
-#if !defined(GL_ES_VERSION_2_0)
-  aCtx->core20fwd->glClearDepth  (1.0);
-#else
-  aCtx->core20fwd->glClearDepthf (1.0f);
-#endif
+  aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+  aCtx->core20fwd->glClearDepth (1.0);
   aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  aCtx->SetColorMask (true); // restore default alpha component write state
 
   const bool toApplyGamma = aCtx->ToRenderSRGB() != aCtx->IsFrameBufferSRGB();
   if (aCtx->arbFBOBlit != NULL

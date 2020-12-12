@@ -6751,6 +6751,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "Compatible:" << (aCaps->contextCompatible ? "1" : "0") << "\n";
     theDI << "Stereo:  " << (aCaps->contextStereo ? "1" : "0") << "\n";
     theDI << "WinBuffer: " << (aCaps->useSystemBuffer ? "1" : "0") << "\n";
+    theDI << "OpaqueAlpha: " << (aCaps->buffersOpaqueAlpha ? "1" : "0") << "\n";
     theDI << "NoExt:"    << (aCaps->contextNoExtensions ? "1" : "0") << "\n";
     theDI << "MaxVersion:" << aCaps->contextMajorVersionUpper << "." << aCaps->contextMinorVersionUpper << "\n";
     theDI << "CompressTextures: " << (aCaps->compressedTexturesDisable ? "0" : "1") << "\n";
@@ -6848,6 +6849,17 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->contextNoAccel = toEnable;
+    }
+    else if (anArgCase == "-opaquealpha"
+          || anArgCase == "-buffersOpaqueAlpha")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->buffersOpaqueAlpha = toEnable;
     }
     else if (anArgCase == "-winbuffer"
           || anArgCase == "-windowbuffer"
@@ -14519,7 +14531,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vcaps",
             "vcaps [-sRGB {0|1}] [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
     "\n\t\t:       [-compatibleProfile {0|1}] [-compressedTextures {0|1}]"
-    "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
+    "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}] [-opaqueAlpha {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
     "\n\t\t:       [-noExtensions {0|1}] [-maxVersion Major Minor]"
@@ -14534,6 +14546,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:             arrays to GPU memory)"
     "\n\t\t:  sprite   - use textured sprites instead of bitmaps"
     "\n\t\t:  vsync    - switch VSync on or off"
+    "\n\t\t:  opaqueAlpha - disable writes in alpha component of color buffer"
     "\n\t\t:  winBuffer - allow using window buffer for rendering"
     "\n\t\t: Context creation options:"
     "\n\t\t:  softMode          - software OpenGL implementation"

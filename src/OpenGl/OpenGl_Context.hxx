@@ -805,9 +805,16 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetFrameBufferSRGB (bool theIsFbo, bool theIsFboSRgb = true);
 
   //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
-  bool ColorMask() const { return myColorMask; }
+  const NCollection_Vec4<bool>& ColorMaskRGBA() const { return myColorMask; }
 
   //! Enable/disable writing into color buffer (wrapper for glColorMask).
+  Standard_EXPORT void SetColorMaskRGBA (const NCollection_Vec4<bool>& theToWriteColor);
+
+  //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
+  bool ColorMask() const { return myColorMask.r(); }
+
+  //! Enable/disable writing into color buffer (wrapper for glColorMask).
+  //! Alpha component writes will be disabled unconditionally in case of caps->buffersOpaqueAlpha.
   Standard_EXPORT bool SetColorMask (bool theToWriteColor);
 
   //! Return TRUE if GL_SAMPLE_ALPHA_TO_COVERAGE usage is allowed.
@@ -1190,7 +1197,7 @@ private: //! @name fields tracking current state
   NCollection_Array1<Standard_Integer>
                                 myDrawBuffers;     //!< current draw buffers
   unsigned int                  myDefaultVao;      //!< default Vertex Array Object
-  Standard_Boolean              myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
+  NCollection_Vec4<bool>        myColorMask;       //!< flag indicating writing into color buffer is enabled or disabled (glColorMask)
   Standard_Boolean              myAllowAlphaToCov; //!< flag allowing   GL_SAMPLE_ALPHA_TO_COVERAGE usage
   Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state

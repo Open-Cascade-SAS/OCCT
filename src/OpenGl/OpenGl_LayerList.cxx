@@ -883,6 +883,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
     static const Standard_Integer aDrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 1 };
     aCtx->SetDrawBuffers (2, aDrawBuffers);
+    aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
     aCtx->core11fwd->glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
     aCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
     aCtx->core15fwd->glBlendFuncSeparate (GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
@@ -917,6 +918,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
     static const Standard_Integer aDrawBuffers[] = { GL_COLOR_ATTACHMENT0 };
     aCtx->SetDrawBuffers (1, aDrawBuffers);
+    aCtx->SetColorMask (true); // update writes into alpha component
   }
 
   theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);

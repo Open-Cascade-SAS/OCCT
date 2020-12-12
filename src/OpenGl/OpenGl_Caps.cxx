@@ -38,6 +38,7 @@ OpenGl_Caps::OpenGl_Caps()
 #endif
   swapInterval      (1),
   buffersNoSwap     (Standard_False),
+  buffersOpaqueAlpha(Standard_False),
   contextStereo     (Standard_False),
 #ifdef OCCT_DEBUG
   contextDebug      (Standard_True),
@@ -78,6 +79,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   useSystemBuffer   = theCopy.useSystemBuffer;
   swapInterval      = theCopy.swapInterval;
   buffersNoSwap     = theCopy.buffersNoSwap;
+  buffersOpaqueAlpha= theCopy.buffersOpaqueAlpha;
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
   contextSyncDebug  = theCopy.contextSyncDebug;

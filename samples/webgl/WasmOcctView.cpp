@@ -227,6 +227,7 @@ bool WasmOcctView::initViewer()
   Handle(Aspect_DisplayConnection) aDisp;
   Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver (aDisp, false);
   aDriver->ChangeOptions().buffersNoSwap = true; // swap has no effect in WebGL
+  aDriver->ChangeOptions().buffersOpaqueAlpha = true; // avoid unexpected blending of canvas with page background
   if (!aDriver->InitContext())
   {
     Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: EGL initialization failed"), Message_Fail);

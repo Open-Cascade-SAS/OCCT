@@ -49,6 +49,17 @@ public: //! @name context creation parameters
   Standard_Boolean buffersNoSwap;
 
   /**
+   * Specify whether alpha component within color buffer should be written or not.
+   * With alpha write enabled, background is considered transparent by default
+   * and overridden by alpha value of last drawn object
+   * (e.g. it could be opaque or not in case of transparent material).
+   * With alpha writes disabled, color buffer will be kept opaque.
+   *
+   * OFF by default.
+   */
+  Standard_Boolean buffersOpaqueAlpha;
+
+  /**
    * Request stereoscopic context (with Quad Buffer). This flag requires support in OpenGL driver.
    *
    * OFF by default.
