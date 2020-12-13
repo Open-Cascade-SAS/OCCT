@@ -428,6 +428,14 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
   di << "Architecture: Intel Itanium (IA 64)\n";
 #elif defined(__sparc__) || defined(__sparc)
   di << "Architecture: SPARC\n";
+#elif defined(__aarch64__) && defined(__LP64__)
+  di << "Architecture: ARM 64-bit\n";
+#elif defined(__arm__) || defined(__arm64__)
+  #if defined(__LP64__)
+  di << "Architecture: ARM 64-bit\n";
+  #else
+  di << "Architecture: ARM 32-bit\n";
+  #endif
 #else
   di << "Architecture: unrecognized\n";
 #endif
