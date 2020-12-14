@@ -65,7 +65,7 @@ void spotLight (in int  theId,
 {
   vec3 aLight   = occLight_Position      (theId).xyz;
   vec3 aSpotDir = occLight_SpotDirection (theId).xyz;
-  if (occLight_IsHeadlight (theId) == 0)
+  if (!occLight_IsHeadlight (theId))
   {
     aLight   = vec3 (occWorldViewMatrix * vec4 (aLight,   1.0));
     aSpotDir = vec3 (occWorldViewMatrix * vec4 (aSpotDir, 0.0));
@@ -114,7 +114,7 @@ void directionalLight (in int  theId,
                        in vec3 theView)
 {
   vec3 aLight = normalize (occLight_Position (theId).xyz);
-  if (occLight_IsHeadlight (theId) == 0)
+  if (!occLight_IsHeadlight (theId))
   {
     aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 0.0));
   }
