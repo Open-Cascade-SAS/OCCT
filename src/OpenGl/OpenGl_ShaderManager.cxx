@@ -1793,6 +1793,14 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
   }
   else
   {
+    const bool toUseMat2x3 = (theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureNormal;
+    if (toUseMat2x3) // TangentSpaceNormal() function uses mat2x3 type
+    {
+      if (myContext->IsGlGreaterEqual (2, 1))
+      {
+        theProgram->SetHeader ("#version 120");
+      }
+    }
     if ((theBits & OpenGl_PO_StippleLine) != 0
      || theProgram->IsPBR())
     {
