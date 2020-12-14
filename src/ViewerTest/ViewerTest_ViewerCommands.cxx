@@ -3847,7 +3847,7 @@ static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char**
     {
       Standard_Real aFps = -1.0;
       if (anArgIter + 1 < theArgNb
-       && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsRealValue())
+       && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsRealValue (Standard_True))
       {
         aFps = Draw::Atof (theArgVec[++anArgIter]);
       }
@@ -4449,8 +4449,8 @@ static int VColorScale (Draw_Interpretor& theDI,
       const TCollection_AsciiString aRangeMin    (theArgVec[++anArgIter]);
       const TCollection_AsciiString aRangeMax    (theArgVec[++anArgIter]);
       const TCollection_AsciiString aNbIntervals (theArgVec[++anArgIter]);
-      if (!aRangeMin.IsRealValue()
-       || !aRangeMax.IsRealValue())
+      if (!aRangeMin.IsRealValue (Standard_True)
+       || !aRangeMax.IsRealValue (Standard_True))
       {
         Message::SendFail ("Syntax error: the range values should be real");
         return 1;
@@ -4882,7 +4882,7 @@ static int VColorScale (Draw_Interpretor& theDI,
 
       TCollection_AsciiString anArg1 (theArgVec[++anArgIter]);
 
-      if (!anArg1.IsRealValue())
+      if (!anArg1.IsRealValue (Standard_True))
       {
         Message::SendFail ("Syntax error: the value should be real");
         return 1;
@@ -4948,7 +4948,7 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
   {
     TCollection_AsciiString anArg (theArgs [anArgIt]);
 
-    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+    if (anArg.Value (1) == '-' && !anArg.IsRealValue (Standard_True))
     {
       aParseKey = anArg;
       aParseKey.Remove (1);
@@ -4999,7 +4999,7 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
     // One string argument
     if ( (aKey.IsEqual ("xnamecolor") || aKey.IsEqual ("ynamecolor") || aKey.IsEqual ("znamecolor")
           || aKey.IsEqual ("xcolor") || aKey.IsEqual ("ycolor") || aKey.IsEqual ("zcolor"))
-          && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue())
+          && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue (Standard_True))
     {
       continue;
     }
@@ -5016,14 +5016,14 @@ static int VGraduatedTrihedron (Draw_Interpretor& /*theDi*/, Standard_Integer th
 
     // One real argument
     if ( aKey.IsEqual ("arrowlength")
-         && anArgs->Length() == 1 && (anArgs->Value(1).IsIntegerValue() || anArgs->Value(1).IsRealValue()))
+         && anArgs->Length() == 1 && (anArgs->Value(1).IsIntegerValue() || anArgs->Value(1).IsRealValue (Standard_True)))
     {
       continue;
     }
 
     // Two string arguments
     if ( (aKey.IsEqual ("namefont") || aKey.IsEqual ("valuesfont"))
-         && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue())
+         && anArgs->Length() == 1 && !anArgs->Value(1).IsIntegerValue() && !anArgs->Value(1).IsRealValue (Standard_True))
     {
       continue;
     }
@@ -6249,7 +6249,7 @@ static int VConvert (Draw_Interpretor& theDI,
   for (; anArgIdx < 4 && anArgIdx < theArgNb; ++anArgIdx)
   {
     TCollection_AsciiString anArg (theArgVec[anArgIdx]);
-    if (!anArg.IsRealValue())
+    if (!anArg.IsRealValue (Standard_True))
     {
       break;
     }
@@ -7402,7 +7402,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
       }
     }
     else if (aTolColor < 0.0
-          && anArg.IsRealValue())
+          && anArg.IsRealValue (Standard_True))
     {
       isOldSyntax = Standard_True;
       aTolColor = anArg.RealValue();
@@ -7822,9 +7822,9 @@ namespace
   static Standard_Boolean parseXYZ (const char** theArgVec, gp_XYZ& thePnt)
   {
     const TCollection_AsciiString anXYZ[3] = { theArgVec[0], theArgVec[1], theArgVec[2] };
-    if (!anXYZ[0].IsRealValue()
-     || !anXYZ[1].IsRealValue()
-     || !anXYZ[2].IsRealValue())
+    if (!anXYZ[0].IsRealValue (Standard_True)
+     || !anXYZ[1].IsRealValue (Standard_True)
+     || !anXYZ[2].IsRealValue (Standard_True))
     {
       return Standard_False;
     }
@@ -7837,10 +7837,10 @@ namespace
   static Standard_Boolean parseQuaternion (const char** theArgVec, gp_Quaternion& theQRot)
   {
     const TCollection_AsciiString anXYZW[4] = {theArgVec[0], theArgVec[1], theArgVec[2], theArgVec[3]};
-    if (!anXYZW[0].IsRealValue()
-     || !anXYZW[1].IsRealValue()
-     || !anXYZW[2].IsRealValue()
-     || !anXYZW[3].IsRealValue())
+    if (!anXYZW[0].IsRealValue (Standard_True)
+     || !anXYZW[1].IsRealValue (Standard_True)
+     || !anXYZW[2].IsRealValue (Standard_True)
+     || !anXYZW[3].IsRealValue (Standard_True))
     {
       return Standard_False;
     }
@@ -7972,7 +7972,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
        && *theArgVec[anArgIter + 1] != '-')
       {
         const TCollection_AsciiString aValueArg (theArgVec[anArgIter + 1]);
-        if (aValueArg.IsRealValue())
+        if (aValueArg.IsRealValue (Standard_True))
         {
           ++anArgIter;
           if (anArg == "-scale")
@@ -8588,7 +8588,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
           }
 
           const TCollection_AsciiString aScaleStr (theArgVec[aTrsfArgIter]);
-          if (!aScaleStr.IsRealValue())
+          if (!aScaleStr.IsRealValue (Standard_True))
           {
             Message::SendFail() << "Syntax error at " << aTrsfArg;
             return 1;
@@ -8654,7 +8654,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
           }
 
           const TCollection_AsciiString aScaleStr (theArgVec[aViewArgIter]);
-          if (!aScaleStr.IsRealValue())
+          if (!aScaleStr.IsRealValue (Standard_True))
           {
             Message::SendFail() << "Syntax error at " << aViewArg;
             return 1;
@@ -9162,9 +9162,9 @@ static int VTextureEnv (Draw_Interpretor& /*theDI*/, Standard_Integer theArgNb, 
         isOk = ((aRepeatOpt.  IsEqual("repeat")   || aRepeatOpt.  IsEqual("clamp")) &&
                 (aModulateOpt.IsEqual("modulate") || aModulateOpt.IsEqual("decal")) &&
                 (aFilterOpt.  IsEqual("nearest")  || aFilterOpt.  IsEqual("bilinear") || aFilterOpt.IsEqual("trilinear")) &&
-                aSScaleOpt.IsRealValue() && aTScaleOpt.IsRealValue() &&
-                aSTransOpt.IsRealValue() && aTTransOpt.IsRealValue() &&
-                anAngleOpt.IsRealValue());
+                aSScaleOpt.IsRealValue (Standard_True) && aTScaleOpt.IsRealValue (Standard_True) &&
+                aSTransOpt.IsRealValue (Standard_True) && aTTransOpt.IsRealValue (Standard_True) &&
+                anAngleOpt.IsRealValue (Standard_True));
       }
     }
   }
@@ -9625,7 +9625,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
     {
       TCollection_AsciiString aValStr (aChangeArgs[1]);
       Handle(Graphic3d_AspectFillArea3d) anAspect = aClipPlane->CappingAspect();
-      if (aValStr.IsRealValue())
+      if (aValStr.IsRealValue (Standard_True))
       {
         Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
         aMat.SetTransparency ((float )aValStr.RealValue());
@@ -11790,7 +11790,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       TCollection_AsciiString aParam = theArgVec[anArgIter];
       aParam.LowerCase();
-      if (aParam.IsRealValue())
+      if (aParam.IsRealValue (Standard_True))
       {
         const Standard_ShortReal aWeight = (Standard_ShortReal) Draw::Atof (theArgVec[anArgIter]);
         if (aWeight < 0.f || aWeight > 1.f)
@@ -12011,7 +12011,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       const TCollection_AsciiString aMaxRadStr = theArgVec[anArgIter];
-      if (!aMaxRadStr.IsRealValue())
+      if (!aMaxRadStr.IsRealValue (Standard_True))
       {
         Message::SendFail() << "Syntax error at argument '" << anArg << "'";
         return 1;
@@ -12344,7 +12344,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       TCollection_AsciiString aParam (theArgVec[anArgIter]);
-      if (aParam.IsRealValue())
+      if (aParam.IsRealValue (Standard_True))
       {
         float aFocalDist = static_cast<float> (aParam.RealValue());
         if (aFocalDist < 0)
@@ -12369,7 +12369,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       TCollection_AsciiString aParam(theArgVec[anArgIter]);
-      if (aParam.IsRealValue())
+      if (aParam.IsRealValue (Standard_True))
       {
         float aApertureSize = static_cast<float> (aParam.RealValue());
         if (aApertureSize < 0)
@@ -12394,7 +12394,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       TCollection_AsciiString anExposure (theArgVec[anArgIter]);
-      if (anExposure.IsRealValue())
+      if (anExposure.IsRealValue (Standard_True))
       {
         aView->ChangeRenderingParams().Exposure = static_cast<float> (anExposure.RealValue());
       }
@@ -12413,7 +12413,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
 
       TCollection_AsciiString aWhitePoint (theArgVec[anArgIter]);
-      if (aWhitePoint.IsRealValue())
+      if (aWhitePoint.IsRealValue (Standard_True))
       {
         aView->ChangeRenderingParams().WhitePoint = static_cast<float> (aWhitePoint.RealValue());
       }

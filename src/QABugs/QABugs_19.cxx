@@ -753,7 +753,9 @@ static Standard_Integer OCC11758 (Draw_Interpretor& di, Standard_Integer n, cons
     TCollection_AsciiString d( 0.1*i );
     //assert( d.IsRealValue() );
     //assert( TCollection_AsciiString(3.3) == "3.3");
-    QCOMPARE ( d.IsRealValue() , Standard_True );
+    QCOMPARE ( d.IsRealValue (Standard_True) , Standard_True );
+    QCOMPARE (TCollection_AsciiString("3.3!").IsRealValue (Standard_True), Standard_False);
+    QCOMPARE (TCollection_AsciiString("3.3!").IsRealValue (Standard_False), Standard_True);
     QCOMPARE ( TCollection_AsciiString(3.3) , "3.3" );
 
     //TCollection_AsciiString(const TCollection_AsciiString& astring)

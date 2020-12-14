@@ -2258,7 +2258,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
   if (aCmdName == "vsetwidth")
   {
     if (aNames.IsEmpty()
-    || !aNames.Last().IsRealValue())
+    || !aNames.Last().IsRealValue (Standard_True))
     {
       Message::SendFail ("Error: not enough arguments!");
       return 1;
@@ -2321,7 +2321,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
   else if (aCmdName == "vsettransparency")
   {
     if (aNames.IsEmpty()
-    || !aNames.Last().IsRealValue())
+    || !aNames.Last().IsRealValue (Standard_True))
     {
       Message::SendFail ("Error: not enough arguments!");
       return 1;
@@ -2357,7 +2357,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
   else if (aCmdName == "vsetinteriorstyle")
   {
     if (aNames.IsEmpty()
-    || !aNames.Last().IsRealValue())
+    || !aNames.Last().IsRealValue (Standard_True))
     {
       Message::SendFail ("Error: not enough arguments!");
       return 1;
@@ -2398,7 +2398,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
         }
       }
       if (aNames.Size() == 6
-       && aNames.Value (6).IsRealValue())
+       && aNames.Value (6).IsRealValue (Standard_True))
       {
         aChangeSet->ToSetFaceBoundaryWidth = 1;
         aChangeSet->FaceBoundaryWidth = aNames.Value (6).RealValue();
@@ -2560,7 +2560,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
        && theArgVec[anArgIter + 1][0] != '-')
       {
         TCollection_AsciiString aParam2 (theArgVec[anArgIter + 1]);
-        if (aParam2.IsRealValue())
+        if (aParam2.IsRealValue (Standard_True))
         {
           aChangeSet->AlphaCutoff = (float )aParam2.RealValue();
           ++anArgIter;
@@ -4208,8 +4208,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         else if (anArgIter + 1 < theArgsNb)
         {
           TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
-          if (aValU.IsRealValue()
-           && aValV.IsRealValue())
+          if (aValU.IsRealValue (Standard_True)
+           && aValV.IsRealValue (Standard_True))
           {
             aTexturedShape->SetTextureScaleUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
@@ -4243,8 +4243,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         else if (anArgIter + 1 < theArgsNb)
         {
           TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
-          if (aValU.IsRealValue()
-           && aValV.IsRealValue())
+          if (aValU.IsRealValue (Standard_True)
+           && aValV.IsRealValue (Standard_True))
           {
             aTexturedShape->SetTextureOriginUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
@@ -4278,8 +4278,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         else if (anArgIter + 1 < theArgsNb)
         {
           TCollection_AsciiString aValV (theArgVec[anArgIter + 1]);
-          if (aValU.IsRealValue()
-           && aValV.IsRealValue())
+          if (aValU.IsRealValue (Standard_True)
+           && aValV.IsRealValue (Standard_True))
           {
             aTexturedShape->SetTextureRepeatUV (gp_Pnt2d (aValU.RealValue(), aValV.RealValue()));
             ++anArgIter;
@@ -4976,8 +4976,8 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       TCollection_AsciiString aX (theArgVec[++anArgIter]);
       TCollection_AsciiString aY (theArgVec[++anArgIter]);
       TCollection_AsciiString aZ = "0";
-      if (!aX.IsRealValue()
-       || !aY.IsRealValue())
+      if (!aX.IsRealValue (Standard_True)
+       || !aY.IsRealValue (Standard_True))
       {
         Message::SendFail() << "Error: wrong syntax at " << aName << ".";
         return 1;
@@ -4985,7 +4985,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       if (anArgIter + 1 < theArgNb)
       {
         TCollection_AsciiString aTemp = theArgVec[anArgIter + 1];
-        if (aTemp.IsRealValue())
+        if (aTemp.IsRealValue (Standard_True))
         {
           aZ = aTemp;
           ++anArgIter;

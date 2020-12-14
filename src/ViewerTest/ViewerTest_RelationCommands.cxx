@@ -380,7 +380,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-arrowlength") || aParam.IsEqual ("-arlen"))
     {
       TCollection_AsciiString aValue (theArgVec[++anIt]);
-      if (!aValue.IsRealValue())
+      if (!aValue.IsRealValue (Standard_True))
       {
         Message::SendFail() << "Error: arrow lenght should be float degree value.";
         return 1;
@@ -390,7 +390,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-arrowangle") || aParam.IsEqual ("-arangle"))
     {
       TCollection_AsciiString aValue (theArgVec[++anIt]);
-      if (!aValue.IsRealValue())
+      if (!aValue.IsRealValue (Standard_True))
       {
         Message::SendFail ("Error: arrow angle should be float degree value.");
         return 1;
@@ -414,7 +414,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-extension"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue())
+      if (!aLocalParam.IsRealValue (Standard_True))
       {
         Message::SendFail ("Error: extension size for dimension should be real value.");
         return 1;
@@ -449,7 +449,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-flyout"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue())
+      if (!aLocalParam.IsRealValue (Standard_True))
       {
         Message::SendFail ("Error: flyout for dimension should be real value.");
         return 1;
@@ -460,7 +460,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     else if (aParam.IsEqual ("-value"))
     {
       TCollection_AsciiString aLocalParam(theArgVec[++anIt]);
-      if (!aLocalParam.IsRealValue())
+      if (!aLocalParam.IsRealValue (Standard_True))
       {
         Message::SendFail ("Error: dimension value for dimension should be real value");
         return 1;
@@ -1671,7 +1671,7 @@ static int VLengthParam (Draw_Interpretor&, Standard_Integer theArgNum, const ch
       for (; anArgumentIt < theArgNum; ++anArgumentIt)
       {
         TCollection_AsciiString anArg (theArgVec[anArgumentIt]);
-        if (!anArg.IsRealValue())
+        if (!anArg.IsRealValue (Standard_True))
         {
           break;
         }

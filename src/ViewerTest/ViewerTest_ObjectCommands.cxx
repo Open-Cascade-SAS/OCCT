@@ -288,7 +288,7 @@ namespace
     {
       TCollection_AsciiString anArg (theArgVec [anArgIt]);
       if (anArg.Value (1) == '-'
-      && !anArg.IsRealValue())
+      && !anArg.IsRealValue (Standard_True))
       {
         aParseKey = anArg;
         aParseKey.Remove (1);
@@ -3742,7 +3742,7 @@ bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString theCommand
   for (int aElement = 0; aElement < theArgCount; aElement++, theArgIndex++)
   {
     aStrCommand = theArgsArray->Value (theArgIndex);
-    if (!aStrCommand.IsRealValue())
+    if (!aStrCommand.IsRealValue (Standard_True))
       return false;
   }
 
@@ -3950,8 +3950,8 @@ namespace
 
     TCollection_AsciiString anX (theArgVec[0]);
     TCollection_AsciiString anY (theArgVec[1]);
-    if (!anX.IsRealValue()
-     || !anY.IsRealValue())
+    if (!anX.IsRealValue (Standard_True)
+     || !anY.IsRealValue (Standard_True))
     {
       return 0;
     }
@@ -3961,7 +3961,7 @@ namespace
     if (theArgNb >= 3)
     {
       TCollection_AsciiString anZ (theArgVec[2]);
-      if (anZ.IsRealValue())
+      if (anZ.IsRealValue (Standard_True))
       {
         theVec.SetZ (anZ.RealValue());
         return 3;
@@ -4112,7 +4112,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
         Standard_Integer aScaleArgIter = 0;
         for (; aScaleArgIter < 4; ++aScaleArgIter)
         {
-          if (!aScaleArgs[aScaleArgIter].IsRealValue())
+          if (!aScaleArgs[aScaleArgIter].IsRealValue (Standard_True))
           {
             break;
           }
@@ -4135,7 +4135,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
       else if (anArgIter + 1 < theArgNb)
       {
         TCollection_AsciiString aScaleArg (theArgVec[anArgIter + 1]);
-        if (aScaleArg.IsRealValue())
+        if (aScaleArg.IsRealValue (Standard_True))
         {
           aScale = aScaleArg.RealValue();
           ++anArgIter;
@@ -4238,7 +4238,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
         Standard_Integer aQuatArgIter = 0;
         for (; aQuatArgIter < 4; ++aQuatArgIter)
         {
-          if (!aQuatArgs[aQuatArgIter].IsRealValue())
+          if (!aQuatArgs[aQuatArgIter].IsRealValue (Standard_True))
           {
             break;
           }
@@ -6387,7 +6387,7 @@ static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
     Standard_CString anArg = theArgs[anArgIter];
     TCollection_AsciiString aFlag (anArg);
     aFlag.LowerCase();
-    if (aFlag.IsRealValue() || aFlag.Search ("-") != 1)
+    if (aFlag.IsRealValue (Standard_True) || aFlag.Search ("-") != 1)
     {
       aCmdArgs++;
     }

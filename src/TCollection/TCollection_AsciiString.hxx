@@ -444,9 +444,11 @@ Standard_Boolean operator > (const TCollection_AsciiString& other) const
   //! Note: an integer value is considered to be a real value as well.
   Standard_EXPORT Standard_Boolean IsIntegerValue() const;
   
-  //! Returns True if the AsciiString contains a real value.
+  //! Returns True if the AsciiString starts with some characters that can be interpreted as integer or real value.
+  //! @param theToCheckFull [in] when TRUE, checks if entire string defines a real value;
+  //!                            otherwise checks if string starts with a real value
   //! Note: an integer value is considered to be a real value as well.
-  Standard_EXPORT Standard_Boolean IsRealValue() const;
+  Standard_EXPORT Standard_Boolean IsRealValue (Standard_Boolean theToCheckFull = Standard_False) const;
   
   //! Returns True if the AsciiString contains only ASCII characters
   //! between ' ' and '~'.

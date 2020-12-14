@@ -22,7 +22,7 @@ set up_y 0.398446
 set up_z 0.825238
 set at_x 146.11
 set at_y -109.936
-set at_z 60.2014"
+set at_z 60.2014
 vviewparams -scale ${scale} -proj ${proj_x} ${proj_y} ${proj_z} -up ${up_x} ${up_y} ${up_z} -at ${at_x} ${at_y} ${at_z}
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
