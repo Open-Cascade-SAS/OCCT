@@ -1458,7 +1458,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI);
   if (isBinaryFormat)
   {
-    if (aVersion > BinTools_FormatVersion_CURRENT)
+    if (aVersion > BinTools_FormatVersion_VERSION_3)
     {
       theDI << "Syntax error: unknown format version";
       return 1;
@@ -1657,7 +1657,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                   "\n\t\t:  -binary  write into the binary format (ASCII when unspecified)"
                   "\n\t\t:  -version a number of format version to save;"
                   "\n\t\t:           ASCII  versions: 1, 2       (1 for ASCII  when unspecified);"
-                  "\n\t\t:           Binary versions: 1, 2 and 3 (3 for Binary when unspecified)."
+                  "\n\t\t:           Binary versions: 1, 2 and 3 (1 for Binary when unspecified)."
                   "\n\t\t:  -noTriangles skip triangulation data (OFF when unspecified).",
                   __FILE__, writebrep, g);
   theCommands.Add("readbrep",

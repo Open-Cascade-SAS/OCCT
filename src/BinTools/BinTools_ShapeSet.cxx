@@ -94,8 +94,9 @@ BinTools_ShapeSet::~BinTools_ShapeSet()
 //=======================================================================
 void BinTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
 {
-  Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_VERSION_1 &&
-                         theFormatNb <= BinTools_FormatVersion_CURRENT,
+  Standard_ASSERT_RETURN(theFormatNb == BinTools_FormatVersion_VERSION_1 ||
+                         theFormatNb == BinTools_FormatVersion_VERSION_2 ||
+                         theFormatNb == BinTools_FormatVersion_VERSION_3,
     "Error: unsupported BinTools version.", );
 
   myFormatNb = theFormatNb;
@@ -500,10 +501,12 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
 
     S.Free(aFree);
     S.Modified(aMod);
-     if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
-       S.Checked(aChecked);
-     else
-       S.Checked   (Standard_False);     // force check at reading.. 
+    if (myFormatNb != BinTools_FormatVersion_VERSION_2
+     && myFormatNb != BinTools_FormatVersion_VERSION_3)
+    {
+      aChecked = false; // force check at reading
+    }
+    S.Checked (aChecked);
     S.Orientable(anOrient);
     S.Closed    (aClosed);
     S.Infinite  (anInf);
@@ -703,17 +706,16 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
 	  BinTools::PutReal(OS, last);
 
         // Write UV Points for higher performance
-	  if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
+	  if (myFormatNb == BinTools_FormatVersion_VERSION_2
+	   || myFormatNb == BinTools_FormatVersion_VERSION_3)
 	    {
 	      gp_Pnt2d Pf,Pl;
 	      if (CR->IsCurveOnClosedSurface()) {
-		Handle(BRep_CurveOnClosedSurface) COCS = 
-		  Handle(BRep_CurveOnClosedSurface)::DownCast(CR);
+		Handle(BRep_CurveOnClosedSurface) COCS = Handle(BRep_CurveOnClosedSurface)::DownCast(CR);
 		COCS->UVPoints2(Pf,Pl);
 	      }
 	      else {
-		Handle(BRep_CurveOnSurface) COS = 
-		  Handle(BRep_CurveOnSurface)::DownCast(CR);
+		Handle(BRep_CurveOnSurface) COS = Handle(BRep_CurveOnSurface)::DownCast(CR);
 		COS->UVPoints(Pf,Pl);
 	      }
 	      BinTools::PutReal(OS, Pf.X());
@@ -847,9 +849,8 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
 	BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
 	TopLoc_Location L;
-	Standard_Boolean aNewF = (myFormatNb >= BinTools_FormatVersion_VERSION_3);
 	do {
-	  if(aNewF) {
+	  if(myFormatNb == BinTools_FormatVersion_VERSION_3) {
 	    val = (Standard_Integer)IS.get();//case {0|1|2|3}
 	    if (val > 0 && val <= 3) 
 	      BinTools::GetReal(IS, p1); 
@@ -1011,7 +1012,8 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	    BinTools::GetReal(IS, last);
 
             // read UV Points // for XML Persistence higher performance
-            if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
+            if (myFormatNb == BinTools_FormatVersion_VERSION_2
+             || myFormatNb == BinTools_FormatVersion_VERSION_3)
             {
 	      BinTools::GetReal(IS, PfX);
 	      BinTools::GetReal(IS, PfY);
@@ -1027,17 +1029,22 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	      break;
 	    
             if (closed) {
-              if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
+              if (myFormatNb == BinTools_FormatVersion_VERSION_2
+               || myFormatNb == BinTools_FormatVersion_VERSION_3)
+              {
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      myCurves2d.Curve2d(pc2),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol,
                                      aPf, aPl);
+              }
               else
+              {
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      myCurves2d.Curve2d(pc2),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol);
+              }
 
               myBuilder.Continuity(E,
                                    mySurfaces.Surface(s),
@@ -1048,15 +1055,20 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
             }
             else
             {
-              if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
+              if (myFormatNb == BinTools_FormatVersion_VERSION_2
+               || myFormatNb == BinTools_FormatVersion_VERSION_3)
+              {
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol,
                                      aPf, aPl);
+              }
               else
+              {
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol);
+              }
             }
             myBuilder.Range(E,
                             mySurfaces.Surface(s),

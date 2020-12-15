@@ -24,7 +24,7 @@ enum BinTools_FormatVersion
   BinTools_FormatVersion_VERSION_3 = 3, //!< (OCCT 6.2.1) Correctly processes geometry with points on Curve,
                                         //!  or point on Surface, or points on curve of surface [#0009745]
 
-  BinTools_FormatVersion_CURRENT = BinTools_FormatVersion_VERSION_3 //!< The current version.
+  BinTools_FormatVersion_CURRENT = BinTools_FormatVersion_VERSION_1 //!< The current version.
 };
 
 #endif

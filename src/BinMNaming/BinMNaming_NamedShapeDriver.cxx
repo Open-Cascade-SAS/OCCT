@@ -143,7 +143,7 @@ BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver
                         (const Handle(Message_Messenger)& theMsgDriver)
 : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()),
   myShapeSet (Standard_False),
-  myFormatNb (BinTools_FormatVersion_VERSION_3)
+  myFormatNb (BinTools_FormatVersion_VERSION_1)
 {
 }
 

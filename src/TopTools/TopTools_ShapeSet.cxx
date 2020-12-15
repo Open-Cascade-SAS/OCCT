@@ -42,7 +42,7 @@ Standard_CString TopTools_ShapeSet::Version_2 = "CASCADE Topology V2, (c) Matra-
 //purpose  : 
 //=======================================================================
 TopTools_ShapeSet::TopTools_ShapeSet()
-: myFormatNb (TopTools_FormatVersion_VERSION_1)
+: myFormatNb (TopTools_FormatVersion_CURRENT)
 {
 }
 
@@ -700,10 +700,9 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange&
     S.Free      (buffer[0] == '1');
     S.Modified  (buffer[1] == '1');
 
-    if (myFormatNb >= TopTools_FormatVersion_VERSION_2)
-      S.Checked   (buffer[2] == '1');
-    else
-      S.Checked   (Standard_False);     // force check at reading.. 
+    const bool isChecked = myFormatNb == TopTools_FormatVersion_VERSION_2
+                        && buffer[2] == '1';
+    S.Checked (isChecked);
 
     S.Orientable(buffer[3] == '1');
     S.Closed    (buffer[4] == '1');

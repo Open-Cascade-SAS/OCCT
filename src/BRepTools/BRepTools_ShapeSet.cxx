@@ -599,7 +599,7 @@ void  BRepTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S, Standard_OStream
         OS << "\n";
 
         // Write UV Points // for XML Persistence higher performance
-        if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
+        if (FormatNb() == TopTools_FormatVersion_VERSION_2)
         {
           gp_Pnt2d Pf,Pl;
           if (CR->IsCurveOnClosedSurface()) {
@@ -909,7 +909,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
             GeomTools::GetReal(IS, last);
 
             // read UV Points // for XML Persistence higher performance
-            if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
+            if (FormatNb() == TopTools_FormatVersion_VERSION_2)
             {
               GeomTools::GetReal(IS, PfX);
               GeomTools::GetReal(IS, PfY);
@@ -927,7 +927,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
 //  Modified by Sergey KHROMOV - Wed Apr 24 12:11:17 2002 End
 
             if (closed) {
-              if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
+              if (FormatNb() == TopTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      myCurves2d.Curve2d(pc2),
                                      mySurfaces.Surface(s),
@@ -948,7 +948,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
             }
             else
             {
-              if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
+              if (FormatNb() == TopTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol,
