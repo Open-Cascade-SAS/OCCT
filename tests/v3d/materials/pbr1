@@ -1,3 +1,7 @@
+# PBR requires OpenGL 3.0+ on macOS
+pload VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
 vlight -change 0 -intensity 5
 vrenderparams -shadingModel PBR -msaa 0

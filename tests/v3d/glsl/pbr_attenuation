@@ -4,6 +4,10 @@ puts "Test of point light's (positional and spot) attenuation and range in PBR"
 puts "========"
 
 pload XDE OCAF VISUALIZATION MODELING
+
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 catch { Close D }
 
 vclear

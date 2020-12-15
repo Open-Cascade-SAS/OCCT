@@ -2,6 +2,9 @@ puts "========"
 puts "0024855: Revision of parameters of standard materials"
 puts "========"
 
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 # custom shapes
 set aShape [locate_data_file occ/Top.brep]
 

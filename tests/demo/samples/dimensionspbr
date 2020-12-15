@@ -1,5 +1,7 @@
 source $env(CSF_OCCTSamplesPath)/tcl/dimensions.tcl
 vcaps -ffp 0
+# PBR requires OpenGL 3.0+ on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 vrenderparams -shadingModel pbr
 vlight -clear
 vlight -add ambient -intensity 1

@@ -5,6 +5,9 @@ puts "========"
 
 pload XDE OCAF MODELING VISUALIZATION
 
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 vclear
 vclose ALL
 

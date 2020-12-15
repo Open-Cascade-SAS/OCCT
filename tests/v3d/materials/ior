@@ -3,6 +3,9 @@ puts "0031284: Visualization - XCAFDoc_VisMaterialPBR lacks Index of Refraction"
 puts "========"
 
 pload MODELING XDE OCAF VISUALIZATION
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 box b 0.5 1.0 -0.5 3 1 1
 psphere s1 0.5
 psphere s2 0.5

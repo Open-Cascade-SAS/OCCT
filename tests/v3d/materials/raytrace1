@@ -4,5 +4,9 @@ puts "Test emission material within Ray-Tracing"
 puts "========="
 puts ""
 
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+pload VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
 vrenderparams -raytrace -msaa 0

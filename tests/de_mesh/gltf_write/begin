@@ -1,2 +1,4 @@
 pload XDE OCAF MODELING VISUALIZATION
 catch { Close D }
+# PBR requires OpenGL 3.0+ on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }

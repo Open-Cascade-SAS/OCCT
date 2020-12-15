@@ -81,6 +81,9 @@ SetName D    [XFindShape     D ts]  "Smooth"
 SetName D {*}[XFindComponent D tr]  "Rough"
 SetName D    [XFindShape     D tr]  "Rough"
 
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 vclear
 vinit View1 -width 768 -height 768
 vfront

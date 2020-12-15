@@ -6,7 +6,9 @@
 #Category: Visualization
 #Title: Penrose triangle on perspective view
 
-pload MODELING VISUALIZATION 
+pload MODELING VISUALIZATION
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
 # procedure to define box dimensions
 set scale 1.

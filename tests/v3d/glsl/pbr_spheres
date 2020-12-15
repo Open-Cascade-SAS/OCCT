@@ -3,6 +3,9 @@ puts "0030700: Visualization, TKOpenGl - support PBR Metallic-Roughness shading 
 puts "Spheres grid with different roughness values"
 puts "========"
 
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 vclear
 vclose ALL
 source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl

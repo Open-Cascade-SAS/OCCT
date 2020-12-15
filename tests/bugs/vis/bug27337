@@ -3,6 +3,10 @@ puts "0027337: \[Regression vs. 6.9.1\] Selection highlight is poor in ray trace
 puts "================"
 
 pload MODELING VISUALIZATION
+
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 box b 10 10 10
 vdisplay b
 vsetdispmode 1
@@ -15,4 +19,4 @@ puts "should be color of shading and not of highlight (blue)"
 checkcolor 205 100 0.64 0.56 0.08
 
 puts "Check result by image: selection highlight should show only visible edges"
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${casename}.png

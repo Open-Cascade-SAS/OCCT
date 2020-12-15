@@ -3,6 +3,9 @@ puts "0031478: Visualization, TKOpenGl - allow uploading Cubemap in compressed D
 puts "============"
 puts ""
 
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 set aCubeMapPNG [locate_data_file cubemap_labels.png]
 set aCubeMapDDS [locate_data_file cubemap_labels.dds]
 

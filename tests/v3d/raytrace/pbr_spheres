@@ -3,6 +3,8 @@ puts "0031225: Visualization, TKOpenGl - support cubemap for environment texture
 puts "Spheres grid with different roughness values"
 puts "========"
 
+cpulimit 600
+
 vclear
 vclose ALL
 source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl

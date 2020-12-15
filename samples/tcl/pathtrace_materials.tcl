@@ -7,6 +7,8 @@
 set aBallPath [locate_data_file occ/Ball.brep]
 
 pload MODELING VISUALIZATION
+# Ray-Tracing doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
 # Setup 3D viewer
 vclear

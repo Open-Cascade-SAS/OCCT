@@ -2,6 +2,9 @@ puts "========"
 puts "Test various Shading Models assigned per-object with transparency"
 puts "========"
 
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
 # setup viewer
 vclear
 vclose ALL
