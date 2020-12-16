@@ -25,12 +25,12 @@
 #include <Quantity_HArray1OfColor.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
-#include <TDocStd_Document.hxx>
 
 class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
 class Vrml_Material;
 class TopoDS_Shape;
+class TDocStd_Document;
 
 
 //! Creates and writes VRML files from Open

@@ -59,6 +59,7 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Application.hxx>
+#include <TDocStd_Document.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <UnitsAPI.hxx>
