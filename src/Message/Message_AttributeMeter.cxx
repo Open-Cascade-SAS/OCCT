@@ -17,6 +17,7 @@
 #include <Message.hxx>
 #include <Message_Report.hxx>
 #include <OSD_Chronometer.hxx>
+#include <OSD_Timer.hxx>
 
 #include <Precision.hxx>
 #include <Standard_Dump.hxx>
@@ -128,6 +129,16 @@ void Message_AttributeMeter::SetAlertMetrics (const Handle(Message_AlertExtended
   const NCollection_IndexedMap<Message_MetricType>& anActiveMetrics = aReport->ActiveMetrics();
 
   // time metrics
+  if (anActiveMetrics.Contains (Message_MetricType_WallClock))
+  {
+    OSD_Timer aTimer;
+    aTimer.Start();
+    Standard_Real aTime = OSD_Timer::GetWallClockTime();
+    if (theStartValue)
+      aMeterAttribute->SetStartValue (Message_MetricType_WallClock, aTime);
+    else
+      aMeterAttribute->SetStopValue (Message_MetricType_WallClock, aTime);
+  }
   if (anActiveMetrics.Contains (Message_MetricType_ProcessCPUUserTime) ||
       anActiveMetrics.Contains (Message_MetricType_ProcessCPUSystemTime) ||
       anActiveMetrics.Contains (Message_MetricType_ThreadCPUUserTime) ||

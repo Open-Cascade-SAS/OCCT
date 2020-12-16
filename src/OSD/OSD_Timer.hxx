@@ -42,6 +42,14 @@ class OSD_Timer  : public OSD_Chronometer
 {
 public:
 
+  //! Returns current time in seconds with system-defined precision.
+  //! The could be a system uptime or a time from some date.
+  //! Returned value is intended for precise elapsed time measurements as a delta between timestamps.
+  //! On Windows implemented via QueryPerformanceCounter(), on other systems via gettimeofday().
+  Standard_EXPORT static Standard_Real GetWallClockTime();
+
+public:
+
   DEFINE_STANDARD_ALLOC
 
   //! Builds a Chronometer initialized and stopped.

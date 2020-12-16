@@ -22,6 +22,7 @@ enum Message_MetricType
   Message_MetricType_ThreadCPUSystemTime,  //!< OSD_Chronometer::GetThreadCPU system time
   Message_MetricType_ProcessCPUUserTime,   //!< OSD_Chronometer::GetProcessCPU user time
   Message_MetricType_ProcessCPUSystemTime, //!< OSD_Chronometer::GetProcessCPU system time
+  Message_MetricType_WallClock,            //!< OSD_Timer elapsed time
   Message_MetricType_MemPrivate,           //!< OSD_MemInfo::MemPrivate
   Message_MetricType_MemVirtual,           //!< OSD_MemInfo::MemVirtual
   Message_MetricType_MemWorkingSet,        //!< OSD_MemInfo::MemWorkingSet

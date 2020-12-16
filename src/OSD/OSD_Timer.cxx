@@ -16,50 +16,11 @@
 
 #include <OSD_Timer.hxx>
 
-#ifndef _WIN32
-
-#include <sys/time.h>
-
-//=======================================================================
-//function : GetWallClockTime
-//purpose  : Get current time in seconds with system-defined precision
-//=======================================================================
-
-static inline Standard_Real GetWallClockTime ()
-{
-  struct timeval tv;
-  // use time of first call as base for computing total time,
-  // to avoid loss of precision due to big values of tv_sec (counted since 1970)
-  static time_t startSec = (gettimeofday (&tv, NULL) ? 0 : tv.tv_sec);
-  return gettimeofday (&tv, NULL) ? 0. : (tv.tv_sec - startSec) + 0.000001 * tv.tv_usec;
-}
-
+#ifdef _WIN32
+  #include <windows.h>
 #else
-
-#include <windows.h>
-
-//=======================================================================
-//function : GetWallClockTime
-//purpose  : Get current time in seconds with system-defined precision
-//=======================================================================
-
-static inline Standard_Real GetWallClockTime ()
-{
-  // compute clock frequence on first call
-  static LARGE_INTEGER freq;
-  static BOOL isOk = QueryPerformanceFrequency (&freq);
-
-  LARGE_INTEGER time;
-  return isOk && QueryPerformanceCounter (&time) ? 
-         (Standard_Real)time.QuadPart / (Standard_Real)freq.QuadPart :
-#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
-         0.001 * GetTickCount64();
-#else
-         0.001 * GetTickCount();
+  #include <sys/time.h>
 #endif
-}
-
-#endif /* _WIN32 */
 
 namespace
 {
@@ -78,6 +39,49 @@ namespace
     theMinutes = (aSec - theHours * 3600) / 60;
     theSeconds = theTimeSec - theHours * 3600 - theMinutes * 60;
   }
+
+#ifdef _WIN32
+  //! Define a structure for initializing global constant of pair values.
+  struct PerfCounterFreq
+  {
+    LARGE_INTEGER    Freq;
+    Standard_Boolean IsOk;
+
+    PerfCounterFreq()
+    {
+      IsOk = QueryPerformanceFrequency (&Freq) != FALSE;
+    }
+  };
+#endif
+}
+
+//=======================================================================
+//function : GetWallClockTime
+//purpose  :
+//=======================================================================
+Standard_Real OSD_Timer::GetWallClockTime()
+{
+#ifdef _WIN32
+  // compute clock frequence on first call
+  static const PerfCounterFreq aFreq;
+
+  LARGE_INTEGER aTime;
+  return aFreq.IsOk && QueryPerformanceCounter (&aTime)
+       ? (Standard_Real )aTime.QuadPart / (Standard_Real )aFreq.Freq.QuadPart
+       #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
+       : 0.001 * GetTickCount64();
+       #else
+       : 0.001 * GetTickCount();
+       #endif
+#else
+  struct timeval aTime;
+  // use time of first call as base for computing total time,
+  // to avoid loss of precision due to big values of tv_sec (counted since 1970)
+  static const time_t aStartSec = (gettimeofday (&aTime, NULL) == 0 ? aTime.tv_sec : 0);
+  return gettimeofday (&aTime, NULL) == 0
+       ? (aTime.tv_sec - aStartSec) + 0.000001 * aTime.tv_usec
+       : 0.0;
+#endif
 }
 
 //=======================================================================

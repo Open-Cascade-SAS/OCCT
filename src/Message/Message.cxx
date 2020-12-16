@@ -25,9 +25,9 @@
 
 namespace
 {
-  static Standard_CString Message_Table_PrintMetricTypeEnum[10] =
+  static Standard_CString Message_Table_PrintMetricTypeEnum[11] =
   {
-    "NONE", "UserTimeCPU", "SystemTimeInfo", "MemPrivate", "MemVirtual",
+    "NONE", "UserTimeCPU", "SystemTimeInfo", "WallClock", "MemPrivate", "MemVirtual",
     "MemWorkingSet", "MemWorkingSetPeak", "MemSwapUsage", "MemSwapUsagePeak", "MemHeapUsage"
   };
 }
