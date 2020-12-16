@@ -3159,7 +3159,7 @@ static Standard_Boolean CheckSegmSegm(const Standard_Real theRefParF,
 //purpose  : Check, if theLine is coincided with theArc (in 2d-space).
 //
 // Attention!!!
-//            Cases when theArc is not 2d-line adaptor are suppored by
+//            Cases when theArc is not 2d-line adaptor are supported by
 //          TopOpeBRep classes only (i.e. are archaic).
 //=======================================================================
 Standard_Boolean IsCoincide(IntPatch_TheSurfFunction& theFunc,

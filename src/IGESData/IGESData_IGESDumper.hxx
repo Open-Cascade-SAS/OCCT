@@ -32,7 +32,7 @@ class IGESData_IGESEntity;
 //! (distinct from normalized output). It works with tools
 //! attached to Entities, as for normalized Reade and Write
 //!
-//! For each Entity, displaying data is splitted in own data
+//! For each Entity, displaying data is split in own data
 //! (specific to each type) and other attached data, which are
 //! defined for all IGES Types (either from "Directory Entry" or
 //! from Lists of Associativities and Properties)
@@ -43,11 +43,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Returns an IGESDumper ready to work. The IGESModel provides
-  //! the numbering of Entities : as for any InterfaceModel, it
-  //! gives each Entity a number; but for IGESEntities, the "Number
-  //! of Directory Entry" according to the definition of IGES Files,
-  //! is also usefull
+  //! Returns an IGESDumper ready to work.
+  //! The IGESModel provides the numbering of Entities:
+  //! as for any InterfaceModel, it gives each Entity a number;
+  //! but for IGESEntities, the "Number of Directory Entry"
+  //! according to the definition of IGES Files, is also useful.
   Standard_EXPORT IGESData_IGESDumper(const Handle(IGESData_IGESModel)& model, const Handle(IGESData_Protocol)& protocol);
   
   //! Prints onto an output, the "Number of Directory Entry" which
@@ -66,29 +66,11 @@ public:
   //! <own> is the parameter <own> from Dump
   Standard_EXPORT void OwnDump (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S, const Standard_Integer own) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Handle(IGESData_IGESModel) themodel;
   IGESData_SpecificLib thelib;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_IGESDumper_HeaderFile

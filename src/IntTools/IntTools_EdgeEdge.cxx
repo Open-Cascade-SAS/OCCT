@@ -245,7 +245,7 @@ void IntTools_EdgeEdge::Perform()
 
   IntTools_SequenceOfRanges aRanges1, aRanges2;
   //
-  //3.2. Find ranges containig solutions
+  //3.2. Find ranges containing solutions
   Standard_Boolean bSplit2;
   FindSolutions(aRanges1, aRanges2, bSplit2);
   //

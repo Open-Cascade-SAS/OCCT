@@ -28,7 +28,6 @@
 class Standard_NoSuchObject;
 class IFSelect_Selection;
 
-
 //! Defines an Iterator on a list of Selections
 class IFSelect_SelectionIterator 
 {
@@ -36,7 +35,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty iterator, ready to be filled
   Standard_EXPORT IFSelect_SelectionIterator();
   
@@ -60,34 +58,16 @@ public:
   
   //! Sets iterator to the next item
   Standard_EXPORT void Next();
-  
-  //! Returns the current Selction beeing iterated
+
+  //! Returns the current Selection being iterated
   //! Error if count of Selection has been passed
   Standard_EXPORT const Handle(IFSelect_Selection)& Value() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Integer thecurr;
   Handle(IFSelect_HSeqOfSelection) thelist;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectionIterator_HeaderFile

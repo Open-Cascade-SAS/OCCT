@@ -147,7 +147,7 @@ public:
   //! Hence, NextItem is available to directly count
   Standard_EXPORT static void StartCount (const Standard_Integer items, const Standard_CString title = "");
   
-  //! Commands to resume the preceeding phase and start a new one
+  //! Commands to resume the preceding phase and start a new one
   //! <items> and <cycles> as for Start, but for this new phase
   //! Ignored if count of phases is already passed
   //! If <cycles> is more than one, the first Cycle must then be
@@ -160,7 +160,7 @@ public:
   //! Can be used by an operator which has to reajust counts on run
   Standard_EXPORT static void SetPhase (const Standard_Integer items, const Standard_Integer cycles = 1);
   
-  //! Commands to resume the preceeding cycle and start a new one,
+  //! Commands to resume the preceding cycle and start a new one,
   //! with a count of items
   //! Ignored if count of cycles is already passed
   //! Then, first step is started (or default one)
@@ -168,7 +168,7 @@ public:
   //! to the next one
   Standard_EXPORT static void NextCycle (const Standard_Integer items);
   
-  //! Commands to resume the preceeding step of the cycle
+  //! Commands to resume the preceding step of the cycle
   //! Ignored if count of steps is already passed
   //! NextItem can be called for this step, NextStep passes to next
   Standard_EXPORT static void NextStep();

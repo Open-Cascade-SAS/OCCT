@@ -544,20 +544,20 @@ static int deja = 0;
     DeclareAndCast(IFSelect_SelectExtract,sxt,sel);
     if (!sxt.IsNull()) {
       if (nbs > 1)
-	sout<<"Lineno."<<thenl<<" : SelectExtract, more than one source, followings ignored"<<std::endl;
+	sout<<"Lineno."<<thenl<<" : SelectExtract, more than one source, following ignored"<<std::endl;
       DeclareAndCast(IFSelect_Selection,source,ItemValue(3));
       sxt->SetInput(source);
     }
     DeclareAndCast(IFSelect_SelectDeduct,sdt,sel);
     if (!sdt.IsNull()) {
       if (nbs > 1)
-	sout<<"Lineno."<<thenl<<" : SelectDeduct, more than one source, followings ignored"<<std::endl;
+	sout<<"Lineno."<<thenl<<" : SelectDeduct, more than one source, following ignored"<<std::endl;
       sdt->SetInput(GetCasted(IFSelect_Selection,ItemValue(3)));
     }
     DeclareAndCast(IFSelect_SelectControl,sct,sel);
     if (!sct.IsNull()) {
       if (nbs != 2)
-	sout<<"Lineno."<<thenl<<" : SelectControl, not two sources, followings ignored"<<std::endl;
+	sout<<"Lineno."<<thenl<<" : SelectControl, not two sources, following ignored"<<std::endl;
       sct->SetMainInput   (GetCasted(IFSelect_Selection,ItemValue(3)));
       sct->SetSecondInput (GetCasted(IFSelect_Selection,ItemValue(4)));
     }

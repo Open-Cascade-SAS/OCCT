@@ -80,7 +80,7 @@ public:
   //! parameter : it can be ended by two lists (Associativities and
   //! Properties), which can be empty, or even absent. Hence, it is
   //! necessary to know, at the end of specific reading, how many
-  //! parameters have been read : the optionnal lists follow
+  //! parameters have been read : the optional lists follow
   Standard_EXPORT Standard_Integer CurrentNumber() const;
   
   //! sets current parameter number to a new value
@@ -302,7 +302,7 @@ public:
   //! If "ord" is given True (default), entities will be added to
   //! the list in their original order
   //! Remark : Negative or Null Pointers are ignored
-  //! Else ("ord" False), order is not garanteed (faster mode)
+  //! Else ("ord" False), order is not guaranteed (faster mode)
   //! If all params cannot be read as Entities, same as above
   //! Warning  Give "ord" to False ONLY if order is not significant
   Standard_EXPORT Standard_Boolean ReadEntList (const Handle(IGESData_IGESReaderData)& IR, const IGESData_ParamCursor& PC, const Standard_CString mess, Interface_EntityList& val, const Standard_Boolean ord = Standard_True);

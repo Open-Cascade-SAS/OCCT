@@ -1521,7 +1521,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                           if(aSQMCurS1 < gp::Resolution())
                           {
-                            //We came back to the one of previos point.
+                            //We came back to the one of previous point.
                             //Therefore, we must break;
 
                             anAngleS1 = M_PI;
@@ -1539,7 +1539,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 
                           if(aSQMCurS2 < gp::Resolution())
                           {
-                            //We came back to the one of previos point.
+                            //We came back to the one of previous point.
                             //Therefore, we must break;
 
                             anAngleS2 = M_PI;
@@ -1564,7 +1564,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
                           {
                             //Check singularity.
                             //I.e. check if we are walking along direction, which does not
-                            //result in comming to any point (i.e. derivative 
+                            //result in coming to any point (i.e. derivative
                             //3D-intersection curve along this direction is equal to 0).
                             //A sphere with direction {dU=1, dV=0} from point
                             //(U=0, V=M_PI/2) can be considered as example for

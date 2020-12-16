@@ -112,7 +112,7 @@ void  IGESSolid_ToolSelectedComponent::OwnDump
   // the heading for boolean tree is in BooleanTree OwnDump
   S << "Boolean Tree Entity :\n";
   dumper.Dump(ent->Component(),S, (level <= 4) ? 0 : 1);
-  S << "Seleted Point       : ";
+  S << "Selected Point       : ";
   IGESData_DumpXYZL(S,level, ent->SelectPoint(), ent->Location());
   S << std::endl;
 }

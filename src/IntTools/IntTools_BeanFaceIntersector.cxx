@@ -1157,7 +1157,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const Standard_Boo
     BoundaryCondition = Standard_False;
   }
 
-  Standard_Integer loopcounter = 0; // neccesary as infinite loop restricter
+  Standard_Integer loopcounter = 0; // necessary as infinite loop restricter
   Standard_Real U = theUParameter;
   Standard_Real V = theVParameter;
   Standard_Boolean anotherSolutionFound = Standard_False;

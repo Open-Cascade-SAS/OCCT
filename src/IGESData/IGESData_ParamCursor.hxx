@@ -77,7 +77,7 @@ public:
   //! (that is, skip "item size" - "term size")
   //!
   //! In addition, Offset from beginning of Item is managed :
-  //! After being created, and for the frist call to SetTerm, the
+  //! After being created, and for the first call to SetTerm, the
   //! part of Item to be read begins exactly as the Item begins
   //! But after a SetTerm, the next read will add an offset which is
   //! the size of former term.

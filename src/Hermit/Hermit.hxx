@@ -39,7 +39,7 @@ class Geom_BSplineCurve;
 //!
 //! the function a(u)D(u) has value 1 at the umin and umax
 //! and has 0.0e0 derivative value a umin and umax.
-//! The details of the computation occuring in this package
+//! The details of the computation occurring in this package
 //! can be found by reading :
 //! " Etude sur la concatenation de NURBS en vue du
 //! balayage de surfaces" PFE n S85 Ensam Lille
@@ -49,7 +49,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! returns the correct spline a(u) which will
   //! be multiplicated with BS later.
   Standard_EXPORT static Handle(Geom2d_BSplineCurve) Solution (const Handle(Geom_BSplineCurve)& BS, const Standard_Real TolPoles = 0.000001, const Standard_Real TolKnots = 0.000001);
@@ -63,27 +62,6 @@ public:
   //! tolerances.
   Standard_EXPORT static void Solutionbis (const Handle(Geom_BSplineCurve)& BS, Standard_Real& Knotmin, Standard_Real& Knotmax, const Standard_Real TolPoles = 0.000001, const Standard_Real TolKnots = 0.000001);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Hermit_HeaderFile

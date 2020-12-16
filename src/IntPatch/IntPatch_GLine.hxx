@@ -129,19 +129,19 @@ public:
   //! when ArcType returns IntPatch_Line.
     gp_Lin Line() const;
   
-  //! Returns the Circ from gp corrsponding to the intersection
+  //! Returns the Circ from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Circle.
     gp_Circ Circle() const;
   
-  //! Returns the Elips from gp corrsponding to the intersection
+  //! Returns the Elips from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Ellipse.
     gp_Elips Ellipse() const;
   
-  //! Returns the Parab from gp corrsponding to the intersection
+  //! Returns the Parab from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Parabola.
     gp_Parab Parabola() const;
   
-  //! Returns the Hypr from gp corrsponding to the intersection
+  //! Returns the Hypr from gp corresponding to the intersection
   //! when ArcType returns IntPatch_Hyperbola.
     gp_Hypr Hyperbola() const;
   

@@ -67,7 +67,7 @@ Standard_Real IntPatch_PointLine::
   //the method, which will be changed possibly never.
   //However, if we do something in this method we can check its
   //functionality easily. For that:
-  //  1. Initialyze aTestID variable by the correct value;
+  //  1. Initialize aTestID variable by the correct value;
   //  2. Compile this test code fragment.
 
   int aTestID = 0;
@@ -115,7 +115,7 @@ Standard_Real IntPatch_PointLine::
 #endif
 
   const gp_Vec aN1(aDU1.Crossed(aDV1)), aN2(aDU2.Crossed(aDV2));
-  //Tangent vactor to the intersection curve
+  //Tangent vector to the intersection curve
   const gp_Vec aCTan(aN1.Crossed(aN2));
   const Standard_Real aSqMagnFDer = aCTan.SquareMagnitude();
   

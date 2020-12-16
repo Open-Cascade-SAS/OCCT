@@ -25,15 +25,13 @@
 #include <Standard_Boolean.hxx>
 class Interface_Graph;
 
-
-//! determines Connected Componants in a Graph. They define
-//! disjoined sets of Entities
+//! determines Connected Components in a Graph.
+//! They define disjoined sets of Entities.
 class IFGraph_ConnectedComponants  : public IFGraph_SubPartsIterator
 {
 public:
 
   DEFINE_STANDARD_ALLOC
-
   
   //! creates with a Graph, and will analyse :
   //! whole True  : all the contents of the Model
@@ -43,27 +41,6 @@ public:
   //! does the computation
   Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFGraph_ConnectedComponants_HeaderFile

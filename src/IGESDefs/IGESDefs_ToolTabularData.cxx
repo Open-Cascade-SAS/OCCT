@@ -114,7 +114,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams
     somedeps->SetValue(i, treal);
   }
   if (nbDeps > 0) valuesDep->SetValue(1,somedeps);
-  else PR.AddWarning("Some Real remain while no dependent vakue is defined");
+  else PR.AddWarning("Some Real remain while no dependent value is defined");
 
   nbProps = PR.CurrentNumber() - 2;
 /*  for (;;) {
@@ -123,7 +123,7 @@ void IGESDefs_ToolTabularData::ReadOwnParams
     if (PR.ParamType(curnum) != Interface_ParamReal) break;
     PR.SetCurrentNumber (curnum+1);
   }  */
-  PR.AddWarning("Don't know exactly how to read dependant values ...");
+  PR.AddWarning("Don't know exactly how to read dependent values ...");
 //  ??  a eclaircir
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init (nbProps, propType, typesInd, nbValuesInd, valuesInd, valuesDep);

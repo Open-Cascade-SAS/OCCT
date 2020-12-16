@@ -28,11 +28,11 @@
 #include <Standard_CString.hxx>
 
 
-//! This class converts a floting number (Real) to a string
+//! This class converts a floating number (Real) to a string
 //! It can be used if the standard C-C++ output functions
 //! (sprintf or std::cout<<) are not convenient. That is to say :
 //! - to suppress trailing '0' and 'E+00' (if desired)
-//! - to control exponant output and floating point output
+//! - to control exponent output and floating point output
 //!
 //! Formats are given in the form used by printf-sprintf
 class Interface_FloatWriter 
@@ -66,7 +66,7 @@ public:
   Standard_EXPORT void SetFormatForRange (const Standard_CString form, const Standard_Real R1, const Standard_Real R2);
   
   //! Sets Sending Real Parameters to suppress trailing Zeros and
-  //! Null Exponant ("E+00"), if <mode> is given True, Resets this
+  //! Null Exponent ("E+00"), if <mode> is given True, Resets this
   //! mode if <mode> is False (in addition to Real Forms)
   //! A call to SetRealFrom resets this mode to False ig <reset> is
   //! given True (Default from Creation is True)
@@ -97,7 +97,7 @@ public:
   Standard_EXPORT Standard_Integer Write (const Standard_Real val, const Standard_CString text) const;
   
   //! This class method converts a Real Value to a string, given
-  //! options given as arguments. It can be called independantly.
+  //! options given as arguments. It can be called independently.
   //! Warning : even if declared in, content of <text> will be modified
   Standard_EXPORT static Standard_Integer Convert (const Standard_Real val, const Standard_CString text, const Standard_Boolean zerosup, const Standard_Real Range1, const Standard_Real Range2, const Standard_CString mainform, const Standard_CString rangeform);
 

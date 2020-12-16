@@ -41,7 +41,6 @@ class Interface_CopyTool;
 class Interface_Graph;
 class Interface_EntityIterator;
 
-
 class IFSelect_ModelCopier;
 DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, Standard_Transient)
 
@@ -49,8 +48,8 @@ DEFINE_STANDARD_HANDLE(IFSelect_ModelCopier, Standard_Transient)
 //! description of a ShareOut (evaluated by a ShareOutResult)
 //! plus, if there are, the Modifications on the results, with
 //! the help of Modifiers. Each Modifier can work on one or more
-//! resulting packets, accoding its criteria : it operates on a
-//! Model once copied and filled with the content of the packet.
+//! resulting packets, according to its criteria : it operates on
+//! a Model once copied and filled with the content of the packet.
 //!
 //! Modifiers can be :
 //! - Model Modifiers, inheriting from the specific class Modifier
@@ -86,7 +85,6 @@ class IFSelect_ModelCopier : public Standard_Transient
 
 public:
 
-  
   //! Creates an empty ModelCopier
   Standard_EXPORT IFSelect_ModelCopier();
   
@@ -204,14 +202,10 @@ public:
   //! BeginSentFiles has stopped recording.
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) SentFiles() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_ModelCopier,Standard_Transient)
 
 protected:
 
-  
   //! Internal routine which does the effective Copy. It allows to
   //! work, either with a standard CopyTool, or a specialised one
   //! Copying itself is done by <WL> which uses a CopyTool
@@ -226,7 +220,7 @@ protected:
   //! <G> is the graph which defines the starting entities, it
   //! contains the original InterfaceModel
   //! <WL> performs the copy by using <TC>
-  //! <protocol> is the used protocol (can be usefull for Modifiers)
+  //! <protocol> is the used protocol (can be useful for Modifiers)
   //! <topcopy> is the list of Entities which are the Roots of the
   //! packet to be copied
   //! <filename> is the name of the file which will receive it
@@ -254,10 +248,7 @@ protected:
   //! itself of the file, these changes are ignored
   Standard_EXPORT void CopiedModel (const Interface_Graph& G, const Handle(IFSelect_WorkLibrary)& WL, const Handle(Interface_Protocol)& protocol, const Interface_EntityIterator& topcopy, const TCollection_AsciiString& filename, const Standard_Integer dispnum, const Standard_Integer numod, Interface_CopyTool& TC, Handle(Interface_InterfaceModel)& newmod, Handle(IFSelect_AppliedModifiers)& applied, Interface_CheckIterator& checks) const;
 
-
-
 private:
-
 
   IFSelect_SequenceOfInterfaceModel thefilemodels;
   TColStd_SequenceOfAsciiString thefilenames;
@@ -266,13 +257,6 @@ private:
   Handle(TColStd_HArray1OfInteger) theremain;
   Handle(TColStd_HSequenceOfHAsciiString) thesentfiles;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ModelCopier_HeaderFile

@@ -26,7 +26,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;
 
-
 class IFSelect_SelectEntityNumber;
 DEFINE_STANDARD_HANDLE(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
 
@@ -34,13 +33,12 @@ DEFINE_STANDARD_HANDLE(IFSelect_SelectEntityNumber, IFSelect_SelectBase)
 //! Graph), the Entity which has a specified Number (its rank of
 //! adding into the Model) : there can be zero (if none) or one.
 //! The Number is not directly defined as an Integer, but as a
-//! Parameter, which can be externally controled
+//! Parameter, which can be externally controlled
 class IFSelect_SelectEntityNumber : public IFSelect_SelectBase
 {
 
 public:
 
-  
   //! Creates a SelectEntityNumber, initially with no specified Number
   Standard_EXPORT IFSelect_SelectEntityNumber();
   
@@ -57,28 +55,12 @@ public:
   //! Returns a text defining the criterium : "Entity Number ..."
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectEntityNumber,IFSelect_SelectBase)
-
-protected:
-
-
-
 
 private:
 
-
   Handle(IFSelect_IntParam) thenum;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectEntityNumber_HeaderFile

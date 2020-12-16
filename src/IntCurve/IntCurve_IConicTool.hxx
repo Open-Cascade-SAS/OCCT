@@ -72,25 +72,12 @@ public:
   //! point P.
   Standard_EXPORT gp_Vec2d GradDistance (const gp_Pnt2d& P) const;
   
-  //! Returns the   parameter  U of   the point  on  the
-  //! implicit curve corresponding to  the point P.  The
-  //! correspondance between P and the point P(U) on the
-  //! implicit curve must be coherent  with the  way  of
-  //! determination of the signed distance.
+  //! Returns the parameter U of the point on the implicit curve corresponding to the point P.
+  //! The correspondence between P and the point P(U) on the
+  //! implicit curve must be coherent with the way of determination of the signed distance.
   Standard_EXPORT Standard_Real FindParameter (const gp_Pnt2d& P) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Real prm1;
   Standard_Real prm2;
@@ -99,13 +86,6 @@ private:
   GeomAbs_CurveType type;
   gp_Trsf2d Abs_To_Object;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IntCurve_IConicTool_HeaderFile

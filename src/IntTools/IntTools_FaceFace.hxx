@@ -84,7 +84,7 @@ public:
   Standard_EXPORT void SetList (IntSurf_ListOfPntOn2S& ListOfPnts);
   
 
-  //! Sets the intersecton context
+  //! Sets the intersection context
   Standard_EXPORT void SetContext (const Handle(IntTools_Context)& aContext);
 
   //! Sets the Fuzzy value
@@ -94,7 +94,7 @@ public:
   //! Returns Fuzzy value
   Standard_EXPORT Standard_Real FuzzyValue() const;
 
-  //! Gets the intersecton context
+  //! Gets the intersection context
   Standard_EXPORT const Handle(IntTools_Context)& Context() const;
 
 protected:

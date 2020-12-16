@@ -41,7 +41,7 @@ public:
   {
   }
 
-  //! Builds model using assined model builder.
+  //! Builds model using assigned model builder.
   //! @return True on success, False elsewhere.
   virtual Standard_Boolean BuildModel ()
   {

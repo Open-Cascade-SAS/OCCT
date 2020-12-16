@@ -106,7 +106,7 @@ public:
   Standard_EXPORT Handle(TColStd_HArray1OfReal) ZPolynomial (const Standard_Integer anIndex1, const Standard_Integer anIndex2) const;
   
   //! returns in one all the polynomial values "in bulk"
-  //! usefull for massive treatements
+  //! useful for massive treatments
   Standard_EXPORT void Polynomials (Handle(IGESBasic_HArray2OfHArray1OfReal)& XCoef, Handle(IGESBasic_HArray2OfHArray1OfReal)& YCoef, Handle(IGESBasic_HArray2OfHArray1OfReal)& ZCoef) const;
 
 

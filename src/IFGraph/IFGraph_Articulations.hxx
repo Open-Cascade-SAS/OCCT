@@ -30,20 +30,18 @@ class Interface_Graph;
 class Standard_Transient;
 class Interface_EntityIterator;
 
-
 //! this class gives entities which are Articulation points
 //! in a whole Model or in a sub-part
 //! An Articulation Point divides the graph in two (or more)
 //! disconnected sub-graphs
 //! Identifying Articulation Points allows improving
-//! efficiency of spliting a set of Entities into sub-sets
+//! efficiency of splitting a set of Entities into sub-sets
 class IFGraph_Articulations  : public Interface_GraphContent
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! creates Articulations to evaluate a Graph
   //! whole True : works on the whole Model
   //! whole False : remains empty, ready to work on a sub-part
@@ -61,34 +59,18 @@ public:
   //! Evaluates the list of Articulation points
   Standard_EXPORT virtual void Evaluate() Standard_OVERRIDE;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
   //! basic routine of computation
   //! (see book Sedgewick "Algorithms", p 392)
   Standard_EXPORT Standard_Integer Visit (const Standard_Integer num);
 
+private:
 
   Interface_Graph thegraph;
   Standard_Integer thenow;
   Handle(TColStd_HSequenceOfInteger) thelist;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFGraph_Articulations_HeaderFile

@@ -68,17 +68,15 @@ public:
   Standard_EXPORT Interface_TypedValue(const Standard_CString name, const Interface_ParamType type = Interface_ParamText, const Standard_CString init = "");
   
   //! Returns the type
-  //! I.E. calls ValueType then makes correspondance between
+  //! I.E. calls ValueType then makes correspondence between
   //! ParamType from Interface (which remains for compatibility
   //! reasons) and ValueType from MoniTool
   Standard_EXPORT Interface_ParamType Type() const;
   
-  //! Correspondance ParamType from Interface  to
-  //! ValueType from MoniTool
+  //! Correspondence ParamType from Interface to ValueType from MoniTool
   Standard_EXPORT static MoniTool_ValueType ParamTypeToValueType (const Interface_ParamType typ);
   
-  //! Correspondance ParamType from Interface  to
-  //! ValueType from MoniTool
+  //! Correspondence ParamType from Interface to ValueType from MoniTool
   Standard_EXPORT static Interface_ParamType ValueTypeToParamType (const MoniTool_ValueType typ);
 
 

@@ -35,7 +35,6 @@ class Interface_CopyTool;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-
 class IFSelect_TransformStandard;
 DEFINE_STANDARD_HANDLE(IFSelect_TransformStandard, IFSelect_Transformer)
 
@@ -69,7 +68,6 @@ class IFSelect_TransformStandard : public IFSelect_Transformer
 
 public:
 
-  
   //! Creates a TransformStandard, option StandardCopy, no Modifier
   Standard_EXPORT IFSelect_TransformStandard();
   
@@ -130,16 +128,15 @@ public:
   //! This is the OnTheSpot action : each entity is bound with ...
   //! itself. The produced model is the same as the starting one.
   Standard_EXPORT void OnTheSpot (const Interface_Graph& G, Interface_CopyTool& TC, Handle(Interface_InterfaceModel)& newmod) const;
-  
-  //! Applies the modifiers sequencially.
-  //! For each one, prepares required data (if a Selection is
-  //! associated as a filter).
+
+  //! Applies the modifiers sequentially.
+  //! For each one, prepares required data (if a Selection is associated as a filter).
   //! For the option OnTheSpot, it determines if the graph may be
   //! changed and updates <newmod> if required
   //! If a Modifier causes an error (check "HasFailed"),
   //! ApplyModifier stops : the following Modifiers are ignored
   Standard_EXPORT Standard_Boolean ApplyModifiers (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CopyTool& TC, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod) const;
-  
+
   //! This methods allows to know what happened to a starting
   //! entity after the last Perform. It reads result from the map
   //! which was filled by Perform.
@@ -150,31 +147,15 @@ public:
   //! "<nn> Modifiers"
   Standard_EXPORT TCollection_AsciiString Label() const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_TransformStandard,IFSelect_Transformer)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Boolean thecopy;
   Handle(IFSelect_Selection) thesel;
   IFSelect_SequenceOfGeneralModifier themodifs;
   Handle(Interface_CopyControl) themap;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_TransformStandard_HeaderFile

@@ -63,10 +63,10 @@ public:
   //! returns the Second Leader Entity
   Standard_EXPORT Handle(IGESDimen_LeaderArrow) SecondLeader() const;
   
-  //! returns the Arc Center co-ordinates as Pnt2d from package gp
+  //! returns the Arc Center coordinates as Pnt2d from package gp
   Standard_EXPORT gp_Pnt2d Center() const;
   
-  //! returns the Arc Center co-ordinates as Pnt2d from package gp
+  //! returns the Arc Center coordinates as Pnt2d from package gp
   //! after Transformation. (Z = 0.0 for Transformation)
   Standard_EXPORT gp_Pnt2d TransformedCenter() const;
 

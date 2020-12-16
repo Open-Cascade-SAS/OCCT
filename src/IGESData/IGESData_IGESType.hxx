@@ -51,7 +51,7 @@ Standard_Boolean operator == (const IGESData_IGESType& another) const
   return IsEqual(another);
 }
   
-  //! resets fields (usefull when an IGESType is stored as mask)
+  //! resets fields (useful when an IGESType is stored as mask)
   Standard_EXPORT void Nullify();
 
 

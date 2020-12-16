@@ -25,7 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 
-
 class IFSelect_IntParam;
 DEFINE_STANDARD_HANDLE(IFSelect_IntParam, Standard_Transient)
 
@@ -36,7 +35,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_IntParam, Standard_Transient)
 //! parameters of a Selection or a Dispatch (according its type)
 //! can be controlled directly from the ShareOut which contains them
 //!
-//! Additionnaly, an IntParam can be bound to a Static.
+//! Additionally, an IntParam can be bound to a Static.
 //! Remember that for a String, binding is immediate, because the
 //! string value of a Static is a HAsciiString, it then suffices
 //! to get its Handle.
@@ -48,7 +47,6 @@ class IFSelect_IntParam : public Standard_Transient
 
 public:
 
-  
   //! Creates an IntParam. Initial value is set to zer
   Standard_EXPORT IFSelect_IntParam();
   
@@ -76,28 +74,13 @@ public:
   Standard_EXPORT void SetValue (const Standard_Integer val);
 
 
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Integer theval;
   TCollection_AsciiString thestn;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_IntParam_HeaderFile

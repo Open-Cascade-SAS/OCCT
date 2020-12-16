@@ -30,7 +30,7 @@
 #include <math_Matrix.hxx>
 
 // The function for searching intersection point, which 
-// lies in the seam-edge of the quadric definetely.
+// lies in the seam-edge of the quadric definitely.
 class FuncPreciseSeam: public math_FunctionSetWithDerivatives
 {
 public:
@@ -397,7 +397,7 @@ Then (indeterminate form is evaluated in accordance of L'Hospital rule),
   {\mathrm{d} V_{s}}+\frac{\partial S_{x}}
   {\partial V_{s}}).
 
-Analogicaly for @\sin (U_{q})@ (@S_{x}@ is substituted to @S_{y}@).
+Analogically for @\sin (U_{q})@ (@S_{x}@ is substituted to @S_{y}@).
 
 Let mean, that
   \cos (U_{q}) \left | _{V_{q} \to (-\pi /2+0)} = \cos (U_{q}) \left | _{V_{q} \to (\pi /2-0)}
@@ -451,7 +451,7 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
     //Example of this case is an intersection of a plane with a sphere
     //when the plane tangents the sphere in some pole (i.e. only one 
     //intersection point, not line). In this case, U-coordinate of the
-    //sphere is undefined (can be realy anything).
+    //sphere is undefined (can be really anything).
     //Another reason is that we have tangent zone around the pole
     //(see bug #26576).
     //Computation of correct value of theUquad is impossible.

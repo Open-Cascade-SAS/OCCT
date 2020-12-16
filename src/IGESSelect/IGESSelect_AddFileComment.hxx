@@ -41,7 +41,7 @@ class IGESSelect_AddFileComment : public IGESSelect_FileModifier
 public:
 
   
-  //! Creates a new emoty AddFileComment. Use AddLine to complete it
+  //! Creates a new empty AddFileComment. Use AddLine to complete it
   Standard_EXPORT IGESSelect_AddFileComment();
   
   //! Clears the list of file comment lines already stored

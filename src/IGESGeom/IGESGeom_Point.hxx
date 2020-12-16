@@ -47,10 +47,10 @@ public:
   //! display symbol if there exists one, or zero
   Standard_EXPORT void Init (const gp_XYZ& aPoint, const Handle(IGESBasic_SubfigureDef)& aSymbol);
   
-  //! returns co-ordinates of the point
+  //! returns coordinates of the point
   Standard_EXPORT gp_Pnt Value() const;
   
-  //! returns co-ordinates of the point after applying Transf. Matrix
+  //! returns coordinates of the point after applying Transf. Matrix
   Standard_EXPORT gp_Pnt TransformedValue() const;
   
   //! returns True if symbol exists

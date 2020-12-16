@@ -33,7 +33,7 @@ class IGESData_Protocol;
 DEFINE_STANDARD_HANDLE(IGESData_Protocol, Interface_Protocol)
 
 //! Description of basic Protocol for IGES
-//! This comprises treatement of IGESModel and Recognition of
+//! This comprises treatment of IGESModel and Recognition of
 //! Undefined-FreeFormat-Entity
 class IGESData_Protocol : public Interface_Protocol
 {

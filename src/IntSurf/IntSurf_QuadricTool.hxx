@@ -27,7 +27,7 @@ class gp_Vec;
 
 
 //! This class provides a tool on a quadric that can be
-//! used to instantiates the Walking algorithmes (see
+//! used to instantiates the Walking algorithms (see
 //! package IntWalk) with a Quadric from IntSurf
 //! as implicit surface.
 class IntSurf_QuadricTool 

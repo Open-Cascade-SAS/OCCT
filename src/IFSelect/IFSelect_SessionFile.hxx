@@ -34,7 +34,6 @@ class IFSelect_WorkSession;
 class TCollection_AsciiString;
 class Standard_Transient;
 
-
 //! A SessionFile is intended to manage access between a
 //! WorkSession and an Ascii Form, to be considered as a Dump.
 //! It allows to write the File from the WorkSession, and later
@@ -46,7 +45,7 @@ class Standard_Transient;
 //! It is possible to cumulate reading of several Files. But in
 //! case of Names conflict, the newer Names are forgottens.
 //!
-//! The Dump supports the description of XSTEP functionnalities
+//! The Dump supports the description of XSTEP functionalities
 //! (Sharing an Interface File, with Selections, Dispatches,
 //! Modifiers ...) but does not refer to the Interface File
 //! which is currently loaded.
@@ -71,7 +70,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a SessionFile, ready to read Files in order to load
   //! them into a given WorkSession.
   //! The following Read Operations must then be called.
@@ -188,26 +186,25 @@ public:
   //! in order to be used by the method ItemValue
   //! <active> commands to make <item> active or not in the session
   Standard_EXPORT void AddItem (const Handle(Standard_Transient)& item, const Standard_Boolean active = Standard_True);
-  
-  //! Returns True if the last Read or Write operation has been
-  //! corectly performed. ELse returns False.
+
+  //! Returns True if the last Read or Write operation has been correctly performed.
+  //! Else returns False.
   Standard_EXPORT Standard_Boolean IsDone() const;
-  
+
   //! Returns the WorkSession on which a SessionFile works.
   //! Remark that it is returned as Immutable.
   Standard_EXPORT Handle(IFSelect_WorkSession) WorkSession() const;
-  
+
   //! At beginning of writing an Item, writes its basics :
   //! - either its name in the session if it has one
-  //! - or its relative number of item in the file, else
-  //! (preceeded by a '_')
+  //! - or its relative number of item in the file, else (preceded by a '_')
   //! - then, its Dynamic Type (in the sense of cdl : pk_class)
   //! This basic description can be followed by the parameters
   //! which are used in the definition of the item.
   Standard_EXPORT void NewItem (const Standard_Integer ident, const Handle(Standard_Transient)& par);
-  
+
   //! Sets Parameters to be sent as Own if <mode> is True (their
-  //! Name or Number or Void Mark or Text Value is preceeded by a
+  //! Name or Number or Void Mark or Text Value is preceded by a
   //! Column sign ':') else they are sent normally
   //! Hence, the Own Parameter are clearly identified in the File
   Standard_EXPORT void SetOwn (const Standard_Boolean mode);
@@ -216,15 +213,15 @@ public:
   //! i.e. a Parameter which is present but undefined
   //! Its form will be the dollar sign : $
   Standard_EXPORT void SendVoid();
-  
+
   //! During a Write action, commands to send the identification of
   //! a Parameter : if it is Null (undefined) it is send as Void ($)
-  //! if it is Named in the WorkSession, its Name is sent preceeded
-  //! by ':', else a relative Ident Number is sent preceeded by '#'
+  //! if it is Named in the WorkSession, its Name is sent preceded
+  //! by ':', else a relative Ident Number is sent preceded by '#'
   //! (relative to the present Write, i.e. starting at one, without
   //! skip, and counted part from Named Items)
   Standard_EXPORT void SendItem (const Handle(Standard_Transient)& par);
-  
+
   //! During a Write action, commands to send a Text without
   //! interpretation. It will be sent as well
   Standard_EXPORT void SendText (const Standard_CString text);
@@ -233,15 +230,15 @@ public:
   //! followed by the Fist Own Parameter of the item.
   //! Used by SessionFile after reading general parameters.
   Standard_EXPORT void SetLastGeneral (const Standard_Integer lastgen);
-  
-  //! During a Read operation, SessionFile processes sequencially
-  //! the Items to read. For each one, it gives access to the list
+
+  //! During a Read operation, SessionFile processes sequentially the Items to read.
+  //! For each one, it gives access to the list
   //! of its Parameters : they were defined by calls to
   //! SendVoid/SendParam/SendText during Writing the File.
   //! NbParams returns the count of Parameters for the line
   //! currently read.
   Standard_EXPORT Standard_Integer NbParams() const;
-  
+
   //! Returns True if a Parameter, given its rank in the Own List
   //! (see NbOwnParams), is Void. Returns also True if <num> is
   //! out of range (undefined parameters)
@@ -271,12 +268,7 @@ public:
   Destroy();
 }
 
-
-
-
 protected:
-
-
 
   Handle(IFSelect_WorkSession) thesess;
   Handle(TColStd_HArray1OfInteger) thenums;
@@ -284,10 +276,7 @@ protected:
   Standard_Integer thenl;
   TColStd_SequenceOfAsciiString theline;
 
-
 private:
-
-
 
   Standard_Boolean themode;
   TColStd_SequenceOfAsciiString thelist;
@@ -297,13 +286,6 @@ private:
   Standard_Boolean theownflag;
   Standard_Integer thenewnum;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SessionFile_HeaderFile

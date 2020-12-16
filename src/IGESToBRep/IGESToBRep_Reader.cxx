@@ -13,7 +13,7 @@
 
 //pdn 11.01.99 including <stdio.h> for compilation on NT
 //#70 rln 03.03.99 syntax correction
-// sln 11.06.2002 OCC448 : Initialize "read.onlyvisiable" parameter  to control transfering invisiable sub entities which logicaly depend on the grouping entities
+// sln 11.06.2002 OCC448 : Initialize "read.onlyvisiable" parameter  to control transferring invisible sub entities which logically depend on the grouping entities
 
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
@@ -166,7 +166,7 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
    // Nb warning in global section.
 
   Standard_Integer nbWarn = 0,nbFail = 0;
-  // Add the number of warning on enities :
+  // Add the number of warning on entities :
   Interface_CheckTool cht (model,protocol);
   Interface_CheckIterator anIter = cht.CompleteCheckList();
   for(anIter.Start(); anIter.More(); anIter.Next()) {
@@ -316,7 +316,7 @@ static Standard_Boolean  EncodeRegul (const TopoDS_Shape& sh)
 //           shape in its internal list
 //=======================================================================
 
-// coment as unused PTV 18.09.2000
+// comment as unused PTV 18.09.2000
 // static void UpdateMap (const Handle(Transfer_TransientProcess)& map,
 // 		       const BRepTools_Modifier& modifier)
 // {

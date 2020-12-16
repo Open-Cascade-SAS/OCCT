@@ -39,7 +39,7 @@ class Interface_InterfaceError;
 class Interface_Static;
 DEFINE_STANDARD_HANDLE(Interface_Static, Interface_TypedValue)
 
-//! This class gives a way to manage meaningfull static variables,
+//! This class gives a way to manage meaningful static variables,
 //! used as "global" parameters in various procedures.
 //!
 //! A Static brings a specification (its type, constraints if any)

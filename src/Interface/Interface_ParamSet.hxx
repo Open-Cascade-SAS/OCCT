@@ -48,11 +48,11 @@ public:
   Standard_EXPORT Interface_ParamSet(const Standard_Integer nres, const Standard_Integer nst = 1);
   
   //! Adds a parameter defined as its Value (CString and length) and
-  //! Type. Optionnal EntityNumber (for FileReaderData) can be given
+  //! Type. Optional EntityNumber (for FileReaderData) can be given
   //! Allows a better memory management than Appending a
   //! complete FileParameter
   //! If <lnval> < 0, <val> is assumed to be managed elsewhere : its
-  //! adress is stored as such. Else, <val> is copied in a locally
+  //! address is stored as such. Else, <val> is copied in a locally
   //! (quickly) managed Page of Characters
   //! Returns new count of recorded Parameters
   Standard_EXPORT Standard_Integer Append (const Standard_CString val, const Standard_Integer lnval, const Interface_ParamType typ, const Standard_Integer nument);
@@ -74,7 +74,7 @@ public:
   //! Changes a parameter identified by its number
   Standard_EXPORT void SetParam (const Standard_Integer num, const Interface_FileParameter& FP);
   
-  //! Builds and returns the sub-list correspinding to parameters,
+  //! Builds and returns the sub-list corresponding to parameters,
   //! from "num" included, with count "nb"
   //! If <num> and <nb> are zero, returns the whole list
   Standard_EXPORT Handle(Interface_ParamList) Params (const Standard_Integer num, const Standard_Integer nb) const;

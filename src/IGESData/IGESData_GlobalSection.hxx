@@ -30,7 +30,6 @@ class Interface_ParamSet;
 class Interface_Check;
 class gp_XYZ;
 
-
 //! Description of a global section (corresponds to file header)
 //! used as well in IGESModel, IGESReader and IGESWriter
 //! Warning : From IGES-5.1, a parameter is added : LastChangeDate (concerns
@@ -52,12 +51,12 @@ public:
   //! undefined parameters do not change default values when defined
   //! Fills Check about Corrections or Fails
   Standard_EXPORT void Init (const Handle(Interface_ParamSet)& params, Handle(Interface_Check)& ach);
-  
+
   //! Copies data referenced by Handle (that is, Strings)
-  //! usefull to "isolate" a GlobalSection after copy by "="
+  //! useful to "isolate" a GlobalSection after copy by "="
   //! (from a Model to another Model for instance)
   Standard_EXPORT void CopyRefs();
-  
+
   //! Returns all contained data in the form of a ParamSet
   //! Remark : Strings are given under Hollerith form
   Standard_EXPORT Handle(Interface_ParamSet) Params() const;

@@ -1118,7 +1118,7 @@ void HLRBRep_Data::NextInterference ()
 	      ((MinMaxFEdg->Max[7] - myLEMinMax->Min[7]) & 0x80008000) == 0) {   //-- Rejection en Z
 	    // not rejected perform intersection
 	    Standard_Boolean rej = Standard_False;
-	    if (myLE == myFE) { // test if an auto-intersection is not usefull
+	    if (myLE == myFE) { // test if an auto-intersection is not useful
 	      if (((HLRBRep_EdgeData*)myLEData)->AutoIntersectionDone()) {
 		((HLRBRep_EdgeData*)myLEData)->
 		  AutoIntersectionDone(Standard_True);

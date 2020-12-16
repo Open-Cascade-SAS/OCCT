@@ -29,7 +29,6 @@ class Standard_Transient;
 class IFSelect_WorkSession;
 class IFSelect_Dispatch;
 
-
 //! Functions gives access to all the actions which can be
 //! commanded with the resources provided by IFSelect : especially
 //! WorkSession and various types of Selections and Dispatches
@@ -41,11 +40,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Takes the name of an entity, either as argument, or (if <name>
-  //! is empty) on keybord, and returns the entity
-  //! name can be a label or a number (in alphanumeric), it is
-  //! searched by NumberFromLabel from WorkSession.
+  //! Takes the name of an entity, either as argument,
+  //! or (if <name> is empty) on keyboard, and returns the entity
+  //! name can be a label or a number (in alphanumeric),
+  //! it is searched by NumberFromLabel from WorkSession.
   //! If <name> doesn't match en entity, a Null Handle is returned
   Standard_EXPORT static Handle(Standard_Transient) GiveEntity (const Handle(IFSelect_WorkSession)& WS, const Standard_CString name = "");
   
@@ -76,27 +74,6 @@ public:
   //! Defines and loads all basic functions (as ActFunc)
   Standard_EXPORT static void Init();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_Functions_HeaderFile

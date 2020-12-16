@@ -34,7 +34,6 @@ class IFSelect_GeneralModifier;
 class IFSelect_Modifier;
 class TCollection_AsciiString;
 
-
 class IFSelect_ShareOut;
 DEFINE_STANDARD_HANDLE(IFSelect_ShareOut, Standard_Transient)
 
@@ -66,7 +65,6 @@ class IFSelect_ShareOut : public Standard_Transient
 
 public:
 
-  
   //! Creates an empty ShareOut
   Standard_EXPORT IFSelect_ShareOut();
   
@@ -94,10 +92,10 @@ public:
   
   //! Returns the rank of last run item (ClearResult resets it to 0)
   Standard_EXPORT Standard_Integer LastRun() const;
-  
-  //! Records a new alue for the rank of last run item
+
+  //! Records a new value for the rank of last run item
   Standard_EXPORT void SetLastRun (const Standard_Integer last);
-  
+
   //! Returns the count of Dispatches
   Standard_EXPORT Standard_Integer NbDispatches() const;
   
@@ -226,18 +224,10 @@ public:
   //! Error if no Root is defined for this <idnum>
   Standard_EXPORT TCollection_AsciiString FileName (const Standard_Integer dnum, const Standard_Integer pnum, const Standard_Integer nbpack = 0);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_ShareOut,Standard_Transient)
-
-protected:
-
-
 
 
 private:
-
 
   IFSelect_TSeqOfDispatch thedisps;
   IFSelect_SequenceOfGeneralModifier themodelmodifiers;
@@ -248,13 +238,6 @@ private:
   Standard_Integer thenbdefs;
   Standard_Integer thelastrun;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ShareOut_HeaderFile

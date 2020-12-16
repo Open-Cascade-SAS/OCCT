@@ -81,7 +81,7 @@ void IGESGraph_ToolNominalSize::WriteOwnParams
   IW.Send( ent->NominalSizeName() );
 
   if (ent->HasStandardName() )
-    IW.Send( ent->StandardName() );  // optionnal
+    IW.Send( ent->StandardName() );  // optional
 }
 
 void  IGESGraph_ToolNominalSize::OwnShared

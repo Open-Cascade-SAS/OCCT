@@ -28,23 +28,20 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 class IFSelect_GeneralModifier;
 
-
 class IFSelect_AppliedModifiers;
 DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, Standard_Transient)
 
 //! This class allows to memorize and access to the modifiers
 //! which are to be applied to a file. To each modifier, is bound
-//! a list of integers (optionnal) : if this list is absent, the
-//! modifier applies to all the file. Else, it applies to the
+//! a list of integers (optional) : if this list is absent,
+//! the modifier applies to all the file. Else, it applies to the
 //! entities designated by these numbers in the produced file.
 //!
-//! To record a modifier, and a possible list of entity numbers
-//! to be applied on :
+//! To record a modifier, and a possible list of entity numbers to be applied on:
 //! AddModif (amodifier);
 //! loop on  AddNum (anumber);
 //!
-//! To query it,  Count gives the count of recorded modifiers,
-//! then for each one :
+//! To query it,  Count gives the count of recorded modifiers, then for each one:
 //! Item (numodif, amodifier, entcount);
 //! IsForAll ()  -> can be called, if True, applies on the whole file
 //!
@@ -52,9 +49,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_AppliedModifiers, Standard_Transient)
 //! nument = ItemNum (i);  -> return an entity number
 class IFSelect_AppliedModifiers : public Standard_Transient
 {
-
 public:
-
   
   //! Creates an AppliedModifiers, ready to record up to <nbmax>
   //! modifiers, on a model of <nbent> entities
@@ -103,31 +98,15 @@ public:
   //! numbers, each one is queried by ItemNum
   Standard_EXPORT Standard_Boolean IsForAll() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_AppliedModifiers,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   IFSelect_SequenceOfGeneralModifier themodifs;
   Interface_IntList thelists;
   Standard_Integer thenbent;
   Standard_Integer theentcnt;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_AppliedModifiers_HeaderFile

@@ -44,7 +44,7 @@ public:
   
   Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Real Fleche, const Standard_Real Pas);
   
-  //! Returns true if the calculus was succesfull.
+  //! Returns true if the calculus was successful.
     Standard_Boolean IsDone() const;
   
   //! Returns true if the is no intersection.

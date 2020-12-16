@@ -52,7 +52,7 @@ public:
   Standard_EXPORT void MakeWLine (const Handle(IntPatch_ALine)& aline,
                                   IntPatch_SequenceOfLine& theLines) const;
   
-  //! Converts aline (limitted by paraminf and paramsup) to the set of 
+  //! Converts aline (limited by paraminf and paramsup) to the set of
   //! Walking-lines and adds them in theLines.
   Standard_EXPORT void MakeWLine (const Handle(IntPatch_ALine)& aline,
                                   const Standard_Real paraminf,

@@ -44,7 +44,7 @@ public:
   //! Adds a Module bound with a Protocol to the list : does
   //! nothing if already in the list, THAT IS, Same Type (exact
   //! match) and Same State (that is, IsEqual is not required)
-  //! Once added, stores its attached Protocol in correspondance
+  //! Once added, stores its attached Protocol in correspondence
   Standard_EXPORT void Add (const Handle(Interface_ReaderModule)& amodule, const Handle(Interface_Protocol)& aprotocol);
   
   //! Returns the Module stored in a given GlobalNode

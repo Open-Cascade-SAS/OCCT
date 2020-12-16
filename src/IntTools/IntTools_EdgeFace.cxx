@@ -135,7 +135,7 @@ Standard_Boolean IntTools_EdgeFace::IsCoincident()
     //be classified. Therefore, points with indexes in 
     //[aTreshIdxF, aTreshIdxL] range are made available 
     //for classification.
-    //isClassified == TRUE if MIDDLE point has been choosen and
+    //isClassified == TRUE if MIDDLE point has been chosen and
     //classified correctly.
 
     if(((0 < i) && (i < aTreshIdxF)) || ((aTreshIdxL < i ) && (i < aNbSeg)))
@@ -575,7 +575,7 @@ void IntTools_EdgeFace::Perform()
     MakeType (aCP); 
   }
   {
-    // Line\Cylinder's Common Parts treatement
+    // Line\Cylinder's Common Parts treatment
     GeomAbs_CurveType   aCType;
     GeomAbs_SurfaceType aSType;
     TopAbs_ShapeEnum aType;
@@ -607,7 +607,7 @@ void IntTools_EdgeFace::Perform()
       }
     }
     
-    // Circle\Plane's Common Parts treatement
+    // Circle\Plane's Common Parts treatment
     
     if (aCType==GeomAbs_Circle && aSType==GeomAbs_Plane) {
       Standard_Boolean bIsCoplanar, bIsRadius;

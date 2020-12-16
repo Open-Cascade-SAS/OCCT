@@ -228,7 +228,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
           else { // there is a solution
             Rsnld.Root(Uvap);
 
-            // Avoid unitialized memory access.
+            // Avoid uninitialized memory access.
             if (CurrentLine->NbPoints() > 2)
             {
               for(Standard_Integer aCoordIdx = 1; aCoordIdx <= 2; aCoordIdx++)

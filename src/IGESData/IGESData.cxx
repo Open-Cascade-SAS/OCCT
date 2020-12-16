@@ -96,9 +96,9 @@ static Handle(IGESData_DefaultSpecific)   speci;
   Interface_Static::Init ("XSTEP","read.iges.resource.name",'t',"IGES");
   Interface_Static::Init ("XSTEP","write.iges.sequence",'t',"ToIGES");
   Interface_Static::Init ("XSTEP","read.iges.sequence",'t',"FromIGES");
-  
-  // sln 11.06.2002 OCC448 : Initialize "read.onlyvisible" parameter  to control transfering 
-  // invisiable sub entities which logicaly depend on the grouping entities
+
+  // sln 11.06.2002 OCC448 : Initialize "read.onlyvisible" parameter to control transferring
+  // invisible sub entities which logically depend on the grouping entities
   Interface_Static::Init ("XSTEP","read.iges.onlyvisible",'e',"");
   Interface_Static::Init ("XSTEP","read.iges.onlyvisible",'&',"ematch 0");
   Interface_Static::Init ("XSTEP","read.iges.onlyvisible",'&',"eval Off");

@@ -40,7 +40,7 @@ class Interface_InterfaceModel;
 //!
 //! Basically, the system provides the following categories :
 //! Shape (Geometry, BRep, CSG, Features, etc...)
-//! Drawing (Drawing, Views, Annotations, Pictures, Scketches ...)
+//! Drawing (Drawing, Views, Annotations, Pictures, Sketches ...)
 //! Structure (Component & Part, Groups & Patterns ...)
 //! Description (Meta-Data : Relations, Properties, Product ...)
 //! Auxiliary   (those which do not enter in the above list)

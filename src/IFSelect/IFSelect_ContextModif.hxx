@@ -59,7 +59,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Prepares a ContextModif with these information :
   //! - the graph established from original model (target passed
   //! directly to Modifier)
@@ -172,8 +171,8 @@ public:
   
   //! Traces the modification of the current entity (see above,
   //! ValueOriginal and ValueResult) for default trace level >= 2.
-  //! To be called on each indivudual entity really modified
-  //! <mess> is an optionnal additional message
+  //! To be called on each individual entity really modified
+  //! <mess> is an optional additional message
   Standard_EXPORT void Trace (const Standard_CString mess = "");
   
   //! Adds a Check to the CheckList. If it is empty, nothing is done
@@ -206,18 +205,7 @@ public:
   //! Returns the complete CheckList
   Standard_EXPORT Interface_CheckIterator CheckList() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Interface_Graph thegraf;
   Handle(Interface_Protocol) theprot;
@@ -229,13 +217,6 @@ private:
   Standard_Integer thecurr;
   Standard_Integer thecurt;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ContextModif_HeaderFile

@@ -141,7 +141,7 @@ public:
   //! Calls ConvertLocation (see below)
   Standard_EXPORT Standard_Boolean AnalyseLocation (const gp_GTrsf& loc, gp_Trsf& result) const;
   
-  //! Convertion of a Location, from GTrsf form to Trsf form
+  //! Conversion of a Location, from GTrsf form to Trsf form
   //! Works with a precision given as argument.
   //! Returns True if the Conversion is possible, (hence, <result>
   //! contains the converted location), False else

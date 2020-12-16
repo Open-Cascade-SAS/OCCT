@@ -827,12 +827,10 @@ Standard_Integer IVtkDraw_Interactor::ViewerMainLoop (Standard_Integer theArgNum
             // Don't call Render when the window is resized to be larger:
             //
             // - if the window is resized to be larger, an Expose event will
-            // be trigged by the X server which will trigger a call to
-            // Render().
+            //   be triggered by the X server which will trigger a call to Render().
             // - if the window is resized to be smaller, no Expose event will
-            // be trigged by the X server, as no new area become visible.
-            // only in this case, we need to explicitly call Render()
-            // in ConfigureNotify.
+            //   be triggered by the X server, as no new area become visible.
+            //   only in this case, we need to explicitly call Render() in ConfigureNotify.
             this->Render();
           }
         }

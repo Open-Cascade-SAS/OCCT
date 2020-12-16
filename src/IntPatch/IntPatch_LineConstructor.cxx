@@ -1300,7 +1300,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	// --purpose: If on a face (lastp-firstp) == 1,
 	//            sometimes it could mean a bad parametrisation of WLine.
 	//            In this case we try to classify the "virtual" WLine point:
-	//            the geometrical point between two vertexes. This emulates
+	//            the geometrical point between two vertices. This emulates
 	//            situation when (lastp-firstp) != 1.
 	if(Abs(int_lastp-int_firstp) == 1)
 	  {

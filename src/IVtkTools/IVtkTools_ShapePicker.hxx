@@ -164,7 +164,7 @@ private:
   vtkSmartPointer<vtkRenderer>        myRenderer;       //!< VTK renderer
   bool                                myIsRectSelection;//!< Rectangle selection mode flag
   bool                                myIsPolySelection;//!< Polyline selection mode flag
-  float                               myTolerance;      //!< Selectoin tolerance
+  float                               myTolerance;      //!< Selection tolerance
 };
 
 #ifdef _MSC_VER

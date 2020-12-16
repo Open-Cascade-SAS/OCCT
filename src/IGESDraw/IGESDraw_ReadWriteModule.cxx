@@ -51,7 +51,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ReadWriteModule,IGESData_ReadWriteModule)
 
-//  Each Module is attached to a Protocol : it must interprete Case Numbers
+//  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
 IGESDraw_ReadWriteModule::IGESDraw_ReadWriteModule ()    {  }

@@ -936,7 +936,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone,
 	// f(z,to)=B(to)*z + C(to)=0, B(to)!=0. 
 	//                   
 	// z=-C(to)/B(to) is one and only
-	// solution inspite of the fact that D(t)>0 for any value of t.
+	// solution in spite of the fact that D(t)>0 for any value of t.
 	//
 	if(to<NewMax && to>NewMin) {
 	  //-----------------------------------------------------------------

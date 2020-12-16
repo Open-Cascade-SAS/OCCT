@@ -140,7 +140,7 @@ public:
   Standard_EXPORT const Handle(Standard_Transient)& ParamEntity (const Standard_Integer num, const Standard_Integer nump) const;
   
   //! Returns the absolute rank of the beginning of a record
-  //! (its lsit is from ParamFirstRank+1 to ParamFirstRank+NbParams)
+  //! (its list is from ParamFirstRank+1 to ParamFirstRank+NbParams)
   Standard_EXPORT Standard_Integer ParamFirstRank (const Standard_Integer num) const;
   
   //! Returns the entity bound to a record, set by SetEntities
@@ -190,7 +190,7 @@ protected:
   //! <nbr> must be the maximum number of records to get (no way to
   //! extend it at run-time) : count entities and sub-entities ...
   //! <npar> is the total count of parameters (if it is not exact,
-  //! it will be extented as necessary)
+  //! it will be extended as necessary)
   //!
   //! Hence, to each record can be bound an Entity and a list of
   //! Parameters. Each kind of FileReaderData can add other data, by

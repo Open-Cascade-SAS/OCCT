@@ -48,14 +48,12 @@ DEFINE_STANDARD_HANDLE(IFSelect_EditForm, Standard_Transient)
 //! Number of Value for the Editor
 //! While references to Rank are for rank in the EditForm, which
 //! may differ if it is not Complete
-//! Two methods give the correspondance between this Number and
+//! Two methods give the correspondence between this Number and
 //! the Rank in the EditForm : RankFromNumber and NumberFromRank
 class IFSelect_EditForm : public Standard_Transient
 {
-
 public:
 
-  
   //! Creates a complete EditForm from an Editor
   //! A specific Label can be given
   Standard_EXPORT IFSelect_EditForm(const Handle(IFSelect_Editor)& editor, const Standard_Boolean readonly, const Standard_Boolean undoable, const Standard_CString label = "");
@@ -279,18 +277,9 @@ public:
   //! Can be run only once
   Standard_EXPORT Standard_Boolean Undo();
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_EditForm,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Boolean thecomplete;
   Standard_Boolean theloaded;
@@ -305,13 +294,6 @@ private:
   Handle(Interface_InterfaceModel) themodel;
   Standard_Integer thetouched;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_EditForm_HeaderFile

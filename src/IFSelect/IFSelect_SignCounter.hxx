@@ -33,7 +33,6 @@ class Interface_InterfaceModel;
 class Interface_Graph;
 class TCollection_HAsciiString;
 
-
 class IFSelect_SignCounter;
 DEFINE_STANDARD_HANDLE(IFSelect_SignCounter, IFSelect_SignatureList)
 
@@ -61,16 +60,14 @@ class IFSelect_SignCounter : public IFSelect_SignatureList
 
 public:
 
-  
   //! Creates a SignCounter, without proper Signature
   //! If <withmap> is True (default), added entities are counted
   //! only if they are not yet recorded in the map
-  //! Map control can be set off if the input garantees uniqueness
-  //! of data
+  //! Map control can be set off if the input guarantees uniqueness of data
   //! <withlist> is transmitted to SignatureList (option to list
   //! entities, not only to count them).
   Standard_EXPORT IFSelect_SignCounter(const Standard_Boolean withmap = Standard_True, const Standard_Boolean withlist = Standard_False);
-  
+
   //! Creates a SignCounter, with a predefined Signature
   //! Other arguments as for Create without Signature.
   Standard_EXPORT IFSelect_SignCounter(const Handle(IFSelect_Signature)& matcher, const Standard_Boolean withmap = Standard_True, const Standard_Boolean withlist = Standard_False);
@@ -110,11 +107,11 @@ public:
   //! Adds the result determined by a Selection from a Graph
   //! Remark : does not impact at all data from SetSelection & Co
   Standard_EXPORT void AddFromSelection (const Handle(IFSelect_Selection)& sel, const Interface_Graph& G);
-  
+
   //! Sets a Selection as input : this causes content to be cleared
-  //! then the Selection to be ready to compute (but not immediatly)
+  //! then the Selection to be ready to compute (but not immediately)
   Standard_EXPORT void SetSelection (const Handle(IFSelect_Selection)& sel);
-  
+
   //! Returns the selection, or a null Handle
   Standard_EXPORT Handle(IFSelect_Selection) Selection() const;
   
@@ -154,18 +151,9 @@ public:
   //! call, the returned value is LastValue
   Standard_EXPORT Standard_CString ComputedSign (const Handle(Standard_Transient)& ent, const Interface_Graph& G);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignCounter,IFSelect_SignatureList)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Boolean themapstat;
   TColStd_MapOfTransient themap;
@@ -175,13 +163,6 @@ private:
   Standard_Integer thenbcomp1;
   Standard_Integer thenbcomp2;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SignCounter_HeaderFile

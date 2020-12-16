@@ -142,7 +142,7 @@ public:
   Standard_EXPORT Standard_Integer StartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, IntPolyh_StartPoint& SP1, IntPolyh_StartPoint& SP2) const;
   
   //! from  two triangles  and an intersection   point I
-  //! seach the other point (if it exist).
+  //! search the other point (if it exist).
   //! This function is used by StartPointChain
   Standard_EXPORT Standard_Integer NextStartingPointsResearch (const Standard_Integer T1, const Standard_Integer T2, const IntPolyh_StartPoint& SPInit, IntPolyh_StartPoint& SPNext) const;
   

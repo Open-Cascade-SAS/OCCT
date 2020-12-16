@@ -52,7 +52,7 @@ public:
   //! otherwise surface is not restricted.
   //! If UseBToler = false then the 2d-point of intersection is classified with null-tolerance
   //! (relative to face);
-  //! otherwise it's using maximium between input tolerance(aTol) and tolerances of face bounds (edges).
+  //! otherwise it's using maximum between input tolerance(aTol) and tolerances of face bounds (edges).
   Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face& F, const Standard_Real aTol, 
                                             const Standard_Boolean aRestr = Standard_True,
                                             const Standard_Boolean UseBToler = Standard_True);
@@ -61,7 +61,7 @@ public:
   //! segment L and the loaded face.
   //!
   //! PInf is the smallest parameter on the line
-  //! PSup is the highest  parmaeter on the line
+  //! PSup is the highest  parameter on the line
   //!
   //! For an infinite line PInf and PSup can be
   //! +/- RealLast.
@@ -102,7 +102,7 @@ public:
   //! The values can be either TopAbs_IN
   //! ( the point is in the face)
   //! or TopAbs_ON
-  //! ( the point is on a boudary of the face).
+  //! ( the point is on a boundary of the face).
     TopAbs_State State (const Standard_Integer I) const;
 
   //! Returns true if curve is parallel or belongs face surface

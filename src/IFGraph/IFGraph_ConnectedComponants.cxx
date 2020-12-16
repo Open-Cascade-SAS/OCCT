@@ -19,7 +19,7 @@
 
 // Pour travailler, ConnectedComponants exploite AllConnected :
 // On prend un 1er Vertex, on determine ses AllConnected -> voila un 1er
-//  Connected Componant
+//  Connected Component
 // On recommence jusqu'a ce qu'il n'y ait plus de Vertex libre
 //  Honnetement, si ca ne marche pas, cf classe ConnectedVerticesIterator
 //  de GraphTools  qui fait en principe la meme chose

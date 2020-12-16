@@ -25,21 +25,18 @@
 class IGESData_Protocol;
 class Interface_Protocol;
 
-
 class IGESData_FileProtocol;
 DEFINE_STANDARD_HANDLE(IGESData_FileProtocol, IGESData_Protocol)
 
 //! This class allows to define complex protocols, in order to
 //! treat various sub-sets (or the complete set) of the IGES Norm,
-//! such as Solid + Draw (which are normally independant), etc...
-//! While it inherits Protocol from IGESData, it admits
-//! UndefinedEntity too
+//! such as Solid + Draw (which are normally independent), etc...
+//! While it inherits Protocol from IGESData, it admits UndefinedEntity too
 class IGESData_FileProtocol : public IGESData_Protocol
 {
 
 public:
 
-  
   //! Returns an empty FileProtocol
   Standard_EXPORT IGESData_FileProtocol();
   
@@ -52,29 +49,13 @@ public:
   //! Returns a Resource, given a rank (rank of call to Add)
   Standard_EXPORT virtual Handle(Interface_Protocol) Resource (const Standard_Integer num) const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IGESData_FileProtocol,IGESData_Protocol)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(IGESData_Protocol) theresource;
   Handle(IGESData_FileProtocol) thenext;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_FileProtocol_HeaderFile

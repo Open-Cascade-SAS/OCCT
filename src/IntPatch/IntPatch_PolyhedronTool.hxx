@@ -30,7 +30,7 @@ class IntPatch_Polyhedron;
 class gp_Pnt;
 
 
-//! Describe  the signature  of  a  polyedral surface with
+//! Describe the signature of a polyhedral surface with
 //! only triangular  facets and the necessary information
 //! to compute the interferences.
 class IntPatch_PolyhedronTool 
@@ -50,17 +50,17 @@ public:
   //! Give the tolerance of the polygon.
     static Standard_Real DeflectionOverEstimation (const IntPatch_Polyhedron& thePolyh);
   
-  //! Give the number of triangles in this polyedral surface.
+  //! Give the number of triangles in this polyhedral surface.
     static Standard_Integer NbTriangles (const IntPatch_Polyhedron& thePolyh);
   
   //! Give the indices  of  the 3 points of  the triangle of
   //! address Index in the Polyhedron.
     static void Triangle (const IntPatch_Polyhedron& thePolyh, const Standard_Integer Index, Standard_Integer& P1, Standard_Integer& P2, Standard_Integer& P3);
   
-  //! Give the point of index i in the polyedral surface.
+  //! Give the point of index i in the polyhedral surface.
     static const gp_Pnt& Point (const IntPatch_Polyhedron& thePolyh, const Standard_Integer Index);
   
-  //! Gives the  addresse Tricon of   the triangle connexe to
+  //! Gives the address Tricon of the triangle connexe to
   //! the triangle of address Triang by the edge Pivot Pedge
   //! and the third point of this  connexe triangle. When we
   //! are on  a free edge TriCon==0  but the function return

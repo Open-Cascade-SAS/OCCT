@@ -56,7 +56,7 @@ public:
                                             double& theDy, 
                                             double& theDz) const = 0;
 
-  //! @return Three doubles contaning scale components of the view transformation
+  //! @return Three doubles containing scale components of the view transformation
   virtual void    GetScale (double& theX, double& theY, double& theZ) const = 0;
 
   //! @return The current view's zoom factor (for parallel projection)

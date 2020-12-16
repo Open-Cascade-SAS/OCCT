@@ -698,7 +698,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      std::cout << "An exception was catched when hiding edge " << E;
+      std::cout << "An exception was caught when hiding edge " << E;
       std::cout << " by the face " << FI << std::endl;
       std::cout << anException << std::endl;
 #endif

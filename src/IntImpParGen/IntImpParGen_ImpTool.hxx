@@ -51,7 +51,7 @@ public:
   
   //! Returns the parameter U of the point on the
   //! implicit curve corresponding to the point P.
-  //! The correspondance between P and the point P(U) on
+  //! The correspondence between P and the point P(U) on
   //! the implicit curve must be coherent with the way
   //! of determination of the signed distance.
   Standard_EXPORT Standard_Real FindParameter (const gp_Pnt2d& P) const;

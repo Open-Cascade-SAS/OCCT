@@ -45,7 +45,7 @@ DEFINE_STANDARD_HANDLE(Interface_ReportEntity, Standard_Transient)
 //! the ReportEntity is an "Error Entity", the Concerned Entity is
 //! an "Erroneous Entity". Else it is a "Correction Entity", the
 //! Concerned Entity is a "Corrected Entity". With no Check
-//! message and if Concerened and Content are equal, it reports
+//! message and if Concerned and Content are equal, it reports
 //! for an "Unknown Entity".
 //!
 //! Each norm must produce its own type of Unknown Entity, but can

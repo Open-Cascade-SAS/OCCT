@@ -33,7 +33,6 @@ class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceModel;
 
-
 class IFSelect_ParamEditor;
 DEFINE_STANDARD_HANDLE(IFSelect_ParamEditor, IFSelect_Editor)
 
@@ -50,17 +49,16 @@ class IFSelect_ParamEditor : public IFSelect_Editor
 
 public:
 
-  
   //! Creates a ParamEditor, empty, with a maximum count of params
   //! (default is 100)
   //! And a label, by default it will be "Param Editor"
   Standard_EXPORT IFSelect_ParamEditor(const Standard_Integer nbmax = 100, const Standard_CString label = "");
-  
+
   //! Adds a TypedValue
-  //! By default, its short name equates its complete name, it can
-  //! be explicited
-  Standard_EXPORT void AddValue (const Handle(Interface_TypedValue)& val, const Standard_CString shortname = "");
-  
+  //! By default, its short name equates its complete name, it can be made explicit
+  Standard_EXPORT void AddValue (const Handle(Interface_TypedValue)& val,
+                                 const Standard_CString shortname = "");
+
   //! Adds a Constant Text, it will be Read Only
   //! By default, its long name equates its shortname
   Standard_EXPORT void AddConstantText (const Standard_CString val, const Standard_CString shortname, const Standard_CString completename = "");
@@ -80,28 +78,12 @@ public:
   //! Null Handle if <list> is null or empty
   Standard_EXPORT static Handle(IFSelect_ParamEditor) StaticEditor (const Handle(TColStd_HSequenceOfHAsciiString)& list, const Standard_CString label = "");
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_ParamEditor,IFSelect_Editor)
-
-protected:
-
-
-
 
 private:
 
-
   TCollection_AsciiString thelabel;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ParamEditor_HeaderFile

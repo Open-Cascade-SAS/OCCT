@@ -50,7 +50,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
     }
     else
     {
-      /* PTV: 21.03.2002 it is neccessary for files that have only `\r` but no `\n` 
+      /* PTV: 21.03.2002 it is necessary for files that have only `\r` but no `\n`
               examle file is 919-001-T02-04-CP-VL.iges */
       while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) )
       {
@@ -116,7 +116,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
     /* the column 72 is empty, try to check the neighbour*/
     if(strlen(ligne)==80 
         && (ligne[79]=='\n' || ligne[79]=='\r') && (ligne[0]<='9' && ligne[0]>='0')) {
-       /*check if the case of losted .*/
+       /*check in case of loss.*/
        int index;
        for(index = 1; ligne[index]<='9' && ligne[index]>='0'; index++);
        if (ligne[index]=='D' || ligne[index]=='d') {

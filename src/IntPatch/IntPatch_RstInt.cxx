@@ -301,7 +301,7 @@ static Standard_Boolean FindParameter(const Handle(IntPatch_Line)& L,
     Standard_Integer inf[3],sup[3];
     // first search inside close bounding around ParamApproche;
     // then search to the nearest end of line;
-    // and then search to the farest end of line.
+    // and then search to the farthest end of line.
     inf[0] = ParamSearchInf; sup[0] = ParamSearchSup;
     if (ParamSearchInf-1 < nbpt-ParamSearchSup) {
       inf[1] = 1;              sup[1] = ParamSearchInf;

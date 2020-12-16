@@ -181,7 +181,7 @@ public:
   //! default is doing nothing; redefinable as necessary
   Standard_EXPORT virtual void EndRead (const Handle(Interface_InterfaceModel)& amodel);
   
-  //! Clear filelds
+  //! Clear fields
   Standard_EXPORT void Clear();
 
 

@@ -299,7 +299,7 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dBasicCurve
 //=======================================================================
 //
 // A,B,C,D,E,F are the coefficients recorded in IGES. a,b,c,d,e,f are used to 
-// simplify the equations of convertion. They are already used in Euclid. 
+// simplify the equations of conversion. They are already used in Euclid.
 
 Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferConicArc
        (const Handle(IGESGeom_ConicArc)& st)
@@ -1378,7 +1378,7 @@ Handle(Geom_BSplineCurve)  IGESToBRep_BasicCurve::TransferCopiousData
   if (!(FormNb==11 || FormNb==12 || FormNb==63)) {
     Message_Msg msg1240("IGES_1240");
     SendWarning( start, msg1240);
-    // "Copious Data : Form number is different from 11, 12 or 63 so the vector treatement is skipped");
+    // "Copious Data : Form number is different from 11, 12 or 63 so the vector treatment is skipped");
   }
 
   Standard_Integer  NbPoints = start->NbPoints();
@@ -1478,7 +1478,7 @@ Handle(Geom2d_BSplineCurve) IGESToBRep_BasicCurve::Transfer2dCopiousData(const H
   if (!(FormNb==11 || FormNb==12 || FormNb==63)) {
     Message_Msg msg1240("IGES_1240");
     SendWarning( start, msg1240);
-    // "Copious Data : Form number is different from 11, 12 or 63 so the vector treatement is skipped");
+    // "Copious Data : Form number is different from 11, 12 or 63 so the vector treatment is skipped");
   }
   
   Standard_Integer  NbPoints = start->NbPoints();

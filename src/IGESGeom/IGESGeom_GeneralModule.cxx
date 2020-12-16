@@ -72,7 +72,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_GeneralModule,IGESData_GeneralModule)
 
-//  Each Module is attached to a Protocol : it must interprete Case Numbers
+//  Each Module is attached to a Protocol : it must interpret Case Numbers
 //  (arguments <CN> of various methods) in accordance to values returned by
 //  the method TypeNumber from this Protocol
 IGESGeom_GeneralModule::IGESGeom_GeneralModule ()    {  }

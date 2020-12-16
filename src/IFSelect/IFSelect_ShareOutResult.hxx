@@ -36,7 +36,6 @@ class IFSelect_PacketList;
 class Interface_EntityIterator;
 class TCollection_AsciiString;
 
-
 //! This class gives results computed from a ShareOut : simulation
 //! before transfer, helps to list entities ...
 //! Transfer itself will later be performed, either by a
@@ -48,7 +47,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a ShareOutResult from a ShareOut, to work on a Model
   //! (without any more precision; uses Active Protocol)
   Standard_EXPORT IFSelect_ShareOutResult(const Handle(IFSelect_ShareOut)& sho, const Handle(Interface_InterfaceModel)& mod);
@@ -86,17 +84,17 @@ public:
   //! Called the first time anyone question is asked, or after a
   //! call to Reset. Works by calling the method Prepare.
   Standard_EXPORT void Evaluate();
-  
+
   //! Returns the list of recorded Packets, under two modes :
   //! - <complete> = False, the strict definition of Packets, i.e.
-  //! for each one, the Root Entities, to be explicitely sent
+  //! for each one, the Root Entities, to be explicitly sent
   //! - <complete> = True (Default), the completely evaluated list,
   //! i.e. which really gives the destination of each entity :
   //! this mode allows to evaluate duplications
   //! Remark that to send packets, iteration remains preferable
   //! (file names are managed)
   Standard_EXPORT Handle(IFSelect_PacketList) Packets (const Standard_Boolean complete = Standard_True);
-  
+
   //! Returns the total count of produced non empty packets
   //! (in out : calls Evaluate as necessary)
   Standard_EXPORT Standard_Integer NbPackets();
@@ -152,20 +150,12 @@ public:
   //! the returned value is Null
   Standard_EXPORT TCollection_AsciiString FileName() const;
 
-
-
-
 protected:
-
-
 
   Interface_Graph thegraph;
   IFGraph_SubPartsIterator thedispres;
 
-
 private:
-
-
 
   Handle(IFSelect_ShareOut) theshareout;
   Handle(IFSelect_Dispatch) thedispatch;
@@ -176,13 +166,6 @@ private:
   Standard_Integer thenbindisp;
   TColStd_SequenceOfInteger thedisplist;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ShareOutResult_HeaderFile

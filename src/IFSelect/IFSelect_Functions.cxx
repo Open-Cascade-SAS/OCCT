@@ -491,7 +491,7 @@ static IFSelect_ReturnStatus fundumpent
   if (argc < 2 || (argc == 2 && levmax < 0)) {
     sout<<"Give n0 or id of entity";
     if (levmax < 0) sout<<"  and dump level"<<std::endl;
-    else sout<<"  + optinal, dump level in [0 - "<<levmax<<"] , default = "<<levdef<<std::endl;
+    else sout<<"  + optional, dump level in [0 - "<<levmax<<"] , default = "<<levdef<<std::endl;
     for (level = 0; level <= levmax; level ++) {
       Standard_CString help = WL->DumpHelp (level);
       if (help[0] != '\0') sout<<level<<" : "<<help<<std::endl;

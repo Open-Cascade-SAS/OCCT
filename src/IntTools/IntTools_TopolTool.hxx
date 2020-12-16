@@ -78,7 +78,7 @@ public:
   //! by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
   //! is the same as in method ComputeSamplePoints(), but only fill arrays of U
   //! and V sample parameters;
-  //! theDefl is a requred deflection
+  //! theDefl is a required deflection
   //! theNUmin, theNVmin are minimal nb points for U and V.
   Standard_EXPORT virtual void SamplePnts (const Standard_Real theDefl, const Standard_Integer theNUmin, const Standard_Integer theNVmin) Standard_OVERRIDE;
 

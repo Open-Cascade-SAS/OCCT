@@ -44,7 +44,7 @@ DEFINE_STANDARD_HANDLE(IGESData_IGESReaderData, Interface_FileReaderData)
 //! contains header as GlobalSection, and for each Entity, its
 //! directory part as DirPart, list of Parameters as ParamSet
 //! Each Item has a DirPart, plus classically a ParamSet and the
-//! correspondant recognized Entity (inherited from FileReaderData)
+//! correspondent recognized Entity (inherited from FileReaderData)
 //! Parameters are accessed through specific objects, ParamReaders
 class IGESData_IGESReaderData : public Interface_FileReaderData
 {

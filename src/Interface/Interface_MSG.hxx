@@ -184,7 +184,7 @@ operator Standard_CString() const;
   //! Codes a date as a text, from its numeric value (-> seconds) :
   //! YYYY-MM-DD:HH-MN-SS  fixed format, completed by leading zeros
   //! Another format can be provided, as follows :
-  //! C:%d ...   C like format, preceeded by  C:
+  //! C:%d ...   C like format, preceded by  C:
   //! S:...      format to call system (not yet implemented)
   Standard_EXPORT static void TDate (const Standard_CString text, const Standard_Integer yy, const Standard_Integer mm, const Standard_Integer dd, const Standard_Integer hh, const Standard_Integer mn, const Standard_Integer ss, const Standard_CString format = "");
   
@@ -214,7 +214,7 @@ operator Standard_CString() const;
   Standard_EXPORT static Standard_CString Blanks (const Standard_Integer count);
   
   //! Prints a String on an Output Stream, as follows :
-  //! Accompagned with blanks, to give up to <max> charis at all,
+  //! Accompanied with blanks, to give up to <max> charis at all,
   //! justified according just :
   //! -1 (D) : left     0 : center    1 : right
   //! Maximum 76 characters

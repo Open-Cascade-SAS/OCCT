@@ -36,13 +36,12 @@ class IFSelect_WorkLibrary;
 class TCollection_AsciiString;
 class IFSelect_SignCounter;
 
-
 class IFSelect_SessionPilot;
 DEFINE_STANDARD_HANDLE(IFSelect_SessionPilot, IFSelect_Activator)
 
-//! A SessionPilot is intended to make easier the use of a
-//! WorkSession. It receives commands, under alphanumeric form,
-//! then calls a library of Activators to interprete and run them.
+//! A SessionPilot is intended to make easier the use of a WorkSession.
+//! It receives commands, under alphanumeric form,
+//! then calls a library of Activators to interpret and run them.
 //!
 //! Then, WorkSession just records data required to work :
 //! Rules for Selection, Dispatch ... ; File Data (InterfaceModel
@@ -78,7 +77,6 @@ class IFSelect_SessionPilot : public IFSelect_Activator
 
 public:
 
-  
   //! Creates an empty SessionPilot, with a prompt which will be
   //! displayed on querying commands. If not precised (""), this
   //! prompt is set to "Test-XSTEP>"
@@ -210,18 +208,9 @@ public:
   //! Help for specific commands (apart from general command help)
   Standard_EXPORT Standard_CString Help (const Standard_Integer number) const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_SessionPilot,IFSelect_Activator)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(IFSelect_WorkSession) thesession;
   TCollection_AsciiString theprompt;
@@ -234,13 +223,6 @@ private:
   Handle(Standard_Transient) theobjrec;
   TColStd_SequenceOfAsciiString thecomlist;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SessionPilot_HeaderFile

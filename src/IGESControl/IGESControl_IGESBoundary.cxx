@@ -13,17 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//06.01.99 pdn renaming ShapeFix_Wire::FixLittle to ShapeFix_Wire::FixSmall
-//:n1 abv 20.01.99: BUC60328.rle (loopback): call FixSmall with Max(1.,preci)
-//smh #1  11.03.99 PRO15640/15641, szv#2 PRO17393: call FixSameParameter after BuildCurve3d
-//#74 rln 10.03.99 S4135: handling use of BRepLib::SameParameter by new static parameter
-// pdn 18.03.99 S4135: using mintol instead of resolution from IGES file
-// pdn 18.03.99 S4135: projecting with resolution from IGES file.
-//%14 pdn 06.03.99 implementing fixFace in IGES
-// S4135 pdn improvements in using of stdsameparameter flag
-//#21 gka 12.04.99 CSR UKI60998 entities number - 13, 24 lost of boundaries during translation of tabulated cylinders
-//S4181 pdn 15.04.99 implementing of reading IGES elementary surfaces. (instead of shift, reverce and 
-//scale factors the transformation matrix and scale factor used)
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>

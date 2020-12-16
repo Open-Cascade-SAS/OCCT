@@ -35,29 +35,22 @@ class IntCurveSurface_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 class IntCurveSurface_IntersectionSegment;
 
-
-//! The Intersector  computes 2D  intersections of the
-//! projections of 3D curves.
-//!
-//! It can also computes the intersection of a 3D line
-//! and a surface.
+//! The Intersector  computes 2D  intersections of the projections of 3D curves.
+//! It can also computes the intersection of a 3D line and a surface.
 class HLRBRep_Intersector 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRBRep_Intersector();
   
-  //! Performs the auto  intersection  of  an edge. The
-  //! edge domain is cutted at start with da1*(b-a) and
-  //! at end with db1*(b-a).
+  //! Performs the auto intersection of an edge.
+  //! The edge domain is cut at start with da1*(b-a) and at end with db1*(b-a).
   Standard_EXPORT void Perform (const Standard_Address A1, const Standard_Real da1, const Standard_Real db1);
   
-  //! Performs the  intersection between the two edges.
-  //! The  edges  domains  are  cutted  at  start  with
-  //! da*(b-a) and at end with db*(b-a).
+  //! Performs the intersection between the two edges.
+  //! The edges domains are cut at start with da*(b-a) and at end with db*(b-a).
   Standard_EXPORT void Perform (const Standard_Integer nA, const Standard_Address A1, const Standard_Real da1, const Standard_Real db1, const Standard_Integer nB, const Standard_Address A2, const Standard_Real da2, const Standard_Real db2, const Standard_Boolean NoBound);
   
   //! Create a single IntersectionPoint (U on A1) (V on A2)
@@ -88,18 +81,7 @@ public:
   Destroy();
 }
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   IntRes2d_IntersectionPoint mySinglePoint;
   Standard_Integer myTypePerform;
@@ -108,13 +90,6 @@ private:
   Standard_Address mySurface;
   HLRBRep_ThePolyhedronOfInterCSurf* myPolyhedron;
 
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_Intersector_HeaderFile

@@ -14,7 +14,7 @@
 // 22.12.98 dce S3767
 // 21.12.98 rln, gka S4054
 //#74 rln,pdn 11.03.99 S4135: Setting minimum and maximum tolerances according to static parameters
-// sln 13.06.2002 OCC448 : Correction in  method TransferGeometry to avoid transfering invisiable sub entities
+// sln 13.06.2002 OCC448 : Correction in  method TransferGeometry to avoid transferring invisible sub entities
 
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
@@ -238,7 +238,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
   // Declaration of messages// 
   // DCE 22/12/98
   //Message_Msg msg1005("IGES_1005");  //  Software error :  start IsNull.
-  //Message_Msg msg1015("IGES_1015");  //  invalid type or execption raising (software error).
+  //Message_Msg msg1015("IGES_1015");  //  invalid type or exception raising (software error).
   //Message_Msg msg1010("IGES_1010");  //  Not sameparameter.
   //  Message_Msg msg1015("IGES_1015");
   //Message_Msg msg210 ("XSTEP_210");  
@@ -256,8 +256,8 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
   Handle(TCollection_HAsciiString) label = GetModel()->StringLabel(start);
   //Standard_Integer typeNumber = start->TypeNumber();
   
-  // sln 13.06.2002 OCC448: Avoid transfering invisiable sub entities which
-  // logicaly depend on the one
+  // sln 13.06.2002 OCC448: Avoid transferring invisible sub entities which
+  // logically depend on the one
   Standard_Integer onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
   
   if (IGESToBRep::IsCurveAndSurface(start)) {

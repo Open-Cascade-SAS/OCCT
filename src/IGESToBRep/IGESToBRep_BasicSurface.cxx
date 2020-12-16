@@ -545,7 +545,7 @@ Handle(Geom_BSplineSurface) IGESToBRep_BasicSurface::TransferSplineSurface
     // case 3 :
     // AddWarning ( start, "Degree is not compatible with code boundary type , C0 is not guaranteed)");
     //case 2 :
-    // AddWarning ( start, "Degree is not compatible with code boundary type , C0 is guaranted)");
+    // AddWarning ( start, "Degree is not compatible with code boundary type , C0 is guaranteed)");
   default :
       break;
   }

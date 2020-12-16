@@ -30,7 +30,7 @@ static Handle(IGESBasic_Protocol) protocol;
 
     void  IGESBasic::Init ()
 {
-  IGESData::Init();      // usefull for Undefined Type or Erroneous Entities
+  IGESData::Init();      // useful for Undefined Type or Erroneous Entities
   if (protocol.IsNull()) {
     protocol = new IGESBasic_Protocol;
     Interface_GeneralLib::SetGlobal (new IGESBasic_GeneralModule,  protocol);

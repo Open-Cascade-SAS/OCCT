@@ -1325,7 +1325,7 @@ Standard_Boolean IntTools_WLineTool::
 
       if(!bIsFirstInside && !bIsLastInside) {
         if((ifprm < iFirst) && (ilprm > iLast)) {
-          // append whole line, and boundaries if neccesary
+          // append whole line, and boundaries if necessary
           if(bhasfirstpoint) {
             pit = aListOfFLIndex.First();
             const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(pit);

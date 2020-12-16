@@ -55,7 +55,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Creates a List as beeing empty
+  //! Creates a List as being empty
   Standard_EXPORT Interface_EntityList();
   
   //! Clears the List

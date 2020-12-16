@@ -132,7 +132,7 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
   case GeomAbs_Circle: {
     //---------------------------------------------------------------
     //-- if the curve is a trimmed curve, first and last parameters
-    //-- will be the parameters used to buid the domain
+    //-- will be the parameters used to build the domain
     //--
     Standard_Real firstparameter = TheCurveTool::FirstParameter(C1);
     Standard_Real lastparameter  = TheCurveTool::LastParameter(C1);  

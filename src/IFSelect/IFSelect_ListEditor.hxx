@@ -29,7 +29,6 @@ class Interface_TypedValue;
 class Interface_InterfaceModel;
 class TCollection_HAsciiString;
 
-
 class IFSelect_ListEditor;
 DEFINE_STANDARD_HANDLE(IFSelect_ListEditor, Standard_Transient)
 
@@ -58,7 +57,6 @@ class IFSelect_ListEditor : public Standard_Transient
 
 public:
 
-  
   //! Creates a ListEditor with absolutely no constraint
   Standard_EXPORT IFSelect_ListEditor();
   
@@ -70,12 +68,11 @@ public:
   
   //! Loads a Model. It is used to check items of type Entity(Ident)
   Standard_EXPORT void LoadModel (const Handle(Interface_InterfaceModel)& model);
-  
-  //! Loads the original values for the list
-  //! Remark : If its length is mor then MaxLength, editions remain
-  //! allowed, except Add
+
+  //! Loads the original values for the list.
+  //! Remark : If its length is more then MaxLength, editions remain allowed, except Add
   Standard_EXPORT void LoadValues (const Handle(TColStd_HSequenceOfHAsciiString)& vals);
-  
+
   //! Declares this ListEditor to have been touched (whatever action)
   Standard_EXPORT void SetTouched();
   
@@ -140,18 +137,9 @@ public:
   //! been recorded
   Standard_EXPORT Standard_Boolean IsTouched() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_ListEditor,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Integer themax;
   Handle(Interface_TypedValue) thedef;
@@ -161,13 +149,6 @@ private:
   Handle(TColStd_HSequenceOfInteger) thestat;
   Handle(Interface_InterfaceModel) themodl;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_ListEditor_HeaderFile

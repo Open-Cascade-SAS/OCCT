@@ -197,7 +197,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick (const double theX, const double theY)
 {
   clearPicked();
 
-  // Calling OCCT algortihm
+  // Calling OCCT algorithm
   myViewerSelector->Pick ((Standard_Integer)theX,
                           (Standard_Integer)theY,
                           myView);
@@ -217,7 +217,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick (const double theXMin,
 {
   clearPicked();
 
-  // Calling OCCT algortihm
+  // Calling OCCT algorithm
   myViewerSelector->Pick ((Standard_Integer)theXMin,
                           (Standard_Integer)theYMin,
                           (Standard_Integer)theXMax,
@@ -237,7 +237,7 @@ bool IVtkOCC_ShapePickerAlgo::Pick (double** thePoly,
 {
   clearPicked();
 
-  // Calling OCCT algortihm
+  // Calling OCCT algorithm
   myViewerSelector->Pick (thePoly, theNbPoints, myView);
 
   // Fill the results

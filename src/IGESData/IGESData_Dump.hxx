@@ -25,7 +25,7 @@
 
 //  ###############################################################
 //  Macros to help Dumping Parts of IGES Entities
-//  (for usefull and repetitive cases but which apply to different classes
+//  (for useful and repetitive cases but which apply to different classes
 //   but with similar signatures, such as Arrays)
 //  Remember that the class IGESDumper processes itself individual dump of
 //  IGESEntity

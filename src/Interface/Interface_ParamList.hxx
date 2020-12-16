@@ -38,7 +38,7 @@ class Interface_ParamList : public Standard_Transient
 public:
 
   
-  //! Creates an vector with size of memmory blok equal to theIncrement
+  //! Creates an vector with size of memory block equal to theIncrement
   Standard_EXPORT Interface_ParamList(const Standard_Integer theIncrement = 256);
   
   //! Returns the number of elements of <me>.

@@ -71,7 +71,7 @@ public:
   //! compatibility with TopOpeBRep package. It shall be deleted
   //! after deleting TopOpeBRep.
   //! If theIsReqToPostWLProc == FALSE, then we will work with Walking-line
-  //! obtained after intersection algorithm directly (wothout any post-processing). 
+  //! obtained after intersection algorithm directly (without any post-processing).
   Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2, const Standard_Real TolArc, const Standard_Real TolTang, const Standard_Boolean isGeomInt = Standard_True, const Standard_Boolean theIsReqToKeepRLine = Standard_False, const Standard_Boolean theIsReqToPostWLProc = Standard_True);
   
   //! If isGeomInt == Standard_False, then method

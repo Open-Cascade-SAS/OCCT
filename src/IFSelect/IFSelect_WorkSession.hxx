@@ -65,7 +65,6 @@ class IFSelect_Transformer;
 class IFSelect_PacketList;
 class IFSelect_SignatureList;
 
-
 class IFSelect_WorkSession;
 DEFINE_STANDARD_HANDLE(IFSelect_WorkSession, Standard_Transient)
 
@@ -80,7 +79,6 @@ class IFSelect_WorkSession : public Standard_Transient
 
 public:
 
-  
   //! Creates a Work Session
   //! It provides default, empty ShareOut and ModelCopier, which can
   //! be replaced (if required, should be done just after creation).
@@ -100,13 +98,13 @@ public:
   //! Sets a new ShareOut. Fills Items which its content
   //! Warning : data from the former ShareOut are lost
   Standard_EXPORT void SetShareOut (const Handle(IFSelect_ShareOut)& shareout);
-  
-  //! Set value of mode responsible for precence of selections after loading
+
+  //! Set value of mode responsible for presence of selections after loading
   //! If mode set to true that different selections will be accessible after loading
-  //! else selections will be not accessible after loading( for economy memory in applicatios)
+  //! else selections will be not accessible after loading( for economy memory in applications)
   void SetModeStat (const Standard_Boolean theMode)
   { themodelstat = theMode; }
-  
+
   //! Return value of mode defining of filling selection during loading
   Standard_Boolean GetModeStat() const
   { return themodelstat; }
@@ -264,7 +262,7 @@ public:
   Standard_EXPORT Standard_Boolean IsLoaded() const;
   
   //! Computes the CheckList for the Model currently loaded
-  //! It can then be used for displays, querries ...
+  //! It can then be used for displays, queries ...
   //! Returns True if OK, False else (i.e. no Protocol set, or Model
   //! absent). If <enforce> is False, works only if not already done
   //! or if a new Model has been loaded from last call.
@@ -313,7 +311,7 @@ public:
   Standard_EXPORT Handle(Standard_Transient) NamedItem (const Standard_CString name) const;
   
   //! Same as above, but <name> is given through a Handle
-  //! Especially Usefull with methods SelectionNames, etc...
+  //! Especially useful with methods SelectionNames, etc...
   Standard_EXPORT Handle(Standard_Transient) NamedItem (const Handle(TCollection_HAsciiString)& name) const;
   
   //! Returns the Ident attached to a Name, 0 if name not recorded
@@ -581,7 +579,7 @@ public:
   
   //! Returns the Rank of a Modifier given its Ident. Model or File
   //! Modifier according its type (ModelModifier or not)
-  //! Remember that Modifiers are applied sequencially following
+  //! Remember that Modifiers are applied sequentially following
   //! their Rank : first Model Modifiers then File Modifiers
   //! Rank is given by rank of call to AddItem and can be
   //! changed by ChangeModifierRank
@@ -812,8 +810,7 @@ public:
   //! Returns a status of execution :
   //! Done if OK,
   //! Void if no data available,
-  //! Error if errors occured (work library is not defined), errors
-  //! during translation
+  //! Error if errors occurred (work library is not defined), errors during translation
   //! Fail if exception during translation is raised
   //! Stop if no disk space or disk, file is write protected
   //! Fills LastRunCheckList
@@ -884,7 +881,7 @@ public:
   //! 0 if <sel> is not kind of SelectCombine, or if <seladd> or
   //! <sel> is not in the WorkSession
   //! By default, adding is done at the end of the list
-  //! Else, it is an insertion to rank <atnum> (usefull for Un-ReDo)
+  //! Else, it is an insertion to rank <atnum> (useful for Un-ReDo)
   Standard_EXPORT Standard_Integer CombineAdd (const Handle(IFSelect_Selection)& selcomb, const Handle(IFSelect_Selection)& seladd, const Standard_Integer atnum = 0);
   
   //! Removes an input selection from a SelectCombine (Union or
@@ -926,7 +923,7 @@ public:
   //! if <first> is the name of a Selection in <WS>, and <second>
   //! not defined, the standard result of this Selection
   //! else, let's consider "first second" : this whole phrase is
-  //! splitted by blanks, as follows (RECURSIVE CALL) :
+  //! split by blanks, as follows (RECURSIVE CALL) :
   //! - the leftest term is the final selection
   //! - the other terms define the result of the selection
   //! - and so on (the "leftest minus one" is a selection, of which
@@ -934,15 +931,15 @@ public:
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) GiveList (const Standard_CString first, const Standard_CString second = "") const;
   
   //! Computes a List of entities from the model as follows
-  //! <first> beeing a Selection or a combination of Selections,
-  //! <ent> beeing an entity or a list
+  //! <first> being a Selection or a combination of Selections,
+  //! <ent> being an entity or a list
   //! of entities (as a HSequenceOfTransient) :
   //! the standard result of this selection applied to this list
   //! if <ent> is Null, the standard definition of the selection is
   //! used (which contains a default input selection)
   //! if <selname> is erroneous, a null handle is returned
   //!
-  //! REMARK : selname is processed as <first second> of preceeding
+  //! REMARK : selname is processed as <first second> of preceding
   //! GiveList
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) GiveListFromList (const Standard_CString selname, const Handle(Standard_Transient)& ent) const;
   

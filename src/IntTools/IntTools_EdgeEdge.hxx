@@ -46,17 +46,17 @@ public:
 
   
 
-  //! Empty contructor
+  //! Empty constructor
   IntTools_EdgeEdge();
 
   //! Destructor
   ~IntTools_EdgeEdge();
 
-  //! Contructor
+  //! Constructor
   IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2);
   
 
-  //! Contructor
+  //! Constructor
   IntTools_EdgeEdge(const TopoDS_Edge& theEdge1, const Standard_Real aT11,
       const Standard_Real aT12, const TopoDS_Edge& theEdge2, 
       const Standard_Real aT21, const Standard_Real aT22);

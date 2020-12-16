@@ -52,7 +52,7 @@ class IGESSelect_SelectBasicGeom : public IFSelect_SelectExplore
 public:
 
   
-  //! Creates a SelectBasicGeom, which allways works recursively
+  //! Creates a SelectBasicGeom, which always works recursively
   //! mode = -1 : Returns Surfaces (without trimming)
   //! mode = +1 : Returns Curves 3D (free or bound of surface)
   //! mode = +2 : Returns Basic Curves 3D : as 1 but CompositeCurves

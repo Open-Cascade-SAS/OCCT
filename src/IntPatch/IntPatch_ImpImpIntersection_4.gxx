@@ -1458,7 +1458,7 @@ Standard_Boolean ComputationMethods::CylCylComputeParameters(const Standard_Real
 
     //Then
     //  aPar - cos(aFI2) == -5.10703e-015 ==> cos(aFI2) == aPar. 
-    //Theoreticaly, in this case 
+    //Theoretically, in this case
     //  aFI2 == +/- acos(aPar).
     //However,
     //  acos(aPar) - aFI2 == 2.16362e-009.

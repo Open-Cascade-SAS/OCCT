@@ -29,12 +29,12 @@ class Interface_Protocol;
 class Interface_Graph;
 class Interface_EntityIterator;
 
-//! Builds the Graph of Dependancies, from the General Service
+//! Builds the Graph of Dependencies, from the General Service
 //! "Shared" -> builds for each Entity of a Model, the Shared and
 //! Sharing Lists, and gives access to them.
 //! Allows to complete with Implied References (which are not
 //! regarded as Shared Entities, but are nevertheless Referenced),
-//! this can be usefull for Reference Checking
+//! this can be useful for Reference Checking
 class Interface_ShareTool 
 {
 public:

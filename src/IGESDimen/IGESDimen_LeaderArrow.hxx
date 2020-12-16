@@ -72,17 +72,17 @@ public:
   //! returns Z depth
   Standard_EXPORT Standard_Real ZDepth() const;
   
-  //! returns ArrowHead co-ordinates
+  //! returns ArrowHead coordinates
   Standard_EXPORT gp_Pnt2d ArrowHead() const;
   
-  //! returns ArrowHead co-ordinates after Transformation
+  //! returns ArrowHead coordinates after Transformation
   Standard_EXPORT gp_Pnt TransformedArrowHead() const;
   
-  //! returns segment tail co-ordinates.
+  //! returns segment tail coordinates.
   //! raises exception if Index <= 0 or Index > NbSegments
   Standard_EXPORT gp_Pnt2d SegmentTail (const Standard_Integer Index) const;
   
-  //! returns segment tail co-ordinates after Transformation.
+  //! returns segment tail coordinates after Transformation.
   //! raises exception if Index <= 0 or Index > NbSegments
   Standard_EXPORT gp_Pnt TransformedSegmentTail (const Standard_Integer Index) const;
 

@@ -34,15 +34,12 @@ class gp_Pnt;
 class Bnd_Box;
 class gp_XYZ;
 
-
-
 class HLRBRep_ThePolyhedronOfInterCSurf 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(const Standard_Address& Surface, const Standard_Integer nbdU, const Standard_Integer nbdV, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2);
   
   Standard_EXPORT HLRBRep_ThePolyhedronOfInterCSurf(const Standard_Address& Surface, const TColStd_Array1OfReal& Upars, const TColStd_Array1OfReal& Vpars);
@@ -71,11 +68,11 @@ public:
   //! Give the number of triangles in this double array of
   Standard_EXPORT Standard_Integer NbTriangles() const;
   
-  //! Give the 3 points of the triangle of addresse Index in
+  //! Give the 3 points of the triangle of address Index in
   //! the double array of triangles.
   Standard_EXPORT void Triangle (const Standard_Integer Index, Standard_Integer& P1, Standard_Integer& P2, Standard_Integer& P3) const;
   
-  //! Give the addresse Tricon of the triangle connexe to the
+  //! Give the address Tricon of the triangle connexe to the
   //! triangle of address Triang by the edge Pivot Pedge and
   //! the third point of this connexe triangle. When we are
   //! on a free edge TriCon==0 but the function return the
@@ -121,10 +118,10 @@ public:
   
   Standard_EXPORT Standard_Boolean HasVMaxSingularity() const;
   
-  //! Give the plane equation of the triangle of addresse Triang.
+  //! Give the plane equation of the triangle of address Triang.
   Standard_EXPORT void PlaneEquation (const Standard_Integer Triang, gp_XYZ& NormalVector, Standard_Real& PolarDistance) const;
   
-  //! Give the plane equation of the triangle of addresse Triang.
+  //! Give the plane equation of the triangle of address Triang.
   Standard_EXPORT Standard_Boolean Contain (const Standard_Integer Triang, const gp_Pnt& ThePnt) const;
   
   Standard_EXPORT void Parameters (const Standard_Integer Index, Standard_Real& U, Standard_Real& V) const;
@@ -140,9 +137,6 @@ public:
   
   Standard_EXPORT void Dump() const;
 
-
-
-
 protected:
 
   
@@ -150,16 +144,13 @@ protected:
   
   Standard_EXPORT void Init (const Standard_Address& Surface, const TColStd_Array1OfReal& Upars, const TColStd_Array1OfReal& Vpars);
 
-
-
-
 private:
 
-  
   //! This method computes and returns a deflection of isoline
   //! of given parameter on Surface.
   Standard_EXPORT Standard_Real ComputeBorderDeflection (const Standard_Address& Surface, const Standard_Real Parameter, const Standard_Real PMin, const Standard_Real PMax, const Standard_Boolean isUIso) const;
 
+private:
 
   Standard_Integer nbdeltaU;
   Standard_Integer nbdeltaV;
@@ -175,7 +166,6 @@ private:
   Standard_Boolean VMaxSingular;
   Standard_Real TheBorderDeflection;
   Standard_Address C_MyIsOnBounds;
-
 
 };
 
@@ -194,8 +184,5 @@ private:
 #undef ThePSurfaceTool_hxx
 #undef IntCurveSurface_Polyhedron
 #undef IntCurveSurface_Polyhedron_hxx
-
-
-
 
 #endif // _HLRBRep_ThePolyhedronOfInterCSurf_HeaderFile

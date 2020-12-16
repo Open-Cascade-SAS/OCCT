@@ -62,7 +62,7 @@ public:
     return myContext;
   }
 
-  //! Performs meshing ot the shape using current context.
+  //! Performs meshing to the shape using current context.
   Standard_EXPORT virtual void Perform (const Message_ProgressRange& theRange);
 
   DEFINE_STANDARD_RTTIEXT(IMeshTools_MeshBuilder, Message_Algorithm)

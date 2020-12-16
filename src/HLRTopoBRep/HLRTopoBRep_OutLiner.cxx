@@ -250,7 +250,7 @@ void HLRTopoBRep_OutLiner::ProcessFace(const TopoDS_Face& F,
 	itE.Next()) {
       TopoDS_Edge E = TopoDS::Edge(itE.Value());
       E.Orientation(TopAbs_INTERNAL);
-      if (myDS.EdgeHasSplE(E)) { // normaly IsoLines are never splitted.
+      if (myDS.EdgeHasSplE(E)) { // normally IsoLines are never split.
 	
 	TopTools_ListIteratorOfListOfShape itS;
 	for (itS.Initialize(myDS.EdgeSplE(E));

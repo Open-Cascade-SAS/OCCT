@@ -161,7 +161,7 @@ public:
   //! coherence with Dispatch
   //! Dispatch can either copy or not.
   //! If it copies the entity, this one should be deleted
-  //! If it doesnt (i.e. duplicates the handle) nothing to do
+  //! If it doesn't (i.e. duplicates the handle) nothing to do
   //!
   //! If <dispatch> is False, normal deletion is to be performed
   Standard_EXPORT virtual void WhenDeleteCase (const Standard_Integer CN, const Handle(Standard_Transient)& ent, const Standard_Boolean dispatched) const;

@@ -89,8 +89,8 @@ public:
   //! Gives a quick analysis of an IGES Entity in the context of a
   //! model (i.e. a File) described by a Graph.
   //! Returned values are :
-  //! <sup> : the most meaningfull super entity, if any (else Null)
-  //! <index> : meaningfull index relating to super entity, if any
+  //! <sup> : the most meaningful super entity, if any (else Null)
+  //! <index> : meaningful index relating to super entity, if any
   //! <returned> : a status which helps exploitation of <sup>, by
   //! giving a case
   //! (normally, types of <ent> and <sup> should suffice to

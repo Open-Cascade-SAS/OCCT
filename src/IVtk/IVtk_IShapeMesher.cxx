@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher,IVtk_Interface)
 // Handle implementation
 
 
-//! Excutes the mesh generation algorithms. To be defined in implementation class.
+//! Executes the mesh generation algorithms. To be defined in implementation class.
 void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,
                                     const IVtk_IShapeData::Handle& theData)
 {

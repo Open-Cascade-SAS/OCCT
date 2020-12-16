@@ -306,7 +306,7 @@ static Handle(IntPatch_WLine)
     return theWLine;
   }
 
-  // Build new line and modify geometry of necessary vertexes.
+  // Build new line and modify geometry of necessary vertices.
   Handle(IntPatch_WLine) aLocalWLine = MakeNewWLine(theWLine, aDelOuterPointsHash, Standard_True);
 
   if (aChangedFirst)

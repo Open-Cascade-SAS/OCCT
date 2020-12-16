@@ -230,7 +230,7 @@ public:
   //! another Graph from <me>
   Standard_EXPORT const Handle(TColStd_HArray1OfListOfInteger)& SharingTable() const;
   
-  //! Returns mode resposible for computation of statuses;
+  //! Returns mode responsible for computation of statuses;
   Standard_EXPORT Standard_Boolean ModeStat() const;
 
 

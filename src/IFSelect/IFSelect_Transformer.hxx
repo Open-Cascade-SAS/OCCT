@@ -29,7 +29,6 @@ class Interface_InterfaceModel;
 class Standard_Transient;
 class TCollection_AsciiString;
 
-
 class IFSelect_Transformer;
 DEFINE_STANDARD_HANDLE(IFSelect_Transformer, Standard_Transient)
 
@@ -39,18 +38,16 @@ DEFINE_STANDARD_HANDLE(IFSelect_Transformer, Standard_Transient)
 //! Perform, it can be parametred as needed.
 //!
 //! It receives a Model (the data set) as input. It then can :
-//! - edit this Model on the spot (i.e. alter its content : by
-//! editing entities, or adding/replacing some ...)
+//! - edit this Model on the spot
+//!   (i.e. alter its content: by editing entities, or adding/replacing some ...)
 //! - produce a copied Model, which detains the needed changes
-//! (typically on the same type, but some or all entities beeing
-//! rebuilt or converted; or converted from a protocol to
-//! another one)
+//!   (typically on the same type, but some or all entities being
+//!   rebuilt or converted; or converted from a protocol to another one)
 class IFSelect_Transformer : public Standard_Transient
 {
 
 public:
 
-  
   //! Performs a Transformation (defined by each sub-class) :
   //! <G> gives the input data (especially the starting model) and
   //! can be used for queries (by Selections, etc...)
@@ -72,9 +69,9 @@ public:
   //! memorized if needed, and to store information useful for
   //! the method Updated
   //!
-  //! Returns True if Done, False if an Error occured : in this case,
-  //! if a new data set has been produced, the transformation
-  //! is ignored, else data may be corrupted.
+  //! Returns True if Done, False if an Error occurred:
+  //! in this case, if a new data set has been produced, the transformation is ignored,
+  //! else data may be corrupted.
   Standard_EXPORT virtual Standard_Boolean Perform (const Interface_Graph& G, const Handle(Interface_Protocol)& protocol, Interface_CheckIterator& checks, Handle(Interface_InterfaceModel)& newmod) = 0;
   
   //! This methods allows to declare that the Protocol applied to
@@ -97,27 +94,9 @@ public:
   //! (to identify the transformation it performs)
   Standard_EXPORT virtual TCollection_AsciiString Label() const = 0;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_Transformer,Standard_Transient)
-
-protected:
-
-
-
-
-private:
-
-
 
 
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_Transformer_HeaderFile

@@ -34,7 +34,7 @@ DEFINE_STANDARD_HANDLE(IGESSelect_RebuildGroups, IGESSelect_ModelModifier)
 //! If a set of entities, all put into a same IGESModel, were
 //! part of a same Group in the starting Model, this Modifier
 //! rebuilds the original group, but only with the transferred
-//! entities. The distinctions (Ordered or not, "WhithoutBackP"
+//! entities. The distinctions (Ordered or not, "WithoutBackP"
 //! or not) are renewed, also the name of the group.
 //!
 //! If the Input Selection is present, tries to rebuild groups

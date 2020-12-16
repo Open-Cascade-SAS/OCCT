@@ -40,27 +40,22 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter();
-  
+
   //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs a zero
-  //! near the close point.
+  //! The close point is defined by the parameter value U0.
+  //! The function F(u)=distance(P,C(u)) has an extremum when g(u)=dF/du=0.
+  //! The algorithm searches a zero near the close point.
   //! TolU is used to decide to stop the iterations.
   //! At the nth iteration, the criteria is:
   //! abs(Un - Un-1) < TolU.
   Standard_EXPORT HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter(const gp_Pnt2d& P, const Standard_Address& C, const Standard_Real U0, const Standard_Real TolU);
   
   //! Calculates the distance with a close point.
-  //! The close point is defined by the parameter value
-  //! U0.
-  //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs a zero
-  //! near the close point.
-  //! Zeros are searched between Umin et Usup.
+  //! The close point is defined by the parameter value U0.
+  //! The function F(u)=distance(P,C(u)) has an extremum when g(u)=dF/du=0.
+  //! The algorithm searches a zero near the close point.
+  //! Zeros are searched between Umin and Usup.
   //! TolU is used to decide to stop the iterations.
   //! At the nth iteration, the criteria is:
   //! abs(Un - Un-1) < TolU.
@@ -86,18 +81,7 @@ public:
   //! Returns the point of the extremum distance.
   Standard_EXPORT const Extrema_POnCurv2d& Point() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Boolean myDone;
   Standard_Real mytolU;
@@ -105,13 +89,6 @@ private:
   Standard_Real myusup;
   HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter myF;
 
-
 };
-
-
-
-
-
-
 
 #endif // _HLRBRep_TheLocateExtPCOfTheProjPCurOfCInter_HeaderFile

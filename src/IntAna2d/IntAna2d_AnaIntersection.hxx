@@ -101,7 +101,7 @@ public:
   //! Intersection between an hyperbola and another conic.
   Standard_EXPORT void Perform (const gp_Hypr2d& H, const IntAna2d_Conic& C);
   
-  //! Returns TRUE if the computation was succesfull.
+  //! Returns TRUE if the computation was successful.
     Standard_Boolean IsDone() const;
   
   //! Returns TRUE when there is no intersection, i-e

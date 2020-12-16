@@ -29,7 +29,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
 
-
 class IFSelect_SelectRange;
 DEFINE_STANDARD_HANDLE(IFSelect_SelectRange, IFSelect_SelectExtract)
 
@@ -75,38 +74,22 @@ public:
   
   //! Returns Value of Upper Limit (0 if none is defined)
   Standard_EXPORT Standard_Integer UpperValue() const;
-  
-  //! Returns True for an Entity of which occurence number in the
+
+  //! Returns True for an Entity of which occurrence number in the
   //! iteration is inside the selected Range (considers <rank>)
   Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
-  
+
   //! Returns a text defining the criterium : following cases,
   //! " From .. Until .." or "From .." or "Until .." or "Rank no .."
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectRange,IFSelect_SelectExtract)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(IFSelect_IntParam) thelower;
   Handle(IFSelect_IntParam) theupper;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IFSelect_SelectRange_HeaderFile

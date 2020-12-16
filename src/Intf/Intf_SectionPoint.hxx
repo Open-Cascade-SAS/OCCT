@@ -38,7 +38,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns the location of the SectionPoint.
   Standard_EXPORT const gp_Pnt& Pnt() const;
   
@@ -58,17 +57,15 @@ public:
     Intf_PIType TypeOnSecond() const;
   
   Standard_EXPORT void InfoFirst (Intf_PIType& Dim, Standard_Integer& Add1, Standard_Integer& Add2, Standard_Real& Param) const;
-  
-  //! Gives the   datas  about   the    first  argument of    the
-  //! Interference.
+
+  //! Gives the data about the first argument of the Interference.
   Standard_EXPORT void InfoFirst (Intf_PIType& Dim, Standard_Integer& Addr, Standard_Real& Param) const;
-  
+
   Standard_EXPORT void InfoSecond (Intf_PIType& Dim, Standard_Integer& Add1, Standard_Integer& Add2, Standard_Real& Param) const;
-  
-  //! Gives the   datas  about   the    second  argument of    the
-  //! Interference.
+
+  //! Gives the data about the second argument of the Interference.
   Standard_EXPORT void InfoSecond (Intf_PIType& Dim, Standard_Integer& Addr, Standard_Real& Param) const;
-  
+
   //! Gives the incidence at  this  section point. The  incidence
   //! between the two triangles is given by the cosine.  The best
   //! incidence is 0. (PI/2).  The worst is 1. (null angle).
@@ -103,18 +100,7 @@ public:
   
   Standard_EXPORT void Dump (const Standard_Integer Indent) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   gp_Pnt myPnt;
   Intf_PIType DimenObje;
@@ -127,14 +113,8 @@ private:
   Standard_Real ParamTool;
   Standard_Real Incide;
 
-
 };
 
-
 #include <Intf_SectionPoint.lxx>
-
-
-
-
 
 #endif // _Intf_SectionPoint_HeaderFile

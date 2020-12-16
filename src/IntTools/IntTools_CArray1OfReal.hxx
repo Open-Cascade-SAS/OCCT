@@ -105,7 +105,7 @@ Standard_Real& operator () (const Standard_Integer Index)
 }
   
 
-  //! Applys the == operator on each array item
+  //! Applies the == operator on each array item
   Standard_EXPORT Standard_Boolean IsEqual (const IntTools_CArray1OfReal& Other) const;
 Standard_Boolean operator == (const IntTools_CArray1OfReal& Other) const
 {

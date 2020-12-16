@@ -1511,7 +1511,7 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
   // 3
   else if (aDA1A2<aTol2) {
     //
-    // When apices are coinsided there can be 3 possible cases
+    // When apices are coincided there can be 3 possible cases
     // 3.1 - empty solution (iRet=0)
     // 3.2 - one line  when cone1 touches cone2 (iRet=1)
     // 3.3 - two lines when cone1 intersects cone2 (iRet=2)

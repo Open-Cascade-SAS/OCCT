@@ -404,7 +404,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 	          //-- All neighbor segments are removed 
 	          for(Standard_Integer k=sp+1;k<=Nbsp;k++) { 
 	            Standard_Integer kk=TriIndex[k];
-	            // --- avoid negative indicies as well as in outer done
+	            // --- avoid negative indices as well as in outer done
 	            if( kk > 0 ) {
 		            if(   Abs(SegIndex1-PtrSegIndex1[kk])< Nelarg
 		               && Abs(SegIndex2-PtrSegIndex2[kk])< Nelarg) { 
@@ -826,7 +826,7 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve& C1,
 
   if(NbIter>NBITER_MAX_POLYGON) return;
 
-  // Number of samples tunning.
+  // Number of samples running.
   nbsamplesOnC1 = TheCurveTool::NbSamples(C1,D1.FirstParameter(),D1.LastParameter());
   nbsamplesOnC2 = TheCurveTool::NbSamples(C2,D2.FirstParameter(),D2.LastParameter());
 

@@ -26,13 +26,11 @@ class IntPatch_Polyhedron;
 class IntPatch_PrmPrmIntersection_T3Bits;
 class IntSurf_LineOn2S;
 
-//! Implementation  of   the Intersection      between two
-//! bi-parametrised surfaces.
+//! Implementation of the Intersection between two bi-parametrised surfaces.
 //!
-//! To  avoid  multiple constructions of  the approximated
-//! polyhedron  of the    surfaces, the algorithm  can  be
-//! called whith the  two  surfaces  and their  associated
-//! polyhedron.
+//! To avoid multiple constructions of the approximated
+//! polyhedron of the surfaces, the algorithm can be
+//! called with the two surfaces and their associated polyhedron.
 class IntPatch_PrmPrmIntersection 
 {
 public:
@@ -86,7 +84,7 @@ public:
   //! computed.
   Standard_EXPORT void Perform (const Handle(Adaptor3d_Surface)& Caro1, const IntPatch_Polyhedron& Polyhedron1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_Surface)& Caro2, const Handle(Adaptor3d_TopolTool)& Domain2, const Standard_Real TolTangency, const Standard_Real Epsilon, const Standard_Real Deflection, const Standard_Real Increment);
   
-  //! Returns true if the calculus was succesfull.
+  //! Returns true if the calculus was successful.
     Standard_Boolean IsDone() const;
   
   //! Returns true if the is no intersection.

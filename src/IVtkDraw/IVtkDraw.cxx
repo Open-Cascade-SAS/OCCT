@@ -699,7 +699,7 @@ static Standard_Integer VtkRemove (Draw_Interpretor& ,
         IVtk_IdType aShapeID = aSrc->GetShape()->GetId();
         GetPicker()->RemoveSelectableObject (aSrc->GetShape());
         GetPipeline (aSrc->GetShape()->GetId())->RemoveFromRenderer (aRenderer);
-        GetPipelines()->UnBind (aShapeID); // Remove a pipepline
+        GetPipelines()->UnBind (aShapeID); // Remove a pipeline
       }
       else
       {

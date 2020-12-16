@@ -114,7 +114,7 @@ void HLRBRep_InternalAlgo::Update ()
       catch(Standard_Failure const& anException) {
         if (myDebug)
         {
-          std::cout << "An exception was catched when preparing the Shape " << i;
+          std::cout << "An exception was caught when preparing the Shape " << i;
           std::cout << " and computing its OutLines " << std::endl;
           std::cout << anException << std::endl;
         }
@@ -721,7 +721,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
         std::cout << "Vertices  : " << std::setw(5) << myDS->NbVertices() << std::endl;
         std::cout << "Edges     : " << std::setw(5) << myDS->NbEdges()    << " , ";
         std::cout << "Selected  : " << std::setw(5) << nbSelEdges         << " , ";
-        std::cout << "Visibles  : " << std::setw(5) << nbVisEdges         << std::endl;
+        std::cout << "Visible   : " << std::setw(5) << nbVisEdges         << std::endl;
         std::cout << "Faces     : " << std::setw(5) << myDS->NbFaces()    << " , ";
         std::cout << "Selected  : " << std::setw(5) << nbSelFaces         << " , ";
         std::cout << "Simple    : " << std::setw(5) << nbFSimp            << std::endl;

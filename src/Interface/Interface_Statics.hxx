@@ -17,7 +17,7 @@
 //  Only the pointer is declared static, and initialized to NULL : then,
 //  there is no routine to call for static construction
 
-//  Remember that the objet designated by a static Handle should not be created
+//  Remember that the object designated by a static Handle should not be created
 //  in the static declaration, but must anyway be created, during main run,
 //  once before its first use : this is the initialization step.
 
@@ -44,7 +44,7 @@
 //  ***************************************************
 //  Old statement (in a routine, not static) :
 //          if (object.IsNull()) object = new pk_class (..args if any..);
-//  can be maintained, but preceeded by an initialization :
+//  can be maintained, but preceded by an initialization :
 //          InitHandle(pk_class,object);         // -> Null Handle
 
 //  ***************************************************

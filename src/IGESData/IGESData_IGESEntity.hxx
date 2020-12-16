@@ -53,7 +53,7 @@ class IGESData_IGESEntity;
 DEFINE_STANDARD_HANDLE(IGESData_IGESEntity, Standard_Transient)
 
 //! defines root of IGES Entity definition, including Directory
-//! Part, lists of (optionnal) Properties and Associativities
+//! Part, lists of (optional) Properties and Associativities
 class IGESData_IGESEntity : public Standard_Transient
 {
 
@@ -335,7 +335,7 @@ friend class IGESData_DirChecker;
 protected:
 
   
-  //! prepares lists of optionnal data, set values to defaults
+  //! prepares lists of optional data, set values to defaults
   Standard_EXPORT IGESData_IGESEntity();
   
   //! Initializes Type and Form Numbers to new values. Reserved for

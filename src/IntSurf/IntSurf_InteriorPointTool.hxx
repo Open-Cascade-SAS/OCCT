@@ -30,7 +30,7 @@ class IntSurf_InteriorPoint;
 
 //! This class provides a tool on the "interior point"
 //! that can be used to instantiates the Walking
-//! algorithmes (see package IntWalk).
+//! algorithms (see package IntWalk).
 class IntSurf_InteriorPointTool 
 {
 public:

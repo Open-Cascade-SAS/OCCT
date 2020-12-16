@@ -25,7 +25,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
 
-
 //! This class detains the data which describe a Graph. A Graph
 //! has two lists, one for shared refs, one for sharing refs
 //! (the reverses). Each list comprises, for each Entity of the
@@ -111,11 +110,11 @@ public:
   
   //! Returns the count of refs attached to current entity number
   Standard_EXPORT Standard_Integer Length() const;
-  
-  //! Returns True if the list for a number (default is taken as
-  //! current) is "redefined"  (usefull for empty list)
+
+  //! Returns True if the list for a number
+  //! (default is taken as current) is "redefined" (useful for empty list)
   Standard_EXPORT Standard_Boolean IsRedefined (const Standard_Integer num = 0) const;
-  
+
   //! Returns a reference number in the list for current number,
   //! according to its rank
   Standard_EXPORT Standard_Integer Value (const Standard_Integer num) const;
@@ -131,18 +130,7 @@ public:
   //! margin can be added.
   Standard_EXPORT void AdjustSize (const Standard_Integer margin = 0);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Integer thenbe;
   Standard_Integer thenbr;
@@ -152,13 +140,6 @@ private:
   Handle(TColStd_HArray1OfInteger) theents;
   Handle(TColStd_HArray1OfInteger) therefs;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Interface_IntList_HeaderFile

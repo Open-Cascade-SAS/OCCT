@@ -49,17 +49,17 @@ public:
   //! Give the tolerance of the polygon.
     static Standard_Real DeflectionOverEstimation (const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
   
-  //! Give the number of triangles in this polyedral surface.
+  //! Give the number of triangles in this polyhedral surface.
     static Standard_Integer NbTriangles (const IntCurveSurface_ThePolyhedronOfHInter& thePolyh);
   
   //! Give the indices  of  the 3 points of  the triangle of
   //! address Index in the PolyhedronTool.
     static void Triangle (const IntCurveSurface_ThePolyhedronOfHInter& thePolyh, const Standard_Integer Index, Standard_Integer& P1, Standard_Integer& P2, Standard_Integer& P3);
   
-  //! Give the point of index i in the polyedral surface.
+  //! Give the point of index i in the polyhedral surface.
     static const gp_Pnt& Point (const IntCurveSurface_ThePolyhedronOfHInter& thePolyh, const Standard_Integer Index);
   
-  //! Give the  addresse Tricon of   the triangle connexe to
+  //! Give the  address Tricon of   the triangle connexe to
   //! the triangle of address Triang by the edge Pivot Pedge
   //! and the third point of this  connexe triangle. When we
   //! are on  a free edge TriCon==0  but the function return

@@ -1525,7 +1525,7 @@ Standard_Integer IntPolyh_MaillageAffinage::StartingPointsResearch
 //=======================================================================
 //function : NextStartingPointsResearch
 //purpose  : from  two triangles  and an intersection   point I
-//           seach the other point (if it exist).
+//           search the other point (if it exist).
 //           This function is used by StartPointChain
 //=======================================================================
 Standard_Integer IntPolyh_MaillageAffinage::NextStartingPointsResearch

@@ -63,7 +63,7 @@ public:
   
   //! Returns Result under the exact form of an EntityIterator :
   //! Can be used when EntityIterator itself is required (as a
-  //! returned value for instance), whitout way for a sub-class
+  //! returned value for instance), without way for a sub-class
   Standard_EXPORT Interface_EntityIterator Result();
   
   //! Does the Evaluation before starting the iteration itself

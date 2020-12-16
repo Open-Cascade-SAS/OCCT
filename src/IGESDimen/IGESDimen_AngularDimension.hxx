@@ -73,10 +73,10 @@ public:
   //! returns the Second Witness Line Entity or Null Handle.
   Standard_EXPORT Handle(IGESDimen_WitnessLine) SecondWitnessLine() const;
   
-  //! returns the co-ordinates of the Vertex point as Pnt2d from gp.
+  //! returns the coordinates of the Vertex point as Pnt2d from gp.
   Standard_EXPORT gp_Pnt2d Vertex() const;
   
-  //! returns the co-ordinates of the Vertex point as Pnt2d from gp
+  //! returns the coordinates of the Vertex point as Pnt2d from gp
   //! after Transformation. (Z = 0.0 for Transformation)
   Standard_EXPORT gp_Pnt2d TransformedVertex() const;
   

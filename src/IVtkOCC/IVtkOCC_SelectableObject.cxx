@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_SelectableObject,SelectMgr_SelectableObject)
 
 //============================================================================
 // Method:  Constructor
-// Purpose: Constructs a selectable object initalized by the given shape
+// Purpose: Constructs a selectable object initialized by the given shape
 //============================================================================
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject (const IVtkOCC_Shape::Handle& theShape)
 : SelectMgr_SelectableObject (PrsMgr_TOP_AllView),

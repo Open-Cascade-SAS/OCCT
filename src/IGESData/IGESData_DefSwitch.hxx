@@ -24,10 +24,9 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_DefType.hxx>
 
-
 //! description of a directory component which can be either
 //! undefined (let Void), defined as a Reference to an entity,
-//! or as a Rank, integer value adressing a builtin table
+//! or as a Rank, integer value addressing a builtin table
 //! The entity reference is not included here, only reference
 //! status is kept (because entity type must be adapted)
 class IGESData_DefSwitch 
@@ -36,7 +35,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! creates a DefSwitch as Void
   Standard_EXPORT IGESData_DefSwitch();
   
@@ -55,28 +53,10 @@ public:
   //! returns Value as Integer (sensefull for a Rank)
   Standard_EXPORT Standard_Integer Value() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Integer theval;
 
-
 };
-
-
-
-
-
-
 
 #endif // _IGESData_DefSwitch_HeaderFile

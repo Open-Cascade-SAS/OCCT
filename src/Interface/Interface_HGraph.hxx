@@ -35,7 +35,7 @@ class Interface_HGraph;
 DEFINE_STANDARD_HANDLE(Interface_HGraph, Standard_Transient)
 
 //! This class allows to store a redefinable Graph, via a Handle
-//! (usefull for an Object which can work on several successive
+//! (useful for an Object which can work on several successive
 //! Models, with the same general conditions)
 class Interface_HGraph : public Standard_Transient
 {
@@ -64,7 +64,7 @@ public:
   //! Returns the Graph contained in <me>, for Read Only Operations
   //! Remark that it is returns as "const &"
   //! Getting it in a new variable instead of a reference would be
-  //! a pitty, because all the graph's content would be duplicated
+  //! a pity, because all the graph's content would be duplicated
   Standard_EXPORT const Interface_Graph& Graph() const;
   
   //! Same as above, but for Read-Write Operations

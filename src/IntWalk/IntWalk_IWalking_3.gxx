@@ -56,7 +56,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 //        calculation of step)
 //     2) calculation of the point
 //     3) if the point is not found the step is divided
-//     4) stpo tests    
+//     4) stop tests
 //     5) calculation of the step depending on the arrow and the max step,
 //        (TestDeflection)
 //        stop  possible.
