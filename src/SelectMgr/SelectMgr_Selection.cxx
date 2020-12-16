@@ -124,6 +124,21 @@ void SelectMgr_Selection::DumpJson (Standard_OStream& theOStream, Standard_Integ
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
+  NCollection_Map<Handle(SelectMgr_EntityOwner)> anOwners;
+  for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anIterator (myEntities); anIterator.More(); anIterator.Next())
+  {
+    const Handle(SelectMgr_SensitiveEntity)& anEntity = anIterator.Value();
+    if (anEntity.IsNull() || anEntity->BaseSensitive().IsNull())
+    {
+      continue;
+    }
+    const Handle(SelectMgr_EntityOwner)& anOwner = anEntity->BaseSensitive()->OwnerId();
+    if (anOwners.Add (anOwner))
+    {
+      OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anOwner.get())
+    }
+  }
+
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anIterator (myEntities); anIterator.More(); anIterator.Next())
   {
     const Handle(SelectMgr_SensitiveEntity)& anEntity = anIterator.Value();
