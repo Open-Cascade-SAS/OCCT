@@ -199,9 +199,27 @@ void XCAFDoc_Material::DumpJson (Standard_OStream& theOStream, Standard_Integer 
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName.get())
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription.get())
+  if (!myName.IsNull())
+  {
+    Standard_CString aMaterialName = myName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aMaterialName)
+  }
+  if (!myDescription.IsNull())
+  {
+    Standard_CString aDescriptionName = myDescription->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDescriptionName)
+  }
+
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDensity)
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDensName.get())
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDensValType.get())
+
+  if (!myDensName.IsNull())
+  {
+    Standard_CString aDensName = myDensName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDensName)
+  }
+  if (!myDensValType.IsNull())
+  {
+    Standard_CString aDensValType = myDensValType->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDensValType)
+  }
 }

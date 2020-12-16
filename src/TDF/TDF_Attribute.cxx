@@ -414,7 +414,7 @@ void TDF_Attribute::ExtendedDump
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
@@ -422,10 +422,14 @@ void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer the
   TDF_Tool::Entry (Label(), aLabel);
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTransaction)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySavedTransaction)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, ID())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Transaction())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, UntilTransaction())
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myNext.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myBackup.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsNew())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsBackuped())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsForgotten())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
 }

@@ -24,6 +24,7 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
@@ -779,5 +780,12 @@ void XCAFDoc_ColorTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
    
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShapeTool.get())
+  TDF_LabelSequence aLabels;
+  GetColors (aLabels);
+  for (TDF_LabelSequence::Iterator aColorLabelIt (aLabels); aColorLabelIt.More(); aColorLabelIt.Next())
+  {
+    TCollection_AsciiString aColorLabel;
+    TDF_Tool::Entry (aColorLabelIt.Value(), aColorLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aColorLabel)
+  }
 }

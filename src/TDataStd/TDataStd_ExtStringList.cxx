@@ -372,15 +372,15 @@ Standard_OStream& TDataStd_ExtStringList::Dump (Standard_OStream& anOS) const
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void TDataStd_ExtStringList::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+void TDataStd_ExtStringList::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
   for (TDataStd_ListOfExtendedString::Iterator aListIt (myList); aListIt.More(); aListIt.Next())
   {
     const TCollection_ExtendedString& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aValue);
   }
-
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

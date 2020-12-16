@@ -400,3 +400,17 @@ const Standard_GUID& XCAFDoc_GeomTolerance::ID() const
 {
   return GetID();
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void XCAFDoc_GeomTolerance::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDataStd_GenericEmpty)
+
+  Handle(XCAFDimTolObjects_GeomToleranceObject) anObject = GetObject();
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anObject.get())
+}

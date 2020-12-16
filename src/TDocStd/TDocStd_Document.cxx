@@ -942,6 +942,13 @@ void TDocStd_Document::DumpJson (Standard_OStream& theOStream, Standard_Integer 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, CDM_Document)
   
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myStorageFormat)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsSaved())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsChanged())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsEmpty())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, GetAvailableUndos())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, GetAvailableRedos())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, HasOpenCommand())
 
   for (TDF_DeltaList::Iterator anUndoIt (myUndos); anUndoIt.More(); anUndoIt.Next())
   {

@@ -379,5 +379,4 @@ void TDataStd_IntegerList::DumpJson (Standard_OStream& theOStream, Standard_Inte
     const Standard_Integer& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
   }
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

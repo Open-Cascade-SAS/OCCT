@@ -403,6 +403,4 @@ void TDataStd_ReferenceList::DumpJson (Standard_OStream& theOStream, Standard_In
     TDF_Tool::Entry (aListIt.Value(), aLabel);
     OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
   }
-
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

@@ -730,6 +730,4 @@ void TDataStd_TreeNode::DumpJson (Standard_OStream& theOStream, Standard_Integer
     TDF_Tool::Entry (myLast->Label(), aLast);
     OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLast)
   }
-
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myTreeID)
 }

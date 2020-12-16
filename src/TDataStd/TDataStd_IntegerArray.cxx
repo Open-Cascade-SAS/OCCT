@@ -355,5 +355,4 @@ void TDataStd_IntegerArray::DumpJson (Standard_OStream& theOStream, Standard_Int
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

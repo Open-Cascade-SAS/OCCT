@@ -22,6 +22,7 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_Material.hxx>
@@ -244,5 +245,12 @@ void XCAFDoc_MaterialTool::DumpJson (Standard_OStream& theOStream, Standard_Inte
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShapeTool.get())
+  TDF_LabelSequence aLabels;
+  GetMaterialLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aMaterialLabelIt (aLabels); aMaterialLabelIt.More(); aMaterialLabelIt.Next())
+  {
+    TCollection_AsciiString aMaterialLabel;
+    TDF_Tool::Entry (aMaterialLabelIt.Value(), aMaterialLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aMaterialLabel)
+  }
 }

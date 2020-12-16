@@ -26,6 +26,7 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
@@ -1071,5 +1072,39 @@ void XCAFDoc_DimTolTool::DumpJson (Standard_OStream& theOStream, Standard_Intege
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShapeTool.get())
+  TDF_LabelSequence aLabels;
+  GetDimensionLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aDimLabelIt (aLabels); aDimLabelIt.More(); aDimLabelIt.Next())
+  {
+    TCollection_AsciiString aDimensionLabel;
+    TDF_Tool::Entry (aDimLabelIt.Value(), aDimensionLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDimensionLabel)
+  }
+
+  aLabels.Clear();
+  GetGeomToleranceLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aGeomToleranceLabelIt (aLabels); aGeomToleranceLabelIt.More(); aGeomToleranceLabelIt.Next())
+  {
+    TCollection_AsciiString aGeomToleranceLabel;
+    TDF_Tool::Entry (aGeomToleranceLabelIt.Value(), aGeomToleranceLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aGeomToleranceLabel)
+  }
+
+  aLabels.Clear();
+  GetDimTolLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aDimTolLabelIt (aLabels); aDimTolLabelIt.More(); aDimTolLabelIt.Next())
+  {
+    TCollection_AsciiString aDimTolLabelLabel;
+    TDF_Tool::Entry (aDimTolLabelIt.Value(), aDimTolLabelLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDimTolLabelLabel)
+  }
+
+  aLabels.Clear();
+  GetDatumLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aDatumLabelIt (aLabels); aDatumLabelIt.More(); aDatumLabelIt.Next())
+  {
+    TCollection_AsciiString aDatumLabel;
+    TDF_Tool::Entry (aDatumLabelIt.Value(), aDatumLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDatumLabel)
+  }
 }

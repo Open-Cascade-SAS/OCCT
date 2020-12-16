@@ -318,3 +318,75 @@ void XCAFDimTolObjects_DatumObject::SetDatumTargetNumber(const Standard_Integer 
 {
   myDatumTargetNumber = theNumber;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void XCAFDimTolObjects_DatumObject::DumpJson (Standard_OStream& theOStream,
+                                                  Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  if (!myName.IsNull())
+  {
+    Standard_CString aDatumName = myName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDatumName)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myModifierWithValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValueOfModifier)
+
+  if (!myDatumTarget.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDatumTarget)
+  }
+
+    
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPosition)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDTarget)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsValidDT)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDTargetType)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxis)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myWidth)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDatumTargetNumber)
+
+  if (myHasPlane)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPlane)
+  }
+
+  if (myHasPnt)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt)
+  }
+
+  if (myHasPntText)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPntText)
+  }
+
+  if (!myPresentation.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPresentation)
+  }
+
+  if (!mySemanticName.IsNull())
+  {
+    Standard_CString aSemanticName = mySemanticName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSemanticName)
+  }
+  if (!myPresentationName.IsNull())
+  {
+    Standard_CString aPresentationName = myPresentationName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aPresentationName)
+  }
+
+  for (XCAFDimTolObjects_DatumModifiersSequence::Iterator aModifIt (myModifiers); aModifIt.More(); aModifIt.Next())
+  {
+    XCAFDimTolObjects_DatumSingleModif aModifier = aModifIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aModifier)
+  }
+}

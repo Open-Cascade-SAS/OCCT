@@ -167,12 +167,12 @@ void CDM_MetaData::UnsetIsReadOnly() {
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void CDM_MetaData::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+void CDM_MetaData::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRetrieved)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDocument)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myDocument)
   
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myFolder)
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)

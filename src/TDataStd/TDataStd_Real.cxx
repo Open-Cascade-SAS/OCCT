@@ -260,5 +260,4 @@ void TDataStd_Real::DumpJson (Standard_OStream& theOStream, Standard_Integer the
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDimension)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

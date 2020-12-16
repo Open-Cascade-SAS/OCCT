@@ -339,5 +339,4 @@ void TDataStd_BooleanArray::DumpJson (Standard_OStream& theOStream, Standard_Int
   }
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLower)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpper)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

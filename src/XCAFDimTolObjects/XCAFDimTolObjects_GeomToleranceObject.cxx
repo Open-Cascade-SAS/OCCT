@@ -279,3 +279,66 @@ Standard_Boolean XCAFDimTolObjects_GeomToleranceObject::HasAxis () const
 {
   return myHasAxis;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void XCAFDimTolObjects_GeomToleranceObject::DumpJson (Standard_OStream& theOStream,
+                                                      Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTypeOfValue)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMatReqModif)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZoneModif)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValueOfZoneModif)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMaxValueModif)
+  if (myHasAxis)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxis)
+  }
+
+  if (myHasPlane)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPlane)
+  }
+
+  if (myHasPnt)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt)
+  }
+
+  if (myHasPntText)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPntText)
+  }
+
+  if (!myPresentation.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPresentation)
+  }
+
+  if (!mySemanticName.IsNull())
+  {
+    Standard_CString aSemanticName = mySemanticName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSemanticName)
+  }
+  if (!myPresentationName.IsNull())
+  {
+    Standard_CString aPresentationName = myPresentationName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aPresentationName)
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAffectedPlane)
+
+  for (XCAFDimTolObjects_GeomToleranceModifiersSequence::Iterator aModifIt (myModifiers); aModifIt.More(); aModifIt.Next())
+  {
+    XCAFDimTolObjects_GeomToleranceModif aModifier = aModifIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aModifier)
+  }
+}

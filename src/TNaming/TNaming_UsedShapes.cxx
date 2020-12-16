@@ -196,18 +196,4 @@ void TNaming_UsedShapes::DumpJson (Standard_OStream& theOStream, Standard_Intege
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
-
-  for (TNaming_DataMapOfShapePtrRefShape::Iterator aMapIt (myMap); aMapIt.More(); aMapIt.Next())
-  {
-    const TopoDS_Shape& aShape = aMapIt.Key();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aShape)
-
-    TCollection_AsciiString aLabel;
-    TDF_Tool::Entry (aMapIt.Value()->Label(), aLabel);
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
-
-    const TopoDS_Shape& aRefShape = aMapIt.Value()->Shape();
-
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aRefShape)
-  }
 }

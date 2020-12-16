@@ -25,6 +25,7 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -606,5 +607,12 @@ void XCAFDoc_LayerTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShapeTool.get())
+  TDF_LabelSequence aLabels;
+  GetLayerLabels (aLabels);
+  for (TDF_LabelSequence::Iterator aLayerLabelIt (aLabels); aLayerLabelIt.More(); aLayerLabelIt.Next())
+  {
+    TCollection_AsciiString aLayerLabel;
+    TDF_Tool::Entry (aLayerLabelIt.Value(), aLayerLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLayerLabel)
+  }
 }

@@ -212,5 +212,4 @@ void TDataStd_AsciiString::DumpJson (Standard_OStream& theOStream, Standard_Inte
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myString)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

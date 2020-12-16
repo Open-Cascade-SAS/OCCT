@@ -560,4 +560,7 @@ void XCAFDoc_Datum::DumpJson (Standard_OStream& theOStream, Standard_Integer the
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName.get())
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription.get())
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myIdentification.get())
+
+  Handle(XCAFDimTolObjects_DatumObject) anObject = GetObject();
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anObject.get())
 }

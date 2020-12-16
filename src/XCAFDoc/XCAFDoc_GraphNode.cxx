@@ -495,7 +495,7 @@ void XCAFDoc_GraphNode::DumpJson (Standard_OStream& theOStream, Standard_Integer
   for (XCAFDoc_GraphNodeSequence::Iterator anIteratorFather (myFathers); anIteratorFather.More(); anIteratorFather.Next())
   {
     const Handle(XCAFDoc_GraphNode)& aFather = anIteratorFather.Value();
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aFather.get())
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aFather)
   }
   
   for (XCAFDoc_GraphNodeSequence::Iterator anIteratorChild (myChildren); anIteratorChild.More(); anIteratorChild.Next())
@@ -503,6 +503,4 @@ void XCAFDoc_GraphNode::DumpJson (Standard_OStream& theOStream, Standard_Integer
     const Handle(XCAFDoc_GraphNode)& aChild = anIteratorChild.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aChild.get())
   }
-
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myGraphID)
 }

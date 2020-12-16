@@ -340,9 +340,11 @@ Handle(TDF_DeltaOnModification) TDataStd_ExtStringArray::DeltaOnModification
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void TDataStd_ExtStringArray::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+void TDataStd_ExtStringArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
   for (TColStd_Array1OfExtendedString::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
   {
@@ -351,5 +353,4 @@ void TDataStd_ExtStringArray::DumpJson (Standard_OStream& theOStream, Standard_I
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

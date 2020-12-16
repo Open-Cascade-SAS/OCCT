@@ -482,3 +482,96 @@ void XCAFDimTolObjects_DimensionObject::RemoveDescription(const Standard_Integer
   myDescriptions = aDescriptions;
   myDescriptionNames = aDescriptionNames;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void XCAFDimTolObjects_DimensionObject::DumpJson (Standard_OStream& theOStream,
+                                                  Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myType)
+
+  if (!myVal.IsNull())
+  {
+    for (Standard_Integer anId = myVal->Lower(); anId <= myVal->Upper(); anId++)
+    {
+      Standard_Real aValue = myVal->Value (anId);
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+    }
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myQualifier)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsHole)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFormVariance)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGrade)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myL)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myR)
+
+  if (!myPath.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPath)
+  }
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDir)
+  if (myHasPoint1)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt1)
+  }
+
+  if (myHasPoint2)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt2)
+  }
+
+  if (myHasPlane)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPlane)
+  }
+
+  if (myHasPntText)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPntText)
+  }
+
+  if (!myPresentation.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPresentation)
+  }
+
+  if (!mySemanticName.IsNull())
+  {
+    Standard_CString aSemanticName = mySemanticName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSemanticName)
+  }
+  if (!myPresentationName.IsNull())
+  {
+    Standard_CString aPresentationName = myPresentationName->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aPresentationName)
+  }
+
+  for (NCollection_Vector<Handle(TCollection_HAsciiString)>::Iterator aDescIt (myDescriptions); aDescIt.More(); aDescIt.Next())
+  {
+    if (aDescIt.Value().IsNull())
+      continue;
+    Standard_CString aDescription = aDescIt.Value()->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDescription)
+  }
+  
+  for (NCollection_Vector<Handle(TCollection_HAsciiString)>::Iterator aDescNameIt (myDescriptionNames); aDescNameIt.More(); aDescNameIt.Next())
+  {
+    if (aDescNameIt.Value().IsNull())
+      continue;
+    Standard_CString aDescriptionName = aDescNameIt.Value()->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aDescriptionName)
+  }
+
+  for (XCAFDimTolObjects_DimensionModifiersSequence::Iterator aModifIt (myModifiers); aModifIt.More(); aModifIt.Next())
+  {
+    XCAFDimTolObjects_DimensionModif aModifier = aModifIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aModifier)
+  }
+}

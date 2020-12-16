@@ -140,6 +140,9 @@ Standard_Boolean  gp_Ax3::InitFromJson (const Standard_SStream& theSStream, Stan
   vxdir = gp_Dir (aXDir);
   vydir = gp_Dir (anYDir);
 
+  if (!Direction().IsEqual (aDir, Precision::Angular()))
+    return Standard_False;
+
   theStreamPos = aPos;
   return Standard_True;
 }

@@ -323,5 +323,4 @@ void TDataStd_BooleanList::DumpJson (Standard_OStream& theOStream, Standard_Inte
     const Standard_Byte& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
   }
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }
