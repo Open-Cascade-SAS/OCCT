@@ -5,10 +5,6 @@
 #if !defined(_SIMPLEDRIVER_H_)
 #define _SIMPLEDRIVER_H_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
 #include <Standard_DefineHandle.hxx> 
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>

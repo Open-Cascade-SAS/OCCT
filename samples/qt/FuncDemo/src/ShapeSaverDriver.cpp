@@ -56,10 +56,14 @@ Standard_Integer ShapeSaverDriver::Execute(Handle(TFunction_Logbook)& log) const
         }
     }
 
-    //BRepTools::Write(C, "result.brep");
+    if (myMutex)
+        myMutex->Lock();
 
     TNaming_Builder Bui(Label());
     Bui.Generated(C);
+
+    if (myMutex)
+        myMutex->Unlock();
 
     return BaseDriver::Execute(log);
 }

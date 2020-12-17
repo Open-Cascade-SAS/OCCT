@@ -50,8 +50,11 @@
 
 class Edge;
 class GraphWidget;
+QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
+QT_END_NAMESPACE
 
+//! [0]
 class Node : public QGraphicsItem
 {
 public:
@@ -66,12 +69,16 @@ public:
     enum { Type = UserType + 1 };
     int type() const { return Type; }
 
+    void calculateForces();
+    bool advance();
+
     QRectF boundingRect() const;
     QPainterPath shape() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     
@@ -81,5 +88,6 @@ private:
     GraphWidget *graph;
     TDF_Label myFunction;
 };
+//! [0]
 
 #endif

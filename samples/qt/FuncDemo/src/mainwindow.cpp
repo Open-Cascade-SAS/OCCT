@@ -101,6 +101,7 @@ MainWindow::MainWindow()
 
     // Create a new document
     createDefaultModel1();
+    graph->setNbThreads(4);
 }
 
 Handle(AppStd_Application) MainWindow::getApplication()
@@ -224,7 +225,7 @@ void MainWindow::nbThreads()
 {
     bool ok;
     int nb = QInputDialog::getInt(this, tr("Number of threads"), tr("(1 - 4): "),
-                                      graph->getNbThreads(), 1, 4, 1, &ok);
+                                  graph->getNbThreads(), 1, 4, 1, &ok);
     if (ok)
         graph->setNbThreads(nb);
 }
@@ -335,6 +336,7 @@ void MainWindow::createDefaultModel1()
     Handle(TDocStd_Document) doc;
     app->NewDocument("XmlOcaf", doc);
     TDF_Label mainLabel = doc->Main();
+    mainLabel.ForgetAllAttributes(true);
 
     // Initialize function drivers
     TFunction_DriverTable::Get()->AddDriver(SimpleDriver::GetID(), new SimpleDriver());
@@ -423,8 +425,8 @@ void MainWindow::createDefaultModel2()
     Handle(AppStd_Application) app = MainWindow::getApplication();
     Handle(TDocStd_Document) doc;
     app->NewDocument("BinOcaf", doc);
-    //app->Open("W:\\TestFM\\model2.cbf", doc);
     TDF_Label mainLabel = doc->Main();
+    mainLabel.ForgetAllAttributes(true);
 
     // Initialize function drivers
     TFunction_DriverTable::Get()->AddDriver(PointDriver::GetID(), new PointDriver());

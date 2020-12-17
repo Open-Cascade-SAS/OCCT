@@ -47,9 +47,15 @@ Standard_Integer PointDriver::Execute(Handle(TFunction_Logbook)& log) const
     // Make the result
     TopoDS_Vertex V = BRepBuilderAPI_MakeVertex(gp_Pnt(x, y, z));
 
+    if (myMutex)
+        myMutex->Lock();
+
     // Set the result
     TNaming_Builder B(Label());
     B.Generated(V);
+
+    if (myMutex)
+        myMutex->Unlock();
 
     return BaseDriver::Execute(log);
 }

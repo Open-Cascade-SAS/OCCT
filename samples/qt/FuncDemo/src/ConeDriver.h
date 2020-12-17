@@ -5,10 +5,6 @@
 #if !defined(_CONEDRIVER_H_)
 #define _CONEDRIVER_H_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
 #include "BaseDriver.h"
 
 #include <Standard_DefineHandle.hxx> 

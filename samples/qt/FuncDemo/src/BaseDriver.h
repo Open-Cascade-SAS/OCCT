@@ -5,14 +5,11 @@
 #if !defined(_BASEDRIVER_H_)
 #define _BASEDRIVER_H_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
 #include <Standard_DefineHandle.hxx> 
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TDF_LabelList.hxx>
+#include <Standard_Mutex.hxx>
 
 DEFINE_STANDARD_HANDLE(BaseDriver, TFunction_Driver)
 
@@ -30,10 +27,16 @@ public:
 	// Returns the results of the function
 	virtual void Results(TDF_LabelList& res) const;
 
+    // Sets a mutex for execution of the driver.
+    void SetMutex(Standard_Mutex* pmutex);
+
 	// Execution.
 	virtual Standard_Integer Execute(Handle(TFunction_Logbook)& log) const;
 
 	DEFINE_STANDARD_RTTIEXT(BaseDriver, TFunction_Driver)
+
+protected:
+    Standard_Mutex* myMutex;
 };
 
 #endif // !defined(_BASEDRIVER_H_)

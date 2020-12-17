@@ -1,5 +1,6 @@
 #include "FThread.h"
 #include "graphwidget.h"
+#include "BaseDriver.h"
 
 #include <TFunction_Function.hxx>
 #include <TFunction_IFunction.hxx>
@@ -37,6 +38,11 @@ void FThread::setGraph(GraphWidget* theGraph)
 void FThread::setThreadIndex(const int theIndex)
 {
     this->thread_index = theIndex;
+}
+
+void FThread::setMutex(Standard_Mutex* pmutex)
+{
+    this->pmutex = pmutex;
 }
 
 // Returns any free (not executed yet) function
@@ -94,12 +100,16 @@ void FThread::run()
         const bool must = D->MustExecute(log);
         if (must)
         {
-            // Usage of mutex for execution of Open CASCADE code is the most stupid thing!!!
-            // But it makes the execution more reliable...
+            // Usage of mutex for execution of Open CASCADE code.
+            // It makes the execution more reliable...
+            if (!Handle(BaseDriver)::DownCast(D).IsNull())
+                Handle(BaseDriver)::DownCast(D)->SetMutex(pmutex);
+
+            // Execute the driver.
             const int ret = D->Execute(log);
             if (ret == 0)
             {
-                // Successfully executed!
+                // Successfuly executed!
                 itr.SetStatus(L, TFunction_ES_Succeeded);
 
                 TDF_LabelList res;

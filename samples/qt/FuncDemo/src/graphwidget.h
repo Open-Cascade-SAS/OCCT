@@ -52,13 +52,16 @@
 
 class Node;
 
+//! [0]
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget* parent);
-    ~GraphWidget();
+    GraphWidget(QWidget *parent = 0);
+   ~GraphWidget();
+
+    void itemMoved();
     
     bool createModel(const Handle(TDocStd_Document)& doc);
     Handle(TDocStd_Document) getDocument() { return myDocument; }
@@ -73,12 +76,25 @@ public:
     void setFinished();
     bool isFinished();
 
+public slots:
+    void shuffle();
+    void zoomIn();
+    void zoomOut();
+
 protected:
+    void keyPressEvent(QKeyEvent *event);
+    void timerEvent(QTimerEvent *event);
     void wheelEvent(QWheelEvent *event);
     void drawBackground(QPainter *painter, const QRectF &rect);
+
     void scaleView(qreal scaleFactor);
 
 private:
+    int timerId;
+    Node *centerNode;
+
+private:
+    Standard_Mutex           myMutex;
     Handle(TDocStd_Document) myDocument;
     int                      myNbThreads;
     FThread*                 myThread1;
@@ -87,5 +103,6 @@ private:
     FThread*                 myThread4;
     int                      myNbFinishedThreads;
 };
+//! [0]
 
 #endif

@@ -36,7 +36,6 @@ void BaseDriver::Arguments(TDF_LabelList& args) const
     }
 }
 
-
 // Returns the results of the function
 void BaseDriver::Results(TDF_LabelList& res) const
 {
@@ -48,6 +47,12 @@ void BaseDriver::Results(TDF_LabelList& res) const
         if (itr.Value().FindAttribute(TDF_Reference::GetID(), ref))
             res.Append(ref->Get());
     }
+}
+
+// Sets a mutex for execution of the driver.
+void BaseDriver::SetMutex(Standard_Mutex* pmutex)
+{
+    myMutex = pmutex;
 }
 
 // Execution.

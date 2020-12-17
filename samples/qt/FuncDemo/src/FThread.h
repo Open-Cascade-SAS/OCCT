@@ -8,6 +8,7 @@
 #include <TFunction_Logbook.hxx>
 #include <TFunction_Iterator.hxx>
 #include <TFunction_Driver.hxx>
+#include <Standard_Mutex.hxx>
 
 class GraphWidget; // shows graphically execution of functions
 
@@ -25,6 +26,7 @@ public:
     void setLogbook(const Handle(TFunction_Logbook)& );         // to set logbook with modifications
     void setGraph(GraphWidget* );                 // to change color of a graph circle
     void setThreadIndex(const int );              // to set the index of the thread
+    void setMutex(Standard_Mutex* );
 
 protected:
 
@@ -35,6 +37,7 @@ private:
 
     TFunction_Iterator itr;
     Handle(TFunction_Logbook) log;
+    Standard_Mutex*    pmutex;
     int                thread_index;
 
     GraphWidget*       graph;
