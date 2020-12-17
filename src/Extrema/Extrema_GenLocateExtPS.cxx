@@ -23,10 +23,84 @@
 #include <Extrema_POnSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <math_NewtonFunctionSetRoot.hxx>
 #include <math_BFGS.hxx>
-#include <math_Vector.hxx>
+#include <math_BFGS.hxx>
+#include <math_FRPR.hxx>
 #include <StdFail_NotDone.hxx>
 
+static void CorrectTol(const Standard_Real theU0, const Standard_Real theV0,
+  math_Vector& theTol)
+{
+  //Correct tolerance for large values of UV parameters
+  Standard_Real aTolRef = Precision::PConfusion();
+  Standard_Real anEpsRef = Epsilon(1.);
+  Standard_Real epsu = Epsilon(theU0);
+  const Standard_Real tolog10 = 0.43429;
+  if (epsu > anEpsRef)
+  {
+    Standard_Integer n = RealToInt(tolog10 * Log(epsu / anEpsRef) + 1) + 1;
+    Standard_Integer i;
+    Standard_Real tol = aTolRef;
+    for (i = 1; i <= n; ++i)
+    {
+      tol *= 10.;
+    }
+    theTol(1) = Max(theTol(1), tol);
+  }
+  Standard_Real epsv = Epsilon(theV0);
+  if (epsv > anEpsRef)
+  {
+    Standard_Integer n = RealToInt(tolog10 * Log(epsv / anEpsRef) + 1) + 1;
+    Standard_Integer i;
+    Standard_Real tol = aTolRef;
+    for (i = 1; i <= n; ++i)
+    {
+      tol *= 10.;
+    }
+    theTol(2) = Max(theTol(2), tol);
+  }
+}
+//=======================================================================
+//function : IsMinDist
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt& theP, const Adaptor3d_Surface& theS,
+  const Standard_Real theU0, const Standard_Real theV0)
+{
+  Standard_Real du = Max(theS.UResolution(10.*Precision::Confusion()), 10.*Precision::PConfusion());
+  Standard_Real dv = Max(theS.VResolution(10.*Precision::Confusion()), 10.*Precision::PConfusion());
+  Standard_Real u, v;
+  gp_Pnt aP0 = theS.Value(theU0, theV0);
+  Standard_Real d0 = theP.SquareDistance(aP0);
+  Standard_Integer iu, iv;
+  for (iu = -1; iu <= 1; ++iu)
+  {
+    u = theU0 + iu * du;
+    if (!theS.IsUPeriodic())
+    {
+      u = Max(u, theS.FirstUParameter());
+      u = Min(u, theS.LastUParameter());
+    }
+    for (iv = -1; iv <= 1; ++iv)
+    {
+      if (iu == 0 && iv == 0)
+        continue;
+
+      v = theV0 + iv * dv;
+      if (!theS.IsVPeriodic())
+      {
+        v = Max(v, theS.FirstVParameter());
+        v = Min(v, theS.LastVParameter());
+      }
+      Standard_Real d = theP.SquareDistance(theS.Value(u, v));
+      if (d < d0)
+        return Standard_False;
+    }
+  }
+  return Standard_True;
+}
 //=======================================================================
 //function : Extrema_GenLocateExtPS
 //purpose  : 
@@ -69,36 +143,84 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
   aBoundSup(1) = mySurf.LastUParameter();
   aBoundSup(2) = mySurf.LastVParameter();
 
-  if (isDistanceCriteria == Standard_False)
+  if (isDistanceCriteria)
   {
-    // Normal projection criteria.
-    Extrema_FuncPSNorm F(theP,mySurf);
+    // Distance criteria.
+    Standard_Real aRelTol = 1.e-8;
+    math_Vector aResPnt(1, 2);  
 
-    math_FunctionSetRoot SR (F, aTol);
-    SR.Perform(F, aStart, aBoundInf, aBoundSup);
-    if (!SR.IsDone()) 
-      return;
+    Extrema_FuncPSDist F(mySurf, theP);
 
-    mySqDist = F.SquareDistance(1);
-    myPoint = F.Point(1);
+    math_BFGS aSolver(2, aRelTol);
+    aSolver.Perform(F, aStart);
+
+    if (!aSolver.IsDone())
+    {
+      //Try another method
+      math_FRPR aSolver1(F, aRelTol);
+      aSolver1.Perform(F, aStart);
+      if(!aSolver1.IsDone())
+        return;
+      aSolver1.Location(aResPnt);
+      mySqDist = aSolver1.Minimum();
+    }
+    else
+    {
+      aSolver.Location(aResPnt);    
+      mySqDist = aSolver.Minimum();
+    }
+
+    myPoint.SetParameters(aResPnt(1), aResPnt(2), mySurf.Value(aResPnt(1), aResPnt(2)));
     myDone = Standard_True;
   }
   else
   {
-    // Distance criteria.
-    Extrema_FuncPSDist F(mySurf, theP);
-    math_BFGS aSolver(2);
-    aSolver.Perform(F, aStart);
+    // Normal projection criteria.
+    Extrema_FuncPSNorm F(theP, mySurf);
 
-    if (!aSolver.IsDone()) 
-      return;
+    if (mySurf.GetType() == GeomAbs_BSplineSurface)
+    {
+      aTol(1) = myTolU;
+      aTol(2) = myTolV;
+      CorrectTol(theU0, theV0, aTol);
+    }
 
-    math_Vector aResPnt(1,2);
-    aSolver.Location(aResPnt);
-    mySqDist = aSolver.Minimum();
-    myPoint.SetParameters(aResPnt(1), aResPnt(2), mySurf.Value(aResPnt(1), aResPnt(2)));
+    Standard_Boolean isCorrectTol = (Abs(aTol(1) - myTolU) > Precision::PConfusion() ||
+      Abs(aTol(2) - myTolV) > Precision::PConfusion());
+
+    math_FunctionSetRoot aSR(F, aTol);
+    aSR.Perform(F, aStart, aBoundInf, aBoundSup);
+
+    if (!aSR.IsDone() || isCorrectTol)
+    {
+      if (isCorrectTol)
+      {
+        aTol(1) = myTolU;
+        aTol(2) = myTolV;
+      }
+      math_NewtonFunctionSetRoot aNSR(F, aTol, Precision::Confusion());
+      aNSR.Perform(F, aStart, aBoundInf, aBoundSup);
+      if (!aSR.IsDone() && !aNSR.IsDone())
+      {
+        return;
+      }
+    }
+    
+    Standard_Real aNbExt = F.NbExt();
+    mySqDist = F.SquareDistance(1);
+    myPoint = F.Point(1);
+    Standard_Integer i;
+    for (i = 2; i <= aNbExt; ++i)
+    {
+      if (F.SquareDistance(i) < mySqDist)
+      {
+        mySqDist = F.SquareDistance(i);
+        myPoint = F.Point(i);
+      }
+    }
     myDone = Standard_True;
   }
+
 }
 
 //=======================================================================

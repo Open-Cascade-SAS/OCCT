@@ -136,7 +136,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
       const gp_XY aP2d(Draw::Atof(a[5]), Draw::Atof(a[6]));
       GeomAdaptor_Surface aGAS(GS);
       Extrema_GenLocateExtPS aProjector(aGAS, Precision::PConfusion(), Precision::PConfusion());
-      aProjector.Perform(P, aP2d.X(), aP2d.Y());
+      aProjector.Perform(P, aP2d.X(), aP2d.Y(), Standard_False);
       if (!aProjector.IsDone())
       {
         di << "projection failed.";

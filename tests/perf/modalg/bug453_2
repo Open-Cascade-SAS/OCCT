@@ -22,6 +22,6 @@ tcopy result_1 result
 
 dchrono h2 stop counter blend
 
-checkprops result -s 3.65777e+06 
+checkprops result -s 3.5496e+06 
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -9,4 +9,4 @@ tscale s 0 0 0 1000
 explode s e
 blend result s 5 s_8
 
-checkprops result -s 3824.84
+checkprops result -s 3740

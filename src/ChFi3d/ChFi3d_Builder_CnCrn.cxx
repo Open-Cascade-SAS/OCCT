@@ -2062,8 +2062,18 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   } 
 
 // declaration for plate 
-  GeomPlate_BuildPlateSurface PSurf(3,10,3,tol2d,tolesp,angular);
-
+  //GeomPlate_BuildPlateSurface PSurf(3,10,3,tol2d,tolesp,angular);
+  //
+  //Sence of Plate parameters and their preferable values :
+  // degree is total order of ordinary or mixed derivatives:
+  // dS/dU, dS/dV have degree 1, d2S/dU2, d2S/dV2, d2S/(dUdV) have degree 2
+  // nbiter - number of iterations, when surface from previous iteration uses as initial surface for next one
+  // practically this process does not converge, using "bad" initial surface leads to much more "bad" solution.
+  // constr is order of constraint: 0 - G0, 1 - G1 ...
+  // Using constraint order > 0 very often causes  unpredicable undulations of solution
+  Standard_Integer degree = 3, nbcurvpnt = 10, nbiter = 1;
+  Standard_Integer constr = 1; //G1
+  GeomPlate_BuildPlateSurface PSurf(degree, nbcurvpnt, nbiter, tol2d, tolesp, angular);
 // calculation of curves on surface for each stripe 
   for (ic=0;ic<nedge;ic++) {
     gp_Pnt2d p2d1, p2d2;
@@ -2088,9 +2098,10 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       Adaptor3d_CurveOnSurface  CurvOnS (Acurv,Asurf);
       Handle(Adaptor3d_CurveOnSurface) HCons =
 	new Adaptor3d_CurveOnSurface(CurvOnS);
-      Order.SetValue(ic,1);
-      Handle(GeomPlate_CurveConstraint) Cont = 
-	new GeomPlate_CurveConstraint(HCons,Order.Value(ic),10,tolesp,angular,0.1);
+      //Order.SetValue(ic,1);
+      Order.SetValue(ic, constr);
+      Handle(GeomPlate_CurveConstraint) Cont =
+	new GeomPlate_CurveConstraint(HCons,Order.Value(ic), nbcurvpnt,tolesp,angular,0.1);
       PSurf.Add(Cont);
       
       // calculate indexes of points and of the curve for the DS         

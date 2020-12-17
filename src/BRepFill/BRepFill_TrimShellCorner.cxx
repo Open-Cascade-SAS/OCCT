@@ -281,11 +281,30 @@ void BRepFill_TrimShellCorner::Perform()
     }
   }
   
+  Standard_Real aMaxTol = 0.;
+  TopExp_Explorer anExp(myShape1, TopAbs_VERTEX);
+  for (; anExp.More(); anExp.Next())
+  {
+    aMaxTol = Max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+  }
+
+  anExp.Init(myShape2, TopAbs_VERTEX);
+  for (; anExp.More(); anExp.Next())
+  {
+    aMaxTol = Max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+  }
+
+  Standard_Real aFuzzy = 4.*Precision::Confusion();
   BOPAlgo_PaveFiller aPF;
   TopTools_ListOfShape aLS;
   aLS.Append(myShape1);
   aLS.Append(myShape2);
   aPF.SetArguments(aLS);
+  if (aMaxTol < 1.005 * Precision::Confusion())
+  {
+    aFuzzy = Max(aPF.FuzzyValue(), aFuzzy);
+    aPF.SetFuzzyValue(aFuzzy);
+  }
   //
   aPF.Perform();
   if (aPF.HasErrors()) {
@@ -856,6 +875,9 @@ Standard_Boolean BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape& Com
     TopoDS_Edge FirstEdge = FindEdgeCloseToBisectorPlane(theFirstVertex,
                                                           OldComp,
                                                           myAxeOfBisPlane.Axis());
+    if (FirstEdge.IsNull())
+      return Standard_False;
+
     iter.Initialize(OldComp);
     if (!iter.More())
     {
@@ -865,7 +887,9 @@ Standard_Boolean BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape& Com
     TopoDS_Edge LastEdge  = FindEdgeCloseToBisectorPlane(theLastVertex,
                                                           OldComp,
                                                           myAxeOfBisPlane.Axis());
-    
+    if (LastEdge.IsNull())
+      return Standard_False;
+
     BB.Add(NewWire, FirstEdge);
 
     if (!FirstEdge.IsSame(LastEdge))

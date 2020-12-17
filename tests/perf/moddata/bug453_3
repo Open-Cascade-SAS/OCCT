@@ -1,7 +1,7 @@
 puts "TODO OCC24156 MacOS: Tcl Exception: tolerance ang"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 puts "TODO OCC27203 ALL: Error: Max tolerance" 
-puts "TODO OCC27203 All: Error : The area of result shape is"
+##puts "TODO OCC27203 All: Error : The area of result shape is"
 
 puts "========"
 puts "OCC453"

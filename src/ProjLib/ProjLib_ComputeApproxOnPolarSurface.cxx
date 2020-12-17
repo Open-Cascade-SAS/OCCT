@@ -1097,7 +1097,7 @@ Handle(Adaptor2d_Curve2d)
     TColgp_SequenceOfPnt2d Sols;
     Standard_Boolean areManyZeros = Standard_False;
     
-    Curve->D0(Param.Value(1), pntproj) ;
+    pntproj = Pts(1);
     Extrema_ExtPS  aExtPS(pntproj, *Surf, TolU, TolV) ;
     Standard_Real aMinSqDist = RealLast();
     if (aExtPS.IsDone())
@@ -1164,15 +1164,15 @@ Handle(Adaptor2d_Curve2d)
 	      if( aDist2 > Dist2Max ) Dist2Max = aDist2;
 	    }
 	  }
-      Standard_Real aMaxT2 = Max(TolU,TolV);
-      aMaxT2 *= aMaxT2;
+          Standard_Real aMaxT2 = Max(TolU,TolV);
+          aMaxT2 *= aMaxT2;
 	  if( Dist2Max > aMaxT2 ) {
 	    Standard_Integer tPp = 0;
 	    for( i = 1; i <= 5; i++ ) {
 	      Standard_Integer nbExtOk = 0;
 	      Standard_Integer indExt = 0;
 	      Standard_Integer iT = 1 + (NbOfPnts - 1)/5*i;
-	      Curve->D0( Param.Value(iT), pntproj );
+              pntproj = Pts(iT);
 	      Extrema_ExtPS aTPS( pntproj, *Surf, TolU, TolV );
 	      Dist2Min = 1.e+200;
 	      if( aTPS.IsDone() && aTPS.NbExt() >= 1 ) {
@@ -1199,7 +1199,7 @@ Handle(Adaptor2d_Curve2d)
 	      Standard_Boolean isFound = Standard_False;
               for (j = tPp + 1; j <= NbOfPnts; ++j)
               {
-		Curve->D0( Param.Value(j), pntproj );
+                pntproj = Pts(j);
 		Extrema_ExtPS aTPS( pntproj, *Surf, TolU, TolV );
 		Dist2Min = RealLast();
 		if( aTPS.IsDone() && aTPS.NbExt() >= 1 ) {
@@ -1220,14 +1220,16 @@ Handle(Adaptor2d_Curve2d)
 	      }
 
 	      if( isFound ) {
-		gp_Vec2d atV(aPp,aPn);
+		gp_Dir2d atV(gp_Vec2d(aPp,aPn));
 		Standard_Boolean isChosen = Standard_False;
 		for( i = 1; i <= nbSols; i++ ) {
 		  const gp_Pnt2d& aP1 = Sols.Value(i);
-		  gp_Vec2d asV(aP1,aPp);
+		  gp_Dir2d asV(gp_Vec2d(aP1,aPp));
 		  if( asV.Dot(atV) > 0. ) {
 		    isChosen = Standard_True;
-		    Pts2d(1).SetCoord(aP1.X(),aP1.Y());
+                    u = aP1.X();
+                    v = aP1.Y();
+		    Pts2d(1).SetCoord(u, v);
 		    myProjIsDone = Standard_True;
 		    break;
 		  }
@@ -1271,7 +1273,7 @@ Handle(Adaptor2d_Curve2d)
 	if(myProjIsDone) {
 	  myProjIsDone = Standard_False;
 	  Dist2Min = RealLast();
-	  Curve->D0(Param.Value(i), pntproj);
+          pntproj = Pts(i);
           Extrema_GenLocateExtPS  aLocateExtPS (*Surf, TolU, TolV);
           aLocateExtPS.Perform(pntproj, U0, V0);
 

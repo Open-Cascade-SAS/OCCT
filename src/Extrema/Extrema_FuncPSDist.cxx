@@ -107,8 +107,8 @@ Standard_Boolean Extrema_FuncPSDist::IsInside(const math_Vector& X)
 {
     if (X(1) < mySurf.FirstUParameter() ||
         X(1) > mySurf.LastUParameter() ||
-        X(2) < mySurf.FirstUParameter() ||
-        X(2) > mySurf.LastUParameter() )
+        X(2) < mySurf.FirstVParameter() ||
+        X(2) > mySurf.LastVParameter() )
     {
       // Point out of borders.
       return Standard_False;
