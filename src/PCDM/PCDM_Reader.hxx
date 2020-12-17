@@ -41,10 +41,6 @@ class PCDM_Reader : public Standard_Transient
 
 public:
 
-  
-  //! this method is called by the framework before the read method.
-  Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() = 0;
-  
   //! retrieves the content of the file into a new Document.
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& aFileName, 
                                      const Handle(CDM_Document)& aNewDocument, 

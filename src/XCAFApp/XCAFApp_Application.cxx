@@ -64,9 +64,9 @@ Standard_CString XCAFApp_Application::ResourcesName()
 //purpose  : 
 //=======================================================================
 
-void XCAFApp_Application::InitDocument(const Handle(TDocStd_Document)& aDoc) const
+void XCAFApp_Application::InitDocument(const Handle(CDM_Document)& aDoc) const
 {
-  XCAFDoc_DocumentTool::Set(aDoc->Main());
+  XCAFDoc_DocumentTool::Set(Handle(TDocStd_Document)::DownCast(aDoc)->Main());
 }
 
 //=======================================================================

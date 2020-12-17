@@ -58,7 +58,19 @@ public:
   //! opened by an application since the application resources are
   //! needed to store it.
   Standard_EXPORT static Handle(CDF_Application) Load (const Standard_GUID& aGUID);
-  
+
+  //! Constructs an new empty document.
+  //! This document will have the specified format.
+  //! If InitDocument() is redefined for a specific
+  //! application, the new document is handled by the
+  //! applicative session.
+  Standard_EXPORT virtual void NewDocument(const TCollection_ExtendedString& theFormat, Handle(CDM_Document)& theDoc);
+
+  //! Initialize a document for the applicative session.
+  //! This virtual function is called by NewDocument
+  //! and should be redefined for each specific application.
+  Standard_EXPORT virtual void InitDocument(const Handle(CDM_Document)& theDoc) const;
+
   //! puts the document in the current session directory
   //! and calls the virtual method Activate on it.
   Standard_EXPORT void Open (const Handle(CDM_Document)& aDocument);

@@ -47,8 +47,6 @@ public:
   
   Standard_EXPORT XmlLDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
-  
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName, 
                                      const Handle(CDM_Document)& theNewDocument,
                                      const Handle(CDM_Application)& theApplication, 

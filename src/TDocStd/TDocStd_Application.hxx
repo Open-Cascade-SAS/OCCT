@@ -29,10 +29,11 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
+#include <TDocStd_Document.hxx>
 
 class Resource_Manager;
 class Standard_NoSuchObject;
-class TDocStd_Document;
+class CDM_Document;
 class TCollection_ExtendedString;
 
 class TDocStd_Application;
@@ -180,7 +181,11 @@ public:
   //! If InitDocument is redefined for a specific
   //! application, the new document is handled by the
   //! applicative session.
-  Standard_EXPORT virtual void NewDocument (const TCollection_ExtendedString& format, Handle(TDocStd_Document)& aDoc);
+  Standard_EXPORT virtual void NewDocument (const TCollection_ExtendedString& format, Handle(CDM_Document)& aDoc) Standard_OVERRIDE;
+
+  //! A non-virtual method taking a TDocStd_Documment object as an input.
+  //! Internally it calls a virtual method NewDocument() with CDM_Document object.
+  Standard_EXPORT void NewDocument (const TCollection_ExtendedString& format, Handle(TDocStd_Document)& aDoc);
   
   //! Initialize the document aDoc for the applicative session.
   //! This virtual function is called by NewDocument
@@ -189,7 +194,7 @@ public:
   //! =============
   //! to open/save a document
   //! =======================
-  Standard_EXPORT virtual void InitDocument (const Handle(TDocStd_Document)& aDoc) const;
+  Standard_EXPORT virtual void InitDocument (const Handle(CDM_Document)& aDoc) const Standard_OVERRIDE;
   
   //! Close the given document. the document is not any more
   //! handled by the applicative session.

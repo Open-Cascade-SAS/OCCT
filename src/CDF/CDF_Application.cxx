@@ -53,6 +53,24 @@ Handle(CDF_Application) CDF_Application::Load(const Standard_GUID& aGUID) {
 }
 
 //=======================================================================
+//function : NewDocument
+//purpose  :
+//=======================================================================
+
+void CDF_Application::NewDocument(const TCollection_ExtendedString& /*theFormat*/, Handle(CDM_Document)& /*theDoc*/)
+{
+}
+
+//=======================================================================
+//function : InitDocument
+//purpose  : do nothing
+//=======================================================================
+
+void CDF_Application::InitDocument(const Handle(CDM_Document)& /*theDoc*/) const
+{
+}
+
+//=======================================================================
 //function : Open
 //purpose  : 
 //=======================================================================
@@ -264,7 +282,7 @@ Handle(CDM_Document) CDF_Application::Retrieve (const Handle(CDM_MetaData)& aMet
       theDocument->RemoveAllReferences();
     }
     else
-      theDocument=theReader->CreateDocument();
+      NewDocument(aFormat, theDocument);
     
     SetReferenceCounter(theDocument,PCDM_RetrievalDriver::ReferenceCounter(aMetaData->FileName(), MessageDriver()));
     
@@ -362,7 +380,7 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream,
   Handle(PCDM_Reader) aReader = ReaderFromFormat (aFormat);
 
   // 2. create document with the detected reader
-  aDoc = aReader->CreateDocument();
+  NewDocument(aFormat, aDoc);
 
   // 3. read the content of theIStream to aDoc
   try

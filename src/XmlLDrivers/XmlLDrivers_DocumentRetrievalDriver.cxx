@@ -162,15 +162,6 @@ XmlLDrivers_DocumentRetrievalDriver::XmlLDrivers_DocumentRetrievalDriver()
 }
 
 //=======================================================================
-//function : CreateDocument
-//purpose  : pure virtual method definition
-//=======================================================================
-Handle(CDM_Document) XmlLDrivers_DocumentRetrievalDriver::CreateDocument()
-{
-  return new TDocStd_Document(PCDM_RetrievalDriver::GetFormat());
-}
-
-//=======================================================================
 //function : Read
 //purpose  : 
 //=======================================================================

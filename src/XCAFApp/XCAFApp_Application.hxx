@@ -39,7 +39,7 @@ public:
   Standard_EXPORT virtual Standard_CString ResourcesName() Standard_OVERRIDE;
   
   //! Set XCAFDoc_DocumentTool attribute
-  Standard_EXPORT virtual void InitDocument (const Handle(TDocStd_Document)& aDoc) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void InitDocument (const Handle(CDM_Document)& aDoc) const Standard_OVERRIDE;
   
   //! Initializes (for the first time) and returns the
   //! static object (XCAFApp_Application)

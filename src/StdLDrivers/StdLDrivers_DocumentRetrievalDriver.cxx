@@ -39,15 +39,6 @@
 IMPLEMENT_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 
 //=======================================================================
-//function : CreateDocument
-//purpose  : Create an empty TDocStd_Document
-//=======================================================================
-Handle(CDM_Document) StdLDrivers_DocumentRetrievalDriver::CreateDocument()
-{
-  return new TDocStd_Document (PCDM_RetrievalDriver::GetFormat());
-}
-
-//=======================================================================
 //function : Read
 //purpose  : Retrieve the content of a file into a new document
 //=======================================================================

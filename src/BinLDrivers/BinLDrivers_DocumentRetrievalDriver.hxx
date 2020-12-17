@@ -55,9 +55,6 @@ public:
   //! Constructor
   Standard_EXPORT BinLDrivers_DocumentRetrievalDriver();
   
-  //! pure virtual method definition
-  Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
-  
   //! retrieves the content of the file into a new Document.
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)& theNewDocument, 

@@ -181,7 +181,7 @@ void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocSt
 //purpose  :
 //=======================================================================
 
-void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format,Handle(TDocStd_Document)& aDoc)
+void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format, Handle(CDM_Document)& aDoc)
 {
   Handle(TDocStd_Document) D = new TDocStd_Document(format);
   InitDocument (D);
@@ -190,11 +190,24 @@ void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format,H
 }
 
 //=======================================================================
+//function : NewDocument
+//purpose  : A non-virtual method taking a TDocStd_Documment object as an input.
+//         : Internally it calls a virtual method NewDocument() with CDM_Document object.
+//=======================================================================
+
+void TDocStd_Application::NewDocument (const TCollection_ExtendedString& format, Handle(TDocStd_Document)& aDoc)
+{
+  Handle(CDM_Document) aCDMDoc;
+  NewDocument (format, aCDMDoc);
+  aDoc = Handle(TDocStd_Document)::DownCast (aCDMDoc);
+}
+
+//=======================================================================
 //function : InitDocument
 //purpose  : do nothing
 //=======================================================================
 
-void TDocStd_Application::InitDocument(const Handle(TDocStd_Document)& /*aDoc*/) const
+void TDocStd_Application::InitDocument(const Handle(CDM_Document)& /*aDoc*/) const
 {
 }
 

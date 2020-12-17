@@ -2198,3 +2198,7 @@ In order to save a document in an older storage format version, call the method 
 This value will be used by storage drivers of a corresponding OCAF file format (XML or binary) and the document will be saved
 following the rules of the specified storage format version (corresponding to an older version of Open CASCADE Technology).
 This way an application based on an old version of Open CASCADE Technology may read documents saved by new applications (based on newer version of Open CASCADE Technology).
+
+@subsection upgrade_760_createdocument New OCAF document
+
+A new OCAF document may be created only by means of the method *NewDocument()* from CDF_Application (redefined in TDocStd_Application). The methods *CreateDocument()* are deleted in all retrieval drivers.
