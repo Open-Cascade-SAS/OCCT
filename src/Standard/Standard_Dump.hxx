@@ -27,10 +27,15 @@
 //! uses the variable name to generate key. If the parameter has prefix symbols "&", "*" and "my", it is cut.
 //!
 //! - OCCT_DUMP_FIELD_VALUE_NUMERICAL. Use it for fields of numerical C++ types, like int, float, double. It creates a pair "key", "value",
+//! - OCCT_DUMP_FIELD_VALUE_NUMERICAL_INC. Use it for fields of numerical C++ types, like int, float, double.
+//!     It creates a pair "key_inc", "value",
 //! - OCCT_DUMP_FIELD_VALUE_STRING. Use it for char* type. It creates a pair "key", "value",
 //! - OCCT_DUMP_FIELD_VALUE_POINTER. Use it for pointer fields. It creates a pair "key", "value", where the value is the pointer address,
 //! - OCCT_DUMP_FIELD_VALUES_DUMPED. Use it for fields that has own Dump implementation. It expects the pointer to the class instance.
 //!     It creates "key": { result of dump of the field }
+//! - OCCT_DUMP_FIELD_VALUES_DUMPED_INC. Use it for fields that has own Dump implementation. It expects the pointer to the class instance.
+//!     It creates "key_inc": { result of dump of the field }
+//! - OCCT_DUMP_STREAM_VALUE_DUMPED. Use it for Standard_SStream. It creates "key": { text of stream }
 //! - OCCT_DUMP_FIELD_VALUES_NUMERICAL. Use it for unlimited list of fields of C++ double type.
 //!     It creates massive of values [value_1, value_2, ...]
 //! - OCCT_DUMP_FIELD_VALUES_STRING. Use it for unlimited list of fields of TCollection_AsciiString types.
@@ -73,6 +78,16 @@
 #define OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, theField) \
 { \
   TCollection_AsciiString aName = Standard_Dump::DumpFieldToName (#theField); \
+  Standard_Dump::AddValuesSeparator (theOStream); \
+  theOStream << "\"" << aName << "\": " << theField; \
+}
+
+//! @def OCCT_DUMP_FIELD_VALUE_NUMERICAL
+//! Append into output value: "Name": Field
+//! Inc name value added to the key to provide unique keys
+#define OCCT_DUMP_FIELD_VALUE_NUMERICAL_INC(theOStream, theField, theIncName) \
+{ \
+  TCollection_AsciiString aName = Standard_Dump::DumpFieldToName (#theField) + theIncName; \
   Standard_Dump::AddValuesSeparator (theOStream); \
   theOStream << "\"" << aName << "\": " << theField; \
 }
@@ -155,6 +170,24 @@
   } \
 }
 
+//! @def OCCT_DUMP_FIELD_VALUES_DUMPED_INC
+//! Append into output value: "Name": { field dumped values }
+//! It computes Dump of the fields. The expected field is a pointer.
+//! Use this macro for fields of the dumped class which has own Dump implementation.
+//! The macros is recursive. Recursion is stopped when the depth value becomes equal to zero.
+//! Depth = -1 is the default value, dump here is unlimited.
+//! Inc name value added to the key to provide unique keys
+#define OCCT_DUMP_FIELD_VALUES_DUMPED_INC(theOStream, theDepth, theField, theIncName) \
+{ \
+  if (theDepth != 0 && (void*)(theField) != NULL) \
+  { \
+    Standard_SStream aFieldStream; \
+    (theField)->DumpJson (aFieldStream, theDepth - 1); \
+    TCollection_AsciiString aName = Standard_Dump::DumpFieldToName (#theField) + theIncName; \
+    Standard_Dump::DumpKeyToClass (theOStream, aName, Standard_Dump::Text (aFieldStream)); \
+  } \
+}
+
 //! @def OCCT_INIT_FIELD_VALUES_DUMPED
 //! Append into output value: "Name": { field dumped values }
 //! It computes Dump of the fields. The expected field is a pointer.
@@ -165,6 +198,16 @@
 { \
   if ((theField) == NULL || !(theField)->InitFromJson (theSStream, theStreamPos)) \
     return Standard_False; \
+}
+
+//! @def OCCT_DUMP_STREAM_VALUE_DUMPED
+//! Append into output value: "Name": { stream text }
+//! It computes Dump of the fields. The expected field is a pointer.
+//! Use this macro for Standard_SStream field.
+#define OCCT_DUMP_STREAM_VALUE_DUMPED(theOStream, theField) \
+{ \
+  TCollection_AsciiString aName = Standard_Dump::DumpFieldToName (#theField); \
+  Standard_Dump::DumpKeyToClass (theOStream, aName, Standard_Dump::Text (theField)); \
 }
 
 //! @def OCCT_DUMP_FIELD_VALUES_NUMERICAL
@@ -267,6 +310,7 @@ public:
   //! - for '{' append after '\n' and indent to the next value, increment current indent value
   //! - for '}' append '\n' and current indent before it, decrement indent value
   //! - for ',' append after '\n' and indent to the next value. If the current symbol is in massive container [], do nothing
+  //! Covers result with opened and closed brackets on the top level, if it has no symbols there.
   //! @param theStream source value
   //! @param theIndent count of ' ' symbols to apply hierarchical indent of the text values
   //! @return text presentation

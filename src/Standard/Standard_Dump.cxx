@@ -24,7 +24,7 @@ void Standard_Dump::AddValuesSeparator (Standard_OStream& theOStream)
   Standard_SStream aStream;
   aStream << theOStream.rdbuf();
   TCollection_AsciiString aStreamStr = Standard_Dump::Text (aStream);
-  if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith ("{"))
+  if (!aStreamStr.IsEmpty() && !aStreamStr.EndsWith ("{") && !aStreamStr.EndsWith (", "))
     theOStream << ", ";
 }
 
@@ -302,9 +302,15 @@ TCollection_AsciiString Standard_Dump::FormatJson (const Standard_SStream& theSt
 
   Standard_Integer anIndentCount = 0;
   Standard_Boolean isMassiveValues = Standard_False;
-  for (Standard_Integer anIndex = 1; anIndex < aStreamStr.Length(); anIndex++)
+  for (Standard_Integer anIndex = 1; anIndex <= aStreamStr.Length(); anIndex++)
   {
     Standard_Character aSymbol = aStreamStr.Value (anIndex);
+    if (anIndex == 1 && aText.IsEmpty() && aSymbol != '{')
+    {
+      // append opening brace for json start
+      aSymbol = '{';
+      anIndex--;
+    }
     if (aSymbol == '{')
     {
       anIndentCount++;
@@ -313,7 +319,9 @@ TCollection_AsciiString Standard_Dump::FormatJson (const Standard_SStream& theSt
       aText += '\n';
 
       for (int anIndent = 0; anIndent < anIndentCount; anIndent++)
+      {
         aText += anIndentStr;
+      }
     }
     else if (aSymbol == '}')
     {
@@ -348,8 +356,24 @@ TCollection_AsciiString Standard_Dump::FormatJson (const Standard_SStream& theSt
       else
         aText += aSymbol;
     }
+    else if (aSymbol == '\n')
+    {
+      aText += ""; // json does not support multi-lined values, skip this symbol
+    }
     else
       aText += aSymbol;
+  
+    if (anIndex == aStreamStr.Length() && aSymbol != '}')
+    {
+      // append closing brace for json end
+      aSymbol = '}';
+
+      anIndentCount--;
+      aText += '\n';
+      for (int anIndent = 0; anIndent < anIndentCount; anIndent++)
+        aText += anIndentStr;
+      aText += aSymbol;
+    }
   }
   return aText;
 }

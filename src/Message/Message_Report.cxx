@@ -489,10 +489,11 @@ void Message_Report::DumpJson (Standard_OStream& theOStream, Standard_Integer th
   Standard_Integer anAlertLevels = myAlertLevels.Size();
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, anAlertLevels)
 
+  Standard_Integer anInc = 1;
   for (NCollection_IndexedMap<Message_MetricType>::Iterator anIterator (myActiveMetrics); anIterator.More(); anIterator.Next())
   {
     Message_MetricType anActiveMetric = anIterator.Value();
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, anActiveMetric)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL_INC (theOStream, anActiveMetric, anInc++)
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLimit)

@@ -255,13 +255,7 @@ void Message_AttributeMeter::DumpJson (Standard_OStream& theOStream,
   for (NCollection_IndexedDataMap<Message_MetricType, StartToStopValue>::Iterator anIterator (myMetrics);
        anIterator.More(); anIterator.Next())
   {
-    Message_MetricType aMetricType = anIterator.Key();
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aMetricType)
-
-    Standard_Real aStartValue = anIterator.Value().first;
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aStartValue)
-
-    Standard_Real aStopValue = anIterator.Value().second;
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aStopValue)
+    OCCT_DUMP_VECTOR_CLASS (theOStream, Message::MetricToString (anIterator.Key()),
+                            2, anIterator.Value().first, anIterator.Value().second)
   }
 }

@@ -47,6 +47,5 @@ void Message_AttributeStream::DumpJson (Standard_OStream& theOStream,
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Message_Attribute)
 
-  TCollection_AsciiString aStream = Standard_Dump::Text (myStream);
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aStream)
+  OCCT_DUMP_STREAM_VALUE_DUMPED (theOStream, myStream)
 }
