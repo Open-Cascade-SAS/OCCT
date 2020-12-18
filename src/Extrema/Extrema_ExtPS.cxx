@@ -230,7 +230,7 @@ void Extrema_ExtPS::Initialize (const Adaptor3d_Surface& theS,
                                 const Standard_Real      theTolU,
                                 const Standard_Real      theTolV)
 {
-  myS = (Adaptor3d_SurfacePtr)&theS;
+  myS = &theS;
   myuinf = theUinf;
   myusup = theUsup;
   myvinf = theVinf;

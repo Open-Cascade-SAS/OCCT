@@ -28,7 +28,7 @@
 BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face   &theSurface,
                                          const gp_Pnt           &theVertex,
                                          const Standard_Boolean  IsByPoint,
-                                         const Standard_Address  theCoeffs,
+                                         const Standard_Real*    theCoeffs,
                                          const Standard_Real     theUMin,
                                          const Standard_Real     theTolerance):
   mySurface(theSurface),

@@ -87,12 +87,10 @@ struct SplitDS
     myPerMinParam(0.0),
     myPerMaxParam(0.0),
     myPeriodicDir(0),
-    myExtCC(NULL),
+    myExtCCCurve1(NULL),
+    myExtCCLast2DParam(0.0),
     myExtPS(NULL)
   { }
-
-  // Assignment operator is forbidden.
-  void operator=(const SplitDS &theSplitDS);
 
   const Handle(Adaptor3d_Curve) myCurve;
   const Handle(Adaptor3d_Surface) mySurface;
@@ -102,8 +100,16 @@ struct SplitDS
   Standard_Real myPerMaxParam;
   Standard_Integer myPeriodicDir;
 
-  Extrema_ExtCC *myExtCC;
+  Adaptor3d_CurveOnSurface* myExtCCCurve1;
+  Standard_Real  myExtCCLast2DParam;
+
   Extrema_ExtPS *myExtPS;
+
+private:
+
+  // Assignment operator is forbidden.
+  void operator=(const SplitDS &theSplitDS);
+
 };
 
   //! Compute split points in the parameter space of the curve.
@@ -1876,13 +1882,8 @@ void SplitOnDirection(SplitDS & theSplitDS)
   Handle(Geom2d_Curve) aC2GC = new Geom2d_Line(aStartPnt, aDir);
   Handle(Geom2dAdaptor_Curve) aC = new Geom2dAdaptor_Curve(aC2GC, 0, aLast2DParam);
   Adaptor3d_CurveOnSurface  aCOnS(aC, theSplitDS.mySurface);
-
-  Extrema_ExtCC anExtCC;
-  anExtCC.SetCurve(1, aCOnS);
-  anExtCC.SetCurve(2, *theSplitDS.myCurve);
-  anExtCC.SetSingleSolutionFlag(Standard_True); // Search only one solution since multiple invocations are needed.
-  anExtCC.SetRange(1, 0, aLast2DParam);
-  theSplitDS.myExtCC = &anExtCC;
+  theSplitDS.myExtCCCurve1 = &aCOnS;
+  theSplitDS.myExtCCLast2DParam = aLast2DParam;
 
   FindSplitPoint(theSplitDS,
                  theSplitDS.myCurve->FirstParameter(), // Initial curve range.
@@ -1899,7 +1900,11 @@ void FindSplitPoint(SplitDS &theSplitDS,
                     const Standard_Real theMaxParam)
 {
   // Make extrema copy to avoid dependencies between different levels of the recursion.
-  Extrema_ExtCC anExtCC(*theSplitDS.myExtCC);
+  Extrema_ExtCC anExtCC;
+  anExtCC.SetCurve(1, *theSplitDS.myExtCCCurve1);
+  anExtCC.SetCurve(2, *theSplitDS.myCurve);
+  anExtCC.SetSingleSolutionFlag (Standard_True); // Search only one solution since multiple invocations are needed.
+  anExtCC.SetRange(1, 0, theSplitDS.myExtCCLast2DParam);
   anExtCC.SetRange(2, theMinParam, theMaxParam);
   anExtCC.Perform();
 

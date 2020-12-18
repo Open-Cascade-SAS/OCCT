@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_CurvePtr.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
@@ -84,25 +82,10 @@ public:
   //! Return the Nth extremum on S.
   Standard_EXPORT const Extrema_POnSurf& PointOnSurface (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon1() const;
-  
-  Standard_EXPORT Adaptor3d_CurvePtr Bidon2() const;
-
-
-  Adaptor3d_CurvePtr myC;
-  Adaptor3d_SurfacePtr myS;
+  const Adaptor3d_Curve* myC;
+  const Adaptor3d_Surface* myS;
   gp_Pnt myP1;
   gp_Pnt myP2;
   Standard_Real myt;
@@ -114,13 +97,6 @@ private:
   Standard_Boolean myCinit;
   Standard_Boolean mySinit;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_FuncExtCS_HeaderFile

@@ -134,7 +134,7 @@
 //function : ParametersOfNearestPointOnSurface
 //purpose  : 
 //=======================================================================
-static Standard_Boolean ParametersOfNearestPointOnSurface(const Extrema_ExtPS theExtr,
+static Standard_Boolean ParametersOfNearestPointOnSurface(const Extrema_ExtPS& theExtr,
                                                           Standard_Real& theU,
                                                           Standard_Real& theV)
 {

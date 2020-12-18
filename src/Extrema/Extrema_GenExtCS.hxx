@@ -17,21 +17,9 @@
 #ifndef _Extrema_GenExtCS_HeaderFile
 #define _Extrema_GenExtCS_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Extrema_FuncExtCS.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <Adaptor3d_CurvePtr.hxx>
 
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
 class Adaptor3d_Curve;
 class Adaptor3d_Surface;
 class Extrema_POnCurv;
@@ -97,21 +85,7 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT const Extrema_POnSurf& PointOnSurface (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-  
-  Standard_EXPORT Adaptor3d_CurvePtr BidonCurve() const;
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr BidonSurface() const;
 
   Standard_EXPORT void GlobMinGenCS(const Adaptor3d_Curve& theC,
     const Standard_Integer theNbParticles,
@@ -131,6 +105,13 @@ private:
     const math_Vector& theTUVsup,
     math_Vector& theTUV);
 
+private:
+
+  // disallow copies
+  Extrema_GenExtCS            (const Extrema_GenExtCS& );
+  Extrema_GenExtCS& operator= (const Extrema_GenExtCS& );
+
+private:
 
   Standard_Boolean myDone;
   Standard_Real mytmin;
@@ -145,16 +126,9 @@ private:
   Standard_Real mytol1;
   Standard_Real mytol2;
   Extrema_FuncExtCS myF;
-  Adaptor3d_SurfacePtr myS;
+  const Adaptor3d_Surface* myS;
   Handle(TColgp_HArray2OfPnt) mySurfPnts;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_GenExtCS_HeaderFile

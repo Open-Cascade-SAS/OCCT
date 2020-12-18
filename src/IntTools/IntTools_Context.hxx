@@ -245,27 +245,19 @@ Standard_EXPORT virtual  ~IntTools_Context();
 
 protected:
 
-  typedef NCollection_DataMap<TopoDS_Shape,
-                              Standard_Address,
-                              TopTools_ShapeMapHasher> DataMapOfShapeAddress;
-  typedef NCollection_DataMap<Handle(Standard_Transient),
-                              Standard_Address,
-                              TColStd_MapTransientHasher> DataMapOfTransientAddress;
-
   Handle(NCollection_BaseAllocator) myAllocator;
-  DataMapOfShapeAddress myFClass2dMap;
-  DataMapOfShapeAddress myProjPSMap;
-  DataMapOfShapeAddress myProjPCMap;
-  DataMapOfShapeAddress mySClassMap;
-  DataMapOfTransientAddress myProjPTMap;
-  DataMapOfShapeAddress myHatcherMap;
-  DataMapOfShapeAddress myProjSDataMap;
-  DataMapOfShapeAddress myBndBoxDataMap;
-  DataMapOfShapeAddress mySurfAdaptorMap;
-  DataMapOfShapeAddress myOBBMap; // Map of oriented bounding boxes
+  NCollection_DataMap<TopoDS_Shape, IntTools_FClass2d*, TopTools_ShapeMapHasher>           myFClass2dMap;
+  NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>  myProjPSMap;
+  NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnCurve*, TopTools_ShapeMapHasher> myProjPCMap;
+  NCollection_DataMap<TopoDS_Shape, BRepClass3d_SolidClassifier*, TopTools_ShapeMapHasher> mySClassMap;
+  NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*, TColStd_MapTransientHasher> myProjPTMap;
+  NCollection_DataMap<TopoDS_Shape, Geom2dHatch_Hatcher*, TopTools_ShapeMapHasher> myHatcherMap;
+  NCollection_DataMap<TopoDS_Shape, IntTools_SurfaceRangeLocalizeData*, TopTools_ShapeMapHasher> myProjSDataMap;
+  NCollection_DataMap<TopoDS_Shape, Bnd_Box*, TopTools_ShapeMapHasher> myBndBoxDataMap;
+  NCollection_DataMap<TopoDS_Shape, BRepAdaptor_Surface*, TopTools_ShapeMapHasher> mySurfAdaptorMap;
+  NCollection_DataMap<TopoDS_Shape, Bnd_OBB*, TopTools_ShapeMapHasher> myOBBMap; // Map of oriented bounding boxes
   Standard_Integer myCreateFlag;
   Standard_Real myPOnSTolerance;
-
 
 private:
 

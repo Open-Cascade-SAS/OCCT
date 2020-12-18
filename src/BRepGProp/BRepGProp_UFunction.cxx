@@ -26,7 +26,7 @@
 BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face   &theSurface,
                                          const gp_Pnt           &theVertex,
                                          const Standard_Boolean  IsByPoint,
-                                         const Standard_Address  theCoeffs)
+                                         const Standard_Real*    theCoeffs)
                                          : mySurface(theSurface),
                                          myVertex(theVertex),
                                          myCoeffs(theCoeffs),
@@ -95,7 +95,7 @@ Standard_Real BRepGProp_UFunction::VolumeValue(const Standard_Real  X,
     return thePMP0.Dot(aNorm.XYZ());
 
   // Volume and additional coefficients computation for ByPlane mode.
-  Standard_Real *aCoeff = (Standard_Real *)myCoeffs;
+  const Standard_Real* aCoeff = myCoeffs;
 
   theS  =   aNorm.X()*aCoeff[0] + aNorm.Y()*aCoeff[1] + aNorm.Z()*aCoeff[2];
   theD1 =   thePMP0.X()*aCoeff[0] + thePMP0.Y()*aCoeff[1]
@@ -132,7 +132,7 @@ Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real  X,
   }
 
   // Center of mass computation for ByPlane mode.
-  Standard_Real *aCoeff = (Standard_Real *)myCoeffs;
+  const Standard_Real* aCoeff = myCoeffs;
 
   switch (myValueType) {
   case GProp_CenterMassX:   F *= (aPmP0.X() - 0.5*aCoeff[0]*aD1); break;
@@ -158,7 +158,7 @@ Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real  X,
   Standard_Real aD1;
   Standard_Real aParam1;
   Standard_Real aParam2;
-  Standard_Real *aCoeffs = (Standard_Real *)myCoeffs;
+  const Standard_Real* aCoeffs = myCoeffs;
 
   F = VolumeValue(X, aPmP0, aS, aD1);
 

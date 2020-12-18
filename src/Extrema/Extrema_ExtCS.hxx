@@ -21,18 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Standard_Boolean.hxx>
 #include <Extrema_ExtElCS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
 #include <Extrema_SequenceOfPOnCurv.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
+
 class Adaptor3d_Curve;
 class Adaptor3d_Surface;
 class Extrema_POnCurv;
@@ -59,7 +53,10 @@ public:
   //! UCinf and UCmax are the start and end parameters
   //! of the curve.
   Standard_EXPORT Extrema_ExtCS(const Adaptor3d_Curve& C, const Adaptor3d_Surface& S, const Standard_Real UCinf, const Standard_Real UCsup, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolC, const Standard_Real TolS);
-  
+
+  //! Initializes the fields of the algorithm.
+  Standard_EXPORT void Initialize (const Adaptor3d_Surface& S, const Standard_Real TolC, const Standard_Real TolS);
+
   //! Initializes the fields of the algorithm.
   Standard_EXPORT void Initialize (const Adaptor3d_Surface& S, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolC, const Standard_Real TolS);
   
@@ -83,24 +80,19 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnCurv& P1, Extrema_POnSurf& P2) const;
 
+private:
 
-
-
-protected:
-
-
-
-
+  Standard_EXPORT Standard_Boolean AddSolution (const Adaptor3d_Curve& Curve, const Standard_Real T, const Standard_Real U, const Standard_Real V, const gp_Pnt& PointOnCurve, const gp_Pnt& PointOnSurf, const Standard_Real SquareDist);
 
 private:
 
-  
-  Standard_EXPORT Standard_Boolean AddSolution (const Adaptor3d_Curve& Curve, const Standard_Real T, const Standard_Real U, const Standard_Real V, const gp_Pnt& PointOnCurve, const gp_Pnt& PointOnSurf, const Standard_Real SquareDist);
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon() const;
+  // disallow copies
+  Extrema_ExtCS            (Extrema_ExtCS& );
+  Extrema_ExtCS& operator= (Extrema_ExtCS& );
 
+private:
 
-  Adaptor3d_SurfacePtr myS;
+  const Adaptor3d_Surface* myS;
   Standard_Boolean myDone;
   Standard_Boolean myIsPar;
   Extrema_ExtElCS myExtElCS;
@@ -117,13 +109,6 @@ private:
   TColStd_SequenceOfReal mySqDist;
   GeomAbs_SurfaceType myStype;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtCS_HeaderFile

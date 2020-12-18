@@ -302,17 +302,13 @@ Standard_Real BOPAlgo_Tools::ComputeToleranceOfCB
   //
   // compute max tolerance for common blocks on faces
   if (aLFI.Extent()) {
-    Standard_Integer nF;
-    GeomAPI_ProjectPointOnSurf aProjPS;
-    TColStd_ListIteratorOfListOfInteger aItLI;
-    //
-    aItLI.Initialize(aLFI);
-    for (; aItLI.More(); aItLI.Next()) {
-      nF = aItLI.Value();
+    for (TColStd_ListIteratorOfListOfInteger aItLI (aLFI); aItLI.More(); aItLI.Next())
+    {
+      const Standard_Integer nF = aItLI.Value();
       const TopoDS_Face& aF = *(TopoDS_Face*)&theDS->Shape(nF);
       aTol = BRep_Tool::Tolerance(aF);
       //
-      aProjPS = aCtx->ProjPS(aF);
+      GeomAPI_ProjectPointOnSurf& aProjPS = aCtx->ProjPS(aF);
       //
       aT = aT1;
       for (Standard_Integer i=1; i <= aNbPnt; i++) {

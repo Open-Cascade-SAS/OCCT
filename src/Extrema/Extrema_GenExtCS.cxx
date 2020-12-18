@@ -191,7 +191,7 @@ void Extrema_GenExtCS::Initialize (const Adaptor3d_Surface& S,
                                    const Standard_Real Vsup,
                                    const Standard_Real Tol2)
 {
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myS = &S;
   myusample = NbU;
   myvsample = NbV;
   myumin = Umin;
@@ -791,22 +791,3 @@ const Extrema_POnSurf& Extrema_GenExtCS::PointOnSurface(const Standard_Integer N
 
   return myF.PointOnSurface(N);
 }
-
-//=======================================================================
-//function : BidonSurface
-//purpose  : 
-//=======================================================================
-Adaptor3d_SurfacePtr Extrema_GenExtCS::BidonSurface() const 
-{
-  return (Adaptor3d_SurfacePtr)0L;
-}
-
-//=======================================================================
-//function : BidonCurve
-//purpose  : 
-//=======================================================================
-Adaptor3d_CurvePtr Extrema_GenExtCS::BidonCurve() const 
-{
-  return (Adaptor3d_CurvePtr)0L;
-}
-

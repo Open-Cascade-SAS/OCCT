@@ -104,7 +104,7 @@ void  HLRBRep_Intersector::Perform (const Standard_Address A1,
 #endif
 
 
-  Standard_Address myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
+  HLRBRep_Curve* myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
 
   myTypePerform = 1;
 
@@ -116,10 +116,10 @@ void  HLRBRep_Intersector::Perform (const Standard_Address A1,
   d = b - a;
   if (da1 != 0) a = a + d * da1;
   if (db1 != 0) b = b - d * db1;
-  ((HLRBRep_Curve*)myC1)->D0(a,pa);
-  ((HLRBRep_Curve*)myC1)->D0(b,pb);
-  a = ((HLRBRep_Curve*)myC1)->Parameter2d(a);
-  b = ((HLRBRep_Curve*)myC1)->Parameter2d(b);
+  myC1->D0(a,pa);
+  myC1->D0(b,pb);
+  a = myC1->Parameter2d(a);
+  b = myC1->Parameter2d(b);
   IntRes2d_Domain D1(pa,a,(Standard_Real)ta,pb,b,(Standard_Real)tb);
 
   //modified by jgv, 18.04.2016 for OCC27341
@@ -152,8 +152,8 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
 //    return;
 //  }
 
-  Standard_Address myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
-  Standard_Address myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
+  HLRBRep_Curve* myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
+  HLRBRep_Curve* myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
 
   myTypePerform = 1;
 
@@ -191,7 +191,7 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
 
     if (da1 != 0)  { 
       //-- a = a + d * da1;
-      ((HLRBRep_Curve*)myC1)->D1(a1,pa1,va1);
+      myC1->D1(a1,pa1,va1);
       Standard_Real qwe=va1.Magnitude();
       if(qwe>1e-12) { 
 	dd=pdist*decalagea1/qwe;
@@ -209,7 +209,7 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
     
     if (db1 != 0) { 
       //-- b = b - d * db1;
-      ((HLRBRep_Curve*)myC1)->D1(b1,pb1,vb1);
+      myC1->D1(b1,pb1,vb1);
       Standard_Real qwe=vb1.Magnitude();
       if(qwe>1e-12) { 
 	dd=pdist*decalageb1/qwe;
@@ -234,11 +234,11 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
 
 
     
-    ((HLRBRep_Curve*)myC1)->D0(a1,pa1);
-    ((HLRBRep_Curve*)myC1)->D0(b1,pb1);
+    myC1->D0(a1,pa1);
+    myC1->D0(b1,pb1);
     
-    a1 = ((HLRBRep_Curve*)myC1)->Parameter2d(a1);
-    b1 = ((HLRBRep_Curve*)myC1)->Parameter2d(b1);
+    a1 = myC1->Parameter2d(a1);
+    b1 = myC1->Parameter2d(b1);
     
     if(EnBout) { 
       ta=tb=-1.;
@@ -305,11 +305,11 @@ void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
 
 
     
-    ((HLRBRep_Curve*)myC2)->D0(a2,pa2);
-    ((HLRBRep_Curve*)myC2)->D0(b2,pb2);
+    myC2->D0(a2,pa2);
+    myC2->D0(b2,pb2);
     
-    a2 = ((HLRBRep_Curve*)myC2)->Parameter2d(a2);
-    b2 = ((HLRBRep_Curve*)myC2)->Parameter2d(b2);
+    a2 = myC2->Parameter2d(a2);
+    b2 = myC2->Parameter2d(b2);
     
     if(EnBout) { 
       ta=tb=-1.;
@@ -405,15 +405,15 @@ void  HLRBRep_Intersector::SimulateOnePoint(const Standard_Address A1,
 #ifdef PERF
   NbIntersSimulate++;
 #endif
-  Standard_Address myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
-  Standard_Address myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
+  HLRBRep_Curve* myC1 = ((HLRBRep_EdgeData*) A1)->Curve();
+  HLRBRep_Curve* myC2 = ((HLRBRep_EdgeData*) A2)->Curve();
 
-  Standard_Real u3= ((HLRBRep_Curve*)myC1)->Parameter3d(u);
-  Standard_Real v3= ((HLRBRep_Curve*)myC2)->Parameter3d(v);
+  Standard_Real u3= myC1->Parameter3d(u);
+  Standard_Real v3= myC2->Parameter3d(v);
   gp_Pnt2d P13,P23;   
   gp_Vec2d T13,T23;
-  ((HLRBRep_Curve*)myC1)->D1(u3,P13,T13);
-  ((HLRBRep_Curve*)myC2)->D1(v3,P23,T23);
+  myC1->D1(u3,P13,T13);
+  myC2->D1(v3,P23,T23);
   
   IntRes2d_Transition Tr1,Tr2;
   IntRes2d_Position Pos1,Pos2;

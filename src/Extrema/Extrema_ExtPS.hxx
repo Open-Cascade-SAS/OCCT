@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Standard_Boolean.hxx>
 #include <Extrema_ExtPElS.hxx>
 #include <Extrema_GenExtPS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
@@ -110,24 +108,13 @@ public:
   
   Standard_EXPORT void SetAlgo (const Extrema_ExtAlgo A);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon() const;
   
   Standard_EXPORT void TreatSolution (const Extrema_POnSurf& PS, const Standard_Real Val);
 
+private:
 
-  Adaptor3d_SurfacePtr myS;
+  const Adaptor3d_Surface* myS;
   Standard_Boolean myDone;
   Extrema_ExtPElS myExtPElS;
   Extrema_GenExtPS myExtPS;
@@ -151,13 +138,6 @@ private:
   Handle(Extrema_ExtPExtS) myExtPExtS;
   Handle(Extrema_ExtPRevS) myExtPRevS;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtPS_HeaderFile

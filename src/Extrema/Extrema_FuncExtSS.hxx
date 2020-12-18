@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_SurfacePtr.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
@@ -80,23 +79,10 @@ public:
   //! Renvoie le Nieme extremum sur S2.
   Standard_EXPORT const Extrema_POnSurf& PointOnS2 (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon() const;
-
-
-  Adaptor3d_SurfacePtr myS1;
-  Adaptor3d_SurfacePtr myS2;
+  const Adaptor3d_Surface* myS1;
+  const Adaptor3d_Surface* myS2;
   gp_Pnt myP1;
   gp_Pnt myP2;
   Standard_Real myU1;
@@ -109,13 +95,6 @@ private:
   Standard_Boolean myS1init;
   Standard_Boolean myS2init;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_FuncExtSS_HeaderFile

@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepFill_Filling.hxx>
 
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -29,7 +29,6 @@
 #include <BRepFill_CurveConstraint.hxx>
 #include <BRepFill_EdgeFaceAndOrder.hxx>
 #include <BRepFill_FaceAndOrder.hxx>
-#include <BRepFill_Filling.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeEdge.hxx>
@@ -393,7 +392,7 @@ void BRepFill_Filling::AddConstraints( const BRepFill_SequenceOfEdgeFaceAndOrder
 	      Constr->SetCurve2dOnSurf( Curve2d );
 	    }
 	}
-      myBuilder.Add( Constr );
+      myBuilder->Add( Constr );
     }
 }
 
@@ -571,10 +570,8 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireLi
 //======================================================================
 void BRepFill_Filling::Build()
 {
-  GeomPlate_BuildPlateSurface thebuild( myDegree, myNbPtsOnCur, myNbIter,
-                                        myTol2d, myTol3d, myTolAng, myTolCurv, myAnisotropie );
-
-  myBuilder = thebuild;
+  myBuilder.reset (new GeomPlate_BuildPlateSurface (myDegree, myNbPtsOnCur, myNbIter,
+                                                    myTol2d, myTol3d, myTolAng, myTolCurv, myAnisotropie));
   TopoDS_Edge CurEdge;
   TopoDS_Face CurFace;
   Standard_Integer i, j;
@@ -650,29 +647,33 @@ void BRepFill_Filling::Build()
     {
       Handle( BRepAdaptor_Surface ) HSurfInit = new BRepAdaptor_Surface();
       HSurfInit->Initialize( myInitFace );
-      myBuilder.LoadInitSurface( BRep_Tool::Surface( HSurfInit->Face() ) );
+      myBuilder->LoadInitSurface( BRep_Tool::Surface( HSurfInit->Face() ) );
     }
 
   //Adding constraints to myBuilder
   AddConstraints( myBoundary );
-  myBuilder.SetNbBounds( myBoundary.Length() );
+  myBuilder->SetNbBounds( myBoundary.Length() );
   AddConstraints( myConstraints );
   for (i = 1; i <= myPoints.Length(); i++)
-    myBuilder.Add( myPoints(i) );
+  {
+    myBuilder->Add (myPoints (i));
+  }
 
-  myBuilder.Perform();
-  if (myBuilder.IsDone())
+  myBuilder->Perform();
+  if (myBuilder->IsDone())
+  {
     myIsDone = Standard_True;
+  }
   else
-    {
-      myIsDone = Standard_False;
-      return;
-    }
+  {
+    myIsDone = Standard_False;
+    return;
+  }
 
-  Handle( GeomPlate_Surface ) GPlate = myBuilder.Surface();
-  Handle( Geom_BSplineSurface ) Surface;
+  Handle(GeomPlate_Surface) GPlate = myBuilder->Surface();
+  Handle(Geom_BSplineSurface) Surface;
   // Approximation
-  Standard_Real dmax = 1.1 * myBuilder.G0Error(); //???????????
+  Standard_Real dmax = 1.1 * myBuilder->G0Error(); //???????????
   //Standard_Real dmax = myTol3d;
   if (! myIsInitFaceGiven)
     {
@@ -680,9 +681,9 @@ void BRepFill_Filling::Build()
 
      TColgp_SequenceOfXY S2d;
      TColgp_SequenceOfXYZ S3d;
-     myBuilder.Disc2dContour(4,S2d);
-     myBuilder.Disc3dContour(4,0,S3d);
-     seuil = Max( myTol3d, 10*myBuilder.G0Error() ); //????????
+     myBuilder->Disc2dContour (4, S2d);
+     myBuilder->Disc3dContour (4, 0, S3d);
+     seuil = Max (myTol3d, 10 * myBuilder->G0Error()); //????????
      GeomPlate_PlateG0Criterion Criterion( S2d, S3d, seuil );
      GeomPlate_MakeApprox Approx( GPlate, Criterion, myTol3d, myMaxSegments, myMaxDeg );
      Surface = Approx.Surface();
@@ -697,7 +698,7 @@ void BRepFill_Filling::Build()
 
   //Build the final wire and final face
   TopTools_ListOfShape FinalEdges;
-  Handle(TColGeom2d_HArray1OfCurve) CurvesOnPlate = myBuilder.Curves2d();
+  Handle(TColGeom2d_HArray1OfCurve) CurvesOnPlate = myBuilder->Curves2d();
   BRep_Builder BB;
   for (i = 1; i <= myBoundary.Length(); i++)
   {
@@ -789,7 +790,7 @@ TopoDS_Face BRepFill_Filling::Face() const
 //==========================================================================
 Standard_Real BRepFill_Filling::G0Error() const
 {
-  return myBuilder.G0Error();
+  return myBuilder->G0Error();
 }
 
 //=======================================================================
@@ -799,7 +800,7 @@ Standard_Real BRepFill_Filling::G0Error() const
 //======================================================================
 Standard_Real BRepFill_Filling::G1Error() const
 {
-  return myBuilder.G1Error();
+  return myBuilder->G1Error();
 }
 
 //=======================================================================
@@ -809,7 +810,7 @@ Standard_Real BRepFill_Filling::G1Error() const
 //======================================================================
 Standard_Real BRepFill_Filling::G2Error() const
 {
-  return myBuilder.G2Error();
+  return myBuilder->G2Error();
 }
 
 //==========================================================================
@@ -819,7 +820,7 @@ Standard_Real BRepFill_Filling::G2Error() const
 //==========================================================================
 Standard_Real BRepFill_Filling::G0Error( const Standard_Integer Index )
 {
-  return myBuilder.G0Error( Index );
+  return myBuilder->G0Error (Index);
 }
 
 //==========================================================================
@@ -829,7 +830,7 @@ Standard_Real BRepFill_Filling::G0Error( const Standard_Integer Index )
 //==========================================================================
 Standard_Real BRepFill_Filling::G1Error( const Standard_Integer Index )
 {
-  return myBuilder.G1Error( Index );
+  return myBuilder->G1Error (Index);
 }
 
 //==========================================================================
@@ -839,5 +840,5 @@ Standard_Real BRepFill_Filling::G1Error( const Standard_Integer Index )
 //==========================================================================
 Standard_Real BRepFill_Filling::G2Error( const Standard_Integer Index )
 {
-  return myBuilder.G2Error( Index );
+  return myBuilder->G2Error (Index);
 }

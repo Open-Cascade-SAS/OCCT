@@ -187,7 +187,7 @@ static Standard_Boolean IsOriginalPnt (const gp_Pnt& P,
 //=======================================================================
 
 static Standard_Boolean IsExtremum (const Standard_Real U, const Standard_Real V,
-				    const gp_Pnt& P, const Adaptor3d_SurfacePtr& S,
+				    const gp_Pnt& P, const Adaptor3d_Surface* S,
 				    gp_Pnt& E,        Standard_Real& Dist2,
 				    const Standard_Boolean IsVSup,
 				    const Standard_Boolean IsMin)

@@ -41,7 +41,7 @@ Extrema_FuncPSNorm::Extrema_FuncPSNorm (const gp_Pnt& P,
   myV(0.0)
 {
   myP = P;
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myS = &S;
   myPinit = Standard_True;
   mySinit = Standard_True;
 }
@@ -49,7 +49,7 @@ Extrema_FuncPSNorm::Extrema_FuncPSNorm (const gp_Pnt& P,
 //=============================================================================
 void Extrema_FuncPSNorm::Initialize(const Adaptor3d_Surface& S)
 {
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myS = &S;
   mySinit = Standard_True;
   myPoint.Clear();
   mySqDist.Clear();

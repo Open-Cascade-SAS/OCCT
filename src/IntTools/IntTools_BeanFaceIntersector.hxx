@@ -182,7 +182,6 @@ private:
   Standard_Real myFaceTolerance;
   Standard_Real myCurveResolution;
   Standard_Real myCriteria;
-  Extrema_ExtCS myExtrema;
   GeomAPI_ProjectPointOnSurf myProjector;
   IntTools_MarkedRangeSet myRangeManager;
   Handle(IntTools_Context) myContext;

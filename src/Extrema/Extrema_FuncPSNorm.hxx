@@ -21,16 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
-class Standard_OutOfRange;
-class gp_Pnt;
+
 class Adaptor3d_Surface;
 class math_Matrix;
 class Extrema_POnSurf;
@@ -102,7 +99,7 @@ public:
 private:
 
   gp_Pnt myP;
-  Adaptor3d_SurfacePtr myS;
+  const Adaptor3d_Surface* myS;
   Standard_Real myU;
   Standard_Real myV;
   gp_Pnt myPs;

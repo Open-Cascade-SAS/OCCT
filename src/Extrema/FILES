@@ -110,7 +110,6 @@ Extrema_HArray1OfPOnSurf.hxx
 Extrema_HArray2OfPOnCurv.hxx
 Extrema_HArray2OfPOnCurv2d.hxx
 Extrema_HArray2OfPOnSurf.hxx
-Extrema_HArray2OfPOnSurfParams.hxx
 Extrema_HUBTreeOfSphere.hxx
 Extrema_LocateExtCC.cxx
 Extrema_LocateExtCC.hxx

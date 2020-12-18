@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Standard_Boolean.hxx>
 #include <Extrema_ExtElSS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
 #include <Standard_Real.hxx>
@@ -77,22 +75,9 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon() const;
-
-
-  Adaptor3d_SurfacePtr myS2;
+  const Adaptor3d_Surface* myS2;
   Standard_Boolean myDone;
   Standard_Boolean myIsPar;
   Extrema_ExtElSS myExtElSS;
@@ -111,13 +96,6 @@ private:
   TColStd_SequenceOfReal mySqDist;
   GeomAbs_SurfaceType myStype;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtSS_HeaderFile

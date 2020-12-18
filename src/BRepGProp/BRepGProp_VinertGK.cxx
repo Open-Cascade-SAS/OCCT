@@ -138,7 +138,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
 {
   Standard_Real aShift[] = { 0., 0., 0. };
 
-  return PrivatePerform(theSurface, NULL, Standard_True, &aShift, theTolerance, 
+  return PrivatePerform(theSurface, NULL, Standard_True, aShift, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -159,7 +159,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
 
   aXYZ.Coord(aShift[0], aShift[1], aShift[2]);
 
-  return PrivatePerform(theSurface, NULL, Standard_True, &aShift, theTolerance, 
+  return PrivatePerform(theSurface, NULL, Standard_True, aShift, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -178,7 +178,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
   Standard_Real aShift[] = { 0., 0., 0. };
 
   return PrivatePerform(theSurface, &theDomain,
-    Standard_True, &aShift, theTolerance, 
+    Standard_True, aShift, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -201,7 +201,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
   aXYZ.Coord(aShift[0], aShift[1], aShift[2]);
 
   return PrivatePerform(theSurface, &theDomain,
-    Standard_True, &aShift, theTolerance, 
+    Standard_True, aShift, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -227,7 +227,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
   aCoeff[3] = aCoeff[3] - aCoeff[0]*aXLoc - aCoeff[1]*aYLoc - aCoeff[2]*aZLoc;
 
   return PrivatePerform(theSurface, NULL,
-    Standard_False, &aCoeff, theTolerance, 
+    Standard_False, aCoeff, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -254,7 +254,7 @@ Standard_Real BRepGProp_VinertGK::Perform(BRepGProp_Face        &theSurface,
   aCoeff[3] = aCoeff[3] - aCoeff[0]*aXLoc - aCoeff[1]*aYLoc - aCoeff[2]*aZLoc;
 
   return PrivatePerform(theSurface, &theDomain,
-    Standard_False, &aCoeff, theTolerance, 
+    Standard_False, aCoeff, theTolerance,
     theCGFlag, theIFlag);
 }
 
@@ -267,7 +267,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform
 (BRepGProp_Face        &theSurface,
  const Standard_Address thePtrDomain,
  const Standard_Boolean IsByPoint,
- const Standard_Address theCoeffs,
+ const Standard_Real*   theCoeffs,
  const Standard_Real    theTolerance,
  const Standard_Boolean theCGFlag,
  const Standard_Boolean theIFlag)
@@ -275,7 +275,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform
 {
 
   const Standard_Real aTTol = 1.e-9;
-  Standard_Real *aCoeffs = (Standard_Real *)theCoeffs;
+  const Standard_Real* aCoeffs = theCoeffs;
 
   // Compute the number of 2d bounding curves of the face.
   BRepGProp_Domain           *aPDomain = NULL;
@@ -357,8 +357,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform
 
     // Get the spans on the curve.
     Handle(TColStd_HArray1OfReal) aTKnots;
-    BRepGProp_TFunction               aTFunc(theSurface, loc, IsByPoint, theCoeffs,
-      aUMin, aCrvTol);
+    BRepGProp_TFunction aTFunc (theSurface, loc, IsByPoint, theCoeffs, aUMin, aCrvTol);
 
     theSurface.GetTKnots(aTMin, aTMax, aTKnots);
 

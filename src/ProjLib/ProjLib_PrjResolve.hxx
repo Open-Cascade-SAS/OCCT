@@ -21,19 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Adaptor3d_CurvePtr.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-class Standard_DomainError;
-class Standard_ConstructionError;
-class StdFail_NotDone;
+
 class Adaptor3d_Curve;
 class Adaptor3d_Surface;
-class gp_Pnt2d;
-
 
 
 class ProjLib_PrjResolve 
@@ -59,32 +50,14 @@ public:
   //! Returns the point of the extremum distance.
   Standard_EXPORT gp_Pnt2d Solution() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-
-
-  Adaptor3d_CurvePtr myCurve;
-  Adaptor3d_SurfacePtr mySurface;
+  const Adaptor3d_Curve* myCurve;
+  const Adaptor3d_Surface* mySurface;
   Standard_Boolean myDone;
   gp_Pnt2d mySolution;
   Standard_Integer myFix;
 
-
 };
-
-
-
-
-
-
 
 #endif // _ProjLib_PrjResolve_HeaderFile

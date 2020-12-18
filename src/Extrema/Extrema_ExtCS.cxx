@@ -63,9 +63,7 @@ Extrema_ExtCS::Extrema_ExtCS(const Adaptor3d_Curve&   C,
   const Standard_Real    TolS)
 
 {
-  Initialize(S, S.FirstUParameter(), S.LastUParameter(), 
-    S.FirstVParameter(), S.LastVParameter(), 
-    TolC, TolS);
+  Initialize (S, TolC, TolS);
   Perform(C, C.FirstParameter(), C.LastParameter());
 }
 
@@ -85,6 +83,12 @@ Extrema_ExtCS::Extrema_ExtCS(const Adaptor3d_Curve&   C,
   Perform(C, UCinf, UCsup);
 }
 
+void Extrema_ExtCS::Initialize (const Adaptor3d_Surface& S, const Standard_Real TolC, const Standard_Real TolS)
+{
+  Initialize (S, S.FirstUParameter(), S.LastUParameter(),
+              S.FirstVParameter(), S.LastVParameter(),
+              TolC, TolS);
+}
 
 void Extrema_ExtCS::Initialize(const Adaptor3d_Surface& S,
   const Standard_Real    Uinf,	
@@ -94,7 +98,7 @@ void Extrema_ExtCS::Initialize(const Adaptor3d_Surface& S,
   const Standard_Real    TolC,
   const Standard_Real    TolS)
 {
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myS = &S;
   myIsPar = Standard_False;
   myuinf  = Uinf;
   myusup  = Usup;

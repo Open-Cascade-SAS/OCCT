@@ -99,114 +99,98 @@ IntTools_Context::IntTools_Context
 //=======================================================================
 IntTools_Context::~IntTools_Context()
 {
-  Standard_Address anAdr;
-  DataMapOfShapeAddress::Iterator aIt;
-  DataMapOfTransientAddress::Iterator aIt1;
-  //
-  IntTools_FClass2d* pFClass2d;
-  //
-  aIt.Initialize(myFClass2dMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pFClass2d=(IntTools_FClass2d*)anAdr;
+  for (NCollection_DataMap<TopoDS_Shape, IntTools_FClass2d*, TopTools_ShapeMapHasher>::Iterator anIt (myFClass2dMap);
+       anIt.More(); anIt.Next())
+  {
+    IntTools_FClass2d* pFClass2d = anIt.Value();;
     (*pFClass2d).~IntTools_FClass2d();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pFClass2d);
   }
   myFClass2dMap.Clear();
-  //
+
   clearCachedPOnSProjectors();
-  //
-  GeomAPI_ProjectPointOnCurve* pProjPC;
-  aIt.Initialize(myProjPCMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pProjPC=(GeomAPI_ProjectPointOnCurve*)anAdr;
+  for (NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnCurve*, TopTools_ShapeMapHasher>::Iterator anIt (myProjPCMap);
+       anIt.More(); anIt.Next())
+  {
+    GeomAPI_ProjectPointOnCurve* pProjPC = anIt.Value();
     (*pProjPC).~GeomAPI_ProjectPointOnCurve();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pProjPC);
   }
   myProjPCMap.Clear();
-  //
-  //
-  BRepClass3d_SolidClassifier* pSC;
-  aIt.Initialize(mySClassMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pSC=(BRepClass3d_SolidClassifier*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, BRepClass3d_SolidClassifier*, TopTools_ShapeMapHasher>::Iterator anIt (mySClassMap);
+       anIt.More(); anIt.Next())
+  {
+    BRepClass3d_SolidClassifier* pSC = anIt.Value();
     (*pSC).~BRepClass3d_SolidClassifier();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pSC);
   }
   mySClassMap.Clear();
-  //
-  GeomAPI_ProjectPointOnCurve* pProjPT;
-  aIt1.Initialize(myProjPTMap);
-  for (; aIt1.More(); aIt1.Next()) {
-    anAdr=aIt1.Value();
-    pProjPT=(GeomAPI_ProjectPointOnCurve*)anAdr;
+
+  for (NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*, TColStd_MapTransientHasher>::Iterator anIt (myProjPTMap);
+       anIt.More(); anIt.Next())
+  {
+    GeomAPI_ProjectPointOnCurve* pProjPT = anIt.Value();
     (*pProjPT).~GeomAPI_ProjectPointOnCurve();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pProjPT);
   }
   myProjPTMap.Clear();
-  //
-  Geom2dHatch_Hatcher* pHatcher;
-  aIt.Initialize(myHatcherMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pHatcher=(Geom2dHatch_Hatcher*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, Geom2dHatch_Hatcher*, TopTools_ShapeMapHasher>::Iterator anIt (myHatcherMap);
+       anIt.More(); anIt.Next())
+  {
+    Geom2dHatch_Hatcher* pHatcher = anIt.Value();
     (*pHatcher).~Geom2dHatch_Hatcher();
-    myAllocator->Free(anAdr);
+    myAllocator->Free (pHatcher);
   }
   myHatcherMap.Clear();
-  //
-  IntTools_SurfaceRangeLocalizeData* pSData = NULL;
-  aIt.Initialize(myProjSDataMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pSData = (IntTools_SurfaceRangeLocalizeData*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, IntTools_SurfaceRangeLocalizeData*, TopTools_ShapeMapHasher>::Iterator anIt (myProjSDataMap);
+       anIt.More(); anIt.Next())
+  {
+    IntTools_SurfaceRangeLocalizeData* pSData = anIt.Value();
     (*pSData).~IntTools_SurfaceRangeLocalizeData();
-    myAllocator->Free(anAdr);
+    myAllocator->Free (pSData);
   }
   myProjSDataMap.Clear();
-  //
-  Bnd_Box* pBox;
-  aIt.Initialize(myBndBoxDataMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pBox=(Bnd_Box*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, Bnd_Box*, TopTools_ShapeMapHasher>::Iterator anIt (myBndBoxDataMap);
+       anIt.More(); anIt.Next())
+  {
+    Bnd_Box* pBox = anIt.Value();
     (*pBox).~Bnd_Box();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pBox);
   }
   myBndBoxDataMap.Clear();
-  //
-  BRepAdaptor_Surface* pSurfAdaptor;
-  aIt.Initialize(mySurfAdaptorMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pSurfAdaptor=(BRepAdaptor_Surface*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, BRepAdaptor_Surface*, TopTools_ShapeMapHasher>::Iterator anIt (mySurfAdaptorMap);
+       anIt.More(); anIt.Next())
+  {
+    BRepAdaptor_Surface* pSurfAdaptor = anIt.Value();
     (*pSurfAdaptor).~BRepAdaptor_Surface();
-    myAllocator->Free(anAdr);
+    myAllocator->Free (pSurfAdaptor);
   }
   mySurfAdaptorMap.Clear();
-  //
-  Bnd_OBB* pOBB;
-  aIt.Initialize(myOBBMap);
-  for (; aIt.More(); aIt.Next()) {
-    anAdr=aIt.Value();
-    pOBB=(Bnd_OBB*)anAdr;
+
+  for (NCollection_DataMap<TopoDS_Shape, Bnd_OBB*, TopTools_ShapeMapHasher>::Iterator anIt (myOBBMap);
+       anIt.More(); anIt.Next())
+  {
+    Bnd_OBB* pOBB = anIt.Value();
     (*pOBB).~Bnd_OBB();
-    myAllocator->Free(anAdr);
+    myAllocator->Free (pOBB);
   }
   myOBBMap.Clear();
 }
+
 //=======================================================================
 //function : BndBox
 //purpose  : 
 //=======================================================================
 Bnd_Box& IntTools_Context::BndBox(const TopoDS_Shape& aS)
 {
-  Standard_Address anAdr;
-  Bnd_Box* pBox;
-  //
-  if (!myBndBoxDataMap.IsBound(aS)) {
+  Bnd_Box* pBox = NULL;
+  if (!myBndBoxDataMap.Find (aS, pBox))
+  {
     //
     pBox=(Bnd_Box*)myAllocator->Allocate(sizeof(Bnd_Box));
     new (pBox) Bnd_Box();
@@ -214,15 +198,11 @@ Bnd_Box& IntTools_Context::BndBox(const TopoDS_Shape& aS)
     Bnd_Box &aBox=*pBox;
     BRepBndLib::Add(aS, aBox);
     //
-    anAdr=(Standard_Address)pBox;
-    myBndBoxDataMap.Bind(aS, anAdr);
-  }
-  else {
-    anAdr=myBndBoxDataMap.Find(aS);
-    pBox=(Bnd_Box*)anAdr;
+    myBndBoxDataMap.Bind (aS, pBox);
   }
   return *pBox;
 }
+
 //=======================================================================
 //function : IsInfiniteFace
 //purpose  : 
@@ -244,10 +224,9 @@ Standard_Boolean IntTools_Context::IsInfiniteFace
 //=======================================================================
 IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
 {
-  Standard_Address anAdr;
-  IntTools_FClass2d* pFClass2d;
-  //
-  if (!myFClass2dMap.IsBound(aF)) {
+  IntTools_FClass2d* pFClass2d = NULL;
+  if (!myFClass2dMap.Find (aF, pFClass2d))
+  {
     Standard_Real aTolF;
     TopoDS_Face aFF;
     //
@@ -258,25 +237,20 @@ IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
     pFClass2d=(IntTools_FClass2d*)myAllocator->Allocate(sizeof(IntTools_FClass2d));
     new (pFClass2d) IntTools_FClass2d(aFF, aTolF);
     //
-    anAdr=(Standard_Address)pFClass2d;
-    myFClass2dMap.Bind(aFF, anAdr);
-  }
-  else {
-    anAdr=myFClass2dMap.Find(aF);
-    pFClass2d=(IntTools_FClass2d*)anAdr;
+    myFClass2dMap.Bind(aFF, pFClass2d);
   }
   return *pFClass2d;
 }
+
 //=======================================================================
 //function : ProjPS
 //purpose  : 
 //=======================================================================
 GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
 {
-  Standard_Address anAdr;
-  GeomAPI_ProjectPointOnSurf* pProjPS;
- 
-  if (!myProjPSMap.IsBound(aF)) {
+  GeomAPI_ProjectPointOnSurf* pProjPS = NULL;
+  if (!myProjPSMap.Find (aF, pProjPS))
+  {
     Standard_Real Umin, Usup, Vmin, Vsup;
     UVBounds(aF, Umin, Usup, Vmin, Vsup);
     const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aF);
@@ -284,15 +258,9 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     pProjPS=(GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
     pProjPS->Init(aS ,Umin, Usup, Vmin, Vsup, myPOnSTolerance);
-    pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN);
+    pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN); ///
     //
-    anAdr=(Standard_Address)pProjPS;
-    myProjPSMap.Bind(aF, anAdr);
-  }
-  
-  else {
-    anAdr=myProjPSMap.Find(aF);
-    pProjPS=(GeomAPI_ProjectPointOnSurf*)anAdr;
+    myProjPSMap.Bind(aF, pProjPS);
   }
   return *pProjPS;
 }
@@ -302,10 +270,9 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
 //=======================================================================
 GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
 {
-  Standard_Address anAdr;
-  GeomAPI_ProjectPointOnCurve* pProjPC;
- 
-  if (!myProjPCMap.IsBound(aE)) {
+  GeomAPI_ProjectPointOnCurve* pProjPC = NULL;
+  if (!myProjPCMap.Find (aE, pProjPC))
+  {
     Standard_Real f, l;
     //
     Handle(Geom_Curve)aC3D=BRep_Tool::Curve (aE, f, l);
@@ -314,13 +281,7 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
     new (pProjPC) GeomAPI_ProjectPointOnCurve();
     pProjPC->Init(aC3D, f, l);
     //
-    anAdr=(Standard_Address)pProjPC;
-    myProjPCMap.Bind(aE, anAdr);
-  }
-  
-  else {
-    anAdr=myProjPCMap.Find(aE);
-    pProjPC=(GeomAPI_ProjectPointOnCurve*)anAdr;
+    myProjPCMap.Bind(aE, pProjPC);
   }
   return *pProjPC;
 }
@@ -333,10 +294,9 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT
   (const Handle(Geom_Curve)& aC3D)
 
 {
-  Standard_Address anAdr;
-  GeomAPI_ProjectPointOnCurve* pProjPT;
- 
-  if (!myProjPTMap.IsBound(aC3D)) {
+  GeomAPI_ProjectPointOnCurve* pProjPT = NULL;
+  if (!myProjPTMap.Find (aC3D, pProjPT))
+  {
     Standard_Real f, l;
     f=aC3D->FirstParameter();
     l=aC3D->LastParameter();
@@ -345,16 +305,11 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT
     new (pProjPT) GeomAPI_ProjectPointOnCurve();
     pProjPT->Init(aC3D, f, l);
     //
-    anAdr=(Standard_Address)pProjPT;
-    myProjPTMap.Bind(aC3D, anAdr);
-  }
-  
-  else {
-    anAdr=myProjPTMap.Find(aC3D);
-    pProjPT=(GeomAPI_ProjectPointOnCurve*)anAdr;
+    myProjPTMap.Bind (aC3D, pProjPT);
   }
   return *pProjPT;
 }
+
 //=======================================================================
 //function : SolidClassifier
 //purpose  : 
@@ -362,21 +317,13 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT
 BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier
   (const TopoDS_Solid& aSolid)
 {
-  Standard_Address anAdr;
-  BRepClass3d_SolidClassifier* pSC;
- 
-  if (!mySClassMap.IsBound(aSolid)) {
-    //
+  BRepClass3d_SolidClassifier* pSC = NULL;
+  if (!mySClassMap.Find (aSolid, pSC))
+  {
     pSC=(BRepClass3d_SolidClassifier*)myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier));
     new (pSC) BRepClass3d_SolidClassifier(aSolid);
     //
-    anAdr=(Standard_Address)pSC;
-    mySClassMap.Bind(aSolid, anAdr);
-  }
-  
-  else {
-    anAdr=mySClassMap.Find(aSolid);
-    pSC =(BRepClass3d_SolidClassifier*)anAdr;
+    mySClassMap.Bind (aSolid, pSC);
   }
   return *pSC;
 }
@@ -388,21 +335,14 @@ BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier
 BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor
   (const TopoDS_Face& theFace)
 {
-  Standard_Address anAdr;
-  BRepAdaptor_Surface* pBAS;
- 
-  if (!mySurfAdaptorMap.IsBound(theFace)) {
+  BRepAdaptor_Surface* pBAS = NULL;
+  if (!mySurfAdaptorMap.Find (theFace, pBAS))
+  {
     //
     pBAS=(BRepAdaptor_Surface*)myAllocator->Allocate(sizeof(BRepAdaptor_Surface));
     new (pBAS) BRepAdaptor_Surface(theFace, Standard_True);
     //
-    anAdr=(Standard_Address)pBAS;
-    mySurfAdaptorMap.Bind(theFace, anAdr);
-  }
-  
-  else {
-    anAdr=mySurfAdaptorMap.Find(theFace);
-    pBAS =(BRepAdaptor_Surface*)anAdr;
+    mySurfAdaptorMap.Bind (theFace, pBAS);
   }
   return *pBAS;
 }
@@ -413,10 +353,9 @@ BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor
 //=======================================================================
 Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
 {
-  Standard_Address anAdr;
-  Geom2dHatch_Hatcher* pHatcher;
-  //
-  if (!myHatcherMap.IsBound(aF)) {
+  Geom2dHatch_Hatcher* pHatcher = NULL;
+  if (!myHatcherMap.Find (aF, pHatcher))
+  {
     Standard_Real aTolArcIntr, aTolTangfIntr, aTolHatch2D, aTolHatch3D;
     Standard_Real aU1, aU2, aEpsT;
     TopAbs_Orientation aOrE;
@@ -461,15 +400,8 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
       pHatcher->AddElement(aGAC, aOrE);
     }// for (; aExp.More() ; aExp.Next()) {
     //
-    anAdr=(Standard_Address)pHatcher;
-    myHatcherMap.Bind(aFF, anAdr);
-  }//if (!myHatcherMap.IsBound(aF)) {
-  //
-  else {
-    anAdr=myHatcherMap.Find(aF);
-    pHatcher=(Geom2dHatch_Hatcher*)anAdr;
+    myHatcherMap.Bind (aFF, pHatcher);
   }
-
   return *pHatcher;
 }
 
@@ -480,10 +412,8 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
 Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS,
                                const Standard_Real theGap)
 {
-  Standard_Address anAdr;
-  Bnd_OBB* pBox;
-  //
-  if (!myOBBMap.IsBound(aS))
+  Bnd_OBB* pBox = NULL;
+  if (!myOBBMap.Find (aS, pBox))
   {
     pBox = (Bnd_OBB*)myAllocator->Allocate(sizeof(Bnd_OBB));
     new (pBox) Bnd_OBB();
@@ -492,13 +422,7 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS,
     BRepBndLib::AddOBB(aS, aBox);
     aBox.Enlarge(theGap);
     //
-    anAdr = (Standard_Address)pBox;
-    myOBBMap.Bind(aS, anAdr);
-  }
-  else
-  {
-    anAdr = myOBBMap.Find(aS);
-    pBox = (Bnd_OBB*)anAdr;
+    myOBBMap.Bind(aS, pBox);
   }
   return *pBox;
 }
@@ -510,10 +434,9 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS,
 IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData
   (const TopoDS_Face& aF) 
 {
-  Standard_Address anAdr;
-  IntTools_SurfaceRangeLocalizeData* pSData;
-  //
-  if (!myProjSDataMap.IsBound(aF)) {
+  IntTools_SurfaceRangeLocalizeData* pSData = NULL;
+  if (!myProjSDataMap.Find (aF, pSData))
+  {
     pSData=(IntTools_SurfaceRangeLocalizeData*)
       myAllocator->Allocate(sizeof(IntTools_SurfaceRangeLocalizeData));
     new (pSData) IntTools_SurfaceRangeLocalizeData
@@ -522,16 +445,9 @@ IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData
        10. * Precision::PConfusion(), 
        10. * Precision::PConfusion());
     //
-    anAdr=(Standard_Address)pSData;
-    myProjSDataMap.Bind(aF, anAdr);
-  }
-  
-  else {
-    anAdr=myProjSDataMap.Find(aF);
-    pSData=(IntTools_SurfaceRangeLocalizeData*)anAdr;
+    myProjSDataMap.Bind (aF, pSData);
   }
   return *pSData;
-
 }
 
 //=======================================================================
@@ -1121,13 +1037,12 @@ void IntTools_Context::SetPOnSProjectionTolerance(const Standard_Real theValue)
 //=======================================================================
 void IntTools_Context::clearCachedPOnSProjectors()
 {
-  GeomAPI_ProjectPointOnSurf* pProjPS;
-  DataMapOfShapeAddress::Iterator aIt(myProjPSMap);
-  for (; aIt.More(); aIt.Next()) {
-    Standard_Address anAdr=aIt.Value();
-    pProjPS=(GeomAPI_ProjectPointOnSurf*)anAdr;
+  for (NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>::Iterator aIt(myProjPSMap);
+       aIt.More(); aIt.Next())
+  {
+    GeomAPI_ProjectPointOnSurf* pProjPS = aIt.Value();
     (*pProjPS).~GeomAPI_ProjectPointOnSurf();
-    myAllocator->Free(anAdr); 
+    myAllocator->Free (pProjPS);
   }
   myProjPSMap.Clear();
 }

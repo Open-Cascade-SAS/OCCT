@@ -56,9 +56,14 @@ public:
   //! correspondingly) of the shift if the inertia is computed
   //! with respect to the point different then the location.
   //! If IsByPoint is equal to Standard_False, the number of the
-  //! coefficients is 4 and they represent the compbination of
+  //! coefficients is 4 and they represent the combination of
   //! plane parameters and shift values.
-  Standard_EXPORT BRepGProp_TFunction(const BRepGProp_Face& theSurface, const gp_Pnt& theVertex, const Standard_Boolean IsByPoint, const Standard_Address theCoeffs, const Standard_Real theUMin, const Standard_Real theTolerance);
+  Standard_EXPORT BRepGProp_TFunction (const BRepGProp_Face& theSurface,
+                                       const gp_Pnt& theVertex,
+                                       const Standard_Boolean IsByPoint,
+                                       const Standard_Real* theCoeffs,
+                                       const Standard_Real theUMin,
+                                       const Standard_Real theTolerance);
   
   Standard_EXPORT void Init();
   

@@ -21,18 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <Extrema_FuncExtSS.hxx>
-#include <Adaptor3d_SurfacePtr.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
+
 class Adaptor3d_Surface;
 class Extrema_POnSurf;
-
 
 //! It calculates all the extremum distances
 //! between two surfaces.
@@ -93,20 +86,13 @@ public:
   //! Returns the point of the Nth resulting distance.
   Standard_EXPORT const Extrema_POnSurf& PointOnS2 (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT Adaptor3d_SurfacePtr Bidon() const;
+  // disallow copies
+  Extrema_GenExtSS            (const Extrema_GenExtSS& );
+  Extrema_GenExtSS& operator= (const Extrema_GenExtSS& );
 
+private:
 
   Standard_Boolean myDone;
   Standard_Boolean myInit;
@@ -125,15 +111,8 @@ private:
   Standard_Real mytol1;
   Standard_Real mytol2;
   Extrema_FuncExtSS myF;
-  Adaptor3d_SurfacePtr myS2;
-
+  const Adaptor3d_Surface* myS2;
 
 };
-
-
-
-
-
-
 
 #endif // _Extrema_GenExtSS_HeaderFile

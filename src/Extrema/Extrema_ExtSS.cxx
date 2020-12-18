@@ -88,7 +88,7 @@ void Extrema_ExtSS::Initialize(const Adaptor3d_Surface&  S2,
 			       const Standard_Real Vsup2,
 			       const Standard_Real TolS2)
 {
-  myS2 = (Adaptor3d_SurfacePtr)&S2;
+  myS2 = &S2;
   myIsPar = Standard_False;
   myuinf2  = Uinf2;
   myusup2  = Usup2;

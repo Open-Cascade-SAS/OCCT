@@ -18,7 +18,6 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_CurveOnSurfacePtr.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <CSLib.hxx>
@@ -274,8 +273,8 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Darboux::Copy() const
   gp_Vec2d D2d;
   gp_Pnt S;
   gp_Vec dS_du, dS_dv;
-  Handle(Adaptor2d_Curve2d) myCurve2d = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetCurve();
-  Handle(Adaptor3d_Surface) mySupport = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetSurface();
+  Handle(Adaptor2d_Curve2d) myCurve2d = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetCurve();
+  Handle(Adaptor3d_Surface) mySupport = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetSurface();
   Standard_Integer OrderU, OrderV;
   myCurve2d->D1(Param, C2d, D2d);
 
@@ -307,8 +306,8 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Darboux::Copy() const
   gp_Vec2d D2d, D2_2d;
   gp_Pnt S;
   gp_Vec dS_du, dS_dv, d2S_du, d2S_dv, d2S_duv, F, DF;
-  Handle(Adaptor2d_Curve2d) myCurve2d = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetCurve();
-  Handle(Adaptor3d_Surface) mySupport = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetSurface();
+  Handle(Adaptor2d_Curve2d) myCurve2d = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetCurve();
+  Handle(Adaptor3d_Surface) mySupport = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetSurface();
 //  Standard_Integer Order;
   myCurve2d->D2(Param, C2d, D2d, D2_2d);
   mySupport->D2(C2d.X(), C2d.Y(), S, dS_du, dS_dv, 
@@ -347,8 +346,8 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Darboux::Copy() const
   gp_Pnt S;
   gp_Vec dS_du, dS_dv, d2S_du, d2S_dv, d2S_duv, 
          d3S_du, d3S_dv, d3S_duuv, d3S_duvv, F, DF, D2F;
-  Handle(Adaptor2d_Curve2d) myCurve2d = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetCurve();
-  Handle(Adaptor3d_Surface) mySupport = Adaptor3d_CurveOnSurfacePtr(myTrimmed.get())->GetSurface();
+  Handle(Adaptor2d_Curve2d) myCurve2d = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetCurve();
+  Handle(Adaptor3d_Surface) mySupport = static_cast<Adaptor3d_CurveOnSurface*>(myTrimmed.get())->GetSurface();
 //  Standard_Integer Order;
   myCurve2d->D3(Param, C2d, D2d, D2_2d, D3_2d);
   mySupport->D3(C2d.X(), C2d.Y(), S, dS_du, dS_dv, 

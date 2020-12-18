@@ -24,7 +24,8 @@
 #include <ProjLib_PrjFunc.hxx>
 #include <Standard_ConstructionError.hxx>
 
-ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_CurvePtr & C,const Standard_Real FixVal,const Adaptor3d_SurfacePtr & S, const Standard_Integer Fix) : myCurve(C), mySurface(S), myt(0), myU(0), myV(0), myFix(Fix)
+ProjLib_PrjFunc::ProjLib_PrjFunc (const Adaptor3d_Curve* C, const Standard_Real FixVal, const Adaptor3d_Surface* S, const Standard_Integer Fix)
+: myCurve(C), mySurface(S), myt(0), myU(0), myV(0), myFix(Fix)
 {
   myNorm=Min(1.,Min(mySurface->UResolution(1.),mySurface->VResolution(1.)));
 // myNorm=1.;
@@ -136,5 +137,3 @@ gp_Pnt2d ProjLib_PrjFunc::Solution() const
   // pout NT, meme si on n'y passe pas.
   return gp_Pnt2d(0.,0.);
 }
-
-

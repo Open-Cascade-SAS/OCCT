@@ -53,6 +53,22 @@ public:
   
   //! It calculates all the distances.
   Standard_EXPORT Extrema_ExtCC(const Adaptor3d_Curve& C1, const Adaptor3d_Curve& C2, const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2, const Standard_Real TolC1 = 1.0e-10, const Standard_Real TolC2 = 1.0e-10);
+
+  //! Initializes but does not perform algorithm.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C1,
+                                   const Adaptor3d_Curve& C2,
+                                   const Standard_Real TolC1 = 1.0e-10,
+                                   const Standard_Real TolC2 = 1.0e-10);
+
+  //! Initializes but does not perform algorithm.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C1,
+                                   const Adaptor3d_Curve& C2,
+                                   const Standard_Real U1,
+                                   const Standard_Real U2,
+                                   const Standard_Real V1,
+                                   const Standard_Real V2,
+                                   const Standard_Real TolC1 = 1.0e-10,
+                                   const Standard_Real TolC2 = 1.0e-10);
   
   Standard_EXPORT void SetCurve (const Standard_Integer theRank, const Adaptor3d_Curve& C);
   
@@ -126,6 +142,11 @@ protected:
 
 private:
 
+  // disallow copies
+  Extrema_ExtCC            (Extrema_ExtCC& );
+  Extrema_ExtCC& operator= (Extrema_ExtCC& );
+
+private:
 
   Standard_Boolean myIsFindSingleSolution; // Default value is false.
   Extrema_ECC myECC;
@@ -133,7 +154,7 @@ private:
   Standard_Boolean myIsPar;
   Extrema_SequenceOfPOnCurv mypoints;
   TColStd_SequenceOfReal mySqDist;
-  Standard_Address myC[2];
+  const Adaptor3d_Curve* myC[2];
   Standard_Real myInf[2];
   Standard_Real mySup[2];
   Standard_Real myTol[2];
@@ -146,13 +167,6 @@ private:
   Standard_Real mydist21;
   Standard_Real mydist22;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Extrema_ExtCC_HeaderFile

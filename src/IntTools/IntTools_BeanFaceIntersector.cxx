@@ -930,28 +930,27 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
     }
 
     GeomAdaptor_Curve aGACurve(aCurve, anarg1, anarg2);
-    Extrema_ExtCS theExtCS;
-    theExtCS.Initialize(aGASurface, myUMinParameter, myUMaxParameter,
-                                    myVMinParameter, myVMaxParameter,  Tol, Tol);
+    Extrema_ExtCS anExtCS;
+    anExtCS.Initialize(aGASurface, myUMinParameter, myUMaxParameter,
+                                   myVMinParameter, myVMaxParameter,  Tol, Tol);
     Standard_Real first = aCurve->FirstParameter(), last = aCurve->LastParameter();
     if (aCurve->IsPeriodic() || 
        (anarg1 >= first - Precision::PConfusion() && anarg2 <= last + Precision::PConfusion()))
     {
-      //Extrema_ExtCS theExtCS(aGACurve, aGASurface, Tol, Tol);
-      theExtCS.Perform(aGACurve, anarg1, anarg2);
+      //Extrema_ExtCS anExtCS (aGACurve, aGASurface, Tol, Tol);
+      anExtCS.Perform (aGACurve, anarg1, anarg2);
     }
-
-    myExtrema = theExtCS; 
     
-    if(myExtrema.IsDone() && (myExtrema.NbExt() || myExtrema.IsParallel())) {
+    if (anExtCS.IsDone() && (anExtCS.NbExt() || anExtCS.IsParallel()))
+    {
       Standard_Integer anOldNbRanges = myRangeManager.Length();
-      
-      if (myExtrema.IsParallel()) {
-        
-        if (myMinSqDistance > myExtrema.SquareDistance (1))
-          myMinSqDistance = myExtrema.SquareDistance (1);
 
-        if(myExtrema.SquareDistance(1) < myCriteria * myCriteria) {
+      if (anExtCS.IsParallel())
+      {
+        const Standard_Real aSqDist = anExtCS.SquareDistance (1);
+        myMinSqDistance = Min (myMinSqDistance, aSqDist);
+        if (aSqDist < myCriteria * myCriteria)
+        {
           Standard_Real U1, V1, U2, V2;
           Standard_Real adistance1 = Distance(anarg1, U1, V1);
           Standard_Real adistance2 = Distance(anarg2, U2, V2);
@@ -1015,12 +1014,13 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
       else {
         Standard_Boolean solutionfound = Standard_False;
         
-        for(Standard_Integer j = 1 ; j <= myExtrema.NbExt(); j++) {
-          
-          if(myExtrema.SquareDistance(j) < myCriteria * myCriteria) {
+        for(Standard_Integer j = 1 ; j <= anExtCS.NbExt(); j++)
+        {
+          if (anExtCS.SquareDistance(j) < myCriteria * myCriteria)
+          {
             Extrema_POnCurv p1;
             Extrema_POnSurf p2;
-            myExtrema.Points(j, p1, p2);
+            anExtCS.Points (j, p1, p2);
             Standard_Real U, V;
             p2.Parameter(U, V);
             
@@ -1034,9 +1034,8 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
             }
           }
 
-          if (myMinSqDistance > myExtrema.SquareDistance (j))
-            myMinSqDistance = myExtrema.SquareDistance (j);
-        } //end for
+          myMinSqDistance = Min (myMinSqDistance, anExtCS.SquareDistance (j));
+        }
         
         if(!solutionfound) {
           myRangeManager.SetFlag(i, 1);
@@ -1047,7 +1046,7 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
       if(adifference > 0) {
         i+=adifference;
       }
-    } // end if(myExtrema.IsDone() && (myExtrema.NbExt() || myExtrema.IsParallel()))
+    }
   }
 }
 

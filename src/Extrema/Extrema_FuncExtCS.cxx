@@ -80,8 +80,8 @@ les algorithmes math_FunctionRoot et math_FunctionRoots.
 void Extrema_FuncExtCS::Initialize(const Adaptor3d_Curve& C, 
 				   const Adaptor3d_Surface& S)
 {
-  myC = (Adaptor3d_CurvePtr)&C;
-  myS = (Adaptor3d_SurfacePtr)&S;
+  myC = &C;
+  myS = &S;
   myCinit = Standard_True;
   mySinit = Standard_True;
   myPoint1.Clear();
@@ -267,24 +267,3 @@ const Extrema_POnSurf& Extrema_FuncExtCS::PointOnSurface(const Standard_Integer 
   if (!myCinit || !mySinit) throw Standard_TypeMismatch();
   return myPoint2.Value(N);
 }
-
-//=======================================================================
-//function : Bidon1
-//purpose  : 
-//=======================================================================
-
-Adaptor3d_SurfacePtr Extrema_FuncExtCS::Bidon1() const 
-{
-  return (Adaptor3d_SurfacePtr)0L;
-}
-
-//=======================================================================
-//function : Bidon2
-//purpose  : 
-//=======================================================================
-
-Adaptor3d_CurvePtr Extrema_FuncExtCS::Bidon2() const 
-{
-  return (Adaptor3d_CurvePtr)0L;
-}
-
