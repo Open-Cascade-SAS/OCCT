@@ -2388,7 +2388,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 #endif
 
  if(Succes) {
-   di << "TestExcept: Successfull completion\n";
+   di << "TestExcept: Successful completion\n";
  } else {
    di << "TestExcept: failure\n";
  }
@@ -2396,6 +2396,76 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+//! Auxiliary functor.
+struct TestParallelFunctor
+{
+  TestParallelFunctor() : myNbNotRaised (0), myNbSigSegv (0), myNbUnknown (0) {}
+
+  Standard_Integer NbNotRaised() const { return myNbNotRaised; }
+  Standard_Integer NbSigSegv()   const { return myNbSigSegv; }
+  Standard_Integer NbUnknown()   const { return myNbUnknown; }
+
+  void operator() (int theThreadId, int theTaskId) const
+  {
+    (void )theThreadId;
+    (void )theTaskId;
+
+    // Test Access Violation
+    {
+      try {
+        OCC_CATCH_SIGNALS
+        int* pint = NULL;
+        *pint = 4;
+        Standard_Atomic_Increment (&myNbNotRaised);
+      }
+    #ifdef _WIN32
+      catch (OSD_Exception_ACCESS_VIOLATION const&)
+    #else
+      catch (OSD_SIGSEGV const&)
+    #endif
+      {
+        Standard_Atomic_Increment (&myNbSigSegv);
+      }
+      catch (Standard_Failure const& )
+      {
+        Standard_Atomic_Increment (&myNbUnknown);
+      }
+    }
+  }
+private:
+  mutable volatile Standard_Integer myNbNotRaised;
+  mutable volatile Standard_Integer myNbSigSegv;
+  mutable volatile Standard_Integer myNbUnknown;
+};
+
+static Standard_Integer OCC30775 (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** )
+{
+  if (theNbArgs != 1)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(OSD_ThreadPool) aPool = new OSD_ThreadPool (4);
+  OSD_ThreadPool::Launcher aLauncher (*aPool, 4);
+  TestParallelFunctor aFunctor;
+  aLauncher.Perform (0, 100, aFunctor);
+  theDI << "NbRaised: "    << (aFunctor.NbSigSegv() + aFunctor.NbUnknown()) << "\n"
+        << "NbNotRaised: " << aFunctor.NbNotRaised() << "\n"
+        << "NbSigSeg: "    << aFunctor.NbSigSegv() << "\n"
+        << "NbUnknown: "   << aFunctor.NbUnknown() << "\n";
+  return 0;
+}
+
+#if defined(_MSC_VER) && !defined(__clang__)
+#pragma optimize( "", on )
+#endif
+
+// try disabling compiler optimizations and function inlining for proper stack
+// (VS2010 is skipped due to generation of extra compiler warnings)
+#if defined(_MSC_VER) && (_MSC_VER >= 1700) && !defined(__clang__)
+  #pragma optimize( "", off)
+#endif
 //! Auxiliary functions for printing synthetic backtrace
 class MyTestInterface : public Standard_Transient
 {
@@ -2477,70 +2547,8 @@ static Standard_NOINLINE Standard_Integer OCC30762 (Draw_Interpretor& theDI,
   }
   return 0;
 }
-
-//! Auxiliary functor.
-struct TestParallelFunctor
-{
-  TestParallelFunctor() : myNbNotRaised (0), myNbSigSegv (0), myNbUnknown (0) {}
-
-  Standard_Integer NbNotRaised() const { return myNbNotRaised; }
-  Standard_Integer NbSigSegv()   const { return myNbSigSegv; }
-  Standard_Integer NbUnknown()   const { return myNbUnknown; }
-
-  void operator() (int theThreadId, int theTaskId) const
-  {
-    (void )theThreadId;
-    (void )theTaskId;
-
-    // Test Access Violation
-    {
-      try {
-        OCC_CATCH_SIGNALS
-        int* pint = NULL;
-        *pint = 4;
-        Standard_Atomic_Increment (&myNbNotRaised);
-      }
-    #ifdef _WIN32
-      catch (OSD_Exception_ACCESS_VIOLATION const&)
-    #else
-      catch (OSD_SIGSEGV const&)
-    #endif
-      {
-        Standard_Atomic_Increment (&myNbSigSegv);
-      }
-      catch (Standard_Failure const& )
-      {
-        Standard_Atomic_Increment (&myNbUnknown);
-      }
-    }
-  }
-private:
-  mutable volatile Standard_Integer myNbNotRaised;
-  mutable volatile Standard_Integer myNbSigSegv;
-  mutable volatile Standard_Integer myNbUnknown;
-};
-
-static Standard_Integer OCC30775 (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** )
-{
-  if (theNbArgs != 1)
-  {
-    std::cout << "Syntax error: wrong number of arguments\n";
-    return 1;
-  }
-
-  Handle(OSD_ThreadPool) aPool = new OSD_ThreadPool (4);
-  OSD_ThreadPool::Launcher aLauncher (*aPool, 4);
-  TestParallelFunctor aFunctor;
-  aLauncher.Perform (0, 100, aFunctor);
-  theDI << "NbRaised: "    << (aFunctor.NbSigSegv() + aFunctor.NbUnknown()) << "\n"
-        << "NbNotRaised: " << aFunctor.NbNotRaised() << "\n"
-        << "NbSigSeg: "    << aFunctor.NbSigSegv() << "\n"
-        << "NbUnknown: "   << aFunctor.NbUnknown() << "\n";
-  return 0;
-}
-
-#if defined(_MSC_VER) && !defined(__clang__)
-#pragma optimize( "", on )
+#if defined(_MSC_VER) && (_MSC_VER >= 1700) && !defined(__clang__)
+  #pragma optimize( "", on)
 #endif
 
 static TopoDS_Compound AddTestStructure(int nCount_)

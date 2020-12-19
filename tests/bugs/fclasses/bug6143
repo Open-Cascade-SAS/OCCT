@@ -1,15 +1,10 @@
 puts "TODO OCC24156 MacOS: Faulty OCC6143"
 
 puts "================"
-puts "OCC1723"
-puts "OCC2707"
-puts "OCC6143"
-puts "OCC12131"
+puts "0001723, 0002707, 0006143, 0012131"
+puts "OSD::SetSignal : not all FLT e x c e p t i o n s are caught"
 puts "================"
 puts ""
-#######################################################################################
-# OSD::SetSignal : not all FLT exceptions are caught
-#######################################################################################
 
 pload QAcommands
 
@@ -20,13 +15,12 @@ set IsDone [catch {set aResult [OCC6143]} result]
 dsetsignal
 
 if { ${IsDone} != 0 } {
-    puts "result = ${result}"
-    puts "Faulty ${BugNumber}"
+  puts "result = ${result}"
+  puts "Faulty ${BugNumber}"
 } else {
-    if { [string first "TestExcept: Successfull completion" ${aResult} ] != -1 } {
-	puts "OK ${BugNumber}"
-    } else {
-	puts "Faulty ${BugNumber}"
-    }
+  if { [string first "TestExcept: Successful completion" ${aResult} ] != -1 } {
+    puts "OK ${BugNumber}"
+  } else {
+    puts "Faulty ${BugNumber}"
+  }
 }
-
