@@ -1,15 +1,23 @@
 // Copyright (c) 2017 OPEN CASCADE SAS
 //
-// This file is part of Open CASCADE Technology software library.
+// This file is part of the examples of the Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 #import <Foundation/Foundation.h>
 
@@ -46,12 +54,14 @@
 {
   EAGLRenderingAPI aRendApi = kEAGLRenderingAPIOpenGLES2;
   myGLContext = [[EAGLContext alloc] initWithAPI:aRendApi];
-  if (!myGLContext) {
-    NSLog(@"Failed to initialize OpenGLES 2.0 context");
+  if (!myGLContext)
+  {
+    NSLog(@"Failed to initialize OpenGL ES 2.0 context");
   }
-  
-  if (![EAGLContext setCurrentContext:myGLContext]) {
-    NSLog(@"Failed to set current OpenGL context");
+
+  if (![EAGLContext setCurrentContext:myGLContext])
+  {
+    NSLog(@"Failed to set current OpenGL ES context");
   }
 }
 
@@ -65,12 +75,12 @@
   glBindFramebuffer(GL_FRAMEBUFFER, myFrameBuffer);
   glGenRenderbuffers(1, &myRenderBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, myRenderBuffer);
-  
+
   [myGLContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, myRenderBuffer);
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &myBackingWidth);
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myBackingHeight);
-  
+
   glGenRenderbuffers(1, &myDepthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, myDepthBuffer);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, myBackingWidth, myBackingHeight);
@@ -98,9 +108,9 @@
 - (void) drawView
 {
   glBindFramebuffer(GL_FRAMEBUFFER, myFrameBuffer);
-  
+
   [myController Draw];
-  
+
   glBindRenderbuffer(GL_RENDERBUFFER, myRenderBuffer);
   [myGLContext presentRenderbuffer:GL_RENDERBUFFER];
 }
@@ -112,24 +122,24 @@
 - (void) layoutSubviews
 {
   [EAGLContext setCurrentContext:myGLContext];
-  
+
   [self destroyBuffers];
   [self createBuffers];
   [self drawView];
-  
+
   glBindRenderbuffer(GL_RENDERBUFFER, myRenderBuffer);
-  
+
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &myBackingWidth);
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myBackingHeight);
-  
+
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
     NSLog(@"Failed to make complete framebuffer object %u",
           glCheckFramebufferStatus(GL_FRAMEBUFFER));
   }
-  
+
   glViewport(0, 0, myBackingWidth, myBackingHeight);
-  
+
   [myController Setup];
 }
 
@@ -140,20 +150,20 @@
 - (id) init
 {
   self = [super init];
-  
+
   if (self) {
     [self setupLayer];
     [self setupContext];
-    
+
     myController = NULL;
-    
+
     myBackingWidth  = 0;
     myBackingHeight = 0;
     myFrameBuffer   = 0;
     myRenderBuffer  = 0;
     myDepthBuffer   = 0;
   }
-  
+
   return self;
 }
 

@@ -1,15 +1,23 @@
 // Copyright (c) 2017 OPEN CASCADE SAS
 //
-// This file is part of Open CASCADE Technology software library.
+// This file is part of the examples of the Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 #import <Foundation/Foundation.h>
 
@@ -29,18 +37,19 @@ IMPLEMENT_STANDARD_RTTIEXT(OcctDocument, Standard_Transient)
 // =======================================================================
 OcctDocument::OcctDocument()
 {
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
-    
     myApp = XCAFApp_Application::GetApplication();
-  } catch (Standard_Failure) {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Error in creating application") +
-                                       Standard_Failure::Caught()->GetMessageString(), Message_Fail);
+  }
+  catch (const Standard_Failure& theFailure)
+  {
+    Message::SendFail (TCollection_AsciiString("Error in creating application") + theFailure.GetMessageString());
   }
 }
 
 // =======================================================================
-// function : OcctDocument
+// function : ~OcctDocument
 // purpose  :
 // =======================================================================
 OcctDocument::~OcctDocument()
@@ -60,23 +69,18 @@ void OcctDocument::InitDoc()
     {
       myOcafDoc->AbortCommand();
     }
-    
+
     myOcafDoc->Main().Root().ForgetAllAttributes(Standard_True);
-    
     myApp->Close(myOcafDoc);
-    
     myOcafDoc.Nullify();
   }
-  
+
   // create a new document
   myApp->NewDocument(TCollection_ExtendedString("BinXCAF"), myOcafDoc);
-  
+
   // set maximum number of available "undo" actions
   if (!myOcafDoc.IsNull())
   {
     myOcafDoc->SetUndoLimit(10);
   }
 }
-
-
-

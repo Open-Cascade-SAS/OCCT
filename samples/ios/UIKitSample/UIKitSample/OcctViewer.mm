@@ -1,21 +1,30 @@
 // Copyright (c) 2017 OPEN CASCADE SAS
 //
-// This file is part of Open CASCADE Technology software library.
+// This file is part of the examples of the Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 #include "OcctViewer.h"
 #include "OcctDocument.h"
 
+#include <OpenGl_GraphicDriver.hxx>
+
 #include <AIS_ConnectedInteractive.hxx>
-#include <AIS_Shape.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -23,9 +32,8 @@
 #include <Cocoa_Window.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Prs3d_Drawer.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <STEPControl_Reader.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <TDF_Tool.hxx>
@@ -82,40 +90,37 @@ bool OcctViewer::InitViewer (UIView* theWin)
     release();
     return false;
   }
-  
   if (!myView.IsNull())
   {
     myView->MustBeResized();
     myView->Invalidate();
+    return true;
   }
-  else
+
+  Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = new OpenGl_GraphicDriver (aDisplayConnection);
+
+  // Create Viewer
+  myViewer = new V3d_Viewer (aGraphicDriver);
+  myViewer->SetDefaultLights();
+  myViewer->SetLightOn();
+
+  // Create AIS context
+  myContext = new AIS_InteractiveContext (myViewer);
+  myContext->SetDisplayMode ((int )AIS_DisplayMode::AIS_Shaded, false);
+
+  myView = myViewer->CreateView();
+  myView->TriedronDisplay (Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.20, V3d_ZBUFFER);
+
+  Handle(Cocoa_Window) aCocoaWindow = new Cocoa_Window (theWin);
+  myView->SetWindow (aCocoaWindow, aRendCtx);
+  if (!aCocoaWindow->IsMapped())
   {
-    Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
-    Handle(Graphic3d_GraphicDriver) aGraphicDriver = new OpenGl_GraphicDriver(aDisplayConnection);
-    
-    // Create Viewer
-    myViewer = new V3d_Viewer(aGraphicDriver);
-    myViewer->SetDefaultLights();
-    myViewer->SetLightOn();
-    
-    // Create AIS context
-    myContext = new AIS_InteractiveContext(myViewer);
-    myContext->SetDisplayMode((int)AIS_DisplayMode::AIS_Shaded, false);
-    
-    myView = myViewer->CreateView();
-    myView->TriedronDisplay (Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.20, V3d_ZBUFFER);
-    
-    Handle(Cocoa_Window) aCocoaWindow = new Cocoa_Window(theWin);
-    myView->SetWindow(aCocoaWindow, aRendCtx);
-    if (!aCocoaWindow->IsMapped())
-    {
-      aCocoaWindow->Map();
-    }
-    
-    myView->Redraw();
-    myView->MustBeResized();
+    aCocoaWindow->Map();
   }
-  
+
+  myView->Redraw();
+  myView->MustBeResized();
   return true;
 }
 
@@ -212,11 +217,12 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
 {
   // create a new document
   myDoc->InitDoc();
-  
+
   STEPCAFControl_Reader aReader;
   Handle(XSControl_WorkSession) aSession = aReader.Reader().WS();
-  
-  try {
+
+  try
+  {
     if (!aReader.ReadFile (theFilename.c_str()))
     {
       clearSession (aSession);
@@ -228,20 +234,22 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
       clearSession (aSession);
       return false;
     }
-    
+
     clearSession(aSession);
-  } catch (Standard_Failure theFailure) {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Exception raised during STEP import\n[")
-                                       + theFailure.GetMessageString() + "]\n" + theFilename.c_str(), Message_Fail);
+  }
+  catch (const Standard_Failure& theFailure)
+  {
+    Message::SendFail (TCollection_AsciiString ("Exception raised during STEP import\n[")
+                     + theFailure.GetMessageString() + "]\n" + theFilename.c_str());
     return false;
   }
-  
+
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (myDoc->Document()->Main());
   Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (myDoc->Document()->Main());
-  
+
   TDF_LabelSequence aLabels;
   aShapeTool->GetFreeShapes (aLabels);
-  
+
   // perform meshing explicitly
   TopoDS_Compound aCompound;
   BRep_Builder    aBuildTool;
@@ -255,7 +263,7 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
       aBuildTool.Add (aCompound, aShape);
     }
   }
-  
+
   Handle(Prs3d_Drawer) aDrawer = myContext->DefaultDrawer();
   Standard_Real aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (aCompound, aDrawer);
   if (!BRepTools::Triangulation (aCompound, aDeflection))
@@ -264,13 +272,13 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
     anAlgo.ChangeParameters().Deflection = aDeflection;
     anAlgo.ChangeParameters().Angle = aDrawer->DeviationAngle();
     anAlgo.ChangeParameters().InParallel = Standard_True;
-    anAlgo.SetShape     (aCompound);
+    anAlgo.SetShape (aCompound);
     anAlgo.Perform();
   }
-  
+
   // clear presentations
   clearContext();
-  
+
   // create presentations
   MapOfPrsForShapes aMapOfShapes;
   XCAFPrs_Style aDefStyle;
@@ -302,7 +310,7 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
   {
     theShapeTool.GetReferredShape (theLabel, aRefLabel);
   }
-  
+
   TCollection_AsciiString anEntry;
   TDF_Tool::Entry (theLabel, anEntry);
   if (!theParentId.IsEmpty())
@@ -310,7 +318,7 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
     anEntry = theParentId + "\n" + anEntry;
   }
   anEntry += ".";
-  
+
   if (!theShapeTool.IsAssembly (aRefLabel))
   {
     Handle(AIS_InteractiveObject) anAis;
@@ -319,8 +327,8 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
       anAis = new CafShapePrs (aRefLabel, theParentStyle, Graphic3d_NameOfMaterial_ShinyPlastified);
       theMapOfShapes.Bind (aRefLabel, anAis);
     }
-    
-    Handle(TCollection_HAsciiString) anId      = new TCollection_HAsciiString (anEntry);
+
+    Handle(TCollection_HAsciiString) anId       = new TCollection_HAsciiString (anEntry);
     Handle(AIS_ConnectedInteractive) aConnected = new AIS_ConnectedInteractive();
     aConnected->Connect (anAis, theParentTrsf.Transformation());
     aConnected->SetOwner (anId);
@@ -329,7 +337,7 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
     myContext->Display  (aConnected, Standard_False);
     return;
   }
-  
+
   XCAFPrs_Style aDefStyle = theParentStyle;
   Quantity_Color aColor;
   if (theColorTool.GetColor (aRefLabel, XCAFDoc_ColorGen, aColor))
@@ -345,7 +353,7 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
   {
     aDefStyle.SetColorCurv (aColor);
   }
-  
+
   for (TDF_ChildIterator childIter (aRefLabel); childIter.More(); childIter.Next())
   {
     TDF_Label aLabel = childIter.Value();
@@ -368,13 +376,13 @@ void OcctViewer::clearSession (const Handle(XSControl_WorkSession)& theSession)
   {
     return;
   }
-  
+
   Handle(Transfer_TransientProcess) aMapReader = theSession->TransferReader()->TransientProcess();
   if (!aMapReader.IsNull())
   {
     aMapReader->Clear();
   }
-  
+
   Handle(XSControl_TransferReader) aTransferReader = theSession->TransferReader();
   if (!aTransferReader.IsNull())
   {
@@ -386,7 +394,7 @@ void OcctViewer::clearSession (const Handle(XSControl_WorkSession)& theSession)
 // function : clearContext
 // purpose  :
 // =======================================================================
-void OcctViewer::clearContext ()
+void OcctViewer::clearContext()
 {
   if (!myContext.IsNull())
   {
