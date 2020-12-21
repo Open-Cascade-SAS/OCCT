@@ -46,12 +46,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Empty contructor
+  //! Empty constructor
   Standard_EXPORT BOPDS_Iterator();
   Standard_EXPORT virtual ~BOPDS_Iterator();
 
-  //! Contructor
-  //! theAllocator - the allocator to manage the memory
+  //! Constructor
+  //! @param theAllocator the allocator to manage the memory
   Standard_EXPORT BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Modifier

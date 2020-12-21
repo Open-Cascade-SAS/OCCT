@@ -227,7 +227,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     // changes due to the fact the parameters of the chamfer must go increasing
     // from surface S1 to surface S2
     if (!plandab) {
-      gcyl->VReverse();// be carefull : the SemiAngle was changed
+      gcyl->VReverse();// be careful : the SemiAngle was changed
       ChamfAx3 = gcyl->Position();
     }
 
@@ -386,7 +386,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     // changes due to the fact the parameters of the chamfer must go increasing
     // from surface S1 to surface S2
     if (!plandab) {
-      gcon->VReverse();// be carefull : the SemiAngle was changed
+      gcon->VReverse();// be careful : the SemiAngle was changed
       ChamfAx3 = gcon->Position();
       SemiAngl = gcon->SemiAngle();
     }

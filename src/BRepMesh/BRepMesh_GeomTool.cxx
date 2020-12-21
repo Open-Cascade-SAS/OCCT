@@ -505,7 +505,7 @@ Standard_Integer BRepMesh_GeomTool::classifyPoint(
   if (thePointToCheck.IsEqual(thePoint1, aPrec) || 
       thePointToCheck.IsEqual(thePoint2, aPrec))
   {
-    return -1; //coinsides with an end point
+    return -1; //coincides with an end point
   }
     
   return 1;

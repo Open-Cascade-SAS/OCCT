@@ -83,7 +83,7 @@ public:
     myFaceMax = theMax;
   }
 
-  //! Retruns true if cell filter contains no circle.
+  //! Returns true if cell filter contains no circle.
   Standard_Boolean IsEmpty () const
   {
     return mySelector.Circles ().IsEmpty ();

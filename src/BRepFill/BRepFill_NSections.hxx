@@ -57,7 +57,7 @@ public:
   //! Say if the Law is  Constant.
   Standard_EXPORT virtual Standard_Boolean IsConstant() const Standard_OVERRIDE;
   
-  //! Give the law build on a concatened section
+  //! Give the law build on a concatenated section
   Standard_EXPORT virtual Handle(GeomFill_SectionLaw) ConcatenedLaw() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual GeomAbs_Shape Continuity (const Standard_Integer Index, const Standard_Real TolAngular) const Standard_OVERRIDE;

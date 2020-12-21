@@ -97,7 +97,7 @@ public:
   //!
   //! Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box");
   //!
-  //! Since  the version is not specified in  this syntax, the  latest wil be used.
+  //! Since  the version is not specified in  this syntax, the  latest will be used.
   //! A link is kept with the database through an instance of CDM_MetaData
   Standard_EXPORT Handle(CDM_Document) Retrieve
     (const TCollection_ExtendedString& aFolder,

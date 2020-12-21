@@ -101,7 +101,7 @@ public:
   //! Make a Wire from four edges.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Edge& E1, const TopoDS_Edge& E2, const TopoDS_Edge& E3, const TopoDS_Edge& E4);
   
-  //! Make a Wire from a Wire. Usefull for adding later.
+  //! Make a Wire from a Wire. Useful for adding later.
   Standard_EXPORT BRepLib_MakeWire(const TopoDS_Wire& W);
   
   //! Add an edge to a wire.

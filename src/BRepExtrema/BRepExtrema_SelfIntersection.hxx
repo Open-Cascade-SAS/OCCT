@@ -35,7 +35,7 @@ class BRepExtrema_SelfIntersection : public BRepExtrema_ElementFilter
 
 public:
 
-  //! Creates unitialized self-intersection tool.
+  //! Creates uninitialized self-intersection tool.
   Standard_EXPORT BRepExtrema_SelfIntersection (const Standard_Real theTolerance = 0.0);
 
   //! Creates self-intersection tool for the given shape.

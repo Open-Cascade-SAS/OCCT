@@ -64,7 +64,7 @@ public:
 
   //! Checks this and other edge for equality.
   //! @param theOther edge to be checked against this one.
-  //! @retrun TRUE if edges have the same orientation, FALSE if not.
+  //! @return TRUE if edges have the same orientation, FALSE if not.
   Standard_Boolean IsEqual(const BRepMesh_OrientedEdge& theOther) const
   {
     return (myFirstNode == theOther.myFirstNode && myLastNode == theOther.myLastNode);

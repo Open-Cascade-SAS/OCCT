@@ -216,7 +216,7 @@ struct CDelaBella : IDelaBella
 		int points = inp_verts;
 		std::sort(vert_alloc, vert_alloc + points);
 
-		// rmove dups
+		// remove dups
 		{
 			int w = 0, r = 1; // skip initial no-dups block
 			while (r < points && !Vert::overlap(vert_alloc + r, vert_alloc + w))
@@ -261,7 +261,7 @@ struct CDelaBella : IDelaBella
 			else
 			{
 				if (errlog_proc)
-					errlog_proc(errlog_file, "[WRN] all input points are identical, returning signle point!\n");
+					errlog_proc(errlog_file, "[WRN] all input points are identical, returning single point!\n");
 				first_hull_vert = vert_alloc + 0;
 				vert_alloc[0].next = 0;
 			}
@@ -333,7 +333,7 @@ struct CDelaBella : IDelaBella
 			// so we calc all signs...
 
 			// why not testing sign of dot prod of 2 normals?
-			// that way we'd fall into precission problems
+			// that way we'd fall into precision problems
 
 			Norm LvH = (*v - *last).cross(*head - *last);
 			bool lvh =
@@ -614,7 +614,7 @@ struct CDelaBella : IDelaBella
 			Face* _f = hull;
 
 			// 1. FIND FIRST VISIBLE FACE 
-			//    simply iterate around last vertex using last added triange adjecency info
+			//    simply iterate around last vertex using last added triangle adjecency info
 			while (_f->dot(*_q) <= 0)
 			{
 				_f = _f->Next(_p);
@@ -725,8 +725,8 @@ struct CDelaBella : IDelaBella
 			}
 
 			// if add<del+2 hungry hull has consumed some point
-			// that means we can't do delaunay for some under precission reasons
-			// althought convex hull would be fine with it
+			// that means we can't do delaunay for some under precision reasons
+			// although convex hull would be fine with it
 			assert(add == del + 2);
 
 			// 3. SEW SIDES OF CONE BUILT ON SLIHOUTTE SEGMENTS

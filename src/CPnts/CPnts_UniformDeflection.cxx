@@ -144,7 +144,7 @@ void CPnts_UniformDeflection::Perform()
 	NormD2 = V2.CrossMagnitude(V1) / NormD1;
 	
 	// passing of arrow starting from which the redivision is done is arbitrary
-	// probably it will be necessary to readjust it (differenciate the first point 
+	// probably it will be necessary to readjust it (differentiate the first point
 	// from the others) this test does not work on the points of inflexion
 	
 	if (NormD2 > myDeflection / 5.0) {

@@ -57,7 +57,7 @@ public:
 
   //! Checks if the given edge and this one have the same orientation.
   //! @param theOther edge to be checked against this one.
-  //! \retrun TRUE if edges have the same orientation, FALSE if not.
+  //! \return TRUE if edges have the same orientation, FALSE if not.
   Standard_Boolean IsSameOrientation(const BRepMesh_Edge& theOther) const
   {
     return BRepMesh_OrientedEdge::IsEqual(theOther);

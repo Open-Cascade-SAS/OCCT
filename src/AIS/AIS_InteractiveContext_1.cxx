@@ -1010,9 +1010,7 @@ void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& t
 
 //=======================================================================
 //function : AddOrRemoveSelected
-//purpose  : Adds or removes current object from AIS selection and highlights/unhighlights it.
-//           Since this method makes sence only for neutral point selection of a whole object,
-//           if 0 selection of the object is empty this method simply does nothing.
+//purpose  :
 //=======================================================================
 void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
                                                   const Standard_Boolean theToUpdateViewer)

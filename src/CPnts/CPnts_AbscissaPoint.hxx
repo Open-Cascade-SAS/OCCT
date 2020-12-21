@@ -144,9 +144,9 @@ public:
   Standard_EXPORT void Perform (const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui, const Standard_Real Resolution);
   
   //! Computes the point at the distance <Abscissa> of
-  //! the curve; performs more appropriate tolerance managment;
+  //! the curve; performs more appropriate tolerance management;
   //! to use this method in right way it is necessary to call
-  //! empty consructor. then call method Init with
+  //! empty constructor. then call method Init with
   //! Tolerance = Resolution, then call AdvPermorm.
   //! U0 is the parameter of the point from which the distance
   //! is measured and Ui is the starting value for the iterative

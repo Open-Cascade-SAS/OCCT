@@ -35,7 +35,7 @@ public:
 
   
 
-  //! Empty contructor
+  //! Empty constructor
     BOPDS_Pave();
 
   //! Modifier

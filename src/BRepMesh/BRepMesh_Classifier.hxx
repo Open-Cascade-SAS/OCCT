@@ -27,7 +27,7 @@
 class gp_Pnt2d;
 class CSLib_Class2d;
 
-//! Auxilary class intended for classification of points
+//! Auxiliary class intended for classification of points
 //! regarding internals of discrete face.
 class BRepMesh_Classifier : public Standard_Transient
 {

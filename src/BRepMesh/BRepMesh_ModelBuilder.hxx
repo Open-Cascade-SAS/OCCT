@@ -23,7 +23,7 @@
 //! Class implements interface representing tool for discrete model building.
 //! 
 //! The following statuses should be used by default:
-//! Message_Done1 - model has been sucessfully built.
+//! Message_Done1 - model has been successfully built.
 //! Message_Fail1 - empty shape.
 //! Message_Fail2 - model has not been build due to unexpected reason.
 class BRepMesh_ModelBuilder : public IMeshTools_ModelBuilder

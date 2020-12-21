@@ -208,13 +208,13 @@ void  BRepPrimAPI_MakeRevol::Build()
           {
             if (anIt.Value().IsEqual(anE))
             {
-              //First occurence of initial deg. edge is not replaced
+              //First occurrence of initial deg. edge is not replaced
               aCEL.Remove(anIt);
               break;
             }
             if (anIt.Value().Orientation() == anE.Orientation())
             {
-              //All other occurences of anE are replaced by any copy
+              //All other occurrences of anE are replaced by any copy
               //with suitable orientation
               isReplaced = Standard_True;
               aSubs.Replace(anE, anIt.Value());
@@ -325,7 +325,7 @@ Standard_Boolean BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theSha
 
     Handle(GeomAdaptor_Curve) HC = new GeomAdaptor_Curve();
     HC->Load(C, First, Last);
-    //Checking coinsidence axe of revolution and basis curve
+    //Checking coincidence axe of revolution and basis curve
     //This code is taken directly from GeomAdaptor_SurfaceOfRevolution
     Standard_Integer Ratio = 1;
     Standard_Real Dist;
@@ -336,10 +336,10 @@ Standard_Boolean BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theSha
       Ratio++;
     } while (Dist < Precision::Confusion() && Ratio < 100);
     //
-    if (Ratio >= 100) // edge coinsides with axes
+    if (Ratio >= 100) // edge coincides with axes
     {
       IsValid = Standard_True; //Such edges are allowed by revol algo and treated
-                               //by special way, so they must be concidered as valid
+                               //by special way, so they must be considered as valid
     }
     else
     {

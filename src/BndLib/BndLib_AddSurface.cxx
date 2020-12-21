@@ -348,7 +348,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       {
         // Bezier surface:
         // All of poles used for any parameter,
-        // thats why in case of trimmed parameters handled by grid algorithm.
+        // that's why in case of trimmed parameters handled by grid algorithm.
 
         if (Abs(UMin-S.FirstUParameter()) > PTol ||
             Abs(VMin-S.FirstVParameter()) > PTol ||

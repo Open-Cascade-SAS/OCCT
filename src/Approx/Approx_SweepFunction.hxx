@@ -52,12 +52,12 @@ public:
   
   //! compute the first  derivative in v direction  of the
   //! section for v =  param
-  //! Warning : It used only for C1 or C2 aproximation
+  //! Warning : It used only for C1 or C2 approximation
   Standard_EXPORT virtual Standard_Boolean D1 (const Standard_Real Param, const Standard_Real First, const Standard_Real Last, TColgp_Array1OfPnt& Poles, TColgp_Array1OfVec& DPoles, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d, TColStd_Array1OfReal& Weigths, TColStd_Array1OfReal& DWeigths);
   
   //! compute the second derivative  in v direction of the
   //! section  for v = param
-  //! Warning : It used only for C2 aproximation
+  //! Warning : It used only for C2 approximation
   Standard_EXPORT virtual Standard_Boolean D2 (const Standard_Real Param, const Standard_Real First, const Standard_Real Last, TColgp_Array1OfPnt& Poles, TColgp_Array1OfVec& DPoles, TColgp_Array1OfVec& D2Poles, TColgp_Array1OfPnt2d& Poles2d, TColgp_Array1OfVec2d& DPoles2d, TColgp_Array1OfVec2d& D2Poles2d, TColStd_Array1OfReal& Weigths, TColStd_Array1OfReal& DWeigths, TColStd_Array1OfReal& D2Weigths);
   
   //! get the number of 2d curves to  approximate.
@@ -105,26 +105,22 @@ public:
   //! SurfTol error inside the surface.
   Standard_EXPORT virtual void GetTolerance (const Standard_Real BoundTol, const Standard_Real SurfTol, const Standard_Real AngleTol, TColStd_Array1OfReal& Tol3d) const = 0;
   
-  //! Is usefull, if (me) have to run numerical
-  //! algorithm to perform D0, D1 or D2
+  //! Is useful, if (me) have to run numerical algorithm to perform D0, D1 or D2
   Standard_EXPORT virtual void SetTolerance (const Standard_Real Tol3d, const Standard_Real Tol2d) = 0;
   
   //! Get the barycentre of Surface.
-  //! An   very  poor estimation is sufficent.
-  //! This information is usefull to perform well
-  //! conditioned rational approximation.
+  //! An very poor estimation is sufficient.
+  //! This information is useful to perform well conditioned rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual gp_Pnt BarycentreOfSurf() const;
   
-  //! Returns the   length of the greater section. This
-  //! information is usefull to G1's control.
+  //! Returns the length of the greater section.
+  //!  Thisinformation is useful to G1's control.
   //! Warning: With an little value, approximation can be slower.
   Standard_EXPORT virtual Standard_Real MaximalSection() const;
   
-  //! Compute the minimal value of weight for each poles
-  //! in all  sections.
-  //! This information is  usefull to control error
-  //! in rational approximation.
+  //! Compute the minimal value of weight for each poles in all  sections.
+  //! This information is useful to control error in rational approximation.
   //! Warning: Used only if <me> IsRational
   Standard_EXPORT virtual void GetMinimalWeight (TColStd_Array1OfReal& Weigths) const;
 

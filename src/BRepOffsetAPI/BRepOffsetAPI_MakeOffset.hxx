@@ -66,7 +66,7 @@ public:
   
   Standard_EXPORT BRepOffsetAPI_MakeOffset(const TopoDS_Wire& Spine, const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean IsOpenResult = Standard_False);
   
-  //! Initialize the evaluation of Offseting.
+  //! Initialize the evaluation of Offsetting.
   Standard_EXPORT void Init (const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean IsOpenResult = Standard_False);
   
   //! Initializes the algorithm to construct parallels to the wire Spine.

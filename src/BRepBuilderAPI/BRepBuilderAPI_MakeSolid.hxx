@@ -79,7 +79,7 @@ public:
   //! these previous ones. Each must bound a closed volume.
   Standard_EXPORT BRepBuilderAPI_MakeSolid(const TopoDS_Shell& S1, const TopoDS_Shell& S2, const TopoDS_Shell& S3);
   
-  //! Make a solid from a solid. Usefull for adding later.
+  //! Make a solid from a solid. useful for adding later.
   Standard_EXPORT BRepBuilderAPI_MakeSolid(const TopoDS_Solid& So);
   
   //! Add a shell to a solid.

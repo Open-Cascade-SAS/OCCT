@@ -110,10 +110,10 @@ public:
   //! Computes max safe offset value for the given tolerance.
   Standard_Real GetSafeOffset(const Standard_Real theExpectedToler);
 
-  //! Returnes result shape for the given one (if exists).
+  //! Returns result shape for the given one (if exists).
   Standard_EXPORT const TopoDS_Shape Generated(const TopoDS_Shape& theShape) const;
 
-  //! Returnes modified shape for the given one (if exists).
+  //! Returns modified shape for the given one (if exists).
   Standard_EXPORT const TopoDS_Shape Modified(const TopoDS_Shape& theShape) const;
 
 protected:

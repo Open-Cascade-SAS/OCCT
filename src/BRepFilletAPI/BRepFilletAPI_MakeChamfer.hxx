@@ -136,7 +136,7 @@ public:
   //! Sets the mode of chamfer
   Standard_EXPORT void SetMode (const ChFiDS_ChamfMode theMode);
   
-  //! return True if chamfer symetric false else.
+  //! return True if chamfer symmetric false else.
   Standard_EXPORT Standard_Boolean IsSymetric (const Standard_Integer IC) const;
   
   //! return True if chamfer is made with two distances false else.

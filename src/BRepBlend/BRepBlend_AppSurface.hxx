@@ -50,7 +50,7 @@ public:
   //! Approximation     of   the   new  Surface  (and
   //! eventually the  2d    Curves   on the   support
   //! surfaces).
-  //! Normaly     the  2d    curve are
+  //! Normally     the  2d    curve are
   //! approximated  with an  tolerance   given  by   the
   //! resolution on   support surfaces,  but  if this
   //! tolerance is too large Tol2d  is used.
@@ -78,7 +78,7 @@ public:
   
     const TColStd_Array1OfInteger& SurfVMults() const;
   
-  //! returns the maximum error in the suface approximation.
+  //! returns the maximum error in the surface approximation.
   Standard_EXPORT Standard_Real MaxErrorOnSurf() const;
   
     Standard_Integer NbCurves2d() const;
@@ -102,7 +102,7 @@ public:
   
   Standard_EXPORT Standard_Real TolCurveOnSurf (const Standard_Integer Index) const;
   
-  //! diplay information on approximation.
+  //! display information on approximation.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 
 

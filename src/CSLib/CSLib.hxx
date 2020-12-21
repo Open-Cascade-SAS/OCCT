@@ -62,7 +62,7 @@ public:
 
   //! If there is a singularity on the surface  the previous method
   //! cannot compute the local normal.
-  //! This method computes an approched normal direction of a surface.
+  //! This method computes an approached normal direction of a surface.
   //! It does a limited development and needs the second derivatives
   //! on the surface as input data.
   //! It computes the normal as follow :
@@ -83,7 +83,7 @@ public:
   //! . if DNu/DNv or DNv/DNu is lower or equal than Real Epsilon
   //! Done = False, the normal is undefined
   //! . if DNu IsNull and DNv is Null Done = False, there is an
-  //! indetermination and we should do a limited developpement at
+  //! indetermination and we should do a limited development at
   //! order 2 (it means that we cannot omit Eps).
   //! . if DNu Is not Null and DNv Is not Null Done = False, there are
   //! an infinity of normals at the considered point on the surface.

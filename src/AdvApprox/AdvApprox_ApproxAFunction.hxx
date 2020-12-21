@@ -122,7 +122,7 @@ public:
   
   Standard_EXPORT Standard_Real AverageError (const Standard_Integer Dimension, const Standard_Integer Index) const;
   
-  //! diplay information on approximation.
+  //! display information on approximation.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 
 

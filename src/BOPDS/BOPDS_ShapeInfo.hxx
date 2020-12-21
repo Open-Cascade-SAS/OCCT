@@ -36,16 +36,14 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Empty constructor
+  BOPDS_ShapeInfo();
 
-  //! Empty contructor
-    BOPDS_ShapeInfo();
-virtual ~BOPDS_ShapeInfo();
-  
+  virtual ~BOPDS_ShapeInfo();
 
-  //! Contructor
-  //! theAllocator - the allocator to manage the memory
-    BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
+  //! Constructor
+  //! @param theAllocator the allocator to manage the memory
+  BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Modifier

@@ -271,7 +271,7 @@ Standard_Integer evolved(Draw_Interpretor& di, Standard_Integer n, const char** 
     di << "   Make evolved profile on spine.\n";
     di << "   -solid means make closed solid.\n";
     di << "   -v means use alternative algorithm (volume mode).\n";
-    di << "   -a means referencial CS is automatically computed, otherwise global CS is used. \n";
+    di << "   -a means referential CS is automatically computed, otherwise global CS is used. \n";
     di << "   -t sets the tolerance.\n";
     di << "   -parallel turns on parallel execution.\n";
     return 0;
@@ -760,12 +760,12 @@ static Standard_Integer buildsweep(Draw_Interpretor& di,
 {
   if (n == 1) {
     di << "build sweep result [-M/-C/-R] [-S] [tol] : options are\n";
-    di << "   -M : Discontinuities are treated by Modfication of\n";
+    di << "   -M : Discontinuities are treated by Modification of\n";
     di << "        the sweeping mode : it is the default\n";
     di << "   -C : Discontinuities are treated like Right Corner\n";
-    di << "        Treatement is Extent && Intersect\n";
+    di << "        Treatment is Extent && Intersect\n";
     di << "   -R : Discontinuities are treated like Round Corner\n";
-    di << "        Treatement is Intersect and Fill\n";
+    di << "        Treatment is Intersect and Fill\n";
     di << "   -S : To build a Solid\n";
     return 0;
   }

@@ -102,7 +102,7 @@ private:
   //! attributes to store
   Standard_EXPORT Standard_Boolean FirstPassSubTree (const TDF_Label& L, TDF_LabelList& ListOfEmptyL);
   
-  //! Write info secton using FSD_BinaryFile driver
+  //! Write info section using FSD_BinaryFile driver
   Standard_EXPORT void WriteInfoSection (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream);
   
   Standard_EXPORT void UnsupportedAttrMsg (const Handle(Standard_Type)& theType);

@@ -72,7 +72,7 @@ public:
   //! Not done.
   Standard_EXPORT BRepBuilderAPI_MakeFace();
   
-  //! Load a face. Usefull to add wires.
+  //! Load a face. useful to add wires.
   Standard_EXPORT BRepBuilderAPI_MakeFace(const TopoDS_Face& F);
   
   //! Make a face from a plane.

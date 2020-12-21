@@ -70,7 +70,7 @@ private:
   //! Adds internal vertices to discrete polygon.
   void addInternalVertices ();
 
-  //Check deflection in 2d space for improvement of edge tesselation.
+  //Check deflection in 2d space for improvement of edge tessellation.
   void splitByDeflection2d ();
 
   void splitSegment (

@@ -326,7 +326,7 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
     return myCstat;
   }
 
-  // Checks the number of occurence of an edge : maximum 2, and in this 
+  // Checks the number of occurrence of an edge : maximum 2, and in this
   // case, one time FORWARD and one time REVERSED
 
   Standard_Boolean yabug = Standard_False;

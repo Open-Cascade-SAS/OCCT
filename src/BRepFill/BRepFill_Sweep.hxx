@@ -61,7 +61,7 @@ public:
   //! Set Approximation Tolerance
   //! Tol3d : Tolerance to surface approximation
   //! Tol2d : Tolerance used to perform curve approximation
-  //! Normaly the 2d curve are approximated with a
+  //! Normally the 2d curve are approximated with a
   //! tolerance given by the resolution on support surfaces,
   //! but if this tolerance is too large Tol2d is used.
   //! TolAngular : Tolerance (in radian) to control the angle

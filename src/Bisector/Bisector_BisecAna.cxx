@@ -67,7 +67,7 @@ Bisector_BisecAna::Bisector_BisecAna()
 }
 
 //=============================================================================
-//              calcul the distance betweem the point and the bissectrice.              +
+//              calcul the distance between the point and the bissectrice.              +
 //              and orientation of the bissectrice.                             +
 //    apoint        :       point of passage.                                 +
 //    abisector     :       calculated bissectrice.                          +
@@ -345,12 +345,12 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 // 		      gp_Dir2d(circle1.Location().X() - PMil.X(), 
 // 			       circle1.Location().Y() - PMil.Y()));
       if (!circle1.Location().IsEqual(PMil,PreConf)) {
-	// PMil doesn't coinside with the circle location.
+	// PMil doesn't coincide with the circle location.
 	line = gp_Lin2d(PMil,
 			gp_Dir2d(circle1.Location().X() - PMil.X(), 
 				 circle1.Location().Y() - PMil.Y()));
       } else if (radius1 >= PreConf) {
-	// PMil coinsides with the circle location and radius is greater then 0.
+	// PMil coincides with the circle location and radius is greater then 0.
 	line = gp_Lin2d(circle1.Location(),
 			gp_Dir2d(P1.Y() - circle1.Location().Y(), 
 				 circle1.Location().X() - P1.X()));

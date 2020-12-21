@@ -160,7 +160,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     // changes due to the fact the parameters of the chamfer must go increasing
     // from surface S1 to surface S2
   if ( (dedans && !plandab) || (!dedans && plandab) ) {
-    gcon->VReverse();// be carefull : the SemiAngle was changed
+    gcon->VReverse();// be careful : the SemiAngle was changed
     ConAx3 = gcon->Position();
     SemiAngl = gcon->SemiAngle();
   }

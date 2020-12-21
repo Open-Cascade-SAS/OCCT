@@ -691,7 +691,7 @@ void BOPTools_AlgoTools2D::IsEdgeIsoline( const TopoDS_Edge& theE,
   if(aSqMagn <= gp::Resolution())
     return;
 
-  //Normalyze aT
+  //Normalize aT
   aT /= sqrt(aSqMagn);
 
   //sin(da) ~ da, when da->0.

@@ -416,7 +416,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 	myConstraints.UpdateInV(Vdec);
 	break;
       case 3 :
-//      It is necesary to cut in U and V
+//      It is necessary to cut in U and V
 	myResult.UpdateInU(Udec);
 	myConstraints.UpdateInU(Udec);
 	myResult.UpdateInV(Vdec);
@@ -796,7 +796,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
 
 //=======================================================================
 //function : ConvertBS
-//purpose  : Convertion of the approximation in BSpline Surface
+//purpose  : Conversion of the approximation in BSpline Surface
 //=======================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ConvertBS()

@@ -72,7 +72,7 @@ static Standard_Boolean IsSingular( const gp_Vec& theDU,
 //              Condition
 //                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()  
 //            has to be satisfied strictly.
-//              More over, vector Tg has to be NORMALYZED
+//              More over, vector Tg has to be NORMALIZED
 //            (if theIsTo3DTgCompute == TRUE then new computed vector will
 //            always have magnitude 1.0).
 //=======================================================================
@@ -86,7 +86,7 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
 {
   //Attention: @ \sin theAngTol \approx theAngTol @ (for cross-product)
 
-  //Really, vector theTg3D has to be normalyzed (if theIsTo3DTgCompute == FALSE).
+  //Really, vector theTg3D has to be normalized (if theIsTo3DTgCompute == FALSE).
   const Standard_Real aSQTan = theTg3D.SquareMagnitude();
 
   const Standard_Real aSqMagnDU = theDU.SquareMagnitude(),
@@ -113,7 +113,7 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
     
     if(theIsTo3DTgCompute)
     {
-      //theTg3D will be normalyzed. Its magnitude is
+      //theTg3D will be normalized. Its magnitude is
       const Standard_Real aTgMagn = 1.0;
 
       const Standard_Real aNorm = sqrt(aSqMagnDV);
@@ -156,7 +156,7 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
     
     if(theIsTo3DTgCompute)
     {
-      //theTg3D will be normalyzed. Its magnitude is
+      //theTg3D will be normalized. Its magnitude is
       const Standard_Real aTgMagn = 1.0;
 
       const Standard_Real aNorm = sqrt(aSqMagnDU);
@@ -286,7 +286,7 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
 //              Condition
 //                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()  
 //            has to be satisfied strictly.
-//              More over, vector Tg has always to be NORMALYZED.
+//              More over, vector Tg has always to be NORMALIZED.
 //=======================================================================
 static Standard_Boolean NonSingularProcessing(const gp_Vec& theDU,
                                               const gp_Vec& theDV,
@@ -621,7 +621,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
         aNormalPrm.Divide(sqrt(aSQMagnPrm));
       }
 
-      //Analogicaly for implicit surface
+      //Analogically for implicit surface
       if(aSQMagnImp < aNullValue)
       {
         isImpSingular = Standard_True;
@@ -657,7 +657,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
         //(3D- and 2D-tangents are still not defined)
 
         //Ask to pay attention to the fact that here
-        //aNormalImp and aNormalPrm are normalyzed.
+        //aNormalImp and aNormalPrm are normalized.
         //Therefore, @ \left \| \vec{Tg} \right \| = 0.0 @
         //if and only if (aNormalImp || aNormalPrm).
         Tg = aNormalImp.Crossed(aNormalPrm);
@@ -672,7 +672,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
         return Standard_False;
       }
 
-      //Normalyze Tg vector
+      //Normalize Tg vector
       Tg.Divide(sqrt(aSQMagnTg));
       MyTg = Tg;
 

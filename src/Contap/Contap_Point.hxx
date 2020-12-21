@@ -35,7 +35,7 @@ class IntSurf_Transition;
 //! Definition of a vertex on the contour line.
 //! Most of the time, such a point is an intersection
 //! between the contour and a restriction of the surface.
-//! When it is not tyhe method IsOnArc return False.
+//! When it is not the method IsOnArc return False.
 //! Such a point is contains geometrical information (see
 //! the Value method) and logical information.
 class Contap_Point 

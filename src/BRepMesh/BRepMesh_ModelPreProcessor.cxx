@@ -172,7 +172,7 @@ namespace
       return aSteps.second;
     } 
 
-    //! Splits 3D and all pcurves accoring using the specified step.
+    //! Splits 3D and all pcurves accordingly using the specified step.
     Standard_Boolean splitEdge(const IMeshData::IEdgePtr& theDEdge,
                                const Standard_Real        theDU) const
     {

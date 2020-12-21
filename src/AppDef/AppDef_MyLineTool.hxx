@@ -31,9 +31,8 @@
 class AppDef_MultiLine;
 
 
-//! example of MultiLine tool corresponding to the tools of the packages
-//! AppParCurves and Approx. For Approx, the tool will not addd points
-//! if the algorithms want some.
+//! Example of MultiLine tool corresponding to the tools of the packages AppParCurves and Approx.
+//! For Approx, the tool will not add points if the algorithms want some.
 class AppDef_MyLineTool 
 {
 public:

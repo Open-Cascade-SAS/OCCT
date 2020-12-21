@@ -227,7 +227,7 @@ static Standard_Integer draft (Draw_Interpretor& di,
       if (Inside==1)  KeepInside = Standard_False;
       MkDraft.Perform(Surf, KeepInside);
     }
-    else {  // by Lenght
+    else {  // by Length
       Standard_Real L = Draw::Atof(a[7]);
       if (L > 1.e-7) {
 	 MkDraft.Perform(L);

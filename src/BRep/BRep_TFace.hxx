@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(BRep_TFace, TopoDS_TFace)
 //! The Tface from BRep  is  based  on the TFace  from
 //! TopoDS. The TFace contains :
 //!
-//! * A suface, a tolerance and a Location.
+//! * A surface, a tolerance and a Location.
 //!
 //! * A NaturalRestriction flag,   when this  flag  is
 //! True the  boundary of the  face is known to be the

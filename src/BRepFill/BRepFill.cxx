@@ -1017,7 +1017,7 @@ TopoDS_Wire BRepFill::InsertACR(const TopoDS_Wire& wire,
       TColStd_SequenceOfReal SR;
       SR.Clear();
       // the wire is always FORWARD
-      // it is necesary to modify the parameter of cut6 if the edge is REVERSED
+      // it is necessary to modify the parameter of cut6 if the edge is REVERSED
       if (E.Orientation() == TopAbs_FORWARD) {
 	for (j=1; j<=ndec; j++) SR.Append(paradec(j));
       }

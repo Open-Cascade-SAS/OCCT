@@ -4685,7 +4685,7 @@ void RemoveSeamAndDegeneratedEdges(const TopoDS_Face& theFace,
         if (aV1.IsSame(aCurVertex))
           break;
       }
-      if (ind > aEseq.Length()) //error occured: wire is not closed
+      if (ind > aEseq.Length()) //error occurred: wire is not closed
         break;
       
       aBB.Add(aNewWire, aCurEdge);

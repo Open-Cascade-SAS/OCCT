@@ -387,7 +387,7 @@ void BinLDrivers_DocumentStorageDriver::FirstPass
 
 //=======================================================================
 //function : WriteInfoSection
-//purpose  : Write info secton using FSD_BinaryFile driver
+//purpose  : Write info section using FSD_BinaryFile driver
 //=======================================================================
 
 #define START_TYPES "START_TYPES"

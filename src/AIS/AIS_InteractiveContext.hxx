@@ -1128,7 +1128,7 @@ public:
 
   //! Allows to add or remove the object given to the list of current and highlight/unhighlight it correspondingly.
   //! Is valid for global context only; for local context use method AddOrRemoveSelected.
-  //! Since this method makes sence only for neutral point selection of a whole object,
+  //! Since this method makes sense only for neutral point selection of a whole object,
   //! if 0 selection of the object is empty this method simply does nothing.
   Standard_DEPRECATED ("Local Context is deprecated - local selection should be used without Local Context")
   void AddOrRemoveCurrentObject (const Handle(AIS_InteractiveObject)& theObj,

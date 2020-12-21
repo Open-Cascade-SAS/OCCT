@@ -48,7 +48,7 @@ public:
   //! This values defined the parametric domain of the Polynomial Equation.
   //!
   //! Coefficients :
-  //! The <Coefficients> have to be formated than an "C array"
+  //! The <Coefficients> have to be formatted than an "C array"
   //! [MaxUDegree+1] [MaxVDegree+1] [3]
   Standard_EXPORT Convert_GridPolynomialToPoles(const Standard_Integer MaxUDegree, const Standard_Integer MaxVDegree, const Handle(TColStd_HArray1OfInteger)& NumCoeff, const Handle(TColStd_HArray1OfReal)& Coefficients, const Handle(TColStd_HArray1OfReal)& PolynomialUIntervals, const Handle(TColStd_HArray1OfReal)& PolynomialVIntervals);
   
@@ -61,7 +61,7 @@ public:
   //! this is the true parameterisation for the composite surface
   //!
   //! Coefficients :
-  //! The Coefficients have to be formated than an "C array"
+  //! The Coefficients have to be formatted than an "C array"
   //! [NbVSurfaces] [NBUSurfaces] [MaxUDegree+1] [MaxVDegree+1] [3]
   //! raises DomainError    if <NumCoeffPerSurface> is not a
   //! [1, NbVSurfaces*NbUSurfaces, 1,2] array.

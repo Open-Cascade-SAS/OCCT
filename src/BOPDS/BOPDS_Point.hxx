@@ -37,7 +37,7 @@ public:
 
   
 
-  //! Empty contructor
+  //! Empty constructor
     BOPDS_Point();
 virtual ~BOPDS_Point();
   

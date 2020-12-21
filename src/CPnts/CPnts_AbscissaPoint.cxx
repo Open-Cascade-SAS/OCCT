@@ -20,7 +20,7 @@
 //  calculate the total length of the curve
 //  calculate an approached point by assimilating the curve to a staight line
 //  calculate the length of the curve between the start point and the approached point
-//  by succsessive iteration find the point and its associated parameter
+//  by successive iteration find the point and its associated parameter
 //  call to FunctionRoot
 
 #include <Adaptor2d_Curve2d.hxx>

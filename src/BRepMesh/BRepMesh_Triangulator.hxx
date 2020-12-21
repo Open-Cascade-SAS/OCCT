@@ -31,7 +31,7 @@
 
 class Message_Messenger;
 
-//! Auxilary tool to generate triangulation
+//! Auxiliary tool to generate triangulation
 class BRepMesh_Triangulator
 {
 public:
@@ -51,7 +51,7 @@ public:
     const NCollection_List<TColStd_SequenceOfInteger>& theWires,
     const gp_Dir&                                      theNorm);
 
-  //! Perfroms triangulation of source wires and stores triangles the the output list.
+  //! Performs triangulation of source wires and stores triangles the the output list.
   Standard_EXPORT Standard_Boolean Perform (NCollection_List<Poly_Triangle>& thePolyTriangles);
 
   //! Set messenger for output information
@@ -65,12 +65,12 @@ public:
 
 private:
 
-  // auxilary for makeTrianglesUsingBRepMesh
+  // auxiliary for makeTrianglesUsingBRepMesh
   void addTriange34 (
     const TColStd_SequenceOfInteger&  theW,
     NCollection_List<Poly_Triangle>&  thePolyTriangles);
 
-  // auxilary for addTriange34
+  // auxiliary for addTriange34
   Standard_Boolean checkCondition(
     const int                       (&theNodes)[4],
     const TColStd_SequenceOfInteger&  theWire);
@@ -78,7 +78,7 @@ private:
   // performs initialization of mesh data structure.
   Standard_Boolean prepareMeshStructure();
 
-  // auxilary for triangulation
+  // auxiliary for triangulation
   Standard_Boolean triangulate (NCollection_List<Poly_Triangle>& thePolyTriangles);
 
 private:

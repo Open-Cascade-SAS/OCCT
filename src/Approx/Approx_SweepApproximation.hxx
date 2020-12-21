@@ -72,7 +72,7 @@ public:
   //! [First, Last] : Approx_SweepApproximation.cdl
   //! Tol3d : Tolerance to surface approximation
   //! Tol2d : Tolerance used to perform curve approximation
-  //! Normaly the 2d curve are approximated with a
+  //! Normally the 2d curve are approximated with a
   //! tolerance given by the resolution on support surfaces,
   //! but if this tolerance is too large Tol2d is used.
   //! TolAngular : Tolerance (in radian) to control the angle
@@ -111,10 +111,10 @@ public:
   
     const TColStd_Array1OfInteger& SurfVMults() const;
   
-  //! returns the maximum error in the suface approximation.
+  //! returns the maximum error in the surface approximation.
   Standard_EXPORT Standard_Real MaxErrorOnSurf() const;
   
-  //! returns the average error in the suface approximation.
+  //! returns the average error in the surface approximation.
   Standard_EXPORT Standard_Real AverageErrorOnSurf() const;
   
     Standard_Integer NbCurves2d() const;

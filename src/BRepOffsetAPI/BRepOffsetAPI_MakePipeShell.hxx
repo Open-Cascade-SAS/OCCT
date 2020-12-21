@@ -118,9 +118,9 @@ public:
   //! Possibilities are :
   //! - Give one or sevral section
   //! - Give one profile and an homotetic law.
-  //! - Automatic compute of correspondance between spine, and section
+  //! - Automatic compute of correspondence between spine, and section
   //! on the sweeped shape
-  //! - correspondance between spine, and section on the sweeped shape
+  //! - correspondence between spine, and section on the sweeped shape
   //! defined by a vertex of the spine
   Standard_EXPORT void SetMode (const TopoDS_Wire& AuxiliarySpine, const Standard_Boolean CurvilinearEquivalence, const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
   
@@ -230,7 +230,7 @@ public:
   Standard_EXPORT void SetTransitionMode (const BRepBuilderAPI_TransitionMode Mode = BRepBuilderAPI_Transformed);
   
   //! Simulates the resulting shape by calculating its
-  //! cross-sections. The spine is devided by this
+  //! cross-sections. The spine is divided by this
   //! cross-sections into (NumberOfSection - 1) equal
   //! parts, the number of cross-sections is
   //! NumberOfSection. The cross-sections are wires and

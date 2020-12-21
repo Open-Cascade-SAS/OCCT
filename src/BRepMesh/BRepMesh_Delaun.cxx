@@ -936,7 +936,7 @@ void BRepMesh_Delaun::frontierAdjust()
   cleanupMesh();
 
   // When the mesh has been cleaned up, try to process frontier edges 
-  // once again to fill the possible gaps that might be occured in case of "saw" -
+  // once again to fill the possible gaps that might be occurred in case of "saw" -
   // situation when frontier edge has a triangle at a right side, but its free 
   // links cross another frontieres  and meshLeftPolygonOf itself can't collect 
   // a closed polygon.
@@ -953,7 +953,7 @@ void BRepMesh_Delaun::frontierAdjust()
 
 //=======================================================================
 //function : fillBndBox
-//purpose  : Add boundig box for edge defined by start & end point to
+//purpose  : Add bounding box for edge defined by start & end point to
 //           the given vector of bounding boxes for triangulation edges
 //=======================================================================
 void BRepMesh_Delaun::fillBndBox(IMeshData::SequenceOfBndB2d& theBoxes,
@@ -1004,7 +1004,7 @@ Standard_Boolean BRepMesh_Delaun::meshLeftPolygonOf(
   if ( aRefLinkDir.SquareMagnitude() < Precision2 )
     return Standard_True;
 
-  // Auxilary structures.
+  // Auxiliary structures.
   // Bounding boxes of polygon links to be used for preliminary
   // analysis of intersections
   IMeshData::SequenceOfBndB2d aBoxes;
@@ -1096,7 +1096,7 @@ Standard_Boolean BRepMesh_Delaun::meshLeftPolygonOf(
 //           angle respect the given reference link.
 //           Each time the next link is found other neighbor links at the 
 //           pivot node are marked as leprous and will be excluded from 
-//           consideration next time until a hanging end is occured.
+//           consideration next time until a hanging end is occurred.
 //=======================================================================
 Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
   const Standard_Integer&               theFirstNode,
@@ -1204,7 +1204,7 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
 //=======================================================================
 //function : checkIntersection
 //purpose  : Check is the given link intersects the polygon boundaries.
-//           Returns bounding box for the given link trough the 
+//           Returns bounding box for the given link through the
 //           <theLinkBndBox> parameter.
 //=======================================================================
 Standard_Boolean BRepMesh_Delaun::checkIntersection( 
@@ -1454,7 +1454,7 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
       }
     }
 
-    // Add link to the survivers to avoid cycling
+    // Add link to the survivors to avoid cycling
     theSurvivedLinks.Add( aNeighborLinkId );
     killLinkTriangles( aNeighborLinkId, theLoopEdges );
   }
@@ -1760,7 +1760,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
 
         // In this context only intersections between frontier edges
         // are possible. If intersection between edges of different
-        // types occured - treat this case as invalid (i.e. result 
+        // types occurred - treat this case as invalid (i.e. result 
         // might not reflect the expectations).
         if ( !theSkipped.IsNull() )
         {
@@ -1771,7 +1771,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
       }
       else if ( aIntFlag == BRepMesh_GeomTool::PointOnSegment )
       {
-        // Indentify chopping link 
+        // Identify chopping link 
         Standard_Boolean isFirstChopping = Standard_False;
         Standard_Integer aCheckPointIt = 0;
         for ( ; aCheckPointIt < 2; ++aCheckPointIt )
@@ -2034,7 +2034,7 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
       continue;
     }
 
-    // Check is the test link crosses the polygon boudaries
+    // Check is the test link crosses the polygon boundaries
     Standard_Boolean isIntersect = Standard_False;
     for ( Standard_Integer aRefLinkNodeIt = 0; aRefLinkNodeIt < 2; ++aRefLinkNodeIt )
     {

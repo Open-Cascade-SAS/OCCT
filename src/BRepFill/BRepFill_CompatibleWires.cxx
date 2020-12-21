@@ -1372,7 +1372,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 	dec2(k) = dec(k);
       }
       
-      //Check of cuts: are all the new edges long enouph or not
+      //Check of cuts: are all the new edges long enough or not
       TColStd_MapOfInteger CutsToRemove;
       for (k = 1; k <= nbdec; k++)
       {

@@ -122,7 +122,7 @@ public:
 
 protected:
 
-  //! Initializes the datas of a Window.
+  //! Initializes the data of a Window.
   Standard_EXPORT Aspect_Window();
 
 protected:

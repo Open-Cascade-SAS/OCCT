@@ -68,7 +68,7 @@ public:
   //! Set the radius of the contour of index IC.
   Standard_EXPORT void SetRadius (const Handle(Law_Function)& C, const Standard_Integer IC, const Standard_Integer IinC);
   
-  //! Returns true the contour is flaged as edge constant.
+  //! Returns true the contour is flagged as edge constant.
   Standard_EXPORT Standard_Boolean IsConstant (const Standard_Integer IC);
   
   //! Returns the vector if the contour is flagged as edge

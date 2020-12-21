@@ -53,8 +53,8 @@ public:
   
   Standard_EXPORT virtual TCollection_ExtendedString BuildFileName (const Handle(CDM_Document)& aDocument) = 0;
   
-  //! this methods  is usefull if the name  of an  object --
-  //! depends on  the metadatadriver. For  example a Driver
+  //! this method is useful if the name of an object --
+  //! depends on the metadatadriver. For  example a Driver
   //! -- based  on the operating  system can choose to  add
   //! the extension of file to create to the object.
   Standard_EXPORT virtual TCollection_ExtendedString SetName (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aName);

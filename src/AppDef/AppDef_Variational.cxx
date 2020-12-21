@@ -921,11 +921,13 @@ void AppDef_Variational::Dump(Standard_OStream& o) const
     o << " NbSegments           "  << myKnots->Length()-1 << std::endl;
   }
   else
-  { if (myIsOverConstr) o << "The probleme is overconstraint " << std::endl;
-  else o << " Erreur dans l''approximation" << std::endl;
-  }   
+  {
+    o << (myIsOverConstr
+       ? " The problem is overconstraint"
+       : " Error in approximation") << std::endl;
+  }
 }
-//
+
 //=======================================================================
 //function : SetConstraints
 //purpose  : Define the constraints to approximate

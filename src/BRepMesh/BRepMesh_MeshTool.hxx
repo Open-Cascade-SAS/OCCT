@@ -151,7 +151,7 @@ public:
   Standard_EXPORT void CleanFrontierLinks();
 
   //! Erases the given set of triangles.
-  //! Fills map of loop edges forming the countour surrounding the erased triangles.
+  //! Fills map of loop edges forming the contour surrounding the erased triangles.
   void EraseTriangles(const IMeshData::MapOfInteger&  theTriangles,
                       IMeshData::MapOfIntegerInteger& theLoopEdges);
 

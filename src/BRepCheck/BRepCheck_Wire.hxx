@@ -64,7 +64,7 @@ public:
   //! **BRepCheck_NotConnected,   if    wire    is   not
   //! topologically closed
   //! **BRepCheck_RedundantEdge, if an  edge  is in wire
-  //! more than 3 times  or  in  case of 2 occurences if
+  //! more than 3 times  or  in  case of 2 occurrences if
   //! not with FORWARD and REVERSED orientation.
   //! **BRepCheck_NoError
   Standard_EXPORT BRepCheck_Status Closed (const Standard_Boolean Update = Standard_False);

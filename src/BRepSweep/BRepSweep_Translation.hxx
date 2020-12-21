@@ -113,7 +113,7 @@ public:
   Standard_EXPORT Standard_Boolean GDDShapeIsToAdd (const TopoDS_Shape& aNewShape, const TopoDS_Shape& aNewSubShape, const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS, const Sweep_NumShape& aSubDirS) const;
   
   //! In  some  particular  cases  the   topology  of  a
-  //! generated  face must be  composed  of  independant
+  //! generated  face must be  composed  of  independent
   //! closed wires,  in this case  this function returns
   //! true.
   //! Here it always returns false.

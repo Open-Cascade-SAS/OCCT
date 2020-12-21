@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ShapeTool, Standard_Transient)
 
 namespace
 {
-  //! Auxilary struct to take a tolerance of edge.
+  //! Auxiliary struct to take a tolerance of edge.
   struct EdgeTolerance
   {
     static Standard_Real Get(const TopoDS_Shape& theEdge)
@@ -39,7 +39,7 @@ namespace
     }
   };
 
-  //! Auxilary struct to take a tolerance of vertex.
+  //! Auxiliary struct to take a tolerance of vertex.
   struct VertexTolerance
   {
     static Standard_Real Get(const TopoDS_Shape& theVertex)

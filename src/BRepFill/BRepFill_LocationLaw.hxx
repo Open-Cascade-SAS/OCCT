@@ -106,14 +106,13 @@ public:
   //! 0  : It is connex (G0)
   //! 1  : It is tangent (G1)
   Standard_EXPORT Standard_Integer IsG1 (const Standard_Integer Index, const Standard_Real SpatialTolerance = 1.0e-7, const Standard_Real AngularTolerance = 1.0e-4) const;
-  
-  //! Apply the Law to a shape, for a given Curnilinear abscissa
+
+  //! Apply the Law to a shape, for a given Curvilinear abscissa
   Standard_EXPORT void D0 (const Standard_Real Abscissa, TopoDS_Shape& Section);
-  
-  //! Find the  index Law  and the  parmaeter, for  a given
-  //! Curnilinear abscissa
+
+  //! Find the index Law and the parameter, for a given Curvilinear abscissa
   Standard_EXPORT void Parameter (const Standard_Real Abscissa, Standard_Integer& Index, Standard_Real& Param);
-  
+
   //! Return the curvilinear abscissa  corresponding to a point
   //! of  the path, defined by  <Index>  of  Edge and a
   //! parameter on the edge.

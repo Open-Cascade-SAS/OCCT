@@ -42,7 +42,7 @@ public:
   
   Standard_EXPORT BRepSweep_Iterator();
   
-  //! Resest the Iterator on sub-shapes of <aShape>.
+  //! Reset the Iterator on sub-shapes of <aShape>.
   Standard_EXPORT void Init (const TopoDS_Shape& aShape);
   
   //! Returns True if there is a current sub-shape.

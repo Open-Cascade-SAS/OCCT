@@ -1300,7 +1300,7 @@ Standard_Boolean BRepFeat_RibSlot::SlidingProfile(TopoDS_Face& Prof,
       Standard_Real par1 = ElCLib::Parameter(ln1->Lin(), myFirstPnt);
       Standard_Real par2 = ElCLib::Parameter(ln2->Lin(), myLastPnt);
       if(par1 >= myTol  ||  par2 >= myTol)  {
-        Concavite = 2;    //paralel and concave
+        Concavite = 2;    //parallel and concave
         BRepLib_MakeEdge e1(myLastPnt, myFirstPnt);
         WW.Add(e1);
       } 

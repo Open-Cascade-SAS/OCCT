@@ -724,8 +724,8 @@ void ChFi3d_ExtrSpineCarac(const TopOpeBRepDS_DataStructure& DStr,
 }
 //=======================================================================
 //function : ChFi3d_CircularSpine
-//purpose  : Calculate a cicular guideline for the corner created from  
-//           tangent points and vectors calculated at the extremities 
+//purpose  : Calculate a circular guideline for the corner created from
+//           tangent points and vectors calculated at the extremities
 //           of guidelines of start and end fillets.
 //=======================================================================
 Handle(Geom_Circle) ChFi3d_CircularSpine(Standard_Real&      WFirst,
@@ -1845,7 +1845,7 @@ Standard_EXPORT void ChFi3d_FilCommonPoint(const BRepBlend_Extremity& SP,
       Dist = DistL; }
 
       if (Dist <= maxtol + BRep_Tool::Tolerance(V[Index_min]) ) { 
-        // a prexisting vertex has been met
+        // a preexisting vertex has been met
         CP.SetVertex(V[Index_min]); //the old vertex is loaded
         CP.SetPoint( BRep_Tool::Pnt(V[Index_min]) );
         maxtol = Max(BRep_Tool::Tolerance(V[Index_min]),maxtol);
@@ -3203,7 +3203,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)&   S1,
         if(nbl==0) {
 
           //  solution of adjustment for SGI 
-          //  if the intersection of gs1 with gs2 doesnot worke 
+          //  if the intersection of gs1 with gs2 does not work
           //  then the intersection of gs2 with gs1 is attempted.
 
           inter.Perform(gs2,gs1,tolap,1,1,1);
@@ -3282,7 +3282,7 @@ Standard_Boolean ChFi3d_ComputeCurves(const Handle(Adaptor3d_Surface)&   S1,
             C3d = new Geom_TrimmedCurve(C3d,Uf,Ul);
             Pc1 = new Geom2d_TrimmedCurve(Pc1,Uf,Ul);
             Pc2 = new Geom2d_TrimmedCurve(Pc2,Uf,Ul);
-            //is it necesary to invert ?
+            //is it necessary to invert ?
             Standard_Real DistDebToDeb = ptestdeb.Distance(pdeb);
             Standard_Real DistDebToFin = ptestdeb.Distance(pfin);
             Standard_Real DistFinToFin = ptestfin.Distance(pfin);

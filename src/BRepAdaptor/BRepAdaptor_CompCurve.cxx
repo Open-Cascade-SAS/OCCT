@@ -116,7 +116,7 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
     }
   }
 
-  Forward = Standard_True; // Defaut ; The Reverse Edges are parsed.
+  Forward = Standard_True; // Default ; The Reverse Edges are parsed.
   if((NbEdge > 2) || ((NbEdge==2) && (!myWire.Closed())) ) {
     TopAbs_Orientation Or = myCurves->Value(1).Edge().Orientation();
     TopoDS_Vertex VI, VL;

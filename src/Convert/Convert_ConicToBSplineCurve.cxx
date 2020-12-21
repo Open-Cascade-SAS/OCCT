@@ -168,8 +168,7 @@ Standard_Integer Convert_ConicToBSplineCurve::Multiplicity
 //                     U   +  V 
 //                                                    2     2
 //  such that the derivative at the domain bounds of U   + V   is 0.0e0 
-//  with is helpfull when having to make a C1 BSpline  by merging two
-//  BSpline toghether
+//  with is helpful when having to make a C1 BSpline by merging two BSpline together
 //=======================================================================
 
 void CosAndSinRationalC1(Standard_Real Parameter,
@@ -507,7 +506,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
         if (alpha_2 < 1.0e-7)
         {
           // Fixed degenerate case, when obtain 0 / 0 uncertainty.
-          // According to Taylor aprroximation:
+          // According to Taylor approximation:
           // b (gamma) = -6.0 / 15.0 + o(gamma^2)
           p_param = -6.0 / 15.0;
         }

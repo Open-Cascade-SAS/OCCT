@@ -60,7 +60,7 @@ public:
   //!
   //! Created(E) = E'
   //! with: E  = an edge of <Face>
-  //! E' = the image of E in the offseting  of
+  //! E' = the image of E in the offsetting  of
   //! another  face  sharing E  with a
   //! continuity at least G1
   Standard_EXPORT BRepOffset_Offset(const TopoDS_Face& Face, const Standard_Real Offset, const TopTools_DataMapOfShapeShape& Created, const Standard_Boolean OffsetOutside = Standard_True, const GeomAbs_JoinType JoinType = GeomAbs_Arc);
@@ -70,7 +70,7 @@ public:
   Standard_EXPORT BRepOffset_Offset(const TopoDS_Edge& Path, const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2, const Standard_Real Offset, const TopoDS_Edge& FirstEdge, const TopoDS_Edge& LastEdge, const Standard_Boolean Polynomial = Standard_False, const Standard_Real Tol = 1.0e-4, const GeomAbs_Shape Conti = GeomAbs_C1);
   
   //! Tol and Conti are only used if Polynomial is True
-  //! (Used to perfrom the approximation)
+  //! (Used to perform the approximation)
   Standard_EXPORT BRepOffset_Offset(const TopoDS_Vertex& Vertex, const TopTools_ListOfShape& LEdge, const Standard_Real Offset, const Standard_Boolean Polynomial = Standard_False, const Standard_Real Tol = 1.0e-4, const GeomAbs_Shape Conti = GeomAbs_C1);
   
   Standard_EXPORT void Init (const TopoDS_Face& Face, const Standard_Real Offset, const Standard_Boolean OffsetOutside = Standard_True, const GeomAbs_JoinType JoinType = GeomAbs_Arc);
@@ -82,7 +82,7 @@ public:
   Standard_EXPORT void Init (const TopoDS_Edge& Path, const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2, const Standard_Real Offset, const TopoDS_Edge& FirstEdge, const TopoDS_Edge& LastEdge, const Standard_Boolean Polynomial = Standard_False, const Standard_Real Tol = 1.0e-4, const GeomAbs_Shape Conti = GeomAbs_C1);
   
   //! Tol and Conti are only used if Polynomial is True
-  //! (Used to perfrom the approximation)
+  //! (Used to perform the approximation)
   Standard_EXPORT void Init (const TopoDS_Vertex& Vertex, const TopTools_ListOfShape& LEdge, const Standard_Real Offset, const Standard_Boolean Polynomial = Standard_False, const Standard_Real Tol = 1.0e-4, const GeomAbs_Shape Conti = GeomAbs_C1);
   
   //! Only used in Rolling Ball. Pipe on Free Boundary

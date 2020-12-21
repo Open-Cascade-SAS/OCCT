@@ -338,7 +338,7 @@ public: //! @name Images/Origins
 protected: //! @name Methods for building the result
 
   //! Performs the building of the result.
-  //! The method calls the PerfromInternal1() method surrounded by a try-catch block.
+  //! The method calls the PerformInternal1() method surrounded by a try-catch block.
   Standard_EXPORT virtual void PerformInternal (const BOPAlgo_PaveFiller& thePF);
 
   //! Performs the building of the result.

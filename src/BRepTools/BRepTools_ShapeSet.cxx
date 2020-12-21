@@ -77,7 +77,7 @@
 //                Workaround is following: Now we don`t use tellg for get position in stream.
 //                Now able to read file (when reading TopAbs_FACE) without tellg. 
 //                We simple check the next string if there are value that equal 2 
-//               (It means a parametr for triangulation).
+//               (It means a parameter for triangulation).
 
 
 //=======================================================================

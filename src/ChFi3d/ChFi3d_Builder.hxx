@@ -180,9 +180,8 @@ public:
   //! of  failure WalkingFailure,TwistedSurface,Error, Ok
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus (const Standard_Integer IC) const;
   
-  //! Reset all  results of   compute and returns the  algorythm
-  //! in  the  state  of  the  last  acquisition to
-  //! enable modification of contours or areas.
+  //! Reset all results of compute and returns the algorithm
+  //! in the state of the last acquisition to enable modification of contours or areas.
   Standard_EXPORT void Reset();
   
   //! Returns the Builder of  topologic operations.

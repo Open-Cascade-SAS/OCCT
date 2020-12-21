@@ -49,7 +49,7 @@ class BOPAlgo_PaveFiller;
 //!
 //! 3. Build solids from <myFaces> using BOPAlgo_BuilderSolid algorithm;
 //!
-//! 4. Treat the result: Eliminate solid containig faces from <mySBox>;
+//! 4. Treat the result: Eliminate solid containing faces from <mySBox>;
 //!
 //! 5. Fill internal shapes: add internal vertices and edges into
 //! created solids;
@@ -115,11 +115,11 @@ public:
 
   
 
-  //! Empty contructor.
+  //! Empty constructor.
   BOPAlgo_MakerVolume();
   virtual ~BOPAlgo_MakerVolume();
 
-  //! Empty contructor.
+  //! Empty constructor.
   BOPAlgo_MakerVolume(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Clears the data.

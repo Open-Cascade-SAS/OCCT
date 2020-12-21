@@ -1675,7 +1675,7 @@ int maoverf_(integer *nbentr,
 /*       Other types of tables (INTEGER*2, INTEGER, REAL, ...) */
 /*       are not managed by the routine. */
 
-/*       It is usable in phase of developpement to detect the */
+/*       It is usable in phase of development to detect the */
 /*       errors of initialization. */
 
 /*       In official version, these calls will be inactive. */
@@ -1770,7 +1770,7 @@ int maoverf_(integer *nbentr,
 
 /*      TABLES */
 
-/*      DATAS */
+/*      DATA */
     /* Parameter adjustments */
   --dtable;
   

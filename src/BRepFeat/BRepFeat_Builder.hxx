@@ -60,10 +60,10 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
   //! Clears internal fields and arguments.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
-  //! Initialyzes the object of local boolean operation.
+  //! Initializes the object of local boolean operation.
   Standard_EXPORT void Init (const TopoDS_Shape& theShape);
   
-  //! Initialyzes the arguments of local boolean operation.
+  //! Initializes the arguments of local boolean operation.
   Standard_EXPORT void Init (const TopoDS_Shape& theShape, const TopoDS_Shape& theTool);
   
   //! Sets the operation of local boolean operation.
@@ -80,7 +80,7 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
   //! Collects parts of the tool.
   Standard_EXPORT void PartsOfTool (TopTools_ListOfShape& theLT);
   
-  //! Initialyzes parts of the tool for second step of algorithm.
+  //! Initializes parts of the tool for second step of algorithm.
   //! Collects shapes and all sub-shapes into myShapes map.
   Standard_EXPORT void KeepParts (const TopTools_ListOfShape& theIm);
   

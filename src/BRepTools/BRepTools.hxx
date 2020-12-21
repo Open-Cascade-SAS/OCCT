@@ -141,7 +141,7 @@ public:
   //! Update a compound (nothing is done)
   Standard_EXPORT static void Update (const TopoDS_Compound& C);
   
-  //! Update a shape, call the corect update.
+  //! Update a shape, call the correct update.
   Standard_EXPORT static void Update (const TopoDS_Shape& S);
   
   //! For each edge of the face <F> reset the UV points

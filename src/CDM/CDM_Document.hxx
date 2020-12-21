@@ -213,8 +213,8 @@ public:
   //! Returns empty sequence if no comments are associated.
   Standard_EXPORT void Comments (TColStd_SequenceOfExtendedString& aComments) const;
   
-  //! returns the first of associated comments. By defaut
-  //! the comment is an empty string.
+  //! Returns the first of associated comments.
+  //! By default the comment is an empty string.
   Standard_EXPORT Standard_ExtString Comment() const;
   
   Standard_EXPORT Standard_Boolean IsStored() const;
@@ -244,10 +244,9 @@ public:
   //! defines the name under which the object should be stored.
   Standard_EXPORT void SetRequestedName (const TCollection_ExtendedString& aName);
   
-  //! determines  under  which the document  is  going to be
-  //! store.  By default the name of the document wil be --
-  //! used.  If the document has  no name  its presentation
-  //! will be used.
+  //! Determines under which the document is going to be store.
+  //! By default the name of the document will be used.
+  //! If the document has no name its presentation will be used.
   Standard_EXPORT TCollection_ExtendedString RequestedName();
   
   Standard_EXPORT void SetRequestedPreviousVersion (const TCollection_ExtendedString& aPreviousVersion);

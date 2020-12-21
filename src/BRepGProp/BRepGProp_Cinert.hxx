@@ -32,7 +32,7 @@ class gp_Pnt;
 //! It can be a curve as defined in the template CurveTool from
 //! package GProp. This template gives the minimum of methods
 //! required to evaluate the global properties of a curve 3D with
-//! the algorithmes of GProp.
+//! the algorithms of GProp.
 class BRepGProp_Cinert  : public GProp_GProps
 {
 public:

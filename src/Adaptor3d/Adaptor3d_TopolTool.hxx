@@ -30,18 +30,14 @@ class Adaptor3d_HVertex;
 DEFINE_STANDARD_HANDLE(Adaptor3d_TopolTool, Standard_Transient)
 
 //! This class provides a default topological tool,
-//! based on the Umin,Vmin,Umax,Vmax of an HSurface
-//! from Adaptor3d.
-//! All methods and fields may be redefined when
-//! inheriting from this class.
-//! This class is used to instantiate algorithmes
-//! as Intersection, outlines,...
+//! based on the Umin,Vmin,Umax,Vmax of an HSurface from Adaptor3d.
+//! All methods and fields may be redefined when inheriting from this class.
+//! This class is used to instantiate algorithms as Intersection, outlines,...
 class Adaptor3d_TopolTool : public Standard_Transient
 {
 
 public:
 
-  
   Standard_EXPORT Adaptor3d_TopolTool();
   
   Standard_EXPORT Adaptor3d_TopolTool(const Handle(Adaptor3d_Surface)& Surface);
@@ -127,31 +123,32 @@ public:
   Standard_EXPORT virtual Standard_Boolean DomainIsInfinite();
   
   Standard_EXPORT virtual Standard_Address Edge() const;
-  
-  //! compute the sample-points for the intersections algorithms
-  //! by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
-  //! is the same as in method ComputeSamplePoints(), but only fill arrays of U
-  //! and V sample parameters;
-  //! theDefl is a requred deflection
-  //! theNUmin, theNVmin are minimal nb points for U and V.
-  Standard_EXPORT virtual void SamplePnts (const Standard_Real theDefl, const Standard_Integer theNUmin, const Standard_Integer theNVmin);
-  
-  //! compute the sample-points for the intersections algorithms
-  //! by adaptive algorithm for BSpline surfaces  -  is  used  in  SamplePnts
-  //! theDefl is a requred deflection
-  //! theNUmin, theNVmin are minimal nb points for U and V.
-  Standard_EXPORT virtual void BSplSamplePnts (const Standard_Real theDefl, const Standard_Integer theNUmin, const Standard_Integer theNVmin);
-  
+
+  //! Compute the sample-points for the intersections algorithms by adaptive algorithm for BSpline surfaces.
+  //! For other surfaces algorithm is the same as in method ComputeSamplePoints(),
+  //! but only fill arrays of U and V sample parameters;
+  //! @param theDefl  [in] a required deflection
+  //! @param theNUmin [in] minimal nb points for U
+  //! @param theNVmin [in] minimal nb points for V
+  Standard_EXPORT virtual void SamplePnts (const Standard_Real theDefl,
+                                           const Standard_Integer theNUmin,
+                                           const Standard_Integer theNVmin);
+
+  //! Compute the sample-points for the intersections algorithms
+  //! by adaptive algorithm for BSpline surfaces - is used in SamplePnts
+  //! @param theDefl  [in] required deflection
+  //! @param theNUmin [in] minimal nb points for U
+  //! @param theNVmin [in] minimal nb points for V
+  Standard_EXPORT virtual void BSplSamplePnts (const Standard_Real theDefl,
+                                               const Standard_Integer theNUmin,
+                                               const Standard_Integer theNVmin);
+
   //! Returns true if provide uniform sampling of points.
   Standard_EXPORT virtual Standard_Boolean IsUniformSampling() const;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool,Standard_Transient)
 
 protected:
-
 
   Handle(Adaptor3d_Surface) myS;
   Standard_Integer myNbSamplesU;
@@ -159,9 +156,7 @@ protected:
   Handle(TColStd_HArray1OfReal) myUPars;
   Handle(TColStd_HArray1OfReal) myVPars;
 
-
 private:
-
 
   Standard_Integer nbRestr;
   Standard_Integer idRestr;
@@ -174,13 +169,6 @@ private:
   Standard_Integer idVtx;
   Handle(Adaptor3d_HVertex) myVtx[2];
 
-
 };
-
-
-
-
-
-
 
 #endif // _Adaptor3d_TopolTool_HeaderFile

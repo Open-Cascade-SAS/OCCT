@@ -89,7 +89,7 @@ public:
   //! vertex, an edge or a face)
   Standard_EXPORT Standard_Boolean IsCopied (const TopoDS_Shape& S) const;
   
-  //! Returns the shape  substitued to <S> in the Quilt.
+  //! Returns the shape substituted to <S> in the Quilt.
   Standard_EXPORT const TopoDS_Shape& Copy (const TopoDS_Shape& S) const;
   
   //! Returns a Compound of shells made from the current

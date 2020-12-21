@@ -594,9 +594,9 @@ void BRepLib_FuseEdges::Perform()
 //=======================================================================
 //function : BuildListConnexEdge
 //purpose  : giving one edge, build the list of connex edges which have
-// vertices that have only two connex edges. All the edges that are addes
+// vertices that have only two connex edges. All the edges that are added
 // to the list must be added also to the mapUniq, in order for the caller
-// to not treat again theses edges.
+// to not treat again these edges.
 // This list is always oriented in the "Forward" direction.
 //=======================================================================
 

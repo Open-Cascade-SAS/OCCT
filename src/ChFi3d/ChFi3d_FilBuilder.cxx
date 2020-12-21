@@ -1872,7 +1872,7 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
   Handle(ChFiDS_Stripe) Stripe;
   Handle(ChFiDS_Spine)  Spine;
 
-  // A value of symetric extension is calculated
+  // A value of symmetric extension is calculated
   for ( ; itel.More(); itel.Next()) {    
    Stripe = itel.Value();
    Spine = Stripe->Spine();

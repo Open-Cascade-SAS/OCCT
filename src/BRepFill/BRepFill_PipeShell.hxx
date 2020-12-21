@@ -125,18 +125,14 @@ public:
   //! Possibilities are :
   //! - Give one or sevral profile
   //! - Give one profile and an homotetic law.
-  //! - Automatic compute of correspondance between profile, and section
-  //! on the sweeped shape
-  //! - correspondance between profile, and section on the sweeped shape
-  //! defined by a vertex of the spine
+  //! - Automatic compute of correspondence between profile, and section on the sweeped shape
+  //! - correspondence between profile, and section on the sweeped shape defined by a vertex of the spine
   Standard_EXPORT void SetForceApproxC1 (const Standard_Boolean ForceApproxC1);
-  
-  //! Set an section. The corespondance with the spine, will
-  //! be automaticaly performed.
+
+  //! Set an section. The correspondence with the spine, will be automaticaly performed.
   Standard_EXPORT void Add (const TopoDS_Shape& Profile, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
-  
-  //! Set an section.   The corespondance with the spine, is
-  //! given by  <Location>
+
+  //! Set an section. The correspondence with the spine, is given by Location.
   Standard_EXPORT void Add (const TopoDS_Shape& Profile, const TopoDS_Vertex& Location, const Standard_Boolean WithContact = Standard_False, const Standard_Boolean WithCorrection = Standard_False);
   
   //! Set  an    section  and  an   homotetic    law.

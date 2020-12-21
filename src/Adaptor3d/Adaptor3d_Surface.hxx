@@ -46,16 +46,14 @@ DEFINE_STANDARD_HANDLE(Adaptor3d_Surface, Standard_Transient)
 //! of a surface for generic algorithms.
 //!
 //! The Surface can  be decomposed in intervals of any
-//! continuity    in  U    and    V using  the  method
-//! NbIntervals.  A current interval can be set.  Most
-//! of the methods apply to the current interval.
+//! continuity in U and V using the method NbIntervals.
+//! A current interval can be set.
+//! Most of the methods apply to the current interval.
 //! Warning: All the methods are virtual and implemented with a
-//! raise to allow to redefined only the methods realy
-//! used.
+//! raise to allow to redefined only the methods really used.
 //!
-//! Polynomial coefficients of BSpline surfaces used for their evaluation are
-//! cached for better performance. Therefore these evaluations are not
-//! thread-safe and parallel evaluations need to be prevented.
+//! Polynomial coefficients of BSpline surfaces used for their evaluation are cached for better performance.
+//! Therefore these evaluations are not thread-safe and parallel evaluations need to be prevented.
 class Adaptor3d_Surface : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)

@@ -383,7 +383,7 @@ public:
   //! Used as argument for a flatknots evaluation.
     static TColStd_Array1OfInteger* NoMults();
   
-  //! Stores in LK  the usefull knots  for the BoorSchem
+  //! Stores in LK the useful knots for the BoorSchem
   //! on the span Knots(Index) - Knots(Index+1)
   Standard_EXPORT static void BuildKnots (const Standard_Integer Degree, const Standard_Integer Index, const Standard_Boolean Periodic, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger* Mults, Standard_Real& LK);
   

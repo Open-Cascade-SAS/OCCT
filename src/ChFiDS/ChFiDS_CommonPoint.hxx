@@ -121,7 +121,7 @@ public:
   //! arc returned by the method Arc().
   Standard_EXPORT Standard_Real ParameterOnArc() const;
   
-  //! Returns  the parameter the  paramter on the  spine
+  //! Returns the parameter on the spine
   Standard_EXPORT Standard_Real Parameter() const;
   
   //! Returns the 3d point

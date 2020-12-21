@@ -134,7 +134,7 @@ Standard_Boolean BRepMesh_Triangulator::Perform (NCollection_List<Poly_Triangle>
 
 //=======================================================================
 //function : addTriange34
-//purpose  : auxilary for makeTrianglesUsingBRepMesh
+//purpose  : auxiliary for makeTrianglesUsingBRepMesh
 //=======================================================================
 void BRepMesh_Triangulator::addTriange34(
   const TColStd_SequenceOfInteger&  theW,
@@ -178,7 +178,7 @@ void BRepMesh_Triangulator::addTriange34(
 
 //=======================================================================
 //function : checkCondition
-//purpose  : auxilary for addTriange34
+//purpose  : auxiliary for addTriange34
 //=======================================================================
 Standard_Boolean BRepMesh_Triangulator::checkCondition(
   const int                       (&theNodes)[4],
@@ -204,7 +204,7 @@ Standard_Boolean BRepMesh_Triangulator::prepareMeshStructure ()
   myIndices = new IMeshData::VectorOfInteger (wireNodesNb(myWires));
   myMeshStructure = new BRepMesh_DataStructureOfDelaun (new NCollection_IncAllocator);
 
-  // fill this structure created BRepMesh_Vertexes using 2d points recieved
+  // fill this structure created BRepMesh_Vertexes using 2d points received
   // by projection initial 3d point on plane.
   try
   {
@@ -242,7 +242,7 @@ Standard_Boolean BRepMesh_Triangulator::prepareMeshStructure ()
 
 //=======================================================================
 //function : triangulate
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 Standard_Boolean BRepMesh_Triangulator::triangulate (NCollection_List<Poly_Triangle>& thePolyTriangles)
 {

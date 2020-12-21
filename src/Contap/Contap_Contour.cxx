@@ -1123,7 +1123,7 @@ void ComputeInternalPointsOnRstr
             Contap_Point& thevtx = Line.Vertex(i);
             if (Abs(thevtx.ParameterOnLine()-paramp) <= toler) {
               thevtx.SetInternal();
-              ok = Standard_False; // on a correspondance
+              ok = Standard_False; // on a correspondence
             }
           }
           if (ok) { // il faut alors rajouter le point

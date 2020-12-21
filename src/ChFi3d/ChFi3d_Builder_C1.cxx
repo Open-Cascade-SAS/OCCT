@@ -1204,7 +1204,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     //   To do: modify for intcouture
     #define VARIANT1
 
-    // First of all the ponts are cut with the edge of the spine.
+    // First of all the points are cut with the edge of the spine.
     Standard_Integer IArcspine = DStr.AddShape(Arcspine);
     Standard_Integer IVtx = DStr.AddShape(Vtx);
     TopAbs_Orientation OVtx = TopAbs_FORWARD;
@@ -1792,9 +1792,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
 
   /***********************************************************************/
   //  find faces intersecting with the fillet and edges limiting intersections
-  //  nbface is the nb of faces intersected, Face[i] contais the faces
-  // to intersect (i=0.. nbface-1). Edge[i] contains edges limiting
-  // the intersections (i=0 ..nbface)
+  //  nbface is the nb of faces intersected, Face[i] contains the faces
+  //  to intersect (i=0.. nbface-1). Edge[i] contains edges limiting
+  //  the intersections (i=0 ..nbface)
   /**********************************************************************/
 
   Standard_Integer nb = 1,nbface;
@@ -2925,7 +2925,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       if (isOnSame1 ? shrink [nb+1] : !shrink [nb]) break;
     Handle(Geom_Curve)   Cend = DStr.Curve(indcurve[nb]).Curve();
     Handle(Geom2d_Curve) PCend = InterfPS[nb]->PCurve();
-    // point near which self intersection may occure
+    // point near which self intersection may occur
     TopOpeBRepDS_Point& Pds = DStr.ChangePoint(midIpoint);
     const gp_Pnt& Pvert = Pds.Point();
     Standard_Real tol = Pds.Tolerance();

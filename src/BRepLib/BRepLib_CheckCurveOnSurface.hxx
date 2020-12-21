@@ -26,10 +26,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Default contructor
+  //! Default constructor
   BRepLib_CheckCurveOnSurface() {}
   
-  //! Contructor
+  //! Constructor
   Standard_EXPORT BRepLib_CheckCurveOnSurface(const TopoDS_Edge& theEdge,
                                               const TopoDS_Face& theFace);
   

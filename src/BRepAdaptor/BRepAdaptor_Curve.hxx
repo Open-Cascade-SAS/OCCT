@@ -206,17 +206,15 @@ public:
   Standard_EXPORT Standard_Integer NbKnots() const Standard_OVERRIDE;
   
 
-  //! Warning :
-  //! This  will    make a copy of the Bezier Curve
-  //! since it applies to it myTsrf . Be carefull when
-  //! using this method
+  //! Warning:
+  //! This will make a copy of the Bezier Curve since it applies to it myTsrf.
+  //! Be careful when using this method.
   Standard_EXPORT Handle(Geom_BezierCurve) Bezier() const Standard_OVERRIDE;
   
 
-  //! Warning :
-  //! This will   make a copy of the BSpline Curve
-  //! since it applies to it myTsrf . Be carefull when
-  //! using this method
+  //! Warning:
+  //! This will make a copy of the BSpline Curve since it applies to it myTsrf.
+  //! Be careful when using this method.
   Standard_EXPORT Handle(Geom_BSplineCurve) BSpline() const Standard_OVERRIDE;
 
   Standard_EXPORT Handle(Geom_OffsetCurve) OffsetCurve() const Standard_OVERRIDE;

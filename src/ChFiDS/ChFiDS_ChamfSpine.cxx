@@ -51,7 +51,10 @@ ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol)
 
 void ChFiDS_ChamfSpine::GetDist(Standard_Real& Dis) const
 {
-  if (mChamf != ChFiDS_Sym)   throw Standard_Failure("Chamfer is not symetric");
+  if (mChamf != ChFiDS_Sym)
+  {
+    throw Standard_Failure ("Chamfer is not symmetric");
+  }
   Dis = d1;
 }
 

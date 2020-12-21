@@ -239,9 +239,10 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
     }
   }
   //
-  // Each vertex has one edge In and one - Out. Good. But it is not enought
-  // to consider that nothing to do with this. We must check edges on TShape
-  // coinsidence. If there are such edges there is something to do with.
+  // Each vertex has one edge In and one - Out. Good.
+  // But it is not enough to consider that nothing to do with this.
+  // We must check edges on TShape coincidence.
+  // If there are such edges there is something to do with.
   if (bNothingToDo) {
     Standard_Integer aNbE, aNbMapEE;
     Standard_Boolean bFlag;

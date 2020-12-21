@@ -69,7 +69,7 @@ public:
     return (myIndex[0] < 0);
   }
 
-  //! Returns number of initialized indeces.
+  //! Returns number of initialized indices.
   Standard_Integer Extent() const
   {
     return (myIndex[0] < 0 ? 0 : (myIndex[1] < 0 ? 1 : 2));

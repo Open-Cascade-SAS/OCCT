@@ -234,7 +234,7 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
   TopLoc_Location Loc;
   Standard_Real Tol = Precision::Confusion();
 
-  // Seach only isos on analytical surfaces.
+  // Search only isos on analytical surfaces.
   Geom2dAdaptor_Curve C(Curve);
   GeomAdaptor_Surface S(Surf);
   GeomAbs_CurveType   CTy = C.GetType();

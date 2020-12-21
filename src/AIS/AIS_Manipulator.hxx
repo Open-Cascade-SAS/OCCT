@@ -203,7 +203,7 @@ public:
 
   //! Computes transformation of parent object according to the active mode and input motion vector.
   //! You can use this method to get object transformation according to current mode or use own algorithm
-  //! to implement any other tranformation for modes.
+  //! to implement any other transformation for modes.
   //! @return transformation of parent object.
   Standard_EXPORT Standard_Boolean ObjectTransformation (const Standard_Integer theX, const Standard_Integer theY,
                                                          const Handle(V3d_View)& theView, gp_Trsf& theTrsf);

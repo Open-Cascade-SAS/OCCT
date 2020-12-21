@@ -57,7 +57,7 @@ public:
   //! @param theLastParam last parameter of the curve.
   //! @param theLinDeflection linear deflection.
   //! @param theAngDeflection angular deflection.
-  //! @param theMinPointsNb minimum nuber of points to be produced.
+  //! @param theMinPointsNb minimum number of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(
     const BRepAdaptor_Curve& theCurve,
     const Standard_Real      theFirstParam,
@@ -77,7 +77,7 @@ public:
   //! @param theLastParam last parameter of the curve.
   //! @param theLinDeflection linear deflection.
   //! @param theAngDeflection angular deflection.
-  //! @param theMinPointsNb minimum nuber of points to be produced.
+  //! @param theMinPointsNb minimum number of points to be produced.
   Standard_EXPORT BRepMesh_GeomTool(
     const Handle(BRepAdaptor_Surface)& theSurface,
     const GeomAbs_IsoType               theIsoType,

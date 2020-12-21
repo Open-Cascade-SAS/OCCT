@@ -84,7 +84,7 @@ public:
   //! The values can be either TopAbs_IN
   //! ( the point is in the face)
   //! or TopAbs_ON
-  //! ( the point is on a boudary of the face).
+  //! ( the point is on a boundary of the face).
     TopAbs_State State() const;
   
   //! Returns the significant face used to determine

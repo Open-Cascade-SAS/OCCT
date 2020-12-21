@@ -30,7 +30,7 @@ class Geom_Surface;
 
 
 
-//! The algorithm is to build a Secton operation between arguments and tools.
+//! The algorithm is to build a Section operation between arguments and tools.
 //! The result of Section operation consists of vertices and edges.
 //! The result of Section operation contains:
 //! 1. new vertices that are subjects of V/V, E/E, E/F, F/F interferences
@@ -56,7 +56,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <S1>  -argument
   //! <S2>  -tool
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1, const TopoDS_Shape& S2, const Standard_Boolean PerformNow = Standard_True);
   
@@ -65,7 +65,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <S2>  -tool
   //! <PF> - PaveFiller object that is carried out
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1, const TopoDS_Shape& S2, const BOPAlgo_PaveFiller& aDSF, const Standard_Boolean PerformNow = Standard_True);
   
@@ -73,7 +73,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <S1>  - argument
   //! <Pl>  - tool
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1, const gp_Pln& Pl, const Standard_Boolean PerformNow = Standard_True);
   
@@ -81,7 +81,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <S1>  - argument
   //! <Sf>  - tool
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1, const Handle(Geom_Surface)& Sf, const Standard_Boolean PerformNow = Standard_True);
   
@@ -89,7 +89,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <Sf>  - argument
   //! <S2>  - tool
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf, const TopoDS_Shape& S2, const Standard_Boolean PerformNow = Standard_True);
   
@@ -97,7 +97,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! <Sf1>  - argument
   //! <Sf2>  - tool
   //! <PerformNow> - the flag:
-  //! if <PerformNow>=True - the algorithm is performed immediatly
+  //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1, const Handle(Geom_Surface)& Sf2, const Standard_Boolean PerformNow = Standard_True);
   

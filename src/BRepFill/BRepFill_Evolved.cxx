@@ -1084,7 +1084,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
         // Find if one of two faces connected to the edge
         // belongs to volevo. The edges on this face serve
         // to eliminate certain vertices that can appear twice
-        // on the parallel edge. These Vertices corespond to the
+        // on the parallel edge. These Vertices correspond to the
         // nodes of the map.
         //---------------------------------------------------------
         TopoDS_Shape     FaceControle;

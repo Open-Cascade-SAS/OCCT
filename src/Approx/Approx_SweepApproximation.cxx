@@ -406,7 +406,7 @@ Standard_Boolean Approx_SweepApproximation::D0(const Standard_Real Param,
 		    myPoles2d->ChangeArray1(),
 		    myWeigths->ChangeArray1());
 
-    //  poles3d are multiplied by weight after tranlation.
+    //  poles3d are multiplied by weight after translation.
     for (ii=1; ii<=Num1DSS; ii++) {
       myPoles->ChangeValue(ii).ChangeCoord()
 	-= Translation.XYZ();
@@ -553,7 +553,7 @@ Standard_Boolean Approx_SweepApproximation::D2(const Standard_Real Param,
 		    myDWeigths->ChangeArray1(),
 		    myD2Weigths->ChangeArray1());
 
-    //  Multiply poles3d by the weight after tranlations.
+    //  Multiply poles3d by the weight after translations.
     for (ii=1; ii<=Num1DSS; ii++) {
       // First translate
       myPoles->ChangeValue(ii).ChangeCoord()

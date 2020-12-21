@@ -32,7 +32,7 @@
 //! tolerances of 3D space only. This means that there are no specific 
 //! computations are made for the sake of determination of U and V tolerance.
 //! Registers intersections on edges forming the face's shape and tries to
-//! amplify discrete represenation by decreasing of deflection for the target edge.
+//! amplify discrete representation by decreasing of deflection for the target edge.
 //! Checks can be performed in parallel mode.
 class BRepMesh_ModelHealer : public IMeshTools_ModelAlgo
 {
@@ -86,7 +86,7 @@ private:
 
   //! Connects pcurves of previous and current edge on the specified face 
   //! according to topological connectivity. Uses next edge in order to
-  //! identify closest point in case of signle vertex shared between both
+  //! identify closest point in case of single vertex shared between both
   //! ends of edge (degenerative edge)
   Standard_Boolean connectClosestPoints(
     const IMeshData::IPCurveHandle& thePrevDEdge,

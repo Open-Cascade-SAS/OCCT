@@ -67,7 +67,7 @@ public:
   
   Standard_EXPORT BRepFill_OffsetWire(const TopoDS_Face& Spine, const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean IsOpenResult = Standard_False);
   
-  //! Initialize the evaluation of Offseting.
+  //! Initialize the evaluation of Offsetting.
   Standard_EXPORT void Init (const TopoDS_Face& Spine, const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean IsOpenResult = Standard_False);
   
   //! Performs  an OffsetWire at  an altitude <Alt> from

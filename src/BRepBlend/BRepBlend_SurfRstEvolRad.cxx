@@ -112,7 +112,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 
 //=======================================================================
 //function : BRepBlend_SurfRstEvolRad
-//purpose  : Contructor
+//purpose  : Constructor
 //=======================================================================
 BRepBlend_SurfRstEvolRad::BRepBlend_SurfRstEvolRad
 (const Handle(Adaptor3d_Surface)& Surf,

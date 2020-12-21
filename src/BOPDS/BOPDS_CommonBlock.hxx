@@ -45,12 +45,12 @@ public:
 
   
 
-  //! Empty contructor
+  //! Empty constructor
   Standard_EXPORT BOPDS_CommonBlock();
   
 
-  //! Contructor
-  //! <theAllocator> - the allocator to manage the memory
+  //! Constructor
+  //! @param theAllocator the allocator to manage the memory
   Standard_EXPORT BOPDS_CommonBlock(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 

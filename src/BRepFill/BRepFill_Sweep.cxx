@@ -2758,7 +2758,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     }
   }
 
-  // (3.1) Reverse the faces that have been built ealier
+  // (3.1) Reverse the faces that have been built earlier
   for (ipath = 1; ipath <= NbPath; ipath++)
     for (isec = 1; isec <= NbLaw; isec++)
       if (IsBuilt(isec))

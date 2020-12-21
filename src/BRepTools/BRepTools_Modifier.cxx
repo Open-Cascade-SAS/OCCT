@@ -412,7 +412,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
         {
           // rem dub 16/09/97 : Make constant topology or not make at all.
           // Do not make if CopySurface = 1
-          // Atention, TRUE sewing edges (RealyClosed)  
+          // Atention, TRUE sewing edges (ReallyClosed)
           // stay even if  CopySurface is true.
     
           // check that edge contains two pcurves on this surface:

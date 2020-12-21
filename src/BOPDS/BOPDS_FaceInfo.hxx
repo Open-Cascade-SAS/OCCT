@@ -39,14 +39,14 @@ public:
 
   
 
-  //! Empty contructor
-    BOPDS_FaceInfo();
-virtual ~BOPDS_FaceInfo();
-  
+  //! Empty constructor
+  BOPDS_FaceInfo();
 
-  //! Contructor
-  //! theAllocator - the allocator to manage the memory
-    BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
+  virtual ~BOPDS_FaceInfo();
+
+  //! Constructor
+  //! @param theAllocator the allocator to manage the memory
+  BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator);
   
 
   //! Clears the contents

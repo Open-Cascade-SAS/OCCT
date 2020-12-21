@@ -176,7 +176,7 @@ private:
                         const Standard_Integer theCellsCountU,
                         const Standard_Integer theCellsCountV);
 
-  //! Add boundig box for edge defined by start & end point to
+  //! Add bounding box for edge defined by start & end point to
   //! the given vector of bounding boxes for triangulation edges.
   void fillBndBox (IMeshData::SequenceOfBndB2d&  theBoxes,
                    const BRepMesh_Vertex&        theV1,
@@ -212,7 +212,7 @@ private:
   //! angle respect the given reference link.
   //! Each time the next link is found other neighbor links at the pivot
   //! node are marked as leprous and will be excluded from consideration
-  //! next time until a hanging end is occured.
+  //! next time until a hanging end is occurred.
   Standard_Integer findNextPolygonLink (const Standard_Integer&               theFirstNode,
                                         const Standard_Integer&               thePivotNode,
                                         const BRepMesh_Vertex&                thePivotVertex,
@@ -228,7 +228,7 @@ private:
                                         Bnd_B2d&                              theNextLinkBndBox);
 
   //! Check is the given link intersects the polygon boundaries.
-  //! Returns bounding box for the given link trough the theLinkBndBox parameter.
+  //! Returns bounding box for the given link through the theLinkBndBox parameter.
   Standard_Boolean checkIntersection (const BRepMesh_Edge&                theLink,
                                       const IMeshData::SequenceOfInteger& thePolygon,
                                       const IMeshData::SequenceOfBndB2d&  thePolyBoxes,

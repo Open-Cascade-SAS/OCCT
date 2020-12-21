@@ -30,7 +30,7 @@ void CPnts_MyRootFunction::Init(const Standard_Real X0,
 {
   myX0 = X0;
   myL = L;
-  myTol = -1; //to supress the tolerance
+  myTol = -1; //to suppress the tolerance
 }
 
 void CPnts_MyRootFunction::Init(const Standard_Real X0,

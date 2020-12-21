@@ -91,14 +91,12 @@ public:
   //! -   ChFi2d_NotPlanar if F is not planar,
   //! -   ChFi2d_NoFace if F is a null face.
   Standard_EXPORT void Init (const TopoDS_Face& F);
-  
-  //! This initialize  method allow  to init the builder
-  //! from a  face <RefFace> and  another face <ModFace>
-  //! which derive from  <RefFace>.  This  is usefull to
-  //! modify a fillet or   a chamfer already created  on
-  //! <ModFace> .
+
+  //! This initialize method allow to init the builder
+  //! from a face RefFace and another face ModFace which derive from RefFace.
+  //! This  is useful to modify a fillet or a chamfer already created on ModFace.
   Standard_EXPORT void Init (const TopoDS_Face& RefFace, const TopoDS_Face& ModFace);
-  
+
   //! Adds a fillet of radius Radius between the two edges
   //! adjacent to the vertex V on the face modified by this
   //! algorithm. The two edges do not need to be rectilinear.

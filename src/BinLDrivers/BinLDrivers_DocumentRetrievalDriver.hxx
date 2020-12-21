@@ -97,7 +97,7 @@ protected:
      const Standard_Boolean isMess = Standard_False,
         const Message_ProgressRange& theRange = Message_ProgressRange());
   
-  //! checks the shapes section can be correctly retreived.
+  //! checks the shapes section can be correctly retrieved.
   Standard_EXPORT virtual void CheckShapeSection (const Storage_Position& thePos, Standard_IStream& theIS);
 
   //! clears the reading-cash data in drivers if any.

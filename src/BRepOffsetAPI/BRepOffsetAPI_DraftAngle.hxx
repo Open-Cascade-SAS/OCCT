@@ -160,8 +160,8 @@ public:
   //! the non-empty constructor or the Init function.
   Standard_EXPORT const TopoDS_Shape& ProblematicShape() const;
   
-  //! Returns an error  status when an error has occured
-  //! (Face,   Edge    or Vertex  recomputaion problem).
+  //! Returns an error  status when an error has occurred
+  //! (Face,   Edge    or Vertex  recomputation problem).
   //! Otherwise returns Draft_NoError. The method may be
   //! called if AddDone  returns Standard_False, or when
   //! IsDone returns Standard_False.

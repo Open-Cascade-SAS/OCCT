@@ -406,7 +406,7 @@ Standard_Boolean IsInput(const gp_Vec&          Vec,
     }
   }
   if (Trouve < 2) return Standard_False;
-  // Calculate the normal and the angles in the asssociated vector plane
+  // Calculate the normal and the angles in the associated vector plane
   gp_Vec Normal;
   Normal = Vec3d[0] ^ Vec3d[1];
   if (Normal.SquareMagnitude() < Precision::Confusion()) {//Colinear case
@@ -847,7 +847,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     PC = BRep_Tool::CurveOnSurface(cured,f1forward,Uf,Ul);
     I1->Initialize((const Handle(Adaptor3d_Surface)&)HS1);
     PC->D1(woned, P1, derive);
-    // There are ponts on the border, and internal points are found
+    // There are points on the border, and internal points are found
     if (derive.Magnitude() > Precision::PConfusion()) {
       derive.Normalize();
       derive.Rotate(M_PI/2);
@@ -1063,7 +1063,7 @@ ChFi3d_Builder::StartSol(const Handle(ChFiDS_Spine)&    Spine,
     else           notons = 1;
     const ChFiDS_CommonPoint& CPbis = SD->Vertex(isfirst,notons);
     if (CPbis.IsOnArc()) { // It is checked if it is not the extension zone 
-                  // In case CP is not at the end of surfdata and it is not necesary to take it into account
+                  // In case CP is not at the end of surfdata and it is not necessary to take it into account
                   // except for separate cases (ie pointus) ...
       //ts and tns were earlier CP.Parameter() and CPbis.Parameter, but sometimes they had no values.
       Standard_Real ts=SD->Interference(ons).Parameter(isfirst), tns=SD->Interference(notons).Parameter(isfirst);

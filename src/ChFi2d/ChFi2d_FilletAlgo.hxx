@@ -51,10 +51,9 @@ class FilletPoint;
 //! 3. Using Newton search method take the point on the segment where function
 //!    value is most close to zero. If it is not enough close, step 2 and 3 are
 //!    repeated taking as start or end point the found point.
-//! 4. If solution is found, result is created on point on root of the function
-//!    (as a start point), point of the projection onto second curve (as an end 
-//!    point) and center of arc in found center. Initial edges are cutted by
-//!    the start and end point of tangency.
+//! 4. If solution is found, result is created on point on root of the function (as a start point),
+//!    point of the projection onto second curve (as an end point) and center of arc in found center.
+//!    Initial edges are cut by the start and end point of tangency.
 class ChFi2d_FilletAlgo 
 {
 public:
@@ -115,7 +114,7 @@ private:
   //! Stores roots in myResultParams.
   void PerformNewton(FilletPoint*, FilletPoint*);
   //! Splits segment by the parameter and calls Newton method for both segments.
-  //! It supplies recursive iterations of the Newthon methods calls 
+  //! It supplies recursive iterations of the Newton methods calls
   //! (PerformNewton calls this function and this calls Netwton two times).
   Standard_Boolean ProcessPoint(FilletPoint*, FilletPoint*, Standard_Real);
 

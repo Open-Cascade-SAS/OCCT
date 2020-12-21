@@ -37,8 +37,8 @@ public:
   //! 1 - Remove all the free boundary  and the faces
   //! connex to such edges.
   //! 2 - Remove all the shapes not  valid in the result
-  //! (according to the side of offseting)
-  //! in this verion only the first point is implemented.
+  //! (according to the side of offsetting)
+  //! in this version only the first point is implemented.
   Standard_EXPORT static TopoDS_Shape Deboucle3D (const TopoDS_Shape& S, const TopTools_MapOfShape& Boundary);
 
 

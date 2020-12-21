@@ -43,7 +43,7 @@ class ChFi2d_Builder;
 //! the fillet edge for any type of edges including
 //! ellipses and b-splines.
 //! The edges may even have no common point.
-//! ChFi2d_ChamferAPI - an algoroithm for construction of chamfers
+//! ChFi2d_ChamferAPI - an algorithm for construction of chamfers
 //! between two linear edges of a plane.
 //!
 //! The algorithms ChFi2d_AnaFilletAlgo and ChFi2d_FilletAlgo may be used directly

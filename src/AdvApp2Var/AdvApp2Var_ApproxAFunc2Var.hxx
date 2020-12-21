@@ -51,7 +51,7 @@ class Geom_BSplineSurface;
 //! [FirstInU, LastInU]: The Bounds in U of the Approximation
 //! [FirstInV, LastInV]: The Bounds in V of the Approximation
 //! FavorIso : Give preference to extract u-iso or v-iso on F(U,V)
-//! This can be usefull to optimize the <Func> methode
+//! This can be useful to optimize the <Func> method
 //! ContInU, ContInV : Continuity waiting in u and v
 //! PrecisCode : Precision on approximation's error mesurement
 //! 1 : Fast computation and average precision
@@ -64,7 +64,7 @@ class Geom_BSplineSurface;
 //! where iu (resp. iv) = 0 if ContInU (resp. ContInV)  = GeomAbs_C0,
 //! = 1 if                          = GeomAbs_C1,
 //! = 2 if                          = GeomAbs_C2.
-//! MaxPatch  : Maximun number of Patch waiting
+//! MaxPatch  : Maximum number of Patch waiting
 //! number of Patch is number of u span * number of v span
 //! Func      : The external method to evaluate F(U,V)
 //! Crit      : To (re)defined condition of convergence

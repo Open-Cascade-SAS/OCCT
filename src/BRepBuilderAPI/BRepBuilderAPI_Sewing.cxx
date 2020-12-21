@@ -3518,7 +3518,7 @@ Standard_Boolean BRepBuilderAPI_Sewing::MergedNearestEdges(const TopoDS_Shape& e
     }
   }
 
-  // Find all possible contigous edges
+  // Find all possible contiguous edges
   TopTools_SequenceOfShape seqEdges;
   seqEdges.Append(edge);
   TopTools_MapOfShape mapEdges;
@@ -3977,7 +3977,7 @@ static TopoDS_Edge DegeneratedSection(const TopoDS_Shape& section, const TopoDS_
 //           . if multiple edge
 //              - length < 100.*myTolerance -> several free edge
 //           . if no multiple edge
-//              - make the contigous edges sameparameter
+//              - make the contiguous edges sameparameter
 //=======================================================================
 
 void BRepBuilderAPI_Sewing::EdgeProcessing(const Message_ProgressRange& theProgress)

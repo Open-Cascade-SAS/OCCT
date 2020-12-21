@@ -39,7 +39,7 @@ class BRepExtrema_OverlapTool : public BVH_PairTraverse <Standard_Real, 3>
 {
 public:
 
-  //! Creates new unitialized overlap tool.
+  //! Creates new uninitialized overlap tool.
   BRepExtrema_OverlapTool();
 
   //! Creates new overlap tool for the given element sets.
