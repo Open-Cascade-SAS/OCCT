@@ -415,14 +415,9 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
   else
   {
     // store a plain list of sub-shapes in case if they have custom attributes (usually per-face color)
-    RWMesh_NodeAttributes aSubShapeAttribs;
     for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
     {
-      const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
-      if (myAttribMap.Find (aSubShape.Located (TopLoc_Location()), aSubShapeAttribs))
-      {
-        addSubShapeIntoDoc (theTools, aSubShape, aNewRefLabel, aSubShapeAttribs);
-      }
+      addSubShapeIntoDoc(theTools, aSubShapeIter.Value(), aNewRefLabel);
     }
   }
   return Standard_True;
@@ -434,8 +429,7 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
 // =======================================================================
 Standard_Boolean RWMesh_CafReader::addSubShapeIntoDoc (CafDocumentTools& theTools,
                                                        const TopoDS_Shape& theShape,
-                                                       const TDF_Label& theParentLabel,
-                                                       const RWMesh_NodeAttributes& theAttribs)
+                                                       const TDF_Label& theParentLabel)
 {
   if (theShape.IsNull()
    || myXdeDoc.IsNull())
@@ -443,17 +437,36 @@ Standard_Boolean RWMesh_CafReader::addSubShapeIntoDoc (CafDocumentTools& theTool
     return Standard_False;
   }
 
+  RWMesh_NodeAttributes aShapeAttribs;
   const TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
+  const Standard_Boolean aHasAttribs = myAttribMap.Find(theShape.Located(TopLoc_Location()), aShapeAttribs);
+
+  // check for the attribute
+  // shell or wire may not contain an attribute, but its subshapes need to be checked
+  if (!aHasAttribs && aShapeType != TopAbs_SHELL &&
+    aShapeType != TopAbs_WIRE)
+  {
+    return Standard_False;
+  }
+
+  for (TopoDS_Iterator aSubShapeIter(theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
+  {
+    addSubShapeIntoDoc(theTools, aSubShapeIter.Value(), theParentLabel);
+  }
+
+  if (!aHasAttribs)
+  {
+    return Standard_False;
+  }
+
   TDF_Label aNewLabel = theTools.ShapeTool->AddSubShape (theParentLabel, theShape);
   if (aNewLabel.IsNull())
   {
     return Standard_False;
   }
 
-  {
-    Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set (aNewLabel);
-    aShapeMapTool->SetShape (theShape);
-  }
+  Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set(aNewLabel);
+  aShapeMapTool->SetShape(theShape);
 
   // if new label is a reference get referred shape
   TDF_Label aNewRefLabel = aNewLabel;
@@ -461,19 +474,10 @@ Standard_Boolean RWMesh_CafReader::addSubShapeIntoDoc (CafDocumentTools& theTool
 
   // put attributes to the Product (shared across Instances)
   static const TCollection_AsciiString anEmptyString;
-  setShapeName (aNewRefLabel, aShapeType, theAttribs.Name, TDF_Label(), anEmptyString);
-  setShapeStyle (theTools, aNewRefLabel, theAttribs.Style);
-  setShapeNamedData (theTools, aNewRefLabel, theAttribs.NamedData);
+  setShapeName (aNewRefLabel, aShapeType, aShapeAttribs.Name, TDF_Label(), anEmptyString);
+  setShapeStyle (theTools, aNewRefLabel, aShapeAttribs.Style);
+  setShapeNamedData (theTools, aNewRefLabel, aShapeAttribs.NamedData);
 
-  RWMesh_NodeAttributes aSubShapeAttribs;
-  for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
-  {
-    const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
-    if (myAttribMap.Find (aSubShape.Located (TopLoc_Location()), aSubShapeAttribs))
-    {
-      addSubShapeIntoDoc (theTools, aSubShape, theParentLabel, aSubShapeAttribs);
-    }
-  }
   return Standard_True;
 }
 
