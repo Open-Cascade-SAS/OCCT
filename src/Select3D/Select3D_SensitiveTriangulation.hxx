@@ -53,6 +53,29 @@ public:
                                                    const Handle(TColStd_HArray1OfInteger)& theFreeEdges,
                                                    const gp_Pnt& theCOG,
                                                    const Standard_Boolean theIsInterior);
+public:
+
+  //! Get last detected triangle.
+  //! @param theTriangle [out] triangle node indexes
+  //! @return TRUE if defined
+  Standard_EXPORT bool LastDetectedTriangle (Poly_Triangle& theTriangle) const;
+
+  //! Get last detected triangle.
+  //! @param theTriangle [out] triangle node indexes
+  //! @param theTriNodes [out] triangle nodes (with pre-applied transformation)
+  //! @return TRUE if defined
+  Standard_EXPORT bool LastDetectedTriangle (Poly_Triangle& theTriangle,
+                                             gp_Pnt theTriNodes[3]) const;
+
+  //! Return index of last detected triangle within [1..NbTris] range, or -1 if undefined.
+  Standard_Integer LastDetectedTriangleIndex() const
+  {
+    return (myDetectedIdx != -1 && mySensType == Select3D_TOS_INTERIOR && !myBVHPrimIndexes.IsNull())
+          ? myBVHPrimIndexes->Value (myDetectedIdx) + 1
+          : -1;
+  }
+
+public:
 
   //! Returns the amount of nodes in triangulation
   Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
@@ -118,7 +141,7 @@ private:
                                                             Standard_Integer theElemIdx,
                                                             Standard_Boolean theIsFullInside) Standard_OVERRIDE;
 
-private:
+protected:
 
   Handle(Poly_Triangulation)       myTriangul;
   TopLoc_Location                  myInitLocation;

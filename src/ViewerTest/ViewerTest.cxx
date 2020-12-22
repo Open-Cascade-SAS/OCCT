@@ -60,6 +60,7 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Select3D_SensitiveWire.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
+#include <Select3D_SensitiveTriangulation.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
@@ -5514,28 +5515,30 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
             << " (" << anEntity->DynamicType()->Name() << ")"
             << "\n";
 
-      Handle(StdSelect_BRepOwner) aBRepOwner = Handle(StdSelect_BRepOwner)::DownCast (anOwner);
-      if (!aBRepOwner.IsNull())
+      if (Handle(StdSelect_BRepOwner) aBRepOwner = Handle(StdSelect_BRepOwner)::DownCast (anOwner))
       {
         theDI << "                       Detected Shape: "
               << aBRepOwner->Shape().TShape()->DynamicType()->Name()
               << "\n";
       }
 
-      Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast (anEntity);
-      if (!aWire.IsNull())
+      if (Handle(Select3D_SensitiveWire) aWire = Handle(Select3D_SensitiveWire)::DownCast (anEntity))
       {
         Handle(Select3D_SensitiveEntity) aSen = aWire->GetLastDetected();
         theDI << "                       Detected Child: "
               << aSen->DynamicType()->Name()
               << "\n";
       }
-
-      Handle(Select3D_SensitivePrimitiveArray) aPrimArr = Handle(Select3D_SensitivePrimitiveArray)::DownCast (anEntity);
-      if (!aPrimArr.IsNull())
+      else if (Handle(Select3D_SensitivePrimitiveArray) aPrimArr = Handle(Select3D_SensitivePrimitiveArray)::DownCast (anEntity))
       {
         theDI << "                       Detected Element: "
               << aPrimArr->LastDetectedElement()
+              << "\n";
+      }
+      else if (Handle(Select3D_SensitiveTriangulation) aTriSens = Handle(Select3D_SensitiveTriangulation)::DownCast (anEntity))
+      {
+        theDI << "                       Detected Triangle: "
+              << aTriSens->LastDetectedTriangleIndex()
               << "\n";
       }
     }

@@ -255,6 +255,39 @@ void Select3D_SensitiveTriangulation::Swap (const Standard_Integer theIdx1,
 }
 
 //=======================================================================
+// function : LastDetectedTriangle
+// purpose  :
+//=======================================================================
+bool Select3D_SensitiveTriangulation::LastDetectedTriangle (Poly_Triangle& theTriangle) const
+{
+  const Standard_Integer anIndex = LastDetectedTriangleIndex();
+  if (anIndex != -1)
+  {
+    theTriangle = myTriangul->Triangle (anIndex);
+    return true;
+  }
+  return false;
+}
+
+//=======================================================================
+// function : LastDetectedTriangle
+// purpose  :
+//=======================================================================
+bool Select3D_SensitiveTriangulation::LastDetectedTriangle (Poly_Triangle& theTriangle,
+                                                            gp_Pnt theTriNodes[3]) const
+{
+  if (!LastDetectedTriangle (theTriangle))
+  {
+    return false;
+  }
+
+  theTriNodes[0] = myTriangul->Nodes().Value (theTriangle.Value (1)).Transformed (myInitLocation.Transformation());;
+  theTriNodes[1] = myTriangul->Nodes().Value (theTriangle.Value (2)).Transformed (myInitLocation.Transformation());;
+  theTriNodes[2] = myTriangul->Nodes().Value (theTriangle.Value (3)).Transformed (myInitLocation.Transformation());;
+  return true;
+}
+
+//=======================================================================
 // function : overlapsElement
 // purpose  : Checks whether the element with index theIdx overlaps the
 //            current selecting volume
