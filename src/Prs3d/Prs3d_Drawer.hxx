@@ -63,13 +63,20 @@ public:
   //! This indicates whether the deflection value is absolute or relative to the size of the object.
   Aspect_TypeOfDeflection TypeOfDeflection() const
   {
-    return HasOwnTypeOfDeflection() || myLink.IsNull()
+    return myHasOwnTypeOfDeflection || myLink.IsNull()
          ? myTypeOfDeflection
          : myLink->TypeOfDeflection();
   }
 
   //! Returns true if the drawer has a type of deflection setting active.
   Standard_Boolean HasOwnTypeOfDeflection() const { return myHasOwnTypeOfDeflection; }
+
+  //! Resets HasOwnTypeOfDeflection() flag, e.g. undoes SetTypeOfDeflection().
+  void UnsetOwnTypeOfDeflection()
+  {
+    myHasOwnTypeOfDeflection = false;
+    myTypeOfDeflection = Aspect_TOD_RELATIVE;
+  }
 
   //! Defines the maximal chordial deviation when drawing any curve.
   //! Even if the type of deviation is set to TOD_Relative, this value is used by: 
@@ -82,13 +89,20 @@ public:
   //! Drawings of curves or patches are made with respect to an absolute maximal chordal deviation.
   Standard_Real MaximalChordialDeviation() const
   {
-    return HasOwnMaximalChordialDeviation() || myLink.IsNull()
+    return myHasOwnChordialDeviation || myLink.IsNull()
          ? myChordialDeviation
          : myLink->MaximalChordialDeviation();
   }
 
   //! Returns true if the drawer has a maximal chordial deviation setting active.
   Standard_Boolean HasOwnMaximalChordialDeviation() const { return myHasOwnChordialDeviation; }
+
+  //! Resets HasOwnMaximalChordialDeviation() flag, e.g. undoes SetMaximalChordialDeviation().
+  void UnsetOwnMaximalChordialDeviation()
+  {
+    myHasOwnChordialDeviation = false;
+    myChordialDeviation = 0.0001;
+  }
 
   //! Sets the type of HLR algorithm used by drawer's interactive objects
   Standard_EXPORT void SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR);
@@ -107,7 +121,7 @@ public:
   //! parameters of an infinite curve. By default, this value is 500000.
   Standard_Real MaximalParameterValue() const
   {
-    return HasOwnMaximalParameterValue() || myLink.IsNull()
+    return myHasOwnMaximalParameterValue || myLink.IsNull()
          ? myMaximalParameterValue
          : myLink->MaximalParameterValue();
   }
@@ -116,13 +130,20 @@ public:
   //! parameters of an infinite curve setting active.
   Standard_Boolean HasOwnMaximalParameterValue() const { return myHasOwnMaximalParameterValue; }
 
+  //! Resets HasOwnMaximalParameterValue() flag, e.g. undoes SetMaximalParameterValue().
+  void UnsetOwnMaximalParameterValue()
+  {
+    myHasOwnMaximalParameterValue = false;
+    myMaximalParameterValue = 500000.0;
+  }
+
   //! Sets IsoOnPlane on or off by setting the parameter theIsEnabled to true or false.
   Standard_EXPORT void SetIsoOnPlane (const Standard_Boolean theIsEnabled);
 
   //! Returns True if the drawing of isos on planes is enabled.
   Standard_Boolean IsoOnPlane() const
   {
-    return HasOwnIsoOnPlane() || myLink.IsNull()
+    return myHasOwnIsoOnPlane || myLink.IsNull()
          ? myIsoOnPlane
          : myLink->IsoOnPlane();
   }
@@ -130,16 +151,30 @@ public:
   //! Returns true if the drawer has IsoOnPlane setting active.
   Standard_Boolean HasOwnIsoOnPlane() const { return myHasOwnIsoOnPlane; }
 
+  //! Resets HasOwnIsoOnPlane() flag, e.g. undoes SetIsoOnPlane().
+  void UnsetOwnIsoOnPlane()
+  {
+    myHasOwnIsoOnPlane = false;
+    myIsoOnPlane = false;
+  }
+
   //! Returns True if the drawing of isos on triangulation is enabled.
   Standard_Boolean IsoOnTriangulation() const
   {
-    return HasOwnIsoOnTriangulation() || myLink.IsNull()
+    return myHasOwnIsoOnTriangulation || myLink.IsNull()
          ? myIsoOnTriangulation
          : myLink->IsoOnTriangulation();
   }
 
   //! Returns true if the drawer has IsoOnTriangulation setting active.
   Standard_Boolean HasOwnIsoOnTriangulation() const { return myHasOwnIsoOnTriangulation; }
+
+  //! Resets HasOwnIsoOnTriangulation() flag, e.g. undoes SetIsoOnTriangulation().
+  void UnsetOwnIsoOnTriangulation()
+  {
+    myHasOwnIsoOnTriangulation = false;
+    myIsoOnTriangulation = false;
+  }
 
   //! Enables or disables isolines on triangulation by setting the parameter theIsEnabled to true or false.
   Standard_EXPORT void SetIsoOnTriangulation (const Standard_Boolean theToEnable);
@@ -150,13 +185,20 @@ public:
   //! Returns the discretisation setting. 
   Standard_Integer Discretisation() const
   {
-    return HasOwnDiscretisation() || myLink.IsNull()
+    return myHasOwnNbPoints || myLink.IsNull()
          ? myNbPoints
          : myLink->Discretisation();
   }
 
   //! Returns true if the drawer has discretisation setting active.
   Standard_Boolean HasOwnDiscretisation() const { return myHasOwnNbPoints; }
+
+  //! Resets HasOwnDiscretisation() flag, e.g. undoes SetDiscretisation().
+  void UnsetOwnDiscretisation()
+  {
+    myHasOwnNbPoints = false;
+    myNbPoints = 30;
+  }
 
   //! Sets the deviation coefficient theCoefficient.
   //! Also sets the hasOwnDeviationCoefficient flag to Standard_True and myPreviousDeviationCoefficient
@@ -185,10 +227,11 @@ public:
          : myLink->DeviationCoefficient();
   }
 
-  //! Sets the hasOwnDeviationCoefficient flag to Standard_False
+  //! Resets HasOwnDeviationCoefficient() flag, e.g. undoes previous SetDeviationCoefficient().
   void SetDeviationCoefficient()
   {
     myHasOwnDeviationCoefficient = Standard_False;
+    myDeviationCoefficient = 0.001;
   }
 
   //! Returns true if there is a local setting for deviation
@@ -225,10 +268,11 @@ public:
          : myLink->DeviationAngle();
   }
 
-  //! Sets the hasOwnDeviationAngle flag to Standard_False
+  //! Resets HasOwnDeviationAngle() flag, e.g. undoes previous SetDeviationAngle().
   void SetDeviationAngle()
   {
     myHasOwnDeviationAngle = Standard_False;
+    myDeviationAngle = 20.0 * M_PI / 180.0;
   }
 
   //! Returns true if the there is a local setting for deviation
@@ -261,13 +305,20 @@ public:
   //! Returns True if automatic triangulation is enabled.
   Standard_Boolean IsAutoTriangulation() const
   {
-    return HasOwnIsAutoTriangulation() || myLink.IsNull()
+    return myHasOwnIsAutoTriangulated || myLink.IsNull()
          ? myIsAutoTriangulated
          : myLink->IsAutoTriangulation();
   }
 
   //! Returns true if the drawer has IsoOnPlane setting active.
   Standard_Boolean HasOwnIsAutoTriangulation() const { return myHasOwnIsAutoTriangulated; }
+
+  //! Resets HasOwnIsAutoTriangulation() flag, e.g. undoes SetAutoTriangulation().
+  void UnsetOwnIsAutoTriangulation()
+  {
+    myHasOwnIsAutoTriangulated = false;
+    myIsAutoTriangulated = true;
+  }
 
   //! Defines the attributes which are used when drawing an
   //! U isoparametric curve of a face. Defines the number
@@ -334,7 +385,7 @@ public:
   //! Returns True if the drawing of the wire is enabled.
   Standard_Boolean WireDraw() const
   {
-    return HasOwnWireDraw() || myLink.IsNull()
+    return myHasOwnWireDraw || myLink.IsNull()
          ? myWireDraw
          : myLink->WireDraw();
   }
@@ -342,6 +393,13 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! "draw wires" flag that overrides the one in the link.
   Standard_Boolean HasOwnWireDraw() const { return myHasOwnWireDraw; }
+
+  //! Resets HasOwnWireDraw() flag, e.g. undoes SetWireDraw().
+  void UnsetOwnWireDraw()
+  {
+    myHasOwnWireDraw = false;
+    myWireDraw = true;
+  }
 
   //! Returns the point aspect setting. The default values are
   //!   Color: Quantity_NOC_YELLOW
@@ -463,16 +521,20 @@ public:
   //! and False otherwise (the default).
   Standard_Boolean LineArrowDraw() const
   {
-    return HasOwnLineArrowDraw() || myLink.IsNull()
+    return myHasOwnLineArrowDraw || myLink.IsNull()
          ? myLineArrowDraw
          : myLink->LineArrowDraw();
   }
 
   //! Returns true if the drawer has its own attribute for
   //! "draw arrow" flag that overrides the one in the link.
-  Standard_Boolean HasOwnLineArrowDraw() const
+  Standard_Boolean HasOwnLineArrowDraw() const { return myHasOwnLineArrowDraw; }
+
+  //! Reset HasOwnLineArrowDraw() flag, e.g. undoes SetLineArrowDraw().
+  void UnsetOwnLineArrowDraw()
   {
-    return myHasOwnLineArrowDraw;
+    myHasOwnLineArrowDraw = false;
+    myLineArrowDraw = false;
   }
 
   //! Returns settings for hidden line aspects.
@@ -493,7 +555,7 @@ public:
   //! By default the hidden lines are not drawn.
   Standard_Boolean DrawHiddenLine() const
   {
-    return HasOwnDrawHiddenLine() || myLink.IsNull()
+    return myHasOwnDrawHiddenLine || myLink.IsNull()
          ? myDrawHiddenLine
          : myLink->DrawHiddenLine();
   }
@@ -507,6 +569,13 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! "draw hidden lines" flag that overrides the one in the link.
   Standard_Boolean HasOwnDrawHiddenLine() const { return myHasOwnDrawHiddenLine; }
+
+  //! Resets HasOwnDrawHiddenLine() flag, e.g. unsets EnableDrawHiddenLine()/DisableDrawHiddenLine().
+  void UnsetOwnDrawHiddenLine()
+  {
+    myHasOwnDrawHiddenLine = false;
+    myDrawHiddenLine = false;
+  }
 
   //! Returns settings for the appearance of vectors.
   //! These settings can be edited. The default values are:
@@ -597,7 +666,7 @@ public:
   //! True is the default setting.
   Standard_Boolean FreeBoundaryDraw() const
   {
-    return HasOwnFreeBoundaryDraw() || myLink.IsNull()
+    return myHasOwnFreeBoundaryDraw || myLink.IsNull()
          ? myFreeBoundaryDraw
          : myLink->FreeBoundaryDraw();
   }
@@ -605,6 +674,13 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! "draw free boundaries" flag that overrides the one in the link.
   Standard_Boolean HasOwnFreeBoundaryDraw() const { return myHasOwnFreeBoundaryDraw; }
+
+  //! Resets HasOwnFreeBoundaryDraw() flag, e.g. undoes SetFreeBoundaryDraw().
+  void UnsetOwnFreeBoundaryDraw()
+  {
+    myHasOwnFreeBoundaryDraw = false;
+    myFreeBoundaryDraw = true;
+  }
 
   //! Sets the parameter theAspect for the display of shared boundaries.
   //! The method sets aspect owned by the drawer that will be used during
@@ -634,7 +710,7 @@ public:
   //! True is the default setting.
   Standard_Boolean UnFreeBoundaryDraw() const
   {
-    return HasOwnUnFreeBoundaryDraw() || myLink.IsNull()
+    return myHasOwnUnFreeBoundaryDraw || myLink.IsNull()
          ? myUnFreeBoundaryDraw
          : myLink->UnFreeBoundaryDraw();
   }
@@ -642,6 +718,13 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! "draw shared boundaries" flag that overrides the one in the link.
   Standard_Boolean HasOwnUnFreeBoundaryDraw() const { return myHasOwnUnFreeBoundaryDraw; }
+
+  //! Resets HasOwnUnFreeBoundaryDraw() flag, e.g. undoes SetUnFreeBoundaryDraw().
+  void UnsetOwnUnFreeBoundaryDraw()
+  {
+    myHasOwnUnFreeBoundaryDraw = false;
+    myUnFreeBoundaryDraw = true;
+  }
 
   //! Sets line aspect for face boundaries.
   //! The method sets line aspect owned by the drawer that will be used during
@@ -669,7 +752,7 @@ public:
   //! Checks whether the face boundary drawing is enabled or not.
   Standard_Boolean FaceBoundaryDraw() const
   {
-    return HasOwnFaceBoundaryDraw() || myLink.IsNull()
+    return myHasOwnFaceBoundaryDraw || myLink.IsNull()
          ? myFaceBoundaryDraw
          : myLink->FaceBoundaryDraw();
   }
@@ -677,6 +760,13 @@ public:
   //! Returns true if the drawer has its own attribute for
   //! "draw face boundaries" flag that overrides the one in the link.
   Standard_Boolean HasOwnFaceBoundaryDraw() const { return myHasOwnFaceBoundaryDraw; }
+
+  //! Resets HasOwnFaceBoundaryDraw() flag, e.g. undoes SetFaceBoundaryDraw().
+  void UnsetOwnFaceBoundaryDraw()
+  {
+    myHasOwnFaceBoundaryDraw = false;
+    myFaceBoundaryDraw = false;
+  }
 
   //! Returns true if the drawer has its own attribute for face boundaries upper edge continuity class that overrides the one in the link.
   Standard_Boolean HasOwnFaceBoundaryUpperContinuity() const { return myFaceBoundaryUpperContinuity != -1; }
@@ -722,7 +812,7 @@ public:
   //! Returns length model units for the dimension presentation. 
   const TCollection_AsciiString& DimLengthModelUnits() const
   {
-    return HasOwnDimLengthModelUnits() || myLink.IsNull()
+    return myHasOwnDimLengthModelUnits || myLink.IsNull()
          ? myDimensionModelUnits.GetLengthUnits()
          : myLink->DimLengthModelUnits();
   }
@@ -730,7 +820,7 @@ public:
   //! Returns angle model units for the dimension presentation. 
   const TCollection_AsciiString& DimAngleModelUnits() const
   {
-    return HasOwnDimAngleModelUnits() || myLink.IsNull()
+    return myHasOwnDimAngleModelUnits || myLink.IsNull()
          ? myDimensionModelUnits.GetAngleUnits()
          : myLink->DimAngleModelUnits();
   }
@@ -739,9 +829,23 @@ public:
   //! dimension length model units that overrides the one in the link.
   Standard_Boolean HasOwnDimLengthModelUnits() const { return myHasOwnDimLengthModelUnits; }
 
+  //! Resets HasOwnDimLengthModelUnits() flag, e.g. undoes SetDimLengthModelUnits().
+  void UnsetOwnDimLengthModelUnits()
+  {
+    myHasOwnDimLengthModelUnits = false;
+    myDimensionModelUnits.SetLengthUnits ("m");
+  }
+
   //! Returns true if the drawer has its own attribute for
   //! dimension angle model units that overrides the one in the link.
   Standard_Boolean HasOwnDimAngleModelUnits() const { return myHasOwnDimAngleModelUnits; }
+
+  //! Resets HasOwnDimAngleModelUnits() flag, e.g. undoes SetDimAngleModelUnits().
+  void UnsetOwnDimAngleModelUnits()
+  {
+    myHasOwnDimAngleModelUnits = false;
+    myDimensionModelUnits.SetAngleUnits ("rad");
+  }
 
   //! Sets length units in which value for dimension presentation is displayed.
   //! The method sets value owned by the drawer that will be used during
@@ -756,7 +860,7 @@ public:
   //! Returns length units in which dimension presentation is displayed.
   const TCollection_AsciiString& DimLengthDisplayUnits() const
   {
-    return HasOwnDimLengthDisplayUnits() || myLink.IsNull()
+    return myHasOwnDimLengthDisplayUnits || myLink.IsNull()
          ? myDimensionDisplayUnits.GetLengthUnits()
          : myLink->DimLengthDisplayUnits();
   }
@@ -764,7 +868,7 @@ public:
   //! Returns angle units in which dimension presentation is displayed.
   const TCollection_AsciiString& DimAngleDisplayUnits() const
   {
-    return HasOwnDimAngleDisplayUnits() || myLink.IsNull()
+    return myHasOwnDimAngleDisplayUnits || myLink.IsNull()
          ? myDimensionDisplayUnits.GetAngleUnits()
          : myLink->DimAngleDisplayUnits();
   }
@@ -774,10 +878,26 @@ public:
   //! that overrides the one in the link.
   Standard_Boolean HasOwnDimLengthDisplayUnits() const { return myHasOwnDimLengthDisplayUnits; }
 
+  //! Resets HasOwnDimLengthModelUnits() flag, e.g. undoes SetDimLengthDisplayUnits().
+  void UnsetOwnDimLengthDisplayUnits()
+  {
+    myHasOwnDimLengthDisplayUnits = false;
+    myDimensionDisplayUnits.SetLengthUnits ("m");
+  }
+
   //! Returns true if the drawer has its own attribute for
   //! angle units in which dimension presentation is displayed
   //! that overrides the one in the link.
   Standard_Boolean HasOwnDimAngleDisplayUnits() const { return myHasOwnDimAngleDisplayUnits; }
+
+  //! Resets HasOwnDimAngleDisplayUnits() flag, e.g. undoes SetDimLengthDisplayUnits().
+  void UnsetOwnDimAngleDisplayUnits()
+  {
+    myHasOwnDimAngleDisplayUnits = false;
+    myDimensionDisplayUnits.SetAngleUnits ("deg");
+  }
+
+public:
 
   //! Returns the drawer to which the current object references.
   const Handle(Prs3d_Drawer)& Link() { return myLink; }
