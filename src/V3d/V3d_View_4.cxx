@@ -197,9 +197,8 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex& theVertex) const
                          + gp_Vec (aPnt0);
     return Graphic3d_Vertex (aResult.X(), aResult.Y(), aResult.Z());
   } 
-  else // IsCircular
+  else if (Handle(Aspect_CircularGrid) aCircleGrid = Handle(Aspect_CircularGrid)::DownCast (MyGrid))
   {
-    Handle(Aspect_CircularGrid) aCircleGrid = Handle(Aspect_CircularGrid)::DownCast (MyGrid);
     const Standard_Real anAlpha = M_PI / Standard_Real (aCircleGrid->DivisionNumber());
 
     // project point on plane to grid local space
@@ -217,6 +216,7 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex& theVertex) const
     const gp_Vec aResult = aGridX * aLocalX + aGridY * aLocalY + gp_Vec (aPnt0);
     return Graphic3d_Vertex (aResult.X(), aResult.Y(), aResult.Z());
   }
+  return Graphic3d_Vertex (0.0, 0.0, 0.0);
 }
 
 //=============================================================================
@@ -230,10 +230,11 @@ void V3d_View::ZBufferTriedronSetup(const Quantity_Color&  theXColor,
                                     const Standard_Real    theAxisDiametr,
                                     const Standard_Integer theNbFacettes)
 {
-  myTrihedron->SetArrowsColor   (theXColor, theYColor, theZColor);
-  myTrihedron->SetSizeRatio     (theSizeRatio);
-  myTrihedron->SetNbFacets      (theNbFacettes);
-  myTrihedron->SetArrowDiameter (theAxisDiametr);
+  const Handle(V3d_Trihedron)& aTrihedron = Trihedron (true);
+  aTrihedron->SetArrowsColor   (theXColor, theYColor, theZColor);
+  aTrihedron->SetSizeRatio     (theSizeRatio);
+  aTrihedron->SetNbFacets      (theNbFacettes);
+  aTrihedron->SetArrowDiameter (theAxisDiametr);
 }
 
 //=============================================================================
@@ -245,12 +246,13 @@ void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
                                 const Standard_Real theScale,
                                 const V3d_TypeOfVisualization theMode)
 {
-  myTrihedron->SetLabelsColor (theColor);
-  myTrihedron->SetScale       (theScale);
-  myTrihedron->SetPosition    (thePosition);
-  myTrihedron->SetWireframe   (theMode == V3d_WIREFRAME);
+  const Handle(V3d_Trihedron)& aTrihedron = Trihedron (true);
+  aTrihedron->SetLabelsColor (theColor);
+  aTrihedron->SetScale       (theScale);
+  aTrihedron->SetPosition    (thePosition);
+  aTrihedron->SetWireframe   (theMode == V3d_WIREFRAME);
 
-  myTrihedron->Display (*this);
+  aTrihedron->Display (*this);
 }
 
 //=============================================================================
@@ -259,7 +261,10 @@ void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
 //=============================================================================
 void V3d_View::TriedronErase()
 {
-  myTrihedron->Erase();
+  if (!myTrihedron.IsNull())
+  {
+    myTrihedron->Erase();
+  }
 }
 
 //=============================================================================

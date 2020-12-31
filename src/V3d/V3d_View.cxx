@@ -68,7 +68,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   MyViewer (theViewer.operator->()),
   SwitchSetFront (Standard_False),
   myZRotation (Standard_False),
-  myTrihedron (new V3d_Trihedron()),
   MyTrsf (1, 4, 1, 4)
 {
   myView = theViewer->Driver()->CreateView (theViewer->StructureManager());
@@ -201,7 +200,7 @@ void V3d_View::SetWindow (const Handle(Aspect_Window)&  theWindow,
 //function : Remove
 //purpose  :
 //=============================================================================
-void V3d_View::Remove() const
+void V3d_View::Remove()
 {
   if (!MyGrid.IsNull())
   {
@@ -1571,41 +1570,48 @@ void V3d_View::WindowFit (const Standard_Integer theMinXp,
 //function : ConvertToGrid
 //purpose  :
 //=======================================================================
-void V3d_View::ConvertToGrid(const Standard_Integer Xp,
-                             const Standard_Integer Yp,
-                             Standard_Real& Xg,
-                             Standard_Real& Yg,
-                             Standard_Real& Zg) const
+void V3d_View::ConvertToGrid(const Standard_Integer theXp,
+                             const Standard_Integer theYp,
+                             Standard_Real& theXg,
+                             Standard_Real& theYg,
+                             Standard_Real& theZg) const
 {
-  Graphic3d_Vertex aVrp;
-  Standard_Real anX, anY, aZ;
-  Convert (Xp, Yp, anX, anY, aZ);
-  aVrp.SetCoord (anX, anY, aZ);
+  Graphic3d_Vec3d anXYZ;
+  Convert (theXp, theYp, anXYZ.x(), anXYZ.y(), anXYZ.z());
 
-  if( MyViewer->Grid()->IsActive() ) {
-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
-    aNewVrp.Coord (Xg,Yg,Zg) ;
-  } else
-    aVrp.Coord (Xg,Yg,Zg) ;
+  Graphic3d_Vertex aVrp;
+  aVrp.SetCoord (anXYZ.x(), anXYZ.y(), anXYZ.z());
+  if (MyViewer->IsGridActive())
+  {
+    Graphic3d_Vertex aNewVrp = Compute (aVrp);
+    aNewVrp.Coord (theXg, theYg, theZg);
+  }
+  else
+  {
+    aVrp.Coord (theXg, theYg, theZg);
+  }
 }
 
 //=======================================================================
 //function : ConvertToGrid
 //purpose  :
 //=======================================================================
-void V3d_View::ConvertToGrid(const Standard_Real X,
-                             const Standard_Real Y,
-                             const Standard_Real Z,
-                             Standard_Real& Xg,
-                             Standard_Real& Yg,
-                             Standard_Real& Zg) const
+void V3d_View::ConvertToGrid(const Standard_Real theX,
+                             const Standard_Real theY,
+                             const Standard_Real theZ,
+                             Standard_Real& theXg,
+                             Standard_Real& theYg,
+                             Standard_Real& theZg) const
 {
-  if( MyViewer->Grid()->IsActive() ) {
-    Graphic3d_Vertex aVrp (X,Y,Z) ;
-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
-    aNewVrp.Coord(Xg,Yg,Zg) ;
-  } else {
-    Xg = X; Yg = Y; Zg = Z;
+  if (MyViewer->IsGridActive())
+  {
+    Graphic3d_Vertex aVrp (theX, theY, theZ);
+    Graphic3d_Vertex aNewVrp = Compute (aVrp);
+    aNewVrp.Coord (theXg, theYg, theZg);
+  }
+  else
+  {
+    theXg = theX; theYg = theY; theZg = theZ;
   }
 }
 

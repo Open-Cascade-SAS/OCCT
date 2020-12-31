@@ -101,7 +101,8 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(Graphic3d_AspectMarker3d) GridAsp = new Graphic3d_AspectMarker3d(AspectTypeOfMarker, Quantity_NOC_BLUE1, 10.);
   aViewer->SetGridEcho(GridAsp);
 
-  if (aViewer->IsActive()) {
+  if (aViewer->IsGridActive())
+  {
     if (aViewer->GridEcho()) {
       Standard_Real X,Y,Z;
       aView->ConvertToGrid(x,y,X,Y,Z);

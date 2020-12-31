@@ -197,7 +197,7 @@ void OCC_2dView::OnBUTTONGridValues()
 void OCC_2dView::OnUpdateBUTTONGridValues(CCmdUI* pCmdUI) 
 {
   Handle(V3d_Viewer) aViewer = myView->Viewer();
-  pCmdUI-> Enable( aViewer->IsActive() );
+  pCmdUI-> Enable( aViewer->IsGridActive() );
 }
 
 void OCC_2dView::OnBUTTONGridCancel() 
@@ -211,7 +211,7 @@ void OCC_2dView::OnBUTTONGridCancel()
 void OCC_2dView::OnUpdateBUTTONGridCancel(CCmdUI* pCmdUI) 
 {
   Handle(V3d_Viewer) aViewer = myView->Viewer();
-  pCmdUI-> Enable( aViewer->IsActive() );	
+  pCmdUI-> Enable( aViewer->IsGridActive() );
 }
 
 void OCC_2dView::OnSize(UINT nType, int cx, int cy)

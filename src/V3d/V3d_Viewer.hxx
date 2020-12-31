@@ -352,51 +352,61 @@ public: //! @name grid management
   
   //! Returns TRUE when grid echo must be displayed at hit point.
   Standard_Boolean GridEcho() const { return myGridEcho; }
-  
+
   //! Returns Standard_True if a grid is activated in <me>.
-  Standard_EXPORT Standard_Boolean IsActive() const;
-  
+  Standard_EXPORT Standard_Boolean IsGridActive();
+
   //! Returns the defined grid in <me>.
-  Standard_EXPORT Handle(Aspect_Grid) Grid() const;
+  Handle(Aspect_Grid) Grid (bool theToCreate = true) { return Grid (myGridType, theToCreate); }
+
+  //! Returns the defined grid in <me>.
+  Standard_EXPORT Handle(Aspect_Grid) Grid (Aspect_GridType theGridType, bool theToCreate = true);
 
   //! Returns the current grid type defined in <me>.
   Aspect_GridType GridType() const { return myGridType; }
-  
+
   //! Returns the current grid draw mode defined in <me>.
-  Standard_EXPORT Aspect_GridDrawMode GridDrawMode() const;
-  
+  Standard_EXPORT Aspect_GridDrawMode GridDrawMode();
+
   //! Returns the definition of the rectangular grid.
-  Standard_EXPORT void RectangularGridValues (Standard_Real& XOrigin, Standard_Real& YOrigin, Standard_Real& XStep, Standard_Real& YStep, Standard_Real& RotationAngle) const;
-  
+  Standard_EXPORT void RectangularGridValues (Standard_Real& theXOrigin, Standard_Real& theYOrigin,
+                                              Standard_Real& theXStep, Standard_Real& theYStep,
+                                              Standard_Real& theRotationAngle);
+
   //! Sets the definition of the rectangular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <XStep> defines the interval between 2 vertical lines.
   //! <YStep> defines the interval between 2 horizontal lines.
   //! <RotationAngle> defines the rotation angle of the grid.
   Standard_EXPORT void SetRectangularGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real XStep, const Standard_Real YStep, const Standard_Real RotationAngle);
-  
+
   //! Returns the definition of the circular grid.
-  Standard_EXPORT void CircularGridValues (Standard_Real& XOrigin, Standard_Real& YOrigin, Standard_Real& RadiusStep, Standard_Integer& DivisionNumber, Standard_Real& RotationAngle) const;
-  
+  Standard_EXPORT void CircularGridValues (Standard_Real& theXOrigin, Standard_Real& theYOrigin,
+                                           Standard_Real& theRadiusStep,
+                                           Standard_Integer& theDivisionNumber,
+                                           Standard_Real& theRotationAngle);
+
   //! Sets the definition of the circular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <RadiusStep> defines the interval between 2 circles.
   //! <DivisionNumber> defines the section number of one half circle.
   //! <RotationAngle> defines the rotation angle of the grid.
   Standard_EXPORT void SetCircularGridValues (const Standard_Real XOrigin, const Standard_Real YOrigin, const Standard_Real RadiusStep, const Standard_Integer DivisionNumber, const Standard_Real RotationAngle);
-  
+
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void CircularGridGraphicValues (Standard_Real& Radius, Standard_Real& OffSet) const;
-  
+  Standard_EXPORT void CircularGridGraphicValues (Standard_Real& theRadius,
+                                                  Standard_Real& theOffSet);
+
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
   Standard_EXPORT void SetCircularGridGraphicValues (const Standard_Real Radius, const Standard_Real OffSet);
-  
+
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void RectangularGridGraphicValues (Standard_Real& XSize, Standard_Real& YSize, Standard_Real& OffSet) const;
-  
+  Standard_EXPORT void RectangularGridGraphicValues (Standard_Real& theXSize, Standard_Real& theYSize,
+                                                     Standard_Real& theOffSet);
+
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
@@ -410,6 +420,10 @@ public: //! @name grid management
   Standard_EXPORT void HideGridEcho (const Handle(V3d_View)& theView);
 
 public: //! @name deprecated methods
+
+  //! Returns Standard_True if a grid is activated in <me>.
+  Standard_DEPRECATED ("Deprecated method - IsGridActive() should be used instead")
+  Standard_Boolean IsActive() { return IsGridActive(); }
 
   //! Initializes an internal iterator on the active views.
   Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")

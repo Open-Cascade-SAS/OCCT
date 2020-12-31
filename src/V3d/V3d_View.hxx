@@ -128,7 +128,7 @@ public:
                                    const Standard_Integer theY2);
 
   //! Destroys the view.
-  Standard_EXPORT void Remove() const;
+  Standard_EXPORT void Remove();
 
   //! Deprecated, Redraw() should be used instead.
   Standard_EXPORT void Update() const;
@@ -287,7 +287,14 @@ public:
   Standard_EXPORT Standard_Boolean SetImmediateUpdate (const Standard_Boolean theImmediateUpdate);
 
   //! Returns trihedron object.
-  const Handle(V3d_Trihedron)& Trihedron() const { return myTrihedron; }
+  const Handle(V3d_Trihedron)& Trihedron (bool theToCreate = true)
+  {
+    if (myTrihedron.IsNull() && theToCreate)
+    {
+      myTrihedron = new V3d_Trihedron();
+    }
+    return myTrihedron;
+  }
 
   //! Customization of the ZBUFFER Triedron.
   //! XColor,YColor,ZColor - colors of axis

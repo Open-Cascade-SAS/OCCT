@@ -7672,7 +7672,7 @@ static Standard_Integer VMoveTo (Draw_Interpretor& theDI,
         return 1;
       }
 
-      const Standard_Boolean toEchoGrid = aContext->CurrentViewer()->Grid()->IsActive()
+      const Standard_Boolean toEchoGrid = aContext->CurrentViewer()->IsGridActive()
                                        && aContext->CurrentViewer()->GridEcho();
       if (toEchoGrid)
       {

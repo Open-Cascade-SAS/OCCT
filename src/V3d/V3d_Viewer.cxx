@@ -58,8 +58,7 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver)
   myGridEcho (Standard_True),
   myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
 {
-  myRGrid = new V3d_RectangularGrid (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
-  myCGrid = new V3d_CircularGrid    (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
+  //
 }
 
 // ========================================================================
@@ -113,9 +112,11 @@ void V3d_Viewer::SetViewOn (const Handle(V3d_View)& theView)
   {
     theView->SetLightOn (anActiveLightIter.Value());
   }
-
-  theView->SetGrid (myPrivilegedPlane, Grid ());
-  theView->SetGridActivity (Grid ()->IsActive ());
+  if (Handle(Aspect_Grid) aGrid = Grid (false))
+  {
+    theView->SetGrid (myPrivilegedPlane, aGrid);
+    theView->SetGridActivity (aGrid->IsActive());
+  }
   if (theView->SetImmediateUpdate (Standard_False))
   {
     theView->Redraw();
@@ -454,10 +455,11 @@ void V3d_Viewer::SetDefaultLights()
 void V3d_Viewer::SetPrivilegedPlane (const gp_Ax3& thePlane)
 {
   myPrivilegedPlane = thePlane;
-  Grid()->SetDrawMode(Grid()->DrawMode());
+  Handle(Aspect_Grid) aGrid = Grid (true);
+  aGrid->SetDrawMode (aGrid->DrawMode()); // aGrid->UpdateDisplay();
   for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, aGrid);
   }
 
   if (myDisplayPlane)
@@ -478,7 +480,7 @@ void V3d_Viewer::DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const 
   if (!myDisplayPlane)
   {
     if (!myPlaneStructure.IsNull())
-	{
+    {
       myPlaneStructure->Erase();
     }
     return;

@@ -33,23 +33,38 @@
 // function : Grid
 // purpose  :
 // =======================================================================
-Handle(Aspect_Grid) V3d_Viewer::Grid() const
+Handle(Aspect_Grid) V3d_Viewer::Grid (Aspect_GridType theGridType, bool theToCreate)
 {
-  switch (myGridType)
+  switch (theGridType)
   {
-  case Aspect_GT_Circular:    return Handle(Aspect_Grid) (myCGrid);
-  case Aspect_GT_Rectangular: return Handle(Aspect_Grid) (myRGrid);
+    case Aspect_GT_Circular:
+    {
+      if (myCGrid.IsNull() && theToCreate)
+      {
+        myCGrid = new V3d_CircularGrid (this, Quantity_Color(Quantity_NOC_GRAY50), Quantity_Color(Quantity_NOC_GRAY70));
+      }
+      return Handle(Aspect_Grid) (myCGrid);
+    }
+    case Aspect_GT_Rectangular:
+    {
+      if (myRGrid.IsNull() && theToCreate)
+      {
+        myRGrid = new V3d_RectangularGrid (this, Quantity_Color(Quantity_NOC_GRAY50), Quantity_Color(Quantity_NOC_GRAY70));
+      }
+      return Handle(Aspect_Grid) (myRGrid);
+    }
   }
-  return Handle(Aspect_Grid) (myRGrid);
+  return Handle(Aspect_Grid)();
 }
 
 // =======================================================================
 // function : GridDrawMode
 // purpose  :
 // =======================================================================
-Aspect_GridDrawMode V3d_Viewer::GridDrawMode() const
+Aspect_GridDrawMode V3d_Viewer::GridDrawMode()
 {
-  return Grid()->DrawMode();
+  Handle(Aspect_Grid) aGrid = Grid (false);
+  return !aGrid.IsNull() ? aGrid->DrawMode() : Aspect_GDM_Lines;
 }
 
 // =======================================================================
@@ -59,17 +74,22 @@ Aspect_GridDrawMode V3d_Viewer::GridDrawMode() const
 void V3d_Viewer::ActivateGrid (const Aspect_GridType     theType,
                                const Aspect_GridDrawMode theMode)
 {
-  Grid()->Erase();
+  if (Handle(Aspect_Grid) anOldGrid = Grid (false))
+  {
+    anOldGrid->Erase();
+  }
+
   myGridType = theType;
-  Grid()->SetDrawMode (theMode);
+  Handle(Aspect_Grid) aGrid = Grid (true);
+  aGrid->SetDrawMode (theMode);
   if (theMode != Aspect_GDM_None)
   {
-    Grid()->Display();
+    aGrid->Display();
   }
-  Grid()->Activate();
+  aGrid->Activate();
   for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
-    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, Grid());
+    anActiveViewIter.Value()->SetGrid (myPrivilegedPlane, aGrid);
   }
 }
 
@@ -79,9 +99,16 @@ void V3d_Viewer::ActivateGrid (const Aspect_GridType     theType,
 // =======================================================================
 void V3d_Viewer::DeactivateGrid()
 {
-  Grid()->Erase();
+  Handle(Aspect_Grid) aGrid = Grid (false);
+  if (aGrid.IsNull())
+  {
+    return;
+  }
+
+  aGrid->Erase();
+  aGrid->Deactivate();
+
   myGridType = Aspect_GT_Rectangular;
-  Grid()->Deactivate();
   for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
     anActiveViewIter.Value()->SetGridActivity (Standard_False);
@@ -94,12 +121,13 @@ void V3d_Viewer::DeactivateGrid()
 }
 
 // =======================================================================
-// function : IsActive
+// function : IsGridActive
 // purpose  :
 // =======================================================================
-Standard_Boolean V3d_Viewer::IsActive() const
+Standard_Boolean V3d_Viewer::IsGridActive()
 {
-  return Grid()->IsActive();
+  Handle(Aspect_Grid) aGrid = Grid (false);
+  return !aGrid.IsNull() && aGrid->IsActive();
 }
 
 // =======================================================================
@@ -110,8 +138,9 @@ void V3d_Viewer::RectangularGridValues (Standard_Real& theXOrigin,
                                         Standard_Real& theYOrigin,
                                         Standard_Real& theXStep,
                                         Standard_Real& theYStep,
-                                        Standard_Real& theRotationAngle) const
+                                        Standard_Real& theRotationAngle)
 {
+  Grid (Aspect_GT_Rectangular, true);
   theXOrigin       = myRGrid->XOrigin();
   theYOrigin       = myRGrid->YOrigin();
   theXStep         = myRGrid->XStep();
@@ -129,6 +158,7 @@ void V3d_Viewer::SetRectangularGridValues (const Standard_Real theXOrigin,
                                            const Standard_Real theYStep,
                                            const Standard_Real theRotationAngle)
 {
+  Grid (Aspect_GT_Rectangular, true);
   myRGrid->SetGridValues (theXOrigin, theYOrigin, theXStep, theYStep, theRotationAngle);
   for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
   {
@@ -144,8 +174,9 @@ void V3d_Viewer::CircularGridValues (Standard_Real& theXOrigin,
                                      Standard_Real& theYOrigin,
                                      Standard_Real& theRadiusStep,
                                      Standard_Integer& theDivisionNumber,
-                                     Standard_Real& theRotationAngle) const
+                                     Standard_Real& theRotationAngle)
 {
+  Grid (Aspect_GT_Circular, true);
   theXOrigin        = myCGrid->XOrigin();
   theYOrigin        = myCGrid->YOrigin();
   theRadiusStep     = myCGrid->RadiusStep();
@@ -163,6 +194,7 @@ void V3d_Viewer::SetCircularGridValues (const Standard_Real theXOrigin,
                                         const Standard_Integer theDivisionNumber,
                                         const Standard_Real theRotationAngle)
 {
+  Grid (Aspect_GT_Circular, true);
   myCGrid->SetGridValues (theXOrigin, theYOrigin, theRadiusStep,
                           theDivisionNumber, theRotationAngle);
   for (V3d_ListOfView::Iterator anActiveViewIter (myActiveViews); anActiveViewIter.More(); anActiveViewIter.Next())
@@ -177,8 +209,9 @@ void V3d_Viewer::SetCircularGridValues (const Standard_Real theXOrigin,
 // =======================================================================
 void V3d_Viewer::RectangularGridGraphicValues (Standard_Real& theXSize,
                                                Standard_Real& theYSize,
-                                               Standard_Real& theOffSet) const
+                                               Standard_Real& theOffSet)
 {
+  Grid (Aspect_GT_Rectangular, true);
   myRGrid->GraphicValues (theXSize, theYSize, theOffSet);
 }
 
@@ -190,6 +223,7 @@ void V3d_Viewer::SetRectangularGridGraphicValues (const Standard_Real theXSize,
                                                   const Standard_Real theYSize,
                                                   const Standard_Real theOffSet)
 {
+  Grid (Aspect_GT_Rectangular, true);
   myRGrid->SetGraphicValues (theXSize, theYSize, theOffSet);
 }
 
@@ -198,8 +232,9 @@ void V3d_Viewer::SetRectangularGridGraphicValues (const Standard_Real theXSize,
 // purpose  :
 // =======================================================================
 void V3d_Viewer::CircularGridGraphicValues (Standard_Real& theRadius,
-                                            Standard_Real& theOffSet) const
+                                            Standard_Real& theOffSet)
 {
+  Grid (Aspect_GT_Circular, true);
   myCGrid->GraphicValues (theRadius, theOffSet);
 }
 
@@ -210,6 +245,7 @@ void V3d_Viewer::CircularGridGraphicValues (Standard_Real& theRadius,
 void V3d_Viewer::SetCircularGridGraphicValues (const Standard_Real theRadius,
                                                const Standard_Real theOffSet)
 {
+  Grid (Aspect_GT_Circular, true);
   myCGrid->SetGraphicValues (theRadius, theOffSet);
 }
 

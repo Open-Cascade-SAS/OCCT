@@ -2707,7 +2707,7 @@ void AIS_ViewController::contextLazyMoveTo (const Handle(AIS_InteractiveContext)
 
   Handle(SelectMgr_EntityOwner) aNewPicked = theCtx->DetectedOwner();
 
-  if (theView->Viewer()->Grid()->IsActive()
+  if (theView->Viewer()->IsGridActive()
    && theView->Viewer()->GridEcho())
   {
     if (aNewPicked.IsNull())

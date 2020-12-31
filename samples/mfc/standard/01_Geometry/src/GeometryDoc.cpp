@@ -255,7 +255,7 @@ void CGeometryDoc::MoveEvent2D(const Standard_Integer x,
                                const Standard_Integer y,
                                const Handle(V3d_View)& aView)
 {
-  if(aView->Viewer()->Grid()->IsActive())
+  if (aView->Viewer()->IsGridActive())
   {
     Standard_Real aGridX=0,aGridY=0,aGridZ=0;
     aView->ConvertToGrid(x,y,aGridX,aGridY,aGridZ);
