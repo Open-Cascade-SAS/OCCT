@@ -902,11 +902,20 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
                                   Graphic3d_Camera::Projection theProjection)
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  const Standard_Boolean wasUsedZBuffer = theWorkspace->SetUseZBuffer (Standard_False);
+  const bool wasUsedZBuffer = theWorkspace->SetUseZBuffer (false);
   if (wasUsedZBuffer)
   {
     aCtx->core11fwd->glDisable (GL_DEPTH_TEST);
   }
+
+#ifdef GL_DEPTH_CLAMP
+  const bool wasDepthClamped = aCtx->arbDepthClamp && glIsEnabled (GL_DEPTH_CLAMP);
+  if (aCtx->arbDepthClamp && !wasDepthClamped)
+  {
+    // make sure background is always drawn (workaround skybox rendering on some hardware)
+    aCtx->core11fwd->glEnable (GL_DEPTH_CLAMP);
+  }
+#endif
 
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
   {
@@ -950,6 +959,12 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
     theWorkspace->SetUseZBuffer (Standard_True);
     aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
   }
+#ifdef GL_DEPTH_CLAMP
+  if (aCtx->arbDepthClamp && !wasDepthClamped)
+  {
+    aCtx->core11fwd->glDisable (GL_DEPTH_CLAMP);
+  }
+#endif
 }
 
 //=======================================================================

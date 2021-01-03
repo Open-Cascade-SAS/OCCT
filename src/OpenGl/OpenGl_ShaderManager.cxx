@@ -3171,15 +3171,40 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
       EOL"{"
       EOL"  ViewDirection = cubemapVectorTransform (occVertex.xyz, uYCoeff, uZCoeff);"
       EOL"  vec4 aPos = occProjectionMatrix * occWorldViewMatrix * vec4(occVertex.xyz, 1.0);"
+      // setting Z to W ensures that final Z will be 1.0 after perspective division, (w/w=1))
+      // which allows rendering skybox after everything else with depth test enabled (GL_LEQUAL)
       EOL"  gl_Position = aPos.xyww;"
       EOL"}";
 
-    TCollection_AsciiString aSrcFrag =
-      EOL"#define occEnvCubemap occSampler0"
+    TCollection_AsciiString aDepthClamp;
+    if (!myContext->arbDepthClamp)
+    {
+      // workaround Z clamping issues on some GPUs
+      aDepthClamp = EOL"  gl_FragDepth = clamp (gl_FragDepth, 0.0, 1.0);";
+    #if defined(GL_ES_VERSION_2_0)
+      if (myContext->IsGlGreaterEqual (3, 0))
+      {
+        myBgCubeMapProgram->SetHeader ("#version 300 es");
+      }
+      else if (myContext->extFragDepth)
+      {
+        myBgCubeMapProgram->SetHeader ("#extension GL_EXT_frag_depth : enable"
+                                    EOL"#define gl_FragDepth gl_FragDepthEXT");
+      }
+      else
+      {
+        aDepthClamp.Clear();
+      }
+    #endif
+    }
+
+    TCollection_AsciiString aSrcFrag = TCollection_AsciiString()
+    + EOL"#define occEnvCubemap occSampler0"
       EOL"void main()"
       EOL"{"
       EOL"  occSetFragColor (vec4(occTextureCube (occEnvCubemap, ViewDirection).rgb, 1.0));"
-      EOL"}";
+    + aDepthClamp
+    + EOL"}";
 
     defaultGlslVersion (myBgCubeMapProgram, "background_cubemap", 0);
     myBgCubeMapProgram->SetDefaultSampler (false);

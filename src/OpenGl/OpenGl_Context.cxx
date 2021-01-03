@@ -177,6 +177,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   arbFBO (NULL),
   arbFBOBlit (NULL),
   arbSampleShading (Standard_False),
+  arbDepthClamp (Standard_False),
   extFragDepth (Standard_False),
   extDrawBuffers (Standard_False),
   extGS  (NULL),
@@ -1913,6 +1914,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                   || CheckExtension ("GL_ARB_texture_float");
   hasTexFloatLinear = arbTexFloat;
   arbSampleShading = CheckExtension ("GL_ARB_sample_shading");
+  arbDepthClamp    = IsGlGreaterEqual (3, 2)
+                  || CheckExtension ("GL_ARB_depth_clamp")
+                  || CheckExtension ("NV_depth_clamp");
   extBgra          = IsGlGreaterEqual (1, 2)
                   || CheckExtension ("GL_EXT_bgra");
   extAnis          = CheckExtension ("GL_EXT_texture_filter_anisotropic");

@@ -1084,6 +1084,7 @@ public: //! @name extensions
   OpenGl_ArbFBO*         arbFBO;             //!< GL_ARB_framebuffer_object
   OpenGl_ArbFBOBlit*     arbFBOBlit;         //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
   Standard_Boolean       arbSampleShading;   //!< GL_ARB_sample_shading
+  Standard_Boolean       arbDepthClamp;      //!< GL_ARB_depth_clamp (on desktop OpenGL - since 3.2 or as extensions GL_ARB_depth_clamp,NV_depth_clamp; unavailable on OpenGL ES)
   Standard_Boolean       extFragDepth;       //!< GL_EXT_frag_depth on OpenGL ES 2.0 (gl_FragDepthEXT built-in variable, before OpenGL ES 3.0)
   Standard_Boolean       extDrawBuffers;     //!< GL_EXT_draw_buffers
   OpenGl_ExtGS*          extGS;              //!< GL_EXT_geometry_shader4
