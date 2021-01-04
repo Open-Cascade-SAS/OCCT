@@ -1370,6 +1370,165 @@ void Graphic3d_Camera::LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
   theOutMx.Multiply (anAxialScaleMx);
 }
 
+// =======================================================================
+// function : FitMinMax
+// purpose  :
+// =======================================================================
+bool Graphic3d_Camera::FitMinMax (const Bnd_Box& theBox,
+                                  const Standard_Real theResolution,
+                                  const bool theToEnlargeIfLine)
+{
+  // Check bounding box for validness
+  if (theBox.IsVoid())
+  {
+    return false; // bounding box is out of bounds...
+  }
+
+  // Apply "axial scaling" to the bounding points.
+  // It is not the best approach to make this scaling as a part of fit all operation,
+  // but the axial scale is integrated into camera orientation matrix and the other
+  // option is to perform frustum plane adjustment algorithm in view camera space,
+  // which will lead to a number of additional world-view space conversions and
+  // loosing precision as well.
+  const gp_Pnt aBndMin = theBox.CornerMin().XYZ().Multiplied (myAxialScale);
+  const gp_Pnt aBndMax = theBox.CornerMax().XYZ().Multiplied (myAxialScale);
+  if (aBndMax.IsEqual (aBndMin, RealEpsilon()))
+  {
+    return false; // nothing to fit all
+  }
+
+  // Prepare camera frustum planes.
+  gp_Pln aFrustumPlaneArray[6];
+  NCollection_Array1<gp_Pln> aFrustumPlane (aFrustumPlaneArray[0], 1, 6);
+  Frustum (aFrustumPlane[1], aFrustumPlane[2], aFrustumPlane[3],
+           aFrustumPlane[4], aFrustumPlane[5], aFrustumPlane[6]);
+
+  // Prepare camera up, side, direction vectors.
+  const gp_Dir aCamUp  = OrthogonalizedUp();
+  const gp_Dir aCamDir = Direction();
+  const gp_Dir aCamSide = aCamDir ^ aCamUp;
+
+  // Prepare scene bounding box parameters.
+  const gp_Pnt aBndCenter = (aBndMin.XYZ() + aBndMax.XYZ()) / 2.0;
+
+  gp_Pnt aBndCornerArray[8];
+  NCollection_Array1<gp_Pnt> aBndCorner (aBndCornerArray[0], 1, 8);
+  aBndCorner[1].SetCoord (aBndMin.X(), aBndMin.Y(), aBndMin.Z());
+  aBndCorner[2].SetCoord (aBndMin.X(), aBndMin.Y(), aBndMax.Z());
+  aBndCorner[3].SetCoord (aBndMin.X(), aBndMax.Y(), aBndMin.Z());
+  aBndCorner[4].SetCoord (aBndMin.X(), aBndMax.Y(), aBndMax.Z());
+  aBndCorner[5].SetCoord (aBndMax.X(), aBndMin.Y(), aBndMin.Z());
+  aBndCorner[6].SetCoord (aBndMax.X(), aBndMin.Y(), aBndMax.Z());
+  aBndCorner[7].SetCoord (aBndMax.X(), aBndMax.Y(), aBndMin.Z());
+  aBndCorner[8].SetCoord (aBndMax.X(), aBndMax.Y(), aBndMax.Z());
+
+  // Perspective-correct camera projection vector, matching the bounding box is determined geometrically.
+  // Knowing the initial shape of a frustum it is possible to match it to a bounding box.
+  // Then, knowing the relation of camera projection vector to the frustum shape it is possible to
+  // set up perspective-correct camera projection matching the bounding box.
+  // These steps support non-asymmetric transformations of view-projection space provided by camera.
+  // The zooming can be done by calculating view plane size matching the bounding box at center of
+  // the bounding box. The only limitation here is that the scale of camera should define size of
+  // its view plane passing through the camera center, and the center of camera should be on the
+  // same line with the center of bounding box.
+
+  // The following method is applied:
+  // 1) Determine normalized asymmetry of camera projection vector by frustum planes.
+  // 2) Determine new location of frustum planes, "matching" the bounding box.
+  // 3) Determine new camera projection vector using the normalized asymmetry.
+  // 4) Determine new zooming in view space.
+
+  // 1. Determine normalized projection asymmetry (if any).
+  Standard_Real anAssymX = Tan (( aCamSide).Angle (aFrustumPlane[1].Axis().Direction()))
+                         - Tan ((-aCamSide).Angle (aFrustumPlane[2].Axis().Direction()));
+  Standard_Real anAssymY = Tan (( aCamUp)  .Angle (aFrustumPlane[3].Axis().Direction()))
+                         - Tan ((-aCamUp)  .Angle (aFrustumPlane[4].Axis().Direction()));
+
+  // 2. Determine how far should be the frustum planes placed from center
+  //    of bounding box, in order to match the bounding box closely.
+  Standard_Real aFitDistanceArray[6];
+  NCollection_Array1<Standard_Real> aFitDistance (aFitDistanceArray[0], 1, 6);
+  aFitDistance.Init (0.0);
+  for (Standard_Integer anI = aFrustumPlane.Lower(); anI <= aFrustumPlane.Upper(); ++anI)
+  {
+    // Measure distances from center of bounding box to its corners towards the frustum plane.
+    const gp_Dir& aPlaneN = aFrustumPlane[anI].Axis().Direction();
+
+    Standard_Real& aFitDist = aFitDistance[anI];
+    for (Standard_Integer aJ = aBndCorner.Lower(); aJ <= aBndCorner.Upper(); ++aJ)
+    {
+      aFitDist = Max (aFitDist, gp_Vec (aBndCenter, aBndCorner[aJ]).Dot (aPlaneN));
+    }
+  }
+  // The center of camera is placed on the same line with center of bounding box.
+  // The view plane section crosses the bounding box at its center.
+  // To compute view plane size, evaluate coefficients converting "point -> plane distance"
+  // into view section size between the point and the frustum plane.
+  //       proj
+  //       /|\   right half of frame     //
+  //        |                           //
+  //  point o<--  distance * coeff  -->//---- (view plane section)
+  //         \                        //
+  //      (distance)                 //
+  //                ~               //
+  //                 (distance)    //
+  //                           \/\//
+  //                            \//
+  //                            //
+  //                      (frustum plane)
+  aFitDistance[1] *= Sqrt(1 + Pow (Tan (  aCamSide .Angle (aFrustumPlane[1].Axis().Direction())), 2.0));
+  aFitDistance[2] *= Sqrt(1 + Pow (Tan ((-aCamSide).Angle (aFrustumPlane[2].Axis().Direction())), 2.0));
+  aFitDistance[3] *= Sqrt(1 + Pow (Tan (  aCamUp   .Angle (aFrustumPlane[3].Axis().Direction())), 2.0));
+  aFitDistance[4] *= Sqrt(1 + Pow (Tan ((-aCamUp)  .Angle (aFrustumPlane[4].Axis().Direction())), 2.0));
+  aFitDistance[5] *= Sqrt(1 + Pow (Tan (  aCamDir  .Angle (aFrustumPlane[5].Axis().Direction())), 2.0));
+  aFitDistance[6] *= Sqrt(1 + Pow (Tan ((-aCamDir) .Angle (aFrustumPlane[6].Axis().Direction())), 2.0));
+
+  Standard_Real aViewSizeXv = aFitDistance[1] + aFitDistance[2];
+  Standard_Real aViewSizeYv = aFitDistance[3] + aFitDistance[4];
+  Standard_Real aViewSizeZv = aFitDistance[5] + aFitDistance[6];
+
+  // 3. Place center of camera on the same line with center of bounding
+  //    box applying corresponding projection asymmetry (if any).
+  Standard_Real anAssymXv = anAssymX * aViewSizeXv * 0.5;
+  Standard_Real anAssymYv = anAssymY * aViewSizeYv * 0.5;
+  Standard_Real anOffsetXv = (aFitDistance[2] - aFitDistance[1]) * 0.5 + anAssymXv;
+  Standard_Real anOffsetYv = (aFitDistance[4] - aFitDistance[3]) * 0.5 + anAssymYv;
+  gp_Vec aTranslateSide = gp_Vec (aCamSide) * anOffsetXv;
+  gp_Vec aTranslateUp   = gp_Vec (aCamUp)   * anOffsetYv;
+  gp_Pnt aCamNewCenter  = aBndCenter.Translated (aTranslateSide).Translated (aTranslateUp);
+
+  gp_Trsf aCenterTrsf;
+  aCenterTrsf.SetTranslation (Center(), aCamNewCenter);
+  Transform (aCenterTrsf);
+  SetDistance (aFitDistance[6] + aFitDistance[5]);
+
+  if (aViewSizeXv < theResolution
+   && aViewSizeYv < theResolution)
+  {
+    // Bounding box collapses to a point or thin line going in depth of the screen
+    if (aViewSizeXv < theResolution || !theToEnlargeIfLine)
+    {
+      return false; // This is just one point or line and zooming has no effect.
+    }
+
+    // Looking along line and "theToEnlargeIfLine" is requested.
+    // Fit view to see whole scene on rotation.
+    aViewSizeXv = aViewSizeZv;
+    aViewSizeYv = aViewSizeZv;
+  }
+
+  const Standard_Real anAspect = Aspect();
+  if (anAspect > 1.0)
+  {
+    SetScale (Max (aViewSizeXv / anAspect, aViewSizeYv));
+  }
+  else
+  {
+    SetScale (Max (aViewSizeXv, aViewSizeYv * anAspect));
+  }
+  return true;
+}
+
 //=============================================================================
 //function : ZFitAll
 //purpose  :

@@ -359,6 +359,11 @@ public:
   //! Set Field Of View (FOV) restriction for 2D on-screen elements.
   Standard_EXPORT void SetFOV2d (Standard_Real theFOV);
 
+  //! Adjust camera to fit in specified AABB.
+  Standard_EXPORT bool FitMinMax (const Bnd_Box& theBox,
+                                  const Standard_Real theResolution,
+                                  const bool theToEnlargeIfLine);
+
   //! Estimate Z-min and Z-max planes of projection volume to match the
   //! displayed objects. The methods ensures that view volume will
   //! be close by depth range to the displayed objects. Fitting assumes that
