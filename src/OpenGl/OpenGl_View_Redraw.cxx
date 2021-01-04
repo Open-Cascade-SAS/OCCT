@@ -129,62 +129,16 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
 }
 
 //=======================================================================
-//function : Redraw
+//function : prepareFrameBuffers
 //purpose  :
 //=======================================================================
-void OpenGl_View::Redraw()
+bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
 {
-  const Standard_Boolean wasDisabledMSAA = myToDisableMSAA;
-  const Standard_Boolean hadFboBlit      = myHasFboBlit;
-  if (myRenderParams.Method == Graphic3d_RM_RAYTRACING
-  && !myCaps->vboDisable
-  && !myCaps->keepArrayData)
-  {
-    // caps are shared across all views, thus we need to invalidate all of them
-    // if (myWasRedrawnGL) { myStructureManager->SetDeviceLost(); }
-    myDriver->setDeviceLost();
-    myCaps->keepArrayData = Standard_True;
-  }
+  theProj = myCamera->ProjectionType();
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
 
-  if (!myWorkspace->Activate())
-  {
-    return;
-  }
-
-  // implicitly disable VSync when using HMD composer (can be mirrored in window for debugging)
-  myWindow->SetSwapInterval (IsActiveXR());
-
-  ++myFrameCounter;
-  const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
-  Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
-  const Handle(OpenGl_Context)& aCtx        = myWorkspace->GetGlContext();
-  aCtx->FrameStats()->FrameStart (myWorkspace->View(), false);
-  aCtx->SetLineFeather (myRenderParams.LineFeather);
-
-  const Standard_Integer anSRgbState = aCtx->ToRenderSRGB() ? 1 : 0;
-  if (mySRgbState != -1
-   && mySRgbState != anSRgbState)
-  {
-    releaseSrgbResources (aCtx);
-    initTextureEnv (aCtx);
-  }
-  mySRgbState = anSRgbState;
-  aCtx->ShaderManager()->UpdateSRgbState();
-
-  // release pending GL resources
-  aCtx->ReleaseDelayed();
-
-  // fetch OpenGl context state
-  aCtx->FetchState();
-
+  Standard_Integer aSizeX = 0, aSizeY = 0;
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
-  bool toSwap = aCtx->IsRender()
-            && !aCtx->caps->buffersNoSwap
-            &&  aFrameBuffer == NULL
-            &&  (!IsActiveXR() || myRenderParams.ToMirrorComposer);
-
-  Standard_Integer aSizeX = myWindow->Width();
-  Standard_Integer aSizeY = myWindow->Height();
   if (aFrameBuffer != NULL)
   {
     aSizeX = aFrameBuffer->GetVPSizeX();
@@ -194,6 +148,11 @@ void OpenGl_View::Redraw()
   {
     aSizeX = myXRSession->RecommendedViewport().x();
     aSizeY = myXRSession->RecommendedViewport().y();
+  }
+  else
+  {
+    aSizeX = myWindow->Width();
+    aSizeY = myWindow->Height();
   }
 
   const Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
@@ -205,7 +164,7 @@ void OpenGl_View::Redraw()
   {
     myBackBufferRestored = Standard_False;
     myIsImmediateDrawn   = Standard_False;
-    return;
+    return false;
   }
 
   // determine multisampling parameters
@@ -232,7 +191,7 @@ void OpenGl_View::Redraw()
 
   if (myHasFboBlit
    && (myTransientDrawToFront
-    || aProjectType == Graphic3d_Camera::Projection_Stereo
+    || theProj == Graphic3d_Camera::Projection_Stereo
     || aNbSamples != 0
     || toUseOit
     || aSizeX != aRendSizeX))
@@ -290,7 +249,7 @@ void OpenGl_View::Redraw()
   }
 
   bool hasXRBlitFbo = false;
-  if (aProjectType == Graphic3d_Camera::Projection_Stereo
+  if (theProj == Graphic3d_Camera::Projection_Stereo
    && IsActiveXR()
    && myMainSceneFbos[0]->IsValid())
   {
@@ -306,7 +265,7 @@ void OpenGl_View::Redraw()
       }
     }
   }
-  else if (aProjectType == Graphic3d_Camera::Projection_Stereo
+  else if (theProj == Graphic3d_Camera::Projection_Stereo
         && myMainSceneFbos[0]->IsValid())
   {
     const bool wasFailedMain1 = checkWasFailedFbo (myMainSceneFbos[1], myMainSceneFbos[0]);
@@ -320,13 +279,14 @@ void OpenGl_View::Redraw()
     if (!myMainSceneFbos[1]->IsValid())
     {
       // no enough memory?
-      aProjectType = Graphic3d_Camera::Projection_Perspective;
+      theProj = Graphic3d_Camera::Projection_Perspective;
     }
     else if (!myTransientDrawToFront)
     {
       //
     }
-    else if (!aCtx->HasStereoBuffers() || aStereoMode != Graphic3d_StereoMode_QuadBuffer)
+    else if (!aCtx->HasStereoBuffers()
+           || myRenderParams.StereoMode != Graphic3d_StereoMode_QuadBuffer)
     {
       const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
       const bool wasFailedImm1 = checkWasFailedFbo (myImmediateSceneFbos[1], myMainSceneFbos[0]);
@@ -347,7 +307,7 @@ void OpenGl_View::Redraw()
       if (!myImmediateSceneFbos[0]->IsValid()
        || !myImmediateSceneFbos[1]->IsValid())
       {
-        aProjectType = Graphic3d_Camera::Projection_Perspective;
+        theProj = Graphic3d_Camera::Projection_Perspective;
       }
     }
   }
@@ -504,6 +464,77 @@ void OpenGl_View::Redraw()
     myImmediateSceneFbosOit[1]->ChangeViewport (0, 0);
   }
 
+  return true;
+}
+
+//=======================================================================
+//function : Redraw
+//purpose  :
+//=======================================================================
+void OpenGl_View::Redraw()
+{
+  const Standard_Boolean wasDisabledMSAA = myToDisableMSAA;
+  const Standard_Boolean hadFboBlit      = myHasFboBlit;
+  if (myRenderParams.Method == Graphic3d_RM_RAYTRACING
+  && !myCaps->vboDisable
+  && !myCaps->keepArrayData)
+  {
+    // caps are shared across all views, thus we need to invalidate all of them
+    // if (myWasRedrawnGL) { myStructureManager->SetDeviceLost(); }
+    myDriver->setDeviceLost();
+    myCaps->keepArrayData = Standard_True;
+  }
+
+  if (!myWorkspace->Activate())
+  {
+    return;
+  }
+
+  // implicitly disable VSync when using HMD composer (can be mirrored in window for debugging)
+  myWindow->SetSwapInterval (IsActiveXR());
+
+  ++myFrameCounter;
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  aCtx->FrameStats()->FrameStart (myWorkspace->View(), false);
+  aCtx->SetLineFeather (myRenderParams.LineFeather);
+
+  const Standard_Integer anSRgbState = aCtx->ToRenderSRGB() ? 1 : 0;
+  if (mySRgbState != -1
+   && mySRgbState != anSRgbState)
+  {
+    releaseSrgbResources (aCtx);
+    initTextureEnv (aCtx);
+  }
+  mySRgbState = anSRgbState;
+  aCtx->ShaderManager()->UpdateSRgbState();
+
+  // release pending GL resources
+  aCtx->ReleaseDelayed();
+
+  // fetch OpenGl context state
+  aCtx->FetchState();
+
+  const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
+  Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
+  if (!prepareFrameBuffers (aProjectType))
+  {
+    myBackBufferRestored = Standard_False;
+    myIsImmediateDrawn   = Standard_False;
+    return;
+  }
+
+  OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
+  bool toSwap = aCtx->IsRender()
+            && !aCtx->caps->buffersNoSwap
+            &&  aFrameBuffer == NULL
+            &&  (!IsActiveXR() || myRenderParams.ToMirrorComposer);
+  if ( aFrameBuffer == NULL
+   && !aCtx->DefaultFrameBuffer().IsNull()
+   &&  aCtx->DefaultFrameBuffer()->IsValid())
+  {
+    aFrameBuffer = aCtx->DefaultFrameBuffer().operator->();
+  }
+
   if (aProjectType == Graphic3d_Camera::Projection_Stereo)
   {
     OpenGl_FrameBuffer* aMainFbos[2] =
@@ -583,7 +614,7 @@ void OpenGl_View::Redraw()
     if (IsActiveXR())
     {
       // push Left frame to HMD display composer
-      OpenGl_FrameBuffer* anXRFbo = hasXRBlitFbo ? myXrSceneFbo.get() : aMainFbos[0];
+      OpenGl_FrameBuffer* anXRFbo = myXrSceneFbo->IsValid() ? myXrSceneFbo.get() : aMainFbos[0];
       if (anXRFbo != aMainFbos[0])
       {
         blitBuffers (aMainFbos[0], anXRFbo); // resize or resolve MSAA samples
@@ -616,7 +647,7 @@ void OpenGl_View::Redraw()
     if (IsActiveXR())
     {
       // push Right frame to HMD display composer
-      OpenGl_FrameBuffer* anXRFbo = hasXRBlitFbo ? myXrSceneFbo.get() : aMainFbos[1];
+      OpenGl_FrameBuffer* anXRFbo = myXrSceneFbo->IsValid() ? myXrSceneFbo.get() : aMainFbos[1];
       if (anXRFbo != aMainFbos[1])
       {
         blitBuffers (aMainFbos[1], anXRFbo); // resize or resolve MSAA samples

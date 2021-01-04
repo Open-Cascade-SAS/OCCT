@@ -354,6 +354,9 @@ protected: //! @name Internal methods for managing GL resources
 
 protected: //! @name low-level redrawing sub-routines
 
+  //! Prepare frame buffers for rendering.
+  Standard_EXPORT virtual bool prepareFrameBuffers (Graphic3d_Camera::Projection& theProj);
+
   //! Redraws view for the given monographic camera projection, or left/right eye.
   Standard_EXPORT virtual void redraw (const Graphic3d_Camera::Projection theProjection,
                                        OpenGl_FrameBuffer*                theReadDrawFbo,
