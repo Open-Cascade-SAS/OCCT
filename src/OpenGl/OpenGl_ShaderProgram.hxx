@@ -59,6 +59,9 @@ enum OpenGl_StateVariable
   OpenGl_OCC_LIGHT_SOURCE_TYPES,
   OpenGl_OCC_LIGHT_SOURCE_PARAMS,
   OpenGl_OCC_LIGHT_AMBIENT,
+  OpenGl_OCC_LIGHT_SHADOWMAP_SIZE_BIAS,// occShadowMapSizeBias
+  OpenGl_OCC_LIGHT_SHADOWMAP_SAMPLERS, // occShadowMapSamplers
+  OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES, // occShadowMapMatrices
 
   // Material state
   OpenGl_OCCT_TEXTURE_ENABLE,
@@ -283,6 +286,9 @@ public:
   //! Return the length of array of light sources (THE_MAX_LIGHTS),
   //! to be used for initialization occLightSources (OpenGl_OCC_LIGHT_SOURCE_PARAMS).
   Standard_Integer NbLightsMax() const { return myNbLightsMax; }
+
+  //! Return the length of array of shadow maps (THE_NB_SHADOWMAPS); 0 by default.
+  Standard_Integer NbShadowMaps() const { return myNbShadowMaps; }
 
   //! Return the length of array of clipping planes (THE_MAX_CLIP_PLANES),
   //! to be used for initialization occClipPlaneEquations (OpenGl_OCC_CLIP_PLANE_EQUATIONS) and occClipPlaneChains (OpenGl_OCC_CLIP_PLANE_CHAINS).
@@ -546,6 +552,13 @@ public:
                                                const OpenGl_Mat4&            theValue,
                                                GLboolean                     theTranspose = GL_FALSE);
 
+  //! Specifies the value of the array of float uniform 4x4 matrices.
+  //! Wrapper over glUniformMatrix4fv().
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Mat4*            theData);
+
   //! Specifies the value of the float uniform 4x4 matrix.
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
@@ -661,6 +674,7 @@ protected:
   Handle(Graphic3d_ShaderProgram) myProxy;         //!< Proxy shader program (from application layer)
   Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
   Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
+  Standard_Integer                myNbShadowMaps;  //!< length of array of shadow maps (THE_NB_SHADOWMAPS)
   Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer                myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
   Standard_Integer                myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits

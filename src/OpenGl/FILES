@@ -122,6 +122,8 @@ OpenGl_ShaderProgram.cxx
 OpenGl_ShaderProgram.hxx
 OpenGl_ShaderStates.cxx
 OpenGl_ShaderStates.hxx
+OpenGl_ShadowMap.cxx
+OpenGl_ShadowMap.hxx
 OpenGl_StencilTest.cxx
 OpenGl_StencilTest.hxx
 OpenGl_TileSampler.hxx

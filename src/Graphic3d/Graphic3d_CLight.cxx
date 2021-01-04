@@ -14,6 +14,7 @@
 #include <Graphic3d_CLight.hxx>
 
 #include <Standard_Atomic.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CLight, Standard_Transient)
@@ -56,7 +57,8 @@ Graphic3d_CLight::Graphic3d_CLight (Graphic3d_TypeOfLightSource theType)
   myType       (theType),
   myRevision   (0),
   myIsHeadlight(false),
-  myIsEnabled  (true)
+  myIsEnabled  (true),
+  myToCastShadows (false)
 {
   switch (theType)
   {
@@ -106,6 +108,20 @@ void Graphic3d_CLight::SetEnabled (Standard_Boolean theIsOn)
 {
   updateRevisionIf (myIsEnabled != theIsOn);
   myIsEnabled = theIsOn;
+}
+
+// =======================================================================
+// function : SetCastShadows
+// purpose  :
+// =======================================================================
+void Graphic3d_CLight::SetCastShadows (Standard_Boolean theToCast)
+{
+  if (myType != Graphic3d_TOLS_DIRECTIONAL)
+  {
+    throw Standard_NotImplemented ("Graphic3d_CLight::SetCastShadows() is not implemented for this light type");
+  }
+  updateRevisionIf (myToCastShadows != theToCast);
+  myToCastShadows = theToCast;
 }
 
 // =======================================================================

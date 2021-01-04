@@ -287,7 +287,24 @@ public:
 
   //! Updates state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceStateTo (const Handle(Graphic3d_LightSet)& theLights,
-                                                 Standard_Integer                  theSpecIBLMapLevels = 0);
+                                                 Standard_Integer theSpecIBLMapLevels,
+                                                 const Handle(OpenGl_ShadowMapArray)& theShadowMaps);
+
+  //! Updates state of OCCT light sources to dynamically enable/disable shadowmap.
+  //! @param theToCast [in] flag to enable/disable shadowmap
+  //! @return previous flag state
+  bool SetCastShadows (const bool theToCast)
+  {
+    if (myLightSourceState.ShadowMaps().IsNull()
+     || myLightSourceState.ToCastShadows() == theToCast)
+	{
+      return myLightSourceState.ToCastShadows();
+    }
+
+    myLightSourceState.SetCastShadows (theToCast);
+    switchLightPrograms();
+    return !theToCast;
+  }
 
   //! Invalidate state of OCCT light sources.
   Standard_EXPORT void UpdateLightSourceState();
@@ -709,10 +726,12 @@ protected:
   //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
   //! @param theIsPBR        [in]  flag to activate PBR pipeline
   //! @param theHasEmissive  [in]  flag to include emissive
+  //! @param theHasShadowMap [in]  flag to include shadow map
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
                                                               Standard_Boolean  theHasVertColor,
                                                               Standard_Boolean  theIsPBR,
-                                                              Standard_Boolean  theHasEmissive = true);
+                                                              Standard_Boolean  theHasEmissive,
+                                                              Standard_Boolean  theHasShadowMap);
 
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
@@ -834,6 +853,7 @@ protected:
 
   mutable NCollection_Array1<Standard_Integer>             myLightTypeArray;
   mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;
+  mutable NCollection_Array1<Graphic3d_Mat4>               myShadowMatArray;
   mutable NCollection_Array1<OpenGl_Vec4>                  myClipPlaneArray;
   mutable NCollection_Array1<OpenGl_Vec4d>                 myClipPlaneArrayFfp;
   mutable NCollection_Array1<Standard_Integer>             myClipChainArray;

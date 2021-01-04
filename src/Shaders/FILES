@@ -1,5 +1,6 @@
 srcinc:::Declarations.glsl
 srcinc:::DeclarationsImpl.glsl
+srcinc:::DirectionalLightShadow.glsl
 srcinc:::PBRCookTorrance.glsl
 srcinc:::PBRDistribution.glsl
 srcinc:::PBREnvBaking.fs
@@ -19,6 +20,7 @@ srcinc:::RaytraceSmooth.fs
 srcinc:::TangentSpaceNormal.glsl
 Shaders_Declarations_glsl.pxx
 Shaders_DeclarationsImpl_glsl.pxx
+Shaders_DirectionalLightShadow_glsl.pxx
 Shaders_Display_fs.pxx
 Shaders_PBRCookTorrance_glsl.pxx
 Shaders_PBRDistribution_glsl.pxx

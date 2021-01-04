@@ -78,6 +78,7 @@ const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
 // =======================================================================
 Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
 : myNbLightsMax (THE_MAX_LIGHTS_DEFAULT),
+  myNbShadowMaps (0),
   myNbClipPlanesMax (THE_MAX_CLIP_PLANES_DEFAULT),
   myNbFragOutputs (THE_NB_FRAG_OUTPUTS),
   myTextureSetBits (Graphic3d_TextureSetBits_NONE),

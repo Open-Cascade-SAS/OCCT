@@ -630,6 +630,9 @@ public:
   //! Returns texture unit where Specular IBL map is expected to be bound, or 0 if PBR is unavailable.
   Graphic3d_TextureUnit PBRSpecIBLMapTexUnit() const { return myPBRSpecIBLMapTexUnit; }
 
+  //! Returns texture unit where shadow map is expected to be bound, or 0 if unavailable.
+  Graphic3d_TextureUnit ShadowMapTexUnit() const { return myShadowMapTexUnit; }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -1169,6 +1172,7 @@ private: // context info
   Graphic3d_TextureUnit myPBRDiffIBLMapSHTexUnit; //!< sampler2D occDiffIBLMapSHCoeffs, texture unit where diffuse (irradiance) IBL map's spherical harmonics coefficients is expected to  be binded
                                                   //!  (0 if PBR is not supported)
   Graphic3d_TextureUnit myPBRSpecIBLMapTexUnit;   //!< samplerCube occSpecIBLMap, texture unit where specular IBL map is expected to  be binded (0 if PBR is not supported)
+  Graphic3d_TextureUnit myShadowMapTexUnit;       //!< sampler2D occShadowMapSampler
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

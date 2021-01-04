@@ -29,7 +29,9 @@ public:
     IterationFilter_None            = 0x0000, //!< no filter
     IterationFilter_ExcludeAmbient  = 0x0002, //!< exclude ambient  light sources
     IterationFilter_ExcludeDisabled = 0x0004, //!< exclude disabled light sources
+    IterationFilter_ExcludeNoShadow = 0x0008, //!< exclude light sources not casting shadow
     IterationFilter_ExcludeDisabledAndAmbient = IterationFilter_ExcludeAmbient | IterationFilter_ExcludeDisabled,
+    IterationFilter_ActiveShadowCasters = IterationFilter_ExcludeDisabledAndAmbient | IterationFilter_ExcludeNoShadow,
   };
 
   //! Iterator through light sources.
@@ -95,6 +97,11 @@ public:
         {
           continue;
         }
+        else if ((myFilter & IterationFilter_ExcludeNoShadow) != 0
+              && !myIter.Key()->ToCastShadows())
+        {
+          continue;
+        }
 
         break;
       }
@@ -155,6 +162,10 @@ public:
   //! @sa UpdateRevision()
   Standard_Integer NbEnabledLightsOfType (Graphic3d_TypeOfLightSource theType) const { return myLightTypesEnabled[theType]; }
 
+  //! Returns total amount of enabled lights castings shadows.
+  //! @sa UpdateRevision()
+  Standard_Integer NbCastShadows() const { return myNbCastShadows; }
+
   //! Returns cumulative ambient color, which is computed as sum of all enabled ambient light sources.
   //! Values are NOT clamped (can be greater than 1.0f) and alpha component is fixed to 1.0f.
   //! @sa UpdateRevision()
@@ -181,6 +192,7 @@ protected:
   Standard_Integer        myLightTypes       [Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type defined in the list
   Standard_Integer        myLightTypesEnabled[Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type enabled in the list
   Standard_Integer        myNbEnabled;              //!< number of enabled light sources, excluding ambient
+  Standard_Integer        myNbCastShadows;          //!< number of enabled light sources casting shadows
   Standard_Size           myRevision;               //!< current revision of light source set
   Standard_Size           myCacheRevision;          //!< revision of cached state
 };

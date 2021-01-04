@@ -59,9 +59,12 @@ class Graphic3d_StructureManager;
 class OpenGl_GraphicDriver;
 class OpenGl_PBREnvironment;
 class OpenGl_StateCounter;
+class OpenGl_ShadowMap;
+class OpenGl_ShadowMapArray;
 class OpenGl_TriangleSet;
 class OpenGl_Workspace;
 class OpenGl_View;
+
 DEFINE_STANDARD_HANDLE(OpenGl_View,Graphic3d_CView)
 
 //! Implementation of OpenGl view.
@@ -390,6 +393,10 @@ protected: //! @name low-level redrawing sub-routines
 
 protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
 
+  //! Renders the graphical contents of the view into the preprepared shadowmap framebuffer.
+  //! @param theShadowMap [in] the framebuffer for rendering shadowmap.
+  Standard_EXPORT virtual void renderShadowMap (const Handle(OpenGl_ShadowMap)& theShadowMap);
+
   //! Renders the graphical contents of the view into the preprepared window or framebuffer.
   //! @param theProjection [in] the projection that should be used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for rendering graphics.
@@ -527,6 +534,7 @@ protected: //! @name Rendering properties
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbosOit[2]; //!< Additional buffers for transparency draw of immediate layer.
   Handle(OpenGl_FrameBuffer) myXrSceneFbo;            //!< additional FBO (without MSAA) for submitting to XR
+  Handle(OpenGl_ShadowMapArray) myShadowMaps;         //!< additional FBOs for shadow map rendering
   OpenGl_VertexBuffer        myFullScreenQuad;        //!< Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuadFlip;
   Standard_Boolean           myToFlipOutput;          //!< Flag to draw result image upside-down

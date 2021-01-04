@@ -10771,6 +10771,7 @@ static int VLight (Draw_Interpretor& theDi,
           theDi << "  Type:       Directional\n";
           theDi << "  Intensity:  " << aLight->Intensity() << "\n";
           theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  CastShadows:" << (aLight->ToCastShadows() ? "TRUE" : "FALSE") << "\n";
           theDi << "  Smoothness: " << aLight->Smoothness() << "\n";
           aLight->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
           theDi << "  Direction:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
@@ -10781,6 +10782,7 @@ static int VLight (Draw_Interpretor& theDi,
           theDi << "  Type:       Positional\n";
           theDi << "  Intensity:  " << aLight->Intensity() << "\n";
           theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  CastShadows:" << (aLight->ToCastShadows() ? "TRUE" : "FALSE") << "\n";
           theDi << "  Smoothness: " << aLight->Smoothness() << "\n";
           aLight->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
           theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
@@ -10794,6 +10796,7 @@ static int VLight (Draw_Interpretor& theDi,
           theDi << "  Type:       Spot\n";
           theDi << "  Intensity:  " << aLight->Intensity() << "\n";
           theDi << "  Headlight:  " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          theDi << "  CastShadows:" << (aLight->ToCastShadows() ? "TRUE" : "FALSE") << "\n";
           aLight->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
           theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
           aLight->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
@@ -11295,6 +11298,25 @@ static int VLight (Draw_Interpretor& theDi,
       }
       aLightCurr->SetHeadlight (isHeadLight);
     }
+    else if (anArgCase.IsEqual ("-CASTSHADOW")
+          || anArgCase.IsEqual ("-CASTSHADOWS")
+          || anArgCase.IsEqual ("-SHADOWS"))
+    {
+      if (aLightCurr.IsNull()
+       || aLightCurr->Type() == Graphic3d_TOLS_AMBIENT)
+      {
+        Message::SendFail() << "Syntax error at argument '" << anArg << "'";
+        return 1;
+      }
+
+      bool toCastShadows = true;
+      if (anArgIt + 1 < theArgsNb
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], toCastShadows))
+      {
+        ++anArgIt;
+      }
+      aLightCurr->SetCastShadows (toCastShadows);
+    }
     else
     {
       Message::SendFail() << "Warning: unknown argument '" << anArg << "'";
@@ -11541,6 +11563,8 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "rayDepth:       " <<  aParams.RaytracingDepth                             << "\n";
     theDI << "fsaa:           " << (aParams.IsAntialiasingEnabled       ? "on" : "off") << "\n";
     theDI << "shadows:        " << (aParams.IsShadowEnabled             ? "on" : "off") << "\n";
+    theDI << "shadowMapRes:   " <<  aParams.ShadowMapResolution                         << "\n";
+    theDI << "shadowMapBias:  " <<  aParams.ShadowMapBias                               << "\n";
     theDI << "reflections:    " << (aParams.IsReflectionEnabled         ? "on" : "off") << "\n";
     theDI << "gleam:          " << (aParams.IsTransparentShadowEnabled  ? "on" : "off") << "\n";
     theDI << "GI:             " << (aParams.IsGlobalIlluminationEnabled ? "on" : "off") << "\n";
@@ -11911,6 +11935,37 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aParams.IsShadowEnabled = toEnable;
+    }
+    else if (aFlag == "-shadowmapresolution"
+          || aFlag == "-shadowmap")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.ShadowMapResolution << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        Message::SendFail() << "Syntax error at argument '" << anArg << "'";
+        return 1;
+      }
+
+      aParams.ShadowMapResolution = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (aFlag == "-shadowmapbias")
+    {
+      if (toPrint)
+      {
+        theDI << aParams.ShadowMapBias << " ";
+        continue;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        Message::SendFail() << "Syntax error at argument '" << anArg << "'";
+        return 1;
+      }
+
+      aParams.ShadowMapBias = (float )Draw::Atof (theArgVec[anArgIter]);
     }
     else if (aFlag == "-refl"
           || aFlag == "-reflections")
@@ -14824,6 +14879,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n        -{dir}ection X Y Z (for directional light or for spotlight)"
     "\n        -color colorName"
     "\n        -{head}light 0|1"
+    "\n        -castShadows 0|1"
     "\n        -{sm}oothness value"
     "\n        -{int}ensity value"
     "\n        -{constAtten}uation value"
@@ -14854,6 +14910,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: vrenderparams [-raster] [-shadingModel {unlit|facet|gouraud|phong|pbr|pbr_facet}=gouraud]"
     "\n\t\t:               [-msaa 0..8=0] [-rendScale scale=1] [-resolution value=72]"
     "\n\t\t:               [-oit {off|0.0-1.0}=off]"
+    "\n\t\t:               [-shadows {on|off}=on] [-shadowMapResolution value=1024] [-shadowMapBias value=0.005]"
     "\n\t\t:               [-depthPrePass {on|off}=off] [-alphaToCoverage {on|off}=on]"
     "\n\t\t:               [-frustumCulling {on|off|noupdate}=on] [-lineFeather width=1.0]"
     "\n\t\t:               [-sync {default|views}] [-reset]"
@@ -14867,6 +14924,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   -oit             Enables/disables order-independent transparency (OIT) rendering;"
     "\n\t\t:                    weight OIT fixes transparency artifacts at the cost of blurry result,"
     "\n\t\t:                    it is managed by depth weight factor (0.0 value also enables weight OIT)."
+    "\n\t\t:   -shadows         Enables/disables shadows rendering."
+    "\n\t\t:   -shadowMapResolution Shadow texture map resolution."
+    "\n\t\t:   -shadowMapBias   Shadow map bias."
     "\n\t\t:   -depthPrePass    Enables/disables depth pre-pass."
     "\n\t\t:   -frustumCulling  Enables/disables objects frustum clipping or"
     "\n\t\t:                    sets state to check structures culled previously."
@@ -14881,7 +14941,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   -perfChart          Show frame timers chart limited by specified number of frames."
     "\n\t\t:   -perfChartMax       Maximum time in seconds with the chart."
     "\n\t\t: Ray-Tracing options:"
-    "\n\t\t: vrenderparams [-rayTrace] [-rayDepth {0..10}=3] [-shadows {on|off}=on] [-reflections {on|off}=off]"
+    "\n\t\t: vrenderparams [-rayTrace] [-rayDepth {0..10}=3] [-reflections {on|off}=off]"
     "\n\t\t:               [-fsaa {on|off}=off] [-gleam {on|off}=off] [-env {on|off}=off]"
     "\n\t\t:               [-gi {on|off}=off] [-brng {on|off}=off]"
     "\n\t\t:               [-iss {on|off}=off] [-tileSize {1..4096}=32] [-nbTiles {64..1024}=256]"
@@ -14891,7 +14951,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:               [-exposure value=0.0] [-whitePoint value=1.0] [-toneMapping {disabled|filmic}=disabled]"
     "\n\t\t:   -rayTrace     Enables  GPU ray-tracing."
     "\n\t\t:   -rayDepth     Defines maximum ray-tracing depth."
-    "\n\t\t:   -shadows      Enables/disables shadows rendering."
     "\n\t\t:   -reflections  Enables/disables specular reflections."
     "\n\t\t:   -fsaa         Enables/disables adaptive anti-aliasing."
     "\n\t\t:   -gleam        Enables/disables transparency shadow effects."

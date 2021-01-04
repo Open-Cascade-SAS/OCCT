@@ -220,6 +220,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myPBREnvLUTTexUnit       (Graphic3d_TextureUnit_PbrEnvironmentLUT),
   myPBRDiffIBLMapSHTexUnit (Graphic3d_TextureUnit_PbrIblDiffuseSH),
   myPBRSpecIBLMapTexUnit   (Graphic3d_TextureUnit_PbrIblSpecular),
+  myShadowMapTexUnit       (Graphic3d_TextureUnit_ShadowMap),
   myFrameStats (new OpenGl_FrameStats()),
   myActiveMockTextures (0),
   myActiveHatchType (Aspect_HS_SOLID),
@@ -3353,6 +3354,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     myPBRDiffIBLMapSHTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblDiffuseSH);
     myPBRSpecIBLMapTexUnit   = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblSpecular);
   }
+  myShadowMapTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_ShadowMap);
 }
 
 // =======================================================================

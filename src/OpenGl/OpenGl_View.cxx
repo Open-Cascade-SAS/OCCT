@@ -30,6 +30,7 @@
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
@@ -149,6 +150,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myRaytraceFBO1[1]          = new OpenGl_FrameBuffer();
   myRaytraceFBO2[0]          = new OpenGl_FrameBuffer();
   myRaytraceFBO2[1]          = new OpenGl_FrameBuffer();
+  myShadowMaps = new OpenGl_ShadowMapArray();
 }
 
 // =======================================================================
@@ -219,6 +221,7 @@ void OpenGl_View::releaseSrgbResources (const Handle(OpenGl_Context)& theCtx)
   myOpenGlFBO2              ->Release (theCtx.get());
   myFullScreenQuad           .Release (theCtx.get());
   myFullScreenQuadFlip       .Release (theCtx.get());
+  myShadowMaps->Release (theCtx.get());
 
   // Technically we should also re-initialize all sRGB/RGB8 color textures.
   // But for now consider this sRGB disabling/enabling to be done at application start-up
@@ -1302,6 +1305,53 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     myImmediateSceneFbosOit[1]->ChangeViewport (0, 0);
   }
 
+  // allocate shadow maps
+  const Handle(Graphic3d_LightSet)& aLights = myShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
+  if (!aLights.IsNull())
+  {
+    aLights->UpdateRevision();
+  }
+  bool toUseShadowMap = myRenderParams.IsShadowEnabled
+                     && myRenderParams.ShadowMapResolution > 0
+                     && !myLights.IsNull()
+                     && myLights->NbCastShadows() > 0
+                     && myRenderParams.Method != Graphic3d_RM_RAYTRACING;
+  if (toUseShadowMap)
+  {
+    if (myShadowMaps->Size() != myLights->NbCastShadows())
+    {
+      myShadowMaps->Release (aCtx.get());
+      myShadowMaps->Resize (0, myLights->NbCastShadows() - 1, true);
+    }
+
+    const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
+    for (Standard_Integer aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+    {
+      Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->ChangeValue (aShadowIter);
+      if (aShadow.IsNull())
+      {
+        aShadow = new OpenGl_ShadowMap();
+      }
+      aShadow->SetShadowMapBias (myRenderParams.ShadowMapBias);
+      aShadow->Texture()->Sampler()->Parameters()->SetTextureUnit ((Graphic3d_TextureUnit )(aSamplFrom + aShadowIter));
+
+      const Handle(OpenGl_FrameBuffer)& aShadowFbo = aShadow->FrameBuffer();
+      if (aShadowFbo->GetVPSizeX() != myRenderParams.ShadowMapResolution
+       && toUseShadowMap)
+      {
+        OpenGl_ColorFormats aDummy;
+        if (!aShadowFbo->Init (aCtx, myRenderParams.ShadowMapResolution, myRenderParams.ShadowMapResolution, aDummy, myFboDepthFormat, 0))
+        {
+          toUseShadowMap = false;
+        }
+      }
+    }
+  }
+  if (!toUseShadowMap && myShadowMaps->IsValid())
+  {
+    myShadowMaps->Release (aCtx.get());
+  }
+
   return true;
 }
 
@@ -1359,6 +1409,28 @@ void OpenGl_View::Redraw()
     myBackBufferRestored = Standard_False;
     myIsImmediateDrawn   = Standard_False;
     return;
+  }
+
+  // draw shadow maps
+  if (myShadowMaps->IsValid())
+  {
+    Standard_Integer aShadowIndex = myShadowMaps->Lower();
+    for (Graphic3d_LightSet::Iterator aLightIter (myLights, Graphic3d_LightSet::IterationFilter_ActiveShadowCasters);
+         aLightIter.More(); aLightIter.Next())
+    {
+      const Handle(Graphic3d_CLight)& aLight = aLightIter.Value();
+      if (aLight->ToCastShadows())
+      {
+        const Handle(OpenGl_ShadowMap)& aShadowMap = myShadowMaps->ChangeValue (aShadowIndex);
+        aShadowMap->SetLightSource (aLight);
+        renderShadowMap (aShadowMap);
+        ++aShadowIndex;
+      }
+    }
+    for (; aShadowIndex <= myShadowMaps->Upper(); ++aShadowIndex)
+    {
+      myShadowMaps->ChangeValue (aShadowIndex)->SetLightSource (Handle(Graphic3d_CLight)());
+    }
   }
 
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
@@ -1807,7 +1879,7 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection,
 }
 
 // =======================================================================
-// function : redrawMonoImmediate
+// function : redrawImmediate
 // purpose  :
 // =======================================================================
 bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProjection,
@@ -1883,6 +1955,60 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
 }
 
 //=======================================================================
+//function : renderShadowMap
+//purpose  :
+//=======================================================================
+void OpenGl_View::renderShadowMap (const Handle(OpenGl_ShadowMap)& theShadowMap)
+{
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (!theShadowMap->UpdateCamera (*this))
+  {
+    return;
+  }
+
+  myBVHSelector.SetViewVolume (theShadowMap->Camera());
+  myBVHSelector.SetViewportSize (myWindow->Width(), myWindow->Height(), myRenderParams.ResolutionRatio());
+  myBVHSelector.CacheClipPtsProjections();
+
+  myLocalOrigin.SetCoord (0.0, 0.0, 0.0);
+  aCtx->SetCamera (theShadowMap->Camera());
+  aCtx->ProjectionState.SetCurrent (theShadowMap->Camera()->ProjectionMatrixF());
+  aCtx->ApplyProjectionMatrix();
+
+  aCtx->ShaderManager()->UpdateMaterialState();
+  aCtx->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4());
+  aCtx->ShaderManager()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+
+  const Handle(OpenGl_FrameBuffer)& aShadowBuffer = theShadowMap->FrameBuffer();
+  aShadowBuffer->BindBuffer    (aCtx);
+  aShadowBuffer->SetupViewport (aCtx);
+
+  aCtx->SetColorMask (false);
+  aCtx->SetAllowSampleAlphaToCoverage (false);
+  aCtx->SetSampleAlphaToCoverage (false);
+
+  myWorkspace->UseZBuffer()    = true;
+  myWorkspace->UseDepthWrite() = true;
+  aCtx->core11fwd->glDepthFunc (GL_LEQUAL);
+  aCtx->core11fwd->glDepthMask (GL_TRUE);
+  aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
+  aCtx->core11fwd->glClearDepth (1.0);
+  aCtx->core11fwd->glClear (GL_DEPTH_BUFFER_BIT);
+
+  renderScene (Graphic3d_Camera::Projection_Orthographic, aShadowBuffer.get(), NULL, false);
+
+  aCtx->SetColorMask (true);
+  myWorkspace->ResetAppliedAspect();
+  aCtx->BindProgram (Handle(OpenGl_ShaderProgram)());
+
+//Image_AlienPixMap anImage; anImage.InitZero (Image_Format_Gray, aShadowBuffer->GetVPSizeX(), aShadowBuffer->GetVPSizeY());
+//OpenGl_FrameBuffer::BufferDump (aCtx, aShadowBuffer, anImage, Graphic3d_BT_Depth);
+//anImage.Save (TCollection_AsciiString ("shadow") + theShadowMap->Texture()->Sampler()->Parameters()->TextureUnit() + ".png");
+
+  bindDefaultFbo();
+}
+
+//=======================================================================
 //function : Render
 //purpose  :
 //=======================================================================
@@ -1929,7 +2055,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
    || aLightsRevision != myLightsRevision)
   {
     myLightsRevision = aLightsRevision;
-    aManager->UpdateLightSourceStateTo (aLights, SpecIBLMapLevels());
+    aManager->UpdateLightSourceStateTo (aLights, SpecIBLMapLevels(), myShadowMaps->IsValid() ? myShadowMaps : Handle(OpenGl_ShadowMapArray)());
     myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
   }
 
@@ -2017,7 +2143,30 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
   myWorkspace->SetEnvironmentTexture (myTextureEnv);
 
+  const bool hasShadowMap = aContext->ShaderManager()->LightSourceState().HasShadowMaps();
+  if (hasShadowMap)
+  {
+    for (Standard_Integer aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper(); ++aShadowIter)
+    {
+      const Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->Value (aShadowIter);
+      aShadow->Texture()->Bind (aContext);
+    }
+  }
+
   renderScene (theProjection, theOutputFBO, theOitAccumFbo, theToDrawImmediate);
+
+  if (hasShadowMap)
+  {
+    for (Standard_Integer aShadowIter = myShadowMaps->Lower(); aShadowIter <= myShadowMaps->Upper(); ++aShadowIter)
+    {
+      const Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->Value (aShadowIter);
+      aShadow->Texture()->Unbind (aContext);
+    }
+    if (aContext->core15fwd != NULL)
+    {
+      aContext->core15fwd->glActiveTexture (GL_TEXTURE0);
+    }
+  }
 
   myWorkspace->SetEnvironmentTexture (Handle(OpenGl_TextureSet)());
 

@@ -96,6 +96,12 @@ public:
   //! Specify the length of array of light sources (THE_MAX_LIGHTS).
   void SetNbLightsMax (Standard_Integer theNbLights) { myNbLightsMax = theNbLights; }
 
+  //! Return the length of array of shadow maps (THE_NB_SHADOWMAPS); 0 by default.
+  Standard_Integer NbShadowMaps() const { return myNbShadowMaps; }
+
+  //! Specify the length of array of shadow maps (THE_NB_SHADOWMAPS).
+  void SetNbShadowMaps (Standard_Integer theNbMaps) { myNbShadowMaps = theNbMaps; }
+
   //! Return the length of array of clipping planes (THE_MAX_CLIP_PLANES),
   //! to be used for initialization occClipPlaneEquations.
   //! Default value is THE_MAX_CLIP_PLANES_DEFAULT.
@@ -213,6 +219,7 @@ private:
   Graphic3d_ShaderAttributeList myAttributes;    //!< the list of custom vertex attributes
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
   Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
+  Standard_Integer              myNbShadowMaps;  //!< length of array of shadow maps (THE_NB_SHADOWMAPS)
   Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
   Standard_Integer              myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits

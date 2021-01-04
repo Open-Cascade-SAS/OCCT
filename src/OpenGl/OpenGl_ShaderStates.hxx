@@ -21,6 +21,8 @@
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Vec.hxx>
 
+class OpenGl_ShadowMapArray;
+
 //! Defines interface for OpenGL state.
 class OpenGl_StateInterface
 {
@@ -122,7 +124,7 @@ class OpenGl_LightSourceState : public OpenGl_StateInterface
 public:
 
   //! Creates uninitialized state of light sources.
-  OpenGl_LightSourceState() : mySpecIBLMapLevels (0) {}
+  OpenGl_LightSourceState() : mySpecIBLMapLevels (0), myToCastShadows (Standard_True) {}
 
   //! Sets new light sources.
   void Set (const Handle(Graphic3d_LightSet)& theLightSources) { myLightSources = theLightSources; }
@@ -137,10 +139,27 @@ public:
   //! Sets number of mipmap levels used in specular IBL map.
   void SetSpecIBLMapLevels(Standard_Integer theSpecIBLMapLevels) { mySpecIBLMapLevels = theSpecIBLMapLevels; }
 
+  //! Returns TRUE if shadowmap is set.
+  bool HasShadowMaps() const { return myToCastShadows && !myShadowMaps.IsNull(); }
+
+  //! Returns shadowmap.
+  const Handle(OpenGl_ShadowMapArray)& ShadowMaps() const { return myShadowMaps; }
+
+  //! Sets shadowmap.
+  void SetShadowMaps (const Handle(OpenGl_ShadowMapArray)& theMap) { myShadowMaps = theMap; }
+
+  //! Returns TRUE if shadowmap should be enabled when available; TRUE by default.
+  bool ToCastShadows() const { return myToCastShadows; }
+
+  //! Set if shadowmap should be enabled when available.
+  void SetCastShadows (bool theToCast) { myToCastShadows = theToCast; }
+
 private:
 
   Handle(Graphic3d_LightSet) myLightSources;     //!< List of OCCT light sources
   Standard_Integer           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
+  Handle(OpenGl_ShadowMapArray) myShadowMaps;    //!< active shadowmap
+  Standard_Boolean           myToCastShadows;    //!< enable/disable shadowmap
 
 };
 

@@ -36,6 +36,7 @@ namespace
 Graphic3d_LightSet::Graphic3d_LightSet()
 : myAmbient (0.0f, 0.0f, 0.0f, 0.0f),
   myNbEnabled (0),
+  myNbCastShadows (0),
   myRevision (1),
   myCacheRevision (0)
 {
@@ -110,6 +111,7 @@ Standard_Size Graphic3d_LightSet::UpdateRevision()
   }
 
   myCacheRevision = myRevision;
+  myNbCastShadows = 0;
   myAmbient.SetValues (0.0f, 0.0f, 0.0f, 0.0f);
   memset (myLightTypesEnabled, 0, sizeof(myLightTypesEnabled));
   NCollection_LocalArray<char, 32> aKeyLong (myLights.Extent() + 1);
@@ -130,7 +132,15 @@ Standard_Size Graphic3d_LightSet::UpdateRevision()
     }
     else
     {
-      aKeyLong[aLightLast++] = THE_LIGHT_KEY_LETTERS[aLight->Type()];
+      if (aLight->ToCastShadows())
+      {
+        ++myNbCastShadows;
+        aKeyLong[aLightLast++] = UpperCase (THE_LIGHT_KEY_LETTERS[aLight->Type()]);
+      }
+      else
+      {
+        aKeyLong[aLightLast++] = THE_LIGHT_KEY_LETTERS[aLight->Type()];
+      }
     }
   }
   aKeyLong[aLightLast] = '\0';

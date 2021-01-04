@@ -67,6 +67,10 @@ enum Graphic3d_TextureUnit
   //! Note that it can be overridden to Graphic3d_TextureUnit_0 for FFP fallback on hardware without multi-texturing.
   Graphic3d_TextureUnit_PointSprite = Graphic3d_TextureUnit_1,
 
+  //! sampler2D occShadowMapSampler.
+  //! Directional light source shadowmap texture.
+  Graphic3d_TextureUnit_ShadowMap = -4,
+
   //! sampler2D occEnvLUT.
   //! Lookup table for approximated PBR environment lighting.
   //! Configured as index at the end of available texture units - 3.

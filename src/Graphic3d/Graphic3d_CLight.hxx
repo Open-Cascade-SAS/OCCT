@@ -58,6 +58,13 @@ public:
   //! instead it turns it OFF so that it just have no effect.
   Standard_EXPORT void SetEnabled (Standard_Boolean theIsOn);
 
+  //! Return TRUE if shadow casting is enabled; FALSE by default.
+  //! Has no effect in Ray-Tracing rendering mode.
+  Standard_Boolean ToCastShadows() const { return myToCastShadows; }
+
+  //! Enable/disable shadow casting.
+  Standard_EXPORT void SetCastShadows (Standard_Boolean theToCast);
+
   //! Returns true if the light is a headlight; FALSE by default.
   //! Headlight flag means that light position/direction are defined not in a World coordinate system, but relative to the camera orientation.
   Standard_Boolean IsHeadlight() const { return myIsHeadlight; }
@@ -258,6 +265,7 @@ protected:
   Standard_Size                     myRevision;    //!< modification counter
   Standard_Boolean                  myIsHeadlight; //!< flag to mark head light
   Standard_Boolean                  myIsEnabled;   //!< enabled state
+  Standard_Boolean                  myToCastShadows;//!< casting shadows is requested
 
 };
 

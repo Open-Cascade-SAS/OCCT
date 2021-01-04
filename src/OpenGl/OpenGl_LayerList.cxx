@@ -589,12 +589,13 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
 
   const Standard_Boolean hasLocalCS = !aLayerSettings.OriginTransformation().IsNull();
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
-  Handle(Graphic3d_LightSet) aLightsBack = aManager->LightSourceState().LightSources();
+  Handle(Graphic3d_LightSet)    aLightsBack = aManager->LightSourceState().LightSources();
+  Handle(OpenGl_ShadowMapArray) aShadowMaps = aManager->LightSourceState().ShadowMaps();
   const bool hasOwnLights = aCtx->ColorMask() && !aLayerSettings.Lights().IsNull() && aLayerSettings.Lights() != aLightsBack;
   if (hasOwnLights)
   {
     aLayerSettings.Lights()->UpdateRevision();
-    aManager->UpdateLightSourceStateTo (aLayerSettings.Lights(), theWorkspace->View()->SpecIBLMapLevels());
+    aManager->UpdateLightSourceStateTo (aLayerSettings.Lights(), theWorkspace->View()->SpecIBLMapLevels(), Handle(OpenGl_ShadowMapArray)());
   }
 
   const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
@@ -665,7 +666,7 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
 
   if (hasOwnLights)
   {
-    aManager->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
+    aManager->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels(), aShadowMaps);
   }
   if (hasLocalCS)
   {
@@ -703,6 +704,8 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   aCtx->core11fwd->glGetIntegerv (GL_DEPTH_FUNC,      &aPrevSettings.DepthFunc);
   aCtx->core11fwd->glGetBooleanv (GL_DEPTH_WRITEMASK, &aPrevSettings.DepthMask);
   OpenGl_GlobalLayerSettings aDefaultSettings = aPrevSettings;
+  const bool isShadowMapPass = theReadDrawFbo != NULL
+                           && !theReadDrawFbo->HasColor();
 
   // Two render filters are used to support transparency draw. Opaque filter accepts
   // only non-transparent OpenGl elements of a layer and counts number of skipped
@@ -722,8 +725,10 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
   OpenGl_LayerStack::iterator aStackIter (myTransparentToProcess.Origin());
   Standard_Integer aClearDepthLayerPrev = -1, aClearDepthLayer = -1;
   const bool toPerformDepthPrepass = theWorkspace->View()->RenderingParams().ToEnableDepthPrepass
-                                  && aPrevSettings.DepthMask == GL_TRUE;
-  const Handle(Graphic3d_LightSet) aLightsBack = aCtx->ShaderManager()->LightSourceState().LightSources();
+                                  && aPrevSettings.DepthMask == GL_TRUE
+                                  && !isShadowMapPass;
+  const Handle(Graphic3d_LightSet)    aLightsBack = aCtx->ShaderManager()->LightSourceState().LightSources();
+  const Handle(OpenGl_ShadowMapArray) aShadowMaps = aCtx->ShaderManager()->LightSourceState().ShadowMaps();
   for (OpenGl_FilteredIndexedLayerIterator aLayerIterStart (myLayers, theToDrawImmediate, theLayersToProcess); aLayerIterStart.More();)
   {
     bool hasSkippedDepthLayers = false;
@@ -732,7 +737,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
       if (aPassIter == 0)
       {
         aCtx->SetColorMask (false);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)(), theWorkspace->View()->SpecIBLMapLevels());
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)(), theWorkspace->View()->SpecIBLMapLevels(), Handle(OpenGl_ShadowMapArray)());
         aDefaultSettings.DepthFunc = aPrevSettings.DepthFunc;
         aDefaultSettings.DepthMask = GL_TRUE;
       }
@@ -743,13 +748,21 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
           continue;
         }
         aCtx->SetColorMask (true);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
+        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels(), aShadowMaps);
         aDefaultSettings = aPrevSettings;
       }
       else if (aPassIter == 2)
       {
-        aCtx->SetColorMask (true);
-        aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels());
+        if (isShadowMapPass)
+        {
+          aCtx->SetColorMask (false);
+          aCtx->ShaderManager()->UpdateLightSourceStateTo (Handle(Graphic3d_LightSet)(), theWorkspace->View()->SpecIBLMapLevels(), Handle(OpenGl_ShadowMapArray)());
+        }
+        else
+        {
+          aCtx->SetColorMask (true);
+          aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels(), aShadowMaps);
+        }
         if (toPerformDepthPrepass)
         {
           aDefaultSettings.DepthFunc = GL_EQUAL;
@@ -830,6 +843,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
     }
   }
 
+  aCtx->ShaderManager()->UpdateLightSourceStateTo (aLightsBack, theWorkspace->View()->SpecIBLMapLevels(), aShadowMaps);
   aCtx->core11fwd->glDepthMask (aPrevSettings.DepthMask);
   aCtx->core11fwd->glDepthFunc (aPrevSettings.DepthFunc);
 

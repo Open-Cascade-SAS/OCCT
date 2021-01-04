@@ -64,6 +64,9 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
   "occLightSourcesTypes",   // OpenGl_OCC_LIGHT_SOURCE_TYPES
   "occLightSources",        // OpenGl_OCC_LIGHT_SOURCE_PARAMS
   "occLightAmbient",        // OpenGl_OCC_LIGHT_AMBIENT
+  "occShadowMapSizeBias",   // OpenGl_OCC_LIGHT_SHADOWMAP_SIZE_BIAS
+  "occShadowMapSamplers",   // OpenGl_OCC_LIGHT_SHADOWMAP_SAMPLERS,
+  "occShadowMapMatrices",   // OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES,
 
   "occTextureEnable",       // OpenGl_OCCT_TEXTURE_ENABLE
   "occDistinguishingMode",  // OpenGl_OCCT_DISTINGUISH_MODE
@@ -169,6 +172,7 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myProxy     (theProxy),
   myShareCount(1),
   myNbLightsMax (0),
+  myNbShadowMaps (0),
   myNbClipPlanesMax (0),
   myNbFragOutputs (1),
   myTextureSetBits (Graphic3d_TextureSetBits_NONE),
@@ -406,10 +410,15 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     TCollection_AsciiString aHeaderConstants;
     myNbLightsMax     = !myProxy.IsNull() ? myProxy->NbLightsMax() : 0;
+    myNbShadowMaps    = !myProxy.IsNull() ? myProxy->NbShadowMaps() : 0;
     myNbClipPlanesMax = !myProxy.IsNull() ? myProxy->NbClipPlanesMax() : 0;
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_LIGHTS ") + myNbLightsMax + "\n";
     aHeaderConstants += TCollection_AsciiString("#define THE_MAX_CLIP_PLANES ") + myNbClipPlanesMax + "\n";
     aHeaderConstants += TCollection_AsciiString("#define THE_NB_FRAG_OUTPUTS ") + myNbFragOutputs + "\n";
+    if (myNbShadowMaps > 0)
+    {
+      aHeaderConstants += TCollection_AsciiString("#define THE_NB_SHADOWMAPS ") + myNbShadowMaps + "\n";
+    }
     if (!myProxy.IsNull()
       && myProxy->HasDefaultSampler())
     {
@@ -555,6 +564,16 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occEnvLUT"))
   {
     SetUniform (theCtx, aLocSampler, GLint(theCtx->PBREnvLUTTexUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occShadowMapSamplers"))
+  {
+    std::vector<GLint> aShadowSamplers (myNbShadowMaps);
+    const GLint aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
+    for (Standard_Integer aSamplerIter = 0; aSamplerIter < myNbShadowMaps; ++aSamplerIter)
+    {
+      aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;
+    }
+    SetUniform (theCtx, aLocSampler, myNbShadowMaps, &aShadowSamplers.front());
   }
 
   const TCollection_AsciiString aSamplerNamePrefix ("occSampler");
@@ -1367,6 +1386,24 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
                                                    GLboolean                     theTranspose)
 {
   return SetUniform (theCtx, theLocation, OpenGl_Mat4::Map (*theValue.mat), theTranspose);
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Mat4*            theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glUniformMatrix4fv (theLocation, theCount, GL_FALSE, theData->GetData());
+  return Standard_True;
 }
 
 // =======================================================================

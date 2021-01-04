@@ -440,8 +440,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   }
 #endif
 
+  bool anOldCastShadows = false;
   if (!myTrsfPers.IsNull())
   {
+    // temporarily disable shadows on non-3d objects
+    anOldCastShadows = aCtx->ShaderManager()->SetCastShadows (false);
+
     aCtx->WorldViewState.Push();
     OpenGl_Mat4& aWorldView = aCtx->WorldViewState.ChangeCurrent();
     myTrsfPers->Apply (aCtx->Camera(),
@@ -608,6 +612,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (!myTrsfPers.IsNull())
   {
     aCtx->WorldViewState.Pop();
+    aCtx->ShaderManager()->SetCastShadows (anOldCastShadows);
   }
 
   // Restore named status

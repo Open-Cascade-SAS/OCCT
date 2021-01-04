@@ -236,13 +236,13 @@ public:
   Standard_EXPORT virtual void UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Returns the color texture for the given color buffer index.
-  inline const Handle(OpenGl_Texture)& ColorTexture (const GLint theColorBufferIndex = 0) const
+  const Handle(OpenGl_Texture)& ColorTexture (const GLint theColorBufferIndex = 0) const
   {
     return myColorTextures (theColorBufferIndex);
   }
 
   //! Returns the depth-stencil texture.
-  inline const Handle(OpenGl_Texture)& DepthStencilTexture() const
+  const Handle(OpenGl_Texture)& DepthStencilTexture() const
   {
     return myDepthStencilTexture;
   }
