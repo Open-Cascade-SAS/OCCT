@@ -300,48 +300,37 @@ void Geom_BSplineSurface::ExchangeUV ()
   Standard_Integer LR = poles->LowerRow();
   Standard_Integer UR = poles->UpperRow();
 
-  Handle(TColgp_HArray2OfPnt)   npoles   = 
-    new TColgp_HArray2OfPnt  (LC, UC, LR, UR);
-  Handle(TColStd_HArray2OfReal) nweights = 
-    new TColStd_HArray2OfReal (LC, UC, LR, UR);
-
-  const TColgp_Array2OfPnt   & spoles   = poles->Array2();
-  const TColStd_Array2OfReal & sweights = weights->Array2();
-  
-  TColgp_Array2OfPnt&   snpoles   = npoles->ChangeArray2();
-  TColStd_Array2OfReal& snweights = nweights->ChangeArray2();
-  
-  Standard_Integer i, j;
-  for (i = LC; i <= UC; i++) {
-    for (j = LR; j <= UR; j++) {
-      snpoles   (i,j) = spoles   (j,i);
-      snweights (i,j) = sweights (j,i);
-    }
+  Handle(TColgp_HArray2OfPnt) npoles = new TColgp_HArray2OfPnt (LC, UC, LR, UR);
+  Handle(TColStd_HArray2OfReal) nweights;
+  if (!weights.IsNull())
+  {
+    nweights = new TColStd_HArray2OfReal (LC, UC, LR, UR);
   }
 
+  const TColgp_Array2OfPnt& spoles = poles->Array2();
+  const TColStd_Array2OfReal* sweights = !weights.IsNull() ? &weights->Array2() : NULL;
+  
+  TColgp_Array2OfPnt& snpoles = npoles->ChangeArray2();
+  TColStd_Array2OfReal* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : NULL;
+  for (Standard_Integer i = LC; i <= UC; i++)
+  {
+    for (Standard_Integer j = LR; j <= UR; j++)
+    {
+      snpoles (i, j) = spoles (j, i);
+      if (snweights != NULL)
+      {
+        snweights->ChangeValue (i, j) = sweights->Value (j, i);
+      }
+    }
+  }
   poles   = npoles;
   weights = nweights;
 
-  Standard_Boolean temp = urational;
-  urational = vrational;
-  vrational = temp;
-
-  temp = uperiodic;
-  uperiodic = vperiodic;
-  vperiodic = temp;
-
-  Standard_Integer tempdeg = udeg;
-  udeg = vdeg;
-  vdeg = tempdeg;
-  
-
-  Handle(TColStd_HArray1OfReal) tempknots = uknots;
-  uknots = vknots;
-  vknots = tempknots;
-
-  Handle(TColStd_HArray1OfInteger) tempmults = umults;
-  umults = vmults;
-  vmults = tempmults;
+  std::swap (urational, vrational);
+  std::swap (uperiodic, vperiodic);
+  std::swap (udeg,   vdeg);
+  std::swap (uknots, vknots);
+  std::swap (umults, vmults);
 
   UpdateUKnots();
   UpdateVKnots();
