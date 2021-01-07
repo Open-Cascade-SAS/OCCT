@@ -147,10 +147,10 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 //! Intensity of light source (>= 0), float.
 #define occLight_Intensity(theId)         occLightSources[theId * 4 + 0].a
 
-//! Is light a headlight, bool?
-#define occLight_IsHeadlight(theId)      (occLightSources[theId * 4 + 1].w > 0.5)
+//! Is light a headlight, bool? DEPRECATED method.
+#define occLight_IsHeadlight(theId) false
 
-//! Position of specified light source, vec3.
+//! Position of specified light source or direction of directional light source, vec3.
 #define occLight_Position(theId)          occLightSources[theId * 4 + 1].xyz
 
 //! Direction of specified spot light source, vec3.

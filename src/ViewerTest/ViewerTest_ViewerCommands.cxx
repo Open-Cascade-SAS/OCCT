@@ -11562,6 +11562,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_TOSM_PBR:       theDI << "pbr";       break;
       case Graphic3d_TOSM_PBR_FACET: theDI << "pbr_facet"; break;
     }
+    theDI << "\n";
     {
       theDI << "perfCounters:";
       if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)

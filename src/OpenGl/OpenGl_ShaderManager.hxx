@@ -293,9 +293,11 @@ public:
   Standard_EXPORT void UpdateLightSourceState();
 
   //! Pushes current state of OCCT light sources to specified program (only on state change).
+  //! Note that light sources definition depends also on WorldViewState.
   void PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
   {
-    if (myLightSourceState.Index() != theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE))
+    if (myLightSourceState.Index() != theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE)
+     || myWorldViewState.Index()   != theProgram->ActiveState (OpenGl_WORLD_VIEW_STATE))
     {
       pushLightSourceState (theProgram);
     }
@@ -539,19 +541,6 @@ public:
 
   //! Sets shading model.
   Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theModel);
-
-  //! Sets last view manger used with.
-  //! Helps to handle matrix states in multi-view configurations.
-  void SetLastView (const OpenGl_View* theLastView)
-  {
-    myLastView = theLastView;
-  }
-
-  //! Returns true when provided view is the same as cached one.
-  bool IsSameView (const OpenGl_View* theView) const
-  {
-    return myLastView == theView;
-  }
 
 protected:
 
@@ -848,10 +837,6 @@ protected:
   mutable NCollection_Array1<OpenGl_Vec4>                  myClipPlaneArray;
   mutable NCollection_Array1<OpenGl_Vec4d>                 myClipPlaneArrayFfp;
   mutable NCollection_Array1<Standard_Integer>             myClipChainArray;
-
-private:
-
-  const OpenGl_View*                 myLastView;           //!< Pointer to the last view shader manager used with
 
 };
 

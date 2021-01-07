@@ -129,7 +129,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myWorkspace = new OpenGl_Workspace (this, NULL);
 
   Handle(Graphic3d_CLight) aLight = new Graphic3d_CLight (Graphic3d_TOLS_AMBIENT);
-  aLight->SetHeadlight (false);
   aLight->SetColor (Quantity_NOC_WHITE);
   myLights = new Graphic3d_LightSet();
   myNoShadingLight = new Graphic3d_LightSet();
@@ -2062,15 +2061,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   if (aContext->caps->ffpEnable)
   {
     aContext->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
-  }
-
-  // ==============================================================
-  //      Step 6: Keep shader manager informed about last View
-  // ==============================================================
-
-  if (!aManager.IsNull())
-  {
-    aManager->SetLastView (this);
   }
 }
 

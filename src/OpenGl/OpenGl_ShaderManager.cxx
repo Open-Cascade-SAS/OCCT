@@ -110,12 +110,7 @@ const char THE_FUNC_pointLight[] =
   EOL"                 in vec3 thePoint,"
   EOL"                 in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight = occLight_Position (theId);"
-  EOL"  if (!occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 1.0));"
-  EOL"  }"
-  EOL"  aLight -= thePoint;"
+  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
   EOL"  float aRange = occLight_Range (theId);"
@@ -147,12 +142,7 @@ const char THE_FUNC_PBR_pointLight[] =
   EOL"                 in vec3 thePoint,"
   EOL"                 in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight = occLight_Position (theId);"
-  EOL"  if (occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrixInverse * vec4 (aLight, 1.0));"
-  EOL"  }"
-  EOL"  aLight -= thePoint;"
+  EOL"  vec3 aLight = occLight_Position (theId) - thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
   EOL"  float aRange = occLight_Range (theId);"
@@ -175,14 +165,7 @@ const char THE_FUNC_spotLight[] =
   EOL"                in vec3 thePoint,"
   EOL"                in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight   = occLight_Position      (theId);"
-  EOL"  vec3 aSpotDir = occLight_SpotDirection (theId);"
-  EOL"  if (!occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight   = vec3 (occWorldViewMatrix * vec4 (aLight,   1.0));"
-  EOL"    aSpotDir = vec3 (occWorldViewMatrix * vec4 (aSpotDir, 0.0));"
-  EOL"  }"
-  EOL"  aLight -= thePoint;"
+  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
   EOL"  float aRange = occLight_Range (theId);"
@@ -190,6 +173,7 @@ const char THE_FUNC_spotLight[] =
   EOL"  if (anAtten <= 0.0) return;"
   EOL"  aLight /= aDist;"
   EOL
+  EOL"  vec3 aSpotDir = vec3 (occWorldViewMatrix * vec4 (occLight_SpotDirection (theId), 0.0));"
   EOL"  aSpotDir = normalize (aSpotDir);"
   // light cone
   EOL"  float aCosA = dot (aSpotDir, -aLight);"
@@ -228,14 +212,7 @@ const char THE_FUNC_spotLight[] =
   EOL"                in vec3 thePoint,"
   EOL"                in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight   = occLight_Position      (theId);"
-  EOL"  vec3 aSpotDir = occLight_SpotDirection (theId);"
-  EOL"  if (occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight   = vec3 (occWorldViewMatrixInverse * vec4 (aLight,   1.0));"
-  EOL"    aSpotDir = vec3 (occWorldViewMatrixInverse * vec4 (aSpotDir, 0.0));"
-  EOL"  }"
-  EOL"  aLight -= thePoint;"
+  EOL"  vec3 aLight = occLight_Position (theId) - thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
   EOL"  float aRange = occLight_Range (theId);"
@@ -243,7 +220,7 @@ const char THE_FUNC_spotLight[] =
   EOL"  if (anAtten <= 0.0) return;"
   EOL"  aLight /= aDist;"
   EOL
-  EOL"  aSpotDir = normalize (aSpotDir);"
+  EOL"  vec3 aSpotDir = occLight_SpotDirection (theId);"
   // light cone
   EOL"  float aCosA = dot (aSpotDir, -aLight);"
   EOL"  float aRelativeAngle = 2.0 * acos(aCosA) / occLight_SpotCutOff(theId);"
@@ -274,11 +251,7 @@ const char THE_FUNC_directionalLight[] =
   EOL"                       in vec3 theView,"
   EOL"                       in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight = normalize (occLight_Position (theId));"
-  EOL"  if (!occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 0.0));"
-  EOL"  }"
+  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
   EOL
@@ -303,11 +276,7 @@ const char THE_FUNC_PBR_directionalLight[] =
   EOL"                       in vec3 theView,"
   EOL"                       in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight = normalize (occLight_Position (theId));"
-  EOL"  if (occLight_IsHeadlight (theId))"
-  EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrixInverse * vec4 (aLight, 0.0));"
-  EOL"  }"
+  EOL"  vec3 aLight = occLight_Position (theId);"
   EOL
   EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
   EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
@@ -323,11 +292,7 @@ const char THE_FUNC_directionalLightFirst[] =
   EOL"                            in vec3 theView,"
   EOL"                            in bool theIsFront)"
   EOL"{"
-  EOL"  vec3 aLight = normalize (occLight_Position(0));"
-  EOL"  if (!occLight_IsHeadlight (0))"
-  EOL"  {"
-  EOL"    aLight = vec3 (occWorldViewMatrix * vec4 (aLight, 0.0));"
-  EOL"  }"
+  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (0), 0.0));"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
   EOL
@@ -546,8 +511,7 @@ OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
   myUnlitPrograms (new OpenGl_SetOfPrograms()),
   myContext  (theContext),
   mySRgbState (theContext->ToRenderSRGB()),
-  myHasLocalOrigin (Standard_False),
-  myLastView (NULL)
+  myHasLocalOrigin (Standard_False)
 {
   //
 }
@@ -910,33 +874,60 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     aLightType = aLight.Type();
     aLightParams.Color     = aLight.PackedColor();
     aLightParams.Color.a() = aLight.Intensity(); // used by PBR and ignored by old shading model
-    if (aLight.Type() == Graphic3d_TOLS_DIRECTIONAL)
-    {
-      aLightParams.Position = -aLight.PackedDirectionRange();
-    }
-    else if (!aLight.IsHeadlight())
-    {
-      aLightParams.Position.x() = static_cast<float>(aLight.Position().X() - myLocalOrigin.X());
-      aLightParams.Position.y() = static_cast<float>(aLight.Position().Y() - myLocalOrigin.Y());
-      aLightParams.Position.z() = static_cast<float>(aLight.Position().Z() - myLocalOrigin.Z());
-    }
-    else
-    {
-      aLightParams.Position.x() = static_cast<float>(aLight.Position().X());
-      aLightParams.Position.y() = static_cast<float>(aLight.Position().Y());
-      aLightParams.Position.z() = static_cast<float>(aLight.Position().Z());
-    }
-    aLightParams.Position.w() = aLight.IsHeadlight() ? 1.0f : 0.0f;
-
-    if (aLight.Type() == Graphic3d_TOLS_SPOT)
-    {
-      aLightParams.Direction = aLight.PackedDirectionRange();
-    }
-    if (aLight.Type() == Graphic3d_TOLS_POSITIONAL)
-    {
-      aLightParams.Direction.w() = aLight.Range();
-    }
     aLightParams.Parameters = aLight.PackedParams();
+    switch (aLight.Type())
+    {
+      case Graphic3d_TOLS_AMBIENT:
+      {
+        break;
+      }
+      case Graphic3d_TOLS_DIRECTIONAL:
+      {
+        if (aLight.IsHeadlight())
+        {
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Position = anOrientInv * Graphic3d_Vec4 (-aLight.PackedDirection(), 0.0f);
+        }
+        else
+        {
+          aLightParams.Position = Graphic3d_Vec4 (-aLight.PackedDirection(), 0.0f);
+        }
+        break;
+      }
+      case Graphic3d_TOLS_SPOT:
+      {
+        if (aLight.IsHeadlight())
+        {
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Direction = anOrientInv * Graphic3d_Vec4 (aLight.PackedDirection(), 0.0f);
+        }
+        else
+        {
+          aLightParams.Direction = Graphic3d_Vec4 (aLight.PackedDirection(), 0.0f);
+        }
+      }
+      Standard_FALLTHROUGH
+      case Graphic3d_TOLS_POSITIONAL:
+      {
+        if (aLight.IsHeadlight())
+        {
+          aLightParams.Position.x() = static_cast<float>(aLight.Position().X());
+          aLightParams.Position.y() = static_cast<float>(aLight.Position().Y());
+          aLightParams.Position.z() = static_cast<float>(aLight.Position().Z());
+          const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
+          aLightParams.Position = anOrientInv * Graphic3d_Vec4 (aLightParams.Position.xyz(), 1.0f);
+        }
+        else
+        {
+          aLightParams.Position.x() = static_cast<float>(aLight.Position().X() - myLocalOrigin.X());
+          aLightParams.Position.y() = static_cast<float>(aLight.Position().Y() - myLocalOrigin.Y());
+          aLightParams.Position.z() = static_cast<float>(aLight.Position().Z() - myLocalOrigin.Z());
+          aLightParams.Position.w() = 0.0f;
+        }
+        aLightParams.Direction.w() = aLight.Range();
+        break;
+      }
+    }
     ++aLightsNb;
   }
 
@@ -1426,10 +1417,10 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
 {
   const Handle(OpenGl_ShaderProgram)& aProgram = !theProgram.IsNull() ? theProgram : myFfpProgram;
   PushClippingState    (aProgram);
+  PushLightSourceState (aProgram); // should be before PushWorldViewState()
   PushWorldViewState   (aProgram);
   PushModelWorldState  (aProgram);
   PushProjectionState  (aProgram);
-  PushLightSourceState (aProgram);
   PushMaterialState    (aProgram);
   PushOitState         (aProgram);
 

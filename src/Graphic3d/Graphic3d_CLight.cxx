@@ -114,6 +114,10 @@ void Graphic3d_CLight::SetEnabled (Standard_Boolean theIsOn)
 // =======================================================================
 void Graphic3d_CLight::SetHeadlight (Standard_Boolean theValue)
 {
+  if (myType == Graphic3d_TOLS_AMBIENT)
+  {
+    throw Standard_ProgramError ("Graphic3d_CLight::SetHeadlight() is not applicable to ambient light");
+  }
   updateRevisionIf (myIsHeadlight != theValue);
   myIsHeadlight = theValue;
 }

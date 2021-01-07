@@ -202,6 +202,9 @@ public:
   //! Returns direction of directional/spot light and range for positional/spot light in alpha channel.
   const Graphic3d_Vec4& PackedDirectionRange() const { return myDirection; }
 
+  //! Returns direction of directional/spot light.
+  Graphic3d_Vec3 PackedDirection() const { return myDirection.xyz(); }
+
   //! @return modification counter
   Standard_Size Revision() const { return myRevision; }
   
