@@ -30,12 +30,18 @@
 
 #include "../Shaders/Shaders_DirectionalLightShadow_glsl.pxx"
 #include "../Shaders/Shaders_PBRDistribution_glsl.pxx"
+#include "../Shaders/Shaders_PBRDirectionalLight_glsl.pxx"
 #include "../Shaders/Shaders_PBRGeometry_glsl.pxx"
 #include "../Shaders/Shaders_PBRFresnel_glsl.pxx"
 #include "../Shaders/Shaders_PBRCookTorrance_glsl.pxx"
 #include "../Shaders/Shaders_PBRIllumination_glsl.pxx"
+#include "../Shaders/Shaders_PBRPointLight_glsl.pxx"
+#include "../Shaders/Shaders_PBRSpotLight_glsl.pxx"
 #include "../Shaders/Shaders_PBREnvBaking_fs.pxx"
 #include "../Shaders/Shaders_PBREnvBaking_vs.pxx"
+#include "../Shaders/Shaders_PhongDirectionalLight_glsl.pxx"
+#include "../Shaders/Shaders_PhongPointLight_glsl.pxx"
+#include "../Shaders/Shaders_PhongSpotLight_glsl.pxx"
 #include "../Shaders/Shaders_PointLightAttenuation_glsl.pxx"
 #include "../Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
 
@@ -104,192 +110,7 @@ const char THE_FUNC_PBR_lightDef[] =
   EOL"vec3  Emission;"       //!< Light intensity emitted by material
   EOL"float IOR;";           //!< Material's index of refraction
 
-//! Function computes contribution of isotropic point light source
-const char THE_FUNC_pointLight[] =
-  EOL"void pointLight (in int  theId,"
-  EOL"                 in vec3 theNormal,"
-  EOL"                 in vec3 theView,"
-  EOL"                 in vec3 thePoint,"
-  EOL"                 in bool theIsFront)"
-  EOL"{"
-  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;"
-  EOL
-  EOL"  float aDist = length (aLight);"
-  EOL"  float aRange = occLight_Range (theId);"
-  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), occLight_ConstAttenuation (theId));"
-  EOL"  if (anAtten <= 0.0) return;"
-  EOL"  aLight /= aDist;"
-  EOL
-  EOL"  vec3 aHalf = normalize (aLight + theView);"
-  EOL
-  EOL"  vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));"
-  EOL"  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));"
-  EOL
-  EOL"  float aSpecl = 0.0;"
-  EOL"  if (aNdotL > 0.0)"
-  EOL"  {"
-  EOL"    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());"
-  EOL"  }"
-  EOL
-  EOL"  Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten;"
-  EOL"  Specular += occLight_Specular(theId) * aSpecl * anAtten;"
-  EOL"}";
-
-//! Function computes contribution of isotropic point light source
-const char THE_FUNC_PBR_pointLight[] =
-  EOL"void pointLight (in int  theId,"
-  EOL"                 in vec3 theNormal,"
-  EOL"                 in vec3 theView,"
-  EOL"                 in vec3 thePoint,"
-  EOL"                 in bool theIsFront)"
-  EOL"{"
-  EOL"  vec3 aLight = occLight_Position (theId) - thePoint;"
-  EOL
-  EOL"  float aDist = length (aLight);"
-  EOL"  float aRange = occLight_Range (theId);"
-  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange);"
-  EOL"  if (anAtten <= 0.0) return;"
-  EOL"  aLight /= aDist;"
-  EOL
-  EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
-  EOL"                                        BaseColor, Metallic, Roughness, IOR,"
-  EOL"                                        occLight_Specular (theId),"
-  EOL"                                        occLight_Intensity(theId) * anAtten);"
-  EOL"}";
-
-//! Function computes contribution of spotlight source
-const char THE_FUNC_spotLight[] =
-  EOL"void spotLight (in int  theId,"
-  EOL"                in vec3 theNormal,"
-  EOL"                in vec3 theView,"
-  EOL"                in vec3 thePoint,"
-  EOL"                in bool theIsFront)"
-  EOL"{"
-  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;"
-  EOL
-  EOL"  float aDist = length (aLight);"
-  EOL"  float aRange = occLight_Range (theId);"
-  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), occLight_ConstAttenuation (theId));"
-  EOL"  if (anAtten <= 0.0) return;"
-  EOL"  aLight /= aDist;"
-  EOL
-  EOL"  vec3 aSpotDir = vec3 (occWorldViewMatrix * vec4 (occLight_SpotDirection (theId), 0.0));"
-  EOL"  aSpotDir = normalize (aSpotDir);"
-  // light cone
-  EOL"  float aCosA = dot (aSpotDir, -aLight);"
-  EOL"  if (aCosA >= 1.0 || aCosA < cos (occLight_SpotCutOff (theId)))"
-  EOL"  {"
-  EOL"    return;"
-  EOL"  }"
-  EOL
-  EOL"  float anExponent = occLight_SpotExponent (theId);"
-  EOL"  if (anExponent > 0.0)"
-  EOL"  {"
-  EOL"    anAtten *= pow (aCosA, anExponent * 128.0);"
-  EOL"  }"
-  EOL
-  EOL"  vec3 aHalf = normalize (aLight + theView);"
-  EOL
-  EOL"  vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));"
-  EOL"  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));"
-  EOL
-  EOL"  float aSpecl = 0.0;"
-  EOL"  if (aNdotL > 0.0)"
-  EOL"  {"
-  EOL"    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());"
-  EOL"  }"
-  EOL
-  EOL"  Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten;"
-  EOL"  Specular += occLight_Specular(theId) * aSpecl * anAtten;"
-  EOL"}";
-
-//! Function computes contribution of spotlight source
-  const char THE_FUNC_PBR_spotLight[] =
-  EOL"void spotLight (in int  theId,"
-  EOL"                in vec3 theNormal,"
-  EOL"                in vec3 theView,"
-  EOL"                in vec3 thePoint,"
-  EOL"                in bool theIsFront)"
-  EOL"{"
-  EOL"  vec3 aLight = occLight_Position (theId) - thePoint;"
-  EOL
-  EOL"  float aDist = length (aLight);"
-  EOL"  float aRange = occLight_Range (theId);"
-  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange);"
-  EOL"  if (anAtten <= 0.0) return;"
-  EOL"  aLight /= aDist;"
-  EOL
-  EOL"  vec3 aSpotDir = occLight_SpotDirection (theId);"
-  // light cone
-  EOL"  float aCosA = dot (aSpotDir, -aLight);"
-  EOL"  float aRelativeAngle = 2.0 * acos(aCosA) / occLight_SpotCutOff(theId);"
-  EOL"  if (aCosA >= 1.0 || aRelativeAngle > 1.0)"
-  EOL"  {"
-  EOL"    return;"
-  EOL"  }"
-  EOL"  float anExponent = occLight_SpotExponent (theId);"
-  EOL"  if ((1.0 - aRelativeAngle) <= anExponent)"
-  EOL"  {"
-  EOL"    float anAngularAttenuationOffset = cos(0.5 * occLight_SpotCutOff(theId));"
-  EOL"    float anAngularAttenuationScale = 1.0 / max(0.001, cos(0.5 * occLight_SpotCutOff(theId) * (1.0 - anExponent)) - anAngularAttenuationOffset);"
-  EOL"    anAngularAttenuationOffset *= -anAngularAttenuationScale;"
-  EOL"    float anAngularAttenuantion = clamp(aCosA * anAngularAttenuationScale + anAngularAttenuationOffset, 0.0, 1.0);"
-  EOL"    anAtten *= anAngularAttenuantion * anAngularAttenuantion;"
-  EOL"  }"
-  EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
-  EOL"                                        BaseColor, Metallic, Roughness, IOR,"
-  EOL"                                        occLight_Specular(theId),"
-  EOL"                                        occLight_Intensity(theId) * anAtten);"
-  EOL"}";
-
-//! Function computes contribution of directional light source
-const char THE_FUNC_directionalLight[] =
-  EOL"void directionalLight (in int  theId,"
-  EOL"                       in vec3 theNormal,"
-  EOL"                       in vec3 theView,"
-  EOL"                       in bool theIsFront,"
-  EOL"                       in float theShadow)"
-  EOL"{"
-  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));"
-  EOL
-  EOL"  vec3 aHalf = normalize (aLight + theView);"
-  EOL
-  EOL"  vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));"
-  EOL"  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));"
-  EOL
-  EOL"  float aSpecl = 0.0;"
-  EOL"  if (aNdotL > 0.0)"
-  EOL"  {"
-  EOL"    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());"
-  EOL"  }"
-  EOL
-  EOL"  Diffuse  += occLight_Diffuse  (theId) * aNdotL * theShadow;"
-  EOL"  Specular += occLight_Specular (theId) * aSpecl * theShadow;"
-  EOL"}";
-
-//! Function computes contribution of directional light source
-const char THE_FUNC_PBR_directionalLight[] =
-  EOL"void directionalLight (in int  theId,"
-  EOL"                       in vec3 theNormal,"
-  EOL"                       in vec3 theView,"
-  EOL"                       in bool theIsFront,"
-  EOL"                       in float theShadow)"
-  EOL"{"
-  EOL"  vec3 aLight = occLight_Position (theId);"
-  EOL
-  EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
-  EOL"                                        BaseColor, Metallic, Roughness, IOR,"
-  EOL"                                        occLight_Specular (theId),"
-  EOL"                                        occLight_Intensity(theId)) * theShadow;"
-  EOL"}";
-
-//! The same as THE_FUNC_directionalLight but for the light with zero index
+//! The same as Shaders_PhongDirectionalLight_glsl but for the light with zero index
 //! (avoids limitations on some mobile devices).
 const char THE_FUNC_directionalLightFirst[] =
   EOL"void directionalLightFirst (in vec3 theNormal,"
@@ -2305,8 +2126,8 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
           if (aLightIter.Value()->Type() == Graphic3d_TOLS_DIRECTIONAL
            && aLightIter.Value()->ToCastShadows())
           {
-            aLightsLoop = aLightsLoop + EOL"    directionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
-                                        EOL"                      occDirectionalLightShadow (" + anIndex + ", theNormal));";
+            aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
+                                        EOL"                         occDirectionalLightShadow (" + anIndex + ", theNormal));";
             ++anIndex;
           }
         }
@@ -2327,19 +2148,19 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
             {
               break;
             }
-            aLightsLoop = aLightsLoop + EOL"    directionalLight (" + anIndex + ", theNormal, theView, theIsFront, 1.0);";
+            aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront, 1.0);";
             ++anIndex;
             break;
           }
           case Graphic3d_TOLS_POSITIONAL:
           {
-            aLightsLoop = aLightsLoop + EOL"    pointLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
+            aLightsLoop = aLightsLoop + EOL"    occPointLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
             ++anIndex;
             break;
           }
           case Graphic3d_TOLS_SPOT:
           {
-            aLightsLoop = aLightsLoop + EOL"    spotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
+            aLightsLoop = aLightsLoop + EOL"    occSpotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
             ++anIndex;
             break;
           }
@@ -2360,7 +2181,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
         aLightsLoop +=
           EOL"      if (aType == OccLightType_Direct)"
           EOL"      {"
-          EOL"        directionalLight (anIndex, theNormal, theView, theIsFront, 1.0);"
+          EOL"        occDirectionalLight (anIndex, theNormal, theView, theIsFront, 1.0);"
           EOL"      }";
       }
       if (aLights->NbEnabledLightsOfType (Graphic3d_TOLS_POSITIONAL) > 0)
@@ -2373,7 +2194,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
         aLightsLoop +=
           EOL"      if (aType == OccLightType_Point)"
           EOL"      {"
-          EOL"        pointLight (anIndex, theNormal, theView, aPoint, theIsFront);"
+          EOL"        occPointLight (anIndex, theNormal, theView, aPoint, theIsFront);"
           EOL"      }";
       }
       if (aLights->NbEnabledLightsOfType (Graphic3d_TOLS_SPOT) > 0)
@@ -2386,7 +2207,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
         aLightsLoop +=
           EOL"      if (aType == OccLightType_Spot)"
           EOL"      {"
-          EOL"        spotLight (anIndex, theNormal, theView, aPoint, theIsFront);"
+          EOL"        occSpotLight (anIndex, theNormal, theView, aPoint, theIsFront);"
           EOL"      }";
       }
       aLightsLoop += EOL"    }";
@@ -2416,15 +2237,15 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
       {
         aLightsFunc += Shaders_DirectionalLightShadow_glsl;
       }
-      aLightsFunc += theIsPBR ? THE_FUNC_PBR_directionalLight : THE_FUNC_directionalLight;
+      aLightsFunc += theIsPBR ? Shaders_PBRDirectionalLight_glsl : Shaders_PhongDirectionalLight_glsl;
     }
     if (aLights->NbEnabledLightsOfType (Graphic3d_TOLS_POSITIONAL) > 0)
     {
-      aLightsFunc += theIsPBR ? THE_FUNC_PBR_pointLight : THE_FUNC_pointLight;
+      aLightsFunc += theIsPBR ? Shaders_PBRPointLight_glsl : Shaders_PhongPointLight_glsl;
     }
     if (aLights->NbEnabledLightsOfType (Graphic3d_TOLS_SPOT) > 0)
     {
-      aLightsFunc += theIsPBR ? THE_FUNC_PBR_spotLight : THE_FUNC_spotLight;
+      aLightsFunc += theIsPBR ? Shaders_PBRSpotLight_glsl : Shaders_PhongSpotLight_glsl;
     }
   }
 

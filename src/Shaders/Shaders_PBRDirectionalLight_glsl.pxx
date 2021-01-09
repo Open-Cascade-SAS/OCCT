@@ -1,0 +1,23 @@
+// This file has been automatically generated from resource file src/Shaders/PBRDirectionalLight.glsl
+
+static const char Shaders_PBRDirectionalLight_glsl[] =
+  "//! Function computes contribution of directional light source\n"
+  "//! into global variable DirectLighting (PBR shading).\n"
+  "//! @param theId      light source index\n"
+  "//! @param theNormal  surface normal\n"
+  "//! @param theView    view direction\n"
+  "//! @param theIsFront front/back face flag\n"
+  "//! @param theShadow  shadow attenuation\n"
+  "void occDirectionalLight (in int  theId,\n"
+  "                          in vec3 theNormal,\n"
+  "                          in vec3 theView,\n"
+  "                          in bool theIsFront,\n"
+  "                          in float theShadow)\n"
+  "{\n"
+  "  vec3 aLight = occLight_Position (theId);\n"
+  "  theNormal = theIsFront ? theNormal : -theNormal;\n"
+  "  DirectLighting += occPBRIllumination (theView, aLight, theNormal,\n"
+  "                                        BaseColor, Metallic, Roughness, IOR,\n"
+  "                                        occLight_Specular (theId),\n"
+  "                                        occLight_Intensity(theId)) * theShadow;\n"
+  "}\n";
