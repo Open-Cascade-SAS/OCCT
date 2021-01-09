@@ -193,6 +193,8 @@ static void TestArray2  (QANCollection_Array2Func&     theA2)
   Handle(QANCollection_HArray2Func) aHa = new QANCollection_HArray2Func(aCArr);
   // Assign
   AssignCollection (aHa->ChangeArray2(), theA2);
+
+  delete[] rBlock;
 }
 
 // ===================== Test methods of List type ==========================
@@ -755,8 +757,17 @@ static Standard_Integer QANColTestArray2(Draw_Interpretor& di, Standard_Integer 
     }
   }
 
-  QANCollection_Array2Func anArr2Copy2 = anArr2;
-  anArr2Copy2.Resize (LowerRow - 1, UpperRow - 1, LowerCol + 1, UpperCol + 1, false);
+  {
+    QANCollection_Array2Func anArr2Copy2 = anArr2;
+    anArr2Copy2.Resize (LowerRow - 1, UpperRow - 1, LowerCol + 1, UpperCol + 1, false);
+  }
+
+  {
+    // empty array resize
+    QANCollection_Array2Func anArr2Copy3;
+    anArr2Copy3.Resize (LowerRow, UpperRow, LowerCol, UpperCol, false);
+    anArr2Copy3 = anArr2;
+  }
 
   return 0;
 }

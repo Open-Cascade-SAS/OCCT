@@ -349,10 +349,11 @@ public:
     }
     delete[] aTableOld;
 
+    const Standard_Boolean wasDeletable = myDeletable;
+    myDeletable = Standard_True;
     Allocate();
     if (!theToCopyData)
     {
-      myDeletable = Standard_True;
       return;
     }
 
@@ -366,11 +367,10 @@ public:
       }
     }
 
-    if (myDeletable)
+    if (wasDeletable)
     {
       delete[] aStartOld;
     }
-    myDeletable = Standard_True;
   }
 
   //! Destructor - releases the memory
