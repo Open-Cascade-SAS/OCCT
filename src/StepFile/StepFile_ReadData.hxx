@@ -16,22 +16,11 @@
 #ifndef _StepFile_ReadData_HeaderFile
 #define _StepFile_ReadData_HeaderFile
 
-// Types of arguments
-enum ArgumentType {
-  ArgumentType_Sub = 0,
-  ArgumentType_Integer,
-  ArgumentType_Float,
-  ArgumentType_Ident,
-  ArgumentType_Text,
-  ArgumentType_Nondef,
-  ArgumentType_Enum,
-  ArgumentType_Hexa,
-  ArgumentType_Binary,
-  ArgumentType_Misc
-};
-
 #include <Standard.hxx>
+#include <Standard_Handle.hxx>
 #include <Standard_DefineAlloc.hxx>
+
+#include <Interface_ParamType.hxx>
 
 //! Provides data structures and tools to collect and store the data
 //! read from the STEP file. 
@@ -114,6 +103,8 @@ enum ArgumentType {
 //! threads) provided that each file is read using its own instances of Flex, Bison
 //! and StepFile_ReadData tools.
 
+class Interface_Check;
+
 class StepFile_ReadData
 {
 public:
@@ -128,6 +119,7 @@ private:
   class ArgumentsPage;  //!< List of arguments pages, contains all text derived from Flex
   class Scope;          //!< List of scopes pages, contains all records for external processing
   class RecordsPage;    //!< List of records pages, contains all records
+  class ErrorsPage;     //!< List of errors messages, containts all errors
 
 public:
 
@@ -178,7 +170,7 @@ public:
   void ClearRecorder(const Standard_Integer theMode);
 
   //! Returns a value of fields of current argument
-  Standard_Boolean GetArgDescription(ArgumentType* theType, char** theValue);
+  Standard_Boolean GetArgDescription(Interface_ParamType* theType, char** theValue);
 
   //! Returns a value of all file counters
   void GetFileNbR(Standard_Integer* theNbHead, Standard_Integer* theNbRec, Standard_Integer* theNbPage);
@@ -203,7 +195,7 @@ public:
   void FinalOfHead();
 
   //! Sets type of the current argument
-  void SetTypeArg(const ArgumentType theArgType);
+  void SetTypeArg(const Interface_ParamType theArgType);
 
   //! Initializes the print mode
   //! 0 - don't print descriptions
@@ -216,6 +208,15 @@ public:
 
   //! Returns number of records
   Standard_Integer GetNbRecord() const;
+
+  //! Adds an error message
+  void AddError(Standard_CString theErrorMessage);
+
+  //! Transfers error messages to checker
+  Standard_Boolean ErrorHandle(const Handle(Interface_Check)& theCheck) const;
+
+  //! Returns the message of the last error
+  Standard_CString GetLastError() const;
 
 private:
 
@@ -250,12 +251,14 @@ private:
   char* myResText;               //!< Text value written by Flex and passed to Bison to create record
   char* myCurrType;              //!< Type of last record read
   char* mySubArg;                //!< Ident last record (possible sub-list)
-  ArgumentType myTypeArg;        //!< Type of last argument read
+  Interface_ParamType myTypeArg; //!< Type of last argument read
   Argument* myCurrArg;           //!< Current node of the argumets list
   Record* myFirstRec;            //!< First node of the records list
   Record* myCurRec;              //!< Current node of the records list
   Record* myLastRec;             //!< Last node of the records list
   Scope* myCurScope;             //!< Current node of the scopes list
+  ErrorsPage* myFirstError;      //!< First node of the errors pages list
+  ErrorsPage* myCurError;        //!< Current node of the errors pages list
   RecordsPage* myOneRecPage;     //!< Current node of the records pages list
   CharactersPage* myOneCharPage; //!< Current node of the characters pages list
   ArgumentsPage* myOneArgPage;   //!< Current node of the arguments pages list

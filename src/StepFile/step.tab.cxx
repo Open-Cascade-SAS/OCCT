@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.7.1.
+// A Bison parser, made by GNU Bison 3.7.4.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
@@ -50,13 +50,9 @@
 
 // Unqualified %code blocks.
 
-
 #undef yylex
 #define yylex scanner->lex
 #define StepData scanner->myDataModel
-
-#define stepclearin yychar = -1
-#define steperrok yyerrflag = 0
 
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
@@ -64,7 +60,7 @@
 #define YYMALLOC malloc
 #define YYFREE free
 #endif
-void StepFile_Interrupt (char* nomfic); /* rln 13.09.00 port on HP*/
+void StepFile_Interrupt (Standard_CString theErrorMessage, const Standard_Boolean theIsFail);
 
 
 
@@ -90,25 +86,6 @@ void StepFile_Interrupt (char* nomfic); /* rln 13.09.00 port on HP*/
 # endif
 #endif
 
-#define YYRHSLOC(Rhs, K) ((Rhs)[K].location)
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-# ifndef YYLLOC_DEFAULT
-#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
-    do                                                                  \
-      if (N)                                                            \
-        {                                                               \
-          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
-          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
-        }                                                               \
-    while (false)
-# endif
 
 
 // Enable debugging if requested.
@@ -184,23 +161,20 @@ namespace step {
   parser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value (that.value)
-    , location (that.location)
   {}
 
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_MOVE_REF (location_type) l)
+  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t)
     : Base (t)
     , value ()
-    , location (l)
   {}
 
   template <typename Base>
-  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v, YY_RVREF (location_type) l)
+  parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v)
     : Base (t)
     , value (YY_MOVE (v))
-    , location (YY_MOVE (l))
   {}
 
   template <typename Base>
@@ -223,7 +197,6 @@ namespace step {
   {
     super_type::move (s);
     value = YY_MOVE (s.value);
-    location = YY_MOVE (s.location);
   }
 
   // by_kind.
@@ -312,7 +285,7 @@ namespace step {
   {}
 
   parser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
-    : super_type (YY_MOVE (that.state), YY_MOVE (that.value), YY_MOVE (that.location))
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.value))
   {
 #if 201103L <= YY_CPLUSPLUS
     // that is emptied.
@@ -321,7 +294,7 @@ namespace step {
   }
 
   parser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
-    : super_type (s, YY_MOVE (that.value), YY_MOVE (that.location))
+    : super_type (s, YY_MOVE (that.value))
   {
     // that is emptied.
     that.kind_ = symbol_kind::S_YYEMPTY;
@@ -333,7 +306,6 @@ namespace step {
   {
     state = that.state;
     value = that.value;
-    location = that.location;
     return *this;
   }
 
@@ -342,7 +314,6 @@ namespace step {
   {
     state = that.state;
     value = that.value;
-    location = that.location;
     // that is emptied.
     that.state = empty_state;
     return *this;
@@ -373,8 +344,7 @@ namespace step {
       {
         symbol_kind_type yykind = yysym.kind ();
         yyo << (yykind < YYNTOKENS ? "token" : "nterm")
-            << ' ' << yysym.name () << " ("
-            << yysym.location << ": ";
+            << ' ' << yysym.name () << " (";
         YYUSE (yykind);
         yyo << ')';
       }
@@ -475,9 +445,6 @@ namespace step {
     /// The lookahead symbol.
     symbol_type yyla;
 
-    /// The locations where the error started and ended.
-    stack_symbol_type yyerror_range[3];
-
     /// The return value of parse ().
     int yyresult;
 
@@ -526,7 +493,7 @@ namespace step {
         try
 #endif // YY_EXCEPTIONS
           {
-            yyla.kind_ = yytranslate_ (yylex (&yyla.value, &yyla.location));
+            yyla.kind_ = yytranslate_ (yylex (&yyla.value));
           }
 #if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
@@ -605,12 +572,6 @@ namespace step {
       else
         yylhs.value = yystack_[0].value;
 
-      // Default location.
-      {
-        stack_type::slice range (yystack_, yylen);
-        YYLLOC_DEFAULT (yylhs.location, range, yylen);
-        yyerror_range[1].location = yylhs.location;
-      }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
@@ -629,7 +590,7 @@ namespace step {
     break;
 
   case 17: // unarg: IDENT
-                        {  StepData->SetTypeArg(ArgumentType_Ident);     StepData->CreateNewArg();  }
+                        {  StepData->SetTypeArg(Interface_ParamIdent);     StepData->CreateNewArg();  }
     break;
 
   case 18: // unarg: QUID
@@ -667,7 +628,7 @@ namespace step {
     break;
 
   case 40: // unid: IDENT
-        {  StepData->SetTypeArg(ArgumentType_Ident);    StepData->CreateNewArg();  }
+        {  StepData->SetTypeArg(Interface_ParamIdent);    StepData->CreateNewArg();  }
     break;
 
   case 43: // debexp: '/'
@@ -723,12 +684,12 @@ namespace step {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        std::string msg = YY_("syntax error");
-        error (yyla.location, YY_MOVE (msg));
+        context yyctx (*this, yyla);
+        std::string msg = yysyntax_error_ (yyctx);
+        error (YY_MOVE (msg));
       }
 
 
-    yyerror_range[1].location = yyla.location;
     if (yyerrstatus_ == 3)
       {
         /* If just tried and failed to reuse lookahead token after an
@@ -790,7 +751,6 @@ namespace step {
         if (yystack_.size () == 1)
           YYABORT;
 
-        yyerror_range[1].location = yystack_[0].location;
         yy_destroy_ ("Error: popping", yystack_[0]);
         yypop_ ();
         YY_STACK_PRINT ();
@@ -798,8 +758,6 @@ namespace step {
     {
       stack_symbol_type error_token;
 
-      yyerror_range[2].location = yyla.location;
-      YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
       error_token.state = state_type (yyn);
@@ -865,19 +823,178 @@ namespace step {
   void
   parser::error (const syntax_error& yyexc)
   {
-    error (yyexc.location, yyexc.what ());
+    error (yyexc.what ());
   }
 
-#if YYDEBUG || 0
-  const char *
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
+  std::string
+  parser::yytnamerr_ (const char *yystr)
+  {
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
+
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
   parser::symbol_name (symbol_kind_type yysymbol)
   {
-    return yytname_[yysymbol];
+    return yytnamerr_ (yytname_[yysymbol]);
   }
-#endif // #if YYDEBUG || 0
 
 
 
+  // parser::context.
+  parser::context::context (const parser& yyparser, const symbol_type& yyla)
+    : yyparser_ (yyparser)
+    , yyla_ (yyla)
+  {}
+
+  int
+  parser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
+  {
+    // Actual number of expected tokens
+    int yycount = 0;
+
+    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    if (!yy_pact_value_is_default_ (yyn))
+      {
+        /* Start YYX at -YYN if negative to avoid negative indexes in
+           YYCHECK.  In other words, skip the first -YYN actions for
+           this state because they are default actions.  */
+        int yyxbegin = yyn < 0 ? -yyn : 0;
+        // Stay within bounds of both yycheck and yytname.
+        int yychecklim = yylast_ - yyn + 1;
+        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+          if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
+              && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+            {
+              if (!yyarg)
+                ++yycount;
+              else if (yycount == yyargn)
+                return 0;
+              else
+                yyarg[yycount++] = YY_CAST (symbol_kind_type, yyx);
+            }
+      }
+
+    if (yyarg && yycount == 0 && 0 < yyargn)
+      yyarg[0] = symbol_kind::S_YYEMPTY;
+    return yycount;
+  }
+
+
+
+  int
+  parser::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yyla) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yyla.  (However, yyla is currently not documented for users.)
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
+    */
+
+    if (!yyctx.lookahead ().empty ())
+      {
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
+      }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+  parser::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
+
+    char const* yyformat = YY_NULLPTR;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    std::string yyres;
+    // Argument number.
+    std::ptrdiff_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += symbol_name (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
+  }
 
 
   const signed char parser::yypact_ninf_ = -24;
@@ -991,7 +1108,7 @@ namespace step {
   };
 
 
-#if YYDEBUG
+#if YYDEBUG || 1
   // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
   // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
   const char*
@@ -1013,11 +1130,11 @@ namespace step {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,   103,   103,   104,   105,   106,   107,   108,   109,   110,
-     110,   110,   113,   114,   116,   117,   119,   122,   123,   124,
-     125,   126,   129,   132,   135,   140,   141,   143,   144,   146,
-     147,   149,   150,   151,   152,   154,   155,   157,   158,   160,
-     163,   166,   167,   169,   172,   174,   179,   182
+       0,    98,    98,    99,   100,   101,   102,   103,   104,   105,
+     105,   105,   108,   109,   111,   112,   114,   117,   118,   119,
+     120,   121,   124,   127,   130,   135,   136,   138,   139,   141,
+     142,   144,   145,   146,   147,   149,   150,   152,   153,   155,
+     158,   161,   162,   164,   167,   169,   174,   177
   };
 
   void
@@ -1099,10 +1216,18 @@ namespace step {
 } // step
 
 
-
-void step::parser::error(const location_type& /*loc*/, const std::string& m)
+void step::parser::error(const std::string& m)
 {
-  char newmess[80];
-  sprintf(newmess, "At line %d : %s", scanner->lineno() + 1, m.c_str());
-  StepFile_Interrupt(newmess);
+  char newmess[120];
+  Standard_Boolean isSyntax = (Standard_Boolean)strncmp(m.c_str(), "syntax error", 13);
+  if (isSyntax && strlen(m.c_str()) > 13)
+    sprintf(newmess, "Undefined Parsing: Line %d: %s: %s", scanner->lineno() + 1, "Incorrect syntax", m.c_str() + 14);
+  else if (isSyntax)
+    sprintf(newmess, "Undefined Parsing: Line %d: Incorrect syntax", scanner->lineno() + 1);
+  else
+    sprintf(newmess, "Undefined Parsing: Line %d: %s", scanner->lineno() + 1, m.c_str());
+
+  StepFile_Interrupt(newmess, Standard_False);
+
+  StepData->AddError(newmess);
 }

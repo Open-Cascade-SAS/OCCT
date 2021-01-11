@@ -653,7 +653,7 @@ goto find_rule; \
 #ifdef  YY_DECL
 # undef YY_DECL
 #endif
-#define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/, step::parser::location_type* /*yylloc*/)
+#define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/)
 
 typedef step::parser::token token;
 
@@ -959,7 +959,7 @@ YY_LINENO_REWIND_TO(yy_bp + 1);
 (yy_c_buf_p) = yy_cp = yy_bp + 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-{ BEGIN(INITIAL); CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Text); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
+{ BEGIN(INITIAL); CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamText); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
@@ -999,23 +999,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Integer); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamInteger); return(token::QUID); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamReal); return(token::QUID); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamReal); return(token::QUID); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Hexa); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamHexa); return(token::QUID); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Enum); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamEnum); return(token::QUID); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
@@ -1031,7 +1031,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Nondef); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamVoid); return(token::QUID); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
@@ -1096,7 +1096,7 @@ YY_RULE_SETUP
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Misc); return(token::QUID); }
+{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamMisc); return(token::QUID); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP

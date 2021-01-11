@@ -14,27 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//   StepFile_Read.hxx
-
-//   routine assurant l'enchainement des operations de lecture d'un fichier
-//   STEP dans un StepModel, en fonction d'une cle de reconnaissance
-//   Retour de la fonction :
-//     0 si OK  (le StepModel a ete charge)
-//    -1 si abandon car fichier pas pu etre ouvert
-//     1 si erreur en cours de lecture
-
-
 #ifndef StepFile_Read_HeaderFile
 #define StepFile_Read_HeaderFile
 
-#include <iostream> 
-//# include <stepread.h>  : sauf recfile_modeprint, declare ici
-# include <StepData_StepModel.hxx>
-# include <StepData_FileRecognizer.hxx>
-# include <StepData_Protocol.hxx>
+#include <iostream>
 
-Standard_EXPORT void StepFile_ReadTrace (const Standard_Integer mode);
-// Modal : 0 pas de trace, 1 trace LoadModel, 2 & 3 + trace interne lex-yac
+class StepData_StepModel;
+class StepData_Protocol;
+
+//! Prints the error message
+//! @param theErrorMessage - error message for output
+//! @param theFail - if true output as a fail info, else output as a trace info ( log )
+void StepFile_Interrupt(Standard_CString theErrorMessage,
+                        const Standard_Boolean theIsFail = Standard_True);
 
 //! Working function reading STEP file or stream.
 //! @param theName - name of the file or stream

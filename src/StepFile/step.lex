@@ -44,7 +44,7 @@
 #ifdef  YY_DECL
 # undef YY_DECL
 #endif
-#define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/, step::parser::location_type* /*yylloc*/)
+#define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/)
 
 typedef step::parser::token token;
 
@@ -97,7 +97,7 @@ long string in files Henri.stp and 401.stp*/
 <Text>[\n]         { yymore(); yylineno ++; }   /* newline in text string - increment line counter and keep collecting yytext */
 <Text>[']          { yymore(); }                /* single ' inside text string - keep collecting yytext*/
 <Text>[^\n']+      { yymore(); }                /* a sequence of any characters except ' and \n - keep collecting yytext */
-<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Text); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
+<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamText); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
 
 "	"	{;}
 " "		{;}
@@ -108,15 +108,15 @@ long string in files Henri.stp and 401.stp*/
 #[0-9]+/=		{ CreateNewText(YYText(),YYLeng()); return(token::ENTITY); }
 #[0-9]+/[ 	]*=	{ CreateNewText(YYText(),YYLeng()); return(token::ENTITY); }
 #[0-9]+		{ CreateNewText(YYText(),YYLeng()); return(token::IDENT); }
-[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Integer); return(token::QUID); }
-[-+\.0-9][\.0-9]+	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
-[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
-["][0-9A-F]+["] 	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Hexa); return(token::QUID); }
-[.]*[A-Z0-9_]+[.]	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Enum); return(token::QUID); }
+[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamInteger); return(token::QUID); }
+[-+\.0-9][\.0-9]+	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamReal); return(token::QUID); }
+[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamReal); return(token::QUID); }
+["][0-9A-F]+["] 	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamHexa); return(token::QUID); }
+[.]*[A-Z0-9_]+[.]	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamEnum); return(token::QUID); }
 [(]		{ return ('('); }
 [)]		{ return (')'); }
 [,]		{ myDataModel->PrepareNewArg(); return (','); }
-[$]		{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Nondef); return(token::QUID); }
+[$]		{ CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamVoid); return(token::QUID); }
 [=]		{ return ('='); }
 [;]		{ return (';'); }
 
@@ -134,7 +134,7 @@ long string in files Henri.stp and 401.stp*/
 (?i:ENDSCOPE)  { return(token::ENDSCOPE); }
 [a-zA-Z0-9_]+  { CreateNewText(YYText(),YYLeng()); return(token::TYPE); }
 ![a-zA-Z0-9_]+ { CreateNewText(YYText(),YYLeng()); return(token::TYPE); }
-[^)]           { CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Misc); return(token::QUID); }
+[^)]           { CreateNewText(YYText(),YYLeng()); SetTypeArg(Interface_ParamMisc); return(token::QUID); }
 
 <End>[^\n]     {;} /* skip any characters (except newlines) */
 

@@ -8,4 +8,3 @@ StepFile_Read.hxx
 step.lex
 step.yacc
 FlexLexer.h
-location.hh

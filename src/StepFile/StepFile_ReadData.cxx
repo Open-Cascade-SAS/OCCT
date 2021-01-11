@@ -15,6 +15,9 @@
 
 #include <StepFile_ReadData.hxx>
 
+#include <Interface_Check.hxx>
+#include <TCollection_AsciiString.hxx>
+
 // Constant litterales
 namespace TextValue
 {
@@ -61,7 +64,7 @@ public:
 
 public:
 
-  Argument() :myNext(NULL), myValue(NULL), myType(ArgumentType_Sub) {}
+  Argument() :myNext(NULL), myValue(NULL), myType(Interface_ParamSub) {}
 
   ~Argument() {}
 
@@ -69,7 +72,7 @@ public:
 
   Argument* myNext;    //!< Next argument in the list for this record
   char*  myValue;      //!< Character value of the argument
-  ArgumentType myType; //!< Type of the argument
+  Interface_ParamType myType; //!< Type of the argument
 };
 
 class StepFile_ReadData::ArgumentsPage {
@@ -143,7 +146,6 @@ public:
   Record* myRecord;   //!< Record interrupted by the scope (to resume)
 };
 
-
 class StepFile_ReadData::RecordsPage
 {
 
@@ -170,6 +172,29 @@ public:
   int myUsed;          //!< Counter employed records
 };
 
+class StepFile_ReadData::ErrorsPage
+{
+
+public:
+
+  ErrorsPage(Standard_CString theError) :myNext(NULL), myError(theError)
+  {}
+
+  //! Returns point to the next ErrorsPage
+  ErrorsPage* NextErrorPage() const { return myNext; }
+
+  //! Sets the next ErrorPage
+  void SetNextErrorPage(ErrorsPage* theNextErrorsPage) { myNext = theNextErrorsPage; }
+
+  //! Returns an error message
+  Standard_CString ErrorMessage() const { return myError.ToCString(); }
+
+private:
+
+  ErrorsPage* myNext;              //!< Chaining of records pages
+  TCollection_AsciiString myError; //!< Own error message
+};
+
 //=======================================================================
 //function : StepFile_ReadData
 //purpose  : 
@@ -179,8 +204,8 @@ StepFile_ReadData::StepFile_ReadData()
   :myMaxChar(50000), myMaxRec(5000), myMaxArg(10000), myModePrint(0),
   myNbRec(0), myNbHead(0), myNbPar(0), myYaRec(0),
   myNumSub(0), myErrorArg(Standard_False), myResText(NULL), myCurrType(TextValue::SubList),
-  mySubArg(NULL), myTypeArg(ArgumentType_Sub), myCurrArg(NULL), myFirstRec(NULL),
-  myCurRec(NULL), myLastRec(NULL), myCurScope(NULL)
+  mySubArg(NULL), myTypeArg(Interface_ParamSub), myCurrArg(NULL), myFirstRec(NULL),
+  myCurRec(NULL), myLastRec(NULL), myCurScope(NULL), myFirstError(NULL), myCurError(NULL)
 {
   myOneCharPage = new CharactersPage(myMaxChar);
   myOneArgPage = new ArgumentsPage(myMaxArg);
@@ -238,7 +263,7 @@ void StepFile_ReadData::RecordNewEntity()
 {
   myErrorArg = Standard_False; // Reset error argument mod
   AddNewRecord(myCurRec);
-  SetTypeArg(ArgumentType_Sub);
+  SetTypeArg(Interface_ParamSub);
   mySubArg = myCurRec->myIdent;
   myCurRec = myCurRec->myNext;
   myLastRec->myNext = NULL;
@@ -331,12 +356,12 @@ void StepFile_ReadData::CreateNewArg()
   aNewArg = &myOneArgPage->myArgs[myOneArgPage->myUsed];
   myOneArgPage->myUsed++;
   aNewArg->myType = myTypeArg;
-  if (myTypeArg == ArgumentType_Sub)
+  if (myTypeArg == Interface_ParamSub)
     aNewArg->myValue = mySubArg;
   else
     GetResultText(&aNewArg->myValue);
 
-  if (myTypeArg == ArgumentType_Misc)
+  if (myTypeArg == Interface_ParamMisc)
     myErrorArg = Standard_True;
 
   if (myCurRec->myFirst == NULL)
@@ -364,7 +389,7 @@ void StepFile_ReadData::CreateErrorArg()
   // If already exists - update text value
   if (!myErrorArg)
   {
-    SetTypeArg(ArgumentType_Misc);
+    SetTypeArg(Interface_ParamMisc);
     CreateNewArg();
     myErrorArg = Standard_True;
     return;
@@ -421,7 +446,7 @@ void StepFile_ReadData::FinalOfScope()
       PrintRecord(myLastRec);
     }
     myCurRec = aRecord;
-    myTypeArg = ArgumentType_Sub;
+    myTypeArg = Interface_ParamSub;
     CreateNewArg();
   }
 
@@ -445,26 +470,28 @@ void StepFile_ReadData::ClearRecorder(const Standard_Integer theMode)
   {
     while (myOneRecPage != NULL)
     {
-      RecordsPage* aNewPage;
-      aNewPage = myOneRecPage->myNext;
+      RecordsPage* aNewPage = myOneRecPage->myNext;
       delete myOneRecPage;
-      myOneRecPage = NULL;
       myOneRecPage = aNewPage;
     }
     while (myOneArgPage != NULL) {
-      ArgumentsPage* aNewPage; aNewPage = myOneArgPage->myNext;
+      ArgumentsPage* aNewPage = myOneArgPage->myNext;
       delete myOneArgPage;
-      myOneArgPage = NULL;
       myOneArgPage = aNewPage;
+    }
+    while (myFirstError != NULL)
+    {
+      ErrorsPage* aNewErrorPage = myFirstError->NextErrorPage();
+      delete myFirstError;
+      myFirstError = aNewErrorPage;
     }
   }
   if (theMode & 2)
   {
     while (myOneCharPage != NULL)
     {
-      CharactersPage* aNewPage; aNewPage = myOneCharPage->myNext;
+      CharactersPage* aNewPage = myOneCharPage->myNext;
       delete myOneCharPage;
-      myOneCharPage = NULL;
       myOneCharPage = aNewPage;
     }
   }
@@ -475,7 +502,7 @@ void StepFile_ReadData::ClearRecorder(const Standard_Integer theMode)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean StepFile_ReadData::GetArgDescription(ArgumentType* theType, char** theValue)
+Standard_Boolean StepFile_ReadData::GetArgDescription(Interface_ParamType* theType, char** theValue)
 {
   if (myCurrArg == NULL)
     return Standard_False;
@@ -491,8 +518,8 @@ Standard_Boolean StepFile_ReadData::GetArgDescription(ArgumentType* theType, cha
 //=======================================================================
 
 void StepFile_ReadData::GetFileNbR(Standard_Integer* theNbHead,
-                                    Standard_Integer* theNbRec,
-                                    Standard_Integer* theNbPage)
+                                   Standard_Integer* theNbRec,
+                                   Standard_Integer* theNbPage)
 {
   myCurRec = myFirstRec;
   *theNbHead = myNbHead;
@@ -506,8 +533,8 @@ void StepFile_ReadData::GetFileNbR(Standard_Integer* theNbHead,
 //=======================================================================
 
 Standard_Boolean StepFile_ReadData::GetRecordDescription(char** theIdent,
-                                                          char** theType,
-                                                          int* theNbArg)
+                                                         char** theType,
+                                                         int* theNbArg)
 {
   if (myCurRec == NULL)
     return Standard_False;
@@ -573,7 +600,7 @@ void StepFile_ReadData::FinalOfHead()
 //purpose  : 
 //=======================================================================
 
-void StepFile_ReadData::SetTypeArg(const ArgumentType theArgType)
+void StepFile_ReadData::SetTypeArg(const Interface_ParamType theArgType)
 {
   myTypeArg = theArgType;
 }
@@ -606,6 +633,51 @@ Standard_Integer StepFile_ReadData::GetModePrint() const
 Standard_Integer StepFile_ReadData::GetNbRecord() const
 {
   return myNbRec;
+}
+
+//=======================================================================
+//function : AddError
+//purpose  :
+//=======================================================================
+void StepFile_ReadData::AddError(Standard_CString theErrorMessage)
+{
+  if (myFirstError == NULL)
+  {
+    myFirstError = new ErrorsPage(theErrorMessage);
+    myCurError = myFirstError;
+  }
+  else
+  {
+    myCurError->SetNextErrorPage(new ErrorsPage(theErrorMessage));
+    myCurError = myCurError->NextErrorPage();
+  }
+}
+
+//=======================================================================
+//function : ErrorHandle
+//purpose  :
+//=======================================================================
+Standard_Boolean StepFile_ReadData::ErrorHandle(const Handle(Interface_Check)& theCheck) const
+{
+  if (myFirstError != NULL)
+  {
+    ErrorsPage* aCurrent = myFirstError;
+    while (aCurrent != NULL)
+    {
+      theCheck->AddFail(aCurrent->ErrorMessage(), "Undefined Parsing");
+      aCurrent = aCurrent->NextErrorPage();
+    }
+  }
+  return myFirstError == NULL;
+}
+
+//=======================================================================
+//function : GetLastError
+//purpose  :
+//=======================================================================
+Standard_CString StepFile_ReadData::GetLastError() const
+{
+  return myCurError != NULL ? myCurError->ErrorMessage() : NULL;
 }
 
 //=======================================================================

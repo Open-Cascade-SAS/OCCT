@@ -26,7 +26,7 @@
 
 %parse-param  {step::scanner* scanner}
 
-%locations
+%define parse.error verbose
 
 %token STEP HEADER ENDSEC DATA ENDSTEP SCOPE ENDSCOPE ENTITY TYPE INTEGER FLOAT IDENT TEXT NONDEF ENUM HEXA QUID
 %start stepf
@@ -48,15 +48,11 @@ namespace step {
 #endif
 
 }
- 
-%code {
 
+%code {
 #undef yylex
 #define yylex scanner->lex
 #define StepData scanner->myDataModel
-
-#define stepclearin yychar = -1
-#define steperrok yyerrflag = 0
 
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
@@ -64,7 +60,7 @@ namespace step {
 #define YYMALLOC malloc
 #define YYFREE free
 #endif
-void StepFile_Interrupt (char* nomfic); /* rln 13.09.00 port on HP*/
+void StepFile_Interrupt (Standard_CString theErrorMessage, const Standard_Boolean theIsFail);
 }
 
 %code provides {
@@ -88,8 +84,7 @@ namespace step {
     public:
       explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
 
-      int lex(step::parser::semantic_type* yylval,
-        step::parser::location_type* yylloc);
+      int lex(step::parser::semantic_type* yylval);
 
       StepFile_ReadData* myDataModel;
     };
@@ -119,7 +114,7 @@ headent : enttype listarg ';'
 endhead : DATA
 	{  StepData->FinalOfHead();  }
 	;
-unarg	: IDENT		{  StepData->SetTypeArg(ArgumentType_Ident);     StepData->CreateNewArg();  }
+unarg	: IDENT		{  StepData->SetTypeArg(Interface_ParamIdent);     StepData->CreateNewArg();  }
 	| QUID		{  /* deja fait par lex*/ 	 StepData->CreateNewArg();  }
 	| listarg	/*  rec_newent lors du ')' */ {  StepData->CreateNewArg();  }
 	| listype listarg  /*  liste typee  */        {  StepData->CreateNewArg();  }
@@ -161,7 +156,7 @@ debscop	: SCOPE
 	{  StepData->AddNewScope();  }
 	;
 unid	: IDENT
-	{  StepData->SetTypeArg(ArgumentType_Ident);    StepData->CreateNewArg();  }
+	{  StepData->SetTypeArg(Interface_ParamIdent);    StepData->CreateNewArg();  }
 	;
 export	: unid
 	| export ',' unid
@@ -183,10 +178,18 @@ enttype	: TYPE
 	{  StepData->RecordType ();  }
 	;
 %%
-
-void step::parser::error(const location_type& /*loc*/, const std::string& m)
+void step::parser::error(const std::string& m)
 {
-  char newmess[80];
-  sprintf(newmess, "At line %d : %s", scanner->lineno() + 1, m.c_str());
-  StepFile_Interrupt(newmess);
+  char newmess[120];
+  Standard_Boolean isSyntax = (Standard_Boolean)strncmp(m.c_str(), "syntax error", 13);
+  if (isSyntax && strlen(m.c_str()) > 13)
+    sprintf(newmess, "Undefined Parsing: Line %d: %s: %s", scanner->lineno() + 1, "Incorrect syntax", m.c_str() + 14);
+  else if (isSyntax)
+    sprintf(newmess, "Undefined Parsing: Line %d: Incorrect syntax", scanner->lineno() + 1);
+  else
+    sprintf(newmess, "Undefined Parsing: Line %d: %s", scanner->lineno() + 1, m.c_str());
+
+  StepFile_Interrupt(newmess, Standard_False);
+
+  StepData->AddError(newmess);
 }

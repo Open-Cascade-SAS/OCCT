@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.7.1.
+// A Bison parser, made by GNU Bison 3.7.4.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
@@ -106,7 +106,7 @@ namespace step {
 #else
 # define YY_CONSTEXPR
 #endif
-# include "location.hh"
+
 
 
 #ifndef YY_ATTRIBUTE_PURE
@@ -204,25 +204,19 @@ namespace step {
 #else
     typedef YYSTYPE semantic_type;
 #endif
-    /// Symbol locations.
-    typedef location location_type;
 
     /// Syntax errors thrown from user actions.
     struct syntax_error : std::runtime_error
     {
-      syntax_error (const location_type& l, const std::string& m)
+      syntax_error (const std::string& m)
         : std::runtime_error (m)
-        , location (l)
       {}
 
       syntax_error (const syntax_error& s)
         : std::runtime_error (s.what ())
-        , location (s.location)
       {}
 
       ~syntax_error () YY_NOEXCEPT YY_NOTHROW;
-
-      location_type location;
     };
 
     /// Token kinds.
@@ -337,7 +331,7 @@ namespace step {
     /// Expects its Base type to provide access to the symbol kind
     /// via kind ().
     ///
-    /// Provide access to semantic value and location.
+    /// Provide access to semantic value.
     template <typename Base>
     struct basic_symbol : Base
     {
@@ -347,7 +341,6 @@ namespace step {
       /// Default constructor.
       basic_symbol ()
         : value ()
-        , location ()
       {}
 
 #if 201103L <= YY_CPLUSPLUS
@@ -355,20 +348,17 @@ namespace step {
       basic_symbol (basic_symbol&& that)
         : Base (std::move (that))
         , value (std::move (that.value))
-        , location (std::move (that.location))
       {}
 #endif
 
       /// Copy constructor.
       basic_symbol (const basic_symbol& that);
       /// Constructor for valueless symbols.
-      basic_symbol (typename Base::kind_type t,
-                    YY_MOVE_REF (location_type) l);
+      basic_symbol (typename Base::kind_type t);
 
       /// Constructor for symbols with semantic value.
       basic_symbol (typename Base::kind_type t,
-                    YY_RVREF (semantic_type) v,
-                    YY_RVREF (location_type) l);
+                    YY_RVREF (semantic_type) v);
 
       /// Destroy the symbol.
       ~basic_symbol ()
@@ -382,14 +372,11 @@ namespace step {
         Base::clear ();
       }
 
-#if YYDEBUG || 0
       /// The user-facing name of this symbol.
-      const char *name () const YY_NOEXCEPT
+      std::string name () const YY_NOEXCEPT
       {
         return parser::symbol_name (this->kind ());
       }
-#endif // #if YYDEBUG || 0
-
 
       /// Backward compatibility (Bison 3.6).
       symbol_kind_type type_get () const YY_NOEXCEPT;
@@ -402,9 +389,6 @@ namespace step {
 
       /// The semantic value.
       semantic_type value;
-
-      /// The location.
-      location_type location;
 
     private:
 #if YY_CPLUSPLUS < 201103L
@@ -492,21 +476,33 @@ namespace step {
 #endif
 
     /// Report a syntax error.
-    /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
-    virtual void error (const location_type& loc, const std::string& msg);
+    virtual void error (const std::string& msg);
 
     /// Report a syntax error.
     void error (const syntax_error& err);
 
-#if YYDEBUG || 0
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static const char *symbol_name (symbol_kind_type yysymbol);
-#endif // #if YYDEBUG || 0
+    static std::string symbol_name (symbol_kind_type yysymbol);
 
 
 
+    class context
+    {
+    public:
+      context (const parser& yyparser, const symbol_type& yyla);
+      const symbol_type& lookahead () const { return yyla_; }
+      symbol_kind_type token () const { return yyla_.kind (); }
+      /// Put in YYARG at most YYARGN of the expected tokens, and return the
+      /// number of tokens stored in YYARG.  If YYARG is null, return the
+      /// number of expected tokens (guaranteed to be less than YYNTOKENS).
+      int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
+
+    private:
+      const parser& yyparser_;
+      const symbol_type& yyla_;
+    };
 
   private:
 #if YY_CPLUSPLUS < 201103L
@@ -520,6 +516,13 @@ namespace step {
     /// Stored state numbers (used for stacks).
     typedef signed char state_type;
 
+    /// The arguments of the error message.
+    int yy_syntax_error_arguments_ (const context& yyctx,
+                                    symbol_kind_type yyarg[], int yyargn) const;
+
+    /// Generate an error message.
+    /// \param yyctx     the context in which the error occurred.
+    virtual std::string yysyntax_error_ (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -541,10 +544,11 @@ namespace step {
     /// are valid, yet not members of the token_type enum.
     static symbol_kind_type yytranslate_ (int t);
 
-#if YYDEBUG || 0
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *yystr);
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-#endif // #if YYDEBUG || 0
 
 
     // Tables.
@@ -847,8 +851,7 @@ namespace step {
     public:
       explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
 
-      int lex(step::parser::semantic_type* yylval,
-        step::parser::location_type* yylloc);
+      int lex(step::parser::semantic_type* yylval);
 
       StepFile_ReadData* myDataModel;
     };

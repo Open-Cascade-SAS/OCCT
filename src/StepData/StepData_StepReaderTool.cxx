@@ -159,7 +159,7 @@ void StepData_StepReaderTool::PrepareHeader
 void StepData_StepReaderTool::BeginRead
   (const Handle(Interface_InterfaceModel)& amodel)
 {
-  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  Message_Messenger::StreamBuffer sout = Message::SendTrace();
   DeclareAndCast(StepData_StepModel,model,amodel);
   DeclareAndCast(StepData_StepReaderData,stepdat,Data());
 
@@ -185,16 +185,20 @@ void StepData_StepReaderTool::BeginRead
       Standard_Integer nbmess = ach->NbWarnings();
       sout<<nbmess<<" Warnings on Reading Header Entity N0."<<i<<":";
       if (!ent.IsNull()) sout << ent->DynamicType()->Name() << std::endl;
-      for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
-	sout << ach->CWarning(nf) << "\n";
+      for (Standard_Integer nf = 1; nf <= nbmess; nf++)
+      {
+        sout << ach->CWarning(nf) << "\n";
+      }
     }
     if (ach->HasFailed()) {
       Handle(Interface_Check) mch = model->GlobalCheck();
       Standard_Integer nbmess = ach->NbFails();
-      sout << " Errors on Reading Header Entity N0."<<i<<":";
+      sout << " Fails on Reading Header Entity N0." << i << ":";
       if (!ent.IsNull()) sout << ent->DynamicType()->Name() << std::endl;
-      for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
-	sout << ach->CFail(nf) << "\n";
+      for (Standard_Integer nf = 1; nf <= nbmess; nf++)
+      {
+        sout << ach->CFail(nf) << "\n";
+      }
     }
   }
 }
