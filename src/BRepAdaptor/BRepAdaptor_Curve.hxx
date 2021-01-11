@@ -71,11 +71,11 @@ public:
   //! Creates an undefined Curve with no Edge loaded.
   Standard_EXPORT BRepAdaptor_Curve();
   
-  //! Creates a Curve  to  acces to the geometry of edge
+  //! Creates a Curve  to  access the geometry of edge
   //! <E>.
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E);
   
-  //! Creates a Curve to acces to  the geometry  of edge
+  //! Creates a Curve to access  the geometry  of edge
   //! <E>.   The geometry  will   be  computed using the
   //! parametric curve of <E> on the face  <F>. An Error
   //! is  raised if  the edge does  not have a pcurve on
@@ -85,11 +85,11 @@ public:
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 
-  //! Sets  the Curve <me>  to acces to the  geometry of
+  //! Sets  the Curve <me>  to access the  geometry of
   //! edge <E>.
   Standard_EXPORT void Initialize (const TopoDS_Edge& E);
   
-  //! Sets the Curve <me>  to acces to  the  geometry of
+  //! Sets the Curve <me>  to access  the  geometry of
   //! edge <E>.  The geometry will be computed using the
   //! parametric curve of <E>  on the face <F>. An Error
   //! is raised if the edge  does not  have a pcurve  on

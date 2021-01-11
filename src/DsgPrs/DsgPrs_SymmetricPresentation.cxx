@@ -75,13 +75,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 
   gp_Pnt P1,P2;
 
-  //===================================
-  // SYMETRY OF EDGE PERPEND. TO THE AXIS    
+  //======================================
+  // SYMMETRY OF EDGE PERPEND. TO THE AXIS
   //   ____        :        ____
   // edge2 |       : -=-   | edge 1
   //       |<------:------>|
   //               :        
-  //===================================
+  //======================================
 
   if (VLa.Dot(VL1) == 0) {
     P1 = AttachmentPoint1.Translated(VLa);
@@ -124,7 +124,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   
   /*=======================================================
    TO AVOID CROSSING
-          P1  -=- P2                P2  -=- P1         
+          P1  -=- P2                P2  -=- P1
             \<-->/                    |<-->|
              \  /                     |    |
               \/                      |    | 
@@ -143,13 +143,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     PntTempo = P1;
     P1       = P2;
     P2       = PntTempo;
-  }  
+  }
   /*===================================
-   FRACTURES OF TRAITS OF CALL    
+   FRACTURES OF TRAITS OF CALL
           /             \		
          /               \	
          |      -=-      |
-         |<------------->| 
+         |<------------->|
   ===================================*/
 
   gp_Vec        Vfix;
@@ -226,7 +226,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   }
 
   /*===================================
-   FRACTURES OF PROCESSING OF CALL    
+   FRACTURES OF PROCESSING OF CALL
                 -=-    
            |<--------->| 
            |           |   
@@ -395,8 +395,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
 
   /*--------------------------------------------------------------------------------------
-  |                          MARKING OF THE SYMMETRY AXIS                             |
-  --------------------------------------------------------------------------------------     
+  |                          MARKING OF THE SYMMETRY AXIS                                |
+  ----------------------------------------------------------------------------------------
           ____
           \  / :Cursor
            \/
@@ -634,7 +634,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   
 /*--------------------------------------------------------------------------------------
   |                          MARKING OF THE AXIS OF SYMMETRY                           |
-  --------------------------------------------------------------------------------------     
+  --------------------------------------------------------------------------------------
           ____
           \  / :Cursor
            \/
@@ -706,11 +706,11 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(OffsetPoint);
   
     //--------------------------------------------------------------------------------------
-    //|                                SYMBOL OF SYMMETRY                                 |
+    //|                                SYMBOL OF SYMMETRY                                  |
     //--------------------------------------------------------------------------------------
-    //           -------    : Superior Segment 
+    //           -------    : Superior Segment
     //         -----------  : Axis
-    //           -------    : Inferior Segment 
+    //           -------    : Inferior Segment
 
     //Calculate extremas of the axis of the symbol
     gp_Vec VAO (AttachmentPoint1,OffsetPoint);
@@ -824,7 +824,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //|                                SYMBOL OF SYMMETRY                                 |
     //-------------------------------------------------------------------------------------
     
-    //           -------    : Superior Segment 
+    //           -------    : Superior Segment
     //         -----------  : Axis
     //           -------    : Inferior Segment
     
@@ -866,8 +866,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
 
     /*--------------------------------------------------------------------------------------
-    |                          MARKING OF THE AXIS OF SYMMETRY                           |
-    --------------------------------------------------------------------------------------     
+    |                          MARKING OF THE AXIS OF SYMMETRY                             |
+    ----------------------------------------------------------------------------------------
             ____
             \  / :Cursor
              \/

@@ -50,14 +50,14 @@ public:
   
   Standard_EXPORT GC_MakeMirror(const gp_Lin& Line);
   
-  //! Make a symetry transformation af axis defined by
+  //! Make a symmetry transformation af axis defined by
   //! <Point> and <Direc>.
   Standard_EXPORT GC_MakeMirror(const gp_Pnt& Point, const gp_Dir& Direc);
   
-  //! Make a symetry transformation of plane <Plane>.
+  //! Make a symmetry transformation of plane <Plane>.
   Standard_EXPORT GC_MakeMirror(const gp_Pln& Plane);
   
-  //! Make a symetry transformation of plane <Plane>.
+  //! Make a symmetry transformation of plane <Plane>.
   Standard_EXPORT GC_MakeMirror(const gp_Ax2& Plane);
   
   //! Returns the constructed transformation.

@@ -95,7 +95,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Pnt P1 = ElCLib::Value(0., myCircle);
   gp_Pnt P2 = ElCLib::Value(M_PI, myCircle);
 
-  gce_MakePln mkPln(P1, P2, Apex); // create a plane whitch defines plane for projection aPosition on it
+  gce_MakePln mkPln(P1, P2, Apex); // create a plane which defines plane for projection aPosition on it
 
   gp_Vec aVector( mkPln.Value().Location(), aPosition );     //project aPosition on a plane
   gp_Vec Normal = mkPln.Value().Axis().Direction(); 
@@ -116,7 +116,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     OppositePnt = P1;
   }
 
-  aPnt = AttachmentPnt ;                          // Creating of circle whitch defines a plane for a dimension arc
+  aPnt = AttachmentPnt ;                          // Creating of circle which defines a plane for a dimension arc
   gp_Vec Vec(AttachmentPnt, Apex);                // Dimension arc is a part of the circle 
   Vec.Scale(2.);
   aPnt.Translate(Vec);

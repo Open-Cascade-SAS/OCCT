@@ -67,7 +67,7 @@ public:
   //! Save the found extremum.
   Standard_EXPORT virtual Standard_Integer GetStateNumber() Standard_OVERRIDE;
   
-  //! Return the nunber of found extrema.
+  //! Return the number of found extrema.
   Standard_EXPORT Standard_Integer NbExt() const;
   
   //! Returns the Nth distance.

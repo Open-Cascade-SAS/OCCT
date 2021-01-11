@@ -45,7 +45,7 @@ public:
   //! defined by the attribute manager aDrawer.
   Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const TCollection_ExtendedString& aText, const gp_Pnt& AttachmentPoint1, const gp_Pnt& AttachmentPoint2, const gp_Dir& aDirection, const gp_Dir& aDirection2, const gp_Pnt& OffsetPoint);
   
-  //! draws the representation of axes alignement Constraint
+  //! draws the representation of axes alignment Constraint
   //! between the point AttachmentPoint1 and the
   //! point AttachmentPoint2, along direction
   //! aDirection, using the offset point OffsetPoint.

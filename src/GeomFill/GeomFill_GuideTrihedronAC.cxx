@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Creted:	Tue Jun 23 15:39:24 1998
+// Created:	Tue Jun 23 15:39:24 1998
 
 #include <Adaptor3d_Curve.hxx>
 #include <Approx_CurvlinFunc.hxx>

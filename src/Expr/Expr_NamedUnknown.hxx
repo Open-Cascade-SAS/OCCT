@@ -60,7 +60,7 @@ public:
   //! Raises exception if <exp> refers to <me>.
   Standard_EXPORT void Assign (const Handle(Expr_GeneralExpression)& exp);
   
-  //! Supresses the assigned expression
+  //! Suppresses the assigned expression
     void Deassign();
   
   //! Returns the number of sub-expressions contained
@@ -94,7 +94,7 @@ public:
   //! Returns the derivative on <X> unknown of <me>
   Standard_EXPORT Handle(Expr_GeneralExpression) Derivative (const Handle(Expr_NamedUnknown)& X) const Standard_OVERRIDE;
   
-  //! Replaces all occurences of <var> with <with> in <me>
+  //! Replaces all occurrences of <var> with <with> in <me>
   //! Raises InvalidOperand if <with> contains <me>.
   Standard_EXPORT void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
   

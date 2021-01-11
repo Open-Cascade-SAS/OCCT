@@ -60,14 +60,14 @@ public:
 
   
   //! This methods implements the algorithms used to
-  //! create 2d lines passing thrue 2 points.
+  //! create 2d lines passing through 2 points.
   //! Tolerance is used because we can't create a line
   //! when the distance between the two points is too small.
   Standard_EXPORT GccAna_Lin2d2Tan(const gp_Pnt2d& ThePoint1, const gp_Pnt2d& ThePoint2, const Standard_Real Tolerance);
   
   //! This methods implements the algorithms used to
   //! create 2d lines tangent to one circle and passing
-  //! thrue a point.
+  //! through a point.
   //! Exception BadQualifier is raised in the case of
   //! EnclosedCirc
   //! Tolerance is used because there is no solution

@@ -5782,11 +5782,11 @@ int mma2er1_(integer *ndjacu,
 /*     PATJAC: Table of coeff. of square of approximation with */
 /*             constraints of order IORDRU by U and IORDRV by V. */
 /*     VECERR: Auxiliary vector. */
-/*     ERREUR: MAX Error commited during removal of ALREADY CALCULATED coeff of PATJAC */
+/*     ERREUR: MAX Error committed during removal of ALREADY CALCULATED coeff of PATJAC */
 
 /*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*     ERREUR: MAX Error commited during removal of coeff of PATJAC */
+/*     ERREUR: MAX Error committed during removal of coeff of PATJAC */
 /*             of indices from MINDGU to MAXDGU by U and from MINDGV to MAXDGV by V */
 /*             THEN the already calculated error. */
 
@@ -5949,11 +5949,11 @@ int mma2er2_(integer *ndjacu,
 /*             constraints of order IORDRU by U and IORDRV by V. */
 /*     EPMSCUT: Tolerance of approximation. */
 /*     VECERR: Auxiliary vector. */
-/*     ERREUR: MAX Error commited ALREADY CALCULATED  */
+/*     ERREUR: MAX Error committed ALREADY CALCULATED  */
 
 /*     OUTPUT ARGUMENTS  : */
 /*     ------------------- */
-/*     ERREUR: MAX Error commited by preserving only coeff of PATJAC */
+/*     ERREUR: MAX Error committed by preserving only coeff of PATJAC */
 /*             of indices from 0 to NEWDGU by U and from 0 to NEWDGV by V */
 /*             PLUS the already calculated error. */
 /* NEWDGU: Min. Degree by U such as the square of approximation */
@@ -7281,7 +7281,7 @@ int mma2moy_(integer *ndgumx,
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*     ERRMOY: Average error commited by preserving only the coeff of */
+/*     ERRMOY: Average error committed by preserving only the coeff of */
 /*             PATJAC 2*(IORDRU+1) in MINDGU by U and 2*(IORDRV+1) in MINDGV by V. */
 
 /*     COMMONS USED   : */

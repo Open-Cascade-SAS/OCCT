@@ -51,7 +51,7 @@ public:
   Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& FirstSect);
   
   //! Create a sweept surface with an evolving section
-  //! The section evoluate from First to Last Section
+  //! The section evaluate from First to Last Section
   Standard_EXPORT GeomFill_SweepSectionGenerator(const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& FirstSect, const Handle(Geom_Curve)& LastSect);
   
   //! Create  a pipe  with  a constant  radius with  2

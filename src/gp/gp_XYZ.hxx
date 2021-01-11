@@ -45,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Creates an XYZ object with zero co-ordinates (0,0,0)
+  //! Creates an XYZ object with zero coordinates (0,0,0)
     gp_XYZ();
   
   //! creates an XYZ with given coordinates

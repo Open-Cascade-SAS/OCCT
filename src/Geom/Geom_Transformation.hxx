@@ -152,12 +152,12 @@ public:
   //! Raised if  Row < 1 or Row > 3  or  Col < 1 or Col > 4
   Standard_Real Value (const Standard_Integer theRow, const Standard_Integer theCol) const { return gpTrsf.Value (theRow, theCol); }
 
-  //! Raised if the the transformation is singular. This means that
+  //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
   void Invert() { gpTrsf.Invert(); }
 
-  //! Raised if the the transformation is singular. This means that
+  //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
   Standard_NODISCARD Standard_EXPORT Handle(Geom_Transformation) Inverted() const;

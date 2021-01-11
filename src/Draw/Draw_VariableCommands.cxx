@@ -49,7 +49,7 @@ static Standard_Boolean autodisp = Standard_True;
 static Standard_Boolean repaint2d,repaint3d;
 
 //===============================================
-// dictionnary of variables
+// dictionary of variables
 // Variables are stored in a map Integer, Transient
 // The Integer Value is the content of the TCl variable 
 //===============================================

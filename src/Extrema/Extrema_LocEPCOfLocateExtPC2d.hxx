@@ -47,7 +47,7 @@ public:
   //! The close point is defined by the parameter value
   //! U0.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs a zero
+  //! when g(u)=dF/du=0. The algorithm searches a zero
   //! near the close point.
   //! TolU is used to decide to stop the iterations.
   //! At the nth iteration, the criteria is:
@@ -58,7 +58,7 @@ public:
   //! The close point is defined by the parameter value
   //! U0.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs a zero
+  //! when g(u)=dF/du=0. The algorithm searches a zero
   //! near the close point.
   //! Zeros are searched between Umin et Usup.
   //! TolU is used to decide to stop the iterations.

@@ -122,7 +122,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
     return Derive(theX(1), theGrad(1));
   }
 
-  //returns 1st derivative of the the one-dimension-function when
+  //returns 1st derivative of the one-dimension-function when
   //parameter is equal to theX
   Standard_Boolean Derive(const Standard_Real theX, Standard_Real& theDeriv1, Standard_Real* const theDeriv2 = 0) const
   {

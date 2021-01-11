@@ -195,7 +195,7 @@ Handle(Expr_GeneralExpression) Expr_Product::ShallowSimplified () const
   for (i = 1; i <= max ; i++) {
     op = Operand(i);
     if (op->IsKind(STANDARD_TYPE(Expr_NumericValue))) {
-      // numeric operands are cumulated separetly
+      // numeric operands are cumulated separately
       Handle(Expr_NumericValue) NVop = Handle(Expr_NumericValue)::DownCast(op);
       if (nbvals == 0) {
 	noone = Standard_False;

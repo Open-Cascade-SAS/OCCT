@@ -46,7 +46,7 @@ public:
   //! The close points are defined by the parameter values
   //! (U1,V1) for S1 and (U2,V2) for S2.
   //! The function F(u1,v1,u2,v2)=distance(S1(u1,v1),S2(u2,v2))
-  //! has an extremun when gradient(F)=0. The algorithm searchs
+  //! has an extremun when gradient(F)=0. The algorithm searches
   //! a zero near the close points.
   Standard_EXPORT Extrema_GenLocateExtSS(const Adaptor3d_Surface& S1, const Adaptor3d_Surface& S2, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, const Standard_Real Tol1, const Standard_Real Tol2);
   

@@ -45,14 +45,14 @@ GccAna_Circ2dBisec::
 
 //=========================================================================
 //  Initialization of fields :                                            +
-//            - circle1  (Circle : first argument.)                       +
-//            - circle2  (Line   : second argument.)                      +
-//            - intersection (Integer showing the smallest position       +
-//                            of two circles correspondingly to each other.) +
-//            - sameradius   (Booleen showing if the two circles have   +
-//                            the same radius or not.)                         +
-//            - NbrSol   (Integer showing the number of solutions.)       +
-//            - WellDone (Boolean showing succes or failure of the algo.). +
+//            - circle1  (Circle : first argument)                        +
+//            - circle2  (Line   : second argument)                       +
+//            - intersection (Integer showing the smallest position of    +
+//                            two circles correspondingly to each other)  +
+//            - sameradius   (Boolean showing if the two circles have     +
+//                            the same radius or not)                     +
+//            - NbrSol   (Integer showing the number of solutions)        +
+//            - WellDone (Boolean showing success or failure of the algo) +
 //=========================================================================
 
    WellDone = Standard_False;

@@ -70,12 +70,12 @@ public:
   Standard_EXPORT void Perform (const gp_Pnt2d& P, const gp_Circ2d& C, const Standard_Real Tol, const Standard_Real Uinf, const Standard_Real Usup);
   
   //! Calculates the 4 extremum distances between the
-  //! point P and the segment [Uinf,Usup] of the elipse C.
+  //! point P and the segment [Uinf,Usup] of the ellipse C.
   //! Tol is used to determine
-  //! if the point is on the axis of the elipse and
+  //! if the point is on the axis of the ellipse and
   //! if the major radius is equal to the minor radius or
   //! if an extremum is on an endpoint of the segment.
-  //! If P is on the axis of the elipse,
+  //! If P is on the axis of the ellipse,
   //! there are infinite solution then IsDone(me)=False.
   //! The conditions on the Uinf and Usup are:
   //! 0. <= Uinf <= 2.*PI and Usup > Uinf.

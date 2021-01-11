@@ -218,7 +218,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 {
   if (myCurve.IsNull())
     throw Standard_ConstructionError(
-          "GeomFill_LocationGuide::The path is not setted !!");
+          "GeomFill_LocationGuide::The path is not set !!");
 
     //repere fixe
   gp_Ax3 Rep(gp::Origin(), gp::DZ(), gp::DX());

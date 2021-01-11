@@ -367,7 +367,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
   // - Add the face to an existing shell
   // - Connect other shells if the face touch more than one shell
 
-  // In the Map M the Shell is bound withe the relative orientation of E 
+  // In the Map M the Shell is bound with the relative orientation of E 
   // in the shell
   // In the map MF we binb the face to its shell.
   // In the Map MF the Shell is bound with the relative orientation of F 

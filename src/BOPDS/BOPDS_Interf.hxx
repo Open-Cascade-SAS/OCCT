@@ -21,7 +21,7 @@
 #include <BOPDS_VectorOfPoint.hxx>
 
 /**
- * The class BOPDS_Interf is is to store the information about
+ * The class BOPDS_Interf stores the information about
  * the interference between two shapes. 
  * The class BOPDS_Interf is root class 
  *
@@ -191,7 +191,7 @@ class BOPDS_Interf  {
   Handle(NCollection_BaseAllocator) myAllocator;
 };
 /**
- * The class BOPDS_InterfVV is is to store the information about
+ * The class BOPDS_InterfVV stores the information about
  * the interference of the type vertex/vertex. 
 */
 //=======================================================================
@@ -224,7 +224,7 @@ class BOPDS_InterfVV  : public BOPDS_Interf {
   //
 };
 /**
- * The class BOPDS_InterfVE is is to store the information about
+ * The class BOPDS_InterfVE stores the information about
  * the interference of the type vertex/edge. 
 */
 //=======================================================================
@@ -289,7 +289,7 @@ class BOPDS_InterfVE  : public BOPDS_Interf {
   
 };
 /**
- * The class BOPDS_InterfVF is is to store the information about
+ * The class BOPDS_InterfVF stores the information about
  * the interference of the type vertex/face 
 */
 //=======================================================================
@@ -362,7 +362,7 @@ class BOPDS_InterfVF  : public BOPDS_Interf {
       
 };
 /**
- * The class BOPDS_InterfEE is is to store the information about
+ * The class BOPDS_InterfEE stores the information about
  * the interference of the type edge/edge. 
 */
 //=======================================================================
@@ -417,7 +417,7 @@ class BOPDS_InterfEE  : public BOPDS_Interf {
   IntTools_CommonPrt myCommonPart;
 };
 /**
- * The class BOPDS_InterfEF is is to store the information about
+ * The class BOPDS_InterfEF stores the information about
  * the interference of the type edge/face. 
 */
 //=======================================================================
@@ -477,7 +477,7 @@ class BOPDS_InterfEF  : public BOPDS_Interf {
   IntTools_CommonPrt myCommonPart;
 }
 /**
- * The class BOPDS_InterfFF is is to store the information about
+ * The class BOPDS_InterfFF stores the information about
  * the interference of the type face/face. 
 */;
 //=======================================================================
@@ -588,7 +588,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
 };
 
 /**
- * The class BOPDS_InterfVZ is is to store the information about
+ * The class BOPDS_InterfVZ stores the information about
  * the interference of the type vertex/solid. 
 */
 //=======================================================================
@@ -621,7 +621,7 @@ class BOPDS_InterfVZ  : public BOPDS_Interf {
   //
 };
 /**
- * The class BOPDS_InterfEZ is is to store the information about
+ * The class BOPDS_InterfEZ stores the information about
  * the interference of the type edge/solid. 
 */
 //=======================================================================
@@ -654,7 +654,7 @@ class BOPDS_InterfEZ  : public BOPDS_Interf {
   //
 };
 /**
- * The class BOPDS_InterfFZ is is to store the information about
+ * The class BOPDS_InterfFZ stores the information about
  * the interference of the type face/solid. 
 */
 //=======================================================================
@@ -687,7 +687,7 @@ class BOPDS_InterfFZ  : public BOPDS_Interf {
   //
 };
 /**
- * The class BOPDS_InterfZZ is is to store the information about
+ * The class BOPDS_InterfZZ stores the information about
  * the interference of the type solid/solid. 
 */
 //=======================================================================

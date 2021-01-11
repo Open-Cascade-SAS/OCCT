@@ -110,7 +110,7 @@ public:
   //! display is drawing.
   Standard_EXPORT Standard_Integer ViewId() const;
   
-  //! Returs  True  if  the  last   drawing   operations
+  //! Returns  True  if  the  last   drawing   operations
   //! generated  a pick hit.  When HasPicked is True the
   //! Drawing should be resumed.
   //!

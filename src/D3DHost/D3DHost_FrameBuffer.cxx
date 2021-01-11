@@ -331,7 +331,7 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
       myDepthFormat = 0;
       myDepthStencilTexture->Release (theCtx.get());
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "D3DHost_FrameBuffer, OpenGL FBO is created without Depth+Stencil attachements!");
+                           "D3DHost_FrameBuffer, OpenGL FBO is created without Depth+Stencil attachments!");
     }
   }
 }

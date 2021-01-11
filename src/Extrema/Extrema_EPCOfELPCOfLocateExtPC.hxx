@@ -46,7 +46,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! when g(u)=dF/du=0. The algorithm searches all the
   //! zeros inside the definition range of the curve.
   //! NbU is used to locate the close points to
   //! find the zeros.
@@ -58,7 +58,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! when g(u)=dF/du=0. The algorithm searches all the
   //! zeros inside the definition range of the curve.
   //! NbU is used to locate the close points to
   //! find the zeros.

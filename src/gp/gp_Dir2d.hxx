@@ -182,7 +182,7 @@ public:
     Standard_Boolean IsOpposite (const gp_Dir2d& Other, const Standard_Real AngularTolerance) const;
   
 
-  //! returns true if if the angle between this unit vector and unit
+  //! returns true if the angle between this unit vector and unit
   //! vector Other is equal to 0, Pi or -Pi.
   //! i.e.  Abs(Angle(<me>, Other)) <= AngularTolerance or
   //! PI - Abs(Angle(<me>, Other)) <= AngularTolerance

@@ -26,7 +26,7 @@
 # white     : interoperable
 # white + c : non interoperable
 # X         : X Reference
-# Red       : not yet commited in transaction #0
+# Red       : not yet committed in transaction #0
 # 
 #
 
@@ -157,7 +157,7 @@ proc TREE:Tree:InitTextPanel { TreeBrowser w p } {
 
     $TREE_WINDOWS($w,NAV,text) insert end " Welcome to the QDF browser (Rev #.#)\n"
     $TREE_WINDOWS($w,NAV,text) insert end "--------------------------------------\n\n"
-    $TREE_WINDOWS($w,NAV,text) insert end "This browser is an easy to use prototype made with Tix technology. We hope it will be usefull for understanding and debugging QDF.\n"
+    $TREE_WINDOWS($w,NAV,text) insert end "This browser is an easy to use prototype made with Tix technology. We hope it will be useful for understanding and debugging QDF.\n"
     $TREE_WINDOWS($w,NAV,text) insert end "\t\t\t\tFID & YAN"
 }
 

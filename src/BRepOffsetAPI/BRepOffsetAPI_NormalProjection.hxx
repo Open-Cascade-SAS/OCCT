@@ -111,7 +111,7 @@ public:
   //! Returns the initial face corresponding to the projected edge E.
   //! Exceptions
   //! StdFail_NotDone if no face was found.
-  //! Standard_NoSuchObject if if a face corresponding to
+  //! Standard_NoSuchObject if a face corresponding to
   //! E has already been found.
   Standard_EXPORT const TopoDS_Shape& Couple (const TopoDS_Edge& E) const;
   

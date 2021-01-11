@@ -164,7 +164,7 @@ protected:
                                                                      BVH_Tree<T, N>*        theBVH,
                                                                      const Standard_Integer theNode) const = 0;
 
-  //! Processes child nodes of the splitted BVH node.
+  //! Processes child nodes of the split BVH node.
   virtual void addChildren (BVH_Tree<T, N>*        theBVH,
                             BVH_BuildQueue&        theBuildQueue,
 							const Standard_Integer theNode,

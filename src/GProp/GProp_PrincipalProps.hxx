@@ -69,7 +69,7 @@ public:
   
 
   //! returns true if the geometric system has an axis of symmetry.
-  //! aTol  is  relative  tolerance for  cheking  equality  of  moments
+  //! aTol  is  relative  tolerance for  checking  equality  of  moments
   //! If  aTol  ==  0,  relative  tolerance  is  ~  1.e-16  (Epsilon(I))
   Standard_EXPORT Standard_Boolean HasSymmetryAxis (const Standard_Real aTol) const;
   
@@ -82,7 +82,7 @@ public:
   
 
   //! returns true if the geometric system has a point of symmetry.
-  //! aTol  is  relative  tolerance for  cheking  equality  of  moments
+  //! aTol  is  relative  tolerance for  checking  equality  of  moments
   //! If  aTol  ==  0,  relative  tolerance  is  ~  1.e-16  (Epsilon(I))
   Standard_EXPORT Standard_Boolean HasSymmetryPoint (const Standard_Real aTol) const;
   

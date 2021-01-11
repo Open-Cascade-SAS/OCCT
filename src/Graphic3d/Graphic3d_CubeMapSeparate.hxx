@@ -29,7 +29,7 @@ public:
   //! @thePaths - array of paths to separate image files (has to have size equal 6).
   Standard_EXPORT Graphic3d_CubeMapSeparate (const NCollection_Array1<TCollection_AsciiString>& thePaths);
 
-  //! Initializes cubemap to be setted directly from PixMaps.
+  //! Initializes cubemap to be set directly from PixMaps.
   //! @theImages - array if PixMaps (has to have size equal 6).
   Standard_EXPORT Graphic3d_CubeMapSeparate(const NCollection_Array1<Handle(Image_PixMap)>& theImages);
 

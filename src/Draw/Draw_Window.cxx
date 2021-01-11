@@ -933,8 +933,8 @@ void Draw_Window::WUnmapNotify()
 
 
 //======================================================
-// funtion : ProcessEvents
-// purpose : process pending X events
+// function : ProcessEvents
+// purpose  : process pending X events
 //======================================================
 
 static void ProcessEvents(ClientData,int)
@@ -966,7 +966,7 @@ static void ProcessEvents(ClientData,int)
 }
 
 //======================================================
-// funtion : GetNextEvent()
+// function : GetNextEvent()
 // purpose :
 //======================================================
 void GetNextEvent(Event& ev)
@@ -995,7 +995,7 @@ void GetNextEvent(Event& ev)
 #endif //__APPLE__
 
 //======================================================
-// funtion :Run_Appli
+// function :Run_Appli
 // purpose :
 //======================================================
 
@@ -1092,8 +1092,8 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
 }
 
 //======================================================
-// funtion : Init_Appli()
-// purpose :
+// function : Init_Appli()
+// purpose  :
 //======================================================
 Standard_Boolean Init_Appli()
 {
@@ -1166,8 +1166,8 @@ Standard_Boolean Init_Appli()
 }
 
 //======================================================
-// funtion : Destroy_Appli()
-// purpose :
+// function : Destroy_Appli()
+// purpose  :
 //======================================================
 void Destroy_Appli()
 {
@@ -1343,7 +1343,7 @@ HPEN colorPenTab[MAXCOLOR] = {CreatePen(PS_SOLID, PENWIDTH, RGB(255,255,255)),
                               CreatePen(PS_SOLID, PENWIDTH, RGB(240,230,140)),
                               CreatePen(PS_SOLID, PENWIDTH, RGB(255,127,80))};
 
-// Correspondance mode X11 and WINDOWS NT
+// Correspondence mode X11 and WINDOWS NT
 int modeTab[16] = {R2_BLACK, R2_MASKPEN, R2_MASKPENNOT, R2_COPYPEN,
                    R2_MASKNOTPEN, R2_NOP, R2_XORPEN, R2_MERGEPEN,
                    R2_NOTMASKPEN, R2_NOTXORPEN, R2_NOT, R2_MERGEPENNOT,

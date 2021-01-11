@@ -810,7 +810,7 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     Handle(Geom2d_Circle) CC2 = Handle(Geom2d_Circle)::DownCast(basisC2);
     ElCLib::D1(param3,CC2->Circ2d(),p,Ve2);
     Sens2 = (CC2->Circ2d()).IsDirect(); 
-  } // if if (C2->DynamicType() ...
+  } // if (C2->DynamicType() ...
   else {
     Handle(Geom2d_Line) CC2 = Handle(Geom2d_Line)::DownCast(basisC2);
     ElCLib::D1(param3,CC2->Lin2d(),p,Ve2);

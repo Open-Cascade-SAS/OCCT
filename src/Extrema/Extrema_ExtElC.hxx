@@ -56,7 +56,7 @@ public:
   Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const Standard_Real Tol);
   
   //! Calculates the distance between a line and an
-  //! elipse.
+  //! ellipse.
   Standard_EXPORT Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2);
   
   //! Calculates the distance between a line and a

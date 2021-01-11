@@ -56,7 +56,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u,v)=distance(P,S(u,v)) has an
-  //! extremum when gradient(F)=0. The algorithm searchs
+  //! extremum when gradient(F)=0. The algorithm searches
   //! all the zeros inside the definition ranges of the
   //! surface.
   //! NbU and NbV are used to locate the close points
@@ -70,7 +70,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u,v)=distance(P,S(u,v)) has an
-  //! extremum when gradient(F)=0. The algorithm searchs
+  //! extremum when gradient(F)=0. The algorithm searches
   //! all the zeros inside the definition ranges of the
   //! surface.
   //! NbU and NbV are used to locate the close points

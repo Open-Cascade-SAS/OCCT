@@ -57,7 +57,7 @@
 //! To facilitate management, each object and each construction element has a selection priority.
 //! There are also means to modify the default priority.
 //! To define an environment of dynamic detection, you can use standard filter classes or create your own.
-//! A filter questions the owner of the sensitive primitive to determine if it has the the desired qualities.
+//! A filter questions the owner of the sensitive primitive to determine if it has the desired qualities.
 //! If it answers positively, it is kept. If not, it is rejected.
 //! The standard filters supplied in AIS include:
 //! - AIS_AttributeFilter

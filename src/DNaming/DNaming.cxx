@@ -273,7 +273,7 @@ static void LoadC0Edges(const TopoDS_Shape& S,
   }
   
   TopTools_MapOfShape anEdgesToDelete;
-  TopExp_Explorer anEx(S,TopAbs_EDGE); // mpv: new explorer iterator becouse we need keep edges order
+  TopExp_Explorer anEx(S,TopAbs_EDGE); // mpv: new explorer iterator because we need keep edges order
   for(;anEx.More();anEx.Next()) {
     Standard_Boolean aC0 = Standard_False;
     TopoDS_Shape anEdge1 = anEx.Current();
@@ -602,7 +602,7 @@ Handle(TNaming_NamedShape) DNaming::GetObjectValue(const Handle(TDataStd_UAttrib
 
 //=======================================================================
 //function : GetPrevFunction
-//purpose  : Returns previus function
+//purpose  : Returns previous function
 //=======================================================================
 Handle(TFunction_Function) DNaming::GetPrevFunction(const Handle(TFunction_Function)& theFunction)
 {

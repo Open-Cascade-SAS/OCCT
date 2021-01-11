@@ -67,7 +67,7 @@ public:
   
   //! Constructs the shell-generating framework defined by the wire Spine.
   //! Sets an sweep's mode
-  //! If no mode are setted, the mode use in MakePipe is used
+  //! If no mode are set, the mode use in MakePipe is used
   Standard_EXPORT BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spine);
   
   //! Sets a Frenet or a CorrectedFrenet trihedron
@@ -91,7 +91,7 @@ public:
   //! Sets support to the spine to define the BiNormal of
   //! the trihedron, like the normal  to the surfaces.
   //! Warning:  To be effective, Each  edge of the <spine> must
-  //! have an representaion on one face of<SpineSupport>
+  //! have a representation on one face of<SpineSupport>
   Standard_EXPORT Standard_Boolean SetMode (const TopoDS_Shape& SpineSupport);
   
   //! Sets  an  auxiliary  spine  to  define  the Normal

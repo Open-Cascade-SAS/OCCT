@@ -103,7 +103,7 @@ public:
   Standard_EXPORT void SetRows (const gp_XYZ& Row1, const gp_XYZ& Row2, const gp_XYZ& Row3);
   
 
-  //! Modifies the the matrix so that it represents
+  //! Modifies the matrix so that it represents
   //! a scaling transformation, where S is the scale factor. :
   //! | S    0.0  0.0 |
   //! <me> =  | 0.0   S   0.0 |

@@ -57,7 +57,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! when g(u)=dF/du=0. The algorithm searches all the
   //! zeros inside the definition range of the curve.
   //! Zeros are searched between uinf and usup.
   //! Tol  is used to decide to stop the
@@ -68,7 +68,7 @@ public:
   
   //! It calculates all the distances.
   //! The function F(u)=distance(P,C(u)) has an extremum
-  //! when g(u)=dF/du=0. The algorithm searchs all the
+  //! when g(u)=dF/du=0. The algorithm searches all the
   //! zeros inside the definition range of the curve.
   //! Tol is used to decide to stop the
   //! iterations according to the following condition:

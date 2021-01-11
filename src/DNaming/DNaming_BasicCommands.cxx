@@ -156,7 +156,7 @@ static Standard_Integer Getentry (Draw_Interpretor& di, Standard_Integer n, cons
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull()) {
-    di <<"Noone shape selected\n";
+    di <<"No shape selected\n";
     //di << 0;
     return 0;
   }
@@ -176,7 +176,7 @@ static Standard_Integer Getentry (Draw_Interpretor& di, Standard_Integer n, cons
 
 //=======================================================================
 //function : NamedShape
-//purpose  : retrive label of Primitive or a Generated shape
+//purpose  : retrieve label of Primitive or a Generated shape
 //=======================================================================
 static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -187,7 +187,7 @@ static Standard_Integer NamedShape(Draw_Interpretor& di, Standard_Integer n, con
   if (!DDF::GetDF(a[1],ND)) return 1;
   TopoDS_Shape  SS = DBRep::Get(a[2]);
   if (SS.IsNull()) {
-    di <<"Noone shape selected\n";
+    di <<"No shape selected\n";
     //di << 0;
     return 0;
   }
@@ -396,7 +396,7 @@ static Standard_Integer Collect (Draw_Interpretor& di,
 }
 //=======================================================================
 //function : GetCreationEntry
-//purpose  : retrive label of Primitive or a Generated shape
+//purpose  : retrieve label of Primitive or a Generated shape
 //=======================================================================
 static Standard_Integer Getcreationentry (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -410,7 +410,7 @@ static Standard_Integer Getcreationentry (Draw_Interpretor& di, Standard_Integer
   TopoDS_Shape  SS = DBRep::Get(a[2]);
 
   if (SS.IsNull()) {
-    di <<"Noone shape selected\n";
+    di <<"No shape selected\n";
     //di << 0;
     return 0;
   }

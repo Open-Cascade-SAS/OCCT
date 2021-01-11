@@ -34,7 +34,7 @@ class GProp_PEquation;
 
 
 
-//! This package defines algorithmes to compute the global properties
+//! This package defines algorithms to compute the global properties
 //! of a set of points, a curve, a surface, a solid (non infinite
 //! region of space delimited with geometric entities), a compound
 //! geometric system (heterogeneous composition of the previous

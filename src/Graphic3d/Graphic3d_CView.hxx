@@ -367,7 +367,7 @@ public:
   //! Returns background image texture map.
   virtual Handle(Graphic3d_TextureMap) BackgroundImage() = 0;
 
-  //! Sets image texture or environment cubemap as backround.
+  //! Sets image texture or environment cubemap as background.
   //! @param theTextureMap [in] source to set a background;
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
   //! @param theToUpdatePBREnv [in] defines whether IBL maps will be generated or not
@@ -381,7 +381,7 @@ public:
   //! Sets background image fill style.
   virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) = 0;
 
-  //! Returns cubemap being setted last time on background.
+  //! Returns cubemap being set last time on background.
   virtual Handle(Graphic3d_CubeMap) BackgroundCubeMap() const = 0;
 
   //! Generates PBR specular probe and irradiance map

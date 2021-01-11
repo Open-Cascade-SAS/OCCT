@@ -195,7 +195,7 @@ public:
     gp_Ax2d Directrix2() const;
   
 
-  //! Returns the excentricity of the hyperbola (e > 1).
+  //! Returns the eccentricity of the hyperbola (e > 1).
   //! If f is the distance between the location of the hyperbola
   //! and the Focus1 then the eccentricity e = f / MajorRadius. Raises DomainError if MajorRadius = 0.0.
     Standard_Real Eccentricity() const;

@@ -838,7 +838,7 @@ Standard_Boolean GeomInt_LineTool::
 
       if(!bIsFirstInside && !bIsLastInside) {
 	if((ifprm < aListOfIndex.First()) && (ilprm > aListOfIndex.Last())) {
-	  // append whole line, and boundaries if neccesary
+	  // append whole line, and boundaries if necessary
 	  if(bhasfirstpoint) {
 	    const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.First());
 	    aLineOn2S->Add(aP);

@@ -306,7 +306,7 @@ Standard_Boolean BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
     Vec(XInit,Pnt);
   }
   else {
-    //  (1.d) Intialisation by linear interpolation
+    //  (1.d) Initialisation by linear interpolation
     Pnt = myLine->Point(Index);
     Vec(X1,Pnt);
     t1 = Pnt.Parameter();

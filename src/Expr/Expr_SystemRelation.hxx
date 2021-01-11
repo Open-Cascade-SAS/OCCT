@@ -83,7 +83,7 @@ public:
   //! Tests if <me> contains <exp>.
   Standard_EXPORT Standard_Boolean Contains (const Handle(Expr_GeneralExpression)& exp) const Standard_OVERRIDE;
   
-  //! Replaces all occurences of <var> with <with> in <me>.
+  //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
   
   //! returns a string representing <me> in a readable way.

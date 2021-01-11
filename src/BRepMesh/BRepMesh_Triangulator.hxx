@@ -51,7 +51,7 @@ public:
     const NCollection_List<TColStd_SequenceOfInteger>& theWires,
     const gp_Dir&                                      theNorm);
 
-  //! Performs triangulation of source wires and stores triangles the the output list.
+  //! Performs triangulation of source wires and stores triangles the output list.
   Standard_EXPORT Standard_Boolean Perform (NCollection_List<Poly_Triangle>& thePolyTriangles);
 
   //! Set messenger for output information

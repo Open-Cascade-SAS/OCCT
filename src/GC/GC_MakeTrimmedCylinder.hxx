@@ -47,7 +47,7 @@ public:
 
   
   //! Make a cylindricalSurface <Cyl> from Geom
-  //! Its axis is is <P1P2> and its radius is the distance
+  //! Its axis is <P1P2> and its radius is the distance
   //! between <P3> and <P1P2>.
   //! The height is the distance between P1 and P2.
   Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);

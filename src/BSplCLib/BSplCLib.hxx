@@ -663,7 +663,7 @@ public:
   //! * Knots  and multiplicities or "flat knots" without
   //! multiplicities.
   //!
-  //! * The  <Index>  is   the the  localization  of  the
+  //! * The  <Index>  is   the localization  of  the
   //! parameter in the knot sequence.  If <Index> is  out
   //! of range the correct value will be searched.
   //!
@@ -1359,7 +1359,7 @@ public:
   //! FlatKnots are the knots of the BSpline  Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the cuve  cannot  move but  tangen  starting
+  //! starting  point  of the curve  cannot  move but  tangent  starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move
@@ -1386,7 +1386,7 @@ public:
   //! FlatKnots are the knots of the BSpline  Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the cuve  cannot  move but  tangen  starting
+  //! starting  point  of the curve  cannot  move but  tangent  starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move
@@ -1413,7 +1413,7 @@ public:
   //! FlatKnots are the knots of the BSpline  Starting Condition if =
   //! -1 means the starting point of the curve can move
   //! = 0 means the
-  //! starting  point  of the cuve  cannot  move but  tangen  starting
+  //! starting  point  of the curve  cannot  move but  tangent  starting
   //! point of the curve cannot move
   //! = 1 means the starting point and tangents cannot move
   //! = 2 means the starting point tangent and curvature cannot move

@@ -279,7 +279,7 @@ public:
   //! method returns boundaries taking into account infinite state
   //! of the structure. This approach generally used for application
   //! specific fit operation (e.g. fitting the model into screen,
-  //! not taking into accout infinite helper elements).
+  //! not taking into account infinite helper elements).
   //! Warning: If the structure <me> is empty then the empty box is returned,
   //! If the structure <me> is infinite then the whole box is returned.
   Standard_EXPORT Bnd_Box MinMaxValues (const Standard_Boolean theToIgnoreInfiniteFlag = Standard_False) const;

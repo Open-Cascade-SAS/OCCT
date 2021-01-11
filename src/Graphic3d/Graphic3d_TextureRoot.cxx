@@ -74,10 +74,10 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
     if (!aDir.Exists() || !aTextureFile.Exists())
     {
 #ifdef OCCT_DEBUG
-      std::cerr << " CSF_MDTVTexturesDirectory or CASROOT not correctly setted\n";
+      std::cerr << " CSF_MDTVTexturesDirectory or CASROOT not correctly set\n";
       std::cerr << " not all files are found in : "<< VarName.ToCString() << std::endl;
 #endif
-      throw Standard_Failure("CSF_MDTVTexturesDirectory or CASROOT not correctly setted");
+      throw Standard_Failure("CSF_MDTVTexturesDirectory or CASROOT not correctly set");
     }
   }
   return VarName;

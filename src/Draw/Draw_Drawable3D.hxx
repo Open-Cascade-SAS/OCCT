@@ -41,7 +41,7 @@ public:
   
   Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const = 0;
   
-  //! Returs True if the pick is outside the box
+  //! Returns True if the pick is outside the box
   Standard_EXPORT virtual Standard_Boolean PickReject (const Standard_Real X, const Standard_Real Y, const Standard_Real Prec) const;
   
   //! For variable copy.

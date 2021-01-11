@@ -65,10 +65,10 @@ class gp_Dir;
 //! It is useful to keep a constant angle between
 //! input surface and the pipe.                           --
 //! 3) give a  path and two sections. The section
-//! evoluate from First to Last Section.
+//! evaluate from First to Last Section.
 //!
 //! 3) give a  path and N sections. The section
-//! evoluate from First to Last Section.
+//! evaluate from First to Last Section.
 //!
 //! In general case the result is a NURBS. But we
 //! can  generate plane,  cylindrical, spherical,
@@ -113,11 +113,11 @@ public:
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& FirstSect, const gp_Dir& Dir);
   
   //! Create a pipe with an evolving section
-  //! The section evoluate from First to Last Section
+  //! The section evaluate from First to Last Section
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const Handle(Geom_Curve)& FirstSect, const Handle(Geom_Curve)& LastSect);
   
   //! Create a pipe with N  sections
-  //! The section evoluate from First to Last Section
+  //! The section evaluate from First to Last Section
   Standard_EXPORT GeomFill_Pipe(const Handle(Geom_Curve)& Path, const TColGeom_SequenceOfCurve& NSections);
   
   //! Create  a pipe  with  a constant  radius with  2

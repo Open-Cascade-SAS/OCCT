@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 // Defines common framework for declaration of main/WinMain functions 
-// for executbales on UNIX and WNT that extends DRAW Test Harness.
+// for executables on UNIX and WNT that extends DRAW Test Harness.
 
 // In order to create executable in DRAW environment, in the executable
 // the following line should be added:

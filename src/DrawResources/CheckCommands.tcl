@@ -14,7 +14,7 @@
 ############################################################################
 # This file defines scripts for verification of OCCT tests.
 # It provides top-level commands starting with 'check'.
-# Type 'help check*' to get their synopsys.
+# Type 'help check*' to get their synopsis.
 # See OCCT Tests User Guide for description of the test system.
 #
 # Note: procedures with names starting with underscore are for internal use
@@ -211,7 +211,7 @@ help checknbshapes {
         the same sub-shapes with different location as different sub-shapes.
     -m msg: print "msg" in case of error
     -ref [nbshapes a]: compare the number of sub-shapes in "shape" and in "a".
-                       -vertex N, -edge N and other options are stil working.
+                       -vertex N, -edge N and other options are still working.
 }
 proc checknbshapes {shape args} {
   puts "checknbshapes ${shape} ${args}"
@@ -663,7 +663,7 @@ proc checkdump {shape args} {
         }
         foreach item ${local_ref} {
             if { ![regexp "$pattern$number_pattern" $ddump full res] } {
-                puts "Error: cheked parameter ${param} is not listed in dump"
+                puts "Error: checked parameter ${param} is not listed in dump"
                 break
             }
             lappend ref_values $res 
@@ -997,7 +997,7 @@ proc checktrinfo {shape args} {
     # get reference values from -ref option
     if { "${ref_info}" != ""} {
         if {![regexp "${triinfo_pattern}" ${ref_info} dump ref_nb_triangles ref_nb_nodes ref_deflection]} {
-            puts "Error: reference information gived by -ref option is wrong"
+            puts "Error: reference information given by -ref option is wrong"
         }
     }
 
@@ -1050,9 +1050,9 @@ help checkplatform {
 
   Use: checkplatform [options...]
   Allowed options are:
-    -windows : return 1 if current platform is 'Windows', overwise return 0
-    -linux   : return 1 if current platform is 'Linux', overwise return 0
-    -osx     : return 1 if current platform is 'MacOS X', overwise return 0
+    -windows : return 1 if current platform is 'Windows', otherwise return 0
+    -linux   : return 1 if current platform is 'Linux', otherwise return 0
+    -osx     : return 1 if current platform is 'MacOS X', otherwise return 0
 
   Only one option can be used at once.
   If no option is given, procedure will return the name of current platform.

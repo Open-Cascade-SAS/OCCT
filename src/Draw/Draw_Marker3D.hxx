@@ -51,7 +51,7 @@ public:
   
   Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
   
-  //! Returs always false
+  //! Returns always false
   Standard_EXPORT virtual Standard_Boolean PickReject (const Standard_Real X, const Standard_Real Y, const Standard_Real Prec) const Standard_OVERRIDE;
 
 

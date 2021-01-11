@@ -75,7 +75,7 @@ public: //! @name Tcl variables management tools
   //! variable exist.
   Standard_EXPORT static Standard_Boolean Get (const Standard_CString Name, Standard_Real& val);
   
-  //! Sets a TCL sting variable
+  //! Sets a TCL string variable
   Standard_EXPORT static void Set (const Standard_CString Name, const Standard_CString val);
 
 public: //! @name argument parsing tools

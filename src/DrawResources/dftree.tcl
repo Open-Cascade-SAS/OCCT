@@ -26,7 +26,7 @@
 # white     : interoperable
 # white + c : non interoperable
 # X         : X Reference
-# Red       : not yet commited in transaction #0
+# Red       : not yet committed in transaction #0
 # 
 #
 

@@ -408,7 +408,7 @@ void  GeometryTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  __FILE__,
 		  tuyau,g);
 
-  theCommands.Add("sweep", "sweep result [options] path [Surf] curve [Tol [nbsegment]]\n sweep the the curve along the path, options are \n -FX : Tangent and Normal are fixed\n -FR : Tangent and Normal are given by Frenet trihedron \n -CF : Tangente is given by Frenet, \n     the Normal is computed to minimize the torsion \n -DX : Tangent and Normal are given by Darboux trihedron \n     <path> have to be a 2d curve,\n     <Surf> have to be defined\n -CN dx dy dz : Normal is given by dx dy dz" ,
+  theCommands.Add("sweep", "sweep result [options] path [Surf] curve [Tol [nbsegment]]\n sweep the curve along the path, options are \n -FX : Tangent and Normal are fixed\n -FR : Tangent and Normal are given by Frenet trihedron \n -CF : Tangente is given by Frenet, \n     the Normal is computed to minimize the torsion \n -DX : Tangent and Normal are given by Darboux trihedron \n     <path> have to be a 2d curve,\n     <Surf> have to be defined\n -CN dx dy dz : Normal is given by dx dy dz" ,
 		  __FILE__,
 		  sweep, g);
 

@@ -88,7 +88,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsConstant() const;
   
   //! Say if the law is defined, only by the 3d Geometry of
-  //! the setted Curve
+  //! the set Curve
   //! Return False by Default.
   Standard_EXPORT virtual Standard_Boolean IsOnlyBy3dCurve() const;
 

@@ -54,7 +54,7 @@ class gp_Parab2d;
 //! * Create a Parab2d from one apex  and the center.
 //! * Create a Parab2d with the directrix and the focus point.
 //! * Create a Parab2d with its vertex point and its axis
-//! of symetry and its focus length.
+//! of symmetry and its focus length.
 class gce_MakeParab2d  : public gce_Root
 {
 public:

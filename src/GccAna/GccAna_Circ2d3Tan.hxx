@@ -54,7 +54,7 @@ class gp_Circ2d;
 //! If we do not use Tolerance it is impossible to find
 //! a solution in the following case : C2 is inside C1
 //! and there is no intersection point between the two
-//! circles, and C3 is completly outside C1.
+//! circles, and C3 is completely outside C1.
 //! With Tolerance we will find a solution if the
 //! lowest distance between C1 and C2 is lower than or
 //! equal Tolerance.
@@ -110,20 +110,20 @@ public:
   
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and passing
-  //! thrue 2 Points.
+  //! through 2 Points.
   //! ConstructionError is raised if there is a problem during
   //! the computation.
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1, const gp_Pnt2d& Point2, const gp_Pnt2d& Point3, const Standard_Real Tolerance);
   
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and passing
-  //! thrue 2 Points.
+  //! through 2 Points.
   //! ConstructionError is raised if there is a problem during
   //! the computation.
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1, const gp_Pnt2d& Point2, const gp_Pnt2d& Point3, const Standard_Real Tolerance);
   
   //! This method implements the algorithms used to
-  //! create 2d circles passing thrue 3 Points.
+  //! create 2d circles passing through 3 Points.
   //! ConstructionError is raised if there is a problem during
   //! the computation.
   Standard_EXPORT GccAna_Circ2d3Tan(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2, const gp_Pnt2d& Point3, const Standard_Real Tolerance);

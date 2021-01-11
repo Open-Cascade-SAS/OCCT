@@ -32,7 +32,7 @@ DEFINE_STANDARD_HANDLE(Graphic3d_Texture1Dsegment, Graphic3d_Texture1D)
 //! This class provides the implementation
 //! of a 1D texture applyable along a segment.
 //! You might use the SetSegment() method
-//! to set the way the texture is "streched" on facets.
+//! to set the way the texture is "stretched" on facets.
 class Graphic3d_Texture1Dsegment : public Graphic3d_Texture1D
 {
 

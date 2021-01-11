@@ -74,7 +74,7 @@ public:
   //! Tests if <exp> contains <var>.
   Standard_EXPORT virtual Standard_Boolean Contains (const Handle(Expr_GeneralExpression)& exp) const = 0;
   
-  //! Replaces all occurences of <var> with <with> in <me>.
+  //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT virtual void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) = 0;
   
   //! returns a string representing <me> in a readable way.

@@ -70,7 +70,7 @@ Bisector_Bisec::Bisector_Bisec()
 //   apoint        :   point through which the bissectrice should pass.         
 //   afirstvector  : \ vectors to determine the sector where       
 //   asecondvector : / the bissectrice should be located.                      
-//   adirection    :   shows the the side of the bissectrice to be preserved.       
+//   adirection    :   shows the side of the bissectrice to be preserved.
 //   tolerance     :   threshold starting from which the bisectrices are degenerated
 //===========================================================================
 

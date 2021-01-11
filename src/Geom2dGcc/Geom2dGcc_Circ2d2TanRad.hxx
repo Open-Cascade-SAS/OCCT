@@ -57,7 +57,7 @@ class gp_Pnt2d;
 //! inside a curve Cu2 with a radius Radius and a
 //! tolerance Tolerance.
 //! If we did not used Tolerance it is impossible to
-//! find a solution in the the following case : Cu2 is
+//! find a solution in the following case : Cu2 is
 //! inside C1 and there is no intersection point
 //! between the two elements.
 //! with Tolerance we will give a solution if the

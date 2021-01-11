@@ -73,7 +73,7 @@ class Draw_Window
 
     /**
      * This method registers a callback function that will be called just before exit.
-     * This is usefull especially for Windows platform, on which Draw is normally 
+     * This is useful especially for Windows platform, on which Draw is normally 
      * self-terminated instead of exiting.
      */
     Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
@@ -179,7 +179,7 @@ class Draw_Window
 };
 
 //======================================================
-// funtion : Run_Appli
+// function : Run_Appli
 // purpose : run the application
 //           interp will be called to interpret a command
 //           and return True if the command is complete
@@ -188,19 +188,19 @@ class Draw_Window
 void Run_Appli(Standard_Boolean (*inteprete) (const char*));
 
 //======================================================
-// funtion : Init_Appli
+// function : Init_Appli
 // purpose :
 //======================================================
 Standard_Boolean Init_Appli();
 
 //======================================================
-// funtion : Destroy_Appli()
+// function : Destroy_Appli()
 // purpose :
 //======================================================
 void Destroy_Appli();
 
 //======================================================
-// funtion : GetNextEvent()
+// function : GetNextEvent()
 // purpose :
 //======================================================
 void GetNextEvent(Event&);
@@ -247,7 +247,7 @@ class Draw_Window
 
   /**
    * This method registers a callback function that will be called just before exit.
-   * This is usefull especially for Windows platform, on which Draw is normally 
+   * This is useful especially for Windows platform, on which Draw is normally 
    * self-terminated instead of exiting.
    */
   Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
@@ -323,7 +323,7 @@ private:
 };
 
 //======================================================
-// funtion : Run_Appli
+// function : Run_Appli
 // purpose : run the application
 //           interp will be called to interpret a command
 //           and return True if the command is complete
@@ -332,19 +332,19 @@ private:
 void Run_Appli(Standard_Boolean (*inteprete) (const char*));
 
 //======================================================
-// funtion : Init_Appli
+// function : Init_Appli
 // purpose :
 //======================================================
 Standard_Boolean Init_Appli();
 
 //======================================================
-// funtion : Destroy_Appli()
+// function : Destroy_Appli()
 // purpose :
 //======================================================
 void Destroy_Appli();
 
 //======================================================
-// funtion : GetNextEvent()
+// function : GetNextEvent()
 // purpose :
 //======================================================
 void GetNextEvent (Standard_Boolean  theWait,
@@ -408,7 +408,7 @@ public:
 
   /**
    * This method registers a callback function that will be called just before exit.
-   * This is usefull especially for Windows platform, on which Draw is normally 
+   * This is useful especially for Windows platform, on which Draw is normally 
    * self-terminated instead of exiting.
    */
   Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);

@@ -76,7 +76,7 @@ class Graphic3d_Group : public Standard_Transient
 
 public:
 
-  //! Supress all primitives and attributes of <me>.
+  //! Suppress all primitives and attributes of <me>.
   //! To clear group without update in Graphic3d_StructureManager
   //! pass Standard_False as <theUpdateStructureMgr>. This
   //! used on context and viewer destruction, when the pointer
@@ -85,10 +85,10 @@ public:
   //! cross-reference);
   Standard_EXPORT virtual void Clear (const Standard_Boolean theUpdateStructureMgr = Standard_True);
 
-  //! Supress the group <me> in the structure.
+  //! Suppress the group <me> in the structure.
   Standard_EXPORT virtual ~Graphic3d_Group();
 
-  //! Supress the group <me> in the structure.
+  //! Suppress the group <me> in the structure.
   //! Warning: No more graphic operations in <me> after this call.
   //! Modifies the current modelling transform persistence (pan, zoom or rotate)
   //! Get the current modelling transform persistence (pan, zoom or rotate)

@@ -30,7 +30,7 @@ class ExprIntrp_GenFct;
 DEFINE_STANDARD_HANDLE(ExprIntrp_GenFct, ExprIntrp_Generator)
 
 //! Implements an interpreter for defining functions.
-//! All its functionnalities can be found in class
+//! All its functionalities can be found in class
 //! GenExp.
 class ExprIntrp_GenFct : public ExprIntrp_Generator
 {

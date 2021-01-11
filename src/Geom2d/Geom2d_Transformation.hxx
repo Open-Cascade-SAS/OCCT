@@ -162,13 +162,13 @@ public:
   //! Computes the inverse of this transformation.
   //! and  assigns the result to this transformatio
   //!
-  //! Raised if the the transformation is singular. This means that
+  //! Raised if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from
   //! package gp.
   Standard_EXPORT void Invert();
   
   //! Computes the inverse of this transformation and creates a new one.
-  //! Raises ConstructionError  if the the transformation is singular. This means that
+  //! Raises ConstructionError  if the transformation is singular. This means that
   //! the ScaleFactor is lower or equal to Resolution from package gp.
   Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Transformation) Inverted() const;
   

@@ -105,7 +105,7 @@ public:
   //! Segmax     : The maximum number of span in v required on
   //! the surface
   //!
-  //! raise If Domain are infinite or Profile not Setted.
+  //! raise If Domain are infinite or Profile not set.
   Standard_EXPORT void Build (const Handle(GeomFill_SectionLaw)& Section, const GeomFill_ApproxStyle Methode = GeomFill_Location, const GeomAbs_Shape Continuity = GeomAbs_C2, const Standard_Integer Degmax = 10, const Standard_Integer Segmax = 30);
   
   //! Tells if the Surface is Buildt.

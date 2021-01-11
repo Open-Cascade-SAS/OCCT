@@ -33,7 +33,7 @@ class TDF_AttributeDelta;
 class DDataStd_DrawPresentation;
 DEFINE_STANDARD_HANDLE(DDataStd_DrawPresentation, TDF_Attribute)
 
-//! draw presentaion of a label of a document
+//! draw presentation of a label of a document
 class DDataStd_DrawPresentation : public TDF_Attribute
 {
 

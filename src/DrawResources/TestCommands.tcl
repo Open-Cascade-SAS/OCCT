@@ -15,7 +15,7 @@
 # This file defines scripts for execution of OCCT tests.
 # It should be loaded automatically when DRAW is started, and provides
 # top-level commands starting with 'test'. Type 'help test' to get their
-# synopsys.
+# synopsis.
 # See OCCT Tests User Guide for description of the test system.
 #
 # Note: procedures with names starting with underscore are for internal use 

@@ -31,7 +31,7 @@ class Draw_Drawable3D;
 class Draw_Number;
 DEFINE_STANDARD_HANDLE(Draw_Number, Draw_Drawable3D)
 
-//! To store nummbers in variables.
+//! To store numbers in variables.
 class Draw_Number : public Draw_Drawable3D
 {
 

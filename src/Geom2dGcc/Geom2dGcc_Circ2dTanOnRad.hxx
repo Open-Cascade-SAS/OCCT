@@ -58,7 +58,7 @@ class gp_Pnt2d;
 //! centered on a line OnLine with a radius Radius and with
 //! a tolerance Tolerance.
 //! If we did not used Tolerance it is impossible to
-//! find a solution in the the following case : OnLine is
+//! find a solution in the following case : OnLine is
 //! outside Cu1. There is no intersection point between Cu1
 //! and OnLine. The distance between the line and the
 //! circle is greater than Radius.

@@ -313,7 +313,7 @@ void GCPnts_UniformAbscissa::Initialize(const TheCurve& C,
 // 
 //  compute the total Length here so that we can 
 //  guess the number of points instead of letting the
-//  constructor of CPnts_AbscissaPoint do that and loosing
+//  constructor of CPnts_AbscissaPoint do that and lose
 //  the information
 //
 //
@@ -422,7 +422,7 @@ void GCPnts_UniformAbscissa::Initialize(const TheCurve& C,
 // 
 //  compute the total Length here so that we can 
 //  guess the number of points instead of letting the
-//  constructor of CPnts_AbscissaPoint do that and loosing
+//  constructor of CPnts_AbscissaPoint do that and lose
 //  the information
 //
 //

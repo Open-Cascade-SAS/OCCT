@@ -257,7 +257,7 @@ static Standard_Integer CopyLabel_SCopy (Draw_Interpretor& di,Standard_Integer n
     if(!DDF::GetDF(a[1], DF)) return 1;
     if (!DDF::FindLabel(DF,a[2],SOURCE)) return 1;   
     if (DDF::FindLabel(DF,a[3],TARGET)) {
-      di << " target label is already setted \n";
+      di << " target label is already set \n";
       return 1;
     }
     DDF::AddLabel(DF,a[3],TARGET);

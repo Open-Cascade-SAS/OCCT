@@ -778,7 +778,7 @@ void Font_FontMgr::InitFontDataBase()
           Standard_Integer aPathNumber = 1;
           do
           {
-            // Getting directory paths, which can be splitted by "," or ":"
+            // Getting directory paths, which can be split by "," or ":"
             aFontPath = aStr.Token (":,", aPathNumber);
             aFontPath.RightAdjust();
             if (!aFontPath.IsEmpty())
@@ -877,7 +877,7 @@ void Font_FontMgr::InitFontDataBase()
       if (aSupportedExtensions.Contains (aFontExtension) && (aLine.Search (anEncoding) > 0))
       {
         // In current implementation use fonts with ISO-8859-1 coding page.
-        // OCCT not give to manage coding page by means of programm interface.
+        // OCCT not give to manage coding page by means of program interface.
         // TODO: make high level interface for choosing necessary coding page.
         TCollection_AsciiString aXLFD (aLine.SubString (anEndOfFileName + 2, aLine.Length()));
         TCollection_AsciiString aFontPath (anIter.Value().ToCString());

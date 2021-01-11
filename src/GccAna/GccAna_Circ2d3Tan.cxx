@@ -184,10 +184,11 @@ GccAna_Circ2d3Tan::
 //   7)  <  (X - X2)2 + (Y - Y2)2 = (R + R2)2   8)  <  (X - X2)2 + (Y - Y2)2 = (R + R2)2
 //        \_(X - X3)2 + (Y - Y3)2 = (R + R3)2        \_(X - X3)2 + (Y - Y3)2 = (R + R3)2
 
-//   each equation (X - Xi)2 + (Y - Yi)2 = (R +- Ri)2 means that the circle (X,Y,R) is tangent 
+//   each equation (X - Xi)2 + (Y - Yi)2 = (R +- Ri)2 means that the circle (X,Y,R) is tangent
 //   to the circle (Xi,Yi,Ri).
 
-//   The number of each system is very important. Further index i shows the numer of the system
+//   The number of each system is very important.
+//   Further index i shows the number of the system.
 
 //   Further Beta, Gamma and Delta are coefficients of the equation:
 //                R +- Ri = Beta*X + Gamma*Y + Delta  where i=2 or i=3

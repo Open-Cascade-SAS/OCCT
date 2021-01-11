@@ -118,7 +118,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
       if (GC->IsCurve3D()) {
 //      if (!C.IsNull()) { //xpu031198, edge degeneree
 
-        // xpu151298 : parameters can be setted for null curves
+        // xpu151298 : parameters can be set for null curves
         //             see lbo & flo, to determine whether range is defined
         //             compare first and last parameters with default values.
         GC->Range(f, l);
@@ -185,7 +185,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
       if (GC->IsCurve3D()) {
 //      if (!C.IsNull()) { //xpu031198, edge degeneree
 
-        // xpu151298 : parameters can be setted for null curves
+        // xpu151298 : parameters can be set for null curves
         //             see lbo & flo, to determine whether range is defined
         //             compare first and last parameters with default values.
         GC->Range(f, l);

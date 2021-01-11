@@ -53,7 +53,7 @@ class gp_Circ2d;
 //! We want to create a circle tangent to an EnclosedCirc C1
 //! with a tolerance Tolerance.
 //! If we did not used Tolerance it is impossible to
-//! find a solution in the the following case : Pcenter is
+//! find a solution in the following case : Pcenter is
 //! outside C1.
 //! With Tolerance we will give a solution if the distance
 //! between C1 and Pcenter is lower than or equal Tolerance.
@@ -75,7 +75,7 @@ public:
   Standard_EXPORT GccAna_Circ2dTanCen(const gp_Lin2d& Linetan, const gp_Pnt2d& Pcenter);
   
   //! This method implements the algorithms used to
-  //! create 2d circles passing thrue a point and
+  //! create 2d circles passing through a point and
   //! centered on a point.
   //! Tolerance is a tolerance criterion used by the algorithm
   //! to find a solution when, mathematically, the problem

@@ -70,7 +70,7 @@ public:
   
   Standard_EXPORT BRepAdaptor_CompCurve(const TopoDS_Wire& W, const Standard_Boolean KnotByCurvilinearAbcissa = Standard_False);
   
-  //! Creates a Curve  to  acces to the geometry of edge
+  //! Creates a Curve  to  access the geometry of edge
   //! <W>.
   Standard_EXPORT BRepAdaptor_CompCurve(const TopoDS_Wire& W, const Standard_Boolean KnotByCurvilinearAbcissa, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   

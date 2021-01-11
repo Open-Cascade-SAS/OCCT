@@ -27,7 +27,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Draw XYZ axes at specified location with attributes defined by the attribute manager theDrawer:
-  //! - Prs3d_DatumAspect defines arrow, line and lenght trihedron axis parameters,
+  //! - Prs3d_DatumAspect defines arrow, line and length trihedron axis parameters,
   //! - Prs3d_TextAspect defines displayed text.
   //! The thihedron origin and axis directions are defined by theDatum coordinate system.
   //! DsgPrs_XYZAxisPresentation framework is used to create graphical primitives for each axis.

@@ -29,7 +29,7 @@ typedef NCollection_Sequence<Handle(Graphic3d_ShaderObject)> Graphic3d_ShaderObj
 //! List of custom uniform shader variables.
 typedef NCollection_Sequence<Handle(Graphic3d_ShaderVariable)> Graphic3d_ShaderVariableList;
 
-//! List of custom vertex shader attrubures
+//! List of custom vertex shader attributes
 typedef NCollection_Sequence<Handle(Graphic3d_ShaderAttribute)> Graphic3d_ShaderAttributeList;
 
 //! This class is responsible for managing shader programs.

@@ -38,7 +38,7 @@ public:
   //! draws the presentation of fixed objects by
   //! drawing the 'fix' symbol at position <aPntEnd>.
   //! A binding segment is drawn between <aPntAttach>
-  //! ( which belongs the the fix object) and <aPntEnd>.
+  //! ( which belongs to the fixed object) and <aPntEnd>.
   //! aSymbSize is the size of the 'fix'symbol
   Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Prs3d_Drawer)& aDrawer, const gp_Pnt& aPntAttach, const gp_Pnt& aPntEnd, const gp_Dir& aNormPln, const Standard_Real aSymbSize);
 

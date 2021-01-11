@@ -87,7 +87,7 @@ static Standard_Integer chronom(Draw_Interpretor& di,
       Draw_Chrono = (*a[1] == '1');
 
     if (Draw_Chrono) di << "Chronometers activated.\n";
-    else di << "Chronometers desactivated.\n";
+    else di << "Chronometers deactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
@@ -155,7 +155,7 @@ static Standard_Integer dchronom(Draw_Interpretor& theDI,
       Draw_Chrono = (*a[1] == '1');
 
     if (Draw_Chrono) theDI << "Chronometers activated.\n";
-    else theDI << "Chronometers desactivated.\n";
+    else theDI << "Chronometers deactivated.\n";
   }
   else {
     Handle(Draw_Drawable3D) D = Draw::Get(a[1]);

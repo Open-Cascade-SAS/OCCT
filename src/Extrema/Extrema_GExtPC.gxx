@@ -156,7 +156,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
 
       if (mysample == 2)
       {
-        //BSpline of first degree, direct seaching extrema for each knot interval
+        //BSpline of first degree, direct searching extrema for each knot interval
         ThePoint aPmin;
         Standard_Real tmin = 0., distmin = RealLast();
         Standard_Real aMin1 = 0., aMin2 = 0.;

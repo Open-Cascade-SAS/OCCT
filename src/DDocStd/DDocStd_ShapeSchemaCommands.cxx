@@ -61,7 +61,7 @@ static void DDocStd_StorageErrorMessage (Draw_Interpretor& theDI, const Storage_
     theDI << "Storage error: error during writing";
     break;
   case Storage_VSFormatError:
-    theDI << "Storage error: wrong format error occured while reading";
+    theDI << "Storage error: wrong format error occurred while reading";
     break;
   case Storage_VSUnknownType:
     theDI << "Storage error: try to read an unknown type";

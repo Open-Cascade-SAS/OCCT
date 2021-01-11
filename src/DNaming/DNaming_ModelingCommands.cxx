@@ -712,7 +712,7 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	    Handle(TFunction_Function) aCntFun;
 	    if(aCont->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
 	      // First argument of Selection function refers to father function (of context object) 
-	      // to which selection is attached (because sel obj. itself already has refrence to result NS
+	      // to which selection is attached (because sel obj. itself already has reference to result NS
 	      TDF_Reference::Set(aFun->Label().FindChild(FUNCTION_ARGUMENTS_LABEL).FindChild(ATTACH_ARG), 
 				 aCntFun->Label()); //ref to function produced Context shape
 	      
@@ -1714,7 +1714,7 @@ static Standard_Boolean MakeSelection (const Handle(TDataStd_UAttribute)& Obj,
 	  Handle(TFunction_Function) aCntFun;
 	  if(aNS->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
 	      // First argument of Selection function refers to father function (of context object) 
-	      // to which selection is attached (because sel obj. itself already has refrence to result NS
+	      // to which selection is attached (because sel obj. itself already has reference to result NS
 	    TDF_Reference::Set(aFun->Label().FindChild(FUNCTION_ARGUMENTS_LABEL).FindChild(ATTACH_ARG), 
 			       aCntFun->Label()); //ref to function produced Context shape
 	    
@@ -1772,7 +1772,7 @@ static Standard_Boolean MakeXSelection (const Handle(TDataStd_UAttribute)& Obj,
 	  Handle(TFunction_Function) aCntFun;
 	  if(aNS->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
 	      // First argument of Selection function refers to father function (of context object) 
-	      // to which selection is attached (because sel obj. itself already has refrence to result NS
+	      // to which selection is attached (because sel obj. itself already has reference to result NS
 	    TDF_Reference::Set(aFun->Label().FindChild(FUNCTION_ARGUMENTS_LABEL).FindChild(ATTACH_ARG), 
 			       aCntFun->Label()); //ref to function produced Context shape
 	    

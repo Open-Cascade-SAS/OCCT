@@ -1362,7 +1362,7 @@ void  DrawTrSurf::BasicCommands(Draw_Interpretor& theCommands)
  marker of the point\n\n").Cat(MarkersHint).ToCString(),
   		  __FILE__,changepointmarker,g);
 
-  g = "Geometric tranformations";
+  g = "Geometric transformations";
   
   theCommands.Add("translate",
 		  "translate name [names...] dx dy dz",

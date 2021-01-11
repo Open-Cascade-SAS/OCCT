@@ -128,7 +128,7 @@ public:
 
   //! Query
   //! Returns true if there is flag.
-  //! Returns the the  flag theFlag
+  //! Returns the flag theFlag
     Standard_Boolean HasFlag (Standard_Integer& theFlag) const;
   
 

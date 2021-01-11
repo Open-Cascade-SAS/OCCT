@@ -120,7 +120,7 @@ void Approx_SweepApproximation::Perform(const Standard_Real First,
    Translation.SetXYZ
      (myFunc->BarycentreOfSurf().XYZ());
    for (ii=1; ii<=Num3DSS; ii++) {
-     Tol =  ThreeDTol->Value(ii)/2; // To take accout of the error on the final result.
+     Tol =  ThreeDTol->Value(ii)/2; // To take account of the error on the final result.
      OneDTol->SetValue(ii, Tol * Wmin(ii) / Size);
      Tol *= Wmin(ii); //Factor of projection
      ThreeDTol->SetValue(ii, Max(Tol, 1.e-20) );

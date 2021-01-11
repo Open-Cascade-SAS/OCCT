@@ -94,7 +94,7 @@ public:
   //! Raise OutOfRange if N <= 0
   Standard_EXPORT virtual Handle(Expr_GeneralExpression) NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const;
   
-  //! Replaces all occurences of <var> with copies of <with>
+  //! Replaces all occurrences of <var> with copies of <with>
   //! in <me>. Copies of <with> are made with the Copy() method.
   //! Raises InvalidOperand if <with> contains <me>.
   Standard_EXPORT virtual void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) = 0;

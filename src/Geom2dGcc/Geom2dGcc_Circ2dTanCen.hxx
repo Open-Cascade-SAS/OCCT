@@ -52,7 +52,7 @@ class gp_Pnt2d;
 //! We want to create a circle tangent to an EnclosedCurv C1
 //! with a tolerance Tolerance.
 //! If we did not used Tolerance it is impossible to
-//! find a solution in the the following case : Pcenter is
+//! find a solution in the following case : Pcenter is
 //! outside C1.
 //! With Tolerance we will give a solution if the distance
 //! between C1 and Pcenter is lower than or equal Tolerance/2.

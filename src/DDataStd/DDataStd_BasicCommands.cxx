@@ -367,7 +367,7 @@ static Standard_Integer DDataStd_Self (Draw_Interpretor& di,
     TDF_Label L;
     if (!DDF::FindLabel(DF,arg[2],L)) return 1; 
 //    TDataStd::MakeSelfContained(L,removed);
-//    if (removed.IsEmpty()) std::cout << "noone attriburte removed" << std::endl;
+//    if (removed.IsEmpty()) std::cout << "no attribute removed" << std::endl;
 //    for (TDF_ListIteratorOfAttributeList it(removed);it.More();it.Next()) {
 //      TDF_Tool::Entry(it.Value()->Label(),s); std::cout  << s << " ";
 //      std::cout << std::endl;

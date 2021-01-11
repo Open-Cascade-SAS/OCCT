@@ -1634,7 +1634,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("numshapes","numshapes s; size of shape",__FILE__,numshapes,g);
   theCommands.Add("countshapes","countshapes s; count of shape",__FILE__,countshapes,g);
   theCommands.Add("setflags",
-                  "setflags shape_name flag1[flag2...]\n sets flags for shape(free, modidfied, checked, orientable, closed, infinite, convex, locked), for exmple <setflags a free> or <setflags a -free> if necessary unflag ",
+                  "setflags shape_name flag1[flag2...]\n sets flags for shape(free, modified, checked, orientable, closed, infinite, convex, locked), for example <setflags a free> or <setflags a -free> if necessary unflag ",
                   __FILE__,setFlags,g);
 
 //  theCommands.Add("dumpmmgt",

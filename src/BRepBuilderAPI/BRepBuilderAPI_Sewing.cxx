@@ -3195,7 +3195,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
                                          MergedWithBound.Contains(iedge));
           if (!isRejected) {
             if (myBoundSections.IsBound(iedge)) {
-              // Edge is splitted - check sections
+              // Edge is split - check sections
               TopTools_ListIteratorOfListOfShape lit(myBoundSections(iedge));
               for (; lit.More() && !isRejected; lit.Next()) {
                 const TopoDS_Shape& sec = lit.Value();
@@ -3289,7 +3289,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
                                            MergedWithSections.Contains(iedge));
             if (!isRejected) {
               if (myBoundSections.IsBound(iedge)) {
-                // Edge is splitted - check sections
+                // Edge is split - check sections
                 TopTools_ListIteratorOfListOfShape lit(myBoundSections(iedge));
                 for (; lit.More() && !isRejected; lit.Next()) {
                   const TopoDS_Shape& sec = lit.Value();
@@ -3370,7 +3370,7 @@ void BRepBuilderAPI_Sewing::Merging(const Standard_Boolean /* firstTime */,
     if (!isMerged && !isMergedSplit) {
       // Nothing was merged in this iteration
       if (isPrevSplit) {
-        // Replace previously splitted bound
+        // Replace previously split bound
         myReShape->Replace(myReShape->Apply(bound),myReShape->Apply(BoundWire));
       }
       //      else if (hasCuttingSections) {
@@ -3726,7 +3726,7 @@ void BRepBuilderAPI_Sewing::Cutting(const Message_ProgressRange& theProgress)
         // Store bound for section
         mySectionBound.Bind(section,bound);
       }
-      // Store splitted bound
+      // Store split bound
       myBoundSections.Bind(bound,listSections);
     }
   }

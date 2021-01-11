@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Dimension independant used to implement GCPnts_AbscissaPoint
+// Dimension independent used to implement GCPnts_AbscissaPoint
 
 // compute the type 
 // and the length ratio if GCPnts_LengthParametrized
@@ -158,7 +158,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
 }
 
 // introduced by rbv for curvilinear parametrization
-// performs more appropriate tolerance managment
+// performs more appropriate tolerance management
 
 static void AdvCompute(CPnts_AbscissaPoint& theComputer,
                     const TheCurve& C,

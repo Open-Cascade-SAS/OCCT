@@ -58,7 +58,7 @@ public:
   Standard_EXPORT Geom2dGcc_Lin2d2TanIter(const Geom2dGcc_QCurve& Qualified1, const gp_Pnt2d& ThePoint, const Standard_Real Param1, const Standard_Real Tolang);
   
   //! This class implements the algorithms used to create 2d
-  //! line tangent to a circle and to a cuve.
+  //! line tangent to a circle and to a curve.
   //! Tolang is used to determine the tolerance for the
   //! tangency points.
   //! Param2 is used for the initial guess on the curve.

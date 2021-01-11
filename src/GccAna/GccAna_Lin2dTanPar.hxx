@@ -103,7 +103,7 @@ public:
   //! solution curv.
   //! ParArg is the intrinsic parameter of the point on the
   //! argument curv.
-  //! ParArg is equal 0 when the solution is passing thrue
+  //! ParArg is equal 0 when the solution is passing through
   //! a point. Raises NotDone if the construction algorithm
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the

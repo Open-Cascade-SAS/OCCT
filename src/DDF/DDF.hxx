@@ -43,12 +43,12 @@ public:
   
   //! Search in draw  directory the framewok  identified
   //! by its name <Name>. returns True if found. In that
-  //! case <DF> is setted.
+  //! case <DF> is set.
   Standard_EXPORT static Standard_Boolean GetDF (Standard_CString& Name, Handle(TDF_Data)& DF, const Standard_Boolean Complain = Standard_True);
   
   //! Search in <DF>  the label identified by its  entry
   //! <Entry>.  returns  <True> if  found. In  that case
-  //! <Label> is setted.
+  //! <Label> is set.
   Standard_EXPORT static Standard_Boolean FindLabel (const Handle(TDF_Data)& DF, const Standard_CString Entry, TDF_Label& Label, const Standard_Boolean Complain = Standard_True);
   
   //! Search in <DF> the  label identified by its entry
@@ -58,7 +58,7 @@ public:
   
   //! Search   in <DF> the  attribute  identified by its
   //! <ID> and its <entry>.  returns <True> if found. In
-  //! that case A is setted.
+  //! that case A is set.
   Standard_EXPORT static Standard_Boolean Find (const Handle(TDF_Data)& DF, const Standard_CString Entry, const Standard_GUID& ID, Handle(TDF_Attribute)& A, const Standard_Boolean Complain = Standard_True);
   
   //! Safe variant for arbitrary type of argument

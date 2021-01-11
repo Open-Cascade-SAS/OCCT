@@ -672,7 +672,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
    Standard_Boolean&                intf,
    Standard_Boolean&                intl)
 {
-  //The the hatching of each faces is started by tangency lines.
+  //The hatching of each faces is started by tangency lines.
   
   Standard_Real pitol = Precision::PIntersection();
   

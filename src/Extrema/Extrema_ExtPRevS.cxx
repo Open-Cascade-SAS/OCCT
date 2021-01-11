@@ -51,7 +51,7 @@ static gp_Ax2 GetPosition (const GeomAdaptor_SurfaceOfRevolution& S)//const Hand
       if (OO.Magnitude() <= gp::Resolution()) {
 	OO = gp_Vec(L.Location(), ElCLib::Value(100,L));
 	if (N.IsParallel(OO, Precision::Angular()))
-	  return gp_Ax2(); // Line and axe of revolution coinside
+	  return gp_Ax2(); // Line and axe of revolution coincide
       }
       N ^= OO;
     }

@@ -41,7 +41,7 @@ class math_Matrix;
 
 
 //! This abstract class describes a set on N Functions of
-//! M independant variables.
+//! M independent variables.
 class Geom2dGcc_FunctionTanCuCuOnCu  : public math_FunctionSetWithDerivatives
 {
 public:

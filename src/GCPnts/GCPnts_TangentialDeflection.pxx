@@ -619,7 +619,7 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
           parameters.InsertAfter(i, umax);
           points.InsertAfter(i, MiddlePoint);
           ++Nbp;
-          --i; //To compensate ++i in loop header: i must point to first part of splitted interval
+          --i; //To compensate ++i in loop header: i must point to first part of split interval
           if(Nbp > MaxNbp)
           {
             break;

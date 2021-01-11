@@ -40,7 +40,7 @@ public:
   
   //! Returns the parameter V of the point on the
   //! parametric curve corresponding to the Point Pnt.
-  //! The Correspondance between Pnt and the point P(V)
+  //! The Correspondence between Pnt and the point P(V)
   //! on the parametric curve must be coherent with the
   //! way of determination of the signed distance
   //! between a point and the implicit curve.
@@ -53,7 +53,7 @@ public:
   
   //! Returns the parameter V of the point on the
   //! parametric curve corresponding to the Point Pnt.
-  //! The Correspondance between Pnt and the point P(V)
+  //! The Correspondence between Pnt and the point P(V)
   //! on the parametric curve must be coherent with the
   //! way of determination of the signed distance
   //! between a point and the implicit curve.

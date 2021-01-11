@@ -155,7 +155,7 @@ public:
 
   //! Allows you to ensure that the array of curves returned by
   //! Curves2d has the correct orientation. Returns the
-  //! orientation of the curves in the the array returned by
+  //! orientation of the curves in the array returned by
   //! Curves2d. Computation changes the orientation of
   //! these curves. Consequently, this method returns the
   //! orientation prior to computation.

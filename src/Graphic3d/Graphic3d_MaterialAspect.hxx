@@ -28,7 +28,7 @@
 //! Aspect attributes of a 3d face.
 //! Keywords: Material, FillArea, Shininess, Ambient, Color, Diffuse,
 //! Specular, Transparency, Emissive, ReflectionMode,
-//! BackFace, FrontFace, Reflection, Absorbtion
+//! BackFace, FrontFace, Reflection, Absorption
 class Graphic3d_MaterialAspect 
 {
 public:

@@ -84,7 +84,7 @@ public:
   //! Raises OutOfRange if <N> <= 0
   Standard_EXPORT virtual Handle(Expr_GeneralExpression) NDerivative (const Handle(Expr_NamedUnknown)& X, const Standard_Integer N) const Standard_OVERRIDE;
   
-  //! Replaces all occurences of <var> with <with> in <me>
+  //! Replaces all occurrences of <var> with <with> in <me>
   Standard_EXPORT void Replace (const Handle(Expr_NamedUnknown)& var, const Handle(Expr_GeneralExpression)& with) Standard_OVERRIDE;
   
   //! Returns the value of <me> (as a Real) by
