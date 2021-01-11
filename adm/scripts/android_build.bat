@@ -34,7 +34,7 @@ set "BUILD_ApplicationFramework=ON"
 set "BUILD_DataExchange=ON"
 
 rem Optional 3rd-party libraries to enable
-set USE_RAPIDJSON=OFF
+set "USE_RAPIDJSON=OFF"
 
 rem Archive tool
 set "THE_7Z_PARAMS=-t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
@@ -54,6 +54,11 @@ if not exist "%anNdkPath%/sources/cxx-stl/gnu-libstdc++" (
 set "aLibType=Shared"
 if ["%isStatic%"] == ["1"] set "aLibType=Static"
 set "aDestDir=%aBuildRoot%\android-%aCompiler%"
+if ["%toCMake%"] == ["1"] (
+  if ["%toClean%"] == ["1"] (
+    rmdir /S /Q %aDestDir%"
+  )
+)
 
 set "anOcctVerSuffix="
 set "anOcctVersion=0.0.0"
@@ -64,6 +69,13 @@ for /f %%i in ('git symbolic-ref --short HEAD') do ( set "aGitBranch=%%i" )
 
 for %%s in (%anNdkAbiList%) do (
   call :cmakeGenerate "%anNdkApiLevel%" "%%s"
+  if errorlevel 1 (
+    if not ["%1"] == ["-nopause"] (
+      pause
+    )
+    exit /B 1
+    goto :eof
+  )
 )
 
 for /F "skip=1 delims=" %%F in ('
@@ -99,9 +111,19 @@ goto :eof
 :cmakeGenerate
 set "anApi=%~1"
 set "anAbi=%~2"
+if ["%anApi%"] == [""] (
+  set "anApi=21"
+  if ["%anAbi%"] == ["armeabi-v7a"] ( set "anApi=16" )
+  if ["%anAbi%"] == ["x86"]         ( set "anApi=16" )
+)
 set "aPlatformAndCompiler=android-%anAbi%-%aCompiler%"
 set "aWorkDir=%aBuildRoot%\%aPlatformAndCompiler%-make"
 set "aLogFile=%aBuildRoot%\build-%aPlatformAndCompiler%.log"
+if ["%toCMake%"] == ["1"] (
+  if ["%toClean%"] == ["1"] (
+    rmdir /S /Q %aWorkDir%"
+  )
+)
 if not exist "%aWorkDir%" ( mkdir "%aWorkDir%" )
 if     exist "%aLogFile%" ( del   "%aLogFile%" )
 
@@ -112,7 +134,7 @@ git log -n 100 >> "%aWorkDir%\VERSION.html"
 echo ^</pre^>>> "%aWorkDir%\VERSION.html"
 
 echo Start building OCCT for %aPlatformAndCompiler%
-echo Start building OCCT for %aPlatformAndCompiler%>> %aLogFile%
+echo Start building OCCT for %aPlatformAndCompiler%, API level %anApi%>> %aLogFile%
 
 pushd "%aWorkDir%"
 
@@ -156,7 +178,7 @@ if ["%toCMake%"] == ["1"] (
     goto :eof
   )
 )
-set aTimeGEN=%TIME%
+set "aTimeGEN=%TIME%"
 call :computeDuration %aTimeZERO% %aTimeGEN%
 if ["%toCMake%"] == ["1"] (
   echo Generation time: %DURATION%
@@ -178,7 +200,7 @@ if ["%toMake%"] == ["1"] (
   )
   type "%aLogFile%"
 )
-set aTimeBUILD=%TIME%
+set "aTimeBUILD=%TIME%"
 call :computeDuration %aTimeGEN% %aTimeBUILD%
 if ["%toMake%"] == ["1"] (
   echo Building time: %DURATION%
