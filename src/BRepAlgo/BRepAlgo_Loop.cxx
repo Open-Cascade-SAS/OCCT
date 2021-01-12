@@ -23,8 +23,10 @@
 #include <BRepAlgo_Loop.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <GeomLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Ax2.hxx>
 #include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -160,6 +162,15 @@ void BRepAlgo_Loop::AddConstEdges(const TopTools_ListOfShape& LE)
   }
 }
 
+//=======================================================================
+//function : SetImageVV
+//purpose  : 
+//=======================================================================
+
+void BRepAlgo_Loop::SetImageVV (const BRepAlgo_Image& theImageVV)
+{
+  myImageVV = theImageVV;
+}
 
 //=======================================================================
 //function : UpdateClosedEdge
@@ -606,6 +617,8 @@ void BRepAlgo_Loop::Perform()
   TopoDS_Wire      NW;
   Standard_Boolean End;
 
+  UpdateVEmap (MVE);
+
   TopTools_MapOfShape UsedEdges;
 
   while (MVE.Extent() > 0) {
@@ -924,6 +937,7 @@ void  BRepAlgo_Loop::GetVerticesForSubstitute( TopTools_DataMapOfShapeShape& Ver
 {
   VerVerMap = myVerticesForSubstitute;
 }
+
 //=======================================================================
 //function : VerticesForSubstitute
 //purpose  : 
@@ -932,4 +946,124 @@ void  BRepAlgo_Loop::GetVerticesForSubstitute( TopTools_DataMapOfShapeShape& Ver
 void  BRepAlgo_Loop::VerticesForSubstitute( TopTools_DataMapOfShapeShape& VerVerMap )
 {
   myVerticesForSubstitute = VerVerMap;
+}
+
+//=======================================================================
+//function : UpdateVEmap
+//purpose  : 
+//=======================================================================
+
+void  BRepAlgo_Loop::UpdateVEmap (TopTools_IndexedDataMapOfShapeListOfShape& theVEmap)
+{
+  TopTools_IndexedDataMapOfShapeListOfShape VerLver;
+
+  for (Standard_Integer ii = 1; ii <= theVEmap.Extent(); ii++)
+  {
+    const TopoDS_Vertex& aVertex = TopoDS::Vertex (theVEmap.FindKey(ii));
+    const TopTools_ListOfShape& aElist = theVEmap(ii);
+    if (aElist.Extent() == 1 && myImageVV.IsImage(aVertex))
+    {
+      const TopoDS_Vertex& aProVertex = TopoDS::Vertex (myImageVV.ImageFrom(aVertex));
+      if (VerLver.Contains(aProVertex))
+      {
+        TopTools_ListOfShape& aVlist = VerLver.ChangeFromKey(aProVertex);
+        aVlist.Append (aVertex.Oriented(TopAbs_FORWARD));
+      }
+      else
+      {
+        TopTools_ListOfShape aVlist;
+        aVlist.Append (aVertex.Oriented(TopAbs_FORWARD));
+        VerLver.Add (aProVertex,  aVlist);
+      }
+    }
+  }
+
+  if (VerLver.IsEmpty())
+    return;
+
+  BRep_Builder aBB;
+  for (Standard_Integer ii = 1; ii <= VerLver.Extent(); ii++)
+  {
+    const TopTools_ListOfShape& aVlist = VerLver(ii);
+    if (aVlist.Extent() == 1)
+      continue;
+    
+    Standard_Real aMaxTol = 0.;
+    TColgp_Array1OfPnt Points (1, aVlist.Extent());
+
+    TopTools_ListIteratorOfListOfShape itl (aVlist);
+    Standard_Integer jj = 0;
+    for (; itl.More(); itl.Next())
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex (itl.Value());
+      Standard_Real aTol = BRep_Tool::Tolerance(aVertex);
+      aMaxTol = Max (aMaxTol, aTol);
+      gp_Pnt aPnt = BRep_Tool::Pnt(aVertex);
+      Points(++jj) = aPnt;
+    }
+
+    gp_Ax2 anAxis;
+    Standard_Boolean IsSingular;
+    GeomLib::AxeOfInertia (Points, anAxis, IsSingular);
+    gp_Pnt aCentre = anAxis.Location();
+    Standard_Real aMaxDist = 0.;
+    for (jj = 1; jj <= Points.Upper(); jj++)
+    {
+      Standard_Real aSqDist = aCentre.SquareDistance (Points(jj));
+      aMaxDist = Max (aMaxDist, aSqDist);
+    }
+    aMaxDist = Sqrt(aMaxDist);
+    aMaxTol = Max (aMaxTol, aMaxDist);
+
+    //Find constant vertex
+    TopoDS_Vertex aConstVertex;
+    for (itl.Initialize(aVlist); itl.More(); itl.Next())
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex (itl.Value());
+      const TopTools_ListOfShape& aElist = theVEmap.FindFromKey(aVertex);
+      const TopoDS_Shape& anEdge = aElist.First();
+      TopTools_ListIteratorOfListOfShape itcedges (myConstEdges);
+      for (; itcedges.More(); itcedges.Next())
+        if (anEdge.IsSame (itcedges.Value()))
+        {
+          aConstVertex = aVertex;
+          break;
+        }
+      if (!aConstVertex.IsNull())
+        break;
+    }
+    if (aConstVertex.IsNull())
+      aConstVertex = TopoDS::Vertex(aVlist.First());
+    aBB.UpdateVertex (aConstVertex, aCentre, aMaxTol);
+
+    for (itl.Initialize(aVlist); itl.More(); itl.Next())
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex (itl.Value());
+      if (aVertex.IsSame(aConstVertex))
+        continue;
+      
+      const TopTools_ListOfShape& aElist = theVEmap.FindFromKey (aVertex);
+      TopoDS_Edge anEdge = TopoDS::Edge (aElist.First());
+      anEdge.Orientation(TopAbs_FORWARD);
+      TopoDS_Vertex aV1, aV2;
+      TopExp::Vertices (anEdge, aV1, aV2);
+      TopoDS_Vertex aVertexToRemove = (aV1.IsSame(aVertex))? aV1 : aV2;
+      anEdge.Free(Standard_True);
+      aBB.Remove (anEdge, aVertexToRemove);
+      aBB.Add (anEdge, aConstVertex.Oriented (aVertexToRemove.Orientation()));
+    }
+  }
+
+  TopTools_IndexedMapOfShape Emap;
+  for (Standard_Integer ii = 1; ii <= theVEmap.Extent(); ii++)
+  {
+    const TopTools_ListOfShape& aElist = theVEmap(ii);
+    TopTools_ListIteratorOfListOfShape itl (aElist);
+    for (; itl.More(); itl.Next())
+      Emap.Add (itl.Value());
+  }
+
+  theVEmap.Clear();
+  for (Standard_Integer ii = 1; ii <= Emap.Extent(); ii++)
+    TopExp::MapShapesAndAncestors (Emap(ii), TopAbs_VERTEX, TopAbs_EDGE, theVEmap);
 }

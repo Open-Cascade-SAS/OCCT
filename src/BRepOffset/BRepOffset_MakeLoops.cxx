@@ -51,12 +51,14 @@ BRepOffset_MakeLoops::BRepOffset_MakeLoops()
 
 void BRepOffset_MakeLoops::Build(const TopTools_ListOfShape&   LF, 
 				 const Handle(BRepAlgo_AsDes)& AsDes, 
-				 BRepAlgo_Image&               Image)
+				 BRepAlgo_Image&               Image,
+                                 BRepAlgo_Image&               theImageVV)
 {
   TopTools_ListIteratorOfListOfShape    it(LF);
   TopTools_ListIteratorOfListOfShape    itl,itLCE;
   BRepAlgo_Loop                       Loops;
   Loops.VerticesForSubstitute( myVerVerMap );
+  Loops.SetImageVV (theImageVV);
 
   for (; it.More(); it.Next()) {
     const TopoDS_Face& F = TopoDS::Face(it.Value());

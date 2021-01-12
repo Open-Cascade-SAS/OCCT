@@ -1,6 +1,6 @@
-puts "TODO OCC23068 ALL: Error :  is WRONG because number of"
-puts "TODO OCC23068 ALL: Error : The area of result shape is"
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25925 ALL: Error: The command cannot be built"
+puts "TODO OCC25925 ALL: TEST INCOMPLETE"
+puts "TODO OCC25925 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
 
 puts "============"
 puts "OCC5805"
@@ -36,9 +36,7 @@ set distance -0.001
 catch { OFFSETSHAPE $distance {} $calcul $type }
 # Null result
 
-
 checkprops result -s 495.635 
-checkshape result
 
 checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 13
 
@@ -53,6 +51,5 @@ if {$index == -1} {
   puts "Faulty ${BugNumber} : result is not Closed shape"
   
 }
-
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

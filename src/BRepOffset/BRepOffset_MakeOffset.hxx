@@ -97,7 +97,7 @@ public:
   
   const TopoDS_Shape& InitShape() const
   {
-    return myShape;
+    return myInitialShape;
   }
 
   //! returns information about offset state.
@@ -231,6 +231,7 @@ private:
 
   Standard_Real myOffset;
   Standard_Real myTol;
+  TopoDS_Shape myInitialShape;
   TopoDS_Shape myShape;
   TopoDS_Compound myFaceComp;
   BRepOffset_Mode myMode;
@@ -248,8 +249,10 @@ private:
   BRepAlgo_Image myInitOffsetFace;
   BRepAlgo_Image myInitOffsetEdge;
   BRepAlgo_Image myImageOffset;
+  BRepAlgo_Image myImageVV;
   TopTools_ListOfShape myWalls;
   Handle(BRepAlgo_AsDes) myAsDes;
+  TopTools_DataMapOfShapeListOfShape myEdgeIntEdges;
   Standard_Boolean myDone;
   BRepOffset_Error myError;
   BRepOffset_MakeLoops myMakeLoops;

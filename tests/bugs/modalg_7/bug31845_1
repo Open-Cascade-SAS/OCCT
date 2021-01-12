@@ -1,0 +1,15 @@
+puts "============================================"
+puts "OCC31845: BRepOffsetAPI_MakeThickSolid fails"
+puts "============================================"
+puts ""
+
+restore [locate_data_file bug31845_1.brep] a
+
+offsetparameter 1e-7 c i
+offsetload a 0.2
+offsetperform result
+
+checkshape result
+checkprops result -s 271.847
+checknbshapes result -t -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

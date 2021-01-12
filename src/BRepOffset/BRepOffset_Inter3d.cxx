@@ -169,6 +169,7 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
 {
   TopTools_ListOfShape LInt1, LInt2;
   TopoDS_Edge NullEdge;
+  TopoDS_Face NullFace;
 
   if (F1.IsSame(F2)) return;
   if (IsDone(F1,F2)) return;
@@ -221,11 +222,11 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
           if (BRepOffset_Tool::FindCommonShapes(TopoDS::Face(InitF1),
                                                 TopoDS::Face(InitF2),LE,LV)) {
             if (!LE.IsEmpty()) {
-              BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge);
+              BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
             }
           }
           else {
-            BRepOffset_Tool::Inter3D(F1,F2,LInt1,LInt2,mySide,NullEdge);
+            BRepOffset_Tool::Inter3D(F1,F2,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
           }
         }
       }
@@ -236,7 +237,7 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
       BRepOffset_Tool::PipeInter(F1,F2,LInt1,LInt2,mySide);
     }
     else {
-      BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge);
+      BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
     }
   }
   Store (F1,F2,LInt1,LInt2);
@@ -259,6 +260,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
   TopTools_ListOfShape           LInt1,LInt2;
   TopoDS_Face                    F1,F2;
   TopoDS_Edge                    NullEdge;
+  TopoDS_Face                    NullFace;
 
   //---------------------------------------------------------------------
   // etape 1 : Intersection of faces // corresponding to the initial faces 
@@ -273,10 +275,13 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
       //-----------------------------------------------------------
       const TopTools_ListOfShape& Anc = Analyse.Ancestors(E);
       if (Anc.Extent() == 2) {
-        F1 = TopoDS::Face(InitOffsetFace.Image(Anc.First()).First());
-        F2 = TopoDS::Face(InitOffsetFace.Image(Anc.Last ()).First());
+        
+        const TopoDS_Face& InitF1 = TopoDS::Face(Anc.First());
+        const TopoDS_Face& InitF2 = TopoDS::Face(Anc.Last());
+        F1 = TopoDS::Face(InitOffsetFace.Image(InitF1).First());
+        F2 = TopoDS::Face(InitOffsetFace.Image(InitF2).First());
         if (!IsDone(F1,F2)) {
-          BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,E,Standard_True);
+          BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,E,InitF1,InitF2);
           Store (F1,F2,LInt1,LInt2);
         }
       }          
@@ -361,7 +366,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
                 if (!TangentFaces) {
                   F2 = TopoDS::Face(InitOffsetFace.Image(InitF2).First());
                   if (!IsDone(F1,F2)) {
-                    BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge);
+                    BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
                     Store (F1,F2,LInt1,LInt2);
                   }
                 }
@@ -371,7 +376,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
                 if (!TangentFaces) {
                   F2 = TopoDS::Face(InitOffsetFace.Image(InitF2).First());
                   if (!IsDone(F1,F2)) {
-                    BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge);
+                    BRepOffset_Tool::Inter3D (F1,F2,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
                     Store (F1,F2,LInt1,LInt2);
                   }
                 }
@@ -635,7 +640,7 @@ void BRepOffset_Inter3d::ConnexIntByInt
       //
       if (!IsDone(NF1,NF2)) {
         TopTools_ListOfShape LInt1,LInt2;
-        BRepOffset_Tool::Inter3D (NF1,NF2,LInt1,LInt2,CurSide,E,bEdge);
+        BRepOffset_Tool::Inter3D (NF1,NF2,LInt1,LInt2,CurSide,E,F1,F2);
         SetDone(NF1,NF2);
         if (!LInt1.IsEmpty()) {
           Store (NF1,NF2,LInt1,LInt2);
@@ -1034,7 +1039,7 @@ void BRepOffset_Inter3d::ContextIntByInt
           TopTools_ListOfShape LInt1,LInt2;
           TopTools_ListOfShape LOE;
           LOE.Append(OE);
-          BRepOffset_Tool::Inter3D (WCF,NF,LInt1,LInt2,Side,E,bEdge);
+          BRepOffset_Tool::Inter3D (WCF,NF,LInt1,LInt2,Side,E,CF,F);
           SetDone(NF,CF);
           if (!LInt1.IsEmpty()) {
             Store (CF,NF,LInt1,LInt2);
@@ -1086,6 +1091,7 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
   TopoDS_Edge                               OE;
   BRep_Builder                              B;  
   TopoDS_Edge                               NullEdge;
+  TopoDS_Face                               NullFace;                  
   Standard_Integer j;
 
   for (j = 1; j <= ContextFaces.Extent(); j++) {
@@ -1255,7 +1261,7 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
             // If no trace try intersection.
             //-------------------------------------------------------
             if (LInt1.IsEmpty()) {
-              BRepOffset_Tool::Inter3D (CF,OF1,LInt1,LInt2,mySide,NullEdge);
+              BRepOffset_Tool::Inter3D (CF,OF1,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
             }
             Store (CF,OF1,LInt1,LInt2);
           }

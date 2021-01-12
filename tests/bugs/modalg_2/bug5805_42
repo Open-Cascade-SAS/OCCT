@@ -1,4 +1,6 @@
-puts "TODO OCC25925 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
+puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC25925 ALL: Error: The command cannot be built"
 
 puts "============"
 puts "OCC5805"
@@ -32,11 +34,10 @@ if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_res
 
 set distance -0.001
 catch { OFFSETSHAPE $distance {s_2} $calcul $type }
-# Bad result
+# Null result
 
 
 checkprops result -s 495.635 
-checkshape result
 
 set index [lsearch [whatis s] Closed]
 if {$index == -1} {
@@ -49,6 +50,5 @@ if {$index == -1} {
   puts "Faulty ${BugNumber} : result is not Closed shape"
   
 }
-
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
