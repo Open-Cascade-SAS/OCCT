@@ -1,0 +1,15 @@
+puts "========="
+puts "0032058: Modeling Data - Extrema curve-surface gives wrong result for planar surface of revolunion and circle"
+puts "========="
+puts ""
+
+
+restore [locate_data_file bug32058_c] c
+restore [locate_data_file bug32058_s] s
+
+extrema c s
+checklength ext_1 -l 2.3437142008433856e-13
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

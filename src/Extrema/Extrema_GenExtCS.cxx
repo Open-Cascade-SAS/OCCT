@@ -17,8 +17,6 @@
 
 #include <Extrema_GenExtCS.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
@@ -38,6 +36,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <ElCLib.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
+
 
 const Standard_Real MaxParamVal = 1.0e+10;
 const Standard_Real aBorderDivisor = 1.0e+4;
@@ -331,8 +331,8 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   // Find min approximation
   math_FunctionSetRoot anA(myF, Tol);
   anA.Perform(myF, TUV, TUVinf, TUVsup);
-
   myDone = Standard_True;
+
 }
 //=======================================================================
 //function : GlobMinGenCS
@@ -447,6 +447,7 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
     anUVsup(i) = theTUVsup(i + 1);
   }
   //
+  //
   math_PSOParticlesPool aParticles(theNbParticles, aNbVar);
 
   math_Vector aMinUV(1, aNbVar);
@@ -517,10 +518,103 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
       aCT = ElCLib::InPeriod(aCT, theTUVinf(1), theTUVinf(1) + 2. * M_PI);
     }
   }
+
   theTUV(1) = aCT;
   theTUV(2) = anUV(1);
   theTUV(3) = anUV(2);
 
+  Standard_Boolean isBadSol = Standard_False;
+  gp_Vec aDU, aDV, aDT;
+  gp_Pnt aPOnS, aPOnC;
+  myS->D1(anUV(1), anUV(2), aPOnS, aDU, aDV);
+  theC.D1(aCT, aPOnC, aDT);
+  Standard_Real aSqDist = aPOnC.SquareDistance(aPOnS);
+  if (aSqDist <= Precision::SquareConfusion())
+    return;
+
+  gp_Vec aN = aDU.Crossed(aDV);
+  if (aN.SquareMagnitude() < Precision::SquareConfusion())
+    return;
+
+  gp_Vec PcPs(aPOnC, aPOnS);
+
+  Standard_Real anAngMin = M_PI_2 - M_PI_2 / 10.;
+  Standard_Real anAngMax = M_PI_2 + M_PI_2 / 10.;
+
+  Standard_Real anAngN = PcPs.Angle(aN);
+  if (anAngN >= anAngMin && anAngN <= anAngMax)
+  {
+    // PcPs is perpendicular to surface normal, it means that
+    // aPOnC can be on surface, but far from aPOnS
+    isBadSol = Standard_True;
+    Standard_Integer iu, iv;
+    for (iu = -1; iu <= 1; ++iu)
+    {
+      Standard_Real u = anUV(1) + iu * aStepSU;
+      u = Max(anUVinf(1), u);
+      u = Min(anUVsup(1), u);
+      for (iv = -1; iv <= 1; ++iv)
+      {
+        Standard_Real v = anUV(2) + iv * aStepSV;
+        v = Max(anUVinf(2), v);
+        v = Min(anUVsup(2), v);
+        myS->D1(u, v, aPOnS, aDU, aDV);
+        if (aPOnC.SquareDistance(aPOnS) < Precision::SquareConfusion())
+        {
+          isBadSol = Standard_False;
+          break;
+        }
+        aN = aDU.Crossed(aDV);
+        if (aN.SquareMagnitude() < Precision::SquareConfusion())
+        {
+          isBadSol = Standard_False;
+          break;
+        }
+        PcPs.SetXYZ(aPOnS.XYZ() - aPOnC.XYZ());
+        anAngN = PcPs.Angle(aN);
+        if (anAngN < anAngMin || anAngN > anAngMax)
+        {
+          isBadSol = Standard_False;
+          break;
+        }
+      }
+      if (!isBadSol)
+      {
+        break;
+      }
+    }
+  }
+
+  if (isBadSol)
+  {
+    //Try to precise solution with help of Extrema PS
+
+    math_Vector aF(1, 3);
+    aF(1) = PcPs.Dot(aDT);
+    aF(2) = PcPs.Dot(aDU);
+    aF(3) = PcPs.Dot(aDV);
+    Standard_Real aFF = aF.Norm2();
+
+    Extrema_GenLocateExtPS anExtPS(*myS, mytol2, mytol2);
+    anExtPS.Perform(aPOnC, anUV(1), anUV(2), Standard_False);
+    if (anExtPS.IsDone())
+    {
+      const Extrema_POnSurf& aPmin = anExtPS.Point();
+      aPmin.Parameter(anUV(1), anUV(2));
+      math_Vector aTUV = theTUV;
+      aTUV(2) = anUV(1);
+      aTUV(3) = anUV(2);
+      myF.Value(aTUV, aF);
+      Standard_Real aFF1 = aF.Norm2();
+
+      if (anExtPS.SquareDistance() < aSqDist && aFF1 <= 1.1 * aFF)
+      {
+        theTUV(2) = aTUV(2);
+        theTUV(3) = aTUV(3);
+      }
+    }
+  }
+ 
 }
 //=======================================================================
 //function : GlobMinCQuadric
