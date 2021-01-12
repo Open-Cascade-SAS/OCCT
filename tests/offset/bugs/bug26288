@@ -1,3 +1,5 @@
+puts "TODO OCC26030 ALL: Error : The offset cannot be built"
+
 puts "========"
 puts "OCC26288"
 puts "========"

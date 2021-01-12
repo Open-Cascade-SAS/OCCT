@@ -1,0 +1,41 @@
+puts "======================================================================"
+puts "OCC31735: BRepOffset_MakeOffset works slowly and produces wrong result"
+puts "======================================================================"
+puts ""
+
+setfillhistory 1
+
+restore [locate_data_file bug31735_1.brep] a
+explode a f
+
+offsetparameter 1e-7 c i
+offsetload a -0.02 a_1 a_2 a_3 a_4 a_10 a_11 a_12 a_15
+offsetperform result
+
+checknbshapes result -t -wire 49 -face 49 -shell 1 -solid 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.001001} {
+   puts "Error: bad tolerance of result"
+}
+
+savehistory hh
+
+generated gf6 hh a_6
+checkprops gf6 -s 0.255127
+
+modified mf2 hh a_2
+checkprops mf2 -s 0.0270215
+
+if {[regexp "Not deleted" [isdeleted hh a_1]]} {
+  puts "Error: History information is wrong"
+}
+
+axo
+donly result gf6 mf2
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"

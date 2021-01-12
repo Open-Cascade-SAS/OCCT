@@ -1,0 +1,14 @@
+puts "TODO OCC31845 All: ERROR. offsetperform operation not done."
+
+puts "============================================"
+puts "OCC31845: BRepOffsetAPI_MakeThickSolid fails"
+puts "============================================"
+puts ""
+
+restore [locate_data_file bug31845_f.brep] a
+explode a f
+
+offsetparameter 1e-7 p i
+offsetload a 0.001 a_4 a_5
+offsetperform result
+

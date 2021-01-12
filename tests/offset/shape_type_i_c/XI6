@@ -1,5 +1,4 @@
 puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
-puts "TODO OCC27414 ALL: the resulting shape is negative"
 
 restore [locate_data_file bug26917_dom-8092.new_trim2_with_faces.brep] c
 

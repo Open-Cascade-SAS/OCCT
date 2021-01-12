@@ -591,6 +591,7 @@ BRepOffset_MakeOffset::BRepOffset_MakeOffset(const TopoDS_Shape&    S,
 : 
 myOffset     (Offset),
 myTol        (Tol),
+myInitialShape (S),
 myShape      (S),
 myMode       (Mode),
 myInter      (Inter),
@@ -623,6 +624,7 @@ void BRepOffset_MakeOffset::Initialize(const TopoDS_Shape&    S,
                                        const Standard_Boolean RemoveIntEdges)
 {
   myOffset     = Offset;
+  myInitialShape = S;
   myShape      = S;
   myTol        = Tol;
   myMode       = Mode;
@@ -650,9 +652,11 @@ void BRepOffset_MakeOffset::Clear()
   myInitOffsetFace .Clear();
   myInitOffsetEdge .Clear();
   myImageOffset    .Clear();
+  myImageVV        .Clear();
   myFaces          .Clear();  
   myOriginalFaces  .Clear();  
   myFaceOffset     .Clear();
+  myEdgeIntEdges   .Clear();
   myAsDes          ->Clear();
   myDone     = Standard_False;
   myGenerated.Clear();
@@ -1256,7 +1260,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   {
     const TopoDS_Face& NEF = TopoDS::Face(itLFE.Value());
     Standard_Real aCurrFaceTol = BRep_Tool::Tolerance(NEF);
-    BRepOffset_Inter2d::Compute(AsDes, NEF, NewEdges, aCurrFaceTol, aDMVV);
+    BRepOffset_Inter2d::Compute(AsDes, NEF, NewEdges, aCurrFaceTol, myEdgeIntEdges, aDMVV);
   }
   //----------------------------------------------
   // Intersections 2d on caps.
@@ -1266,10 +1270,10 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   {
     const TopoDS_Face& Cork = TopoDS::Face(myFaces(i));
     Standard_Real aCurrFaceTol = BRep_Tool::Tolerance(Cork);
-    BRepOffset_Inter2d::Compute(AsDes, Cork, NewEdges, aCurrFaceTol, aDMVV);
+    BRepOffset_Inter2d::Compute(AsDes, Cork, NewEdges, aCurrFaceTol, myEdgeIntEdges, aDMVV);
   }
   //
-  BRepOffset_Inter2d::FuseVertices(aDMVV, AsDes);
+  BRepOffset_Inter2d::FuseVertices(aDMVV, AsDes, myImageVV);
   //-------------------------------
   // Unwinding of extended Faces.
   //-------------------------------
@@ -1286,7 +1290,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
     }
   }
   else {
-    myMakeLoops.Build(LFE, AsDes, IMOE);
+    myMakeLoops.Build(LFE, AsDes, IMOE, myImageVV);
   }
   //
 #ifdef OCCT_DEBUG
@@ -2526,10 +2530,10 @@ void BRepOffset_MakeOffset::Intersection2D(const TopTools_IndexedMapOfShape& Mod
   Standard_Integer i;
   for (i = 1; i <= Modif.Extent(); i++) {
     const TopoDS_Face& F  = TopoDS::Face(Modif(i));
-    BRepOffset_Inter2d::Compute(myAsDes,F,NewEdges,myTol, aDMVV);
+    BRepOffset_Inter2d::Compute(myAsDes, F, NewEdges, myTol, myEdgeIntEdges, aDMVV);
   }
   //
-  BRepOffset_Inter2d::FuseVertices(aDMVV, myAsDes);
+  BRepOffset_Inter2d::FuseVertices(aDMVV, myAsDes, myImageVV);
   //
 #ifdef OCCT_DEBUG
   if (AffichInt2d) {
@@ -2569,7 +2573,7 @@ void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
     BuildSplitsOfTrimmedFaces(LF, myAsDes, myImageOffset);
   }
   else {
-    myMakeLoops.Build(LF,myAsDes,myImageOffset);
+    myMakeLoops.Build(LF,myAsDes,myImageOffset,myImageVV);
   }
 
   //-----------------------------------------
@@ -3345,7 +3349,7 @@ const BRepAlgo_Image& BRepOffset_MakeOffset::OffsetEdgesFromShapes() const
 
 const TopTools_IndexedMapOfShape& BRepOffset_MakeOffset::ClosingFaces () const
 {
-  return myFaces;
+  return myOriginalFaces;
 }
 
 
@@ -3998,8 +4002,8 @@ void BRepOffset_MakeOffset::IntersectEdges(const TopTools_ListOfShape& theFaces,
   {
     const TopoDS_Face& aF  = TopoDS::Face (it.Value());
     aTolF = BRep_Tool::Tolerance (aF);
-    if (!BRepOffset_Inter2d::ConnexIntByInt(aF, theMapSF(aF), theMES, theBuild, theAsDes2d,
-                                            myOffset, aTolF, myAnalyse, aMFV, aDMVV))
+    if (!BRepOffset_Inter2d::ConnexIntByInt(aF, theMapSF(aF), theMES, theBuild, theAsDes, theAsDes2d,
+                                            myOffset, aTolF, myAnalyse, aMFV, myImageVV, myEdgeIntEdges, aDMVV))
     {
       myError = BRepOffset_CannotExtentEdge;
       return;
@@ -4015,7 +4019,7 @@ void BRepOffset_MakeOffset::IntersectEdges(const TopTools_ListOfShape& theFaces,
   }
   //
   // fuse vertices on edges
-  if (!BRepOffset_Inter2d::FuseVertices(aDMVV, theAsDes2d))
+  if (!BRepOffset_Inter2d::FuseVertices(aDMVV, theAsDes2d, myImageVV))
   {
     myError = BRepOffset_CannotFuseVertices;
     return;
@@ -4490,9 +4494,24 @@ const TopTools_ListOfShape& BRepOffset_MakeOffset::Generated (const TopoDS_Shape
     Standard_FALLTHROUGH
     case TopAbs_FACE:
     {
-      if (myInitOffsetFace.HasImage (theS))
+      TopoDS_Shape aS = theS;
+      const TopoDS_Shape* aPlanface = myFacePlanfaceMap.Seek(aS);
+      if (aPlanface)
+        aS = TopoDS::Face(*aPlanface);
+      
+      if (!myFaces.Contains (aS) &&
+          myInitOffsetFace.HasImage (aS))
       {
-        myInitOffsetFace.LastImage (theS, myGenerated);
+        myInitOffsetFace.LastImage (aS, myGenerated);
+
+        if (!myFaces.IsEmpty())
+        {
+          // Reverse generated shapes in case of small solids.
+          // Useful only for faces without influence on others.
+          TopTools_ListIteratorOfListOfShape it(myGenerated);
+          for (; it.More(); it.Next())
+            it.Value().Reverse();
+        }
       }
       break;
     }
@@ -4524,9 +4543,33 @@ const TopTools_ListOfShape& BRepOffset_MakeOffset::Generated (const TopoDS_Shape
 //function : Modified
 //purpose  : 
 //=======================================================================
-const TopTools_ListOfShape& BRepOffset_MakeOffset::Modified (const TopoDS_Shape&)
+const TopTools_ListOfShape& BRepOffset_MakeOffset::Modified (const TopoDS_Shape& theShape)
 {
   myGenerated.Clear();
+
+  if (theShape.ShapeType() == TopAbs_FACE)
+  {
+    TopoDS_Shape aS = theShape;
+    const TopoDS_Shape* aPlanface = myFacePlanfaceMap.Seek(aS);
+    if (aPlanface)
+      aS = TopoDS::Face(*aPlanface);
+    
+    if (myFaces.Contains (aS) &&
+        myInitOffsetFace.HasImage (aS))
+    {
+      myInitOffsetFace.LastImage (aS, myGenerated);
+      
+      if (!myFaces.IsEmpty())
+      {
+        // Reverse generated shapes in case of small solids.
+        // Useful only for faces without influence on others.
+        TopTools_ListIteratorOfListOfShape it(myGenerated);
+        for (; it.More(); it.Next())
+          it.Value().Reverse();
+      }
+    }
+  }
+  
   return myGenerated;
 }
 

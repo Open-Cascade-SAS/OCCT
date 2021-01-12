@@ -1399,8 +1399,9 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
 			      TopTools_ListOfShape& L1,
 			      TopTools_ListOfShape& L2,
 			      const TopAbs_State    Side,
-			      const TopoDS_Edge&     RefEdge,
-			      const Standard_Boolean IsRefEdgeDefined)
+			      const TopoDS_Edge&    RefEdge,
+                              const TopoDS_Face&    theRefFace1,
+                              const TopoDS_Face&    theRefFace2)
 {
 #ifdef DRAW
   if (AffichInter) {
@@ -1443,7 +1444,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
   aPF.Perform();
   
   TopTools_IndexedMapOfShape TrueEdges;
-  if (IsRefEdgeDefined)
+  if (!RefEdge.IsNull())
     CheckIntersFF( aPF.PDS(), RefEdge, TrueEdges );
 
   Standard_Boolean addPCurve1 = 1;
@@ -1492,33 +1493,33 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
         if (!BOPTools_AlgoTools2D::HasCurveOnSurface(anEdge, F1)) {
           Handle(Geom2d_Curve) aC2d = aBC.Curve().FirstCurve2d();
           if(!aC3DETrim.IsNull()) {
-		Handle(Geom2d_Curve) aC2dNew;
-		
-		if(aC3DE->IsPeriodic()) {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(F1, f, l,  aC2d, aC2dNew, aContext);
-		  }
-		else {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(F1, aC3DETrim, aC2d, aC2dNew, aContext); 
-		  }
-		aC2d = aC2dNew;
-	      }
-	      BB.UpdateEdge(anEdge, aC2d, F1, aTolEdge);
+            Handle(Geom2d_Curve) aC2dNew;
+            
+            if(aC3DE->IsPeriodic()) {
+              BOPTools_AlgoTools2D::AdjustPCurveOnFace(F1, f, l,  aC2d, aC2dNew, aContext);
+            }
+            else {
+              BOPTools_AlgoTools2D::AdjustPCurveOnFace(F1, aC3DETrim, aC2d, aC2dNew, aContext); 
+            }
+            aC2d = aC2dNew;
+          }
+          BB.UpdateEdge(anEdge, aC2d, F1, aTolEdge);
         }
         
         if (!BOPTools_AlgoTools2D::HasCurveOnSurface(anEdge, F2)) {
           Handle(Geom2d_Curve) aC2d = aBC.Curve().SecondCurve2d();
           if(!aC3DETrim.IsNull()) {
-		Handle(Geom2d_Curve) aC2dNew;
-		
-		if(aC3DE->IsPeriodic()) {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(F2, f, l,  aC2d, aC2dNew, aContext);
-		  }
-		else {
-                  BOPTools_AlgoTools2D::AdjustPCurveOnFace(F2, aC3DETrim, aC2d, aC2dNew, aContext); 
-		  }
-		aC2d = aC2dNew;
-	      }
-	      BB.UpdateEdge(anEdge, aC2d, F2, aTolEdge);
+            Handle(Geom2d_Curve) aC2dNew;
+            
+            if(aC3DE->IsPeriodic()) {
+              BOPTools_AlgoTools2D::AdjustPCurveOnFace(F2, f, l,  aC2d, aC2dNew, aContext);
+            }
+            else {
+              BOPTools_AlgoTools2D::AdjustPCurveOnFace(F2, aC3DETrim, aC2d, aC2dNew, aContext); 
+            }
+            aC2d = aC2dNew;
+          }
+          BB.UpdateEdge(anEdge, aC2d, F2, aTolEdge);
         }
          
         OrientSection (anEdge, F1, F2, O1, O2);
@@ -1560,6 +1561,84 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
     addPCurve2 = Standard_False;
   else if (aSurf->IsKind(STANDARD_TYPE(Geom_ElementarySurface)))
     isEl2 = Standard_True;
+
+  if (L1.Extent() > 1 && (!isEl1 || !isEl2) && !theRefFace1.IsNull())
+  {
+    //remove excess edges that are out of range
+    TopoDS_Vertex aV1, aV2;
+    TopExp::Vertices (RefEdge, aV1, aV2);
+    if (!aV1.IsSame(aV2)) //only if RefEdge is open
+    {
+      Handle(Geom_Surface) aRefSurf1 = BRep_Tool::Surface (theRefFace1);
+      Handle(Geom_Surface) aRefSurf2 = BRep_Tool::Surface (theRefFace2);
+      if (aRefSurf1->IsUClosed() || aRefSurf1->IsVClosed() ||
+          aRefSurf2->IsUClosed() || aRefSurf2->IsVClosed())
+      {
+        TopoDS_Edge MinAngleEdge;
+        Standard_Real MinAngle = Precision::Infinite();
+        BRepAdaptor_Curve aRefBAcurve (RefEdge);
+        gp_Pnt aRefPnt = aRefBAcurve.Value ((aRefBAcurve.FirstParameter() + aRefBAcurve.LastParameter())/2);
+        
+        TopTools_ListIteratorOfListOfShape itl (L1);
+        for (; itl.More(); itl.Next())
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge (itl.Value());
+          
+          BRepAdaptor_Curve aBAcurve (anEdge);
+          gp_Pnt aMidPntOnEdge = aBAcurve.Value ((aBAcurve.FirstParameter() + aBAcurve.LastParameter())/2);
+          gp_Vec RefToMid (aRefPnt, aMidPntOnEdge);
+          
+          Extrema_ExtPC aProjector (aRefPnt, aBAcurve);
+          if (aProjector.IsDone())
+          {
+            Standard_Integer imin = 0;
+            Standard_Real MinSqDist = Precision::Infinite();
+            for (Standard_Integer ind = 1; ind <= aProjector.NbExt(); ind++)
+            {
+              Standard_Real aSqDist = aProjector.SquareDistance(ind);
+              if (aSqDist < MinSqDist)
+              {
+                MinSqDist = aSqDist;
+                imin = ind;
+              }
+            }
+            if (imin != 0)
+            {
+              gp_Pnt aProjectionOnEdge = aProjector.Point(imin).Value();
+              gp_Vec RefToProj (aRefPnt, aProjectionOnEdge);
+              Standard_Real anAngle = RefToProj.Angle(RefToMid);
+              if (anAngle < MinAngle)
+              {
+                MinAngle = anAngle;
+                MinAngleEdge = anEdge;
+              }
+            }
+          }
+        }
+
+        if (!MinAngleEdge.IsNull())
+        {
+          TopTools_ListIteratorOfListOfShape itlist1 (L1);
+          TopTools_ListIteratorOfListOfShape itlist2 (L2);
+          
+          while (itlist1.More())
+          {
+            const TopoDS_Shape& anEdge = itlist1.Value();
+            if (anEdge.IsSame(MinAngleEdge))
+            {
+              itlist1.Next();
+              itlist2.Next();
+            }
+            else
+            {
+              L1.Remove(itlist1);
+              L2.Remove(itlist2);
+            }
+          }
+        }
+      } //if closed
+    } //if (!aV1.IsSame(aV2))
+  } //if (L1.Extent() > 1 && (!isEl1 || !isEl2) && !theRefFace1.IsNull())
 
   if (L1.Extent() > 1 && (!isEl1 || !isEl2)) {
     TopTools_SequenceOfShape eseq;
@@ -1722,7 +1801,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
             eseq.Append( aLocalEdgesForConcat(j) );
         else
           eseq.Append( AssembledEdge );
-      }
+      } //for (i = 1; i <= wseq.Length(); i++)
     } //end of else (when TrueEdges is empty)
     
     if (eseq.Length() < L1.Extent())
@@ -3466,7 +3545,8 @@ void BRepOffset_Tool::ExtentFace (const TopoDS_Face&            F,
       if (ConstShapes.IsBound(E)) ToBuild.UnBind(E);
       if (ToBuild.IsBound(E)) {
         EnLargeFace(TopoDS::Face(ToBuild(E)),StopFace,Standard_False);
-        BRepOffset_Tool::Inter3D (EF,StopFace,LInt1,LInt2,Side,E,Standard_True);
+        TopoDS_Face NullFace;
+        BRepOffset_Tool::Inter3D (EF,StopFace,LInt1,LInt2,Side,E,NullFace,NullFace);
         // No intersection, it may happen for example for a chosen (non-offseted) planar face and 
         // its neighbour offseted cylindrical face, if the offset is directed so that 
         // the radius of the cylinder becomes smaller.

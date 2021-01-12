@@ -87,9 +87,10 @@ public:
                                        const TopoDS_Face& F2,
                                        TopTools_ListOfShape& LInt1,
                                        TopTools_ListOfShape& LInt2,
-                                       const TopAbs_State Side,
-                                       const TopoDS_Edge& RefEdge,
-                                       const Standard_Boolean IsRefEdgeDefined = Standard_False);
+                                       const TopAbs_State    Side,
+                                       const TopoDS_Edge&    RefEdge,
+                                       const TopoDS_Face&    RefFace1,
+                                       const TopoDS_Face&    RefFace2);
   
   //! Find if the edges <Edges> of the face <F2> are on
   //! the face <F1>.

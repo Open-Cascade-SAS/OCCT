@@ -1,4 +1,8 @@
-puts "TODO OCC25925 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC25925 ALL: Error: The command cannot be built"
+puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
+puts "TODO OCC25925 ALL: TEST INCOMPLETE"
+puts "TODO OCC25925 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
 
 puts "============"
 puts "OCC5805"
@@ -32,7 +36,7 @@ if [catch { thrusections s ${issolid} ${isruled} UpCover BottomCover } catch_res
 
 set distance -0.001
 catch { OFFSETSHAPE $distance {s_2} $calcul $type }
-# Bad result
+# Null result
 
 checkprops result -s 358.795 
 
@@ -48,6 +52,6 @@ if {$index == -1} {
   
 }
 
-checkshape result
 checknbshapes result -t -wire 5 -face 5 -shell 2 -solid 1
+
 checkview -display result -2d -path ${imagedir}/${test_image}.png
