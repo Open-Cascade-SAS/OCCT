@@ -616,10 +616,10 @@ TopoDS_Wire  BRepTools::OuterWire(const TopoDS_Face& F)
         while (expw.More()) {
           const TopoDS_Wire& W = TopoDS::Wire(expw.Current());
           BRepTools::UVBounds(F,W,umin, umax, vmin, vmax);
-          if ((umin <= UMin) &&
-              (umax >= UMax) &&
-              (vmin <= VMin) &&
-              (vmax >= VMax)) {
+          if (((umin - UMin) <= Precision::PConfusion()) &&
+              ((umax - UMax) >= -Precision::PConfusion()) &&
+              ((vmin - VMin) <= Precision::PConfusion()) &&
+              ((vmax - VMax) >= -Precision::PConfusion())) {
             Wres = W;
             UMin = umin;
             UMax = umax;
