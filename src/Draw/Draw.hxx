@@ -179,6 +179,39 @@ public: //! @name argument parsing tools
   Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
                                                       Standard_Boolean& theIsOn);
 
+  //! Parses boolean argument at specified iterator position with optional on/off coming next.
+  //!
+  //! Usage code sample for command argument in form "cmd -usefeature [on|off|1|0]=on":
+  //! @code
+  //!   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  //!   {
+  //!     if (strcasecmp (theArgVec[anArgIter], "-usefeature") == 0)
+  //!     {
+  //!       bool toUseFeature = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
+  //!       // process feature
+  //!     }
+  //!   }
+  //! @endcode
+  //!
+  //! @param theArgsNb [in] overall number of arguments
+  //! @param theArgVec [in] vector of arguments
+  //! @param theArgIter [in] [out] argument position to parse
+  //! @return flag value
+  Standard_EXPORT static Standard_Boolean ParseOnOffIterator (Standard_Integer  theArgsNb,
+                                                              const char**      theArgVec,
+                                                              Standard_Integer& theArgIter);
+
+  //! Parses boolean argument at specified iterator position with optional on/off coming next.
+  //! Similar to ParseOnOffIterator() but also reverses returned value if argument name starts with "no" prefix.
+  //! E.g. if nominal argument is "cmd -usefeature [on|off|1|0]=on", then "-nousefeature" argument will return FALSE.
+  //! @param theArgsNb [in] overall number of arguments
+  //! @param theArgVec [in] vector of arguments
+  //! @param theArgIter [in] [out] argument position to parse
+  //! @return flag value
+  Standard_EXPORT static Standard_Boolean ParseOnOffNoIterator (Standard_Integer  theArgsNb,
+                                                                const char**      theArgVec,
+                                                                Standard_Integer& theArgIter);
+
 public:
 
   //! Returns last graphic selection description.

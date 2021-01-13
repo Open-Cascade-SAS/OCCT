@@ -958,3 +958,34 @@ Standard_Boolean Draw::ParseOnOff (Standard_CString  theArg,
   }
   return Standard_False;
 }
+
+//=======================================================================
+//function : ParseOnOffIterator
+//purpose  :
+//=======================================================================
+Standard_Boolean Draw::ParseOnOffIterator (Standard_Integer  theArgsNb,
+                                           const char**      theArgVec,
+                                           Standard_Integer& theArgIter)
+{
+  Standard_Boolean isOn = Standard_True;
+  if (theArgIter + 1 < theArgsNb
+   && Draw::ParseOnOff (theArgVec[theArgIter + 1], isOn))
+  {
+    ++theArgIter;
+  }
+  return isOn;
+}
+
+//=======================================================================
+//function : ParseOnOffNoIterator
+//purpose  :
+//=======================================================================
+Standard_Boolean Draw::ParseOnOffNoIterator (Standard_Integer  theArgsNb,
+                                             const char**      theArgVec,
+                                             Standard_Integer& theArgIter)
+{
+  Standard_Boolean toReverse = strncasecmp (theArgVec[theArgIter], "no", 2) == 0
+                            || strncasecmp (theArgVec[theArgIter], "-no", 3) == 0;
+  Standard_Boolean isOn = Draw::ParseOnOffIterator (theArgsNb, theArgVec, theArgIter);
+  return toReverse ? !isOn : isOn;
+}

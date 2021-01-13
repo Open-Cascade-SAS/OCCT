@@ -12889,6 +12889,27 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
   return 0;
 }
 
+namespace
+{
+  //! Structure for setting AIS_Manipulator::SetPart() property.
+  struct ManipAxisModeOnOff
+  {
+    Standard_Integer    Axis;
+    AIS_ManipulatorMode Mode;
+    Standard_Boolean    ToEnable;
+
+    ManipAxisModeOnOff() : Axis (-1), Mode (AIS_MM_None), ToEnable (false) {}
+  };
+
+  enum ManipAjustPosition
+  {
+    ManipAjustPosition_Off,
+    ManipAjustPosition_Center,
+    ManipAjustPosition_Location,
+    ManipAjustPosition_ShapeLocation,
+  };
+}
+
 //===============================================================================================
 //function : VManipulator
 //purpose  :
@@ -12908,239 +12929,259 @@ static int VManipulator (Draw_Interpretor& theDi,
 
   ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
   Standard_Integer anArgIter = 1;
+  Handle(AIS_Manipulator) aManipulator;
+  ViewerTest_DoubleMapOfInteractiveAndName& aMapAIS = GetMapOfAIS();
+  TCollection_AsciiString aName;
+  // parameters
+  Standard_Integer toAutoActivate = -1, toFollowTranslation = -1, toFollowRotation = -1, toFollowDragging = -1, isZoomable = -1;
+  Standard_Real aGap = -1.0, aSize = -1.0;
+  NCollection_Sequence<ManipAxisModeOnOff> aParts;
+  gp_XYZ aLocation (RealLast(), RealLast(), RealLast()), aVDir, anXDir;
+  //
+  bool toDetach = false;
+  AIS_Manipulator::OptionsForAttach anAttachOptions;
+  Handle(AIS_InteractiveObject) anAttachObject;
+  Handle(V3d_View) aViewAffinity;
+  ManipAjustPosition anAttachPos = ManipAjustPosition_Off;
+  //
+  Graphic3d_Vec2i aMousePosFrom(IntegerLast(), IntegerLast());
+  Graphic3d_Vec2i aMousePosTo  (IntegerLast(), IntegerLast());
+  Standard_Integer toStopMouseTransform = -1;
+  // explicit transformation
+  gp_Trsf aTrsf;
+  gp_XYZ aTmpXYZ;
+  Standard_Real aTmpReal = 0.0;
+  gp_XYZ aRotPnt, aRotAxis;
   for (; anArgIter < theArgsNb; ++anArgIter)
   {
-    anUpdateTool.parseRedrawMode (theArgVec[anArgIter]);
-  }
-
-  ViewerTest_CmdParser aCmd;
-  aCmd.SetDescription ("Manages manipulator for interactive objects:");
-  aCmd.AddOption ("attach",         "... object - attach manipulator to an object");
-  aCmd.AddOption ("adjustPosition", "... {0|1} - adjust position when attaching");
-  aCmd.AddOption ("adjustSize",     "... {0|1} - adjust size when attaching ");
-  aCmd.AddOption ("enableModes",    "... {0|1} - enable modes when attaching ");
-  aCmd.AddOption ("view",           "... {active | [view name]} - define view in which manipulator will be displayed, 'all' by default");
-  aCmd.AddOption ("detach",         "...       - detach manipulator");
-
-  aCmd.AddOption ("startTransform",   "... mouse_x mouse_y - invoke start transformation");
-  aCmd.AddOption ("transform",        "... mouse_x mouse_y - invoke transformation");
-  aCmd.AddOption ("stopTransform",    "... [abort] - invoke stop transformation");
-
-  aCmd.AddOption ("move",   "... x y z - move object");
-  aCmd.AddOption ("rotate", "... x y z dx dy dz angle - rotate object");
-  aCmd.AddOption ("scale",  "... factor - scale object");
-
-  aCmd.AddOption ("autoActivate",      "... {0|1} - set activation on detection");
-  aCmd.AddOption ("followTranslation", "... {0|1} - set following translation transform");
-  aCmd.AddOption ("followRotation",    "... {0|1} - set following rotation transform");
-  aCmd.AddOption ("followDragging",    "... {0|1} - set following dragging transform");
-  aCmd.AddOption ("gap",               "... value - set gap between sub-parts");
-  aCmd.AddOption ("part",              "... axis mode {0|1} - set visual part");
-  aCmd.AddOption ("parts",             "... all axes mode {0|1} - set visual part");
-  aCmd.AddOption ("pos",               "... x y z [nx ny nz [xx xy xz]] - set position of manipulator");
-  aCmd.AddOption ("size",              "... size - set size of manipulator");
-  aCmd.AddOption ("zoomable",          "... {0|1} - set zoom persistence");
-
-  aCmd.Parse (theArgsNb, theArgVec);
-
-  if (aCmd.HasOption ("help"))
-  {
-    theDi.PrintHelp (theArgVec[0]);
-    return 0;
-  }
-
-  ViewerTest_DoubleMapOfInteractiveAndName& aMapAIS = GetMapOfAIS();
-
-  TCollection_AsciiString aName (aCmd.Arg (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, 0).c_str());
-
-  if (aName.IsEmpty())
-  {
-    Message::SendFail ("Syntax error: please specify AIS manipulator's name as the first argument");
-    return 1;
-  }
-
-  // ----------------------------------
-  // detach existing manipulator object
-  // ----------------------------------
-
-  if (aCmd.HasOption ("detach"))
-  {
-    if (!aMapAIS.IsBound2 (aName))
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
     {
-      Message::SendFail() << "Syntax error: could not find \"" << aName << "\" AIS object";
-      return 1;
+      continue;
     }
-
-    Handle(AIS_Manipulator) aManipulator = Handle(AIS_Manipulator)::DownCast (aMapAIS.Find2 (aName));
-    if (aManipulator.IsNull())
+    else if (anArg == "-help")
     {
-      Message::SendFail() << "Syntax error: \"" << aName << "\" is not an AIS manipulator";
-      return 1;
+      theDi.PrintHelp (theArgVec[0]);
+      return 0;
     }
-
-    aManipulator->Detach();
-    aMapAIS.UnBind2 (aName);
-    ViewerTest::GetAISContext()->Remove (aManipulator, Standard_True);
-
-    return 0;
-  }
-
-  // -----------------------------------------------
-  // find or create manipulator if it does not exist
-  // -----------------------------------------------
-
-  Handle(AIS_Manipulator) aManipulator;
-  if (!aMapAIS.IsBound2 (aName))
-  {
-    std::cout << theArgVec[0] << ": AIS object \"" << aName << "\" has been created.\n";
-
-    aManipulator = new AIS_Manipulator();
-    aManipulator->SetModeActivationOnDetection (true);
-    aMapAIS.Bind (aManipulator, aName);
-  }
-  else
-  {
-    aManipulator = Handle(AIS_Manipulator)::DownCast (aMapAIS.Find2 (aName));
-    if (aManipulator.IsNull())
+    //
+    else if (anArg == "-autoactivate"
+          || anArg == "-noautoactivate")
     {
-      Message::SendFail() << "Syntax error: \"" << aName << "\" is not an AIS manipulator";
-      return 1;
+      toAutoActivate = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
-  }
-
-  // -----------------------------------------
-  // change properties of manipulator instance
-  // -----------------------------------------
-
-  if (aCmd.HasOption ("autoActivate", 1, Standard_True))
-  {
-    aManipulator->SetModeActivationOnDetection (aCmd.ArgBool ("autoActivate"));
-  }
-  if (aCmd.HasOption ("followTranslation", 1, Standard_True))
-  {
-    aManipulator->ChangeTransformBehavior().SetFollowTranslation (aCmd.ArgBool ("followTranslation"));
-  }
-  if (aCmd.HasOption ("followRotation", 1, Standard_True))
-  {
-    aManipulator->ChangeTransformBehavior().SetFollowRotation (aCmd.ArgBool ("followRotation"));
-  }
-  if (aCmd.HasOption("followDragging", 1, Standard_True))
-  {
-    aManipulator->ChangeTransformBehavior().SetFollowDragging(aCmd.ArgBool("followDragging"));
-  }
-  if (aCmd.HasOption ("gap", 1, Standard_True))
-  {
-    aManipulator->SetGap (aCmd.ArgFloat ("gap"));
-  }
-  if (aCmd.HasOption ("part", 3, Standard_True))
-  {
-    Standard_Integer anAxis = aCmd.ArgInt  ("part", 0);
-    Standard_Integer aMode  = aCmd.ArgInt  ("part", 1);
-    Standard_Boolean aOnOff = aCmd.ArgBool ("part", 2);
-    if (aMode < 1 || aMode > 4)
+    else if (anArg == "-followtranslation"
+          || anArg == "-nofollowtranslation")
     {
-      Message::SendFail ("Syntax error: mode value should be in range [1, 4]");
-      return 1;
+      toFollowTranslation = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
-
-    aManipulator->SetPart (anAxis, static_cast<AIS_ManipulatorMode> (aMode), aOnOff);
-  }
-  if (aCmd.HasOption("parts", 2, Standard_True))
-  {
-    Standard_Integer aMode = aCmd.ArgInt("parts", 0);
-    Standard_Boolean aOnOff = aCmd.ArgBool("parts", 1);
-    if (aMode < 1 || aMode > 4)
+    else if (anArg == "-followrotation"
+          || anArg == "-nofollowrotation")
     {
-      Message::SendFail ("Syntax error: mode value should be in range [1, 4]");
-      return 1;
+      toFollowRotation = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
-
-    aManipulator->SetPart(static_cast<AIS_ManipulatorMode>(aMode), aOnOff);
-  }
-  if (aCmd.HasOption ("pos", 3, Standard_True))
-  {
-    gp_Pnt aLocation = aCmd.ArgPnt ("pos", 0);
-    gp_Dir aVDir     = aCmd.HasOption ("pos", 6) ? gp_Dir (aCmd.ArgVec ("pos", 3)) : aManipulator->Position().Direction();
-    gp_Dir aXDir     = aCmd.HasOption ("pos", 9) ? gp_Dir (aCmd.ArgVec ("pos", 6)) : aManipulator->Position().XDirection();
-
-    aManipulator->SetPosition (gp_Ax2 (aLocation, aVDir, aXDir));
-  }
-  if (aCmd.HasOption ("size", 1, Standard_True))
-  {
-    aManipulator->SetSize (aCmd.ArgFloat ("size"));
-  }
-  if (aCmd.HasOption ("zoomable", 1, Standard_True))
-  {
-    aManipulator->SetZoomPersistence (!aCmd.ArgBool ("zoomable"));
-
-    if (ViewerTest::GetAISContext()->IsDisplayed (aManipulator))
+    else if (anArg == "-followdragging"
+          || anArg == "-nofollowdragging")
     {
-      ViewerTest::GetAISContext()->Remove  (aManipulator, Standard_False);
-      ViewerTest::GetAISContext()->Display (aManipulator, Standard_False);
+      toFollowDragging = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
-  }
-
-  // ---------------------------------------------------
-  // attach, detach or access manipulator from an object
-  // ---------------------------------------------------
-
-  if (aCmd.HasOption ("attach"))
-  {
-    // Find an object and attach manipulator to it
-    if (!aCmd.HasOption ("attach", 1, Standard_True))
+    else if (anArg == "-gap"
+          && anArgIter + 1 < theArgsNb
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aGap)
+          && aGap >= 0.0)
     {
-      return 1;
+      ++anArgIter;
     }
-
-    TCollection_AsciiString anObjName (aCmd.Arg ("attach", 0).c_str());
-    Handle(AIS_InteractiveObject) anObject;
-    if (!aMapAIS.Find2 (anObjName, anObject))
+    else if (anArg == "-size"
+          && anArgIter + 1 < theArgsNb
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aSize)
+          && aSize > 0.0)
     {
-      Message::SendFail() << "Syntax error: AIS object \"" << anObjName << "\" does not exist";
-      return 1;
+      ++anArgIter;
     }
-
-    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (aMapAIS);
-         anIter.More(); anIter.Next())
+    else if ((anArg == "-part"  && anArgIter + 3 < theArgsNb)
+          || (anArg == "-parts" && anArgIter + 2 < theArgsNb))
     {
-      Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (anIter.Key1());
-      if (!aManip.IsNull()
-       && aManip->IsAttached()
-       && aManip->Object() == anObject)
+      ManipAxisModeOnOff aPart;
+      Standard_Integer aMode = 0;
+      if (anArg == "-part")
       {
-        Message::SendFail() << "Syntax error: AIS object \"" << anObjName << "\" already has manipulator";
+        if (!Draw::ParseInteger (theArgVec[++anArgIter], aPart.Axis)
+          || aPart.Axis < 0 || aPart.Axis > 3)
+        {
+          Message::SendFail() << "Syntax error: -part axis '" << theArgVec[anArgIter] << "' is out of range [1, 3]";
+          return 1;
+        }
+      }
+      if (!Draw::ParseInteger (theArgVec[++anArgIter], aMode)
+        || aMode < 1 || aMode > 4)
+      {
+        Message::SendFail() << "Syntax error: -part mode '" << theArgVec[anArgIter] << "' is out of range [1, 4]";
         return 1;
       }
-    }
-
-    AIS_Manipulator::OptionsForAttach anOptions;
-    if (aCmd.HasOption ("adjustPosition", 1, Standard_True))
-    {
-      anOptions.SetAdjustPosition (aCmd.ArgBool ("adjustPosition"));
-    }
-    if (aCmd.HasOption ("adjustSize", 1, Standard_True))
-    {
-      anOptions.SetAdjustSize (aCmd.ArgBool ("adjustSize"));
-    }
-    if (aCmd.HasOption ("enableModes", 1, Standard_True))
-    {
-      anOptions.SetEnableModes (aCmd.ArgBool ("enableModes"));
-    }
-
-    aManipulator->Attach (anObject, anOptions);
-
-    // Check view option
-    if (aCmd.HasOption ("view"))
-    {
-      if (!aCmd.HasOption ("view", 1, Standard_True))
+      if (!Draw::ParseOnOff (theArgVec[++anArgIter], aPart.ToEnable))
       {
+        Message::SendFail() << "Syntax error: -part value on/off '" << theArgVec[anArgIter] << "' is incorrect";
         return 1;
       }
-      TCollection_AsciiString aViewString (aCmd.Arg ("view", 0).c_str());
-      Handle(V3d_View) aView;
-      if (aViewString.IsEqual ("active"))
+      aPart.Mode = static_cast<AIS_ManipulatorMode> (aMode);
+      aParts.Append (aPart);
+    }
+    else if (anArg == "-pos"
+          && anArgIter + 3 < theArgsNb
+          && parseXYZ (theArgVec + anArgIter + 1, aLocation))
+    {
+      anArgIter += 3;
+      if (anArgIter + 3 < theArgsNb
+       && parseXYZ (theArgVec + anArgIter + 1, aVDir)
+       && aVDir.Modulus() > Precision::Confusion())
       {
-        aView = ViewerTest::CurrentView();
+        anArgIter += 3;
+      }
+      if (anArgIter + 3 < theArgsNb
+       && parseXYZ (theArgVec + anArgIter + 1, anXDir)
+       && anXDir.Modulus() > Precision::Confusion())
+      {
+        anArgIter += 3;
+      }
+    }
+    else if (anArg == "-zoomable"
+          || anArg == "-notzoomable")
+    {
+      isZoomable = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
+    }
+    //
+    else if (anArg == "-adjustposition"
+          || anArg == "-noadjustposition")
+    {
+      anAttachPos = ManipAjustPosition_Center;
+      if (anArgIter + 1 < theArgsNb)
+      {
+        TCollection_AsciiString aPosName (theArgVec[++anArgIter]);
+        aPosName.LowerCase();
+        if (aPosName == "0")
+        {
+          anAttachPos = ManipAjustPosition_Off;
+        }
+        else if (aPosName == "1"
+              || aPosName == "center")
+        {
+          anAttachPos = ManipAjustPosition_Center;
+        }
+        else if (aPosName == "transformation"
+              || aPosName == "trsf"
+              || aPosName == "location"
+              || aPosName == "loc")
+        {
+          anAttachPos = ManipAjustPosition_Location;
+        }
+        else if (aPosName == "shapelocation"
+              || aPosName == "shapeloc")
+        {
+          anAttachPos = ManipAjustPosition_ShapeLocation;
+        }
+        else
+        {
+          --anArgIter;
+        }
+      }
+      anAttachOptions.SetAdjustPosition (anAttachPos == ManipAjustPosition_Center);
+    }
+    else if (anArg == "-adjustsize"
+          || anArg == "-noadjustsize")
+    {
+      anAttachOptions.SetAdjustSize (Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+    }
+    else if (anArg == "-enablemodes"
+          || anArg == "-enablemodes")
+    {
+      anAttachOptions.SetEnableModes (Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0);
+    }
+    //
+    else if (anArg == "-starttransform"
+          && anArgIter + 2 < theArgsNb
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aMousePosFrom.x())
+          && Draw::ParseInteger (theArgVec[anArgIter + 2], aMousePosFrom.y()))
+    {
+      anArgIter += 2;
+    }
+    else if (anArg == "-transform"
+          && anArgIter + 2 < theArgsNb
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aMousePosTo.x())
+          && Draw::ParseInteger (theArgVec[anArgIter + 2], aMousePosTo.y()))
+    {
+      anArgIter += 2;
+    }
+    else if (anArg == "-stoptransform")
+    {
+      toStopMouseTransform = 1;
+      if (anArgIter + 1 < theArgsNb
+       && TCollection_AsciiString::IsSameString (theArgVec[anArgIter + 1], "abort", false))
+      {
+        ++anArgIter;
+        toStopMouseTransform = 0;
+      }
+    }
+    //
+    else if (anArg == "-move"
+          && anArgIter + 3 < theArgsNb
+          && parseXYZ (theArgVec + anArgIter + 1, aTmpXYZ))
+    {
+      anArgIter += 3;
+      aTrsf.SetTranslationPart (aTmpXYZ);
+    }
+    else if (anArg == "-scale"
+          && anArgIter + 1 < theArgsNb
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aTmpReal))
+    {
+      ++anArgIter;
+      aTrsf.SetScale (gp_Pnt(), aTmpReal);
+    }
+    else if (anArg == "-rotate"
+          && anArgIter + 7 < theArgsNb
+          && parseXYZ (theArgVec + anArgIter + 1, aRotPnt)
+          && parseXYZ (theArgVec + anArgIter + 4, aRotAxis)
+          && Draw::ParseReal (theArgVec[anArgIter + 7], aTmpReal))
+    {
+      anArgIter += 7;
+      aTrsf.SetRotation (gp_Ax1 (gp_Pnt (aRotPnt), gp_Dir (aRotAxis)), aTmpReal);
+    }
+    //
+    else if (anArg == "-detach")
+    {
+      toDetach = true;
+    }
+    else if (anArg == "-attach"
+          && anArgIter + 1 < theArgsNb)
+    {
+      TCollection_AsciiString anObjName (theArgVec[++anArgIter]);
+      if (!aMapAIS.Find2 (anObjName, anAttachObject))
+      {
+        Message::SendFail() << "Syntax error: AIS object '" << anObjName << "' does not exist";
+        return 1;
+      }
+
+      for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (aMapAIS); anIter.More(); anIter.Next())
+      {
+        Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (anIter.Key1());
+        if (!aManip.IsNull()
+          && aManip->IsAttached()
+          && aManip->Object() == anAttachObject)
+        {
+          Message::SendFail() << "Syntax error: AIS object '" << anObjName << "' already has manipulator";
+          return 1;
+        }
+      }
+    }
+    else if (anArg == "-view"
+          && anArgIter + 1 < theArgsNb
+          && aViewAffinity.IsNull())
+    {
+      TCollection_AsciiString aViewString (theArgVec[++anArgIter]);
+      if (aViewString == "active")
+      {
+        aViewAffinity = ViewerTest::CurrentView();
       }
       else // Check view name
       {
@@ -13150,62 +13191,223 @@ static int VManipulator (Draw_Interpretor& theDi,
           Message::SendFail() << "Syntax error: wrong view name '" << aViewString << "'";
           return 1;
         }
-        aView = ViewerTest_myViews.Find1 (aViewNames.GetViewName());
-        if (aView.IsNull())
+        aViewAffinity = ViewerTest_myViews.Find1 (aViewNames.GetViewName());
+        if (aViewAffinity.IsNull())
         {
           Message::SendFail() << "Syntax error: cannot find view with name '" << aViewString << "'";
           return 1;
         }
       }
-      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
-        anIter (ViewerTest_myViews); anIter.More(); anIter.Next())
-      {
-        ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, anIter.Value(), Standard_False);
-      }
-      ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, aView, Standard_True);
     }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgVec[anArgIter];
+      if (!aMapAIS.IsBound2 (aName))
+      {
+        aManipulator = new AIS_Manipulator();
+        aManipulator->SetModeActivationOnDetection (true);
+        aMapAIS.Bind (aManipulator, aName);
+      }
+      else
+      {
+        aManipulator = Handle(AIS_Manipulator)::DownCast (aMapAIS.Find2 (aName));
+        if (aManipulator.IsNull())
+        {
+          Message::SendFail() << "Syntax error: \"" << aName << "\" is not an AIS manipulator";
+          return 1;
+        }
+      }
+    }
+    else
+    {
+      theDi << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'";
+    }
+  }
+
+  if (aName.IsEmpty())
+  {
+    Message::SendFail ("Syntax error: please specify AIS manipulator's name as the first argument");
+    return 1;
+  }
+  if (!toDetach
+    && aManipulator.IsNull())
+  {
+    aManipulator = new AIS_Manipulator();
+    aManipulator->SetModeActivationOnDetection (true);
+    aMapAIS.Bind (aManipulator, aName);
+  }
+
+  // -----------------------------------------
+  // change properties of manipulator instance
+  // -----------------------------------------
+
+  if (toAutoActivate != -1)
+  {
+    aManipulator->SetModeActivationOnDetection (toAutoActivate == 1);
+  }
+  if (toFollowTranslation != -1)
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowTranslation (toFollowTranslation == 1);
+  }
+  if (toFollowRotation != -1)
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowRotation (toFollowRotation == 1);
+  }
+  if (toFollowDragging != -1)
+  {
+    aManipulator->ChangeTransformBehavior().SetFollowDragging (toFollowDragging == 1);
+  }
+  if (aGap >= 0.0f)
+  {
+    aManipulator->SetGap ((float )aGap);
+  }
+
+  for (NCollection_Sequence<ManipAxisModeOnOff>::Iterator aPartIter (aParts); aPartIter.More(); aPartIter.Next())
+  {
+    const ManipAxisModeOnOff& aPart = aPartIter.Value();
+    if (aPart.Axis == -1)
+    {
+      aManipulator->SetPart (aPart.Mode, aPart.ToEnable);
+    }
+    else
+    {
+      aManipulator->SetPart (aPart.Axis, aPart.Mode, aPart.ToEnable);
+    }
+  }
+
+  if (aSize > 0.0)
+  {
+    aManipulator->SetSize ((float )aSize);
+  }
+  if (isZoomable != -1)
+  {
+    aManipulator->SetZoomPersistence (isZoomable == 0);
+
+    if (ViewerTest::GetAISContext()->IsDisplayed (aManipulator))
+    {
+      ViewerTest::GetAISContext()->Remove  (aManipulator, Standard_False);
+      ViewerTest::GetAISContext()->Display (aManipulator, Standard_False);
+    }
+  }
+
+  // ----------------------------------
+  // detach existing manipulator object
+  // ----------------------------------
+
+  if (toDetach)
+  {
+    aManipulator->Detach();
+    aMapAIS.UnBind2 (aName);
+    ViewerTest::GetAISContext()->Remove (aManipulator, false);
+  }
+
+  // ---------------------------------------------------
+  // attach, detach or access manipulator from an object
+  // ---------------------------------------------------
+
+  if (!anAttachObject.IsNull())
+  {
+    aManipulator->Attach (anAttachObject, anAttachOptions);
+  }
+  if (!aViewAffinity.IsNull())
+  {
+    for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter (ViewerTest_myViews);
+         anIter.More(); anIter.Next())
+    {
+      ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, anIter.Value(), false);
+    }
+    ViewerTest::GetAISContext()->SetViewAffinity (aManipulator, aViewAffinity, true);
+  }
+
+  if (anAttachPos != ManipAjustPosition_Off
+   && aManipulator->IsAttached()
+   && (anAttachObject.IsNull() || anAttachPos != ManipAjustPosition_Center))
+  {
+    gp_Ax2 aPosition = gp::XOY();
+    const gp_Trsf aBaseTrsf = aManipulator->Object()->LocalTransformation();
+    switch (anAttachPos)
+    {
+      case ManipAjustPosition_Off:
+      {
+        break;
+      }
+      case ManipAjustPosition_Location:
+      {
+        aPosition = gp::XOY().Transformed (aBaseTrsf);
+        break;
+      }
+      case ManipAjustPosition_ShapeLocation:
+      {
+        if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aManipulator->Object()))
+        {
+          aPosition = gp::XOY().Transformed (aBaseTrsf * aShapePrs->Shape().Location());
+        }
+        else
+        {
+          Message::SendFail() << "Syntax error: manipulator is not attached to shape";
+          return 1;
+        }
+        break;
+      }
+      case ManipAjustPosition_Center:
+      {
+        Bnd_Box aBox;
+        for (AIS_ManipulatorObjectSequence::Iterator anObjIter (*aManipulator->Objects()); anObjIter.More(); anObjIter.Next())
+        {
+          Bnd_Box anObjBox;
+          anObjIter.Value()->BoundingBox (anObjBox);
+          aBox.Add (anObjBox);
+        }
+        aBox = aBox.FinitePart();
+        if (!aBox.IsVoid())
+        {
+          const gp_Pnt aCenter = (aBox.CornerMin().XYZ() + aBox.CornerMax().XYZ()) * 0.5;
+          aPosition.SetLocation (aCenter);
+        }
+        break;
+      }
+    }
+    aManipulator->SetPosition (aPosition);
+  }
+  if (!Precision::IsInfinite (aLocation.X()))
+  {
+    if (aVDir.Modulus() <= Precision::Confusion())
+    {
+      aVDir = aManipulator->Position().Direction().XYZ();
+    }
+    if (anXDir.Modulus() <= Precision::Confusion())
+    {
+      anXDir = aManipulator->Position().XDirection().XYZ();
+    }
+    aManipulator->SetPosition (gp_Ax2 (gp_Pnt (aLocation), gp_Dir (aVDir), gp_Dir (anXDir)));
   }
 
   // --------------------------------------
   // apply transformation using manipulator
   // --------------------------------------
 
-  if (aCmd.HasOption ("startTransform", 2, Standard_True))
+  if (aMousePosFrom.x() != IntegerLast())
   {
-    aManipulator->StartTransform (aCmd.ArgInt ("startTransform", 0), aCmd.ArgInt ("startTransform", 1), ViewerTest::CurrentView());
+    aManipulator->StartTransform (aMousePosFrom.x(), aMousePosFrom.y(), ViewerTest::CurrentView());
   }
-  if (aCmd.HasOption ("transform", 2, Standard_True))
+  if (aMousePosTo.x() != IntegerLast())
   {
-    aManipulator->Transform (aCmd.ArgInt ("transform", 0), aCmd.ArgInt ("transform", 1), ViewerTest::CurrentView());
+    aManipulator->Transform (aMousePosTo.x(), aMousePosTo.y(), ViewerTest::CurrentView());
   }
-  if (aCmd.HasOption ("stopTransform"))
+  if (toStopMouseTransform != -1)
   {
-    Standard_Boolean toApply = !aCmd.HasOption ("stopTransform", 1) || (aCmd.Arg ("stopTransform", 0) != "abort");
-
-    aManipulator->StopTransform (toApply);
+    aManipulator->StopTransform (toStopMouseTransform == 1);
   }
 
-  gp_Trsf aT;
-  if (aCmd.HasOption ("move", 3, Standard_True))
+  if (aTrsf.Form() != gp_Identity)
   {
-    aT.SetTranslationPart (aCmd.ArgVec ("move"));
-  }
-  if (aCmd.HasOption ("rotate", 7, Standard_True))
-  {
-    aT.SetRotation (gp_Ax1 (aCmd.ArgPnt ("rotate", 0), aCmd.ArgVec ("rotate", 3)), aCmd.ArgDouble ("rotate", 6));
-  }
-  if (aCmd.HasOption ("scale", 1))
-  {
-    aT.SetScale (gp_Pnt(), aCmd.ArgDouble("scale"));
+    aManipulator->Transform (aTrsf);
   }
 
-  if (aT.Form() != gp_Identity)
+  if (ViewerTest::GetAISContext()->IsDisplayed (aManipulator))
   {
-    aManipulator->Transform (aT);
+    ViewerTest::GetAISContext()->Redisplay (aManipulator, true);
   }
-
-  ViewerTest::GetAISContext()->Redisplay (aManipulator, Standard_True);
-
   return 0;
 }
 
@@ -15009,7 +15211,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n    tool to create and manage AIS manipulators."
       "\n    Options: "
       "\n      '-attach AISObject'                 attach manipulator to AISObject"
-      "\n      '-adjustPosition {0|1}'             adjust position when attaching"
+      "\n      '-adjustPosition {0|center|location|shapeLocation}' adjust position when attaching"
       "\n      '-adjustSize     {0|1}'             adjust size when attaching"
       "\n      '-enableModes    {0|1}'             enable modes when attaching"
       "\n      '-view  {active | [name of view]}'  display manipulator only in defined view,"

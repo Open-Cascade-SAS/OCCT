@@ -256,14 +256,10 @@ Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream,
   #define GETPOS(aPos) ((int64_t)aPos)
 #endif
 
-# if defined(_MSC_VER) && ! defined(strncasecmp)
-#  define strncasecmp _strnicmp
-# endif
-
 static inline bool str_starts_with (const char* theStr, const char* theWord, int theN)
 {
   while (isspace (*theStr) && *theStr != '\0') theStr++;
-  return !strncasecmp (theStr, theWord, theN); 
+  return !strncasecmp (theStr, theWord, theN);
 }
 
 static bool ReadVertex (const char* theStr, double& theX, double& theY, double& theZ)

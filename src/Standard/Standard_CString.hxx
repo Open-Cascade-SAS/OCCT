@@ -24,9 +24,14 @@
 #include <stdio.h>
 #include <string.h>
 
-# if defined(_MSC_VER) && ! defined(strcasecmp)
-#  define strcasecmp _stricmp
-# endif
+#if defined(_MSC_VER)
+  #if !defined(strcasecmp)
+    #define strcasecmp _stricmp
+  #endif
+  #if !defined(strncasecmp)
+    #define strncasecmp _strnicmp
+  #endif
+#endif
 
 // C++ only definitions
 #ifdef __cplusplus
