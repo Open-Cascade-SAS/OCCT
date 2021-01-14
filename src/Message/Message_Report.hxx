@@ -29,7 +29,7 @@ class Message_Messenger;
 
 class Message_Report;
 
-DEFINE_STANDARD_HANDLE(Message_Report, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_Report, Standard_Transient)
 
 //! Container for alert messages, sorted according to their gravity.
 //! 

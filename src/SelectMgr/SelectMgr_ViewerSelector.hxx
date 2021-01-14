@@ -246,42 +246,6 @@ public:
 
 public:
 
-  //! Begins an iteration scanning for the owners detected at a position in the view.
-  Standard_DEPRECATED("Deprecated method Init()")
-  void Init() { initPicked(); }
-
-  //! Continues the interation scanning for the owners detected at a position in the view,
-  //! or continues the iteration scanning for the owner closest to the position in the view.
-  Standard_DEPRECATED("Deprecated method More()")
-  Standard_Boolean More() { return morePicked(); }
-
-  //! Returns the next owner found in the iteration. This is
-  //! a scan for the owners detected at a position in the view.
-  Standard_DEPRECATED("Deprecated method Next()")
-  void Next() { nextPicked(); }
-
-  //! Returns the current selected entity detected by the selector;
-  Standard_DEPRECATED("Deprecated method Picked()")
-  Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked() const;
-
-  //! Initializes internal iterator for stored detected sensitive entities
-  Standard_DEPRECATED("Deprecated method InitDetected()")
-  void InitDetected() { initPicked(); }
-
-  //! Makes a step along the map of detected sensitive entities and their owners
-  Standard_DEPRECATED("Deprecated method NextDetected()")
-  void NextDetected() { nextPicked(); }
-
-  //! Returns true if iterator of map of detected sensitive entities has reached its end
-  Standard_DEPRECATED("Deprecated method MoreDetected()")
-  Standard_Boolean MoreDetected() { return morePicked(); }
-
-  //! Returns sensitive entity that was detected during the previous run of selection algorithm
-  Standard_DEPRECATED("Deprecated method DetectedEntity() should be replaced by DetectedEntity(int)")
-  Standard_EXPORT const Handle(Select3D_SensitiveEntity)& DetectedEntity() const;
-
-public:
-
   //! Enables/disables building BVH for sensitives in separate threads
   Standard_EXPORT void SetToPrebuildBVH(Standard_Boolean theToPrebuild, Standard_Integer theThreadsNum = -1);
 
@@ -351,21 +315,7 @@ private:
                        SelectMgr_SelectingVolumeManager& theResMgr);
 
 
-private: // implementation of deprecated methods
-
-  //! Initializes internal iterator for stored detected sensitive entities
-  void initPicked() { myCurRank = 1; }
-
-  //! Makes a step along the map of detected sensitive entities and their owners
-  void nextPicked() { ++myCurRank; }
-
-  //! Returns true if iterator of map of detected sensitive entities has reached its end
-  Standard_Boolean morePicked() const
-  {
-    if (mystored.Extent() == 0) return Standard_False;
-    if (myCurRank == 0) return Standard_False;
-    return myCurRank <= myIndexes->Length();
-  }
+private:
 
   //! Compute 3d position for detected entity.
   void updatePoint3d (SelectMgr_SortCriterion& theCriterion,
@@ -394,7 +344,6 @@ protected:
   Handle(SelectMgr_BVHThreadPool)               myBVHThreadPool;
 
   Handle(TColStd_HArray1OfInteger)             myIndexes;
-  Standard_Integer                             myCurRank;
   Standard_Boolean                             myIsLeftChildQueuedFirst;
   SelectMgr_MapOfObjectSensitives              myMapOfObjectSensitives;
 

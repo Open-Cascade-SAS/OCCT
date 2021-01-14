@@ -339,48 +339,6 @@ void PrsMgr_PresentableObject::SetTransformPersistence (const Handle(Graphic3d_T
 }
 
 //=======================================================================
-//function : GetTransformPersistence
-//purpose  :
-//=======================================================================
-gp_Pnt PrsMgr_PresentableObject::GetTransformPersistencePoint() const
-{
-  if (myTransformPersistence.IsNull())
-  {
-    return gp_Pnt();
-  }
-  else if (myTransformPersistence->IsZoomOrRotate())
-  {
-    return myTransformPersistence->AnchorPoint();
-  }
-  else if (!myTransformPersistence->IsTrihedronOr2d())
-  {
-    return gp_Pnt();
-  }
-
-  Standard_Real anX = 0.0;
-  if ((myTransformPersistence->Corner2d() & Aspect_TOTP_RIGHT) != 0)
-  {
-    anX = 1.0;
-  }
-  else if ((myTransformPersistence->Corner2d() & Aspect_TOTP_LEFT) != 0)
-  {
-    anX = -1.0;
-  }
-
-  Standard_Real anY = 0.0;
-  if ((myTransformPersistence->Corner2d() & Aspect_TOTP_TOP) != 0)
-  {
-    anY = 1.0;
-  }
-  else if ((myTransformPersistence->Corner2d() & Aspect_TOTP_BOTTOM) != 0)
-  {
-    anY = -1.0;
-  }
-
-  return gp_Pnt (anX, anY, myTransformPersistence->Offset2d().x());
-}
-
-//=======================================================================
 //function : AddChild
 //purpose  : 
 //=======================================================================

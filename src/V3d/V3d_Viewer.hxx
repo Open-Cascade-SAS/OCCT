@@ -411,43 +411,6 @@ public: //! @name grid management
 
 public: //! @name deprecated methods
 
-  Standard_DEPRECATED("This constructor is deprecated")
-  Standard_EXPORT V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
-                              const Standard_ExtString theName,
-                              const Standard_CString theDomain = "",
-                              const Standard_Real theViewSize = 1000.0,
-                              const V3d_TypeOfOrientation theViewProj = V3d_XposYnegZpos,
-                              const Quantity_Color& theViewBackground = Quantity_NOC_GRAY30,
-                              const V3d_TypeOfVisualization theVisualization = V3d_ZBUFFER,
-                              const Graphic3d_TypeOfShadingModel theShadingModel = Graphic3d_TOSM_VERTEX,
-                              const Standard_Boolean theComputedMode = Standard_True,
-                              const Standard_Boolean theDefaultComputedMode = Standard_True);
-
-  //! Defines the default base colour of views attached
-  //! to the Viewer by supplying the type of colour
-  //! definition and the three component values.
-  Standard_DEPRECATED("This method is deprecated - SetDefaultBackgroundColor() taking Quantity_Color should be used instead")
-  void SetDefaultBackgroundColor (const Quantity_TypeOfColor theType,
-                                  const Standard_Real theV1,
-                                  const Standard_Real theV2,
-                                  const Standard_Real theV3)
-  {
-    Standard_Real aV1 = theV1;
-    Standard_Real aV2 = theV2;
-    Standard_Real aV3 = theV3;
-    if (aV1 < 0.0) aV1 = 0.0; else if (aV1 > 1.0) aV1 = 1.0;
-    if (aV2 < 0.0) aV2 = 0.0; else if (aV2 > 1.0) aV2 = 1.0;
-    if (aV3 < 0.0) aV3 = 0.0; else if (aV3 > 1.0) aV3 = 1.0;
-    SetDefaultBackgroundColor (Quantity_Color (aV1, aV2, aV3, theType));
-  }
-
-  Standard_DEPRECATED("This method is deprecated - DefaultBackgroundColor() without arguments should be used instead")
-  void DefaultBackgroundColor (const Quantity_TypeOfColor theType, Standard_Real& theV1, Standard_Real& theV2, Standard_Real& theV3) const
-  {
-    Quantity_Color aColor = DefaultBackgroundColor();
-    aColor.Values (theV1, theV2, theV3, theType) ;
-  }
-
   //! Initializes an internal iterator on the active views.
   Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")
   void InitActiveViews() { myActiveViewsIterator.Initialize (myActiveViews); }

@@ -1034,7 +1034,4 @@ protected:
   Standard_Boolean              myHasOwnDimAngleDisplayUnits;
 };
 
-Standard_DEPRECATED("Class name is deprecated - use Prs3d_Drawer instead")
-typedef Prs3d_Drawer Graphic3d_HighlightStyle;
-
 #endif // _Prs3d_Drawer_HeaderFile

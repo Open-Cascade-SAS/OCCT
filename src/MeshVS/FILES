@@ -1,7 +1,6 @@
 MeshVS_Array1OfSequenceOfInteger.hxx
 MeshVS_Buffer.hxx
 MeshVS_BuilderPriority.hxx
-MeshVS_ColorHasher.hxx
 MeshVS_CommonSensitiveEntity.hxx
 MeshVS_CommonSensitiveEntity.cxx
 MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger.hxx

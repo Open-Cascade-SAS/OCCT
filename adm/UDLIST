@@ -11,7 +11,6 @@ n Expr
 n ExprIntrp
 n FSD
 n GeomAbs
-n MMgt
 n Message
 n OSD
 n PLib

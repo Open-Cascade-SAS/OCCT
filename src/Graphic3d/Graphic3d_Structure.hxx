@@ -376,9 +376,6 @@ public:
   //! Modifies the current local transformation
   Standard_EXPORT void SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf);
 
-  Standard_DEPRECATED("This method is deprecated - SetTransformation() should be called instead")
-  void Transform (const Handle(TopLoc_Datum3D)& theTrsf) { SetTransformation (theTrsf); }
-
   //! Modifies the current transform persistence (pan, zoom or rotate)
   Standard_EXPORT void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
 

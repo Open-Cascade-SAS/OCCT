@@ -63,43 +63,6 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver)
 }
 
 // ========================================================================
-// function : V3d_Viewer
-// purpose  :
-// ========================================================================
-V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver,
-                        const Standard_ExtString ,
-                        const Standard_CString ,
-                        const Standard_Real                theViewSize,
-                        const V3d_TypeOfOrientation        theViewProj,
-                        const Quantity_Color&              theViewBackground,
-                        const V3d_TypeOfVisualization      theVisualization,
-                        const Graphic3d_TypeOfShadingModel theShadingModel,
-                        const Standard_Boolean             theComputedMode,
-                        const Standard_Boolean             theDefaultComputedMode)
-: myDriver (theDriver),
-  myStructureManager (new Graphic3d_StructureManager (theDriver)),
-  myZLayerGenId (1, IntegerLast()),
-  myBackground (theViewBackground),
-  myViewSize (theViewSize),
-  myViewProj (theViewProj),
-  myVisualization (theVisualization),
-  myShadingModel (theShadingModel),
-  myDefaultTypeOfView (V3d_ORTHOGRAPHIC),
-  myComputedMode (theComputedMode),
-  myDefaultComputedMode (theDefaultComputedMode),
-  myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
-  myDisplayPlane (Standard_False),
-  myDisplayPlaneLength (theViewSize),
-  myGridType (Aspect_GT_Rectangular),
-  myGridEcho (Standard_True),
-  myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
-{
-  myRGrid = new V3d_RectangularGrid (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
-  myCGrid = new V3d_CircularGrid    (this, Quantity_Color (Quantity_NOC_GRAY50), Quantity_Color (Quantity_NOC_GRAY70));
-  SetDefaultViewSize (theViewSize);
-}
-
-// ========================================================================
 // function : CreateView
 // purpose  :
 // ========================================================================

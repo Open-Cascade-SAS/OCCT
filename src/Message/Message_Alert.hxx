@@ -18,8 +18,7 @@
 
 #include <Standard_Type.hxx>
 
-class Message_Alert;
-DEFINE_STANDARD_HANDLE(Message_Alert, MMgt_TShared)
+DEFINE_STANDARD_HANDLE(Message_Alert, Standard_Transient)
 
 //! Base class of the hierarchy of classes describing various situations
 //! occurring during execution of some algorithm or procedure.
@@ -32,7 +31,6 @@ DEFINE_STANDARD_HANDLE(Message_Alert, MMgt_TShared)
 //! can be merged with another one of the same type. Method SupportsMerge() 
 //! should return true if merge is supported; method Merge() should do the
 //! merge if possible and return true in that case and false otherwise.
-//! 
 class Message_Alert : public Standard_Transient
 {
 public:

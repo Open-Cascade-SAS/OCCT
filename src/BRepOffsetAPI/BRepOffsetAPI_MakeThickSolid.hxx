@@ -54,18 +54,6 @@ public:
   //! Constructor does nothing.
   Standard_EXPORT BRepOffsetAPI_MakeThickSolid();
 
-  //! Deprecated constructor. Please avoid usage of this constructor.
-  Standard_DEPRECATED("Deprecated constructor. Please use constructor without parameters and one of make methods.")
-  Standard_EXPORT BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S,
-                                               const TopTools_ListOfShape& ClosingFaces,
-                                               const Standard_Real Offset,
-                                               const Standard_Real Tol,
-                                               const BRepOffset_Mode Mode = BRepOffset_Skin,
-                                               const Standard_Boolean Intersection = Standard_False,
-                                               const Standard_Boolean SelfInter = Standard_False,
-                                               const GeomAbs_JoinType Join = GeomAbs_Arc,
-                                               const Standard_Boolean RemoveIntEdges = Standard_False);
-
   //! Constructs solid using simple algorithm. 
   //! According to its nature it is not possible to set list of the closing faces.
   //! This algorithm does not support faces removing. It is caused by fact that 

@@ -99,15 +99,6 @@ public: // short aliases to Connect() method
     return connect (theAnotherObj, new TopLoc_Datum3D (theLocation), theTrsfPers);
   }
 
-  Standard_DEPRECATED("This method is deprecated - Connect() taking Graphic3d_TransformPers should be called instead")
-  Handle(AIS_InteractiveObject) Connect (const Handle(AIS_InteractiveObject)& theInteractive,
-                                         const gp_Trsf& theLocation,
-                                         const Graphic3d_TransModeFlags& theTrsfPersFlag,
-                                         const gp_Pnt& theTrsfPersPoint)
-  {
-    return connect (theInteractive, new TopLoc_Datum3D (theLocation), Graphic3d_TransformPers::FromDeprecatedParams (theTrsfPersFlag, theTrsfPersPoint));
-  }
-
 protected:
   
   //! this method is redefined virtual;

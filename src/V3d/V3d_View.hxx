@@ -893,6 +893,10 @@ public:
   //! @param thePlane [in] the clip plane to be removed from view.
   Standard_EXPORT virtual void RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane);
 
+  //! Get clip planes.
+  //! @return sequence clip planes that have been set for the view
+  Standard_EXPORT const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const;
+
   //! Sets sequence of clip planes to the view. The planes that have been set
   //! before are removed from the view. The composition of clip planes
   //! truncates the rendering space to convex volume. Number of supported
@@ -901,17 +905,6 @@ public:
   //! exceed the limit are ignored during rendering.
   //! @param thePlanes [in] the clip planes to set.
   Standard_EXPORT void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
-
-  Standard_DEPRECATED("This method is deprecated - overload taking Handle should be used instead")
-  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
-  {
-    Handle(Graphic3d_SequenceOfHClipPlane) aPlanes = new Graphic3d_SequenceOfHClipPlane (thePlanes);
-    SetClipPlanes (aPlanes);
-  }
-
-  //! Get clip planes.
-  //! @return sequence clip planes that have been set for the view
-  Standard_EXPORT const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const;
 
   //! Returns the MAX number of clipping planes associated to the view.
   Standard_EXPORT Standard_Integer PlaneLimit() const;

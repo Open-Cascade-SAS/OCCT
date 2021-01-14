@@ -113,12 +113,6 @@ public:
   //! the current active signal handler, and only then is
   //! converted to C++ exception.
   Standard_EXPORT void Jump();
-  
-  //! Returns the last caught exception.
-  //! Needed when exceptions are emulated by C longjumps,
-  //! in other cases is also provided for compatibility.
-  Standard_DEPRECATED("This method is deprecated (not thread-safe), use standard C++ mechanism instead")
-  Standard_EXPORT static Handle(Standard_Failure) Caught();
 
   DEFINE_STANDARD_RTTIEXT(Standard_Failure,Standard_Transient)
 

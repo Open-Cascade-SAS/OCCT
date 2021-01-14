@@ -122,50 +122,6 @@ public:
   Standard_DEPRECATED("This method is deprecated - TextAspect() with axis parameter should be called instead")
   const Handle(Prs3d_TextAspect)& TextAspect() const { return myTextAspects[Prs3d_DatumParts_XAxis]; }
 
-  //! Returns the attributes for display of the first axis.
-  Standard_DEPRECATED("This method is deprecated - LineAspect() should be called instead")
-  const Handle(Prs3d_LineAspect)& FirstAxisAspect() const { return myLineAspects[Prs3d_DatumParts_XAxis]; }
-
-  //! Returns the attributes for display of the second axis.
-  Standard_DEPRECATED("This method is deprecated - LineAspect() should be called instead")
-  const Handle(Prs3d_LineAspect)& SecondAxisAspect() const { return myLineAspects[Prs3d_DatumParts_YAxis]; }
-
-  //! Returns the attributes for display of the third axis.
-  Standard_DEPRECATED("This method is deprecated - LineAspect() should be called instead")
-  const Handle(Prs3d_LineAspect)& ThirdAxisAspect() const { return myLineAspects[Prs3d_DatumParts_ZAxis]; }
-
-  //! Sets the DrawFirstAndSecondAxis attributes to active.
-  Standard_DEPRECATED("This method is deprecated - SetDrawDatumAxes() should be called instead")
-  Standard_EXPORT void SetDrawFirstAndSecondAxis (Standard_Boolean theToDraw);
-
-  //! Returns true if the first and second axes can be drawn.
-  Standard_DEPRECATED("This method is deprecated - DatumAxes() should be called instead")
-  Standard_Boolean DrawFirstAndSecondAxis() const
-  {
-    return (myAxes & Prs3d_DatumAxes_XAxis) != 0
-        && (myAxes & Prs3d_DatumAxes_YAxis) != 0;
-  }
-
-  //! Sets the DrawThirdAxis attributes to active.
-  Standard_DEPRECATED("This method is deprecated - SetDrawDatumAxes() should be called instead")
-  Standard_EXPORT void SetDrawThirdAxis (Standard_Boolean theToDraw);
-
-  //! Returns true if the third axis can be drawn.
-  Standard_DEPRECATED("This method is deprecated - DatumAxes() should be called instead")
-  Standard_Boolean DrawThirdAxis() const { return (myAxes & Prs3d_DatumAxes_ZAxis) != 0; }
-
-  //! Returns the length of the displayed first axis.
-  Standard_DEPRECATED("This method is deprecated - AxisLength() should be called instead")
-  Standard_Real FirstAxisLength() const { return myAttributes[Prs3d_DatumAttribute_XAxisLength]; }
-
-  //! Returns the length of the displayed second axis.
-  Standard_DEPRECATED("This method is deprecated - AxisLength() should be called instead")
-  Standard_Real SecondAxisLength() const { return myAttributes[Prs3d_DatumAttribute_YAxisLength]; }
-
-  //! Returns the length of the displayed third axis.
-  Standard_DEPRECATED("This method is deprecated - AxisLength() should be called instead")
-  Standard_Real ThirdAxisLength() const { return myAttributes[Prs3d_DatumAttribute_ZAxisLength]; }
-
 protected:
 
   Handle(Prs3d_ShadingAspect) myShadedAspects[Prs3d_DatumParts_NB];

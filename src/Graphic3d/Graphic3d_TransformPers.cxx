@@ -16,43 +16,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TransformPers, Standard_Transient)
 
 // =======================================================================
-// function : FromDeprecatedParams
-// purpose  :
-// =======================================================================
-Handle(Graphic3d_TransformPers) Graphic3d_TransformPers::FromDeprecatedParams (Graphic3d_TransModeFlags theFlag,
-                                                                               const gp_Pnt&            thePoint)
-{
-  Handle(Graphic3d_TransformPers) aTrsfPers;
-  if (Graphic3d_TransformPers::IsZoomOrRotate (theFlag))
-  {
-    aTrsfPers = new Graphic3d_TransformPers (theFlag, thePoint);
-  }
-  else if (Graphic3d_TransformPers::IsTrihedronOr2d (theFlag))
-  {
-    Standard_Integer aCorner = Aspect_TOTP_CENTER;
-    const Graphic3d_Vec2i anOffset (Standard_Integer(thePoint.Z()), Standard_Integer(thePoint.Z()));
-    if (thePoint.X() > 0.0)
-    {
-      aCorner |= Aspect_TOTP_RIGHT;
-    }
-    else if (thePoint.X() < 0.0)
-    {
-      aCorner |= Aspect_TOTP_LEFT;
-    }
-    if (thePoint.Y() > 0.0)
-    {
-      aCorner |= Aspect_TOTP_TOP;
-    }
-    else if (thePoint.Y() < 0.0)
-    {
-      aCorner |= Aspect_TOTP_BOTTOM;
-    }
-    aTrsfPers = new Graphic3d_TransformPers (theFlag, Aspect_TypeOfTriedronPosition(aCorner), anOffset);
-  }
-  return aTrsfPers;
-}
-
-// =======================================================================
 // function : DumpJson
 // purpose  :
 // =======================================================================

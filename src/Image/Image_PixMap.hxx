@@ -297,26 +297,6 @@ public: //! @name low-level API for batch-processing (pixels reading / compariso
     return myData.ChangeValue (theRow, theCol);
   }
 
-public:
-
-  Standard_DEPRECATED("This member is deprecated, use Image_Format enumeration instead")
-  typedef Image_Format ImgFormat;
-  static const Image_Format ImgUNKNOWN = Image_Format_UNKNOWN;
-  static const Image_Format ImgGray    = Image_Format_Gray;
-  static const Image_Format ImgAlpha   = Image_Format_Alpha;
-  static const Image_Format ImgRGB     = Image_Format_RGB;
-  static const Image_Format ImgBGR     = Image_Format_BGR;
-  static const Image_Format ImgRGB32   = Image_Format_RGB32;
-  static const Image_Format ImgBGR32   = Image_Format_BGR32;
-  static const Image_Format ImgRGBA    = Image_Format_RGBA;
-  static const Image_Format ImgBGRA    = Image_Format_BGRA;
-  static const Image_Format ImgGrayF   = Image_Format_GrayF;
-  static const Image_Format ImgAlphaF  = Image_Format_AlphaF;
-  static const Image_Format ImgRGBF    = Image_Format_RGBF;
-  static const Image_Format ImgBGRF    = Image_Format_BGRF;
-  static const Image_Format ImgRGBAF   = Image_Format_RGBAF;
-  static const Image_Format ImgBGRAF   = Image_Format_BGRAF;
-
 protected:
 
   Image_PixMapData myData;      //!< data buffer

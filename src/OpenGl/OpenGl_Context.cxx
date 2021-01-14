@@ -1331,11 +1331,11 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   // standard formats
   mySupportedFormats->Clear();
-  mySupportedFormats->Add (Image_PixMap::ImgGray);
-  mySupportedFormats->Add (Image_PixMap::ImgAlpha);
-  mySupportedFormats->Add (Image_PixMap::ImgRGB);
-  mySupportedFormats->Add (Image_PixMap::ImgRGB32);
-  mySupportedFormats->Add (Image_PixMap::ImgRGBA);
+  mySupportedFormats->Add (Image_Format_Gray);
+  mySupportedFormats->Add (Image_Format_Alpha);
+  mySupportedFormats->Add (Image_Format_RGB);
+  mySupportedFormats->Add (Image_Format_RGB32);
+  mySupportedFormats->Add (Image_Format_RGBA);
 
   if (caps->contextMajorVersionUpper != -1)
   {
@@ -1490,8 +1490,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   if (extBgra)
   {
     // no BGR on OpenGL ES - only BGRA as extension
-    mySupportedFormats->Add (Image_PixMap::ImgBGR32);
-    mySupportedFormats->Add (Image_PixMap::ImgBGRA);
+    mySupportedFormats->Add (Image_Format_BGR32);
+    mySupportedFormats->Add (Image_Format_BGRA);
   }
 
   core11fwd = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
@@ -1927,9 +1927,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   if (extBgra)
   {
-    mySupportedFormats->Add (Image_PixMap::ImgBGR);
-    mySupportedFormats->Add (Image_PixMap::ImgBGR32);
-    mySupportedFormats->Add (Image_PixMap::ImgBGRA);
+    mySupportedFormats->Add (Image_Format_BGR);
+    mySupportedFormats->Add (Image_Format_BGR32);
+    mySupportedFormats->Add (Image_Format_BGRA);
   }
 
   hasDrawBuffers = IsGlGreaterEqual (2, 0) ? OpenGl_FeatureInCore :

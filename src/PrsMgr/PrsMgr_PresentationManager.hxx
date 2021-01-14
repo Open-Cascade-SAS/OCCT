@@ -61,7 +61,7 @@ public:
   //! Presentation manager with the given mode.
   //! If @theMode is -1, then erases all presentations of the object.
   Standard_EXPORT void Erase (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
-  
+
 
   //! Clears the presentation of the presentable object thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT virtual void Clear (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode = 0);
@@ -72,13 +72,10 @@ public:
   //! Removes highlighting from the presentation of the presentable object.
   Standard_EXPORT void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject);
 
-  Standard_DEPRECATED("Deprecated method Unhighlight() - argument theMode will be ignored")
-  void Unhighlight (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode) { Unhighlight (thePrsObject); (void )theMode; }
-
   //! Sets the display priority theNewPrior of the
   //! presentable object thePrsObject in this framework with the display mode theMode.
   Standard_EXPORT void SetDisplayPriority (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode, const Standard_Integer theNewPrior) const;
-  
+
 
   //! Returns the display priority of the presentable object
   //! thePrsObject in this framework with the display mode theMode.

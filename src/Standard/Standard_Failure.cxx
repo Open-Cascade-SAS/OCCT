@@ -27,9 +27,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Standard_Failure,Standard_Transient)
 
 namespace
 {
-  //! Global last failure object returned by Standard_Failure::Caught().
-  static Standard_THREADLOCAL Handle(Standard_Failure) Standard_Failure_RaisedError;
-
   //! Global parameter defining default length of stack trace.
   static Standard_Integer Standard_Failure_DefaultStackTraceLength = 0;
 }
@@ -222,15 +219,6 @@ void Standard_Failure::SetStackString (const Standard_CString theStack)
 }
 
 // =======================================================================
-// function : Caught
-// purpose  :
-// =======================================================================
-Handle(Standard_Failure) Standard_Failure::Caught()
-{
-  return Standard_Failure_RaisedError;
-}
-
-// =======================================================================
 // function : Raise
 // purpose  :
 // =======================================================================
@@ -276,7 +264,6 @@ void Standard_Failure::Reraise (const Standard_SStream& theReason)
 // =======================================================================
 void Standard_Failure::Reraise()
 {
-  Standard_Failure_RaisedError = this;
   Throw();
 }
 
@@ -290,7 +277,6 @@ void Standard_Failure::Jump()
   Standard_ErrorHandler::Error (this);
   Standard_ErrorHandler::Abort (this);
 #else
-  Standard_Failure_RaisedError = this;
   Throw();
 #endif
 }

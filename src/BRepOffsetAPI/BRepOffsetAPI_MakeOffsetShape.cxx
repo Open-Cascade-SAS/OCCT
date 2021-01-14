@@ -30,23 +30,6 @@ BRepOffsetAPI_MakeOffsetShape::BRepOffsetAPI_MakeOffsetShape()
 }
 
 //=======================================================================
-//function : BRepOffsetAPI_MakeOffsetShape
-//purpose  : 
-//=======================================================================
-BRepOffsetAPI_MakeOffsetShape::BRepOffsetAPI_MakeOffsetShape(const TopoDS_Shape& S,
-                                                             const Standard_Real Offset,
-                                                             const Standard_Real Tol,
-                                                             const BRepOffset_Mode Mode,
-                                                             const Standard_Boolean Intersection,
-                                                             const Standard_Boolean SelfInter,
-                                                             const GeomAbs_JoinType Join,
-                                                             const Standard_Boolean RemoveIntEdges)
-: myLastUsedAlgo(OffsetAlgo_NONE)
-{
-  PerformByJoin(S, Offset, Tol, Mode, Intersection, SelfInter, Join, RemoveIntEdges);
-}
-
-//=======================================================================
 //function : PerformByJoin
 //purpose  : 
 //=======================================================================

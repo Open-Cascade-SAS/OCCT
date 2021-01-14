@@ -4993,14 +4993,18 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         }
       }
 
-      const gp_Pnt aPnt (aX.RealValue(), aY.RealValue(), aZ.RealValue());
       if (aTrsfPers->IsZoomOrRotate())
       {
-        aTrsfPers->SetAnchorPoint (aPnt);
+        aTrsfPers->SetAnchorPoint (gp_Pnt (aX.RealValue(), aY.RealValue(), aZ.RealValue()));
       }
       else if (aTrsfPers->IsTrihedronOr2d())
       {
-        aTrsfPers = Graphic3d_TransformPers::FromDeprecatedParams (aTrsfPers->Mode(), aPnt);
+        Standard_Integer aCorner = Aspect_TOTP_CENTER;
+        if      (aX.RealValue() > 0.0) { aCorner |= Aspect_TOTP_RIGHT; }
+        else if (aX.RealValue() < 0.0) { aCorner |= Aspect_TOTP_LEFT; }
+        if      (aY.RealValue() > 0.0) { aCorner |= Aspect_TOTP_TOP; }
+        else if (aY.RealValue() < 0.0) { aCorner |= Aspect_TOTP_BOTTOM; }
+        aTrsfPers = new Graphic3d_TransformPers (aTrsfPers->Mode(), Aspect_TypeOfTriedronPosition (aCorner), Graphic3d_Vec2i (aZ.IntegerValue()));
       }
     }
     else if (aNameCase == "-layer"

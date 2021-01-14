@@ -68,38 +68,6 @@ Prs3d_DatumAspect::Prs3d_DatumAspect()
 }
 
 // =======================================================================
-// function : SetDrawFirstAndSecondAxis
-// purpose  :
-// =======================================================================
-void Prs3d_DatumAspect::SetDrawFirstAndSecondAxis (Standard_Boolean theToDraw)
-{
-  if (theToDraw)
-  {
-    myAxes = ((myAxes & Prs3d_DatumAxes_ZAxis) != 0 ? Prs3d_DatumAxes_XYZAxes : Prs3d_DatumAxes_XYAxes);
-  }
-  else
-  {
-    myAxes = Prs3d_DatumAxes_ZAxis;
-  }
-}
-
-// =======================================================================
-// function : SetDrawThirdAxis
-// purpose  :
-// =======================================================================
-void Prs3d_DatumAspect::SetDrawThirdAxis (Standard_Boolean theToDraw)
-{
-  if (theToDraw)
-  {
-    myAxes = ((myAxes & Prs3d_DatumAxes_XYAxes) != 0 ? Prs3d_DatumAxes_XYZAxes : Prs3d_DatumAxes_ZAxis);
-  }
-  else
-  {
-    myAxes = Prs3d_DatumAxes_XYAxes;
-  }
-}
-
-// =======================================================================
 // function : DrawDatumPart
 // purpose  :
 // =======================================================================

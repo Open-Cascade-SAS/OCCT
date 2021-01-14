@@ -2729,7 +2729,12 @@ static int VDrawText (Draw_Interpretor& theDI,
         }
       }
 
-      aTrsfPers = Graphic3d_TransformPers::FromDeprecatedParams (Graphic3d_TMF_2d, gp_Pnt (aX.IntegerValue(), aY.IntegerValue(), aZ.IntegerValue()));
+      Standard_Integer aCorner = Aspect_TOTP_CENTER;
+      if      (aX.IntegerValue() > 0.0) { aCorner |= Aspect_TOTP_RIGHT; }
+      else if (aX.IntegerValue() < 0.0) { aCorner |= Aspect_TOTP_LEFT; }
+      if      (aY.IntegerValue() > 0.0) { aCorner |= Aspect_TOTP_TOP; }
+      else if (aY.IntegerValue() < 0.0) { aCorner |= Aspect_TOTP_BOTTOM; }
+      aTrsfPers = new Graphic3d_TransformPers (aTrsfPers->Mode(), Aspect_TypeOfTriedronPosition (aCorner), Graphic3d_Vec2i (aZ.IntegerValue()));
     }
     else
     {

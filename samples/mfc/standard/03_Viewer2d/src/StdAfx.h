@@ -113,16 +113,12 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <HLRAlgo_Projector.hxx>
-#include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_Length.hxx>
-#include <Quantity_PlaneAngle.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectableObject.hxx>

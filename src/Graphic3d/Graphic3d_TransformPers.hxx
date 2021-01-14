@@ -59,11 +59,6 @@ public:
     return (theMode & (Graphic3d_TMF_TriedronPers | Graphic3d_TMF_2d)) != 0;
   }
 
-  //! Create Graphic3d_TransformPers instance from deprecated parameters set
-  //! decoding 2D corner + offset parameters from 3D point.
-  Standard_EXPORT static Handle(Graphic3d_TransformPers) FromDeprecatedParams (Graphic3d_TransModeFlags theFlag,
-                                                                               const gp_Pnt&            thePoint);
-
 public:
 
   //! Set transformation persistence.

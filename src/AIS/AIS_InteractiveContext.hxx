@@ -346,14 +346,6 @@ public: //! @name object local transformation management
   Standard_EXPORT void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObject,
                                                 const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
-  Standard_DEPRECATED("This method is deprecated - SetTransformPersistence() taking Graphic3d_TransformPers should be called instead")
-  void SetTransformPersistence (const Handle(AIS_InteractiveObject)& theObj,
-                                const Graphic3d_TransModeFlags&      theFlag,
-                                const gp_Pnt&                        thePoint = gp_Pnt (0.0, 0.0, 0.0))
-  {
-    SetTransformPersistence (theObj, Graphic3d_TransformPers::FromDeprecatedParams (theFlag, thePoint));
-  }
-
 public: //! @name mouse picking logic (detection and dynamic highlighting of entities under cursor)
 
   //! Setup pixel tolerance for MoveTo() operation.

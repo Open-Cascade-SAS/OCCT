@@ -56,39 +56,6 @@ public:
                                                       const gp_Ax2&                     theOrientation,
                                                       const Standard_Boolean            theHasOwnAnchor = Standard_True);
 
-public:
-
-  //! Alias to another method Draw() for backward compatibility.
-  Standard_DEPRECATED("Prs3d_Text::Draw() taking Graphic3d_Group should be used instead")
-  static void Draw (const Handle(Prs3d_Presentation)& thePrs,
-                    const Handle(Prs3d_Drawer)& theDrawer,
-                    const TCollection_ExtendedString& theText,
-                    const gp_Pnt& theAttachmentPoint)
-  {
-    Draw (thePrs->CurrentGroup(), theDrawer->TextAspect(), theText, theAttachmentPoint);
-  }
-
-  //! Alias to another method Draw() for backward compatibility.
-  Standard_DEPRECATED("Prs3d_Text::Draw() taking Graphic3d_Group should be used instead")
-  static void Draw (const Handle(Prs3d_Presentation)& thePrs,
-                    const Handle(Prs3d_TextAspect)&   theAspect,
-                    const TCollection_ExtendedString& theText,
-                    const gp_Ax2&                     theOrientation,
-                    const Standard_Boolean            theHasOwnAnchor = Standard_True)
-  {
-    Draw (thePrs->CurrentGroup(), theAspect, theText, theOrientation, theHasOwnAnchor);
-  }
-
-  //! Alias to another method Draw() for backward compatibility.
-  Standard_DEPRECATED("Prs3d_Text::Draw() taking Graphic3d_Group should be used instead")
-  static void Draw (const Handle(Prs3d_Presentation)& thePrs,
-                    const Handle(Prs3d_TextAspect)& theAspect,
-                    const TCollection_ExtendedString& theText,
-                    const gp_Pnt& theAttachmentPoint)
-  {
-    Draw (thePrs->CurrentGroup(), theAspect, theText, theAttachmentPoint);
-  }
-
 };
 
 #endif // _Prs3d_Text_HeaderFile

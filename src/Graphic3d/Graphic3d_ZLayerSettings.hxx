@@ -22,14 +22,6 @@
 #include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 
-enum Graphic3d_ZLayerSetting
-{
-  Graphic3d_ZLayerDepthTest = 1,
-  Graphic3d_ZLayerDepthWrite = 2,
-  Graphic3d_ZLayerDepthClear = 4,
-  Graphic3d_ZLayerDepthOffset = 8
-};
-
 //! Structure defines list of ZLayer properties.
 struct Graphic3d_ZLayerSettings
 {
@@ -153,46 +145,6 @@ struct Graphic3d_ZLayerSettings
 
   //! Modify glPolygonOffset() arguments.
   Graphic3d_PolygonOffset& ChangePolygonOffset() { return myPolygonOffset; }
-
-  //! Returns true if theSetting is enabled.
-  Standard_DEPRECATED("Deprecated method IsSettingEnabled() should be replaced by individual property getters")
-  Standard_Boolean IsSettingEnabled (const Graphic3d_ZLayerSetting theSetting) const
-  {
-    switch (theSetting)
-    {
-      case Graphic3d_ZLayerDepthTest:   return myToEnableDepthTest;
-      case Graphic3d_ZLayerDepthWrite:  return myToEnableDepthWrite;
-      case Graphic3d_ZLayerDepthClear:  return myToClearDepth;
-      case Graphic3d_ZLayerDepthOffset: return myPolygonOffset.Mode != Aspect_POM_Off;
-    }
-    return Standard_False;
-  }
-
-  //! Enables theSetting
-  Standard_DEPRECATED("Deprecated method EnableSetting() should be replaced by individual property getters")
-  void EnableSetting (const Graphic3d_ZLayerSetting theSetting)
-  {
-    switch (theSetting)
-    {
-      case Graphic3d_ZLayerDepthTest:   myToEnableDepthTest  = Standard_True; return;
-      case Graphic3d_ZLayerDepthWrite:  myToEnableDepthWrite = Standard_True; return;
-      case Graphic3d_ZLayerDepthClear:  myToClearDepth       = Standard_True; return;
-      case Graphic3d_ZLayerDepthOffset: myPolygonOffset.Mode = Aspect_POM_Fill; return;
-    }
-  }
-
-  //! Disables theSetting
-  Standard_DEPRECATED("Deprecated method DisableSetting() should be replaced by individual property getters")
-  void DisableSetting (const Graphic3d_ZLayerSetting theSetting)
-  {
-    switch (theSetting)
-    {
-      case Graphic3d_ZLayerDepthTest:   myToEnableDepthTest  = Standard_False; return;
-      case Graphic3d_ZLayerDepthWrite:  myToEnableDepthWrite = Standard_False; return;
-      case Graphic3d_ZLayerDepthClear:  myToClearDepth       = Standard_False; return;
-      case Graphic3d_ZLayerDepthOffset: myPolygonOffset.Mode = Aspect_POM_Off; return;
-    }
-  }
 
   //! Sets minimal possible positive depth offset.
   void SetDepthOffsetPositive()

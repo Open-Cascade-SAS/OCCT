@@ -165,7 +165,6 @@ SelectMgr_ViewerSelector::SelectMgr_ViewerSelector()
   myToUpdateTolerance (Standard_True),
   myCameraScale (1.0),
   myToPrebuildBVH (Standard_False),
-  myCurRank (0),
   myIsLeftChildQueuedFirst (Standard_False)
 {
   myEntitySetBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
@@ -745,17 +744,6 @@ void SelectMgr_ViewerSelector::ClearPicked()
   mystored.Clear();
 }
 
-//==================================================
-// Function: Picked
-// Purpose :
-//==================================================
-Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked() const
-{
-  const Standard_Integer aRankInMap = myIndexes->Value (myCurRank);
-  const Handle(SelectMgr_EntityOwner)& anOwner = mystored.FindKey (aRankInMap);
-  return anOwner;
-}
-
 //=======================================================================
 //function : Picked
 //purpose  :
@@ -1058,17 +1046,6 @@ void SelectMgr_ViewerSelector::ResetSelectionActivationStatus()
 }
 
 //=======================================================================
-// function : DetectedEntity
-// purpose  : Returns sensitive entity that was detected during the
-//            previous run of selection algorithm
-//=======================================================================
-const Handle(Select3D_SensitiveEntity)& SelectMgr_ViewerSelector::DetectedEntity() const
-{
-  const Standard_Integer aRankInMap = myIndexes->Value(myCurRank);
-  return mystored.FindFromIndex (aRankInMap).Entity;
-}
-
-//=======================================================================
 // function : ActiveOwners
 // purpose  : Returns the list of active entity owners
 //=======================================================================
@@ -1135,7 +1112,6 @@ void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_
   if (!myIndexes.IsNull())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIndexes->Size())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurRank)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsLeftChildQueuedFirst)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMapOfObjectSensitives.Extent())
 }

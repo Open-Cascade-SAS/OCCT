@@ -70,17 +70,6 @@ public:
                                     const Standard_Real theAngle,
                                     const Standard_Real theLength);
 
-  //! Alias to another method Draw() for backward compatibility.
-  Standard_DEPRECATED("Prs3d_Arrow::Draw() taking Graphic3d_Group should be used instead")
-  static void Draw (const Handle(Prs3d_Presentation)& thePrs,
-                    const gp_Pnt& theLocation,
-                    const gp_Dir& theDirection,
-                    const Standard_Real theAngle,
-                    const Standard_Real theLength)
-  {
-    Draw (thePrs->CurrentGroup(), theLocation, theDirection, theAngle, theLength);
-  }
-
 };
 
 #endif // _Prs3d_Arrow_HeaderFile

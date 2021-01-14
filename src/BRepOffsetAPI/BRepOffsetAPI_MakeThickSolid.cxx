@@ -34,27 +34,6 @@ BRepOffsetAPI_MakeThickSolid::BRepOffsetAPI_MakeThickSolid()
 }
 
 //=======================================================================
-//function : BRepOffsetAPI_MakeThickSolid
-//purpose  : 
-//=======================================================================
-BRepOffsetAPI_MakeThickSolid::BRepOffsetAPI_MakeThickSolid(const TopoDS_Shape& S,
-                                                           const TopTools_ListOfShape& ClosingFaces,
-                                                           const Standard_Real Offset,
-                                                           const Standard_Real Tol,
-                                                           const BRepOffset_Mode Mode,
-                                                           const Standard_Boolean Intersection,
-                                                           const Standard_Boolean SelfInter,
-                                                           const GeomAbs_JoinType Join,
-                                                           const Standard_Boolean RemoveIntEdges)
-{
-  // Build only solids.
-  mySimpleOffsetShape.SetBuildSolidFlag(Standard_True);
-
-  MakeThickSolidByJoin(S, ClosingFaces, Offset, Tol,
-                       Mode, Intersection, SelfInter, Join, RemoveIntEdges);
-}
-
-//=======================================================================
 //function : MakeThickSolidByJoin
 //purpose  : 
 //=======================================================================

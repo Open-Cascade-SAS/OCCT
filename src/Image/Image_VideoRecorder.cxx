@@ -402,7 +402,7 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec (const Image_VideoParams& t
   myFrame->height = aCodecCtx->height;
 
   const Standard_Size aStride = aCodecCtx->width + 16 - (aCodecCtx->width % 16);
-  if (!myImgSrcRgba.InitZero (Image_PixMap::ImgRGBA, aCodecCtx->width, aCodecCtx->height, aStride))
+  if (!myImgSrcRgba.InitZero (Image_Format_RGBA, aCodecCtx->width, aCodecCtx->height, aStride))
   {
     ::Message::SendFail (TCollection_AsciiString ("Error: can not allocate RGBA32 picture ")
                        + aCodecCtx->width+ "x" + aCodecCtx->height);
