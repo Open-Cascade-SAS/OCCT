@@ -111,7 +111,7 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
   myYBottom (thePxTop + thePxHeight)
 {
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  //
+  (void )theTitle;
 #else
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {

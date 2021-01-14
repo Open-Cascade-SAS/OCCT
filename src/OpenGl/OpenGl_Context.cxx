@@ -787,7 +787,7 @@ Standard_Boolean OpenGl_Context::SetSwapInterval (const Standard_Integer theInte
     return Standard_True;
   }
 #elif defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  //
+  (void )theInterval; // vsync cannot be turned OFF on iOS
 #elif defined(__APPLE__)
   if (::CGLSetParameter (CGLGetCurrentContext(), kCGLCPSwapInterval, &theInterval) == kCGLNoError)
   {
