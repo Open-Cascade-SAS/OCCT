@@ -147,14 +147,18 @@ Standard_Boolean XCAFDoc_LayerTool::FindLayer(const TCollection_ExtendedString& 
 //purpose  : 
 //=======================================================================
 
-TDF_Label XCAFDoc_LayerTool::FindLayer(const TCollection_ExtendedString& aLayer) const
+TDF_Label XCAFDoc_LayerTool::FindLayer(const TCollection_ExtendedString& aLayer,
+                                       const Standard_Boolean theToFindWithProperty,
+                                       const Standard_Boolean theToFindVisible) const
 {
   TDF_ChildIterator it( Label() );
   TDF_Label lab;
   for (; it.More(); it.Next()) {
     TDF_Label aLabel = it.Value();
     Handle(TDataStd_Name) aName;
-    if ( aLabel.FindAttribute (TDataStd_Name::GetID(), aName) && (aName->Get().IsEqual(aLayer)) ) {
+    if ( aLabel.FindAttribute (TDataStd_Name::GetID(), aName) && (aName->Get().IsEqual(aLayer)) &&
+         (!theToFindWithProperty || (theToFindWithProperty && (IsVisible(aLabel) == theToFindVisible))) )
+    {
       lab =  aLabel;
       break;
     }
@@ -168,18 +172,35 @@ TDF_Label XCAFDoc_LayerTool::FindLayer(const TCollection_ExtendedString& aLayer)
 //purpose  : 
 //=======================================================================
 
-TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& aLayer) const
+TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer) const
 {
   TDF_Label lab;
-  if ( FindLayer(aLayer, lab) )
+  if ( FindLayer(theLayer, lab) )
     return lab;
   TDF_TagSource aTag;
   TDF_Label aLabel = aTag.NewChild( Label() );
   Handle(TDataStd_Name) aName = new TDataStd_Name;
-  aName->Set(aLabel, aLayer);
+  aName->Set(aLabel, theLayer);
   return aLabel;
 }
 
+//=======================================================================
+//function : AddLayer
+//purpose  : 
+//=======================================================================
+
+TDF_Label XCAFDoc_LayerTool::AddLayer(const TCollection_ExtendedString& theLayer,
+                                      const Standard_Boolean theToFindVisible) const
+{
+  TDF_Label lab = FindLayer(theLayer, Standard_True, theToFindVisible);
+  if (!lab.IsNull())
+    return lab;
+  TDF_TagSource aTag;
+  TDF_Label aLabel = aTag.NewChild(Label());
+  Handle(TDataStd_Name) aName = new TDataStd_Name;
+  aName->Set(aLabel, theLayer);
+  return aLabel;
+}
 
 //=======================================================================
 //function : RemoveLayer

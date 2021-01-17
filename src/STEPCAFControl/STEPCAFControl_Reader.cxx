@@ -1491,6 +1491,18 @@ Standard_Boolean STEPCAFControl_Reader::ReadLayers(const Handle(XSControl_WorkSe
     Handle(TCollection_HAsciiString) descr = SVPLA->Description();
     Handle(TCollection_HAsciiString) hName = SVPLA->Name();
     TCollection_ExtendedString aLayerName(hName->String());
+    TDF_Label aLayerLabel;
+
+    // check invisibility
+    Standard_Boolean isVisible = Standard_True;;
+    Interface_EntityIterator subs = WS->Graph().Sharings(SVPLA);
+    for (subs.Start(); subs.More() && isVisible; subs.Next()) {
+      if (!subs.Value()->IsKind(STANDARD_TYPE(StepVisual_Invisibility))) continue;
+#ifdef OCCT_DEBUG
+      std::cout << "\tLayer \"" << aLayerName << "\" is invisible" << std::endl;
+#endif
+      isVisible = Standard_False;
+    }
 
     // find a target shape and its label in the document
     for (Standard_Integer j = 1; j <= SVPLA->NbAssignedItems(); j++) {
@@ -1503,20 +1515,13 @@ Standard_Boolean STEPCAFControl_Reader::ReadLayers(const Handle(XSControl_WorkSe
 
       TDF_Label shL;
       if (!STool->Search(S, shL, Standard_True, Standard_True, Standard_True)) continue;
-      LTool->SetLayer(shL, aLayerName);
+      if (aLayerLabel.IsNull())
+        aLayerLabel = LTool->AddLayer(aLayerName, isVisible);
+      LTool->SetLayer(shL, aLayerLabel);
     }
 
-    // check invisibility
-    Interface_EntityIterator subs = WS->Graph().Sharings(SVPLA);
-    for (subs.Start(); subs.More(); subs.Next()) {
-      if (!subs.Value()->IsKind(STANDARD_TYPE(StepVisual_Invisibility))) continue;
-#ifdef OCCT_DEBUG
-      std::cout << "\tLayer \"" << aLayerName << "\" is invisible" << std::endl;
-#endif
-      //TDF_Label InvLayerLab = LTool->FindLayer(aLayerName);
-      TDF_Label InvLayerLab = LTool->AddLayer(aLayerName); //skl for OCC3926
-      TDataStd_UAttribute::Set (InvLayerLab, XCAFDoc::InvisibleGUID());
-    }
+    if (!aLayerLabel.IsNull())
+      LTool->SetVisibility(aLayerLabel, isVisible);
   }
   return Standard_True;
 }
@@ -4181,6 +4186,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
               for (Standard_Integer idu = 1; idu <= DU->NbElements(); idu++) {
                 Handle(StepBasic_DerivedUnitElement) DUE = DU->ElementsValue(idu);
                 Handle(StepBasic_NamedUnit) NU = DUE->Unit();
+                if (NU.IsNull())
+                  continue;
                 if (NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)) ||
                   NU->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)))
                 {

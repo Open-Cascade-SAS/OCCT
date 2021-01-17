@@ -73,14 +73,21 @@ public:
   //! Returns False if Layer is not found in Layertable
   Standard_EXPORT Standard_Boolean FindLayer (const TCollection_ExtendedString& aLayer, TDF_Label& lab) const;
   
-  //! Finds a Layer definition in a Layertable and returns
-  //! its label if found (or Null label else)
-  Standard_EXPORT TDF_Label FindLayer (const TCollection_ExtendedString& aLayer) const;
+  //! Finds a Layer definition in a Layertable by name
+  //! Returns first founded label with the same name if <theToFindWithProperty> is false
+  //! If <theToFindWithProperty> is true returns first label that
+  //! contains or not contains visible attr, according to the <theToFindVisible> parameter
+  Standard_EXPORT TDF_Label FindLayer (const TCollection_ExtendedString& aLayer, const Standard_Boolean theToFindWithProperty = Standard_False, const Standard_Boolean theToFindVisible = Standard_True) const;
   
   //! Adds a Layer definition to a Layertable and returns
   //! its label (returns existing label if the same Layer
   //! is already defined)
-  Standard_EXPORT TDF_Label AddLayer (const TCollection_ExtendedString& aLayer) const;
+  Standard_EXPORT TDF_Label AddLayer (const TCollection_ExtendedString& theLayer) const;
+
+  //! Adds a Layer definition to a Layertable and returns its label
+  //! Returns existing label (if it is already defined)
+  //! of visible or invisible layer, according to <theToFindVisible> parameter
+  Standard_EXPORT TDF_Label AddLayer(const TCollection_ExtendedString& theLayer, const Standard_Boolean theToFindVisible) const;
   
   //! Removes Layer from the Layertable
   Standard_EXPORT void RemoveLayer (const TDF_Label& lab) const;

@@ -197,7 +197,7 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_L
   Standard_Boolean aFound;
   theHolle = Standard_False;
   //it is not verified information
-  for(Standard_Integer c = 0; c <= 1; c++)
+  for(Standard_Integer c = 0; c <= 1 && !aFormV.IsNull(); c++)
   {
     aFound = Standard_False;
     Standard_Boolean aCaseSens = Standard_False;
