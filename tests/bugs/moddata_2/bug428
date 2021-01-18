@@ -1,5 +1,5 @@
 puts "========"
-puts "OCC428: Excep-tion during vizualization on attached shape in application."
+puts "OCC428: Excep-tion during visualization on attached shape in application."
 puts "SAM1414: Excep-tion is raised in the package StdPrs."
 puts "========"
 

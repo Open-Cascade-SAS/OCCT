@@ -7,7 +7,7 @@
 # - write data to 
 
 # Set flag dump_file to 1 in order to regenerate script files with actual data
-# used as reference. In this mode all tests intentionaly report failure. 
+# used as reference. In this mode all tests intentionally report failure. 
 set dump_file 0
 ########################################################################
 set mist_Second 0; set mist_w 0; set mist 0; set isIGES 0;
@@ -250,7 +250,7 @@ if { $mist < 1} {
     if { $mist_w < 1 } {
 	
         if { [catch { $ReadCommand D_Second $imagedir/${casename}_D_First$ext } catch_result] } {
-	    set err_msg "Errorr: Second - file was not read - exception"
+	    set err_msg "Error: Second - file was not read - exception"
 	    puts $err_msg
 	    append todo_msg $todo_mask $err_msg $end_line
     	    set mist_Second 1
@@ -607,9 +607,9 @@ if { $dump_file == 1 } {
     }
     close $fd_stream 
 } elseif { $mist != 1 } {
-    puts "========================== Comparision with reference data ========"
+    puts "========================== Comparison with reference data ========"
     puts ""
-    # Comparision of reference data with obtained result
+    # Comparison of reference data with obtained result
     set ref_list [split $ref_data \n]
     set cur_list [split $result \n]
     set nb_ref [llength $ref_list]
@@ -707,7 +707,7 @@ if { $dump_file == 1 } {
 }
  
 if { $dump_file != 0 } {
-    puts "Error : Running in regeneration mode, comparision was not performed!"
+    puts "Error : Running in regeneration mode, comparison was not performed!"
     if { $mist != 1 } {
       	 puts "Generation of test file $groupname/$gridname/$casename successful"
     } else {
@@ -717,7 +717,7 @@ if { $dump_file != 0 } {
     if { $ref_Compare > 0} {
         puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
     } else {
-        puts "Comparision of current result with reference data - OK\n"
+        puts "Comparison of current result with reference data - OK\n"
     }    
 }
 

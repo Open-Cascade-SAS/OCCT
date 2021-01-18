@@ -15,7 +15,7 @@ if { [info exists test_image ] == 0 } {
 
 
 #
-#evaluate n points beetween u1 and u2 on the curve 2d c
+#evaluate n points between u1 and u2 on the curve 2d c
 #
 
 proc val2d { c u1 u2 n } {
@@ -42,7 +42,7 @@ proc val2d { c u1 u2 n } {
 }
 
 #
-#evaluate n points beetween u1 and u2 on the curve 3d c
+#evaluate n points between u1 and u2 on the curve 3d c
 #
 proc val3d { c u1 u2 n } {
 
@@ -67,10 +67,10 @@ proc val3d { c u1 u2 n } {
 
 proc compare {r1 r2 tol} {
 	if {$r1 - $r2  >= $tol} {
-		puts "Error : evalution" 
+		puts "Error : evaluation" 
 	}
 	if {$r2 - $r1  >= $tol} {
-		puts "Error : evalution" 
+		puts "Error : evaluation" 
 	}
 } 
 

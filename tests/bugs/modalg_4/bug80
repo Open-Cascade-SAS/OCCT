@@ -4,7 +4,7 @@ puts "OCC80"
 puts "============"
 puts ""
 ##########################################################
-## The command "section" in Draw gives exception "attempt to access to null objec " 
+## The command "section" in Draw gives exception "attempt to access to null object " 
 ##########################################################
 
 restore [locate_data_file BUC60877_lh.brep] sh 

@@ -3,7 +3,7 @@ puts "OCC8228"
 puts "============"
 puts ""
 ######################################################
-# exeption is raised during the vprops in DRAW on the attached shape
+# exception is raised during the vprops in DRAW on the attached shape
 ######################################################
 
 set BugNumber OCC8228

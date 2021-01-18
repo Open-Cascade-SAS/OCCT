@@ -43,7 +43,7 @@ checkcolor ${X_01} ${Y_01} 0.8 0.8 0.8
 
 checkcolor ${X_02} ${Y_02} 0.8 0.8 0.8
 
-# Hilight face
+# Highlight face
 vmoveto ${X_01} ${Y_01}
 
 # Check face color

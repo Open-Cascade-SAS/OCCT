@@ -3,7 +3,7 @@ puts "OCC28030"
 puts "========"
 puts ""
 ########################################################################################################
-# Algorith GeomLib_CheckCurveOnSurface takes too much time for Bspline curves with big number of knots
+# Algorithm GeomLib_CheckCurveOnSurface takes too much time for Bspline curves with big number of knots
 ########################################################################################################
 
 beziercurve c 4 0 0 0 1 1 0 2 1 0 3 0 0

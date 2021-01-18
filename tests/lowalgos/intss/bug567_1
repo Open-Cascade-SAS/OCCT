@@ -56,8 +56,8 @@ if { [catch {intersect res s1 s2 } catch_result] } {
         set coe [checkoverlapedges e1 e2 5.0e-5]
 
         puts "res_$ic <-> res_$ip: $coe"
-        if { [regexp "Edges is not overlaped" $coe] != 1 } {
-          puts "Error: res_$ic and res_$ip are overlaped"
+        if { [regexp "Edges are not overlapped" $coe] != 1 } {
+          puts "Error: res_$ic and res_$ip are overlapped"
         }
       }
       

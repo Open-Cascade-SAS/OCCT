@@ -30,7 +30,7 @@ set Pnt1 [AddPoint D 0 0 0];		## add point1
 ComputeFun D $Pnt1:1;			## compute function
 GetShape D $Pnt1:1:2 P1;		## check result
 whatis P1
-# referes to result NS
+# refers to result NS
 GetReference D $Pnt1;			## check is reference set 
 
 set Pnt2 [AddPoint D 0 200 0];

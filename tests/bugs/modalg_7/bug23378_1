@@ -17,7 +17,7 @@ bopcut r
 # Result of operation should be two shapes (checking)
 set oper_result [explode r]
 if {[llength $oper_result] != 2} {
-  puts "ERRROR: Result of BrepAlgoAPI_Cut is unexpected"
+  puts "ERROR: Result of BrepAlgoAPI_Cut is unexpected"
 }
 
 # Algorithmic check of r_1 shape

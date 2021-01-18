@@ -3,7 +3,7 @@ puts "OCC17126"
 puts "================"
 puts ""
 #######################################################################################
-# Vizualisation in 3d viewer in Draw hungs up
+# Visualisation in 3d viewer in Draw hangs up
 #######################################################################################
 
 restore [locate_data_file bug17126_ff_1285_viz.brep] a

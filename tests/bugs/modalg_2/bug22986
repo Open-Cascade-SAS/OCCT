@@ -3,7 +3,7 @@ puts "OCC22986"
 puts "==========="
 puts ""
 #######################################################################
-# Regression with OCCT652 on Windows. DRAWEXE craches during featprism
+# Regression with OCCT652 on Windows. DRAWEXE crashes during featprism
 #######################################################################
 
 set BugNumber OCC22986

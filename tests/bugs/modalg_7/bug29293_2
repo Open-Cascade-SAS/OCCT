@@ -33,7 +33,7 @@ fit
 
 # Check that the normal directions have been preserved.
 # Both input faces faces have normals
-# directed stricly to the top (0, 0, 1). So, it is necessary to check
+# directed strictly to the top (0, 0, 1). So, it is necessary to check
 # that the reuslting face has the same normal direction.
 
 if {![regexp "(0, 0, 100)" [normals result -length 100 -print]]} {

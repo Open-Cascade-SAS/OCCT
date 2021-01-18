@@ -17,7 +17,7 @@ set scriptdir [file dirname [info script]]
 
 set mistake 0
 
-#################### procedure GetDigit returns digit (cutted) from string ####################
+#################### procedure GetDigit returns digit (cut) from string ####################
 proc GetDigit {s} {
   set res ""
   for {set a 0} {$a < [string length $s]} {incr a} {

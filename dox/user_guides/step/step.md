@@ -1066,7 +1066,7 @@ The table below describes STEP entities, which are created when the assembly str
 | :----- | :------ | :----- | :----- | 
 | Points | Geom_CartesianPoint, Geom2d_CartesianPoint |  cartesian_point | |
 | | TColgp_Array1OfPnt, TColgp_Array1OfPnt2d | polyline  | | 
-| Placements | Geom_Axis1Plasement, Geom2d_AxisPlacement | axis1_placement | | 
+| Placements | Geom_Axis1Placement, Geom2d_AxisPlacement | axis1_placement | |
 | | Geom_Axis2Placement | axis2_placement_3d | | 
 | Directions | Geom_Direction, Geom2d_Direction  | direction | |
 | Vectors | Geom_Vector, Geom2d_Vector | vector | |

@@ -10,7 +10,7 @@ restore [locate_data_file OCC469.brep] a
 # remove small edges from the shape
 fixsmalledges a a 0.002
 
-# explode to get two arguemnts
+# explode to get two arguments
 explode a
 
 # use fuzzy value to treat misalignment of the arguments

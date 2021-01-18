@@ -3,7 +3,7 @@ puts "OCC425"
 puts "OCC414"
 puts "==========="
 ######################################################
-# Exception on attemp to save a document that contains empty TDataStd_Name
+# Exception on attempt to save a document that contains empty TDataStd_Name
 ######################################################
 # Crash on NT during document saving (SAM1344-#2153)
 ######################################################

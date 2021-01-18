@@ -22,7 +22,7 @@ set actions 8
 
 set act_afternone [expr $act_none+1]
 
-# retuns 1 if after this action there exists attribute on the label
+# returns 1 if after this action there exists attribute on the label
 proc produces_attribute1 {action} {
   global act_create act_modify act_forgetcreate act_createmodify
   if {$action==$act_create || $action==$act_createmodify || $action==$act_modify || $action==$act_forgetcreate} {
@@ -31,7 +31,7 @@ proc produces_attribute1 {action} {
   return 0
 }
 
-# retuns 1 if after two actions there exists attribute on the label
+# returns 1 if after two actions there exists attribute on the label
 proc produces_attribute2 {action1 action2} {
   global act_create act_modify act_modifyforget act_forget act_createforget
   if {[produces_attribute1 $action2]} {
@@ -43,7 +43,7 @@ proc produces_attribute2 {action1 action2} {
   return 0
 }
 
-# retuns value of the attribute produced by two actions
+# returns value of the attribute produced by two actions
 proc produces_value {action1 action2} {
   global act_modify act_createmodify act_none act_forgetcreate
   if {$action2==$act_modify} {

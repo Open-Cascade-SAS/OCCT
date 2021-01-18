@@ -3,7 +3,7 @@ puts "CR23736"
 puts "============"
 puts ""
 ######################################################
-# Exeption during reading STEP file in Test Harness
+# Exception during reading STEP file in Test Harness
 ######################################################
 
 pload DCAF

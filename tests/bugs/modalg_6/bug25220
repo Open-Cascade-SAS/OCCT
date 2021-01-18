@@ -3,7 +3,7 @@ puts "OCC25220"
 puts "============"
 puts ""
 ######################################################
-# Using BRepFill_OffsetWire withs wires containing arc edges throws exception "Standard_NullValue"
+# Using BRepFill_OffsetWire with wires containing arc edges throws exception "Standard_NullValue"
 ######################################################
 
 restore [locate_data_file bug25220.brep] a

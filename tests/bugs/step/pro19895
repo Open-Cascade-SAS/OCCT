@@ -3,7 +3,7 @@ puts "PRO19895"
 puts "=========="
 
 #############################################################################
-## There is wrong tolerance after reading of the model in optimaze mode (C30). Retrive entity number 2139 from file
+## There is wrong tolerance after reading of the model in optimaze mode (C30). Retrieve entity number 2139 from file
 ## "bm4_db_punch_a.stp" and will obtaine tolerance. It is very big and isolains extend from entity. 
 #############################################################################
 

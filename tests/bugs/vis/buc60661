@@ -8,7 +8,7 @@ pload XDE
 
 ##################################################################
 ##DESCRIPTION: It is impossible to nominate "sheding" mode in 3D-viewer for the some shapes in
-##  C30 (SUN station), which were stored in "IGES" format previousl and then were retrieved again 
+##  C30 (SUN station), which were stored in "IGES" format previously and then were retrieved again 
 ## into "BREP" format. 
 ##################################################################
 

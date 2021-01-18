@@ -12,7 +12,7 @@ set BugNumber OCC23226
 # This test is modified test cdl/934/C2
 #
 
-# this test performs automatical test of primitives array objects by pixel checking
+# this test performs automatic test of primitives array objects by pixel checking
 # this test ALSO DUMPS two result images (the primitives on the images should have
 # same contours, WIREFRAME OBJECTS ARE IN YELLOW-RED COLORS, SHADED OBJECTS ARE
 # BLUE-GREEN COLORS)

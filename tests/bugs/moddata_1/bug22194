@@ -3,7 +3,7 @@ puts "OCC22194"
 puts "============"
 puts ""
 #######################################################################
-# Exception in LocOpe_SplitShape algoritm
+# Exception in LocOpe_SplitShape algorithm
 #######################################################################
 
 restore [locate_data_file OCC22194-sh.brep] s 

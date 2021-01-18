@@ -454,7 +454,7 @@ ICE.GENERIC_FILE_NAME                           :toto
 ! SplitClosedFaces.NbSplitPoints        : Number of cuttings (number of resulting faces will be NbSplitPoints+1)
 ! SplitClosedFaces.CloseTolerance       : Precision to define geometric closure.
 
-! SplitContinuity			: Correction or split shapes to have speicified continuity
+! SplitContinuity			: Correction or split shapes to have specified continuity
 ! SplitContinuity.Tolerance3d		: 3D tolerance for correction of geometry
 ! SplitContinuity.SurfaceContinuity	: Required continuity for surfaces
 ! SplitContinuity.CurveContinuity	: Required continuity for curves
@@ -522,8 +522,8 @@ ICE.GENERIC_FILE_NAME                           :toto
 ! FixShape.FixOrientationMode		: Mode for fixing face orientation (default - -1, yes - 1 , no - 0).
 ! FixShape.FixMissingSeamMode		: Mode for fixing face missing seam (default - -1, yes - 1 , no - 0).
 ! FixShape.FixSmallAreaWireMode		: Mode for fixing small area wires (default - -1, yes - 1 , no - 0).
-! FixShape.ModifyTopologyMode		: Mode allowing of modifing of topology (default - 0, yes - 1 , no - 0).
-! FixShape.ModifyGeometryMode		: Mode allowing of modifing of geometry (default - 1, yes - 1 , no - 0).
+! FixShape.ModifyTopologyMode		: Mode allowing of modifying of topology (default - 0, yes - 1 , no - 0).
+! FixShape.ModifyGeometryMode		: Mode allowing of modifying of geometry (default - 1, yes - 1 , no - 0).
 ! FixShape.ClosedWireMode		: Mode defining whether the wire is to be closed. (default - 1, yes - 1 , no - 0).
 ! FixShape.PreferencePCurveMode		: Mode defining of preference of 2d representation (default - 1, yes - 1 , no - 0). 
 ! FixShape.FixReorderMode		: Mode for fixing of order of the edges in the wire (default - -1, yes - 1 , no - 0).

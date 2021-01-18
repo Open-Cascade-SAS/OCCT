@@ -1,5 +1,5 @@
 puts "========"
-puts "0025775: Default Gradient Backgound in V3d_Viewer has no effect in new created V3d_View"
+puts "0025775: Default Gradient Background in V3d_Viewer has no effect in new created V3d_View"
 puts "========"
 puts ""
 

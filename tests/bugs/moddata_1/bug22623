@@ -6,7 +6,7 @@ puts ""
 puts "ATTENTION! TEST IN DEBUG MODE!"
 puts ""
 #######################################################################
-# Use of uninitializaed variables in HLRBRep_Curve::UpdateMinMax in debug mode
+# Use of uninitialized variables in HLRBRep_Curve::UpdateMinMax in debug mode
 #######################################################################
 
 catch { pload XDE }

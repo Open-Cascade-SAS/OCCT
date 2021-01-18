@@ -16,7 +16,7 @@ set z4 100
 # spine
 polyline s1 0 0 ${z4} 0 0 -${z4}
 
-# begining vertex
+# beginning vertex
 vertex v4 40 0 ${z4}
 # ending vertex
 vertex v5 40 0 -${z4}

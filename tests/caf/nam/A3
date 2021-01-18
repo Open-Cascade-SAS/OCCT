@@ -91,7 +91,7 @@ for {set i 1} {$i <= 10} {incr i} {
 BuildNamedShape D [set TestLab]:4:1 MODIFY [lindex $needgenerate 0] [lindex $needgenerate 1] [lindex $needgenerate 2] [lindex $needgenerate 3] [lindex $needgenerate 4] [lindex $needgenerate 5] [lindex $needgenerate 6] [lindex $needgenerate 7] [lindex $needgenerate 8] [lindex $needgenerate 9] [lindex $needgenerate 10] [lindex $needgenerate 11]
 BuildNamedShape D [set TestLab]:4:2 GENERATED [lindex $needmodify 0] [lindex $needmodify 1] [lindex $needmodify 2] [lindex $needmodify 3] b_1 b_1
 
-#################### test TNamig_Tool::NamedShape commmand ####################
+#################### test TNamig_Tool::NamedShape command ####################
 set names "e1 e2 e3 p p_1 p_2 p_3 p_5 b b_1 b_2 b_3 b_4 b_5 b_6 c c_1 c_2 c_3 c_5 c_6 c_7 c_8 c_9 c_10"
 set entities "1:1 1:2 1:3 2 2:1 2:1 2:1 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:1 4:2 4:1 4:1 4:1 4:2 2:3 4:1"
 

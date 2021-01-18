@@ -3,7 +3,7 @@ puts "OCC19793"
 puts "============"
 puts ""
 #######################################################################
-# Fuse problem of symetrical shapes. Appendix for NPAL19789
+# Fuse problem of symmetrical shapes. Appendix for NPAL19789
 #######################################################################
 
 cpulimit 2500

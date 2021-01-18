@@ -50,8 +50,8 @@ for {set i 1} {$i < ${NbCurv}} {incr i} {
     set coe [checkoverlapedges e1 e2 $Tolerance_Reached]
 
     puts "$i<->$j: $coe"
-    if { [regexp "Edges is not overlaped" $coe] != 1 } {
-      puts "Error: c_$i and c_$j are overlaped"
+    if { [regexp "Edges are not overlapped" $coe] != 1 } {
+      puts "Error: c_$i and c_$j are overlapped"
     }
   }
 }

@@ -28,7 +28,7 @@ set B1 [AddBox D 130 140 150];		## add box
 ComputeFun D $B1:1;			## compute box1 function
 GetShape D $B1:1:2 Box1;		## check result
 whatis Box1
-# referes to result NS
+# refers to result NS
 GetReference D $B1;			## check is reference set 
 
 

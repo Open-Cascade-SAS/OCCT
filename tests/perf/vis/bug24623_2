@@ -6,8 +6,8 @@ puts ""
 puts "Visualization - improve selection mechanism"
 # tests performance of selection algorithm. Creates a spiral via polyline
 # and checks its selection in neutral point. For representative result,
-# increase the number of points in POINTS_NUM and check time measurments
-# in comparsion to previous OCCT versions.
+# increase the number of points in POINTS_NUM and check time measurements
+# in comparison to previous OCCT versions.
 #######################################################################
 
 set POINTS_NUM 1000

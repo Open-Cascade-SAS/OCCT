@@ -13,7 +13,7 @@ restore [locate_data_file bug26735_PartialOverlap_OCOverlapValidatorWire.brep] w
 explode w1 e
 
 set Log [checkoverlapedges w1_1 w1_2 0.01 0.01]
-set Message "Edges is overlaped"
+set Message "Edges are overlapped"
 
 if { [regexp ${Message} ${Log} ] == 1 } {
     puts "Error : Adjacent perpendicular edges are detected as overlapped"

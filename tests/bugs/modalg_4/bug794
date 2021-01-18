@@ -3,7 +3,7 @@ puts " OCC794 "
 puts "========="
 puts ""
 #####################################################
-## The offset algorithm produced invalid result when offseting an attached face
+## The offset algorithm produced invalid result when offsetting an attached face
 #####################################################
 
 pload QAcommands

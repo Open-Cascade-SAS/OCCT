@@ -1634,7 +1634,7 @@ It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Co
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image033.png,"Generating a  sweep",360}
 
-*BRepPrimAPI_MakeSweep class* is a deferred class used as a root of the the following sweep classes:
+*BRepPrimAPI_MakeSweep class* is a deferred class used as a root of the following sweep classes:
 * *BRepPrimAPI_MakePrism* -- produces a linear sweep
 * *BRepPrimAPI_MakeRevol* -- produces a rotational sweep
 * *BRepPrimAPI_MakePipe* -- produces a general sweep. 
@@ -1667,7 +1667,8 @@ TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,Standard_False);
 @subsubsection occt_modalg_4_2_3 Rotational Sweep 
 *BRepPrimAPI_MakeRevol* class allows creating a rotational sweep from a shape, an axis  (gp_Ax1), and an angle. The angle has a default value of 2*PI which means a  closed revolution. 
 
-*BRepPrimAPI_MakeRevol* constructors  have a last argument to copy or share the original shape. The following code creates a a full and a partial rotation using a face, an axis and an angle.
+*BRepPrimAPI_MakeRevol* constructors have a last argument to copy or share the original shape.
+The following code creates a full and a partial rotation using a face, an axis and an angle.
 
 ~~~~~
 TopoDS_Face F = ...; // the profile 

@@ -89,5 +89,5 @@ set xst [ XStat D_Copy 1]
 regexp {Number +of +labels +with +color +link += +([-0-9.+eE]+)} $xst full nbshcolor_Copy
 
 if {$nbshcolor_Copy != 31} {
-  puts "Error: incorect count of color links to shapes"   
+  puts "Error: incorrect count of color links to shapes"
 }

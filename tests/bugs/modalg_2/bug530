@@ -6,7 +6,7 @@ puts "OCC530"
 puts "======="
 puts ""
 ####################################
-## Draw hungs up during performing bfuse operation
+## Draw hangs up during performing bfuse operation
 ####################################
 
 cpulimit 3000

@@ -26,10 +26,10 @@ if {$index > -1} {
     set index1 [lsearch -exact ${dumpList} Circle]
 
     if {${index1} == -1} {
-        puts "Faulty ${BugNumber} : there is not a cirle in source file"
+        puts "Faulty ${BugNumber} : there is not a circle in source file"
         incr status
     } else {
-        puts "OK ${BugNumber} : there is a cirle in source file"
+        puts "OK ${BugNumber} : there is a circle in source file"
         set Center_X_1 [lindex ${dumpList} [expr ${index1} + 5]]
         set Center_Y_1 [lindex ${dumpList} [expr ${index1} + 7]]
         set Center_Z_1 [lindex ${dumpList} [expr ${index1} + 9]]
@@ -77,10 +77,10 @@ if {$index > -1} {
             set index2 [lsearch -exact ${dumpList2} Circle]
 
             if {${index2} == -1} {
-                puts "Faulty ${BugNumber} : there is not a cirle in writing file"
+                puts "Faulty ${BugNumber} : there is not a circle in writing file"
                 incr status
             } else {
-                puts "OK ${BugNumber} : there is a cirle in writing file"
+                puts "OK ${BugNumber} : there is a circle in writing file"
                 set Center_X_2 [lindex ${dumpList2} [expr ${index2} + 5]]
                 set Center_Y_2 [lindex ${dumpList2} [expr ${index2} + 7]]
                 set Center_Z_2 [lindex ${dumpList2} [expr ${index2} + 9]]

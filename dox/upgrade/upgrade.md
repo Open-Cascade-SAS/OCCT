@@ -1046,7 +1046,7 @@ Release 7.1.0 disables this functionality by default in favor of Programmable Pi
 
 Method *V3d_View::Export()*, based on *gl2ps* library, requires fixed pipeline and will return error if used with default settings.
 Applications should explicitly enable fixed pipeline by setting *OpenGl_Caps::ffpEnable* flag to TRUE within *OpenGl_GraphicDriver::ChangeOptions()* before creating the viewer to use *V3d_View::Export()*.
-This method is declared as deprecated and will be removed in one of the the next OCCT releases.
+This method is declared as deprecated and will be removed in one of the next OCCT releases.
 The recommended way to generate a vector image of a 3D model or scene is to use an application-level solution independent from OpenGL.
 
 @subsection upgrade_710_trsfpers Transformation persistence

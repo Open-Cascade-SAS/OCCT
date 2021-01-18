@@ -77,7 +77,7 @@ for { set i 0 } { $i < 12 } { incr i } {
 if {[llength $err_compare_ref] > 0} {
   puts "Error : differences with reference data found :\n$err_compare_ref"
 } else {
-  puts "Comparision of current result with reference data - OK\n"
+  puts "Comparison of current result with reference data - OK\n"
 } 
 
 puts "TEST COMPLETED"

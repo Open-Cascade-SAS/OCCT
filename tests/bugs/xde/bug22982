@@ -5,7 +5,7 @@ puts "OCC22982"
 puts "============"
 puts ""
 ##################################################################
-# Generic color is overriden in STEPCAFControl_Writer::WriteColors
+# Generic color is overridden in STEPCAFControl_Writer::WriteColors
 ##################################################################
 
 set BugNumber OCC22982

@@ -103,7 +103,7 @@ proc chamf_sequence { args } {
 
      set len [llength $chamf_edge_face]
      for {set i 0} {$i < $len} {incr i} {
-# Numbers of EDGE and FACE in inital shape for step $i
+# Numbers of EDGE and FACE in initial shape for step $i
 	 set ef [lindex $chamf_edge_face  $i]
 # Parameters of chamfer for step $i
 	 set p  [lindex $chamf_parameters $i]

@@ -20,7 +20,7 @@ As a result, in 3D, you, the user, have no need to be familiar with any function
 If, however, you require types of interactive objects and filters other than those provided, you will need to know the mechanics of presentable and selectable objects, specifically how to implement their virtual functions.
 To do this requires familiarity with such fundamental concepts as the Sensitive Primitive and the Presentable Object.
 
-The the following packages are used to display 3D objects:
+The following packages are used to display 3D objects:
   * *AIS*;
   * *StdPrs*;
   * *Prs3d*;

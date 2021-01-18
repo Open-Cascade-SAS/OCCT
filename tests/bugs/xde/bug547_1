@@ -4,7 +4,7 @@ puts "(case 1)"
 puts "========================"
 puts ""
 ####################################
-## Big tolerance after commmand fixshape r a 1.e-7 1
+## Big tolerance after command fixshape r a 1.e-7 1
 ####################################
 
 cpulimit 3000

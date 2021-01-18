@@ -105,7 +105,7 @@ puts "Transparency1 = ${Transparency1}"
 puts "Transparency2 = ${Transparency2}"
 set DefaultAISTransparency 0
 if { ${Transparency1} != ${DefaultAISTransparency} } {
-	puts "Default transparency is worng: Error"
+	puts "Default transparency is wrong: Error"
 	set status 1
 }
 

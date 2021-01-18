@@ -15,5 +15,5 @@ set info [OCC24008 a b]
 if { [regexp "Exception" $info] != 0 } {
     puts "Error : Exception was caught"
 } else {
-    puts "OK: COmmand wrong propery"
+    puts "OK: Command wrong property"
 }

@@ -4,7 +4,7 @@ puts "========"
 puts ""
 
 set X1 5;  # positive x-axis
-set X2 5;  # nagative x-axis
+set X2 5;  # negative x-axis
 set Y1 10; # positive y-axis
 set Y2 10; # negative y-axis
 set TOP 5; # positive z-axis

@@ -57,12 +57,12 @@ for {set i 1} {$i < ${NbCurv}} {incr i} {
 
     puts "$i<->$j: $coeb"
     puts "$i<->$j: $coei"
-    if { [regexp "Edges is not overlaped" $coeb] != 1 } {
-      puts "Error: c_$i and c_$j are overlaped"
+    if { [regexp "Edges are not overlapped" $coeb] != 1 } {
+      puts "Error: c_$i and c_$j are overlapped"
     }
     
-    if { [regexp "Edges is not overlaped" $coei] != 1 } {
-      puts "Error: intres_$i and intres_$j are overlaped"
+    if { [regexp "Edges are not overlapped" $coei] != 1 } {
+      puts "Error: intres_$i and intres_$j are overlapped"
     }
     
     erase eb1 eb2 ei1 ei2

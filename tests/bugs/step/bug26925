@@ -1,5 +1,5 @@
 puts "# ====================================================================="
-puts "# 0026925: Data Exchange - Execeptions can be raised if assembly is empty"
+puts "# 0026925: Data Exchange - Exceptions can be raised if assembly is empty"
 puts "# ====================================================================="
 puts ""
 

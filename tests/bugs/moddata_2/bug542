@@ -17,11 +17,11 @@ if { [catch {project result c3d s } catch_result] } {
     set dump [dump result]
     # read dump of old curve 
     set olddump [read [open [locate_data_file OCC542_DUMP]]]
-    # if the the dumps is equal this bug is still exist
+    # if the dumps are equal this bug still exists
     if { $dump == $olddump } {
 	puts "OCC542 Faulty"
     } else {
-	puts "OCC542 WARNING: Dumps of old and new curve are different, probably bug is still exist"
+	puts "OCC542 WARNING: Dumps of old and new curve are different, probably bug still exists"
     }
 }
 

@@ -16,7 +16,7 @@ if { ${IsDone} != 0 } {
   if { [string first "NbRaised: 100" $aResult] != -1 } {
     puts "OK test case"
   } else {
-    puts "Error: expected to have 100 raised expections"
+    puts "Error: expected to have 100 raised exceptions"
   }
 }
 

@@ -14,6 +14,6 @@ BuildNamedShape D1 0:1 P
 SaveAs D1 $imagedir/bug28428_new.cbf
 Close D1
 # This produced a NamedShape driver failure with catching by general driver
-# and output a failure message (catched by parse.rules)
+# and output a failure message (caught by parse.rules)
 Open $imagedir/bug28428_new.cbf D2
 Close D2

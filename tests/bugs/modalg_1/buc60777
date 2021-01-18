@@ -16,7 +16,7 @@ if {  $end >=  $end1} {
     puts " Mkoffset  operation was made successfully"
 }
 
-#  Lenth of "profile" : 203.733802110964
+#  Length of "profile" : 203.733802110964
 
 renamevar result_1 result
 

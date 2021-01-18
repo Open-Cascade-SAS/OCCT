@@ -3017,7 +3017,7 @@ function (cotire_setup_unity_build_target _languages _configurations _target)
 		endif()
 	else()
 		if (_targetAutoMoc OR _targetAutoUic OR _targetAutoRcc)
-			# depend on the original target's implicity generated <targetname>_automoc target
+			# depend on the original target's implicitly generated <targetname>_automoc target
 			if (CMAKE_VERSION VERSION_LESS "3.8.0")
 				add_dependencies(${_unityTargetName} ${_target}_automoc)
 			else()

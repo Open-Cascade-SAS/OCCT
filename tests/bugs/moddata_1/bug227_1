@@ -5,7 +5,7 @@ puts "(case 1)"
 puts "========"
 
 ##############################################################
-##Incorrect result with missing faces after a fuse operation beetween the box and the wedge.
+##Incorrect result with missing faces after a fuse operation between the box and the wedge.
 ###############################################################
 
 restore [locate_data_file OCC227a.brep] a 

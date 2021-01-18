@@ -5,7 +5,7 @@ puts "=========="
 puts ""
 ###########################################################
 ## The matrix of inertia for sphere computed incorrectly.
-## In the secod case the not diagonal elements of the inertia matrix are not close to zero.
+## In the second case the not diagonal elements of the inertia matrix are not close to zero.
 ###########################################################
 
 psphere result 10 10 10

@@ -3,7 +3,7 @@ puts "CR25547"
 puts "========="
 puts ""
 ###############################################
-# static class mehtods not exported in BrepMesh_GeomTool
+# static class methods not exported in BrepMesh_GeomTool
 ###############################################
 
 pload QAcommands

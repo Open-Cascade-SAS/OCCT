@@ -3,7 +3,7 @@ puts "OCC27948"
 puts "========"
 puts ""
 ##################################
-# Cut produces unexcpected shape
+# Cut produces unexpected shape
 ##################################
 
 restore [locate_data_file bug27948_a.brep] a

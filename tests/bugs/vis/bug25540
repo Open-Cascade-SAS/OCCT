@@ -27,7 +27,7 @@ vdump $imagedir/${casename}_shaded_pres.png
 vmoveto 100 100
 vdump $imagedir/${casename}_h_pres.png
 
-# Activate the local selection by edges and hilight small circle edge.
+# Activate the local selection by edges and highlight small circle edge.
 # It's discretization should coincide with discretization of whole shape hiligting.
 vselmode p -set EDGE 1
 vmoveto 130 80

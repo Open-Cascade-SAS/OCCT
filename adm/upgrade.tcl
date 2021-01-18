@@ -370,7 +370,7 @@ proc upgrade {args} {
   }
 }
 
-# search and rename the indeces (old names) of @theNewNames with their values (new ones)
+# search and rename the indices (old names) of @theNewNames with their values (new ones)
 #  processes files that have @theExtensions only in @thePath folder
 proc Rename {thePath theExtensions theNewNames theCheckMode} {
   upvar $theNewNames aNewNames

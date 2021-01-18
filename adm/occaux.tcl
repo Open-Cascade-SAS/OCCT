@@ -16,7 +16,7 @@
 # commercial license or contractual agreement.
  
 # =======================================================================
-# This script contains auxilary functions which can be used 
+# This script contains auxiliary functions which can be used
 # in documentation generation process
 # =======================================================================
 

@@ -5,7 +5,7 @@ puts "================"
 puts ""
 
 ########################################################
-####	 Exeption is raised in DRAW during command "restore" on attahed shape.
+####	 Exception is raised in DRAW during command "restore" on attahed shape.
 ########################################################
 
 restore [locate_data_file OCC313.brep] result

@@ -3,7 +3,7 @@ puts "OCC181"
 puts "OCC701"
 puts "========"
 ######################################################
-# Resource_Manager class doen't return status of saving resources in a file.
+# Resource_Manager class doesn't return status of saving resources in a file.
 ######################################################
 # Add method BuildPath to OSD_Directory
 ######################################################

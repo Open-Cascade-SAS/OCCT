@@ -36,7 +36,7 @@ baddcompound b4
 
 bfillds
 #
-puts "Comparing perfomance of building many faces"
+puts "Comparing performance of building many faces"
 puts "in parallel and serial modes"
 
 #

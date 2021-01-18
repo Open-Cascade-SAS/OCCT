@@ -55,7 +55,7 @@ while { $AllowRepeate != 0 } {
     set coe [checkoverlapedges e1 e2]
 
     puts "res_$ic <-> res_$jc: $coe"
-    if { [regexp "Edges is not overlaped" $coe] != 1 } {
+    if { [regexp "Edges are not overlapped" $coe] != 1 } {
       puts "Error: Overlapped intersection curves"
     }
   }

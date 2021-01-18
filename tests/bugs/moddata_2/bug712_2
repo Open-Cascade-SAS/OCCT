@@ -5,7 +5,7 @@ puts "OCC712"
 puts "========"
 puts ""
 ############################################################
-## Exeption is raised in DRAW during building draft with help command "depouille"
+## Exception is raised in DRAW during building draft with help command "depouille"
 ## on face in the attached shape.
 ## The source code of application is also attached and should be checked.
 ############################################################

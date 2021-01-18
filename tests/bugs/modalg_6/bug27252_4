@@ -54,8 +54,8 @@ foreach Toler { 1.0e-7 1.0e-4 } {
         set coe [checkoverlapedges e1 e2 5.0e-5]
 
         puts "result_$ic <-> result_$ip: $coe"
-        if { [regexp "Edges is not overlaped" $coe] != 1 } {
-          puts "Error: result_$ic and result_$ip are overlaped"
+        if { [regexp "Edges are not overlapped" $coe] != 1 } {
+          puts "Error: result_$ic and result_$ip are overlapped"
         }
       }
       

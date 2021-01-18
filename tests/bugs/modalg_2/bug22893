@@ -3,7 +3,7 @@ puts "OCC22893"
 puts "============"
 puts ""
 #############################################################################
-# Possible regression is tesselation algorithm of OCCT 6.5.2 
+# Possible regression is tessellation algorithm of OCCT 6.5.2 
 #############################################################################
 
 set BugNumber OCC22893

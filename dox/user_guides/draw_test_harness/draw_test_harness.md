@@ -282,7 +282,7 @@ unset varname [varname varname ...]
 
 Without a value, *set* returns the content of the variable. 
 
-*unset* deletes variables. It is is also used to delete Draw variables. 
+*unset* deletes variables. It is also used to delete Draw variables.
 
 **Example:** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -6716,7 +6716,9 @@ options are :
  * *-FX Tx Ty TZ [Nx Ny Nz]* : Tangent and Normal are fixed 
  * *-G guide* 
 
-These commands are used to create a shape from wires. One wire is designated as the contour that defines the direction; it is called the spine. At least one other wire is used to define the the sweep profile. 
+These commands are used to create a shape from wires.
+One wire is designated as the contour that defines the direction; it is called the spine.
+At least one other wire is used to define the sweep profile.
 * **mksweep** -- initializes the sweep creation and defines the wire to be used as the spine. 
 * **addsweep** -- defines the wire to be used as the profile. 
 * **deletesweep** -- cancels the choice of profile wire, without leaving the mksweep mode. You can re-select a profile wire. 
@@ -9258,7 +9260,7 @@ stepwrite 0 a /disk1/tmp/aaa.igs
 
 @subsection occt_draw_8_3  General commands 
 
-These are auxilary commands used for the analysis of result of translation of IGES and STEP files. 
+These are auxiliary commands used for the analysis of result of translation of IGES and STEP files.
 
 @subsubsection occt_draw_8_3_1  count
 

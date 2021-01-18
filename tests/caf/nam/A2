@@ -9,7 +9,7 @@ source ${scriptdir}/A1
 if {$IsDone == 0} {
 	set Test "TNaming_Iterator test"
 	set IsDone 0
-	set TestError " # Can't test iterators becouse of Builder errors"
+	set TestError " # Can't test iterators because of Builder errors"
 } else {
 
 set Test "TNaming_Iterator test"

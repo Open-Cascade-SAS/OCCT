@@ -39,4 +39,4 @@ vdisplay -dispMode 1 c
 vaspects c -setBackFaceColor RED
 vfit
 vdump $imagedir/${casename}_mirrev.png
-if { [vreadpixel 195 220 rgb name] == "BLUE2" } { puts "Error: revered mirrored box should NOT look inside out" }
+if { [vreadpixel 195 220 rgb name] == "BLUE2" } { puts "Error: reversed mirrored box should NOT look inside out" }

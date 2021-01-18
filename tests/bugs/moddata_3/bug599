@@ -3,7 +3,7 @@ puts " OCC599"
 puts "========================"
 puts ""
 #########################################################
-## Result of BOPFUSE operation is unclosed shape inspite of source solids are valid
+## Result of BOPFUSE operation is unclosed shape in spite of source solids are valid
 #########################################################
 
 cpulimit 2000

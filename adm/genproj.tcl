@@ -759,7 +759,7 @@ proc osutils:tk:sort { tklm theSrcDir theSourceDirOther } {
   return $lret
 }
 
-#  close dependencies of ltk. (full wok pathes of toolkits)
+#  close dependencies of ltk. (full work paths of toolkits)
 # The CURRENT WOK LOCATION MUST contains ALL TOOLKITS required.
 # (locate not performed.)
 proc osutils:tk:close { ltk theSrcDir theSourceDirOther } {
@@ -906,7 +906,7 @@ proc osutils:collectinc {theModules theSrcDir theIncPath} {
     # relative anIncPath in connection with aCasRoot/$theSrcDir
     set aFromBuildIncToSrcPath [relativePath "$anIncPath" "$aCasRoot/$theSrcDir"]
 
-    # create and copy short-cut header files
+    # create and copy shortcut header files
     foreach anUnit $anUnits {
       osutils:checksrcfiles ${anUnit} $theSrcDir
 
@@ -1671,7 +1671,7 @@ proc wokUtils:EASY:bs1 { s } {
     return $r
 }
 
-# Returs for a full path the liste of n last directory part
+# Returns for a full path the liste of n last directory part
 # n = 1 => tail
 # n = 2 => dir/file.c
 # n = 3 => sdir/dir/file.c

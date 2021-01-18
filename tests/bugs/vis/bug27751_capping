@@ -1,5 +1,5 @@
 puts "========"
-puts "Capping plane perserving material"
+puts "Capping plane preserving material"
 puts "========"
 
 set aHatch  [locate_data_file images/hatch_1.png]

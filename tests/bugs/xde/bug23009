@@ -3,7 +3,7 @@ puts "OCC23009"
 puts "========================"
 puts ""
 #######################################################################
-# Request of a new feature fot units management during step import
+# Request of a new feature for units management during step import
 #######################################################################
 
 set BugNumber OCC23009

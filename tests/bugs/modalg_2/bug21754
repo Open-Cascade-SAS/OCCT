@@ -8,7 +8,7 @@ puts ""
 
 set BugNumber OCC21754
 
-# load shape and make face with natural bounds, to excluse possibility of
+# load shape and make face with natural bounds, to exclude possibility of
 # lame excuse saying that it contains small edges
 restore [locate_data_file OCC21754-bug_bsection_empty.brep] a 
 mksurface s a

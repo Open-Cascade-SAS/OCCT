@@ -5,7 +5,7 @@ puts "OCC24764"
 puts "================"
 puts ""
 #######################################################################################
-# Alien subshapes occured in result of 'bopcheck' operation
+# Alien subshapes occurred in result of 'bopcheck' operation
 ######################################################################################
 
 cpulimit 2000

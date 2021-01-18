@@ -2,7 +2,7 @@ puts "========================"
 puts " OCC26848"
 puts " OCC600"
 puts "========================"
-## Result of BOPCOMMON operation is unclosed shape inspite of source solids are valid
+## Result of BOPCOMMON operation is unclosed shape in spite of source solids are valid
 ## Result of BO depends on arguments order
 ############################################################
 cpulimit 5000

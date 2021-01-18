@@ -3,7 +3,7 @@ puts " OCC431 "
 puts "========================"
 puts ""
 #####################################
-## Intersection of two surfaces is not compleate curve. 
+## Intersection of two surfaces is not complete curve. 
 #####################################
 
 restore [locate_data_file OCC431a.draw] su1 

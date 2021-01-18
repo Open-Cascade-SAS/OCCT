@@ -192,7 +192,7 @@ It is called **local illumination**. Based on this name there is also a global o
 \f[L_{indirect} = \int\limits_H f(v, l) L_i^{indirect}(l) \cos\theta_l\, \mathrm{d}l\f]
 
 It includes influence of light reflected or scattered from other points and environment's contribution.
-It's impossible to achieve photorealistic results without this component, but is is also very difficult to compute.
+It's impossible to achieve photorealistic results without this component, but it is also very difficult to compute.
 While the cross point light interaction cannot be calculated in a simple way (especially in real time rendering), the environment illumination has some options to be realized via precomputational work before visualization.
 But right now lets summarize the practical application of illumination model.
 At this moment the output radiance is represented as:

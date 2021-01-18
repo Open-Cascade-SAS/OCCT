@@ -1,6 +1,6 @@
 puts "========"
 puts "OCC280"
-puts "2. Hilighting the object, by moving mouse cursor on it does not hilight the object"
+puts "2. Highlighting the object, by moving mouse cursor on it does not highlight the object"
 puts "========"
 
 vinit

@@ -3,7 +3,7 @@ puts "OCC745"
 puts "========"
 puts ""
 #############################################
-# Negative offset parameter leads to positive offset and vise
+# Negative offset parameter leads to positive offset and vice-
 # versa. Result of the offset represent an edge instead of wire.
 #############################################
 

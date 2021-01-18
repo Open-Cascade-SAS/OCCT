@@ -26,22 +26,22 @@ puts "Name_3='${Name_3}'"
 puts "Name_4='${Name_4}'"
 
 if (![regexp {NAUO1} ${Name_1}]) {
-  puts "Error: Name of entitie ${label_1} is bad"
+  puts "Error: Name of entity ${label_1} is bad"
 } else {
-  puts "OK: Name of entitie ${label_1} is good"
+  puts "OK: Name of entity ${label_1} is good"
 }
 if (![regexp {NAUO2} ${Name_2}]) {
-  puts "Error: Name of entitie ${label_2} is bad"
+  puts "Error: Name of entity ${label_2} is bad"
 } else {
-  puts "OK: Name of entitie ${label_2} is good"
+  puts "OK: Name of entity ${label_2} is good"
 }
 if (![regexp {NAUO3} ${Name_3}]) {
-  puts "Error: Name of entitie ${label_3} is bad"
+  puts "Error: Name of entity ${label_3} is bad"
 } else {
-  puts "OK: Name of entitie ${label_3} is good"
+  puts "OK: Name of entity ${label_3} is good"
 }
 if (![regexp {NAUO4} ${Name_4}]) {
-  puts "Error: Name of entitie ${label_4} is bad"
+  puts "Error: Name of entity ${label_4} is bad"
 } else {
-  puts "OK: Name of entitie ${label_4} is good"
+  puts "OK: Name of entity ${label_4} is good"
 }

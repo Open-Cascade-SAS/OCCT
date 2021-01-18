@@ -4,7 +4,7 @@ puts "OCC22165"
 puts "================"
 puts ""
 #######################################################################################
-# IGES transaltor does not produce any shape
+# IGES translator does not produce any shape
 ######################################################################################
 
 set BugNumber OCC22165

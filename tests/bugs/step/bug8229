@@ -3,7 +3,7 @@ puts "OCC8229"
 puts "============"
 puts ""
 #######################################################################
-# Exeption is raised during the ReadStep in DRAW on the attached shape
+# Exception is raised during the ReadStep in DRAW on the attached shape
 #######################################################################
 
 set BugNumber OCC8229

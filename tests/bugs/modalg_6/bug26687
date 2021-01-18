@@ -11,7 +11,7 @@ puts ""
 restore [locate_data_file bug26687_w.brep] w
 
 #It is impossible to create a plane there is no any surface
-#which every edge has its p-cuve in.  
+#which every edge has its p-curve in.  
 
 mkplane f w
 

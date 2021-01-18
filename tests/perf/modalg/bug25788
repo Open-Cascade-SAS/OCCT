@@ -10,7 +10,7 @@ puts ""
 box b1 100 100 1
 
 # N defines number of holes along each of X and Y, thus total N^2 holes
-# will be drilled; note that the algorithm iself is likely to be quadratic
+# will be drilled; note that the algorithm itself is likely to be quadratic
 # for number of shapes, i.e. CPU 
 set N 40
 set holes {}

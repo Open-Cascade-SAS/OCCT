@@ -27,7 +27,7 @@ foreach i $ll {
       set coe [checkoverlapedges e1 e2]
 
       puts "$i<->$j: $coe"
-      if { [regexp "Edges is not overlaped" $coe] != 1 } {
+      if { [regexp "Edges are not overlapped" $coe] != 1 } {
          set status 2
       }
    }

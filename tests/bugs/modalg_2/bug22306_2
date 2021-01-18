@@ -3,7 +3,7 @@ puts "OCC22306"
 puts "============"
 puts ""
 #######################################################################
-# Fuse between cylinder and sphere produces not vallid result
+# Fuse between cylinder and sphere produces not valid result
 #######################################################################
 
 set BugNumber OCC22306

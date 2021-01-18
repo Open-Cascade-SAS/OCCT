@@ -9,7 +9,7 @@ restore [locate_data_file CCV_2_d1_gsw.rle] s
 explode s F
 catch {offsetcompshape result s -2 s_17}
 
-#real volume of result shape is unknow yet
+#real volume of result shape is unknown yet
 checkprops result -v 534256
 
 

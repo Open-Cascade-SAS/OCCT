@@ -1,7 +1,7 @@
 puts "TODO OCC24156 MacOS: Error: unsupported locale specification"
 
 # Test for issue #22898 and other functionality that can be affected by locale.
-# Just run multiple conversions of the shape to and from diferent formats and 
+# Just run multiple conversions of the shape to and from different formats and 
 # check that the result is good shape with expected area
 
 if { [checkplatform -linux] } {

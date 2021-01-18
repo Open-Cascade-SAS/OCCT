@@ -3,7 +3,7 @@
 # test data (expected values of test execution).
 # The procedure is:
 # - load specified data files
-# - check validity of result shape, vizualize building compartments, 
+# - check validity of result shape, visualize building compartments, 
 
 ########################################################################
 

@@ -3,7 +3,7 @@ puts "OCC22814"
 puts "============"
 puts ""
 #######################################################################
-# Boolean opeation Section fails
+# Boolean operation Section fails
 #######################################################################
 
 set BugNumber OCC22814

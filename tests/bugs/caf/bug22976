@@ -2,7 +2,7 @@ puts "==========="
 puts "OCC22976"
 puts "==========="
 ######################################################
-# A draw-command CopyDF failes to copy content of a label
+# A draw-command CopyDF fails to copy content of a label
 ######################################################
 
 set BugNumber OCC22976

@@ -717,14 +717,14 @@ static Standard_Integer checkoverlapedges(Draw_Interpretor& di, Standard_Integer
    ShapeAnalysis_Edge sae;
    if(sae.CheckOverlapping(e1,e2,aTol,aDistDomain)) {
      if(aDistDomain ==0.0)
-       di<<"Edges is overlaping comletly\n";
+       di<<"Edges are overlapping completely\n";
      else {
-        di<<"Edges is overlaped\n";
+        di<<"Edges are overlapped\n";
         di<<"with tolerance = "<<aTol<<"\n";
         di<<"on segment length = "<<aDistDomain<<"\n";
      }
    }
-   else di<<"Edges is not overlaped\n";
+   else di<<"Edges are not overlapped\n";
    return 0;
 }
 
@@ -876,4 +876,3 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
 		   __FILE__,connectedges,g);
   
 }
-

@@ -23,7 +23,7 @@ checknbshapes result -vertex 588 -edge 588 -wire 147 -face 147 -shell 147
 
 # Check that the normal directions have been preserved.
 # All faces from input shapes which could pass into result have normals
-# directed stricly to the top (0, 0, 1). So, it is necessary to check
+# directed strictly to the top (0, 0, 1). So, it is necessary to check
 # that all faces from the result have the same normal direction.
 
 foreach f [explode result f] {

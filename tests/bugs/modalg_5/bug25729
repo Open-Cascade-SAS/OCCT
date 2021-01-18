@@ -3,7 +3,7 @@ puts "OCC25729"
 puts "========="
 puts ""
 ###############################################
-# algorith BRepOffset_MakeOffset(...) produces wrong result for join type Intersection
+# algorithm BRepOffset_MakeOffset(...) produces wrong result for join type Intersection
 ###############################################
 
 restore [locate_data_file bug25729_source_shape.brep] s

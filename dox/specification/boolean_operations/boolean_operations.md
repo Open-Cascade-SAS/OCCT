@@ -1677,7 +1677,7 @@ Let us consider face *F1* and solid *S2* that have an intersection curve:
   	
 @figure{/specification/boolean_operations/images/boolean_image046.png,"",230}
 	
-* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+* The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
 @subsubsection specification__boolean_9_4_16	Case 16: A Face and a Solid that have overlapping faces.
 
@@ -1695,7 +1695,7 @@ Let us consider face *F1* and solid *S2* that have overlapping faces:
   	
 @figure{/specification/boolean_operations/images/boolean_image049.png,"",230}
 	
-* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+* The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
 
 @subsubsection specification__boolean_9_4_17	Case 17: A Face and a Solid that have overlapping edges.
@@ -1712,7 +1712,7 @@ Let us consider face *F1* and solid *S2* that have overlapping edges:
   	
 @figure{/specification/boolean_operations/images/boolean_image051.png,"",230}
 	
-* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+* The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
 @subsubsection specification__boolean_9_4_18	Case 18: A Face and a Solid that have overlapping vertices.
 
@@ -1728,7 +1728,7 @@ Let us consider face *F1* and solid *S2* that have overlapping vertices:
   	
 @figure{/specification/boolean_operations/images/boolean_image053.png,"",230}
 	
-* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+* The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
 @subsubsection specification__boolean_9_4_19	Case 19: Two intersecting Solids.
 

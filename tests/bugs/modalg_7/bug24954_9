@@ -3,7 +3,7 @@ puts "OCC24954"
 puts "========"
 puts ""
 ################################################################
-# BRepBuilderAPI_MakeFace adds wire with aribitary orientation
+# BRepBuilderAPI_MakeFace adds wire with arbitrary orientation
 ################################################################
 
 polyline p 1.21 0.16 4.2 3.12 4.16 0.93 -2.33 -2.55 2.41 1.21 0.16 4.2

@@ -4,7 +4,7 @@ puts "================"
 puts ""
 ##############################################################
 # Incorrect result of the normal projection algorithm
-# Exception during the exectuion
+# Exception during the execution
 ##############################################################
 
 restore [locate_data_file bug27299_2.brep] aShape

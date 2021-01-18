@@ -3,7 +3,7 @@ puts "OCC15943"
 puts "============"
 puts ""
 #######################################################################
-# Wrong result of boolen fuse
+# Wrong result of boolean fuse
 #######################################################################
 
 restore [locate_data_file OCC15943_p1.brep] b1

@@ -5,7 +5,7 @@ puts "OCC2269"
 puts "================"
 puts ""
 #######################################################################################
-# XML persistance should be more robust
+# XML persistence should be more robust
 #######################################################################################
 # 
 # Tested file is contains 3 labels with TDataStd_RealArray attributes

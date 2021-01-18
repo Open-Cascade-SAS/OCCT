@@ -13,7 +13,7 @@ build3d a ${tolerance}
 fsameparameter a
 
 explode a E 
-# Verify only a_1 and a_2 eges becouse a_3 had 3d curve before call of build3d command
+# Verify only a_1 and a_2 eges because a_3 had 3d curve before call of build3d command
 
 set toler1 [maxtolerance a_1]
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} $toler1 full MaxEdgeTolerance1

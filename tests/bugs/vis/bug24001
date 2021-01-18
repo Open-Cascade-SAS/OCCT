@@ -26,7 +26,7 @@ vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -st
 set aTitle "stereoL"
 vdump $imagedir/${casename}_${aTitle}.png -buffer rgb -width 512 -height 512 -stereo L
 
-# test context stereo mode swicthing
+# test context stereo mode switching
 # if not supported by hardware it must not crash
 vstereo 1
 vclose all

@@ -4,8 +4,8 @@ puts " OCC292 "
 puts "========================"
 puts ""
 #################################################################
-## Attached face looks as unclosed but command "checkshape" concludes that it is valid. Inspite of that,
-##  mesh for shading is not creating on this face.
+## Attached face looks as unclosed but command "checkshape" concludes that it is valid.
+## In spite of that, mesh for shading is not being created on this face.
 #################################################################
 
 restore [locate_data_file OCC292.brep] result

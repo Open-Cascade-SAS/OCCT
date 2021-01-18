@@ -15,7 +15,7 @@ setsweep -FR
 addsweep w
 
 ########
-#does'nt work
+#doesn't work
 buildsweep result -C -S
 
 checkprops result -s 1979.9 

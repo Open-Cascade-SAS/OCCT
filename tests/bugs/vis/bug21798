@@ -3,7 +3,7 @@ puts "OCC21798"
 puts "============"
 puts ""
 #######################################################################
-# Attached face hangs during vizualization in OCC Viewer 3D .
+# Attached face hangs during visualization in OCC Viewer 3D .
 #######################################################################
 
 set BugNumber OCC21798

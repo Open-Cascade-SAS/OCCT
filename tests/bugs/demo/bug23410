@@ -3,7 +3,7 @@ puts "CR23410"
 puts "============"
 puts ""
 #######################################################################
-# QA comamnds don't work properly in new testing system
+# QA commands don't work properly in new testing system
 #######################################################################
 pload QAcommands
 

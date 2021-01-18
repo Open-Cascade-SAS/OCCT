@@ -34,14 +34,14 @@ vclipplane set pln view Driver1/Viewer1/View1
 # use clippling plane to have two objects visible (the second object is partially visible)
 vclipplane change pln equation -1 0 0 5
 
-# apply inital selection rectangle, expecting selection of only fully visible object
+# apply initial selection rectangle, expecting selection of only fully visible object
 vselect 40 100 370 300
 if {[vnbselected] != 1} {
-  puts "ERROR: Bad numer of selected objects after clippling plane set on view!"
+  puts "ERROR: Bad number of selected objects after clippling plane set on view!"
 }
 
-# apply inital selection rectangle, expecting selection of partially included object also
+# apply initial selection rectangle, expecting selection of partially included object also
 vselect 40 100 370 300 -allowoverlap 1
 if {[vnbselected] != 2} {
-  puts "ERROR: Bad numer of selected objects after clippling plane set on view with allow overlap selection!"
+  puts "ERROR: Bad number of selected objects after clippling plane set on view with allow overlap selection!"
 }

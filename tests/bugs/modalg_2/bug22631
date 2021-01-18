@@ -3,7 +3,7 @@ puts "OCC22631"
 puts "================"
 puts ""
 #######################################################################################
-# Regression in vizualization for b-spline surface
+# Regression in visualization for b-spline surface
 ######################################################################################
 
 set BugNumber OCC22631

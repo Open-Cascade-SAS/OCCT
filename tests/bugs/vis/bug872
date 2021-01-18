@@ -5,7 +5,7 @@ puts "======="
 puts ""
 
 ########################################
-## Exception is raised during vizualization attached shape.
+## Exception is raised during visualization attached shape.
 ########################################
 
 cpulimit 3000

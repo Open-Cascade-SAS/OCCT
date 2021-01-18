@@ -4,7 +4,7 @@ puts "============"
 puts ""
 #######################################################################
 # Boolean fuse fails
-# -- test #2: in rotated co-ordinates --
+# -- test #2: in rotated coordinates --
 #######################################################################
 
 puts "Load first shape ..."

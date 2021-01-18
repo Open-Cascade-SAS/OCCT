@@ -26,7 +26,7 @@ set IsDone 1
 source ${scriptdir}/A3
 set Test "TNaming_Selector test"
 if {$IsDone == 0} {
-	set TestError " # Can't test iterators becouse of Tool errors: # $TestError"
+	set TestError " # Can't test iterators because of Tool errors: # $TestError"
 } else {
 
 #################### selection and checking shapes ####################
@@ -80,7 +80,7 @@ for {set i 1} {$i <= 35} {incr i} {
     }
   }
 }
-#################### with setted valid map ####################
+#################### with set valid map ####################
 
 }
 

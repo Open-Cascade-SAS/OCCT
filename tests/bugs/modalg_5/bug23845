@@ -3,7 +3,7 @@ puts "OCC23845"
 puts "================"
 puts ""
 #######################################################################
-# New auxilary method concatenating a wire into an edge based on C0-continuous curve.
+# New auxiliary method concatenating a wire into an edge based on C0-continuous curve.
 #######################################################################
 
 restore [locate_data_file bug23845_profil_0a.brep] a

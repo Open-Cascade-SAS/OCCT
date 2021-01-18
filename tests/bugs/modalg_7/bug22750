@@ -26,12 +26,12 @@ appro c1 16 ee1
 appro c2 16 ee2
 appro c3 16 ee3
 
-#Make a surface by approximation passing throught a set of curves
+#Make a surface by approximation passing through a set of curves
 # and create a face
 appsurf s1 c1 c2 c3
 mkface f1 s1
 
-#Make a surface by approximation passing throught a set of ellipse
+#Make a surface by approximation passing through a set of ellipse
 # and create a face
 appsurf s2 ee1 ee2 ee3
 mkface f2 s2
@@ -45,7 +45,7 @@ circle c3 50 0 0 1 0 0  29
 circle c4 100 0 0 1 0 0 20
 circle c5 150 0 0 1 0 0 10
 
-#Make a surface by approximation passing throught a set of circles
+#Make a surface by approximation passing through a set of circles
 # and create a face
 appsurf s3 c1 c2 c3 c4 c5
 mkface f3 s3
@@ -74,7 +74,7 @@ checkshape so1
 # The shape so1 is valid
 
 #Step 4: Create a Solid for fuselage
-# We will extract the edge from the face f3, and use them to buid faces, the edge will be shared and we 
+# We will extract the edge from the face f3, and use them to build faces, the edge will be shared and we 
 # can rebuild a sh and a solid with the basic and fast method
 
 nexplode f3 e
@@ -97,7 +97,7 @@ checkshape rrr
 checknbshapes rrr -face 5 -wire 5 -shell 1 -solid 1
 checkprops rrr -s 57448.9 -v 664969
 
-# Step 6: Create the othe wing using copy and rotation
+# Step 6: Create the other wing using copy and rotation
 tcopy so1 so3
 trotate so3 0 0 0 1 0 0 180
 

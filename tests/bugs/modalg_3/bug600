@@ -1,5 +1,5 @@
 puts "========================"
-puts " OCC600: Result of BOPCOMMON operation is unclosed shape inspite of source solids are valid"
+puts " OCC600: Result of BOPCOMMON operation is unclosed shape in spite of source solids are valid"
 puts "========================"
 
 cpulimit 200

@@ -7,7 +7,7 @@ puts "OCC21578"
 puts "============"
 puts ""
 ######################################################
-# Attached shape is not vizualized in the shaded mode
+# Attached shape is not visualized in the shaded mode
 ######################################################
 
 set BugNumber OCC21578

@@ -4,7 +4,7 @@ puts "========"
 
 ######################################################
 ## Exception while segment operation on periodic BSpline curve.
-## More over it seems that command segment in Draw doesnot work.
+## More over it seems that command segment in Draw does not work.
 ######################################################
 
 restore [locate_data_file OCC253.draw] result

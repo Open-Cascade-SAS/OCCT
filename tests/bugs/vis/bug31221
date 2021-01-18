@@ -16,7 +16,7 @@ vdisplay e
 vfit
 
 # 1.
-# Set composition filter AND to aplly VERTEX and EDGE filter
+# Set composition filter AND to apply VERTEX and EDGE filter
 # the vertex and the edge isn't selected
 vselfilter -contextfilter AND -type VERTEX -secondtype EDGE
 
@@ -36,7 +36,7 @@ vchangeselected e
 vchangeselected v
 
 # 3.
-# Set composition filter OR to aplly VERTEX and EDGE filter
+# Set composition filter OR to apply VERTEX and EDGE filter
 # the vertex and the edge is selected
 
 vselfilter -contextfilter OR -type VERTEX -secondtype EDGE

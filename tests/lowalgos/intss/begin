@@ -63,7 +63,7 @@ proc CheckOverlapIntCurves { theListOfCurves {theTolerance 1.0e-7} } {
       
       set coe [ checkoverlapedges e1 e2 $theTolerance ]
 
-      if { [regexp "Edges is not overlaped" $coe] != 1 } {
+      if { [regexp "Edges are not overlapped" $coe] != 1 } {
         set cIdx1 [ expr $i1 + 1 ]
         set cIdx2 [ expr $i2 + 1 ]
         

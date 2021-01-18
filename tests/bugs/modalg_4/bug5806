@@ -22,7 +22,7 @@ if { [catch { thrusections resthru 1 1 wc pl } catch_result] } {
    puts "Faulty ${BugNumber} : thrusections is wrong"
 }
 
-# straighforward hollowing will fail due to problems in the algorithm
+# straightforward hollowing will fail due to problems in the algorithm
 explode resthru f
 
 if { [catch { offsetshape result resthru -0.5 resthru_6 resthru_7 } catch_result] } {

@@ -15,7 +15,7 @@ checkshape sh2
 regexp {Mass +: +([-0-9.+eE]+)} [vprops sh2] full l2
 
 if { [expr abs([expr $l1 - $vol1_exp])] > 0.00999} {	
-   puts "Error : Volume of OCC76-1.brep is calculated wrongly becuase $vol1_exp value must be but $l1 is"
+   puts "Error : Volume of OCC76-1.brep is calculated wrongly because $vol1_exp value must be but $l1 is"
 } else {
   puts " Volume of OCC76-1.brep is right calculated"
 }

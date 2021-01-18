@@ -57,6 +57,6 @@ puts "\n------- Additional Comments From Igor FEOKTISTOV 2002-05-20 12:32 ------
 
 puts "It is not problem of meshing."
 puts "It is pure problem of shading geometrically coinciding faces with different"
-puts "triangulation. If we create analitical cylinder and box by such way that plane"
+puts "triangulation. If we create analytical cylinder and box by such way that plane"
 puts "faces of cylinder and two faces of box are coinceded, we will have the same"
 puts "result: fractional shading of coinciding faces.\n"

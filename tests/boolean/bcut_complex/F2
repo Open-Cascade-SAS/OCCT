@@ -21,7 +21,7 @@ mkface f2 s2 -10 10 -10 10
 # fix solid
 mkvolume r part_2 f_in f1 f2
 
-# find the outher solid - the one containing the outer cylinder (part_2 face)
+# find the other solid - the one containing the outer cylinder (part_2 face)
 foreach s [explode r so] {
   set found 0
   foreach f [explode $s f] {

@@ -4,7 +4,7 @@ puts " OCC366 "
 puts "========================"
 puts ""
 ##################################################
-## Checkshape says that face is valid but it inludes selfintersecting wire
+## Checkshape says that face is valid but it includes selfintersecting wire
 ##################################################
 
 restore [locate_data_file buc61006.brep] result

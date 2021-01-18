@@ -3,7 +3,7 @@ puts "OCC22826"
 puts "============"
 puts ""
 #######################################################################
-# Increasiong of perfomance of fixes applied during translation of STEP files.
+# Increasiong of performance of fixes applied during translation of STEP files.
 #######################################################################
 
 set BugNumber OCC22826

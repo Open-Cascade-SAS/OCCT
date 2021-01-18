@@ -4,7 +4,7 @@ puts "OCC767"
 puts "======="
 puts ""
 ############################################
-## Command sameparametr in DRAW hangs  on attached edge.
+## Command sameparameter in DRAW hangs  on attached edge.
 ############################################
 
 restore [locate_data_file OCC767.brep] result

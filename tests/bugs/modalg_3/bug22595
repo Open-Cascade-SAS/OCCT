@@ -3,7 +3,7 @@ puts "OCC22595"
 puts "============"
 puts ""
 ######################################################
-# gp_Mat's constructors incompletely initilize memory
+# gp_Mat's constructors incompletely initialize memory
 ######################################################
 
 set BugNumber OCC22595

@@ -22,7 +22,7 @@ if [catch { OCC22 result shape compoundToBeDivided 0 } ] {
 
 regexp {([-0-9.+eE]+)\s FACE} [statshape result] full nbFaces
 if {$nbFaces != 5} {
-    puts "OCC22 FAULTY: Initial shape was not splitted"
+    puts "OCC22 FAULTY: Initial shape was not split"
 }
 
 # Case B of the bug is reproduced. Result must be valid

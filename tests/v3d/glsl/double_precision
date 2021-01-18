@@ -1,5 +1,5 @@
 puts "========"
-puts "0024393: Visualization - objects position with enchanced precision"
+puts "0024393: Visualization - objects position with enhanced precision"
 puts "========"
 
 pload MODELING VISUALIZATION

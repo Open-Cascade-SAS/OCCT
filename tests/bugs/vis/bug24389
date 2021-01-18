@@ -3,7 +3,7 @@ puts "CR24389"
 puts "============"
 puts ""
 #######################################################################
-#  Invalid hilight of AIS dimension line in local selection
+#  Invalid highlight of AIS dimension line in local selection
 #######################################################################
 
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
@@ -141,12 +141,12 @@ proc check_cross_picking { pick object name } {
       if {$i == $j} {
         set res [checkcolor $check_x $check_y 0 1 1]
         if { $res != 1 } {
-          puts "Error : No local hilighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+          puts "Error : No local highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
         }
       } else {
         set res [checkcolor $check_x $check_y 0 0 0]
         if { $res != 1 } {
-          puts "Error : Unwanted hilighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+          puts "Error : Unwanted highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
         }
       }
     }

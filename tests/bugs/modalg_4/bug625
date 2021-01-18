@@ -6,7 +6,7 @@ puts "OCC625"
 puts "========================"
 puts ""
 ###############################################################################
-## Created filler looks strange (see attached picture) inspite of checkshapes told about correct source and result shapes.
+## Created filler looks strange (see attached picture) in spite of checkshapes told about correct source and result shapes.
 ###############################################################################
 
 pload QAcommands

@@ -4,7 +4,7 @@ puts "========"
 puts ""
 
 #############################################
-##Uncorrect work DRAW command "proj" in version dev
+##Incorrect work DRAW command "proj" in version dev
 ## and receive such result:
 ## in dev : ext_1 ext_2 ext_3
 ## in C40 : ext_1 ext_2 ext_3 ext_4

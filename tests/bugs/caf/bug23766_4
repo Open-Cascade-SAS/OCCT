@@ -3,7 +3,7 @@ puts "OCC23766"
 puts "=========="
 puts ""
 ########################################################
-# Shape orientation processing mechanis, redesign
+# Shape orientation processing mechanism, redesign
 ########################################################
 
 ## test for keeping Orientation (cbf)
@@ -15,7 +15,7 @@ NewDocument D BinOcaf
 NewCommand D
 set B2 [AddObject D];			## add object
 set F2 [AddFunction D $B2 Box];		## add function
-BoxDX D $B2 190;			## set argumets of this function
+BoxDX D $B2 190;			## set arguments of this function
 BoxDY D $B2 290
 BoxDZ D $B2 390
 InitLogBook D;				## initialize (clean) internal maps of labels

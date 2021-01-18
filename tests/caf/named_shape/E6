@@ -29,14 +29,14 @@ set B1 [AddBox D 130 140 150];		## add box
 ComputeFun D $B1:1;			## compute box1 function
 GetShape D $B1:1:2 Box1;		## check result
 whatis Box1
-# referes to result NS
+# refers to result NS
 GetReference D $B1;			## check is reference set 
 
 #2 - create box using more flexible set of commands
 NewCommand D
 set B2 [AddObject D];			## add object
 set F2 [AddFunction D $B2 Box];		## add function
-BoxDX D $B2 190;			## set argumets of this function
+BoxDX D $B2 190;			## set arguments of this function
 BoxDY D $B2 290
 BoxDZ D $B2 390
 InitLogBook D;				## initialize (clean) internal maps of labels
@@ -44,7 +44,7 @@ AddDriver D Box Attach Cyl
 ComputeFun D $F2;			## compute the function
 GetShape D $F2:2 Box2;			## check result
 whatis Box2
-GetReference D $B2;			## referes to result NS
+GetReference D $B2;			## refers to result NS
 
 #3
 NewCommand D

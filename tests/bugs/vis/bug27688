@@ -2,7 +2,7 @@ puts "========"
 puts "Visualization, AIS_Dimension - add possibility to set custom text value"
 puts "========"
 
-# Test case creates three lenght dimensions where value is set as real,
+# Test case creates three length dimensions where value is set as real,
 # as text and is reset to auto value state.
 
 pload MODELING VISUALIZATION

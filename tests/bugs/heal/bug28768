@@ -3,7 +3,7 @@ puts "OCC28768"
 puts "========"
 puts ""
 #############################################
-# ShapeFix slighly corrupts the source face
+# ShapeFix slightly corrupts the source face
 #############################################
 
 binrestore [locate_data_file bug28768_f12g.brep] f12g

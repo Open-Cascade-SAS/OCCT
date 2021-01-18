@@ -3,7 +3,7 @@ puts "OCC24968"
 puts "=========="
 puts ""
 #####################################
-# Impove BRepMesh_Classifier to cope with intersection of huge number of wires
+# Improve BRepMesh_Classifier to cope with intersection of huge number of wires
 #####################################
 
 cpulimit 2500

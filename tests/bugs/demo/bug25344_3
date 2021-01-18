@@ -18,7 +18,7 @@ if {[dtyp mybox] == ""} {
 } else {
   puts "SUCCESS: mybox is created"
   if {[lsearch [directory] mybox] == -1} {
-    puts "ERRROR: but it is absent among TCL variables"
+    puts "ERROR: but it is absent among TCL variables"
   } else {
     puts "SUCCESS: and it is present among TCL variables"
   }

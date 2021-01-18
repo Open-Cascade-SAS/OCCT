@@ -1461,8 +1461,8 @@ The procedure of its creation is as follows:
   The long cylinder representing a "stem" of the nail  refers to the corresponding parameters 
   of the cone to define its own data  (position, radius and height). It means that the long cylinder depends on the  cone.  
   
-  The parameters of the head cylinder may be expressed  through the cone parameters 
-  only or through the cone and the long cylinder  parameters. 
+  The parameters of the head cylinder may be expressed through the cone parameters
+  only or through the cone and the long cylinder parameters.
   It is suggested to express the position and the radius of the head cylinder 
   through the position and the radius of the long cylinder, and the height 
   of the head cylinder through the height of the cone. 
@@ -1478,12 +1478,12 @@ The procedure of its creation is as follows:
 
 @subsubsection occt_ocaf_8a_3_1 Creation of the nail
 
-  This method of the interface creates a data tree for the nail  at a given leaf of OCAF data tree.  
-  
-  It creates three sub-leaves for the cone and two cylinders  and allocates the necessary data (references at the sub-leaves of the long and the  head cylinders).  
-  
-  It sets the default values of position, radius and height of  the nail.  
-  
+  This method of the interface creates a data tree for the nail at a given leaf of OCAF data tree.
+
+  It creates three sub-leaves for the cone and two cylinders and allocates the necessary data (references at the sub-leaves of the long and the head cylinders).
+
+  It sets the default values of position, radius and height of the nail.
+
   The nail has the following user parameters:  
   * The position -- coincides with the position of the cone  
   * The radius of the stem part of the nail -- coincides with the radius  of the cone  
@@ -1609,7 +1609,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
     // A virtual method  ::Arguments() returns a list of arguments of the function.  
     CylinderDriver::Arguments( TDF_LabelList&amp; args )  
     {  
-      // The direct arguments, located at sub-leaves of  the fucntion, are collected (see picture 2).  
+      // The direct arguments, located at sub-leaves of the function, are collected (see picture 2)
       TDF_ChildIterator  cIterator( Label(), false );  
       for (;  cIterator.More(); cIterator.Next() )  
       {  

@@ -3,7 +3,7 @@ puts "OCC25890"
 puts "============"
 puts ""
 ###############################
-## Intersection algorithm produces curves overlaped
+## Intersection algorithm produces curves overlapped
 ###############################
 
 set ExpToler 1.5361108163989659e-007

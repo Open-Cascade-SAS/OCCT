@@ -11,7 +11,7 @@ set filePrefix "$imagedir/${casename}_日本語"
 
 proc checkFile {filepath} {
   if { [file exists $filepath] } {
-    puts "File $filepath is ceated, OK"
+    puts "File $filepath is created, OK"
   } else {
     puts "Error: Could not find file $filepath"
   }

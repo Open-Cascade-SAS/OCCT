@@ -3,7 +3,7 @@ puts "OCC26718"
 puts "============"
 puts ""
 #############################################################################################
-## Big tolerance value of the edge in the result of Genral Fuse operation
+## Big tolerance value of the edge in the result of General Fuse operation
 #############################################################################################
 
 restore [locate_data_file bug26718_w6_b1.brep] b1

@@ -19,4 +19,4 @@ vmoveto 110 110
 vlocation b -reset
 vmoveto 110 110
 vreadpixel 110 110 rgb name
-if { "[vreadpixel 110 110 rgb name]" != "CYAN2" } { puts "Error: resetted shape is not selected!" }
+if { "[vreadpixel 110 110 rgb name]" != "CYAN2" } { puts "Error: reset shape is not selected!" }

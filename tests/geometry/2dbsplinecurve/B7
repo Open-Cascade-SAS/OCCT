@@ -31,7 +31,7 @@ point rd2_9  7.1981968444776498  596.42386808493779
 point rp_10   17.699999999999999  -15
 point rd1_10  10.090909090909133  11.45454545454545
 point rd2_10  -1197.6198347107429  -889.19008264462809
-# Comparaison between currents value and references values
+# Comparison between currents value and references values
 set tol 0.000001
 set i   1
 puts " --> Test value"
