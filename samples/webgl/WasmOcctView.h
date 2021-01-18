@@ -35,6 +35,72 @@ class AIS_ViewCube;
 class WasmOcctView : protected AIS_ViewController
 {
 public:
+
+  //! Return global viewer instance.
+  static WasmOcctView& Instance();
+
+public: //! @name methods exported by Module
+
+  //! Set cubemap background.
+  //! File will be loaded asynchronously.
+  //! @param theImagePath [in] image path to load
+  static void setCubemapBackground (const std::string& theImagePath);
+
+  //! Clear all named objects from viewer.
+  static void removeAllObjects();
+
+  //! Fit all/selected objects into view.
+  //! @param theAuto [in] fit selected objects (TRUE) or all objects (FALSE)
+  static void fitAllObjects (bool theAuto);
+
+  //! Remove named object from viewer.
+  //! @param theName [in] object name
+  //! @return FALSE if object was not found
+  static bool removeObject (const std::string& theName);
+
+  //! Temporarily hide named object.
+  //! @param theName [in] object name
+  //! @return FALSE if object was not found
+  static bool eraseObject (const std::string& theName);
+
+  //! Display temporarily hidden object.
+  //! @param theName [in] object name
+  //! @return FALSE if object was not found
+  static bool displayObject (const std::string& theName);
+
+  //! Show/hide ground.
+  //! @param theToShow [in] show or hide flag
+  static void displayGround (bool theToShow);
+
+  //! Open object from the given URL.
+  //! File will be loaded asynchronously.
+  //! @param theName      [in] object name
+  //! @param theModelPath [in] model path
+  static void openFromUrl (const std::string& theName,
+                           const std::string& theModelPath);
+
+  //! Open object from memory.
+  //! @param theName    [in] object name
+  //! @param theBuffer  [in] pointer to data
+  //! @param theDataLen [in] data length
+  //! @param theToFree  [in] free theBuffer if set to TRUE
+  //! @return FALSE on reading error
+  static bool openFromMemory (const std::string& theName,
+                              uintptr_t theBuffer, int theDataLen,
+                              bool theToFree);
+
+  //! Open BRep object from memory.
+  //! @param theName    [in] object name
+  //! @param theBuffer  [in] pointer to data
+  //! @param theDataLen [in] data length
+  //! @param theToFree  [in] free theBuffer if set to TRUE
+  //! @return FALSE on reading error
+  static bool openBRepFromMemory (const std::string& theName,
+                                  uintptr_t theBuffer, int theDataLen,
+                                  bool theToFree);
+
+public:
+
   //! Default constructor.
   WasmOcctView();
 
@@ -52,6 +118,9 @@ public:
 
   //! Return device pixel ratio for handling high DPI displays.
   float DevicePixelRatio() const { return myDevicePixelRatio; }
+
+  //! Request view redrawing.
+  void UpdateView();
 
 private:
 
@@ -141,6 +210,8 @@ private:
   { return ((WasmOcctView* )theView)->onKeyUpEvent (theEventType, theEvent); }
 
 private:
+
+  NCollection_IndexedDataMap<TCollection_AsciiString, Handle(AIS_InteractiveObject)> myObjects; //!< map of named objects
 
   Handle(AIS_InteractiveContext) myContext;          //!< interactive context
   Handle(V3d_View)               myView;             //!< 3D view

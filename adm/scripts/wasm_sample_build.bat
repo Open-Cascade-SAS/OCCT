@@ -18,6 +18,8 @@ set "toCMake=1"
 set "toClean=0"
 set "toMake=1"
 set "toInstall=1"
+set "toDebug=0"
+set "sourceMapBase="
 
 rem Configuration file
 if exist "%~dp0wasm_custom.bat" call "%~dp0wasm_custom.bat"
@@ -25,6 +27,13 @@ if exist "%~dp0wasm_custom.bat" call "%~dp0wasm_custom.bat"
 call "%EMSDK_ROOT%\emsdk_env.bat"
 set "aToolchain=%EMSDK%/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
 if not ["%aCmakeBin%"] == [""] ( set "PATH=%aCmakeBin%;%PATH%" )
+
+set "aBuildType=Release"
+set "aBuildTypePrefix="
+if ["%toDebug%"] == ["1"] (
+  set "aBuildType=Debug"
+  set "aBuildTypePrefix=-debug"
+)
 
 call :cmakeGenerate
 if not ["%1"] == ["-nopause"] (
@@ -34,12 +43,12 @@ if not ["%1"] == ["-nopause"] (
 goto :eof
 
 :cmakeGenerate
-set "aPlatformAndCompiler=wasm32"
-set "aDestDirOcct=%aBuildRoot%\%aPlatformAndCompiler%"
+set "aPlatformAndCompiler=wasm32%aBuildTypePrefix%"
+set "aDestDirOcct=%aBuildRoot%\occt-%aPlatformAndCompiler%"
 set "aSrcRootSmpl=%aCasSrc%\samples\webgl"
-set "aWorkDirSmpl=%aBuildRoot%\%aPlatformAndCompiler%-sample-make"
-set "aDestDirSmpl=%aBuildRoot%\%aPlatformAndCompiler%-sample"
-set "aLogFileSmpl=%aBuildRoot%\build-%aPlatformAndCompiler%-sample.log"
+set "aWorkDirSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%-make"
+set "aDestDirSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%"
+set "aLogFileSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%-build.log"
 if ["%toCMake%"] == ["1"] (
   if ["%toClean%"] == ["1"] (
     rmdir /S /Q %aWorkDirSmpl%"
@@ -54,8 +63,9 @@ pushd "%aWorkDirSmpl%"
 if ["%toCMake%"] == ["1"] (
   cmake -G "MinGW Makefiles" ^
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
- -D CMAKE_BUILD_TYPE:STRING="Release" ^
+ -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
  -D CMAKE_INSTALL_PREFIX:PATH="%aDestDirSmpl%" ^
+ -D SOURCE_MAP_BASE:STRING="%sourceMapBase%" ^
  -D OpenCASCADE_DIR:PATH="%aDestDirOcct%/lib/cmake/opencascade" ^
  -D freetype_DIR:PATH="%aFreeType%/lib/cmake/freetype" ^
  "%aSrcRootSmpl%"

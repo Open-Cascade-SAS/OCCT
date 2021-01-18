@@ -9,11 +9,15 @@
 
 <h2>OCCT WebGL Viewer Sample</h2>
 <div>
-  <canvas id=canvas oncontextmenu=event.preventDefault() tabindex=-1 style="border:0 none;background-color:#000" width="409" height="409"></canvas>
+  <canvas id=occViewerCanvas oncontextmenu=event.preventDefault() tabindex=-1 style="border:0 none;background-color:#000" width="409" height="409"></canvas>
   <img id=occlogo src="OCC_logo.png" style="position: absolute; left: 20px; top: 0px; z-index: 2;" />
 </div>
 
-<div><label for="fileInput">Choose BREP file to upload: </label><input type="file" id="fileInput" accept=".brep"></div>
+<div>
+  <label for="fileInput">Choose BREP file to upload: </label><input type="file" id="fileInput" accept=".brep">
+  <input type="button" value="Clear All" onclick="OccViewerModule.removeAllObjects()">
+  <input type="button" value="Fit All"   onclick="OccViewerModule.fitAllObjects(true)">
+</div>
 <h4>Console output:</h4>
 <p id="output"></p>
 <script>
@@ -25,13 +29,13 @@ function updateCanvasSize()
   var aSizeY = Math.min (window.innerHeight, window.screen.availHeight);
   aSizeX = Math.max (300, aSizeX - 30);
   aSizeY = Math.max (300, aSizeY / 2);
-  canvas.style.width  = aSizeX + "px";
-  canvas.style.height = aSizeY + "px";
+  occViewerCanvas.style.width  = aSizeX + "px";
+  occViewerCanvas.style.height = aSizeY + "px";
 
   // drawing buffer size (aka backing store)
   var aDevicePixelRatio = window.devicePixelRatio || 1;
-  canvas.width  = aSizeX * aDevicePixelRatio;
-  canvas.height = aSizeY * aDevicePixelRatio;
+  occViewerCanvas.width  = aSizeX * aDevicePixelRatio;
+  occViewerCanvas.height = aSizeY * aDevicePixelRatio;
 
   occlogo.style.top = (aSizeY - 30) + "px";
 }
@@ -59,24 +63,6 @@ if (!isWasmSupported())
   anElement.innerHTML += "Browser is too old - WebAssembly support is missing!<br>Please check updates or install a modern browser.<br>";
 }
 
-//! Define OCCT WebGL Viewer module.
-var Module =
-{
-  print: (function() {
-    var anElement = document.getElementById('output');
-    return function(theText) { anElement.innerHTML += theText + "<br>"; };
-  })(),
-  printErr: function(theText) {
-    //var anElement = document.getElementById('output');
-    //anElement.innerHTML += theText + "<br>";
-    console.warn(theText);
-  },
-  canvas: (function() {
-    var aCanvas = document.getElementById('canvas');
-    return aCanvas;
-  })()
-};
-
 //! Handle file uploading.
 fileInput.onchange = function()
 {
@@ -86,17 +72,12 @@ fileInput.onchange = function()
   var aReader = new FileReader();
   aReader.onload = function()
   {
-    var aNameLenBytes = lengthBytesUTF8(aFile.name) + 1;
-    const aNameBuffer = Module._malloc(aNameLenBytes);
-    stringToUTF8(aFile.name, aNameBuffer, aNameLenBytes);
-
     var aDataArray = new Uint8Array (aReader.result);
-    const aDataBuffer = Module._malloc(aDataArray.length);
-    Module.HEAPU8.set(aDataArray, aDataBuffer);
-    Module.ccall('onFileDataRead', null, ['number', 'number', 'number'], [aNameBuffer, aDataBuffer, aDataArray.length]);
-    Module._free(aDataBuffer);
-    Module._free(aNameBuffer);
-    fileInput.value = '';
+    const aDataBuffer = OccViewerModule._malloc (aDataArray.length);
+    OccViewerModule.HEAPU8.set (aDataArray, aDataBuffer);
+    OccViewerModule.openFromMemory (aFile.name, aDataBuffer, aDataArray.length, true);
+    //OccViewerModule._free (aDataBuffer); will be freed by called method
+    OccViewerModule.displayGround (true);
   };
   aReader.readAsArrayBuffer(aFile);
 };

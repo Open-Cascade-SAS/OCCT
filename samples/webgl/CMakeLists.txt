@@ -7,16 +7,29 @@ set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
 set(APP_TARGET occt-webgl-sample)
 
+# option to enable or disable use of precompiled headers
+if (NOT DEFINED SOURCE_MAP_BASE)
+  set (SOURCE_MAP_BASE "" CACHE STRING "Path to source map server for debugging C++ code; e.g. http://localhost:9090/")
+endif()
+
 # customize build
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s WASM=1")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_WEBGL2=1")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --bind")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s SAFE_HEAP=1")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s TOTAL_MEMORY=16MB")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ABORTING_MALLOC=0")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s FORCE_FILESYSTEM=1")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file myFile")
+if (NOT "${SOURCE_MAP_BASE}" STREQUAL "")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g4 --source-map-base ${SOURCE_MAP_BASE}")
+endif()
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s MODULARIZE=1")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s EXPORT_NAME='createOccViewerModule'")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --extern-post-js ${CMAKE_CURRENT_SOURCE_DIR}/occt-webgl-viewer.js")
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 file(GLOB SOURCES
@@ -24,9 +37,11 @@ file(GLOB SOURCES
   *.cpp
 )
 source_group ("Headers" FILES
-  WasmOcctView.h)
+  WasmOcctView.h
+  WasmOcctPixMap.h)
 source_group ("Sources" FILES
   WasmOcctView.cpp
+  WasmOcctPixMap.cpp
   main.cpp)
 
 # FreeType
@@ -57,10 +72,14 @@ target_link_libraries(
   ${OpenCASCADE_LIBS}
   freetype
 )
-set_target_properties(${APP_TARGET} PROPERTIES LINK_FLAGS "-s EXPORTED_FUNCTIONS=['_main','_onFileDataRead'] -s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}" LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.wasm DESTINATION ${CMAKE_INSTALL_PREFIX})
+if (NOT "${SOURCE_MAP_BASE}" STREQUAL "")
+  if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.wasm.map DESTINATION ${CMAKE_INSTALL_PREFIX})
+  endif()
+endif()
 install(FILES occt-webgl-sample.html DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${OpenCASCADE_RESOURCE_DIR}/DrawResources/OCC_logo.png DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${OpenCASCADE_RESOURCE_DIR}/DrawResources/lamp.ico DESTINATION ${CMAKE_INSTALL_PREFIX})

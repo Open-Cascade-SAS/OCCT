@@ -20,7 +20,9 @@ set "toClean=0"
 set "toMake=1"
 set "toInstall=1"
 set "toPack=0"
+set "toDebug=0"
 set "toBuildSample=0"
+set "sourceMapBase="
 
 rem OCCT Modules to build
 set "BUILD_ModelingData=ON"
@@ -50,6 +52,13 @@ for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_DEVELOP
 for /f tokens^=2^ delims^=^" %%i in ('findstr /b /c:"#define OCC_VERSION_COMPLETE" "%aCasSrc%\src\Standard\Standard_Version.hxx"') do ( set "anOcctVersion=%%i" )
 for /f %%i in ('git symbolic-ref --short HEAD') do ( set "aGitBranch=%%i" )
 
+set "aBuildType=Release"
+set "aBuildTypePrefix="
+if ["%toDebug%"] == ["1"] (
+  set "aBuildType=Debug"
+  set "aBuildTypePrefix=-debug"
+)
+
 call :cmakeGenerate
 if errorlevel 1 (
   if not ["%1"] == ["-nopause"] (
@@ -72,7 +81,7 @@ set DAY00=%DAY00:~-2%
 set MONTH00=%MONTH00:~-2%
 set "aRevision=-%YEAR%-%MONTH00%-%DAY00%"
 rem set "aRevision=-%aGitBranch%"
-set "anArchName=occt-%anOcctVersion%%anOcctVerSuffix%%aRevision%-wasm32"
+set "anArchName=occt-%anOcctVersion%%anOcctVerSuffix%%aRevision%-wasm32%aBuildTypePrefix%"
 set "aTarget=%aBuildRoot%\%anArchName%"
 if ["%toPack%"] == ["1"] (
   echo Creating archive %anArchName%.7z
@@ -95,10 +104,10 @@ if not ["%1"] == ["-nopause"] (
 goto :eof
 
 :cmakeGenerate
-set "aPlatformAndCompiler=wasm32"
-set "aWorkDir=%aBuildRoot%\%aPlatformAndCompiler%-make"
-set "aDestDir=%aBuildRoot%\%aPlatformAndCompiler%"
-set "aLogFile=%aBuildRoot%\build-%aPlatformAndCompiler%.log"
+set "aPlatformAndCompiler=wasm32%aBuildTypePrefix%"
+set "aWorkDir=%aBuildRoot%\occt-%aPlatformAndCompiler%-make"
+set "aDestDir=%aBuildRoot%\occt-%aPlatformAndCompiler%"
+set "aLogFile=%aBuildRoot%\occt-%aPlatformAndCompiler%-build.log"
 if ["%toCMake%"] == ["1"] (
   if ["%toClean%"] == ["1"] (
     rmdir /S /Q %aWorkDir%"
@@ -109,9 +118,9 @@ if not exist "%aWorkDir%" ( mkdir "%aWorkDir%" )
 if     exist "%aLogFile%" ( del   "%aLogFile%" )
 
 set "aSrcRootSmpl=%aCasSrc%\samples\webgl"
-set "aWorkDirSmpl=%aBuildRoot%\%aPlatformAndCompiler%-sample-make"
-set "aDestDirSmpl=%aBuildRoot%\%aPlatformAndCompiler%-sample"
-set "aLogFileSmpl=%aBuildRoot%\build-%aPlatformAndCompiler%-sample.log"
+set "aWorkDirSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%-make"
+set "aDestDirSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%"
+set "aLogFileSmpl=%aBuildRoot%\sample-%aPlatformAndCompiler%-build.log"
 if ["%toBuildSample%"] == ["1"] (
   if ["%toCMake%"] == ["1"] (
     if ["%toClean%"] == ["1"] (
@@ -139,7 +148,7 @@ if ["%toCMake%"] == ["1"] (
   echo Configuring OCCT for WASM...
   cmake -G "MinGW Makefiles" ^
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
- -D CMAKE_BUILD_TYPE:STRING="Release" ^
+ -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
  -D BUILD_LIBRARY_TYPE:STRING="Static" ^
  -D INSTALL_DIR:PATH="%aDestDir%" ^
  -D INSTALL_DIR_INCLUDE:STRING="inc" ^
@@ -226,8 +235,9 @@ pushd "%aWorkDirSmpl%"
 if ["%toCMake%"] == ["1"] (
   cmake -G "MinGW Makefiles" ^
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
- -D CMAKE_BUILD_TYPE:STRING="Release" ^
+ -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
  -D CMAKE_INSTALL_PREFIX:PATH="%aDestDirSmpl%" ^
+ -D SOURCE_MAP_BASE:STRING="%sourceMapBase%" ^
  -D OpenCASCADE_DIR:PATH="%aDestDir%/lib/cmake/opencascade" ^
  -D freetype_DIR:PATH="%aFreeType%/lib/cmake/freetype" ^
  "%aSrcRootSmpl%"

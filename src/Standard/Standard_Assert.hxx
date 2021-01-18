@@ -80,6 +80,9 @@ inline void Standard_ASSERT_DO_NOTHING() {}
       #include <windows.h>
       #define Standard_ASSERT_DBGBREAK_() DebugBreak()
     #endif
+  #elif defined(__EMSCRIPTEN__)
+    #include <emscripten.h>
+    #define Standard_ASSERT_DBGBREAK_() emscripten_debugger()
   #else
     // POSIX systems
     #include <signal.h>
