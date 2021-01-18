@@ -1,0 +1,21 @@
+puts "========"
+puts "0032061: Data Exchange, RWGltf_CafWriter - exporting XBF file produces an invalid glTF document"
+puts "========"
+
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+pload MODELING OCAF XDE VISUALIZATION
+
+# create a document with one shape without triangulation
+box b1 0 0 0 1 2 3
+box b2 3 3 3 1 2 3
+compound ce
+compound b1 b2 ce cc
+incmesh b2 1
+XNewDoc   DD
+XAddShape DD cc 1
+WriteGltf DD "$aTmpGltf"
+Close     DD
+
+ReadGltf  D "$aTmpGltf"
+XGetOneShape s D
+checknbshapes s -face 6 -compound 1

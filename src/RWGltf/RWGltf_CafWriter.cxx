@@ -639,7 +639,29 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     {
       continue;
     }
-    aSceneNodeMap.Add (aDocNode);
+
+    bool hasMeshData = false;
+    if (!aDocNode.IsAssembly)
+    {
+      for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
+      {
+        if (!toSkipFaceMesh (aFaceIter))
+        {
+          hasMeshData = true;
+          break;
+        }
+      }
+    }
+    if (hasMeshData)
+    {
+      aSceneNodeMap.Add (aDocNode);
+    }
+    else
+    {
+      // glTF disallows empty meshes / primitive arrays
+      const TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.RefLabel);
+      Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without triangulation data");
+    }
   }
 
   rapidjson::OStreamWrapper aFileStream (aGltfContentFile);
@@ -1273,26 +1295,24 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
   {
     const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
     const TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.RefLabel);
-    {
-      RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), false);
-      if (!aFaceIter.More())
-      {
-        Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without triangulation data");
-        continue;
-      }
-    }
-    myWriter->StartObject();
-    myWriter->Key ("name");
-    myWriter->String (aNodeName.ToCString());
-    myWriter->Key ("primitives");
-    myWriter->StartArray();
 
+    bool toStartPrims = true;
     Standard_Integer aNbFacesInNode = 0;
     for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next(), ++aNbFacesInNode)
     {
       if (toSkipFaceMesh (aFaceIter))
       {
         continue;
+      }
+
+      if (toStartPrims)
+      {
+        toStartPrims = false;
+        myWriter->StartObject();
+        myWriter->Key ("name");
+        myWriter->String (aNodeName.ToCString());
+        myWriter->Key ("primitives");
+        myWriter->StartArray();
       }
 
       const RWGltf_GltfFace& aGltfFace = myBinDataMap.Find (aFaceIter.Face());
@@ -1329,8 +1349,12 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
       }
       myWriter->EndObject();
     }
-    myWriter->EndArray();
-    myWriter->EndObject();
+
+    if (!toStartPrims)
+    {
+      myWriter->EndArray();
+      myWriter->EndObject();
+    }
   }
   myWriter->EndArray();
 #else
@@ -1357,18 +1381,15 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
        aDocExplorer.More(); aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
-    {
-      RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), false);
-      if (!aFaceIter.More())
-      {
-        continue;
-      }
-    }
     if (theLabelFilter != NULL
     && !theLabelFilter->Contains (aDocNode.Id))
     {
       continue;
     }
+
+    // keep empty nodes
+    //RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), false);
+    //if (!aFaceIter.More()) { continue; }
 
     Standard_Integer aNodeIndex = aSceneNodeMapWithChildren.Add (aDocNode);
     if (aDocExplorer.CurrentDepth() == 0)
@@ -1490,11 +1511,11 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
     }
     if (!aDocNode.IsAssembly)
     {
-      myWriter->Key ("mesh");
       // Mesh order of current node is equal to order of this node in scene nodes map
       Standard_Integer aMeshIdx = theSceneNodeMap.FindIndex (aDocNode.Id);
       if (aMeshIdx > 0)
       {
+        myWriter->Key ("mesh");
         myWriter->Int (aMeshIdx - 1);
       }
     }

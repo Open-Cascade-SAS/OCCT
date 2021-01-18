@@ -1317,7 +1317,8 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
 {
   const RWGltf_JsonValue* aName  = findObjectMember (theMesh, "name");
   const RWGltf_JsonValue* aPrims = findObjectMember (theMesh, "primitives");
-  if (!aPrims->IsArray())
+  if (aPrims == NULL
+  || !aPrims->IsArray())
   {
     reportGltfError ("Primitive array attributes within Mesh '" + theMeshId + "' is not an array.");
     return false;
