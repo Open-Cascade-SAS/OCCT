@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWGltf_GltfJsonParser.pxx"
+#include "RWGltf_GltfJsonParser.hxx"
 
 #include <BRep_Builder.hxx>
 #include <gp_Quaternion.hxx>

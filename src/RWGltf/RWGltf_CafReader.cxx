@@ -14,7 +14,7 @@
 
 #include <RWGltf_CafReader.hxx>
 
-#include "RWGltf_GltfJsonParser.pxx"
+#include "RWGltf_GltfJsonParser.hxx"
 #include <RWGltf_TriangulationReader.hxx>
 
 #include <BRep_Builder.hxx>
