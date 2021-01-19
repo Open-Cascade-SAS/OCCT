@@ -2250,7 +2250,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
            && aLightIter.Value()->ToCastShadows())
           {
             aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
-                                        EOL"                         occDirectionalLightShadow (" + anIndex + ", theNormal));";
+                                        EOL"                         occDirectionalLightShadow (occShadowMapSamplers[" + anIndex + "], " + anIndex + ", theNormal));";
             ++anIndex;
           }
         }
