@@ -55,7 +55,7 @@ static gp_Pnt roughBaryCenter(const TopoDS_Shape& S){
       TopLoc_Location aLocDummy;
       const Handle(Poly_Triangulation)& aTri =
         BRep_Tool::Triangulation(TopoDS::Face(aF), aLocDummy);
-      if (!aTri.IsNull())
+      if (!aTri.IsNull() && aTri->NbNodes() > 0)
       {
         xyz = aTri->Node(1).XYZ();
         if (!aLocDummy.IsIdentity())
@@ -148,7 +148,7 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
         NoSurf = Standard_True;
       }
       const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
-      if (aTri.IsNull())
+      if (aTri.IsNull() || aTri->NbNodes() == 0 || aTri->NbTriangles() == 0)
       {
         NoTri = Standard_True;
       }
@@ -261,7 +261,7 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
         NoSurf = Standard_True;
       }
       const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation(F, aLocDummy);
-      if (aTri.IsNull())
+      if (aTri.IsNull() || aTri->NbNodes() == 0 || aTri->NbTriangles() == 0)
       {
         NoTri = Standard_True;
       }

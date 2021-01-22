@@ -15,7 +15,6 @@
 #ifndef _RWGltf_GltfLatePrimitiveArray_HeaderFile
 #define _RWGltf_GltfLatePrimitiveArray_HeaderFile
 
-#include <Bnd_Box.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Poly_Triangulation.hxx>
 #include <RWGltf_GltfPrimArrayData.hxx>
@@ -79,20 +78,11 @@ public:
   //! Add primitive array data element.
   Standard_EXPORT RWGltf_GltfPrimArrayData& AddPrimArrayData (RWGltf_GltfArrayType theType);
 
-  //! Return bounding box defined within glTF file, or VOID if not specified.
-  const Bnd_Box& BoundingBox() const { return myBox; }
-
-  //! This method sets input bounding box and assigns a FAKE data to underlying Poly_Triangulation
-  //! as Min/Max corners of bounding box, so that standard tools like BRepBndLib::Add()
-  //! can be used transparently for computing bounding box of this face.
-  Standard_EXPORT void SetBoundingBox (const Bnd_Box& theBox);
-
 protected:
 
   NCollection_Sequence<RWGltf_GltfPrimArrayData> myData;
   Handle(RWGltf_MaterialMetallicRoughness) myMaterialPbr;    //!< PBR material
   Handle(RWGltf_MaterialCommon)            myMaterialCommon; //!< common (obsolete) material
-  Bnd_Box                  myBox;        //!< bounding box
   TCollection_AsciiString  myId;         //!< entity id
   TCollection_AsciiString  myName;       //!< entity name
   RWGltf_GltfPrimitiveMode myPrimMode;   //!< type of primitive array

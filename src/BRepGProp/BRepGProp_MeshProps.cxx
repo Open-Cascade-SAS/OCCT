@@ -165,6 +165,10 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
                                   const TopLoc_Location& theLoc,
                                   const TopAbs_Orientation theOri)
 {
+  if (theMesh.IsNull() || theMesh->NbNodes() == 0 || theMesh->NbTriangles() == 0)
+  {
+    return;
+  }
   if (theLoc.IsIdentity())
   {
     Perform(theMesh->Nodes(), theMesh->Triangles(), theOri);
@@ -229,6 +233,10 @@ void BRepGProp_MeshProps::Perform(const TColgp_Array1OfPnt& theNodes,
                                    const Poly_Array1OfTriangle& theTriangles,
                                    const TopAbs_Orientation theOri)
 {
+  if (theNodes.IsEmpty() || theTriangles.IsEmpty())
+  {
+    return;
+  }
   //
   // Gauss points for barycentriche coordinates
   static const Standard_Real GPtsWg[] =

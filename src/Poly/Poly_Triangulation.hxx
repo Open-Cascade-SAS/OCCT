@@ -17,6 +17,7 @@
 #ifndef _Poly_Triangulation_HeaderFile
 #define _Poly_Triangulation_HeaderFile
 
+#include <Bnd_Box.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Real.hxx>
@@ -68,6 +69,9 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
 
+  //! Constructs an empty triangulation.
+  Standard_EXPORT Poly_Triangulation();
+
   //! Constructs a triangulation from a set of triangles. The
   //! triangulation is initialized without a triangle or a node, but capable of
   //! containing nbNodes nodes, and nbTriangles
@@ -101,6 +105,9 @@ public:
   //! constructed triangulation.
   Standard_EXPORT Poly_Triangulation(const TColgp_Array1OfPnt& Nodes, const TColgp_Array1OfPnt2d& UVNodes, const Poly_Array1OfTriangle& Triangles);
 
+  //! Destructor
+  Standard_EXPORT virtual ~Poly_Triangulation();
+
   //! Creates full copy of current triangulation
   Standard_EXPORT virtual Handle(Poly_Triangulation) Copy() const;
 
@@ -116,6 +123,9 @@ public:
 
   //! Deallocates the UV nodes.
   Standard_EXPORT void RemoveUVNodes();
+
+  //! Returns TRUE if triangulation has some geometry.
+  virtual Standard_Boolean HasGeometry() const { return !myNodes.IsEmpty() && !myTriangles.IsEmpty(); }
 
   //! Returns the number of nodes for this triangulation.
   Standard_Integer NbNodes() const { return myNodes.Length(); }
@@ -207,11 +217,54 @@ public:
   Standard_EXPORT void SetNormal (const Standard_Integer theIndex,
                                   const gp_Dir&          theNormal);
 
+  //! Returns cached min - max range of triangulation data,
+  //! which is VOID by default (e.g, no cached information).
+  Standard_EXPORT const Bnd_Box& CachedMinMax() const;
+
+  //! Sets a cached min - max range of this triangulation.
+  //! The bounding box should exactly match actual range of triangulation data
+  //! without a gap or transformation, or otherwise undefined behavior will be observed.
+  //! Passing a VOID range invalidates the cache.
+  Standard_EXPORT void SetCachedMinMax (const Bnd_Box& theBox);
+
+  //! Returns TRUE if there is some cached min - max range of this triangulation.
+  Standard_EXPORT Standard_Boolean HasCachedMinMax() const { return myCachedMinMax != NULL; }
+
+  //! Updates cached min - max range of this triangulation with bounding box of nodal data.
+  void UpdateCachedMinMax()
+  {
+    Bnd_Box aBox;
+    MinMax (aBox, gp_Trsf(), true);
+    SetCachedMinMax (aBox);
+  }
+
+  //! Extends the passed box with bounding box of this triangulation.
+  //! Uses cached min - max range when available and:
+  //! - input transformation theTrsf has no rotation part;
+  //! - theIsAccurate is set to FALSE;
+  //! - no triangulation data available (e.g. it is deferred and not loaded).
+  //! @param theBox [in] [out] bounding box to extend by this triangulation
+  //! @param theTrsf [in] optional transformation
+  //! @param theIsAccurate [in] when FALSE, allows using a cached min - max range of this triangulation
+  //!                           even for non-identity transformation.
+  //! @return FALSE if there is no any data to extend the passed box (no both triangulation and cached min - max range).
+  Standard_EXPORT Standard_Boolean MinMax (Bnd_Box& theBox, const gp_Trsf& theTrsf, const bool theIsAccurate = false) const;
+
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
 
+  //! Clears cached min - max range saved previously.
+  Standard_EXPORT void unsetCachedMinMax();
+
+  //! Calculates bounding box of nodal data.
+  //! @param theTrsf [in] optional transformation.
+  Standard_EXPORT virtual Bnd_Box computeBoundingBox (const gp_Trsf& theTrsf) const;
+
+protected:
+
+  Bnd_Box*                           myCachedMinMax;
   Standard_Real                      myDeflection;
   TColgp_Array1OfPnt                 myNodes;
   Handle(TColgp_HArray1OfPnt2d)      myUVNodes;

@@ -196,8 +196,8 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape& theS,
     {
       if (thePts)
       {
-        const gp_Pnt aP = aLoc.IsIdentity() ? aNodesArr(i) :
-          aNodesArr(i).Transformed(aLoc);
+        const gp_Pnt aP = aLoc.IsIdentity() ? aNodesArr[i] :
+          aNodesArr[i].Transformed(aLoc);
         (*thePts)(aRetVal) = aP;
       }
 
@@ -239,8 +239,8 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape& theS,
     {
       if (thePts)
       {
-        const gp_Pnt aP = aLoc.IsIdentity() ? aNodesArr(i) :
-          aNodesArr(i).Transformed(aLoc);
+        const gp_Pnt aP = aLoc.IsIdentity() ? aNodesArr[i] :
+          aNodesArr[i].Transformed(aLoc);
         (*thePts)(aRetVal) = aP;
       }
 

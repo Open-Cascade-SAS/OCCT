@@ -32,12 +32,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, Poly_Triangulation)
 // =======================================================================
 RWGltf_GltfLatePrimitiveArray::RWGltf_GltfLatePrimitiveArray (const TCollection_AsciiString& theId,
                                                               const TCollection_AsciiString& theName)
-: Poly_Triangulation (3, 1, false),
+: Poly_Triangulation(),
   myId (theId),
   myName (theName),
   myPrimMode (RWGltf_GltfPrimitiveMode_UNKNOWN)
 {
-  SetBoundingBox (Bnd_Box());
 }
 
 // =======================================================================
@@ -97,37 +96,4 @@ RWGltf_GltfPrimArrayData& RWGltf_GltfLatePrimitiveArray::AddPrimArrayData (RWGlt
     myData.Append (RWGltf_GltfPrimArrayData (theType));
     return myData.ChangeLast();
   }
-}
-
-// =======================================================================
-// function : SetBoundingBox
-// purpose  :
-// =======================================================================
-void RWGltf_GltfLatePrimitiveArray::SetBoundingBox (const Bnd_Box& theBox)
-{
-  myBox = theBox;
-
-  if (theBox.IsVoid())
-  {
-    Poly_Triangulation::myNodes = TColgp_Array1OfPnt();
-    Poly_Triangulation::myTriangles = Poly_Array1OfTriangle();
-    return;
-  }
-
-  // define 8 nodes so that AABB will be huge enough to include mesh even with transformation applied
-  Poly_Triangulation::myNodes.Resize (1, 8, false);
-  const gp_Pnt aMin = theBox.CornerMin();
-  const gp_Pnt aMax = theBox.CornerMax();
-  Poly_Triangulation::ChangeNode(1).SetCoord(aMin.X(), aMin.Y(), aMin.Z());
-  Poly_Triangulation::ChangeNode(2).SetCoord(aMax.X(), aMax.Y(), aMax.Z());
-  Poly_Triangulation::ChangeNode(3).SetCoord(aMin.X(), aMin.Y(), aMax.Z());
-  Poly_Triangulation::ChangeNode(4).SetCoord(aMin.X(), aMax.Y(), aMax.Z());
-  Poly_Triangulation::ChangeNode(5).SetCoord(aMax.X(), aMax.Y(), aMin.Z());
-  Poly_Triangulation::ChangeNode(6).SetCoord(aMax.X(), aMin.Y(), aMin.Z());
-  Poly_Triangulation::ChangeNode(7).SetCoord(aMin.X(), aMax.Y(), aMin.Z());
-  Poly_Triangulation::ChangeNode(8).SetCoord(aMax.X(), aMin.Y(), aMax.Z());
-
-  Poly_Triangulation::myTriangles.Resize (1, 1, false);
-  Poly_Triangulation::ChangeTriangle (1).Set (1, 2, 1);
-  //Poly_Triangulation::myTriangles = Poly_Array1OfTriangle();
 }

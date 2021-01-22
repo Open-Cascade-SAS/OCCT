@@ -29,12 +29,23 @@ IMPLEMENT_STANDARD_RTTIEXT (Poly_Triangulation, Standard_Transient)
 //function : Poly_Triangulation
 //purpose  : 
 //=======================================================================
+Poly_Triangulation::Poly_Triangulation()
+: myCachedMinMax (NULL),
+  myDeflection   (0)
+{
+}
+
+//=======================================================================
+//function : Poly_Triangulation
+//purpose  : 
+//=======================================================================
 Poly_Triangulation::Poly_Triangulation(const Standard_Integer theNbNodes,
                                        const Standard_Integer theNbTriangles,
                                        const Standard_Boolean theHasUVNodes)
-: myDeflection(0),
-  myNodes     (1, theNbNodes),
-  myTriangles (1, theNbTriangles)
+: myCachedMinMax (NULL),
+  myDeflection   (0),
+  myNodes        (1, theNbNodes),
+  myTriangles    (1, theNbTriangles)
 {
   if (theHasUVNodes) myUVNodes = new TColgp_HArray1OfPnt2d(1, theNbNodes);
 }
@@ -67,9 +78,10 @@ Poly_Triangulation::Poly_Triangulation(const Standard_Integer theNbNodes,
 //=======================================================================
 Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
                                        const Poly_Array1OfTriangle& theTriangles)
-: myDeflection(0),
-  myNodes     (1, theNodes.Length()),
-  myTriangles (1, theTriangles.Length())
+: myCachedMinMax (NULL),
+  myDeflection   (0),
+  myNodes        (1, theNodes.Length()),
+  myTriangles    (1, theTriangles.Length())
 {
   myNodes = theNodes;
   myTriangles = theTriangles;
@@ -83,14 +95,24 @@ Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
 Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
                                        const TColgp_Array1OfPnt2d&  theUVNodes,
                                        const Poly_Array1OfTriangle& theTriangles)
-: myDeflection(0),
-  myNodes     (1, theNodes.Length()),
-  myTriangles (1, theTriangles.Length())
+: myCachedMinMax (NULL),
+  myDeflection   (0),
+  myNodes        (1, theNodes.Length()),
+  myTriangles    (1, theTriangles.Length())
 {
   myNodes = theNodes;
   myTriangles = theTriangles;
   myUVNodes = new TColgp_HArray1OfPnt2d (1, theNodes.Length());
   myUVNodes->ChangeArray1() = theUVNodes;
+}
+
+//=======================================================================
+//function : ~Poly_Triangulation
+//purpose  :
+//=======================================================================
+Poly_Triangulation::~Poly_Triangulation()
+{
+  delete myCachedMinMax;
 }
 
 //=======================================================================
@@ -100,16 +122,7 @@ Poly_Triangulation::Poly_Triangulation(const TColgp_Array1OfPnt&    theNodes,
 
 Handle(Poly_Triangulation) Poly_Triangulation::Copy() const
 {
-  Handle(Poly_Triangulation) aCopy;
-  if (HasUVNodes())
-    aCopy = new Poly_Triangulation(Nodes(), UVNodes(), Triangles());
-  else
-    aCopy = new Poly_Triangulation(Nodes(), Triangles());
-  aCopy->Deflection(myDeflection);
-  if (HasNormals())
-    aCopy->myNormals = new TShort_HArray1OfShortReal(myNormals->Array1());
-
-  return aCopy;
+  return new Poly_Triangulation (this);
 }
 
 //=======================================================================
@@ -118,10 +131,12 @@ Handle(Poly_Triangulation) Poly_Triangulation::Copy() const
 //=======================================================================
 
 Poly_Triangulation::Poly_Triangulation (const Handle(Poly_Triangulation)& theTriangulation)
-: myDeflection ( theTriangulation->myDeflection ),
+: myCachedMinMax(NULL),
+  myDeflection(theTriangulation->myDeflection),
   myNodes(theTriangulation->Nodes()),
   myTriangles(theTriangulation->Triangles())
 {
+  SetCachedMinMax (theTriangulation->CachedMinMax());
   if (theTriangulation->HasUVNodes())
   {
     myUVNodes = new TColgp_HArray1OfPnt2d(theTriangulation->myUVNodes->Array1());
@@ -348,4 +363,95 @@ void Poly_Triangulation::DumpJson (Standard_OStream& theOStream, Standard_Intege
   if (!myNormals.IsNull())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNormals->Size())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTriangles.Size())
+}
+
+// =======================================================================
+// function : CachedMinMax
+// purpose  :
+// =======================================================================
+const Bnd_Box& Poly_Triangulation::CachedMinMax() const
+{
+  static const Bnd_Box anEmptyBox;
+  return (myCachedMinMax == NULL) ? anEmptyBox : *myCachedMinMax;
+}
+
+// =======================================================================
+// function : SetCachedMinMax
+// purpose  :
+// =======================================================================
+void Poly_Triangulation::SetCachedMinMax (const Bnd_Box& theBox)
+{
+  if (theBox.IsVoid())
+  {
+    unsetCachedMinMax();
+    return;
+  }
+  if (myCachedMinMax == NULL)
+  {
+    myCachedMinMax = new Bnd_Box();
+  }
+  *myCachedMinMax = theBox;
+}
+
+// =======================================================================
+// function : unsetCachedMinMax
+// purpose  :
+// =======================================================================
+void Poly_Triangulation::unsetCachedMinMax()
+{
+  if (myCachedMinMax != NULL)
+  {
+    delete myCachedMinMax;
+    myCachedMinMax = NULL;
+  }
+}
+
+// =======================================================================
+// function : MinMax
+// purpose  :
+// =======================================================================
+Standard_Boolean Poly_Triangulation::MinMax (Bnd_Box& theBox, const gp_Trsf& theTrsf, const bool theIsAccurate) const
+{
+  Bnd_Box aBox;
+  if (HasCachedMinMax() &&
+      (!HasGeometry() || !theIsAccurate ||
+       theTrsf.Form() == gp_Identity || theTrsf.Form() == gp_Translation ||
+       theTrsf.Form() == gp_PntMirror || theTrsf.Form() == gp_Scale))
+  {
+    aBox = myCachedMinMax->Transformed (theTrsf);
+  }
+  else
+  {
+    aBox = computeBoundingBox (theTrsf);
+  }
+  if (aBox.IsVoid())
+  {
+    return Standard_False;
+  }
+  theBox.Add (aBox);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : computeBoundingBox
+// purpose  :
+// =======================================================================
+Bnd_Box Poly_Triangulation::computeBoundingBox (const gp_Trsf& theTrsf) const
+{
+  Bnd_Box aBox;
+  if (theTrsf.Form() == gp_Identity)
+  {
+    for (Standard_Integer aNodeIdx = 1; aNodeIdx <= NbNodes(); aNodeIdx++)
+    {
+      aBox.Add (myNodes[aNodeIdx]);
+    }
+  }
+  else
+  {
+    for (Standard_Integer aNodeIdx = 1; aNodeIdx <= NbNodes(); aNodeIdx++)
+    {
+      aBox.Add (myNodes[aNodeIdx].Transformed (theTrsf));
+    }
+  }
+  return aBox;
 }
