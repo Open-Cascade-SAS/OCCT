@@ -39,8 +39,8 @@ vselect 0 0
 
 vselmode b3 4 1
 
-vselect 75 230 235 320 -allowoverlap 0 1
-vselect 350 150 380 170 1
+vselect 75 230 235 320 -allowoverlap 0 -xor
+vselect 350 150 380 170 -xor
 vnbselected
 set aNbSelected3 [vnbselected]
 if {$aNbSelected3 != 4} {
@@ -49,8 +49,8 @@ if {$aNbSelected3 != 4} {
 
 vselect 0 0
 
-vselect  75 230 235 320 -allowoverlap 1 1
-vselect 350 150 380 170 -allowOverlap 1 1
+vselect  75 230 235 320 -allowoverlap 1 -xor
+vselect 350 150 380 170 -allowOverlap 1 -xor
 vnbselected
 set aNbSelected4 [vnbselected]
 if {$aNbSelected4 != 13} {

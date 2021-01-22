@@ -21,8 +21,8 @@ vaspects b1 b2 -setWidth 3
 
 vselmode 2 1
 # try to select b1 and b2
-vselect 305 322 1
-vselect 103 322 1
+vselect 305 322 -xor
+vselect 103 322 -xor
 # check that both boxes were not selected with default tolerance value
 set aNbSelected [vnbselected]
 if {$aNbSelected != "0"} {
@@ -43,7 +43,7 @@ if {$aNbSelected != "1"} {
   puts "ERROR: b1 was not selected"
 }
 # try to select b2
-vselect 103 322 1
+vselect 103 322 -xor
 # check that increase of tolerance for b1 doesn't influence
 # on b2
 set aNbSelected [vnbselected]

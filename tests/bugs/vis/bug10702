@@ -25,8 +25,7 @@ checkcolor $x_coord $y_coord 0 0 0.36
 vselmode m 8 1
 puts "\nSelection of elements is activated"
 
-vselect $x_coord $y_coord 1
-###vselect $x_coord $y_coord 1
+vselect $x_coord $y_coord -xor
 
 meshhidesel m
 puts "\nSelected element is hidden"

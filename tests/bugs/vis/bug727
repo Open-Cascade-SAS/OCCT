@@ -21,14 +21,14 @@ set y2 120
 
 vselect 0 0
 vselect ${x1} ${y1}
-vselect ${x2} ${y2} 1
+vselect ${x2} ${y2} -xor
 
 set NbSelected1 [vnbselected]
 if { ${NbSelected1} != 2 } {
   puts "Error : (case 1)"
 }
 
-vselect ${x2} ${y2} 1
+vselect ${x2} ${y2} -xor
 
 set NbSelected1 [vnbselected]
 if { ${NbSelected1} != 1 } {

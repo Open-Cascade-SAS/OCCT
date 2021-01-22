@@ -258,6 +258,12 @@ public: //! @name mouse input
   //! Return map defining mouse gestures.
   AIS_MouseGestureMap& ChangeMouseGestureMap() { return myMouseGestureMap; }
 
+  //! Return map defining mouse selection schemes.
+  const AIS_MouseSelectionSchemeMap& MouseSelectionSchemes() const { return myMouseSelectionSchemes; }
+
+  //! Return map defining mouse gestures.
+  AIS_MouseSelectionSchemeMap& ChangeMouseSelectionSchemes() { return myMouseSelectionSchemes; }
+
   //! Return double click interval in seconds; 0.4 by default.
   double MouseDoubleClickInterval() const { return myMouseDoubleClickInt; }
 
@@ -267,25 +273,23 @@ public: //! @name mouse input
   //! Perform selection in 3D viewer.
   //! This method is expected to be called from UI thread.
   //! @param thePnt picking point
-  //! @param theIsXOR XOR selection flag
+  //! @param theScheme selection scheme
   Standard_EXPORT virtual void SelectInViewer (const Graphic3d_Vec2i& thePnt,
-                                               const bool theIsXOR = false);
+                                               const AIS_SelectionScheme theScheme = AIS_SelectionScheme_Replace);
 
   //! Perform selection in 3D viewer.
   //! This method is expected to be called from UI thread.
   //! @param thePnts picking point
-  //! @param theIsXOR XOR selection flag
+  //! @param theScheme selection scheme
   Standard_EXPORT virtual void SelectInViewer (const NCollection_Sequence<Graphic3d_Vec2i>& thePnts,
-                                               const bool theIsXOR = false);
+                                               const AIS_SelectionScheme theScheme = AIS_SelectionScheme_Replace);
 
   //! Update rectangle selection tool.
   //! This method is expected to be called from UI thread.
   //! @param thePntFrom rectangle first   corner
   //! @param thePntTo   rectangle another corner
-  //! @param theIsXOR XOR selection flag
   Standard_EXPORT virtual void UpdateRubberBand (const Graphic3d_Vec2i& thePntFrom,
-                                                 const Graphic3d_Vec2i& thePntTo,
-                                                 const bool theIsXOR = false);
+                                                 const Graphic3d_Vec2i& thePntTo);
 
   //! Update polygonal selection tool.
   //! This method is expected to be called from UI thread.
@@ -772,6 +776,8 @@ protected: //! @name mouse input variables
 
   AIS_MouseGestureMap myMouseGestureMap;          //!< map defining mouse gestures
   AIS_MouseGesture    myMouseActiveGesture;       //!< initiated mouse gesture (by pressing mouse button)
+  AIS_MouseSelectionSchemeMap
+                      myMouseSelectionSchemes;    //!< map defining selection schemes bound to mouse + modifiers
   Standard_Boolean    myMouseActiveIdleRotation;  //!< flag indicating view idle rotation state
   Graphic3d_Vec2i     myMousePositionLast;        //!< last mouse position
   Graphic3d_Vec2i     myMousePressPoint;          //!< mouse position where active gesture was been initiated

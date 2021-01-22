@@ -128,6 +128,12 @@ AIS_ViewController::AIS_ViewController()
   myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_CTRL,   AIS_MouseGesture_Zoom);
   myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_SHIFT,  AIS_MouseGesture_Pan);
   myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT,    AIS_MouseGesture_SelectRectangle);
+  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT | Aspect_VKeyFlags_SHIFT, AIS_MouseGesture_SelectRectangle);
+
+  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton,                          AIS_SelectionScheme_Replace);
+  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT,   AIS_SelectionScheme_Replace);
+  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_SHIFT, AIS_SelectionScheme_XOR);
+  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT | Aspect_VKeyFlags_SHIFT, AIS_SelectionScheme_XOR);
 
   myMouseGestureMap.Bind (Aspect_VKeyMouse_RightButton,                          AIS_MouseGesture_Zoom);
   myMouseGestureMap.Bind (Aspect_VKeyMouse_RightButton | Aspect_VKeyFlags_CTRL,  AIS_MouseGesture_RotateOrbit);
@@ -223,9 +229,9 @@ void AIS_ViewController::flushBuffers (const Handle(AIS_InteractiveContext)& ,
 
   {
     myGL.Selection.Tool   = myUI.Selection.Tool;
-    myGL.Selection.IsXOR  = myUI.Selection.IsXOR;
+    myGL.Selection.Scheme = myUI.Selection.Scheme;
     myGL.Selection.Points = myUI.Selection.Points;
-    myUI.Selection.IsXOR  = false;
+    //myGL.Selection.Scheme = AIS_SelectionScheme_UNKNOWN; // no need
     if (myUI.Selection.Tool == AIS_ViewSelectionTool_Picking)
     {
       myUI.Selection.Points.Clear();
@@ -472,7 +478,7 @@ void AIS_ViewController::UpdateViewOrientation (V3d_TypeOfOrientation theOrienta
 // purpose  :
 // =======================================================================
 void AIS_ViewController::SelectInViewer (const Graphic3d_Vec2i& thePnt,
-                                         const bool theIsXOR)
+                                         const AIS_SelectionScheme theScheme)
 {
   if (myUI.Selection.Tool != AIS_ViewSelectionTool_Picking)
   {
@@ -480,7 +486,7 @@ void AIS_ViewController::SelectInViewer (const Graphic3d_Vec2i& thePnt,
     myUI.Selection.Points.Clear();
   }
 
-  myUI.Selection.IsXOR = theIsXOR;
+  myUI.Selection.Scheme = theScheme;
   myUI.Selection.Points.Append (thePnt);
 }
 
@@ -489,9 +495,9 @@ void AIS_ViewController::SelectInViewer (const Graphic3d_Vec2i& thePnt,
 // purpose  :
 // =======================================================================
 void AIS_ViewController::SelectInViewer (const NCollection_Sequence<Graphic3d_Vec2i>& thePnts,
-                                         const bool theIsXOR)
+                                         const AIS_SelectionScheme theScheme)
 {
-  myUI.Selection.IsXOR = theIsXOR;
+  myUI.Selection.Scheme = theScheme;
   myUI.Selection.Points = thePnts;
   myUI.Selection.ToApplyTool = true;
   if (thePnts.Length() == 1)
@@ -513,11 +519,9 @@ void AIS_ViewController::SelectInViewer (const NCollection_Sequence<Graphic3d_Ve
 // purpose  :
 // =======================================================================
 void AIS_ViewController::UpdateRubberBand (const Graphic3d_Vec2i& thePntFrom,
-                                           const Graphic3d_Vec2i& thePntTo,
-                                           const bool theIsXOR)
+                                           const Graphic3d_Vec2i& thePntTo)
 {
   myUI.Selection.Tool = AIS_ViewSelectionTool_RubberBand;
-  myUI.Selection.IsXOR = theIsXOR;
   myUI.Selection.Points.Clear();
   myUI.Selection.Points.Append (thePntFrom);
   myUI.Selection.Points.Append (thePntTo);
@@ -613,9 +617,10 @@ bool AIS_ViewController::UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
                                            bool theIsDoubleClick)
 {
   (void )theIsDoubleClick;
-  if (theButton == Aspect_VKeyMouse_LeftButton)
+  AIS_SelectionScheme aScheme = AIS_SelectionScheme_UNKNOWN;
+  if (myMouseSelectionSchemes.Find (theButton | theModifiers, aScheme))
   {
-    SelectInViewer (thePoint, (theModifiers & Aspect_VKeyFlags_SHIFT) != 0);
+    SelectInViewer (thePoint, aScheme);
     return true;
   }
   return false;
@@ -713,6 +718,8 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
   }
 
   const AIS_MouseGesture aPrevGesture = myMouseActiveGesture;
+  const Aspect_VKeyMouse aPrevButtons = myMousePressed;
+  const Aspect_VKeyFlags aPrevModifiers = myMouseModifiers;
   myMouseModifiers = theModifiers;
   myMousePressed   = theButtons;
   if (theIsEmulated
@@ -796,11 +803,14 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
      || aPrevGesture == AIS_MouseGesture_ZoomWindow)
     {
       myUI.Selection.ToApplyTool = true;
+      myUI.Selection.Scheme = AIS_SelectionScheme_Replace;
+      myMouseSelectionSchemes.Find (aPrevButtons | aPrevModifiers, myUI.Selection.Scheme);
     }
 
     myUI.IsNewGesture = true;
     toUpdateView = true;
   }
+
   return toUpdateView;
 }
 
@@ -2755,7 +2765,7 @@ void AIS_ViewController::handleSelectionPick (const Handle(AIS_InteractiveContex
         ResetPreviousMoveTo();
       }
 
-      theCtx->SelectDetected (myGL.Selection.IsXOR ? AIS_SelectionScheme_XOR : AIS_SelectionScheme_Replace);
+      theCtx->SelectDetected (myGL.Selection.Scheme);
 
       // selection affects all Views
       theView->Viewer()->Invalidate();
@@ -2859,8 +2869,8 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
             theCtx->MainSelector()->AllowOverlapDetection (aPnt1.y() != Min (aPnt1.y(), aPnt2.y()));
             theCtx->SelectRectangle (Graphic3d_Vec2i (Min (aPnt1.x(), aPnt2.x()), Min (aPnt1.y(), aPnt2.y())),
                                      Graphic3d_Vec2i (Max (aPnt1.x(), aPnt2.x()), Max (aPnt1.y(), aPnt2.y())),
-                                      theView,
-                                      myGL.Selection.IsXOR ? AIS_SelectionScheme_XOR : AIS_SelectionScheme_Replace);
+                                     theView,
+                                     myGL.Selection.Scheme);
             theCtx->MainSelector()->AllowOverlapDetection (false);
           }
         }
@@ -2875,8 +2885,7 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
             aPolyIter.ChangeValue() = gp_Pnt2d (aNewPnt.x(), -aNewPnt.y());
           }
 
-          theCtx->SelectPolygon (aPolyline, theView,
-                                 myGL.Selection.IsXOR ? AIS_SelectionScheme_XOR : AIS_SelectionScheme_Replace);
+          theCtx->SelectPolygon (aPolyline, theView, myGL.Selection.Scheme);
           theCtx->MainSelector()->AllowOverlapDetection (false);
         }
       }

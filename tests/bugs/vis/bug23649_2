@@ -20,7 +20,7 @@ vselmode b 2 1
 #select the first edge
 vselect 232 368
 #select the second edge
-vselect 165 278 1
+vselect 165 278 -xor
 vmoveto 0 0 
 
 #enable 'highlight selected' mode

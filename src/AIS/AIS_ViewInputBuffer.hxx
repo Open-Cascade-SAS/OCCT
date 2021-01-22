@@ -16,6 +16,7 @@
 
 #include <Aspect_ScrollDelta.hxx>
 
+#include <AIS_SelectionScheme.hxx>
 #include <Graphic3d_Vec2.hxx>
 #include <NCollection_Sequence.hxx>
 #include <V3d_TypeOfOrientation.hxx>
@@ -65,12 +66,12 @@ public:
   struct _selection
   {
     AIS_ViewSelectionTool Tool;          //!< perform selection
-    bool                  IsXOR;         //!< perform shift selection
+    AIS_SelectionScheme   Scheme;        //!< selection scheme
     NCollection_Sequence<Graphic3d_Vec2i>
                           Points;        //!< the points for selection
     bool                  ToApplyTool;   //!< apply rubber-band selection tool
 
-    _selection() : Tool (AIS_ViewSelectionTool_Picking), IsXOR (false), ToApplyTool (false) {}
+    _selection() : Tool (AIS_ViewSelectionTool_Picking), Scheme (AIS_SelectionScheme_UNKNOWN), ToApplyTool (false) {}
   } Selection;
 
   struct _panningParams

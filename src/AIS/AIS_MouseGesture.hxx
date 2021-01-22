@@ -14,6 +14,7 @@
 #ifndef _AIS_MouseGesture_HeaderFile
 #define _AIS_MouseGesture_HeaderFile
 
+#include <AIS_SelectionScheme.hxx>
 #include <NCollection_DataMap.hxx>
 
 //! Mouse gesture - only one can be active at one moment.
@@ -37,5 +38,6 @@ enum AIS_MouseGesture
 
 //! Map defining mouse gestures.
 typedef NCollection_DataMap<unsigned int, AIS_MouseGesture> AIS_MouseGestureMap;
+typedef NCollection_DataMap<unsigned int, AIS_SelectionScheme> AIS_MouseSelectionSchemeMap;
 
 #endif // _AIS_MouseGesture_HeaderFile

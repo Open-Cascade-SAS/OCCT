@@ -21,7 +21,7 @@ vfit
 #select the first shape
 vselect 70 230
 #select the second shape
-vselect 200 358 1
+vselect 200 358 -xor
 vmoveto 0 0
 vdump ${anImage1}
 

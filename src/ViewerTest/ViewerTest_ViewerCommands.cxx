@@ -7603,6 +7603,23 @@ static Standard_Integer VSelect (Draw_Interpretor& ,
         ++anArgIter;
       }
     }
+    else if (anArg == "-replace")
+    {
+      aSelScheme = AIS_SelectionScheme_Replace;
+    }
+    else if (anArg == "-xor"
+          || anArg == "-shift")
+    {
+      aSelScheme = AIS_SelectionScheme_XOR;
+    }
+    else if (anArg == "-add")
+    {
+      aSelScheme = AIS_SelectionScheme_Add;
+    }
+    else if (anArg == "-remove")
+    {
+      aSelScheme = AIS_SelectionScheme_Remove;
+    }
     else if (anArgIter + 1 < theNbArgs
           && anArg.IsIntegerValue()
           && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsIntegerValue())
@@ -7648,11 +7665,12 @@ static Standard_Integer VSelect (Draw_Interpretor& ,
     {
       std::swap (aPnts.ChangeFirst(), aPnts.ChangeLast());
     }
-    aCurrentEventManager->SelectInViewer (aPnts, aSelScheme == AIS_SelectionScheme_XOR);
+
+    aCurrentEventManager->SelectInViewer (aPnts, aSelScheme);
   }
   else
   {
-    aCurrentEventManager->SelectInViewer (aPnts, aSelScheme == AIS_SelectionScheme_XOR);
+    aCurrentEventManager->SelectInViewer (aPnts, aSelScheme);
   }
   aCurrentEventManager->FlushViewEvents (aCtx, ViewerTest::CurrentView(), true);
   return 0;
@@ -15096,7 +15114,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: When -closeOnEscape is specified, view will be closed on pressing Escape.",
     __FILE__, VDiffImage, group);
   theCommands.Add ("vselect",
-    "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [shift_selection = 0|1]\n"
+    "vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [-replace|-xor|-add|-remove]\n"
     "- emulates different types of selection:\n"
     "- 1) single click selection\n"
     "- 2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)\n"
@@ -15105,7 +15123,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "     If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined \n"
     "     rectangle or polygon will be detected, otherwise algorithm will chose only fully included sensitives.\n"
     "     Default behavior is to detect only full inclusion. (partial inclusion - overlap - is not allowed by default)\n"
-    "- 5) any of these selections with shift button pressed",
+    "- 5) selection scheme replace, xor, add or remove (replace by default)",
     __FILE__, VSelect, group);
   theCommands.Add ("vmoveto",
     "vmoveto [x y] [-reset]"

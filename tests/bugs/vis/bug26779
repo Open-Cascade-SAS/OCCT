@@ -33,7 +33,7 @@ if {$aSize != 3 || [string compare $aItem1 "Locally selected sub-shapes within b
 vdisplay b2
 vfit
 
-vselect 350 120 1
+vselect 350 120 -xor
 set anInfo [split [vstate *] "\n"]
 set aItem1 [string trim [lindex $anInfo 1] ]
 set aItem2 [string trim [lindex $anInfo 2] ]

@@ -25,9 +25,9 @@ if {$aColor != "CHOCOLATE3" && abs($aTrsp - 1.0) < 0.1} {
 
 vdump $imagedir/${casename}_dyn.png
 
-vselect 50 200 1
-vselect 200 200 1
-vselect 350 200 1
+vselect 50 200 -xor
+vselect 200 200 -xor
+vselect 350 200 -xor
 
 if {[vreadpixel 350 200 name rgba] != "RED2 1" || [vreadpixel 350 200 name rgba] == [vreadpixel 200 200 name rgba]} {
   puts "ERROR: selection highlight of 3rd box is displayed with wrong color!"
