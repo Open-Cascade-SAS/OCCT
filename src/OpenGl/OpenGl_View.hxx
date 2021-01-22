@@ -340,6 +340,15 @@ public: //! @name obsolete Graduated Trihedron functionality
                                                               const Graphic3d_Vec3 theMax)
     Standard_OVERRIDE;
 
+  //! Returns necessity to flip OY in projection matrix
+  virtual Standard_Boolean ToFlipOutput() const Standard_OVERRIDE { return myToFlipOutput; }
+
+  //! Sets state of flip OY necessity in projection matrix
+  virtual void SetToFlipOutput(const Standard_Boolean theFlip) Standard_OVERRIDE
+  {
+    myToFlipOutput = theFlip;
+  }
+
 protected: //! @name Internal methods for managing GL resources
   //! Initializes OpenGl resource for environment texture.
   void initTextureEnv(const Handle(OpenGl_Context)& theContext);
