@@ -2506,7 +2506,7 @@ static Standard_Integer OCC25340 (Draw_Interpretor& /*theDI*/,
     std::cerr << "Error: No opened viewer!\n";
     return 1;
   }
-  Handle(AIS_TypeFilter) aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+  Handle(AIS_TypeFilter) aFilter = new AIS_TypeFilter (AIS_KindOfInteractive_Shape);
   aCtx->AddFilter (aFilter);
   return 0;
 }

@@ -58,7 +58,7 @@ public:
   //! lines representing the relation between the two shapes.
   Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Relation; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Relation; }
 
   //! Indicates that the type of dimension is unknown.
   virtual PrsDim_KindOfDimension KindOfDimension() const { return PrsDim_KOD_NONE; }

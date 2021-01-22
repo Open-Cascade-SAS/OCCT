@@ -177,7 +177,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 3; }
 
   //! Indicates that the type of Interactive Object is datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   //! Removes the settings for color.
   Standard_EXPORT virtual void UnsetColor() Standard_OVERRIDE;

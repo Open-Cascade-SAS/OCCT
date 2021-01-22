@@ -336,7 +336,7 @@ void AIS_InteractiveContext::ObjectsInside (AIS_ListOfInteractive&      theListO
                                             const AIS_KindOfInteractive theKind,
                                             const Standard_Integer      theSign) const
 {
-  if (theKind == AIS_KOI_None
+  if (theKind == AIS_KindOfInteractive_None
    && theSign == -1)
   {
     for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjIter (myObjects); anObjIter.More(); anObjIter.Next())
@@ -1402,8 +1402,8 @@ void AIS_InteractiveContext::SetDeviationCoefficient (const Handle(AIS_Interacti
 
   // to be modified after the related methods of AIS_Shape are passed to InteractiveObject
   setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Object
-   && theIObj->Type() != AIS_KOI_Shape)
+  if (theIObj->Type() != AIS_KindOfInteractive_Object
+   && theIObj->Type() != AIS_KindOfInteractive_Shape)
   {
     return;
   }
@@ -1436,7 +1436,7 @@ void AIS_InteractiveContext::SetDeviationAngle (const Handle(AIS_InteractiveObje
 
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Shape)
+  if (theIObj->Type() != AIS_KindOfInteractive_Shape)
   {
     return;
   }
@@ -1469,7 +1469,7 @@ void AIS_InteractiveContext::SetAngleAndDeviation (const Handle(AIS_InteractiveO
 
   // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
   setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Shape)
+  if (theIObj->Type() != AIS_KindOfInteractive_Shape)
   {
     return;
   }
@@ -2224,8 +2224,8 @@ void AIS_InteractiveContext::SetTrihedronSize (const Standard_Real    theVal,
                                                const Standard_Boolean /*updateviewer*/)
 {
   myDefaultDrawer->DatumAspect()->SetAxisLength (theVal, theVal, theVal);
-  Redisplay (AIS_KOI_Datum, 3, Standard_False);
-  Redisplay (AIS_KOI_Datum, 4, Standard_True);
+  Redisplay (AIS_KindOfInteractive_Datum, 3, Standard_False);
+  Redisplay (AIS_KindOfInteractive_Datum, 4, Standard_True);
 }
 
 //=======================================================================
@@ -2237,7 +2237,7 @@ void AIS_InteractiveContext::SetPlaneSize(const Standard_Real    theValX,
                                           const Standard_Boolean theToUpdateViewer)
 {
   myDefaultDrawer->PlaneAspect()->SetPlaneLength (theValX, theValY);
-  Redisplay (AIS_KOI_Datum, 7, theToUpdateViewer);
+  Redisplay (AIS_KindOfInteractive_Datum, 7, theToUpdateViewer);
 }
 
 //=======================================================================

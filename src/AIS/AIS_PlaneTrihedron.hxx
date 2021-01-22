@@ -77,7 +77,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 4; }
 
   //! Returns datum as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   //! Allows you to provide settings for the color aColor.
   Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;

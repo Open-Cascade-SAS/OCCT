@@ -869,8 +869,10 @@ public: //! @name common properties
   
   //! fills <aListOfIO> with objects of a particular Type and Signature with no consideration of display status.
   //! by Default, <WhichSignature> = -1 means control only on <WhichKind>.
-  //! if <WhichKind> = AIS_KOI_None and <WhichSignature> = -1, all the objects are put into the list.
-  Standard_EXPORT void ObjectsInside (AIS_ListOfInteractive& aListOfIO, const AIS_KindOfInteractive WhichKind = AIS_KOI_None, const Standard_Integer WhichSignature = -1) const;
+  //! if <WhichKind> = AIS_KindOfInteractive_None and <WhichSignature> = -1, all the objects are put into the list.
+  Standard_EXPORT void ObjectsInside (AIS_ListOfInteractive& aListOfIO,
+                                      const AIS_KindOfInteractive WhichKind = AIS_KindOfInteractive_None,
+                                      const Standard_Integer WhichSignature = -1) const;
 
   //! Rebuilds 1st level of BVH selection forcibly
   Standard_EXPORT void RebuildSelectionStructs();

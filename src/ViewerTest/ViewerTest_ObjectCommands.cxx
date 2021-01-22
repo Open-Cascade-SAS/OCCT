@@ -742,9 +742,7 @@ static int VTrihedron (Draw_Interpretor& ,
 //           if no value, the value is set at 100 by default
 //Draw arg : vsize [name] [size]
 //==============================================================================
-
 static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-
 {
   if (TheAISContext().IsNull())
   {
@@ -752,141 +750,89 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
     return 1;
   }
 
-  // Declaration de booleens
-  Standard_Boolean             ThereIsName;
-  Standard_Boolean             ThereIsCurrent;
-  Standard_Real                value;
-  Standard_Boolean             hascol;
-
-  Quantity_Color col = Quantity_NOC_BLACK;
-
-  // Verification des arguments
-  if ( argc>3 ) {di<<argv[0]<<" Syntaxe error\n"; return 1;}
-
-  // Verification du nombre d'arguments
-  if (argc==1)      {ThereIsName=Standard_False;value=100;}
-  else if (argc==2) {ThereIsName=Standard_False;value=Draw::Atof(argv[1]);}
-  else              {ThereIsName=Standard_True;value=Draw::Atof(argv[2]);}
-
-  // On set le booleen ThereIsCurrent
-  if (TheAISContext() -> NbSelected() > 0) {ThereIsCurrent=Standard_True;}
-  else {ThereIsCurrent=Standard_False;}
-
-
-
-  //===============================================================
-  // Il n'y a pas de nom  mais des objets selectionnes
-  //===============================================================
-  if (!ThereIsName && ThereIsCurrent)
+  TCollection_AsciiString aName;
+  Standard_Real aSize = 0.0;
+  switch (argc)
   {
-
-    ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-      it (GetMapOfAIS());
-
-    while ( it.More() ) {
-
-      Handle(AIS_InteractiveObject) aShape = it.Key1();
-
-      if (!aShape.IsNull() &&  TheAISContext()->IsSelected(aShape) )
-      {
-
-        // On verifie que l'AIS InteraciveObject selectionne est bien
-        // un AIS_Trihedron
-        if (aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3) {
-
-          if (aShape->HasColor())
-          {
-            hascol = Standard_True;
-
-            // On recupere la couleur de aShape
-            aShape->Color (col);
-          }
-          else
-          {
-            hascol = Standard_False;
-          }
-
-          // On downcast aShape  de AIS_InteractiveObject a AIS_Trihedron
-          // pour lui appliquer la methode SetSize()
-          Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape);
-
-          // C'est bien un triedre,on chage sa valeur!
-          aTrihedron->SetSize(value);
-
-          // On donne la couleur au Trihedron
-          if(hascol)   aTrihedron->SetColor(col);
-          else         aTrihedron->UnsetColor();
-
-
-          // The trihedron hasn't be errased from the map
-          // so you just have to redisplay it
-          TheAISContext() ->Redisplay(aTrihedron,Standard_False);
-
-        }
-
-      }
-
-      it.Next();
-    }
-
-    TheAISContext() ->UpdateCurrentViewer();
-  }
-
-  //===============================================================
-  // Il n'y a pas d'arguments et aucuns objets selectionne Rien A Faire!
-  //===============================================================
-
-
-
-  //===============================================================
-  // Il y a un nom de triedre passe en argument
-  //===============================================================
-  if (ThereIsName) {
-    TCollection_AsciiString name=argv[1];
-
-    // on verifie que ce nom correspond bien a une shape
-    Handle(AIS_InteractiveObject) aShape;
-    if (GetMapOfAIS().Find2(name, aShape))
+    case 1:
     {
-      // On verifie que l'AIS InteraciveObject est bien
-      // un AIS_Trihedron
-      if (!aShape.IsNull() &&
-        aShape->Type()==AIS_KOI_Datum && aShape->Signature()==3)
+      aSize = 100;
+      break;
+    }
+    case 2:
+    {
+      aSize = Draw::Atof (argv[1]);
+      break;
+    }
+    case 3:
+    {
+      aName = argv[1];
+      aSize = Draw::Atof (argv[2]);
+      break;
+    }
+    default:
+    {
+      di << "Syntax error";
+      return 1;
+    }
+  }
+
+  NCollection_Sequence<Handle(AIS_Trihedron)> aTrihedrons;
+  if (!aName.IsEmpty())
+  {
+    Handle(AIS_InteractiveObject) aShape;
+    if (GetMapOfAIS().Find2 (aName, aShape))
+    {
+      if (Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape))
       {
-        if (aShape->HasColor())
-        {
-          hascol=Standard_True;
-
-          // On recupere la couleur de aShape
-          aShape->Color (col);
-        }
-        else
-        {
-          hascol = Standard_False;
-        }
-
-        // On downcast aShape de AIS_InteractiveObject a AIS_Trihedron
-        // pour lui appliquer la methode SetSize()
-        Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape);
-
-        // C'est bien un triedre,on chage sa valeur
-        aTrihedron->SetSize(value);
-
-        // On donne la couleur au Trihedron
-        if(hascol)   aTrihedron->SetColor(col);
-        else         aTrihedron->UnsetColor();
-
-        // The trihedron hasn't be errased from the map
-        // so you just have to redisplay it
-        TheAISContext() ->Redisplay(aTrihedron,Standard_False);
-
-        TheAISContext() ->UpdateCurrentViewer();
+        aTrihedrons.Append (aTrihedron);
+      }
+      else
+      {
+        di << "Syntax error: " << aName << " is not a trihedron";
+        return 1;
       }
     }
   }
+  else if (TheAISContext()->NbSelected() > 0)
+  {
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it (GetMapOfAIS()); it.More(); it.Next())
+    {
+      const Handle(AIS_InteractiveObject)& aShape = it.Key1();
+      if (!aShape.IsNull()
+       && TheAISContext()->IsSelected (aShape))
+      {
+        if (Handle(AIS_Trihedron) aTrihedron = Handle(AIS_Trihedron)::DownCast (aShape))
+        {
+          aTrihedrons.Append (aTrihedron);
+        }
+      }
+    }
+  }
+
+  for (NCollection_Sequence<Handle(AIS_Trihedron)>::Iterator anObjIter (aTrihedrons); anObjIter.More(); anObjIter.Next())
+  {
+    const Handle(AIS_Trihedron)& aTrihedron = anObjIter.Value();
+    Quantity_Color aColor = Quantity_NOC_BLACK;
+    const bool hasColor = aTrihedron->HasColor();
+    if (hasColor)
+    {
+      aTrihedron->Color (aColor);
+    }
+
+    aTrihedron->SetSize (aSize);
+    if (hasColor) { aTrihedron->SetColor (aColor); }
+    else          { aTrihedron->UnsetColor(); }
+
+    TheAISContext()->Redisplay (aTrihedron, Standard_False);
+  }
+  if (!aTrihedrons.IsEmpty())
+  {
+    TheAISContext()->UpdateCurrentViewer();
+  }
+
   return 0;
 }
-
 
 //==============================================================================
 
@@ -1283,111 +1229,112 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
     }
 
     // The first argument is an AIS_Point
-    if (!aShapeA.IsNull() &&
-        aShapeA->Type()==AIS_KOI_Datum &&
-        aShapeA->Signature()==1)
+    if (!aShapeA.IsNull()
+      && aShapeA->Type() == AIS_KindOfInteractive_Datum
+      && aShapeA->Signature() == 1)
     {
-        // The second argument must also be an AIS_Point
-        Handle(AIS_InteractiveObject) aShapeB;
-        if (argc<5 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
-        {
-          Message::SendFail ("Syntax error: 2nd name is not displayed");
-          return 1;
-        }
-        // If B is not an AIS_Point
-        if (aShapeB.IsNull() ||
-          (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
-        {
-          Message::SendFail ("Syntax error: 2nd object is expected to be an AIS_Point");
-          return 1;
-        }
-        // The third object is an AIS_Point
-        Handle(AIS_InteractiveObject) aShapeC;
-        if (!GetMapOfAIS().Find2(argv[4], aShapeC)) 
-        {
-          Message::SendFail ("Syntax error: 3d name is not displayed");
-          return 1; 
-        }
-        // If C is not an AIS_Point
-        if (aShapeC.IsNull() ||
-          (!(aShapeC->Type()==AIS_KOI_Datum && aShapeC->Signature()==1)))
-        {
-          Message::SendFail ("Syntax error: 3d object is expected to be an AIS_Point");
-          return 1;
-        }
-
-        // Treatment of objects A, B, C
-        // Downcast an AIS_IO to AIS_Point
-        Handle(AIS_Point) anAISPointA = Handle(AIS_Point)::DownCast( aShapeA);
-        Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast( aShapeB);
-        Handle(AIS_Point) anAISPointC = Handle(AIS_Point)::DownCast( aShapeC);
-
-        Handle(Geom_CartesianPoint ) aCartPointA = 
-          Handle(Geom_CartesianPoint)::DownCast( anAISPointA->Component());
-
-        Handle(Geom_CartesianPoint ) aCartPointB = 
-          Handle(Geom_CartesianPoint)::DownCast( anAISPointB->Component());
-
-        Handle(Geom_CartesianPoint ) aCartPointC = 
-          Handle(Geom_CartesianPoint)::DownCast( anAISPointC->Component());
-
-        // Verification that the three points are different
-        if(Abs(aCartPointB->X()-aCartPointA->X())<=Precision::Confusion() &&
-           Abs(aCartPointB->Y()-aCartPointA->Y())<=Precision::Confusion() &&
-           Abs(aCartPointB->Z()-aCartPointA->Z())<=Precision::Confusion())
-        {
-          // B=A
-          Message::SendFail ("Error: same points");
-          return 1;
-        }
-        if(Abs(aCartPointC->X()-aCartPointA->X())<=Precision::Confusion() &&
-           Abs(aCartPointC->Y()-aCartPointA->Y())<=Precision::Confusion() &&
-           Abs(aCartPointC->Z()-aCartPointA->Z())<=Precision::Confusion())
-        {
-          // C=A
-          Message::SendFail ("Error: same points");
-          return 1;
-        }
-        if(Abs(aCartPointC->X()-aCartPointB->X())<=Precision::Confusion() &&
-           Abs(aCartPointC->Y()-aCartPointB->Y())<=Precision::Confusion() &&
-           Abs(aCartPointC->Z()-aCartPointB->Z())<=Precision::Confusion())
-        {
-          // C=B
-          Message::SendFail ("Error: same points");
-          return 1;
-        }
-
-        gp_Pnt A = aCartPointA->Pnt();
-        gp_Pnt B = aCartPointB->Pnt();
-        gp_Pnt C = aCartPointC->Pnt();
-
-        // Construction of AIS_Plane
-        GC_MakePlane MkPlane (A,B,C);
-        Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
-        Handle(AIS_Plane)  anAISPlane = new AIS_Plane(aGeomPlane );
-        GetMapOfAIS().Bind (anAISPlane,aName );
-        if (argc == 6)
-        {
-          Standard_Integer aType = Draw::Atoi (argv[5]);
-          if (aType != 0 && aType != 1)
-          {
-            Message::SendFail("Syntax error: wrong type of sensitivity.\n"
-                              "Should be one of the following values:\n"
-                              "0 - Interior\n"
-                              "1 - Boundary");
-            return 1;
-          }
-          else
-          {
-            anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
-          }
-        }
-        TheAISContext()->Display (anAISPlane, Standard_True);
+      // The second argument must also be an AIS_Point
+      Handle(AIS_InteractiveObject) aShapeB;
+      if (argc<5 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
+      {
+        Message::SendFail ("Syntax error: 2nd name is not displayed");
+        return 1;
       }
 
-      // The first argument is an AIS_Axis
-      // Creation of a plane orthogonal to the axis through a point
-    else if (aShapeA->Type()==AIS_KOI_Datum && aShapeA->Signature()==2 ) {
+      // If B is not an AIS_Point
+      if (aShapeB.IsNull()
+      || !(aShapeB->Type() == AIS_KindOfInteractive_Datum
+        && aShapeB->Signature() == 1))
+      {
+        Message::SendFail ("Syntax error: 2nd object is expected to be an AIS_Point");
+        return 1;
+      }
+
+      // The third object is an AIS_Point
+      Handle(AIS_InteractiveObject) aShapeC;
+      if (!GetMapOfAIS().Find2(argv[4], aShapeC))
+      {
+        Message::SendFail ("Syntax error: 3d name is not displayed");
+        return 1;
+      }
+
+      // If C is not an AIS_Point
+      if (aShapeC.IsNull()
+      || !(aShapeC->Type() == AIS_KindOfInteractive_Datum
+        && aShapeC->Signature() == 1))
+      {
+        Message::SendFail ("Syntax error: 3d object is expected to be an AIS_Point");
+        return 1;
+      }
+
+      // Treatment of objects A, B, C
+      // Downcast an AIS_IO to AIS_Point
+      Handle(AIS_Point) anAISPointA = Handle(AIS_Point)::DownCast (aShapeA);
+      Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast (aShapeB);
+      Handle(AIS_Point) anAISPointC = Handle(AIS_Point)::DownCast (aShapeC);
+
+      Handle(Geom_CartesianPoint ) aCartPointA = Handle(Geom_CartesianPoint)::DownCast (anAISPointA->Component());
+      Handle(Geom_CartesianPoint ) aCartPointB = Handle(Geom_CartesianPoint)::DownCast (anAISPointB->Component());
+      Handle(Geom_CartesianPoint ) aCartPointC = Handle(Geom_CartesianPoint)::DownCast (anAISPointC->Component());
+
+      // Verification that the three points are different
+      if (Abs(aCartPointB->X()-aCartPointA->X()) <= Precision::Confusion()
+       && Abs(aCartPointB->Y()-aCartPointA->Y()) <= Precision::Confusion()
+       && Abs(aCartPointB->Z()-aCartPointA->Z()) <= Precision::Confusion())
+      {
+        // B=A
+        Message::SendFail ("Error: same points");
+        return 1;
+      }
+      if (Abs(aCartPointC->X()-aCartPointA->X()) <= Precision::Confusion()
+       && Abs(aCartPointC->Y()-aCartPointA->Y()) <= Precision::Confusion()
+       && Abs(aCartPointC->Z()-aCartPointA->Z()) <= Precision::Confusion())
+      {
+        // C=A
+        Message::SendFail ("Error: same points");
+        return 1;
+      }
+      if (Abs(aCartPointC->X()-aCartPointB->X()) <= Precision::Confusion()
+       && Abs(aCartPointC->Y()-aCartPointB->Y()) <= Precision::Confusion()
+       && Abs(aCartPointC->Z()-aCartPointB->Z()) <= Precision::Confusion())
+      {
+        // C=B
+        Message::SendFail ("Error: same points");
+        return 1;
+      }
+
+      gp_Pnt A = aCartPointA->Pnt();
+      gp_Pnt B = aCartPointB->Pnt();
+      gp_Pnt C = aCartPointC->Pnt();
+
+      // Construction of AIS_Plane
+      GC_MakePlane MkPlane (A,B,C);
+      Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+      Handle(AIS_Plane)  anAISPlane = new AIS_Plane (aGeomPlane);
+      GetMapOfAIS().Bind (anAISPlane, aName);
+      if (argc == 6)
+      {
+        Standard_Integer aType = Draw::Atoi (argv[5]);
+        if (aType != 0 && aType != 1)
+        {
+          Message::SendFail("Syntax error: wrong type of sensitivity.\n"
+                            "Should be one of the following values:\n"
+                            "0 - Interior\n"
+                            "1 - Boundary");
+          return 1;
+        }
+        else
+        {
+          anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
+        }
+      }
+      TheAISContext()->Display (anAISPlane, Standard_True);
+    }
+    // The first argument is an AIS_Axis
+    // Creation of a plane orthogonal to the axis through a point
+    else if (aShapeA->Type() == AIS_KindOfInteractive_Datum
+          && aShapeA->Signature() == 2)
+    {
       // The second argument should be an AIS_Point
       Handle(AIS_InteractiveObject) aShapeB;
       if (argc!=4 || !GetMapOfAIS().Find2 (argv[3], aShapeB))
@@ -1396,8 +1343,9 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         return 1;
       }
       // If B is not an AIS_Point
-      if (aShapeB.IsNull() ||
-        (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
+      if (aShapeB.IsNull()
+      || !(aShapeB->Type() == AIS_KindOfInteractive_Datum
+        && aShapeB->Signature() == 1))
       {
         Message::SendFail ("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;
@@ -1407,14 +1355,13 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       Handle(AIS_Axis) anAISAxisA = Handle(AIS_Axis)::DownCast(aShapeA);
       Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast(aShapeB);
 
-      Handle(Geom_Line ) aGeomLineA = anAISAxisA ->Component();
-      Handle(Geom_Point) aGeomPointB = anAISPointB->Component()  ;
+      Handle(Geom_Line ) aGeomLineA = anAISAxisA->Component();
+      Handle(Geom_Point) aGeomPointB = anAISPointB->Component();
 
       gp_Ax1 anAxis = aGeomLineA->Position();
-      Handle(Geom_CartesianPoint) aCartPointB = 
-        Handle(Geom_CartesianPoint)::DownCast(aGeomPointB);
+      Handle(Geom_CartesianPoint) aCartPointB = Handle(Geom_CartesianPoint)::DownCast(aGeomPointB);
 
-      gp_Dir D =anAxis.Direction();
+      gp_Dir D = anAxis.Direction();
       gp_Pnt B = aCartPointB->Pnt();
 
       // Construction of AIS_Plane
@@ -1438,11 +1385,11 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         }
       }
       TheAISContext()->Display (anAISPlane, Standard_True);
-
     }
-    // The first argumnet is an AIS_Plane
+    // The first argument is an AIS_Plane
     // Creation of a plane parallel to the plane passing through the point
-    else if (aShapeA->Type()==AIS_KOI_Datum && aShapeA->Signature()==7)
+    else if (aShapeA->Type() == AIS_KindOfInteractive_Datum
+          && aShapeA->Signature() == 7)
     {
       // The second argument should be an AIS_Point
       Handle(AIS_InteractiveObject) aShapeB;
@@ -1452,8 +1399,9 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         return 1;
       }
       // B should be an AIS_Point
-      if (aShapeB.IsNull() ||
-         (!(aShapeB->Type()==AIS_KOI_Datum && aShapeB->Signature()==1)))
+      if (aShapeB.IsNull()
+       || !(aShapeB->Type()==AIS_KindOfInteractive_Datum
+         && aShapeB->Signature() == 1))
       {
         Message::SendFail ("Syntax error: 2d object is expected to be an AIS_Point");
         return 1;
@@ -1466,8 +1414,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       Handle(Geom_Plane) aNewGeomPlane= anAISPlaneA->Component();
       Handle(Geom_Point) aGeomPointB = anAISPointB->Component();
 
-      Handle(Geom_CartesianPoint) aCartPointB = 
-        Handle(Geom_CartesianPoint)::DownCast(aGeomPointB);
+      Handle(Geom_CartesianPoint) aCartPointB = Handle(Geom_CartesianPoint)::DownCast(aGeomPointB);
       gp_Pnt B= aCartPointB->Pnt();
 
       // Construction of an AIS_Plane
@@ -1888,78 +1835,57 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
 
 static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  // Verifications
-  if (argc!=4 && argc!=8 && argc!=2 )  {di<<"vline error: number of arguments not correct \n";return 1; }
+  if (argc == 4)   // parameters: AIS_Point AIS_Point
+  {
+    Handle(AIS_InteractiveObject) aShapeA, aShapeB;
+    GetMapOfAIS().Find2 (argv[2], aShapeA);
+    GetMapOfAIS().Find2 (argv[3], aShapeB);
+    Handle(AIS_Point) anAISPointA = Handle(AIS_Point)::DownCast (aShapeA);
+    Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast (aShapeB);
+    if (anAISPointA.IsNull()
+     || anAISPointB.IsNull())
+    {
+      di << "vline error: wrong type of arguments\n";
+      return 1;
+    }
 
-  // On recupere les parametres
-  Handle(AIS_InteractiveObject) theShapeA;
-  Handle(AIS_InteractiveObject) theShapeB;
+    Handle(Geom_Point) aGeomPointBA = anAISPointA->Component();
+    Handle(Geom_CartesianPoint) aCartPointA = Handle(Geom_CartesianPoint)::DownCast (aGeomPointBA);
 
-  // Parametres: AIS_Point AIS_Point
-  // ===============================
-  if (argc==4) {
-    GetMapOfAIS().Find2 (argv[2], theShapeA);
-    // On verifie que c'est bien une AIS_Point
-    if (!theShapeA.IsNull() &&
-      theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==1) {
-        // on recupere le deuxieme AIS_Point
-        GetMapOfAIS().Find2 (argv[3], theShapeB);
-        if (theShapeB.IsNull() ||
-          (!(theShapeB->Type()==AIS_KOI_Datum && theShapeB->Signature()==1)))
-        {
-          di <<"vline error: wrong type of 2de argument.\n";
-          return 1;
-        }
-      }
-    else {di <<"vline error: wrong type of 1st argument.\n";return 1; }
-    // Les deux parametres sont du bon type. On verifie que les points ne sont pas confondus
-    Handle(AIS_Point) theAISPointA= Handle(AIS_Point)::DownCast (theShapeA);
-    Handle(AIS_Point) theAISPointB= Handle(AIS_Point)::DownCast (theShapeB);
+    Handle(Geom_Point) aGeomPointB = anAISPointB->Component();
+    Handle(Geom_CartesianPoint) aCartPointB = Handle(Geom_CartesianPoint)::DownCast (aGeomPointB);
 
-    Handle(Geom_Point ) myGeomPointBA=  theAISPointA->Component();
-    Handle(Geom_CartesianPoint ) myCartPointA= Handle(Geom_CartesianPoint)::DownCast (myGeomPointBA);
-    //    Handle(Geom_CartesianPoint ) myCartPointA= *(Handle(Geom_CartesianPoint)*)& (theAISPointA->Component() ) ;
-
-    Handle(Geom_Point ) myGeomPointB=  theAISPointB->Component();
-    Handle(Geom_CartesianPoint ) myCartPointB= Handle(Geom_CartesianPoint)::DownCast (myGeomPointB);
-    //    Handle(Geom_CartesianPoint ) myCartPointB= *(Handle(Geom_CartesianPoint)*)& (theAISPointB->Component() ) ;
-
-    if (myCartPointB->X()==myCartPointA->X() && myCartPointB->Y()==myCartPointA->Y() && myCartPointB->Z()==myCartPointA->Z() ) {
+    if (aCartPointB->X() == aCartPointA->X()
+     && aCartPointB->Y() == aCartPointA->Y()
+     && aCartPointB->Z() == aCartPointA->Z())
+    {
       // B=A
-      di<<"vline error: same points\n";return 1;
-    }
-    // Les deux points sont OK...Construction de l'AIS_Line (en faite, le segment AB)
-    Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
-    GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display (theAISLine, Standard_True);
-
-  }
-
-  // Parametres 6 Reals
-  // ==================
-
-  else if (argc==8) {
-    // On verifie que les deux points ne sont pas confondus
-
-    Standard_Real coord[6];
-    for(Standard_Integer i=0;i<=2;i++){
-      coord[i]=Draw::Atof(argv[2+i]);
-      coord[i+3]=Draw::Atof(argv[5+i]);
+      di << "vline error: same points\n";
+      return 1;
     }
 
-    Handle(Geom_CartesianPoint ) myCartPointA=new Geom_CartesianPoint (coord[0],coord[1],coord[2] );
-    Handle(Geom_CartesianPoint ) myCartPointB=new Geom_CartesianPoint (coord[3],coord[4],coord[5] );
+    Handle(AIS_Line) anAISLine = new AIS_Line (aCartPointA, aCartPointB);
+    GetMapOfAIS().Bind (anAISLine, argv[1]);
+    TheAISContext()->Display (anAISLine, Standard_True);
+  }
+  else if (argc == 8) // parametres 6 reals
+  {
+    Standard_Real aCoord[6] = {};
+    for (Standard_Integer i = 0; i <= 2; ++i)
+    {
+      aCoord[i]     = Draw::Atof (argv[2 + i]);
+      aCoord[i + 3] = Draw::Atof (argv[5 + i]);
+    }
 
-    Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
-    GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display (theAISLine, Standard_True);
+    Handle(Geom_CartesianPoint) aCartPointA = new Geom_CartesianPoint (aCoord[0], aCoord[1], aCoord[2]);
+    Handle(Geom_CartesianPoint) aCartPointB = new Geom_CartesianPoint (aCoord[3], aCoord[4], aCoord[5]);
+
+    Handle(AIS_Line) anAISLine = new AIS_Line (aCartPointA, aCartPointB);
+    GetMapOfAIS().Bind (anAISLine, argv[1]);
+    TheAISContext()->Display (anAISLine, Standard_True);
 
   }
-
-  // Pas de parametres: Selection dans le viewer.
-  // ============================================
-
-  else
+  else if (argc == 2) // selection in 3D viewer
   {
     TopTools_ListOfShape aShapes;
     ViewerTest::GetSelectedShapes (aShapes);
@@ -1971,9 +1897,8 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
     const TopoDS_Shape& aShapeA = aShapes.First();
     const TopoDS_Shape& aShapeB = aShapes.Last();
-
-    if (!(aShapeA.ShapeType() == TopAbs_VERTEX
-       && aShapeB.ShapeType() == TopAbs_VERTEX))
+    if (aShapeA.ShapeType() != TopAbs_VERTEX
+     || aShapeB.ShapeType() != TopAbs_VERTEX)
     {
       Message::SendFail ("Error: you should select two different vertex.");
       return 1;
@@ -1983,12 +1908,17 @@ static int VLineBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
     gp_Pnt A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
     gp_Pnt B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
 
-    Handle(Geom_CartesianPoint ) myCartPointA=new Geom_CartesianPoint(A);
-    Handle(Geom_CartesianPoint ) myCartPointB=new Geom_CartesianPoint(B);
+    Handle(Geom_CartesianPoint) aCartPointA = new Geom_CartesianPoint (A);
+    Handle(Geom_CartesianPoint) aCartPointB = new Geom_CartesianPoint (B);
 
-    Handle(AIS_Line) theAISLine= new AIS_Line(myCartPointA,myCartPointB );
-    GetMapOfAIS().Bind(theAISLine,argv[1] );
-    TheAISContext()->Display (theAISLine, Standard_True);
+    Handle(AIS_Line) anAISLine = new AIS_Line (aCartPointA, aCartPointB);
+    GetMapOfAIS().Bind (anAISLine, argv[1]);
+    TheAISContext()->Display (anAISLine, Standard_True);
+  }
+  else
+  {
+    di << "Syntax error: wrong number of arguments";
+    return 1;
   }
 
   return 0;
@@ -2137,164 +2067,137 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
 
 static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
-  // Verification of the arguments
-  if (argc>6 || argc<2) 
+  if (argc > 6 || argc < 2)
   { 
     Message::SendFail ("Syntax error: wrong number of arguments");
     return 1;
   }
 
-  // There are all arguments
   if (argc == 6) 
   {
-    // Get arguments
-    TCollection_AsciiString aName(argv[1]);
+    TCollection_AsciiString aName (argv[1]);
     Standard_Boolean isFilled = Draw::Atoi(argv[5]) != 0;
 
-    Handle(AIS_InteractiveObject) theShapeA, theShapeB;
-    GetMapOfAIS().Find2 (argv[2], theShapeA);
-    GetMapOfAIS().Find2 (argv[3], theShapeB);
+    Handle(AIS_InteractiveObject) aShapeA, aShapeB;
+    GetMapOfAIS().Find2 (argv[2], aShapeA);
+    GetMapOfAIS().Find2 (argv[3], aShapeB);
 
     // Arguments: AIS_Point AIS_Point AIS_Point
-    // ========================================
-    if (!theShapeA.IsNull() && !theShapeB.IsNull() &&
-      theShapeA->Type()==AIS_KOI_Datum && theShapeA->Signature()==1)
+    if (!aShapeA.IsNull()
+     && !aShapeB.IsNull()
+     &&  aShapeA->Type() == AIS_KindOfInteractive_Datum
+     &&  aShapeA->Signature() == 1)
     {
-      if (theShapeB->Type()!=AIS_KOI_Datum || theShapeB->Signature()!=1 ) 
+      Handle(AIS_InteractiveObject) aShapeC;
+      GetMapOfAIS().Find2 (argv[4], aShapeC);
+      Handle(AIS_Point) anAISPointA = Handle(AIS_Point)::DownCast (aShapeA);
+      Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast (aShapeB);
+      Handle(AIS_Point) anAISPointC = Handle(AIS_Point)::DownCast (aShapeC);
+      if (anAISPointA.IsNull()
+       || anAISPointB.IsNull()
+       || anAISPointC.IsNull())
       {
-        Message::SendFail ("Error: 2d argument is unexpected to be a point");
+        Message::SendFail ("Error: arguments are expected to be points");
         return 1;
       }
-      // The third object must be a point
-      Handle(AIS_InteractiveObject) theShapeC;
-      GetMapOfAIS().Find2 (argv[4], theShapeC);
-      if (theShapeC.IsNull() ||
-        theShapeC->Type()!=AIS_KOI_Datum || theShapeC->Signature()!=1 ) 
+
+      // Verify that the three points are different
+      Handle(Geom_CartesianPoint) aCartPointA = Handle(Geom_CartesianPoint)::DownCast (anAISPointA->Component());
+      Handle(Geom_CartesianPoint) aCartPointB = Handle(Geom_CartesianPoint)::DownCast (anAISPointB->Component());
+      Handle(Geom_CartesianPoint) aCartPointC = Handle(Geom_CartesianPoint)::DownCast (anAISPointC->Component());
+      // Test A=B
+      if (Abs(aCartPointA->X() - aCartPointB->X()) <= Precision::Confusion()
+       && Abs(aCartPointA->Y() - aCartPointB->Y()) <= Precision::Confusion()
+       && Abs(aCartPointA->Z() - aCartPointB->Z()) <= Precision::Confusion())
       {
-        Message::SendFail ("Error: 3d argument is unexpected to be a point");
+        Message::SendFail ("Error: Same points");
         return 1;
       }
-        // tag
-        // Verify that the three points are different
-        Handle(AIS_Point) theAISPointA = Handle(AIS_Point)::DownCast(theShapeA);
-        Handle(AIS_Point) theAISPointB = Handle(AIS_Point)::DownCast(theShapeB);
-        Handle(AIS_Point) theAISPointC = Handle(AIS_Point)::DownCast(theShapeC);
-        
-        Handle(Geom_Point) myGeomPointA = theAISPointA->Component();
-        Handle(Geom_CartesianPoint) myCartPointA = 
-          Handle(Geom_CartesianPoint)::DownCast(myGeomPointA);
+      // Test A=C
+      if (Abs(aCartPointA->X() - aCartPointC->X()) <= Precision::Confusion()
+       && Abs(aCartPointA->Y() - aCartPointC->Y()) <= Precision::Confusion()
+       && Abs(aCartPointA->Z() - aCartPointC->Z()) <= Precision::Confusion())
+      {
+        Message::SendFail ("Error: Same points");
+        return 1;
+      }
+      // Test B=C
+      if (Abs(aCartPointB->X() - aCartPointC->X()) <= Precision::Confusion()
+       && Abs(aCartPointB->Y() - aCartPointC->Y()) <= Precision::Confusion()
+       && Abs(aCartPointB->Z() - aCartPointC->Z()) <= Precision::Confusion())
+      {
+        Message::SendFail ("Error: Same points");
+        return 1;
+      }
+      // Construction of the circle
+      GC_MakeCircle aCir = GC_MakeCircle (aCartPointA->Pnt(), aCartPointB->Pnt(), aCartPointC->Pnt());
+      Handle (Geom_Circle) aGeomCircle;
+      try
+      {
+        aGeomCircle = aCir.Value();
+      }
+      catch (StdFail_NotDone const&)
+      {
+        Message::SendFail ("Error: can't create circle");
+        return 1;
+      }
 
-        Handle(Geom_Point) myGeomPointB = theAISPointB->Component();
-        Handle(Geom_CartesianPoint) myCartPointB =
-          Handle(Geom_CartesianPoint)::DownCast(myGeomPointB);
-
-        Handle(Geom_Point) myGeomPointC = theAISPointC->Component();
-        Handle(Geom_CartesianPoint) myCartPointC =
-          Handle(Geom_CartesianPoint)::DownCast(myGeomPointC);
-
-        // Test A=B
-        if (Abs(myCartPointA->X()-myCartPointB->X()) <= Precision::Confusion() && 
-            Abs(myCartPointA->Y()-myCartPointB->Y()) <= Precision::Confusion() && 
-            Abs(myCartPointA->Z()-myCartPointB->Z()) <= Precision::Confusion() ) 
-        {
-          Message::SendFail ("Error: Same points");
-          return 1;
-        }
-        // Test A=C
-        if (Abs(myCartPointA->X()-myCartPointC->X()) <= Precision::Confusion() &&
-            Abs(myCartPointA->Y()-myCartPointC->Y()) <= Precision::Confusion() && 
-            Abs(myCartPointA->Z()-myCartPointC->Z()) <= Precision::Confusion() ) 
-        {
-          Message::SendFail ("Error: Same points");
-          return 1;
-        }
-        // Test B=C
-        if (Abs(myCartPointB->X()-myCartPointC->X()) <= Precision::Confusion() && 
-            Abs(myCartPointB->Y()-myCartPointC->Y()) <= Precision::Confusion() && 
-            Abs(myCartPointB->Z()-myCartPointC->Z()) <= Precision::Confusion() ) 
-        {
-          Message::SendFail ("Error: Same points");
-          return 1;
-        }
-        // Construction of the circle
-        GC_MakeCircle Cir = GC_MakeCircle (myCartPointA->Pnt(), 
-          myCartPointB->Pnt(), myCartPointC->Pnt() );
-        Handle (Geom_Circle) theGeomCircle;
-        try 
-        {
-          theGeomCircle = Cir.Value();
-        }
-        catch (StdFail_NotDone const&)
-        {
-          Message::SendFail ("Error: can't create circle");
-          return -1;
-        }
-
-        DisplayCircle(theGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled);
     }
 
     // Arguments: AIS_Plane AIS_Point Real
-    // ===================================
-    else if (theShapeA->Type() == AIS_KOI_Datum && 
-      theShapeA->Signature() == 7 ) 
+    else if (aShapeA->Type() == AIS_KindOfInteractive_Datum
+          && aShapeA->Signature() == 7)
     {
-      if (theShapeB->Type() != AIS_KOI_Datum || 
-        theShapeB->Signature() != 1 ) 
+      Handle(AIS_Plane) anAISPlane  = Handle(AIS_Plane)::DownCast (aShapeA);
+      Handle(AIS_Point) anAISPointB = Handle(AIS_Point)::DownCast (aShapeB);
+      if (anAISPointB.IsNull())
       {
-        Message::SendFail ("Error: 2d element is a unexpected to be a point");
+        Message::SendFail ("Error: 2d element is a expected to be a point");
         return 1;
       }
+
       // Check that the radius is >= 0
-      if (Draw::Atof(argv[4]) <= 0 ) 
+      const Standard_Real anR = Draw::Atof (argv[4]);
+      if (anR <= 0)
       {
         Message::SendFail ("Syntax error: the radius must be >=0");
         return 1;
       }
 
       // Recover the normal to the plane
-      Handle(AIS_Plane) theAISPlane = Handle(AIS_Plane)::DownCast(theShapeA);
-      Handle(AIS_Point) theAISPointB = Handle(AIS_Point)::DownCast(theShapeB); 
+      Handle(Geom_Plane) aGeomPlane  = anAISPlane->Component();
+      Handle(Geom_Point) aGeomPointB = anAISPointB->Component();
+      Handle(Geom_CartesianPoint) aCartPointB = Handle(Geom_CartesianPoint)::DownCast(aGeomPointB);
 
-      Handle(Geom_Plane) myGeomPlane = theAISPlane->Component();
-      Handle(Geom_Point) myGeomPointB = theAISPointB->Component();
-      Handle(Geom_CartesianPoint) myCartPointB = 
-        Handle(Geom_CartesianPoint)::DownCast(myGeomPointB);
-
-      gp_Pln mygpPlane = myGeomPlane->Pln();
-      gp_Ax1 thegpAxe = mygpPlane.Axis();
-      gp_Dir theDir = thegpAxe.Direction();
-      gp_Pnt theCenter = myCartPointB->Pnt();
-      Standard_Real TheR = Draw::Atof(argv[4]);
-      GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,TheR);
-      Handle (Geom_Circle) theGeomCircle;
-      try 
+      gp_Pln aGpPlane = aGeomPlane->Pln();
+      gp_Ax1 aGpAxe = aGpPlane.Axis();
+      gp_Dir aDir = aGpAxe.Direction();
+      gp_Pnt aCenter = aCartPointB->Pnt();
+      GC_MakeCircle aCir = GC_MakeCircle (aCenter, aDir, anR);
+      Handle(Geom_Circle) aGeomCircle;
+      try
       {
-        theGeomCircle = Cir.Value();
+        aGeomCircle = aCir.Value();
       }
       catch (StdFail_NotDone const&)
       {
         Message::SendFail ("Error: can't create circle");
-        return -1;
+        return 1;
       }
 
-      DisplayCircle(theGeomCircle, aName, isFilled);
-
+      DisplayCircle (aGeomCircle, aName, isFilled);
     }
-
-    // Error
     else
     {
       Message::SendFail ("Error: 1st argument has an unexpected type");
       return 1;
     }
-
   }
-  // No arguments: selection in the viewer
-  // =========================================
-  else 
+  else // No arguments: selection in the viewer
   {
     // Get the name of the circle 
-    TCollection_AsciiString aName(argv[1]);
+    TCollection_AsciiString aName (argv[1]);
 
     TopTools_ListOfShape aShapes;
     ViewerTest::GetSelectedShapes (aShapes);
@@ -2305,7 +2208,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
     }
 
     const TopoDS_Shape& aShapeA = aShapes.First();
-    if (aShapeA.ShapeType() == TopAbs_VERTEX ) 
+    if (aShapeA.ShapeType() == TopAbs_VERTEX)
     {
       if (aShapes.Extent() != 3)
       {
@@ -2331,64 +2234,63 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       gp_Pnt B = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
       gp_Pnt C = BRep_Tool::Pnt (TopoDS::Vertex (aShapeC));
 
-      GC_MakeCircle Cir = GC_MakeCircle (A, B, C);
-      Handle (Geom_Circle) theGeomCircle;
-      try 
+      GC_MakeCircle aCir = GC_MakeCircle (A, B, C);
+      Handle(Geom_Circle) aGeomCircle;
+      try
       {
-        theGeomCircle = Cir.Value();
+        aGeomCircle = aCir.Value();
       }
       catch (StdFail_NotDone const&)
       {
         Message::SendFail ("Error: can't create circle");
-        return -1;
+        return 1;
       }
 
-      DisplayCircle(theGeomCircle, aName, isFilled);
-
+      DisplayCircle (aGeomCircle, aName, isFilled);
     }
     else if (aShapeA.ShapeType() == TopAbs_FACE)
     {
       const TopoDS_Shape& aShapeB = aShapes.Last();
 
       // Recover the radius 
-      Standard_Real theRad;
-      do 
+      Standard_Real aRad = 0.0;
+      do
       {
         std::cout << " Enter the value of the radius:\n";
-        std::cin >> theRad;
-      } while (theRad <= 0);
-      
+        std::cin >> aRad;
+      } while (aRad <= 0);
+
       // Get filled status
       Standard_Boolean isFilled;
       std::cout << "Enter filled status (0 or 1)\n";
       std::cin >> isFilled;
 
       // Recover the normal to the plane. tag
-      TopoDS_Face myFace = TopoDS::Face(aShapeA);
-      BRepAdaptor_Surface mySurface (myFace, Standard_False);
-      gp_Pln myPlane = mySurface.Plane();
-      Handle(Geom_Plane) theGeomPlane = new Geom_Plane (myPlane);
-      gp_Pln mygpPlane = theGeomPlane->Pln();
-      gp_Ax1 thegpAxe = mygpPlane.Axis();
-      gp_Dir theDir = thegpAxe.Direction();
+      TopoDS_Face aFace = TopoDS::Face (aShapeA);
+      BRepAdaptor_Surface aSurface (aFace, Standard_False);
+      gp_Pln aPlane = aSurface.Plane();
+      Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
+      gp_Pln aGpPlane = aGeomPlane->Pln();
+      gp_Ax1 aGpAxe = aGpPlane.Axis();
+      gp_Dir aDir = aGpAxe.Direction();
 
       // Recover the center
-      gp_Pnt theCenter = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
+      gp_Pnt aCenter = BRep_Tool::Pnt (TopoDS::Vertex (aShapeB));
 
       // Construct the circle
-      GC_MakeCircle Cir = GC_MakeCircle (theCenter, theDir ,theRad);
-      Handle (Geom_Circle) theGeomCircle;
-      try 
+      GC_MakeCircle aCir = GC_MakeCircle (aCenter, aDir, aRad);
+      Handle(Geom_Circle) aGeomCircle;
+      try
       {
-        theGeomCircle = Cir.Value();
+        aGeomCircle = aCir.Value();
       }
       catch (StdFail_NotDone const&)
       {
         Message::SendFail ("Error: can't create circle");
-        return -1;
+        return 1;
       }
 
-      DisplayCircle(theGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled);
     }
     else
     {

@@ -47,8 +47,8 @@ class AIS_InteractiveObject : public SelectMgr_SelectableObject
   DEFINE_STANDARD_RTTIEXT(AIS_InteractiveObject, SelectMgr_SelectableObject)
 public:
 
-  //! Returns the kind of Interactive Object; AIS_KOI_None by default.
-  virtual AIS_KindOfInteractive Type() const { return AIS_KOI_None; }
+  //! Returns the kind of Interactive Object; AIS_KindOfInteractive_None by default.
+  virtual AIS_KindOfInteractive Type() const { return AIS_KindOfInteractive_None; }
 
   //! Specifies additional characteristics of Interactive Object of Type(); -1 by default.
   //! Among the datums, this signature is attributed to the shape.

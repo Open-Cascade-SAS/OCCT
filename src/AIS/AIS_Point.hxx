@@ -38,7 +38,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
 
   //! Indicates that a point is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the component specified in SetComponent.
   Standard_EXPORT Handle(Geom_Point) Component();

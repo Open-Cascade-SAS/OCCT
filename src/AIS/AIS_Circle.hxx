@@ -42,7 +42,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 6; }
 
   //! Indicates that the type of Interactive Object is a datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   //! Returns the circle component defined in SetCircle.
   const Handle(Geom_Circle)& Circle() const { return myComponent; }

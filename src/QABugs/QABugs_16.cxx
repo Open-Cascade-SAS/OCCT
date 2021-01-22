@@ -287,7 +287,9 @@ static Standard_Integer OCC218bug (Draw_Interpretor& di, Standard_Integer argc, 
       
     // On verifie que l'AIS InteraciveObject est bien 
     // un AIS_PlaneTrihedron
-    if (aShape->Type()==AIS_KOI_Datum && aShape->Signature()==4) {
+    if (aShape->Type() == AIS_KindOfInteractive_Datum
+     && aShape->Signature() == 4)
+    {
       // On downcast aShape de AIS_InteractiveObject a AIS_PlaneTrihedron
       theAISPlaneTri = Handle(AIS_PlaneTrihedron)::DownCast (aShape);
 

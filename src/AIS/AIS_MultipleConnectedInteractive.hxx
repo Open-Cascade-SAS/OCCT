@@ -44,9 +44,9 @@ public:
     return connect (theAnotherObj, theLocation, theTrsfPers);
   }
 
-  Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Object; }
+
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 1; }
   
   //! Returns true if the object is connected to others.
   Standard_EXPORT Standard_Boolean HasConnection() const;

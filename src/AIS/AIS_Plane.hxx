@@ -66,9 +66,9 @@ public:
 
   Standard_Boolean HasOwnSize() const { return myHasOwnSize; }
 
-  Standard_EXPORT virtual Standard_Integer Signature() const Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE;
+  virtual Standard_Integer Signature() const Standard_OVERRIDE { return 7; }
+
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
   
   //! Returns the component specified in SetComponent.
   const Handle(Geom_Plane)& Component() { return myComponent; }

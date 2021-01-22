@@ -41,7 +41,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 5; }
 
   //! Returns the type Datum.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   //! Constructs an infinite line.
   const Handle(Geom_Line)& Line() const { return myComponent; }

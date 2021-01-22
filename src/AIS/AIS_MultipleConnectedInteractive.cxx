@@ -38,24 +38,6 @@ AIS_MultipleConnectedInteractive::AIS_MultipleConnectedInteractive()
 }
 
 //=======================================================================
-//function : Type
-//purpose  : 
-//=======================================================================
-AIS_KindOfInteractive AIS_MultipleConnectedInteractive::Type() const
-{
-  return AIS_KOI_Object;
-}
-
-//=======================================================================
-//function : Signature
-//purpose  : 
-//=======================================================================
-Standard_Integer AIS_MultipleConnectedInteractive::Signature() const
-{
-  return 1;
-}
-
-//=======================================================================
 //function : connect
 //purpose  :
 //=======================================================================

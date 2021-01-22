@@ -45,7 +45,7 @@ public:
   Standard_EXPORT AIS_ConnectedInteractive(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
   
   //! Returns KOI_Object
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Object; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Object; }
 
   //! Returns 0
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }

@@ -670,7 +670,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   TCollection_AsciiString aName (theArgs[1]);
 
   NCollection_List<Handle(AIS_InteractiveObject)> aShapes;
-  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect;
+  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   Standard_Boolean isPlaneCustom = Standard_False;
   gp_Pln aWorkingPlane;
 
@@ -718,8 +718,9 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
     {
       if (aShapes.Extent() == 1)
       {
-        if (aShapes.First()->Type() == AIS_KOI_Shape
-          && (Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape().ShapeType() != TopAbs_EDGE)
+        Handle(AIS_Shape) aFirstShapePrs = Handle(AIS_Shape)::DownCast(aShapes.First());
+        if (aFirstShapePrs.IsNull()
+         || aFirstShapePrs->Shape().ShapeType() != TopAbs_EDGE)
         {
           Message::SendFail ("Error: wrong shape type");
           return 1;
@@ -731,7 +732,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         }
 
         // Adjust working plane
-        TopoDS_Edge anEdge = TopoDS::Edge ((Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape());
+        TopoDS_Edge anEdge = TopoDS::Edge (aFirstShapePrs->Shape());
         TopoDS_Vertex aFirst, aSecond;
         TopExp::Vertices (anEdge, aFirst, aSecond);
         aDim = new PrsDim_LengthDimension (anEdge, aWorkingPlane);
@@ -744,22 +745,22 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         TopoDS_Shape aShape1, aShape2;
 
         // Getting shapes
-        if (aShapes.First()->DynamicType() == STANDARD_TYPE (AIS_Point))
+        if (Handle(AIS_Point) aPntPrs = Handle(AIS_Point)::DownCast (aShapes.First()))
         {
-          aShape1 = Handle(AIS_Point)::DownCast (aShapes.First ())->Vertex();
+          aShape1 = aPntPrs->Vertex();
         }
-        else if (aShapes.First()->Type() == AIS_KOI_Shape)
+        else if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aShapes.First()))
         {
-          aShape1 = (Handle(AIS_Shape)::DownCast (aShapes.First()))->Shape();
+          aShape1 = aShapePrs->Shape();
         }
 
-        if (aShapes.Last()->DynamicType() == STANDARD_TYPE (AIS_Point))
+        if (Handle(AIS_Point) aPntPrs = Handle(AIS_Point)::DownCast (aShapes.Last ()))
         {
-          aShape2 = Handle(AIS_Point)::DownCast (aShapes.Last ())->Vertex();
+          aShape2 = aPntPrs->Vertex();
         }
-        else if (aShapes.Last()->Type() == AIS_KOI_Shape)
+        else if (Handle(AIS_Shape) aShapePrs = Handle(AIS_Shape)::DownCast (aShapes.Last()))
         {
-          aShape2 = (Handle(AIS_Shape)::DownCast (aShapes.Last()))->Shape();
+          aShape2 = aShapePrs->Shape();
         }
 
         if (aShape1.IsNull() || aShape2.IsNull())
@@ -811,51 +812,59 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
     }
     case PrsDim_KOD_PLANEANGLE:
     {
-      if (aShapes.Extent() == 1 && aShapes.First()->Type()==AIS_KOI_Shape)
+      switch (aShapes.Extent())
       {
-        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First());
-        if (aShape->Shape().ShapeType() == TopAbs_FACE)
-          aDim = new PrsDim_AngleDimension (TopoDS::Face(aShape->Shape()));
-      }
-      if (aShapes.Extent() == 2)
-      {
-        Handle(AIS_Shape) aShape1 = Handle(AIS_Shape)::DownCast(aShapes.First());
-        Handle(AIS_Shape) aShape2 = Handle(AIS_Shape)::DownCast(aShapes.Last());
-        if (!aShape1.IsNull() && !aShape2.IsNull()
-          && aShape1->Shape().ShapeType() == TopAbs_EDGE
-          && aShape2->Shape().ShapeType() == TopAbs_EDGE)
-          aDim = new PrsDim_AngleDimension (TopoDS::Edge(aShape1->Shape()),TopoDS::Edge(aShape2->Shape()));
-        else
+        case 1:
         {
-          Message::SendFail ("Error: wrong shapes for angle dimension");
-          return 1;
+          if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First()))
+          {
+            if (aShape->Shape().ShapeType() == TopAbs_FACE)
+            {
+              aDim = new PrsDim_AngleDimension (TopoDS::Face(aShape->Shape()));
+            }
+          }
+          break;
+        }
+        case 2:
+        {
+          Handle(AIS_Shape) aShape1 = Handle(AIS_Shape)::DownCast(aShapes.First());
+          Handle(AIS_Shape) aShape2 = Handle(AIS_Shape)::DownCast(aShapes.Last());
+          if (!aShape1.IsNull() && !aShape2.IsNull()
+            && aShape1->Shape().ShapeType() == TopAbs_EDGE
+            && aShape2->Shape().ShapeType() == TopAbs_EDGE)
+          {
+            aDim = new PrsDim_AngleDimension (TopoDS::Edge(aShape1->Shape()), TopoDS::Edge(aShape2->Shape()));
+          }
+          else
+          {
+            Message::SendFail ("Error: wrong shapes for angle dimension");
+            return 1;
+          }
+          break;
+        }
+        case 3:
+        {
+          gp_Pnt aPnts[3];
+          Standard_Integer aPntIndex = 0;
+          for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator aPntIter (aShapes); aPntIter.More(); aPntIter.Next())
+          {
+            if (Handle(AIS_Point) aPoint = Handle(AIS_Point)::DownCast (aPntIter.Value()))
+            {
+              aPnts[aPntIndex++] = aPoint->Component()->Pnt();
+            }
+          }
+          if (aPntIndex == 3)
+          {
+            aDim = new PrsDim_AngleDimension (aPnts[0], aPnts[1], aPnts[2]);
+          }
+          break;
         }
       }
-      else if (aShapes.Extent() == 3)
-      {
-        gp_Pnt aP1, aP2, aP3;
-        Handle(AIS_Point) aPoint = Handle(AIS_Point)::DownCast (aShapes.First());
-        if (aPoint.IsNull())
-          return 1;
-        aP1 = aPoint->Component()->Pnt();
-        aShapes.RemoveFirst();
-        aPoint = Handle(AIS_Point)::DownCast (aShapes.First());
-        if (aPoint.IsNull())
-          return 1;
-        aP2 = aPoint->Component()->Pnt();
-        aShapes.RemoveFirst();
-        aPoint = Handle(AIS_Point)::DownCast (aShapes.First());
-        if (aPoint.IsNull())
-          return 1;
-        aP3 = aPoint->Component()->Pnt();
-        aDim = new PrsDim_AngleDimension (aP1, aP2, aP3);
-      }
-      else
+      if (aDim.IsNull())
       {
         Message::SendFail ("Error: wrong number of shapes to build dimension");
         return 1;
       }
-
       break;
     }
     case PrsDim_KOD_RADIUS: // radius of the circle
@@ -1790,7 +1799,8 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
        return 1;
      }
 
-     if (aPickedObj->Type() != AIS_KOI_Dimension && aPickedObj->Type() != AIS_KOI_Relation)
+     if (aPickedObj->Type() != AIS_KindOfInteractive_Dimension
+      && aPickedObj->Type() != AIS_KindOfInteractive_Relation)
      {
        theDi << theArgVec[0] << " error: no dimension or relation with this name.\n";
        return 1;
@@ -1814,8 +1824,9 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
         aPickedObj = TheAISContext()->SelectedInteractive();
       }
 
-      isPicked = (!aPickedObj.IsNull() && (aPickedObj->Type() == AIS_KOI_Dimension || aPickedObj->Type() == AIS_KOI_Relation));
-
+      isPicked = (!aPickedObj.IsNull()
+               && (aPickedObj->Type() == AIS_KindOfInteractive_Dimension
+                || aPickedObj->Type() == AIS_KindOfInteractive_Relation));
       if (isPicked)
       {
         break;
@@ -1844,7 +1855,7 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
     while (ViewerMainLoop (aPickArgNum, aPickArgVec)) { }
 
     // Set text position, update relation or dimension.
-    if (aPickedObj->Type() == AIS_KOI_Relation)
+    if (aPickedObj->Type() == AIS_KindOfInteractive_Relation)
     {
       Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (aPickedObj);
       aPoint = Get3DPointAtMousePosition();
@@ -1892,9 +1903,8 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
   }
 
   // Set text position, update relation or dimension.
-  if (aPickedObj->Type() == AIS_KOI_Relation)
+  if (Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (aPickedObj))
   {
-    Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (aPickedObj);
     aRelation->SetPosition (aPoint);
     TheAISContext()->Redisplay (aRelation, Standard_True);
   }

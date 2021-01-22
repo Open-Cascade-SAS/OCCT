@@ -475,41 +475,48 @@ static const char** GetTypeNames()
 //function : GetTypeAndSignfromString
 //purpose  :
 //=======================================================================
-void GetTypeAndSignfromString (const char* name,AIS_KindOfInteractive& TheType,Standard_Integer& TheSign)
+static void GetTypeAndSignfromString (const char* theName,
+                                      AIS_KindOfInteractive& theType,
+                                      Standard_Integer& theSign)
 {
-  const char ** thefullnames = GetTypeNames();
-  Standard_Integer index(-1);
+  const char** aFullNames = GetTypeNames();
+  Standard_Integer anIndex = -1;
+  for (Standard_Integer i = 0; i <= 13 && anIndex == -1; ++i)
+  {
+    if (strcasecmp (theName, aFullNames[i]) == 0)
+    {
+      anIndex = i;
+    }
+  }
 
-  for(Standard_Integer i=0;i<=13 && index==-1;i++)
-    if(!strcasecmp(name,thefullnames[i]))
-      index = i;
-
-  if(index ==-1){
-    TheType = AIS_KOI_None;
-    TheSign = -1;
+  if (anIndex ==-1)
+  {
+    theType = AIS_KindOfInteractive_None;
+    theSign = -1;
     return;
   }
 
-  if(index<=6){
-    TheType = AIS_KOI_Datum;
-    TheSign = index+1;
+  if (anIndex <= 6)
+  {
+    theType = AIS_KindOfInteractive_Datum;
+    theSign = anIndex+1;
   }
-  else if (index <=9){
-    TheType = AIS_KOI_Shape;
-    TheSign = index-7;
+  else if (anIndex <= 9)
+  {
+    theType = AIS_KindOfInteractive_Shape;
+    theSign = anIndex - 7;
   }
-  else if(index<=11){
-    TheType = AIS_KOI_Object;
-    TheSign = index-10;
+  else if (anIndex <= 11)
+  {
+    theType = AIS_KindOfInteractive_Object;
+    theSign = anIndex - 10;
   }
-  else{
-    TheType = AIS_KOI_Relation;
-    TheSign = index-12;
+  else
+  {
+    theType = AIS_KindOfInteractive_Relation;
+    theSign = anIndex - 12;
   }
-
 }
-
-
 
 #include <string.h>
 #include <Draw_Interpretor.hxx>
@@ -5156,7 +5163,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       aSelMode = aShape->GlobalSelectionMode();
     }
 
-    if (aShape->Type() == AIS_KOI_Datum)
+    if (aShape->Type() == AIS_KindOfInteractive_Datum)
     {
       aCtx->Display (aShape, Standard_False);
     }
@@ -5329,7 +5336,7 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
         << (TheAISContext()->IsSelected  (theObj) ? " Selected" : "         ")
         << (theDetected.Contains (theObj)         ? " Detected" : "         ")
         << " Type: ";
-  if (theObj->Type() == AIS_KOI_Datum)
+  if (theObj->Type() == AIS_KindOfInteractive_Datum)
   {
     // AIS_Datum
     if      (theObj->Signature() == 3) { theDI << " AIS_Trihedron"; }
@@ -5341,12 +5348,12 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
     else if (theObj->Signature() == 4) { theDI << " AIS_PlaneTrihedron"; }
   }
   // AIS_Shape
-  else if (theObj->Type()      == AIS_KOI_Shape
+  else if (theObj->Type()      == AIS_KindOfInteractive_Shape
         && theObj->Signature() == 0)
   {
     theDI << " AIS_Shape";
   }
-  else if (theObj->Type() == AIS_KOI_Relation)
+  else if (theObj->Type() == AIS_KindOfInteractive_Relation)
   {
     // PrsDim_Dimention and AIS_Relation
     Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (theObj);
@@ -5663,7 +5670,7 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum theShapeType,
   aCtx->DisplayedObjects (aDispObjects);
   if (theShapeType == TopAbs_SHAPE)
   {
-    aCtx->AddFilter (new AIS_TypeFilter (AIS_KOI_Shape));
+    aCtx->AddFilter (new AIS_TypeFilter (AIS_KindOfInteractive_Shape));
   }
   else
   {
@@ -5879,7 +5886,7 @@ static int VSelFilter(Draw_Interpretor& , Standard_Integer theArgc,
       Handle(SelectMgr_Filter) aFilter;
       if (aShapeType == TopAbs_SHAPE)
       {
-        aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+        aFilter = new AIS_TypeFilter (AIS_KindOfInteractive_Shape);
       }
       else
       {
@@ -5901,7 +5908,7 @@ static int VSelFilter(Draw_Interpretor& , Standard_Integer theArgc,
       Handle(SelectMgr_Filter) aFilter;
       if (aShapeType == TopAbs_SHAPE)
       {
-        aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+        aFilter = new AIS_TypeFilter (AIS_KindOfInteractive_Shape);
       }
       else
       {
@@ -6087,9 +6094,10 @@ static int VEraseType( Draw_Interpretor& , Standard_Integer argc, const char** a
   // en attendant l'amelioration ais pour les dimensions...
   //
   Standard_Integer dimension_status(-1);
-  if(TheType==AIS_KOI_Relation){
-    dimension_status = TheSign ==1 ? 1 : 0;
-    TheSign=-1;
+  if (TheType==AIS_KindOfInteractive_Relation)
+  {
+    dimension_status = TheSign == 1 ? 1 : 0;
+    TheSign = -1;
   }
 
   TheAISContext()->DisplayedObjects(TheType,TheSign,LIO);
@@ -6120,9 +6128,10 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
   // en attendant l'amelioration ais pour les dimensions...
   //
   Standard_Integer dimension_status(-1);
-  if(TheType==AIS_KOI_Relation){
-    dimension_status = TheSign ==1 ? 1 : 0;
-    TheSign=-1;
+  if (TheType==AIS_KindOfInteractive_Relation)
+  {
+    dimension_status = TheSign == 1 ? 1 : 0;
+    TheSign = -1;
   }
 
   AIS_ListOfInteractive LIO;

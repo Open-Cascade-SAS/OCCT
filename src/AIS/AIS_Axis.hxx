@@ -86,7 +86,7 @@ public:
 
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 2; }
 
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Datum; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
   

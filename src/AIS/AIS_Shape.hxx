@@ -69,7 +69,7 @@ public:
   virtual Standard_Integer Signature() const Standard_OVERRIDE { return 0; }
 
   //! Returns Object as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KOI_Shape; }
+  virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Shape; }
 
   //! Returns true if the Interactive Object accepts shape decomposition.
   virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE { return Standard_True; }
