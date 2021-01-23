@@ -2580,7 +2580,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, aReadSizeX, aReadSizeY,
                                          0, 0, aDrawSizeX, aDrawSizeY,
                                          aCopyMask, GL_NEAREST);
-    const int anErr = ::glGetError();
+    const int anErr = aCtx->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
     {
       // glBlitFramebuffer() might fail in several cases:
@@ -2592,18 +2592,14 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
       // - Pixel formats of FBOs do not match.
       //   This also might happen with window has pixel format,
       //   e.g. Mesa fails blitting RGBA8 -> RGB8 while other drivers support this conversion.
-      TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "FBO blitting has failed [Error #" + anErr + "]\n"
+      TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "FBO blitting has failed [Error " + OpenGl_Context::FormatGlError (anErr) + "]\n"
                                       + "  Please check your graphics driver settings or try updating driver.";
       if (theReadFbo->NbSamples() != 0)
       {
         myToDisableMSAA = true;
         aMsg += "\n  MSAA settings should not be overridden by driver!";
       }
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
-                         aMsg);
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
     }
 
     if (theDrawFbo != NULL

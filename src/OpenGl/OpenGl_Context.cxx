@@ -43,6 +43,11 @@
 #include <Standard_ProgramError.hxx>
 #include <Standard_WarningDisableFunctionCast.hxx>
 
+#if defined(_WIN32) && defined(max)
+  #undef max
+#endif
+#include <limits>
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
 
 #if defined(HAVE_EGL)
@@ -1005,6 +1010,62 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 }
 
 // =======================================================================
+// function : FormatGlEnumHex
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_Context::FormatGlEnumHex (int theGlEnum)
+{
+  char aBuff[16];
+  Sprintf (aBuff, theGlEnum < (int )std::numeric_limits<uint16_t>::max()
+                ? "0x%04X"
+                : "0x%08X", theGlEnum);
+  return aBuff;
+}
+
+// =======================================================================
+// function : FormatSize
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_Context::FormatSize (Standard_Size theSize)
+{
+  char aBuff[32];
+  Sprintf (aBuff, "%" PRIu64, (uint64_t )theSize);
+  return aBuff;
+}
+
+// =======================================================================
+// function : FormatPointer
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_Context::FormatPointer (const void* thePtr)
+{
+  char aBuff[32];
+  Sprintf (aBuff, "0x%" PRIXPTR, (uintptr_t )thePtr);
+  return aBuff;
+}
+
+// =======================================================================
+// function : FormatGlError
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_Context::FormatGlError (int theGlError)
+{
+  switch (theGlError)
+  {
+    case GL_INVALID_ENUM:      return "GL_INVALID_ENUM";
+    case GL_INVALID_VALUE:     return "GL_INVALID_VALUE";
+    case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+  #ifdef GL_STACK_OVERFLOW
+    case GL_STACK_OVERFLOW:    return "GL_STACK_OVERFLOW";
+    case GL_STACK_UNDERFLOW:   return "GL_STACK_UNDERFLOW";
+  #endif
+    case GL_OUT_OF_MEMORY:     return "GL_OUT_OF_MEMORY";
+    case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+  }
+  return FormatGlEnumHex (theGlError);
+}
+
+// =======================================================================
 // function : ResetErrors
 // purpose  :
 // =======================================================================
@@ -1024,29 +1085,40 @@ bool OpenGl_Context::ResetErrors (const bool theToPrintErrors)
 
   for (; anErr != GL_NO_ERROR && aPrevErr != anErr; aPrevErr = anErr, anErr = ::glGetError())
   {
-    TCollection_ExtendedString anErrId;
-    switch (anErr)
-    {
-      case GL_INVALID_ENUM:      anErrId = "GL_INVALID_ENUM";      break;
-      case GL_INVALID_VALUE:     anErrId = "GL_INVALID_VALUE";     break;
-      case GL_INVALID_OPERATION: anErrId = "GL_INVALID_OPERATION"; break;
-    #ifdef GL_STACK_OVERFLOW
-      case GL_STACK_OVERFLOW:    anErrId = "GL_STACK_OVERFLOW";    break;
-      case GL_STACK_UNDERFLOW:   anErrId = "GL_STACK_UNDERFLOW";   break;
-    #endif
-      case GL_OUT_OF_MEMORY:     anErrId = "GL_OUT_OF_MEMORY";     break;
-      case GL_INVALID_FRAMEBUFFER_OPERATION:
-        anErrId = "GL_INVALID_FRAMEBUFFER_OPERATION";
-        break;
-      default:
-        anErrId = TCollection_ExtendedString("#") + anErr;
-        break;
-    }
-
-    const TCollection_ExtendedString aMsg = TCollection_ExtendedString ("Unhandled GL error: ") + anErrId;
+    const TCollection_ExtendedString aMsg = TCollection_ExtendedString ("Unhandled GL error: ") + FormatGlError (anErr);
     PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, 0, GL_DEBUG_SEVERITY_LOW, aMsg);
   }
   return hasError;
+}
+
+// =======================================================================
+// function : debugPrintError
+// purpose  :
+// =======================================================================
+bool OpenGl_GlFunctions::debugPrintError (const char* theName) const
+{
+  const int anErr = ::glGetError();
+  if (anErr != GL_NO_ERROR)
+  {
+    Message::SendFail() << theName << "(), unhandled GL error: " << OpenGl_Context::FormatGlError (anErr);
+    // there is no glSetError(), just emulate non-clear state
+    switch (anErr)
+    {
+      case GL_INVALID_VALUE:
+      {
+        ::glLineWidth(-1.0f);
+        ::glLineWidth( 1.0f);
+        break;
+      }
+      default:
+      case GL_INVALID_ENUM:
+      {
+        ::glEnable (0xFFFF);
+        break;
+      }
+    }
+  }
+  return anErr != GL_NO_ERROR;
 }
 
 // =======================================================================

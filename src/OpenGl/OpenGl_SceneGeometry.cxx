@@ -404,22 +404,22 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_C
 
       aTexture->Sampler()->SetImmutable();
       aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (aTexture->TextureId(), aTexture->Sampler()->SamplerID());
-      const GLenum anErr = glGetError();
+      const GLenum anErr = theContext->core11fwd->glGetError();
       if (anErr != GL_NO_ERROR)
       {
         theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                                 TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture #") + int(anErr));
+                                 TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture ") + OpenGl_Context::FormatGlError (anErr));
         myTextureHandles.clear();
         return Standard_False;
       }
     }
 
     theContext->arbTexBindless->glMakeTextureHandleResidentARB (aHandle);
-    const GLenum anErr = glGetError();
+    const GLenum anErr = theContext->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
     {
       theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                               TCollection_AsciiString ("Error: Failed to make OpenGL texture resident #") + int(anErr));
+                               TCollection_AsciiString ("Error: Failed to make OpenGL texture resident ") + OpenGl_Context::FormatGlError (anErr));
       return Standard_False;
     }
   }
@@ -443,11 +443,11 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures (const Handle(OpenGl_C
   for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
   {
     theContext->arbTexBindless->glMakeTextureHandleNonResidentARB (myTextureHandles[aTexIter]);
-    const GLenum anErr = glGetError();
+    const GLenum anErr = theContext->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
     {
       theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                               TCollection_AsciiString("Error: Failed to make OpenGL texture non-resident #") + int(anErr));
+                               TCollection_AsciiString("Error: Failed to make OpenGL texture non-resident ") + OpenGl_Context::FormatGlError (anErr));
       return Standard_False;
     }
   }
@@ -513,11 +513,11 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
 
     aTexture->Sampler()->SetImmutable();
     aHandle = theContext->arbTexBindless->glGetTextureSamplerHandleARB (aTexture->TextureId(), aTexture->Sampler()->SamplerID());
-    const GLenum anErr = glGetError();
+    const GLenum anErr = theContext->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
     {
       theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                               TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture #") + int(anErr));
+                               TCollection_AsciiString ("Error: Failed to get 64-bit handle of OpenGL texture ") + OpenGl_Context::FormatGlError(anErr));
       myTextureHandles.clear();
       return Standard_False;
     }

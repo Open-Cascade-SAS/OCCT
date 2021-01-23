@@ -232,6 +232,18 @@ public:
     return theThreshold;
   }
 
+  //! Format GL constant as hex value 0xABCD.
+  Standard_EXPORT static TCollection_AsciiString FormatGlEnumHex (int theGlEnum);
+
+  //! Format pointer as hex value 0xABCD.
+  Standard_EXPORT static TCollection_AsciiString FormatPointer (const void* thePtr);
+
+  //! Format size value.
+  Standard_EXPORT static TCollection_AsciiString FormatSize (Standard_Size theSize);
+
+  //! Return text description of GL error.
+  Standard_EXPORT static TCollection_AsciiString FormatGlError (int theGlError);
+
 public:
 
   //! Empty constructor. You should call Init() to perform initialization with bound GL context.

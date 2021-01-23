@@ -17,6 +17,103 @@
 #include <OpenGl_Context.hxx>
 
 // =======================================================================
+// function : FormatFormat
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_TextureFormat::FormatFormat (GLint theInternalFormat)
+{
+  switch (theInternalFormat)
+  {
+    // RED variations (GL_RED, OpenGL 3.0+)
+    case GL_RED:      return "GL_RED";
+    case GL_R8:       return "GL_R8";
+    case 0x822A:      return "GL_R16";
+    case GL_R16F:     return "GL_R16F"; // half-float
+    case GL_R32F:     return "GL_R32F"; // float
+    case GL_R32I:     return "GL_R32I";
+    case GL_RED_INTEGER: return "GL_RED_INTEGER";
+    //
+    case GL_RG:       return "GL_RG";
+    case GL_RG8:      return "GL_RG8";
+    case 0x822C:      return "GL_RG16";
+    case GL_RG16F:    return "GL_RG16F";
+    case GL_RG32F:    return "GL_RG32F";
+    case GL_RG32I:    return "GL_RG32I";
+    case GL_RG_INTEGER: return "GL_RG_INTEGER";
+    // RGB variations
+    case GL_RGB:      return "GL_RGB";
+    case 0x804F:      return "GL_RGB4";
+    case 0x8050:      return "GL_RGB5";
+    case GL_RGB8:     return "GL_RGB8";
+    case GL_SRGB8:    return "GL_SRGB8";
+    case 0x8052:      return "GL_RGB10";
+    case 0x8053:      return "GL_RGB12";
+    case 0x8054:      return "GL_RGB16";
+    case GL_RGB16F:   return "GL_RGB16F"; // half-float
+    case GL_RGB32F:   return "GL_RGB32F"; // float
+    case GL_RGB32I:   return "GL_RGB32I";
+    // RGBA variations
+    case GL_RGBA:     return "GL_RGBA";
+    case GL_RGBA8:    return "GL_RGBA8";
+    case GL_SRGB8_ALPHA8: return "GL_SRGB8_ALPHA8";
+    case GL_RGB10_A2: return "GL_RGB10_A2";
+    case 0x805A:      return "GL_RGBA12";
+    case 0x805B:      return "GL_RGBA16";
+    case GL_RGBA16F:  return "GL_RGBA16F"; // half-float
+    case GL_RGBA32F:  return "GL_RGBA32F"; // float
+    case GL_RGBA32I:  return "GL_RGBA32I";
+    //
+    case 0x80E0:       return "GL_BGR";
+    case GL_BGRA_EXT:  return "GL_BGRA";
+    // ALPHA variations (deprecated)
+    case GL_ALPHA:     return "GL_ALPHA";
+    case 0x803C:       return "GL_ALPHA8";
+    case 0x803E:       return "GL_ALPHA16";
+    case GL_LUMINANCE: return "GL_LUMINANCE";
+    case GL_LUMINANCE_ALPHA: return "GL_LUMINANCE_ALPHA";
+    //
+    case GL_DEPTH_COMPONENT:    return "GL_DEPTH_COMPONENT";
+    case GL_DEPTH_COMPONENT16:  return "GL_DEPTH_COMPONENT16";
+    case GL_DEPTH_COMPONENT24:  return "GL_DEPTH_COMPONENT24";
+    case GL_DEPTH_COMPONENT32F: return "GL_DEPTH_COMPONENT32F";
+    case GL_DEPTH_STENCIL:      return "GL_DEPTH_STENCIL";
+    case GL_DEPTH24_STENCIL8:   return "GL_DEPTH24_STENCIL8";
+    case GL_DEPTH32F_STENCIL8:  return "GL_DEPTH32F_STENCIL8";
+    //
+    case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:        return "GL_COMPRESSED_RGB_S3TC_DXT1_EXT";
+    case GL_COMPRESSED_SRGB_S3TC_DXT1_EXT:       return "GL_COMPRESSED_SRGB_S3TC_DXT1_EXT";
+    case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:       return "GL_COMPRESSED_RGBA_S3TC_DXT1_EXT";
+    case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT: return "GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT";
+    case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:       return "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT";
+    case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT: return "GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT";
+    case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:       return "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT";
+    case GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT: return "GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT";
+  }
+  return OpenGl_Context::FormatGlEnumHex (theInternalFormat);
+}
+
+// =======================================================================
+// function : FormatDataType
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_TextureFormat::FormatDataType (GLint theDataType)
+{
+  switch (theDataType)
+  {
+    case GL_UNSIGNED_BYTE:     return "GL_UNSIGNED_BYTE";
+    case GL_UNSIGNED_SHORT:    return "GL_UNSIGNED_SHORT";
+    case GL_INT:               return "GL_INT";
+    case GL_UNSIGNED_INT:      return "GL_UNSIGNED_INT";
+    case GL_FLOAT:             return "GL_FLOAT";
+    case GL_HALF_FLOAT:        return "GL_HALF_FLOAT";
+    case 0x8D61:               return "GL_HALF_FLOAT_OES";
+    case GL_UNSIGNED_INT_24_8: return "GL_UNSIGNED_INT_24_8";
+    case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return "GL_FLOAT_32_UNSIGNED_INT_24_8_REV";
+  }
+  return OpenGl_Context::FormatGlEnumHex (theDataType);
+}
+
+// =======================================================================
 // function : FindFormat
 // purpose  :
 // =======================================================================

@@ -18,6 +18,7 @@
 #include <Image_Format.hxx>
 #include <OpenGl_GlCore13.hxx>
 #include <Standard_Handle.hxx>
+#include <TCollection_AsciiString.hxx>
 
 class OpenGl_Context;
 
@@ -55,6 +56,12 @@ public:
   Standard_EXPORT static OpenGl_TextureFormat FindCompressedFormat (const Handle(OpenGl_Context)& theCtx,
                                                                     Image_CompressedFormat theFormat,
                                                                     bool theIsColorMap);
+
+  //! Format pixel format enumeration.
+  Standard_EXPORT static TCollection_AsciiString FormatFormat (GLint theInternalFormat);
+
+  //! Format data type enumeration.
+  Standard_EXPORT static TCollection_AsciiString FormatDataType (GLint theDataType);
 
 public:
 

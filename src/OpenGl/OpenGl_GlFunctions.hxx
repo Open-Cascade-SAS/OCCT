@@ -100,6 +100,15 @@
 struct OpenGl_GlFunctions
 {
 
+  //! Check glGetError(); defined for debugging purposes.
+  //! @return TRUE on error
+  Standard_EXPORT bool debugPrintError (const char* theName) const;
+
+  // This debug macros can be enabled to help debugging OpenGL implementations
+  // without solid / working debugging capabilities.
+  //#define OpenGl_TRACE(theName) {OpenGl_GlFunctions::debugPrintError(#theName);}
+  #define OpenGl_TRACE(theName)
+
 public: //! @name OpenGL ES 1.1
 
 #if defined(GL_ES_VERSION_2_0)
@@ -107,71 +116,85 @@ public: //! @name OpenGL ES 1.1
   inline void glActiveTexture (GLenum texture) const
   {
     ::glActiveTexture (texture);
+    OpenGl_TRACE(glActiveTexture)
   }
 
   inline void glCompressedTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
   {
     ::glCompressedTexImage2D (target, level, internalformat, width, height, border, imageSize, data);
+    OpenGl_TRACE(glCompressedTexImage2D)
   }
 
   inline void glCompressedTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data) const
   {
     ::glCompressedTexSubImage2D (target, level, xoffset, yoffset, width, height, format, imageSize, data);
+    OpenGl_TRACE(glCompressedTexSubImage2D)
   }
 
   inline void glBindBuffer (GLenum target, GLuint buffer) const
   {
     ::glBindBuffer (target, buffer);
+    OpenGl_TRACE(glBindBuffer)
   }
 
   inline void glBufferData (GLenum target, GLsizeiptr size, const void* data, GLenum usage) const
   {
     ::glBufferData (target, size, data, usage);
+    OpenGl_TRACE(glBufferData)
   }
 
   inline void glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const void* data) const
   {
     ::glBufferSubData (target, offset, size, data);
+    OpenGl_TRACE(glBufferSubData)
   }
 
   inline void glDeleteBuffers (GLsizei n, const GLuint *buffers) const
   {
     ::glDeleteBuffers (n, buffers);
+    OpenGl_TRACE(glDeleteBuffers)
   }
 
   inline void glDeleteTextures (GLsizei n, const GLuint *textures) const
   {
     ::glDeleteTextures (n, textures);
+    OpenGl_TRACE(glDeleteTextures)
   }
 
   inline void glDepthFunc (GLenum func) const
   {
     ::glDepthFunc (func);
+    OpenGl_TRACE(glDepthFunc)
   }
 
   inline void glDepthMask (GLboolean flag) const
   {
     ::glDepthMask (flag);
+    OpenGl_TRACE(glDepthMask)
   }
 
   inline void glDepthRangef (GLfloat n, GLfloat f) const
   {
     ::glDepthRangef (n, f);
+    OpenGl_TRACE(glDepthRangef)
   }
 
   inline void glGenBuffers (GLsizei n, GLuint *buffers) const
   {
     ::glGenBuffers (n, buffers);
+    OpenGl_TRACE(glGenBuffers)
   }
 
   inline void glGenTextures (GLsizei n, GLuint *textures) const
   {
     ::glGenTextures (n, textures);
+    OpenGl_TRACE(glGenTextures)
   }
 
   inline void glGetBufferParameteriv (GLenum target, GLenum pname, GLint* params) const
   {
     ::glGetBufferParameteriv (target, pname, params);
+    OpenGl_TRACE(glGetBufferParameteriv)
   }
 
   inline GLboolean glIsBuffer (GLuint buffer) const
@@ -182,6 +205,7 @@ public: //! @name OpenGL ES 1.1
   inline void glSampleCoverage (GLfloat value, GLboolean invert) const
   {
     ::glSampleCoverage (value, invert);
+    OpenGl_TRACE(glSampleCoverage)
   }
 
   inline void glMultiDrawElements (GLenum theMode, const GLsizei* theCount, GLenum theType, const void* const* theIndices, GLsizei theDrawCount) const
@@ -196,6 +220,7 @@ public: //! @name OpenGL ES 1.1
     {
       ::glDrawElements (theMode, theCount[aBatchIter], theType, theIndices[aBatchIter]);
     }
+    OpenGl_TRACE(glMultiDrawElements)
   }
 
 #endif
@@ -206,56 +231,67 @@ public: //! @name OpenGL ES 2.0
   inline void glBlendColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha) const
   {
     ::glBlendColor (red, green, blue, alpha);
+    OpenGl_TRACE(glBlendColor)
   }
 
   inline void glBlendEquation (GLenum mode) const
   {
     ::glBlendEquation (mode);
+    OpenGl_TRACE(glBlendEquation)
   }
 
   inline void glBlendFuncSeparate (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) const
   {
     ::glBlendFuncSeparate (sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
+    OpenGl_TRACE(glBlendFuncSeparate)
   }
 
   inline void glBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha) const
   {
     ::glBlendEquationSeparate (modeRGB, modeAlpha);
+    OpenGl_TRACE(glBlendEquationSeparate)
   }
 
   inline void glStencilOpSeparate (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) const
   {
     ::glStencilOpSeparate (face, sfail, dpfail, dppass);
+    OpenGl_TRACE(glStencilOpSeparate)
   }
 
   inline void glStencilFuncSeparate (GLenum face, GLenum func, GLint ref, GLuint mask) const
   {
     ::glStencilFuncSeparate (face, func, ref, mask);
+    OpenGl_TRACE(glStencilFuncSeparate)
   }
 
   inline void glStencilMaskSeparate (GLenum face, GLuint mask) const
   {
     ::glStencilMaskSeparate (face, mask);
+    OpenGl_TRACE(glStencilMaskSeparate)
   }
 
   inline void glAttachShader (GLuint program, GLuint shader) const
   {
     ::glAttachShader (program, shader);
+    OpenGl_TRACE(glAttachShader)
   }
 
   inline void glBindAttribLocation (GLuint program, GLuint index, const GLchar *name) const
   {
     ::glBindAttribLocation (program, index, name);
+    OpenGl_TRACE(glBindAttribLocation)
   }
 
   inline void glBindFramebuffer (GLenum target, GLuint framebuffer) const
   {
     ::glBindFramebuffer (target, framebuffer);
+    OpenGl_TRACE(glBindFramebuffer)
   }
 
   inline void glBindRenderbuffer (GLenum target, GLuint renderbuffer) const
   {
     ::glBindRenderbuffer (target, renderbuffer);
+    OpenGl_TRACE(glBindRenderbuffer)
   }
 
   inline GLenum glCheckFramebufferStatus (GLenum target) const
@@ -266,6 +302,7 @@ public: //! @name OpenGL ES 2.0
   inline void glCompileShader (GLuint shader) const
   {
     ::glCompileShader (shader);
+    OpenGl_TRACE(glCompileShader)
   }
 
   inline GLuint glCreateProgram() const
@@ -281,151 +318,183 @@ public: //! @name OpenGL ES 2.0
   inline void glDeleteFramebuffers (GLsizei n, const GLuint *framebuffers) const
   {
     ::glDeleteFramebuffers (n, framebuffers);
+    OpenGl_TRACE(glDeleteFramebuffers)
   }
 
   inline void glDeleteProgram (GLuint program) const
   {
     ::glDeleteProgram (program);
+    OpenGl_TRACE(glDeleteProgram)
   }
 
   inline void glDeleteRenderbuffers (GLsizei n, const GLuint *renderbuffers) const
   {
     ::glDeleteRenderbuffers (n, renderbuffers);
+    OpenGl_TRACE(glDeleteRenderbuffers)
   }
 
   inline void glDeleteShader (GLuint shader) const
   {
     ::glDeleteShader (shader);
+    OpenGl_TRACE(glDeleteShader)
   }
 
   inline void glDetachShader (GLuint program, GLuint shader) const
   {
     ::glDetachShader (program, shader);
+    OpenGl_TRACE(glDetachShader)
   }
 
   inline void glDisableVertexAttribArray (GLuint index) const
   {
     ::glDisableVertexAttribArray (index);
+    OpenGl_TRACE(glDisableVertexAttribArray)
   }
 
   inline void glEnableVertexAttribArray (GLuint index) const
   {
     ::glEnableVertexAttribArray (index);
+    OpenGl_TRACE(glEnableVertexAttribArray)
   }
 
   inline void glFramebufferRenderbuffer (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) const
   {
     ::glFramebufferRenderbuffer (target, attachment, renderbuffertarget, renderbuffer);
+    OpenGl_TRACE(glFramebufferRenderbuffer)
   }
 
   inline void glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) const
   {
     ::glFramebufferTexture2D (target, attachment, textarget, texture, level);
+    OpenGl_TRACE(glFramebufferTexture2D)
   }
 
   inline void glGenerateMipmap (GLenum target) const
   {
     ::glGenerateMipmap (target);
+    OpenGl_TRACE(glGenerateMipmap)
   }
 
   inline void glGenFramebuffers (GLsizei n, GLuint *framebuffers) const
   {
     ::glGenFramebuffers (n, framebuffers);
+    OpenGl_TRACE(glGenFramebuffers)
   }
 
   inline void glGenRenderbuffers (GLsizei n, GLuint *renderbuffers) const
   {
     ::glGenRenderbuffers (n, renderbuffers);
+    OpenGl_TRACE(glGenRenderbuffers)
   }
 
   inline void glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint* size, GLenum *type, GLchar *name) const
   {
     ::glGetActiveAttrib (program, index, bufSize, length, size, type, name);
+    OpenGl_TRACE(glGetActiveAttrib)
   }
 
   inline void glGetActiveUniform (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint* size, GLenum *type, GLchar *name) const
   {
     ::glGetActiveUniform (program, index, bufSize, length, size, type, name);
+    OpenGl_TRACE(glGetActiveUniform)
   }
 
   inline void glGetAttachedShaders (GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders) const
   {
     ::glGetAttachedShaders (program, maxCount, count, shaders);
+    OpenGl_TRACE(glGetAttachedShaders)
   }
 
   inline GLint glGetAttribLocation (GLuint program, const GLchar *name) const
   {
-    return ::glGetAttribLocation (program, name);
+    const GLint aRes = ::glGetAttribLocation (program, name);
+    OpenGl_TRACE(glGetAttribLocation)
+    return aRes;
   }
 
   inline void glGetFramebufferAttachmentParameteriv (GLenum target, GLenum attachment, GLenum pname, GLint* params) const
   {
     ::glGetFramebufferAttachmentParameteriv (target, attachment, pname, params);
+    OpenGl_TRACE(glGetFramebufferAttachmentParameteriv)
   }
 
   inline void glGetProgramiv (GLuint program, GLenum pname, GLint* params) const
   {
     ::glGetProgramiv (program, pname, params);
+    OpenGl_TRACE(glGetProgramiv)
   }
 
   inline void glGetProgramInfoLog (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const
   {
     ::glGetProgramInfoLog (program, bufSize, length, infoLog);
+    OpenGl_TRACE(glGetProgramInfoLog)
   }
 
   inline void glGetRenderbufferParameteriv (GLenum target, GLenum pname, GLint* params) const
   {
     ::glGetRenderbufferParameteriv (target, pname, params);
+    OpenGl_TRACE(glGetRenderbufferParameteriv)
   }
 
   inline void glGetShaderiv (GLuint shader, GLenum pname, GLint* params) const
   {
     ::glGetShaderiv (shader, pname, params);
+    OpenGl_TRACE(glGetShaderiv)
   }
 
   inline void glGetShaderInfoLog (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog) const
   {
     ::glGetShaderInfoLog (shader, bufSize, length, infoLog);
+    OpenGl_TRACE(glGetShaderInfoLog)
   }
 
   inline void glGetShaderPrecisionFormat (GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision) const
   {
     ::glGetShaderPrecisionFormat (shadertype, precisiontype, range, precision);
+    OpenGl_TRACE(glGetShaderPrecisionFormat)
   }
 
   inline void glGetShaderSource (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source) const
   {
     ::glGetShaderSource (shader, bufSize, length, source);
+    OpenGl_TRACE(glGetShaderSource)
   }
 
   inline void glGetUniformfv (GLuint program, GLint location, GLfloat* params) const
   {
     ::glGetUniformfv (program, location, params);
+    OpenGl_TRACE(glGetUniformfv)
   }
 
   inline void glGetUniformiv (GLuint program, GLint location, GLint* params) const
   {
     ::glGetUniformiv (program, location, params);
+    OpenGl_TRACE(glGetUniformiv)
   }
 
   GLint glGetUniformLocation (GLuint program, const GLchar *name) const
   {
-    return ::glGetUniformLocation (program, name);
+    const GLint aRes = ::glGetUniformLocation (program, name);
+    OpenGl_TRACE(glGetUniformLocation)
+    return aRes;
   }
 
   inline void glGetVertexAttribfv (GLuint index, GLenum pname, GLfloat* params) const
   {
     ::glGetVertexAttribfv (index, pname, params);
+    OpenGl_TRACE(glGetVertexAttribfv)
   }
 
   inline void glGetVertexAttribiv (GLuint index, GLenum pname, GLint* params) const
   {
     ::glGetVertexAttribiv (index, pname, params);
+    OpenGl_TRACE(glGetVertexAttribiv)
   }
 
   inline void glGetVertexAttribPointerv (GLuint index, GLenum pname, void* *pointer) const
   {
     ::glGetVertexAttribPointerv (index, pname, pointer);
+    OpenGl_TRACE(glGetVertexAttribPointerv)
   }
 
   inline GLboolean glIsFramebuffer (GLuint framebuffer) const
@@ -451,176 +520,211 @@ public: //! @name OpenGL ES 2.0
   inline void glLinkProgram (GLuint program) const
   {
     ::glLinkProgram (program);
+    OpenGl_TRACE(glLinkProgram)
   }
 
   inline void glReleaseShaderCompiler() const
   {
     ::glReleaseShaderCompiler();
+    OpenGl_TRACE(glReleaseShaderCompiler)
   }
 
   inline void glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height) const
   {
     ::glRenderbufferStorage (target, internalformat, width, height);
+    OpenGl_TRACE(glRenderbufferStorage)
   }
 
   inline void glShaderBinary (GLsizei count, const GLuint *shaders, GLenum binaryformat, const void* binary, GLsizei length) const
   {
     ::glShaderBinary (count, shaders, binaryformat, binary, length);
+    OpenGl_TRACE(glShaderBinary)
   }
 
   inline void glShaderSource (GLuint shader, GLsizei count, const GLchar** string, const GLint* length) const
   {
     ::glShaderSource (shader, count, string, length);
+    OpenGl_TRACE(glShaderSource)
   }
 
   inline void glUniform1f (GLint location, GLfloat v0) const
   {
     ::glUniform1f (location, v0);
+    OpenGl_TRACE(glUniform1f)
   }
 
   inline void glUniform1fv (GLint location, GLsizei count, const GLfloat* value) const
   {
     ::glUniform1fv (location, count, value);
+    OpenGl_TRACE(glUniform1fv)
   }
 
   inline void glUniform1i (GLint location, GLint v0) const
   {
     ::glUniform1i (location, v0);
+    OpenGl_TRACE(glUniform1i)
   }
 
   inline void glUniform1iv (GLint location, GLsizei count, const GLint* value) const
   {
     ::glUniform1iv (location, count, value);
+    OpenGl_TRACE(glUniform1iv)
   }
 
   inline void glUniform2f (GLint location, GLfloat v0, GLfloat v1) const
   {
     ::glUniform2f (location, v0, v1);
+    OpenGl_TRACE(glUniform2f)
   }
 
   inline void glUniform2fv (GLint location, GLsizei count, const GLfloat* value) const
   {
     ::glUniform2fv (location, count, value);
+    OpenGl_TRACE(glUniform2fv)
   }
 
   inline void glUniform2i (GLint location, GLint v0, GLint v1) const
   {
     ::glUniform2i (location, v0, v1);
+    OpenGl_TRACE(glUniform2i)
   }
 
   inline void glUniform2iv (GLint location, GLsizei count, const GLint* value) const
   {
     ::glUniform2iv (location, count, value);
+    OpenGl_TRACE(glUniform2iv)
   }
 
   inline void glUniform3f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2) const
   {
     ::glUniform3f (location, v0, v1, v2);
+    OpenGl_TRACE(glUniform3f)
   }
 
   inline void glUniform3fv (GLint location, GLsizei count, const GLfloat* value) const
   {
     ::glUniform3fv (location, count, value);
+    OpenGl_TRACE(glUniform3fv)
   }
 
   inline void glUniform3i (GLint location, GLint v0, GLint v1, GLint v2) const
   {
     ::glUniform3i (location, v0, v1, v2);
+    OpenGl_TRACE(glUniform3i)
   }
 
   inline void glUniform3iv (GLint location, GLsizei count, const GLint* value) const
   {
     ::glUniform3iv (location, count, value);
+    OpenGl_TRACE(glUniform3iv)
   }
 
   inline void glUniform4f (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const
   {
     ::glUniform4f (location, v0, v1, v2, v3);
+    OpenGl_TRACE(glUniform4f)
   }
 
   inline void glUniform4fv (GLint location, GLsizei count, const GLfloat* value) const
   {
     ::glUniform4fv (location, count, value);
+    OpenGl_TRACE(glUniform4fv)
   }
 
   inline void glUniform4i (GLint location, GLint v0, GLint v1, GLint v2, GLint v3) const
   {
     ::glUniform4i (location, v0, v1, v2, v3);
+    OpenGl_TRACE(glUniform4i)
   }
 
   inline void glUniform4iv (GLint location, GLsizei count, const GLint* value) const
   {
     ::glUniform4iv (location, count, value);
+    OpenGl_TRACE(glUniform4iv)
   }
 
   inline void glUniformMatrix2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) const
   {
     ::glUniformMatrix2fv (location, count, transpose, value);
+    OpenGl_TRACE(glUniformMatrix2fv)
   }
 
   inline void glUniformMatrix3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) const
   {
     ::glUniformMatrix3fv (location, count, transpose, value);
+    OpenGl_TRACE(glUniformMatrix3fv)
   }
 
   inline void glUniformMatrix4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) const
   {
     ::glUniformMatrix4fv (location, count, transpose, value);
+    OpenGl_TRACE(glUniformMatrix4fv)
   }
 
   inline void glUseProgram (GLuint program) const
   {
     ::glUseProgram (program);
+    OpenGl_TRACE(glUseProgram)
   }
 
   inline void glValidateProgram (GLuint program) const
   {
     ::glValidateProgram (program);
+    OpenGl_TRACE(glValidateProgram)
   }
 
   inline void glVertexAttrib1f (GLuint index, GLfloat x) const
   {
     ::glVertexAttrib1f (index, x);
+    OpenGl_TRACE(glVertexAttrib1f)
   }
 
   inline void glVertexAttrib1fv (GLuint index, const GLfloat* v) const
   {
     ::glVertexAttrib1fv (index, v);
+    OpenGl_TRACE(glVertexAttrib1fv)
   }
 
   inline void glVertexAttrib2f (GLuint index, GLfloat x, GLfloat y) const
   {
     ::glVertexAttrib2f (index, x, y);
+    OpenGl_TRACE(glVertexAttrib2f)
   }
 
   inline void glVertexAttrib2fv (GLuint index, const GLfloat* v) const
   {
     ::glVertexAttrib2fv (index, v);
+    OpenGl_TRACE(glVertexAttrib2fv)
   }
 
   inline void glVertexAttrib3f (GLuint index, GLfloat x, GLfloat y, GLfloat z) const
   {
     ::glVertexAttrib3f (index, x, y, z);
+    OpenGl_TRACE(glVertexAttrib3f)
   }
 
   inline void glVertexAttrib3fv (GLuint index, const GLfloat* v) const
   {
     ::glVertexAttrib3fv (index, v);
+    OpenGl_TRACE(glVertexAttrib3fv)
   }
 
   inline void glVertexAttrib4f (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const
   {
     ::glVertexAttrib4f (index, x, y, z, w);
+    OpenGl_TRACE(glVertexAttrib4f)
   }
 
   inline void glVertexAttrib4fv (GLuint index, const GLfloat* v) const
   {
     ::glVertexAttrib4fv (index, v);
+    OpenGl_TRACE(glVertexAttrib4fv)
   }
 
   inline void glVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer) const
   {
     ::glVertexAttribPointer (index, size, type, normalized, stride, pointer);
+    OpenGl_TRACE(glVertexAttribPointer)
   }
 
 public: //! @name OpenGL ES 3.0

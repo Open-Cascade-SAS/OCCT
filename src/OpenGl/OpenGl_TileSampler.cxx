@@ -57,7 +57,7 @@ void OpenGl_TileSampler::GrabVarianceMap (const Handle(OpenGl_Context)& theConte
   if (anErr != GL_NO_ERROR)
   {
     theContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_MEDIUM,
-                             "Error! Failed to fetch visual error map from the GPU");
+                             TCollection_AsciiString ("Error! Failed to fetch visual error map from the GPU ") + OpenGl_Context::FormatGlError (anErr));
     return;
   }
 #else

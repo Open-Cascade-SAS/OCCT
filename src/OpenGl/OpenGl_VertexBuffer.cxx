@@ -21,6 +21,21 @@
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer,OpenGl_Resource)
 
 // =======================================================================
+// function : FormatTarget
+// purpose  :
+// =======================================================================
+TCollection_AsciiString OpenGl_VertexBuffer::FormatTarget (GLenum theTarget)
+{
+  switch (theTarget)
+  {
+    case GL_ARRAY_BUFFER:         return "GL_ARRAY_BUFFER";
+    case GL_ELEMENT_ARRAY_BUFFER: return "GL_ELEMENT_ARRAY_BUFFER";
+    case GL_TEXTURE_BUFFER:       return "GL_TEXTURE_BUFFER";
+  }
+  return OpenGl_Context::FormatGlEnumHex (theTarget);
+}
+
+// =======================================================================
 // function : OpenGl_VertexBuffer
 // purpose  :
 // =======================================================================
@@ -128,9 +143,19 @@ bool OpenGl_VertexBuffer::init (const Handle(OpenGl_Context)& theGlCtx,
   myComponentsNb = theComponentsNb;
   myElemsNb      = theElemsNb;
   theGlCtx->core15fwd->glBufferData (GetTarget(), GLsizeiptr(myElemsNb) * theStride, theData, GL_STATIC_DRAW);
-  bool isDone = (glGetError() == GL_NO_ERROR); // GL_OUT_OF_MEMORY
+  const int anErr = theGlCtx->core15fwd->glGetError();
+  if (anErr != GL_NO_ERROR
+   && anErr != GL_OUT_OF_MEMORY) // pass-through out-of-memory error, but log unexpected errors
+  {
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Error: glBufferData (")
+                           + FormatTarget (GetTarget()) + ","
+                           + OpenGl_Context::FormatSize (GLsizeiptr(myElemsNb) * theStride) + ","
+                           + OpenGl_Context::FormatPointer (theData) + ") Id: " + (int )myBufferId
+                           + " failed with " + OpenGl_Context::FormatGlError (anErr));
+  }
   Unbind (theGlCtx);
-  return isDone;
+  return anErr == GL_NO_ERROR;
 }
 
 // =======================================================================
@@ -155,9 +180,19 @@ bool OpenGl_VertexBuffer::subData (const Handle(OpenGl_Context)& theGlCtx,
                                         GLintptr(theElemFrom)  * GLintptr  (myComponentsNb) * aDataSize, // offset in bytes
                                         GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * aDataSize, // size   in bytes
                                         theData);
-  bool isDone = (glGetError() == GL_NO_ERROR); // some dummy error
+  const int anErr = theGlCtx->core15fwd->glGetError();
+  if (anErr != GL_NO_ERROR)
+  {
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Error: glBufferSubData (")
+                           + FormatTarget (GetTarget()) + ","
+                           + OpenGl_Context::FormatSize (GLintptr(theElemFrom)  * GLintptr  (myComponentsNb) * aDataSize) + ","
+                           + OpenGl_Context::FormatSize (GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * aDataSize) + ","
+                           + OpenGl_Context::FormatPointer (theData) + ") Id: " + (int )myBufferId
+                           + " failed with " + OpenGl_Context::FormatGlError (anErr));
+  }
   Unbind (theGlCtx);
-  return isDone;
+  return anErr == GL_NO_ERROR;
 }
 
 // =======================================================================

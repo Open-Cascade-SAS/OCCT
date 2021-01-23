@@ -32,6 +32,9 @@ public:
   //! Helpful constants
   static const GLuint NO_BUFFER = 0;
 
+  //! Format VBO target enumeration value.
+  Standard_EXPORT static TCollection_AsciiString FormatTarget (GLenum theTarget);
+
 public:
 
   //! Create uninitialized VBO.
