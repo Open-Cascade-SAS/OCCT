@@ -122,6 +122,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
                                                        bool theIsColorMap)
 {
   OpenGl_TextureFormat aFormat;
+  aFormat.SetImageFormat (theFormat);
   switch (theFormat)
   {
     case Image_Format_GrayF:
@@ -414,6 +415,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RGBA);
       aFormat.SetDataType (GL_FLOAT);
+      aFormat.SetImageFormat (Image_Format_RGBAF);
       return aFormat;
     }
     case GL_R32F:
@@ -422,6 +424,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RED);
       aFormat.SetDataType (GL_FLOAT);
+      aFormat.SetImageFormat (Image_Format_GrayF);
       return aFormat;
     }
     case GL_RG32F:
@@ -430,6 +433,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RG);
       aFormat.SetDataType (GL_FLOAT);
+      aFormat.SetImageFormat (Image_Format_RGF);
       return aFormat;
     }
     case GL_RGBA16F:
@@ -438,6 +442,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RGBA);
       aFormat.SetDataType (GL_HALF_FLOAT);
+      aFormat.SetImageFormat (Image_Format_RGBAF);
       if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
       {
       #if defined(GL_ES_VERSION_2_0)
@@ -454,6 +459,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RED);
       aFormat.SetDataType (GL_HALF_FLOAT);
+      aFormat.SetImageFormat (Image_Format_GrayF);
       if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
       {
       #if defined(GL_ES_VERSION_2_0)
@@ -472,6 +478,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RGBA);
       aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetImageFormat (Image_Format_RGBA);
       if (theSizedFormat == GL_SRGB8_ALPHA8
       && !theCtx->ToRenderSRGB())
       {
@@ -487,6 +494,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RGB);
       aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetImageFormat (Image_Format_RGB);
       if (theSizedFormat == GL_SRGB8
       && !theCtx->ToRenderSRGB())
       {

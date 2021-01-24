@@ -191,6 +191,19 @@ public:
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const { return false; }
 
+  //! Auxiliary method for making an image dump from texture data.
+  //! @param theImage   [out] result image data (will be overridden)
+  //! @param theCtx      [in] active GL context
+  //! @param theTexUnit  [in] texture slot to use
+  //! @param theLevel    [in] mipmap level to dump
+  //! @param theCubeSide [in] cubemap side to dump within [0, 5] range
+  //! @return FALSE on error
+  Standard_EXPORT bool ImageDump (Image_PixMap& theImage,
+                                  const Handle(OpenGl_Context)& theCtx,
+                                  Graphic3d_TextureUnit theTexUnit,
+                                  Standard_Integer theLevel = 0,
+                                  Standard_Integer theCubeSide = 0) const;
+
 public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used instead")

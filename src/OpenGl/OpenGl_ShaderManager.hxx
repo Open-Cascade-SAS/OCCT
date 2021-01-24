@@ -277,13 +277,13 @@ public:
   const Handle(OpenGl_VertexBuffer)& BoundBoxVertBuffer() const { return myBoundBoxVertBuffer; }
 
   //! Bind program for IBL maps generation in PBR pipeline.
-  Standard_Boolean BindPBREnvBakingProgram()
+  Standard_Boolean BindPBREnvBakingProgram (Standard_Integer theIndex)
   {
-    if (myPBREnvBakingProgram.IsNull())
+    if (myPBREnvBakingProgram[theIndex].IsNull())
     {
-      preparePBREnvBakingProgram();
+      preparePBREnvBakingProgram (theIndex);
     }
-    return myContext->BindProgram (myPBREnvBakingProgram);
+    return myContext->BindProgram (myPBREnvBakingProgram[theIndex]);
   }
 
   //! Generates shader program to render environment cubemap as background.
@@ -814,7 +814,7 @@ protected:
                                                               Standard_Integer theBits);
 
   //! Prepare GLSL source for IBL generation used in PBR pipeline.
-  Standard_EXPORT Standard_Boolean preparePBREnvBakingProgram();
+  Standard_EXPORT Standard_Boolean preparePBREnvBakingProgram (Standard_Integer theIndex);
 
   //! Checks whether one of PBR shading models is set as default model.
   Standard_Boolean IsPbrAllowed() const { return myShadingModel == Graphic3d_TOSM_PBR
@@ -883,7 +883,7 @@ protected:
   Handle(OpenGl_ShaderProgram)       myOitDepthPeelingFlushProgram[2]; //!< standard program for OIT Depth Peeling flush (default and MSAA)
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
-  Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram;//!< program for IBL maps generation used in PBR pipeline
+  Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram[3]; //!< programs for IBL maps generation used in PBR pipeline (0 for Diffuse; 1 for Specular; 2 for fallback)
   Handle(Graphic3d_ShaderProgram)    myBgCubeMapProgram;   //!< program for background cubemap rendering
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs

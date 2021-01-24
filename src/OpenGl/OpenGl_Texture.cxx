@@ -16,7 +16,7 @@
 
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_GlCore32.hxx>
+#include <OpenGl_GlCore45.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -1234,4 +1234,73 @@ Standard_Size OpenGl_Texture::EstimatedDataSize() const
     aSize = aSize + aSize / 3;
   }
   return aSize;
+}
+
+// =======================================================================
+// function : ImageDump
+// purpose  :
+// =======================================================================
+bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
+                                const Handle(OpenGl_Context)& theCtx,
+                                Graphic3d_TextureUnit theTexUnit,
+                                Standard_Integer theLevel,
+                                Standard_Integer theCubeSide) const
+{
+#if !defined(GL_ES_VERSION_2_0)
+  const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, mySizedFormat);
+  if (theCtx.IsNull()
+  || !IsValid()
+  ||  theLevel < 0
+  || !aFormat.IsValid()
+  ||  aFormat.ImageFormat() == Image_Format_UNKNOWN
+  || (myTarget == GL_TEXTURE_CUBE_MAP
+   && (theCubeSide < 0 || theCubeSide > 5)))
+  {
+    return false;
+  }
+
+  GLenum aTarget = myTarget;
+  Graphic3d_Vec2i aSize (mySizeX, mySizeY);
+  if (myTarget == GL_TEXTURE_CUBE_MAP)
+  {
+    aTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + theCubeSide;
+  }
+  for (Standard_Integer aMipIter = 0; aMipIter < theLevel; ++aMipIter)
+  {
+    aSize /= 2;
+    if (aSize.x() == 0) { aSize.x() = 1; }
+    if (aSize.y() == 0) { aSize.y() = 1; }
+  }
+  if (!theImage.InitTrash (aFormat.ImageFormat(), aSize.x(), aSize.y()))
+  {
+    return false;
+  }
+
+  const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  theCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
+  theCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+  // glGetTextureImage() allows avoiding to binding texture id, but apparently requires clean FBO binding state...
+  //if (theCtx->core45 != NULL) { theCtx->core45->glGetTextureImage (myTextureId, theLevel, aFormat.PixelFormat(), aFormat.DataType(), (GLsizei )theImage.SizeBytes(), theImage.ChangeData()); } else
+  {
+    Bind (theCtx, theTexUnit);
+    theCtx->core11fwd->glGetTexImage (aTarget, theLevel, aFormat.PixelFormat(), aFormat.DataType(), theImage.ChangeData());
+    Unbind (theCtx, theTexUnit);
+  }
+  if (theImage.Format() != aFormat.ImageFormat())
+  {
+    Image_PixMap::SwapRgbaBgra (theImage);
+  }
+
+  const bool hasErrors = theCtx->ResetErrors (true);
+  theCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, 1);
+  return !hasErrors;
+#else
+  // glGetTexImage() is unavailable in OpenGL ES
+  (void )theImage;
+  (void )theCtx;
+  (void )theTexUnit;
+  (void )theLevel;
+  (void )theCubeSide;
+  return false;
+#endif
 }

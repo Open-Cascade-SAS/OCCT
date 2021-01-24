@@ -134,7 +134,22 @@ private:
   enum OpenGl_TypeOfIBLMap
   {
     OpenGl_TypeOfIBLMap_DiffuseSH,
-    OpenGl_TypeOfIBLMap_Specular
+    OpenGl_TypeOfIBLMap_Specular,
+    OpenGl_TypeOfIBLMap_DiffuseFallback,
+  };
+
+  //! Parameters for baking IBL.
+  struct BakingParams
+  {
+    Standard_Size      NbSpecSamples;
+    Standard_Size      NbDiffSamples;
+    Standard_Integer   EnvMapSize;
+    Standard_ShortReal Probability;
+    Standard_Boolean   IsZInverted;
+    Standard_Boolean   IsTopDown;
+
+    BakingParams()
+    : NbSpecSamples (0), NbDiffSamples (0), EnvMapSize (1024), Probability (1.0f), IsZInverted (false), IsTopDown (false) {}
   };
 
   //! Initializes all textures.
@@ -156,23 +171,19 @@ private:
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
   bool processDiffIBLMap (const Handle(OpenGl_Context)& theCtx,
-                          Standard_Boolean      theIsDrawAction,
-                          Standard_Size         theNbSamples = 0);
+                          const BakingParams* theDrawParams);
 
   //! Responses for specular IBL map processing.
   //! @return false in case of failed baking or clearing
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
   bool processSpecIBLMap (const Handle(OpenGl_Context)& theCtx,
-                          Standard_Boolean   theIsDrawAction,
-                          Standard_Integer   theEnvMapSize = 1024,
-                          Standard_Size      theNbSamples = 0,
-                          Standard_ShortReal theProbability = 1.f);
+                          const BakingParams* theDrawParams);
 
   //! Checks completeness of frame buffer object for all targets
   //! (all cube map sides and levels of IBL maps).
   //! @return false in case of uncompleted frame buffer object.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
-  bool checkFBOComplentess (const Handle(OpenGl_Context)& theCtx) const;
+  bool checkFBOComplentess (const Handle(OpenGl_Context)& theCtx);
 
   //! Version of 'Bake' without OpenGl_PBREnvironmentSetnry.
   //! Warning! Requires using of OpenGl_PBREnvironmentSentry.
@@ -194,12 +205,13 @@ private:
   unsigned int        myPow2Size;            //!< size of IBL maps sides (real size can be calculated as 2^myPow2Size)
   unsigned int        mySpecMapLevelsNumber; //!< number of mipmap levels used in specular IBL map
 
-  OpenGl_Texture      myIBLMaps[2];          //!< IBL maps
+  OpenGl_Texture      myIBLMaps[3];          //!< IBL maps
   OpenGl_VertexBuffer myVBO;                 //!< vertex buffer object of screen rectangular
   GLuint              myFBO;                 //!< frame buffer object to generate or clear IBL maps
 
   Standard_Boolean    myIsComplete;          //!< completeness of PBR environment
   Standard_Boolean    myIsNeededToBeBound;   //!< indicates whether IBL map's textures have to be bound or it is not obligate
+  Standard_Boolean    myCanRenderFloat;      //!< indicates whether driver supports rendering into floating point texture or not
 
 };
 

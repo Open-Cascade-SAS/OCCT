@@ -77,7 +77,7 @@ private:
 
   void restore()
   {
-    myContext->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myFBO);
+    myContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myFBO);
     myContext->BindProgram (myShaderProgram);
     myContext->ResizeViewport (myViewport);
     myContext->core11fwd->glClearColor (myClearColor.r(), myClearColor.g(), myClearColor.b(), myClearColor.a());
@@ -159,7 +159,8 @@ OpenGl_PBREnvironment::OpenGl_PBREnvironment (const Handle(OpenGl_Context)&  the
   mySpecMapLevelsNumber (std::max (2u, std::min (theSpecMapLevelsNumber, std::max (1u, thePowOf2Size) + 1))),
   myFBO (OpenGl_FrameBuffer::NO_FRAMEBUFFER),
   myIsComplete (Standard_False),
-  myIsNeededToBeBound (Standard_True)
+  myIsNeededToBeBound (Standard_True),
+  myCanRenderFloat (Standard_True)
 {
   OpenGl_PBREnvironmentSentry aSentry (theCtx);
 
@@ -253,8 +254,9 @@ void OpenGl_PBREnvironment::Release (OpenGl_Context* theCtx)
     }
     myFBO = OpenGl_FrameBuffer::NO_FRAMEBUFFER;
   }
-  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Release(theCtx);
+  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Release (theCtx);
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular] .Release (theCtx);
+  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].Release (theCtx);
   myVBO.Release (theCtx);
 }
 
@@ -276,16 +278,35 @@ bool OpenGl_PBREnvironment::initTextures (const Handle(OpenGl_Context)& theCtx)
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular] .Sampler()->Parameters()->SetTextureUnit (theCtx->PBRSpecIBLMapTexUnit());
   myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Sampler()->Parameters()->SetTextureUnit (theCtx->PBRDiffIBLMapSHTexUnit());
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular] .Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_TRILINEAR);
-  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Sampler()->Parameters()->SetFilter(Graphic3d_TOTF_NEAREST);
+  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_NEAREST);
   myIBLMaps[OpenGl_TypeOfIBLMap_Specular] .Sampler()->Parameters()->SetLevelsRange (mySpecMapLevelsNumber - 1);
+  myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_NEAREST);
 
   // NVIDIA's driver didn't work properly with 3 channel texture for diffuse SH coefficients so that alpha channel has been added
-  return myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init (theCtx,
-                                                        OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBAF, false),
-                                                        Graphic3d_Vec2i (9, 1),
-                                                        Graphic3d_TOT_2D)
-      && myIBLMaps[OpenGl_TypeOfIBLMap_Specular].InitCubeMap (theCtx, Handle(Graphic3d_CubeMap)(),
-                                                              Standard_Size(1) << myPow2Size, Image_Format_RGB, true, false);
+  if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init (theCtx,
+                                                      OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBAF, false),
+                                                      Graphic3d_Vec2i (9, 1), Graphic3d_TOT_2D))
+  {
+    Message::SendFail() << "OpenGl_PBREnvironment, DiffuseSH texture creation failed";
+    return false;
+  }
+
+  if (!myIBLMaps[OpenGl_TypeOfIBLMap_Specular].InitCubeMap (theCtx, Handle(Graphic3d_CubeMap)(),
+                                                            Standard_Size(1) << myPow2Size, Image_Format_RGB, true, false))
+  {
+    Message::SendFail() << "OpenGl_PBREnvironment, Specular texture creation failed";
+    return false;
+  }
+
+  if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].Init (theCtx,
+                                                            OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBA, false),
+                                                            Graphic3d_Vec2i (10, 4), Graphic3d_TOT_2D))
+  {
+    Message::SendFail() << "OpenGl_PBREnvironment, DiffuseFallback texture creation failed";
+    return false;
+  }
+
+  return true;
 }
 
 // =======================================================================
@@ -319,28 +340,98 @@ bool OpenGl_PBREnvironment::initFBO (const Handle(OpenGl_Context)& theCtx)
 // purpose  :
 // =======================================================================
 bool OpenGl_PBREnvironment::processDiffIBLMap (const Handle(OpenGl_Context)& theCtx,
-                                               Standard_Boolean              theIsDrawAction,
-                                               Standard_Size                 theNbSamples)
+                                               const BakingParams* theDrawParams)
 {
-  theCtx->arbFBO->glFramebufferTexture2D (GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                          myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].TextureId(), 0);
-  const Standard_Integer aViewport[4] = { 0, 0, 9, 1 };
-  theCtx->ResizeViewport(aViewport);
-  if (theIsDrawAction)
+  const OpenGl_TypeOfIBLMap aRendMapId = myCanRenderFloat ? OpenGl_TypeOfIBLMap_DiffuseSH : OpenGl_TypeOfIBLMap_DiffuseFallback;
+  Image_PixMap anImageF;
+  if (!myCanRenderFloat)
   {
-    theCtx->ActiveProgram()->SetUniform(theCtx, "occNbSpecIBLLevels", 0);
-    theCtx->ActiveProgram()->SetUniform(theCtx, "uSamplesNum", static_cast<Standard_Integer>(theNbSamples));
+    anImageF.InitZero (Image_Format_RGBAF, myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].SizeX(), myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].SizeY());
+  }
 
+  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                          myIBLMaps[aRendMapId].TextureId(), 0);
+  const Standard_Integer aViewport[4] = { 0, 0, 9, myCanRenderFloat ? 1 : 3 };
+  theCtx->ResizeViewport(aViewport);
+  if (theDrawParams != NULL)
+  {
+    if (!theCtx->ShaderManager()->BindPBREnvBakingProgram (aRendMapId))
+    {
+      return false;
+    }
+
+    const Handle(OpenGl_ShaderProgram)& aProg = theCtx->ActiveProgram();
+    aProg->SetSampler (theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
+    aProg->SetUniform (theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 :  1);
+    aProg->SetUniform (theCtx, "uYCoeff", theDrawParams->IsTopDown   ?  1 : -1);
+    aProg->SetUniform (theCtx, "uSamplesNum", Standard_Integer(theDrawParams->NbDiffSamples));
+
+    myVBO.BindAttribute (theCtx, Graphic3d_TOA_POS);
     theCtx->core11fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+    myVBO.UnbindAttribute (theCtx, Graphic3d_TOA_POS);
+
+    if (!myCanRenderFloat)
+    {
+      // unpack RGBA8 values to floats
+      Image_PixMap anImageIn;
+      anImageIn.InitZero (myCanRenderFloat ? Image_Format_RGBAF : Image_Format_RGBA, aViewport[2], aViewport[3]);
+      theCtx->core11fwd->glReadPixels (0, 0, aViewport[2], aViewport[3],
+                                       GL_RGBA, myCanRenderFloat ? GL_FLOAT : GL_UNSIGNED_BYTE, anImageIn.ChangeData());
+      const GLenum anErr = theCtx->core11fwd->glGetError();
+      if (anErr != GL_NO_ERROR)
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString ("Unable to read PBR baking diffuse texture. Error ") + OpenGl_Context::FormatGlError (anErr));
+      }
+      for (Standard_Size aValIter = 0; aValIter < anImageIn.SizeX(); ++aValIter)
+      {
+        Graphic3d_Vec4 aVal;
+        if (myCanRenderFloat)
+        {
+          aVal = anImageIn.Value<Graphic3d_Vec4> (0, aValIter);
+        }
+        else
+        {
+          const int32_t aPacked[3] = { anImageIn.Value<int32_t> (2, aValIter), anImageIn.Value<int32_t> (1, aValIter), anImageIn.Value<int32_t> (0, aValIter) };
+          aVal[0] = aPacked[0] / 2147483647.0f;
+          aVal[1] = aPacked[1] / 2147483647.0f;
+          aVal[2] = aPacked[2] / 2147483647.0f;
+        }
+        anImageF.ChangeValue<Graphic3d_Vec4> (0, aValIter) = aVal;
+      }
+    }
   }
   else
   {
-    theCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
+    if (myCanRenderFloat)
+    {
+      theCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
 
-    theCtx->core11fwd->glEnable (GL_SCISSOR_TEST);
-    theCtx->core11fwd->glClearColor (0.f, 0.f, 0.f, 1.f);
-    theCtx->core11fwd->glScissor (1, 0, 8, 1);
-    theCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
+      theCtx->core11fwd->glEnable (GL_SCISSOR_TEST);
+      theCtx->core11fwd->glClearColor (0.f, 0.f, 0.f, 1.f);
+      theCtx->core11fwd->glScissor (1, 0, 8, 1);
+      theCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
+      theCtx->core11fwd->glDisable (GL_SCISSOR_TEST);
+    }
+    else
+    {
+      anImageF.ChangeValue<Graphic3d_Vec4> (0, 0) = Graphic3d_Vec4 (1.0f);
+      for (Standard_Size aValIter = 1; aValIter < anImageF.SizeX(); ++aValIter)
+      {
+        anImageF.ChangeValue<Graphic3d_Vec4> (0, aValIter) = Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
+      }
+    }
+  }
+
+  if (!myCanRenderFloat)
+  {
+    if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init (theCtx,
+                                                        OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBAF, false),
+                                                        Graphic3d_Vec2i (9, 1), Graphic3d_TOT_2D, &anImageF))
+    {
+      Message::SendFail() << "OpenGl_PBREnvironment, DiffuseSH texture update failed";
+      return false;
+    }
   }
 
   return true;
@@ -351,34 +442,52 @@ bool OpenGl_PBREnvironment::processDiffIBLMap (const Handle(OpenGl_Context)& the
 // purpose  :
 // =======================================================================
 bool OpenGl_PBREnvironment::processSpecIBLMap (const Handle(OpenGl_Context)& theCtx,
-                                               Standard_Boolean              theIsDrawAction,
-                                               Standard_Integer              theEnvMapSize,
-                                               Standard_Size                 theNbSamples,
-                                               Standard_ShortReal            theProbability)
+                                               const BakingParams* theDrawParams)
 {
-  if (theIsDrawAction)
+  if (theDrawParams != NULL)
   {
-    theCtx->ActiveProgram()->SetUniform (theCtx, "occNbSpecIBLLevels", Standard_Integer(mySpecMapLevelsNumber));
-    theCtx->ActiveProgram()->SetUniform (theCtx, "uEnvMapSize", theEnvMapSize);
+    if (!theCtx->ShaderManager()->BindPBREnvBakingProgram (OpenGl_TypeOfIBLMap_Specular))
+    {
+      return false;
+    }
+
+    const Handle(OpenGl_ShaderProgram)& aProg = theCtx->ActiveProgram();
+    const float aSolidAngleSource = float(4.0 * M_PI / (6.0 * float(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
+    aProg->SetSampler (theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
+    aProg->SetUniform (theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 :  1);
+    aProg->SetUniform (theCtx, "uYCoeff", theDrawParams->IsTopDown   ?  1 : -1);
+    aProg->SetUniform (theCtx, "occNbSpecIBLLevels",   Standard_Integer(mySpecMapLevelsNumber));
+    aProg->SetUniform (theCtx, "uEnvSolidAngleSource", aSolidAngleSource);
+    myVBO.BindAttribute (theCtx, Graphic3d_TOA_POS);
   }
+
+  const bool canRenderMipmaps = theCtx->hasFboRenderMipmap;
+  const OpenGl_TextureFormat aTexFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizedFormat());
+#if !defined(GL_ES_VERSION_2_0)
+  const GLint anIntFormat = aTexFormat.InternalFormat();
+#else
+  // ES 2.0 does not support sized formats and format conversions - them detected from data type
+  const GLint anIntFormat = theCtx->IsGlGreaterEqual (3, 0) ? aTexFormat.InternalFormat() : aTexFormat.PixelFormat();
+#endif
 
   for (int aLevelIter = mySpecMapLevelsNumber - 1;; --aLevelIter)
   {
     const Standard_Integer aSize = 1 << (myPow2Size - aLevelIter);
     const Standard_Integer aViewport[4] = { 0, 0, aSize, aSize };
     theCtx->ResizeViewport (aViewport);
-    if (theIsDrawAction)
+    if (theDrawParams != NULL)
     {
-      Standard_Integer aNbSamples = static_cast<Standard_Integer>(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor (theProbability, aLevelIter / float (mySpecMapLevelsNumber - 1)) * theNbSamples);
-      theCtx->ActiveProgram()->SetUniform (theCtx, "uSamplesNum", static_cast<Standard_Integer>(aNbSamples));
+      const Standard_Integer aNbSamples = Standard_Integer(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor (theDrawParams->Probability,
+                                                                                                           aLevelIter / float (mySpecMapLevelsNumber - 1)) * theDrawParams->NbSpecSamples);
+      theCtx->ActiveProgram()->SetUniform (theCtx, "uSamplesNum",   aNbSamples);
       theCtx->ActiveProgram()->SetUniform (theCtx, "uCurrentLevel", aLevelIter);
     }
 
     for (Standard_Integer aSideIter = 0; aSideIter < 6; ++aSideIter)
     {
-      theCtx->arbFBO->glFramebufferTexture2D (GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
-                                              myIBLMaps[OpenGl_TypeOfIBLMap_Specular].TextureId(), aLevelIter);
-      if (theIsDrawAction)
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
+                                              myIBLMaps[OpenGl_TypeOfIBLMap_Specular].TextureId(), canRenderMipmaps ? aLevelIter : 0);
+      if (theDrawParams != NULL)
       {
         theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentSide", aSideIter);
         theCtx->core11fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -386,6 +495,20 @@ bool OpenGl_PBREnvironment::processSpecIBLMap (const Handle(OpenGl_Context)& the
       else
       {
         theCtx->core11fwd->glClear(GL_COLOR_BUFFER_BIT);
+      }
+
+      if (!canRenderMipmaps
+        && aLevelIter != 0)
+      {
+        myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Bind (theCtx, Graphic3d_TextureUnit_1);
+        theCtx->core20fwd->glCopyTexImage2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter, aLevelIter, anIntFormat, 0, 0, (GLsizei )aSize, (GLsizei )aSize, 0);
+        myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Unbind (theCtx, Graphic3d_TextureUnit_1);
+        const GLenum anErr = theCtx->core11fwd->glGetError();
+        if (anErr != GL_NO_ERROR)
+        {
+          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               TCollection_AsciiString ("Unable to copy cubemap mipmap level. Error ") + OpenGl_Context::FormatGlError (anErr));
+        }
       }
     }
 
@@ -395,6 +518,11 @@ bool OpenGl_PBREnvironment::processSpecIBLMap (const Handle(OpenGl_Context)& the
     }
   }
 
+  if (theDrawParams != NULL)
+  {
+    myVBO.UnbindAttribute (theCtx, Graphic3d_TOA_POS);
+  }
+
   return true;
 }
 
@@ -402,23 +530,44 @@ bool OpenGl_PBREnvironment::processSpecIBLMap (const Handle(OpenGl_Context)& the
 // function : checkFBOCompletness
 // purpose  :
 // =======================================================================
-bool OpenGl_PBREnvironment::checkFBOComplentess (const Handle(OpenGl_Context)& theCtx) const
+bool OpenGl_PBREnvironment::checkFBOComplentess (const Handle(OpenGl_Context)& theCtx)
 {
-  theCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myFBO);
-  theCtx->arbFBO->glFramebufferTexture2D (GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+  myCanRenderFloat = true;
+  theCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myFBO);
+  theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                                           myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].TextureId(), 0);
-  if (theCtx->arbFBO->glCheckFramebufferStatus (GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+  if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    return false;
+    // Some WebGL 1.0 and OpenGL ES 2.0 implementations support float textures which cannot be used as render targets.
+    // This capability could be exposed by WEBGL_color_buffer_float/EXT_color_buffer_float extensions,
+    // but the simplest way is just to check FBO status.
+    // The fallback solution involves rendering into RGBA8 texture with floating values packed,
+    // and using glReadPixels() + conversion + texture upload of computed values.
+    myCanRenderFloat = false;
+    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                            myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].TextureId(), 0);
+    if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+      Message::SendTrace() << "OpenGl_PBREnvironment, incomplete FBO for diffuse map";
+      return false;
+    }
   }
+
   for (Standard_Integer aSideIter = 0; aSideIter < 6; ++aSideIter)
   {
     for (unsigned int aLevel = 0; aLevel < mySpecMapLevelsNumber; ++aLevel)
     {
-      theCtx->arbFBO->glFramebufferTexture2D (GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
-                                              myIBLMaps[OpenGl_TypeOfIBLMap_Specular].TextureId(), aLevel);
-      if (theCtx->arbFBO->glCheckFramebufferStatus (GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+      if (!theCtx->hasFboRenderMipmap
+        && aLevel != 0)
       {
+        continue;
+      }
+
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
+                                              myIBLMaps[OpenGl_TypeOfIBLMap_Specular].TextureId(), aLevel);
+      if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+      {
+        Message::SendTrace() << "OpenGl_PBREnvironment, incomplete FBO for specular map " << aSideIter << " "<< aLevel;
         return false;
       }
     }
@@ -439,21 +588,21 @@ void OpenGl_PBREnvironment::bake (const Handle(OpenGl_Context)& theCtx,
                                   Standard_ShortReal            theProbability)
 {
   myIsNeededToBeBound = Standard_True;
-  if (!theCtx->ShaderManager()->BindPBREnvBakingProgram())
-  {
-    return;
-  }
+
   theEnvMap->Bind (theCtx, theCtx->PBRSpecIBLMapTexUnit());
-  theCtx->ActiveProgram()->SetSampler (theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
-  theCtx->ActiveProgram()->SetUniform (theCtx, "uZCoeff", theZIsInverted ? -1 : 1);
-  theCtx->ActiveProgram()->SetUniform (theCtx, "uYCoeff", theIsTopDown ? 1 : -1);
-  theCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myFBO);
-  myVBO.BindAttribute (theCtx, Graphic3d_TOA_POS);
+  theCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myFBO);
 
   OSD_Timer aTimer;
   aTimer.Start();
-  if (processSpecIBLMap (theCtx, true, theEnvMap->SizeX(), theSpecNbSamples, theProbability)
-   && processDiffIBLMap (theCtx, true, theDiffNbSamples))
+  BakingParams aDrawParams;
+  aDrawParams.NbSpecSamples = theSpecNbSamples;
+  aDrawParams.NbDiffSamples = theDiffNbSamples;
+  aDrawParams.EnvMapSize    = theEnvMap->SizeX();
+  aDrawParams.Probability   = theProbability;
+  aDrawParams.IsZInverted   = theZIsInverted;
+  aDrawParams.IsTopDown     = theIsTopDown;
+  if (processSpecIBLMap (theCtx, &aDrawParams)
+   && processDiffIBLMap (theCtx, &aDrawParams))
   {
     Message::SendTrace(TCollection_AsciiString()
       + "IBL " + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeX() + "x" + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeY()
@@ -467,7 +616,6 @@ void OpenGl_PBREnvironment::bake (const Handle(OpenGl_Context)& theCtx,
     clear (theCtx, Graphic3d_Vec3(1.0f));
   }
 
-  myVBO.UnbindAttribute (theCtx, Graphic3d_TOA_POS);
   theEnvMap->Unbind (theCtx, theCtx->PBREnvLUTTexUnit());
 }
 
@@ -479,9 +627,9 @@ void OpenGl_PBREnvironment::clear (const Handle(OpenGl_Context)& theCtx,
                                    const Graphic3d_Vec3&         theColor)
 {
   myIsNeededToBeBound = Standard_True;
-  theCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myFBO);
+  theCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myFBO);
   theCtx->core11fwd->glClearColor (theColor.r(), theColor.g(), theColor.b(), 1.f);
 
-  processSpecIBLMap (theCtx, false);
-  processDiffIBLMap (theCtx, false);
+  processSpecIBLMap (theCtx, NULL);
+  processDiffIBLMap (theCtx, NULL);
 }

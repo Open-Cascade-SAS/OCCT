@@ -1764,10 +1764,17 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
   }
   else
   {
-    if (theProgram->IsPBR()
-     && myContext->IsGlGreaterEqual (3, 0))
+    if (theProgram->IsPBR())
     {
-      theProgram->SetHeader ("#version 300 es");
+      if (myContext->IsGlGreaterEqual (3, 0))
+      {
+        theProgram->SetHeader ("#version 300 es");
+      }
+      else if (myContext->CheckExtension ("GL_EXT_shader_texture_lod"))
+      {
+        theProgram->SetHeader ("#extension GL_EXT_shader_texture_lod : enable\n"
+                               "#define textureCubeLod textureCubeLodEXT");
+      }
     }
     if ((theBits & OpenGl_PO_WriteOit) != 0
      || (theBits & OpenGl_PO_OitDepthPeeling) != 0
@@ -3165,8 +3172,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramBoundBox()
 // function : preparePBREnvBakingProgram
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram()
+Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram (Standard_Integer theIndex)
 {
+  Standard_ASSERT_RAISE (theIndex >= 0 && theIndex <= 2,"");
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
   OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
 
@@ -3177,16 +3185,27 @@ Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram()
   TCollection_AsciiString aSrcFrag = TCollection_AsciiString()
   + THE_FUNC_cubemap_vector_transform
   + Shaders_PBRDistribution_glsl
+  + ((theIndex == 0 || theIndex == 2) ? "\n#define THE_TO_BAKE_DIFFUSE\n" : "\n#define THE_TO_BAKE_SPECULAR\n")
+  + (theIndex == 2 ? "\n#define THE_TO_PACK_FLOAT\n" : "")
   + Shaders_PBREnvBaking_fs;
 
   // constant array definition requires OpenGL 2.1+ or OpenGL ES 3.0+
 #if defined(GL_ES_VERSION_2_0)
-  aProgramSrc->SetHeader ("#version 300 es");
+  if (myContext->IsGlGreaterEqual (3, 0))
+  {
+    aProgramSrc->SetHeader ("#version 300 es");
+  }
+  else if (myContext->CheckExtension ("GL_EXT_shader_texture_lod"))
+  {
+    aProgramSrc->SetHeader ("#extension GL_EXT_shader_texture_lod : enable\n"
+                            "#define textureCubeLod textureCubeLodEXT");
+  }
 #else
   aProgramSrc->SetHeader ("#version 120");
 #endif
 
-  defaultGlslVersion (aProgramSrc, "pbr_env_baking", 0);
+  static const char* THE_BAKE_NAMES[3] = { "pbr_env_baking_diffuse", "pbr_env_baking_specular", "pbr_env_baking_difffallback" };
+  defaultGlslVersion (aProgramSrc, THE_BAKE_NAMES[theIndex], 0);
   aProgramSrc->SetDefaultSampler (false);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbShadowMaps (0);
@@ -3195,10 +3214,26 @@ Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram()
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
-  if (!Create (aProgramSrc, aKey, myPBREnvBakingProgram))
+  if (!Create (aProgramSrc, aKey, myPBREnvBakingProgram[theIndex]))
   {
-    myPBREnvBakingProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    myPBREnvBakingProgram[theIndex] = new OpenGl_ShaderProgram(); // just mark as invalid
     return Standard_False;
+  }
+
+  if (theIndex == 0
+   || theIndex == 2)
+  {
+    // workaround for old GLSL - load constants as uniform
+    myContext->BindProgram (myPBREnvBakingProgram[theIndex]);
+    const float aSHBasisFuncCoeffs[9] =
+    {
+      0.282095f * 0.282095f, 0.488603f * 0.488603f, 0.488603f * 0.488603f, 0.488603f * 0.488603f,
+      1.092548f * 1.092548f, 1.092548f * 1.092548f, 1.092548f * 1.092548f, 0.315392f * 0.315392f, 0.546274f * 0.546274f
+    };
+    const float aSHCosCoeffs[9] = { 3.141593f, 2.094395f, 2.094395f, 2.094395f, 0.785398f, 0.785398f, 0.785398f, 0.785398f, 0.785398f };
+    myPBREnvBakingProgram[theIndex]->SetUniform (myContext, myPBREnvBakingProgram[theIndex]->GetUniformLocation (myContext, "aSHBasisFuncCoeffs"), 9, aSHBasisFuncCoeffs);
+    myPBREnvBakingProgram[theIndex]->SetUniform (myContext, myPBREnvBakingProgram[theIndex]->GetUniformLocation (myContext, "aSHCosCoeffs"), 9, aSHCosCoeffs);
+    myContext->BindProgram (NULL);
   }
 
   return Standard_True;

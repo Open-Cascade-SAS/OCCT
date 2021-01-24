@@ -17,7 +17,7 @@ static const char Shaders_DirectionalLightShadow_glsl[] =
   "                                 in int  theId,\n"
   "                                 in vec3 theNormal)\n"
   "{\n"
-  "  vec4 aPosLightSpace = PosLightSpace[theId];\n"
+  "  vec4 aPosLightSpace = PosLightSpace[occLight_Index(theId)];\n"
   "  vec3 aLightDir = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));\n"
   "  vec3 aProjCoords = (aPosLightSpace.xyz / aPosLightSpace.w) * 0.5 + vec3 (0.5);\n"
   "  float aCurrentDepth = aProjCoords.z;\n"

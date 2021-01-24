@@ -66,7 +66,7 @@ public:
 public:
 
   //! Empty constructor (invalid texture format).
-  OpenGl_TextureFormat() : myInternalFormat (0), myPixelFormat (0), myDataType (0), myNbComponents (0) {}
+  OpenGl_TextureFormat() : myImageFormat (Image_Format_UNKNOWN), myInternalFormat (0), myPixelFormat (0), myDataType (0), myNbComponents (0) {}
 
   //! Return TRUE if format is defined.
   bool IsValid() const
@@ -107,6 +107,12 @@ public:
         || myInternalFormat == GL_SRGB8_ALPHA8;
   }
 
+  //! Returns image format (best match or Image_Format_UNKNOWN if no suitable fit).
+  Image_Format ImageFormat() const { return myImageFormat; }
+
+  //! Sets image format.
+  void SetImageFormat (Image_Format theFormat) { myImageFormat = theFormat; }
+
 public:
 
   //! Returns OpenGL internal format of the pixel data (example: GL_R32F).
@@ -117,6 +123,7 @@ public:
 
 private:
 
+  Image_Format myImageFormat; //!< image format
   GLint  myInternalFormat; //!< OpenGL internal format of the pixel data
   GLenum myPixelFormat;    //!< OpenGL pixel format
   GLint  myDataType;       //!< OpenGL data type of input pixel data

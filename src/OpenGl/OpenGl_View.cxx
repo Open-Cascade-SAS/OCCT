@@ -1194,14 +1194,34 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
           aParams->SetTextureUnit (aCtx->PBREnvLUTTexUnit());
           anEnvLUT = new OpenGl_Texture(THE_SHARED_ENV_LUT_KEY, aParams);
           Handle(Image_PixMap) aPixMap = new Image_PixMap();
-          aPixMap->InitWrapper (Image_Format_RGF, (Standard_Byte*)Textures_EnvLUT, Textures_EnvLUTSize, Textures_EnvLUTSize);
+          if (aCtx->arbTexRG)
+          {
+            aPixMap->InitWrapper (Image_Format_RGF, (Standard_Byte*)Textures_EnvLUT, Textures_EnvLUTSize, Textures_EnvLUTSize);
+          }
+          else
+          {
+            Image_PixMap aPixMapRG;
+            aPixMapRG.InitWrapper (Image_Format_RGF, (Standard_Byte*)Textures_EnvLUT, Textures_EnvLUTSize, Textures_EnvLUTSize);
+            aPixMap->InitZero (Image_Format_RGBAF, Textures_EnvLUTSize, Textures_EnvLUTSize);
+            for (Standard_Size aRowIter = 0; aRowIter < aPixMapRG.SizeY(); ++aRowIter)
+            {
+              for (Standard_Size aColIter = 0; aColIter < aPixMapRG.SizeX(); ++aColIter)
+              {
+                const Image_ColorRGF& aPixelRG = aPixMapRG.Value<Image_ColorRGF> (aRowIter, aColIter);
+                Image_ColorRGBAF& aPixelRGBA = aPixMap->ChangeValue<Image_ColorRGBAF> (aRowIter, aColIter);
+                aPixelRGBA.r() = aPixelRG.r();
+                aPixelRGBA.g() = aPixelRG.g();
+              }
+            }
+          }
+
           OpenGl_TextureFormat aTexFormat = OpenGl_TextureFormat::FindFormat (aCtx, aPixMap->Format(), false);
         #if defined(GL_ES_VERSION_2_0)
           // GL_RG32F is not texture-filterable format on OpenGL ES without OES_texture_float_linear extension.
           // GL_RG16F is texture-filterable since OpenGL ES 3.0 and can be initialized from 32-bit floats.
           // Note that it is expected that GL_RG16F has enough precision for this table, so that it can be used also on desktop OpenGL.
           //if (!aCtx->hasTexFloatLinear)
-          aTexFormat.SetInternalFormat (GL_RG16F);
+          aTexFormat.SetInternalFormat (aCtx->arbTexRG ? GL_RG16F : GL_RGBA16F);
         #endif
           if (!aTexFormat.IsValid()
            || !anEnvLUT->Init (aCtx, aTexFormat, Graphic3d_Vec2i((Standard_Integer)Textures_EnvLUTSize), Graphic3d_TOT_2D, aPixMap.get()))

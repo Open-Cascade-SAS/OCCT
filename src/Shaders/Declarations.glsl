@@ -143,44 +143,49 @@ const int OccLightType_Spot   = 3; //!< spot            light source
 // Light sources
 uniform               vec4 occLightAmbient;      //!< Cumulative ambient color
 #if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
+#if (THE_MAX_LIGHTS > 1)
+  #define occLight_Index(theId) theId
+#else
+  #define occLight_Index(theId) 0
+#endif
 uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sources
 
 //! Type of light source, int (see OccLightType enum).
-#define occLight_Type(theId)              occLightSourcesTypes[theId]
+#define occLight_Type(theId)              occLightSourcesTypes[occLight_Index(theId)]
 
 //! Specular intensity (equals to diffuse), vec3.
-#define occLight_Specular(theId)          occLightSources[theId * 4 + 0].rgb
+#define occLight_Specular(theId)          occLightSources[occLight_Index(theId) * 4 + 0].rgb
 
 //! Intensity of light source (>= 0), float.
-#define occLight_Intensity(theId)         occLightSources[theId * 4 + 0].a
+#define occLight_Intensity(theId)         occLightSources[occLight_Index(theId) * 4 + 0].a
 
 //! Is light a headlight, bool? DEPRECATED method.
 #define occLight_IsHeadlight(theId) false
 
 //! Position of specified light source or direction of directional light source, vec3.
-#define occLight_Position(theId)          occLightSources[theId * 4 + 1].xyz
+#define occLight_Position(theId)          occLightSources[occLight_Index(theId) * 4 + 1].xyz
 
 //! Direction of specified spot light source, vec3.
-#define occLight_SpotDirection(theId)     occLightSources[theId * 4 + 2].xyz
+#define occLight_SpotDirection(theId)     occLightSources[occLight_Index(theId) * 4 + 2].xyz
 
 //! Range on which point light source (positional or spot) can affect (>= 0), float.
-#define occLight_Range(theId)             occLightSources[theId * 4 + 2].w
+#define occLight_Range(theId)             occLightSources[occLight_Index(theId) * 4 + 2].w
 
 //! Maximum spread angle of the spot light (in radians), float.
-#define occLight_SpotCutOff(theId)        occLightSources[theId * 4 + 3].z
+#define occLight_SpotCutOff(theId)        occLightSources[occLight_Index(theId) * 4 + 3].z
 
 //! Attenuation of the spot light intensity (from 0 to 1), float.
-#define occLight_SpotExponent(theId)      occLightSources[theId * 4 + 3].w
+#define occLight_SpotExponent(theId)      occLightSources[occLight_Index(theId) * 4 + 3].w
 
 #if !defined(THE_IS_PBR)
 //! Diffuse intensity (equals to Specular), vec3.
-#define occLight_Diffuse(theId)           occLightSources[theId * 4 + 0].rgb
+#define occLight_Diffuse(theId)           occLightSources[occLight_Index(theId) * 4 + 0].rgb
 
 //! Const attenuation factor of positional light source, float.
-#define occLight_ConstAttenuation(theId)  occLightSources[theId * 4 + 3].x
+#define occLight_ConstAttenuation(theId)  occLightSources[occLight_Index(theId) * 4 + 3].x
 
 //! Linear attenuation factor of positional light source, float.
-#define occLight_LinearAttenuation(theId) occLightSources[theId * 4 + 3].y
+#define occLight_LinearAttenuation(theId) occLightSources[occLight_Index(theId) * 4 + 3].y
 #endif
 #endif
 

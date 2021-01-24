@@ -158,6 +158,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasTexSRGB (Standard_False),
   hasFboSRGB (Standard_False),
   hasSRGBControl (Standard_False),
+  hasFboRenderMipmap (Standard_False),
 #if defined(GL_ES_VERSION_2_0)
   hasFlatShading (OpenGl_FeatureNotAvailable),
 #else
@@ -1228,6 +1229,20 @@ void OpenGl_Context::ReadGlVersion (Standard_Integer& theGlVerMajor,
   // read numbers
   theGlVerMajor = atoi (aMajorStr);
   theGlVerMinor = atoi (aMinorStr);
+#if defined(__EMSCRIPTEN__)
+  if (theGlVerMajor >= 3)
+  {
+    if (!toCheckVer3
+     || ::strstr (aVerStr, "WebGL 1.0") != NULL)
+    {
+      Message::SendWarning() << "Warning! OpenGL context reports version " << theGlVerMajor << "." << theGlVerMinor
+                             << " but WebGL 2.0 was unavailable\n"
+                             << "Fallback to OpenGL ES 2.0 will be used instead of reported version";
+      theGlVerMajor = 2;
+      theGlVerMinor = 0;
+    }
+  }
+#endif
 
   if (theGlVerMajor <= 0)
   {
@@ -1540,6 +1555,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
              || CheckExtension ("GL_OES_rgb8_rgba8");
   hasTexSRGB  = IsGlGreaterEqual (3, 0);
   hasFboSRGB  = IsGlGreaterEqual (3, 0);
+  hasFboRenderMipmap = IsGlGreaterEqual (3, 0)
+                    || CheckExtension ("GL_OES_fbo_render_mipmap");
   hasSRGBControl = CheckExtension ("GL_EXT_sRGB_write_control");
   // NPOT textures has limited support within OpenGL ES 2.0
   // which are relaxed by OpenGL ES 3.0 or some extensions
@@ -1983,6 +2000,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasTexSRGB       = IsGlGreaterEqual (2, 1);
   hasFboSRGB       = IsGlGreaterEqual (2, 1);
   hasSRGBControl   = hasFboSRGB;
+  hasFboRenderMipmap = Standard_True;
   arbDrawBuffers   = CheckExtension ("GL_ARB_draw_buffers");
   arbNPTW          = CheckExtension ("GL_ARB_texture_non_power_of_two");
   arbTexFloat      = IsGlGreaterEqual (3, 0)
@@ -3415,10 +3433,11 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   // check whether PBR shading model is supported
   myHasPBR = arbFBO != NULL
           && myMaxTexCombined >= 4
-          && arbTexRG
           && arbTexFloat
           && (IsGlGreaterEqual (3, 0)
-        #if !defined(GL_ES_VERSION_2_0)
+        #if defined(GL_ES_VERSION_2_0)
+          || CheckExtension ("GL_EXT_shader_texture_lod")
+        #else
           || (IsGlGreaterEqual (2, 1) && CheckExtension ("GL_EXT_gpu_shader4"))
         #endif
              );
