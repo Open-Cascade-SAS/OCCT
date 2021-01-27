@@ -2244,7 +2244,7 @@ static Standard_Integer FindShapeIndexForDGT(const Handle(Standard_Transient)& t
   const Handle(Transfer_TransientProcess) &aTP = theWS->TransferReader()->TransientProcess();
   // try to find index of given entity
   Standard_Integer anIndex = aTP->MapIndex(theEnt);
-  if (anIndex > 0)
+  if (anIndex > 0 || theEnt.IsNull())
     return anIndex;
   // if theEnt is a geometry item try to find its topological item
   const Interface_Graph& aGraph = aTP->Graph();
@@ -3591,7 +3591,7 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         if (aGRI.IsNull()) return;
         Handle(StepRepr_RepresentationItem) aPRI;
         Interface_EntityIterator anIterGRI = aGraph.Sharings(aGRI);
-        for (anIterGRI.Start(); anIterGRI.More() && aPGISU.IsNull(); anIterGRI.Next()) {
+        for (anIterGRI.Start(); anIterGRI.More() && aPRI.IsNull(); anIterGRI.Next()) {
           aPRI = Handle(StepRepr_RepresentationItem)::DownCast(anIterGRI.Value());
         }
         Standard_Integer anIndex = FindShapeIndexForDGT(aPRI, theWS);
