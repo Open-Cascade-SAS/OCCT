@@ -196,6 +196,12 @@ static
                          BRepOffset_DataMapOfShapeMapOfShape& theNeutralEdges);
 
 static
+  void  MakeInvertedEdgesInvalid(const TopTools_ListOfShape& theLFOffset,
+                                 const TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
+                                 const TopTools_MapOfShape& theInvertedEdges,
+                                 TopTools_IndexedMapOfShape& theInvEdges);
+
+static
   void FindInvalidFaces(TopTools_ListOfShape& theLFImages,
                         const TopTools_IndexedMapOfShape& theInvEdges,
                         const TopTools_IndexedMapOfShape& theValidEdges,
@@ -1029,6 +1035,10 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
   // in the splits of SD faces
   FindInvalidEdges (aLFDone, theFImages, theFacesOrigins, theAnalyse,
                     theInvEdges, theValidEdges, aDMFMIE, aDMFMVE, aDMFMNE);
+
+  // Additional step to mark inverted edges located inside loops
+  // of invalid edges as invalid as well
+  MakeInvertedEdgesInvalid(aLFDone, theFImages, theInvertedEdges, theInvEdges);
 
 #ifdef OFFSET_DEBUG
   // show invalid edges
@@ -2174,6 +2184,82 @@ void FindInvalidEdges (const TopTools_ListOfShape& theLFOffset,
           }
           if (itLFSp.More())
             break;
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : MakeInvertedEdgesInvalid
+//purpose  : Makes inverted edges located inside loop of invalid edges, invalid as well
+//=======================================================================
+void MakeInvertedEdgesInvalid(const TopTools_ListOfShape& theLFOffset,
+                              const TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
+                              const TopTools_MapOfShape& theInvertedEdges,
+                              TopTools_IndexedMapOfShape& theInvEdges)
+{
+  if (theInvEdges.IsEmpty() || theInvertedEdges.IsEmpty())
+    return;
+
+  // Map all invalid edges
+  TopoDS_Compound aCBEInv;
+  BRep_Builder().MakeCompound(aCBEInv);
+  for (Standard_Integer i = 1; i <= theInvEdges.Extent(); ++i)
+  {
+    BRep_Builder().Add(aCBEInv, theInvEdges(i));
+  }
+
+  // Make loops of invalid edges
+  TopTools_ListOfShape aLCB;
+  BOPTools_AlgoTools::MakeConnexityBlocks(aCBEInv, TopAbs_VERTEX, TopAbs_EDGE, aLCB);
+
+  // Analyze each loop on closeness and use only closed ones
+  TopTools_DataMapOfShapeShape aDMVCB;
+
+  for (TopTools_ListOfShape::Iterator itLCB(aLCB); itLCB.More(); itLCB.Next())
+  {
+    const TopoDS_Shape& aCB = itLCB.Value();
+
+    TopTools_IndexedDataMapOfShapeListOfShape aDMVE;
+    TopExp::MapShapesAndAncestors(aCB, TopAbs_VERTEX, TopAbs_EDGE, aDMVE);
+    Standard_Boolean isClosed = Standard_True;
+    for (Standard_Integer iV = 1; iV <= aDMVE.Extent(); ++iV)
+    {
+      if (aDMVE(iV).Extent() != 2)
+      {
+        isClosed = Standard_False;
+        break;
+      }
+    }
+    if (!isClosed)
+      continue;
+
+    // Bind loop to each vertex of the loop
+    for (Standard_Integer iV = 1; iV <= aDMVE.Extent(); ++iV)
+    {
+      aDMVCB.Bind(aDMVE.FindKey(iV), aCB);
+    }
+  }
+
+  // Check if any inverted edges of offset faces are locked inside the loops of invalid edges.
+  // Make such edges invalid as well.
+  for (TopTools_ListOfShape::Iterator itLF(theLFOffset); itLF.More(); itLF.Next())
+  {
+    const TopTools_ListOfShape& aLFIm = theFImages.FindFromKey(itLF.Value());
+    for (TopTools_ListOfShape::Iterator itLFIm(aLFIm); itLFIm.More(); itLFIm.Next())
+    {
+      for (TopExp_Explorer expE(itLFIm.Value(), TopAbs_EDGE); expE.More(); expE.Next())
+      {
+        const TopoDS_Edge& aE = TopoDS::Edge(expE.Current());
+        if (!theInvEdges.Contains(aE) && theInvertedEdges.Contains(aE))
+        {
+          const TopoDS_Shape* pCB1 = aDMVCB.Seek (TopExp::FirstVertex(aE));
+          const TopoDS_Shape* pCB2 = aDMVCB.Seek (TopExp::LastVertex(aE));
+          if (pCB1 && pCB2 && pCB1->IsSame(*pCB2))
+          {
+            theInvEdges.Add(aE);
+          }
         }
       }
     }
