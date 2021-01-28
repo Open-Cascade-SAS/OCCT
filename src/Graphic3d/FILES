@@ -173,6 +173,8 @@ Graphic3d_TextureSetBits.hxx
 Graphic3d_ToneMappingMethod.hxx
 Graphic3d_TransformPers.hxx
 Graphic3d_TransformPers.cxx
+Graphic3d_TransformPersScaledAbove.hxx
+Graphic3d_TransformPersScaledAbove.cxx
 Graphic3d_TransformUtils.hxx
 Graphic3d_TransModeFlags.hxx
 Graphic3d_TypeOfAnswer.hxx

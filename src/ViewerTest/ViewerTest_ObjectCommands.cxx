@@ -1756,6 +1756,8 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
 
   Standard_Real aSizeX = 0.0;
   Standard_Real aSizeY = 0.0;
+  Standard_Boolean aHasMinSize = aPlane->HasMinimumSize();
+  Standard_Real aMinSizeY = 0.0;
   aPlane->Size (aSizeX, aSizeY);
   Standard_Boolean isUpdate = Standard_True;
 
@@ -1800,6 +1802,11 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
       {
         aSizeY = aPValue.RealValue();
       }
+      else if (aPName.IsEqual ("MINSIZE"))
+      {
+        aHasMinSize = Standard_True;
+        aMinSizeY = aPValue.RealValue();
+      }
     }
     else if (anArg.IsEqual ("NOUPDATE"))
     {
@@ -1812,6 +1819,15 @@ static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb
   aPlane->SetCenter (aCenterPnt);
   aPlane->SetComponent (new Geom_Plane (aCenterPnt, aDirection));
   aPlane->SetSize (aSizeX, aSizeY);
+
+  if (aHasMinSize)
+  {
+    aPlane->SetMinimumSize (aMinSizeY);
+  }
+  else if (aPlane->HasMinimumSize())
+  {
+    aPlane->UnsetMinimumSize();
+  }
 
   aContextAIS->Update (aPlane, isUpdate);
 
@@ -6904,6 +6920,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     " [x=center_x y=center_y z=center_z]"
     " [dx=dir_x dy=dir_y dz=dir_z]"
     " [sx=size_x sy=size_y]"
+    " [minsize=value]"
     " [noupdate]\n"
     "   - changes parameters of the plane:\n"
     "   - x y z     - center\n"

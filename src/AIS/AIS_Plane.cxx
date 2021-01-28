@@ -31,6 +31,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Graphic3d_TransformPersScaledAbove.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Prs3d_DatumAspect.hxx>
@@ -413,6 +414,40 @@ Standard_Boolean AIS_Plane::Size(Standard_Real& X,Standard_Real& Y) const
   X = myDrawer->PlaneAspect()->PlaneXLength();
   Y = myDrawer->PlaneAspect()->PlaneYLength();
   return Abs(X-Y)<=Precision::Confusion();
+}
+
+//=======================================================================
+//function : SetMinimumSize
+//purpose  :
+//=======================================================================
+void AIS_Plane::SetMinimumSize (const Standard_Real theValue)
+{
+  if (theValue <= 0)
+  {
+    UnsetMinimumSize();
+    return;
+  }
+  Standard_Real aX, anY;
+  Size (aX, anY);
+  SetTransformPersistence (new Graphic3d_TransformPersScaledAbove (Min (aX, anY) / theValue, myCenter));
+}
+
+//=======================================================================
+//function : UnsetMinimumSize
+//purpose  :
+//=======================================================================
+void AIS_Plane::UnsetMinimumSize()
+{
+  SetTransformPersistence (NULL);
+}
+
+//=======================================================================
+//function : HasMinimumSize
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_Plane::HasMinimumSize() const
+{
+  return !Handle(Graphic3d_TransformPersScaledAbove)::DownCast (TransformPersistence()).IsNull();
 }
 
 //=======================================================================
