@@ -30,7 +30,13 @@ inline void OpenGl_VertexBuffer::bindAttribute (const Handle(OpenGl_Context)&   
     {
       bindFixed (theCtx, theAttribute, theNbComp, theDataType, theStride, theOffset);
     }
+    else
   #endif
+    {
+      // OpenGL handles vertex attribute setup independently from active GLSL program,
+      // but OCCT historically requires program to be bound beforehand (this check could be removed in future).
+      Message::SendFail ("Error: OpenGl_VertexBuffer::bindAttribute() does nothing without active GLSL program");
+    }
     return;
   }
 
