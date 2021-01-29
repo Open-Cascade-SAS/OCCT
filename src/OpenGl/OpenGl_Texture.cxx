@@ -234,7 +234,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
    || theSizeXY.y() < 1)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         "Error: texture of 0 size cannot be created.");
+                         TCollection_AsciiString ("Error: texture of 0 size cannot be created [") + myResourceId +"]");
     Release (theCtx.get());
     return false;
   }
@@ -286,7 +286,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   && !theCtx->arbTexFloat)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         "Error: floating-point textures are not supported by hardware.");
+                         TCollection_AsciiString ("Error: floating-point textures are not supported by hardware [") + myResourceId +"]");
     Release (theCtx.get());
     return false;
   }
@@ -297,7 +297,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          TCollection_AsciiString ("Error: Texture dimension - ") + theSizeXY.x() + "x" + theSizeXY.y()
-                       + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")");
+                       + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")"
+                       + " [" + myResourceId +"]");
     Release (theCtx.get());
     return false;
   }
@@ -315,7 +316,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                            TCollection_AsciiString ("Error: NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
-                           " are not supported by hardware.");
+                           " are not supported by hardware [" + myResourceId +"]");
       Release (theCtx.get());
       return false;
     }
@@ -331,7 +332,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                            TCollection_AsciiString ("Error: Mipmap NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
-                           " are not supported by OpenGL ES 2.0");
+                           " are not supported by OpenGL ES 2.0 [" + myResourceId +"]");
       Release (theCtx.get());
       return false;
     }
@@ -407,7 +408,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       return true;
     #else
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error: 1D textures are not supported by hardware.");
+                           TCollection_AsciiString ( "Error: 1D textures are not supported by hardware [") + myResourceId +"]");
       Release (theCtx.get());
       return false;
     #endif
@@ -466,7 +467,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                                                    + " IF: " + OpenGl_TextureFormat::FormatFormat (anIntFormat)
                                                    + " PF: " + OpenGl_TextureFormat::FormatFormat (theFormat.PixelFormat())
                                                    + " DT: " + OpenGl_TextureFormat::FormatDataType (theFormat.DataType())
-                                                   + " can not be created with error " + OpenGl_Context::FormatGlError (anErr) + ".");
+                                                   + " can not be created with error " + OpenGl_Context::FormatGlError (anErr)
+                                                   + " [" + myResourceId +"]");
         Unbind (theCtx);
         Release (theCtx.get());
         return false;
@@ -484,8 +486,20 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         if (anErr != GL_NO_ERROR)
         {
           myMaxMipLevel = 0;
-          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                               "Warning: generating mipmaps requires GL_ARB_framebuffer_object extension which is missing.");
+        #if defined(GL_ES_VERSION_2_0)
+          if (theFormat.InternalFormat() == GL_RGB8
+           || theFormat.InternalFormat() == GL_SRGB8)
+          {
+            theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                 TCollection_AsciiString ("Warning: generating mipmaps requires color-renderable format, while giving ")
+                                 + OpenGl_TextureFormat::FormatFormat (anIntFormat) + " [" + myResourceId +"]");
+          }
+          else
+        #endif
+          {
+            theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                 TCollection_AsciiString ("Warning: generating mipmaps has failed [") + myResourceId +"]");
+          }
         }
       }
 
@@ -522,6 +536,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theImage.Format(), theIsColorMap);
   if (!aFormat.IsValid())
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: No suitable texture format for ") + Image_PixMap::ImageFormatToString (theImage.Format()) + " image format"
+                         + " [" + myResourceId +"]");
     Release (theCtx.get());
     return false;
   }
@@ -600,6 +617,9 @@ bool OpenGl_Texture::InitCompressed (const Handle(OpenGl_Context)& theCtx,
   const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindCompressedFormat (theCtx, theImage.CompressedFormat(), theIsColorMap);
   if (!aFormat.IsValid())
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: No suitable texture format for ") + Image_PixMap::ImageFormatToString (theImage.CompressedFormat()) + " image format "
+                         + " [" + myResourceId +"]");
     Release (theCtx.get());
     return false;
   }
@@ -978,6 +998,9 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
   }
   if (!aFormat.IsValid())
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: No suitable texture format for ") + Image_PixMap::ImageFormatToString (theFormat) + " image format"
+                         + " [" + myResourceId +"]");
     Unbind(theCtx);
     Release(theCtx.get());
     return false;
@@ -1115,10 +1138,10 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     if (anErr != GL_NO_ERROR)
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Unable to generate mipmap of cubemap. Error ") + OpenGl_Context::FormatGlError (anErr));
-      Unbind (theCtx);
-      Release (theCtx.get());
-      return false;
+                           TCollection_AsciiString ("Unable to generate mipmap of cubemap with format ")
+                           + OpenGl_TextureFormat::FormatFormat (anIntFormat)
+                           + ", error " + OpenGl_Context::FormatGlError (anErr));
+      myMaxMipLevel = 0;
     }
   }
 

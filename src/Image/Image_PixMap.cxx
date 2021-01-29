@@ -20,6 +20,55 @@
 
 #include <algorithm>
 
+namespace
+{
+  //! Structure defining image pixel format description.
+  struct Image_FormatInfo
+  {
+    const char*  Name;         //!< string representation
+    int          Format;       //!< enumeration name
+    unsigned int NbComponents; //!< number of components
+    unsigned int PixelSize;    //!< bytes per pixel
+
+    Image_FormatInfo (Image_Format theFormat, const char* theName, unsigned int theNbComponents, Standard_Size thePixelSize)
+    : Name (theName), Format (theFormat), NbComponents (theNbComponents), PixelSize ((unsigned int )thePixelSize) {}
+
+    Image_FormatInfo (Image_CompressedFormat theFormat, const char* theName, unsigned int theNbComponents, Standard_Size thePixelSize)
+    : Name (theName), Format (theFormat), NbComponents (theNbComponents), PixelSize ((unsigned int )thePixelSize) {}
+  };
+
+  #define ImageFormatInfo(theName, theNbComponents, thePixelSize) \
+    Image_FormatInfo(Image_Format_##theName, #theName, theNbComponents, thePixelSize)
+
+  #define CompressedImageFormatInfo(theName, theNbComponents, thePixelSize) \
+    Image_FormatInfo(Image_CompressedFormat_##theName, #theName, theNbComponents, thePixelSize)
+
+  //! Table of image pixel formats.
+  static const Image_FormatInfo Image_Table_ImageFormats[Image_CompressedFormat_NB] =
+  {
+    ImageFormatInfo(UNKNOWN, 0, 1),
+    ImageFormatInfo(Gray,    1, 1),
+    ImageFormatInfo(Alpha,   1, 1),
+    ImageFormatInfo(RGB,     3, 3),
+    ImageFormatInfo(BGR,     3, 3),
+    ImageFormatInfo(RGB32,   3, 4),
+    ImageFormatInfo(BGR32,   3, 4),
+    ImageFormatInfo(RGBA,    4, 4),
+    ImageFormatInfo(BGRA,    4, 4),
+    ImageFormatInfo(GrayF,   1, sizeof(float)),
+    ImageFormatInfo(AlphaF,  1, sizeof(float)),
+    ImageFormatInfo(RGF,     2, sizeof(float) * 2),
+    ImageFormatInfo(RGBF,    3, sizeof(float) * 3),
+    ImageFormatInfo(BGRF,    3, sizeof(float) * 3),
+    ImageFormatInfo(RGBAF,   4, sizeof(float) * 4),
+    ImageFormatInfo(BGRAF,   4, sizeof(float) * 4),
+    CompressedImageFormatInfo(RGB_S3TC_DXT1,  3, 1), // DXT1 uses circa half a byte per pixel (64 bits per 4x4 block)
+    CompressedImageFormatInfo(RGBA_S3TC_DXT1, 4, 1),
+    CompressedImageFormatInfo(RGBA_S3TC_DXT3, 4, 1), // DXT3/5 uses circa 1 byte per pixel (128 bits per 4x4 block)
+    CompressedImageFormatInfo(RGBA_S3TC_DXT5, 4, 1)
+  };
+}
+
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient)
 
 // =======================================================================
@@ -30,6 +79,24 @@ const Handle(NCollection_BaseAllocator)& Image_PixMap::DefaultAllocator()
 {
   static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator (16);
   return THE_ALLOC;
+}
+
+// =======================================================================
+// function : ImageFormatToString
+// purpose  :
+// =======================================================================
+Standard_CString Image_PixMap::ImageFormatToString (Image_Format theFormat)
+{
+  return Image_Table_ImageFormats[theFormat].Name;
+}
+
+// =======================================================================
+// function : ImageFormatToString
+// purpose  :
+// =======================================================================
+Standard_CString Image_PixMap::ImageFormatToString (Image_CompressedFormat theFormat)
+{
+  return Image_Table_ImageFormats[theFormat].Name;
 }
 
 // =======================================================================
@@ -57,35 +124,7 @@ Image_PixMap::~Image_PixMap()
 // =======================================================================
 Standard_Size Image_PixMap::SizePixelBytes (const Image_Format thePixelFormat)
 {
-  switch (thePixelFormat)
-  {
-    case Image_Format_GrayF:
-    case Image_Format_AlphaF:
-      return sizeof(float);
-    case Image_Format_RGF:
-      return sizeof(float) * 2;
-    case Image_Format_RGBAF:
-    case Image_Format_BGRAF:
-      return sizeof(float) * 4;
-    case Image_Format_RGBF:
-    case Image_Format_BGRF:
-      return sizeof(float) * 3;
-    case Image_Format_RGBA:
-    case Image_Format_BGRA:
-      return 4;
-    case Image_Format_RGB32:
-    case Image_Format_BGR32:
-      return 4;
-    case Image_Format_RGB:
-    case Image_Format_BGR:
-      return 3;
-    case Image_Format_Gray:
-    case Image_Format_Alpha:
-      return 1;
-    case Image_Format_UNKNOWN:
-      return 1;
-  }
-  return 1;
+  return Image_Table_ImageFormats[thePixelFormat].PixelSize;
 }
 
 // =======================================================================

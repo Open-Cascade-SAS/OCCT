@@ -221,13 +221,20 @@ void Graphic3d_TextureRoot::convertToCompatible (const Handle(Image_SupportedFor
     return;
   }
 
-  if ((theImage->Format() == Image_Format_BGR32
-    || theImage->Format() == Image_Format_BGR32))
+  switch (theImage->Format())
   {
-    Image_PixMap::SwapRgbaBgra (*theImage);
-    theImage->SetFormat (theImage->Format() == Image_Format_BGR32
-                       ? Image_Format_RGB32
-                       : Image_Format_RGBA);
+    // BGR formats are unsupported in OpenGL ES, only RGB
+    case Image_Format_BGR:
+      Image_PixMap::SwapRgbaBgra (*theImage);
+      theImage->SetFormat (Image_Format_RGB);
+      break;
+    case Image_Format_BGRA:
+    case Image_Format_BGR32:
+      Image_PixMap::SwapRgbaBgra (*theImage);
+      theImage->SetFormat (theImage->Format() == Image_Format_BGR32 ? Image_Format_RGB32 : Image_Format_RGBA);
+      break;
+    default:
+      break;
   }
 }
 

@@ -16,7 +16,7 @@
 #ifndef _Image_PixMap_H__
 #define _Image_PixMap_H__
 
-#include <Image_Format.hxx>
+#include <Image_CompressedFormat.hxx>
 #include <Image_PixMapData.hxx>
 #include <Standard_Transient.hxx>
 #include <Quantity_ColorRGBA.hxx>
@@ -53,6 +53,12 @@ public:
 
   //! Return default image data allocator.
   Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
+
+  //! Return string representation of pixel format.
+  Standard_EXPORT static Standard_CString ImageFormatToString (Image_Format theFormat);
+
+  //! Return string representation of compressed pixel format.
+  Standard_EXPORT static Standard_CString ImageFormatToString (Image_CompressedFormat theFormat);
 
 public: // high-level API
 
