@@ -1,8 +1,5 @@
 pload QAcommands
 
-puts "TODO ?OCC29132 Windows: ERROR: performance"
-
-
 set info [QANTestNCollectionIndexedDataMap]
 
 set keys {}
@@ -36,7 +33,7 @@ set index 0
 foreach key $keys {
   set value [lindex $values $index]
   if { $value > [lindex $check_values $index] } {
-    puts "ERROR: performance of $key become worse"
+    puts "Error: performance of $key become worse"
   } else {
     puts "OK: performance of $key is OK"
   }

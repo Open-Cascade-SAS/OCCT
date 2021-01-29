@@ -1,1 +1,2 @@
 FAILED /\bFaulty\b/ bad shape
+IGNORE /Error: performance/skip performance
