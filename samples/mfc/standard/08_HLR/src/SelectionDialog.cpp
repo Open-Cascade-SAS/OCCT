@@ -27,7 +27,7 @@ CSelectionDialog::CSelectionDialog (CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
   myDoc =  aDoc;
   myIsDisplayed = false;
   //{{AFX_DATA_INIT(CSelectionDialog)
-  m_Algo        = 0;
+  m_Algo        = 1;
   m_DisplayMode = 0;
   m_NbIsos      = 2;
   m_DrawHiddenLine = TRUE;
