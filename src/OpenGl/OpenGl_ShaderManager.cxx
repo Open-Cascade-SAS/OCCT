@@ -1764,6 +1764,7 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
   }
   else
   {
+    TCollection_AsciiString aGles2Extensions;
     if (theProgram->IsPBR())
     {
       if (myContext->IsGlGreaterEqual (3, 0))
@@ -1772,8 +1773,8 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       }
       else if (myContext->CheckExtension ("GL_EXT_shader_texture_lod"))
       {
-        theProgram->SetHeader ("#extension GL_EXT_shader_texture_lod : enable\n"
-                               "#define textureCubeLod textureCubeLodEXT");
+        aGles2Extensions += "#extension GL_EXT_shader_texture_lod : enable\n"
+                            "#define textureCubeLod textureCubeLodEXT\n";
       }
     }
     if ((theBits & OpenGl_PO_WriteOit) != 0
@@ -1802,8 +1803,13 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       }
       else if (myContext->oesStdDerivatives)
       {
-        theProgram->SetHeader ("#extension GL_OES_standard_derivatives : enable");
+        aGles2Extensions += "#extension GL_OES_standard_derivatives : enable\n";
       }
+    }
+
+    if (!aGles2Extensions.IsEmpty())
+    {
+      theProgram->SetHeader (aGles2Extensions);
     }
   }
 #endif
