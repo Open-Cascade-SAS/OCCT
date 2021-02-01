@@ -179,7 +179,7 @@ public:
   //! Returns the label corresponding to shape S
   //! (searches among top-level shapes, not including subcomponents
   //! of assemblies and subshapes)
-  //! If findInstance is False (default), seach for the
+  //! If findInstance is False (default), search for the
   //! input shape without location
   //! If findInstance is True, searches for the
   //! input shape as is.
@@ -211,7 +211,7 @@ public:
   //! If makeAssembly is True, treats TopAbs_COMPOUND shapes
   //! as assemblies (creates assembly structure).
   //! NOTE: <makePrepare> replace components without location
-  //! in assmebly by located components to avoid some problems.
+  //! in assembly by located components to avoid some problems.
   //! If AutoNaming() is True then automatically attaches names.
   Standard_EXPORT TDF_Label AddShape (const TopoDS_Shape& S, const Standard_Boolean makeAssembly = Standard_True, const Standard_Boolean makePrepare = Standard_True);
   
@@ -380,7 +380,7 @@ public:
   //! NOTE: remove any styles that associated with this SHUO.
   Standard_EXPORT Standard_Boolean RemoveSHUO (const TDF_Label& SHUOLabel) const;
   
-  //! Serach the path of labels in the document,
+  //! Search the path of labels in the document,
   //! that corresponds the component from any assembly
   //! Try to search the sequence of labels with location that
   //! produce this shape as component of any assembly
@@ -396,12 +396,12 @@ public:
   //! Returns null attribute if no component in any assembly found.
   Standard_EXPORT Handle(XCAFDoc_GraphNode) SetInstanceSHUO (const TopoDS_Shape& theShape) const;
   
-  //! Seaching for component shapes that styled by shuo
+  //! Searching for component shapes that styled by shuo
   //! Returns empty sequence of shape if no any shape is found.
   Standard_EXPORT Standard_Boolean GetAllSHUOInstances (const Handle(XCAFDoc_GraphNode)& theSHUO, TopTools_SequenceOfShape& theSHUOShapeSeq) const;
   
-  //! Searchs the SHUO by labels of components
-  //! from upper_usage componet to next_usage
+  //! Searches the SHUO by labels of components
+  //! from upper_usage component to next_usage
   //! Returns null attribute if no SHUO found
   Standard_EXPORT static Standard_Boolean FindSHUO (const TDF_LabelSequence& Labels, Handle(XCAFDoc_GraphNode)& theSHUOAttr);
   

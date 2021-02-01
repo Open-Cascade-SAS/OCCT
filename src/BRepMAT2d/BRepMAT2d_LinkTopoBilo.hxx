@@ -34,7 +34,7 @@ class MAT_BasicElt;
 class TopoDS_Wire;
 
 
-//! Constucts links between the Wire or the Face of the explorer and
+//! Constructs links between the Wire or the Face of the explorer and
 //! the BasicElts contained in the bisecting locus.
 class BRepMAT2d_LinkTopoBilo 
 {

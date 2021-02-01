@@ -43,7 +43,7 @@
       <element ref="ocaf:AbstractList3RealAtt"/>
     </choice>
     <element name="label" type="ocaf:LabelType" minOccurs="0" maxOccurs="unbounded">
-<!-- This type of uniqueness does not alow recursive structures
+<!-- This type of uniqueness does not allow recursive structures
       <unique name="LabelUniqueness">
         <selector xpath="ocaf:label"/>
         <field xpath="@tag"/>

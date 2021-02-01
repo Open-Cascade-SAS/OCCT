@@ -138,7 +138,7 @@ public:
   //! radius    of  -- the   cylindrical  pipe  surface that
   //! MinToleranceRequest is the minimum tolerance before it
   //! is useful to start testing.
-  //! Usually it should be arround 10e-5
+  //! Usually it should be around 10e-5
   //! contains all -- the curve representation of the edge
   //! returns True if the Edge tolerance had to be updated
   Standard_EXPORT static Standard_Boolean UpdateEdgeTol (const TopoDS_Edge& E, const Standard_Real MinToleranceRequest, const Standard_Real MaxToleranceToCheck);
@@ -148,7 +148,7 @@ public:
   //! Returns True if at  least  one edge was updated --
   //! MinToleranceRequest is the minimum tolerance before
   //! --  it -- is  useful to start  testing.
-  //! Usually it should be arround -- 10e-5--
+  //! Usually it should be around -- 10e-5--
   //!
   //! Warning :The  method is  very  slow  as it  checks all.
   //! Use  only  in interfaces or  processing assimilate batch

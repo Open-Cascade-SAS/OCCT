@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(XCAFDoc_GraphNode, TDF_Attribute)
 
 //! This attribute allow user multirelation tree of labels.
 //! This GraphNode is experimental Graph that not control looping and redundance.
-//! Attribute containg sequence of father's and child's labels.
+//! Attribute containing sequence of father's and child's labels.
 //! Provide create and work with Graph in XCAFDocument.
 class XCAFDoc_GraphNode : public TDF_Attribute
 {
@@ -126,7 +126,7 @@ public:
   Standard_EXPORT Standard_Integer NbChildren() const;
   
   //! Returns the Graph ID (default or explicit one depending
-  //! onthe Set method used).
+  //! on the Set method used).
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;

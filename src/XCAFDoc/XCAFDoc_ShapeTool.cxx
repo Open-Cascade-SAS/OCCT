@@ -508,7 +508,7 @@ TDF_Label XCAFDoc_ShapeTool::addShape (const TopoDS_Shape& S, const Standard_Boo
 
 //=======================================================================
 //function : prepareAssembly
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean prepareAssembly (const TopoDS_Shape& theShape,
                                          TopoDS_Shape& theOUTShape)
@@ -1439,7 +1439,7 @@ void XCAFDoc_ShapeTool::GetExternRefs(const TDF_Label& L,
   }
 }
 
-// API: API work with SHUO (Specified Higher Usage Occurrance) structure
+// API: API work with SHUO (Specified Higher Usage Occurrence) structure
 
 //=======================================================================
 //function : GetSHUO
@@ -1569,7 +1569,7 @@ Standard_Boolean XCAFDoc_ShapeTool::RemoveSHUO (const TDF_Label& L) const
 
 //=======================================================================
 //function : checkForShape
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 static Standard_Boolean checkForShape (const TopoDS_Shape& theShape,
@@ -1590,7 +1590,7 @@ static Standard_Boolean checkForShape (const TopoDS_Shape& theShape,
     theLabels.Prepend( theUserL );
     return Standard_True;
   }
-  // try to search deeply (upper by assmebly structure)
+  // try to search deeply (upper by assembly structure)
   TDF_LabelSequence aNewLabels;
   for (Standard_Integer j = 1; j <= theLabels.Length(); j++)
     aNewLabels.Append( theLabels.Value( j ) );
@@ -1634,7 +1634,7 @@ Standard_Boolean XCAFDoc_ShapeTool::FindComponent (const TopoDS_Shape& theShape,
 
 //=======================================================================
 //function : getShapesOfSHUO
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 static Standard_Boolean getShapesOfSHUO (TopLoc_IndexedMapOfLocation& theaPrevLocMap,
@@ -1699,7 +1699,7 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetSHUOInstance (const Handle(XCAFDoc_GraphNode)
   // get location of the component
   TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation ( aSHUOlab.Father() );
   TopLoc_IndexedMapOfLocation aPrevLocMap;
-  // get previous setted location 
+  // get previous set location
   if ( !loc.IsIdentity() )
     aPrevLocMap.Add( loc );
   aPrevLocMap.Add( compLoc );
@@ -1712,7 +1712,7 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetSHUOInstance (const Handle(XCAFDoc_GraphNode)
 
 //=======================================================================
 //function : getUsersShapesOfSHUO
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 static Standard_Boolean getUsersShapesOfSHUO (TopLoc_IndexedMapOfLocation& aPrevLocMap,
@@ -1726,7 +1726,7 @@ static Standard_Boolean getUsersShapesOfSHUO (TopLoc_IndexedMapOfLocation& aPrev
   TopLoc_Location loc = XCAFDoc_ShapeTool::GetLocation ( theUserL.Father() );
   // get location of the component
   TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation ( theUserL );
-  // get previous setted location 
+  // get previous set location
   aNewPrevLocMap.Add( loc );
   aNewPrevLocMap.Add( compLoc );
   Standard_Integer i;
@@ -1754,7 +1754,7 @@ static Standard_Boolean getUsersShapesOfSHUO (TopLoc_IndexedMapOfLocation& aPrev
 
 //=======================================================================
 //function : GetAllSHUOInstances
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 Standard_Boolean XCAFDoc_ShapeTool::GetAllSHUOInstances (const Handle(XCAFDoc_GraphNode)& theSHUO,
@@ -1769,7 +1769,7 @@ Standard_Boolean XCAFDoc_ShapeTool::GetAllSHUOInstances (const Handle(XCAFDoc_Gr
   TopLoc_Location loc = XCAFDoc_ShapeTool::GetLocation ( aSHUOlab.Father().Father() );
   // get location of the component
   TopLoc_Location compLoc = XCAFDoc_ShapeTool::GetLocation ( aSHUOlab.Father() );
-  // get previous setted location 
+  // get previous set location
   if ( !loc.IsIdentity() )
     aPrevLocMap.Add( loc );
   aPrevLocMap.Add( compLoc );

@@ -107,7 +107,7 @@ public:
   
   //! Adds to the bounding box B the part of curve C
   //! B is then enlarged by the tolerance value Tol.
-  //! U1, U2 - the parametric range to comute the bounding box;
+  //! U1, U2 - the parametric range to compute the bounding box;
   //! Note: depending on the type of curve, one of the following
   //! representations of the curve C is used to include it in the bounding box B:
   //! -   an exact representation if C is built from a line, a circle or a conic curve,
@@ -117,7 +117,7 @@ public:
 
   //! Adds to the bounding box B the part of curve C
   //! B is then enlarged by the tolerance value Tol.
-  //! U1, U2 - the parametric range to comute the bounding box;
+  //! U1, U2 - the parametric range to compute the bounding box;
   //! Note: depending on the type of curve, one of the following
   //! algorithms  is used to include it in the bounding box B:
   //! -   an exact analytical if C is built from a line, a circle or a conic curve,

@@ -2310,7 +2310,7 @@ void BiTgte_Blend::ComputeShape()
   // Find in the initial Shapel:
   //  - untouched Faces
   //  - generated tubes
-  //  - the faces neighbors of tubes that sould be reconstucted preserving sharing.
+  //  - the faces neighbors of tubes that should be reconstructed preserving sharing.
 
   // For Debug : Visualize edges of the initial shape that should be reconstructed.
 #ifdef DRAW

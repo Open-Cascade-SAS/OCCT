@@ -472,7 +472,7 @@ static IFSelect_ReturnStatus XSControl_fromshape
       if ( silent ) sout << " in file " << XSControl::Session(pilot)->LoadedFile();
       sout<<std::endl;
     }
-    // abv 31.08.00: treat case of splitted shape (several results)
+    // abv 31.08.00: treat case of split shape (several results)
     // it is supposed that results are of the same type and lie in one-level comp
     else {
       Handle(Transfer_Binder) bnd = FP->Find ( fnd );

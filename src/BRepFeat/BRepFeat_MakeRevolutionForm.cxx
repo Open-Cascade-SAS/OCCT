@@ -468,7 +468,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 // Construct a great profile that goes till the bounding box
 // -> by tangency with first and last edge of the Wire
 // -> by normals to base faces : statistically better
-// Intersect everythin to find the final profile
+// Intersect everything to find the final profile
 
 
 // ---case of sliding : construction of the face profile

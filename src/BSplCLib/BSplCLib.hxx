@@ -595,8 +595,8 @@ public:
   Standard_EXPORT static void Unperiodize (const Standard_Integer Degree, const TColStd_Array1OfInteger& Mults, const TColStd_Array1OfReal& Knots, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal* Weights, TColStd_Array1OfInteger& NewMults, TColStd_Array1OfReal& NewKnots, TColgp_Array1OfPnt2d& NewPoles, TColStd_Array1OfReal* NewWeights);
   
   //! Set in <NbKnots> and <NbPoles> the number of Knots and
-  //! Poles of the  curve resulting  of  the trimming of the
-  //! BSplinecurve definded with <degree>, <knots>, <mults>
+  //! Poles of the curve resulting from  the trimming of the
+  //! BSplinecurve defined with <degree>, <knots>, <mults>
   Standard_EXPORT static void PrepareTrimming (const Standard_Integer Degree, const Standard_Boolean Periodic, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Standard_Real U1, const Standard_Real U2, Standard_Integer& NbKnots, Standard_Integer& NbPoles);
   
   Standard_EXPORT static void Trimming (const Standard_Integer Degree, const Standard_Boolean Periodic, const Standard_Integer Dimension, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const TColStd_Array1OfReal& Poles, const Standard_Real U1, const Standard_Real U2, TColStd_Array1OfReal& NewKnots, TColStd_Array1OfInteger& NewMults, TColStd_Array1OfReal& NewPoles);
@@ -766,12 +766,12 @@ public:
   //! Array[i][p]       for     each  p    in
   //! 1..ArrayDimension. If  HomogeneousFlag ==
   //! 0  the  Poles  are  multiplied by   the
-  //! Weights   uppon   Entry   and      once
+  //! Weights   upon   Entry   and      once
   //! interpolation   is    carried  over the
   //! result of the  poles are divided by the
   //! result of   the   interpolation of  the
   //! weights. Otherwise if HomogenousFlag == 1
-  //! the Poles and Weigths are treated homogenously
+  //! the Poles and Weigths are treated homogeneously
   //! that is that those are interpolated as they
   //! are and result is returned without division
   //! by the interpolated weigths.
@@ -788,12 +788,12 @@ public:
   //! B[i] = Array[i][p] for each p in 1..ArrayDimension
   //! If  HomogeneousFlag ==
   //! 0  the  Poles  are  multiplied by   the
-  //! Weights   uppon   Entry   and      once
+  //! Weights   upon   Entry   and      once
   //! interpolation   is    carried  over the
   //! result of the  poles are divided by the
   //! result of   the   interpolation of  the
   //! weights. Otherwise if HomogenousFlag == 1
-  //! the Poles and Weigths are treated homogenously
+  //! the Poles and Weigths are treated homogeneously
   //! that is that those are interpolated as they
   //! are and result is returned without division
   //! by the interpolated weigths.
@@ -1221,7 +1221,7 @@ public:
   //! the Poles  array  according  to the  requests in
   //! ContactOrderArray    that is      :           if
   //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   containes the dth  derivative of  the
+  //! Poles(i)   contains the dth  derivative of  the
   //! function to be interpolated. The length L of the
   //! following arrays must be the same :
   //! Parameters, ContactOrderArray, Poles,
@@ -1242,7 +1242,7 @@ public:
   //! the Poles  array  according  to the  requests in
   //! ContactOrderArray    that is      :           if
   //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   containes the dth  derivative of  the
+  //! Poles(i)   contains the dth  derivative of  the
   //! function to be interpolated. The length L of the
   //! following arrays must be the same :
   //! Parameters, ContactOrderArray, Poles,
@@ -1264,7 +1264,7 @@ public:
   //! the Poles  array  according  to the  requests in
   //! ContactOrderArray    that is      :           if
   //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   containes the dth  derivative of  the
+  //! Poles(i)   contains the dth  derivative of  the
   //! function to be interpolated. The length L of the
   //! following arrays must be the same :
   //! Parameters, ContactOrderArray, Poles,
@@ -1285,7 +1285,7 @@ public:
   //! the Poles  array  according  to the  requests in
   //! ContactOrderArray    that is      :           if
   //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   containes the dth  derivative of  the
+  //! Poles(i)   contains the dth  derivative of  the
   //! function to be interpolated. The length L of the
   //! following arrays must be the same :
   //! Parameters, ContactOrderArray, Poles,
@@ -1306,7 +1306,7 @@ public:
   //! the Poles  array  according  to the  requests in
   //! ContactOrderArray    that is      :           if
   //! ContactOrderArray(i) has value  d it means  that
-  //! Poles(i)   containes the dth  derivative of  the
+  //! Poles(i)   contains the dth  derivative of  the
   //! function to be interpolated. The length L of the
   //! following arrays must be the same :
   //! Parameters, ContactOrderArray

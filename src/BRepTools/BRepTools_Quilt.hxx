@@ -29,25 +29,19 @@ class TopoDS_Vertex;
 class TopoDS_Shape;
 
 
-//! A  Tool    to  glue faces  at  common    edges and
-//! reconstruct shells.
+//! A Tool to glue faces at common edges and reconstruct shells.
 //!
-//! The user designate pairs of common edges using the
-//! method Bind. One edge is designated as the edge to
-//! use  in place of the  other one (they are supposed
-//! to   be    geometrically confused,  but  this  not
-//! checked). They can be of opposite directions, this
-//! is specified by the orientations.
+//! The user designate pairs of common edges using the method Bind.
+//! One edge is designated as the edge to use in place of the other one
+//! (they are supposed to be geometrically confused, but this not checked).
+//! They can be of opposite directions, this is specified by the orientations.
 //!
-//! The user can add  shapes with the Add method,  all
-//! the faces are  registred and  copies of faces  and
-//! edges are made to glue at the bound edges.
+//! The user can add shapes with the Add method, all the faces are registered and copies of faces
+//! and edges are made to glue at the bound edges.
 //!
-//! The user can call the Shells  methods to compute a
-//! compound of shells from the current set of faces.
+//! The user can call the Shells methods to compute a compound of shells from the current set of faces.
 //!
-//! If no  binding is made  this class can  be used to
-//! make shell from faces already sharing their edges.
+//! If no binding is made this class can be used to make shell from faces already sharing their edges.
 class BRepTools_Quilt 
 {
 public:

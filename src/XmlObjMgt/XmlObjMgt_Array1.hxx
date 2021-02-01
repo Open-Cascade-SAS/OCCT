@@ -26,10 +26,10 @@
 #include <XmlObjMgt_DOMString.hxx>
 
 
-//! The class Array1 represents unidimensionnal
+//! The class Array1 represents unidimensional
 //! array of fixed size known at run time.
 //! The range of the index is user defined.
-//! Warning: Programs clients of such class must be independant
+//! Warning: Programs clients of such class must be independent
 //! of the range of the first element. Then, a C++ for
 //! loop must be written like this
 //! for (i = A->Lower(); i <= A->Upper(); i++)

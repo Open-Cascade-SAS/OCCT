@@ -115,7 +115,7 @@ Standard_Boolean XCAFDoc_ShapeMapTool::IsSubShape(const TopoDS_Shape& sub) const
 
 //=======================================================================
 //function : SetShape
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void AddSubShape(const TopoDS_Shape& S,
                         TopTools_IndexedMapOfShape& myMap) 

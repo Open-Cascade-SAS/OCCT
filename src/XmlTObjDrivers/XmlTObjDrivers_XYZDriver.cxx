@@ -68,7 +68,7 @@ Standard_Boolean XmlTObjDrivers_XYZDriver::Paste
 {
   const XmlObjMgt_Element& anElement = Source;
   
-  // get co-ordinates
+  // get coordinates
   TCollection_AsciiString CoordX = anElement.getAttribute(::CoordX());
   TCollection_AsciiString CoordY = anElement.getAttribute(::CoordY());
   TCollection_AsciiString CoordZ = anElement.getAttribute(::CoordZ());
@@ -120,15 +120,15 @@ void XmlTObjDrivers_XYZDriver::Paste
 
   TCollection_AsciiString aCoord;
 
-  // co-ordinate X
+  // coordinate X
   aCoord = TCollection_AsciiString( aXYZ.X() );
   Target.Element().setAttribute(::CoordX(), aCoord.ToCString());
 
-  // co-ordinate Y
+  // coordinate Y
   aCoord = TCollection_AsciiString( aXYZ.Y() );
   Target.Element().setAttribute(::CoordY(), aCoord.ToCString());
 
-  // co-ordinate Z
+  // coordinate Z
   aCoord = TCollection_AsciiString( aXYZ.Z() );
   Target.Element().setAttribute(::CoordZ(), aCoord.ToCString());
 }

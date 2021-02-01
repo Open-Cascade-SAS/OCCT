@@ -100,7 +100,7 @@ void VrmlData_ShapeConvert::AddShape (const TopoDS_Shape& theShape,
 
 //=======================================================================
 //function : makeTShapeNode
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 Handle(VrmlData_Geometry) VrmlData_ShapeConvert::makeTShapeNode(const TopoDS_Shape& theShape,
                                                                 const TopAbs_ShapeEnum theShapeType,

@@ -75,7 +75,7 @@ class VrmlData_ShapeConvert
 
   /**
    * Convert all accumulated shapes and store them in myScene.
-   * The internal data structures are cleared in the end of convertion.
+   * The internal data structures are cleared in the end of conversion.
    * @param theExtractFaces
    *   If True,  converter extracst faces from the shapes. 
    * @param theExtractEdges

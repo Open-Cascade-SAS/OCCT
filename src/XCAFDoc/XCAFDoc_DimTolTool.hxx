@@ -120,7 +120,7 @@ public:
   Standard_EXPORT void GetDimTolLabels (TDF_LabelSequence& Labels) const;
   
   //! Finds a dimension tolerance definition in the GD&T table 
-  //! sutisfying the specified kind, values, name and description
+  //! satisfying the specified kind, values, name and description
   //! and returns its label if found.
   //! Returns False if dimension tolerance is not found in DGTtable.
   Standard_EXPORT Standard_Boolean FindDimTol (const Standard_Integer theKind, 
@@ -130,14 +130,14 @@ public:
                                                TDF_Label& lab) const;
   
   //! Finds a dimension tolerance in the GD&T table 
-  //! sutisfying the specified kind, values, name and description
+  //! satisfying the specified kind, values, name and description
   //! and returns its label if found (or Null label else).
   Standard_EXPORT TDF_Label FindDimTol (const Standard_Integer theKind, 
                                         const Handle(TColStd_HArray1OfReal)& theVal, 
                                         const Handle(TCollection_HAsciiString)& theName, 
                                         const Handle(TCollection_HAsciiString)& theDescription) const;
   
-  //! Adds a a dimension tolerance definition with the specified
+  //! Adds a dimension tolerance definition with the specified
   //! kind, value, name and description to the GD&T table and returns its label.
   Standard_EXPORT TDF_Label AddDimTol (const Standard_Integer theKind, 
                                        const Handle(TColStd_HArray1OfReal)& theVal, 
@@ -155,7 +155,7 @@ public:
                                        const Handle(TCollection_HAsciiString)& theName, 
                                        const Handle(TCollection_HAsciiString)& theDescription) const;
   
-  //! Gets all shape labels reffered by theL label of the GD&T table.
+  //! Gets all shape labels referred by theL label of the GD&T table.
   //! Returns False if there are no shape labels added to the sequences.
   Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& theL, 
                                                      TDF_LabelSequence& theShapeLFirst, 
@@ -177,7 +177,7 @@ public:
   //! in the GD&T table.
   Standard_EXPORT void GetDatumLabels (TDF_LabelSequence& Labels) const;
   
-  //! Finds a datum sutisfying the specified name, description and
+  //! Finds a datum satisfying the specified name, description and
   //! identification and returns its label if found.
   Standard_EXPORT Standard_Boolean FindDatum (const Handle(TCollection_HAsciiString)& theName, 
                                               const Handle(TCollection_HAsciiString)& theDescription, 

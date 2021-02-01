@@ -1058,7 +1058,7 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetFreeShapes","Doc [shape_prefix]\t: Print labels or create DRAW shapes for all free shapes in the Doc",
                    __FILE__, getFreeShapes, g);
 
-  di.Add ("XGetOneShape","shape Doc \t: Put all free shapes of the Doc into signle DRAW shape",
+  di.Add ("XGetOneShape","shape Doc \t: Put all free shapes of the Doc into single DRAW shape",
                    __FILE__, getOneShape, g);
 
   di.Add ("XDumpLocation","Doc Label \t: Dump Transformation() of XCAFDoc_Location attribute",

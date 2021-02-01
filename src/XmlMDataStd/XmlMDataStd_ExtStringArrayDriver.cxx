@@ -243,7 +243,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   Standard_Character c = '-';
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_8)
   {
-    // Preferrable symbols for the separator: - _ . : ^ ~
+    // Preferable symbols for the separator: - _ . : ^ ~
     // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
     static Standard_Character aPreferable[] = "-_.:^~";
     for (i = 0; found && aPreferable[i]; i++)
@@ -251,7 +251,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
       c = aPreferable[i];
       found = Contains(aExtStringArray, TCollection_ExtendedString(c));
     }
-    // If all prefferable symbols exist in the array, 
+    // If all preferable symbols exist in the array,
     // try to use any other simple symbols.
     if (found)
     {

@@ -257,7 +257,7 @@ void BRepGProp_MeshProps::Perform(const TColgp_Array1OfPnt& theNodes,
 
   Standard_Boolean isVolume = myType == Vinert;
   Standard_Integer i;
-  Standard_Integer n1, n2, n3; //node indeces
+  Standard_Integer n1, n2, n3; //node indices
   for (i = theTriangles.Lower(); i <= theTriangles.Upper(); ++i)
   {
     const Poly_Triangle& aTri = theTriangles(i);

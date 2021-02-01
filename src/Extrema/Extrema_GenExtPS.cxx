@@ -207,7 +207,7 @@ Processing:
         and  RealLast() in case of maximums),
       - table TbSel(0,NbU+1,0,NbV+1) of selection of points for 
         calculation of local extremum (0). When a point will selected,
-	it will not be selectable, as well as the ajacent points 
+	it will not be selectable, as well as the adjacent points
 	(8 at least). The corresponding addresses will be set to 1.
   b.b- Calculation of minimums (or maximums):
        All distances from table TbDist are parsed in a loop:

@@ -144,7 +144,7 @@ public: //! @name view API
   //! Initialize view by the type.
   Standard_Boolean Init(const char* theType);
 
-  //! Transformates view matrix.
+  //! Transform view matrix.
   void Transform(const gp_Trsf& theTransformation);
 
   //! Resets frame of current view.

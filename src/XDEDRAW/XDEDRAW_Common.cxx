@@ -496,7 +496,7 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
     case '3' : mode = STEPControl_ManifoldSolidBrep;       break;
     case 'w' :
     case '4' : mode = STEPControl_GeometricCurveSet;       break;
-    default :  di<<"3st arg = mode, incorrect [give fsmw]\n"; return 1;
+    default :  di<<"3rd arg = mode, incorrect [give fsmw]\n"; return 1;
     }
     Standard_Boolean wrmode = Standard_True;
     for ( Standard_Integer i = 0; argv[k][i] ; i++ ) 
@@ -684,7 +684,7 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
          __FILE__, ReadStep, g);
   di.Add("WriteStep" , "Doc filename [mode=a [multifile_prefix] [label]]: Write DECAF document to STEP file" ,__FILE__, WriteStep, g);  
   
-  di.Add("XFileList","Print list of files that was transfered by the last transfer" ,__FILE__, GetDicWSList , g);
+  di.Add("XFileList","Print list of files that was transferred by the last transfer" ,__FILE__, GetDicWSList , g);
   di.Add("XFileCur", ": returns name of file which is set as current",__FILE__, GetCurWS, g);
   di.Add("XFileSet", "filename: Set the specified file to be the current one",__FILE__, SetCurWS, g);
   di.Add("XFromShape", "shape: do fromshape command for all the files",__FILE__, FromShape, g);

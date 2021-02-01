@@ -173,7 +173,7 @@ void XmlMDataStd_ByteArrayDriver::Paste(const Handle(TDF_Attribute)& theSource,
   const Handle(TColStd_HArray1OfByte)& hArr = aByteArray->InternalArray();
   if (!hArr.IsNull() && hArr->Length())
   {
-    // Access to data through an internal reprsentation of the array is faster.
+    // Access to data through an internal representation of the array is faster.
     const TColStd_Array1OfByte& arr = hArr->Array1();
 
     // Allocate 4 characters (including a space ' ') for each byte (unsigned char) from the array.

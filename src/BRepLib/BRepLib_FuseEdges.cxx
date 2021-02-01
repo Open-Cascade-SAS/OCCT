@@ -708,7 +708,7 @@ Standard_Boolean BRepLib_FuseEdges::NextConnexEdge(const TopoDS_Vertex& theVerte
 	  itFac1.Next();
 	}
 	
-	// 3rd condition : same suport
+	// 3rd condition : same support
 	if (HasConnex) {
 	  HasConnex = SameSupport(TopoDS::Edge(theEdge),TopoDS::Edge(theEdgeConnex));
 	}

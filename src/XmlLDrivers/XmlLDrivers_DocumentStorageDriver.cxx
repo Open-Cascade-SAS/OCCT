@@ -273,7 +273,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   TDocStd_FormatVersion aFormatVersion = TDocStd_Document::CurrentStorageFormatVersion(); // the last version of the format
   if (TDocStd_Document::CurrentStorageFormatVersion() < aDoc->StorageFormatVersion())
   {
-    TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last verson is used");
+    TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last version is used");
     aMessageDriver->Send (anErrorString.ToExtString(), Message_Warning);
   }
   else
@@ -299,7 +299,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   for(i = 1; i <= aRefs.Length(); i++)
     aUserInfo.Append(aRefs.Value(i));
 
-  // Keep fomat version in Reloc. table
+  // Keep format version in Reloc. table
   Handle(Storage_HeaderData) aHeaderData = theData->HeaderData();
   aHeaderData->SetStorageVersion(aFormatVersion);
   myRelocTable.Clear();
@@ -406,7 +406,7 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
 //      Retrieve from DOM_Document
     XmlMDF::FromTo (aTDF, theElement, myRelocTable, myDrivers, theRange);
 #ifdef OCCT_DEBUGXML
-    aMessage = "First step successfull";
+    aMessage = "First step successful";
     aMessageDriver -> Send (aMessage.ToExtString(), Message_Warning);
 #endif
     return myRelocTable.Extent();

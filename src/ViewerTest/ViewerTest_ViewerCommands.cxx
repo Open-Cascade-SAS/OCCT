@@ -2397,7 +2397,7 @@ void ViewerTest::RemoveView (const Handle(V3d_View)& theView,
 
 //==============================================================================
 //function : RemoveView
-//purpose  : Close and remove view from display, clear maps if neccessary
+//purpose  : Close and remove view from display, clear maps if necessary
 //==============================================================================
 void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const Standard_Boolean isContextRemoved)
 {
@@ -12355,7 +12355,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       const Standard_Integer aPbrEnvBakingDiffNbSamples = Draw::Atoi (theArgVec[anArgIter]);
       if (aPbrEnvBakingDiffNbSamples < 1)
       {
-        Message::SendFail ("Syntax error: 'BakingDiffSamplesNumber' of PBR Environtment has to be greater or equal 1");
+        Message::SendFail ("Syntax error: 'BakingDiffSamplesNumber' of PBR Environment has to be greater or equal 1");
         return 1;
       }
       aParams.PbrEnvBakingDiffNbSamples = aPbrEnvBakingDiffNbSamples;
@@ -12373,7 +12373,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     const Standard_Integer aPbrEnvBakingSpecNbSamples = Draw::Atoi(theArgVec[anArgIter]);
     if (aPbrEnvBakingSpecNbSamples < 1)
     {
-      Message::SendFail ("Syntax error: 'BakingSpecSamplesNumber' of PBR Environtment has to be greater or equal 1");
+      Message::SendFail ("Syntax error: 'BakingSpecSamplesNumber' of PBR Environment has to be greater or equal 1");
       return 1;
     }
     aParams.PbrEnvBakingSpecNbSamples = aPbrEnvBakingSpecNbSamples;
@@ -12390,7 +12390,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       if (aPbrEnvBakingProbability < 0.f
        || aPbrEnvBakingProbability > 1.f)
       {
-        Message::SendFail ("Syntax error: 'BakingProbability' of PBR Environtment has to be in range of [0, 1]");
+        Message::SendFail ("Syntax error: 'BakingProbability' of PBR Environment has to be in range of [0, 1]");
         return 1;
       }
       aParams.PbrEnvBakingProbability = aPbrEnvBakingProbability;
@@ -14365,7 +14365,7 @@ static int VColorDiff (Draw_Interpretor& theDI, Standard_Integer  theNbArgs, con
 }
  
 //===============================================================================================
-//function : VBVHPrebuid
+//function : VSelBvhBuild
 //purpose  :
 //===============================================================================================
 static int VSelBvhBuild (Draw_Interpretor& /*theDI*/, Standard_Integer theNbArgs, const char** theArgVec)
@@ -14467,7 +14467,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: Display name will be used within creation of graphic driver, when specified."
 #endif
     "\n\t\t:  -left,  -top    pixel position of left top corner of the window."
-    "\n\t\t:  -width, -height width and heigth of window respectively."
+    "\n\t\t:  -width, -height width and height of window respectively."
     "\n\t\t:  -cloneActive floag to copy camera and dimensions of active view."
     "\n\t\t:  -exitOnClose when specified, closing the view will exit application."
     "\n\t\t:  -closeOnEscape when specified, view will be closed on pressing Escape."
@@ -14576,7 +14576,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  -imageMode    (-imgMode, -imageMd, -imgMd):         sets image fill type\n"
     "  -gradient     (-grad, -gr):                         sets background gradient starting and ending colors\n"
     "  -gradientMode (-gradMode, -gradMd, -grMode, -grMd): sets gradient fill method\n"
-    "  -cubemap      (-cmap, -cm):                         sets environmet cubemap as background\n"
+    "  -cubemap      (-cmap, -cm):                         sets environment cubemap as background\n"
     "  -invertedz    (-invz, -iz):                         sets inversion of Z axis for background cubemap rendering\n"
     "  -order        (-o):                                 defines order of tiles in one image cubemap\n"
     "                                                      (has no effect in case of multi image cubemaps)\n"
@@ -14772,7 +14772,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   window - convert to window coordinates, pixels"
     "\n\t\t:   view   - convert to view projection plane"
     "\n\t\t:   grid   - convert to model coordinates, given on grid"
-    "\n\t\t:   ray    - convert projection ray to model coordiantes"
+    "\n\t\t:   ray    - convert projection ray to model coordinates"
     "\n\t\t: - vconvert v window : convert view to window;"
     "\n\t\t: - vconvert v view   : convert window to view;"
     "\n\t\t: - vconvert x y window : convert view to window;"
@@ -14995,7 +14995,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:         [-fov2d  [Angle]] [-lockZup {0|1}]"
       "\n\t\t:         [-xrPose base|head=base]"
       "\n\t\t: Manages camera parameters."
-      "\n\t\t: Displays frustum when presntation name PrsName is specified."
+      "\n\t\t: Displays frustum when presentation name PrsName is specified."
       "\n\t\t: Prints current value when option called without argument."
       "\n\t\t: Orthographic camera:"
       "\n\t\t:   -ortho      activate orthographic projection"

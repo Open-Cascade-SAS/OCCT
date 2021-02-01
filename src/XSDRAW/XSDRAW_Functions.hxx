@@ -19,7 +19,7 @@
 
 #include <Standard.hxx>
 
-//! Defines additionnal commands for XSDRAW to :
+//! Defines additional commands for XSDRAW to :
 //! - control of initialisation (xinit, xnorm, newmodel)
 //! - analyse of the result of a transfer (recorded in a
 //! TransientProcess for Read, FinderProcess for Write) :

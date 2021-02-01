@@ -87,7 +87,7 @@ static void DisplayText (const TDF_Label& aLabel,
 
   TDF_LabelSequence seq;
   
-  // attibutes of subshapes
+  // attributes of subshapes
   if (XCAFDoc_ShapeTool::GetSubShapes (aLabel, seq)) {
     Standard_Integer i = 1;
     for (i = 1; i <= seq.Length(); i++) {
@@ -96,7 +96,7 @@ static void DisplayText (const TDF_Label& aLabel,
     }
   }
   
-  // attibutes of components
+  // attributes of components
   seq.Clear();
   if (XCAFDoc_ShapeTool::GetComponents (aLabel, seq)) {
     Standard_Integer i = 1;
@@ -105,7 +105,7 @@ static void DisplayText (const TDF_Label& aLabel,
       DisplayText (aL, aPrs, anAspect, aLocation);
       TDF_Label aRefLabel;
       
-      // attributes of referrences
+      // attributes of references
       TopLoc_Location aLoc = XCAFDoc_ShapeTool::GetLocation (aL);
       if (XCAFDoc_ShapeTool::GetReferredShape (aL, aRefLabel)) {
 	DisplayText (aRefLabel, aPrs, anAspect, aLoc);

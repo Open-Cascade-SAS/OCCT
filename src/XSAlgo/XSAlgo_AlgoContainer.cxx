@@ -303,7 +303,7 @@ Standard_Boolean XSAlgo_AlgoContainer::CheckPCurve (const TopoDS_Edge& E,
   if ( DU/8. > (UL/6. - UF/6.) || DV/8. > (VL/6. - VF/6.) ) {
     ShapeBuild_Edge().RemovePCurve(E,face);
 #ifdef OCCT_DEBUG
-    std::cout<<"Removing pcuve periodic"<<std::endl;
+    std::cout<<"Removing pcurve periodic"<<std::endl;
 #endif      
     return Standard_False;
   }
@@ -513,7 +513,7 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const Handle(Transfer_FinderProcess
     
     if (resBinder.IsNull()) {
       resBinder = new TransferBRep_ShapeBinder(res);
-      //if <orig> shape was splitted, put entities corresponding to new shapes
+      //if <orig> shape was split, put entities corresponding to new shapes
       // into Transfer_TransientListBinder.
       if ( orig.ShapeType() > res.ShapeType() ) {
 	TopoDS_Shape sub;
@@ -532,11 +532,11 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const Handle(Transfer_FinderProcess
           resBinder->AddResult(TransientListBinder);
 //	  resBinder->SetNext(TransientListBinder, Standard_True);
 #ifdef OCCT_DEBUG
-	  std::cout<<"Info: TransientListBinder created for splitted shape"<<std::endl;
+	  std::cout<<"Info: TransientListBinder created for split shape"<<std::endl;
 	} 
 	else {
 	  std::cout<<"Warning: XSAlgo_AlgoContainer::MergeTransferInfo() "
-	    <<"No results were found for splitted shape. "<<std::endl;
+	    <<"No results were found for split shape. "<<std::endl;
 	  //<<"Transfer_FinderProcess->NbMapped() = "<<FP->NbMapped()<<std::endl;
 #endif	  
 	}

@@ -139,7 +139,7 @@ public:
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) GiveList (const Standard_CString first = "", const Standard_CString second = "");
   
   //! Computes a List of entities from the model as follows
-  //! <first> beeing a Selection, <ent> beeing an entity or a list
+  //! <first> being a Selection, <ent> being an entity or a list
   //! of entities (as a HSequenceOfTransient) :
   //! the standard result of this selection applied to this list
   //! if <first> is erroneous, a null handle is returned

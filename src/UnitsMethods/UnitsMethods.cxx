@@ -306,14 +306,14 @@ Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
 #ifdef OCCT_DEBUG
       std::cout << "PCURVE of Parabola type" << std::endl;
-      std::cout << "Parameters Not Yet transformed according to LenghtUnit" << std::endl;
+      std::cout << "Parameters Not Yet transformed according to LengthUnit" << std::endl;
 #endif
       return aPcurve;
     }
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Hyperbola))) {
 #ifdef OCCT_DEBUG
       std::cout << "PCURVE of Hyperbola type" << std::endl;
-      std::cout << "Parameters Not Yet transformed according to LenghtUnit" << std::endl;
+      std::cout << "Parameters Not Yet transformed according to LengthUnit" << std::endl;
 #endif
       return aPcurve;
     }

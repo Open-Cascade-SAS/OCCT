@@ -60,10 +60,10 @@ public:
   //! Sets the text position
   Standard_EXPORT void SetPointText (const gp_Pnt& thePnt);
 
-  //! Returns a tesselated annotation if specified
+  //! Returns a tessellated annotation if specified
   const TopoDS_Shape& GetPresentation() const { return myPresentation; }
 
-  //! Sets a tesselated annotation
+  //! Sets a tessellated annotation
   Standard_EXPORT void SetPresentation (const TopoDS_Shape& thePresentation);
 
   //! Resets data to the state after calling the default constructor

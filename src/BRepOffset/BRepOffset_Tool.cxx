@@ -3547,8 +3547,8 @@ void BRepOffset_Tool::ExtentFace (const TopoDS_Face&            F,
         EnLargeFace(TopoDS::Face(ToBuild(E)),StopFace,Standard_False);
         TopoDS_Face NullFace;
         BRepOffset_Tool::Inter3D (EF,StopFace,LInt1,LInt2,Side,E,NullFace,NullFace);
-        // No intersection, it may happen for example for a chosen (non-offseted) planar face and 
-        // its neighbour offseted cylindrical face, if the offset is directed so that 
+        // No intersection, it may happen for example for a chosen (non-offsetted) planar face and
+        // its neighbour offseted cylindrical face, if the offset is directed so that
         // the radius of the cylinder becomes smaller.
         if (LInt1.IsEmpty())
           continue;  

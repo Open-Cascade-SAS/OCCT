@@ -47,7 +47,7 @@ class TopoDS_Vertex;
 //! - A new wire  is created with the edges  of  the
 //! wire + the edge.
 //!
-//! - If the edge is not connnected  to the wire the
+//! - If the edge is not connected  to the wire the
 //! flag NotDone   is set and  the  method Wire will
 //! raise an error.
 //!

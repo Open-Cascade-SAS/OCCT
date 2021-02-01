@@ -435,7 +435,7 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
 			  Interface_Static::IVal("write.iges.brep.mode"));
   di<<"unit (write) : "<<Interface_Static::CVal("write.iges.unit")<<"\n";
   di<<"mode  write  : "<<Interface_Static::CVal("write.iges.brep.mode")<<"\n";
-  di<<"  To modifiy : command  param\n";
+  di<<"  To modify : command  param\n";
 
 //  Mode d emploi (K4B ->) : brepiges shape [+shape][ +shape] nomfic
 //   c a d tant qu il y a des + on ajoute ce qui suit

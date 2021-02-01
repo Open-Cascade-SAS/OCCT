@@ -55,7 +55,7 @@ public:
   
   Standard_EXPORT Standard_Real Get() const;
   
-  //! Returns volume of area as argument and succes status
+  //! Returns volume of area as argument and success status
   //! returns false if no such attribute at the <label>
   Standard_EXPORT static Standard_Boolean Get (const TDF_Label& label, Standard_Real& area);
   

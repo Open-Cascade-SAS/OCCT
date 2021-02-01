@@ -6265,7 +6265,7 @@ static int VVertexMode (Draw_Interpretor& theDI,
 
 //=======================================================================
 //function : VPointCloud
-//purpose  : Create interactive object for arbitary set of points.
+//purpose  : Create interactive object for arbitrary set of points.
 //=======================================================================
 static Standard_Integer VPointCloud (Draw_Interpretor& theDI,
                                      Standard_Integer  theArgNum,
@@ -7161,7 +7161,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("vpointcloud",
                    "vpointcloud name shape [-randColor] [-normals] [-noNormals] [-uv]"
-                   "\n\t\t: Create an interactive object for arbitary set of points"
+                   "\n\t\t: Create an interactive object for arbitrary set of points"
                    "\n\t\t: from triangulated shape."
                    "\n"
                    "vpointcloud name x y z r npts {surface|volume}\n"

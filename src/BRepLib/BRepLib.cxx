@@ -2129,7 +2129,7 @@ static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
 
     // Check conditions for G2 and C2 continuity:
     // * calculate principal curvatures on each surface
-    // * continuity is C2 if directions of principal curvatures are equal on differenct surfaces
+    // * continuity is C2 if directions of principal curvatures are equal on different surfaces
     // * continuity is G2 if directions of principal curvatures are just parallel
     //   and values of curvatures are the same
     aSP1.Curvature(aCrvDir1[0], aCrvLen1[0], aCrvDir1[1], aCrvLen1[1]);

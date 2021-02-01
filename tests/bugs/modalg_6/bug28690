@@ -20,6 +20,6 @@ foreach e [explode r] {
   if {[validrange $e] == "edge has no valid range"} {
     regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
     regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
-    puts "Error: edge $e (lenth=$len, tolerance=$tol) is too small"
+    puts "Error: edge $e (length=$len, tolerance=$tol) is too small"
   }
 }

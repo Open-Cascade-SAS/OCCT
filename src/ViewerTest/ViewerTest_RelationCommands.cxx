@@ -203,7 +203,7 @@ static Standard_Boolean Get3DPointAtMousePosition (const gp_Pnt& theFirstPoint,
 //           -hideunits
 //
 // Warning! flyout is not an aspect value, it is for dimension parameter
-// likewise text position, but text position override other paramaters.
+// likewise text position, but text position override other parameters.
 // For text position changing use 'vmovedim'.
 //=======================================================================
 static int ParseDimensionParams (Standard_Integer  theArgNum,
@@ -382,7 +382,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
       TCollection_AsciiString aValue (theArgVec[++anIt]);
       if (!aValue.IsRealValue (Standard_True))
       {
-        Message::SendFail() << "Error: arrow lenght should be float degree value.";
+        Message::SendFail() << "Error: arrow length should be float degree value.";
         return 1;
       }
       theAspect->ArrowAspect()->SetLength (Draw::Atof (aValue.ToCString()));

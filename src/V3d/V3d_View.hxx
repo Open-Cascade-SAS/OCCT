@@ -494,7 +494,7 @@ public:
   Standard_EXPORT void SetCenter (const Standard_Integer theXp, const Standard_Integer theYp);
 
   //! Defines the view projection size in its maximum dimension,
-  //! keeping the inital height/width ratio unchanged.
+  //! keeping the initial height/width ratio unchanged.
   Standard_EXPORT void SetSize (const Standard_Real theSize);
 
   //! Defines the Depth size of the view

@@ -60,7 +60,7 @@
 // --------------------- VolumeFix Begin ---
 //=======================================================================
 //function : TetraVol
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static double TetraVol(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 {
@@ -99,7 +99,7 @@ static double TetraVol(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 
 //=======================================================================
 //function : TetraCen
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static gp_XYZ TetraCen(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 {
@@ -112,7 +112,7 @@ static gp_XYZ TetraCen(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 
 //=======================================================================
 //function : CalculVolume
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Real CalculVolume(const TopoDS_Shape& So,
 				  gp_Pnt&       aRefPoint,
@@ -716,7 +716,7 @@ static Standard_Integer ShapeVolume (Draw_Interpretor& di, Standard_Integer argc
 
 //=======================================================================
 //function : GetMassProps
-//purpose  : auxilary for ShapeMassProps
+//purpose  : auxiliary for ShapeMassProps
 //=======================================================================
 
 static Standard_Boolean GetMassProps(const TDF_Label& aLabel, gp_XYZ& theCenterGravity,
@@ -1003,19 +1003,19 @@ void XDEDRAW_Props::InitCommands(Draw_Interpretor& di)
 
   Standard_CString g = "XDE property's commands";
   
-  di.Add ("XSetVolume","DocName {Label|Shape} volume \t: Seting volume to shape",
+  di.Add ("XSetVolume","DocName {Label|Shape} volume \t: Setting volume to shape",
 		   __FILE__, SetVolume, g);
 
   di.Add ("XGetVolume","DocName {Shape|Label} \t: Getting volume of shape",
 		   __FILE__, GetVolume, g);
 
-  di.Add ("XSetArea","DocName {Label|Shape} area \t: Seting area to shape",
+  di.Add ("XSetArea","DocName {Label|Shape} area \t: Setting area to shape",
 		   __FILE__, SetArea, g);
 
   di.Add ("XGetArea","DocName {Shape|Label} \t: Getting area of shape",
 		   __FILE__, GetArea, g);
 
-  di.Add ("XSetCentroid","DocName  {Label|Shape} x y z \t: Seting centroid to shape",
+  di.Add ("XSetCentroid","DocName  {Label|Shape} x y z \t: Setting centroid to shape",
 		   __FILE__, SetCentroid, g);
 
   di.Add ("XGetCentroid","DocName {Shape|Label} \t: Getting centroid of shape ",

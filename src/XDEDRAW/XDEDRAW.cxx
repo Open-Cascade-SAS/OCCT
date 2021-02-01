@@ -1167,7 +1167,7 @@ static Standard_Integer setviewName (Draw_Interpretor& di, Standard_Integer argc
 
 //=======================================================================
 //function : getviewName
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 static Standard_Integer getviewName (Draw_Interpretor&  di, Standard_Integer /*argc*/, const char** /*argv*/)

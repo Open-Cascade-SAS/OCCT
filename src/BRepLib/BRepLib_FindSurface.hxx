@@ -64,7 +64,7 @@ public:
   //! if <OnlyPlane> is true, the computed surface will be
   //! a plane. If it is not possible to find a plane, the
   //! flag NotDone will be set.
-  //! If <OnlyClosed> is true,  then  S  sould be a wire
+  //! If <OnlyClosed> is true,  then  S  should be a wire
   //! and the existing surface,  on  which wire S is not
   //! closed in 2D, will be ignored.
   Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape& S, const Standard_Real Tol = -1, const Standard_Boolean OnlyPlane = Standard_False, const Standard_Boolean OnlyClosed = Standard_False);
@@ -74,7 +74,7 @@ public:
   //! if <OnlyPlane> is true, the computed surface will be
   //! a plane. If it is not possible to find a plane, the
   //! flag NotDone will be set.
-  //! If <OnlyClosed> is true,  then  S  sould be a wire
+  //! If <OnlyClosed> is true,  then  S  should be a wire
   //! and the existing surface,  on  which wire S is not
   //! closed in 2D, will be ignored.
   Standard_EXPORT void Init (const TopoDS_Shape& S, const Standard_Real Tol = -1, const Standard_Boolean OnlyPlane = Standard_False, const Standard_Boolean OnlyClosed = Standard_False);

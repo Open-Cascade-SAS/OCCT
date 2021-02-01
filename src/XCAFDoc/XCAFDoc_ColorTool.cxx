@@ -723,7 +723,7 @@ Standard_Boolean XCAFDoc_ColorTool::IsInstanceVisible (const TopoDS_Shape& theSh
 
 //=======================================================================
 //function : ReverseTreeNodes
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void ReverseTreeNodes(Handle(TDataStd_TreeNode)& mainNode)
 {

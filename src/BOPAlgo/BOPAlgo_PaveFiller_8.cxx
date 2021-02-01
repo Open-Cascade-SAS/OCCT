@@ -69,7 +69,7 @@ void BOPAlgo_PaveFiller::ProcessDE()
   Handle(BOPDS_PaveBlock) aPBD;
   TColStd_ListIteratorOfListOfInteger aItLI;
   //
-  // 1. Find degnerated edges
+  // 1. Find degenerated edges
   //-----------------------------------------------------scope f
   //
   aAllocator=

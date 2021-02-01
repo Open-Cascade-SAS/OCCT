@@ -737,7 +737,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
     orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
     Fcur.Orientation(orf);
     std::cout << "    Error : this face has been already examined " << std::endl;
-    std::cout << "    Imposible to return it ";
+    std::cout << "    Impossible to return it ";
     PrintShape(Fcur, MapOfShapeOrientation.NbBuckets());
   }
 #endif

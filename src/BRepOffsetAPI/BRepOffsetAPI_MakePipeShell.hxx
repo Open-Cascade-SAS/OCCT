@@ -56,8 +56,8 @@ class Law_Function;
 //! The two global approaches can also be combined.
 //! You can also close the surface later in order to form a solid.
 //! Warning: some limitations exist
-//! -- Mode with auxilary spine is incompatible with hometetic laws
-//! -- Mode with auxilary spine and keep contact produce only CO surface.
+//! -- Mode with auxiliary spine is incompatible with hometetic laws
+//! -- Mode with auxiliary spine and keep contact produce only CO surface.
 class BRepOffsetAPI_MakePipeShell  : public BRepPrimAPI_MakeSweep
 {
 public:

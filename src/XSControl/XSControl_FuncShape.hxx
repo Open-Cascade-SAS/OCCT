@@ -29,7 +29,7 @@ class XSControl_WorkSession;
 class TCollection_AsciiString;
 
 
-//! Defines additionnal commands for XSControl to :
+//! Defines additional commands for XSControl to :
 //! - control of initialisation (xinit, xnorm, newmodel)
 //! - analyse of the result of a transfer (recorded in a
 //! TransientProcess for Read, FinderProcess for Write) :

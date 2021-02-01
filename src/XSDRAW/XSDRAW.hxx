@@ -100,7 +100,7 @@ class XSDRAW
   Standard_EXPORT static Handle(IFSelect_SessionPilot) Pilot();
   
   //! Returns the WorkSession defined in AddDraw (through Pilot)
-  //! It is from XSControl, it brings functionnalities for Transfers
+  //! It is from XSControl, it brings functionalities for Transfers
   Standard_EXPORT static Handle(XSControl_WorkSession) Session();
   
   //! Defines a Controller for the command "xinit" and applies it
@@ -161,7 +161,7 @@ class XSDRAW
   Standard_EXPORT static Handle(XSControl_TransferReader) TransferReader();
   
   //! Takes the name of an entity, either as argument, or (if <name>
-  //! is empty) on keybord, and returns the entity
+  //! is empty) on keyboard, and returns the entity
   //! name can be a label or a number (in alphanumeric), it is
   //! searched by NumberFromLabel from WorkSession.
   //! If <name> doesn't match en entity, a Null Handle is returned

@@ -502,7 +502,7 @@ Parameter Data : parameter 2 (Surface entity to be bounded) is incorrect.
 Parameter Data : parameter 3 (Number of Boundary entities) is incorrect.
 !Type 143
 .XSTEP_168
-Parameter Data : parameter %d (Boudary entity)  is incorrect.
+Parameter Data : parameter %d (Boundary entity)  is incorrect.
 !Type 144
 .XSTEP_169
 Parameter Data : parameter 1 (Surface to be trimmed)  is incorrect.
@@ -748,10 +748,10 @@ Exception during loading entity %s
  Transfer error on basic curve : entity skipped.
 !
 .IGES_1115
- With C0 continuity can not be splitted into Geom_BSplineCurve C1 lower than Precision::Confusion().
+ With C0 continuity can not be split into Geom_BSplineCurve C1 lower than Precision::Confusion().
 !
 .IGES_1120
- With C0 continuity was splitted into C1 continuity Geom_BSplineCurve.
+ With C0 continuity was split into C1 continuity Geom_BSplineCurve.
 !
 .IGES_1125
  Parameter data : parameter 1 (Type of Bounded Surface Representation = 0) : case not implemented. 
@@ -847,7 +847,7 @@ Exception during loading entity %s
  Basis surface is C0-continuous but was corrected to C1-continuous.
 !
 .IGES_1270
- Basis surface is C0-continuous and is transferred into a TopoDS_Shell. Only first face was offseted.
+ Basis surface is C0-continuous and is transferred into a TopoDS_Shell. Only first face was offsetted.
 !
 .IGES_1275
  Model Space Representation 0 case not implemented : result is a basis surface.

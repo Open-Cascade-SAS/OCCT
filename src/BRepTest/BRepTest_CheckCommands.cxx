@@ -511,7 +511,7 @@ void ContextualDump(Draw_Interpretor& theCommands,
 
 //=======================================================================
 //function : FillProblems
-// purpose : auxilary for StructuralDump
+// purpose : auxiliary for StructuralDump
 //=======================================================================
 static void FillProblems(const BRepCheck_Status stat,
                          Handle(TColStd_HArray1OfInteger)& NbProblems)
@@ -529,7 +529,7 @@ static void FillProblems(const BRepCheck_Status stat,
 
 //=======================================================================
 //function : GetProblemSub
-// purpose : auxilary for StructuralDump
+// purpose : auxiliary for StructuralDump
 //=======================================================================
 static void GetProblemSub(const BRepCheck_Analyzer& Ana,
                           const TopoDS_Shape& Shape,
@@ -577,7 +577,7 @@ static void GetProblemSub(const BRepCheck_Analyzer& Ana,
 
 //=======================================================================
 //function : GetProblemShapes
-// purpose : auxilary for StructuralDump
+// purpose : auxiliary for StructuralDump
 //=======================================================================
 static void GetProblemShapes(const BRepCheck_Analyzer& Ana,
                              const TopoDS_Shape& Shape,
@@ -1745,7 +1745,7 @@ void BRepTest::CheckCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("checksection", 
 		  "checks the closure of a section : checksection name [-r <RefVal>]\n"
-                  "\"-r\" - allowed number of allone vertices.",
+                  "\"-r\" - allowed number of alone vertices.",
 		  __FILE__,
 		  checksection,
 		  g);

@@ -250,7 +250,7 @@ static void Descendants(const TopoDS_Shape&,
           continue;
 
 // for base case prism on mySUntil -> ambivalent direction
-//      ->  preferrable direction = 1
+//      ->  preferable direction = 1
         if(sens != 1) {
           if (ASI2.Point(jj,1).Parameter()*
               ASI2.Point(jj,ASI2.NbPoints(jj)).Parameter()<=0) 

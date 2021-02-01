@@ -94,7 +94,7 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! Clears the whole current Context (nullifies it)
   Standard_EXPORT void ClearContext();
   
-  //! Prints the transfer status of a transferred item, as beeing
+  //! Prints the transfer status of a transferred item, as being
   //! the Mapped n0 <num>, from MapWriter if <wri> is True, or
   //! from MapReader if <wri> is False
   //! Returns True when done, False else (i.e. num out of range)
@@ -151,7 +151,7 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! No cumulation with former calls to TransferReadOne
   Standard_EXPORT Standard_Integer TransferReadRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  //! produces and returns a new Model well conditionned
+  //! produces and returns a new Model well conditioned
   //! It is produced by the Norm Controller
   //! It can be Null (if this function is not implemented)
   Standard_EXPORT Handle(Interface_InterfaceModel) NewModel();

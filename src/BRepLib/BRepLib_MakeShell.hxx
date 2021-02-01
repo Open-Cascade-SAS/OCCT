@@ -30,7 +30,7 @@ class Geom_Surface;
 class TopoDS_Shell;
 
 
-//! Provides methos to build shells.
+//! Provides methods to build shells.
 //!
 //! Build a shell from a set of faces.
 //! Build untied shell from a non C2 surface

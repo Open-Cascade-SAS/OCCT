@@ -646,7 +646,7 @@ void BSplCLib::MovePointAndTangent(const Standard_Real    U,
     
     if (conditions) {
       //
-      // build 2 auxialiary functions 
+      // build 2 auxiliary functions
       // 
       TColStd_Array1OfReal schoenberg_points(1,num_poles) ;
       TColStd_Array1OfReal first_function  (1,num_poles) ;

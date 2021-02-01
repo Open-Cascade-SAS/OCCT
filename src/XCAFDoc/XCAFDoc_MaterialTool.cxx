@@ -218,7 +218,7 @@ Standard_Real XCAFDoc_MaterialTool::GetDensityForShape(const TDF_Label& ShapeL)
   if(!MatL.FindAttribute(XCAFDoc_Material::GetID(),MatAttr)) {
     return Dens;
   }
-  // defaul dimension fo density - gram/sm^3
+  // default dimension fo density - gram/sm^3
   // we transfer "sm" into "mm"
   Dens = MatAttr->GetDensity()*0.001; 
   return Dens;

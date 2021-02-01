@@ -46,8 +46,8 @@ public:
   //! Constructor
   Standard_EXPORT XSDRAWSTLVRML_DataSource(const Handle(Poly_Triangulation)& aMesh);
   
-  //! Returns geometry information about node ( if IsElement is False ) or element ( IsElement is True )
-  //! by co-ordinates. For element this method must return all its nodes co-ordinates in the strict order: X, Y, Z and
+  //! Returns geometry information about node (if IsElement is False) or element (IsElement is True) by coordinates.
+  //! For element this method must return all its nodes coordinates in the strict order: X, Y, Z and
   //! with nodes order is the same as in wire bounding the face or link. NbNodes is number of nodes of element.
   //! It is recommended to return 1 for node. Type is an element type.
   Standard_EXPORT Standard_Boolean GetGeom (const Standard_Integer ID, const Standard_Boolean IsElement, TColStd_Array1OfReal& Coords, Standard_Integer& NbNodes, MeshVS_EntityType& Type) const Standard_OVERRIDE;

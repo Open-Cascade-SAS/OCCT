@@ -5355,7 +5355,7 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
   }
   else if (theObj->Type() == AIS_KindOfInteractive_Relation)
   {
-    // PrsDim_Dimention and AIS_Relation
+    // PrsDim_Dimension and AIS_Relation
     Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (theObj);
     switch (aRelation->KindOfDimension())
     {
@@ -6870,7 +6870,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
     "\nSets selection shape type filter in context or remove all filters."
     "\n    : Option -contextfilter : To define a selection filter for two or more types of entity,"
     "\n                              use value AND (OR by default)."
-    "\n    : Option -type set type of selection filter. Filters are applyed with Or combination."
+    "\n    : Option -type set type of selection filter. Filters are applied with Or combination."
     "\n    : Option -clear remove all filters in context",
 		  __FILE__,VSelFilter,group);
 

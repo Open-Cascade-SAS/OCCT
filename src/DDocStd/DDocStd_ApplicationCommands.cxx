@@ -482,7 +482,7 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : SetStorageFormatVerison
+//function : SetStorageFormatVersion
 //purpose  : 
 //=======================================================================
 static Standard_Integer DDocStd_SetStorageFormatVersion (Draw_Interpretor& ,
@@ -501,7 +501,7 @@ static Standard_Integer DDocStd_SetStorageFormatVersion (Draw_Interpretor& ,
 }
 
 //=======================================================================
-//function : GetStorageFormatVerison
+//function : GetStorageFormatVersion
 //purpose  : 
 //=======================================================================
 static Standard_Integer DDocStd_GetStorageFormatVersion (Draw_Interpretor& di,

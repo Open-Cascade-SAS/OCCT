@@ -527,7 +527,7 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
                                    
   Standard_Integer i =1;
   di<<"=====================================================\n";
-  di<<"LENTH Unit\n";
+  di<<"LENGTH Unit\n";
   for( ; i <= anUnitLengthNames.Length() ; i++)
     di<<anUnitLengthNames(i).ToCString()<<"\n";
   

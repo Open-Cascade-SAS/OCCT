@@ -87,7 +87,7 @@ Standard_Boolean BinTObjDrivers_ReferenceDriver::Paste
     }
     aDS = aModel->GetLabel().Data();
   }
-  // reffered label
+  // referred label
   TDF_Label aLabel;
   if (! theSource.GetLabel (aDS, aLabel)) return Standard_False;
 

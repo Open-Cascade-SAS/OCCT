@@ -59,7 +59,7 @@ DEFINE_STANDARD_HANDLE(XSControl_Controller, Standard_Transient)
 //! instance).
 //!
 //! Finally, Controller can be gathered in a general dictionary then
-//! retreived later by a general call (method Recorded)
+//! retrieved later by a general call (method Recorded)
 //!
 //! It does not manage the produced data, but the Actors make the
 //! link between the norm and the application
@@ -90,7 +90,7 @@ class XSControl_Controller : public Standard_Transient
   
   //! Returns a name, as given when initializing :
   //! rsc = False (D) : True Name attached to the Norm (long name)
-  //! rsc = True : Name of the ressource set (i.e. short name)
+  //! rsc = True : Name of the resource set (i.e. short name)
   Standard_CString Name (const Standard_Boolean rsc = Standard_False) const
   { return (rsc ? myShortName.ToCString() : myLongName.ToCString()); }
   

@@ -65,7 +65,7 @@ static Standard_Real Norm(const gp_Mat& M) {
 
 //=======================================================================
 //function : ToG0
-//purpose  : Calculate tranformation T such as T.M2 = M1
+//purpose  : Calculate transformation T such as T.M2 = M1
 //=======================================================================
 
 static void ToG0(const gp_Mat& M1, const gp_Mat& M2, gp_Mat& T) {

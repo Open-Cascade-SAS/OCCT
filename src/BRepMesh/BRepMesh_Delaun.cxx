@@ -644,7 +644,7 @@ void BRepMesh_Delaun::insertInternalEdges()
 {
   Handle(IMeshData::MapOfInteger) anInternalEdges = InternalEdges();
 
-  // Destruction of triancles intersecting internal edges 
+  // Destruction of triangles intersecting internal edges
   // and their replacement by makeshift triangles
   IMeshData::IteratorOfMapOfInteger anInernalEdgesIt( *anInternalEdges );
   for ( ; anInernalEdgesIt.More(); anInernalEdgesIt.Next() )

@@ -47,8 +47,8 @@ public:
   //! Constructor
   Standard_EXPORT XSDRAWSTLVRML_DataSource3D();
   
-  //! Returns geometry information about node ( if IsElement is False ) or element ( IsElement is True )
-  //! by co-ordinates. For element this method must return all its nodes co-ordinates in the strict order: X, Y, Z and
+  //! Returns geometry information about node (if IsElement is False) or element (IsElement is True) by coordinates.
+  //! For element this method must return all its nodes coordinates in the strict order: X, Y, Z and
   //! with nodes order is the same as in wire bounding the face or link. NbNodes is number of nodes of element.
   //! It is recommended to return 1 for node. Type is an element type.
   Standard_EXPORT Standard_Boolean GetGeom (const Standard_Integer theID, const Standard_Boolean theIsElement, TColStd_Array1OfReal& theCoords, Standard_Integer& theNbNodes, MeshVS_EntityType& theType) const Standard_OVERRIDE;

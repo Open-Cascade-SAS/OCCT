@@ -230,7 +230,7 @@ void BSplCLib::LocateParameter
 //function : LocateParameter
 //purpose  : Effective computation
 // pmn 28-01-97 : Add limits of the period as input argument,  
-//                as it is imposible to produce them at this level.
+//                as it is impossible to produce them at this level.
 //=======================================================================
 
 void BSplCLib::LocateParameter 
