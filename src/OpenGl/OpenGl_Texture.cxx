@@ -25,6 +25,8 @@
 #include <Image_PixMap.hxx>
 #include <Image_SupportedFormats.hxx>
 
+#include <algorithm>
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture, OpenGl_NamedResource)
 
 namespace
@@ -33,23 +35,26 @@ namespace
 //! Simple class to reset unpack alignment settings
 struct OpenGl_UnpackAlignmentSentry
 {
-
   //! Reset unpack alignment settings to safe values
-  static void Reset()
+  static void Reset (const OpenGl_Context& theCtx)
   {
-    glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
-  #if !defined(GL_ES_VERSION_2_0)
-    glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
-  #endif
+    theCtx.core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+    if (theCtx.hasUnpackRowLength)
+    {
+      theCtx.core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+    }
   }
 
-  OpenGl_UnpackAlignmentSentry() {}
+  OpenGl_UnpackAlignmentSentry (const Handle(OpenGl_Context)& theCtx)
+  : myCtx (theCtx.get()) {}
 
   ~OpenGl_UnpackAlignmentSentry()
   {
-    Reset();
+    Reset (*myCtx);
   }
 
+private:
+  OpenGl_Context* myCtx;
 };
 
 //! Compute the upper mipmap level for complete mipmap set (e.g. till the 1x1 level).
@@ -161,7 +166,7 @@ void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
 
   if (theGlCtx->IsValid())
   {
-    glDeleteTextures (1, &myTextureId);
+    theGlCtx->core11fwd->glDeleteTextures (1, &myTextureId);
   }
   myTextureId = NO_TEXTURE;
   mySizeX = mySizeY = mySizeZ = 0;
@@ -192,7 +197,7 @@ void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
     theCtx->core15fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   }
   mySampler->Bind (theCtx, theTextureUnit);
-  glBindTexture (myTarget, myTextureId);
+  theCtx->core11fwd->glBindTexture (myTarget, myTextureId);
 }
 
 // =======================================================================
@@ -207,7 +212,7 @@ void OpenGl_Texture::Unbind (const Handle(OpenGl_Context)& theCtx,
     theCtx->core15fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
   }
   mySampler->Unbind (theCtx, theTextureUnit);
-  glBindTexture (myTarget, NO_TEXTURE);
+  theCtx->core11fwd->glBindTexture (myTarget, NO_TEXTURE);
 }
 
 //=======================================================================
@@ -340,25 +345,31 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 #endif
 
 #if !defined(GL_ES_VERSION_2_0)
-  GLint aTestWidth  = 0, aTestHeight = 0;
+  GLint aTestWidth = 0, aTestHeight = 0;
 #endif
   GLvoid* aDataPtr = (theImage != NULL) ? (GLvoid* )theImage->Data() : NULL;
 
   // setup the alignment
-  OpenGl_UnpackAlignmentSentry anUnpackSentry;
+  OpenGl_UnpackAlignmentSentry anUnpackSentry (theCtx);
   (void)anUnpackSentry; // avoid compiler warning
 
   if (aDataPtr != NULL)
   {
     const GLint anAligment = Min ((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
     theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
-
-  #if !defined(GL_ES_VERSION_2_0)
-    // notice that GL_UNPACK_ROW_LENGTH is not available on OpenGL ES 2.0 without GL_EXT_unpack_subimage extension
     const GLint anExtraBytes = GLint(theImage->RowExtraBytes());
     const GLint aPixelsWidth = GLint(theImage->SizeRowBytes() / theImage->SizePixelBytes());
-    theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
-  #endif
+    if (theCtx->hasUnpackRowLength)
+    {
+      theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+    }
+    else if (anExtraBytes >= anAligment)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Error: unsupported image stride within OpenGL ES 2.0 [") + myResourceId +"]");
+      Release (theCtx.get());
+      return false;
+    }
   }
 
   myTarget = aTarget;
@@ -659,7 +670,7 @@ bool OpenGl_Texture::InitCompressed (const Handle(OpenGl_Context)& theCtx,
   applyDefaultSamplerParams (theCtx);
 
   // setup the alignment
-  OpenGl_UnpackAlignmentSentry::Reset();
+  OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
 
   Graphic3d_Vec2i aMipSizeXY (theImage.SizeX(), theImage.SizeY());
   const Standard_Byte* aData = theImage.FaceData()->Data();
@@ -667,7 +678,7 @@ bool OpenGl_Texture::InitCompressed (const Handle(OpenGl_Context)& theCtx,
   {
     const Standard_Integer aMipLength = theImage.MipMaps().Value (aMipIter);
     theCtx->Functions()->glCompressedTexImage2D (GL_TEXTURE_2D, aMipIter, mySizedFormat, aMipSizeXY.x(), aMipSizeXY.y(), 0, aMipLength, aData);
-    const GLenum aTexImgErr = glGetError();
+    const GLenum aTexImgErr = theCtx->core11fwd->glGetError();
     if (aTexImgErr != GL_NO_ERROR)
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -764,8 +775,8 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   myNbSamples = 1;
   myMaxMipLevel = 0;
 
-  const GLsizei aSizeX    = Min (theCtx->MaxTextureSize(), theSizeX);
-  const GLsizei aSizeY    = Min (theCtx->MaxTextureSize(), theSizeY);
+  const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
+  const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
 
   Bind (theCtx);
   applyDefaultSamplerParams (theCtx);
@@ -774,19 +785,16 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   mySizedFormat = theFormat.Internal();
 
   // setup the alignment
-  OpenGl_UnpackAlignmentSentry::Reset();
+  OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
 
   theCtx->core11fwd->glTexImage2D (GL_PROXY_TEXTURE_RECTANGLE, 0, mySizedFormat,
                                    aSizeX, aSizeY, 0,
                                    myTextFormat, GL_FLOAT, NULL);
 
-  GLint aTestSizeX = 0;
-  GLint aTestSizeY = 0;
-
+  GLint aTestSizeX = 0, aTestSizeY = 0;
   glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_WIDTH,  &aTestSizeX);
   glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
   glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
-
   if (aTestSizeX == 0 || aTestSizeY == 0)
   {
     Unbind (theCtx);
@@ -796,7 +804,6 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   theCtx->core11fwd->glTexImage2D (myTarget, 0, mySizedFormat,
                                    aSizeX, aSizeY, 0,
                                    myTextFormat, GL_FLOAT, NULL);
-
   if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
   {
     Unbind (theCtx);
@@ -805,7 +812,6 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 
   mySizeX = aSizeX;
   mySizeY = aSizeY;
-
   Unbind (theCtx);
   return true;
 #else
@@ -865,7 +871,7 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
   mySizedFormat = theFormat.InternalFormat();
 
   // setup the alignment
-  OpenGl_UnpackAlignmentSentry::Reset();
+  OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
 
 #if !defined (GL_ES_VERSION_2_0)
   theCtx->core15fwd->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, mySizedFormat,
@@ -960,7 +966,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
           }
         }
 
-        OpenGl_UnpackAlignmentSentry::Reset();
+        OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
       }
       else
       {
@@ -1047,7 +1053,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
         {
           const Standard_Integer aMipLength = aCompImage->MipMaps().Value (aMipIter);
           theCtx->Functions()->glCompressedTexImage2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, aMipIter, mySizedFormat, aMipSizeXY.x(), aMipSizeXY.y(), 0, aMipLength, aData);
-          const GLenum aTexImgErr = glGetError();
+          const GLenum aTexImgErr = theCtx->core11fwd->glGetError();
           if (aTexImgErr != GL_NO_ERROR)
           {
             theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -1073,32 +1079,34 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
       if (!anImage.IsNull())
       {
-#if !defined(GL_ES_VERSION_2_0)
         const GLint anAligment = Min ((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
-        theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
-
-        // notice that GL_UNPACK_ROW_LENGTH is not available on OpenGL ES 2.0 without GL_EXT_unpack_subimage extension
         const GLint anExtraBytes = GLint(anImage->RowExtraBytes());
         const GLint aPixelsWidth = GLint(anImage->SizeRowBytes() / anImage->SizePixelBytes());
         const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
-        theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, aRowLength);
-#else
-        Handle(Image_PixMap) aCopyImage = new Image_PixMap();
-        aCopyImage->InitTrash (theFormat, theSize, theSize);
-        for (unsigned int y = 0; y < theSize; ++y)
+        if (theCtx->hasUnpackRowLength)
         {
-          for (unsigned int x = 0; x < theSize; ++x)
-          {
-            for (unsigned int aByte = 0; aByte < anImage->SizePixelBytes(); ++aByte)
-            {
-              aCopyImage->ChangeRawValue (y, x)[aByte] = anImage->RawValue (y, x)[aByte];
-            }
-          }
+          theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, aRowLength);
         }
-        anImage = aCopyImage;
-        const GLint anAligment = Min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
-        theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
-#endif
+
+        if (aRowLength > 0
+        && !theCtx->hasUnpackRowLength)
+        {
+          Handle(Image_PixMap) aCopyImage = new Image_PixMap();
+          aCopyImage->InitTrash (theFormat, theSize, theSize);
+          const Standard_Size aRowBytesPacked = std::min (aCopyImage->SizeRowBytes(), anImage->SizeRowBytes());
+          for (unsigned int y = 0; y < theSize; ++y)
+          {
+            memcpy (aCopyImage->ChangeRow (y), anImage->ChangeRow (y), aRowBytesPacked);
+          }
+          anImage = aCopyImage;
+          const GLint anAligment2 = Min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+          theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment2);
+        }
+        else
+        {
+          theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
+        }
+
         aData = anImage->Data();
       }
       else
@@ -1118,7 +1126,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
                                      0, aFormat.PixelFormat(), aFormat.DataType(),
                                      aData);
 
-    OpenGl_UnpackAlignmentSentry::Reset();
+    OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
 
     const GLenum anErr = theCtx->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
@@ -1278,7 +1286,10 @@ bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
 
   const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   theCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
-  theCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+  if (theCtx->hasPackRowLength)
+  {
+    theCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+  }
   // glGetTextureImage() allows avoiding to binding texture id, but apparently requires clean FBO binding state...
   //if (theCtx->core45 != NULL) { theCtx->core45->glGetTextureImage (myTextureId, theLevel, aFormat.PixelFormat(), aFormat.DataType(), (GLsizei )theImage.SizeBytes(), theImage.ChangeData()); } else
   {

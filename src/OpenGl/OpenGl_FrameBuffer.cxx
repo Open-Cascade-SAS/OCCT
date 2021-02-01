@@ -953,16 +953,16 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
   else
   {
   #if !defined(GL_ES_VERSION_2_0)
-    glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
+    theGlCtx->core11fwd->glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
     GLint aDrawBufferPrev = GL_BACK;
-    glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
+    theGlCtx->core11fwd->glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
     glReadBuffer (aDrawBufferPrev);
   #endif
   }
 
   // setup alignment
-  const GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
-  glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
+  const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  theGlCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
   bool isBatchCopy = !theImage.IsTopDown();
 
   const GLint   anExtraBytes       = GLint(theImage.RowExtraBytes());
@@ -977,14 +977,15 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     aPixelsWidth = 0;
     isBatchCopy  = false;
   }
-#if !defined(GL_ES_VERSION_2_0)
-  glPixelStorei (GL_PACK_ROW_LENGTH, aPixelsWidth);
-#else
-  if (aPixelsWidth != 0)
+  if (theGlCtx->hasPackRowLength)
+  {
+    theGlCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, aPixelsWidth);
+  }
+  else if (aPixelsWidth != 0)
   {
     isBatchCopy = false;
   }
-#endif
+
   if (toConvRgba2Rgb)
   {
     Handle(NCollection_BaseAllocator) anAlloc = new NCollection_AlignedAllocator (16);
@@ -999,7 +1000,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     {
       // Image_PixMap rows indexation always starts from the upper corner
       // while order in memory depends on the flag and processed by ChangeRow() method
-      glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, aRowBuffer.ChangeData());
+      theGlCtx->core11fwd->glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, aRowBuffer.ChangeData());
       const Image_ColorRGBA* aRowDataRgba = (const Image_ColorRGBA* )aRowBuffer.Data();
       if (theImage.Format() == Image_Format_BGR)
       {
@@ -1018,19 +1019,20 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     {
       // Image_PixMap rows indexation always starts from the upper corner
       // while order in memory depends on the flag and processed by ChangeRow() method
-      glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
+      theGlCtx->core11fwd->glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
     }
   }
   else
   {
-    glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
+    theGlCtx->core11fwd->glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
   }
   const bool hasErrors = theGlCtx->ResetErrors (true);
 
-  glPixelStorei (GL_PACK_ALIGNMENT,  1);
-#if !defined(GL_ES_VERSION_2_0)
-  glPixelStorei (GL_PACK_ROW_LENGTH, 0);
-#endif
+  theGlCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, 1);
+  if (theGlCtx->hasPackRowLength)
+  {
+    theGlCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+  }
 
   if (!theFbo.IsNull() && theFbo->IsValid())
   {

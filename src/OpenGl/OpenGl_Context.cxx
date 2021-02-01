@@ -146,10 +146,14 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
   hasGetBufferData (Standard_False),
 #if defined(GL_ES_VERSION_2_0)
+  hasPackRowLength (Standard_False),
+  hasUnpackRowLength (Standard_False),
   hasHighp   (Standard_False),
   hasUintIndex(Standard_False),
   hasTexRGBA8(Standard_False),
 #else
+  hasPackRowLength (Standard_True),
+  hasUnpackRowLength (Standard_True),
   hasHighp   (Standard_True),
   hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
@@ -1558,6 +1562,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasFboRenderMipmap = IsGlGreaterEqual (3, 0)
                     || CheckExtension ("GL_OES_fbo_render_mipmap");
   hasSRGBControl = CheckExtension ("GL_EXT_sRGB_write_control");
+  hasPackRowLength   = IsGlGreaterEqual (3, 0);
+  hasUnpackRowLength = IsGlGreaterEqual (3, 0); // || CheckExtension ("GL_EXT_unpack_subimage");
   // NPOT textures has limited support within OpenGL ES 2.0
   // which are relaxed by OpenGL ES 3.0 or some extensions
   //arbNPTW     = IsGlGreaterEqual (3, 0)

@@ -204,14 +204,17 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
 
   aTexture->Bind (theCtx);
 #if !defined(GL_ES_VERSION_2_0)
-  glPixelStorei (GL_UNPACK_LSB_FIRST,  GL_FALSE);
-  glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+  theCtx->core11fwd->glPixelStorei (GL_UNPACK_LSB_FIRST,  GL_FALSE);
 #endif
-  glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
+  if (theCtx->hasUnpackRowLength)
+  {
+    theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+  }
+  theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
-  glTexSubImage2D (GL_TEXTURE_2D, 0,
-                   myLastTilePx.Left, myLastTilePx.Top, (GLsizei )anImg.SizeX(), (GLsizei )anImg.SizeY(),
-                   aTexture->GetFormat(), GL_UNSIGNED_BYTE, anImg.Data());
+  theCtx->core11fwd->glTexSubImage2D (GL_TEXTURE_2D, 0,
+                                      myLastTilePx.Left, myLastTilePx.Top, (GLsizei )anImg.SizeX(), (GLsizei )anImg.SizeY(),
+                                      aTexture->GetFormat(), GL_UNSIGNED_BYTE, anImg.Data());
 
   OpenGl_Font::Tile aTile;
   aTile.uv.Left   = GLfloat(myLastTilePx.Left)                / GLfloat(aTexture->SizeX());
