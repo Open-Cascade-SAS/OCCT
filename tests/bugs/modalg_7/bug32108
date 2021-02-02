@@ -1,0 +1,21 @@
+puts "============================================================================================="
+puts "0032108: Modeling Algorithms - BRepAlgoAPI_Section is too slow"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32108_H502.brep] s1
+restore [locate_data_file bug32108_z.brep] s2
+
+dchrono h restart
+bsection result s1 s2 -na
+dchrono h stop counter SECTION_NO_APPROX
+
+dchrono h restart
+bsection result1 s1 s2
+dchrono h stop counter SECTION_WITH_APPROX
+
+checksection result -r 0
+checkprops result -l 9.15304 
+checkprops result1 -l 9.15304
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
