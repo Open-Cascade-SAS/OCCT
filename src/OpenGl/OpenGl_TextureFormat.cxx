@@ -217,6 +217,34 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       return OpenGl_TextureFormat();
     #endif
     }
+    case Image_Format_RGF_half:
+    {
+      aFormat.SetNbComponents (2);
+      aFormat.SetInternalFormat (GL_RG16F);
+      aFormat.SetPixelFormat (GL_RG);
+      aFormat.SetDataType (GL_HALF_FLOAT);
+      if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        aFormat.SetDataType (GL_HALF_FLOAT_OES);
+      #endif
+      }
+      return aFormat;
+    }
+    case Image_Format_RGBAF_half:
+    {
+      aFormat.SetNbComponents (4);
+      aFormat.SetInternalFormat (GL_RGBA16F);
+      aFormat.SetPixelFormat (GL_RGBA);
+      aFormat.SetDataType (GL_HALF_FLOAT);
+      if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        aFormat.SetDataType (GL_HALF_FLOAT_OES);
+      #endif
+      }
+      return aFormat;
+    }
     case Image_Format_RGBA:
     {
       aFormat.SetNbComponents (4);
@@ -442,7 +470,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RGBA);
       aFormat.SetDataType (GL_HALF_FLOAT);
-      aFormat.SetImageFormat (Image_Format_RGBAF);
+      aFormat.SetImageFormat (Image_Format_RGBAF_half);
       if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
       {
       #if defined(GL_ES_VERSION_2_0)
@@ -460,6 +488,23 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetPixelFormat (GL_RED);
       aFormat.SetDataType (GL_HALF_FLOAT);
       aFormat.SetImageFormat (Image_Format_GrayF);
+      if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
+      {
+      #if defined(GL_ES_VERSION_2_0)
+        aFormat.SetDataType (GL_HALF_FLOAT_OES);
+      #else
+        aFormat.SetDataType (GL_FLOAT);
+      #endif
+      }
+      return aFormat;
+    }
+    case GL_RG16F:
+    {
+      aFormat.SetNbComponents (2);
+      aFormat.SetInternalFormat (theSizedFormat);
+      aFormat.SetPixelFormat (GL_RG);
+      aFormat.SetDataType (GL_HALF_FLOAT);
+      aFormat.SetImageFormat (Image_Format_RGF_half);
       if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
       {
       #if defined(GL_ES_VERSION_2_0)

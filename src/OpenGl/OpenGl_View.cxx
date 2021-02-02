@@ -1188,41 +1188,70 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
         static const TCollection_AsciiString THE_SHARED_ENV_LUT_KEY("EnvLUT");
         if (!aCtx->GetResource (THE_SHARED_ENV_LUT_KEY, anEnvLUT))
         {
-          Handle(Graphic3d_TextureParams) aParams = new Graphic3d_TextureParams();
-          aParams->SetFilter (Graphic3d_TOTF_BILINEAR);
-          aParams->SetRepeat (Standard_False);
-          aParams->SetTextureUnit (aCtx->PBREnvLUTTexUnit());
-          anEnvLUT = new OpenGl_Texture(THE_SHARED_ENV_LUT_KEY, aParams);
-          Handle(Image_PixMap) aPixMap = new Image_PixMap();
+          bool toConvertHalfFloat = false;
+        #if defined(GL_ES_VERSION_2_0)
+          // GL_RG32F is not texture-filterable format in OpenGL ES without OES_texture_float_linear extension.
+          // GL_RG16F is texture-filterable since OpenGL ES 3.0 or OpenGL ES 2.0 + OES_texture_half_float_linear.
+          // OpenGL ES 3.0 allows initialization of GL_RG16F from 32-bit float data, but OpenGL ES 2.0 + OES_texture_half_float does not.
+          // Note that it is expected that GL_RG16F has enough precision for this table, so that it can be used also on desktop OpenGL.
+          const bool hasHalfFloat = aCtx->IsGlGreaterEqual (3, 0) || aCtx->CheckExtension ("GL_OES_texture_half_float_linear");
+          toConvertHalfFloat = !aCtx->IsGlGreaterEqual (3, 0) && hasHalfFloat;
+        #endif
+          Image_Format anImgFormat = Image_Format_UNKNOWN;
           if (aCtx->arbTexRG)
+          {
+            anImgFormat = toConvertHalfFloat ? Image_Format_RGF_half : Image_Format_RGF;
+          }
+          else
+          {
+            anImgFormat = toConvertHalfFloat ? Image_Format_RGBAF_half : Image_Format_RGBAF;
+          }
+
+          Handle(Image_PixMap) aPixMap = new Image_PixMap();
+          if (anImgFormat == Image_Format_RGF)
           {
             aPixMap->InitWrapper (Image_Format_RGF, (Standard_Byte*)Textures_EnvLUT, Textures_EnvLUTSize, Textures_EnvLUTSize);
           }
           else
           {
+            aPixMap->InitZero (anImgFormat, Textures_EnvLUTSize, Textures_EnvLUTSize);
             Image_PixMap aPixMapRG;
             aPixMapRG.InitWrapper (Image_Format_RGF, (Standard_Byte*)Textures_EnvLUT, Textures_EnvLUTSize, Textures_EnvLUTSize);
-            aPixMap->InitZero (Image_Format_RGBAF, Textures_EnvLUTSize, Textures_EnvLUTSize);
             for (Standard_Size aRowIter = 0; aRowIter < aPixMapRG.SizeY(); ++aRowIter)
             {
               for (Standard_Size aColIter = 0; aColIter < aPixMapRG.SizeX(); ++aColIter)
               {
                 const Image_ColorRGF& aPixelRG = aPixMapRG.Value<Image_ColorRGF> (aRowIter, aColIter);
-                Image_ColorRGBAF& aPixelRGBA = aPixMap->ChangeValue<Image_ColorRGBAF> (aRowIter, aColIter);
-                aPixelRGBA.r() = aPixelRG.r();
-                aPixelRGBA.g() = aPixelRG.g();
+                if (toConvertHalfFloat)
+                {
+                  NCollection_Vec2<uint16_t>& aPixelRGBA = aPixMap->ChangeValue<NCollection_Vec2<uint16_t>> (aRowIter, aColIter);
+                  aPixelRGBA.x() = Image_PixMap::ConvertToHalfFloat (aPixelRG.r());
+                  aPixelRGBA.y() = Image_PixMap::ConvertToHalfFloat (aPixelRG.g());
+                }
+                else
+                {
+                  Image_ColorRGBAF& aPixelRGBA = aPixMap->ChangeValue<Image_ColorRGBAF> (aRowIter, aColIter);
+                  aPixelRGBA.r() = aPixelRG.r();
+                  aPixelRGBA.g() = aPixelRG.g();
+                }
               }
             }
           }
 
           OpenGl_TextureFormat aTexFormat = OpenGl_TextureFormat::FindFormat (aCtx, aPixMap->Format(), false);
         #if defined(GL_ES_VERSION_2_0)
-          // GL_RG32F is not texture-filterable format on OpenGL ES without OES_texture_float_linear extension.
-          // GL_RG16F is texture-filterable since OpenGL ES 3.0 and can be initialized from 32-bit floats.
-          // Note that it is expected that GL_RG16F has enough precision for this table, so that it can be used also on desktop OpenGL.
-          //if (!aCtx->hasTexFloatLinear)
-          aTexFormat.SetInternalFormat (aCtx->arbTexRG ? GL_RG16F : GL_RGBA16F);
+          if (aTexFormat.IsValid()
+           && hasHalfFloat)
+          {
+            aTexFormat.SetInternalFormat (aCtx->arbTexRG ? GL_RG16F : GL_RGBA16F);
+          }
         #endif
+
+          Handle(Graphic3d_TextureParams) aParams = new Graphic3d_TextureParams();
+          aParams->SetFilter (Graphic3d_TOTF_BILINEAR);
+          aParams->SetRepeat (Standard_False);
+          aParams->SetTextureUnit (aCtx->PBREnvLUTTexUnit());
+          anEnvLUT = new OpenGl_Texture(THE_SHARED_ENV_LUT_KEY, aParams);
           if (!aTexFormat.IsValid()
            || !anEnvLUT->Init (aCtx, aTexFormat, Graphic3d_Vec2i((Standard_Integer)Textures_EnvLUTSize), Graphic3d_TOT_2D, aPixMap.get()))
           {

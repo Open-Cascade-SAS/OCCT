@@ -97,6 +97,8 @@ int Media_Frame::FormatOcct2FFmpeg (Image_Format theFormat)
     case Image_Format_RGBF:
     case Image_Format_BGRAF:
     case Image_Format_BGRF:
+    case Image_Format_RGF_half:
+    case Image_Format_RGBAF_half:
     case Image_Format_UNKNOWN:
       return AV_PIX_FMT_NONE; // unsupported
   }

@@ -3389,9 +3389,17 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     mySupportedFormats->Add (Image_Format_AlphaF);
     mySupportedFormats->Add (Image_Format_RGBF);
     mySupportedFormats->Add (Image_Format_RGBAF);
+    if (hasHalfFloatBuffer)
+    {
+      mySupportedFormats->Add (Image_Format_RGBAF_half);
+    }
     if (arbTexRG)
     {
       mySupportedFormats->Add (Image_Format_RGF);
+      if (hasHalfFloatBuffer)
+      {
+        mySupportedFormats->Add (Image_Format_RGF_half);
+      }
     }
     if (extBgra)
     {
@@ -3442,7 +3450,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
           && arbTexFloat
           && (IsGlGreaterEqual (3, 0)
         #if defined(GL_ES_VERSION_2_0)
-          || true // || CheckExtension ("GL_EXT_shader_texture_lod") fallback is used when extension is unavailable
+           || hasHighp
+        // || CheckExtension ("GL_EXT_shader_texture_lod") fallback is used when extension is unavailable
         #else
           || (IsGlGreaterEqual (2, 1) && CheckExtension ("GL_EXT_gpu_shader4"))
         #endif

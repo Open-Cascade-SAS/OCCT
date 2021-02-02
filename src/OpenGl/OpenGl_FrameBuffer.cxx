@@ -922,9 +922,14 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
       aFormat = GL_RGBA;
       aType   = GL_FLOAT;
       break;
+    case Image_Format_RGBAF_half:
+      aFormat = GL_RGBA;
+      aType   = GL_HALF_FLOAT;
+      break;
     case Image_Format_Alpha:
     case Image_Format_AlphaF:
       return Standard_False; // GL_ALPHA is no more supported in core context
+    case Image_Format_RGF_half:
     case Image_Format_UNKNOWN:
       return Standard_False;
   }

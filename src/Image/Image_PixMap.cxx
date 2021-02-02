@@ -62,6 +62,8 @@ namespace
     ImageFormatInfo(BGRF,    3, sizeof(float) * 3),
     ImageFormatInfo(RGBAF,   4, sizeof(float) * 4),
     ImageFormatInfo(BGRAF,   4, sizeof(float) * 4),
+    ImageFormatInfo(RGF_half,   2, sizeof(uint16_t) * 2),
+    ImageFormatInfo(RGBAF_half, 4, sizeof(uint16_t) * 4),
     CompressedImageFormatInfo(RGB_S3TC_DXT1,  3, 1), // DXT1 uses circa half a byte per pixel (64 bits per 4x4 block)
     CompressedImageFormatInfo(RGBA_S3TC_DXT1, 4, 1),
     CompressedImageFormatInfo(RGBA_S3TC_DXT3, 4, 1), // DXT3/5 uses circa 1 byte per pixel (128 bits per 4x4 block)
@@ -294,6 +296,17 @@ Quantity_ColorRGBA Image_PixMap::PixelColor (const Standard_Integer theX,
       const Image_ColorBGRF& aPixel = Value<Image_ColorBGRF> (theY, theX);
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
     }
+    case Image_Format_RGF_half:
+    {
+      const NCollection_Vec2<uint16_t>& aPixel = Value<NCollection_Vec2<uint16_t>> (theY, theX);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (ConvertFromHalfFloat (aPixel.x()), ConvertFromHalfFloat (aPixel.y()), 0.0f, 1.0f));
+    }
+    case Image_Format_RGBAF_half:
+    {
+      const NCollection_Vec4<uint16_t>& aPixel = Value<NCollection_Vec4<uint16_t>> (theY, theX);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (ConvertFromHalfFloat (aPixel.r()), ConvertFromHalfFloat (aPixel.g()),
+                                                          ConvertFromHalfFloat (aPixel.b()), ConvertFromHalfFloat (aPixel.a())));
+    }
     case Image_Format_RGBA:
     {
       const Image_ColorRGBA& aPixel = Value<Image_ColorRGBA> (theY, theX);
@@ -438,6 +451,22 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.r() = aColor.r();
       aPixel.g() = aColor.g();
       aPixel.b() = aColor.b();
+      return;
+    }
+    case Image_Format_RGF_half:
+    {
+      NCollection_Vec2<uint16_t>& aPixel = ChangeValue<NCollection_Vec2<uint16_t>> (theY, theX);
+      aPixel.x() = ConvertToHalfFloat (aColor.r());
+      aPixel.y() = ConvertToHalfFloat (aColor.g());
+      return;
+    }
+    case Image_Format_RGBAF_half:
+    {
+      NCollection_Vec4<uint16_t>& aPixel = ChangeValue<NCollection_Vec4<uint16_t>> (theY, theX);
+      aPixel.r() = ConvertToHalfFloat (aColor.r());
+      aPixel.g() = ConvertToHalfFloat (aColor.g());
+      aPixel.b() = ConvertToHalfFloat (aColor.b());
+      aPixel.a() = ConvertToHalfFloat (aColor.a());
       return;
     }
     case Image_Format_RGBA:
