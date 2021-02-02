@@ -48,6 +48,7 @@ private:
 
   void backup()
   {
+    myColorMask = myContext->ColorMaskRGBA();
     myContext->core11fwd->glGetIntegerv (GL_FRAMEBUFFER_BINDING, &myFBO);
     myShaderProgram = myContext->ActiveProgram();
     for (unsigned int i = 0; i < 4; ++i)
@@ -73,10 +74,12 @@ private:
     myContext->core11fwd->glDepthMask (GL_FALSE);
     myContext->core11fwd->glDisable (GL_BLEND);
     myContext->core11fwd->glDisable (GL_SCISSOR_TEST);
+    myContext->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
   }
 
   void restore()
   {
+    myContext->SetColorMaskRGBA (myColorMask);
     myContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myFBO);
     myContext->BindProgram (myShaderProgram);
     myContext->ResizeViewport (myViewport);
@@ -111,6 +114,7 @@ private:
   const Handle(OpenGl_Context) myContext;
   GLint                        myFBO;
   Handle(OpenGl_ShaderProgram) myShaderProgram;
+  NCollection_Vec4<bool>       myColorMask;
   Standard_Boolean             myDepthTestWasEnabled;
   Standard_Boolean             myDepthWrirtingWasEnablig;
   Standard_Boolean             myScissorTestWasEnabled;
