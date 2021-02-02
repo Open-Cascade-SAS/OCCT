@@ -3442,7 +3442,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
           && arbTexFloat
           && (IsGlGreaterEqual (3, 0)
         #if defined(GL_ES_VERSION_2_0)
-          || CheckExtension ("GL_EXT_shader_texture_lod")
+          || true // || CheckExtension ("GL_EXT_shader_texture_lod") fallback is used when extension is unavailable
         #else
           || (IsGlGreaterEqual (2, 1) && CheckExtension ("GL_EXT_gpu_shader4"))
         #endif

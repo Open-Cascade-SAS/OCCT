@@ -3206,6 +3206,11 @@ Standard_Boolean OpenGl_ShaderManager::preparePBREnvBakingProgram (Standard_Inte
     aProgramSrc->SetHeader ("#extension GL_EXT_shader_texture_lod : enable\n"
                             "#define textureCubeLod textureCubeLodEXT");
   }
+  else
+  {
+    myContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: incomplete PBR lighting implementation due to missing OpenGL ES 3.0 or GL_EXT_shader_texture_lod support.");
+  }
 #else
   aProgramSrc->SetHeader ("#version 120");
 #endif

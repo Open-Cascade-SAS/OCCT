@@ -32,7 +32,11 @@
   #define occTexture2D   texture2D
   #define occTexture3D   texture3D
   #define occTextureCube textureCube
-  #define occTextureCubeLod textureCubeLod
+  #if !defined(GL_ES) || defined(textureCubeLod)
+    #define occTextureCubeLod textureCubeLod
+  #else // fallback
+    #define occTextureCubeLod(theSampl,theCoord,theLod) textureCube(theSampl,theCoord)
+  #endif
 #endif
 
 #ifdef GL_ES
