@@ -23,13 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 
 class RWGltf_GltfLatePrimitiveArray;
-
-//! The interface for shared file.
-struct RWGltf_GltfSharedIStream
-{
-  std::ifstream           Stream; //!< shared file
-  TCollection_AsciiString Path;   //!< path to currently opened stream
-};
+class OSD_FileSystem;
 
 //! Interface for reading primitive array from glTF buffer.
 class RWGltf_PrimitiveArrayReader : public Standard_Transient
@@ -53,9 +47,10 @@ public:
   void SetCoordinateSystemConverter (const RWMesh_CoordinateSystemConverter& theConverter) { myCoordSysConverter = theConverter; }
 
   //! Load primitive array.
-  Handle(Poly_Triangulation) Load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh)
+  Handle(Poly_Triangulation) Load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
+                                   const Handle(OSD_FileSystem)& theFileSystem)
   {
-    if (load (theMesh))
+    if (load (theMesh, theFileSystem))
     {
       return result();
     }
@@ -68,7 +63,8 @@ protected:
   Standard_EXPORT virtual void reset() = 0;
 
   //! Load primitive array.
-  Standard_EXPORT virtual bool load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh);
+  Standard_EXPORT virtual bool load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
+                                     const Handle(OSD_FileSystem)& theFileSystem);
 
   //! Return result primitive array.
   Standard_EXPORT virtual Handle(Poly_Triangulation) result() = 0;
@@ -92,7 +88,6 @@ protected:
 protected:
 
   TCollection_AsciiString          myErrorPrefix;
-  RWGltf_GltfSharedIStream         mySharedStream;
   RWMesh_CoordinateSystemConverter myCoordSysConverter;
 
 };

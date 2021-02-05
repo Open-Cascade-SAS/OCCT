@@ -22,6 +22,8 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_OStream.hxx>
+
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class gp_XYZ;

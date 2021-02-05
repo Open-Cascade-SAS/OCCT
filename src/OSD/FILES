@@ -1,5 +1,7 @@
 OSD.cxx
 OSD.hxx
+OSD_CachedFileSystem.cxx
+OSD_CachedFileSystem.hxx
 OSD_Chronometer.cxx
 OSD_Chronometer.hxx
 OSD_Directory.cxx
@@ -39,12 +41,18 @@ OSD_FileIterator.cxx
 OSD_FileIterator.hxx
 OSD_FileNode.cxx
 OSD_FileNode.hxx
+OSD_FileSystem.cxx
+OSD_FileSystem.hxx
+OSD_FileSystemSelector.cxx
+OSD_FileSystemSelector.hxx
 OSD_FromWhere.hxx
 OSD_Function.hxx
 OSD_Host.cxx
 OSD_Host.hxx
 OSD_KindFile.hxx
 OSD_LoadMode.hxx
+OSD_LocalFileSystem.cxx
+OSD_LocalFileSystem.hxx
 OSD_LockType.hxx
 OSD_MAllocHook.cxx
 OSD_MAllocHook.hxx
@@ -82,6 +90,7 @@ OSD_SIGQUIT.hxx
 OSD_SIGSEGV.hxx
 OSD_SIGSYS.hxx
 OSD_SingleProtection.hxx
+OSD_StreamBuffer.hxx
 OSD_SysType.hxx
 OSD_Thread.cxx
 OSD_Thread.hxx

@@ -16,7 +16,6 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_NullValue.hxx>
 #include <Standard_Stream.hxx>
-#include <Standard_OStream.hxx>
 
 //============================================================================
 // function : HashCode

@@ -23,7 +23,6 @@
 #include <Standard_CLocaleSentry.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_OStream.hxx>
 #include <string.h>
 #include <stdarg.h>
 

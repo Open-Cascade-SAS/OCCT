@@ -19,7 +19,7 @@
 #include <BRep_Builder.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_CachedFileSystem.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -39,7 +39,8 @@ void RWGltf_PrimitiveArrayReader::reportError (const TCollection_AsciiString& th
 // function : load
 // purpose  :
 // =======================================================================
-bool RWGltf_PrimitiveArrayReader::load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh)
+bool RWGltf_PrimitiveArrayReader::load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
+                                        const Handle(OSD_FileSystem)& theFileSystem)
 {
   reset();
   if (theMesh.IsNull()
@@ -68,31 +69,13 @@ bool RWGltf_PrimitiveArrayReader::load (const Handle(RWGltf_GltfLatePrimitiveArr
       return false;
     }
 
-    if (mySharedStream.Path != aData.StreamUri)
+    opencascade::std::shared_ptr<std::istream> aSharedStream = theFileSystem->OpenIStream (aData.StreamUri, std::ios::in | std::ios::binary, aData.StreamOffset);
+    if (aSharedStream.get() == NULL)
     {
-      mySharedStream.Stream.close();
-      mySharedStream.Path = aData.StreamUri;
-    }
-    if (!mySharedStream.Stream.is_open())
-    {
-      OSD_OpenStream (mySharedStream.Stream, aData.StreamUri.ToCString(), std::ios::in | std::ios::binary);
-      if (!mySharedStream.Stream.is_open())
-      {
-        mySharedStream.Stream.close();
-        reportError (TCollection_AsciiString ("Buffer '") + theMesh->Id() + "refers to non-existing file '" + aData.StreamUri + "'.");
-        return false;
-      }
-    }
-
-    mySharedStream.Stream.seekg ((std::streamoff )aData.StreamOffset, std::ios_base::beg);
-    if (!mySharedStream.Stream.good())
-    {
-      mySharedStream.Stream.close();
-      reportError (TCollection_AsciiString ("Buffer '") + theMesh->Id() + "refers to invalid location.");
+      reportError (TCollection_AsciiString ("Buffer '") + theMesh->Id() + "refers to invalid file '" + aData.StreamUri + "'.");
       return false;
     }
-
-    if (!readBuffer (mySharedStream.Stream, theMesh->Id(), aData.Accessor, aData.Type, theMesh->PrimitiveMode()))
+    if (!readBuffer (*aSharedStream.get(), theMesh->Id(), aData.Accessor, aData.Type, theMesh->PrimitiveMode()))
     {
       return false;
     }

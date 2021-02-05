@@ -18,7 +18,6 @@
 #include <Standard_NumericError.hxx>
 #include <Standard_NullValue.hxx>
 #include <Standard_Stream.hxx>
-#include <Standard_OStream.hxx>
 
 static const Standard_Real ACosLimit = 1. + Epsilon(1.);
 

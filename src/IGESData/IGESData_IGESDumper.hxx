@@ -23,6 +23,8 @@
 
 #include <IGESData_SpecificLib.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_OStream.hxx>
+
 class IGESData_IGESModel;
 class Interface_InterfaceError;
 class IGESData_Protocol;

@@ -22,6 +22,7 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
+#include <OSD_CachedFileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_ThreadPool.hxx>
 
@@ -36,6 +37,7 @@ public:
 
   struct GltfReaderTLS
   {
+    Handle(OSD_FileSystem) FileSystem;
     Handle(RWGltf_PrimitiveArrayReader) Reader;
   };
 
@@ -66,11 +68,15 @@ public:
       aTlsData.Reader->SetErrorPrefix (myErrPrefix);
       aTlsData.Reader->SetCoordinateSystemConverter (myCafReader->myCoordSysConverter);
     }
+    if (aTlsData.FileSystem.IsNull())
+    {
+      aTlsData.FileSystem = new OSD_CachedFileSystem();
+    }
 
     TopLoc_Location aDummyLoc;
     TopoDS_Face& aFace = myFaceList->ChangeValue (theFaceIndex);
     Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (aFace, aDummyLoc));
-    Handle(Poly_Triangulation) aPolyData = aTlsData.Reader->Load (aLateData);
+    Handle(Poly_Triangulation) aPolyData = aTlsData.Reader->Load (aLateData, aTlsData.FileSystem);
     BRep_Builder aBuilder;
     aBuilder.UpdateFace (aFace, aPolyData);
 
