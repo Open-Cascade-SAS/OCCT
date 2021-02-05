@@ -27,6 +27,24 @@ namespace
 {
   static volatile Standard_Integer THE_MARKER_IMAGE_COUNTER = 0;
 
+  //! Names of built-in markers
+  static const char* THE_MARKER_NAMES[Aspect_TOM_USERDEFINED] =
+  {
+    ".",     // Aspect_TOM_POINT
+    "+",     // Aspect_TOM_PLUS
+    "*",     // Aspect_TOM_STAR
+    "x",     // Aspect_TOM_X
+    "o",     // Aspect_TOM_O
+    "o.",    // Aspect_TOM_O_POINT
+    "o+",    // Aspect_TOM_O_PLUS
+    "o*",    // Aspect_TOM_O_STAR
+    "ox",    // Aspect_TOM_O_X
+    "ring1", // Aspect_TOM_RING1
+    "ring2", // Aspect_TOM_RING2
+    "ring3", // Aspect_TOM_RING3
+    "ball"   // Aspect_TOM_BALL
+  };
+
   //! Returns a parameters for the marker of the specified type and scale.
   static void getMarkerBitMapParam (const Aspect_TypeOfMarker theMarkerType,
                                     const Standard_ShortReal theScale,
@@ -169,6 +187,37 @@ Graphic3d_MarkerImage::Graphic3d_MarkerImage (const Handle(Image_PixMap)& theIma
   myImageAlphaId = TCollection_AsciiString ("Graphic3d_MarkerImageAlpha_")
                  + TCollection_AsciiString (THE_MARKER_IMAGE_COUNTER);
 
+  if (!theImageAlpha.IsNull())
+  {
+    if (theImageAlpha->Format() != Image_Format_Alpha
+     && theImageAlpha->Format() != Image_Format_Gray)
+    {
+      throw Standard_ProgramError ("Graphic3d_MarkerImage, wrong color format of alpha image");
+    }
+    if (theImageAlpha->SizeX() != theImage->SizeX()
+     || theImageAlpha->SizeY() != theImage->SizeY())
+    {
+      throw Standard_ProgramError ("Graphic3d_MarkerImage, wrong dimensions of alpha image");
+    }
+  }
+}
+
+// =======================================================================
+// function : Graphic3d_MarkerImage
+// purpose  :
+// =======================================================================
+Graphic3d_MarkerImage::Graphic3d_MarkerImage (const TCollection_AsciiString& theId,
+                                              const TCollection_AsciiString& theAlphaId,
+                                              const Handle(Image_PixMap)& theImage,
+                                              const Handle(Image_PixMap)& theImageAlpha)
+: myImageId (theId),
+  myImageAlphaId (theAlphaId),
+  myImage  (theImage),
+  myImageAlpha (theImageAlpha),
+  myMargin (1),
+  myWidth  ((Standard_Integer )theImage->Width()),
+  myHeight ((Standard_Integer )theImage->Height())
+{
   if (!theImageAlpha.IsNull())
   {
     if (theImageAlpha->Format() != Image_Format_Alpha
@@ -369,6 +418,29 @@ Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker (const Aspec
                                                                      const Standard_ShortReal theScale,
                                                                      const Graphic3d_Vec4& theColor)
 {
+  if (theMarkerType == Aspect_TOM_USERDEFINED
+   || theMarkerType == Aspect_TOM_EMPTY)
+  {
+    return Handle(Graphic3d_MarkerImage)();
+  }
+
+  // predefined markers are defined with 0.5 step
+  const Standard_Integer aScaleInt = Standard_Integer(theScale * 10.0f + 0.5f);
+  TCollection_AsciiString aKey  = TCollection_AsciiString ("Graphic3d_MarkerImage_")      + THE_MARKER_NAMES[theMarkerType] + "_" + aScaleInt;
+  TCollection_AsciiString aKeyA = TCollection_AsciiString ("Graphic3d_MarkerImageAlpha_") + THE_MARKER_NAMES[theMarkerType] + "_" + aScaleInt;
+  if (theMarkerType == Aspect_TOM_BALL)
+  {
+    unsigned int aColor[3] =
+    {
+      (unsigned int )(255.0f * theColor.r()),
+      (unsigned int )(255.0f * theColor.g()),
+      (unsigned int )(255.0f * theColor.b())
+    };
+    char aBytes[8];
+    sprintf (aBytes, "%02X%02X%02X", aColor[0], aColor[1], aColor[2]);
+    aKey += aBytes;
+  }
+
   switch (theMarkerType)
   {
     case Aspect_TOM_O_POINT:
@@ -392,7 +464,7 @@ Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker (const Aspec
         aMarkerImage2 = getTextureImage (Aspect_TypeOfMarker(theMarkerType - Aspect_TOM_O_POINT), theScale);
       }
       Handle(Image_PixMap) anImage = mergeImages (aMarkerImage1->GetImage(), aMarkerImage2->GetImage());
-      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (anImage);
+      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (aKey, aKey, anImage);
       return aNewMarkerImage;
     }
     case Aspect_TOM_RING1:
@@ -420,7 +492,7 @@ Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker (const Aspec
       {
         anImage = mergeImages (anImage, getTextureImage (Aspect_TOM_O, aScale)->GetImage());
       }
-      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (anImage);
+      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (aKey, aKey, anImage);
       return aNewMarkerImage;
     }
     case Aspect_TOM_BALL:
@@ -470,12 +542,15 @@ Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage::StandardMarker (const Aspec
         }
         aScale -= aDelta;
       }
-      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (anImage, anImageA);
+      Handle(Graphic3d_MarkerImage) aNewMarkerImage = new Graphic3d_MarkerImage (aKey, aKeyA, anImage, anImageA);
       return aNewMarkerImage;
     }
     default:
     {
-      return getTextureImage (theMarkerType, theScale);
+      Handle(Graphic3d_MarkerImage) aNewMarkerImage = getTextureImage (theMarkerType, theScale);
+      aNewMarkerImage->myImageId = aKey;
+      aNewMarkerImage->myImageAlphaId = aKey;
+      return aNewMarkerImage;
     }
   }
 }

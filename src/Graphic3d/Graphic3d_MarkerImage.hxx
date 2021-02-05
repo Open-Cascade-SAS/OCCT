@@ -85,6 +85,14 @@ public:
   Standard_EXPORT Handle(TColStd_HArray1OfByte) GetBitMapArray (const Standard_Real theAlphaValue = 0.5,
                                                                 const Standard_Boolean theIsTopDown = false) const;
 
+protected:
+
+  //! Constructor from existing pixmap with predefined ids.
+  Standard_EXPORT Graphic3d_MarkerImage (const TCollection_AsciiString& theId,
+                                         const TCollection_AsciiString& theAlphaId,
+                                         const Handle(Image_PixMap)& theImage,
+                                         const Handle(Image_PixMap)& theImageAlpha = Handle(Image_PixMap)());
+
 private:
 
   TCollection_AsciiString       myImageId;      //!< resource identifier
