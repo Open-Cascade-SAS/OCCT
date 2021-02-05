@@ -206,9 +206,16 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
 
   Handle(OpenGl_PointSprite)& aSprite  = mySprite;
   Handle(OpenGl_PointSprite)& aSpriteA = mySpriteA;
-  if (!aNewKey.IsEmpty()
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, aSpriteA) // alpha sprite could be shared
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  aSprite))
+  if (!aNewKey.IsEmpty())
+  {
+    theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, aSpriteA); // alpha sprite could be shared
+    theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  aSprite);
+  }
+
+  const bool hadAlreadyRGBA  = !aSprite.IsNull();
+  const bool hadAlreadyAlpha = !aSpriteA.IsNull();
+  if (hadAlreadyRGBA
+   && hadAlreadyAlpha)
   {
     // reuse shared resource
     if (!aSprite->IsDisplayList())
@@ -218,15 +225,20 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
-  const bool hadAlreadyAlpha = !aSpriteA.IsNull();
   if (!hadAlreadyAlpha)
   {
     aSpriteA = new OpenGl_PointSprite (aNewKeyA);
   }
-  aSprite = new OpenGl_PointSprite (aNewKey);
+  if (!hadAlreadyRGBA)
+  {
+    aSprite = new OpenGl_PointSprite (aNewKey);
+  }
   if (!aNewKey.IsEmpty())
   {
-    theCtx->ShareResource (aNewKey, aSprite);
+    if (!hadAlreadyRGBA)
+    {
+      theCtx->ShareResource (aNewKey, aSprite);
+    }
     if (!hadAlreadyAlpha)
     {
       theCtx->ShareResource (aNewKeyA, aSpriteA);
@@ -249,7 +261,10 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     Handle(Image_PixMap) anImage = aNewMarkerImage->GetImage();
     theMarkerSize = Max ((Standard_ShortReal )anImage->Width(),(Standard_ShortReal )anImage->Height());
 
-    aSprite->Init (theCtx, *anImage, Graphic3d_TOT_2D, true);
+    if (!hadAlreadyRGBA)
+    {
+      aSprite->Init (theCtx, *anImage, Graphic3d_TOT_2D, true);
+    }
     if (!hadAlreadyAlpha)
     {
       if (Handle(Image_PixMap) anImageA = aSprite->GetFormat() != GL_ALPHA ? aNewMarkerImage->GetImageAlpha() : Handle(Image_PixMap)())
