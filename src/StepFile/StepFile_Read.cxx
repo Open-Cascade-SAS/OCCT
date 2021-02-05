@@ -80,7 +80,7 @@ static Standard_Integer StepFile_Read (const char* theName,
     aStreamPtr = &aFileStream;
   }
 
-  if (aStreamPtr->bad())
+  if (aStreamPtr->fail())
   {
     return -1;
   }
@@ -166,7 +166,7 @@ static Standard_Integer StepFile_Read (const char* theName,
   sout << "      ... Parameters prepared ...\n";
 
 #ifdef CHRONOMESURE
-  c.Show(sout)
+  c.Show(sout);
 #endif
 
   readtool.LoadModel(theStepModel);
