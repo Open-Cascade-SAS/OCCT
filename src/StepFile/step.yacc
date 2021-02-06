@@ -181,13 +181,13 @@ enttype	: TYPE
 void step::parser::error(const std::string& m)
 {
   char newmess[120];
-  Standard_Boolean isSyntax = (Standard_Boolean)strncmp(m.c_str(), "syntax error", 13);
-  if (isSyntax && strlen(m.c_str()) > 13)
-    sprintf(newmess, "Undefined Parsing: Line %d: %s: %s", scanner->lineno() + 1, "Incorrect syntax", m.c_str() + 14);
+  Standard_Boolean isSyntax = strncmp(m.c_str(), "syntax error", 12) == 0;
+  if (isSyntax && m.length() > 13)
+    Sprintf(newmess, "Undefined Parsing: Line %d: %s: %s", scanner->lineno() + 1, "Incorrect syntax", m.c_str() + 14);
   else if (isSyntax)
-    sprintf(newmess, "Undefined Parsing: Line %d: Incorrect syntax", scanner->lineno() + 1);
+    Sprintf(newmess, "Undefined Parsing: Line %d: Incorrect syntax", scanner->lineno() + 1);
   else
-    sprintf(newmess, "Undefined Parsing: Line %d: %s", scanner->lineno() + 1, m.c_str());
+    Sprintf(newmess, "Undefined Parsing: Line %d: %s", scanner->lineno() + 1, m.c_str());
 
   StepFile_Interrupt(newmess, Standard_False);
 
