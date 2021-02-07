@@ -137,6 +137,28 @@ WasmOcctView::WasmOcctView()
 : myDevicePixelRatio (1.0f),
   myUpdateRequests (0)
 {
+  addActionHotKeys (Aspect_VKey_NavForward,        Aspect_VKey_W, Aspect_VKey_W | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavBackward ,      Aspect_VKey_S, Aspect_VKey_S | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideLeft,      Aspect_VKey_A, Aspect_VKey_A | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideRight,     Aspect_VKey_D, Aspect_VKey_D | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavRollCCW,        Aspect_VKey_Q, Aspect_VKey_Q | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavRollCW,         Aspect_VKey_E, Aspect_VKey_E | Aspect_VKeyFlags_SHIFT);
+
+  addActionHotKeys (Aspect_VKey_NavSpeedIncrease,  Aspect_VKey_Plus,  Aspect_VKey_Plus  | Aspect_VKeyFlags_SHIFT,
+                                                   Aspect_VKey_Equal,
+                                                   Aspect_VKey_NumpadAdd, Aspect_VKey_NumpadAdd | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSpeedDecrease,  Aspect_VKey_Minus, Aspect_VKey_Minus | Aspect_VKeyFlags_SHIFT,
+                                                   Aspect_VKey_NumpadSubtract, Aspect_VKey_NumpadSubtract | Aspect_VKeyFlags_SHIFT);
+
+  // arrow keys conflict with browser page scrolling, so better be avoided in non-fullscreen mode
+  addActionHotKeys (Aspect_VKey_NavLookUp,         Aspect_VKey_Numpad8); // Aspect_VKey_Up
+  addActionHotKeys (Aspect_VKey_NavLookDown,       Aspect_VKey_Numpad2); // Aspect_VKey_Down
+  addActionHotKeys (Aspect_VKey_NavLookLeft,       Aspect_VKey_Numpad4); // Aspect_VKey_Left
+  addActionHotKeys (Aspect_VKey_NavLookRight,      Aspect_VKey_Numpad6); // Aspect_VKey_Right
+  addActionHotKeys (Aspect_VKey_NavSlideLeft,      Aspect_VKey_Numpad1); // Aspect_VKey_Left |Aspect_VKeyFlags_SHIFT
+  addActionHotKeys (Aspect_VKey_NavSlideRight,     Aspect_VKey_Numpad3); // Aspect_VKey_Right|Aspect_VKeyFlags_SHIFT
+  addActionHotKeys (Aspect_VKey_NavSlideUp,        Aspect_VKey_Numpad9); // Aspect_VKey_Up   |Aspect_VKeyFlags_SHIFT
+  addActionHotKeys (Aspect_VKey_NavSlideDown,      Aspect_VKey_Numpad7); // Aspect_VKey_Down |Aspect_VKeyFlags_SHIFT
 }
 
 // ================================================================
@@ -430,6 +452,14 @@ void WasmOcctView::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCt
 {
   myUpdateRequests = 0;
   AIS_ViewController::handleViewRedraw (theCtx, theView);
+
+  for (NCollection_DataMap<unsigned int, Aspect_VKey>::Iterator aNavKeyIter (myNavKeyMap);
+       !myToAskNextFrame && aNavKeyIter.More(); aNavKeyIter.Next())
+  {
+    const Aspect_VKey aVKey = aNavKeyIter.Key() & ~Aspect_VKeyFlags_ALL;
+    myToAskNextFrame = myKeys.IsKeyDown (aVKey);
+  }
+
   if (myToAskNextFrame)
   {
     // ask more frames
@@ -697,6 +727,43 @@ EM_BOOL WasmOcctView::onTouchEvent (int theEventType, const EmscriptenTouchEvent
 }
 
 // ================================================================
+// Function : navigationKeyModifierSwitch
+// Purpose  :
+// ================================================================
+bool WasmOcctView::navigationKeyModifierSwitch (unsigned int theModifOld,
+                                                unsigned int theModifNew,
+                                                double       theTimeStamp)
+{
+  bool hasActions = false;
+  for (unsigned int aKeyIter = 0; aKeyIter < Aspect_VKey_ModifiersLower; ++aKeyIter)
+  {
+    if (!myKeys.IsKeyDown (aKeyIter))
+    {
+      continue;
+    }
+
+    Aspect_VKey anActionOld = Aspect_VKey_UNKNOWN, anActionNew = Aspect_VKey_UNKNOWN;
+    myNavKeyMap.Find (aKeyIter | theModifOld, anActionOld);
+    myNavKeyMap.Find (aKeyIter | theModifNew, anActionNew);
+    if (anActionOld == anActionNew)
+    {
+      continue;
+    }
+
+    if (anActionOld != Aspect_VKey_UNKNOWN)
+    {
+      myKeys.KeyUp (anActionOld, theTimeStamp);
+    }
+    if (anActionNew != Aspect_VKey_UNKNOWN)
+    {
+      hasActions = true;
+      myKeys.KeyDown (anActionNew, theTimeStamp);
+    }
+  }
+  return hasActions;
+}
+
+// ================================================================
 // Function : onKeyDownEvent
 // Purpose  :
 // ================================================================
@@ -714,15 +781,27 @@ EM_BOOL WasmOcctView::onKeyDownEvent (int theEventType, const EmscriptenKeyboard
   {
     return EM_FALSE;
   }
-
-  if (theEvent->repeat == EM_FALSE)
+  if (theEvent->repeat == EM_TRUE)
   {
-    myKeys.KeyDown (aVKey, aTimeStamp);
+    return EM_FALSE;
   }
 
-  if (Aspect_VKey2Modifier (aVKey) == 0)
+  const unsigned int aModifOld = myKeys.Modifiers();
+  AIS_ViewController::KeyDown (aVKey, aTimeStamp);
+
+  const unsigned int aModifNew = myKeys.Modifiers();
+  if (aModifNew != aModifOld
+   && navigationKeyModifierSwitch (aModifOld, aModifNew, aTimeStamp))
   {
-    // normal key
+    // modifier key just pressed
+  }
+
+  Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
+  if (myNavKeyMap.Find (aVKey | myKeys.Modifiers(), anAction)
+  &&  anAction != Aspect_VKey_UNKNOWN)
+  {
+    AIS_ViewController::KeyDown (anAction, aTimeStamp);
+    UpdateView();
   }
   return EM_FALSE;
 }
@@ -746,28 +825,43 @@ EM_BOOL WasmOcctView::onKeyUpEvent (int theEventType, const EmscriptenKeyboardEv
     return EM_FALSE;
   }
 
-  if (theEvent->repeat == EM_TRUE)
+  const unsigned int aModifOld = myKeys.Modifiers();
+  AIS_ViewController::KeyUp (aVKey, aTimeStamp);
+
+  Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
+  if (myNavKeyMap.Find (aVKey | myKeys.Modifiers(), anAction)
+  &&  anAction != Aspect_VKey_UNKNOWN)
   {
-    return EM_FALSE;
+    AIS_ViewController::KeyUp (anAction, aTimeStamp);
+    UpdateView();
   }
 
-  const unsigned int aModif = myKeys.Modifiers();
-  myKeys.KeyUp (aVKey, aTimeStamp);
-  if (Aspect_VKey2Modifier (aVKey) == 0)
+  const unsigned int aModifNew = myKeys.Modifiers();
+  if (aModifNew != aModifOld
+   && navigationKeyModifierSwitch (aModifOld, aModifNew, aTimeStamp))
   {
-    // normal key released
-    switch (aVKey | aModif)
+    // modifier key released
+  }
+
+  return processKeyPress (aVKey | aModifNew) ? EM_TRUE : EM_FALSE;
+}
+
+//==============================================================================
+//function : processKeyPress
+//purpose  :
+//==============================================================================
+bool WasmOcctView::processKeyPress (Aspect_VKey theKey)
+{
+  switch (theKey)
+  {
+    case Aspect_VKey_F:
     {
-      case Aspect_VKey_F:
-      {
-        myView->FitAll (0.01, false);
-        myView->Invalidate();
-        updateView();
-        return EM_TRUE;
-      }
+      myView->FitAll (0.01, false);
+      UpdateView();
+      return true;
     }
   }
-  return EM_FALSE;
+  return false;
 }
 
 // ================================================================

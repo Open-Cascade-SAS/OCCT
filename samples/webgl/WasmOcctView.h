@@ -211,7 +211,34 @@ private:
 
 private:
 
+  //! Register hot-keys for specified Action.
+  void addActionHotKeys (Aspect_VKey theAction,
+                         unsigned int theHotKey1 = 0,
+                         unsigned int theHotKey2 = 0,
+                         unsigned int theHotKey3 = 0,
+                         unsigned int theHotKey4 = 0,
+                         unsigned int theHotKey5 = 0)
+  {
+    if (theHotKey1 != 0) { myNavKeyMap.Bind (theHotKey1, theAction); }
+    if (theHotKey2 != 0) { myNavKeyMap.Bind (theHotKey2, theAction); }
+    if (theHotKey3 != 0) { myNavKeyMap.Bind (theHotKey3, theAction); }
+    if (theHotKey4 != 0) { myNavKeyMap.Bind (theHotKey4, theAction); }
+    if (theHotKey5 != 0) { myNavKeyMap.Bind (theHotKey5, theAction); }
+  }
+
+  //! Handle navigation keys.
+  bool navigationKeyModifierSwitch (unsigned int theModifOld,
+                                    unsigned int theModifNew,
+                                    double       theTimeStamp);
+
+  //! Handle hot-key.
+  bool processKeyPress (Aspect_VKey theKey);
+
+private:
+
   NCollection_IndexedDataMap<TCollection_AsciiString, Handle(AIS_InteractiveObject)> myObjects; //!< map of named objects
+
+  NCollection_DataMap<unsigned int, Aspect_VKey> myNavKeyMap; //!< map of Hot-Key (key+modifiers) to Action
 
   Handle(AIS_InteractiveContext) myContext;          //!< interactive context
   Handle(V3d_View)               myView;             //!< 3D view
