@@ -15,5 +15,5 @@ for {set i 1} {$i < 10} {incr i} {
   Close D
 
   lappend listmem [meminfo h]
-  checktrend $listmem 0 0 "Memory leak"
+  checktrend $listmem 50 50 "Memory leak"
 }
