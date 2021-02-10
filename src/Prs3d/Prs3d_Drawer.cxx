@@ -1140,7 +1140,7 @@ Standard_Boolean Prs3d_Drawer::SetOwnLineAspects (const Handle(Prs3d_Drawer)& th
     if (!aLink.IsNull())
     {
       *myVIsoAspect->Aspect() = *aLink->VIsoAspect()->Aspect();
-      myUIsoAspect->SetNumber (aLink->VIsoAspect()->Number());
+      myVIsoAspect->SetNumber (aLink->VIsoAspect()->Number());
     }
     myHasOwnVIsoAspect = true;
   }
