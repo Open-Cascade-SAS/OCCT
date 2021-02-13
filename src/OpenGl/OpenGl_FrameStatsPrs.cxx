@@ -405,7 +405,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     aCtx->WorldViewState.Push();
     if (!myChartTrsfPers.IsNull())
     {
-      myChartTrsfPers->Apply (theWorkspace->View()->Camera(),
+      myChartTrsfPers->Apply (aCtx->Camera(),
                               aCtx->ProjectionState.Current(), aCtx->WorldViewState.ChangeCurrent(),
                               aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
     }

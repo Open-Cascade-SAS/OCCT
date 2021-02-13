@@ -20,6 +20,7 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_View.hxx>
@@ -604,7 +605,7 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
     aManager->UpdateLightSourceStateTo (aLayerSettings.Lights(), theWorkspace->View()->SpecIBLMapLevels(), Handle(OpenGl_ShadowMapArray)());
   }
 
-  const Handle(Graphic3d_Camera)& aWorldCamera = theWorkspace->View()->Camera();
+  const Handle(Graphic3d_Camera)& aWorldCamera = aCtx->Camera();
   if (hasLocalCS)
   {
     // Apply local camera transformation.
@@ -645,6 +646,15 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
     NCollection_Mat4<Standard_Real> aWorldView = aWorldCamera->OrientationMatrix();
     Graphic3d_TransformUtils::Translate (aWorldView, aLayerSettings.Origin().X(), aLayerSettings.Origin().Y(), aLayerSettings.Origin().Z());
 
+    if (!aManager->LightSourceState().ShadowMaps().IsNull())
+    {
+      // shift shadowmap matrix
+      for (OpenGl_ShadowMapArray::Iterator aShadowIter (*aManager->LightSourceState().ShadowMaps()); aShadowIter.More(); aShadowIter.Next())
+      {
+        aShadowIter.Value()->UpdateCamera (*theWorkspace->View(), &aLayerSettings.Origin());
+      }
+    }
+
     NCollection_Mat4<Standard_ShortReal> aWorldViewF;
     aWorldViewF.ConvertFrom (aWorldView);
     aCtx->WorldViewState.SetCurrent (aWorldViewF);
@@ -676,6 +686,15 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
   }
   if (hasLocalCS)
   {
+    if (!aManager->LightSourceState().ShadowMaps().IsNull())
+    {
+      // restore shadowmap matrix
+      for (OpenGl_ShadowMapArray::Iterator aShadowIter (*aManager->LightSourceState().ShadowMaps()); aShadowIter.More(); aShadowIter.Next())
+      {
+        aShadowIter.Value()->UpdateCamera (*theWorkspace->View(), &gp::Origin().XYZ());
+      }
+    }
+
     aCtx->ShaderManager()->RevertClippingState();
     aCtx->ShaderManager()->UpdateLightSourceState();
 

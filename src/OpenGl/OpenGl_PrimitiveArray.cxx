@@ -1037,7 +1037,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       const Graphic3d_Vec2i aViewSize (aCtx->Viewport()[2], aCtx->Viewport()[3]);
       const Standard_Integer aMin = aViewSize.minComp();
       const GLfloat anEdgeWidth  = (GLfloat )anAspectFace->Aspect()->EdgeWidth() * aCtx->LineWidthScale() / (GLfloat )aMin;
-      const GLfloat anOrthoScale = theWorkspace->View()->Camera()->IsOrthographic() ? (GLfloat )theWorkspace->View()->Camera()->Scale() : -1.0f;
+      const GLfloat anOrthoScale = aCtx->Camera()->IsOrthographic() ? (GLfloat )aCtx->Camera()->Scale() : -1.0f;
 
       const Handle(OpenGl_ShaderProgram)& anOutlineProgram = aCtx->ActiveProgram();
       anOutlineProgram->SetUniform (aCtx, anOutlineProgram->GetStateLocation (OpenGl_OCCT_SILHOUETTE_THICKNESS), anEdgeWidth);

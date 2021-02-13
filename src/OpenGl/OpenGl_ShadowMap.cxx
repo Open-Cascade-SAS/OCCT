@@ -85,10 +85,11 @@ const Handle(OpenGl_Texture)& OpenGl_ShadowMap::Texture() const
 // function : UpdateCamera
 // purpose  :
 // =======================================================================
-bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView)
+bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView,
+                                     const gp_XYZ* theOrigin)
 {
-  const Bnd_Box aMinMaxBox  = theView.MinMaxValues (false); // applicative min max boundaries
-  const Bnd_Box aGraphicBox = theView.MinMaxValues (true);  // real graphical boundaries (not accounting infinite flag).
+  const Bnd_Box aMinMaxBox  = theOrigin == NULL ? theView.MinMaxValues (false) : Bnd_Box(); // applicative min max boundaries
+  const Bnd_Box aGraphicBox = theOrigin == NULL ? theView.MinMaxValues (true)  : Bnd_Box(); // real graphical boundaries (not accounting infinite flag)
 
   switch (myShadowLight->Type())
   {
@@ -98,6 +99,15 @@ bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView)
     }
     case Graphic3d_TOLS_DIRECTIONAL:
     {
+      if (theOrigin != NULL)
+      {
+        Graphic3d_Mat4d aTrans;
+        aTrans.Translate (Graphic3d_Vec3d (theOrigin->X(), theOrigin->Y(), theOrigin->Z()));
+        Graphic3d_Mat4d anOrientMat = myShadowCamera->OrientationMatrix() * aTrans;
+        myLightMatrix = myShadowCamera->ProjectionMatrixF() * Graphic3d_Mat4 (anOrientMat);
+        return true;
+      }
+
       Graphic3d_Vec4d aDir (myShadowLight->Direction().X(), myShadowLight->Direction().Y(), myShadowLight->Direction().Z(), 0.0);
       if (myShadowLight->IsHeadlight())
       {

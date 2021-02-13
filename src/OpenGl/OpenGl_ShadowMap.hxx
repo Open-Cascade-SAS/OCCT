@@ -19,6 +19,7 @@
 #include <NCollection_Shared.hxx>
 #include <OpenGl_NamedResource.hxx>
 
+class gp_XYZ;
 class Graphic3d_Camera;
 class Graphic3d_CLight;
 class Graphic3d_CView;
@@ -74,7 +75,10 @@ public:
   void SetShadowMapBias (Standard_ShortReal theBias) { myShadowMapBias = theBias; }
 
   //! Compute camera.
-  Standard_EXPORT bool UpdateCamera (const Graphic3d_CView& theView);
+  //! @param theView   [in] active view
+  //! @param theOrigin [in] when not-NULL - displace shadow map camera to specified Z-Layer origin
+  Standard_EXPORT bool UpdateCamera (const Graphic3d_CView& theView,
+                                     const gp_XYZ* theOrigin = NULL);
 
 private:
 

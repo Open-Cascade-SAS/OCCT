@@ -449,13 +449,13 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
   Standard_Integer aViewSizeY = aCtx->Viewport()[3];
   Graphic3d_Vec2i aTileOffset, aTileSize;
 
-  if (theWorkspace->View()->Camera()->Tile().IsValid())
+  if (aCtx->Camera()->Tile().IsValid())
   {
-    aViewSizeX = theWorkspace->View()->Camera()->Tile().TotalSize.x();
-    aViewSizeY = theWorkspace->View()->Camera()->Tile().TotalSize.y();
+    aViewSizeX = aCtx->Camera()->Tile().TotalSize.x();
+    aViewSizeY = aCtx->Camera()->Tile().TotalSize.y();
 
-    aTileOffset = theWorkspace->View()->Camera()->Tile().OffsetLowerLeft();
-    aTileSize   = theWorkspace->View()->Camera()->Tile().TileSize;
+    aTileOffset = aCtx->Camera()->Tile().OffsetLowerLeft();
+    aTileSize   = aCtx->Camera()->Tile().TileSize;
   }
   if (myToUpdate
    || myViewWidth  != aViewSizeX
@@ -473,7 +473,7 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
 
   if (myType == Graphic3d_TOB_CUBEMAP)
   {
-    Graphic3d_Camera aCamera (theWorkspace->View()->Camera());
+    Graphic3d_Camera aCamera (aCtx->Camera());
     aCamera.SetZRange (0.01, 1.0); // is needed to avoid perspective camera exception
 
     // cancel translation
@@ -514,7 +514,7 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
   {
     aProjection.InitIdentity();
     aWorldView.InitIdentity();
-    if (theWorkspace->View()->Camera()->Tile().IsValid())
+    if (aCtx->Camera()->Tile().IsValid())
     {
       aWorldView.SetDiagonal (OpenGl_Vec4 (2.0f / aTileSize.x(), 2.0f / aTileSize.y(), 1.0f, 1.0f));
       if (myType == Graphic3d_TOB_GRADIENT)
