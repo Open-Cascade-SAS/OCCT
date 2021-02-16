@@ -1217,14 +1217,12 @@ void CGeometryDoc::simplify(const TopoDS_Shape& aShape)
     "\n"
     "    if(!aTr.IsNull())\n"
     "    { \n"
-    "      // takes the array of nodes for this triangulation\n"
-    "      const TColgp_Array1OfPnt& aNodes = aTr->Nodes();    \n"
-    "      nbNodes = aNodes.Length();\n"
+    "      nbNodes = aTr->NbNodes();\n"
     "\n"
     "      for( Standard_Integer i = 1; i <= nbNodes; i++)\n"
     "      {\n"
     "        // create seguence of node points in absolute coordinate system\n"
-    "        gp_Pnt aPnt = aNodes(i).Transformed(aLocation);\n"
+    "        gp_Pnt aPnt = aTr->Node (i).Transformed (aLocation);\n"
     "        aPoints.Append(aPnt);\n"
     "        \n"
     "      }\n"
@@ -1371,13 +1369,12 @@ void CGeometryDoc::simplify(const TopoDS_Shape& aShape)
       if(!aTr.IsNull())
       { 
         // takes the array of nodes for this triangulation
-        const TColgp_Array1OfPnt& aNodes = aTr->Nodes();    
-        nbNodes = aNodes.Length();
+        nbNodes = aTr->NbNodes();
 
         for( Standard_Integer i = 1; i <= nbNodes; i++)
         {
           // create seguence of node points in absolute coordinate system
-          gp_Pnt aPnt = aNodes(i).Transformed(aLocation);
+          gp_Pnt aPnt = aTr->Node (i).Transformed (aLocation);
           aPoints.Append(aPnt);
 
         }

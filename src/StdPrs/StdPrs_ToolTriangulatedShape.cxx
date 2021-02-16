@@ -149,7 +149,6 @@ void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
   // take in face the surface location
   const TopoDS_Face    aZeroFace = TopoDS::Face (theFace.Located (TopLoc_Location()));
   Handle(Geom_Surface) aSurf     = BRep_Tool::Surface (aZeroFace);
-  const Poly_Array1OfTriangle& aTriangles = theTris->Triangles();
   if (!theTris->HasUVNodes() || aSurf.IsNull())
   {
     // compute normals by averaging triangulation normals sharing the same vertex
@@ -158,15 +157,13 @@ void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
   }
 
   const Standard_Real aTol = Precision::Confusion();
-  Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, theTris->NbNodes() * 3);
-  const TColgp_Array1OfPnt2d& aNodesUV = theTris->UVNodes();
   Standard_Integer aTri[3];
-  const TColgp_Array1OfPnt& aNodes = theTris->Nodes();
   gp_Dir aNorm;
-  for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+  theTris->AddNormals();
+  for (Standard_Integer aNodeIter = 1; aNodeIter <= theTris->NbNodes(); ++aNodeIter)
   {
     // try to retrieve normal from real surface first, when UV coordinates are available
-    if (GeomLib::NormEstim (aSurf, aNodesUV.Value (aNodeIter), aTol, aNorm) > 1)
+    if (GeomLib::NormEstim (aSurf, theTris->UVNode (aNodeIter), aTol, aNorm) > 1)
     {
       if (thePolyConnect.Triangulation() != theTris)
       {
@@ -177,9 +174,9 @@ void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
       gp_XYZ eqPlan (0.0, 0.0, 0.0);
       for (thePolyConnect.Initialize (aNodeIter); thePolyConnect.More(); thePolyConnect.Next())
       {
-        aTriangles (thePolyConnect.Value()).Get (aTri[0], aTri[1], aTri[2]);
-        const gp_XYZ v1 (aNodes (aTri[1]).Coord() - aNodes (aTri[0]).Coord());
-        const gp_XYZ v2 (aNodes (aTri[2]).Coord() - aNodes (aTri[1]).Coord());
+        theTris->Triangle (thePolyConnect.Value()).Get (aTri[0], aTri[1], aTri[2]);
+        const gp_XYZ v1 (theTris->Node (aTri[1]).Coord() - theTris->Node (aTri[0]).Coord());
+        const gp_XYZ v2 (theTris->Node (aTri[2]).Coord() - theTris->Node (aTri[1]).Coord());
         const gp_XYZ vv = v1 ^ v2;
         const Standard_Real aMod = vv.Modulus();
         if (aMod >= aTol)
@@ -191,12 +188,8 @@ void StdPrs_ToolTriangulatedShape::ComputeNormals (const TopoDS_Face& theFace,
       aNorm = (aModMax > aTol) ? gp_Dir (eqPlan) : gp::DZ();
     }
 
-    const Standard_Integer anId = (aNodeIter - aNodes.Lower()) * 3;
-    aNormals->SetValue (anId + 1, (Standard_ShortReal )aNorm.X());
-    aNormals->SetValue (anId + 2, (Standard_ShortReal )aNorm.Y());
-    aNormals->SetValue (anId + 3, (Standard_ShortReal )aNorm.Z());
+    theTris->SetNormal (aNodeIter, aNorm);
   }
-  theTris->SetNormals (aNormals);
 }
 
 //=======================================================================
@@ -213,21 +206,16 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
     ComputeNormals (theFace, aPolyTri, thePolyConnect);
   }
 
-  const TColgp_Array1OfPnt&       aNodes   = aPolyTri->Nodes();
-  const TShort_Array1OfShortReal& aNormals = aPolyTri->Normals();
-  const Standard_ShortReal*       aNormArr = &aNormals.First();
-  for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+  gp_Vec3f aNormal;
+  for (Standard_Integer aNodeIter = 1; aNodeIter <= aPolyTri->NbNodes(); ++aNodeIter)
   {
-    const Standard_Integer anId = 3 * (aNodeIter - aNodes.Lower());
-    const gp_Dir aNorm (aNormArr[anId + 0],
-                        aNormArr[anId + 1],
-                        aNormArr[anId + 2]);
-    theNormals (aNodeIter) = aNorm;
+    aPolyTri->Normal (aNodeIter, aNormal);
+    theNormals.ChangeValue (aNodeIter).SetCoord (aNormal.x(), aNormal.y(), aNormal.z());
   }
 
   if (theFace.Orientation() == TopAbs_REVERSED)
   {
-    for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+    for (Standard_Integer aNodeIter = 1; aNodeIter <= aPolyTri->NbNodes(); ++aNodeIter)
     {
       theNormals.ChangeValue (aNodeIter).Reverse();
     }

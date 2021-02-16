@@ -157,13 +157,9 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {
 	TopoDS_Face F =TopoDS::Face(ex.Current());
     TopLoc_Location L;
 	Handle (Poly_Triangulation) facing = BRep_Tool::Triangulation(F,L);
-    TColgp_Array1OfPnt tab(1,(facing->NbNodes()));
-	tab = facing->Nodes();
-	Poly_Array1OfTriangle tri(1,facing->NbTriangles());
-	tri = facing->Triangles();
 
 	for (Standard_Integer i=1;i<=(facing->NbTriangles());i++) {
-		Poly_Triangle trian = tri.Value(i);
+		const Poly_Triangle trian = facing->Triangle (i);
 		Standard_Integer index1,index2,index3,M = 0, N = 0;
 		trian.Get(index1,index2,index3);
 	
@@ -180,7 +176,7 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {
 				M = index2;
 			}
 			
-			BRepBuilderAPI_MakeEdge ME(tab.Value(M),tab.Value(N));
+			BRepBuilderAPI_MakeEdge ME(facing->Node (M), facing->Node (N));
 			if (ME.IsDone()) {
 				builder.Add(Comp,ME.Edge());
 			}
@@ -210,13 +206,9 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {	\n\
 	TopoDS_Face F =TopoDS::Face(ex.Current());	\n\
 	TopLoc_Location L;	\n\
 	Handle (Poly_Triangulation) facing = BRep_Tool::Triangulation(F,L);	\n\
-	TColgp_Array1OfPnt tab(1,(facing->NbNodes()));	\n\
-	tab = facing->Nodes();	\n\
-	Poly_Array1OfTriangle tri(1,facing->NbTriangles());	\n\
-	tri = facing->Triangles();	\n\
-	\n\
+    \n\
 	for (Standard_Integer i=1;i<=(facing->NbTriangles());i++) {	\n\
-		Poly_Triangle trian = tri.Value(i);	\n\
+		Poly_Triangle trian = facing->Triangle (i);	\n\
 		Standard_Integer index1,index2,index3,M,N;	\n\
 		trian.Get(index1,index2,index3);	\n\
 		\n\
@@ -233,7 +225,7 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {	\n\
 				M = index2;	\n\
 			}	\n\
 				\n\
-			BRepBuilderAPI_MakeEdge ME(tab.Value(M),tab.Value(N));	\n\
+			BRepBuilderAPI_MakeEdge ME(facing->Node (M),facing->Node (N));	\n\
 			if (ME.IsDone()) {	\n\
 				builder.Add(Comp,ME.Edge());	\n\
 			}	\n\

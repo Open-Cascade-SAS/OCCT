@@ -697,6 +697,7 @@ BRepCheck_Status BRepCheck_Edge::
     Handle(BRep_PolygonOnTriangulation) aPT (Handle(BRep_PolygonOnTriangulation)::DownCast(aCR));
 
     const TopLoc_Location aLL = theEdge.Location() * aPT->Location();
+    const gp_Trsf aTrsf = aLL;
 
     const Handle(Poly_Triangulation) aTriang =  aCR->Triangulation();
     const Handle(Poly_PolygonOnTriangulation) aPOnTriag = 
@@ -704,7 +705,6 @@ BRepCheck_Status BRepCheck_Edge::
       aCR->PolygonOnTriangulation2() : 
     aCR->PolygonOnTriangulation();
     const TColStd_Array1OfInteger& anIndices = aPOnTriag->Nodes();
-    const TColgp_Array1OfPnt& Nodes = aTriang->Nodes();
     const Standard_Integer aNbNodes = anIndices.Length();
 
     const Standard_Real aTol = aPOnTriag->Deflection() +
@@ -716,8 +716,8 @@ BRepCheck_Status BRepCheck_Edge::
         i <= aPOnTriag->Parameters()->Upper(); i++)
       {
         const Standard_Real aParam = aPOnTriag->Parameters()->Value(i);
-        const gp_Pnt  aPE(aBC.Value(aParam)), 
-          aPnt(Nodes(anIndices(i)).Transformed(aLL));
+        const gp_Pnt aPE (aBC.Value (aParam));
+        const gp_Pnt aPnt (aTriang->Node (anIndices (i)).Transformed (aTrsf));
 
         const Standard_Real aSQDist = aPE.SquareDistance(aPnt);
         if(aSQDist > aTol*aTol)
@@ -735,10 +735,14 @@ BRepCheck_Status BRepCheck_Edge::
 
       for (Standard_Integer i = 1; i <= aNbNodes; i++)
       {
-        if (aLL.IsIdentity())
-          aB.Add(Nodes(anIndices(i)));
+        if (aTrsf.Form() == gp_Identity)
+        {
+          aB.Add (aTriang->Node (anIndices(i)));
+        }
         else
-          aB.Add(Nodes(anIndices(i)).Transformed(aLL));
+        {
+          aB.Add (aTriang->Node (anIndices(i)).Transformed(aTrsf));
+        }
       }
 
       aB.Enlarge(aTol);

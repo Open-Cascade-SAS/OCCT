@@ -146,24 +146,20 @@ static Standard_Real CalculVolume(const TopoDS_Shape& So,
 	  facing = BRep_Tool::Triangulation(F,L);
 	}
 
-      TColgp_Array1OfPnt tab(1,(facing->NbNodes()));
-      tab = facing->Nodes();
-      Poly_Array1OfTriangle tri(1,facing->NbTriangles());
-      tri = facing->Triangles();
       for (Standard_Integer i=1;i<=(facing->NbTriangles());i++)
 	{
 	  
-	  Poly_Triangle trian = tri.Value(i);
+	  Poly_Triangle trian = facing->Triangle (i);
 	  Standard_Integer index1,index2,index3;//M,N;
 	  if( F.Orientation() == TopAbs_REVERSED )
 	    trian.Get(index1,index3,index2);
 	  else
 	    trian.Get(index1,index2,index3);
-	  curVolume = TetraVol(aRefPoint, tab.Value(index1),
-			       tab.Value(index2), tab.Value(index3));
+	  curVolume = TetraVol (aRefPoint, facing->Node (index1),
+			       facing->Node (index2), facing->Node (index3));
 	  myVolume += curVolume;
-	  curCentroid = TetraCen(aRefPoint, tab.Value(index1),
-				 tab.Value(index2), tab.Value(index3));
+	  curCentroid = TetraCen (aRefPoint, facing->Node (index1),
+				 facing->Node (index2), facing->Node (index3));
 	  
 	  localCentroid = localCentroid + curCentroid*curVolume;
 	}

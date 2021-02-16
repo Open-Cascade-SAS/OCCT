@@ -1336,11 +1336,11 @@ void AIS_Manipulator::Cube::addTriangle (const Standard_Integer theIndex,
                                          const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3,
                                          const gp_Dir& theNormal)
 {
-  myTriangulation->ChangeNodes().SetValue (theIndex * 3 + 1, theP1);
-  myTriangulation->ChangeNodes().SetValue (theIndex * 3 + 2, theP2);
-  myTriangulation->ChangeNodes().SetValue (theIndex * 3 + 3, theP3);
+  myTriangulation->SetNode (theIndex * 3 + 1, theP1);
+  myTriangulation->SetNode (theIndex * 3 + 2, theP2);
+  myTriangulation->SetNode (theIndex * 3 + 3, theP3);
 
-  myTriangulation->ChangeTriangles().SetValue (theIndex + 1, Poly_Triangle (theIndex * 3 + 1, theIndex * 3 + 2, theIndex * 3 + 3));
+  myTriangulation->SetTriangle (theIndex + 1, Poly_Triangle (theIndex * 3 + 1, theIndex * 3 + 2, theIndex * 3 + 3));
   myArray->AddVertex (theP1, theNormal);
   myArray->AddVertex (theP2, theNormal);
   myArray->AddVertex (theP3, theNormal);

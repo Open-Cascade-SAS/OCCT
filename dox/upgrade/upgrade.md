@@ -2210,3 +2210,9 @@ BRep and Binary BRep Shape formats (only in case of triangulation-only Faces, wi
 
 Versions of formats have been changed (11 for BinOCAF, 10 for XmlOCAF, 4 for BRep Shape and 3 for Binary BRep Shape).
 Files written with the new version will not be readable by applications of old versions.
+
+@subsection upgrade_occt760_poly Changes in *Poly* package and *Poly_Triangulation* class:
+
+*Poly_Triangulation* does no more provide access to internal array structures: methods Nodes(), ChangeNode(), Triangles(), ChangeTriangle(), UVNodes(), ChangeUVNode(), Normals() have been removed.
+Methods of *Poly_Triangulation* for accessing individual nodal properties / triangles by index and implementing copy semantics should be used instead.
+The same is applicable to *Poly_PolygonOnTriangulation* interface.

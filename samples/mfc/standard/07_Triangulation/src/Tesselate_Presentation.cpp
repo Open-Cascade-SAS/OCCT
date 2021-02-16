@@ -126,15 +126,10 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     
     "  if(!aTr.IsNull()) // if this triangulation is not NULL" EOL
     "  { " EOL
-    "    // takes the array of nodes for this triangulation:" EOL
-    "    const TColgp_Array1OfPnt& aNodes = aTr->Nodes();" EOL
-    "    // takes the array of triangles for this triangulation:" EOL
-    "    const Poly_Array1OfTriangle& triangles = aTr->Triangles();" EOL EOL
-    
     "    // create array of node points in absolute coordinate system" EOL
-    "    TColgp_Array1OfPnt aPoints(1, aNodes.Length());" EOL
-    "    for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)" EOL
-    "      aPoints(i) = aNodes(i).Transformed(aLocation);" EOL EOL
+    "    TColgp_Array1OfPnt aPoints(1, aTr->NbNodes());" EOL
+    "    for( Standard_Integer i = 1; i < aTr->NbNodes()+1; i++)" EOL
+    "      aPoints(i) = aTr->Node (i).Transformed (aLocation);" EOL EOL
 
     "    // Takes the node points of each triangle of this triangulation." EOL
     "    // takes a number of triangles:" EOL
@@ -143,7 +138,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     "    for( nt = 1 ; nt < nnn+1 ; nt++)" EOL
     "    {" EOL
     "      // takes the node indices of each triangle in n1,n2,n3:" EOL
-    "      triangles(nt).Get(n1,n2,n3);" EOL
+    "      aTr->Triangle (nt).Get (n1,n2,n3);" EOL
     "      // takes the node points:" EOL
     "      gp_Pnt aPnt1 = aPoints(n1);" EOL
     "      gp_Pnt aPnt2 = aPoints(n2);" EOL
@@ -211,11 +206,9 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
     if(!aTr.IsNull())
     { 
-      const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
       aNumOfNodes += aTr->NbNodes();
       //Standard_Integer aLower = aNodes.Lower();
       //Standard_Integer anUpper = aNodes.Upper();
-      const Poly_Array1OfTriangle& triangles = aTr->Triangles();
       aNumOfTriangles += aTr->NbTriangles();
 
       if(aCount == aNumOfFace)
@@ -251,8 +244,8 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
             Standard_Integer aLower = aNodesOfPol.Lower(), anUpper = aNodesOfPol.Upper();
             for( int i = aLower; i < anUpper ; i++)
             {
-              gp_Pnt aPnt1 = aNodes(aNodesOfPol(i)).Transformed(aLocation);
-              gp_Pnt aPnt2 = aNodes(aNodesOfPol(i+1)).Transformed(aLocation);
+              gp_Pnt aPnt1 = aTr->Node (aNodesOfPol (i)).Transformed (aLocation);
+              gp_Pnt aPnt2 = aTr->Node (aNodesOfPol (i+1)).Transformed (aLocation);
               TopoDS_Vertex aVertex1 = BRepBuilderAPI_MakeVertex (aPnt1);
               TopoDS_Vertex aVertex2 = BRepBuilderAPI_MakeVertex (aPnt2);
 
@@ -283,9 +276,9 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
       TopTools_DataMapOfIntegerShape aEdges;
       TopTools_SequenceOfShape aVertices;
 
-      for( Standard_Integer i = 1; i < aNodes.Length()+1; i++)
+      for( Standard_Integer i = 1; i < aTr->NbNodes()+1; i++)
       {
-        gp_Pnt aPnt = aNodes(i).Transformed(aLocation);
+        gp_Pnt aPnt = aTr->Node (i).Transformed (aLocation);
         TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(aPnt);
 
         if(!aVertex.IsNull())
@@ -302,7 +295,7 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
 
       for( nt = 1 ; nt < nnn+1 ; nt++)
       {     
-        triangles(nt).Get(n1,n2,n3);
+        aTr->Triangle (nt).Get (n1,n2,n3);
 
         Standard_Integer key[3];
         

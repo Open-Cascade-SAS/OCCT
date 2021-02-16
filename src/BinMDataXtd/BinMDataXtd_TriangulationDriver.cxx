@@ -80,7 +80,7 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
     theSource >> x;
     theSource >> y;
     theSource >> z;
-    PT->ChangeNode(i).SetCoord(x, y, z);
+    PT->SetNode (i, gp_Pnt (x, y, z));
   }
 
   // read 2d nodes
@@ -90,7 +90,7 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
     {
       theSource >> x;
       theSource >> y;
-      PT->ChangeUVNode(i).SetCoord(x,y);
+      PT->SetUVNode (i, gp_Pnt2d (x, y));
     }
   }
 
@@ -100,7 +100,7 @@ Standard_Boolean BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persiste
     theSource >> n1;
     theSource >> n2;
     theSource >> n3;
-    PT->ChangeTriangle(i).Set(n1, n2, n3);
+    PT->SetTriangle (i, Poly_Triangle (n1, n2, n3));
   }
 
   // set triangulation to Ocaf attribute
@@ -132,29 +132,29 @@ void BinMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     theTarget << PT->Deflection();
 
     // write 3d nodes
-    Standard_Integer i;
-    for (i = 1; i <= nbNodes; i++)
+    for (Standard_Integer i = 1; i <= nbNodes; i++)
     {
-      theTarget << PT->Node(i).X();
-      theTarget << PT->Node(i).Y();
-      theTarget << PT->Node(i).Z();
+      const gp_Pnt aNode = PT->Node (i);
+      theTarget << aNode.X();
+      theTarget << aNode.Y();
+      theTarget << aNode.Z();
     }
 
     // write 2d nodes
     if (PT->HasUVNodes())
     {
-      for (i = 1; i <= nbNodes; i++)
+      for (Standard_Integer i = 1; i <= nbNodes; i++)
       {
-        theTarget << PT->UVNode(i).X();
-        theTarget << PT->UVNode(i).Y();
+        const gp_Pnt2d aNode2d = PT->UVNode (i);
+        theTarget << aNode2d.X();
+        theTarget << aNode2d.Y();
       }
     }
 
     // Write triangles
-    const Poly_Array1OfTriangle& Triangles = PT->Triangles();
-    for (i = 1; i <= nbTriangles; i++)
+    for (Standard_Integer i = 1; i <= nbTriangles; i++)
     {
-      Triangles(i).Get(n1, n2, n3);
+      PT->Triangle (i).Get (n1, n2, n3);
       theTarget << n1;
       theTarget << n2;
       theTarget << n3;

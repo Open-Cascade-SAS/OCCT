@@ -158,31 +158,25 @@ void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     stream << PT->Deflection() << "\n";
 
     // write the 3d nodes
-    const TColgp_Array1OfPnt& Nodes = PT->Nodes();
     for (i = 1; i <= nbNodes; i++)
     {
-      stream << Nodes(i).X() << " "
-             << Nodes(i).Y() << " "
-             << Nodes(i).Z() << " ";
+      const gp_Pnt aNode = PT->Node (i);
+      stream << aNode.X() << " " << aNode.Y() << " " << aNode.Z() << " ";
     }
 
     if (PT->HasUVNodes())
     {
-      const TColgp_Array1OfPnt2d& UVNodes = PT->UVNodes();
       for (i = 1; i <= nbNodes; i++)
       {
-        stream << UVNodes(i).X() << " "
-               << UVNodes(i).Y() << " ";
+        const gp_Pnt2d aNode2d = PT->UVNode (i);
+        stream << aNode2d.X() << " " << aNode2d.Y() << " ";
       }
     }
 
-    const Poly_Array1OfTriangle& Triangles = PT->Triangles();
     for (i = 1; i <= nbTriangles; i++)
     {
-      Triangles(i).Get(n1, n2, n3);
-      stream << n1 << " "
-             << n2 << " "
-             << n3 << " ";
+      PT->Triangle (i).Get (n1, n2, n3);
+      stream << n1 << " " << n2 << " " << n3 << " ";
     }
 
     stream << std::ends;

@@ -1321,10 +1321,11 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation
       Standard_Integer aNbNodes = 0;
       BinTools::GetInteger(IS, aNbNodes);
       Handle(Poly_PolygonOnTriangulation) aPoly = new Poly_PolygonOnTriangulation (aNbNodes, Standard_False);
-      TColStd_Array1OfInteger& aNodes = aPoly->ChangeNodes();
       for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       {
-        BinTools::GetInteger(IS, aNodes.ChangeValue (aNodeIter));
+        Standard_Integer aNode = 0;
+        BinTools::GetInteger (IS, aNode);
+        aPoly->SetNode (aNodeIter, aNode);
       }
 
       Standard_Real aDefl = 0.0;
@@ -1498,10 +1499,9 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
       BinTools::PutReal(OS, aTriangulation->Deflection());
 
       // write the 3d nodes
-      const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
       for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       {
-        const gp_Pnt& aPnt = aNodes.Value (aNodeIter);
+        const gp_Pnt aPnt = aTriangulation->Node (aNodeIter);
         BinTools::PutReal(OS, aPnt.X());
         BinTools::PutReal(OS, aPnt.Y());
         BinTools::PutReal(OS, aPnt.Z());
@@ -1509,19 +1509,17 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
 
       if (aTriangulation->HasUVNodes())
       {
-        const TColgp_Array1OfPnt2d& aUVNodes = aTriangulation->UVNodes();
         for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
         {
-          const gp_Pnt2d aUV = aUVNodes.Value (aNodeIter);
+          const gp_Pnt2d aUV = aTriangulation->UVNode (aNodeIter);
           BinTools::PutReal(OS, aUV.X());
           BinTools::PutReal(OS, aUV.Y());
         }
       }
 
-      const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
       for (Standard_Integer aTriIter = 1; aTriIter <= aNbTriangles; ++aTriIter)
       {
-        const Poly_Triangle& aTri = aTriangles.Value (aTriIter);
+        const Poly_Triangle aTri = aTriangulation->Triangle (aTriIter);
         BinTools::PutInteger(OS, aTri.Value (1));
         BinTools::PutInteger(OS, aTri.Value (2));
         BinTools::PutInteger(OS, aTri.Value (3));
@@ -1532,11 +1530,13 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
       {
         if (aTriangulation->HasNormals() && NeedToWriteNormals)
         {
-          const TShort_Array1OfShortReal& aNormals = aTriangulation->Normals();
-          for (Standard_Integer aNormalIter = 1; aNormalIter <= 3 * aNbNodes; ++aNormalIter)
+          gp_Vec3f aNormal;
+          for (Standard_Integer aNormalIter = 1; aNormalIter <= aNbNodes; ++aNormalIter)
           {
-            const Standard_ShortReal& aNormal = aNormals.Value(aNormalIter);
-            BinTools::PutShortReal(OS, aNormal);
+            aTriangulation->Normal (aNormalIter, aNormal);
+            BinTools::PutShortReal (OS, aNormal.x());
+            BinTools::PutShortReal (OS, aNormal.y());
+            BinTools::PutShortReal (OS, aNormal.z());
           }
         }
       }
@@ -1589,45 +1589,45 @@ void BinTools_ShapeSet::ReadTriangulation (Standard_IStream& IS,
       Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation (aNbNodes, aNbTriangles, hasUV, hasNormals);
       aTriangulation->Deflection (aDefl);
 
-      TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
+      gp_Pnt aNode;
       for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       {
-        Standard_Real* anXYZ = aNodes.ChangeValue (aNodeIter).ChangeCoord().ChangeData();
-        BinTools::GetReal(IS, anXYZ[0]);
-        BinTools::GetReal(IS, anXYZ[1]);
-        BinTools::GetReal(IS, anXYZ[2]);
+        BinTools::GetReal(IS, aNode.ChangeCoord().ChangeCoord (1));
+        BinTools::GetReal(IS, aNode.ChangeCoord().ChangeCoord (2));
+        BinTools::GetReal(IS, aNode.ChangeCoord().ChangeCoord (3));
+        aTriangulation->SetNode (aNodeIter, aNode);
       }
 
       if (hasUV)
       {
-        TColgp_Array1OfPnt2d& aUVNodes = aTriangulation->ChangeUVNodes();
+        gp_Pnt2d aNode2d;
         for (Standard_Integer aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
         {
-          gp_XY& anUV = aUVNodes.ChangeValue (aNodeIter).ChangeCoord();
-          BinTools::GetReal(IS, anUV.ChangeCoord (1));
-          BinTools::GetReal(IS, anUV.ChangeCoord (2));
+          BinTools::GetReal(IS, aNode2d.ChangeCoord().ChangeCoord (1));
+          BinTools::GetReal(IS, aNode2d.ChangeCoord().ChangeCoord (2));
+          aTriangulation->SetUVNode (aNodeIter, aNode2d);
         }
       }
 
       // read the triangles
-      Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
+      Standard_Integer aTriNodes[3] = {};
       for (Standard_Integer aTriIter = 1; aTriIter <= aNbTriangles; ++aTriIter)
       {
-        Poly_Triangle& aTri = aTriangles.ChangeValue (aTriIter);
-        BinTools::GetInteger(IS, aTri.ChangeValue (1));
-        BinTools::GetInteger(IS, aTri.ChangeValue (2));
-        BinTools::GetInteger(IS, aTri.ChangeValue (3));
+        BinTools::GetInteger(IS, aTriNodes[0]);
+        BinTools::GetInteger(IS, aTriNodes[1]);
+        BinTools::GetInteger(IS, aTriNodes[2]);
+        aTriangulation->SetTriangle (aTriIter, Poly_Triangle (aTriNodes[0], aTriNodes[1], aTriNodes[2]));
       }
 
       if (hasNormals)
       {
-        TShort_Array1OfShortReal& aNormals = aTriangulation->ChangeNormals();
-        for (Standard_Integer aNormalIter = 1; aNormalIter <= aNbNodes*3; ++aNormalIter)
+        gp_Vec3f aNormal;
+        for (Standard_Integer aNormalIter = 1; aNormalIter <= aNbNodes; ++aNormalIter)
         {
-          Standard_ShortReal aNormalFromFile;
-          BinTools::GetShortReal(IS, aNormalFromFile);
-          Standard_ShortReal& aNormalCoordinate = aNormals.ChangeValue(aNormalIter);
-          aNormalCoordinate = aNormalFromFile;
+          BinTools::GetShortReal(IS, aNormal.x());
+          BinTools::GetShortReal(IS, aNormal.y());
+          BinTools::GetShortReal(IS, aNormal.z());
+          aTriangulation->SetNormal (aNormalIter, aNormal);
         }
       }
 

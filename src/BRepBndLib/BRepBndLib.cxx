@@ -149,20 +149,19 @@ void BRepBndLib::Add(const TopoDS_Shape& S, Bnd_Box& B, Standard_Boolean useTria
       if (useTriangulation && !Poly.IsNull() && !T.IsNull() && T->NbNodes() > 0)
       {
         const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-        const TColgp_Array1OfPnt& Nodes = T->Nodes();
         nbNodes = Indices.Length();
         if (l.IsIdentity())
         {
           for (i = 1; i <= nbNodes; i++)
           {
-            B.Add(Nodes(Indices[i]));
+            B.Add (T->Node (Indices[i]));
           }
         }
         else
         {
           for (i = 1; i <= nbNodes; i++)
           {
-            B.Add(Nodes(Indices[i]).Transformed(l));
+            B.Add (T->Node (Indices[i]).Transformed (l));
           }
         }
         // 	B.Enlarge(T->Deflection());
@@ -341,12 +340,17 @@ void BRepBndLib::AddOptimal(const TopoDS_Shape& S, Bnd_Box& B,
       if (useTriangulation && !Poly.IsNull() && !T.IsNull() && T->NbNodes() > 0)
       {
         const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-        const TColgp_Array1OfPnt& Nodes = T->Nodes();
         nbNodes = Indices.Length();
         for (i = 1; i <= nbNodes; i++)
         {
-          if (l.IsIdentity()) aLocBox.Add(Nodes(Indices[i]));
-          else aLocBox.Add(Nodes(Indices[i]).Transformed(l));
+          if (l.IsIdentity())
+          {
+            aLocBox.Add (T->Node (Indices[i]));
+          }
+          else
+          {
+            aLocBox.Add (T->Node (Indices[i]).Transformed (l));
+          }
         }
         Standard_Real Tol = useShapeTolerance?  BRep_Tool::Tolerance(E) : 0.;
         aLocBox.Enlarge(Poly->Deflection() + Tol);

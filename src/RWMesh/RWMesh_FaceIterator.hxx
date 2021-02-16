@@ -75,10 +75,10 @@ public:
   Standard_Integer NbTriangles() const { return myPolyTriang->NbTriangles(); }
 
   //! Lower element index in current triangulation.
-  Standard_Integer ElemLower() const { return myPolyTriang->Triangles().Lower(); }
+  Standard_Integer ElemLower() const { return 1; }
 
   //! Upper element index in current triangulation.
-  Standard_Integer ElemUpper() const { return myPolyTriang->Triangles().Upper(); }
+  Standard_Integer ElemUpper() const { return myPolyTriang->NbTriangles(); }
 
   //! Return triangle with specified index with applied Face orientation.
   Poly_Triangle TriangleOriented (Standard_Integer theElemIndex) const
@@ -97,7 +97,7 @@ public:
   bool HasNormals() const { return myHasNormals; }
 
   //! Return true if triangulation has defined normals.
-  bool HasTexCoords() const { return myNodeUVs != NULL; }
+  bool HasTexCoords() const { return !myPolyTriang.IsNull() && myPolyTriang->HasUVNodes(); }
 
   //! Return normal at specified node index with face transformation applied and face orientation applied.
   gp_Dir NormalTransformed (Standard_Integer theNode)
@@ -118,15 +118,15 @@ public:
   Standard_Integer NbNodes() const
   {
     return !myPolyTriang.IsNull()
-          ? myPolyTriang->Nodes().Length()
+          ? myPolyTriang->NbNodes()
           : 0;
   }
 
   //! Lower node index in current triangulation.
-  Standard_Integer NodeLower() const { return myPolyTriang->Nodes().Lower(); }
+  Standard_Integer NodeLower() const { return 1; }
 
   //! Upper node index in current triangulation.
-  Standard_Integer NodeUpper() const { return myPolyTriang->Nodes().Upper(); }
+  Standard_Integer NodeUpper() const { return myPolyTriang->NbNodes(); }
 
   //! Return the node with specified index with applied transformation.
   gp_Pnt NodeTransformed (const Standard_Integer theNode) const
@@ -139,19 +139,19 @@ public:
   //! Return texture coordinates for the node.
   gp_Pnt2d NodeTexCoord (const Standard_Integer theNode) const
   {
-    return myNodeUVs != NULL ? myNodeUVs->Value (theNode) : gp_Pnt2d();
+    return myPolyTriang->HasUVNodes() ? myPolyTriang->UVNode (theNode) : gp_Pnt2d();
   }
 
 public:
 
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node (const Standard_Integer theNode) const { return myPolyTriang->Nodes().Value (theNode); }
+  gp_Pnt node (const Standard_Integer theNode) const { return myPolyTriang->Node (theNode); }
 
   //! Return normal at specified node index without face transformation applied.
   Standard_EXPORT gp_Dir normal (Standard_Integer theNode);
 
   //! Return triangle with specified index.
-  Poly_Triangle triangle (Standard_Integer theElemIndex) const { return myPolyTriang->Triangles().Value (theElemIndex); }
+  Poly_Triangle triangle (Standard_Integer theElemIndex) const { return myPolyTriang->Triangle (theElemIndex); }
 
 private:
 
@@ -165,9 +165,6 @@ private:
   {
     myPolyTriang.Nullify();
     myFace.Nullify();
-    myNodes   = NULL;
-    myNormals = NULL;
-    myNodeUVs = NULL;
     myHasNormals = false;
     myHasFaceColor = false;
     myFaceColor = Quantity_ColorRGBA();
@@ -190,9 +187,6 @@ private:
   TopLoc_Location                 myFaceLocation; //!< current face location
   BRepLProp_SLProps               mySLTool;       //!< auxiliary tool for fetching normals from surface
   BRepAdaptor_Surface             myFaceAdaptor;  //!< surface adaptor for fetching normals from surface
-  const TColgp_Array1OfPnt*       myNodes;        //!< node positions of current face
-  const TShort_Array1OfShortReal* myNormals;      //!< node normals of current face
-  const TColgp_Array1OfPnt2d*     myNodeUVs;      //!< node UV coordinates of current face
   Standard_Boolean                myHasNormals;   //!< flag indicating that current face has normals
   gp_Trsf                         myTrsf;         //!< current face transformation
   Standard_Boolean                myIsMirrored;   //!< flag indicating that face triangles should be mirrored

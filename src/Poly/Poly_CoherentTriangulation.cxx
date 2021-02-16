@@ -51,45 +51,41 @@ Poly_CoherentTriangulation::Poly_CoherentTriangulation
              : theAlloc)
 {
   if (theTriangulation.IsNull() == Standard_False) {
-    const TColgp_Array1OfPnt&    arrNodes    = theTriangulation->Nodes();
-    const Poly_Array1OfTriangle& arrTriangle = theTriangulation->Triangles();
     const Standard_Integer nNodes = theTriangulation->NbNodes();
-    const Standard_Integer nTri   = theTriangulation->NbTriangles();
     Standard_Integer i;
 
     // Copy the nodes
     for (i = 0; i < nNodes; i++) {
-      const Standard_Integer anOldInd = i + arrNodes.Lower();
-      const Standard_Integer aNewInd = SetNode(arrNodes(anOldInd).XYZ(), i);
+      const Standard_Integer anOldInd = i + 1;
+      const Standard_Integer aNewInd = SetNode (theTriangulation->Node (anOldInd).XYZ(), i);
       Poly_CoherentNode& aCopiedNode = myNodes(aNewInd);
       aCopiedNode.SetIndex(anOldInd);
     }
 
     // Copy the triangles
-    for (i = 0; i < nTri; i++) {
+    for (i = 1; i <= theTriangulation->NbTriangles(); i++) {
       Standard_Integer iNode[3];
-      arrTriangle(i + arrTriangle.Lower()).Get(iNode[0], iNode[1], iNode[2]);
+      theTriangulation->Triangle (i).Get (iNode[0], iNode[1], iNode[2]);
       if (iNode[0] != iNode[1] && iNode[1] != iNode[2] && iNode[2] != iNode[0])
         AddTriangle (iNode[0]-1, iNode[1]-1, iNode[2]-1);
     }
 
     // Copy UV coordinates of nodes
     if (theTriangulation->HasUVNodes()) {
-      const TColgp_Array1OfPnt2d& arrNodes2d = theTriangulation->UVNodes();
       for (i = 0; i < nNodes; i++) {
-        const gp_Pnt2d& anUV = arrNodes2d(i + arrNodes2d.Lower());
+        const gp_Pnt2d anUV = theTriangulation->UVNode (i + 1);
         myNodes(i).SetUV(anUV.X(), anUV.Y());
       }
     }
 
     // Copy the normals at nodes
-    if (theTriangulation->HasNormals()) {
-      const TShort_Array1OfShortReal& arrNorm = theTriangulation->Normals();
-      for (i = 0; i < nNodes; i++) {
-        const gp_XYZ aNormal (arrNorm(3 * i + 0 + arrNorm.Lower()),
-                              arrNorm(3 * i + 1 + arrNorm.Lower()),
-                              arrNorm(3 * i + 2 + arrNorm.Lower()));
-        myNodes(i).SetNormal(aNormal);
+    if (theTriangulation->HasNormals())
+    {
+      gp_Vec3f aNormal;
+      for (i = 0; i < nNodes; i++)
+      {
+        theTriangulation->Normal (i + 1, aNormal);
+        myNodes (i).SetNormal (gp_XYZ (aNormal.x(), aNormal.y(), aNormal.z()));
       }
     }
     myDeflection = theTriangulation->Deflection();
@@ -116,66 +112,59 @@ Poly_CoherentTriangulation::~Poly_CoherentTriangulation ()
 
 Handle(Poly_Triangulation) Poly_CoherentTriangulation::GetTriangulation() const
 {
-  Handle(Poly_Triangulation) aResult;
   const Standard_Integer nNodes = NNodes();
   const Standard_Integer nTriangles = NTriangles();
-  if (nNodes > 0 && nTriangles > 0) {
-    aResult = new Poly_Triangulation(nNodes, nTriangles, Standard_True);
-    const Handle(TShort_HArray1OfShortReal) harrNormal =
-      new TShort_HArray1OfShortReal(1, 3 * nNodes);
-    Standard_ShortReal * arrNormal = &harrNormal->ChangeValue(1);
-
-    TColgp_Array1OfPnt&    arrNodes    = aResult->ChangeNodes();
-    TColgp_Array1OfPnt2d&  arrNodesUV  = aResult->ChangeUVNodes();
-    Poly_Array1OfTriangle& arrTriangle = aResult->ChangeTriangles();
-    NCollection_Vector<Standard_Integer> vecNodeId;
-    Standard_Integer i, aCount(0);
-    Standard_Boolean hasUV (Standard_False);
-    Standard_Boolean hasNormals (Standard_False);
-
-    // Copy the nodes (3D and 2D coordinates)
-    for (i = 0; i < myNodes.Length(); i++) {
-      const Poly_CoherentNode& aNode = myNodes(i);
-      if (aNode.IsFreeNode())
-        vecNodeId.SetValue(i, 0);
-      else {
-        const gp_XYZ aNormal = aNode.GetNormal();
-        arrNormal[3 * aCount + 0] = static_cast<Standard_ShortReal>(aNormal.X());
-        arrNormal[3 * aCount + 1] = static_cast<Standard_ShortReal>(aNormal.Y());
-        arrNormal[3 * aCount + 2] = static_cast<Standard_ShortReal>(aNormal.Z());
-
-        vecNodeId.SetValue(i, ++aCount);
-        arrNodes.SetValue(aCount, aNode);
-
-        arrNodesUV.SetValue(aCount, gp_Pnt2d(aNode.GetU(), aNode.GetV()));
-        if (aNode.GetU()*aNode.GetU() + aNode.GetV()*aNode.GetV() >
-            Precision::Confusion())
-          hasUV = Standard_True;
-        if (aNormal.SquareModulus() >  Precision::Confusion())
-          hasNormals = Standard_True;
-      }
-    }
-    if (hasUV == Standard_False)
-      aResult->RemoveUVNodes();
-
-    // Copy the triangles
-    aCount = 0;
-    NCollection_Vector<Poly_CoherentTriangle>::Iterator anIterT (myTriangles);
-    for (; anIterT.More(); anIterT.Next()) {
-      const Poly_CoherentTriangle& aTri = anIterT.Value();
-      if (aTri.IsEmpty() == Standard_False) {
-        const Poly_Triangle aPolyTriangle (vecNodeId(aTri.Node(0)),
-                                           vecNodeId(aTri.Node(1)),
-                                           vecNodeId(aTri.Node(2)));
-        arrTriangle.SetValue(++aCount, aPolyTriangle);
-      }
-    }
-    if (hasNormals)
-      aResult->SetNormals (harrNormal);
-
-    aResult->Deflection(myDeflection);
+  if (nNodes == 0 || nTriangles == 0)
+  {
+    return Handle(Poly_Triangulation)();
   }
 
+  Handle(Poly_Triangulation) aResult = new Poly_Triangulation(nNodes, nTriangles, false);
+
+  NCollection_Vector<Standard_Integer> vecNodeId;
+  Standard_Integer aCount = 0;
+
+  // Copy the nodes (3D and 2D coordinates)
+  for (Standard_Integer i = 0; i < myNodes.Length(); i++)
+  {
+    const Poly_CoherentNode& aNode = myNodes(i);
+    if (aNode.IsFreeNode())
+    {
+      vecNodeId.SetValue (i, 0);
+      continue;
+    }
+
+    vecNodeId.SetValue (i, ++aCount);
+    const gp_XYZ aNormal = aNode.GetNormal();
+    if (aNormal.SquareModulus() > Precision::Confusion())
+    {
+      aResult->AddNormals();
+      aResult->SetNormal (aCount, gp_Dir (aNormal));
+    }
+
+    aResult->SetNode (aCount, aNode);
+    if (aNode.GetU() * aNode.GetU() + aNode.GetV() * aNode.GetV() > Precision::Confusion())
+    {
+      aResult->AddUVNodes();
+      aResult->SetUVNode (aCount, gp_Pnt2d (aNode.GetU(), aNode.GetV()));
+    }
+  }
+
+  // Copy the triangles
+  aCount = 0;
+  for (NCollection_Vector<Poly_CoherentTriangle>::Iterator anIterT (myTriangles);
+       anIterT.More(); anIterT.Next())
+  {
+    const Poly_CoherentTriangle& aTri = anIterT.Value();
+    if (!aTri.IsEmpty())
+    {
+      aResult->SetTriangle (++aCount,  Poly_Triangle (vecNodeId (aTri.Node (0)),
+                                                      vecNodeId (aTri.Node (1)),
+                                                      vecNodeId (aTri.Node (2))));
+    }
+  }
+
+  aResult->Deflection (myDeflection);
   return aResult;
 }
 

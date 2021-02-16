@@ -158,10 +158,6 @@ case 6: //color
         return;
       }
 
-      const TColgp_Array1OfPnt& Nodes= myT->Nodes();
-
-      const Poly_Array1OfTriangle& triangles = myT->Triangles();
-
       Standard_Integer nnn = myT->NbTriangles(); // nnn : nombre de triangles
       Standard_Integer nt, n1, n2, n3 = 0;// nt : triangle courant
       // ni : sommet i du triangle courant
@@ -171,15 +167,15 @@ case 6: //color
         // triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
 
         if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
-          triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
+          myT->Triangle (nt).Get (n1,n3,n2); // le triangle est n1,n3,n2
         else
-          triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
+          myT->Triangle (nt).Get (n1,n2,n3); // le triangle est n1,n2,n3
 
-        if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
+        if (TriangleIsValid (myT->Node (n1), myT->Node (n2), myT->Node (n3)) )
         { // Associates a vertexNT to each node
-          gp_Pnt p = Nodes(n1).Transformed(myLocation.Transformation());
-          gp_Pnt q = Nodes(n2).Transformed(myLocation.Transformation());
-          gp_Pnt r = Nodes(n3).Transformed(myLocation.Transformation());
+          gp_Pnt p = myT->Node (n1).Transformed (myLocation.Transformation());
+          gp_Pnt q = myT->Node (n2).Transformed (myLocation.Transformation());
+          gp_Pnt r = myT->Node (n3).Transformed (myLocation.Transformation());
 
           if (p.Z() > H.Z()) H=p;
           if (q.Z() > H.Z()) H=q;
@@ -213,12 +209,13 @@ case 6: //color
         return;
       }
       Poly_Connect pc(myT);
-      const TColgp_Array1OfPnt& Nodes= myT->Nodes();
+      TColgp_Array1OfPnt Nodes (1, myT->NbNodes());
+      for (Standard_Integer in = 1; in <= myT->NbNodes(); in++)
+      {
+        Nodes.SetValue(in, myT->Node (in));
+      }
       BAR = GProp_PGProps::Barycentre(Nodes);
 
-
-      //const TColgp_Array1OfPnt2d& UVNodes = myT->UVNodes();
-      const Poly_Array1OfTriangle& triangles = myT->Triangles();
       TColgp_Array1OfDir myNormal(Nodes.Lower(), Nodes.Upper());
 
       StdPrs_ToolTriangulatedShape::Normal(myFace, pc, myNormal);
@@ -238,15 +235,15 @@ case 6: //color
       {
         // triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
         if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
-          triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
+          myT->Triangle (nt).Get (n1,n3,n2); // le triangle est n1,n3,n2
         else
-          triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
+          myT->Triangle (nt).Get (n1,n2,n3); // le triangle est n1,n2,n3
 
         if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
         { // Associates a vertexNT to each node
-          gp_Pnt p = Nodes(n1).Transformed(myLocation.Transformation());
-          gp_Pnt q = Nodes(n2).Transformed(myLocation.Transformation());
-          gp_Pnt r = Nodes(n3).Transformed(myLocation.Transformation());
+          gp_Pnt p = myT->Node(n1).Transformed(myLocation.Transformation());
+          gp_Pnt q = myT->Node(n2).Transformed(myLocation.Transformation());
+          gp_Pnt r = myT->Node(n3).Transformed(myLocation.Transformation());
         }
       }
 
@@ -258,18 +255,18 @@ case 6: //color
         std::cout << "On traite actuellement le triangle : "<< nt <<"\n";
 #endif
         if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
-          triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2
+          myT->Triangle (nt).Get (n1,n3,n2); // le triangle est n1,n3,n2
         else
-          triangles(nt).Get(n1,n2,n3); // le triangle est n1,n2,n3
+          myT->Triangle (nt).Get (n1,n2,n3); // le triangle est n1,n2,n3
 
         if (TriangleIsValid (Nodes(n1),Nodes(n2),Nodes(n3)) )
         { // Associates a vertexNT to each node
 
           TColgp_Array1OfPnt Points(1,3);
 
-          gp_Pnt p = Nodes(n1).Transformed(myLocation.Transformation());
-          gp_Pnt q = Nodes(n2).Transformed(myLocation.Transformation());
-          gp_Pnt r = Nodes(n3).Transformed(myLocation.Transformation());
+          gp_Pnt p = myT->Node(n1).Transformed(myLocation.Transformation());
+          gp_Pnt q = myT->Node(n2).Transformed(myLocation.Transformation());
+          gp_Pnt r = myT->Node(n3).Transformed(myLocation.Transformation());
 
           Points(1).SetCoord(p.X(), p.Y(), p.Z());
           Points(2).SetCoord(q.X(), q.Y(), q.Z());

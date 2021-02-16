@@ -648,20 +648,17 @@ static Standard_Integer QABVH_PairDistance (Draw_Interpretor& theDI,
       TopLoc_Location aLoc;
       const Handle(Poly_Triangulation)& aTriangulation = BRep_Tool::Triangulation(aF, aLoc);
 
-      const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
-      const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
-
-      const int aNbTriangles = aTriangles.Length();
+      const int aNbTriangles = aTriangulation->NbTriangles();
       for (int iT = 1; iT <= aNbTriangles; ++iT)
       {
-        const Poly_Triangle& aTriangle = aTriangles (iT);
+        const Poly_Triangle aTriangle = aTriangulation->Triangle (iT);
         // Nodes indices
         Standard_Integer id1, id2, id3;
         aTriangle.Get (id1, id2, id3);
 
-        const gp_Pnt& aP1 = aNodes(id1).Transformed(aLoc.Transformation());
-        const gp_Pnt& aP2 = aNodes(id2).Transformed(aLoc.Transformation());
-        const gp_Pnt& aP3 = aNodes(id3).Transformed(aLoc.Transformation());
+        const gp_Pnt aP1 = aTriangulation->Node (id1).Transformed (aLoc.Transformation());
+        const gp_Pnt aP2 = aTriangulation->Node (id2).Transformed (aLoc.Transformation());
+        const gp_Pnt aP3 = aTriangulation->Node (id3).Transformed (aLoc.Transformation());
 
         BVH_Vec3d aBVHP1 (aP1.X(), aP1.Y(), aP1.Z());
         BVH_Vec3d aBVHP2 (aP2.X(), aP2.Y(), aP2.Z());
@@ -711,20 +708,17 @@ public:
     TopLoc_Location aLoc;
     const Handle(Poly_Triangulation)& aTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
 
-    const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
-    const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
-
-    const int aNbTriangles = aTriangles.Length();
+    const int aNbTriangles = aTriangulation->NbTriangles();
     for (int iT = 1; iT <= aNbTriangles; ++iT)
     {
-      const Poly_Triangle& aTriangle = aTriangles (iT);
+      const Poly_Triangle aTriangle = aTriangulation->Triangle (iT);
       // Nodes indices
       Standard_Integer id1, id2, id3;
       aTriangle.Get (id1, id2, id3);
 
-      const gp_Pnt& aP1 = aNodes(id1).Transformed(aLoc.Transformation());
-      const gp_Pnt& aP2 = aNodes(id2).Transformed(aLoc.Transformation());
-      const gp_Pnt& aP3 = aNodes(id3).Transformed(aLoc.Transformation());
+      const gp_Pnt aP1 = aTriangulation->Node (id1).Transformed (aLoc.Transformation());
+      const gp_Pnt aP2 = aTriangulation->Node (id2).Transformed (aLoc.Transformation());
+      const gp_Pnt aP3 = aTriangulation->Node (id3).Transformed (aLoc.Transformation());
 
       BVH_Vec3d aBVHP1 (aP1.X(), aP1.Y(), aP1.Z());
       BVH_Vec3d aBVHP2 (aP2.X(), aP2.Y(), aP2.Z());

@@ -56,7 +56,7 @@ protected: //! @name interface for filling triangulation data
     {
       return false;
     }
-    myTriangulation->ChangeNodes().Resize (1, theNbNodes, false);
+    myTriangulation->ResizeNodes (theNbNodes, false);
     return true;
   }
 
@@ -66,7 +66,7 @@ protected: //! @name interface for filling triangulation data
   virtual void setNodePosition (Standard_Integer theIndex,
                                 const gp_Pnt& thePnt)
   {
-    myTriangulation->ChangeNode (theIndex) = thePnt;
+    myTriangulation->SetNode (theIndex, thePnt);
   }
 
   //! Resize array of UV nodes to specified size.
@@ -77,7 +77,7 @@ protected: //! @name interface for filling triangulation data
     {
       return false;
     }
-    myTriangulation->ChangeUVNodes().Resize (1, theNbNodes, false);
+    myTriangulation->AddUVNodes();
     return true;
   }
 
@@ -87,7 +87,7 @@ protected: //! @name interface for filling triangulation data
   virtual void setNodeUV (Standard_Integer theIndex,
                           const gp_Pnt2d& theUV)
   {
-    myTriangulation->ChangeUVNode (theIndex) = theUV;
+    myTriangulation->SetUVNode (theIndex, theUV);
   }
 
   //! Resize array of nodes normals to specified size.
@@ -98,7 +98,7 @@ protected: //! @name interface for filling triangulation data
     {
       return false;
     }
-    myTriangulation->SetNormals (new TShort_HArray1OfShortReal (1, theNbNodes * 3));
+    myTriangulation->AddNormals();
     return true;
   }
 
@@ -116,7 +116,7 @@ protected: //! @name interface for filling triangulation data
   {
     if (theNbTris >= 1)
     {
-      myTriangulation->ChangeTriangles().Resize (1, theNbTris, false);
+      myTriangulation->ResizeTriangles (theNbTris, false);
       return true;
     }
     return false;
@@ -129,13 +129,13 @@ protected: //! @name interface for filling triangulation data
   virtual bool setTriangle (Standard_Integer theIndex,
                             const Poly_Triangle& theTriangle)
   {
-    if (theTriangle.Value (1) < myTriangulation->Nodes().Lower() || theTriangle.Value (1) > myTriangulation->Nodes().Upper()
-     || theTriangle.Value (2) < myTriangulation->Nodes().Lower() || theTriangle.Value (2) > myTriangulation->Nodes().Upper()
-     || theTriangle.Value (3) < myTriangulation->Nodes().Lower() || theTriangle.Value (3) > myTriangulation->Nodes().Upper())
+    if (theTriangle.Value (1) < 1 || theTriangle.Value (1) > myTriangulation->NbNodes()
+     || theTriangle.Value (2) < 1 || theTriangle.Value (2) > myTriangulation->NbNodes()
+     || theTriangle.Value (3) < 1 || theTriangle.Value (3) > myTriangulation->NbNodes())
     {
       return false;
     }
-    myTriangulation->ChangeTriangle (theIndex) = theTriangle;
+    myTriangulation->SetTriangle (theIndex, theTriangle);
     return true;
   }
 

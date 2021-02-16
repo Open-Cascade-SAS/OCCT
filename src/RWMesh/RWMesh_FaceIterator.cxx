@@ -31,9 +31,6 @@ RWMesh_FaceIterator::RWMesh_FaceIterator (const TDF_Label&       theLabel,
 : myDefStyle (theStyle),
   myToMapColors (theToMapColors),
   mySLTool  (1, 1e-12),
-  myNodes   (NULL),
-  myNormals (NULL),
-  myNodeUVs (NULL),
   myHasNormals (false),
   myIsMirrored (false),
   myHasFaceColor (false)
@@ -133,21 +130,19 @@ void RWMesh_FaceIterator::dispatchStyles (const TDF_Label&       theLabel,
 gp_Dir RWMesh_FaceIterator::normal (Standard_Integer theNode)
 {
   gp_Dir aNormal (gp::DZ());
-  if (myNormals != NULL)
+  if (myPolyTriang->HasNormals())
   {
-    const Standard_Integer aNodeIndex = theNode - myNodes->Lower();
-    const Graphic3d_Vec3 aNormVec3 (myNormals->Value (myNormals->Lower() + aNodeIndex * 3),
-                                    myNormals->Value (myNormals->Lower() + aNodeIndex * 3 + 1),
-                                    myNormals->Value (myNormals->Lower() + aNodeIndex * 3 + 2));
+    Graphic3d_Vec3 aNormVec3;
+    myPolyTriang->Normal (theNode, aNormVec3);
     if (aNormVec3.Modulus() != 0.0f)
     {
       aNormal.SetCoord (aNormVec3.x(), aNormVec3.y(), aNormVec3.z());
     }
   }
   else if (myHasNormals
-        && myNodeUVs != NULL)
+        && myPolyTriang->HasUVNodes())
   {
-    const gp_XY& anUV = myNodeUVs->Value (theNode).XY();
+    const gp_XY anUV = myPolyTriang->UVNode (theNode).XY();
     mySLTool.SetParameters (anUV.X(), anUV.Y());
     if (mySLTool.IsNormalDefined())
     {
@@ -169,7 +164,7 @@ void RWMesh_FaceIterator::Next()
     myPolyTriang = BRep_Tool::Triangulation (myFace, myFaceLocation);
     myTrsf       = myFaceLocation.Transformation();
     if (myPolyTriang.IsNull()
-     || myPolyTriang->Triangles().Length() == 0)
+     || myPolyTriang->NbTriangles() == 0)
     {
       resetFace();
       continue;
@@ -192,29 +187,20 @@ void RWMesh_FaceIterator::initFace()
   myHasNormals   = false;
   myHasFaceColor = false;
   myIsMirrored   = myTrsf.VectorialPart().Determinant() < 0.0;
-  myNormals = NULL;
-  myNodeUVs = NULL;
-
-  myNodes = &myPolyTriang->Nodes();
   if (myPolyTriang->HasNormals())
   {
-    myNormals = &myPolyTriang->Normals();
     myHasNormals = true;
   }
-  if (myPolyTriang->HasUVNodes())
+  if (myPolyTriang->HasUVNodes() && !myHasNormals)
   {
-    myNodeUVs = &myPolyTriang->UVNodes();
-    if (!myHasNormals)
+    TopoDS_Face aFaceFwd = TopoDS::Face (myFace.Oriented (TopAbs_FORWARD));
+    aFaceFwd.Location (TopLoc_Location());
+    TopLoc_Location aLoc;
+    if (!BRep_Tool::Surface (aFaceFwd, aLoc).IsNull())
     {
-      TopoDS_Face aFaceFwd = TopoDS::Face (myFace.Oriented (TopAbs_FORWARD));
-      aFaceFwd.Location (TopLoc_Location());
-      TopLoc_Location aLoc;
-      if (!BRep_Tool::Surface (aFaceFwd, aLoc).IsNull())
-      {
-        myFaceAdaptor.Initialize (aFaceFwd, false);
-        mySLTool.SetSurface (myFaceAdaptor);
-        myHasNormals = true;
-      }
+      myFaceAdaptor.Initialize (aFaceFwd, false);
+      mySLTool.SetSurface (myFaceAdaptor);
+      myHasNormals = true;
     }
   }
   if (!myToMapColors)

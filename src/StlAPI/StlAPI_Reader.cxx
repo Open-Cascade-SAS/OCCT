@@ -52,22 +52,18 @@ Standard_Boolean StlAPI_Reader::Read (TopoDS_Shape&          theShape,
   BRep_Builder BuildTool;
   BuildTool.MakeCompound (aComp);
 
-  const TColgp_Array1OfPnt& aNodes = aMesh->Nodes();
-  const Poly_Array1OfTriangle& aTriangles = aMesh->Triangles();
-  for (Standard_Integer aTriIdx  = aTriangles.Lower();
-                        aTriIdx <= aTriangles.Upper();
-                      ++aTriIdx)
+  for (Standard_Integer aTriIdx  = 1; aTriIdx <= aMesh->NbTriangles(); ++aTriIdx)
   {
-    const Poly_Triangle& aTriangle = aTriangles(aTriIdx);
+    const Poly_Triangle aTriangle = aMesh->Triangle (aTriIdx);
 
     Standard_Integer anId[3];
     aTriangle.Get(anId[0], anId[1], anId[2]);
 
-    const gp_Pnt& aPnt1 = aNodes (anId[0]);
-    const gp_Pnt& aPnt2 = aNodes (anId[1]);
-    const gp_Pnt& aPnt3 = aNodes (anId[2]);
-    if ((!(aPnt1.IsEqual (aPnt2, 0.0)))
-     && (!(aPnt1.IsEqual (aPnt3, 0.0))))
+    const gp_Pnt aPnt1 = aMesh->Node (anId[0]);
+    const gp_Pnt aPnt2 = aMesh->Node (anId[1]);
+    const gp_Pnt aPnt3 = aMesh->Node (anId[2]);
+    if (!(aPnt1.IsEqual (aPnt2, 0.0))
+     && !(aPnt1.IsEqual (aPnt3, 0.0)))
     {
       aTriVertexes[0] = BRepBuilderAPI_MakeVertex (aPnt1);
       aTriVertexes[1] = BRepBuilderAPI_MakeVertex (aPnt2);

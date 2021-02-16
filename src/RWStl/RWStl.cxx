@@ -87,12 +87,12 @@ namespace
       Handle(Poly_Triangulation) aPoly = new Poly_Triangulation (myNodes.Length(), myTriangles.Length(), Standard_False);
       for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
       {
-        aPoly->ChangeNode (aNodeIter + 1) = myNodes (aNodeIter);
+        aPoly->SetNode (aNodeIter + 1, myNodes[aNodeIter]);
       }
 
       for (Standard_Integer aTriIter = 0; aTriIter < myTriangles.Size(); ++aTriIter)
       {
-        aPoly->ChangeTriangle (aTriIter + 1) = myTriangles (aTriIter);
+        aPoly->SetTriangle (aTriIter + 1, myTriangles[aTriIter]);
       }
 
       return aPoly;
@@ -284,17 +284,15 @@ Standard_Boolean RWStl::writeASCII (const Handle(Poly_Triangulation)& theMesh,
   const Standard_Integer NBTriangles = theMesh->NbTriangles();
   Message_ProgressScope aPS (theProgress, "Triangles", NBTriangles);
 
-  const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
-  const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
   Standard_Integer anElem[3] = {0, 0, 0};
   for (Standard_Integer aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
   {
-    const Poly_Triangle& aTriangle = aTriangles (aTriIter);
+    const Poly_Triangle aTriangle = theMesh->Triangle (aTriIter);
     aTriangle.Get (anElem[0], anElem[1], anElem[2]);
 
-    const gp_Pnt aP1 = aNodes (anElem[0]);
-    const gp_Pnt aP2 = aNodes (anElem[1]);
-    const gp_Pnt aP3 = aNodes (anElem[2]);
+    const gp_Pnt aP1 = theMesh->Node (anElem[0]);
+    const gp_Pnt aP2 = theMesh->Node (anElem[1]);
+    const gp_Pnt aP3 = theMesh->Node (anElem[2]);
 
     const gp_Vec aVec1 (aP1, aP2);
     const gp_Vec aVec2 (aP1, aP3);
@@ -365,9 +363,6 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
   NCollection_Array1<Standard_Character> aData (1, aChunkSize);
   Standard_Character* aDataChunk = &aData.ChangeFirst();
 
-  const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
-  const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
-
   Standard_Character aConv[4];
   convertInteger (aNBTriangles, aConv);
   if (fwrite (aConv, 1, 4, theFile) != 4)
@@ -379,12 +374,12 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
   for (Standard_Integer aTriIter = 1; aTriIter <= aNBTriangles; ++aTriIter)
   {
     Standard_Integer id[3];
-    const Poly_Triangle& aTriangle = aTriangles (aTriIter);
+    const Poly_Triangle aTriangle = theMesh->Triangle (aTriIter);
     aTriangle.Get (id[0], id[1], id[2]);
 
-    const gp_Pnt aP1 = aNodes (id[0]);
-    const gp_Pnt aP2 = aNodes (id[1]);
-    const gp_Pnt aP3 = aNodes (id[2]);
+    const gp_Pnt aP1 = theMesh->Node (id[0]);
+    const gp_Pnt aP2 = theMesh->Node (id[1]);
+    const gp_Pnt aP3 = theMesh->Node (id[2]);
 
     gp_Vec aVec1 (aP1, aP2);
     gp_Vec aVec2 (aP1, aP3);

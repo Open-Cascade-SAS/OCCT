@@ -185,23 +185,26 @@ static Standard_Integer PointsForOBB(const TopoDS_Shape& theS,
     }
 
     // Use triangulation of the face
-    const Handle(Poly_Triangulation) &aTrng = BRep_Tool::Triangulation(aF, aLoc);
+    const Handle(Poly_Triangulation)& aTrng = BRep_Tool::Triangulation (aF, aLoc);
     if (aTrng.IsNull())
+    {
       // no triangulation on the face
       return 0;
+    }
 
     const Standard_Integer aCNode = aTrng->NbNodes();
-    const TColgp_Array1OfPnt& aNodesArr = aTrng->Nodes();
+    const gp_Trsf aTrsf = aLoc;
     for (Standard_Integer i = 1; i <= aCNode; i++)
     {
-      if (thePts)
+      if (thePts != NULL)
       {
-        const gp_Pnt aP = aLoc.IsIdentity() ? aNodesArr[i] :
-          aNodesArr[i].Transformed(aLoc);
+        const gp_Pnt aP = aTrsf.Form() == gp_Identity
+                        ? aTrng->Node (i)
+                        : aTrng->Node (i).Transformed (aTrsf);
         (*thePts)(aRetVal) = aP;
       }
 
-      if (theArrOfToler)
+      if (theArrOfToler != NULL)
       {
         (*theArrOfToler) (aRetVal) = aTrng->Deflection();
       }

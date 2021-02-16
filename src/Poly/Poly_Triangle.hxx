@@ -89,7 +89,7 @@ public:
 
   Standard_Integer& operator() (const Standard_Integer Index) { return ChangeValue(Index); }
 
-private:
+protected:
 
   Standard_Integer myNodes[3];
 

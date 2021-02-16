@@ -70,14 +70,9 @@ void TriangulationSamples::Triangulation3dSample()
     TopLoc_Location aLocation;
     Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(aFace, aLocation);
 
-    TColgp_Array1OfPnt aTriangNodes(1, (aTriangulation->NbNodes()));
-    aTriangNodes = aTriangulation->Nodes();
-    Poly_Array1OfTriangle aTriangles(1, aTriangulation->NbTriangles());
-    aTriangles = aTriangulation->Triangles();
-
-    for (Standard_Integer i = 1; i <= (aTriangulation->NbTriangles()); i++)
+    for (Standard_Integer i = 1; i <= aTriangulation->NbTriangles(); i++)
     {
-      Poly_Triangle trian = aTriangles.Value(i);
+      const Poly_Triangle trian = aTriangulation->Triangle (i);
       Standard_Integer index1, index2, index3, M = 0, N = 0;
       trian.Get(index1, index2, index3);
 
@@ -96,7 +91,7 @@ void TriangulationSamples::Triangulation3dSample()
             M = index2;
         }
 
-        BRepBuilderAPI_MakeEdge anEdgeMaker(aTriangNodes.Value(M), aTriangNodes.Value(N));
+        BRepBuilderAPI_MakeEdge anEdgeMaker(aTriangulation->Node (M), aTriangulation->Node (N));
         if (anEdgeMaker.IsDone())
         {
           aBuilder.Add(aCompound, anEdgeMaker.Edge());

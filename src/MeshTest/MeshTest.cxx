@@ -334,7 +334,6 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
     new Poly_Triangulation (aNbNodes, aNbTriangles, Standard_False);
 
   // fill nodes
-  TColgp_Array1OfPnt &aNodes = aTriangulation->ChangeNodes();
   GeomAdaptor_Surface anAdSurf (aSurf);
   double aDU = (aUMax - aUMin) / aNbU;
   double aDV = (aVMax - aVMin) / aNbV;
@@ -345,12 +344,11 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
     {
       double aV = aVMin + iV * aDV;
       gp_Pnt aP = anAdSurf.Value (aU, aV);
-      aNodes.SetValue (iShift + iV, aP);
+      aTriangulation->SetNode (iShift + iV, aP);
     }
   }
 
   // fill triangles
-  Poly_Array1OfTriangle &aTriangles = aTriangulation->ChangeTriangles();
   for (int iU = 0, iShift = 1, iTri = 0; iU < aNbU; iU++, iShift += aNbV + 1)
   {
     for (int iV = 0; iV < aNbV; iV++)
@@ -358,8 +356,8 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
       int iBase = iShift + iV;
       Poly_Triangle aTri1 (iBase, iBase + aNbV + 2, iBase + 1);
       Poly_Triangle aTri2 (iBase, iBase + aNbV + 1, iBase + aNbV + 2);
-      aTriangles.SetValue (++iTri, aTri1);
-      aTriangles.SetValue (++iTri, aTri2);
+      aTriangulation->SetTriangle (++iTri, aTri1);
+      aTriangulation->SetTriangle (++iTri, aTri2);
     }
   }
 
@@ -574,21 +572,18 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
     Standard_Real deflemax = 0, deflemin = 1.e100;
     if (!T.IsNull()) {
       Standard_Real defstock = T->Deflection();
-      const Poly_Array1OfTriangle& triangles  = T->Triangles();
-      const TColgp_Array1OfPnt2d&  Nodes2d    = T->UVNodes();
-      const TColgp_Array1OfPnt&    Nodes      = T->Nodes();
 
       S = BRep_Tool::Surface(F, L);
 
-      for(i = 1; i <= triangles.Length(); i++) {
+      for(i = 1; i <= T->NbTriangles(); i++) {
         if (F.Orientation() == TopAbs_REVERSED) 
-          triangles(i).Get(n1,n3,n2);
+          T->Triangle (i).Get (n1,n3,n2);
         else 
-          triangles(i).Get(n1,n2,n3);
+          T->Triangle (i).Get (n1,n2,n3);
 
-        const gp_XY& xy1 = Nodes2d(n1).XY();
-        const gp_XY& xy2 = Nodes2d(n2).XY();
-        const gp_XY& xy3 = Nodes2d(n3).XY();
+        const gp_XY& xy1 = T->UVNode (n1).XY();
+        const gp_XY& xy2 = T->UVNode (n2).XY();
+        const gp_XY& xy3 = T->UVNode (n3).XY();
 
         mi2d1.SetCoord((xy2.X()+xy3.X())*0.5, 
           (xy2.Y()+xy3.Y())*0.5);
@@ -597,9 +592,9 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
         mi2d3.SetCoord((xy1.X()+xy2.X())*0.5, 
           (xy1.Y()+xy2.Y())*0.5);
 
-        gp_XYZ p1 = Nodes(n1).Transformed(L.Transformation()).XYZ();
-        gp_XYZ p2 = Nodes(n2).Transformed(L.Transformation()).XYZ();
-        gp_XYZ p3 = Nodes(n3).Transformed(L.Transformation()).XYZ();
+        gp_XYZ p1 = T->Node (n1).Transformed (L.Transformation()).XYZ();
+        gp_XYZ p2 = T->Node (n2).Transformed (L.Transformation()).XYZ();
+        gp_XYZ p3 = T->Node (n3).Transformed (L.Transformation()).XYZ();
 
         vecEd1=p2-p1;
         vecEd2=p3-p2;
@@ -721,11 +716,10 @@ static Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char*
     TColStd_Array1OfInteger Internal(0,2*nInternal);
 
     Standard_Integer fr = 1, in = 1;
-    const Poly_Array1OfTriangle& triangles = T->Triangles();
     Standard_Integer nodes[3];
     for (i = 1; i <= nbTriangles; i++) {
       pc.Triangles(i,t[0],t[1],t[2]);
-      triangles(i).Get(nodes[0],nodes[1],nodes[2]);
+      T->Triangle (i).Get (nodes[0],nodes[1],nodes[2]);
       for (j = 0; j < 3; j++) {
         Standard_Integer k = (j+1) % 3;
         if (t[j] == 0) {
@@ -744,17 +738,15 @@ static Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char*
 
     // Display the edges
     if (T->HasUVNodes()) {
-      const TColgp_Array1OfPnt2d& Nodes2d = T->UVNodes();
-
       Handle(Draw_Segment2D) Seg;
 
       // free edges
       Standard_Integer nn;
       nn = Free.Length() / 2;
       for (i = 1; i <= nn; i++) {
-        Seg = new Draw_Segment2D(Nodes2d(Free(2*i-1)),
-          Nodes2d(Free(2*i)),
-          Draw_rouge);
+        Seg = new Draw_Segment2D (T->UVNode (Free[2*i-1]),
+                                  T->UVNode (Free[2*i]),
+                                  Draw_rouge);
         dout << Seg;
       }
 
@@ -762,9 +754,9 @@ static Standard_Integer tri2d(Draw_Interpretor&, Standard_Integer n, const char*
 
       nn = nInternal;
       for (i = 1; i <= nn; i++) {
-        Seg = new Draw_Segment2D(Nodes2d(Internal(2*i-1)),
-          Nodes2d(Internal(2*i)),
-          Draw_bleu);
+        Seg = new Draw_Segment2D (T->UVNode (Internal[2*i-1]),
+                                  T->UVNode (Internal[2*i]),
+                                  Draw_bleu);
         dout << Seg;
       }
     }
@@ -833,11 +825,10 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
 
     if (!Tr.IsNull()) {
       nbNodes = Tr->NbNodes();
-      const TColgp_Array1OfPnt& Nodes = Tr->Nodes();
 
       // les noeuds.
       for (i = 1; i <= nbNodes; i++) {
-        gp_Pnt Pnt = Nodes(i).Transformed(L.Transformation());
+        gp_Pnt Pnt = Tr->Node (i).Transformed (L.Transformation());
         x = Pnt.X();
         y = Pnt.Y();
         z = Pnt.Z();
@@ -850,12 +841,11 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
       // les normales.
 
       if (Tr->HasUVNodes()) {
-        const TColgp_Array1OfPnt2d& UVNodes = Tr->UVNodes();
         BRepAdaptor_Surface BS(F, Standard_False);
 
         for (i = 1; i <= nbNodes; i++) {
-          U = UVNodes(i).X();
-          V = UVNodes(i).Y();
+          U = Tr->UVNode (i).X();
+          V = Tr->UVNode (i).Y();
 
           BS.D1(U,V,P,D1U,D1V);
           CSLib::Normal (D1U, D1V, Precision::Angular(), aStatus, Nor);
@@ -875,14 +865,12 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
 
       // les triangles.
       Standard_Integer nbTriangles = Tr->NbTriangles();
-      const Poly_Array1OfTriangle& triangles = Tr->Triangles();
-
 
       for (i = 1; i <= nbTriangles; i++) {
         if (F.Orientation()  == TopAbs_REVERSED)
-          triangles(i).Get(n1, n3, n2);
+          Tr->Triangle (i).Get (n1, n3, n2);
         else 
-          triangles(i).Get(n1, n2, n3);
+          Tr->Triangle (i).Get (n1, n2, n3);
         k1 = n1+totalnodes;
         k2 = n2+totalnodes;
         k3 = n3+totalnodes;
@@ -950,14 +938,13 @@ static Standard_Integer triedgepoints(Draw_Interpretor& di, Standard_Integer nba
       BRep_Tool::PolygonOnTriangulation(TopoDS::Edge(it.Key()), aPoly, aT, aLoc);
       if ( aT.IsNull() || aPoly.IsNull() )
         continue;
-      
-      const TColgp_Array1OfPnt&      Nodes   = aT->Nodes();
+
       const TColStd_Array1OfInteger& Indices = aPoly->Nodes();
       const Standard_Integer         nbnodes = Indices.Length();
 
       for( Standard_Integer j = 1; j <= nbnodes; j++ )
       {
-        gp_Pnt P3d = Nodes(Indices(j));
+        gp_Pnt P3d = aT->Node (Indices[j]);
         if( !aLoc.IsIdentity() )
           P3d.Transform(aLoc.Transformation());
 

@@ -350,7 +350,6 @@ static Handle(TColgp_HArray1OfPnt) GetPointsFromPolygon (const TopoDS_Edge& theE
   if (!anHIndices.IsNull())
   {
     const TColStd_Array1OfInteger& anIndices = anHIndices->Nodes();
-    const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
 
     aResultPoints = new TColgp_HArray1OfPnt (1, anIndices.Length());
 
@@ -358,14 +357,14 @@ static Handle(TColgp_HArray1OfPnt) GetPointsFromPolygon (const TopoDS_Edge& theE
     {
       for (Standard_Integer anIndex (anIndices.Lower()), aPntId (1); anIndex <= anIndices.Upper(); ++anIndex, ++aPntId)
       {
-        aResultPoints->SetValue (aPntId, aNodes (anIndices (anIndex)));
+        aResultPoints->SetValue (aPntId, aTriangulation->Node (anIndices[anIndex]));
       }
     }
     else
     {
       for (Standard_Integer anIndex (anIndices.Lower()), aPntId (1); anIndex <= anIndices.Upper(); ++anIndex, ++aPntId)
       {
-        aResultPoints->SetValue (aPntId, aNodes (anIndices (anIndex)).Transformed (aLocation));
+        aResultPoints->SetValue (aPntId, aTriangulation->Node (anIndices[anIndex]).Transformed (aLocation));
       }
     }
     return aResultPoints;

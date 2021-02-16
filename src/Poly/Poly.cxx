@@ -43,42 +43,48 @@ Handle(Poly_Triangulation) Poly::Catenate (const Poly_ListOfTriangulation& lstTr
 
   // Sum up the total number of nodes.
   Poly_ListOfTriangulation::Iterator anIter(lstTri);
-  for (; anIter.More(); anIter.Next()) {
+  for (; anIter.More(); anIter.Next())
+  {
     const Handle(Poly_Triangulation)& aTri = anIter.Value();
-    if (aTri.IsNull() == Standard_False) {
+    if (!aTri.IsNull())
+    {
       nNodes += aTri->NbNodes();
       nTrian += aTri->NbTriangles();
     }
   }
 
-  Handle(Poly_Triangulation) aResult;
-  if (nNodes > 0) {
-    aResult = new Poly_Triangulation(nNodes, nTrian, Standard_False);
-    Standard_Integer i, iNode[3];
-    nNodes = 0;
-    nTrian = 0;
-    TColgp_Array1OfPnt&    arrNode  = aResult->ChangeNodes();
-    Poly_Array1OfTriangle& arrTrian = aResult->ChangeTriangles();
-    for (anIter.Init(lstTri); anIter.More(); anIter.Next()) {
-      const Handle(Poly_Triangulation)& aTri = anIter.Value();
-      if (aTri.IsNull() == Standard_False) {
-        const TColgp_Array1OfPnt&    srcNode  = aTri->Nodes();
-        const Poly_Array1OfTriangle& srcTrian = aTri->Triangles();
-        const Standard_Integer nbNodes = aTri->NbNodes(); 
-        const Standard_Integer nbTrian = aTri->NbTriangles(); 
-        for (i = 1; i <= nbNodes; i++) {
-          arrNode.SetValue(i + nNodes, srcNode(i));
-        }
-        for (i = 1; i <= nbTrian; i++) {
-          srcTrian(i).Get(iNode[0], iNode[1], iNode[2]);
-          arrTrian.SetValue(i + nTrian, Poly_Triangle(iNode[0] + nNodes,
-                                                      iNode[1] + nNodes,
-                                                      iNode[2] + nNodes));
-        }
-        nNodes += nbNodes;
-        nTrian += nbTrian;
-      }
+  if (nNodes == 0)
+  {
+    return Handle(Poly_Triangulation)();
+  }
+
+  Handle(Poly_Triangulation) aResult = new Poly_Triangulation(nNodes, nTrian, Standard_False);
+  Standard_Integer iNode[3] = {};
+  nNodes = 0;
+  nTrian = 0;
+  for (anIter.Init(lstTri); anIter.More(); anIter.Next())
+  {
+    const Handle(Poly_Triangulation)& aTri = anIter.Value();
+    if (aTri.IsNull())
+    {
+      continue;
     }
+
+    const Standard_Integer nbNodes = aTri->NbNodes();
+    const Standard_Integer nbTrian = aTri->NbTriangles();
+    for (Standard_Integer i = 1; i <= nbNodes; i++)
+    {
+      aResult->SetNode (i + nNodes, aTri->Node (i));
+    }
+    for (Standard_Integer i = 1; i <= nbTrian; i++)
+    {
+      aTri->Triangle (i).Get (iNode[0], iNode[1], iNode[2]);
+      aResult->SetTriangle (i + nTrian, Poly_Triangle (iNode[0] + nNodes,
+                                                       iNode[1] + nNodes,
+                                                       iNode[2] + nNodes));
+    }
+    nNodes += nbNodes;
+    nTrian += nbTrian;
   }
   return aResult;
 }
@@ -113,36 +119,39 @@ void Poly::Write(const Handle(Poly_Triangulation)& T,
   if (!Compact) OS << "\n3D Nodes :\n";
 
   Standard_Integer i, nbNodes = T->NbNodes();
-  const TColgp_Array1OfPnt& Nodes = T->Nodes();
-  for (i = 1; i <= nbNodes; i++) {
+  for (i = 1; i <= nbNodes; i++)
+  {
+    const gp_Pnt aNode = T->Node (i);
     if (!Compact) OS << std::setw(10) << i << " : ";
     if (!Compact) OS << std::setw(17);
-    OS << Nodes(i).X() << " ";
+    OS << aNode.X() << " ";
     if (!Compact) OS << std::setw(17);
-    OS << Nodes(i).Y() << " ";
+    OS << aNode.Y() << " ";
     if (!Compact) OS << std::setw(17);
-    OS << Nodes(i).Z() << "\n";
+    OS << aNode.Z() << "\n";
   }
 
-  if (T->HasUVNodes()) {
+  if (T->HasUVNodes())
+  {
     if (!Compact) OS << "\nUV Nodes :\n";
-    const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
-    for (i = 1; i <= nbNodes; i++) {
+    for (i = 1; i <= nbNodes; i++)
+    {
+      const gp_Pnt2d aNode2d = T->UVNode (i);
       if (!Compact) OS << std::setw(10) << i << " : ";
-    if (!Compact) OS << std::setw(17);
-      OS << UVNodes(i).X() << " ";
-    if (!Compact) OS << std::setw(17);
-      OS << UVNodes(i).Y() << "\n";
+      if (!Compact) OS << std::setw(17);
+      OS << aNode2d.X() << " ";
+      if (!Compact) OS << std::setw(17);
+      OS << aNode2d.Y() << "\n";
     }
   }
 
   if (!Compact) OS << "\nTriangles :\n";
   Standard_Integer nbTriangles = T->NbTriangles();
   Standard_Integer n1, n2, n3;
-  const Poly_Array1OfTriangle& Triangles = T->Triangles();
-  for (i = 1; i <= nbTriangles; i++) {
+  for (i = 1; i <= nbTriangles; i++)
+  {
     if (!Compact) OS << std::setw(10) << i << " : ";
-    Triangles(i).Get(n1, n2, n3);
+    T->Triangle (i).Get (n1, n2, n3);
     if (!Compact) OS << std::setw(10);
     OS << n1 << " ";
     if (!Compact) OS << std::setw(10);
@@ -447,70 +456,7 @@ Handle(Poly_Polygon2D) Poly::ReadPolygon2D(Standard_IStream& IS)
 //=======================================================================
 void Poly::ComputeNormals (const Handle(Poly_Triangulation)& theTri)
 {
-  const TColgp_Array1OfPnt& aNodes   = theTri->Nodes();
-  const Standard_Integer    aNbNodes = aNodes.Size();
-
-  const Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, aNbNodes * 3);
-  aNormals->Init (0.0f);
-  Standard_ShortReal* aNormArr = &aNormals->ChangeFirst();
-
-  Standard_Integer anElem[3] = {0, 0, 0};
-  const Standard_Real anEps2 = gp::Resolution();
-  for (Poly_Array1OfTriangle::Iterator aTriIter (theTri->Triangles()); aTriIter.More(); aTriIter.Next())
-  {
-    aTriIter.Value().Get (anElem[0], anElem[1], anElem[2]);
-    const gp_Pnt& aNode0 = aNodes.Value (anElem[0]);
-    const gp_Pnt& aNode1 = aNodes.Value (anElem[1]);
-    const gp_Pnt& aNode2 = aNodes.Value (anElem[2]);
-
-    const gp_XYZ aVec01 = aNode1.XYZ() - aNode0.XYZ();
-    const gp_XYZ aVec02 = aNode2.XYZ() - aNode0.XYZ();
-    gp_XYZ aTriNorm = aVec01 ^ aVec02;
-    /*if (theToIgnoreTriangleSize)
-    {
-      const Standard_Real aMod = aTriNorm.SquareModulus();
-      if (aMod > anEps2)
-      {
-        aTriNorm /= Sqrt (aMod);
-      }
-      else
-      {
-        continue;
-      }
-    }*/
-
-    for (Standard_Integer aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
-    {
-      const Standard_Size anIndex = (anElem[aNodeIter] - 1) * 3;
-      aNormArr[anIndex + 0] += Standard_ShortReal(aTriNorm.X());
-      aNormArr[anIndex + 1] += Standard_ShortReal(aTriNorm.Y());
-      aNormArr[anIndex + 2] += Standard_ShortReal(aTriNorm.Z());
-    }
-  }
-
-  // Normalize all vectors
-  gp_XYZ aNormXYZ;
-  for (Standard_Integer aNodeIter = 0; aNodeIter < aNbNodes; ++aNodeIter)
-  {
-    const Standard_Size anIndex = aNodeIter * 3;
-    aNormXYZ.SetCoord (aNormArr[anIndex + 0], aNormArr[anIndex + 1], aNormArr[anIndex + 2]);
-    const Standard_Real aMod2 = aNormXYZ.SquareModulus();
-    if (aMod2 < anEps2)
-    {
-      aNormArr[anIndex + 0] = 0.0f;
-      aNormArr[anIndex + 1] = 0.0f;
-      aNormArr[anIndex + 2] = 1.0f;
-    }
-    else
-    {
-      aNormXYZ /= Sqrt (aMod2);
-      aNormArr[anIndex + 0] = Standard_ShortReal(aNormXYZ.X());
-      aNormArr[anIndex + 1] = Standard_ShortReal(aNormXYZ.Y());
-      aNormArr[anIndex + 2] = Standard_ShortReal(aNormXYZ.Z());
-    }
-  }
-
-  theTri->SetNormals (aNormals);
+  theTri->ComputeNormals();
 }
 
 //=======================================================================

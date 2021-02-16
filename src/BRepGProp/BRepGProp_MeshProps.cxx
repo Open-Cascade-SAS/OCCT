@@ -171,7 +171,7 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
   }
   if (theLoc.IsIdentity())
   {
-    Perform(theMesh->Nodes(), theMesh->Triangles(), theOri);
+    Perform (theMesh, theOri);
   }
   else
   {
@@ -181,21 +181,24 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
                                 Abs(Abs(aTr.ScaleFactor()) - 1.) > gp::Resolution();
     if (isToCopy)
     {
-      TColgp_Array1OfPnt aNodes(1, theMesh->NbNodes());
-      const TColgp_Array1OfPnt& aMeshNodes = theMesh->Nodes();
-      Standard_Integer i;
-      for (i = 1; i <= aMeshNodes.Length(); ++i)
+      Handle(Poly_Triangulation) aCopy = new Poly_Triangulation (theMesh->NbNodes(), theMesh->NbTriangles(), false);
+      TColgp_Array1OfPnt aNodes (1, theMesh->NbNodes());
+      for (Standard_Integer i = 1; i <= theMesh->NbNodes(); ++i)
       {
-        aNodes(i) = aMeshNodes.Value(i).Transformed(aTr);
+        aCopy->SetNode (i, theMesh->Node (i).Transformed (aTr));
       }
-      Perform(aNodes, theMesh->Triangles(), theOri);
+      for (Standard_Integer i = 1; i <= theMesh->NbTriangles(); ++i)
+      {
+        aCopy->SetTriangle (i, theMesh->Triangle (i));
+      }
+      Perform (aCopy, theOri);
       return;
     }
     //
     gp_Trsf aTrInv = aTr.Inverted();
     gp_Pnt loc_save = loc;
     loc.Transform(aTrInv);
-    Perform(theMesh->Nodes(), theMesh->Triangles(), theOri);
+    Perform (theMesh, theOri);
     //Computes the inertia tensor at mesh gravity center
     gp_Mat HMat, inertia0;
     gp_Pnt g0 = g;
@@ -229,11 +232,12 @@ void BRepGProp_MeshProps::Perform(const Handle(Poly_Triangulation)& theMesh,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BRepGProp_MeshProps::Perform(const TColgp_Array1OfPnt& theNodes,
-                                   const Poly_Array1OfTriangle& theTriangles,
+void BRepGProp_MeshProps::Perform (const Handle(Poly_Triangulation)& theMesh,
                                    const TopAbs_Orientation theOri)
 {
-  if (theNodes.IsEmpty() || theTriangles.IsEmpty())
+  if (theMesh.IsNull()
+   || theMesh->NbNodes() == 0
+   || theMesh->NbTriangles() == 0)
   {
     return;
   }
@@ -256,23 +260,20 @@ void BRepGProp_MeshProps::Perform(const TColgp_Array1OfPnt& theNodes,
   //aGProps[7] = Ixy, aGProps[8] = Ixz, aGProps[9] = Iyz,
 
   Standard_Boolean isVolume = myType == Vinert;
-  Standard_Integer i;
   Standard_Integer n1, n2, n3; //node indices
-  for (i = theTriangles.Lower(); i <= theTriangles.Upper(); ++i)
+  for (Standard_Integer i = 1; i <= theMesh->NbTriangles(); ++i)
   {
-    const Poly_Triangle& aTri = theTriangles(i);
-    aTri.Get(n1, n2, n3);
+    const Poly_Triangle aTri = theMesh->Triangle (i);
+    aTri.Get (n1, n2, n3);
     if (theOri == TopAbs_REVERSED)
     {
-      Standard_Integer nn = n2;
-      n2 = n3;
-      n3 = nn;
+      std::swap (n2, n3);
     }
     // Calculate properties of a pyramid built on face and apex
-    const gp_Pnt& p1 = theNodes(n1);
-    const gp_Pnt& p2 = theNodes(n2);
-    const gp_Pnt& p3 = theNodes(n3);
-    CalculateProps(p1, p2, p3, loc, isVolume, aGProps, aNbGaussPoints, GPtsWg);
+    const gp_Pnt p1 = theMesh->Node (n1);
+    const gp_Pnt p2 = theMesh->Node (n2);
+    const gp_Pnt p3 = theMesh->Node (n3);
+    CalculateProps (p1, p2, p3, loc, isVolume, aGProps, aNbGaussPoints, GPtsWg);
   }
 
   dim = aGProps[0];

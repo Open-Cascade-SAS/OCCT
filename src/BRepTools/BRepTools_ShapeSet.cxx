@@ -1467,28 +1467,31 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
     if (!Compact) OS << "\n3D Nodes :\n";
     
     nbNodes = T->NbNodes();
-    const TColgp_Array1OfPnt& Nodes = T->Nodes();
-    for (j = 1; j <= nbNodes; j++) {
+    for (j = 1; j <= nbNodes; j++)
+    {
+      const gp_Pnt aNode = T->Node (j);
       if (!Compact) OS << std::setw(10) << j << " : ";
       if (!Compact) OS << std::setw(17);
-      OS << Nodes(j).X() << " ";
+      OS << aNode.X() << " ";
       if (!Compact) OS << std::setw(17);
-      OS << Nodes(j).Y() << " ";
+      OS << aNode.Y() << " ";
       if (!Compact) OS << std::setw(17);
-      OS << Nodes(j).Z();
+      OS << aNode.Z();
       if (!Compact) OS << "\n";
       else OS << " ";
     }
     
-    if (T->HasUVNodes()) {
+    if (T->HasUVNodes())
+    {
       if (!Compact) OS << "\nUV Nodes :\n";
-      const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
-      for (j = 1; j <= nbNodes; j++) {
+      for (j = 1; j <= nbNodes; j++)
+      {
+        const gp_Pnt2d aNode2d = T->UVNode (j);
         if (!Compact) OS << std::setw(10) << j << " : ";
         if (!Compact) OS << std::setw(17);
-        OS << UVNodes(j).X() << " ";
+        OS << aNode2d.X() << " ";
         if (!Compact) OS << std::setw(17);
-        OS << UVNodes(j).Y();
+        OS << aNode2d.Y();
         if (!Compact) OS << "\n";
         else OS << " ";
       }
@@ -1496,10 +1499,9 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
     
     if (!Compact) OS << "\nTriangles :\n";
     nbTriangles = T->NbTriangles();
-    const Poly_Array1OfTriangle& Triangles = T->Triangles();
     for (j = 1; j <= nbTriangles; j++) {
       if (!Compact) OS << std::setw(10) << j << " : ";
-      Triangles(j).Get(n1, n2, n3);
+      T->Triangle (j).Get (n1, n2, n3);
       if (!Compact) OS << std::setw(10);
       OS << n1 << " ";
       if (!Compact) OS << std::setw(10);
@@ -1515,22 +1517,19 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
       if (T->HasNormals() && toWriteNormals)
       {
         if (!Compact) OS << "\nNormals :\n";
-        const TShort_Array1OfShortReal& Normals = T->Normals();
-        for (j = 1; j <= nbNodes * 3; j++)
+        for (j = 1; j <= nbNodes; j++)
         {
           if (!Compact)
           {
             OS << std::setw(10) << j << " : ";
             OS << std::setw(17);
           }
-          OS << Normals(j) << " ";
-          if (!Compact)
+          gp_Vec3f aNorm;
+          for (Standard_Integer k = 0; k < 3; ++k)
           {
-            OS << "\n";
-          }
-          else
-          {
-            OS << " ";
+            T->Normal (j, aNorm);
+            OS << aNorm[k];
+            OS << (!Compact ? "\n" : " ");
           }
         }
       }
@@ -1558,10 +1557,8 @@ void BRepTools_ShapeSet::DumpTriangulation(Standard_OStream& OS)const
 void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
   char buffer[255];
-  //  Standard_Integer i, j, val, nbtri;
   Standard_Integer i, j, nbtri =0;
   Standard_Real d, x, y, z;
-  Standard_Real normal;
   Standard_Integer nbNodes =0, nbTriangles=0;
   Standard_Boolean hasUV= Standard_False;
   Standard_Boolean hasNormals= Standard_False;
@@ -1583,53 +1580,43 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream& IS, const Message_P
     }
     GeomTools::GetReal(IS, d);
 
-    TColgp_Array1OfPnt Nodes(1, nbNodes);
-    TColgp_Array1OfPnt2d UVNodes(1, nbNodes);
-    Handle(TShort_HArray1OfShortReal) Normals;
-    if (hasNormals)
-    {
-      Normals = new TShort_HArray1OfShortReal(1, nbNodes * 3);
-    }
+    T = new Poly_Triangulation (nbNodes, nbTriangles, hasUV, hasNormals);
+
     for (j = 1; j <= nbNodes; j++) {
       GeomTools::GetReal(IS, x);
       GeomTools::GetReal(IS, y);
       GeomTools::GetReal(IS, z);
-      Nodes(j).SetCoord(x,y,z);
+      T->SetNode (j, gp_Pnt (x, y, z));
     }
 
     if (hasUV) {
       for (j = 1; j <= nbNodes; j++) {
         GeomTools::GetReal(IS, x);
         GeomTools::GetReal(IS, y);
-        UVNodes(j).SetCoord(x,y);
+        T->SetUVNode (j, gp_Pnt2d (x,y));
       }
     }
       
     // read the triangles
     Standard_Integer n1,n2,n3;
-    Poly_Array1OfTriangle Triangles(1, nbTriangles);
     for (j = 1; j <= nbTriangles; j++) {
       IS >> n1 >> n2 >> n3;
-      Triangles(j).Set(n1,n2,n3);
+      T->SetTriangle (j, Poly_Triangle (n1, n2, n3));
     }
 
     if (hasNormals)
     {
-      for (j = 1; j <= nbNodes * 3; j++)
+      NCollection_Vec3<Standard_Real> aNorm;
+      for (j = 1; j <= nbNodes; j++)
       {
-        GeomTools::GetReal(IS, normal);
-        Normals->SetValue(j, static_cast<Standard_ShortReal>(normal));
+        GeomTools::GetReal (IS, aNorm.x());
+        GeomTools::GetReal (IS, aNorm.y());
+        GeomTools::GetReal (IS, aNorm.z());
+        T->SetNormal (j, gp_Vec3f (aNorm));
       }
     }
 
-    if (hasUV) T =  new Poly_Triangulation(Nodes,UVNodes,Triangles);
-    else T = new Poly_Triangulation(Nodes,Triangles);
-      
     T->Deflection(d);
-    if (hasNormals)
-    {
-      T->SetNormals(Normals);
-    }
     myTriangulations.Add(T, hasNormals);
   }
 }

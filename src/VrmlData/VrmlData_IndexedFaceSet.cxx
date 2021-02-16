@@ -208,17 +208,15 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
   Handle(Poly_Triangulation) aTriangulation =
     new Poly_Triangulation(aNodes.Length(), aTriangles.Extent(), Standard_False);
   // Copy the triangulation vertices
-  TColgp_Array1OfPnt& aTNodes = aTriangulation->ChangeNodes();
   for (i = 0; i < aNodes.Length(); i++)
   {
-    aTNodes.SetValue(i + 1, gp_Pnt(aNodes(i)));
+    aTriangulation->SetNode (i + 1, gp_Pnt (aNodes (i)));
   }
   // Copy the triangles.
-  Poly_Array1OfTriangle& aTTriangles = aTriangulation->ChangeTriangles();
   NCollection_List<Poly_Triangle>::Iterator itT(aTriangles);
   for (i = 1; itT.More(); itT.Next(), i++)
   {
-    aTTriangles.SetValue(i, itT.Value());
+    aTriangulation->SetTriangle (i, itT.Value());
   }
 
   Handle(BRep_TFace) aFace = new BRep_TFace();
@@ -229,19 +227,18 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
   if (myNormals.IsNull()) {
     Poly::ComputeNormals(aTriangulation);
   }
-  else {
+  else
+  {
     // Copy the normals. Currently only normals-per-vertex are supported.
-    Handle(TShort_HArray1OfShortReal) Normals =
-      new TShort_HArray1OfShortReal(1, 3 * nbNodes);
-    if (myNormalPerVertex) {
-      if (myArrNormalInd == 0L) {
+    if (myNormalPerVertex)
+    {
+      aTriangulation->AddNormals();
+      if (myArrNormalInd == 0L)
+      {
         for (i = 0; i < nbNodes; i++)
         {
-          Standard_Integer anIdx = i * 3 + 1;
-          const gp_XYZ& aNormal = myNormals->Normal(i);
-          Normals->SetValue(anIdx + 0, Standard_ShortReal(aNormal.X()));
-          Normals->SetValue(anIdx + 1, Standard_ShortReal(aNormal.Y()));
-          Normals->SetValue(anIdx + 2, Standard_ShortReal(aNormal.Z()));
+          const gp_XYZ& aNormal = myNormals->Normal (i);
+          aTriangulation->SetNormal (i + 1, aNormal);
         }
       }
       else
@@ -254,12 +251,10 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
             Polygon(i, anArrNodes);
             const Standard_Integer * arrIndice;
             int nbn = IndiceNormals(i, arrIndice);
-            for (Standard_Integer j = 0; j < nbn; j++) {
+            for (Standard_Integer j = 0; j < nbn; j++)
+            {
               const gp_XYZ& aNormal = myNormals->Normal(arrIndice[j]);
-              Standard_Integer anInd = mapIdId(anArrNodes[j]) * 3 + 1;
-              Normals->SetValue(anInd + 0, Standard_ShortReal(aNormal.X()));
-              Normals->SetValue(anInd + 1, Standard_ShortReal(aNormal.Y()));
-              Normals->SetValue(anInd + 2, Standard_ShortReal(aNormal.Z()));
+              aTriangulation->SetNormal (mapIdId (anArrNodes[j]) + 1, aNormal);
             }
           }
         }
@@ -268,7 +263,6 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
     else {
       //TODO ..
     }
-    aTriangulation->SetNormals(Normals);
   }
 
   myIsModified = Standard_False;

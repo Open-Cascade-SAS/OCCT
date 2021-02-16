@@ -155,20 +155,19 @@ Handle(Poly_Triangulation) RWObj_TriangulationReader::GetTriangulation()
   for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
   {
     const gp_Pnt& aNode = myNodes.Value (aNodeIter);
-    aPoly->ChangeNode (aNodeIter + 1) = aNode;
+    aPoly->SetNode (aNodeIter + 1, aNode);
   }
   if (hasUV)
   {
     for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
     {
       const Graphic3d_Vec2& aNode = myNodesUV.Value (aNodeIter);
-      aPoly->ChangeUVNode (aNodeIter + 1).SetCoord (aNode.x(), aNode.y());
+      aPoly->SetUVNode (aNodeIter + 1, gp_Pnt2d (aNode.x(), aNode.y()));
     }
   }
   if (hasNormals)
   {
-    const Handle(TShort_HArray1OfShortReal) aNormals = new TShort_HArray1OfShortReal (1, myNodes.Length() * 3);
-    Standard_ShortReal* aNormArr = &aNormals->ChangeFirst();
+    aPoly->AddNormals();
     Standard_Integer aNbInvalid = 0;
     for (Standard_Integer aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
     {
@@ -176,27 +175,23 @@ Handle(Poly_Triangulation) RWObj_TriangulationReader::GetTriangulation()
       const float aMod2 = aNorm.SquareModulus();
       if (aMod2 > 0.001f)
       {
-        aNormArr[aNodeIter * 3 + 0] = aNorm.x();
-        aNormArr[aNodeIter * 3 + 1] = aNorm.y();
-        aNormArr[aNodeIter * 3 + 2] = aNorm.z();
+        aPoly->SetNormal (aNodeIter + 1, aNorm);
       }
       else
       {
         ++aNbInvalid;
-        aNormArr[aNodeIter * 3 + 0] = 0.0f;
-        aNormArr[aNodeIter * 3 + 1] = 0.0f;
-        aNormArr[aNodeIter * 3 + 2] = 1.0f;
+        aPoly->SetNormal (aNodeIter + 1, Graphic3d_Vec3 (0.0f, 0.0f, 1.0f));
       }
     }
-    if (aNbInvalid != myNodes.Length())
+    if (aNbInvalid == myNodes.Length())
     {
-      aPoly->SetNormals (aNormals);
+      aPoly->RemoveNormals();
     }
   }
 
   for (Standard_Integer aTriIter = 0; aTriIter < myTriangles.Size(); ++aTriIter)
   {
-    aPoly->ChangeTriangle (aTriIter + 1) = myTriangles (aTriIter);
+    aPoly->SetTriangle (aTriIter + 1, myTriangles[aTriIter]);
   }
 
   return aPoly;

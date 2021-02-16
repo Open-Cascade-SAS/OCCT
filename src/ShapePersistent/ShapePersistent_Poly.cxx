@@ -198,13 +198,36 @@ ShapePersistent_Poly::Translate(const Handle(Poly_Triangulation)& thePolyTriang,
     {
       aPT = new Triangulation;
       aPT->myPersistent = new pTriangulation;
+
+      // Create an array of nodes
+      TColgp_Array1OfPnt pArrayOfNodes (1, thePolyTriang->NbNodes());
+      for (Standard_Integer i = 1; i <= thePolyTriang->NbNodes(); i++)
+      {
+        pArrayOfNodes.SetValue (i, thePolyTriang->Node (i));
+      }
+
+      // Create an array of triangles
+      Poly_Array1OfTriangle pArrayOfTriangles (1, thePolyTriang->NbTriangles());
+      for (Standard_Integer i = 1; i <= thePolyTriang->NbTriangles(); i++)
+      {
+        pArrayOfTriangles.SetValue (i, thePolyTriang->Triangle (i));
+      }
+
       aPT->myPersistent->myNodes = 
-        StdLPersistent_HArray1::Translate<TColgp_HArray1OfPnt>("PColgp_HArray1OfPnt", thePolyTriang->Nodes());
+        StdLPersistent_HArray1::Translate<TColgp_HArray1OfPnt>("PColgp_HArray1OfPnt", pArrayOfNodes);
       aPT->myPersistent->myTriangles = 
-        StdLPersistent_HArray1::Translate<Poly_HArray1OfTriangle>("PPoly_HArray1OfTriangle", thePolyTriang->Triangles());
+        StdLPersistent_HArray1::Translate<Poly_HArray1OfTriangle>("PPoly_HArray1OfTriangle", pArrayOfTriangles);
       if (thePolyTriang->HasUVNodes()) {
+
+        // Create an array of UV-nodes
+        TColgp_Array1OfPnt2d pArrayOfUVNodes (1, thePolyTriang->NbNodes());
+        for (Standard_Integer i = 1; i <= thePolyTriang->NbNodes(); i++)
+        {
+          pArrayOfUVNodes.SetValue (i, thePolyTriang->UVNode (i));
+        }
+
         aPT->myPersistent->myUVNodes = 
-          StdLPersistent_HArray1::Translate<TColgp_HArray1OfPnt2d>("PColgp_HArray1OfPnt2d", thePolyTriang->UVNodes());
+          StdLPersistent_HArray1::Translate<TColgp_HArray1OfPnt2d>("PColgp_HArray1OfPnt2d", pArrayOfUVNodes);
       }
       theMap.Bind(thePolyTriang, aPT);
     }

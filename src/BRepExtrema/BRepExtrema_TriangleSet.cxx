@@ -179,25 +179,15 @@ Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& the
 
     for (Standard_Integer aVertIdx = 1; aVertIdx <= aTriangulation->NbNodes(); ++aVertIdx)
     {
-      gp_Pnt aVertex = aTriangulation->Nodes().Value (aVertIdx);
-
+      gp_Pnt aVertex = aTriangulation->Node (aVertIdx);
       aVertex.Transform (aLocation.Transformation());
-
-      myVertexArray.push_back (BVH_Vec3d (aVertex.X(),
-                                          aVertex.Y(),
-                                          aVertex.Z()));
+      myVertexArray.push_back (BVH_Vec3d (aVertex.X(), aVertex.Y(), aVertex.Z()));
     }
 
     for (Standard_Integer aTriIdx = 1; aTriIdx <= aTriangulation->NbTriangles(); ++aTriIdx)
     {
-      Standard_Integer aVertex1;
-      Standard_Integer aVertex2;
-      Standard_Integer aVertex3;
-
-      aTriangulation->Triangles().Value (aTriIdx).Get (aVertex1,
-                                                       aVertex2,
-                                                       aVertex3);
-
+      Standard_Integer aVertex1, aVertex2, aVertex3;
+      aTriangulation->Triangle (aTriIdx).Get (aVertex1, aVertex2, aVertex3);
       myTriangles.push_back (BVH_Vec4i (aVertex1 + aVertOffset,
                                         aVertex2 + aVertOffset,
                                         aVertex3 + aVertOffset,

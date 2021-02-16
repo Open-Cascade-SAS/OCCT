@@ -36,11 +36,8 @@ void Prs3d::AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
     return;
   }
 
-  const TColgp_Array1OfPnt& aNodes = thePolyTri->Nodes();
-
   // Build the connect tool.
   Poly_Connect aPolyConnect (thePolyTri);
-
   Standard_Integer aNbTriangles = thePolyTri->NbTriangles();
   Standard_Integer aT[3];
   Standard_Integer aN[3];
@@ -66,11 +63,10 @@ void Prs3d::AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
   TColStd_Array1OfInteger aFree (1, 2 * aNbFree);
 
   Standard_Integer aFreeIndex = 1;
-  const Poly_Array1OfTriangle& aTriangles = thePolyTri->Triangles();
   for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
   {
     aPolyConnect.Triangles (anI, aT[0], aT[1], aT[2]);
-    aTriangles (anI).Get (aN[0], aN[1], aN[2]);
+    thePolyTri->Triangle (anI).Get (aN[0], aN[1], aN[2]);
     for (Standard_Integer aJ = 0; aJ < 3; aJ++)
     {
       Standard_Integer k = (aJ + 1) % 3;
@@ -87,8 +83,8 @@ void Prs3d::AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
   Standard_Integer aFreeHalfNb = aFree.Length() / 2;
   for (Standard_Integer anI = 1; anI <= aFreeHalfNb; ++anI)
   {
-    const gp_Pnt aPoint1 = aNodes (aFree (2 * anI - 1)).Transformed (theLocation);
-    const gp_Pnt aPoint2 = aNodes (aFree (2 * anI    )).Transformed (theLocation);
+    const gp_Pnt aPoint1 = thePolyTri->Node (aFree (2 * anI - 1)).Transformed (theLocation);
+    const gp_Pnt aPoint2 = thePolyTri->Node (aFree (2 * anI    )).Transformed (theLocation);
     theSegments.Append (aPoint1);
     theSegments.Append (aPoint2);
   }

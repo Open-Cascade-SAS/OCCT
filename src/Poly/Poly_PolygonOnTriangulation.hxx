@@ -17,7 +17,7 @@
 #ifndef _Poly_PolygonOnTriangulation_HeaderFile
 #define _Poly_PolygonOnTriangulation_HeaderFile
 
-
+#include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -40,6 +40,7 @@ DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, Standard_Transient)
 //! curve.represents a 3d Polygon
 class Poly_PolygonOnTriangulation : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation, Standard_Transient)
 public:
 
   //! Constructs a 3D polygon on the triangulation of a shape with specified size of nodes.
@@ -79,26 +80,33 @@ public:
   //! triangle, the function NbNodes returns 4.
   Standard_Integer NbNodes() const { return myNodes.Length(); }
 
-  //! Returns the table of nodes for this polygon. A node value
-  //! is an index in the table of nodes specific to an existing
-  //! triangulation of a shape.
-  const TColStd_Array1OfInteger& Nodes() const { return myNodes; }
+  //! Returns node at the given index.
+  Standard_Integer Node (Standard_Integer theIndex) const { return myNodes.Value (theIndex); }
 
-  //! Returns the table of nodes for this polygon for modification.
-  TColStd_Array1OfInteger& ChangeNodes() { return myNodes; }
+  //! Sets node at the given index.
+  void SetNode (Standard_Integer theIndex,
+                Standard_Integer theNode)
+  {
+    myNodes.SetValue (theIndex, theNode);
+  }
 
   //! Returns true if parameters are associated with the nodes in this polygon.
   Standard_Boolean HasParameters() const { return !myParameters.IsNull(); }
 
-  //! Returns the table of the parameters associated with each node in this polygon.
-  //! Warning
-  //! Use the function HasParameters to check if parameters
-  //! are associated with the nodes in this polygon.
-  const Handle(TColStd_HArray1OfReal)& Parameters() const { return myParameters; }
+  //! Returns parameter at the given index.
+  Standard_Real Parameter (Standard_Integer theIndex) const
+  {
+    Standard_NullObject_Raise_if (myParameters.IsNull(), "Poly_PolygonOnTriangulation::Parameter : parameters is NULL");
+    return myParameters->Value (theIndex);
+  }
 
-  //! Returns the table of the parameters associated with each node in this polygon.
-  //! Warning! HasParameters() should be called beforehand to check if parameters array is allocated.
-  TColStd_Array1OfReal& ChangeParameters() { return myParameters->ChangeArray1(); }
+  //! Sets parameter at the given index.
+  void SetParameter (Standard_Integer theIndex,
+                     Standard_Real theValue)
+  {
+    Standard_NullObject_Raise_if (myParameters.IsNull(), "Poly_PolygonOnTriangulation::Parameter : parameters is NULL");
+    myParameters->SetValue (theIndex, theValue);
+  }
 
   //! Sets the table of the parameters associated with each node in this polygon.
   //! Raises exception if array size doesn't much number of polygon nodes.
@@ -107,7 +115,21 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,Standard_Transient)
+public:
+
+  //! Returns the table of nodes for this polygon.
+  //! A node value is an index in the table of nodes specific to an existing triangulation of a shape.
+  const TColStd_Array1OfInteger& Nodes() const { return myNodes; }
+
+  //! Returns the table of the parameters associated with each node in this polygon.
+  //! Warning! Use the function HasParameters to check if parameters are associated with the nodes in this polygon.
+  const Handle(TColStd_HArray1OfReal)& Parameters() const { return myParameters; }
+
+  Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
+  TColStd_Array1OfInteger& ChangeNodes() { return myNodes; }
+
+  Standard_DEPRECATED("Deprecated method, SetParameter() should be used instead")
+  TColStd_Array1OfReal& ChangeParameters() { return myParameters->ChangeArray1(); }
 
 private:
 

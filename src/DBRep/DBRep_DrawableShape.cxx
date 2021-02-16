@@ -777,13 +777,15 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
 	Handle(Poly_Triangulation) PolyTr;
 	Handle(Poly_PolygonOnTriangulation) Poly;
 	BRep_Tool::PolygonOnTriangulation(E->Edge(), Poly, PolyTr, loc);
-	if (!Poly.IsNull()) {
+	if (!Poly.IsNull())
+	{
 	  const TColStd_Array1OfInteger& Indices = Poly->Nodes();
-	  const TColgp_Array1OfPnt& Nodes = PolyTr->Nodes();
-	  for (i=Indices.Lower()+1; i<=Indices.Upper(); i++) {
-	    dis.Draw(Nodes(Indices(i-1)).Transformed(loc),
-		     Nodes(Indices(i)).Transformed(loc));
-	    if (dis.HasPicked()) {
+	  for (i=Indices.Lower()+1; i<=Indices.Upper(); i++)
+	  {
+	    dis.Draw (PolyTr->Node (Indices (i-1)).Transformed (loc),
+	              PolyTr->Node (Indices (i  )).Transformed (loc));
+	    if (dis.HasPicked())
+	    {
 	      pickshape = E->Edge();
 	      upick = 0;
 	      vpick = 0;
@@ -1079,11 +1081,11 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   NCollection_Vector< NCollection_Vec2<Standard_Integer> > anInternal;
 
   Standard_Integer fr = 1;
-  const Poly_Array1OfTriangle& triangles = T->Triangles();
+
   Standard_Integer n[3];
   for (i = 1; i <= nbTriangles; i++) {
     pc.Triangles(i,t[0],t[1],t[2]);
-    triangles(i).Get(n[0],n[1],n[2]);
+    T->Triangle (i).Get (n[0],n[1],n[2]);
     for (j = 0; j < 3; j++) {
       Standard_Integer k = (j+1) % 3;
       if (t[j] == 0) {
@@ -1099,16 +1101,14 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   }
 
   // Display the edges
-  const TColgp_Array1OfPnt& Nodes = T->Nodes();
-//  std::cout<<"nb nodes = "<<Nodes.Length()<<std::endl;
   
   // free edges
   Standard_Integer nn;
   dis.SetColor(Draw_rouge);
   nn = Free.Length() / 2;
   for (i = 1; i <= nn; i++) {
-    dis.Draw(Nodes(Free(2*i-1)).Transformed(tr),
-	     Nodes(Free(2*i)).Transformed(tr));
+    dis.Draw (T->Node (Free[2*i-1]).Transformed (tr),
+              T->Node (Free[2*i]).Transformed (tr));
   }
   
   // internal edges
@@ -1118,7 +1118,7 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
   {
     const Standard_Integer n1 = anInterIter.Value()[0];
     const Standard_Integer n2 = anInterIter.Value()[1];
-    dis.Draw (Nodes(n1).Transformed(tr), Nodes(n2).Transformed(tr));
+    dis.Draw (T->Node (n1).Transformed (tr), T->Node (n2).Transformed (tr));
   }
 }
 
@@ -1139,11 +1139,10 @@ Standard_Boolean DBRep_DrawableShape::addMeshNormals (NCollection_Vector<std::pa
     return Standard_False;
   }
 
-  const TColgp_Array1OfPnt& aNodes = aTriangulation->Nodes();
   BRepAdaptor_Surface aSurface (theFace);
-  for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+  for (Standard_Integer aNodeIter = 1; aNodeIter <= aTriangulation->NbNodes(); ++aNodeIter)
   {
-    gp_Pnt aP1 = aNodes (aNodeIter);
+    gp_Pnt aP1 = aTriangulation->Node (aNodeIter);
     if (!aLoc.IsIdentity())
     {
       aP1.Transform (aLoc.Transformation());

@@ -98,7 +98,7 @@ public:
 
   //! @return node at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT const gp_Pnt& Node (const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt Node (const Standard_Integer theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a node at the given index.
@@ -107,7 +107,7 @@ public:
 
   //! @return UVNode at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
-  Standard_EXPORT const gp_Pnt2d& UVNode (const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Pnt2d UVNode (const Standard_Integer theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a UVNode at the given index.
@@ -116,16 +116,12 @@ public:
 
   //! @return triangle at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
-  Standard_EXPORT const Poly_Triangle& Triangle (const Standard_Integer theIndex) const;
+  Standard_EXPORT Poly_Triangle Triangle (const Standard_Integer theIndex) const;
 
   //! The method differs from Poly_Triangulation!
   //! Sets a triangle at the given index.
   //! Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
   Standard_EXPORT void SetTriangle (const Standard_Integer theIndex, const Poly_Triangle& theTriangle);
-
-  //! Sets the table of node normals.
-  //! Raises exception if length of theNormals != 3 * NbNodes
-  Standard_EXPORT void SetNormals (const Handle(TShort_HArray1OfShortReal)& theNormals);
 
   //! Changes normal at the given index.
   //! Raises Standard_OutOfRange exception.
@@ -137,7 +133,7 @@ public:
 
   //! @return normal at the given index.
   //! Raises Standard_OutOfRange exception.
-  Standard_EXPORT const gp_Dir Normal (const Standard_Integer theIndex) const;
+  Standard_EXPORT gp_Dir Normal (const Standard_Integer theIndex) const;
 
   //! Inherited attribute methods
   //  ===========================

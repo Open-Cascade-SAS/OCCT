@@ -100,9 +100,6 @@ Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolQuadric::CreateTriangulation (const
 Handle(Poly_Triangulation) Prs3d_ToolQuadric::CreatePolyTriangulation (const gp_Trsf& theTrsf) const
 {
   Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation (VerticesNb(), TrianglesNb(), Standard_False);
-  TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
-  Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
-
   Standard_ShortReal aStepU = 1.0f / mySlicesNb;
   Standard_ShortReal aStepV = 1.0f / myStacksNb;
 
@@ -116,11 +113,11 @@ Handle(Poly_Triangulation) Prs3d_ToolQuadric::CreatePolyTriangulation (const gp_
       const Standard_Integer   aVertId = aU * (myStacksNb + 1) + (aV + 1);
       gp_Pnt aVertex = Vertex (aParamU, aParamV).Transformed (theTrsf);
 
-      aNodes.SetValue (aVertId, aVertex);
+      aTriangulation->SetNode (aVertId, aVertex);
       if (aU != 0 && aV != 0)
       {
-        aTriangles.SetValue (++anIndex, Poly_Triangle (aVertId, aVertId - myStacksNb - 2, aVertId - 1));
-        aTriangles.SetValue (++anIndex, Poly_Triangle (aVertId - myStacksNb - 2, aVertId, aVertId - myStacksNb - 1));
+        aTriangulation->SetTriangle (++anIndex, Poly_Triangle (aVertId, aVertId - myStacksNb - 2, aVertId - 1));
+        aTriangulation->SetTriangle (++anIndex, Poly_Triangle (aVertId - myStacksNb - 2, aVertId, aVertId - myStacksNb - 1));
       }
     }
   }

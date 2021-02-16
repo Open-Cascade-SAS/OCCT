@@ -112,8 +112,6 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       // check distances between corresponding points
       Standard_Real aSqDefle = BRep_Tool::Tolerance(aEdge);
       aSqDefle *= aSqDefle;
-      const TColgp_Array1OfPnt& aPoints1 = aT1->Nodes();
-      const TColgp_Array1OfPnt& aPoints2 = aT2->Nodes();
       Standard_Integer iF1 = aMapF.FindIndex(aFace1);
       Standard_Integer iF2 = aMapF.FindIndex(aFace2);
       Standard_Integer i1 = aNodes1.Lower();
@@ -121,17 +119,17 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
       const gp_Trsf &aTrsf1 = aFace1.Location().Transformation();
       const gp_Trsf &aTrsf2 = aFace2.Location().Transformation();
       for (; i1 <= aNodes1.Upper(); i1++, i2++) {
-	const gp_Pnt aP1 = aPoints1(aNodes1(i1)).Transformed(aTrsf1);
-	const gp_Pnt aP2 = aPoints2(aNodes2(i2)).Transformed(aTrsf2);
-	const Standard_Real aSqDist = aP1.SquareDistance(aP2);
+        const gp_Pnt aP1 = aT1->Node (aNodes1[i1]).Transformed (aTrsf1);
+        const gp_Pnt aP2 = aT2->Node (aNodes2[i2]).Transformed (aTrsf2);
+        const Standard_Real aSqDist = aP1.SquareDistance(aP2);
         if (aSqDist > aSqDefle)
         {
-	  myErrors.Append(iF1);
-	  myErrors.Append(i1);
-	  myErrors.Append(iF2);
-	  myErrors.Append(i2);
+          myErrors.Append(iF1);
+          myErrors.Append(i1);
+          myErrors.Append(iF2);
+          myErrors.Append(i2);
           myErrorsVal.Append(Sqrt(aSqDist));
-	}
+        }
       }
     }
   }
@@ -167,10 +165,9 @@ void MeshTest_CheckTopology::Perform (Draw_Interpretor& di)
 
     // check of free links and nodes
     Poly_Connect aConn(aT);
-    const Poly_Array1OfTriangle& aTriangles = aT->Triangles();
     Standard_Integer nbTri = aT->NbTriangles(), i, j, n[3], t[3];
     for (i = 1; i <= nbTri; i++) {
-      aTriangles(i).Get(n[0], n[1], n[2]);
+      aT->Triangle (i).Get (n[0], n[1], n[2]);
       
       aUsedNodes.Add (n[0]);
       aUsedNodes.Add (n[1]);

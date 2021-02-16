@@ -208,10 +208,12 @@ void BRepMesh_ShapeTool::AddInFace(
   {
     gp_Trsf aTrsf = aLoc.Transformation();
     aTrsf.Invert();
-
-    TColgp_Array1OfPnt& aNodes = theTriangulation->ChangeNodes();
-    for (Standard_Integer i = aNodes.Lower(); i <= aNodes.Upper(); ++i)
-      aNodes(i).Transform(aTrsf);
+    for (Standard_Integer aNodeIter = 1; aNodeIter <= theTriangulation->NbNodes(); ++aNodeIter)
+    {
+      gp_Pnt aNode = theTriangulation->Node (aNodeIter);
+      aNode.Transform (aTrsf);
+      theTriangulation->SetNode (aNodeIter, aNode);
+    }
   }
 
   BRep_Builder aBuilder;

@@ -156,7 +156,7 @@ Standard_Boolean TDataXtd_Triangulation::HasUVNodes() const
 //purpose  : return node at the given index.
 //           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
 //=======================================================================
-const gp_Pnt& TDataXtd_Triangulation::Node (const Standard_Integer theIndex) const
+gp_Pnt TDataXtd_Triangulation::Node (const Standard_Integer theIndex) const
 {
   return myTriangulation->Node(theIndex);
 }
@@ -170,7 +170,7 @@ const gp_Pnt& TDataXtd_Triangulation::Node (const Standard_Integer theIndex) con
 void TDataXtd_Triangulation::SetNode (const Standard_Integer theIndex, const gp_Pnt& theNode)
 {
   Backup();
-  myTriangulation->ChangeNode(theIndex) = theNode;
+  myTriangulation->SetNode (theIndex, theNode);
 }
 
 //=======================================================================
@@ -178,7 +178,7 @@ void TDataXtd_Triangulation::SetNode (const Standard_Integer theIndex, const gp_
 //purpose  : return UVNode at the given index.
 //           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbNodes.
 //=======================================================================
-const gp_Pnt2d& TDataXtd_Triangulation::UVNode (const Standard_Integer theIndex) const
+gp_Pnt2d TDataXtd_Triangulation::UVNode (const Standard_Integer theIndex) const
 {
   return myTriangulation->UVNode(theIndex);
 }
@@ -192,7 +192,7 @@ const gp_Pnt2d& TDataXtd_Triangulation::UVNode (const Standard_Integer theIndex)
 void TDataXtd_Triangulation::SetUVNode (const Standard_Integer theIndex, const gp_Pnt2d& theUVNode)
 {
   Backup();
-  myTriangulation->ChangeUVNode(theIndex) = theUVNode;
+  myTriangulation->SetUVNode (theIndex, theUVNode);
 }
 
 //=======================================================================
@@ -200,7 +200,7 @@ void TDataXtd_Triangulation::SetUVNode (const Standard_Integer theIndex, const g
 //purpose  : return triangle at the given index.
 //           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than NbTriangles.
 //=======================================================================
-const Poly_Triangle& TDataXtd_Triangulation::Triangle (const Standard_Integer theIndex) const
+Poly_Triangle TDataXtd_Triangulation::Triangle (const Standard_Integer theIndex) const
 {
   return myTriangulation->Triangle(theIndex);
 }
@@ -214,18 +214,7 @@ const Poly_Triangle& TDataXtd_Triangulation::Triangle (const Standard_Integer th
 void TDataXtd_Triangulation::SetTriangle (const Standard_Integer theIndex, const Poly_Triangle& theTriangle)
 {
   Backup();
-  myTriangulation->ChangeTriangle(theIndex) = theTriangle;
-}
-
-//=======================================================================
-//function : SetNormals
-//purpose  : Sets the table of node normals.
-//           Raises exception if length of theNormals = 3 * NbNodes
-//=======================================================================
-void TDataXtd_Triangulation::SetNormals (const Handle(TShort_HArray1OfShortReal)& theNormals)
-{
-  Backup();
-  myTriangulation->SetNormals(theNormals);
+  myTriangulation->SetTriangle (theIndex, theTriangle);
 }
 
 //=======================================================================
@@ -234,10 +223,10 @@ void TDataXtd_Triangulation::SetNormals (const Handle(TShort_HArray1OfShortReal)
 //           Raises Standard_OutOfRange exception.
 //=======================================================================
 void TDataXtd_Triangulation::SetNormal (const Standard_Integer theIndex,
-                               const gp_Dir&          theNormal)
+                                        const gp_Dir&          theNormal)
 {
   Backup();
-  myTriangulation->SetNormal(theIndex, theNormal);
+  myTriangulation->SetNormal (theIndex, theNormal);
 }
 
 //=======================================================================
@@ -254,9 +243,9 @@ Standard_Boolean TDataXtd_Triangulation::HasNormals() const
 //purpose  : return normal at the given index.
 //           Raises Standard_OutOfRange exception.
 //=======================================================================
-const gp_Dir TDataXtd_Triangulation::Normal (const Standard_Integer theIndex) const
+gp_Dir TDataXtd_Triangulation::Normal (const Standard_Integer theIndex) const
 {
-  return myTriangulation->Normal(theIndex);
+  return myTriangulation->Normal (theIndex);
 }
 
 //=======================================================================

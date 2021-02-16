@@ -253,9 +253,6 @@ void StdPrs_Isolines::addOnTriangulation (const Handle(Poly_Triangulation)& theT
                                           Prs3d_NListOfSequenceOfPnt&       theUPolylines,
                                           Prs3d_NListOfSequenceOfPnt&       theVPolylines)
 {
-  const Poly_Array1OfTriangle& aTriangles = theTriangulation->Triangles();
-  const TColgp_Array1OfPnt&    aNodes     = theTriangulation->Nodes();
-  const TColgp_Array1OfPnt2d&  aUVNodes   = theTriangulation->UVNodes();
   for (Standard_Integer anUVIter = 0; anUVIter < 2; ++anUVIter)
   {
     const Standard_Boolean        isUIso      = anUVIter == 0;
@@ -278,16 +275,16 @@ void StdPrs_Isolines::addOnTriangulation (const Handle(Poly_Triangulation)& theT
         anIsoPnts = aPolylines.ChangeValue (anIsoIndexes.Value (anIsoIdx));
       }
 
-      for (Standard_Integer aTriIter = aTriangles.Lower(); aTriIter <= aTriangles.Upper(); ++aTriIter)
+      for (Standard_Integer aTriIter = 1; aTriIter <= theTriangulation->NbTriangles(); ++aTriIter)
       {
         Standard_Integer aNodeIdxs[3];
-        aTriangles.Value (aTriIter).Get (aNodeIdxs[0], aNodeIdxs[1],aNodeIdxs[2]);
-        const gp_Pnt aNodesXYZ[3] = { aNodes.Value (aNodeIdxs[0]),
-                                      aNodes.Value (aNodeIdxs[1]),
-                                      aNodes.Value (aNodeIdxs[2]) };
-        const gp_Pnt2d aNodesUV[3] = { aUVNodes.Value (aNodeIdxs[0]),
-                                       aUVNodes.Value (aNodeIdxs[1]),
-                                       aUVNodes.Value (aNodeIdxs[2]) };
+        theTriangulation->Triangle (aTriIter).Get (aNodeIdxs[0], aNodeIdxs[1],aNodeIdxs[2]);
+        const gp_Pnt aNodesXYZ[3] = { theTriangulation->Node (aNodeIdxs[0]),
+                                      theTriangulation->Node (aNodeIdxs[1]),
+                                      theTriangulation->Node (aNodeIdxs[2]) };
+        const gp_Pnt2d aNodesUV[3] = { theTriangulation->UVNode (aNodeIdxs[0]),
+                                       theTriangulation->UVNode (aNodeIdxs[1]),
+                                       theTriangulation->UVNode (aNodeIdxs[2]) };
 
         // Find intersections with triangle in uv space and its projection on triangulation.
         SegOnIso aSegment;

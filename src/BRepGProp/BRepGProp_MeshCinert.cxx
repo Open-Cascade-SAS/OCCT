@@ -180,13 +180,12 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge& theE,
     Standard_Integer aNbNodes = aPOnTri->NbNodes();
     thePolyg = new TColgp_HArray1OfPnt(1, aNbNodes);
     const TColStd_Array1OfInteger& aNodeInds = aPOnTri->Nodes();
-    const TColgp_Array1OfPnt& aNodes = aTri->Nodes();
     Standard_Integer i;
     if (aLoc.IsIdentity())
     {
       for (i = 1; i <= aNbNodes; ++i)
       {
-        thePolyg->SetValue(i, aNodes(aNodeInds(i)));
+        thePolyg->SetValue (i, aTri->Node (aNodeInds (i)));
       }
     }
     else
@@ -194,7 +193,7 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge& theE,
       const gp_Trsf& aTr = aLoc.Transformation();
       for (i = 1; i <= aNbNodes; ++i)
       {
-        thePolyg->SetValue(i, aNodes.Value(aNodeInds(i)).Transformed(aTr));
+        thePolyg->SetValue (i, aTri->Node (aNodeInds (i)).Transformed (aTr));
       }
     }
     return;

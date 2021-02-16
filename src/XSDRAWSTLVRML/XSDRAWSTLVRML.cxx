@@ -783,7 +783,7 @@ static Standard_Integer createmesh
 
   // Hide all nodes by default
   Handle(TColStd_HPackedMapOfInteger) aNodes = new TColStd_HPackedMapOfInteger();
-  Standard_Integer aLen = aSTLMesh->Nodes().Length();
+  const Standard_Integer aLen = aSTLMesh->NbNodes();
   for ( Standard_Integer anIndex = 1; anIndex <= aLen; anIndex++ )
     aNodes->ChangeMap().Add( anIndex );
   aMesh->SetHiddenNodes( aNodes );

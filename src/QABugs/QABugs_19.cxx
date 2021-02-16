@@ -4030,25 +4030,15 @@ static Standard_Integer OCC26485 (Draw_Interpretor& theDI, Standard_Integer theA
       continue;
 
     Poly::ComputeNormals(aT);
-    const TColgp_Array1OfPnt&       aVertices = aT->Nodes();
-    const TShort_Array1OfShortReal& aNormals  = aT->Normals();
 
     // Number of nodes in the triangulation
-    int aVertexNb = aT->Nodes().Length();
-    if (aVertexNb*3 != aNormals.Length())
-    {
-      theDI << "Failed. Different number of normals vs. vertices\n";
-      return 1;
-    }
+    int aVertexNb = aT->NbNodes();
 
     // Get each vertex index, checking common vertexes between shapes
     for( int i=0; i < aVertexNb; i++ )
     {
-      gp_Pnt aPoint = aVertices.Value( i+1 );
-      gp_Vec aNormal = gp_Vec(
-        aNormals.Value( i*3 + 1 ),
-        aNormals.Value( i*3 + 2 ),
-        aNormals.Value( i*3 + 3 ) );
+      gp_Pnt aPoint = aT->Node ( i+1 );
+      const gp_Dir aNormal = aT->Normal (i + 1);
 
       if (aNormal.X() == 0 && aNormal.Y() == 0 && aNormal.Z() == 1)
       {

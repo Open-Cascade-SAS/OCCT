@@ -63,19 +63,15 @@ namespace
         if (isTriangulationConsistent)
         {
           // #25080: check that indices of links forming triangles are in range.
-          const Standard_Integer aNodesNb = aTriangulation->NbNodes();
-          const Poly_Array1OfTriangle& aTriangles = aTriangulation->Triangles();
-
-          Standard_Integer i = aTriangles.Lower();
-          for (; i <= aTriangles.Upper() && isTriangulationConsistent; ++i)
+          for (Standard_Integer i = 1; i <= aTriangulation->NbTriangles() && isTriangulationConsistent; ++i)
           {
-            const Poly_Triangle& aTriangle = aTriangles(i);
+            const Poly_Triangle aTriangle = aTriangulation->Triangle (i);
 
             Standard_Integer aNode[3];
             aTriangle.Get(aNode[0], aNode[1], aNode[2]);
             for (Standard_Integer j = 0; j < 3 && isTriangulationConsistent; ++j)
             {
-              isTriangulationConsistent = (aNode[j] >= 1 && aNode[j] <= aNodesNb);
+              isTriangulationConsistent = (aNode[j] >= 1 && aNode[j] <= aTriangulation->NbNodes());
             }
           }
         }

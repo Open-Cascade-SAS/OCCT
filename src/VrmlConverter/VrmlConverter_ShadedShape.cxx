@@ -84,22 +84,18 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
       // number of triangles:
     if (T.IsNull()) continue; //smh 
       nnn = T->NbTriangles();            
-    
-    const TColgp_Array1OfPnt& Nodes = T->Nodes(); 
-    // getting a triangle. It is  a triplet of indices in the node table:	
-    const Poly_Array1OfTriangle& triangles = T->Triangles(); 
-    
+
     // Taking the nodes of the triangle, taking into account the orientation
     // of the triangle.
     for (nt = 1; nt <= nnn; nt++) {
       if (F.Orientation() == TopAbs_REVERSED) 
-	triangles(nt).Get(n1,n3,n2);
+	T->Triangle (nt).Get (n1,n3,n2);
       else 
-	triangles(nt).Get(n1,n2,n3);
+	T->Triangle (nt).Get (n1,n2,n3);
       
-      const gp_Pnt& P1 = Nodes(n1);
-      const gp_Pnt& P2 = Nodes(n2);
-      const gp_Pnt& P3 = Nodes(n3);
+      const gp_Pnt P1 = T->Node (n1);
+      const gp_Pnt P2 = T->Node (n2);
+      const gp_Pnt P3 = T->Node (n3);
       // controlling whether the triangle correct from a 3d point of 
       // view: (the triangle may exist in the UV space but the
       // in the 3d space a dimension is null for example)
@@ -160,13 +156,12 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
 	// 1 -  Building HAV1 -  array of all XYZ of nodes for Vrml_Coordinate3 from the triangles
 	//            and HAV2 - array of all normals of nodes for Vrml_Normal
 	
-	const TColgp_Array1OfPnt& Nodes = T->Nodes();
-	TColgp_Array1OfDir NORMAL(Nodes.Lower(), Nodes.Upper());
+	TColgp_Array1OfDir NORMAL(1, T->NbNodes());
 
 	  decal = nnv-1;
 	
-	for (j= Nodes.Lower(); j<= Nodes.Upper(); j++) {
-	  p = Nodes(j).Transformed(theLocation.Transformation());
+	for (j= 1; j<= T->NbNodes(); j++) {
+	  p = T->Node (j).Transformed (theLocation.Transformation());
 
           V.SetX(p.X()); V.SetY(p.Y()); V.SetZ(p.Z());
           HAV1->SetValue(nnv,V);
@@ -185,16 +180,15 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
 	// 2 -   Building HAI1 - array of indexes of all triangles and
 	//        HAI3 - array of indexes of all normales  for Vrml_IndexedFaceSet
         nbTriangles = T->NbTriangles();
-	const Poly_Array1OfTriangle& triangles = T->Triangles();	
         for (i = 1; i <= nbTriangles; i++) {
           pc.Triangles(i,t[0],t[1],t[2]);
           if (F.Orientation() == TopAbs_REVERSED) 
-            triangles(i).Get(n[0],n[2],n[1]);
+            T->Triangle (i).Get (n[0],n[2],n[1]);
           else 
-            triangles(i).Get(n[0],n[1],n[2]);
-          const gp_Pnt& P1 = Nodes(n[0]);
-          const gp_Pnt& P2 = Nodes(n[1]);
-          const gp_Pnt& P3 = Nodes(n[2]);
+            T->Triangle (i).Get (n[0],n[1],n[2]);
+          const gp_Pnt P1 = T->Node (n[0]);
+          const gp_Pnt P2 = T->Node (n[1]);
+          const gp_Pnt P3 = T->Node (n[2]);
           gp_Vec V1(P1,P2);
           if (V1.SquareMagnitude() > 1.e-10) {
             gp_Vec V2(P2,P3);
@@ -389,10 +383,9 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face& aFace,
     CSLib_DerivativeStatus aStatus;
     CSLib_NormalStatus NStat;
     S.Initialize(aFace);
-    const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
-    for (i = UVNodes.Lower(); i <= UVNodes.Upper(); i++) {
-      U = UVNodes(i).X();
-      V = UVNodes(i).Y();
+    for (i = 1; i <= T->NbNodes(); i++) {
+      U = T->UVNode (i).X();
+      V = T->UVNode (i).Y();
       S.D1(U,V,P,D1U,D1V);
       CSLib::Normal(D1U,D1V,Precision::Angular(),aStatus,Nor(i));
       if (aStatus != CSLib_Done) {
@@ -403,16 +396,14 @@ void VrmlConverter_ShadedShape::ComputeNormal(const TopoDS_Face& aFace,
     }
   }
   else {
-    const TColgp_Array1OfPnt& Nodes = T->Nodes();
     Standard_Integer n[3];
-    const Poly_Array1OfTriangle& triangles = T->Triangles();
 
-    for (i = Nodes.Lower(); i <= Nodes.Upper(); i++) {
+    for (i = 1; i <= T->NbNodes(); i++) {
       gp_XYZ eqPlan(0, 0, 0);
       for (pc.Initialize(i);  pc.More(); pc.Next()) {
-	triangles(pc.Value()).Get(n[0], n[1], n[2]);
-	gp_XYZ v1(Nodes(n[1]).Coord()-Nodes(n[0]).Coord());
-	gp_XYZ v2(Nodes(n[2]).Coord()-Nodes(n[1]).Coord());
+	T->Triangle (pc.Value()).Get (n[0], n[1], n[2]);
+	gp_XYZ v1 (T->Node (n[1]).Coord() - T->Node (n[0]).Coord());
+	gp_XYZ v2 (T->Node (n[2]).Coord() - T->Node (n[1]).Coord());
 	eqPlan += (v1^v2).Normalized();
       }
       Nor(i) = gp_Dir(eqPlan);

@@ -55,8 +55,7 @@ public:
                                const TopLoc_Location& theLoc,
                                const TopAbs_Orientation theOri);
 
-  Standard_EXPORT void Perform(const TColgp_Array1OfPnt& theNodes,
-                               const Poly_Array1OfTriangle& theTriangles, 
+  Standard_EXPORT void Perform(const Handle(Poly_Triangulation)& theMesh,
                                const TopAbs_Orientation theOri);
 
   //! Computes the global properties of triangle {p1, p2, p3} relatively 

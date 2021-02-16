@@ -332,21 +332,20 @@ void StdPrs_WFShape::addEdges (const TopTools_ListOfShape&  theEdges,
     {
       // Presentation based on triangulation of a face.
       const TColStd_Array1OfInteger& anIndices = anEdgeIndicies->Nodes();
-      const TColgp_Array1OfPnt&      aNodes    = aTriangulation->Nodes();
 
       Standard_Integer anIndex = anIndices.Lower();
       if (aLocation.IsIdentity())
       {
         for (; anIndex <= anIndices.Upper(); ++anIndex)
         {
-          aPoints->Append (aNodes (anIndices (anIndex)));
+          aPoints->Append (aTriangulation->Node (anIndices[anIndex]));
         }
       }
       else
       {
         for (; anIndex <= anIndices.Upper(); ++anIndex)
         {
-          aPoints->Append (aNodes (anIndices (anIndex)).Transformed (aLocation));
+          aPoints->Append (aTriangulation->Node (anIndices[anIndex]).Transformed (aLocation));
         }
       }
     }
