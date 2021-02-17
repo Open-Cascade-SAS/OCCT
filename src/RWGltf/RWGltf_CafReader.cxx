@@ -109,7 +109,8 @@ private:
 RWGltf_CafReader::RWGltf_CafReader()
 : myToParallel (false),
   myToSkipEmptyNodes (true),
-  myUseMeshNameAsFallback (true)
+  myUseMeshNameAsFallback (true),
+  myIsDoublePrecision (false)
 {
   myCoordSysConverter.SetInputLengthUnit (1.0); // glTF defines model in meters
   myCoordSysConverter.SetInputCoordinateSystem (RWMesh_CoordinateSystem_glTF);
@@ -284,6 +285,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
 Handle(RWGltf_PrimitiveArrayReader) RWGltf_CafReader::createMeshReaderContext()
 {
   Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
+  aReader->SetDoublePrecision (myIsDoublePrecision);
   return aReader;
 }
 

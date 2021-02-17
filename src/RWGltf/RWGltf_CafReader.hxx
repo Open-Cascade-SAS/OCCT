@@ -49,6 +49,12 @@ public:
   //! Set flag to use Mesh name in case if Node name is empty.
   void SetMeshNameAsFallback (bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
 
+  //! Return flag to fill in triangulation using double or single precision; FALSE by default.
+  bool IsDoublePrecision() const { return myIsDoublePrecision; }
+
+  //! Set flag to fill in triangulation using double or single precision.
+  void SetDoublePrecision (bool theIsDouble) { myIsDoublePrecision = theIsDouble; }
+
 protected:
 
   //! Read the mesh from specified file.
@@ -74,6 +80,7 @@ protected:
   Standard_Boolean myToParallel;            //!< flag to use multithreading; FALSE by default
   Standard_Boolean myToSkipEmptyNodes;      //!< ignore nodes without Geometry; TRUE by default
   Standard_Boolean myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
+  Standard_Boolean myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
 
 };
 

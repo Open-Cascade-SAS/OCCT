@@ -38,6 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWGltf_PrimitiveArrayRead
 // purpose  :
 // =======================================================================
 RWGltf_TriangulationReader::RWGltf_TriangulationReader()
+: myIsDoublePrecision (false)
 {
   //
 }
@@ -49,6 +50,7 @@ RWGltf_TriangulationReader::RWGltf_TriangulationReader()
 void RWGltf_TriangulationReader::reset()
 {
   myTriangulation = new Poly_Triangulation();
+  myTriangulation->SetDoublePrecision (myIsDoublePrecision);
 }
 
 // =======================================================================

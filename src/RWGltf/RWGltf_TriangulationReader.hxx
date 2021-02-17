@@ -26,6 +26,12 @@ public:
   //! Empty constructor.
   Standard_EXPORT RWGltf_TriangulationReader();
 
+  //! Return flag to fill in triangulation using double or single precision; FALSE by default.
+  bool IsDoublePrecision() const { return myIsDoublePrecision; }
+
+  //! Set flag to fill in triangulation using double or single precision.
+  void SetDoublePrecision (bool theIsDouble) { myIsDoublePrecision = theIsDouble; }
+
 protected:
 
   //! Create Poly_Triangulation from collected data
@@ -142,6 +148,7 @@ protected: //! @name interface for filling triangulation data
 protected:
 
   Handle(Poly_Triangulation) myTriangulation;
+  Standard_Boolean myIsDoublePrecision;
 
 };
 

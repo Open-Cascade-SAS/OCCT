@@ -1,6 +1,10 @@
 Poly.cxx
 Poly.hxx
 Poly_Array1OfTriangle.hxx
+Poly_ArrayOfNodes.cxx
+Poly_ArrayOfNodes.hxx
+Poly_ArrayOfUVNodes.cxx
+Poly_ArrayOfUVNodes.hxx
 Poly_CoherentLink.cxx
 Poly_CoherentLink.hxx
 Poly_CoherentNode.cxx

@@ -102,6 +102,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
   Standard_Boolean toListExternalFiles = Standard_False;
   Standard_Boolean isParallel = Standard_False;
+  Standard_Boolean isDoublePrec = Standard_False;
   Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -125,6 +126,22 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
        && Draw::ParseOnOff (theArgVec[anArgIter + 1], isParallel))
       {
         ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-doubleprec"
+          || anArgCase == "-doubleprecision"
+          || anArgCase == "-singleprec"
+          || anArgCase == "-singleprecision")
+    {
+      isDoublePrec = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isDoublePrec))
+      {
+        ++anArgIter;
+      }
+      if (anArgCase.StartsWith ("-single"))
+      {
+        isDoublePrec = !isDoublePrec;
       }
     }
     else if (anArgCase == "-listexternalfiles"
@@ -184,6 +201,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   aReader.SetSystemCoordinateSystem (RWMesh_CoordinateSystem_Zup);
   aReader.SetDocument (aDoc);
   aReader.SetParallel (isParallel);
+  aReader.SetDoublePrecision (isDoublePrec);
   if (toListExternalFiles)
   {
     aReader.ProbeHeader (aFilePath);
@@ -1720,10 +1738,12 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   //XSDRAW::LoadDraw(theCommands);
 
   theCommands.Add ("ReadGltf",
-                   "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc]"
+                   "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc] [-doublePrecision {on|off}]"
                    "\n\t\t: Read glTF file into XDE document."
                    "\n\t\t:   -listExternalFiles do not read mesh and only list external files"
-                   "\n\t\t:   -noCreateDoc read into existing XDE document",
+                   "\n\t\t:   -noCreateDoc read into existing XDE document"
+                   "\n\t\t:   -doublePrecision store triangulation with double or single floating point"
+                   "\n\t\t:                    precision (single by default)",
                    __FILE__, ReadGltf, g);
   theCommands.Add ("readgltf",
                    "readgltf shape file"

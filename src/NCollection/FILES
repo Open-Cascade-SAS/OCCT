@@ -1,5 +1,6 @@
 NCollection_AccAllocator.cxx
 NCollection_AccAllocator.hxx
+NCollection_AliasedArray.hxx
 NCollection_AlignedAllocator.cxx
 NCollection_AlignedAllocator.hxx
 NCollection_Array1.hxx

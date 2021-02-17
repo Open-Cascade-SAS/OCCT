@@ -20,6 +20,8 @@
 #include <Bnd_Box.hxx>
 #include <gp_Vec3f.hxx>
 #include <Poly_HArray1OfTriangle.hxx>
+#include <Poly_ArrayOfNodes.hxx>
+#include <Poly_ArrayOfUVNodes.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
@@ -119,23 +121,23 @@ public:
   Standard_Boolean HasNormals() const { return !myNormals.IsEmpty(); }
 
   //! Returns a node at the given index.
-  const gp_Pnt& Node (Standard_Integer theIndex) const { return myNodes.Value (theIndex); }
+  gp_Pnt Node (Standard_Integer theIndex) const { return myNodes.Value (theIndex - 1); }
 
   //! Sets a node coordinates.
   void SetNode (Standard_Integer theIndex,
                 const gp_Pnt& thePnt)
   {
-    myNodes.SetValue (theIndex, thePnt);
+    myNodes.SetValue (theIndex - 1, thePnt);
   }
 
   //! Returns UV-node at the given index.
-  const gp_Pnt2d& UVNode (Standard_Integer theIndex) const { return myUVNodes.Value (theIndex); }
+  gp_Pnt2d UVNode (Standard_Integer theIndex) const { return myUVNodes.Value (theIndex - 1); }
 
   //! Sets an UV-node coordinates.
   void SetUVNode (Standard_Integer theIndex,
                   const gp_Pnt2d&  thePnt)
   {
-    myUVNodes.SetValue (theIndex, thePnt);
+    myUVNodes.SetValue (theIndex - 1, thePnt);
   }
 
   //! Returns triangle at the given index.
@@ -151,7 +153,7 @@ public:
   //! Returns normal at the given index.
   gp_Dir Normal (Standard_Integer theIndex) const
   {
-    const gp_Vec3f& aNorm = myNormals.Value (theIndex);
+    const gp_Vec3f& aNorm = myNormals.Value (theIndex - 1);
     return gp_Dir (aNorm.x(), aNorm.y(), aNorm.z());
   }
 
@@ -159,14 +161,14 @@ public:
   void Normal (Standard_Integer theIndex,
                gp_Vec3f& theVec3) const
   {
-    theVec3 = myNormals.Value (theIndex);
+    theVec3 = myNormals.Value (theIndex - 1);
   }
 
   //! Changes normal at the given index.
   void SetNormal (const Standard_Integer theIndex,
                   const gp_Vec3f& theNormal)
   {
-    myNormals.SetValue (theIndex, theNormal);
+    myNormals.SetValue (theIndex - 1, theNormal);
   }
 
   //! Changes normal at the given index.
@@ -215,6 +217,13 @@ public:
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 public:
+
+  //! Returns TRUE if node positions are defined with double precision; TRUE by default.
+  bool IsDoublePrecision() const { return myNodes.IsDoublePrecision(); }
+
+  //! Set if node positions should be defined with double or single precision for 3D and UV nodes.
+  //! Raises exception if data was already allocated.
+  Standard_EXPORT void SetDoublePrecision (bool theIsDouble);
 
   //! Method resizing internal arrays of nodes (synchronously for all attributes).
   //! @param theNbNodes   [in] new number of nodes
@@ -273,11 +282,11 @@ public:
 
   //! Returns an internal array of nodes.
   //! Node()/SetNode() should be used instead in portable code.
-  TColgp_Array1OfPnt& InternalNodes() { return myNodes; }
+  Poly_ArrayOfNodes& InternalNodes() { return myNodes; }
 
   //! Returns an internal array of UV nodes.
   //! UBNode()/SetUVNode() should be used instead in portable code.
-  TColgp_Array1OfPnt2d& InternalUVNodes() { return myUVNodes; }
+  Poly_ArrayOfUVNodes& InternalUVNodes() { return myUVNodes; }
 
   //! Return an internal array of normals.
   //! Normal()/SetNormal() should be used instead in portable code.
@@ -285,24 +294,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method, SetNormal() should be used instead")
   Standard_EXPORT void SetNormals (const Handle(TShort_HArray1OfShortReal)& theNormals);
-
-  Standard_DEPRECATED("Deprecated method, Node() should be used instead")
-  const TColgp_Array1OfPnt& Nodes() const { return myNodes; }
-
-  Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
-  TColgp_Array1OfPnt& ChangeNodes() { return myNodes; }
-
-  Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
-  gp_Pnt& ChangeNode (const Standard_Integer theIndex) { return myNodes.ChangeValue (theIndex); }
-
-  Standard_DEPRECATED("Deprecated method, UVNode() should be used instead")
-  const TColgp_Array1OfPnt2d& UVNodes() const { return myUVNodes; }
-
-  Standard_DEPRECATED("Deprecated method, SetUVNode() should be used instead")
-  TColgp_Array1OfPnt2d& ChangeUVNodes() { return myUVNodes; }
-
-  Standard_DEPRECATED("Deprecated method, SetUVNode() should be used instead")
-  gp_Pnt2d& ChangeUVNode (const Standard_Integer theIndex) { return myUVNodes.ChangeValue (theIndex); }
 
   Standard_DEPRECATED("Deprecated method, Triangle() should be used instead")
   const Poly_Array1OfTriangle& Triangles() const { return myTriangles; }
@@ -326,9 +317,9 @@ protected:
 
   Bnd_Box*                     myCachedMinMax;
   Standard_Real                myDeflection;
-  TColgp_Array1OfPnt           myNodes;
+  Poly_ArrayOfNodes            myNodes;
   Poly_Array1OfTriangle        myTriangles;
-  TColgp_Array1OfPnt2d         myUVNodes;
+  Poly_ArrayOfUVNodes          myUVNodes;
   NCollection_Array1<gp_Vec3f> myNormals;
 
 };
