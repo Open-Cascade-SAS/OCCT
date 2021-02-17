@@ -19,6 +19,7 @@
 
 #define No_Standard_OutOfRange
 
+#include <gp_Trsf.hxx>
 
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
@@ -28,7 +29,6 @@
 #include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Quaternion.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>

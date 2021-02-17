@@ -18,6 +18,7 @@
 // and maths found in Wikipedia and elsewhere
 
 #include <gp_Quaternion.hxx>
+
 #include <gp_Vec.hxx>
 #include <gp_Mat.hxx>
 

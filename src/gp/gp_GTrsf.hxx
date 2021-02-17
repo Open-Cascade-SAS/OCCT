@@ -15,24 +15,17 @@
 #ifndef _gp_GTrsf_HeaderFile
 #define _gp_GTrsf_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <gp_Ax1.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Mat.hxx>
-#include <gp_XYZ.hxx>
-#include <gp_TrsfForm.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Trsf.hxx>
-class Standard_ConstructionError;
-class Standard_OutOfRange;
+#include <gp_TrsfForm.hxx>
+#include <gp_XYZ.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_OutOfRange.hxx>
+
 class gp_Trsf;
 class gp_Mat;
-class gp_XYZ;
-class gp_Ax1;
-class gp_Ax2;
 
 // Avoid possible conflict with SetForm macro defined by windows.h
 #ifdef SetForm
@@ -70,62 +63,85 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Returns the Identity transformation.
-    gp_GTrsf();
-  
+  gp_GTrsf()
+  {
+    shape = gp_Identity;
+    matrix.SetScale (1.0);
+    loc.SetCoord (0.0, 0.0, 0.0);
+    scale = 1.0;
+  }
 
-  //! Converts the gp_Trsf transformation T into a
+  //! Converts the gp_Trsf transformation theT into a
   //! general transformation, i.e. Returns a GTrsf with
-  //! the same matrix of coefficients as the Trsf T.
-    gp_GTrsf(const gp_Trsf& T);
-  
+  //! the same matrix of coefficients as the Trsf theT.
+  gp_GTrsf (const gp_Trsf& theT)
+  {
+    shape = theT.Form();
+    matrix = theT.matrix;
+    loc = theT.TranslationPart();
+    scale = theT.ScaleFactor();
+  }
 
-  //! Creates a transformation based on the matrix M and the
-  //! vector V where M defines the vectorial part of
+  //! Creates a transformation based on the matrix theM and the
+  //! vector theV where theM defines the vectorial part of
   //! the transformation, and V the translation part, or
-    gp_GTrsf(const gp_Mat& M, const gp_XYZ& V);
-  
-  //! Changes this transformation into an affinity of ratio Ratio
-  //! with respect to the axis A1.
-  //! Note: an affinity is a point-by-point transformation that
-  //! transforms any point P into a point P' such that if H is
-  //! the orthogonal projection of P on the axis A1 or the
-  //! plane A2, the vectors HP and HP' satisfy:
-  //! HP' = Ratio * HP.
-    void SetAffinity (const gp_Ax1& A1, const Standard_Real Ratio);
-  
-  //! Changes this transformation into an affinity of ratio Ratio
-  //! with respect to  the plane defined by the origin, the "X Direction" and
-  //! the "Y Direction" of coordinate system A2.
-  //! Note: an affinity is a point-by-point transformation that
-  //! transforms any point P into a point P' such that if H is
-  //! the orthogonal projection of P on the axis A1 or the
-  //! plane A2, the vectors HP and HP' satisfy:
-  //! HP' = Ratio * HP.
-    void SetAffinity (const gp_Ax2& A2, const Standard_Real Ratio);
-  
+  gp_GTrsf (const gp_Mat& theM, const gp_XYZ& theV)
+  : matrix (theM),
+    loc (theV)
+  {
+    shape = gp_Other;
+    scale = 0.0;
+  }
 
-  //! Replaces  the coefficient (Row, Col) of the matrix representing
-  //! this transformation by Value.  Raises OutOfRange
-  //! if  Row < 1 or Row > 3 or Col < 1 or Col > 4
-    void SetValue (const Standard_Integer Row, const Standard_Integer Col, const Standard_Real Value);
-  
-  //! Replaces the vectorial part of this transformation by Matrix.
-    void SetVectorialPart (const gp_Mat& Matrix);
-  
+  //! Changes this transformation into an affinity of ratio theRatio
+  //! with respect to the axis theA1.
+  //! Note: an affinity is a point-by-point transformation that
+  //! transforms any point P into a point P' such that if H is
+  //! the orthogonal projection of P on the axis theA1 or the
+  //! plane A2, the vectors HP and HP' satisfy:
+  //! HP' = theRatio * HP.
+  void SetAffinity (const gp_Ax1& theA1, const Standard_Real theRatio);
+
+  //! Changes this transformation into an affinity of ratio theRatio
+  //! with respect to  the plane defined by the origin, the "X Direction" and
+  //! the "Y Direction" of coordinate system theA2.
+  //! Note: an affinity is a point-by-point transformation that
+  //! transforms any point P into a point P' such that if H is
+  //! the orthogonal projection of P on the axis A1 or the
+  //! plane theA2, the vectors HP and HP' satisfy:
+  //! HP' = theRatio * HP.
+  void SetAffinity (const gp_Ax2& theA2, const Standard_Real theRatio);
+
+  //! Replaces  the coefficient (theRow, theCol) of the matrix representing
+  //! this transformation by theValue.  Raises OutOfRange
+  //! if  theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
+  void SetValue (const Standard_Integer theRow, const Standard_Integer theCol, const Standard_Real theValue);
+
+  //! Replaces the vectorial part of this transformation by theMatrix.
+  void SetVectorialPart (const gp_Mat& theMatrix)
+  {
+    matrix = theMatrix;
+    shape = gp_Other;
+    scale = 0.0;
+  }
+
   //! Replaces the translation part of
-  //! this transformation by the coordinates of the number triple Coord.
-  Standard_EXPORT void SetTranslationPart (const gp_XYZ& Coord);
-  
-  //! Assigns the vectorial and translation parts of T to this transformation.
-    void SetTrsf (const gp_Trsf& T);
-  
+  //! this transformation by the coordinates of the number triple theCoord.
+  Standard_EXPORT void SetTranslationPart (const gp_XYZ& theCoord);
+
+  //! Assigns the vectorial and translation parts of theT to this transformation.
+  void SetTrsf (const gp_Trsf& theT)
+  {
+    shape = theT.shape;
+    matrix = theT.matrix;
+    loc = theT.loc;
+    scale = theT.scale;
+  }
 
   //! Returns true if the determinant of the vectorial part of
   //! this transformation is negative.
-    Standard_Boolean IsNegative() const;
-  
+  Standard_Boolean IsNegative() const { return matrix.Determinant() < 0.0; }
 
   //! Returns true if this transformation is singular (and
   //! therefore, cannot be inverted).
@@ -135,16 +151,14 @@ public:
   //! than or equal to gp::Resolution().
   //! Warning
   //! If this transformation is singular, it cannot be inverted.
-    Standard_Boolean IsSingular() const;
-  
+  Standard_Boolean IsSingular() const { return matrix.IsSingular(); }
 
   //! Returns the nature of the transformation.  It can be an
   //! identity transformation, a rotation, a translation, a mirror
   //! transformation (relative to a point, an axis or a plane), a
   //! scaling transformation, a compound transformation or
   //! some other type of transformation.
-  gp_TrsfForm Form() const;
-  
+  gp_TrsfForm Form() const { return shape; }
 
   //! verify and set the shape of the GTrsf Other or CompoundTrsf
   //! Ex :
@@ -155,35 +169,34 @@ public:
   //! myGTrsf.SetForm();
   //! @endcode
   Standard_EXPORT void SetForm();
-  
+
   //! Returns the translation part of the GTrsf.
-    const gp_XYZ& TranslationPart() const;
-  
+  const gp_XYZ& TranslationPart() const { return loc; }
 
   //! Computes the vectorial part of the GTrsf. The returned Matrix
   //! is a  3*3 matrix.
-    const gp_Mat& VectorialPart() const;
-  
+  const gp_Mat& VectorialPart() const { return matrix; }
 
   //! Returns the coefficients of the global matrix of transformation.
-  //! Raises OutOfRange if Row < 1 or Row > 3 or Col < 1 or Col > 4
-    Standard_Real Value (const Standard_Integer Row, const Standard_Integer Col) const;
-  Standard_Real operator() (const Standard_Integer Row, const Standard_Integer Col) const
-{
-  return Value(Row,Col);
-}
-  
+  //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
+  Standard_Real Value (const Standard_Integer theRow, const Standard_Integer theCol) const;
+
+  Standard_Real operator() (const Standard_Integer theRow, const Standard_Integer theCol) const { return Value (theRow, theCol); }
+
   Standard_EXPORT void Invert();
-  
 
   //! Computes the reverse transformation.
   //! Raises an exception if the matrix of the transformation
   //! is not inversible.
-  Standard_NODISCARD gp_GTrsf Inverted() const;
-  
+  Standard_NODISCARD gp_GTrsf Inverted() const
+  {
+    gp_GTrsf aT = *this;
+    aT.Invert();
+    return aT;
+  }
 
-  //! Computes the transformation composed from T and <me>.
-  //! In a C++ implementation you can also write Tcomposed = <me> * T.
+  //! Computes the transformation composed from theT and <me>.
+  //! In a C++ implementation you can also write Tcomposed = <me> * theT.
   //! Example :
   //! @code
   //! gp_GTrsf T1, T2, Tcomp; ...............
@@ -197,51 +210,54 @@ public:
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
   //! @endcode
-  Standard_NODISCARD gp_GTrsf Multiplied (const gp_GTrsf& T) const;
-  Standard_NODISCARD gp_GTrsf operator * (const gp_GTrsf& T)  const
-  {
-    return Multiplied(T);
+  Standard_NODISCARD gp_GTrsf Multiplied (const gp_GTrsf& theT) const
+   {
+    gp_GTrsf aTres = *this;
+    aTres.Multiply (theT);
+    return aTres;
   }
-  
 
-  //! Computes the transformation composed with <me> and T.
-  //! <me> = <me> * T
-  Standard_EXPORT void Multiply (const gp_GTrsf& T);
-  void operator *= (const gp_GTrsf& T) 
-  {
-    Multiply(T);
-  }
-  
+  Standard_NODISCARD gp_GTrsf operator * (const gp_GTrsf& theT)  const { return Multiplied (theT); }
 
-  //! Computes the product of the transformation T and this
+  //! Computes the transformation composed with <me> and theT.
+  //! <me> = <me> * theT
+  Standard_EXPORT void Multiply (const gp_GTrsf& theT);
+
+  void operator *= (const gp_GTrsf& theT) { Multiply (theT); }
+
+  //! Computes the product of the transformation theT and this
   //! transformation and assigns the result to this transformation.
-  //! this = T * this
-  Standard_EXPORT void PreMultiply (const gp_GTrsf& T);
-  
-  Standard_EXPORT void Power (const Standard_Integer N);
-  
+  //! this = theT * this
+  Standard_EXPORT void PreMultiply (const gp_GTrsf& theT);
+
+  Standard_EXPORT void Power (const Standard_Integer theN);
 
   //! Computes:
   //! -   the product of this transformation multiplied by itself
-  //! N times, if N is positive, or
+  //! theN times, if theN is positive, or
   //! -   the product of the inverse of this transformation
-  //! multiplied by itself |N| times, if N is negative.
-  //! If N equals zero, the result is equal to the Identity
+  //! multiplied by itself |theN| times, if theN is negative.
+  //! If theN equals zero, the result is equal to the Identity
   //! transformation.
-  //! I.e.:  <me> * <me> * .......* <me>, N time.
-  //! if N =0 <me> = Identity
-  //! if N < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
+  //! I.e.:  <me> * <me> * .......* <me>, theN time.
+  //! if theN =0 <me> = Identity
+  //! if theN < 0 <me> = <me>.Inverse() *...........* <me>.Inverse().
   //!
   //! Raises an exception if N < 0 and if the matrix of the
   //! transformation not inversible.
-  Standard_NODISCARD gp_GTrsf Powered (const Standard_Integer N) const;
-  
-    void Transforms (gp_XYZ& Coord) const;
-  
+  Standard_NODISCARD gp_GTrsf Powered (const Standard_Integer theN) const
+  {
+    gp_GTrsf aT = *this;
+    aT.Power (theN);
+    return aT;
+  }
+
+  void Transforms (gp_XYZ& theCoord) const;
+
   //! Transforms a triplet XYZ with a GTrsf.
-    void Transforms (Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const;
-  
-    gp_Trsf Trsf() const;
+  void Transforms (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const;
+
+  gp_Trsf Trsf() const;
 
   //! Convert transformation to 4x4 matrix.
   template<class T>
@@ -284,10 +300,141 @@ private:
 };
 
 
-#include <gp_GTrsf.lxx>
+//=======================================================================
+//function : SetAffinity
+// purpose :
+//=======================================================================
+inline void gp_GTrsf::SetAffinity (const gp_Ax1& theA1, const Standard_Real theRatio)
+{
+  shape = gp_Other;
+  scale = 0.0;
+  matrix.SetDot (theA1.Direction().XYZ());
+  matrix.Multiply (1.0 - theRatio);
+  matrix.SetDiagonal (matrix.Value (1,1) + theRatio,
+                      matrix.Value (2,2) + theRatio,
+                      matrix.Value (3,3) + theRatio);
+  loc = theA1.Location().XYZ();
+  loc.Reverse ();
+  loc.Multiply (matrix);
+  loc.Add (theA1.Location().XYZ());
+}
 
+//=======================================================================
+//function : SetAffinity
+// purpose :
+//=======================================================================
+inline void gp_GTrsf::SetAffinity (const gp_Ax2& theA2, const Standard_Real theRatio)
+{
+  shape = gp_Other;
+  scale = 0.0;
+  matrix.SetDot (theA2.Direction().XYZ());
+  matrix.Multiply (theRatio - 1.);
+  loc = theA2.Location().XYZ();
+  loc.Reverse ();
+  loc.Multiply (matrix);
+  matrix.SetDiagonal (matrix.Value (1,1) + 1.,
+                      matrix.Value (2,2) + 1.,
+                      matrix.Value (3,3) + 1.);
+}
 
+//=======================================================================
+//function : SetValue
+// purpose :
+//=======================================================================
+inline void gp_GTrsf::SetValue (const Standard_Integer theRow,
+                                const Standard_Integer theCol,
+                                const Standard_Real theValue)
+{
+  Standard_OutOfRange_Raise_if
+    (theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
+  if (theCol == 4)
+  {
+    loc.SetCoord (theRow, theValue);
+    if (shape == gp_Identity)
+    {
+      shape = gp_Translation;
+    }
+    return;
+  }
+  else
+  {
+    if (!(shape == gp_Other) && !(scale == 1.0))
+    {
+      matrix.Multiply (scale);
+    }
+    matrix.SetValue (theRow, theCol, theValue);
+    shape = gp_Other;
+    scale = 0.0;
+    return;
+  }
+}
 
+//=======================================================================
+//function : Value
+// purpose :
+//=======================================================================
+inline Standard_Real gp_GTrsf::Value (const Standard_Integer theRow,
+                                      const Standard_Integer theCol) const
+{
+  Standard_OutOfRange_Raise_if
+    (theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
+  if (theCol == 4)
+  {
+    return loc.Coord (theRow);
+  }
+  if (shape == gp_Other)
+  {
+    return matrix.Value (theRow, theCol);
+  }
+  return scale * matrix.Value (theRow, theCol);
+}
 
+//=======================================================================
+//function : Transforms
+// purpose :
+//=======================================================================
+inline void gp_GTrsf::Transforms (gp_XYZ& theCoord) const
+{
+  theCoord.Multiply (matrix);
+  if (!(shape == gp_Other) && !(scale == 1.0))
+  {
+    theCoord.Multiply (scale);
+  }
+  theCoord.Add (loc);
+}
+
+//=======================================================================
+//function : Transforms
+// purpose :
+//=======================================================================
+inline void gp_GTrsf::Transforms (Standard_Real& theX, Standard_Real& theY, Standard_Real& theZ) const
+{
+  gp_XYZ aTriplet (theX, theY, theZ);
+  aTriplet.Multiply (matrix);
+  if (!(shape == gp_Other) && !(scale == 1.0))
+  {
+    aTriplet.Multiply (scale);
+  }
+  aTriplet.Add (loc);
+  aTriplet.Coord (theX, theY, theZ);
+}
+
+//=======================================================================
+//function : Trsf
+// purpose :
+//=======================================================================
+inline gp_Trsf gp_GTrsf::Trsf() const
+{
+  if (Form() == gp_Other)
+  {
+    throw Standard_ConstructionError("gp_GTrsf::Trsf() - non-orthogonal GTrsf");
+  }
+  gp_Trsf aT;
+  aT.shape = shape;
+  aT.scale = scale;
+  aT.matrix = matrix;
+  aT.loc = loc;
+  return aT;
+}
 
 #endif // _gp_GTrsf_HeaderFile

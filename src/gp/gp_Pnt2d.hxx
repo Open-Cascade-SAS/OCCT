@@ -23,12 +23,12 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+
 class Standard_OutOfRange;
 class gp_XY;
 class gp_Ax2d;
 class gp_Trsf2d;
 class gp_Vec2d;
-
 
 //! Defines  a non-persistent 2D cartesian point.
 class gp_Pnt2d 
@@ -37,145 +37,218 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a point with zero coordinates.
-    gp_Pnt2d();
-  
+  gp_Pnt2d() {}
+
   //! Creates a point with a doublet of coordinates.
-    gp_Pnt2d(const gp_XY& Coord);
-  
+  gp_Pnt2d (const gp_XY& theCoord)
+  : coord (theCoord)
+  {}
 
-  //! Creates a  point with its 2 cartesian's coordinates : Xp, Yp.
-    gp_Pnt2d(const Standard_Real Xp, const Standard_Real Yp);
-  
+  //! Creates a  point with its 2 cartesian's coordinates : theXp, theYp.
+  gp_Pnt2d (const Standard_Real theXp, const Standard_Real theYp)
+  : coord (theXp, theYp)
+  {}
 
-  //! Assigns the value Xi to the coordinate that corresponds to Index:
-  //! Index = 1 => X is modified
-  //! Index = 2 => Y is modified
-  //! Raises OutOfRange if Index != {1, 2}.
-    void SetCoord (const Standard_Integer Index, const Standard_Real Xi);
-  
-  //! For this point, assigns the values Xp and Yp to its two coordinates
-    void SetCoord (const Standard_Real Xp, const Standard_Real Yp);
-  
+  //! Assigns the value Xi to the coordinate that corresponds to theIndex:
+  //! theIndex = 1 => X is modified
+  //! theIndex = 2 => Y is modified
+  //! Raises OutOfRange if theIndex != {1, 2}.
+  void SetCoord (const Standard_Integer theIndex, const Standard_Real theXi) { coord.SetCoord (theIndex, theXi); }
+
+  //! For this point, assigns the values theXp and theYp to its two coordinates
+  void SetCoord (const Standard_Real theXp, const Standard_Real theYp) { coord.SetCoord (theXp, theYp); }
+
   //! Assigns the given value to the X  coordinate of this point.
-    void SetX (const Standard_Real X);
-  
-  //! Assigns the given value to the Y  coordinate of this point.
-    void SetY (const Standard_Real Y);
-  
-  //! Assigns the two coordinates of Coord to this point.
-    void SetXY (const gp_XY& Coord);
-  
+  void SetX (const Standard_Real theX) { coord.SetX (theX); }
 
-  //! Returns the coordinate of range Index :
-  //! Index = 1 => X is returned
-  //! Index = 2 => Y is returned
-  //! Raises OutOfRange if Index != {1, 2}.
-  Standard_Real Coord (const Standard_Integer Index) const;
-  
+  //! Assigns the given value to the Y  coordinate of this point.
+  void SetY (const Standard_Real theY) { coord.SetY (theY); }
+
+  //! Assigns the two coordinates of Coord to this point.
+  void SetXY (const gp_XY& theCoord) { coord = theCoord; }
+
+  //! Returns the coordinate of range theIndex :
+  //! theIndex = 1 => X is returned
+  //! theIndex = 2 => Y is returned
+  //! Raises OutOfRange if theIndex != {1, 2}.
+  Standard_Real Coord (const Standard_Integer theIndex) const { return coord.Coord (theIndex); }
+
   //! For this point returns its two coordinates as a number pair.
-    void Coord (Standard_Real& Xp, Standard_Real& Yp) const;
-  
+  void Coord (Standard_Real& theXp, Standard_Real& theYp) const { coord.Coord (theXp, theYp); }
+
   //! For this point, returns its X  coordinate.
-    Standard_Real X() const;
-  
+  Standard_Real X() const { return coord.X(); }
+
   //! For this point, returns its Y coordinate.
-    Standard_Real Y() const;
-  
+  Standard_Real Y() const { return coord.Y(); }
+
   //! For this point, returns its two coordinates as a number pair.
-    const gp_XY& XY() const;
-  
+  const gp_XY& XY() const { return coord; }
+
   //! For this point, returns its two coordinates as a number pair.
-    const gp_XY& Coord() const;
-  
+  const gp_XY& Coord() const { return coord; }
 
   //! Returns the coordinates of this point.
   //! Note: This syntax allows direct modification of the returned value.
-    gp_XY& ChangeCoord();
-  
+  gp_XY& ChangeCoord() { return coord; }
+
   //! Comparison
   //! Returns True if the distance between the two
-  //! points is lower or equal to LinearTolerance.
-    Standard_Boolean IsEqual (const gp_Pnt2d& Other, const Standard_Real LinearTolerance) const;
-  
+  //! points is lower or equal to theLinearTolerance.
+  Standard_Boolean IsEqual (const gp_Pnt2d& theOther, const Standard_Real theLinearTolerance) const
+  {
+    return Distance (theOther) <= theLinearTolerance;
+  }
+
   //! Computes the distance between two points.
-    Standard_Real Distance (const gp_Pnt2d& Other) const;
-  
+  Standard_Real Distance (const gp_Pnt2d& theOther) const;
+
   //! Computes the square distance between two points.
-    Standard_Real SquareDistance (const gp_Pnt2d& Other) const;
-  
+  Standard_Real SquareDistance (const gp_Pnt2d& theOther) const;
 
   //! Performs the symmetrical transformation of a point
-  //! with respect to the point P which is the center of
+  //! with respect to the point theP which is the center of
   //! the  symmetry.
-  Standard_EXPORT void Mirror (const gp_Pnt2d& P);
-  
+  Standard_EXPORT void Mirror (const gp_Pnt2d& theP);
 
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
-  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored (const gp_Pnt2d& P) const;
-  
-  Standard_EXPORT void Mirror (const gp_Ax2d& A);
-  
+  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored (const gp_Pnt2d& theP) const;
 
-  //! Rotates a point. A1 is the axis of the rotation.
+  Standard_EXPORT void Mirror (const gp_Ax2d& theA);
+
+  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored (const gp_Ax2d& theA) const;
+
+  //! Rotates a point. theA1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_NODISCARD Standard_EXPORT gp_Pnt2d Mirrored (const gp_Ax2d& A) const;
-  
-    void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
-  
-  //! Scales a point. S is the scaling value.
-    Standard_NODISCARD gp_Pnt2d Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
-  
-    void Scale (const gp_Pnt2d& P, const Standard_Real S);
-  
-  //! Transforms a point with the transformation T.
-    Standard_NODISCARD gp_Pnt2d Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
-  
-  Standard_EXPORT void Transform (const gp_Trsf2d& T);
-  
+  void Rotate (const gp_Pnt2d& theP, const Standard_Real theAng);
 
-  //! Translates a point in the direction of the vector V.
+  Standard_NODISCARD gp_Pnt2d Rotated (const gp_Pnt2d& theP, const Standard_Real theAng) const
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Rotate (theP, theAng);
+    return aPres;
+  }
+
+  //! Scales a point. theS is the scaling value.
+  void Scale (const gp_Pnt2d& theP, const Standard_Real theS);
+
+  Standard_NODISCARD gp_Pnt2d Scaled (const gp_Pnt2d& theP, const Standard_Real theS) const
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Scale (theP, theS);
+    return aPres;
+  }
+
+  //! Transforms a point with the transformation theT.
+  Standard_EXPORT void Transform (const gp_Trsf2d& theT);
+
+  Standard_NODISCARD gp_Pnt2d Transformed (const gp_Trsf2d& theT) const
+  {
+    gp_Pnt2d aPres = *this;
+    aPres.Transform (theT);
+    return aPres;
+  }
+
+  //! Translates a point in the direction of the vector theV.
   //! The magnitude of the translation is the vector's magnitude.
-  Standard_NODISCARD gp_Pnt2d Transformed (const gp_Trsf2d& T) const;
-  
-    void Translate (const gp_Vec2d& V);
-  
+  void Translate (const gp_Vec2d& theV);
 
-  //! Translates a point from the point P1 to the point P2.
-    Standard_NODISCARD gp_Pnt2d Translated (const gp_Vec2d& V) const;
-  
-    void Translate (const gp_Pnt2d& P1, const gp_Pnt2d& P2);
-  
-    Standard_NODISCARD gp_Pnt2d Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+  Standard_NODISCARD gp_Pnt2d Translated (const gp_Vec2d& theV) const;
 
+  //! Translates a point from the point theP1 to the point theP2.
+  void Translate (const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+  {
+    coord.Add (theP2.coord);
+    coord.Subtract (theP1.coord);
+  }
+
+  Standard_NODISCARD gp_Pnt2d Translated (const gp_Pnt2d& theP1, const gp_Pnt2d& theP2) const
+  {
+    gp_Pnt2d aP = *this;
+    aP.Translate (theP1, theP2);
+    return aP;
+  }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
 
-
-
   gp_XY coord;
-
 
 };
 
+#include <gp_Vec2d.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Trsf2d.hxx>
 
-#include <gp_Pnt2d.lxx>
+//=======================================================================
+//function : Distance
+// purpose :
+//=======================================================================
+inline Standard_Real gp_Pnt2d::Distance (const gp_Pnt2d& theOther) const
+{
+  const gp_XY& aXY = theOther.coord;
+  Standard_Real aX = coord.X() - aXY.X();
+  Standard_Real aY = coord.Y() - aXY.Y();
+  return sqrt (aX * aX + aY * aY);
+}
 
+//=======================================================================
+//function : SquareDistance
+// purpose :
+//=======================================================================
+inline Standard_Real gp_Pnt2d::SquareDistance (const gp_Pnt2d& theOther) const
+{
+  const gp_XY& aXY = theOther.coord;
+  Standard_Real aX = coord.X() - aXY.X();
+  Standard_Real aY = coord.Y() - aXY.Y();
+  return (aX * aX + aY * aY);
+}
 
+//=======================================================================
+//function : Rotate
+// purpose :
+//=======================================================================
+inline void gp_Pnt2d::Rotate (const gp_Pnt2d& theP, const Standard_Real theAng)
+{
+  gp_Trsf2d aT;
+  aT.SetRotation (theP, theAng);
+  aT.Transforms (coord);
+}
 
+//=======================================================================
+//function : Scale
+// purpose :
+//=======================================================================
+inline void gp_Pnt2d::Scale (const gp_Pnt2d& theP, const Standard_Real theS)
+{
+  gp_XY aXY = theP.coord;
+  aXY.Multiply (1.0 - theS);
+  coord.Multiply (theS);
+  coord.Add (aXY);
+}
 
+//=======================================================================
+//function : Translate
+// purpose :
+//=======================================================================
+inline void gp_Pnt2d::Translate(const gp_Vec2d& theV)
+{
+  coord.Add (theV.XY());
+}
+
+//=======================================================================
+//function : Translated
+// purpose :
+//=======================================================================
+inline gp_Pnt2d gp_Pnt2d::Translated (const gp_Vec2d& theV) const
+{
+  gp_Pnt2d aP = *this;
+  aP.coord.Add (theV.XY());
+  return aP;
+}
 
 #endif // _gp_Pnt2d_HeaderFile

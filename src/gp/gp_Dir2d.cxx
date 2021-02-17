@@ -14,8 +14,9 @@
 
 // JCV 08/01/90 Modifs suite a l'introduction des classes XY et Mat2d dans gp
 
-#include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
+
+#include <gp_Ax2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>

@@ -23,6 +23,8 @@
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
 #include <TColStd_ListOfReal.hxx>
 
 //! Definition of a parametric Curve which is the result

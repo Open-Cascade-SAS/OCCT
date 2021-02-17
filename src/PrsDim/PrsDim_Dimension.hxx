@@ -24,6 +24,7 @@
 #include <PrsDim_KindOfDimension.hxx>
 #include <PrsDim_KindOfSurface.hxx>
 #include <Geom_Curve.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>

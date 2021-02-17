@@ -17,8 +17,9 @@
 // LPA, JCV  07/92 passage sur C1.
 // JCV 07/92 Introduction de la method Dump 
 
-#include <gp_Ax2d.hxx>
 #include <gp_Ax22d.hxx>
+
+#include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>

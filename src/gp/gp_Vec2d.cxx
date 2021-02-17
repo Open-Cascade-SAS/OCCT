@@ -16,13 +16,13 @@
 
 #define No_Standard_OutOfRange
 
+#include <gp_Vec2d.hxx>
 
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>

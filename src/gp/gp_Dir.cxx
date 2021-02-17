@@ -14,9 +14,10 @@
 
 // JCV 07/12/90 Modifs suite a l'introduction des classes XYZ et Mat dans gp
 
+#include <gp_Dir.hxx>
+
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>

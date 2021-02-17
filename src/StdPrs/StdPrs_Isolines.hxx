@@ -18,6 +18,7 @@
 
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom_Surface.hxx>
+#include <gp_Lin2d.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_LineAspect.hxx>
