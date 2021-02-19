@@ -211,6 +211,7 @@ class OpenGl_Context : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
   friend class OpenGl_Window;
+  friend struct OpenGl_GlFunctions;
 public:
 
   typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)> > OpenGl_ResourcesMap;

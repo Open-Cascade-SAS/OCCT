@@ -96,6 +96,8 @@
   #include <glext.h>
 #endif
 
+class OpenGl_Context;
+
 //! Mega structure defines the complete list of OpenGL functions.
 struct OpenGl_GlFunctions
 {
@@ -103,6 +105,10 @@ struct OpenGl_GlFunctions
   //! Check glGetError(); defined for debugging purposes.
   //! @return TRUE on error
   Standard_EXPORT bool debugPrintError (const char* theName) const;
+
+  //! Load functions.
+  Standard_EXPORT void load (OpenGl_Context& theCtx,
+                             Standard_Boolean theIsCoreProfile);
 
   // This debug macros can be enabled to help debugging OpenGL implementations
   // without solid / working debugging capabilities.

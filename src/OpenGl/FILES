@@ -79,6 +79,7 @@ OpenGl_DepthPeeling.cxx
 OpenGl_DepthPeeling.hxx
 OpenGl_ExtGS.hxx
 OpenGl_GLESExtensions.hxx
+OpenGl_GlFunctions.cxx
 OpenGl_GlFunctions.hxx
 OpenGl_Flipper.cxx
 OpenGl_Flipper.hxx
