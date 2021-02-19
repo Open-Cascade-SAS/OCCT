@@ -1,4 +1,4 @@
-puts "TODO OCC30286 ALL: Error : The length of result shape is 227257, expected 11."
+puts "TODO OCC30286 ALL: Error : The length of result shape is"
 
 puts "========================================================================"
 puts "OCC27979: Parasolid converted BREP shows weird lines on hidden line Algo"

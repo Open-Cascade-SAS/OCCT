@@ -132,7 +132,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(
   if (SecondCurve->Degree() < Deg)  { SecondCurve->IncreaseDegree(Deg); }
 
 // Declarationd
-  Standard_Real L1, L2, U_de_raccord;
+  Standard_Real L1, L2;
   Standard_Integer ii, jj;
   Standard_Real  Ratio=1, Ratio1, Ratio2, Delta1, Delta2;
   Standard_Integer NbP1 = FirstCurve->NbPoles(), NbP2 = SecondCurve->NbPoles();
@@ -159,7 +159,6 @@ void GeomConvert_CompCurveToBSplineCurve::Add(
     Delta1 = 0;
     Ratio2 = 1/Ratio;
     Delta2 = Ratio2*SecondCurve->Knot(1) - FirstCurve->Knot(NbK1);
-    U_de_raccord = FirstCurve->LastParameter();
   }
   else {
 // On ne bouge pas la seconde courbe
@@ -167,12 +166,11 @@ void GeomConvert_CompCurveToBSplineCurve::Add(
     Delta1 = Ratio1*FirstCurve->Knot(NbK1) - SecondCurve->Knot(1);
     Ratio2 = 1;
     Delta2 = 0;
-    U_de_raccord = SecondCurve->FirstParameter();
   }    
 
 // Les Noeuds
   Standard_Real eps;
-  for (ii=1; ii<NbK1; ii++) {
+  for (ii=1; ii<=NbK1; ii++) {
     Noeuds(ii) = Ratio1*FirstCurve->Knot(ii) - Delta1;
     if(ii > 1) {
       eps = Epsilon (Abs(Noeuds(ii-1)));
@@ -182,11 +180,6 @@ void GeomConvert_CompCurveToBSplineCurve::Add(
       }
     }
     Mults(ii) = FirstCurve->Multiplicity(ii);
-  }
-  Noeuds(NbK1) = U_de_raccord;
-  eps = Epsilon (Abs(Noeuds(NbK1-1)));
-  if(Noeuds(NbK1) - Noeuds(NbK1-1) <= eps) {
-    Noeuds(NbK1) += eps;
   }
   Mults(NbK1) = FirstCurve->Degree();
   for (ii=2, jj=NbK1+1; ii<=NbK2; ii++, jj++) {

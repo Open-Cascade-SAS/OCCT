@@ -1,0 +1,26 @@
+puts "======================================================="
+puts "0032066: Modeling Algorithms - Incorrect result of Boolean CUT operation"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug32066_solid.brep] s
+
+restore [locate_data_file bug32066_hole_2547.brep] h1
+restore [locate_data_file bug32066_hole_2562.brep] h2
+restore [locate_data_file bug32066_hole_2563.brep] h3
+restore [locate_data_file bug32066_hole_2564.brep] h4
+
+bclearobjects
+bcleartools
+baddobjects s
+baddtools h1 h2 h3 h4
+bfillds
+
+bbop r 2
+
+checkshape r
+
+checknbshapes r -wire 73 -face 65 -shell 1 -solid 1 -t
+checkprops r -s 3.45489e+07 -v 1.54742e+08
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png
