@@ -400,8 +400,15 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 
   //Normalizing factor. If it is less than 1.0 then the range will be expanded. 
   //This is no good for computation. Therefore, it is limited.
-  const Standard_Real deltau = mySRangeU.IsVoid() ? UM - Um : Max(mySRangeU.Delta(), 1.0);
-  const Standard_Real deltav = mySRangeV.IsVoid() ? VM - Vm : Max(mySRangeV.Delta(), 1.0);
+  //Do not limit this factor in case of highly anisotropic parametrization
+  //(parametric space is considerably larger in one direction than another).
+  const Standard_Boolean isHighlyAnisotropic = Max(tolu, tolv) > 1000. * Min(tolu, tolv);
+  const Standard_Real deltau = mySRangeU.IsVoid() ? UM - Um
+                                                  : (isHighlyAnisotropic ? mySRangeU.Delta()
+                                                                         : Max(mySRangeU.Delta(), 1.0));
+  const Standard_Real deltav = mySRangeV.IsVoid() ? VM - Vm
+                                                  : (isHighlyAnisotropic ? mySRangeV.Delta()
+                                                                         : Max(mySRangeV.Delta(), 1.0));
 
   Up/=deltau; UV1/=deltau; 
   Vp/=deltav; UV2/=deltav;
