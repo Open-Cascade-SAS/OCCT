@@ -253,9 +253,8 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
-  if (!theCtx.IsNull()
-   &&  theCtx->core20fwd != NULL
-   && !theCtx->caps->pntSpritesDisable)
+  if (theCtx->core20fwd != NULL
+   && (!theCtx->caps->pntSpritesDisable || theCtx->core11 == NULL))
   {
     // Creating texture resource for using it with point sprites
     Handle(Image_PixMap) anImage = aNewMarkerImage->GetImage();
@@ -273,7 +272,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
       }
     }
   }
-  else
+  else if (theCtx->core11 != NULL)
   {
   #if !defined(GL_ES_VERSION_2_0)
     // Creating list with bitmap for using it in compatibility mode

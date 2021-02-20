@@ -168,6 +168,19 @@ Standard_Boolean OpenGl_Workspace::Activate()
   ViewMatrix_applied      = &myDefaultMatrix;
   StructureMatrix_applied = &myDefaultMatrix;
 
+  if (myGlContext->core11 == NULL)
+  {
+    if (myGlContext->caps->ffpEnable)
+    {
+    #if defined(GL_ES_VERSION_2_0)
+      Message::SendWarning ("Warning: FFP is unsupported by OpenGL ES");
+    #else
+      Message::SendWarning ("Warning: FFP is unsupported by OpenGL Core Profile");
+    #endif
+      myGlContext->caps->ffpEnable = false;
+    }
+  }
+
   ResetAppliedAspect();
 
   // reset state for safety

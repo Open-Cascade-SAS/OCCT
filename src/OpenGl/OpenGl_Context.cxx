@@ -2579,7 +2579,9 @@ void OpenGl_Context::SetLineStipple (const Standard_ShortReal theFactor,
 // =======================================================================
 void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
 {
+#if !defined(GL_ES_VERSION_2_0)
   if (core11 != NULL)
+#endif
   {
     // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
     core11fwd->glLineWidth (theWidth * myLineWidthScale);

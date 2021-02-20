@@ -123,12 +123,17 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
 {
   OpenGl_TextureFormat aFormat;
   aFormat.SetImageFormat (theFormat);
+#if defined(GL_ES_VERSION_2_0)
+  const bool useRedRedAlpha = false;
+#else
+  const bool useRedRedAlpha = (theCtx->core11 == NULL);
+#endif
   switch (theFormat)
   {
     case Image_Format_GrayF:
     {
       aFormat.SetNbComponents (1);
-      if (theCtx->core11 == NULL)
+      if (useRedRedAlpha)
       {
         aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_R32F : GL_R8);
         aFormat.SetPixelFormat (GL_RED);
@@ -148,7 +153,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
     case Image_Format_AlphaF:
     {
       aFormat.SetNbComponents (1);
-      if (theCtx->core11 == NULL)
+      if (useRedRedAlpha)
       {
         aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_R32F : GL_R8);
         aFormat.SetPixelFormat (GL_RED);
@@ -382,7 +387,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
     case Image_Format_Gray:
     {
       aFormat.SetNbComponents (1);
-      if (theCtx->core11 == NULL)
+      if (useRedRedAlpha)
       {
         aFormat.SetInternalFormat (GL_R8);
         aFormat.SetPixelFormat (GL_RED);
@@ -402,7 +407,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
     case Image_Format_Alpha:
     {
       aFormat.SetNbComponents (1);
-      if (theCtx->core11 == NULL)
+      if (useRedRedAlpha)
       {
         aFormat.SetInternalFormat (GL_R8);
         aFormat.SetPixelFormat (GL_RED);

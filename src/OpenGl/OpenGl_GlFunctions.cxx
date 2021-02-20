@@ -33,8 +33,13 @@
 void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
                                Standard_Boolean theIsCoreProfile)
 {
+#if defined(GL_ES_VERSION_2_0)
+  (void )theIsCoreProfile;
+  theCtx.core11 = NULL;
+#else
   const bool isCoreProfile = theIsCoreProfile;
   theCtx.core11 = !isCoreProfile ? (OpenGl_GlCore11* )this : NULL;
+#endif
   theCtx.core11fwd  = (OpenGl_GlCore11Fwd* )this;
   theCtx.core15     = NULL;
   theCtx.core15fwd  = NULL;
