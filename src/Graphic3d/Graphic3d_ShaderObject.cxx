@@ -13,11 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Graphic3d_ShaderObject.hxx>
+
+#include <Graphic3d_GraphicDriver.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_Atomic.hxx>
-#include <Graphic3d_ShaderObject.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderObject,Standard_Transient)
 
@@ -25,7 +26,6 @@ namespace
 {
   static volatile Standard_Integer THE_SHADER_OBJECT_COUNTER = 0;
 }
-
 
 // =======================================================================
 // function : Graphic3d_ShaderObject
@@ -89,4 +89,141 @@ Graphic3d_ShaderObject::~Graphic3d_ShaderObject()
 Standard_Boolean Graphic3d_ShaderObject::IsDone() const
 {
   return !mySource.IsEmpty();
+}
+
+// =======================================================================
+// function : CreateFromSource
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollection_AsciiString& theSource,
+                                                                         Graphic3d_TypeOfShaderObject theType,
+                                                                         const ShaderVariableList& theUniforms,
+                                                                         const ShaderVariableList& theStageInOuts,
+                                                                         const TCollection_AsciiString& theInName,
+                                                                         const TCollection_AsciiString& theOutName,
+                                                                         Standard_Integer theNbGeomInputVerts)
+{
+  if (theSource.IsEmpty())
+  {
+    return Handle(Graphic3d_ShaderObject)();
+  }
+
+  TCollection_AsciiString aSrcUniforms, aSrcInOuts, aSrcInStructs, aSrcOutStructs;
+  for (ShaderVariableList::Iterator anUniformIter (theUniforms); anUniformIter.More(); anUniformIter.Next())
+  {
+    const ShaderVariable& aVar = anUniformIter.Value();
+    if ((aVar.Stages & theType) != 0)
+    {
+      aSrcUniforms += TCollection_AsciiString("\nuniform ") + aVar.Name + ";";
+    }
+  }
+  for (ShaderVariableList::Iterator aVarListIter (theStageInOuts); aVarListIter.More(); aVarListIter.Next())
+  {
+    const ShaderVariable& aVar = aVarListIter.Value();
+    Standard_Integer aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
+    Standard_Integer aNbStages = 0;
+    for (Standard_Integer aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= (Standard_Integer )Graphic3d_TOS_COMPUTE; aStageIter = aStageIter << 1)
+    {
+      if ((aVar.Stages & aStageIter) != 0)
+      {
+        ++aNbStages;
+        aStageLower = Min (aStageLower, aStageIter);
+        aStageUpper = Max (aStageUpper, aStageIter);
+      }
+    }
+    if ((Standard_Integer )theType < aStageLower
+     || (Standard_Integer )theType > aStageUpper)
+    {
+      continue;
+    }
+
+    const Standard_Boolean hasGeomStage = theNbGeomInputVerts > 0
+                                       && aStageLower <  Graphic3d_TOS_GEOMETRY
+                                       && aStageUpper >= Graphic3d_TOS_GEOMETRY;
+    const Standard_Boolean isAllStagesVar = aStageLower == Graphic3d_TOS_VERTEX
+                                         && aStageUpper == Graphic3d_TOS_FRAGMENT;
+    if (hasGeomStage
+    || !theInName.IsEmpty()
+    || !theOutName.IsEmpty())
+    {
+      if (aSrcInStructs.IsEmpty()
+       && aSrcOutStructs.IsEmpty()
+       && isAllStagesVar)
+      {
+        if (theType == aStageLower)
+        {
+          aSrcOutStructs = "\nout VertexData\n{";
+        }
+        else if (theType == aStageUpper)
+        {
+          aSrcInStructs = "\nin VertexData\n{";
+        }
+        else // requires theInName/theOutName
+        {
+          aSrcInStructs  = "\nin  VertexData\n{";
+          aSrcOutStructs = "\nout VertexData\n{";
+        }
+      }
+    }
+
+    if (isAllStagesVar
+     && (!aSrcInStructs.IsEmpty()
+      || !aSrcOutStructs.IsEmpty()))
+    {
+      if (!aSrcInStructs.IsEmpty())
+      {
+        aSrcInStructs  += TCollection_AsciiString("\n  ") + aVar.Name + ";";
+      }
+      if (!aSrcOutStructs.IsEmpty())
+      {
+        aSrcOutStructs += TCollection_AsciiString("\n  ") + aVar.Name + ";";
+      }
+    }
+    else
+    {
+      if (theType == aStageLower)
+      {
+        aSrcInOuts += TCollection_AsciiString("\nTHE_SHADER_OUT ") + aVar.Name + ";";
+      }
+      else if (theType == aStageUpper)
+      {
+        aSrcInOuts += TCollection_AsciiString("\nTHE_SHADER_IN ") + aVar.Name + ";";
+      }
+    }
+  }
+
+  if (theType == Graphic3d_TOS_GEOMETRY)
+  {
+    aSrcUniforms.Prepend (TCollection_AsciiString()
+                        + "\nlayout (triangles) in;"
+                          "\nlayout (triangle_strip, max_vertices = " + theNbGeomInputVerts + ") out;");
+  }
+  if (!aSrcInStructs.IsEmpty()
+   && theType == Graphic3d_TOS_GEOMETRY)
+  {
+    aSrcInStructs  += TCollection_AsciiString ("\n} ") + theInName  + "[" + theNbGeomInputVerts + "];";
+  }
+  else if (!aSrcInStructs.IsEmpty())
+  {
+    aSrcInStructs += "\n}";
+    if (!theInName.IsEmpty())
+    {
+      aSrcInStructs += " ";
+      aSrcInStructs += theInName;
+    }
+    aSrcInStructs += ";";
+  }
+  if (!aSrcOutStructs.IsEmpty())
+  {
+    aSrcOutStructs += "\n}";
+    if (!theOutName.IsEmpty())
+    {
+      aSrcOutStructs += " ";
+      aSrcOutStructs += theOutName;
+    }
+    aSrcOutStructs += ";";
+  }
+
+  theSource.Prepend (aSrcUniforms + aSrcInStructs + aSrcOutStructs + aSrcInOuts);
+  return Graphic3d_ShaderObject::CreateFromSource (theType, theSource);
 }

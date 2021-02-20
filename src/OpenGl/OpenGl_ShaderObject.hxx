@@ -33,46 +33,6 @@ public:
 
 public:
 
-  //! Structure defining shader uniform or in/out variable.
-  struct ShaderVariable
-  {
-    TCollection_AsciiString Name;   //!< variable name
-    Standard_Integer        Stages; //!< active stages as Graphic3d_TypeOfShaderObject bits;
-                                    //!  for in/out variables, intermediate stages will be automatically filled
-
-    //! Create new shader variable.
-    ShaderVariable (const TCollection_AsciiString& theVarName, Standard_Integer theShaderStageBits) : Name (theVarName), Stages (theShaderStageBits) {}
-
-    //! Empty constructor.
-    ShaderVariable() : Stages (0) {}
-  };
-
-  //! List of variable of shader program.
-  typedef NCollection_Sequence<ShaderVariable> ShaderVariableList;
-
-  //! This is a preprocessor for Graphic3d_ShaderObject::CreateFromSource() function.
-  //! Creates a new shader object from specified source according to list of uniforms and in/out variables.
-  //! @param theSource      shader object source code to modify
-  //! @param theType        shader object type to create
-  //! @param theUniforms    list of uniform variables
-  //! @param theStageInOuts list of stage in/out variables
-  //! @param theInName      name of input  variables block;
-  //!                       can be empty for accessing each variable without block prefix
-  //!                       (mandatory for stages accessing both inputs and outputs)
-  //! @param theOutName     name of output variables block;
-  //!                       can be empty for accessing each variable without block prefix
-  //!                       (mandatory for stages accessing both inputs and outputs)
-  //! @param theNbGeomInputVerts number of geometry shader input vertexes
-  Standard_EXPORT static Handle(Graphic3d_ShaderObject) CreateFromSource (TCollection_AsciiString& theSource,
-                                                                          Graphic3d_TypeOfShaderObject theType,
-                                                                          const ShaderVariableList& theUniforms,
-                                                                          const ShaderVariableList& theStageInOuts,
-                                                                          const TCollection_AsciiString& theInName  = TCollection_AsciiString(),
-                                                                          const TCollection_AsciiString& theOutName = TCollection_AsciiString(),
-                                                                          Standard_Integer theNbGeomInputVerts = 0);
-
-public:
-
   //! Creates uninitialized shader object.
   Standard_EXPORT OpenGl_ShaderObject (GLenum theType);
 

@@ -127,6 +127,9 @@ Graphic3d_SequenceOfHClipPlane.hxx
 Graphic3d_SequenceOfStructure.hxx
 Graphic3d_ShaderAttribute.cxx
 Graphic3d_ShaderAttribute.hxx
+Graphic3d_ShaderFlags.hxx
+Graphic3d_ShaderManager.cxx
+Graphic3d_ShaderManager.hxx
 Graphic3d_ShaderObject.cxx
 Graphic3d_ShaderObject.hxx
 Graphic3d_ShaderProgram.cxx

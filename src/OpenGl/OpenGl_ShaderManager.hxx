@@ -16,12 +16,8 @@
 #ifndef _OpenGl_ShaderManager_HeaderFile
 #define _OpenGl_ShaderManager_HeaderFile
 
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Graphic3d_StereoMode.hxx>
-
-#include <NCollection_DataMap.hxx>
+#include <Graphic3d_ShaderManager.hxx>
 #include <NCollection_Sequence.hxx>
-
 #include <OpenGl_PBREnvironment.hxx>
 #include <OpenGl_SetOfShaderPrograms.hxx>
 #include <OpenGl_ShaderStates.hxx>
@@ -36,9 +32,9 @@ class OpenGl_VertexBuffer;
 typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramList;
 
 //! This class is responsible for managing shader programs.
-class OpenGl_ShaderManager : public Standard_Transient
+class OpenGl_ShaderManager : public Graphic3d_ShaderManager
 {
-  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(OpenGl_ShaderManager, Graphic3d_ShaderManager)
   friend class OpenGl_ShaderProgram;
 public:
 
@@ -90,10 +86,10 @@ public:
                                    Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! Returns list of registered shader programs.
-  Standard_EXPORT const OpenGl_ShaderProgramList& ShaderPrograms() const;
+  const OpenGl_ShaderProgramList& ShaderPrograms() const { return myProgramList; }
 
   //! Returns true if no program objects are registered in the manager.
-  Standard_EXPORT Standard_Boolean IsEmpty() const;
+  Standard_Boolean IsEmpty() const { return myProgramList.IsEmpty(); }
 
   //! Bind program for filled primitives rendering
   Standard_Boolean BindFaceProgram (const Handle(OpenGl_TextureSet)& theTextures,
@@ -149,7 +145,7 @@ public:
     Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
     if (theLineType != Aspect_TOL_SOLID)
     {
-      aBits |= OpenGl_PO_StippleLine;
+      aBits |= Graphic3d_ShaderFlags_StippleLine;
     }
 
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
@@ -164,21 +160,7 @@ public:
                                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram);
 
   //! Bind program for rendering alpha-textured font.
-  Standard_Boolean BindFontProgram (const Handle(OpenGl_ShaderProgram)& theCustomProgram)
-  {
-    if (!theCustomProgram.IsNull()
-     || myContext->caps->ffpEnable)
-    {
-      return bindProgramWithState (theCustomProgram, Graphic3d_TOSM_UNLIT);
-    }
-
-    if (myFontProgram.IsNull())
-    {
-      prepareStdProgramFont();
-    }
-
-    return bindProgramWithState (myFontProgram, Graphic3d_TOSM_UNLIT);
-  }
+  Standard_Boolean BindFontProgram (const Handle(OpenGl_ShaderProgram)& theCustomProgram);
 
   //! Bind program for outline rendering
   Standard_Boolean BindOutlineProgram()
@@ -208,60 +190,16 @@ public:
                                                        Standard_Boolean theIsFallback_sRGB);
 
   //! Bind program for blended order-independent transparency buffers compositing.
-  Standard_Boolean BindOitCompositingProgram (const Standard_Boolean theIsMSAAEnabled)
-  {
-    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-    if (myOitCompositingProgram[aProgramIdx].IsNull())
-    {
-      prepareStdProgramOitCompositing (theIsMSAAEnabled);
-    }
-
-    const Handle(OpenGl_ShaderProgram)& aProgram = myOitCompositingProgram [aProgramIdx];
-    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
-  }
+  Standard_EXPORT Standard_Boolean BindOitCompositingProgram (Standard_Boolean theIsMSAAEnabled);
 
   //! Bind program for Depth Peeling order-independent transparency back color blending.
-  Standard_Boolean BindOitDepthPeelingBlendProgram (bool theIsMSAAEnabled)
-  {
-    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-    if (myOitDepthPeelingBlendProgram[aProgramIdx].IsNull())
-    {
-      prepareStdProgramOitDepthPeelingBlend (theIsMSAAEnabled);
-    }
-
-    const Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingBlendProgram [aProgramIdx];
-    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
-  }
+  Standard_EXPORT Standard_Boolean BindOitDepthPeelingBlendProgram (bool theIsMSAAEnabled);
 
   //! Bind program for Depth Peeling order-independent transparency flush.
-  Standard_Boolean BindOitDepthPeelingFlushProgram (bool theIsMSAAEnabled)
-  {
-    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
-    if (myOitDepthPeelingFlushProgram[aProgramIdx].IsNull())
-    {
-      prepareStdProgramOitDepthPeelingFlush (theIsMSAAEnabled);
-    }
-
-    const Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingFlushProgram [aProgramIdx];
-    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
-  }
+  Standard_EXPORT Standard_Boolean BindOitDepthPeelingFlushProgram (bool theIsMSAAEnabled);
 
   //! Bind program for rendering stereoscopic image.
-  Standard_Boolean BindStereoProgram (const Graphic3d_StereoMode theStereoMode)
-  {
-    if (theStereoMode < 0 || theStereoMode >= Graphic3d_StereoMode_NB)
-    {
-      return Standard_False;
-    }
-
-    if (myStereoPrograms[theStereoMode].IsNull())
-    {
-      prepareStdProgramStereo (myStereoPrograms[theStereoMode], theStereoMode);
-    }
-    const Handle(OpenGl_ShaderProgram)& aProgram = myStereoPrograms[theStereoMode];
-    return !aProgram.IsNull()
-         && myContext->BindProgram (aProgram);
-  }
+  Standard_EXPORT Standard_Boolean BindStereoProgram (Graphic3d_StereoMode theStereoMode);
 
   //! Bind program for rendering bounding box.
   Standard_Boolean BindBoundBoxProgram()
@@ -613,20 +551,20 @@ protected:
     Standard_Integer aBits = 0;
     if (myContext->Clipping().HasClippingChains())
     {
-      aBits |= OpenGl_PO_ClipChains;
+      aBits |= Graphic3d_ShaderFlags_ClipChains;
     }
 
     if (aNbPlanes == 1)
     {
-      aBits |= OpenGl_PO_ClipPlanes1;
+      aBits |= Graphic3d_ShaderFlags_ClipPlanes1;
     }
     else if (aNbPlanes == 2)
     {
-      aBits |= OpenGl_PO_ClipPlanes2;
+      aBits |= Graphic3d_ShaderFlags_ClipPlanes2;
     }
     else
     {
-      aBits |= OpenGl_PO_ClipPlanesN;
+      aBits |= Graphic3d_ShaderFlags_ClipPlanesN;
     }
     return aBits;
   }
@@ -642,47 +580,47 @@ protected:
     Standard_Integer aBits = 0;
     if (theAlphaMode == Graphic3d_AlphaMode_Mask)
     {
-      aBits |= OpenGl_PO_AlphaTest;
+      aBits |= Graphic3d_ShaderFlags_AlphaTest;
     }
 
     aBits |= getClipPlaneBits();
     if (theEnableMeshEdges
      && myContext->hasGeometryStage != OpenGl_FeatureNotAvailable)
     {
-      aBits |= OpenGl_PO_MeshEdges;
+      aBits |= Graphic3d_ShaderFlags_MeshEdges;
       if (theInteriorStyle == Aspect_IS_HOLLOW)
       {
-        aBits |= OpenGl_PO_AlphaTest;
+        aBits |= Graphic3d_ShaderFlags_AlphaTest;
       }
     }
 
     if (theEnableEnvMap)
     {
       // Environment map overwrites material texture
-      aBits |= OpenGl_PO_TextureEnv;
+      aBits |= Graphic3d_ShaderFlags_TextureEnv;
     }
     else if (!theTextures.IsNull()
            && theTextures->HasNonPointSprite())
     {
-      aBits |= OpenGl_PO_TextureRGB;
+      aBits |= Graphic3d_ShaderFlags_TextureRGB;
       if ((theTextures->TextureSetBits() & Graphic3d_TextureSetBits_Normal) != 0)
       {
-        aBits |= OpenGl_PO_TextureNormal;
+        aBits |= Graphic3d_ShaderFlags_TextureNormal;
       }
     }
     if (theHasVertColor
      && theInteriorStyle != Aspect_IS_HIDDENLINE)
     {
-      aBits |= OpenGl_PO_VertColor;
+      aBits |= Graphic3d_ShaderFlags_VertColor;
     }
 
     if (myOitState.ActiveMode() == Graphic3d_RTM_BLEND_OIT)
     {
-      aBits |= OpenGl_PO_WriteOit;
+      aBits |= Graphic3d_ShaderFlags_WriteOit;
     }
     else if (myOitState.ActiveMode() == Graphic3d_RTM_DEPTH_PEELING_OIT)
     {
-      aBits |= OpenGl_PO_OitDepthPeeling;
+      aBits |= Graphic3d_ShaderFlags_OitDepthPeeling;
     }
     return aBits;
   }
@@ -692,7 +630,7 @@ protected:
                                                Standard_Integer theBits)
   {
     if (theShadingModel == Graphic3d_TOSM_UNLIT
-     || (theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureEnv)
+     || (theBits & Graphic3d_ShaderFlags_HasTextures) == Graphic3d_ShaderFlags_TextureEnv)
     {
       // If environment map is enabled lighting calculations are
       // not needed (in accordance with default OCCT behavior)
@@ -711,30 +649,6 @@ protected:
     }
     return aProgram;
   }
-
-  //! Prepare standard GLSL program for accessing point sprite alpha.
-  Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc (Standard_Integer theBits);
-
-  //! Prepare standard GLSL program for computing point sprite shading.
-  Standard_EXPORT TCollection_AsciiString pointSpriteShadingSrc (const TCollection_AsciiString& theBaseColorSrc,
-                                                                 Standard_Integer theBits);
-
-  //! Prepare standard GLSL program for textured font.
-  Standard_EXPORT Standard_Boolean prepareStdProgramFont();
-
-  //! Prepare standard GLSL program for FBO blit operation.
-  Standard_EXPORT Standard_Boolean prepareStdProgramFboBlit (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                             Standard_Integer theNbSamples,
-                                                             Standard_Boolean theIsFallback_sRGB);
-
-  //! Prepare standard GLSL programs for OIT compositing operation.
-  Standard_EXPORT Standard_Boolean prepareStdProgramOitCompositing (const Standard_Boolean theMsaa);
-
-  //! Prepare standard GLSL programs for OIT Depth Peeling blend operation.
-  Standard_EXPORT Standard_Boolean prepareStdProgramOitDepthPeelingBlend (Standard_Boolean theMsaa);
-
-  //! Prepare standard GLSL programs for OIT Depth Peeling flush operation.
-  Standard_EXPORT Standard_Boolean prepareStdProgramOitDepthPeelingFlush (Standard_Boolean theMsaa);
 
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT Standard_Boolean prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
@@ -771,18 +685,6 @@ protected:
                                                            const Standard_Boolean        theIsFlatNormal = false,
                                                            const Standard_Boolean        theIsPBR = false);
 
-  //! Define computeLighting GLSL function depending on current lights configuration
-  //! @param theNbLights     [out] number of defined light sources
-  //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
-  //! @param theIsPBR        [in]  flag to activate PBR pipeline
-  //! @param theHasEmissive  [in]  flag to include emissive
-  //! @param theHasShadowMap [in]  flag to include shadow map
-  Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
-                                                              Standard_Boolean  theHasVertColor,
-                                                              Standard_Boolean  theIsPBR,
-                                                              Standard_Boolean  theHasEmissive,
-                                                              Standard_Boolean  theHasShadowMap);
-
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
                                                          Graphic3d_TypeOfShadingModel theShadingModel);
@@ -790,28 +692,8 @@ protected:
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();
 
-  //! Prepare standard GLSL program for stereoscopic image.
-  Standard_EXPORT Standard_Boolean prepareStdProgramStereo (Handle(OpenGl_ShaderProgram)& theProgram,
-                                                            const Graphic3d_StereoMode    theStereoMode);
-
   //! Prepare standard GLSL program for bounding box.
   Standard_EXPORT Standard_Boolean prepareStdProgramBoundBox();
-
-  //! Prepare GLSL version header.
-  Standard_EXPORT Standard_Integer defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
-                                                       const TCollection_AsciiString& theName,
-                                                       Standard_Integer theBits,
-                                                       bool theUsesDerivates = false) const;
-
-  //! Prepare GLSL version header for OIT composition programs.
-  Standard_EXPORT void defaultOitGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
-                                              const TCollection_AsciiString& theName,
-                                              bool theMsaa) const;
-
-  //! Prepare GLSL source for geometry shader according to parameters.
-  Standard_EXPORT TCollection_AsciiString prepareGeomMainSrc (OpenGl_ShaderObject::ShaderVariableList& theUnifoms,
-                                                              OpenGl_ShaderObject::ShaderVariableList& theStageInOuts,
-                                                              Standard_Integer theBits);
 
   //! Prepare GLSL source for IBL generation used in PBR pipeline.
   Standard_EXPORT Standard_Boolean preparePBREnvBakingProgram (Standard_Integer theIndex);
@@ -893,7 +775,6 @@ protected:
   mutable Handle(OpenGl_PBREnvironment) myPBREnvironment;  //!< manager of IBL maps used in PBR pipeline
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
-  Standard_Boolean                   mySRgbState;          //!< track sRGB state
 
 protected:
 
@@ -916,7 +797,5 @@ protected:
   mutable NCollection_Array1<Standard_Integer>             myClipChainArray;
 
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_ShaderManager, Standard_Transient)
 
 #endif // _OpenGl_ShaderManager_HeaderFile

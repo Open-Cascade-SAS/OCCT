@@ -1510,6 +1510,30 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   myFuncs->load (*this, isCoreProfile);
 
+  // setup shader generator
+  myShaderManager->SetGapiVersion (myGlVerMajor, myGlVerMinor);
+  myShaderManager->SetEmulateDepthClamp (!arbDepthClamp);
+
+  bool toReverseDFdxSign = false;
+#if defined(GL_ES_VERSION_2_0)
+  // workaround Adreno driver bug computing reversed normal using dFdx/dFdy
+  toReverseDFdxSign = myVendor.Search("qualcomm") != -1;
+#endif
+  myShaderManager->SetFlatShading (hasFlatShading != OpenGl_FeatureNotAvailable, toReverseDFdxSign);
+#if defined(GL_ES_VERSION_2_0)
+  myShaderManager->SetUseRedAlpha (false);
+#else
+  myShaderManager->SetUseRedAlpha (core11 == NULL);
+#endif
+  #define checkGlslExtensionShort(theName) myShaderManager->EnableGlslExtension (Graphic3d_GlslExtension_ ## theName, CheckExtension (#theName))
+#if defined(GL_ES_VERSION_2_0)
+  checkGlslExtensionShort(GL_OES_standard_derivatives);
+  checkGlslExtensionShort(GL_EXT_shader_texture_lod);
+  checkGlslExtensionShort(GL_EXT_frag_depth);
+#else
+  checkGlslExtensionShort(GL_EXT_gpu_shader4);
+#endif
+
   // initialize debug context extension
   if (arbDbg != NULL
    && caps->contextDebug)

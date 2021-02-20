@@ -16,35 +16,11 @@
 #ifndef _OpenGl_SetOfShaderPrograms_HeaderFile
 #define _OpenGl_SetOfShaderPrograms_HeaderFile
 
+#include <Graphic3d_ShaderFlags.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <NCollection_DataMap.hxx>
-#include <OpenGl_ShaderProgram.hxx>
 
-//! Standard GLSL program combination bits.
-enum OpenGl_ProgramOptions
-{
-  OpenGl_PO_VertColor       = 0x0001, //!< per-vertex color
-  OpenGl_PO_TextureRGB      = 0x0002, //!< handle RGB texturing
-  OpenGl_PO_TextureEnv      = 0x0004, //!< handle environment map (obsolete, to be removed)
-  OpenGl_PO_TextureNormal   = OpenGl_PO_TextureRGB|OpenGl_PO_TextureEnv, //!< extended texture set (with normal map)
-  OpenGl_PO_PointSimple     = 0x0008, //!< point marker without sprite
-  OpenGl_PO_PointSprite     = 0x0010, //!< point sprite with RGB image
-  OpenGl_PO_PointSpriteA    = OpenGl_PO_PointSimple|OpenGl_PO_PointSprite, //!< point sprite with Alpha image
-  OpenGl_PO_StippleLine     = 0x0020, //!< stipple line
-  OpenGl_PO_ClipPlanes1     = 0x0040, //!< handle 1 clipping plane
-  OpenGl_PO_ClipPlanes2     = 0x0080, //!< handle 2 clipping planes
-  OpenGl_PO_ClipPlanesN     = OpenGl_PO_ClipPlanes1|OpenGl_PO_ClipPlanes2, //!< handle N clipping planes
-  OpenGl_PO_ClipChains      = 0x0100, //!< handle chains of clipping planes
-  OpenGl_PO_MeshEdges       = 0x0200, //!< draw mesh edges (wireframe)
-  OpenGl_PO_AlphaTest       = 0x0400, //!< discard fragment by alpha test (defined by cutoff value)
-  OpenGl_PO_WriteOit        = 0x0800, //!< write coverage buffer for Blended Order-Independent Transparency
-  OpenGl_PO_OitDepthPeeling = 0x1000, //!< handle Depth Peeling OIT
-  //
-  OpenGl_PO_NB              = 0x2000, //!< overall number of combinations
-  OpenGl_PO_IsPoint         = OpenGl_PO_PointSimple|OpenGl_PO_PointSprite|OpenGl_PO_PointSpriteA,
-  OpenGl_PO_HasTextures     = OpenGl_PO_TextureRGB|OpenGl_PO_TextureEnv,
-  OpenGl_PO_NeedsGeomShader = OpenGl_PO_MeshEdges,
-};
+class OpenGl_ShaderProgram;
 
 //! Alias to programs array of predefined length
 class OpenGl_SetOfPrograms : public Standard_Transient
@@ -59,7 +35,7 @@ public:
   Handle(OpenGl_ShaderProgram)& ChangeValue (Standard_Integer theProgramBits) { return myPrograms[theProgramBits]; }
 
 protected:
-  Handle(OpenGl_ShaderProgram) myPrograms[OpenGl_PO_NB]; //!< programs array
+  Handle(OpenGl_ShaderProgram) myPrograms[Graphic3d_ShaderFlags_NB]; //!< programs array
 };
 
 //! Alias to 2D programs array of predefined length
