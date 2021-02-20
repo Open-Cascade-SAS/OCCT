@@ -446,12 +446,7 @@ Download the necessary archive from https://www.vtk.org/VTK/resources/software.h
 All 3rd-party products required for building of  OCCT could be installed
 from official repositories. You may install them from  console using apt-get utility:
 
-    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libfreeimage-dev libtbb-dev
-
-To launch binaries built with WOK you need to install C shell and 32-bit libraries on x86_64 distributives:
-
-    # you may need to add i386 if not done already by command "dpkg --add-architecture i386"
-    sudo apt-get install csh libstdc++6:i386 libxt6:i386 libxext6:i386 libxmu6:i386
+    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libfreeimage-dev
 
 Building is possible with C++ compliant compiler:
 

@@ -15,8 +15,6 @@ On OS X we recommend to use native libraries.
 
 This article describes the **CMake**-based build process, which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources. *OCCT requires CMake version 2.8.12 or later*.
 
-@note Compared to the previous (6.x) releases of Open CASCADE Technology, OCCT 7.x has a complete set of CMake scripts and projects, so that there is no need to use WOK anymore. Moreover, CMake gives you a powerful configuration tool, which allows to control many aspects of OCCT deployment. At the same time this tool is quite intuitive, which is a significant advantage over the legacy WOK utilities.
-
 Here we describe the build procedure on the example of Windows platform with Visual Studio 2010. 
 However, CMake is cross-platform and can be used to build OCCT on Linux and OS X in essentially the same way.
 
