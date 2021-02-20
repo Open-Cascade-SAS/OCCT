@@ -660,8 +660,7 @@ protected: //! @name data types related to ray-tracing
     OpenGl_RT_uFrameRndSeed,
 
     // adaptive FSAA params
-    OpenGl_RT_uOffsetX,
-    OpenGl_RT_uOffsetY,
+    OpenGl_RT_uFsaaOffset,
     OpenGl_RT_uSamples,
 
     // images used by ISS mode
@@ -721,7 +720,8 @@ protected: //! @name data types related to ray-tracing
     }
 
     //! Returns shader source combined with prefix.
-    TCollection_AsciiString Source() const;
+    TCollection_AsciiString Source (const Handle(OpenGl_Context)& theCtx,
+                                    const GLenum theType) const;
 
     //! Loads shader source from specified files.
     Standard_Boolean LoadFromFiles (const TCollection_AsciiString* theFileNames, const TCollection_AsciiString& thePrefix = EMPTY_PREFIX);

@@ -1619,7 +1619,13 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   // get number of maximum clipping planes
   glGetIntegerv (GL_MAX_CLIP_PLANES, &myMaxClipPlanes);
+#endif
 
+#if defined(GL_ES_VERSION_2_0)
+  // check whether ray tracing mode is supported
+  myHasRayTracing = IsGlGreaterEqual (3, 2);
+  myHasRayTracingTextures = myHasRayTracingAdaptiveSampling = myHasRayTracingAdaptiveSamplingAtomic = false;
+#else
   // check whether ray tracing mode is supported
   myHasRayTracing = IsGlGreaterEqual (3, 1)
                  && arbTboRGB32

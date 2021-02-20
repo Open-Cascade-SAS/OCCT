@@ -1023,16 +1023,37 @@ const TCollection_AsciiString OpenGl_View::ShaderSource::EMPTY_PREFIX;
 // function : Source
 // purpose  : Returns shader source combined with prefix
 // =======================================================================
-TCollection_AsciiString OpenGl_View::ShaderSource::Source() const
+TCollection_AsciiString OpenGl_View::ShaderSource::Source (const Handle(OpenGl_Context)& theCtx,
+                                                           const GLenum theType) const
 {
-  const TCollection_AsciiString aVersion = "#version 140";
-
+  TCollection_AsciiString aVersion =
+  #if defined(GL_ES_VERSION_2_0)
+    "#version 320 es\n";
+  #else
+    "#version 140\n";
+  #endif
+  TCollection_AsciiString aPrecisionHeader;
+  if (theType == GL_FRAGMENT_SHADER)
+  {
+  #if defined(GL_ES_VERSION_2_0)
+    aPrecisionHeader = theCtx->hasHighp
+                     ? "precision highp float;\n"
+                       "precision highp int;\n"
+                       "precision highp samplerBuffer;\n"
+                       "precision highp isamplerBuffer;\n"
+                     : "precision mediump float;\n"
+                       "precision mediump int;\n"
+                       "precision mediump samplerBuffer;\n"
+                       "precision mediump isamplerBuffer;\n";
+  #else
+    (void )theCtx;
+  #endif
+  }
   if (myPrefix.IsEmpty())
   {
-    return aVersion + "\n" + mySource;
+    return aVersion + aPrecisionHeader + mySource;
   }
-
-  return aVersion + "\n" + myPrefix + "\n" + mySource;
+  return aVersion + aPrecisionHeader + myPrefix + "\n" + mySource;
 }
 
 // =======================================================================
@@ -1220,7 +1241,7 @@ Handle(OpenGl_ShaderObject) OpenGl_View::initShader (const GLenum               
     return Handle(OpenGl_ShaderObject)();
   }
 
-  if (!aShader->LoadAndCompile (theGlContext, "", theSource.Source()))
+  if (!aShader->LoadAndCompile (theGlContext, "", theSource.Source (theGlContext, theType)))
   {
     aShader->Release (theGlContext.get());
     return Handle(OpenGl_ShaderObject)();
@@ -1416,18 +1437,15 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       myToUpdateEnvironmentMap = Standard_True;
 
       const TCollection_AsciiString aPrefixString = generateShaderPrefix (theGlContext);
-
 #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
+      Message::SendTrace() << "GLSL prefix string:" << std::endl << aPrefixString;
 #endif
-
       myRaytraceShaderSource.SetPrefix (aPrefixString);
       myPostFSAAShaderSource.SetPrefix (aPrefixString);
       myOutImageShaderSource.SetPrefix (aPrefixString);
-
-      if (!myRaytraceShader->LoadAndCompile (theGlContext, myRaytraceProgram->ResourceId(), myRaytraceShaderSource.Source())
-       || !myPostFSAAShader->LoadAndCompile (theGlContext, myPostFSAAProgram->ResourceId(), myPostFSAAShaderSource.Source())
-       || !myOutImageShader->LoadAndCompile (theGlContext, myOutImageProgram->ResourceId(), myOutImageShaderSource.Source()))
+      if (!myRaytraceShader->LoadAndCompile (theGlContext, myRaytraceProgram->ResourceId(), myRaytraceShaderSource.Source (theGlContext, GL_FRAGMENT_SHADER))
+       || !myPostFSAAShader->LoadAndCompile (theGlContext, myPostFSAAProgram->ResourceId(), myPostFSAAShaderSource.Source (theGlContext, GL_FRAGMENT_SHADER))
+       || !myOutImageShader->LoadAndCompile (theGlContext, myOutImageProgram->ResourceId(), myOutImageShaderSource.Source (theGlContext, GL_FRAGMENT_SHADER)))
       {
         return safeFailBack ("Failed to compile ray-tracing fragment shaders", theGlContext);
       }
@@ -1435,7 +1453,6 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       myRaytraceProgram->SetAttributeName (theGlContext, Graphic3d_TOA_POS, "occVertex");
       myPostFSAAProgram->SetAttributeName (theGlContext, Graphic3d_TOA_POS, "occVertex");
       myOutImageProgram->SetAttributeName (theGlContext, Graphic3d_TOA_POS, "occVertex");
-
       if (!myRaytraceProgram->Link (theGlContext)
        || !myPostFSAAProgram->Link (theGlContext)
        || !myOutImageProgram->Link (theGlContext))
@@ -1449,6 +1466,12 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
   {
     myAccumFrames = 0; // accumulation should be restarted
 
+  #if defined(GL_ES_VERSION_2_0)
+    if (!theGlContext->IsGlGreaterEqual (3, 2))
+    {
+      return safeFailBack ("Ray-tracing requires OpenGL ES 3.2 and higher", theGlContext);
+    }
+  #else
     if (!theGlContext->IsGlGreaterEqual (3, 1))
     {
       return safeFailBack ("Ray-tracing requires OpenGL 3.1 and higher", theGlContext);
@@ -1461,6 +1484,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
     {
       return safeFailBack ("Ray-tracing requires EXT_framebuffer_blit extension", theGlContext);
     }
+  #endif
 
     myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
 
@@ -1474,7 +1498,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
     const TCollection_AsciiString aPrefixString  = generateShaderPrefix (theGlContext);
 
 #ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "GLSL prefix string:" << std::endl << aPrefixString << std::endl;
+    Message::SendTrace() << "GLSL prefix string:" << std::endl << aPrefixString;
 #endif
 
     ShaderSource aBasicVertShaderSrc;
@@ -1684,10 +1708,8 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       myUniformLocations[anIndex][OpenGl_RT_uLightAmbnt] =
         aShaderProgram->GetUniformLocation (theGlContext, "uGlobalAmbient");
 
-      myUniformLocations[anIndex][OpenGl_RT_uOffsetX] =
-        aShaderProgram->GetUniformLocation (theGlContext, "uOffsetX");
-      myUniformLocations[anIndex][OpenGl_RT_uOffsetY] =
-        aShaderProgram->GetUniformLocation (theGlContext, "uOffsetY");
+      myUniformLocations[anIndex][OpenGl_RT_uFsaaOffset] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uFsaaOffset");
       myUniformLocations[anIndex][OpenGl_RT_uSamples] =
         aShaderProgram->GetUniformLocation (theGlContext, "uSamples");
 
@@ -2083,13 +2105,19 @@ void OpenGl_View::updatePerspCameraPT (const OpenGl_Mat4&           theOrientati
 // =======================================================================
 Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& theGlContext)
 {
-  if (!theGlContext->IsGlGreaterEqual (3, 1))
+#if defined(GL_ES_VERSION_2_0)
+  if (!theGlContext->IsGlGreaterEqual (3, 2))
   {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error: OpenGL version is less than 3.1" << std::endl;
-#endif
+    Message::SendFail() << "Error: OpenGL ES version is less than 3.2";
     return Standard_False;
   }
+#else
+  if (!theGlContext->IsGlGreaterEqual (3, 1))
+  {
+    Message::SendFail() << "Error: OpenGL version is less than 3.1";
+    return Standard_False;
+  }
+#endif
 
   myAccumFrames = 0; // accumulation should be restarted
 
@@ -2102,9 +2130,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
     // to get unique 64- bit handles for using on the GPU
     if (!myRaytraceGeometry.UpdateTextureHandles (theGlContext))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to get OpenGL texture handles" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to get OpenGL texture handles";
       return Standard_False;
     }
   }
@@ -2124,9 +2150,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
      || !mySceneMaxPointTexture->Create  (theGlContext)
      || !mySceneTransformTexture->Create (theGlContext))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create scene BVH buffers" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to create scene BVH buffers";
       return Standard_False;
     }
   }
@@ -2143,22 +2167,17 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
      || !myGeometryTexCrdTexture->Create (theGlContext)
      || !myGeometryTriangTexture->Create (theGlContext))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create buffers for triangulation data" << std::endl;
-#endif
+      Message::SendTrace() << "\nError: Failed to create buffers for triangulation data";
       return Standard_False;
     }
   }
 
   if (myRaytraceMaterialTexture.IsNull()) // create material buffer
   {
-    myRaytraceMaterialTexture = new OpenGl_TextureBufferArb;
-
+    myRaytraceMaterialTexture = new OpenGl_TextureBufferArb();
     if (!myRaytraceMaterialTexture->Create (theGlContext))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to create buffers for material data" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to create buffers for material data";
       return Standard_False;
     }
   }
@@ -2225,9 +2244,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
   if (!aResult)
   {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error: Failed to upload buffers for bottom-level scene BVH" << std::endl;
-#endif
+    Message::SendTrace() << "Error: Failed to upload buffers for bottom-level scene BVH";
     return Standard_False;
   }
 
@@ -2249,9 +2266,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
   if (!aResult)
   {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error: Failed to upload buffers for scene geometry" << std::endl;
-#endif
+    Message::SendTrace() << "Error: Failed to upload buffers for scene geometry";
     return Standard_False;
   }
 
@@ -2295,9 +2310,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
       if (!aResult)
       {
-#ifdef RAY_TRACE_PRINT_INFO
-        std::cout << "Error: Failed to upload buffers for bottom-level scene BVHs" << std::endl;
-#endif
+        Message::SendTrace() << "Error: Failed to upload buffers for bottom-level scene BVHs";
         return Standard_False;
       }
     }
@@ -2330,9 +2343,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
     if (!aResult)
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to upload triangulation buffers for OpenGL element" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to upload triangulation buffers for OpenGL element";
       return Standard_False;
     }
   }
@@ -2347,9 +2358,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
     if (!aResult)
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to upload material buffer" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to upload material buffer";
       return Standard_False;
     }
   }
@@ -2506,9 +2515,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
     if (!myRaytraceLightSrcTexture->Init (theGlContext, 4, GLsizei (myRaytraceGeometry.Sources.size() * 2), aDataPtr))
     {
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error: Failed to upload light source buffer" << std::endl;
-#endif
+      Message::SendTrace() << "Error: Failed to upload light source buffer";
       return Standard_False;
     }
 
@@ -2866,31 +2873,27 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
     // available from initial ray-traced image).
     for (Standard_Integer anIt = 1; anIt < 4; ++anIt)
     {
-      GLfloat aOffsetX = 1.f / theSizeX;
-      GLfloat aOffsetY = 1.f / theSizeY;
-
+      OpenGl_Vec2 aFsaaOffset (1.f / theSizeX, 1.f / theSizeY);
       if (anIt == 1)
       {
-        aOffsetX *= -0.55f;
-        aOffsetY *=  0.55f;
+        aFsaaOffset.x() *= -0.55f;
+        aFsaaOffset.y() *=  0.55f;
       }
       else if (anIt == 2)
       {
-        aOffsetX *=  0.00f;
-        aOffsetY *= -0.55f;
+        aFsaaOffset.x() *=  0.00f;
+        aFsaaOffset.y() *= -0.55f;
       }
       else if (anIt == 3)
       {
-        aOffsetX *= 0.55f;
-        aOffsetY *= 0.00f;
+        aFsaaOffset.x() *= 0.55f;
+        aFsaaOffset.y() *= 0.00f;
       }
 
       aResult &= myPostFSAAProgram->SetUniform (theGlContext,
         myUniformLocations[1][OpenGl_RT_uSamples], anIt + 1);
       aResult &= myPostFSAAProgram->SetUniform (theGlContext,
-        myUniformLocations[1][OpenGl_RT_uOffsetX], aOffsetX);
-      aResult &= myPostFSAAProgram->SetUniform (theGlContext,
-        myUniformLocations[1][OpenGl_RT_uOffsetY], aOffsetY);
+        myUniformLocations[1][OpenGl_RT_uFsaaOffset], aFsaaOffset);
 
       Handle(OpenGl_FrameBuffer)& aFramebuffer = anIt % 2
                                                ? myRaytraceFBO2[aFBOIdx]

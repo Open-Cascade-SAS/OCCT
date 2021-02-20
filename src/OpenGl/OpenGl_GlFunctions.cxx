@@ -440,6 +440,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
     theCtx.checkWrongVersion (3, 2, aLastFailedProc);
   }
 
+  theCtx.arbTboRGB32 = isGlGreaterEqualShort (3, 2); // OpenGL ES 3.2 introduces TBO already supporting RGB32 format
   theCtx.extDrawBuffers = checkExtensionShort ("GL_EXT_draw_buffers") && theCtx.FindProc ("glDrawBuffersEXT", this->glDrawBuffers);
   theCtx.arbDrawBuffers = checkExtensionShort ("GL_ARB_draw_buffers") && theCtx.FindProc ("glDrawBuffersARB", this->glDrawBuffers);
 

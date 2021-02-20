@@ -126,11 +126,9 @@ void main (void)
   else // showing number of samples
   {
     vec2 aRatio = vec2 (1.f, 1.f);
-
 #ifdef GL_ARB_shader_image_size
     aRatio = vec2 (imageSize (uRenderImage)) / vec2 (3.f * 512.f, 2.f * 512.f);
 #endif
-
     aColor = vec4 (0.5f * aColor.rgb * aSampleWeight + vec3 (0.f, sqrt (aRatio.x * aRatio.y) * aColor.w / uAccumFrames * 0.35f, 0.f), 1.0);
   }
 
@@ -138,7 +136,7 @@ void main (void)
 
 #ifdef PATH_TRACING
 
-  aColor *= pow (2, uExposure);
+  aColor *= pow (2.0, uExposure);
 
 #ifdef TONE_MAPPING_FILMIC
   aColor = ToneMappingFilmic (aColor, uWhitePoint);

@@ -18,7 +18,7 @@ uniform int uAccumSamples;
 
 //! Maximum radiance that can be added to the pixel.
 //! Decreases noise level, but introduces some bias.
-uniform float uMaxRadiance = 50.f;
+uniform float uMaxRadiance;
 
 #ifdef ADAPTIVE_SAMPLING
 //! Wrapper over imageLoad()+imageStore() having similar syntax as imageAtomicAdd().
@@ -77,8 +77,8 @@ void main (void)
 
 #endif // ADAPTIVE_SAMPLING
 
-  vec2 aPnt = vec2 (aFragCoord.x + RandFloat(),
-                    aFragCoord.y + RandFloat());
+  vec2 aPnt = vec2 (float(aFragCoord.x) + RandFloat(),
+                    float(aFragCoord.y) + RandFloat());
 
   SRay aRay = GenerateRay (aPnt / vec2 (uWinSizeX, uWinSizeY));
 
@@ -89,21 +89,16 @@ void main (void)
 #ifdef PATH_TRACING
 
 #ifndef ADAPTIVE_SAMPLING
-
   vec4 aColor = PathTrace (aRay, aInvDirect, uAccumSamples);
-
 #else
-
   float aNbSamples = addRenderImageComp (aFragCoord, ivec2 (0, 1), 1.0);
   vec4 aColor = PathTrace (aRay, aInvDirect, int (aNbSamples));
-
 #endif
 
   if (any (isnan (aColor.rgb)))
   {
     aColor.rgb = ZERO;
   }
-
   aColor.rgb = min (aColor.rgb, vec3 (uMaxRadiance));
 
 #ifdef ADAPTIVE_SAMPLING
@@ -113,7 +108,6 @@ void main (void)
   addRenderImageComp (aFragCoord, ivec2 (1, 0), aColor.g);
   addRenderImageComp (aFragCoord, ivec2 (1, 1), aColor.b);
   addRenderImageComp (aFragCoord, ivec2 (2, 1), aColor.w);
-
   if (int (aNbSamples) % 2 == 0) // accumulate luminance for even samples only
   {
     addRenderImageComp (aFragCoord, ivec2 (2, 0), dot (LUMA, aColor.rgb));
@@ -127,7 +121,7 @@ void main (void)
   }
   else
   {
-    OutColor = mix (texture (uAccumTexture, vPixel), aColor, 1.f / (uAccumSamples + 1));
+    OutColor = mix (texture (uAccumTexture, vPixel), aColor, 1.0 / float(uAccumSamples + 1));
   }
 
 #endif // ADAPTIVE_SAMPLING

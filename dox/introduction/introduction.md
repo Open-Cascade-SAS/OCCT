@@ -391,7 +391,7 @@ Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_obje
 Textures within ray tracing will be available only when *GL_ARB_bindless_texture extension* is provided by driver.
 
 On mobile platforms, OpenGL ES 2.0+ is required for 3D viewer (OpenGL ES 3.1+ is recommended).
-The ray tracing is not yet available on mobile platforms.
+Ray tracing requires OpenGL ES 3.2.
 Some old hardware might be unable to execute complex GLSL programs (e.g. with high number of light sources, clipping planes).
 
 OCCT 3D Viewer, in general, supports wide range of graphics hardware - from very old to new.

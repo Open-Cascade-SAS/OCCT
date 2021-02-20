@@ -643,25 +643,18 @@ float HandleDistantLight (in vec3 theInput, in vec3 theToLight, in float theCosM
 vec3 IntersectLight (in SRay theRay, in int theDepth, in float theHitDistance, out float thePDF)
 {
   vec3 aTotalRadiance = ZERO;
-
   thePDF = 0.f; // PDF of sampling light sources
-
   for (int aLightIdx = 0; aLightIdx < uLightCount; ++aLightIdx)
   {
-    vec4 aLight = texelFetch (
-      uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
-    vec4 aParam = texelFetch (
-      uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx));
+    vec4 aLight = texelFetch (uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
+    vec4 aParam = texelFetch (uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx));
 
     // W component: 0 for infinite light and 1 for point light
     aLight.xyz -= mix (ZERO, theRay.Origin, aLight.w);
-
-    float aPDF = 1.f / uLightCount;
-
+    float aPDF = 1.0 / float(uLightCount);
     if (aLight.w != 0.f) // point light source
     {
       float aCenterDst = length (aLight.xyz);
-
       if (aCenterDst < theHitDistance)
       {
         float aVisibility = HandlePointLight (
@@ -909,14 +902,12 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
 
     if (uLightCount > 0 && IsNotZero (aBSDF, aThroughput))
     {
-      aExpPDF = 1.f / uLightCount;
+      aExpPDF = 1.0 / float(uLightCount);
 
-      int aLightIdx = min (int (floor (RandFloat() * uLightCount)), uLightCount - 1);
+      int aLightIdx = min (int (floor (RandFloat() * float(uLightCount))), uLightCount - 1);
 
-      vec4 aLight = texelFetch (
-        uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
-      vec4 aParam = texelFetch (
-        uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx));
+      vec4 aLight = texelFetch (uRaytraceLightSrcTexture, LIGHT_POS (aLightIdx));
+      vec4 aParam = texelFetch (uRaytraceLightSrcTexture, LIGHT_PWR (aLightIdx));
 
       // 'w' component is 0 for infinite light and 1 for point light
       aLight.xyz -= mix (ZERO, theRay.Origin, aLight.w);
@@ -971,7 +962,9 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
 #endif
 
     // here, we additionally increase path length for non-diffuse bounces
-    if (RandFloat() > aSurvive || all (lessThan (aThroughput, MIN_THROUGHPUT)) || aDepth >= theNbSamples / FRAME_STEP + step (1.f / M_PI, aImpPDF))
+    if (RandFloat() > aSurvive
+     || all (lessThan (aThroughput, MIN_THROUGHPUT))
+     || aDepth >= (theNbSamples / FRAME_STEP + int(step (1.0 / M_PI, aImpPDF))))
     {
       aDepth = INVALID_BOUNCES; // terminate path
     }

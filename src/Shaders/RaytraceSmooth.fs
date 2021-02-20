@@ -21,8 +21,8 @@ void main (void)
   int aPixelY = int (gl_FragCoord.y);
 
   // Adjust FLIPTRI pattern used for adaptive FSAA
-  float anOffsetX = mix (uOffsetX, -uOffsetX, float (aPixelX % 2));
-  float anOffsetY = mix (uOffsetY, -uOffsetY, float (aPixelY % 2));
+  float anOffsetX = mix (uFsaaOffset.x, -uFsaaOffset.x, float (aPixelX % 2));
+  float anOffsetY = mix (uFsaaOffset.y, -uFsaaOffset.y, float (aPixelY % 2));
 
   vec4 aClr0 = texelFetch (uFSAAInputTexture, ivec2 (aPixelX + 0, aPixelY + 0), 0);
   vec4 aClr1 = texelFetch (uFSAAInputTexture, ivec2 (aPixelX + 0, aPixelY - 1), 0);
@@ -71,7 +71,7 @@ void main (void)
                        aRay.Direct.y < 0.f ? -aInvDirect.y : aInvDirect.y,
                        aRay.Direct.z < 0.f ? -aInvDirect.z : aInvDirect.z);
 
-    aColor = mix (aClr0, clamp (Radiance (aRay, aInvDirect), 0.f, 1.f), 1.f / uSamples);
+    aColor = mix (aClr0, clamp (Radiance (aRay, aInvDirect), 0.0, 1.0), 1.0 / float(uSamples));
   }
 
   OutColor = aColor;

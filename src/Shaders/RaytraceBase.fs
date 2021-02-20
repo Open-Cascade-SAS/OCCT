@@ -12,10 +12,10 @@
 //! Normalized pixel coordinates.
 in vec2 vPixel;
 
-//! Sub-pixel offset in X direction for FSAA.
-uniform float uOffsetX = 0.f;
+//! Sub-pixel offset in for FSAA.
+uniform vec2 uFsaaOffset;
 //! Sub-pixel offset in Y direction for FSAA.
-uniform float uOffsetY = 0.f;
+uniform float uOffsetY;
 
 //! Origin of viewing ray in left-top corner.
 uniform vec3 uOriginLT;
@@ -124,15 +124,15 @@ uniform float uSceneEpsilon;
 #endif
 
 //! Top color of gradient background.
-uniform vec4 uBackColorTop = vec4 (0.0);
+uniform vec4 uBackColorTop;
 //! Bottom color of gradient background.
-uniform vec4 uBackColorBot = vec4 (0.0);
+uniform vec4 uBackColorBot;
 
 //! Aperture radius of camera used for depth-of-field
-uniform float uApertureRadius = 0.f;
+uniform float uApertureRadius;
 
 //! Focal distance of camera used for depth-of field
-uniform float uFocalPlaneDist = 10.f;
+uniform float uFocalPlaneDist;
 
 //! Camera position used for projective mode
 uniform vec3 uEyeOrig;
@@ -156,7 +156,6 @@ uniform vec2 uEyeSize;
 struct SRay
 {
   vec3 Origin;
-
   vec3 Direct;
 };
 
@@ -164,9 +163,7 @@ struct SRay
 struct SIntersect
 {
   float Time;
-
   vec2 UV;
-
   vec3 Normal;
 };
 
@@ -174,7 +171,6 @@ struct SIntersect
 struct STriangle
 {
   ivec4 TriIndex;
-
   vec3 Points[3];
 };
 
