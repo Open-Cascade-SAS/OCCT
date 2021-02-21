@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_HatchStyle.hxx>
-#include <NCollection_AlignedAllocator.hxx>
+
 #include <Standard_Atomic.hxx>
 #include <Standard_ProgramError.hxx>
 
@@ -496,7 +496,7 @@ Graphic3d_HatchStyle::Graphic3d_HatchStyle (const Handle(Image_PixMap)& thePatte
     "Hatch pattern must be a 32*32 bitmap (Image_Format_Gray format)");
 
   const Standard_Size aByteSize = thePattern->SizeBytes();
-  Handle(NCollection_AlignedAllocator) anAllocator = new NCollection_AlignedAllocator (16);
+  const Handle(NCollection_BaseAllocator)& anAllocator = Image_PixMap::DefaultAllocator();
   myPattern = new NCollection_Buffer (anAllocator);
   myPattern->Allocate (aByteSize);
   std::memcpy (myPattern->ChangeData(), thePattern->Data(), aByteSize);

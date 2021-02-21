@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <NCollection_AlignedAllocator.hxx>
 #include <OpenGl_CappingPlaneResource.hxx>
+
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -71,9 +71,7 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource (const Handle(Graphic3d
   myEquationMod ((unsigned int )-1),
   myAspectMod   ((unsigned int )-1)
 {
-  // Fill primitive array
-  Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-  Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (anAlloc);
+  Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
   Graphic3d_Attribute anAttribInfo[] =
   {
     { Graphic3d_TOA_POS,  Graphic3d_TOD_VEC4 },

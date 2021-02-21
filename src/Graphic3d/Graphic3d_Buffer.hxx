@@ -76,6 +76,11 @@ class Graphic3d_Buffer : public NCollection_Buffer
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Buffer, NCollection_Buffer)
 public:
 
+  //! Return default vertex data allocator.
+  Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
+
+public:
+
   //! Empty constructor.
   Graphic3d_Buffer (const Handle(NCollection_BaseAllocator)& theAlloc)
   : NCollection_Buffer (theAlloc),

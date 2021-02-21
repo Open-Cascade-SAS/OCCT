@@ -15,7 +15,6 @@
 
 #include <Select3D_SensitivePrimitiveArray.hxx>
 
-#include <NCollection_AlignedAllocator.hxx>
 #include <OSD_Parallel.hxx>
 #include <Standard_Atomic.hxx>
 
@@ -165,7 +164,7 @@ Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray (const Handle
   myPatchSizeMax (1),
   myPatchDistance (ShortRealLast()),
   myIs3d (false),
-  myBvhIndices (new NCollection_AlignedAllocator(16)),
+  myBvhIndices (Graphic3d_Buffer::DefaultAllocator()),
   myMinDepthElem (RealLast()),
   myMinDepthNode (RealLast()),
   myMinDepthEdge (RealLast()),

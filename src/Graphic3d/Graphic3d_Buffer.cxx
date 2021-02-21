@@ -12,13 +12,25 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_Buffer.hxx>
+
 #include <Graphic3d_BoundBuffer.hxx>
 #include <Graphic3d_MutableIndexBuffer.hxx>
+#include <NCollection_AlignedAllocator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Buffer,      NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_IndexBuffer, Graphic3d_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_BoundBuffer, NCollection_Buffer)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
+
+// =======================================================================
+// function : DefaultAllocator
+// purpose  :
+// =======================================================================
+const Handle(NCollection_BaseAllocator)& Graphic3d_Buffer::DefaultAllocator()
+{
+  static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator (16);
+  return THE_ALLOC;
+}
 
 // =======================================================================
 // function : DumpJson

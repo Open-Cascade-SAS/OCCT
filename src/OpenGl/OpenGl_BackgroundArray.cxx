@@ -16,7 +16,6 @@
 #include <OpenGl_BackgroundArray.hxx>
 
 #include <Aspect_FillMethod.hxx>
-#include <NCollection_AlignedAllocator.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <Graphic3d_TextureParams.hxx>
@@ -198,8 +197,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
 
   if (myAttribs.IsNull())
   {
-    Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-    myAttribs = new Graphic3d_Buffer (anAlloc);
+    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
   }
   if (!myAttribs->Init (4, aGragientAttribInfo, 2))
   {
@@ -332,8 +330,7 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
 
   if (myAttribs.IsNull())
   {
-    Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-    myAttribs = new Graphic3d_Buffer (anAlloc);
+    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
   }
   if (!myAttribs->Init (4, aTextureAttribInfo, 2))
   {
@@ -405,9 +402,8 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
 
   if (myAttribs.IsNull())
   {
-    Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-    myAttribs = new Graphic3d_Buffer (anAlloc);
-    myIndices = new Graphic3d_IndexBuffer (anAlloc);
+    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
+    myIndices = new Graphic3d_IndexBuffer (Graphic3d_Buffer::DefaultAllocator());
   }
   if (!myAttribs->Init (8, aCubeMapAttribInfo, 1)
    || !myIndices->Init<unsigned short> (14))

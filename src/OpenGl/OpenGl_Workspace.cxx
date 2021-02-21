@@ -31,7 +31,6 @@
 
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TransformUtils.hxx>
-#include <NCollection_AlignedAllocator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
 

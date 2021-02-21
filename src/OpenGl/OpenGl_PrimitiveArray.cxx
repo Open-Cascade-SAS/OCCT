@@ -13,12 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <OpenGl_PrimitiveArray.hxx>
+
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_IndexBuffer.hxx>
 #include <OpenGl_PointSprite.hxx>
-#include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
@@ -27,7 +28,6 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <NCollection_AlignedAllocator.hxx>
 
 namespace
 {
@@ -1165,7 +1165,7 @@ Standard_Boolean OpenGl_PrimitiveArray::processIndices (const Handle(OpenGl_Cont
 
   if (myAttribs->NbElements > std::numeric_limits<GLushort>::max())
   {
-    Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (new NCollection_AlignedAllocator (16));
+    Handle(Graphic3d_Buffer) anAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
     if (!anAttribs->Init (myIndices->NbElements, myAttribs->AttributesArray(), myAttribs->NbAttributes))
     {
       return Standard_False; // failed to initialize attribute array

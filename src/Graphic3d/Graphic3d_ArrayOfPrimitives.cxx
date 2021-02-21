@@ -26,7 +26,6 @@
 #include <Graphic3d_AttribBuffer.hxx>
 #include <Graphic3d_MutableIndexBuffer.hxx>
 
-#include <NCollection_AlignedAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
@@ -103,7 +102,7 @@ void Graphic3d_ArrayOfPrimitives::init (Graphic3d_TypeOfPrimitiveArray theType,
   myIndices.Nullify();
   myBounds.Nullify();
 
-  Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
+  const Handle(NCollection_BaseAllocator)& anAlloc = Graphic3d_Buffer::DefaultAllocator();
   if ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) != 0
    || (theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) != 0)
   {

@@ -15,7 +15,6 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_ArbFBO.hxx>
 
-#include <NCollection_AlignedAllocator.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -993,9 +992,8 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
 
   if (toConvRgba2Rgb)
   {
-    Handle(NCollection_BaseAllocator) anAlloc = new NCollection_AlignedAllocator (16);
     const Standard_Size aRowSize = theImage.SizeX() * 4;
-    NCollection_Buffer aRowBuffer (anAlloc);
+    NCollection_Buffer aRowBuffer (Image_PixMap::DefaultAllocator());
     if (!aRowBuffer.Allocate (aRowSize))
     {
       return Standard_False;

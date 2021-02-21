@@ -14,9 +14,6 @@
 
 #include <OpenGl_VertexBufferCompat.hxx>
 
-#include <NCollection_AlignedAllocator.hxx>
-
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBufferCompat,OpenGl_VertexBuffer)
 
 // =======================================================================
@@ -46,8 +43,7 @@ bool OpenGl_VertexBufferCompat::Create (const Handle(OpenGl_Context)& )
   if (myBufferId == NO_BUFFER)
   {
     myBufferId = (GLuint )-1; // dummy identifier...
-    Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-    myData = new NCollection_Buffer (anAlloc);
+    myData = new NCollection_Buffer (Graphic3d_Buffer::DefaultAllocator());
   }
   return myBufferId != NO_BUFFER;
 }
