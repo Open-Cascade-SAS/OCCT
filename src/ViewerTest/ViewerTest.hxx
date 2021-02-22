@@ -55,13 +55,15 @@ public:
   //! @param theViewName    name of newly created View
   //! @oaram theDisplayName display name
   //! @param theViewToClone when specified, the new View will copy properties of existing one
+  //! @param theIsVirtual   force creation of virtual off-screen window within interactive session
   Standard_EXPORT static TCollection_AsciiString ViewerInit (const Standard_Integer thePxLeft   = 0,
                                                              const Standard_Integer thePxTop    = 0,
                                                              const Standard_Integer thePxWidth  = 0,
                                                              const Standard_Integer thePxHeight = 0,
                                                              const TCollection_AsciiString& theViewName = "",
                                                              const TCollection_AsciiString& theDisplayName = "",
-                                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)());
+                                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)(),
+                                                             const Standard_Boolean theIsVirtual = false);
 
   Standard_EXPORT static void RemoveViewName (const TCollection_AsciiString& theName);
 

@@ -1658,7 +1658,8 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                                 const Standard_Integer thePxHeight,
                                                 const TCollection_AsciiString& theViewName,
                                                 const TCollection_AsciiString& theDisplayName,
-                                                const Handle(V3d_View)& theViewToClone)
+                                                const Handle(V3d_View)& theViewToClone,
+                                                const Standard_Boolean theIsVirtual)
 {
   // Default position and dimension of the viewer window.
   // Note that left top corner is set to be sufficiently small to have
@@ -1670,6 +1671,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   Standard_Integer aPxWidth  = 409;
   Standard_Integer aPxHeight = 409;
   Standard_Boolean toCreateViewer = Standard_False;
+  const Standard_Boolean isVirtual = Draw_VirtualWindows || theIsVirtual;
   if (!theViewToClone.IsNull())
   {
     theViewToClone->Window()->Size (aPxWidth, aPxHeight);
@@ -1715,7 +1717,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
 
-    if (Draw_VirtualWindows)
+    if (isVirtual)
     {
       // don't waste the time waiting for VSync when window is not displayed on the screen
       ViewerTest_myDefaultCaps.swapInterval = 0;
@@ -1833,7 +1835,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // Create window
 #if defined(_WIN32)
   VT_GetWindow() = new WNT_Window (aTitle.ToCString(), WClass(),
-                                    Draw_VirtualWindows ? WS_POPUP : WS_OVERLAPPEDWINDOW,
+                                   isVirtual ? WS_POPUP : WS_OVERLAPPEDWINDOW,
                                     aPxLeft, aPxTop,
                                     aPxWidth, aPxHeight,
                                     Quantity_NOC_BLACK);
@@ -1849,7 +1851,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                   aPxLeft, aPxTop,
                                   aPxWidth, aPxHeight);
 #endif
-  VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
+  VT_GetWindow()->SetVirtual (isVirtual);
 
   // View setup
   Handle(V3d_View) aView;
@@ -1927,6 +1929,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
 {
   TCollection_AsciiString aViewName, aDisplayName;
   Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
+  Standard_Boolean isVirtual = false;
   Handle(V3d_View) aCopyFrom;
   TCollection_AsciiString aName, aValue;
   int is2dMode = -1;
@@ -1963,6 +1966,16 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
            || anArgCase == "-h"))
     {
       aPxHeight = Draw::Atoi (theArgVec[++anArgIt]);
+    }
+    else if (anArgCase == "-virtual"
+          || anArgCase == "-offscreen")
+    {
+      isVirtual = true;
+      if (anArgIt + 1 < theArgsNb
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], isVirtual))
+      {
+        ++anArgIt;
+      }
     }
     else if (anArgCase == "-exitonclose")
     {
@@ -2081,7 +2094,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   }
 
   TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
-                                                            aViewName, aDisplayName, aCopyFrom);
+                                                            aViewName, aDisplayName, aCopyFrom, isVirtual);
   if (is2dMode != -1)
   {
     ViewerTest_V3dView::SetCurrentView2DMode (is2dMode == 1);
@@ -14677,7 +14690,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   const char *group = "ZeViewer";
   theCommands.Add("vinit",
           "vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]"
-    "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive] [-2d_mode {on|off}=off]"
+    "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive] [-virtual {on|off}=off] [-2d_mode {on|off}=off]"
   #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     "\n\t\t:     [-display displayName]"
   #endif
@@ -14693,9 +14706,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 #endif
     "\n\t\t:  -left,  -top    pixel position of left top corner of the window."
     "\n\t\t:  -width, -height width and height of window respectively."
-    "\n\t\t:  -cloneActive floag to copy camera and dimensions of active view."
+    "\n\t\t:  -cloneActive flag to copy camera and dimensions of active view."
     "\n\t\t:  -exitOnClose when specified, closing the view will exit application."
     "\n\t\t:  -closeOnEscape when specified, view will be closed on pressing Escape."
+    "\n\t\t:  -virtual create an offscreen window within interactive session"
     "\n\t\t:  -2d_mode when on, view will not react on rotate scene events"
     "\n\t\t: Additional commands for operations with views: vclose, vactivate, vviewlist.",
     __FILE__,VInit,group);

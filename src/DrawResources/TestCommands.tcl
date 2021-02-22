@@ -559,6 +559,9 @@ proc testgrid {args} {
     lappend log "Host: [info hostname]"
     lappend log "Started on: [clock format [clock seconds] -format {%Y-%m-%d %H:%M:%S}]"
     catch {lappend log "DRAW build:\n[dversion]" }
+    catch { pload VISUALIZATION; vinit g/v/info -virtual -w 2 -h 2 }
+    catch { lappend log "[vglinfo -complete -lineWidth 80]" }
+    catch { vclose g/v/info 0 }
     lappend log "Environment:"
     foreach envar [lsort [array names env]] {
         lappend log "$envar=\"$env($envar)\""

@@ -284,32 +284,72 @@ static int VGlInfo (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Integer anArgIter = 1;
   Graphic3d_DiagnosticInfo anInfoLevel = Graphic3d_DiagnosticInfo_Basic;
-  if (theArgNb == 2)
+  Standard_Integer aLineWidth = 80;
+  NCollection_Sequence<TCollection_AsciiString> aKeys;
+  TColStd_IndexedDataMapOfStringString aDict;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    TCollection_AsciiString aName (theArgVec[1]);
+    TCollection_AsciiString aName (theArgVec[anArgIter]);
     aName.LowerCase();
+    TCollection_AsciiString aValue;
     if (aName == "-short")
     {
-      ++anArgIter;
       anInfoLevel = Graphic3d_DiagnosticInfo_Short;
     }
     else if (aName == "-basic")
     {
-      ++anArgIter;
       anInfoLevel = Graphic3d_DiagnosticInfo_Basic;
     }
     else if (aName == "-complete"
           || aName == "-full")
     {
-      ++anArgIter;
       anInfoLevel = Graphic3d_DiagnosticInfo_Complete;
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (aName == "-maxwidth"
+           || aName == "-maxlinewidth"
+           || aName == "-linewidth"))
+    {
+      aLineWidth = Draw::Atoi (theArgVec[++anArgIter]);
+      if (aLineWidth < 0)
+      {
+        aLineWidth = IntegerLast();
+      }
+    }
+    else if (aName.Search ("vendor") != -1)
+    {
+      aKeys.Append ("GLvendor");
+    }
+    else if (aName.Search ("renderer") != -1)
+    {
+      aKeys.Append ("GLdevice");
+    }
+    else if (aName.Search ("shading_language_version") != -1
+          || aName.Search ("glsl") != -1)
+    {
+      aKeys.Append ("GLSLversion");
+    }
+    else if (aName.Search ("version") != -1)
+    {
+      aKeys.Append ("GLversion");
+    }
+    else if (aName.Search ("extensions") != -1)
+    {
+      aKeys.Append ("GLextensions");
+    }
+    else if (aName.Search ("extensions") != -1)
+    {
+      aKeys.Append ("GLextensions");
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error: unknown key '" << aName << "'";
+      return 1;
     }
   }
 
-  TColStd_IndexedDataMapOfStringString aDict;
-  if (anArgIter >= theArgNb)
+  if (aKeys.IsEmpty())
   {
     aView->DiagnosticInformation (aDict, anInfoLevel);
     TCollection_AsciiString aText;
@@ -319,7 +359,42 @@ static int VGlInfo (Draw_Interpretor& theDI,
       {
         aText += "\n";
       }
-      aText += TCollection_AsciiString("  ") + aValueIter.Key() + ": " + aValueIter.Value();
+      if ((aValueIter.Key().Length() + aValueIter.Value().Length() + 4) <= aLineWidth)
+      {
+        aText += TCollection_AsciiString("  ") + aValueIter.Key() + ": " + aValueIter.Value();
+        continue;
+      }
+
+      // split into lines
+      aText += TCollection_AsciiString("  ") + aValueIter.Key() + ":";
+      TCollection_AsciiString aSubList;
+      for (Standard_Integer aTokenIter = 1;; ++aTokenIter)
+      {
+        TCollection_AsciiString aToken = aValueIter.Value().Token (" ", aTokenIter);
+        if (aToken.IsEmpty())
+        {
+          break;
+        }
+
+        if (!aSubList.IsEmpty()
+         && (aSubList.Length() + aToken.Length() + 5) > aLineWidth)
+        {
+          aText += TCollection_AsciiString("\n    ") + aSubList;
+          aSubList = aToken;
+        }
+        else
+        {
+          if (!aSubList.IsEmpty())
+          {
+            aSubList += " ";
+          }
+          aSubList += aToken;
+        }
+      }
+      if (!aSubList.IsEmpty())
+      {
+        aText += TCollection_AsciiString("\n    ") + aSubList;
+      }
     }
 
     theDI << "OpenGL info:\n"
@@ -327,41 +402,11 @@ static int VGlInfo (Draw_Interpretor& theDI,
     return 0;
   }
 
-  const Standard_Boolean isList = theArgNb >= 3;
   aView->DiagnosticInformation (aDict, Graphic3d_DiagnosticInfo_Complete);
-  for (; anArgIter < theArgNb; ++anArgIter)
+  for (NCollection_Sequence<TCollection_AsciiString>::Iterator aKeyIter (aKeys); aKeyIter.More(); aKeyIter.Next())
   {
-    TCollection_AsciiString aName (theArgVec[anArgIter]);
-    aName.UpperCase();
-    TCollection_AsciiString aValue;
-    if (aName.Search ("VENDOR") != -1)
-    {
-      aValue = searchInfo (aDict, "GLvendor");
-    }
-    else if (aName.Search ("RENDERER") != -1)
-    {
-      aValue = searchInfo (aDict, "GLdevice");
-    }
-    else if (aName.Search ("SHADING_LANGUAGE_VERSION") != -1
-          || aName.Search ("GLSL") != -1)
-    {
-      aValue = searchInfo (aDict, "GLSLversion");
-    }
-    else if (aName.Search ("VERSION") != -1)
-    {
-      aValue = searchInfo (aDict, "GLversion");
-    }
-    else if (aName.Search ("EXTENSIONS") != -1)
-    {
-      aValue = searchInfo (aDict, "GLextensions");
-    }
-    else
-    {
-      Message::SendFail() << "Syntax error: unknown key '" << aName.ToCString() << "'";
-      return 1;
-    }
-
-    if (isList)
+    TCollection_AsciiString aValue = searchInfo (aDict, aKeyIter.Value());
+    if (aKeys.Length() > 1)
     {
       theDI << "{" << aValue << "} ";
     }
@@ -1363,10 +1408,12 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
     "vimmediatefront : render immediate mode to front buffer or to back buffer",
     __FILE__, VImmediateFront, aGroup);
   theCommands.Add("vglinfo",
-                "vglinfo [-short|-basic|-complete]"
+                "vglinfo [-short|-basic|-complete] [-lineWidth Value=80]"
         "\n\t\t:         [GL_VENDOR] [GL_RENDERER] [GL_VERSION]"
         "\n\t\t:         [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
-        "\n\t\t: print OpenGL info",
+        "\n\t\t: print OpenGL info."
+        "\n\t\t:  -lineWidth split values longer than specified value into multiple lines;"
+        "\n\t\t:             -1 disables splitting.",
     __FILE__, VGlInfo, aGroup);
   theCommands.Add("vshader",
                   "vshader name -vert VertexShader -frag FragmentShader [-geom GeometryShader]"

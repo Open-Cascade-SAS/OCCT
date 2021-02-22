@@ -417,7 +417,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         // Try to create the core profile of highest OpenGL version supported by OCCT
         // (this will be done automatically by some drivers when requesting 3.2,
         //  but some will not (e.g. AMD Catalyst) since WGL_ARB_create_context_profile specification allows both implementations).
-        for (int aLowVer4 = 5; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
+        for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
         {
           aCoreCtxAttribs[1] = 4;
           aCoreCtxAttribs[3] = aLowVer4;
@@ -555,7 +555,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
       };
 
       // try to create the core profile of highest OpenGL version supported by OCCT
-      for (int aLowVer4 = 5; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
+      for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
       {
         aCoreCtxAttribs[1] = 4;
         aCoreCtxAttribs[3] = aLowVer4;
