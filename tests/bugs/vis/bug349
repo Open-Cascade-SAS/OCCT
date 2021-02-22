@@ -1,14 +1,14 @@
 puts "========"
-puts "OCC349"
-puts "1. Hidden line removal algorithm works incorrect in the perspective view"
+puts "OCC349 - Hidden line removal algorithm works incorrect in the perspective view"
 puts "========"
+puts ""
 
-vinit
+pload MODELING VISUALIZATION
+vinit View1
 box b 100 900 300
+vcamera -persp
 vdisplay b
-
-OCC280 1 0
-
+vhlr 1
 vfit
 
 set yellow_coords {{135 119} {387 33} {172 144} {28 190} {212 272} {60 343} {26 255} {389 113} {60 276}}
@@ -66,4 +66,4 @@ foreach i $black_coords {
   }
 }
 
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${test_image}.png

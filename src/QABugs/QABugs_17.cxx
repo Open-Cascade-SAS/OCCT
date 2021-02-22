@@ -454,48 +454,6 @@ static Standard_Integer OCC353 (Draw_Interpretor& di, Standard_Integer , const c
   return 0;
 }
 
-static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) 
-  { 
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return -1;
-  }
-  if ( argc != 3) {
-    di << "ERROR : Usage : " << argv[0] << " hlr=0/1 setsurfecedetail=0/1; set perspecrive view\n";
-    return 1;
-  }
-
-  Standard_Integer HLR = Draw::Atoi(argv[1]);
-  if (HLR != 0) {
-    HLR = 1;
-  }
-
-  TCollection_AsciiString anOldName = ViewerTest::GetCurrentViewName();
-  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
-  Handle(Aspect_Window) asp = ViewerTest::CurrentView()->Window();
-  Handle(V3d_View) aNewView = aViewer->CreateView();
-  ViewerTest::CurrentView (aNewView);
-  TCollection_AsciiString aNewName=anOldName + "_new";
-  ViewerTest::InitViewName(aNewName,ViewerTest::CurrentView());
-  aNewView->SetWindow (asp);
-  if (!asp->IsMapped()) asp->Map();
-  aNewView->Redraw();
-  ViewerTest::RemoveView(anOldName,false);
-  ViewerTest::UnsetEventManager();
-  ViewerTest::SetEventManager (new ViewerTest_EventManager (aNewView, ViewerTest::GetAISContext()));
-
-  if (HLR == 1)
-  {
-    di << "HLR\n";
-    ViewerTest::CurrentView()->SetComputedMode (Standard_True);
-  }
-
-  return 0;
-}
-
 static Standard_Integer  OCC138LC (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
@@ -1522,7 +1480,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("BUC60915", "BUC60915", __FILE__, BUC60915_1, group);
   theCommands.Add ("OCC138", "OCC138", __FILE__, OCC138, group);
   theCommands.Add ("OCC353","OCC353",__FILE__,OCC353,group);
-  theCommands.Add ("OCC280","OCC280 hlr=0/1 setsurfecedetail=0/1; set perspecrive view",__FILE__,OCC280,group);
   theCommands.Add ("OCC138LC", "OCC138LC", __FILE__, OCC138LC, group);
   theCommands.Add ("OCC566", "OCC566 shape [ xmin ymin zmin xmax ymax zmax] ; print bounding box", __FILE__, OCC566, group);
   theCommands.Add ("OCC570", "OCC570 result", __FILE__, OCC570, group);
