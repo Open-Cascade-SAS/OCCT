@@ -42,10 +42,7 @@ DEFINE_STANDARD_HANDLE(AIS_AttributeFilter, SelectMgr_Filter)
 //! filters, which are in position when a local context is open.
 class AIS_AttributeFilter : public SelectMgr_Filter
 {
-
 public:
-
-  
 
   //! Constructs an empty attribute filter object.
   //! This filter object determines whether selectable
@@ -65,29 +62,33 @@ public:
 
   //! Indicates that the Interactive Object has the color
   //! setting specified by the argument aCol at construction time.
-    Standard_Boolean HasColor() const;
-  
+  Standard_Boolean HasColor() const { return hasC; }
 
   //! Indicates that the Interactive Object has the width
   //! setting specified by the argument aWidth at
   //! construction time.
-    Standard_Boolean HasWidth() const;
-  
-  //! Sets the color aCol.
-  //! This must be chosen from the list of colors in Quantity_NameOfColor.
-    void SetColor (const Quantity_NameOfColor aCol);
-  
-  //! Sets the line width aWidth.
-    void SetWidth (const Standard_Real aWidth);
-  
+  Standard_Boolean HasWidth() const { return hasW; }
+
+  //! Sets the color.
+  void SetColor (const Quantity_NameOfColor theCol)
+  {
+    myCol = theCol;
+    hasC = Standard_True;
+  }
+
+  //! Sets the line width.
+  void SetWidth (const Standard_Real theWidth)
+  {
+    myWid = theWidth;
+    hasW = Standard_True;
+  }
 
   //! Removes the setting for color from the filter.
-    void UnsetColor();
-  
+  void UnsetColor() { hasC = Standard_False; }
 
   //! Removes the setting for width from the filter.
-    void UnsetWidth();
-  
+  void UnsetWidth() { hasW = Standard_False; }
+
   //! Indicates that the selected Interactive Object passes
   //! the filter. The owner, anObj, can be either direct or
   //! user. A direct owner is the corresponding
@@ -98,32 +99,15 @@ public:
   //! the mouse, the object is kept; if not, it is rejected.
   Standard_EXPORT virtual Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anObj) const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(AIS_AttributeFilter,SelectMgr_Filter)
 
-protected:
-
-
-
-
 private:
-
 
   Quantity_NameOfColor myCol;
   Standard_Real myWid;
   Standard_Boolean hasC;
   Standard_Boolean hasW;
 
-
 };
-
-
-#include <AIS_AttributeFilter.lxx>
-
-
-
-
 
 #endif // _AIS_AttributeFilter_HeaderFile

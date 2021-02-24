@@ -38,8 +38,6 @@
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_ListOfFilter.hxx>
 #include <SelectMgr_PickingStrategy.hxx>
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -793,16 +791,16 @@ public: //! @name Selection Filters management
   { myFilters->SetFilterType (theFilterType); }
 
   //! Returns the list of filters active in a local context.
-  Standard_EXPORT const SelectMgr_ListOfFilter& Filters() const;
+  const SelectMgr_ListOfFilter& Filters() const { return myFilters->StoredFilters(); }
 
   //! Allows you to add the filter.
-  Standard_EXPORT void AddFilter (const Handle(SelectMgr_Filter)& theFilter);
+  void AddFilter (const Handle(SelectMgr_Filter)& theFilter) { myFilters->Add (theFilter); }
 
   //! Removes a filter from context.
-  Standard_EXPORT void RemoveFilter (const Handle(SelectMgr_Filter)& theFilter);
+  void RemoveFilter (const Handle(SelectMgr_Filter)& theFilter) { myFilters->Remove (theFilter); }
 
   //! Remove all filters from context.
-  Standard_EXPORT void RemoveFilters();
+  void RemoveFilters() { myFilters->Clear(); }
 
   //! Return picking strategy; SelectMgr_PickingStrategy_FirstAcceptable by default.
   //! @sa MoveTo()/Filters()

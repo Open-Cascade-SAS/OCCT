@@ -28,7 +28,6 @@
 #include <TColStd_ListOfInteger.hxx>
 class SelectMgr_EntityOwner;
 
-
 class AIS_ExclusionFilter;
 DEFINE_STANDARD_HANDLE(AIS_ExclusionFilter, SelectMgr_Filter)
 
@@ -79,43 +78,26 @@ public:
   Standard_EXPORT Standard_Boolean Remove (const AIS_KindOfInteractive TypeToExclude, const Standard_Integer SignatureInType);
   
   Standard_EXPORT void Clear();
-  
-    Standard_Boolean IsExclusionFlagOn() const;
-  
-    void SetExclusionFlag (const Standard_Boolean Status);
-  
+
+  Standard_Boolean IsExclusionFlagOn() const { return myIsExclusionFlagOn; }
+
+  void SetExclusionFlag (const Standard_Boolean theStatus) { myIsExclusionFlagOn = theStatus; }
+
   Standard_EXPORT Standard_Boolean IsStored (const AIS_KindOfInteractive aType) const;
   
   Standard_EXPORT void ListOfStoredTypes (TColStd_ListOfInteger& TheList) const;
   
   Standard_EXPORT void ListOfSignature (const AIS_KindOfInteractive aType, TColStd_ListOfInteger& TheStoredList) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(AIS_ExclusionFilter,SelectMgr_Filter)
-
-protected:
-
-
-
 
 private:
 
-  
   Standard_EXPORT Standard_Boolean IsSignatureIn (const AIS_KindOfInteractive aType, const Standard_Integer aSignature) const;
 
   Standard_Boolean myIsExclusionFlagOn;
   TColStd_DataMapOfIntegerListOfInteger myStoredTypes;
 
-
 };
-
-
-#include <AIS_ExclusionFilter.lxx>
-
-
-
-
 
 #endif // _AIS_ExclusionFilter_HeaderFile

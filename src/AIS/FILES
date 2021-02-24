@@ -8,7 +8,6 @@ AIS_AnimationObject.cxx
 AIS_AnimationObject.hxx
 AIS_AttributeFilter.cxx
 AIS_AttributeFilter.hxx
-AIS_AttributeFilter.lxx
 AIS_Axis.cxx
 AIS_Axis.hxx
 AIS_BadEdgeFilter.cxx
@@ -40,7 +39,6 @@ AIS_DisplayStatus.hxx
 AIS_DragAction.hxx
 AIS_ExclusionFilter.cxx
 AIS_ExclusionFilter.hxx
-AIS_ExclusionFilter.lxx
 AIS_GlobalStatus.cxx
 AIS_GlobalStatus.hxx
 AIS_GraphicTool.cxx
@@ -48,9 +46,6 @@ AIS_GraphicTool.hxx
 AIS_IndexedDataMapOfOwnerPrs.hxx
 AIS_InteractiveContext.cxx
 AIS_InteractiveContext.hxx
-AIS_InteractiveContext_1.cxx
-AIS_InteractiveContext_2.cxx
-AIS_InteractiveContext_3.cxx
 AIS_InteractiveObject.cxx
 AIS_InteractiveObject.hxx
 AIS_KindOfInteractive.hxx
@@ -72,7 +67,6 @@ AIS_MediaPlayer.hxx
 AIS_MouseGesture.hxx
 AIS_MultipleConnectedInteractive.cxx
 AIS_MultipleConnectedInteractive.hxx
-AIS_MultipleConnectedInteractive.lxx
 AIS_NavigationMode.hxx
 AIS_NArray1OfEntityOwner.hxx
 AIS_NListOfEntityOwner.hxx

@@ -13,8 +13,10 @@
 
 #include <V3d_View.hxx>
 
+#include <Aspect_CircularGrid.hxx>
 #include <Aspect_GradientBackground.hxx>
 #include <Aspect_Grid.hxx>
+#include <Aspect_RectangularGrid.hxx>
 #include <Aspect_Window.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Ax3.hxx>
@@ -3028,6 +3030,606 @@ const Graphic3d_RenderingParams& V3d_View::RenderingParams() const
 Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 {
   return myView->ChangeRenderingParams();
+}
+
+
+//=============================================================================
+//function : SetLightOn
+//purpose  :
+//=============================================================================
+void V3d_View::SetLightOn (const Handle(V3d_Light)& theLight)
+{
+  if (!myActiveLights.Contains (theLight))
+  {
+    myActiveLights.Append (theLight);
+    UpdateLights();
+  }
+}
+
+//=============================================================================
+//function : SetLightOff
+//purpose  :
+//=============================================================================
+void V3d_View::SetLightOff (const Handle(V3d_Light)& theLight)
+{
+  if (MyViewer->IsGlobalLight (theLight))
+    throw Standard_TypeMismatch("V3d_View::SetLightOff, the light is global");
+  myActiveLights.Remove (theLight);
+  UpdateLights();
+}
+
+//=============================================================================
+//function : IsActiveLight
+//purpose  :
+//=============================================================================
+Standard_Boolean V3d_View::IsActiveLight (const Handle(V3d_Light)& theLight) const
+{
+  return !theLight.IsNull()
+       && myActiveLights.Contains (theLight);
+}
+
+//=============================================================================
+//function : SetLightOn
+//purpose  :
+//=============================================================================
+void V3d_View::SetLightOn()
+{
+  for (V3d_ListOfLightIterator aDefLightIter (MyViewer->DefinedLightIterator()); aDefLightIter.More(); aDefLightIter.Next())
+  {
+    if (!myActiveLights.Contains (aDefLightIter.Value()))
+    {
+      myActiveLights.Append (aDefLightIter.Value());
+    }
+  }
+  UpdateLights();
+}
+
+//=============================================================================
+//function : SetLightOff
+//purpose  :
+//=============================================================================
+void V3d_View::SetLightOff()
+{
+  for (V3d_ListOfLight::Iterator anActiveLightIter (myActiveLights); anActiveLightIter.More();)
+  {
+    if (!MyViewer->IsGlobalLight (anActiveLightIter.Value()))
+    {
+      myActiveLights.Remove (anActiveLightIter);
+    }
+    else
+    {
+      anActiveLightIter.Next();
+    }
+  }
+  UpdateLights();
+}
+
+//=============================================================================
+//function : IfMoreLights
+//purpose  :
+//=============================================================================
+Standard_Boolean V3d_View::IfMoreLights() const
+{
+  return myActiveLights.Extent() < LightLimit();
+}
+
+//=======================================================================
+//function : LightLimit
+//purpose  :
+//=======================================================================
+Standard_Integer V3d_View::LightLimit() const
+{
+  return Viewer()->Driver()->InquireLightLimit();
+}
+
+//=======================================================================
+//function : AddClipPlane
+//purpose  :
+//=======================================================================
+void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
+{
+  Handle(Graphic3d_SequenceOfHClipPlane) aSeqOfPlanes = ClipPlanes();
+  if (aSeqOfPlanes.IsNull())
+  {
+    aSeqOfPlanes = new Graphic3d_SequenceOfHClipPlane();
+  }
+  else
+  {
+    for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aSeqOfPlanes); aPlaneIt.More(); aPlaneIt.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+      if (aPlane == thePlane)
+      {
+        // plane is already defined in view
+        return;
+      }
+    }
+  }
+
+  aSeqOfPlanes->Append (thePlane);
+  SetClipPlanes (aSeqOfPlanes);
+}
+
+//=======================================================================
+//function : RemoveClipPlane
+//purpose  :
+//=======================================================================
+void V3d_View::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
+{
+  Handle(Graphic3d_SequenceOfHClipPlane) aSeqOfPlanes = ClipPlanes();
+  if (aSeqOfPlanes.IsNull())
+  {
+    return;
+  }
+
+  for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aSeqOfPlanes); aPlaneIt.More(); aPlaneIt.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    if (aPlane != thePlane)
+    {
+      continue;
+    }
+
+    aSeqOfPlanes->Remove (aPlaneIt);
+    SetClipPlanes (aSeqOfPlanes);
+    return;
+  }
+}
+
+//=======================================================================
+//function : SetClipPlanes
+//purpose  :
+//=======================================================================
+void V3d_View::SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+{
+  myView->SetClipPlanes (thePlanes);
+}
+
+//=======================================================================
+//function : ClipPlanes
+//purpose  :
+//=======================================================================
+const Handle(Graphic3d_SequenceOfHClipPlane)& V3d_View::ClipPlanes() const
+{
+  return myView->ClipPlanes();
+}
+
+//=======================================================================
+//function : PlaneLimit
+//purpose  :
+//=======================================================================
+Standard_Integer V3d_View::PlaneLimit() const
+{
+  return Viewer()->Driver()->InquirePlaneLimit();
+}
+
+//=============================================================================
+//function : Move
+//purpose  :
+//=============================================================================
+void V3d_View::Move (const Standard_Real theDx,
+                     const Standard_Real theDy,
+                     const Standard_Real theDz,
+                     const Standard_Boolean theStart)
+{
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  if (theStart)
+  {
+    myCamStartOpEye = aCamera->Eye();
+
+    gp_Dir aReferencePlane (aCamera->Direction().Reversed());
+    gp_Dir anUp (aCamera->Up());
+    if (!screenAxis (aReferencePlane, anUp, myXscreenAxis, myYscreenAxis, myZscreenAxis))
+    {
+      throw V3d_BadValue ("V3d_View::Translate, alignment of Eye,At,Up");
+    }
+  }
+
+  Standard_Real XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ;
+  myXscreenAxis.Coord (XX,XY,XZ);
+  myYscreenAxis.Coord (YX,YY,YZ);
+  myZscreenAxis.Coord (ZX,ZY,ZZ);
+
+  aCamera->SetEye (myCamStartOpEye);
+
+  aCamera->SetEye (aCamera->Eye().XYZ()
+    + theDx * gp_Pnt (XX, XY, XZ).XYZ()
+    + theDy * gp_Pnt (YX, YY, YZ).XYZ()
+    + theDz * gp_Pnt (ZX, ZY, ZZ).XYZ()
+    );
+
+  ImmediateUpdate();
+}
+
+//=============================================================================
+//function : Move
+//purpose  :
+//=============================================================================
+void V3d_View::Move (const Standard_Real theLength, const Standard_Boolean theStart)
+{
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  if (theStart)
+  {
+    myCamStartOpEye = aCamera->Eye();
+  }
+  aCamera->SetEye (myCamStartOpEye);
+  aCamera->SetEye (aCamera->Eye().XYZ() + theLength * myDefaultViewAxis.XYZ());
+
+  ImmediateUpdate();
+}
+
+//=============================================================================
+//function : Move
+//purpose  :
+//=============================================================================
+void V3d_View::Move (const V3d_TypeOfAxe theAxe,
+                     const Standard_Real theLength,
+                     const Standard_Boolean theStart)
+{
+  switch (theAxe)
+  {
+    case V3d_X:
+      Move (theLength,0.,0.,theStart);
+      break;
+    case V3d_Y:
+      Move (0.,theLength,0.,theStart);
+      break;
+    case V3d_Z:
+      Move (0.,0.,theLength,theStart);
+      break;
+  }
+}
+
+//=============================================================================
+//function : Translate
+//purpose  :
+//=============================================================================
+void V3d_View::Translate (const Standard_Real theDx,
+                          const Standard_Real theDy,
+                          const Standard_Real theDz,
+                          const Standard_Boolean theStart)
+{
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  if (theStart)
+  {
+    myCamStartOpEye = aCamera->Eye();
+    myCamStartOpCenter = aCamera->Center();
+
+    gp_Dir aReferencePlane (aCamera->Direction().Reversed());
+    gp_Dir anUp (aCamera->Up());
+    if (!screenAxis (aReferencePlane, anUp, myXscreenAxis, myYscreenAxis, myZscreenAxis))
+    {
+      throw V3d_BadValue ("V3d_View::Translate, alignment of Eye,At,Up");
+    }
+  }
+
+  aCamera->SetEye (myCamStartOpEye);
+  aCamera->SetCenter (myCamStartOpCenter);
+
+  aCamera->SetCenter (aCamera->Center().XYZ()
+    - theDx * myXscreenAxis.XYZ()
+    - theDy * myYscreenAxis.XYZ()
+    - theDz * myZscreenAxis.XYZ()
+    );
+
+  aCamera->SetEye (aCamera->Eye().XYZ()
+    - theDx * myXscreenAxis.XYZ()
+    - theDy * myYscreenAxis.XYZ()
+    - theDz * myZscreenAxis.XYZ()
+    );
+
+  ImmediateUpdate();
+}
+
+//=============================================================================
+//function : Translate
+//purpose  :
+//=============================================================================
+void V3d_View::Translate (const V3d_TypeOfAxe theAxe, const Standard_Real theLength,const Standard_Boolean theStart)
+{
+  switch (theAxe)
+  {
+    case V3d_X:
+      Translate (theLength,0.,0., theStart);
+      break;
+    case V3d_Y:
+      Translate (0.,theLength,0., theStart);
+      break;
+    case V3d_Z:
+      Translate (0.,0.,theLength, theStart);
+      break;
+  }
+}
+
+//=======================================================================
+//function : Place
+//purpose  :
+//=======================================================================
+void V3d_View::Place (const Standard_Integer theXp,
+                      const Standard_Integer theYp,
+                      const Standard_Real theZoomFactor)
+{
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+  View()->Window()->Size (aWinWidth, aWinHeight);
+
+  Standard_Integer aWinCXp = aWinWidth  / 2;
+  Standard_Integer aWinCYp = aWinHeight / 2;
+  Pan (aWinCXp - theXp, -(aWinCYp - theYp), theZoomFactor / Scale());
+}
+
+//=======================================================================
+//function : Translate
+//purpose  :
+//=======================================================================
+void V3d_View::Translate (const Standard_Real theLength, const Standard_Boolean theStart)
+{
+  Handle(Graphic3d_Camera) aCamera = Camera();
+  if (theStart)
+  {
+    myCamStartOpCenter = aCamera->Center() ;
+  }
+
+  gp_Pnt aNewCenter (myCamStartOpCenter.XYZ() - myDefaultViewAxis.XYZ() * theLength);
+  aCamera->SetCenter (aNewCenter);
+
+  ImmediateUpdate();
+}
+
+//=============================================================================
+//function : SetGrid
+//purpose  :
+//=============================================================================
+void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
+{
+  MyPlane	= aPlane;
+  MyGrid	= aGrid;
+
+  Standard_Real xl, yl, zl;
+  Standard_Real xdx, xdy, xdz;
+  Standard_Real ydx, ydy, ydz;
+  Standard_Real dx, dy, dz;
+  aPlane.Location ().Coord (xl, yl, zl);
+  aPlane.XDirection ().Coord (xdx, xdy, xdz);
+  aPlane.YDirection ().Coord (ydx, ydy, ydz);
+  aPlane.Direction ().Coord (dx, dy, dz);
+
+  Standard_Real CosAlpha = Cos (MyGrid->RotationAngle ());
+  Standard_Real SinAlpha = Sin (MyGrid->RotationAngle ());
+
+  TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
+  Trsf1 (4, 4) = 1.0;
+  Trsf1 (4, 1) = Trsf1 (4, 2) = Trsf1 (4, 3) = 0.0;
+  // Translation
+  Trsf1 (1, 4) = xl,
+  Trsf1 (2, 4) = yl,
+  Trsf1 (3, 4) = zl;
+  // Transformation change of marker
+  Trsf1 (1, 1) = xdx,
+  Trsf1 (2, 1) = xdy,
+  Trsf1 (3, 1) = xdz,
+  Trsf1 (1, 2) = ydx,
+  Trsf1 (2, 2) = ydy,
+  Trsf1 (3, 2) = ydz,
+  Trsf1 (1, 3) = dx,
+  Trsf1 (2, 3) = dy,
+  Trsf1 (3, 3) = dz;
+
+  TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
+  Trsf2 (4, 4) = 1.0;
+  Trsf2 (4, 1) = Trsf2 (4, 2) = Trsf2 (4, 3) = 0.0;
+  // Translation of the origin
+  Trsf2 (1, 4) = -MyGrid->XOrigin (),
+  Trsf2 (2, 4) = -MyGrid->YOrigin (),
+  Trsf2 (3, 4) = 0.0;
+  // Rotation Alpha around axis -Z
+  Trsf2 (1, 1) = CosAlpha,
+  Trsf2 (2, 1) = -SinAlpha,
+  Trsf2 (3, 1) = 0.0,
+  Trsf2 (1, 2) = SinAlpha,
+  Trsf2 (2, 2) = CosAlpha,
+  Trsf2 (3, 2) = 0.0,
+  Trsf2 (1, 3) = 0.0,
+  Trsf2 (2, 3) = 0.0,
+  Trsf2 (3, 3) = 1.0;
+
+  Standard_Real valuetrsf;
+  Standard_Real valueoldtrsf;
+  Standard_Real valuenewtrsf;
+  Standard_Integer i, j, k;
+  // Calculation of the product of matrices
+  for (i=1; i<=4; i++)
+      for (j=1; j<=4; j++) {
+    MyTrsf (i, j) = 0.0;
+    for (k=1; k<=4; k++) {
+        valueoldtrsf = Trsf1 (i, k);
+        valuetrsf	 = Trsf2 (k, j);
+        valuenewtrsf = MyTrsf (i, j) + valueoldtrsf * valuetrsf;
+        MyTrsf (i, j) = valuenewtrsf;
+    }
+     }
+}
+
+//=============================================================================
+//function : SetGridActivity
+//purpose  :
+//=============================================================================
+void V3d_View::SetGridActivity (const Standard_Boolean AFlag)
+{
+  if (AFlag) MyGrid->Activate ();
+  else MyGrid->Deactivate ();
+}
+
+//=============================================================================
+//function : toPolarCoords
+//purpose  :
+//=============================================================================
+void toPolarCoords (const Standard_Real theX, const Standard_Real theY,
+                          Standard_Real& theR, Standard_Real& thePhi)
+{
+  theR = Sqrt (theX * theX + theY * theY);
+  thePhi = ATan2 (theY, theX);
+}
+
+//=============================================================================
+//function : toCartesianCoords
+//purpose  :
+//=============================================================================
+void toCartesianCoords (const Standard_Real theR, const Standard_Real thePhi,
+                              Standard_Real& theX, Standard_Real& theY)
+{
+  theX = theR * Cos (thePhi);
+  theY = theR * Sin (thePhi);
+}
+
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
+Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex& theVertex) const
+{
+  const Handle(Graphic3d_Camera)& aCamera = Camera();
+  gp_Dir VPN = aCamera->Direction().Reversed(); // RefPlane
+  gp_Dir GPN = MyPlane.Direction();
+
+  Standard_Real XPp = 0.0, YPp = 0.0;
+  Project (theVertex.X(), theVertex.Y(), theVertex.Z(), XPp, YPp);
+
+  // Casw when the plane of the grid and the plane of the view
+  // are perpendicular to MYEPSILON2 close radians
+  #define MYEPSILON2 M_PI / 180.0 // Delta between 2 angles
+  if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2)
+  {
+    return theVertex;
+  }
+
+  const gp_XYZ aPnt0 = V3d_View::TrsPoint (Graphic3d_Vertex (0.0, 0.0, 0.0), MyTrsf);
+
+  // get grid axes in world space
+  const gp_XYZ aPnt1 = V3d_View::TrsPoint (Graphic3d_Vertex (1.0, 0.0, 0.0), MyTrsf);
+  gp_Vec aGridX (aPnt0, aPnt1);
+  aGridX.Normalize();
+
+  const gp_XYZ aPnt2 = V3d_View::TrsPoint (Graphic3d_Vertex (0.0, 1.0, 0.0), MyTrsf);
+  gp_Vec aGridY (aPnt0, aPnt2);
+  aGridY.Normalize();
+
+  // project ray from camera onto grid plane
+  const gp_Vec aProjection  = aCamera->IsOrthographic()
+                            ? gp_Vec (aCamera->Direction())
+                            : gp_Vec (aCamera->Eye(), gp_Pnt (theVertex.X(), theVertex.Y(), theVertex.Z())).Normalized();
+  const gp_Vec aPointOrigin = gp_Vec (gp_Pnt (theVertex.X(), theVertex.Y(), theVertex.Z()), aPnt0);
+  const Standard_Real aT    = aPointOrigin.Dot (MyPlane.Direction()) / aProjection.Dot (MyPlane.Direction());
+  const gp_XYZ aPointOnPlane = gp_XYZ (theVertex.X(), theVertex.Y(), theVertex.Z()) + aProjection.XYZ() * aT;
+
+  if (Handle(Aspect_RectangularGrid) aRectGrid = Handle(Aspect_RectangularGrid)::DownCast (MyGrid))
+  {
+    // project point on plane to grid local space
+    const gp_Vec aToPoint (aPnt0, aPointOnPlane);
+    const Standard_Real anXSteps = Round (aGridX.Dot (aToPoint) / aRectGrid->XStep());
+    const Standard_Real anYSteps = Round (aGridY.Dot (aToPoint) / aRectGrid->YStep());
+
+    // clamp point to grid
+    const gp_Vec aResult = aGridX * anXSteps * aRectGrid->XStep()
+                         + aGridY * anYSteps * aRectGrid->YStep()
+                         + gp_Vec (aPnt0);
+    return Graphic3d_Vertex (aResult.X(), aResult.Y(), aResult.Z());
+  }
+  else if (Handle(Aspect_CircularGrid) aCircleGrid = Handle(Aspect_CircularGrid)::DownCast (MyGrid))
+  {
+    const Standard_Real anAlpha = M_PI / Standard_Real (aCircleGrid->DivisionNumber());
+
+    // project point on plane to grid local space
+    const gp_Vec aToPoint (aPnt0, aPointOnPlane);
+    Standard_Real aLocalX = aGridX.Dot (aToPoint);
+    Standard_Real aLocalY = aGridY.Dot (aToPoint);
+    Standard_Real anR = 0.0, aPhi = 0.0;
+    toPolarCoords (aLocalX, aLocalY, anR, aPhi);
+
+    // clamp point to grid
+    const Standard_Real anRSteps  = Round (anR / aCircleGrid->RadiusStep());
+    const Standard_Real aPhiSteps = Round (aPhi / anAlpha);
+    toCartesianCoords (anRSteps * aCircleGrid->RadiusStep(), aPhiSteps * anAlpha, aLocalX, aLocalY);
+
+    const gp_Vec aResult = aGridX * aLocalX + aGridY * aLocalY + gp_Vec (aPnt0);
+    return Graphic3d_Vertex (aResult.X(), aResult.Y(), aResult.Z());
+  }
+  return Graphic3d_Vertex (0.0, 0.0, 0.0);
+}
+
+//=============================================================================
+//function : ZBufferTriedronSetup
+//purpose  :
+//=============================================================================
+void V3d_View::ZBufferTriedronSetup (const Quantity_Color&  theXColor,
+                                     const Quantity_Color&  theYColor,
+                                     const Quantity_Color&  theZColor,
+                                     const Standard_Real    theSizeRatio,
+                                     const Standard_Real    theAxisDiametr,
+                                     const Standard_Integer theNbFacettes)
+{
+  const Handle(V3d_Trihedron)& aTrihedron = Trihedron (true);
+  aTrihedron->SetArrowsColor   (theXColor, theYColor, theZColor);
+  aTrihedron->SetSizeRatio     (theSizeRatio);
+  aTrihedron->SetNbFacets      (theNbFacettes);
+  aTrihedron->SetArrowDiameter (theAxisDiametr);
+}
+
+//=============================================================================
+//function : TriedronDisplay
+//purpose  :
+//=============================================================================
+void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition thePosition,
+                                const Quantity_Color& theColor,
+                                const Standard_Real theScale,
+                                const V3d_TypeOfVisualization theMode)
+{
+  const Handle(V3d_Trihedron)& aTrihedron = Trihedron (true);
+  aTrihedron->SetLabelsColor (theColor);
+  aTrihedron->SetScale       (theScale);
+  aTrihedron->SetPosition    (thePosition);
+  aTrihedron->SetWireframe   (theMode == V3d_WIREFRAME);
+
+  aTrihedron->Display (*this);
+}
+
+//=============================================================================
+//function : TriedronErase
+//purpose  :
+//=============================================================================
+void V3d_View::TriedronErase()
+{
+  if (!myTrihedron.IsNull())
+  {
+    myTrihedron->Erase();
+  }
+}
+
+//=============================================================================
+//function : GetGraduatedTrihedron
+//purpose  :
+//=============================================================================
+const Graphic3d_GraduatedTrihedron& V3d_View::GetGraduatedTrihedron() const
+{
+  return myView->GetGraduatedTrihedron();
+}
+
+//=============================================================================
+//function : GraduatedTrihedronDisplay
+//purpose  :
+//=============================================================================
+void V3d_View::GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData)
+{
+  myView->GraduatedTrihedronDisplay (theTrihedronData);
+}
+
+//=============================================================================
+//function : GraduatedTrihedronErase
+//purpose  :
+//=============================================================================
+void V3d_View::GraduatedTrihedronErase()
+{
+  myView->GraduatedTrihedronErase();
 }
 
 // =======================================================================

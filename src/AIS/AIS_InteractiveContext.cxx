@@ -20,15 +20,8 @@
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_GlobalStatus.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_ListIteratorOfListOfInteractive.hxx>
-#include <AIS_MapIteratorOfMapOfInteractive.hxx>
 #include <AIS_MultipleConnectedInteractive.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_Trihedron.hxx>
-#include <Geom_Axis2Placement.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <HLRBRep.hxx>
-#include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <Prs3d_BasicAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
@@ -37,25 +30,17 @@
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentableObject.hxx>
-#include <Quantity_Color.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Filter.hxx>
-#include <SelectMgr_OrFilter.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-#include <Standard_Atomic.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <StdSelect_ViewerSelector3d.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS_Shape.hxx>
-#include <UnitsAPI.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
+
+#include <AIS_Shape.hxx>
+#include <StdSelect_BRepOwner.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext, Standard_Transient)
 
@@ -700,7 +685,7 @@ void AIS_InteractiveContext::RemoveAll (const Standard_Boolean theToUpdateViewer
 {
   AIS_ListOfInteractive aList;
   ObjectsInside (aList);
-  for (AIS_ListIteratorOfListOfInteractive aListIterator (aList); aListIterator.More(); aListIterator.Next())
+  for (AIS_ListOfInteractive::Iterator aListIterator (aList); aListIterator.More(); aListIterator.Next())
   {
     Remove (aListIterator.Value(), Standard_False);
   }
@@ -2465,4 +2450,1797 @@ void AIS_InteractiveContext::setObjectStatus (const Handle(AIS_InteractiveObject
 
     setObjectStatus (aChild, theStatus, theDispMode, theSelectionMode);
   }
+}
+
+//=======================================================================
+//function : highlightWithColor
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightWithColor (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                 const Handle(V3d_Viewer)& theViewer)
+{
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  if (anObj.IsNull())
+  {
+    return;
+  }
+
+  const Handle(Prs3d_Drawer)& aStyle = getHiStyle (anObj, theOwner);
+  const Standard_Integer aHiMode = getHilightMode (anObj, aStyle, -1);
+
+  myMainPM->BeginImmediateDraw();
+  theOwner->HilightWithColor (myMainPM, aStyle, aHiMode);
+  myMainPM->EndImmediateDraw (theViewer.IsNull() ? myMainVwr : theViewer);
+}
+
+//=======================================================================
+//function : highlightSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner)
+{
+  AIS_NListOfEntityOwner anOwners;
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  if (anObj.IsNull())
+  {
+    return;
+  }
+
+  if (!theOwner->IsAutoHilight())
+  {
+    SelectMgr_SequenceOfOwner aSeq;
+    for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
+    {
+      if (aSelIter.Value()->IsSameSelectable (anObj))
+      {
+        anOwners.Append (aSelIter.Value());
+      }
+    }
+  }
+  else
+  {
+    anOwners.Append (theOwner);
+  }
+  highlightOwners (anOwners, Handle(Prs3d_Drawer)());
+}
+
+//=======================================================================
+//function : highlightGlobal
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightGlobal (const Handle(AIS_InteractiveObject)& theObj,
+                                              const Handle(Prs3d_Drawer)& theStyle,
+                                              const Standard_Integer theDispMode)
+{
+  if (theObj.IsNull())
+  {
+    return;
+  }
+
+  const Standard_Integer aHiMode = getHilightMode (theObj, theStyle, theDispMode);
+  const Handle(SelectMgr_EntityOwner)& aGlobOwner = theObj->GlobalSelOwner();
+
+  if (aGlobOwner.IsNull())
+  {
+    myMainPM->Color (theObj, theStyle, aHiMode);
+    return;
+  }
+
+  AIS_NListOfEntityOwner anOwners;
+  if (!aGlobOwner->IsAutoHilight())
+  {
+    SelectMgr_SequenceOfOwner aSeq;
+    for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
+    {
+      if (aSelIter.Value()->IsSameSelectable (theObj))
+      {
+        anOwners.Append (aSelIter.Value());
+      }
+    }
+  }
+  else
+  {
+    anOwners.Append (aGlobOwner);
+  }
+  highlightOwners (anOwners, theStyle);
+}
+
+//=======================================================================
+//function : unhighlightSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity)
+{
+  unhighlightOwners (mySelection->Objects(), theIsToHilightSubIntensity);
+}
+
+//=======================================================================
+//function : unhighlightOwners
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::unhighlightOwners (const AIS_NListOfEntityOwner& theOwners,
+                                                const Standard_Boolean theIsToHilightSubIntensity)
+{
+  NCollection_IndexedMap<Handle(AIS_InteractiveObject)> anObjToClear;
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (theOwners); aSelIter.More(); aSelIter.Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelIter.Value();
+    const Handle(AIS_InteractiveObject) anInteractive = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    Handle(AIS_GlobalStatus)* aStatusPtr = myObjects.ChangeSeek (anInteractive);
+    if (!aStatusPtr)
+    {
+      continue;
+    }
+
+    if (anOwner->IsAutoHilight())
+    {
+      anOwner->Unhilight (myMainPM);
+      if (theIsToHilightSubIntensity)
+      {
+        if ((*aStatusPtr)->IsSubIntensityOn())
+        {
+          const Standard_Integer aHiMode = getHilightMode (anInteractive, (*aStatusPtr)->HilightStyle(), (*aStatusPtr)->DisplayMode());
+          highlightWithSubintensity (anOwner, aHiMode);
+        }
+      }
+    }
+    else
+    {
+      anObjToClear.Add (anInteractive);
+    }
+    if (anOwner == anInteractive->GlobalSelOwner())
+    {
+      (*aStatusPtr)->SetHilightStatus (Standard_False);
+    }
+    (*aStatusPtr)->SetHilightStyle (Handle(Prs3d_Drawer)());
+  }
+  for (NCollection_IndexedMap<Handle(AIS_InteractiveObject)>::Iterator anIter (anObjToClear); anIter.More(); anIter.Next())
+  {
+    const Handle(AIS_InteractiveObject)& anObj = anIter.Value();
+    myMainPM->Unhighlight (anObj);
+    anObj->ClearSelected();
+  }
+}
+
+//=======================================================================
+//function : unhighlightGlobal
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj)
+{
+  if (theObj.IsNull())
+  {
+    return;
+  }
+
+  const Handle(SelectMgr_EntityOwner)& aGlobOwner = theObj->GlobalSelOwner();
+  if (aGlobOwner.IsNull())
+  {
+    myMainPM->Unhighlight (theObj);
+    return;
+  }
+
+  AIS_NListOfEntityOwner anOwners;
+  anOwners.Append (aGlobOwner);
+  unhighlightOwners (anOwners);
+}
+
+//=======================================================================
+//function : turnOnSubintensity
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::turnOnSubintensity (const Handle(AIS_InteractiveObject)& theObject,
+                                                 const Standard_Integer theDispMode,
+                                                 const Standard_Boolean theIsDisplayedOnly) const
+{
+  // the only differ with selection highlight is color, so sync transparency values
+  const Handle(Prs3d_Drawer)& aSubStyle = myStyles[Prs3d_TypeOfHighlight_SubIntensity];
+  aSubStyle->SetTransparency (myStyles[Prs3d_TypeOfHighlight_Selected]->Transparency());
+
+  if (theObject.IsNull())
+  {
+    for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjsIter (myObjects); anObjsIter.More(); anObjsIter.Next())
+    {
+      const Handle(AIS_GlobalStatus)& aStatus = anObjsIter.Value();
+      if (theObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed && theIsDisplayedOnly)
+      {
+        continue;
+      }
+
+      aStatus->SubIntensityOn();
+      myMainPM->Color (anObjsIter.Key(), aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
+    }
+  }
+  else
+  {
+    Handle(AIS_GlobalStatus) aStatus;
+    if (!myObjects.Find (theObject, aStatus))
+    {
+      return;
+    }
+
+    if (theObject->DisplayStatus() != PrsMgr_DisplayStatus_Displayed && theIsDisplayedOnly)
+    {
+      return;
+    }
+
+    aStatus->SubIntensityOn();
+    myMainPM->Color (theObject, aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
+  }
+}
+
+//=======================================================================
+//function : highlightWithSubintensity
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightWithSubintensity (const Handle(AIS_InteractiveObject)& theObject,
+                                                        const Standard_Integer theMode) const
+{
+  // the only differ with selection highlight is color, so
+  // sync transparency values
+  myStyles[Prs3d_TypeOfHighlight_SubIntensity]->SetTransparency (myStyles[Prs3d_TypeOfHighlight_Selected]->Transparency());
+
+  myMainPM->Color (theObject, myStyles[Prs3d_TypeOfHighlight_SubIntensity], theMode);
+}
+
+//=======================================================================
+//function : highlightWithSubintensity
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightWithSubintensity (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                        const Standard_Integer theMode) const
+{
+  // the only differ with selection highlight is color, so
+  // sync transparency values
+  myStyles[Prs3d_TypeOfHighlight_SubIntensity]->SetTransparency (myStyles[Prs3d_TypeOfHighlight_Selected]->Transparency());
+
+  theOwner->HilightWithColor (myMainPM, myStyles[Prs3d_TypeOfHighlight_SubIntensity], theMode);
+}
+
+//=======================================================================
+//function : isSlowHiStyle
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::isSlowHiStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                        const Handle(V3d_Viewer)& theViewer) const
+{
+  if (const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable()))
+  {
+    const Handle(Prs3d_Drawer)& aHiStyle = getHiStyle (anObj, myLastPicked);
+    return aHiStyle->ZLayer() == Graphic3d_ZLayerId_UNKNOWN
+       || !theViewer->ZLayerSettings (aHiStyle->ZLayer()).IsImmediate();
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : MoveTo
+//purpose  :
+//=======================================================================
+AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  theXPix,
+                                                      const Standard_Integer  theYPix,
+                                                      const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean  theToRedrawOnUpdate)
+{
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
+  }
+
+  myCurDetected = 0;
+  myCurHighlighted = 0;
+  myDetectedSeq.Clear();
+  myLastActiveView = theView.get();
+
+  // preliminaires
+  AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
+  Standard_Boolean      toUpdateViewer = Standard_False;
+
+  myFilters->SetDisabledObjects (theView->View()->HiddenObjects());
+  myMainSel->Pick (theXPix, theYPix, theView);
+
+  // filling of myAISDetectedSeq sequence storing information about detected AIS objects
+  // (the objects must be AIS_Shapes)
+  const Standard_Integer aDetectedNb = myMainSel->NbPicked();
+  Standard_Integer aNewDetected = 0;
+  Standard_Boolean toIgnoreDetTop = Standard_False;
+  for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
+  {
+    Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aDetIter);
+    if (anOwner.IsNull()
+     || !myFilters->IsOk (anOwner))
+    {
+      if (myPickingStrategy == SelectMgr_PickingStrategy_OnlyTopmost)
+      {
+        toIgnoreDetTop = Standard_True;
+      }
+      continue;
+    }
+
+    if (aNewDetected < 1
+    && !toIgnoreDetTop)
+    {
+      aNewDetected = aDetIter;
+    }
+
+    myDetectedSeq.Append (aDetIter);
+  }
+
+  if (aNewDetected >= 1)
+  {
+    myCurHighlighted = myDetectedSeq.Lower();
+
+    // Does nothing if previously detected object is equal to the current one.
+    // However in advanced selection modes the owners comparison
+    // is not effective because in that case only one owner manage the
+    // selection in current selection mode. It is necessary to check the current detected
+    // entity and hilight it only if the detected entity is not the same as
+    // previous detected (IsForcedHilight call)
+    Handle(SelectMgr_EntityOwner) aNewPickedOwner = myMainSel->Picked (aNewDetected);
+    if (aNewPickedOwner == myLastPicked && !aNewPickedOwner->IsForcedHilight())
+    {
+      return myLastPicked->IsSelected()
+           ? AIS_SOD_Selected
+           : AIS_SOD_OnlyOneDetected;
+    }
+
+    // Previously detected object is unhilighted if it is not selected or hilighted
+    // with selection color if it is selected. Such highlighting with selection color
+    // is needed only if myToHilightSelected flag is true. In this case previously detected
+    // object has been already highlighted with myHilightColor during previous MoveTo()
+    // method call. As result it is necessary to rehighligt it with mySelectionColor.
+    if (!myLastPicked.IsNull() && myLastPicked->HasSelectable())
+    {
+      if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+      {
+        theView->Viewer()->Invalidate();
+      }
+
+      clearDynamicHighlight();
+      toUpdateViewer = Standard_True;
+    }
+
+    // initialize myLastPicked field with currently detected object
+    myLastPicked = aNewPickedOwner;
+
+    // highlight detected object if it is not selected or myToHilightSelected flag is true
+    if (myLastPicked->HasSelectable())
+    {
+      if (myAutoHilight
+       && (!myLastPicked->IsSelected()
+         || myToHilightSelected))
+      {
+        if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+        {
+          theView->Viewer()->Invalidate();
+        }
+
+        highlightWithColor (myLastPicked, theView->Viewer());
+        toUpdateViewer = Standard_True;
+      }
+
+      aStatus = myLastPicked->IsSelected()
+              ? AIS_SOD_Selected
+              : AIS_SOD_OnlyOneDetected;
+    }
+  }
+  else
+  {
+    // previously detected object is unhilighted if it is not selected or hilighted
+    // with selection color if it is selected
+    aStatus = AIS_SOD_Nothing;
+    if (myAutoHilight
+    && !myLastPicked.IsNull()
+     && myLastPicked->HasSelectable())
+    {
+      if (isSlowHiStyle (myLastPicked, theView->Viewer()))
+      {
+        theView->Viewer()->Invalidate();
+      }
+
+      clearDynamicHighlight();
+      toUpdateViewer = Standard_True;
+    }
+
+    myLastPicked.Nullify();
+  }
+
+  if (toUpdateViewer
+   && theToRedrawOnUpdate)
+  {
+    if (theView->ComputedMode())
+    {
+      theView->Viewer()->Update();
+    }
+    else
+    {
+      if (theView->IsInvalidated())
+      {
+        theView->Viewer()->Redraw();
+      }
+      else
+      {
+        theView->Viewer()->RedrawImmediate();
+      }
+    }
+  }
+
+  return aStatus;
+}
+
+//=======================================================================
+//function : AddSelect
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::AddSelect (const Handle(SelectMgr_EntityOwner)& theObject)
+{
+  mySelection->AddSelect (theObject);
+
+  Standard_Integer aSelNum = NbSelected();
+  return (aSelNum == 0) ? AIS_SOP_NothingSelected
+                        : (aSelNum == 1) ? AIS_SOP_OneSelected
+                                         : AIS_SOP_SeveralSelected;
+}
+
+//=======================================================================
+//function : SelectRectangle
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::SelectRectangle (const Graphic3d_Vec2i&    thePntMin,
+                                                          const Graphic3d_Vec2i&    thePntMax,
+                                                          const Handle(V3d_View)&   theView,
+                                                          const AIS_SelectionScheme theSelScheme)
+{
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::SelectRectangle() - invalid argument");
+  }
+
+  myLastActiveView = theView.get();
+  myMainSel->Pick (thePntMin.x(), thePntMin.y(), thePntMax.x(), thePntMax.y(), theView);
+
+  AIS_NArray1OfEntityOwner aPickedOwners;
+  if (myMainSel->NbPicked() > 0)
+  {
+    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    {
+      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+    }
+  }
+
+  return Select (aPickedOwners, theSelScheme);
+}
+
+//=======================================================================
+//function : SelectPolygon
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::SelectPolygon (const TColgp_Array1OfPnt2d& thePolyline,
+                                                        const Handle(V3d_View)&     theView,
+                                                        const AIS_SelectionScheme   theSelScheme)
+{
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::SelectPolygon() - invalid argument");
+  }
+
+  myLastActiveView = theView.get();
+  myMainSel->Pick (thePolyline, theView);
+
+  AIS_NArray1OfEntityOwner aPickedOwners;
+  if (myMainSel->NbPicked() > 0)
+  {
+    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    {
+      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+    }
+  }
+
+  return Select (aPickedOwners, theSelScheme);
+}
+
+//=======================================================================
+//function : SelectPoint
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::SelectPoint (const Graphic3d_Vec2i&    thePnt,
+                                                      const Handle(V3d_View)&   theView,
+                                                      const AIS_SelectionScheme theSelScheme)
+{
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::SelectPoint() - invalid argument");
+  }
+
+  myLastActiveView = theView.get();
+  myMainSel->Pick (thePnt.x(), thePnt.y(), theView);
+
+  AIS_NArray1OfEntityOwner aPickedOwners;
+  if (myMainSel->NbPicked() > 0)
+  {
+    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    {
+      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+    }
+  }
+
+  return Select (aPickedOwners, theSelScheme);
+}
+
+//=======================================================================
+//function : SelectDetected
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::SelectDetected (const AIS_SelectionScheme theSelScheme)
+{
+  if (theSelScheme == AIS_SelectionScheme_Replace && !myLastPicked.IsNull())
+  {
+    Graphic3d_Vec2i aMousePos (-1, -1);
+    if (myMainSel->GetManager().GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point)
+    {
+      aMousePos.SetValues ((Standard_Integer )myMainSel->GetManager().GetMousePosition().X(),
+                           (Standard_Integer )myMainSel->GetManager().GetMousePosition().Y());
+    }
+    if (myLastPicked->HandleMouseClick (aMousePos, Aspect_VKeyMouse_LeftButton, Aspect_VKeyFlags_NONE, false))
+    {
+      return AIS_SOP_NothingSelected;
+    }
+  }
+
+  AIS_NArray1OfEntityOwner aPickedOwners (1, 1);
+  aPickedOwners.SetValue (1, myLastPicked);
+  return Select (aPickedOwners, theSelScheme);
+}
+
+//=======================================================================
+//function : Select
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Integer  theXPMin,
+                                                 const Standard_Integer  theYPMin,
+                                                 const Standard_Integer  theXPMax,
+                                                 const Standard_Integer  theYPMax,
+                                                 const Handle(V3d_View)& theView,
+                                                 const Standard_Boolean  theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectRectangle (Graphic3d_Vec2i (theXPMin, theYPMin),
+                                              Graphic3d_Vec2i (theXPMax, theYPMax),
+                                              theView);
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : Select
+//purpose  : Selection by polyline
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::Select (const TColgp_Array1OfPnt2d& thePolyline,
+                                                 const Handle(V3d_View)&     theView,
+                                                 const Standard_Boolean      theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectPolygon (thePolyline, theView);
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : Select
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::Select (const Standard_Boolean theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectDetected();
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Boolean theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectDetected (AIS_SelectionScheme_XOR);
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const Standard_Integer theXPMin,
+                                                      const Standard_Integer theYPMin,
+                                                      const Standard_Integer theXPMax,
+                                                      const Standard_Integer theYPMax,
+                                                      const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectRectangle (Graphic3d_Vec2i (theXPMin, theYPMin),
+                                              Graphic3d_Vec2i (theXPMax, theYPMax),
+                                              theView,
+                                              AIS_SelectionScheme_XOR);
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : ShiftSelect
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline,
+                                                      const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean theToUpdateViewer)
+{
+  AIS_StatusOfPick aStatus = SelectPolygon (thePolyline, theView, AIS_SelectionScheme_XOR);
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+  return aStatus;
+}
+
+//=======================================================================
+//function : Select
+//purpose  :
+//=======================================================================
+AIS_StatusOfPick AIS_InteractiveContext::Select (const AIS_NArray1OfEntityOwner& theOwners,
+                                                 const AIS_SelectionScheme theSelScheme)
+{
+  NCollection_IndexedMap<Handle(SelectMgr_EntityOwner)> aSelOwnerMap (myAutoHilight ? mySelection->Objects().Size() : 0);
+  if (myAutoHilight)
+  {
+    clearDynamicHighlight();
+
+    // collect currently selected owners
+    for (AIS_NListOfEntityOwner::Iterator anOwnerIter (mySelection->Objects()); anOwnerIter.More(); anOwnerIter.Next())
+    {
+      aSelOwnerMap.Add (anOwnerIter.Value());
+    }
+  }
+
+  mySelection->SelectOwners (theOwners, theSelScheme, myMainSel->GetManager().IsOverlapAllowed(), myFilters);
+
+  if (myAutoHilight)
+  {
+    // collect lists of owners to unhighlight (unselected) and to highlight (selected)
+    AIS_NListOfEntityOwner anOwnersToUnhighlight, anOwnersToHighlight;
+    for (AIS_NListOfEntityOwner::Iterator anOwnerIter (mySelection->Objects()); anOwnerIter.More(); anOwnerIter.Next())
+    {
+      // add newly selected owners
+      const Handle(SelectMgr_EntityOwner)& anOwner = anOwnerIter.Value();
+      if (!aSelOwnerMap.RemoveKey (anOwner))
+      {
+        // newly selected owner
+        anOwnersToHighlight.Append (anOwner);
+      }
+      else
+      {
+        // already selected owner
+        if (!anOwner->IsAutoHilight()
+          && theSelScheme != AIS_SelectionScheme_XOR
+          && theSelScheme != AIS_SelectionScheme_Add)
+        {
+          // hack to perform AIS_InteractiveObject::ClearSelected() before highlighting
+          anOwnersToUnhighlight.Append (anOwner);
+          anOwnersToHighlight.Append (anOwner);
+        }
+        else if (anOwner->IsForcedHilight()
+             || !anOwner->IsAutoHilight())
+        {
+          anOwnersToHighlight.Append (anOwner);
+        }
+      }
+    }
+
+    for (NCollection_IndexedMap<Handle(SelectMgr_EntityOwner)>::Iterator anOwnerIter (aSelOwnerMap); anOwnerIter.More(); anOwnerIter.Next())
+    {
+      // owners removed from selection
+      const Handle(SelectMgr_EntityOwner)& anOwner = anOwnerIter.Value();
+      anOwnersToUnhighlight.Append (anOwner);
+    }
+
+    unhighlightOwners (anOwnersToUnhighlight);
+    highlightOwners (anOwnersToHighlight, Handle(Prs3d_Drawer)());
+  }
+
+  Standard_Integer aSelNum = NbSelected();
+  return (aSelNum == 0) ? AIS_SOP_NothingSelected
+                        : (aSelNum == 1) ? AIS_SOP_OneSelected
+                                         : AIS_SOP_SeveralSelected;
+}
+
+//=======================================================================
+//function : HilightSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdateViewer)
+{
+  // In case of selection without using local context
+  clearDynamicHighlight();
+
+  highlightOwners (mySelection->Objects(), Handle(Prs3d_Drawer)());
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+//=======================================================================
+//function : highlightOwners
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::highlightOwners (const AIS_NListOfEntityOwner& theOwners,
+                                              const Handle(Prs3d_Drawer)& theStyle)
+{
+  NCollection_DataMap<Handle(AIS_InteractiveObject), NCollection_Handle<SelectMgr_SequenceOfOwner> > anObjOwnerMap;
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (theOwners); aSelIter.More(); aSelIter.Next())
+  {
+    const Handle(SelectMgr_EntityOwner) anOwner = aSelIter.Value();
+    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    if (anObj.IsNull())
+      continue;
+
+    const Handle(Prs3d_Drawer)& anObjSelStyle = !theStyle.IsNull() ? theStyle : getSelStyle (anObj, anOwner);
+    Handle(AIS_GlobalStatus)* aStatusPtr = myObjects.ChangeSeek (anObj);
+    if (!aStatusPtr)
+    {
+      continue;
+    }
+    if (anOwner == anObj->GlobalSelOwner())
+    {
+      (*aStatusPtr)->SetHilightStatus (Standard_True);
+      (*aStatusPtr)->SetHilightStyle (anObjSelStyle);
+    }
+    if (!anOwner->IsAutoHilight())
+    {
+      NCollection_Handle<SelectMgr_SequenceOfOwner> aSeq;
+      if (anObjOwnerMap.Find (anObj, aSeq))
+      {
+        aSeq->Append (anOwner);
+      }
+      else
+      {
+        aSeq = new SelectMgr_SequenceOfOwner();
+        aSeq->Append (anOwner);
+        anObjOwnerMap.Bind (anObj, aSeq);
+      }
+    }
+    else
+    {
+      const Standard_Integer aHiMode = getHilightMode (anObj, anObjSelStyle, (*aStatusPtr)->DisplayMode());
+      anOwner->HilightWithColor (myMainPM, anObjSelStyle, aHiMode);
+    }
+  }
+
+  if (!anObjOwnerMap.IsEmpty())
+  {
+    for (NCollection_DataMap<Handle(AIS_InteractiveObject), NCollection_Handle<SelectMgr_SequenceOfOwner> >::Iterator anIter (anObjOwnerMap);
+         anIter.More(); anIter.Next())
+    {
+      anIter.Key()->HilightSelected (myMainPM, *anIter.Value());
+    }
+    anObjOwnerMap.Clear();
+  }
+}
+
+//=======================================================================
+//function : UnhilightSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::UnhilightSelected (const Standard_Boolean theToUpdateViewer)
+{
+  unhighlightSelected();
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+//=======================================================================
+//function : ClearSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::ClearSelected (const Standard_Boolean theToUpdateViewer)
+{
+  if (NbSelected() == 0)
+  {
+    return;
+  }
+
+  if (myAutoHilight)
+  {
+    unhighlightSelected();
+  }
+
+  mySelection->Clear();
+  if (myAutoHilight)
+  {
+    clearDynamicHighlight();
+  }
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+//=======================================================================
+//function : SetSelected
+//purpose  : Sets the whole object as selected and highlights it with selection color
+//=======================================================================
+void AIS_InteractiveContext::SetSelected (const Handle(AIS_InteractiveObject)& theObject,
+                                          const Standard_Boolean theToUpdateViewer)
+{
+  if (theObject.IsNull())
+  {
+    return;
+  }
+
+  if (!myObjects.IsBound (theObject))
+  {
+    return;
+  }
+
+  Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
+  if (anOwner.IsNull())
+  {
+    return;
+  }
+
+  const Handle(Prs3d_Drawer)& anObjSelStyle = getSelStyle (theObject, anOwner);
+  if (NbSelected() == 1 && myObjects (theObject)->IsHilighted() && myAutoHilight)
+  {
+    Handle(Prs3d_Drawer) aCustomStyle;
+    if (HighlightStyle (theObject, aCustomStyle))
+    {
+      if (!aCustomStyle.IsNull() && anObjSelStyle != aCustomStyle)
+      {
+        HilightWithColor (theObject, anObjSelStyle, theToUpdateViewer);
+      }
+    }
+    return;
+  }
+
+  for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
+  {
+    const Handle(SelectMgr_EntityOwner)& aSelOwner = aSelIter.Value();
+    if (!myFilters->IsOk (aSelOwner))
+    {
+      continue;
+    }
+
+    Handle(AIS_InteractiveObject) aSelectable = Handle(AIS_InteractiveObject)::DownCast (aSelOwner->Selectable());
+    if (myAutoHilight)
+    {
+      Unhilight (aSelectable, Standard_False);
+    }
+    if (aSelOwner == aSelectable->GlobalSelOwner())
+    {
+      if (Handle(AIS_GlobalStatus)* aStatusPtr = myObjects.ChangeSeek (aSelectable))
+      {
+        (*aStatusPtr)->SetHilightStatus (Standard_False);
+      }
+    }
+  }
+
+  // added to avoid untimely viewer update...
+  mySelection->ClearAndSelect (anOwner);
+
+  if (myAutoHilight)
+  {
+    Handle(Prs3d_Drawer) aCustomStyle;
+    if (HighlightStyle (theObject, aCustomStyle))
+    {
+      if (!aCustomStyle.IsNull() && anObjSelStyle != aCustomStyle)
+      {
+        HilightWithColor (theObject, anObjSelStyle, Standard_False);
+      }
+    }
+    else
+    {
+      HilightWithColor (theObject, anObjSelStyle, Standard_False);
+    }
+  }
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+//=======================================================================
+//function : SetSelected
+//purpose  : Sets the whole object as selected and highlights it with selection color
+//=======================================================================
+void AIS_InteractiveContext::SetSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                          const Standard_Boolean theToUpdateViewer)
+{
+  if (theOwner.IsNull() || !theOwner->HasSelectable() || !myFilters->IsOk (theOwner))
+  {
+    return;
+  }
+
+  const Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+  const Handle(Prs3d_Drawer)& anObjSelStyle = getSelStyle (anObject, theOwner);
+  if (NbSelected() == 1 && theOwner->IsSelected() && !theOwner->IsForcedHilight())
+  {
+    Handle(Prs3d_Drawer) aCustomStyle;
+    if (myAutoHilight && HighlightStyle (theOwner, aCustomStyle))
+    {
+      if (!aCustomStyle.IsNull() && anObjSelStyle != aCustomStyle)
+      {
+        const Standard_Integer aHiMode = anObject->HasHilightMode() ? anObject->HilightMode() : 0;
+        theOwner->HilightWithColor (myMainPM, anObjSelStyle, aHiMode);
+      }
+    }
+    return;
+  }
+
+  if (!myObjects.IsBound (anObject))
+  {
+    return;
+  }
+
+  if (myAutoHilight)
+  {
+    unhighlightSelected();
+  }
+
+  mySelection->ClearAndSelect (theOwner);
+  if (myAutoHilight)
+  {
+    Handle(Prs3d_Drawer) aCustomStyle;
+    if (!HighlightStyle (theOwner, aCustomStyle) ||
+      (!aCustomStyle.IsNull() && aCustomStyle != anObjSelStyle))
+    {
+      highlightSelected (theOwner);
+    }
+  }
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+//=======================================================================
+//function : AddOrRemoveSelected
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(AIS_InteractiveObject)& theObject,
+                                                  const Standard_Boolean theToUpdateViewer)
+{
+  if (theObject.IsNull()
+  || !myObjects.IsBound (theObject))
+  {
+    return;
+  }
+
+  const Handle(SelectMgr_EntityOwner) anOwner = theObject->GlobalSelOwner();
+  if (!anOwner.IsNull()
+    && anOwner->HasSelectable())
+  {
+    AddOrRemoveSelected (anOwner, theToUpdateViewer);
+  }
+}
+
+//=======================================================================
+//function : AddOrRemoveSelected
+//purpose  : Allows to highlight or unhighlight the owner given depending on
+//           its selection status
+//=======================================================================
+void AIS_InteractiveContext::AddOrRemoveSelected (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                  const Standard_Boolean theToUpdateViewer)
+{
+  if (theOwner.IsNull() || !theOwner->HasSelectable())
+  {
+    return;
+  }
+
+  if (!myFilters->IsOk(theOwner) && !theOwner->IsSelected())
+  {
+    return;
+  }
+
+  mySelection->Select (theOwner);
+
+  if (myAutoHilight)
+  {
+    const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theOwner->Selectable());
+    Handle(AIS_GlobalStatus)* aStatusPtr = myObjects.ChangeSeek (anObj);
+    if (!aStatusPtr)
+    {
+      return;
+    }
+
+    if (theOwner->IsSelected())
+    {
+      highlightSelected (theOwner);
+    }
+    else
+    {
+      AIS_NListOfEntityOwner anOwners;
+      anOwners.Append (theOwner);
+      unhighlightOwners (anOwners);
+
+      (*aStatusPtr)->SetHilightStyle (Handle(Prs3d_Drawer)());
+    }
+  }
+
+  if (theToUpdateViewer)
+  {
+    UpdateCurrentViewer();
+  }
+}
+
+// =======================================================================
+// function : SetSelectedState
+// purpose  :
+// =======================================================================
+Standard_Boolean AIS_InteractiveContext::SetSelectedState (const Handle(SelectMgr_EntityOwner)& theEntity,
+                                                           const Standard_Boolean theIsSelected)
+{
+  if (theEntity.IsNull())
+  {
+    throw Standard_ProgramError ("Internal error: AIS_InteractiveContext::SetSelectedState() called with NO object");
+  }
+
+  if (!theEntity->HasSelectable()
+    || mySelection->IsSelected (theEntity) == theIsSelected)
+  {
+    return false;
+  }
+
+  if (theEntity->IsAutoHilight())
+  {
+    AddOrRemoveSelected (theEntity, false);
+    return true;
+  }
+
+  if (theIsSelected)
+  {
+    const AIS_SelectStatus aSelStatus = mySelection->AddSelect (theEntity);
+    theEntity->SetSelected (true);
+    return aSelStatus == AIS_SS_Added;
+  }
+  else
+  {
+    const AIS_SelectStatus aSelStatus = mySelection->Select (theEntity);
+    theEntity->SetSelected (false);
+    return aSelStatus == AIS_SS_Removed;
+  }
+}
+
+//=======================================================================
+//function : IsSelected
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::IsSelected (const Handle(AIS_InteractiveObject)& theObj) const
+{
+  if (theObj.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theObj);
+  if (aStatus == NULL)
+  {
+    return Standard_False;
+  }
+
+  const Standard_Integer aGlobalSelMode = theObj->GlobalSelectionMode();
+  const TColStd_ListOfInteger& anActivatedModes = (*aStatus)->SelectionModes();
+  for (TColStd_ListIteratorOfListOfInteger aModeIter (anActivatedModes); aModeIter.More(); aModeIter.Next())
+  {
+    if (aModeIter.Value() == aGlobalSelMode)
+    {
+      if (Handle(SelectMgr_EntityOwner) aGlobOwner = theObj->GlobalSelOwner())
+      {
+        return aGlobOwner->IsSelected();
+      }
+      return Standard_False;
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : FirstSelectedObject
+//purpose  :
+//=======================================================================
+Handle(AIS_InteractiveObject) AIS_InteractiveContext::FirstSelectedObject() const
+{
+  return !mySelection->Objects().IsEmpty()
+        ? Handle(AIS_InteractiveObject)::DownCast (mySelection->Objects().First()->Selectable())
+        : Handle(AIS_InteractiveObject)();
+}
+
+//=======================================================================
+//function : HasSelectedShape
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::HasSelectedShape() const
+{
+  if (!mySelection->More())
+  {
+    return Standard_False;
+  }
+
+  const Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (mySelection->Value());
+  return !anOwner.IsNull() && anOwner->HasShape();
+}
+
+//=======================================================================
+//function : SelectedShape
+//purpose  :
+//=======================================================================
+TopoDS_Shape AIS_InteractiveContext::SelectedShape() const
+{
+  if (!mySelection->More())
+  {
+    return TopoDS_Shape();
+  }
+
+  const Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (mySelection->Value());
+  if (anOwner.IsNull() || !anOwner->HasSelectable())
+  {
+    return TopoDS_Shape();
+  }
+
+  return anOwner->Shape().Located (anOwner->Location() * anOwner->Shape().Location());
+}
+
+//=======================================================================
+//function : EntityOwners
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::EntityOwners (Handle(SelectMgr_IndexedMapOfOwner)& theOwners,
+                                           const Handle(AIS_InteractiveObject)& theIObj,
+                                           const Standard_Integer theMode) const
+{
+  if (theIObj.IsNull())
+  {
+    return;
+  }
+
+  TColStd_ListOfInteger aModes;
+  if (theMode == -1)
+  {
+    ActivatedModes (theIObj, aModes);
+  }
+  else
+  {
+    aModes.Append (theMode);
+  }
+
+  if (theOwners.IsNull())
+  {
+    theOwners = new SelectMgr_IndexedMapOfOwner();
+  }
+
+  for (TColStd_ListIteratorOfListOfInteger anItr (aModes); anItr.More(); anItr.Next())
+  {
+    const int aMode = anItr.Value();
+    const Handle(SelectMgr_Selection)& aSel = theIObj->Selection (aMode);
+    if (aSel.IsNull())
+    {
+      continue;
+    }
+
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+    {
+      if (Handle(Select3D_SensitiveEntity) aEntity = aSelEntIter.Value()->BaseSensitive())
+      {
+        if (const Handle(SelectMgr_EntityOwner)& aOwner = aEntity->OwnerId())
+        {
+          theOwners->Add (aOwner);
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : HasDetectedShape
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::HasDetectedShape() const
+{
+  Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (myLastPicked);
+  return !anOwner.IsNull()
+       && anOwner->HasShape();
+}
+
+//=======================================================================
+//function : DetectedShape
+//purpose  :
+//=======================================================================
+const TopoDS_Shape& AIS_InteractiveContext::DetectedShape() const
+{
+  Handle(StdSelect_BRepOwner) anOwner = Handle(StdSelect_BRepOwner)::DownCast (myLastPicked);
+  return anOwner->Shape();
+}
+
+//=======================================================================
+//function : HilightNextDetected
+//purpose  :
+//=======================================================================
+Standard_Integer AIS_InteractiveContext::HilightNextDetected (const Handle(V3d_View)& theView,
+                                                              const Standard_Boolean  theToRedrawImmediate)
+{
+  myMainPM->ClearImmediateDraw();
+  if (myDetectedSeq.IsEmpty())
+  {
+    return 0;
+  }
+
+  if (++myCurHighlighted > myDetectedSeq.Upper())
+  {
+    myCurHighlighted = myDetectedSeq.Lower();
+  }
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  if (anOwner.IsNull())
+  {
+    return 0;
+  }
+
+  highlightWithColor (anOwner, theView->Viewer());
+  myLastPicked = anOwner;
+
+  if (theToRedrawImmediate)
+  {
+    myMainPM->RedrawImmediate (theView->Viewer());
+    myMainVwr->RedrawImmediate();
+  }
+
+  return myCurHighlighted;
+}
+
+//=======================================================================
+//function : HilightPreviousDetected
+//purpose  :
+//=======================================================================
+Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V3d_View)& theView,
+                                                                  const Standard_Boolean  theToRedrawImmediate)
+{
+  myMainPM->ClearImmediateDraw();
+  if (myDetectedSeq.IsEmpty())
+  {
+    return 0;
+  }
+
+  if (--myCurHighlighted < myDetectedSeq.Lower())
+  {
+    myCurHighlighted = myDetectedSeq.Upper();
+  }
+  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  if (anOwner.IsNull())
+  {
+    return 0;
+  }
+
+  highlightWithColor (anOwner, theView->Viewer());
+  myLastPicked = anOwner;
+
+  if (theToRedrawImmediate)
+  {
+    myMainPM->RedrawImmediate (theView->Viewer());
+    myMainVwr->RedrawImmediate();
+  }
+
+  return myCurHighlighted;
+}
+
+//=======================================================================
+//function : DetectedCurrentOwner
+//purpose  :
+//=======================================================================
+Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedCurrentOwner() const
+{
+  return MoreDetected()
+       ? myMainSel->Picked (myDetectedSeq (myCurDetected))
+       : Handle(SelectMgr_EntityOwner)();
+}
+
+//=======================================================================
+//function : DetectedCurrentShape
+//purpose  :
+//=======================================================================
+const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
+{
+  static const TopoDS_Shape AIS_InteractiveContext_myDummyShape;
+
+  Standard_DISABLE_DEPRECATION_WARNINGS
+  Handle(AIS_Shape) aCurrentShape = Handle(AIS_Shape)::DownCast (DetectedCurrentObject());
+  Standard_ENABLE_DEPRECATION_WARNINGS
+  return !aCurrentShape.IsNull()
+        ? aCurrentShape->Shape()
+        : AIS_InteractiveContext_myDummyShape;
+}
+
+//=======================================================================
+//function : DetectedCurrentObject
+//purpose  :
+//=======================================================================
+Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() const
+{
+  return MoreDetected()
+       ? Handle(AIS_InteractiveObject)::DownCast (myMainSel->Picked (myDetectedSeq (myCurDetected))->Selectable())
+       : Handle(AIS_InteractiveObject)();
+}
+
+//=======================================================================
+//function : SetSelectionModeActive
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SetSelectionModeActive (const Handle(AIS_InteractiveObject)& theObj,
+                                                     const Standard_Integer theMode,
+                                                     const Standard_Boolean theIsActive,
+                                                     const AIS_SelectionModesConcurrency theActiveFilter,
+                                                     const Standard_Boolean theIsForce)
+{
+  if (theObj.IsNull())
+  {
+    return;
+  }
+
+  const Handle(AIS_GlobalStatus)* aStat = myObjects.Seek (theObj);
+  if (aStat == NULL)
+  {
+    return;
+  }
+
+  if (!theIsActive
+   || (theMode == -1
+    && theActiveFilter == AIS_SelectionModesConcurrency_Single))
+  {
+    if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed
+     || theIsForce)
+    {
+      if (theMode == -1)
+      {
+        for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+        {
+          mgrSelector->Deactivate (theObj, aModeIter.Value());
+        }
+      }
+      else
+      {
+        mgrSelector->Deactivate (theObj, theMode);
+      }
+    }
+
+    if (theMode == -1)
+    {
+      (*aStat)->ClearSelectionModes();
+    }
+    else
+    {
+      (*aStat)->RemoveSelectionMode (theMode);
+    }
+    return;
+  }
+  else if (theMode == -1)
+  {
+    return;
+  }
+
+  if ((*aStat)->SelectionModes().Size() == 1
+   && (*aStat)->SelectionModes().First() == theMode)
+  {
+    return;
+  }
+
+  if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed
+   || theIsForce)
+  {
+    switch (theActiveFilter)
+    {
+      case AIS_SelectionModesConcurrency_Single:
+      {
+        for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+        {
+          mgrSelector->Deactivate (theObj, aModeIter.Value());
+        }
+        (*aStat)->ClearSelectionModes();
+        break;
+      }
+      case AIS_SelectionModesConcurrency_GlobalOrLocal:
+      {
+        const Standard_Integer aGlobSelMode = theObj->GlobalSelectionMode();
+        TColStd_ListOfInteger aRemovedModes;
+        for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStat)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+        {
+          if ((theMode == aGlobSelMode && aModeIter.Value() != aGlobSelMode)
+           || (theMode != aGlobSelMode && aModeIter.Value() == aGlobSelMode))
+          {
+            mgrSelector->Deactivate (theObj, aModeIter.Value());
+            aRemovedModes.Append (aModeIter.Value());
+          }
+        }
+        if (aRemovedModes.Size() == (*aStat)->SelectionModes().Size())
+        {
+          (*aStat)->ClearSelectionModes();
+        }
+        else
+        {
+          for (TColStd_ListIteratorOfListOfInteger aModeIter (aRemovedModes); aModeIter.More(); aModeIter.Next())
+          {
+            (*aStat)->RemoveSelectionMode (aModeIter.Value());
+          }
+        }
+        break;
+      }
+      case AIS_SelectionModesConcurrency_Multiple:
+      {
+        break;
+      }
+    }
+    mgrSelector->Activate (theObj, theMode);
+  }
+  (*aStat)->AddSelectionMode (theMode);
+}
+
+// ============================================================================
+// function : Activate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Activate (const Standard_Integer theMode,
+                                       const Standard_Boolean theIsForce)
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+  for (AIS_ListOfInteractive::Iterator anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Load (anIter.Value(), -1);
+    Activate (anIter.Value(), theMode, theIsForce);
+  }
+}
+
+// ============================================================================
+// function : Deactivate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Deactivate (const Standard_Integer theMode)
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+  for (AIS_ListOfInteractive::Iterator anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Deactivate (anIter.Value(), theMode);
+  }
+}
+
+// ============================================================================
+// function : Deactivate
+// purpose  :
+// ============================================================================
+void AIS_InteractiveContext::Deactivate()
+{
+  AIS_ListOfInteractive aDisplayedObjects;
+  DisplayedObjects (aDisplayedObjects);
+
+  for (AIS_ListOfInteractive::Iterator anIter (aDisplayedObjects); anIter.More(); anIter.Next())
+  {
+    Deactivate (anIter.Value());
+  }
+}
+
+//=======================================================================
+//function : ActivatedModes
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::ActivatedModes (const Handle(AIS_InteractiveObject)& theObj,
+                                             TColStd_ListOfInteger& theList) const
+{
+  const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theObj);
+  if (aStatus != NULL)
+  {
+    for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStatus)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+    {
+      theList.Append (aModeIter.Value());
+    }
+  }
+}
+
+//=======================================================================
+//function : SubIntensityOn
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SubIntensityOn (const Handle(AIS_InteractiveObject)& theObj,
+                                             const Standard_Boolean theToUpdateViewer)
+{
+  turnOnSubintensity (theObj);
+  if (theToUpdateViewer)
+  {
+    myMainVwr->Update();
+  }
+}
+
+//=======================================================================
+//function : SubIntensityOff
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SubIntensityOff (const Handle(AIS_InteractiveObject)& theObj,
+                                              const Standard_Boolean theToUpdateViewer)
+{
+  const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theObj);
+  if (aStatus == NULL
+   || !(*aStatus)->IsSubIntensityOn())
+  {
+    return;
+  }
+
+  (*aStatus)->SubIntensityOff();
+  Standard_Boolean toUpdateMain = Standard_False;
+  if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
+  {
+    myMainPM->Unhighlight (theObj);
+    toUpdateMain = Standard_True;
+  }
+
+  if (IsSelected (theObj))
+  {
+    highlightSelected (theObj->GlobalSelOwner());
+  }
+
+  if (theToUpdateViewer && toUpdateMain)
+  {
+    myMainVwr->Update();
+  }
+}
+
+//=======================================================================
+//function : DisplayActiveSensitive
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::DisplayActiveSensitive(const Handle(V3d_View)& theView)
+{
+  myMainSel->DisplaySensitive (theView);
+}
+
+//=======================================================================
+//function : DisplayActiveSensitive
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::DisplayActiveSensitive (const Handle(AIS_InteractiveObject)& theObj,
+                                                     const Handle(V3d_View)& theView)
+{
+  const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theObj);
+  if (aStatus == NULL)
+  {
+    return;
+  }
+
+  for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStatus)->SelectionModes()); aModeIter.More(); aModeIter.Next())
+  {
+    const Handle(SelectMgr_Selection)& aSel = theObj->Selection (aModeIter.Value());
+    myMainSel->DisplaySensitive (aSel, theObj->Transformation(), theView, Standard_False);
+  }
+}
+
+//=======================================================================
+//function : ClearActiveSensitive
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::ClearActiveSensitive (const Handle(V3d_View)& theView)
+{
+  myMainSel->ClearSensitive (theView);
+}
+
+//=======================================================================
+//function : PurgeDisplay
+//purpose  :
+//=======================================================================
+Standard_Integer AIS_InteractiveContext::PurgeDisplay()
+{
+  Standard_Integer NbStr = PurgeViewer(myMainVwr);
+  myMainVwr->Update();
+  return NbStr;
+}
+
+//=======================================================================
+//function : PurgeViewer
+//purpose  :
+//=======================================================================
+Standard_Integer AIS_InteractiveContext::PurgeViewer (const Handle(V3d_Viewer)& theViewer)
+{
+  Handle(Graphic3d_StructureManager) GSM = theViewer->StructureManager();
+  Standard_Integer aNbCleared = 0;
+  Graphic3d_MapOfStructure SOS;
+  GSM->DisplayedStructures (SOS);
+  for (Graphic3d_MapOfStructure::Iterator It(SOS); It.More();It.Next())
+  {
+    Handle(Graphic3d_Structure) G = It.Key();
+    Standard_Address anOwner = G->Owner();
+    if (anOwner == NULL)
+    {
+      G->Erase();
+      G->Clear();// it means that it is not referenced as a presentation of InterfactiveObject...
+      ++aNbCleared;
+    }
+    Handle(AIS_InteractiveObject) IO = (AIS_InteractiveObject* )anOwner;
+    if (!myObjects.IsBound (IO))
+    {
+      G->Erase();
+      ++aNbCleared;
+    }
+  }
+  return aNbCleared;
+}
+
+//=======================================================================
+//function : IsImmediateModeOn
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::IsImmediateModeOn() const
+{
+  return myMainPM->IsImmediateModeOn();
+}
+
+//=======================================================================
+//function : BeginImmediateDraw
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::BeginImmediateDraw()
+{
+  if (myMainPM->IsImmediateModeOn())
+  {
+    myMainPM->BeginImmediateDraw();
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : ImmediateAdd
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_InteractiveObject)& theObj,
+                                                       const Standard_Integer theMode)
+{
+  if (myMainPM->IsImmediateModeOn())
+  {
+    myMainPM->AddToImmediateList (myMainPM->Presentation (theObj, theMode));
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : EndImmediateDraw
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::EndImmediateDraw (const Handle(V3d_View)& theView)
+{
+  if (myMainPM->IsImmediateModeOn())
+  {
+    myMainPM->EndImmediateDraw (theView->Viewer());
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : EndImmediateDraw
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::EndImmediateDraw()
+{
+  if (myMainPM->IsImmediateModeOn())
+  {
+    myMainPM->EndImmediateDraw (myMainVwr);
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : SetPolygonOffsets
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::SetPolygonOffsets (const Handle(AIS_InteractiveObject)& theObj,
+                                                const Standard_Integer   theMode,
+                                                const Standard_ShortReal theFactor,
+                                                const Standard_ShortReal theUnits,
+                                                const Standard_Boolean   theToUpdateViewer)
+{
+  if (theObj.IsNull())
+  {
+    return;
+  }
+
+  setContextToObject (theObj);
+  theObj->SetPolygonOffsets (theMode, theFactor, theUnits);
+
+  const Handle(AIS_GlobalStatus)* aStatus = theToUpdateViewer ? myObjects.Seek (theObj) : NULL;
+  if (aStatus != NULL
+   && theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
+  {
+    myMainVwr->Update();
+  }
+}
+
+//=======================================================================
+//function : HasPolygonOffsets
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveContext::HasPolygonOffsets (const Handle(AIS_InteractiveObject)& theObj) const
+{
+  return !theObj.IsNull() && theObj->HasPolygonOffsets();
+}
+
+//=======================================================================
+//function : PolygonOffsets
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::PolygonOffsets (const Handle(AIS_InteractiveObject)& theObj,
+                                             Standard_Integer&   theMode,
+                                             Standard_ShortReal& theFactor,
+                                             Standard_ShortReal& theUnits) const
+{
+  if (HasPolygonOffsets (theObj))
+  {
+    theObj->PolygonOffsets (theMode, theFactor, theUnits);
+  }
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myObjects.Size())
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mgrSelector.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainPM.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainVwr.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainSel.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastActiveView)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastPicked.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToHilightSelected)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mySelection.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myFilters.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myDefaultDrawer.get())
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_Selected])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_Dynamic])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_LocalSelected])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_LocalDynamic])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_SubIntensity])
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedSeq.Size())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurDetected)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurHighlighted)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPickingStrategy)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoHilight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsAutoActivateSelMode)
 }
