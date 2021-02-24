@@ -84,7 +84,7 @@ public: //! @name object display management
   //! - AIS_DS_Erased    hidden in main viewer
   //! - AIS_DS_Temporary temporarily displayed
   //! - AIS_DS_None      nowhere displayed.
-  Standard_EXPORT AIS_DisplayStatus DisplayStatus (const Handle(AIS_InteractiveObject)& anIobj) const;
+  Standard_EXPORT PrsMgr_DisplayStatus DisplayStatus (const Handle(AIS_InteractiveObject)& anIobj) const;
 
   //! Returns the status of the Interactive Context for the view of the Interactive Object.
   Standard_EXPORT void Status (const Handle(AIS_InteractiveObject)& anObj, TCollection_ExtendedString& astatus) const;
@@ -112,7 +112,7 @@ public: //! @name object display management
                                 const Standard_Integer               theDispMode,
                                 const Standard_Integer               theSelectionMode,
                                 const Standard_Boolean               theToUpdateViewer,
-                                const AIS_DisplayStatus              theDispStatus = AIS_DS_None);
+                                const PrsMgr_DisplayStatus           theDispStatus = PrsMgr_DisplayStatus_None);
 
   //! Allows you to load the Interactive Object with a given selection mode,
   //! and/or with the desired decomposition option, whether the object is visualized or not.
@@ -125,7 +125,7 @@ public: //! @name object display management
                 const Standard_Integer               theSelectionMode,
                 const Standard_Boolean               theToUpdateViewer,
                 const Standard_Boolean               theToAllowDecomposition,
-                const AIS_DisplayStatus              theDispStatus = AIS_DS_None)
+                const PrsMgr_DisplayStatus           theDispStatus = PrsMgr_DisplayStatus_None)
   {
     (void )theToAllowDecomposition;
     Display (theIObj, theDispMode, theSelectionMode, theToUpdateViewer, theDispStatus);
@@ -861,11 +861,14 @@ public: //! @name common properties
 
   //! Returns the list theListOfIO of objects with indicated display status particular Type WhichKind and Signature WhichSignature.
   //! By Default, WhichSignature equals 1. This means that there is a check on type only.
-  Standard_EXPORT void ObjectsByDisplayStatus (const AIS_DisplayStatus theStatus, AIS_ListOfInteractive& theListOfIO) const;
+  Standard_EXPORT void ObjectsByDisplayStatus (const PrsMgr_DisplayStatus theStatus, AIS_ListOfInteractive& theListOfIO) const;
 
   //! gives the list of objects with indicated display status
   //! Type and signature by Default, <WhichSignature> = -1 means control only on <WhichKind>.
-  Standard_EXPORT void ObjectsByDisplayStatus (const AIS_KindOfInteractive WhichKind, const Standard_Integer WhichSignature, const AIS_DisplayStatus theStatus, AIS_ListOfInteractive& theListOfIO) const;
+  Standard_EXPORT void ObjectsByDisplayStatus (const AIS_KindOfInteractive WhichKind,
+                                               const Standard_Integer WhichSignature,
+                                               const PrsMgr_DisplayStatus theStatus,
+                                               AIS_ListOfInteractive& theListOfIO) const;
   
   //! fills <aListOfIO> with objects of a particular Type and Signature with no consideration of display status.
   //! by Default, <WhichSignature> = -1 means control only on <WhichKind>.
@@ -881,7 +884,10 @@ public: //! @name common properties
   Standard_EXPORT void Disconnect (const Handle(AIS_InteractiveObject)& theAssembly, const Handle(AIS_InteractiveObject)& theObjToDisconnect = NULL);
 
   //! Query objects visible or hidden in specified view due to affinity mask.
-  Standard_EXPORT void ObjectsForView (AIS_ListOfInteractive& theListOfIO, const Handle(V3d_View)& theView, const Standard_Boolean theIsVisibleInView, const AIS_DisplayStatus theStatus = AIS_DS_None) const;
+  Standard_EXPORT void ObjectsForView (AIS_ListOfInteractive& theListOfIO,
+                                       const Handle(V3d_View)& theView,
+                                       const Standard_Boolean theIsVisibleInView,
+                                       const PrsMgr_DisplayStatus theStatus = PrsMgr_DisplayStatus_None) const;
 
   //! Clears all the structures which don't belong to objects displayed at neutral point
   //! only effective when no Local Context is opened...
@@ -1399,7 +1405,7 @@ protected: //! @name internal methods
   //! @param theObj [in] the object to change status
   //! @param theStatus status, if NULL, unbind object
   Standard_EXPORT void setObjectStatus (const Handle(AIS_InteractiveObject)& theIObj,
-                                        const AIS_DisplayStatus theStatus,
+                                        const PrsMgr_DisplayStatus theStatus,
                                         const Standard_Integer theDispyMode,
                                         const Standard_Integer theSelectionMode);
 

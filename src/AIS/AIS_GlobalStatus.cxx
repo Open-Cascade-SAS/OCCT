@@ -23,7 +23,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_GlobalStatus, Standard_Transient)
 
 AIS_GlobalStatus::AIS_GlobalStatus():
-myStatus(AIS_DS_None),
 myDispMode(AIS_WireFrame),
 myLayerIndex(0),
 myIsHilit(Standard_False),
@@ -31,18 +30,15 @@ mySubInt(Standard_False)
 {  
 }
 
-AIS_GlobalStatus::AIS_GlobalStatus(const AIS_DisplayStatus DS,
-				   const Standard_Integer DMode,
-				   const Standard_Integer SMode,
-				   const Standard_Boolean /*ishilighted*/,
-				   const Standard_Integer Layer):
-myStatus(DS),
-myDispMode(DMode),
-myLayerIndex(Layer),
-myIsHilit(Standard_False),
-mySubInt(Standard_False)
+AIS_GlobalStatus::AIS_GlobalStatus (const Standard_Integer theDMode,
+                                    const Standard_Integer theSMode,
+                                    const Standard_Integer theLayer):
+myDispMode (theDMode),
+myLayerIndex (theLayer),
+myIsHilit (Standard_False),
+mySubInt (Standard_False)
 {
-  mySelModes.Append(SMode);
+  mySelModes.Append (theSMode);
 }
 
 void AIS_GlobalStatus::RemoveSelectionMode(const Standard_Integer aMode)

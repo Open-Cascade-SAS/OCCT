@@ -47,6 +47,7 @@ PrsMgr_PresentableObject::PrsMgr_PresentableObject (const PrsMgr_TypeOfPresentat
 : myParent (NULL),
   myDrawer (new Prs3d_Drawer()),
   myTypeOfPresentation3d (theType),
+  myDisplayStatus (PrsMgr_DisplayStatus_None),
   //
   myCurrentFacingModel (Aspect_TOFM_BOTH_SIDE),
   myOwnWidth (0.0f),

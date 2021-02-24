@@ -143,6 +143,9 @@ protected:
   //! may have a presentation dependant of the view of Display.
   Standard_EXPORT AIS_InteractiveObject(const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
+  //! Set presentation display status.
+  Standard_EXPORT void SetDisplayStatus (PrsMgr_DisplayStatus theStatus);
+
 protected:
 
   AIS_InteractiveContext*    myCTXPtr; //!< pointer to Interactive Context, where object is currently displayed; @sa SetContext()

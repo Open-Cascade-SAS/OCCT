@@ -43,9 +43,9 @@ public:
 
   Standard_EXPORT AIS_GlobalStatus();
   
-  Standard_EXPORT AIS_GlobalStatus(const AIS_DisplayStatus aStat, const Standard_Integer aDispMode, const Standard_Integer aSelMode, const Standard_Boolean ishilighted = Standard_False, const Standard_Integer aLayerIndex = 0);
-
-  void SetGraphicStatus (const AIS_DisplayStatus theStatus) { myStatus = theStatus; }
+  Standard_EXPORT AIS_GlobalStatus (const Standard_Integer theDispMode,
+                                    const Standard_Integer theSelMode,
+                                    const Standard_Integer theLayerIndex = 0);
 
   void AddSelectionMode (const Standard_Integer theMode) { if (!IsSModeIn (theMode)) mySelModes.Append (theMode); }
 
@@ -74,9 +74,7 @@ public:
   Standard_EXPORT void RemoveSelectionMode (const Standard_Integer aMode);
   
   Standard_EXPORT void ClearSelectionModes();
-  
-  AIS_DisplayStatus GraphicStatus() const { return myStatus; }
-  
+
   //! keeps the active selection modes of the object
   //! in the main viewer.
   const TColStd_ListOfInteger& SelectionModes() const { return mySelModes; }
@@ -95,7 +93,6 @@ private:
 
   TColStd_ListOfInteger mySelModes;
   Handle(Prs3d_Drawer) myHiStyle;
-  AIS_DisplayStatus myStatus;
   Standard_Integer myDispMode;
   Standard_Integer myLayerIndex;
   Standard_Boolean myIsHilit;

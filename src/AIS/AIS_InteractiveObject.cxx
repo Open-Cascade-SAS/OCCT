@@ -98,6 +98,15 @@ void AIS_InteractiveObject::SetContext (const Handle(AIS_InteractiveContext)& th
 }
 
 //=======================================================================
+//function : SetDisplayStatus
+//purpose  :
+//=======================================================================
+void AIS_InteractiveObject::SetDisplayStatus (PrsMgr_DisplayStatus theStatus)
+{
+  myDisplayStatus = theStatus;
+}
+
+//=======================================================================
 //function : HasPresentation
 //purpose  :
 //=======================================================================

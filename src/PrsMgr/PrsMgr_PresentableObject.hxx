@@ -28,6 +28,7 @@
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_Presentations.hxx>
+#include <PrsMgr_DisplayStatus.hxx>
 #include <PrsMgr_TypeOfPresentation3d.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
@@ -160,6 +161,9 @@ public:
 
   //! Set type of presentation.
   Standard_EXPORT void SetTypeOfPresentation (const PrsMgr_TypeOfPresentation3d theType);
+
+  //! Return presentation display status; PrsMgr_DisplayStatus_None by default.
+  PrsMgr_DisplayStatus DisplayStatus() const { return myDisplayStatus; }
 
 public: //! @name presentation attributes
 
@@ -522,6 +526,7 @@ protected:
   PrsMgr_ListOfPresentableObjects        myChildren;                //!< list of children
   gp_GTrsf                               myInvTransformation;       //!< inversion of absolute transformation (combined parents + local transformations)
   PrsMgr_TypeOfPresentation3d            myTypeOfPresentation3d;    //!< presentation type
+  PrsMgr_DisplayStatus                   myDisplayStatus;           //!< presentation display status
 
   Aspect_TypeOfFacingModel               myCurrentFacingModel;      //!< current facing model
   Standard_ShortReal                     myOwnWidth;                //!< custom width value

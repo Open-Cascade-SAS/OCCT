@@ -66,7 +66,7 @@ void AIS_InteractiveContext::SetSelectionModeActive (const Handle(AIS_Interactiv
    || (theMode == -1
     && theActiveFilter == AIS_SelectionModesConcurrency_Single))
   {
-    if ((*aStat)->GraphicStatus() == AIS_DS_Displayed
+    if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed
      || theIsForce)
     {
       if (theMode == -1)
@@ -103,7 +103,7 @@ void AIS_InteractiveContext::SetSelectionModeActive (const Handle(AIS_Interactiv
     return;
   }
 
-  if ((*aStat)->GraphicStatus() == AIS_DS_Displayed
+  if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed
     || theIsForce)
   {
     switch (theActiveFilter)
@@ -247,7 +247,7 @@ void AIS_InteractiveContext::SubIntensityOff (const Handle(AIS_InteractiveObject
 
   (*aStatus)->SubIntensityOff();
   Standard_Boolean toUpdateMain = Standard_False;
-  if ((*aStatus)->GraphicStatus() == AIS_DS_Displayed)
+  if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
   {
     myMainPM->Unhighlight (theObj);
     toUpdateMain = Standard_True;

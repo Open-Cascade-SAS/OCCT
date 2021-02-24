@@ -52,12 +52,11 @@ void AIS_InteractiveContext::SetPolygonOffsets(
   setContextToObject (anObj);
   anObj->SetPolygonOffsets( aMode, aFactor, aUnits );
 
-  if ( updateviewer ) {
-    if( myObjects.IsBound( anObj ) ) {
-      Handle(AIS_GlobalStatus) STATUS = myObjects(anObj);
-      if ( STATUS->GraphicStatus() == AIS_DS_Displayed )
-        myMainVwr->Update();
-    }
+  const Handle(AIS_GlobalStatus)* aStatus = updateviewer ? myObjects.Seek (anObj) : NULL;
+  if (aStatus != NULL
+   && anObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
+  {
+    myMainVwr->Update();
   }
 }
 
