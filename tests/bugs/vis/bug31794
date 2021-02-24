@@ -1,0 +1,22 @@
+puts "============"
+puts "0031794: Visualization - Highlighting of AIS_Shape works incorrectly when AddChild() used"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b   10 10 10
+box p1 -100 -100  0 200 200 0 -preview
+box p2  100 -100  0 200 200 0 -preview
+vdisplay b -dispMode 1
+vdisplay p1 p2 -dispMode 1 -highMode 1
+vfit
+vselmode b 0 0
+verase p1
+vchild b -add p1
+vchild b -add p2
+vselmode b 0 1
+vmoveto 100 200
+if {[vreadpixel 100 200 -rgb -name] != "BLACK"} { puts "Error" }
+
+vdump ${imagedir}/${casename}.png

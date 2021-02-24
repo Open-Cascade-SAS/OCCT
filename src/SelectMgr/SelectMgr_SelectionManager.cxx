@@ -114,7 +114,11 @@ void SelectMgr_SelectionManager::Activate (const Handle(SelectMgr_SelectableObje
 
   for (PrsMgr_ListOfPresentableObjectsIter anChildIter (theObject->Children()); anChildIter.More(); anChildIter.Next())
   {
-    Activate (Handle(SelectMgr_SelectableObject)::DownCast (anChildIter.Value()), theMode);
+    Handle(SelectMgr_SelectableObject) aChild = Handle(SelectMgr_SelectableObject)::DownCast (anChildIter.Value());
+    if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
+    {
+      Activate (aChild, theMode);
+    }
   }
   if (!theObject->HasOwnPresentations())
     return;

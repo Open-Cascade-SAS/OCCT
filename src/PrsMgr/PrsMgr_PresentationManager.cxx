@@ -73,7 +73,11 @@ void PrsMgr_PresentationManager::Display (const Handle(PrsMgr_PresentableObject)
   {
     for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More(); anIter.Next())
     {
-      Display(anIter.Value(), theMode);
+      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
+      {
+        Display(anIter.Value(), theMode);
+      }
     }
   }
 }
@@ -157,7 +161,12 @@ void PrsMgr_PresentationManager::SetVisibility (const Handle(PrsMgr_PresentableO
   {
     for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More(); anIter.Next())
     {
-      SetVisibility(anIter.Value(), theMode, theValue);
+      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      if (!theValue
+        || aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
+      {
+        SetVisibility (anIter.Value(), theMode, theValue);
+      }
     }
   }
   if (!thePrsObj->HasOwnPresentations())
@@ -616,7 +625,11 @@ void PrsMgr_PresentationManager::Color (const Handle(PrsMgr_PresentableObject)& 
   {
     for (PrsMgr_ListOfPresentableObjectsIter anIter(thePrsObj->Children()); anIter.More(); anIter.Next())
     {
-      Color(anIter.Value(), theStyle, theMode, NULL, theImmediateStructLayerId);
+      const Handle(PrsMgr_PresentableObject)& aChild = anIter.Value();
+      if (aChild->DisplayStatus() != PrsMgr_DisplayStatus_Erased)
+      {
+        Color (aChild, theStyle, theMode, NULL, theImmediateStructLayerId);
+      }
     }
   }
   if (!thePrsObj->HasOwnPresentations())
