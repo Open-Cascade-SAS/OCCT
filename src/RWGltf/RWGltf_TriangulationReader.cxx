@@ -14,6 +14,7 @@
 
 #include <RWGltf_TriangulationReader.hxx>
 
+#include <RWGltf_GltfLatePrimitiveArray.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <Standard_ReadBuffer.hxx>
 
@@ -83,6 +84,24 @@ Handle(Poly_Triangulation) RWGltf_TriangulationReader::result()
   }
 
   return myTriangulation;
+}
+
+// =======================================================================
+// function : load
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
+                                       const Handle(OSD_FileSystem)& theFileSystem)
+{
+  if (!RWGltf_PrimitiveArrayReader::load (theMesh, theFileSystem))
+  {
+    return false;
+  }
+  if (!theMesh->CachedMinMax().IsVoid())
+  {
+    myTriangulation->SetCachedMinMax (theMesh->CachedMinMax());
+  }
+  return true;
 }
 
 // =======================================================================

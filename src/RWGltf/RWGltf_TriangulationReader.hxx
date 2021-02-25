@@ -34,6 +34,10 @@ public:
 
 protected:
 
+  //! Load primitive array.
+  Standard_EXPORT virtual bool load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
+                                     const Handle(OSD_FileSystem)& theFileSystem) Standard_OVERRIDE;
+
   //! Create Poly_Triangulation from collected data
   Standard_EXPORT virtual Handle(Poly_Triangulation) result() Standard_OVERRIDE;
 
