@@ -8938,30 +8938,6 @@ static Standard_Integer VNbSelected (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : VPurgeDisplay
-//purpose  : Switches altialiasing on or off
-//=======================================================================
-static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
-                                Standard_Integer argc,
-                                const char ** argv)
-{
-  if (argc > 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  di << aContext->PurgeDisplay() << "\n";
-  return 0;
-}
-
-//=======================================================================
 //function : VSetViewSize
 //purpose  :
 //=======================================================================
@@ -15265,10 +15241,6 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "   vzrange                - without parameters shows current values\n"
     "   vzrange [znear] [zfar] - applies provided values to view",
     __FILE__,VZRange, group);
-  theCommands.Add ("vpurgedisplay",
-    "vpurgedisplay"
-    "- removes structures which don't belong to objects displayed in neutral point",
-    __FILE__, VPurgeDisplay, group);
   theCommands.Add("vsetviewsize",
     "vsetviewsize size",
     __FILE__,VSetViewSize,group);

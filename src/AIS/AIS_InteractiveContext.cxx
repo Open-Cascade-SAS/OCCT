@@ -4050,47 +4050,6 @@ void AIS_InteractiveContext::ClearActiveSensitive (const Handle(V3d_View)& theVi
 }
 
 //=======================================================================
-//function : PurgeDisplay
-//purpose  :
-//=======================================================================
-Standard_Integer AIS_InteractiveContext::PurgeDisplay()
-{
-  Standard_Integer NbStr = PurgeViewer(myMainVwr);
-  myMainVwr->Update();
-  return NbStr;
-}
-
-//=======================================================================
-//function : PurgeViewer
-//purpose  :
-//=======================================================================
-Standard_Integer AIS_InteractiveContext::PurgeViewer (const Handle(V3d_Viewer)& theViewer)
-{
-  Handle(Graphic3d_StructureManager) GSM = theViewer->StructureManager();
-  Standard_Integer aNbCleared = 0;
-  Graphic3d_MapOfStructure SOS;
-  GSM->DisplayedStructures (SOS);
-  for (Graphic3d_MapOfStructure::Iterator It(SOS); It.More();It.Next())
-  {
-    Handle(Graphic3d_Structure) G = It.Key();
-    Standard_Address anOwner = G->Owner();
-    if (anOwner == NULL)
-    {
-      G->Erase();
-      G->Clear();// it means that it is not referenced as a presentation of InterfactiveObject...
-      ++aNbCleared;
-    }
-    Handle(AIS_InteractiveObject) IO = (AIS_InteractiveObject* )anOwner;
-    if (!myObjects.IsBound (IO))
-    {
-      G->Erase();
-      ++aNbCleared;
-    }
-  }
-  return aNbCleared;
-}
-
-//=======================================================================
 //function : IsImmediateModeOn
 //purpose  :
 //=======================================================================

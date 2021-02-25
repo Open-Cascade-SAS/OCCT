@@ -1465,17 +1465,6 @@ vchangeselected shape
 ~~~~~
 Adds a shape to selection or removes one from it.
 
-@subsubsection occt_draw_4_2_15  vzclipping
-
-Syntax:     
-~~~~~
-vzclipping [mode] [depth width]
-~~~~~
-Gets or sets ZClipping mode, width and depth, where
- - *mode = OFF|BACK|FRONT|SLICE*
- - *depth* is a real value from segment [0,1]
- - *width* is a real value from segment [0,1]
-
 @subsubsection occt_draw_4_2_16  vnbselected
 
 Syntax:     
@@ -1483,14 +1472,6 @@ Syntax:
 vnbselected
 ~~~~~
 Returns the number of selected objects in the interactive context.
-
-@subsubsection occt_draw_4_2_18  vpurgedisplay
-
-Syntax:     
-~~~~~
-vpurgedisplay [CollectorToo = 0|1]
-~~~~~
-Removes structures which do not belong to objects displayed in neutral point.
 
 @subsubsection occt_draw_4_2_19  vhlr
 

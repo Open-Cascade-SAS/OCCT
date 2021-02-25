@@ -887,11 +887,6 @@ public: //! @name common properties
                                        const Standard_Boolean theIsVisibleInView,
                                        const PrsMgr_DisplayStatus theStatus = PrsMgr_DisplayStatus_None) const;
 
-  //! Clears all the structures which don't belong to objects displayed at neutral point
-  //! only effective when no Local Context is opened...
-  //! returns the number of removed  structures from the viewers.
-  Standard_EXPORT Standard_Integer PurgeDisplay();
-
   //! Return rotation gravity point.
   Standard_EXPORT virtual gp_Pnt GravityPoint (const Handle(V3d_View)& theView) const;
 
@@ -1249,8 +1244,6 @@ protected: //! @name internal methods
                                        const Standard_Boolean               theToUpdateViewer);
   
   Standard_EXPORT void InitAttributes();
-  
-  Standard_EXPORT Standard_Integer PurgeViewer (const Handle(V3d_Viewer)& Vwr);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
   Standard_EXPORT void unselectOwners (const Handle(AIS_InteractiveObject)& theObject);
