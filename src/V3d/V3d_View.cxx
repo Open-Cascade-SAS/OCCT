@@ -969,7 +969,7 @@ void V3d_View::SetTwist(const Standard_Real angle)
   const gp_Dir aReferencePlane (aCamera->Direction().Reversed());
   if (!screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
    && !screenAxis (aReferencePlane, gp::DY(), myXscreenAxis, myYscreenAxis, myZscreenAxis)
-   && !screenAxis (aReferencePlane, gp::DZ(), myXscreenAxis, myYscreenAxis, myZscreenAxis))
+   && !screenAxis (aReferencePlane, gp::DX(), myXscreenAxis, myYscreenAxis, myZscreenAxis))
   {
     throw V3d_BadValue ("V3d_ViewSetTwist, alignment of Eye,At,Up,");
   }
