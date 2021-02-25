@@ -277,8 +277,8 @@ Standard_Real PrsDim_DiameterDimension::ComputeValue() const
 //function : Compute
 //purpose  : 
 //=======================================================================
-void PrsDim_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
-                                        const Handle(Prs3d_Presentation)& thePresentation, 
+void PrsDim_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                        const Handle(Prs3d_Presentation)& thePresentation,
                                         const Standard_Integer theMode)
 {
   mySelectionGeom.Clear (theMode);

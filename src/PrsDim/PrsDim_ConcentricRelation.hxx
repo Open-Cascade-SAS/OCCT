@@ -44,15 +44,18 @@ public:
 
 private:
 
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT void ComputeTwoEdgesConcentric (const Handle(Prs3d_Presentation)& aPresentationManager);
-  
-  Standard_EXPORT void ComputeEdgeVertexConcentric (const Handle(Prs3d_Presentation)& aPresentationManager);
-  
-  Standard_EXPORT void ComputeTwoVerticesConcentric (const Handle(Prs3d_Presentation)& aPresentationManager);
-  
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT void ComputeTwoEdgesConcentric (const Handle(Prs3d_Presentation)& thePrsMgr);
+
+  Standard_EXPORT void ComputeEdgeVertexConcentric (const Handle(Prs3d_Presentation)& thePrsMgr);
+
+  Standard_EXPORT void ComputeTwoVerticesConcentric (const Handle(Prs3d_Presentation)& thePrsMgr);
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
 private:
 

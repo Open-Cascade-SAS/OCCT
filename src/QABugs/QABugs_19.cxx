@@ -5025,9 +5025,9 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE (OCC27700_Text, AIS_InteractiveObject)
 
-  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& ,
                         const Handle(Prs3d_Presentation)& thePresentation,
-                        const Standard_Integer /*theMode*/) Standard_OVERRIDE
+                        const Standard_Integer ) Standard_OVERRIDE
   {
     Handle(Graphic3d_ArrayOfTriangles) aFrame = new Graphic3d_ArrayOfTriangles (6, 6);
     aFrame->AddVertex (gp_Pnt (-1, 0, 0));

@@ -54,7 +54,7 @@ Sample2D_Markers::Sample2D_Markers (const Standard_Real theXPosition,
   myArrayOfPoints = theArrayOfPoints;
 }
 
-void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode)
 {

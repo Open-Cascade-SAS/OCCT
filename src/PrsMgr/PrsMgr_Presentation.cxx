@@ -45,7 +45,7 @@ namespace
 //function : PrsMgr_Presentation
 //purpose  :
 //=======================================================================
-PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                           const Handle(PrsMgr_PresentableObject)& thePrsObject,
                                           const Standard_Integer theMode)
 : Graphic3d_Structure (thePrsMgr->StructureManager()),

@@ -65,15 +65,14 @@ myLineIsSegment(Standard_True)
 //function : Compute
 //purpose  : 
 //=======================================================================
-void AIS_Line::Compute(const Handle(PrsMgr_PresentationManager3d)&,
-		       const Handle(Prs3d_Presentation)& aPresentation, 
-		       const Standard_Integer)
+void AIS_Line::Compute (const Handle(PrsMgr_PresentationManager)&,
+		        const Handle(Prs3d_Presentation)& thePrs,
+		        const Standard_Integer )
 {
-  aPresentation->SetDisplayPriority(5);
+  thePrs->SetDisplayPriority (5);
 
-  if (!myLineIsSegment) ComputeInfiniteLine(aPresentation);
-  else ComputeSegmentLine(aPresentation);
-
+  if (!myLineIsSegment) { ComputeInfiniteLine (thePrs); }
+  else { ComputeSegmentLine (thePrs); }
 }
 
 //=======================================================================

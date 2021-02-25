@@ -24,7 +24,7 @@
 #include <Geom_CartesianPoint.hxx>
 #include <StdPrs_Point.hxx>
 
-void AdaptorPnt2d_AIS::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AdaptorPnt2d_AIS::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode)
 {

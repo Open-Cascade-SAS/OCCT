@@ -884,7 +884,7 @@ Old APIs based on global callback functions for creating *UserDraw* objects and 
 class UserDrawElement : public OpenGl_Element {};
 
 //! Implementation of virtual method AIS_InteractiveObject::Compute().
-void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void UserDrawObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer theMode)
 {

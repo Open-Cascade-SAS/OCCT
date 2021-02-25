@@ -551,7 +551,7 @@ If you are creating your own type of interactive object, you must implement the 
 #### For 3D:
 
 ~~~~~{.cpp}
-void PackageName_ClassName::Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+void PackageName_ClassName::Compute (const Handle(PrsMgr_PresentationManager)& thePresentationManager,
                                      const Handle(Prs3d_Presentation)& thePresentation,
                                      const Standard_Integer theMode);
 ~~~~~
@@ -650,7 +650,7 @@ Standard_Boolean myPk_IShape::AcceptDisplayMode (const Standard_Integer theMode)
   return theMode == 0 || theMode == 1;
 }
 
-void myPk_IShape::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void myPk_IShape::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                            const Handle(Prs3d_Presentation)& thePrs,
                            const Standard_Integer theMode)
 {
@@ -2096,7 +2096,7 @@ i.e. in hidden line removal and wireframe modes.
 Let us look at the example of compute methods
 
 ~~~~~{.cpp}
-void MyPresentableObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsManager,
+void MyPresentableObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsManager,
                                    const Handle(Graphic3d_Structure)& thePrs,
                                    const Standard_Integer theMode)
 (

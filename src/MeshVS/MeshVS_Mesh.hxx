@@ -48,19 +48,23 @@ public:
 
   //! Computes presentation using builders added to sequence. Each builder computes
   //! own part of mesh presentation according to its type.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& PM, const Handle(Prs3d_Presentation)& Prs, const Standard_Integer DisplayMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theDispMode) Standard_OVERRIDE;
+
   //! Computes selection according to SelectMode
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& Sel, const Standard_Integer SelectMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theSelMode) Standard_OVERRIDE;
+
   //! Draw selected owners presentation
-  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager3d)& PM, const SelectMgr_SequenceOfOwner& Owners) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                                const SelectMgr_SequenceOfOwner& theOwners) Standard_OVERRIDE;
+
   //! Draw hilighted owner presentation
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                       const Handle(Prs3d_Drawer)& theColor,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
-  
+
   //! Clears internal selection presentation
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
   

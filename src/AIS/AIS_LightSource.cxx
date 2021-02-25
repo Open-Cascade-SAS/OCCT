@@ -359,7 +359,7 @@ void AIS_LightSource::setLocalTransformation (const Handle(TopLoc_Datum3D)& theT
 // function : Compute
 // purpose  :
 // =======================================================================
-void AIS_LightSource::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_LightSource::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                const Handle(Prs3d_Presentation)& thePrs,
                                const Standard_Integer theMode)
 {

@@ -965,7 +965,7 @@ void AIS_Manipulator::setLocalTransformation (const Handle(TopLoc_Datum3D)& /*th
 //function : Compute
 //purpose  : 
 //=======================================================================
-void AIS_Manipulator::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void AIS_Manipulator::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                const Handle(Prs3d_Presentation)& thePrs,
                                const Standard_Integer theMode)
 {
@@ -1007,7 +1007,7 @@ void AIS_Manipulator::Compute (const Handle(PrsMgr_PresentationManager3d)& thePr
 //function : HilightSelected
 //purpose  : 
 //=======================================================================
-void AIS_Manipulator::HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_Manipulator::HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM,
                                        const SelectMgr_SequenceOfOwner& theSeq)
 {
   if (theSeq.IsEmpty())
@@ -1059,7 +1059,7 @@ void AIS_Manipulator::ClearSelected()
 //function : HilightOwnerWithColor
 //purpose  : 
 //=======================================================================
-void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                              const Handle(Prs3d_Drawer)& theStyle,
                                              const Handle(SelectMgr_EntityOwner)& theOwner)
 {

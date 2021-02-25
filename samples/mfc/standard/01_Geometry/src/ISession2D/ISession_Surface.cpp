@@ -18,7 +18,7 @@ static char THIS_FILE[]=__FILE__;
 
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Surface,AIS_InteractiveObject)
 
-void ISession_Surface::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void ISession_Surface::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode)
 {

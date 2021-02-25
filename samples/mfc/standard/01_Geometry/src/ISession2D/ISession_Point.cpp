@@ -41,7 +41,7 @@ ISession_Point::~ISession_Point()
 
 }
 
-void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
                              const Standard_Integer /*aMode*/)
 {

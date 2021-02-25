@@ -70,7 +70,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_Text.hxx>
 

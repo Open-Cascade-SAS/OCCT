@@ -26,7 +26,7 @@
 #include <StdPrs_PoleCurve.hxx>
 #include <StdPrs_Curve.hxx>
 
-void AdaptorCurve_AIS::Compute (const Handle(PrsMgr_PresentationManager3d)&,
+void AdaptorCurve_AIS::Compute (const Handle(PrsMgr_PresentationManager)&,
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode)
 {

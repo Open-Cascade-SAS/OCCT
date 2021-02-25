@@ -17,7 +17,7 @@
 #define _MeshVS_PrsBuilder_HeaderFile
 
 #include <MeshVS_MeshPtr.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
@@ -35,10 +35,8 @@ DEFINE_STANDARD_HANDLE(MeshVS_PrsBuilder, Standard_Transient)
 //! It provides base fields and methods all buildes need.
 class MeshVS_PrsBuilder : public Standard_Transient
 {
-
 public:
 
-  
   //! Builds presentation of certain type of data.
   //! Prs is presentation object which this method constructs.
   //! IDs is set of numeric identificators forming object appearance.
@@ -90,21 +88,17 @@ public:
   
   //! Read excluding state
   Standard_EXPORT Standard_Boolean IsExcludingOn() const;
-  
+
   //! Set presentation manager for builder
-  Standard_EXPORT void SetPresentationManager (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr);
-  
+  Standard_EXPORT void SetPresentationManager (const Handle(PrsMgr_PresentationManager)& thePrsMgr);
+
   //! Get presentation manager of builder
-  Standard_EXPORT Handle(PrsMgr_PresentationManager3d) GetPresentationManager() const;
-
-
-
+  Standard_EXPORT Handle(PrsMgr_PresentationManager) GetPresentationManager() const;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_PrsBuilder,Standard_Transient)
 
 protected:
 
-  
   //! Constructor
   //! Parent is pointer to MeshVS_Mesh object
   //! Flags is set of display modes corresponding to this builder
@@ -121,11 +115,11 @@ protected:
   //! Returns only custom drawer
   Standard_EXPORT Handle(MeshVS_Drawer) Drawer() const;
 
+protected:
+
   MeshVS_MeshPtr myParentMesh;
 
-
 private:
-
 
   Standard_Boolean myIsExcluding;
   Handle(MeshVS_DataSource) myDataSource;
@@ -133,15 +127,8 @@ private:
   Standard_Integer myFlags;
   Standard_Integer myId;
   Standard_Integer myPriority;
-  Handle(PrsMgr_PresentationManager3d) myPrsMgr;
-
+  Handle(PrsMgr_PresentationManager) myPrsMgr;
 
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_PrsBuilder_HeaderFile

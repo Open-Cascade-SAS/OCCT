@@ -48,7 +48,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_Array1OfColor.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>

@@ -34,7 +34,7 @@ QABugs_PresentableObject::QABugs_PresentableObject(const PrsMgr_TypeOfPresentati
 {
 }
 
-void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
+void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager)& ,
 				const Handle(Prs3d_Presentation)& thePrs,
 				const Standard_Integer theMode)
 {

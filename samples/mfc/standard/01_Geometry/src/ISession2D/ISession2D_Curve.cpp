@@ -26,7 +26,7 @@ ISession2D_Curve::ISession2D_Curve(const Handle(Geom2d_Curve) aGeom2dCurve,
   myradiusratio = 1;
 }
 
-void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
+void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager)& ,
                                const Handle(Prs3d_Presentation)& thePrs,
                                const Standard_Integer )
 {

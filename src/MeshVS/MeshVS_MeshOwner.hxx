@@ -17,7 +17,7 @@
 #define _MeshVS_MeshOwner_HeaderFile
 
 #include <SelectMgr_EntityOwner.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_NameOfColor.hxx>
 
 class MeshVS_DataSource;
@@ -61,42 +61,29 @@ public:
   
   //! Saves ids of hilighted mesh entities
   Standard_EXPORT void SetDetectedEntities (const Handle(TColStd_HPackedMapOfInteger)& Nodes, const Handle(TColStd_HPackedMapOfInteger)& Elems);
-  
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                  const Handle(Prs3d_Drawer)& theColor,
-                                                 const Standard_Integer theMode = 0) Standard_OVERRIDE;
-  
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
   Standard_EXPORT virtual void Unhilight (const Handle(PrsMgr_PresentationManager)& PM, const Standard_Integer Mode = 0) Standard_OVERRIDE;
-  
+
   Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshOwner,SelectMgr_EntityOwner)
 
 protected:
 
-
   Handle(TColStd_HPackedMapOfInteger) mySelectedNodes;
   Handle(TColStd_HPackedMapOfInteger) mySelectedElems;
 
-
 private:
-
 
   Handle(MeshVS_DataSource) myDataSource;
   Handle(TColStd_HPackedMapOfInteger) myDetectedNodes;
   Handle(TColStd_HPackedMapOfInteger) myDetectedElems;
   Standard_Integer myLastID;
 
-
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_MeshOwner_HeaderFile

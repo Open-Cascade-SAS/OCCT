@@ -116,78 +116,76 @@ void AIS_Triangulation::updatePresentation()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                                const Handle(Prs3d_Presentation)& aPresentation,
-                                const Standard_Integer aMode)
+void AIS_Triangulation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                 const Handle(Prs3d_Presentation)& thePrs,
+                                 const Standard_Integer theMode)
 {
-  switch (aMode)
+  if (theMode != 0)
   {
-    case 0:
-      Standard_Boolean hasVNormals = myTriangulation->HasNormals();
-      Standard_Boolean hasVColors  = HasVertexColors();
-
-      Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (myNbNodes, myNbTriangles * 3,
-                                                                                   hasVNormals, hasVColors, Standard_False);
-      Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
-      Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
-
-      Standard_Integer i;
-
-      const Standard_Real ambient = 0.2;
-      if (hasVNormals)
-      {
-        gp_Vec3f aNormal;
-        if (hasVColors)
-        {
-          const TColStd_Array1OfInteger& colors = myColor->Array1();
-          for ( i = 1; i <= myTriangulation->NbNodes(); i++ )
-          {
-            anArray->AddVertex (myTriangulation->Node (i), attenuateColor (colors[i], ambient));
-            myTriangulation->Normal (i, aNormal);
-            anArray->SetVertexNormal (i, aNormal.x(), aNormal.y(), aNormal.z());
-          }
-        }
-        else // !hasVColors
-        {
-          for ( i = 1; i <= myTriangulation->NbNodes(); i++ )
-          {
-            anArray->AddVertex (myTriangulation->Node (i));
-            myTriangulation->Normal (i, aNormal);
-            anArray->SetVertexNormal(i, aNormal.x(), aNormal.y(), aNormal.z());
-          }
-        }
-      }
-      else // !hasVNormals
-      {
-        if (hasVColors)
-        {
-          const TColStd_Array1OfInteger& colors = myColor->Array1();
-          for ( i = 1; i <= myTriangulation->NbNodes(); i++ )
-          {
-            anArray->AddVertex (myTriangulation->Node (i), attenuateColor(colors(i), ambient));
-          }
-        }
-        else // !hasVColors
-        {
-          for ( i = 1; i <= myTriangulation->NbNodes(); i++ )
-          {
-            anArray->AddVertex (myTriangulation->Node (i));
-          }
-        }
-      }
-
-      Standard_Integer indexTriangle[3] = {0,0,0};
-      for ( i = 1; i<= myTriangulation->NbTriangles(); i++ )
-      {
-        myTriangulation->Triangle (i).Get (indexTriangle[0], indexTriangle[1], indexTriangle[2]);
-        anArray->AddEdge(indexTriangle[0]);
-        anArray->AddEdge(indexTriangle[1]);
-        anArray->AddEdge(indexTriangle[2]);
-      }
-      TheGroup->SetPrimitivesAspect(aspect);
-      TheGroup->AddPrimitiveArray(anArray);
-      break;
+    return;
   }
+
+  Standard_Boolean hasVNormals = myTriangulation->HasNormals();
+  Standard_Boolean hasVColors  = HasVertexColors();
+
+  Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (myNbNodes, myNbTriangles * 3,
+                                                                               hasVNormals, hasVColors, Standard_False);
+  Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+  Handle(Graphic3d_AspectFillArea3d) anAspect = myDrawer->ShadingAspect()->Aspect();
+
+  const Standard_Real anAmbient = 0.2;
+  if (hasVNormals)
+  {
+    gp_Vec3f aNormal;
+    if (hasVColors)
+    {
+      const TColStd_Array1OfInteger& colors = myColor->Array1();
+      for (Standard_Integer aNodeIter = 1; aNodeIter <= myTriangulation->NbNodes(); ++aNodeIter)
+      {
+        anArray->AddVertex (myTriangulation->Node (aNodeIter), attenuateColor (colors[aNodeIter], anAmbient));
+        myTriangulation->Normal (aNodeIter, aNormal);
+        anArray->SetVertexNormal (aNodeIter, aNormal.x(), aNormal.y(), aNormal.z());
+      }
+    }
+    else // !hasVColors
+    {
+      for (Standard_Integer aNodeIter = 1; aNodeIter <= myTriangulation->NbNodes(); ++aNodeIter)
+      {
+        anArray->AddVertex (myTriangulation->Node (aNodeIter));
+        myTriangulation->Normal (aNodeIter, aNormal);
+        anArray->SetVertexNormal(aNodeIter, aNormal.x(), aNormal.y(), aNormal.z());
+      }
+    }
+  }
+  else // !hasVNormals
+  {
+    if (hasVColors)
+    {
+      const TColStd_Array1OfInteger& colors = myColor->Array1();
+      for (Standard_Integer aNodeIter = 1; aNodeIter <= myTriangulation->NbNodes(); ++aNodeIter)
+      {
+        anArray->AddVertex (myTriangulation->Node (aNodeIter), attenuateColor (colors[aNodeIter], anAmbient));
+      }
+    }
+    else // !hasVColors
+    {
+      for (Standard_Integer aNodeIter = 1; aNodeIter <= myTriangulation->NbNodes(); ++aNodeIter)
+      {
+        anArray->AddVertex (myTriangulation->Node (aNodeIter));
+      }
+    }
+  }
+
+  Standard_Integer aTriIndices[3] = {0,0,0};
+  for (Standard_Integer aTriIter = 1; aTriIter <= myTriangulation->NbTriangles(); ++aTriIter)
+  {
+    myTriangulation->Triangle (aTriIter).Get (aTriIndices[0], aTriIndices[1], aTriIndices[2]);
+    anArray->AddEdge (aTriIndices[0]);
+    anArray->AddEdge (aTriIndices[1]);
+    anArray->AddEdge (aTriIndices[2]);
+  }
+  aGroup->SetPrimitivesAspect (anAspect);
+  aGroup->AddPrimitiveArray (anArray);
 }
 
 //=======================================================================

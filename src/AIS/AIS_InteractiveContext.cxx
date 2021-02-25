@@ -108,7 +108,7 @@ namespace
 //=======================================================================
 
 AIS_InteractiveContext::AIS_InteractiveContext(const Handle(V3d_Viewer)& MainViewer):
-myMainPM(new PrsMgr_PresentationManager3d(MainViewer->StructureManager())),
+myMainPM (new PrsMgr_PresentationManager (MainViewer->StructureManager())),
 myMainVwr(MainViewer),
 myMainSel(new StdSelect_ViewerSelector3d()),
 myToHilightSelected(Standard_True),

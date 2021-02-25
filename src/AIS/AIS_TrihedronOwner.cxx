@@ -32,7 +32,7 @@ AIS_TrihedronOwner::AIS_TrihedronOwner (const Handle(SelectMgr_SelectableObject)
 // function : HilightWithColor
 // purpose  :
 // =======================================================================
-void AIS_TrihedronOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_TrihedronOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                            const Handle(Prs3d_Drawer)& theStyle,
                                            const Standard_Integer /*theMode*/)
 {

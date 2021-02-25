@@ -317,7 +317,7 @@ public: //! @name Presentation computation
 
   //! Fills presentation.
   //! @note Manipulator presentation does not use display mode and for all modes has the same presentation.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
@@ -337,11 +337,11 @@ public: //! @name Presentation computation
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
 
   //! Method which draws selected owners ( for fast presentation draw ).
-  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePM, const SelectMgr_SequenceOfOwner& theSeq) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM, const SelectMgr_SequenceOfOwner& theSeq) Standard_OVERRIDE;
 
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw ).
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                       const Handle(Prs3d_Drawer)& theStyle,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
 

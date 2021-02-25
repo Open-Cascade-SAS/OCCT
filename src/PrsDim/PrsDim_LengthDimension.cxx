@@ -278,7 +278,7 @@ Standard_Real PrsDim_LengthDimension::ComputeValue() const
 //function : Compute
 //purpose  : 
 //=======================================================================
-void PrsDim_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
+void PrsDim_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                       const Handle(Prs3d_Presentation)& thePresentation,
                                       const Standard_Integer theMode)
 {

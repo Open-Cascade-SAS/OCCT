@@ -89,7 +89,7 @@ void PrsDim_DimensionOwner::Unhilight (const Handle(PrsMgr_PresentationManager)&
 //function : HilightWithColor
 //purpose  : 
 //=======================================================================
-void PrsDim_DimensionOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void PrsDim_DimensionOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                               const Handle(Prs3d_Drawer)& theStyle,
                                               const Standard_Integer /*theMode*/)
 {

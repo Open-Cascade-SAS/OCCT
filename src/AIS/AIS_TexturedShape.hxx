@@ -25,7 +25,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 
 class Graphic3d_AspectFillArea3d;
 class Graphic3d_Texture2Dmanual;
@@ -178,9 +178,9 @@ public: //! @name methods to alter texture mapping properties
 protected: //! @name overridden methods
 
   //! Compute presentation with texture mapping support.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   Standard_EXPORT void updateAttributes (const Handle(Prs3d_Presentation)& thePrs);
 

@@ -43,7 +43,7 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitivePoint.hxx>
@@ -166,7 +166,7 @@ Standard_Boolean MeshVS_Mesh::AcceptDisplayMode (const Standard_Integer theMode)
 // Function : Compute
 // Purpose  :
 //================================================================
-void MeshVS_Mesh::Compute ( const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void MeshVS_Mesh::Compute ( const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                             const Handle(Prs3d_Presentation)& thePresentation,
                             const Standard_Integer theMode )
 {
@@ -927,7 +927,7 @@ void MeshVS_Mesh::SetDataSource( const Handle(MeshVS_DataSource)& theDataSource 
 // Function : HilightSelected
 // Purpose  :
 //================================================================
-void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& thePM,
+void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager)& thePM,
                                     const SelectMgr_SequenceOfOwner& theOwners )
 {
   if ( myHilighter.IsNull() )
@@ -1073,7 +1073,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
 // Function : HilightOwnerWithColor
 // Purpose  :
 //================================================================
-void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager3d)& thePM,
+void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManager)& thePM,
                                           const Handle(Prs3d_Drawer)& theStyle,
                                           const Handle(SelectMgr_EntityOwner)& theOwner)
 {

@@ -203,14 +203,13 @@ Standard_Real PrsDim_RadiusDimension::ComputeValue() const
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
+void PrsDim_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                       const Handle(Prs3d_Presentation)& thePresentation,
                                       const Standard_Integer theMode)
 {
   mySelectionGeom.Clear (theMode);
-
   if (!IsValid())
   {
     return;

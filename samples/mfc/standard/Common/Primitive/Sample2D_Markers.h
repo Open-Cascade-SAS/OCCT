@@ -37,7 +37,7 @@ DEFINE_STANDARD_RTTIEXT(Sample2D_Markers,AIS_InteractiveObject)
 
 private: 
 
-virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+virtual void Compute (const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                       const Handle(Prs3d_Presentation)& /*aPresentation*/,
                       const Standard_Integer /*aMode*/);
 

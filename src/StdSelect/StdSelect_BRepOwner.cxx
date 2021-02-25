@@ -86,9 +86,9 @@ IsHilighted(const Handle(PrsMgr_PresentationManager)& PM,
 //function : HilightWithColor
 //purpose  :
 //=======================================================================
-void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                            const Handle(Prs3d_Drawer)&                 theStyle,
-                                            const Standard_Integer                      theMode)
+void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
+                                            const Handle(Prs3d_Drawer)& theStyle,
+                                            const Standard_Integer theMode)
 {
   if (!HasSelectable())
   {
@@ -174,7 +174,7 @@ void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 //purpose  :
 //=======================================================================
 void StdSelect_BRepOwner::UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
-                                               const Handle(PrsMgr_PresentationManager3d)& theManager,
+                                               const Handle(PrsMgr_PresentationManager)& theManager,
                                                const Standard_Integer theDispMode)
 {
   if (myPrsSh.IsNull() && Selectable().IsNull())

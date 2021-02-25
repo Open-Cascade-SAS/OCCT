@@ -125,9 +125,9 @@ void AIS_MultipleConnectedInteractive::DisconnectAll()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_MultipleConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
-                                                const Handle(Prs3d_Presentation)&           /*thePrs*/,
-                                                const Standard_Integer                      /*theMode*/)
+void AIS_MultipleConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                                const Handle(Prs3d_Presentation)& ,
+                                                const Standard_Integer )
 {
   Handle(AIS_InteractiveContext) aCtx = GetContext();
   for (PrsMgr_ListOfPresentableObjectsIter anIter (Children()); anIter.More(); anIter.Next())

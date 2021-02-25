@@ -200,9 +200,9 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
 //function : Compute
 //purpose  :
 //=======================================================================
-void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                                 const Handle(Prs3d_Presentation)&           thePrs,
-                                 const Standard_Integer                      theMode)
+void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePresentationManager,
+                                 const Handle(Prs3d_Presentation)& thePrs,
+                                 const Standard_Integer theMode)
 {
   // update shape and sub-shapes styles only on first compute, or on first recompute
   if (myToSyncStyles)

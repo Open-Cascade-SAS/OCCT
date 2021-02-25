@@ -35,7 +35,7 @@ AIS_ManipulatorOwner::AIS_ManipulatorOwner (const Handle(SelectMgr_SelectableObj
 //function : HilightWithColor
 //purpose  : 
 //=======================================================================
-void AIS_ManipulatorOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_ManipulatorOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                              const Handle(Prs3d_Drawer)& theStyle,
                                              const Standard_Integer theMode)
 {

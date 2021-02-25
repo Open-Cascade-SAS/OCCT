@@ -229,9 +229,9 @@ void AIS_CameraFrustum::fillBorders()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_CameraFrustum::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
-                                 const Handle(Prs3d_Presentation)&           thePrs,
-                                 const Standard_Integer                      theMode)
+void AIS_CameraFrustum::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                 const Handle(Prs3d_Presentation)& thePrs,
+                                 const Standard_Integer theMode)
 {
   thePrs->SetInfiniteState (true);
   if (myTriangles.IsNull())

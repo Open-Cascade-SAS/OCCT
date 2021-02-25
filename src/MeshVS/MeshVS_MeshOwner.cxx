@@ -18,7 +18,7 @@
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -133,7 +133,7 @@ void MeshVS_MeshOwner::SetDetectedEntities (const Handle(TColStd_HPackedMapOfInt
 // Function : HilightWithColor
 // Purpose  :
 //================================================================
-void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                          const Handle(Prs3d_Drawer)& theStyle,
                                          const Standard_Integer /*theMode*/)
 {

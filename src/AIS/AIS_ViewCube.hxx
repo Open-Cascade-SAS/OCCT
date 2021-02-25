@@ -533,7 +533,7 @@ public: //! @name Presentation computation
   //! @param thePrs [in] input presentation that is to be filled with flat presentation primitives.
   //! @param theMode [in] display mode.
   //! @warning this object accept only 0 display mode.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
@@ -555,12 +555,12 @@ public: //! @name Presentation computation
   //! @param thePM [in] presentation manager
   //! @param theStyle [in] style for dynamic highlighting.
   //! @param theOwner [in] input entity owner.
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                       const Handle(Prs3d_Drawer)& theStyle,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
 
   //! Method which draws selected owners.
-  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const SelectMgr_SequenceOfOwner& theSeq) Standard_OVERRIDE;
 
   //! Set default parameters for visual attributes

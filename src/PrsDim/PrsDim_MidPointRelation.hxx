@@ -42,22 +42,25 @@ public:
 
 private:
 
-  Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
   Standard_EXPORT void ComputeFaceFromPnt (const Handle(Prs3d_Presentation)& aprs, const Standard_Boolean first);
-  
+
   Standard_EXPORT void ComputeEdgeFromPnt (const Handle(Prs3d_Presentation)& aprs, const Standard_Boolean first);
-  
+
   Standard_EXPORT void ComputeVertexFromPnt (const Handle(Prs3d_Presentation)& aprs, const Standard_Boolean first);
-  
+
   Standard_EXPORT void ComputePointsOnLine (const gp_Lin& aLin, const Standard_Boolean first);
-  
+
   Standard_EXPORT void ComputePointsOnLine (const gp_Pnt& pnt1, const gp_Pnt& pnt2, const Standard_Boolean first);
-  
+
   Standard_EXPORT void ComputePointsOnCirc (const gp_Circ& aCirc, const gp_Pnt& pnt1, const gp_Pnt& pnt2, const Standard_Boolean first);
-  
+
   //! ComputePointsOn... methods set myFAttach, myFirstPnt and myLastPnt
   //! from the following initial data: curve, end points, myMidPoint.
   //! End points (pnt1 & pnt2) and curve define the trimmed curve.

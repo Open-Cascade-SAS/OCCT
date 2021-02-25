@@ -115,19 +115,23 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                        const Handle(Prs3d_Presentation)& aPrs,
-                        const Standard_Integer theMode)
-{  
-  if(myshape.IsNull()) return;
+void AIS_Shape::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                         const Handle(Prs3d_Presentation)& thePrs,
+                         const Standard_Integer theMode)
+{
+  if (myshape.IsNull())
+  {
+    return;
+  }
 
   // wire,edge,vertex -> pas de HLR + priorite display superieure
-  Standard_Integer TheType = (Standard_Integer) myshape.ShapeType();
-  if(TheType>4 && TheType<8) {
-    aPrs->SetVisual(Graphic3d_TOS_ALL);
-    aPrs->SetDisplayPriority(TheType+2);
+  const Standard_Integer aShapeType = (Standard_Integer )myshape.ShapeType();
+  if (aShapeType > 4 && aShapeType < 8)
+  {
+    thePrs->SetVisual (Graphic3d_TOS_ALL);
+    thePrs->SetDisplayPriority (aShapeType + 2);
   }
   // Shape vide -> Assemblage vide.
   if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
@@ -137,7 +141,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 
   if (IsInfinite())
   {
-    aPrs->SetInfiniteState (Standard_True); //not taken in account during FITALL
+    thePrs->SetInfiniteState (Standard_True); //not taken in account during FITALL
   }
 
   switch (theMode)
@@ -148,7 +152,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       try
       {
         OCC_CATCH_SIGNALS
-        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       catch (Standard_Failure const& anException)
       {
@@ -162,20 +166,20 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (myshape, myDrawer, Standard_True);
       if ((Standard_Integer) myshape.ShapeType() > 4)
       {
-        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       else
       {
         if (IsInfinite())
         {
-          StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+          StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
         }
         else
         {
           try
           {
             OCC_CATCH_SIGNALS
-            StdPrs_ShadedShape::Add (aPrs, myshape, myDrawer,
+            StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer,
                                      myDrawer->ShadingAspect()->Aspect()->ToMapTexture()
                                  && !myDrawer->ShadingAspect()->Aspect()->TextureMap().IsNull(),
                                      myUVOrigin, myUVRepeat, myUVScale);
@@ -184,7 +188,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
           {
             Message::SendFail (TCollection_AsciiString("Error: AIS_Shape::Compute() shaded presentation builder has failed (")
                              + anException.GetMessageString() + ")");
-            StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+            StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
           }
         }
       }
@@ -201,17 +205,17 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     {
       if (IsInfinite())
       {
-        StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
+        StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       else
       {
-        Prs3d_BndBox::Add (aPrs, BoundingBox(), myDrawer);
+        Prs3d_BndBox::Add (thePrs, BoundingBox(), myDrawer);
       }
     }
   }
 
   // Recompute hidden line presentation (if necessary).
-  aPrs->ReCompute();
+  thePrs->ReCompute();
 }
 
 //=======================================================================

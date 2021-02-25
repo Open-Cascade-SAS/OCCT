@@ -25,7 +25,7 @@ public:
 	void SetColor(const Quantity_Color &aColor);
 
 private:
-	void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+	void Compute(const Handle(PrsMgr_PresentationManager)& aPresentationManager,
 				 const Handle(Prs3d_Presentation)& aPresentation,
 				 const Standard_Integer aMode = 0) ;
 	void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,

@@ -190,7 +190,7 @@ Handle (MeshVS_Drawer) MeshVS_PrsBuilder::Drawer () const
 //            MeshVS_Mesh::Compute methodto assign presentation 
 //            manager to the builder. 
 //================================================================
-void MeshVS_PrsBuilder::SetPresentationManager( const Handle(PrsMgr_PresentationManager3d)& thePrsMgr )
+void MeshVS_PrsBuilder::SetPresentationManager( const Handle(PrsMgr_PresentationManager)& thePrsMgr )
 {
   myPrsMgr = thePrsMgr;
 }
@@ -199,7 +199,7 @@ void MeshVS_PrsBuilder::SetPresentationManager( const Handle(PrsMgr_Presentation
 // Function : GetPresentationManager
 // Purpose  : Get presentation manager
 //================================================================
-Handle(PrsMgr_PresentationManager3d) MeshVS_PrsBuilder::GetPresentationManager() const
+Handle(PrsMgr_PresentationManager) MeshVS_PrsBuilder::GetPresentationManager() const
 {
   return myPrsMgr;
 }

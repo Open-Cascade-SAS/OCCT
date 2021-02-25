@@ -72,15 +72,14 @@ AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& theComponent,
 //function : Compute
 //purpose  : 
 //=======================================================================
-void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                         const Handle(Prs3d_Presentation)& aPresentation, 
-                         const Standard_Integer /*aMode*/)
+void AIS_Circle::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                          const Handle(Prs3d_Presentation)& thePrs,
+                          const Standard_Integer )
 {
-  aPresentation->SetDisplayPriority(5);
+  thePrs->SetDisplayPriority (5);
 
-  if (myCircleIsArc) ComputeArc(aPresentation);
-  else ComputeCircle(aPresentation);
-
+  if (myCircleIsArc) { ComputeArc (thePrs); }
+  else { ComputeCircle (thePrs); }
 }
 
 //=======================================================================

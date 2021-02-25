@@ -81,23 +81,23 @@ Handle(Geom_Point) AIS_Point::Component()
 //function : Compute
 //purpose  : 
 //=======================================================================
-void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                        const Handle(Prs3d_Presentation)& aPresentation, 
-                        const Standard_Integer aMode)
+void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager)& ,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode)
 {
-  aPresentation->SetInfiniteState(myInfiniteState);
-
-  if (aMode==0)
-    StdPrs_Point::Add(aPresentation,myComponent,myDrawer);
-  else if (aMode== -99)
-    {
-      Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
-      TheGroup->SetPrimitivesAspect (myHilightDrawer->PointAspect()->Aspect());
-      Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints (1);
-      aPoint->AddVertex (myComponent->X(),myComponent->Y(),myComponent->Z());
-      TheGroup->AddPrimitiveArray (aPoint);
-    }
-    
+  thePrs->SetInfiniteState (myInfiniteState);
+  if (theMode == 0)
+  {
+    StdPrs_Point::Add (thePrs, myComponent, myDrawer);
+  }
+  else if (theMode == -99)
+  {
+    Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+    aGroup->SetPrimitivesAspect (myHilightDrawer->PointAspect()->Aspect());
+    Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints (1);
+    aPoint->AddVertex (myComponent->X(), myComponent->Y(), myComponent->Z());
+    aGroup->AddPrimitiveArray (aPoint);
+  }
 }
 
 //=======================================================================

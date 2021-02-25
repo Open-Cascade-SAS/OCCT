@@ -58,10 +58,9 @@ PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation( const TopoDS_Edge& aFirs
 //function : Compute
 //purpose  :
 //=======================================================================
-
-void PrsDim_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager3d )&,
-				       const Handle( Prs3d_Presentation )& aPresentation,
-				       const Standard_Integer ) 
+void PrsDim_EqualRadiusRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                          const Handle(Prs3d_Presentation)& aPresentation,
+                                          const Standard_Integer )
 {
   BRepAdaptor_Curve FirstCurve( TopoDS::Edge( myFShape ) ), SecondCurve( TopoDS::Edge( mySShape ) );
 

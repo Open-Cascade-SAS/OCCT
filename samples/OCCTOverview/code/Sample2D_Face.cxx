@@ -219,7 +219,7 @@ void Sample2D_Face::FillData(Standard_Boolean isSizesRecompute)
   }
 }
 
-void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager)& ,
                              const Handle(Prs3d_Presentation)& thePresentation,
                              const Standard_Integer theMode)
 {
@@ -303,7 +303,7 @@ void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
   thePresentation->CurrentGroup()->AddPrimitiveArray(myExternalArray);
 }
 
-void Sample2D_Face::HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void Sample2D_Face::HilightSelected (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                      const SelectMgr_SequenceOfOwner& theOwners)
 {
   Handle(Prs3d_Presentation) aSelectionPrs = GetSelectPresentation (thePrsMgr);
@@ -368,7 +368,7 @@ void Sample2D_Face::ClearSelected()
   }
 }
 
-void Sample2D_Face::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void Sample2D_Face::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                            const Handle(Prs3d_Drawer)& theStyle,
                                            const Handle(SelectMgr_EntityOwner)& theOwner)
 {

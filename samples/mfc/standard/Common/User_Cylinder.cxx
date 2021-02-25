@@ -11,7 +11,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -49,7 +49,7 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   myColor = Quantity_NOC_KHAKI4;
 }
 
-void User_Cylinder::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+void User_Cylinder::Compute(const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                             const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer aMode ) 
 {

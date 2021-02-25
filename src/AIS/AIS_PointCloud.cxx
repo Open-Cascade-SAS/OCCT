@@ -67,9 +67,9 @@ Standard_Boolean AIS_PointCloudOwner::IsForcedHilight() const
 //function : HilightWithColor
 //purpose  :
 //=======================================================================
-void AIS_PointCloudOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                                      const Handle(Prs3d_Drawer)& theStyle,
-                                                      const Standard_Integer )
+void AIS_PointCloudOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                            const Handle(Prs3d_Drawer)& theStyle,
+                                            const Standard_Integer )
 {
   Handle(AIS_PointCloud) anObj = Handle(AIS_PointCloud)::DownCast (Selectable());
   if (anObj.IsNull())
@@ -150,7 +150,7 @@ void AIS_PointCloudOwner::HilightWithColor (const Handle(PrsMgr_PresentationMana
 //=======================================================================
 void AIS_PointCloudOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& , const Standard_Integer )
 {
-  if (Handle(Prs3d_Presentation) aPrs = Selectable()->GetSelectPresentation (Handle(PrsMgr_PresentationManager3d)()))
+  if (Handle(Prs3d_Presentation) aPrs = Selectable()->GetSelectPresentation (Handle(PrsMgr_PresentationManager)()))
   {
     aPrs->Erase();
   }
@@ -372,9 +372,9 @@ void AIS_PointCloud::UnsetMaterial()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
-                              const Handle(Prs3d_Presentation)&           thePrs,
-                              const Standard_Integer                      theMode)
+void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                              const Handle(Prs3d_Presentation)& thePrs,
+                              const Standard_Integer theMode)
 {
   switch (theMode)
   {

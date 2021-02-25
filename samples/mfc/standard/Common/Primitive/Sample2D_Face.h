@@ -49,14 +49,14 @@ private:
 //private methods
   void FillData(Standard_Boolean isSizesRecomputed = Standard_False); 
   void ClearSelected ();
-  void HilightSelected( const Handle(PrsMgr_PresentationManager3d)& thePM,
+  void HilightSelected( const Handle(PrsMgr_PresentationManager)& thePM,
                         const SelectMgr_SequenceOfOwner& theOwners);
 
-  void HilightOwnerWithColor( const Handle(PrsMgr_PresentationManager3d)& thePM,
+  void HilightOwnerWithColor( const Handle(PrsMgr_PresentationManager)& thePM,
                               const Handle(Prs3d_Drawer)& theStyle,
                               const Handle(SelectMgr_EntityOwner)& theOwner);
 
-  void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+  void Compute (  const Handle(PrsMgr_PresentationManager)& thePresentationManager,
                   const Handle(Prs3d_Presentation)& thePresentation,
                   const Standard_Integer theMode);
 

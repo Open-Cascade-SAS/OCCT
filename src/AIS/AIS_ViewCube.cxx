@@ -563,7 +563,7 @@ void AIS_ViewCube::createBoxCornerTriangles (const Handle(Graphic3d_ArrayOfTrian
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager)& ,
                             const Handle(Prs3d_Presentation)& thePrs,
                             const Standard_Integer theMode)
 {
@@ -1001,7 +1001,7 @@ void AIS_ViewCube::HandleClick (const Handle(AIS_ViewCubeOwner)& theOwner)
 //function : HilightOwnerWithColor
 //purpose  :
 //=======================================================================
-void AIS_ViewCube::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void AIS_ViewCube::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                           const Handle(Prs3d_Drawer)& theStyle,
                                           const Handle(SelectMgr_EntityOwner)& theOwner)
 {
@@ -1044,7 +1044,7 @@ void AIS_ViewCube::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManage
 //function : HilightSelected
 //purpose  :
 //=======================================================================
-void AIS_ViewCube::HilightSelected (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_ViewCube::HilightSelected (const Handle(PrsMgr_PresentationManager)& ,
                                     const SelectMgr_SequenceOfOwner& theSeq)
 {
   // this method should never be called since AIS_InteractiveObject::HandleClick() has been overridden

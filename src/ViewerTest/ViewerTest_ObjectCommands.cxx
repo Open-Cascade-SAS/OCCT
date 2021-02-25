@@ -1946,26 +1946,27 @@ Handle(Geom_Circle) CreateCircle(gp_Pnt theCenter, Standard_Real theRadius)
 class FilledCircle : public AIS_InteractiveObject 
 {
 public:
-    // CASCADE RTTI
-    DEFINE_STANDARD_RTTI_INLINE(FilledCircle,AIS_InteractiveObject); 
+  // CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(FilledCircle, AIS_InteractiveObject);
 
-    FilledCircle(gp_Pnt theCenter, Standard_Real theRadius);
-    FilledCircle(Handle(Geom_Circle) theCircle);
+  FilledCircle (gp_Pnt theCenter, Standard_Real theRadius);
+  FilledCircle (Handle(Geom_Circle) theCircle);
 
 private:
-    TopoDS_Face ComputeFace();
+  TopoDS_Face ComputeFace();
 
-    // Virtual methods implementation
-    void Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                  const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode) Standard_OVERRIDE;
+  // Virtual methods implementation
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
-    void ComputeSelection (  const Handle(SelectMgr_Selection)& theSelection, 
-                           const Standard_Integer theMode) Standard_OVERRIDE;
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
-    Handle(Geom_Circle) myCircle;
-    Standard_Boolean myFilledStatus;
+
+  Handle(Geom_Circle) myCircle;
+  Standard_Boolean myFilledStatus;
 
 }; 
 
@@ -1999,18 +2000,18 @@ TopoDS_Face FilledCircle::ComputeFace()
   return aFace;
 }
 
-void FilledCircle::Compute(const Handle(PrsMgr_PresentationManager3d) &/*thePresentationManager*/, 
-                           const Handle(Prs3d_Presentation) &thePresentation, 
-                           const Standard_Integer theMode) 
+void FilledCircle::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                            const Handle(Prs3d_Presentation)& thePrs,
+                            const Standard_Integer theMode)
 {
-  thePresentation->Clear();
+  thePrs->Clear();
 
   TopoDS_Face aFace = ComputeFace();
 
   if (aFace.IsNull()) return;
   if (theMode != 0) return;
 
-  StdPrs_ShadedShape::Add(thePresentation, aFace, myDrawer);
+  StdPrs_ShadedShape::Add (thePrs, aFace, myDrawer);
 }
 
 void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection) &theSelection, 
@@ -3311,12 +3312,12 @@ public:
 
 private:
 
-  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                const Handle(Prs3d_Presentation)& aPresentation,
-                const Standard_Integer aMode) Standard_OVERRIDE;
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                const Handle(Prs3d_Presentation)& thePrs,
+                const Standard_Integer theMode) Standard_OVERRIDE;
 
-  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer /*theMode*/) Standard_OVERRIDE;
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
   bool CheckInputCommand (const TCollection_AsciiString theCommand,
                           const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
@@ -3338,7 +3339,7 @@ protected:
 
 };
 
-void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager)& ,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer theMode)
 {
@@ -5483,12 +5484,12 @@ public:
 
 private:
 
-  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                const Handle(Prs3d_Presentation)& aPresentation,
-                const Standard_Integer aMode) Standard_OVERRIDE;
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
-  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                         const Standard_Integer /*theMode*/) Standard_OVERRIDE;
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
 protected:
 
@@ -5498,9 +5499,9 @@ protected:
 };
 
 
-void ViewerTest_MarkersArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                              const Handle(Prs3d_Presentation)& aPresentation,
-                              const Standard_Integer /*aMode*/)
+void ViewerTest_MarkersArrayObject::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                             const Handle(Prs3d_Presentation)& aPresentation,
+                                             const Standard_Integer )
 {
   Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfPoints ((Standard_Integer )Pow (myPointsOnSide, 3), myPointsOnSide != 1);
   if (myPointsOnSide == 1)
@@ -6600,10 +6601,10 @@ public:
 
 protected:
 
-  //! Comnpute presentation.
-  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                        const Handle(Prs3d_Presentation)&           thePrs,
-                        const Standard_Integer                      theMode) Standard_OVERRIDE
+  //! Compute presentation.
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE
   {
     AIS_Shape::Compute (thePrsMgr, thePrs, theMode);
 

@@ -30,7 +30,7 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Prs3d_BndBox.hxx>
 #include <StdPrs_ShadedShape.hxx>
@@ -345,10 +345,9 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
 //function : Compute
 //purpose  :
 //=======================================================================
-
-void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
-                                 const Handle(Prs3d_Presentation)&           thePrs,
-                                 const Standard_Integer                      theMode)
+void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                 const Handle(Prs3d_Presentation)& thePrs,
+                                 const Standard_Integer theMode)
 {
   if (myshape.IsNull())
   {

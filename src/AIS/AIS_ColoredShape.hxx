@@ -95,9 +95,9 @@ public:
 protected: //! @name override presentation computation
 
   //! Compute presentation considering sub-shape color map.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection considering sub-shape hidden state.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,

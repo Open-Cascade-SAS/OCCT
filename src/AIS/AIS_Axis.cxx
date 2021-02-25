@@ -161,24 +161,23 @@ void AIS_Axis::SetAxis1Placement(const Handle(Geom_Axis1Placement)& anAxis)
 //function : Compute
 //purpose  : 
 //=======================================================================
-void AIS_Axis::Compute(const Handle(PrsMgr_PresentationManager3d)&,
-		       const Handle(Prs3d_Presentation)& aPresentation, 
-		       const Standard_Integer)
+void AIS_Axis::Compute (const Handle(PrsMgr_PresentationManager)& ,
+		        const Handle(Prs3d_Presentation)& thePrs,
+		        const Standard_Integer )
 {
-  aPresentation->SetInfiniteState (myInfiniteState);
-
-  aPresentation->SetDisplayPriority(5);
-  if (!myIsXYZAxis ){
-    GeomAdaptor_Curve curv(myComponent);
-    StdPrs_Curve::Add(aPresentation,curv,myDrawer);
+  thePrs->SetInfiniteState (myInfiniteState);
+  thePrs->SetDisplayPriority(5);
+  if (!myIsXYZAxis)
+  {
+    GeomAdaptor_Curve curv (myComponent);
+    StdPrs_Curve::Add (thePrs, curv, myDrawer);
   }
   else
   {
-    DsgPrs_XYZAxisPresentation::Add (aPresentation,myLineAspect,myDir,myVal,
+    DsgPrs_XYZAxisPresentation::Add (thePrs, myLineAspect, myDir, myVal,
                                      myDrawer->DatumAspect()->ToDrawLabels() ? myText : "",
                                      myPfirst, myPlast);
   }
-
 }
 
 //=======================================================================

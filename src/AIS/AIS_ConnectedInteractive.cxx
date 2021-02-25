@@ -110,9 +110,9 @@ void AIS_ConnectedInteractive::Disconnect()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode)
+void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode)
 {
   if (HasConnection())
   {

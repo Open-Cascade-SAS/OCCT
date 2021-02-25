@@ -35,7 +35,7 @@ public:
                                         const AIS_ManipulatorMode theMode,
                                         const Standard_Integer thePriority = 0);
 
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                  const Handle(Prs3d_Drawer)& theStyle,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 

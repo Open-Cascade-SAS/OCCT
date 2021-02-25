@@ -36,7 +36,7 @@ Sample2D_Markers::Sample2D_Markers (const Standard_Real theXPosition,
 }
 
 
-void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                                 const Handle(Prs3d_Presentation)& aPresentation,
                                 const Standard_Integer /*aMode*/)
 {

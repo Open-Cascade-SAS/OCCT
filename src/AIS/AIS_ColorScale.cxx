@@ -545,7 +545,7 @@ void AIS_ColorScale::updateTextAspect()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_ColorScale::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_ColorScale::Compute (const Handle(PrsMgr_PresentationManager)& ,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer theMode)
 {

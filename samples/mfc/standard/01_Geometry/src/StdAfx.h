@@ -215,7 +215,7 @@
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_PointAspect.hxx>

@@ -288,9 +288,9 @@ protected:
 
   Standard_EXPORT virtual Standard_Real ComputeValue() const Standard_OVERRIDE;
 
-  Standard_EXPORT  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                         const Handle(Prs3d_Presentation)& thePresentation,
-                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePM,
+                                        const Handle(Prs3d_Presentation)& thePresentation,
+                                        const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void ComputeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                        const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;

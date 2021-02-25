@@ -75,7 +75,7 @@ void ISession2D_Shape::BuildPolyAlgo()
   myPolyAlgo->Update();
 }
 
-void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager)& /*thePresentationManager*/,
                                const Handle(Prs3d_Presentation)& thePresentation,
                                const Standard_Integer theMode)
 {

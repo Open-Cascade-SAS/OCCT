@@ -72,12 +72,11 @@ PrsDim_EqualDistanceRelation::PrsDim_EqualDistanceRelation( const TopoDS_Shape& 
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void PrsDim_EqualDistanceRelation::Compute( const Handle( PrsMgr_PresentationManager3d )&,
-					 const Handle( Prs3d_Presentation )& aPresentation,
-					 const Standard_Integer ) 
+void PrsDim_EqualDistanceRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                            const Handle(Prs3d_Presentation)& aPresentation,
+                                            const Standard_Integer )
 {
   gp_Pnt Position12 =  myPosition, Position34 = myPosition;
 

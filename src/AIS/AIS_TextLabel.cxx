@@ -263,9 +263,9 @@ void AIS_TextLabel::SetColorSubTitle (const Quantity_Color& theColor)
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
-                             const Handle(Prs3d_Presentation)&             thePrs,
-                             const Standard_Integer                        theMode)
+void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                             const Handle(Prs3d_Presentation)& thePrs,
+                             const Standard_Integer theMode)
 {
   switch (theMode)
   {

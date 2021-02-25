@@ -71,11 +71,11 @@ PrsDim_MidPointRelation::PrsDim_MidPointRelation(const TopoDS_Shape& aMidPointTo
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_MidPointRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&, 
-				   const Handle(Prs3d_Presentation)& aprs, 
-				   const Standard_Integer)
+void PrsDim_MidPointRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                       const Handle(Prs3d_Presentation)& aprs,
+                                       const Standard_Integer )
 {
   if (myTool.ShapeType() == TopAbs_VERTEX)
     {

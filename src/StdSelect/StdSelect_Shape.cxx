@@ -36,24 +36,31 @@ StdSelect_Shape::StdSelect_Shape (const TopoDS_Shape& theShape,
   }
 }
 
-void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/,
-			      const Handle(Prs3d_Presentation)& P,
-			      const Standard_Integer aMode)
+void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager)& ,
+			      const Handle(Prs3d_Presentation)& thePrs,
+			      const Standard_Integer theMode)
 {
-  if(mysh.IsNull())
+  if (mysh.IsNull())
   {
     return;
   }
 
-  Standard_Boolean CanShade = (mysh.ShapeType()<5 || mysh.ShapeType()==8);
-  if(aMode==1){
-    if(CanShade)
-      StdPrs_ShadedShape::Add (P, mysh, myDrawer);
+  Standard_Boolean canShade = (mysh.ShapeType() < 5 || mysh.ShapeType() == 8);
+  if (theMode == 1)
+  {
+    if (canShade)
+    {
+      StdPrs_ShadedShape::Add (thePrs, mysh, myDrawer);
+    }
     else
-      StdPrs_WFShape::Add (P, mysh, myDrawer);
+    {
+      StdPrs_WFShape::Add (thePrs, mysh, myDrawer);
+    }
   }
-  else if (aMode==0)
-    StdPrs_WFShape::Add (P, mysh, myDrawer);
+  else if (theMode == 0)
+  {
+    StdPrs_WFShape::Add (thePrs, mysh, myDrawer);
+  }
 }
 
 void StdSelect_Shape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const

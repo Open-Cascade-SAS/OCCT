@@ -92,16 +92,19 @@ public:
 
 private:
 
-  Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& theprs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
   Standard_EXPORT void ComputeCircle (const Handle(Prs3d_Presentation)& aPresentation);
-  
+
   Standard_EXPORT void ComputeArc (const Handle(Prs3d_Presentation)& aPresentation);
-  
+
   Standard_EXPORT void ComputeCircleSelection (const Handle(SelectMgr_Selection)& aSelection);
-  
+
   Standard_EXPORT void ComputeArcSelection (const Handle(SelectMgr_Selection)& aSelection);
 
   //! Replace aspects of already computed groups with the new value.

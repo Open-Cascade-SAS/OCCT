@@ -42,7 +42,7 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <ProjLib.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -623,7 +623,7 @@ Standard_Real PrsDim_AngleDimension::ComputeValue() const
 //function : Compute
 //purpose  : Having three gp_Pnt points compute presentation
 //=======================================================================
-void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
+void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                      const Handle(Prs3d_Presentation)& thePresentation,
                                      const Standard_Integer theMode)
 {

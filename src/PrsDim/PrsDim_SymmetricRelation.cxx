@@ -67,11 +67,11 @@ PrsDim_SymmetricRelation::PrsDim_SymmetricRelation(const TopoDS_Shape& aSymmTool
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_SymmetricRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&, 
-				    const Handle(Prs3d_Presentation)& aprs, 
-				    const Standard_Integer)
+void PrsDim_SymmetricRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                        const Handle(Prs3d_Presentation)& aprs,
+                                        const Standard_Integer )
 {
   switch (myFShape.ShapeType()) {
   case TopAbs_FACE :

@@ -19,7 +19,7 @@
 
 #include <PrsDim_Relation.hxx>
 #include <gp_Pnt.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <TColStd_ListOfTransient.hxx>
 
@@ -62,19 +62,21 @@ public:
 
 private:
 
-  
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
   Standard_EXPORT void ComputeOneEdgeOVertexPresentation (const Handle(Prs3d_Presentation)& aPresentation);
-  
+
   Standard_EXPORT void ComputeTwoEdgesPresentation (const Handle(Prs3d_Presentation)& aPresentation);
-  
+
   Standard_EXPORT void ComputeTwoLinesPresentation (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Geom_Line)& aLin, gp_Pnt& Pnt1On1, gp_Pnt& Pnt2On1, gp_Pnt& Pnt1On2, gp_Pnt& Pnt2On2, const Standard_Boolean isInf1, const Standard_Boolean isInf2);
-  
+
   Standard_EXPORT void ComputeTwoCirclesPresentation (const Handle(Prs3d_Presentation)& aPresentation, const Handle(Geom_Circle)& aCircle, const gp_Pnt& Pnt1On1, const gp_Pnt& Pnt2On1, const gp_Pnt& Pnt1On2, const gp_Pnt& Pnt2On2);
-  
+
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of automatic presentation
   Standard_EXPORT void ComputeAutoArcPresentation (const Handle(Geom_Circle)& aCircle, const gp_Pnt& firstp, const gp_Pnt& lastp, const Standard_Boolean isstatic = Standard_False);

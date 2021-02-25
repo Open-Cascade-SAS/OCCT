@@ -53,14 +53,14 @@ public:
 protected:
 
   //! Redefined method to compute presentation.
-  Standard_EXPORT virtual  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                                         const Handle(Prs3d_Presentation)&           thePresentation,
-                                         const Standard_Integer                      theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Fills out a default style object which is used when styles are
   //! not explicitly defined in the document.
   //! By default, the style uses white color for curves and surfaces.
-  Standard_EXPORT virtual  void DefaultStyle (XCAFPrs_Style& theStyle) const;
+  Standard_EXPORT virtual void DefaultStyle (XCAFPrs_Style& theStyle) const;
 
 protected:
 

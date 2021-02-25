@@ -46,7 +46,7 @@ AdaptorCurve2d_AIS::AdaptorCurve2d_AIS (const Handle(Geom2d_Curve)& theGeom2dCur
   //
 }
 
-void AdaptorCurve2d_AIS::Compute (const Handle(PrsMgr_PresentationManager3d)&,
+void AdaptorCurve2d_AIS::Compute (const Handle(PrsMgr_PresentationManager)&,
                                   const Handle(Prs3d_Presentation)& thePrs,
                                   const Standard_Integer theMode)
 {

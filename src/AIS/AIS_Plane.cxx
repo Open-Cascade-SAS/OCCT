@@ -208,17 +208,17 @@ void AIS_Plane::SetPlaneAttributes(const Handle(Geom_Plane)& aComponent,
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
-			const Handle(Prs3d_Presentation)& aPresentation, 
-			const Standard_Integer aMode)
+void AIS_Plane::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                         const Handle(Prs3d_Presentation)& thePrs,
+                         const Standard_Integer theMode)
 {
   ComputeFields();
-  aPresentation->SetInfiniteState(myInfiniteState);
+  thePrs->SetInfiniteState (myInfiniteState);
   myDrawer->PlaneAspect()->EdgesAspect()->SetWidth(myCurrentMode == 0? 1 : 3);
 
-  switch (aMode)
+  switch (theMode)
   {
     case 0:
     {
@@ -228,10 +228,12 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
         const Handle(Geom_Plane)& pl = myComponent;
         Handle(Geom_Plane) thegoodpl (Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter)));
         GeomAdaptor_Surface surf(thegoodpl);
-        StdPrs_Plane::Add(aPresentation,surf,myDrawer);
+        StdPrs_Plane::Add (thePrs, surf, myDrawer);
       }
       else
-        DsgPrs_XYZPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
+      {
+        DsgPrs_XYZPlanePresentation::Add (thePrs, myDrawer, myCenter, myPmin, myPmax);
+      }
       break;
     }
     case 1:
@@ -239,12 +241,12 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
       if (!myIsXYZPlane)
       {
         ComputeFrame();
-        Handle(Prs3d_PlaneAspect) theaspect = myDrawer->PlaneAspect();
-        Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
-        TheGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
+        Handle(Prs3d_PlaneAspect) anAspect = myDrawer->PlaneAspect();
+        Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
+        aGroup->SetPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
         gp_Pnt p1;
-        const Standard_Real Xmax = 0.5*Standard_Real(theaspect->PlaneXLength());
-        const Standard_Real Ymax = 0.5*Standard_Real(theaspect->PlaneYLength());
+        const Standard_Real Xmax = 0.5*Standard_Real(anAspect->PlaneXLength());
+        const Standard_Real Ymax = 0.5*Standard_Real(anAspect->PlaneYLength());
 
         Handle(Graphic3d_ArrayOfQuadrangles) aQuads = new Graphic3d_ArrayOfQuadrangles(4);
 
@@ -257,10 +259,12 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
         myComponent->D0(-Xmax,-Ymax,p1);
         aQuads->AddVertex(p1);
 
-        TheGroup->AddPrimitiveArray(aQuads);
+        aGroup->AddPrimitiveArray (aQuads);
       }
       else
-        DsgPrs_ShadedPlanePresentation::Add(aPresentation,myDrawer,myCenter,myPmin,myPmax);
+      {
+        DsgPrs_ShadedPlanePresentation::Add (thePrs, myDrawer, myCenter, myPmin, myPmax);
+      }
       break;
     }
   }

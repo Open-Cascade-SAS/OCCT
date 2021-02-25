@@ -61,7 +61,7 @@ private:
   virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
 
   //! Compute presentation.
-  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                         const Handle(Prs3d_Presentation)& /*aPresentation*/,
                         const Standard_Integer theMode) Standard_OVERRIDE;
 

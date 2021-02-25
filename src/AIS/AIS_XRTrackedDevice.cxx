@@ -148,7 +148,7 @@ void AIS_XRTrackedDevice::computeLaserRay()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_XRTrackedDevice::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AIS_XRTrackedDevice::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                    const Handle(Prs3d_Presentation)& thePrs,
                                    const Standard_Integer theMode)
 {

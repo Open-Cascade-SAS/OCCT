@@ -94,12 +94,11 @@ PrsDim_MinRadiusDimension::PrsDim_MinRadiusDimension(const TopoDS_Shape& aShape,
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void PrsDim_MinRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-				     const Handle(Prs3d_Presentation)& aPresentation, 
-				     const Standard_Integer /*aMode*/)
+void PrsDim_MinRadiusDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                         const Handle(Prs3d_Presentation)& aPresentation,
+                                         const Standard_Integer )
 {
 //  if( myAutomaticPosition )
     //{ //ota : recompute ellipse always

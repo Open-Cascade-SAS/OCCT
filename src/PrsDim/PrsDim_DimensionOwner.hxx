@@ -23,7 +23,7 @@
 #include <PrsDim_DimensionSelectionMode.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Integer.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Boolean.hxx>
 
@@ -54,9 +54,9 @@ public:
   
   PrsDim_DimensionSelectionMode SelectionMode() const { return mySelectionMode; }
   
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                  const Handle(Prs3d_Drawer)& theStyle,
-                                                 const Standard_Integer theMode = 0) Standard_OVERRIDE;
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
   
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.

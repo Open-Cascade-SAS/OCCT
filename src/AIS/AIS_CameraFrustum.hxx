@@ -58,9 +58,9 @@ public:
 protected:
 
   //! Computes presentation of camera frustum.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                        const Handle(Prs3d_Presentation)&           thePrs,
-                                        const Standard_Integer                      theMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,

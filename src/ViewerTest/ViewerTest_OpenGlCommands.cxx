@@ -53,28 +53,28 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
                                            Standard_Boolean theReplaceIfExists = Standard_True);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
-namespace {
+namespace
+{
 
 //=======================================================================
 //function : VUserDraw
 //purpose  : Checks availability and operation of UserDraw feature
 //=======================================================================
-
 class VUserDrawObj : public AIS_InteractiveObject
 {
 public:
-    // CASCADE RTTI
-    DEFINE_STANDARD_RTTI_INLINE(VUserDrawObj,AIS_InteractiveObject);
+  // CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VUserDrawObj, AIS_InteractiveObject);
 
-    VUserDrawObj()
-    {
-      myCoords[0] = -10.;
-      myCoords[1] = -20.;
-      myCoords[2] = -30.;
-      myCoords[3] =  10.;
-      myCoords[4] =  20.;
-      myCoords[5] =  30.;
-    }
+  VUserDrawObj()
+  {
+    myCoords[0] = -10.;
+    myCoords[1] = -20.;
+    myCoords[2] = -30.;
+    myCoords[3] =  10.;
+    myCoords[4] =  20.;
+    myCoords[5] =  30.;
+  }
 
 public:
   class Element : public OpenGl_Element
@@ -103,23 +103,23 @@ public:
   };
 
 private:
-    // Virtual methods implementation
-    void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                  const Handle(Prs3d_Presentation)& thePresentation,
-                  const Standard_Integer theMode) Standard_OVERRIDE;
+  // Virtual methods implementation
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
-    void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                           const Standard_Integer theMode) Standard_OVERRIDE;
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
-    // Called by VUserDrawElement
-    void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
+  // Called by VUserDrawElement
+  void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 private:
-    GLfloat myCoords[6];
-    friend class Element;
+  GLfloat myCoords[6];
+  friend class Element;
 };
 
-void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                            const Handle(Prs3d_Presentation)& thePrs,
                            const Standard_Integer /*theMode*/)
 {

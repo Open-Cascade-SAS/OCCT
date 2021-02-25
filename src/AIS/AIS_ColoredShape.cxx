@@ -33,7 +33,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
 #include <StdPrs_ShadedShape.hxx>
@@ -349,9 +349,9 @@ void AIS_ColoredShape::SetMaterial (const Graphic3d_MaterialAspect& theMaterial)
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
-                                const Handle(Prs3d_Presentation)&           thePrs,
-                                const Standard_Integer                      theMode)
+void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                const Handle(Prs3d_Presentation)& thePrs,
+                                const Standard_Integer theMode)
 {
   if (myshape.IsNull())
   {

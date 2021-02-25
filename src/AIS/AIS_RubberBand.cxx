@@ -390,10 +390,15 @@ Standard_Boolean AIS_RubberBand::fillTriangles()
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+void AIS_RubberBand::Compute (const Handle(PrsMgr_PresentationManager)& ,
                               const Handle(Prs3d_Presentation)& thePresentation,
-                              const Standard_Integer /*theMode*/)
+                              const Standard_Integer theMode)
 {
+  if (theMode != 0)
+  {
+    return;
+  }
+
   // Draw filling
   if (IsFilling() && fillTriangles())
   {

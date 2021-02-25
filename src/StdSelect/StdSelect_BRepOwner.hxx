@@ -24,7 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 class StdSelect_Shape;
@@ -98,9 +98,9 @@ public:
   //! aMode is highlighted in the presentation manager aPM.
   Standard_EXPORT virtual Standard_Boolean IsHilighted (const Handle(PrsMgr_PresentationManager)& aPM, const Standard_Integer aMode = 0) const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-                                                 const Handle(Prs3d_Drawer)&                 theStyle,
-                                                 const Standard_Integer                      theMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
   
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.
@@ -114,7 +114,7 @@ public:
 
   //! Implements immediate application of location transformation of parent object to dynamic highlight structure
   Standard_EXPORT virtual void UpdateHighlightTrsf (const Handle(V3d_Viewer)& theViewer,
-                                                    const Handle(PrsMgr_PresentationManager3d)& theManager,
+                                                    const Handle(PrsMgr_PresentationManager)& theManager,
                                                     const Standard_Integer theDispMode) Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream

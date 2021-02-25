@@ -67,15 +67,15 @@ protected:
 
   Standard_EXPORT void updatePresentation();
 
-
-
 private:
 
-  
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
   //! Attenuates 32-bit color by a given attenuation factor (0...1):
   //! aColor = Alpha << 24 + Blue << 16 + Green << 8 + Red
   //! All color components are multiplied by aComponent, the result is then packed again as 32-bit integer.

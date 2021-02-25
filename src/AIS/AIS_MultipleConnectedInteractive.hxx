@@ -107,7 +107,9 @@ protected:
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Establishes the connection between the Connected Interactive Object, theInteractive, and its reference.
   //! Locates instance in theLocation and applies specified transformation persistence mode.

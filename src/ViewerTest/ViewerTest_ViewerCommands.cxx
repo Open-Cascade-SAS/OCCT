@@ -5785,14 +5785,14 @@ public:
                                Standard_Real theWidth    = 0.5,
                                Standard_Real theTransp   = 1.0);
 
-  private:
+private:
 
-  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                const Handle(Prs3d_Presentation)& thePresentation,
-                const Standard_Integer theMode) Standard_OVERRIDE;
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE;
 
-  void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
-                         const Standard_Integer /*aMode*/) Standard_OVERRIDE
+  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& ,
+                                 const Standard_Integer ) Standard_OVERRIDE
   {}
 
 private:
@@ -5815,9 +5815,9 @@ V3d_LineItem::V3d_LineItem(Standard_Real X1, Standard_Real Y1,
 }
 
 // render line
-void V3d_LineItem::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+void V3d_LineItem::Compute (const Handle(PrsMgr_PresentationManager)& ,
                             const Handle(Prs3d_Presentation)& thePresentation,
-                            const Standard_Integer /*theMode*/)
+                            const Standard_Integer )
 {
   thePresentation->Clear();
   Quantity_Color aColor (Quantity_NOC_RED);
@@ -7281,7 +7281,9 @@ public:
   virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0 || theMode == 1; }
 
   //! Compute presentation.
-  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& , const Handle(Prs3d_Presentation)& thePrs, const Standard_Integer theMode) Standard_OVERRIDE
+  virtual void Compute (const Handle(PrsMgr_PresentationManager)& ,
+                        const Handle(Prs3d_Presentation)& thePrs,
+                        const Standard_Integer theMode) Standard_OVERRIDE
   {
     switch (theMode)
     {

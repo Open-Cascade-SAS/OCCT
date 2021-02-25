@@ -33,6 +33,7 @@
 #include <TColStd_ListOfInteger.hxx>
 
 class PrsMgr_PresentationManager;
+Standard_DEPRECATED("Deprecated alias to PrsMgr_PresentationManager")
 typedef PrsMgr_PresentationManager PrsMgr_PresentationManager3d;
 
 //! A framework to supply the Graphic3d structure of the object to be presented.

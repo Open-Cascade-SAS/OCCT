@@ -34,7 +34,7 @@ public:
   Prs3d_DatumParts DatumPart() const { return myDatumPart; }
 
   //! Highlights selectable object's presentation.
-  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                  const Handle(Prs3d_Drawer)& theStyle,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 

@@ -103,7 +103,9 @@ protected:
   //! compute anything, but just uses the
   //! presentation of this last object, with
   //! a transformation if there's one stored.
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& theprs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Computes the presentation according to a point of view.
   Standard_EXPORT virtual void computeHLR (const Handle(Graphic3d_Camera)& theProjector,

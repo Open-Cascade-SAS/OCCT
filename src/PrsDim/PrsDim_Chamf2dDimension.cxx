@@ -95,11 +95,10 @@ PrsDim_Chamf2dDimension::PrsDim_Chamf2dDimension(const TopoDS_Shape& aFShape,
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& , 
-				   const Handle(Prs3d_Presentation)& aPresentation, 
+void PrsDim_Chamf2dDimension::Compute(const Handle(PrsMgr_PresentationManager)& ,
+				   const Handle(Prs3d_Presentation)& aPresentation,
 				   const Standard_Integer)
 {
     Handle(Geom_Curve) gcurv;

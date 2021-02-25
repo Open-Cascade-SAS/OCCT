@@ -33,7 +33,7 @@
 #include <Graphic3d_Vec2.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TypeOfHighlight.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_AndOrFilter.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_ListOfFilter.hxx>
@@ -834,7 +834,7 @@ public: //! @name common properties
 
   const Handle(SelectMgr_SelectionManager)& SelectionManager() const { return mgrSelector; }
 
-  const Handle(PrsMgr_PresentationManager3d)& MainPrsMgr() const { return myMainPM; }
+  const Handle(PrsMgr_PresentationManager)& MainPrsMgr() const { return myMainPM; }
 
   const Handle(StdSelect_ViewerSelector3d)& MainSelector() const { return myMainSel; }
 
@@ -1411,7 +1411,7 @@ protected: //! @name internal fields
 
   AIS_DataMapOfIOStatus myObjects;
   Handle(SelectMgr_SelectionManager) mgrSelector;
-  Handle(PrsMgr_PresentationManager3d) myMainPM;
+  Handle(PrsMgr_PresentationManager) myMainPM;
   Handle(V3d_Viewer) myMainVwr;
   Handle(StdSelect_ViewerSelector3d) myMainSel;
   V3d_View* myLastActiveView;

@@ -88,11 +88,11 @@ PrsDim_ParallelRelation::PrsDim_ParallelRelation(const TopoDS_Shape& aFShape,
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_ParallelRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&, 
-				   const Handle(Prs3d_Presentation)& aPresentation, 
-				   const Standard_Integer)
+void PrsDim_ParallelRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                       const Handle(Prs3d_Presentation)& aPresentation,
+                                       const Standard_Integer )
 {
   switch (myFShape.ShapeType())
     {

@@ -57,11 +57,11 @@ PrsDim_ConcentricRelation::PrsDim_ConcentricRelation(
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&, 
-				     const Handle(Prs3d_Presentation)& aPresentation, 
-				     const Standard_Integer)
+void PrsDim_ConcentricRelation::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                         const Handle(Prs3d_Presentation)& aPresentation,
+                                         const Standard_Integer )
 {
   TopAbs_ShapeEnum type2(mySShape.ShapeType());
   aPresentation->SetInfiniteState(Standard_True);

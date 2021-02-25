@@ -68,13 +68,15 @@ public:
   virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
 
 private:
-  
-  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
-  
-  //! computes the presentation for <myFixShape> if it's a
-  //! vertex.
+
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                        const Handle(Prs3d_Presentation)& thePrs,
+                                        const Standard_Integer theMode) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
+  //! computes the presentation for <myFixShape> if it's a vertex.
   Standard_EXPORT void ComputeVertex (const TopoDS_Vertex& FixVertex, gp_Pnt& curpos);
   
   Standard_EXPORT gp_Pnt ComputePosition (const Handle(Geom_Curve)& curv1, const Handle(Geom_Curve)& curv2, const gp_Pnt& firstp1, const gp_Pnt& lastp1, const gp_Pnt& firstp2, const gp_Pnt& lastp2) const;

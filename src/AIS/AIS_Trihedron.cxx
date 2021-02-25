@@ -165,7 +165,7 @@ Standard_Real AIS_Trihedron::Size() const
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_Trihedron::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+void AIS_Trihedron::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                              const Handle(Prs3d_Presentation)& thePrs,
                              const Standard_Integer theMode)
 {
@@ -257,7 +257,7 @@ void AIS_Trihedron::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
 //function : HilightOwnerWithColor
 //purpose  :
 //=======================================================================
-void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                            const Handle(Prs3d_Drawer)& theStyle,
                                            const Handle(SelectMgr_EntityOwner)& theOwner)
 {
@@ -318,7 +318,7 @@ void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManag
 //function : HilightSelected
 //purpose  :
 //========================================================================
-void AIS_Trihedron::HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePM,
+void AIS_Trihedron::HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM,
                                      const SelectMgr_SequenceOfOwner& theOwners)
 {
   if (theOwners.IsEmpty() || !HasInteractiveContext())
@@ -415,7 +415,7 @@ void AIS_Trihedron::ClearSelected()
 //function : computePresentation
 //purpose  :
 //=======================================================================
-void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
+void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager)& /*thePrsMgr*/,
                                          const Handle(Prs3d_Presentation)& thePrs)
 {
   for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DatumParts_NB; ++aPartIter)

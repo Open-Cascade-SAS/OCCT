@@ -51,7 +51,7 @@ private:
                      const TopoDS_Shape& theCompound,
                      const Handle(Prs3d_LineAspect) theAspect);
 
-  Standard_EXPORT virtual  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+  Standard_EXPORT virtual  void Compute (const Handle(PrsMgr_PresentationManager)& thePresentationManager,
                                          const Handle(Prs3d_Presentation)& thePresentation,
                                          const Standard_Integer theMode = 0);
 

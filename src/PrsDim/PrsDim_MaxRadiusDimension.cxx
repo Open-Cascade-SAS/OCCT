@@ -94,12 +94,11 @@ PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape& aShape,
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void PrsDim_MaxRadiusDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-				     const Handle(Prs3d_Presentation)& aPresentation, 
-				     const Standard_Integer /*aMode*/)
+void PrsDim_MaxRadiusDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                         const Handle(Prs3d_Presentation)& aPresentation,
+                                         const Standard_Integer )
 {
 //  if( myAutomaticPosition )
     {//ota : recompute in any case 

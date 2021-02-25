@@ -147,13 +147,13 @@ Standard_Real AIS_PlaneTrihedron::GetLength() const {
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
-				    const Handle(Prs3d_Presentation)& aPresentation, 
-				    const Standard_Integer)
+void AIS_PlaneTrihedron::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                  const Handle(Prs3d_Presentation)& thePrs,
+                                  const Standard_Integer )
 {
-  aPresentation->SetDisplayPriority(5);
+  thePrs->SetDisplayPriority (5);
   // drawing axis in X direction
   gp_Pnt first, last;
   Standard_Real value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
@@ -166,7 +166,7 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   first.SetCoord( xo, yo, zo );
   last.SetCoord( xo + x * value, yo + y * value, zo + z * value );
   
-  DsgPrs_XYZAxisPresentation::Add (aPresentation,
+  DsgPrs_XYZAxisPresentation::Add (thePrs,
                                    myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis),
                                    myDrawer->ArrowAspect(),
                                    myDrawer->TextAspect(),
@@ -178,13 +178,13 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 
   yDir.Coord( x, y, z );
   last.SetCoord( xo + x * value, yo + y * value, zo + z * value );
-  DsgPrs_XYZAxisPresentation::Add (aPresentation,
+  DsgPrs_XYZAxisPresentation::Add (thePrs,
                                    myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis),
                                    myDrawer->ArrowAspect(),
                                    myDrawer->TextAspect(),
                                    yDir, value, myYLabel.ToCString(), first, last);
 
-  aPresentation->SetInfiniteState (Standard_True);
+  thePrs->SetInfiniteState (Standard_True);
 }
 
 //=======================================================================

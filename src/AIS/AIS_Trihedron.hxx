@@ -21,7 +21,7 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <AIS_TrihedronSelectionMode.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_DatumMode.hxx>
 #include <Prs3d_DatumParts.hxx>
@@ -189,19 +189,19 @@ public:
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
 
   //! Method which draws selected owners ( for fast presentation draw ).
-  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightSelected (const Handle(PrsMgr_PresentationManager)& thePM,
                                                 const SelectMgr_SequenceOfOwner& theOwners) Standard_OVERRIDE;
 
   //! Method which hilight an owner belonging to
   //! this selectable object  ( for fast presentation draw ).
-  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+  Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                       const Handle(Prs3d_Drawer)& theStyle,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
 
 protected:
 
   //! Compute trihedron presentation.
-  Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+  Standard_EXPORT void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
@@ -219,7 +219,7 @@ protected:
                                                      const Handle(SelectMgr_EntityOwner)& theOwner) const;
 
   //! Computes presentation for display mode equal 1.
-  Standard_EXPORT void computePresentation (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
+  Standard_EXPORT void computePresentation (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                             const Handle(Prs3d_Presentation)& thePrs);
 
   //! Returns own datum aspect of trihedron, create this aspect if it was not created yet.

@@ -81,11 +81,11 @@ mySAttach(0.,0.,0.)
 
 //=======================================================================
 //function : Compute
-//purpose  : 
+//purpose  :
 //=======================================================================
-void PrsDim_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
-				  const Handle(Prs3d_Presentation)& aprs,
-				  const Standard_Integer)
+void PrsDim_OffsetDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
+                                      const Handle(Prs3d_Presentation)& aprs,
+                                      const Standard_Integer )
 {
   gp_Trsf aInvertTrsf = myRelativePos;
   //myArrowSize = fabs (myVal/5.);

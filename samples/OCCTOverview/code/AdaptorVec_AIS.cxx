@@ -39,7 +39,7 @@ AdaptorVec_AIS::AdaptorVec_AIS (const gp_Pnt2d& thePnt1,
   myLength = aVec.Magnitude();
 }
 
-void AdaptorVec_AIS::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
+void AdaptorVec_AIS::Compute (const Handle(PrsMgr_PresentationManager)& ,
                               const Handle(Prs3d_Presentation)& thePrs,
                               const Standard_Integer theMode)
 {
