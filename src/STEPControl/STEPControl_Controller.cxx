@@ -213,8 +213,8 @@ STEPControl_Controller::STEPControl_Controller ()
     // Issues #29068 and #31491.
     Interface_Static::Init("step", "read.step.root.transformation", 'e', "");
     Interface_Static::Init("step", "read.step.root.transformation", '&', "enum 0");
-    Interface_Static::Init("step", "read.step.root.transformation", '&', "eval ON");
     Interface_Static::Init("step", "read.step.root.transformation", '&', "eval OFF");
+    Interface_Static::Init("step", "read.step.root.transformation", '&', "eval ON");
     Interface_Static::SetCVal("read.step.root.transformation", "ON");
 
     // STEP file encoding for names translation
