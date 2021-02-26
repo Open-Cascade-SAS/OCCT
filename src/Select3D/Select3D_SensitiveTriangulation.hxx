@@ -119,7 +119,14 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
+  //! Checks whether one or more entities of the set overlap current selecting volume.
+  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+
 protected:
+
+  //! Compute bounding box.
+  void computeBoundingBox();
 
   //! Inner function for transformation application to bounding
   //! box of the triangulation

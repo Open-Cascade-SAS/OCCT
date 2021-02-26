@@ -22,10 +22,12 @@
 #include <Poly_HArray1OfTriangle.hxx>
 #include <Poly_ArrayOfNodes.hxx>
 #include <Poly_ArrayOfUVNodes.hxx>
+#include <Poly_MeshPurpose.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 
+class OSD_FileSystem;
 class Poly_Triangulation;
 DEFINE_STANDARD_HANDLE(Poly_Triangulation, Standard_Transient)
 
@@ -105,6 +107,9 @@ public:
   //! See more on deflection in Polygon2D
   void Deflection (const Standard_Real theDeflection) { myDeflection = theDeflection; }
 
+  //! Clears internal arrays of nodes and all attributes.
+  Standard_EXPORT virtual void Clear();
+
   //! Returns TRUE if triangulation has some geometry.
   virtual Standard_Boolean HasGeometry() const { return !myNodes.IsEmpty() && !myTriangles.IsEmpty(); }
 
@@ -180,6 +185,12 @@ public:
                                    float(theNormal.Z())));
   }
 
+  //! Returns mesh purpose bits.
+  Poly_MeshPurpose MeshPurpose() const { return myPurpose; }
+
+  //! Sets mesh purpose bits.
+  void SetMeshPurpose (const Poly_MeshPurpose thePurpose) { myPurpose = thePurpose; }
+
   //! Returns cached min - max range of triangulation data,
   //! which is VOID by default (e.g, no cached information).
   Standard_EXPORT const Bnd_Box& CachedMinMax() const;
@@ -246,7 +257,7 @@ public:
   //! If an array for normals is not allocated yet, do it now.
   Standard_EXPORT void AddNormals();
 
-  //! Deallocates the Normals array.
+  //! Deallocates the normals array.
   Standard_EXPORT void RemoveNormals();
 
   //! Compute smooth normals by averaging triangle normals.
@@ -304,6 +315,50 @@ public:
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
   Poly_Triangle& ChangeTriangle (const Standard_Integer theIndex) { return myTriangles.ChangeValue (theIndex); }
 
+public: //! @name late-load deferred data interface
+
+  //! Returns number of deferred nodes that can be loaded using LoadDeferredData().
+  //! Note: this is estimated values, which might be different from actually loaded values.
+  //! Always check triangulation size of actually loaded data in code to avoid out-of-range issues.
+  virtual Standard_Integer NbDeferredNodes() const { return 0; }
+
+  //! Returns number of deferred triangles that can be loaded using LoadDeferredData().
+  //! Note: this is estimated values, which might be different from actually loaded values
+  //! Always check triangulation size of actually loaded data in code to avoid out-of-range issues.
+  virtual Standard_Integer NbDeferredTriangles() const { return 0; }
+
+  //! Returns TRUE if there is some triangulation data that can be loaded using LoadDeferredData().
+  virtual Standard_Boolean HasDeferredData() const { return NbDeferredTriangles() > 0; }
+
+  //! Loads triangulation data into itself
+  //! from some deferred storage using specified shared input file system.
+  Standard_EXPORT virtual Standard_Boolean LoadDeferredData (const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)());
+
+  //! Loads triangulation data into new Poly_Triangulation object
+  //! from some deferred storage using specified shared input file system.
+  Standard_EXPORT virtual Handle(Poly_Triangulation) DetachedLoadDeferredData
+    (const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)()) const;
+
+  //! Releases triangulation data if it has connected deferred storage.
+  Standard_EXPORT virtual Standard_Boolean UnloadDeferredData();
+
+protected:
+
+  //! Creates new triangulation object (can be inheritor of Poly_Triangulation).
+  virtual Handle(Poly_Triangulation) createNewEntity() const
+  {
+    return new Poly_Triangulation();
+  }
+
+  //! Load triangulation data from deferred storage using specified shared input file system.
+  virtual Standard_Boolean loadDeferredData (const Handle(OSD_FileSystem)& theFileSystem,
+                                             const Handle(Poly_Triangulation)& theDestTriangulation) const
+  {
+    (void )theFileSystem;
+    (void )theDestTriangulation;
+    return false;
+  }
+
 protected:
 
   //! Clears cached min - max range saved previously.
@@ -321,6 +376,7 @@ protected:
   Poly_Array1OfTriangle        myTriangles;
   Poly_ArrayOfUVNodes          myUVNodes;
   NCollection_Array1<gp_Vec3f> myNormals;
+  Poly_MeshPurpose             myPurpose;
 
 };
 

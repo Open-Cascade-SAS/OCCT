@@ -54,6 +54,7 @@ class BRepTools_ReShape;
 class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
+class OSD_FileSystem;
 
 
 //! The BRepTools package provides  utilities for BRep
@@ -165,7 +166,9 @@ public:
   //! Removes all the pcurves of the edges of <S> that
   //! refer to surfaces not belonging to any face of <S>
   Standard_EXPORT static void RemoveUnusedPCurves (const TopoDS_Shape& S);
-  
+
+public:
+
   //! Verifies that each Face from the shape has got a triangulation with a deflection smaller or equal to specified one
   //! and the Edges a discretization on this triangulation.
   //! @param theShape   [in] shape to verify
@@ -178,7 +181,60 @@ public:
   Standard_EXPORT static Standard_Boolean Triangulation (const TopoDS_Shape& theShape,
                                                          const Standard_Real theLinDefl,
                                                          const Standard_Boolean theToCheckFreeEdges = Standard_False);
-  
+
+  //! Loads triangulation data for each face of the shape
+  //! from some deferred storage using specified shared input file system
+  //! @param theShape            [in] shape to load triangulations
+  //! @param theTriangulationIdx [in] index defining what triangulation should be loaded. Starts from 0.
+  //!        -1 is used in specific case to load currently already active triangulation.
+  //!        If some face doesn't contain triangulation with this index, nothing will be loaded for it.
+  //!        Exception will be thrown in case of invalid negative index
+  //! @param theToSetAsActive    [in] flag to activate triangulation after its loading
+  //! @param theFileSystem       [in] shared file system
+  //! @return TRUE if at least one triangulation is loaded.
+  Standard_EXPORT static Standard_Boolean LoadTriangulation (const TopoDS_Shape& theShape,
+                                                             const Standard_Integer theTriangulationIdx = -1,
+                                                             const Standard_Boolean theToSetAsActive = Standard_False,
+                                                             const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)());
+
+  //! Releases triangulation data for each face of the shape if there is deferred storage to load it later
+  //! @param theShape            [in] shape to unload triangulations
+  //! @param theTriangulationIdx [in] index defining what triangulation should be unloaded. Starts from 0.
+  //!        -1 is used in specific case to unload currently already active triangulation.
+  //!        If some face doesn't contain triangulation with this index, nothing will be unloaded for it.
+  //!        Exception will be thrown in case of invalid negative index
+  //! @return TRUE if at least one triangulation is unloaded.
+  Standard_EXPORT static Standard_Boolean UnloadTriangulation (const TopoDS_Shape& theShape,
+                                                               const Standard_Integer theTriangulationIdx = -1);
+
+  //! Activates triangulation data for each face of the shape
+  //! from some deferred storage using specified shared input file system
+  //! @param theShape              [in] shape to activate triangulations
+  //! @param theTriangulationIdx   [in] index defining what triangulation should be activated. Starts from 0.
+  //!        Exception will be thrown in case of invalid negative index
+  //! @param theToActivateStrictly [in] flag to activate exactly triangulation with defined theTriangulationIdx index.
+  //!        In TRUE case if some face doesn't contain triangulation with this index, active triangulation
+  //!        will not be changed for it. Else the last available triangulation will be activated.
+  //! @return TRUE if at least one active triangulation was changed.
+  Standard_EXPORT static Standard_Boolean ActivateTriangulation (const TopoDS_Shape& theShape,
+                                                                 const Standard_Integer theTriangulationIdx,
+                                                                 const Standard_Boolean theToActivateStrictly = false);
+
+  //! Loads all available triangulations for each face of the shape
+  //! from some deferred storage using specified shared input file system
+  //! @param theShape      [in] shape to load triangulations
+  //! @param theFileSystem [in] shared file system
+  //! @return TRUE if at least one triangulation is loaded.
+  Standard_EXPORT static Standard_Boolean LoadAllTriangulations (const TopoDS_Shape& theShape,
+                                                                 const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)());
+
+  //! Releases all available triangulations for each face of the shape if there is deferred storage to load them later
+  //! @param theShape      [in] shape to unload triangulations
+  //! @return TRUE if at least one triangulation is unloaded.
+  Standard_EXPORT static Standard_Boolean UnloadAllTriangulations (const TopoDS_Shape& theShape);
+
+public:
+
   //! Returns  True if  the    distance between the  two
   //! vertices is lower than their tolerance.
   Standard_EXPORT static Standard_Boolean Compare (const TopoDS_Vertex& V1, const TopoDS_Vertex& V2);

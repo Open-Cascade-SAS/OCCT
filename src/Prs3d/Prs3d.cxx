@@ -31,7 +31,7 @@ void Prs3d::AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
                           const Handle(Poly_Triangulation)& thePolyTri,
                           const gp_Trsf& theLocation)
 {
-  if (thePolyTri.IsNull())
+  if (thePolyTri.IsNull() || !thePolyTri->HasGeometry())
   {
     return;
   }

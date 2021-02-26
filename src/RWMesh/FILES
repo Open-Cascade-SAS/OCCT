@@ -8,3 +8,7 @@ RWMesh_FaceIterator.hxx
 RWMesh_MaterialMap.cxx
 RWMesh_MaterialMap.hxx
 RWMesh_NodeAttributes.hxx
+RWMesh_TriangulationReader.cxx
+RWMesh_TriangulationReader.hxx
+RWMesh_TriangulationSource.cxx
+RWMesh_TriangulationSource.hxx

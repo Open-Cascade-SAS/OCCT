@@ -14,17 +14,11 @@
 
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 
+#include <RWGltf_GltfPrimArrayData.hxx>
 #include <RWGltf_MaterialMetallicRoughness.hxx>
 #include <RWGltf_MaterialCommon.hxx>
 
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <OSD_OpenFile.hxx>
-#include <Standard_ArrayStreamBuffer.hxx>
-
-#include <fstream>
-
-IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, Poly_Triangulation)
+IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, RWMesh_TriangulationSource)
 
 // =======================================================================
 // function : RWGltf_GltfLatePrimitiveArray
@@ -32,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, Poly_Triangulation)
 // =======================================================================
 RWGltf_GltfLatePrimitiveArray::RWGltf_GltfLatePrimitiveArray (const TCollection_AsciiString& theId,
                                                               const TCollection_AsciiString& theName)
-: Poly_Triangulation(),
-  myId (theId),
+: myId (theId),
   myName (theName),
   myPrimMode (RWGltf_GltfPrimitiveMode_UNKNOWN)
 {

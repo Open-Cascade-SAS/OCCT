@@ -469,19 +469,34 @@ void  BRep_Builder::MakeFace(TopoDS_Face& F,
 //function : MakeFace
 //purpose  : 
 //=======================================================================
-
-void  BRep_Builder::MakeFace(TopoDS_Face&                      F,
-                             const Handle(Poly_Triangulation)& T) const
+void  BRep_Builder::MakeFace(TopoDS_Face& theFace,
+                             const Handle(Poly_Triangulation)& theTriangulation) const
 {
-  Handle(BRep_TFace) TF = new BRep_TFace();
-  if(!F.IsNull() && F.Locked())
+  Handle(BRep_TFace) aTFace = new BRep_TFace();
+  if(!theFace.IsNull() && theFace.Locked())
   {
     throw TopoDS_LockedShape("BRep_Builder::MakeFace");
   }
-  TF->Triangulation(T);
-  MakeShape(F, TF);
+  aTFace->Triangulation (theTriangulation);
+  MakeShape (theFace, aTFace);
 }
 
+//=======================================================================
+//function : MakeFace
+//purpose  :
+//=======================================================================
+void BRep_Builder::MakeFace (TopoDS_Face& theFace,
+                             const Poly_ListOfTriangulation& theTriangulations,
+                             const Handle(Poly_Triangulation)& theActiveTriangulation) const
+{
+  Handle(BRep_TFace) aTFace = new BRep_TFace();
+  if(!theFace.IsNull() && theFace.Locked())
+  {
+    throw TopoDS_LockedShape ("BRep_Builder::MakeFace");
+  }
+  aTFace->Triangulations (theTriangulations, theActiveTriangulation);
+  MakeShape (theFace, aTFace);
+}
 
 //=======================================================================
 //function : MakeFace
@@ -531,19 +546,18 @@ void  BRep_Builder::UpdateFace(const TopoDS_Face& F,
 //function : UpdateFace
 //purpose  : 
 //=======================================================================
-
-void  BRep_Builder::UpdateFace(const TopoDS_Face& F,
-                               const Handle(Poly_Triangulation)& T) const
+void BRep_Builder::UpdateFace (const TopoDS_Face& theFace,
+                               const Handle(Poly_Triangulation)& theTriangulation,
+                               const Standard_Boolean theToReset) const
 {
-  const Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*) &F.TShape());
-  if(TF->Locked())
+  const Handle(BRep_TFace)& aTFace = *((Handle(BRep_TFace)*) &theFace.TShape());
+  if(aTFace->Locked())
   {
     throw TopoDS_LockedShape("BRep_Builder::UpdateFace");
   }
-  TF->Triangulation(T);
-  F.TShape()->Modified(Standard_True);
+  aTFace->Triangulation (theTriangulation, theToReset);
+  theFace.TShape()->Modified (Standard_True);
 }
-
 
 //=======================================================================
 //function : UpdateFace

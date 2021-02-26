@@ -52,6 +52,8 @@
 #include <BRepMesh_MeshAlgoFactory.hxx>
 #include <BRepMesh_DelabellaMeshAlgoFactory.hxx>
 
+#include <algorithm>
+
 //epa Memory leaks test
 //OAN: for triepoints
 #ifdef _WIN32
@@ -429,32 +431,328 @@ static Standard_Integer MemLeakTest(Draw_Interpretor&, Standard_Integer /*nbarg*
 }
 
 //=======================================================================
+//function : TrLateLoad
+//purpose  :
+//=======================================================================
+static Standard_Integer TrLateLoad (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs < 3)
+  {
+    theDI << "Syntax error: not enough arguments\n";
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get (theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDI << "Syntax error: '" << theArgVec[1] << "' is not a shape\n";
+    return 1;
+  }
+  for (Standard_Integer anArgIter = 2; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-load")
+    {
+      if (anArgIter + 1 < theNbArgs)
+      {
+        TCollection_AsciiString aLoadArg(theArgVec[anArgIter + 1]);
+        aLoadArg.LowerCase();
+        if (aLoadArg == "all"
+         || aLoadArg == "*")
+        {
+          // Load all triangulations
+          anArgIter++;
+          if (BRepTools::LoadAllTriangulations (aShape))
+          {
+            theDI << "All triangulations of shape " << theArgVec[1] << " were loaded\n";
+          }
+          continue;
+        }
+        if (aLoadArg.IsIntegerValue())
+        {
+          // Load defined triangulation
+          anArgIter++;
+          Standard_Integer anIndexToLoad = aLoadArg.IntegerValue();
+          if (anIndexToLoad < -1)
+          {
+            Message::SendWarning ("Invalid negative triangulation index to be loaded");
+            continue;
+          }
+          if (BRepTools::LoadTriangulation (aShape, anIndexToLoad))
+          {
+            theDI << "The " << anIndexToLoad << " triangulation of shape " << theArgVec[1] << " was loaded\n";
+          }
+          continue;
+        }
+      }
+      // Load active triangulation
+      if (BRepTools::LoadTriangulation (aShape))
+      {
+        theDI << "The active triangulation of shape " << theArgVec[1] << " was loaded\n";
+      }
+      continue;
+    }
+    else if (anArgCase == "-unload")
+    {
+      if (anArgIter + 1 < theNbArgs)
+      {
+        TCollection_AsciiString anUnloadArg(theArgVec[anArgIter + 1]);
+        anUnloadArg.LowerCase();
+        if (anUnloadArg == "all"
+         || anUnloadArg == "*")
+        {
+          // Unload all triangulations
+          anArgIter++;
+          if (BRepTools::UnloadAllTriangulations (aShape))
+          {
+            theDI << "All triangulations of shape " << theArgVec[1] << " were unloaded\n";
+          }
+          continue;
+        }
+        if (anUnloadArg.IsIntegerValue())
+        {
+          // Unload defined triangulation
+          anArgIter++;
+          Standard_Integer anIndexToUnload = anUnloadArg.IntegerValue();
+          if (anIndexToUnload < -1)
+          {
+            Message::SendWarning ("Invalid negative triangulation index to be unloaded");
+            continue;
+          }
+          if (BRepTools::UnloadTriangulation (aShape, anIndexToUnload))
+          {
+            theDI << "The " << anIndexToUnload << " triangulation of shape " << theArgVec[1] << " was unloaded\n";
+          }
+          continue;
+        }
+      }
+      // Unload active triangulation
+      if (BRepTools::UnloadTriangulation (aShape))
+      {
+        theDI << "The active triangulation of shape " << theArgVec[1] << " was unloaded\n";
+      }
+      continue;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArgCase == "-activate"
+          && TCollection_AsciiString(theArgVec[anArgIter + 1]).IsIntegerValue())
+    {
+      Standard_Integer anIndexToActivate = TCollection_AsciiString(theArgVec[++anArgIter]).IntegerValue();
+      if (anIndexToActivate < 0)
+      {
+        Message::SendWarning ("Invalid negative triangulation index to be activated");
+        continue;
+      }
+      if (BRepTools::ActivateTriangulation (aShape, anIndexToActivate, false))
+      {
+        theDI << "The " << anIndexToActivate << " triangulation of shape " << theArgVec[1] << " was activated\n";
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-activatestrict" || anArgCase == "-activateexact")
+          && TCollection_AsciiString(theArgVec[anArgIter + 1]).IsIntegerValue())
+    {
+      Standard_Integer anIndexToActivate = TCollection_AsciiString(theArgVec[++anArgIter]).IntegerValue();
+      if (anIndexToActivate < 0)
+      {
+        Message::SendWarning ("Invalid negative triangulation index to be activated");
+        continue;
+      }
+      if (BRepTools::ActivateTriangulation (aShape, anIndexToActivate, true))
+      {
+        theDI << "The " << anIndexToActivate << " triangulation of shape " << theArgVec[1] << " was activated\n";
+      }
+    }
+    else if (anArgCase == "-loadsingle")
+    {
+      Standard_Integer anIndexToSingleLoad = -1;
+      if (anArgIter + 1 < theNbArgs
+       && TCollection_AsciiString(theArgVec[anArgIter + 1]).IsIntegerValue())
+      {
+        anIndexToSingleLoad = TCollection_AsciiString(theArgVec[++anArgIter]).IntegerValue();
+      }
+      if (anIndexToSingleLoad < -1)
+      {
+        Message::SendWarning ("Invalid negative triangulation index to be single loaded");
+        continue;
+      }
+      // Unload all triangulations
+      if (BRepTools::UnloadAllTriangulations (aShape))
+      {
+        theDI << "All triangulations of shape " << theArgVec[1] << " were unloaded\n";
+      }
+      // Activate required triangulation
+      if (anIndexToSingleLoad > -1
+       && BRepTools::ActivateTriangulation (aShape, anIndexToSingleLoad))
+      {
+        theDI << "The " << anIndexToSingleLoad << " triangulation of shape " << theArgVec[1] << " was activated\n";
+      }
+      // Load active triangulation
+      if (BRepTools::LoadTriangulation (aShape))
+      {
+        theDI << "The " << anIndexToSingleLoad << " triangulation of shape " << theArgVec[1] << " was loaded\n";
+      }
+
+      continue;
+    }
+    else if (anArgCase == "-loadsingleexact" ||
+             anArgCase == "-loadsinglestrict")
+    {
+      Standard_Integer anIndexToSingleLoad = -1;
+      if (anArgIter + 1 < theNbArgs
+       && TCollection_AsciiString(theArgVec[anArgIter + 1]).IsIntegerValue())
+      {
+        anIndexToSingleLoad = TCollection_AsciiString(theArgVec[++anArgIter]).IntegerValue();
+      }
+      if (anIndexToSingleLoad <= -1)
+      {
+        Message::SendWarning ("Invalid negative triangulation index to be single loaded");
+        continue;
+      }
+      // Unload all triangulations
+      if (BRepTools::UnloadAllTriangulations (aShape))
+      {
+        theDI << "All triangulations of shape " << theArgVec[1] << " were unloaded\n";
+      }
+      // Load required triangulation
+      if (BRepTools::LoadTriangulation (aShape, anIndexToSingleLoad, true))
+      {
+        theDI << "The " << anIndexToSingleLoad << " triangulation of shape " << theArgVec[1] << " was loaded and activated\n";
+      }
+      continue;
+    }
+    else
+    {
+      theDI << "Syntax error: incorrect arguments";
+      return 1;
+    }
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : trianglesinfo
 //purpose  : 
 //=======================================================================
-static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer trianglesinfo (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
 {
-  if (n != 2) return 1;
-  TopoDS_Shape S = DBRep::Get(a[1]);
-  if (S.IsNull()) return 1;
-  TopExp_Explorer ex;
-  Handle(Poly_Triangulation) T;
-  TopLoc_Location L;
+  if (theNbArgs < 2)
+  {
+    Message::SendFail ("Syntax error: not enough arguments");
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get (theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDI << theArgVec[1] << " is not a shape\n";
+    return 1;
+  }
 
-  Standard_Real MaxDeflection = 0.0;
-  Standard_Integer nbtriangles = 0, nbnodes = 0, nbrepresentations = 0;
-  for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next()) {
-    TopoDS_Face F = TopoDS::Face(ex.Current());
-    T = BRep_Tool::Triangulation(F, L);
-    if (!T.IsNull()) {
-      nbtriangles += T->NbTriangles();
-      nbnodes += T->NbNodes();
-      if (T->Deflection() > MaxDeflection)
-        MaxDeflection = T->Deflection();
+  struct TriangulationStat
+  {
+    TriangulationStat()
+    : NbFaces (0),
+      NbEmptyFaces (0),
+      NbTriangles(0),
+      NbDeferredFaces (0),
+      NbUnloadedFaces (0),
+      NbUnloadedTriangles (0) {}
+
+    NCollection_IndexedDataMap<Handle(Standard_Type), Standard_Integer> TypeMap;
+    Standard_Integer NbFaces;
+    Standard_Integer NbEmptyFaces;
+    Standard_Integer NbTriangles;
+    Standard_Integer NbDeferredFaces;
+    Standard_Integer NbUnloadedFaces;
+    Standard_Integer NbUnloadedTriangles;
+  };
+
+  Standard_Boolean toPrintLODs = false;
+  if (theNbArgs > 2)
+  {
+    TCollection_AsciiString anArgCase(theArgVec[2]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-lods")
+    {
+      toPrintLODs = true;
+    }
+  }
+
+  TopExp_Explorer anExp;
+  Handle(Poly_Triangulation) aTriangulation;
+  TopLoc_Location aLoc;
+  Standard_Real aMaxDeflection = 0.0;
+  Standard_Integer aNbFaces = 0, aNbEmptyFaces = 0, aNbTriangles = 0, aNbNodes = 0, aNbRepresentations = 0;
+  NCollection_IndexedDataMap<Standard_Integer, TriangulationStat> aLODsStat;
+  NCollection_Vector<Standard_Integer> aNbLODs;
+  for (anExp.Init (aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face (anExp.Current());
+    aNbFaces++;
+    aTriangulation = BRep_Tool::Triangulation (aFace, aLoc);
+    if (!aTriangulation.IsNull())
+    {
+      aNbTriangles += aTriangulation->NbTriangles();
+      aNbNodes += aTriangulation->NbNodes();
+      if (aTriangulation->Deflection() > aMaxDeflection)
+      {
+        aMaxDeflection = aTriangulation->Deflection();
+      }
+    }
+    else
+    {
+      aNbEmptyFaces++;
+    }
+    if (toPrintLODs)
+    {
+      // Collect LODs information
+      const Poly_ListOfTriangulation& aLODs = BRep_Tool::Triangulations (aFace, aLoc);
+      if (aLODs.Size() != 0)
+      {
+        aNbLODs.Append (aLODs.Size());
+      }
+      Standard_Integer aTriangIndex = 0;
+      for (Poly_ListOfTriangulation::Iterator anIter(aLODs); anIter.More(); anIter.Next(), ++aTriangIndex)
+      {
+        TriangulationStat* aStats = aLODsStat.ChangeSeek (aTriangIndex);
+        if (aStats == NULL)
+        {
+          Standard_Integer aNewIndex = aLODsStat.Add (aTriangIndex, TriangulationStat());
+          aStats = &aLODsStat.ChangeFromIndex (aNewIndex);
+        }
+        aStats->NbFaces++;
+        const Handle(Poly_Triangulation)& aLOD = anIter.Value();
+        if (aLOD.IsNull())
+        {
+          aStats->NbEmptyFaces++;
+          continue;
+        }
+        Standard_Integer* aDynTypeCounter = aStats->TypeMap.ChangeSeek (aLOD->DynamicType());
+        if (aDynTypeCounter == NULL)
+        {
+          Standard_Integer aNewIndex = aStats->TypeMap.Add (aLOD->DynamicType(), 0);
+          aDynTypeCounter = &aStats->TypeMap.ChangeFromIndex (aNewIndex);
+        }
+        (*aDynTypeCounter)++;
+        aStats->NbTriangles += aLOD->NbTriangles();
+        if (aLOD->HasDeferredData())
+        {
+          aStats->NbDeferredFaces++;
+          if (!aLOD->HasGeometry())
+          {
+            aStats->NbUnloadedFaces++;
+            aStats->NbUnloadedTriangles += aLOD->NbDeferredTriangles();
+          }
+        }
+        else if (!aLOD->HasGeometry())
+        {
+          aStats->NbEmptyFaces++;
+        }
+      }
     }
   }
   TopTools_IndexedMapOfShape anEdges;
-  TopExp::MapShapes(S, TopAbs_EDGE, anEdges);
+  TopExp::MapShapes (aShape, TopAbs_EDGE, anEdges);
   for (int i = 1; i<=anEdges.Extent(); ++i)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges(i));
@@ -467,19 +765,105 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
       aCR = anIterCR.Value();
       if (aCR->IsPolygonOnTriangulation())
       {
-        nbrepresentations++;
+        aNbRepresentations++;
       }
       anIterCR.Next();
     }
   }
 
-  di<<"\n";
-  di << "This shape contains " << nbtriangles << " triangles.\n";
-  di << "                    " << nbnodes << " nodes.\n";
-  di << "                    " << nbrepresentations << " polygons on triangulation .\n";;
-  di << "Maximal deflection " << MaxDeflection << "\n";
-  
-  di<<"\n";
+  theDI <<"\n";
+  theDI << "This shape contains " << aNbFaces << " faces.\n";
+  if (aNbEmptyFaces > 0)
+  {
+    theDI << "                    " << aNbEmptyFaces << " empty faces.\n";
+  }
+  theDI << "                    " << aNbTriangles << " triangles.\n";
+  theDI << "                    " << aNbNodes << " nodes.\n";
+  theDI << "                    " << aNbRepresentations << " polygons on triangulation.\n";
+  theDI << "Maximal deflection " << aMaxDeflection << "\n";
+
+  if (aNbLODs.Size() > 0)
+  {
+    // Find all different numbers of triangulation LODs and their average value per face
+    if (aNbLODs.Size() > 1)
+    {
+      std::sort (aNbLODs.begin(), aNbLODs.end());
+    }
+    NCollection_IndexedMap<Standard_Integer> aLODsRange;
+    for (NCollection_Vector<Standard_Integer>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
+    {
+      if (!aLODsRange.Contains (aNbIter.Value()))
+      {
+        aLODsRange.Add (aNbIter.Value());
+      }
+    }
+    TCollection_AsciiString aLODsRangeStr;
+    Standard_Integer anIndex = 0;
+    for (NCollection_IndexedMap<Standard_Integer>::Iterator aRangeIter(aLODsRange); aRangeIter.More(); aRangeIter.Next(), anIndex++)
+    {
+      aLODsRangeStr += TCollection_AsciiString(aRangeIter.Value());
+      if (anIndex < aLODsRange.Size() - 1)
+      {
+        aLODsRangeStr += " ";
+      }
+    }
+    theDI << TCollection_AsciiString("Number of triangulation LODs [") + aLODsRangeStr + "]\n";
+    if (aLODsRange.Size() > 1)
+    {
+      // Find average number of triangulation LODs per face
+      Standard_Integer aMedian = aNbLODs.Value (aNbLODs.Lower() + aNbLODs.Size() / 2);
+      if ((aNbLODs.Size() % 2) == 0)
+      {
+        aMedian += aNbLODs.Value (aNbLODs.Lower() + aNbLODs.Size() / 2 - 1);
+        aMedian /= 2;
+      }
+      theDI << TCollection_AsciiString("                             [average per face: ") + aMedian + "]\n";
+    }
+  }
+  if (!aLODsStat.IsEmpty())
+  {
+    TCollection_AsciiString aLODsStatStr;
+    for (NCollection_IndexedDataMap<Standard_Integer, TriangulationStat>::Iterator anIter(aLODsStat);
+         anIter.More(); anIter.Next())
+    {
+      const TriangulationStat& aLodStat = anIter.Value();
+      aLODsStatStr += TCollection_AsciiString("LOD #") + anIter.Key() + ". ";
+      //aLODsStatStr += TCollection_AsciiString("NbFaces: ") + aLodStat.NbFaces;
+      if (aLodStat.NbEmptyFaces > 0 || aLodStat.NbFaces < aNbFaces)
+      {
+        const Standard_Integer aNbEmpty = aLodStat.NbEmptyFaces + (aNbFaces - aLodStat.NbFaces);
+        aLODsStatStr += TCollection_AsciiString("NbEmpty: ") + aNbEmpty + ", ";
+      }
+      aLODsStatStr += TCollection_AsciiString("NbTris: ") + aLodStat.NbTriangles;
+      if (aLodStat.NbDeferredFaces > 0)
+      {
+        aLODsStatStr += TCollection_AsciiString(", NbDeferred: ") + aLodStat.NbDeferredFaces;
+        if (aLodStat.NbUnloadedFaces > 0)
+        {
+          aLODsStatStr += TCollection_AsciiString(", NbUnloaded: ") + aLodStat.NbUnloadedFaces + ", NbUnloadedTris: " + aLodStat.NbUnloadedTriangles;
+        }
+      }
+      aLODsStatStr += ".\n";
+
+      // Add types
+      aLODsStatStr += TCollection_AsciiString("        Types: ");
+      Standard_Integer aCounter = 0;
+      for (NCollection_IndexedDataMap<Handle(Standard_Type), Standard_Integer>::Iterator aTypeIter(aLodStat.TypeMap);
+           aTypeIter.More(); aTypeIter.Next(), aCounter++)
+      {
+        aLODsStatStr += TCollection_AsciiString(aTypeIter.Key()->Name()) + " (" + aTypeIter.Value() + ")";
+        if (aCounter < aLodStat.TypeMap.Size() - 1)
+        {
+          aLODsStatStr += TCollection_AsciiString(", ");
+        }
+      }
+      aLODsStatStr += ".\n";
+    }
+
+    theDI << aLODsStatStr;
+  }
+  theDI << "\n";
+
 #ifdef OCCT_DEBUG_MESH_CHRONO
   Standard_Real tot, addp, unif, contr, inter;
   Standard_Real edges, mailledges, etuinter, lastcontrol, stock;
@@ -494,40 +878,40 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   chPointValid.Show(pointvalid); chIsos.Show(isos); chPointsOnIsos.Show(pointsisos);
 
   if (tot > 0.00001) {
-    di <<"temps total de maillage:     "<<tot        <<" seconds\n";
-    di <<"dont: \n";
-    di <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %\n";
-    di <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %\n";
-    di <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %\n";
-    di <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %\n";
-    di <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %\n";
-    di << "\n";
-    di <<"et plus precisement: \n";
-    di <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %\n";
-    di <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %\n";
-    di <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %\n";
-    di <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %\n";
-    di <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %\n";
-    di <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %\n";
-    di <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %\n";
-    di <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %\n";
-    di <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %\n";
-    di <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %\n";
-    di <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %\n";
-    di << "\n";
+    theDI <<"temps total de maillage:     "<<tot        <<" seconds\n";
+    theDI <<"dont: \n";
+    theDI <<"discretisation des edges:    "<<edges      <<" seconds---> "<< 100*edges/tot      <<" %\n";
+    theDI <<"maillage des edges:          "<<mailledges <<" seconds---> "<< 100*mailledges/tot <<" %\n";
+    theDI <<"controle et points internes: "<<etuinter   <<" seconds---> "<< 100*etuinter/tot   <<" %\n";
+    theDI <<"derniers controles:          "<<lastcontrol<<" seconds---> "<< 100*lastcontrol/tot<<" %\n";
+    theDI <<"stockage dans la S.D.        "<<stock      <<" seconds---> "<< 100*stock/tot      <<" %\n";
+    theDI << "\n";
+    theDI <<"et plus precisement: \n";
+    theDI <<"Add 11ere partie :           "<<add11     <<" seconds---> "<<100*add11/tot      <<" %\n";
+    theDI <<"Add 12ere partie :           "<<add12     <<" seconds---> "<<100*add12/tot      <<" %\n";
+    theDI <<"Add 2eme partie :            "<<add2      <<" seconds---> "<<100*add2/tot       <<" %\n";
+    theDI <<"Update :                     "<<upda      <<" seconds---> "<<100*upda/tot       <<" %\n";
+    theDI <<"AddPoint :                   "<<addp      <<" seconds---> "<<100*addp/tot       <<" %\n";
+    theDI <<"UniformDeflection            "<<unif      <<" seconds---> "<<100*unif/tot       <<" %\n";
+    theDI <<"Controle :                   "<<contr     <<" seconds---> "<<100*contr/tot      <<" %\n";
+    theDI <<"Points Internes:             "<<inter     <<" seconds---> "<<100*inter/tot      <<" %\n";
+    theDI <<"calcul des isos et du, dv:   "<<isos      <<" seconds---> "<<100*isos/tot       <<" %\n";
+    theDI <<"calcul des points sur isos:  "<<pointsisos<<" seconds---> "<<100*pointsisos/tot <<" %\n";
+    theDI <<"IsPointValid:                "<<pointvalid<<" seconds---> "<<100*pointvalid/tot <<" %\n";
+    theDI << "\n";
 
 
-    di <<"nombre d'appels de controle apres points internes          : "<< NbControls << "\n";
-    di <<"nombre de points sur restrictions                          : "<< D0Edges    << "\n";
-    di <<"nombre de points calcules par UniformDeflection            : "<< D0Unif     << "\n";
-    di <<"nombre de points calcules dans InternalVertices            : "<< D0Internal << "\n";
-    di <<"nombre de points calcules dans Control                     : "<< D0Control  << "\n";
+    theDI <<"nombre d'appels de controle apres points internes          : "<< NbControls << "\n";
+    theDI <<"nombre de points sur restrictions                          : "<< D0Edges    << "\n";
+    theDI <<"nombre de points calcules par UniformDeflection            : "<< D0Unif     << "\n";
+    theDI <<"nombre de points calcules dans InternalVertices            : "<< D0Internal << "\n";
+    theDI <<"nombre de points calcules dans Control                     : "<< D0Control  << "\n";
     if (nbnodes-D0Edges != 0) { 
       Standard_Real ratio = (Standard_Real)(D0Internal+D0Control)/ (Standard_Real)(nbnodes-D0Edges);
-      di <<"---> Ratio: (D0Internal+D0Control) / (nbNodes-nbOnEdges)   : "<< ratio      << "\n";
+      theDI <<"---> Ratio: (D0Internal+D0Control) / (nbNodes-nbOnEdges)   : "<< ratio      << "\n";
     }
 
-    di << "\n";
+    theDI << "\n";
 
     chTotal.Reset(); chAddPoint.Reset(); chUnif.Reset(); 
     chControl.Reset(); chInternal.Reset();
@@ -1003,10 +1387,31 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
 
   theCommands.Add("tri2d", "tri2d facename",__FILE__, tri2d, g);
-  theCommands.Add("trinfo","trinfo name, print triangles information on objects",__FILE__,trianglesinfo,g);
+  theCommands.Add("trinfo",
+                  "trinfo shapeName [-lods], print triangles information on objects"
+                  "\n\t\t: -lods Print detailed LOD information",
+                  __FILE__,trianglesinfo,g);
   theCommands.Add("veriftriangles","veriftriangles name, verif triangles",__FILE__,veriftriangles,g);
   theCommands.Add("wavefront","wavefront name",__FILE__, wavefront, g);
   theCommands.Add("triepoints", "triepoints shape1 [shape2 ...]",__FILE__, triedgepoints, g);
-
+  theCommands.Add("trlateload",
+                  "trlateload shapeName"
+                  "\n\t\t:   [-load {-1|Index|ALL}=-1] [-unload {-1|Index|ALL}=-1]"
+                  "\n\t\t:   [-activate Index] [-activateExact Index]"
+                  "\n\t\t:   [-loadSingle {-1|Index}=-1] [-loadSingleExact {Index}=-1]"
+                  "\n\t\t: Interaction with deferred triangulations."
+                  "\n\t\t:   '-load'            - load triangulation (-1 - currently active one, Index - with defined index,"
+                  "\n\t\t:                      ALL - all available ones)"
+                  "\n\t\t:   '-unload'          - unload triangulation (-1 - currently active one, Index - with defined index,"
+                  "\n\t\t:                      ALL - all available ones)"
+                  "\n\t\t:   '-activate'        - activate triangulation with defined index. If it doesn't exist -"
+                  "\n\t\t:                      activate the last available triangulation."
+                  "\n\t\t:   '-activateExact'   - activate exactly triangulation with defined index or do nothing."
+                  "\n\t\t:   '-loadSingle'      - make loaded and active ONLY specified triangulation (-1 - currently active one,"
+                  "\n\t\t:                      Index - with defined index or last available if it doesn't exist)."
+                  "\n\t\t:                      All other triangulations will be unloaded."
+                  "\n\t\t:   '-loadSingleExact' - make loaded and active ONLY exactly specified triangulation. All other triangulations"
+                  "\n\t\t:                      will be unloaded. If triangulation with such Index doesn't exist do nothing",
+                  __FILE__, TrLateLoad, g);
   theCommands.Add("correctnormals", "correctnormals shape",__FILE__, correctnormals, g);
 }

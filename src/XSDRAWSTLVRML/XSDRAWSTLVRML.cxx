@@ -103,6 +103,9 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   Standard_Boolean toListExternalFiles = Standard_False;
   Standard_Boolean isParallel = Standard_False;
   Standard_Boolean isDoublePrec = Standard_False;
+  Standard_Boolean toSkipLateDataLoading = Standard_False;
+  Standard_Boolean toKeepLateData = Standard_True;
+  Standard_Boolean toPrintDebugInfo = Standard_False;
   Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -142,6 +145,34 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       if (anArgCase.StartsWith ("-single"))
       {
         isDoublePrec = !isDoublePrec;
+      }
+    }
+    else if (anArgCase == "-skiplateloading")
+    {
+      toSkipLateDataLoading = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toSkipLateDataLoading))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-keeplate")
+    {
+      toKeepLateData = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toKeepLateData))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-toprintinfo"
+          || anArgCase == "-toprintdebuginfo")
+    {
+      toPrintDebugInfo = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toPrintDebugInfo))
+      {
+        ++anArgIter;
       }
     }
     else if (anArgCase == "-listexternalfiles"
@@ -202,6 +233,9 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   aReader.SetDocument (aDoc);
   aReader.SetParallel (isParallel);
   aReader.SetDoublePrecision (isDoublePrec);
+  aReader.SetToSkipLateDataLoading (toSkipLateDataLoading);
+  aReader.SetToKeepLateData (toKeepLateData);
+  aReader.SetToPrintDebugMessages (toPrintDebugInfo);
   if (toListExternalFiles)
   {
     aReader.ProbeHeader (aFilePath);
@@ -1743,7 +1777,12 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:   -listExternalFiles do not read mesh and only list external files"
                    "\n\t\t:   -noCreateDoc read into existing XDE document"
                    "\n\t\t:   -doublePrecision store triangulation with double or single floating point"
-                   "\n\t\t:                    precision (single by default)",
+                   "\n\t\t:                    precision (single by default)"
+                   "\n\t\t:   -skipLateLoading data loading is skipped and can be performed later"
+                   "\n\t\t:                    (false by default)"
+                   "\n\t\t:   -keepLate data is loaded into itself with preservation of information"
+                   "\n\t\t:             about deferred storage to load/unload this data later.",
+                   "\n\t\t:   -toPrintDebugInfo print additional debug inforamtion during data reading"
                    __FILE__, ReadGltf, g);
   theCommands.Add ("readgltf",
                    "readgltf shape file"

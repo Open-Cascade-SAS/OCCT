@@ -179,7 +179,7 @@ namespace
     {
       const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
       aT = BRep_Tool::Triangulation (aFace, aLoc);
-      if (aT.IsNull())
+      if (aT.IsNull() || !aT->HasGeometry())
       {
         continue;
       }

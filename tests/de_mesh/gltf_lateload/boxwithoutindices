@@ -1,0 +1,51 @@
+puts "========"
+puts "0032086: Visualization - support deferred data loading"
+puts "========"
+
+# glTF file content
+set cubeWithoutIndicesGltf {
+{
+"asset": {"generator": "","version": "2.0"},
+"scene": "defaultScene",
+"scenes": {"defaultScene": {"nodes": ["rootNode"]}},
+"nodes": {"rootNode": {
+"children": [],"meshes": ["Geometry-mesh002"], "matrix":
+[1.0,0.0,0.0,0.0,0.0,0.0,-1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0]}},
+"meshes": {"Geometry-mesh002": {"name": "Mesh", "primitives":
+[{"attributes": {"NORMAL": "accessor_20","POSITION": "accessor_18"},
+"material": 0,"mode": 4}]}},
+"accessors": {
+"accessor_18": {"bufferView": "bufferView_0","byteOffset": 0,"byteStride": 0,"componentType": 5126,"count": 36,"max": [0.5,0.5,0.5],"min": [-0.5,-0.5,-0.5],"type": "VEC3"},
+"accessor_20": {"bufferView": "bufferView_0","byteOffset": 432,"byteStride": 0,"componentType": 5126,"count": 36,"max": [1.0,1.0,1.0],"min": [-1.0,-1.0,-1.0],"type": "VEC3"}},
+"materials": {
+"Effect-Red": {"name": "Red","technique": "technique0","values":
+{"diffuse": [0.8,0.0,0.0,1.0],"shininess": 256,"specular": [0.2,0.2,0.2,1.0]}}},
+"bufferViews": {
+"bufferView_0": {"buffer": "BoxWithoutIndices","byteOffset": 0,"byteLength": 864,"target": 34962}},
+"buffers": {
+"BoxWithoutIndices": {"byteLength": 864,"type": "arraybuffer","uri": "data:application/octet-stream;base64,AAAAvwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAvwAAAD8AAAC/AAAAPwAAAD8AAAC/AAAAvwAAAD8AAAC/AAAAPwAAAD8AAAA/AAAAvwAAAL8AAAC/AAAAPwAAAL8AAAA/AAAAvwAAAL8AAAA/AAAAPwAAAL8AAAA/AAAAvwAAAL8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAL8AAAC/AAAAPwAAAD8AAAC/AAAAvwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAA/AAAAvwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAPwAAAD8AAAC/AAAAPwAAAL8AAAC/AAAAvwAAAD8AAAC/AAAAPwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAvwAAAL8AAAA/AAAAvwAAAD8AAAA/AAAAPwAAAL8AAAA/AAAAPwAAAD8AAAA/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/"}}
+}
+}
+
+set fd [open ${imagedir}/${casename}.gltf w]
+fconfigure $fd -translation lf
+puts $fd $cubeWithoutIndicesGltf
+close $fd
+
+ReadGltf D ${imagedir}/${casename}.gltf -skiplateloading 1
+XGetOneShape s D
+trinfo s -lods
+
+vclear
+vinit View1
+XDisplay D -explore -dispMode 1 -outdisplist prsList
+vfit
+
+vdump ${imagedir}/${casename}_empty.png
+
+trlateload s -load
+checktrinfo s -tri 12 -nod 36
+vdisplay {*}$prsList -redisplay -noecho
+vfit
+
+vdump ${imagedir}/${casename}_loaded.png

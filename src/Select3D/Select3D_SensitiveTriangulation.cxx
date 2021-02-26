@@ -59,80 +59,88 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
                                                                   const Standard_Boolean theIsInterior)
 : Select3D_SensitiveSet (theOwnerId),
   myTriangul (theTrg),
-  myInitLocation (theInitLoc)
+  myInitLocation (theInitLoc),
+  myPrimitivesNb (0)
 {
   myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-  Standard_Integer aNbTriangles (myTriangul->NbTriangles());
+  Standard_Integer aNbTriangles = 0;
   gp_XYZ aCenter (0.0, 0.0, 0.0);
-
-  myPrimitivesNb = theIsInterior ? aNbTriangles : NbOfFreeEdges (theTrg);
-  myBVHPrimIndexes = new TColStd_HArray1OfInteger(0, myPrimitivesNb - 1);
-  TColStd_Array1OfInteger& aBVHPrimIdxs = myBVHPrimIndexes->ChangeArray1();
-
-  if (!theIsInterior)
+  if (!theTrg->HasGeometry())
   {
-    Standard_Integer anEdgeIdx = 1;
-    myFreeEdges = new TColStd_HArray1OfInteger (1, 2 * myPrimitivesNb);
-    TColStd_Array1OfInteger& aFreeEdges = myFreeEdges->ChangeArray1();
-    Poly_Connect aPoly (myTriangul);
-    Standard_Integer aTriangle[3];
-    Standard_Integer aTrNodeIdx[3];
-    for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= aNbTriangles; aTriangleIdx++)
+    if (myTriangul->HasCachedMinMax())
     {
-      aPoly.Triangles (aTriangleIdx, aTriangle[0], aTriangle[1], aTriangle[2]);
-      myTriangul->Triangle (aTriangleIdx).Get (aTrNodeIdx[0], aTrNodeIdx[1], aTrNodeIdx[2]);
-      const gp_Pnt aTriNodes[3] = { myTriangul->Node (aTrNodeIdx[0]), myTriangul->Node (aTrNodeIdx[1]), myTriangul->Node (aTrNodeIdx[2]) };
-      aCenter += (aTriNodes[0].XYZ() + aTriNodes[1].XYZ()+ aTriNodes[2].XYZ()) / 3.0;
-      for (Standard_Integer aVertIdx = 0; aVertIdx < 3; aVertIdx++)
+      aCenter = 0.5 * (myTriangul->CachedMinMax().CornerMin().XYZ()
+                     + myTriangul->CachedMinMax().CornerMax().XYZ());
+    }
+  }
+  else
+  {
+    aNbTriangles = myTriangul->NbTriangles();
+    myPrimitivesNb = theIsInterior ? aNbTriangles : NbOfFreeEdges (theTrg);
+    myBVHPrimIndexes = new TColStd_HArray1OfInteger(0, myPrimitivesNb - 1);
+    TColStd_Array1OfInteger& aBVHPrimIdxs = myBVHPrimIndexes->ChangeArray1();
+
+    if (!theIsInterior)
+    {
+      Standard_Integer anEdgeIdx = 1;
+      myFreeEdges = new TColStd_HArray1OfInteger (1, 2 * myPrimitivesNb);
+      TColStd_Array1OfInteger& aFreeEdges = myFreeEdges->ChangeArray1();
+      Poly_Connect aPoly (myTriangul);
+      Standard_Integer aTriangle[3];
+      Standard_Integer aTrNodeIdx[3];
+      for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= aNbTriangles; aTriangleIdx++)
       {
-        Standard_Integer aNextVert = (aVertIdx + 1) % 3;
-        if (aTriangle[aVertIdx] == 0)
+        aPoly.Triangles (aTriangleIdx, aTriangle[0], aTriangle[1], aTriangle[2]);
+        myTriangul->Triangle (aTriangleIdx).Get (aTrNodeIdx[0], aTrNodeIdx[1], aTrNodeIdx[2]);
+        const gp_Pnt aTriNodes[3] = { myTriangul->Node (aTrNodeIdx[0]), myTriangul->Node (aTrNodeIdx[1]), myTriangul->Node (aTrNodeIdx[2]) };
+        aCenter += (aTriNodes[0].XYZ() + aTriNodes[1].XYZ()+ aTriNodes[2].XYZ()) / 3.0;
+        for (Standard_Integer aVertIdx = 0; aVertIdx < 3; aVertIdx++)
         {
-          aFreeEdges (anEdgeIdx)  = aTrNodeIdx[aVertIdx];
-          aFreeEdges (anEdgeIdx+1) = aTrNodeIdx[aNextVert];
-          anEdgeIdx += 2;
+          Standard_Integer aNextVert = (aVertIdx + 1) % 3;
+          if (aTriangle[aVertIdx] == 0)
+          {
+            aFreeEdges (anEdgeIdx)  = aTrNodeIdx[aVertIdx];
+            aFreeEdges (anEdgeIdx+1) = aTrNodeIdx[aNextVert];
+            anEdgeIdx += 2;
+          }
         }
       }
     }
-  }
-  else
-  {
-    Standard_Integer aTrNodeIdx[3];
-    for (Standard_Integer aTrIdx = 1; aTrIdx <= aNbTriangles; aTrIdx++)
+    else
     {
-      myTriangul->Triangle (aTrIdx).Get (aTrNodeIdx[0], aTrNodeIdx[1], aTrNodeIdx[2]);
-      const gp_Pnt aTriNodes[3] = { myTriangul->Node (aTrNodeIdx[0]), myTriangul->Node (aTrNodeIdx[1]), myTriangul->Node (aTrNodeIdx[2]) };
-      aCenter += (aTriNodes[0].XYZ() + aTriNodes[1].XYZ()+ aTriNodes[2].XYZ()) / 3.0;
+      Standard_Integer aTrNodeIdx[3];
+      for (Standard_Integer aTrIdx = 1; aTrIdx <= aNbTriangles; aTrIdx++)
+      {
+        myTriangul->Triangle (aTrIdx).Get (aTrNodeIdx[0], aTrNodeIdx[1], aTrNodeIdx[2]);
+        const gp_Pnt aTriNodes[3] = { myTriangul->Node (aTrNodeIdx[0]), myTriangul->Node (aTrNodeIdx[1]), myTriangul->Node (aTrNodeIdx[2]) };
+        aCenter += (aTriNodes[0].XYZ() + aTriNodes[1].XYZ()+ aTriNodes[2].XYZ()) / 3.0;
+      }
+    }
+
+    if (theIsInterior)
+    {
+      for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= aNbTriangles; ++aTriangleIdx)
+      {
+        aBVHPrimIdxs(aTriangleIdx - 1) = aTriangleIdx - 1;
+      }
+    }
+    else
+    {
+      Standard_Integer aStartIdx = myFreeEdges->Lower();
+      Standard_Integer anEndIdx = myFreeEdges->Upper();
+      for (Standard_Integer aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
+      {
+        aBVHPrimIdxs((aFreeEdgesIdx - aStartIdx) / 2) = (aFreeEdgesIdx - aStartIdx) / 2;
+      }
     }
   }
   if (aNbTriangles != 0)
+  {
     aCenter /= aNbTriangles;
+  }
   myCDG3D = gp_Pnt (aCenter);
-
-  myBndBox.Clear();
-  for (Standard_Integer aNodeIdx = 1; aNodeIdx <= myTriangul->NbNodes(); ++aNodeIdx)
-  {
-    const gp_Pnt aNode = myTriangul->Node (aNodeIdx);
-    myBndBox.Add (SelectMgr_Vec3 (aNode.X(), aNode.Y(), aNode.Z()));
-  }
-
-  if (theIsInterior)
-  {
-    for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= aNbTriangles; ++aTriangleIdx)
-    {
-      aBVHPrimIdxs (aTriangleIdx - 1) = aTriangleIdx - 1;
-    }
-  }
-  else
-  {
-    Standard_Integer aStartIdx = myFreeEdges->Lower();
-    Standard_Integer anEndIdx = myFreeEdges->Upper();
-    for (Standard_Integer aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
-    {
-      aBVHPrimIdxs ((aFreeEdgesIdx - aStartIdx) / 2) = (aFreeEdgesIdx - aStartIdx) / 2;
-    }
-  }
+  computeBoundingBox();
 }
 
 //=======================================================================
@@ -149,26 +157,30 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation (const Handle(S
   myTriangul (theTrg),
   myInitLocation (theInitLoc),
   myCDG3D (theCOG),
-  myFreeEdges (theFreeEdges)
+  myFreeEdges (theFreeEdges),
+  myPrimitivesNb (0)
 {
   myInvInitLocation = myInitLocation.Transformation().Inverted();
   mySensType = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-  myPrimitivesNb = theIsInterior ? theTrg->NbTriangles() : theFreeEdges->Length() / 2;
-  myBVHPrimIndexes = new TColStd_HArray1OfInteger(0, myPrimitivesNb - 1);
-  if (theIsInterior)
+  if (theTrg->HasGeometry())
   {
-    for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= myPrimitivesNb; ++aTriangleIdx)
+    myPrimitivesNb = theIsInterior ? theTrg->NbTriangles() : theFreeEdges->Length() / 2;
+    myBVHPrimIndexes = new TColStd_HArray1OfInteger(0, myPrimitivesNb - 1);
+    if (theIsInterior)
     {
-      myBVHPrimIndexes->SetValue (aTriangleIdx - 1, aTriangleIdx - 1);
+      for (Standard_Integer aTriangleIdx = 1; aTriangleIdx <= myPrimitivesNb; ++aTriangleIdx)
+      {
+        myBVHPrimIndexes->SetValue (aTriangleIdx - 1, aTriangleIdx - 1);
+      }
     }
-  }
-  else
-  {
-    Standard_Integer aStartIdx = myFreeEdges->Lower();
-    Standard_Integer anEndIdx = myFreeEdges->Upper();
-    for (Standard_Integer aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
+    else
     {
-      myBVHPrimIndexes->SetValue ((aFreeEdgesIdx - aStartIdx) / 2, (aFreeEdgesIdx - aStartIdx) / 2);
+      Standard_Integer aStartIdx = myFreeEdges->Lower();
+      Standard_Integer anEndIdx = myFreeEdges->Upper();
+      for (Standard_Integer aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
+      {
+        myBVHPrimIndexes->SetValue ((aFreeEdgesIdx - aStartIdx) / 2, (aFreeEdgesIdx - aStartIdx) / 2);
+      }
     }
   }
 }
@@ -224,6 +236,37 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box (const Standard_Integer t
   }
 
   return Select3D_BndBox3d (aMinPnt, aMaxPnt);
+}
+
+// =======================================================================
+// function : Matches
+// purpose  :
+// =======================================================================
+Standard_Boolean Select3D_SensitiveTriangulation::Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                           SelectBasics_PickResult& thePickResult)
+{
+  if (myTriangul->HasGeometry())
+  {
+    return Select3D_SensitiveSet::Matches (theMgr, thePickResult);
+  }
+
+  Select3D_BndBox3d aBndBox = BoundingBox();
+  if (!aBndBox.IsValid())
+  {
+    return false;
+  }
+
+  if (!theMgr.IsOverlapAllowed()) // check for inclusion
+  {
+    bool isInside = true;
+    return theMgr.Overlaps (aBndBox.CornerMin(), aBndBox.CornerMax(), &isInside) && isInside;
+  }
+  if (!theMgr.Overlaps (aBndBox.CornerMin(), aBndBox.CornerMax(), thePickResult)) // check for overlap
+  {
+    return false;
+  }
+  thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter (myCDG3D));
+  return true;
 }
 
 //=======================================================================
@@ -430,22 +473,41 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::applyTransformation()
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveTriangulation::BoundingBox()
 {
-  if (myBndBox.IsValid())
-    return applyTransformation();
-
-  const Standard_Integer aLower = 1;
-  const Standard_Integer anUpper = myTriangul->NbNodes();
-  Select3D_BndBox3d aBndBox;
-  for (Standard_Integer aNodeIdx = aLower; aNodeIdx <= anUpper; ++aNodeIdx)
+  if (!myBndBox.IsValid())
   {
-    const gp_Pnt aNode = myTriangul->Node (aNodeIdx);
-    const SelectMgr_Vec3 aNodeTransf = SelectMgr_Vec3 (aNode.X(), aNode.Y(), aNode.Z());
-    aBndBox.Add (aNodeTransf);
+    computeBoundingBox();
   }
-
-  myBndBox = aBndBox;
-
   return applyTransformation();
+}
+
+// =======================================================================
+// function : computeBoundingBox
+// purpose  :
+// =======================================================================
+void Select3D_SensitiveTriangulation::computeBoundingBox()
+{
+  myBndBox.Clear();
+
+  if (myTriangul->HasCachedMinMax())
+  {
+    // Use cached MeshData_Data bounding box if it exists
+    Bnd_Box aCachedBox = myTriangul->CachedMinMax();
+    myBndBox.Add (SelectMgr_Vec3 (aCachedBox.CornerMin().X(),
+                                  aCachedBox.CornerMin().Y(),
+                                  aCachedBox.CornerMin().Z()));
+    myBndBox.Add (SelectMgr_Vec3 (aCachedBox.CornerMax().X(),
+                                  aCachedBox.CornerMax().Y(),
+                                  aCachedBox.CornerMax().Z()));
+    return;
+  }
+  else if (myTriangul->HasGeometry())
+  {
+    for (Standard_Integer aNodeIdx = 1; aNodeIdx <= myTriangul->NbNodes(); ++aNodeIdx)
+    {
+      const gp_Pnt aNode = myTriangul->Node (aNodeIdx);
+      myBndBox.Add (SelectMgr_Vec3 (aNode.X(), aNode.Y(), aNode.Z()));
+    }
+  }
 }
 
 //=======================================================================

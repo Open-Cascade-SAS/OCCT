@@ -47,7 +47,6 @@ BRep_TEdge.hxx
 BRep_TEdge.lxx
 BRep_TFace.cxx
 BRep_TFace.hxx
-BRep_TFace.lxx
 BRep_Tool.cxx
 BRep_Tool.hxx
 BRep_TVertex.cxx

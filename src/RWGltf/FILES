@@ -23,8 +23,6 @@ RWGltf_GltfJsonParser.cxx
 RWGltf_GltfJsonParser.hxx
 RWGltf_GltfOStreamWriter.hxx
 RWGltf_GltfSceneNodeMap.hxx
-RWGltf_PrimitiveArrayReader.cxx
-RWGltf_PrimitiveArrayReader.hxx
 RWGltf_TriangulationReader.cxx
 RWGltf_TriangulationReader.hxx
 RWGltf_WriterTrsfFormat.hxx

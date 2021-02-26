@@ -1503,6 +1503,10 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
       return false;
     }
   }
+  else
+  {
+    theMeshData->SetNbDeferredTriangles (theMeshData->NbDeferredNodes() / 3);
+  }
 
   return true;
 }
@@ -1594,6 +1598,8 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimi
   // Read Min/Max values for POSITION type. It is used for bounding boxes
   if (theType == RWGltf_GltfArrayType_Position)
   {
+    theMeshData->SetNbDeferredNodes ((Standard_Integer )aStruct.Count);
+
     const RWGltf_JsonValue* aMin = findObjectMember (theAccessor, "min");
     const RWGltf_JsonValue* aMax = findObjectMember (theAccessor, "max");
     if (aMin != NULL && aMax != NULL)
@@ -1643,6 +1649,10 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimi
         }
       }
     }
+  }
+  else if (theType == RWGltf_GltfArrayType_Indices)
+  {
+    theMeshData->SetNbDeferredTriangles ((Standard_Integer )(aStruct.Count / 3));
   }
 
   const RWGltf_JsonValue* aBufferView = myGltfRoots[RWGltf_GltfRootElement_BufferViews].FindChild (*aBufferViewName);

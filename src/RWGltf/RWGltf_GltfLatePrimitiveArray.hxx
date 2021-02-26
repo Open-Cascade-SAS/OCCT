@@ -15,21 +15,21 @@
 #ifndef _RWGltf_GltfLatePrimitiveArray_HeaderFile
 #define _RWGltf_GltfLatePrimitiveArray_HeaderFile
 
+#include <RWMesh_TriangulationSource.hxx>
+
 #include <NCollection_Sequence.hxx>
-#include <Poly_Triangulation.hxx>
-#include <RWGltf_GltfPrimArrayData.hxx>
+#include <RWGltf_GltfArrayType.hxx>
 #include <RWGltf_GltfPrimitiveMode.hxx>
 #include <Quantity_ColorRGBA.hxx>
 
+class RWGltf_GltfPrimArrayData;
 class RWGltf_MaterialMetallicRoughness;
 class RWGltf_MaterialCommon;
 
 //! Mesh data wrapper for delayed primitive array loading from glTF file.
-//! Class inherits Poly_Triangulation so that it can be put temporarily into TopoDS_Face within assembly structure,
-//! to be replaced with proper Poly_Triangulation loaded later on.
-class RWGltf_GltfLatePrimitiveArray : public Poly_Triangulation
+class RWGltf_GltfLatePrimitiveArray : public RWMesh_TriangulationSource
 {
-  DEFINE_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, Poly_Triangulation)
+  DEFINE_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, RWMesh_TriangulationSource)
 public:
 
   //! Constructor.
@@ -77,6 +77,13 @@ public:
 
   //! Add primitive array data element.
   Standard_EXPORT RWGltf_GltfPrimArrayData& AddPrimArrayData (RWGltf_GltfArrayType theType);
+
+  //! Returns TRUE if there is deferred storege and some triangulation data
+  //! that can be loaded using LoadDeferredData().
+  virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
+  {
+    return !myData.IsEmpty() && RWMesh_TriangulationSource::HasDeferredData();
+  }
 
 protected:
 

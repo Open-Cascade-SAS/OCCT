@@ -36,6 +36,8 @@
 #include <Geom_Surface.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Vec2d.hxx>
+#include <Message.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
@@ -1020,6 +1022,230 @@ Standard_Boolean  BRepTools::Triangulation(const TopoDS_Shape& theShape,
   return Standard_True;
 }
 
+//=======================================================================
+//function : LoadTriangulation
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools::LoadTriangulation (const TopoDS_Shape& theShape,
+                                               const Standard_Integer theTriangulationIdx,
+                                               const Standard_Boolean theToSetAsActive,
+                                               const Handle(OSD_FileSystem)& theFileSystem)
+{
+  Standard_ASSERT_RAISE (theTriangulationIdx >= -1, "Invalid negative triangulation index!");
+
+  Standard_Boolean wasLoaded = false;
+  BRep_Builder aBuilder;
+  TopLoc_Location aDummyLoc;
+  const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    Handle(Poly_Triangulation) aTriangulation;
+    if (theTriangulationIdx == -1)
+    {
+      // load an active triangulation
+      aTriangulation = BRep_Tool::Triangulation (aFace, aDummyLoc);
+    }
+    else
+    {
+      const Poly_ListOfTriangulation& aTriangulations = BRep_Tool::Triangulations (aFace, aDummyLoc);
+      if (theTriangulationIdx >= aTriangulations.Size())
+      {
+        // triangulation index is out of range
+        continue;
+      }
+      Standard_Integer aTriangulationIdx = 0;
+      for (Poly_ListOfTriangulation::Iterator anIter(aTriangulations);
+           anIter.More(); anIter.Next(), aTriangulationIdx++)
+      {
+        if (aTriangulationIdx != theTriangulationIdx)
+        {
+          continue;
+        }
+        aTriangulation = anIter.Value();
+        break;
+      }
+    }
+    if (aTriangulation.IsNull() ||
+       !aTriangulation->HasDeferredData())
+    {
+      // NULL triangulation, already loaded triangulation or triangulation without deferred storage
+      // cannot be loaded
+      continue;
+    }
+    if (aTriangulation->LoadDeferredData (aFileSystem))
+    {
+      wasLoaded = true;
+      if (theToSetAsActive
+       && (theTriangulationIdx != -1)) // triangulation is already active
+      {
+        aBuilder.UpdateFace (aFace, aTriangulation, false);
+      }
+    }
+  }
+  return wasLoaded;
+}
+
+//=======================================================================
+//function : LoadAllTriangulation
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools::LoadAllTriangulations (const TopoDS_Shape& theShape,
+                                                   const Handle(OSD_FileSystem)& theFileSystem)
+{
+  Standard_Boolean wasLoaded = false;
+  TopLoc_Location aDummyLoc;
+  const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    for (Poly_ListOfTriangulation::Iterator anIter (BRep_Tool::Triangulations (aFace, aDummyLoc));
+         anIter.More(); anIter.Next())
+    {
+      const Handle(Poly_Triangulation)& aTriangulation = anIter.Value();
+      if (aTriangulation.IsNull() ||
+         !aTriangulation->HasDeferredData())
+      {
+        // NULL triangulation, already loaded triangulation or triangulation without deferred storage
+        // cannot be loaded
+        continue;
+      }
+      wasLoaded = aTriangulation->LoadDeferredData (aFileSystem);
+    }
+  }
+  return wasLoaded;
+}
+
+//=======================================================================
+//function : UnloadTriangulation
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools::UnloadTriangulation (const TopoDS_Shape& theShape,
+                                                 const Standard_Integer theTriangulationIdx)
+{
+  Standard_ASSERT_RAISE (theTriangulationIdx >= -1, "Invalid negative triangulation index!");
+
+  Standard_Boolean wasUnloaded = false;
+  TopLoc_Location aDummyLoc;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    Handle(Poly_Triangulation) aTriangulation;
+    if (theTriangulationIdx == -1)
+    {
+      // unload an active triangulation
+      aTriangulation = BRep_Tool::Triangulation (aFace, aDummyLoc);
+    }
+    else
+    {
+      Standard_Integer aTriangulationIdx = 0;
+      const Poly_ListOfTriangulation& aTriangulations = BRep_Tool::Triangulations (aFace, aDummyLoc);
+      if (theTriangulationIdx >= aTriangulations.Size())
+      {
+        // triangulation index is out of range
+        continue;
+      }
+      for (Poly_ListOfTriangulation::Iterator anIter (aTriangulations);
+           anIter.More(); anIter.Next(), aTriangulationIdx++)
+      {
+        if (aTriangulationIdx != theTriangulationIdx)
+        {
+          continue;
+        }
+        aTriangulation = anIter.Value();
+        break;
+      }
+    }
+    if (aTriangulation.IsNull() ||
+       !aTriangulation->HasDeferredData())
+    {
+      // NULL triangulation or triangulation without deferred storage cannot be unloaded
+      continue;
+    }
+    wasUnloaded = aTriangulation->UnloadDeferredData();
+  }
+  return wasUnloaded;
+}
+
+//=======================================================================
+//function : UnloadAllTriangulations
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools::UnloadAllTriangulations (const TopoDS_Shape& theShape)
+{
+  Standard_Boolean wasUnloaded = false;
+  TopLoc_Location aDummyLoc;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    Handle(Poly_Triangulation) aTriangulation;
+    for (Poly_ListOfTriangulation::Iterator anIter (BRep_Tool::Triangulations (aFace, aDummyLoc));
+         anIter.More(); anIter.Next())
+    {
+      aTriangulation = anIter.Value();
+      if (aTriangulation.IsNull() ||
+         !aTriangulation->HasDeferredData())
+      {
+        // NULL triangulation or triangulation without deferred storage cannot be unloaded
+        continue;
+      }
+      wasUnloaded = aTriangulation->UnloadDeferredData();
+    }
+  }
+  return wasUnloaded;
+}
+
+//=======================================================================
+//function : ActivateTriangulation
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools::ActivateTriangulation (const TopoDS_Shape& theShape,
+                                                   const Standard_Integer theTriangulationIdx,
+                                                   const Standard_Boolean theToActivateStrictly)
+{
+  Standard_ASSERT_RAISE (theTriangulationIdx > -1, "Invalid negative triangulation index!");
+
+  Standard_Boolean wasActivated = false;
+  BRep_Builder aBuilder;
+  TopLoc_Location aDummyLoc;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    Standard_Integer aTriangulationIdx = theTriangulationIdx;
+    const Poly_ListOfTriangulation& aTriangulations = BRep_Tool::Triangulations (aFace, aDummyLoc);
+    const Standard_Integer aTriangulationsNb = aTriangulations.Size();
+    if (theTriangulationIdx >= aTriangulationsNb)
+    {
+      // triangulation index is out of range
+      if (theToActivateStrictly)
+      {
+        // skip activation
+        continue;
+      }
+      // use last available
+      aTriangulationIdx = aTriangulationsNb - 1;
+    }
+    Handle(Poly_Triangulation) anActiveTriangulation;
+    Standard_Integer aTriangulationIter = 0;
+    for (Poly_ListOfTriangulation::Iterator anIter (aTriangulations);
+         anIter.More(); anIter.Next(), aTriangulationIter++)
+    {
+      if (aTriangulationIter != aTriangulationIdx)
+      {
+        continue;
+      }
+      anActiveTriangulation = anIter.Value();
+      break;
+    }
+    if (anActiveTriangulation.IsNull())
+    {
+      continue;
+    }
+    aBuilder.UpdateFace (aFace, anActiveTriangulation, false);
+    wasActivated = true;
+  }
+  return wasActivated;
+}
 
 //=======================================================================
 //function : IsReallyClosed

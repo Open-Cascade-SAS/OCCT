@@ -14,16 +14,12 @@
 
 #include <RWGltf_TriangulationReader.hxx>
 
-#include <RWGltf_GltfLatePrimitiveArray.hxx>
-#include <RWMesh_CoordinateSystemConverter.hxx>
-#include <Standard_ReadBuffer.hxx>
-
-#include <BRep_Builder.hxx>
-#include <Graphic3d_Vec.hxx>
 #include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Iterator.hxx>
+#include <OSD_FileSystem.hxx>
+#include <RWGltf_GltfLatePrimitiveArray.hxx>
+#include <RWGltf_GltfPrimArrayData.hxx>
+#include <Standard_ArrayStreamBuffer.hxx>
+#include <Standard_ReadBuffer.hxx>
 
 namespace
 {
@@ -32,91 +28,128 @@ namespace
   static const Standard_ShortReal THE_NORMAL_PREC2 = 0.001f;
 }
 
-IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWGltf_PrimitiveArrayReader)
+IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReader)
 
 // =======================================================================
 // function : RWGltf_TriangulationReader
 // purpose  :
 // =======================================================================
 RWGltf_TriangulationReader::RWGltf_TriangulationReader()
-: myIsDoublePrecision (false)
 {
   //
 }
 
 // =======================================================================
-// function : reset
+// function : reportError
 // purpose  :
 // =======================================================================
-void RWGltf_TriangulationReader::reset()
+void RWGltf_TriangulationReader::reportError (const TCollection_AsciiString& theText) const
 {
-  myTriangulation = new Poly_Triangulation();
-  myTriangulation->SetDoublePrecision (myIsDoublePrecision);
-}
-
-// =======================================================================
-// function : result
-// purpose  :
-// =======================================================================
-Handle(Poly_Triangulation) RWGltf_TriangulationReader::result()
-{
-  if (myTriangulation->NbNodes() < 1)
-  {
-    return Handle(Poly_Triangulation)();
-  }
-
-  if (myTriangulation->NbTriangles() < 1)
-  {
-    // reconstruct indexes
-    const Standard_Integer aNbTris = myTriangulation->NbNodes() / 3;
-    if (!setNbTriangles (aNbTris))
-    {
-      return Handle(Poly_Triangulation)();
-    }
-
-    for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
-    {
-      setTriangle (THE_LOWER_TRI_INDEX + aTriIter,
-                   Poly_Triangle (THE_LOWER_NODE_INDEX + aTriIter * 3 + 0,
-                                  THE_LOWER_NODE_INDEX + aTriIter * 3 + 1,
-                                  THE_LOWER_NODE_INDEX + aTriIter * 3 + 2));
-    }
-  }
-
-  return myTriangulation;
+  Message::SendFail (TCollection_AsciiString("File '") + myFileName + "' defines invalid glTF!\n" + theText);
 }
 
 // =======================================================================
 // function : load
 // purpose  :
 // =======================================================================
-bool RWGltf_TriangulationReader::load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
-                                       const Handle(OSD_FileSystem)& theFileSystem)
+bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                       const Handle(Poly_Triangulation)& theDestMesh,
+                                       const Handle(OSD_FileSystem)& theFileSystem) const
 {
-  if (!RWGltf_PrimitiveArrayReader::load (theMesh, theFileSystem))
+  const Handle(RWGltf_GltfLatePrimitiveArray) aSourceGltfMesh = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(theSourceMesh);
+  if (aSourceGltfMesh.IsNull()
+   || aSourceGltfMesh->PrimitiveMode() == RWGltf_GltfPrimitiveMode_UNKNOWN)
   {
     return false;
   }
-  if (!theMesh->CachedMinMax().IsVoid())
+
+  for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter (aSourceGltfMesh->Data()); aDataIter.More(); aDataIter.Next())
   {
-    myTriangulation->SetCachedMinMax (theMesh->CachedMinMax());
+    const RWGltf_GltfPrimArrayData& aData = aDataIter.Value();
+    if (!aData.StreamData.IsNull())
+    {
+      Standard_ArrayStreamBuffer aStreamBuffer ((const char* )aData.StreamData->Data(), aData.StreamData->Size());
+      std::istream aStream (&aStreamBuffer);
+      aStream.seekg ((std::streamoff )aData.StreamOffset, std::ios_base::beg);
+      if (!readBuffer (aSourceGltfMesh, theDestMesh, aStream, aData.Accessor, aData.Type))
+      {
+        return false;
+      }
+      continue;
+    }
+    else if (aData.StreamUri.IsEmpty())
+    {
+      reportError (TCollection_AsciiString ("Buffer '") + aSourceGltfMesh->Id() + "' does not define uri.");
+      return false;
+    }
+
+    const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
+    opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream (aData.StreamUri, std::ios::in | std::ios::binary, aData.StreamOffset);
+    if (aSharedStream.get() == NULL)
+    {
+      reportError (TCollection_AsciiString ("Buffer '") + aSourceGltfMesh->Id() + "refers to invalid file '" + aData.StreamUri + "'.");
+      return false;
+    }
+    if (!readBuffer (aSourceGltfMesh, theDestMesh, *aSharedStream.get(), aData.Accessor, aData.Type))
+    {
+      return false;
+    }
   }
   return true;
+}
+
+// =======================================================================
+// function : finalizeLoading
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                                  const Handle(Poly_Triangulation)& theDestMesh) const
+{
+  if (theDestMesh->NbNodes() < 1)
+  {
+    return false;
+  }
+  if (theDestMesh->NbTriangles() < 1)
+  {
+    const Handle(RWGltf_GltfLatePrimitiveArray) aSourceGltfMesh = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(theSourceMesh);
+    if (!aSourceGltfMesh.IsNull() && aSourceGltfMesh->PrimitiveMode() == RWGltf_GltfPrimitiveMode_Triangles)
+    {
+      // reconstruct indexes
+      const Standard_Integer aNbTris = theDestMesh->NbNodes() / 3;
+      if (!setNbTriangles (theDestMesh, aNbTris))
+      {
+        return false;
+      }
+      for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
+      {
+        if (!setTriangle (theDestMesh, THE_LOWER_TRI_INDEX + aTriIter,
+                          Poly_Triangle (THE_LOWER_NODE_INDEX + aTriIter * 3 + 0,
+                                         THE_LOWER_NODE_INDEX + aTriIter * 3 + 1,
+                                         THE_LOWER_NODE_INDEX + aTriIter * 3 + 2)))
+        {
+          return false;
+        }
+      }
+    }
+  }
+  return RWMesh_TriangulationReader::finalizeLoading (theSourceMesh, theDestMesh);
 }
 
 // =======================================================================
 // function : readBuffer
 // purpose  :
 // =======================================================================
-bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
-                                             const TCollection_AsciiString& theName,
+bool RWGltf_TriangulationReader::readBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
+                                             const Handle(Poly_Triangulation)& theDestMesh,
+                                             std::istream& theStream,
                                              const RWGltf_GltfAccessor& theAccessor,
-                                             RWGltf_GltfArrayType theType,
-                                             RWGltf_GltfPrimitiveMode theMode)
+                                             RWGltf_GltfArrayType theType) const
+
 {
-  if (theMode != RWGltf_GltfPrimitiveMode_Triangles)
+  const TCollection_AsciiString& aName = theSourceMesh->Id();
+  if (theSourceMesh->PrimitiveMode() != RWGltf_GltfPrimitiveMode_Triangles)
   {
-    Message::SendWarning (TCollection_AsciiString("Buffer '") + theName + "' skipped unsupported primitive array");
+    Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' skipped unsupported primitive array");
     return true;
   }
 
@@ -134,12 +167,12 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       {
         if ((theAccessor.Count / 3) > std::numeric_limits<Standard_Integer>::max())
         {
-          reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+          reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
           return false;
         }
 
         const Standard_Integer aNbTris = (Standard_Integer )(theAccessor.Count / 3);
-        if (!setNbTriangles (aNbTris))
+        if (!setNbTriangles (theDestMesh, aNbTris))
         {
           return false;
         }
@@ -147,6 +180,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                              ? theAccessor.ByteStride
                              : sizeof(uint16_t);
         Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+        Standard_Integer aLastTriIndex = 0;
         for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
         {
           if (const uint16_t* anIndex0 = aBuffer.ReadChunk<uint16_t> (theStream))
@@ -163,13 +197,37 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           }
           else
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
 
-          if (!setTriangle (THE_LOWER_TRI_INDEX + aTriIter, aVec3))
+          const Standard_Integer wasSet = setTriangle (theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
+          if (!wasSet)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' refers to invalid indices.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' refers to invalid indices.");
+          }
+          if (wasSet > 0)
+          {
+            aLastTriIndex++;
+          }
+        }
+        const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+        if (aNbDegenerate > 0)
+        {
+          if (aNbDegenerate == aNbTris)
+          {
+            Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' has been skipped (all elements are degenerative in)");
+            return false;
+          }
+          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
+          if ((myLoadingStatistic == NULL) && myToPrintDebugMessages)
+          {
+            Message::SendTrace (TCollection_AsciiString() + aNbDegenerate
+                                + " degenerate triangles have been skipped while reading glTF triangulation '" + aName + "'");
+          }
+          if (!setNbTriangles (theDestMesh, aLastTriIndex, true))
+          {
+            return false;
           }
         }
       }
@@ -177,12 +235,12 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       {
         if ((theAccessor.Count / 3) > std::numeric_limits<Standard_Integer>::max())
         {
-          reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+          reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
           return false;
         }
 
         const int aNbTris = (Standard_Integer )(theAccessor.Count / 3);
-        if (!setNbTriangles (aNbTris))
+        if (!setNbTriangles (theDestMesh, aNbTris))
         {
           return false;
         }
@@ -190,6 +248,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                              ? theAccessor.ByteStride
                              : sizeof(uint32_t);
         Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+        Standard_Integer aLastTriIndex = 0;
         for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
         {
           if (const uint32_t* anIndex0 = aBuffer.ReadChunk<uint32_t> (theStream))
@@ -206,13 +265,37 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           }
           else
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
 
-          if (!setTriangle (THE_LOWER_TRI_INDEX + aTriIter, aVec3))
+          const Standard_Integer wasSet = setTriangle (theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
+          if (!wasSet)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' refers to invalid indices.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' refers to invalid indices.");
+          }
+          if (wasSet > 0)
+          {
+            aLastTriIndex++;
+          }
+        }
+        const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+        if (aNbDegenerate > 0)
+        {
+          if (aNbDegenerate == aNbTris)
+          {
+            Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' has been skipped (all elements are degenerative in)");
+            return false;
+          }
+          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
+          if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+          {
+            Message::SendTrace (TCollection_AsciiString() + aNbDegenerate
+                                + " degenerate triangles have been skipped while reading glTF triangulation '" + aName + "'");
+          }
+          if (!setNbTriangles (theDestMesh, aLastTriIndex, true))
+          {
+            return false;
           }
         }
       }
@@ -220,12 +303,12 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       {
         if ((theAccessor.Count / 3) > std::numeric_limits<Standard_Integer>::max())
         {
-          reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+          reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
           return false;
         }
 
         const Standard_Integer aNbTris = (Standard_Integer )(theAccessor.Count / 3);
-        if (!setNbTriangles (aNbTris))
+        if (!setNbTriangles (theDestMesh, aNbTris))
         {
           return false;
         }
@@ -233,6 +316,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                              ? theAccessor.ByteStride
                              : sizeof(uint8_t);
         Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+        Standard_Integer aLastTriIndex = 0;
         for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
         {
           if (const uint8_t* anIndex0 = aBuffer.ReadChunk<uint8_t> (theStream))
@@ -249,13 +333,37 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           }
           else
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
 
-          if (!setTriangle (THE_LOWER_TRI_INDEX + aTriIter, aVec3))
+          const Standard_Integer wasSet = setTriangle (theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
+          if (!wasSet)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' refers to invalid indices.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' refers to invalid indices.");
+          }
+          if (wasSet > 0)
+          {
+            aLastTriIndex++;
+          }
+        }
+        const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+        if (aNbDegenerate > 0)
+        {
+          if (aNbDegenerate == aNbTris)
+          {
+            Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' has been skipped (all elements are degenerative in)");
+            return false;
+          }
+          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
+          if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+          {
+            Message::SendTrace (TCollection_AsciiString() + aNbDegenerate
+                                + " degenerate triangles have been skipped while reading glTF triangulation '" + aName + "'");
+          }
+          if (!setNbTriangles (theDestMesh, aLastTriIndex, true))
+          {
+            return false;
           }
         }
       }
@@ -275,7 +383,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       }
       else if (theAccessor.Count > std::numeric_limits<Standard_Integer>::max())
       {
-        reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+        reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
         return false;
       }
 
@@ -283,7 +391,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                            ? theAccessor.ByteStride
                            : sizeof(Graphic3d_Vec3);
       const Standard_Integer aNbNodes = (Standard_Integer )theAccessor.Count;
-      if (!setNbPositionNodes (aNbNodes))
+      if (!setNbPositionNodes (theDestMesh, aNbNodes))
       {
         return false;
       }
@@ -296,13 +404,13 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           const Graphic3d_Vec3* aVec3 = aBuffer.ReadChunk<Graphic3d_Vec3> (theStream);
           if (aVec3 == NULL)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
 
           gp_Pnt anXYZ (aVec3->x(), aVec3->y(), aVec3->z());
           myCoordSysConverter.TransformPosition (anXYZ.ChangeCoord());
-          setNodePosition (THE_LOWER_NODE_INDEX + aVertIter, anXYZ);
+          setNodePosition (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, anXYZ);
         }
       }
       else
@@ -312,10 +420,10 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           const Graphic3d_Vec3* aVec3 = aBuffer.ReadChunk<Graphic3d_Vec3> (theStream);
           if (aVec3 == NULL)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
-          setNodePosition (THE_LOWER_NODE_INDEX + aVertIter, gp_Pnt (aVec3->x(), aVec3->y(), aVec3->z()));
+          setNodePosition (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Pnt (aVec3->x(), aVec3->y(), aVec3->z()));
         }
       }
       break;
@@ -329,7 +437,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       }
       else if (theAccessor.Count > std::numeric_limits<Standard_Integer>::max())
       {
-        reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+        reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
         return false;
       }
 
@@ -337,7 +445,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                            ? theAccessor.ByteStride
                            : sizeof(Graphic3d_Vec3);
       const Standard_Integer aNbNodes = (Standard_Integer )theAccessor.Count;
-      if (!setNbNormalNodes (aNbNodes))
+      if (!setNbNormalNodes (theDestMesh, aNbNodes))
       {
         return false;
       }
@@ -349,17 +457,17 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           Graphic3d_Vec3* aVec3 = aBuffer.ReadChunk<Graphic3d_Vec3> (theStream);
           if (aVec3 == NULL)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
           if (aVec3->SquareModulus() >= THE_NORMAL_PREC2)
           {
             myCoordSysConverter.TransformNormal (*aVec3);
-            setNodeNormal (THE_LOWER_NODE_INDEX + aVertIter, gp_Dir (aVec3->x(), aVec3->y(), aVec3->z()));
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, *aVec3);
           }
           else
           {
-            setNodeNormal (THE_LOWER_NODE_INDEX + aVertIter, gp_Dir (0.0, 0.0, 1.0));
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Vec3f(0.0, 0.0, 1.0));
           }
         }
       }
@@ -370,16 +478,16 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
           const Graphic3d_Vec3* aVec3 = aBuffer.ReadChunk<Graphic3d_Vec3> (theStream);
           if (aVec3 == NULL)
           {
-            reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
             return false;
           }
           if (aVec3->SquareModulus() >= THE_NORMAL_PREC2)
           {
-            setNodeNormal (THE_LOWER_NODE_INDEX + aVertIter, gp_Dir (aVec3->x(), aVec3->y(), aVec3->z()));
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, *aVec3);
           }
           else
           {
-            setNodeNormal (THE_LOWER_NODE_INDEX + aVertIter, gp_Dir (0.0, 0.0, 1.0));
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Vec3f(0.0, 0.0, 1.0));
           }
         }
       }
@@ -394,7 +502,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       }
       else if (theAccessor.Count > std::numeric_limits<Standard_Integer>::max())
       {
-        reportError (TCollection_AsciiString ("Buffer '") + theName + "' defines too big array.");
+        reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
         return false;
       }
 
@@ -402,7 +510,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
                            ? theAccessor.ByteStride
                            : sizeof(Graphic3d_Vec2);
       const Standard_Integer aNbNodes = (Standard_Integer )theAccessor.Count;
-      if (!setNbUVNodes (aNbNodes))
+      if (!setNbUVNodes (theDestMesh, aNbNodes))
       {
         return false;
       }
@@ -413,13 +521,13 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
         Graphic3d_Vec2* aVec2 = aBuffer.ReadChunk<Graphic3d_Vec2> (theStream);
         if (aVec2 == NULL)
         {
-          reportError (TCollection_AsciiString ("Buffer '") + theName + "' reading error.");
+          reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
           return false;
         }
 
         // Y should be flipped (relative to image layout used by OCCT)
         aVec2->y() = 1.0f - aVec2->y();
-        setNodeUV (THE_LOWER_NODE_INDEX + aVertIter, gp_Pnt2d (aVec2->x(), aVec2->y()));
+        setNodeUV (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Pnt2d (aVec2->x(), aVec2->y()));
       }
       break;
     }

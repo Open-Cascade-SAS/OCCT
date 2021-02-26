@@ -28,7 +28,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_Triangulation.hxx>
+#include <Poly_ListOfTriangulation.hxx>
 
 class Standard_NullObject;
 class Standard_DomainError;
@@ -79,19 +79,26 @@ public:
   //! Makes a Face with a surface and a location.
   Standard_EXPORT void MakeFace (TopoDS_Face& F, const Handle(Geom_Surface)& S, const TopLoc_Location& L, const Standard_Real Tol) const;
   
-  //! Makes a Face with a triangulation. The triangulation
+  //! Makes a theFace with a single triangulation. The triangulation
   //! is in the same reference system than the TFace.
-  Standard_EXPORT void MakeFace (TopoDS_Face& F, const Handle(Poly_Triangulation)& T) const;
+  Standard_EXPORT void MakeFace (TopoDS_Face& theFace, const Handle(Poly_Triangulation)& theTriangulation) const;
+
+  //! Makes a Face with a list of triangulations and active one.
+  //! Use NULL active triangulation to set the first triangulation in list as active.
+  //! The triangulations is in the same reference system than the TFace.
+  Standard_EXPORT void MakeFace (TopoDS_Face& theFace, const Poly_ListOfTriangulation& theTriangulations, const Handle(Poly_Triangulation)& theActiveTriangulation = Handle(Poly_Triangulation)()) const;
   
   //! Updates the face F using the tolerance value Tol,
   //! surface S and location Location.
   Standard_EXPORT void UpdateFace (const TopoDS_Face& F, const Handle(Geom_Surface)& S, const TopLoc_Location& L, const Standard_Real Tol) const;
   
-  //! Changes a  face triangulation.
-  //!
-  //! A null Triangulation removes the triangulation.
-  Standard_EXPORT void UpdateFace (const TopoDS_Face& F, const Handle(Poly_Triangulation)& T) const;
-  
+  //! Changes a face triangulation.
+  //! A NULL theTriangulation removes face triangulations.
+  //! If theToReset is TRUE face triangulations will be reset to new list with only one input triangulation that will be active.
+  //! Else if theTriangulation is contained in internal triangulations list it will be made active,
+  //!      else the active triangulation will be replaced to theTriangulation one.
+  Standard_EXPORT void UpdateFace (const TopoDS_Face& theFace, const Handle(Poly_Triangulation)& theTriangulation, const Standard_Boolean theToReset = true) const;
+
   //! Updates the face Tolerance.
   Standard_EXPORT void UpdateFace (const TopoDS_Face& F, const Standard_Real Tol) const;
   

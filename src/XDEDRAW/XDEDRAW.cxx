@@ -609,10 +609,10 @@ private:
     myToExplore  (Standard_False) {}
 
   //! Display single label.
-  Standard_Integer displayLabel (Draw_Interpretor& theDI,
-                                 const TDF_Label& theLabel,
+  Standard_Integer displayLabel (const TDF_Label& theLabel,
                                  const TCollection_AsciiString& theNamePrefix,
-                                 const TopLoc_Location& theLoc)
+                                 const TopLoc_Location& theLoc,
+                                 TCollection_AsciiString& theOutDispList)
   {
     TCollection_AsciiString aName;
     if (myToGetNames)
@@ -661,7 +661,7 @@ private:
         const TopLoc_Location aLoc = theLoc * XCAFDoc_ShapeTool::GetLocation (theLabel);
         for (TDF_ChildIterator aChildIter (aRefLabel); aChildIter.More(); aChildIter.Next())
         {
-          if (displayLabel (theDI, aChildIter.Value(), aName, aLoc) == 1)
+          if (displayLabel (aChildIter.Value(), aName, aLoc, theOutDispList) == 1)
           {
             return 1;
           }
@@ -703,7 +703,7 @@ private:
     }
 
     ViewerTest::Display (aName, aPrs, false);
-    theDI << aName << " ";
+    theOutDispList += aName + " ";
     return 0;
   }
 
@@ -787,6 +787,12 @@ private:
           myToExplore = !myToExplore;
         }
       }
+      else if (anArgCase == "-outdisplist"
+            && anArgIter + 1 < theNbArgs)
+      {
+        myOutDispListVar = theArgVec[++anArgIter];
+        myOutDispList.Clear();
+      }
       else
       {
         if (myDoc.IsNull()
@@ -848,10 +854,18 @@ private:
     for (TDF_LabelSequence::Iterator aLabIter (myLabels); aLabIter.More(); aLabIter.Next())
     {
       const TDF_Label& aLabel = aLabIter.Value();
-      if (displayLabel (theDI, aLabel, myToPrefixDocName ? myDocName + ":" : "", TopLoc_Location()) == 1)
+      if (displayLabel (aLabel, myToPrefixDocName ? myDocName + ":" : "", TopLoc_Location(), myOutDispList) == 1)
       {
         return 1;
       }
+    }
+    if (myOutDispListVar.IsEmpty())
+    {
+      theDI << myOutDispList;
+    }
+    else
+    {
+      Draw::Set (myOutDispListVar.ToCString(), myOutDispList.ToCString());
     }
     return 0;
   }
@@ -861,6 +875,8 @@ private:
                            myNameMap;         //!< names map to handle collisions
   Handle(TDocStd_Document) myDoc;             //!< document
   TCollection_AsciiString  myDocName;         //!< document name
+  TCollection_AsciiString  myOutDispListVar;  //!< tcl variable to print the result objects
+  TCollection_AsciiString  myOutDispList;     //!< string with list of all displayed object names
   TDF_LabelSequence        myLabels;          //!< labels to display
   Standard_Integer         myDispMode;        //!< shape display mode
   Standard_Integer         myHiMode;          //!< shape highlight mode
@@ -1466,7 +1482,9 @@ void XDEDRAW::Init(Draw_Interpretor& di)
           "\n\t\t:  -highMode    Presentation highlight mode."
           "\n\t\t:  -docPrefix   Prepend document name to object names; TRUE by default."
           "\n\t\t:  -names       Use object names instead of label tag; TRUE by default."
-          "\n\t\t:  -explore     Explode labels to leaves; FALSE by default.",
+          "\n\t\t:  -explore     Explode labels to leaves; FALSE by default."
+          "\n\t\t:  -outDispList Set the TCL variable to the list of displayed object names."
+          "\n\t\t:               (instead of printing them to draw interpreter)",
           __FILE__, XDEDRAW_XDisplayTool::XDisplay, g);
 
   di.Add ("XWdump","Doc filename.{gif|xwd|bmp} \t: Dump contents of viewer window to XWD, GIF or BMP file",

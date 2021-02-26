@@ -1118,7 +1118,7 @@ proc testfile {filelist} {
         # warn if shape contains triangulation
         pload MODELING
         if { "$format" != "STL" &&
-             [regexp {contains\s+([0-9]+)\s+triangles} [uplevel trinfo a] res nbtriangles] &&
+             [regexp {([0-9]+)\s+triangles} [uplevel trinfo a] res nbtriangles] &&
              $nbtriangles != 0 } {
             puts "  Warning: shape contains triangulation ($nbtriangles triangles),"
             puts "           consider removing them unless they are needed for the test!"

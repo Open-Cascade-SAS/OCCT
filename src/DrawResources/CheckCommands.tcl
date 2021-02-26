@@ -934,6 +934,12 @@ help checktrinfo {
 
   Use: checktrinfo shapename [options...]
   Allowed options are:
+    -face [N]: compare current number of faces in "shapename" mesh with given reference data.
+               If reference value N is not given and current number of faces is equal to 0
+               procedure checktrinfo will print an error.
+    -empty[N]: compare current number of empty faces in "shapename" mesh with given reference data.
+               If reference value N is not given and current number of empty faces is greater that 0
+               procedure checktrinfo will print an error.
     -tri [N]:  compare current number of triangles in "shapename" mesh with given reference data.
                If reference value N is not given and current number of triangles is equal to 0
                procedure checktrinfo will print an error.
@@ -961,6 +967,8 @@ proc checktrinfo {shape args} {
         return
     }
 
+    set ref_nb_faces false
+    set ref_nb_empty_faces true
     set ref_nb_triangles false
     set ref_nb_nodes false
     set ref_deflection false
@@ -973,7 +981,9 @@ proc checktrinfo {shape args} {
     set max_defl -1
     set ref_info ""
 
-    set options {{"-tri" ref_nb_triangles ?}
+    set options {{"-face" ref_nb_faces ?}
+                 {"-empty" ref_nb_empty_faces ?} 
+                 {"-tri" ref_nb_triangles ?}
                  {"-nod" ref_nb_nodes ?}
                  {"-defl" ref_deflection ?}
                  {"-tol_abs_defl" tol_abs_defl 1}
@@ -987,17 +997,49 @@ proc checktrinfo {shape args} {
 
     _check_args ${args} ${options} "checktrinfo"
 
-    # get current number of triangles and nodes, value of max deflection
+    # get current number of faces, triangles and nodes, value of max deflection
     set tri_info [trinfo ${shape}]
-    set triinfo_pattern "(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[-0-9.+eE\]+)"
-    if {![regexp "${triinfo_pattern}" ${tri_info} dump cur_nb_triangles cur_nb_nodes cur_deflection]} {
+    set triinfo_pattern "(\[0-9\]+) +faces(.*\[^0-9]\(\[0-9\]+) +empty faces)?.*\[^0-9]\(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[-0-9.+eE\]+)"
+    if {![regexp "${triinfo_pattern}" ${tri_info} dump cur_nb_faces tmp cur_nb_empty_faces cur_nb_triangles cur_nb_nodes cur_deflection]} {
         puts "Error: command trinfo prints empty info"
+    }
+    if { ${cur_nb_empty_faces} == "" } {
+      set cur_nb_empty_faces 0
     }
 
     # get reference values from -ref option
     if { "${ref_info}" != ""} {
-        if {![regexp "${triinfo_pattern}" ${ref_info} dump ref_nb_triangles ref_nb_nodes ref_deflection]} {
+        if {![regexp "${triinfo_pattern}" ${ref_info} dump ref_nb_faces tmp ref_nb_empty_faces ref_nb_triangles ref_nb_nodes ref_deflection]} {
             puts "Error: reference information given by -ref option is wrong"
+        }
+    }
+
+    # check number of faces
+    if { [string is boolean ${ref_nb_faces}] } {
+        if { ${cur_nb_faces} <= 0 && ${ref_nb_faces} } {
+            puts "Error: Number of faces is equal to 0"
+        }
+    } else {
+        if {[regexp {!([-0-9.+eE]+)} $ref_nb_faces full ref_nb_faces_value]} {
+            if  {${ref_nb_faces_value} == ${cur_nb_faces} } {
+                puts "Error: Number of faces is equal to ${ref_nb_faces_value} but it should not"
+            }
+        } else {
+            checkreal "Number of faces" ${cur_nb_faces} ${ref_nb_faces} ${tol_abs_tri} ${tol_rel_tri}
+        }
+    }
+    # check number of empty faces
+    if { [string is boolean ${ref_nb_empty_faces}] } {
+        if { ${cur_nb_empty_faces} > 0 && !${ref_nb_empty_faces} } {
+            puts "Error: Number of empty faces is greater that 0"
+        }
+    } else {
+        if {[regexp {!([-0-9.+eE]+)} $ref_nb_empty_faces full ref_nb_empty_faces_value]} {
+            if  {${ref_nb_empty_faces_value} == ${cur_nb_empty_faces} } {
+                puts "Error: Number of empty faces is equal to ${ref_nb_empty_faces_value} but it should not"
+            }
+        } else {
+            checkreal "Number of empty faces" ${cur_nb_empty_faces} ${ref_nb_empty_faces} ${tol_abs_tri} ${tol_rel_tri}
         }
     }
 

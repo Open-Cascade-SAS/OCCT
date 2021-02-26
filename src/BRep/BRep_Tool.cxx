@@ -113,16 +113,27 @@ Handle(Geom_Surface) BRep_Tool::Surface(const TopoDS_Face& F)
 
 //=======================================================================
 //function : Triangulation
-//purpose  : Returns  the Triangulation of  the  face. It  is a
-//           null handle if there is no triangulation.
+//purpose  :
 //=======================================================================
-
-const Handle(Poly_Triangulation)& BRep_Tool::Triangulation(const TopoDS_Face& F,
-                                                           TopLoc_Location&   L)
+const Handle(Poly_Triangulation)& BRep_Tool::Triangulation (const TopoDS_Face& theFace,
+                                                            TopLoc_Location&   theLocation,
+                                                            const Poly_MeshPurpose theMeshPurpose)
 {
-  L = F.Location();
-  const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
-  return TF->Triangulation();
+  theLocation = theFace.Location();
+  const BRep_TFace* aTFace = static_cast<const BRep_TFace*>(theFace.TShape().get());
+  return aTFace->Triangulation (theMeshPurpose);
+}
+
+//=======================================================================
+//function : Triangulations
+//purpose  :
+//=======================================================================
+const Poly_ListOfTriangulation& BRep_Tool::Triangulations (const TopoDS_Face& theFace,
+                                                           TopLoc_Location&   theLocation)
+{
+  theLocation = theFace.Location();
+  const BRep_TFace* aTFace = static_cast<const BRep_TFace*>(theFace.TShape().get());
+  return aTFace->Triangulations();
 }
 
 //=======================================================================

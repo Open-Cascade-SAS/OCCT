@@ -15,144 +15,52 @@
 #ifndef _RWGltf_TriangulationReader_HeaderFile
 #define _RWGltf_TriangulationReader_HeaderFile
 
-#include <RWGltf_PrimitiveArrayReader.hxx>
+#include <RWMesh_TriangulationReader.hxx>
+#include <RWGltf_GltfAccessor.hxx>
+#include <RWGltf_GltfArrayType.hxx>
+#include <RWGltf_GltfPrimitiveMode.hxx>
 
-//! RWGltf_PrimitiveArrayReader implementation creating Poly_Triangulation.
-class RWGltf_TriangulationReader : public RWGltf_PrimitiveArrayReader
+class RWGltf_GltfLatePrimitiveArray;
+
+//! RWMesh_TriangulationReader implementation creating Poly_Triangulation.
+class RWGltf_TriangulationReader : public RWMesh_TriangulationReader
 {
-  DEFINE_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWGltf_PrimitiveArrayReader)
+  DEFINE_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReader)
 public:
 
   //! Empty constructor.
   Standard_EXPORT RWGltf_TriangulationReader();
 
-  //! Return flag to fill in triangulation using double or single precision; FALSE by default.
-  bool IsDoublePrecision() const { return myIsDoublePrecision; }
-
-  //! Set flag to fill in triangulation using double or single precision.
-  void SetDoublePrecision (bool theIsDouble) { myIsDoublePrecision = theIsDouble; }
-
 protected:
 
-  //! Load primitive array.
-  Standard_EXPORT virtual bool load (const Handle(RWGltf_GltfLatePrimitiveArray)& theMesh,
-                                     const Handle(OSD_FileSystem)& theFileSystem) Standard_OVERRIDE;
+  //! Reports error.
+  Standard_EXPORT virtual void reportError (const TCollection_AsciiString& theText) const;
 
-  //! Create Poly_Triangulation from collected data
-  Standard_EXPORT virtual Handle(Poly_Triangulation) result() Standard_OVERRIDE;
+  //! Loads primitive array.
+  Standard_EXPORT virtual bool load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                     const Handle(Poly_Triangulation)& theDestMesh,
+                                     const Handle(OSD_FileSystem)& theFileSystem) const Standard_OVERRIDE;
 
-  //! Reset cache before loading primitive array.
-  Standard_EXPORT virtual void reset() Standard_OVERRIDE;
+  //! Performs additional actions to finalize data loading.
+  Standard_EXPORT virtual bool finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                                const Handle(Poly_Triangulation)& theDestMesh) const Standard_OVERRIDE;
 
-  //! Fill triangulation data and ignore non-triangulation primitives.
-  //! @param theStream   input stream to read from
-  //! @param theName     entity name for logging errors
-  //! @param theAccessor buffer accessor
-  //! @param theType     array type
-  //! @param theMode     primitive mode
+  //! Fills triangulation data and ignore non-triangulation primitives.
+  //! @param theSourceMesh source triangulation
+  //! @param theDestMesh   triangulation to be modified
+  //! @param theStream     input stream to read from
+  //! @param theAccessor   buffer accessor
+  //! @param theType       array type
   //! @return FALSE on error
-  Standard_EXPORT virtual bool readBuffer (std::istream& theStream,
-                                           const TCollection_AsciiString& theName,
+  Standard_EXPORT virtual bool readBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
+                                           const Handle(Poly_Triangulation)& theDestMesh,
+                                           std::istream& theStream,
                                            const RWGltf_GltfAccessor& theAccessor,
-                                           RWGltf_GltfArrayType theType,
-                                           RWGltf_GltfPrimitiveMode theMode) Standard_OVERRIDE;
-
-protected: //! @name interface for filling triangulation data
-
-  //! Resize array of position nodes to specified size.
-  virtual bool setNbPositionNodes (Standard_Integer theNbNodes)
-  {
-    if (theNbNodes <= 0)
-    {
-      return false;
-    }
-    myTriangulation->ResizeNodes (theNbNodes, false);
-    return true;
-  }
-
-  //! Set node position.
-  //! @param theIndex node index starting from 1
-  //! @param thePnt   node position
-  virtual void setNodePosition (Standard_Integer theIndex,
-                                const gp_Pnt& thePnt)
-  {
-    myTriangulation->SetNode (theIndex, thePnt);
-  }
-
-  //! Resize array of UV nodes to specified size.
-  virtual bool setNbUVNodes (Standard_Integer theNbNodes)
-  {
-    if (theNbNodes <= 0
-     || myTriangulation->NbNodes() != theNbNodes)
-    {
-      return false;
-    }
-    myTriangulation->AddUVNodes();
-    return true;
-  }
-
-  //! Set node UV texture coordinates.
-  //! @param theIndex node index starting from 1
-  //! @param theUV    node UV coordinates
-  virtual void setNodeUV (Standard_Integer theIndex,
-                          const gp_Pnt2d& theUV)
-  {
-    myTriangulation->SetUVNode (theIndex, theUV);
-  }
-
-  //! Resize array of nodes normals to specified size.
-  virtual bool setNbNormalNodes (Standard_Integer theNbNodes)
-  {
-    if (theNbNodes <= 0
-     || myTriangulation->NbNodes() != theNbNodes)
-    {
-      return false;
-    }
-    myTriangulation->AddNormals();
-    return true;
-  }
-
-  //! Set node normal.
-  //! @param theIndex  node index starting from 1
-  //! @param theNormal node normal
-  virtual void setNodeNormal (Standard_Integer theIndex,
-                              const gp_Dir& theNormal)
-  {
-    myTriangulation->SetNormal (theIndex, theNormal);
-  }
-
-  //! Resize array of triangles to specified size.
-  virtual bool setNbTriangles (Standard_Integer theNbTris)
-  {
-    if (theNbTris >= 1)
-    {
-      myTriangulation->ResizeTriangles (theNbTris, false);
-      return true;
-    }
-    return false;
-  }
-
-  //! Add triangle element.
-  //! @param theIndex    triangle index starting from 1
-  //! @param theTriangle triangle nodes starting from 1
-  //! @return FALSE if node indexes are out of range
-  virtual bool setTriangle (Standard_Integer theIndex,
-                            const Poly_Triangle& theTriangle)
-  {
-    if (theTriangle.Value (1) < 1 || theTriangle.Value (1) > myTriangulation->NbNodes()
-     || theTriangle.Value (2) < 1 || theTriangle.Value (2) > myTriangulation->NbNodes()
-     || theTriangle.Value (3) < 1 || theTriangle.Value (3) > myTriangulation->NbNodes())
-    {
-      return false;
-    }
-    myTriangulation->SetTriangle (theIndex, theTriangle);
-    return true;
-  }
+                                           RWGltf_GltfArrayType theType) const;
 
 protected:
 
   Handle(Poly_Triangulation) myTriangulation;
-  Standard_Boolean myIsDoublePrecision;
 
 };
 

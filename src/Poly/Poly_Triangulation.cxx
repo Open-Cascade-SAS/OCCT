@@ -17,6 +17,7 @@
 #include <Poly_Triangulation.hxx>
 
 #include <gp_Pnt.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Poly_Triangle.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
@@ -29,7 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT (Poly_Triangulation, Standard_Transient)
 //=======================================================================
 Poly_Triangulation::Poly_Triangulation()
 : myCachedMinMax (NULL),
-  myDeflection   (0)
+  myDeflection   (0),
+  myPurpose      (Poly_MeshPurpose_NONE)
 {
   //
 }
@@ -45,7 +47,8 @@ Poly_Triangulation::Poly_Triangulation (const Standard_Integer theNbNodes,
 : myCachedMinMax (NULL),
   myDeflection(0),
   myNodes     (theNbNodes),
-  myTriangles (1, theNbTriangles)
+  myTriangles (1, theNbTriangles),
+  myPurpose   (Poly_MeshPurpose_NONE)
 {
   if (theHasUVNodes)
   {
@@ -66,7 +69,8 @@ Poly_Triangulation::Poly_Triangulation (const TColgp_Array1OfPnt&    theNodes,
 : myCachedMinMax (NULL),
   myDeflection   (0),
   myNodes        (theNodes.Length()),
-  myTriangles    (1, theTriangles.Length())
+  myTriangles    (1, theTriangles.Length()),
+  myPurpose      (Poly_MeshPurpose_NONE)
 {
   const Poly_ArrayOfNodes aNodeWrapper (theNodes.First(), theNodes.Length());
   myNodes = aNodeWrapper;
@@ -85,7 +89,8 @@ Poly_Triangulation::Poly_Triangulation (const TColgp_Array1OfPnt&    theNodes,
   myDeflection   (0),
   myNodes        (theNodes.Length()),
   myTriangles    (1, theTriangles.Length()),
-  myUVNodes      (theNodes.Length())
+  myUVNodes      (theNodes.Length()),
+  myPurpose      (Poly_MeshPurpose_NONE)
 {
   const Poly_ArrayOfNodes aNodeWrapper (theNodes.First(), theNodes.Length());
   myNodes = aNodeWrapper;
@@ -124,9 +129,31 @@ Poly_Triangulation::Poly_Triangulation (const Handle(Poly_Triangulation)& theTri
   myNodes     (theTriangulation->myNodes),
   myTriangles (theTriangulation->myTriangles),
   myUVNodes   (theTriangulation->myUVNodes),
-  myNormals   (theTriangulation->myNormals)
+  myNormals   (theTriangulation->myNormals),
+  myPurpose   (theTriangulation->myPurpose)
 {
   SetCachedMinMax (theTriangulation->CachedMinMax());
+}
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void Poly_Triangulation::Clear()
+{
+  if (!myNodes.IsEmpty())
+  {
+    Poly_ArrayOfNodes anEmptyNodes;
+    anEmptyNodes.SetDoublePrecision (myNodes.IsDoublePrecision());
+    myNodes.Move (anEmptyNodes);
+  }
+  if (!myTriangles.IsEmpty())
+  {
+    Poly_Array1OfTriangle anEmptyTriangles;
+    myTriangles.Move(anEmptyTriangles);
+  }
+  RemoveUVNodes();
+  RemoveNormals();
 }
 
 //=======================================================================
@@ -354,6 +381,8 @@ void Poly_Triangulation::DumpJson (Standard_OStream& theOStream, Standard_Intege
   if (!myNormals.IsEmpty())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNormals.Size())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTriangles.Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPurpose)
+
 }
 
 // =======================================================================
@@ -482,4 +511,56 @@ void Poly_Triangulation::ComputeNormals()
     const float aMod = aNorm3f.Modulus();
     aNorm3f = aMod == 0.0f ? gp_Vec3f (0.0f, 0.0f, 1.0f) : (aNorm3f / aMod);
   }
+}
+
+//=======================================================================
+//function : LoadDeferredData
+//purpose  :
+//=======================================================================
+Standard_Boolean Poly_Triangulation::LoadDeferredData (const Handle(OSD_FileSystem)& theFileSystem)
+{
+  if (!HasDeferredData())
+  {
+    return false;
+  }
+  if (!loadDeferredData (theFileSystem, this))
+  {
+    return false;
+  }
+  SetMeshPurpose (myPurpose | Poly_MeshPurpose_Loaded);
+  return true;
+}
+
+//=======================================================================
+//function : DetachedLoadDeferredData
+//purpose  :
+//=======================================================================
+Handle(Poly_Triangulation) Poly_Triangulation::DetachedLoadDeferredData (const Handle(OSD_FileSystem)& theFileSystem) const
+{
+  if (!HasDeferredData())
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  Handle(Poly_Triangulation) aResult = createNewEntity();
+  if (!loadDeferredData(theFileSystem, aResult))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  aResult->SetMeshPurpose(aResult->MeshPurpose() | Poly_MeshPurpose_Loaded);
+  return aResult;
+}
+
+//=======================================================================
+//function : UnloadDeferredData
+//purpose  :
+//=======================================================================
+Standard_Boolean Poly_Triangulation::UnloadDeferredData()
+{
+  if (HasDeferredData())
+  {
+    Clear();
+    SetMeshPurpose (myPurpose & ~Poly_MeshPurpose_Loaded);
+    return true;
+  }
+  return false;
 }

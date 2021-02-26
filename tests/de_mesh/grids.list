@@ -3,3 +3,4 @@
 003 gltf_read
 004 obj_read
 005 gltf_write
+006 gltf_lateload

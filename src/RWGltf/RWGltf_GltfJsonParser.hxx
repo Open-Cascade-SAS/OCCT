@@ -20,6 +20,8 @@
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <RWGltf_GltfAccessor.hxx>
+#include <RWGltf_GltfPrimArrayData.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 #include <RWGltf_GltfBufferView.hxx>
 #include <RWGltf_GltfRootElement.hxx>

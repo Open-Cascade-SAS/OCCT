@@ -4840,6 +4840,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   Standard_Integer   anObjDispMode  = -2;
   Standard_Integer   anObjHighMode  = -2;
   Standard_Boolean   toSetTrsfPers  = Standard_False;
+  Standard_Boolean   toEcho         = Standard_True;
   Handle(Graphic3d_TransformPers) aTrsfPers;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   AIS_DisplayStatus aDispStatus = AIS_DS_None;
@@ -5046,6 +5047,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     {
       aDispStatus = AIS_DS_Erased;
     }
+    else if (aNameCase == "-noecho")
+    {
+      toEcho = false;
+    }
     else
     {
       aNamesOfDisplayIO.Append (aName);
@@ -5175,7 +5180,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     }
     else
     {
-      theDI << "Display " << aName << "\n";
+      if (toEcho)
+      {
+        theDI << "Display " << aName << "\n";
+      }
 
       // update the Shape in the AIS_Shape
       TopoDS_Shape      aNewShape = DBRep::GetExisting (aName);
@@ -6540,6 +6548,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
       "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
       "\n\t\t:          [-redisplay] [-erased]"
+      "\n\t\t:          [-noecho]"
       "\n\t\t:          name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -local enables displaying of objects in local"
@@ -6567,7 +6576,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:               (DY looks up)"
       "\n\t\t:  -dispmode    Sets display mode for objects."
       "\n\t\t:  -highmode    Sets hilight mode for objects."
-      "\n\t\t:  -redisplay   Recomputes presentation of objects.",
+      "\n\t\t:  -redisplay   Recomputes presentation of objects."
+      "\n\t\t:  -noecho      Avoid printing of command results.",
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vnbdisplayed",
