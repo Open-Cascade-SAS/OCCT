@@ -290,6 +290,9 @@ static void cherche_edge1 (const TopoDS_Face & F1,
       {Edge=Ecur1;trouve=Standard_True;}
     }
   }
+  if (Edge.IsNull()) {
+    throw Standard_ConstructionError ("Failed to find edge");
+  }
 }
 
 //=======================================================================
@@ -348,6 +351,10 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
     else  ilin=CDicplus->SetOfSurfData()->Value(icplus)->InterferenceOnS2().LineIndex();
     c2=DStr.Curve(ilin ).Curve();
   }
+  if (c1.IsNull()) 
+    throw Standard_ConstructionError ("Failed to get 3D curve of edge");
+  if (c2.IsNull()) 
+    throw Standard_ConstructionError ("Failed to get 3D curve of edge");
   c1->D1(picmoins,p01,d11);
   c2->D1(picplus,p02,d12);
   Standard_Integer size = 4;
@@ -413,8 +420,12 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
             }
             Eproj.Append(E1);
             proj1=BRep_Tool::CurveOnSurface(E1,F,up1,up2);
+            if (proj1.IsNull()) 
+              throw Standard_ConstructionError ("Failed to get p-curve of edge");
             proj2d.Append(new Geom2d_TrimmedCurve(proj1,up1,up2));
             proj1c=BRep_Tool::Curve(E1,up1,up2);
+            if (proj1c.IsNull()) 
+              throw Standard_ConstructionError ("Failed to get 3D curve of edge");
             cproj.Append(new Geom_TrimmedCurve(proj1c,up1,up2));
             if (error>BRep_Tool::Tolerance(E1)) error=BRep_Tool::Tolerance(E1);
           }
@@ -1138,7 +1149,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       nbcouture++;
     }
     else ChFi3d_cherche_edge(V1,Evive,Fcur,Enext,VV);
-    if (Enext.IsNull())throw Standard_Failure("PerformMoreThreeCorner: pb in the parsing of edges and faces");
+    if (Enext.IsNull())
+      throw Standard_ConstructionError ("PerformMoreThreeCorner: pb in the parsing of edges and faces");
     if (Enext.IsSame(edgelibre1)|| Enext.IsSame(edgelibre2)) {
       CD.SetValue(ii, cdbid);
       Index.SetValue(ii, 0);
@@ -2226,6 +2238,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
                                               u1bid,u2bid);
 	else
 	  Calcul_C2dOnFace(CD.Value(ic),jf.Value(ic),i.Value(ic,icplus),curv2d1);
+
+        if (curv2d1.IsNull()) 
+          throw Standard_ConstructionError ("Failed to get p-curve of edge");
 	p2d1 = curv2d1 ->Value(p.Value(ic,icplus));
 	
 	// recuperation de la deuxieme courbe 2d
@@ -2237,6 +2252,8 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  jfp = 3 - jf.Value(icplus);
 	  Calcul_C2dOnFace(CD.Value(icplus),jfp,i.Value(icplus,ic),curv2d2);
 	}
+        if (curv2d2.IsNull()) 
+          throw Standard_ConstructionError ("Failed to get p-curve of edge");
 	p2d2 = curv2d2 ->Value(p.Value(icplus,ic));
 
 	Asurf = new GeomAdaptor_Surface(BRep_Tool::Surface(TopoDS::Face(Fvive.Value(ic,icplus))));
@@ -2465,8 +2482,12 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  n3d++;
 	  proj=BRep_Tool::CurveOnSurface(TopoDS::Edge(Eproj.Value(nb)),
 					 TopoDS::Face(Fproj.Value(nb)),up1,up2);
+          if (proj.IsNull()) 
+            throw Standard_ConstructionError ("Failed to get p-curve of edge");
 	  proj2d=new Geom2d_TrimmedCurve(proj,up1,up2);
 	  projc=BRep_Tool::Curve(TopoDS::Edge(Eproj.Value(nb)),up1,up2);
+          if (projc.IsNull()) 
+            throw Standard_ConstructionError ("Failed to get 3D curve of edge");
 	  cproj=new Geom_TrimmedCurve(projc,up1,up2);
 	  pardeb=cproj->FirstParameter();
 	  parfin=cproj->LastParameter();

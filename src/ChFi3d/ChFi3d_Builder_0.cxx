@@ -4394,6 +4394,9 @@ void ChFi3d_cherche_face1 (const TopTools_ListOfShape & map,
     if (!Fcur.IsSame(F1)) {
       F=Fcur;trouve=Standard_True;}
   }
+  if (F.IsNull()) {
+    throw Standard_ConstructionError ("Failed to find face");
+  }
 } 
 //=======================================================================
 //function : cherche_element
@@ -4432,6 +4435,9 @@ void ChFi3d_cherche_element(const TopoDS_Vertex & V,
         }
       }
     }
+  }
+  if (E.IsNull()) {
+    throw Standard_ConstructionError ("Failed to find element");
   }
 } 
 //=======================================================================
@@ -4476,6 +4482,9 @@ void ChFi3d_cherche_edge(const TopoDS_Vertex & V,
         }
       }
     }
+  }
+  if (E.IsNull()) {
+    throw Standard_ConstructionError ("Failed to find edge");
   }
 }
 
