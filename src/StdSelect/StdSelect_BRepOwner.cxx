@@ -114,21 +114,13 @@ void StdSelect_BRepOwner::HilightWithColor (const Handle(PrsMgr_PresentationMana
   // generate new presentable shape
   if (myPrsSh.IsNull())
   {
-    if (HasLocation())
-    {
-      TopLoc_Location lbid = Location() * myShape.Location();
-      TopoDS_Shape ShBis = myShape.Located(lbid);
-      myPrsSh = new StdSelect_Shape (ShBis, theStyle);
-    }
-    else
-    {
-      myPrsSh = new StdSelect_Shape (myShape, theStyle);
-    }
+    myPrsSh = new StdSelect_Shape (myShape, theStyle);
   }
 
   // initialize presentation attributes of child presentation
   myPrsSh->SetZLayer               (aSel->ZLayer());
   myPrsSh->SetTransformPersistence (aSel->TransformPersistence());
+  myPrsSh->SetLocalTransformation  (Location());
   myPrsSh->Attributes()->SetLink                (theStyle);
   myPrsSh->Attributes()->SetColor               (theStyle->Color());
   myPrsSh->Attributes()->SetTransparency        (theStyle->Transparency());
@@ -162,11 +154,10 @@ void StdSelect_BRepOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
 void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 {
   SelectMgr_EntityOwner::SetLocation(aLoc);
-  // we must not nullify the myPrsSh here, because unhilight method
-  // will be working with wrong entity in this case, the best is to
-  // set the update flag and then recompute myPrsSh on hilighting
   if (!myPrsSh.IsNull())
-    myPrsSh->SetToUpdate();
+  {
+    myPrsSh->SetLocalTransformation  (Location());
+  }
 }
 
 //=======================================================================
@@ -177,10 +168,10 @@ void StdSelect_BRepOwner::UpdateHighlightTrsf (const Handle(V3d_Viewer)& theView
                                                const Handle(PrsMgr_PresentationManager)& theManager,
                                                const Standard_Integer theDispMode)
 {
-  if (myPrsSh.IsNull() && Selectable().IsNull())
-    return;
-
-  theManager->UpdateHighlightTrsf (theViewer, Selectable(), theDispMode, myPrsSh);
+  if (!myPrsSh.IsNull() || HasSelectable())
+  {
+    theManager->UpdateHighlightTrsf (theViewer, Selectable(), theDispMode, myPrsSh);
+  }
 }
 
 // =======================================================================
