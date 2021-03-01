@@ -16,58 +16,15 @@
 
 #include <AIS_GlobalStatus.hxx>
 
-#include <AIS_DisplayMode.hxx>
-#include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-
 IMPLEMENT_STANDARD_RTTIEXT(AIS_GlobalStatus, Standard_Transient)
 
-AIS_GlobalStatus::AIS_GlobalStatus():
-myDispMode(AIS_WireFrame),
-myLayerIndex(0),
-myIsHilit(Standard_False),
-mySubInt(Standard_False)
+// =======================================================================
+// function : AIS_GlobalStatus
+// purpose  :
+// =======================================================================
+AIS_GlobalStatus::AIS_GlobalStatus()
+: myDispMode (0),
+  myIsHilit(Standard_False),
+  mySubInt (Standard_False)
 {  
-}
-
-AIS_GlobalStatus::AIS_GlobalStatus (const Standard_Integer theDMode,
-                                    const Standard_Integer theSMode,
-                                    const Standard_Integer theLayer):
-myDispMode (theDMode),
-myLayerIndex (theLayer),
-myIsHilit (Standard_False),
-mySubInt (Standard_False)
-{
-  mySelModes.Append (theSMode);
-}
-
-void AIS_GlobalStatus::RemoveSelectionMode(const Standard_Integer aMode)
-{
-  TColStd_ListIteratorOfListOfInteger anIt (mySelModes);
-  for (; anIt.More(); anIt.Next())
-  {
-    if (anIt.Value() == aMode)
-    {
-      mySelModes.Remove (anIt);
-      return;
-    }
-  }
-}
-
-void AIS_GlobalStatus::ClearSelectionModes()
-{
-  mySelModes.Clear();
-}
-
-Standard_Boolean AIS_GlobalStatus::IsSModeIn(const Standard_Integer aMode) const 
-{
-  TColStd_ListIteratorOfListOfInteger anIt (mySelModes);
-  for (; anIt.More(); anIt.Next())
-  {
-    if (anIt.Value() == aMode)
-    {
-      return Standard_True;
-    }
-  }
-  return Standard_False;
 }

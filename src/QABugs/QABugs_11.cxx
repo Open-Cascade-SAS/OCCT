@@ -671,28 +671,6 @@ for(;wex.More();wex.Next())
 
 }
 
-static Standard_Integer OCC166 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
-{
-
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0];
-    return 1;
-  }
-
-  BRepPrimAPI_MakeBox aBox(gp_Pnt(0, 0, 0), 100, 100, 100);
-  Handle(AIS_Shape) anAISBox = new AIS_Shape(aBox.Shape());
-  myAISContext->SetAutoActivateSelection (Standard_False);
-  myAISContext->Display(anAISBox, 1);
-
-  TColStd_ListOfInteger anActivatedModes;
-  myAISContext->ActivatedModes (anAISBox, anActivatedModes);
-  if(anActivatedModes.Extent() != 1 || anActivatedModes.First() != -1 )
-    return 1;
-
-  return 0;
-}
-
 #include <TDocStd_Document.hxx>
 #include <DDocStd.hxx>
 #include <PCDM_StoreStatus.hxx>
@@ -4992,7 +4970,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC305","OCC305 file",__FILE__,OCC305,group);
 
   // New commands:
-  theCommands.Add("OCC166", "OCC166", __FILE__, OCC166, group);
   theCommands.Add("OCC381_Save", "OCC381_Save Doc", __FILE__, OCC381_Save, group);
   theCommands.Add("OCC381_SaveAs", "OCC381_SaveAs Doc Path", __FILE__, OCC381_SaveAs, group);
 

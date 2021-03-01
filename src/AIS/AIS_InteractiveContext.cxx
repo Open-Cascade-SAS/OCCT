@@ -495,8 +495,7 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
       }
       if (!mgrSelector->IsActivated (theIObj, theSelectionMode))
       {
-        if (!aStatus->IsSModeIn (theSelectionMode))
-          aStatus->AddSelectionMode (theSelectionMode);
+        aStatus->AddSelectionMode (theSelectionMode);
         mgrSelector->Activate (theIObj, theSelectionMode);
       }
     }
@@ -2402,7 +2401,7 @@ void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_Interacti
 
   mgrSelector->UpdateSelection (theObject);
 
-  const Standard_Integer    aLayerId   = myObjects.Find (theObject)->GetLayerIndex();
+  const Graphic3d_ZLayerId  aLayerId   = theObject->ZLayer();
   const Handle(V3d_Viewer)& aCurViewer = CurrentViewer();
   for (V3d_ListOfViewIterator anActiveViewIter (aCurViewer->ActiveViewIterator()); anActiveViewIter.More(); anActiveViewIter.Next())
   {
@@ -2432,7 +2431,12 @@ void AIS_InteractiveContext::setObjectStatus (const Handle(AIS_InteractiveObject
   theIObj->SetDisplayStatus (theStatus);
   if (theStatus != PrsMgr_DisplayStatus_None)
   {
-    Handle(AIS_GlobalStatus) aStatus = new AIS_GlobalStatus (theDispMode, theSelectionMode);
+    Handle(AIS_GlobalStatus) aStatus = new AIS_GlobalStatus();
+    aStatus->SetDisplayMode (theDispMode);
+    if (theSelectionMode != -1)
+    {
+      aStatus->AddSelectionMode (theSelectionMode);
+    }
     myObjects.Bind (theIObj, aStatus);
   }
   else
@@ -2647,7 +2651,7 @@ void AIS_InteractiveContext::turnOnSubintensity (const Handle(AIS_InteractiveObj
         continue;
       }
 
-      aStatus->SubIntensityOn();
+      aStatus->SetSubIntensity (true);
       myMainPM->Color (anObjsIter.Key(), aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
     }
   }
@@ -2664,7 +2668,7 @@ void AIS_InteractiveContext::turnOnSubintensity (const Handle(AIS_InteractiveObj
       return;
     }
 
-    aStatus->SubIntensityOn();
+    aStatus->SetSubIntensity (true);
     myMainPM->Color (theObject, aSubStyle, theDispMode != -1 ? theDispMode : aStatus->DisplayMode());
   }
 }
@@ -3992,7 +3996,7 @@ void AIS_InteractiveContext::SubIntensityOff (const Handle(AIS_InteractiveObject
     return;
   }
 
-  (*aStatus)->SubIntensityOff();
+  (*aStatus)->SetSubIntensity (false);
   Standard_Boolean toUpdateMain = Standard_False;
   if (theObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
   {
