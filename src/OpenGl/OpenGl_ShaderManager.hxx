@@ -578,7 +578,8 @@ protected:
                                    Standard_Boolean theEnableMeshEdges) const
   {
     Standard_Integer aBits = 0;
-    if (theAlphaMode == Graphic3d_AlphaMode_Mask)
+    if (theAlphaMode == Graphic3d_AlphaMode_Mask
+     || theAlphaMode == Graphic3d_AlphaMode_MaskBlend)
     {
       aBits |= Graphic3d_ShaderFlags_AlphaTest;
     }

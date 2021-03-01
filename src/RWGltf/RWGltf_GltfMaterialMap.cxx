@@ -516,6 +516,7 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
         break;
       }
       case Graphic3d_AlphaMode_Blend:
+      case Graphic3d_AlphaMode_MaskBlend:
       {
         myWriter->Key ("alphaMode");
         myWriter->String ("BLEND");

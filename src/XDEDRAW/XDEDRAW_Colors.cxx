@@ -87,6 +87,7 @@ static const char* alphaModeToString (Graphic3d_AlphaMode theMode)
     case Graphic3d_AlphaMode_Opaque:    return "Opaque";
     case Graphic3d_AlphaMode_Mask:      return "Mask";
     case Graphic3d_AlphaMode_Blend:     return "Blend";
+    case Graphic3d_AlphaMode_MaskBlend: return "MaskBlend";
     case Graphic3d_AlphaMode_BlendAuto: return "BlendAuto";
   }
   return "";
@@ -985,6 +986,11 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
       else if (aModeStr == "blend")
       {
         anAlphaMode = Graphic3d_AlphaMode_Blend;
+      }
+      else if (aModeStr == "maskblend"
+            || aModeStr == "blendmask")
+      {
+        anAlphaMode = Graphic3d_AlphaMode_MaskBlend;
       }
       else if (aModeStr == "blendauto")
       {

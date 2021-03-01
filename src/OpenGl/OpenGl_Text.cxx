@@ -759,7 +759,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                          && theTextAspect.Aspect()->TextStyle() != Aspect_TOST_ANNOTATION;
   if (!hasDepthTest)
   {
-    glDisable (GL_DEPTH_TEST);
+    theCtx->core11fwd->glDisable (GL_DEPTH_TEST);
   }
 
   if (theCtx->core15fwd != NULL)
@@ -782,8 +782,11 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 #endif
 
   // setup blending
-  glEnable (GL_BLEND);
-  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  if (theTextAspect.Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
+  {
+    theCtx->core11fwd->glEnable (GL_BLEND);
+    theCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
 
   // alpha to coverage makes text too thin
   theCtx->SetSampleAlphaToCoverage (false);
@@ -854,7 +857,10 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   if (theTextAspect.Aspect()->TextDisplayType() == Aspect_TODT_DIMENSION)
   {
-    glDisable (GL_BLEND);
+    if (theTextAspect.Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
+    {
+      glDisable (GL_BLEND);
+    }
     if (!myIs2d)
     {
       glDisable (GL_DEPTH_TEST);
@@ -880,7 +886,10 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 
   // reset OpenGL state
-  glDisable (GL_BLEND);
+  if (theTextAspect.Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
+  {
+    theCtx->core11fwd->glDisable (GL_BLEND);
+  }
   glDisable (GL_STENCIL_TEST);
 #if !defined(GL_ES_VERSION_2_0)
   glDisable (GL_COLOR_LOGIC_OP);

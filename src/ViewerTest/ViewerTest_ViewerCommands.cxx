@@ -9640,6 +9640,11 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         {
           aMode = Graphic3d_AlphaMode_Blend;
         }
+        else if (aValStr == "maskblend"
+              || aValStr == "blendmask")
+        {
+          aMode = Graphic3d_AlphaMode_MaskBlend;
+        }
         else if (aValStr == "blendauto")
         {
           aMode = Graphic3d_AlphaMode_BlendAuto;

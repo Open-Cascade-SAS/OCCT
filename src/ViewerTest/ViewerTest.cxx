@@ -2552,6 +2552,11 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
         {
           aChangeSet->AlphaMode = Graphic3d_AlphaMode_Blend;
         }
+        else if (aParam == "maskblend"
+              || aParam == "blendmask")
+        {
+          aChangeSet->AlphaMode = Graphic3d_AlphaMode_MaskBlend;
+        }
         else if (aParam == "blendauto"
               || aParam == "auto")
         {
@@ -6689,7 +6694,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-faceBoundaryWidth LineWidth] [-faceBoundaryColor R G B] [-faceBoundaryType LineType]"
       "\n\t\t:          [-drawEdges {0|1}] [-edgeType LineType] [-edgeColor R G B] [-quadEdges {0|1}]"
       "\n\t\t:          [-drawSilhouette {0|1}]"
-      "\n\t\t:          [-alphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
+      "\n\t\t:          [-alphaMode {opaque|mask|blend|maskblend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t:          [-dumpJson]"
       "\n\t\t:          [-dumpCompact {0|1}]"
       "\n\t\t:          [-dumpDepth depth]"

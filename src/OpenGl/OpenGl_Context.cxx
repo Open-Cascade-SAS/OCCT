@@ -2445,7 +2445,8 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
   // do not update material properties in case of zero reflection mode,
   // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
   const OpenGl_MaterialState& aMatState = myShaderManager->MaterialState();
-  float anAlphaCutoff = anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
+  float anAlphaCutoff = (anAspect->AlphaMode() == Graphic3d_AlphaMode_Mask
+                      || anAspect->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
                       ? anAspect->AlphaCutoff()
                       : ShortRealLast();
   if (anAspect->ToDrawEdges())
@@ -2513,6 +2514,7 @@ Standard_Boolean OpenGl_Context::CheckIsTransparent (const OpenGl_Aspects* theAs
     return theAlphaFront < 1.0f
         || theAlphaBack  < 1.0f;
   }
+  // Graphic3d_AlphaMode_Mask and Graphic3d_AlphaMode_MaskBlend are not considered transparent here
   return anAspect->AlphaMode() == Graphic3d_AlphaMode_Blend;
 }
 

@@ -261,6 +261,7 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
       if (myAspectsSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
        || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
        || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
+       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend
        || (myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
         && myAspectsSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
       {

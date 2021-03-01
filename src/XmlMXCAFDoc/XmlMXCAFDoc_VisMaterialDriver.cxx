@@ -51,6 +51,7 @@ static const char* alphaModeToString (Graphic3d_AlphaMode theMode)
     case Graphic3d_AlphaMode_Opaque:    return "Opaque";
     case Graphic3d_AlphaMode_Mask:      return "Mask";
     case Graphic3d_AlphaMode_Blend:     return "Blend";
+    case Graphic3d_AlphaMode_MaskBlend: return "MaskBlend";
     case Graphic3d_AlphaMode_BlendAuto: return "Auto";
   }
   return "Auto";
@@ -59,12 +60,25 @@ static const char* alphaModeToString (Graphic3d_AlphaMode theMode)
 //! Decode alpha mode from string.
 static Graphic3d_AlphaMode alphaModeFromString (const char* theMode)
 {
-  switch (*theMode)
+  if (strcasecmp (theMode, "Opaque") == 0)
   {
-    case 'O': return Graphic3d_AlphaMode_Opaque;
-    case 'M': return Graphic3d_AlphaMode_Mask;
-    case 'B': return Graphic3d_AlphaMode_Blend;
-    case 'A': return Graphic3d_AlphaMode_BlendAuto;
+    return Graphic3d_AlphaMode_Opaque;
+  }
+  else if (strcasecmp (theMode, "Mask") == 0)
+  {
+    return Graphic3d_AlphaMode_Mask;
+  }
+  else if (strcasecmp (theMode, "Blend") == 0)
+  {
+    return Graphic3d_AlphaMode_Blend;
+  }
+  else if (strcasecmp (theMode, "MaskBlend") == 0)
+  {
+    return Graphic3d_AlphaMode_MaskBlend;
+  }
+  else if (strcasecmp (theMode, "Auto") == 0)
+  {
+    return Graphic3d_AlphaMode_BlendAuto;
   }
   return Graphic3d_AlphaMode_BlendAuto;
 }

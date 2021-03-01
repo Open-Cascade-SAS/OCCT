@@ -109,11 +109,13 @@ void OpenGl_GraduatedTrihedron::initGlResources (const Handle(OpenGl_Context)& t
 
   myLabelValues.SetFontSize (theCtx, myData.ValuesSize());
 
+  myAspectLabels.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_MaskBlend, 0.285f);
   myAspectLabels.Aspect()->SetTextFontAspect (myData.NamesFontAspect());
   myAspectLabels.Aspect()->SetTextFont (!myData.NamesFont().IsEmpty()
                                        ? new TCollection_HAsciiString (myData.NamesFont())
                                        : Handle(TCollection_HAsciiString )());
 
+  myAspectValues.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_MaskBlend, 0.285f);
   myAspectValues.Aspect()->SetTextFontAspect (myData.ValuesFontAspect());
   myAspectValues.Aspect()->SetTextFont (!myData.ValuesFont().IsEmpty()
                                        ? new TCollection_HAsciiString (myData.ValuesFont())

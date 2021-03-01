@@ -1009,6 +1009,13 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
     aCtx->SetSampleAlphaToCoverage (aCtx->ShaderManager()->MaterialState().HasAlphaCutoff());
 
+    const bool isForcedBlend = anAspectFace->Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend;
+    if (isForcedBlend)
+    {
+      aCtx->core11fwd->glEnable (GL_BLEND);
+      aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
     const Graphic3d_Vec4* aFaceColors = !myBounds.IsNull() && !toHilight && anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_HIDDENLINE
                                       ?  myBounds->Colors
                                       :  NULL;
@@ -1024,6 +1031,10 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       }
 
       drawArray (theWorkspace, aFaceColors, hasColorAttrib);
+      if (isForcedBlend)
+      {
+        aCtx->core11fwd->glDisable (GL_BLEND);
+      }
       return;
     }
 
@@ -1048,6 +1059,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       drawArray (theWorkspace, NULL, false);
 
       aCtx->core11fwd->glCullFace (GL_BACK);
+    }
+
+    if (isForcedBlend)
+    {
+      aCtx->core11fwd->glDisable (GL_BLEND);
     }
   }
 

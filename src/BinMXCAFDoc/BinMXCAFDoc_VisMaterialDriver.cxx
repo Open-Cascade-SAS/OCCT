@@ -27,6 +27,7 @@ static Standard_Byte alphaModeToChar (Graphic3d_AlphaMode theMode)
     case Graphic3d_AlphaMode_Opaque:    return 'O';
     case Graphic3d_AlphaMode_Mask:      return 'M';
     case Graphic3d_AlphaMode_Blend:     return 'B';
+    case Graphic3d_AlphaMode_MaskBlend: return 'b';
     case Graphic3d_AlphaMode_BlendAuto: return 'A';
   }
   return 'A';
@@ -40,6 +41,7 @@ static Graphic3d_AlphaMode alphaModeFromChar (Standard_Byte theMode)
     case 'O': return Graphic3d_AlphaMode_Opaque;
     case 'M': return Graphic3d_AlphaMode_Mask;
     case 'B': return Graphic3d_AlphaMode_Blend;
+    case 'b': return Graphic3d_AlphaMode_MaskBlend;
     case 'A': return Graphic3d_AlphaMode_BlendAuto;
   }
   return Graphic3d_AlphaMode_BlendAuto;

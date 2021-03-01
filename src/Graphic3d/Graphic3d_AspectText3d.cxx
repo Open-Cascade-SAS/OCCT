@@ -23,10 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_AspectText3d, Graphic3d_Aspects)
 // =======================================================================
 Graphic3d_AspectText3d::Graphic3d_AspectText3d()
 {
-  // actually this should be a special state Graphic3d_AlphaMode_MaskBlend
-  // since text is drawn in usual order with normal opaque objects (thanks to alpha test),
-  // but blending is also enabled to smoothen boundaries
-  SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  SetAlphaMode (Graphic3d_AlphaMode_MaskBlend, 0.285f);
   myShadingModel = Graphic3d_TOSM_UNLIT;
   myInteriorColor.SetRGB (Quantity_NOC_YELLOW);
   myEdgeColor.SetRGB (Quantity_NOC_WHITE);
@@ -43,7 +40,7 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d (const Quantity_Color& theColor,
                                                 Aspect_TypeOfStyleText   theStyle,
                                                 Aspect_TypeOfDisplayText theDisplayType)
 {
-  SetAlphaMode (Graphic3d_AlphaMode_Mask, 0.285f);
+  SetAlphaMode (Graphic3d_AlphaMode_MaskBlend, 0.285f);
   myShadingModel = Graphic3d_TOSM_UNLIT;
   myTextStyle = theStyle;
   myTextDisplayType = theDisplayType;
