@@ -47,6 +47,30 @@ static Graphic3d_AlphaMode alphaModeFromChar (Standard_Byte theMode)
   return Graphic3d_AlphaMode_BlendAuto;
 }
 
+//! Encode face culling mode into character.
+static Standard_Byte faceCullToChar (Graphic3d_TypeOfBackfacingModel theMode)
+{
+  switch (theMode)
+  {
+    case Graphic3d_TypeOfBackfacingModel_Auto:        return '0';
+    case Graphic3d_TypeOfBackfacingModel_BackCulled:  return 'B';
+    case Graphic3d_TypeOfBackfacingModel_DoubleSided: return '1';
+  }
+  return '0';
+}
+
+//! Decode face culling mode from character.
+static Graphic3d_TypeOfBackfacingModel faceCullFromChar (Standard_Byte theMode)
+{
+  switch (theMode)
+  {
+    case '0': return Graphic3d_TypeOfBackfacingModel_Auto;
+    case 'B': return Graphic3d_TypeOfBackfacingModel_BackCulled;
+    case '1': return Graphic3d_TypeOfBackfacingModel_DoubleSided;
+  }
+  return Graphic3d_TypeOfBackfacingModel_Auto;
+}
+
 //! Encode vec3.
 static void writeVec3 (BinObjMgt_Persistent& theTarget,
                        const Graphic3d_Vec3& theVec3)
@@ -162,7 +186,7 @@ Standard_Boolean BinMXCAFDoc_VisMaterialDriver::Paste (const BinObjMgt_Persisten
   theSource.GetByte (isDoubleSided);
   theSource.GetByte (anAlphaMode);
   theSource.GetShortReal (anAlphaCutOff);
-  aMat->SetDoubleSided (isDoubleSided == '1');
+  aMat->SetFaceCulling (faceCullFromChar (isDoubleSided));
   aMat->SetAlphaMode (alphaModeFromChar (anAlphaMode), anAlphaCutOff);
 
   XCAFDoc_VisMaterialPBR aPbrMat;
@@ -227,7 +251,7 @@ void BinMXCAFDoc_VisMaterialDriver::Paste (const Handle(TDF_Attribute)& theSourc
   theTarget.PutByte (MaterialVersionMajor);
   theTarget.PutByte (MaterialVersionMinor);
 
-  theTarget.PutByte (aMat->IsDoubleSided() ? '1' : '0');
+  theTarget.PutByte (faceCullToChar (aMat->FaceCulling()));
   theTarget.PutByte (alphaModeToChar (aMat->AlphaMode()));
   theTarget.PutShortReal (aMat->AlphaCutOff());
 

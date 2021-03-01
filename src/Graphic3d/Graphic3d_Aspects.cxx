@@ -26,6 +26,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   myEdgeColor           (Quantity_NOC_WHITE),
   myInteriorStyle       (Aspect_IS_SOLID),
   myShadingModel        (Graphic3d_TOSM_DEFAULT),
+  myFaceCulling         (Graphic3d_TypeOfBackfacingModel_Auto),
   myAlphaMode           (Graphic3d_AlphaMode_BlendAuto),
   myAlphaCutoff         (0.5f),
   myLineType            (Aspect_TOL_SOLID),
@@ -42,7 +43,6 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   myToDistinguishMaterials (false),
   myToDrawEdges         (false),
   myToDrawSilhouette    (false),
-  myToSuppressBackFaces (true),
   myToMapTexture        (false),
   myIsTextZoomable      (false)
 {
@@ -81,7 +81,7 @@ void Graphic3d_Aspects::DumpJson (Standard_OStream& theOStream, Standard_Integer
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceCulling)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable)
 

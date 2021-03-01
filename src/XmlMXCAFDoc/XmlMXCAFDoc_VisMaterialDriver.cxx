@@ -252,11 +252,15 @@ Standard_Boolean XmlMXCAFDoc_VisMaterialDriver::Paste (const XmlObjMgt_Persisten
   Handle(XCAFDoc_VisMaterial) aMat = Handle(XCAFDoc_VisMaterial)::DownCast(theTarget);
 
   const XmlObjMgt_DOMString aDoubleSidedStr = theSource.Element().getAttribute (::IsDoubleSided());
-  Standard_Integer isDoubleSided = 1;
-  aDoubleSidedStr.GetInteger (isDoubleSided);
+  Standard_Integer aDoubleSidedInt = 1;
+  aDoubleSidedStr.GetInteger (aDoubleSidedInt);
   Standard_ShortReal anAlphaCutOff = 0.5f;
   readReal (theSource, ::AlphaCutOff(), anAlphaCutOff);
-  aMat->SetDoubleSided (isDoubleSided != 0);
+  aMat->SetFaceCulling (aDoubleSidedInt == 1
+                      ? Graphic3d_TypeOfBackfacingModel_DoubleSided
+                      : (aDoubleSidedInt == 2
+                       ? Graphic3d_TypeOfBackfacingModel_BackCulled
+                       : Graphic3d_TypeOfBackfacingModel_Auto));
   aMat->SetAlphaMode (alphaModeFromString (theSource.Element().getAttribute (::AlphaMode()).GetString()), anAlphaCutOff);
 
   Quantity_ColorRGBA aBaseColor;
@@ -303,8 +307,12 @@ void XmlMXCAFDoc_VisMaterialDriver::Paste (const Handle(TDF_Attribute)& theSourc
                                            XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(XCAFDoc_VisMaterial) aMat = Handle(XCAFDoc_VisMaterial)::DownCast(theSource);
-
-  theTarget.Element().setAttribute (::IsDoubleSided(), aMat->IsDoubleSided() ? 1 : 0);
+  Standard_Integer aDoubleSidedInt = aMat->FaceCulling() == Graphic3d_TypeOfBackfacingModel_DoubleSided
+                                   ? 1
+                                   : (aMat->FaceCulling() == Graphic3d_TypeOfBackfacingModel_BackCulled
+                                    ? 2
+                                    : 0);
+  theTarget.Element().setAttribute (::IsDoubleSided(), aDoubleSidedInt);
   theTarget.Element().setAttribute (::AlphaMode(),     alphaModeToString (aMat->AlphaMode()));
   writeReal (theTarget, ::AlphaCutOff(), aMat->AlphaCutOff());
   if (aMat->HasPbrMaterial())

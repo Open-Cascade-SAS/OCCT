@@ -38,7 +38,7 @@ const Standard_GUID& XCAFDoc_VisMaterial::GetID()
 XCAFDoc_VisMaterial::XCAFDoc_VisMaterial()
 : myAlphaMode (Graphic3d_AlphaMode_BlendAuto),
   myAlphaCutOff (0.5f),
-  myIsDoubleSided (Standard_True)
+  myFaceCulling (Graphic3d_TypeOfBackfacingModel_Auto)
 {
   //
 }
@@ -76,13 +76,13 @@ void XCAFDoc_VisMaterial::SetAlphaMode (Graphic3d_AlphaMode theMode,
 }
 
 //=======================================================================
-//function : SetDoubleSided
+//function : SetFaceCulling
 //purpose  :
 //=======================================================================
-void XCAFDoc_VisMaterial::SetDoubleSided (Standard_Boolean theIsDoubleSided)
+void XCAFDoc_VisMaterial::SetFaceCulling (Graphic3d_TypeOfBackfacingModel theFaceCulling)
 {
   Backup();
-  myIsDoubleSided = theIsDoubleSided;
+  myFaceCulling = theFaceCulling;
 }
 
 //=======================================================================
@@ -96,7 +96,7 @@ void XCAFDoc_VisMaterial::Restore (const Handle(TDF_Attribute)& theWith)
   myCommonMat     = anOther->myCommonMat;
   myAlphaMode     = anOther->myAlphaMode;
   myAlphaCutOff   = anOther->myAlphaCutOff;
-  myIsDoubleSided = anOther->myIsDoubleSided;
+  myFaceCulling   = anOther->myFaceCulling;
 }
 
 //=======================================================================
@@ -121,7 +121,7 @@ void XCAFDoc_VisMaterial::Paste (const Handle(TDF_Attribute)& theInto,
   anOther->myCommonMat     = myCommonMat;
   anOther->myAlphaMode     = myAlphaMode;
   anOther->myAlphaCutOff   = myAlphaCutOff;
-  anOther->myIsDoubleSided = myIsDoubleSided;
+  anOther->myFaceCulling   = myFaceCulling;
 }
 
 // =======================================================================
@@ -259,7 +259,7 @@ void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect
   FillMaterialAspect (aMaterial);
   theAspect->SetFrontMaterial (aMaterial);
   theAspect->SetAlphaMode (myAlphaMode , myAlphaCutOff);
-  theAspect->SetSuppressBackFaces (!myIsDoubleSided);
+  theAspect->SetFaceCulling (myFaceCulling);
 
   const Handle(Image_Texture)& aColorTexture = !myPbrMat.BaseColorTexture.IsNull() ? myPbrMat.BaseColorTexture : myCommonMat.DiffuseTexture;
   Standard_Integer aNbTexUnits = 0;
@@ -317,5 +317,5 @@ void XCAFDoc_VisMaterial::DumpJson (Standard_OStream& theOStream, Standard_Integ
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaMode)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaCutOff)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDoubleSided)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceCulling)
 }

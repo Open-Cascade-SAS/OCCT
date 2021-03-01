@@ -144,11 +144,11 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   #endif
   }
 
-  myNoneCulling .Aspect()->SetSuppressBackFaces (false);
+  myNoneCulling .Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
   myNoneCulling .Aspect()->SetDrawEdges (false);
   myNoneCulling .Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
 
-  myFrontCulling.Aspect()->SetSuppressBackFaces (true);
+  myFrontCulling.Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);
   myFrontCulling.Aspect()->SetDrawEdges (false);
   myFrontCulling.Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
 }
@@ -252,12 +252,14 @@ const OpenGl_Aspects* OpenGl_Workspace::SetAspects (const OpenGl_Aspects* theAsp
 // =======================================================================
 const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
 {
-  if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
+  bool toSuppressBackFaces = myView->BackfacingModel() == Graphic3d_TypeOfBackfacingModel_BackCulled;
+  if (myView->BackfacingModel() == Graphic3d_TypeOfBackfacingModel_Auto)
   {
-    bool toSuppressBackFaces = myToAllowFaceCulling
-                            && myAspectsSet->Aspect()->ToSuppressBackFaces();
-    if (toSuppressBackFaces)
+    toSuppressBackFaces = myAspectsSet->Aspect()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_BackCulled;
+    if (myAspectsSet->Aspect()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_Auto
+     && myToAllowFaceCulling)
     {
+      toSuppressBackFaces = true;
       if (myAspectsSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
        || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
        || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
@@ -269,8 +271,8 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
         toSuppressBackFaces = false;
       }
     }
-    myGlContext->SetCullBackFaces (toSuppressBackFaces);
   }
+  myGlContext->SetCullBackFaces (toSuppressBackFaces);
 
   if (myAspectsSet->Aspect() == myAspectsApplied
    && myHighlightStyle == myAspectFaceAppliedWithHL)

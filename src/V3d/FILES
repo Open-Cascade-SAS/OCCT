@@ -5,7 +5,6 @@ V3d_AmbientLight.hxx
 V3d_BadValue.hxx
 V3d_CircularGrid.cxx
 V3d_CircularGrid.hxx
-V3d_Coordinate.hxx
 V3d_DirectionalLight.cxx
 V3d_DirectionalLight.hxx
 V3d_ImageDumpOptions.hxx
@@ -30,9 +29,6 @@ V3d_TypeOfAxe.hxx
 V3d_TypeOfBackfacingModel.hxx
 V3d_TypeOfLight.hxx
 V3d_TypeOfOrientation.hxx
-V3d_TypeOfPickCamera.hxx
-V3d_TypeOfPickLight.hxx
-V3d_TypeOfRepresentation.hxx
 V3d_TypeOfShadingModel.hxx
 V3d_TypeOfView.hxx
 V3d_TypeOfVisualization.hxx

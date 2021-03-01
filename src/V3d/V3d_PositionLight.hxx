@@ -19,8 +19,6 @@
 
 #include <Graphic3d_Vertex.hxx>
 #include <V3d_Light.hxx>
-#include <V3d_TypeOfPickLight.hxx>
-#include <V3d_TypeOfRepresentation.hxx>
 
 //! Base class for Positional, Spot and Directional Light classes.
 class V3d_PositionLight : public Graphic3d_CLight

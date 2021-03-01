@@ -17,16 +17,9 @@
 #ifndef _V3d_TypeOfBackfacingModel_HeaderFile
 #define _V3d_TypeOfBackfacingModel_HeaderFile
 
-//! Modes of display of back faces in the view
-//!
-//! TOBM_AUTOMATIC graphic's structure setting is in use
-//! TOBM_ALWAYS_DISPLAYED     force display of back faces
-//! TOBM_NEVER_DISPLAYED      disable display of back faces
-enum V3d_TypeOfBackfacingModel
-{
-V3d_TOBM_AUTOMATIC,
-V3d_TOBM_ALWAYS_DISPLAYED,
-V3d_TOBM_NEVER_DISPLAYED
-};
+#include <Graphic3d_TypeOfBackfacingModel.hxx>
+
+Standard_DEPRECATED("Deprecated alias - Graphic3d_TypeOfBackfacingModel should be used instead")
+typedef Graphic3d_TypeOfBackfacingModel V3d_TypeOfBackfacingModel;
 
 #endif // _V3d_TypeOfBackfacingModel_HeaderFile

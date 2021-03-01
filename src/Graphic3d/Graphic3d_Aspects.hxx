@@ -24,12 +24,13 @@
 #include <Font_NameOfFont.hxx>
 #include <Graphic3d_AlphaMode.hxx>
 #include <Graphic3d_MarkerImage.hxx>
-#include <Graphic3d_HatchStyle.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
+#include <Graphic3d_HatchStyle.hxx>
 #include <Graphic3d_PolygonOffset.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TextureSet.hxx>
+#include <Graphic3d_TypeOfBackfacingModel.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -120,22 +121,13 @@ public:
   //! Modifies the surface material of internal faces
   void SetBackMaterial (const Graphic3d_MaterialAspect& theMaterial) { myBackMaterial = theMaterial; }
 
-  //! Returns true if back faces should be suppressed (true by default).
-  bool ToSuppressBackFaces() const { return myToSuppressBackFaces; }
-
-  //! Assign back faces culling flag.
-  void SetSuppressBackFaces (bool theToSuppress) { myToSuppressBackFaces = theToSuppress; }
-
-  //! Returns true if back faces should be suppressed (true by default).
-  bool BackFace() const { return myToSuppressBackFaces; }
-
-  //! Allows the display of back-facing filled polygons.
-  void AllowBackFace() { myToSuppressBackFaces = false; }
-
-  //! Suppress the display of back-facing filled polygons.
+  //! Return face culling mode; Graphic3d_FaceCulling_BackClosed by default.
   //! A back-facing polygon is defined as a polygon whose
   //! vertices are in a clockwise order with respect to screen coordinates.
-  void SuppressBackFace() { myToSuppressBackFaces = true; }
+  Graphic3d_TypeOfBackfacingModel FaceCulling() const { return myFaceCulling; }
+
+  //! Set face culling mode.
+  void SetFaceCulling (Graphic3d_TypeOfBackfacingModel theCulling) { myFaceCulling = theCulling; }
 
   //! Returns true if material properties should be distinguished for back and front faces (false by default).
   bool Distinguish() const { return myToDistinguishMaterials; }
@@ -511,6 +503,7 @@ public:
         && myBackMaterial  == theOther.myBackMaterial
         && myInteriorStyle == theOther.myInteriorStyle
         && myShadingModel == theOther.myShadingModel
+        && myFaceCulling == theOther.myFaceCulling
         && myAlphaMode == theOther.myAlphaMode
         && myAlphaCutoff == theOther.myAlphaCutoff
         && myLineType  == theOther.myLineType
@@ -531,7 +524,6 @@ public:
         && myToDistinguishMaterials == theOther.myToDistinguishMaterials
         && myToDrawEdges == theOther.myToDrawEdges
         && myToDrawSilhouette == theOther.myToDrawSilhouette
-        && myToSuppressBackFaces == theOther.myToSuppressBackFaces
         && myToMapTexture == theOther.myToMapTexture
         && myIsTextZoomable == theOther.myIsTextZoomable;
   }
@@ -539,6 +531,30 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
+public:
+
+  Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
+  bool ToSuppressBackFaces() const
+  {
+    return myFaceCulling == Graphic3d_TypeOfBackfacingModel_BackCulled
+        || myFaceCulling == Graphic3d_TypeOfBackfacingModel_Auto;
+  }
+
+  Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
+  void SetSuppressBackFaces (bool theToSuppress) { myFaceCulling = theToSuppress ? Graphic3d_TypeOfBackfacingModel_Auto : Graphic3d_TypeOfBackfacingModel_DoubleSided; }
+
+  Standard_DEPRECATED("Deprecated method, FaceCulling() should be used instead")
+  bool BackFace() const
+  {
+    return myFaceCulling == Graphic3d_TypeOfBackfacingModel_BackCulled
+        || myFaceCulling == Graphic3d_TypeOfBackfacingModel_Auto;
+  }
+
+  Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
+  void AllowBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_DoubleSided; }
+
+  Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
+  void SuppressBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_Auto; }
 
 protected:
 
@@ -557,6 +573,7 @@ protected:
   Graphic3d_PolygonOffset      myPolygonOffset;
   Aspect_InteriorStyle         myInteriorStyle;
   Graphic3d_TypeOfShadingModel myShadingModel;
+  Graphic3d_TypeOfBackfacingModel myFaceCulling;
   Graphic3d_AlphaMode          myAlphaMode;
   Standard_ShortReal           myAlphaCutoff;
 
@@ -577,7 +594,6 @@ protected:
   bool myToDistinguishMaterials;
   bool myToDrawEdges;
   bool myToDrawSilhouette;
-  bool myToSuppressBackFaces;
   bool myToMapTexture;
   bool myIsTextZoomable;
 

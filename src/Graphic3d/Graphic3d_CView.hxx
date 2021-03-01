@@ -106,6 +106,13 @@ public:
   //! Will throw an exception on attempt to set Graphic3d_TOSM_DEFAULT.
   Standard_EXPORT void SetShadingModel (Graphic3d_TypeOfShadingModel theModel);
 
+  //! Return backfacing model used for the view; Graphic3d_TypeOfBackfacingModel_Auto by default,
+  //! which means that backface culling is defined by each presentation.
+  Graphic3d_TypeOfBackfacingModel BackfacingModel() const { return myBackfacing; }
+
+  //! Sets backfacing model for the view.
+  void SetBackfacingModel (const Graphic3d_TypeOfBackfacingModel theModel) { myBackfacing = theModel; }
+
   //! Returns visualization type of the view.
   Graphic3d_TypeOfVisualization VisualizationType() const { return myVisualization; }
 
@@ -403,12 +410,6 @@ public:
   //! Sets environment texture for the view.
   virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) = 0;
 
-  //! Return backfacing model used for the view.
-  virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const = 0;
-
-  //! Sets backfacing model for the view.
-  virtual void SetBackfacingModel (const Graphic3d_TypeOfBackfacingModel theModel) = 0;
-
   //! Returns list of lights of the view.
   virtual const Handle(Graphic3d_LightSet)& Lights() const = 0;
 
@@ -570,6 +571,7 @@ protected:
   Standard_Boolean myIsActive;
   Standard_Boolean myIsRemoved;
   Graphic3d_TypeOfShadingModel  myShadingModel;
+  Graphic3d_TypeOfBackfacingModel myBackfacing;
   Graphic3d_TypeOfVisualization myVisualization;
 
   Handle(Aspect_XRSession) myXRSession;

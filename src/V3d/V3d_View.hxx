@@ -876,18 +876,11 @@ public:
   }
 
   //! Manages display of the back faces
-  //! When <aModel> is TOBM_AUTOMATIC the object backfaces
-  //! are displayed only for surface objects and
-  //! never displayed for solid objects.
-  //! this was the previous mode.
-  //! <aModel> is TOBM_ALWAYS_DISPLAYED the object backfaces
-  //! are always displayed both for surfaces or solids.
-  //! <aModel> is TOBM_NEVER_DISPLAYED the object backfaces
-  //! are never displayed.
-  Standard_EXPORT void SetBackFacingModel (const V3d_TypeOfBackfacingModel theModel = V3d_TOBM_AUTOMATIC);
+  Standard_EXPORT void SetBackFacingModel (const Graphic3d_TypeOfBackfacingModel theModel = Graphic3d_TypeOfBackfacingModel_Auto);
 
-  //! Returns current state of the back faces display
-  Standard_EXPORT V3d_TypeOfBackfacingModel BackFacingModel() const;
+  //! Returns current state of the back faces display; Graphic3d_TypeOfBackfacingModel_Auto by default,
+  //! which means that backface culling is defined by each presentation.
+  Standard_EXPORT Graphic3d_TypeOfBackfacingModel BackFacingModel() const;
 
   //! Adds clip plane to the view. The composition of clip planes truncates the
   //! rendering space to convex volume. Number of supported clip planes can be consulted

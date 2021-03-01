@@ -2603,9 +2603,9 @@ Standard_Boolean V3d_View::ComputedMode() const
 //function : SetBackFacingModel
 //purpose  :
 //=============================================================================
-void V3d_View::SetBackFacingModel (const V3d_TypeOfBackfacingModel theModel)
+void V3d_View::SetBackFacingModel (const Graphic3d_TypeOfBackfacingModel theModel)
 {
-  myView->SetBackfacingModel (static_cast<Graphic3d_TypeOfBackfacingModel> (theModel));
+  myView->SetBackfacingModel (theModel);
   Redraw();
 }
 
@@ -2613,9 +2613,9 @@ void V3d_View::SetBackFacingModel (const V3d_TypeOfBackfacingModel theModel)
 //function : BackFacingModel
 //purpose  :
 //=============================================================================
-V3d_TypeOfBackfacingModel V3d_View::BackFacingModel() const
+Graphic3d_TypeOfBackfacingModel V3d_View::BackFacingModel() const
 {
-  return static_cast<V3d_TypeOfBackfacingModel> (myView->BackfacingModel());
+  return myView->BackfacingModel();
 }
 
 //=============================================================================

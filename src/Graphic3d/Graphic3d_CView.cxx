@@ -33,6 +33,7 @@ Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theM
   myIsActive               (Standard_False),
   myIsRemoved              (Standard_False),
   myShadingModel           (Graphic3d_TOSM_FRAGMENT),
+  myBackfacing             (Graphic3d_TypeOfBackfacingModel_Auto),
   myVisualization          (Graphic3d_TOV_WIREFRAME),
   myUnitFactor             (1.0)
 {

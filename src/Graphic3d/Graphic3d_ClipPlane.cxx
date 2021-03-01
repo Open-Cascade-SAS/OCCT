@@ -34,7 +34,7 @@ namespace
     anAspect->SetHatchStyle (Aspect_HS_HORIZONTAL);
     anAspect->SetInteriorStyle (Aspect_IS_SOLID);
     anAspect->SetInteriorColor (Quantity_NOC_GRAY20);
-    anAspect->SetSuppressBackFaces (false);
+    anAspect->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
     return anAspect;
   }
 }

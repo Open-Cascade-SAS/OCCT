@@ -198,7 +198,7 @@ void AIS_ViewCube::setDefaultAttributes()
   myDrawer->TextAspect()->SetHeight (16.0);
   myDrawer->TextAspect()->Aspect()->SetTextZoomable (true); // the whole object is drawn within transformation-persistence
   // this should be forced back-face culling regardless Closed flag
-  myDrawer->TextAspect()->Aspect()->SetSuppressBackFaces (true);
+  myDrawer->TextAspect()->Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);
 
   Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_UserDefined);
   aMat.SetColor (Quantity_NOC_WHITE);
@@ -207,7 +207,7 @@ void AIS_ViewCube::setDefaultAttributes()
   const Handle(Graphic3d_AspectFillArea3d)& aShading = myDrawer->ShadingAspect()->Aspect();
   aShading->SetInteriorStyle (Aspect_IS_SOLID);
   // this should be forced back-face culling regardless Closed flag
-  aShading->SetSuppressBackFaces (true);
+  aShading->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);
   aShading->SetInteriorColor (aMat.Color());
   aShading->SetFrontMaterial (aMat);
   myDrawer->SetFaceBoundaryDraw (false);
@@ -671,7 +671,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager)& ,
 
       {
         Handle(Graphic3d_Group) aGroupSides = thePrs->NewGroup();
-        aGroupSides->SetClosed (true); // should be replaced by forced back-face culling aspect
+        aGroupSides->SetClosed (true);
         aGroupSides->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
         aGroupSides->AddPrimitiveArray (aTris);
       }

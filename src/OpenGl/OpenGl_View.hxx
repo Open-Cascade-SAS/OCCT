@@ -261,12 +261,6 @@ public:
   //! Sets environment texture for the view.
   Standard_EXPORT virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) Standard_OVERRIDE;
 
-  //! Return backfacing model used for the view.
-  virtual Graphic3d_TypeOfBackfacingModel BackfacingModel() const Standard_OVERRIDE { return myBackfacing; }
-
-  //! Sets backfacing model for the view.
-  virtual void SetBackfacingModel (const Graphic3d_TypeOfBackfacingModel theModel) Standard_OVERRIDE { myBackfacing = theModel; }
-
   //! Returns local camera origin currently set for rendering, might be modified during rendering.
   const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
 
@@ -489,7 +483,6 @@ protected:
   Handle(OpenGl_Caps)      myCaps;
   Standard_Boolean         myWasRedrawnGL;
 
-  Graphic3d_TypeOfBackfacingModel myBackfacing;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   gp_XYZ                          myLocalOrigin;
   Handle(OpenGl_FrameBuffer)      myFBO;

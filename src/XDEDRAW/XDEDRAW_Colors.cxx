@@ -93,6 +93,18 @@ static const char* alphaModeToString (Graphic3d_AlphaMode theMode)
   return "";
 }
 
+//! Convert back face culling mode into string.
+static const char* faceCullToString (Graphic3d_TypeOfBackfacingModel theMode)
+{
+  switch (theMode)
+  {
+    case Graphic3d_TypeOfBackfacingModel_Auto:        return "Auto";
+    case Graphic3d_TypeOfBackfacingModel_BackCulled:  return "BackCulled";
+    case Graphic3d_TypeOfBackfacingModel_DoubleSided: return "DoubleSided";
+  }
+  return "";
+}
+
 //! Find existing visualization material in the document.
 static TDF_Label findVisMaterial (const Handle(TDocStd_Document)& theDoc,
                                   const TCollection_AsciiString& theKey)
@@ -860,7 +872,7 @@ static Standard_Integer XGetVisMaterial (Draw_Interpretor& theDI, Standard_Integ
   }
   theDI << "AlphaMode:              " << alphaModeToString (aMat->AlphaMode()) << "\n";
   theDI << "AlphaCutOff:            " << aMat->AlphaCutOff() << "\n";
-  theDI << "IsDoubleSided:          " << aMat->IsDoubleSided() << "\n";
+  theDI << "IsDoubleSided:          " << faceCullToString (aMat->FaceCulling()) << "\n";
   if (aMat->HasCommonMaterial())
   {
     const XCAFDoc_VisMaterialCommon& aMatCom = aMat->CommonMaterial();
@@ -968,7 +980,7 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
       ++anArgIter;
       aMatPbr.IsDefined = true;
     }
-    else if (anArg == "-alphaMode"
+    else if (anArg == "-alphamode"
           && anArgIter + 2 < theNbArgs
           && parseNormalizedReal (theArgVec[anArgIter + 2], aRealValue))
     {
@@ -1130,7 +1142,36 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
       {
         ++anArgIter;
       }
-      aMat->SetDoubleSided (isDoubleSided);
+      aMat->SetFaceCulling (isDoubleSided ? Graphic3d_TypeOfBackfacingModel_Auto : Graphic3d_TypeOfBackfacingModel_BackCulled);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-faceculling"
+           || anArg == "-facecull"))
+    {
+      aMatPbr.IsDefined = true;
+      TCollection_AsciiString aCullStr (theArgVec[++anArgIter]);
+      Graphic3d_TypeOfBackfacingModel aMode = Graphic3d_TypeOfBackfacingModel_Auto;
+      aCullStr.LowerCase();
+      if (aCullStr == "auto")
+      {
+        aMode = Graphic3d_TypeOfBackfacingModel_Auto;
+      }
+      else if (aCullStr == "backculled"
+            || aCullStr == "backcull"
+            || aCullStr == "back")
+      {
+        aMode = Graphic3d_TypeOfBackfacingModel_BackCulled;
+      }
+      else if (aCullStr == "doublesided")
+      {
+        aMode = Graphic3d_TypeOfBackfacingModel_DoubleSided;
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error at '" << anArg << "'";
+        return 1;
+      }
+      aMat->SetFaceCulling (aMode);
     }
     else if (anArgIter + 1 < theNbArgs
           && anArg == "-metallic"
@@ -1329,7 +1370,7 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
           "\n\t\t: [-emissiveFactor RGB] [-emissiveTexture ImagePath]"
           "\n\t\t: [-metallic 0..1] [-roughness 0..1] [-metallicRoughnessTexture ImagePath]"
           "\n\t\t: [-occlusionTexture ImagePath] [-normalTexture ImagePath]"
-          "\n\t\t: [-doubleSided {0|1}]"
+          "\n\t\t: [-faceCulling {auto|backCulled|doubleSided}] [-doubleSided {0|1}]"
           "\n\t\t: Add material into Document's material table.",
           __FILE__, XAddVisMaterial, g);
   di.Add ("XRemoveVisMaterial","Doc Material"

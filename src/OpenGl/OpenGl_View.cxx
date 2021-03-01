@@ -83,7 +83,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myDriver         (theDriver.operator->()),
   myCaps           (theCaps),
   myWasRedrawnGL   (Standard_False),
-  myBackfacing     (Graphic3d_TOBM_AUTOMATIC),
   myToShowGradTrihedron  (false),
   myZLayers        (Structure_MAX_PRIORITY - Structure_MIN_PRIORITY + 1),
   myStateCounter         (theCounter),
@@ -540,7 +539,7 @@ void OpenGl_View::SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTex
   Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
   Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (theTextureMap);
   anAspect->SetInteriorStyle (Aspect_IS_SOLID);
-  anAspect->SetSuppressBackFaces (false);
+  anAspect->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
   anAspect->SetShadingModel (Graphic3d_TOSM_UNLIT);
   anAspect->SetTextureSet (aTextureSet);
   anAspect->SetTextureMapOn (true);
@@ -2188,20 +2187,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   //      Step 3: Redraw main plane
   // =================================
 
-  // Setup face culling
-  GLboolean isCullFace = GL_FALSE;
-  if (myBackfacing != Graphic3d_TOBM_AUTOMATIC)
-  {
-    isCullFace = glIsEnabled (GL_CULL_FACE);
-    if (myBackfacing == Graphic3d_TOBM_DISABLE)
-    {
-      glEnable (GL_CULL_FACE);
-      glCullFace (GL_BACK);
-    }
-    else
-      glDisable (GL_CULL_FACE);
-  }
-
 #if !defined(GL_ES_VERSION_2_0)
   // if the view is scaled normal vectors are scaled to unit
   // length for correct displaying of shaded objects
@@ -2274,18 +2259,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   if (!theToDrawImmediate)
   {
     renderTrihedron (myWorkspace);
-
-    // Restore face culling
-    if (myBackfacing != Graphic3d_TOBM_AUTOMATIC)
-    {
-      if (isCullFace)
-      {
-        glEnable (GL_CULL_FACE);
-        glCullFace (GL_BACK);
-      }
-      else
-        glDisable (GL_CULL_FACE);
-    }
   }
   else
   {

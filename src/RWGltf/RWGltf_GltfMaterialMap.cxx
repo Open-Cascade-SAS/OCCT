@@ -486,8 +486,13 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
     }
     myWriter->EndObject();
 
+    // export automatic culling as doubleSided material;
+    // extra preprocessing is necessary to automatically export
+    // Solids with singleSided material and Shells with doubleSided material,
+    // as both may share the same material having "auto" flag
     if (theStyle.Material().IsNull()
-     || theStyle.Material()->IsDoubleSided())
+     || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_Auto
+     || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_DoubleSided)
     {
       myWriter->Key ("doubleSided");
       myWriter->Bool (true);

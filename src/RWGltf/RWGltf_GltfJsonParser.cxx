@@ -438,7 +438,9 @@ void RWGltf_GltfJsonParser::gltfBindMaterial (const Handle(RWGltf_MaterialMetall
       }
     }
     aMat->SetAlphaMode (anAlphaMode, theMatPbr->AlphaCutOff);
-    aMat->SetDoubleSided (theMatPbr->IsDoubleSided);
+    // consider "doubleSided" material flag as indication of automatically culled material
+    // as glTF doesn't define closed/open flag and culling will be practically disabled
+    aMat->SetFaceCulling (theMatPbr->IsDoubleSided ? Graphic3d_TypeOfBackfacingModel_Auto : Graphic3d_TypeOfBackfacingModel_BackCulled);
 
     if (!theMatPbr->Name.IsEmpty())
     {
