@@ -3,7 +3,7 @@ puts "0031703: Data Exchange, RWGltf_CafWriter - add option putting textures ins
 puts "Test case exporting glTF model into GLB file."
 puts "========"
 
-catch { Close D1 }
+Close D1 -silent
 ReadGltf D1 [locate_data_file bug30691_DamagedHelmet.gltf]
 
 set aTmpGltfBase "${imagedir}/${casename}_tmp"

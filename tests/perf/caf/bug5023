@@ -11,7 +11,7 @@ set aFile [locate_data_file OCC5023.cbf]
 puts "Info: Restore the document"
 
 if [info exists DD] {
-    catch {Close DD}; unset DD
+    Close DD -silent; unset DD
 }
 
 dchrono h restart

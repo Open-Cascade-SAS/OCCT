@@ -326,46 +326,84 @@ static Standard_Integer DDocStd_Close (Draw_Interpretor& theDI,
                                        Standard_Integer  theArgNb,
                                        const char**      theArgVec)
 {   
-  if (theArgNb != 2)
+  bool toComplain = true;
+  NCollection_List<TCollection_AsciiString> aDocNames;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgNb; ++anArgIt)
   {
-    theDI << "DDocStd_Close : Error\n";
-    return 1;
+    const TCollection_AsciiString anArg (theArgVec[anArgIt]);
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    if (anArgCase == "*"
+     || anArgCase == "-all"
+     || anArgCase == "all")
+    {
+      for (NCollection_Map<Handle(Draw_Drawable3D)>::Iterator anIter (Draw::Drawables());
+           anIter.More(); anIter.Next())
+      {
+        if (Handle(DDocStd_DrawDocument) aDrawDocument = Handle(DDocStd_DrawDocument)::DownCast (anIter.Value()))
+        {
+          aDocNames.Append (aDrawDocument->Name());
+        }
+      }
+      if (aDocNames.IsEmpty())
+      {
+        return 0;
+      }
+    }
+    else if (anArgCase == "-silent")
+    {
+      toComplain = false;
+    }
+    else
+    {
+      aDocNames.Append (anArg);
+    }
   }
 
-  Handle(TDocStd_Document) aDoc;
-  Standard_CString aDocName = theArgVec[1];
-  if (!DDocStd::GetDocument (aDocName, aDoc))
+  if (aDocNames.IsEmpty())
   {
+    theDI << "Syntax error: wrong number of arguments";
     return 1;
-  }
-
-  TDF_Label aRoot = aDoc->GetData()->Root();
-  Handle(TPrsStd_AISViewer) aDocViewer;
-  if (TPrsStd_AISViewer::Find (aRoot, aDocViewer)
-   && !aDocViewer->GetInteractiveContext().IsNull())
-  {
-    Handle(V3d_Viewer) aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
-    V3d_ListOfView aViews;
-    for (V3d_ListOfViewIterator aViewIter (aDocViewer->GetInteractiveContext()->CurrentViewer()->DefinedViewIterator()); aViewIter.More(); aViewIter.Next())
-    {
-      aViews.Append (aViewIter.Value());
-    }
-    for (V3d_ListOfViewIterator aViewIter (aViews); aViewIter.More(); aViewIter.Next())
-    {
-      Handle(V3d_View) aView = aViewIter.Value();
-      ViewerTest::RemoveView (aView);
-    }
   }
 
   Handle(TDocStd_Application) aDocApp = DDocStd::GetApplication();
-
-  aDocApp->Close (aDoc);
-
-  if (Handle(Draw_Drawable3D) aDrawable = Draw::GetExisting (aDocName))
+  for (NCollection_List<TCollection_AsciiString>::Iterator aDocNameIter (aDocNames);
+       aDocNameIter.More(); aDocNameIter.Next())
   {
-    dout.RemoveDrawable (aDrawable);
+    Standard_CString aDocName = aDocNameIter.Value().ToCString();
+    Handle(TDocStd_Document) aDoc;
+    if (DDocStd::GetDocument (aDocName, aDoc, toComplain))
+    {
+      TDF_Label aRoot = aDoc->GetData()->Root();
+      Handle(TPrsStd_AISViewer) aDocViewer;
+      if (TPrsStd_AISViewer::Find (aRoot, aDocViewer)
+      && !aDocViewer->GetInteractiveContext().IsNull())
+      {
+        Handle(V3d_Viewer) aViewer = aDocViewer->GetInteractiveContext()->CurrentViewer();
+        V3d_ListOfView aViews;
+        for (V3d_ListOfViewIterator aViewIter (aDocViewer->GetInteractiveContext()->CurrentViewer()->DefinedViewIterator()); aViewIter.More(); aViewIter.Next())
+        {
+          aViews.Append (aViewIter.Value());
+        }
+        for (V3d_ListOfViewIterator aViewIter (aViews); aViewIter.More(); aViewIter.Next())
+        {
+          Handle(V3d_View) aView = aViewIter.Value();
+          ViewerTest::RemoveView (aView);
+        }
+      }
+      aDocApp->Close (aDoc);
+    }
+    else if (toComplain)
+    {
+      return 1;
+    }
+
+    if (Handle(Draw_Drawable3D) aDrawable = Draw::GetExisting (aDocName))
+    {
+      dout.RemoveDrawable (aDrawable);
+    }
+    Draw::Set (aDocName, Handle(Draw_Drawable3D)());
   }
-  Draw::Set (theArgVec[1], Handle(Draw_Drawable3D)());
   return 0;
 }
 
@@ -553,7 +591,12 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  __FILE__, DDocStd_Save, g);  
 
   theCommands.Add("Close",
-		  "Close DOC",
+      "Close the specific document or all documents\n"
+      "Close DOC [-silent]"
+      "\n\t\t: Close the specific document."
+      "\n\t\t: -silent not raise an exception or print error message for an empty document \n"
+      "Close *"
+      "\n\t\t: Close all open documents.",
 		  __FILE__, DDocStd_Close, g);   
 
   theCommands.Add("IsInSession",

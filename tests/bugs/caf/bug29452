@@ -12,7 +12,7 @@ puts "REQUIRED ALL: Cannot retrieve real member for RealArray attribute"
 set BugNumber OCC29452
 set file [locate_data_file bug29452.xml]
 
-catch {Close D}
+Close D -silent
 set res [Open $file D]
 
 set real [GetReal D 0:1]

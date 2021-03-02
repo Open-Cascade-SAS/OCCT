@@ -4,7 +4,7 @@ puts "============"
 puts ""
 
 pload XDE OCAF VISUALIZATION
-catch { Close D }
+Close D -silent
 ReadStep D [locate_data_file bug25381_test_assembly_invisible.step]
 XShow D
 vaxo

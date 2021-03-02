@@ -13,7 +13,7 @@ psphere s3 0.5
 ttranslate s1 1 0 0
 ttranslate s2 2 0 0
 ttranslate s3 3 0 0
-catch { Close D }
+Close D -silent
 XNewDoc D
 set l0 [XAddShape D b  0]
 set l1 [XAddShape D s1 0]

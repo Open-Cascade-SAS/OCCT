@@ -5,7 +5,7 @@ puts "================"
 puts ""
 
 pload OCAF
-catch {Close D}
+Close D -silent
 
 # Read File
 ReadStep D [locate_data_file bug28454_directives.stp]

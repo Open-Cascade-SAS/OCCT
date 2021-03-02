@@ -31,10 +31,7 @@ set aTmpFileCP850   "${imagedir}/${casename}-tmp-cp850.stp"
 # Überprüfung de codificação
 set aName [encoding convertfrom utf-8 "\xc3\x9c\x62\x65\x72\x70\x72\xc3\xbc\x66\x75\x6e\x67 \x64\x65 \x63\x6f\x64\x69\x66\x69\x63\x61\xc3\xa7\xc3\xa3\x6f"]
 
-catch { Close A }
-catch { Close T }
-catch { Close U }
-catch { Close C }
+Close A T U C -silent
 
 box b 1 2 3
 XNewDoc   T

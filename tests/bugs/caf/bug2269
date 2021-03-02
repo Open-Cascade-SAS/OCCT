@@ -22,7 +22,7 @@ puts ""
 #set aTestName "OCC2269"
 #set WorkDirectory ${filedir}
 #set aFile $WorkDirectory/${aTestName}.${FileSuffix}
-#catch {Close D}
+#Close D -silent
 
 set IsGood 1
 Open [locate_data_file OCC2269.xml] DD

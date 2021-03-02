@@ -3,7 +3,7 @@ puts "0031096: Visualization, TKOpenGl - support metallic-roughness texture mapp
 puts "========"
 
 pload XDE OCAF MODELING VISUALIZATION
-catch { Close D }
+Close D -silent
 ReadGltf D [locate_data_file bug30691_DamagedHelmet.gltf]
 
 vclear

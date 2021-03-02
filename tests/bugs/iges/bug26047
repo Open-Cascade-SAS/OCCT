@@ -4,8 +4,7 @@ puts "============"
 
 pload MODELING VISUALIZATION OCAF XDE
 
-catch { Close D }
-catch { Close D_Cope }
+Close D D_Cope -silent
 
 # create original
 box b 0 -20 -10 100 40 20

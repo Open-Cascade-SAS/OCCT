@@ -19,7 +19,7 @@ vrenderparams -shadingModel PBR
 vlight -clear
 vlight -add ambient
 
-catch { Close D }
+Close D -silent
 ReadGltf D [locate_data_file bug31302_NormalTangentTest.gltf]
 XDisplay -dispmode 1 D
 

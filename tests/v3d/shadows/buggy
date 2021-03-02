@@ -5,7 +5,7 @@ puts "========"
 
 pload MODELING VISUALIZATION XDE OCAF
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
-catch {Close D}
+Close D -silent
 ReadGltf D [locate_data_file bug30691_Buggy.glb]
 vclear
 vinit View1

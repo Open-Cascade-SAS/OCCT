@@ -4,7 +4,7 @@ puts "# ====================================================================="
 puts ""
 
 pload OCAF
-catch { Close D }
+Close D -silent
 
 # Read file
 ReadStep D [locate_data_file bug31000_InSensitive.stp]

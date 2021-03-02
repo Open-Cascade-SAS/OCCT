@@ -18,6 +18,7 @@
 #define _Draw_HeaderFile
 
 #include <Draw_Interpretor.hxx>
+#include <NCollection_Map.hxx>
 #include <Quantity_ColorRGBA.hxx>
 #include <Standard_Handle.hxx>
 
@@ -77,6 +78,9 @@ public: //! @name Tcl variables management tools
   
   //! Sets a TCL string variable
   Standard_EXPORT static void Set (const Standard_CString Name, const Standard_CString val);
+
+  //! Returns a map of Draw_Drawable3D variables.
+  Standard_EXPORT static const NCollection_Map<Handle(Draw_Drawable3D)>& Drawables();
 
 public: //! @name argument parsing tools
   

@@ -5,8 +5,7 @@ puts ""
 
 pload OCAF
 param write.step.schema AP242DIS
-catch { Close D_First }
-catch { Close D_Sec }
+Close D_First D_Sec -silent
 
 # Read file
 set Path ${imagedir}/${casename}.stp

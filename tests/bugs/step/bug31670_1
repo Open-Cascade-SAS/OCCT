@@ -38,9 +38,7 @@ proc fileCreateAndCompare { thePathFrom theUtfPathTo theCpPathTo theNameFrom the
   if { [GetName U  0:1:1:1] != "$theNameTo" } { puts "Error: unable to read UTF-8  STEP" }
   if { [GetName CP 0:1:1:1] != "$theNameTo" } { puts "Error: unable to read $theCodePage STEP" }
   if { [GetName A  0:1:1:1] == "$theNameTo" } { puts "Error: broken test case" }
-  catch { Close A }
-  catch { Close U }
-  catch { Close CP }
+  Close A U CP -silent
 }
 
 pload XDE OCAF MODELING VISUALIZATION
@@ -73,10 +71,7 @@ set aBaltName [encoding convertfrom utf-8 "\x50\xc4\x81\x72\x62\x61\x75\x64\x65"
 set aViettName [encoding convertfrom utf-8 "\u0054\u0068\u00ed \u006e\u0067\u0068\u0069\u1ec7\u006d"]
 
 box b 1 2 3
-catch { Close A }
-catch { Close T }
-catch { Close U }
-catch { Close CP }
+Close A T U CP -silent
 
 XNewDoc   T
 XAddShape T b 0

@@ -6,7 +6,7 @@ pload MODELING OCAF XDE
 box b 10 10 10
 vclear
 vinit View1
-catch { Close D }
+Close D -silent
 NewDocument D BinXCAF
 XAddShape D b
 XSetColor D b BLUE

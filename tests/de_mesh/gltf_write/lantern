@@ -2,7 +2,7 @@ puts "========"
 puts "0031816: Data Exchange - RWMesh_MaterialMap::CopyTexture() copies glb file instead of a texture inside it"
 puts "========"
 
-catch { Close D1 }
+Close D1 -silent
 ReadGltf D1 [locate_data_file bug30691_Lantern.glb]
 
 set aTmpGltfBase "${imagedir}/${casename}_tmp"

@@ -3,7 +3,7 @@ puts "0031275: Visualization, TKOpenGl - handle normal-map texture with Path-Tra
 puts "========"
 
 pload XDE OCAF MODELING VISUALIZATION
-catch { Close D }
+Close D -silent
 ReadGltf D [locate_data_file bug31275_SphereWithNormalMap.glb]
 
 vclear

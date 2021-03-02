@@ -42,28 +42,29 @@ extern Draw_Viewer dout;
 #include <OSD_Environment.hxx>
 #include <OSD_OpenFile.hxx>
 
-Standard_Boolean Draw_ParseFailed;
+Standard_Boolean Draw_ParseFailed = Standard_True;
 
 static Standard_Boolean autodisp = Standard_True;
-static Standard_Boolean repaint2d,repaint3d;
+static Standard_Boolean repaint2d = Standard_False, repaint3d = Standard_False;
 
-//===============================================
-// dictionary of variables
-// Variables are stored in a map Integer, Transient
-// The Integer Value is the content of the TCl variable 
-//===============================================
-
-static NCollection_Map<Handle(Draw_Drawable3D)> theVariables;
+//! Returns dictionary of variables
+//! Variables are stored in a map Integer, Transient.
+//! The Integer Value is the content of the Tcl variable.
+static NCollection_Map<Handle(Draw_Drawable3D)>& Draw_changeDrawables()
+{
+  static NCollection_Map<Handle(Draw_Drawable3D)> theVariables;
+  return theVariables;
+}
 
 //=======================================================================
 //function : FindVariable
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer p_id;
-static Standard_Integer p_X;
-static Standard_Integer p_Y;
-static Standard_Integer p_b;
+static Standard_Integer p_id = 0;
+static Standard_Integer p_X = 0;
+static Standard_Integer p_Y = 0;
+static Standard_Integer p_b = 0;
 static const char* p_Name = "";
 
 //=======================================================================
@@ -234,15 +235,18 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
 	}
       }
     }
-    
+
     // sauvegarde des proteges visibles
     Draw_SequenceOfDrawable3D prot;
-    NCollection_Map<Handle(Draw_Drawable3D)>::Iterator aMapIt (theVariables);
-    for (; aMapIt.More(); aMapIt.Next()) {
+    for (NCollection_Map<Handle(Draw_Drawable3D)>::Iterator aMapIt (Draw::Drawables()); aMapIt.More(); aMapIt.Next())
+    {
       const Handle(Draw_Drawable3D)& D = aMapIt.Key();
-      if (!D.IsNull()) {
-	if (D->Protected() && D->Visible())
-	  prot.Append(D);
+      if (!D.IsNull())
+      {
+        if (D->Protected() && D->Visible())
+        {
+          prot.Append(D);
+        }
       }
     }
   
@@ -654,7 +658,10 @@ void Draw::Set(const Standard_CString name,
 static char* tracevar(ClientData CD, Tcl_Interp*,const char* name,const char*, int)
 {
   // protect if the map was destroyed before the interpretor
-  if (theVariables.IsEmpty()) return NULL;
+  if (Draw::Drawables().IsEmpty())
+  {
+    return NULL;
+  }
 
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
@@ -678,7 +685,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*,const char* name,const char*, i
     }
     Tcl_UntraceVar(aCommands.Interp(),name,TCL_TRACE_UNSETS | TCL_TRACE_WRITES,
                    tracevar,CD);
-    theVariables.Remove(D);
+    Draw_changeDrawables().Remove(D);
     return NULL;
   }
 }
@@ -706,7 +713,7 @@ void Draw::Set(const Standard_CString name,
                        tracevar, NULL);
     Handle(Draw_Drawable3D) anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
     if (!anOldD.IsNull()) {
-      if (theVariables.Contains(anOldD) && anOldD->Protected()) {
+      if (Draw::Drawables().Contains(anOldD) && anOldD->Protected()) {
         std::cout << "variable is protected" << std::endl;
         return;
       }
@@ -716,7 +723,7 @@ void Draw::Set(const Standard_CString name,
     Tcl_UnsetVar(aCommands.Interp(),name,0);
 
     if (!D.IsNull()) {
-      theVariables.Add(D);
+      Draw_changeDrawables().Add(D);
       D->Name(Tcl_SetVar(aCommands.Interp(),name,name,0));
     
       // set the trace function
@@ -760,7 +767,7 @@ Handle(Draw_Drawable3D) Draw::getDrawable (Standard_CString& theName,
   {
     ClientData aCD = Tcl_VarTraceInfo (Draw::GetInterpretor().Interp(), theName, TCL_TRACE_UNSETS | TCL_TRACE_WRITES, tracevar, NULL);
     Handle(Draw_Drawable3D) aDrawable = reinterpret_cast<Draw_Drawable3D*>(aCD);
-    return theVariables.Contains (aDrawable)
+    return Draw::Drawables().Contains (aDrawable)
          ? aDrawable
          : Handle(Draw_Drawable3D)();
   }
@@ -1120,6 +1127,16 @@ void Draw::Set(const Standard_CString Name, const Standard_CString val)
   //
   Tcl_SetVar(Draw::GetInterpretor().Interp(), pName, pVal, 0);
 }
+
+//=======================================================================
+//function : Drawables
+//purpose  :
+//=======================================================================
+const NCollection_Map<Handle(Draw_Drawable3D)>& Draw::Drawables()
+{
+  return Draw_changeDrawables();
+}
+
 //=======================================================================
 // Command management
 // refresh the screen

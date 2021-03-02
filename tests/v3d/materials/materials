@@ -5,7 +5,7 @@ puts "========"
 
 pload XDE OCAF MODELING VISUALIZATION
 
-catch { Close D }
+Close D -silent
 vclear
 vinit View1
 vaxo

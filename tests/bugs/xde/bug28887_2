@@ -4,7 +4,7 @@ puts "=========="
 puts ""
 
 pload QAcommands VISUALIZATION DCAF
-catch { Close doc }
+Close Doc -silent
 OCC28887 [locate_data_file bug23384-doc_subshapes.xbf] doc
 
 vclear
