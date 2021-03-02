@@ -26,7 +26,7 @@
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_ArbSamplerObject.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
-#include <OpenGl_GlCore45.hxx>
+#include <OpenGl_GlCore46.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Sampler.hxx>
@@ -143,6 +143,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core44back (NULL),
   core45     (NULL),
   core45back (NULL),
+  core46     (NULL),
+  core46back (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
   hasGetBufferData (Standard_False),
 #if defined(GL_ES_VERSION_2_0)

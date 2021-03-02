@@ -24,7 +24,7 @@
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_ArbSamplerObject.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
-#include <OpenGl_GlCore45.hxx>
+#include <OpenGl_GlCore46.hxx>
 
 // =======================================================================
 // function : init
@@ -61,6 +61,8 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   theCtx.core44back = NULL;
   theCtx.core45     = NULL;
   theCtx.core45back = NULL;
+  theCtx.core46     = NULL;
+  theCtx.core46back = NULL;
   theCtx.arbTBO     = NULL;
   theCtx.arbTboRGB32 = false;
   theCtx.arbIns     = NULL;
@@ -540,7 +542,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   bool has12 = false, has13 = false, has14 = false, has15 = false;
   bool has20 = false, has21 = false;
   bool has30 = false, has31 = false, has32 = false, has33 = false;
-  bool has40 = false, has41 = false, has42 = false, has43 = false, has44 = false, has45 = false;
+  bool has40 = false, has41 = false, has42 = false, has43 = false, has44 = false, has45 = false, has46 = false;
 
   // retrieve platform-dependent extensions
 #if defined(HAVE_EGL)
@@ -1642,6 +1644,24 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   else
   {
     theCtx.checkWrongVersion (4, 5, aLastFailedProc);
+  }
+
+  has46 = isGlGreaterEqualShort (4, 6)
+       && FindProcShort (glSpecializeShader)
+       && FindProcShort (glMultiDrawArraysIndirectCount)
+       && FindProcShort (glMultiDrawElementsIndirectCount)
+       && FindProcShort (glPolygonOffsetClamp);
+  if (has46)
+  {
+    theCtx.core46 = (OpenGl_GlCore46* )this;
+    if (!isCoreProfile)
+    {
+      theCtx.core46back = (OpenGl_GlCore46Back* )this;
+    }
+  }
+  else
+  {
+    theCtx.checkWrongVersion (4, 6, aLastFailedProc);
   }
 
   // initialize debug context extension

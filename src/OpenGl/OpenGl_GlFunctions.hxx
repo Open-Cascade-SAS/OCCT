@@ -1772,6 +1772,13 @@ public: //! @name OpenGL 4.5
   PFNGLGETNMINMAXPROC glGetnMinmax;
   PFNGLTEXTUREBARRIERPROC glTextureBarrier;
 
+public: //! @name OpenGL 4.6
+
+  PFNGLSPECIALIZESHADERPROC glSpecializeShader;
+  PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC glMultiDrawArraysIndirectCount;
+  PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTPROC glMultiDrawElementsIndirectCount;
+  PFNGLPOLYGONOFFSETCLAMPPROC glPolygonOffsetClamp;
+
 public: //! @name GL_EXT_geometry_shader4
 
   PFNGLPROGRAMPARAMETERIEXTPROC glProgramParameteriEXT;
