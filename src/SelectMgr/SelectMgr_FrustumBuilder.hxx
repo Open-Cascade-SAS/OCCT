@@ -39,7 +39,8 @@ public:
   Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
 
   //! Stores current projection matrix
-  Standard_EXPORT void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection);
+  Standard_EXPORT void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection,
+                                            const Standard_Boolean theIsZeroToOneDepth);
 
   //! @return current projection matrix
   Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
@@ -93,6 +94,7 @@ private:
   Standard_Integer                  myHeight;
   NCollection_Vec4<Standard_Real>   myViewport;
   Standard_Boolean                  myIsViewportSet;
+  Standard_Boolean                  myIsZeroToOneDepth;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_FrustumBuilder, Standard_Transient)

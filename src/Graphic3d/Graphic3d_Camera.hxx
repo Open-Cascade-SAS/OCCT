@@ -413,6 +413,20 @@ public:
     return myZFar;
   }
 
+  //! Return TRUE if camera should calculate projection matrix for [0, 1] depth range or for [-1, 1] range.
+  //! FALSE by default.
+  Standard_Boolean IsZeroToOneDepth() const { return myIsZeroToOneDepth; }
+
+  //! Set using [0, 1] depth range or [-1, 1] range.
+  void SetZeroToOneDepth (Standard_Boolean theIsZeroToOne)
+  {
+    if (myIsZeroToOneDepth != theIsZeroToOne)
+    {
+      myIsZeroToOneDepth = theIsZeroToOne;
+      InvalidateProjection();
+    }
+  }
+
   //! Changes width / height display ratio.
   //! @param theAspect [in] the display ratio.
   Standard_EXPORT void SetAspect (const Standard_Real theAspect);
@@ -747,10 +761,10 @@ private:
   //! @param theNear [in] the near mapping (clipping) coordinate
   //! @param theFar [in] the far mapping (clipping) coordinate
   template <typename Elem_t>
-  static void orthoProj (NCollection_Mat4<Elem_t>& theOutMx,
-                         const Aspect_FrustumLRBT<Elem_t>& theLRBT,
-                         const Elem_t theNear,
-                         const Elem_t theFar);
+  void orthoProj (NCollection_Mat4<Elem_t>& theOutMx,
+                  const Aspect_FrustumLRBT<Elem_t>& theLRBT,
+                  const Elem_t theNear,
+                  const Elem_t theFar) const;
 
   //! Compose perspective projection matrix for the passed camera volume mapping.
   //! @param theOutMx [out] the projection matrix
@@ -758,10 +772,10 @@ private:
   //! @param theNear [in] the near mapping (clipping) coordinate
   //! @param theFar [in] the far mapping (clipping) coordinate
   template <typename Elem_t>
-  static void perspectiveProj (NCollection_Mat4<Elem_t>& theOutMx,
-                               const Aspect_FrustumLRBT<Elem_t>& theLRBT,
-                               const Elem_t theNear,
-                               const Elem_t theFar);
+  void perspectiveProj (NCollection_Mat4<Elem_t>& theOutMx,
+                        const Aspect_FrustumLRBT<Elem_t>& theLRBT,
+                        const Elem_t theNear,
+                        const Elem_t theFar) const;
 
   //! Compose projection matrix for L/R stereo eyes.
   //! @param theOutMx [out] the projection matrix
@@ -772,13 +786,13 @@ private:
   //! @param theZFocus [in] the z coordinate of off-axis projection plane with zero parallax
   //! @param theEyeIndex [in] choose between L/R eyes
   template <typename Elem_t>
-  static void stereoEyeProj (NCollection_Mat4<Elem_t>& theOutMx,
-                             const Aspect_FrustumLRBT<Elem_t>& theLRBT,
-                             const Elem_t theNear,
-                             const Elem_t theFar,
-                             const Elem_t theIOD,
-                             const Elem_t theZFocus,
-                             const Aspect_Eye theEyeIndex);
+  void stereoEyeProj (NCollection_Mat4<Elem_t>& theOutMx,
+                      const Aspect_FrustumLRBT<Elem_t>& theLRBT,
+                      const Elem_t theNear,
+                      const Elem_t theFar,
+                      const Elem_t theIOD,
+                      const Elem_t theZFocus,
+                      const Aspect_Eye theEyeIndex) const;
 
   //! Construct "look at" orientation transformation.
   //! Reference point differs for perspective and ortho modes 
@@ -835,6 +849,7 @@ private:
   Standard_Real myZNear;    //!< Distance to near clipping plane.
   Standard_Real myZFar;     //!< Distance to far clipping plane.
   Standard_Real myAspect;   //!< Width to height display ratio.
+  Standard_Boolean myIsZeroToOneDepth; //!< use [0, 1] depth range or [-1, 1]
 
   Standard_Real myScale;      //!< Specifies parallel scale for orthographic projection.
   Standard_Real myZFocus;     //!< Stereographic focus value.

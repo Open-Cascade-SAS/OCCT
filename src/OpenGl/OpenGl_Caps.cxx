@@ -37,6 +37,7 @@ OpenGl_Caps::OpenGl_Caps()
   useSystemBuffer   (Standard_True),
 #endif
   swapInterval      (1),
+  useZeroToOneDepth (Standard_False),
   buffersNoSwap     (Standard_False),
   buffersOpaqueAlpha(Standard_False),
   contextStereo     (Standard_False),
@@ -78,6 +79,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   ffpEnable         = theCopy.ffpEnable;
   useSystemBuffer   = theCopy.useSystemBuffer;
   swapInterval      = theCopy.swapInterval;
+  useZeroToOneDepth = theCopy.useZeroToOneDepth;
   buffersNoSwap     = theCopy.buffersNoSwap;
   buffersOpaqueAlpha= theCopy.buffersOpaqueAlpha;
   contextStereo     = theCopy.contextStereo;

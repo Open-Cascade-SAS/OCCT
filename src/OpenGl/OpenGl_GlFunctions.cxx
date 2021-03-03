@@ -65,6 +65,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   theCtx.core46back = NULL;
   theCtx.arbTBO     = NULL;
   theCtx.arbTboRGB32 = false;
+  theCtx.arbClipControl = false;
   theCtx.arbIns     = NULL;
   theCtx.arbDbg     = NULL;
   theCtx.arbFBO     = NULL;
@@ -1636,6 +1637,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has45)
   {
     theCtx.core45 = (OpenGl_GlCore45* )this;
+    theCtx.arbClipControl = true;
     if (!isCoreProfile)
     {
       theCtx.core45back = (OpenGl_GlCore45Back* )this;
@@ -1716,6 +1718,13 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
    && FindProcShort (glGetVertexAttribLui64vARB))
   {
     theCtx.arbTexBindless = (OpenGl_ArbTexBindless* )this;
+  }
+
+  if (!has45
+    && checkExtensionShort ("GL_ARB_clip_control")
+    && FindProcShort (glClipControl))
+  {
+    theCtx.arbClipControl = true;
   }
 
   if (has30)

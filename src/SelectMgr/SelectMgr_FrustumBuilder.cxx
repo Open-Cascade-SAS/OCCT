@@ -31,7 +31,8 @@ SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
   myWorldViewProjState(),
   myWidth (INT_MAX),
   myHeight (INT_MAX),
-  myIsViewportSet (Standard_False)
+  myIsViewportSet (Standard_False),
+  myIsZeroToOneDepth (Standard_False)
 {
   //
 }
@@ -58,9 +59,11 @@ const Graphic3d_Mat4d& SelectMgr_FrustumBuilder::WorldViewMatrix() const
 // function : SetProjectionMatrix
 // purpose  : Stores current projection matrix
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetProjectionMatrix (const Graphic3d_Mat4d& theProjection)
+void SelectMgr_FrustumBuilder::SetProjectionMatrix (const Graphic3d_Mat4d& theProjection,
+                                                    const Standard_Boolean theIsZeroToOneDepth)
 {
   myProjection = theProjection;
+  myIsZeroToOneDepth = theIsZeroToOneDepth;
 }
 
 //=======================================================================
@@ -180,23 +183,19 @@ static NCollection_Vec4<Standard_Real> safePointCast (const gp_Pnt& thePnt)
 //=======================================================================
 gp_Pnt SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
 {
-  Graphic3d_Mat4d aInvView;
-  Graphic3d_Mat4d aInvProj;
-
-  // this case should never happen
+  // inversed matrices could be cached
+  Graphic3d_Mat4d aInvView, aInvProj;
   if (!myWorldView.Inverted (aInvView) || !myProjection.Inverted (aInvProj))
   {
-    return gp_Pnt (0.0, 0.0, 0.0);
+    return gp_Pnt (0.0, 0.0, 0.0); // this case should never happen
   }
 
   // use compatible type of point
   NCollection_Vec4<Standard_Real> aPnt = safePointCast (thePnt);
-
   aPnt = aInvProj * aPnt; // convert to view coordinate space
   aPnt = aInvView * aPnt; // convert to world coordinate space
 
   const Standard_Real aInvW = 1.0 / Standard_Real (aPnt.w());
-
   return gp_Pnt (aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
 
@@ -210,23 +209,19 @@ gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& the
                                                         const Standard_Real& theY,
                                                         const Standard_Real& theZ) const
 {
-  Standard_Real aX, anY, aZ;
-
   // map coords to NDC
+  gp_Pnt anXYZ;
   if (!myIsViewportSet)
   {
-    aX = 2.0 * theX / myWidth - 1.0;
-    anY = (myHeight - 1 - theY) / myHeight * 2.0 - 1.0;
-    aZ = 2.0 * theZ - 1.0;
+    anXYZ.SetCoord (2.0 * theX / myWidth - 1.0,
+                    (myHeight - 1 - theY) / myHeight * 2.0 - 1.0,
+                    myIsZeroToOneDepth ? theZ : (2.0 * theZ - 1.0));
   }
   else
   {
-    aX = 2.0 * (theX - myWidth * myViewport.x()) /
-      (myWidth * (myViewport.z() - myViewport.x())) - 1.0;
-    anY = 2.0 * (theY - myHeight * myViewport.y()) /
-      (myHeight * (myViewport.w() - myViewport.y())) - 1.0;
-    aZ = theZ;
+    anXYZ.SetCoord (2.0 * (theX - myWidth  * myViewport.x()) / (myWidth  * (myViewport.z() - myViewport.x())) - 1.0,
+                    2.0 * (theY - myHeight * myViewport.y()) / (myHeight * (myViewport.w() - myViewport.y())) - 1.0,
+                    theZ);
   }
-
-  return unProject (gp_Pnt (aX, anY, aZ));
+  return unProject (anXYZ);
 }

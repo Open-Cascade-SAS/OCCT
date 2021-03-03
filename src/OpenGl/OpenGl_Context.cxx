@@ -184,6 +184,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   arbTexBindless (NULL),
   arbTBO (NULL),
   arbTboRGB32 (Standard_False),
+  arbClipControl (Standard_False),
   arbIns (NULL),
   arbDbg (NULL),
   arbFBO (NULL),

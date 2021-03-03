@@ -820,7 +820,11 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
       vec4 aNDCPoint = uViewMat * vec4 (theRay.Origin, 1.f);
 
       float aPolygonOffset = PolygonOffset (aHit.Normal, theRay.Origin);
+    #ifdef THE_ZERO_TO_ONE_DEPTH
+      aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w + aPolygonOffset * POLYGON_OFFSET_SCALE);
+    #else
       aRaytraceDepth = (aNDCPoint.z / aNDCPoint.w + aPolygonOffset * POLYGON_OFFSET_SCALE) * 0.5f + 0.5f;
+    #endif
     }
 
     SBSDF aBSDF;

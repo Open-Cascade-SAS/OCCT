@@ -41,7 +41,7 @@ void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera
 {
   myCamera = theCamera;
   myBuilder->SetWorldViewMatrix (theCamera->OrientationMatrix());
-  myBuilder->SetProjectionMatrix (theCamera->ProjectionMatrix());
+  myBuilder->SetProjectionMatrix (theCamera->ProjectionMatrix(), theCamera->IsZeroToOneDepth());
   myBuilder->SetWorldViewProjState (theCamera->WorldViewProjState());
   myIsOrthographic = theCamera->IsOrthographic();
   myBuilder->InvalidateViewport();
@@ -58,7 +58,7 @@ void SelectMgr_BaseFrustum::SetCamera (const Graphic3d_Mat4d& theProjection,
 {
   myCamera.Nullify();
   myBuilder->SetWorldViewMatrix (theWorldView);
-  myBuilder->SetProjectionMatrix (theProjection);
+  myBuilder->SetProjectionMatrix (theProjection, false);
   myBuilder->SetWorldViewProjState (theWVPState);
   myIsOrthographic = theIsOrthographic;
 }

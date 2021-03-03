@@ -115,6 +115,7 @@ bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView,
         theView.Camera()->OrientationMatrix().Inverted (anOrientInv);
         aDir = anOrientInv * aDir;
       }
+      myShadowCamera->SetZeroToOneDepth (theView.Camera()->IsZeroToOneDepth());
       myShadowCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
       myShadowCamera->SetDirection (gp_Dir (aDir.x(), aDir.y(), aDir.z()));
       myShadowCamera->SetUp (!myShadowCamera->Direction().IsParallel (gp::DY(), Precision::Angular())

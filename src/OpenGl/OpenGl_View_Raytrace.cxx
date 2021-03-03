@@ -1139,6 +1139,11 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     TCollection_AsciiString ("#define STACK_SIZE ") + TCollection_AsciiString (myRaytraceParameters.StackSize) + "\n" +
     TCollection_AsciiString ("#define NB_BOUNCES ") + TCollection_AsciiString (myRaytraceParameters.NbBounces);
 
+  if (myRaytraceParameters.IsZeroToOneDepth)
+  {
+    aPrefixString += TCollection_AsciiString ("\n#define THE_ZERO_TO_ONE_DEPTH");
+  }
+
   if (myRaytraceParameters.TransparentShadows)
   {
     aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
@@ -1364,13 +1369,17 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       }
     }
 
-    if (myRenderParams.RaytracingDepth             != myRaytraceParameters.NbBounces
+    const bool isZeroToOneDepth = myCaps->useZeroToOneDepth
+                               && myWorkspace->GetGlContext()->arbClipControl;
+    if (isZeroToOneDepth                           != myRaytraceParameters.IsZeroToOneDepth
+     || myRenderParams.RaytracingDepth             != myRaytraceParameters.NbBounces
      || myRenderParams.IsTransparentShadowEnabled  != myRaytraceParameters.TransparentShadows
      || myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination
      || myRenderParams.TwoSidedBsdfModels          != myRaytraceParameters.TwoSidedBsdfModels
      || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures
      || myRenderParams.ToIgnoreNormalMapInRayTracing != myRaytraceParameters.ToIgnoreNormalMap)
     {
+      myRaytraceParameters.IsZeroToOneDepth    = isZeroToOneDepth;
       myRaytraceParameters.NbBounces           = myRenderParams.RaytracingDepth;
       myRaytraceParameters.TransparentShadows  = myRenderParams.IsTransparentShadowEnabled;
       myRaytraceParameters.GlobalIllumination  = myRenderParams.IsGlobalIlluminationEnabled;

@@ -652,7 +652,8 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
 
       // define corresponding frustum builder parameters
       Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
-      aBuilder->SetProjectionMatrix (mySelectingVolumeMgr.ProjectionMatrix());
+      aBuilder->SetProjectionMatrix (mySelectingVolumeMgr.ProjectionMatrix(),
+                                     !aCamera.IsNull() && aCamera->IsZeroToOneDepth());
       aBuilder->SetWorldViewMatrix (SelectMgr_ViewerSelector_THE_IDENTITY_MAT);
       aBuilder->SetWindowSize (aWidth, aHeight);
       aMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTFrustum, aBuilder);

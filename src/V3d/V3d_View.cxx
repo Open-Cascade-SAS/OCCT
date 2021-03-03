@@ -1701,25 +1701,23 @@ void V3d_View::Convert(const Standard_Real Xv,
 //function : Convert
 //purpose  :
 //=======================================================================
-void V3d_View::Convert(const Standard_Integer Xp,
-                       const Standard_Integer Yp,
-                       Standard_Real& X,
-                       Standard_Real& Y,
-                       Standard_Real& Z) const
+void V3d_View::Convert(const Standard_Integer theXp,
+                       const Standard_Integer theYp,
+                       Standard_Real& theX,
+                       Standard_Real& theY,
+                       Standard_Real& theZ) const
 {
   V3d_UnMapped_Raise_if (!myView->IsDefined(), "view has no window");
-  Standard_Integer aHeight, aWidth;
+  Standard_Integer aHeight = 0, aWidth = 0;
   MyWindow->Size (aWidth, aHeight);
 
-  Standard_Real anX = 2.0 * Xp / aWidth - 1.0;
-  Standard_Real anY = 2.0 * (aHeight - 1 - Yp) / aHeight - 1.0;
-  Standard_Real  aZ = 2.0 * 0.0 - 1.0;
-
-  gp_Pnt aResult = Camera()->UnProject (gp_Pnt (anX, anY, aZ));
-
-  X = aResult.X();
-  Y = aResult.Y();
-  Z = aResult.Z();
+  const gp_Pnt anXYZ (2.0 * theXp / aWidth - 1.0,
+                      2.0 * (aHeight - 1 - theYp) / aHeight - 1.0,
+                      Camera()->IsZeroToOneDepth() ? 0.0 : -1.0);
+  const gp_Pnt aResult = Camera()->UnProject (anXYZ);
+  theX = aResult.X();
+  theY = aResult.Y();
+  theZ = aResult.Z();
 }
 
 //=======================================================================
@@ -1817,7 +1815,9 @@ void V3d_View::Project (const Standard_Real theX,
   // NDC [-1, 1] --> PROJ [ -size / 2, +size / 2 ]
   theXp = aPoint.X() * aXSize * 0.5;
   theYp = aPoint.Y() * aYSize * 0.5;
-  theZp = aPoint.Z() * aZSize * 0.5;
+  theZp = Camera()->IsZeroToOneDepth()
+        ? aPoint.Z() * aZSize
+        : aPoint.Z() * aZSize * 0.5;
 }
 
 //=======================================================================

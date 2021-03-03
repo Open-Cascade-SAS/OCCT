@@ -436,6 +436,11 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     {
       aHeaderConstants += TCollection_AsciiString("#define THE_NB_SHADOWMAPS ") + myNbShadowMaps + "\n";
     }
+    if (theCtx->caps->useZeroToOneDepth
+     && theCtx->arbClipControl)
+    {
+      aHeaderConstants += "#define THE_ZERO_TO_ONE_DEPTH\n";
+    }
     if (!myProxy.IsNull()
       && myProxy->HasDefaultSampler())
     {
