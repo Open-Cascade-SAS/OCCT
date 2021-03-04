@@ -3035,26 +3035,27 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
     return;
   }
 
-  if (aDistVP > aTolV)
+  // Check if there will be valid range on the curve
+  Standard_Real aFirst, aLast;
+  Standard_Real aNewTolV = Max(aTolV, aDistVP + BOPTools_AlgoTools::DTolerance());
+  if (!BRepLib::FindValidRange(GeomAdaptor_Curve(aIC.Curve()), aIC.Tolerance(),
+                               aT[0], aP[0], aNewTolV,
+                               aT[1], aP[1], aNewTolV,
+                               aFirst, aLast))
   {
-    Standard_Integer nVn = UpdateVertex(nV, aDistVP + BOPTools_AlgoTools::DTolerance());
+    // No valid range
+    return;
+  }
+
+  if (aNewTolV > aTolV)
+  {
+    Standard_Integer nVn = UpdateVertex(nV, aNewTolV);
     if (nVn != nV)
     {
       aPave.SetIndex(nVn);
       nV = nVn;
     }
     aTolV = BRep_Tool::Tolerance(TopoDS::Vertex(myDS->Shape(nV)));
-  }
-
-  // Check if there will be valid range on the curve
-  Standard_Real aFirst, aLast;
-  if (!BRepLib::FindValidRange(GeomAdaptor_Curve(aIC.Curve()), aIC.Tolerance(),
-                               aT[0], aP[0], aTolV,
-                               aT[1], aP[1], aTolV,
-                               aFirst, aLast))
-  {
-    // No valid range
-    return;
   }
 
   // Add closing pave to the curve

@@ -18,7 +18,7 @@ if {[regexp "Faulties" [bopargcheck result]]} {
   puts "Error: bopargcheck has found some faulties in res2"
 }
 
-checkmaxtol result -ref 0.031968491076118669
+checkmaxtol result -ref 5.e-6
 
 smallview
 don result sw tw
