@@ -1,0 +1,34 @@
+puts "============================================================================================="
+puts "0032136: Modeling Algorithms - Boolean fuse fails and corrupts the argument-shape"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32136_obj.brep] s
+restore [locate_data_file bug32136_tools.brep] t
+
+bclearobjects
+bcleartools
+baddobjects s
+eval baddtools [explode t]
+bfillds
+bbop result 1
+
+checkshape result
+checknbshapes result -face 731 -shell 1 -solid 1 -t
+checkprops result -s 0.051066 -v 8.9084e-06
+
+foreach sh {result s} {
+  if {![regexp "This shape seems to be OK" [bopcheck $sh]]} {
+    puts "Error: the $sh shape is self-interfered"
+  }
+  checkmaxtol $sh -ref 5.e-6
+}
+
+foreach sh [explode t] {
+  if {![regexp "This shape seems to be OK" [bopcheck $sh]]} {
+    puts "Error: the $sh shape is self-interfered"
+  }
+  checkmaxtol $sh -ref 5.e-6
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
