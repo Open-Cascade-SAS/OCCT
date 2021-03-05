@@ -70,10 +70,8 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
 
   "occTextureEnable",       // OpenGl_OCCT_TEXTURE_ENABLE
   "occDistinguishingMode",  // OpenGl_OCCT_DISTINGUISH_MODE
-  "occPbrFrontMaterial",    // OpenGl_OCCT_PBR_FRONT_MATERIAL
-  "occPbrBackMaterial",     // OpenGl_OCCT_PBR_BACK_MATERIAL
-  "occFrontMaterial",       // OpenGl_OCCT_COMMON_FRONT_MATERIAL
-  "occBackMaterial",        // OpenGl_OCCT_COMMON_BACK_MATERIAL
+  "occPbrMaterial",         // OpenGl_OCCT_PBR_MATERIAL
+  "occCommonMaterial",      // OpenGl_OCCT_COMMON_MATERIAL
   "occAlphaCutoff",         // OpenGl_OCCT_ALPHA_CUTOFF
   "occColor",               // OpenGl_OCCT_COLOR
 

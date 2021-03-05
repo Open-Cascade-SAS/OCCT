@@ -28,24 +28,19 @@ public:
   OpenGl_MaterialState() : myAlphaCutoff (0.5f), myToDistinguish (false), myToMapTexture (false) {}
 
   //! Sets new material aspect.
-  void Set (const OpenGl_Material& theFrontMat,
-            const OpenGl_Material& theBackMat,
+  void Set (const OpenGl_Material& theMat,
             const float theAlphaCutoff,
             const bool theToDistinguish,
             const bool theToMapTexture)
   {
-    myMatFront      = theFrontMat;
-    myMatBack       = theBackMat;
+    myMaterial      = theMat;
     myAlphaCutoff   = theAlphaCutoff;
     myToDistinguish = theToDistinguish;
     myToMapTexture  = theToMapTexture;
   }
 
   //! Return front material.
-  const OpenGl_Material& FrontMaterial() const { return myMatFront; }
-
-  //! Return back material.
-  const OpenGl_Material& BackMaterial()  const { return myMatBack; }
+  const OpenGl_Material& Material() const { return myMaterial; }
 
   //! Alpha cutoff value.
   float AlphaCutoff() const { return myAlphaCutoff; }
@@ -61,8 +56,7 @@ public:
 
 private:
 
-  OpenGl_Material myMatFront;      //!< front material
-  OpenGl_Material myMatBack;       //!< back  material
+  OpenGl_Material myMaterial;      //!< material
   float           myAlphaCutoff;   //!< alpha cutoff value
   bool            myToDistinguish; //!< distinguish front/back flag
   bool            myToMapTexture;  //!< flag for mapping a texture

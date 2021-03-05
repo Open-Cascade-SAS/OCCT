@@ -197,13 +197,13 @@ protected:
   //! @param theLights       [in]  light sources list
   //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
   //! @param theIsPBR        [in]  flag to activate PBR pipeline
-  //! @param theHasEmissive  [in]  flag to include emissive
+  //! @param theHasTexColor  [in]  flag to include color texturing
   //! @param theNbShadowMaps [in]  flag to include shadow map
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
                                                               const Handle(Graphic3d_LightSet)& theLights,
                                                               Standard_Boolean  theHasVertColor,
                                                               Standard_Boolean  theIsPBR,
-                                                              Standard_Boolean  theHasEmissive,
+                                                              Standard_Boolean  theHasTexColor,
                                                               Standard_Integer  theNbShadowMaps) const;
 
 protected:

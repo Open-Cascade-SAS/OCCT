@@ -94,33 +94,23 @@ vec3 occDiffIBLMap (in vec3 theNormal)
 
 // front and back material properties accessors
 #if defined(THE_IS_PBR)
-uniform vec4 occPbrFrontMaterial[3];
-uniform vec4 occPbrBackMaterial[3];
+uniform vec4 occPbrMaterial[3 * 2];
 
 #define MIN_ROUGHNESS 0.01
 float occRoughness (in float theNormalizedRoughness) { return theNormalizedRoughness * (1.0 - MIN_ROUGHNESS) + MIN_ROUGHNESS; }
-vec4  occPBRMaterial_Color(in bool theIsFront)     { return theIsFront ? occPbrFrontMaterial[0]     : occPbrBackMaterial[0]; }
-vec3  occPBRMaterial_Emission(in bool theIsFront)  { return theIsFront ? occPbrFrontMaterial[1].rgb : occPbrBackMaterial[1].rgb; }
-float occPBRMaterial_IOR(in bool theIsFront)       { return theIsFront ? occPbrFrontMaterial[1].w   : occPbrBackMaterial[1].w; }
-float occPBRMaterial_Metallic(in bool theIsFront)  { return theIsFront ? occPbrFrontMaterial[2].b   : occPbrBackMaterial[2].b; }
-float occPBRMaterial_NormalizedRoughness(in bool theIsFront) { return theIsFront ? occPbrFrontMaterial[2].g : occPbrBackMaterial[2].g; }
+vec4  occPBRMaterial_Color(in bool theIsFront)     { return theIsFront ? occPbrMaterial[0]     : occPbrMaterial[3]; }
+vec3  occPBRMaterial_Emission(in bool theIsFront)  { return theIsFront ? occPbrMaterial[1].rgb : occPbrMaterial[4].rgb; }
+float occPBRMaterial_IOR(in bool theIsFront)       { return theIsFront ? occPbrMaterial[1].w   : occPbrMaterial[4].w; }
+float occPBRMaterial_Metallic(in bool theIsFront)  { return theIsFront ? occPbrMaterial[2].b   : occPbrMaterial[5].b; }
+float occPBRMaterial_NormalizedRoughness(in bool theIsFront) { return theIsFront ? occPbrMaterial[2].g : occPbrMaterial[5].g; }
 #else
-uniform vec4 occFrontMaterial[5];
-uniform vec4 occBackMaterial[5];
+uniform vec4 occCommonMaterial[4 * 2];
 
-vec4  occFrontMaterial_Ambient(void)      { return occFrontMaterial[0]; }
-vec4  occFrontMaterial_Diffuse(void)      { return occFrontMaterial[1]; }
-vec4  occFrontMaterial_Specular(void)     { return occFrontMaterial[2]; }
-vec4  occFrontMaterial_Emission(void)     { return occFrontMaterial[3]; }
-float occFrontMaterial_Shininess(void)    { return occFrontMaterial[4].x; }
-float occFrontMaterial_Transparency(void) { return occFrontMaterial[4].y; }
-
-vec4  occBackMaterial_Ambient(void)       { return occBackMaterial[0]; }
-vec4  occBackMaterial_Diffuse(void)       { return occBackMaterial[1]; }
-vec4  occBackMaterial_Specular(void)      { return occBackMaterial[2]; }
-vec4  occBackMaterial_Emission(void)      { return occBackMaterial[3]; }
-float occBackMaterial_Shininess(void)     { return occBackMaterial[4].x; }
-float occBackMaterial_Transparency(void)  { return occBackMaterial[4].y; }
+vec4  occMaterial_Diffuse(in bool theIsFront)   { return theIsFront ? occCommonMaterial[0]     : occCommonMaterial[4]; }
+vec3  occMaterial_Emission(in bool theIsFront)  { return theIsFront ? occCommonMaterial[1].rgb : occCommonMaterial[5].rgb; }
+vec3  occMaterial_Specular(in bool theIsFront)  { return theIsFront ? occCommonMaterial[2].rgb : occCommonMaterial[6].rgb; }
+float occMaterial_Shininess(in bool theIsFront) { return theIsFront ? occCommonMaterial[2].a   : occCommonMaterial[6].a; }
+vec3  occMaterial_Ambient(in bool theIsFront)   { return theIsFront ? occCommonMaterial[3].rgb : occCommonMaterial[7].rgb; }
 #endif
 
 // 2D texture coordinates transformation

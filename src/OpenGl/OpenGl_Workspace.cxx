@@ -54,45 +54,67 @@ namespace
 // purpose  :
 // =======================================================================
 void OpenGl_Material::Init (const OpenGl_Context& theCtx,
-                            const Graphic3d_MaterialAspect& theMat,
-                            const Quantity_Color& theInteriorColor)
+                            const Graphic3d_MaterialAspect& theFront,
+                            const Quantity_Color& theFrontColor,
+                            const Graphic3d_MaterialAspect& theBack,
+                            const Quantity_Color& theBackColor)
 {
-  Common.ChangeShine()        = 128.0f * theMat.Shininess();
-  Common.ChangeTransparency() = theMat.Alpha();
+  init (theCtx, theFront, theFrontColor, 0);
+  if (&theFront != &theBack)
+  {
+    init (theCtx, theBack, theBackColor, 1);
+  }
+  else
+  {
+    Common[1] = Common[0];
+    Pbr[1] = Pbr[0];
+  }
+}
 
-  Pbr.ChangeMetallic()  = theMat.PBRMaterial().Metallic();
-  Pbr.ChangeRoughness() = theMat.PBRMaterial().NormalizedRoughness();
-  Pbr.EmissionIOR = Graphic3d_Vec4 (theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
+// =======================================================================
+// function : init
+// purpose  :
+// =======================================================================
+void OpenGl_Material::init (const OpenGl_Context& theCtx,
+                            const Graphic3d_MaterialAspect& theMat,
+                            const Quantity_Color& theInteriorColor,
+                            const Standard_Integer theIndex)
+{
+  OpenGl_MaterialCommon& aCommon = Common[theIndex];
+  OpenGl_MaterialPBR&    aPbr    = Pbr[theIndex];
+  aPbr.ChangeMetallic()  = theMat.PBRMaterial().Metallic();
+  aPbr.ChangeRoughness() = theMat.PBRMaterial().NormalizedRoughness();
+  aPbr.EmissionIOR = Graphic3d_Vec4 (theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
 
   const OpenGl_Vec3& aSrcAmb = theMat.AmbientColor();
   const OpenGl_Vec3& aSrcDif = theMat.DiffuseColor();
   const OpenGl_Vec3& aSrcSpe = theMat.SpecularColor();
   const OpenGl_Vec3& aSrcEms = theMat.EmissiveColor();
-  Common.Specular.SetValues (aSrcSpe, 1.0f); // interior color is ignored for Specular
+  aCommon.SpecularShininess.SetValues (aSrcSpe,128.0f * theMat.Shininess()); // interior color is ignored for Specular
   switch (theMat.MaterialType())
   {
     case Graphic3d_MATERIAL_ASPECT:
     {
-      Common.Ambient .SetValues (aSrcAmb * theInteriorColor, 1.0f);
-      Common.Diffuse .SetValues (aSrcDif * theInteriorColor, 1.0f);
-      Common.Emission.SetValues (aSrcEms * theInteriorColor, 1.0f);
-      Pbr  .BaseColor.SetValues (theInteriorColor, theMat.Alpha());
+      aCommon.Diffuse .SetValues (aSrcDif * theInteriorColor, theMat.Alpha());
+      aCommon.Ambient .SetValues (aSrcAmb * theInteriorColor, 1.0f);
+      aCommon.Emission.SetValues (aSrcEms * theInteriorColor, 1.0f);
+      aPbr  .BaseColor.SetValues (theInteriorColor, theMat.Alpha());
       break;
     }
     case Graphic3d_MATERIAL_PHYSIC:
     {
-      Common.Ambient .SetValues (aSrcAmb, 1.0f);
-      Common.Diffuse .SetValues (aSrcDif, 1.0f);
-      Common.Emission.SetValues (aSrcEms, 1.0f);
-      Pbr.BaseColor = theMat.PBRMaterial().Color();
+      aCommon.Diffuse .SetValues (aSrcDif, theMat.Alpha());
+      aCommon.Ambient .SetValues (aSrcAmb, 1.0f);
+      aCommon.Emission.SetValues (aSrcEms, 1.0f);
+      aPbr.BaseColor = theMat.PBRMaterial().Color();
       break;
     }
   }
 
-  Common.Ambient  = theCtx.Vec4FromQuantityColor (Common.Ambient);
-  Common.Diffuse  = theCtx.Vec4FromQuantityColor (Common.Diffuse);
-  Common.Specular = theCtx.Vec4FromQuantityColor (Common.Specular);
-  Common.Emission = theCtx.Vec4FromQuantityColor (Common.Emission);
+  aCommon.Diffuse  = theCtx.Vec4FromQuantityColor (aCommon.Diffuse);
+  aCommon.Ambient  = theCtx.Vec4FromQuantityColor (aCommon.Ambient);
+  aCommon.SpecularShininess = theCtx.Vec4FromQuantityColor (aCommon.SpecularShininess);
+  aCommon.Emission = theCtx.Vec4FromQuantityColor (aCommon.Emission);
 }
 
 // =======================================================================

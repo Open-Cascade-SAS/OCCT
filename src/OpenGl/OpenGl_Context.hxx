@@ -1249,8 +1249,7 @@ private: //! @name fields tracking current state
   Standard_ShortReal            myLineFeather;     //!< line feater width in pixels
   Standard_ShortReal            myRenderScale;     //!< scaling factor for rendering resolution
   Standard_ShortReal            myRenderScaleInv;  //!< scaling factor for rendering resolution (inverted value)
-  OpenGl_Material               myMatFront;        //!< current front material state (cached to reduce GL context updates)
-  OpenGl_Material               myMatBack;         //!< current back  material state
+  OpenGl_Material               myMaterial;        //!< current front/back material state (cached to reduce GL context updates)
 
 private:
 

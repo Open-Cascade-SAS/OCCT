@@ -50,7 +50,7 @@ void pointLight (in int  theId,
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
+    aSpecl = pow (aNdotH, occMaterial_Shininess (gl_FrontFacing));
   }
 
   Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;
@@ -101,7 +101,7 @@ void spotLight (in int  theId,
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
+    aSpecl = pow (aNdotH, occMaterial_Shininess (gl_FrontFacing));
   }
 
   Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;
@@ -128,7 +128,7 @@ void directionalLight (in int  theId,
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
+    aSpecl = pow (aNdotH, occMaterial_Shininess (gl_FrontFacing));
   }
 
   Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL;
@@ -162,15 +162,15 @@ vec4 computeLighting (in vec3 theNormal,
     }
   }
 
-  vec4 aMaterialAmbient  = gl_FrontFacing ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();
-  vec4 aMaterialDiffuse  = gl_FrontFacing ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();
-  vec4 aMaterialSpecular = gl_FrontFacing ? occFrontMaterial_Specular() : occBackMaterial_Specular();
-  vec4 aMaterialEmission = gl_FrontFacing ? occFrontMaterial_Emission() : occBackMaterial_Emission();
-  vec3 aColor = Ambient  * aMaterialAmbient.rgb
-              + Diffuse  * aMaterialDiffuse.rgb
-              + Specular * aMaterialSpecular.rgb
-                         + aMaterialEmission.rgb;
-  return vec4 (aColor, aMaterialDiffuse.a);
+  vec3 aMatAmbient  = occMaterial_Ambient (gl_FrontFacing);
+  vec4 aMatDiffuse  = occMaterial_Diffuse (gl_FrontFacing);
+  vec3 aMatSpecular = occMaterial_Specular(gl_FrontFacing);
+  vec3 aMatEmission = occMaterial_Emission(gl_FrontFacing);
+  vec3 aColor = Ambient  * aMatAmbient.rgb
+              + Diffuse  * aMatDiffuse.rgb
+              + Specular * aMatSpecular.rgb
+                         + aMatEmission.rgb;
+  return vec4 (aColor, aMatDiffuse.a);
 }
 
 //! Entry point to the Fragment Shader
