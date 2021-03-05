@@ -15,7 +15,7 @@ float occDirectionalLightShadow (in sampler2D theShadow,
                                  in vec3 theNormal)
 {
   vec4 aPosLightSpace = PosLightSpace[occLight_Index(theId)];
-  vec3 aLightDir = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));
+  vec3 aLightDir = occLight_Position (theId);
   vec3 aProjCoords = (aPosLightSpace.xyz / aPosLightSpace.w);
 #ifdef THE_ZERO_TO_ONE_DEPTH
   aProjCoords.xy = aProjCoords.xy * 0.5 + vec2 (0.5);

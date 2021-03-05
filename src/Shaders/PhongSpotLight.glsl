@@ -3,7 +3,7 @@
 //! @param theId      light source index
 //! @param theNormal  surface normal
 //! @param theView    view direction
-//! @param thePoint   3D position (view space)
+//! @param thePoint   3D position (world space)
 //! @param theIsFront front/back face flag
 void occSpotLight (in int  theId,
                    in vec3 theNormal,
@@ -11,7 +11,7 @@ void occSpotLight (in int  theId,
                    in vec3 thePoint,
                    in bool theIsFront)
 {
-  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;
+  vec3 aLight = occLight_Position (theId) - thePoint;
 
   float aDist = length (aLight);
   float aRange = occLight_Range (theId);
@@ -19,8 +19,7 @@ void occSpotLight (in int  theId,
   if (anAtten <= 0.0) return;
   aLight /= aDist;
 
-  vec3 aSpotDir = vec3 (occWorldViewMatrix * vec4 (occLight_SpotDirection (theId), 0.0));
-  aSpotDir = normalize (aSpotDir);
+  vec3 aSpotDir = occLight_SpotDirection (theId);
   // light cone
   float aCosA = dot (aSpotDir, -aLight);
   if (aCosA >= 1.0 || aCosA < cos (occLight_SpotCutOff (theId)))

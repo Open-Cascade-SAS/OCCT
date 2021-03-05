@@ -11,7 +11,7 @@ void occDirectionalLight (in int  theId,
                           in bool theIsFront,
                           in float theShadow)
 {
-  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));
+  vec3 aLight = occLight_Position (theId);
   vec3 aHalf = normalize (aLight + theView);
 
   vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;

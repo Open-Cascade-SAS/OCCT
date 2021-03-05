@@ -107,7 +107,7 @@ const char THE_FUNC_directionalLightFirst[] =
   EOL"                            in bool theIsFront,"
   EOL"                            in float theShadow)"
   EOL"{"
-  EOL"  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (0), 0.0));"
+  EOL"  vec3 aLight = occLight_Position (0);"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
   EOL
@@ -1025,10 +1025,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramUnlit (Sta
   if ((theBits & Graphic3d_ShaderFlags_ClipPlanesN) != 0)
   {
     aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
-    aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain +=
-      EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
-      EOL"  Position      = occWorldViewMatrix * PositionWorld;";
+      EOL"  PositionWorld = occModelWorldMatrix * occVertex;";
 
     if ((theBits & Graphic3d_ShaderFlags_ClipPlanesN) == Graphic3d_ShaderFlags_ClipPlanesN)
     {
@@ -1430,10 +1428,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud (c
   if ((theBits & Graphic3d_ShaderFlags_ClipPlanesN) != 0)
   {
     aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
-    aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
     aSrcVertExtraMain +=
-      EOL"  PositionWorld = aPositionWorld;"
-      EOL"  Position      = aPosition;";
+      EOL"  PositionWorld = aPositionWorld;";
 
     if ((theBits & Graphic3d_ShaderFlags_ClipPlanesN) == Graphic3d_ShaderFlags_ClipPlanesN)
     {
@@ -1472,18 +1468,17 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud (c
   Standard_Integer aNbLights = 0;
   const TCollection_AsciiString aLights = stdComputeLighting (aNbLights, theLights, !aSrcVertColor.IsEmpty(), false, toUseTexColor, 0);
   aSrcVert = TCollection_AsciiString()
-    + THE_FUNC_transformNormal_view
+    + THE_FUNC_transformNormal_world
     + EOL
     + aSrcVertColor
     + aLights
     + EOL"void main()"
       EOL"{"
       EOL"  vec4 aPositionWorld = occModelWorldMatrix * occVertex;"
-      EOL"  vec4 aPosition      = occWorldViewMatrix * aPositionWorld;"
       EOL"  vec3 aNormal        = transformNormal (occNormal);"
-      EOL"  vec3 aView          = vec3 (0.0, 0.0, 1.0);"
-      EOL"  FrontColor  = computeLighting (aNormal, aView, aPosition, true);"
-      EOL"  BackColor   = computeLighting (aNormal, aView, aPosition, false);"
+      EOL"  vec3 aView = (occWorldViewMatrixInverse * vec4(0.0, 0.0, 1.0, 0.0)).xyz;"
+      EOL"  FrontColor  = computeLighting (aNormal, aView, aPositionWorld, true);"
+      EOL"  BackColor   = computeLighting (aNormal, aView, aPositionWorld, false);"
     + aSrcVertExtraMain
     + THE_VERT_gl_Position
     + EOL"}";
@@ -1526,9 +1521,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
                                                                              const Standard_Boolean theIsPBR,
                                                                              const Standard_Integer theNbShadowMaps) const
 {
-  TCollection_AsciiString aPosition = theIsPBR ? "PositionWorld" : "Position";
   TCollection_AsciiString aPhongCompLight = TCollection_AsciiString() +
-    "computeLighting (normalize (Normal), normalize (View), " + aPosition + ", gl_FrontFacing)";
+    "computeLighting (normalize (Normal), normalize (View), PositionWorld, gl_FrontFacing)";
   const bool isFlatNormal = theIsFlatNormal && myHasFlatShading;
   const char* aDFdxSignReversion = myToReverseDFdxSign ? "-" : "";
   bool toUseTexColor = false;
@@ -1646,7 +1640,7 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
   if (isFlatNormal)
   {
     aSrcFragExtraMain += TCollection_AsciiString()
-      + EOL"  Normal = " + aDFdxSignReversion + "normalize (cross (dFdx (" + aPosition + ".xyz / " + aPosition + ".w), dFdy (" + aPosition + ".xyz / " + aPosition + ".w)));"
+      + EOL"  Normal = " + aDFdxSignReversion + "normalize (cross (dFdx (PositionWorld.xyz / PositionWorld.w), dFdy (PositionWorld.xyz / PositionWorld.w)));"
         EOL"  if (!gl_FrontFacing) { Normal = -Normal; }";
   }
   else
@@ -1674,15 +1668,9 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
         EOL"  }"
         EOL"#endif";
     }
-    if (!theIsPBR)
-    {
-      aSrcFragExtraMain +=
-        EOL"  Normal = normalize ((occWorldViewMatrixInverseTranspose * vec4 (Normal, 0.0)).xyz);";
-    }
   }
 
   aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 PositionWorld", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
-  aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 Position",      Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
   aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec3 View",          Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
   if (theNbShadowMaps > 0)
   {
@@ -1703,16 +1691,16 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
     + EOL"void main()"
       EOL"{"
       EOL"  PositionWorld = occModelWorldMatrix * occVertex;"
-      EOL"  Position      = occWorldViewMatrix * PositionWorld;"
       EOL"  if (occProjectionMatrix[3][3] == 1.0)"
       EOL"  {"
       EOL"    View = vec3(0.0, 0.0, 1.0);"
       EOL"  }"
       EOL"  else"
       EOL"  {"
-      EOL"    View = -Position.xyz;"
+      EOL"    vec4 aPosition = occWorldViewMatrix * PositionWorld;"
+      EOL"    View = -aPosition.xyz;"
       EOL"  }"
-    + (theIsPBR ? EOL"  View = (occWorldViewMatrixInverse * vec4(View, 0.0)).xyz;" : "")
+      EOL"  View = (occWorldViewMatrixInverse * vec4(View, 0.0)).xyz;"
     + aSrcVertExtraMain
     + THE_VERT_gl_Position
     + EOL"}";

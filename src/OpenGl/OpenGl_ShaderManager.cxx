@@ -488,6 +488,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
         {
           const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
           aLightParams.Position = anOrientInv * Graphic3d_Vec4 (-aLight.PackedDirection(), 0.0f);
+          aLightParams.Position.SetValues (aLightParams.Position.xyz().Normalized(), 0.0f);
         }
         else
         {
@@ -501,6 +502,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
         {
           const Graphic3d_Mat4& anOrientInv = myWorldViewState.WorldViewMatrixInverse();
           aLightParams.Direction = anOrientInv * Graphic3d_Vec4 (aLight.PackedDirection(), 0.0f);
+          aLightParams.Direction.SetValues (aLightParams.Direction.xyz().Normalized(), 0.0f);
         }
         else
         {
