@@ -25,24 +25,24 @@ class OpenGl_Context;
 struct OpenGl_MaterialCommon
 {
 
-  OpenGl_Vec4 Ambient;  //!< ambient reflection coefficient
-  OpenGl_Vec4 Diffuse;  //!< diffuse reflection coefficient
-  OpenGl_Vec4 Specular; //!< glossy  reflection coefficient
-  OpenGl_Vec4 Emission; //!< material emission
-  OpenGl_Vec4 Params;   //!< extra packed parameters
+  OpenGl_Vec4 Diffuse;           //!< diffuse RGB coefficients + alpha
+  OpenGl_Vec4 Emission;          //!< material RGB emission
+  OpenGl_Vec4 SpecularShininess; //!< glossy  RGB coefficients + shininess
+  OpenGl_Vec4 Ambient;           //!< ambient RGB coefficients
 
-  float  Shine()        const { return Params.x(); }
-  float& ChangeShine()        { return Params.x(); }
-
-  float  Transparency() const { return Params.y(); }
-  float& ChangeTransparency() { return Params.y(); }
+  float  Shine() const { return SpecularShininess.a(); }
+  float& ChangeShine() { return SpecularShininess.a(); }
 
   //! Empty constructor.
-  OpenGl_MaterialCommon() : Ambient (1.0f), Diffuse (1.0f), Specular (1.0f), Emission (1.0f), Params (1.0f, 0.0f, 0.0f, 0.0f) {}
+  OpenGl_MaterialCommon() : Diffuse (1.0f), Emission (1.0f), SpecularShininess (1.0f, 1.0f, 1.0f, 0.0f), Ambient (1.0f) {}
 
-  //! Returns packed (serialized) representation of material properties
-  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
-  static Standard_Integer NbOfVec4() { return 5; }
+  //! Set material color.
+  void SetColor (const OpenGl_Vec3& theColor)
+  {
+    // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
+    Ambient.SetValues (theColor * 0.25f, Ambient.a());
+    Diffuse.SetValues (theColor, Diffuse.a());
+  }
 
 };
 
@@ -63,31 +63,35 @@ struct OpenGl_MaterialPBR
   //! Empty constructor.
   OpenGl_MaterialPBR() : BaseColor (1.0f), EmissionIOR (1.0f), Params  (1.0f, 1.0f, 1.0f, 1.0f) {}
 
-  //! Returns packed (serialized) representation of material properties
-  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
-  static Standard_Integer NbOfVec4() { return 3; }
+  //! Set material color.
+  void SetColor (const OpenGl_Vec3& theColor)
+  {
+    BaseColor.SetValues (theColor, BaseColor.a());
+  }
 
 };
 
 //! OpenGL material definition
 struct OpenGl_Material
 {
-  OpenGl_MaterialCommon Common;
-  OpenGl_MaterialPBR    Pbr;
+  OpenGl_MaterialCommon Common[2];
+  OpenGl_MaterialPBR    Pbr[2];
 
   //! Set material color.
-  void SetColor (const OpenGl_Vec4& theColor)
+  void SetColor (const OpenGl_Vec3& theColor)
   {
-    // apply the same formula as in Graphic3d_MaterialAspect::SetColor()
-    Common.Ambient.SetValues (theColor.rgb() * 0.25f, Common.Ambient.a());
-    Common.Diffuse.SetValues (theColor.rgb(), Common.Diffuse.a());
-    Pbr .BaseColor.SetValues (theColor.rgb(), Pbr.BaseColor.a());
+    Common[0].SetColor (theColor);
+    Common[1].SetColor (theColor);
+    Pbr[0].SetColor (theColor);
+    Pbr[1].SetColor (theColor);
   }
 
   //! Initialize material
   void Init (const OpenGl_Context& theCtx,
-             const Graphic3d_MaterialAspect& theProp,
-             const Quantity_Color& theInteriorColor);
+             const Graphic3d_MaterialAspect& theFront,
+             const Quantity_Color& theFrontColor,
+             const Graphic3d_MaterialAspect& theBack,
+             const Quantity_Color& theBackColor);
 
   //! Check this material for equality with another material (without tolerance!).
   bool IsEqual (const OpenGl_Material& theOther) const
@@ -102,6 +106,22 @@ struct OpenGl_Material
   //! Check this material for non-equality with another material (without tolerance!).
   bool operator!= (const OpenGl_Material& theOther)       { return !IsEqual (theOther); }
   bool operator!= (const OpenGl_Material& theOther) const { return !IsEqual (theOther); }
+
+  //! Returns packed (serialized) representation of common material properties
+  const OpenGl_Vec4* PackedCommon() const { return reinterpret_cast<const OpenGl_Vec4*> (Common); }
+  static Standard_Integer NbOfVec4Common() { return 4 * 2; }
+
+  //! Returns packed (serialized) representation of PBR material properties
+  const OpenGl_Vec4* PackedPbr() const { return reinterpret_cast<const OpenGl_Vec4*> (Pbr); }
+  static Standard_Integer NbOfVec4Pbr() { return 3 * 2; }
+
+private:
+
+  //! Initialize material
+  void init (const OpenGl_Context& theCtx,
+             const Graphic3d_MaterialAspect& theMat,
+             const Quantity_Color& theColor,
+             const Standard_Integer theIndex);
 
 };
 

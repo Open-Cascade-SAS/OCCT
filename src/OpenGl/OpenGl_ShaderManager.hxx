@@ -373,13 +373,12 @@ public:
   const OpenGl_MaterialState& MaterialState() const { return myMaterialState; }
 
   //! Updates state of material.
-  void UpdateMaterialStateTo (const OpenGl_Material& theFrontMat,
-                              const OpenGl_Material& theBackMat,
+  void UpdateMaterialStateTo (const OpenGl_Material& theMat,
                               const float theAlphaCutoff,
                               const bool theToDistinguish,
                               const bool theToMapTexture)
   {
-    myMaterialState.Set (theFrontMat, theBackMat, theAlphaCutoff, theToDistinguish, theToMapTexture);
+    myMaterialState.Set (theMat, theAlphaCutoff, theToDistinguish, theToMapTexture);
     myMaterialState.Update();
   }
 

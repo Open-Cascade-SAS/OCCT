@@ -908,8 +908,7 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
 // =======================================================================
 void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  const OpenGl_Material& aFrontMat = myMaterialState.FrontMaterial();
-  const OpenGl_Material& aBackMat  = myMaterialState.BackMaterial();
+  const OpenGl_Material& aMat = myMaterialState.Material();
   theProgram->UpdateState (OpenGl_MATERIAL_STATE, myMaterialState.Index());
   if (theProgram == myFfpProgram)
   {
@@ -930,18 +929,22 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
     }
 
     const GLenum aFrontFace = myMaterialState.ToDistinguish() ? GL_FRONT : GL_FRONT_AND_BACK;
-    myContext->core11->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Common.Ambient.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Common.Diffuse.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_SPECULAR,  aFrontMat.Common.Specular.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Common.Emission.GetData());
-    myContext->core11->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Common.Shine());
+    const OpenGl_MaterialCommon& aFrontMat = aMat.Common[0];
+    const OpenGl_MaterialCommon& aBackMat  = aMat.Common[1];
+    const Graphic3d_Vec4 aSpec4 (aFrontMat.SpecularShininess.rgb(), 1.0f);
+    myContext->core11->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_SPECULAR,  aSpec4.GetData());
+    myContext->core11->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Emission.GetData());
+    myContext->core11->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Shine());
     if (myMaterialState.ToDistinguish())
     {
-      myContext->core11->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Common.Ambient.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Common.Diffuse.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_SPECULAR,  aBackMat.Common.Specular.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Common.Emission.GetData());
-      myContext->core11->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Common.Shine());
+      const Graphic3d_Vec4 aSpec4Back (aBackMat.SpecularShininess.rgb(), 1.0f);
+      myContext->core11->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Ambient.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Diffuse.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_SPECULAR,  aSpec4Back.GetData());
+      myContext->core11->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
+      myContext->core11->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
     }
   #endif
     return;
@@ -957,25 +960,13 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
                           theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
                           myMaterialState.ToDistinguish() ? 1 : 0);
 
-  if (const OpenGl_ShaderUniformLocation& aLocPbrFront = theProgram->GetStateLocation (OpenGl_OCCT_PBR_FRONT_MATERIAL))
+  if (const OpenGl_ShaderUniformLocation& aLocPbrFront = theProgram->GetStateLocation (OpenGl_OCCT_PBR_MATERIAL))
   {
-    theProgram->SetUniform (myContext, aLocPbrFront, OpenGl_MaterialPBR::NbOfVec4(),
-                            aFrontMat.Pbr.Packed());
+    theProgram->SetUniform (myContext, aLocPbrFront, OpenGl_Material::NbOfVec4Pbr(), aMat.PackedPbr());
   }
-  if (const OpenGl_ShaderUniformLocation aLocPbrBack = theProgram->GetStateLocation (OpenGl_OCCT_PBR_BACK_MATERIAL))
+  if (const OpenGl_ShaderUniformLocation& aLocFront = theProgram->GetStateLocation (OpenGl_OCCT_COMMON_MATERIAL))
   {
-    theProgram->SetUniform (myContext, aLocPbrBack,  OpenGl_MaterialPBR::NbOfVec4(),
-                            aBackMat.Pbr.Packed());
-  }
-  if (const OpenGl_ShaderUniformLocation aLocFront = theProgram->GetStateLocation (OpenGl_OCCT_COMMON_FRONT_MATERIAL))
-  {
-    theProgram->SetUniform (myContext, aLocFront, OpenGl_MaterialCommon::NbOfVec4(),
-                            aFrontMat.Common.Packed());
-  }
-  if (const OpenGl_ShaderUniformLocation aLocBack = theProgram->GetStateLocation (OpenGl_OCCT_COMMON_BACK_MATERIAL))
-  {
-    theProgram->SetUniform (myContext, aLocBack,  OpenGl_MaterialCommon::NbOfVec4(),
-                            aBackMat.Common.Packed());
+    theProgram->SetUniform (myContext, aLocFront, OpenGl_Material::NbOfVec4Common(), aMat.PackedCommon());
   }
 }
 

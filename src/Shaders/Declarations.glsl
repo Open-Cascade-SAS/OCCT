@@ -203,22 +203,15 @@ float occPBRMaterial_Metallic(in bool theIsFront); //!< Metallic coefficient
 float occPBRMaterial_NormalizedRoughness(in bool theIsFront); //!< Normalized roughness coefficient
 vec3  occPBRMaterial_Emission(in bool theIsFront); //!< Light intensity emitted by material
 float occPBRMaterial_IOR(in bool theIsFront);      //!< Index of refraction
+#define occMaterial_Emission occPBRMaterial_Emission
+#define occMaterial_Color occPBRMaterial_Color
 #else
-// Front material properties accessors
-vec4  occFrontMaterial_Emission(void);           //!< Emission color
-vec4  occFrontMaterial_Ambient(void);            //!< Ambient  reflection
-vec4  occFrontMaterial_Diffuse(void);            //!< Diffuse  reflection
-vec4  occFrontMaterial_Specular(void);           //!< Specular reflection
-float occFrontMaterial_Shininess(void);          //!< Specular exponent
-float occFrontMaterial_Transparency(void);       //!< Transparency coefficient
-
-// Back material properties accessors
-vec4  occBackMaterial_Emission(void);            //!< Emission color
-vec4  occBackMaterial_Ambient(void);             //!< Ambient  reflection
-vec4  occBackMaterial_Diffuse(void);             //!< Diffuse  reflection
-vec4  occBackMaterial_Specular(void);            //!< Specular reflection
-float occBackMaterial_Shininess(void);           //!< Specular exponent
-float occBackMaterial_Transparency(void);        //!< Transparency coefficient
+vec4  occMaterial_Diffuse(in bool theIsFront);     //!< Diffuse  reflection
+vec3  occMaterial_Specular(in bool theIsFront);    //!< Specular reflection
+float occMaterial_Shininess(in bool theIsFront);   //!< Specular exponent
+vec3  occMaterial_Ambient(in bool theIsFront);     //!< Ambient  reflection
+vec3  occMaterial_Emission(in bool theIsFront);    //!< Emission color
+#define occMaterial_Color occMaterial_Diffuse
 #endif
 
 #ifdef THE_HAS_DEFAULT_SAMPLER
@@ -227,24 +220,24 @@ float occBackMaterial_Transparency(void);        //!< Transparency coefficient
 uniform sampler2D           occSampler0; //!< current active sampler;
 #endif                                   //!  occSampler1, occSampler2,... should be defined in GLSL program body for multitexturing
 
-#if defined(THE_HAS_TEXTURE_COLOR)
-#define occTextureColor(theMatColor, theTexCoord) (theMatColor * occTexture2D(occSamplerBaseColor, theTexCoord))
+#if defined(THE_HAS_TEXTURE_COLOR) && defined(FRAGMENT_SHADER)
+#define occMaterialBaseColor(theIsFront, theTexCoord) (occMaterial_Color(theIsFront) * occTexture2D(occSamplerBaseColor, theTexCoord))
 #else
-#define occTextureColor(theMatColor, theTexCoord) theMatColor
+#define occMaterialBaseColor(theIsFront, theTexCoord) occMaterial_Color(theIsFront)
 #endif
 
 #if defined(THE_HAS_TEXTURE_OCCLUSION) && defined(FRAGMENT_SHADER)
 uniform sampler2D occSamplerOcclusion;   //!< R occlusion texture sampler
-#define occTextureOcclusion(theColor, theTexCoord) theColor *= occTexture2D(occSamplerOcclusion, theTexCoord).r;
+#define occMaterialOcclusion(theColor, theTexCoord) theColor *= occTexture2D(occSamplerOcclusion, theTexCoord).r;
 #else
-#define occTextureOcclusion(theColor, theTexCoord)
+#define occMaterialOcclusion(theColor, theTexCoord)
 #endif
 
 #if defined(THE_HAS_TEXTURE_EMISSIVE) && defined(FRAGMENT_SHADER)
 uniform sampler2D occSamplerEmissive;    //!< RGB emissive texture sampler
-#define occTextureEmissive(theMatEmis, theTexCoord) (theMatEmis * occTexture2D(occSamplerEmissive, theTexCoord).rgb)
+#define occMaterialEmission(theIsFront, theTexCoord) (occMaterial_Emission(theIsFront) * occTexture2D(occSamplerEmissive, theTexCoord).rgb)
 #else
-#define occTextureEmissive(theMatEmis, theTexCoord) theMatEmis
+#define occMaterialEmission(theIsFront, theTexCoord) occMaterial_Emission(theIsFront)
 #endif
 
 #if defined(THE_HAS_TEXTURE_NORMAL) && defined(FRAGMENT_SHADER)
@@ -256,11 +249,11 @@ uniform sampler2D occSamplerNormal;      //!< XYZ normal texture sampler with W=
 
 #if defined(THE_HAS_TEXTURE_METALROUGHNESS) && defined(FRAGMENT_SHADER)
 uniform sampler2D occSamplerMetallicRoughness; //!< BG metallic-roughness texture sampler
-#define occTextureRoughness(theRoug, theTexCoord) (theRoug * occTexture2D(occSamplerMetallicRoughness, theTexCoord).g)
-#define occTextureMetallic(theMet,   theTexCoord) (theMet  * occTexture2D(occSamplerMetallicRoughness, theTexCoord).b)
+#define occMaterialRoughness(theIsFront, theTexCoord) (occPBRMaterial_NormalizedRoughness(theIsFront) * occTexture2D(occSamplerMetallicRoughness, theTexCoord).g)
+#define occMaterialMetallic(theIsFront,  theTexCoord) (occPBRMaterial_Metallic(theIsFront) * occTexture2D(occSamplerMetallicRoughness, theTexCoord).b)
 #else
-#define occTextureRoughness(theRoug, theTexCoord) theRoug
-#define occTextureMetallic(theMet,   theTexCoord) theMet
+#define occMaterialRoughness(theIsFront, theTexCoord) occPBRMaterial_NormalizedRoughness(theIsFront)
+#define occMaterialMetallic(theIsFront,  theTexCoord) occPBRMaterial_Metallic(theIsFront)
 #endif
 
 uniform               vec4      occColor;              //!< color value (in case of disabled lighting)

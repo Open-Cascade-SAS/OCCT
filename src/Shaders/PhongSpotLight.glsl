@@ -43,7 +43,7 @@ void occSpotLight (in int  theId,
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
+    aSpecl = pow (aNdotH, occMaterial_Shininess (theIsFront));
   }
 
   Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten;

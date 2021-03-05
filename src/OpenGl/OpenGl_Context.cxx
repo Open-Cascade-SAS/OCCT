@@ -2417,32 +2417,22 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
                                        ? anAspect->BackInteriorColor()
                                        : aFrontIntColor;
 
-  myMatFront.Init (*this, aMatFrontSrc, aFrontIntColor);
-  if (toDistinguish)
-  {
-    myMatBack.Init (*this, aMatBackSrc, aBackIntColor);
-  }
-  else
-  {
-    myMatBack = myMatFront;
-  }
-
+  myMaterial.Init (*this, aMatFrontSrc, aFrontIntColor, aMatBackSrc, aBackIntColor);
   if (!theHighlight.IsNull()
     && theHighlight->BasicFillAreaAspect().IsNull())
   {
-    myMatFront.SetColor (theHighlight->ColorRGBA());
-    myMatBack .SetColor (theHighlight->ColorRGBA());
+    myMaterial.SetColor (theHighlight->ColorRGBA().GetRGB());
+    myMaterial.SetColor (theHighlight->ColorRGBA().GetRGB());
   }
 
-  Standard_ShortReal anAlphaFront = 1.0f;
-  Standard_ShortReal anAlphaBack  = 1.0f;
+  float anAlphaFront = 1.0f, anAlphaBack = 1.0f;
   if (CheckIsTransparent (theAspect, theHighlight, anAlphaFront, anAlphaBack))
   {
-    myMatFront.Common.Diffuse.a() = anAlphaFront;
-    myMatBack .Common.Diffuse.a() = anAlphaBack;
+    myMaterial.Common[0].Diffuse.a() = anAlphaFront;
+    myMaterial.Common[1].Diffuse.a() = anAlphaBack;
 
-    myMatFront.Pbr.BaseColor.a() = anAlphaFront;
-    myMatBack .Pbr.BaseColor.a() = anAlphaBack;
+    myMaterial.Pbr[0].BaseColor.a() = anAlphaFront;
+    myMaterial.Pbr[1].BaseColor.a() = anAlphaBack;
   }
 
   // do not update material properties in case of zero reflection mode,
@@ -2468,8 +2458,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
       return;
     }
   }
-  else if (myMatFront    == aMatState.FrontMaterial()
-        && myMatBack     == aMatState.BackMaterial()
+  else if (myMaterial.IsEqual (aMatState.Material())
         && toDistinguish == aMatState.ToDistinguish()
         && toMapTexture  == aMatState.ToMapTexture()
         && anAlphaCutoff == aMatState.AlphaCutoff())
@@ -2477,7 +2466,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
     return;
   }
 
-  myShaderManager->UpdateMaterialStateTo (myMatFront, myMatBack, anAlphaCutoff, toDistinguish, toMapTexture);
+  myShaderManager->UpdateMaterialStateTo (myMaterial, anAlphaCutoff, toDistinguish, toMapTexture);
 }
 
 // =======================================================================

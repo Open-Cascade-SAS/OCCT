@@ -24,7 +24,7 @@ static const char Shaders_PhongDirectionalLight_glsl[] =
   "  float aSpecl = 0.0;\n"
   "  if (aNdotL > 0.0)\n"
   "  {\n"
-  "    aSpecl = pow (aNdotH, theIsFront ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());\n"
+  "    aSpecl = pow (aNdotH, occMaterial_Shininess (theIsFront));\n"
   "  }\n"
   "\n"
   "  Diffuse  += occLight_Diffuse  (theId) * aNdotL * theShadow;\n"
