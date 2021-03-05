@@ -3,7 +3,7 @@
 //! @param theId      light source index
 //! @param theNormal  surface normal
 //! @param theView    view direction
-//! @param thePoint   3D position (view space)
+//! @param thePoint   3D position (world space)
 //! @param theIsFront front/back face flag
 void occPointLight (in int  theId,
                     in vec3 theNormal,
@@ -11,7 +11,7 @@ void occPointLight (in int  theId,
                     in vec3 thePoint,
                     in bool theIsFront)
 {
-  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 1.0)) - thePoint;
+  vec3 aLight = occLight_Position (theId) - thePoint;
 
   float aDist = length (aLight);
   float aRange = occLight_Range (theId);

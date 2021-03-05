@@ -14,7 +14,7 @@ static const char Shaders_PhongDirectionalLight_glsl[] =
   "                          in bool theIsFront,\n"
   "                          in float theShadow)\n"
   "{\n"
-  "  vec3 aLight = vec3 (occWorldViewMatrix * vec4 (occLight_Position (theId), 0.0));\n"
+  "  vec3 aLight = occLight_Position (theId);\n"
   "  vec3 aHalf = normalize (aLight + theView);\n"
   "\n"
   "  vec3  aFaceSideNormal = theIsFront ? theNormal : -theNormal;\n"
