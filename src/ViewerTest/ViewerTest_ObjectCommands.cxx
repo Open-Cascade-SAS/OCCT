@@ -3014,7 +3014,7 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   aMat.SetSpecularColor(Quantity_Color (Graphic3d_Vec3 (0.50f)));
   Handle(Graphic3d_AspectFillArea3d) anAspect
     = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
-                                      Quantity_NOC_RED,
+                                      Quantity_NOC_WHITE,
                                       Quantity_NOC_YELLOW,
                                       Aspect_TOL_SOLID,
                                       1.0,
@@ -3438,6 +3438,17 @@ Standard_Boolean MyPArrayObject::Init (Graphic3d_TypeOfPrimitiveArray thePrimTyp
   if (myPArray.IsNull())
   {
     myPArray = Graphic3d_ArrayOfPrimitives::CreateArray (thePrimType, aVertexNum, aBoundNum, aEdgeNum, anArrayFlags);
+    if (myPArray->HasVertexColors())
+    {
+      myDrawer->SetupOwnShadingAspect();
+      Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_Plastified);
+      aMat.SetSpecularColor (Quantity_NOC_BLACK);
+      aMat.SetEmissiveColor (Quantity_NOC_BLACK);
+      aMat.SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
+      aMat.SetDiffuseColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
+      myDrawer->ShadingAspect()->SetMaterial (aMat);
+      myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
+    }
   }
   else
   {

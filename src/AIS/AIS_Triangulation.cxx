@@ -133,7 +133,7 @@ void AIS_Triangulation::Compute (const Handle(PrsMgr_PresentationManager)& ,
   Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
   Handle(Graphic3d_AspectFillArea3d) anAspect = myDrawer->ShadingAspect()->Aspect();
 
-  const Standard_Real anAmbient = 0.2;
+  const Standard_Real anAmbient = 1.0;
   if (hasVNormals)
   {
     gp_Vec3f aNormal;

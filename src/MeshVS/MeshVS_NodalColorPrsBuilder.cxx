@@ -274,7 +274,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   gp_Dir aDefNorm( 0., 0., 1. );
 
   // Prepare for scaling the incoming colors
-  const Standard_Real anColorRatio = !IsReflect ? 0.44f : 0.5f;
+  const Standard_Real anColorRatio = 1.0;
 
   for (it.Reset(); it.More(); it.Next())
   {
@@ -454,7 +454,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 //      aStyle = (Aspect_InteriorStyle)aStyleInt;
 
     anAsp = new Graphic3d_AspectFillArea3d (
-      Aspect_IS_SOLID, Quantity_NOC_GRAY, anEdgeColor,
+      Aspect_IS_SOLID, Quantity_NOC_WHITE, anEdgeColor,
       anEdgeType, anEdgeWidth, aMaterial[ 0 ], aMaterial[ 1 ] );
   }
 

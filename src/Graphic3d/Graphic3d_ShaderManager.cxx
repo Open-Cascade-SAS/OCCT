@@ -1296,14 +1296,6 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
     }
   }
 
-  TCollection_AsciiString aGetMatAmbient = "occMaterial_Ambient(theIsFront);";
-  TCollection_AsciiString aGetMatDiffuse = "occMaterial_Diffuse(theIsFront);";
-  if (theHasVertColor)
-  {
-    aGetMatAmbient = "getVertColor().rgb;";
-    aGetMatDiffuse = "getVertColor();";
-  }
-
   if (!theIsPBR)
   {
     return TCollection_AsciiString()
@@ -1321,10 +1313,12 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       EOL"  Specular = vec3 (0.0);"
       EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
     + aLightsLoop
-    + EOL"  vec3 aMatAmbient  = " + aGetMatAmbient
-    + EOL"  vec4 aMatDiffuse  = " + aGetMatDiffuse
-    + EOL"  vec3 aMatSpecular = occMaterial_Specular(theIsFront);"
+    + EOL"  vec3 aMatAmbient  = occMaterial_Ambient(theIsFront);"
+      EOL"  vec4 aMatDiffuse  = occMaterial_Diffuse(theIsFront);"
+      EOL"  vec3 aMatSpecular = occMaterial_Specular(theIsFront);"
       EOL"  vec4 aColor = vec4(Ambient * aMatAmbient + Diffuse * aMatDiffuse.rgb + Specular * aMatSpecular, aMatDiffuse.a);"
+    + (theHasVertColor ?
+      EOL"  aColor *= getVertColor();" : "")
     + (theHasTexColor ?
       EOL"#if defined(THE_HAS_TEXTURE_COLOR) && defined(FRAGMENT_SHADER)"
       EOL"  aColor *= occTexture2D(occSamplerBaseColor, TexCoord.st / TexCoord.w);"
@@ -1348,7 +1342,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       EOL"                      in bool theIsFront)"
       EOL"{"
       EOL"  DirectLighting = vec3(0.0);"
-      EOL"  BaseColor = " + (theHasVertColor ? "getVertColor();" : "occMaterialBaseColor(theIsFront, TexCoord.st / TexCoord.w);")
+      EOL"  BaseColor           = occMaterialBaseColor(theIsFront, TexCoord.st / TexCoord.w)" + (theHasVertColor ? " * getVertColor()" : "") + ";"
     + EOL"  Emission            = occMaterialEmission(theIsFront, TexCoord.st / TexCoord.w);"
       EOL"  Metallic            = occMaterialMetallic(theIsFront, TexCoord.st / TexCoord.w);"
       EOL"  NormalizedRoughness = occMaterialRoughness(theIsFront, TexCoord.st / TexCoord.w);"

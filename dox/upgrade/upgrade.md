@@ -2221,3 +2221,11 @@ The same is applicable to *Poly_PolygonOnTriangulation* interface.
 
 Accessors to standard materials have been modified within *Declarations.glsl* (*occFrontMaterial_Diffuse()* -> *occMaterial_Diffuse(bool)* and similar).
 Applications defining custom GLSL programs should take into account syntax changes.
+
+@subsection upgrade_occt760_noral_colors Nodal color modulation
+
+Nodal color vertex attribute is now modulated in the same way as a color texture - color is multiplied by material coefficients (diffuse/ambient/specular in case of a common material definition).
+Existing code defining nodal colors should be updated to:
+- Use *Graphic3d_TOSM_UNLIT* shading model when lighting is not needed.
+- Adjust diffuse/ambient material coefficients, which have been previously ignored.
+- Remove code multiplying nodal colors, intended to compensate over-brightness due to addition of specular color from material definition, as specular component is now also modulated by a vertex color.

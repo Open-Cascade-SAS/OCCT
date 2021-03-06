@@ -1,0 +1,76 @@
+puts "============"
+puts "0032198: Visualization, TKOpenGl - per-vertex lighting ignores back/front material colors"
+puts "============"
+puts ""
+
+set aVerts {
+  {{0 55 0} { 0 75  0} {20 55  0}}
+  {{0 75 0} { 0 55 20} {20 55  0}}
+  {{0 55 0} { 0 55 20} { 0 75  0}}
+  {{0 55 0} {20 55  0} { 0 55 20}}
+}
+set aColors {
+  {{1.0 0.0 0.0} {0.0 1.0 0.0} {0.0 0.0 1.0}}
+  {{1.0 1.0 0.0} {1.0 1.0 1.0} {0.0 1.0 1.0}}
+  {{0.5 0.0 0.0} {0.0 0.0 0.5} {0.0 0.5 0.0}}
+  {{0.5 0.5 0.0} {0.0 0.5 0.5} {0.5 0.0 0.5}}
+}
+set aNormals {
+  { 0  0 -1}
+  { 1  1  1}
+  {-1  0  0}
+  { 0 -1  0}
+}
+
+proc genTris {theFrom theTo theColors} {
+  set aTris ""
+  for {set t $theFrom} {$t <= $theTo} {incr t} {
+    for {set n 0} {$n < 3} {incr n} {
+      set aVert [lindex $::aVerts   $t]
+      set aCol  [lindex $::aColors  $t]
+      set aNorm [lindex $::aNormals $t]
+      set aTris "$aTris v [lindex $aVert $n] n $aNorm"
+      if { $theColors == 1 } { set aTris "$aTris c [lindex $aCol $n]" }
+    }
+  }
+  return $aTris
+}
+
+set aTris1  [genTris 0 3 0]
+set aTris1c [genTris 0 3 1]
+set aTris2  [genTris 0 1 0]
+set aTris2c [genTris 0 1 1]
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vviewparams -scale 10 -proj -0.3 -0.7 0.6 -up 0.013 0.65 0.75 -at 35.4 61.8 31.5
+vdrawparray t1  triangles {*}$aTris1
+vdrawparray t1c triangles {*}$aTris1c
+vdrawparray t2  triangles {*}$aTris2
+vdrawparray t2c triangles {*}$aTris2c
+vdrawparray t3  triangles {*}$aTris2
+vdrawparray t3c triangles {*}$aTris2c
+vlocation t1  -location  0 0  0
+vlocation t2  -location 30 0  0
+vlocation t3  -location 60 0  0
+vlocation t1c -location  0 0 30
+vlocation t2c -location 30 0 30
+vlocation t3c -location 60 0 30
+vaspects t1  -color GREEN -backfaceColor RED
+vaspects t2  -color GREEN -backfaceColor RED
+vaspects t1c -color GREEN -backfaceColor RED
+vaspects t2c -color GREEN -backfaceColor RED
+vaspects t3  -color WHITE -backfaceColor WHITE
+vaspects t3c -color WHITE -backfaceColor WHITE
+
+vrenderparams -shadingModel VERT
+vdump ${imagedir}/${casename}_vert.png
+vrenderparams -shadingModel PHONG
+vdump ${imagedir}/${casename}_phong.png
+vrenderparams -shadingModel FLAT
+vdump ${imagedir}/${casename}_flat.png
+vrenderparams -shadingModel UNLIT
+vdump ${imagedir}/${casename}_unlit.png
+vrenderparams -shadingModel PBR
+vdump ${imagedir}/${casename}_pbr.png
