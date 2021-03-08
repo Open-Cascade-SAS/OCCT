@@ -16,214 +16,25 @@
 #include <ViewerTest.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ShaderObject.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
 #include <Image_AlienPixMap.hxx>
-#include <OpenGl_Aspects.hxx>
-#include <OpenGl_Context.hxx>
-#include <OpenGl_Element.hxx>
-#include <OpenGl_GlCore20.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <OpenGl_ShaderManager.hxx>
-#include <OpenGl_Workspace.hxx>
-#include <OSD_Environment.hxx>
+#include <Message.hxx>
 #include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-#include <Select3D_SensitiveCurve.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
-#include <OpenGl_Group.hxx>
-#include <OSD_OpenFile.hxx>
 
-extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
-                                           const Handle(AIS_InteractiveObject)& theAISObj,
-                                           Standard_Boolean theReplaceIfExists = Standard_True);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
-
-namespace
-{
-
-//=======================================================================
-//function : VUserDraw
-//purpose  : Checks availability and operation of UserDraw feature
-//=======================================================================
-class VUserDrawObj : public AIS_InteractiveObject
-{
-public:
-  // CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(VUserDrawObj, AIS_InteractiveObject);
-
-  VUserDrawObj()
-  {
-    myCoords[0] = -10.;
-    myCoords[1] = -20.;
-    myCoords[2] = -30.;
-    myCoords[3] =  10.;
-    myCoords[4] =  20.;
-    myCoords[5] =  30.;
-  }
-
-public:
-  class Element : public OpenGl_Element
-  {
-  private:
-    Handle(VUserDrawObj) myIObj;
-
-  public:
-    Element (const Handle(VUserDrawObj)& theIObj) : myIObj (theIObj) {}
-
-    virtual ~Element() {}
-
-    virtual void Render (const Handle(OpenGl_Workspace)& theWorkspace) const
-    {
-      if (!myIObj.IsNull())
-        myIObj->Render(theWorkspace);
-    }
-
-    virtual void Release (OpenGl_Context*)
-    {
-      //
-    }
-
-  public:
-    DEFINE_STANDARD_ALLOC
-  };
-
-private:
-  // Virtual methods implementation
-  virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                        const Handle(Prs3d_Presentation)& thePrs,
-                        const Standard_Integer theMode) Standard_OVERRIDE;
-
-  virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                 const Standard_Integer theMode) Standard_OVERRIDE;
-
-  // Called by VUserDrawElement
-  void Render(const Handle(OpenGl_Workspace)& theWorkspace) const;
-
-private:
-  GLfloat myCoords[6];
-  friend class Element;
-};
-
-void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-                           const Handle(Prs3d_Presentation)& thePrs,
-                           const Standard_Integer /*theMode*/)
-{
-  thePrs->Clear();
-
-  Graphic3d_Vec4 aBndMin (myCoords[0], myCoords[1], myCoords[2], 1.0f);
-  Graphic3d_Vec4 aBndMax (myCoords[3], myCoords[4], myCoords[5], 1.0f);
-  Handle(OpenGl_Group) aGroup = Handle(OpenGl_Group)::DownCast (thePrs->NewGroup());
-  aGroup->SetMinMaxValues (aBndMin.x(), aBndMin.y(), aBndMin.z(),
-                           aBndMax.x(), aBndMax.y(), aBndMax.z());
-  aGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  VUserDrawObj::Element* anElem = new VUserDrawObj::Element (this);
-  aGroup->AddElement(anElem);
-
-  // invalidate bounding box of the scene
-  thePrsMgr->StructureManager()->Update();
-}
-
-void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                     const Standard_Integer /*theMode*/)
-{
-  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
-  Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
-  aPnts->SetValue(1, gp_Pnt(myCoords[0], myCoords[1], myCoords[2]));
-  aPnts->SetValue(2, gp_Pnt(myCoords[3], myCoords[4], myCoords[2]));
-  aPnts->SetValue(3, gp_Pnt(myCoords[3], myCoords[4], myCoords[5]));
-  aPnts->SetValue(4, gp_Pnt(myCoords[0], myCoords[1], myCoords[5]));
-  aPnts->SetValue(5, gp_Pnt(myCoords[0], myCoords[1], myCoords[2]));
-  Handle(Select3D_SensitiveCurve) aSensitive = new Select3D_SensitiveCurve(anEntityOwner, aPnts);
-  theSelection->Add(aSensitive);
-}
-
-void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
-{
-  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-
-  // To test linking against OpenGl_Workspace and all aspect classes
-  const OpenGl_Aspects* aMA = theWorkspace->Aspects();
-  aMA->Aspect()->MarkerType();
-  OpenGl_Vec4 aColor = theWorkspace->InteriorColor();
-
-  aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID,
-                                          Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false,
-                                          Handle(OpenGl_ShaderProgram)());
-  aCtx->SetColor4fv (aColor);
-
-  const OpenGl_Vec3 aVertArray[4] =
-  {
-    OpenGl_Vec3(myCoords[0], myCoords[1], myCoords[2]),
-    OpenGl_Vec3(myCoords[3], myCoords[4], myCoords[2]),
-    OpenGl_Vec3(myCoords[3], myCoords[4], myCoords[5]),
-    OpenGl_Vec3(myCoords[0], myCoords[1], myCoords[5]),
-  };
-  Handle(OpenGl_VertexBuffer) aVertBuffer = new OpenGl_VertexBuffer();
-  aVertBuffer->Init (aCtx, 3, 4, aVertArray[0].GetData());
-
-  // Finally draw something to make sure UserDraw really works
-  aVertBuffer->BindAttribute  (aCtx, Graphic3d_TOA_POS);
-  glDrawArrays(GL_LINE_LOOP, 0, aVertBuffer->GetElemsNb());
-  aVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
-  aVertBuffer->Release (aCtx.get());
-}
-
-} // end of anonymous namespace
-
-static Standard_Integer VUserDraw (Draw_Interpretor& ,
-                                    Standard_Integer argc,
-                                    const char ** argv)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull())
-  {
-    Message::SendFail ("Error: no active viewer");
-    return 1;
-  }
-
-  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Driver());
-  if (aDriver.IsNull())
-  {
-    Message::SendFail ("Error: Graphic driver not available.");
-    return 1;
-  }
-
-  if (argc > 2)
-  {
-    Message::SendFail ("Syntax error: wrong number of arguments");
-    return 1;
-  }
-
-  TCollection_AsciiString aName (argv[1]);
-  VDisplayAISObject(aName, Handle(AIS_InteractiveObject)());
-
-  Handle(VUserDrawObj) anIObj = new VUserDrawObj();
-  VDisplayAISObject(aName, anIObj);
-
-  return 0;
-}
 
 //==============================================================================
 //function : VImmediateFront
 //purpose  :
 //==============================================================================
 
-static int VImmediateFront (Draw_Interpretor& /*theDI*/,
+static int VImmediateFront (Draw_Interpretor& ,
                             Standard_Integer  theArgNb,
                             const char**      theArgVec)
 {
@@ -419,6 +230,7 @@ static int VGlInfo (Draw_Interpretor& theDI,
   return 0;
 }
 
+
 //! Parse shader type argument.
 static bool parseShaderTypeArg (Graphic3d_TypeOfShaderObject& theType,
                                 const TCollection_AsciiString& theArg)
@@ -468,7 +280,7 @@ static bool parseShaderTypeArg (Graphic3d_TypeOfShaderObject& theType,
 //function : VShaderProg
 //purpose  : Sets the pair of vertex and fragment shaders for the object
 //==============================================================================
-static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
+static Standard_Integer VShaderProg (Draw_Interpretor& ,
                                      Standard_Integer  theArgNb,
                                      const char**      theArgVec)
 {
@@ -500,56 +312,6 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
     {
       TCollection_AsciiString aName = theArgVec[++anArgIter];
       aProgram->PushVariableFloat (aName, float (Draw::Atof (theArgVec[++anArgIter])));
-    }
-    else if (anArg == "-list"
-          || ((anArg == "-update"
-            || anArg == "-dump"
-            || anArg == "-debug"
-            || anArg == "-reload"
-            || anArg == "-load")
-           && anArgIter + 1 < theArgNb))
-    {
-      Handle(OpenGl_Context) aGlCtx;
-      if (Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aCtx->CurrentViewer()->Driver()))
-      {
-        aGlCtx = aDriver->GetSharedContext();
-      }
-      if (aGlCtx.IsNull())
-      {
-        Message::SendFail ("Error: no OpenGl_Context");
-        return 1;
-      }
-
-      if (anArg == "-list")
-      {
-        for (OpenGl_Context::OpenGl_ResourcesMap::Iterator aResIter (aGlCtx->SharedResources()); aResIter.More(); aResIter.Next())
-        {
-          if (Handle(OpenGl_ShaderProgram) aResProg = Handle(OpenGl_ShaderProgram)::DownCast (aResIter.Value()))
-          {
-            theDI << aResProg->ResourceId() << " ";
-          }
-        }
-      }
-      else
-      {
-        TCollection_AsciiString aShaderName = theArgVec[++anArgIter];
-        Handle(OpenGl_ShaderProgram) aResProg;
-        if (!aGlCtx->GetResource (aShaderName, aResProg))
-        {
-          Message::SendFail() << "Syntax error: shader resource '" << aShaderName << "' is not found";
-          return 1;
-        }
-        if (aResProg->UpdateDebugDump (aGlCtx, "", false, anArg == "-dump"))
-        {
-          aCtx->UpdateCurrentViewer();
-        }
-      }
-      if (anArgIter + 1 < theArgNb)
-      {
-        Message::SendFail ("Syntax error: wrong number of arguments");
-        return 1;
-      }
-      return 0;
     }
     else if (!aProgram.IsNull()
           &&  aProgram->ShaderObjects().IsEmpty()
@@ -1401,9 +1163,6 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
 {
   const char* aGroup ="Commands for low-level TKOpenGl features";
 
-  theCommands.Add("vuserdraw",
-    "vuserdraw : name - simulates drawing with help of UserDraw",
-    __FILE__, VUserDraw, aGroup);
   theCommands.Add("vimmediatefront",
     "vimmediatefront : render immediate mode to front buffer or to back buffer",
     __FILE__, VImmediateFront, aGroup);
@@ -1421,11 +1180,7 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
                   "\n\t\t:   [-header VersionHeader]"
                   "\n\t\t:   [-tessControl TessControlShader -tesseval TessEvaluationShader]"
                   "\n\t\t:   [-uniform Name FloatValue]"
-                  "\n\t\t: Assign custom GLSL program to presentation aspects."
-                  "\nvshader [-list] [-dump] [-reload] ShaderId"
-                  "\n\t\t:  -list   prints the list of registered GLSL programs"
-                  "\n\t\t:  -dump   dumps specified GLSL program (for debugging)"
-                  "\n\t\t:  -reload restores dump of specified GLSL program",
+                  "\n\t\t: Assign custom GLSL program to presentation aspects.",
     __FILE__, VShaderProg, aGroup);
   theCommands.Add("vshaderprog", "Alias for vshader", __FILE__, VShaderProg, aGroup);
   theCommands.Add("vlistmaterials",

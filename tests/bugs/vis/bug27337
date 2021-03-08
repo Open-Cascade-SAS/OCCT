@@ -5,6 +5,7 @@ puts "================"
 pload MODELING VISUALIZATION
 
 # Ray-Tracing doesn't work with Compatible Profile on macOS
+pload OPENGL
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
 box b 10 10 10

@@ -1,12 +1,3 @@
-pload XDE
-pload AISV
+pload XDE VISUALIZATION
 
 set subgroup iges
-
-
-
-
-
-
-
-

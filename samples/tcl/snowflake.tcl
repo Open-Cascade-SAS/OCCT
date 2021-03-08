@@ -3,7 +3,7 @@
 #Category: Modeling
 #Title: Snowflake - creation of 2d drawing
 
-pload MODELING AISV
+pload MODELING VISUALIZATION
 
 puts "Generating sample drawing of snowflake..."
 

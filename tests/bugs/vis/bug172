@@ -2,13 +2,13 @@ puts "========"
 puts "OCC172"
 puts "========"
 
-pload XDE
+pload XDE VISUALIZATION
 
-# disable VBO to avoid false memory leaks reported
-# on NVidia graphics, see issue #29996
+# disable VBO to avoid false memory leaks reported on NVIDIA graphics, see issue #29996
+pload OPENGL
 vcaps -vbo 0
 
-vinit
+vinit View1
 restore [locate_data_file OCC162.brep] s 
 vdisplay s
 

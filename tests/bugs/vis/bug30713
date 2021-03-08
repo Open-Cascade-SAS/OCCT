@@ -3,6 +3,7 @@ puts "0030713: Visualization, TKOpenGl - stipple line artifacts on Intel UHD Gra
 puts "============="
 
 pload MODELING VISUALIZATION
+pload OPENGL
 box b 1 2 3
 vclear
 vcaps -core

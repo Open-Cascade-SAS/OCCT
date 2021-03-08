@@ -57,7 +57,7 @@ proc checkarray {name array expected} {
   }
 }
 
-pload TOPTEST
+pload TOPTEST VISUALIZATION
 
 Close D -silent
 

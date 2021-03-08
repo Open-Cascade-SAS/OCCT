@@ -4,6 +4,7 @@ puts "# ==================================================================="
 puts ""
 
 pload VISUALIZATION
+pload OPENGL
 vcaps -vsync 0
 vinit View1
 vglinfo

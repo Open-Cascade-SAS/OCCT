@@ -108,6 +108,8 @@ OpenGl_LayerList.hxx
 OpenGl_LayerFilter.hxx
 OpenGl_GraphicDriver.cxx
 OpenGl_GraphicDriver.hxx
+OpenGl_GraphicDriverFactory.cxx
+OpenGl_GraphicDriverFactory.hxx
 OpenGl_IndexBuffer.cxx
 OpenGl_IndexBuffer.hxx
 OpenGl_Layer.hxx

@@ -3,6 +3,7 @@ puts "OCC23654 Markers recompute"
 puts "========"
 
 pload VISUALIZATION
+pload OPENGL
 vcaps -sprites
 source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
 

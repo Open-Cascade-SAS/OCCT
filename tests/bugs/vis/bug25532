@@ -8,6 +8,7 @@ puts ""
 #######################################################################
 
 pload MODELING VISUALIZATION
+pload OPENGL
 psphere s 0.5
 tclean  s
 incmesh s 0.001

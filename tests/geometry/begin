@@ -1,7 +1,5 @@
-if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
-    pload TOPTEST
-    pload AISV
-}
+pload TOPTEST VISUALIZATION
+
 # To prevent loops limit to 10 minutes
 cpulimit 600
 

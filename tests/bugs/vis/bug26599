@@ -1,13 +1,7 @@
 puts "============"
-puts "CR26599"
+puts "CR26599: Visualization, TKOpenGl - gradient background should reset model transformation in Core profile"
 puts "============"
 puts ""
-
-##########################################################################################
-# Visualization, TKOpenGl - gradient background should reset model transformation in Core profile
-##########################################################################################
-
-vcaps -ffp 0
 
 vinit View1
 vclear

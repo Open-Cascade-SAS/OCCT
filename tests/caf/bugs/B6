@@ -7,6 +7,8 @@ puts "OCC1228"
 puts "================"
 puts ""
 
+pload VISUALIZATION
+
 # Presentation attributes
 #
 # Testing attribute: TPrsStd_AISPresentation

@@ -416,6 +416,7 @@ endif()
 
 if (NOT USE_D3D)
   list (REMOVE_ITEM Visualization_TOOLKITS TKD3DHost)
+  list (REMOVE_ITEM Draw_TOOLKITS TKD3DHostTest)
 endif()
 
 # accumulate used toolkits (first level) in BUILD_TOOLKITS variable

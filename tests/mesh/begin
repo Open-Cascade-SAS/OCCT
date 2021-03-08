@@ -22,9 +22,4 @@ set bug_cross ""
 set bug_async ""
 set bug_freenodes ""
 
-if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
-	pload TOPTEST
-}
-if { [array get Draw_Groups "ZeViewer"] == "" } {
-	pload AISV
-}
+pload TOPTEST VISUALIZATION

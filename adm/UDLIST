@@ -402,6 +402,8 @@ n HLRTest
 n MeshTest
 n SWDRAW
 n TObjDRAW
+n OpenGlTest
+n D3DHostTest
 n ViewerTest
 n XDEDRAW
 n XSDRAW
@@ -413,6 +415,8 @@ t TKDCAF
 t TKDraw
 t TKTObjDRAW
 t TKTopTest
+t TKOpenGlTest
+t TKD3DHostTest
 t TKViewerTest
 t TKXDEDRAW
 t TKXSDRAW

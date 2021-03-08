@@ -74,6 +74,8 @@ Graphic3d_FrameStatsTimer.hxx
 Graphic3d_GraduatedTrihedron.hxx
 Graphic3d_GraphicDriver.cxx
 Graphic3d_GraphicDriver.hxx
+Graphic3d_GraphicDriverFactory.cxx
+Graphic3d_GraphicDriverFactory.hxx
 Graphic3d_Group.cxx
 Graphic3d_Group.hxx
 Graphic3d_GroupAspect.hxx

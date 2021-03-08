@@ -153,7 +153,14 @@ public:
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
   //! Warning! This method should be called only before any primitives are displayed in GL scene!
-  Standard_EXPORT void EnableVBO (const Standard_Boolean theToTurnOn) Standard_OVERRIDE;
+  Standard_EXPORT virtual void EnableVBO (const Standard_Boolean theToTurnOn) Standard_OVERRIDE;
+
+
+  //! Returns TRUE if vertical synchronization with display refresh rate (VSync) should be used; TRUE by default.
+  Standard_EXPORT virtual bool IsVerticalSync() const Standard_OVERRIDE;
+
+  //! Set if vertical synchronization with display refresh rate (VSync) should be used.
+  Standard_EXPORT virtual void SetVerticalSync (bool theToEnable) Standard_OVERRIDE;
 
   //! Returns information about GPU memory usage.
   //! Please read OpenGl_Context::MemoryInfo() for more description.

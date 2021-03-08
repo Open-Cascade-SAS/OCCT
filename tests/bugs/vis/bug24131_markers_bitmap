@@ -3,6 +3,7 @@ puts "OCC24131 Markers using deprecated glBitmap"
 puts "========"
 
 pload VISUALIZATION
+pload OPENGL
 vcaps -sprites 0 -ffp 1
 source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
 vdump $imagedir/${casename}.png

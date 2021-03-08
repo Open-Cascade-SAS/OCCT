@@ -1,18 +1,12 @@
 cpulimit 1000
 
-if { [array get Draw_Groups "Primitive building commands"] == "" } {
-    pload TOPTEST
-}
-
-if { [array get Draw_Groups "ZeViewer"] == "" } {
-    pload AISV
-}
+pload TOPTEST VISUALIZATION
 
 if { [info exists imagedir] == 0 } {
-    set imagedir .
+  set imagedir .
 }
-if { [info exists test_image ] == 0 } {
-   set test_image photo
+if { [info exists test_image] == 0 } {
+ set test_image photo
 }
 
 vinit View1

@@ -1145,7 +1145,7 @@ proc testfile {filelist} {
         file mkdir $tmpdir/$dir
 
         # make snapshot
-        pload AISV
+        pload VISUALIZATION
         uplevel vdisplay a
         uplevel vsetdispmode 1
         uplevel vfit

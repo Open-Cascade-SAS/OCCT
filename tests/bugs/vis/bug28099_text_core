@@ -5,6 +5,7 @@ puts "============"
 puts ""
 
 pload MODELING VISUALIZATION
+pload OPENGL
 
 vclear
 vcaps -core 1

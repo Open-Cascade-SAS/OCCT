@@ -95,8 +95,14 @@ public:
   //! Removes view from graphic driver and releases its resources.
   virtual void RemoveView (const Handle(Graphic3d_CView)& theView) = 0;
 
-  //! enables/disables usage of OpenGL vertex buffer arrays while drawing primitiev arrays
+  //! enables/disables usage of OpenGL vertex buffer arrays while drawing primitive arrays
   virtual void EnableVBO (const Standard_Boolean status) = 0;
+
+  //! Returns TRUE if vertical synchronization with display refresh rate (VSync) should be used; TRUE by default.
+  virtual bool IsVerticalSync() const = 0;
+
+  //! Set if vertical synchronization with display refresh rate (VSync) should be used.
+  virtual void SetVerticalSync (bool theToEnable) = 0;
   
   //! Returns information about GPU memory usage.
   virtual Standard_Boolean MemoryInfo (Standard_Size& theFreeBytes, TCollection_AsciiString& theInfo) const = 0;

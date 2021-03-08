@@ -2,11 +2,13 @@ puts "========"
 puts "OCC79"
 puts "========"
 
-# disable VBO to avoid false memory leaks reported
-# on NVidia graphics, see issue #29996
+pload VISUALIZATION
+
+# disable VBO to avoid false memory leaks reported on NVIDIA graphics, see issue #29996
+pload OPENGL
 vcaps -vbo 0
 
-vinit
+vinit View1
 restore [locate_data_file OCC162.brep] s
 vdisplay s
 

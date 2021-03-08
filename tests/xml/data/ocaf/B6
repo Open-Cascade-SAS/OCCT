@@ -1,6 +1,8 @@
 set aTestName "caf003-A4"
 puts ${aTestName}
 
+pload VISUALIZATION
+
 # Set NamedShape attribute
 box aBox1 100 200 300
 set aLabel 0:2

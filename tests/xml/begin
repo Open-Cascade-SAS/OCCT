@@ -1,5 +1,4 @@
-pload TOPTEST
-pload DCAF
+pload TOPTEST DCAF
 
 cpulimit 300
 

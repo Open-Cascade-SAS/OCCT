@@ -8,8 +8,6 @@ vinit View1
 vclear
 vaxo
 
-# Disable ffp
-vcaps -ffp 0
 # draw color scale
 vcolorscale cs -demo
 vdump ${imagedir}/${casename}_View1.png

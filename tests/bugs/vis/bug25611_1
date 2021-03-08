@@ -8,9 +8,6 @@ puts "Displaying \'zbufftrihedron\' interferes with \'vgraduatedtrihedron\'"
 
 set anImage $imagedir/${casename}.png
 
-# enable FFP until bug-fix for GLSL
-vcaps -ffp 1
-
 vinit View1
 psphere s 10
 vdisplay s
@@ -21,6 +18,3 @@ vgraduatedtrihedron -on
 vzbufftrihedron
 
 vdump $anImage
-vclear
-vclose View1 
-

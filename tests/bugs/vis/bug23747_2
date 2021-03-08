@@ -4,10 +4,13 @@ puts "Checking environment mapping in general"
 puts "============"
 puts ""
 
+pload MODELING VISUALIZATION
+
 # enable FFP until bug-fix for GLSL
+pload OPENGL
 vcaps -ffp 1
 
-vinit
+vinit View1
 vclear
 vaxo
 psphere b 20

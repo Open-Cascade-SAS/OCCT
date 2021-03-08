@@ -35,7 +35,6 @@ vtextureenv on 0
 
 vdump $imagedir/${casename}_2.png
 
-vcaps -ffp 0
 vmoveto 100 300
 vmoveto 0 0
 

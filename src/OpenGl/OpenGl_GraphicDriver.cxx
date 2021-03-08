@@ -549,6 +549,24 @@ void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 }
 
 // =======================================================================
+// function : IsVerticalSync
+// purpose  :
+// =======================================================================
+bool OpenGl_GraphicDriver::IsVerticalSync() const
+{
+  return myCaps->swapInterval == 1;
+}
+
+// =======================================================================
+// function : SetVerticalSync
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::SetVerticalSync (bool theToEnable)
+{
+  myCaps->swapInterval = theToEnable ? 1 : 0;
+}
+
+// =======================================================================
 // function : GetSharedContext
 // purpose  :
 // =======================================================================
