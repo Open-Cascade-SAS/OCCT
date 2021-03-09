@@ -648,8 +648,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
         // check if the pave block has a valid range
         Standard_Real aFirst, aLast;
         if (!BRepLib::FindValidRange(GeomAdaptor_Curve(aIC.Curve()), aTolR3D,
-                                     aT1, BRep_Tool::Pnt(aV1), BRep_Tool::Tolerance(aV1),
-                                     aT2, BRep_Tool::Pnt(aV2), BRep_Tool::Tolerance(aV2),
+                                     aT1, BRep_Tool::Pnt(aV1), Max (aTolR3D, BRep_Tool::Tolerance(aV1)),
+                                     aT2, BRep_Tool::Pnt(aV2), Max (aTolR3D, BRep_Tool::Tolerance(aV2)),
                                      aFirst, aLast))
         {
           // If the pave block does not have valid range, i.e. it is completely
