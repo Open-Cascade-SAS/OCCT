@@ -14695,12 +14695,41 @@ static int VSelBvhBuild (Draw_Interpretor& /*theDI*/, Standard_Integer theNbArgs
 }
 
 //=======================================================================
+//function : ViewerTest_ExitProc
+//purpose  :
+//=======================================================================
+static void ViewerTest_ExitProc (ClientData )
+{
+  NCollection_List<TCollection_AsciiString> aViewList;
+  for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter (ViewerTest_myViews);
+       anIter.More(); anIter.Next())
+  {
+    aViewList.Append (anIter.Key1());
+  }
+
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter (aViewList);
+       anIter.More(); anIter.Next())
+  {
+    ViewerTest::RemoveView (anIter.Value(), true);
+  }
+}
+
+//=======================================================================
 //function : ViewerCommands
 //purpose  :
 //=======================================================================
 
 void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 {
+  static bool TheIsInitialized = false;
+  if (TheIsInitialized)
+  {
+    return;
+  }
+
+  TheIsInitialized = true;
+  // define destruction callback to destroy views in a well-defined order
+  Tcl_CreateExitHandler (ViewerTest_ExitProc, 0);
 
   const char *group = "ZeViewer";
   theCommands.Add("vinit",
