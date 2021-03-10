@@ -288,7 +288,7 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   (void )theTexture;
   (void )theParams;
 #else
-  if (theCtx->core11 == NULL
+  if (theCtx->core11ffp == NULL
    || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
     return;
@@ -310,21 +310,21 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   {
     case Graphic3d_TOTM_OBJECT:
     {
-      theCtx->core11->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-      theCtx->core11->glTexGenfv (GL_S, GL_OBJECT_PLANE,     theParams->GenPlaneS().GetData());
+      theCtx->core11ffp->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+      theCtx->core11ffp->glTexGenfv (GL_S, GL_OBJECT_PLANE,     theParams->GenPlaneS().GetData());
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-        theCtx->core11->glTexGenfv (GL_T, GL_OBJECT_PLANE,     theParams->GenPlaneT().GetData());
+        theCtx->core11ffp->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+        theCtx->core11ffp->glTexGenfv (GL_T, GL_OBJECT_PLANE,     theParams->GenPlaneT().GetData());
       }
       break;
     }
     case Graphic3d_TOTM_SPHERE:
     {
-      theCtx->core11->glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+      theCtx->core11ffp->glTexGeni (GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11->glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+        theCtx->core11ffp->glTexGeni (GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
       }
       break;
     }
@@ -334,12 +334,12 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
       theCtx->WorldViewState.SetIdentity();
       theCtx->ApplyWorldViewMatrix();
 
-      theCtx->core11->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-      theCtx->core11->glTexGenfv (GL_S, GL_EYE_PLANE,        theParams->GenPlaneS().GetData());
+      theCtx->core11ffp->glTexGeni  (GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+      theCtx->core11ffp->glTexGenfv (GL_S, GL_EYE_PLANE,        theParams->GenPlaneS().GetData());
       if (theTexture.GetTarget() != GL_TEXTURE_1D)
       {
-        theCtx->core11->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-        theCtx->core11->glTexGenfv (GL_T, GL_EYE_PLANE,        theParams->GenPlaneT().GetData());
+        theCtx->core11ffp->glTexGeni  (GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+        theCtx->core11ffp->glTexGenfv (GL_T, GL_EYE_PLANE,        theParams->GenPlaneT().GetData());
       }
 
       theCtx->WorldViewState.Pop();
@@ -350,7 +350,7 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
       if (theCtx->core20fwd != NULL)
       {
         theCtx->core11fwd->glEnable (GL_POINT_SPRITE);
-        glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+        theCtx->core11ffp->glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
         anEnvMode = GL_REPLACE;
       }
       break;
@@ -360,7 +360,7 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   }
 
   // setup lighting
-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
+  theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, anEnvMode);
 
   switch (theTexture.GetTarget())
   {
@@ -401,7 +401,7 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
   (void )theTexture;
   (void )theParams;
 #else
-  if (theCtx->core11 == NULL)
+  if (theCtx->core11ffp == NULL)
   {
     return;
   }
@@ -409,9 +409,9 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
   // reset texture matrix because some code may expect it is identity
   GLint aMatrixMode = GL_TEXTURE;
   theCtx->core11fwd->glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
-  theCtx->core11->glMatrixMode (GL_TEXTURE);
-  theCtx->core11->glLoadIdentity();
-  theCtx->core11->glMatrixMode (aMatrixMode);
+  theCtx->core11ffp->glMatrixMode (GL_TEXTURE);
+  theCtx->core11ffp->glLoadIdentity();
+  theCtx->core11ffp->glMatrixMode (aMatrixMode);
 
   switch (theTexture.GetTarget())
   {

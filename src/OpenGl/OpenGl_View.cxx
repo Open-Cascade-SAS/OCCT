@@ -1659,7 +1659,7 @@ void OpenGl_View::Redraw()
     #endif
       myXRSession->SubmitEye ((void* )(size_t )anXRFbo->ColorTexture()->TextureId(),
                               aGraphicsLib, Aspect_ColorSpace_sRGB, Aspect_Eye_Right);
-      ::glFinish();
+      aCtx->core11fwd->glFinish();
 
       if (myRenderParams.ToMirrorComposer)
       {
@@ -2030,14 +2030,10 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
 
   myWorkspace->UseZBuffer()    = Standard_True;
   myWorkspace->UseDepthWrite() = Standard_True;
-  glDepthFunc (GL_LEQUAL);
-  glDepthMask (GL_TRUE);
-  glEnable (GL_DEPTH_TEST);
-#if !defined(GL_ES_VERSION_2_0)
-  glClearDepth (1.0);
-#else
-  glClearDepthf (1.0f);
-#endif
+  aCtx->core11fwd->glDepthFunc (GL_LEQUAL);
+  aCtx->core11fwd->glDepthMask (GL_TRUE);
+  aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
+  aCtx->core11fwd->glClearDepth (1.0);
 
   render (theProjection, theDrawFbo, theOitAccumFbo, Standard_True);
 
@@ -2118,7 +2114,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
 #if !defined(GL_ES_VERSION_2_0)
   // Disable current clipping planes
-  if (aContext->core11 != NULL)
+  if (aContext->core11ffp != NULL)
   {
     const Standard_Integer aMaxPlanes = aContext->MaxClipPlanes();
     for (Standard_Integer aClipPlaneId = GL_CLIP_PLANE0; aClipPlaneId < GL_CLIP_PLANE0 + aMaxPlanes; ++aClipPlaneId)
@@ -2176,10 +2172,10 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 
 #if !defined(GL_ES_VERSION_2_0)
   // Switch off lighting by default
-  if (aContext->core11 != NULL
+  if (aContext->core11ffp != NULL
    && aContext->caps->ffpEnable)
   {
-    glDisable(GL_LIGHTING);
+    aContext->core11fwd->glDisable (GL_LIGHTING);
   }
 #endif
 
@@ -2893,7 +2889,7 @@ bool OpenGl_View::copyBackToFront()
   myIsImmediateDrawn = Standard_False;
 #if !defined(GL_ES_VERSION_2_0)
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
-  if (aCtx->core11 == NULL)
+  if (aCtx->core11ffp == NULL)
   {
     return false;
   }
@@ -2939,9 +2935,9 @@ bool OpenGl_View::copyBackToFront()
     }
   }
 
-  aCtx->core11->glRasterPos2i (0, 0);
-  aCtx->core11->glCopyPixels  (0, 0, myWindow->Width() + 1, myWindow->Height() + 1, GL_COLOR);
-  //aCtx->core11->glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
+  aCtx->core11ffp->glRasterPos2i (0, 0);
+  aCtx->core11ffp->glCopyPixels  (0, 0, myWindow->Width() + 1, myWindow->Height() + 1, GL_COLOR);
+  //aCtx->core11ffp->glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_DEPTH);
 
   aCtx->EnableFeatures();
 

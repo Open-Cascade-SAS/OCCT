@@ -17,9 +17,10 @@
 #include <OpenGl_GlCore45.hxx>
 
 //! OpenGL 4.6 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore46 : public theBaseClass_t
+struct OpenGl_GlCore46 : public OpenGl_GlCore45
 {
+private:
+  typedef OpenGl_GlCore45 theBaseClass_t;
 
 public: //! @name OpenGL 4.6 additives to 4.5
 
@@ -31,11 +32,5 @@ public: //! @name OpenGL 4.6 additives to 4.5
 #endif
 
 };
-
-//! OpenGL 4.6 compatibility profile.
-typedef OpenGl_TmplCore46<OpenGl_GlCore45Back> OpenGl_GlCore46Back;
-
-//! OpenGL 4.6 core profile.
-typedef OpenGl_TmplCore46<OpenGl_GlCore45>     OpenGl_GlCore46;
 
 #endif // _OpenGl_GlCore46_Header

@@ -121,30 +121,21 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
-: core11     (NULL),
+: core11ffp  (NULL),
   core11fwd  (NULL),
   core15     (NULL),
-  core15fwd  (NULL),
   core20     (NULL),
-  core20fwd  (NULL),
   core30     (NULL),
-  core30fwd  (NULL),
   core32     (NULL),
-  core32back (NULL),
   core33     (NULL),
-  core33back (NULL),
   core41     (NULL),
-  core41back (NULL),
   core42     (NULL),
-  core42back (NULL),
   core43     (NULL),
-  core43back (NULL),
   core44     (NULL),
-  core44back (NULL),
   core45     (NULL),
-  core45back (NULL),
   core46     (NULL),
-  core46back (NULL),
+  core15fwd  (NULL),
+  core20fwd  (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
   hasGetBufferData (Standard_False),
 #if defined(GL_ES_VERSION_2_0)
@@ -599,7 +590,7 @@ void OpenGl_Context::FetchState()
 {
 #if !defined(GL_ES_VERSION_2_0)
   // cache feedback mode state
-  if (core11 != NULL)
+  if (core11ffp != NULL)
   {
     ::glGetIntegerv (GL_RENDER_MODE, &myRenderMode);
     ::glGetIntegerv (GL_SHADE_MODEL, &myShadeModel);
@@ -1526,7 +1517,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 #if defined(GL_ES_VERSION_2_0)
   myShaderManager->SetUseRedAlpha (false);
 #else
-  myShaderManager->SetUseRedAlpha (core11 == NULL);
+  myShaderManager->SetUseRedAlpha (core11ffp == NULL);
 #endif
   #define checkGlslExtensionShort(theName) myShaderManager->EnableGlslExtension (Graphic3d_GlslExtension_ ## theName, CheckExtension (#theName))
 #if defined(GL_ES_VERSION_2_0)
@@ -1571,7 +1562,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
 #if !defined(GL_ES_VERSION_2_0)
-  if (IsGlGreaterEqual (1, 3) && core11 != NULL)
+  if (IsGlGreaterEqual (1, 3) && core11ffp != NULL)
   {
     // this is a maximum of texture units for FFP functionality,
     // usually smaller than combined texture units available for GLSL
@@ -1613,7 +1604,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
   }
 #else
-  if (core30fwd != NULL)
+  if (core30 != NULL)
   {
     // MSAA RenderBuffers have been defined in OpenGL 3.0,
     // but MSAA Textures - only in OpenGL 3.2+
@@ -2211,7 +2202,7 @@ void OpenGl_Context::ReleaseDelayed()
       continue;
     }
 
-    // release resource if no one requiested it more than 2 redraw calls
+    // release resource if no one requested it more than 2 redraw calls
     aRes->Release (this);
     mySharedResources->UnBind (aKey);
     aDeadList.Append (aKey);
@@ -2291,7 +2282,7 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
           }
         }
       #if !defined(GL_ES_VERSION_2_0)
-        if (core11 != NULL)
+        if (core11ffp != NULL)
         {
           OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
         }
@@ -2302,7 +2293,7 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
       {
         aTextureOld->Unbind (aThisCtx, aTexUnit);
       #if !defined(GL_ES_VERSION_2_0)
-        if (core11 != NULL)
+        if (core11ffp != NULL)
         {
           OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
         }
@@ -2524,9 +2515,9 @@ void OpenGl_Context::SetColor4fv (const OpenGl_Vec4& theColor)
     }
   }
 #if !defined(GL_ES_VERSION_2_0)
-  else if (core11 != NULL)
+  else if (core11ffp != NULL)
   {
-    core11->glColor4fv (theColor.GetData());
+    core11ffp->glColor4fv (theColor.GetData());
   }
 #endif
 }
@@ -2573,17 +2564,17 @@ void OpenGl_Context::SetLineStipple (const Standard_ShortReal theFactor,
 #if !defined(GL_ES_VERSION_2_0)
   if (thePattern != 0xFFFF)
   {
-    if (core11 != NULL)
+    if (core11ffp != NULL)
     {
       core11fwd->glEnable (GL_LINE_STIPPLE);
 
-      core11->glLineStipple (static_cast<GLint>    (theFactor),
-                             static_cast<GLushort> (thePattern));
+      core11ffp->glLineStipple (static_cast<GLint>    (theFactor),
+                                static_cast<GLushort> (thePattern));
     }
   }
   else
   {
-    if (core11 != NULL)
+    if (core11ffp != NULL)
     {
       core11fwd->glDisable (GL_LINE_STIPPLE);
     }
@@ -2598,7 +2589,7 @@ void OpenGl_Context::SetLineStipple (const Standard_ShortReal theFactor,
 void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
+  if (core11ffp != NULL)
 #endif
   {
     // glLineWidth() is still defined within Core Profile, but has no effect with values != 1.0f
@@ -2647,12 +2638,12 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
+  if (core11ffp != NULL)
   {
     GLint aMatrixMode = GL_TEXTURE;
     ::glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
 
-    core11->glMatrixMode (GL_TEXTURE);
+    core11ffp->glMatrixMode (GL_TEXTURE);
     OpenGl_Mat4 aTextureMat;
     if (caps->isTopDownTextureUV != theIsTopDown)
     {
@@ -2666,8 +2657,8 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
       Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
     }
     Graphic3d_TransformUtils::Rotate (aTextureMat, -theParams->Rotation(), 0.0f, 0.0f, 1.0f);
-    core11->glLoadMatrixf (aTextureMat);
-    core11->glMatrixMode (aMatrixMode);
+    core11ffp->glLoadMatrixf (aTextureMat);
+    core11ffp->glMatrixMode (aMatrixMode);
   }
 #endif
 }
@@ -2730,19 +2721,17 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabl
   }
 
   Standard_Boolean anOldGlNormalize = myIsGlNormalizeEnabled;
-
   myIsGlNormalizeEnabled = isEnabled;
-
 #if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
+  if (core11ffp != NULL)
   {
     if (isEnabled)
     {
-      ::glEnable  (GL_NORMALIZE);
+      core11fwd->glEnable  (GL_NORMALIZE);
     }
     else
     {
-      ::glDisable (GL_NORMALIZE);
+      core11fwd->glDisable (GL_NORMALIZE);
     }
   }
 #endif
@@ -2757,7 +2746,7 @@ Standard_Boolean OpenGl_Context::SetGlNormalizeEnabled (Standard_Boolean isEnabl
 void OpenGl_Context::SetShadeModel (Graphic3d_TypeOfShadingModel theModel)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  if (core11 != NULL)
+  if (core11ffp != NULL)
   {
     const Standard_Integer aModel = theModel == Graphic3d_TOSM_FACET
                                  || theModel == Graphic3d_TOSM_PBR_FACET ? GL_FLAT : GL_SMOOTH;
@@ -2766,7 +2755,7 @@ void OpenGl_Context::SetShadeModel (Graphic3d_TypeOfShadingModel theModel)
       return;
     }
     myShadeModel = aModel;
-    core11->glShadeModel (aModel);
+    core11ffp->glShadeModel (aModel);
   }
 #else
   (void )theModel;
@@ -2801,7 +2790,7 @@ Standard_Integer OpenGl_Context::SetPolygonMode (const Standard_Integer theMode)
 // =======================================================================
 bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
 {
-  if (core11 == NULL)
+  if (core11ffp == NULL)
   {
     return false;
   }
@@ -2834,7 +2823,7 @@ Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_Ha
 {
   const Standard_Integer aNewStyle = !theStyle.IsNull() ? theStyle->HatchType() : Aspect_HS_SOLID;
   if (myActiveHatchType == aNewStyle
-   || core11 == NULL)
+   || core11ffp == NULL)
   {
     return myActiveHatchType;
   }
@@ -2883,11 +2872,11 @@ void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
   {
     if (toFillNew)
     {
-      glEnable (GL_POLYGON_OFFSET_FILL);
+      core11fwd->glEnable (GL_POLYGON_OFFSET_FILL);
     }
     else
     {
-      glDisable (GL_POLYGON_OFFSET_FILL);
+      core11fwd->glDisable (GL_POLYGON_OFFSET_FILL);
     }
   }
 
@@ -2898,11 +2887,11 @@ void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
   {
     if (toLineNew)
     {
-      glEnable (GL_POLYGON_OFFSET_LINE);
+      core11fwd->glEnable (GL_POLYGON_OFFSET_LINE);
     }
     else
     {
-      glDisable (GL_POLYGON_OFFSET_LINE);
+      core11fwd->glDisable (GL_POLYGON_OFFSET_LINE);
     }
   }
 
@@ -2912,11 +2901,11 @@ void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
   {
     if (toPointNew)
     {
-      glEnable (GL_POLYGON_OFFSET_POINT);
+      core11fwd->glEnable (GL_POLYGON_OFFSET_POINT);
     }
     else
     {
-      glDisable (GL_POLYGON_OFFSET_POINT);
+      core11fwd->glDisable (GL_POLYGON_OFFSET_POINT);
     }
   }
 #endif
@@ -2924,7 +2913,7 @@ void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
   if (myPolygonOffset.Factor != theOffset.Factor
    || myPolygonOffset.Units  != theOffset.Units)
   {
-    glPolygonOffset (theOffset.Factor, theOffset.Units);
+    core11fwd->glPolygonOffset (theOffset.Factor, theOffset.Units);
   }
   myPolygonOffset = theOffset;
 }
@@ -3017,24 +3006,24 @@ void OpenGl_Context::EnableFeatures() const
 void OpenGl_Context::DisableFeatures() const
 {
   // Disable stuff that's likely to slow down glDrawPixels.
-  glDisable(GL_DITHER);
-  glDisable(GL_BLEND);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_STENCIL_TEST);
+  core11fwd->glDisable(GL_DITHER);
+  core11fwd->glDisable(GL_BLEND);
+  core11fwd->glDisable(GL_DEPTH_TEST);
+  core11fwd->glDisable(GL_STENCIL_TEST);
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (core11 == NULL)
+  if (core11ffp == NULL)
   {
     return;
   }
 
-  glDisable(GL_TEXTURE_1D);
-  glDisable(GL_TEXTURE_2D);
+  core11fwd->glDisable(GL_TEXTURE_1D);
+  core11fwd->glDisable(GL_TEXTURE_2D);
 
-  glDisable(GL_LIGHTING);
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_FOG);
-  glDisable(GL_LOGIC_OP);
+  core11fwd->glDisable(GL_LIGHTING);
+  core11fwd->glDisable(GL_ALPHA_TEST);
+  core11fwd->glDisable(GL_FOG);
+  core11fwd->glDisable(GL_LOGIC_OP);
 
   glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
   glPixelTransferi(GL_RED_SCALE, 1);
@@ -3049,22 +3038,22 @@ void OpenGl_Context::DisableFeatures() const
   if ((myGlVerMajor >= 1) && (myGlVerMinor >= 2))
   {
     if (CheckExtension ("GL_CONVOLUTION_1D_EXT"))
-      glDisable(GL_CONVOLUTION_1D_EXT);
+      core11fwd->glDisable(GL_CONVOLUTION_1D_EXT);
 
     if (CheckExtension ("GL_CONVOLUTION_2D_EXT"))
-      glDisable(GL_CONVOLUTION_2D_EXT);
+      core11fwd->glDisable(GL_CONVOLUTION_2D_EXT);
 
     if (CheckExtension ("GL_SEPARABLE_2D_EXT"))
-      glDisable(GL_SEPARABLE_2D_EXT);
+      core11fwd->glDisable(GL_SEPARABLE_2D_EXT);
 
     if (CheckExtension ("GL_SEPARABLE_2D_EXT"))
-      glDisable(GL_HISTOGRAM_EXT);
+      core11fwd->glDisable(GL_HISTOGRAM_EXT);
 
     if (CheckExtension ("GL_MINMAX_EXT"))
-      glDisable(GL_MINMAX_EXT);
+      core11fwd->glDisable(GL_MINMAX_EXT);
 
     if (CheckExtension ("GL_TEXTURE_3D_EXT"))
-      glDisable(GL_TEXTURE_3D_EXT);
+      core11fwd->glDisable(GL_TEXTURE_3D_EXT);
   }
 #endif
 }
@@ -3075,7 +3064,7 @@ void OpenGl_Context::DisableFeatures() const
 // =======================================================================
 void OpenGl_Context::SetColorMaskRGBA (const NCollection_Vec4<bool>& theVal)
 {
-  glColorMask (theVal.r() ? GL_TRUE : GL_FALSE,
+  core11fwd->glColorMask (theVal.r() ? GL_TRUE : GL_FALSE,
                theVal.g() ? GL_TRUE : GL_FALSE,
                theVal.b() ? GL_TRUE : GL_FALSE,
                theVal.a() ? GL_TRUE : GL_FALSE);
@@ -3091,7 +3080,7 @@ bool OpenGl_Context::SetColorMask (bool theToWriteColor)
   const bool anOldValue = myColorMask.r();
   myColorMask.SetValues (theToWriteColor, theToWriteColor, theToWriteColor, caps->buffersOpaqueAlpha ? false : theToWriteColor);
   const GLboolean toWrite = theToWriteColor ? GL_TRUE : GL_FALSE;
-  glColorMask (toWrite, toWrite, toWrite, myColorMask.a() ? GL_TRUE : GL_FALSE);
+  core11fwd->glColorMask (toWrite, toWrite, toWrite, myColorMask.a() ? GL_TRUE : GL_FALSE);
   return anOldValue;
 }
 
@@ -3142,10 +3131,10 @@ bool OpenGl_Context::GetBufferSubData (GLenum theTarget, GLintptr theOffset, GLs
   }, theTarget, theOffset, theData, theSize);
   return true;
 #elif defined(GL_ES_VERSION_2_0)
-  if (void* aData = core30fwd->glMapBufferRange (theTarget, theOffset, theSize, GL_MAP_READ_BIT))
+  if (void* aData = core30->glMapBufferRange (theTarget, theOffset, theSize, GL_MAP_READ_BIT))
   {
     memcpy (theData, aData, theSize);
-    core30fwd->glUnmapBuffer (theTarget);
+    core30->glUnmapBuffer (theTarget);
     return true;
   }
   return false;

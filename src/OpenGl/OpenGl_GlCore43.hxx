@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore42.hxx>
 
 //! OpenGL 4.3 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore43 : public theBaseClass_t
+struct OpenGl_GlCore43 : public OpenGl_GlCore42
 {
+private:
+  typedef OpenGl_GlCore42 theBaseClass_t;
 
 public: //! @name OpenGL 4.3 additives to 4.2
 
@@ -74,11 +75,5 @@ public: //! @name OpenGL 4.3 additives to 4.2
 #endif
 
 };
-
-//! OpenGL 4.3 compatibility profile.
-typedef OpenGl_TmplCore43<OpenGl_GlCore42Back> OpenGl_GlCore43Back;
-
-//! OpenGL 4.3 core profile.
-typedef OpenGl_TmplCore43<OpenGl_GlCore42>     OpenGl_GlCore43;
 
 #endif // _OpenGl_GlCore43_Header

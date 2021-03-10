@@ -254,7 +254,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   }
 
   if (theCtx->core20fwd != NULL
-   && (!theCtx->caps->pntSpritesDisable || theCtx->core11 == NULL))
+   && (!theCtx->caps->pntSpritesDisable || theCtx->core11ffp == NULL))
   {
     // Creating texture resource for using it with point sprites
     Handle(Image_PixMap) anImage = aNewMarkerImage->GetImage();
@@ -272,11 +272,11 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
       }
     }
   }
-  else if (theCtx->core11 != NULL)
+  else if (theCtx->core11ffp != NULL)
   {
   #if !defined(GL_ES_VERSION_2_0)
     // Creating list with bitmap for using it in compatibility mode
-    GLuint aBitmapList = glGenLists (1);
+    GLuint aBitmapList = theCtx->core11ffp->glGenLists (1);
     aSprite->SetDisplayList (theCtx, aBitmapList);
 
     Handle(Image_PixMap) anImage = aNewMarkerImage->IsColoredImage()
@@ -295,20 +295,20 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
         anImage = anImageCopy;
       }
       const GLint anAligment = Min ((GLint)anImage->MaxRowAligmentBytes(), 8);
-      glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
+      theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
 
       const GLint anExtraBytes = GLint (anImage->RowExtraBytes());
       const GLint aPixelsWidth = GLint (anImage->SizeRowBytes() / anImage->SizePixelBytes());
       const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
-      glPixelStorei (GL_UNPACK_ROW_LENGTH, aRowLength);
+      theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, aRowLength);
 
-      glNewList (aBitmapList, GL_COMPILE);
+      theCtx->core11ffp->glNewList (aBitmapList, GL_COMPILE);
       const Standard_Integer aWidth = (Standard_Integer )anImage->Width(), aHeight = (Standard_Integer )anImage->Height();
-      glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), NULL); // make offsets that will be added to the current raster position
-      glDrawPixels (GLsizei(anImage->Width()), GLsizei(anImage->Height()), aFormat.PixelFormat(), aFormat.DataType(), anImage->Data());
-      glEndList();
-      glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-      glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+      theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), NULL); // make offsets that will be added to the current raster position
+      theCtx->core11ffp->glDrawPixels (GLsizei(anImage->Width()), GLsizei(anImage->Height()), aFormat.PixelFormat(), aFormat.DataType(), anImage->Data());
+      theCtx->core11ffp->glEndList();
+      theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+      theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
     }
 
     if (!aFormat.IsValid() || !hadAlreadyAlpha)
@@ -323,10 +323,10 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
       aNewMarkerImage->GetTextureSize (aWidth, aHeight);
       if (Handle(TColStd_HArray1OfByte) aBitMap = aNewMarkerImage->GetBitMapArray())
       {
-        glNewList (aBitmapList, GL_COMPILE);
-        glBitmap ((GLsizei)aWidth, (GLsizei)aHeight, (GLfloat)(0.5f * aWidth), (GLfloat)(0.5f * aHeight),
-                   0.f, 0.f, (const GLubyte*)&aBitMap->First());
-        glEndList();
+        theCtx->core11ffp->glNewList (aBitmapList, GL_COMPILE);
+        theCtx->core11ffp->glBitmap ((GLsizei)aWidth, (GLsizei)aHeight, (GLfloat)(0.5f * aWidth), (GLfloat)(0.5f * aHeight),
+                                     0.f, 0.f, (const GLubyte*)&aBitMap->First());
+        theCtx->core11ffp->glEndList();
       }
     }
   #endif

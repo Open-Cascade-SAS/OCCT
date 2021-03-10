@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore30.hxx>
 
 //! OpenGL 3.1 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore31 : public theBaseClass_t
+struct OpenGl_GlCore31 : public OpenGl_GlCore30
 {
+private:
+  typedef OpenGl_GlCore30 theBaseClass_t;
 
 public: //! @name GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
 
@@ -49,12 +50,5 @@ public: //! @name OpenGL 3.1 additives to 3.0
 #endif
 
 };
-
-//! OpenGL 3.1 compatibility profile.
-typedef OpenGl_TmplCore31<OpenGl_GlCore30>    OpenGl_GlCore31Back;
-
-//! OpenGL 3.1 core profile (without removed entry points marked as deprecated in 3.0).
-//! Notice that GLSL versions 1.10 and 1.20 also removed in 3.1!
-typedef OpenGl_TmplCore31<OpenGl_GlCore30Fwd> OpenGl_GlCore31;
 
 #endif // _OpenGl_GlCore31_Header

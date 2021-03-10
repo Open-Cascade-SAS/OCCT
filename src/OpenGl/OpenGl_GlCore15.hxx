@@ -18,12 +18,11 @@
 
 #include <OpenGl_GlCore14.hxx>
 
-/**
- * OpenGL 1.5 core based on 1.4 version.
- */
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore15 : public theBaseClass_t
+//! OpenGL 1.5 core based on 1.4 version.
+struct OpenGl_GlCore15 : public OpenGl_GlCore14
 {
+private:
+  typedef OpenGl_GlCore14 theBaseClass_t;
 
 public: //! @name OpenGL 1.5 additives to 1.4
 
@@ -52,11 +51,5 @@ public: //! @name OpenGL 1.5 additives to 1.4
   using theBaseClass_t::glGetBufferParameteriv;
 
 };
-
-//! OpenGL 1.5 core based on 1.4 version.
-typedef OpenGl_TmplCore15<OpenGl_GlCore14>    OpenGl_GlCore15;
-
-//! OpenGL 1.5 without deprecated entry points.
-typedef OpenGl_TmplCore15<OpenGl_GlCore14Fwd> OpenGl_GlCore15Fwd;
 
 #endif // _OpenGl_GlCore15_Header

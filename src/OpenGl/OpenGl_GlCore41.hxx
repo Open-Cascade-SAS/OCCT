@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore40.hxx>
 
 //! OpenGL 4.1 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore41 : public theBaseClass_t
+struct OpenGl_GlCore41 : public OpenGl_GlCore40
 {
+private:
+  typedef OpenGl_GlCore40 theBaseClass_t;
 
 #if !defined(GL_ES_VERSION_2_0)
 
@@ -128,16 +129,8 @@ public: //! @name GL_ARB_viewport_array (added to OpenGL 4.1 core)
   using theBaseClass_t::glGetFloati_v;
   using theBaseClass_t::glGetDoublei_v;
 
-public: //! @name OpenGL 4.1 additives to 4.0
-
 #endif
 
 };
-
-//! OpenGL 4.1 compatibility profile.
-typedef OpenGl_TmplCore41<OpenGl_GlCore40Back> OpenGl_GlCore41Back;
-
-//! OpenGL 4.1 core profile.
-typedef OpenGl_TmplCore41<OpenGl_GlCore40>     OpenGl_GlCore41;
 
 #endif // _OpenGl_GlCore41_Header

@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore15.hxx>
 
 //! OpenGL 2.0 core based on 1.5 version.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore20 : public theBaseClass_t
+struct OpenGl_GlCore20 : public OpenGl_GlCore15
 {
+private:
+  typedef OpenGl_GlCore15 theBaseClass_t;
 
 public: //! @name OpenGL 2.0 additives to 1.5
 
@@ -123,11 +124,5 @@ public: //! @name OpenGL 2.0 additives to 1.5
 #endif
 
 };
-
-//! OpenGL 2.0 core based on 1.5 version.
-typedef OpenGl_TmplCore20<OpenGl_GlCore15>    OpenGl_GlCore20;
-
-//! OpenGL 2.0 without deprecated entry points.
-typedef OpenGl_TmplCore20<OpenGl_GlCore15Fwd> OpenGl_GlCore20Fwd;
 
 #endif // _OpenGl_GlCore20_Header

@@ -22,9 +22,10 @@
 //! This is first version with deprecation model introduced
 //! - a lot of functionality regarding to fixed pipeline were marked deprecated.
 //! Notice that nothing were actually removed in this version (unless Forward context loaded)!
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore30 : public theBaseClass_t
+struct OpenGl_GlCore30 : public OpenGl_GlCore21
 {
+private:
+  typedef OpenGl_GlCore21 theBaseClass_t;
 
 public: //! @name GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
 
@@ -149,12 +150,5 @@ public: //! @name OpenGL 3.0 additives to 2.1
 #endif
 #endif
 };
-
-//! OpenGL 3.0 core based on 2.1 version.
-typedef OpenGl_TmplCore30<OpenGl_GlCore21>    OpenGl_GlCore30;
-
-//! OpenGL 3.0 without deprecated entry points.
-//! Notice that this doesn't actually corresponds to GL3.0 forward profile!
-typedef OpenGl_TmplCore30<OpenGl_GlCore21Fwd> OpenGl_GlCore30Fwd;
 
 #endif // _OpenGl_GlCore30_Header

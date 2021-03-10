@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore41.hxx>
 
 //! OpenGL 4.2 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore42 : public theBaseClass_t
+struct OpenGl_GlCore42 : public OpenGl_GlCore41
 {
+private:
+  typedef OpenGl_GlCore41 theBaseClass_t;
 
 #if !defined(GL_ES_VERSION_2_0)
 
@@ -58,12 +59,5 @@ public: //! @name GL_ARB_texture_storage (added to OpenGL 4.2 core)
 #endif
 
 };
-
-//! OpenGL 4.2 compatibility profile.
-typedef OpenGl_TmplCore42<OpenGl_GlCore41Back> OpenGl_GlCore42Back;
-
-//! OpenGL 4.2 core profile.
-typedef OpenGl_TmplCore42<OpenGl_GlCore41>     OpenGl_GlCore42;
-
 
 #endif // _OpenGl_GlCore42_Header

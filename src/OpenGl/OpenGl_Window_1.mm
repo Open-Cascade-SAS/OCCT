@@ -379,7 +379,7 @@ void OpenGl_Window::Init()
   ::glViewport (0, 0, myWidth, myHeight);
 #if !defined(GL_ES_VERSION_2_0)
   ::glDrawBuffer (GL_BACK);
-  if (myGlContext->core11 != NULL)
+  if (myGlContext->core11ffp != NULL)
   {
     ::glMatrixMode (GL_MODELVIEW);
   }

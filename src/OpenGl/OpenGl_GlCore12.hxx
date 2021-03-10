@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore11.hxx>
 
 //! OpenGL 1.2 core based on 1.1 version.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore12 : public theBaseClass_t
+struct OpenGl_GlCore12 : public OpenGl_GlCore11Fwd
 {
+private:
+  typedef OpenGl_GlCore11Fwd theBaseClass_t;
 
 public: //! @name OpenGL 1.2 additives to 1.1
 
@@ -36,11 +37,5 @@ public: //! @name OpenGL 1.2 additives to 1.1
 #endif
 
 };
-
-//! OpenGL 1.2 core based on 1.1 version.
-typedef OpenGl_TmplCore12<OpenGl_GlCore11>    OpenGl_GlCore12;
-
-//! OpenGL 1.2 without deprecated entry points.
-typedef OpenGl_TmplCore12<OpenGl_GlCore11Fwd> OpenGl_GlCore12Fwd;
 
 #endif // _OpenGl_GlCore12_Header

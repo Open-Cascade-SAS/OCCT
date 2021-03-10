@@ -73,72 +73,23 @@ struct OpenGl_ArbSamplerObject;
 struct OpenGl_ArbTexBindless;
 struct OpenGl_ExtGS;
 
-template<typename theBaseClass_t> struct OpenGl_TmplCore12;
-typedef OpenGl_TmplCore12<OpenGl_GlCore11>     OpenGl_GlCore12;
-typedef OpenGl_TmplCore12<OpenGl_GlCore11Fwd>  OpenGl_GlCore12Fwd;
-
+struct OpenGl_GlCore12;
 struct OpenGl_GlCore13;
-struct OpenGl_GlCore13Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore14;
-typedef OpenGl_TmplCore14<OpenGl_GlCore13>     OpenGl_GlCore14;
-typedef OpenGl_TmplCore14<OpenGl_GlCore13Fwd>  OpenGl_GlCore14Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore15;
-typedef OpenGl_TmplCore15<OpenGl_GlCore14>     OpenGl_GlCore15;
-typedef OpenGl_TmplCore15<OpenGl_GlCore14Fwd>  OpenGl_GlCore15Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore20;
-typedef OpenGl_TmplCore20<OpenGl_GlCore15>     OpenGl_GlCore20;
-typedef OpenGl_TmplCore20<OpenGl_GlCore15Fwd>  OpenGl_GlCore20Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore21;
-typedef OpenGl_TmplCore21<OpenGl_GlCore20>     OpenGl_GlCore21;
-typedef OpenGl_TmplCore21<OpenGl_GlCore20Fwd>  OpenGl_GlCore21Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore30;
-typedef OpenGl_TmplCore30<OpenGl_GlCore21>     OpenGl_GlCore30;
-typedef OpenGl_TmplCore30<OpenGl_GlCore21Fwd>  OpenGl_GlCore30Fwd;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore31;
-typedef OpenGl_TmplCore31<OpenGl_GlCore30>     OpenGl_GlCore31Back;
-typedef OpenGl_TmplCore31<OpenGl_GlCore30Fwd>  OpenGl_GlCore31;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore32;
-typedef OpenGl_TmplCore32<OpenGl_GlCore31Back> OpenGl_GlCore32Back;
-typedef OpenGl_TmplCore32<OpenGl_GlCore31>     OpenGl_GlCore32;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore33;
-typedef OpenGl_TmplCore33<OpenGl_GlCore32Back> OpenGl_GlCore33Back;
-typedef OpenGl_TmplCore33<OpenGl_GlCore32>     OpenGl_GlCore33;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore40;
-typedef OpenGl_TmplCore40<OpenGl_GlCore33Back> OpenGl_GlCore40Back;
-typedef OpenGl_TmplCore40<OpenGl_GlCore33>     OpenGl_GlCore40;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore41;
-typedef OpenGl_TmplCore41<OpenGl_GlCore40Back> OpenGl_GlCore41Back;
-typedef OpenGl_TmplCore41<OpenGl_GlCore40>     OpenGl_GlCore41;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore42;
-typedef OpenGl_TmplCore42<OpenGl_GlCore41Back> OpenGl_GlCore42Back;
-typedef OpenGl_TmplCore42<OpenGl_GlCore41>     OpenGl_GlCore42;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore43;
-typedef OpenGl_TmplCore43<OpenGl_GlCore42Back> OpenGl_GlCore43Back;
-typedef OpenGl_TmplCore43<OpenGl_GlCore42>     OpenGl_GlCore43;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore44;
-typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
-typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore45;
-typedef OpenGl_TmplCore45<OpenGl_GlCore44Back> OpenGl_GlCore45Back;
-typedef OpenGl_TmplCore45<OpenGl_GlCore44>     OpenGl_GlCore45;
-
-template<typename theBaseClass_t> struct OpenGl_TmplCore46;
-typedef OpenGl_TmplCore46<OpenGl_GlCore45Back> OpenGl_GlCore46Back;
-typedef OpenGl_TmplCore46<OpenGl_GlCore45>     OpenGl_GlCore46;
+struct OpenGl_GlCore14;
+struct OpenGl_GlCore15;
+struct OpenGl_GlCore20;
+struct OpenGl_GlCore21;
+struct OpenGl_GlCore30;
+struct OpenGl_GlCore31;
+struct OpenGl_GlCore32;
+struct OpenGl_GlCore33;
+struct OpenGl_GlCore40;
+struct OpenGl_GlCore41;
+struct OpenGl_GlCore42;
+struct OpenGl_GlCore43;
+struct OpenGl_GlCore44;
+struct OpenGl_GlCore45;
+struct OpenGl_GlCore46;
 
 class Graphic3d_Camera;
 class Graphic3d_PresentationAttributes;
@@ -174,24 +125,15 @@ DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 //!   }
 //! @endcode
 //!
-//! Current implementation provide access to OpenGL core functionality up to 4.4 version (core12, core13, core14, core15, fields core20)
+//! Current implementation provide access to OpenGL core functionality up to 4.6 version (core12, core13, core14, etc.)
 //! as well as several extensions (arbTBO, arbFBO, etc.).
 //!
 //! OpenGL context might be initialized in Core Profile. In this case deprecated functionality become unavailable.
-//! To make code easily adaptable to wide range of OpenGL versions, function sets related to each version has two kinds of suffixes:
-//!  - "back" for version 3.2+.
-//!     Represents function set for Backward-Compatible Profile.
-//!     Function sets without this suffix represents core profile.
-//!  - "fwd"  for version 3.0-.
-//!     Represents non-deprecated function set of earlier OpenGL versions, which are still available within OpenGL 3.2 Core Profile.
-//!     Function sets without this suffix represents complete list of functions related to specific OpenGL version.
-//!
 //! To select which core** function set should be used in specific case:
 //!  - Determine the minimal OpenGL version required for implemented functionality and use it to access all functions.
 //!    For example, if algorithm requires OpenGL 2.1+, it is better to write core20fwd->glEnable() rather than core11fwd->glEnable() for uniformity.
-//!  - If functionality will work within Core Profile, use function sets with appropriate suffix.
 //!  - Validate minimal requirements at initialization/creation time and omit checks within code where algorithm should be already initialized.
-//!    Properly escape code incompatible with Core Profile. The simplest way to check Core Profile is "if (core11 == NULL)".
+//!    Properly escape code incompatible with Core Profile. The simplest way to check Core Profile is "if (core11ffp == NULL)".
 //!
 //! Simplified extensions classification:
 //!  - prefixed with NV, AMD, ATI are vendor-specific (however may be provided by other vendors in some cases);
@@ -209,7 +151,7 @@ DEFINE_STANDARD_HANDLE(OpenGl_Context, Standard_Transient)
 //! model -> world -> view -> projection
 //! These matrices might be changed for local transformation, transform persistent using direct access to
 //! current matrix of ModelWorldState, WorldViewState and ProjectionState
-//! After, these matrices should be applyed using ApplyModelWorldMatrix, ApplyWorldViewMatrix,
+//! After, these matrices should be applied using ApplyModelWorldMatrix, ApplyWorldViewMatrix,
 //! ApplyModelViewMatrix or ApplyProjectionMatrix.
 class OpenGl_Context : public Standard_Transient
 {
@@ -1055,30 +997,22 @@ private:
 
 public: //! @name core profiles
 
-  OpenGl_GlCore11*     core11;     //!< OpenGL 1.1 core functionality
+  OpenGl_GlCore11*     core11ffp;  //!< OpenGL 1.1 core functionality
   OpenGl_GlCore11Fwd*  core11fwd;  //!< OpenGL 1.1 without deprecated entry points
-  OpenGl_GlCore15*     core15;     //!< OpenGL 1.5 core functionality
-  OpenGl_GlCore15Fwd*  core15fwd;  //!< OpenGL 1.5 without deprecated entry points
-  OpenGl_GlCore20*     core20;     //!< OpenGL 2.0 core functionality (includes 1.5)
-  OpenGl_GlCore20Fwd*  core20fwd;  //!< OpenGL 2.0 without deprecated entry points
-  OpenGl_GlCore30*     core30;     //!< OpenGL 3.0 core functionality
-  OpenGl_GlCore30Fwd*  core30fwd;  //!< OpenGL 3.0 without deprecated entry points
+  OpenGl_GlCore15*     core15;     //!< OpenGL 1.5 without deprecated entry points
+  OpenGl_GlCore20*     core20;     //!< OpenGL 2.0 without deprecated entry points
+  OpenGl_GlCore30*     core30;     //!< OpenGL 3.0 without deprecated entry points
   OpenGl_GlCore32*     core32;     //!< OpenGL 3.2 core profile
-  OpenGl_GlCore32Back* core32back; //!< OpenGL 3.2 backward compatibility profile
   OpenGl_GlCore33*     core33;     //!< OpenGL 3.3 core profile
-  OpenGl_GlCore33Back* core33back; //!< OpenGL 3.3 backward compatibility profile
   OpenGl_GlCore41*     core41;     //!< OpenGL 4.1 core profile
-  OpenGl_GlCore41Back* core41back; //!< OpenGL 4.1 backward compatibility profile
   OpenGl_GlCore42*     core42;     //!< OpenGL 4.2 core profile
-  OpenGl_GlCore42Back* core42back; //!< OpenGL 4.2 backward compatibility profile
   OpenGl_GlCore43*     core43;     //!< OpenGL 4.3 core profile
-  OpenGl_GlCore43Back* core43back; //!< OpenGL 4.3 backward compatibility profile
   OpenGl_GlCore44*     core44;     //!< OpenGL 4.4 core profile
-  OpenGl_GlCore44Back* core44back; //!< OpenGL 4.4 backward compatibility profile
   OpenGl_GlCore45*     core45;     //!< OpenGL 4.5 core profile
-  OpenGl_GlCore45Back* core45back; //!< OpenGL 4.5 backward compatibility profile
   OpenGl_GlCore46*     core46;     //!< OpenGL 4.6 core profile
-  OpenGl_GlCore46Back* core46back; //!< OpenGL 4.6 backward compatibility profile
+
+  OpenGl_GlCore15*     core15fwd;  //!< obsolete entry left for code portability; core15 should be used instead
+  OpenGl_GlCore20*     core20fwd;  //!< obsolete entry left for code portability; core20 should be used instead
 
   Handle(OpenGl_Caps) caps; //!< context options
 

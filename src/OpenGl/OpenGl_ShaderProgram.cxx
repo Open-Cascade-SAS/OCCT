@@ -1116,9 +1116,9 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return true;
   }
 #else
-  if (theCtx->core30fwd != NULL)
+  if (theCtx->core30 != NULL)
   {
-    theCtx->core30fwd->glUniform2uiv (theLocation, 1, theValue.GetData());
+    theCtx->core30->glUniform2uiv (theLocation, 1, theValue.GetData());
     return true;
   }
 #endif
@@ -1158,9 +1158,9 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return true;
   }
 #else
-  if (theCtx->core30fwd != NULL)
+  if (theCtx->core30 != NULL)
   {
-    theCtx->core30fwd->glUniform2uiv (theLocation, theCount, theValue->GetData());
+    theCtx->core30->glUniform2uiv (theLocation, theCount, theValue->GetData());
     return true;
   }
 #endif

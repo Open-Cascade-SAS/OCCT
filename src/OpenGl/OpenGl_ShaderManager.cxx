@@ -46,8 +46,8 @@ namespace
     // the light is a headlight?
     if (theLight.IsHeadlight())
     {
-      theCtx->core11->glMatrixMode (GL_MODELVIEW);
-      theCtx->core11->glLoadIdentity();
+      theCtx->core11ffp->glMatrixMode (GL_MODELVIEW);
+      theCtx->core11ffp->glLoadIdentity();
     }
 
     // setup light type
@@ -61,44 +61,44 @@ namespace
         const OpenGl_Vec4 anInfDir = -theLight.PackedDirectionRange();
 
         // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
-        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
         break;
       }
       case Graphic3d_TOLS_POSITIONAL:
       {
         // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
         const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
-        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
-        theCtx->core11->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
-        theCtx->core11->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
-        theCtx->core11->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
         break;
       }
       case Graphic3d_TOLS_SPOT:
       {
         const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
-        theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
-        theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.PackedDirectionRange().GetData());
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
-        theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
-        theCtx->core11->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
-        theCtx->core11->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
-        theCtx->core11->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
+        theCtx->core11ffp->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.PackedDirectionRange().GetData());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+        theCtx->core11ffp->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
         break;
       }
     }
@@ -106,7 +106,7 @@ namespace
     // restore matrix in case of headlight
     if (theLight.IsHeadlight())
     {
-      theCtx->core11->glLoadMatrixf (theModelView.GetData());
+      theCtx->core11ffp->glLoadMatrixf (theModelView.GetData());
     }
 
     glEnable (theLightGlId);
@@ -364,7 +364,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 == NULL)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
@@ -389,22 +389,22 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     const Graphic3d_Vec4 anAmbient = !myLightSourceState.LightSources().IsNull()
                                     ? myLightSourceState.LightSources()->AmbientColor()
                                     : Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
-    myContext->core11->glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbient.GetData());
+    myContext->core11ffp->glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbient.GetData());
 
     // GL_LIGHTING is managed by drawers to switch between shaded / no lighting output,
     // therefore managing the state here does not have any effect - do it just for consistency.
     if (aLightGlId != GL_LIGHT0)
     {
-      ::glEnable (GL_LIGHTING);
+      myContext->core11fwd->glEnable (GL_LIGHTING);
     }
     else
     {
-      ::glDisable (GL_LIGHTING);
+      myContext->core11fwd->glDisable (GL_LIGHTING);
     }
     // switch off unused lights
     for (; aLightGlId <= GL_LIGHT7; ++aLightGlId)
     {
-      ::glDisable (aLightGlId);
+      myContext->core11fwd->glDisable (aLightGlId);
     }
   #endif
     return;
@@ -594,10 +594,10 @@ void OpenGl_ShaderManager::pushProjectionState (const Handle(OpenGl_ShaderProgra
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 != NULL)
+    if (myContext->core11ffp != NULL)
     {
-      myContext->core11->glMatrixMode (GL_PROJECTION);
-      myContext->core11->glLoadMatrixf (myProjectionState.ProjectionMatrix());
+      myContext->core11ffp->glMatrixMode (GL_PROJECTION);
+      myContext->core11ffp->glLoadMatrixf (myProjectionState.ProjectionMatrix());
     }
   #endif
     return;
@@ -634,11 +634,11 @@ void OpenGl_ShaderManager::pushModelWorldState (const Handle(OpenGl_ShaderProgra
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 != NULL)
+    if (myContext->core11ffp != NULL)
     {
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11->glMatrixMode (GL_MODELVIEW);
-      myContext->core11->glLoadMatrixf (aModelView.GetData());
+      myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
       theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
     }
   #endif
@@ -681,11 +681,11 @@ void OpenGl_ShaderManager::pushWorldViewState (const Handle(OpenGl_ShaderProgram
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 != NULL)
+    if (myContext->core11ffp != NULL)
     {
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11->glMatrixMode (GL_MODELVIEW);
-      myContext->core11->glLoadMatrixf (aModelView.GetData());
+      myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
       theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
     }
   #endif
@@ -741,7 +741,7 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 == NULL)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
@@ -789,12 +789,12 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
       {
         // set either identity or pure view matrix
         toRestoreModelView = Standard_True;
-        myContext->core11->glMatrixMode (GL_MODELVIEW);
-        myContext->core11->glLoadMatrixf (myWorldViewState.WorldViewMatrix().GetData());
+        myContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+        myContext->core11ffp->glLoadMatrixf (myWorldViewState.WorldViewMatrix().GetData());
       }
 
-      ::glEnable (anFfpPlaneID);
-      myContext->core11->glClipPlane (anFfpPlaneID, aPlaneEq);
+      myContext->core11fwd->glEnable (anFfpPlaneID);
+      myContext->core11ffp->glClipPlane (anFfpPlaneID, aPlaneEq);
 
       ++aPlaneId;
     }
@@ -802,14 +802,14 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
     // switch off unused lights
     for (; aPlaneId < aNbMaxPlanes; ++aPlaneId)
     {
-      ::glDisable (GL_CLIP_PLANE0 + aPlaneId);
+      myContext->core11fwd->glDisable (GL_CLIP_PLANE0 + aPlaneId);
     }
 
     // restore combined model-view matrix
     if (toRestoreModelView)
     {
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
-      myContext->core11->glLoadMatrixf (aModelView.GetData());
+      myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
     }
   #endif
     return;
@@ -915,38 +915,38 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
   if (theProgram == myFfpProgram)
   {
   #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->core11 == NULL)
+    if (myContext->core11ffp == NULL)
     {
       return;
     }
 
     if (myMaterialState.AlphaCutoff() < ShortRealLast())
     {
-      glAlphaFunc (GL_GEQUAL, myMaterialState.AlphaCutoff());
-      glEnable (GL_ALPHA_TEST);
+      myContext->core11fwd->glAlphaFunc (GL_GEQUAL, myMaterialState.AlphaCutoff());
+      myContext->core11fwd->glEnable (GL_ALPHA_TEST);
     }
     else
     {
-      glDisable (GL_ALPHA_TEST);
+      myContext->core11fwd->glDisable (GL_ALPHA_TEST);
     }
 
     const GLenum aFrontFace = myMaterialState.ToDistinguish() ? GL_FRONT : GL_FRONT_AND_BACK;
     const OpenGl_MaterialCommon& aFrontMat = aMat.Common[0];
     const OpenGl_MaterialCommon& aBackMat  = aMat.Common[1];
     const Graphic3d_Vec4 aSpec4 (aFrontMat.SpecularShininess.rgb(), 1.0f);
-    myContext->core11->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_SPECULAR,  aSpec4.GetData());
-    myContext->core11->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Emission.GetData());
-    myContext->core11->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Shine());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_AMBIENT,   aFrontMat.Ambient.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_DIFFUSE,   aFrontMat.Diffuse.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_SPECULAR,  aSpec4.GetData());
+    myContext->core11ffp->glMaterialfv(aFrontFace, GL_EMISSION,  aFrontMat.Emission.GetData());
+    myContext->core11ffp->glMaterialf (aFrontFace, GL_SHININESS, aFrontMat.Shine());
     if (myMaterialState.ToDistinguish())
     {
       const Graphic3d_Vec4 aSpec4Back (aBackMat.SpecularShininess.rgb(), 1.0f);
-      myContext->core11->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Ambient.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Diffuse.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_SPECULAR,  aSpec4Back.GetData());
-      myContext->core11->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
-      myContext->core11->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_AMBIENT,   aBackMat.Ambient.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_DIFFUSE,   aBackMat.Diffuse.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_SPECULAR,  aSpec4Back.GetData());
+      myContext->core11ffp->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
+      myContext->core11ffp->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
     }
   #endif
     return;
@@ -1048,17 +1048,17 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
     }
   }
 #if !defined(GL_ES_VERSION_2_0)
-  else if (myContext->core11 != NULL)
+  else if (myContext->core11ffp != NULL)
   {
     // manage FFP lighting
     myContext->SetShadeModel (theShadingModel);
     if (theShadingModel == Graphic3d_TOSM_UNLIT)
     {
-      glDisable (GL_LIGHTING);
+      myContext->core11fwd->glDisable (GL_LIGHTING);
     }
     else
     {
-      glEnable (GL_LIGHTING);
+      myContext->core11fwd->glEnable (GL_LIGHTING);
     }
   }
 #else

@@ -144,19 +144,19 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
 
     // General initialization of the context
   #if !defined(GL_ES_VERSION_2_0)
-    if (myGlContext->core11 != NULL)
+    if (myGlContext->core11ffp != NULL)
     {
       // enable two-side lighting by default
-      glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-      glHint (GL_POINT_SMOOTH_HINT, GL_FASTEST);
+      myGlContext->core11ffp->glLightModeli ((GLenum )GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+      myGlContext->core11fwd->glHint (GL_POINT_SMOOTH_HINT, GL_FASTEST);
       if (myGlContext->caps->ffpEnable)
       {
-        glHint (GL_FOG_HINT, GL_FASTEST);
+        myGlContext->core11fwd->glHint (GL_FOG_HINT, GL_FASTEST);
       }
     }
 
-    glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
-    glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    myGlContext->core11fwd->glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
+    myGlContext->core11fwd->glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
     if (myGlContext->Vendor() == "microsoft corporation"
     && !myGlContext->IsGlGreaterEqual (1, 2))
     {
@@ -189,7 +189,7 @@ Standard_Boolean OpenGl_Workspace::Activate()
   ViewMatrix_applied      = &myDefaultMatrix;
   StructureMatrix_applied = &myDefaultMatrix;
 
-  if (myGlContext->core11 == NULL)
+  if (myGlContext->core11ffp == NULL)
   {
     if (myGlContext->caps->ffpEnable)
     {

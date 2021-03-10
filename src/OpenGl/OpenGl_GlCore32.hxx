@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore31.hxx>
 
 //! OpenGL 3.2 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore32 : public theBaseClass_t
+struct OpenGl_GlCore32 : public OpenGl_GlCore31
 {
+private:
+  typedef OpenGl_GlCore31 theBaseClass_t;
 
 #if !defined(GL_ES_VERSION_2_0)
 
@@ -62,11 +63,5 @@ public: //! @name OpenGL 3.2 additives to 3.1
 #endif
 
 };
-
-//! OpenGL 3.2 compatibility profile.
-typedef OpenGl_TmplCore32<OpenGl_GlCore31Back> OpenGl_GlCore32Back;
-
-//! OpenGL 3.2 core profile.
-typedef OpenGl_TmplCore32<OpenGl_GlCore31>     OpenGl_GlCore32;
 
 #endif // _OpenGl_GlCore32_Header

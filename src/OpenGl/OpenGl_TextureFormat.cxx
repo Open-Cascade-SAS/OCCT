@@ -126,7 +126,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
 #if defined(GL_ES_VERSION_2_0)
   const bool useRedRedAlpha = false;
 #else
-  const bool useRedRedAlpha = (theCtx->core11 == NULL);
+  const bool useRedRedAlpha = (theCtx->core11ffp == NULL);
 #endif
   switch (theFormat)
   {

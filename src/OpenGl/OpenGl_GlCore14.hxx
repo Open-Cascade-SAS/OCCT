@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore13.hxx>
 
 //! OpenGL 1.4 core based on 1.3 version.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore14 : public theBaseClass_t
+struct OpenGl_GlCore14 : public OpenGl_GlCore13
 {
+private:
+  typedef OpenGl_GlCore13 theBaseClass_t;
 
 public: //! @name OpenGL 1.4 additives to 1.3
 
@@ -37,11 +38,5 @@ public: //! @name OpenGL 1.4 additives to 1.3
 #endif
 
 };
-
-//! OpenGL 1.4 core based on 1.3 version.
-typedef OpenGl_TmplCore14<OpenGl_GlCore13>    OpenGl_GlCore14;
-
-//! OpenGL 1.4 without deprecated entry points.
-typedef OpenGl_TmplCore14<OpenGl_GlCore13Fwd> OpenGl_GlCore14Fwd;
 
 #endif // _OpenGl_GlCore14_Header

@@ -60,7 +60,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
     aBoundBoxVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
   }
 #if !defined(GL_ES_VERSION_2_0)
-  else if (aCtx->core11 != NULL)
+  else if (aCtx->core11ffp != NULL)
   {
     const Graphic3d_Vec3d aMind = myBndBox.CornerMin() + aMoveVec;
     const Graphic3d_Vec3d aMaxd = myBndBox.CornerMax() + aMoveVec;
@@ -89,10 +89,10 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
     aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false, Handle(OpenGl_ShaderProgram)());
     aCtx->SetColor4fv (theWorkspace->InteriorColor());
     aCtx->core11fwd->glDisable (GL_LIGHTING);
-    aCtx->core11->glEnableClientState (GL_VERTEX_ARRAY);
-    aCtx->core11->glVertexPointer (3, GL_FLOAT, 0, aVerts[0].GetData());
+    aCtx->core11ffp->glEnableClientState (GL_VERTEX_ARRAY);
+    aCtx->core11ffp->glVertexPointer (3, GL_FLOAT, 0, aVerts[0].GetData());
     aCtx->core11fwd->glDrawArrays (GL_LINE_STRIP, 0, 16);
-    aCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);
+    aCtx->core11ffp->glDisableClientState (GL_VERTEX_ARRAY);
   }
 #endif
   aCtx->BindTextures (aPrevTexture, Handle(OpenGl_ShaderProgram)());
@@ -429,7 +429,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   const Standard_Boolean anOldGlNormalize = aCtx->IsGlNormalizeEnabled();
 #if !defined(GL_ES_VERSION_2_0)
   // detect scale transform
-  if (aCtx->core11 != NULL
+  if (aCtx->core11ffp != NULL
   && !myTrsf.IsNull())
   {
     const Standard_Real aScale = myTrsf->Trsf().ScaleFactor();
@@ -457,7 +457,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 
   #if !defined(GL_ES_VERSION_2_0)
     if (!aCtx->IsGlNormalizeEnabled()
-      && aCtx->core11 != NULL)
+      && aCtx->core11ffp != NULL)
     {
       const Standard_Real aScale = Graphic3d_TransformUtils::ScaleFactor<Standard_ShortReal> (aWorldView);
       if (Abs (aScale - 1.0) > Precision::Confusion())

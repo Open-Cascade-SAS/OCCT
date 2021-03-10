@@ -35,10 +35,9 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
 {
 #if defined(GL_ES_VERSION_2_0)
   (void )theIsCoreProfile;
-  theCtx.core11 = NULL;
+  theCtx.core11ffp = NULL;
 #else
-  const bool isCoreProfile = theIsCoreProfile;
-  theCtx.core11 = !isCoreProfile ? (OpenGl_GlCore11* )this : NULL;
+  theCtx.core11ffp = !theIsCoreProfile ? (OpenGl_GlCore11* )this : NULL;
 #endif
   theCtx.core11fwd  = (OpenGl_GlCore11Fwd* )this;
   theCtx.core15     = NULL;
@@ -46,23 +45,14 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   theCtx.core20     = NULL;
   theCtx.core20fwd  = NULL;
   theCtx.core30     = NULL;
-  theCtx.core30fwd  = NULL;
   theCtx.core32     = NULL;
-  theCtx.core32back = NULL;
   theCtx.core33     = NULL;
-  theCtx.core33back = NULL;
   theCtx.core41     = NULL;
-  theCtx.core41back = NULL;
   theCtx.core42     = NULL;
-  theCtx.core42back = NULL;
   theCtx.core43     = NULL;
-  theCtx.core43back = NULL;
   theCtx.core44     = NULL;
-  theCtx.core44back = NULL;
   theCtx.core45     = NULL;
-  theCtx.core45back = NULL;
   theCtx.core46     = NULL;
-  theCtx.core46back = NULL;
   theCtx.arbTBO     = NULL;
   theCtx.arbTboRGB32 = false;
   theCtx.arbClipControl = false;
@@ -106,10 +96,11 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (isGlGreaterEqualShort (2, 0))
   {
     // enable compatible functions
-    theCtx.core20    = (OpenGl_GlCore20*    )this;
-    theCtx.core20fwd = (OpenGl_GlCore20Fwd* )this;
-    theCtx.core15fwd = (OpenGl_GlCore15Fwd* )this;
-    theCtx.arbFBO    = (OpenGl_ArbFBO*      )this;
+    theCtx.core20    = (OpenGl_GlCore20* )this;
+    theCtx.core20fwd = (OpenGl_GlCore20* )this;
+    theCtx.core15    = (OpenGl_GlCore15* )this;
+    theCtx.core15fwd = (OpenGl_GlCore15* )this;
+    theCtx.arbFBO    = (OpenGl_ArbFBO*   )this;
   }
   if (isGlGreaterEqualShort (3, 0)
    && FindProcShort (glBlitFramebuffer))
@@ -292,8 +283,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   }
   else
   {
-    theCtx.core30    = (OpenGl_GlCore30*    )this;
-    theCtx.core30fwd = (OpenGl_GlCore30Fwd* )this;
+    theCtx.core30 = (OpenGl_GlCore30* )this;
     theCtx.hasGetBufferData = true;
   }
 
@@ -628,48 +618,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
        && FindProcShort (glCompressedTexSubImage2D)
        && FindProcShort (glCompressedTexSubImage1D)
        && FindProcShort (glGetCompressedTexImage);
-
-  if (!isCoreProfile)
-  {
-    has13 = has13
-       && FindProcShort (glClientActiveTexture)
-       && FindProcShort (glMultiTexCoord1d)
-       && FindProcShort (glMultiTexCoord1dv)
-       && FindProcShort (glMultiTexCoord1f)
-       && FindProcShort (glMultiTexCoord1fv)
-       && FindProcShort (glMultiTexCoord1i)
-       && FindProcShort (glMultiTexCoord1iv)
-       && FindProcShort (glMultiTexCoord1s)
-       && FindProcShort (glMultiTexCoord1sv)
-       && FindProcShort (glMultiTexCoord2d)
-       && FindProcShort (glMultiTexCoord2dv)
-       && FindProcShort (glMultiTexCoord2f)
-       && FindProcShort (glMultiTexCoord2fv)
-       && FindProcShort (glMultiTexCoord2i)
-       && FindProcShort (glMultiTexCoord2iv)
-       && FindProcShort (glMultiTexCoord2s)
-       && FindProcShort (glMultiTexCoord2sv)
-       && FindProcShort (glMultiTexCoord3d)
-       && FindProcShort (glMultiTexCoord3dv)
-       && FindProcShort (glMultiTexCoord3f)
-       && FindProcShort (glMultiTexCoord3fv)
-       && FindProcShort (glMultiTexCoord3i)
-       && FindProcShort (glMultiTexCoord3iv)
-       && FindProcShort (glMultiTexCoord3s)
-       && FindProcShort (glMultiTexCoord3sv)
-       && FindProcShort (glMultiTexCoord4d)
-       && FindProcShort (glMultiTexCoord4dv)
-       && FindProcShort (glMultiTexCoord4f)
-       && FindProcShort (glMultiTexCoord4fv)
-       && FindProcShort (glMultiTexCoord4i)
-       && FindProcShort (glMultiTexCoord4iv)
-       && FindProcShort (glMultiTexCoord4s)
-       && FindProcShort (glMultiTexCoord4sv)
-       && FindProcShort (glLoadTransposeMatrixf)
-       && FindProcShort (glLoadTransposeMatrixd)
-       && FindProcShort (glMultTransposeMatrixf)
-       && FindProcShort (glMultTransposeMatrixd);
-  }
   if (!has13)
   {
     theCtx.checkWrongVersion (1, 3, aLastFailedProc);
@@ -712,11 +660,8 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
        && FindProcShort (glGetBufferPointerv);
   if (has15)
   {
-    if (!isCoreProfile)
-    {
-      theCtx.core15 = (OpenGl_GlCore15* )this;
-    }
-    theCtx.core15fwd = (OpenGl_GlCore15Fwd* )this;
+    theCtx.core15    = (OpenGl_GlCore15* )this;
+    theCtx.core15fwd = (OpenGl_GlCore15* )this;
     theCtx.hasGetBufferData = true;
   }
   else
@@ -830,11 +775,8 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
     }
     else
     {
-      if (!isCoreProfile)
-      {
-        theCtx.core20  = (OpenGl_GlCore20*    )this;
-      }
-      theCtx.core20fwd = (OpenGl_GlCore20Fwd* )this;
+      theCtx.core20    = (OpenGl_GlCore20* )this;
+      theCtx.core20fwd = (OpenGl_GlCore20* )this;
     }
   }
   else
@@ -979,11 +921,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
     theCtx.arbNPTW  = true;
     theCtx.arbTexRG = true;
 
-    if (!isCoreProfile)
-    {
-      theCtx.core30 = (OpenGl_GlCore30* )this;
-    }
-    theCtx.core30fwd = (OpenGl_GlCore30Fwd* )this;
+    theCtx.core30 = (OpenGl_GlCore30* )this;
   }
 
   // load OpenGL 3.1 new functions
@@ -1061,10 +999,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has32)
   {
     theCtx.core32 = (OpenGl_GlCore32* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core32back = (OpenGl_GlCore32Back* )this;
-    }
   }
   else
   {
@@ -1114,44 +1048,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
        && FindProcShort (glVertexAttribP4ui)
        && FindProcShort (glVertexAttribP4uiv);
 
-  if ( hasVertType21010101rev
-   && !isCoreProfile)
-  {
-    // load deprecated functions
-    const bool hasVertType21010101revExt =
-          FindProcShort (glVertexP2ui)
-       && FindProcShort (glVertexP2uiv)
-       && FindProcShort (glVertexP3ui)
-       && FindProcShort (glVertexP3uiv)
-       && FindProcShort (glVertexP4ui)
-       && FindProcShort (glVertexP4uiv)
-       && FindProcShort (glTexCoordP1ui)
-       && FindProcShort (glTexCoordP1uiv)
-       && FindProcShort (glTexCoordP2ui)
-       && FindProcShort (glTexCoordP2uiv)
-       && FindProcShort (glTexCoordP3ui)
-       && FindProcShort (glTexCoordP3uiv)
-       && FindProcShort (glTexCoordP4ui)
-       && FindProcShort (glTexCoordP4uiv)
-       && FindProcShort (glMultiTexCoordP1ui)
-       && FindProcShort (glMultiTexCoordP1uiv)
-       && FindProcShort (glMultiTexCoordP2ui)
-       && FindProcShort (glMultiTexCoordP2uiv)
-       && FindProcShort (glMultiTexCoordP3ui)
-       && FindProcShort (glMultiTexCoordP3uiv)
-       && FindProcShort (glMultiTexCoordP4ui)
-       && FindProcShort (glMultiTexCoordP4uiv)
-       && FindProcShort (glNormalP3ui)
-       && FindProcShort (glNormalP3uiv)
-       && FindProcShort (glColorP3ui)
-       && FindProcShort (glColorP3uiv)
-       && FindProcShort (glColorP4ui)
-       && FindProcShort (glColorP4uiv)
-       && FindProcShort (glSecondaryColorP3ui)
-       && FindProcShort (glSecondaryColorP3uiv);
-    (void )hasVertType21010101revExt;
-  }
-
   // load OpenGL 3.3 extra functions
   has33 = isGlGreaterEqualShort (3, 3)
        && hasBlendFuncExtended
@@ -1162,10 +1058,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has33)
   {
     theCtx.core33 = (OpenGl_GlCore33* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core33back = (OpenGl_GlCore33Back* )this;
-    }
   }
   else
   {
@@ -1366,10 +1258,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has41)
   {
     theCtx.core41 = (OpenGl_GlCore41* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core41back = (OpenGl_GlCore41Back* )this;
-    }
   }
   else
   {
@@ -1416,10 +1304,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has42)
   {
     theCtx.core42 = (OpenGl_GlCore42* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core42back = (OpenGl_GlCore42Back* )this;
-    }
   }
   else
   {
@@ -1473,10 +1357,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has43)
   {
     theCtx.core43 = (OpenGl_GlCore43* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core43back = (OpenGl_GlCore43Back* )this;
-    }
   }
   else
   {
@@ -1500,10 +1380,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has44)
   {
     theCtx.core44 = (OpenGl_GlCore44* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core44back = (OpenGl_GlCore44Back* )this;
-    }
   }
   else
   {
@@ -1638,10 +1514,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   {
     theCtx.core45 = (OpenGl_GlCore45* )this;
     theCtx.arbClipControl = true;
-    if (!isCoreProfile)
-    {
-      theCtx.core45back = (OpenGl_GlCore45Back* )this;
-    }
   }
   else
   {
@@ -1656,10 +1528,6 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   if (has46)
   {
     theCtx.core46 = (OpenGl_GlCore46* )this;
-    if (!isCoreProfile)
-    {
-      theCtx.core46back = (OpenGl_GlCore46Back* )this;
-    }
   }
   else
   {

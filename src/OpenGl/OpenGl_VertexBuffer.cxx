@@ -305,7 +305,7 @@ bool OpenGl_VertexBuffer::HasNormalAttribute() const
 // =======================================================================
 void OpenGl_VertexBuffer::unbindFixedColor (const Handle(OpenGl_Context)& theCtx)
 {
-  theCtx->core11->glDisableClientState (GL_COLOR_ARRAY);
+  theCtx->core11ffp->glDisableClientState (GL_COLOR_ARRAY);
   theCtx->core11fwd->glDisable (GL_COLOR_MATERIAL);
 
   // invalidate FFP material state after GL_COLOR_MATERIAL has modified it (took values from the vertex color)

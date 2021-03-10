@@ -778,7 +778,7 @@ void OpenGl_Window::Init()
   myGlContext->ResizeViewport (aViewport);
 #if !defined(GL_ES_VERSION_2_0)
   myGlContext->SetDrawBuffer (GL_BACK);
-  if (myGlContext->core11 != NULL)
+  if (myGlContext->core11ffp != NULL)
   {
     glMatrixMode (GL_MODELVIEW);
   }

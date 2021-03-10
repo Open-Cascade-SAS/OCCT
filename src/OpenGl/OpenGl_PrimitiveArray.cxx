@@ -520,9 +520,9 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
                          : myDrawMode;
 #if !defined(GL_ES_VERSION_2_0)
   if (aGlContext->ActiveProgram().IsNull()
-   && aGlContext->core11 != NULL)
+   && aGlContext->core11ffp != NULL)
   {
-    glDisable (GL_LIGHTING);
+    aGlContext->core11fwd->glDisable (GL_LIGHTING);
   }
 #endif
 
@@ -550,14 +550,14 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
       for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
       {
         const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-        glDrawElements (aDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
+        aGlContext->core11fwd->glDrawElements (aDrawMode, aNbElemsInGroup, myVboIndices->GetDataType(), anOffset);
         anOffset += aStride * aNbElemsInGroup;
       }
     }
     // draw one (or sequential) primitive by the indices
     else
     {
-      glDrawElements (aDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
+      aGlContext->core11fwd->glDrawElements (aDrawMode, myVboIndices->GetElemsNb(), myVboIndices->GetDataType(), anOffset);
     }
     myVboIndices->Unbind (aGlContext);
   }
@@ -567,13 +567,13 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
     for (Standard_Integer aGroupIter = 0; aGroupIter < myBounds->NbBounds; ++aGroupIter)
     {
       const GLint aNbElemsInGroup = myBounds->Bounds[aGroupIter];
-      glDrawArrays (aDrawMode, aFirstElem, aNbElemsInGroup);
+      aGlContext->core11fwd->glDrawArrays (aDrawMode, aFirstElem, aNbElemsInGroup);
       aFirstElem += aNbElemsInGroup;
     }
   }
   else
   {
-    glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    aGlContext->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
   }
 
   // unbind buffers
@@ -606,7 +606,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (aCtx->core11 != NULL)
+  if (aCtx->core11ffp != NULL)
   {
     aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
     aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
@@ -631,7 +631,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
   {
     for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
     {
-      aCtx->core11->glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
+      aCtx->core11ffp->glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
       aSprite->DrawBitmap (theWorkspace->GetGlContext());
     }
   }
@@ -639,7 +639,7 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
 
   aCtx->core11fwd->glDisable (GL_BLEND);
 #if !defined(GL_ES_VERSION_2_0)
-  if (aCtx->core11 != NULL)
+  if (aCtx->core11ffp != NULL)
   {
     if (aCtx->ShaderManager()->MaterialState().AlphaCutoff() >= ShortRealLast())
     {

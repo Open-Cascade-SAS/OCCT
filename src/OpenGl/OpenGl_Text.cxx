@@ -359,7 +359,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // restore Z buffer settings
   if (theWorkspace->UseZBuffer())
   {
-    glEnable (GL_DEPTH_TEST);
+    aCtx->core11fwd->glEnable (GL_DEPTH_TEST);
   }
 }
 
@@ -514,19 +514,19 @@ void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
   for (Standard_Integer anIter = 0; anIter < myTextures.Length(); ++anIter)
   {
     const GLuint aTexId = myTextures.Value (anIter);
-    glBindTexture (GL_TEXTURE_2D, aTexId);
+    theCtx->core11fwd->glBindTexture (GL_TEXTURE_2D, aTexId);
 
     const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value (anIter);
     const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value (anIter);
     aVerts->BindAttribute (theCtx, Graphic3d_TOA_POS);
     aTCrds->BindAttribute (theCtx, Graphic3d_TOA_UV);
 
-    glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
+    theCtx->core11fwd->glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
 
     aTCrds->UnbindAttribute (theCtx, Graphic3d_TOA_UV);
     aVerts->UnbindAttribute (theCtx, Graphic3d_TOA_POS);
   }
-  glBindTexture (GL_TEXTURE_2D, 0);
+  theCtx->core11fwd->glBindTexture (GL_TEXTURE_2D, 0);
 }
 
 // =======================================================================
@@ -634,10 +634,10 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
                                             Handle(OpenGl_ShaderProgram)());
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11 != NULL
+  if (theCtx->core11ffp != NULL
    && theCtx->ActiveProgram().IsNull())
   {
-    glBindTexture (GL_TEXTURE_2D, 0);
+    theCtx->core11fwd->glBindTexture (GL_TEXTURE_2D, 0);
   }
 #endif
   theCtx->SetColor4fv (theColorSubs);
@@ -747,10 +747,10 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11 != NULL
+  if (theCtx->core11ffp != NULL
    && theCtx->caps->ffpEnable)
   {
-    glDisable (GL_LIGHTING);
+    theCtx->core11fwd->glDisable (GL_LIGHTING);
   }
 #endif
 
@@ -769,14 +769,14 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 #if !defined(GL_ES_VERSION_2_0)
   // activate texture unit
   GLint aTexEnvParam = GL_REPLACE;
-  if (theCtx->core11 != NULL)
+  if (theCtx->core11ffp != NULL)
   {
-    glDisable (GL_TEXTURE_1D);
-    glEnable  (GL_TEXTURE_2D);
-    glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
+    theCtx->core11fwd->glDisable (GL_TEXTURE_1D);
+    theCtx->core11fwd->glEnable  (GL_TEXTURE_2D);
+    theCtx->core11ffp->glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
     if (aTexEnvParam != GL_REPLACE)
     {
-      glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     }
   }
 #endif
@@ -797,8 +797,8 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     case Aspect_TODT_BLEND:
     {
     #if !defined(GL_ES_VERSION_2_0)
-      glEnable  (GL_COLOR_LOGIC_OP);
-      glLogicOp (GL_XOR);
+      theCtx->core11fwd->glEnable (GL_COLOR_LOGIC_OP);
+      theCtx->core11ffp->glLogicOp (GL_XOR);
     #endif
       break;
     }
@@ -849,9 +849,9 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11 != NULL)
+  if (theCtx->core11ffp != NULL)
   {
-    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
+    theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
   }
 #endif
 
@@ -859,28 +859,28 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   {
     if (theTextAspect.Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend)
     {
-      glDisable (GL_BLEND);
+      theCtx->core11fwd->glDisable (GL_BLEND);
     }
     if (!myIs2d)
     {
-      glDisable (GL_DEPTH_TEST);
+      theCtx->core11fwd->glDisable (GL_DEPTH_TEST);
     }
   #if !defined(GL_ES_VERSION_2_0)
-    if (theCtx->core11 != NULL)
+    if (theCtx->core11ffp != NULL)
     {
-      glDisable (GL_TEXTURE_2D);
+      theCtx->core11fwd->glDisable (GL_TEXTURE_2D);
     }
   #endif
     const bool aColorMaskBack = theCtx->SetColorMask (false);
 
-    glClear (GL_STENCIL_BUFFER_BIT);
-    glEnable (GL_STENCIL_TEST);
-    glStencilFunc (GL_ALWAYS, 1, 0xFF);
-    glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
+    theCtx->core11fwd->glClear (GL_STENCIL_BUFFER_BIT);
+    theCtx->core11fwd->glEnable (GL_STENCIL_TEST);
+    theCtx->core11fwd->glStencilFunc (GL_ALWAYS, 1, 0xFF);
+    theCtx->core11fwd->glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
 
     drawRect (theCtx, theTextAspect, OpenGl_Vec4 (1.0f, 1.0f, 1.0f, 1.0f));
 
-    glStencilFunc (GL_ALWAYS, 0, 0xFF);
+    theCtx->core11fwd->glStencilFunc (GL_ALWAYS, 0, 0xFF);
 
     theCtx->SetColorMask (aColorMaskBack);
   }
@@ -890,9 +890,9 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   {
     theCtx->core11fwd->glDisable (GL_BLEND);
   }
-  glDisable (GL_STENCIL_TEST);
+  theCtx->core11fwd->glDisable (GL_STENCIL_TEST);
 #if !defined(GL_ES_VERSION_2_0)
-  glDisable (GL_COLOR_LOGIC_OP);
+  theCtx->core11fwd->glDisable (GL_COLOR_LOGIC_OP);
 #endif
 
   // model view matrix was modified

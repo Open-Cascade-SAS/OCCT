@@ -19,9 +19,10 @@
 #include <OpenGl_GlCore33.hxx>
 
 //! OpenGL 4.0 definition.
-template<typename theBaseClass_t>
-struct OpenGl_TmplCore40 : public theBaseClass_t
+struct OpenGl_GlCore40 : public OpenGl_GlCore33
 {
+private:
+  typedef OpenGl_GlCore33 theBaseClass_t;
 
 #if !defined(GL_ES_VERSION_2_0)
 
@@ -95,11 +96,5 @@ public: //! @name OpenGL 4.0 additives to 3.3
 #endif
 
 };
-
-//! OpenGL 4.0 compatibility profile.
-typedef OpenGl_TmplCore40<OpenGl_GlCore33Back> OpenGl_GlCore40Back;
-
-//! OpenGL 4.0 core profile.
-typedef OpenGl_TmplCore40<OpenGl_GlCore33>     OpenGl_GlCore40;
 
 #endif // _OpenGl_GlCore40_Header
