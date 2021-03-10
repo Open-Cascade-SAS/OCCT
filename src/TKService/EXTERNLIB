@@ -3,7 +3,6 @@ TKMath
 CSF_user32
 CSF_advapi32
 CSF_OpenVR
-CSF_OpenGlLibs
 CSF_advapi32
 CSF_user32
 CSF_XwLibs

@@ -46,6 +46,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   #include <X11/Xlib.h> // XOpenDisplay()
+  #include <GL/glx.h>
 #endif
 
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
@@ -109,7 +110,31 @@ namespace
     }
     return aCfg;
   }
+#elif !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  //! Search for RGBA double-buffered visual with stencil buffer.
+  static int TheDoubleBuffVisual[] =
+  {
+    GLX_RGBA,
+    GLX_DEPTH_SIZE, 16,
+    GLX_STENCIL_SIZE, 1,
+    GLX_DOUBLEBUFFER,
+    None
+  };
+
+  //! Search for RGBA double-buffered visual with stencil buffer.
+  static int TheDoubleBuffFBConfig[] =
+  {
+    GLX_X_RENDERABLE,  True,
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+    GLX_DEPTH_SIZE,    16,
+    GLX_STENCIL_SIZE,  1,
+    GLX_DOUBLEBUFFER,  True,
+    None
+  };
 #endif
+
 }
 
 // =======================================================================
@@ -140,15 +165,6 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   Bool toSync = ::getenv ("CSF_GraphicSync") != NULL
              || ::getenv ("CALL_SYNCHRO_X")  != NULL;
   XSynchronize (aDisplay, toSync);
-
-#if !defined(HAVE_EGL) && !defined(HAVE_GLES2)
-  // does the server know about OpenGL & GLX?
-  int aDummy;
-  if (!XQueryExtension (aDisplay, "GLX", &aDummy, &aDummy, &aDummy))
-  {
-    ::Message::SendWarning ("OpenGl_GraphicDriver, this system doesn't appear to support OpenGL");
-  }
-#endif
 #endif
   if (theToInitialize
   && !InitContext())
@@ -333,6 +349,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   //  return Standard_False;
   //}
 #endif
+  chooseVisualInfo();
   myIsOwnContext = Standard_True;
   return Standard_True;
 }
@@ -371,9 +388,90 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
       return Standard_False;
     }
   }
+  chooseVisualInfo();
   return Standard_True;
 }
 #endif
+
+// =======================================================================
+// function : chooseVisualInfo
+// purpose  :
+// =======================================================================
+void OpenGl_GraphicDriver::chooseVisualInfo()
+{
+  if (myDisplayConnection.IsNull())
+  {
+    return;
+  }
+
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
+  Display* aDisp = myDisplayConnection->GetDisplay();
+
+  XVisualInfo* aVisInfo = NULL;
+  Aspect_FBConfig anFBConfig = NULL;
+#if defined(HAVE_EGL) || defined(HAVE_GLES2)
+  XVisualInfo aVisInfoTmp;
+  memset (&aVisInfoTmp, 0, sizeof(aVisInfoTmp));
+  aVisInfoTmp.screen = DefaultScreen (aDisp);
+  if (myEglDisplay != EGL_NO_DISPLAY
+   && myEglConfig != NULL
+   && eglGetConfigAttrib ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NATIVE_VISUAL_ID, (EGLint* )&aVisInfoTmp.visualid) == EGL_TRUE)
+  {
+    int aNbVisuals = 0;
+    aVisInfo = XGetVisualInfo (aDisp, VisualIDMask | VisualScreenMask, &aVisInfoTmp, &aNbVisuals);
+  }
+#else
+  int aScreen = DefaultScreen(aDisp);
+  int aDummy = 0;
+  if (!XQueryExtension (aDisp, "GLX", &aDummy, &aDummy, &aDummy)
+   || !glXQueryExtension (aDisp, &aDummy, &aDummy))
+  {
+    Message::SendFail ("Error: OpenGl_GraphicDriver, GLX extension is unavailable");
+  }
+
+  // FBConfigs were added in GLX version 1.3
+  int aGlxMajor = 0, aGlxMinor = 0;
+  const bool hasFBCfg = glXQueryVersion (aDisp, &aGlxMajor, &aGlxMinor)
+                     && ((aGlxMajor == 1 && aGlxMinor >= 3) || (aGlxMajor > 1));
+  if (hasFBCfg)
+  {
+    int aFBCount = 0;
+    GLXFBConfig* aFBCfgList = NULL;
+    if (hasFBCfg)
+    {
+      aFBCfgList = glXChooseFBConfig (aDisp, aScreen, TheDoubleBuffFBConfig, &aFBCount);
+    }
+    if(aFBCfgList != NULL
+    && aFBCount >= 1)
+    {
+      anFBConfig = aFBCfgList[0];
+      aVisInfo   = glXGetVisualFromFBConfig (aDisp, anFBConfig);
+
+      /*int aDepthSize = 0, aStencilSize = 0;
+      glXGetFBConfigAttrib (aDisp, anFBConfig, GLX_DEPTH_SIZE, &aDepthSize);
+      glXGetFBConfigAttrib (aDisp, anFBConfig, GLX_STENCIL_SIZE, &aStencilSize);
+      Message::SendInfo() << "GLX FBConfig:"
+                          << "\n  DepthSize= " << aDepthSize
+                          << "\n  StencilSize= " << aStencilSize;*/
+    }
+    XFree (aFBCfgList);
+  }
+
+  if (aVisInfo == NULL)
+  {
+    aVisInfo = glXChooseVisual (aDisp, aScreen, TheDoubleBuffVisual);
+  }
+#endif
+  if (aVisInfo != NULL)
+  {
+    myDisplayConnection->SetDefaultVisualInfo (aVisInfo, anFBConfig);
+  }
+  else
+  {
+    Message::SendWarning ("OpenGl_GraphicDriver, couldn't find compatible Visual (RGBA, double-buffered)");
+  }
+#endif
+}
 
 // =======================================================================
 // function : InquireLimit

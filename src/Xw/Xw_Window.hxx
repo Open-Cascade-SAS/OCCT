@@ -53,8 +53,7 @@ public:
                              const Standard_Integer thePxLeft,
                              const Standard_Integer thePxTop,
                              const Standard_Integer thePxWidth,
-                             const Standard_Integer thePxHeight,
-                             const Aspect_FBConfig  theFBConfig = NULL);
+                             const Standard_Integer thePxHeight);
 
   //! Creates a wrapper over existing Window handle
   Standard_EXPORT Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,

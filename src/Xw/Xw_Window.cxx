@@ -24,44 +24,6 @@
 
 //#include <X11/XF86keysym.h>
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2)
-  #include <EGL/egl.h>
-  #ifndef EGL_OPENGL_ES3_BIT
-    #define EGL_OPENGL_ES3_BIT 0x00000040
-  #endif
-#else
-  #include <GL/glx.h>
-
-namespace
-{
-
-  //! Search for RGBA double-buffered visual with stencil buffer.
-  static int TheDoubleBuffVisual[] =
-  {
-    GLX_RGBA,
-    GLX_DEPTH_SIZE, 16,
-    GLX_STENCIL_SIZE, 1,
-    GLX_DOUBLEBUFFER,
-    None
-  };
-
-  //! Search for RGBA double-buffered visual with stencil buffer.
-  static int TheDoubleBuffFBConfig[] =
-  {
-    GLX_X_RENDERABLE,  True,
-    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
-    GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-    GLX_DEPTH_SIZE,    16,
-    GLX_STENCIL_SIZE,  1,
-    GLX_DOUBLEBUFFER,  True,
-    None
-  };
-
-}
-
-#endif
-
 IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 
 // =======================================================================
@@ -73,12 +35,11 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
                       const Standard_Integer thePxLeft,
                       const Standard_Integer thePxTop,
                       const Standard_Integer thePxWidth,
-                      const Standard_Integer thePxHeight,
-                      const Aspect_FBConfig  theFBConfig)
+                      const Standard_Integer thePxHeight)
 : Aspect_Window(),
   myDisplay  (theXDisplay),
   myXWindow  (0),
-  myFBConfig (theFBConfig),
+  myFBConfig (NULL),
   myXLeft    (thePxLeft),
   myYTop     (thePxTop),
   myXRight   (thePxLeft + thePxWidth),
@@ -92,120 +53,15 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   else if (theXDisplay.IsNull())
   {
     throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
-    return;
   }
+
+  myFBConfig = theXDisplay->GetDefaultFBConfig();
+  XVisualInfo* aVisInfo = theXDisplay->GetDefaultVisualInfo();
 
   Display* aDisp   = myDisplay->GetDisplay();
   int      aScreen = DefaultScreen(aDisp);
   Window   aParent = RootWindow   (aDisp, aScreen);
-  XVisualInfo* aVisInfo = NULL;
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2)
-  EGLDisplay anEglDisplay = eglGetDisplay (aDisp);
-  EGLint aVerMajor = 0; EGLint aVerMinor = 0;
-  XVisualInfo aVisInfoTmp; memset (&aVisInfoTmp, 0, sizeof(aVisInfoTmp));
-  if (anEglDisplay != EGL_NO_DISPLAY
-   && eglInitialize (anEglDisplay, &aVerMajor, &aVerMinor) == EGL_TRUE)
-  {
-    EGLint aConfigAttribs[] =
-    {
-      EGL_RED_SIZE,     8,
-      EGL_GREEN_SIZE,   8,
-      EGL_BLUE_SIZE,    8,
-      EGL_ALPHA_SIZE,   0,
-      EGL_DEPTH_SIZE,   24,
-      EGL_STENCIL_SIZE, 8,
-    #if defined(HAVE_GLES2)
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-    #else
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-    #endif
-      EGL_NONE
-    };
-
-    EGLint aNbConfigs = 0;
-    void* anEglConfig = NULL;
-    for (Standard_Integer aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
-    {
-    #if defined(GL_ES_VERSION_2_0)
-      aConfigAttribs[6 * 2 + 1] = aGlesVer == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT;
-    #else
-      if (aGlesVer == 2)
-      {
-        break;
-      }
-    #endif
-
-      if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) == EGL_TRUE
-       && anEglConfig != NULL)
-      {
-        break;
-      }
-      eglGetError();
-
-      aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
-      if (eglChooseConfig (anEglDisplay, aConfigAttribs, &anEglConfig, 1, &aNbConfigs) == EGL_TRUE
-       && anEglConfig != NULL)
-      {
-        break;
-      }
-      eglGetError();
-    }
-
-    if (anEglConfig != NULL
-     && eglGetConfigAttrib (anEglDisplay, anEglConfig, EGL_NATIVE_VISUAL_ID, (EGLint* )&aVisInfoTmp.visualid) == EGL_TRUE)
-    {
-      int aNbVisuals = 0;
-      aVisInfoTmp.screen = DefaultScreen (aDisp);
-      aVisInfo = XGetVisualInfo (aDisp, VisualIDMask | VisualScreenMask, &aVisInfoTmp, &aNbVisuals);
-    }
-  }
-  if (aVisInfo == NULL)
-  {
-    Message::SendWarning ("Warning: cannot choose Visual using EGL while creating Xw_Window");
-  }
-#else
-  int aDummy = 0;
-  if (!glXQueryExtension (myDisplay->GetDisplay(), &aDummy, &aDummy))
-  {
-    throw Aspect_WindowDefinitionError("Xw_Window, GLX extension is unavailable");
-    return;
-  }
-  if (myFBConfig == NULL)
-  {
-    // FBConfigs were added in GLX version 1.3
-    int aGlxMajor = 0;
-    int aGlxMinor = 0;
-    const bool hasFBCfg = glXQueryVersion (aDisp, &aGlxMajor, &aGlxMinor)
-                       && ((aGlxMajor == 1 && aGlxMinor >= 3) || (aGlxMajor > 1));
-    if (hasFBCfg)
-    {
-      int aFBCount = 0;
-      GLXFBConfig* aFBCfgList = NULL;
-      if (hasFBCfg)
-      {
-        aFBCfgList = glXChooseFBConfig (aDisp, aScreen, TheDoubleBuffFBConfig, &aFBCount);
-      }
-      if(aFBCfgList != NULL
-      && aFBCount >= 1)
-      {
-        myFBConfig = aFBCfgList[0];
-        aVisInfo   = glXGetVisualFromFBConfig (aDisp, myFBConfig);
-      }
-      XFree (aFBCfgList);
-    }
-  }
-
-  if (aVisInfo == NULL)
-  {
-    aVisInfo = glXChooseVisual (aDisp, aScreen, TheDoubleBuffVisual);
-  }
-  if (aVisInfo == NULL)
-  {
-    throw Aspect_WindowDefinitionError("Xw_Window, couldn't find compatible Visual (RGBA, double-buffered)");
-    return;
-  }
-#endif
 
   unsigned long aMask = 0;
   XSetWindowAttributes aWinAttr;
@@ -225,15 +81,9 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
                             InputOutput,
                             aVisInfo != NULL ? aVisInfo->visual : CopyFromParent,
                             CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect, &aWinAttr);
-  if (aVisInfo != NULL)
-  {
-    XFree (aVisInfo);
-    aVisInfo = NULL;
-  }
   if (myXWindow == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Unable to create window");
-    return;
   }
 
   // if parent - desktop
@@ -277,22 +127,11 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   if (theXWin == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, given invalid X window");
-    return;
   }
   else if (theXDisplay.IsNull())
   {
     throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
-    return;
   }
-#if !defined(HAVE_EGL) && !defined(HAVE_GLES2)
-  int aDummy = 0;
-  if (!glXQueryExtension (myDisplay->GetDisplay(), &aDummy, &aDummy))
-  {
-    myXWindow = 0;
-    throw Aspect_WindowDefinitionError("Xw_Window, GLX extension is unavailable");
-    return;
-  }
-#endif
 
   Display* aDisp = myDisplay->GetDisplay();
 
@@ -306,7 +145,6 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   if (aVisInfo == NULL)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Visual is unavailable");
-    return;
   }
   XFree (aVisInfo);
 

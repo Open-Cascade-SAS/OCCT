@@ -187,6 +187,11 @@ public:
 
 protected:
 
+  //! Choose default visual for new windows created by Aspect_DisplayConnection.
+  Standard_EXPORT void chooseVisualInfo();
+
+protected:
+
   Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
   Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay

@@ -16,7 +16,6 @@
 #include <Aspect_DisplayConnectionDefinitionError.hxx>
 #include <OSD_Environment.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection,Standard_Transient)
 
 // =======================================================================
@@ -27,6 +26,8 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
   myDisplay = NULL;
+  myDefVisualInfo = NULL;
+  myDefFBConfig = NULL;
   myIsOwnDisplay = false;
   OSD_Environment anEnv ("DISPLAY");
   myDisplayName = anEnv.Value();
@@ -41,6 +42,10 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
+  if (myDefVisualInfo != NULL)
+  {
+    XFree (myDefVisualInfo);
+  }
   if (myDisplay != NULL
    && myIsOwnDisplay)
   {
@@ -56,6 +61,8 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection (const TCollection_AsciiString& theDisplayName)
 : myDisplay (NULL),
+  myDefVisualInfo (NULL),
+  myDefFBConfig (NULL),
   myIsOwnDisplay (false)
 {
   myDisplayName = theDisplayName;
@@ -68,9 +75,26 @@ Aspect_DisplayConnection::Aspect_DisplayConnection (const TCollection_AsciiStrin
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection (Display* theDisplay)
 : myDisplay (NULL),
+  myDefVisualInfo (NULL),
+  myDefFBConfig (NULL),
   myIsOwnDisplay (false)
 {
   Init (theDisplay);
+}
+
+// =======================================================================
+// function : SetDefaultVisualInfo
+// purpose  :
+// =======================================================================
+void Aspect_DisplayConnection::SetDefaultVisualInfo (XVisualInfo* theVisual,
+                                                     Aspect_FBConfig theFBConfig)
+{
+  if (myDefVisualInfo != NULL)
+  {
+    XFree (myDefVisualInfo);
+  }
+  myDefVisualInfo = theVisual;
+  myDefFBConfig = theFBConfig;
 }
 
 // =======================================================================

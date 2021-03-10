@@ -22,6 +22,7 @@
 
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
   #include <InterfaceGraphic.hxx>
+  #include <Aspect_FBConfig.hxx>
 #endif
 
 //! This class creates and provides connection with X server.
@@ -72,9 +73,21 @@ public:
   //! @param theDisplay external pointer to allocated Display, or NULL if new connection should be created
   void Init (Display* theDisplay);
 
+  //! Return default window visual or NULL when undefined.
+  XVisualInfo* GetDefaultVisualInfo() const { return myDefVisualInfo; }
+
+  //! @return native Window FB config (GLXFBConfig on Xlib)
+  Aspect_FBConfig GetDefaultFBConfig() const { return myDefFBConfig; }
+
+  //! Set default window visual; the visual will be deallocated using XFree().
+  Standard_EXPORT void SetDefaultVisualInfo (XVisualInfo* theVisual,
+                                             Aspect_FBConfig theFBConfig);
+
 private:
 
   Display*                 myDisplay;
+  XVisualInfo*             myDefVisualInfo;
+  Aspect_FBConfig          myDefFBConfig;
   NCollection_DataMap<Aspect_XAtom, Atom> myAtoms;
   TCollection_AsciiString  myDisplayName;
   Standard_Boolean         myIsOwnDisplay;
