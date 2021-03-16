@@ -22,6 +22,7 @@
 #include <Graphic3d_RenderingMode.hxx>
 #include <Graphic3d_StereoMode.hxx>
 #include <Graphic3d_ToneMappingMethod.hxx>
+#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vec4.hxx>
 
 //! Helper class to store rendering parameters.
@@ -94,6 +95,7 @@ public:
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
+    ShadingModel                (Graphic3d_TOSM_FRAGMENT),
     TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
     LineFeather                 (1.0f),
     // PBR parameters
@@ -186,6 +188,7 @@ public:
 public:
 
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
+  Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TOSM_FRAGMENT by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
   Standard_ShortReal                LineFeather;                 //!< line feater width in pixels (> 0.0), 1.0 by default;
                                                                  //!  high values produce blurred results, small values produce sharp (aliased) edges

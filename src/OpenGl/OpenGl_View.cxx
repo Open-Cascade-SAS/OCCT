@@ -1162,8 +1162,8 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // process PBR environment
-  if (myShadingModel == Graphic3d_TOSM_PBR
-   || myShadingModel == Graphic3d_TOSM_PBR_FACET)
+  if (myRenderParams.ShadingModel == Graphic3d_TOSM_PBR
+   || myRenderParams.ShadingModel == Graphic3d_TOSM_PBR_FACET)
   {
     if (!myPBREnvironment.IsNull()
       && myPBREnvironment->SizesAreDifferent (myRenderParams.PbrEnvPow2Size,
@@ -1396,7 +1396,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // allocate shadow maps
-  const Handle(Graphic3d_LightSet)& aLights = myShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
+  const Handle(Graphic3d_LightSet)& aLights = myRenderParams.ShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
   if (!aLights.IsNull())
   {
     aLights->UpdateRevision();
@@ -2135,7 +2135,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   myBVHSelector.CacheClipPtsProjections();
 
   const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
-  const Handle(Graphic3d_LightSet)&   aLights  = myShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
+  const Handle(Graphic3d_LightSet)&   aLights  = myRenderParams.ShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
   Standard_Size aLightsRevision = 0;
   if (!aLights.IsNull())
   {
@@ -2203,7 +2203,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   }
 #endif
 
-  aManager->SetShadingModel (OpenGl_ShaderManager::PBRShadingModelFallback (myShadingModel, checkPBRAvailability()));
+  aManager->SetShadingModel (OpenGl_ShaderManager::PBRShadingModelFallback (myRenderParams.ShadingModel, checkPBRAvailability()));
 
   // Redraw 3d scene
   if (theProjection == Graphic3d_Camera::Projection_MonoLeftEye)

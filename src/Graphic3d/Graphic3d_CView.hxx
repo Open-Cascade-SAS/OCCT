@@ -100,7 +100,7 @@ public:
 public:
 
   //! Returns default Shading Model of the view; Graphic3d_TOSM_FRAGMENT by default.
-  Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
+  Graphic3d_TypeOfShadingModel ShadingModel() const { return myRenderParams.ShadingModel; }
 
   //! Sets default Shading Model of the view.
   //! Will throw an exception on attempt to set Graphic3d_TOSM_DEFAULT.
@@ -570,7 +570,6 @@ protected:
   Standard_Boolean myIsInComputedMode;
   Standard_Boolean myIsActive;
   Standard_Boolean myIsRemoved;
-  Graphic3d_TypeOfShadingModel  myShadingModel;
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Graphic3d_TypeOfVisualization myVisualization;
 

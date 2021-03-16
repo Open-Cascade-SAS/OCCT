@@ -96,7 +96,6 @@ V3d_View::V3d_View (const Handle(V3d_Viewer)& theViewer, const V3d_TypeOfView th
   SetCamera (aCamera);
   SetAxis (0.,0.,0.,1.,1.,1.);
   SetVisualization (theViewer->DefaultVisualization());
-  SetShadingModel (theViewer->DefaultShadingModel());
   SetTwist (0.);
   SetAt (0.,0.,0.);
   SetProj (theViewer->DefaultViewProj());

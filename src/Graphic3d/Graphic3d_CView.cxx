@@ -32,7 +32,6 @@ Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theM
   myIsInComputedMode       (Standard_False),
   myIsActive               (Standard_False),
   myIsRemoved              (Standard_False),
-  myShadingModel           (Graphic3d_TOSM_FRAGMENT),
   myBackfacing             (Graphic3d_TypeOfBackfacingModel_Auto),
   myVisualization          (Graphic3d_TOV_WIREFRAME),
   myUnitFactor             (1.0)
@@ -1098,7 +1097,7 @@ void Graphic3d_CView::SetShadingModel (Graphic3d_TypeOfShadingModel theModel)
     throw Standard_ProgramError ("Graphic3d_CView::SetShadingModel() - attempt to set invalid Shading Model!");
   }
 
-  myShadingModel = theModel;
+  myRenderParams.ShadingModel = theModel;
 }
 
 // =======================================================================
@@ -1441,7 +1440,6 @@ void Graphic3d_CView::DumpJson (Standard_OStream& theOStream, Standard_Integer t
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsActive)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRemoved)
   
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShadingModel)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVisualization)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myBackXRCamera.get())

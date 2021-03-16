@@ -340,8 +340,8 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
     myGlContext->BindTextures (aTextureSet, Handle(OpenGl_ShaderProgram)());
   }
 
-  if ((myView->myShadingModel == Graphic3d_TOSM_PBR
-    || myView->myShadingModel == Graphic3d_TOSM_PBR_FACET)
+  if ((myView->ShadingModel() == Graphic3d_TOSM_PBR
+    || myView->ShadingModel() == Graphic3d_TOSM_PBR_FACET)
    && !myView->myPBREnvironment.IsNull()
    &&  myView->myPBREnvironment->IsNeededToBeBound())
   {

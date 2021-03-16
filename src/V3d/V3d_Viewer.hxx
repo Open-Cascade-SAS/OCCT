@@ -167,10 +167,10 @@ public:
   void SetDefaultVisualization (const V3d_TypeOfVisualization theType) { myVisualization = theType; }
 
   //! Returns the default type of Shading
-  Graphic3d_TypeOfShadingModel DefaultShadingModel() const { return myShadingModel; }
+  Graphic3d_TypeOfShadingModel DefaultShadingModel() const { return myDefaultRenderingParams.ShadingModel; }
 
   //! Gives the default type of SHADING.
-  void SetDefaultShadingModel (const Graphic3d_TypeOfShadingModel theType) { myShadingModel = theType; }
+  void SetDefaultShadingModel (const Graphic3d_TypeOfShadingModel theType) { myDefaultRenderingParams.ShadingModel = theType; }
 
   //! Returns the default type of View (orthographic or perspective projection) to be returned by CreateView() method.
   V3d_TypeOfView DefaultTypeOfView() const { return myDefaultTypeOfView; }
@@ -516,7 +516,6 @@ private:
   Standard_Real myViewSize;
   V3d_TypeOfOrientation myViewProj;
   V3d_TypeOfVisualization myVisualization;
-  Graphic3d_TypeOfShadingModel myShadingModel;
   V3d_TypeOfView myDefaultTypeOfView;
   Graphic3d_RenderingParams myDefaultRenderingParams;
 
