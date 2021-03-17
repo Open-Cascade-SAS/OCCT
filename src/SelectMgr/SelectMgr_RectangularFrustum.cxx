@@ -16,6 +16,7 @@
 #include <SelectMgr_RectangularFrustum.hxx>
 
 #include <BVH_Tools.hxx>
+#include <gp_Pln.hxx>
 #include <NCollection_Vector.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
@@ -750,6 +751,53 @@ const gp_Pnt2d& SelectMgr_RectangularFrustum::GetMousePosition() const
     return mySelRectangle.MousePos();
   }
   return base_type::GetMousePosition();
+}
+
+// =======================================================================
+// function : OverlapsSphere
+// purpose  :
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere (const gp_Pnt& theCenter,
+                                                               const Standard_Real theRadius,
+                                                               const SelectMgr_ViewClipRange& theClipRange,
+                                                               SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+  if (!hasSphereOverlap (theCenter, theRadius))
+  {
+    return Standard_False;
+  }
+
+  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  if (!RaySphereIntersection (theCenter, theRadius, myNearPickedPnt, myViewRayDir, aTimeEnter, aTimeLeave))
+  {
+    return Standard_False;
+  }
+
+  thePickResult.SetDepth (aTimeEnter * myScale);
+  if (theClipRange.IsClipped (thePickResult.Depth()))
+  {
+    thePickResult.SetDepth (aTimeLeave * myScale);
+  }
+  gp_Pnt aPntOnSphere (myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * thePickResult.Depth());
+  gp_Vec aNormal (aPntOnSphere.XYZ() - theCenter.XYZ());
+  thePickResult.SetPickedPoint (aPntOnSphere);
+  thePickResult.SetSurfaceNormal (aNormal);
+  return !theClipRange.IsClipped (thePickResult.Depth());
+}
+
+// =======================================================================
+// function : OverlapsSphere
+// purpose  :
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere (const gp_Pnt& theCenter,
+                                                               const Standard_Real theRadius,
+                                                               Standard_Boolean* theInside) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+  return hasSphereOverlap (theCenter, theRadius, theInside);
 }
 
 // =======================================================================

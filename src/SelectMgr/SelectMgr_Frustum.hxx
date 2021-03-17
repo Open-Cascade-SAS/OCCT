@@ -88,6 +88,11 @@ protected:
                                        const gp_Pnt& thePnt3,
                                        gp_Vec& theNormal) const;
 
+  //! Intersection test between defined volume and given sphere
+  Standard_Boolean hasSphereOverlap (const gp_Pnt& thePnt1,
+                                     const Standard_Real theRadius,
+                                     Standard_Boolean* theInside = NULL) const;
+
 private:
 
   //! Checks if AABB and frustum are separated along the given axis

@@ -168,6 +168,19 @@ public:
                                              const SelectMgr_ViewClipRange& theClipRange,
                                              SelectBasics_PickResult& thePickResult) const = 0;
 
+  //! Returns true if selecting volume is overlapped by sphere with center theCenter
+  //! and radius theRadius
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           Standard_Boolean* theInside = NULL) const = 0;
+
+  //! Returns true if selecting volume is overlapped by sphere with center theCenter
+  //! and radius theRadius
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
+                                                           SelectBasics_PickResult& thePickResult) const = 0;
+
 public:
 
   //! Measures distance between 3d projection of user-picked
@@ -183,6 +196,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
+  //! Checks whether the ray that starts at the point theLoc and directs with the direction theRayDir intersects
+  //! with the sphere with center at theCenter and radius TheRadius
+  Standard_EXPORT virtual Standard_Boolean RaySphereIntersection (const gp_Pnt& theCenter,
+                                                                  const Standard_Real theRadius,
+                                                                  const gp_Pnt& theLoc,
+                                                                  const gp_Dir& theRayDir,
+                                                                  Standard_Real& theTimeEnter,
+                                                                  Standard_Real& theTimeLeave) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseIntersector,Standard_Transient)
 

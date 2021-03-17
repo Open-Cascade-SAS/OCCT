@@ -27,6 +27,7 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_SphericalSurface.hxx>
 #include <gp_Circ.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -41,6 +42,7 @@
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <Select3D_SensitiveSegment.hxx>
+#include <Select3D_SensitiveSphere.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <Select3D_SensitiveWire.hxx>
@@ -572,6 +574,35 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
   TopLoc_Location aLoc;
   if (Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLoc))
   {
+    TopLoc_Location aLocSurf;
+    const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface (theFace, aLocSurf);
+    if (Handle(Geom_SphericalSurface) aGeomSphere = Handle(Geom_SphericalSurface)::DownCast (aSurf))
+    {
+      bool isFullSphere = theFace.NbChildren() == 0;
+      if (theFace.NbChildren() == 1)
+      {
+        const TopoDS_Iterator aWireIter (theFace);
+        const TopoDS_Wire& aWire = TopoDS::Wire (aWireIter.Value());
+        if (aWire.NbChildren() == 4)
+        {
+          Standard_Integer aNbSeamEdges = 0, aNbDegenEdges = 0;
+          for (TopoDS_Iterator anEdgeIter (aWire); anEdgeIter.More(); anEdgeIter.Next())
+          {
+            const TopoDS_Edge& anEdge = TopoDS::Edge (anEdgeIter.Value());
+            aNbSeamEdges += BRep_Tool::IsClosed (anEdge, theFace);
+            aNbDegenEdges += BRep_Tool::Degenerated (anEdge);
+          }
+          isFullSphere = aNbSeamEdges == 2 && aNbDegenEdges == 2;
+        }
+      }
+      if (isFullSphere)
+      {
+        gp_Sphere aSphere = BRepAdaptor_Surface (theFace).Sphere();
+        Handle(Select3D_SensitiveSphere) aSensSphere = new Select3D_SensitiveSphere (theOwner, aSphere.Position().Axis().Location(), aSphere.Radius());
+        theSensitiveList.Append (aSensSphere);
+        return Standard_True;
+      }
+    }
     Handle(Select3D_SensitiveTriangulation) STG = new Select3D_SensitiveTriangulation (theOwner, aTriangulation, aLoc, theInteriorFlag);
     theSensitiveList.Append (STG);
     return Standard_True;

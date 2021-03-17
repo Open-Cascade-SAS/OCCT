@@ -389,6 +389,36 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsTriangle (const gp_Pn
 }
 
 //=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsSphere (const gp_Pnt& theCenter,
+                                                                   const Standard_Real theRadius,
+                                                                   SelectBasics_PickResult& thePickResult) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return Standard_False;
+  }
+  return myActiveSelectingVolume->OverlapsSphere (theCenter, theRadius, myViewClipRange, thePickResult);
+}
+
+//=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsSphere (const gp_Pnt& theCenter,
+                                                                   const Standard_Real theRadius,
+                                                                   Standard_Boolean* theInside) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return Standard_False;
+  }
+  return myActiveSelectingVolume->OverlapsSphere (theCenter, theRadius, theInside);
+}
+
+//=======================================================================
 // function : DistToGeometryCenter
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG

@@ -123,6 +123,48 @@ const gp_Pnt2d& SelectMgr_BaseIntersector::GetMousePosition() const
 }
 
 //=======================================================================
+// function : RaySphereIntersection
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::RaySphereIntersection (const gp_Pnt& theCenter,
+                                                                   const Standard_Real theRadius,
+                                                                   const gp_Pnt& theLoc,
+                                                                   const gp_Dir& theRayDir,
+                                                                   Standard_Real& theTimeEnter,
+                                                                   Standard_Real& theTimeLeave) const
+{
+  // to find the intersection of the ray (theLoc, theRayDir) and sphere with theCenter(x0, y0, z0) and theRadius(R), you need to solve the equation
+  // (x' - x0)^2 + (y' - y0)^2 + (z' - z0)^2 = R^2, where P(x',y',z') = theLoc(x,y,z) + theRayDir(vx,vy,vz) * T
+  // at the end of solving, you receive a square equation with respect to T
+  // T^2 * (vx^2 + vy^2 + vz^2) + 2 * T * (vx*(x - x0) + vy*(y - y0) + vz*(z - z0)) + ((x-x0)^2 + (y-y0)^2 + (z-z0)^2 -R^2) = 0 (= A*T^2 + K*T + C)
+  // and find T by discriminant D = K^2 - A*C
+  const Standard_Real anA = theRayDir.Dot (theRayDir);
+  const Standard_Real aK = theRayDir.X() * (theLoc.X() - theCenter.X())
+                         + theRayDir.Y() * (theLoc.Y() - theCenter.Y())
+                         + theRayDir.Z() * (theLoc.Z() - theCenter.Z());
+  const Standard_Real aC = theLoc.Distance (theCenter) * theLoc.Distance (theCenter) - theRadius * theRadius;
+  const Standard_Real aDiscr = aK * aK - anA * aC;
+  if (aDiscr < 0)
+  {
+    return Standard_False;
+  }
+
+  const Standard_Real aTime1 = (-aK - Sqrt (aDiscr)) / anA;
+  const Standard_Real aTime2 = (-aK + Sqrt (aDiscr)) / anA;
+  if (Abs (aTime1) < Abs (aTime2))
+  {
+    theTimeEnter = aTime1;
+    theTimeLeave = aTime2;
+  }
+  else
+  {
+    theTimeEnter = aTime2;
+    theTimeLeave = aTime1;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
 // function : DistToGeometryCenter
 // purpose  :
 //=======================================================================

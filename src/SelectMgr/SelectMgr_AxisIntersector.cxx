@@ -496,6 +496,58 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle (const gp_Pnt& theP
 }
 
 //=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere (const gp_Pnt& theCenter,
+                                                            const Standard_Real theRadius,
+                                                            Standard_Boolean* theInside) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point,
+    "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
+  (void )theInside;
+  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  if (!RaySphereIntersection (theCenter, theRadius, myAxis.Location(), myAxis.Direction(), aTimeEnter, aTimeLeave))
+  {
+    return Standard_False;
+  }
+  if (theInside != NULL)
+  {
+    *theInside &= (aTimeEnter >= 0.0);
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere (const gp_Pnt& theCenter,
+                                                            const Standard_Real theRadius,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point,
+    "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
+  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  if (!RaySphereIntersection (theCenter, theRadius, myAxis.Location(), myAxis.Direction(), aTimeEnter, aTimeLeave))
+  {
+    return Standard_False;
+  }
+
+  Standard_Real aDepth = 0.0;
+  Bnd_Range aRange (Max (aTimeEnter, 0.0), aTimeLeave);
+  aRange.GetMin (aDepth);
+  if (!theClipRange.GetNearestDepth (aRange, aDepth))
+  {
+    return Standard_False;
+  }
+
+  thePickResult.SetDepth (aDepth);
+  return Standard_True;
+}
+
+//=======================================================================
 // function : GetNearPnt
 // purpose  :
 //=======================================================================

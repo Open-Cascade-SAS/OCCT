@@ -133,6 +133,17 @@ public:
                                                              const SelectMgr_ViewClipRange& theClipRange,
                                                              SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
+  //! Intersection test between defined volume and given sphere
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
+                                                           SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Intersection test between defined volume and given sphere
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           Standard_Boolean* theInside) const Standard_OVERRIDE;
+
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG.
   //! It makes sense only for frustums built on a single point.

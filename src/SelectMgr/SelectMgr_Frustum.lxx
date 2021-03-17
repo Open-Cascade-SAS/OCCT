@@ -459,8 +459,61 @@ Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap (const gp_Pnt& thePnt1
       }
     }
   }
-
   return Standard_True;
+}
+
+// =======================================================================
+// function : hasSphereOverlap
+// purpose  :
+// =======================================================================
+template <int N>
+Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap (const gp_Pnt& thePnt,
+                                                         const Standard_Real theRadius,
+                                                         Standard_Boolean* theInside) const
+{
+  Standard_Boolean isOverlapFull = Standard_True;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N; aPlaneIdx += anIncFactor)
+  {
+    const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
+    const Standard_Real aNormVecLen = Sqrt (aPlane.Dot (aPlane));
+    const Standard_Real aCenterProj = aPlane.Dot (thePnt.XYZ()) / aNormVecLen;
+    const Standard_Real aMaxDist = myMaxVertsProjections[aPlaneIdx] / aNormVecLen;
+    const Standard_Real aMinDist = myMinVertsProjections[aPlaneIdx] / aNormVecLen;
+    if (aCenterProj > (aMaxDist + theRadius)
+     || aCenterProj < (aMinDist - theRadius))
+    {
+      return Standard_False; // fully separated
+    }
+    else if (theInside)
+    {
+      *theInside &= aCenterProj >= (aMinDist + theRadius)
+                 && aCenterProj <= (aMaxDist - theRadius);
+    }
+    isOverlapFull &= aCenterProj >= (aMinDist + theRadius)
+                  && aCenterProj <= (aMaxDist - theRadius);
+  }
+  if (theInside || isOverlapFull)
+  {
+    return Standard_True;
+  }
+  const gp_Vec aVecPlane1 (myVertices[0], myVertices[2]);
+  const gp_Vec aVecPlane2 (myVertices[0], myVertices[2 * N - 2]);
+  if (aVecPlane1.IsParallel (aVecPlane2, Precision::Angular()))
+  {
+    return Standard_False;
+  }
+  const gp_Dir aNorm (aVecPlane1.Crossed (aVecPlane2));
+  gp_Pnt aBoundariesCArr[5];
+  NCollection_Array1<gp_Pnt> aBoundaries (aBoundariesCArr[0], 0, N);
+  for (Standard_Integer anIdx = 0; anIdx < N * 2; anIdx += 2)
+  {
+    aBoundaries.SetValue (anIdx / 2, myVertices[anIdx]);
+  }
+  // distance from point(x,y,z) to plane(A,B,C,D) d = | Ax + By + Cz + D | / sqrt (A^2 + B^2 + C^2) = aPnt.Dot (Norm) / 1
+  const gp_Pnt aCenterProj = thePnt.XYZ() - aNorm.XYZ() * thePnt.XYZ().Dot (aNorm.XYZ());
+  Standard_Boolean isBoundaryInside = Standard_False;
+  return IsBoundaryIntersectSphere (aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
 }
 
 //=======================================================================

@@ -29,6 +29,8 @@ Select3D_SensitiveSegment.cxx
 Select3D_SensitiveSegment.hxx
 Select3D_SensitiveSet.cxx
 Select3D_SensitiveSet.hxx
+Select3D_SensitiveSphere.cxx
+Select3D_SensitiveSphere.hxx
 Select3D_SensitiveTriangle.cxx
 Select3D_SensitiveTriangle.hxx
 Select3D_SensitiveTriangulation.cxx

@@ -54,6 +54,13 @@ public:
                                             const Standard_Real theWidth,
                                             const Standard_Real theHeight) Standard_OVERRIDE;
 
+  //! Checks whether the boundary of the current volume selection intersects with a sphere or are there it's boundaries lying inside the sphere
+  Standard_EXPORT Standard_Boolean IsBoundaryIntersectSphere (const gp_Pnt& theCenter,
+                                                              const Standard_Real theRadius,
+                                                              const gp_Dir& thePlaneNormal,
+                                                              const TColgp_Array1OfPnt& theBoundaries,
+                                                              Standard_Boolean& theBoundaryInside) const;
+
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 

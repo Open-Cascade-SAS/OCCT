@@ -152,6 +152,16 @@ public:
                                                               Standard_Integer theSensType,
                                                               SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
+  //! Intersection test between defined volume and given sphere
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Intersection test between defined volume and given sphere
+  Standard_EXPORT virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                                           const Standard_Real theRadius,
+                                                           Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
+
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const Standard_OVERRIDE;

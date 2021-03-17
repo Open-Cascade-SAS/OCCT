@@ -389,6 +389,115 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle (const gp_Pnt&
   return Standard_False;
 }
 
+//=======================================================================
+// function : OverlapsSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere (const gp_Pnt& theCenter,
+                                                                 const Standard_Real theRadius,
+                                                                 Standard_Boolean* /*theInside*/) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->OverlapsSphere (theCenter, theRadius, NULL))
+    {
+      // select 3 points of the frustum and build a plane on them
+      Standard_Real aMaxDist1 = 0.0, aMaxDist2 = 0.0;
+      Standard_Integer anIdx1 = myBoundaryPoints.Lower();
+      Standard_Integer anIdx2 = myBoundaryPoints.Lower();
+      Standard_Integer anIdx3 = myBoundaryPoints.Lower();
+      for (Standard_Integer anIdx = myBoundaryPoints.Lower(); anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower(); anIdx++)
+      {
+        if (myBoundaryPoints[anIdx1].Distance (myBoundaryPoints[anIdx]) < Precision::Confusion())
+        {
+          continue;
+        }
+        else if (aMaxDist1 < myBoundaryPoints[anIdx1].Distance (myBoundaryPoints[anIdx]))
+        {
+          if (anIdx2 != anIdx3)
+          {
+            anIdx3 = anIdx2;
+            aMaxDist2 = aMaxDist1;
+          }
+          anIdx2 = anIdx;
+          aMaxDist1 = myBoundaryPoints[anIdx1].Distance (myBoundaryPoints[anIdx]);
+        }
+        else if (aMaxDist2 < myBoundaryPoints[anIdx2].Distance (myBoundaryPoints[anIdx]))
+        {
+          anIdx3 = anIdx;
+          aMaxDist2 = myBoundaryPoints[anIdx2].Distance (myBoundaryPoints[anIdx]);
+        }
+      }
+      gp_Vec aVecPlane1 (myBoundaryPoints[anIdx1], myBoundaryPoints[anIdx2]);
+      gp_Vec aVecPlane2 (myBoundaryPoints[anIdx1], myBoundaryPoints[anIdx3]);
+
+      const gp_Dir aNorm (aVecPlane1.Crossed (aVecPlane2));
+
+      // distance from point(x,y,z) to plane(A,B,C,D) d = | Ax + By + Cz + D | / sqrt (A^2 + B^2 + C^2) = aPnt.Dot (Norm) / 1
+      const gp_Pnt aCenterProj = theCenter.XYZ() - aNorm.XYZ() * theCenter.XYZ().Dot (aNorm.XYZ());
+
+      // If the center of the sphere is inside of the volume projection, then anAngleSum will be equal 2*M_PI
+      Standard_Real anAngleSum = 0.0;
+      TColgp_Array1OfPnt aBoundaries (myBoundaryPoints.Lower(), myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower());
+
+      for (Standard_Integer anIdx = myBoundaryPoints.Lower(); anIdx < myBoundaryPoints.Size() / 2 + myBoundaryPoints.Lower(); anIdx++)
+      {
+        aBoundaries.SetValue (anIdx, myBoundaryPoints[anIdx]);
+
+        gp_Pnt aPnt1 = myBoundaryPoints.Value (anIdx);
+        gp_Pnt aPnt2 = myBoundaryPoints.Value (anIdx + 1);
+
+        // Projections of the points on the plane
+        gp_Pnt aPntProj1 = aPnt1.XYZ() - aNorm.XYZ() * aPnt1.XYZ().Dot (aNorm.XYZ());
+        gp_Pnt aPntProj2 = aPnt2.XYZ() - aNorm.XYZ() * aPnt2.XYZ().Dot (aNorm.XYZ());
+
+        gp_Vec aVecAngle1 (aCenterProj, aPntProj1);
+        gp_Vec aVecAngle2 (aCenterProj, aPntProj2);
+        anAngleSum += aVecAngle1.Angle (aVecAngle2);
+      }
+      Standard_Boolean isCenterInside = Abs (anAngleSum - 2 * M_PI) < Precision::Confusion();
+      Standard_Boolean isBoundaryInside = Standard_False;
+      Standard_Boolean isIntersectSphereBoundaries = IsBoundaryIntersectSphere (aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
+
+      if (myToAllowOverlap)
+      {
+        return isIntersectSphereBoundaries
+            || isCenterInside;
+      }
+      else
+      {
+        return !isIntersectSphereBoundaries
+            && isCenterInside
+            && !isBoundaryInside;
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+// function : OverlapsSphere
+// purpose :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere (const gp_Pnt& theCenter,
+                                                                 const Standard_Real theRadius,
+                                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                                 SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->OverlapsSphere (theCenter, theRadius, theClipRange, thePickResult))
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
 // =======================================================================
 // function : GetPlanes
 // purpose  :

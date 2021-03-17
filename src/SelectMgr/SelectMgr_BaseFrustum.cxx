@@ -100,6 +100,49 @@ void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& 
 }
 
 //=======================================================================
+// function : IsBoundariesIntersectSphere
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseFrustum::IsBoundaryIntersectSphere (const gp_Pnt& theCenter,
+                                                                   const Standard_Real theRadius,
+                                                                   const gp_Dir& thePlaneNormal,
+                                                                   const TColgp_Array1OfPnt& theBoundaries,
+                                                                   Standard_Boolean& theBoundaryInside) const
+{
+  for (Standard_Integer anIdx = theBoundaries.Lower(); anIdx < theBoundaries.Upper(); ++anIdx)
+  {
+    const Standard_Integer aNextIdx = ((anIdx + 1) == theBoundaries.Upper()) ? theBoundaries.Lower() : (anIdx + 1);
+    const gp_Pnt aPnt1 = theBoundaries.Value (anIdx);
+    const gp_Pnt aPnt2 = theBoundaries.Value (aNextIdx);
+    if (aPnt1.Distance (aPnt2) < Precision::Confusion())
+    {
+      continue;
+    }
+
+    // Projections of the points on the plane
+    const gp_Pnt aPntProj1 = aPnt1.XYZ() - thePlaneNormal.XYZ() * aPnt1.XYZ().Dot (thePlaneNormal.XYZ());
+    const gp_Pnt aPntProj2 = aPnt2.XYZ() - thePlaneNormal.XYZ() * aPnt2.XYZ().Dot (thePlaneNormal.XYZ());
+    if (aPntProj1.Distance (theCenter) < theRadius || aPntProj2.Distance (theCenter) < theRadius) // polygon intersects the sphere
+    {
+      theBoundaryInside = Standard_True;
+      return Standard_True;
+    }
+
+    gp_Dir aRayDir (gp_Vec (aPntProj1, aPntProj2));
+    Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+    if (RaySphereIntersection (theCenter, theRadius, aPntProj1, aRayDir, aTimeEnter, aTimeLeave))
+    {
+      if ((aTimeEnter > 0 && aTimeEnter < aPntProj1.Distance (aPntProj2))
+       || (aTimeLeave > 0 && aTimeLeave < aPntProj1.Distance (aPntProj2)))
+      {
+        return Standard_True; // polygon crosses  the sphere
+      }
+    }
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================

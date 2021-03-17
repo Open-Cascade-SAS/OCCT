@@ -85,6 +85,18 @@ public:
                                              Standard_Integer theSensType,
                                              SelectBasics_PickResult& thePickResult) const = 0;
 
+  //! Returns true if selecting volume is overlapped by sphere with center theCenter
+  //! and radius theRadius
+  virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                           const Standard_Real theRadius,
+                                           SelectBasics_PickResult& thePickResult) const = 0;
+
+  //! Returns true if selecting volume is overlapped by sphere with center theCenter
+  //! and radius theRadius
+  virtual Standard_Boolean OverlapsSphere (const gp_Pnt& theCenter,
+                                           const Standard_Real theRadius,
+                                           Standard_Boolean* theInside = NULL) const = 0;
+
 public:
 
   //! Calculates distance from 3d projection of user-defined selection point
