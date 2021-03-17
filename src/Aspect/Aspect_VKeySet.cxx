@@ -49,9 +49,9 @@ void Aspect_VKeySet::KeyDown (Aspect_VKey theKey,
                               double thePressure)
 {
   Standard_Mutex::Sentry aLock (myLock);
-  if (myKeys[theKey].Status != KeyStatus_Pressed)
+  if (myKeys[theKey].KStatus != KeyStatus_Pressed)
   {
-    myKeys[theKey].Status   = KeyStatus_Pressed;
+    myKeys[theKey].KStatus  = KeyStatus_Pressed;
     myKeys[theKey].TimeDown = theTime;
   }
   myKeys[theKey].Pressure = thePressure;
@@ -68,9 +68,9 @@ void Aspect_VKeySet::KeyUp (Aspect_VKey theKey,
                             double theTime)
 {
   Standard_Mutex::Sentry aLock (myLock);
-  if (myKeys[theKey].Status == KeyStatus_Pressed)
+  if (myKeys[theKey].KStatus == KeyStatus_Pressed)
   {
-    myKeys[theKey].Status = KeyStatus_Released;
+    myKeys[theKey].KStatus = KeyStatus_Released;
     myKeys[theKey].TimeUp = theTime;
   }
 
@@ -97,18 +97,18 @@ void Aspect_VKeySet::KeyFromAxis (Aspect_VKey theNegative,
     const Aspect_VKey aKeyUp   = thePressure < 0 ? thePositive : theNegative;
 
     KeyDown (aKeyDown, theTime, Abs (thePressure));
-    if (myKeys[aKeyUp].Status == KeyStatus_Pressed)
+    if (myKeys[aKeyUp].KStatus == KeyStatus_Pressed)
     {
       KeyUp (aKeyUp, theTime);
     }
   }
   else
   {
-    if (myKeys[theNegative].Status == KeyStatus_Pressed)
+    if (myKeys[theNegative].KStatus == KeyStatus_Pressed)
     {
       KeyUp (theNegative, theTime);
     }
-    if (myKeys[thePositive].Status == KeyStatus_Pressed)
+    if (myKeys[thePositive].KStatus == KeyStatus_Pressed)
     {
       KeyUp (thePositive, theTime);
     }
@@ -125,7 +125,7 @@ bool Aspect_VKeySet::HoldDuration (Aspect_VKey theKey,
                                    double& thePressure)
 {
   Standard_Mutex::Sentry aLock (myLock);
-  switch (myKeys[theKey].Status)
+  switch (myKeys[theKey].KStatus)
   {
     case KeyStatus_Free:
     {
@@ -134,7 +134,7 @@ bool Aspect_VKeySet::HoldDuration (Aspect_VKey theKey,
     }
     case KeyStatus_Released:
     {
-      myKeys[theKey].Status = KeyStatus_Free;
+      myKeys[theKey].KStatus = KeyStatus_Free;
       theDuration = myKeys[theKey].TimeUp - myKeys[theKey].TimeDown;
       thePressure = myKeys[theKey].Pressure;
       return true;

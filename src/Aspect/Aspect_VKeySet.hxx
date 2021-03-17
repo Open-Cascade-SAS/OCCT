@@ -55,14 +55,14 @@ public:
   bool IsFreeKey (Aspect_VKey theKey) const
   {
     Standard_Mutex::Sentry aLock (myLock);
-    return myKeys[theKey].Status == KeyStatus_Free;
+    return myKeys[theKey].KStatus == KeyStatus_Free;
   }
 
   //! Return TRUE if key is in Pressed state.
   bool IsKeyDown (Aspect_VKey theKey) const
   {
     Standard_Mutex::Sentry aLock (myLock);
-    return myKeys[theKey].Status == KeyStatus_Pressed;
+    return myKeys[theKey].KStatus == KeyStatus_Pressed;
   }
 
   //! Return mutex for thread-safe updates.
@@ -131,10 +131,10 @@ private:
   //! Structure defining key state.
   struct KeyState
   {
-    KeyState() : TimeDown (0.0), TimeUp (0.0), Pressure (1.0), Status (KeyStatus_Free) {}
+    KeyState() : TimeDown (0.0), TimeUp (0.0), Pressure (1.0), KStatus (KeyStatus_Free) {}
     void Reset()
     {
-      Status = KeyStatus_Free;
+      KStatus = KeyStatus_Free;
       TimeDown = 0.0;
       TimeUp   = 0.0;
       Pressure = 1.0;
@@ -143,7 +143,7 @@ private:
     double    TimeDown; //!< time of key press   event
     double    TimeUp;   //!< time of key release event
     double    Pressure; //!< key pressure
-    KeyStatus Status;   //!< key status
+    KeyStatus KStatus;  //!< key status
   };
 
 private:
