@@ -84,7 +84,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_View();
 
   //! Release OpenGL resources.
-  Standard_EXPORT void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT virtual void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
 
   //! Deletes and erases the view.
   Standard_EXPORT virtual void Remove() Standard_OVERRIDE;

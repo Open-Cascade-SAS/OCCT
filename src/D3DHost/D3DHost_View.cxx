@@ -87,11 +87,7 @@ D3DHost_View::D3DHost_View (const Handle(Graphic3d_StructureManager)& theMgr,
 // =======================================================================
 D3DHost_View::~D3DHost_View()
 {
-  if (!myD3dWglFbo.IsNull())
-  {
-    myD3dWglFbo->Release (myWorkspace->GetGlContext().operator->());
-    myD3dWglFbo.Nullify();
-  }
+  ReleaseGlResources (NULL);
   if (myD3dDevice != NULL)
   {
     myD3dDevice->Release();
@@ -102,6 +98,20 @@ D3DHost_View::~D3DHost_View()
     myD3dLib->Release();
     myD3dLib = NULL;
   }
+}
+
+// =======================================================================
+// function : ReleaseGlResources
+// purpose  :
+// =======================================================================
+void D3DHost_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
+{
+  if (!myD3dWglFbo.IsNull())
+  {
+    myD3dWglFbo->Release (theCtx.get());
+    myD3dWglFbo.Nullify();
+  }
+  OpenGl_View::ReleaseGlResources (theCtx);
 }
 
 // =======================================================================

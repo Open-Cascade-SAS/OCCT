@@ -1847,6 +1847,7 @@ void OpenGl_View::RedrawImmediate()
                               Standard_True) || toSwap;
     if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
     &&  toSwap
+    &&  myFBO.get() == NULL
     && !aCtx->caps->buffersNoSwap)
     {
       aCtx->SwapBuffers();
@@ -1914,7 +1915,9 @@ void OpenGl_View::RedrawImmediate()
     aCtx->ShaderManager()->PushState (Handle(OpenGl_ShaderProgram)());
   }
 
-  if (toSwap && !aCtx->caps->buffersNoSwap)
+  if (toSwap
+  &&  myFBO.get() == NULL
+  && !aCtx->caps->buffersNoSwap)
   {
     aCtx->SwapBuffers();
   }

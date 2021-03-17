@@ -245,6 +245,7 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
     return Standard_False;
   }
 
+  myIsOwnColor = true;
   myColorTextures (0)->Release (theCtx.operator->());
   myColorTextures (0)->Create  (theCtx);
 
