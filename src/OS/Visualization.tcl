@@ -18,6 +18,9 @@ proc Visualization:toolkits { } {
   set aResult [list TKService TKV3d TKMeshVS]
 
   lappend aResult "TKOpenGl"
+  if { [info exists ::env(HAVE_GLES2)] && "$::env(HAVE_GLES2)" == "true" } {
+    lappend aResult "TKOpenGles"
+  }
   if { "$::tcl_platform(platform)" == "windows" } {
     if { [info exists ::env(HAVE_D3D)] } {
       if { "$::env(HAVE_D3D)" == "true" } {

@@ -303,6 +303,13 @@ foreach (USED_ITEM ${USED_EXTERNLIB_AND_TOOLKITS})
       else() # get CSF_ value
         set (CURRENT_CSF ${${USED_ITEM}})
         if (NOT "x${CURRENT_CSF}" STREQUAL "x")
+          if ("${CURRENT_CSF}" STREQUAL "CSF_OpenGlLibs")
+            add_definitions (-DHAVE_OPENGL)
+          endif()
+          if ("${CURRENT_CSF}" STREQUAL "CSF_OpenGlesLibs")
+            add_definitions (-DHAVE_GLES2)
+          endif()
+
           set (LIBRARY_FROM_CACHE 0)
           separate_arguments (CURRENT_CSF)
           foreach (CSF_LIBRARY ${CURRENT_CSF})

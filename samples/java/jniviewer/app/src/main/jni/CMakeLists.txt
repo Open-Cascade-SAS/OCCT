@@ -11,7 +11,7 @@ set (anOcctLibs
   TKIGES
   TKSTEPBase TKSTEPAttr TKSTEP209 TKSTEP
   # OCCT Visualization
-  TKService TKHLR TKV3d TKOpenGl
+  TKService TKHLR TKV3d TKOpenGles
 )
 
 set(aLibDeps "")

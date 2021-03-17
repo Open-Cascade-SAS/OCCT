@@ -710,7 +710,7 @@ EM_BOOL WasmOcctView::onTouchEvent (int theEventType, const EmscriptenTouchEvent
               myDoubleTapTimer.Stop();
               myDoubleTapTimer.Reset();
               myDoubleTapTimer.Start();
-              SelectInViewer (Graphic3d_Vec2i (myClickTouch.From), false);
+              SelectInViewer (Graphic3d_Vec2i (myClickTouch.From), AIS_SelectionScheme_Replace);
             }
           }
           hasUpdates = true;

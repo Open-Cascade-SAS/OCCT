@@ -145,15 +145,18 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
                                             const Standard_Boolean                  theToInitialize)
 : Graphic3d_GraphicDriver (theDisp),
   myIsOwnContext (Standard_False),
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
-  myEglDisplay ((Aspect_Display )EGL_NO_DISPLAY),
-  myEglContext ((Aspect_RenderingContext )EGL_NO_CONTEXT),
+  myEglDisplay (NULL),
+  myEglContext (NULL),
   myEglConfig  (NULL),
-#endif
   myCaps           (new OpenGl_Caps()),
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator())
 {
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+  myEglDisplay = (Aspect_Display )EGL_NO_DISPLAY;
+  myEglContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
+#endif
+
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
   {
@@ -354,7 +357,6 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   return Standard_True;
 }
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
 // =======================================================================
 // function : InitEglContext
 // purpose  :
@@ -364,6 +366,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
                                                        void*                   theEglConfig)
 {
   ReleaseContext();
+#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
 #if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if (myDisplayConnection.IsNull())
   {
@@ -390,8 +393,13 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
   }
   chooseVisualInfo();
   return Standard_True;
-}
+#else
+  (void )theEglDisplay;
+  (void )theEglContext;
+  (void )theEglConfig;
+  throw Standard_NotImplemented ("OpenGl_GraphicDriver::InitEglContext() is not implemented");
 #endif
+}
 
 // =======================================================================
 // function : chooseVisualInfo

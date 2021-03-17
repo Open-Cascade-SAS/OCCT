@@ -1688,7 +1688,12 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     aFactory = Graphic3d_GraphicDriverFactory::DefaultDriverFactory();
     if (aFactory.IsNull())
     {
-      throw Standard_ProgramError("Error: no graphic driver factory found");
+      Draw::GetInterpretor().Eval ("pload GLES");
+      aFactory = Graphic3d_GraphicDriverFactory::DefaultDriverFactory();
+      if (aFactory.IsNull())
+      {
+        throw Standard_ProgramError("Error: no graphic driver factory found");
+      }
     }
   }
 
@@ -2020,6 +2025,12 @@ static int VDriver (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
     {
       aNewActive = "tkopengl";
     }
+    else if (TCollection_AsciiString::IsSameString (aNewActive, "gles", false)
+          || TCollection_AsciiString::IsSameString (aNewActive, "opengles", false)
+          || TCollection_AsciiString::IsSameString (aNewActive, "tkopengles", false))
+    {
+      aNewActive = "tkopengles";
+    }
     else if (TCollection_AsciiString::IsSameString (aNewActive, "d3d", false)
           || TCollection_AsciiString::IsSameString (aNewActive, "d3dhost", false)
           || TCollection_AsciiString::IsSameString (aNewActive, "tkd3dhost", false))
@@ -2032,6 +2043,10 @@ static int VDriver (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
       if (aNewActive == "tkopengl")
       {
         Draw::GetInterpretor().Eval ("pload OPENGL");
+      }
+      else if (aNewActive == "tkopengles")
+      {
+        Draw::GetInterpretor().Eval ("pload GLES");
       }
       else if (aNewActive == "tkd3dhost")
       {

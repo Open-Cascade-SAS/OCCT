@@ -42,7 +42,10 @@ ALL                : MODELING, OCAFKERNEL, DATAEXCHANGE
 TOPTEST            : TKTopTest
 DCAF               : TKDCAF
 AISV               : TKViewerTest
+GL                 : TKOpenGlTest
 OPENGL             : TKOpenGlTest
+GLES               : TKOpenGlesTest
+OPENGLES           : TKOpenGlesTest
 D3DHOST            : TKD3DHostTest
 XSDRAW             : TKXSDRAW
 XDEDRAW            : TKXDEDRAW

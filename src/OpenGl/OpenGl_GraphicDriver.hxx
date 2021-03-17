@@ -68,7 +68,6 @@ public:
   //! Perform initialization of default OpenGL context.
   Standard_EXPORT Standard_Boolean InitContext();
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
   //! Initialize default OpenGL context using existing one.
   //! @param theEglDisplay EGL connection to the Display
   //! @param theEglContext EGL rendering context
@@ -76,7 +75,6 @@ public:
   Standard_EXPORT Standard_Boolean InitEglContext (Aspect_Display          theEglDisplay,
                                                    Aspect_RenderingContext theEglContext,
                                                    void*                   theEglConfig);
-#endif
 
   //! Request limit of graphic resource of specific type.
   Standard_EXPORT virtual Standard_Integer InquireLimit (const Graphic3d_TypeOfLimit theType) const Standard_OVERRIDE;
@@ -175,11 +173,9 @@ public:
   //!                 any context will be returned otherwise
   Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext (bool theBound = false) const;
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
   Aspect_Display          getRawGlDisplay() const { return myEglDisplay; }
   Aspect_RenderingContext getRawGlContext() const { return myEglContext;  }
   void*                   getRawGlConfig()  const { return myEglConfig; }
-#endif
 
   //! Set device lost flag for redrawn views.
   Standard_EXPORT void setDeviceLost();
@@ -200,11 +196,10 @@ protected:
 protected:
 
   Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+
   Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay
   Aspect_RenderingContext myEglContext;   //!< EGL rendering context         : EGLContext
   void*                   myEglConfig;    //!< EGL configuration             : EGLConfig
-#endif
 
   Handle(OpenGl_Caps)                                      myCaps;
   NCollection_Map<Handle(OpenGl_View)>                     myMapOfView;

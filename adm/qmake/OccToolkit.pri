@@ -36,7 +36,7 @@ win32 {
   CSF_wsock32    = -lwsock32
   CSF_netapi32   = -lnetapi32
   CSF_OpenGlLibs = -lopengl32
-  HAVE_GLES2 { CSF_OpenGlLibs = -llibEGL -llibGLESv2 }
+  CSF_OpenGlesLibs = -llibEGL -llibGLESv2
   CSF_psapi      = -lPsapi
   CSF_winmm      = -lwinmm
   CSF_d3d9       = -ld3d9
@@ -46,12 +46,12 @@ win32 {
 } else:mac {
   CSF_dl         = -ldl
   CSF_objc       = -lobjc
+  CSF_OpenGlLibs = -framework OpenGL
+  CSF_OpenGlesLibs = -framework OpenGLES
   iphoneos {
     CSF_Appkit     = -framework UIKit
-    CSF_OpenGlLibs = -framework OpenGLES
   } else {
     CSF_Appkit     = -framework AppKit
-    CSF_OpenGlLibs = -framework OpenGL
   }
   CSF_IOKit      = -framework IOKit
   CSF_TclLibs    = -framework Tcl
@@ -60,17 +60,19 @@ win32 {
   CSF_dl = -ldl
   CSF_ThreadLibs = -lpthread -lrt
   CSF_OpenGlLibs = -lGL
+  CSF_OpenGlesLibs = -lEGL -lGLESv2
   CSF_TclTkLibs  = -lX11 -ltk8.6
   CSF_XwLibs     = -lX11 -lXext -lXmu -lXi
   CSF_MotifLibs  = -lX11
   CSF_fontconfig = -lfontconfig
-  HAVE_GLES2 { CSF_OpenGlLibs = -lEGL -lGLESv2 }
 }
 
 for (aCfgIter, CONFIG) {
   aRes = $$find(aCfgIter, "^HAVE_")
-  count(aRes, 1) {
-    DEFINES += $$aCfgIter
+  !equals(aCfgIter, "HAVE_GLES2") {
+    count(aRes, 1) {
+      DEFINES += $$aCfgIter
+    }
   }
 }
 
@@ -103,6 +105,12 @@ for (anExternLib, anExternLibs) {
   count(hasCsf, 1) {
     aList = $$split($$anExternLib, "\n")
     LIBS += $$aList
+    equals(anExternLib, "CSF_OpenGlLibs") {
+      DEFINES += "HAVE_OPENGL"
+    }
+    equals(anExternLib, "CSF_OpenGlesLibs") {
+      DEFINES += "HAVE_GLES2"
+    }
   } else {
     LIBS += -l$$anExternLib
   }

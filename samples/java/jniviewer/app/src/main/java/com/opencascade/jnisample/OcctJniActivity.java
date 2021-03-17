@@ -147,7 +147,7 @@ public class OcctJniActivity extends Activity implements OnClickListener
      || !loadLibVerbose ("TKService",    aLoaded, aFailed)
      || !loadLibVerbose ("TKHLR",        aLoaded, aFailed)
      || !loadLibVerbose ("TKV3d",        aLoaded, aFailed)
-     || !loadLibVerbose ("TKOpenGl",     aLoaded, aFailed)
+     || !loadLibVerbose ("TKOpenGles",   aLoaded, aFailed)
         // application code
      || !loadLibVerbose ("TKJniSample",  aLoaded, aFailed))
     {

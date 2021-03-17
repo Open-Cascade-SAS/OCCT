@@ -2229,3 +2229,11 @@ Existing code defining nodal colors should be updated to:
 - Use *Graphic3d_TOSM_UNLIT* shading model when lighting is not needed.
 - Adjust diffuse/ambient material coefficients, which have been previously ignored.
 - Remove code multiplying nodal colors, intended to compensate over-brightness due to addition of specular color from material definition, as specular component is now also modulated by a vertex color.
+
+@subsection upgrade_occt760_tkopengles TKOpenGles library
+
+OCCT now provides two separate toolkits - *TKOpenGl* depending on desktop OpenGL and *TKOpenGles* depending on OpenGL ES.
+Both libraries can be now built simultaneously on systems providing both APIs (like desktop Linux).
+
+Existing applications depending on OpenGL ES (mobile projects first of all) should be adjusted to link against *TKOpenGles*.
+Note that both *TKOpenGl* and *TKOpenGles* keep exporting classes with the same name, so applications should not attempt to link both libraries simultaneously.

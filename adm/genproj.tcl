@@ -1461,9 +1461,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
     set aLibsMap(CSF_netapi32)     "netapi32"
     set aLibsMap(CSF_winmm)        "winmm"
     set aLibsMap(CSF_OpenGlLibs)   "opengl32"
-    if { "$::HAVE_GLES2" == "true" } {
-      set aLibsMap(CSF_OpenGlLibs) "libEGL libGLESv2"
-    }
+    set aLibsMap(CSF_OpenGlesLibs) "libEGL libGLESv2"
     set aLibsMap(CSF_psapi)        "Psapi"
     set aLibsMap(CSF_d3d9)         "d3d9"
 
@@ -1484,14 +1482,18 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
     }
   } else {
     set aLibsMap(CSF_dl)           "dl"
+    set aLibsMap(CSF_OpenGlLibs)   "GL"
+    set aLibsMap(CSF_OpenGlesLibs) "EGL GLESv2"
     if { "$theOS" == "mac" || "$theOS" == "ios" } {
-      set aLibsMap(CSF_objc)       "objc"
+      set aLibsMap(CSF_objc)         "objc"
+      set aLibsMap(CSF_OpenGlLibs)   ""
+      set aLibsMap(CSF_OpenGlesLibs) ""
+      set aFrmsMap(CSF_OpenGlLibs)   "OpenGL"
+      set aFrmsMap(CSF_OpenGlesLibs) "OpenGLES"
       if { "$theOS" == "ios" } {
-        set aFrmsMap(CSF_Appkit)     "UIKit"
-        set aFrmsMap(CSF_OpenGlLibs) "OpenGLES"
+        set aFrmsMap(CSF_Appkit)   "UIKit"
       } else {
-        set aFrmsMap(CSF_Appkit)     "AppKit"
-        set aFrmsMap(CSF_OpenGlLibs) "OpenGL"
+        set aFrmsMap(CSF_Appkit)   "AppKit"
       }
       set aFrmsMap(CSF_IOKit)      "IOKit"
       set aFrmsMap(CSF_TclLibs)    "Tcl"
@@ -1500,23 +1502,16 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
       set aLibsMap(CSF_TclTkLibs)  ""
       set aLibsMap(CSF_QT)         "QtCore QtGui"
     } elseif { "$theOS" == "android" } {
-      set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
       set aLibsMap(CSF_androidlog) "log"
     } else {
       set aLibsMap(CSF_fontconfig) "fontconfig"
       if { "$theOS" == "qnx" } {
         # CSF_ThreadLibs - pthread API is part of libc on QNX
-        set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
       } else {
         set aLibsMap(CSF_ThreadLibs) "pthread rt"
-        set aLibsMap(CSF_OpenGlLibs) "GL"
         set aLibsMap(CSF_TclTkLibs)  "X11 tk8.6"
         set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
         set aLibsMap(CSF_MotifLibs)  "X11"
-      }
-
-      if { "$::HAVE_GLES2" == "true" } {
-        set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
       }
     }
   }
@@ -1785,9 +1780,14 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
   global path
 
   set aHasQtDep "false"
+  set aTkDefines ""
   foreach aCsfElem [osutils:tk:csfInExternlib "$path/$theSrcDir/${theToolKit}/EXTERNLIB"] {
     if { "$aCsfElem" == "CSF_QT" } {
       set aHasQtDep "true"
+    } elseif { "$aCsfElem" == "CSF_OpenGlLibs" } {
+      set aTkDefines "$aTkDefines;HAVE_OPENGL"
+    } elseif { "$aCsfElem" == "CSF_OpenGlesLibs" } {
+      set aTkDefines "$aTkDefines;HAVE_GLES2"
     }
   }
   set theProjTmpl [osutils:vcproj:readtemplate $theVcVer $isUWP 0]
@@ -1822,9 +1822,9 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
   # depending on VC version
   regsub -all -- {__TKDEP__} $theProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] theProjTmpl
   regsub -all -- {__TKDEP_DEBUG__} $theProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] theProjTmpl
+  regsub -all -- {__TKDEFINES__} $theProjTmpl $aTkDefines theProjTmpl
 
   set anIncPaths "..\\..\\..\\inc"
-#  set aTKDefines ""
   set aFilesSection ""
   set aVcFilesCxx(units) ""
   set aVcFilesHxx(units) ""
@@ -2108,6 +2108,7 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir
     set aVCRTVer [string range $theVcVer 0 3]
     regsub -all -- {__TKDEP__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] aProjTmpl
     regsub -all -- {__TKDEP_DEBUG__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] aProjTmpl
+    regsub -all -- {__TKDEFINES__} $aProjTmpl "" aProjTmpl
 
     set aFilesSection ""
     set aVcFilesCxx(units) ""

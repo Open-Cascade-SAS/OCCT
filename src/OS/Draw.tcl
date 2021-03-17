@@ -18,6 +18,9 @@ proc Draw:toolkits { } {
   set aResult [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
 
   lappend aResult "TKOpenGlTest"
+  if { [info exists ::env(HAVE_GLES2)] && "$::env(HAVE_GLES2)" == "true" } {
+    lappend aResult "TKOpenGlesTest"
+  }
   if { "$::tcl_platform(platform)" == "windows" } {
     if { [info exists ::env(HAVE_D3D)] } {
       if { "$::env(HAVE_D3D)" == "true" } {

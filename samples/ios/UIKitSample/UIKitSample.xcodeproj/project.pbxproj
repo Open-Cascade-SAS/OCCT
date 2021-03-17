@@ -32,7 +32,7 @@
 		0A7DEE351E2D2AE000267B9B /* libTKXCAF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE151E2D2AC000267B9B /* libTKXCAF.a */; };
 		0A7DEE371E2D2AE000267B9B /* libTKXDESTEP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE171E2D2AC700267B9B /* libTKXDESTEP.a */; };
 		0A7DEE3E1E2D2B8100267B9B /* libTKBO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE021E2D2A7F00267B9B /* libTKBO.a */; };
-		0A7DEE3F1E2D2BB000267B9B /* libTKOpenGl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */; };
+		0A7DEE3F1E2D2BB000267B9B /* libTKOpenGles.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE091E2D2A9700267B9B /* libTKOpenGles.a */; };
 		0A7DEE401E2D2BEA00267B9B /* libTKSTEP209.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE0F1E2D2AAB00267B9B /* libTKSTEP209.a */; };
 		0A7DEE411E2D2C1500267B9B /* libTKXSBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7DEE1D1E2D2ADC00267B9B /* libTKXSBase.a */; };
 		0AAE0DE61EAF816E00C1F65B /* screw.step in Resources */ = {isa = PBXBuildFile; fileRef = 0AAE0DE51EAF816D00C1F65B /* screw.step */; };
@@ -82,7 +82,7 @@
 		0A7DEE061E2D2A8C00267B9B /* libTKIGES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKIGES.a; path = ../occt/lib/libTKIGES.a; sourceTree = "<group>"; };
 		0A7DEE071E2D2A8F00267B9B /* libTKMeshVS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKMeshVS.a; path = ../occt/lib/libTKMeshVS.a; sourceTree = "<group>"; };
 		0A7DEE081E2D2A9300267B9B /* libTKOffset.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKOffset.a; path = ../occt/lib/libTKOffset.a; sourceTree = "<group>"; };
-		0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKOpenGl.a; path = ../occt/lib/libTKOpenGl.a; sourceTree = "<group>"; };
+		0A7DEE091E2D2A9700267B9B /* libTKOpenGles.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKOpenGles.a; path = ../occt/lib/libTKOpenGles.a; sourceTree = "<group>"; };
 		0A7DEE0A1E2D2A9A00267B9B /* libTKPrim.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKPrim.a; path = ../occt/lib/libTKPrim.a; sourceTree = "<group>"; };
 		0A7DEE0B1E2D2A9D00267B9B /* libTKService.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKService.a; path = ../occt/lib/libTKService.a; sourceTree = "<group>"; };
 		0A7DEE0C1E2D2AA100267B9B /* libTKStd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTKStd.a; path = ../occt/lib/libTKStd.a; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 				0AE286641EB0D29B00A9D719 /* libz.tbd in Frameworks */,
 				0A7DEE411E2D2C1500267B9B /* libTKXSBase.a in Frameworks */,
 				0A7DEE401E2D2BEA00267B9B /* libTKSTEP209.a in Frameworks */,
-				0A7DEE3F1E2D2BB000267B9B /* libTKOpenGl.a in Frameworks */,
+				0A7DEE3F1E2D2BB000267B9B /* libTKOpenGles.a in Frameworks */,
 				0A7DEE3E1E2D2B8100267B9B /* libTKBO.a in Frameworks */,
 				0A7DEE2B1E2D2AE000267B9B /* libTKService.a in Frameworks */,
 				0A7DEE2E1E2D2AE000267B9B /* libTKSTEP.a in Frameworks */,
@@ -234,7 +234,7 @@
 				0A7DEE061E2D2A8C00267B9B /* libTKIGES.a */,
 				0A7DEE071E2D2A8F00267B9B /* libTKMeshVS.a */,
 				0A7DEE081E2D2A9300267B9B /* libTKOffset.a */,
-				0A7DEE091E2D2A9700267B9B /* libTKOpenGl.a */,
+				0A7DEE091E2D2A9700267B9B /* libTKOpenGles.a */,
 				0A7DEE0A1E2D2A9A00267B9B /* libTKPrim.a */,
 				0A7DEE0B1E2D2A9D00267B9B /* libTKService.a */,
 				0A7DEE0C1E2D2AA100267B9B /* libTKStd.a */,

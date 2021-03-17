@@ -207,6 +207,7 @@ n Image
 n Media
 n MeshVS
 n OpenGl
+n OpenGles
 n D3DHost
 n Prs3d
 n PrsMgr
@@ -224,6 +225,7 @@ r Shaders
 r XRResources
 t TKMeshVS
 t TKOpenGl
+t TKOpenGles
 t TKD3DHost
 t TKService
 t TKV3d
@@ -403,6 +405,7 @@ n MeshTest
 n SWDRAW
 n TObjDRAW
 n OpenGlTest
+n OpenGlesTest
 n D3DHostTest
 n ViewerTest
 n XDEDRAW
@@ -416,6 +419,7 @@ t TKDraw
 t TKTObjDRAW
 t TKTopTest
 t TKOpenGlTest
+t TKOpenGlesTest
 t TKD3DHostTest
 t TKViewerTest
 t TKXDEDRAW

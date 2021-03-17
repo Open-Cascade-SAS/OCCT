@@ -174,9 +174,10 @@ set (USE_EGL_DESCR
 "Indicates whether EGL should be used in OCCT visualization
 module instead of conventional OpenGL context creation APIs")
 
+set (USE_OPENGL_DESCR
+"Indicates whether OpenGL desktop should be used in OCCT visualization module")
 set (USE_GLES2_DESCR
-"Indicates whether OpenGL ES 2.0 should be used in OCCT visualization
-module instead of desktop OpenGL")
+"Indicates whether OpenGL ES 2.0 should be used in OCCT visualization module")
 
 set (USE_TBB_DESCR
 "Indicates whether TBB is used or not. TBB stands for Threading Building Blocks,

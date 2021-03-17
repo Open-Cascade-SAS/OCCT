@@ -358,10 +358,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "FFmpeg disabled\n";
 #endif
-#ifdef HAVE_GLES2
-  di << "OpenGL: ES2\n";
-#else
-  di << "OpenGL: desktop\n";
+#ifdef HAVE_OPENGL_EXT
+  di << "OpenGL: enabled (HAVE_OPENGL_EXT)\n";
+#endif
+#ifdef HAVE_GLES2_EXT
+  di << "OpenGL ES: enabled (HAVE_GLES2_EXT)\n";
 #endif
 #ifdef HAVE_OPENVR
   di << "OpenVR enabled (HAVE_OPENVR)\n";

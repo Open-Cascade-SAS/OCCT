@@ -38,7 +38,7 @@ LIBS += -lTKernel \
         -lTKMesh \
         -lTKHLR \
         -lTKV3d \
-        -lTKOpenGl
+        -lTKOpenGles
 
 # IMPORTANT. load libraries in a proper order
 ANDROID_EXTRA_LIBS =  $$3rdparty_lib_path/libfreeimage.so \
@@ -56,4 +56,4 @@ ANDROID_EXTRA_LIBS =  $$3rdparty_lib_path/libfreeimage.so \
                       $$occt_lib_path/libTKMesh.so \
                       $$occt_lib_path/libTKHLR.so \
                       $$occt_lib_path/libTKV3d.so \
-                      $$occt_lib_path/libTKOpenGl.so
+                      $$occt_lib_path/libTKOpenGles.so
