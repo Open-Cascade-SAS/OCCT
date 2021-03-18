@@ -306,33 +306,83 @@ void Extrema_GenExtCS::Perform (const Adaptor3d_Curve& C,
   Tol(2) = mytol2;
   Tol(3) = mytol2;
   //
-  TUVinf(1) = mytmin;
-  TUVinf(2) = trimumin;
-  TUVinf(3) = trimvmin;
-  //
-  TUVsup(1) = mytsup;
-  TUVsup(2) = trimusup;
-  TUVsup(3) = trimvsup;
-  //
   // Number of particles used in PSO algorithm (particle swarm optimization).
   const Standard_Integer aNbParticles = 48;
-  //
-  if (aNbVar == 3)
+
+  Standard_Integer aNbIntC = 1;
+  if (C.IsClosed() || C.IsPeriodic())
   {
-    GlobMinGenCS(C, aNbParticles, TUVinf, TUVsup, TUV);
-  }
-  else if (aNbVar == 2)
-  {
-    GlobMinConicS(C, aNbParticles, TUVinf, TUVsup, TUV);
-  }
-  else
-  {
-    GlobMinCQuadric(C, aNbParticles, TUVinf, TUVsup, TUV);
+    Standard_Real aPeriod = C.Period();
+    if (C.LastParameter() - C.FirstParameter() > 2. * aPeriod / 3.)
+    {
+      aNbIntC = 2;
+    }
   }
 
-  // Find min approximation
-  math_FunctionSetRoot anA(myF, Tol);
-  anA.Perform(myF, TUV, TUVinf, TUVsup);
+  Standard_Integer anInt;
+  Standard_Real dT = (mytsup - mytmin) / aNbIntC;
+  for (anInt = 1; anInt <= aNbIntC; anInt++)
+  {
+    TUVinf(1) = mytmin + (anInt - 1) * dT;
+    TUVinf(2) = trimumin;
+    TUVinf(3) = trimvmin;
+    //
+    TUVsup(1) = TUVinf(1) + dT; // mytsup;
+    TUVsup(2) = trimusup;
+    TUVsup(3) = trimvsup;
+    //
+    if (aNbVar == 3)
+    {
+      GlobMinGenCS(C, aNbParticles, TUVinf, TUVsup, TUV);
+    }
+    else if (aNbVar == 2)
+    {
+      GlobMinConicS(C, aNbParticles, TUVinf, TUVsup, TUV);
+    }
+    else
+    {
+      GlobMinCQuadric(C, aNbParticles, TUVinf, TUVsup, TUV);
+    }
+
+    // Find min approximation
+    math_FunctionSetRoot anA(myF, Tol);
+    anA.Perform(myF, TUV, TUVinf, TUVsup);
+  }
+  if (aNbIntC > 1 && myF.NbExt() > 1)
+  {
+    //Try to remove "false" extrema caused by dividing curve interval
+    TColStd_SequenceOfReal& aSqDists = myF.SquareDistances();
+    Extrema_SequenceOfPOnCurv& aPntsOnCrv = myF.PointsOnCurve();
+    Extrema_SequenceOfPOnSurf& aPntsOnSurf = myF.PointsOnSurf();
+    TColStd_SequenceOfReal aSqDists1(aSqDists);
+    Extrema_SequenceOfPOnCurv aPntsOnCrv1(aPntsOnCrv);
+    Extrema_SequenceOfPOnSurf aPntsOnSurf1(aPntsOnSurf);
+
+    Standard_Real aMinDist = aSqDists(1);
+    Standard_Integer i;
+    for (i = 2; i <= aSqDists.Length(); ++i)
+    {
+      Standard_Real aDist = aSqDists(i);
+      if (aDist < aMinDist)
+      {
+        aMinDist = aDist;
+      }
+    }
+    aSqDists.Clear();
+    aPntsOnCrv.Clear();
+    aPntsOnSurf.Clear();
+    Standard_Real aTol = Precision::SquareConfusion();
+    for (i = 1; i <= aSqDists1.Length(); ++i)
+    {
+      Standard_Real aDist = aSqDists1(i);
+      if (Abs(aDist - aMinDist) <= aTol)
+      {
+        aSqDists.Append(aDist);
+        aPntsOnCrv.Append(aPntsOnCrv1(i));
+        aPntsOnSurf.Append(aPntsOnSurf1(i));
+      }
+    }
+  }
   myDone = Standard_True;
 
 }
