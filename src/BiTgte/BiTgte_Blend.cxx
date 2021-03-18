@@ -1781,12 +1781,8 @@ void BiTgte_Blend::ComputeCenters()
 	}
       }
       TopTools_DataMapOfShapeListOfShape anEmptyMap;
-      BRepOffset_Inter2d::Compute(myAsDes,
-				  CurOF,
-				  myEdges,
-				  myTol,
-                                  anEmptyMap,
-				  aDMVV);
+      BRepOffset_Inter2d::Compute(myAsDes, CurOF, myEdges, myTol,
+                                  anEmptyMap, aDMVV, Message_ProgressRange());
     }
   }
 
@@ -1816,12 +1812,8 @@ void BiTgte_Blend::ComputeCenters()
     }
 
     TopTools_DataMapOfShapeListOfShape anEmptyMap;
-    BRepOffset_Inter2d::Compute(myAsDes,
-				CurOF,
-				myEdges,
-				myTol,
-                                anEmptyMap,
-				aDMVV);
+    BRepOffset_Inter2d::Compute(myAsDes, CurOF, myEdges, myTol,
+                                anEmptyMap, aDMVV, Message_ProgressRange());
   }
   //
   // fuse vertices on edges stored in AsDes
@@ -1831,7 +1823,7 @@ void BiTgte_Blend::ComputeCenters()
   // unwinding 
   // ------------
   BRepOffset_MakeLoops MakeLoops;
-  MakeLoops.Build (LOF, myAsDes, myImageOffset, anEmptyImage);
+  MakeLoops.Build (LOF, myAsDes, myImageOffset, anEmptyImage, Message_ProgressRange());
 
   // ------------------------------------------------------------
   // It is possible to unwind edges at least one ancestor which of 

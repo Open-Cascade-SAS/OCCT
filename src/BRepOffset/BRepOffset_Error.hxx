@@ -28,7 +28,8 @@ enum BRepOffset_Error
   BRepOffset_NotConnectedShell,
   BRepOffset_CannotTrimEdges,        //!< exception while trim edges
   BRepOffset_CannotFuseVertices,     //!< exception while fuse vertices
-  BRepOffset_CannotExtentEdge        //!< exception while extent edges
+  BRepOffset_CannotExtentEdge,       //!< exception while extent edges
+  BRepOffset_UserBreak               //!< user break
 };
 
 #endif // _BRepOffset_Error_HeaderFile

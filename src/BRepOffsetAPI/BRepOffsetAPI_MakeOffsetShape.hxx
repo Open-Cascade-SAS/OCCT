@@ -114,7 +114,8 @@ public:
                                      const Standard_Boolean Intersection = Standard_False,
                                      const Standard_Boolean SelfInter = Standard_False,
                                      const GeomAbs_JoinType Join = GeomAbs_Arc,
-                                     const Standard_Boolean RemoveIntEdges = Standard_False);
+                                     const Standard_Boolean RemoveIntEdges = Standard_False,
+                                     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Returns instance of the unrelying intersection / arc algorithm.
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;

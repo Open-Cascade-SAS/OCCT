@@ -20,6 +20,7 @@
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #include <string.h>
 #include <stdio.h>
@@ -392,7 +393,7 @@ Standard_Integer MakeBoss(Draw_Interpretor& , Standard_Integer , const char** a)
 //function : MakeShell
 //purpose  : 
 //=======================================================================
-Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a)
+Standard_Integer MakeShell(Draw_Interpretor& theDI, Standard_Integer , const char** a)
 {
 
   TopoDS_Shape aShape = DBRep::Get( a[1] ); 
@@ -404,12 +405,14 @@ Standard_Integer MakeShell(Draw_Interpretor& , Standard_Integer , const char** a
   
   Standard_Real Off = -Draw::Atof( a[3] );
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+
   BRepOffset_MakeOffset Offset;
 
   Offset.Initialize( aShape, Off,  1.0e-3, BRepOffset_Skin, 
 			       Standard_True , Standard_False , GeomAbs_Arc );
   Offset.AddFace( F );
-  Offset.MakeThickSolid();
+  Offset.MakeThickSolid(aProgress->Start());
 
   if( Offset.IsDone() ) {
   //    SaveShape::Save(Offset.Shape(), "ss");

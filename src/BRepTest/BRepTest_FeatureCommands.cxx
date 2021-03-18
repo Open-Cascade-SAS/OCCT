@@ -17,6 +17,7 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
@@ -976,10 +977,12 @@ Standard_Integer thickshell(Draw_Interpretor& theCommands,
   if (n > 5)
     Tol = Draw::Atof(a[5]);
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theCommands, 1);
+
   BRepOffset_MakeOffset B;
   B.Initialize(S, Of, Tol, BRepOffset_Skin, Inter, 0, JT, Standard_True);
 
-  B.MakeOffsetShape();
+  B.MakeOffsetShape(aProgress->Start());
 
   const BRepOffset_Error aRetCode = B.Error();
   reportOffsetState(theCommands, aRetCode);
@@ -1037,8 +1040,9 @@ Standard_Integer offsetshape(Draw_Interpretor& theCommands,
     }
   }
 
-  if (!YaBouchon)  B.MakeOffsetShape();
-  else             B.MakeThickSolid();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theCommands, 1);
+  if (!YaBouchon)  B.MakeOffsetShape(aProgress->Start());
+  else             B.MakeThickSolid(aProgress->Start());
 
   const BRepOffset_Error aRetCode = B.Error();
   reportOffsetState(theCommands, aRetCode);
@@ -1169,10 +1173,11 @@ Standard_Integer offsetperform(Draw_Interpretor& theCommands,
 {
   if (theNArg < 2) return 1;
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theCommands, 1);
   if (theYaBouchon)
-    TheOffset.MakeThickSolid();
+    TheOffset.MakeThickSolid(aProgress->Start());
   else
-    TheOffset.MakeOffsetShape();
+    TheOffset.MakeOffsetShape(aProgress->Start());
 
   if (TheOffset.IsDone())
   {

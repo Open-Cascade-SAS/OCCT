@@ -140,7 +140,8 @@ static void BuildAncestors (const TopoDS_Shape&                        S,
 //purpose  : 
 //=======================================================================
 void BRepOffset_Analyse::Perform (const TopoDS_Shape& S, 
-                                  const Standard_Real Angle)
+                                  const Standard_Real Angle,
+                                  const Message_ProgressRange& theRange)
 {
   myShape = S;
   myNewFaces .Clear();
@@ -155,9 +156,14 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
   BuildAncestors (S,myAncestors);
 
   TopTools_ListOfShape aLETang;
-
   TopExp_Explorer Exp(S.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
-  for ( ; Exp.More(); Exp.Next()) {
+  Message_ProgressScope aPSOuter(theRange, NULL, 2);
+  Message_ProgressScope aPS(aPSOuter.Next(), "Performing edges analysis", 1, Standard_True);
+  for ( ; Exp.More(); Exp.Next(), aPS.Next()) {
+    if (!aPS.More())
+    {
+      return;
+    }
     const TopoDS_Edge& E = TopoDS::Edge(Exp.Current());
     if (!myMapEdgeType.IsBound(E)) {
       BRepOffset_ListOfInterval LI;
@@ -196,7 +202,11 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
     }
   }
 
-  TreatTangentFaces (aLETang);
+  TreatTangentFaces (aLETang, aPSOuter.Next());
+  if (!aPSOuter.More())
+  {
+    return;
+  }
   myDone = Standard_True;
 }
 
@@ -204,7 +214,7 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
 //function : Generated
 //purpose  : 
 //=======================================================================
-void BRepOffset_Analyse::TreatTangentFaces (const TopTools_ListOfShape& theLE)
+void BRepOffset_Analyse::TreatTangentFaces (const TopTools_ListOfShape& theLE, const Message_ProgressRange& theRange)
 {
   if (theLE.IsEmpty() || myFaceOffsetMap.IsEmpty())
   {
@@ -221,8 +231,14 @@ void BRepOffset_Analyse::TreatTangentFaces (const TopTools_ListOfShape& theLE)
   // Bind vertices of the tangent edges with connected edges
   // of the face with smaller offset value
   TopTools_DataMapOfShapeShape aDMVEMin;
-  for (TopTools_ListOfShape::Iterator it (theLE); it.More(); it.Next())
+  Message_ProgressScope aPSOuter(theRange, NULL, 3);
+  Message_ProgressScope aPS1(aPSOuter.Next(), "Binding vertices with connected edges", theLE.Size());
+  for (TopTools_ListOfShape::Iterator it (theLE); it.More(); it.Next(), aPS1.Next())
   {
+    if (!aPS1.More())
+    {
+      return;
+    }
     const TopoDS_Shape& aE = it.Value();
     const TopTools_ListOfShape& aLA = Ancestors (aE);
 
@@ -266,8 +282,13 @@ void BRepOffset_Analyse::TreatTangentFaces (const TopTools_ListOfShape& theLE)
   // Create map of Face ancestors for the vertices on tangent edges
   TopTools_DataMapOfShapeListOfShape aDMVFAnc;
 
-  for (TopTools_ListOfShape::Iterator itE (theLE); itE.More(); itE.Next())
+  Message_ProgressScope aPS2(aPSOuter.Next(), "Creating map of Face ancestors", theLE.Size());
+  for (TopTools_ListOfShape::Iterator itE (theLE); itE.More(); itE.Next(), aPS2.Next())
   {
+    if (!aPS2.More())
+    {
+      return;
+    }
     const TopoDS_Shape& aE = itE.Value();
     if (!anEdgeOffsetMap.IsBound (aE))
       continue;
@@ -315,8 +336,13 @@ void BRepOffset_Analyse::TreatTangentFaces (const TopTools_ListOfShape& theLE)
   BOPTools_AlgoTools::MakeConnexityBlocks (aCETangent, TopAbs_VERTEX, TopAbs_EDGE, aLCB, aMVEMap);
 
   // Analyze each block to find co-planar edges
-  for (TopTools_ListOfListOfShape::Iterator itLCB (aLCB); itLCB.More(); itLCB.Next())
+  Message_ProgressScope aPS3(aPSOuter.Next(), "Analyzing blocks to find co-planar edges", aLCB.Size());
+  for (TopTools_ListOfListOfShape::Iterator itLCB (aLCB); itLCB.More(); itLCB.Next(), aPS3.Next())
   {
+    if (!aPS3.More())
+    {
+      return;
+    }
     const TopTools_ListOfShape& aCB = itLCB.Value();
 
     TopTools_MapOfShape aMFence;

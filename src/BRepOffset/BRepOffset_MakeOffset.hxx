@@ -36,13 +36,15 @@
 #include <BRepOffset_MakeLoops.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepOffset_DataMapOfShapeOffset.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+#include <Message_ProgressRange.hxx>
 class BRepAlgo_AsDes;
 class TopoDS_Shape;
 class TopoDS_Face;
 class BRepOffset_Analyse;
 class BRepAlgo_Image;
 class BRepOffset_Inter3d;
-
 
 
 class BRepOffset_MakeOffset 
@@ -61,7 +63,8 @@ public:
                                         const Standard_Boolean SelfInter = Standard_False,
                                         const GeomAbs_JoinType Join = GeomAbs_Arc,
                                         const Standard_Boolean Thickening = Standard_False,
-                                        const Standard_Boolean RemoveIntEdges = Standard_False);
+                                        const Standard_Boolean RemoveIntEdges = Standard_False,
+                                        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT void Initialize (const TopoDS_Shape& S,
                                    const Standard_Real Offset,
@@ -85,9 +88,9 @@ public:
   //! set the offset <Off> on the Face <F>
   Standard_EXPORT void SetOffsetOnFace (const TopoDS_Face& F, const Standard_Real Off);
   
-  Standard_EXPORT void MakeOffsetShape();
+  Standard_EXPORT void MakeOffsetShape(const Message_ProgressRange& theRange = Message_ProgressRange());
   
-  Standard_EXPORT void MakeThickSolid();
+  Standard_EXPORT void MakeThickSolid(const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT const BRepOffset_Analyse& GetAnalyse() const;
   
@@ -124,7 +127,7 @@ public:
   //! 3) Check continuity of input surfaces.
   //! 4) Check for normals existence on grid.
   //! @return True if possible make computations and false otherwise.
-  Standard_EXPORT Standard_Boolean CheckInputData();
+  Standard_EXPORT Standard_Boolean CheckInputData(const Message_ProgressRange& theRange);
 
   //! Return bad shape, which obtained in CheckInputData.
   Standard_EXPORT const TopoDS_Shape& GetBadShape() const;
@@ -142,7 +145,11 @@ public: //! @name History methods
 
 
 protected:
-
+  //! Analyze progress steps of the whole operation.
+  //! @param theWhole - sum of progress of all operations.
+  //! @oaram theSteps - steps of the operations supported by PI
+  Standard_EXPORT void analyzeProgress (const Standard_Real theWhole,
+                                        TColStd_Array1OfReal& theSteps) const;
 
 private:
 
@@ -159,26 +166,28 @@ private:
   
   Standard_EXPORT void BuildFaceComp();
   
-  Standard_EXPORT void BuildOffsetByArc();
+  Standard_EXPORT void BuildOffsetByArc(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void BuildOffsetByInter();
+  Standard_EXPORT void BuildOffsetByInter(const Message_ProgressRange& theRange);
 
   //! Make Offset faces
-  Standard_EXPORT void MakeOffsetFaces(BRepOffset_DataMapOfShapeOffset& theMapSF);
+  Standard_EXPORT void MakeOffsetFaces(BRepOffset_DataMapOfShapeOffset& theMapSF, const Message_ProgressRange& theRange);
 
   Standard_EXPORT void SelfInter (TopTools_MapOfShape& Modif);
   
-  Standard_EXPORT void Intersection3D (BRepOffset_Inter3d& Inter);
+  Standard_EXPORT void Intersection3D (BRepOffset_Inter3d& Inter, const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void Intersection2D (const TopTools_IndexedMapOfShape& Modif, const TopTools_IndexedMapOfShape& NewEdges);
+  Standard_EXPORT void Intersection2D (const TopTools_IndexedMapOfShape& Modif, 
+                                       const TopTools_IndexedMapOfShape& NewEdges, 
+                                       const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void MakeLoops (TopTools_IndexedMapOfShape& Modif);
+  Standard_EXPORT void MakeLoops (TopTools_IndexedMapOfShape& Modif, const Message_ProgressRange& theRange);
   
   Standard_EXPORT void MakeLoopsOnContext (TopTools_MapOfShape& Modif);
   
-  Standard_EXPORT void MakeFaces (TopTools_IndexedMapOfShape& Modif);
+  Standard_EXPORT void MakeFaces (TopTools_IndexedMapOfShape& Modif, const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void MakeShells();
+  Standard_EXPORT void MakeShells(const Message_ProgressRange& theRange);
   
   Standard_EXPORT void SelectShells();
   
@@ -187,7 +196,7 @@ private:
   //! Replace roots in history maps
   Standard_EXPORT void ReplaceRoots();
 
-  Standard_EXPORT void MakeSolid();
+  Standard_EXPORT void MakeSolid(const Message_ProgressRange& theRange);
   
   Standard_EXPORT void ToContext (BRepOffset_DataMapOfShapeOffset& MapSF);
   
@@ -198,7 +207,7 @@ private:
   Standard_EXPORT void CorrectConicalFaces();
   
   //! Private method used to build walls for thickening the shell
-  Standard_EXPORT void MakeMissingWalls();
+  Standard_EXPORT void MakeMissingWalls(const Message_ProgressRange& theRange);
 
   //! Removes INTERNAL edges from the result
   Standard_EXPORT void RemoveInternalEdges();
@@ -209,7 +218,8 @@ private:
                                        TopTools_DataMapOfShapeShape& theMES,
                                        TopTools_DataMapOfShapeShape& theBuild,
                                        Handle(BRepAlgo_AsDes)& theAsDes,
-                                       Handle(BRepAlgo_AsDes)& theAsDes2d);
+                                       Handle(BRepAlgo_AsDes)& theAsDes2d,
+                                       const Message_ProgressRange& theRange);
 
   //! Building of the splits of the offset faces for mode Complete
   //! and joint type Intersection. This method is an advanced alternative
@@ -221,13 +231,15 @@ private:
                                                   TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
                                                   TopTools_DataMapOfShapeShape& theFacesOrigins,
                                                   TopTools_DataMapOfShapeShape& theETrimEInf,
-                                                  BRepAlgo_Image& theImage);
+                                                  BRepAlgo_Image& theImage,
+                                                  const Message_ProgressRange& theRange);
 
   //! Building of the splits of the already trimmed offset faces for mode Complete
   //! and joint type Intersection.
   Standard_EXPORT void BuildSplitsOfTrimmedFaces(const TopTools_ListOfShape& theLF,
                                                  const Handle(BRepAlgo_AsDes)& theAsDes,
-                                                 BRepAlgo_Image& theImage);
+                                                 BRepAlgo_Image& theImage,
+                                                 const Message_ProgressRange& theRange);
 
   Standard_Real myOffset;
   Standard_Real myTol;

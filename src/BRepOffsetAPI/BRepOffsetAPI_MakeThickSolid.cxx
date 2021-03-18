@@ -41,12 +41,13 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin
 (const TopoDS_Shape&         S,
  const TopTools_ListOfShape& ClosingFaces,
  const Standard_Real         Offset, 
- const Standard_Real         Tol, 
+ const Standard_Real         Tol,
  const BRepOffset_Mode       Mode,
  const Standard_Boolean      Intersection,
  const Standard_Boolean      SelfInter,
  const GeomAbs_JoinType      Join,
- const Standard_Boolean      RemoveIntEdges)
+ const Standard_Boolean      RemoveIntEdges,
+ const Message_ProgressRange& theRange)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_JOIN;
@@ -57,7 +58,7 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidByJoin
   for (; it.More(); it.Next())
     myOffsetShape.AddFace(TopoDS::Face(it.Value()));
 
-  myOffsetShape.MakeThickSolid();
+  myOffsetShape.MakeThickSolid(theRange);
   if (!myOffsetShape.IsDone())
     return;
 

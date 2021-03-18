@@ -41,14 +41,15 @@ void BRepOffsetAPI_MakeOffsetShape::PerformByJoin
  const Standard_Boolean Intersection,
  const Standard_Boolean SelfInter,
  const GeomAbs_JoinType Join,
- const Standard_Boolean RemoveIntEdges)
+ const Standard_Boolean RemoveIntEdges,
+ const Message_ProgressRange& theRange)
 {
   NotDone();
   myLastUsedAlgo = OffsetAlgo_JOIN;
 
   myOffsetShape.Initialize (S,Offset,Tol,Mode,Intersection,SelfInter,
                             Join, Standard_False, RemoveIntEdges);
-  myOffsetShape.MakeOffsetShape();
+  myOffsetShape.MakeOffsetShape(theRange);
 
   if (!myOffsetShape.IsDone())
     return;

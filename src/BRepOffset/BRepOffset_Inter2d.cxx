@@ -1572,7 +1572,8 @@ void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&     AsDes,
                                   const TopTools_IndexedMapOfShape& NewEdges,
                                   const Standard_Real               Tol,
                                   const TopTools_DataMapOfShapeListOfShape& theEdgeIntEdges,
-                                  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
+                                  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+                                  const Message_ProgressRange& theRange)
 {
 #ifdef DRAW
   NbF2d++;
@@ -1600,7 +1601,12 @@ void BRepOffset_Inter2d::Compute (const Handle(BRepAlgo_AsDes)&     AsDes,
   Standard_Integer                   j, i = 1;
   BRepAdaptor_Surface BAsurf(F);
   //
-  for ( it1LE.Initialize(LE) ; it1LE.More(); it1LE.Next()) {
+  Message_ProgressScope aPS(theRange, "Intersecting edges on faces", LE.Size());
+  for ( it1LE.Initialize(LE) ; it1LE.More(); it1LE.Next(), aPS.Next()) {
+    if (!aPS.More())
+    {
+      return;
+    }
     const TopoDS_Edge& E1 = TopoDS::Edge(it1LE.Value());        
     j = 1;
     it2LE.Initialize(LE);
@@ -1670,18 +1676,23 @@ Standard_Boolean BRepOffset_Inter2d::ConnexIntByInt
   TopTools_IndexedMapOfShape&   FacesWithVerts,
   BRepAlgo_Image&               theImageVV,
   TopTools_DataMapOfShapeListOfShape& theEdgeIntEdges,
-  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
+  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+  const Message_ProgressRange& theRange)
 {  
 
   TopTools_DataMapOfShapeListOfShape MVE;
   BRepOffset_Tool::MapVertexEdges(FI,MVE);
-
+  Message_ProgressScope aPS(theRange, "Intersecting edges obtained as intersection of faces", 1, Standard_True);
   //---------------------
   // Extension of edges.
   //---------------------
   TopoDS_Edge  NE;
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape it(MVE);
   for  ( ; it.More(); it.Next()) {
+    if (!aPS.More())
+    {
+      return Standard_False;
+    }
     const TopTools_ListOfShape&  L = it.Value();
     Standard_Boolean   YaBuild = 0;
     TopTools_ListIteratorOfListOfShape itL(L);
@@ -1712,9 +1723,13 @@ Standard_Boolean BRepOffset_Inter2d::ConnexIntByInt
   if (MES.IsBound(FIO)) FIO = TopoDS::Face(MES(FIO));
   //
   BRepAdaptor_Surface BAsurf(FIO);
-  
+
   TopExp_Explorer exp(FI.Oriented(TopAbs_FORWARD),TopAbs_WIRE);
-  for (; exp.More(); exp.Next()) {
+  for (; exp.More(); exp.Next(), aPS.Next()) {
+    if (!aPS.More())
+    {
+      return Standard_False;
+    }
     const TopoDS_Wire&     W = TopoDS::Wire(exp.Current());
     BRepTools_WireExplorer wexp;
     Standard_Boolean       end = Standard_False ;
@@ -1871,7 +1886,8 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
   const Handle(BRepAlgo_AsDes)& AsDes2d,
   const Standard_Real           Tol,
   const BRepOffset_Analyse&     Analyse,
-  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
+  TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+  const Message_ProgressRange& theRange)
 {
   TopoDS_Face           FIO = TopoDS::Face(OFI.Face());
   if (MES.IsBound(FIO)) FIO = TopoDS::Face(MES(FIO));
@@ -1886,8 +1902,13 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
   //
   BRepAdaptor_Surface BAsurf(FIO);
   //
+  Message_ProgressScope aPS(theRange, "Intersecting edges created from vertices", 1, Standard_True);
   TopExp_Explorer exp(FI.Oriented(TopAbs_FORWARD),TopAbs_WIRE);
-  for (; exp.More(); exp.Next()) {
+  for (; exp.More(); exp.Next(), aPS.Next()) {
+    if (!aPS.More())
+    {
+      return;
+    }
     const TopoDS_Wire&     W = TopoDS::Wire(exp.Current());
     //
     BRepTools_WireExplorer wexp;
