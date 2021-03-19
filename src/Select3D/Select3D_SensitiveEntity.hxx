@@ -24,7 +24,6 @@
 #include <Select3D_BndBox3d.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 #include <SelectBasics_PickResult.hxx>
-#include <SelectBasics_SensitiveEntity.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -110,7 +109,7 @@ protected:
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveEntity, Standard_Transient)
 
-// for porting old code
+Standard_DEPRECATED("Deprecated alias - Select3D_SensitiveEntity should be used instead")
 typedef Select3D_SensitiveEntity SelectBasics_SensitiveEntity;
 
 #endif // _Select3D_SensitiveEntity_HeaderFile

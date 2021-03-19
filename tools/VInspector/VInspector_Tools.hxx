@@ -72,27 +72,27 @@ public:
   //! \param theOwner a selectable owner
   //! \return boolean value
   Standard_EXPORT static bool IsOwnerSelected (const Handle(AIS_InteractiveContext)& theContext,
-                                               const Handle(SelectBasics_EntityOwner)& theOwner);
+                                               const Handle(SelectMgr_EntityOwner)& theOwner);
 
   //! Returns all owners present in the context
   //! \param theContext an interactive context
   //! \return container of owners
-  Standard_EXPORT static NCollection_List<Handle(SelectBasics_EntityOwner)> ContextOwners (
+  Standard_EXPORT static NCollection_List<Handle(SelectMgr_EntityOwner)> ContextOwners (
                                                  const Handle(AIS_InteractiveContext)& theContext);
 
   //! Returns active owners in main selector of context
   //! \param theContext an interactive context
   //! \param theEmptySelectableOwners container of owners with NULL presentation or not displayed presentation
   //! \return container of owners
-  Standard_EXPORT static NCollection_List<Handle(SelectBasics_EntityOwner)> ActiveOwners (
+  Standard_EXPORT static NCollection_List<Handle(SelectMgr_EntityOwner)> ActiveOwners (
                             const Handle(AIS_InteractiveContext)& theContext,
-                            NCollection_List<Handle(SelectBasics_EntityOwner)>& theEmptySelectableOwners);
+                            NCollection_List<Handle(SelectMgr_EntityOwner)>& theEmptySelectableOwners);
 
   //! Unhighlight selected, set selected the owners
   //! \param theContext an interactive context
   //! \param theOwners a container of owners
   Standard_EXPORT static void AddOrRemoveSelectedShapes (const Handle(AIS_InteractiveContext)& theContext,
-                                         const NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners);
+                                         const NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners);
 
   //! Unhighlight selected, set selected presentations
   //! \param theContext an interactive context

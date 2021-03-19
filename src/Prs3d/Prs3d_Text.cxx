@@ -19,7 +19,6 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Text.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <TCollection_AsciiString.hxx>

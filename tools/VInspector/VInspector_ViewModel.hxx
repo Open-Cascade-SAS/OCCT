@@ -18,8 +18,8 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <NCollection_List.hxx>
-#include <SelectBasics_EntityOwner.hxx>
-#include <Standard.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+
 #include <inspector/TreeModel_ModelBase.hxx>
 #include <inspector/VInspector_ItemBase.hxx>
 

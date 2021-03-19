@@ -23,12 +23,10 @@
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_TypeOfConnection.hxx>
 #include <Graphic3d_TypeOfStructure.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <NCollection_IndexedMap.hxx>
 

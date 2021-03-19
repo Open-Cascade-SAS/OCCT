@@ -118,7 +118,7 @@ Standard_Boolean Select3D_SensitiveWire::overlapsElement (SelectBasics_PickResul
                                                           Standard_Boolean )
 {
   const Standard_Integer aSensitiveIdx = myEntityIndexes.Value (theElemIdx);
-  const Handle(SelectBasics_SensitiveEntity)& aSeg = myEntities.Value (aSensitiveIdx);
+  const Handle(Select3D_SensitiveEntity)& aSeg = myEntities.Value (aSensitiveIdx);
   return aSeg->Matches (theMgr, thePickResult);
 }
 

@@ -10,7 +10,6 @@ SelectMgr_BVHThreadPool.cxx
 SelectMgr_BVHThreadPool.hxx
 SelectMgr_CompositionFilter.cxx
 SelectMgr_CompositionFilter.hxx
-SelectMgr_CompositionFilter.lxx
 SelectMgr_EntityOwner.cxx
 SelectMgr_EntityOwner.hxx
 SelectMgr_Filter.cxx
@@ -45,7 +44,6 @@ SelectMgr_SensitiveEntity.cxx
 SelectMgr_SensitiveEntity.hxx
 SelectMgr_SensitiveEntitySet.cxx
 SelectMgr_SensitiveEntitySet.hxx
-SelectMgr_SequenceOfFilter.hxx
 SelectMgr_SequenceOfOwner.hxx
 SelectMgr_SequenceOfSelection.hxx
 SelectMgr_SortCriterion.hxx

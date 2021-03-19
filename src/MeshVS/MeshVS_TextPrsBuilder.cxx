@@ -20,7 +20,6 @@
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Text.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <MeshVS_Buffer.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>

@@ -48,7 +48,6 @@ Graphic3d_ClipPlane.cxx
 Graphic3d_ClipPlane.hxx
 Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
-Graphic3d_CTexture.hxx
 Graphic3d_CubeMap.cxx
 Graphic3d_CubeMap.hxx
 Graphic3d_CubeMapOrder.cxx
@@ -82,7 +81,6 @@ Graphic3d_GroupAspect.hxx
 Graphic3d_GroupDefinitionError.hxx
 Graphic3d_HatchStyle.hxx
 Graphic3d_HatchStyle.cxx
-Graphic3d_HighlightStyle.hxx
 Graphic3d_PresentationAttributes.hxx
 Graphic3d_PresentationAttributes.cxx
 Graphic3d_HorizontalTextAlignment.hxx
@@ -95,7 +93,6 @@ Graphic3d_MapOfAspectsToAspects.hxx
 Graphic3d_MapIteratorOfMapOfStructure.hxx
 Graphic3d_MapOfObject.hxx
 Graphic3d_MapOfStructure.hxx
-Graphic3d_MapOfZLayerSettings.hxx
 Graphic3d_MarkerImage.cxx
 Graphic3d_MarkerImage.hxx
 Graphic3d_MarkerImage.pxx
@@ -174,7 +171,6 @@ Graphic3d_TextureSet.cxx
 Graphic3d_TextureSet.hxx
 Graphic3d_TextureSetBits.hxx
 Graphic3d_ToneMappingMethod.hxx
-Graphic3d_TransformError.hxx
 Graphic3d_TransformPers.hxx
 Graphic3d_TransformPers.cxx
 Graphic3d_TransformUtils.hxx
@@ -182,7 +178,6 @@ Graphic3d_TransModeFlags.hxx
 Graphic3d_TypeOfAnswer.hxx
 Graphic3d_TypeOfBackfacingModel.hxx
 Graphic3d_TypeOfBackground.hxx
-Graphic3d_TypeOfComposition.hxx
 Graphic3d_TypeOfConnection.hxx
 Graphic3d_TypeOfLightSource.hxx
 Graphic3d_TypeOfLimit.hxx

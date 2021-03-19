@@ -17,17 +17,10 @@
 #ifndef _SelectMgr_CompositionFilter_HeaderFile
 #define _SelectMgr_CompositionFilter_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <SelectMgr_ListOfFilter.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class SelectMgr_Filter;
 
-
-class SelectMgr_CompositionFilter;
 DEFINE_STANDARD_HANDLE(SelectMgr_CompositionFilter, SelectMgr_Filter)
 
 //! A framework to define a compound filter composed of
@@ -37,51 +30,33 @@ class SelectMgr_CompositionFilter : public SelectMgr_Filter
 
 public:
 
-  
   //! Adds the filter afilter to a filter object created by a
   //! filter class inheriting this framework.
   Standard_EXPORT void Add (const Handle(SelectMgr_Filter)& afilter);
-  
+
   //! Removes the filter aFilter from this framework.
   Standard_EXPORT void Remove (const Handle(SelectMgr_Filter)& aFilter);
-  
+
   //! Returns true if this framework is empty.
   Standard_EXPORT Standard_Boolean IsEmpty() const;
-  
+
   //! Returns true if the filter aFilter is in this framework.
   Standard_EXPORT Standard_Boolean IsIn (const Handle(SelectMgr_Filter)& aFilter) const;
-  
+
   //! Returns the list of stored filters from this framework.
-    const SelectMgr_ListOfFilter& StoredFilters() const;
-  
+  const SelectMgr_ListOfFilter& StoredFilters() const { return myFilters; }
+
   //! Clears the filters used in this framework.
   Standard_EXPORT void Clear();
-  
+
   Standard_EXPORT virtual Standard_Boolean ActsOn (const TopAbs_ShapeEnum aStandardMode) const Standard_OVERRIDE;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter,SelectMgr_Filter)
 
 protected:
 
-
   SelectMgr_ListOfFilter myFilters;
 
-
-private:
-
-
-
-
 };
-
-
-#include <SelectMgr_CompositionFilter.lxx>
-
-
-
-
 
 #endif // _SelectMgr_CompositionFilter_HeaderFile

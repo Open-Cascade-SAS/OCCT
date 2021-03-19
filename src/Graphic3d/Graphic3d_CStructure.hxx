@@ -20,7 +20,6 @@
 #include <Graphic3d_PresentationAttributes.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_Vec3.hxx>

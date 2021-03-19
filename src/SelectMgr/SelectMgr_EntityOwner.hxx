@@ -211,7 +211,7 @@ protected:
 
 DEFINE_STANDARD_HANDLE(SelectMgr_EntityOwner, Standard_Transient)
 
-// for porting old code
+Standard_DEPRECATED("Deprecated alias - SelectMgr_EntityOwner should be used instead")
 typedef SelectMgr_EntityOwner SelectBasics_EntityOwner;
 
 #endif // _SelectMgr_EntityOwner_HeaderFile

@@ -17,7 +17,6 @@
 #ifndef _V3d_PositionLight_HeaderFile
 #define _V3d_PositionLight_HeaderFile
 
-#include <Graphic3d_Vertex.hxx>
 #include <V3d_Light.hxx>
 
 //! Base class for Positional, Spot and Directional Light classes.

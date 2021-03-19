@@ -192,8 +192,8 @@ namespace
           const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
           for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
           {
-            const Handle(SelectMgr_SensitiveEntity)& aSens   = aSelEntIter.Value();
-            const Handle(SelectBasics_EntityOwner)&  anOwner = aSens->BaseSensitive()->OwnerId();
+            const Handle(SelectMgr_SensitiveEntity)& aSens = aSelEntIter.Value();
+            const Handle(SelectMgr_EntityOwner)&   anOwner = aSens->BaseSensitive()->OwnerId();
             if (!myMapOwnerColors.IsBound (anOwner))
             {
               Quantity_Color aColor;
@@ -223,7 +223,7 @@ namespace
     }
 
   protected:
-    NCollection_DataMap<Handle(SelectBasics_EntityOwner), Quantity_Color> myMapOwnerColors;
+    NCollection_DataMap<Handle(SelectMgr_EntityOwner), Quantity_Color> myMapOwnerColors;
   };
 
   //! Help class for filling pixel with random color for each selection mode.

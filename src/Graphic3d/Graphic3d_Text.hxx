@@ -16,7 +16,6 @@
 
 #include <gp_Ax2.hxx>
 
-#include <Graphic3d_Vertex.hxx>
 #include <Font_TextFormatter.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>

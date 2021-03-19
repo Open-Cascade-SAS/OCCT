@@ -22,7 +22,6 @@
 #include <OpenGl_TextBuilder.hxx>
 
 #include <TCollection_ExtendedString.hxx>
-#include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_Text.hxx>

@@ -17,47 +17,21 @@
 #ifndef _Graphic3d_GraphicDriver_HeaderFile
 #define _Graphic3d_GraphicDriver_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Transient.hxx>
-#include <Graphic3d_CView.hxx>
-#include <Graphic3d_CStructure.hxx>
-#include <Aspect_GradientFillMethod.hxx>
-#include <Standard_CString.hxx>
-#include <Aspect_FillMethod.hxx>
-#include <Standard_Size.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_Real.hxx>
-#include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Graphic3d_GraduatedTrihedron.hxx>
-#include <Graphic3d_Vec3.hxx>
-#include <Standard_ShortReal.hxx>
-#include <Standard_Address.hxx>
-#include <Image_PixMap.hxx>
-#include <Graphic3d_BufferType.hxx>
 #include <Aspect_GenId.hxx>
-#include <Aspect_Handle.hxx>
+#include <Graphic3d_Vec3.hxx>
+#include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
-#include <Graphic3d_MapOfZLayerSettings.hxx>
-#include <Graphic3d_CLight.hxx>
 #include <Graphic3d_TypeOfLimit.hxx>
-#include <TColStd_Array2OfReal.hxx>
-#include <TColStd_MapOfInteger.hxx>
+#include <Standard_CString.hxx>
+#include <Standard_Size.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 class Aspect_DisplayConnection;
+class Aspect_Window;
 class Graphic3d_CView;
-class Graphic3d_GraphicDriver;
 class Graphic3d_Layer;
-class Graphic3d_TransformError;
-class Graphic3d_Structure;
 class Graphic3d_StructureManager;
-class Graphic3d_ViewManager;
-class Quantity_Color;
 class TCollection_AsciiString;
 
 DEFINE_STANDARD_HANDLE(Graphic3d_GraphicDriver, Standard_Transient)

@@ -25,7 +25,6 @@
 #include <Graphic3d_PriorityDefinitionError.hxx>
 #include <Graphic3d_StructureDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_TransformError.hxx>
 #include <Quantity_Color.hxx>
 
 #include "Graphic3d_Structure.pxx"

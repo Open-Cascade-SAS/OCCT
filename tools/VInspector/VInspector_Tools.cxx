@@ -100,7 +100,7 @@ int VInspector_Tools::SelectedOwners (const Handle(AIS_InteractiveContext)& theC
 // purpose :
 // =======================================================================
 bool VInspector_Tools::IsOwnerSelected (const Handle(AIS_InteractiveContext)& theContext,
-                                        const Handle(SelectBasics_EntityOwner)& theOwner)
+                                        const Handle(SelectMgr_EntityOwner)& theOwner)
 {
   bool anIsSelected = false;
   for (theContext->InitSelected(); theContext->MoreSelected() && !anIsSelected; theContext->NextSelected())
@@ -112,10 +112,10 @@ bool VInspector_Tools::IsOwnerSelected (const Handle(AIS_InteractiveContext)& th
 // function : ContextOwners
 // purpose :
 // =======================================================================
-NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwners (
+NCollection_List<Handle(SelectMgr_EntityOwner)> VInspector_Tools::ContextOwners (
                                                const Handle(AIS_InteractiveContext)& theContext)
 {
-  NCollection_List<Handle(SelectBasics_EntityOwner)> aResultOwners;
+  NCollection_List<Handle(SelectMgr_EntityOwner)> aResultOwners;
   if (theContext.IsNull())
     return aResultOwners;
 
@@ -137,8 +137,8 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwne
         Handle(SelectMgr_SensitiveEntity) anEntity = aSelEntIter.Value();
         if (anEntity.IsNull())
           continue;
-        const Handle(SelectBasics_SensitiveEntity)& aBase = anEntity->BaseSensitive();
-        Handle(SelectBasics_EntityOwner) anOwner = aBase->OwnerId();
+        const Handle(Select3D_SensitiveEntity)& aBase = anEntity->BaseSensitive();
+        Handle(SelectMgr_EntityOwner) anOwner = aBase->OwnerId();
         Standard_Transient* anOwnerPtr = anOwner.get();
         if (aSelectedIds.contains ((size_t)anOwnerPtr))
           continue;
@@ -154,22 +154,22 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ContextOwne
 // function : ActiveOwners
 // purpose :
 // =======================================================================
-NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ActiveOwners (
+NCollection_List<Handle(SelectMgr_EntityOwner)> VInspector_Tools::ActiveOwners (
                                 const Handle(AIS_InteractiveContext)& theContext,
-                                NCollection_List<Handle(SelectBasics_EntityOwner)>& theEmptySelectableOwners)
+                                NCollection_List<Handle(SelectMgr_EntityOwner)>& theEmptySelectableOwners)
 {
-  NCollection_List<Handle(SelectBasics_EntityOwner)> aResultOwners;
+  NCollection_List<Handle(SelectMgr_EntityOwner)> aResultOwners;
 
   // only local context is processed: TODO for global context
   Handle(AIS_InteractiveContext) aContext = theContext;
   if (aContext.IsNull())
     return aResultOwners;
-  NCollection_List<Handle(SelectBasics_EntityOwner)> anActiveOwners;
+  NCollection_List<Handle(SelectMgr_EntityOwner)> anActiveOwners;
   // OCCT BUG:1 - equal pointer owners are appears in the list
   aContext->MainSelector()->ActiveOwners (anActiveOwners);
   QList<size_t> aSelectedIds; // Remember of selected address in order to avoid duplicates
   Handle(SelectMgr_EntityOwner) anOwner;
-  for (NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt (anActiveOwners);
+  for (NCollection_List<Handle(SelectMgr_EntityOwner)>::Iterator anOwnersIt (anActiveOwners);
        anOwnersIt.More(); anOwnersIt.Next())
   {
     anOwner = anOwnersIt.Value();
@@ -195,7 +195,7 @@ NCollection_List<Handle(SelectBasics_EntityOwner)> VInspector_Tools::ActiveOwner
 // purpose :
 // =======================================================================
 void VInspector_Tools::AddOrRemoveSelectedShapes (const Handle(AIS_InteractiveContext)& theContext,
-                                                  const NCollection_List<Handle(SelectBasics_EntityOwner)>& theOwners)
+                                                  const NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners)
 {
   // TODO: the next two rows are to be removed later
   theContext->UnhilightSelected(false);
@@ -203,7 +203,7 @@ void VInspector_Tools::AddOrRemoveSelectedShapes (const Handle(AIS_InteractiveCo
 
   theContext->UnhilightSelected(Standard_False);
 
-  for (NCollection_List<Handle(SelectBasics_EntityOwner)>::Iterator anOwnersIt(theOwners);
+  for (NCollection_List<Handle(SelectMgr_EntityOwner)>::Iterator anOwnersIt(theOwners);
        anOwnersIt.More(); anOwnersIt.Next())
   {
     Handle(SelectMgr_EntityOwner) anOwner = anOwnersIt.Value();

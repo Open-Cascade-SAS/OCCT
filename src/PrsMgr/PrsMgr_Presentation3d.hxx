@@ -19,6 +19,7 @@
 
 #include <PrsMgr_Presentation.hxx>
 
+Standard_DEPRECATED("Deprecated alias to PrsMgr_Presentation3d")
 typedef PrsMgr_Presentation PrsMgr_Presentation3d;
 typedef Handle_PrsMgr_Presentation Handle_PrsMgr_Presentation3d;
 

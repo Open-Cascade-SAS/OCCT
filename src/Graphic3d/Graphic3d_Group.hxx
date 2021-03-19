@@ -125,9 +125,6 @@ public:
   //! Adds an array of primitives for display
   Standard_EXPORT void AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitives)& thePrim, const Standard_Boolean theToEvalMinMax = Standard_True);
 
-  //! Creates a primitive array with single marker using AddPrimitiveArray().
-  Standard_EXPORT void Marker (const Graphic3d_Vertex& thePoint, const Standard_Boolean theToEvalMinMax = Standard_True);
-
 public:
 
   //! sets the stencil test to theIsEnabled state;
@@ -172,6 +169,9 @@ public:
 
 //! @name obsolete methods
 public:
+
+  Standard_DEPRECATED("Deprecated method Marker(), pass Graphic3d_ArrayOfPoints to AddPrimitiveArray() instead")
+  Standard_EXPORT void Marker (const Graphic3d_Vertex& thePoint, const Standard_Boolean theToEvalMinMax = Standard_True);
 
   //! Creates the string <AText> at position <APoint>.
   //! The 3D point of attachment is projected. The text is

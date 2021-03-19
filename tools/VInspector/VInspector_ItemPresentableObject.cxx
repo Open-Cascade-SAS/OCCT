@@ -30,7 +30,7 @@
 #include <NCollection_List.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <SelectBasics_EntityOwner.hxx>
+#include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
 #include <Standard_WarningsDisable.hxx>
