@@ -447,12 +447,6 @@ foreach (OCCT_MODULE ${OCCT_MODULES})
   endif()
 endforeach()
 
-# DRAWEXE excluded when library build is static
-if (NOT BUILD_SHARED_LIBS)
-  list (REMOVE_ITEM BUILD_TOOLKITS DRAWEXE)
-  message (STATUS "Info: DRAWEXE is not included due to ${BUILD_LIBRARY_TYPE} build library type")
-endif()
-
 # accumulate all used toolkits
 list (REMOVE_DUPLICATES BUILD_TOOLKITS)
 set (RAW_BUILD_TOOLKITS)

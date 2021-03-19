@@ -173,6 +173,7 @@ if ["%toCMake%"] == ["1"] (
  -D 3RDPARTY_TCL_INCLUDE_DIR:PATH="%aTcl%/include" ^
  -D 3RDPARTY_TCL_LIBRARY_DIR:PATH="%aTcl%/lib" ^
  -D 3RDPARTY_TCL_LIBRARY:FILEPATH="%aTcl%/lib/libtcl.a" ^
+ -D USE_TK:BOOL="OFF" ^
  "%aCasSrc%"
 
   if errorlevel 1 (

@@ -12,6 +12,7 @@ set VS=14
 set VSDATA=2015
 set VSPLATFORM=Win64
 set "BUILD_DIR=build-vs%VS%-%VSPLATFORM%"
+set "OCCT3RDPARTY="
 set "INSTALL_DIR=%SrcRoot%\install"
 
 set BUILD_ADDITIONAL_TOOLKITS=

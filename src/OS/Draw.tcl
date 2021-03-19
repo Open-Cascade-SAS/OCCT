@@ -11,9 +11,7 @@
 # Alternatively, this file may be used under the terms of Open CASCADE
 # commercial license or contractual agreement.
 
-;#
-;# Liste des toolkits WOK sous forme de full path
-;# 
+;# Return list of toolkits
 proc Draw:toolkits { } {
   set aResult [list TKDraw TKTopTest TKViewerTest TKXSDRAW TKDCAF TKXDEDRAW TKTObjDRAW TKQADraw]
 
@@ -35,41 +33,23 @@ proc Draw:toolkits { } {
   return $aResult
 }
 
-;#
 ;# Autres UDs a prendre. Listes de triplets
 ;# { ar typ UD str } Tous les types de UD vont dans un sous directory nomme root/str
 ;# Ils seront dans CAS3.0/str de l'archive de type ar (source/runtime)
 ;# { ar typ UD {}  } Tous les types de UD vont dans root/UD/src => CAS3.0/src
-;#
 proc Draw:ressources { } {
-    return [list \
-	    [list both r DrawResources {}] \
-	    [list both x DRAWEXE {}] \
-	    ]
-}
-proc Draw:freefiles { } {
-    return {}
-}
-;#
-;# Nom du module 
-;#
-proc Draw:name { } {
-    return Draw
-}
-proc Draw:alias { } {
-    return DRAW
-}
-proc Draw:depends { } {
-    return [list DataExchange]
+  return [list \
+          [list both r DrawResources {}] \
+          [list both x DRAWEXE {}] \
+         ]
 }
 
-proc Draw:acdepends { } {
-    return [list TCLTK]
-}
+proc Draw:freefiles { } { return {} }
 
-;#
+proc Draw:name { } { return Draw }
+proc Draw:alias { } { return DRAW }
+proc Draw:depends { } { return [list DataExchange] }
+proc Draw:acdepends { } { return [list TCLTK] }
+
 ;# Returns a list of exported features.
-;#
-proc Draw:Export { } {
-    return [list source runtime wokadm api]
-}
+proc Draw:Export { } { return [list source runtime wokadm api] }

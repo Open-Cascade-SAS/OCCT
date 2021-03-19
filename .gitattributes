@@ -1,6 +1,8 @@
 .gitattributes eol=lf
 .gitignore  eol=lf
 *.txt       eol=lf
+*.htm       eol=lf
+*.html      eol=lf
 *.h         eol=lf
 *.c         eol=lf
 *.inl       eol=lf
@@ -29,6 +31,7 @@
 *.xib       eol=lf
 *.plist     eol=lf
 *.java      eol=lf
+*.js        eol=lf
 *.igs       eol=lf
 *.iges      eol=lf
 *.stp       eol=lf
@@ -44,6 +47,7 @@
 FILES       eol=lf
 PACKAGES    eol=lf
 EXTERNLIB   eol=lf
+EXTERNLIB_STATIC eol=lf
 UDLIST      eol=lf
 tests/*     eol=lf
 tests/*/*   eol=lf
