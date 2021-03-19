@@ -41,7 +41,11 @@ static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, co
 
 namespace
 {
-  static BOPAlgo_MakeConnected TheMakeConnectedTool;
+  static BOPAlgo_MakeConnected& getMakeConnectedTool()
+  {
+    static BOPAlgo_MakeConnected TheMakeConnectedTool;
+    return TheMakeConnectedTool;
+  }
 }
 
 //=======================================================================
@@ -104,7 +108,7 @@ Standard_Integer MakeConnected(Draw_Interpretor& theDI,
     return 1;
   }
 
-  TheMakeConnectedTool.Clear();
+  getMakeConnectedTool().Clear();
 
   for (Standard_Integer i = 2; i < theArgc; ++i)
   {
@@ -114,24 +118,24 @@ Standard_Integer MakeConnected(Draw_Interpretor& theDI,
       theDI << "Error: " << theArgv[i] << " is a null shape. Skip it.\n";
       continue;
     }
-    TheMakeConnectedTool.AddArgument(aS);
+    getMakeConnectedTool().AddArgument(aS);
   }
 
-  TheMakeConnectedTool.SetRunParallel(BOPTest_Objects::RunParallel());
+  getMakeConnectedTool().SetRunParallel(BOPTest_Objects::RunParallel());
 
-  TheMakeConnectedTool.Perform();
+  getMakeConnectedTool().Perform();
 
   // Print Error/Warning messages
-  BOPTest::ReportAlerts(TheMakeConnectedTool.GetReport());
+  BOPTest::ReportAlerts(getMakeConnectedTool().GetReport());
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(TheMakeConnectedTool.History());
+  BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
-  if (TheMakeConnectedTool.HasErrors())
+  if (getMakeConnectedTool().HasErrors())
     return 0;
 
   // Draw the result shape
-  const TopoDS_Shape& aResult = TheMakeConnectedTool.Shape();
+  const TopoDS_Shape& aResult = getMakeConnectedTool().Shape();
   DBRep::Set(theArgv[1], aResult);
 
   return 0;
@@ -151,7 +155,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
     return 1;
   }
 
-  if (TheMakeConnectedTool.Shape().IsNull() || TheMakeConnectedTool.HasErrors())
+  if (getMakeConnectedTool().Shape().IsNull() || getMakeConnectedTool().HasErrors())
   {
     theDI << "Make the shapes connected first.\n";
     return 1;
@@ -210,19 +214,19 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
     }
   }
 
-  TheMakeConnectedTool.MakePeriodic(aParams);
+  getMakeConnectedTool().MakePeriodic(aParams);
 
   // Print Error/Warning messages
-  BOPTest::ReportAlerts(TheMakeConnectedTool.GetReport());
+  BOPTest::ReportAlerts(getMakeConnectedTool().GetReport());
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(TheMakeConnectedTool.History());
+  BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
-  if (TheMakeConnectedTool.HasErrors())
+  if (getMakeConnectedTool().HasErrors())
     return 0;
 
   // Draw the result shape
-  const TopoDS_Shape& aResult = TheMakeConnectedTool.PeriodicShape();
+  const TopoDS_Shape& aResult = getMakeConnectedTool().PeriodicShape();
   DBRep::Set(theArgv[1], aResult);
 
   return 0;
@@ -242,7 +246,7 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
     return 1;
   }
 
-  if (TheMakeConnectedTool.PeriodicityTool().HasErrors())
+  if (getMakeConnectedTool().PeriodicityTool().HasErrors())
   {
     theDI << "The shapes have not been made periodic yet.\n";
     return 1;
@@ -276,20 +280,20 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
       return 1;
     }
 
-    TheMakeConnectedTool.RepeatShape(aDirID, aTimes);
+    getMakeConnectedTool().RepeatShape(aDirID, aTimes);
   }
 
   // Print Error/Warning messages
-  BOPTest::ReportAlerts(TheMakeConnectedTool.GetReport());
+  BOPTest::ReportAlerts(getMakeConnectedTool().GetReport());
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(TheMakeConnectedTool.History());
+  BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
-  if (TheMakeConnectedTool.HasErrors())
+  if (getMakeConnectedTool().HasErrors())
     return 0;
 
   // Draw the result shape
-  const TopoDS_Shape& aResult = TheMakeConnectedTool.PeriodicShape();
+  const TopoDS_Shape& aResult = getMakeConnectedTool().PeriodicShape();
   DBRep::Set(theArgv[1], aResult);
 
   return 0;
@@ -331,8 +335,8 @@ Standard_Integer MaterialsOn(Draw_Interpretor& theDI,
   }
 
   const TopTools_ListOfShape& aLS = bPositive ?
-    TheMakeConnectedTool.MaterialsOnPositiveSide(aShape) :
-    TheMakeConnectedTool.MaterialsOnNegativeSide(aShape);
+    getMakeConnectedTool().MaterialsOnPositiveSide(aShape) :
+    getMakeConnectedTool().MaterialsOnNegativeSide(aShape);
 
   TopoDS_Shape aResult;
   if (aLS.IsEmpty())
@@ -373,7 +377,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const TopTools_ListOfShape& aTwins = TheMakeConnectedTool.PeriodicityTool().GetTwins(aShape);
+  const TopTools_ListOfShape& aTwins = getMakeConnectedTool().PeriodicityTool().GetTwins(aShape);
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
@@ -401,13 +405,15 @@ Standard_Integer ClearRepetitions(Draw_Interpretor&,
                                   const char **theArgv)
 {
   // Clear all previous repetitions
-  TheMakeConnectedTool.ClearRepetitions();
+  getMakeConnectedTool().ClearRepetitions();
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(TheMakeConnectedTool.History());
+  BRepTest_Objects::SetHistory(getMakeConnectedTool().History());
 
   if (theArgc > 1)
-    DBRep::Set(theArgv[1], TheMakeConnectedTool.PeriodicShape());
+  {
+    DBRep::Set(theArgv[1], getMakeConnectedTool().PeriodicShape());
+  }
 
   return 0;
 }

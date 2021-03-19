@@ -37,7 +37,11 @@ static Standard_Integer ClearRepetitions(Draw_Interpretor&, Standard_Integer, co
 
 namespace
 {
-  static BOPAlgo_MakePeriodic ThePeriodicityMaker;
+  static BOPAlgo_MakePeriodic& getPeriodicityMaker()
+  {
+    static BOPAlgo_MakePeriodic ThePeriodicityMaker;
+    return ThePeriodicityMaker;
+  }
 }
 
 //=======================================================================
@@ -99,8 +103,8 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
     return 1;
   }
 
-  ThePeriodicityMaker.Clear();
-  ThePeriodicityMaker.SetShape(aShape);
+  getPeriodicityMaker().Clear();
+  getPeriodicityMaker().SetShape(aShape);
 
   for (Standard_Integer i = 3; i < theArgc;)
   {
@@ -131,7 +135,7 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
 
     Standard_Real aPeriod = Draw::Atof(theArgv[++i]);
 
-    ThePeriodicityMaker.MakePeriodic(aDirID, Standard_True, aPeriod);
+    getPeriodicityMaker().MakePeriodic(aDirID, Standard_True, aPeriod);
 
     ++i;
     if (theArgc > i + 1)
@@ -146,28 +150,30 @@ Standard_Integer MakePeriodic(Draw_Interpretor& theDI,
         }
         Standard_Real aFirst = Draw::Atof(theArgv[++i]);
 
-        ThePeriodicityMaker.SetTrimmed(aDirID, Standard_False, aFirst);
+        getPeriodicityMaker().SetTrimmed(aDirID, Standard_False, aFirst);
         ++i;
       }
     }
   }
 
-  ThePeriodicityMaker.SetRunParallel(BOPTest_Objects::RunParallel());
+  getPeriodicityMaker().SetRunParallel(BOPTest_Objects::RunParallel());
 
   // Perform operation
-  ThePeriodicityMaker.Perform();
+  getPeriodicityMaker().Perform();
 
   // Print Error/Warning messages
-  BOPTest::ReportAlerts(ThePeriodicityMaker.GetReport());
+  BOPTest::ReportAlerts(getPeriodicityMaker().GetReport());
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(ThePeriodicityMaker.History());
+  BRepTest_Objects::SetHistory(getPeriodicityMaker().History());
 
-  if (ThePeriodicityMaker.HasErrors())
+  if (getPeriodicityMaker().HasErrors())
+  {
     return 0;
+  }
 
   // Draw the result shape
-  const TopoDS_Shape& aResult = ThePeriodicityMaker.Shape();
+  const TopoDS_Shape& aResult = getPeriodicityMaker().Shape();
   DBRep::Set(theArgv[1], aResult);
 
   return 0;
@@ -195,7 +201,7 @@ Standard_Integer GetTwins(Draw_Interpretor& theDI,
     return 1;
   }
 
-  const TopTools_ListOfShape& aTwins = ThePeriodicityMaker.GetTwins(aShape);
+  const TopTools_ListOfShape& aTwins = getPeriodicityMaker().GetTwins(aShape);
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
@@ -256,20 +262,22 @@ Standard_Integer RepeatShape(Draw_Interpretor& theDI,
       return 1;
     }
 
-    ThePeriodicityMaker.RepeatShape(aDirID, aTimes);
+    getPeriodicityMaker().RepeatShape(aDirID, aTimes);
   }
 
   // Print Error/Warning messages
-  BOPTest::ReportAlerts(ThePeriodicityMaker.GetReport());
+  BOPTest::ReportAlerts(getPeriodicityMaker().GetReport());
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(ThePeriodicityMaker.History());
+  BRepTest_Objects::SetHistory(getPeriodicityMaker().History());
 
-  if (ThePeriodicityMaker.HasErrors())
+  if (getPeriodicityMaker().HasErrors())
+  {
     return 0;
+  }
 
   // Draw the result shape
-  const TopoDS_Shape& aResult = ThePeriodicityMaker.RepeatedShape();
+  const TopoDS_Shape& aResult = getPeriodicityMaker().RepeatedShape();
   DBRep::Set(theArgv[1], aResult);
 
   return 0;
@@ -284,13 +292,15 @@ Standard_Integer ClearRepetitions(Draw_Interpretor&,
                                   const char **theArgv)
 {
   // Clear all previous repetitions
-  ThePeriodicityMaker.ClearRepetitions();
+  getPeriodicityMaker().ClearRepetitions();
 
   // Set the history of the operation in session
-  BRepTest_Objects::SetHistory(ThePeriodicityMaker.History());
+  BRepTest_Objects::SetHistory(getPeriodicityMaker().History());
 
   if (theArgc > 1)
-    DBRep::Set(theArgv[1], ThePeriodicityMaker.Shape());
+  {
+    DBRep::Set(theArgv[1], getPeriodicityMaker().Shape());
+  }
 
   return 0;
 }

@@ -74,17 +74,45 @@
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
-static BRepFeat_MakeCylindricalHole theHole;
+static BRepFeat_MakeCylindricalHole& getHole()
+{
+  static BRepFeat_MakeCylindricalHole theHole;
+  return theHole;
+}
 static Standard_Boolean WithControl = Standard_True;
 
 Standard_Boolean DownCastingEnforcing = Standard_False;
 
-static BRepFeat_MakePrism thePrism;
-static BRepFeat_MakeDPrism theDPrism;
-static BRepFeat_MakeRevol theRevol;
-static BRepFeat_MakePipe  thePipe;
-static BRepFeat_MakeLinearForm  theLF;
-static BRepFeat_MakeRevolutionForm  theRF;
+static BRepFeat_MakePrism& getPrism()
+{
+  static BRepFeat_MakePrism thePrism;
+  return thePrism;
+}
+static BRepFeat_MakeDPrism& getDPrism()
+{
+  static BRepFeat_MakeDPrism theDPrism;
+  return theDPrism;
+}
+static BRepFeat_MakeRevol& getRevol()
+{
+  static BRepFeat_MakeRevol theRevol;
+  return theRevol;
+}
+static BRepFeat_MakePipe& getPipe()
+{
+  static BRepFeat_MakePipe thePipe;
+  return thePipe;
+}
+static BRepFeat_MakeLinearForm& getLienarForm()
+{
+  static BRepFeat_MakeLinearForm theLF;
+  return theLF;
+}
+static BRepFeat_MakeRevolutionForm& getRevolutionForm()
+{
+  static BRepFeat_MakeRevolutionForm theRF;
+  return theRF;
+}
 
 //Input shapes for Prism, DPrism, Revol, Pipe
 static TopoDS_Shape theSbase, thePbase;
@@ -231,26 +259,27 @@ static Standard_Integer HOLE1(Draw_Interpretor& theCommands,
 
   Standard_Real Radius = Draw::Atof(a[9]);
 
-  theHole.Init(S, gp_Ax1(Or, Di));
+  getHole().Init(S, gp_Ax1(Or, Di));
 
   if (narg <= 10) {
-    theHole.Perform(Radius);
+    getHole().Perform(Radius);
   }
   else {
     Standard_Real pfrom = Draw::Atof(a[10]);
     Standard_Real pto = Draw::Atof(a[11]);
-    theHole.Perform(Radius, pfrom, pto, WithControl);
+    getHole().Perform(Radius, pfrom, pto, WithControl);
   }
 
-  theHole.Build();
-  if (!theHole.HasErrors()) {
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
     //    dout.Clear();
-    DBRep::Set(a[1], theHole.Shape());
+    DBRep::Set(a[1], getHole().Shape());
     dout.Flush();
     return 0;
   }
   theCommands << "Echec de MakeCylindricalHole";
-  Print(theCommands, theHole.Status());
+  Print(theCommands, getHole().Status());
   return 1;
 }
 
@@ -265,18 +294,19 @@ static Standard_Integer HOLE2(Draw_Interpretor& theCommands,
 
   Standard_Real Radius = Draw::Atof(a[9]);
 
-  theHole.Init(S, gp_Ax1(Or, Di));
-  theHole.PerformThruNext(Radius, WithControl);
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformThruNext(Radius, WithControl);
 
-  theHole.Build();
-  if (!theHole.HasErrors()) {
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
     //    dout.Clear();
-    DBRep::Set(a[1], theHole.Shape());
+    DBRep::Set(a[1], getHole().Shape());
     dout.Flush();
     return 0;
   }
   theCommands << "Echec de MakeCylindricalHole";
-  Print(theCommands, theHole.Status());
+  Print(theCommands, getHole().Status());
   return 1;
 }
 
@@ -291,17 +321,17 @@ static Standard_Integer HOLE3(Draw_Interpretor& theCommands,
 
   Standard_Real Radius = Draw::Atof(a[9]);
 
-  theHole.Init(S, gp_Ax1(Or, Di));
-  theHole.PerformUntilEnd(Radius, WithControl);
-  theHole.Build();
-  if (!theHole.HasErrors()) {
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformUntilEnd(Radius, WithControl);
+  getHole().Build();
+  if (!getHole().HasErrors()) {
     //    dout.Clear();
-    DBRep::Set(a[1], theHole.Shape());
+    DBRep::Set(a[1], getHole().Shape());
     dout.Flush();
     return 0;
   }
   theCommands << "Echec de MakeCylindricalHole";
-  Print(theCommands, theHole.Status());
+  Print(theCommands, getHole().Status());
   return 1;
 }
 
@@ -318,17 +348,18 @@ static Standard_Integer HOLE4(Draw_Interpretor& theCommands,
   Standard_Real Radius = Draw::Atof(a[9]);
   Standard_Real Length = Draw::Atof(a[10]);
 
-  theHole.Init(S, gp_Ax1(Or, Di));
-  theHole.PerformBlind(Radius, Length, WithControl);
-  theHole.Build();
-  if (!theHole.HasErrors()) {
+  getHole().Init(S, gp_Ax1(Or, Di));
+  getHole().PerformBlind(Radius, Length, WithControl);
+  getHole().Build();
+  if (!getHole().HasErrors())
+  {
     //    dout.Clear();
-    DBRep::Set(a[1], theHole.Shape());
+    DBRep::Set(a[1], getHole().Shape());
     dout.Flush();
     return 0;
   }
   theCommands << "Echec de MakeCylindricalHole";
-  Print(theCommands, theHole.Status());
+  Print(theCommands, getHole().Status());
   return 1;
 }
 
@@ -1630,7 +1661,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theSbase = Sbase;
       thePbase = Pbase;
       theSkface = Skface;
-      thePrism.Init(Sbase, Pbase, Skface, gp_Dir(X, Y, Z), Fuse, Modify);
+      getPrism().Init(Sbase, Pbase, Skface, gp_Dir(X, Y, Z), Fuse, Modify);
     }
     else if (narg == 14) {
       rfdef = Standard_True;
@@ -1641,9 +1672,10 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       Standard_Real H1 = Draw::Atof(a[10]);
       Standard_Real H2 = Draw::Atof(a[11]);
       gp_Ax1 ax1(Or, gp_Dir(X, Y, Z));
-      theRF.Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
-      if (!theRF.IsDone()) {
-        se = theRF.CurrentStatusError();
+      getRevolutionForm().Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
+      if (!getRevolutionForm().IsDone())
+      {
+        se = getRevolutionForm().CurrentStatusError();
         //BRepFeat::Print(se,std::cout) << std::endl;
         Standard_SStream aSStream;
         BRepFeat::Print(se, aSStream);
@@ -1660,7 +1692,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theSbase = Sbase;
       thePbase = Pbase;
       theSkface = Skface;
-      theRevol.Init(Sbase, Pbase, Skface, gp_Ax1(Or, gp_Dir(X, Y, Z)),
+      getRevol().Init(Sbase, Pbase, Skface, gp_Ax1(Or, gp_Dir(X, Y, Z)),
         Fuse, Modify);
     }
     else {
@@ -1669,9 +1701,10 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       X = Draw::Atof(a[7]);
       Y = Draw::Atof(a[8]);
       Z = Draw::Atof(a[9]);
-      theLF.Init(Sbase, W, P, Direct, gp_Vec(X, Y, Z), Fuse, Modify);
-      if (!theLF.IsDone()) {
-        se = theLF.CurrentStatusError();
+      getLienarForm().Init(Sbase, W, P, Direct, gp_Vec(X, Y, Z), Fuse, Modify);
+      if (!getLienarForm().IsDone())
+      {
+        se = getLienarForm().CurrentStatusError();
         //BRepFeat::Print(se,std::cout) << std::endl;
         Standard_SStream aSStream;
         BRepFeat::Print(se, aSStream);
@@ -1691,7 +1724,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theSbase = Sbase;
       thePbase = Pbase;
       theSkface = Skface;
-      theDPrism.Init(Sbase, TopoDS::Face(Pbase), Skface, Angle, Fuse, Modify);
+      getDPrism().Init(Sbase, TopoDS::Face(Pbase), Skface, Angle, Fuse, Modify);
     }
     else { // FEATPIPE
       TopoDS_Shape aLocalShape(DBRep::Get(a[4], TopAbs_WIRE));
@@ -1711,7 +1744,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theSbase = Sbase;
       thePbase = Pbase;
       theSkface = Skface;
-      thePipe.Init(Sbase, Pbase, Skface, Spine, Fuse, Modify);
+      getPipe().Init(Sbase, Pbase, Skface, Spine, Fuse, Modify);
     }
   }
   return 0;
@@ -1743,7 +1776,7 @@ static Standard_Integer ADD(Draw_Interpretor&,
       if (fac.IsNull()) {
         return 1;
       }
-      thePrism.Add(edg, fac);
+      getPrism().Add(edg, fac);
     }
   }
   else if (!strcasecmp("REVOL", a[1])) {
@@ -1763,7 +1796,7 @@ static Standard_Integer ADD(Draw_Interpretor&,
       if (fac.IsNull()) {
         return 1;
       }
-      theRevol.Add(edg, fac);
+      getRevol().Add(edg, fac);
     }
   }
   else if (!strcasecmp("PIPE", a[1])) {
@@ -1783,7 +1816,7 @@ static Standard_Integer ADD(Draw_Interpretor&,
       if (fac.IsNull()) {
         return 1;
       }
-      thePipe.Add(edg, fac);
+      getPipe().Add(edg, fac);
     }
   }
   else {
@@ -1874,14 +1907,14 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
     if (narg == 4) {
       Standard_Real Val = Draw::Atof(a[3]);
       if (Kas == 1) {
-        thePrism.Perform(Val);
+        getPrism().Perform(Val);
       }
       else if (Kas == 2) {
         Val *= (M_PI / 180.);
-        theRevol.Perform(Val);
+        getRevol().Perform(Val);
       }
       else if (Kas == 4) {
-        theDPrism.Perform(Val);
+        getDPrism().Perform(Val);
       }
       else if (Kas == 5) {
         theCommands << "invalid command for lf";
@@ -1896,14 +1929,14 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       Standard_Real Val = Draw::Atof(a[3]);
       TopoDS_Shape FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
       if (Kas == 1) {
-        thePrism.PerformUntilHeight(FUntil, Val);
+        getPrism().PerformUntilHeight(FUntil, Val);
       }
       else if (Kas == 2) {
         Val *= (M_PI / 180.);
-        theRevol.PerformUntilAngle(FUntil, Val);
+        getRevol().PerformUntilAngle(FUntil, Val);
       }
       else if (Kas == 4) {
-        theDPrism.PerformUntilHeight(FUntil, Val);
+        getDPrism().PerformUntilHeight(FUntil, Val);
       }
       else {
         theCommands << "invalid command for ribs or slots";
@@ -1915,22 +1948,22 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
     if (narg == 3) { // Thru all
       switch (Kas) {
       case 1:
-        thePrism.PerformThruAll();
+        getPrism().PerformThruAll();
         break;
       case 2:
-        theRevol.PerformThruAll();
+        getRevol().PerformThruAll();
         break;
       case 3:
-        thePipe.Perform();
+        getPipe().Perform();
         break;
       case 4:
-        theDPrism.PerformThruAll();
+        getDPrism().PerformThruAll();
         break;
       case 5:
-        theLF.Perform();
+        getLienarForm().Perform();
         break;
       case 6:
-        theRF.Perform();
+        getRevolutionForm().Perform();
         break;
       default:
 
@@ -1943,17 +1976,17 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       case 1:
       {
         if (Funtil.IsNull()) {
-          thePrism.PerformUntilEnd();
+          getPrism().PerformUntilEnd();
         }
         else {
-          thePrism.Perform(Funtil);
+          getPrism().Perform(Funtil);
         }
       }
       break;
       case 2:
       {
         if (!Funtil.IsNull()) {
-          theRevol.Perform(Funtil);
+          getRevol().Perform(Funtil);
         }
         else {
           return 1;
@@ -1962,8 +1995,9 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       break;
       case 3:
       {
-        if (!Funtil.IsNull()) {
-          thePipe.Perform(Funtil);
+        if (!Funtil.IsNull())
+        {
+          getPipe().Perform(Funtil);
         }
         else {
           theCommands << "invalid command for ribs pipe";
@@ -1974,10 +2008,10 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       case 4:
       {
         if (!Funtil.IsNull()) {
-          theDPrism.Perform(Funtil);
+          getDPrism().Perform(Funtil);
         }
         else {
-          theDPrism.PerformUntilEnd();
+          getDPrism().PerformUntilEnd();
         }
       }
       break;
@@ -2006,11 +2040,13 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       switch (Kas) {
       case 1:
       {
-        if (Ffrom.IsNull()) {
-          thePrism.PerformFromEnd(Funtil);
+        if (Ffrom.IsNull())
+        {
+          getPrism().PerformFromEnd(Funtil);
         }
-        else {
-          thePrism.Perform(Ffrom, Funtil);
+        else
+        {
+          getPrism().Perform(Ffrom, Funtil);
         }
       }
       break;
@@ -2019,7 +2055,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
         if (Ffrom.IsNull()) {
           return 1;
         }
-        theRevol.Perform(Ffrom, Funtil);
+        getRevol().Perform(Ffrom, Funtil);
       }
       break;
       case 3:
@@ -2027,16 +2063,16 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
         if (Ffrom.IsNull()) {
           return 1;
         }
-        thePipe.Perform(Ffrom, Funtil);
+        getPipe().Perform(Ffrom, Funtil);
       }
       break;
       case 4:
       {
         if (Ffrom.IsNull()) {
-          theDPrism.PerformFromEnd(Funtil);
+          getDPrism().PerformFromEnd(Funtil);
         }
         else {
-          theDPrism.Perform(Ffrom, Funtil);
+          getDPrism().Perform(Ffrom, Funtil);
         }
       }
       break;
@@ -2050,15 +2086,16 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   BRepFeat_StatusError se;
   switch (Kas) {
   case 1:
-    if (!thePrism.IsDone()) {
-      se = thePrism.CurrentStatusError();
+    if (!getPrism().IsDone())
+    {
+      se = getPrism().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
       theCommands << aSStream << "\n";
       return 1;
     }
-    DBRep::Set(a[2], thePrism);
+    DBRep::Set(a[2], getPrism());
     dout.Flush();
     //History 
     if (BRepTest_Objects::IsHistoryNeeded())
@@ -2067,12 +2104,13 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       anArgs.Append(theSbase);
       anArgs.Append(thePbase);
       anArgs.Append(theSkface);
-      BRepTest_Objects::SetHistory(anArgs, thePrism);
+      BRepTest_Objects::SetHistory(anArgs, getPrism());
     }
     return 0;
   case 2:
-    if (!theRevol.IsDone()) {
-      se = theRevol.CurrentStatusError();
+    if (!getRevol().IsDone())
+    {
+      se = getRevol().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
@@ -2086,14 +2124,15 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       anArgs.Append(theSbase);
       anArgs.Append(thePbase);
       anArgs.Append(theSkface);
-      BRepTest_Objects::SetHistory(anArgs, theRevol);
+      BRepTest_Objects::SetHistory(anArgs, getRevol());
     }
-    DBRep::Set(a[2], theRevol);
+    DBRep::Set(a[2], getRevol());
     dout.Flush();
     return 0;
   case 3:
-    if (!thePipe.IsDone()) {
-      se = thePipe.CurrentStatusError();
+    if (!getPipe().IsDone())
+    {
+      se = getPipe().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
@@ -2107,14 +2146,15 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       anArgs.Append(theSbase);
       anArgs.Append(thePbase);
       anArgs.Append(theSkface);
-      BRepTest_Objects::SetHistory(anArgs, thePipe);
+      BRepTest_Objects::SetHistory(anArgs, getPipe());
     }
-    DBRep::Set(a[2], thePipe);
+    DBRep::Set(a[2], getPipe());
     dout.Flush();
     return 0;
   case 4:
-    if (!theDPrism.IsDone()) {
-      se = theDPrism.CurrentStatusError();
+    if (!getDPrism().IsDone())
+    {
+      se = getDPrism().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
@@ -2128,33 +2168,35 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
       anArgs.Append(theSbase);
       anArgs.Append(thePbase);
       anArgs.Append(theSkface);
-      BRepTest_Objects::SetHistory(anArgs, theDPrism);
+      BRepTest_Objects::SetHistory(anArgs, getDPrism());
     }
-    DBRep::Set(a[2], theDPrism);
+    DBRep::Set(a[2], getDPrism());
     dout.Flush();
     return 0;
   case 5:
-    if (!theLF.IsDone()) {
-      se = theLF.CurrentStatusError();
+    if (!getLienarForm().IsDone())
+    {
+      se = getLienarForm().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
       theCommands << aSStream << "\n";
       return 1;
     }
-    DBRep::Set(a[2], theLF);
+    DBRep::Set(a[2], getLienarForm());
     dout.Flush();
     return 0;
   case 6:
-    if (!theRF.IsDone()) {
-      se = theRF.CurrentStatusError();
+    if (!getRevolutionForm().IsDone())
+    {
+      se = getRevolutionForm().CurrentStatusError();
       //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se, aSStream);
       theCommands << aSStream << "\n";
       return 1;
     }
-    DBRep::Set(a[2], theRF);
+    DBRep::Set(a[2], getRevolutionForm());
     dout.Flush();
     return 0;
   default:
@@ -2207,11 +2249,11 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
       return 1;
     }
 
-    theDPrism.BossEdges(dprsig);
+    getDPrism().BossEdges(dprsig);
 
     TopTools_ListOfShape theTopEdges, theLatEdges;
-    theTopEdges = theDPrism.TopEdges();
-    theLatEdges = theDPrism.LatEdges();
+    theTopEdges = getDPrism().TopEdges();
+    theLatEdges = getDPrism().LatEdges();
 
     TopTools_ListIteratorOfListOfShape it;
     BRep_Builder B;
@@ -2245,7 +2287,7 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
       V = DBRep::Get(a[2], TopAbs_SHAPE);
     }
     else if (Kas == 3) {
-      V = theDPrism;
+      V = getDPrism();
     }
 
     if (V.IsNull()) return 1;
