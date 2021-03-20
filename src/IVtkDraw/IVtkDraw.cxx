@@ -83,7 +83,6 @@
   #include <Xw_Window.hxx>
   #include <vtkXRenderWindowInteractor.h>
   #include <vtkXOpenGLRenderWindow.h>
-  #include <tk.h>
 #endif
 #include <Standard_WarningsRestore.hxx>
 

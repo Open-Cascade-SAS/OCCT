@@ -343,6 +343,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #elif defined(_DEBUG)
   di << "Debug mode\n";
 #endif
+#ifdef HAVE_TK
+  di << "Tk enabled (HAVE_TK)\n";
+#else
+  di << "Tk disabled\n";
+#endif
 #ifdef HAVE_TBB
   di << "TBB enabled (HAVE_TBB)\n";
 #else 

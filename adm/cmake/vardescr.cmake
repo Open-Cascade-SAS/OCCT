@@ -155,6 +155,9 @@ set (3RDPARTY_DIR_DESCR
 third-party product have been found - corresponding CMake variables will be specified
 (VTK: 3RDPARTY_VTK_DIR, 3RDPARTY_VTK_INCLUDE_DIR, 3RDPARTY_VTK_LIBRARY_DIR)")
 
+set (USE_TK_DESCR
+"Indicates whether Tk product should be used by Draw Harness for user interface")
+
 set (USE_FREETYPE_DESCR
 "Indicates whether FreeType product should be used in OCCT for text rendering using external font files")
 

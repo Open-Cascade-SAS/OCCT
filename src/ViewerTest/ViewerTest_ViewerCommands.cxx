@@ -107,7 +107,6 @@
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
   #include <X11/Xutil.h>
-  #include <tk.h>
 #endif
 
 //==============================================================================
@@ -2086,9 +2085,8 @@ static int VDriver (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
 //==============================================================================
 //function : Vinit
 //purpose  : Create the window viewer and initialize all the global variable
-//    Use Tk_CreateFileHandler on UNIX to catch the X11 Viewer event
+//    Use Tcl_CreateFileHandler on UNIX to catch the X11 Viewer event
 //==============================================================================
-
 static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
   TCollection_AsciiString aViewName, aDisplayName;

@@ -28,6 +28,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <Message.hxx>
 #include <NCollection_List.hxx>
 
 extern Standard_Boolean Draw_Batch;
@@ -109,6 +110,7 @@ defaultPrompt:
 #include <Draw_Window.hxx>
 #include <unistd.h>
 
+#ifdef HAVE_TK
 #if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   // use forward declaration for small subset of used Tk functions
   // to workaround broken standard Tk framework installation within OS X SDKs
@@ -126,6 +128,7 @@ defaultPrompt:
 
 #else
   #include <tk.h>
+#endif
 #endif
 
 /*
@@ -926,41 +929,38 @@ void Draw_Window::WConfigureNotify(const Standard_Integer,
 //function : WUnmapNotify
 //purpose  :
 //=======================================================================
-
 void Draw_Window::WUnmapNotify()
 {
 }
-
 
 //======================================================
 // function : ProcessEvents
 // purpose  : process pending X events
 //======================================================
-
 static void ProcessEvents(ClientData,int)
 {
   // test for X Event
+  while (XPending (Draw_WindowDisplay))
+  {
+    XEvent anEvent = {};
+    XNextEvent (Draw_WindowDisplay, &anEvent);
 
-  while (XPending(Draw_WindowDisplay)) {
-
-    XEvent xev;
-    xev.type = 0;
-
-    XNextEvent(Draw_WindowDisplay,&xev);
-
-    /* search the window in the window list */
-    Draw_Window* w = Draw_Window::firstWindow;
-    Standard_Integer found=0;
-    while (w) {
-      if (xev.xany.window == w->win) {
-        ProcessEvent(*w, xev);
-        found=1;
+    // search the window in the window list
+    bool isFound = false;
+    for (Draw_Window* aWinIter = Draw_Window::firstWindow; aWinIter != NULL; aWinIter = aWinIter->next)
+    {
+      if (anEvent.xany.window == aWinIter->win)
+      {
+        ProcessEvent (*aWinIter, anEvent);
+        isFound = true;
         break;
       }
-      w = w->next;
     }
-    if (found==0) {
-      Tk_HandleEvent(&xev);
+    if (!isFound)
+    {
+    #ifdef _TK
+      Tk_HandleEvent (&anEvent);
+    #endif
     }
   }
 }
@@ -998,96 +998,59 @@ void GetNextEvent(Event& ev)
 // function :Run_Appli
 // purpose :
 //======================================================
-
-
 static Standard_Boolean(*Interprete) (const char*);
 
 void Run_Appli(Standard_Boolean (*interprete) (const char*))
 {
-  Tcl_Channel outChannel, inChannel ;
   Interprete = interprete;
 
-#ifdef _TK
-
-    /*
-     * Commands will come from standard input, so set up an event
-     * handler for standard input.  If the input device is aEvaluate the
-     * .rc file, if one has been specified, set up an event handler
-     * for standard input, and print a prompt if the input
-     * device is a terminal.
-     */
-  inChannel = Tcl_GetStdChannel(TCL_STDIN);
-  if (inChannel) {
-            Tcl_CreateChannelHandler(inChannel, TCL_READABLE, StdinProc,
-                    (ClientData) inChannel);
-        }
+  // Commands will come from standard input, so set up an event handler for standard input.
+  // If the input device is aEvaluate the .rc file, if one has been specified,
+  // set up an event handler for standard input, and print a prompt if the input device is a terminal.
+  Tcl_Channel anInChannel = Tcl_GetStdChannel(TCL_STDIN);
+  if (anInChannel)
+  {
+    Tcl_CreateChannelHandler (anInChannel, TCL_READABLE, StdinProc, (ClientData )anInChannel);
+  }
 
   // Create a handler for the draw display
-
-  // Adding of the casting into void* to be able to compile on AO1
-  // ConnectionNumber(Draw_WindowDisplay) is an int 32 bits
-  //                    (void*) is a pointer      64 bits ???????
-
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
-#if TCL_MAJOR_VERSION  < 8
-    Tk_CreateFileHandler((void*) ConnectionNumber(Draw_WindowDisplay),
-                         TK_READABLE, ProcessEvents,(ClientData) 0 );
-#else
-    Tk_CreateFileHandler(ConnectionNumber(Draw_WindowDisplay),
-                         TK_READABLE, ProcessEvents,(ClientData) 0 );
-#endif
+  Tcl_CreateFileHandler (ConnectionNumber(Draw_WindowDisplay), TCL_READABLE, ProcessEvents, (ClientData) 0);
 #endif // __APPLE__
-
-#endif
 
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
-  if (tty) Prompt(aCommands.Interp(), 0);
-  Prompt(aCommands.Interp(), 0);
+  if (tty) { Prompt (aCommands.Interp(), 0); }
+  Prompt (aCommands.Interp(), 0);
 
-  outChannel = Tcl_GetStdChannel(TCL_STDOUT);
-  if (outChannel) {
-        Tcl_Flush(outChannel);
-    }
-  Tcl_DStringInit(&command);
-
-  /*
-   * Loop infinitely, waiting for commands to execute.  When there
-   * are no windows left, Tk_MainLoop returns and we exit.
-   */
+  Tcl_Channel anOutChannel = Tcl_GetStdChannel(TCL_STDOUT);
+  if (anOutChannel)
+  {
+    Tcl_Flush (anOutChannel);
+  }
+  Tcl_DStringInit (&command);
 
 #ifdef _TK
-
-  if (Draw_VirtualWindows) {
+  if (Draw_VirtualWindows)
+  {
     // main window will never shown
     // but main loop will parse all Xlib messages
     Tcl_Eval(aCommands.Interp(), "wm withdraw .");
   }
+  // Loop infinitely, waiting for commands to execute.
+  // When there are no windows left, Tk_MainLoop returns and we exit.
   Tk_MainLoop();
-
 #else
-
-  fd_set readset;
-  Standard_Integer count = ConnectionNumber(Draw_WindowDisplay);
-  Standard_Integer numfd;
-  while (1) {
-      FD_ZERO(&readset);
-      FD_SET(0,&readset);
-      FD_SET(count,&readset);
-#ifdef HPUX
-      numfd = select(count+1,(Integer*)&readset,NULL,NULL,NULL);
-#else
-      numfd = select(count+1,&readset,NULL,NULL,NULL);
-#endif
-      if (FD_ISSET(0,&readset))     StdinProc((ClientData)0,0);
-      if (FD_ISSET(count,&readset)) ProcessEvents((ClientData)0,0);
-    }
-
-#endif
-  NCollection_List<Draw_Window::FCallbackBeforeTerminate>::Iterator Iter(MyCallbacks);
-  for(; Iter.More(); Iter.Next())
+  for (;;)
   {
-      (*Iter.Value())();
+    Tcl_DoOneEvent (0); // practically the same as Tk_MainLoop()
+  }
+#endif
+
+  for (NCollection_List<Draw_Window::FCallbackBeforeTerminate>::Iterator anIter (MyCallbacks);
+       anIter.More(); anIter.Next())
+  {
+    (*anIter.Value())();
   }
 }
 
@@ -1102,11 +1065,15 @@ Standard_Boolean Init_Appli()
   Tcl_Interp *interp = aCommands.Interp();
   Tcl_Init (interp);
 
-  try {
+#ifdef _TK
+  try
+  {
     OCC_CATCH_SIGNALS
-    Tk_Init(interp) ;
-  } catch  (Standard_Failure const&) {
-    std::cout <<" Pb au lancement de TK_Init "<<std::endl;
+    Tk_Init (interp);
+  }
+  catch (Standard_Failure const& theFail)
+  {
+    Message::SendFail() << "TK_Init() failed with " << theFail;
   }
 
   Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
@@ -1127,6 +1094,7 @@ Standard_Boolean Init_Appli()
 #endif
 
   Tk_GeometryRequest (aMainWindow, 200, 200);
+#endif
 
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
   if (Draw_DisplayConnection.IsNull())
@@ -1135,9 +1103,9 @@ Standard_Boolean Init_Appli()
     {
       Draw_DisplayConnection = new Aspect_DisplayConnection();
     }
-    catch (Standard_Failure const&)
+    catch (Standard_Failure const& theFail)
     {
-      std::cout << "Cannot open display. Interpret commands in batch mode." << std::endl;
+      std::cout << "Cannot open display (" << theFail << "). Interpret commands in batch mode." << std::endl;
       return Standard_False;
     }
   }
@@ -1313,7 +1281,9 @@ prompt:
 #include <Draw_Appli.hxx>
 #include <OSD.hxx>
 
-#include <tk.h>
+#ifdef HAVE_TK
+  #include <tk.h>
+#endif
 
 #define PENWIDTH 1
 #define CLIENTWND 0

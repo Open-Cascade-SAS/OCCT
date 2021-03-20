@@ -202,13 +202,8 @@ void IVtkDraw_Interactor::Enable()
   SetWindowLongPtr(this->myWindowId, GWLP_USERDATA, (LONG_PTR)this);
   SetWindowLongPtr(this->myWindowId, GWLP_WNDPROC, (LONG_PTR)WndProc);
 #else
-  #if TCL_MAJOR_VERSION  < 8
-    Tk_CreateFileHandler((void*)ConnectionNumber(this->myDisplayId),
-      TK_READABLE, ProcessEvents, (ClientData) this);
-  #else
-    Tk_CreateFileHandler(ConnectionNumber(this->myDisplayId),
-      TK_READABLE, ProcessEvents, (ClientData) this);
-  #endif
+  Tcl_CreateFileHandler (ConnectionNumber(this->myDisplayId),
+                         TCL_READABLE, ProcessEvents, (ClientData) this);
 #endif
 
   this->Enabled = 1;

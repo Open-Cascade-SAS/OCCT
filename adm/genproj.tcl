@@ -1416,7 +1416,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
     set aLibsMap(CSF_FREETYPE) "freetype"
   }
   set aLibsMap(CSF_TclLibs)   "tcl8.6"
-  set aLibsMap(CSF_TclTkLibs) "tk8.6"
+  if { "$::HAVE_TK" == "true" } {
+    set aLibsMap(CSF_TclTkLibs) "tk8.6"
+  }
   if { "$::HAVE_FREEIMAGE" == "true" } {
     if { "$theOS" == "wnt" } {
       set aLibsMap(CSF_FreeImagePlus) "FreeImage"
@@ -1472,7 +1474,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
 
     # the naming is different on Windows
     set aLibsMap(CSF_TclLibs)      "tcl86"
-    set aLibsMap(CSF_TclTkLibs)    "tk86"
+    if { "$::HAVE_TK" == "true" } {
+      set aLibsMap(CSF_TclTkLibs)  "tk86"
+    }
     if { "$theRelease" == "true" } {
       set aLibsMap(CSF_QT)         "Qt5Gui Qt5Widgets Qt5Xml Qt5Core"
     } else {
@@ -1501,10 +1505,12 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
         set aFrmsMap(CSF_Appkit)   "AppKit"
       }
       set aFrmsMap(CSF_IOKit)      "IOKit"
-      set aFrmsMap(CSF_TclLibs)    "Tcl"
       set aLibsMap(CSF_TclLibs)    ""
-      set aFrmsMap(CSF_TclTkLibs)  "Tk"
       set aLibsMap(CSF_TclTkLibs)  ""
+      set aFrmsMap(CSF_TclLibs)    "Tcl"
+      if { "$::HAVE_TK" == "true" } {
+        set aFrmsMap(CSF_TclTkLibs) "Tk"
+      }
       set aLibsMap(CSF_QT)         "QtCore QtGui"
     } elseif { "$theOS" == "android" } {
       set aLibsMap(CSF_androidlog) "log"
@@ -1516,7 +1522,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
         # CSF_ThreadLibs - pthread API is part of libc on QNX
       } else {
         set aLibsMap(CSF_ThreadLibs) "pthread rt"
-        set aLibsMap(CSF_TclTkLibs)  "X11 tk8.6"
+        if { "$::HAVE_TK" == "true" } {
+          set aLibsMap(CSF_TclTkLibs) "tk8.6"
+        }
         set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
         set aLibsMap(CSF_MotifLibs)  "X11"
       }
