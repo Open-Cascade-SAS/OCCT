@@ -99,8 +99,13 @@ Standard_Integer OSD_Process::ProcessId(){
 
 TCollection_AsciiString OSD_Process::UserName()
 {
+#if defined(__EMSCRIPTEN__)
+  // Emscripten SDK raises TODO exception in runtime while calling getpwuid()
+  return TCollection_AsciiString();
+#else
   struct passwd *anInfos = getpwuid (getuid());
   return TCollection_AsciiString (anInfos ? anInfos->pw_name : "");
+#endif
 }
 
 Standard_Boolean OSD_Process::IsSuperUser (){
