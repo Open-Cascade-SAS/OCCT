@@ -57,7 +57,7 @@ V3d_Viewer::V3d_Viewer (const Handle(Graphic3d_GraphicDriver)& theDriver)
   myGridEcho (Standard_True),
   myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
 {
-  myDefaultRenderingParams.ShadingModel = Graphic3d_TOSM_VERTEX;
+  //
 }
 
 // ========================================================================

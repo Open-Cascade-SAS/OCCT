@@ -27,6 +27,7 @@
 #include <Message_Messenger.hxx>
 #include <gp_Quaternion.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <WNT_HIDSpaceMouse.hxx>
 
 // =======================================================================

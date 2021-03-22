@@ -14,10 +14,12 @@
 // commercial license or contractual agreement.
 
 #include <V3d_Plane.hxx>
+
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <gp_Pln.hxx>
+#include <V3d_Viewer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane,Standard_Transient)
 

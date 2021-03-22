@@ -23,6 +23,8 @@ tclean res
 
 if { [string compare $command "shading"] == 0 } {
     vinit View1
+    # prefer vertex shading
+    vrenderparams -shadingModel VERT
     vdisplay -noupdate -redisplay res
     vsetdispmode res 1
     vfit

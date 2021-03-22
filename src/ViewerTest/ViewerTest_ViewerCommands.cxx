@@ -91,6 +91,7 @@
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
 #include <V3d_Trihedron.hxx>
+#include <V3d_Viewer.hxx>
 
 #include <tcl.h>
 

@@ -17,17 +17,10 @@
 #ifndef _PrsMgr_PresentationManager_HeaderFile
 #define _PrsMgr_PresentationManager_HeaderFile
 
-#include <Graphic3d_NameOfMaterial.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <Standard_Transient.hxx>
 #include <PrsMgr_ListOfPresentations.hxx>
 #include <Quantity_Color.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
 
 class Graphic3d_Structure;
 typedef Graphic3d_Structure Prs3d_Presentation;
@@ -36,7 +29,6 @@ class TopLoc_Datum3D;
 class Prs3d_Drawer;
 class PrsMgr_Presentation;
 class PrsMgr_PresentableObject;
-class Standard_NoSuchObject;
 class V3d_Viewer;
 
 DEFINE_STANDARD_HANDLE(PrsMgr_PresentationManager, Standard_Transient)

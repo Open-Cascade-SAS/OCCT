@@ -24,13 +24,10 @@
 #include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
-
 #include <Bnd_Box.hxx>
-
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_ClipPlane.hxx>
@@ -40,46 +37,26 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vertex.hxx>
-
 #include <Image_PixMap.hxx>
-
-#include <Standard_Transient.hxx>
-
 #include <Quantity_TypeOfColor.hxx>
-
-#include <Standard.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
-
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
-
 #include <V3d_ImageDumpOptions.hxx>
+#include <V3d_ListOfLight.hxx>
+#include <V3d_Viewer.hxx>
 #include <V3d_Trihedron.hxx>
 #include <V3d_TypeOfAxe.hxx>
-
 #include <V3d_TypeOfBackfacingModel.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_ViewerPointer.hxx>
 
 class Aspect_Grid;
 class Aspect_Window;
 class Graphic3d_Group;
 class Graphic3d_Structure;
 class Graphic3d_TextureEnv;
-class Standard_MultiplyDefined;
-class Standard_TypeMismatch;
-class V3d_BadValue;
-class V3d_UnMapped;
 
-class V3d_View;
 DEFINE_STANDARD_HANDLE(V3d_View, Standard_Transient)
 
 //! Defines the application object VIEW for the
@@ -258,9 +235,6 @@ public:
   //! Warning! raises BadValue from V3d if the vector normal is NULL. .
   Standard_EXPORT void SetAxis (const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
                                 const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
-
-  //! Defines the shading model for the visualization. Various models are available.
-  Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theShadingModel);
 
   //! Sets the environment texture to use. No environment texture by default.
   Standard_EXPORT void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTexture);
@@ -714,8 +688,11 @@ public:
   //! the visual axis measured from the Y axis of the screen.
   Standard_EXPORT Standard_Real Twist() const;
 
-  //! Returns the current shading model.
+  //! Returns the current shading model; Graphic3d_TOSM_FRAGMENT by default.
   Standard_EXPORT Graphic3d_TypeOfShadingModel ShadingModel() const;
+
+  //! Defines the shading model for the visualization.
+  Standard_EXPORT void SetShadingModel (const Graphic3d_TypeOfShadingModel theShadingModel);
 
   Standard_EXPORT Handle(Graphic3d_TextureEnv) TextureEnv() const;
 
@@ -1038,7 +1015,7 @@ protected:
 
 private:
 
-  V3d_ViewerPointer MyViewer;
+  V3d_Viewer* MyViewer;
   V3d_ListOfLight myActiveLights;
   gp_Dir myDefaultViewAxis;
   gp_Pnt myDefaultViewPoint;

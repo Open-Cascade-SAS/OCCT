@@ -54,6 +54,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <ViewerTest.hxx>
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
 #include <XmlDrivers_DocumentStorageDriver.hxx>

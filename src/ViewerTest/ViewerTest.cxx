@@ -18,6 +18,7 @@
 
 #include <ViewerTest.hxx>
 #include <ViewerTest_CmdParser.hxx>
+#include <ViewerTest_AutoUpdater.hxx>
 
 #include <Draw.hxx>
 #include <TopLoc_Location.hxx>
@@ -37,14 +38,13 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
-#include <PrsDim.hxx>
-#include <PrsDim_Relation.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <AIS_SignatureFilter.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_Window.hxx>
+#include <Aspect_XRSession.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_CStructure.hxx>
@@ -58,6 +58,8 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
+#include <PrsDim.hxx>
+#include <PrsDim_Relation.hxx>
 #include <Select3D_SensitiveWire.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
@@ -65,8 +67,7 @@
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <ViewerTest_AutoUpdater.hxx>
-#include <Aspect_XRSession.hxx>
+#include <V3d_Viewer.hxx>
 
 #include <stdio.h>
 

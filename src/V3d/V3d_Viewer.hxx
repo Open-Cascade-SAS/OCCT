@@ -23,33 +23,20 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <Aspect_GridType.hxx>
-
 #include <gp_Ax3.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
-
-#include <Standard.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_ExtString.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
-
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-
 #include <V3d_ListOfLight.hxx>
 #include <V3d_ListOfView.hxx>
 #include <V3d_TypeOfOrientation.hxx>
 #include <V3d_TypeOfView.hxx>
 #include <V3d_TypeOfVisualization.hxx>
-
 #include <Quantity_Color.hxx>
 
 class Aspect_Grid;
@@ -166,7 +153,7 @@ public:
   //! Gives the default visualization mode.
   void SetDefaultVisualization (const V3d_TypeOfVisualization theType) { myVisualization = theType; }
 
-  //! Returns the default type of Shading
+  //! Returns the default type of Shading; Graphic3d_TOSM_FRAGMENT by default.
   Graphic3d_TypeOfShadingModel DefaultShadingModel() const { return myDefaultRenderingParams.ShadingModel; }
 
   //! Gives the default type of SHADING.
