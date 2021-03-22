@@ -1,0 +1,23 @@
+puts "========"
+puts "0026978: VIS - Interactive selection is insensitive to swept shell"
+puts "========"
+puts ""
+
+pload MODELING VIS VISUALIZATION
+restore [locate_data_file bug26978_evol3.brep] s
+
+ivtkinit
+ivtkdisplay s
+ivtksetdispmode s 1
+
+set anImg1 ${imagedir}/${test_image}_1.png
+set anImg2 ${imagedir}/${test_image}_2.png
+set anImgDiff ${imagedir}/${test_image}_diff.png
+
+ivtkselect 75 200
+ivtkdump ${anImg1}
+
+ivtkselect 150 150
+ivtkdump ${anImg2}
+
+if { [diffimage ${anImg2} ${anImg1} 0.0 0 0 ${anImgDiff}] != 0 } { puts "Error: selection failed" }

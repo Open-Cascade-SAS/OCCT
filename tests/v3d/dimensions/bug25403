@@ -1,0 +1,17 @@
+puts "============"
+puts "CR25403: Wrong storage of model units in AIS_AngleDimension"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint angleP1 0 0 0
+vpoint angleP2 50 50 50
+vpoint angleP3 50 50 100
+vdimension dim1 -angle -value 300 -modelunits deg -shapes angleP1 angleP2 angleP3 -font SansFont
+vdimension dim2 -length -value 10 -modelunits mm -showunits -plane yoz -shapes angleP1 angleP3 -font SansFont
+vfit
+
+vdump $imagedir/${casename}.png

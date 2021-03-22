@@ -1,0 +1,27 @@
+puts "==========="
+puts "OCC22912: After calling AIS_InteractiveContext::UnsetColor objects are drawn with the same color when transparency is changed"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug22912_p.brep] p
+explode p
+vinit View1
+vdisplay p_1
+vdisplay p_2
+vfit
+vsetdispmode p_1 1
+vsetdispmode p_2 1
+vsetcolor p_1 red
+vsetcolor p_2 green
+vunsetcolor p_1
+vunsetcolor p_2
+vsetcolor p_1 red
+vsetcolor p_2 green
+vsettransparency p_1 0.5
+vsettransparency p_1 0
+
+checkcolor 120 150 0.831 0.000 0.000
+checkcolor 180 273 0.000 0.753 0.000
+
+vdump $imagedir/${casename}.png

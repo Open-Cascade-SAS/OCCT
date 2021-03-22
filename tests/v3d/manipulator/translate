@@ -2,6 +2,8 @@ puts "====================================="
 puts "AIS_Manipulator - translate an object"
 puts "====================================="
 
+pload MODELING VISUALIZATION
+
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png
 set anImage3 $imagedir/${casename}_3.png
@@ -152,5 +154,3 @@ vmanipulator m -stopTransform
 vselect 0 0
 vmoveto {*}$mouse_drag
 vdump $anImage5
-
-set to_dump_screen 0

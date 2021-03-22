@@ -1,0 +1,32 @@
+puts "============"
+puts "CR24288: Provide a text flipping"
+puts "Test for text flipping after X rotation"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+set m_pi 3,14
+set m_pi2 1,57
+vinit View1
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle radP1 radP2 radP3 0
+vrotate 0 -$m_pi2 0
+verase radP1 radP2 radP3
+vdimension dim -radius -text 3d -shapes circle -font SansFont
+vfit
+vmoveto 110 111
+checkcolor 196 196 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of radius dimension with 3d text before flipping is wrong." }
+
+# X axis rotation
+vrotate $m_pi 0 0
+vfit
+vmoveto 208 200
+checkcolor 295 113 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of radius dimension with 3d text with flipping after x rotation is wrong." }
+
+vdump $imagedir/${casename}.png

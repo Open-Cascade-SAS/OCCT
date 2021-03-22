@@ -1,0 +1,12 @@
+puts "==========="
+puts "BUC60915"
+puts "==========="
+
+pload VISUALIZATION QAcommands
+vinit View1
+BUC60915
+
+checkcolor 300 164 0.51 0.98 0
+if {$stat != 1} { puts "Error : Cannot set the arrow size when using AIS_LengthDimension or AIS_RadiusDimensin." }
+
+vdump $imagedir/${casename}.png

@@ -2,6 +2,8 @@ puts "==============================================="
 puts "AIS_Manipulator - check zoom persistence option"
 puts "==============================================="
 
+pload MODELING VISUALIZATION
+
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png
 set anImage3 $imagedir/${casename}_3.png
@@ -83,5 +85,3 @@ vmanipulator m2 -transform {*}$mouse_drag_3
 vmanipulator m2 -stopTransform
 vselect 0 0
 vdump $anImage6
-
-set to_dump_screen 0

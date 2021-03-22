@@ -1,0 +1,43 @@
+puts "========"
+puts "0031225: Visualization, TKOpenGl - support cubemap for environment texture within Ray-Tracing"
+puts "Spheres grid with different roughness values"
+puts "========"
+
+cpulimit 600
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl
+
+vrenderparams -ray -gi -rayDepth 10
+vcamera -ortho
+vfit
+vlight -change 1 -intensity 0.0001
+vfps 200
+vdump $::imagedir/${::casename}_ortho0.png
+
+vlight -change 1 -intensity 0.3
+vfps 200
+vdump $::imagedir/${::casename}_ortho30.png
+
+vcamera -persp
+vfit
+vlight -change 1 -intensity 0.0001
+vfps 200
+vdump $::imagedir/${::casename}_persp0.png
+
+vlight -change 1 -intensity 0.3
+vfps 200
+vdump $::imagedir/${::casename}_persp30.png
+
+set aCubeMap [locate_data_file Circus_CubeMap_V.png]
+vlight -change 1 -intensity 1
+vbackground -cubemap $aCubeMap
+vcamera -ortho
+vfps 200
+vdump $::imagedir/${::casename}_orthoenv.png
+
+vcamera -persp
+vfps 200
+vdump $::imagedir/${::casename}_perspenv.png

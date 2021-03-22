@@ -1,0 +1,16 @@
+puts "============"
+puts "0027130: Visualization, Ray tracing - skip structures with transformation persistence flag"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+vinit View1
+vsetdispmode 1
+restore [locate_data_file face1.brep] f
+vdisplay f
+box b1 25 25 25
+vdisplay b1 -trsfPers zoom -trsfPersPos 0 0 0
+
+vraytrace 1
+vfit
+vdump ${imagedir}/${casename}.png

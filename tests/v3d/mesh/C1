@@ -11,4 +11,4 @@ vselbvhbuild 1 -nbThreads 1
 vselmode s FACE 1
 vselbvhbuild -wait
 vselect 0 0 512 512
-vdump $imagedir/${test_image}.png
+vdump $imagedir/${casename}.png

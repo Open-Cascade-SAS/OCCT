@@ -3,6 +3,7 @@ puts "0028954: Visualization - implement interactive object AIS_ViewCube for cam
 puts "Check view affinity"
 puts "=================================="
 
+pload MODELING VISUALIZATION
 vclear
 vclose ALL
 vinit View1

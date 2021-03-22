@@ -1,0 +1,28 @@
+puts "================"
+puts "OCC23102: Change the algorithm of rendering the 3d viewer background using tiled texture"
+puts "================"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vbackground -image [locate_data_file OCC23102.bmp] -imageMode TILED
+
+set x1 58
+set y1 4
+set R_bg 0.70196002721786499
+set G_bg 0.78039199113845825
+set B_bg 0.86274499999999998
+
+set WrongColor "$R_bg $G_bg $B_bg"
+
+set Color [vreadpixel ${x1} ${y1} rgb]
+
+# Resume
+puts ""
+if { "[vreadpixel ${x1} ${y1} rgb]" != "$WrongColor" } {
+  puts "OK OCC23102"
+} else {
+  puts "Faulty OCC23102"
+}
+
+vdump $imagedir/${casename}.png

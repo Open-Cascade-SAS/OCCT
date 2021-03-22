@@ -3,6 +3,7 @@ puts "0028954: Visualization - implement interactive object AIS_ViewCube for cam
 puts "Display custom styled View Cube"
 puts "=================================="
 
+pload MODELING VISUALIZATION
 vclear
 vinit View1
 vrenderparams -rendScale 1

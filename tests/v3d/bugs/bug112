@@ -1,0 +1,17 @@
+puts "========"
+puts "BUC60956: When restoring a TopoDS_Shape containing a valid Meshing (computed for display) the meshing is computed again when displaying it."
+puts "OCC112"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC20.brep] result
+tclean result
+vinit View1
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checkcolor 140 115 0.77 0.54 0.9
+
+vdump $imagedir/${casename}.png

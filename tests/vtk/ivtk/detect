@@ -1,0 +1,12 @@
+puts "============"
+puts "detect: Tests detection of shapes in the IVtk view"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b 1 1 1
+ivtkinit
+ivtkdisplay b
+ivtkmoveto 100 100
+
+ivtkdump $imagedir/${casename}.png

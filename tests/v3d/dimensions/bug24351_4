@@ -1,0 +1,75 @@
+puts "============"
+puts "CR24351: Test AIS angle dimensions: label position and arrow orientation"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vfront
+
+set hpos "left hcenter right"
+set vpos "above vcenter below"
+
+# ---------------------------------------------------------------------
+# create dimensions with different arrow orientation and fit algorithm
+# ---------------------------------------------------------------------
+
+# test forced internal arrow orientation
+vpoint  angle1_p1  0 0 40
+vpoint  angle1_p2  0 0  0
+vpoint  angle1_p3 40 0  0
+vdimension ang1 -angle -shapes angle1_p1 angle1_p2 angle1_p3 -text 3d -plane zox -label hfit -flyout 40.0 -arrow internal -font SansFont
+
+# test forced external arrow orientation
+vpoint  angle2_p1  80 0 40
+vpoint  angle2_p2  80 0  0
+vpoint  angle2_p3 120 0  0
+vdimension ang2 -angle -shapes angle2_p1 angle2_p2 angle2_p3 -text 3d -plane zox -label hfit -flyout 40.0 -arrow external -font SansFont
+
+# test that auto-fit for arrow places them externally for small geometry
+vpoint  angle3_p1  0 0 100
+vpoint  angle3_p2  0 0  80
+vpoint  angle3_p3 20 0  80
+vdimension ang3 -angle -shapes angle3_p1 angle3_p2 angle3_p3 -text 3d -plane zox -label hcenter -flyout 20.0 -arrow fit -font SansFont
+
+# test that auto-fit for text places the label externally for small geometry
+vpoint  angle4_p1  85 0 100
+vpoint  angle4_p2  85 0  85
+vpoint  angle4_p3 100 0  85
+vdimension ang4 -angle -shapes angle4_p1 angle4_p2 angle4_p3 -text 3d -plane zox -label hfit -flyout 15.0 -arrow fit -font SansFont
+
+vdisplay ang1 ang2 ang3 ang4
+vfit
+
+# ------------------------------------------------
+# create dimension with different label positions
+# ------------------------------------------------
+
+vinit Viewer2/View2
+vfront
+
+set idx 0
+for {set r 0} {$r < 3} {incr r} {
+  for {set c 0} {$c < 3} {incr c} {
+
+    set point1 p_[expr "$idx * 3 + 0"]
+    set point2 p_[expr "$idx * 3 + 1"]
+    set point3 p_[expr "$idx * 3 + 2"]
+
+    vpoint $point1 [expr "60.0 * $c +  0"] 0.0 [expr "60.0 * $r + 40"]
+    vpoint $point2 [expr "60.0 * $c +  0"] 0.0 [expr "60.0 * $r +  0"]
+    vpoint $point3 [expr "60.0 * $c + 40"] 0.0 [expr "60.0 * $r +  0"]
+
+    set dimension r_$idx
+
+    vdimension $dimension -angle -shapes $point1 $point2 $point3 -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 40.0 -font SansFont
+    vdisplay $dimension
+
+    incr idx
+  }
+}
+vfit
+
+vdump $imagedir/${casename}.png

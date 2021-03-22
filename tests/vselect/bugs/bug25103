@@ -1,0 +1,45 @@
+puts "============"
+puts "CR25103: Visualization - Regression in interactive detection"
+puts "============"
+puts ""
+
+vinit View1
+vsetdispmode 1
+
+box wall1 1 8 8
+box wall2 1 8 8
+box wall3 16 8 1
+
+vdisplay wall1
+vdisplay wall2
+vdisplay wall3
+
+vsetlocation wall1 -10 0 0
+vsetlocation wall2 5 0 0
+vsetlocation wall3 -10 0 -1
+
+vsetmaterial wall1 stone
+vsetmaterial wall2 stone
+vsetmaterial wall3 pewter
+
+vsetcolor wall1 red
+vsetcolor wall2 green
+
+vfront
+vturnview 0 -0.3 0
+vfit
+
+set anImage ${imagedir}/${casename}_1.png
+vdump ${anImage}
+
+# The next line should highlight the green box (wall2) but it does not
+vmoveto 394 205
+
+set anImage ${imagedir}/${casename}_2.png
+vdump ${anImage}
+
+# The next line should not hit any object but it highlights the green box
+vmoveto 264 205
+
+set anImage ${imagedir}/${casename}_3.png
+vdump ${anImage}

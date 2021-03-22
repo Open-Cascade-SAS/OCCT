@@ -1,0 +1,74 @@
+puts "========"
+puts "OCC24819: TKOpenGl - extend the ray-tracing core by visualization of lines, text and point sprites"
+puts "========"
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+vglinfo
+
+vvbo 0
+vsetdispmode 1
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+# boxes
+box b1 1 1 1
+vdisplay b1
+vsetlocation b1 0 0 0.001
+vsetmaterial b1 Silver
+vsettransparency b1 0.5
+box b2 3 2 2 1 2 1
+vdisplay b2
+vsetmaterial b2 Pewter
+vsettransparency b2 0.8
+
+# brep text
+text2brep t "text" -font "SansFont" -height 8
+vdisplay t
+
+# overlay objects
+vdrawtext t1 "Overlay text!" -2d -perspos -1 1 -pos 200 -440 0 -height 40 -font SansFont
+
+# markers
+vpoint p 1 1 1
+vdisplay p
+vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
+
+# 3d text
+vdrawtext text0 3D_Text -pos 1 2 2 -color RED -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular -font SansFont
+
+vlight -change 0 -dir 0.577 -0.577 -0.577
+
+vfit
+
+# trihedron
+vzbufftrihedron
+
+# activate ray-tracing
+vrenderparams -raytrace
+
+# orthogonal projection
+set aModeNum 0
+foreach aFSAAMode {on off} {
+  foreach aReflMode {on off} {
+    foreach aShadMode {on off} {
+      vrenderparams -shadows $aShadMode -reflections $aReflMode -fsaa $aFSAAMode
+      vdump $imagedir/${casename}_${aModeNum}.png
+      incr aModeNum
+    }
+  }
+}
+
+# perspective projection
+vcamera -persp
+set aModeNum 0
+foreach aFSAAMode {on off} {
+  foreach aReflMode {on off} {
+    foreach aShadMode {on off} {
+      vrenderparams -shadows $aShadMode -reflections $aReflMode -fsaa $aFSAAMode
+      vdump $imagedir/${casename}_${aModeNum}.png
+      incr aModeNum
+    }
+  }
+}

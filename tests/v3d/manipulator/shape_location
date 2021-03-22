@@ -15,4 +15,3 @@ vmanipulator m -attach b -adjustPosition 0
 vmanipulator m -adjustPosition shapeLocation
 
 vdump $imagedir/${casename}.png
-set to_dump_screen 0

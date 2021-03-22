@@ -1,0 +1,22 @@
+puts "============"
+puts "CR23886: Visualizing planar faces with 'notches' depends heavily on the deflection coefficient"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug23886_face_02.brep] s
+
+vinit View1
+vdisplay s
+vfit
+
+vdefaults -angDefl 1
+
+vsetdispmode s 1
+vdump ${imagedir}/${casename}_1.png
+
+vsetshading s 0.00001
+vdump ${imagedir}/${casename}_2.png
+
+vsetshading s 0.01
+vdump ${imagedir}/${casename}_3.png

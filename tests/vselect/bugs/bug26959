@@ -1,0 +1,30 @@
+puts "============"
+puts "CR26959: Visualization - cannot select edge of the shape"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+restore [locate_data_file bug26959.brep] aFace
+
+vinit
+vdisplay aFace
+fixshape aFace1 aFace
+
+vremove aFace
+vdisplay aFace1
+vaspects aFace1 -setWidth 3
+vselmode aFace1 2 1
+
+vfit
+
+vmoveto 142 127
+if {[vreadpixel 142 127 name] == "CYAN 1"} {
+  puts "OK"
+} elseif {[vreadpixel 142 127 name] == "GREEN 1"} {
+  puts "ERROR: the upper edge cannot be highlighted!"
+} else {
+  puts "ERROR: the shape was not displayed correctly!"
+}
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,10 @@
+puts "============"
+puts "OCC12584"
+puts "============"
+puts ""
+
+pload VISUALIZATION QAcommands
+vinit View1
+OCC12584
+
+vdump $imagedir/${casename}.png

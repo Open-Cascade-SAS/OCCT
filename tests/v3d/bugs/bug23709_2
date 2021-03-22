@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC23709: Redesign of hlrtest command"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+pcone a 5 0 10
+box b 15 0 0 10 10 10
+vinit View1
+vdisplay a b
+vrotate 35 0 0
+vfit
+vhlr on
+vhlrtype algo a
+vaspects -setwidth 5
+if { "[vreadpixel 290 170 rgb name]" != "YELLOW" } {
+  puts "Error : color is not yellow"
+}
+
+checkcolor 86 221 0 0 0
+
+vdump $imagedir/${casename}.png

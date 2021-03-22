@@ -2,6 +2,8 @@ puts "================================="
 puts "AIS_Manipulator - scale an object"
 puts "================================="
 
+pload MODELING VISUALIZATION
+
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png
 
@@ -59,5 +61,3 @@ vmanipulator m -transform {*}$mouse_drag
 vmanipulator m -stopTransform
 vselect 0 0
 vdump $anImage2
-
-set to_dump_screen 0

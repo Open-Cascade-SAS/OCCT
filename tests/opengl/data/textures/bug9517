@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC9517: Wrong use of the method glTexCoordPointer() in OpenGl_PrimitiveArray.c"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+vinit View1
+vdisplay b
+vtop
+vfit
+
+vtexture b [locate_data_file OCC9517.bmp]
+
+vdump $imagedir/${casename}.png

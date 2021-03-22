@@ -1,0 +1,78 @@
+puts "============"
+puts "CR26413: Visualization, SelectMgr_ViewerSelector - Pixel tolerance is overridden by selection sensitivity"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+vinit View1
+box b 1 1 1
+vdisplay b
+vfit
+
+set x_on_edge 320
+set y_on_edge 340
+set x_on_vert 383
+set y_on_vert 306
+
+set x_sel_precise 228
+set y_sel_precise 393
+set x_sel_tol 228
+set y_sel_tol 400
+
+set x_notol 374
+set y_notol 309
+set x_tol 372
+set y_tol 310
+
+vselmode b 2 1
+
+# check precise selection of the edge
+vmoveto ${x_sel_precise} ${y_sel_precise}
+checkcolor ${x_on_edge} ${y_on_edge} 0 1 1
+# check selection in neighborhood of the edge
+vmoveto 0 0
+vmoveto ${x_sel_tol} ${y_sel_tol}
+checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
+
+vmoveto 0 0
+# increase selection precision
+vselprops -pixtol 8
+
+# check precise selection of the edge
+vmoveto ${x_sel_precise} ${y_sel_precise}
+checkcolor ${x_on_edge} ${y_on_edge} 0 1 1
+# check selection in neighborhood of the edge
+vmoveto 0 0
+vmoveto $x_sel_tol ${y_sel_tol}
+checkcolor ${x_on_edge} ${y_on_edge} 0 1 1
+
+# check that after precision reset selection works as usual
+vmoveto 0 0
+vselprops -pixtol -1
+vmoveto ${x_sel_precise} ${y_sel_precise}
+checkcolor ${x_on_edge} ${y_on_edge} 0 1 1
+vmoveto 0 0
+vmoveto ${x_sel_tol} ${y_sel_tol}
+checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
+
+# check that point sensitivity is inreased for all types of
+# sensitive entities
+vmoveto 0 0
+vselmode b 1 1
+vselprops -pixtol -1
+
+vmoveto ${x_notol} ${y_notol}
+# check that vertex is highlighted and edge is not
+checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
+checkcolor ${x_on_vert} ${y_on_vert} 0 1 1
+
+vmoveto 0 0
+vselprops -pixtol 8
+vmoveto ${x_tol} ${y_tol}
+# check that vertex is highlighted and edge is not
+checkcolor ${x_on_edge} ${y_on_edge} 1 1 0
+checkcolor $x_on_vert $y_on_vert 0 1 1
+
+vdump ${imagedir}/${casename}.png
+vseldump ${imagedir}/${casename}_sel_ent.png -type entity

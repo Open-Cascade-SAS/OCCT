@@ -1,0 +1,23 @@
+puts "============"
+puts "CR24901: Visualization - Incorrect area filled with capping color"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+box b 10 10 10
+vdisplay b
+vsetdispmode 1
+
+vclipplane create pln1
+vclipplane set pln1 object b
+vclipplane change pln1 equation 0 1 0 -5
+vclipplane change pln1 capping on
+vfit
+vmoveto 304 146
+
+if { "[vreadpixel 304 146 rgb name]" != "CYAN" } {
+  puts "Error : Highlighting is broken."
+}
+
+vdump $imagedir/${casename}.png

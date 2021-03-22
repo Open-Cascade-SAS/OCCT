@@ -1,0 +1,12 @@
+puts "========"
+puts "CR27624: Draw Harness, ViewerTest - vdrawtext command ignores text display options"
+puts "========"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vdrawtext t1 "Subtitle" -height 20 -font SansFont -color GREEN -disptype subtitle -subcolor 4C4C4C
+vfit
+vdump $imagedir/${casename}.png

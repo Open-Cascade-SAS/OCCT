@@ -1,0 +1,19 @@
+puts "========"                                                                                                                                                 
+puts "BUC60876"                                                                                                                                                 
+puts "========"                                                                                                                                                 
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+
+pcylinder c 100 300
+vinit View1
+BUC60876 c
+vfit
+vmoveto 200 200
+
+set x_coord 200
+set y_coord 200
+
+checkcolor $x_coord $y_coord 0 1 1
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC25136: Display customized colorscale."
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+# create default color scale
+vcolorscale cs1 -demo -xy 0 0
+foreach {y aColor} {20 RED 60 DARKORANGE1 100 GOLD 140 GREENYELLOW 220 GREEN 250 MEDIUMSPRINGGREEN 290 CYAN 330 DODGERBLUE1 370 BLUE} { if { [vreadpixel 15 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# reduce color scale range and number of intervals
+vcolorscale cs2 -range 0 20 5 -xy 60 0
+foreach {y aColor} {40 RED 120 YELLOW 200 GREEN 280 CYAN2 350 BLUE} { if { [vreadpixel 75 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# set user-defined colors and labels for color scale
+vcolorscale cs3 -range 0 20 5 -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end -xy 120 0
+foreach {y aColor} {40 WHITE 120 RED 200 GREEN 280 BLUE 350 WHITE} { if { [vreadpixel 135 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+
+# change colors of first and last intervals
+vcolorscale cs4 -range 0 20 5 -colors white 0 0 1 green 1 0 0 1 1 1 -labels start 1 2 3 4 end -xy 200 0
+vcolorscale cs4 -color 1 0.42 0.35 0.8
+vcolorscale cs4 -color 5 pink
+vcolorscale cs4 -label 6 "last"
+vcolorscale cs4 -title "My color scale"
+foreach {y aColor} {60 PINK 120 RED 200 GREEN 280 BLUE 350 LIGHTSTEELBLUE3} { if { [vreadpixel 215 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC22507: Regression: shading of face is bad (wrong normals)"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+restore [locate_data_file OCC22507-bug589_f77_badshading.brep] result
+vinit View1
+vdisplay result
+vfit
+vsetdispmode 1
+
+set RED_R1   0.96470499038696289
+set GREEN_R1 0.68627399206161499
+set BLUE_R1  0.12156800180673599
+vmoveto    200 220
+checkcolor 200 220 ${RED_R1} ${GREEN_R1} ${BLUE_R1}
+
+vdump $imagedir/${casename}.png

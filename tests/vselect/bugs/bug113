@@ -1,0 +1,60 @@
+puts "================"
+puts "OCC113"
+puts "BUC60978"
+puts "================"
+puts ""
+
+# Data
+set X_01 29
+set Y_01 170
+
+set X_02 204
+set Y_02 300
+
+set scale    60.6309
+set proj_X   0.479541
+set proj_Y   0.586729
+set proj_Z   0.652525
+set up_X     -0.838029
+set up_Y     0.0856396
+set up_Z     0.538863
+set at_X     3.61568258316782
+set at_Y     3.30626448080767
+set at_Z     3.11631746104816
+
+# Display two face
+vinit
+box b 10 10 10
+explode b f
+vdisplay b_1
+vdisplay b_2
+vfit
+
+# Check face color
+checkcolor ${X_01} ${Y_01} 0 1 0 
+checkcolor ${X_02} ${Y_02} 0 1 0
+
+# Select faces
+vchangeselected b_1
+vchangeselected b_2
+
+# Check face color
+checkcolor ${X_01} ${Y_01} 0.8 0.8 0.8
+
+checkcolor ${X_02} ${Y_02} 0.8 0.8 0.8
+
+# Highlight face
+vmoveto ${X_01} ${Y_01}
+
+# Check face color
+vselect 10 10
+vmoveto ${X_01} ${Y_01}
+checkcolor ${X_01} ${Y_01} 0 1 1
+
+vmoveto ${X_02} ${Y_02}
+checkcolor ${X_02} ${Y_02} 0 1 1
+
+# Rotation
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+vdump $imagedir/${casename}.png

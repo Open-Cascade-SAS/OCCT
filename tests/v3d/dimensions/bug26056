@@ -1,0 +1,35 @@
+puts "============"
+puts "CR26056"
+puts "AIS_LengthDimension can not build dimension for face-edge or edge-face"
+puts "Tests case of edge-face and face-edge input geometry for dimension"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+plane aPlane 0 0 50 0 0 1
+mkface aFace aPlane -100 100 -100 100
+
+line aLine 0 -100 0 1 0 0
+mkedge anEdge aLine -100 100
+
+line aLine2 0 0 100 1 1 0.1
+mkedge anEdge2 aLine2 -150 150
+
+circle aCirc1 30 -30 100 0.3 -0.3 1 20.
+mkedge anEdge3 aCirc1
+
+circle aCirc2 -130 -30 100 0.3 -0.3 1 20.
+mkedge anEdge4 aCirc2 30. 180.
+
+vinit View1
+vclear
+vaxo
+vdisplay anEdge anEdge2 anEdge3 anEdge4 aFace
+vdimension aDim1 -length -shapes anEdge aFace -text 15 3d sh
+vdimension aDim2 -length -shapes aFace anEdge2 -text 15 3d sh
+vdimension aDim3 -length -shapes aFace anEdge3 -text 15 3d sh
+vdimension aDim4 -length -shapes aFace anEdge4 -text 15 3d sh
+vfit
+
+vdump $imagedir/${casename}.png

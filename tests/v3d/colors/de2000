@@ -1,5 +1,7 @@
 # Check calculation of CIE Ddlta E 2000 color difference 
 
+pload VISUALIZATION
+
 # Reference data are obtained using online calculator
 # http://brucelindbloom.com/index.html?ColorDifferenceCalc.html
 # or

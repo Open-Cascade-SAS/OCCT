@@ -1,0 +1,22 @@
+puts "============"
+puts "CR25229: Cappings have gray tint if setting color with vclipplane command."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 100 100
+vinit View1
+vsetdispmode 1
+vdisplay b
+vclipplane create pln1
+vclipplane change pln1 equation 0 0 -1 20
+vclipplane set pln1 object b
+vclipplane change pln1 capping on
+vclipplane change pln1 capping color 1.0 1.0 1.0
+vtop
+vfit
+
+checkcolor 100 100 1 1 1
+if { $stat != 1 } { puts "Error : Capping color is broken." }
+
+vdump $imagedir/${casename}.png

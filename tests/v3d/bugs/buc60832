@@ -1,0 +1,18 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
+puts "============"
+puts "BUC60832: Try to display this shape in the viewer 3D by means of the method AIS_InteractiveContext::Display()."
+puts "This method calls StdSelect_BRepSelectionTool::ComputeSelection() a recursive method which hangs up an application."
+puts "============"
+puts ""                                                                                                                                                                        
+
+pload MODELING VISUALIZATION
+restore [locate_data_file BUC60832.brep] result
+checkshape result
+
+tclean result
+vinit
+vdisplay result
+vsetdispmode result 1 
+vfit
+vdump $imagedir/${casename}.png

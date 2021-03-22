@@ -2,9 +2,12 @@ puts "================================"
 puts "Prs3d_ToolSphere - create sphere"
 puts "================================"
 
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
 # complete sphere
 vsphere s 10 
-
 vfit
 
 vdump $imagedir/${casename}.png

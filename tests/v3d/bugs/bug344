@@ -1,0 +1,21 @@
+puts "================"
+puts "BUC61047: An e x c e p t i o n - <access v i o l a t i o n> is raised during visualization."
+puts "OCC344"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC344.brep] result 
+checkshape result
+tclean result
+
+vinit View1
+vdisplay result
+vsetdispmode result 1
+vfit
+vclear
+isos result 0
+triangles result
+
+checktrinfo result -tri 8 -nod 8
+vdump $imagedir/${casename}.png

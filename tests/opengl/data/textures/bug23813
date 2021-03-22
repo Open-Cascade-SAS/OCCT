@@ -1,0 +1,26 @@
+## It's impossible to make vdump with non-default parameters (width and height) on remote PC
+
+puts "============"
+puts "OCC23813: TKOpenGl, OpenGl_Texture ignores stride image property"
+puts "============"
+puts ""
+
+file delete -force ${imagedir}/texture_412.png
+file delete -force ${imagedir}/texture_409.png
+
+pload MODELING VISUALIZATION
+box b 1 2 3 
+vinit View1
+vsetdispmode 1
+vdisplay b
+vfit
+vdump ${imagedir}/texture_409.png -buffer rgb -width 409 -height 409
+vdump ${imagedir}/texture_412.png -buffer rgb -width 412 -height 412
+
+# texture loaded correctly
+vtexture b ${imagedir}/texture_412.png
+
+# texture is corrupted during uploading to OpenGL
+vtexture b ${imagedir}/texture_409.png
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,29 @@
+puts "========"
+puts "OCC27285: Visualization - selection of AIS_MultipleConnectedInteractive is broken"
+puts "========"
+puts ""
+
+pload VISUALIZATION MODELING
+
+vinit View1
+vsetdispmode 1
+
+box b 100 100 100
+vdisplay b
+
+vconnect bc 0 0 300 b
+
+vfit
+
+vchangeselected b
+vchangeselected bc
+
+if {[vnbselected] != "2"} {
+  puts "ERROR: only one object is selected"
+}
+
+if {[string match *Selected* [vstate bc]] != "1"} {
+  puts "ERROR: multiple connected interactive object is not selected"
+}
+
+vdump $imagedir/${casename}.png

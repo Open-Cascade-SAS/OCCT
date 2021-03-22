@@ -1,9 +1,0 @@
-puts "========"
-puts "OCC362"
-puts "BUC60997"
-puts "========"
-
-smallview
-box b 10 10 10
-sphere s -30 -30 -30 20
-wzoom 1 -86 -72 -13 10

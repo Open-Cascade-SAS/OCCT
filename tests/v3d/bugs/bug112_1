@@ -1,0 +1,26 @@
+puts "========================"
+puts " BUC60956 "
+puts " OCC112 "
+puts "========================"
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC20.brep] res
+checkshape res
+
+set first [trinfo res]
+tclean res
+
+######################################################################
+catch {file delete ${imagedir}/vrem.brep}
+save res ${imagedir}/vrem.brep
+
+vinit View1
+restore ${imagedir}/vrem.brep result
+vdisplay result
+vsetdispmode result 1
+
+set second [trinfo result]
+
+if {$first == $second} { puts "Faulty OCC112 : Mesh for shading was recalculated !!!" }
+
+vdump $imagedir/${casename}.png

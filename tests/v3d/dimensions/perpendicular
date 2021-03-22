@@ -3,6 +3,7 @@ puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
 puts "Select 2 edges"
 puts "===================================================================="
 
+pload MODELING VISUALIZATION
 vclear
 vinit
 

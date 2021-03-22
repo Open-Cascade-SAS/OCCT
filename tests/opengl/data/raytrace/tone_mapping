@@ -1,0 +1,14 @@
+puts "========"
+puts "Ray Tracing - check tone mapping"
+puts "========"
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_cube.tcl
+
+vrenderparams -ray -gi -rayDepth 10 -iss
+
+vrenderparams -tonemapping filmic
+vrenderparams -exposure -1.0
+vrenderparams -whitepoint 7.0
+vfit
+vfps 200
+vdump ${imagedir}/${casename}.png

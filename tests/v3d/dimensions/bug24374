@@ -1,0 +1,21 @@
+puts "============"
+puts "CR24374: Flipping affects highlight presentation of dimension"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+box b 100 100 100
+explode b e
+vdisplay b
+vdisplay b_9
+vdimension dim1 -length -shapes b_9 -text 3d -plane zox -font SansFont
+vselmode b 2 1
+vselmode dim1 2 1
+vfit
+vmoveto 130 352
+checkcolor 130 352 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of dimension with flipping in local context failed." }
+
+vdump $imagedir/${casename}.png

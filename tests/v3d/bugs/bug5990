@@ -1,0 +1,34 @@
+puts "================"
+puts "OCC5990: SetColor does not change color of wireframe entities in shading mode"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+
+set LINE_R 0.00
+set LINE_G 0.00
+set LINE_B 1.00
+
+box b1 10 10 10
+vertex v1 20 0 0
+vertex v2 20 0 10
+vertex v3 30 0 0
+vertex v4 30 0 10
+vertex v5 30 10 10
+edge e1 v1 v2
+edge e2 v3 v4
+edge e3 v4 v5
+compound e2 e3 c1
+vinit View1
+vdisplay b1 e1 c1
+vsetdispmode 1
+vfit
+vsetcolor b1 BLUE
+vsetcolor e1 BLUE
+vsetcolor c1 BLUE
+
+checkcolor 162 159 0.00 0.00 0.83
+checkcolor 204 269 ${LINE_R} ${LINE_G} ${LINE_B}
+checkcolor 348 238 ${LINE_R} ${LINE_G} ${LINE_B}
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC5682: AIS_InteractiveContext::Remove does not remove the object from memory"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+set aNbBoxes 10
+set aBoxes {}
+for {set i 1} {$i <= $aNbBoxes} {incr i} { box b$i $i 0 0 1 2 3; lappend aBoxes b$i }
+box b 1 1 1
+
+vclear
+vinit View1
+catch {vselmode 4 1}
+vdisplay b
+vfit
+vclear
+
+set listmem {}
+set aNbChecks 50
+set aMemBase [meminfo h]
+puts "Memory base: [expr $aMemBase / 1024] KiB"
+for {set anIter 1} {$anIter <= $aNbChecks} {incr anIter} {
+  vdisplay {*}$aBoxes
+  vfit
+  set aMemDisp [meminfo h]
+  puts "Memory usage: [expr ($aMemDisp - $aMemBase) / 1024] KiB"
+
+  vclear
+  set aMemCleared [meminfo h]
+  lappend listmem $aMemCleared
+  #checktrend $listmem 0 1 "Memory leak detected"
+}
+puts $listmem
+vglinfo
+checktrend $listmem 0 1 "Memory leak detected"

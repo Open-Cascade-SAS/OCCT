@@ -3,8 +3,9 @@ puts "OCC28162: Draw Harness - eliminate usage of deprecated Local Context"
 puts "Select two circled edges"
 puts "===================================================================="
 
+pload MODELING VISUALIZATION
 vclear
-vinit
+vinit View1
 
 pcylinder c 15 30
 vdisplay c

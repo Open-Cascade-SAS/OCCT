@@ -1,0 +1,17 @@
+puts "========"                                                                                   
+puts "BUC60814"                                                                                   
+puts "========"                                                                                   
+puts ""                                                                                           
+
+pload VISUALIZATION QAcommands
+vinit View1
+BUC60814
+vfit
+
+checkcolor 131 352 0 0 1
+if {$stat != 1} { puts "Error : Circle has NOT blue color." }
+
+checkcolor 170 319 0 0 1
+if {$stat != 1} { puts "Error : Trihedron has NOT blue color." }
+
+vdump $imagedir/${casename}.png

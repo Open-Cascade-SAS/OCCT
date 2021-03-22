@@ -1,0 +1,128 @@
+puts "================"
+puts "OCC12121:  Optimization of existing selection classes"
+puts "================"
+puts ""
+
+set BugNumber OCC12121
+set x1 226
+set y1 154
+
+set x2 300
+set y2 187
+
+set x3 183
+set y3 269
+
+set x_vertex_obj 330
+set y_vertex_obj 212
+set x_vertex_new 184
+set y_vertex_new 268
+
+set x_edge_obj 296
+set y_edge_obj 155
+set x_edge_new 205
+set y_edge_new 240
+
+set x_wire_obj 298
+set y_wire_obj 209
+set x_wire_new 56
+set y_wire_new 236
+
+set x_face_obj 169
+set y_face_obj 146
+set x_face_new 204
+set y_face_new 238
+
+set x_shell_obj 224
+set y_shell_obj 148
+set x_shell_new 230
+set y_shell_new 268
+
+set x_solid_obj 329
+set y_solid_obj 218
+set x_solid_new 168
+set y_solid_new 256
+
+set R_check 0
+set G_check 1
+set B_check 1
+
+set x_refresh 10
+set y_refresh 10
+
+restore [locate_data_file OCC12121-CrankArm.brep] obj 
+vinit
+vdisplay obj
+vconnect new 50 50 50 obj
+vfit
+vmoveto $x1 $y1
+set ColorObj1 [vreadpixel ${x2} ${y2} rgb]
+set ColorNew1 [vreadpixel ${x3} ${y3} rgb]
+
+vselect $x1 $y1
+set ColorObj2 [vreadpixel ${x2} ${y2} rgb]
+set ColorNew2 [vreadpixel ${x3} ${y3} rgb]
+
+puts "Check vconnect command"
+set status_vconnect 0
+if { ${ColorObj1} == ${ColorNew1} && ${ColorObj2} == ${ColorNew2} } {   
+    set status_vconnect 0
+} else {
+    set status_vconnect 1
+}
+
+vselect ${x_refresh} ${y_refresh}
+vselmode 1 1
+vmoveto ${x_vertex_obj} ${y_vertex_obj}
+checkcolor ${x_vertex_obj} ${y_vertex_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_vertex_new} ${y_vertex_new}
+checkcolor ${x_vertex_new} ${y_vertex_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 1 0
+vselmode 2 1
+vmoveto ${x_edge_obj} ${y_edge_obj}
+checkcolor ${x_edge_obj} ${y_edge_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_edge_new} ${y_edge_new}
+checkcolor ${x_edge_new} ${y_edge_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 2 0
+vselmode 3 1
+vmoveto ${x_wire_obj} ${y_wire_obj}
+checkcolor ${x_wire_obj} ${y_wire_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_wire_new} ${y_wire_new}
+checkcolor ${x_wire_new} ${y_wire_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 3 0
+vselmode 4 1
+vmoveto ${x_face_obj} ${y_face_obj}
+checkcolor ${x_face_obj} ${y_face_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_face_new} ${y_face_new}
+checkcolor ${x_face_new} ${y_face_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 4 0
+vselmode 5 1
+vmoveto ${x_shell_obj} ${y_shell_obj}
+checkcolor ${x_shell_obj} ${y_shell_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_shell_new} ${y_shell_new}
+checkcolor ${x_shell_new} ${y_shell_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 5 0
+vselmode 6 1
+vmoveto ${x_solid_obj} ${y_solid_obj}
+checkcolor ${x_solid_obj} ${y_solid_obj} ${R_check} ${G_check} ${B_check}
+vmoveto ${x_solid_new} ${y_solid_new}
+checkcolor ${x_solid_new} ${y_solid_new} ${R_check} ${G_check} ${B_check}
+
+vselmode 6 0
+vselmode 0 1
+vselect ${x_refresh} ${y_refresh}
+
+##Resume
+puts ""
+if { ${status_vconnect} == 1 } {
+   puts "OK ${BugNumber}"
+} else {
+   puts "Faulty ${BugNumber}"
+}
+
+vdump $imagedir/${casename}.png

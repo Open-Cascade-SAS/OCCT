@@ -5,6 +5,3 @@ proc check3reals {name value1 value2 value3 ref1 ref2 ref3 tol} {
   checkreal "${name}, component 2" $value2 $ref2 $tol 1e-6
   checkreal "${name}, component 3" $value3 $ref3 $tol 1e-6
 }
-
-# weird way to disable unnecessary screen dumps
-set to_dump_screen 0

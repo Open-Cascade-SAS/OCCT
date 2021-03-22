@@ -1,0 +1,33 @@
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error: Maximal deflection"
+
+puts "============"
+puts "OCC22188: Visualization of solid fails (in BRepMesh_FastDiscretFace) "
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC22188.brep] result
+tclean result
+
+vinit View1
+vdisplay result
+vsetdispmode 1
+vfit
+
+if { [checkplatform -windows] }  {
+    set good_tri  6114
+    set good_nod  3080
+    set good_defl 0.50050406431775729
+} else {
+    set good_tri  6148
+    set good_nod  3097
+    set good_defl 0.5153628044287929
+}
+
+checktrinfo result -tri ${good_tri} -nod ${good_nod} -defl ${good_defl} -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checkprops result -s 32416.7
+checkshape result
+checknbshapes result -vertex 2 -edge 3 -wire 1 -face 1 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 9
+vdump $imagedir/${casename}.png

@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC25732: Visualization, TKOpenGl - back face culling should not affect textured font rendering"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+box b -100 0 -200 50 100 200
+
+vinit View1
+vclear
+vaxo
+
+vdisplay b
+vfit
+vsetdispmode b 1
+
+vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color RED -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font SansFont
+
+set x_coord 255
+set y_coord 277
+
+set bug_info [vreadpixel ${x_coord} ${y_coord} rgb name]
+if {$bug_info != "RED"} { puts "ERROR: OCC25732 is reproduced. Text is missed." }
+
+vdump $imagedir/${casename}.png

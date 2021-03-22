@@ -1,5 +1,7 @@
 # Check conversion of RGB colors to CIE Lab color space
 
+pload VISUALIZATION
+
 # Samples are obtained (with Ref. White D65, Gamma = 1 for linear RGB) using
 # http://brucelindbloom.com/index.html?ColorCalculator.html
 set rgb_to_lab_samples {

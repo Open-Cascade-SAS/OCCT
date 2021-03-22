@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC24272 Provide basic text formatting routines for Font_BRepFont"
+puts "Test case prints 3D brep text with different text alignment styles"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vinit View1
+vtrihedron trihedr
+vfront
+
+vsetdispmode 1
+
+vpoint pTL  -700  100 600
+text2brep Text0 "  Top-Left\nFirst line  \nLion   The Second\n  3rd  " -pos -700  100  600 -halign left -valign top -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pTC  0  100 600
+text2brep Text1 "  Top-Center\nFirst line  \nLion   The Second\n  3rd  " -pos 0  100  600 -halign center -valign top -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pTR  700  100 600
+text2brep Text2 "  Top-Right\nFirst line  \nLion   The Second\n  3rd  " -pos 700  100  600 -halign right -valign top -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pCL  -700  100 -100
+text2brep Text3 "  Center-Left\nFirst line  \nLion   The Second\n  3rd  " -pos -700  100 -100 -halign left -valign center -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pCC  0  100 -100
+text2brep Text4 "  Center-Center\nFirst line  \nLion   The Second\n  3rd  " -pos 0  100 -100 -halign center -valign center -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pCR  700  100 -100
+text2brep Text5 "  Center-Right\nFirst line  \nLion   The Second\n  3rd  " -pos 700  100 -100 -halign right -valign center -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pBL  -700  100 -700
+text2brep Text6 "  Bottom-Left\nFirst line  \nLion   The Second\n  3rd  " -pos -700  100 -700 -halign left -valign bottom -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pBC  0  100 -700
+text2brep Text7 "  Bottom-Center\nFirst line  \nLion   The Second\n  3rd  " -pos 0  100 -700 -halign center -valign bottom -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vpoint pBR  700  100 -700
+text2brep Text8 "  Bottom-Right\nFirst line  \nLion   The Second\n  3rd  " -pos 700  100 -700 -halign right -valign bottom -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
+
+vdisplay Text0 Text1 Text2 Text3 Text4 Text5 Text6 Text7 Text8 -noupdate
+vsetcolor Text0 Text1 Text2 CYAN
+vsetcolor Text3 Text4 Text5 WHITE
+vsetcolor Text6 Text7 Text8 YELLOW
+
+vfit
+vglinfo
+vdump $imagedir/${casename}.png

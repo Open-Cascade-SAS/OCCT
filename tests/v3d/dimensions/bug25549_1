@@ -1,0 +1,20 @@
+puts "============"
+puts "CR25549"
+puts "Visualization - do not crash on attempt to display the Angle dimension between two parallel lines"
+puts "Tests case of two edges with the same line but different end points parameters"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+line l 0 0 0 1 0 0
+mkedge e1 l 50 100
+mkedge e2 l 50 0
+
+vinit View1
+vclear
+vaxo
+vdisplay e1 e2
+vdimension ad -angle -shapes e1 e2
+vfit
+
+vdump $imagedir/${casename}.png

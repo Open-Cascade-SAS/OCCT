@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC2883: It is impossible to set material, color and transparency to compound"
+puts "=========="
+puts ""
+
+pload MODELING VISUALIZATION
+vertex v -20 10 -30
+vertex ve1 -10 10 10
+vertex ve2 0 10 10
+edge e ve1 ve2
+sphere s -80 0 0 150
+mkface f s 0.1 0.7 0.2 0.9
+box s -60 0 0 30 60 40
+compound v e f s c
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdisplay c
+vfit
+vsetmaterial c JADE
+vdump $imagedir/${casename}.png

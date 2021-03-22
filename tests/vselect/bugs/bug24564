@@ -1,0 +1,36 @@
+puts "============"
+puts "CR24564: Test for sensitivity of box located over AIS_Plane"
+puts "============"
+puts ""
+
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=400 h=400
+vactivate $aV
+vclear
+
+puts "Testing box selection over the plane in orthogonal projection:"
+vpoint p1 0 0 0
+vpoint p2 1 0 0
+vpoint p3 0 1 0
+
+vplane pl1 p1 p2 p3 0
+box b 50 50 50
+vdisplay b
+vfit
+vtop
+
+vaspects -setwidth 5
+vmoveto 200 200
+if { "[vreadpixel 200 200 rgb name]" != "CYAN"  } {
+  puts "Error : The box is not selectable!"
+}
+
+puts "Testing box selection over the plane in axonometry projection:"
+vaxo
+vfit
+
+vmoveto 200 200
+if { "[vreadpixel 199 200 rgb name]" != "CYAN"  } {
+  puts "Error : The box is not selectable!"
+}
+vdump ${imagedir}/${casename}.png

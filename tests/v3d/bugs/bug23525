@@ -1,0 +1,22 @@
+puts "======="
+puts "CR23525: Disappearing of highlight in screenshot"
+puts "======="
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+box t_box 100 100 100
+vdisplay t_box
+vfit
+
+set x_coord 110
+set y_coord 352
+vmoveto 0 0
+
+# EDGE ON
+vselmode 2 1
+vmoveto $x_coord $y_coord
+checkcolor $x_coord $y_coord 0 1 1
+
+vdump $imagedir/${casename}.png

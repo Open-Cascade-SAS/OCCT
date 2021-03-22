@@ -1,0 +1,23 @@
+puts "============"
+puts "CR26217: Visualization, Select3D_SensitiveCircle - fix compilation with CLang for iOS"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+vinit View1
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle radP1 radP2 radP3 1
+vfit
+
+vselect 40 120 185 320
+if {[vreadpixel 120 200 rgb name] != "DARKGOLDENROD"} { puts "ERROR: the circle is selected with no overlap mode activated" }
+
+vselect 0 0
+
+vselect 40 120 185 320 -allowoverlap 1
+if {[vreadpixel 120 200 rgb name] != "GRAY73"} { puts "ERROR: the circle is not selected with overlap mode activated" }
+
+vdump ${imagedir}/${casename}.png

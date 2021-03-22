@@ -1,0 +1,22 @@
+puts "============"
+puts "CR25466: Visualization - Impossible to change the display mode when a local context is opened"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 3 0 0 2 3 1
+
+vinit View1
+vclear
+vaxo
+
+vsetdispmode 0
+vdisplay b1 b2
+vfit
+
+vselmode b1 4 1
+vsetdispmode b1 1
+checkcolor 100 100 0.78 0.55 0.09
+
+vdump $imagedir/${casename}.png

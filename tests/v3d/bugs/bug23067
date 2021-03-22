@@ -1,0 +1,13 @@
+puts "==========="
+puts "OCC23067: OpenGl package API needed by UserDraw feature is not exported"
+puts "==========="
+puts ""
+
+pload VISUALIZATION
+
+vinit View1
+vuserdraw a
+vfit
+checkcolor 321 159 1 1 0
+
+vdump $imagedir/${casename}.png

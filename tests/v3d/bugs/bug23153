@@ -1,0 +1,55 @@
+#puts "REQUIRED All: \\*\\*\\*  Error on Record"
+puts "============"
+puts "OCC23153: BRepMesh can't apply a mesh for a face of attached shape"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION XDE
+
+set TheFileName OCC23153-long_furrowed_shape.stp
+
+stepread [locate_data_file $TheFileName] a *
+
+tpcompound result
+
+checkprops result -s 14684.4 
+checkshape result
+checknbshapes result -vertex 1152 -edge 1735 -wire 635 -face 581 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 4106
+vinit View1
+vsetdispmode 1
+vdisplay result
+vtop
+vfit
+
+set status 0
+set x1 223
+set y1 195
+
+if { "[vreadpixel $x1 $y1 rgb name]" == "BLACK" } {
+  set status 1
+  puts "Faulty Color1"
+}
+
+set x2 224
+set y2 240
+if { "[vreadpixel $x2 $y2 rgb name]" == "BLACK" } {
+  set status 1
+  puts "Faulty Color2"
+}
+
+set x3 223
+set y3 266
+if { "[vreadpixel $x3 $y3 rgb name]" == "BLACK" } {
+  set status 1
+  puts "Faulty Color3"
+}
+
+# Resume
+puts ""
+if { ${status} == 0 } {
+  puts "OK OCC23153"
+} else {
+  puts "Faulty OCC23153"
+}
+
+vdump $imagedir/${casename}.png

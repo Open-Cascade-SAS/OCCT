@@ -1,0 +1,50 @@
+puts "=========="
+puts "OCC25853: Edges disappear or reappear when displaying new edges"
+puts "=========="
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1 w=1024 h=1024
+vsetdispmode View1 1
+vclear
+
+#vtop
+set scale 0.086865724500890112
+set vpprojx 0.0
+set vpprojy 0.0
+set vpprojz 1.0
+set vpupx 0.0
+set vpupy 1.0
+set vpupz 0.0
+set vpatx 4995
+set vpaty 500
+set vpatz 0
+set vpeyex 4995
+set vpeyey 500
+set vpeyez 0.0001
+vviewparams -scale $scale -eye $vpeyex $vpeyey $vpeyez -at $vpatx $vpaty $vpatz -up $vpupx $vpupy $vpupz -proj $vpprojx $vpprojy $vpprojz
+
+set NB 1000
+
+proc draw_lines {{distance 10.0}} {
+  # set colors to corner spheres
+  for {set i 0} {$i < $::NB} {incr i} {
+    set x [expr $i * $distance]
+    set ya 0.0
+    set yb 1000.0
+    set z 0.0
+    vertex v1 $x $ya $z
+    vertex v2 $x $yb $z
+    edge e$i v1 v2
+    vdisplay -update e$i
+    puts "$i: $x $ya $yb $z"
+  }
+}
+
+puts "Start test lines"
+draw_lines 10.0
+
+checkcolor 804 483 1 0 0
+checkcolor 860 500 1 0 0
+
+vdump $imagedir/${casename}.png

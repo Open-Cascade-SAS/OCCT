@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC22483: ZBufferTrihedron loses user-defined color"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vzbufftrihedron
+vdump $imagedir/${casename}_1.png
+
+vzbufftrihedron -position left_lower -scale 0.1 -type zbuffer -colorLabels WHITE
+vdump $imagedir/${casename}_2.png
+
+vzbufftrihedron -position right_upper -scale 0.2 -type zbuffer -colorLabels 0.78 0.20 1.0
+vdump $imagedir/${casename}_3.png
+
+vzbufftrihedron -position center -scale 0.1 -type wireframe -colorLabels 0.0 0.59 1.0
+vdump $imagedir/${casename}_4.png

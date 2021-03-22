@@ -2,6 +2,10 @@ puts "=============================="
 puts "Prs3d_ToolTorus - create torus"
 puts "=============================="
 
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
 # complete torus
 vtorus t1 10 5 
 vlocation t1 -translate 0 0 20
@@ -15,5 +19,4 @@ vtorus t3 10 5 180 360
 vlocation t3 -translate 20 20 -20
 
 vfit
-
 vdump $imagedir/${casename}.png

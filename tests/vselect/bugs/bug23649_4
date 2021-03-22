@@ -1,0 +1,31 @@
+puts "============"
+puts "0023649: Different behaviour of highlighting after shift selection"
+puts "It tests highlighting of selected shapes (neutral point)."
+puts "This mode is option of interactive context."
+puts "============"
+puts ""
+
+set anImage1 $imagedir/${casename}_HighlightFirst.png
+set anImage2 $imagedir/${casename}_HighlightSecond.png
+
+box a 2 0 0 3 2 1
+box b 1 2 3
+vinit
+vdisplay a b
+vfit
+#select the first shape
+vselect 70 230
+#select the second shape
+vselect 200 358 -xor
+vmoveto 0 0
+
+#enable 'highlight selected' mode
+vhighlightselected on
+
+#highlight the first edge - it should be highlightable by default
+vmoveto 70 230
+vdump ${anImage1}
+
+#highlight the second edge - it should be highlightable by default
+vmoveto 200 358
+vdump ${anImage2}

@@ -2,7 +2,10 @@ puts "========"
 puts "0024855: Revision of parameters of standard materials"
 puts "========"
 
+pload MODELING VISUALIZATION
+
 # Ray-Tracing doesn't work with Compatible Profile on macOS
+pload OPENGL
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
 # custom shapes

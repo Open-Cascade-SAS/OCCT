@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC23654 Markers recompute"
+puts "========"
+
+pload VISUALIZATION
+vcaps -sprites
+source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vdump $anImage1
+
+vclose Driver1/Viewer1/View1 1
+
+vinit name=View1 l=32 t=32 w=512 h=512
+vactivate Driver1/Viewer1/View1
+vbottom
+vdisplay -noupdate b
+vfit
+vremove b
+
+vdump $anImage2

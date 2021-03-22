@@ -2,6 +2,8 @@ puts "========"
 puts "Sensitive box selection"
 puts "========"
 
+pload MODELING VISUALIZATION
+
 # create sphere
 sphere ss 10
 mkface s ss
@@ -58,3 +60,4 @@ vfit
 vclipplane pl1 -delete
 vclipplane pl2 -delete
 vmoveto 200 200
+vdump $imagedir/${casename}.png

@@ -1,0 +1,11 @@
+puts "============"
+puts "CR26139: AIS_InteractiveContext::Display performance regression"
+puts "To measure performance downgrade, the time elapsed should be greater than on previous version"
+puts "============"
+puts ""
+
+pload VISUALIZATION QAcommands
+
+vinit View1
+OCC26139
+vdump $imagedir/${casename}.png

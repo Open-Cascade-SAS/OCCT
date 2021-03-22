@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC21091"
+puts "OCC21450"
+puts "============"
+puts ""
+
+pload TOPTEST VISUALIZATION
+vinit View1
+vcolorscale cs -range 10 20 100 -font 16 -textpos right -xy 0 0
+
+vglinfo
+vdump ${imagedir}/${casename}.png

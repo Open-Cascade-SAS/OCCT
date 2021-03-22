@@ -1,0 +1,74 @@
+puts "============"
+puts "0026344: Visualization - provide a support of zoom persistent selection"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+vclear
+vclose ALL
+vinit View1 w=409 h=409
+vtrihedron tri
+vpan 50 50
+
+box bz1 25 25 25
+box bz2 25 25 25
+box br 100 100 100
+box bzr 50 25 20
+box bt 100 100 100
+
+# 1) Zoom persistence
+vpoint pz 200 200 200
+
+vdisplay bz1 -dispMode 1 -highMode 1 -trsfPers zoom -trsfPersPos 200 200 200
+vdisplay bz2 -dispMode 1 -highMode 1 -trsfPers zoom -trsfPersPos 200 200 200
+vsetlocation bz2 -25 -25 -25
+
+vselect 0 0
+vselect 387 77
+if { [vreadpixel 387 77 rgb name] != "GRAY73" } { puts "Error picking zoom persistence object(s)" }
+
+vselect 0 0
+vselect 330 120 410 50
+if { [vreadpixel 387 77 rgb name] != "GRAY73" || [vreadpixel 352 96 rgb name] != "GRAY73" } { puts "Error selecting zoom persistence object(s)" }
+
+# 2) Rotate persistence
+
+vpoint pr -200 -200 -200
+vdisplay br -dispMode 1 -highMode 1 -trsfPers rotate -trsfPersPos -200 -200 -200
+vsetmaterial br PLASTIC
+vselect 0 0
+vselect 160 200
+if { [vreadpixel 160 180 rgb name] != "GRAY89" } { puts "Error picking rotate persistence object" }
+
+vselect 0 0
+vselect 130 230 190 170
+if { [vreadpixel 160 180 rgb name] != "GRAY89" } { puts "Error selecting rotate persistence object" }
+
+# 3) Zoom + Rotate persistence
+
+vpoint pzr -200 100 0
+vdisplay bzr -dispMode 1 -highMode 1 -trsfPers zoomRotate -trsfPersPos -200 100 0
+
+vsetmaterial bzr PLASTIC
+vselect 0 0
+vselect 250 90
+if { [vreadpixel 250 90 rgb name] != "GRAY89" } { puts "Error picking zoom-rotate persistence object" }
+vselect 0 0
+vselect 200 70 286 110
+if { [vreadpixel 250 90 rgb name] != "GRAY89" } { puts "Error selecting zoom-rotate persistence object" }
+
+# 4) Trihedron persistence
+
+vdisplay bt -dispMode 1 -highMode 1 -trsfPers trihedron -trsfPersPos -1 -1 62
+vselect 0 0
+vselect 132 300
+if { [vreadpixel 132 300 rgb name] != "GRAY73" } { puts "Error picking trihedron persistence object" }
+vselect 0 0
+vselect 50 223 235 395
+if { [vreadpixel 132 300 rgb name] != "GRAY73" } { puts "Error selecting trihedron persistence object" }
+
+vselect 50 410 410 50
+vstate -entities
+
+vdump $imagedir/${casename}.png

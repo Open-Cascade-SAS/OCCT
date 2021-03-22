@@ -1,0 +1,20 @@
+puts "==========="
+puts "OCC23709: Redesign of hlrtest command"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug23709_solidcone.brep] result
+vinit View1
+vdisplay result
+vrotate 35 0 0
+vfit
+vhlr on
+vhlrtype algo result
+
+vaspects -setwidth 5
+if { "[vreadpixel 183 267 rgb name]" != "YELLOW" } {
+  puts "Error : color is not yellow"
+}
+
+vdump $imagedir/${casename}.png

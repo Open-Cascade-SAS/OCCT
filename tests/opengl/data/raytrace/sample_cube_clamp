@@ -1,0 +1,22 @@
+puts "============"
+puts "Visualization - Path Tracing, Cube sample with radiance clamping"
+puts "============"
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_cube.tcl
+
+vrenderparams -maxrad 1.0
+vfps 100
+vdump $imagedir/${casename}_1.png
+
+vrenderparams -maxrad 2.0
+vfps 100
+vdump $imagedir/${casename}_2.png
+
+vrenderparams -maxrad 10.0
+vfps 100
+vdump $imagedir/${casename}_10.png
+
+vrenderparams -maxrad 100.0
+vfps 100
+vdump $imagedir/${casename}_100.png

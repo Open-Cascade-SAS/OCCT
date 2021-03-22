@@ -1,0 +1,39 @@
+puts "========"
+puts "OCC25400: Visualization, TKOpenGl - Structure disappears if assigned a non-default Z layer"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 1 2 3
+vinit View1
+vdisplay b
+vrenderparams -frustumculling on
+vfit
+
+vdump $imagedir/${casename}_default_layer.png
+
+# 1. Test a non-default Z layer:
+# the object should not disappear from the screen
+# due to wrong frustum culling operation
+
+vzlayer add
+vobjzlayer set b 1
+# vfit is used to redraw the view, the box disappeared after this due to the issue 25400
+vfit
+
+vdump $imagedir/${casename}_new_layer.png
+
+vzlayer del 1
+# vfit is used to redraw the view, the textured box appeared again after this
+vfit
+
+vdump $imagedir/${casename}_after_delete_layer.png
+
+# 2. Test a non-default display priority value:
+# the object should not disappear from the screen
+# due to wrong frustum culling operation
+
+vpriority b
+vpriority b 6
+
+vdump $imagedir/${casename}_new_priority.png

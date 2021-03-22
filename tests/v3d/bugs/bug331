@@ -1,0 +1,20 @@
+puts "========================"
+puts " OCC331: Dark spot on a sphere after nurbsconvert"
+puts "========================"
+puts ""
+
+pload MODELING VISUALIZATION
+box b -5 -5 -5 10 10 10 
+psphere s 6 
+bfuse res s b 
+nurbsconvert result res 
+
+tclean result
+vinit View1
+vdisplay result
+vfit
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri !3808 -nod !2188
+vdump $imagedir/${casename}.png

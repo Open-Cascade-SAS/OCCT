@@ -1,5 +1,7 @@
 # Check calculation of CIE Ddlta E 2000 color difference 
 
+pload VISUALIZATION
+
 # Reference data taken from 
 # "The CIEDE2000 Color-Difference Formula: Implementation Notes, 
 # Supplementary Test Data, and Mathematical Observations", 

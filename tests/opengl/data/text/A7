@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case prints overlay labels with different subtitle styles"
+puts "============"
+puts ""
+
+pload TOPTEST VISUALIZATION
+vinit View1
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+set aParams "-height 16 -font SansFont -2d -persPos -1 1 -subColor BLUE"
+
+vclear
+vviewparams -scale 254.5 -proj 0.89 -0.37 0.26 -up -0.21 0.16 0.96 -at 0.69 1.05 1.46
+
+vdrawtext td "Overlay Test Decal"    {*}$aParams -pos 20 -100 0 -color WHITE  -dispType decal
+vdrawtext ts "Overlay Test Shadow"   {*}$aParams -pos 20 -150 0 -color WHITE  -dispType shadow
+vdrawtext tx "Overlay Test XOR"      {*}$aParams -pos 20 -200 0 -color YELLOW -dispType blend
+vdrawtext tt "Overlay Test Subtitle" {*}$aParams -pos 20 -250 0 -color WHITE  -dispType subtitle
+vdrawtext tw "Overlay Test Normal"   {*}$aParams -pos 20 -300 0 -color WHITE  -dispType normal
+vdrawtext tb "Overlay Test Normal"   {*}$aParams -pos 20 -350 0 -color GRAY33  -dispType normal
+
+vdrawtext td2 "    Overlay Test Decal   \n    Second line" {*}$aParams -pos 200 -100 0 -color WHITE  -dispType decal
+vdrawtext ts2 "    Overlay Test Shadow  \n    Second line" {*}$aParams -pos 200 -150 0 -color WHITE  -dispType shadow
+vdrawtext tx2 "    Overlay Test XOR     \n    Second line" {*}$aParams -pos 200 -200 0 -color YELLOW -dispType blend
+vdrawtext tt2 "    Overlay Test Subtitle\n    Second line" {*}$aParams -pos 200 -250 0 -color WHITE  -dispType subtitle
+vdrawtext tw2 "    Overlay Test Normal  \n    Second line" {*}$aParams -pos 200 -300 0 -color WHITE  -dispType normal
+vdrawtext tb2 "    Overlay Test Normal  \n    Second line" {*}$aParams -pos 200 -350 0 -color GRAY33 -dispType normal
+
+box b 1 2 3
+vdisplay -dispMode 1 b
+vselprops localSelHighlight -dispMode 1 -material SILVER -color WHITE
+vselmode b FACE 1
+vselect 190 250
+
+vglinfo
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22313: Bug in shading mode with attached shape"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+restore [locate_data_file OCC22313-face_shading_problem.brep] result
+incmesh result 0.1
+vinit View1
+vdisplay result
+vfit
+vsetdispmode 1
+vfit
+
+set scale    2.9701073117025172
+set proj_X   0.4096425473690033
+set proj_Y   0.77340573072433472
+set proj_Z   0.48377299308776855
+set up_X     -0.83569550514221191
+set up_Y     0.1055084615945816
+set up_Z     0.538962721824646
+set at_X     -632.109173226325
+set at_Y     -2711.56694941045
+set at_Z     -1979.06316609577
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+checkcolor 300 230 0 0 0
+
+vdump $imagedir/${casename}.png

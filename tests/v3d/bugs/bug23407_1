@@ -1,0 +1,21 @@
+puts "============"
+puts "CR23407: Draw face outlines for XDE objects"
+puts "============"
+puts ""
+
+pload XDEDRAW VISUALIZATION
+
+XNewDoc Doc1
+ReadStep Doc1 [locate_data_file screw.step]
+XShow Doc1 0:1:1:1
+XShowFaceBoundary Doc1 0:1:1:1 1 255 0 0 10 1
+vfit
+vsetdispmode 1
+
+checkcolor 178 36 1 0 0
+if { $stat != 1 } { puts "Error : Boundary of face is not changed" }
+
+checkcolor 244 89 1 0 0
+if { $stat != 01} { puts "Error : Boundary of face is not changed" }
+
+vdump $imagedir/${casename}.png

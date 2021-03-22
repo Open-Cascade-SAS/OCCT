@@ -1,0 +1,23 @@
+puts "=========="
+puts "OCC23883"
+#################################################################################
+puts "Bound color in the primitive array do not work when displayed using VBO"
+#################################################################################
+
+set x_coord 321
+set y_coord 200
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vvbo 0
+vdrawparray pl01 polylines v 0 0 0 v 0 10 0 v 0 10 10 v 0 0 0 b 4 c 1 0 0
+vfit
+checkcolor $x_coord $y_coord 1 0 0
+
+vclear
+vvbo 1
+vdrawparray pl01 polylines v 0 0 0 v 0 10 0 v 0 10 10 v 0 0 0 b 4 c 1 0 0
+checkcolor $x_coord $y_coord 1 0 0
+
+vdump $imagedir/${casename}.png

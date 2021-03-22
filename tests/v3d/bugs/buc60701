@@ -1,0 +1,12 @@
+puts "========================"                                                                                      
+puts "BUC60701"                                                                                                      
+puts "========================"                                                                                      
+           
+pload MODELING VISUALIZATION		   
+box result 10 10 10
+vinit View1
+vdisplay result
+
+vdump $imagedir/${casename}.png
+
+###  Photo of V3Dview is less than image in the viewer (only half-part of viewer is present on a photo).

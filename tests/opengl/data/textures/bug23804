@@ -1,0 +1,23 @@
+puts "============"
+puts "CR23804: Unexpected color modulation during texture mapping"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 100 100
+vinit View1
+vdisplay b
+vfit
+vsetdispmode b 1
+vsetmaterial b plastic
+vdump $imagedir/${casename}_1.png
+
+vsetcolor b ANTIQUEWHITE
+vdump $imagedir/${casename}_2.png
+
+vunsetcolor b
+vtexture b 3
+vdump $imagedir/${casename}_3.png
+
+vsetcolor b ANTIQUEWHITE
+vdump $imagedir/${casename}_4.png

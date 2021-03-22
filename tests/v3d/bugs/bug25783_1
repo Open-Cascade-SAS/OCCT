@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC25783_1"
+puts "Draw 2D objects."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vclear
+vaxo
+
+# display polyline in overlay
+text2brep tcc "Center" -font SansFont -height 30
+vdisplay  tcc -2d center -osd
+polyline  lcc -50 -50 0 -50 50 0 50 50 0 50 0 0 0 -50 0 -50 -50 0
+vdisplay  lcc -2d center -overlay
+
+# display polyline in overlay in the bottom left corner of the view
+text2brep tbl "Bottom-Left" -font SansFont -height 30
+vdisplay  tbl -2d bottomLeft 5 5 -osd
+polyline  lbl 0 0 0 0 100 0 100 100 0 100 50 0 50 0 0 0 0 0
+vdisplay  lbl -2d bottomLeft 3 3 -overlay
+
+# display polyline in overlay in the top left corner of the view
+text2brep ttl "Top-Left" -font SansFont -height 30 -pos -27 0 0
+vdisplay  ttl -2d topLeft 30 30 -osd
+polyline  ltl 0 -100 0 0 0 0 100 0 0 100 -50 0 50 -100 0 0 -100 0
+vdisplay  ltl -2d topLeft  3  3 -overlay
+
+# display polyline in overlay in the top right corner of the view
+text2brep ttr "Top-Right" -font SansFont -height 30 -pos -100 0 0
+vdisplay  ttr -2d topRight 30 30 -osd
+polyline  ltr -100 -100 0 -100 0 0 0 0 0 0 -50 0 -50 -100 0 -100 -100 0
+vdisplay  ltr -2d topRight  3  3 -overlay
+
+# display polyline in overlay in the bottom right corner of the view
+text2brep tbr "Bottom-Right" -font SansFont -height 30 -pos -165 0 0
+vdisplay  tbr -2d bottomRight 5 5 -osd
+polyline  lbr -100 0 0 -100 100 0 0 100 0 0 50 0 -50 0 0 -100 0 0
+vdisplay  lbr -2d bottomRight 3 3 -overlay
+
+vdump ${imagedir}/${casename}.png

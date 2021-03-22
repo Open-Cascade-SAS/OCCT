@@ -1,0 +1,73 @@
+puts "============"
+puts "CR26719: Visualization - cannot pick zoom persistent object"
+puts "============"
+puts ""
+
+proc compareDepth {theInfo} {
+  set aInfoList [split $theInfo "\n"]
+  set aEntNb [llength $aInfoList]
+  set aDepths {}
+  for {set aEntIdx 0} {$aEntIdx < $aEntNb} {incr aEntIdx} {
+    set aBuff [lindex $aInfoList $aEntIdx]
+    set aStringArr [split $aBuff " "]
+    set aSize [llength $aStringArr]
+    for {set aIdx 0} {$aIdx < $aSize} {incr aIdx} {
+      set aItem [lindex $aBuff $aIdx]
+      if {[string compare $aItem "Depth:"] == 0} {
+        lappend aDepths [string trim [lindex $aBuff [expr $aIdx + 1]]]
+      }
+    }
+  }
+
+  set aDepth1 [lindex $aDepths 0]
+  set aDepth2 [lindex $aDepths 1]
+  set aDiff [expr $aDepth1 - $aDepth2]
+  if {[expr abs($aDiff)] > 0.55} {
+    puts "ERROR: the depths diff is bigger than adequate tolerance, see vstate output!"
+  }
+}
+
+pload VISUALIZATION MODELING
+
+vinit
+vtrihedron tri
+vpan 50 50
+
+box b1 20.3 20.3 20.3
+box b2 20.3 20.3 20.3
+box b3 150 150 150 100 100 100
+
+vpoint p1 200 200 200
+
+vdisplay b1 -trsfPers zoom -trsfPersPos 200 200 200
+vdisplay b2 -trsfPers zoom -trsfPersPos 200 200 200
+vsetlocation b2 -20.3 -20.3 -20.3
+vdisplay b3
+
+vsetdispmode 1
+vaspects b1 -setColor RED
+vaspects b2 -setColor GREEN
+
+# setup the view in a way that front faces of b2 and b3 lie
+# almost on the same plane
+vviewparams -scale 0.99 -proj -0.04 -0.99 0.11
+vviewparams -up -0.58 0.16 0.8 -at 8.48 160.93 282.42
+vviewparams -eye -14.63 -379.49 343.06
+# check depth values
+vmoveto 230 280
+set anInfo [vstate -entities]
+compareDepth $anInfo
+vdump ${imagedir}/${casename}_1.png
+
+vmoveto 0 0
+
+# setup the view in a way that front faces of b1 and b3 lie
+# almost on the same plane
+vviewparams -scale 0.99 -proj -0.17 0.09 0.98
+vviewparams -up -0.1 0.99 -0.1 -at -49.98 231.47 25.2
+vviewparams -eye -142.03 280.17 559.45
+# check depth values
+vmoveto 276 110
+set anInfo [vstate -entities]
+compareDepth $anInfo
+vdump ${imagedir}/${casename}_2.png

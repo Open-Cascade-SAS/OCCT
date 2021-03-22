@@ -1,0 +1,59 @@
+puts "========"
+puts "0029074: Visualization, TKOpenGl - support Geometry Shader definition"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+set aShaderVert "
+out vec4 VertColor;
+void main() {
+  VertColor = occColor;
+  gl_Position = occVertex;
+}"
+
+# define a Geometry shader drawing shrinked triangles
+set aShaderGeom "
+layout(triangles) in;
+layout(triangle_strip, max_vertices=3) out;
+in vec4 VertColor\[3\];
+out vec4 Color;
+void main() {
+  mat4 aMat = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix;
+  vec3 aCenter = vec3 (0.0, 0.0, 0.0);
+  for (int aTriVertIter = 0; aTriVertIter < 3; ++aTriVertIter) {
+    aCenter += gl_in\[aTriVertIter\].gl_Position.xyz;
+  }
+  aCenter /= 3.0;
+  for (int aTriVertIter = 0; aTriVertIter < 3; ++aTriVertIter) {
+    vec3 aVec = gl_in\[aTriVertIter\].gl_Position.xyz - aCenter;
+    vec3 aVertRes = aCenter + normalize (aVec) * length (aVec) * 0.75;
+    gl_Position = aMat * vec4 (aVertRes, 1.0);
+    Color = VertColor\[aTriVertIter\] * 2.0;
+    EmitVertex();
+  }
+  EndPrimitive();
+}"
+
+set aShaderFrag "
+in vec4 Color;
+void main() {
+  occFragColor = Color;
+}"
+
+# draw a box
+box b 1 2 3
+vcaps -core
+vclear
+vinit View1
+if { [string match "OpenGL ES 2.0*" [vglinfo VERSION]] || [string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  puts "Skipping test case: OpenGL ES 3.2+ is required"
+  return
+}
+vaxo
+vdisplay -dispMode 1 -mutable b
+vfit
+vrotate 0.2 0.0 0.0
+vdump $::imagedir/${::casename}_normal.png
+
+vshaderprog b -vert $aShaderVert -geom $aShaderGeom -frag $aShaderFrag
+vdump $::imagedir/${::casename}_geom.png

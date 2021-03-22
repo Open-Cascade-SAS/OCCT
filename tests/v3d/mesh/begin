@@ -1,3 +1,2 @@
-set subgroup "mesh"
-pload XSDRAW
-vinit
+pload MODELING VISUALIZATION XSDRAW
+vinit View1

@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC727"
+puts "============"
+puts ""
+#############################
+## The second object can not be deselected.
+#############################
+
+box a 10 10 10
+box b 50 50 50 10 10 10
+
+vinit
+vdisplay a
+vdisplay b
+vfit
+
+set x1 60
+set y1 300
+set x2 350
+set y2 120
+
+vselect 0 0
+vselect ${x1} ${y1}
+vselect ${x2} ${y2} -xor
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 2 } {
+  puts "Error : (case 1)"
+}
+
+vselect ${x2} ${y2} -xor
+
+set NbSelected1 [vnbselected]
+if { ${NbSelected1} != 1 } {
+  puts "Error : (case 2)"
+}
+
+vdump $imagedir/${casename}.png

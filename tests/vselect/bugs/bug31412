@@ -1,0 +1,36 @@
+puts "============="
+puts "0031412: Visualization - entity behind is returned as topmost at the edges"
+puts "============="
+
+pload VISUALIZATION
+box b1 250 250 900 1000 1000 200
+box b2 1000 1000 1000
+vdisplay -dispMode 1 b1 b2
+vaspects b1 -setWidth 3 -setColor ORANGE
+vaspects b2 -setWidth 3 -setColor MATRABLUE
+vrenderparams -shadingModel UNLIT
+
+vviewparams -proj 0 0 1
+vfit
+vmoveto 325 100
+if { [vreadpixel 325 400 rgb name] == "CYAN" } { puts "ERROR: back box is misdetected" }
+vpoint p1 -2d -nosel 325 100
+vdump $imagedir/${casename}_proj_Z.png
+vremove p1
+
+vviewparams -proj 0 1 0
+vfit
+vmoveto 200 58
+if { [vreadpixel 400 58 rgb name] == "CYAN" } { puts "ERROR: back box is misdetected" }
+vpoint p2 -2d -nosel 200 58
+vdump $imagedir/${casename}_proj_Y.png
+vremove p2
+
+vviewparams -proj 1 0 0
+vfit
+vmoveto 200 58
+if { [vreadpixel 50 58 rgb name] == "CYAN" } { puts "ERROR: back box is misdetected" }
+vpoint p3 -2d -nosel 200 58
+vdump $imagedir/${casename}_proj_X.png
+vremove p3
+vdump ${imagedir}/${casename}.png

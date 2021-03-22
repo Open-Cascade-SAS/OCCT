@@ -1,0 +1,27 @@
+puts "============"
+puts "CR26596: Visualization - hidden twice times structure should not be selectabl"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 1 2 3
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+
+vdisplay b
+vfit
+verase b
+
+vdisplay b
+verase b
+
+vmoveto 250 250
+set aResColor [vreadpixel 165 263]
+if {$aResColor == "0 1 1 1"} {
+  puts "ERROR: Zero selection mode was not deactivated at second AIS_InteractiveContext::Erase call"
+}
+
+vdump ${imagedir}/${casename}.png

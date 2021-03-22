@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC25687"
+puts "AIS_ColoredShape should disable back-face culling for Solids with hidden Face"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+explode b f
+
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vdisplay b
+vviewparams -proj 0.5 0.3 0.1
+vfit
+
+vaspects b -subshapes b_1 -setcolor GREEN
+vaspects b -subshapes b_2 -setvis 0
+
+if {"[vreadpixel 200 200 rgb name]" != "GREEN"} {
+  puts "Error: back-face culling should be disabled, but seems to be not."
+}
+
+vdump $imagedir/${casename}.png

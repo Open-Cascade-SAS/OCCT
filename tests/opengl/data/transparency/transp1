@@ -1,0 +1,70 @@
+puts "========"
+puts "Test various Shading Models assigned per-object with transparency"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
+# setup viewer
+vclear
+vclose ALL
+vinit View1 -width 912 -height 912
+
+# define spheres with a rough triangulation to easily distinguish Shading Models
+psphere p0 10
+box b0 4 4 4
+copytranslate p11 p0  0  0 0
+copytranslate b11 b0  0  0 0
+copytranslate p12 p0 40  0 0
+copytranslate b12 b0 40  0 0
+copytranslate p21 p0  0 20 0
+copytranslate b21 b0  0 20 0
+copytranslate p22 p0 40 20 0
+copytranslate b22 b0 40 20 0
+copytranslate p31 p0  0 40 0
+copytranslate b31 b0  0 40 0
+copytranslate p32 p0 40 40 0
+copytranslate b32 b0 40 40 0
+compound p11 p12 p21 p22 p31 p32 b11 b12 b21 b22 b31 b32 ss
+incmesh ss 1
+vdefaults -autoTriang 0
+
+# display objects
+vdisplay -dispMode 1 p11 p12 p21 p22 p31 p32 b11 b12 b21 b22 b31 b32
+vdrawparray p41 triangles v  0 55 0 v  0 75 0 v 20 55 0 v  0 55 0 v  0 75 0 v  0 55 20 v  0 55 0 v  0 55 20 v 20 55 0 v  0 75 0 v  0 55 20 v 20 55 0
+vdrawparray p42 triangles v 40 55 0 v 40 75 0 v 60 55 0 v 40 55 0 v 40 75 0 v 40 55 20 v 40 55 0 v 40 55 20 v 60 55 0 v 40 75 0 v 40 55 20 v 60 55 0
+vtop
+vrotate -0.9 0.1 0
+vfit
+
+set aMatProps "-setMaterial DIAMOND  -setColor GRAY70 -setTransparency 0.8"
+
+# customize shading models
+vaspects  b11 b12 b21 b22 b31 b32 -setShadingModel FRAGMENT -setColor RED
+
+vaspects  p11 -setShadingModel VERTEX   {*}$aMatProps
+vdrawtext t11   Graphic3d_TOSM_VERTEX   -pos 10  5 10 -color RED -aspect BOLD
+vaspects  p12 -setShadingModel FRAGMENT {*}$aMatProps
+vdrawtext t12   Graphic3d_TOSM_FRAGMENT -pos 50  5 10 -color RED -aspect BOLD
+
+vaspects  p21 -setShadingModel PBR       {*}$aMatProps
+vdrawtext t21   Graphic3d_TOSM_PBR       -pos 10 25 10 -color RED -aspect BOLD
+vaspects  p22 -setShadingModel PBR_FACET {*}$aMatProps
+vdrawtext t22   Graphic3d_TOSM_PBR_FACET -pos 50 25 10 -color RED -aspect BOLD
+
+vaspects  p31 -setShadingModel UNLIT    {*}$aMatProps
+vdrawtext t31   Graphic3d_TOSM_UNLIT    -pos 10 45 10 -color RED -aspect BOLD
+vaspects  p32 -setShadingModel FACET    {*}$aMatProps
+vdrawtext t32   Graphic3d_TOSM_FACET    -pos 50 45 10 -color RED -aspect BOLD
+vaspects  p41 -setShadingModel VERTEX   {*}$aMatProps
+vdrawtext t41   Graphic3d_TOSM_VERTEX   -pos 10 65 10 -color RED -aspect BOLD
+vaspects  p42 -setShadingModel FACET    {*}$aMatProps
+vdrawtext t42   Graphic3d_TOSM_FACET    -pos 50 65 10 -color RED -aspect BOLD
+vdisplay -topmost t11 t12 t21 t22 t31 t32 t41 t42
+
+vlight -change 0 -intensity 1.0
+vlight -change 1 -intensity 0.5
+vrenderparams -shadingModel pbr
+vdump $::imagedir/${::casename}.png

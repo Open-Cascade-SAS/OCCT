@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC20373: Shading doesn't work on b-spline sphere"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC20373.brep] result
+
+vinit View1
+vdisplay result
+vsetdispmode 1
+vfit
+
+checktrinfo result -tri
+checkprops result -s 9.92128e+06 
+checkshape result
+vdump $imagedir/${casename}.png

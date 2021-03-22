@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC544: Problems with the results of MakePipeShell"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+
+vinit View1
+vsetdispmode 1
+OCC544
+vdisplay result
+vsetmaterial result PLASTIC
+vsetcolor result MATRABLUE
+vsettransparency result 0.5
+vsetdispmode 1
+vfit
+vviewparams -scale 2.05374 -proj 0.135192 -0.978297 -0.157031 -up -0.399854 -0.198875 0.894743 -at 415.781529476262 349.647084890243 417.026634136105
+
+vmoveto 300 70
+checkcolor 220 110 0.04 0.04 0.5
+
+vdump $imagedir/${casename}.png

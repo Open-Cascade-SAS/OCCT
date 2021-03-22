@@ -1,0 +1,20 @@
+puts "============"
+puts "OCC23670: Support for multiple 3D views"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vinit MyDriver/MyViewer/View1
+vinit MyDriver/MyViewer/MyView
+vclose View1
+set ResultBefore [vviewlist]
+vinit Driver1/Viewer1/MyView
+vclose MyView
+vinit Driver1/Viewer1/View2
+
+set ResultAfter [vviewlist]
+set Result [string equal $ResultBefore $ResultAfter]
+if {$Result != 0} { puts "Error. Different view lists are equal." }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,18 @@
+puts "==========="
+puts "BUC60740"
+puts "==========="
+
+pload MODELING VISUALIZATION
+vinit View1
+box b 0 0 0 10 10 10
+pcylinder c 10 10
+vdisplay b
+vsetdispmode b 1
+vdisplay c
+vsetdispmode c 1
+vfit
+vsettransparency c 0.5
+checkcolor 154 257 0.6 0.4 0.07
+if {$stat != 1} { puts "Error :function vsettransparency works WRONGLY" }
+
+vdump $imagedir/${casename}.png

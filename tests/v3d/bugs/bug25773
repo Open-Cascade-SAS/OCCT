@@ -1,0 +1,27 @@
+puts "============"
+puts "CR25773"
+puts "Check that properties of object can be applied to it (set to its drawer)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+
+vaspects -defaults -setfreeboundarycolor 0 0 1
+
+pcone c 0 5 10
+explode c F
+vdisplay c_1; vfit
+
+set x 80
+set y 103
+checkcolor $x $y 0 0 1
+
+vaspects c_1 -freeboundary off
+checkcolor $x $y 0 0 0
+
+vaspects c_1 -freeboundary on -setfreeboundarycolor 1 0 0 -setfreeboundarywidth 2
+checkcolor $x $y 1 0 0
+
+vdump $imagedir/${casename}.png

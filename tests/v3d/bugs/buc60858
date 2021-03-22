@@ -1,0 +1,26 @@
+puts "TODO CR30056 ALL: Meshing statuses: Failure UnorientedWire"
+
+puts "============"
+puts "BUC60858: crash within BRepMesh1"
+puts "============"
+puts ""                                                                                                                                                                        
+
+pload MODELING VISUALIZATION
+restore [locate_data_file BUC60858.brep] result
+
+tclean result
+isos 0
+vinit View1
+incmesh result 0.01
+vdisplay result
+vfit
+
+vclear
+vdisplay result
+vsetdispmode result 1
+
+isos result 0
+triangles result
+
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

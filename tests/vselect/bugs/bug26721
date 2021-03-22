@@ -1,0 +1,30 @@
+puts "============"
+puts "CR26721: Visualization - selection highlight of selected face is broken"
+puts "============"
+puts ""
+
+pload VISUALIZATION MODELING
+
+box b 1 1 1
+vinit View1
+vdisplay b
+vfit
+
+# select box in 0 selection mode
+vselect 200 200
+
+vselmode 4 1
+# select box's face
+vselect 200 300
+
+# check if highlight is correct:
+# 1. check if other edges of the box are not highlighted
+if {[vreadpixel 292 356 name] != "YELLOW 1"} {
+  puts "ERROR: the box is drawn with the color that isn't equal to default!"
+}
+# 2. check if previously selected face is highlighted with selection color
+if {[vreadpixel 204 301 name] != "GRAY80 1"} {
+  puts "ERROR: the face selected is not highlighted with selection color!"
+}
+
+vdump ${imagedir}/${casename}.png

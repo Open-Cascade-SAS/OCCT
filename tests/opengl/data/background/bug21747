@@ -1,0 +1,75 @@
+puts "============"
+puts "OCC21747"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+
+puts "Type=NONE, Color from RED to BLUE"
+vbackground -gradient RED BLUE -gradientMode NONE
+vdump $imagedir/${casename}_none.png
+
+puts "Type=HORIZONTAL, Color from RED to BLUE, Direction from LEFT to RIGHT"
+vbackground -gradient RED BLUE -gradientMode HORIZONTAL
+vdump $imagedir/${casename}_hor1.png
+
+puts "Type=HORIZONTAL, Color from BLUE to RED, Direction from LEFT to RIGHT"
+vbackground -gradient BLUE RED -gradientMode HORIZONTAL
+vdump $imagedir/${casename}_hor2.png
+
+puts "Type=VERTICAL, Color from RED to BLUE, Direction from TOP to BOTTOM"
+vbackground -gradient RED BLUE -gradientMode VERTICAL
+vdump $imagedir/${casename}_vert1.png
+
+puts "Type=VERTICAL, Color from BLUE to RED, Direction from TOP to BOTTOM"
+vbackground -gradient BLUE RED -gradientMode VERTICAL
+vdump $imagedir/${casename}_vert2.png
+
+puts "Type=DIAGONAL1, Color from RED to BLUE, Direction from LEFT TOP CORNER to RIGHT BOTTOM CORNER"
+vbackground -gradient RED BLUE -gradientMode DIAGONAL1
+vdump $imagedir/${casename}_diag1.png
+
+puts "Type=DIAGONAL1, Color from BLUE to RED, Direction from LEFT TOP CORNER to RIGHT BOTTOM CORNER"
+vbackground -gradient BLUE RED -gradientMode DIAGONAL1
+vdump $imagedir/${casename}_diag2.png
+
+puts "Type=DIAGONAL2, Color from RED to BLUE, Direction from RIGHT TOP CORNER to LEFT BOTTOM CORNER"
+vbackground -gradient RED BLUE -gradientMode DIAGONAL2
+vdump $imagedir/${casename}_diag3.png
+
+puts "Type=DIAGONAL2, Color from BLUE to RED, Direction from RIGHT TOP CORNER to LEFT BOTTOM CORNER"
+vbackground -gradient BLUE RED -gradientMode DIAGONAL2
+vdump $imagedir/${casename}_diag4.png
+
+puts "Type=CORNER1, Color from RED to BLUE, Direction from LEFT TOP CORNER"
+vbackground -gradient RED BLUE -gradientMode CORNER1
+vdump $imagedir/${casename}_corn1.png
+
+puts "Type=CORNER2, Color from RED to BLUE, Direction from RIGHT TOP CORNER"
+vbackground -gradient RED BLUE -gradientMode CORNER2
+vdump $imagedir/${casename}_corn2.png
+
+puts "Type=CORNER3, Color from RED to BLUE, Direction from RIGHT BOTTOM CORNER"
+vbackground -gradient RED BLUE -gradientMode CORNER3
+vdump $imagedir/${casename}_corn3.png
+
+puts "Type=CORNER4, Color from RED to BLUE, Direction from LEFT BOTTOM CORNER"
+vbackground -gradient RED BLUE -gradientMode CORNER4
+vdump $imagedir/${casename}_corn4.png
+
+puts "Type=CORNER1, Color from BLUE to RED, Direction from LEFT TOP CORNER"
+vbackground -gradient BLUE RED -gradientMode CORNER1
+vdump $imagedir/${casename}_corn5.png
+
+puts "Type=CORNER2, Color from BLUE to RED, Direction from RIGHT TOP CORNER"
+vbackground -gradient BLUE RED -gradientMode CORNER2
+vdump $imagedir/${casename}_corn6.png
+
+puts "Type=CORNER3, Color from BLUE to RED, Direction from RIGHT BOTTOM CORNER"
+vbackground -gradient BLUE RED -gradientMode CORNER3
+vdump $imagedir/${casename}_corn7.png
+
+puts "Type=CORNER4, Color from BLUE to RED, Direction from LEFT BOTTOM CORNER"
+vbackground -gradient BLUE RED -gradientMode CORNER4
+vdump $imagedir/${casename}_corn8.png

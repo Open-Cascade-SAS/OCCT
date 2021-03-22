@@ -1,0 +1,20 @@
+puts "============="
+puts "0031315: Visualization - marker texture is lost after multi-textured object"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+if { [string match "OpenGL ES 2.0*" [vglinfo VERSION]] } {
+  puts "Skipping test case: OpenGL ES 3.0+ is required"
+  return
+}
+box b 1 2 3
+vdisplay -dispMode 1 -highMode 1 b
+vtexture b -tex0 3 -tex1 4
+vfit
+vpoint p0 -1 0 0
+vaspects p0 -setMarkerSize 5
+if { [vreadpixel 15 310 -rgb -name] != "BLACK" } { puts "Error: Black color is expected" }
+
+vdump ${imagedir}/${casename}.png

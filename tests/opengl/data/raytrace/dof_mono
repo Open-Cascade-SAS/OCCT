@@ -1,0 +1,10 @@
+puts "========"
+puts "Ray Tracing - check depth-of-field"
+puts "========"
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_cube.tcl
+
+vrenderparams -ray -gi -rayDepth 10 -iss
+vrenderparams -aperture 0.1 -focal 2.0
+vfps 200
+vdump ${imagedir}/${casename}.png

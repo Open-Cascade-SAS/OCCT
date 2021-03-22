@@ -1,0 +1,21 @@
+puts "==========="
+puts "0024358: TKV3d - connected structures are not re-computed on device lost"
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 0 0 0 1 2 3
+box b2 3 0 0 3 2 1
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+vconnect b1c -3 0 0 b1 b2
+vfit
+vdump $imagedir/${casename}_1.png
+
+vclose View1 1
+vinit View1
+vdisplay b1c
+vfit
+vdump $imagedir/${casename}_2.png

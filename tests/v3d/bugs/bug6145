@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC6145: Incorrect rendering of a transparent object"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 200 100 100
+plane p 20 20 50
+pcylinder c1 p 10 80
+
+tcopy c1 c2
+ttranslate c2 40 0 0
+tcopy c2 c3
+ttranslate c3 40 0 0
+tcopy c3 c4
+ttranslate c4 40 0 0
+tcopy c4 c5
+ttranslate c5 40 0 0
+
+compound c1 c2 c3 c4 c5 co
+bcut r b co
+
+vinit View1
+vsetdispmode 1
+vdisplay r
+vfit
+
+checkcolor 270 230 0.78 0.55 0.09
+
+vsettransparency r 0.5
+checkcolor 270 230 0.8 0.56 0.1
+
+vdump $imagedir/${casename}.png

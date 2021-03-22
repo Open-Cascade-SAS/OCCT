@@ -1,0 +1,25 @@
+puts "============="
+puts "0030823: Visualization, PrsMgr_PresentableObject - A new flag to disable automatic display/erase of children"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+psphere parent 3
+vdisplay -dispMode 1 parent
+box child1 1 1 1 
+box child2 1 1 1 
+vdisplay child1 -dispMode 1
+vdisplay child2 -dispMode 1
+vlocation child1 -setLocation 10 0 0
+vlocation child2 -setLocation 20 0 0
+
+vparent parent -ignoreVisu
+vchild parent -ignoreParentTrsf -add child1
+vchild parent -ignoreParentTrsf -add child2
+
+vfit
+
+verase parent
+vdump $imagedir/${casename}.png

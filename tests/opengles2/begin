@@ -1,0 +1,13 @@
+cpulimit 300
+if { ![checkplatform -windows] } {
+  puts "TEST COMPLETED"
+  return -code 1 "Skipping testgrid 'opengles2': OpenGL ES can be reliably fixed to 2.0 only by ANGLE library"
+}
+
+pload VISUALIZATION
+vdriver -load GLES
+vcaps -maxVersion 2 0
+vcaps -useWinBuffer 0
+vgldebug -glslWarn 1
+
+if { [info exists imagedir] == 0 } { set imagedir . } 

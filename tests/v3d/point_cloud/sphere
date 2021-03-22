@@ -2,6 +2,8 @@ puts "========"
 puts "Point cloud object from triangulated sphere"
 puts "========"
 
+pload MODELING VISUALIZATION
+
 # create sphere
 sphere ss 10
 mkface s ss
@@ -38,3 +40,4 @@ vsetmaterial p COPPER
 vdump $::imagedir/${::casename}_copper.png
 
 vmoveto 200 200
+vdump $imagedir/${casename}.png

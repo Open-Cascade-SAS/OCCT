@@ -1,0 +1,14 @@
+puts "============"
+puts "display_mode: Tests display modes changing in the IVtk view"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b 1 1 1
+ivtkinit
+ivtkdisplay b
+ivtksetdispmode 1
+ivtkdump $imagedir/${casename}_1.png
+
+ivtksetdispmode 0
+ivtkdump $imagedir/${casename}_2.png

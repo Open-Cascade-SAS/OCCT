@@ -1,0 +1,18 @@
+puts "================"
+puts "OCC19"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC19.brep] result
+checkshape result
+
+tclean result
+vinit View1
+vdisplay result
+vsetdispmode result 1
+isos result 0
+triangles result
+
+checktrinfo result -tri 50 -nod 52
+vdump $imagedir/${casename}.png

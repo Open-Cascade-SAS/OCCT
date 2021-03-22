@@ -1,0 +1,15 @@
+puts "========"
+puts "CR23705: Isoline in the AIS viewer is not trimmed"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug23705_plancher20igs_face.brep] result
+
+vinit View1
+visos 10 10 1
+vdisplay result
+vfit
+checkcolor 326 295 0 0 0
+
+vdump $imagedir/${casename}.png

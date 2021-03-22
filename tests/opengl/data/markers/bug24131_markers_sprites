@@ -1,0 +1,8 @@
+puts "========"
+puts "OCC24131 Markers using Point Sprites and FFP"
+puts "========"
+
+pload VISUALIZATION
+vcaps -sprites 1 -ffp 1
+source $env(CSF_OCCTSamplesPath)/tcl/markers.tcl
+vdump $imagedir/${casename}.png

@@ -1,0 +1,167 @@
+puts "================"
+puts "OCC74"
+puts "BUC61051"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+
+# Data
+set Shape_X 100
+set Shape_Y 346
+
+set Vertex_X 29
+set Vertex_Y 305
+
+set Edge_X ${Shape_X}
+set Edge_Y ${Shape_Y}
+
+set Wire_X ${Shape_X}
+set Wire_Y ${Shape_Y}
+
+set Face_X ${Shape_X}
+set Face_Y ${Shape_Y}
+
+set Shell_X ${Shape_X}
+set Shell_Y ${Shape_Y}
+
+set Solid_X ${Shape_X}
+set Solid_Y ${Shape_Y}
+
+# Display box
+vinit View1
+box b 10 10 10
+vdisplay b
+vfit
+vaspects -setwidth 5
+
+### FIRST PART
+
+# Check Shape color
+if { [vreadpixel ${Shape_X} ${Shape_Y} rgb name] != "YELLOW" } {
+  puts "Error : shape color is not yellow"
+}
+
+# Check Vertex color
+if { [vreadpixel ${Vertex_X} ${Vertex_Y} rgb name] != "YELLOW" } {
+  puts "Error : vertex color is not yellow"
+}
+
+### SECOND PART
+
+# Check Shape color
+vmoveto 1 1
+set SetSelectMode 0
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Shape_X} ${Shape_Y}
+
+if { [vreadpixel  ${Shape_X} ${Shape_Y} rgb name] != "CYAN" } {
+  puts "Error : shape color is not cyan"
+}
+
+# Check Vertex color
+vmoveto 1 1
+set SetSelectMode 1
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Vertex_X} ${Vertex_Y}
+
+checkcolor ${Vertex_X} ${Vertex_Y} 0 1 1
+
+# Check Edge color
+vmoveto 1 1
+set SetSelectMode 2
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Edge_X} ${Edge_Y}
+
+checkcolor ${Edge_X} ${Edge_Y} 0 1 1
+
+# Check Wire color
+vmoveto 1 1
+set SetSelectMode 3
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Wire_X} ${Wire_Y}
+
+checkcolor ${Wire_X} ${Wire_Y} 0 1 1
+
+# Check Face color
+vmoveto 1 1
+set SetSelectMode 4
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Face_X} ${Face_Y}
+
+checkcolor ${Face_X} ${Face_Y} 0 1 1
+
+# Check Shell color
+vmoveto 1 1
+set SetSelectMode 5
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Shell_X} ${Shell_Y}
+
+checkcolor ${Shell_X} ${Shell_Y} 0 1 1
+
+# Check Solid color
+vmoveto 1 1
+set SetSelectMode 6
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+vmoveto ${Solid_X} ${Solid_Y}
+
+checkcolor ${Solid_X} ${Solid_Y} 0 1 1
+
+### THIRD PART
+
+set SetSelectMode -1
+OCC74_set b ${SetSelectMode}
+set GetSelectMode [OCC74_get b]
+if { ${GetSelectMode} != ${SetSelectMode} } then {
+   puts "Select Mode = ${GetSelectMode}"
+   puts "OCC74: Get Select Mode Error "
+}
+
+# Check Shape color
+vmoveto 1 1
+if { [vreadpixel ${Shape_X} ${Shape_Y} rgb name] != "YELLOW" } {
+  puts "Error : shape color is not yellow"
+}
+
+# Check Vertex color
+vmoveto 1 1
+if { [vreadpixel ${Vertex_X} ${Vertex_Y} rgb name] != "YELLOW" } {
+  puts "Error : vertex color is not yellow"
+}
+
+vdump $imagedir/${casename}.png

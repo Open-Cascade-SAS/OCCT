@@ -14,3 +14,4 @@ vfit
 vmoveto 250 150
 set aColor [vreadpixel 200 150 name rgb]
 if { "$aColor" != "TURQUOISE3" } { puts "Error: Wrong dynamic highlight color" }
+vdump $imagedir/${casename}.png

@@ -1,0 +1,23 @@
+puts "=================="
+puts "0028988: Visualization - AIS_InteractiveContext::SetLocation() does not reset location properly"
+puts "=================="
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b 1 2 3
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 -highMode 1 b
+vfit
+vmoveto 110 110
+if { "[vreadpixel 110 110 rgb name]" != "CYAN2" } { puts "Error: shape is not selected!" }
+
+vlocation b -translate 1 0 0
+vmoveto 110 110
+vlocation b -reset
+vmoveto 110 110
+vreadpixel 110 110 rgb name
+if { "[vreadpixel 110 110 rgb name]" != "CYAN2" } { puts "Error: reset shape is not selected!" }
+vdump ${imagedir}/${casename}.png

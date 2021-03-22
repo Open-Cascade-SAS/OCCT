@@ -1,0 +1,38 @@
+puts "================"
+puts "OCC218"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+vinit View1
+box b 10 10 10
+explode b f
+vdisplay b_1
+vfit
+
+set scale    7674.87317785833
+set proj_X   0.966540098190308
+set proj_Y   -0.24304473400116
+set proj_Z   0.0820330902934074
+set up_X     -0.0460147373378277
+set up_Y     0.150333747267723
+set up_Z     0.987563848495483
+set at_X     0.0466426680664981
+set at_Y     0.147133996816294
+set at_Z     9.95295385008357
+
+set x_coord 388
+set y_coord 28
+
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
+
+OCC218 trihedron1 b_1 X Y
+
+checkcolor $x_coord $y_coord 0 0 0
+
+OCC218 trihedron1 b_1 my___axis___1 my___axis2
+
+checkcolor $x_coord $y_coord 0.85 0.85 0
+if { $stat != 1 } { puts "There is no messages near axes" }
+
+vdump $imagedir/${casename}.png

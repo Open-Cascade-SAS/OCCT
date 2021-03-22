@@ -1,0 +1,15 @@
+puts "==========="
+puts "OCC27893: Visualization - AIS_InteractiveContext::SetSelected does not work"
+puts "==========="
+puts ""
+
+pload VISUALIZATION QAcommands
+
+vinit View1
+OCC27893
+vfit
+
+if {[vnbselected] != "1" || [vreadpixel 204 254 name] != "GRAY80 1"} {
+  puts "ERROR: The box is not selected, AIS_InteractiveContext::SetSelected works incorrect"
+}
+vdump ${imagedir}/${casename}.png

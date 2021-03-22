@@ -1,0 +1,22 @@
+puts "============"
+puts "CR25507: Visualization - the method V3d_View::Place() is incorrect"
+puts "============"
+puts ""
+
+vinit View1
+vsetdispmode 1
+
+box b1 2 1 1
+vdisplay b1
+box b2 1 1 1
+vdisplay b2
+vsetlocation b2 5 0 0
+vfit
+
+vselect 80 140
+vplace 80 140
+
+vmoveto 200 180
+checkcolor 200 180 0.78 0.55 0.09
+
+vdump ${imagedir}/${casename}.png

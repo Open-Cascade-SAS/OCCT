@@ -1,0 +1,18 @@
+puts "========"
+puts "0027083: Visualization, Ray Tracing - shape with visible face boundaries disappears after turning the ray-tracing on"
+puts "========"
+puts ""
+
+pload VISUALIZATION MODELING
+box b 1 1 1
+vclear
+vinit View1
+vdisplay -noupdate -dispMode 1 b
+vfit
+vaspects b -setFaceBoundaryDraw 1 -setFaceBoundaryColor RED -setFaceBoundaryWidth 3
+vraytrace 1
+
+if {[vreadpixel 295 255 -rgb -name] != "DARKGOLDENROD"} { puts "ERROR: the box with boundary aspect set is not shown in ray-tracing mode!" }
+if {[vreadpixel 105  58 -rgb -name] != "RED"}           { puts "ERROR: the box's boundaries are not shown in ray-tracing mode!" }
+
+vdump $imagedir/${casename}.png

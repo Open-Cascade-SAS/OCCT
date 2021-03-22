@@ -1,0 +1,8 @@
+puts "============"
+puts "CR23425: diffimage generate O S D _ E x c e p t i o n during execution"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+diffimage [locate_data_file bug23425_B8_Linux.gif] [locate_data_file bug23425_B8_Win.gif] 0.01 0 1
+diffimage [locate_data_file bug23425_B8_Win.gif] [locate_data_file bug23425_B8_Linux.gif] 0.01 0 1

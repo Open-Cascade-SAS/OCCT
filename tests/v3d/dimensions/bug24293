@@ -1,0 +1,21 @@
+puts "============"
+puts "CR24293: Dimension flyout lines don't belong to the dimension sensitive entity."
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vpoint lengthP1 0 0 0
+vpoint lengthP2 10 10 10
+vdimension dim1 -length -plane xoy -shapes lengthP1 lengthP2 -font SansFont
+vfit
+vmoveto 202 191
+
+set x_coord 272
+set y_coord 198
+checkcolor $x_coord $y_coord 0 1 1
+if { $stat != 1 } {  puts "Error : Highlighting of length dimension is wrong." }
+
+vdump $imagedir/${casename}.png

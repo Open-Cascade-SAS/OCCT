@@ -2,6 +2,8 @@ puts "====================================="
 puts "AIS_Manipulator - drag an object"
 puts "====================================="
 
+pload MODELING VISUALIZATION
+
 set anImage1 $imagedir/${casename}_1.png
 set anImage2 $imagedir/${casename}_2.png
 set anImage3 $imagedir/${casename}_3.png

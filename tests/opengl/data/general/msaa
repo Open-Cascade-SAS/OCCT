@@ -1,0 +1,34 @@
+puts "========"
+puts "Multisampling FBOs"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 2 3 1
+vclear
+vclose ALL
+vinit View1 w=512 h=512
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+vsetdispmode 0
+vdisplay b
+vfit
+vrotate 0.5 0 0
+vzbufftrihedron
+
+vrenderparams -msaa 0
+vdump $::imagedir/${::casename}_512x512_msaa0.png
+vrenderparams -msaa 2
+vdump $::imagedir/${::casename}_512x512_msaa2.png
+vrenderparams -msaa 4
+vdump $::imagedir/${::casename}_512x512_msaa4.png
+vrenderparams -msaa 8
+vdump $::imagedir/${::casename}_512x512_msaa8.png
+
+# check dump with resolutions not equal to window size
+vdump $::imagedir/${::casename}_1920x1080_msaa8.png -width 1920 -height 1080
+vdump $::imagedir/${::casename}_2560x1440_msaa8.png -width 2560 -height 1440
+
+# check dump with stereo
+vstereo anaglyph
+vdump $::imagedir/${::casename}_512x512_msaa8stereo.png -stereo blend
+vdump $::imagedir/${::casename}_1920x1080_msaa8stereo.png -width 1920 -height 1080 -stereo blend
+vdump $::imagedir/${::casename}_2560x1440_msaa8stereo.png -width 2560 -height 1440 -stereo blend

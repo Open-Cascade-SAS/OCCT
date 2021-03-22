@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC301"
+puts "SAM926"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+vinit View1
+OCC301 50 5
+OCC301 30 3
+vtop
+vfit
+puts "Angle dimensions have different arrow sizes"
+
+vdump $imagedir/${casename}.png

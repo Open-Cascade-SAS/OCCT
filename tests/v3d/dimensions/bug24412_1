@@ -1,0 +1,39 @@
+puts "============"
+puts "CR24412: TKV3d, Dimensions - Possibility to customize text position was lost"
+puts "Test position setting for linear dimension"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit Viewer1/View1
+vpoint  circ_p1 0  10 30
+vpoint  circ_p2 30 10  0
+vpoint  circ_p3 60 10 30
+vcircle circ circ_p1 circ_p2 circ_p3 0
+vdisplay circ
+vdimension diam -diameter -shapes circ -font SansFont
+# Change text position
+vmovedim diam 15 15 15
+vfit
+
+# Check that text position was changed and the text is not aligned
+set x_coord 166
+set y_coord 226
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } { puts "Error : Text position of dimension is incorrect." }
+
+vdump $imagedir/${casename}_1.png
+
+# Update dimension parameters and set automatic text positioning
+vdimparam diam -flyout -5
+vfit
+
+# Check that text position was changed according to flyout
+set x_coord 213
+set y_coord 179
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } { puts "Error : Text position of dimension after layout changing is incorrect." }
+
+vdump $imagedir/${casename}_2.png

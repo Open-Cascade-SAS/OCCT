@@ -1,0 +1,47 @@
+puts "============"
+puts "CR23747"
+puts "Checking environment mapping in general"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+# enable FFP until bug-fix for GLSL
+vcaps -ffp 1
+
+vinit View1
+vclear
+vaxo
+psphere b 20
+vdisplay b
+vsetdispmode b 1
+vfit
+
+puts "Applying standard environment textures"
+set max_textures 8
+for {set i 0} {$i < $max_textures} {incr i} {
+  vtextureenv on $i
+  vdump $imagedir/${casename}_std_texture_${i}.png  
+}
+
+puts "Varying parameters of the 6th std texture (black stripes on white background)"
+puts "Trying modulate flag"
+vtextureenv on 6 clamp modulate trilinear 1 1 0 0 0
+vdump $imagedir/${casename}_modulate.png
+
+puts "Trying nearest texture filtering mode"
+vtextureenv on 6 clamp decal nearest 1 1 0 0 0
+vdump $imagedir/${casename}_nearest.png
+
+puts "Trying scaling of s and t texture coordinates by 5 (texture repeat on)"
+vtextureenv on 6 repeat decal trilinear 5 5 0 0 0
+vdump $imagedir/${casename}_scaled.png
+
+puts "Trying translation of s and t texture coordinates by 0.5 (texture repeat on)"
+vtextureenv on 6 repeat decal trilinear 1 1 0.5 0.5 0
+vdump $imagedir/${casename}_translated.png
+
+puts "Trying rotation of texture coordinates by 90 degrees around the texture center (texture repeat on)"
+vtextureenv on 6 repeat decal trilinear 1 1 0 0 90
+vdump $imagedir/${casename}_rotated.png
+

@@ -1,0 +1,136 @@
+puts "============"
+puts "0025098: Visualization - Calculation of depth on selection of a wire is not accurate"
+puts "============"
+puts ""
+
+proc ParseEntityInfo {theInfoString} {
+  set aStringArr [split $theInfoString " "]
+  set isEdgeInfo 0
+  set aDepth ""
+  set aPoint ""
+  set aType ""
+  set aSize [llength $aStringArr]
+  for {set aIdx 0} {$aIdx < $aSize} {incr aIdx} {
+    set aItem [lindex $theInfoString $aIdx]
+    if {[string compare $aItem "e"] == 0} {
+      set isEdgeInfo 1
+    } elseif {[string compare $aItem "Depth:"] == 0} {
+        set aDepth [string trim [lindex $theInfoString [expr $aIdx + 1]]]
+    } elseif {[string compare $aItem "Point:"] == 0} {
+        set aPoint [string trim [lindex $theInfoString [expr $aIdx + 1]]]
+        append aPoint " "
+        append aPoint [string trim [lindex $theInfoString [expr $aIdx + 2]]]
+        append aPoint " "
+        append aPoint [string trim [lindex $theInfoString [expr $aIdx + 3]]]
+      } elseif {[string compare [string index $aItem 0] "("] == 0} {
+        set aType [string trim $aItem]
+    }
+  }
+
+  return [list $isEdgeInfo $aDepth $aPoint $aType]
+}
+
+pload VISUALIZATION MODELING
+vinit View1
+
+box b 10 10 10
+vdisplay b
+vremove b
+
+explode b w
+vdisplay b_5
+
+vertex v1 10 0 0
+vertex v2 10 10 0
+edge e v1 v2
+vdisplay e
+
+vfit
+vmoveto 240 300
+set aOut [split [vstate -entities] "\n"]
+
+# compare parameters of detected match: depth, distance and point
+set anInfoList1Idx 1
+set anInfoList2Idx -1
+set anInfoList1 [ParseEntityInfo [lindex $aOut $anInfoList1Idx]]
+if {[string equal [lindex $anInfoList1 0] "1"]} {
+  set anInfoList2Idx 3
+} else {
+  set anInfoList2Idx 4
+}
+set anInfoList2 [ParseEntityInfo [lindex $aOut $anInfoList2Idx]]
+for {set aIdx 1} {$aIdx < 3} {incr aIdx} {
+  if {[string equal [lindex $anInfoList1 $aIdx] [lindex $anInfoList2 $aIdx]] == 0} {
+    set aDebugInfo "Characteristics are not equal at value nb: "
+    append aDebugInfo [expr $aIdx + 1]
+    puts $aDebugInfo
+    set aDebugInfo "The values are: "
+    append aDebugInfo [lindex $anInfoList1 $aIdx]
+    append aDebugInfo " and "
+    append aDebugInfo [lindex $anInfoList2 $aIdx]
+    puts $aDebugInfo
+    puts "ERROR"
+    puts ""
+  }
+}
+
+set anEdgeSensitiveType ""
+set aWireSensitiveType ""
+set anEdgeTypeStringNb -1
+set aWireTypeStringNb -1
+if {[string equal [lindex $anInfoList1 0] "1"]} {
+  set anEdgeTypeStringNb 2
+  set anEdgeSensitiveType [lindex $anInfoList1 3]
+  set aWireTypeStringNb 4
+  set aWireSensitiveType [lindex $anInfoList2 3]
+} else {
+  set anEdgeTypeStringNb 5
+  set anEdgeSensitiveType [lindex $anInfoList2 3]
+  set aWireTypeStringNb 2
+  set aWireSensitiveType [lindex $anInfoList1 3]
+}
+
+# checks that edge e is represented by correct shape and sensitive entity
+if {[string equal $anEdgeSensitiveType "(Select3D_SensitiveSegment)"] == 0} {
+  puts "Wrong sensitive for segment! Value is: "
+  puts $anEdgeSensitiveType
+  puts "Must be: (Select3D_SensitiveSegment)"
+  puts "ERROR"
+  puts ""
+}
+
+set aEdgeType [string trim [lindex $aOut $anEdgeTypeStringNb]]
+if {[string equal $aEdgeType "Detected Shape: BRep_TEdge"] == 0} {
+  puts "Wrong type of edge! Value is: "
+  puts $aEdgeType
+  puts "Must be: Detected Shape: BRep_TEdge"
+  puts "ERROR"
+  puts ""
+}
+
+# checks that wire b_5 is represented by correct shape and sensitive entity
+if {[string equal $aWireSensitiveType "(Select3D_SensitiveWire)"] == 0} {
+  puts "Wrong sensitive for wire! Value is: "
+  puts $aWireSensitiveType
+  puts "Must be: (Select3D_SensitiveWire)"
+  puts "ERROR"
+  puts ""
+}
+
+set aWireType [string trim [lindex $aOut $aWireTypeStringNb]]
+if {[string equal $aWireType "Detected Shape: TopoDS_TWire"] == 0} {
+  puts "Wrong type of wire! Value is: "
+  puts $aWireType
+  puts "Must be: Detected Shape: TopoDS_TWire"
+  puts "ERROR"
+  puts ""
+}
+
+set aWireChildSensitiveType [string trim [lindex $aOut [expr $aWireTypeStringNb + 1]]]
+if {[string equal $aWireChildSensitiveType "Detected Child: Select3D_SensitiveSegment"] == 0} {
+  puts "Wrong type of wire's inner sensitive! Value is: "
+  puts $aWireChildSensitiveType
+  puts "Must be: Detected Child: Select3D_SensitiveSegment"
+  puts "ERROR"
+}
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,25 @@
+puts "============"
+puts "0032143: Visualization - add option excluding transparent object from sorting"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1 -width 512 -height 512
+vbackground -gradient GRAY20 GRAY80
+restore [locate_data_file Ball.brep] b
+vdisplay -dispMode 1 b
+vfit
+
+set dx 220; set dy 74
+set logoPath "$::env(CSF_OCCTResourcePath)/DrawResources/OCC_logo.png"
+box logo $dx $dy 0 -preview
+vdisplay -dispMode 1 logo -topmost -2d bottomRight [expr $dx+25] 25
+vtexture logo "$logoPath"
+vaspects logo -alphaMode BLEND -shadingModel UNLIT
+vdisplay logo -underlay
+if { [vreadpixel 320 440 -rgb -name] != "DEEPSKYBLUE3" && [vreadpixel 320 440 -rgb -name] != "TURQUOISE2" } { puts "Error: Unexpected color for BLEND" }
+vaspects logo -alphaMode MASKBLEND 0.001 -shadingModel UNLIT
+if { [vreadpixel 320 440 -rgb -name] != "DARKGOLDENROD" } { puts "Error: Unexpected color for MASKBLEND" }
+
+vdump ${imagedir}/${casename}.png

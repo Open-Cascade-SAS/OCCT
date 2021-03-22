@@ -6,7 +6,9 @@ puts ""
 
 # Ray-Tracing doesn't work with Compatible Profile on macOS
 pload VISUALIZATION
+pload OPENGL
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
 source $env(CSF_OCCTSamplesPath)/tcl/materials.tcl
 vrenderparams -raytrace -msaa 0
+vdump $imagedir/${casename}.png

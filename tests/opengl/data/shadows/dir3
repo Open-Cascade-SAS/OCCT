@@ -1,0 +1,34 @@
+puts "========"
+puts "0030640: Visualization, Graphic3d_Camera - add option creating Projection matrix with 0 to 1 depth range"
+puts "Test shadow map from a single directional light source on a box geometry."
+puts "========"
+
+pload MODELING VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+vcaps -depthZeroToOne 1
+box b 1 2 3
+box bb -5 -5 0 10 10 0 -preview
+vgldebug 1
+vcaps -core
+vcaps -vsync 0
+vclear
+vinit View1
+vrenderparams -shadingModel PHONG
+vdisplay -dispMode 1 b bb
+vaspects bb -material STONE
+vfit
+vselect 250 200
+vlight -change 0 -castShadows 1 -direction 1 1 -1 -head 0
+
+if { ![string match "OpenGL ES 2.0*" [vglinfo VERSION]] && ![string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  vraytrace 1
+  vdump $::imagedir/${::casename}_raytrace.png
+}
+
+vraytrace 0
+vrenderparams -shadingModel phong
+vrenderparams -shadowMapBias 0.01
+vdump $::imagedir/${::casename}_phong.png
+
+vrenderparams -shadingModel pbr
+vdump $::imagedir/${::casename}_pbr.png

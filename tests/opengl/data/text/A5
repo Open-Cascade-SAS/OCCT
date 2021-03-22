@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case prints 3D labels with different text alignment styles"
+puts "============"
+puts ""
+
+pload TOPTEST VISUALIZATION
+vinit View1
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vtrihedron trihedr
+
+vpoint pTL  -700  100 600
+vdrawtext Text0 "Top-Left\nFirst line\nLion The Second\n3rd" -pos -700  100  600 -color CYAN -halign left -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pTC  0  100 600
+vdrawtext Text1 "Top-Center\nFirst line\nLion The Second\n3rd" -pos 0  100  600 -color CYAN -halign center -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pTR  700  100 600
+vdrawtext Text2 "Top-Right\nFirst line\nLion The Second\n3rd" -pos 700  100  600 -color CYAN -halign right -valign top -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pCL  -700  100 -100
+vdrawtext Text3 "Center-Left\nFirst line\nLion The Second\n3rd" -pos -700  100 -100 -color WHITE -halign left -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pCC  0  100 -100
+vdrawtext Text4 "Center-Center\nFirst line\nLion The Second\n3rd" -pos 0  100 -100 -color WHITE -halign center -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pCR  700  100 -100
+vdrawtext Text5 "Center-Right\nFirst line\nLion The Second\n3rd" -pos 700  100 -100 -color WHITE -halign right -valign center -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pBL  -700  100 -700
+vdrawtext Text6 "Bottom-Left\nFirst line\nLion The Second\n3rd" -pos -700  100 -700 -color YELLOW -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pBC  0  100 -700
+vdrawtext Text7 "Bottom-Center\nFirst line\nLion The Second\n3rd" -pos 0  100 -700 -color YELLOW -halign center -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vpoint pBR  700  100 -700
+vdrawtext Text8 "Bottom-Right\nFirst line\nLion The Second\n3rd" -pos 700  100 -700 -color YELLOW -halign right -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vfit
+
+vglinfo
+vdump $imagedir/${casename}.png

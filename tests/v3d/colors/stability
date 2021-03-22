@@ -1,6 +1,8 @@
 # Check stability of conversion of RGB colors to CIE Lab and Lch
 # color spaces and back on random colors
 
+pload VISUALIZATION
+
 # check color diff on random colors
 for {set i 1} {$i < 1000} {incr i} {
   set rgb "[expr rand()] [expr rand()] [expr rand()]"

@@ -1,0 +1,35 @@
+puts "=================================="
+puts "BUC60661"
+puts "It is impossible to nominate sheding mode in 3D-viewer for the some shapes in C30 (SUN station),"
+puts "which were stored in IGES format previously and then were retrieved again into BREP format."
+puts "=================================="
+puts ""
+
+pload MODELING XDE VISUALIZATION
+
+restore [locate_data_file buc60661a.brep] buc60661
+checkshape buc60661
+
+######################################################################
+file delete ${imagedir}/buc60661.igs } 
+brepiges buc60661 ${imagedir}/buc60661.igs
+######################################################################
+
+dall
+
+if [catch { igesbrep ${imagedir}/buc60661.igs a * } res] {
+  puts "Faulty BUC60661: here is reading problem of iges file"
+} else {
+  puts "Reading of iges in BUC60661 is OK"
+}
+
+tpcompound result
+checkshape result
+
+vinit View1
+tclean result
+vdisplay result
+vsetdispmode result 1
+
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

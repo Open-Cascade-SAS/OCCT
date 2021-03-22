@@ -1,0 +1,43 @@
+puts "================"
+puts "OCC22906: Gradient background is clipped by planes"
+puts "================"
+puts ""
+
+set BugNumber OCC22906
+set x1 73
+set y1 338
+
+set x2 144
+set y2 23
+
+set x3 377
+set y3 123
+
+set x4 87
+set y4 232
+
+pload MODELING VISUALIZATION
+vinit View1
+vbackground -gradient RED BLUE -gradientMode DIAGONAL2
+set Color1 [vreadpixel ${x1} ${y1} rgb]
+set Color2 [vreadpixel ${x2} ${y2} rgb]
+set Color3 [vreadpixel ${x3} ${y3} rgb]
+set Color4 [vreadpixel ${x4} ${y4} rgb]
+vclipplane create pln1
+vclipplane change pln1 equation 1 0 0 -0.1
+vclipplane set pln1 view Driver1/Viewer1/View1
+box b 100 100 100
+vdisplay b
+vsetdispmode 1
+set ColorRes1 [vreadpixel ${x1} ${y1} rgb]
+set ColorRes2 [vreadpixel ${x2} ${y2} rgb]
+set ColorRes3 [vreadpixel ${x3} ${y3} rgb]
+set ColorRes4 [vreadpixel ${x4} ${y4} rgb]
+
+if { ${Color1} == ${ColorRes1} && ${Color2} == ${ColorRes2} && ${Color3} == ${ColorRes3} && ${Color4} == ${ColorRes4}} {
+  puts "OK ${BugNumber}"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,35 @@
+puts "============"
+puts "0030561: Visualization, PrsMgr_PresentableObject - Keep the local transformation for child in AddChild()"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+psphere m 3
+vdisplay -dispMode 1 m
+vlocation m -setLocation 20 10 20
+box b1 1 1 1 
+box b2 1 1 1 
+vdisplay b1 -dispMode 1
+vdisplay b2 -dispMode 1
+vlocation b1 -setLocation -10 0 0
+vlocation b2 -setLocation -10 0 0
+
+set r {1 2 3 4 5}
+foreach i $r { psphere c$i 1 }
+foreach i $r { vdisplay -dispMode 1 c$i }
+foreach i $r { vlocation c$i -setLocation [expr 20+10*$i] 10 20 }
+foreach i $r { vchild m -ignoreParentTrsf -add c$i }
+vchild m -add b1
+
+# change main shape's local transformation, the children should be correspondingly moved
+vlocation m -setLocation 100 20 20
+
+# change one of sub-shape's local transformation, other shapes MUST NOT move
+vlocation c4 -setLocation 40 10 0
+
+vfit
+
+vdump $imagedir/${casename}.png

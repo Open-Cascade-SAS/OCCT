@@ -1,0 +1,33 @@
+puts "========"
+puts "Ray Tracing - check rendering of multi-connected structures"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create boxes
+box b1 0 0 0 1 2 3
+box b2 3 0 0 3 2 1
+
+# draw box
+vinit View1
+vclear
+vrenderparams -rasterization
+vsetdispmode 1
+vaxo
+vconnect b1c -3 0 0 b1 b2
+vfit
+vrotate 0.2 0.0 0.0
+vfit
+vclear
+vconnect b1c -3 0 0 b1 b2
+
+# take snapshot with fixed pipeline
+vdump $::imagedir/${::casename}_OFF.png
+
+# turn on ray tracing
+vrenderparams -raytrace
+vdump $::imagedir/${::casename}_rt1.png
+
+vclear
+vconnect b1c -3 0 0 b1 b2
+vdump ${imagedir}/${casename}.png

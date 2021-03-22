@@ -1,0 +1,10 @@
+puts "========"
+puts "BUC60774"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+vinit View1
+catch {BUC60774}
+vfit
+vdump $imagedir/${casename}.png

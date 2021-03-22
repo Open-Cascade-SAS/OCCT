@@ -1,0 +1,33 @@
+puts "========"
+puts "Per-pixel lighting using GLSL program (Phong shading)"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# import model
+restore [locate_data_file occ/fuse.brep] f
+tclean f
+box b 2 0 0 1 0.5 0.25
+
+# draw box
+vclear
+vclose ALL
+vinit View1
+vdefaults -absDefl 0.5
+vsetdispmode 1
+vaxo
+vdisplay f
+vfit
+vrotate -0.5 0.0 0.0
+vdisplay b
+vfit
+
+# take snapshot with fixed pipeline
+vdump $::imagedir/${::casename}_OFF.png
+
+vshaderprog f phong
+vshaderprog b phong
+vshaderprog b off
+vrotate -0.2 0.0 0.0
+vmoveto 100 100
+vdump $::imagedir/${::casename}_ph1.png

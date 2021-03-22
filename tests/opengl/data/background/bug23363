@@ -1,0 +1,19 @@
+puts "============"
+puts "0023363: Lost gradient background when switching to the hollow interior style"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vbackground -gradient FA0000 GREEN -gradientMode VERTICAL
+pcylinder p 100 200
+vdisplay -dispMode 1 p
+vaspects p -setInteriorStyle HOLLOW -setDrawEdges 1
+
+set color1 [vreadpixel 10 0 rgb]
+set rd1 [lindex $color1 0]
+if { $rd1 == 0 } { puts "Faulty ${BugNumber}" }
+
+vdump $imagedir/${casename}.png

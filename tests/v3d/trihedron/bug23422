@@ -1,0 +1,17 @@
+puts "============"
+puts "CR23422: Selection problems when using SetLocation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 50 50 50
+vinit View1
+vsetdispmode 1
+vdisplay b
+vtrihedron t
+
+vsetlocation b 30 30 130
+
+vmoveto 240 150
+
+vdump ${imagedir}/${casename}.png

@@ -1,5 +1,7 @@
 # Check conversion of RGB colors to CIE Lch color space
 
+pload VISUALIZATION
+
 # Samples are obtained (with Ref. White D65, Gamma = 1 for linear RGB) using
 # http://brucelindbloom.com/index.html?ColorCalculator.html
 # Note that for c = 0 we have h = 0 (not 270 as in the above link)

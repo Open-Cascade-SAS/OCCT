@@ -1,0 +1,24 @@
+puts "========"
+puts "OCC185"
+puts "========"
+
+pload XDE MODELING VISUALIZATION
+
+igesbrep [locate_data_file OCC185.igs] a *
+
+tpcompound result
+tclean result
+
+vinit View1
+vdisplay result
+vfit
+vsetdispmode result 1
+
+checkcolor 235 214 0.78 0.55 0.9
+if { $stat != 1 } { puts "Error : Shading is OFF, but should be ON" }
+
+vsetdispmode result 0
+checkcolor 235 214 0 1 0
+if { $stat != 1 } { puts "Error : Shading is ON, but should be OFF" }
+
+vdump $imagedir/${casename}.png

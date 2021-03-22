@@ -1,0 +1,3 @@
+cpulimit 300
+
+if { [info exists imagedir] == 0 } { set imagedir . }

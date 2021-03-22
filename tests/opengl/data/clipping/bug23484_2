@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC23484: Visualization, TKOpenGl - primitive arrays to become the only way to render geometry"
+puts "Tests clipping plane rendering with primitive arrays"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+vsetdispmode 1
+box b 1 1 1
+vdisplay b
+vfit
+
+vclipplane create pln
+vclipplane set pln view Driver1/Viewer1/View1
+vclipplane change pln equation 0 1 0 -0.5
+vclipplane change pln capping on
+
+vdump $imagedir/${casename}_1.png

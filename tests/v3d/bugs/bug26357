@@ -1,0 +1,50 @@
+puts "============"
+puts "0026357: Visualization - Panning zooms view if aspect ratio > 1"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 100 100 100
+
+vclear
+vinit View1 w=400 h=400
+vinit View2 w=200 h=400
+vinit View3 w=400 h=200
+
+vdisplay -dispMode 1 -highMode 1 b
+
+# Test panning with aspect ratio 1:1
+vactivate View1
+vaxo
+vfit
+vpan        200 0
+vmoveto     399 200
+if { [vreadpixel 399 200 rgb name] != "CYAN2" } { puts "Error: incorrect color after forward panning in View1" }
+vpan       -200 0
+vmoveto     200 200
+if { [vreadpixel 200 200 rgb name] != "CYAN2" } { puts "Error: incorrect color after backward panning in View1" }
+vdump ${imagedir}/${casename}_1.png
+
+# Test panning with aspect ratio 1:2
+vactivate View2
+vaxo
+vfit
+vpan        100 0
+vmoveto     199 100
+if { [vreadpixel 199 100 rgb name] != "CYAN2" } { puts "Error: incorrect color after forward panning in View2" }
+vpan       -100 0
+vmoveto     100 100
+if { [vreadpixel 100 100 rgb name] != "CYAN2" } { puts "Error: incorrect color after backward panning in View2" }
+vdump ${imagedir}/${casename}_2.png
+
+# Test panning with aspect ratio 2:1
+vactivate View3
+vaxo
+vfit
+vpan        200 0
+vmoveto     399 100
+if { [vreadpixel 399 100 rgb name] != "CYAN2" } { puts "Error: incorrect color after forward panning in View3" }
+vpan       -200 0
+vmoveto     200 100
+if { [vreadpixel 200 100 rgb name] != "CYAN2" } { puts "Error: incorrect color after backward panning in View3" }
+vdump ${imagedir}/${casename}_3.png

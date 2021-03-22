@@ -1,0 +1,31 @@
+puts "============"
+puts "0027573: AIS_ColorScale::FindColor does not take into account custom colors."
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vclose all
+vinit View1
+vclear
+vaxo
+
+vcolorscale cs -demo
+vcolorscale cs -range 0 20 5
+
+# Set user-defined colors and labels for color scale
+vcolorscale cs -colors white red green BLUE gray
+vdump ${imagedir}/${casename}_pos.png
+
+if {[vcolorscale cs -findcolor  0] != "WHITE"} { puts "ERROR: wrong 1st segment сolor" }
+if {[vcolorscale cs -findcolor  4] != "RED"}   { puts "ERROR: wrong color on border between 1st and 2nd segments" }
+if {[vcolorscale cs -findcolor  5] != "RED"}   { puts "ERROR: wrong 2nd segment color" }
+if {[vcolorscale cs -findcolor  9] != "GREEN"} { puts "ERROR: wrong 3rd segment color" }
+if {[vcolorscale cs -findcolor 20] != "GRAY"}  { puts "ERROR: wrong last segment color at border" }
+
+# Check negative value limits
+vcolorscale cs -range -5 5 5
+vdump ${imagedir}/${casename}_neg.png
+
+if {[vcolorscale cs -findcolor -5] != "WHITE"} { puts "ERROR: wrong first  segment color" }
+if {[vcolorscale cs -findcolor  0] != "GREEN"} { puts "ERROR: wrong middle segment color" }
+if {[vcolorscale cs -findcolor  5] != "GRAY"}  { puts "ERROR: wrong last   segment color" }

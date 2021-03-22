@@ -1,0 +1,26 @@
+puts "============"
+puts "OCC23457 Text rendering performance"
+puts "Test case performs rendering of single huge text label"
+puts "============"
+puts ""
+
+pload TOPTEST VISUALIZATION
+vinit View1
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vtrihedron trihedr
+
+set aFileHandle [open [locate_data_file screw.step] r]
+set aText [read $aFileHandle]
+close $aFileHandle
+
+vpoint p0     0      0 -400
+vpoint p1     0  10000 -400
+vpoint p2  1000      0 -400
+vfit
+
+vdrawtext text "$aText" -pos 100  100 -400 -color CYAN -halign left -valign bottom -angle 000 -zoom 1 -height 50 -aspect regular -font SansFont
+
+vglinfo
+vdump $imagedir/${casename}.png

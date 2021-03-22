@@ -1,0 +1,22 @@
+puts "==========="
+puts "0024388: Option to enable visualization of hidden lines in DRAW"
+puts "Checks if dotted hidden lines are highlighted properly."
+puts "==========="
+puts ""
+
+pload MODELING VISUALIZATION
+box b 15 0 0 10 10 10
+vinit View1
+vdisplay b
+vrotate 35 0 0
+vfit
+vhlr on 1
+vhlrtype algo b
+vmoveto 76 304
+checkcolor 115 203 0 1 1
+if { $stat != 1 } { puts "Error : Highlighting of dotted hidden lines in the box is wrong." }
+
+checkcolor 122 200 0 0 0
+if { $stat != 1 } { puts "Error : Highlighting of dotted hidden lines in the box is wrong." }
+
+vdump ${imagedir}/${casename}_3.png

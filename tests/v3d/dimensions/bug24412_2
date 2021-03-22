@@ -1,0 +1,31 @@
+puts "============"
+puts "CR24412: TKV3d, Dimensions - Possibility to customize text position was lost"
+puts "Test position setting for angular dimension"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit Viewer1/View1
+vpoint  ang_p1 0  0 30
+vpoint  ang_p2 30 0  0
+vpoint  ang_p3 60 0 30
+vdimension ang -angle -shapes ang_p1 ang_p2 ang_p3 -font SansFont
+vmovedim ang 5 0 5
+vfit
+
+# Check that text position was changed and the text is not aligned
+checkcolor 60 189 0.46 0.9 0
+if { $stat != 1 } { puts "Error : Text position of dimension is incorrect." }
+vdump $imagedir/${casename}_1.png
+
+# Update dimension parameters and set automatic text positioning
+vdimparam ang -flyout -5
+vfit
+
+# Check that text position was changed according to flyout
+checkcolor 206 312 0.46 0.9 0
+if { $stat != 1 } { puts "Error : Text position of dimension after layout changing is incorrect." }
+
+vdump $imagedir/${casename}_2.png

@@ -1,0 +1,50 @@
+puts "============"
+puts "OCC25532: Visualization - fix cross-references between AIS_ConnectedInteractive and connected presentation"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+pload OPENGL
+psphere s 0.5
+tclean  s
+incmesh s 0.001
+trinfo  s
+
+vclear
+vinit View1
+vaxo
+vcaps -vbo 0
+vsetdispmode 1
+vdefaults -absDefl 1.0
+vselprops -autoactivate 0
+
+set aMemInit [meminfo h]
+set aNb 1000
+
+# display as copies
+eval compound [lrepeat $aNb s] ss
+explode ss
+for {set i 1} {$i <= $aNb} {incr i} { vdisplay -noupdate ss_${i}; vsetlocation -noupdate ss_${i} ${i} 0 0 }
+vfit
+set aMemDisp1  [meminfo h]
+vclear
+set aMemClear1 [meminfo h]
+
+# display as connected instances of single presentation
+vconnectto i_1 0 0 0 s
+for {set i 2} {$i < $aNb} {incr i} { vconnectto i_${i} ${i} 0 0 i_1 }
+set aMemDisp2  [meminfo h]
+vclear
+set aMemClear2 [meminfo h]
+
+puts "Initial memory:         [expr $aMemInit   / (1024 * 1024)] MiB"
+puts "Displaying (simple):    [expr $aMemDisp1  / (1024 * 1024)] MiB"
+puts "Clearing   (simple):    [expr $aMemClear1 / (1024 * 1024)] MiB"
+puts "Displaying (connected): [expr $aMemDisp2  / (1024 * 1024)] MiB"
+puts "Clearing   (connected): [expr $aMemClear2 / (1024 * 1024)] MiB"
+
+set aRatio [expr $aMemClear2 / double($aMemClear1)]
+
+# check if the memory difference is greater than 20%
+if [expr $aRatio > 1.2] { puts "Error : TEST FAILED" }
+vdump ${imagedir}/${casename}.png

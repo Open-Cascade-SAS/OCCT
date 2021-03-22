@@ -1,0 +1,23 @@
+puts "========"
+puts "OCC25459 AIS_ColoredShape::SetMaterial() should not reset custom colors"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 0 0 0 1 2 3
+
+# prepare view
+vclear
+vinit View1
+vglinfo
+vaxo
+vdisplay -dispMode 1 b
+vfit
+
+# customize object
+explode b F
+vaspects b -subshapes b_3 -setcolor RED
+vaspects b -setmaterial PLASTIC
+
+# validate results
+if { [vreadpixel 128 256 -rgb -name] != "RED4"} { puts "Error: wrong Face color" }
+vdump $imagedir/${casename}.png

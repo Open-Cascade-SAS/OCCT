@@ -1,0 +1,25 @@
+puts "============"
+puts "CR24714: Test V3d_View::SetSize method"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=400 h=200
+vactivate $aV
+vclear
+
+box b 10 10 10
+vdisplay b
+vfront
+vfit
+
+vviewparams -size 22
+
+vaspects -setwidth 5
+vmoveto 200 100
+if { "[vreadpixel 200 9 rgb name]" != "CYAN" } {
+  puts "Error : the view projection size is incorrect!"
+}
+
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,17 @@
+puts "================"
+puts "OCC316: E x c e p t i o n is raised in the application during visualization. (#2054)"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC316.brep] result 
+
+tclean result
+vinit View1
+vdisplay result
+vsetdispmode result 1
+vfit
+
+checktrinfo result -tri !212909 -nod !158362
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

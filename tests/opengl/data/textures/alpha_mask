@@ -1,0 +1,40 @@
+puts "========"
+puts "Alpha test modes"
+puts "========"
+
+pload MODELING VISUALIZATION
+
+# create box
+box b 1 2 3
+
+# draw box
+vinit View1
+vclear
+vzbufftrihedron
+vaxo
+vdisplay -dispMode 1 b
+vfit
+vtexture b [locate_data_file images/marker_box2.png]
+vrotate 0.2 0.0 0.0
+vaspects -setAlphaMode mask 0.5
+vmoveto 250 250
+
+# take snapshots
+vrenderparams -msaa 0 -alphaToCoverage 0
+vcaps -ffp 1
+vdump $::imagedir/${::casename}_msaa0_ffp.png
+
+vcaps -ffp 0
+vdump $::imagedir/${::casename}_msaa0.png
+
+vrenderparams -msaa 2 -alphaToCoverage 0
+vdump $::imagedir/${::casename}_msaa2.png
+
+vrenderparams -msaa 2 -alphaToCoverage 1
+vdump $::imagedir/${::casename}_msaa2_cov.png
+
+vrenderparams -msaa 8 -alphaToCoverage 0
+vdump $::imagedir/${::casename}_msaa8.png
+
+vrenderparams -msaa 8 -alphaToCoverage 1
+vdump $::imagedir/${::casename}_msaa8_cov.png

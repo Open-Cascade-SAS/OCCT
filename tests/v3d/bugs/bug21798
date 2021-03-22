@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC21798: Attached face hangs during visualization in OCC Viewer 3D."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC21798.brep] result
+vinit View1
+vdisplay result
+vfit
+
+vsetdispmode 1
+vfit
+
+vdump $imagedir/${casename}.png

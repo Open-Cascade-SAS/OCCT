@@ -1,0 +1,4 @@
+if { [checkplatform -windows] && [vdriver -default] == "TKOpenGles" } {
+  puts "TEST COMPLETED"
+  return -code 1 "Skipping testgrid 'raytracing': OpenGL ES 3.2 is required which ANGLE doesn't yet provide"
+}

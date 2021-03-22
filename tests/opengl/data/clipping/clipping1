@@ -1,0 +1,95 @@
+puts "========"
+puts "0029729: Visualization, Graphic3d_ClipPlane - add support of clipping plane chains"
+puts "========"
+
+pload MODELING VISUALIZATION
+vclear
+vclose ALL
+vinit View1
+
+set aCapParams "-capping 1 -color 0.5 0.5 0.5 -texname [locate_data_file images/hatch_1.png] -texscale 0.02 -0.02 -useObjMaterial 1"
+
+pload MODELING VISUALIZATION
+
+# create the geometry
+box b0sole 10 10   0 30 30 70
+box b0hole 20 20 -10 10 10 90
+bcut b0 b0sole b0hole
+box b1 40 20 0 10 30 70
+box b2 20 40 0 20 10 70
+box b3 0  40 0 20 10 70
+box b4 0  10 0 10 30 70
+box b5 0   0 0 30 10 70
+box bb 10 -10 0 20 10 10
+
+set aNbParts 6
+set aColors { RED YELLOW GREEN GRAY MAGENTA ORANGE }
+
+compound b0 b1 b2 b3 b4 b5 cc
+
+# create the viewer
+vclear
+vclose ALL
+vinit name=View1 w=512 h=512
+vviewparams -scale 4.66737 -proj 0.465292 -0.577133 0.671134 -up -0.46873 0.482524 0.739907 -at 15.807 37.1157 21.9799
+
+vpoint p0 0 0 0
+vdisplay -dispMode 1 bb
+vaspects -noupdate bb -setColor CYAN
+vzbufftrihedron
+
+puts "Display the geometry as dedicated objects"
+for { set aPartIter 0 } { $aPartIter < $aNbParts } { incr aPartIter } {
+  vdisplay -noupdate -dispMode 1 b${aPartIter}
+  set aColor [lindex $aColors $aPartIter]
+  vsetcolor -noupdate b${aPartIter} $aColor
+}
+
+puts "Display the geometry as sole object"
+vdisplay -noupdate -dispMode 1 cc
+for { set aPartIter 0 } { $aPartIter < $aNbParts } { incr aPartIter } {
+  set aColor [lindex $aColors $aPartIter]
+  vaspects -noupdate cc -subShapes b${aPartIter} -setColor $aColor
+}
+# show also connected interactive object
+vconnectto co -70 0 0 cc
+vsetdispmode co 1
+vsetlocation cc 70 0 0
+
+set aPln1Z 40
+set aPln2Y 15
+
+vpoint p1 0 0 1
+vpoint p2 1 0 1
+vpoint p3 0 1 1
+vplane pp1 p1 p2 p3
+vsetlocation -noupdate pp1 25 0 [expr $aPln1Z - 1]
+vremove -noupdate p1 p2 p3
+
+vpoint p1 0 1 0
+vpoint p2 1 1 0
+vpoint p3 0 1 1
+vplane pp2 p1 p2 p3
+vsetlocation -noupdate pp2 25 $aPln2Y 35
+vremove -noupdate p1 p2 p3
+verase pp1 pp2
+vfit
+vdisplay pp1 pp2
+
+vclipplane pln -set {*}$aCapParams -equation1 0 0 -1 40 -equation2  0 1 0 -15
+if { [vreadpixel 200 360 rgb name] != "CYAN2" } { puts "Error: bb should NOT be clipped" }
+vdump $::imagedir/${::casename}_2.png
+
+vclipplane pln -set {*}$aCapParams -equation1 0 0 -1 40 -equation2  0 1 0 -15 -equation3 -1 0 0 5
+vdump $::imagedir/${::casename}_3.png
+
+vsettransparency b0 b1 b2 b3 b4 b5 0.5
+vdump $::imagedir/${::casename}_3transp.png
+
+vviewparams -scale 8.51584 -proj 0.284186 0.750426 0.59674 -up -0.228109 -0.55161 0.802305 -at 24.2647 23.8116 32.8743
+vclipplane pln -set {*}$aCapParams -boxint 25 25 25 55 55 55
+vsettransparency b0 b1 b2 b3 b4 b5 0
+vdump $::imagedir/${::casename}_6.png
+
+vsettransparency b0 b1 b2 b3 b4 b5 0.5
+vdump $::imagedir/${::casename}_6transp.png

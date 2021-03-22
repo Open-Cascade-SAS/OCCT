@@ -1,0 +1,34 @@
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "========"
+puts "OCC173: Impossible to change the material or the transparency of the attached BREP shape."
+puts "(case 2)"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC173.brep] result
+checkshape result
+
+vinit View1
+tclean result
+vdisplay result
+vfit
+vsetdispmode result 1
+
+set color1 [vreadpixel 175 195 rgb]
+set rd1 [lindex $color1 0]
+set gr1 [lindex $color1 1]
+set bl1 [lindex $color1 2]
+
+vsetmaterial result ALUMINIUM
+
+set color2 [vreadpixel 175 195 rgb]
+set rd2 [lindex $color2 0]
+set gr2 [lindex $color2 1]
+set bl2 [lindex $color2 2]
+
+if { ${rd2} == ${rd1} || ${gr2} == ${gr1} || ${bl2} == ${bl1} } {
+  puts "Error : material of the shape was NOT changed"
+}
+
+vdump $imagedir/${casename}.png

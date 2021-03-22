@@ -1,15 +1,3 @@
-cpulimit 300
-set group "v3d"
+cpulimit 1000
 
-pload VISUALIZATION TOPTEST
-
-pload OPENGL
-vgldebug -glslWarn 1
-
-if { [info exists imagedir] == 0 } {
-  set imagedir .
-}
-
-if { [info exists test_image ] == 0 } {
-  set test_image photo
-}
+if { [info exists imagedir] == 0 } { set imagedir . }

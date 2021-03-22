@@ -1,0 +1,25 @@
+puts "========"
+puts "OCC172"
+puts "========"
+
+pload XDE VISUALIZATION QAcommands
+
+# disable VBO to avoid false memory leaks reported on NVIDIA graphics, see issue #29996
+pload OPENGL
+vcaps -vbo 0
+
+vinit View1
+restore [locate_data_file OCC162.brep] s 
+vdisplay s
+
+set listmem {}
+set i_max 10
+for {set i 1} {${i} <= ${i_max}} {incr i} {
+  # select shape
+  OCC172
+  # deselect shape
+  OCC172
+
+  lappend listmem [meminfo h]
+  checktrend $listmem 0 1 "Memory leak detected"
+}

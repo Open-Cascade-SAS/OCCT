@@ -1,0 +1,19 @@
+puts "========================"
+puts "BUC60738"                
+puts "========================"
+puts ""                                  
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+
+psphere s 20
+ttranslate s -40 0 0
+vdisplay -dispMode 1 s
+vfit
+vaspects s -setInteriorStyle HOLLOW -setDrawEdges 1 -setEdgeType DASH -setEdgeColor GREEN
+
+checkcolor 261 314 0 1 0
+if {$stat != 1} { puts "Error : The style of edge is NOT dash" }
+vdump $imagedir/${casename}.png

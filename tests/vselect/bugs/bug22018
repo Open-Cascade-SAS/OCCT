@@ -1,0 +1,66 @@
+puts "============"
+puts "OCC22018: Select3D_SensitiveCircle::Matches(): DMin parameter left uninitialized"
+puts "============"
+puts ""
+
+set BugNumber OCC22018
+
+vinit View1
+
+vpoint p1 -5 0 0
+vpoint p2 0 5 0
+vpoint p3 5 0 0
+
+vcircle c p1 p2 p3 1
+
+vpoint p4 0 0 0
+vpoint p5 5 5 0
+vpoint p6 10 0 0
+
+vcircle c1 p4 p5 p6 1
+
+verase p1 p2 p3 p4 p5 p6
+
+vfit
+vtop
+
+set White_R 1
+set White_G 1
+set White_B 0.94901901483535767
+
+set Select_R 0
+set Select_G 1
+set Select_B 1
+
+set x1 150
+set x2 300
+set y  200
+
+vmoveto 0 0
+vmoveto 0 0
+
+if { [vreadpixel $x1 $y rgb name] != "IVORY" || [vreadpixel $x2 $y rgb name] != "IVORY" } {
+  puts "Error: unexpected color of not selected object"
+}
+
+vmoveto ${x1} ${y}
+vmoveto ${x1} ${y}
+
+if { [vreadpixel $x1 $y rgb name] != "WHITE" } {
+  puts "Error: unexpected color of selected object"
+}
+if { [vreadpixel $x2 $y rgb name] != "IVORY" } {
+  puts "Error: unexpected color of not selected object"
+}
+
+vmoveto ${x2} ${y}
+vmoveto ${x2} ${y}
+
+if { [vreadpixel $x1 $y rgb name] != "IVORY" } {
+  puts "Error: unexpected color of not selected object"
+}
+if { [vreadpixel $x2 $y rgb name] != "WHITE" } {
+  puts "Error: unexpected color of selected object"
+}
+
+vdump ${imagedir}/${casename}.png

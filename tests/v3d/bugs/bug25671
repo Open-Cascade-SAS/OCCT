@@ -1,0 +1,112 @@
+puts "============"
+puts "CR25671: V3d_View::Convert doesn't work as expected in GRID active mode."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1 w=400 h=400
+
+# 1. Synthetic case for detection with AIS_InteractiveContext::MoveTo
+set detect_x 197
+set detect_y 229
+
+set cylinder_r 5
+set cylinder_h 10
+set cylinder_xyz {100 0 0}
+
+vgrid -type circular -mode points -origin -10 0 -step 5 5 -rotAngle 45
+pcylinder c $cylinder_r $cylinder_h
+ttranslate c {*}$cylinder_xyz
+vdisplay c
+vfit
+vmoveto $detect_x $detect_y
+checkcolor $detect_x $detect_y 0 1 1
+
+if { $stat != 1 } { puts "Error : Detection does not work correctly with activated grid." }
+
+vgrid off
+vremove -all
+
+# 2.1 Quick test of coordinate conversion commands
+set view_scale 2.5
+set view_proj {0 1 0}
+set view_up {0 0 1}
+set view_eye {0.5 100.5 0.5}
+set view_at {0.5 0.5 0.5}
+set view_znear  0
+set view_zfar 150
+
+vviewparams -scale $view_scale -eye {*}$view_eye -at {*}$view_at -proj {*}$view_proj -up {*}$view_up
+vzrange $view_znear $view_zfar
+
+set vconvert_1_view        [vconvert 1.0 view]
+set vconvert_1_win         [vconvert 1.0 window]
+set vconvert_00_00_win     [vconvert 0.0 0.0 window]
+set vconvert_200_200_view  [vconvert 200 200 view]
+set vconvert_05_05_ray     [vconvert 0.5 0.5 ray]
+set vconvert_200_200_model [vconvert 200 200]
+set vconvert_05_100_05_win [vconvert 0.5 100 0.5 window]
+
+checkreal "vconvert 1.0 view, view 1"               [lindex $vconvert_1_view 2]          1.0 1e-7 0.0
+checkreal "vconvert 1.0 window, view 1"             [lindex $vconvert_1_win 2]           1.0 1e-7 0.0
+checkreal "vconvert 0.0 0.0 window, view 1, Xp"     [lindex $vconvert_00_00_win 2]     200.0 1.0  0.0
+checkreal "vconvert 0.0 0.0 window, view 1, Yp"     [lindex $vconvert_00_00_win 3]     200.0 1.0  0.0
+checkreal "vconvert 200 200 view, view 1, Xv"       [lindex $vconvert_200_200_view 2]    0.0 1e-7 0.0
+checkreal "vconvert 200 200 view, view 1, Yv"       [lindex $vconvert_200_200_view 3]    0.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 1, DX"        [lindex $vconvert_05_05_ray 2]       0.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 1, DY"        [lindex $vconvert_05_05_ray 3]      -1.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 1, DZ"        [lindex $vconvert_05_05_ray 4]       0.0 1e-7 0.0
+checkreal "vconvert 200 200, view 1, X"             [lindex $vconvert_200_200_model 2]   0.5 1.0  0.0
+checkreal "vconvert 200 200, view 1, Y"             [lindex $vconvert_200_200_model 3] 100.5 1.0  0.0
+checkreal "vconvert 200 200, view 1, Z"             [lindex $vconvert_200_200_model 4]  -0.5 1.0  0.0
+checkreal "vconvert 0.5 100 0.5 window, view 1, Xp" [lindex $vconvert_05_100_05_win 2] 200.0 1.0  0.0
+checkreal "vconvert 0.5 100 0.5 window, view 1, Yp" [lindex $vconvert_05_100_05_win 3] 199.0 1.0  0.0
+
+# 2.2 Quick test of coordinate conversion commands
+vgrid -type rectangular -origin 10 10 -step 1 1 -rotAngle 45
+
+set view_scale 49.504950495049506
+set view_proj {0 0 1}
+set view_up {0 1 0}
+set view_eye {25 5 125}
+set view_at {25 5 45}
+set view_znear  0
+set view_zfar 150
+
+vviewparams -scale $view_scale -eye {*}$view_eye -at {*}$view_at -proj {*}$view_proj -up {*}$view_up
+vautozfit 0
+vzrange $view_znear $view_zfar
+
+set vconvert_1_view        [vconvert 1.0 view]
+set vconvert_1_win         [vconvert 1.0 window]
+set vconvert_00_00_win     [vconvert 0.0 0.0 window]
+set vconvert_200_200_view  [vconvert 200 200 view]
+set vconvert_05_05_ray     [vconvert 0.5 0.5 ray]
+set vconvert_200_200_model [vconvert 200 200]
+set vconvert_200_200_grid  [vconvert 200 200 grid]
+set vconvert_25_5_35_win   [vconvert 25.0 4.94 35.0 window]
+set vconvert_25_5_35_grid  [vconvert 25.0 4.94 35.0 grid]
+
+checkreal "vconvert 1.0 view, view 2"               [lindex $vconvert_1_view 2]         0.05 0.05 0.0
+checkreal "vconvert 1.0 window, view 2"             [lindex $vconvert_1_win 2]          19.0 0.05 0.0
+checkreal "vconvert 0.0 0.0 window, view 2, Xp"     [lindex $vconvert_00_00_win 2]     200.0 1.0  0.0
+checkreal "vconvert 0.0 0.0 window, view 2, Yp"     [lindex $vconvert_00_00_win 3]     200.0 1.0  0.0
+checkreal "vconvert 200 200 view, view 2, Xv"       [lindex $vconvert_200_200_view 2]    0.0 1e-7 0.0
+checkreal "vconvert 200 200 view, view 2, Yv"       [lindex $vconvert_200_200_view 3]    0.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 2, DX"        [lindex $vconvert_05_05_ray 2]       0.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 2, DY"        [lindex $vconvert_05_05_ray 3]       0.0 1e-7 0.0
+checkreal "vconvert 0.5 0.5 ray, view 2, DZ"        [lindex $vconvert_05_05_ray 4]      -1.0 1e-7 0.0
+checkreal "vconvert 200 200, view 2, X"             [lindex $vconvert_200_200_model 2]  25.0 0.05 0.0
+checkreal "vconvert 200 200, view 2, Y"             [lindex $vconvert_200_200_model 3]  4.95 0.05 0.0
+checkreal "vconvert 200 200, view 2, Z"             [lindex $vconvert_200_200_model 4] 125.0 0.05 0.0
+checkreal "vconvert 200 200 grid, view 2, X"        [lindex $vconvert_200_200_grid 2] 25.486 0.05 0.0
+checkreal "vconvert 200 200 grid, view 2, Y"        [lindex $vconvert_200_200_grid 3]  4.856 0.05 0.0
+checkreal "vconvert 200 200 grid, view 2, Z"        [lindex $vconvert_200_200_grid 4]    0.0 0.05 0.0
+checkreal "vconvert 0.5 100 0.5 window, view 2, Xp" [lindex $vconvert_25_5_35_win 2]   200.0 1.0  0.0
+checkreal "vconvert 0.5 100 0.5 window, view 2, Yp" [lindex $vconvert_25_5_35_win 3]   200.0 1.0  0.0
+checkreal "vconvert 25 4.94 35 grid, view 2, X"     [lindex $vconvert_25_5_35_grid 2] 25.486 0.05 0.0
+checkreal "vconvert 25 4.94 35 grid, view 2, Y"     [lindex $vconvert_25_5_35_grid 3]  4.856 0.05 0.0
+checkreal "vconvert 25 4.94 35 grid, view 2, Z"     [lindex $vconvert_25_5_35_grid 4]    0.0 0.05 0.0
+
+# do not save any image
+vdump $imagedir/${casename}.png

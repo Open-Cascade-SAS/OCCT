@@ -1,0 +1,27 @@
+puts "==========="
+puts "OCC16950: OCC Visualization fails to display empty nested compounds"
+puts "==========="
+
+pload MODELING VISUALIZATION DCAF
+
+set BugNumber OCC16950
+
+puts "Make compound containing another (empty) one"
+compound c
+compound c result
+
+pload XDE
+puts "Add it to the new XCAF document"
+NewDocument D
+XAddShape D result
+
+puts "Then display it"
+XShow D
+
+# Resume
+if [catch { vsetdispmode 1 } res] {
+  puts "Faulty OCC16950"
+} else {
+  puts "OK OCC16950"
+}
+vdump $imagedir/${casename}.png

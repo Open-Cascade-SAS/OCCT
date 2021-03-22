@@ -1,0 +1,14 @@
+puts "=========="
+puts "OCC25767: 'vdisplay' command raises e x c e p t i o n"
+puts "=========="
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vaxo
+vpoint p1 -108.4710001 -108.56800009999999 -145.30700009999998
+vpoint p2 8.4813999999999999e+102 117.1230001 128.35480981703273
+vfit
+
+vdump $imagedir/${casename}.png

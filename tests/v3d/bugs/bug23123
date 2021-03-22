@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC23123: Bug/Regression in visualization of XDE documents in shaded mode"
+puts "============"
+puts ""
+
+pload XDE VISUALIZATION
+
+ReadStep D [locate_data_file OCC23123-test.step]
+XShow D
+vfit
+vsetdispmode 1
+puts "Point color test:"
+checkcolor 310 225 0.04 0.04 0.67
+
+vdump $imagedir/${casename}.png

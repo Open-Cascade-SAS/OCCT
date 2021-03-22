@@ -1,0 +1,103 @@
+puts "============"
+puts "OCC23253: Additional viewer 3d draw-commands vleft, vfront, ..."
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b 10 20 30
+ptorus t 50 10
+
+vinit
+vsetdispmode 1
+
+vdisplay b
+vdisplay t
+vfit
+
+set status 0
+
+#####
+vaxo
+#####
+
+set x1 120
+set y1 260
+checkcolor $x1 $y1 0.91 0.64 0.11
+
+set x2 120
+set y2 260
+checkcolor $x2 $y2 0.91 0.64 0.11
+
+#####
+vtop
+#####
+
+set x1 125
+set y1 135
+checkcolor $x1 $y1 1 1 0.92
+
+set x2 220
+set y2 200
+checkcolor $x2 $y2 1 1 0.94
+
+#####
+vback
+#####
+
+set x1 120
+set y1 230
+checkcolor $x1 $y1 0.92 0.66 0.11
+
+set x2 190
+set y2 170
+checkcolor $x2 $y2 1 1 0.94
+
+#####
+vfront
+#####
+
+set x1 120
+set y1 230
+checkcolor $x1 $y1 0.93 0.66 0.11
+
+set x2 220
+set y2 170
+checkcolor $x2 $y2 1 1 0.94
+
+#####
+vright
+#####
+
+set x1 120
+set y1 230
+checkcolor $x1 $y1 0.92 0.66 0.11
+
+set x2 240
+set y2 170
+checkcolor $x2 $y2 1 1 0.94
+
+#####
+vleft
+#####
+
+set x1 120
+set y1 230
+checkcolor $x1 $y1 0.93 0.66 0.11
+
+set x2 170
+set y2 170
+checkcolor $x2 $y2 1 1 0.94
+
+#####
+vbottom
+#####
+
+set x1 90
+set y1 300
+checkcolor $x1 $y1 0.81 0.58 0.09
+
+set x2 220
+set y2 250
+checkcolor $x2 $y2 1 1 0.94
+
+vdump $imagedir/${casename}.png

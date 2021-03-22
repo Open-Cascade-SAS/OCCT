@@ -1,0 +1,13 @@
+puts "TODO OCC12345 ALL: Error : Colors are not equal in default coordinate and in the near coordinates too"
+puts "================"
+puts "OCC136"
+puts "================"
+
+pload VISUALIZATION QAcommands
+vinit View1
+OCC136
+vfit
+
+checkcolor 211 215 0.8 0.8 0.8
+
+vdump $imagedir/${casename}.png

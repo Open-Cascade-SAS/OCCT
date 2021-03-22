@@ -1,0 +1,19 @@
+puts "================================================================"
+puts "CR26754: Visualization - provide API to display AIS_Trihedron presentation without axes labels"
+puts "================================================================"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+vclear
+vaxo
+vtrihedron t -hidelabels on
+vzoom 4
+vdump $imagedir/${casename}_1.png
+
+vselect 204 100
+vdump $imagedir/${casename}_2.png
+
+vselmode 2 1
+vselect 204 100
+vdump $imagedir/${casename}_3.png

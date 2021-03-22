@@ -1,0 +1,57 @@
+puts "============"
+puts "CR25552"
+puts "Provide the way to hide objects within different Views of the one Viewer"
+puts "============"
+puts ""
+
+set aSubShapeTriang $imagedir/${casename}_subshape_triangulation.png
+set aShapeTriang $imagedir/${casename}_shape_triangulation.png
+set aDiff $imagedir/${casename}_diff.png
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vaxo
+vsetdispmode 1
+
+vinit View2
+vclear
+vaxo
+vsetdispmode 1
+
+box b1 0 0 0 1 2 3
+box b2 3 0 0 2 3 1
+box b3 0 3 0 2 3 1
+
+vdisplay b1 b3
+# b2 should be displayed only in View2, but not in View1
+vdisplay -inview b2
+#vdisplay b2
+vaspects -noupdate b1 -setcolor RED
+vaspects -noupdate b2 -setcolor GREEN
+vfit
+# b1 should be displayed only in View1
+verase -inview b1
+vmoveto 250 347
+
+set aColorV2B1 [vreadpixel  50 250 rgb name]
+if { $aColorV2B1 != "BLACK" } { puts "Error: box b1 (red) should NOT be visible in View2!" }
+
+set aColorV2B2 [vreadpixel 200 350 rgb name]
+if { $aColorV2B2 != "GREEN2" } { puts "Error: box b2 (green) should be visible in View2!" }
+
+set aColorV2B3 [vreadpixel 250 200 rgb name]
+if { $aColorV2B3 != "DARKGOLDENROD" } { puts "Error: box b3 (goldenrod) should be visible in View2!" }
+vdump $imagedir/${casename}_v2.png
+
+vactivate View1
+vfit
+set aColorV1B1 [vreadpixel  50 250 rgb name]
+if { $aColorV1B1 != "RED2" } { puts "Error: box b1 (red) should be visible in View1!" }
+
+set aColorV1B2 [vreadpixel 200 350 rgb name]
+if { $aColorV1B2 != "BLACK" } { puts "Error: box b2 (green) should NOT be visible in View1!" }
+
+set aColorV1B3 [vreadpixel 250 200 rgb name]
+if { $aColorV1B3 != "DARKGOLDENROD" } { puts "Error: box b3 (goldenrod) should be visible in View1!" }
+vdump $imagedir/${casename}_v1.png

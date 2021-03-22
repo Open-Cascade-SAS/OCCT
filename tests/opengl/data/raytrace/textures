@@ -1,0 +1,80 @@
+puts "========"
+puts "Ray Tracing - check refraction"
+puts "========"
+
+pload MODELING VISUALIZATION
+vinit View1
+vclear
+vrenderparams -rasterization
+vsetdispmode 1
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
+
+box wall1 1 8 8
+box wall2 1 8 8
+box wall3 16 8 1
+
+psphere S1 1.5
+psphere S2 1.5
+psphere S3 1.5
+
+box B1 -1.5 -1.5 -1.5 2.5 2 3
+box B2 -1.5 -1.5 -1.5 2.5 2 3
+box B3 -1.5 -1.5 -1.5 2.5 2 3
+
+vdisplay S1
+vdisplay S2
+vdisplay S3
+
+vdisplay B1
+vdisplay B2
+vdisplay B3
+
+vdisplay wall1
+vdisplay wall2
+vdisplay wall3
+
+vtexture S1 8
+vtexture S2 2
+vtexture S3 3
+
+vtexture B1 4
+vtexture B2 5
+vtexture B3 6
+
+vsetlocation S1 2 2 4
+vsetlocation S2 -2 2 4
+vsetlocation S3 -6 2 4
+
+vsetlocation B1 2 6 4
+vsetlocation B2 -2 6 4
+vsetlocation B3 -6 6 4
+
+vsetlocation wall1 -10 0 0
+vsetlocation wall2 5 0 0
+vsetlocation wall3 -10 0 -1
+
+vsetmaterial S1 gold
+vsetmaterial S2 silver
+vsetmaterial S3 copper
+
+vsetmaterial B1 steel
+vsetmaterial B2 pewter
+vsetmaterial B3 chrome
+
+vsetmaterial wall1 stone
+vsetmaterial wall2 stone
+vsetmaterial wall3 pewter
+
+vsetcolor wall1 red
+vsetcolor wall2 green
+
+vfront
+vturnview 0 -0.3 0
+vfit
+vlight -clear
+vlight -add ambient
+vlight -add directional -dir -0.577 -0.577 -0.577 -head 1
+vlight -add directional -dir  0.577  0.577  0.577 -head 0
+
+vrenderparams -raytrace -raydepth 3 -shadows on -reflections -fsaa
+vdump ${imagedir}/${casename}.png

@@ -1,0 +1,45 @@
+puts "============"
+puts "CR26435: Visualization - V3d_View::ConvertToGrid returns wrong coordinates for non-orthogonal projection"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1 w=400 h=400
+vgrid -type rectangular -mode lines -origin 0 0 -step 5 5
+
+# 1. Check convert to grid for axonometric projection. Grid is at origin.
+vaxo
+set output [vconvert 200 200 grid]
+
+checkreal "vconvert axo - grid origin" [lindex $output 2]  5.0 1e-7 0.0
+checkreal "vconvert axo - grid origin" [lindex $output 3] -5.0 1e-7 0.0
+checkreal "vconvert axo - grid origin" [lindex $output 4]  0.0 1e-7 0.0
+
+# 2. Check convert to grid for top projection. Grid is at origin.
+vtop
+set output [vconvert 200 200 grid]
+
+checkreal "vconvert top - grid origin" [lindex $output 2]  0.0 1e-7 0.0
+checkreal "vconvert top - grid origin" [lindex $output 3] -5.0 1e-7 0.0
+checkreal "vconvert top - grid origin" [lindex $output 4]  0.0 1e-7 0.0
+
+# 3. Check convert to grid for axonometric projection. Grid is not at origin.
+vpriviledgedplane 0.0 0.0 10.0 0 0 1 1 0 0
+
+vaxo
+set output [vconvert 200 200 grid]
+
+checkreal "vconvert axo - grid lifted" [lindex $output 2]  15.0 1e-7 0.0
+checkreal "vconvert axo - grid lifted" [lindex $output 3] -15.0 1e-7 0.0
+checkreal "vconvert axo - grid lifted" [lindex $output 4]  10.0 1e-7 0.0
+
+# 4. Check convert to grid for top projection. Grid is not at origin.
+vtop
+set output [vconvert 200 200 grid]
+
+checkreal "vconvert top - grid lifted" [lindex $output 2]  0.0 1e-7 0.0
+checkreal "vconvert top - grid lifted" [lindex $output 3] -5.0 1e-7 0.0
+checkreal "vconvert top - grid lifted" [lindex $output 4] 10.0 1e-7 0.0
+
+# do not save any image
+vdump $imagedir/${casename}.png

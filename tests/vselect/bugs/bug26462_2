@@ -1,0 +1,11 @@
+puts "============"
+puts "CR26462: Visualization - selection does not adapt to line width change"
+puts "============"
+puts ""
+
+pload VISUALIZATION QAcommands
+
+vinit View1
+OCC26462
+
+vdump ${imagedir}/${casename}.png

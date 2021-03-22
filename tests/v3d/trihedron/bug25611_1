@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC25611: Displaying zbufftrihedron interferes with vgraduatedtrihedron"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+psphere s 10
+vdisplay s
+vaxo
+vfit
+vsetdispmode s 1
+vgraduatedtrihedron -on
+vzbufftrihedron
+
+vdump $imagedir/${casename}.png

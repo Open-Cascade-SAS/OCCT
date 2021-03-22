@@ -1,0 +1,80 @@
+puts "============"
+puts "CR24351: Test AIS Diameter dimensions: label position and arrow orientation"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vfront
+
+set hpos "left hcenter right"
+set vpos "above vcenter below"
+
+# ---------------------------------------------------------------------
+# create dimensions with different arrow orientation and fit algorithm
+# ---------------------------------------------------------------------
+
+# test forced internal arrow orientation
+vpoint  circle1_p1 0  0 30
+vpoint  circle1_p2 30 0  0
+vpoint  circle1_p3 60 0 30
+vcircle circle1 circle1_p1 circle1_p2 circle1_p3 0
+vdimension diam1 -diameter -shapes circle1 -text 3d -plane zox -label hfit -flyout 0 -arrow internal -font SansFont
+
+# test forced external arrow orientation
+vpoint  circle2_p1 100 0 30
+vpoint  circle2_p2 130 0  0
+vpoint  circle2_p3 160 0 30
+vcircle circle2 circle2_p1 circle2_p2 circle2_p3 0
+vdimension diam2 -diameter -shapes circle2 -text 3d -plane zox -label hfit -flyout 0 -arrow external -font SansFont
+
+# test that auto-fit for arrow places them externally for small geometry
+vpoint  circle3_p1 0  0 102
+vpoint  circle3_p2 22 0  80
+vpoint  circle3_p3 44 0 102
+vcircle circle3 circle3_p1 circle3_p2 circle3_p3 0
+vdimension diam3 -diameter -shapes circle3 -text 3d -plane zox -label hcenter -flyout 0 -label hfit -arrow fit -font SansFont
+
+# test that auto-fit for text places the label externally for small geometry
+vpoint  circle4_p1 100 0 92
+vpoint  circle4_p2 112 0 80
+vpoint  circle4_p3 124 0 92
+vcircle circle4 circle4_p1 circle4_p2 circle4_p3 0
+vdimension diam4 -diameter -shapes circle4 -text 3d -plane zox -label hfit -flyout 0 -label hfit -arrow fit -font SansFont
+
+vfit
+
+# ------------------------------------------------
+# create dimension with different label positions
+# ------------------------------------------------
+
+vinit Viewer2/View2
+vfront
+
+set idx 0
+for {set r 0} {$r < 3} {incr r} {
+  for {set c 0} {$c < 3} {incr c} {
+
+    set point1 p_[expr "$idx * 3 + 0"]
+    set point2 p_[expr "$idx * 3 + 1"]
+    set point3 p_[expr "$idx * 3 + 2"]
+    set circle c_[expr "$idx"]
+
+    vpoint $point1 [expr "80.0 * $c +  0"] 0.0 [expr "60.0 * $r + 22"]
+    vpoint $point2 [expr "80.0 * $c + 22"] 0.0 [expr "60.0 * $r +  0"]
+    vpoint $point3 [expr "80.0 * $c + 44"] 0.0 [expr "60.0 * $r + 22"]
+    vcircle $circle $point1 $point2 $point3 0
+
+    set dimension d_$idx
+
+    vdimension $dimension -diameter -shapes $circle -text 3d -plane zox -label [lindex $hpos $c] [lindex $vpos $r] -arrow external -flyout 0.0 -font SansFont
+    vdisplay $dimension
+
+    incr idx
+  }
+}
+vfit
+
+vdump $imagedir/${casename}.png

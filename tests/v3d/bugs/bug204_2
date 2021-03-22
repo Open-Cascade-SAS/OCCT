@@ -1,0 +1,12 @@
+puts "========"
+puts "OCC204"
+puts "========"
+
+pload VISUALIZATION QAcommands
+vinit View1
+OCC204 1
+vfit
+checkcolor 150 200 0 0 0
+if { ${stat} != 1 } { puts "Error : There are 3 boxes in the viewer! (should be nothing)" }
+
+vdump $imagedir/${casename}.png

@@ -1,0 +1,25 @@
+puts "============"
+puts "0031454: Visualization - perceptually uniform color scale"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+vclear
+vinit View1 -width 600
+#vsetcolorbg 1 1 1
+vaxo
+
+set nbcolors 10
+
+# create default color scale with 20 steps
+vcolorscale hsl -range 0 1 $nbcolors -xy 0 0 -title HSL
+
+# create color scales with uniform lightness
+vcolorscale lch30 -range 0 1 $nbcolors -xy 100 0 -uniform 30 300 40 -title L=30
+vcolorscale lch40 -range 0 1 $nbcolors -xy 200 0 -uniform 40 300 40 -title L=40
+vcolorscale lch50 -range 0 1 $nbcolors -xy 300 0 -uniform 50 300 40 -title L=50
+vcolorscale lch60 -range 0 1 $nbcolors -xy 400 0 -uniform 60 300 40 -title L=60
+vcolorscale lch70 -range 0 1 $nbcolors -xy 500 0 -uniform 70 300 40 -title L=70
+
+vdump ${imagedir}/${casename}.png

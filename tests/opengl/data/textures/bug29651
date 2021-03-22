@@ -1,0 +1,15 @@
+puts "========"
+puts "OCC29651: ViewerTest - vtexture command crashes"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1
+vsetdispmode 1
+box b 1 2 3
+vdisplay b
+vfit
+vtexture b 0
+vtexture b off
+
+vdump $imagedir/${casename}.png

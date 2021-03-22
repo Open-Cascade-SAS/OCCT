@@ -1,0 +1,19 @@
+puts "================"
+puts "OCC288: Currently meshing (for shading) of some shapes looks incorrect"
+puts "================"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file shading_151.brep] result
+
+checkprops result -s 52620.1
+checkshape result
+
+checknbshapes result -vertex 20 -edge 37 -wire 21 -face 19 -shell 1 -solid 0 -compsolid 0 -compound 0 -shape 98
+vinit View1
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+vdump $imagedir/${casename}.png

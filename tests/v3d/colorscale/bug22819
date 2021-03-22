@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC22819: Redesign of OpenGl driver(Tests ColorScale)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+plane p 100 100 100 0 0 1 1 0 0
+psphere result p 30
+vinit View1
+vdisplay result
+vsetmaterial result SILVER
+vsettransparency result 0.6
+vcolorscale cs -demo
+vsetdispmode result 1 
+
+checkprops result -s 11309.6 
+checkshape result
+vdump ${imagedir}/${casename}.png

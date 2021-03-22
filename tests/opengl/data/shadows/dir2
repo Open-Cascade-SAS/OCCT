@@ -1,0 +1,36 @@
+puts "========"
+puts "0032039: Visualization, TKOpenGl - implement simple shadow mapping for a direct light source"
+puts "Test shadow map from two directional light sources on a box geometry."
+puts "========"
+
+pload MODELING VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+box b 1 2 3
+box bb -5 -5 0 10 10 0 -preview
+vgldebug 1
+vcaps -core
+vcaps -vsync 0
+vclear
+vinit View1
+vrenderparams -shadingModel PHONG
+vdisplay -dispMode 1 b bb
+vaspects bb -material STONE
+vfit
+
+vlight -clear
+vlight -add AMBIENT
+vlight -add DIRECTIONAL -direction  0.2  0.2 -1 -head 0 -castShadows 1 -color RED
+vlight -add DIRECTIONAL -direction -0.2 -0.2 -1 -head 0 -castShadows 1 -color GREEN
+
+if { ![string match "OpenGL ES 2.0*" [vglinfo VERSION]] && ![string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  vraytrace 1
+  vdump $::imagedir/${::casename}_raytrace.png
+}
+
+vraytrace 0
+vrenderparams -shadingModel phong
+vrenderparams -shadowMapBias 0.01
+vdump $::imagedir/${::casename}_phong.png
+
+vrenderparams -shadingModel pbr
+vdump $::imagedir/${::casename}_pbr.png

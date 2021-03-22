@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC25369: Visualization, Image_AlienPixMap - handle UTF-8 names in image read/save operations on Windows"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+box b 1 2 3
+vinit View1
+vclear
+vsetdispmode 0
+vdisplay b
+vfit
+set s [encoding convertfrom unicode "\x3A\x04\x30\x04\x40\x04\x2E\x00\x70\x00\x6E\x00\x67\x00"]
+
+vdrawtext text0 $s -pos 0 0 0 -color WHITE -halign left -valign bottom -angle 0 -zoom 0 -height 50 -aspect regular -font SansFont
+vdump $::imagedir/$s
+vtexture b $::imagedir/$s
+file delete $::imagedir/$s
+vdump $imagedir/${casename}.png

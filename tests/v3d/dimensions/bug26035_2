@@ -1,0 +1,24 @@
+puts "============"
+puts "CR26035: E x c e p t i o n when trying to draw dimension between face and point"
+puts "============"
+puts ""
+
+puts "REQUIRED All: Error: dimension geometry is invalid, -length dimension can't be built on input shapes"
+
+pload MODELING VISUALIZATION
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+
+vinit View1
+vclear
+vaxo
+
+box b -10 -10 -10 20 20 20
+explode b F
+vdisplay b_1
+
+vpoint p 10 0 0
+
+catch {vdimension len -length -shapes b_1 p -plane zox -font SansFont}
+
+vfit
+vdump $imagedir/${casename}.png

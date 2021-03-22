@@ -34,4 +34,3 @@ regexp {Location:\s*([ 0-9.e+-]+)} $aLocFull aLocTmp aLoc
 if { [expr abs([lindex $aLoc 0] - 46)] > 0.1 || [lindex $aLoc 1] != 0  || [lindex $aLoc 2] != 0 } { puts "Error: wrong translation" }
 
 vdump $imagedir/${casename}.png
-set to_dump_screen 0

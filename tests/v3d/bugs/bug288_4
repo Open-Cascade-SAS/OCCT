@@ -1,0 +1,19 @@
+puts "========================"
+puts " OCC288 "
+puts "(case 4)"
+puts "========================"
+
+pload MODELING VISUALIZATION
+restore [locate_data_file shading_151.brep] result 
+checkshape result
+
+tclean result
+vinit View1
+vdisplay result
+vsetdispmode result 1
+isos result 0
+triangles result
+vfit
+
+checktrinfo result -tri !4176 -nod !2857
+vdump $imagedir/${casename}.png

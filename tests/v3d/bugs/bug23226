@@ -1,0 +1,310 @@
+puts "============"
+puts "OCC23226: Extend OpenGl_Context to store map of shared GPU resources"
+puts "this test performs automatic test of primitives array objects by pixel checking"
+puts "this test ALSO DUMPS two result images (the primitives on the images should have"
+puts "same contours, WIREFRAME OBJECTS ARE IN YELLOW-RED COLORS, SHADED OBJECTS ARE BLUE-GREEN COLORS)"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+set status 0
+
+# set window width and height, this values should correspond to a 
+# view window sizes to pass the test
+set view_width  405
+set view_height 405
+
+# colors used for tests
+# yellow
+set colorY_R 1
+set colorY_G 1
+set colorY_B 0
+
+# red
+set colorR_R 1
+set colorR_G 0
+set colorR_B 0
+
+# blue
+set colorB_R 0
+set colorB_G 1
+set colorB_B 1
+
+# green
+set colorG_R 0
+set colorG_G 1
+set colorG_B 0
+
+# limit of range where the pixels are tested (sets number of iterations)
+# 30 pixels in width and in height will be enough to test all primitives
+set limit_x 3
+set limit_y 3
+
+# this procedure is internal and will be removed at the end of the script
+# generate points for primitive
+proc generate_points {x y z r g b} {
+  # define top plane points
+  global pts01 pts02 pts03 pts04 pts05 pts06
+  set pts01 "v [expr "$x-5"] [expr "$y+5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+  set pts02 "v [expr "$x  "] [expr "$y+5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+  set pts03 "v [expr "$x  "] [expr "$y "] [expr "$z"]  n 0 0 -1 c $r $g $b"
+  set pts04 "v [expr "$x+5"] [expr "$y "] [expr "$z"]  n 0 0 -1 c $r $g $b"
+  set pts05 "v [expr "$x-5"] [expr "$y-5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+  set pts06 "v [expr "$x  "] [expr "$y-5"] [expr "$z"]  n 0 0 -1 c $r $g $b"
+}
+
+# this procedure is internal and will be removed at the end of the script
+# check pixels of primitive
+proc check_primitive {name1 r g b args} {
+  global limit_x limit_y view_width view_height
+  # show only primitive that we interested in to test
+  vdonly $name1 $args
+  vtop
+  vfit
+
+  # move cursor not to select shape
+  vmoveto 0 0
+  vmoveto 0 0
+
+  # test pixels in a top left corner
+  set TestPassed 0
+  set HasPixel 0
+  for {set i 0} {$i < $limit_x} {incr i} {
+    for {set j 0} {$j < $limit_y} {incr j} {
+      if { "[vreadpixel $i $j rgb]" == "$r $g $b" } {
+        set HasPixel 1
+      }
+    }
+  }
+  if { $HasPixel == 1 } {
+    set TestPassed [expr $TestPassed + 1]
+  } else {
+    set TestPassed 0
+  }
+
+  # test pixels in bottom left corner
+  set HasPixel 1
+  for {set i 0} {$i < $limit_x} {incr i} {
+    for {set j 0} {$j < $limit_y} {incr j} {
+      set coord_y [expr $view_height-$j]
+      if { "[vreadpixel $i $coord_y rgb]" == "$r $g $b" } {
+        set HasPixel 1
+      }
+    }
+  }
+  if { $HasPixel == 1 } {
+    set TestPassed [expr $TestPassed + 1]
+  } else {
+    set TestPassed 0
+  }
+
+  # test pixels in center right corner
+  set HasPixel 1
+  for {set i 0} {$i < $limit_x} {incr i} {
+    for {set j 0} {$j < $limit_y} {incr j} {
+      set coord_x [expr ($view_width-$limit_y) + $i]
+      set coord_y [expr ($view_height-$limit_y)/2 + $j]
+      if { "[vreadpixel $coord_x $coord_y rgb]" == "$r $g $b" } {
+        set HasPixel 1
+      }
+    }
+  }
+  if { $HasPixel == 1 } {
+    set TestPassed [expr $TestPassed + 1]
+  } else {
+    set TestPassed 0
+  }
+
+  # test pixels in center left corner (shouldn't be anything)
+  set HasPixel 0
+  for {set i 0} {$i < $limit_x} {incr i} {
+    for {set j 0} {$j < $limit_y} {incr j} {
+      set coord_x [expr $view_width/4 + $i]
+      set coord_y [expr ($view_height-$limit_y)/2 + $j]
+      if { "[vreadpixel $coord_x $coord_y rgb]" == "$r $g $b" } {
+        set HasPixel 1
+      }
+    }
+  }
+  if { $HasPixel == 1 } {
+    set TestPassed 0
+  } else {
+    set TestPassed [expr $TestPassed + 1]
+  }
+
+  # show all primitives
+  vdisplayall
+  vtop
+  vfit
+
+  # return a result
+  if { ${TestPassed} == 4 } {
+      return 1
+  } else {
+      return 0
+  }
+}
+
+vclose ALL
+
+# ### THIS IS THE HEAD LOOP OF THE TEST ####################
+# During this test primitives are created and displayed
+# with commands vdrawparray, and verified for consistency
+# with check_primitive procedure. In spite of the fact that there
+# a lot of code below, it's similar and divided on the similar
+# blocks of code.
+# The iteration loop is intended to check primitives with
+# "vertex buffer objects" turned off (vbo_enable = 0) and
+# turned on (vbo_enable = 1)
+for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
+  for {set isNonInterleaved 0} {$isNonInterleaved < 2} {incr isNonInterleaved} {
+    vclear
+    vinit View1
+    vtop
+    vvbo $vbo_enable
+    if { $vbo_enable == 0 } {
+      puts "TEST WITH VBO is OFF"
+    } else {
+      puts "TEST WITH VBO is ON"
+    }
+    set aParams ""
+    if { $isNonInterleaved == 1 } { set aParams "-deinterleaved" }
+
+    # this points are only to simplify visiual check of dumped image
+    vpoint point1   65 0 0
+    vpoint point2 -145 0 0
+
+    # ****************************** Graphic3d_ArrayOfPoints ****************************** #
+    puts "Graphic3d_ArrayOfPoints: TEST"
+    generate_points 60 0 0   $colorY_R $colorY_G $colorY_B
+    eval vdrawparray pt01 points {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06
+
+    # ****************************** Graphic3d_ArrayOfSegments ****************************** #
+    puts "Graphic3d_ArrayOfSegments: TEST"
+
+    # 1: no indexes
+    generate_points 50 0 0   $colorY_R $colorY_G $colorY_B
+    eval vdrawparray seg01 segments {*}$aParams $pts02 $pts01 $pts01 $pts03 $pts03 $pts05 $pts05 $pts06 $pts06 $pts04 $pts04 $pts02
+
+    # 2: indexes
+    generate_points 40 0 0   $colorR_R $colorR_G $colorR_B
+    eval vdrawparray seg02 segments {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 2 e 2 e 4 e 4 e 6 e 6 e 5 e 5 e 3 e 3 e 1
+
+    # ****************************** Graphic3d_ArrayOfPolylines ****************************** #
+    puts "Graphic3d_ArrayOfPolylines: TEST"
+
+    # 1: no indexes
+    generate_points 30 0 0   $colorY_R $colorY_G $colorY_B
+    eval vdrawparray pline01 polylines {*}$aParams $pts02 $pts01 $pts03 $pts05 $pts06 $pts04 $pts02
+
+    # 2: indexes
+    generate_points 20 0 0   $colorR_R $colorR_G $colorR_B
+    eval vdrawparray pline02 polylines {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 2 e 4 e 6 e 5 e 3 e 1 e 2
+
+    # 3: bounds
+    generate_points 10 0 0   $colorY_R $colorY_G $colorY_B
+    eval vdrawparray pline03 polylines {*}$aParams ( b 3 ( $pts02 $pts01 $pts03 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 )), ( b 2 ( $pts04 $pts02 ))
+
+    # 4: bounds and indexes
+    generate_points 0 0 0   $colorR_R $colorR_G $colorR_B
+    eval vdrawparray pline04 polylines {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 4 ( e 2 e 1 e 3 e 5 )), ( b 4 ( e 5 e 6 e 4 e 2 ))
+
+    # ****************************** Graphic3d_ArrayOfTriangles ****************************** #
+    puts "Graphic3d_ArrayOfTriangles: TEST"
+
+    # 1: no indexes
+    generate_points -10 0 0   $colorB_R $colorB_G $colorB_B
+    eval vdrawparray t01 triangles {*}$aParams ( $pts03 $pts02 $pts01 ) , ( $pts03 $pts04 $pts02 ) , ( $pts04 $pts03 $pts06 ) , ( $pts06 $pts03 $pts05 )
+
+    # 2: indexes
+    generate_points -20 0 0   $colorG_R $colorG_G $colorG_B
+    eval vdrawparray t02 triangles {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 6 e 3 e 5 e 6 e 4 e 3 e 1 e 3 e 2 e 2 e 3 e 4
+
+    # ****************************** Graphic3d_ArrayOfTriangleFans ****************************** #
+    puts "Graphic3d_ArrayOfTriangleFans: TEST"
+
+    # 1: no bounds
+    generate_points -30 0 0    $colorB_R $colorB_G $colorB_B
+    eval vdrawparray tfan01 trianglefans {*}$aParams ( $pts02 $pts01 $pts03 $pts04 )
+    eval vdrawparray tfan02 trianglefans {*}$aParams ( $pts03 $pts05 $pts06 $pts04 )
+
+    # 2: bounds
+    generate_points -40 0 0   $colorG_R $colorG_G $colorG_B
+    eval vdrawparray tfan03 trianglefans {*}$aParams ( b 4 ( $pts02 $pts01 $pts03 $pts04 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 ))
+
+    # ****************************** Graphic3d_ArrayOfTriangleStrips ****************************** #
+    puts "Graphic3d_ArrayOfTriangleStrips: TEST"
+
+    # 1: no bounds
+    generate_points -50 0 0    $colorB_R $colorB_G $colorB_B
+    eval vdrawparray tstrip01 trianglestrips {*}$aParams ( $pts06 $pts04 $pts03 $pts02 $pts01 )
+    eval vdrawparray tstrip02 trianglestrips {*}$aParams ( $pts03 $pts05 $pts06 )
+
+    # 2: bounds
+    generate_points -60 0 0    $colorG_R $colorG_G $colorG_B
+    eval vdrawparray tstrip03 trianglestrips {*}$aParams ( b 5 ( $pts06 $pts04 $pts03 $pts02 $pts01 )) , ( b 3 ( $pts03 $pts05 $pts06 ))
+
+    # ****************************** Graphic3d_ArrayOfQuadrangles ****************************** #
+    puts "Graphic3d_ArrayOfQuadrangles: TEST"
+
+    # 1: no indexes
+    generate_points -70 0 0    $colorB_R $colorB_G $colorB_B
+    eval vdrawparray q01 quads {*}$aParams ( $pts01 $pts03 $pts04 $pts02 )
+    eval vdrawparray q02 quads {*}$aParams ( $pts03 $pts05 $pts06 $pts04 )
+
+    # 2: indexes
+    generate_points -80 0 0    $colorG_R $colorG_G $colorG_B
+    eval vdrawparray q03 quads {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 3 e 4 e 2 e 3 e 5 e 6 e 4
+
+    # ****************************** Graphic3d_ArrayOfQuadrangleStrips ****************************** #
+    puts "Graphic3d_ArrayOfQuadrangleStrips: TEST"
+
+    # 1: no bounds
+    generate_points -90 0 0    $colorB_R $colorB_G $colorB_B
+    eval vdrawparray qstrips01 quadstrips {*}$aParams ( $pts02 $pts01 $pts04 $pts03 $pts06 $pts05 )
+
+    # 2: bounds
+    generate_points -100 0 0    $colorG_R $colorG_G $colorG_B
+    eval vdrawparray qstrips02 quadstrips {*}$aParams ( b 4 ( $pts02 $pts01 $pts04 $pts03 )) , ( b 4 ( $pts04 $pts03 $pts06 $pts05 ))
+
+    # ****************************** Graphic3d_ArrayOfPolygons ****************************** #
+    puts "Graphic3d_ArrayOfPolygons: TEST"
+
+    # 1: no indexes
+    generate_points -110 0 0    $colorB_R $colorB_G $colorB_B
+    eval vdrawparray poly01 polygons {*}$aParams ( $pts04 $pts02 $pts01 $pts03 $pts05 $pts06 )
+
+    # 2: bounds
+    generate_points -120 0 0   $colorG_R $colorG_G $colorG_B
+    eval vdrawparray poly02 polygons {*}$aParams ( b 5 ( $pts04 $pts02 $pts01 $pts03 $pts06 )) , ( b 3 ( $pts06 $pts03 $pts05 ))
+
+    # 3: indexes
+    generate_points -130 0 0   $colorB_R $colorB_G $colorB_B
+    eval vdrawparray poly03 polygons {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 4 e 2 e 1 e 3 e 5 e 6
+
+    # 4: bounds and indexes
+    generate_points -140 0 0   $colorG_R $colorG_G $colorG_B
+    eval vdrawparray poly04 polygons {*}$aParams $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 5 ( e 4 e 2 e 1 e 3 e 6 )), ( b 3 ( e 6 e 3 e 5 ))
+
+    # dump resulted image
+    set anImgName "${casename}"
+    if { $vbo_enable == 0 } { set anImgName "${anImgName}_vbooff" }
+    if { $vbo_enable == 1 } { set anImgName "${anImgName}_vboon" }
+    if { $isNonInterleaved == 1 } { set anImgName "${anImgName}_noninter" }
+    vfit
+    vdump ${imagedir}/${anImgName}.png
+  }
+}
+
+# delete internal procedures
+rename generate_points ""
+rename check_primitive ""
+
+checkcolor 200 200 $colorG_R $colorG_G $colorG_B
+checkcolor 220 200 $colorB_R $colorB_G $colorB_B
+if { $stat == 1 } {
+  puts "BUG OK OCC22583"
+} else {
+  puts "BUG FAULTY OCC22583"
+}

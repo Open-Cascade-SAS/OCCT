@@ -1,0 +1,56 @@
+puts "============"
+puts "CR26779: Draw Harness, ViewerTest - vstate output is incorrect for sub-shapes selection without opening local context"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b1 1 2 3
+box b2  5 5 5 1 1 1
+
+vclear
+vclose ALL
+vinit View1
+vaxo
+vsetdispmode 1
+vdisplay b1
+vfit
+
+vselmode b1 4 1
+vselect 300 300
+set anInfo [split [vstate] "\n"]
+set aItem1 [lindex $anInfo 0]
+set aItem2 [string trim [lindex $anInfo 1] ]
+set aSize [llength $anInfo]
+if {$aSize != 3 || [string compare $aItem1 "Locally selected sub-shapes within b1:"] != 0 || [string compare $aItem2 "Face #2"] != 0} {
+  puts "ERROR: vstate output for selected face is incorrect"
+}
+
+vdisplay b2
+vfit
+
+vselect 350 120 -xor
+set anInfo [split [vstate *] "\n"]
+set aItem1 [string trim [lindex $anInfo 1] ]
+set aItem2 [string trim [lindex $anInfo 2] ]
+set aItem3 [string trim [lindex $anInfo 4] ]
+set aSize [llength $anInfo]
+puts $aItem1
+puts $aItem2
+puts $aSize
+if {$aSize != 6} {
+  puts "ERROR: vstate output for shift selection is incorrect"
+}
+if {[string compare $aItem1 "b1                   Displayed                   Type:  AIS_Shape (AIS_Shape)"] != 0 &&
+[string compare $aItem2 "b1                   Displayed                   Type:  AIS_Shape (AIS_Shape)"] != 0} {
+  puts "ERROR: no info about object b1 in vstate output"
+}
+if {[string compare $aItem1 "b2                   Displayed Selected Detected Type:  AIS_Shape (AIS_Shape)"] != 0 &&
+[string compare $aItem2 "b2                   Displayed Selected Detected Type:  AIS_Shape (AIS_Shape)"] != 0} {
+  puts "ERROR: no info about object b2 in vstate output"
+}
+if {[string compare $aItem3 "Face #2"] != 0} {
+  puts "ERROR: vstate output for selected face in test part 2 is incorrect"
+}
+
+vdump ${imagedir}/${casename}.png

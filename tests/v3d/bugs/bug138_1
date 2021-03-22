@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC138: Viewer problem: Selection of objects on global context"
+puts "========"
+puts ""
+
+pload VISUALIZATION QAcommands
+vinit View1
+set info [OCC138]
+
+set ll [llength ${info}]
+if {${ll} < 5 } {
+   puts "OCC138: Error (case 1)"
+} else {
+  regexp {No of currents += +([-0-9.+eE]+)} $info full NbCurrents
+  if {${NbCurrents} != 3 } {
+     puts "OCC138: Error (case 2)"
+  }
+}
+
+vfit
+vdump $imagedir/${casename}.png

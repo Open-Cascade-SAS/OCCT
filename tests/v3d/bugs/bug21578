@@ -1,0 +1,22 @@
+puts "TODO OCC11111 ALL: Error: Number of triangles"
+puts "TODO OCC11111 ALL: Error: Number of nodes"
+puts "TODO OCC11111 ALL: Error : The area of result shape is"
+
+puts "============"
+puts "OCC21578: Attached shape is not visualized in the shaded mode"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file OCC21578.brep] result
+
+vinit View1
+tclean result
+vsetdispmode 1
+vdisplay result
+vfit
+
+checktrinfo result -tri 231 -nod 236
+vdump $imagedir/${casename}.png
+checkprops result -s 0 
+checkshape result

@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC4894: Problems with sharding in vdisplay"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+restore [locate_data_file bug4894_face_cyl] result
+
+vinit View1
+vdisplay result
+tclean result
+trinfo result
+vsetdispmode 1
+vfit
+
+checktrinfo result -tri -nod
+vdump $imagedir/${casename}.png

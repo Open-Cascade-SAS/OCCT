@@ -1,0 +1,45 @@
+puts "============"
+puts "CR25672: V3d_View::ConvertToGrid doesn't work for grid if the grid plane's origin is not identical to camera origin."
+puts "============"
+puts ""
+
+pload VISUALIZATION
+vinit View1
+
+set view_scale 60.630934227306405
+set view_proj {0.577 -0.577 0.577}
+set view_up {-0.408 0.408 0.816}
+set view_at {5 5 5}
+set view_eye {15 -5 15}
+set view_zmin -300.0
+set view_zmax  300.0
+vviewparams -scale $view_scale -eye {*}$view_eye -at {*}$view_at -proj {*}$view_proj -up {*}$view_up
+vzrange $view_zmin $view_zmax
+vgrid -type rectangular -mode lines -origin -10 10 -step 1 1
+
+set vconvert_res [vconvert 5.0 5.0 0.0 grid]
+
+checkreal "vconvert 5.0 5.0 0.0 grid, X" [lindex $vconvert_res 2] 5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 0.0 grid, Y" [lindex $vconvert_res 3] 5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 0.0 grid, Z" [lindex $vconvert_res 4] 0.0 1e-7 0.0
+
+vpriviledgedplane 20 20 30 0 0 1 1 0 0
+
+set vconvert_res [vconvert 5.0 5.0 30.0 grid]
+
+checkreal "vconvert 5.0 5.0 30.0 grid, X" [lindex $vconvert_res 2]  5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 30.0 grid, Y" [lindex $vconvert_res 3]  5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 30.0 grid, Z" [lindex $vconvert_res 4] 30.0 1e-7 0.0
+
+vcamera -persp
+
+vpriviledgedplane 10 5 10 0 0 1 1 0 0
+
+set vconvert_res [vconvert 5.0 5.0 10.0 grid]
+
+checkreal "vconvert 5.0 5.0 10.0 grid, X" [lindex $vconvert_res 2]  5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 10.0 grid, Y" [lindex $vconvert_res 3]  5.0 1e-7 0.0
+checkreal "vconvert 5.0 5.0 10.0 grid, Z" [lindex $vconvert_res 4] 10.0 1e-7 0.0
+
+# do not save any image
+vdump $imagedir/${casename}.png

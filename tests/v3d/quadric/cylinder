@@ -2,6 +2,10 @@ puts "===================================="
 puts "Prs3d_ToolCylinder - create cylinder"
 puts "===================================="
 
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
 # cylinder
 vcylinder c1 8 8 20 
 vlocation c1 -translate 0 0 20
