@@ -84,14 +84,21 @@ public:
   //! Return the Nth extremum on S.
   Standard_EXPORT const Extrema_POnSurf& PointOnSurface (const Standard_Integer N) const;
 
-
-
-
-protected:
-
-
-
-
+  //! Change Sequence of SquareDistance
+  Standard_EXPORT TColStd_SequenceOfReal& SquareDistances()
+  {
+    return mySqDist;
+  }
+  //! Change Sequence of PointOnCurv
+  Standard_EXPORT Extrema_SequenceOfPOnCurv& PointsOnCurve()
+  {
+    return myPoint1;
+  }
+  //! Change Sequence of PointOnSurf
+  Standard_EXPORT Extrema_SequenceOfPOnSurf& PointsOnSurf()
+  {
+    return myPoint2;
+  }
 
 private:
 
