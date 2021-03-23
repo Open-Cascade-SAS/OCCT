@@ -366,10 +366,14 @@ endif()
 # whether use optional 3rdparty or not
 if (APPLE)
   set (USE_GLX OFF CACHE BOOL "${USE_GLX_DESCR}")
+else()
+  set (USE_GLX OFF)
 endif()
 
 if (WIN32)
   set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
+else()
+  set (USE_D3D OFF)
 endif()
 
 # Enable/Disable the floating point exceptions (FPE) during runtime.
@@ -381,6 +385,15 @@ if (BUILD_ENABLE_FPE_SIGNAL_HANDLER)
   set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 1)
 else()
   set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 0)
+endif()
+
+# OpenGL
+if (ANDROID OR IOS OR EMSCRIPTEN OR "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+  set (USE_OPENGL OFF)
+  set (USE_GLES2 ON)
+else()
+  set (USE_OPENGL ON CACHE BOOL "${USE_OPENGL_DESCR}")
+  set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
 endif()
 
 # include the patched or original list of modules
@@ -412,19 +425,6 @@ if (NOT DEFINED BUILD_DOC_Overview)
   endif()
 
   set (BUILD_DOC_Overview ${CAN_DOXYGEN_BE_USED} CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
-endif()
-
-if (ANDROID OR IOS OR EMSCRIPTEN OR "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-  list (REMOVE_ITEM Visualization_TOOLKITS TKOpenGl)
-  list (REMOVE_ITEM Draw_TOOLKITS TKOpenGlTest)
-elseif (NOT USE_GLES2)
-  list (REMOVE_ITEM Visualization_TOOLKITS TKOpenGles)
-  list (REMOVE_ITEM Draw_TOOLKITS TKOpenGlesTest)
-endif()
-
-if (NOT USE_D3D)
-  list (REMOVE_ITEM Visualization_TOOLKITS TKD3DHost)
-  list (REMOVE_ITEM Draw_TOOLKITS TKD3DHostTest)
 endif()
 
 # accumulate used toolkits (first level) in BUILD_TOOLKITS variable
@@ -542,14 +542,6 @@ else()
   endif()
 endif()
 
-# D3D
-if (USE_D3D)
-  add_definitions (-DHAVE_D3D)
-  #if(MSVC_VERSION LESS 1700)
-  #OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/d3d")
-  #endif()
-endif()
-
 # GLX
 if (USE_GLX)
   add_definitions (-DMACOSX_USE_GLX)
@@ -557,7 +549,6 @@ if (USE_GLX)
 endif()
 
 # FREEIMAGE
-
 if (CAN_USE_FREEIMAGE)
   set (USE_FREEIMAGE OFF CACHE BOOL "${USE_FREEIMAGE_DESCR}")
 
@@ -618,9 +609,11 @@ endif()
 
 # OpenGL
 if (CAN_USE_OPENGL)
-  set (USE_OPENGL ON CACHE BOOL "${USE_OPENGL_DESCR}")
   if (USE_OPENGL)
     add_definitions (-DHAVE_OPENGL_EXT)
+  else()
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGl)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlTest)
   endif()
 else()
   OCCT_CHECK_AND_UNSET ("USE_OPENGL")
@@ -628,12 +621,6 @@ endif()
 
 # OpenGL ES 2.0
 if (CAN_USE_GLES2)
-  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-    set (USE_GLES2 ON)
-  else()
-    set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
-  endif()
-
   if (USE_GLES2)
     add_definitions (-DHAVE_GLES2_EXT)
     OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/egl")
@@ -643,6 +630,8 @@ if (CAN_USE_GLES2)
     OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
     OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
     OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGles)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlesTest)
   endif()
 else()
   OCCT_CHECK_AND_UNSET ("USE_GLES2")
@@ -651,6 +640,17 @@ else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
   OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
   OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
+endif()
+
+# D3D
+if (USE_D3D)
+  add_definitions (-DHAVE_D3D)
+  #if(MSVC_VERSION LESS 1700)
+  #OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/d3d")
+  #endif()
+else()
+  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHost)
+  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHostTest)
 endif()
 
 # TBB
