@@ -1,7 +1,9 @@
 sphere s 10
 tessellate result s 100 100
 XProgress +t
-set out [writestl result s.stl]
+set aTmpFile "$imagedir/${casename}.stl"
+set out [writestl result "$aTmpFile"]
+file delete "$aTmpFile"
 
 set expected {
   {Progress: 0%}

@@ -7,9 +7,10 @@ brestore [locate_data_file bug31617.brep] a
 
 param write.step.nonmanifold 1
 
-testwritestep comp_nonmanifold.step a
-testreadstep comp_nonmanifold.step result
+set aTmpFile "$imagedir/${casename}.step"
+testwritestep "$aTmpFile" a
+testreadstep  "$aTmpFile" result
+file delete   "$aTmpFile"
 
 checkshape result
-
 checknbshapes result -ref [lrange [nbshapes a] 11 16]
