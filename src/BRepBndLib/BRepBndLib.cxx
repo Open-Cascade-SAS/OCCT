@@ -306,9 +306,13 @@ void BRepBndLib::AddOptimal(const TopoDS_Shape& S, Bnd_Box& B,
                           Tol);
           }
         }
-        Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-        aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-        B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        if (!aLocBox.IsVoid())
+        {
+          Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+          aLocBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+          B.Update(xmin, ymin, zmin, xmax, ymax, zmax);
+        }
       }
     }
   }
@@ -703,6 +707,16 @@ void AdjustFaceBox(const BRepAdaptor_Surface& BS,
                    Bnd_Box& FaceBox,
                    const Bnd_Box& EdgeBox, const Standard_Real Tol)
 {
+  if (EdgeBox.IsVoid())
+  {
+    return;
+  }
+  if (FaceBox.IsVoid())
+  {
+    FaceBox = EdgeBox;
+    return;
+  }
+
   Standard_Real fxmin, fymin, fzmin, fxmax, fymax, fzmax;
   Standard_Real exmin, eymin, ezmin, exmax, eymax, ezmax;
   //
