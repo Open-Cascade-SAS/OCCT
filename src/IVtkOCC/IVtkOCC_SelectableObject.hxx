@@ -73,7 +73,6 @@ private:
 private:
   IVtkOCC_Shape::Handle myShape;
   Bnd_Box               myBndBox;
-  Handle(Prs3d_Drawer)  myOCCTDrawer;
 };
 
 #endif // __IVTKOCC_SELECTABLEOBJECT_H__

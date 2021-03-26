@@ -51,7 +51,8 @@ public: //! @name Initialization
 
   //! Get the source OCCT shape.
   //! @return occShape OCCT shape wrapper.
-  IVtkOCC_Shape::Handle GetShape();
+  const IVtkOCC_Shape::Handle& GetShape() { return myOccShape; }
+
   inline void FastTransformModeOn() { myIsFastTransformMode = true; }
   inline void FastTransformModeOff() { myIsFastTransformMode = false; }
 
@@ -82,7 +83,7 @@ protected: //! @name Interface to override
   //! @param theOutputVector [in] the pointer to output data, that is filled in this method.
   virtual int RequestData(vtkInformation* theRequest,
                           vtkInformationVector** theInputVector,
-                          vtkInformationVector* theOutputVector);
+                          vtkInformationVector* theOutputVector) Standard_OVERRIDE;
 
 protected: //! @name Internals
 

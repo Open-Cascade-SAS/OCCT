@@ -23,12 +23,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapePickerAlgo,IVtk_IShapePickerAlgo)
 
-// Handle implementation
-
-
 //================================================================
 // Function : Constructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkOCC_ShapePickerAlgo::IVtkOCC_ShapePickerAlgo() :
 myViewerSelector (new IVtkOCC_ViewerSelector())
@@ -36,7 +33,7 @@ myViewerSelector (new IVtkOCC_ViewerSelector())
 
 //================================================================
 // Function : Destructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkOCC_ShapePickerAlgo::~IVtkOCC_ShapePickerAlgo()
 { }
@@ -57,30 +54,29 @@ void IVtkOCC_ShapePickerAlgo::SetView (const IVtk_IView::Handle& theView)
 IVtk_SelectionModeList IVtkOCC_ShapePickerAlgo::GetSelectionModes (
                                   const IVtk_IShape::Handle& theShape) const
 {
-  IVtk_SelectionModeList aRes;
-
-  if (! theShape.IsNull())
+  if (theShape.IsNull())
   {
-    // Get shape implementation from shape interface.
-    Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
-
-    // Get selectable object from the shape implementation.
-    Handle(IVtkOCC_SelectableObject) aSelObj = 
-      Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
-
-    if (!aSelObj.IsNull())
-    {
-      IVtk_SelectionMode aSelMode;
-      for (aSelMode = SM_Shape; aSelMode <= SM_Compound; aSelMode = (IVtk_SelectionMode)(aSelMode + 1))
-      {
-        if (myViewerSelector->IsActive (aSelObj, aSelMode))
-        {
-          aRes.Append (aSelMode);
-        }
-      }
-    }
+    return IVtk_SelectionModeList();
   }
 
+  // Get shape implementation from shape interface.
+  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
+
+  // Get selectable object from the shape implementation.
+  Handle(IVtkOCC_SelectableObject) aSelObj = Handle(IVtkOCC_SelectableObject)::DownCast(aShapeImpl->GetSelectableObject());
+  if (aSelObj.IsNull())
+  {
+    return IVtk_SelectionModeList();
+  }
+
+  IVtk_SelectionModeList aRes;
+  for (IVtk_SelectionMode aSelMode = SM_Shape; aSelMode <= SM_Compound; aSelMode = (IVtk_SelectionMode)(aSelMode + 1))
+  {
+    if (myViewerSelector->IsActive (aSelObj, aSelMode))
+    {
+      aRes.Append (aSelMode);
+    }
+  }
   return aRes;
 }
 
@@ -102,8 +98,7 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_IShape::Handle& theSh
   // are destroyed when shapes are deactivated...
 
   // Get shape implementation from shape interface.
-  Handle(IVtkOCC_Shape) aShapeImpl = 
-    Handle(IVtkOCC_Shape)::DownCast(theShape);
+  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
 
   // Get selectable object from the shape implementation.
   Handle(IVtkOCC_SelectableObject) aSelObj = 
@@ -180,11 +175,9 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_ShapePtrList& theShap
                                                 const IVtk_SelectionMode theMode,
                                                 const bool /*theIsTurnOn*/)
 {
-  IVtk_IShape::Handle aShape;
-  IVtk_ShapePtrList::Iterator anIt (theShapes);
-  for (; anIt.More(); anIt.Next())
+  for (IVtk_ShapePtrList::Iterator anIt (theShapes); anIt.More(); anIt.Next())
   {
-    aShape = anIt.Value();
+    IVtk_IShape::Handle aShape = anIt.Value();
     SetSelectionMode (aShape, theMode);
   }
 }
@@ -371,8 +364,7 @@ void IVtkOCC_ShapePickerAlgo::RemoveSelectableObject(const IVtk_IShape::Handle& 
 {
   clearPicked();
   // Get shape implementation from shape interface.
-  Handle(IVtkOCC_Shape) aShapeImpl =
-    Handle(IVtkOCC_Shape)::DownCast(theShape);
+  Handle(IVtkOCC_Shape) aShapeImpl = Handle(IVtkOCC_Shape)::DownCast(theShape);
 
   // Get selectable object from the shape implementation.
   Handle(IVtkOCC_SelectableObject) aSelObj =

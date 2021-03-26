@@ -17,10 +17,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtk_IShapeMesher,IVtk_Interface)
 
-// Handle implementation
-
-
-//! Executes the mesh generation algorithms. To be defined in implementation class.
+// ================================================================
+// Function : initialize
+// Purpose  :
+// ================================================================
 void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,
                                     const IVtk_IShapeData::Handle& theData)
 {
@@ -28,9 +28,10 @@ void IVtk_IShapeMesher::initialize (const IVtk_IShape::Handle&     theShape,
   myShapeData = theData;
 }
 
-//! Main entry point for building shape representation
-//! @param [in] shape IShape to be meshed
-//! @param [in] data IShapeData interface visualization data is passed to.
+// ================================================================
+// Function : Build
+// Purpose  :
+// ================================================================
 void IVtk_IShapeMesher::Build (const IVtk_IShape::Handle&     theShape,
                                const IVtk_IShapeData::Handle& theData)
 {

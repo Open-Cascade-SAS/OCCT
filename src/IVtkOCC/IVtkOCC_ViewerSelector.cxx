@@ -14,10 +14,10 @@
 // commercial license or contractual agreement.
 
 #include <IVtkOCC_ViewerSelector.hxx>
+
 #include <Select3D_SensitiveBox.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Graphic3d_Camera.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector,SelectMgr_ViewerSelector)
 
@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ViewerSelector,SelectMgr_ViewerSelector)
 //============================================================================
 IVtkOCC_ViewerSelector::IVtkOCC_ViewerSelector()
 : SelectMgr_ViewerSelector(),
-myPixTol(2),
-myToUpdateTol(Standard_True) 
+  myPixTol(2),
+  myToUpdateTol(Standard_True)
 {
 }
 

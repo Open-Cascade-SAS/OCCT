@@ -14,20 +14,29 @@
 // commercial license or contractual agreement.
 
 #include <IVtkOCC_Shape.hxx>
+
 #include <TopExp.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
-
-// Handle implementation
-
 
 //============================================================================
 // Method: Constructor
 // Purpose:
 //============================================================================
-IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape)
-: myTopoDSShape (theShape)
+IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape,
+                              const Handle(Prs3d_Drawer)& theDrawerLink)
+: myTopoDSShape (theShape),
+  myOCCTDrawer (new Prs3d_Drawer())
 {
+  if (!theDrawerLink.IsNull())
+  {
+    myOCCTDrawer->SetLink (theDrawerLink);
+  }
+  else
+  {
+    // these old defaults have been moved from IVtkOCC_ShapeMesher constructor
+    myOCCTDrawer->SetDeviationCoefficient (0.0001); // Aspect_TOD_RELATIVE
+  }
   buildSubShapeIdMap();
 }
 
@@ -38,26 +47,24 @@ IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape)
 IVtkOCC_Shape::~IVtkOCC_Shape() { }
 
 //============================================================================
-// Method: getSubShapeId
-// Purpose: Returns unique ID of the given sub-shape within the top-level shape.
+// Method: GetSubShapeId
+// Purpose:
 //============================================================================
 IVtk_IdType IVtkOCC_Shape::GetSubShapeId (const TopoDS_Shape& theSubShape) const
 {
   Standard_Integer anIndex = theSubShape.IsSame (myTopoDSShape) ?
                              -1 :
                              mySubShapeIds.FindIndex (theSubShape);
-
-  if (!anIndex) // Not found in the map
+  if (anIndex == 0) // Not found in the map
   {
-    anIndex = -1;
+    return (IVtk_IdType )-1;
   }
-
   return (IVtk_IdType)anIndex;
 }
 
 //============================================================================
 // Method: getSubIds
-// Purpose: Get ids of sub-shapes composing a sub-shape with the given id.
+// Purpose:
 //============================================================================
 IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
 {
@@ -73,7 +80,7 @@ IVtk_ShapeIdList IVtkOCC_Shape::GetSubIds (const IVtk_IdType theId) const
   }
   else
   {
-    // Find all composing vertices, edges and faces of the the found sub-shape
+    // Find all composing vertices, edges and faces of the found sub-shape
     // and append their ids to the result.
     TopTools_IndexedMapOfShape aSubShapes;
     if (aShape.IsSame (myTopoDSShape))

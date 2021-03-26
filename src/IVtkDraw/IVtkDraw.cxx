@@ -167,6 +167,22 @@ static Handle(PipelinePtr) PipelineByActorName (const TCollection_AsciiString& t
   return PipelineByActor (anActor);
 }
 
+//! Create global presentation attributes.
+static Handle(Prs3d_Drawer) createDefaultDrawer()
+{
+  Handle(Prs3d_Drawer) aGlobalDrawer = new Prs3d_Drawer();
+  aGlobalDrawer->SetTypeOfDeflection (Aspect_TOD_RELATIVE);
+  aGlobalDrawer->SetDeviationCoefficient (0.0001);
+  return aGlobalDrawer;
+}
+
+//! Get global presentation attributes (analog of AIS_InteractiveContext::DefaultDrawer()).
+static const Handle(Prs3d_Drawer)& GetDefaultDrawer()
+{
+  static Handle(Prs3d_Drawer) aGlobalDrawer = createDefaultDrawer();
+  return aGlobalDrawer;
+}
+
 #ifdef _WIN32
 
 static Handle(WNT_Window)& GetWindow()
@@ -495,10 +511,103 @@ vtkActor* CreateActor (const Standard_Integer theId,
     return NULL;
   }
 
-  Handle(PipelinePtr) aPL = new PipelinePtr (theShape, theId);
+  Handle(PipelinePtr) aPL = new PipelinePtr (theShape, theId, GetDefaultDrawer());
   GetPipelines()->Bind (theId, aPL);
 
   return aPL->Actor();
+}
+
+
+//===============================================================================================
+//function : VtkDefaults
+//purpose  :
+//===============================================================================================
+static int VtkDefaults (Draw_Interpretor& theDi,
+                        Standard_Integer  theArgsNb,
+                        const char**      theArgVec)
+{
+  const Handle(Prs3d_Drawer)& aDefParams = GetDefaultDrawer();
+  if (theArgsNb < 2)
+  {
+    if (aDefParams->TypeOfDeflection() == Aspect_TOD_RELATIVE)
+    {
+      theDi << "DeflType:           relative\n"
+            << "DeviationCoeff:     " << aDefParams->DeviationCoefficient() << "\n";
+    }
+    else
+    {
+      theDi << "DeflType:           absolute\n"
+            << "AbsoluteDeflection: " << aDefParams->MaximalChordialDeviation() << "\n";
+    }
+    theDi << "AngularDeflection:  " << (180.0 * aDefParams->DeviationAngle() / M_PI) << "\n";
+    theDi << "AutoTriangulation:  " << (aDefParams->IsAutoTriangulation() ? "on" : "off") << "\n";
+    return 0;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.UpperCase();
+    if (anArg == "-ABSDEFL"
+     || anArg == "-ABSOLUTEDEFLECTION"
+     || anArg == "-DEFL"
+     || anArg == "-DEFLECTION")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        theDi << "Syntax error at " << anArg;
+        return 1;
+      }
+      aDefParams->SetTypeOfDeflection         (Aspect_TOD_ABSOLUTE);
+      aDefParams->SetMaximalChordialDeviation (Draw::Atof (theArgVec[anArgIter]));
+    }
+    else if (anArg == "-RELDEFL"
+          || anArg == "-RELATIVEDEFLECTION"
+          || anArg == "-DEVCOEFF"
+          || anArg == "-DEVIATIONCOEFF"
+          || anArg == "-DEVIATIONCOEFFICIENT")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        theDi << "Syntax error at " << anArg;
+        return 1;
+      }
+      aDefParams->SetTypeOfDeflection     (Aspect_TOD_RELATIVE);
+      aDefParams->SetDeviationCoefficient (Draw::Atof (theArgVec[anArgIter]));
+    }
+    else if (anArg == "-ANGDEFL"
+          || anArg == "-ANGULARDEFL"
+          || anArg == "-ANGULARDEFLECTION")
+    {
+      if (++anArgIter >= theArgsNb)
+      {
+        theDi << "Syntax error at " << anArg;
+        return 1;
+      }
+      aDefParams->SetDeviationAngle (M_PI * Draw::Atof (theArgVec[anArgIter]) / 180.0);
+    }
+    else if (anArg == "-AUTOTR"
+          || anArg == "-AUTOTRIANG"
+          || anArg == "-AUTOTRIANGULATION")
+    {
+      ++anArgIter;
+      bool toTurnOn = true;
+      if (anArgIter >= theArgsNb
+      || !Draw::ParseOnOff (theArgVec[anArgIter], toTurnOn))
+      {
+        theDi << "Syntax error at '" << anArg << "'";
+        return 1;
+      }
+      aDefParams->SetAutoTriangulation (toTurnOn);
+    }
+    else
+    {
+      theDi << "Syntax error: unknown argument '" << anArg << "'";
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 //================================================================
@@ -1508,6 +1617,14 @@ void IVtkDraw::Commands (Draw_Interpretor& theCommands)
   theCommands.Add("ivtkclose",
               "ivtkclose : Closes the Vtk window.",
     __FILE__, VtkClose, group);
+
+  theCommands.Add("ivtkdefaults",
+               "ivtkdefaults [-absDefl value]"
+       "\n\t\t:              [-devCoeff value]"
+       "\n\t\t:              [-angDefl value]"
+       "\n\t\t:              [-autoTriang {off/on | 0/1}]"
+       "\n\t\t: Sets default VTK meshing parameters."
+    , __FILE__, VtkDefaults, group);
 
   theCommands.Add("ivtkrenderparams",
               "ivtkrenderparams [-depthPeeling NbLayers] [-shadows {on|off}]"

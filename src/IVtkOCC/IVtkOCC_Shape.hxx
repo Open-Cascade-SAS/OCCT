@@ -32,19 +32,23 @@ public:
 
   typedef Handle(IVtkOCC_Shape) Handle;
 
-  //! Constructor for OCC IShape implementation
-  Standard_EXPORT IVtkOCC_Shape (const TopoDS_Shape& theShape);
+  //! Constructor for OCC IShape implementation.
+  //! @param theShape [in] shape to display
+  //! @param theDrawerLink [in] default attributes to link
+  Standard_EXPORT IVtkOCC_Shape (const TopoDS_Shape& theShape,
+                                 const Handle(Prs3d_Drawer)& theDrawerLink = Handle(Prs3d_Drawer)());
 
   //! Destructor
   Standard_EXPORT virtual ~IVtkOCC_Shape();
 
+  //! Returns unique ID of the given sub-shape within the top-level shape.
   Standard_EXPORT IVtk_IdType GetSubShapeId (const IVtk_IShape::Handle&) const;
 
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_Shape,IVtk_IShape)
 
   //! Get the wrapped original OCCT shape
   //! @return TopoDS_Shape the wrapped original OCCT shape
-  TopoDS_Shape GetShape() const
+  const TopoDS_Shape& GetShape() const
   {
     return myTopoDSShape;
   }
@@ -78,10 +82,16 @@ public:
   }
 
   //! @return Handle to the selectable object for this shape.
-  Handle(SelectMgr_SelectableObject) GetSelectableObject() const
+  const Handle(SelectMgr_SelectableObject)& GetSelectableObject() const
   {
     return mySelectable;
   }
+
+  //! Return presentation attributes.
+  const Handle(Prs3d_Drawer)& Attributes() const { return myOCCTDrawer; }
+
+  //! Set presentation attributes.
+  void SetAttributes (const Handle(Prs3d_Drawer)& theDrawer) { myOCCTDrawer = theDrawer; }
 
 private:
   //! @brief Build a map of sub-shapes by their IDs
@@ -94,6 +104,7 @@ private:
 private:
   TopTools_IndexedMapOfShape         mySubShapeIds; //!< Map of sub-shapes by their IDs
   TopoDS_Shape                       myTopoDSShape; //!< The wrapped main OCCT shape
+  Handle(Prs3d_Drawer)               myOCCTDrawer;  //!< presentation attributes
   Handle(SelectMgr_SelectableObject) mySelectable;  //!< Link to a holder of selection primitives
 };
 

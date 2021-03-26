@@ -60,7 +60,7 @@ public:
 
 protected:
   //! Filter cells according to the given set of ids.
-  virtual int RequestData (vtkInformation *, vtkInformationVector **, vtkInformationVector *);
+  virtual int RequestData (vtkInformation *, vtkInformationVector **, vtkInformationVector *) Standard_OVERRIDE;
 
   IVtkTools_DisplayModeFilter();
   virtual ~IVtkTools_DisplayModeFilter();

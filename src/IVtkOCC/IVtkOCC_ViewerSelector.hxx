@@ -25,7 +25,6 @@
 //! @brief Class that implements OCCT selection algorithm.
 //!
 //! Inspired by StdSelect_ViewerSelector3d class from OCCT 6.5.1
-
 class IVtkOCC_ViewerSelector : public SelectMgr_ViewerSelector
 {
 public:
@@ -66,4 +65,5 @@ private:
 };
 
 DEFINE_STANDARD_HANDLE( IVtkOCC_ViewerSelector, SelectMgr_ViewerSelector )
+
 #endif // __IVTKOCC_VIEWERSELECTOR_H__

@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IVtkVTK_View.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 

@@ -18,6 +18,7 @@
 #include <AIS_Shape.hxx>
 #include <BRepBndLib.hxx>
 #include <Message.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -27,12 +28,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_SelectableObject,SelectMgr_SelectableObject)
 
-// Handle implementation
-
-
 //============================================================================
 // Method:  Constructor
-// Purpose: Constructs a selectable object initialized by the given shape
+// Purpose:
 //============================================================================
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject (const IVtkOCC_Shape::Handle& theShape)
 : SelectMgr_SelectableObject (PrsMgr_TOP_AllView),
@@ -42,37 +40,35 @@ IVtkOCC_SelectableObject::IVtkOCC_SelectableObject (const IVtkOCC_Shape::Handle&
   {
     myShape->SetSelectableObject (this);
   }
-
-  // Minor stuff - but it facilitates usage of OCCT selection 
-  // classes dealing with deflection, see ComputeSelection() below
-  myOCCTDrawer = new Prs3d_Drawer();
 }
 
 //============================================================================
 // Method:  Constructor
-// Purpose: Constructs uninitialized selectable object.
-//          setShape() should be called later.
+// Purpose:
 //============================================================================
 IVtkOCC_SelectableObject::IVtkOCC_SelectableObject()
-: SelectMgr_SelectableObject (PrsMgr_TOP_AllView),
-  myShape (0)
-{ }
+: SelectMgr_SelectableObject (PrsMgr_TOP_AllView)
+{
+  //
+}
 
 //============================================================================
 // Method:  Destructor
-// Purpose: 
+// Purpose:
 //============================================================================
 IVtkOCC_SelectableObject::~IVtkOCC_SelectableObject()
-{ }
+{
+  //
+}
 
 //============================================================================
 // Method:  SetShape
-// Purpose: Sets the selectable shape
+// Purpose:
 //============================================================================
 void IVtkOCC_SelectableObject::SetShape (const IVtkOCC_Shape::Handle& theShape)
 {
   myShape = theShape;
-  if (! myShape.IsNull())
+  if (!myShape.IsNull())
   {
     myShape->SetSelectableObject (this);
   }
@@ -84,7 +80,7 @@ void IVtkOCC_SelectableObject::SetShape (const IVtkOCC_Shape::Handle& theShape)
 
 //============================================================================
 // Method:  ComputeSelection
-// Purpose: Internal method, computes selection data for viewer selector
+// Purpose:
 //============================================================================
 void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode)
@@ -94,33 +90,17 @@ void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selectio
     return;
   }
 
-  TopoDS_Shape anOcctShape = myShape->GetShape();
-
-  if (anOcctShape.ShapeType() == TopAbs_COMPOUND && anOcctShape.NbChildren() == 0)
+  const TopoDS_Shape& anOcctShape = myShape->GetShape();
+  if (anOcctShape.ShapeType() == TopAbs_COMPOUND
+   && anOcctShape.NbChildren() == 0)
   {
     // Shape empty -> go away
     return;
   }
 
-  TopAbs_ShapeEnum aTypeOfSel = AIS_Shape::SelectionType (theMode);
-
-  Standard_Real aDeflection = myOCCTDrawer->MaximalChordialDeviation();
-  if (myOCCTDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)
-  {
-    Bnd_Box aBndBox;
-    BRepBndLib::Add (anOcctShape, aBndBox);
-    if (!aBndBox.IsVoid())
-    {
-      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-      aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-      aDeflection = Max (aXmax - aXmin, Max (aYmax - aYmin, aZmax - aZmin)) * 
-        myOCCTDrawer->DeviationCoefficient();
-    }
-  }
-
-  // Assume the shape has been displayed already -> triangulation should exist
-  Standard_Boolean isAutoTriangulation = Standard_False;
-
+  const TopAbs_ShapeEnum aTypeOfSel = AIS_Shape::SelectionType (theMode);
+  const Handle(Prs3d_Drawer)& aDrawer = myShape->Attributes();
+  const Standard_Real aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (anOcctShape, aDrawer);
   try
   {
     OCC_CATCH_SIGNALS
@@ -129,8 +109,8 @@ void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selectio
                                        anOcctShape,
                                        aTypeOfSel,
                                        aDeflection,
-                                       myOCCTDrawer->DeviationAngle(),
-                                       isAutoTriangulation);
+                                       aDrawer->DeviationAngle(),
+                                       aDrawer->IsAutoTriangulation());
   }
   catch (const Standard_Failure& anException)
   {
@@ -158,8 +138,7 @@ const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
     return myBndBox;
   }
 
-  TopoDS_Shape anOcctShape = myShape->GetShape();
-
+  const TopoDS_Shape& anOcctShape = myShape->GetShape();
   if (anOcctShape.ShapeType() == TopAbs_COMPOUND && anOcctShape.NbChildren() == 0)
   {
     // Shape empty -> nothing to do

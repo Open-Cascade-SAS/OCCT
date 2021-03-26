@@ -39,7 +39,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline,Standard_Trans
 //===========================================================
 
 IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline (const TopoDS_Shape& theShape,
-                                                                                const Standard_Integer theShapeID)
+                                                                                const Standard_Integer theShapeID,
+                                                                                const Handle(Prs3d_Drawer)& theDrawerLink)
 : Standard_Transient()
 {
   /* ===========================
@@ -57,7 +58,7 @@ IVtkDraw_HighlightAndSelectionPipeline::IVtkDraw_HighlightAndSelectionPipeline (
    * ======================== */
 
   myActor = vtkSmartPointer<vtkActor>::New();
-  IVtkOCC_Shape::Handle anIVtkShape = new IVtkOCC_Shape (theShape);
+  IVtkOCC_Shape::Handle anIVtkShape = new IVtkOCC_Shape (theShape, theDrawerLink);
   anIVtkShape->SetId (theShapeID);
   vtkSmartPointer<IVtkTools_ShapeDataSource> aDataSource = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
   aDataSource->SetShape (anIVtkShape);

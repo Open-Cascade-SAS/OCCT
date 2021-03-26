@@ -15,54 +15,62 @@
 
 #include <IVtkOCC_ShapeMesher.hxx>
 
-#include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepMesh_DiscretFactory.hxx>
-#include <BRepMesh_DiscretRoot.hxx>
 #include <BRepTools.hxx>
-#include <Hatch_Hatcher.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
-#include <GCPnts_TangentialDeflection.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Message.hxx>
 #include <NCollection_Array1.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Precision.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_IsoAspect.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdPrs_Isolines.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
-#include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkOCC_ShapeMesher,IVtk_IShapeMesher)
 
-// Handle implementation
+//================================================================
+// Function : IVtkOCC_ShapeMesher
+// Purpose  :
+//================================================================
+IVtkOCC_ShapeMesher::IVtkOCC_ShapeMesher()
+{
+  //
+}
 
+//================================================================
+// Function : ~IVtkOCC_ShapeMesher
+// Purpose  :
+//================================================================
+IVtkOCC_ShapeMesher::~IVtkOCC_ShapeMesher()
+{
+  //
+}
 
 //================================================================
 // Function : internalBuild
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::internalBuild()
 {
-  // TODO: do we need any protection here so as not to triangualte
-  // the shape twice??? This can be done e.g. by checking if
-  // triangulation exists for TopoDS_Shape..
-  meshShape();
+  const TopoDS_Shape& anOcctShape = GetShapeObj()->GetShape();
+  if (anOcctShape.IsNull())
+  {
+    return;
+  }
+
+  const Handle(Prs3d_Drawer)& anOcctDrawer = GetShapeObj()->Attributes();
+  const Standard_Real aShapeDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (anOcctShape, anOcctDrawer);
+  if (anOcctDrawer->IsAutoTriangulation())
+  {
+    StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (anOcctShape, anOcctDrawer, true);
+    StdPrs_ToolTriangulatedShape::Tessellate (anOcctShape, anOcctDrawer);
+  }
 
   // Free vertices and free edges should always be shown.
   // Shared edges are needed in WF representation only.
@@ -71,83 +79,79 @@ void IVtkOCC_ShapeMesher::internalBuild()
   addEdges();
 
   // Build wireframe points and cells (lines for isolines)
-  addWireFrameFaces();
+  for (TopExp_Explorer aFaceIter (anOcctShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
+    try
+    {
+      OCC_CATCH_SIGNALS
+      addWFFace (anOcctFace, GetShapeObj()->GetSubShapeId (anOcctFace), aShapeDeflection);
+    }
+    catch (const Standard_Failure& anException)
+    {
+      Message::SendFail (TCollection_AsciiString("Error: addWireFrameFaces() wireframe presentation builder has failed (")
+                       + anException.GetMessageString() + ")");
+    }
+  }
 
   // Build shaded representation (based on Poly_Triangulation)
-  addShadedFaces();
+  for (TopExp_Explorer aFaceIter (anOcctShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
+    addShadedFace (anOcctFace, GetShapeObj()->GetSubShapeId (anOcctFace));
+  }
 }
 
 //================================================================
 // Function : GetShapeObj
-// Purpose  : 
+// Purpose  :
 //================================================================
 const IVtkOCC_Shape::Handle IVtkOCC_ShapeMesher::GetShapeObj() const
 {
-  return (IVtkOCC_Shape::Handle::DownCast(myShapeObj));
+  return IVtkOCC_Shape::Handle::DownCast(myShapeObj);
 }
 
 //================================================================
 // Function : GetDeflection
-// Purpose  : Returns absolute deflection used by this algorithm.
+// Purpose  :
 //================================================================
 Standard_Real IVtkOCC_ShapeMesher::GetDeflection() const
 {
-  if (myDeflection < Precision::Confusion()) // if not yet initialized
-  {
-    Handle(Prs3d_Drawer) aDefDrawer = new Prs3d_Drawer();
-    aDefDrawer->SetTypeOfDeflection (Aspect_TOD_RELATIVE);
-    aDefDrawer->SetDeviationCoefficient (GetDeviationCoeff());
-    myDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (GetShapeObj()->GetShape(), aDefDrawer);
-  }
-
-  return myDeflection;
+  const TopoDS_Shape& anOcctShape = GetShapeObj()->GetShape();
+  return !anOcctShape.IsNull()
+        ? StdPrs_ToolTriangulatedShape::GetDeflection (anOcctShape, GetShapeObj()->Attributes())
+        : 0.0;
 }
 
 //================================================================
-// Function : meshShape
-// Purpose  : 
+// Function : GetDeflection
+// Purpose  :
 //================================================================
-void IVtkOCC_ShapeMesher::meshShape()
+Standard_Real IVtkOCC_ShapeMesher::GetDeviationCoeff() const
 {
-  const TopoDS_Shape& anOcctShape = GetShapeObj()->GetShape();
-  if (anOcctShape.IsNull())
+  if (IVtkOCC_Shape::Handle aShape = GetShapeObj())
   {
-    return;
+    return aShape->Attributes()->DeviationCoefficient();
   }
+  return 0.0;
+}
 
-  //Clean triangulation before compute incremental mesh
-  BRepTools::Clean (anOcctShape);
-
-  //Compute triangulation
-  Standard_Real aDeflection = GetDeflection();
-  if (aDeflection < Precision::Confusion())
+//================================================================
+// Function : GetDeviationAngle
+// Purpose  :
+//================================================================
+Standard_Real IVtkOCC_ShapeMesher::GetDeviationAngle() const
+{
+  if (IVtkOCC_Shape::Handle aShape = GetShapeObj())
   {
-    return;
+    return aShape->Attributes()->DeviationAngle();
   }
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    Handle(BRepMesh_DiscretRoot) anAlgo;
-    anAlgo = BRepMesh_DiscretFactory::Get().Discret (anOcctShape,
-                                                     aDeflection,
-                                                     GetDeviationAngle());
-    if (!anAlgo.IsNull())
-    {
-      anAlgo->Perform();
-    }
-  }
-  catch (const Standard_Failure& anException)
-  {
-    Message::SendFail (TCollection_AsciiString("Error: IVtkOCC_ShapeMesher::meshShape() triangulation builder has failed (")
-                     + anException.GetMessageString() + ")");
-  }
+  return 0.0;
 }
 
 //================================================================
 // Function : addFreeVertices
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::addFreeVertices()
 {
@@ -176,7 +180,7 @@ void IVtkOCC_ShapeMesher::addFreeVertices()
 
 //================================================================
 // Function : addEdges
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::addEdges()
 {
@@ -214,53 +218,8 @@ void IVtkOCC_ShapeMesher::addEdges()
 }
 
 //================================================================
-// Function : addWireFrameFaces
-// Purpose  : 
-//================================================================
-void IVtkOCC_ShapeMesher::addWireFrameFaces()
-{
-  // Check the deflection value once for all faces
-  if (GetDeflection() < Precision::Confusion())
-  {
-    return;
-  }
-
-  TopExp_Explorer aFaceIter (GetShapeObj()->GetShape(), TopAbs_FACE);
-  for (; aFaceIter.More(); aFaceIter.Next())
-  {
-    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
-    try
-    {
-      OCC_CATCH_SIGNALS
-      addWFFace (anOcctFace, 
-                 GetShapeObj()->GetSubShapeId (anOcctFace));
-    }
-    catch (const Standard_Failure& anException)
-    {
-      Message::SendFail (TCollection_AsciiString("Error: addWireFrameFaces() wireframe presentation builder has failed (")
-                       + anException.GetMessageString() + ")");
-    }
-  }
-}
-
-//================================================================
-// Function : addShadedFaces
-// Purpose  : 
-//================================================================
-void IVtkOCC_ShapeMesher::addShadedFaces()
-{
-  TopExp_Explorer aFaceIter (GetShapeObj()->GetShape(), TopAbs_FACE);
-  for (; aFaceIter.More(); aFaceIter.Next())
-  {
-    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
-    addShadedFace (anOcctFace,
-                   GetShapeObj()->GetSubShapeId (anOcctFace));
-  }
-}
-
-//================================================================
 // Function : addVertex
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::addVertex (const TopoDS_Vertex& theVertex,
                                      const IVtk_IdType    theShapeId,
@@ -273,15 +232,14 @@ void IVtkOCC_ShapeMesher::addVertex (const TopoDS_Vertex& theVertex,
 
   gp_Pnt aPnt3d = BRep_Tool::Pnt (theVertex);
 
-  IVtk_PointId anId = 
-    myShapeData->InsertCoordinate (aPnt3d.X(), aPnt3d.Y(), aPnt3d.Z());
+  IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt3d.X(), aPnt3d.Y(), aPnt3d.Z());
   myShapeData->InsertVertex (theShapeId, anId, theMeshType);
 
 }
 
 //================================================================
 // Function : processPolyline
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::processPolyline (Standard_Integer          theNbNodes,
                                       const TColgp_Array1OfPnt&      thePoints,
@@ -319,7 +277,7 @@ void IVtkOCC_ShapeMesher::processPolyline (Standard_Integer          theNbNodes,
 
 //================================================================
 // Function : addEdge
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
                                    const IVtk_IdType   theShapeId,
@@ -331,7 +289,7 @@ void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
   }
 
   // Two discrete representations of an OCCT edge are possible:
-  // 1. Polygon on trinagulation - holds Ids of points
+  // 1. Polygon on triangulation - holds Ids of points
   // contained in Poly_Triangulation object
   Handle(Poly_PolygonOnTriangulation) aPolyOnTriangulation;
   Handle(Poly_Triangulation) aTriangulation;
@@ -354,7 +312,7 @@ void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
     return;
   }
 
-  // Handle a non-identity transofmation applied to the edge
+  // Handle a non-identity transformation applied to the edge
   gp_Trsf anEdgeTransf;
   bool noTransform = true;
   if (!aLocation.IsIdentity())
@@ -401,10 +359,11 @@ void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
 
 //================================================================
 // Function : addWFFace
-// Purpose  : 
+// Purpose  :
 //================================================================
-void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
-                                     const IVtk_IdType  theShapeId)
+void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face&  theFace,
+                                     const IVtk_IdType   theShapeId,
+                                     const Standard_Real theDeflection)
 {
   if (theFace.IsNull())
   {
@@ -434,16 +393,8 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
     return;
   }
 
-  const Standard_Real aDeflection = GetDeflection();
-  Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
-  aDrawer->SetUIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0f, myNbIsos[0]));
-  aDrawer->SetVIsoAspect (new Prs3d_IsoAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0f, myNbIsos[1]));
-  aDrawer->SetDeviationAngle (myDevAngle);
-  aDrawer->SetDeviationCoefficient (myDevCoeff);
-  aDrawer->SetMaximalChordialDeviation (aDeflection);
-
   Prs3d_NListOfSequenceOfPnt aPolylines;
-  StdPrs_Isolines::Add (theFace, aDrawer, aDeflection, aPolylines, aPolylines);
+  StdPrs_Isolines::Add (theFace, GetShapeObj()->Attributes(), theDeflection, aPolylines, aPolylines);
   for (Prs3d_NListOfSequenceOfPnt::Iterator aPolyIter (aPolylines); aPolyIter.More(); aPolyIter.Next())
   {
     const Handle(TColgp_HSequenceOfPnt)& aPoints = aPolyIter.Value();
@@ -467,7 +418,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face& theFace,
 
 //================================================================
 // Function : addShadedFace
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
                                          const IVtk_IdType  theShapeId)
@@ -479,7 +430,7 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
 
   // Build triangulation of the face.
   TopLoc_Location aLoc;
-  Handle(Poly_Triangulation) anOcctTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
+  const Handle(Poly_Triangulation)& anOcctTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
   if (anOcctTriangulation.IsNull())
   {
     return;
@@ -499,9 +450,7 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
   // Keep inserted points id's of triangulation in an array.
   NCollection_Array1<IVtk_PointId> aPointIds (1, aNbPoints);
   IVtk_PointId anId;
-
-  Standard_Integer anI;
-  for (anI = 1; anI <= aNbPoints; anI++)
+  for (Standard_Integer anI = 1; anI <= aNbPoints; anI++)
   {
     gp_Pnt aPoint = anOcctTriangulation->Node (anI);
 
@@ -516,9 +465,9 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
   }
 
   // Create triangles on the created triangulation points.
-  Standard_Integer aNbTriangles = anOcctTriangulation->NbTriangles();
+  const Standard_Integer aNbTriangles = anOcctTriangulation->NbTriangles();
   Standard_Integer aN1, aN2, aN3;
-  for (anI = 1; anI <= aNbTriangles; anI++)
+  for (Standard_Integer anI = 1; anI <= aNbTriangles; anI++)
   {
     anOcctTriangulation->Triangle (anI).Get (aN1, aN2, aN3); // get indexes of triangle's points
     // Insert new triangle on these points into output shape data.

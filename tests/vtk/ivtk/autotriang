@@ -1,0 +1,19 @@
+puts "============"
+puts "0032247: VIS, IVtkOCC_ShapeMesher - allow disabling auto-triangulation behavior"
+puts "============"
+puts ""
+
+pload MODELING VIS
+psphere s 1
+explode s F
+tessellate r s_1 10 10
+trinfo r
+checktrinfo r -tri 200
+
+ivtkinit
+ivtkdefaults -autoTriang 0
+ivtkdisplay r
+ivtksetdispmode 1
+checktrinfo r -tri 200
+
+ivtkdump $imagedir/${casename}.png

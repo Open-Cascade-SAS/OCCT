@@ -39,7 +39,7 @@ class IVtkTools_ShapeDataSource;
 //! @class IVtkTools_ShapeObject
 //! @brief VTK holder class for OCC shapes to pass them through pipelines.
 //!
-//! It is descendent of vtkObject (data). Logically it is a one of milestones of VTK pipeline.
+//! It is descendant of vtkObject (data). Logically it is a one of milestones of VTK pipeline.
 //! It stores data of OCC shape (the OccShape instance) in vtkInformation object of vtkDataObject.
 //! Then pass it to the actors through pipelines,
 //! so selection logic can access OccShape easily given the actor instance.

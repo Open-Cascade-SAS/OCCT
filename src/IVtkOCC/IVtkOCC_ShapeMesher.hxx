@@ -16,23 +16,21 @@
 #ifndef __IVTKOCC_SHAPEMESHER_H__
 #define __IVTKOCC_SHAPEMESHER_H__
 
-#include <BRepAdaptor_Surface.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtk_IShapeMesher.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
 typedef NCollection_DataMap <TopoDS_Shape, IVtk_MeshType, TopTools_ShapeMapHasher> IVtk_ShapeTypeMap;
 typedef NCollection_Sequence <gp_Pnt> IVtk_Polyline;
 typedef NCollection_List <IVtk_Polyline> IVtk_PolylineList;
+
+class Prs3d_Drawer;
 
 class IVtkOCC_ShapeMesher;
 DEFINE_STANDARD_HANDLE( IVtkOCC_ShapeMesher, IVtk_IShapeMesher )
@@ -47,19 +45,11 @@ DEFINE_STANDARD_HANDLE( IVtkOCC_ShapeMesher, IVtk_IShapeMesher )
 class IVtkOCC_ShapeMesher : public IVtk_IShapeMesher
 {
 public:
-  IVtkOCC_ShapeMesher (const Standard_Real& theDevCoeff = 0.0001,
-                       const Standard_Real& theDevAngle = 12.0 * M_PI / 180.0,
-                       const Standard_Integer theNbUIsos = 1,
-                       const Standard_Integer theNbVIsos = 1)
- : myDevCoeff (theDevCoeff),
-   myDevAngle (theDevAngle),
-   myDeflection (0.0)
-  {
-    myNbIsos[0] = theNbUIsos;
-    myNbIsos[1] = theNbVIsos;
-  }
+  //! Main constructor.
+  Standard_EXPORT IVtkOCC_ShapeMesher();
 
-  virtual ~IVtkOCC_ShapeMesher() { }
+  //! Destructor.
+  Standard_EXPORT virtual ~IVtkOCC_ShapeMesher();
 
   //! Returns absolute deflection used by this algorithm.
   //! This value is calculated on the basis of the shape's bounding box.
@@ -71,28 +61,19 @@ public:
 
   //! Returns relative deviation coefficient used by this algorithm.
   //! @return relative deviation coefficient
-  Standard_Real GetDeviationCoeff() const
-  {
-    return myDevCoeff;
-  }
+  Standard_EXPORT Standard_Real GetDeviationCoeff() const;
 
   //! Returns deviation angle used by this algorithm.
   //! This is the maximum allowed angle between the normals to the 
   //! curve/surface and the normals to polyline/faceted representation.
   //! @return deviation angle (in radians)
-  Standard_Real GetDeviationAngle() const
-  {
-    return myDevAngle;
-  }
+  Standard_EXPORT Standard_Real GetDeviationAngle() const;
 
 protected:
   //! Executes the mesh generation algorithms. To be defined in implementation class.
   Standard_EXPORT virtual void internalBuild() Standard_OVERRIDE;
 
 private:
-  //! Internal method, generates OCCT triangulation starting from TopoDS_Shape
-  //! @see IVtkOCC_ShapeMesher::addEdge, IVtkOCC_ShapeMesher::addShadedFace
-  void meshShape();
 
   //! Extracts free vertices from the shape (i.e. those not belonging to any edge)
   //! and passes the geometry to IPolyData. 
@@ -101,12 +82,6 @@ private:
 
   //! Adds all the edges (free and non-free) to IPolyData.
   void addEdges();
-
-  //! Adds wireframe representations of all faces to IPolyData.
-  void addWireFrameFaces();
-
-  //! Adds shaded representations of all faces to IPolyData.
-  void addShadedFaces();
 
   //! Adds the point coordinates, connectivity info and
   //! sub-shape ID for the OCCT vertex.
@@ -130,20 +105,22 @@ private:
   //! Generates wireframe representation of the given TopoDS_Face object
   //! with help of OCCT algorithms. The resulting polylines are passed to IPolyData
   //! interface and associated with the given sub-shape ID.
-  //! @param [in] faceToMesh TopoDS_Face object to build wireframe representation for.
-  //! @param [in] shapeId The face' sub-shape ID 
-  void addWFFace (const TopoDS_Face&   theFace,
-                  const IVtk_IdType    theShapeId);
+  //! @param [in] theFace TopoDS_Face object to build wireframe representation for
+  //! @param [in] theShapeId The face' sub-shape ID
+  //! @param [in] theDeflection curve deflection
+  void addWFFace (const TopoDS_Face&  theFace,
+                  const IVtk_IdType   theShapeId,
+                  const Standard_Real theDeflection);
 
   //! Creates shaded representation of the given TopoDS_Face object
   //! starting from OCCT triangulation that should be created in advance. 
   //! The resulting triangles are passed to IPolyData
   //! interface and associated with the given sub-shape ID.
-  //! @param [in] faceToMesh TopoDS_Face object to build shaded representation for.
-  //! @param [in] shapeId The face' sub-shape ID
+  //! @param [in] theFace    TopoDS_Face object to build shaded representation for
+  //! @param [in] theShapeId the face' sub-shape ID
   //! @see IVtkOCC_ShapeMesher::meshShape, IVtkOCC_ShapeMesher::addEdge
-  void addShadedFace (const TopoDS_Face&   theFace,
-                      const IVtk_IdType    theShapeId);
+  void addShadedFace (const TopoDS_Face&  theFace,
+                      const IVtk_IdType   theShapeId);
 
   //! Internal helper method that unpacks the input arrays of points and 
   //! connectivity and creates the polyline using IPolyData interface.
@@ -164,11 +141,7 @@ private:
   DEFINE_STANDARD_RTTIEXT(IVtkOCC_ShapeMesher,IVtk_IShapeMesher)
 
 private:
-  IVtk_ShapeTypeMap     myEdgesTypes;
-  Standard_Real         myDevCoeff;
-  Standard_Real         myDevAngle;
-  mutable Standard_Real myDeflection;
-  Standard_Integer      myNbIsos[2];
+  IVtk_ShapeTypeMap myEdgesTypes;
 };
 
 #endif //  __IVTKOCC_SHAPEMESHER_H__
