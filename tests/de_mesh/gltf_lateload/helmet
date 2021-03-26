@@ -1,0 +1,12 @@
+puts "========"
+puts "0032248: Visualization - load false deferred glTF data immediately"
+puts "========"
+
+ReadGltf D [locate_data_file bug30691_DamagedHelmet.gltf] -skiplateloading 1
+XGetOneShape s D
+
+set info [trinfo s -lods]
+if {![regexp {([0-9]+) +triangles.*Types: Poly_Triangulation \(1\)} $info dummy triangles_nb]
+    || $triangles_nb != 15452} {
+  puts "Fail: incorrect loading file with stream data"
+}

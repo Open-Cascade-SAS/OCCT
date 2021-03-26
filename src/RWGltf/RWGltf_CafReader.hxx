@@ -98,7 +98,9 @@ protected:
 
 protected:
 
-  class CafReader_GltfReaderFunctor;
+  class CafReader_GltfBaseLoadingFunctor;
+  class CafReader_GltfFullDataLoadingFunctor;
+  class CafReader_GltfStreamDataLoadingFunctor;
 
 protected:
 

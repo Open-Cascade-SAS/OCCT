@@ -78,12 +78,15 @@ public:
   //! Add primitive array data element.
   Standard_EXPORT RWGltf_GltfPrimArrayData& AddPrimArrayData (RWGltf_GltfArrayType theType);
 
-  //! Returns TRUE if there is deferred storege and some triangulation data
+  //! Return TRUE if there is deferred storege and some triangulation data
   //! that can be loaded using LoadDeferredData().
   virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
   {
     return !myData.IsEmpty() && RWMesh_TriangulationSource::HasDeferredData();
   }
+
+  //! Load primitive array saved as stream buffer to new triangulation object.
+  Standard_EXPORT Handle(Poly_Triangulation) LoadStreamData() const;
 
 protected:
 

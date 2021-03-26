@@ -49,6 +49,107 @@ void RWGltf_TriangulationReader::reportError (const TCollection_AsciiString& the
 }
 
 // =======================================================================
+// function : LoadStreamData
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::LoadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                                 const Handle(Poly_Triangulation)& theDestMesh) const
+{
+  Standard_ASSERT_RETURN (!theDestMesh.IsNull(), "The destination mesh should be initialized before loading data to it", false);
+  theDestMesh->Clear();
+  theDestMesh->SetDoublePrecision (myIsDoublePrecision);
+
+  if (!loadStreamData (theSourceMesh, theDestMesh))
+  {
+    theDestMesh->Clear();
+    return false;
+  }
+  if (!finalizeLoading (theSourceMesh, theDestMesh))
+  {
+    theDestMesh->Clear();
+    return false;
+  }
+  return true;
+}
+
+// =======================================================================
+// function : readStreamData
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::readStreamData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
+                                                 const RWGltf_GltfPrimArrayData& theGltfData,
+                                                 const Handle(Poly_Triangulation)& theDestMesh) const
+{
+  Standard_ArrayStreamBuffer aStreamBuffer ((const char* )theGltfData.StreamData->Data(), theGltfData.StreamData->Size());
+  std::istream aStream (&aStreamBuffer);
+  aStream.seekg ((std::streamoff )theGltfData.StreamOffset, std::ios_base::beg);
+  if (!readBuffer (theSourceGltfMesh, theDestMesh, aStream, theGltfData.Accessor, theGltfData.Type))
+  {
+    return false;
+  }
+  return true;
+}
+
+// =======================================================================
+// function : readFileData
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::readFileData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
+                                               const RWGltf_GltfPrimArrayData& theGltfData,
+                                               const Handle(Poly_Triangulation)& theDestMesh,
+                                               const Handle(OSD_FileSystem)& theFileSystem) const
+{
+  const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream
+    (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
+  if (aSharedStream.get() == NULL)
+  {
+    reportError (TCollection_AsciiString("Buffer '") + theSourceGltfMesh->Id() + "refers to invalid file '" + theGltfData.StreamUri + "'.");
+    return false;
+  }
+  if (!readBuffer (theSourceGltfMesh, theDestMesh, *aSharedStream.get(), theGltfData.Accessor, theGltfData.Type))
+  {
+    return false;
+  }
+  return true;
+}
+
+// =======================================================================
+// function : loadStreamData
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::loadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
+                                                 const Handle(Poly_Triangulation)& theDestMesh,
+                                                 bool theToResetStream) const
+{
+  const Handle(RWGltf_GltfLatePrimitiveArray) aSourceGltfMesh = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(theSourceMesh);
+  if (aSourceGltfMesh.IsNull()
+   || aSourceGltfMesh->PrimitiveMode() == RWGltf_GltfPrimitiveMode_UNKNOWN)
+  {
+    return false;
+  }
+  bool wasLoaded = false;
+  for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter (aSourceGltfMesh->Data()); aDataIter.More(); aDataIter.Next())
+  {
+    RWGltf_GltfPrimArrayData& aData = aDataIter.ChangeValue();
+    if (aData.StreamData.IsNull())
+    {
+      continue;
+    }
+    if (!readStreamData (aSourceGltfMesh, aData, theDestMesh))
+    {
+      return false;
+    }
+    if (theToResetStream)
+    {
+      aData.StreamData.Nullify();
+    }
+    wasLoaded = true;
+  }
+  return wasLoaded;
+}
+
+// =======================================================================
 // function : load
 // purpose  :
 // =======================================================================
@@ -68,13 +169,8 @@ bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)&
     const RWGltf_GltfPrimArrayData& aData = aDataIter.Value();
     if (!aData.StreamData.IsNull())
     {
-      Standard_ArrayStreamBuffer aStreamBuffer ((const char* )aData.StreamData->Data(), aData.StreamData->Size());
-      std::istream aStream (&aStreamBuffer);
-      aStream.seekg ((std::streamoff )aData.StreamOffset, std::ios_base::beg);
-      if (!readBuffer (aSourceGltfMesh, theDestMesh, aStream, aData.Accessor, aData.Type))
-      {
-        return false;
-      }
+      Message::SendWarning (TCollection_AsciiString("Buffer '") + aSourceGltfMesh->Id() +
+        "' contains stream data that cannot be loaded during deferred data loading.");
       continue;
     }
     else if (aData.StreamUri.IsEmpty())
@@ -83,14 +179,7 @@ bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)&
       return false;
     }
 
-    const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
-    opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream (aData.StreamUri, std::ios::in | std::ios::binary, aData.StreamOffset);
-    if (aSharedStream.get() == NULL)
-    {
-      reportError (TCollection_AsciiString ("Buffer '") + aSourceGltfMesh->Id() + "refers to invalid file '" + aData.StreamUri + "'.");
-      return false;
-    }
-    if (!readBuffer (aSourceGltfMesh, theDestMesh, *aSharedStream.get(), aData.Accessor, aData.Type))
+    if (!readFileData (aSourceGltfMesh, aData, theDestMesh, theFileSystem))
     {
       return false;
     }

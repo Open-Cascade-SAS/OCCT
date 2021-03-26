@@ -30,28 +30,18 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 
-//! Functor for parallel execution.
-class RWGltf_CafReader::CafReader_GltfReaderFunctor
+//! Abstract base functor for parallel execution of glTF data loading.
+class RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
 {
 public:
 
-  struct GltfReaderTLS
-  {
-    Handle(OSD_FileSystem) FileSystem;
-  };
-
   //! Main constructor.
-  CafReader_GltfReaderFunctor (RWGltf_CafReader* myCafReader,
-                               NCollection_Vector<TopoDS_Face>& theFaceList,
-                               const Message_ProgressRange& theProgress,
-                               const OSD_ThreadPool::Launcher& theThreadPool,
-                               const TCollection_AsciiString& theErrPrefix)
-  : myCafReader (myCafReader),
-    myFaceList  (&theFaceList),
-    myErrPrefix (theErrPrefix),
+  CafReader_GltfBaseLoadingFunctor (NCollection_Vector<TopoDS_Face>& theFaceList,
+                                    const Message_ProgressRange& theProgress,
+                                    const OSD_ThreadPool::Launcher& theThreadPool)
+  : myFaceList  (&theFaceList),
     myProgress  (theProgress, "Loading glTF triangulation", Max (1, theFaceList.Size())),
-    myThreadPool(theThreadPool),
-    myTlsData   (theThreadPool.LowerThreadIndex(), theThreadPool.UpperThreadIndex())
+    myThreadPool(theThreadPool)
   {
     //
   }
@@ -60,26 +50,15 @@ public:
   void operator() (int theThreadIndex,
                    int theFaceIndex) const
   {
-    GltfReaderTLS& aTlsData = myTlsData.ChangeValue (theThreadIndex);
-    if (aTlsData.FileSystem.IsNull())
-    {
-      aTlsData.FileSystem = new OSD_CachedFileSystem();
-    }
-
     TopLoc_Location aDummyLoc;
     TopoDS_Face& aFace = myFaceList->ChangeValue (theFaceIndex);
     Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (aFace, aDummyLoc));
-    if (myCafReader->ToKeepLateData())
+    Handle(Poly_Triangulation) aPolyData = loadData (aLateData, theThreadIndex);
+    if (!aPolyData.IsNull())
     {
-      aLateData->LoadDeferredData (aTlsData.FileSystem);
-    }
-    else
-    {
-      Handle(Poly_Triangulation) aPolyData = aLateData->DetachedLoadDeferredData (aTlsData.FileSystem);
       BRep_Builder aBuilder;
       aBuilder.UpdateFace (aFace, aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
     }
-
     if (myThreadPool.HasThreads())
     {
       Standard_Mutex::Sentry aLock (&myMutex);
@@ -91,15 +70,95 @@ public:
     }
   }
 
+protected:
+
+  //! Load primitive array.
+  virtual Handle(Poly_Triangulation) loadData (const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
+                                               int theThreadIndex) const = 0;
+
+protected:
+
+  NCollection_Vector<TopoDS_Face>* myFaceList;
+  mutable Standard_Mutex           myMutex;
+  mutable Message_ProgressScope    myProgress;
+  const OSD_ThreadPool::Launcher&  myThreadPool;
+};
+//! Functor for parallel execution of all glTF data loading.
+class RWGltf_CafReader::CafReader_GltfFullDataLoadingFunctor : public RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
+{
+public:
+
+  struct GltfReaderTLS
+  {
+    Handle(OSD_FileSystem) FileSystem;
+  };
+
+  //! Main constructor.
+  CafReader_GltfFullDataLoadingFunctor (RWGltf_CafReader* myCafReader,
+                                        NCollection_Vector<TopoDS_Face>& theFaceList,
+                                        const Message_ProgressRange& theProgress,
+                                        const OSD_ThreadPool::Launcher& theThreadPool)
+  : CafReader_GltfBaseLoadingFunctor (theFaceList, theProgress, theThreadPool),
+    myCafReader (myCafReader),
+    myTlsData   (theThreadPool.LowerThreadIndex(), theThreadPool.UpperThreadIndex())
+  {
+    //
+  }
+
+protected:
+
+  //! Load primitive array.
+  virtual Handle(Poly_Triangulation) loadData (const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
+                                               int theThreadIndex) const Standard_OVERRIDE
+  {
+    GltfReaderTLS& aTlsData = myTlsData.ChangeValue (theThreadIndex);
+    if (aTlsData.FileSystem.IsNull())
+    {
+      aTlsData.FileSystem = new OSD_CachedFileSystem();
+    }
+    // Load stream data if exists
+    if (Handle(Poly_Triangulation) aStreamLoadedData = theLateData->LoadStreamData())
+    {
+      return aStreamLoadedData;
+    }
+    // Load file data
+    if (myCafReader->ToKeepLateData())
+    {
+      theLateData->LoadDeferredData (aTlsData.FileSystem);
+      return Handle(Poly_Triangulation)();
+    }
+    return theLateData->DetachedLoadDeferredData (aTlsData.FileSystem);
+  }
+
 private:
 
   RWGltf_CafReader* myCafReader;
-  NCollection_Vector<TopoDS_Face>* myFaceList;
-  TCollection_AsciiString   myErrPrefix;
-  mutable Standard_Mutex    myMutex;
-  mutable Message_ProgressScope myProgress;
-  const OSD_ThreadPool::Launcher& myThreadPool;
   mutable NCollection_Array1<GltfReaderTLS> myTlsData;
+};
+
+//! Functor for parallel execution of loading of only glTF data saved in stream buffers.
+class RWGltf_CafReader::CafReader_GltfStreamDataLoadingFunctor : public RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
+{
+public:
+
+  //! Main constructor.
+  CafReader_GltfStreamDataLoadingFunctor (NCollection_Vector<TopoDS_Face>& theFaceList,
+                                          const Message_ProgressRange& theProgress,
+                                          const OSD_ThreadPool::Launcher& theThreadPool)
+  : CafReader_GltfBaseLoadingFunctor (theFaceList, theProgress, theThreadPool)
+  {
+    //
+  }
+
+protected:
+
+  //! Load primitive array.
+  virtual Handle(Poly_Triangulation) loadData (const Handle(RWGltf_GltfLatePrimitiveArray)& theLateData,
+                                               int theThreadIndex) const Standard_OVERRIDE
+  {
+    (void )theThreadIndex;
+    return theLateData->LoadStreamData();
+  }
 };
 
 //================================================================
@@ -306,8 +365,16 @@ Standard_Boolean RWGltf_CafReader::readLateData (NCollection_Vector<TopoDS_Face>
   Handle(RWGltf_TriangulationReader) aReader = Handle(RWGltf_TriangulationReader)::DownCast(createMeshReaderContext());
   aReader->SetFileName (theFile);
   updateLateDataReader (theFaces, aReader);
+
   if (myToSkipLateDataLoading)
   {
+    // Load glTF data encoded in base64. It should not be skipped and saved in "proxy" object to be loaded later.
+    const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+    const int aNbThreads = myToParallel ? Min (theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
+    OSD_ThreadPool::Launcher aLauncher(*aThreadPool, aNbThreads);
+    CafReader_GltfStreamDataLoadingFunctor aFunctor(theFaces, theProgress, aLauncher);
+    aLauncher.Perform (theFaces.Lower(), theFaces.Upper() + 1, aFunctor);
+
     return Standard_True;
   }
 
@@ -317,8 +384,7 @@ Standard_Boolean RWGltf_CafReader::readLateData (NCollection_Vector<TopoDS_Face>
   const int aNbThreads = myToParallel ? Min (theFaces.Size(), aThreadPool->NbDefaultThreadsToLaunch()) : 1;
   OSD_ThreadPool::Launcher aLauncher (*aThreadPool, aNbThreads);
 
-  CafReader_GltfReaderFunctor aFunctor (this, theFaces, theProgress, aLauncher,
-                                        TCollection_AsciiString ("File '") + theFile + "' defines invalid glTF!\n");
+  CafReader_GltfFullDataLoadingFunctor aFunctor (this, theFaces, theProgress, aLauncher);
   aLauncher.Perform (theFaces.Lower(), theFaces.Upper() + 1, aFunctor);
 
   aReader->PrintStatistic();

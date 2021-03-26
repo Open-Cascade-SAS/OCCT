@@ -542,11 +542,11 @@ Handle(Poly_Triangulation) Poly_Triangulation::DetachedLoadDeferredData (const H
     return Handle(Poly_Triangulation)();
   }
   Handle(Poly_Triangulation) aResult = createNewEntity();
-  if (!loadDeferredData(theFileSystem, aResult))
+  if (!loadDeferredData (theFileSystem, aResult))
   {
     return Handle(Poly_Triangulation)();
   }
-  aResult->SetMeshPurpose(aResult->MeshPurpose() | Poly_MeshPurpose_Loaded);
+  aResult->SetMeshPurpose (aResult->MeshPurpose() | Poly_MeshPurpose_Loaded);
   return aResult;
 }
 

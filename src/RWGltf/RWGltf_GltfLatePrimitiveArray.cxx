@@ -17,6 +17,7 @@
 #include <RWGltf_GltfPrimArrayData.hxx>
 #include <RWGltf_MaterialMetallicRoughness.hxx>
 #include <RWGltf_MaterialCommon.hxx>
+#include <RWGltf_TriangulationReader.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfLatePrimitiveArray, RWMesh_TriangulationSource)
 
@@ -89,4 +90,24 @@ RWGltf_GltfPrimArrayData& RWGltf_GltfLatePrimitiveArray::AddPrimArrayData (RWGlt
     myData.Append (RWGltf_GltfPrimArrayData (theType));
     return myData.ChangeLast();
   }
+}
+
+//=======================================================================
+//function : LoadStreamData
+//purpose  :
+//=======================================================================
+Handle(Poly_Triangulation) RWGltf_GltfLatePrimitiveArray::LoadStreamData() const
+{
+  Handle(RWGltf_TriangulationReader) aGltfReader = Handle(RWGltf_TriangulationReader)::DownCast(myReader);
+  if (aGltfReader.IsNull())
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  Handle(Poly_Triangulation) aResult = createNewEntity();
+  if (!aGltfReader->LoadStreamData (this, aResult))
+  {
+    return Handle(Poly_Triangulation)();
+  }
+  aResult->SetMeshPurpose (aResult->MeshPurpose() | Poly_MeshPurpose_Loaded);
+  return aResult;
 }
