@@ -26,6 +26,7 @@ Select3D_SensitiveSphere::Select3D_SensitiveSphere (const Handle(SelectMgr_Entit
                                                     const Standard_Real theRadius)
 : Select3D_SensitiveEntity (theOwnerId),
   myCenter (theCenter),
+  myLastDetectedPoint (RealLast(), RealLast(), RealLast()),
   myRadius (theRadius)
 {
 }
@@ -37,6 +38,7 @@ Select3D_SensitiveSphere::Select3D_SensitiveSphere (const Handle(SelectMgr_Entit
 Standard_Boolean Select3D_SensitiveSphere::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                     SelectBasics_PickResult& thePickResult)
 {
+  myLastDetectedPoint = gp_Pnt (RealLast(), RealLast(), RealLast());
   if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
     if (!theMgr.IsOverlapAllowed())
@@ -53,7 +55,7 @@ Standard_Boolean Select3D_SensitiveSphere::Matches (SelectBasics_SelectingVolume
   {
     return Standard_False;
   }
-
+  myLastDetectedPoint = thePickResult.PickedPoint();
   thePickResult.SetDistToGeomCenter (theMgr.DistToGeometryCenter (myCenter));
   return Standard_True;
 }

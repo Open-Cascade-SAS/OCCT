@@ -764,11 +764,6 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere (const gp_Pnt& the
 {
   Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
-  if (!hasSphereOverlap (theCenter, theRadius))
-  {
-    return Standard_False;
-  }
-
   Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
   if (!RaySphereIntersection (theCenter, theRadius, myNearPickedPnt, myViewRayDir, aTimeEnter, aTimeLeave))
   {
@@ -780,7 +775,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSphere (const gp_Pnt& the
   {
     thePickResult.SetDepth (aTimeLeave * myScale);
   }
-  gp_Pnt aPntOnSphere (myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * thePickResult.Depth());
+  gp_Pnt aPntOnSphere (myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * thePickResult.Depth() / myScale);
   gp_Vec aNormal (aPntOnSphere.XYZ() - theCenter.XYZ());
   thePickResult.SetPickedPoint (aPntOnSphere);
   thePickResult.SetSurfaceNormal (aNormal);

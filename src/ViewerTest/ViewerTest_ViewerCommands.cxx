@@ -10755,6 +10755,14 @@ static int VLight (Draw_Interpretor& theDi,
       aLightPrs->SetZoomable (isZoomable);
     }
     else if (!aLightPrs.IsNull()
+         && (anArgCase == "-showdraggable"
+          || anArgCase == "-prsdraggable"
+          || anArgCase == "-draggable"))
+    {
+      const bool isDraggable = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);
+      aLightPrs->SetDraggable (isDraggable);
+    }
+    else if (!aLightPrs.IsNull()
           && (anArgCase == "-showname"
            || anArgCase == "-prsname"))
     {
@@ -10785,6 +10793,23 @@ static int VLight (Draw_Interpretor& theDi,
       }
 
       aLightPrs->SetSize (aSize);
+    }
+    else if (!aLightPrs.IsNull()
+          && (anArgCase == "-dirarcsize"
+           || anArgCase == "-arcsize"
+           || anArgCase == "-arc")
+          && anArgIt + 1 < theArgsNb)
+    {
+      Standard_Integer aSize = 0;
+      if (!Draw::ParseInteger (theArgVec[anArgIt + 1], aSize)
+       || aSize <= 0
+       || aLightPrs->Light()->Type() != Graphic3d_TypeOfLightSource_Directional)
+      {
+        Message::SendFail() << "Syntax error at argument '" << anArg << "'";
+        return 1;
+      }
+      ++anArgIt;
+      aLightPrs->SetArcSize (aSize);
     }
     else if (!aLightNew.IsNull()
           && aLightNew->Type() != Graphic3d_TypeOfLightSource_Ambient
@@ -14887,6 +14912,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   [-spotExponent value] [-spotAngle angleDeg]"
       "\n\t\t:   [-smoothAngle value] [-smoothRadius value]"
       "\n\t\t:   [-display] [-showName 1|0] [-showRange 1|0] [-prsZoomable 1|0] [-prsSize Value]"
+      "\n\t\t:   [-arcSize Value]"
       "\n\t\t: Command manages light sources. Without arguments shows list of lights."
       "\n\t\t: Arguments affecting the list of defined/active lights:"
       "\n\t\t:   -clear       remove all light sources"
@@ -14931,7 +14957,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   -showName    shows/hides the name of light source; 1 by default"
       "\n\t\t:   -showRange   shows/hides the range of spot/positional light source; 1 by default"
       "\n\t\t:   -prsZoomable makes light presentation zoomable/non-zoomable"
+      "\n\t\t:   -prsDraggable makes light presentation draggable/non-draggable"
       "\n\t\t:   -prsSize     sets light presentation size"
+      "\n\t\t:   -arcSize     sets arc presentation size(in pixels) for rotation directional light source; 25 by default"
       "\n\t\t: Examples:"
       "\n\t\t:   vlight redlight -type POSITIONAL -headlight 1 -pos 0 1 1 -color RED"
       "\n\t\t:   vlight redlight -delete",

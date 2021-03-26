@@ -1,0 +1,46 @@
+puts "================================="
+puts "0032183: Visualization - implement AIS_LightSource::ProcessDragging() for rotating directional light"
+puts "Tests dynamic highlighting of directional light source"
+puts "================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1 -height 480 -width 640
+vlight -clear
+vbackground -color GRAY
+vrenderparams -shadingModel PHONG
+box b 10 10 10 10 10 10
+vdisplay b -dispMode 1
+vaspects b -material Brass
+vfit
+
+vlight -add ambient -color WHITE -name AMBIENT -display
+vlight -add directional -dir 1 0 0 -name DIR1 -color BLUE -display
+vlight -add directional -dir 0 1 0 -name DIR2 -color RED -display -prsSize 200 -arcsize 50
+
+vmoveto 350 202
+vdump $imagedir/${casename}_dyn_highlighting_red_light_draggable.png
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 354 101
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 445 169
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 259 239
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+
+vmoveto 122 50
+vdump $imagedir/${casename}_dyn_highlighting_blue_light_draggable.png
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 126 25
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 149 46
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vmoveto 101 47
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+
+vlight -change 2 -prsDraggable 0
+vmoveto 350 202
+vdump $imagedir/${casename}_dyn_highlighting_red_light_non_draggable.png
+vlight -change 1 -prsDraggable 0
+vmoveto 122 50
+vdump $imagedir/${casename}_dyn_highlighting_blue_light_non_draggable.png

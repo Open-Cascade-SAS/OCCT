@@ -21,6 +21,7 @@
 #include <SelectMgr_EntityOwner.hxx>
 
 class Prs3d_ShadingAspect;
+class Select3D_SensitiveSphere;
 
 //! Interactive object for a light source.
 //! Each type of light source has it's own presentation:
@@ -90,6 +91,19 @@ public: //! @name Light properties
     }
   }
 
+  //! Returns Sensitive sphere arc size in pixels; 20 by default.
+  Standard_Integer ArcSize() const { return mySensSphereArcSize; }
+
+  //! Sets the size of sensitive sphere arc.
+  void SetArcSize (Standard_Integer theSize)
+  {
+    if (mySensSphereArcSize != theSize)
+    {
+      mySensSphereArcSize = theSize;
+      SetToUpdate();
+    }
+  }
+
   //! Returns TRUE if transform-persistence is allowed;
   //! TRUE by default for Ambient and Directional lights
   //! and FALSE by default for Positional and Spot lights.
@@ -102,6 +116,15 @@ public: //! @name Light properties
     {
       myIsZoomable = theIsZoomable;
       SetToUpdate();
+    }
+  }
+
+  //! Sets if dragging is allowed.
+  void SetDraggable (bool theIsDraggable)
+  {
+    if (myIsDraggable != theIsDraggable)
+    {
+      myIsDraggable = theIsDraggable;
     }
   }
 
@@ -182,6 +205,21 @@ protected:
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
+  //! Drag object in the viewer.
+  //! @param[in] theCtx      interactive context
+  //! @param[in] theView     active View
+  //! @param[in] theOwner    the owner of detected entity
+  //! @param[in] theDragFrom drag start point
+  //! @param[in] theDragTo   drag end point
+  //! @param[in] theAction   drag action
+  //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
+  Standard_EXPORT virtual Standard_Boolean ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
+                                                            const Handle(V3d_View)& theView,
+                                                            const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                            const Graphic3d_Vec2i& theDragFrom,
+                                                            const Graphic3d_Vec2i& theDragTo,
+                                                            const AIS_DragAction theAction) Standard_OVERRIDE;
+
   //! Sets new local transformation, which is propagated to Graphic3d_CLight instance.
   Standard_EXPORT virtual void setLocalTransformation (const Handle(TopLoc_Datum3D)& theTrsf) Standard_OVERRIDE;
 
@@ -217,18 +255,23 @@ protected:
   Handle(Graphic3d_AspectMarker3d) myDisabledMarkerAspect;  //!< disabled light source marker style
   Handle(Graphic3d_AspectLine3d)   myArrowLineAspectShadow; //!< arrow shadow style
   Handle(Graphic3d_MarkerImage)    myMarkerImages[2];       //!< icon of disabled (0) and enabled (1) light
+  Handle(Select3D_SensitiveSphere) mySensSphere;            //!< sensitive sphere of directional light source
   Aspect_TypeOfMarker              myMarkerTypes[2];        //!< icon of disabled (0) and enabled (1) light
   Aspect_TypeOfMarker              myCodirMarkerType;       //!< icon of arrow co-directional to camera direction (look from)
   Aspect_TypeOfMarker              myOpposMarkerType;       //!< icon of arrow opposite to camera direction (look at)
 
-  Standard_Real    mySize;            //!< presentation size
-  Standard_Integer myNbArrows;        //!< number of directional light arrows
-  Standard_Integer myNbSplitsQuadric; //!< tessellation level for quadric surfaces
-  Standard_Integer myNbSplitsArrow;   //!< tessellation level for arrows
-  Standard_Boolean myIsZoomable;      //!< flag to allow/disallow transform-persistence when possible
-  Standard_Boolean myToDisplayName;   //!< flag to show/hide name
-  Standard_Boolean myToDisplayRange;  //!< flag to show/hide range of positional/spot light
-  Standard_Boolean myToSwitchOnClick; //!< flag to handle mouse click to turn light on/off
+  Graphic3d_Vec2i  myStartTransform;    //!< position of starting transformation
+  gp_Trsf          myLocTrsfStart;      //!< object transformation before transformation
+  Standard_Real    mySize;              //!< presentation size
+  Standard_Integer myNbArrows;          //!< number of directional light arrows
+  Standard_Integer myNbSplitsQuadric;   //!< tessellation level for quadric surfaces
+  Standard_Integer myNbSplitsArrow;     //!< tessellation level for arrows
+  Standard_Integer mySensSphereArcSize; //! sensitive sphere arc size in pixels
+  Standard_Boolean myIsZoomable;        //!< flag to allow/disallow transform-persistence when possible
+  Standard_Boolean myIsDraggable;       //!< flag to allow/disallow rotate directional light source by dragging
+  Standard_Boolean myToDisplayName;     //!< flag to show/hide name
+  Standard_Boolean myToDisplayRange;    //!< flag to show/hide range of positional/spot light
+  Standard_Boolean myToSwitchOnClick;   //!< flag to handle mouse click to turn light on/off
 
 };
 
@@ -247,6 +290,16 @@ public:
                                                              Aspect_VKeyMouse theButton,
                                                              Aspect_VKeyFlags theModifiers,
                                                              bool theIsDoubleClick) Standard_OVERRIDE;
+
+  //! Highlights selectable object's presentation with display mode in presentation manager with given highlight style.
+  //! Also a check for auto-highlight is performed - if selectable object manages highlighting on its own,
+  //! execution will be passed to SelectMgr_SelectableObject::HilightOwnerWithColor method.
+  Standard_EXPORT virtual void HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
+                                                 const Handle(Prs3d_Drawer)& theStyle,
+                                                 const Standard_Integer theMode) Standard_OVERRIDE;
+
+  //! Always update dynamic highlighting.
+  Standard_EXPORT virtual Standard_Boolean IsForcedHilight() const Standard_OVERRIDE;
 
 };
 

@@ -16,7 +16,9 @@
 #include <AIS_LightSource.hxx>
 
 #include <AIS_InteractiveContext.hxx>
+#include <gp_Quaternion.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_CView.hxx>
@@ -27,6 +29,7 @@
 #include <Prs3d_ToolCylinder.hxx>
 #include <Prs3d_ToolSphere.hxx>
 #include <Select3D_SensitivePoint.hxx>
+#include <Select3D_SensitiveSphere.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_LightSource, AIS_InteractiveObject)
@@ -65,6 +68,105 @@ Standard_Boolean AIS_LightSourceOwner::HandleMouseClick (const Graphic3d_Vec2i& 
   return false;
 }
 
+//=======================================================================
+//function : HilightWithColor
+//purpose  :
+//=======================================================================
+void AIS_LightSourceOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
+                                             const Handle(Prs3d_Drawer)& theStyle,
+                                             const Standard_Integer theMode)
+{
+  Handle(AIS_LightSource) aLightSource = Handle(AIS_LightSource)::DownCast (mySelectable);
+  if (aLightSource.IsNull())
+  {
+    return;
+  }
+
+  if (aLightSource->Light()->Type() == Graphic3d_TypeOfLightSource_Directional && aLightSource->myIsDraggable)
+  {
+    Handle(Prs3d_Presentation) aPrs = aLightSource->GetHilightPresentation (thePM);
+    const Graphic3d_ZLayerId aZLayer = theStyle->ZLayer() != -1
+                                     ? theStyle->ZLayer()
+                                     : (thePM->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : aLightSource->ZLayer());
+    aPrs->Clear();
+    if (aPrs->GetZLayer() != aZLayer)
+    {
+      aPrs->SetZLayer (aZLayer);
+    }
+    Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints (1);
+    const gp_Pnt aDetPnt = aLightSource->mySensSphere->LastDetectedPoint();
+    if (aDetPnt.X() == RealLast())
+    {
+      return;
+    }
+    aPoints->AddVertex (aDetPnt);
+    Handle(Graphic3d_Group) aGroup = aPrs->NewGroup();
+    const Handle(Prs3d_PointAspect) aPointAspect = new Prs3d_PointAspect (Aspect_TOM_O_POINT, theStyle->Color(), 3.0f);
+    aGroup->SetGroupPrimitivesAspect (aPointAspect->Aspect());
+    aGroup->AddPrimitiveArray (aPoints);
+
+    const Standard_Real aRadius = aLightSource->Size() * 0.5;
+    const Standard_Integer aNbPnts = int (aLightSource->ArcSize() * 180 / (M_PI * aRadius));
+    TColgp_Array1OfPnt aCircPoints (0, aNbPnts);
+    const gp_Dir aDirNorm (gp_Vec (gp::Origin(), aDetPnt));
+    gp_Dir aDirNormToPln (gp::DY());
+    if (!gp::DX().IsParallel (aDirNorm, Precision::Angular()))
+    {
+      aDirNormToPln = gp::DX().Crossed (aDirNorm);
+    }
+    for (Standard_Integer aStep = 0; aStep < aNbPnts; ++aStep)
+    {
+      aCircPoints.SetValue (aStep, (aDetPnt.Rotated (gp_Ax1 (gp::Origin(), aDirNormToPln), M_PI / 90 * (aStep - aNbPnts / 2))));
+    }
+
+    Handle(Graphic3d_Group) aCircGroup = aPrs->NewGroup();
+    Handle(Graphic3d_ArrayOfPolylines) aPolylines = new Graphic3d_ArrayOfPolylines (aNbPnts * 2, 2);
+    aPolylines->AddBound (aNbPnts);
+
+    for (Standard_Integer anIdx = 0; anIdx < aNbPnts; ++anIdx)
+    {
+      aPolylines->AddVertex (aCircPoints.Value (anIdx).Rotated (gp_Ax1 (gp::Origin(), aDirNorm), M_PI / 2));
+    }
+    aPolylines->AddBound (aNbPnts);
+    for (Standard_Integer anIdx = 0; anIdx < aNbPnts; ++anIdx)
+    {
+      aPolylines->AddVertex (aCircPoints.Value (anIdx));
+    }
+    aCircGroup->AddPrimitiveArray (aPolylines, Standard_False);
+    aCircGroup->SetGroupPrimitivesAspect (theStyle->ArrowAspect()->Aspect());
+    if (thePM->IsImmediateModeOn())
+    {
+      thePM->AddToImmediateList (aPrs);
+    }
+    else
+    {
+      aPrs->Display();
+    }
+  }
+  else
+  {
+    base_type::HilightWithColor (thePM, theStyle, theMode);;
+  }
+}
+
+//=======================================================================
+//function : IsForcedHilight
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_LightSourceOwner::IsForcedHilight() const
+{
+  Handle(AIS_LightSource) aLightSource = Handle(AIS_LightSource)::DownCast (mySelectable);
+  if (aLightSource.IsNull())
+  {
+    return Standard_False;
+  }
+  if (aLightSource->Light()->Type() == Graphic3d_TypeOfLightSource_Directional)
+  {
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
 // =======================================================================
 // function : Constructor
 // purpose  :
@@ -77,8 +179,10 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
   myNbArrows (5),
   myNbSplitsQuadric (theLight->Type() == Graphic3d_TypeOfLightSource_Ambient ? 10 : 30),
   myNbSplitsArrow (20),
+  mySensSphereArcSize (25),
   myIsZoomable (theLight->Type() == Graphic3d_TypeOfLightSource_Positional
              || theLight->Type() == Graphic3d_TypeOfLightSource_Spot),
+  myIsDraggable (theLight->Type() == Graphic3d_TypeOfLightSource_Directional),
   myToDisplayName (true),
   myToDisplayRange (true),
   myToSwitchOnClick (true)
@@ -131,6 +235,63 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
     myDrawer->TextAspect()->SetHorizontalJustification (Graphic3d_HTA_CENTER);
     myDrawer->TextAspect()->SetVerticalJustification (Graphic3d_VTA_TOP);
   }
+}
+
+//=======================================================================
+//function : ProcessDragging
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_LightSource::ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
+                                                   const Handle(V3d_View)& theView,
+                                                   const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                   const Graphic3d_Vec2i& theDragFrom,
+                                                   const Graphic3d_Vec2i& theDragTo,
+                                                   const AIS_DragAction theAction)
+{
+  if (Light()->Type() != Graphic3d_TypeOfLightSource_Directional)
+  {
+    return Standard_False;
+  }
+
+  switch (theAction)
+  {
+    case AIS_DragAction_Start:
+    {
+      myStartTransform = theDragFrom;
+      myLocTrsfStart = LocalTransformation();
+      return Standard_True;
+    }
+    case AIS_DragAction_Update:
+    {
+      theCtx->MainSelector()->Pick (myStartTransform.x(), myStartTransform.y(), theView);
+      gp_Pnt aStartPosition = mySensSphere->LastDetectedPoint();
+      theCtx->MainSelector()->Pick (theDragTo.x(), theDragTo.y(), theView);
+      gp_Pnt aCurrPosition = mySensSphere->LastDetectedPoint();
+      if (aCurrPosition.X() != RealLast() && aStartPosition.Distance (aCurrPosition) > Precision::Confusion())
+      {
+        gp_Quaternion aQRot;
+        aQRot.SetRotation (gp_Vec (gp_Pnt (0, 0, 0), aStartPosition), gp_Vec (gp_Pnt (0, 0, 0), aCurrPosition));
+        gp_Trsf aTrsf;
+        aTrsf.SetRotation (aQRot);
+        SetLocalTransformation (myLocTrsfStart * aTrsf);
+        myLocTrsfStart = LocalTransformation();
+        myStartTransform = theDragTo;
+        theOwner->Selectable()->ClearDynamicHighlight (theCtx->MainPrsMgr());
+        theCtx->HilightWithColor (this, Handle(Prs3d_Drawer)(), false);
+      }
+      return Standard_True;
+    }
+    case AIS_DragAction_Abort:
+    {
+      return Standard_True;
+    }
+    case AIS_DragAction_Stop:
+    {
+      GetHilightPresentation (theCtx->MainPrsMgr())->Clear();
+      break;
+    }
+  }
+  return Standard_False;
 }
 
 // =======================================================================
@@ -681,6 +842,12 @@ void AIS_LightSource::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
 
   Handle(AIS_LightSourceOwner) anEntityOwner = new AIS_LightSourceOwner (this, 15);
   {
+    if (myLightSource->Type() == Graphic3d_TypeOfLightSource_Directional)
+    {
+      mySensSphere = new Select3D_SensitiveSphere (anEntityOwner, gp::Origin(), mySize * 0.5);
+      theSel->Add (mySensSphere);
+    }
+
     Handle(Select3D_SensitivePoint) aSensPosition = new Select3D_SensitivePoint (anEntityOwner, gp::Origin());
     aSensPosition->SetSensitivityFactor (12);
     if (!myTransformPersistence.IsNull()
