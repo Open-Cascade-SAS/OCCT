@@ -36,34 +36,28 @@ class gp_Ax2d;
 
 //! Defines a non persistent transformation in 2D space.
 //! This transformation is a general transformation.
-//! It can be a Trsf2d from package gp, an affinity, or you can
-//! define your own transformation giving the corresponding
-//! matrix of transformation.
+//! It can be a gp_Trsf2d, an affinity, or you can
+//! define your own transformation giving the corresponding matrix of transformation.
 //!
-//! With a GTrsf2d you can transform only a doublet of coordinates
-//! XY. It is not possible to transform other geometric objects
-//! because these transformations can change the nature of non-
-//! elementary geometric objects.
-//! A GTrsf2d is represented with a 2 rows * 3 columns matrix :
-//!
-//! V1   V2   T        XY         XY
+//! With a gp_GTrsf2d you can transform only a doublet of coordinates gp_XY.
+//! It is not possible to transform other geometric objects
+//! because these transformations can change the nature of non-elementary geometric objects.
+//! A gp_GTrsf2d is represented with a 2 rows * 3 columns matrix:
+//! @code
+//!    V1   V2   T        XY         XY
 //! | a11  a12  a14 |   | x |      | x'|
-//! | a21  a22  a24 |   | y |      | y'|
+//! | a21  a22  a24 |   | y |   =  | y'|
 //! |  0    0    1  |   | 1 |      | 1 |
-//!
+//! @endcode
 //! where {V1, V2} defines the vectorial part of the
-//! transformation and T defines the translation part of
-//! the transformation.
+//! transformation and T defines the translation part of the transformation.
 //! Warning
-//! A GTrsf2d transformation is only applicable on
-//! coordinates. Be careful if you apply such a
-//! transformation to all the points of a geometric object,
-//! as this can change the nature of the object and thus
-//! render it incoherent!
-//! Typically, a circle is transformed into an ellipse by an
-//! affinity transformation. To avoid modifying the nature of
-//! an object, use a gp_Trsf2d transformation instead, as
-//! objects of this class respect the nature of geometric objects.
+//! A gp_GTrsf2d transformation is only applicable on coordinates.
+//! Be careful if you apply such a transformation to all the points of a geometric object,
+//! as this can change the nature of the object and thus render it incoherent!
+//! Typically, a circle is transformed into an ellipse by an affinity transformation.
+//! To avoid modifying the nature of an object, use a gp_Trsf2d transformation instead,
+//! as objects of this class respect the nature of geometric objects.
 class gp_GTrsf2d 
 {
 public:
@@ -98,7 +92,7 @@ public:
   //! Raises OutOfRange if Row < 1 or Row > 2 or Col < 1 or Col > 3
     void SetValue (const Standard_Integer Row, const Standard_Integer Col, const Standard_Real Value);
   
-  //! Replacesthe translation part of this
+  //! Replaces the translation part of this
   //! transformation by the coordinates of the number pair Coord.
   Standard_EXPORT void SetTranslationPart (const gp_XY& Coord);
   
@@ -162,16 +156,18 @@ public:
   //! Computes the transformation composed with T and <me>.
   //! In a C++ implementation you can also write Tcomposed = <me> * T.
   //! Example :
-  //! GTrsf2d T1, T2, Tcomp; ...............
+  //! @code
+  //! gp_GTrsf2d T1, T2, Tcomp; ...............
   //! //composition :
   //! Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
   //! // transformation of a point
-  //! XY P(10.,3.);
-  //! XY P1(P);
+  //! gp_XY P(10.,3.);
+  //! gp_XY P1(P);
   //! Tcomp.Transforms(P1);               //using Tcomp
-  //! XY P2(P);
+  //! gp_XY P2(P);
   //! T1.Transforms(P2);                  //using T1 then T2
   //! T2.Transforms(P2);                  // P1 = P2 !!!
+  //! @endcode
   Standard_NODISCARD gp_GTrsf2d Multiplied (const gp_GTrsf2d& T) const;
   Standard_NODISCARD gp_GTrsf2d operator * (const gp_GTrsf2d& T) const
 {

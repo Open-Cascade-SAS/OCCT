@@ -84,14 +84,16 @@ public:
     void SetRadius (const Standard_Real R);
   
 
-  //! Computes the aera of the sphere.
+  //! Computes the area of the sphere.
     Standard_Real Area() const;
   
 
   //! Computes the coefficients of the implicit equation of the quadric
   //! in the absolute cartesian coordinates system :
+  //! @code
   //! A1.X**2 + A2.Y**2 + A3.Z**2 + 2.(B1.X.Y + B2.X.Z + B3.Y.Z) +
   //! 2.(C1.X + C2.Y + C3.Z) + D = 0.0
+  //! @endcode
   Standard_EXPORT void Coefficients (Standard_Real& A1, Standard_Real& A2, Standard_Real& A3, Standard_Real& B1, Standard_Real& B2, Standard_Real& B3, Standard_Real& C1, Standard_Real& C2, Standard_Real& C3, Standard_Real& D) const;
   
   //! Reverses the   U   parametrization of   the sphere

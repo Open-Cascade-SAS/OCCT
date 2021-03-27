@@ -28,12 +28,12 @@ class gp_Vec;
 class gp_Mat;
 
 
-//! Represents operation of rotation in 3d space as queternion
+//! Represents operation of rotation in 3d space as quaternion
 //! and implements operations with rotations basing on
 //! quaternion mathematics.
 //!
 //! In addition, provides methods for conversion to and from other
-//! representatons of rotation (3*3 matrix, vector and
+//! representations of rotation (3*3 matrix, vector and
 //! angle, Euler angles)
 class gp_Quaternion 
 {
@@ -191,25 +191,29 @@ Standard_NODISCARD gp_Quaternion operator - (const gp_Quaternion& theOther) cons
 }
   
   //! Multiply function - work the same as Matrices multiplying.
+  //! @code
   //! qq' = (cross(v,v') + wv' + w'v, ww' - dot(v,v'))
+  //! @endcode
   //! Result is rotation combination: q' than q (here q=this, q'=theQ).
-  //! Notices than:
+  //! Notices that:
+  //! @code
   //! qq' != q'q;
   //! qq^-1 = q;
+  //! @endcode
 Standard_NODISCARD gp_Quaternion Multiplied (const gp_Quaternion& theOther) const;
 Standard_NODISCARD gp_Quaternion operator * (const gp_Quaternion& theOther) const
 {
   return Multiplied(theOther);
 }
   
-  //! Adds componnets of other quaternion; result is "rotations mix"
+  //! Adds components of other quaternion; result is "rotations mix"
   void Add (const gp_Quaternion& theOther);
 void operator += (const gp_Quaternion& theOther)
 {
   Add(theOther);
 }
   
-  //! Subtracts componnets of other quaternion; result is "rotations mix"
+  //! Subtracts components of other quaternion; result is "rotations mix"
   void Subtract (const gp_Quaternion& theOther);
 void operator -= (const gp_Quaternion& theOther)
 {

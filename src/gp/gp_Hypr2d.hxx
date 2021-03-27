@@ -53,6 +53,7 @@ class gp_Vec2d;
 //! and in it, the respective positions of the three branches of
 //! hyperbolas constructed with the functions OtherBranch,
 //! ConjugateBranch1, and ConjugateBranch2:
+//! @code
 //! ^YAxis
 //! |
 //! FirstConjugateBranch
@@ -64,7 +65,7 @@ class gp_Vec2d;
 //! |
 //! SecondConjugateBranch
 //! |
-//!
+//! @endcode
 //! Warning
 //! The major radius can be less than the minor radius.
 //! See Also

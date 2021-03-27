@@ -72,9 +72,11 @@ public:
   
 
   //! Modifies the main diagonal of the matrix.
+  //! @code
   //! <me>.Value (1, 1) = X1
   //! <me>.Value (2, 2) = X2
   //! <me>.Value (3, 3) = X3
+  //! @endcode
   //! The other coefficients of the matrix are not modified.
     void SetDiagonal (const Standard_Real X1, const Standard_Real X2, const Standard_Real X3);
   
@@ -107,9 +109,11 @@ public:
 
   //! Modifies the matrix so that it represents
   //! a scaling transformation, where S is the scale factor. :
-  //! | S    0.0  0.0 |
+  //! @code
+  //!         | S    0.0  0.0 |
   //! <me> =  | 0.0   S   0.0 |
-  //! | 0.0  0.0   S  |
+  //!         | 0.0  0.0   S  |
+  //! @endcode
     void SetScale (const Standard_Real S);
   
   //! Assigns <Value> to the coefficient of row Row, column Col of   this matrix.

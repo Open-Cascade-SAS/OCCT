@@ -44,7 +44,9 @@ class gp_Vec2d;
 //! of the ellipse. Its orientation (direct or indirect) gives an
 //! implicit orientation to the ellipse. In this coordinate
 //! system, the equation of the ellipse is:
+//! @code
 //! X*X / (MajorRadius**2) + Y*Y / (MinorRadius**2) = 1.0
+//! @endcode
 //! See Also
 //! gce_MakeElips2d which provides functions for more
 //! complex ellipse constructions

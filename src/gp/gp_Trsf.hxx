@@ -50,13 +50,13 @@ class gp_Vec;
 //! previous elementary transformations using the method
 //! Multiply.
 //! The transformations can be represented as follow :
-//!
-//! V1   V2   V3    T       XYZ        XYZ
+//! @code
+//!    V1   V2   V3    T       XYZ        XYZ
 //! | a11  a12  a13   a14 |   | x |      | x'|
 //! | a21  a22  a23   a24 |   | y |      | y'|
 //! | a31  a32  a33   a34 |   | z |   =  | z'|
 //! |  0    0    0     1  |   | 1 |      | 1 |
-//!
+//! @endcode
 //! where {V1, V2, V3} defines the vectorial part of the
 //! transformation and T defines the translation part of the
 //! transformation.
@@ -156,16 +156,16 @@ public:
   //! The transformation is from the coordinate
   //! system "FromSystem1" to the coordinate system "ToSystem2".
   //! Example :
-  //! In a C++ implementation :
-  //! Real x1, y1, z1;  // are the coordinates of a point in the
-  //! // local system FromSystem1
-  //! Real x2, y2, z2;  // are the coordinates of a point in the
-  //! // local system ToSystem2
+  //! @code
+  //! gp_Ax3 FromSystem1, ToSystem2;
+  //! double x1, y1, z1;  // are the coordinates of a point in the local system FromSystem1
+  //! double x2, y2, z2;  // are the coordinates of a point in the local system ToSystem2
   //! gp_Pnt P1 (x1, y1, z1)
-  //! Trsf T;
+  //! gp_Trsf T;
   //! T.SetTransformation (FromSystem1, ToSystem2);
   //! gp_Pnt P2 = P1.Transformed (T);
   //! P2.Coord (x2, y2, z2);
+  //! @endcode
   Standard_EXPORT void SetTransformation (const gp_Ax3& FromSystem1, const gp_Ax3& ToSystem2);
   
   //! Modifies this transformation so that it transforms the
@@ -174,7 +174,9 @@ public:
   //! are relative to a target coordinate system, but which
   //! represent the same point
   //! The transformation is from the default coordinate system
+  //! @code
   //! {P(0.,0.,0.), VX (1.,0.,0.), VY (0.,1.,0.), VZ (0., 0. ,1.) }
+  //! @endcode
   //! to the local coordinate system defined with the Ax3 ToSystem.
   //! Use in the same way  as the previous method. FromSystem1 is
   //! defaulted to the absolute coordinate system.
@@ -206,11 +208,11 @@ public:
   //! Sets the coefficients  of the transformation.  The
   //! transformation  of the  point  x,y,z is  the point
   //! x',y',z' with :
-  //!
+  //! @code
   //! x' = a11 x + a12 y + a13 z + a14
   //! y' = a21 x + a22 y + a23 z + a24
   //! z' = a31 x + a32 y + a33 z + a34
-  //!
+  //! @endcode
   //! The method Value(i,j) will return aij.
   //! Raises ConstructionError if the determinant of  the aij is null.
   //! The matrix is orthogonalized before future using.
@@ -279,12 +281,14 @@ public:
   //! Computes the transformation composed with T and  <me>.
   //! In a C++ implementation you can also write Tcomposed = <me> * T.
   //! Example :
-  //! Trsf T1, T2, Tcomp; ...............
+  //! @code
+  //! gp_Trsf T1, T2, Tcomp; ...............
   //! Tcomp = T2.Multiplied(T1);         // or   (Tcomp = T2 * T1)
-  //! Pnt P1(10.,3.,4.);
-  //! Pnt P2 = P1.Transformed(Tcomp);    //using Tcomp
-  //! Pnt P3 = P1.Transformed(T1);       //using T1 then T2
+  //! gp_Pnt P1(10.,3.,4.);
+  //! gp_Pnt P2 = P1.Transformed(Tcomp); // using Tcomp
+  //! gp_Pnt P3 = P1.Transformed(T1);    // using T1 then T2
   //! P3.Transform(T2);                  // P3 = P2 !!!
+  //! @endcode
   Standard_NODISCARD gp_Trsf Inverted() const;
   
   Standard_NODISCARD gp_Trsf Multiplied (const gp_Trsf& T) const;

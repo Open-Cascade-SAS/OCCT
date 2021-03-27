@@ -45,7 +45,9 @@ class gp_Vec;
 //! coordinate system define the plane of the parabola.
 //! The equation of the parabola in this coordinate system,
 //! which is the "local coordinate system" of the parabola, is:
+//! @code
 //! Y**2 = (2*P) * X.
+//! @endcode
 //! where P, referred to as the parameter of the parabola, is
 //! the distance between the focus and the directrix (P is
 //! twice the focal length).

@@ -130,6 +130,7 @@ public:
   
   //! Computes the coefficients of the implicit equation of the surface
   //! in the absolute Cartesian coordinate system:
+  //! @code
   //!     Coef(1) * X^4 + Coef(2) * Y^4 + Coef(3) * Z^4 +
   //!     Coef(4) * X^3 * Y + Coef(5) * X^3 * Z + Coef(6) * Y^3 * X +
   //!     Coef(7) * Y^3 * Z + Coef(8) * Z^3 * X + Coef(9) * Z^3 * Y +
@@ -144,6 +145,7 @@ public:
   //!     Coef(29) * X * Y + Coef(30) * X * Z + Coef(31) * Y * Z +
   //!     Coef(32) * X + Coef(33) * Y + Coef(34) *  Z + 
   //!     Coef(35) = 0.0
+  //! @endcode
   //! Raises DimensionError if the length of Coef is lower than 35.
   Standard_EXPORT void Coefficients (TColStd_Array1OfReal& Coef) const;
   

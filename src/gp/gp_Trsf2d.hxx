@@ -39,17 +39,17 @@ class gp_Mat2d;
 
 //! Defines a non-persistent transformation in 2D space.
 //! The following transformations are implemented :
-//! . Translation, Rotation, Scale
-//! . Symmetry with respect to a point and a line.
+//! - Translation, Rotation, Scale
+//! - Symmetry with respect to a point and a line.
 //! Complex transformations can be obtained by combining the
 //! previous elementary transformations using the method Multiply.
 //! The transformations can be represented as follow :
-//!
-//! V1   V2   T       XY        XY
+//! @code
+//!    V1   V2   T       XY        XY
 //! | a11  a12  a13 |   | x |     | x'|
 //! | a21  a22  a23 |   | y |     | y'|
 //! |  0    0    1  |   | 1 |     | 1 |
-//!
+//! @endcode
 //! where {V1, V2} defines the vectorial part of the transformation
 //! and T defines the translation part of the transformation.
 //! This transformation never change the nature of the objects.
@@ -206,10 +206,10 @@ void operator *= (const gp_Trsf2d& T)
   //! Sets the coefficients  of the transformation. The
   //! transformation  of the  point  x,y is  the point
   //! x',y' with :
-  //!
+  //! @code
   //! x' = a11 x + a12 y + a13
   //! y' = a21 x + a22 y + a23
-  //!
+  //! @endcode
   //! The method Value(i,j) will return aij.
   //! Raises ConstructionError if the determinant of the aij is null.
   //! If the matrix as not a uniform scale it will be orthogonalized before future using.

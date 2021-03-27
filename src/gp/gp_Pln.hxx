@@ -82,13 +82,17 @@ public:
   
 
   //! Creates a plane from its cartesian equation :
+  //! @code
   //! A * X + B * Y + C * Z + D = 0.0
+  //! @endcode
   //! Raises ConstructionError if Sqrt (A*A + B*B + C*C) <= Resolution from gp.
   Standard_EXPORT gp_Pln(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D);
   
 
   //! Returns the coefficients of the plane's cartesian equation :
+  //! @code
   //! A * X + B * Y + C * Z + D = 0.
+  //! @endcode
     void Coefficients (Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D) const;
   
   //! Modifies this plane, by redefining its local coordinate system so that

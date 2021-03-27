@@ -119,40 +119,44 @@ public:
   //! abs(<me>.Z() - Other.Z()) <= Tolerance.
   Standard_EXPORT Standard_Boolean IsEqual (const gp_XYZ& Other, const Standard_Real Tolerance) const;
   
-
+  //! @code
   //! <me>.X() = <me>.X() + Other.X()
   //! <me>.Y() = <me>.Y() + Other.Y()
   //! <me>.Z() = <me>.Z() + Other.Z()
+  //! @endcode
     void Add (const gp_XYZ& Other);
   void operator += (const gp_XYZ& Other)
 {
   Add(Other);
 }
-  
 
+  //! @code
   //! new.X() = <me>.X() + Other.X()
   //! new.Y() = <me>.Y() + Other.Y()
   //! new.Z() = <me>.Z() + Other.Z()
+  //! @endcode
   Standard_NODISCARD gp_XYZ Added (const gp_XYZ& Other) const;
   Standard_NODISCARD gp_XYZ operator + (const gp_XYZ& Other) const
 {
   return Added(Other);
 }
-  
 
+  //! @code
   //! <me>.X() = <me>.Y() * Other.Z() - <me>.Z() * Other.Y()
   //! <me>.Y() = <me>.Z() * Other.X() - <me>.X() * Other.Z()
   //! <me>.Z() = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+  //! @endcode
     void Cross (const gp_XYZ& Right);
   void operator ^= (const gp_XYZ& Right)
 {
   Cross(Right);
 }
-  
 
+  //! @code
   //! new.X() = <me>.Y() * Other.Z() - <me>.Z() * Other.Y()
   //! new.Y() = <me>.Z() * Other.X() - <me>.X() * Other.Z()
   //! new.Z() = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+  //! @endcode
   Standard_NODISCARD gp_XYZ Crossed (const gp_XYZ& Right) const;
   Standard_NODISCARD gp_XYZ operator ^ (const gp_XYZ& Right) const
 {
@@ -200,97 +204,111 @@ public:
   
   //! computes the triple scalar product
     Standard_Real DotCross (const gp_XYZ& Coord1, const gp_XYZ& Coord2) const;
-  
 
+  //! @code
   //! <me>.X() = <me>.X() * Scalar;
   //! <me>.Y() = <me>.Y() * Scalar;
   //! <me>.Z() = <me>.Z() * Scalar;
+  //! @endcode
     void Multiply (const Standard_Real Scalar);
   void operator *= (const Standard_Real Scalar)
 {
   Multiply(Scalar);
 }
-  
 
+  //! @code
   //! <me>.X() = <me>.X() * Other.X();
   //! <me>.Y() = <me>.Y() * Other.Y();
   //! <me>.Z() = <me>.Z() * Other.Z();
+  //! @endcode
     void Multiply (const gp_XYZ& Other);
   void operator *= (const gp_XYZ& Other)
 {
   Multiply(Other);
 }
-  
+
+  //! @code
   //! <me> = Matrix * <me>
+  //! @endcode
     void Multiply (const gp_Mat& Matrix);
   void operator *= (const gp_Mat& Matrix)
 {
   Multiply(Matrix);
 }
-  
 
+  //! @code
   //! New.X() = <me>.X() * Scalar;
   //! New.Y() = <me>.Y() * Scalar;
   //! New.Z() = <me>.Z() * Scalar;
+  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const Standard_Real Scalar) const;
   Standard_NODISCARD gp_XYZ operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
-  
 
+  //! @code
   //! new.X() = <me>.X() * Other.X();
   //! new.Y() = <me>.Y() * Other.Y();
   //! new.Z() = <me>.Z() * Other.Z();
+  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const gp_XYZ& Other) const;
-  
+
+  //! @code
   //! New = Matrix * <me>
+  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const gp_Mat& Matrix) const;
   Standard_NODISCARD gp_XYZ operator * (const gp_Mat& Matrix) const
 {
   return Multiplied(Matrix);
 }
-  
 
+  //! @code
   //! <me>.X() = <me>.X()/ <me>.Modulus()
   //! <me>.Y() = <me>.Y()/ <me>.Modulus()
   //! <me>.Z() = <me>.Z()/ <me>.Modulus()
+  //! @endcode
   //! Raised if <me>.Modulus() <= Resolution from gp
     void Normalize();
-  
 
+  //! @code
   //! New.X() = <me>.X()/ <me>.Modulus()
   //! New.Y() = <me>.Y()/ <me>.Modulus()
   //! New.Z() = <me>.Z()/ <me>.Modulus()
+  //! @endcode
   //! Raised if <me>.Modulus() <= Resolution from gp
     Standard_NODISCARD gp_XYZ Normalized() const;
-  
 
+  //! @code
   //! <me>.X() = -<me>.X()
   //! <me>.Y() = -<me>.Y()
   //! <me>.Z() = -<me>.Z()
+  //! @endcode
     void Reverse();
-  
 
+  //! @code
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
   //! New.Z() = -<me>.Z()
+  //! @endcode
     Standard_NODISCARD gp_XYZ Reversed() const;
-  
 
+  //! @code
   //! <me>.X() = <me>.X() - Other.X()
   //! <me>.Y() = <me>.Y() - Other.Y()
   //! <me>.Z() = <me>.Z() - Other.Z()
+  //! @endcode
     void Subtract (const gp_XYZ& Right);
   void operator -= (const gp_XYZ& Right)
 {
   Subtract(Right);
 }
-  
 
+  //! @code
   //! new.X() = <me>.X() - Other.X()
   //! new.Y() = <me>.Y() - Other.Y()
   //! new.Z() = <me>.Z() - Other.Z()
+  //! @endcode
   Standard_NODISCARD gp_XYZ Subtracted (const gp_XYZ& Right) const;
   Standard_NODISCARD gp_XYZ operator - (const gp_XYZ& Right) const
 {
@@ -299,32 +317,44 @@ public:
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! A1 * XYZ1 + A2 * XYZ2 + A3 * XYZ3 + XYZ4
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1, const Standard_Real A2, const gp_XYZ& XYZ2, const Standard_Real A3, const gp_XYZ& XYZ3, const gp_XYZ& XYZ4);
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! A1 * XYZ1 + A2 * XYZ2 + A3 * XYZ3
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1, const Standard_Real A2, const gp_XYZ& XYZ2, const Standard_Real A3, const gp_XYZ& XYZ3);
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! A1 * XYZ1 + A2 * XYZ2 + XYZ3
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1, const Standard_Real A2, const gp_XYZ& XYZ2, const gp_XYZ& XYZ3);
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! A1 * XYZ1 + A2 * XYZ2
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1, const Standard_Real A2, const gp_XYZ& XYZ2);
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! A1 * XYZ1 + XYZ2
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XYZ& XYZ1, const gp_XYZ& XYZ2);
   
 
   //! <me> is set to the following linear form :
+  //! @code
   //! XYZ1 + XYZ2
+  //! @endcode
     void SetLinearForm (const gp_XYZ& XYZ1, const gp_XYZ& XYZ2);
 
 

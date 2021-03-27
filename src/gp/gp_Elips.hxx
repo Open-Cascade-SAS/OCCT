@@ -43,7 +43,9 @@ class gp_Vec;
 //! This coordinate system is the "local coordinate system"
 //! of the ellipse. In this coordinate system, the equation of
 //! the ellipse is:
+//! @code
 //! X*X / (MajorRadius**2) + Y*Y / (MinorRadius**2) = 1.0
+//! @endcode
 //! The "main Direction" of the local coordinate system gives
 //! the normal vector to the plane of the ellipse. This vector
 //! gives an implicit orientation to the ellipse (definition of the

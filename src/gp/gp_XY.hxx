@@ -98,8 +98,10 @@ public:
   Standard_EXPORT Standard_Boolean IsEqual (const gp_XY& Other, const Standard_Real Tolerance) const;
   
   //! Computes the sum of this number pair and number pair Other
+  //! @code
   //! <me>.X() = <me>.X() + Other.X()
   //! <me>.Y() = <me>.Y() + Other.Y()
+  //! @endcode
     void Add (const gp_XY& Other);
   void operator += (const gp_XY& Other)
 {
@@ -107,8 +109,10 @@ public:
 }
   
   //! Computes the sum of this number pair and number pair Other
+  //! @code
   //! new.X() = <me>.X() + Other.X()
   //! new.Y() = <me>.Y() + Other.Y()
+  //! @endcode
   Standard_NODISCARD gp_XY Added (const gp_XY& Other) const;
   Standard_NODISCARD gp_XY operator + (const gp_XY& Other) const
 {
@@ -116,7 +120,9 @@ public:
 }
   
 
-  //! Real D = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+  //! @code
+  //! double D = <me>.X() * Other.Y() - <me>.Y() * Other.X()
+  //! @endcode
   Standard_NODISCARD Standard_Real Crossed (const gp_XY& Right) const;
   Standard_NODISCARD Standard_Real operator ^ (const gp_XY& Right) const
 {
@@ -155,71 +161,84 @@ public:
 }
   
 
+  //! @code
   //! <me>.X() = <me>.X() * Scalar;
   //! <me>.Y() = <me>.Y() * Scalar;
+  //! @endcode
     void Multiply (const Standard_Real Scalar);
   void operator *= (const Standard_Real Scalar)
 {
   Multiply(Scalar);
 }
   
-
+  //! @code
   //! <me>.X() = <me>.X() * Other.X();
   //! <me>.Y() = <me>.Y() * Other.Y();
+  //! @endcode
     void Multiply (const gp_XY& Other);
   void operator *= (const gp_XY& Other)
 {
   Multiply(Other);
 }
-  
+
+  //! @code
   //! <me> = Matrix * <me>
+  //! @endcode
     void Multiply (const gp_Mat2d& Matrix);
   void operator *= (const gp_Mat2d& Matrix)
 {
   Multiply(Matrix);
 }
   
-
+  //! @code
   //! New.X() = <me>.X() * Scalar;
   //! New.Y() = <me>.Y() * Scalar;
+  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const Standard_Real Scalar) const;
   Standard_NODISCARD gp_XY operator * (const Standard_Real Scalar) const
 {
   return Multiplied(Scalar);
 }
   
-
+  //! @code
   //! new.X() = <me>.X() * Other.X();
   //! new.Y() = <me>.Y() * Other.Y();
+  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const gp_XY& Other) const;
-  
+
+  //! @code
   //! New = Matrix * <me>
+  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const gp_Mat2d& Matrix) const;
   Standard_NODISCARD gp_XY operator * (const gp_Mat2d& Matrix) const
 {
   return Multiplied(Matrix);
 }
   
-
+  //! @code
   //! <me>.X() = <me>.X()/ <me>.Modulus()
   //! <me>.Y() = <me>.Y()/ <me>.Modulus()
+  //! @endcode
   //! Raises ConstructionError if <me>.Modulus() <= Resolution from gp
     void Normalize();
   
-
+  //! @code
   //! New.X() = <me>.X()/ <me>.Modulus()
   //! New.Y() = <me>.Y()/ <me>.Modulus()
+  //! @endcode
   //! Raises ConstructionError if <me>.Modulus() <= Resolution from gp
     Standard_NODISCARD gp_XY Normalized() const;
   
-
+  //! @code
   //! <me>.X() = -<me>.X()
   //! <me>.Y() = -<me>.Y()
+  //! @endcode
     void Reverse();
   
-
+  //! @code
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
+  //! @endcode
     Standard_NODISCARD gp_XY Reversed() const;
   Standard_NODISCARD gp_XY operator -() const
 {
@@ -229,39 +248,49 @@ public:
 
   //! Computes  the following linear combination and
   //! assigns the result to this number pair:
+  //! @code
   //! A1 * XY1 + A2 * XY2
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XY& XY1, const Standard_Real A2, const gp_XY& XY2);
   
 
   //! --  Computes  the following linear combination and
   //! assigns the result to this number pair:
+  //! @code
   //! A1 * XY1 + A2 * XY2 + XY3
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XY& XY1, const Standard_Real A2, const gp_XY& XY2, const gp_XY& XY3);
   
 
   //! Computes  the following linear combination and
   //! assigns the result to this number pair:
+  //! @code
   //! A1 * XY1 + XY2
+  //! @endcode
     void SetLinearForm (const Standard_Real A1, const gp_XY& XY1, const gp_XY& XY2);
   
 
   //! Computes  the following linear combination and
   //! assigns the result to this number pair:
+  //! @code
   //! XY1 + XY2
+  //! @endcode
     void SetLinearForm (const gp_XY& XY1, const gp_XY& XY2);
   
-
+  //! @code
   //! <me>.X() = <me>.X() - Other.X()
   //! <me>.Y() = <me>.Y() - Other.Y()
+  //! @endcode
     void Subtract (const gp_XY& Right);
   void operator -= (const gp_XY& Right)
 {
   Subtract(Right);
 }
-  
 
+  //! @code
   //! new.X() = <me>.X() - Other.X()
   //! new.Y() = <me>.Y() - Other.Y()
+  //! @endcode
   Standard_NODISCARD gp_XY Subtracted (const gp_XY& Right) const;
   Standard_NODISCARD gp_XY operator - (const gp_XY& Right) const
 {

@@ -44,7 +44,9 @@ class gp_Vec2d;
 //! of the parabola. Its orientation (direct or indirect sense)
 //! gives an implicit orientation to the parabola.
 //! In this coordinate system, the equation for the parabola is:
+//! @code
 //! Y**2 = (2*P) * X.
+//! @endcode
 //! where P, referred to as the parameter of the parabola, is
 //! the distance between the focus and the directrix (P is
 //! twice the focal length).
@@ -126,7 +128,9 @@ public:
 
   //! Computes the coefficients of the implicit equation of the parabola
   //! (in WCS - World Coordinate System).
+  //! @code
   //! A * (X**2) + B * (Y**2) + 2*C*(X*Y) + 2*D*X + 2*E*Y + F = 0.
+  //! @endcode
   Standard_EXPORT void Coefficients (Standard_Real& A, Standard_Real& B,
                                      Standard_Real& C, Standard_Real& D,
                                      Standard_Real& E, Standard_Real& F) const;

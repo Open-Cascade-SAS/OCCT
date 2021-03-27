@@ -56,8 +56,10 @@ public:
   
 
   //! Modifies the main diagonal of the matrix.
+  //! @code
   //! <me>.Value (1, 1) = X1
   //! <me>.Value (2, 2) = X2
+  //! @endcode
   //! The other coefficients of the matrix are not modified.
     void SetDiagonal (const Standard_Real X1, const Standard_Real X2);
   
@@ -65,7 +67,7 @@ public:
     void SetIdentity();
   
 
-  //! Modifies this matrix, so that it representso a rotation. Ang is the angular
+  //! Modifies this matrix, so that it represents a rotation. Ang is the angular
   //! value in radian of the rotation.
     void SetRotation (const Standard_Real Ang);
   
@@ -79,8 +81,10 @@ public:
 
   //! Modifies the matrix such that it
   //! represents a scaling transformation, where S is the scale   factor :
-  //! | S    0.0 |
+  //! @code
+  //!         | S    0.0 |
   //! <me> =  | 0.0   S  |
+  //! @endcode
     void SetScale (const Standard_Real S);
   
   //! Assigns <Value> to the coefficient of row Row, column Col of this matrix.
@@ -135,7 +139,9 @@ public:
 
   //! Computes the sum of this matrix and the matrix
   //! Other.for each coefficient of the matrix :
+  //! @code
   //! <me>.Coef(i,j) + <Other>.Coef(i,j)
+  //! @endcode
   //! Note:
   //! -   operator += assigns the result to this matrix, while
   //! -   operator + creates a new one.
@@ -212,7 +218,9 @@ public:
   
 
   //! Computes for each coefficient of the matrix :
+  //! @code
   //! <me>.Coef(i,j) - <Other>.Coef(i,j)
+  //! @endcode
   Standard_NODISCARD gp_Mat2d Subtracted (const gp_Mat2d& Other) const;
   Standard_NODISCARD gp_Mat2d operator - (const gp_Mat2d& Other) const
 {
