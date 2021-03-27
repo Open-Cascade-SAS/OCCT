@@ -686,6 +686,17 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
   # Write specific options
   if { $docType == "REFMAN" } {
 
+    # always include optional components
+    set aHaveD3dBack  ""
+    set aHaveGlesBack ""
+    set aHaveVtkBack  ""
+    if { [info exists ::env(HAVE_D3D)]   } { set aHaveD3dBack  "$::env(HAVE_D3D)" }
+    if { [info exists ::env(HAVE_GLES2)] } { set aHaveGlesBack "$::env(HAVE_GLES2)" }
+    if { [info exists ::env(HAVE_VTK)]   } { set aHaveVtkBack  "$::env(HAVE_VTK)" }
+    set ::env(HAVE_D3D)   "true"
+    set ::env(HAVE_GLES2) "true"
+    set ::env(HAVE_VTK)   "true"
+
     # Load lists of modules scripts
     if { $productsPath == "" } {
       set modules_scripts [glob -nocomplain -type f -directory "[OCCDoc_GetSourceDir $productsPath]/OS/" *.tcl]
@@ -810,6 +821,11 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
     puts $doxyFile "MATHJAX_RELPATH        = ${mathjaxLocation}"
 
     puts $doxyFile ""
+
+    # restore environment variables
+    set ::env(HAVE_D3D)   "$aHaveD3dBack"
+    set ::env(HAVE_GLES2) "$aHaveGlesBack"
+    set ::env(HAVE_VTK)   "$aHaveVtkBack"
 
   } elseif { $docType == "OVERVIEW" } {
 

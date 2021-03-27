@@ -21,15 +21,13 @@ proc Visualization:toolkits { } {
   if { [info exists ::env(HAVE_GLES2)] && "$::env(HAVE_GLES2)" == "true" } {
     lappend aResult "TKOpenGles"
   }
-  if { "$::tcl_platform(platform)" == "windows" } {
-    if { [info exists ::env(HAVE_D3D)] } {
-      if { "$::env(HAVE_D3D)" == "true" } {
-        lappend aResult "TKD3DHost"
-      }
-    } elseif { [info exists ::env(VCVER)] && "$::env(VCVER)" != "vc8" && "$::env(VCVER)" != "vc9" && "$::env(VCVER)" != "vc10" } {
+
+  if { [info exists ::env(HAVE_D3D)] } {
+    if { "$::env(HAVE_D3D)" == "true" } {
       lappend aResult "TKD3DHost"
     }
   }
+
   if { [info exists ::env(HAVE_VTK)] && "$::env(HAVE_VTK)" == "true" } {
     lappend aResult "TKIVtk"
   }
