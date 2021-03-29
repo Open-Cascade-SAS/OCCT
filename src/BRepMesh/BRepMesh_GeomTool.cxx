@@ -342,17 +342,25 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
     classifyPoint(theStartPnt2, theEndPnt2, theEndPnt1  )
   };
 
+  Standard_Integer aPosHash =
+    aPointHash[0] + aPointHash[1] + aPointHash[2] + aPointHash[3];
+
   // Consider case when edges have shared vertex
   if ( aPointHash[0] < 0 || aPointHash[1] < 0 )
   {
-    if ( isConsiderEndPointTouch )
-      return BRepMesh_GeomTool::EndPointTouch;
+    if (aPosHash == -1)
+    {
+      // -1 means, that 2 points are equal, and 1 point is on another curve
+      return BRepMesh_GeomTool::Glued;
+    }
+    else
+    {
+      if (isConsiderEndPointTouch)
+        return BRepMesh_GeomTool::EndPointTouch;
 
-    return BRepMesh_GeomTool::NoIntersection;
+      return BRepMesh_GeomTool::NoIntersection;
+    }
   }
-
-  Standard_Integer aPosHash = 
-    aPointHash[0] + aPointHash[1] + aPointHash[2] + aPointHash[3];
 
   /*=========================================*/
   /*  1) hash code == 1:
