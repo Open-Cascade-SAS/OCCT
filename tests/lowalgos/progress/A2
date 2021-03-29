@@ -1,0 +1,30 @@
+puts "========"
+puts "0031190: Modeling Algorithms - progress indication in GeomPlate is inconsistent"
+puts "========"
+
+beziercurve c1 3 0 0 0 1 0 1 2 0 0 
+mkedge e1 c1 
+tcopy e1 e2 
+ttranslate e2 0 2 0 
+
+beziercurve c2 3 0 0 0 0 1 2 0 2 0
+mkedge e3 c2
+tcopy e3 e4 
+ttranslate e4 2 0 0 
+
+# Configurate XProgress 
+XProgress +t 
+
+# create the surface 
+set output [gplate r1 4 0 e1 0 e2 0 e3 0 e4 0] 
+
+# Test data
+set ctr {"0%" "Calculating the surface filled" "ComputeSurfInit"
+         "Plate_Plate::SolveTI1()" "math_Gauss LU_Decompose" "100%" }
+
+foreach data ${ctr} {
+  if ![regexp $data $output] {
+     puts "Error: gplate command: Mismatch data on '$data'"
+     break
+  }
+}

@@ -470,7 +470,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
   //======================================================================   
   // Initial Surface 
   //======================================================================
-  Message_ProgressScope aPS(theProgress, NULL, 100, Standard_True);
+  Message_ProgressScope aPS(theProgress, "Calculating the surface filled", 100, Standard_True);
   if (!mySurfInitIsGive)
   {
     ComputeSurfInit (aPS.Next(10));
@@ -1716,7 +1716,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       //====================================================================
       // Construction of the surface
       //====================================================================
-      myPlate.SolveTI(2, ComputeAnisotropie(), theProgress);
+      Message_ProgressScope aPS(theProgress, "ComputeSurfInit", 1);
+      myPlate.SolveTI(2, ComputeAnisotropie(), aPS.Next());
       if (theProgress.UserBreak())
       {
           return;

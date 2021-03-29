@@ -1,0 +1,27 @@
+puts "========"
+puts "0031190: Modeling Algorithms - progress indication in GeomPlate is inconsistent"
+puts "========"
+ 
+# Generate control points       
+set n 100
+set l {}
+for {set i 0} {$i < $n} {incr i} {
+  point p$i [dval sin(2.*pi*$i/$n)] [dval cos(2.*pi*$i/$n)] [expr abs(1-2.*$i/$n)]
+  lappend l p$i
+}
+
+# Configurate XProgress 
+XProgress +t 
+
+# create the surface 
+set output [eval gplate r 0 [llength $l] $l] 
+
+# Test data
+set ctr {"0%" "Calculating the surface filled" "Plate_Plate::SolveTI1()" "math_Gauss LU_Decompose" "100%" }
+
+foreach data ${ctr} {
+  if ![regexp $data $output] {
+    puts "Error: gplate command: Mismatch data on '$data'"
+    break
+  }
+}

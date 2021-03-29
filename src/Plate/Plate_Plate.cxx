@@ -345,7 +345,7 @@ void Plate_Plate::SolveTI1(const Standard_Integer IterationNumber,
   Standard_Real pivot_max = 1.e-12;
   OK = Standard_True;     
 
-  Message_ProgressScope aScope (theProgress, NULL, 10);
+  Message_ProgressScope aScope (theProgress, "Plate_Plate::SolveTI1()", 10);
   math_Gauss algo_gauss(mat,pivot_max, aScope.Next (7));
 
   if (aScope.UserBreak())
@@ -459,7 +459,7 @@ void Plate_Plate::SolveTI2(const Standard_Integer IterationNumber,
   Standard_Real pivot_max = 1.e-12;
   OK = Standard_True;      // ************ JHH
 
-  Message_ProgressScope aScope (theProgress, NULL, 10);
+  Message_ProgressScope aScope (theProgress, "Plate_Plate::SolveTI2()", 10);
   math_Gauss algo_gauss(mat,pivot_max, aScope.Next (7));
   
   if (aScope.UserBreak())
@@ -733,7 +733,7 @@ void Plate_Plate::SolveTI3(const Standard_Integer IterationNumber,
   Standard_Real pivot_max = 1.e-12;
   OK = Standard_True;      // ************ JHH
 
-  Message_ProgressScope aScope (theProgress, NULL, 10);
+  Message_ProgressScope aScope (theProgress, "Plate_Plate::SolveTI3()", 10);
   math_Gauss algo_gauss(mat,pivot_max, aScope.Next (7));
   
   if (aScope.UserBreak())

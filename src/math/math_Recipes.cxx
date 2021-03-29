@@ -185,7 +185,7 @@ Standard_Integer LU_Decompose(math_Matrix& a,
      Standard_Integer n = a.RowNumber();
      d = 1.0;
 
-     Message_ProgressScope aPS(theProgress, "", n);
+     Message_ProgressScope aPS(theProgress, "math_Gauss LU_Decompose", n);
 
      for(i = 1; i <= n; i++) {
        big = 0.0;

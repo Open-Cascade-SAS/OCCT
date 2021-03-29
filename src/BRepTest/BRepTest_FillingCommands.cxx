@@ -29,6 +29,7 @@
 #include <GeometryTest.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <DrawTrSurf.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
@@ -167,8 +168,13 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
 				     NbPtsCur->Value(i));
     Henri.Add(Cont);
   }
-  
-  Henri.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  Henri.Perform(aProgress->Start());
+  if (aProgress->UserBreak())
+  {
+    di << "Error: UserBreak\n";
+    return 0;
+  }
 
   Standard_Real ErrG0 = 1.1*Henri.G0Error();
   //std::cout<<" dist. max = "<<Henri.G0Error()<<" ; angle max = "<<Henri.G1Error()<<std::endl;
@@ -217,7 +223,7 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
 //  commande gplate : resultat face egale a la surface approchee
 //////////////////////////////////////////////////////////////////////////////// 
  
-static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const char** a)
+static Standard_Integer gplate (Draw_Interpretor & di,Standard_Integer n,const char** a)
 {
   if (n < 6 ) return 1; 
   Standard_Integer NbCurFront=Draw::Atoi(a[2]),
@@ -298,7 +304,13 @@ static Standard_Integer gplate (Draw_Interpretor & ,Standard_Integer n,const cha
 	  Henri.Add(PCont);
 	}
     }    
-  Henri.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  Henri.Perform(aProgress->Start());
+  if (aProgress->UserBreak())
+  {
+    di << "Error: UserBreak\n";
+    return 0;
+  }
   Standard_Integer nbcarreau=9;
   Standard_Integer degmax=8;
   Standard_Real seuil;
@@ -368,7 +380,13 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
     Henri.Add(Cont);
   }
   
-  Henri.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  Henri.Perform(aProgress->Start());
+  if (aProgress->UserBreak())
+  {
+    di << "Error: UserBreak\n";
+    return 0;
+  }
 
   Standard_Real dmax = Henri.G0Error(),
                 anmax = Henri.G1Error();
