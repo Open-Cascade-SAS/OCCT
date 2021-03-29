@@ -577,7 +577,7 @@ bool OcctJni_Viewer::saveSnapshot (const TCollection_AsciiString& thePath,
   }
 
   Image_AlienPixMap anAlienImage;
-  if (!anAlienImage.InitTrash (Image_PixMap::ImgBGRA, theWidth, theHeight))
+  if (!anAlienImage.InitTrash (Image_Format_BGRA, theWidth, theHeight))
   {
     Message::DefaultMessenger()->Send (TCollection_AsciiString() + "RGBA image " + theWidth + "x" + theHeight + " allocation failed", Message_Fail);
     return false;
@@ -586,7 +586,7 @@ bool OcctJni_Viewer::saveSnapshot (const TCollection_AsciiString& thePath,
   // OpenGL ES does not support fetching data in BGRA format
   // while FreeImage does not support RGBA format.
   Image_PixMap anImage;
-  anImage.InitWrapper (Image_PixMap::ImgRGBA,
+  anImage.InitWrapper (Image_Format_RGBA,
                        anAlienImage.ChangeData(),
                        anAlienImage.SizeX(),
                        anAlienImage.SizeY(),
