@@ -734,19 +734,30 @@ static Standard_Integer trianglesinfo (Draw_Interpretor& theDI, Standard_Integer
           aDynTypeCounter = &aStats->TypeMap.ChangeFromIndex (aNewIndex);
         }
         (*aDynTypeCounter)++;
-        aStats->NbTriangles += aLOD->NbTriangles();
         if (aLOD->HasDeferredData())
         {
           aStats->NbDeferredFaces++;
-          if (!aLOD->HasGeometry())
+          if (aLOD->HasGeometry())
+          {
+            aStats->NbTriangles += aLOD->NbTriangles();
+          }
+          else
           {
             aStats->NbUnloadedFaces++;
+            aStats->NbTriangles += aLOD->NbDeferredTriangles();
             aStats->NbUnloadedTriangles += aLOD->NbDeferredTriangles();
           }
         }
-        else if (!aLOD->HasGeometry())
+        else
         {
-          aStats->NbEmptyFaces++;
+          if (aLOD->HasGeometry())
+          {
+            aStats->NbTriangles += aLOD->NbTriangles();
+          }
+          else
+          {
+            aStats->NbEmptyFaces++;
+          }
         }
       }
     }
