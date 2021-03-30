@@ -514,6 +514,7 @@ vtkActor* CreateActor (const Standard_Integer theId,
   Handle(PipelinePtr) aPL = new PipelinePtr (theShape, theId, GetDefaultDrawer());
   GetPipelines()->Bind (theId, aPL);
 
+  aPL->Actor()->GetProperty()->SetInterpolationToPhong();
   return aPL->Actor();
 }
 
@@ -828,158 +829,159 @@ static Standard_Integer VtkRemove (Draw_Interpretor& ,
 
 //================================================================
 // Function  : VtkSetDisplayMode
-// Purpose   : 
-// Draw args : ivtksetdispmode [name] mode(0,1)
+// Purpose   :
 //================================================================
-static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& ,
+static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& theDI,
                                            Standard_Integer theArgNum,
                                            const char** theArgs)
 {
   if (!GetInteractor()
    || !GetInteractor()->IsEnabled())
   {
-    Message::SendFail() << "Error: call ivtkinit before";
-    return 1;
-  }
-  else if (theArgNum != 2 && theArgNum != 3)
-  {
-    Message::SendFail() << "Syntax error: expects 1 or 2 arguments";
+    theDI << "Error: call ivtkinit before";
     return 1;
   }
 
-  if (theArgNum == 2)
+  Standard_Integer aDispMode = -1;
+  Standard_Integer isFaceBoundaryDraw = -1, isSmoothShading = -1;
+  Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TOSM_DEFAULT;
+  NCollection_Sequence< vtkSmartPointer<vtkActor> > anActors;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
   {
-    // Set disp mode for all objects
-    Standard_Integer aMode =  Draw::Atoi (theArgs[1]); // Get mode
-    DoubleMapOfActorsAndNames::Iterator anIter (GetMapOfActors());
-    while (anIter.More())
+    TCollection_AsciiString anArgCase (theArgs[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-faceboundarydraw"
+     || anArgCase == "-drawfaceboundary"
+     || anArgCase == "-faceboundary")
     {
-      vtkSmartPointer<vtkActor> anActor = anIter.Key1();
-      IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
-      if (aSrc)
+      bool toDraw = Draw::ParseOnOffNoIterator (theArgNum, theArgs, anArgIter);
+      isFaceBoundaryDraw = toDraw ? 1 : 0;
+    }
+    else if (anArgCase == "-smoothshading"
+          || anArgCase == "-smooth")
+    {
+      bool toEnable = Draw::ParseOnOffNoIterator (theArgNum, theArgs, anArgIter);
+      isSmoothShading = toEnable ? 1 : 0;
+    }
+    else if (anArgIter + 1 < theArgNum
+          && (anArgCase == "-shadingmodel"))
+    {
+      TCollection_AsciiString aModelName (theArgs[++anArgIter]);
+      aModelName.LowerCase();
+      if (aModelName == "fragment"
+       || aModelName == "frag"
+       || aModelName == "phong")
       {
-        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-        if (!anOccShape.IsNull())
+        aShadingModel = Graphic3d_TOSM_FRAGMENT;
+      }
+      else if (aModelName == "vertex"
+            || aModelName == "vert"
+            || aModelName == "gouraud")
+      {
+        aShadingModel = Graphic3d_TOSM_VERTEX;
+      }
+      else if (aModelName == "facet"
+            || aModelName == "flat")
+      {
+        aShadingModel = Graphic3d_TOSM_FACET;
+      }
+      else
+      {
+        theDI << "Syntax error: unknown shading model '" << theArgs[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else if (aDispMode == -1
+          && (anArgCase == "0"
+           || anArgCase == "1"))
+    {
+      aDispMode = Draw::Atoi (theArgs[anArgIter]);
+    }
+    else if (aDispMode == -1
+          && (anArgCase == "-shaded"
+           || anArgCase == "-shading"))
+    {
+      aDispMode = DM_Shading;
+    }
+    else if (aDispMode == -1
+          && anArgCase == "-wireframe")
+    {
+      aDispMode = DM_Wireframe;
+    }
+    else
+    {
+      TCollection_AsciiString aName = theArgs[anArgIter];
+      vtkSmartPointer<vtkActor> anActor;
+      if (!GetMapOfActors().Find2 (aName, anActor))
+      {
+        theDI << "Syntax error: object '" << aName << "' not found";
+        return 1;
+      }
+      anActors.Append (anActor);
+    }
+  }
+  if (aDispMode == -1)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  if (anActors.IsEmpty())
+  {
+    // update all objects
+    for (DoubleMapOfActorsAndNames::Iterator anIter (GetMapOfActors()); anIter.More(); anIter.Next())
+    {
+      anActors.Append (anIter.Key1());
+    }
+  }
+
+  for (NCollection_Sequence< vtkSmartPointer<vtkActor> >::Iterator anActorIter (anActors); anActorIter.More(); anActorIter.Next())
+  {
+    vtkSmartPointer<vtkActor> anActor = anActorIter.Value();
+    IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
+    if (aSrc == NULL)
+    {
+      continue;
+    }
+
+    IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
+    if (!anOccShape.IsNull())
+    {
+      IVtkTools_DisplayModeFilter* aFilter = GetPipeline ( anOccShape->GetId() )->GetDisplayModeFilter();
+      aFilter->SetDisplayMode ((IVtk_DisplayMode)aDispMode);
+      if (isFaceBoundaryDraw != -1)
+      {
+        // Set Red color for boundary edges
+        vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
+        IVtkTools::SetLookupTableColor (aTable, MT_SharedEdge, 1., 0., 0., 1.);
+        aFilter->SetFaceBoundaryDraw (isFaceBoundaryDraw == 1);
+      }
+      if (isSmoothShading != -1)
+      {
+        aFilter->SetSmoothShading (isSmoothShading == 1);
+      }
+      switch (aShadingModel)
+      {
+        case Graphic3d_TOSM_FACET:
         {
-          IVtkTools_DisplayModeFilter* aFilter = GetPipeline ( anOccShape->GetId() )->GetDisplayModeFilter();
-          aFilter->SetDisplayMode((IVtk_DisplayMode)aMode);
-          aFilter->Modified();
-          aFilter->Update();
+          anActor->GetProperty()->SetInterpolationToFlat();
+          break;
         }
-      }
-      anIter.Next();
-    }
-  }
-  // Set disp mode for named object
-  else 
-  {
-    TCollection_AsciiString aName = theArgs[1];
-    vtkSmartPointer<vtkActor> anActor;
-    if (!GetMapOfActors().Find2 (aName, anActor))
-    {
-      Message::SendFail() << "Syntax error: object '" << aName << "' not found";
-      return 1;
-    }
-
-    Standard_Integer aMode = atoi(theArgs[2]);
-    vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
-    if (aSrc)
-    {
-      IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-      if (!anOccShape.IsNull())
-      {
-        IVtkTools_DisplayModeFilter* aFilter = GetPipeline (anOccShape->GetId())->GetDisplayModeFilter();
-        aFilter->SetDisplayMode ((IVtk_DisplayMode)aMode);
-        aFilter->Modified();
-        aFilter->Update();
-      }
-    }
-  }
-
-  // Redraw window
-  GetInteractor()->Render();
-  return 0;
-}
-
-//================================================================
-// Function  : VtkSetBoundaryDraw
-// Purpose   :
-//================================================================
-static Standard_Integer VtkSetBoundaryDraw (Draw_Interpretor& ,
-                                            Standard_Integer theArgNum,
-                                            const char** theArgs)
-{
-  if (!GetInteractor()
-   || !GetInteractor()->IsEnabled())
-  {
-    Message::SendFail() << "Error: call ivtkinit before";
-    return 1;
-  }
-  else if (theArgNum != 2 && theArgNum != 3)
-  {
-    Message::SendFail() << "Syntax error: expects 1 or 2 arguments";
-    return 1;
-  }
-
-  if (theArgNum == 2)
-  {
-    // Set disp mode for all objects
-    Standard_Boolean toDraw = true;
-    Draw::ParseOnOff (theArgs[1], toDraw);
-    DoubleMapOfActorsAndNames::Iterator anIter(GetMapOfActors());
-    while (anIter.More())
-    {
-      vtkSmartPointer<vtkActor> anActor = anIter.Key1();
-      // Set Red color for boundary edges
-      vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
-      IVtkTools::SetLookupTableColor(aTable, MT_SharedEdge, 1., 0., 0., 1.);
-
-      IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource(anActor);
-      if (aSrc)
-      {
-        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-        if (!anOccShape.IsNull())
+        case Graphic3d_TOSM_VERTEX:
         {
-          IVtkTools_DisplayModeFilter* aFilter = GetPipeline(anOccShape->GetId())->GetDisplayModeFilter();
-          aFilter->SetDisplayMode(DM_Shading);
-          aFilter->SetFaceBoundaryDraw(toDraw != 0);
-          aFilter->Modified();
-          aFilter->Update();
+          anActor->GetProperty()->SetInterpolationToGouraud();
+          break;
         }
+        case Graphic3d_TOSM_FRAGMENT:
+        {
+          anActor->GetProperty()->SetInterpolationToPhong();
+          break;
+        }
+        default: break;
       }
-      anIter.Next();
-    }
-  }
-  else
-  {
-    // Set disp mode for named object
-    TCollection_AsciiString aName = theArgs[1];
-    vtkSmartPointer<vtkActor> anActor;
-    if (!GetMapOfActors().Find2 (aName, anActor))
-    {
-      Message::SendFail() << "Syntax error: object '" << aName << "' not found";
-      return 1;
-    }
 
-    Standard_Boolean toDraw = true;
-    Draw::ParseOnOff (theArgs[2], toDraw);
-
-    // Set Red color for boundary edges
-    vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
-    IVtkTools::SetLookupTableColor (aTable, MT_SharedEdge, 1., 0., 0., 1.);
-
-    vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
-    if (aSrc)
-    {
-      IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-      if (!anOccShape.IsNull())
-      {
-        IVtkTools_DisplayModeFilter* aFilter = GetPipeline (anOccShape->GetId())->GetDisplayModeFilter();
-        aFilter->SetDisplayMode (DM_Shading);
-        aFilter->SetFaceBoundaryDraw (toDraw != 0);
-        aFilter->Modified();
-        aFilter->Update();
-      }
+      aFilter->Modified();
+      aFilter->Update();
     }
   }
 
@@ -1655,15 +1657,13 @@ void IVtkDraw::Commands (Draw_Interpretor& theCommands)
     __FILE__, VtkRemove, group);
 
   theCommands.Add("ivtksetdispmode",
-              "ivtksetdispmode [name] mode={0|1}"
-      "\n\t\t: Sets or unsets display mode 'mode' to the object with name 'name' or to all objects.",
+              "ivtksetdispmode [name] mode={0|1} [-faceBoundaryDraw {0|1}] [-smoothShading {0|1}]"
+      "\n\t\t:                                   [-shadingModel {phong|gouraud|flat}]"
+      "\n\t\t: Sets or unsets display mode to the object with the given name or to all objects."
+      "\n\t\t:   -faceBoundaryDraw show/hide boundaries within shading display mode"
+      "\n\t\t:   -smoothShading    enable/disable vertex normals for smooth shading"
+      "\n\t\t:   -shadingModel     sets specified shading model",
     __FILE__, VtkSetDisplayMode, group);
-
-  theCommands.Add("ivtksetboundingdraw",
-              "ivtksetboundingdraw [name] {on|off}"
-      "\n\t\t: Sets or unsets boundaries drawing for shading display mode"
-      "\n\t\t: to the object with name 'name' or to all objects.",
-    __FILE__, VtkSetBoundaryDraw, group);
 
   theCommands.Add("ivtksetselmode",
               "ivtksetselmode [name] mode {on|off}"

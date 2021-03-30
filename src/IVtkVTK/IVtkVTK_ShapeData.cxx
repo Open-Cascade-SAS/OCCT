@@ -19,7 +19,9 @@
 #include <Standard_WarningsDisable.hxx>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
+#include <vtkFloatArray.h>
 #include <vtkIdList.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <Standard_WarningsRestore.hxx>
@@ -28,13 +30,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 
 //================================================================
 // Function : Constructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkVTK_ShapeData::IVtkVTK_ShapeData()
 {
   myPolyData = vtkSmartPointer<vtkPolyData>::New();
   myPolyData->Allocate();
   myPolyData->SetPoints (vtkSmartPointer<vtkPoints>::New());
+
+  myNormals = vtkSmartPointer<vtkFloatArray>::New();
+  myNormals->SetName ("Normals");
+  myNormals->SetNumberOfComponents (3);
+  myPolyData->GetPointData()->SetNormals (myNormals);
 
   mySubShapeIDs = vtkSmartPointer<vtkIdTypeArray>::New();
   mySubShapeIDs->SetName (IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
@@ -49,25 +56,29 @@ IVtkVTK_ShapeData::IVtkVTK_ShapeData()
 
 //================================================================
 // Function : Destructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkVTK_ShapeData::~IVtkVTK_ShapeData()
 { }
 
 //================================================================
-// Function : InsertCoordinate
-// Purpose  : 
+// Function : InsertPoint
+// Purpose  :
 //================================================================
-IVtk_PointId IVtkVTK_ShapeData::InsertCoordinate (double theX,
-                                                  double theY,
-                                                  double theZ)
+IVtk_PointId IVtkVTK_ShapeData::InsertPoint (const gp_Pnt& thePnt,
+                                             const NCollection_Vec3<float>& theNorm)
 {
-  return myPolyData->GetPoints()->InsertNextPoint (theX, theY, theZ);
+  IVtk_PointId aPointId = myPolyData->GetPoints()->InsertNextPoint (thePnt.X(), thePnt.Y(), thePnt.Z());
+  if (myNormals.GetPointer() != NULL)
+  {
+    myNormals->InsertNextTuple (theNorm.GetData());
+  }
+  return aPointId;
 }
 
 //================================================================
 // Function : InsertVertex
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkVTK_ShapeData::InsertVertex (const IVtk_IdType theShapeID,
                                       const IVtk_PointId thePointId,
@@ -80,7 +91,7 @@ void IVtkVTK_ShapeData::InsertVertex (const IVtk_IdType theShapeID,
 
 //================================================================
 // Function : InsertLine
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType   theShapeID,
                                     const IVtk_PointId  thePointId1,
@@ -94,7 +105,7 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType   theShapeID,
 
 //================================================================
 // Function : InsertLine
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType       theShapeID,
                                     const IVtk_PointIdList* thePointIds,
@@ -119,7 +130,7 @@ void IVtkVTK_ShapeData::InsertLine (const IVtk_IdType       theShapeID,
 
 //================================================================
 // Function : InsertTriangle
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkVTK_ShapeData::InsertTriangle (const IVtk_IdType   theShapeID,
                                         const IVtk_PointId  thePointId1,

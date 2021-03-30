@@ -70,6 +70,7 @@ protected:
   IVtk_IdTypeMap myIdsSet;
   const char*    myIdsArrayName;
   bool           myDoFiltering;
+  bool           myToCopyNormals;
 };
 
 #ifdef _MSC_VER

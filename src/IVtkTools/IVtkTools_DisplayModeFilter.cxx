@@ -34,9 +34,10 @@ vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
 // Purpose:
 //============================================================================
 IVtkTools_DisplayModeFilter::IVtkTools_DisplayModeFilter()
-  : myDisplayMode (DM_Wireframe),
-    myDoDisplaySharedVertices (false),
-  myDrawFaceBoundaries( false )
+: myDisplayMode (DM_Wireframe),
+  myDoDisplaySharedVertices (false),
+  myDrawFaceBoundaries (false),
+  myIsSmoothShading (true)
 {
   // Filter according to values in subshapes types array.
   myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_MESH_TYPES();
@@ -78,6 +79,7 @@ int IVtkTools_DisplayModeFilter::RequestData (vtkInformation        *theRequest,
                                               vtkInformationVector  *theOutputVector)
 {
   SetData (myModesDefinition[myDisplayMode]);
+  myToCopyNormals = myIsSmoothShading && (myDisplayMode == DM_Shading);
   return Superclass::RequestData (theRequest, theInputVector, theOutputVector);
 }
 
@@ -183,4 +185,17 @@ void IVtkTools_DisplayModeFilter::SetFaceBoundaryDraw(bool theToDraw)
     myModesDefinition[DM_Shading].Remove(MT_SharedEdge);
   }
   Modified();
+}
+
+//============================================================================
+// Method: SetSmoothShading
+// Purpose:
+//============================================================================
+void IVtkTools_DisplayModeFilter::SetSmoothShading (bool theIsSmooth)
+{
+  if (myIsSmoothShading != theIsSmooth)
+  {
+    myIsSmoothShading = theIsSmooth;
+    Modified();
+  }
 }

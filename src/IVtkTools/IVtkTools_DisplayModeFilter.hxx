@@ -58,6 +58,12 @@ public:
   //! Returns True if drawing Boundary of faces for shading mode is defined.
   bool FaceBoundaryDraw() const { return myDrawFaceBoundaries; }
 
+  //! Returns TRUE if vertex normals should be included for smooth shading within DM_Shading mode or not.
+  bool IsSmoothShading() const { return myIsSmoothShading; }
+
+  //! Set if vertex normals should be included for smooth shading or not.
+  void SetSmoothShading (bool theIsSmooth);
+
 protected:
   //! Filter cells according to the given set of ids.
   virtual int RequestData (vtkInformation *, vtkInformationVector **, vtkInformationVector *) Standard_OVERRIDE;
@@ -66,13 +72,12 @@ protected:
   virtual ~IVtkTools_DisplayModeFilter();
 
 protected:
-  //! Display mode defining mesh types to pass through this filter.
-  IVtk_DisplayMode      myDisplayMode;
+  IVtk_DisplayMode      myDisplayMode;             //!< Display mode defining mesh types to pass through this filter
   IVtk_IdTypeMap        myModesDefinition[2];
   bool                  myDoDisplaySharedVertices;
 
-  //! Draw Face boundaries flag is applicable only for shading display mode.
-  bool                  myDrawFaceBoundaries;
+  bool                  myDrawFaceBoundaries;      //!< Draw Face boundaries within shading display mode
+  bool                  myIsSmoothShading;         //!< include vertex normals for smooth shading or not
 };
 
 #ifdef _MSC_VER

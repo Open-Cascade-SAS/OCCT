@@ -16,6 +16,8 @@
 #ifndef __IVTKVTK_SHAPEDATA_H__
 #define __IVTKVTK_SHAPEDATA_H__
 
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <IVtk_IShapeData.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 
@@ -26,6 +28,7 @@
 #include <Standard_WarningsRestore.hxx>
 
 class vtkIdTypeArray;
+class vtkFloatArray;
 
 class IVtkVTK_ShapeData;
 DEFINE_STANDARD_HANDLE( IVtkVTK_ShapeData, IVtk_IShapeData )
@@ -51,11 +54,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 
   //! Insert a coordinate
-  //! @param [in] theX X coordinate
-  //! @param [in] theY Y coordinate
-  //! @param [in] theZ Z coordinate
+  //! @param [in] thePnt  point position
+  //! @param [in] theNorm point normal
   //! @return id of added point
-  Standard_EXPORT virtual IVtk_PointId InsertCoordinate (double theX, double theY, double theZ) Standard_OVERRIDE;
+  Standard_EXPORT virtual IVtk_PointId InsertPoint (const gp_Pnt& thePnt,
+                                                    const NCollection_Vec3<float>& theNorm) Standard_OVERRIDE;
 
   //! Insert a vertex.
   //! @param [in] theShapeID id of the subshape to which the vertex belongs.
@@ -121,6 +124,7 @@ private:
 
 private:
   vtkSmartPointer< vtkPolyData >    myPolyData;    //!< Shape geometry as vtkPolyData
+  vtkSmartPointer< vtkFloatArray >  myNormals;     //!< vertex normals
   vtkSmartPointer< vtkIdTypeArray > mySubShapeIDs; //!< Array of sub-shapes ids
   vtkSmartPointer< vtkIdTypeArray > myMeshTypes;   //!< Array of type codes of mesh parts
 };

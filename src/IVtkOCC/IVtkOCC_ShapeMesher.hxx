@@ -122,19 +122,6 @@ private:
   void addShadedFace (const TopoDS_Face&  theFace,
                       const IVtk_IdType   theShapeId);
 
-  //! Internal helper method that unpacks the input arrays of points and 
-  //! connectivity and creates the polyline using IPolyData interface.
-  //! Optionally, the transformation specified through the last argument
-  //! can be applied to each point's coordinates (noTransform == true).
-  //! The polyline is associated with the given sub-shape ID.
-  void processPolyline (Standard_Integer               theNbNodes,
-                        const TColgp_Array1OfPnt&      thePoints,
-                        const TColStd_Array1OfInteger& thePointIds, 
-                        const IVtk_IdType              theOcctId,
-                        bool                           theNoTransform,
-                        gp_Trsf                        theTransformation,
-                        const IVtk_MeshType            theMeshType);
-
   //! Get the IShape as OCC implementation
   const IVtkOCC_Shape::Handle GetShapeObj() const;
 

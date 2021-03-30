@@ -7,9 +7,8 @@ pload MODELING VIS
 box b 1 1 1
 ivtkinit
 ivtkdisplay b
-ivtksetdispmode 1
-ivtksetboundingdraw 1
-ivtkdump $imagedir/${casename}_1.png
-
-ivtksetboundingdraw 0
+ivtksetdispmode 1 -faceBoundaryDraw 0 -smoothShading 1
 ivtkdump $imagedir/${casename}_2.png
+
+ivtksetdispmode 1 -faceBoundaryDraw 1 -smoothShading 0
+ivtkdump $imagedir/${casename}_1.png

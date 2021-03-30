@@ -21,30 +21,109 @@
 #pragma warning(push)
 #endif
 #include <vtkCellData.h>
+#include <vtkFloatArray.h>
+#include <vtkGenericCell.h>
 #include <vtkIdList.h>
 #include <vtkIdTypeArray.h>
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
+#include <vtkPointData.h>
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
+namespace
+{
+  //! Modified version of vtkPolyData::CopyCells() that includes copying of normals.
+  //! How to ask vtkPolyData::CopyCells() to do that automatically?
+  static void copyCells (vtkPolyData* theDst,
+                         vtkPolyData* theSrc,
+                         vtkIdList* theIdList)
+  {
+    //theDst->CopyCells (theSrc, theIdList);
+
+    const vtkIdType aNbPts = theSrc->GetNumberOfPoints();
+    vtkDataArray* anOldNormals = theSrc->GetPointData()->GetNormals();
+
+    if (theDst->GetPoints() == NULL)
+    {
+      theDst->SetPoints (vtkSmartPointer<vtkPoints>::New());
+    }
+
+    vtkSmartPointer<vtkIdList> aNewCellPts = vtkSmartPointer<vtkIdList>::New();
+    vtkSmartPointer<vtkGenericCell> aCell  = vtkSmartPointer<vtkGenericCell>::New();
+    NCollection_Vec3<double> anXYZ;
+    vtkPointData* aNewPntData  = theDst->GetPointData();
+    vtkCellData*  aNewCellData = theDst->GetCellData();
+    vtkPoints*    aNewPoints   = theDst->GetPoints();
+    vtkSmartPointer<vtkFloatArray> aNewNormals;
+    if (anOldNormals != NULL)
+    {
+      aNewNormals = vtkSmartPointer<vtkFloatArray>::New();
+      aNewNormals->SetName ("Normals");
+      aNewNormals->SetNumberOfComponents (3);
+      theDst->GetPointData()->SetNormals (aNewNormals);
+    }
+
+    vtkSmartPointer<vtkIdList> aPntMap = vtkSmartPointer<vtkIdList>::New(); // maps old pt ids into new
+    aPntMap->SetNumberOfIds (aNbPts);
+    for (vtkIdType i = 0; i < aNbPts; ++i)
+    {
+      aPntMap->SetId (i, -1);
+    }
+
+    // Filter the cells
+    for (vtkIdType aCellIter = 0; aCellIter < theIdList->GetNumberOfIds(); ++aCellIter)
+    {
+      theSrc->GetCell (theIdList->GetId (aCellIter), aCell);
+      vtkIdList* aCellPts = aCell->GetPointIds();
+      const vtkIdType aNbCellPts = aCell->GetNumberOfPoints();
+      for (vtkIdType i = 0; i < aNbCellPts; ++i)
+      {
+        const vtkIdType aPtId = aCellPts->GetId (i);
+        vtkIdType aNewId = aPntMap->GetId (aPtId);
+        if (aNewId < 0)
+        {
+          theSrc->GetPoint (aPtId, anXYZ.ChangeData());
+
+          aNewId = aNewPoints->InsertNextPoint (anXYZ.GetData());
+          aPntMap->SetId (aPtId, aNewId);
+          aNewPntData->CopyData (theSrc->GetPointData(), aPtId, aNewId);
+
+          if (anOldNormals != NULL)
+          {
+            anOldNormals->GetTuple (aPtId, anXYZ.ChangeData());
+            aNewNormals->InsertNextTuple (anXYZ.GetData());
+          }
+        }
+        aNewCellPts->InsertId (i, aNewId);
+      }
+
+      const vtkIdType aNewCellId = theDst->InsertNextCell (aCell->GetCellType(), aNewCellPts);
+      aNewCellData->CopyData (theSrc->GetCellData(), theIdList->GetId (aCellIter), aNewCellId);
+      aNewCellPts->Reset();
+    }
+  }
+}
 
 vtkStandardNewMacro(IVtkTools_SubPolyDataFilter)
 
 //================================================================
 // Function : Constructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkTools_SubPolyDataFilter::IVtkTools_SubPolyDataFilter()
+: myIdsArrayName (IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS()),
+  myDoFiltering (true),
+  myToCopyNormals (true)
 {
-  myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS();
-  myDoFiltering = true;
+  //
 }
 
 //================================================================
 // Function : Destructor
-// Purpose  : 
+// Purpose  :
 //================================================================
 IVtkTools_SubPolyDataFilter::~IVtkTools_SubPolyDataFilter() { }
 
@@ -70,18 +149,17 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
 
   if (myDoFiltering)
   {
-    vtkSmartPointer<vtkCellData> aCellData = anInput->GetCellData();
-    vtkIdType aSize = 0;
-    vtkSmartPointer<vtkIdTypeArray> aDataArray =
-      vtkIdTypeArray::SafeDownCast (aCellData->GetArray (myIdsArrayName));
+    vtkSmartPointer<vtkCellData> anInputCellData  = anInput->GetCellData();
+    vtkSmartPointer<vtkCellData> anOutputCellData = anOutput->GetCellData();
+    vtkSmartPointer<vtkIdTypeArray> aDataArray = vtkIdTypeArray::SafeDownCast (anInputCellData->GetArray (myIdsArrayName));
 
     // List of cell ids to be passed
     vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
-    anIdList->Allocate(myIdsSet.Extent());  // Allocate the list of ids
+    anIdList->Allocate (myIdsSet.Extent());  // Allocate the list of ids
 
-    if (aDataArray.GetPointer() != NULL)
+    const vtkIdType aSize = aDataArray.GetPointer() != NULL ? aDataArray->GetNumberOfTuples() : 0;
+    if (aSize != 0)
     {
-      aSize = aDataArray->GetNumberOfTuples();
       anIdList->Allocate (aSize);  // Allocate the list of ids
     }
 
@@ -100,39 +178,41 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
     }
 
     // Copy cells with their points according to the prepared list of cell ids.
-    anOutput->GetCellData()->AllocateArrays(anInput->GetCellData()->GetNumberOfArrays());
-    anOutput->Allocate(anInput, anIdList->GetNumberOfIds());  // Allocate output cells
+    anOutputCellData->AllocateArrays (anInputCellData->GetNumberOfArrays());
+    anOutput->Allocate (anInput, anIdList->GetNumberOfIds());  // Allocate output cells
+
     // Pass data arrays.
     // Create new arrays for output data 
-    vtkSmartPointer<vtkCellData> anInData = anInput->GetCellData();
-    vtkSmartPointer<vtkCellData> anOutData = anOutput->GetCellData();
-    vtkSmartPointer<vtkDataArray> anInArr, anOutArr;
-
-    for (Standard_Integer anI = 0; anI < anInData->GetNumberOfArrays(); anI++)
+    for (Standard_Integer anI = 0; anI < anInputCellData->GetNumberOfArrays(); anI++)
     {
-      anInArr = anInData->GetArray (anI);
-      anOutArr = vtkSmartPointer<vtkDataArray>::Take(
-        vtkDataArray::CreateDataArray(anInArr->GetDataType()));
-      anOutArr->SetName(anInArr->GetName());
-      anOutArr->Allocate(anIdList->GetNumberOfIds() * anInArr->GetNumberOfComponents());
+      vtkSmartPointer<vtkDataArray> anInArr  = anInputCellData->GetArray (anI);
+      vtkSmartPointer<vtkDataArray> anOutArr = vtkSmartPointer<vtkDataArray>::Take (vtkDataArray::CreateDataArray(anInArr->GetDataType()));
+
+      anOutArr->SetName (anInArr->GetName());
+      anOutArr->Allocate (anIdList->GetNumberOfIds() * anInArr->GetNumberOfComponents());
       anOutArr->SetNumberOfTuples (anIdList->GetNumberOfIds());
       anOutArr->SetNumberOfComponents (anInArr->GetNumberOfComponents());
-      anOutData->AddArray(anOutArr);
+      anOutputCellData->AddArray (anOutArr);
     }
 
     // Copy cells with ids from our list.
-    anOutput->CopyCells (anInput, anIdList);
+    if (myToCopyNormals)
+    {
+      copyCells (anOutput, anInput, anIdList);
+    }
+    else
+    {
+      anOutput->CopyCells (anInput, anIdList);
+    }
 
     // Copy filtered arrays data
-    vtkIdType anOutId, anInId;
-
-    for (Standard_Integer anI = 0; anI < anInData->GetNumberOfArrays(); anI++)
+    for (Standard_Integer anI = 0; anI < anInputCellData->GetNumberOfArrays(); anI++)
     {
-      anInArr = anInData->GetArray (anI);
-      anOutArr = anOutData->GetArray(anI);
-      for (anOutId = 0; anOutId < anIdList->GetNumberOfIds(); anOutId++)
+      vtkSmartPointer<vtkDataArray> anInArr  = anInputCellData ->GetArray (anI);
+      vtkSmartPointer<vtkDataArray> anOutArr = anOutputCellData->GetArray (anI);
+      for (vtkIdType anOutId = 0; anOutId < anIdList->GetNumberOfIds(); anOutId++)
       {
-        anInId = anIdList->GetId (anOutId);
+        const vtkIdType anInId = anIdList->GetId (anOutId);
         anOutArr->SetTuple (anOutId, anInId, anInArr);
       }
     }
@@ -148,7 +228,7 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
 
 //================================================================
 // Function : SetDoFiltering
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkTools_SubPolyDataFilter::SetDoFiltering (const bool theDoFiltering)
 {
@@ -169,12 +249,12 @@ void IVtkTools_SubPolyDataFilter::PrintSelf (std::ostream& theOs, vtkIndent theI
   IVtk_IdTypeMap::Iterator anIter(myIdsSet);
   while (anIter.More())
   {
-      theOs << " " << anIter.Value();
-      anIter.Next();
-      if (anIter.More())
-      {
-          theOs << "; ";
-      }
+    theOs << " " << anIter.Value();
+    anIter.Next();
+    if (anIter.More())
+    {
+      theOs << "; ";
+    }
   }
   theOs << "}" << "\n";
 }
@@ -203,8 +283,7 @@ void IVtkTools_SubPolyDataFilter::SetData (const IVtk_IdTypeMap theSet)
 //================================================================
 void IVtkTools_SubPolyDataFilter::AddData (const IVtk_IdTypeMap theSet)
 {
-  IVtk_IdTypeMap::Iterator anIt (theSet);
-  for (; anIt.More(); anIt.Next())
+  for (IVtk_IdTypeMap::Iterator anIt (theSet); anIt.More(); anIt.Next())
   {
     if (!myIdsSet.Contains (anIt.Value()))
     {
@@ -229,8 +308,7 @@ void IVtkTools_SubPolyDataFilter::SetData (const IVtk_ShapeIdList theIdList)
 //================================================================
 void IVtkTools_SubPolyDataFilter::AddData (const IVtk_ShapeIdList theIdList)
 {
-  IVtk_ShapeIdList::Iterator anIt (theIdList);
-  for (; anIt.More(); anIt.Next())
+  for (IVtk_ShapeIdList::Iterator anIt (theIdList); anIt.More(); anIt.Next())
   {
     if (!myIdsSet.Contains (anIt.Value()))
     {
@@ -239,10 +317,9 @@ void IVtkTools_SubPolyDataFilter::AddData (const IVtk_ShapeIdList theIdList)
   }
 }
 
-//! Set ids to be passed through this filter.
 //================================================================
 // Function : SetIdsArrayName
-// Purpose  : 
+// Purpose  :
 //================================================================
 void IVtkTools_SubPolyDataFilter::SetIdsArrayName (const char* theArrayName)
 {

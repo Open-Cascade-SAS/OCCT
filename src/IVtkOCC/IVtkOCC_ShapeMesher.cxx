@@ -71,6 +71,15 @@ void IVtkOCC_ShapeMesher::internalBuild()
     StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange (anOcctShape, anOcctDrawer, true);
     StdPrs_ToolTriangulatedShape::Tessellate (anOcctShape, anOcctDrawer);
   }
+  for (TopExp_Explorer aFaceIter (anOcctShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& anOcctFace = TopoDS::Face (aFaceIter.Current());
+    TopLoc_Location aLoc;
+    if (const Handle(Poly_Triangulation)& anOcctTriangulation = BRep_Tool::Triangulation (anOcctFace, aLoc))
+    {
+      StdPrs_ToolTriangulatedShape::ComputeNormals (anOcctFace, anOcctTriangulation);
+    }
+  }
 
   // Free vertices and free edges should always be shown.
   // Shared edges are needed in WF representation only.
@@ -232,47 +241,9 @@ void IVtkOCC_ShapeMesher::addVertex (const TopoDS_Vertex& theVertex,
 
   gp_Pnt aPnt3d = BRep_Tool::Pnt (theVertex);
 
-  IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt3d.X(), aPnt3d.Y(), aPnt3d.Z());
+  IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt3d);
   myShapeData->InsertVertex (theShapeId, anId, theMeshType);
 
-}
-
-//================================================================
-// Function : processPolyline
-// Purpose  :
-//================================================================
-void IVtkOCC_ShapeMesher::processPolyline (Standard_Integer          theNbNodes,
-                                      const TColgp_Array1OfPnt&      thePoints,
-                                      const TColStd_Array1OfInteger& thePointIds,
-                                      const IVtk_IdType              theOcctId,
-                                      bool                           theNoTransform,
-                                      gp_Trsf                        theTransformation,
-                                      const IVtk_MeshType            theMeshType)
-{
-  if (theNbNodes < 2)
-  {
-    return;
-  }
-
-  IVtk_PointIdList aPolyPointIds;
-
-  IVtk_PointId anId;
-  for (Standard_Integer aJ = 0; aJ < theNbNodes; aJ++)
-  {
-    Standard_Integer aPntId = thePointIds (aJ + 1);
-    gp_Pnt point = thePoints (aPntId);
-
-    if (!theNoTransform)
-    {
-      // Apply the transformation to points
-      point.Transform (theTransformation);
-    }
-
-    anId = myShapeData->InsertCoordinate (point.X(), point.Y(), point.Z());
-    aPolyPointIds.Append (anId);
-  }
-
-  myShapeData->InsertLine (theOcctId, &aPolyPointIds, theMeshType);
 }
 
 //================================================================
@@ -288,73 +259,60 @@ void IVtkOCC_ShapeMesher::addEdge (const TopoDS_Edge&  theEdge,
     return;
   }
 
-  // Two discrete representations of an OCCT edge are possible:
-  // 1. Polygon on triangulation - holds Ids of points
-  // contained in Poly_Triangulation object
   Handle(Poly_PolygonOnTriangulation) aPolyOnTriangulation;
   Handle(Poly_Triangulation) aTriangulation;
-  TopLoc_Location aLocation;
-  BRep_Tool::PolygonOnTriangulation (theEdge,
-                                     aPolyOnTriangulation,
-                                     aTriangulation,
-                                     aLocation,
-                                     1);
-
-  // 2. 3D polygon - holds 3D points
-  Handle(Poly_Polygon3D) aPoly3d;
-  if (aPolyOnTriangulation.IsNull())
+  TopLoc_Location aLoc;
+  BRep_Tool::PolygonOnTriangulation (theEdge, aPolyOnTriangulation, aTriangulation, aLoc, 1);
+  if (!aPolyOnTriangulation.IsNull()
+    && aPolyOnTriangulation->NbNodes() >= 2)
   {
-    aPoly3d = BRep_Tool::Polygon3D (theEdge, aLocation);
-  }
+    // prefer polygon on triangulation when defined
+    const gp_Trsf aTrsf = aLoc.Transformation();
+    const bool hasTransform = !aLoc.IsIdentity();
 
-  if (aPoly3d.IsNull() && aPolyOnTriangulation.IsNull())
-  {
-    return;
-  }
-
-  // Handle a non-identity transformation applied to the edge
-  gp_Trsf anEdgeTransf;
-  bool noTransform = true;
-  if (!aLocation.IsIdentity())
-  {
-    noTransform = false;
-    anEdgeTransf = aLocation.Transformation();
-  }
-
-  if (!aPoly3d.IsNull())
-  {
-    Standard_Integer aNbNodes = aPoly3d->NbNodes();
-    const TColgp_Array1OfPnt& aPoints = aPoly3d->Nodes();
-    TColStd_Array1OfInteger aPointIds (1, aNbNodes);
-
-    for (Standard_Integer anI = 1; anI <= aNbNodes; anI++)
-    {
-      aPointIds.SetValue (anI, anI);
-    }
-
-    processPolyline (aNbNodes,
-                     aPoints,
-                     aPointIds,
-                     theShapeId,
-                     noTransform,
-                     anEdgeTransf,
-                     theMeshType);
-  }
-  else if (aPolyOnTriangulation->NbNodes() >= 2)
-  {
     IVtk_PointIdList aPolyPointIds;
     const Standard_Integer aNbNodes = aPolyOnTriangulation->NbNodes();
     for (Standard_Integer aJ = 0; aJ < aNbNodes; aJ++)
     {
       const Standard_Integer aPntId = aPolyOnTriangulation->Node (aJ + 1);
       gp_Pnt aPoint = aTriangulation->Node (aPntId);
-      if (!noTransform) { aPoint.Transform (anEdgeTransf); }
+      gp_Dir aNorm  = aTriangulation->HasNormals() ? aTriangulation->Normal (aPntId) : gp::DZ();
+      if (hasTransform)
+      {
+        aPoint.Transform (aTrsf);
+        aNorm .Transform (aTrsf);
+      }
 
-      IVtk_PointId anId = myShapeData->InsertCoordinate (aPoint.X(), aPoint.Y(), aPoint.Z());
+      IVtk_PointId anId = myShapeData->InsertPoint (aPoint, Graphic3d_Vec3 ((float )aNorm.X(), (float )aNorm.Y(), (float )aNorm.Z()));
       aPolyPointIds.Append (anId);
     }
     myShapeData->InsertLine (theShapeId, &aPolyPointIds, theMeshType);
+    return;
   }
+
+  // try polygon 3d
+  Handle(Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D (theEdge, aLoc);
+  if (aPoly3d.IsNull()
+   || aPoly3d->NbNodes() < 2)
+  {
+    return;
+  }
+
+  const gp_Trsf anEdgeTransf = aLoc.Transformation();
+  const bool     noTransform = aLoc.IsIdentity();
+  IVtk_PointIdList aPolyPointIds;
+  for (Standard_Integer aNodeIter = 1; aNodeIter <= aPoly3d->NbNodes(); ++aNodeIter)
+  {
+    gp_Pnt aPnt = aPoly3d->Nodes().Value (aNodeIter);
+    if (!noTransform)
+    {
+      aPnt.Transform (anEdgeTransf);
+    }
+
+    const IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt);
+    aPolyPointIds.Append (anId);
+  }
+  myShapeData->InsertLine (theShapeId, &aPolyPointIds, theMeshType);
 }
 
 //================================================================
@@ -372,12 +330,6 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face&  theFace,
 
   TopoDS_Face aFaceToMesh = theFace;
   aFaceToMesh.Orientation (TopAbs_FORWARD);
-
-  // The code that builds wireframe representation for a TopoDS_Face
-  // has been adapted from some OCCT 6.5.1 methods:
-  // - Prs3d_WFShape::Add()
-  // - StdPrs_WFDeflectionRestrictedFace::Add()
-  // - StdPrs_DeflectionCurve::Add()
 
   // Add face's edges here but with the face ID
   for (TopExp_Explorer anEdgeIter (aFaceToMesh, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
@@ -408,7 +360,7 @@ void IVtkOCC_ShapeMesher::addWFFace (const TopoDS_Face&  theFace,
     for (TColgp_HSequenceOfPnt::Iterator aNodeIter (*aPoints); aNodeIter.More(); aNodeIter.Next())
     {
       const gp_Pnt& aPnt = aNodeIter.Value();
-      const IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt.X(), aPnt.Y(), aPnt.Z());
+      const IVtk_PointId anId = myShapeData->InsertCoordinate (aPnt);
       aPolyPointIds.Append (anId);
     }
 
@@ -428,7 +380,6 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
     return;
   }
 
-  // Build triangulation of the face.
   TopLoc_Location aLoc;
   const Handle(Poly_Triangulation)& anOcctTriangulation = BRep_Tool::Triangulation (theFace, aLoc);
   if (anOcctTriangulation.IsNull())
@@ -436,13 +387,10 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
     return;
   }
 
-  gp_Trsf aPntTransform;
-  Standard_Boolean noTransform = Standard_True;
-  if (!aLoc.IsIdentity())
-  {
-    noTransform = Standard_False;
-    aPntTransform = aLoc.Transformation();
-  }
+  // Determinant of transform matrix less then 0 means that mirror transform applied
+  const gp_Trsf aTrsf = aLoc.Transformation();
+  const bool hasTransform = !aLoc.IsIdentity();
+  const bool isMirrored   = aTrsf.VectorialPart().Determinant() < 0;
 
   // Get triangulation points.
   Standard_Integer aNbPoints = anOcctTriangulation->NbNodes();
@@ -453,14 +401,19 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
   for (Standard_Integer anI = 1; anI <= aNbPoints; anI++)
   {
     gp_Pnt aPoint = anOcctTriangulation->Node (anI);
-
-    if (!noTransform)
+    gp_Dir aNorm  = anOcctTriangulation->HasNormals() ? anOcctTriangulation->Normal (anI) : gp::DZ();
+    if ((theFace.Orientation() == TopAbs_REVERSED) ^ isMirrored)
     {
-      aPoint.Transform (aPntTransform);
+      aNorm.Reverse();
+    }
+    if (hasTransform)
+    {
+      aPoint.Transform (aTrsf);
+      aNorm .Transform (aTrsf);
     }
 
     // Add a point into output shape data and keep its id in the array.
-    anId = myShapeData->InsertCoordinate (aPoint.X(), aPoint.Y(), aPoint.Z());
+    anId = myShapeData->InsertPoint (aPoint, Graphic3d_Vec3 ((float )aNorm.X(), (float )aNorm.Y(), (float )aNorm.Z()));
     aPointIds.SetValue (anI, anId);
   }
 
@@ -469,9 +422,16 @@ void IVtkOCC_ShapeMesher::addShadedFace (const TopoDS_Face& theFace,
   Standard_Integer aN1, aN2, aN3;
   for (Standard_Integer anI = 1; anI <= aNbTriangles; anI++)
   {
-    anOcctTriangulation->Triangle (anI).Get (aN1, aN2, aN3); // get indexes of triangle's points
+    if (theFace.Orientation() == TopAbs_REVERSED)
+    {
+      anOcctTriangulation->Triangle (anI).Get (aN1, aN3, aN2);
+    }
+    else
+    {
+      anOcctTriangulation->Triangle (anI).Get (aN1, aN2, aN3);
+    }
+
     // Insert new triangle on these points into output shape data.
-    myShapeData->InsertTriangle (
-      theShapeId, aPointIds(aN1), aPointIds(aN2), aPointIds(aN3), MT_ShadedFace);
+    myShapeData->InsertTriangle (theShapeId, aPointIds(aN1), aPointIds(aN2), aPointIds(aN3), MT_ShadedFace);
   }
 }
