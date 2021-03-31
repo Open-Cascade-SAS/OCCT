@@ -186,9 +186,11 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
   
   Handle(StepGeom_Curve) Gpms;
   Handle(Geom_Curve) C = CA.Curve().Curve();
+ 
   if (!C.IsNull()) {
     C = Handle(Geom_Curve)::DownCast(C->Copy());
-
+    gp_Trsf Tr1 = CA.Trsf();
+    C->Transform(Tr1);
     // Special treatment is needed for very short edges based on periodic curves.
     // Since edge in STEP does not store its parametric range, parameters are computed
     // on import by projecting vertices on a curve, and for periodic curve this may 
@@ -246,8 +248,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
       }
     }
 
-    gp_Trsf Tr1 = CA.Trsf();
-    C->Transform(Tr1);
+ 
     GeomToStep_MakeCurve MkCurve(C);
     Gpms = MkCurve.Value();
   }
