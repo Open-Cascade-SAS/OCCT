@@ -1,0 +1,37 @@
+puts "============================================================================================="
+puts "0032106: Modeling Algorithms - Tolerance of General Fuse result depends on a sequence of arguments"
+puts "============================================================================================="
+puts ""
+
+brestore [locate_data_file bug32106-body.brep] b1
+brestore [locate_data_file bug32106-contour.brep] w1
+tcopy -n b1 b2 
+tcopy -n w1 w2
+
+bclearobjects
+bcleartools
+
+baddobjects b1 w1
+bfuzzyvalue 1.0
+bfillds
+bbuild r1
+
+checkshape r1
+checknbshapes r1 -vertex 65 -edge 96 -wire 33 -face 32 -shell 1 -t
+checkmaxtol r1 -ref  4.2e-01
+checkprops r1 -l 73255.5
+
+bclearobjects
+bcleartools
+
+baddobjects w2 b2
+bfuzzyvalue 1.0
+bfillds
+bbuild r2
+checkshape r2
+checknbshapes r2 -ref [nbshapes r1]
+checkmaxtol r2 -ref 4.2e-01
+checkprops r2 -l 73255.6
+
+checkview -display r1 -2d -path ${imagedir}/${test_image}_r1.png
+checkview -display r2 -2d -path ${imagedir}/${test_image}_r2.png
