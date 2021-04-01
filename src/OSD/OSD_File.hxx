@@ -159,7 +159,7 @@ public:
   Standard_EXPORT Standard_Boolean IsOpen() const;
   
   //! returns TRUE if the file exists and if the user
-  //! has the autorization to read it.
+  //! has the authorization to read it.
   Standard_EXPORT Standard_Boolean IsReadable();
   
   //! returns TRUE if the file can be read and overwritten.
@@ -170,7 +170,7 @@ public:
   
   //! Enables to emulate unix "tail -f" command.
   //! If a line is available in the file <me> returns it.
-  //! Otherwise attemps to read again aNbTries times in the file
+  //! Otherwise attempts to read again aNbTries times in the file
   //! waiting aDelay seconds between each read.
   //! If meanwhile the file increases returns the next line, otherwise
   //! returns FALSE.

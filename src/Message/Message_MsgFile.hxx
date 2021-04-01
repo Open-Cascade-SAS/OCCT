@@ -56,7 +56,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Load message file <theFileName> from directory <theDirName>
   //! or its sub-directory
   Standard_EXPORT static Standard_Boolean Load (const Standard_CString theDirName, const Standard_CString theFileName);
@@ -96,36 +95,13 @@ public:
   
   Standard_EXPORT static const TCollection_ExtendedString& Msg (const Standard_CString key);
   
-  //! Gives the text for the message identified by the keyword <key>
-  //! If there are no messages with such keyword defined,
-  //! the error message is returned.
-  //! In that case reference to static string is returned, it can
-  //! be chenged with next call(s) to Msg().
+  //! Gives the text for the message identified by the keyword <key>.
+  //! If there are no messages with such keyword defined, the error message is returned.
+  //! In that case reference to static string is returned, it can be changed with next call(s) to Msg().
   //! Note: The error message is constructed like 'Unknown message: <key>', and can
   //! itself be customized by defining message with key Message_Msg_BadKeyword.
   Standard_EXPORT static const TCollection_ExtendedString& Msg (const TCollection_AsciiString& key);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Message_MsgFile_HeaderFile

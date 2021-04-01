@@ -14,10 +14,10 @@
 
 #include <OSD.hxx>
 
-// Convert Real to CString in format e with 16 significant digits.
-// The decimal point character is always a period.
-// The conversion is independant from current locale database
-
+//=======================================================================
+//function : RealToCString
+//purpose  :
+//=======================================================================
 Standard_Boolean OSD::RealToCString(const Standard_Real aReal,
 				    Standard_PCharacter& aString)
 {

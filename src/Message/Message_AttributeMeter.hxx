@@ -76,7 +76,7 @@ public:
   static void StopAlert (const Handle(Message_AlertExtended)& theAlert) { SetAlertMetrics (theAlert, Standard_False); }
 
   //! Sets current values of default report metrics into the alert.
-  //! Processed oly alert with Message_AttributeMeter attribute
+  //! Processed only alert with Message_AttributeMeter attribute
   //! @param theAlert an alert  
   //! @param theStartValue flag, if true, the start value is collected otherwise stop
   static Standard_EXPORT void SetAlertMetrics (const Handle(Message_AlertExtended)& theAlert,

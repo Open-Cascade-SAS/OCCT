@@ -37,14 +37,14 @@ DEFINE_STANDARD_HANDLE(IGESSelect_SelectSubordinate, IFSelect_SelectExtract)
 
 //! This selections uses Subordinate Status as sort criterium
 //! It is an integer number which can be :
-//! 0 Independant
-//! 1 Physically Dependant
-//! 2 Logically Dependant
+//! 0 Independent
+//! 1 Physically Dependent
+//! 2 Logically Dependent
 //! 3 Both (recorded)
 //! + to sort :
 //! 4 : 1 or 3  ->  at least Physically
 //! 5 : 2 or 3  ->  at least Logically
-//! 6 : 1 or 2 or 3 -> any kind of dependance
+//! 6 : 1 or 2 or 3 -> any kind of dependence
 //! (corresponds to 0 reversed)
 class IGESSelect_SelectSubordinate : public IFSelect_SelectExtract
 {
@@ -62,7 +62,7 @@ public:
   //! Status matching the criterium
   Standard_EXPORT Standard_Boolean Sort (const Standard_Integer rank, const Handle(Standard_Transient)& ent, const Handle(Interface_InterfaceModel)& model) const Standard_OVERRIDE;
   
-  //! Returns the Selection criterium : "IGES Entity, Independant"
+  //! Returns the Selection criterium : "IGES Entity, Independent"
   //! etc...
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const Standard_OVERRIDE;
 

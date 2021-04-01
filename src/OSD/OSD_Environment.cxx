@@ -289,7 +289,7 @@ TCollection_AsciiString OSD_Environment::Value()
 
   // msvc C-runtime (_wputenv()) puts variable using WinAPI internally (calls SetEnvironmentVariableW())
   // and also caches its value in its own map,
-  // so that _wgetenv() ignores WinAPI and retieves variable from this cache.
+  // so that _wgetenv() ignores WinAPI and retrieves variable from this cache.
   //
   // Using _wgetenv() might lead to awkward results in context when several C-runtimes are used
   // at once within application or WinAPI is used directly for setting environment variable.

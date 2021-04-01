@@ -78,7 +78,7 @@ public:
   
   //! On  the element of range   <I>, searches the first
   //! intersection   point  located after  the parameter
-  //! <From>,   wich orientation is not TopAbs_EXTERNAL.
+  //! <From>,  which orientation is not TopAbs_EXTERNAL.
   //! If  found, returns <Standard_True>.  <Or> contains
   //! the orientation    of  the  point,  <IndFrom>  and
   //! <IndTo> represents  the interval  of index in  the
@@ -91,7 +91,7 @@ public:
   
   //! On the element  of range  <I>, searches the  first
   //! intersection point   located before  the parameter
-  //! <From>,  wich orientation  is not TopAbs_EXTERNAL.
+  //! <From>,  which orientation is not TopAbs_EXTERNAL.
   //! If found,  returns <Standard_True>.  <Or> contains
   //! the   orientation  of   the point,  <IndFrom>  and
   //! <IndTo> represents the interval   of index in  the
@@ -104,7 +104,7 @@ public:
   
   //! On the  element of  range <I>, searches  the first
   //! intersection      point  located after the   index
-  //! <FromInd> ( >=  FromInd + 1), wich  orientation is
+  //! <FromInd> ( >=  FromInd + 1), which orientation is
   //! not    TopAbs_EXTERNAL.      If    found,  returns
   //! <Standard_True>.  <Or> contains the orientation of
   //! the  point, <IndFrom>  and <IndTo> represents  the
@@ -118,7 +118,7 @@ public:
   
   //! On  the element of  range  <I>, searches the first
   //! intersection  point    located  before  the  index
-  //! <FromInd>  (  <= FromInd -1),  wich orientation is
+  //! <FromInd>  (  <= FromInd -1), which orientation is
   //! not   TopAbs_EXTERNAL.  If    found,       returns
   //! <Standard_True>.  <Or> contains the orientation of
   //! the  point, <IndFrom>  and  <IndTo> represents the

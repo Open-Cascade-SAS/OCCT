@@ -187,7 +187,7 @@ protected:
   };
 
   //! Interface class representing functor object.
-  //! Intended to add polymorphic behavour to For and ForEach functionality 
+  //! Intended to add polymorphic behaviour to For and ForEach functionality
   //! enabling execution of arbitrary function in parallel mode.
   class FunctorInterface
   {

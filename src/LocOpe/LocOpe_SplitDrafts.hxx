@@ -20,22 +20,15 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
+#include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
-class StdFail_NotDone;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
-class Standard_NullObject;
-class TopoDS_Shape;
+
 class TopoDS_Face;
 class TopoDS_Wire;
 class gp_Dir;
 class gp_Pln;
-
 
 //! This  class  provides  a    tool to   realize  the
 //! following operations on a shape :
@@ -48,14 +41,13 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Empty constructor.
-    LocOpe_SplitDrafts();
+  LocOpe_SplitDrafts() {}
+
+  //! Creates the algorithm on the shape <S>.
+  LocOpe_SplitDrafts(const TopoDS_Shape& S) : myShape (S) {}
   
-  //! Creates the algoritm on the shape <S>.
-    LocOpe_SplitDrafts(const TopoDS_Shape& S);
-  
-  //! Initializes the algoritm with the shape <S>.
+  //! Initializes the algorithm with the shape <S>.
   Standard_EXPORT void Init (const TopoDS_Shape& S);
   
   //! Splits the face <F> of the former given shape with
@@ -85,43 +77,23 @@ public:
   //! angle.
   Standard_EXPORT void Perform (const TopoDS_Face& F, const TopoDS_Wire& W, const gp_Dir& Extract, const gp_Pln& NPl, const Standard_Real Angle);
   
-  //! Returns <Standard_True>  if the  modification  has
-  //! been succesfully performed.
-    Standard_Boolean IsDone() const;
-  
-    const TopoDS_Shape& OriginalShape() const;
-  
+  //! Returns <Standard_True> if the modification has been successfully performed.
+  Standard_Boolean IsDone() const { return !myResult.IsNull(); }
+
+  const TopoDS_Shape& OriginalShape() const { return myShape; }
+
   //! Returns the modified shape.
   Standard_EXPORT const TopoDS_Shape& Shape() const;
-  
+
   //! Manages the descendant shapes.
   Standard_EXPORT const TopTools_ListOfShape& ShapesFromShape (const TopoDS_Shape& S) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TopoDS_Shape myShape;
   TopoDS_Shape myResult;
   TopTools_DataMapOfShapeListOfShape myMap;
 
-
 };
-
-
-#include <LocOpe_SplitDrafts.lxx>
-
-
-
-
 
 #endif // _LocOpe_SplitDrafts_HeaderFile

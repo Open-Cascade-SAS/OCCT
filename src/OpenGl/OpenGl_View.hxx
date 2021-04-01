@@ -221,7 +221,7 @@ public:
   //! Returns background image texture map.
   virtual Handle(Graphic3d_TextureMap) BackgroundImage() Standard_OVERRIDE { return myBackgroundImage; }
 
-  //! Sets image texture or environment cubemap as backround.
+  //! Sets image texture or environment cubemap as background.
   //! @param theTextureMap [in] source to set a background;
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
   //! @param theToUpdatePBREnv [in] defines whether IBL maps will be generated or not

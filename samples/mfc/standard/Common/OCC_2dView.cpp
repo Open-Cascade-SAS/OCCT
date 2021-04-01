@@ -217,7 +217,7 @@ void OCC_2dView::OnUpdateBUTTONGridCancel(CCmdUI* pCmdUI)
 void OCC_2dView::OnSize(UINT nType, int cx, int cy)
 {
   OCC_BaseView::OnSize (nType, cx, cy);
-  // Take care : This fonction is call before OnInitialUpdate
+  // Take care : This function is called before OnInitialUpdate
   if (!myView.IsNull())
     myView->MustBeResized(); 
 }

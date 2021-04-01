@@ -142,7 +142,7 @@ public:
     Standard_Mutex myMutex;             //!< used for thread-safe access
     Numbers*       myArray;             //!< indexed from 0 to myMaxAllocSize-1
     ptrdiff_t      myTotalLeftSize;     //!< currently remained allocated size
-    size_t         myTotalPeakSize;     //!< maxium cumulative allocated size
+    size_t         myTotalPeakSize;     //!< maximum cumulative allocated size
     size_t         myBreakSize;         //!< user defined allocation size to debug (see place_for_breakpoint())
     size_t         myBreakPeak;         //!< user defined peak size limit to debug
   };

@@ -57,7 +57,7 @@ public:
   //! Changes environment variable value.
   //! Raises ConstructionError either if the string contains
   //! characters not in range of ' '...'~' or if the string
-  //! contains the character '$' which is forbiden.
+  //! contains the character '$' which is forbidden.
   Standard_EXPORT void SetValue (const TCollection_AsciiString& Value);
   
   //! Gets the value of an environment variable
@@ -66,7 +66,7 @@ public:
   //! Changes environment variable name.
   //! Raises ConstructionError either if the string contains
   //! characters not in range of ' '...'~' or if the string
-  //! contains the character '$' which is forbiden.
+  //! contains the character '$' which is forbidden.
   Standard_EXPORT void SetName (const TCollection_AsciiString& name);
   
   //! Gets the name of <me>.

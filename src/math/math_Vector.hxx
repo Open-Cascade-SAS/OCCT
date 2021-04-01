@@ -34,7 +34,7 @@ class math_Matrix;
 //!    math_Vector V1(-3, 5); // a vector with range [-3..5]
 //! @endcode
 //!
-//! Vector are copied through assignement :
+//! Vector are copied through assignment:
 //! @code
 //!    math_Vector V2( 1, 9);
 //!    ....

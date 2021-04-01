@@ -42,36 +42,43 @@
 //! of definition of the matrix.
 //! Matrix objects follow "value semantics", that is, they
 //! cannot be shared and are copied through assignment
-//! Matrices are copied through assignement:
+//! Matrices are copied through assignment:
+//! @code
 //! math_Matrix M2(1, 9, 1, 3);
 //! ...
 //! M2 = M1;
 //! M1(1) = 2.0;//the matrix M2 will not be modified.
-//!
+//! @endcode
 //! The exception RangeError is raised when trying to access
 //! outside the range of a matrix :
+//! @code
 //! M1(11, 1)=0.0// --> will raise RangeError.
+//! @endcode
 //!
 //! The exception DimensionError is raised when the dimensions of
 //! two matrices or vectors are not compatible.
+//! @code
 //! math_Matrix M3(1, 2, 1, 2);
 //! M3 = M1;   // will raise DimensionError
 //! M1.Add(M3) // --> will raise DimensionError.
-//! A Matrix can be constructed with a a pointer to "c array".
+//! @endcode
+//! A Matrix can be constructed with a pointer to "c array".
 //! It allows to carry the bounds inside the matrix.
-//! Exemple :
+//! Example :
+//! @code
 //! Standard_Real tab1[10][20];
 //! Standard_Real tab2[200];
 //!
 //! math_Matrix A (tab1[0][0], 1, 10, 1, 20);
 //! math_Matrix B (tab2[0],    1, 10, 1, 20);
-class math_Matrix 
+//! @endcode
+class math_Matrix
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+
   //! Constructs a non-initialized  matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! For the constructed matrix:
@@ -80,24 +87,24 @@ public:
   //! -   LowerCol and UpperCol are the indexes of the
   //! lower and upper bounds of a column.
   Standard_EXPORT math_Matrix(const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
-  
+
   //! constructs a non-initialized matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! whose values are all initialized with the value InitialValue.
   Standard_EXPORT math_Matrix(const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol, const Standard_Real InitialValue);
-  
+
   //! constructs a matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
   //! Sharing data with a "C array" pointed by Tab.
   Standard_EXPORT math_Matrix(const Standard_Address Tab, const Standard_Integer LowerRow, const Standard_Integer UpperRow, const Standard_Integer LowerCol, const Standard_Integer UpperCol);
-  
+
   //! constructs a matrix for copy in initialization.
   //! An exception is raised if the matrixes have not the same dimensions.
   Standard_EXPORT math_Matrix(const math_Matrix& Other);
-  
+
   //! Initialize all the elements of a matrix to InitialValue.
   Standard_EXPORT void Init (const Standard_Real InitialValue);
-  
+
   //! Returns the number of rows  of this matrix.
   //! Note that for a matrix A you always have the following relations:
   //! - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
@@ -106,7 +113,7 @@ public:
   //! - the length of a column of A is equal to the number of
   //! rows of A.returns the row range of a matrix.
     Standard_Integer RowNumber() const;
-  
+
   //! Returns the number of rows  of this matrix.
   //! Note that for a matrix A you always have the following relations:
   //! - A.RowNumber() = A.UpperRow() -   A.LowerRow() + 1
@@ -115,36 +122,36 @@ public:
   //! - the length of a column of A is equal to the number of
   //! rows of A.returns the row range of a matrix.
     Standard_Integer ColNumber() const;
-  
+
   //! Returns the value of the Lower index of the row
   //! range of a matrix.
     Standard_Integer LowerRow() const;
-  
+
   //! Returns the Upper index of the row range
   //! of a matrix.
     Standard_Integer UpperRow() const;
-  
+
   //! Returns the value of the Lower index of the
   //! column range of a matrix.
     Standard_Integer LowerCol() const;
-  
+
   //! Returns the value of the upper index of the
   //! column range of a matrix.
     Standard_Integer UpperCol() const;
-  
+
   //! Computes the determinant of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
   Standard_EXPORT Standard_Real Determinant() const;
-  
+
   //! Transposes a given matrix.
   //! An exception is raised if the matrix is not a square matrix.
   Standard_EXPORT void Transpose();
-  
+
   //! Inverts a matrix using Gauss algorithm.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
   Standard_EXPORT void Invert();
-  
+
   //! Sets this matrix to the product of the matrix Left, and the matrix Right.
   //! Example
   //! math_Matrix A (1, 3, 1, 3);
@@ -167,7 +174,7 @@ void operator*= (const Standard_Real Right)
 {
   Multiply(Right);
 }
-  
+
   //! multiplies all the elements of a matrix by the
   //! value <Right>.
   Standard_NODISCARD Standard_EXPORT math_Matrix Multiplied (const Standard_Real Right) const;
@@ -175,7 +182,7 @@ Standard_NODISCARD math_Matrix operator* (const Standard_Real Right) const
 {
   return Multiplied(Right);
 }
-  
+
   //! Sets this matrix to the product of the
   //! transposed matrix TLeft, and the matrix Right.
   //! Example
@@ -196,7 +203,7 @@ Standard_NODISCARD math_Matrix operator* (const Standard_Real Right) const
   //! the number of columns of this matrix.
   Standard_NODISCARD Standard_EXPORT math_Matrix TMultiplied (const Standard_Real Right) const;
 friend math_Matrix  operator *(const Standard_Real Left,const math_Matrix& Right);
-  
+
   //! divides all the elements of a matrix by the value <Right>.
   //! An exception is raised if <Right> = 0.
   Standard_EXPORT void Divide (const Standard_Real Right);
@@ -204,7 +211,7 @@ void operator/= (const Standard_Real Right)
 {
   Divide(Right);
 }
-  
+
   //! divides all the elements of a matrix by the value <Right>.
   //! An exception is raised if <Right> = 0.
   Standard_NODISCARD Standard_EXPORT math_Matrix Divided (const Standard_Real Right) const;
@@ -212,7 +219,7 @@ Standard_NODISCARD math_Matrix operator/ (const Standard_Real Right) const
 {
   return Divided(Right);
 }
-  
+
   //! adds the matrix <Right> to a matrix.
   //! An exception is raised if the dimensions are different.
   //! Warning
@@ -224,7 +231,7 @@ void operator+= (const math_Matrix& Right)
 {
   Add(Right);
 }
-  
+
   //! adds the matrix <Right> to a matrix.
   //! An exception is raised if the dimensions are different.
   Standard_NODISCARD Standard_EXPORT math_Matrix Added (const math_Matrix& Right) const;
@@ -232,11 +239,11 @@ Standard_NODISCARD math_Matrix operator+ (const math_Matrix& Right) const
 {
   return Added(Right);
 }
-  
+
   //! sets a  matrix to the addition of <Left> and <Right>.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Add (const math_Matrix& Left, const math_Matrix& Right);
-  
+
   //! Subtracts the matrix <Right> from <me>.
   //! An exception is raised if the dimensions are different.
   //! Warning
@@ -248,7 +255,7 @@ void operator-= (const math_Matrix& Right)
 {
   Subtract(Right);
 }
-  
+
   //! Returns the result of the subtraction of <Right> from <me>.
   //! An exception is raised if the dimensions are different.
   Standard_NODISCARD Standard_EXPORT math_Matrix Subtracted (const math_Matrix& Right) const;
@@ -256,7 +263,7 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
 {
   return Subtracted(Right);
 }
-  
+
   //! Sets the values of this matrix,
   //! -   from index I1 to index I2 on the row dimension, and
   //! -   from index J1 to index J2 on the column dimension,
@@ -270,71 +277,71 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
   //! -   I2 - I1 + 1 is not equal to the number of rows of matrix M, or
   //! -   J2 - J1 + 1 is not equal to the number of columns of matrix M.
   Standard_EXPORT void Set (const Standard_Integer I1, const Standard_Integer I2, const Standard_Integer J1, const Standard_Integer J2, const math_Matrix& M);
-  
+
   //! Sets the row of index Row of a matrix to the vector <V>.
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Row> is inferior to the lower
   //! row of the matrix or <Row> is superior to the upper row.
   Standard_EXPORT void SetRow (const Standard_Integer Row, const math_Vector& V);
-  
+
   //! Sets the column of index Col of a matrix to the vector <V>.
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Col> is inferior to the lower
   //! column of the matrix or <Col> is superior to the upper
   //! column.
   Standard_EXPORT void SetCol (const Standard_Integer Col, const math_Vector& V);
-  
+
   //! Sets the diagonal of a matrix to the value <Value>.
   //! An exception is raised if the matrix is not square.
   Standard_EXPORT void SetDiag (const Standard_Real Value);
-  
+
   //! Returns the row of index Row of a matrix.
   Standard_EXPORT math_Vector Row (const Standard_Integer Row) const;
-  
+
   //! Returns the column of index <Col> of a matrix.
   Standard_EXPORT math_Vector Col (const Standard_Integer Col) const;
-  
+
   //! Swaps the rows of index Row1 and Row2.
   //! An exception is raised if <Row1> or <Row2> is out of range.
   Standard_EXPORT void SwapRow (const Standard_Integer Row1, const Standard_Integer Row2);
-  
+
   //! Swaps the columns of index <Col1> and <Col2>.
   //! An exception is raised if <Col1> or <Col2> is out of range.
   Standard_EXPORT void SwapCol (const Standard_Integer Col1, const Standard_Integer Col2);
-  
+
   //! Teturns the transposed of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
   Standard_NODISCARD Standard_EXPORT math_Matrix Transposed() const;
-  
+
   //! Returns the inverse of a matrix.
   //! Exception NotSquare is raised if the matrix is not square.
   //! Exception SingularMatrix is raised if the matrix is singular.
   Standard_EXPORT math_Matrix Inverse() const;
-  
+
   //! Returns the product of the transpose of a matrix with
   //! the matrix <Right>.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT math_Matrix TMultiply (const math_Matrix& Right) const;
-  
+
   //! Computes a matrix as the product of 2 vectors.
   //! An exception is raised if the dimensions are different.
   //! <me> = <Left> * <Right>.
   Standard_EXPORT void Multiply (const math_Vector& Left, const math_Vector& Right);
-  
+
   //! Computes a matrix as the product of 2 matrixes.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Multiply (const math_Matrix& Left, const math_Matrix& Right);
-  
+
   //! Computes a matrix to the product of the transpose of
   //! the matrix <TLeft> with the matrix <Right>.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void TMultiply (const math_Matrix& TLeft, const math_Matrix& Right);
-  
+
   //! Sets a matrix to the Subtraction of the matrix <Right>
   //! from the matrix <Left>.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Subtract (const math_Matrix& Left, const math_Matrix& Right);
-  
+
   //! Accesses (in read or write mode) the value of index <Row>
   //! and <Col> of a matrix.
   //! An exception is raised if <Row> and <Col> are not
@@ -344,15 +351,15 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
 {
   return Value(Row,Col);
 }
-  
-  //! Matrixes are copied through assignement.
+
+  //! Matrixes are copied through assignment.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT math_Matrix& Initialized (const math_Matrix& Other);
 math_Matrix& operator= (const math_Matrix& Other)
 {
   return Initialized(Other);
 }
-  
+
   //! Returns the product of 2 matrices.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT void Multiply (const math_Matrix& Right);
@@ -360,7 +367,7 @@ void operator*= (const math_Matrix& Right)
 {
   Multiply(Right);
 }
-  
+
   //! Returns the product of 2 matrices.
   //! An exception is raised if the dimensions are different.
   Standard_NODISCARD Standard_EXPORT math_Matrix Multiplied (const math_Matrix& Right) const;
@@ -368,7 +375,7 @@ Standard_NODISCARD math_Matrix operator* (const math_Matrix& Right) const
 {
   return Multiplied(Right);
 }
-  
+
   //! Returns the product of a matrix by a vector.
   //! An exception is raised if the dimensions are different.
   Standard_NODISCARD Standard_EXPORT math_Vector Multiplied (const math_Vector& Right) const;
@@ -376,7 +383,7 @@ Standard_NODISCARD math_Vector operator* (const math_Vector& Right) const
 {
   return Multiplied(Right);
 }
-  
+
   //! Returns the opposite of a matrix.
   //! An exception is raised if the dimensions are different.
   Standard_EXPORT math_Matrix Opposite();
@@ -384,7 +391,7 @@ math_Matrix operator-()
 {
   return Opposite();
 }
-  
+
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
@@ -395,14 +402,14 @@ friend class math_Vector;
 
 protected:
 
-  
+
   //! The new lower row of the matrix is set to <LowerRow>
   Standard_EXPORT void SetLowerRow (const Standard_Integer LowerRow);
-  
+
   //! The new lower column of the matrix is set to the column
   //! of range <LowerCol>.
   Standard_EXPORT void SetLowerCol (const Standard_Integer LowerCol);
-  
+
   //! The new lower row of the matrix is set to <LowerRow>
   //! and the new lower column of the matrix is set to the column
   //! of range <LowerCol>.

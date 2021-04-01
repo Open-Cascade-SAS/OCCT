@@ -31,7 +31,7 @@ public:
 public:
 
   //! Creates Directory object.
-  //! It is initiliazed to an empty name.
+  //! It is initialized to an empty name.
   Standard_EXPORT OSD_Directory();
 
   //! Creates Directory object initialized with theName.

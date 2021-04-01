@@ -172,7 +172,7 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
     GTranslate2d = Standard_False;
   
   if (GTranslate3d && GTranslate2d) {
-    //Setting preference in the case of inconsitency between 3D and 2D
+    //Setting preference in the case of inconsistency between 3D and 2D
     if      (myfilepreference == 2) Preferred3d = Standard_False;
     else if (myfilepreference == 3) Preferred2d = Standard_False;
     else                            Preferred3d = Standard_False;

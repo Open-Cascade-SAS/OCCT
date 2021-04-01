@@ -1227,8 +1227,8 @@ Standard_Integer project6(const IntPolyh_Point &ax,
 }
 //=======================================================================
 //function : TriContact
-//purpose  : This fonction     Check if two triangles   are  in
-//           contact or no,  return 1 if yes, return 0
+//purpose  : This function checks if two triangles are in
+//           contact or not, return 1 if yes, return 0
 //           if no.
 //=======================================================================
 Standard_Integer IntPolyh_MaillageAffinage::TriContact

@@ -68,7 +68,7 @@ DEFINE_STANDARD_HANDLE(Law_BSpline, Standard_Transient)
 //! -  Quasi-uniform if  all multiplicities are  1
 //! but the first and the last which are Degree+1.
 //!
-//! -   PiecewiseBezier if  all multiplicites  are
+//! -   PiecewiseBezier if  all multiplicities are
 //! Degree but the   first and the  last which are
 //! Degree+1.
 //!
@@ -518,7 +518,7 @@ public:
   //! StartingCondition = 1 means the first point and tangent cannot move
   //! EndingCondition   = 1 means the last point and tangent cannot move
   //! and so forth
-  //! ErrorStatus != 0 means that there are not enought degree of freedom
+  //! ErrorStatus != 0 means that there are not enough degree of freedom
   //! with the constrain to deform the curve accordingly
   Standard_EXPORT void MovePointAndTangent (const Standard_Real U, const Standard_Real NewValue, const Standard_Real Derivative, const Standard_Real Tolerance, const Standard_Integer StartingCondition, const Standard_Integer EndingCondition, Standard_Integer& ErrorStatus);
   

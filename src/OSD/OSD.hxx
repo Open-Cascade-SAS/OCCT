@@ -19,8 +19,8 @@
 #include <Standard_PCharacter.hxx>
 #include <OSD_SignalMode.hxx>
 
-//! Set of Operating Sytem Dependent (OSD) Tools
-class OSD 
+//! Set of Operating System Dependent (OSD) tools.
+class OSD
 {
 public:
 
@@ -118,17 +118,17 @@ public:
   //! Commands the process to sleep for a number of milliseconds
   Standard_EXPORT static void MilliSecSleep (const Standard_Integer theMilliseconds);
 
-  //! Converts aReal into aCstring in exponential format with a period as
-  //! decimal point, no thousand separator and no grouping of digits.
-  //! The conversion is independant from the current locale
+  //! Converts aReal into aCstring in exponential format with a period as decimal point,
+  //! no thousand separator and no grouping of digits.
+  //! The conversion is independent from the current locale
   Standard_EXPORT static Standard_Boolean RealToCString (const Standard_Real aReal, Standard_PCharacter& aString);
 
-  //! Converts aCstring representing a real with a period as
-  //! decimal point, no thousand separator and no grouping of digits
-  //! into aReal .
-  //! The conversion is independant from the current locale.
+  //! Converts aCstring representing a real with a period as decimal point,
+  //! no thousand separator and no grouping of digits into aReal.
+  //!
+  //! The conversion is independent from the current locale.
   Standard_EXPORT static Standard_Boolean CStringToReal (const Standard_CString aString, Standard_Real& aReal);
-  
+
   //! since Windows NT does not support 'SIGINT' signal like UNIX,
   //! then this method checks whether Ctrl-Break keystroke was or
   //! not. If yes then raises Exception_CTRL_BREAK.

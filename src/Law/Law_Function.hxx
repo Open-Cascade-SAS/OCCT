@@ -44,11 +44,9 @@ public:
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT virtual Standard_Integer NbIntervals (const GeomAbs_Shape S) const = 0;
   
-  //! Stores in <T> the  parameters bounding the intervals
-  //! of continuity <S>.
-  //!
-  //! The array must provide  enough room to  accomodate
-  //! for the parameters. i.e. T.Length() > NbIntervals()
+  //! Stores in <T> the parameters bounding the intervals of continuity <S>.
+  //! The array must provide enough room to accommodate for the parameters,
+  //! i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const = 0;
   
   //! Returns the value of the function at the point of parameter X.

@@ -43,7 +43,7 @@ public:
                                 NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theVertsPerTexture,
                                 NCollection_Vector<Handle(OpenGl_VertexBuffer)>& theTCrdsPerTexture);
 
-protected: //! @name class auxillary methods
+protected: //! @name class auxiliary methods
 
   Standard_EXPORT void createGlyphs (const Handle(Font_TextFormatter)&                                              theFormatter,
                                      const Handle(OpenGl_Context)&                                                  theCtx,
@@ -52,7 +52,7 @@ protected: //! @name class auxillary methods
                                      NCollection_Vector< NCollection_Handle < NCollection_Vector <OpenGl_Vec2> > >& theVertsPerTexture,
                                      NCollection_Vector< NCollection_Handle < NCollection_Vector <OpenGl_Vec2> > >& theTCrdsPerTexture);
 
-protected: //! @name class auxillary fields
+protected: //! @name class auxiliary fields
 
   NCollection_Vector<OpenGl_Font::Tile>  myTileRects;
   OpenGl_VertexBufferEditor<OpenGl_Vec2> myVboEditor;

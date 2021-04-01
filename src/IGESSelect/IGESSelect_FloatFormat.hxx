@@ -59,7 +59,7 @@ public:
   
   //! Sets Main Format to a new value
   //! Remark : SetFormat, SetZeroSuppress and SetFormatForRange are
-  //! independant
+  //! independent
   Standard_EXPORT void SetFormat (const Standard_CString format = "%E");
   
   //! Sets Format for Range to a new value with its range of

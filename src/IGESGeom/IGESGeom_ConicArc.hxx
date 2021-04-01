@@ -108,7 +108,7 @@ public:
   Standard_EXPORT gp_Dir TransformedAxis() const;
   
   //! Returns a Definition computed from equation, easier to use
-  //! <Center> : the center of the the conic (meaningless for
+  //! <Center> : the center of the conic (meaningless for
   //! a parabola) (defined with Z displacement)
   //! <MainAxis> : the Main Axis of the conic (for a Circle,
   //! arbitrary the X Axis)

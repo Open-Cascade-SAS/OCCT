@@ -39,7 +39,7 @@ public:
   //! Default implementation create a stream from file buffer returned by OSD_FileSystem::OpenFileBuffer().
   //! @param theUrl       [in] path to open
   //! @param theMode      [in] flags describing the requested input mode for the stream (std::ios_base::in will be implicitly added)
-  //! @param theOffset    [in] expected stream position from the begining of the file (beginning of the stream by default);
+  //! @param theOffset    [in] expected stream position from the beginning of the file (beginning of the stream by default);
   //!                          -1 would keep seek position undefined (in case of re-using theOldStream)
   //! @param theOldStream [in] a pointer to existing stream pointing to theUrl to be reused (without re-opening)
   //! @return pointer to newly created opened stream, to theOldStream if it can be reused or NULL in case of failure.
@@ -52,7 +52,7 @@ public:
   //! Opens stream buffer for specified file URL.
   //! @param theUrl        [in]  path to open
   //! @param theMode       [in]  flags describing the requested input mode for the stream
-  //! @param theOffset     [in]  expected stream position from the begining of the buffer (beginning of the stream buffer by default)
+  //! @param theOffset     [in]  expected stream position from the beginning of the buffer (beginning of the stream buffer by default)
   //! @param theOutBufSize [out] total buffer size (only if buffer is opened for read)
   //! @return pointer to newly created opened stream buffer or NULL in case of failure.
   virtual opencascade::std::shared_ptr<std::streambuf> OpenStreamBuffer (const TCollection_AsciiString& theUrl,

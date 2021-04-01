@@ -50,7 +50,6 @@ LocOpe_SequenceOfLin.hxx
 LocOpe_SequenceOfPntFace.hxx
 LocOpe_SplitDrafts.cxx
 LocOpe_SplitDrafts.hxx
-LocOpe_SplitDrafts.lxx
 LocOpe_Spliter.cxx
 LocOpe_Spliter.hxx
 LocOpe_Spliter.lxx

@@ -42,7 +42,6 @@ class Law_BSpFunc : public Law_Function
 
 public:
 
-  
   Standard_EXPORT Law_BSpFunc();
   
   Standard_EXPORT Law_BSpFunc(const Handle(Law_BSpline)& C, const Standard_Real First, const Standard_Real Last);
@@ -52,14 +51,11 @@ public:
   //! Returns  the number  of  intervals for  continuity
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals (const GeomAbs_Shape S) const Standard_OVERRIDE;
-  
-  //! Stores in <T> the  parameters bounding the intervals
-  //! of continuity <S>.
-  //!
-  //! The array must provide  enough room to  accomodate
-  //! for the parameters. i.e. T.Length() > NbIntervals()
+
+  //! Stores in <T> the parameters bounding the intervals of continuity <S>.
+  //! The array must provide enough room to accommodate for the parameters, i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
-  
+
   Standard_EXPORT Standard_Real Value (const Standard_Real X) Standard_OVERRIDE;
   
   Standard_EXPORT void D1 (const Standard_Real X, Standard_Real& F, Standard_Real& D) Standard_OVERRIDE;
@@ -80,30 +76,14 @@ public:
   
   Standard_EXPORT void SetCurve (const Handle(Law_BSpline)& C);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(Law_BSpFunc,Law_Function)
 
-protected:
-
-
-
-
 private:
-
 
   Handle(Law_BSpline) curv;
   Standard_Real first;
   Standard_Real last;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Law_BSpFunc_HeaderFile

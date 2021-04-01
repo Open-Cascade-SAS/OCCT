@@ -29,7 +29,7 @@ class math_Matrix;
 
 
 //! This abstract class describes the virtual functions associated
-//! with a set of N Functions each of M independant variables.
+//! with a set of N Functions each of M independent variables.
 class math_FunctionSetWithDerivatives  : public math_FunctionSet
 {
 public:

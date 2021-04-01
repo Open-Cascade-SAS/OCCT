@@ -76,7 +76,7 @@ namespace
 
     private: //! @name private fields
 
-      const   OSD_Parallel::UniversalIterator&  myBegin; //!< Fisrt element of range.
+      const   OSD_Parallel::UniversalIterator&  myBegin; //!< First element of range.
       const   OSD_Parallel::UniversalIterator&  myEnd;   //!< Last element of range.
       mutable OSD_Parallel::UniversalIterator   myIt;    //!< First non processed element of range.
       mutable Standard_Mutex                 myMutex; //!< Access controller for the first non processed element.

@@ -31,7 +31,7 @@
 //!    math_IntegerVector V1(-3, 5); // an IntegerVector with range [-3..5]
 //! @endcode
 //!
-//! IntegerVector is copied through assignement :
+//! IntegerVector is copied through assignment:
 //! @code
 //!    math_IntegerVector V2( 1, 9);
 //!    ....

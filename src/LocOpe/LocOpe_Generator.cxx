@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modifed:     Portage NT 7-5-97 DPF (return NewParameter)
+#include <LocOpe_Generator.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -35,7 +35,6 @@
 #include <gp_Pln.hxx>
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_GeneratedShape.hxx>
-#include <LocOpe_Generator.hxx>
 #include <Precision.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>

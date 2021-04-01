@@ -193,7 +193,7 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
     GTranslate2d = Standard_False;
  
   if (GTranslate3d && GTranslate2d) {
-    //Setting preference in the case of inconsitency between 3D and 2D
+    //Setting preference in the case of inconsistency between 3D and 2D
     if      (surfcurv == 2)         Preferred3d = Standard_False;
     else if (surfcurv == 3)         Preferred2d = Standard_False;
     else if (myfilepreference == 2) Preferred3d = Standard_False;

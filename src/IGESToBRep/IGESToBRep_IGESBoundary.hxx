@@ -72,7 +72,7 @@ public:
   //! and may contain pcurves)
     Handle(ShapeExtend_WireData) WireData3d() const;
   
-  //! Returns the the wire from 2D curves (edges contain pcurves
+  //! Returns the wire from 2D curves (edges contain pcurves
   //! only)
     Handle(ShapeExtend_WireData) WireData2d() const;
   

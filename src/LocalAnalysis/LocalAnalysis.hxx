@@ -20,14 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <Standard_OStream.hxx>
+
 class LocalAnalysis_SurfaceContinuity;
 class LocalAnalysis_CurveContinuity;
 class LocalAnalysis_SurfaceContinuity;
 class LocalAnalysis_CurveContinuity;
-
-
 
 //! This package gives tools to check the local continuity
 //! between two  points situated  on two curves or two surfaces.
@@ -37,42 +35,21 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-
-  //! This  class  compute
-  //! s  and gives  tools to check  the  local
-  //! continuity  between two points situated  on 2  curves)
+  //! This  class  compute s and gives tools to check the local
+  //! continuity between two points situated on 2 curves.
   //!
-  //! This fonction gives informations  about a  variable CurveContinuity
+  //! This function gives information about a variable CurveContinuity
   Standard_EXPORT static void Dump (const LocalAnalysis_SurfaceContinuity& surfconti, Standard_OStream& o);
   
 
-  //! This fonction gives informations  about a variable SurfaceContinuity
+  //! This function gives information about a variable SurfaceContinuity
   Standard_EXPORT static void Dump (const LocalAnalysis_CurveContinuity& curvconti, Standard_OStream& o);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
-
 
 friend class LocalAnalysis_SurfaceContinuity;
 friend class LocalAnalysis_CurveContinuity;
 
 };
-
-
-
-
-
-
 
 #endif // _LocalAnalysis_HeaderFile

@@ -298,7 +298,7 @@ static void MacExtract(const TCollection_AsciiString& what,
   Standard_Integer pos;
   Standard_PCharacter p;
   
-  // I don't know how to distingish a disk from a trek !
+  // I don't know how to distinguish a disk from a trek !
   
   trek = what;
   
@@ -612,7 +612,7 @@ static void P2DOS (TCollection_AsciiString & Way){
 
 
 
-// Convert a path to system dependant syntax
+// Convert a path to system dependent syntax
 
 void OSD_Path::SystemName (TCollection_AsciiString& FullName,
 			   const OSD_SysType aType)const{

@@ -65,10 +65,10 @@ public:
   Standard_EXPORT static Handle(TColStd_HArray1OfReal) MixBnd (const Standard_Integer Degree, const TColStd_Array1OfReal& Knots, const TColStd_Array1OfInteger& Mults, const Handle(Law_Linear)& Lin);
   
   //! Builds the poles of the 1d bspline that is null on the
-  //! rigth    side   of   Knots(Index)  (on  the    left if
+  //! right    side   of   Knots(Index)  (on  the    left if
   //! NulOnTheRight  is  false)    and   that is     like  a
   //! t*(1-t)(1-t) curve  on the  left side of  Knots(Index)
-  //! (on the rigth  if NulOnTheRight is false).  The result
+  //! (on the right  if NulOnTheRight is false).  The result
   //! curve is  C1 with  a derivative  equal  to 1. at first
   //! parameter (-1 at last  parameter  if  NulOnTheRight is
   //! false).

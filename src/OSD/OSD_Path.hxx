@@ -32,7 +32,7 @@ public:
   //! i.e. current directory.
   Standard_EXPORT OSD_Path();
   
-  //! Creates a Path object initialized by dependant path.
+  //! Creates a Path object initialized by dependent path.
   //! ex: OSD_Path me ("/usr/bin/myprog.sh",OSD_UnixBSD);
   //!
   //! OSD_Path me ("sys$common:[syslib]cc.exe",OSD_OSF) will

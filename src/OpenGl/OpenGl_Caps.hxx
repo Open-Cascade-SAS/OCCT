@@ -114,7 +114,7 @@ public: //! @name context creation parameters
    * but some limit functionality to OpenGL 2.1 (e.g. OS X) when core profile is not explicitly requested.
    *
    * Requires OpenGL 3.2+ drivers.
-   * Has no effect on OpenGL ES 2.0+ drivers (which do not provie FFP compatibility).
+   * Has no effect on OpenGL ES 2.0+ drivers (which do not provide FFP compatibility).
    * Interacts with ffpEnable option, which should be disabled within core profile.
    *
    * ON by default.

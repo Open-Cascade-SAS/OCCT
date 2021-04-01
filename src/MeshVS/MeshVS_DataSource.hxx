@@ -60,10 +60,10 @@ public:
   //! Returns geometry information about node or element
   //! ID is the numerical identificator of node or element
   //! IsElement indicates this ID describe node ( if Standard_False ) or element ( if Standard_True )
-  //! Coords is an array of co-ordinates of node(s).
+  //! Coords is an array of coordinates of node(s).
   //! For node it is only 3 numbers: X, Y, Z in the strict order
   //! For element it is 3*n numbers, where n is number of this element vertices
-  //! The order is strict also: X1, Y1, Z1, X2,...., where Xi, Yi, Zi are co-ordinates of vertices
+  //! The order is strict also: X1, Y1, Z1, X2,...., where Xi, Yi, Zi are coordinates of vertices
   //! NbNodes is number of nodes. It is recommended this parameter to be set to 1 for node.
   //! Type is type of node or element (from enumeration). It is recommended this parameter to be set to
   //! MeshVS_ET_Node for node.
@@ -101,7 +101,7 @@ public:
   //! There is default method, for advance reflection this method can be redefined.
   //! Id is the numerical identificator of only element!
   //! Max is maximal number of nodes an element can consist of
-  //! nx, ny, nz  are values whose represent co-ordinates of normal (will be returned)
+  //! nx, ny, nz  are values whose represent coordinates of normal (will be returned)
   //! In the redefined method you can return normal with length more then 1, but in this case
   //! the appearance of element will be more bright than usual. For ordinary brightness you must return
   //! normal with length 1
@@ -160,7 +160,7 @@ public:
   
   //! Returns maps of entities (nodes and elements) detected
   //! by mouse selection with rectangular box (XMin, YMin, XMax, YMax)
-  //! on the current veiw plane, with the tolerance aTol.
+  //! on the current view plane, with the tolerance aTol.
   //! Returns True if something is detected.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
@@ -168,7 +168,7 @@ public:
   
   //! Returns maps of entities (nodes and elements) detected
   //! by mouse selection with the polyline <Polyline>
-  //! on the current veiw plane, with the tolerance aTol.
+  //! on the current view plane, with the tolerance aTol.
   //! Returns True if something is detected.
   //! It should be redefined if the advanced mesh selection is
   //! activated. Default implementation returns False.
@@ -182,27 +182,8 @@ public:
   //! activated. Default implementation returns False.
   Standard_EXPORT virtual Standard_Boolean GetDetectedEntities (const Handle(MeshVS_Mesh)& Prs, Handle(TColStd_HPackedMapOfInteger)& Nodes, Handle(TColStd_HPackedMapOfInteger)& Elements);
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(MeshVS_DataSource,Standard_Transient)
 
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _MeshVS_DataSource_HeaderFile

@@ -128,10 +128,10 @@ void IntRes2d_Intersection::SetValues(const IntRes2d_Intersection& Other) {
 //--  parameter of the bounds of the composite Curve
 //-- Merge of two Intersection Segments S1 and S2 when :
 //--  
-//--     S1 : U1First,PosU1Fisrt   -->  U1Last,PosU1Last
-//--          V1First,PosV1Fisrt   -->  V1Last,PosV1Last
-//--     S2 : U2First,PosU2Fisrt   -->  U2Last,PosU2Last
-//--          V2First,PosV2Fisrt   -->  V2Last,PosV2Last
+//--     S1 : U1First,PosU1First   -->  U1Last,PosU1Last
+//--          V1First,PosV1First   -->  V1Last,PosV1Last
+//--     S2 : U2First,PosU2First   -->  U2Last,PosU2Last
+//--          V2First,PosV2First   -->  V2Last,PosV2Last
 //--
 //--   1       U :      X------1-------E H-----2-------X   U -->
 //--           V :      X------1-------X X-----2-------X  <- V -> ?

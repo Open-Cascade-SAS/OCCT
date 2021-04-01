@@ -205,7 +205,7 @@ void OSD_Parallel::SetUseOcctThreads (Standard_Boolean theToUseOcct)
 
 //=======================================================================
 //function : NbLogicalProcessors
-//purpose  : Returns number of logical proccessors.
+//purpose  : Returns number of logical processors.
 //=======================================================================
 Standard_Integer OSD_Parallel::NbLogicalProcessors()
 {

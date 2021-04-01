@@ -295,7 +295,7 @@ Quantity_Date  OSD_FileNode::CreationMoment(){
 
 // if (Failed()) Perror();
 
- /* Get File Informations */
+ /* Get File Information */
 
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );
@@ -323,7 +323,7 @@ Quantity_Date  OSD_FileNode::AccessMoment(){
 
 // if (Failed()) Perror();
 
- /* Get File Informations */
+ /* Get File Information */
 
  TCollection_AsciiString aBuffer;
  myPath.SystemName ( aBuffer );

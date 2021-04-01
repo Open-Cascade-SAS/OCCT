@@ -28,7 +28,7 @@
 
 
 //! This abstract class describes the virtual functions associated to
-//! a set on N Functions of M independant variables.
+//! a set on N Functions of M independent variables.
 class math_FunctionSet 
 {
 public:

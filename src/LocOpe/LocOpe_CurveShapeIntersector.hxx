@@ -75,7 +75,7 @@ public:
     const LocOpe_PntFace& Point (const Standard_Integer Index) const;
   
   //! Searches the   first intersection  point   located
-  //! after the  parameter  <From>, wich  orientation is
+  //! after the parameter  <From>, which  orientation is
   //! not       TopAbs_EXTERNAL.      If found,  returns
   //! <Standard_True>.  <Or> contains the orientation of
   //! the  point, <IndFrom>  and  <IndTo> represents the
@@ -87,7 +87,7 @@ public:
   Standard_EXPORT Standard_Boolean LocalizeAfter (const Standard_Real From, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
   
   //! Searches  the first intersection point     located
-  //! before  the parameter <From>,  wich orientation is
+  //! before  the parameter <From>, which orientation is
   //! not      TopAbs_EXTERNAL.      If  found,  returns
   //! <Standard_True>.  <Or> contains the orientation of
   //! the point,  <IndFrom>  and <IndTo>  represents the
@@ -99,7 +99,7 @@ public:
   Standard_EXPORT Standard_Boolean LocalizeBefore (const Standard_Real From, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
   
   //! Searches  the first intersection point     located
-  //! after the index <FromInd>  ( >= FromInd + 1), wich
+  //! after the index <FromInd> ( >= FromInd + 1), which
   //! orientation   is   not TopAbs_EXTERNAL.   If found,
   //! returns   <Standard_True>.   <Or>  contains    the
   //! orientation of the  point, <IndFrom>  and  <IndTo>
@@ -111,7 +111,7 @@ public:
   Standard_EXPORT Standard_Boolean LocalizeAfter (const Standard_Integer FromInd, TopAbs_Orientation& Or, Standard_Integer& IndFrom, Standard_Integer& IndTo) const;
   
   //! Searches the  first  intersection   point  located
-  //! before the index <FromInd>  ( <= FromInd -1), wich
+  //! before the index <FromInd> ( <= FromInd -1), which
   //! orientation is   not TopAbs_EXTERNAL.   If   found,
   //! returns   <Standard_True>.  <Or>  contains     the
   //! orientation  of the  point,  <IndFrom> and <IndTo>

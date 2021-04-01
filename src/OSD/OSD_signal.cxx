@@ -250,7 +250,7 @@ static LONG CallHandler (DWORD theExceptionCode,
     }
     case EXCEPTION_PRIV_INSTRUCTION:
     {
-      strcat_s (aBuffer, sizeof(aBuffer), "PRIVELEGED INSTRUCTION ENCOUNTERED");
+      strcat_s (aBuffer, sizeof(aBuffer), "PRIVILEGED INSTRUCTION ENCOUNTERED");
       break;
     }
     case EXCEPTION_STACK_OVERFLOW:
@@ -467,7 +467,7 @@ void OSD::SetSignal (OSD_SignalMode theSignalMode,
   TCollection_AsciiString val = env.Value();
   if (!env.Failed())
   {
-    std::cout << "Environment variable CSF_DEBUG_MODE setted.\n";
+    std::cout << "Environment variable CSF_DEBUG_MODE set.\n";
     fMsgBox = Standard_True;
     if (OSD_SignalStackTraceLength == 0)
     {
@@ -769,7 +769,7 @@ typedef void (* SIG_PFV) (int);
 
 //============================================================================
 //==== Handler
-//====     Catche the differents signals:
+//====     Catch the different signals:
 //====          1- The Fatal signals, which cause the end of process:
 //====          2- The exceptions which are "signaled" by Raise.
 //====     The Fatal Signals:
@@ -802,7 +802,7 @@ static void Handler (const int theSignal)
     perror ("sigaction");
   }
 
-  // std::cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  std::endl ;
+  // std::cout << "OSD::Handler: signal " << (int) theSignal << " occurred inside a try block " <<  std::endl ;
   if ( ADR_ACT_SIGIO_HANDLER != NULL )
     (*ADR_ACT_SIGIO_HANDLER)() ;
 
@@ -1029,7 +1029,7 @@ void OSD::SetThreadLocalSignal (OSD_SignalMode /*theSignalMode*/,
 
 //============================================================================
 //==== SetSignal
-//====     Set the differents signals:
+//====     Set the different signals:
 //============================================================================
 
 void OSD::SetSignal (OSD_SignalMode theSignalMode,

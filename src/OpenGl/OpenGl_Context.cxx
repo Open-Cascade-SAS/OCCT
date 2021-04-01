@@ -2182,7 +2182,7 @@ void OpenGl_Context::ReleaseDelayed()
   {
     if (++anIter.ChangeValue() <= 2)
     {
-      continue; // postpone release one more frame to ensure noone use it periodically
+      continue; // postpone release one more frame to ensure no one uses it periodically
     }
 
     const TCollection_AsciiString& aKey = anIter.Key();

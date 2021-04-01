@@ -188,7 +188,7 @@ Standard_ShortReal OpenGl_GraduatedTrihedron::getDistanceToCorner (const OpenGl_
 Standard_ExtCharacter OpenGl_GraduatedTrihedron::getGridAxes (const Standard_ShortReal theCorners[8],
                                                               GridAxes& theGridAxes) const
 {
-  // Find the farest corner
+  // Find the farthest corner
   Standard_Byte aMaxIndex = 0;
   Standard_ShortReal aMax = theCorners[aMaxIndex] > 0.0f ? theCorners[aMaxIndex] : 0.0f;
 
@@ -581,7 +581,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
     }
   }
 
-  // Find the farest point of bounding box
+  // Find the farthest point of bounding box
 
   // Get normal of the view out of user and distance corresponding to 1 pixel
   OpenGl_Vec3 aNormal;
@@ -607,7 +607,7 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   // (0, 0, 1), (0, 1, 0) and (0, 0, 1) directions from (myMin.x(), Ymin, Zmin) point
   // are reserved for trihedron axes.
   // So for the grid here are 9 edges of cube,
-  // and, depending on the farest point, 2 or 3 of them may not be drawn
+  // and, depending on the farthest point, 2 or 3 of them may not be drawn
   // if they overlap displayed model.
   
   // Write an axes state what axes of bounding box are to be drawn

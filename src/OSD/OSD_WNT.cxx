@@ -17,8 +17,8 @@
 
 /******************************************************************************/
 /* File:      OSD_WNT.cxx                                                     */
-/* Purpose:   Security management routines ( more convinient than WIN32       */
-/*            ones ) and other convinient functions.                          */
+/* Purpose:   Security management routines ( more convenient than WIN32       */
+/*            ones ) and other convrnient functions.                          */
 /******************************************************************************/
 /***/
 #include <OSD_WNT.hxx>
@@ -970,7 +970,7 @@ retry:
 /***/
 /******************************************************************************/
 /* Function : SetMoveDirectoryProc                                          */
-/* Purpose  : Sets callback procedure which is calling by the               */ 
+/* Purpose  : Sets callback procedure which is calling by the               */
 /*            'MoveDirectory' after moving of each item in the              */
 /*            directory. To unregister this callback function supply NULL   */
 /*            pointer                                                       */
@@ -984,7 +984,7 @@ void SetMoveDirectoryProc ( MOVE_DIR_PROC proc ) {
 /***/
 /******************************************************************************/
 /* Function : SetCopyDirectoryProc                                          */
-/* Purpose  : Sets callback procedure which is calling by the               */ 
+/* Purpose  : Sets callback procedure which is calling by the               */
 /*            'CopyDirectory' after copying of each item in the             */
 /*            directory. To unregister this callback function supply NULL   */
 /*            pointer                                                       */
@@ -998,10 +998,10 @@ void SetCopyDirectoryProc ( COPY_DIR_PROC proc ) {
 /***/
 /******************************************************************************/
 /* Function : SetResponseDirectoryProc                                      */
-/* Purpose  : Sets callback procedure which is calling by the               */ 
-/*            directoy processing function if an error was occur.           */
+/* Purpose  : Sets callback procedure which is calling by the               */
+/*            directory processing function if an error was occur.          */
 /*            The return value of that callback procedure determines        */
-/*            behaviour of directoy processing functions in case of error.  */
+/*            behaviour of directory processing functions in case of error. */
 /*            To unregister this callback function supply NULL pointer      */
 /******************************************************************************/
 /***/

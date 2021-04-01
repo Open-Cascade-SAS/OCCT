@@ -48,7 +48,7 @@ public:
   Standard_EXPORT IGESSelect_SelectPCurves(const Standard_Boolean basic);
   
   //! Explores an entity, to take its contained PCurves
-  //! An independant curve is IGNORED : only faces are explored
+  //! An independent curve is IGNORED : only faces are explored
   Standard_EXPORT Standard_Boolean Explore (const Standard_Integer level, const Handle(Standard_Transient)& ent, const Interface_Graph& G, Interface_EntityIterator& explored) const Standard_OVERRIDE;
   
   //! Returns a text defining the criterium : "Basic PCurves" or
