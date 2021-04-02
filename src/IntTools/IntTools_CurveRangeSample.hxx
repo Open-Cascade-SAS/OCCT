@@ -24,8 +24,8 @@
 #include <IntTools_BaseRangeSample.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class IntTools_Range;
 
+class IntTools_Range;
 
 //! class for range index management of curve
 class IntTools_CurveRangeSample  : public IntTools_BaseRangeSample
@@ -39,39 +39,26 @@ public:
   
   Standard_EXPORT IntTools_CurveRangeSample(const Standard_Integer theIndex);
   
-    void SetRangeIndex (const Standard_Integer theIndex);
-  
-    Standard_Integer GetRangeIndex() const;
-  
-    Standard_Boolean IsEqual (const IntTools_CurveRangeSample& Other) const;
-  
+  void SetRangeIndex (const Standard_Integer theIndex) { myIndex = theIndex; }
+
+  Standard_Integer GetRangeIndex() const { return myIndex; }
+
+  Standard_Boolean IsEqual (const IntTools_CurveRangeSample& Other) const
+  {
+    return ((myIndex == Other.myIndex) && (GetDepth() == Other.GetDepth()));
+  }
+
   Standard_EXPORT IntTools_Range GetRange (const Standard_Real theFirst, const Standard_Real theLast, const Standard_Integer theNbSample) const;
   
-    Standard_Integer GetRangeIndexDeeper (const Standard_Integer theNbSample) const;
-
-
-
-
-protected:
-
-
-
-
+  Standard_Integer GetRangeIndexDeeper (const Standard_Integer theNbSample) const
+  {
+    return myIndex * theNbSample;
+  }
 
 private:
 
-
-
   Standard_Integer myIndex;
 
-
 };
-
-
-#include <IntTools_CurveRangeSample.lxx>
-
-
-
-
 
 #endif // _IntTools_CurveRangeSample_HeaderFile

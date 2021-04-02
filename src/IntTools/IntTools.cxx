@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntTools.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -24,15 +25,14 @@
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
-#include <IntTools.hxx>
 #include <IntTools_Array1OfRoots.hxx>
-#include <IntTools_CArray1OfReal.hxx>
 #include <IntTools_Root.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_ListOfReal.hxx>
 #include <TopoDS_Edge.hxx>
 
 #include <algorithm>
+
 //=======================================================================
 //function : IntTools::GetRadius
 //purpose  : 
@@ -89,17 +89,17 @@
 //function : PrepareArgs
 //purpose  : 
 //=======================================================================
-  Standard_Integer IntTools::PrepareArgs(BRepAdaptor_Curve& C,
-					 const Standard_Real Tmax,
-					 const Standard_Real Tmin,
-					 const Standard_Integer Discret,
-					 const Standard_Real Deflection,
-					 IntTools_CArray1OfReal& anArgs)
+Standard_Integer IntTools::PrepareArgs (BRepAdaptor_Curve& C,
+                                        const Standard_Real Tmax,
+                                        const Standard_Real Tmin,
+                                        const Standard_Integer Discret,
+                                        const Standard_Real Deflection,
+                                        TColStd_Array1OfReal& anArgs)
 {
   
   TColStd_ListOfReal aPars;
   Standard_Real dt, tCurrent, tNext, aR, anAbsDeflection;
-  Standard_Integer ip, i, j, aNbDeflectionPoints, aDiscretBis;
+  Standard_Integer ip, i, j, aNbDeflectionPoints;
   Standard_Boolean aRFlag; 
   
   GeomAbs_CurveType aCurveType;
@@ -150,11 +150,12 @@
   }
 
   aPars.Append(Tmax);
-  aDiscretBis=aPars.Extent();
-  anArgs.Resize(aDiscretBis);
+  const Standard_Integer aDiscretBis = aPars.Extent();
+  anArgs.Resize (0, aDiscretBis - 1, false);
   TColStd_ListIteratorOfListOfReal anIt(aPars);
-  for (i=0; anIt.More(); anIt.Next(), i++) {
-    anArgs(i)=anIt.Value();
+  for (i = 0; anIt.More(); anIt.Next(), i++)
+  {
+    anArgs.SetValue (i, anIt.Value());
   }
   return 0;
 }

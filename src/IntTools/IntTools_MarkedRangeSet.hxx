@@ -16,18 +16,11 @@
 #ifndef _IntTools_MarkedRangeSet_HeaderFile
 #define _IntTools_MarkedRangeSet_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <IntTools_CArray1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-class IntTools_CArray1OfReal;
-class IntTools_Range;
 
+class IntTools_Range;
 
 //! class MarkedRangeSet provides continuous set of ranges marked with flags
 class IntTools_MarkedRangeSet 
@@ -35,8 +28,6 @@ class IntTools_MarkedRangeSet
 public:
 
   DEFINE_STANDARD_ALLOC
-
-  
 
   //! Empty constructor
   Standard_EXPORT IntTools_MarkedRangeSet();
@@ -52,7 +43,7 @@ public:
   //! Warning:
   //! The constructor do not check if the values of array are not sorted
   //! It should be checked before function invocation
-  Standard_EXPORT IntTools_MarkedRangeSet(const IntTools_CArray1OfReal& theSortedArray, const Standard_Integer theInitFlag);
+  Standard_EXPORT IntTools_MarkedRangeSet(const TColStd_Array1OfReal& theSortedArray, const Standard_Integer theInitFlag);
   
 
   //! build set of ranges which consists of one range with
@@ -65,7 +56,7 @@ public:
   //! Warning:
   //! The function do not check if the values of array are not sorted
   //! It should be checked before function invocation
-  Standard_EXPORT void SetRanges (const IntTools_CArray1OfReal& theSortedArray, const Standard_Integer theInitFlag);
+  Standard_EXPORT void SetRanges (const TColStd_Array1OfReal& theSortedArray, const Standard_Integer theInitFlag);
   
 
   //! Inserts a new range marked with flag theFlag
@@ -123,42 +114,21 @@ public:
   //! can be equal to theValue, otherwise upper boundary of the range
   //! can be equal to theValue.
   Standard_EXPORT Standard_Integer GetIndex (const Standard_Real theValue, const Standard_Boolean UseLower) const;
-  
 
   //! Returns number of ranges
-    Standard_Integer Length() const;
-  
+  Standard_Integer Length() const { return myRangeNumber; }
 
   //! Returns the range with index theIndex.
   //! the Index can be from 1 to Length()
   Standard_EXPORT IntTools_Range Range (const Standard_Integer theIndex) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TColStd_SequenceOfReal myRangeSetStorer;
   Standard_Integer myRangeNumber;
   TColStd_SequenceOfInteger myFlags;
   TColStd_SequenceOfInteger myFoundIndices;
 
-
 };
-
-
-#include <IntTools_MarkedRangeSet.lxx>
-
-
-
-
 
 #endif // _IntTools_MarkedRangeSet_HeaderFile

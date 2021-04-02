@@ -11,9 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <IntTools_CArray1OfReal.hxx>
 #include <IntTools_MarkedRangeSet.hxx>
+
 #include <IntTools_Range.hxx>
 
 IntTools_MarkedRangeSet::IntTools_MarkedRangeSet() :
@@ -28,9 +27,8 @@ IntTools_MarkedRangeSet::IntTools_MarkedRangeSet(const Standard_Real    theFirst
   SetBoundaries(theFirstBoundary, theLastBoundary, theInitFlag);
 }
 
-IntTools_MarkedRangeSet::IntTools_MarkedRangeSet(const IntTools_CArray1OfReal& theSortedArray,
-						 const Standard_Integer        theInitFlag)
-
+IntTools_MarkedRangeSet::IntTools_MarkedRangeSet (const TColStd_Array1OfReal& theSortedArray,
+                                                  const Standard_Integer theInitFlag)
 {
   SetRanges(theSortedArray, theInitFlag);
 }
@@ -47,19 +45,19 @@ void IntTools_MarkedRangeSet::SetBoundaries(const Standard_Real    theFirstBound
   myFlags.Append(theInitFlag);
 }
 
-void IntTools_MarkedRangeSet::SetRanges(const IntTools_CArray1OfReal& theSortedArray,
-					const Standard_Integer        theInitFlag) 
+void IntTools_MarkedRangeSet::SetRanges (const TColStd_Array1OfReal& theSortedArray,
+                                         const Standard_Integer theInitFlag)
 {
   myRangeSetStorer.Clear();
   myFlags.Clear();
-  Standard_Integer i = 0;
-
-  for(i = 0; i < theSortedArray.Length(); i++) {
-    myRangeSetStorer.Append(theSortedArray(i));    
+  for (TColStd_Array1OfReal::Iterator aRangeIter (theSortedArray); aRangeIter.More(); aRangeIter.Next())
+  {
+    myRangeSetStorer.Append (aRangeIter.Value());
   }
   myRangeNumber = myRangeSetStorer.Length() - 1;
 
-  for(i = 1; i <= myRangeNumber; i++) {
+  for (Standard_Integer i = 1; i <= myRangeNumber; i++)
+  {
     myFlags.Append(theInitFlag);
   }
 }

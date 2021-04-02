@@ -39,7 +39,6 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntTools.hxx>
 #include <IntTools_BeanFaceIntersector.hxx>
-#include <IntTools_CArray1OfInteger.hxx>
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>

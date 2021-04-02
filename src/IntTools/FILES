@@ -4,15 +4,9 @@ IntTools_Array1OfRange.hxx
 IntTools_Array1OfRoots.hxx
 IntTools_BaseRangeSample.cxx
 IntTools_BaseRangeSample.hxx
-IntTools_BaseRangeSample.lxx
 IntTools_BeanFaceIntersector.cxx
 IntTools_BeanFaceIntersector.hxx
-IntTools_CArray1.gxx
-IntTools_CArray1.lxx
-IntTools_CArray1OfInteger.hxx
-IntTools_CArray1OfInteger_0.cxx
 IntTools_CArray1OfReal.hxx
-IntTools_CArray1OfReal_0.cxx
 IntTools_CommonPrt.cxx
 IntTools_CommonPrt.hxx
 IntTools_Context.cxx
@@ -21,12 +15,9 @@ IntTools_Curve.cxx
 IntTools_Curve.hxx
 IntTools_CurveRangeLocalizeData.cxx
 IntTools_CurveRangeLocalizeData.hxx
-IntTools_CurveRangeLocalizeData.lxx
 IntTools_CurveRangeSample.cxx
 IntTools_CurveRangeSample.hxx
-IntTools_CurveRangeSample.lxx
 IntTools_CurveRangeSampleMapHasher.hxx
-IntTools_CurveRangeSampleMapHasher.lxx
 IntTools_DataMapIteratorOfDataMapOfCurveSampleBox.hxx
 IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox.hxx
 IntTools_DataMapOfCurveSampleBox.hxx
@@ -52,7 +43,6 @@ IntTools_MapOfCurveSample.hxx
 IntTools_MapOfSurfaceSample.hxx
 IntTools_MarkedRangeSet.cxx
 IntTools_MarkedRangeSet.hxx
-IntTools_MarkedRangeSet.lxx
 IntTools_PntOn2Faces.cxx
 IntTools_PntOn2Faces.hxx
 IntTools_PntOnFace.cxx
@@ -75,7 +65,6 @@ IntTools_SurfaceRangeSample.cxx
 IntTools_SurfaceRangeSample.hxx
 IntTools_SurfaceRangeSample.lxx
 IntTools_SurfaceRangeSampleMapHasher.hxx
-IntTools_SurfaceRangeSampleMapHasher.lxx
 IntTools_Tools.cxx
 IntTools_Tools.hxx
 IntTools_TopolTool.cxx
