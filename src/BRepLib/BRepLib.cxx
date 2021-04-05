@@ -1991,6 +1991,12 @@ public:
       theCurvature1 = -theCurvature1;
       theCurvature2 = -theCurvature2;
     }
+    if (mySurfaceTrsf.IsNegative())
+    {
+      theCurvature1 = -theCurvature1;
+      theCurvature2 = -theCurvature2;
+    }
+
     thePrincipalDir1.Transform(mySurfaceTrsf);
     thePrincipalDir2.Transform(mySurfaceTrsf);
   }

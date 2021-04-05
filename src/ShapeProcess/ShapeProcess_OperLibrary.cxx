@@ -86,7 +86,7 @@ TopoDS_Shape ShapeProcess_OperLibrary::ApplyModifier (const TopoDS_Shape &S,
 	map.Bind ( shape, res );
       }
       if ( ! res.IsSame ( shape ) ) locModified = Standard_True;
-      res.Location ( L );
+      res.Location ( L, Standard_False );
       B.Add ( C, res );
     }
     if ( ! locModified ) return S;

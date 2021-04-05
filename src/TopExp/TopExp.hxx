@@ -58,10 +58,22 @@ public:
   Standard_EXPORT static void MapShapes (const TopoDS_Shape& S, const TopAbs_ShapeEnum T, TopTools_IndexedMapOfShape& M);
   
   //! Stores in the map <M> all  the sub-shapes of <S>.
-  Standard_EXPORT static void MapShapes (const TopoDS_Shape& S, TopTools_IndexedMapOfShape& M);
+  //! - If cumOri is true, the function composes all
+  //! sub-shapes with the orientation of S.
+  //! - If cumLoc is true, the function multiplies all
+  //! sub-shapes by the location of S, i.e. it applies to
+  //! each sub-shape the transformation that is associated with S.
+  Standard_EXPORT static void MapShapes (const TopoDS_Shape& S, TopTools_IndexedMapOfShape& M,
+    const Standard_Boolean cumOri = Standard_True, const Standard_Boolean cumLoc = Standard_True);
 
   //! Stores in the map <M> all  the sub-shapes of <S>.
-  Standard_EXPORT static void MapShapes (const TopoDS_Shape& S, TopTools_MapOfShape& M);
+  //! - If cumOri is true, the function composes all
+  //! sub-shapes with the orientation of S.
+  //! - If cumLoc is true, the function multiplies all
+  //! sub-shapes by the location of S, i.e. it applies to
+  //! each sub-shape the transformation that is associated with S.
+  Standard_EXPORT static void MapShapes (const TopoDS_Shape& S, TopTools_MapOfShape& M,
+    const Standard_Boolean cumOri = Standard_True, const Standard_Boolean cumLoc = Standard_True);
 
   //! Stores in the map <M> all the subshape of <S> of
   //! type <TS>  for each one append  to  the list all

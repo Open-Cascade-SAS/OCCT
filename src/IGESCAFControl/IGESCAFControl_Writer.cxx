@@ -102,7 +102,7 @@ namespace
     {
       TopoDS_Shape aShape;
       if (!XCAFDoc_ShapeTool::GetShape (theLabel, aShape)) return;
-      aShape.Move (theLocation);
+      aShape.Move (theLocation, Standard_False);
       theMapOfShapeNames.Bind (aShape, thePrevName->Get());
     }
   }

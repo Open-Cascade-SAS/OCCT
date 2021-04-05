@@ -305,7 +305,7 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
       TopoDS_Compound aCompound;
       BRep_Builder aBuilder;
       aBuilder.MakeCompound (aCompound);
-      aCompound.Location (theShape.Location());
+      aCompound.Location (theShape.Location(), Standard_False);
       aShapeToAdd = aCompound;
     }
   }

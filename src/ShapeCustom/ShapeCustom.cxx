@@ -76,7 +76,7 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
         context.Bind ( shape, res );
         locModified = Standard_True;
       }
-      res.Location ( L );
+      res.Location ( L, Standard_False );
       B.Add ( C, res );
     }
 

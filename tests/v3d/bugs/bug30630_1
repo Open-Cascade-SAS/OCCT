@@ -22,7 +22,7 @@ verase b
 
 # Box with mirror transformation
 box a 1 1 1
-bmirror a 0 0 0 1 0 0
+fmirror a 0 0 0 1 0 0
 explode a sh
 renamevar a_1 a
 vdisplay -dispMode 1 a
@@ -37,7 +37,7 @@ verase a
 
 # Box with mirror transformation and reversed face
 box c 1 1 1
-bmirror c 0 0 0 1 0 0
+fmirror c 0 0 0 1 0 0
 orientation c R
 explode c sh
 renamevar c_1 c

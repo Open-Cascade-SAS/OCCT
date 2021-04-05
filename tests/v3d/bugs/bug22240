@@ -6,7 +6,7 @@ puts ""
 pload MODELING VISUALIZATION
 restore [locate_data_file bug22240_Pump_Nut.brep] a
 restore [locate_data_file bug22240_Pump_Nut.brep] b
-bscale b 0 0 0 2.
+tscale b 0 0 0 2.
 vinit View1
 vdisplay a b
 vsetdispmode a 1

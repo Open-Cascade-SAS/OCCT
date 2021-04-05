@@ -190,8 +190,8 @@ static void RecModif (const TopoDS_Shape &S,
   if ( ! r.IsNull() ) {
     TopoDS_Shape res = r;
     
-    if ( repl.IsBound ( r.Located(aShLoc) ) ) {
-      res = repl.Find (  r.Located(aShLoc) );
+    if ( repl.IsBound ( r.Located(aShLoc, Standard_False) ) ) {
+      res = repl.Find (  r.Located(aShLoc, Standard_False) );
       // it is supposed that map is created for r having FORWARD orientation
       // hence, if it is reversed, result should be reversed too
       // INTERNAL or EXTERNAL orientations are not allowed
@@ -330,7 +330,7 @@ void ShapeProcess_ShapeContext::RecordModification (const Handle(ShapeBuild_ReSh
   if ( myMap.IsBound(myShape) ) 
   {
     myResult = myMap.Find ( myShape );
-    myResult.Location(myShape.Location());
+    myResult.Location(myShape.Location(), Standard_False);
   }
 #ifdef OCCT_DEBUG
 //  std::cout << "ReShape: " << std::endl; DumpMap (myMap);

@@ -1231,11 +1231,16 @@ Handle(Geom_Direction) StepToGeom::MakeDirection (const Handle(StepGeom_Directio
     const Standard_Real X = SD->DirectionRatiosValue(1);
     const Standard_Real Y = SD->DirectionRatiosValue(2);
     const Standard_Real Z = SD->DirectionRatiosValue(3);
+    //5.08.2021. Unstable test bugs xde bug24759: Y is very large value - FPE in SquareModulus
+    if (Precision::IsInfinite(X) || Precision::IsInfinite(Y) || Precision::IsInfinite(Z))
+    {
+      return 0;
+    }
     // sln 22.10.2001. CTS23496: Direction is not created if it has null magnitude
     if (gp_XYZ(X, Y, Z).SquareModulus() > gp::Resolution()*gp::Resolution())
     {
       return new Geom_Direction(X, Y, Z);
-    }
+    }  
   }
   return 0;
 }

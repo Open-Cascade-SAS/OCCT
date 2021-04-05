@@ -1865,11 +1865,11 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
   {
     if (!theShape.Location().IsIdentity())
     {
-      theShape.Location (theLoc * theShape.Location());
+      theShape.Location (theLoc * theShape.Location(), Standard_False);
     }
     else
     {
-      theShape.Location (theLoc);
+      theShape.Location (theLoc, Standard_False);
     }
   }
 

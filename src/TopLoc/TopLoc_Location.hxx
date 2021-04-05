@@ -31,7 +31,6 @@ class Standard_ConstructionError;
 class gp_Trsf;
 class TopLoc_Datum3D;
 
-
 //! A Location is a composite transition. It comprises a
 //! series of elementary reference coordinates, i.e.
 //! objects of type TopLoc_Datum3D, and the powers to
@@ -156,7 +155,10 @@ Standard_Boolean operator != (const TopLoc_Location& Other) const
   }
 
 
-
+  static Standard_Real ScalePrec()
+  {
+    return  1.e-14;
+  }
 
 protected:
 

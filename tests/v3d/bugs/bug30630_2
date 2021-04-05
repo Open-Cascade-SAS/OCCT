@@ -13,7 +13,7 @@ vcamera -persp
 
 # Simple box
 box b 1 1 1
-bmirror b 0 0 0 0 0 1
+fmirror b 0 0 0 0 0 1
 vdisplay -dispMode 1 b
 vaspects b -setBackFaceColor RED
 box bb 0.5 0.5 -0.5 0.1 0.1 0.1

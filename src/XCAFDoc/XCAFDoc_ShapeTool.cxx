@@ -333,7 +333,7 @@ Standard_Boolean XCAFDoc_ShapeTool::GetShape (const TDF_Label& L, TopoDS_Shape& 
   if ( L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node) && Node->HasFather() && 
        L.FindAttribute(XCAFDoc_Location::GetID(), LocationAttribute)) {
     if ( ! GetShape(Node->Father()->Label(), S) ) return Standard_False;
-    S.Move ( LocationAttribute->Get() );
+    S.Move ( LocationAttribute->Get(), Standard_False );
     return Standard_True;
   }
 
@@ -537,7 +537,7 @@ static Standard_Boolean prepareAssembly (const TopoDS_Shape& theShape,
         gp_Trsf aTrsf;
         aTrsf.SetScale(gp_Pnt(0,0,0), 1);
         aLoc = TopLoc_Location( aTrsf );
-        aNewScomp.Location( aLoc );
+        aNewScomp.Location( aLoc, Standard_False );
       }
       B.Add(theOUTShape, aNewScomp);
     }
@@ -1585,7 +1585,7 @@ static Standard_Boolean checkForShape (const TopoDS_Shape& theShape,
   TopoDS_Shape aCopySh = theCurSh;
   aCompLoc = aCompLoc.Multiplied( theCurSh.Location() );
   aSupLoc = aSupLoc.Multiplied( aCompLoc );
-  aCopySh.Location( aSupLoc );
+  aCopySh.Location( aSupLoc, Standard_False );
   if ( aCopySh.IsSame( theShape ) ) {
     theLabels.Prepend( theUserL );
     return Standard_True;
@@ -1676,7 +1676,7 @@ static Standard_Boolean getShapesOfSHUO (TopLoc_IndexedMapOfLocation& theaPrevLo
         l--;
       }
     }
-    aSHUO_NUSh.Location( SupcompLoc );
+    aSHUO_NUSh.Location( SupcompLoc, Standard_False );
     theShape = aSHUO_NUSh;
   }
   return (!theShape.IsNull());
@@ -1958,7 +1958,7 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
       // Identical location and empty location are not the same for ShapeTool, so try to process both
       // in case of aSubLoc is not identical, the second Add try will not affect algorithm.
       Standard_Boolean isNewSubL;
-      isNewSubL = AddSubShape(thePart, aChildShape.Located(aSubLoc), aSubLabel);
+      isNewSubL = AddSubShape(thePart, aChildShape.Located(aSubLoc, Standard_False), aSubLabel);
       if (aSubLabel.IsNull())
       {
         isNewSubL = AddSubShape(thePart, aChildShape.Located(TopLoc_Location()), aSubLabel);
@@ -2051,7 +2051,7 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
       if ( updateComponent(aComponentRefLab, aComponentShape, theUpdated) )
       {
         isModified = Standard_True;
-        aComponentShape.Location(aComponentLoc); // Apply placement
+        aComponentShape.Location(aComponentLoc, Standard_False); // Apply placement
       }
     }
     else

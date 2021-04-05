@@ -514,7 +514,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
 	  T.SetScaleFactor(sc);
 	}
       TopLoc_Location L(T);
-      res.Move(L);
+      res.Move(L, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");

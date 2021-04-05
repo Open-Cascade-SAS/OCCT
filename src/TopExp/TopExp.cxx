@@ -52,10 +52,11 @@ void TopExp::MapShapes(const TopoDS_Shape& S,
 //=======================================================================
 
 void TopExp::MapShapes(const TopoDS_Shape& S,
-		       TopTools_IndexedMapOfShape& M)
+		       TopTools_IndexedMapOfShape& M,
+  const Standard_Boolean cumOri, const Standard_Boolean cumLoc)
 {
   M.Add(S);
-  TopoDS_Iterator It(S);
+  TopoDS_Iterator It(S, cumOri, cumLoc);
   while (It.More()) {
     MapShapes(It.Value(),M);
     It.Next();
@@ -67,11 +68,13 @@ void TopExp::MapShapes(const TopoDS_Shape& S,
 //purpose  : 
 //=======================================================================
 void TopExp::MapShapes(const TopoDS_Shape& S,
-                       TopTools_MapOfShape& M)
+                       TopTools_MapOfShape& M, 
+  const Standard_Boolean cumOri, const Standard_Boolean cumLoc)
 {
   M.Add(S);
-  for (TopoDS_Iterator it(S); it.More(); it.Next())
-    MapShapes(it.Value(), M);
+  TopoDS_Iterator It(S, cumOri, cumLoc);
+  for (; It.More(); It.Next())
+    MapShapes(It.Value(), M);
 }
 
 //=======================================================================

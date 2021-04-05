@@ -65,6 +65,9 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
 #include <errno.h>
+#include <BRepTools_TrsfModification.hxx>
+#include <BRepTools_Modifier.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 
 //=======================================================================
@@ -1517,4 +1520,34 @@ void BRepTools::RemoveInternals (TopoDS_Shape& theS,
   }
 
   removeInternals (theS, pMKeep);
+}
+
+//=======================================================================
+//function : CheckLocations
+//purpose  : 
+//=======================================================================
+
+void BRepTools::CheckLocations(const TopoDS_Shape& theS,
+                               TopTools_ListOfShape& theProblemShapes)
+{
+  if (theS.IsNull()) return;
+
+  TopTools_IndexedMapOfShape aMapS;
+  TopExp::MapShapes(theS, aMapS, Standard_False, Standard_False);
+
+  Standard_Integer i;
+  for (i = 1; i <= aMapS.Extent(); ++i)
+  {
+    const TopoDS_Shape& anS = aMapS(i);
+    const TopLoc_Location& aLoc = anS.Location();
+    const gp_Trsf& aTrsf = aLoc.Transformation();
+    Standard_Boolean isBadTrsf = aTrsf.IsNegative() ||
+      (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+
+    if (isBadTrsf)
+    {
+      theProblemShapes.Append(anS);
+    }
+  }
+
 }

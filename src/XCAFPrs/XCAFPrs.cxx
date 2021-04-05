@@ -95,7 +95,7 @@ static Standard_Boolean getShapesOfSHUO (TopLoc_IndexedMapOfLocation& theaPrevLo
         l--;
       }
     }
-    aSHUO_NUSh.Location( SupcompLoc );
+    aSHUO_NUSh.Location( SupcompLoc, Standard_False );
     theSHUOShapeSeq.Append( aSHUO_NUSh );
   }
   return (theSHUOShapeSeq.Length() > 0);
@@ -295,7 +295,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
         continue;
       }
     }
-    aSubshape.Move (theLoc);
+    aSubshape.Move (theLoc, Standard_False);
     XCAFPrs_Style* aMapStyle = theSettings.ChangeSeek (aSubshape);
     if (aMapStyle == NULL)
       theSettings.Add (aSubshape, aStyle);

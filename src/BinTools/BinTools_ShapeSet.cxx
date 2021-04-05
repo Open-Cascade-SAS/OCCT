@@ -526,7 +526,7 @@ void BinTools_ShapeSet::ReadSubs(TopoDS_Shape& S, Standard_IStream& IS,
 
     Standard_Integer l;
     BinTools::GetInteger(IS, l);
-    S.Location(myLocations.Location(l));
+    S.Location(myLocations.Location(l), Standard_False);
   }
 }
 

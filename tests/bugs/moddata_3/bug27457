@@ -1,0 +1,33 @@
+puts "========="
+puts "0027457: Modeling Data - Raise if scaled transformation is used for shape location"
+puts "========="
+puts ""
+
+box b 1 1 1
+fscale b 0 0 0 2
+set chsh [checkshape b f]
+regexp {Shapes with problems : ([0-9]+)} $chsh full NbSh
+if { $NbSh > 1 } {
+  puts "Number of faulty shapes : $NbSh"
+} else {
+  puts "Error: fscale does not produce wrong shape"
+}
+
+set Nbloc 0
+set chloc [checkloc b]
+set Nbloc [llength $chloc]
+if { $Nbloc > 0 } {
+  puts "Number of problematic locations : $Nbloc"
+} else {
+  puts "Error: fscale does not produce wrong location"
+}
+checkprops b -v 8.
+
+box b1 1 1 1
+bscale b1 0 0 0 2
+checkprops b1 -v 1.
+
+smallview
+donly b b1
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

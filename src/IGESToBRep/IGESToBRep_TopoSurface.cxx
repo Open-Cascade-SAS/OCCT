@@ -325,7 +325,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTopoBasicSurface
     if (IGESData_ToolLocation::ConvertLocation
 	(GetEpsilon(),st->CompoundLocation(),trsf,GetUnitFactor())) { 
       TopLoc_Location locFace(trsf);
-      res.Move(locFace);
+      res.Move(locFace, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");
@@ -651,7 +651,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface
     if (IGESData_ToolLocation::ConvertLocation
 	(GetEpsilon(),st->CompoundLocation(), trsf,GetUnitFactor())) { 
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc);
+      res.Move(shapeLoc, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");
@@ -819,7 +819,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
     if (IGESData_ToolLocation::ConvertLocation
 	(GetEpsilon(), st->CompoundLocation(), trsf, GetUnitFactor())) { 
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc);
+      res.Move(shapeLoc, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");
@@ -959,7 +959,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
     if (IGESData_ToolLocation::ConvertLocation
 	(GetEpsilon(),st->CompoundLocation(), trsf, GetUnitFactor())) { 
       TopLoc_Location shapeLoc(trsf);
-      res.Move(shapeLoc);
+      res.Move(shapeLoc, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");
@@ -1115,7 +1115,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface
     if (IGESData_ToolLocation::ConvertLocation
 	(GetEpsilon(),st->CompoundLocation(),trsf, GetUnitFactor())) { 
       TopLoc_Location loc2(trsf);
-      res.Move(loc2);
+      res.Move(loc2, Standard_False);
     }
     else {
       Message_Msg msg1035("IGES_1035");
@@ -1256,7 +1256,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface
           aMat.Value(2, 1), aMat.Value(2, 2), aMat.Value(2, 3), aTrans.Y(),
           aMat.Value(3, 1), aMat.Value(3, 2), aMat.Value(3, 3), aTrans.Z());
         TopLoc_Location aLoc(aT);
-        face.Move(aLoc);
+        face.Move(aLoc, Standard_False);
       }
     }
   }
@@ -1399,7 +1399,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlane
 //   il reste a la mettre en position
   if (trsf.Form() != gp_Identity) {
     TopLoc_Location loc(trsf);
-    res.Location(loc);
+    res.Location(loc, Standard_False);
   }
   return res;
 }
@@ -1476,14 +1476,14 @@ TopoDS_Shape  IGESToBRep_TopoSurface::TransferPerforate
 //    Ne pas oublier de composer la transformation locale a ce Wire
     if (trsi.Form() != gp_Identity) {
       TopLoc_Location locw(trsi);
-      wire.Location(locw);
+      wire.Location(locw, Standard_False);
     }
     B.Add (res,wire);
   }
 //    Enfin, appliquer la trsf globale
   if (trsf.Form() != gp_Identity) {
     TopLoc_Location loc(trsf);
-    res.Location(loc);
+    res.Location(loc, Standard_False);
   }
   return res;
 }

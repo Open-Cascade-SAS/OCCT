@@ -90,7 +90,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape (BinTools_IStream& theStream)
       aResult = ReadShape (theStream);
       theStream.GoTo (aCurrent); // returns to the current position
     }
-    aResult.Location (*ReadLocation (theStream));
+    aResult.Location (*ReadLocation (theStream), Standard_False);
     aResult.Orientation (TopAbs_Orientation (theStream.ReadByte()));
     return aResult;
   }
@@ -323,7 +323,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape (BinTools_IStream& theStream)
   aResult.Convex (aConv);
   myShapePos.Bind (aPosition, aResult);
   aResult.Orientation (aShapeOrientation);
-  aResult.Location (*aShapeLocation);
+  aResult.Location (*aShapeLocation, Standard_False);
   return aResult;
 }
 

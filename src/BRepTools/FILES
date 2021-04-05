@@ -26,3 +26,5 @@ BRepTools_TrsfModification.cxx
 BRepTools_TrsfModification.hxx
 BRepTools_WireExplorer.cxx
 BRepTools_WireExplorer.hxx
+BRepTools_PurgeLocations.cxx
+BRepTools_PurgeLocations.hxx

@@ -272,7 +272,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
         RevWires = aNSinfo.myRevWires;
         B.MakeFace(TopoDS::Face(result),aNSinfo.mySurface,
           aNSinfo.myLoc.Predivided(S.Location()),aNSinfo.myToler);
-        result.Location(S.Location());
+        result.Location(S.Location(), Standard_False);
         if (aNSinfo.myRevFace) 
           ResOr = TopAbs_REVERSED;
         // set specifics flags of a Face
@@ -288,7 +288,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
         else
         { // create new face with bare triangulation
           B.MakeFace(TopoDS::Face(result), aTriangulation);
-          result.Location(S.Location());
+          result.Location(S.Location(), Standard_False);
         }
         rebuild = Standard_True;
       }
@@ -313,7 +313,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
             aNCinfo.myLoc.Predivided(S.Location()),aNCinfo.myToler);
 	  No3DCurve = Standard_False;
 	}
-	result.Location(S.Location());
+	result.Location(S.Location(), Standard_False);
 //	result.Orientation(S.Orientation());
 
 	// set specifics flags of an Edge
@@ -332,7 +332,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
         else
         { // create new edge with bare polygon
           B.MakeEdge(TopoDS::Edge(result), aPolygon);
-          result.Location(S.Location());
+          result.Location(S.Location(), Standard_False);
         }
         rebuild = Standard_True;
       }

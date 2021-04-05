@@ -174,7 +174,7 @@ void BRepTools_ReShape::replace (const TopoDS_Shape& ashape,
 
   if (myConsiderLocation) {
     //sln 29.11.01 Bug22: Change location of 'newshape' in accordance with location of 'shape'
-    newshape.Location(newshape.Location().Multiplied(shape.Location().Inverted()));
+    newshape.Location(newshape.Location().Multiplied(shape.Location().Inverted()), Standard_False);
     TopLoc_Location nullLoc; 
     shape.Location ( nullLoc );
   }
@@ -243,8 +243,8 @@ TopoDS_Shape BRepTools_ReShape::Value (const TopoDS_Shape& ashape) const
   if (myConsiderLocation) {
     //sln 29.11.01 Bug22: Recalculate location of resulting shape in accordance with
     //whether result is from map or not
-    if(fromMap) res.Location(ashape.Location()*res.Location());
-    else res.Location(ashape.Location());
+    if(fromMap) res.Location(ashape.Location()*res.Location(), Standard_False);
+    else res.Location(ashape.Location(), Standard_False);
   }
 
   return res;
@@ -300,7 +300,7 @@ Standard_Integer BRepTools_ReShape::Status(const TopoDS_Shape& ashape,
   {
     TopLoc_Location aResLoc = (res >0 && !newsh.Location().IsIdentity() ? 
       aLocSh * newsh.Location() : aLocSh);
-    newsh.Location(aResLoc);
+    newsh.Location(aResLoc, Standard_False);
   }
   return res;
 }

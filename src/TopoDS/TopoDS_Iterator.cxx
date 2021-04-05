@@ -47,7 +47,7 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S,
     myShape = myShapes.Value();
     myShape.Orientation(TopAbs::Compose(myOrientation,myShape.Orientation()));
     if (!myLocation.IsIdentity())
-      myShape.Move(myLocation);
+      myShape.Move(myLocation, Standard_False);
   }
 }
 
@@ -63,6 +63,6 @@ void TopoDS_Iterator::Next()
     myShape = myShapes.Value();
     myShape.Orientation(TopAbs::Compose(myOrientation,myShape.Orientation()));
     if (!myLocation.IsIdentity())
-      myShape.Move(myLocation);
+      myShape.Move(myLocation, Standard_False);
   }
 }

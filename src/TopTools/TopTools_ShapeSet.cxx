@@ -814,7 +814,7 @@ void  TopTools_ShapeSet::Read(TopoDS_Shape& S,
 
     Standard_Integer l;
     IS >> l;
-    S.Location(myLocations.Location(l));
+    S.Location(myLocations.Location(l), Standard_False);
   }
 }
 

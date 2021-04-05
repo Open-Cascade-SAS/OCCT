@@ -992,8 +992,8 @@ void  BRep_Tool::UVPoints(const TopoDS_Edge& E,
     TopExp::Vertices(E,Vf,Vl);
 
     TopLoc_Location Linverted = L.Inverted();
-    Vf.Move(Linverted);
-    Vl.Move(Linverted);
+    Vf.Move(Linverted, Standard_False);
+    Vl.Move(Linverted, Standard_False);
     Standard_Real u,v;
     gp_Pln pln = GP->Pln();
 

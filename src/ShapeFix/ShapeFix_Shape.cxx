@@ -120,14 +120,14 @@ Standard_Boolean ShapeFix_Shape::Perform(const Message_ProgressRange& theProgres
   TopoDS_Shape aShapeNullLoc = myShape;
   aShapeNullLoc.Location(nullLoc);
   if(myMapFixingShape.Contains(aShapeNullLoc)) {
-    myShape.Location(L);
+    myShape.Location(L, Standard_False);
     myResult = Context()->Apply(myShape);
     status = Standard_True;
     return status;
   }
   else myMapFixingShape.Add(aShapeNullLoc);
   //---------------------------------------
-  myShape.Location(L);
+  myShape.Location(L, Standard_False);
   TopoDS_Shape S = Context()->Apply(myShape);
   if ( NeedFix (  myFixVertexPositionMode ) )
     ShapeFix::FixVertexPosition(S,Precision(),Context());

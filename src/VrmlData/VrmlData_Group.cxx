@@ -411,7 +411,7 @@ void VrmlData_Group::Shape (TopoDS_Shape&                       theShape,
                             VrmlData_DataMapOfShapeAppearance * pMapApp)
 {
   VrmlData_Scene::createShape (theShape, myNodes, pMapApp);
-  theShape.Location(myTrsf);
+  theShape.Location(myTrsf, Standard_False);
 }
 
 //=======================================================================

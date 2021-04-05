@@ -29,6 +29,7 @@
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
 #include <Message_ProgressRange.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 class TopoDS_Face;
 class TopoDS_Wire;
@@ -358,9 +359,14 @@ public:
   //! removal is not going to break topological connectivity between sub-shapes.
   //! The flag <theForce> if set to true disables the connectivity check and clears
   //! the given shape from all sub-shapes with internal orientation.
-  Standard_EXPORT static void RemoveInternals (TopoDS_Shape& theS,
-                                               const Standard_Boolean theForce = Standard_False);
+  Standard_EXPORT static void RemoveInternals(TopoDS_Shape& theS,
+    const Standard_Boolean theForce = Standard_False);
 
+  //! Check all locations of shape according criterium:
+  //! aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
+  //! All sub-shapes having such locations are put in list theProblemShapes
+  Standard_EXPORT static void CheckLocations(const TopoDS_Shape& theS,
+                                             TopTools_ListOfShape& theProblemShapes);
 
 protected:
 

@@ -10,7 +10,7 @@ set GoodNbExtremas 4
 
 circle c1 5 5 10 0 1 1 20
 mkedge e1 c1
-bmirror e1 e1 5 5 10 1 0 0
+tmirror e1 e1 5 5 10 1 0 0
 mkcurve c1 e1
 
 cvalue c1 0.63 x1 y1 z1
