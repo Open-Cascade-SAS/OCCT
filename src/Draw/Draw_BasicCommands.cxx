@@ -348,6 +348,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else 
   di << "TBB disabled\n";
 #endif
+#ifdef HAVE_FREETYPE
+  di << "FreeType enabled (HAVE_FREETYPE)\n";
+#else
+  di << "FreeType disabled\n";
+#endif
 #ifdef HAVE_FREEIMAGE
   di << "FreeImage enabled (HAVE_FREEIMAGE)\n";
 #else

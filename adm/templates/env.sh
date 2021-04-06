@@ -9,6 +9,7 @@ export CASDEB=""
 export PRJFMT="";
 export HAVE_TBB="false";
 export HAVE_OPENCL="false";
+export HAVE_FREETYPE="true";
 export HAVE_FREEIMAGE="false";
 export HAVE_FFMPEG="false";
 export HAVE_VTK="false";
@@ -100,6 +101,7 @@ export CSF_OPT_CMPL=""
 # Optiona 3rd-parties should be enabled by HAVE macros
 if [ "$HAVE_TBB"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TBB"; fi
 if [ "$HAVE_OPENCL"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENCL"; fi
+if [ "$HAVE_FREETYPE"  == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FREETYPE"; fi
 if [ "$HAVE_FREEIMAGE" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FREEIMAGE"; fi
 if [ "$HAVE_FFMPEG"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FFMPEG"; fi
 if [ "$HAVE_GLES2"     == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GLES2_EXT"; fi

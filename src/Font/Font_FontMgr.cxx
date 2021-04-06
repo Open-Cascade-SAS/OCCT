@@ -28,10 +28,12 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-#include "Font_DejavuSans_Latin_woff.pxx"
+#ifdef HAVE_FREETYPE
+  #include "Font_DejavuSans_Latin_woff.pxx"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+  #include <ft2build.h>
+  #include FT_FREETYPE_H
+#endif
 IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 
 #if defined(_WIN32)
@@ -39,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
   #include <windows.h>
   #include <stdlib.h>
 
-  #ifdef _MSC_VER
+  #if defined(_MSC_VER) && defined(HAVE_FREETYPE)
     #pragma comment (lib, "freetype.lib")
   #endif
 
@@ -82,7 +84,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
       NULL
     };
 
-  #if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
+  #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
     // X11 configuration file in plain text format (obsolete - doesn't exists in modern distributives)
     static Standard_CString myFontServiceConf[] = {"/etc/X11/fs/config",
                                                    "/usr/X11R6/lib/X11/fs/config",
@@ -149,8 +151,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 static bool checkFont (NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
                        const Handle(Font_FTLibrary)& theFTLib,
                        const TCollection_AsciiString& theFontPath,
-                       FT_Long theFaceId = -1)
+                       signed long theFaceId = -1) // FT_Long
 {
+#ifdef HAVE_FREETYPE
   const FT_Long aFaceId = theFaceId != -1 ? theFaceId : 0;
   FT_Face aFontFace;
   FT_Error aFaceError = FT_New_Face (theFTLib->Instance(), theFontPath.ToCString(), aFaceId, &aFontFace);
@@ -283,6 +286,13 @@ static bool checkFont (NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
 
   FT_Done_Face (aFontFace);
   return true;
+#else
+  (void )theFonts;
+  (void )theFTLib;
+  (void )theFontPath;
+  (void )theFaceId;
+  return false;
+#endif
 }
 
 // =======================================================================
@@ -712,7 +722,7 @@ void Font_FontMgr::InitFontDataBase()
 #else
 
   NCollection_Map<TCollection_AsciiString> aMapOfFontsDirs;
-#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
+#if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
   if (FcConfig* aFcCfg = FcInitLoadConfig())
   {
     if (FcStrList* aFcFontDir = FcConfigGetFontDirs (aFcCfg))
@@ -815,7 +825,7 @@ void Font_FontMgr::InitFontDataBase()
   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
        anIter.More(); anIter.Next())
   {
-  #if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
+  #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
     OSD_File aReadFile (anIter.Value() + "/fonts.dir");
     if (!aReadFile.Exists())
     {
@@ -835,7 +845,7 @@ void Font_FontMgr::InitFontDataBase()
         RegisterFonts (aFonts, false);
       }
 
-  #if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
+  #if defined(HAVE_FREETYPE) && !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
       continue;
     }
 
@@ -1154,7 +1164,11 @@ Handle(Font_SystemFont) Font_FontMgr::Font_FontMap::Find (const TCollection_Asci
 // =======================================================================
 Handle(NCollection_Buffer) Font_FontMgr::EmbedFallbackFont()
 {
+#ifdef HAVE_FREETYPE
   return new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
                                  Font_DejavuSans_Latin_woff_size,
                                  const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
+#else
+  return Handle(NCollection_Buffer)();
+#endif
 }

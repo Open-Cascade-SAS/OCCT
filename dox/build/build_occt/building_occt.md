@@ -471,7 +471,7 @@ The environment is defined in the file *custom.sh* which can be edited directly:
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
 ~~~~~
-       export HAVE_GL2PS=false
+       export HAVE_FREEIMAGE=false
 ~~~~~
 
 Alternatively, or when *custom.sh* does not exist, you can launch *genconf.sh* to configure environment interactively:
@@ -544,7 +544,7 @@ directly:
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
 ~~~~~
-       export HAVE_GL2PS=false
+       export HAVE_FREEIMAGE=false
 ~~~~~
 
 Alternatively, or when *custom.sh* or *custom.bat* does not exist, you can launch **genconf** tool to configure

@@ -17,6 +17,7 @@ set "ARCH=64"
 set "VCVARS="
 set "HAVE_TBB=false"
 set "HAVE_OPENCL=false"
+set "HAVE_FREETYPE=true"
 set "HAVE_FREEIMAGE=false"
 set "HAVE_FFMPEG=false"
 set "HAVE_VTK=false"
@@ -56,9 +57,9 @@ rem Decode VCVER variable and define related ones:
 rem
 rem VCFMT - "vc" followed by full version number of Visual Studio toolset
 rem         (same as VCVER without optional suffix "-uwp")
-rem VCLIB - name of folder contining binaries
+rem VCLIB - name of folder containing binaries
 rem         (same as VCVER except without third version in number)
-rem VCPROP - name of required Visual Studion Workload (starting with VS 2017)
+rem VCPROP - name of required Visual Studio Workload (starting with VS 2017)
 rem
 rem Note that for VS before 2015 (vc14) always
 rem VCFMT=VCLIB=VCVER and VCPROP=NativeDesktop
@@ -182,6 +183,7 @@ set "CSF_OPT_CMPL="
 set "PRODUCTS_DEFINES="
 if ["%HAVE_TBB%"]       == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_TBB"       & set "CSF_DEFINES=HAVE_TBB;%CSF_DEFINES%"
 if ["%HAVE_OPENCL%"]    == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_OPENCL"    & set "CSF_DEFINES=HAVE_OPENCL;%CSF_DEFINES%"
+if ["%HAVE_FREETYPE%"]  == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_FREEIMAGE" & set "CSF_DEFINES=HAVE_FREETYPE;%CSF_DEFINES%"
 if ["%HAVE_FREEIMAGE%"] == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_FREEIMAGE" & set "CSF_DEFINES=HAVE_FREEIMAGE;%CSF_DEFINES%"
 if ["%HAVE_FFMPEG%"]    == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_FFMPEG"    & set "CSF_DEFINES=HAVE_FFMPEG;%CSF_DEFINES%"
 if ["%HAVE_VTK%"]       == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_VTK"       & set "CSF_DEFINES=HAVE_VTK;%CSF_DEFINES%"
@@ -199,20 +201,20 @@ if ["%CSF_DEFINES%"]  == [""] set "CSF_DEFINES=;"
 rem ----- Optional 3rd-parties should be enabled by HAVE macros -----
 if not ["%PRODUCTS_DEFINES%"] == [""] set "CSF_OPT_CMPL=%CSF_OPT_CMPL% %PRODUCTS_DEFINES%"
 
-rem ----- Colect 3rd-parties additional include paths into compiler options -----
+rem ----- Collect 3rd-parties additional include paths into compiler options -----
 for %%a in ("%CSF_OPT_INC:;=";"%") do (
   set "anItem=%%~a"
   if not ["%%~a"] == [""] call :concatCmplInc %%~a
 )
 
-rem ----- Colect 3rd-parties additional library paths (32-bit) into linker options -----
+rem ----- Collect 3rd-parties additional library paths (32-bit) into linker options -----
 set "OPT_LIB32="
 for %%a in ("%CSF_OPT_LIB32:;=";"%") do (
   set "anItem=%%~a"
   if not ["%%~a"] == [""] call :concatLib32 %%~a
 )
 
-rem ----- Colect 3rd-parties additional library paths (64-bit) into linker options -----
+rem ----- Collect 3rd-parties additional library paths (64-bit) into linker options -----
 set "OPT_LIB64="
 for %%a in ("%CSF_OPT_LIB64:;=";"%") do (
   set "anItem=%%~a"
@@ -244,7 +246,7 @@ if ["%CASDEB%"] == ["d"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64D%;%PAT
 if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32I%;%PATH%"
 if ["%CASDEB%"] == ["i"] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64I%;%PATH%"
 
-rem ----- Set envoronment variables used by OCCT -----
+rem ----- Set environment variables used by OCCT -----
 set CSF_LANGUAGE=us
 set MMGT_CLEAR=1
 set "CSF_SHMessage=%CSF_OCCTResourcePath%\SHMessage"

@@ -175,7 +175,9 @@ proc wokdep:gui:UpdateList {} {
   set anBin32Errs {}
   set anBin64Errs {}
   wokdep:SearchTclTk     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
-  wokdep:SearchFreeType  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  if { "$::HAVE_FREETYPE" == "true" } {
+    wokdep:SearchFreeType anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
   wokdep:SearchX11       anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   if { "$::HAVE_GLES2" == "true" } {
     wokdep:SearchEGL     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
@@ -471,6 +473,8 @@ ttk::label    .myFrame.myHxxChecks.myScutsLbl     -text "Strategy for filling he
 ttk::label    .myFrame.mySrchLbl       -text "3rd-parties search path:" -padding {5 5 80 5}
 entry         .myFrame.mySrchEntry     -textvariable PRODUCTS_PATH_INPUT -width 80
 ttk::button   .myFrame.mySrchBrowseBtn -text "Browse" -command wokdep:gui:BrowsePartiesRoot
+checkbutton   .myFrame.myChecks.myFreeTypeCheck -offvalue "false" -onvalue "true" -variable HAVE_FREETYPE  -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myFreeTypeLbl   -text "Use FreeType"
 checkbutton   .myFrame.myChecks.myFImageCheck   -offvalue "false" -onvalue "true" -variable HAVE_FREEIMAGE -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myFImageLbl     -text "Use FreeImage"
 checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
@@ -604,10 +608,10 @@ incr aRowIter
 
 grid .myFrame.myChecks        -row $aRowIter -column 0 -columnspan 10 -sticky w
 incr aRowIter
-grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
-grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
-grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
-grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
+grid .myFrame.myChecks.myFreeTypeCheck  -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myFreeTypeLbl    -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 3 -sticky w
 if { "$::tcl_platform(os)" != "Darwin" } {
   grid .myFrame.myChecks.myGlesCheck     -row $aCheckRowIter -column 4 -sticky e
   grid .myFrame.myChecks.myGlesLbl       -row $aCheckRowIter -column 5 -sticky w
@@ -621,10 +625,10 @@ grid .myFrame.myChecks.myQtCheck      -row $aCheckRowIter -column 12 -sticky e
 grid .myFrame.myChecks.myQtLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
-grid .myFrame.myChecks.myFFmpegCheck   -row $aCheckRowIter -column 0 -sticky e
-grid .myFrame.myChecks.myFFmpegLbl     -row $aCheckRowIter -column 1 -sticky w
-grid .myFrame.myChecks.myVtkCheck      -row $aCheckRowIter -column 2 -sticky e
-grid .myFrame.myChecks.myVtkLbl        -row $aCheckRowIter -column 3 -sticky w
+grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
 if { "$::tcl_platform(platform)" == "windows" } {
   grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 4 -sticky e
   grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 5 -sticky w
@@ -638,8 +642,10 @@ grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 12 -sticky e
 grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
-grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 0 -sticky e
-grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myFFmpegCheck   -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myFFmpegLbl     -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myVtkCheck      -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myVtkLbl        -row $aCheckRowIter -column 3 -sticky w
 grid .myFrame.myChecks.myOpenVrCheck   -row $aCheckRowIter -column 4 -sticky e
 grid .myFrame.myChecks.myOpenVrLbl     -row $aCheckRowIter -column 5 -sticky w
 grid .myFrame.myChecks.myE57Check      -row $aCheckRowIter -column 6 -sticky e

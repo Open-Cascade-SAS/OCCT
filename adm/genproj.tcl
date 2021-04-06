@@ -129,7 +129,7 @@ proc osutils:isEqualContent { theContent1 theContent2 } {
 # Auxiliary function for writing new file content only if it has been actually changed
 # (e.g. to preserve file timestamp on no change).
 # Useful for automatically (re)generated files.
-proc osutils:writeTextFile { theFile theContent {theEol lf} } {
+proc osutils:writeTextFile { theFile theContent {theEol lf} {theToBackup false} } {
   if {[file exists "${theFile}"]} {
     set aFileOld [open "${theFile}" rb]
     fconfigure $aFileOld -translation crlf
@@ -143,6 +143,10 @@ proc osutils:writeTextFile { theFile theContent {theEol lf} } {
       return false
     }
 
+    if { $theToBackup == true } {
+      puts "Warning: file ${theFile} is updated. Old content is saved to ${theFile}.bak"
+      file copy -force -- "${theFile}" "${theFile}.bak"
+    }
     file delete -force "${theFile}"
   }
 
@@ -373,28 +377,27 @@ proc copy_with_warning {from to} {
 # Generate auxiliary scripts for launching IDE.
 proc genprojbat {theFormat thePlatform theSolution} {
   set aTargetPlatformExt sh
+  set aTargetEol lf
   if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
     set aTargetPlatformExt bat
+    set aTargetEol crlf
   }
 
   if {"$theFormat" != "cmake"} {
-    # copy env.bat/sh only if not yet present
-    if { ! [file exists "$::path/env.${aTargetPlatformExt}"] } {
-      set anEnvTmplFile [open "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}" "r"]
-      set anEnvTmpl [read $anEnvTmplFile]
-      close $anEnvTmplFile
+    # generate env.bat/sh
+    set anEnvTmplFilePath "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}"
+    set anEnvTmplFile [open "$anEnvTmplFilePath" "r"]
+    set anEnvTmpl [read $anEnvTmplFile]
+    close $anEnvTmplFile
 
-      set aCasRoot ""
-      if { [file normalize "$::path"] != [file normalize "$::THE_CASROOT"] } {
-        set aCasRoot [relativePath "$::path" "$::THE_CASROOT"]
-      }
-
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
-
-      set anEnvFile [open "$::path/env.${aTargetPlatformExt}" "w"]
-      puts $anEnvFile $anEnvTmpl
-      close $anEnvFile
+    set aCasRoot ""
+    if { [file normalize "$::path"] != [file normalize "$::THE_CASROOT"] } {
+      set aCasRoot [relativePath "$::path" "$::THE_CASROOT"]
     }
+
+    regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
+    set aLineList [split $anEnvTmpl "\n"]
+    osutils:writeTextFile "$::path/env.${aTargetPlatformExt}" $aLineList $aTargetEol true
 
     copy_with_warning "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
 
@@ -1409,7 +1412,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
   unset theCsfLibsMap
   unset theCsfFrmsMap
 
-  set aLibsMap(CSF_FREETYPE)  "freetype"
+  if { "$::HAVE_FREETYPE" == "true" } {
+    set aLibsMap(CSF_FREETYPE) "freetype"
+  }
   set aLibsMap(CSF_TclLibs)   "tcl8.6"
   set aLibsMap(CSF_TclTkLibs) "tk8.6"
   if { "$::HAVE_FREEIMAGE" == "true" } {
@@ -1504,7 +1509,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
     } elseif { "$theOS" == "android" } {
       set aLibsMap(CSF_androidlog) "log"
     } else {
-      set aLibsMap(CSF_fontconfig) "fontconfig"
+      if { "$::HAVE_FREETYPE" == "true" } {
+        set aLibsMap(CSF_fontconfig) "fontconfig"
+      }
       if { "$theOS" == "qnx" } {
         # CSF_ThreadLibs - pthread API is part of libc on QNX
       } else {

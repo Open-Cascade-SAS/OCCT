@@ -18,7 +18,7 @@ aHxxRoot = $$OccGitRoot/inc
 INCLUDEPATH += $$aHxxRoot
 
 # CSF variables
-CSF_FREETYPE  = -lfreetype
+HAVE_FREETYPE  { CSF_FREETYPE = -lfreetype }
 CSF_TclLibs   = -ltcl8.6
 CSF_TclTkLibs = -ltk8.6
 HAVE_FREEIMAGE { CSF_FreeImagePlus = -lfreeimage } else:win32 { CSF_FreeImagePlus = -lwindowscodecs -lole32 }
@@ -64,7 +64,7 @@ win32 {
   CSF_TclTkLibs  = -lX11 -ltk8.6
   CSF_XwLibs     = -lX11 -lXext -lXmu -lXi
   CSF_MotifLibs  = -lX11
-  CSF_fontconfig = -lfontconfig
+  HAVE_FREETYPE  { CSF_fontconfig = -lfontconfig }
 }
 
 for (aCfgIter, CONFIG) {

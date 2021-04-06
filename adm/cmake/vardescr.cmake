@@ -155,12 +155,15 @@ set (3RDPARTY_DIR_DESCR
 third-party product have been found - corresponding CMake variables will be specified
 (VTK: 3RDPARTY_VTK_DIR, 3RDPARTY_VTK_INCLUDE_DIR, 3RDPARTY_VTK_LIBRARY_DIR)")
 
+set (USE_FREETYPE_DESCR
+"Indicates whether FreeType product should be used in OCCT for text rendering using external font files")
+
 set (USE_FFMPEG_DESCR
 "Indicates whether FFmpeg framework is used or not. FFmpeg stands for
 multimedia data handling, open-source software libraries used for video encoding and decoding.")
 
 set (USE_FREEIMAGE_DESCR
-"Indicates whether Freeimage product should be used in OCCT visualization
+"Indicates whether FreeImage product should be used in OCCT visualization
 module for support of popular graphics image formats (PNG, BMP etc)")
 
 set (USE_OPENVR_DESCR
