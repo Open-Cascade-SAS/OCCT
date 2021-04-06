@@ -10,7 +10,6 @@ GCPnts_QuasiUniformDeflection.cxx
 GCPnts_QuasiUniformDeflection.pxx
 GCPnts_QuasiUniformDeflection.hxx
 GCPnts_TangentialDeflection.cxx
-GCPnts_TangentialDeflection.pxx
 GCPnts_TangentialDeflection.hxx
 GCPnts_UniformAbscissa.cxx
 GCPnts_UniformAbscissa.pxx
