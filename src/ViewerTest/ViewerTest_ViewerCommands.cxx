@@ -5598,7 +5598,7 @@ static int VZLayer (Draw_Interpretor& theDI,
       Graphic3d_ZLayerSettings aSettings = aViewer->ZLayerSettings (aLayeriter.Value());
       printZLayerInfo (theDI, aSettings);
     }
-    return 1;
+    return 0;
   }
 
   Standard_Integer anArgIter = 1;
