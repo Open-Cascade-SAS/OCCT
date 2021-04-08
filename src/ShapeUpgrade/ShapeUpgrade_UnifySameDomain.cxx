@@ -100,6 +100,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
+static void SplitWire (const TopoDS_Wire&                theWire,
+                       const TopoDS_Face&                theFace,
+                       const TopTools_IndexedMapOfShape& theVmap,
+                       TopTools_SequenceOfShape&         theWireSeq);
+
 static Standard_Real TrueValueOfOffset(const Standard_Real theValue,
                                        const Standard_Real thePeriod)
 {
@@ -3012,6 +3017,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         BB.MakeWire(aNewWire);
         BB.Add(aNewWire, StartEdge);
         RemoveEdgeFromMap(StartEdge, VEmap);
+        TopTools_IndexedMapOfShape SplittingVertices;
         
         Standard_Real fpar, lpar;
         Handle(Geom2d_Curve) StartPCurve = BRep_Tool::CurveOnSurface(StartEdge, F_RefFace, fpar, lpar);
@@ -3093,6 +3099,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
             else
             {
               //we must choose the closest direction - the biggest angle
+              SplittingVertices.Add (CurVertex);
               Standard_Real MaxAngle = RealFirst();
               TopoDS_Edge TrueEdge;
               Handle(Geom2d_Curve) CurPCurve = BRep_Tool::CurveOnSurface(CurEdge, F_RefFace, fpar, lpar);
@@ -3242,7 +3249,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         }
         else //may be this wire is a hole
         {
-          NewWires.Append(aNewWire);
+          //split this wire if needed
+          if (!SplittingVertices.IsEmpty())
+            SplitWire (aNewWire, F_RefFace, SplittingVertices, NewWires);
+          else
+            NewWires.Append(aNewWire);
         }
       } //while (!edges.IsEmpty())
 
@@ -3574,4 +3585,113 @@ void ShapeUpgrade_UnifySameDomain::FillHistory()
 
   // Merge the history of the operation into global history
   myHistory->Merge(aUSDHistory);
+}
+
+void SplitWire (const TopoDS_Wire&                theWire,
+                const TopoDS_Face&                theFace,
+                const TopTools_IndexedMapOfShape& theVmap,
+                TopTools_SequenceOfShape&         theWireSeq)
+{
+  TopTools_DataMapOfShapeListOfShape aVEmap;
+
+  TopTools_MapOfShape aEmap;
+  TopoDS_Iterator itw (theWire);
+  for (; itw.More(); itw.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge (itw.Value());
+    if (!aEmap.Add (anEdge))
+      continue;
+    if (anEdge.Orientation() != TopAbs_FORWARD &&
+        anEdge.Orientation() != TopAbs_REVERSED)
+      continue;
+
+    const TopoDS_Vertex& aVertex = TopExp::FirstVertex (anEdge, Standard_True); //with orientation
+    if (aVEmap.IsBound (aVertex))
+      aVEmap(aVertex).Append (anEdge);
+    else
+    {
+      TopTools_ListOfShape aElist;
+      aElist.Append (anEdge);
+      aVEmap.Bind (aVertex, aElist);
+    }
+  }
+
+  BRep_Builder aBB;
+  for (Standard_Integer ii = 1; ii <= theVmap.Extent(); ii++)
+  {
+    const TopoDS_Vertex& anOrigin = TopoDS::Vertex (theVmap(ii));
+    TopTools_ListOfShape& aBranches = aVEmap (anOrigin);
+    TopTools_ListIteratorOfListOfShape anItl (aBranches);
+    while (anItl.More())
+    {
+      TopoDS_Edge CurEdge = TopoDS::Edge (anItl.Value());
+      aBranches.Remove (anItl);
+      
+      TopoDS_Wire aNewWire;
+      aBB.MakeWire (aNewWire);
+      for (;;)
+      {
+        aBB.Add (aNewWire, CurEdge);
+        
+        const TopoDS_Vertex& aVertex = TopExp::LastVertex (CurEdge, Standard_True); //with orientation
+        if (aVertex.IsSame(anOrigin))
+          break;
+
+        if (!aVEmap.IsBound (aVertex))
+          break;
+
+        TopTools_ListOfShape& aElist = aVEmap (aVertex);
+        if (aElist.Extent() == 0)
+          break;
+        
+        if (aElist.Extent() == 1)
+        {
+          CurEdge = TopoDS::Edge (aElist.First());
+          aElist.Clear();
+        }
+        else
+        {
+          Standard_Real fpar, lpar;
+          Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(CurEdge, theFace, fpar, lpar);
+          Standard_Real aParam = (CurEdge.Orientation() == TopAbs_FORWARD)? lpar : fpar;
+          gp_Pnt2d aPoint;
+          gp_Vec2d CurDir;
+          aPCurve->D1(aParam, aPoint, CurDir);
+          CurDir.Normalize();
+          if (CurEdge.Orientation() == TopAbs_REVERSED)
+            CurDir.Reverse();
+          //choose the rightest direction - the smallest angle
+          Standard_Real MinAngle = RealLast();
+          TopoDS_Edge NextEdge;
+          TopTools_ListIteratorOfListOfShape aLocalIter (aElist);
+          for (; aLocalIter.More(); aLocalIter.Next())
+          {
+            const TopoDS_Edge& anEdge = TopoDS::Edge(aLocalIter.Value());
+            aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+            aParam = (anEdge.Orientation() == TopAbs_FORWARD)? fpar : lpar;
+            gp_Vec2d aDir;
+            aPCurve->D1(aParam, aPoint, aDir);
+            aDir.Normalize();
+            if (anEdge.Orientation() == TopAbs_REVERSED)
+              aDir.Reverse();
+            Standard_Real anAngle = CurDir.Angle(aDir);
+            if (anAngle < MinAngle)
+            {
+              MinAngle = anAngle;
+              NextEdge = anEdge;
+            }
+          }
+          CurEdge = NextEdge;
+          //Remove <CurEdge> from list
+          for (aLocalIter.Initialize(aElist); aLocalIter.More(); aLocalIter.Next())
+            if (CurEdge.IsSame (aLocalIter.Value()))
+            {
+              aElist.Remove (aLocalIter);
+              break;
+            }
+        } //else (more than one edge)
+      } //for (;;)
+      theWireSeq.Append (aNewWire);
+    } //while (anItl.More())
+  }
 }
