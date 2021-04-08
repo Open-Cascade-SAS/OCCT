@@ -1,0 +1,15 @@
+puts "============================="
+puts "	0032189: BOP Cut regression"
+puts "============================="
+puts ""
+
+restore [locate_data_file bug32189_a.brep] a
+restore [locate_data_file bug32189_b.brep] b
+
+bcut result a b
+
+checkshape result
+checknbshapes result -vertex 5 -edge 6 -wire 3 -face 3 -shell 1 -solid 1
+checkprops result -s 0.000687454 -v 8.86946e-07
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
