@@ -17,17 +17,15 @@
 #define _NCollection_Mat4_HeaderFile
 
 #include <NCollection_Vec4.hxx>
-#include <Standard_Dump.hxx>
-#include <Standard_OStream.hxx>
+#include <NCollection_Mat3.hxx>
 
 //! Generic matrix of 4 x 4 elements.
 //! To be used in conjunction with NCollection_Vec4 entities.
-//! Originally introduced for 3D space projection and orientation
-//! operations.
+//! Originally introduced for 3D space projection and orientation operations.
+//! Warning, empty constructor returns an identity matrix.
 template<typename Element_t>
 class NCollection_Mat4
 {
-
 public:
 
   //! Get number of rows.
@@ -44,8 +42,23 @@ public:
     return 4;
   }
 
+  //! Return identity matrix.
+  static NCollection_Mat4 Identity()
+  {
+    return NCollection_Mat4();
+  }
+
+  //! Return zero matrix.
+  static NCollection_Mat4 Zero()
+  {
+    NCollection_Mat4 aMat; aMat.InitZero();
+    return aMat;
+  }
+
+public:
+
   //! Empty constructor.
-  //! Construct the zero matrix.
+  //! Construct the identity matrix.
   NCollection_Mat4()
   {
     InitIdentity();
@@ -63,7 +76,7 @@ public:
   }
 
   //! Get element at the specified row and column.
-  //! @param theRow [in] the row.to address.
+  //! @param theRow [in] the row to address.
   //! @param theCol [in] the column to address.
   //! @return the value of the addressed element.
   Element_t GetValue (const size_t theRow, const size_t theCol) const
@@ -72,7 +85,7 @@ public:
   }
 
   //! Access element at the specified row and column.
-  //! @param theRow [in] the row.to access.
+  //! @param theRow [in] the row to access.
   //! @param theCol [in] the column to access.
   //! @return reference on the matrix element.
   Element_t& ChangeValue (const size_t theRow, const size_t theCol)
@@ -83,13 +96,19 @@ public:
   //! Set value for the element specified by row and columns.
   //! @param theRow   [in] the row to change.
   //! @param theCol   [in] the column to change.
-  //! @param theValue [in] the value to set.s
+  //! @param theValue [in] the value to set.
   void SetValue (const size_t    theRow,
                  const size_t    theCol,
                  const Element_t theValue)
   {
     myMat[theCol * 4 + theRow] = theValue;
   }
+
+  //! Return value.
+  Element_t& operator() (const size_t theRow, const size_t theCol) { return ChangeValue (theRow, theCol); }
+
+  //! Return value.
+  Element_t  operator() (const size_t theRow, const size_t theCol) const { return GetValue (theRow, theCol); }
 
   //! Get vector of elements for the specified row.
   //! @param theRow [in] the row to access.
@@ -158,7 +177,7 @@ public:
   }
 
   //! Get vector of diagonal elements.
-  //! \return vector of diagonal elements.
+  //! @return vector of diagonal elements.
   NCollection_Vec4<Element_t> GetDiagonal() const
   {
     return NCollection_Vec4<Element_t> (GetValue (0, 0),
@@ -186,16 +205,38 @@ public:
     SetValue (3, 3, theVec.w());
   }
 
+  //! Return 3x3 sub-matrix.
+  NCollection_Mat3<Element_t> GetMat3() const
+  {
+    NCollection_Mat3<Element_t> aMat;
+    aMat.SetColumn (0, GetColumn (0).xyz());
+    aMat.SetColumn (1, GetColumn (1).xyz());
+    aMat.SetColumn (2, GetColumn (2).xyz());
+    return aMat;
+  }
+
+  //! Initialize the zero matrix.
+  void InitZero()
+  {
+    std::memcpy (this, MyZeroArray, sizeof (NCollection_Mat4));
+  }
+
+  //! Checks the matrix for zero (without tolerance).
+  bool IsZero() const
+  {
+    return std::memcmp (this, MyZeroArray, sizeof (NCollection_Mat4)) == 0;
+  }
+
   //! Initialize the identity matrix.
   void InitIdentity()
   {
-    std::memcpy (this, myIdentityArray, sizeof (NCollection_Mat4));
+    std::memcpy (this, MyIdentityArray, sizeof (NCollection_Mat4));
   }
 
-  //! Checks the matrix for identity.
+  //! Checks the matrix for identity (without tolerance).
   bool IsIdentity() const
   {
-    return std::memcmp (this, myIdentityArray, sizeof (NCollection_Mat4)) == 0;
+    return std::memcmp (this, MyIdentityArray, sizeof (NCollection_Mat4)) == 0;
   }
 
   //! Check this matrix for equality with another matrix (without tolerance!).
@@ -205,18 +246,15 @@ public:
   }
 
   //! Check this matrix for equality with another matrix (without tolerance!).
-  bool operator== (const NCollection_Mat4& theOther)       { return IsEqual (theOther); }
   bool operator== (const NCollection_Mat4& theOther) const { return IsEqual (theOther); }
 
   //! Check this matrix for non-equality with another matrix (without tolerance!).
-  bool operator!= (const NCollection_Mat4& theOther)       { return !IsEqual (theOther); }
   bool operator!= (const NCollection_Mat4& theOther) const { return !IsEqual (theOther); }
 
-  //! Raw access to the data (for OpenGL exchange).
+  //! Raw access to the data (for OpenGL exchange);
+  //! the data is returned in column-major order.
   const Element_t* GetData()    const { return myMat; }
   Element_t*       ChangeData()       { return myMat; }
-  operator const   Element_t*() const { return myMat; }
-  operator         Element_t*()       { return myMat; }
 
   //! Multiply by the vector (M * V).
   //! @param theVec [in] the vector to multiply.
@@ -232,19 +270,19 @@ public:
   //! Compute matrix multiplication product: A * B.
   //! @param theMatA [in] the matrix "A".
   //! @param theMatB [in] the matrix "B".
-  NCollection_Mat4 Multiply (const NCollection_Mat4& theMatA,
-                             const NCollection_Mat4& theMatB)
+  static NCollection_Mat4 Multiply (const NCollection_Mat4& theMatA,
+                                    const NCollection_Mat4& theMatB)
   {
     NCollection_Mat4 aMatRes;
 
     size_t aInputElem;
     for (size_t aResElem = 0; aResElem < 16; ++aResElem)
     {
-      aMatRes[aResElem] = (Element_t )0;
+      aMatRes.myMat[aResElem] = (Element_t )0;
       for (aInputElem = 0; aInputElem < 4; ++aInputElem)
       {
-        aMatRes[aResElem] += theMatA.GetValue(aResElem % 4, aInputElem)
-                           * theMatB.GetValue(aInputElem, aResElem / 4);
+        aMatRes.myMat[aResElem] += theMatA.GetValue(aResElem % 4, aInputElem)
+                                 * theMatB.GetValue(aInputElem, aResElem / 4);
       }
     }
 
@@ -269,7 +307,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param theMat [in] the other matrix.
   //! @return result of multiplication.
-  NCollection_Mat4 operator* (const NCollection_Mat4& theMat) const
+  Standard_NODISCARD NCollection_Mat4 operator* (const NCollection_Mat4& theMat) const
   {
     return Multiplied (theMat);
   }
@@ -277,7 +315,7 @@ public:
   //! Compute matrix multiplication product.
   //! @param theMat [in] the other matrix.
   //! @return result of multiplication.
-  NCollection_Mat4 Multiplied (const NCollection_Mat4& theMat) const
+  Standard_NODISCARD NCollection_Mat4 Multiplied (const NCollection_Mat4& theMat) const
   {
     NCollection_Mat4 aTempMat (*this);
     aTempMat *= theMat;
@@ -296,7 +334,7 @@ public:
 
   //! Compute per-element multiplication.
   //! @param theFactor [in] the scale factor.
-  NCollection_Mat4& operator*=(const Element_t theFactor)
+  NCollection_Mat4& operator*= (const Element_t theFactor)
   {
     Multiply (theFactor);
     return *this;
@@ -304,21 +342,121 @@ public:
 
   //! Compute per-element multiplication.
   //! @param theFactor [in] the scale factor.
-  //! @return the result of multiplicaton.
-  NCollection_Mat4 operator* (const Element_t theFactor) const
+  //! @return the result of multiplication.
+  Standard_NODISCARD NCollection_Mat4 operator* (const Element_t theFactor) const
   {
     return Multiplied (theFactor);
   }
 
   //! Compute per-element multiplication.
   //! @param theFactor [in] the scale factor.
-  //! @return the result of multiplicaton.
-  NCollection_Mat4 Multiplied (const Element_t theFactor) const
+  //! @return the result of multiplication.
+  Standard_NODISCARD NCollection_Mat4 Multiplied (const Element_t theFactor) const
   {
     NCollection_Mat4 aTempMat (*this);
     aTempMat *= theFactor;
     return aTempMat;
   }
+
+  //! Compute per-component division.
+  //! @param theFactor [in] the scale factor.
+  void Divide (const Element_t theFactor)
+  {
+    for (size_t i = 0; i < 16; ++i)
+    {
+      myMat[i] /= theFactor;
+    }
+  }
+
+  //! Per-component division.
+  //! @param theScalar [in] the scale factor.
+  NCollection_Mat4& operator/= (const Element_t theScalar)
+  {
+    Divide (theScalar);
+    return *this;
+  }
+
+  //! Divides all the coefficients of the matrix by scalar.
+  Standard_NODISCARD NCollection_Mat4 Divided (const Element_t theScalar) const
+  {
+    NCollection_Mat4 aTempMat (*this);
+    aTempMat /= theScalar;
+    return aTempMat;
+  }
+
+  //! Divides all the coefficients of the matrix by scalar.
+  Standard_NODISCARD NCollection_Mat4 operator/ (const Element_t theScalar) const
+  {
+    return Divided (theScalar);
+  }
+
+  //! Per-component addition of another matrix.
+  void Add (const NCollection_Mat4& theMat)
+  {
+    for (size_t i = 0; i < 16; ++i)
+    {
+      myMat[i] += theMat.myMat[i];
+    }
+  }
+
+  //! Per-component addition of another matrix.
+  NCollection_Mat4& operator+= (const NCollection_Mat4& theMat)
+  {
+    Add (theMat);
+    return *this;
+  }
+
+  //! Per-component subtraction of another matrix.
+  void Subtract (const NCollection_Mat4& theMat)
+  {
+    for (size_t i = 0; i < 16; ++i)
+    {
+      myMat[i] -= theMat.myMat[i];
+    }
+  }
+
+  //! Per-component subtraction of another matrix.
+  NCollection_Mat4& operator-= (const NCollection_Mat4& theMat)
+  {
+    Subtract (theMat);
+    return *this;
+  }
+
+  //! Per-component addition of another matrix.
+  Standard_NODISCARD NCollection_Mat4 Added (const NCollection_Mat4& theMat) const
+  {
+    NCollection_Mat4 aMat (*this);
+    aMat += theMat;
+    return aMat;
+  }
+
+  //! Per-component addition of another matrix.
+  Standard_NODISCARD NCollection_Mat4 operator+ (const NCollection_Mat4& theMat) const { return Added (theMat); }
+
+  //! Per-component subtraction of another matrix.
+  Standard_NODISCARD NCollection_Mat4 Subtracted (const NCollection_Mat4& theMat) const
+  {
+    NCollection_Mat4 aMat (*this);
+    aMat -= theMat;
+    return aMat;
+  }
+
+  //! Per-component subtraction of another matrix.
+  Standard_NODISCARD NCollection_Mat4 operator- (const NCollection_Mat4& theMat) const { return Subtracted (theMat); }
+
+  //! Returns matrix with all components negated.
+  Standard_NODISCARD NCollection_Mat4 Negated() const
+  {
+    NCollection_Mat4 aMat;
+    for (size_t i = 0; i < 16; ++i)
+    {
+      aMat.myMat[i] = -myMat[i];
+    }
+    return aMat;
+  }
+
+  //! Returns matrix with all components negated.
+  Standard_NODISCARD NCollection_Mat4 operator-() const { return Negated(); }
 
   //! Translate the matrix on the passed vector.
   //! @param theVec [in] the translation vector.
@@ -331,7 +469,7 @@ public:
 
   //! Transpose the matrix.
   //! @return transposed copy of the matrix.
-  NCollection_Mat4 Transposed() const
+  Standard_NODISCARD NCollection_Mat4 Transposed() const
   {
     NCollection_Mat4 aTempMat;
     aTempMat.SetRow (0, GetColumn (0));
@@ -348,9 +486,10 @@ public:
   }
 
   //! Compute inverted matrix.
-  //! @param theOutMx [out] the inverted matrix.
-  //! @return true if reversion success.
-  bool Inverted (NCollection_Mat4<Element_t>& theOutMx) const
+  //! @param theOutMx [out] the inverted matrix
+  //! @param theDet   [out] determinant of matrix
+  //! @return true if reversion success
+  bool Inverted (NCollection_Mat4<Element_t>& theOutMx, Element_t& theDet) const
   {
     Element_t* inv = theOutMx.myMat;
 
@@ -421,20 +560,52 @@ public:
               m[ 4] * (m[ 1] * m[10] - m[ 2] * m[ 9]) -
               m[ 8] * (m[ 2] * m[ 5] - m[ 1] * m[ 6]);
 
-    Element_t aDet = m[0] * inv[ 0] +
-                     m[1] * inv[ 4] +
-                     m[2] * inv[ 8] +
-                     m[3] * inv[12];
-
-    if (aDet == 0)
+    theDet = m[0] * inv[ 0] +
+             m[1] * inv[ 4] +
+             m[2] * inv[ 8] +
+             m[3] * inv[12];
+    if (theDet == 0)
+    {
       return false;
+    }
 
-    aDet = (Element_t) 1. / aDet;
-
+    const Element_t aDiv = (Element_t) 1. / theDet;
     for (int i = 0; i < 16; ++i)
-      inv[i] *= aDet;
-
+    {
+      inv[i] *= aDiv;
+    }
     return true;
+  }
+
+  //! Compute inverted matrix.
+  //! @param theOutMx [out] the inverted matrix
+  //! @return true if reversion success
+  bool Inverted (NCollection_Mat4<Element_t>& theOutMx) const
+  {
+    Element_t aDet;
+    return Inverted (theOutMx, aDet);
+  }
+
+  //! Return inverted matrix.
+  NCollection_Mat4 Inverted() const
+  {
+    NCollection_Mat4 anInv;
+    if (!Inverted (anInv))
+    {
+      throw Standard_ConstructionError ("NCollection_Mat4::Inverted() - matrix has zero determinant");
+    }
+    return anInv;
+  }
+
+  //! Return adjoint (adjugate matrix, e.g. conjugate transpose).
+  Standard_NODISCARD NCollection_Mat4<Element_t> Adjoint() const
+  {
+    NCollection_Mat4<Element_t> aMat;
+    aMat.SetRow (0, crossVec4 ( GetRow (1), GetRow (2), GetRow (3)));
+    aMat.SetRow (1, crossVec4 (-GetRow (0), GetRow (2), GetRow (3)));
+    aMat.SetRow (2, crossVec4 ( GetRow (0), GetRow (1), GetRow (3)));
+    aMat.SetRow (3, crossVec4 (-GetRow (0), GetRow (1), GetRow (2)));
+    return aMat;
   }
 
   //! Take values from NCollection_Mat4 with a different element type with type conversion.
@@ -475,11 +646,34 @@ public:
 
 private:
 
+  //! Cross-product has no direct meaning in 4D space - provided for local usage.
+  static NCollection_Vec4<Element_t> crossVec4 (const NCollection_Vec4<Element_t>& theA,
+                                                const NCollection_Vec4<Element_t>& theB,
+                                                const NCollection_Vec4<Element_t>& theC)
+  {
+    const Element_t aD1 = (theB.z() * theC.w()) - (theB.w() * theC.z());
+    const Element_t aD2 = (theB.y() * theC.w()) - (theB.w() * theC.y());
+    const Element_t aD3 = (theB.y() * theC.z()) - (theB.z() * theC.y());
+    const Element_t aD4 = (theB.x() * theC.w()) - (theB.w() * theC.x());
+    const Element_t aD5 = (theB.x() * theC.z()) - (theB.z() * theC.x());
+    const Element_t aD6 = (theB.x() * theC.y()) - (theB.y() * theC.x());
+
+    NCollection_Vec4<Element_t> aVec;
+    aVec.x() = -theA.y() * aD1 + theA.z() * aD2 - theA.w() * aD3;
+    aVec.y() =  theA.x() * aD1 - theA.z() * aD4 + theA.w() * aD5;
+    aVec.z() = -theA.x() * aD2 + theA.y() * aD4 - theA.w() * aD6;
+    aVec.w() =  theA.x() * aD3 - theA.y() * aD5 + theA.z() * aD6;
+    return aVec;
+  }
+
+private:
+
   Element_t myMat[16];
 
 private:
 
-  static Element_t myIdentityArray[16];
+  static const Element_t MyZeroArray[16];
+  static const Element_t MyIdentityArray[16];
 
   // All instantiations are friend to each other
   template<class OtherType> friend class NCollection_Mat4;
@@ -487,7 +681,14 @@ private:
 };
 
 template<typename Element_t>
-Element_t NCollection_Mat4<Element_t>::myIdentityArray[] =
+const Element_t NCollection_Mat4<Element_t>::MyZeroArray[] =
+  {0, 0, 0, 0,
+   0, 0, 0, 0,
+   0, 0, 0, 0,
+   0, 0, 0, 0};
+
+template<typename Element_t>
+const Element_t NCollection_Mat4<Element_t>::MyIdentityArray[] =
   {1, 0, 0, 0,
    0, 1, 0, 0,
    0, 0, 1, 0,
@@ -498,6 +699,7 @@ Element_t NCollection_Mat4<Element_t>::myIdentityArray[] =
 
   static_assert(std::is_trivially_copyable<NCollection_Mat4<float>>::value, "NCollection_Mat4 is not is_trivially_copyable() structure!");
   static_assert(std::is_standard_layout   <NCollection_Mat4<float>>::value, "NCollection_Mat4 is not is_standard_layout() structure!");
+  static_assert(sizeof(NCollection_Mat4<float>) == sizeof(float)*16,        "NCollection_Mat4 is not packed/aligned!");
 #endif
 
 #endif // _NCollection_Mat4_HeaderFile

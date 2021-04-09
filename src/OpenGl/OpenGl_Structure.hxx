@@ -23,7 +23,6 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Group.hxx>
-#include <OpenGl_Matrix.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>
 

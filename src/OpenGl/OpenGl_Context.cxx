@@ -2657,7 +2657,7 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
       Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
     }
     Graphic3d_TransformUtils::Rotate (aTextureMat, -theParams->Rotation(), 0.0f, 0.0f, 1.0f);
-    core11ffp->glLoadMatrixf (aTextureMat);
+    core11ffp->glLoadMatrixf (aTextureMat.GetData());
     core11ffp->glMatrixMode (aMatrixMode);
   }
 #endif

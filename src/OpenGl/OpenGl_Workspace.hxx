@@ -22,7 +22,6 @@
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Material.hxx>
-#include <OpenGl_Matrix.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_TextureBufferArb.hxx>
@@ -188,12 +187,6 @@ public:
   //! @sa OpenGl_LayerList::Render()
   void ResetSkippedCounter() { myNbSkippedTranspElems = 0; }
 
-  //! @return applied view matrix.
-  inline const OpenGl_Matrix* ViewMatrix() const { return ViewMatrix_applied; }
-
-  //! @return applied model structure matrix.
-  inline const OpenGl_Matrix* ModelMatrix() const { return StructureMatrix_applied; }
-
   //! Returns face aspect for none culling mode.
   const OpenGl_Aspects& NoneCulling() const { return myNoneCulling; }
 
@@ -230,13 +223,8 @@ protected: //! @name fields related to status
 
   Handle(Graphic3d_PresentationAttributes) myAspectFaceAppliedWithHL;
 
-  const OpenGl_Matrix* ViewMatrix_applied;
-  const OpenGl_Matrix* StructureMatrix_applied;
-
   bool            myToAllowFaceCulling; //!< allow back face culling
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //!< active highlight style
-
-  OpenGl_Matrix myModelViewMatrix; //!< Model matrix with applied structure transformations
 
   OpenGl_Aspects myAspectFaceHl; //!< Hiddenline aspect
 

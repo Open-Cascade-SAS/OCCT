@@ -16,6 +16,7 @@
 
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 #include <TCollection_AsciiString.hxx>
 

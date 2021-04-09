@@ -53,8 +53,6 @@
 #include <map>
 #include <set>
 
-struct OpenGl_Matrix;
-
 class Graphic3d_StructureManager;
 class OpenGl_DepthPeeling;
 class OpenGl_GraphicDriver;

@@ -46,18 +46,7 @@ namespace
     1.0f, 0.0f, 0.0f, 0.0f,  0.0f,-1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f, 0.0f,
     0.0f, 0.0f,-1.0f, 0.0f,  0.0f,-1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f
   };
-
-  static const OpenGl_Matrix OpenGl_IdentityMatrix =
-  {
-    // mat[4][4]
-    { { 1.0f, 0.0f, 0.0f, 0.0f },
-      { 0.0f, 1.0f, 0.0f, 0.0f },
-      { 0.0f, 0.0f, 1.0f, 0.0f },
-      { 0.0f, 0.0f, 0.0f, 1.0f } }
-  };
-
 }
-
 
 // =======================================================================
 // function : OpenGl_CappingPlaneResource
@@ -65,7 +54,7 @@ namespace
 // =======================================================================
 OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource (const Handle(Graphic3d_ClipPlane)& thePlane)
 : myPrimitives  (NULL),
-  myOrientation (OpenGl_IdentityMatrix),
+  myOrientation (OpenGl_Mat4::Identity()),
   myAspect      (NULL),
   myPlaneRoot   (thePlane),
   myEquationMod ((unsigned int )-1),
@@ -210,24 +199,8 @@ void OpenGl_CappingPlaneResource::updateTransform (const Handle(OpenGl_Context)&
   }
 
   const Graphic3d_Vec3 F = Graphic3d_Vec3::Cross (-aLeft, aNorm);
-
-  myOrientation.mat[0][0] = aLeft[0];
-  myOrientation.mat[0][1] = aLeft[1];
-  myOrientation.mat[0][2] = aLeft[2];
-  myOrientation.mat[0][3] = 0.0f;
-
-  myOrientation.mat[1][0] = aNorm[0];
-  myOrientation.mat[1][1] = aNorm[1];
-  myOrientation.mat[1][2] = aNorm[2];
-  myOrientation.mat[1][3] = 0.0f;
-
-  myOrientation.mat[2][0] = F[0];
-  myOrientation.mat[2][1] = F[1];
-  myOrientation.mat[2][2] = F[2];
-  myOrientation.mat[2][3] = 0.0f;
-
-  myOrientation.mat[3][0] = T[0];
-  myOrientation.mat[3][1] = T[1];
-  myOrientation.mat[3][2] = T[2];
-  myOrientation.mat[3][3] = 1.0f;
+  myOrientation.SetColumn (0, aLeft);
+  myOrientation.SetColumn (1, aNorm);
+  myOrientation.SetColumn (2, F);
+  myOrientation.SetColumn (3, T);
 }

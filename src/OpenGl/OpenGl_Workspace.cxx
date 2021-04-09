@@ -34,21 +34,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
 
-namespace
-{
-  static const OpenGl_Vec4 THE_WHITE_COLOR (1.0f, 1.0f, 1.0f, 1.0f);
-  static const OpenGl_Vec4 THE_BLACK_COLOR (0.0f, 0.0f, 0.0f, 1.0f);
-
-  static const OpenGl_Matrix myDefaultMatrix =
-  {
-    {{ 1.0F, 0.0F, 0.0F, 0.0F },
-     { 0.0F, 1.0F, 0.0F, 0.0F },
-     { 0.0F, 0.0F, 1.0F, 0.0F },
-     { 0.0F, 0.0F, 0.0F, 1.0F }}
-  };
-
-}
-
 // =======================================================================
 // function : Init
 // purpose  :
@@ -133,10 +118,7 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
   //
   myAspectsSet (&myDefaultAspects),
   //
-  ViewMatrix_applied (&myDefaultMatrix),
-  StructureMatrix_applied (&myDefaultMatrix),
-  myToAllowFaceCulling (false),
-  myModelViewMatrix (myDefaultMatrix)
+  myToAllowFaceCulling (false)
 {
   if (!myGlContext.IsNull() && myGlContext->MakeCurrent())
   {
@@ -185,9 +167,6 @@ Standard_Boolean OpenGl_Workspace::Activate()
   {
     return Standard_False;
   }
-
-  ViewMatrix_applied      = &myDefaultMatrix;
-  StructureMatrix_applied = &myDefaultMatrix;
 
   if (myGlContext->core11ffp == NULL)
   {

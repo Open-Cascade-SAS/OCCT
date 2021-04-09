@@ -25,7 +25,6 @@
 #include <Graphic3d_TextureSetBits.hxx>
 
 #include <OpenGl_Vec.hxx>
-#include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedResource.hxx>
 #include <OpenGl_ShaderObject.hxx>
 
@@ -340,43 +339,46 @@ public:
 
 public:
 
-  //! Returns the value of the integer uniform variable.
-  Standard_EXPORT Standard_Boolean GetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               OpenGl_Vec4i&                 theValue) const;
+  //! Returns the value of the uniform variable from given name.
+  template<typename ValueType>
+  bool GetUniform (const Handle(OpenGl_Context)& theCtx,
+                   const GLchar* theName,
+                   ValueType& theValue) const
+  {
+    return GetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
+  }
 
+  //! Returns the value of the integer uniform variable.
+  //! Wrapper for glGetUniformiv()
   Standard_EXPORT Standard_Boolean GetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                OpenGl_Vec4i&                 theValue) const;
 
   //! Returns the value of the float uniform variable.
-  Standard_EXPORT Standard_Boolean GetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               OpenGl_Vec4&                  theValue) const;
-
-  //! Returns the value of the float uniform variable.
+  //! Wrapper for glGetUniformfv()
   Standard_EXPORT Standard_Boolean GetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                OpenGl_Vec4&                  theValue) const;
 
 public:
 
-  //! Returns the integer vertex attribute.
-  Standard_EXPORT Standard_Boolean GetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 OpenGl_Vec4i&                 theValue) const;
+  //! Returns the vertex attribute from given name.
+  template<typename ValueType>
+  bool GetAttribute (const Handle(OpenGl_Context)& theCtx,
+                     const GLchar* theName,
+                     ValueType& theValue) const
+  {
+    return GetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+  }
 
   //! Returns the integer vertex attribute.
+  //! Wrapper for glGetVertexAttribiv()
   Standard_EXPORT Standard_Boolean GetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                  GLint                         theIndex,
                                                  OpenGl_Vec4i&                 theValue) const;
 
   //! Returns the float vertex attribute.
-  Standard_EXPORT Standard_Boolean GetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 OpenGl_Vec4&                  theValue) const;
-
-  //! Returns the float vertex attribute.
+  //! Wrapper for glGetVertexAttribfv()
   Standard_EXPORT Standard_Boolean GetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                  GLint                         theIndex,
                                                  OpenGl_Vec4&                  theValue) const;
@@ -388,10 +390,14 @@ public:
                                                      GLint                         theIndex,
                                                      const GLchar*                 theName);
 
-  //! Wrapper for glVertexAttrib1f()
-  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 GLfloat                       theValue);
+  //! Wrapper for glVertexAttrib*() for attribute with the given name.
+  template<typename ValueType>
+  bool SetAttribute (const Handle(OpenGl_Context)& theCtx,
+                     const GLchar* theName,
+                     const ValueType& theValue)
+  {
+    return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
+  }
 
   //! Wrapper for glVertexAttrib1f()
   Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
@@ -400,18 +406,8 @@ public:
 
   //! Wrapper for glVertexAttrib2fv()
   Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 const OpenGl_Vec2&            theValue);
-
-  //! Wrapper for glVertexAttrib2fv()
-  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                  GLint                         theIndex,
                                                  const OpenGl_Vec2&            theValue);
-
-  //! Wrapper for glVertexAttrib3fv()
-  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 const OpenGl_Vec3&            theValue);
 
   //! Wrapper for glVertexAttrib3fv()
   Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
@@ -420,52 +416,40 @@ public:
 
   //! Wrapper for glVertexAttrib4fv()
   Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                 const GLchar*                 theName,
-                                                 const OpenGl_Vec4&            theValue);
-
-  //! Wrapper for glVertexAttrib4fv()
-  Standard_EXPORT Standard_Boolean SetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                  GLint                         theIndex,
                                                  const OpenGl_Vec4&            theValue);
 
 public:
 
-  //! Specifies the value of the integer uniform variable.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               GLint                         theValue);
+  //! Specifies the value of the uniform variable with given name.
+  template<typename ValueType>
+  bool SetUniform (const Handle(OpenGl_Context)& theCtx,
+                   const GLchar* theName,
+                   const ValueType& theValue)
+  {
+    return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
+  }
 
   //! Specifies the value of the integer uniform variable.
+  //! Wrapper for glUniform1i()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLint                         theValue);
 
   //! Specifies the value of the integer uniform 2D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec2i&           theValue);
-
-  //! Specifies the value of the integer uniform 2D vector.
+  //! Wrapper for glUniform2iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec2i&           theValue);
 
   //! Specifies the value of the integer uniform 3D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec3i&           theValue);
-
-  //! Specifies the value of the integer uniform 3D vector.
+  //! Wrapper for glUniform3iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec3i&           theValue);
 
   //! Specifies the value of the integer uniform 4D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec4i&           theValue);
-
-  //! Specifies the value of the integer uniform 4D vector.
+  //! Wrapper for glUniform4iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec4i&           theValue);
@@ -473,22 +457,20 @@ public:
 public:
 
   //! Specifies the value of the unsigned integer uniform 2D vector (uvec2).
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec2u&           theValue);
-
-  //! Specifies the value of the unsigned integer uniform 2D vector (uvec2).
+  //! Wrapper for glUniform2uiv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec2u&           theValue);
 
   //! Specifies the value of the uvec2 uniform array
+  //! Wrapper for glUniform2uiv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                const GLchar*                 theName,
                                                const GLsizei                 theCount,
                                                const OpenGl_Vec2u*           theValue);
 
   //! Specifies the value of the uvec2 uniform array
+  //! Wrapper for glUniform2uiv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const GLsizei                 theCount,
@@ -497,54 +479,50 @@ public:
 public:
 
   //! Specifies the value of the float uniform variable.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               GLfloat                       theValue);
-
-  //! Specifies the value of the float uniform variable.
+  //! Wrapper for glUniform1f()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLfloat                       theValue);
 
   //! Specifies the value of the float uniform 2D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec2&            theValue);
-
-  //! Specifies the value of the float uniform 2D vector.
+  //! Wrapper for glUniform2fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec2&            theValue);
 
   //! Specifies the value of the float uniform 3D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec3&            theValue);
-
-  //! Specifies the value of the float uniform 3D vector.
+  //! Wrapper for glUniform3fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec3&            theValue);
 
   //! Specifies the value of the float uniform 4D vector.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Vec4&            theValue);
-
-  //! Specifies the value of the float uniform 4D vector.
+  //! Wrapper for glUniform4fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Vec4&            theValue);
 
 public:
 
-  //! Specifies the value of the float uniform 4x4 matrix.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Mat4&            theValue,
-                                               GLboolean                     theTranspose = GL_FALSE);
+  //! Specifies the value of the array of float uniform 3x3 matrices.
+  //! Wrapper over glUniformMatrix3fv().
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)&  theCtx,
+                                               GLint                          theLocation,
+                                               GLuint                         theCount,
+                                               const NCollection_Mat3<float>* theData);
 
   //! Specifies the value of the float uniform 4x4 matrix.
+  //! Wrapper for glUniformMatrix4fv()
+  bool SetUniform (const Handle(OpenGl_Context)& theCtx,
+                   const GLchar*                 theName,
+                   const OpenGl_Mat4&            theValue,
+                   GLboolean                     theTranspose = GL_FALSE)
+  {
+    return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue, theTranspose);
+  }
+
+  //! Specifies the value of the float uniform 4x4 matrix.
+  //! Wrapper for glUniformMatrix4fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                const OpenGl_Mat4&            theValue,
@@ -557,61 +535,57 @@ public:
                                                GLuint                        theCount,
                                                const OpenGl_Mat4*            theData);
 
-  //! Specifies the value of the float uniform 4x4 matrix.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const OpenGl_Matrix&          theValue,
-                                               GLboolean                     theTranspose = GL_FALSE);
-
-  //! Specifies the value of the float uniform 4x4 matrix.
-  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                               GLint                         theLocation,
-                                               const OpenGl_Matrix&          theValue,
-                                               GLboolean                     theTranspose = GL_FALSE);
-
   //! Specifies the value of the float uniform array
+  //! Wrapper over glUniform1fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const Standard_ShortReal*     theData);
 
   //! Specifies the value of the float2 uniform array
+  //! Wrapper over glUniform2fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const OpenGl_Vec2*            theData);
 
   //! Specifies the value of the float3 uniform array
+  //! Wrapper over glUniform3fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const OpenGl_Vec3*            theData);
 
   //! Specifies the value of the float4 uniform array
+  //! Wrapper over glUniform4fv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const OpenGl_Vec4*            theData);
 
   //! Specifies the value of the integer uniform array
+  //! Wrapper over glUniform1iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const Standard_Integer*       theData);
 
   //! Specifies the value of the int2 uniform array
+  //! Wrapper over glUniform2iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const OpenGl_Vec2i*           theData);
 
   //! Specifies the value of the int3 uniform array
+  //! Wrapper over glUniform3iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
                                                const OpenGl_Vec3i*           theData);
 
   //! Specifies the value of the int4 uniform array
+  //! Wrapper over glUniform4iv()
   Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                GLint                         theLocation,
                                                GLuint                        theCount,
@@ -620,9 +594,12 @@ public:
 public:
 
   //! Specifies the value of the sampler uniform variable.
-  Standard_EXPORT Standard_Boolean SetSampler (const Handle(OpenGl_Context)& theCtx,
-                                               const GLchar*                 theName,
-                                               const Graphic3d_TextureUnit   theTextureUnit);
+  bool SetSampler (const Handle(OpenGl_Context)& theCtx,
+                   const GLchar*                 theName,
+                   const Graphic3d_TextureUnit   theTextureUnit)
+  {
+    return SetSampler (theCtx, GetUniformLocation (theCtx, theName), theTextureUnit);
+  }
 
   //! Specifies the value of the sampler uniform variable.
   Standard_EXPORT Standard_Boolean SetSampler (const Handle(OpenGl_Context)& theCtx,

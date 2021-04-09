@@ -51,6 +51,7 @@ NCollection_List.hxx
 NCollection_ListNode.hxx
 NCollection_LocalArray.hxx
 NCollection_Map.hxx
+NCollection_Mat3.hxx
 NCollection_Mat4.hxx
 NCollection_Sequence.hxx
 NCollection_Shared.hxx

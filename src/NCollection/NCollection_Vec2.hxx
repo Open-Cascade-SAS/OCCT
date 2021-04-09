@@ -102,11 +102,9 @@ public:
   }
 
   //! Check this vector with another vector for equality (without tolerance!).
-  bool operator== (const NCollection_Vec2& theOther)       { return IsEqual (theOther); }
   bool operator== (const NCollection_Vec2& theOther) const { return IsEqual (theOther); }
 
   //! Check this vector with another vector for non-equality (without tolerance!).
-  bool operator!= (const NCollection_Vec2& theOther)       { return !IsEqual (theOther); }
   bool operator!= (const NCollection_Vec2& theOther) const { return !IsEqual (theOther); }
 
   //! Raw access to the data (for OpenGL exchange).

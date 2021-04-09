@@ -826,17 +826,6 @@ GLint OpenGl_ShaderProgram::GetAttributeLocation (const Handle(OpenGl_Context)& 
 // purpose  : Returns the value of the integer uniform variable
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::GetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   OpenGl_Vec4i&                 theValue) const
-{
-  return GetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : GetUniform
-// purpose  : Returns the value of the integer uniform variable
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::GetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    OpenGl_Vec4i&                 theValue) const
 {
@@ -847,17 +836,6 @@ Standard_Boolean OpenGl_ShaderProgram::GetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glGetUniformiv (myProgramID, theLocation, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : GetUniform
-// purpose  : Returns the value of the floating-point uniform variable
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::GetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   OpenGl_Vec4&                  theValue) const
-{
-  return GetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -882,17 +860,6 @@ Standard_Boolean OpenGl_ShaderProgram::GetUniform (const Handle(OpenGl_Context)&
 // purpose  : Returns the integer vertex attribute
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::GetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     OpenGl_Vec4i&                 theValue) const
-{
-  return GetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : GetAttribute
-// purpose  : Returns the integer vertex attribute
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::GetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                      GLint                         theIndex,
                                                      OpenGl_Vec4i&                 theValue) const
 {
@@ -903,17 +870,6 @@ Standard_Boolean OpenGl_ShaderProgram::GetAttribute (const Handle(OpenGl_Context
 
   theCtx->core20fwd->glGetVertexAttribiv (theIndex, GL_CURRENT_VERTEX_ATTRIB, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : GetAttribute
-// purpose  : Returns the floating-point vertex attribute
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::GetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     OpenGl_Vec4&                  theValue) const
-{
-  return GetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -950,17 +906,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttributeName (const Handle(OpenGl_Con
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     GLfloat                       theValue)
-{
-  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                      GLint                         theIndex,
                                                      GLfloat                       theValue)
 {
@@ -971,17 +916,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context
 
   theCtx->core20fwd->glVertexAttrib1f (theIndex, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     const OpenGl_Vec2&            theValue)
-{
-  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1006,17 +940,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     const OpenGl_Vec3&            theValue)
-{
-  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
                                                      GLint                         theIndex,
                                                      const OpenGl_Vec3&            theValue)
 {
@@ -1027,17 +950,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context
 
   theCtx->core20fwd->glVertexAttrib3fv (theIndex, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetAttribute
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context)& theCtx,
-                                                     const GLchar*                 theName,
-                                                     const OpenGl_Vec4&            theValue)
-{
-  return SetAttribute (theCtx, GetAttributeLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1062,17 +974,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetAttribute (const Handle(OpenGl_Context
 // purpose  : Specifies the value of the integer uniform variable
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   GLint                         theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the integer uniform variable
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    GLint                         theValue)
 {
@@ -1083,17 +984,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glUniform1i (theLocation, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec2u&           theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1172,17 +1062,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 // purpose  : Specifies the value of the floating-point uniform variable
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   GLfloat                       theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform variable
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    GLfloat                       theValue)
 {
@@ -1193,17 +1072,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glUniform1f (theLocation, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the integer uniform 2D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec2i&           theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1228,17 +1096,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 // purpose  : Specifies the value of the integer uniform 3D vector
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec3i&           theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the integer uniform 3D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    const OpenGl_Vec3i&           theValue)
 {
@@ -1249,17 +1106,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glUniform3iv (theLocation, 1, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the integer uniform 4D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec4i&           theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1284,17 +1130,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 // purpose  : Specifies the value of the floating-point uniform 2D vector
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec2&            theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 2D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    const OpenGl_Vec2&            theValue)
 {
@@ -1305,17 +1140,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glUniform2fv (theLocation, 1, theValue);
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 3D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec3&            theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
 }
 
 // =======================================================================
@@ -1340,17 +1164,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 // purpose  : Specifies the value of the floating-point uniform 4D vector
 // =======================================================================
 Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Vec4&            theValue)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4D vector
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
                                                    GLint                         theLocation,
                                                    const OpenGl_Vec4&            theValue)
 {
@@ -1365,14 +1178,20 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
 // =======================================================================
 // function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4x4 matrix
+// purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Mat4&            theValue,
-                                                   GLboolean                     theTranspose)
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&  theCtx,
+                                                   GLint                          theLocation,
+                                                   GLuint                         theCount,
+                                                   const NCollection_Mat3<float>* theData)
 {
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue, theTranspose);
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20fwd->glUniformMatrix3fv (theLocation, theCount, GL_FALSE, theData->GetData());
+  return Standard_True;
 }
 
 // =======================================================================
@@ -1389,32 +1208,8 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
-  theCtx->core20fwd->glUniformMatrix4fv (theLocation, 1, GL_FALSE, theTranspose ? theValue.Transposed() : theValue);
+  theCtx->core20fwd->glUniformMatrix4fv (theLocation, 1, GL_FALSE, theTranspose ? theValue.Transposed().GetData() : theValue.GetData());
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4x4 matrix
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const OpenGl_Matrix&          theValue,
-                                                   GLboolean                     theTranspose)
-{
-  return SetUniform (theCtx, GetUniformLocation (theCtx, theName), theValue, theTranspose);
-}
-
-// =======================================================================
-// function : SetUniform
-// purpose  : Specifies the value of the floating-point uniform 4x4 matrix
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
-                                                   GLint                         theLocation,
-                                                   const OpenGl_Matrix&          theValue,
-                                                   GLboolean                     theTranspose)
-{
-  return SetUniform (theCtx, theLocation, OpenGl_Mat4::Map (*theValue.mat), theTranspose);
 }
 
 // =======================================================================
@@ -1577,17 +1372,6 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 
   theCtx->core20fwd->glUniform4iv (theLocation, theCount, theData[0].GetData());
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetSampler
-// purpose  : Specifies the value of the sampler uniform variable
-// =======================================================================
-Standard_Boolean OpenGl_ShaderProgram::SetSampler (const Handle(OpenGl_Context)& theCtx,
-                                                   const GLchar*                 theName,
-                                                   const Graphic3d_TextureUnit   theTextureUnit)
-{
-  return SetSampler (theCtx, GetUniformLocation (theCtx, theName), theTextureUnit);
 }
 
 // =======================================================================

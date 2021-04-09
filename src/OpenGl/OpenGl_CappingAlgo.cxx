@@ -69,7 +69,7 @@ namespace
 
     // set identity model matrix
     aContext->ModelWorldState.Push();
-    aContext->ModelWorldState.SetCurrent (OpenGl_Mat4::Map (*thePlane->Orientation()->mat));
+    aContext->ModelWorldState.SetCurrent (thePlane->Orientation());
     aContext->ApplyModelViewMatrix();
 
     thePlane->Primitives().Render (theWorkspace);

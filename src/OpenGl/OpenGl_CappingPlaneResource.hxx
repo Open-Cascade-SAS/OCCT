@@ -19,7 +19,7 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Resource.hxx>
 #include <OpenGl_Aspects.hxx>
-#include <OpenGl_Matrix.hxx>
+#include <OpenGl_Vec.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
 class OpenGl_CappingPlaneResource;
@@ -64,7 +64,7 @@ public:
   inline const OpenGl_Aspects* AspectFace() const { return myAspect; }
 
   //! @return evaluated orientation matrix to transform infinite plane.
-  inline const OpenGl_Matrix* Orientation() const { return &myOrientation; }
+  inline const OpenGl_Mat4& Orientation() const { return myOrientation; }
 
   //! @return primitive array of vertices to render infinite plane.
   inline const OpenGl_PrimitiveArray& Primitives() const { return myPrimitives; }
@@ -80,7 +80,7 @@ private:
 private:
 
   OpenGl_PrimitiveArray       myPrimitives;    //!< vertices and texture coordinates for rendering
-  OpenGl_Matrix               myOrientation;   //!< plane transformation matrix.
+  OpenGl_Mat4                 myOrientation;   //!< plane transformation matrix.
   OpenGl_Aspects*             myAspect;        //!< capping face aspect.
   Handle(Graphic3d_ClipPlane) myPlaneRoot;     //!< parent clipping plane structure.
   Handle(Graphic3d_Aspects)   myFillAreaAspect;//!< own capping aspect
