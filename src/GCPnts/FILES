@@ -5,7 +5,6 @@ GCPnts_DeflectionType.hxx
 GCPnts_QuasiUniformAbscissa.cxx
 GCPnts_QuasiUniformAbscissa.hxx
 GCPnts_QuasiUniformDeflection.cxx
-GCPnts_QuasiUniformDeflection.pxx
 GCPnts_QuasiUniformDeflection.hxx
 GCPnts_TangentialDeflection.cxx
 GCPnts_TangentialDeflection.hxx

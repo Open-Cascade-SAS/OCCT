@@ -22,26 +22,20 @@
 #include <TColgp_SequenceOfPnt.hxx>
 #include <GeomAbs_Shape.hxx>
 
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
 class gp_Pnt;
 
-//! This  class computes  a  distribution of  points  on a
-//! curve. The points may respect the deflection. The algorithm
-//! is not based on the  classical prediction (with second
-//! derivative of curve), but either  on the evaluation of
-//! the distance between the   mid point and the  point of
-//! mid parameter of    the two points,   or  the distance
-//! between the mid point and  the point at parameter  0.5
-//! on the cubic interpolation of the two points and their
-//! tangents.
-//! Note: this algorithm is faster than a
-//! GCPnts_UniformDeflection algorithm, and is
-//! able to work with non-"C2" continuous curves.
+//! This class computes a distribution of points on a curve.
+//! The points may respect the deflection.
+//! The algorithm is not based on the classical prediction (with second derivative of curve),
+//! but either on the evaluation of the distance between the mid point
+//! and the point of mid parameter of the two points,
+//! or the distance between the mid point and the point at parameter 0.5
+//! on the cubic interpolation of the two points and their tangents.
+//!
+//! Note: this algorithm is faster than a GCPnts_UniformDeflection algorithm,
+//! and is able to work with non-"C2" continuous curves.
 //! However, it generates more points in the distribution.
 class GCPnts_QuasiUniformDeflection 
 {
@@ -49,132 +43,132 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Constructs an empty algorithm. To define the problem
-  //! to be solved, use the function Initialize.
+  //! Constructs an empty algorithm.
+  //! To define the problem to be solved, use the function Initialize().
   Standard_EXPORT GCPnts_QuasiUniformDeflection();
-  
-  //! Computes  a QuasiUniform Deflection distribution
-  //! of points on the Curve <C>.
-  Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Computes  a QuasiUniform Deflection distribution
-  //! of points on the Curve <C>.
-  Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Computes a QuasiUniform Deflection distribution
-  //! of points on a part of the Curve <C>.
-  Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Computes  a QuasiUniform Deflection distribution
-  //! of points on a part of the Curve <C>.
+
+  //! Computes a QuasiUniform Deflection distribution of points on the Curve.
+  Standard_EXPORT GCPnts_QuasiUniformDeflection (const Adaptor3d_Curve& theC,
+                                                 const Standard_Real theDeflection,
+                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Computes a QuasiUniform Deflection distribution of points on the Curve.
+  Standard_EXPORT GCPnts_QuasiUniformDeflection (const Adaptor2d_Curve2d& theC,
+                                                 const Standard_Real theDeflection,
+                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
+  Standard_EXPORT GCPnts_QuasiUniformDeflection (const Adaptor3d_Curve& theC,
+                                                 const Standard_Real theDeflection,
+                                                 const Standard_Real theU1, const Standard_Real theU2,
+                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
   //! This and the above algorithms compute a distribution of points:
-  //! -   on the curve C, or
-  //! -   on the part of curve C limited by the two
-  //! parameter values U1 and U2,
+  //! -   on the curve theC, or
+  //! -   on the part of curve theC limited by the two parameter values theU1 and theU2,
   //! where the deflection resulting from the distributed
-  //! points is not greater than Deflection.
+  //! points is not greater than theDeflection.
+  //!
   //! The first point of the distribution is either the origin of
-  //! curve C or the point of parameter U1. The last point
-  //! of the distribution is either the end point of curve C or
-  //! the point of parameter U2.
+  //! curve theC or the point of parameter theU1.
+  //! The last point of the distribution is either the end point
+  //! of curve theC or the point of parameter theU2.
+  //!
   //! Intermediate points of the distribution are built such
-  //! that the deflection is not greater than Deflection.
+  //! that the deflection is not greater than theDeflection.
   //! Using the following evaluation of the deflection:
   //! if Pi and Pj are two consecutive points of the
-  //! distribution, respectively of parameter ui and uj on
-  //! the curve, the deflection is the distance between:
-  //! -   the mid-point of Pi and Pj (the center of the
-  //! chord joining these two points)
+  //! distribution, respectively of parameter ui and uj on the curve,
+  //! the deflection is the distance between:
+  //! -   the mid-point of Pi and Pj (the center of the chord joining these two points)
   //! -   and the point of mid-parameter of these two
-  //! points (the point of parameter [(ui+uj) / 2 ] on curve C).
-  //! Continuity, defaulted to GeomAbs_C1, gives the
-  //! degree of continuity of the curve C. (Note that C is an
-  //! Adaptor3d_Curve or an Adaptor2d_Curve2d
-  //! object, and does not know the degree of continuity of
-  //! the underlying curve).
-  //! Use the function IsDone to verify that the
-  //! computation was successful, the function NbPoints
-  //! to obtain the number of points of the computed
-  //! distribution, and the function Parameter to read the
-  //! parameter of each point.
+  //!     points (the point of parameter [(ui+uj) / 2] on curve theC).
+  //! theContinuity, defaulted to GeomAbs_C1, gives the degree of continuity of the curve theC.
+  //! (Note that C is an Adaptor3d_Curve or an Adaptor2d_Curve2d object,
+  //! and does not know the degree of continuity of the underlying curve).
+  //! Use the function IsDone() to verify that the computation was successful,
+  //! the function NbPoints() to obtain the number of points of the computed distribution,
+  //! and the function Parameter() to read the parameter of each point.
+  //!
   //! Warning
-  //! -   The roles of U1 and U2 are inverted if U1 > U2.
-  //! -   Derivative functions on the curve are called
-  //! according to Continuity. An error may occur if
-  //! Continuity is greater than the real degree of
-  //! continuity of the curve.
+  //! -   The roles of theU1 and theU2 are inverted if theU1 > theU2.
+  //! -   Derivative functions on the curve are called according to theContinuity.
+  //!     An error may occur if theContinuity is greater than
+  //!     the real degree of continuity of the curve.
+  //!
   //! Warning
-  //! C is an adapted curve, i.e. an object which is an
-  //! interface between:
+  //! theC is an adapted curve, i.e. an object which is an interface between:
   //! -   the services provided by either a 2D curve from
-  //! the package Geom2d (in the case of an
-  //! Adaptor2d_Curve2d curve) or a 3D curve from
-  //! the package Geom (in the case of an
-  //! Adaptor3d_Curve curve),
-  //! -   and those required on the curve by the
-  //! computation algorithm.
-  Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Initialize the algorithms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Initialize the algorithms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Initialize the algorithms with <C>, <Deflection>,
-  //! <U1>,<U2>
-  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
-  //! Initialize  the  algorithms with <C>, <Deflection>,
-  //! -- <U1>,<U2>
+  //!     the package Geom2d (in the case of an Adaptor2d_Curve2d curve)
+  //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
+  //! -   and those required on the curve by the computation algorithm.
+  Standard_EXPORT GCPnts_QuasiUniformDeflection (const Adaptor2d_Curve2d& theC,
+                                                 const Standard_Real theDeflection,
+                                                 const Standard_Real theU1, const Standard_Real theU2,
+                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Initialize the algorithms with 3D curve and deflection.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
+                                   const Standard_Real theDeflection,
+                                   const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Initialize the algorithms with 2D curve and deflection.
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
+                                   const Standard_Real theDeflection,
+                                   const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Initialize the algorithms with 3D curve, deflection and parameter range.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Real theU1, const Standard_Real theU2,
+                                   const GeomAbs_Shape theContinuity = GeomAbs_C1);
+
+  //! Initialize the algorithms with theC, theDeflection, theU1, theU2.
   //! This and the above algorithms initialize (or reinitialize)
   //! this algorithm and compute a distribution of points:
-  //! -   on the curve C, or
-  //! -   on the part of curve C limited by the two
-  //! parameter values U1 and U2,
+  //! -   on the curve theC, or
+  //! -   on the part of curve theC limited by the two parameter values theU1 and theU2,
   //! where the deflection resulting from the distributed
-  //! points is not greater than Deflection.
+  //! points is not greater than theDeflection.
+  //!
   //! The first point of the distribution is either the origin
-  //! of curve C or the point of parameter U1. The last
-  //! point of the distribution is either the end point of
-  //! curve C or the point of parameter U2.
+  //! of curve theC or the point of parameter theU1.
+  //! The last point of the distribution is either the end point of
+  //! curve theC or the point of parameter theU2.
+  //!
   //! Intermediate points of the distribution are built in
-  //! such a way that the deflection is not greater than
-  //! Deflection. Using the following evaluation of the deflection:
-  //! if Pi and Pj are two consecutive points of the
-  //! distribution, respectively of parameter ui and uj
-  //! on the curve, the deflection is the distance between:
-  //! -   the mid-point of Pi and Pj (the center of the
-  //! chord joining these two points)
+  //! such a way that the deflection is not greater than theDeflection.
+  //! Using the following evaluation of the deflection:
+  //! if Pi and Pj are two consecutive points of the distribution,
+  //! respectively of parameter ui and uj on the curve,
+  //! the deflection is the distance between:
+  //! -   the mid-point of Pi and Pj (the center of the chord joining these two points)
   //! -   and the point of mid-parameter of these two
-  //! points (the point of parameter [(ui+uj) / 2 ] on curve C).
-  //! Continuity, defaulted to GeomAbs_C1, gives the
-  //! degree of continuity of the curve C. (Note that C is
-  //! an Adaptor3d_Curve or an
-  //! Adaptor2d_Curve2d object, and does not know
-  //! the degree of continuity of the underlying curve).
-  //! Use the function IsDone to verify that the
-  //! computation was successful, the function NbPoints
-  //! to obtain the number of points of the computed
-  //! distribution, and the function Parameter to read
-  //! the parameter of each point.
+  //!     points (the point of parameter [(ui+uj) / 2] on curve theC).
+  //! theContinuity, defaulted to GeomAbs_C1, gives the degree of continuity of the curve theC.
+  //! (Note that C is an Adaptor3d_Curve or an Adaptor2d_Curve2d object,
+  //! and does not know the degree of continuity of the underlying curve).
+  //! Use the function IsDone to verify that the computation was successful,
+  //! the function NbPoints() to obtain the number of points of the computed distribution,
+  //! and the function Parameter() to read the parameter of each point.
+  //!
   //! Warning
-  //! -   The roles of U1 and U2 are inverted if U1 > U2.
-  //! -   Derivative functions on the curve are called
-  //! according to Continuity. An error may occur if
-  //! Continuity is greater than the real degree of
-  //! continuity of the curve.
+  //! -   The roles of theU1 and theU2 are inverted if theU1 > theU2.
+  //! -   Derivative functions on the curve are called according to theContinuity.
+  //!     An error may occur if theContinuity is greater than
+  //!     the real degree of continuity of the curve.
+  //!
   //! Warning
-  //! C is an adapted curve, i.e. an object which is an
-  //! interface between:
+  //! theC is an adapted curve, i.e. an object which is an interface between:
   //! -   the services provided by either a 2D curve from
-  //! the package Geom2d (in the case of an
-  //! Adaptor2d_Curve2d curve) or a 3D curve from
-  //! the package Geom (in the case of an Adaptor3d_Curve curve),
-  //! and those required on the curve by the computation algorithm.
-  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
-  
+  //!     the package Geom2d (in the case of an Adaptor2d_Curve2d curve)
+  //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
+  //!     and those required on the curve by the computation algorithm.
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Real theU1, const Standard_Real theU2,
+                                   const GeomAbs_Shape theContinuity = GeomAbs_C1);
 
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:
@@ -237,6 +231,15 @@ public:
     StdFail_NotDone_Raise_if (!myDone, "GCPnts_QuasiUniformDeflection::Deflection()");
     return myDeflection;
   }
+
+private:
+
+  //! Initializes algorithm.
+  template<class TheCurve>
+  void initialize (const TheCurve& theC,
+                   const Standard_Real theDeflection,
+                   const Standard_Real theU1, const Standard_Real theU2,
+                   const GeomAbs_Shape theContinuity);
 
 private:
   Standard_Boolean myDone;
