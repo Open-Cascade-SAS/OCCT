@@ -19,104 +19,122 @@
 
 #include <CPnts_AbscissaPoint.hxx>
 
-class StdFail_NotDone;
-class Standard_ConstructionError;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
 
 //! Provides an algorithm to compute a point on a curve
-//! situated at a given distance from another point on the
-//! curve, the distance being measured along the curve
-//! (curvilinear abscissa on the curve).
+//! situated at a given distance from another point on the curve,
+//! the distance being measured along the curve (curvilinear abscissa on the curve).
 //! This algorithm is also used to compute the length of a curve.
 //! An AbscissaPoint object provides a framework for:
 //! -   defining the point to compute
 //! -   implementing the construction algorithm
 //! -   consulting the result.
-class GCPnts_AbscissaPoint 
+class GCPnts_AbscissaPoint
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Computes the length of the 3D Curve.
+  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& theC);
   
-  //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& C);
+  //! Computes the length of the 2D Curve.
+  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& theC);
   
-  //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& C);
+  //! Computes the length of the 3D Curve with the given tolerance.
+  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& theC,
+                                               const Standard_Real theTol);
   
-  //! Computes the length of the Curve <C> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& C, const Standard_Real Tol);
+  //! Computes the length of the 2D Curve with the given tolerance.
+  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& theC,
+                                               const Standard_Real theTol);
   
-  //! Computes the length of the Curve <C> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& C, const Standard_Real Tol);
+  //! Computes the length of the 3D Curve.
+  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& theC,
+                                               const Standard_Real theU1, const Standard_Real theU2);
   
-  //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& C, const Standard_Real U1, const Standard_Real U2);
+  //! Computes the length of the 2D Curve.
+  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& theC,
+                                               const Standard_Real theU1, const Standard_Real theU2);
   
-  //! Computes the length of the Curve <C>.
-  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& C, const Standard_Real U1, const Standard_Real U2);
-  
-  //! Computes the length of the Curve <C> with the given tolerance.
-  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol);
-  
-  //! Computes the length of the Curve <C> with the given tolerance.
-  //! Constructs an empty algorithm. This function is used
-  //! only for initializing a framework to compute the length
-  //! of a curve (or a series of curves).
-  //! Warning
-  //! The function IsDone will return the value false after the use of this function.
-  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& C, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol);
-  
+  //! Computes the length of the 3D Curve with the given tolerance.
+  Standard_EXPORT static Standard_Real Length (const Adaptor3d_Curve& theC,
+                                               const Standard_Real theU1, const Standard_Real theU2,
+                                               const Standard_Real theTol);
+
+  //! Computes the length of the Curve with the given tolerance.
+  Standard_EXPORT static Standard_Real Length (const Adaptor2d_Curve2d& theC,
+                                               const Standard_Real theU1, const Standard_Real theU2,
+                                               const Standard_Real theTol);
+
+public:
+
+  //! Empty constructor.
   Standard_EXPORT GCPnts_AbscissaPoint();
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U0);
-  
-  //! the  algorithm computes a point on  a curve <Curve> at
-  //! the distance  <Abscissa> from the  point of parameter
-  //! <U0> with the given  tolerance.
-  Standard_EXPORT GCPnts_AbscissaPoint(const Standard_Real Tol, const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U0);
-  
-  //! the  algorithm computes a point on  a curve <Curve> at
-  //! the distance  <Abscissa> from the  point of parameter
-  //! <U0> with the given  tolerance.
-  Standard_EXPORT GCPnts_AbscissaPoint(const Standard_Real Tol, const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U0);
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U0);
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  //! <Ui> is the starting value used in the iterative process
-  //! which find the solution, it must be close to the final
-  //! solution
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui);
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  //! <Ui> is the starting value used in the iterative process
-  //! which find the solution, it must be closed to the final
-  //! solution
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui);
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  //! <Ui> is the starting value used in the iterative process
-  //! which find the solution, it must be close to the final
-  //! solution
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui, const Standard_Real Tol);
-  
-  //! the algorithm computes a point on a curve <Curve> at the
-  //! distance <Abscissa> from the point of parameter <U0>.
-  //! <Ui> is the starting value used in the iterative process
-  //! which find the solution, it must be close to the final
-  //! solution
-  Standard_EXPORT GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U0, const Standard_Real Ui, const Standard_Real Tol);
-  
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor3d_Curve& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0);
+
+  //! The algorithm computes a point on a curve at
+  //! the distance theAbscissa from the point of parameter
+  //! theU0 with the given tolerance.
+  Standard_EXPORT GCPnts_AbscissaPoint (const Standard_Real theTol,
+                                        const Adaptor3d_Curve& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0);
+
+  //! The algorithm computes a point on a curve at
+  //! the distance theAbscissa from the point of parameter
+  //! theU0 with the given tolerance.
+  Standard_EXPORT GCPnts_AbscissaPoint (const Standard_Real theTol,
+                                        const Adaptor2d_Curve2d& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0);
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor2d_Curve2d& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0);
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  //! theUi is the starting value used in the iterative process
+  //! which find the solution, it must be close to the final solution.
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor3d_Curve& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0, const Standard_Real theUi);
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  //! theUi is the starting value used in the iterative process
+  //! which find the solution, it must be closed to the final solution
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor2d_Curve2d& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0, const Standard_Real theUi);
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  //! theUi is the starting value used in the iterative process
+  //! which find the solution, it must be close to the final solution
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor3d_Curve& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0, const Standard_Real theUi,
+                                        const Standard_Real theTol);
+
+  //! The algorithm computes a point on a curve at the
+  //! distance theAbscissa from the point of parameter theU0.
+  //! theUi is the starting value used in the iterative process
+  //! which find the solution, it must be close to the final solution
+  Standard_EXPORT GCPnts_AbscissaPoint (const Adaptor2d_Curve2d& theC,
+                                        const Standard_Real theAbscissa,
+                                        const Standard_Real theU0, const Standard_Real theUi,
+                                        const Standard_Real theTol);
+
   //! True if the computation was successful, False otherwise.
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
@@ -135,6 +153,27 @@ public:
   {
     return myComputer.Parameter ();
   }
+
+private:
+
+  //! Computes the length of the Curve with the optional tolerance.
+  template<class TheCurve>
+  static Standard_Real length (const TheCurve& theC,
+                               const Standard_Real theU1, const Standard_Real theU2,
+                               const Standard_Real* theTol);
+
+  //! Performs algorithm from the point of parameter.
+  template<class TheCurve>
+  void compute (const TheCurve& theC,
+                const Standard_Real theAbscissa,
+                const Standard_Real theU0);
+
+  //! Performs algorithm from the point of parameter with the given tolerance.
+  template<class TheCurve>
+  void advCompute (const Standard_Real theTol,
+                   const TheCurve& theC,
+                   const Standard_Real theAbscissa,
+                   const Standard_Real theU0);
 
 private:
   CPnts_AbscissaPoint myComputer;
