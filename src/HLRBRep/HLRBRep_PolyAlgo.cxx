@@ -313,7 +313,7 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 {
   TopLoc_Location L;
   TopExp_Explorer exface,exedge;
-  Standard_Integer f = 0,i,j;
+  Standard_Integer f = 0, i;
   Standard_Integer nbFaceShell = 0;
   Standard_Boolean reversed;
   Standard_Boolean closed    = Standard_False;
@@ -450,49 +450,62 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	  HLRAlgo_Array1OfTData* TData = &pid->TData();
 	  HLRAlgo_Array1OfPISeg* PISeg = &pid->PISeg();
 	  HLRAlgo_Array1OfPINod* PINod = &pid->PINod();
-	  HLRAlgo_TriangleData* NT = &TData->ChangeValue(1);
-
 	  for (i = 1; i <= nbT; i++)
 	  {
-	    Tr->Triangle (i).Get (NT->Node1, NT->Node2, NT->Node3);
-	    NT->Flags = 0;
-	    if (reversed) {
-	      j         = NT->Node1;
-	      NT->Node1 = NT->Node3;
-	      NT->Node3 = j;
+	    const Poly_Triangle& aPolyTri = Tr->Triangle (i);
+	    HLRAlgo_TriangleData& aTriData = TData->ChangeValue (i);
+	    aTriData.Flags = 0;
+	    if (reversed)
+	    {
+	      aPolyTri.Get (aTriData.Node3, aTriData.Node2, aTriData.Node1);
 	    }
-	    NT++;
+	    else
+	    {
+	      aPolyTri.Get (aTriData.Node1, aTriData.Node2, aTriData.Node3);
+	    }
 	  }
 
-	  Handle(HLRAlgo_PolyInternalNode)* NN = &PINod->ChangeValue(1);
-
-	  for (i = 1; i <= nbN; i++) {
-	    HLRAlgo_PolyInternalNode::NodeData& Nod1RValues = (*NN)->Data();
-	    HLRAlgo_PolyInternalNode::NodeIndices& aNodIndices = (*NN)->Indices();
+	  for (i = 1; i <= nbN; i++)
+	  {
+	    const gp_Pnt& aPnt = Tr->Node (i);
+	    const Handle(HLRAlgo_PolyInternalNode)& aPolyINode   = PINod->ChangeValue (i);
+	    HLRAlgo_PolyInternalNode::NodeData&     aNod1RValues = aPolyINode->Data();
+	    HLRAlgo_PolyInternalNode::NodeIndices&  aNodIndices  = aPolyINode->Indices();
 	    aNodIndices.NdSg = 0;
 	    aNodIndices.Flag = 0;
-	    Nod1RValues.Point = Tr->Node (i).Coord();
-	    TTMultiply(Nod1RValues.Point);
-	    NN++;
+	    aNod1RValues.Point = aPnt.XYZ();
+	    TTMultiply (aNod1RValues.Point);
 	  }
 	  pid->UpdateLinks(TData,PISeg,PINod);
-	  if (Tr->HasUVNodes()) {
-	    myBSurf.Initialize(F,Standard_False);
-	    NN             = &(((HLRAlgo_Array1OfPINod*)PINod)->
-			       ChangeValue(1));
-	    
-	    for (i = 1; i <= nbN; i++) {
-	      HLRAlgo_PolyInternalNode::NodeIndices& aNodIndices = (*NN)->Indices();
-	      HLRAlgo_PolyInternalNode::NodeData& Nod1RValues = (*NN)->Data();
-	      Nod1RValues.UV = Tr->UVNode (i).Coord();
-	      if (Normal(i,aNodIndices,Nod1RValues,
-			 TData,PISeg,PINod,Standard_False))
-		aNodIndices.Flag |=  NMsk_Norm;
-	      else {
-		aNodIndices.Flag &= ~NMsk_Norm;
-		Nod1RValues.Scal = 0;
+	  if (Tr->HasUVNodes())
+	  {
+	    const bool hasSurf = BRep_Tool::IsGeometric (F);
+	    myBSurf.Initialize (F, Standard_False);
+	    for (i = 1; i <= nbN; i++)
+	    {
+	      const Handle(HLRAlgo_PolyInternalNode)& aPolyINode   = PINod->ChangeValue (i);
+	      HLRAlgo_PolyInternalNode::NodeIndices&  aNodIndices  = aPolyINode->Indices();
+	      HLRAlgo_PolyInternalNode::NodeData&     aNod1RValues = aPolyINode->Data();
+	      if (Tr->HasUVNodes())
+	      {
+		aNod1RValues.UV = Tr->UVNode (i).XY();
 	      }
-	      NN++;
+	      if (Tr->HasNormals())
+	      {
+		aNod1RValues.Normal = Tr->Normal (i).XYZ();
+	      }
+
+	      if ((Tr->HasNormals()
+	       || (hasSurf && Tr->HasUVNodes()))
+	      && Normal (i, aNodIndices, aNod1RValues, TData, PISeg, PINod, Standard_False))
+	      {
+		aNodIndices.Flag |=  NMsk_Norm;
+	      }
+	      else
+	      {
+		aNodIndices.Flag &= ~NMsk_Norm;
+		aNod1RValues.Scal = 0;
+	      }
 	    }
 	  }
 #ifdef OCCT_DEBUG
@@ -501,23 +514,14 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	    std::cout << f << " non triangulated" << std::endl;
 	  }
 #endif
-	  NT = &(((HLRAlgo_Array1OfTData*)TData)->ChangeValue(1));
 
-	  for (i = 1; i <= nbT; i++) {
-	    const Handle(HLRAlgo_PolyInternalNode)* PN1 = 
-        &PINod->ChangeValue(NT->Node1);
-	    const Handle(HLRAlgo_PolyInternalNode)* PN2 = 
-        &PINod->ChangeValue(NT->Node2);
-	    const Handle(HLRAlgo_PolyInternalNode)* PN3 = 
-        &PINod->ChangeValue(NT->Node3);
-	    HLRAlgo_PolyInternalNode::NodeData& Nod1RValues = (*PN1)->Data();
-	    HLRAlgo_PolyInternalNode::NodeData& Nod2RValues = (*PN2)->Data();
-	    HLRAlgo_PolyInternalNode::NodeData& Nod3RValues = (*PN3)->Data();
-	    OrientTriangle(i,*NT,
-			   (*PN1)->Indices(),Nod1RValues,
-			   (*PN2)->Indices(),Nod2RValues,
-			   (*PN3)->Indices(),Nod3RValues);
-	    NT++;
+	  for (i = 1; i <= nbT; i++)
+	  {
+	    HLRAlgo_TriangleData& aTriData = TData->ChangeValue (i);
+	    const Handle(HLRAlgo_PolyInternalNode)& aPN1 = PINod->ChangeValue (aTriData.Node1);
+	    const Handle(HLRAlgo_PolyInternalNode)& aPN2 = PINod->ChangeValue (aTriData.Node2);
+	    const Handle(HLRAlgo_PolyInternalNode)& aPN3 = PINod->ChangeValue (aTriData.Node3);
+	    OrientTriangle (i, aTriData, aPN1->Indices(), aPN1->Data(), aPN2->Indices(), aPN2->Data(), aPN3->Indices(), aPN3->Data());
 	  }
 	}
       }
@@ -595,61 +599,67 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean HLRBRep_PolyAlgo::
-Normal (const Standard_Integer iNode,
-	HLRAlgo_PolyInternalNode::NodeIndices& theNodIndices,
-	HLRAlgo_PolyInternalNode::NodeData& Nod1RValues,
-        HLRAlgo_Array1OfTData*& TData,
-        HLRAlgo_Array1OfPISeg*& PISeg,
-        HLRAlgo_Array1OfPINod*& PINod,
-        const Standard_Boolean orient) const
+Standard_Boolean HLRBRep_PolyAlgo::Normal (const Standard_Integer theNodeIndex,
+                                           HLRAlgo_PolyInternalNode::NodeIndices& theNodIndices,
+                                           HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
+                                           HLRAlgo_Array1OfTData*& theTriData,
+                                           HLRAlgo_Array1OfPISeg*& thePISeg,
+                                           HLRAlgo_Array1OfPINod*& thePINod,
+                                           const Standard_Boolean theToOrient) const
 {
-  gp_Vec D1U,D1V,D2U,D2V,D2UV;
-  gp_Pnt P;
-  gp_Dir Norma;
-  Standard_Boolean OK;
-  CSLib_DerivativeStatus aStatus;
-  CSLib_NormalStatus NStat;
-  myBSurf.D1(Nod1RValues.UV.X(), Nod1RValues.UV.Y(), P, D1U, D1V);
-  CSLib::Normal(D1U,D1V,Standard_Real(Precision::Angular()),
-		aStatus,Norma);
-  if (aStatus != CSLib_Done) {
-    myBSurf.D2(Nod1RValues.UV.X(), Nod1RValues.UV.Y(), P, D1U, D1V, D2U, D2V, D2UV);
-    CSLib::Normal(D1U,D1V,D2U,D2V,D2UV,
-		  Precision::Angular(),OK,NStat,Norma);
-    if (!OK)
-      return Standard_False;
-  }
-  Standard_Real EyeX =  0;
-  Standard_Real EyeY =  0;
-  Standard_Real EyeZ = -1;
-  if (myProj.Perspective()) {
-    EyeX = Nod1RValues.Point.X();
-    EyeY = Nod1RValues.Point.Y();
-    EyeZ = Nod1RValues.Point.Z() - myProj.Focus();
-    Standard_Real d = sqrt(EyeX * EyeX + EyeY * EyeY + EyeZ * EyeZ);
-    if (d > 0) {
-      EyeX /= d;
-      EyeY /= d;
-      EyeZ /= d;
-    }
-  }
-  Nod1RValues.Normal = Norma.XYZ();
-//  TMultiply(Nod1NrmX,Nod1NrmY,Nod1NrmZ);
-  TMultiply(Nod1RValues.Normal,myProj.Perspective()); //OCC349
-  gp_XYZ Norm;
-  
-  if (AverageNormal(iNode,theNodIndices,TData,PISeg,PINod,Norm))
+  if (theNod1RValues.Normal.SquareModulus() < Precision::Confusion())
   {
-    if (Nod1RValues.Normal * Norm < 0)
+    gp_Vec aD1U, aD1V;
+    gp_Pnt aPnt;
+    CSLib_DerivativeStatus aStatus = CSLib_D1IsNull;
+    myBSurf.D1 (theNod1RValues.UV.X(), theNod1RValues.UV.Y(), aPnt, aD1U, aD1V);
+    gp_Dir aNorm;
+    CSLib::Normal (aD1U, aD1V, Precision::Angular(), aStatus, aNorm);
+    if (aStatus != CSLib_Done)
     {
-      Nod1RValues.Normal.Reverse();
+      gp_Vec aD2U, aD2V, aD2UV;
+      bool isOK = false;
+      CSLib_NormalStatus aNromStatus;
+      myBSurf.D2 (theNod1RValues.UV.X(), theNod1RValues.UV.Y(), aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+      CSLib::Normal (aD1U, aD1V, aD2U, aD2V, aD2UV,
+                     Precision::Angular(), isOK, aNromStatus, aNorm);
+      if (!isOK)
+      {
+        return false;
+      }
     }
-    Nod1RValues.Scal = (Nod1RValues.Normal * gp_XYZ(EyeX, EyeY, EyeZ));
+    theNod1RValues.Normal = aNorm.XYZ();
   }
-  else {
-    Nod1RValues.Scal = 0;
-    Nod1RValues.Normal = gp_XYZ(1., 0., 0.);
+  
+//  TMultiply(Nod1NrmX,Nod1NrmY,Nod1NrmZ);
+  TMultiply (theNod1RValues.Normal, myProj.Perspective()); //OCC349
+
+  gp_XYZ anAverNorm;
+  if (AverageNormal (theNodeIndex, theNodIndices, theTriData, thePISeg, thePINod, anAverNorm))
+  {
+    if (theNod1RValues.Normal * anAverNorm < 0)
+    {
+      theNod1RValues.Normal.Reverse();
+    }
+
+    gp_XYZ anEyeDir (0.0, 0.0, -1.0);
+    if (myProj.Perspective())
+    {
+      anEyeDir.SetCoord (theNod1RValues.Point.X(),
+                         theNod1RValues.Point.Y(),
+                         theNod1RValues.Point.Z() - myProj.Focus());
+      const Standard_Real anEyeMod = anEyeDir.Modulus();
+      if (anEyeMod > 0.0)
+      {
+        anEyeDir /= anEyeMod;
+      }
+    }
+    theNod1RValues.Scal = (theNod1RValues.Normal * anEyeDir);
+  }
+  else
+  {
+    theNod1RValues.Scal = 0;
+    theNod1RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
     if (DoError) {
       std::cout << "HLRBRep_PolyAlgo::Normal : AverageNormal error";
@@ -657,20 +667,27 @@ Normal (const Standard_Integer iNode,
     }
 #endif
   }
-  if (Nod1RValues.Scal > 0) {
-    if ( Nod1RValues.Scal < myTolAngular) {
-      Nod1RValues.Scal  = 0;
+  if (theNod1RValues.Scal > 0)
+  {
+    if ( theNod1RValues.Scal < myTolAngular)
+    {
+      theNod1RValues.Scal  = 0;
       theNodIndices.Flag |= NMsk_OutL;
     }
   }
-  else {
-    if (-Nod1RValues.Scal < myTolAngular) {
-      Nod1RValues.Scal  = 0;
+  else
+  {
+    if (-theNod1RValues.Scal < myTolAngular)
+    {
+      theNod1RValues.Scal  = 0;
       theNodIndices.Flag |= NMsk_OutL;
     }
   }
-  if (orient) UpdateAroundNode(iNode,theNodIndices,
-			       TData,PISeg,PINod);
+
+  if (theToOrient)
+  {
+    UpdateAroundNode (theNodeIndex, theNodIndices, theTriData, thePISeg, thePINod);
+  }
   return Standard_True;
 }
 
@@ -2104,10 +2121,22 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
 	    insP3 = NewNode(Nod1RValues,Nod2RValues,coef3,mP3P1);
 	    if (insP3) {
 	      UVNode(Nod1RValues,Nod2RValues,coef3,U3,V3);
-	      const gp_Pnt& PT3 = myGSurf->Value(U3,V3);
-	      X3 = PT3.X();
-	      Y3 = PT3.Y();
-	      Z3 = PT3.Z();
+	      if (!myGSurf.IsNull())
+	      {
+		const gp_Pnt aPT3 = myGSurf->Value(U3,V3);
+		X3 = aPT3.X();
+		Y3 = aPT3.Y();
+		Z3 = aPT3.Z();
+	      }
+	      else
+	      {
+		// simple averaging - this could be improved
+		const Standard_Real aCoef2 = 1.0 - coef3;
+		const gp_Pnt aPT3 = aCoef2 * Nod1RValues.Point + coef3 * Nod2RValues.Point;
+		X3 = aPT3.X();
+		Y3 = aPT3.Y();
+		Z3 = aPT3.Z();
+	      }
 	      TTMultiply(X3,Y3,Z3);
 	    }
 	    
