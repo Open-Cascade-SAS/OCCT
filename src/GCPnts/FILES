@@ -4,7 +4,6 @@ GCPnts_AbscissaPoint.hxx
 GCPnts_AbscissaType.hxx
 GCPnts_DeflectionType.hxx
 GCPnts_QuasiUniformAbscissa.cxx
-GCPnts_QuasiUniformAbscissa.pxx
 GCPnts_QuasiUniformAbscissa.hxx
 GCPnts_QuasiUniformDeflection.cxx
 GCPnts_QuasiUniformDeflection.pxx
