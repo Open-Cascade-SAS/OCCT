@@ -10,7 +10,6 @@ GCPnts_TangentialDeflection.cxx
 GCPnts_TangentialDeflection.hxx
 GCPnts_TCurveTypes.hxx
 GCPnts_UniformAbscissa.cxx
-GCPnts_UniformAbscissa.pxx
 GCPnts_UniformAbscissa.hxx
 GCPnts_UniformDeflection.cxx
 GCPnts_UniformDeflection.hxx
