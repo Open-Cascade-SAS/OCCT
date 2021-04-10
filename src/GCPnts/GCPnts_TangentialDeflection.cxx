@@ -16,8 +16,8 @@
 
 #include <GCPnts_TangentialDeflection.hxx>
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
+#include <GCPnts_TCurveTypes.hxx>
+
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -25,12 +25,6 @@
 #include <gp_XYZ.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
-#include <GCPnts_DistFunction2d.hxx>
-#include <GCPnts_DistFunction.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <math_BrentMinimum.hxx>
 #include <math_PSO.hxx>
 #include <Precision.hxx>
@@ -41,27 +35,6 @@
 namespace
 {
   static const Standard_Real Us3 = 0.3333333333333333333333333333;
-
-  //! Auxiliary tool to resolve 2D/3D curve classes.
-  template<class TheCurve> struct CurveTypes {};
-
-  //! Auxiliary tool to resolve 3D curve classes.
-  template<> struct CurveTypes<Adaptor3d_Curve>
-  {
-    typedef Geom_BezierCurve      BezierCurve;
-    typedef Geom_BSplineCurve     BSplineCurve;
-    typedef GCPnts_DistFunction   DistFunction;
-    typedef GCPnts_DistFunctionMV DistFunctionMV;
-  };
-
-  //! Auxiliary tool to resolve 2D curve classes.
-  template<> struct CurveTypes<Adaptor2d_Curve2d>
-  {
-    typedef Geom2d_BezierCurve      BezierCurve;
-    typedef Geom2d_BSplineCurve     BSplineCurve;
-    typedef GCPnts_DistFunction2d   DistFunction;
-    typedef GCPnts_DistFunction2dMV DistFunctionMV;
-  };
 
   inline static void D0 (const Adaptor3d_Curve& C, const Standard_Real U, gp_Pnt& P)
   {
@@ -435,14 +408,14 @@ void GCPnts_TangentialDeflection::initialize (const TheCurve& theC,
     }
     case GeomAbs_BSplineCurve:
     {
-      Handle(typename CurveTypes<TheCurve>::BSplineCurve) aBS = theC.BSpline();
+      Handle(typename GCPnts_TCurveTypes<TheCurve>::BSplineCurve) aBS = theC.BSpline();
       if (aBS->NbPoles() == 2) PerformLinear (theC);
       else                     PerformCurve  (theC);
       break;
     }
     case GeomAbs_BezierCurve:
     {
-      Handle(typename CurveTypes<TheCurve>::BezierCurve) aBZ = theC.Bezier();
+      Handle(typename GCPnts_TCurveTypes<TheCurve>::BezierCurve) aBZ = theC.Bezier();
       if (aBZ->NbPoles() == 2) PerformLinear (theC);
       else                     PerformCurve  (theC);
       break;
@@ -577,13 +550,13 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& theC)
       {
         case GeomAbs_BSplineCurve:
         {
-          Handle(typename CurveTypes<TheCurve>::BSplineCurve) BS = theC.BSpline();
+          Handle(typename GCPnts_TCurveTypes<TheCurve>::BSplineCurve) BS = theC.BSpline();
           NbPoints = Max(BS->Degree() + 1, NbPoints);
           break;
         }
         case GeomAbs_BezierCurve:
         {
-          Handle(typename CurveTypes<TheCurve>::BezierCurve) BZ = theC.Bezier();
+          Handle(typename GCPnts_TCurveTypes<TheCurve>::BezierCurve) BZ = theC.Bezier();
           NbPoints = Max(BZ->Degree() + 1, NbPoints);
           break;
         }
@@ -963,7 +936,7 @@ void GCPnts_TangentialDeflection::EstimDefl (const TheCurve& theC,
 {
   const Standard_Real Du = (myLastU - myFirstu);
   //
-  typename CurveTypes<TheCurve>::DistFunction aFunc (theC, theU1, theU2);
+  typename GCPnts_TCurveTypes<TheCurve>::DistFunction aFunc (theC, theU1, theU2);
   //
   const Standard_Integer aNbIter = 100;
   const Standard_Real aRelTol = Max (1.e-3, 2. * myUTol / (Abs(theU1) + Abs(theU2)));
@@ -986,7 +959,7 @@ void GCPnts_TangentialDeflection::EstimDefl (const TheCurve& theC,
   //
   Standard_Real aValue = 0.0;
   math_Vector aT (1, 1);
-  typename CurveTypes<TheCurve>::DistFunctionMV aFuncMV(aFunc);
+  typename GCPnts_TCurveTypes<TheCurve>::DistFunctionMV aFuncMV(aFunc);
 
   math_PSO aFinder (&aFuncMV, aLowBorder, aUppBorder, aSteps, aNbParticles);
   aFinder.Perform (aSteps, aValue, aT);

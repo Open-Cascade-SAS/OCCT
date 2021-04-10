@@ -11,11 +11,11 @@ GCPnts_QuasiUniformDeflection.pxx
 GCPnts_QuasiUniformDeflection.hxx
 GCPnts_TangentialDeflection.cxx
 GCPnts_TangentialDeflection.hxx
+GCPnts_TCurveTypes.hxx
 GCPnts_UniformAbscissa.cxx
 GCPnts_UniformAbscissa.pxx
 GCPnts_UniformAbscissa.hxx
 GCPnts_UniformDeflection.cxx
-GCPnts_UniformDeflection.pxx
 GCPnts_UniformDeflection.hxx
 GCPnts_DistFunction.hxx
 GCPnts_DistFunction.cxx

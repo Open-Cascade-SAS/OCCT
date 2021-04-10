@@ -21,112 +21,125 @@
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 
-class Standard_DomainError;
-class Standard_ConstructionError;
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
 class gp_Pnt;
 
 //! Provides an algorithm to compute a distribution of
-//! points on a 'C2' continuous curve. The algorithm
-//! respects a criterion of maximum deflection between
+//! points on a 'C2' continuous curve.
+//! The algorithm respects a criterion of maximum deflection between
 //! the curve and the polygon that results from the computed points.
-//! Note: This algorithm is relatively time consuming. A
-//! GCPnts_QuasiUniformDeflection algorithm is
-//! quicker; it can also work with non-'C2' continuous
-//! curves, but it generates more points in the distribution.
-class GCPnts_UniformDeflection 
+//! Note: This algorithm is relatively time consuming.
+//! A GCPnts_QuasiUniformDeflection algorithm is quicker;
+//! it can also work with non-'C2' continuous curves,
+//! but it generates more points in the distribution.
+class GCPnts_UniformDeflection
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Constructs an empty algorithm. To define the problem
-  //! to be solved, use the function Initialize.
+  //! Constructs an empty algorithm.
+  //! To define the problem to be solved, use the function Initialize.
   Standard_EXPORT GCPnts_UniformDeflection();
+
+  //! Computes a uniform Deflection distribution of points on the curve.
+  //! @param theC [in] input 3D curve
+  //! @param theDeflection [in] target deflection
+  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  Standard_EXPORT GCPnts_UniformDeflection (const Adaptor3d_Curve& theC,
+                                            const Standard_Real theDeflection,
+                                            const Standard_Boolean theWithControl = Standard_True);
+
+  //! Computes a uniform Deflection distribution of points on the curve.
+  //! @param theC [in] input 2D curve
+  //! @param theDeflection [in] target deflection
+  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  Standard_EXPORT GCPnts_UniformDeflection (const Adaptor2d_Curve2d& theC,
+                                            const Standard_Real theDeflection,
+                                            const Standard_Boolean theWithControl = Standard_True);
+
+  //! Computes a Uniform Deflection distribution of points on a part of the curve.
+  //! @param theC [in] input 3D curve
+  //! @param theDeflection [in] target deflection
+  //! @param theU1 [in] first parameter on curve
+  //! @param theU2 [in] last  parameter on curve
+  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  Standard_EXPORT GCPnts_UniformDeflection (const Adaptor3d_Curve& theC,
+                                            const Standard_Real theDeflection,
+                                            const Standard_Real theU1, const Standard_Real theU2,
+                                            const Standard_Boolean theWithControl = Standard_True);
   
-  //! Computes a uniform Deflection distribution of points on
-  //! the Curve <C>.
-  //! if <WithControl> is True,the algorithm controls the estimate
-  //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
+  //! Computes a Uniform Deflection distribution of points on a part of the curve.
+  //! @param theC [in] input 2D curve
+  //! @param theDeflection [in] target deflection
+  //! @param theU1 [in] first parameter on curve
+  //! @param theU2 [in] last  parameter on curve
+  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  Standard_EXPORT GCPnts_UniformDeflection (const Adaptor2d_Curve2d& theC,
+                                            const Standard_Real theDeflection,
+                                            const Standard_Real theU1, const Standard_Real theU2,
+                                            const Standard_Boolean theWithControl = Standard_True);
+
+  //! Initialize the algorithms with 3D curve and deflection.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Boolean theWithControl = Standard_True);
+
+  //! Initialize the algorithms with 2D curve and deflection.
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Boolean theWithControl = Standard_True);
+
+  //! Initialize the algorithms with 3D curve, deflection, parameter range.
+  Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Real theU1, const Standard_Real theU2,
+                                   const Standard_Boolean theWithControl = Standard_True);
   
-  //! Computes a uniform Deflection distribution of points on
-  //! the Curve <C>.
-  //! if <WithControl> is True,the algorithm controls the estimate
-  //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Computes a Uniform Deflection distribution of points
-  //! on a part of the Curve <C>.
-  //! if <WithControl> is True,the algorithm controls the estimate
-  //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Computes a Uniform Deflection distribution of points
-  //! on a part of the Curve <C>.
-  //! if <WithControl> is True,the algorithm controls the estimate
-  //! deflection
-  Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Initialize the algorithms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Initialize the algorithms with <C>, <Deflection>
-  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Initialize the algorithms with <C>, <Deflection>,
-  //! <U1>,<U2>
-  Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
-  
-  //! Initialize the algorithms with <C>, <Deflection>,
-  //! <U1>,<U2>
+  //! Initialize the algorithms with curve, deflection, parameter range.
   //! This and the above methods initialize (or reinitialize) this algorithm and
   //! compute a distribution of points:
-  //! -   on the curve C, or
-  //! -   on the part of curve C limited by the two
-  //! parameter values U1 and U2,
-  //! where the maximum distance between C and the
+  //! -   on the curve theC, or
+  //! -   on the part of curve theC limited by the two parameter values theU1 and theU2,
+  //! where the maximum distance between theC and the
   //! polygon that results from the points of the
-  //! distribution is not greater than Deflection.
+  //! distribution is not greater than theDeflection.
   //! The first point of the distribution is either the origin
-  //! of curve C or the point of parameter U1. The last
-  //! point of the distribution is either the end point of
-  //! curve C or the point of parameter U2. Intermediate
-  //! points of the distribution are built using
-  //! interpolations of segments of the curve limited at
-  //! the 2nd degree. The construction ensures, in a first
-  //! step, that the chordal deviation for this
-  //! interpolation of the curve is less than or equal to
-  //! Deflection. However, it does not ensure that the
-  //! chordal deviation for the curve itself is less than or
-  //! equal to Deflection. To do this a check is
-  //! necessary, which may generate (second step)
-  //! additional intermediate points. This check is time
-  //! consuming, and can be avoided by setting
-  //! WithControl to false. Note that by default
-  //! WithControl is true and check is performed.
-  //! Use the function IsDone to verify that the
-  //! computation was successful, the function NbPoints
-  //! to obtain the number of points of the computed
-  //! distribution, and the function Parameter to read
-  //! the parameter of each point.
+  //! of curve theC or the point of parameter theU1.
+  //! The last point of the distribution is either the end point of
+  //! curve theC or the point of parameter theU2.
+  //! Intermediate points of the distribution are built using
+  //! interpolations of segments of the curve limited at the 2nd degree.
+  //! The construction ensures, in a first step,
+  //! that the chordal deviation for this
+  //! interpolation of the curve is less than or equal to theDeflection.
+  //! However, it does not ensure that the chordal deviation
+  //! for the curve itself is less than or equal to theDeflection.
+  //! To do this a check is necessary,
+  //! which may generate (second step) additional intermediate points.
+  //! This check is time consuming, and can be avoided by setting theWithControl to false.
+  //! Note that by default theWithControl is true and check is performed.
+  //! Use the function IsDone to verify that the computation was successful,
+  //! the function NbPoints() to obtain the number of points of the computed distribution,
+  //! and the function Parameter to read the parameter of each point.
+  //!
   //! Warning
-  //! -   C is necessary, 'C2' continuous. This property is
-  //! not checked at construction time.
-  //! -   The roles of U1 and U2 are inverted if U1 > U2.
+  //! -   theC is necessary, 'C2' continuous.
+  //!     This property is not checked at construction time.
+  //! -   The roles of theU1 and theU2 are inverted if theU1 > theU2.
+  //!
   //! Warning
-  //! C is an adapted curve, i.e. an object which is an interface between:
+  //! theC is an adapted curve, i.e. an object which is an interface between:
   //! -   the services provided by either a 2D curve from
-  //! the package Geom2d (in the case of an
-  //! Adaptor2d_Curve2d curve) or a 3D curve from
-  //! the package Geom (in the case of an Adaptor3d_Curve curve),
+  //!     the package Geom2d (in the case of an Adaptor2d_Curve2d curve)
+  //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
-  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
-  
+  Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
+                                   const Standard_Real theDeflection,
+                                   const Standard_Real theU1, const Standard_Real theU2,
+                                   const Standard_Boolean theWithControl = Standard_True);
+
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:
   //! -   non-convergence of the algorithm
@@ -188,6 +201,16 @@ public:
     StdFail_NotDone_Raise_if (!myDone, "GCPnts_UniformDeflection::Deflection()");
     return myDeflection;
   }
+
+private:
+
+  //! Initialize the algorithm.
+  template<class TheCurve>
+  void initialize (const TheCurve& theC,
+                   const Standard_Real theDeflection,
+                   const Standard_Real theU1,
+                   const Standard_Real theU2,
+                   const Standard_Boolean theWithControl);
 
 private:
   Standard_Boolean myDone;
