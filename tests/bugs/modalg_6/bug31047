@@ -1,0 +1,17 @@
+puts "================================================================="
+puts "OCC31047: BRepExtrema_DistShapeShape gives wrong result"
+puts "================================================================="
+puts ""
+
+restore [locate_data_file bug31047.brep] f
+
+point p1 -79 -282.7
+point p2 -79 -282.6
+
+if ![regexp "IN" [b2dclassify f p1]] {
+  puts "Error: inner point p1 is classified as OUT"
+}
+
+if ![regexp "IN" [b2dclassify f p2]] {
+  puts "Error: inner point p2 is classified as OUT"
+}

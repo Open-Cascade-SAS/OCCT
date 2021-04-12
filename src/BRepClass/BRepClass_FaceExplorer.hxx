@@ -20,14 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
+#include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <TopAbs_Orientation.hxx>
-class TopoDS_Face;
 class gp_Pnt2d;
 class gp_Lin2d;
 class BRepClass_Edge;
@@ -112,6 +112,7 @@ private:
   TopExp_Explorer myEExplorer;
   Standard_Integer myCurEdgeInd;
   Standard_Real myCurEdgePar;
+  TopTools_IndexedDataMapOfShapeListOfShape myMapVE;
 
   Standard_Real myUMin;
   Standard_Real myUMax;

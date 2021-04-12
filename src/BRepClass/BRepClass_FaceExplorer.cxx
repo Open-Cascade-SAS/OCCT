@@ -22,11 +22,9 @@
 #include <BRepClass_FaceExplorer.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
+#include <TopExp.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 
 static const Standard_Real Probing_Start = 0.123;
@@ -311,6 +309,8 @@ Standard_Boolean  BRepClass_FaceExplorer::RejectWire
 void  BRepClass_FaceExplorer::InitEdges()
 {
   myEExplorer.Init(myWExplorer.Current(),TopAbs_EDGE);
+  myMapVE.Clear();
+  TopExp::MapShapesAndAncestors(myWExplorer.Current(), TopAbs_VERTEX, TopAbs_EDGE, myMapVE);
 }
 
 //=======================================================================
@@ -337,5 +337,6 @@ void  BRepClass_FaceExplorer::CurrentEdge(BRepClass_Edge& E,
   E.Edge() = TopoDS::Edge(myEExplorer.Current());
   E.Face() = myFace;
   Or = E.Edge().Orientation();
+  E.SetNextEdge(myMapVE);
 }
 
