@@ -53,17 +53,19 @@ class LDOM_XmlReader
   // Constructor - takes a file descriptor for input
   // Constructor - takes an std::istream for input
 
-  RecordType            ReadRecord      (Standard_IStream& theIStream, LDOM_OSStream& theData);
+  RecordType ReadRecord (Standard_IStream& theIStream,
+                         LDOM_OSStream& theData,
+                         Standard_Boolean& theDocStart);
   // reading a markup or other element of XML format
 
-  LDOM_BasicElement&    GetElement      () const        { return * myElement; }
+  LDOM_BasicElement& GetElement() const { return * myElement; }
   // get the last element retrieved from the stream
 
   void CreateElement (const char *theName, const Standard_Integer theLen);
 
-  static Standard_Boolean getInteger    (LDOMBasicString&       theValue,
-                                         const char             * theStart,
-                                         const char             * theEnd);
+  static Standard_Boolean getInteger (LDOMBasicString&       theValue,
+                                      const char             * theStart,
+                                      const char             * theEnd);
   // try convert string theStart to LDOM_AsciiInteger, return False on success
 
   // Returns the byte order mask defined at the start of a stream

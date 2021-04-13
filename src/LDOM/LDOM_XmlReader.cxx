@@ -84,7 +84,8 @@ LDOM_XmlReader::LDOM_XmlReader (
 //=======================================================================
 
 LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStream,
-                                        LDOM_OSStream& theData)
+                                                       LDOM_OSStream& theData,
+                                                       Standard_Boolean& theDocStart)
 {
   theData.Clear();
   myError.Clear();
@@ -93,7 +94,6 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
   LDOMBasicString anAttrName, anAttrValue;
   char anAttDelimiter = '\0';
   Standard_Boolean aHasRead = Standard_False;
-  Standard_Boolean isFileStart = !myEOF && theIStream.tellg() == std::iostream::pos_type(0);
 
   for(;;) {
     //  Check if the current file buffer is exhausted
@@ -155,9 +155,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
         myBuffer[aBytesRest + aNBytes] = '\0';
       }
     }
-    if (isFileStart)
+    if (theDocStart && !myEOF)
     {
-      isFileStart = Standard_False;
+      theDocStart = Standard_False;
       // check for BOM block
       Standard_Utf8UChar aFirstChar = Standard_Utf8UChar(myPtr[0]);
       switch(aFirstChar) {

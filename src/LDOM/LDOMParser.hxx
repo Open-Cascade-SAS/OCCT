@@ -86,7 +86,7 @@ class LDOMParser
   // ---------- PRIVATE METHODS ----------
   Standard_Boolean      ParseDocument   (Standard_IStream& theIStream, const Standard_Boolean theWithoutRoot = Standard_False);
 
-  Standard_Boolean      ParseElement    (Standard_IStream& theIStream);
+  Standard_Boolean      ParseElement    (Standard_IStream& theIStream, Standard_Boolean& theDocStart);
 
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
 
