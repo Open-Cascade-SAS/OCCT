@@ -2969,12 +2969,24 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
     // Construction of the shell
     TopoDS_Shell shell;
     B.MakeShell(shell);
+    Standard_Integer aNbFaces = 0;
     for (ipath=1; ipath<=NbPath; ipath++) 
-      for (isec=1; isec <=NbLaw; isec++) {
-      const TopoDS_Shape& face = myFaces->Value(isec, ipath);
+      for (isec=1; isec <=NbLaw; isec++)
+      {
+        const TopoDS_Shape& face = myFaces->Value(isec, ipath);
 	if (!face.IsNull() && 
-	    (face.ShapeType() == TopAbs_FACE) ) B.Add(shell, face);
+	    (face.ShapeType() == TopAbs_FACE) )
+        {
+          B.Add(shell, face);
+          aNbFaces++;
+        }
       }
+
+    if (aNbFaces == 0)
+    {
+      isDone = Standard_False;
+      return;
+    }
 
     TopTools_ListIteratorOfListOfShape It(myAuxShape);
     for (; It.More(); It.Next()) {

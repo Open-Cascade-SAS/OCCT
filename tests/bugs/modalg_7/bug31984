@@ -1,0 +1,12 @@
+puts "=============================================="
+puts "	0031984: Sweep crashes if Bi-normal is given"
+puts "=============================================="
+puts ""
+
+restore [locate_data_file bug31984.brep] a
+explode a
+
+mksweep a_1
+addsweep a_2
+setsweep -CN 0 0 1
+buildsweep result
