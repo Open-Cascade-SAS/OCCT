@@ -175,11 +175,13 @@ void BRepMesh_ModelHealer::amplifyEdges()
   Standard_Integer aAmpIt = 0;
   const Standard_Real aIterNb = 5;
   IMeshData::MapOfIEdgePtr aEdgesToUpdate(1, aTmpAlloc);
+  EdgeAmplifier anEdgeAmplifier (myParameters);
+
   while (aAmpIt++ < aIterNb && popEdgesToUpdate(aEdgesToUpdate))
   {
     // Try to update discretization by decreasing deflection of problematic edges.
     OSD_Parallel::ForEach(aEdgesToUpdate.cbegin(), aEdgesToUpdate.cend(),
-                          EdgeAmplifier(myParameters),
+                          anEdgeAmplifier,
                           !(myParameters.InParallel && aEdgesToUpdate.Size() > 1),
                           aEdgesToUpdate.Size());
 
