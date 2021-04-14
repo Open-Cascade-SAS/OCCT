@@ -16,6 +16,7 @@
 #ifndef _Graphic3d_RenderingParams_HeaderFile
 #define _Graphic3d_RenderingParams_HeaderFile
 
+#include <Font_Hinting.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_RenderTransparentMethod.hxx>
@@ -97,6 +98,8 @@ public:
   : Method                      (Graphic3d_RM_RASTERIZATION),
     ShadingModel                (Graphic3d_TOSM_FRAGMENT),
     TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
+    Resolution                  (THE_DEFAULT_RESOLUTION),
+    FontHinting                 (Font_Hinting_Off),
     LineFeather                 (1.0f),
     // PBR parameters
     PbrEnvPow2Size              (9),
@@ -154,9 +157,7 @@ public:
     StatsNbFrames (1),
     StatsMaxChartTime (0.1f),
     CollectedStats (PerfCounters_Basic),
-    ToShowStats (Standard_False),
-    //
-    Resolution (THE_DEFAULT_RESOLUTION)
+    ToShowStats (Standard_False)
   {
     const Graphic3d_Vec4 aZero (0.0f, 0.0f, 0.0f, 0.0f);
     AnaglyphLeft .SetRow (0, Graphic3d_Vec4 (1.0f,  0.0f,  0.0f, 0.0f));
@@ -181,17 +182,27 @@ public:
   {
     return Resolution / static_cast<Standard_ShortReal> (THE_DEFAULT_RESOLUTION);
   }
-  
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-public:
+public: //! @name general parameters
 
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
   Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TOSM_FRAGMENT by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
-  Standard_ShortReal                LineFeather;                 //!< line feater width in pixels (> 0.0), 1.0 by default;
+  unsigned int                      Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
+                                                                 //!  (when defined in screen-space units rather than in 3D) to be properly displayed
+                                                                 //!  on device (screen / printer). 72 is default value.
+                                                                 //!  Note that using difference resolution in different Views in same Viewer
+                                                                 //!  will lead to performance regression (for example, text will be recreated every time).
+  Font_Hinting                      FontHinting;                 //!< enables/disables text hinting within textured fonts, Font_Hinting_Off by default;
+                                                                 //!  hinting improves readability of thin text on low-resolution screen,
+                                                                 //!  but adds distortions to original font depending on font family and font library version
+  Standard_ShortReal                LineFeather;                 //!< line feather width in pixels (> 0.0), 1.0 by default;
                                                                  //!  high values produce blurred results, small values produce sharp (aliased) edges
+
+public: //! @name rendering resolution parameters
 
   Standard_Integer                  PbrEnvPow2Size;              //!< size of IBL maps side can be calculated as 2^PbrEnvPow2Size (> 0), 9 by default
   Standard_Integer                  PbrEnvSpecMapNbLevels;       //!< number of levels used in specular IBL map (> 1), 6 by default
@@ -210,6 +221,8 @@ public:
   Standard_ShortReal                ShadowMapBias;               //!< shadowmap bias, 0.005 by default;
   Standard_Boolean                  ToEnableDepthPrepass;        //!< enables/disables depth pre-pass, False by default
   Standard_Boolean                  ToEnableAlphaToCoverage;     //!< enables/disables alpha to coverage, True by default
+
+public: //! @name Ray-Tracing/Path-Tracing parameters
 
   Standard_Boolean                  IsGlobalIlluminationEnabled; //!< enables/disables global illumination effects (path tracing)
   Standard_Integer                  SamplesPerPixel;             //!< number of samples per pixel (SPP)
@@ -239,6 +252,8 @@ public:
   Standard_ShortReal                Exposure;                    //!< exposure value used for tone mapping (path tracing), 0.0 by default
   Standard_ShortReal                WhitePoint;                  //!< white point value used in filmic tone mapping (path tracing), 1.0 by default
 
+public: //! @name VR / stereoscopic parameters
+
   Graphic3d_StereoMode              StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
   Standard_ShortReal                HmdFov2d;                    //!< sharp field of view range in degrees for displaying on-screen 2D elements, 30.0 by default;
   Anaglyph                          AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default
@@ -246,6 +261,8 @@ public:
   Graphic3d_Mat4                    AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Standard_Boolean                  ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
   Standard_Boolean                  ToMirrorComposer;            //!< if output device is an external composer - mirror rendering results in window in addition to sending frame to composer, TRUE by default
+
+public: //! @name on-screen display parameters
 
   Handle(Graphic3d_TransformPers)   StatsPosition;               //!< location of stats, upper-left position by default
   Handle(Graphic3d_TransformPers)   ChartPosition;               //!< location of stats chart, upper-right position by default
@@ -265,11 +282,6 @@ public:
                                                                  //!  note that counters specified within CollectedStats will be updated nevertheless
                                                                  //!  of visibility of widget managed by ToShowStats flag (e.g. stats can be retrieved by application for displaying using other methods)
 
-  unsigned int                      Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
-                                                                 //!  (when defined in screen-space units rather than in 3D) to be properly displayed
-                                                                 //!  on device (screen / printer). 72 is default value.
-                                                                 //!  Note that using difference resolution in different Views in same Viewer
-                                                                 //!  will lead to performance regression (for example, text will be recreated every time).
 };
 
 #endif // _Graphic3d_RenderingParams_HeaderFile

@@ -7,6 +7,7 @@ Font_FTFont.cxx
 Font_FTFont.hxx
 Font_FTLibrary.cxx
 Font_FTLibrary.hxx
+Font_Hinting.hxx
 Font_NameOfFont.hxx
 Font_NListOfSystemFont.hxx
 Font_Rect.hxx

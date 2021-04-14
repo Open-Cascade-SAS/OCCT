@@ -1,10 +1,7 @@
 puts "============"
-puts "OCC24387"
+puts "0021091: Draw the text with different fonts"
 puts "============"
 puts ""
-#################################################
-# Draw the text with different fonts.
-#################################################
 
 pload TOPTEST VISUALIZATION
 vinit View1
@@ -67,4 +64,14 @@ vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 00FF05  -halign left -valig
 vdrawtext OC21 OpenCascade -pos -200 -200 300 -color FF0005  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font Arial
 
 vglinfo
-vdump $imagedir/${casename}.png
+vrenderparams -fontHinting normal
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white_hinted.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}_hinted.png
+
+vrenderparams -fontHinting off
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}.png

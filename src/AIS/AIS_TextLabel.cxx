@@ -404,9 +404,11 @@ Standard_Boolean AIS_TextLabel::calculateLabelParams (const gp_Pnt& thePosition,
 {
   // Get width and height of text
   Handle(Prs3d_TextAspect) anAsp = myDrawer->TextAspect();
+  const Graphic3d_RenderingParams& aRendParams = GetContext()->CurrentViewer()->DefaultRenderingParams();
   Font_FTFontParams aFontParams;
   aFontParams.PointSize = (unsigned int) anAsp->Height();
-  aFontParams.Resolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
+  aFontParams.Resolution = aRendParams.Resolution;
+  aFontParams.FontHinting = aRendParams.FontHinting;
 
   Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (anAsp->Aspect()->Font(),
                                                           anAsp->Aspect()->GetTextFontAspect(),

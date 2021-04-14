@@ -18,6 +18,7 @@
 #include <PrsDim.hxx>
 #include <PrsDim_DimensionOwner.hxx>
 #include <Adaptor3d_Curve.hxx>
+#include <AIS_InteractiveContext.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
@@ -67,6 +68,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <V3d_Viewer.hxx>
 #include <Units.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <UnitsAPI.hxx>
@@ -82,7 +84,6 @@ namespace
 
   // default text margin and resolution
   static const Standard_Real THE_3D_TEXT_MARGIN    = 0.1;
-  static const unsigned int  THE_2D_TEXT_RESOLUTION = 72;
 
   // default selection priorities
   static const Standard_Integer THE_NEUTRAL_SEL_PRIORITY = 5;
@@ -329,9 +330,14 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString (Standard_Real& theW
   {
     // Text width for 1:1 scale 2D case
     Font_FTFontParams aFontParams;
+    const Graphic3d_RenderingParams& aRendParams = GetContext()->CurrentViewer()->DefaultRenderingParams();
     aFontParams.PointSize  = (unsigned int )aTextAspect->Height();
-    aFontParams.Resolution = THE_2D_TEXT_RESOLUTION;
-    if (Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (aTextAspect->Aspect()->Font(), aTextAspect->Aspect()->GetTextFontAspect(), aFontParams, Font_StrictLevel_Any))
+    aFontParams.Resolution = aRendParams.Resolution;
+    aFontParams.FontHinting = aRendParams.FontHinting;
+    if (Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (aTextAspect->Aspect()->Font(),
+                                                                aTextAspect->Aspect()->GetTextFontAspect(),
+                                                                aFontParams,
+                                                                Font_StrictLevel_Any))
     {
       for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
       {

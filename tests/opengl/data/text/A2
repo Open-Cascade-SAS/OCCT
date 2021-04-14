@@ -1,6 +1,5 @@
 puts "============"
-puts "OCC21091"
-puts "OCC21450"
+puts "0024387: Draw the text with different fonts"
 puts "============"
 puts ""
 
@@ -64,12 +63,22 @@ vdrawtext OC16 OpenCascade -pos -100 -300 -100 -color GREEN -halign left -valign
 
 vdrawtext OC17 OpenCascade -pos -200 -200 100 -color MAGENTA -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font sans-serif
 vdrawtext OC18 OpenCascade -pos -200 -200 150 -color CYAN    -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font serif
-vdrawtext OC19 OpenCascade -pos -200 -200 200 -color YELLOW   -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic -font serif
-vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 00FF05   -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font monospace
-vdrawtext OC21 OpenCascade -pos -200 -200 300 -color FF0005   -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font monospace
+vdrawtext OC19 OpenCascade -pos -200 -200 200 -color YELLOW  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect italic  -font serif
+vdrawtext OC20 OpenCascade -pos -200 -200 250 -color 00FF05  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect bolditalic -font monospace
+vdrawtext OC21 OpenCascade -pos -200 -200 300 -color FF0005  -halign left -valign bottom -angle 010 -zoom 0 -height 15 -aspect regular -font monospace
 
 vglinfo
-vdump $imagedir/${casename}.png
+vrenderparams -fontHinting normal
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white_hinted.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}_hinted.png
+
+vrenderparams -fontHinting off
+vbackground -color WHITE
+vdump ${imagedir}/${test_image}_white.png
+vbackground -color BLACK
+vdump ${imagedir}/${test_image}.png
 
 vsensdis
 vdump $imagedir/${casename}_sensitive.png

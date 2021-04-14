@@ -82,13 +82,15 @@ public: //! @name methods for compatibility with layers
   //! Create key for shared resource
   Standard_EXPORT static TCollection_AsciiString FontKey (const OpenGl_Aspects& theAspect,
                                                           Standard_Integer theHeight,
-                                                          unsigned int theResolution);
+                                                          unsigned int theResolution,
+                                                          Font_Hinting theFontHinting);
 
   //! Find shared resource for specified font or initialize new one
   Standard_EXPORT static Handle(OpenGl_Font) FindFont (const Handle(OpenGl_Context)& theCtx,
                                                        const OpenGl_Aspects& theAspect,
                                                        Standard_Integer theHeight,
                                                        unsigned int theResolution,
+                                                       Font_Hinting theFontHinting,
                                                        const TCollection_AsciiString& theKey);
 
   //! Compute text width
@@ -97,6 +99,7 @@ public: //! @name methods for compatibility with layers
                                           const OpenGl_Aspects&         theTextAspect,
                                           const Standard_ShortReal      theHeight,
                                           const unsigned int            theResolution,
+                                          const Font_Hinting            theFontHinting,
                                           Standard_ShortReal&           theWidth,
                                           Standard_ShortReal&           theAscent,
                                           Standard_ShortReal&           theDescent);
@@ -104,7 +107,8 @@ public: //! @name methods for compatibility with layers
   //! Perform rendering
   Standard_EXPORT void Render (const Handle(OpenGl_Context)& theCtx,
                                const OpenGl_Aspects& theTextAspect,
-                               unsigned int theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
+                               unsigned int theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION,
+                               Font_Hinting theFontHinting = Font_Hinting_Off) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
@@ -151,7 +155,8 @@ private:
                const OpenGl_Aspects& theTextAspect,
                const OpenGl_Vec4& theColorText,
                const OpenGl_Vec4& theColorSubs,
-               unsigned int theResolution) const;
+               unsigned int theResolution,
+               Font_Hinting theFontHinting) const;
 
 protected:
 

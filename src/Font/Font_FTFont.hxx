@@ -17,6 +17,7 @@
 #define _Font_FTFont_H__
 
 #include <Font_FontAspect.hxx>
+#include <Font_Hinting.hxx>
 #include <Font_Rect.hxx>
 #include <Font_StrictLevel.hxx>
 #include <Font_UnicodeSubset.hxx>
@@ -37,16 +38,26 @@ struct Font_FTFontParams
 {
   unsigned int PointSize;                  //!< face size in points (1/72 inch)
   unsigned int Resolution;                 //!< resolution of the target device in dpi for FT_Set_Char_Size()
+  Font_Hinting FontHinting;                //!< request hinting (exclude FT_LOAD_NO_HINTING flag), Font_Hinting_Off by default;
+                                           //!  hinting improves readability of thin text on low-resolution screen,
+                                           //!  but adds distortions to original font depending on font family and font library version
   bool         ToSynthesizeItalic;         //!< generate italic style (e.g. for font family having no italic style); FALSE by default
   bool         IsSingleStrokeFont;         //!< single-stroke (one-line) font, FALSE by default
 
   //! Empty constructor.
-  Font_FTFontParams() : PointSize (0), Resolution (72u), ToSynthesizeItalic (false), IsSingleStrokeFont (false) {}
+  Font_FTFontParams()
+  : PointSize (0), Resolution (72u),
+    FontHinting (Font_Hinting_Off),
+    ToSynthesizeItalic (false),
+    IsSingleStrokeFont (false)  {}
 
   //! Constructor.
   Font_FTFontParams (unsigned int thePointSize,
                      unsigned int theResolution)
-  : PointSize (thePointSize), Resolution (theResolution), ToSynthesizeItalic (false), IsSingleStrokeFont (false) {}
+  : PointSize (thePointSize), Resolution (theResolution),
+    FontHinting (Font_Hinting_Off),
+    ToSynthesizeItalic (false),
+    IsSingleStrokeFont (false) {}
 };
 
 DEFINE_STANDARD_HANDLE(Font_FTFont, Standard_Transient)
@@ -358,6 +369,19 @@ protected:
 
   //! Initialize fallback font.
   Standard_EXPORT bool findAndInitFallback (Font_UnicodeSubset theSubset);
+
+  //! Enable/disable load flag.
+  void setLoadFlag (int32_t theFlag, bool theToEnable)
+  {
+    if (theToEnable)
+    {
+      myLoadFlags |= theFlag;
+    }
+    else
+    {
+      myLoadFlags &= ~theFlag;
+    }
+  }
 
 protected:
 

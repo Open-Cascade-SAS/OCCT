@@ -96,6 +96,26 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
   myBuffer = theData;
   myFontPath = theFileName;
   myFontParams = theParams;
+
+  // manage hinting style
+  if ((theParams.FontHinting & Font_Hinting_Light)  != 0
+   && (theParams.FontHinting & Font_Hinting_Normal) != 0)
+  {
+    throw Standard_ProgramError ("Font_FTFont, Light and Normal hinting styles are mutually exclusive");
+  }
+  setLoadFlag (FT_LOAD_TARGET_LIGHT,   (theParams.FontHinting & Font_Hinting_Light) != 0);
+  setLoadFlag (FT_LOAD_NO_HINTING,     (theParams.FontHinting & Font_Hinting_Normal) == 0
+                                    && (theParams.FontHinting & Font_Hinting_Light)  == 0);
+
+  // manage native / autohinting
+  if ((theParams.FontHinting & Font_Hinting_ForceAutohint) != 0
+   && (theParams.FontHinting & Font_Hinting_NoAutohint) != 0)
+  {
+    throw Standard_ProgramError ("Font_FTFont, ForceAutohint and NoAutohint are mutually exclusive");
+  }
+  setLoadFlag (FT_LOAD_FORCE_AUTOHINT, (theParams.FontHinting & Font_Hinting_ForceAutohint) != 0);
+  setLoadFlag (FT_LOAD_NO_AUTOHINT,    (theParams.FontHinting & Font_Hinting_NoAutohint) != 0);
+
   if (!myFTLib->IsValid())
   {
     Message::SendTrace ("FreeType library is unavailable");
@@ -597,7 +617,8 @@ float Font_FTFont::AdvanceX (Standard_Utf32Char theUCharNext) const
 #ifdef HAVE_FREETYPE
   FT_Vector aKern;
   getKerning (aKern, myUChar, theUCharNext);
-  return myWidthScaling * fromFTPoints<float> (myActiveFTFace->glyph->advance.x + aKern.x);
+  return myWidthScaling * fromFTPoints<float> (myActiveFTFace->glyph->advance.x + aKern.x
+                                             + myActiveFTFace->glyph->lsb_delta - myActiveFTFace->glyph->rsb_delta);
 #else
   (void )theUCharNext;
   return 0.0f;

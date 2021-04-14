@@ -11757,6 +11757,107 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         return 1;
       }
     }
+    else if (aFlag == "-fonthinting"
+          || aFlag == "-fonthint")
+    {
+      if (toPrint)
+      {
+        if ((aParams.FontHinting & Font_Hinting_Normal) != 0)
+        {
+          theDI << "normal" << " ";
+        }
+        else if ((aParams.FontHinting & Font_Hinting_Normal) != 0)
+        {
+          theDI << "light" << " ";
+        }
+        else
+        {
+          theDI << "off" << " ";
+        }
+        continue;
+      }
+      else if (anArgIter + 1 >= theArgNb)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+
+      TCollection_AsciiString aHintStyle (theArgVec[++anArgIter]);
+      aHintStyle.LowerCase();
+      if (aHintStyle == "normal"
+       || aHintStyle == "on"
+       || aHintStyle == "1")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_Light);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting | Font_Hinting_Normal);
+      }
+      else if (aHintStyle == "light")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_Normal);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting | Font_Hinting_Light);
+      }
+      else if (aHintStyle == "no"
+            || aHintStyle == "off"
+            || aHintStyle == "0")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_Normal);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_Light);
+      }
+      else
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else if (aFlag == "-fontautohinting"
+          || aFlag == "-fontautohint")
+    {
+      if (toPrint)
+      {
+        if ((aParams.FontHinting & Font_Hinting_ForceAutohint) != 0)
+        {
+          theDI << "force" << " ";
+        }
+        else if ((aParams.FontHinting & Font_Hinting_NoAutohint) != 0)
+        {
+          theDI << "disallow" << " ";
+        }
+        else
+        {
+          theDI << "auto" << " ";
+        }
+        continue;
+      }
+      else if (anArgIter + 1 >= theArgNb)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+
+      TCollection_AsciiString aHintStyle (theArgVec[++anArgIter]);
+      aHintStyle.LowerCase();
+      if (aHintStyle == "force")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_NoAutohint);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting | Font_Hinting_ForceAutohint);
+      }
+      else if (aHintStyle == "disallow"
+            || aHintStyle == "no")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_ForceAutohint);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting | Font_Hinting_NoAutohint);
+      }
+      else if (aHintStyle == "auto")
+      {
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_ForceAutohint);
+        aParams.FontHinting = Font_Hinting(aParams.FontHinting & ~Font_Hinting_NoAutohint);
+      }
+      else
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+    }
     else if (aFlag == "-depthprepass")
     {
       if (toPrint)
@@ -15023,7 +15124,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: Should be applied taking into account GPU hardware capabilities and performance."
     "\n\t\t: Common parameters:"
     "\n\t\t: vrenderparams [-raster] [-shadingModel {unlit|facet|gouraud|phong|pbr|pbr_facet}=gouraud]"
-    "\n\t\t:               [-msaa 0..8=0] [-rendScale scale=1] [-resolution value=72]"
+    "\n\t\t:               [-msaa 0..8=0] [-rendScale scale=1]"
+    "\n\t\t:               [-resolution value=72] [-fontHinting {off|normal|light}=off]"
+    "\n\t\t:               [-fontAutoHinting {auto|force|disallow}=auto]"
     "\n\t\t:               [-oit {off|0.0-1.0}=off]"
     "\n\t\t:               [-shadows {on|off}=on] [-shadowMapResolution value=1024] [-shadowMapBias value=0.005]"
     "\n\t\t:               [-depthPrePass {on|off}=off] [-alphaToCoverage {on|off}=on]"
@@ -15034,6 +15137,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   -msaa            Specifies number of samples for MSAA."
     "\n\t\t:   -rendScale       Rendering resolution scale factor (supersampling, alternative to MSAA)."
     "\n\t\t:   -resolution      Sets new pixels density (PPI) used as text scaling factor."
+    "\n\t\t:   -fontHinting     Enables/disables font hinting for better readability on low-resolution screens."
+    "\n\t\t:   -fontAutoHinting Manages font autohinting."
     "\n\t\t:   -lineFeather     Sets line feather factor while displaying mesh edges."
     "\n\t\t:   -alphaToCoverage Enables/disables alpha to coverage (needs MSAA)."
     "\n\t\t:   -oit             Enables/disables order-independent transparency (OIT) rendering;"

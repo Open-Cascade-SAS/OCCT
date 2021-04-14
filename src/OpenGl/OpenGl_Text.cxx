@@ -262,6 +262,7 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
                               const OpenGl_Aspects&         theTextAspect,
                               const Standard_ShortReal      theHeight,
                               const unsigned int            theResolution,
+                              const Font_Hinting            theFontHinting,
                               Standard_ShortReal&           theWidth,
                               Standard_ShortReal&           theAscent,
                               Standard_ShortReal&           theDescent)
@@ -269,8 +270,8 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
   theWidth   = 0.0f;
   theAscent  = 0.0f;
   theDescent = 0.0f;
-  const TCollection_AsciiString aFontKey = FontKey (theTextAspect, (Standard_Integer)theHeight, theResolution);
-  Handle(OpenGl_Font) aFont = FindFont (theCtx, theTextAspect, (Standard_Integer)theHeight, theResolution, aFontKey);
+  const TCollection_AsciiString aFontKey = FontKey (theTextAspect, (Standard_Integer)theHeight, theResolution, theFontHinting);
+  Handle(OpenGl_Font) aFont = FindFont (theCtx, theTextAspect, (Standard_Integer)theHeight, theResolution, theFontHinting, aFontKey);
   if (aFont.IsNull() || !aFont->IsValid())
   {
     return;
@@ -348,7 +349,8 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
           *aTextAspect,
           theWorkspace->TextColor(),
           theWorkspace->TextSubtitleColor(),
-          aCtx->Resolution());
+          aCtx->Resolution(),
+          theWorkspace->View()->RenderingParams().FontHinting);
 
   // restore aspects
   if (!aPrevTexture.IsNull())
@@ -369,7 +371,8 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
                           const OpenGl_Aspects& theTextAspect,
-                          unsigned int theResolution) const
+                          unsigned int theResolution,
+                          Font_Hinting theFontHinting) const
 {
 #if !defined(GL_ES_VERSION_2_0)
   const Standard_Integer aPrevPolygonMode  = theCtx->SetPolygonMode (GL_FILL);
@@ -379,7 +382,8 @@ void OpenGl_Text::Render (const Handle(OpenGl_Context)& theCtx,
   render (theCtx, theTextAspect,
           theTextAspect.Aspect()->ColorRGBA(),
           theTextAspect.Aspect()->ColorSubTitleRGBA(),
-          theResolution);
+          theResolution,
+          theFontHinting);
 
 #if !defined(GL_ES_VERSION_2_0)
   theCtx->SetPolygonMode         (aPrevPolygonMode);
@@ -535,16 +539,21 @@ void OpenGl_Text::drawText (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 TCollection_AsciiString OpenGl_Text::FontKey (const OpenGl_Aspects& theAspect,
                                               Standard_Integer theHeight,
-                                              unsigned int theResolution)
+                                              unsigned int theResolution,
+                                              Font_Hinting theFontHinting)
 {
   const Font_FontAspect anAspect = theAspect.Aspect()->TextFontAspect() != Font_FA_Undefined
                                  ? theAspect.Aspect()->TextFontAspect()
                                  : Font_FA_Regular;
   const TCollection_AsciiString& aFont = !theAspect.Aspect()->TextFont().IsNull() ? theAspect.Aspect()->TextFont()->String() : THE_DEFAULT_FONT;
-  return aFont
-       + TCollection_AsciiString(":") + Standard_Integer(anAspect)
-       + TCollection_AsciiString(":") + Standard_Integer(theResolution)
-       + TCollection_AsciiString(":") + theHeight;
+
+  char aSuff[64];
+  Sprintf (aSuff, ":%d:%d:%d:%d",
+           Standard_Integer(anAspect),
+           Standard_Integer(theResolution),
+           theHeight,
+           Standard_Integer(theFontHinting));
+  return aFont + aSuff;
 }
 
 // =======================================================================
@@ -555,6 +564,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
                                            const OpenGl_Aspects& theAspect,
                                            Standard_Integer theHeight,
                                            unsigned int theResolution,
+                                           Font_Hinting theFontHinting,
                                            const TCollection_AsciiString& theKey)
 {
   Handle(OpenGl_Font) aFont;
@@ -575,6 +585,7 @@ Handle(OpenGl_Font) OpenGl_Text::FindFont (const Handle(OpenGl_Context)& theCtx,
     Font_FTFontParams aParams;
     aParams.PointSize  = theHeight;
     aParams.Resolution = theResolution;
+    aParams.FontHinting = theFontHinting;
     if (Handle(Font_FTFont) aFontFt = Font_FTFont::FindAndCreate (aFontName, anAspect, aParams, Font_StrictLevel_Any))
     {
       aFont = new OpenGl_Font (aFontFt, theKey);
@@ -658,7 +669,8 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                           const OpenGl_Aspects& theTextAspect,
                           const OpenGl_Vec4& theColorText,
                           const OpenGl_Vec4& theColorSubs,
-                          unsigned int theResolution) const
+                          unsigned int theResolution,
+                          Font_Hinting theFontHinting) const
 {
   if (myText->Text().IsEmpty() && myText->TextFormatter().IsNull())
   {
@@ -667,7 +679,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   // Note that using difference resolution in different Views in same Viewer
   // will lead to performance regression (for example, text will be recreated every time).
-  const TCollection_AsciiString aFontKey = FontKey (theTextAspect, (Standard_Integer)myText->Height(), theResolution);
+  const TCollection_AsciiString aFontKey = FontKey (theTextAspect, (Standard_Integer)myText->Height(), theResolution, theFontHinting);
   if (!myFont.IsNull()
    && !myFont->ResourceKey().IsEqual (aFontKey))
   {
@@ -677,7 +689,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   if (myFont.IsNull())
   {
-    myFont = FindFont (theCtx, theTextAspect, (Standard_Integer)myText->Height(), theResolution, aFontKey);
+    myFont = FindFont (theCtx, theTextAspect, (Standard_Integer)myText->Height(), theResolution, theFontHinting, aFontKey);
   }
   if (myFont.IsNull()
   || !myFont->WasInitialized())
