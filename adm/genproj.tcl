@@ -383,7 +383,7 @@ proc genprojbat {theFormat thePlatform theSolution} {
     set aTargetEol crlf
   }
 
-  if {"$theFormat" != "cmake"} {
+  if { [file exists "$::path/src/OS/FoundationClasses.tcl"] || ![file exists "$::path/env.${aTargetPlatformExt}"] } {
     # generate env.bat/sh
     set anEnvTmplFilePath "$::THE_CASROOT/adm/templates/env.${aTargetPlatformExt}"
     set anEnvTmplFile [open "$anEnvTmplFilePath" "r"]
