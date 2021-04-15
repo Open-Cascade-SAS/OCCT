@@ -31,23 +31,14 @@ OpenGl_Caps::OpenGl_Caps()
   keepArrayData     (Standard_False),
   ffpEnable         (Standard_False),
   usePolygonMode    (Standard_False),
-#if !defined(GL_ES_VERSION_2_0)
   useSystemBuffer   (Standard_False),
-#else
-  useSystemBuffer   (Standard_True),
-#endif
   swapInterval      (1),
   useZeroToOneDepth (Standard_False),
   buffersNoSwap     (Standard_False),
   buffersOpaqueAlpha(Standard_False),
   contextStereo     (Standard_False),
-#ifdef OCCT_DEBUG
-  contextDebug      (Standard_True),
-  contextSyncDebug  (Standard_True),
-#else
   contextDebug      (Standard_False),
   contextSyncDebug  (Standard_False),
-#endif
   contextNoAccel    (Standard_False),
 #if !defined(GL_ES_VERSION_2_0)
   contextCompatible (Standard_True),
@@ -62,7 +53,14 @@ OpenGl_Caps::OpenGl_Caps()
   suppressExtraMsg  (Standard_True),
   glslDumpLevel     (OpenGl_ShaderProgramDumpLevel_Off)
 {
-  //
+#if defined(__EMSCRIPTEN__)
+  buffersNoSwap      = true; // swap has no effect in WebGL
+  buffersOpaqueAlpha = true; // avoid unexpected blending of canvas with page background
+#endif
+#ifdef OCCT_DEBUG
+  contextDebug     = true;
+  contextSyncDebug = true;
+#endif
 }
 
 // =======================================================================
