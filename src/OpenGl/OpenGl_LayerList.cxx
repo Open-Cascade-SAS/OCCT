@@ -966,6 +966,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
       // initialize min/max depth buffer
       aGlBlendBackFBO->BindDrawBuffer (aCtx);
       aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
       aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
       aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
 
@@ -1122,6 +1123,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
         theReadDrawFbo->BindBuffer (aCtx);
       }
       aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->SetColorMask (true); // update writes into alpha component
       break;
     }
   }

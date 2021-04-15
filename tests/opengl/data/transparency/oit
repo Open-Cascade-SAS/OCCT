@@ -36,6 +36,11 @@ vdump $imagedir/${casename}_weight.png
 vrenderparams -oit peeling 4
 vdump $imagedir/${casename}_peel.png
 
+# test opaqueAlpha option - result should be the same
+vcaps -opaqueAlpha 1
+vdump $imagedir/${casename}_peel_rgb.png
+vcaps -opaqueAlpha 0
+
 # VTK viewer, just for comparison
 set hasVtk 0
 if { [vdriver -default] == "TKOpenGl" } {
