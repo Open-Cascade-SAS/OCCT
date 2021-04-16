@@ -66,6 +66,8 @@ Aspect_Window.cxx
 Aspect_Window.hxx
 Aspect_WindowDefinitionError.hxx
 Aspect_WindowError.hxx
+Aspect_WindowInputListener.cxx
+Aspect_WindowInputListener.hxx
 Aspect_XAtom.hxx
 Aspect_XRAction.hxx
 Aspect_XRActionSet.hxx

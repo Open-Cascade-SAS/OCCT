@@ -16,6 +16,7 @@
 
 #include <Aspect_VKeySet.hxx>
 #include <Aspect_TouchMap.hxx>
+#include <Aspect_WindowInputListener.hxx>
 #include <Aspect_XRHapticActionData.hxx>
 #include <Aspect_XRTrackedDeviceRole.hxx>
 #include <AIS_DragAction.hxx>
@@ -51,7 +52,7 @@ class WNT_HIDSpaceMouse;
 //! - Mapping mouse/multi-touch input to View camera manipulations (panning/rotating/zooming).
 //! - Input events are not applied immediately but queued for separate processing from two working threads
 //!   UI thread receiving user input and Rendering thread for OCCT 3D Viewer drawing.
-class AIS_ViewController
+class AIS_ViewController : public Aspect_WindowInputListener
 {
 public:
 
@@ -221,30 +222,30 @@ public: //! @name global parameters
 
 public: //! @name keyboard input
 
-  //! Return keyboard state.
-  const Aspect_VKeySet& Keys() const { return myKeys; }
-
-  //! Return keyboard state.
-  Aspect_VKeySet& ChangeKeys() { return myKeys; }
+  using Aspect_WindowInputListener::Keys;
+  using Aspect_WindowInputListener::ChangeKeys;
 
   //! Press key.
+  //! Default implementation updates internal cache.
   //! @param theKey key pressed
   //! @param theTime event timestamp
   Standard_EXPORT virtual void KeyDown (Aspect_VKey theKey,
                                         double theTime,
-                                        double thePressure = 1.0);
+                                        double thePressure = 1.0) Standard_OVERRIDE;
 
   //! Release key.
+  //! Default implementation updates internal cache.
   //! @param theKey key pressed
   //! @param theTime event timestamp
   Standard_EXPORT virtual void KeyUp (Aspect_VKey theKey,
-                                      double theTime);
+                                      double theTime) Standard_OVERRIDE;
 
   //! Simulate key up/down events from axis value.
+  //! Default implementation updates internal cache.
   Standard_EXPORT virtual void KeyFromAxis (Aspect_VKey theNegative,
                                             Aspect_VKey thePositive,
                                             double theTime,
-                                            double thePressure);
+                                            double thePressure) Standard_OVERRIDE;
 
   //! Fetch active navigation actions.
   Standard_EXPORT AIS_WalkDelta FetchNavigationKeys (Standard_Real theCrouchRatio,
@@ -313,7 +314,7 @@ public: //! @name mouse input
   //! This method is expected to be called from UI thread.
   //! @param theDelta mouse cursor position and delta
   //! @return TRUE if new event has been created or FALSE if existing one has been updated
-  Standard_EXPORT virtual bool UpdateMouseScroll (const Aspect_ScrollDelta& theDelta);
+  Standard_EXPORT virtual bool UpdateMouseScroll (const Aspect_ScrollDelta& theDelta) Standard_OVERRIDE;
 
   //! Handle mouse button press/release event.
   //! This method is expected to be called from UI thread.
@@ -326,7 +327,7 @@ public: //! @name mouse input
   Standard_EXPORT virtual bool UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
                                                    Aspect_VKeyMouse theButtons,
                                                    Aspect_VKeyFlags theModifiers,
-                                                   bool theIsEmulated);
+                                                   bool theIsEmulated) Standard_OVERRIDE;
 
   //! Handle mouse cursor movement event.
   //! This method is expected to be called from UI thread.
@@ -339,40 +340,7 @@ public: //! @name mouse input
   Standard_EXPORT virtual bool UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
                                                     Aspect_VKeyMouse theButtons,
                                                     Aspect_VKeyFlags theModifiers,
-                                                    bool theIsEmulated);
-
-  //! Handle mouse button press event.
-  //! This method is expected to be called from UI thread.
-  //! @param thePoint      mouse cursor position
-  //! @param theButton     pressed button
-  //! @param theModifiers  key modifiers
-  //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
-  //!                      but emulated from non-precise input like touch on screen
-  //! @return TRUE if View should be redrawn
-  bool PressMouseButton (const Graphic3d_Vec2i& thePoint,
-                         Aspect_VKeyMouse theButton,
-                         Aspect_VKeyFlags theModifiers,
-                         bool theIsEmulated)
-  {
-    return UpdateMouseButtons (thePoint, myMousePressed | theButton, theModifiers, theIsEmulated);
-  }
-
-  //! Handle mouse button release event.
-  //! This method is expected to be called from UI thread.
-  //! @param thePoint      mouse cursor position
-  //! @param theButton     released button
-  //! @param theModifiers  key modifiers
-  //! @param theIsEmulated if TRUE then mouse event comes NOT from real mouse
-  //!                      but emulated from non-precise input like touch on screen
-  //! @return TRUE if View should be redrawn
-  bool ReleaseMouseButton (const Graphic3d_Vec2i& thePoint,
-                           Aspect_VKeyMouse theButton,
-                           Aspect_VKeyFlags theModifiers,
-                           bool theIsEmulated)
-  {
-    Aspect_VKeyMouse aButtons = myMousePressed & (~theButton);
-    return UpdateMouseButtons (thePoint, aButtons, theModifiers, theIsEmulated);
-  }
+                                                    bool theIsEmulated) Standard_OVERRIDE;
 
   //! Handle mouse button click event (emulated by UpdateMouseButtons() while releasing single button).
   //! Note that as this method is called by UpdateMouseButtons(), it should be executed from UI thread.
@@ -388,14 +356,12 @@ public: //! @name mouse input
                                                  Aspect_VKeyFlags theModifiers,
                                                  bool theIsDoubleClick);
 
-  //! Return currently pressed mouse buttons.
-  Aspect_VKeyMouse PressedMouseButtons() const { return myMousePressed; }
+  using Aspect_WindowInputListener::PressMouseButton;
+  using Aspect_WindowInputListener::ReleaseMouseButton;
 
-  //! Return active key modifiers passed with last mouse event.
-  Aspect_VKeyFlags LastMouseFlags() const { return myMouseModifiers; }
-
-  //! Return last mouse position.
-  const Graphic3d_Vec2i& LastMousePosition() const { return myMousePositionLast; }
+  using Aspect_WindowInputListener::PressedMouseButtons;
+  using Aspect_WindowInputListener::LastMouseFlags;
+  using Aspect_WindowInputListener::LastMousePosition;
 
 public: //! @name multi-touch input
 
@@ -436,52 +402,40 @@ public: //! @name multi-touch input
 
 public: //! @name 3d mouse input
 
-  //! Return acceleration ratio for translation event; 2.0 by default.
-  float Get3dMouseTranslationScale() const { return my3dMouseAccelTrans; }
-
-  //! Set acceleration ratio for translation event.
-  void Set3dMouseTranslationScale (float theScale) { my3dMouseAccelTrans = theScale; }
-
-  //! Return acceleration ratio for rotation event; 4.0 by default.
-  float Get3dMouseRotationScale() const { return my3dMouseAccelRotate; }
-
-  //! Set acceleration ratio for rotation event.
-  void Set3dMouseRotationScale (float theScale) { my3dMouseAccelRotate = theScale; }
-
-  //! Return quadric acceleration flag; TRUE by default.
-  bool To3dMousePreciseInput() const { return my3dMouseIsQuadric; }
-
-  //! Set quadric acceleration flag.
-  void Set3dMousePreciseInput (bool theIsQuadric) { my3dMouseIsQuadric = theIsQuadric; }
-
-  //! Return 3d mouse rotation axes (tilt/roll/spin) ignore flag; (FALSE, FALSE, FALSE) by default.
-  const NCollection_Vec3<bool>& Get3dMouseIsNoRotate() const { return my3dMouseNoRotate; }
-
-  //! Return 3d mouse rotation axes (tilt/roll/spin) ignore flag; (FALSE, FALSE, FALSE) by default.
-  NCollection_Vec3<bool>& Change3dMouseIsNoRotate() { return my3dMouseNoRotate; }
-
-  //! Return 3d mouse rotation axes (tilt/roll/spin) reverse flag; (TRUE, FALSE, FALSE) by default.
-  const NCollection_Vec3<bool>& Get3dMouseToReverse() const { return my3dMouseToReverse; }
-
-  //! Return 3d mouse rotation axes (tilt/roll/spin) reverse flag; (TRUE, FALSE, FALSE) by default.
-  NCollection_Vec3<bool>& Change3dMouseToReverse() { return my3dMouseToReverse; }
-
   //! Process 3d mouse input event (redirects to translation, rotation and keys).
-  Standard_EXPORT virtual bool Update3dMouse (const WNT_HIDSpaceMouse& theEvent);
+  Standard_EXPORT virtual bool Update3dMouse (const WNT_HIDSpaceMouse& theEvent) Standard_OVERRIDE;
 
-  //! Process 3d mouse input translation event.
-  Standard_EXPORT virtual bool update3dMouseTranslation (const WNT_HIDSpaceMouse& theEvent);
+public: //! @name resize events
 
-  //! Process 3d mouse input rotation event.
-  Standard_EXPORT virtual bool update3dMouseRotation (const WNT_HIDSpaceMouse& theEvent);
+  //! Handle expose event (window content has been invalidation and should be redrawn).
+  //! Default implementation does nothing.
+  virtual void ProcessExpose() Standard_OVERRIDE {}
 
-  //! Process 3d mouse input keys event.
-  Standard_EXPORT virtual bool update3dMouseKeys (const WNT_HIDSpaceMouse& theEvent);
+  //! Handle window resize event.
+  //! Default implementation does nothing.
+  virtual void ProcessConfigure (bool theIsResized) Standard_OVERRIDE
+  {
+    (void )theIsResized;
+  }
+
+  //! Handle window input event immediately.
+  //! Default implementation does nothing - input events are accumulated in internal buffer until explicit FlushViewEvents() call.
+  virtual void ProcessInput() Standard_OVERRIDE {}
+
+  //! Handle focus event.
+  //! Default implementation does nothing.
+  virtual void ProcessFocus (bool theIsActivated)
+  {
+    (void )theIsActivated;
+  }
+
+  //! Handle window close event.
+  //! Default implementation does nothing.
+  virtual void ProcessClose() {}
 
 public:
 
-  //! Return event time (e.g. current time).
-  double EventTime() const { return myEventTimer.ElapsedTime(); }
+  using Aspect_WindowInputListener::EventTime;
 
   //! Reset input state (pressed keys, mouse buttons, etc.) e.g. on window focus loss.
   //! This method is expected to be called from UI thread.
@@ -712,7 +666,6 @@ protected:
   AIS_ViewInputBuffer myUI;                       //!< buffer for UI thread
   AIS_ViewInputBuffer myGL;                       //!< buffer for rendering thread
 
-  OSD_Timer           myEventTimer;               //!< timer for timestamping events
   Standard_Real       myLastEventsTime;           //!< last fetched events timer value for computing delta/progress
   Standard_Boolean    myToAskNextFrame;           //!< flag indicating that another frame should be drawn right after this one
 
@@ -764,10 +717,6 @@ protected: //! @name XR input variables
   Standard_Boolean    myToDisplayXRAuxDevices;    //!< flag to display auxiliary tracked XR devices
   Standard_Boolean    myToDisplayXRHands;         //!< flag to display XR hands
 
-protected: //! @name keyboard input variables
-
-  Aspect_VKeySet      myKeys;                     //!< keyboard state
-
 protected: //! @name mouse input variables
 
   Standard_Real       myMouseClickThreshold;      //!< mouse click threshold in pixels; 3 by default
@@ -779,13 +728,10 @@ protected: //! @name mouse input variables
   AIS_MouseSelectionSchemeMap
                       myMouseSelectionSchemes;    //!< map defining selection schemes bound to mouse + modifiers
   Standard_Boolean    myMouseActiveIdleRotation;  //!< flag indicating view idle rotation state
-  Graphic3d_Vec2i     myMousePositionLast;        //!< last mouse position
   Graphic3d_Vec2i     myMousePressPoint;          //!< mouse position where active gesture was been initiated
   Graphic3d_Vec2i     myMouseProgressPoint;       //!< gesture progress
   OSD_Timer           myMouseClickTimer;          //!< timer for handling double-click event
   Standard_Integer    myMouseClickCounter;        //!< counter for handling double-click event
-  Aspect_VKeyMouse    myMousePressed;             //!< active mouse buttons
-  Aspect_VKeyFlags    myMouseModifiers;           //!< active key modifiers passed with last mouse event
   Standard_Integer    myMouseSingleButton;        //!< index of mouse button pressed alone (>0)
   Standard_Boolean    myMouseStopDragOnUnclick;   //!< queue stop dragging even with at next mouse unclick
 
@@ -805,15 +751,6 @@ protected: //! @name multi-touch input variables
   Standard_Boolean    myUpdateStartPointPan;      //!< flag indicating that new anchor  point should be picked for starting panning    gesture
   Standard_Boolean    myUpdateStartPointRot;      //!< flag indicating that new gravity point should be picked for starting rotation   gesture
   Standard_Boolean    myUpdateStartPointZRot;     //!< flag indicating that new gravity point should be picked for starting Z-rotation gesture
-
-protected: //! @name 3d mouse input variables
-
-  bool                   my3dMouseButtonState[32];//!< cached button state
-  NCollection_Vec3<bool> my3dMouseNoRotate;       //!< ignore  3d mouse rotation axes
-  NCollection_Vec3<bool> my3dMouseToReverse;      //!< reverse 3d mouse rotation axes
-  float                  my3dMouseAccelTrans;     //!< acceleration ratio for translation event
-  float                  my3dMouseAccelRotate;    //!< acceleration ratio for rotation event
-  bool                   my3dMouseIsQuadric;      //!< quadric acceleration
 
 protected: //! @name rotation/panning transient state variables
 

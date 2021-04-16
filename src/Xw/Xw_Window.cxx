@@ -18,7 +18,9 @@
 #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
 
 #include <Aspect_Convert.hxx>
+#include <Aspect_ScrollDelta.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
+#include <Aspect_WindowInputListener.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
@@ -529,6 +531,170 @@ Aspect_VKey Xw_Window::VirtualKeyFromNative (unsigned long theKey)
       return Aspect_VKey_BrowserRefresh;
   }
   return Aspect_VKey_UNKNOWN;
+}
+
+// =======================================================================
+// function : ProcessMessage
+// purpose  :
+// =======================================================================
+bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
+                                XEvent& theMsg)
+{
+  Display* aDisplay = myDisplay->GetDisplay();
+
+  // Handle event for the chosen display connection
+  switch (theMsg.type)
+  {
+    case ClientMessage:
+    {
+      if ((Atom)theMsg.xclient.data.l[0] == myDisplay->GetAtom (Aspect_XA_DELETE_WINDOW)
+       && theMsg.xclient.window == myXWindow)
+      {
+        theListener.ProcessClose();
+        return true;
+      }
+      return false;
+    }
+    case FocusIn:
+    case FocusOut:
+    {
+      if (theMsg.xfocus.window == myXWindow)
+      {
+        theListener.ProcessFocus (theMsg.type == FocusIn);
+      }
+      return true;
+    }
+    case Expose:
+    {
+      if (theMsg.xexpose.window == myXWindow)
+      {
+        theListener.ProcessExpose();
+      }
+
+      // remove all the ExposureMask and process them at once
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, myXWindow, ExposureMask, &theMsg))
+        {
+          break;
+        }
+      }
+
+      return true;
+    }
+    case ConfigureNotify:
+    {
+      // remove all the StructureNotifyMask and process them at once
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, myXWindow, StructureNotifyMask, &theMsg))
+        {
+          break;
+        }
+      }
+
+      if (theMsg.xconfigure.window == myXWindow)
+      {
+        theListener.ProcessConfigure (true);
+      }
+      return true;
+    }
+    case KeyPress:
+    case KeyRelease:
+    {
+      XKeyEvent*   aKeyEvent = (XKeyEvent* )&theMsg;
+      const KeySym aKeySym = XLookupKeysym (aKeyEvent, 0);
+      const Aspect_VKey aVKey = Xw_Window::VirtualKeyFromNative (aKeySym);
+      if (aVKey != Aspect_VKey_UNKNOWN)
+      {
+        const double aTimeStamp = theListener.EventTime();
+        if (theMsg.type == KeyPress)
+        {
+          theListener.KeyDown (aVKey, aTimeStamp);
+        }
+        else
+        {
+          theListener.KeyUp (aVKey, aTimeStamp);
+        }
+        theListener.ProcessInput();
+      }
+      return true;
+    }
+    case ButtonPress:
+    case ButtonRelease:
+    {
+      const Graphic3d_Vec2i aPos (theMsg.xbutton.x, theMsg.xbutton.y);
+      Aspect_VKeyFlags aFlags  = Aspect_VKeyFlags_NONE;
+      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
+      if (theMsg.xbutton.button == Button1) { aButton = Aspect_VKeyMouse_LeftButton; }
+      if (theMsg.xbutton.button == Button2) { aButton = Aspect_VKeyMouse_MiddleButton; }
+      if (theMsg.xbutton.button == Button3) { aButton = Aspect_VKeyMouse_RightButton; }
+
+      if ((theMsg.xbutton.state & ControlMask) != 0) { aFlags |= Aspect_VKeyFlags_CTRL; }
+      if ((theMsg.xbutton.state & ShiftMask)   != 0) { aFlags |= Aspect_VKeyFlags_SHIFT; }
+      if (theListener.Keys().IsKeyDown (Aspect_VKey_Alt))
+      {
+        aFlags |= Aspect_VKeyFlags_ALT;
+      }
+
+      if (theMsg.xbutton.button == Button4
+       || theMsg.xbutton.button == Button5)
+      {
+        if (theMsg.type != ButtonPress)
+        {
+          return true;
+        }
+
+        const double aDeltaF = (theMsg.xbutton.button == Button4 ? 1.0 : -1.0);
+        theListener.UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
+      }
+      else if (theMsg.type == ButtonPress)
+      {
+        theListener.PressMouseButton (aPos, aButton, aFlags, false);
+      }
+      else
+      {
+        theListener.ReleaseMouseButton (aPos, aButton, aFlags, false);
+      }
+      theListener.ProcessInput();
+      return true;
+    }
+    case MotionNotify:
+    {
+      if (theMsg.xmotion.window != myXWindow)
+      {
+        return false;
+      }
+
+      // remove all the ButtonMotionMask and process them at once
+      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
+      {
+        if (!XCheckWindowEvent (aDisplay, myXWindow, ButtonMotionMask | PointerMotionMask, &theMsg))
+        {
+          break;
+        }
+      }
+
+      Graphic3d_Vec2i aPos (theMsg.xmotion.x, theMsg.xmotion.y);
+      Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
+      Aspect_VKeyFlags aFlags   = Aspect_VKeyFlags_NONE;
+      if ((theMsg.xmotion.state & Button1Mask) != 0) { aButtons |= Aspect_VKeyMouse_LeftButton; }
+      if ((theMsg.xmotion.state & Button2Mask) != 0) { aButtons |= Aspect_VKeyMouse_MiddleButton; }
+      if ((theMsg.xmotion.state & Button3Mask) != 0) { aButtons |= Aspect_VKeyMouse_RightButton; }
+
+      if ((theMsg.xmotion.state & ControlMask) != 0) { aFlags |= Aspect_VKeyFlags_CTRL; }
+      if ((theMsg.xmotion.state & ShiftMask)   != 0) { aFlags |= Aspect_VKeyFlags_SHIFT; }
+      if (theListener.Keys().IsKeyDown (Aspect_VKey_Alt))
+      {
+        aFlags |= Aspect_VKeyFlags_ALT;
+      }
+
+      theListener.UpdateMousePosition (aPos, aButtons, aFlags, false);
+      theListener.ProcessInput();
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif //  Win32 or Mac OS X

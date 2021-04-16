@@ -7,5 +7,4 @@ WNT_WClass.cxx
 WNT_WClass.hxx
 WNT_Window.cxx
 WNT_Window.hxx
-WNT_Window.lxx
 WNT_WindowPtr.hxx

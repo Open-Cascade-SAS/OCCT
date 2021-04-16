@@ -167,11 +167,32 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
 //function : ProcessConfigure
 //purpose  :
 //==============================================================================
-void ViewerTest_EventManager::ProcessConfigure()
+void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
 {
   if (!myView.IsNull())
   {
+    if (!theIsResized
+     // track window moves to reverse stereo pair
+     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_RowInterlaced
+     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ColumnInterlaced
+     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ChessBoard)
+    {
+      return;
+    }
+
     myView->MustBeResized();
+    FlushViewEvents (myCtx, myView, true);
+  }
+}
+
+//==============================================================================
+//function : ProcessInput
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::ProcessInput()
+{
+  if (!myView.IsNull())
+  {
     FlushViewEvents (myCtx, myView, true);
   }
 }

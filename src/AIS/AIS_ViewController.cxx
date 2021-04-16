@@ -82,8 +82,6 @@ AIS_ViewController::AIS_ViewController()
   myMouseActiveGesture  (AIS_MouseGesture_NONE),
   myMouseActiveIdleRotation (false),
   myMouseClickCounter   (0),
-  myMousePressed        (Aspect_VKeyMouse_NONE),
-  myMouseModifiers      (Aspect_VKeyFlags_NONE),
   myMouseSingleButton   (-1),
   myMouseStopDragOnUnclick (false),
   //
@@ -99,16 +97,8 @@ AIS_ViewController::AIS_ViewController()
   myUpdateStartPointRot  (true),
   myUpdateStartPointZRot (true),
   //
-  my3dMouseNoRotate  (false, false, false),
-  my3dMouseToReverse (true,  false, false),
-  my3dMouseAccelTrans  (2.0f),
-  my3dMouseAccelRotate (4.0f),
-  my3dMouseIsQuadric   (true),
-  //
   myPanPnt3d (Precision::Infinite(), 0.0, 0.0)
 {
-  memset(my3dMouseButtonState, 0, sizeof(my3dMouseButtonState));
-  myEventTimer.Start();
   myViewAnimation->SetOwnDuration (0.5);
 
   myAnchorPointPrs1 = new AIS_Point (new Geom_CartesianPoint (0.0, 0.0, 0.0));
@@ -1119,101 +1109,8 @@ bool AIS_ViewController::Update3dMouse (const WNT_HIDSpaceMouse& theEvent)
 {
   bool toUpdate = false;
   toUpdate = update3dMouseTranslation (theEvent) || toUpdate;
-  toUpdate = update3dMouseRotation (theEvent) || toUpdate;
+  toUpdate = (myToAllowRotation && update3dMouseRotation (theEvent)) || toUpdate;
   toUpdate = update3dMouseKeys (theEvent) || toUpdate;
-  return toUpdate;
-}
-
-// =======================================================================
-// function : update3dMouseTranslation
-// purpose  :
-// =======================================================================
-bool AIS_ViewController::update3dMouseTranslation (const WNT_HIDSpaceMouse& theEvent)
-{
-  if (!theEvent.IsTranslation())
-  {
-    return false;
-  }
-
-  bool isIdle = true;
-  const double aTimeStamp = EventTime();
-  const Graphic3d_Vec3d aTrans = theEvent.Translation (isIdle, my3dMouseIsQuadric) * my3dMouseAccelTrans;
-  myKeys.KeyFromAxis (Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp, aTrans.x());
-  myKeys.KeyFromAxis (Aspect_VKey_NavForward,   Aspect_VKey_NavBackward,   aTimeStamp, aTrans.y());
-  myKeys.KeyFromAxis (Aspect_VKey_NavSlideUp,   Aspect_VKey_NavSlideDown,  aTimeStamp, aTrans.z());
-  return true;
-}
-
-// =======================================================================
-// function : update3dMouseRotation
-// purpose  :
-// =======================================================================
-bool AIS_ViewController::update3dMouseRotation (const WNT_HIDSpaceMouse& theEvent)
-{
-  if (!theEvent.IsRotation()
-   || !myToAllowRotation)
-  {
-    return false;
-  }
-
-  bool isIdle = true, toUpdate = false;
-  const double aTimeStamp = EventTime();
-  const Graphic3d_Vec3d aRot3 = theEvent.Rotation (isIdle, my3dMouseIsQuadric) * my3dMouseAccelRotate;
-  if (!my3dMouseNoRotate.x())
-  {
-    KeyFromAxis (Aspect_VKey_NavLookUp,   Aspect_VKey_NavLookDown,  aTimeStamp, !my3dMouseToReverse.x() ? aRot3.x() : -aRot3.x());
-    toUpdate = true;
-  }
-  if (!my3dMouseNoRotate.y())
-  {
-    KeyFromAxis (Aspect_VKey_NavRollCW,   Aspect_VKey_NavRollCCW,   aTimeStamp, !my3dMouseToReverse.y() ? aRot3.y() : -aRot3.y());
-    toUpdate = true;
-  }
-  if (!my3dMouseNoRotate.z())
-  {
-    KeyFromAxis (Aspect_VKey_NavLookLeft, Aspect_VKey_NavLookRight, aTimeStamp, !my3dMouseToReverse.z() ? aRot3.z() : -aRot3.z());
-    toUpdate = true;
-  }
-  return toUpdate;
-}
-
-// =======================================================================
-// function : update3dMouseKeys
-// purpose  :
-// =======================================================================
-bool AIS_ViewController::update3dMouseKeys (const WNT_HIDSpaceMouse& theEvent)
-{
-  bool toUpdate = false;
-  const double aTimeStamp = EventTime();
-  if (theEvent.IsKeyState())
-  {
-    const uint32_t aKeyState = theEvent.KeyState();
-    for (unsigned short aKeyBit = 0; aKeyBit < 32; ++aKeyBit)
-    {
-      const bool isPressed  = (aKeyState & (1 << aKeyBit)) != 0;
-      const bool isReleased = my3dMouseButtonState[aKeyBit] && !isPressed;
-      //const bool isRepeated = my3dMouseButtonState[aKeyBit] &&  isPressed;
-      my3dMouseButtonState[aKeyBit] = isPressed;
-      if (!isReleased && !isPressed)
-      {
-        continue;
-      }
-
-      const Aspect_VKey aVKey = theEvent.HidToSpaceKey (aKeyBit);
-      if (aVKey != Aspect_VKey_UNKNOWN)
-      {
-        toUpdate = true;
-        if (isPressed)
-        {
-          KeyDown (aVKey, aTimeStamp);
-        }
-        else
-        {
-          KeyUp (aVKey, aTimeStamp);
-        }
-      }
-    }
-  }
   return toUpdate;
 }
 
@@ -1240,7 +1137,7 @@ void AIS_ViewController::KeyDown (Aspect_VKey theKey,
                                   double theTime,
                                   double thePressure)
 {
-  myKeys.KeyDown (theKey, theTime, thePressure);
+  Aspect_WindowInputListener::KeyDown (theKey, theTime, thePressure);
 }
 
 // =======================================================================
@@ -1250,7 +1147,7 @@ void AIS_ViewController::KeyDown (Aspect_VKey theKey,
 void AIS_ViewController::KeyUp (Aspect_VKey theKey,
                                 double theTime)
 {
-  myKeys.KeyUp (theKey, theTime);
+  Aspect_WindowInputListener::KeyUp (theKey, theTime);
 }
 
 // =======================================================================
@@ -1262,7 +1159,7 @@ void AIS_ViewController::KeyFromAxis (Aspect_VKey theNegative,
                                       double theTime,
                                       double thePressure)
 {
-  myKeys.KeyFromAxis (theNegative, thePositive, theTime, thePressure);
+  Aspect_WindowInputListener::KeyFromAxis (theNegative, thePositive, theTime, thePressure);
 }
 
 // =======================================================================

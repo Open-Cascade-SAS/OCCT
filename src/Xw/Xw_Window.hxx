@@ -32,6 +32,7 @@
 
 class Aspect_WindowDefinitionError;
 class Aspect_WindowError;
+class Aspect_WindowInputListener;
 class Aspect_Background;
 class Quantity_Color;
 class Aspect_GradientBackground;
@@ -124,6 +125,13 @@ public:
   //! Sending exposure messages from non-window thread would require dedicated display connection opened specifically
   //! for this working thread to avoid race conditions, since Xlib display connection is not thread-safe by default.
   Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
+
+  //! Process a single window message.
+  //! @param theListener [in][out] listener to redirect message
+  //! @param theMsg [in][out] message to process
+  //! @return TRUE if message has been processed
+  Standard_EXPORT virtual bool ProcessMessage (Aspect_WindowInputListener& theListener,
+                                               XEvent& theMsg);
 
 protected:
 

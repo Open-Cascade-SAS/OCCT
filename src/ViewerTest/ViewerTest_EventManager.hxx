@@ -91,14 +91,17 @@ public:
                                       double theTime) Standard_OVERRIDE;
 
   //! Redraw the View on an Expose Event
-  Standard_EXPORT virtual void ProcessExpose();
+  Standard_EXPORT virtual void ProcessExpose() Standard_OVERRIDE;
 
   //! Handle redraw.
   Standard_EXPORT virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                                  const Handle(V3d_View)& theView) Standard_OVERRIDE;
 
   //! Resize View.
-  Standard_EXPORT virtual void ProcessConfigure();
+  Standard_EXPORT virtual void ProcessConfigure (bool theIsResized = true) Standard_OVERRIDE;
+
+  //! Handle window input event immediately (flush input buffer).
+  Standard_EXPORT virtual void ProcessInput() Standard_OVERRIDE;
 
   //! Handle KeyPress event.
   Standard_EXPORT void ProcessKeyPress (Aspect_VKey theKey);

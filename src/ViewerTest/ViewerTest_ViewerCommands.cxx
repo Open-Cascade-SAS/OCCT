@@ -1390,18 +1390,8 @@ namespace
 //==============================================================================
 
 #ifdef _WIN32
-static LRESULT WINAPI ViewerWindowProc(
-                                       HWND hwnd,
-                                       UINT uMsg,
-                                       WPARAM wParam,
-                                       LPARAM lParam );
-static LRESULT WINAPI AdvViewerWindowProc(
-  HWND hwnd,
-  UINT uMsg,
-  WPARAM wParam,
-  LPARAM lParam );
+static LRESULT WINAPI AdvViewerWindowProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 #endif
-
 
 //==============================================================================
 //function : WClass
@@ -3247,7 +3237,7 @@ static LRESULT WINAPI AdvViewerWindowProc (HWND theWinHandle,
 {
   if (ViewerTest_myViews.IsEmpty())
   {
-    return ViewerWindowProc (theWinHandle, theMsg, wParam, lParam);
+    return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
   }
 
   switch (theMsg)
@@ -3271,215 +3261,32 @@ static LRESULT WINAPI AdvViewerWindowProc (HWND theWinHandle,
           ActivateView (FindViewIdByWindowHandle (theWinHandle));
         }
       }
-      break;
+      return 0;
     }
-    default:
-    {
-      return ViewerWindowProc (theWinHandle, theMsg, wParam, lParam);
-    }
-  }
-  return 0;
-}
-
-static LRESULT WINAPI ViewerWindowProc (HWND theWinHandle,
-                                        UINT theMsg,
-                                        WPARAM wParam,
-                                        LPARAM lParam)
-{
-  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
-  {
-    return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
-  }
-
-  switch (theMsg)
-  {
-    case WM_PAINT:
-    {
-      PAINTSTRUCT aPaint;
-      BeginPaint(theWinHandle, &aPaint);
-      EndPaint  (theWinHandle, &aPaint);
-      ViewerTest::CurrentEventManager()->ProcessExpose();
-      break;
-    }
-    case WM_SIZE:
-    {
-      ViewerTest::CurrentEventManager()->ProcessConfigure();
-      break;
-    }
-    case WM_MOVE:
-    case WM_MOVING:
-    case WM_SIZING:
-    {
-      switch (aView->RenderingParams().StereoMode)
-      {
-        case Graphic3d_StereoMode_RowInterlaced:
-        case Graphic3d_StereoMode_ColumnInterlaced:
-        case Graphic3d_StereoMode_ChessBoard:
-        {
-          // track window moves to reverse stereo pair
-          aView->MustBeResized();
-          aView->Update();
-          break;
-        }
-        default:
-          break;
-      }
-      break;
-    }
-    case WM_KEYUP:
-    case WM_KEYDOWN:
-    {
-      const Aspect_VKey aVKey = WNT_Window::VirtualKeyFromNative ((Standard_Integer )wParam);
-      if (aVKey != Aspect_VKey_UNKNOWN)
-      {
-        const double aTimeStamp = ViewerTest::CurrentEventManager()->EventTime();
-        if (theMsg == WM_KEYDOWN)
-        {
-          ViewerTest::CurrentEventManager()->KeyDown (aVKey, aTimeStamp);
-        }
-        else
-        {
-          ViewerTest::CurrentEventManager()->KeyUp (aVKey, aTimeStamp);
-        }
-        ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
-      }
-      break;
-    }
-    case WM_LBUTTONUP:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONUP:
     case WM_LBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_RBUTTONDOWN:
     {
-      const Graphic3d_Vec2i aPos (LOWORD(lParam), HIWORD(lParam));
-      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (wParam);
-      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
-      switch (theMsg)
-      {
-        case WM_LBUTTONUP:
-        case WM_LBUTTONDOWN:
-          aButton = Aspect_VKeyMouse_LeftButton;
-          break;
-        case WM_MBUTTONUP:
-        case WM_MBUTTONDOWN:
-          aButton = Aspect_VKeyMouse_MiddleButton;
-          break;
-        case WM_RBUTTONUP:
-        case WM_RBUTTONDOWN:
-          aButton = Aspect_VKeyMouse_RightButton;
-          break;
-      }
-      if (theMsg == WM_LBUTTONDOWN
-       || theMsg == WM_MBUTTONDOWN
-       || theMsg == WM_RBUTTONDOWN)
-      {
-        if (aButton == Aspect_VKeyMouse_LeftButton)
-        {
-          TheIsAnimating = Standard_False;
-        }
-
-        SetFocus  (theWinHandle);
-        SetCapture(theWinHandle);
-        ViewerTest::CurrentEventManager()->PressMouseButton (aPos, aButton, aFlags, false);
-      }
-      else
-      {
-        ReleaseCapture();
-        ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, aButton, aFlags, false);
-      }
-      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
-      break;
+      TheIsAnimating = Standard_False;
     }
-    case WM_MOUSEWHEEL:
-    {
-      const int aDelta = GET_WHEEL_DELTA_WPARAM (wParam);
-      const Standard_Real aDeltaF = Standard_Real(aDelta) / Standard_Real(WHEEL_DELTA);
-      const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (wParam);
-      Graphic3d_Vec2i aPos (int(short(LOWORD(lParam))), int(short(HIWORD(lParam))));
-      POINT aCursorPnt = { aPos.x(), aPos.y() };
-      if (ScreenToClient (theWinHandle, &aCursorPnt))
-      {
-        aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
-      }
-
-      ViewerTest::CurrentEventManager()->UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
-      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
-      break;
-    }
-    case WM_MOUSEMOVE:
-    {
-      Graphic3d_Vec2i aPos (LOWORD(lParam), HIWORD(lParam));
-      Aspect_VKeyMouse aButtons = WNT_Window::MouseButtonsFromEvent (wParam);
-      Aspect_VKeyFlags aFlags   = WNT_Window::MouseKeyFlagsFromEvent(wParam);
-
-      // don't make a slide-show from input events - fetch the actual mouse cursor position
-      CURSORINFO aCursor;
-      aCursor.cbSize = sizeof(aCursor);
-      if (::GetCursorInfo (&aCursor) != FALSE)
-      {
-        POINT aCursorPnt = { aCursor.ptScreenPos.x, aCursor.ptScreenPos.y };
-        if (ScreenToClient (theWinHandle, &aCursorPnt))
-        {
-          // as we override mouse position, we need overriding also mouse state
-          aPos.SetValues (aCursorPnt.x, aCursorPnt.y);
-          aButtons = WNT_Window::MouseButtonsAsync();
-          aFlags   = WNT_Window::MouseKeyFlagsAsync();
-        }
-      }
-
-      if (VT_GetWindow().IsNull()
-      || (HWND )VT_GetWindow()->HWindow() != theWinHandle)
-      {
-        // mouse move events come also for inactive windows
-        break;
-      }
-
-      ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
-      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), aView, true);
-      break;
-    }
-    case WM_INPUT:
-    {
-      UINT aSize = 0;
-      ::GetRawInputData ((HRAWINPUT )lParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
-      NCollection_LocalArray<BYTE> aRawData (aSize);
-      if (aSize == 0 || ::GetRawInputData ((HRAWINPUT )lParam, RID_INPUT, aRawData, &aSize, sizeof(RAWINPUTHEADER)) != aSize)
-      {
-        break;
-      }
-
-      const RAWINPUT* aRawInput = (RAWINPUT* )(BYTE* )aRawData;
-      if (aRawInput->header.dwType != RIM_TYPEHID)
-      {
-        break;
-      }
-
-      RID_DEVICE_INFO aDevInfo;
-      aDevInfo.cbSize = sizeof(RID_DEVICE_INFO);
-      UINT aDevInfoSize = sizeof(RID_DEVICE_INFO);
-      if (::GetRawInputDeviceInfoW (aRawInput->header.hDevice, RIDI_DEVICEINFO, &aDevInfo, &aDevInfoSize) != sizeof(RID_DEVICE_INFO)
-        || (aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_LOGITECH
-         && aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_3DCONNEXION))
-      {
-        break;
-      }
-
-      WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData, aRawInput->data.hid.dwSizeHid);
-      if (ViewerTest::CurrentEventManager()->Update3dMouse (aSpaceData)
-      && !VT_GetWindow().IsNull())
-      {
-        VT_GetWindow()->InvalidateContent();
-      }
-      break;
-    }
+    Standard_FALLTHROUGH
     default:
     {
-      return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
+      const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+      if (!aView.IsNull()
+       && !VT_GetWindow().IsNull())
+      {
+        MSG aMsg = {};
+        aMsg.hwnd = theWinHandle;
+        aMsg.message = theMsg;
+        aMsg.wParam = wParam;
+        aMsg.lParam = lParam;
+        if (VT_GetWindow()->ProcessMessage (*ViewerTest::CurrentEventManager(), aMsg))
+        {
+          return 0;
+        }
+      }
     }
   }
-  return 0L;
+  return DefWindowProcW (theWinHandle, theMsg, wParam, lParam);
 }
 
 //==============================================================================
@@ -3517,22 +3324,6 @@ int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
 }
 
 #elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
-
-int min( int a, int b )
-{
-  if( a<b )
-    return a;
-  else
-    return b;
-}
-
-int max( int a, int b )
-{
-  if( a>b )
-    return a;
-  else
-    return b;
-}
 
 int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
 {
@@ -3573,170 +3364,22 @@ int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
       }
       break;
     }
-    case Expose:
-    {
-      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
-      if (anXWindow == aReport.xexpose.window)
-      {
-        ViewerTest::CurrentEventManager()->ProcessExpose();
-      }
-
-      // remove all the ExposureMask and process them at once
-      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
-      {
-        if (!XCheckWindowEvent (aDisplay, anXWindow, ExposureMask, &aReport))
-        {
-          break;
-        }
-      }
-
-      break;
-    }
-    case ConfigureNotify:
-    {
-      // remove all the StructureNotifyMask and process them at once
-      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
-      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
-      {
-        if (!XCheckWindowEvent (aDisplay, anXWindow, StructureNotifyMask, &aReport))
-        {
-          break;
-        }
-      }
-
-      if (anXWindow == aReport.xconfigure.window)
-      {
-        ViewerTest::CurrentEventManager()->ProcessConfigure();
-      }
-      break;
-    }
-    case KeyPress:
-    case KeyRelease:
-    {
-      XKeyEvent*   aKeyEvent = (XKeyEvent* )&aReport;
-      const KeySym aKeySym = XLookupKeysym (aKeyEvent, 0);
-      const Aspect_VKey aVKey = Xw_Window::VirtualKeyFromNative (aKeySym);
-      if (aVKey != Aspect_VKey_UNKNOWN)
-      {
-        const double aTimeStamp = ViewerTest::CurrentEventManager()->EventTime();
-        if (aReport.type == KeyPress)
-        {
-          ViewerTest::CurrentEventManager()->KeyDown (aVKey, aTimeStamp);
-        }
-        else
-        {
-          ViewerTest::CurrentEventManager()->KeyUp (aVKey, aTimeStamp);
-        }
-        ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
-      }
-      break;
-    }
     case ButtonPress:
-    case ButtonRelease:
     {
-      const Graphic3d_Vec2i aPos (aReport.xbutton.x, aReport.xbutton.y);
-      Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
-      Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
       if (aReport.xbutton.button == Button1)
       {
-        aButton = Aspect_VKeyMouse_LeftButton;
+        TheIsAnimating = Standard_False;
       }
-      if (aReport.xbutton.button == Button2)
-      {
-        aButton = Aspect_VKeyMouse_MiddleButton;
-      }
-      if (aReport.xbutton.button == Button3)
-      {
-        aButton = Aspect_VKeyMouse_RightButton;
-      }
-
-      if (aReport.xbutton.state & ControlMask)
-      {
-        aFlags |= Aspect_VKeyFlags_CTRL;
-      }
-      if (aReport.xbutton.state & ShiftMask)
-      {
-        aFlags |= Aspect_VKeyFlags_SHIFT;
-      }
-      if (ViewerTest::CurrentEventManager()->Keys().IsKeyDown (Aspect_VKey_Alt))
-      {
-        aFlags |= Aspect_VKeyFlags_ALT;
-      }
-
-      if (aReport.xbutton.button == Button4
-       || aReport.xbutton.button == Button5)
-      {
-        if (aReport.type != ButtonPress)
-        {
-          break;
-        }
-
-        const double aDeltaF = (aReport.xbutton.button == Button4 ? 1.0 : -1.0);
-        ViewerTest::CurrentEventManager()->UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags));
-      }
-      else if (aReport.type == ButtonPress)
-      {
-        if (aButton == Aspect_VKeyMouse_LeftButton)
-        {
-          TheIsAnimating = Standard_False;
-        }
-        ViewerTest::CurrentEventManager()->PressMouseButton (aPos, aButton, aFlags, false);
-      }
-      else
-      {
-        ViewerTest::CurrentEventManager()->ReleaseMouseButton (aPos, aButton, aFlags, false);
-      }
-      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
-      break;
     }
-    case MotionNotify:
+    Standard_FALLTHROUGH
+    default:
     {
-      Window anXWindow = !VT_GetWindow().IsNull() ? VT_GetWindow()->XWindow() : 0;
-      if (anXWindow != aReport.xmotion.window)
+      const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+      if (!aView.IsNull()
+       && !VT_GetWindow().IsNull())
       {
-        break;
+        VT_GetWindow()->ProcessMessage (*ViewerTest::CurrentEventManager(), aReport);
       }
-
-      // remove all the ButtonMotionMask and process them at once
-      for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
-      {
-        if (!XCheckWindowEvent (aDisplay, anXWindow, ButtonMotionMask | PointerMotionMask, &aReport))
-        {
-          break;
-        }
-      }
-
-      Graphic3d_Vec2i aPos (aReport.xmotion.x, aReport.xmotion.y);
-      Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
-      Aspect_VKeyFlags aFlags   = Aspect_VKeyFlags_NONE;
-      if ((aReport.xmotion.state & Button1Mask) != 0)
-      {
-        aButtons |= Aspect_VKeyMouse_LeftButton;
-      }
-      else if ((aReport.xmotion.state & Button2Mask) != 0)
-      {
-        aButtons |= Aspect_VKeyMouse_MiddleButton;
-      }
-      else if ((aReport.xmotion.state & Button3Mask) != 0)
-      {
-        aButtons |= Aspect_VKeyMouse_RightButton;
-      }
-
-      if (aReport.xmotion.state & ControlMask)
-      {
-        aFlags |= Aspect_VKeyFlags_CTRL;
-      }
-      if (aReport.xmotion.state & ShiftMask)
-      {
-        aFlags |= Aspect_VKeyFlags_SHIFT;
-      }
-      if (ViewerTest::CurrentEventManager()->Keys().IsKeyDown (Aspect_VKey_Alt))
-      {
-        aFlags |= Aspect_VKeyFlags_ALT;
-      }
-
-      ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
-      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
       break;
     }
   }
