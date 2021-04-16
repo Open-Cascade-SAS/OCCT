@@ -64,6 +64,7 @@
 #include <gp_Pnt.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
+#include <IntTools_Tools.hxx>
 #include <Precision.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -278,6 +279,14 @@ static void Store(const TopoDS_Edge& theEdge,
                   Handle(BRepAlgo_AsDes) theAsDes2d,
                   TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
 {
+  // Update vertices
+  TopTools_ListIteratorOfListOfShape aIt(theLV);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Vertex& aV = TopoDS::Vertex(aIt.Value());
+    BRep_Builder().UpdateVertex(aV, theTol);
+  }
+
+  // Get vertices already added to the edge and check the distances to the new ones
   const TopTools_ListOfShape& aLVEx = theAsDes2d->Descendant(theEdge);
   if (!IsToUpdate && aLVEx.IsEmpty()) {
     if (theLV.Extent()) theAsDes2d->Add(theEdge, theLV);
@@ -285,21 +294,23 @@ static void Store(const TopoDS_Edge& theEdge,
   }
   //
   GeomAPI_ProjectPointOnCurve aProjPC;
+  Standard_Real aTolE = 0.0;
   if (IsToUpdate) {
     Standard_Real aT1, aT2;
     const Handle(Geom_Curve)& aC = BRep_Tool::Curve(theEdge, aT1, aT2);
     aProjPC.Init(aC, aT1, aT2);
+    aTolE = BRep_Tool::Tolerance(theEdge);
   }
   //
   TopTools_MapOfShape aMV;
-  TopTools_ListIteratorOfListOfShape aIt(theLV);
-  for (; aIt.More(); aIt.Next()) {
+  for (aIt.Init(theLV); aIt.More(); aIt.Next()) {
     const TopoDS_Vertex& aV = TopoDS::Vertex(aIt.Value());
     if (!aMV.Add(aV)) {
       continue;
     }
     //
     const gp_Pnt& aP = BRep_Tool::Pnt(aV);
+    const Standard_Real aTol = BRep_Tool::Tolerance(aV);
     //
     TopTools_ListOfShape aLVC;
     TopTools_ListIteratorOfListOfShape aItEx(aLVEx);
@@ -309,7 +320,8 @@ static void Store(const TopoDS_Edge& theEdge,
         break;
       }
       const gp_Pnt& aPEx = BRep_Tool::Pnt(aVEx);
-      if (aP.IsEqual(aPEx, theTol)) {
+      const Standard_Real aTolVEx = BRep_Tool::Tolerance(aVEx);
+      if (aP.IsEqual(aPEx, aTol + aTolVEx)) {
         aLVC.Append(aVEx);
       }
     }
@@ -325,16 +337,13 @@ static void Store(const TopoDS_Edge& theEdge,
         continue;
       }
       //
-      if (aProjPC.LowerDistance() > theTol) {
+      if (aProjPC.LowerDistance() > aTol + aTolE) {
         continue;
       }
       //
       Standard_Real aT = aProjPC.LowerDistanceParameter();
       TopoDS_Shape aLocalShape = aV.Oriented(TopAbs_INTERNAL);
-      BRep_Builder().UpdateVertex(TopoDS::Vertex(aLocalShape), aT, theEdge, theTol);
-    }
-    else {
-      BRep_Builder().UpdateVertex(aV, theTol);
+      BRep_Builder().UpdateVertex(TopoDS::Vertex(aLocalShape), aT, theEdge, aTol);
     }
     //
     if (aLVC.Extent()) {
@@ -672,7 +681,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
     return;
 
   Standard_Real f[3],l[3];
-  Standard_Real TolDub = 1.e-7;
+  Standard_Real TolDub = 1.e-7, TolLL = 0.0;
   Standard_Integer i;
 
   //BRep_Tool::Range(E1, f[1], l[1]);
@@ -688,9 +697,6 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 
   BRepLib::BuildCurve3d(E1);
   BRepLib::BuildCurve3d(E2);
-
-  Standard_Real TolSum = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
-  TolSum = Max( TolSum, 1.e-5 );
 
   TColgp_SequenceOfPnt   ResPoints;
   TColStd_SequenceOfReal ResParamsOnE1, ResParamsOnE2;
@@ -721,10 +727,18 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       (GAC2.GetType() == GeomAbs_Line))
   {
     // Just quickly check if lines coincide
-    if (GAC1.Line().Direction().IsParallel (GAC2.Line().Direction(), 1.e-8))
+    Standard_Real anAngle = Abs(GAC1.Line().Direction().Angle(GAC2.Line().Direction()));
+    if (anAngle <= 1.e-8 || M_PI - anAngle <= 1.e-8)
     {
       theCoincide = Standard_True;
       return;
+    }
+    else
+    {
+      // Take into account the intersection range of line-line intersection
+      // (the smaller angle between curves, the bigger range)
+      TolLL = IntTools_Tools::ComputeIntRange(TolDub, TolDub, anAngle);
+      TolLL = Min (TolLL, 1.e-5);
     }
   }
   
@@ -943,10 +957,12 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       else
         theImageVV.Bind (theVref.Oriented(TopAbs_FORWARD), aNewVertex);
     }
-      
+
 ////-----------------------------------------------------
     Standard_Real TolStore = BRep_Tool::Tolerance(E1) + BRep_Tool::Tolerance(E2);
     TolStore = Max (TolStore, Tol);
+    // Compare to Line-Line tolerance
+    TolStore = Max (TolStore, TolLL);
     Store (E1,E2,LV1,LV2,TolStore,AsDes, aDMVV);
   }
 }
