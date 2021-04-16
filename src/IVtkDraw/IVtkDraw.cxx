@@ -310,7 +310,7 @@ void IVtkDraw::ViewerInit (const IVtkWinParams& theParams)
 #else
     Window aWindowId = GetWindow()->XWindow();
     aRenWin->SetWindowId ((void*)aWindowId);
-    Display *aDisplayId = GetDisplayConnection()->GetDisplay();
+    Display* aDisplayId = (Display* )GetDisplayConnection()->GetDisplayAspect();
     aRenWin->SetDisplayId (aDisplayId);
 
     // Setup XWindow

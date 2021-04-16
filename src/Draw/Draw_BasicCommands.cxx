@@ -348,6 +348,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "Tk disabled\n";
 #endif
+#ifdef HAVE_XLIB
+  di << "Xlib enabled (HAVE_XLIB)\n";
+#elif !defined(_WIN32)
+  di << "Xlib disabled\n";
+#endif
 #ifdef HAVE_TBB
   di << "TBB enabled (HAVE_TBB)\n";
 #else 

@@ -65,11 +65,14 @@
   #include <GL/gl.h>
 #endif
 
-#if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
+#if !defined(HAVE_EGL)
+#if defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP)
+  #define HAVE_EGL
+#elif !defined(_WIN32) && !defined(__APPLE__) && !defined(HAVE_XLIB)
   #define HAVE_EGL
 #endif
-
-#include <InterfaceGraphic.hxx>
+#endif
+struct Aspect_XDisplay;
 
 #if defined(GL_ES_VERSION_2_0)
   #include <OpenGl_GLESExtensions.hxx>
@@ -1937,11 +1940,11 @@ public: //! @name glX extensions
   #define GLX_RENDERER_ID_MESA                             0x818E
 #endif // GLX_RENDERER_VENDOR_ID_MESA
 
-  typedef Bool (*glXQueryRendererIntegerMESA_t)(Display* theDisplay, int theScreen,
-                                                int theRenderer, int theAttribute,
-                                                unsigned int* theValue);
-  typedef Bool (*glXQueryCurrentRendererIntegerMESA_t)(int theAttribute, unsigned int* theValue);
-  typedef const char* (*glXQueryRendererStringMESA_t)(Display* theDisplay, int theScreen,
+  typedef int (*glXQueryRendererIntegerMESA_t)(Aspect_XDisplay* theDisplay, int theScreen,
+                                               int theRenderer, int theAttribute,
+                                               unsigned int* theValue);
+  typedef int (*glXQueryCurrentRendererIntegerMESA_t)(int theAttribute, unsigned int* theValue);
+  typedef const char* (*glXQueryRendererStringMESA_t)(Aspect_XDisplay* theDisplay, int theScreen,
                                                       int theRenderer, int theAttribute);
   typedef const char* (*glXQueryCurrentRendererStringMESA_t)(int theAttribute);
 

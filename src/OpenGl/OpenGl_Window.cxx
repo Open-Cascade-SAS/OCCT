@@ -34,10 +34,11 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,Standard_Transient)
 
 #if defined(HAVE_EGL)
   #include <EGL/egl.h>
+#elif defined(HAVE_XLIB)
+  #include <GL/glx.h>
 #endif
 
-
-#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#if !defined(__APPLE__) || defined(HAVE_XLIB)
 
 namespace
 {
@@ -123,7 +124,7 @@ namespace
   {
     return DefWindowProcW (theWin, theMsg, theParamW, theParamL);
   }
-#else
+#elif defined(HAVE_XLIB)
 
   // GLX_ARB_create_context
 #ifndef GLX_CONTEXT_MAJOR_VERSION_ARB
@@ -206,16 +207,40 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                                         anEglConfig,
                                         (EGLNativeWindowType )myPlatformWindow->NativeHandle(),
                                         NULL);
-    if (anEglSurf == EGL_NO_SURFACE)
+    if (anEglSurf == EGL_NO_SURFACE
+     && myPlatformWindow->NativeHandle() != 0)
     {
       throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create surface for window!");
-      return;
+    }
+    else if (anEglSurf == EGL_NO_SURFACE)
+    {
+      // window-less EGL context (off-screen)
+      //throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current surface!");
+      if (anEglConfig != NULL)
+      {
+      #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
+        const int aSurfAttribs[] =
+        {
+          EGL_WIDTH,  myWidth,
+          EGL_HEIGHT, myHeight,
+          // EGL_KHR_gl_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+          //EGL_GL_COLORSPACE_KHR, !theCaps->sRGBDisable ? EGL_GL_COLORSPACE_SRGB_KHR : EGL_GL_COLORSPACE_LINEAR_KHR,
+          EGL_NONE
+        };
+        anEglSurf = eglCreatePbufferSurface (anEglDisplay, anEglConfig, aSurfAttribs);
+        if (anEglSurf == EGL_NO_SURFACE)
+        {
+          throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create off-screen surface!");
+        }
+      #endif
+      }
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                                "OpenGl_Window::CreateWindow: WARNING, a Window is created without a EGL Surface!");
     }
   }
   else if (theGContext != anEglContext)
   {
     throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is used in unsupported combination!");
-    return;
   }
   else
   {
@@ -502,9 +527,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   }
 
   myGlContext->Init ((Aspect_Handle )aWindow, (Aspect_Handle )aWindowDC, (Aspect_RenderingContext )aGContext, isCoreProfile);
-#else
+#elif defined(HAVE_XLIB)
   Window     aWindow   = (Window )myPlatformWindow->NativeHandle();
-  Display*   aDisp     = theDriver->GetDisplayConnection()->GetDisplay();
+  Display*   aDisp     = (Display* )theDriver->GetDisplayConnection()->GetDisplayAspect();
   GLXContext aGContext = (GLXContext )theGContext;
   GLXContext aSlaveCtx = !theShareCtx.IsNull() ? (GLXContext )theShareCtx->myGContext : NULL;
 
@@ -631,6 +656,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   }
 
   myGlContext->Init ((Aspect_Drawable )aWindow, (Aspect_Display )aDisp, (Aspect_RenderingContext )aGContext, isCoreProfile);
+#else
+  // not implemented
+  (void )isCoreProfile;
 #endif
   myGlContext->Share (theShareCtx);
   myGlContext->SetSwapInterval (mySwapInterval);
@@ -661,7 +689,7 @@ OpenGl_Window::~OpenGl_Window()
   }
 #elif defined(_WIN32)
   HWND  aWindow          = (HWND  )myGlContext->myWindow;
-  HDC   aWindowDC        = (HDC   )myGlContext->myWindowDC;
+  HDC   aWindowDC        = (HDC   )myGlContext->myDisplay;
   HGLRC aWindowGContext  = (HGLRC )myGlContext->myGContext;
   HGLRC aThreadGContext  = wglGetCurrentContext();
   myGlContext.Nullify();
@@ -676,7 +704,7 @@ OpenGl_Window::~OpenGl_Window()
     wglDeleteContext (aWindowGContext);
   }
   ReleaseDC (aWindow, aWindowDC);
-#else
+#elif defined(HAVE_XLIB)
   Display*    aDisplay        = (Display*    )myGlContext->myDisplay;
   GLXContext  aWindowGContext = (GLXContext  )myGlContext->myGContext;
   GLXContext  aThreadGContext = glXGetCurrentContext();
@@ -693,6 +721,8 @@ OpenGl_Window::~OpenGl_Window()
     glXWaitGL();
     glXDestroyContext (aDisplay, aWindowGContext);
   }
+#else
+  // not implemented
 #endif
 }
 
@@ -707,7 +737,7 @@ Standard_Boolean OpenGl_Window::Activate()
   return myGlContext->MakeCurrent();
 }
 
-#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#if !defined(__APPLE__) || defined(HAVE_XLIB)
 
 // =======================================================================
 // function : Resize

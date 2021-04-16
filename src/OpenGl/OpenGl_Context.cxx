@@ -57,7 +57,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
   #endif
 #elif defined(_WIN32)
   //
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+  #include <GL/glx.h> // glXGetProcAddress()
+#elif defined(__APPLE__)
   #include <dlfcn.h>
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     //
@@ -66,7 +68,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
     #include <CoreGraphics/CoreGraphics.h>
   #endif
 #else
-  #include <GL/glx.h> // glXGetProcAddress()
+  //
 #endif
 
 #ifdef __EMSCRIPTEN__
@@ -192,6 +194,9 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   nvxMem (Standard_False),
   oesSampleVariables (Standard_False),
   oesStdDerivatives (Standard_False),
+  myWindow  (0),
+  myDisplay (0),
+  myGContext(0),
   mySharedResources (new OpenGl_ResourcesMap()),
   myDelayed         (new OpenGl_DelayReleaseMap()),
   myUnusedResources (new OpenGl_ResourcesStack()),
@@ -275,11 +280,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myDisplay  = (Aspect_Display          )EGL_NO_DISPLAY;
   myWindow   = (Aspect_Drawable         )EGL_NO_SURFACE;
   myGContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
-#elif defined(_WIN32)
-  myWindow   = NULL;
-  myWindowDC = NULL;
-  myGContext = NULL;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(__APPLE__) && !defined(HAVE_XLIB)
   // Vendors can not extend functionality on this system
   // and developers are limited to OpenGL support provided by Mac OS X SDK.
   // We retrieve function pointers from system library
@@ -290,16 +291,10 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   // because function pointers may be available but not functionality itself
   // (depends on renderer).
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  myGContext    = NULL;
   myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGLES.framework/OpenGLES", RTLD_LAZY);
 #else
-  myGContext    = NULL;
   myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 #endif
-#else
-  myDisplay =  NULL;
-  myWindow   = 0;
-  myGContext = 0;
 #endif
 
   memset (myFuncs.operator->(), 0, sizeof(OpenGl_GlFunctions));
@@ -638,7 +633,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
   }
 }
 
-#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#if !defined(__APPLE__) || defined(HAVE_XLIB)
 
 // =======================================================================
 // function : IsCurrent
@@ -657,13 +652,13 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
        && ((EGLContext )myGContext == eglGetCurrentContext())
        && ((EGLSurface )myWindow   == eglGetCurrentSurface (EGL_DRAW)));
 #elif defined(_WIN32)
-  if (myWindowDC == NULL || myGContext == NULL)
+  if (myDisplay == NULL || myGContext == NULL)
   {
     return Standard_False;
   }
-  return (( (HDC )myWindowDC == wglGetCurrentDC())
+  return (( (HDC )myDisplay  == wglGetCurrentDC())
       && ((HGLRC )myGContext == wglGetCurrentContext()));
-#else
+#elif defined(HAVE_XLIB)
   if (myDisplay == NULL || myWindow == 0 || myGContext == 0)
   {
     return Standard_False;
@@ -672,6 +667,8 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
   return (   ((Display* )myDisplay  == glXGetCurrentDisplay())
        &&  ((GLXContext )myGContext == glXGetCurrentContext())
        && ((GLXDrawable )myWindow   == glXGetCurrentDrawable()));
+#else
+  return Standard_False;
 #endif
 }
 
@@ -698,7 +695,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     return Standard_False;
   }
 #elif defined(_WIN32)
-  if (myWindowDC == NULL || myGContext == NULL)
+  if (myDisplay == NULL || myGContext == NULL)
   {
     Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
     return Standard_False;
@@ -711,7 +708,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     myShaderManager->SetContext (this);
     return Standard_True;
   }
-  else if (wglMakeCurrent ((HDC )myWindowDC, (HGLRC )myGContext) != TRUE)
+  else if (wglMakeCurrent ((HDC )myDisplay, (HGLRC )myGContext) != TRUE)
   {
     // notice that glGetError() couldn't be used here!
     wchar_t* aMsgBuff = NULL;
@@ -728,7 +725,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     myIsInitialized = Standard_False;
     return Standard_False;
   }
-#else
+#elif defined(HAVE_XLIB)
   if (myDisplay == NULL || myWindow == 0 || myGContext == 0)
   {
     Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
@@ -742,6 +739,12 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
                  "glXMakeCurrent() has failed!");
     myIsInitialized = Standard_False;
     return Standard_False;
+  }
+#else
+  // not implemented
+  if (!myIsInitialized)
+  {
+    throw Standard_ProgramError ("OpenGl_Context::Init() should be called before!");
   }
 #endif
   myShaderManager->SetContext (this);
@@ -760,16 +763,18 @@ void OpenGl_Context::SwapBuffers()
     eglSwapBuffers ((EGLDisplay )myDisplay, (EGLSurface )myWindow);
   }
 #elif defined(_WIN32)
-  if ((HDC )myWindowDC != NULL)
+  if ((HDC )myDisplay != NULL)
   {
-    ::SwapBuffers ((HDC )myWindowDC);
+    ::SwapBuffers ((HDC )myDisplay);
     glFlush();
   }
-#else
+#elif defined(HAVE_XLIB)
   if ((Display* )myDisplay != NULL)
   {
     glXSwapBuffers ((Display* )myDisplay, (GLXDrawable )myWindow);
   }
+#else
+  //
 #endif
 }
 
@@ -799,7 +804,7 @@ Standard_Boolean OpenGl_Context::SetSwapInterval (const Standard_Integer theInte
   {
     return Standard_True;
   }
-#else
+#elif defined(HAVE_XLIB)
   if (theInterval == -1
    && myFuncs->glXSwapIntervalEXT != NULL)
   {
@@ -813,6 +818,8 @@ Standard_Boolean OpenGl_Context::SetSwapInterval (const Standard_Integer theInte
     myFuncs->glXSwapIntervalSGI (theInterval);
     return Standard_True;
   }
+#else
+  //
 #endif
   return Standard_False;
 }
@@ -827,10 +834,13 @@ void* OpenGl_Context::findProc (const char* theFuncName)
   return (void* )eglGetProcAddress (theFuncName);
 #elif defined(_WIN32)
   return (void* )wglGetProcAddress (theFuncName);
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+  return (void* )glXGetProcAddress ((const GLubyte* )theFuncName);
+#elif defined(__APPLE__)
   return (myGlLibHandle != NULL) ? dlsym (myGlLibHandle, theFuncName) : NULL;
 #else
-  return (void* )glXGetProcAddress ((const GLubyte* )theFuncName);
+  (void )theFuncName;
+  return NULL;
 #endif
 }
 
@@ -914,7 +924,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtString,
   return Standard_False;
 }
 
-#if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#if !defined(__APPLE__) || defined(HAVE_XLIB)
 
 // =======================================================================
 // function : Init
@@ -932,12 +942,14 @@ Standard_Boolean OpenGl_Context::Init (const Standard_Boolean theIsCoreProfile)
   myGContext = (Aspect_RenderingContext )eglGetCurrentContext();
   myWindow   = (Aspect_Drawable )eglGetCurrentSurface(EGL_DRAW);
 #elif defined(_WIN32)
-  myWindowDC = (Aspect_Handle )wglGetCurrentDC();
+  myDisplay  = (Aspect_Handle )wglGetCurrentDC();
   myGContext = (Aspect_RenderingContext )wglGetCurrentContext();
-#else
+#elif defined(HAVE_XLIB)
   myDisplay  = (Aspect_Display )glXGetCurrentDisplay();
   myGContext = (Aspect_RenderingContext )glXGetCurrentContext();
   myWindow   = (Aspect_Drawable )glXGetCurrentDrawable();
+#else
+  //
 #endif
   if (myGContext == NULL)
   {
@@ -955,49 +967,15 @@ Standard_Boolean OpenGl_Context::Init (const Standard_Boolean theIsCoreProfile)
 // function : Init
 // purpose  :
 // =======================================================================
-#if defined(HAVE_EGL)
-Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theEglSurface,
-                                       const Aspect_Display          theEglDisplay,
-                                       const Aspect_RenderingContext theEglContext,
-                                       const Standard_Boolean        theIsCoreProfile)
-#elif defined(_WIN32)
-Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
-                                       const Aspect_Handle           theWindowDC,
-                                       const Aspect_RenderingContext theGContext,
-                                       const Standard_Boolean        theIsCoreProfile)
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-
-#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-Standard_Boolean OpenGl_Context::Init (EAGLContext*                  theGContext,
-                                       const Standard_Boolean        theIsCoreProfile)
-#else
-Standard_Boolean OpenGl_Context::Init (NSOpenGLContext*              theGContext,
-                                       const Standard_Boolean        theIsCoreProfile)
-#endif
-
-#else
-Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
+Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theSurface,
                                        const Aspect_Display          theDisplay,
-                                       const Aspect_RenderingContext theGContext,
+                                       const Aspect_RenderingContext theContext,
                                        const Standard_Boolean        theIsCoreProfile)
-#endif
 {
   Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
-#if defined(HAVE_EGL)
-  myWindow   = theEglSurface;
-  myGContext = theEglContext;
-  myDisplay  = theEglDisplay;
-#elif defined(_WIN32)
-  myWindow   = theWindow;
-  myGContext = theGContext;
-  myWindowDC = theWindowDC;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  myGContext = theGContext;
-#else
-  myWindow   = theWindow;
-  myGContext = theGContext;
+  myWindow   = theSurface;
   myDisplay  = theDisplay;
-#endif
+  myGContext = theContext;
   if (myGContext == NULL || !MakeCurrent())
   {
     return Standard_False;
@@ -1867,7 +1845,7 @@ void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) 
 {
 #if defined(GL_ES_VERSION_2_0)
   (void )theDict;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(__APPLE__) && !defined(HAVE_XLIB)
   GLint aGlRendId = 0;
   CGLGetParameter (CGLGetCurrentContext(), kCGLCPCurrentRendererID, &aGlRendId);
 
@@ -2001,12 +1979,10 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0
      && myFuncs->wglGetExtensionsStringARB != NULL)
     {
-      const char* aWglExts = myFuncs->wglGetExtensionsStringARB ((HDC )myWindowDC);
+      const char* aWglExts = myFuncs->wglGetExtensionsStringARB ((HDC )myDisplay);
       addInfo (theDict, "WGLExtensions", aWglExts);
     }
-  #elif defined(__APPLE__)
-    //
-  #else
+  #elif defined(HAVE_XLIB)
     Display* aDisplay = (Display*)myDisplay;
     const int aScreen = DefaultScreen(aDisplay);
     addInfo (theDict, "GLXDirectRendering", ::glXIsDirect (aDisplay, (GLXContext )myGContext) ? "Yes" : "No");
@@ -2024,6 +2000,8 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     {
       addInfo (theDict, "GLXClientExtensions", ::glXGetClientString (aDisplay, GLX_EXTENSIONS));
     }
+  #else
+    //
   #endif
   }
 

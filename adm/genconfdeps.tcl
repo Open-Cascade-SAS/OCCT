@@ -68,10 +68,11 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_TK HAVE_FREETYPE HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENVR HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo BUILD_Inspector}
+set THE_ENV_VARIABLES {HAVE_TK HAVE_FREETYPE HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENVR HAVE_OPENCL CHECK_QT4 CHECK_JDK HAVE_XLIB HAVE_RelWithDebInfo BUILD_Inspector}
 foreach anEnvIter $THE_ENV_VARIABLES { set ${anEnvIter} "false" }
 set HAVE_TK       "true"
 set HAVE_FREETYPE "true"
+if { "$tcl_platform(os)" != "Darwin" } { set HAVE_XLIB "true" }
 foreach anEnvIter $THE_ENV_VARIABLES {
   if { [info exists ::env(${anEnvIter})] } {
     set ${anEnvIter} "$::env(${anEnvIter})"
@@ -80,12 +81,12 @@ foreach anEnvIter $THE_ENV_VARIABLES {
 # do not export platform-specific variables
 if { "$::tcl_platform(os)" == "Darwin" } {
   set HAVE_GLES2 ""
-} else {
-  set MACOSX_USE_GLX ""
 }
 if { "$tcl_platform(platform)" != "windows" } {
   set HAVE_D3D ""
   set HAVE_RelWithDebInfo ""
+} else {
+  set HAVE_XLIB ""
 }
 foreach anEnvIter {ARCH VCVER VCVARS PRJFMT } {
   if { [info exists ::env(${anEnvIter})] } {
@@ -1195,7 +1196,7 @@ proc wokdep:SearchX11 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   upvar $theErrBin64 anErrBin64
 
   set isFound "true"
-  if { "$::tcl_platform(platform)" == "windows" || ( "$::tcl_platform(os)" == "Darwin" && "$::MACOSX_USE_GLX" != "true" ) } {
+  if { "$::tcl_platform(platform)" == "windows" || ( "$::tcl_platform(os)" == "Darwin" && "$::HAVE_XLIB" != "true" ) } {
     return "$isFound"
   }
 

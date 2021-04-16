@@ -1,5 +1,3 @@
-CommandWindow.cxx
-CommandWindow.h
 Draw.cxx
 Draw.hxx
 Draw_Appli.hxx
@@ -71,8 +69,10 @@ Draw_Viewer.hxx
 Draw_Window.cxx
 Draw_Window.hxx
 Draw_Window_1.mm
-DrawRessource.h
-init.cxx
-init.h
-MainWindow.cxx
-MainWindow.h
+Draw_WNTCommandWindow.cxx
+Draw_WNTCommandWindow.pxx
+Draw_WNTInit.cxx
+Draw_WNTInit.pxx
+Draw_WNTMainWindow.cxx
+Draw_WNTMainWindow.pxx
+Draw_WNTRessource.pxx

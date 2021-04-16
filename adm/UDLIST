@@ -197,7 +197,6 @@ t TKPrim
 t TKShHealing
 t TKTopAlgo
 t TKXMesh
-n InterfaceGraphic
 n AIS
 n Aspect
 n DsgPrs

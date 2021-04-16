@@ -44,11 +44,13 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-#include <WNT_Window.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-#include <Cocoa_Window.hxx>
+  #include <WNT_Window.hxx>
+#elif defined(HAVE_XLIB)
+  #include <Xw_Window.hxx>
+#elif defined(__APPLE__)
+  #include <Cocoa_Window.hxx>
 #else
-#include <Xw_Window.hxx>
+
 #endif
 
 // =======================================================================
@@ -106,13 +108,15 @@ void View_Widget::Init()
 #ifdef _WIN32
   Aspect_Handle aWindowHandle = (Aspect_Handle)winId();
   Handle(Aspect_Window) aWnd = new WNT_Window (aWindowHandle);
-#elif defined (__APPLE__) && !defined (MACOSX_USE_GLX)
+#elif defined (HAVE_XLIB)
+  Aspect_Drawable aWindowHandle = (Aspect_Drawable )winId();
+  Handle(Aspect_DisplayConnection) aDispConnection = myViewer->GetContext()->CurrentViewer()->Driver()->GetDisplayConnection();
+  Handle(Aspect_Window) aWnd = new Xw_Window (aDispConnection, aWindowHandle);
+#elif defined (__APPLE__)
   NSView* aViewHandle = (NSView*)winId();
   Handle(Aspect_Window) aWnd = new Cocoa_Window (aViewHandle);
 #else
-  Window aWindowHandle = (Window)winId();
-  Handle(Aspect_DisplayConnection) aDispConnection = myViewer->GetContext()->CurrentViewer()->Driver()->GetDisplayConnection();
-  Handle(Aspect_Window) aWnd = new Xw_Window (aDispConnection, aWindowHandle);
+  //
 #endif
   myViewer->SetWindow (aWnd);
 

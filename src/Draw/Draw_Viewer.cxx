@@ -30,7 +30,7 @@ static const Standard_Real DRAWINFINITE = 1e50;
 Standard_EXPORT Standard_Boolean Draw_Bounds = Standard_True;
 extern Standard_Boolean Draw_Batch;
 const Standard_Integer MAXSEGMENT = 1000;
-Segment segm[MAXSEGMENT];
+Draw_XSegment segm[MAXSEGMENT];
 static int nbseg=0;
 static Draw_View* curview = NULL;
 static Standard_Integer curviewId = 0;
@@ -943,12 +943,17 @@ Draw_Display Draw_Viewer::MakeDisplay (const Standard_Integer id) const
 //function : Select
 //purpose  :
 //=======================================================================
-
-void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_Integer& Y,
-			  Standard_Integer& Button, Standard_Boolean wait)
+void Draw_Viewer::Select (Standard_Integer& theId,
+                          Standard_Integer& theX, Standard_Integer& theY,
+                          Standard_Integer& theButton,
+                          Standard_Boolean  theToWait)
 {
-  if (Draw_Batch) return;
-  id = X = Y = Button = 0;
+  if (Draw_Batch)
+  {
+    return;
+  }
+
+  theId = theX = theY = theButton = 0;
   Standard_Boolean hasView = Standard_False;
   for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
   {
@@ -965,105 +970,142 @@ void Draw_Viewer::Select (Standard_Integer& id, Standard_Integer& X, Standard_In
     return;
   }
   Flush();
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  if (!wait) {
-    if (id >=0 && id < MAXVIEW) {
-      if (myViews[id]) myViews[id]->Wait(wait);
+
+#ifdef _WIN32
+  HANDLE hWnd = NULL;
+
+  theId = MAXVIEW; //:abv 29.05.02: cycle for working in console mode
+  while (theId >= MAXVIEW)
+  {
+    if (theToWait)
+    {
+      Draw_Window::SelectWait (hWnd, theX, theY, theButton);
+    }
+    else
+    {
+      Draw_Window::SelectNoWait (hWnd, theX, theY, theButton);
+    }
+
+    // Recherche du numero de la vue grace au HANDLE
+    for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
+    {
+      if (myViews[aViewIter] != NULL
+       && myViews[aViewIter]->IsEqualWindows (hWnd))
+      {
+        theId = aViewIter;
+      }
     }
   }
-  else {
-    for(int i=0 ; i<MAXVIEW ; i++)
-      if (myViews[i])  myViews[i]->Wait(wait);
+  theX =  theX - myViews[theId]->GetDx();
+  theY = -theY - myViews[theId]->GetDy();
+#elif defined(HAVE_XLIB)
+  if (!theToWait)
+  {
+    if (theId >= 0 && theId < MAXVIEW)
+    {
+      if (myViews[theId] != NULL)
+      {
+        myViews[theId]->Wait (theToWait);
+      }
+    }
+  }
+  else
+  {
+    for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
+    {
+      if (myViews[aViewIter] != NULL)
+      {
+        myViews[aViewIter]->Wait (theToWait);
+      }
+    }
   }
 
   Standard_Boolean again = Standard_True;
-  while (again) {
-
-    Event ev;
+  while (again)
+  {
+    Draw_Window::Draw_XEvent ev;
     ev.type = 0;
-
-    GetNextEvent(ev);
-
-    switch (ev.type) {
-
-    case ButtonPress :
-      Standard_Integer iv;
-      for (iv = 0; iv < MAXVIEW; iv++) {
-	if (myViews[iv]) {
-	  if (myViews[iv]->win == ev.window)
-	    break;
-	}
+    Draw_Window::GetNextEvent (ev);
+    switch (ev.type)
+    {
+      case ButtonPress:
+      {
+        Standard_Integer aViewIter = 0;
+        for (; aViewIter < MAXVIEW; ++aViewIter)
+        {
+          if (myViews[aViewIter] != NULL
+           && myViews[aViewIter]->IsEqualWindows (ev.window))
+          {
+            break;
+          }
+        }
+        if (theToWait || theId == aViewIter)
+        {
+          if (aViewIter < MAXVIEW)
+          {
+            theId = aViewIter;
+            theX = ev.x;
+            theY = ev.y;
+            theButton = ev.button;
+          }
+          else
+          {
+            theId = -1;
+          }
+          again = Standard_False;
+        }
+        break;
       }
-      if (wait || id == iv) {
-	if (iv < MAXVIEW) {
-	  id = iv;
-	  X = ev.x;
-	  Y = ev.y;
-	  Button = ev.button;
-	}
-	else {
-	  id = -1;
-	}
-	again = Standard_False;
+      case MotionNotify:
+      {
+        if (theToWait)
+        {
+          break;
+        }
+        theX = ev.x;
+        theY = ev.y;
+        theButton = 0;
+        again = Standard_False;
+        break;
       }
-      break;
-
-    case MotionNotify :
-      if (wait) break;
-      X = ev.x;
-      Y = ev.y;
-      Button = 0;
-      again = Standard_False;
-      break;
     }
   }
 
-  if (id != -1) {
-    X =  X - myViews[id]->GetDx();
-    Y = -Y - myViews[id]->GetDy();
-  }
-  if (!wait) myViews[id]->Wait(!wait);
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  Standard_Integer aWindowNumber;
-
-  id = MAXVIEW;
-  while (id >= MAXVIEW)
+  if (theId != -1)
   {
-    GetNextEvent(wait, aWindowNumber, X, Y, Button);
-
-    if (Y < 0)
+    theX =  theX - myViews[theId]->GetDx();
+    theY = -theY - myViews[theId]->GetDy();
+  }
+  if (!theToWait)
+  {
+    myViews[theId]->Wait (!theToWait);
+  }
+#elif defined(__APPLE__)
+  theId = MAXVIEW;
+  while (theId >= MAXVIEW)
+  {
+    Standard_Integer aWindowNumber = 0;
+    Draw_Window::GetNextEvent (theToWait, aWindowNumber, theX, theY, theButton);
+    if (theY < 0)
     {
       continue; // mouse clicked on window title
     }
 
-    for (Standard_Integer anIter = 0; anIter < MAXVIEW; anIter++)
+    for (Standard_Integer aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
     {
-      if (myViews[anIter] && myViews[anIter]->IsEqualWindows (aWindowNumber))
+      if (myViews[aViewIter] != NULL
+       && myViews[aViewIter]->IsEqualWindows (aWindowNumber))
       {
-        id = anIter;
+        theId = aViewIter;
       }
     }
   }
 
-  X =  X - myViews[id]->GetDx();
-  Y = -Y - myViews[id]->GetDy();
-
+  theX =  theX - myViews[theId]->GetDx();
+  theY = -theY - myViews[theId]->GetDy();
 #else
-  HANDLE hWnd;
-
-  id = MAXVIEW; //:abv 29.05.02: cycle for working in console mode
-  while ( id >= MAXVIEW ) {
-    if (wait)
-      Draw_Window::SelectWait(hWnd, X, Y, Button);
-    else
-      Draw_Window::SelectNoWait(hWnd, X, Y, Button);
-
-    // Recherche du numero de la vue grace au HANDLE
-    for(int i=0 ; i<MAXVIEW ; i++)
-      if (myViews[i] && myViews[i]->win == hWnd )  id = i;
-  }
-  X =  X - myViews[id]->GetDx();
-  Y = -Y - myViews[id]->GetDy();
+  // not implemented
+  (void )theToWait;
 #endif
 }
 

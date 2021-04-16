@@ -373,10 +373,12 @@ set (USE_RAPIDJSON OFF CACHE BOOL "${USE_RAPIDJSON_DESCR}")
 set (USE_TBB       OFF CACHE BOOL "${USE_TBB_DESCR}")
 set (USE_EIGEN     OFF CACHE BOOL "${USE_EIGEN_DESCR}")
 
-if (APPLE)
-  set (USE_GLX OFF CACHE BOOL "${USE_GLX_DESCR}")
+if (WIN32 OR ANDROID OR IOS OR EMSCRIPTEN)
+  # no Xlib
+elseif (APPLE)
+  set (USE_XLIB OFF CACHE BOOL "${USE_XLIB_DESCR}")
 else()
-  set (USE_GLX OFF)
+  set (USE_XLIB ON  CACHE BOOL "${USE_XLIB_DESCR}")
 endif()
 
 if (WIN32)
@@ -503,6 +505,7 @@ endif()
 OCCT_IS_PRODUCT_REQUIRED (CSF_FreeImagePlus CAN_USE_FREEIMAGE)
 OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
 OCCT_IS_PRODUCT_REQUIRED (CSF_TclTkLibs CAN_USE_TK)
+OCCT_IS_PRODUCT_REQUIRED (CSF_XwLibs CAN_USE_XLIB)
 OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE CAN_USE_FREETYPE)
 OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlLibs CAN_USE_OPENGL)
 OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlesLibs CAN_USE_GLES2)
@@ -537,6 +540,19 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_TK")
 endif()
 
+# Xlib
+if (CAN_USE_XLIB)
+  if (USE_XLIB)
+    message (STATUS "Info: Xlib is used by OCCT")
+    add_definitions (-DHAVE_XLIB)
+    if (APPLE)
+      OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/glx")
+    endif()
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_XLIB")
+endif()
+
 # FreeType
 if (CAN_USE_FREETYPE)
   if (USE_FREETYPE)
@@ -569,12 +585,6 @@ else()
     list (REMOVE_ITEM BUILD_TOOLKITS TKIVtk)
     list (REMOVE_ITEM BUILD_TOOLKITS TKIVtkDraw)
   endif()
-endif()
-
-# GLX
-if (USE_GLX)
-  add_definitions (-DMACOSX_USE_GLX)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/glx")
 endif()
 
 # FREEIMAGE
@@ -1232,7 +1242,7 @@ if (WIN32)
   set (SET_OpenCASCADE_WITH_D3D "set (OpenCASCADE_WITH_D3D       ${USE_D3D})")
 endif()
 if (APPLE)
-  set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_GLX})")
+  set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_XLIB})")
 endif()
 
 # Configure and install cmake config file

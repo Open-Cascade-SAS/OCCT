@@ -216,53 +216,75 @@ public:
     return myIsInitialized;
   }
 
-#if defined(HAVE_EGL)
   //! Initialize class from specified surface and rendering context. Method should be called only once.
+  //! The meaning of parameters is platform-specific.
+  //!
+  //! EGL:
+  //! @code
+  //!   Handle(Aspect_Window) theAspWin;
+  //!   EGLSurface theEglSurf = eglCreateWindowSurface (theEglDisp, anEglConfig, (EGLNativeWindowType )theAspWin->NativeHandle(), NULL);
+  //!   EGLDisplay theEglDisp = eglGetDisplay (EGL_DEFAULT_DISPLAY);
+  //!   EGLContext theEglCtx  = eglCreateContext ((EGLDisplay )theEglDisp, anEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs);
+  //!   Handle(OpenGl_Context) aGlCtx = new OpenGl_Context();
+  //!   aGlCtx->Init ((Aspect_Drawable )theEglSurf, (Aspect_Display )theEglDisp,  (Aspect_RenderingContext )theEglCtx);
+  //! @endcode
+  //!
+  //! Windows (Win32):
+  //! @code
+  //!   Handle(WNT_Window) theAspWin;
+  //!   HWND  theWindow   = (HWND )theAspWin->NativeHandle();
+  //!   HDC   theDevCtx   = GetDC(theWindow);
+  //!   HGLRC theGContext = wglCreateContext (theDevCtx);
+  //!   Handle(OpenGl_Context) aGlCtx = new OpenGl_Context();
+  //!   aGlCtx->Init ((Aspect_Drawable )theWindow, (Aspect_Display )theDevCtx, (Aspect_RenderingContext )theGContext);
+  //! @endcode
+  //!
+  //! Linux (Xlib):
+  //! @code
+  //!   Handle(Xw_Window) theAspWin;
+  //!   Window     theXWindow = (Window )theAspWin->NativeHandle();
+  //!   Display*   theXDisp   = (Display* )theAspWin->DisplayConnection()->GetDisplayAspect();
+  //!   GLXContext theGlxCtx  = glXCreateContext (theXDisp, aVis.get(), NULL, GL_TRUE);
+  //!   Handle(OpenGl_Context) aGlCtx = new OpenGl_Context();
+  //!   aGlCtx->Init ((Aspect_Drawable )theXWindow, (Aspect_Display )theXDisp,  (Aspect_RenderingContext )theGlxCtx);
+  //! @endcode
+  //!
+  //! @param theSurface [in] surface / window          (EGLSurface | HWND  | GLXDrawable/Window)
+  //! @param theDisplay [in] display or device context (EGLDisplay | HDC   | Display*)
+  //! @param theContext [in] rendering context         (EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*)
+  //! @param theIsCoreProfile [in] flag indicating that passed GL rendering context has been created with Core Profile
   //! @return false if OpenGL context can not be bound to specified surface
-  Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theEglSurface,
-                                         const Aspect_Display          theEglDisplay,
-                                         const Aspect_RenderingContext theEglContext,
-                                         const Standard_Boolean        theIsCoreProfile = Standard_False);
-#elif defined(_WIN32)
-  //! Initialize class from specified window and rendering context. Method should be called only once.
-  //! @return false if OpenGL context can not be bound to specified window
-  Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
-                                         const Aspect_Handle           theWindowDC,
-                                         const Aspect_RenderingContext theGContext,
+  Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theSurface,
+                                         const Aspect_Display          theDisplay,
+                                         const Aspect_RenderingContext theContext,
                                          const Standard_Boolean        theIsCoreProfile = Standard_False);
 
-  //! @return the window handle (HWND) currently bound to this OpenGL context
-  inline Aspect_Handle Window() const
-  {
-    return myWindow;
-  }
+  //! Return window handle currently bound to this OpenGL context (EGLSurface | HWND | GLXDrawable).
+  Aspect_Drawable Window() const { return myWindow; }
 
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  //! Return display / window device context (EGLDisplay | HDC | Display*).
+  Aspect_Display GetDisplay() const { return myDisplay; }
+
+  //! Return rendering context (EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*).
+  Aspect_RenderingContext RenderingContext() const { return myGContext; }
+
+#if defined(__APPLE__) && !defined(HAVE_XLIB)
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 
   //! Initialize class from specified OpenGL ES context (EAGLContext). Method should be called only once.
-  Standard_EXPORT Standard_Boolean Init (EAGLContext*                  theGContext,
-                                         const Standard_Boolean        theIsCoreProfile = Standard_False);
-  #else
-
-  //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only once.
-  Standard_EXPORT Standard_Boolean Init (NSOpenGLContext*              theGContext,
-                                         const Standard_Boolean        theIsCoreProfile = Standard_False);
-  #endif
-#else
-
-  //! Initialize class from specified window and rendering context. Method should be called only once.
-  //! @return false if OpenGL context can not be bound to specified window
-  Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theWindow,
-                                         const Aspect_Display          theDisplay,
-                                         const Aspect_RenderingContext theGContext,
-                                         const Standard_Boolean        theIsCoreProfile = Standard_False);
-
-  //! @return the window handle (GLXDrawable) currently bound to this OpenGL context
-  inline Aspect_Drawable Window() const
+  Standard_Boolean Init (EAGLContext*           theGContext,
+                         const Standard_Boolean theIsCoreProfile = Standard_False)
   {
-    return myWindow;
+    return Init ((Aspect_Drawable )0, (Aspect_Display )0, (Aspect_RenderingContext )theGContext, theIsCoreProfile);
   }
+  #else
+  //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only once.
+  Standard_Boolean Init (NSOpenGLContext*       theGContext,
+                         const Standard_Boolean theIsCoreProfile = Standard_False)
+  {
+    return Init ((Aspect_Drawable )0, (Aspect_Display )0, (Aspect_RenderingContext )theGContext, theIsCoreProfile);
+  }
+  #endif
 #endif
 
   //! Read OpenGL version information from active context.
@@ -1070,25 +1092,9 @@ public: //! @name public properties tracking current state
 
 private: // system-dependent fields
 
-#if defined(HAVE_EGL)
-  Aspect_Drawable         myWindow;   //!< EGL surface                   : EGLSurface
-  Aspect_Display          myDisplay;  //!< EGL connection to the Display : EGLDisplay
-  Aspect_RenderingContext myGContext; //!< EGL rendering context         : EGLContext
-#elif defined(_WIN32)
-  Aspect_Handle           myWindow;   //!< window handle (owner of GL context) : HWND
-  Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
-  Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-  EAGLContext*            myGContext;    //!< Rendering Context handle
-  #else
-  NSOpenGLContext*        myGContext; //!< Rendering Context handle
-  #endif
-#else
-  Aspect_Drawable         myWindow;   //!< window handle (owner of GL context) : GLXDrawable
-  Aspect_Display          myDisplay;  //!< connection to the X-server : Display*
-  Aspect_RenderingContext myGContext; //!< X-GLX rendering context : GLXContext
-#endif
+  Aspect_Drawable         myWindow;   //!< surface           EGLSurface | HWND  | GLXDrawable
+  Aspect_Display          myDisplay;  //!< display           EGLDisplay | HDC   | Display*
+  Aspect_RenderingContext myGContext; //!< rendering context EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*
 
 private: // context info
 

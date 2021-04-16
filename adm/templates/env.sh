@@ -3,6 +3,8 @@
 # go to the script directory
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
 
+aSystem=`uname -s`
+
 # Reset values
 export CASROOT="__CASROOT__"
 export CASDEB=""
@@ -20,7 +22,10 @@ export HAVE_LIBLZMA="false";
 export HAVE_RAPIDJSON="false";
 export HAVE_OPENVR="false";
 export HAVE_E57="false";
-export MACOSX_USE_GLX="false";
+export HAVE_XLIB="true";
+if [ "$aSystem" == "Darwin" ]; then
+  export HAVE_XLIB="false";
+fi
 export CSF_OPT_INC=""
 export CSF_OPT_LIB32=""
 export CSF_OPT_LIB64=""
@@ -60,7 +65,6 @@ else
   export ARCH="64";
 fi
 
-aSystem=`uname -s`
 if [ "$aSystem" == "Darwin" ]; then
   export WOKSTATION="mac";
   export ARCH="64";
@@ -113,8 +117,7 @@ if [ "$HAVE_LIBLZMA"   == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -D
 if [ "$HAVE_RAPIDJSON" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_RAPIDJSON"; fi
 if [ "$HAVE_OPENVR"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENVR"; fi
 if [ "$HAVE_E57"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_E57"; fi
-# Option to compile OCCT with X11 libs on Mac OS X
-if [ "$MACOSX_USE_GLX" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DMACOSX_USE_GLX"; fi
+if [ "$HAVE_XLIB"      == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_XLIB"; fi
 
 # To split string into array
 aDelimBack=$IFS

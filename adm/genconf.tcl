@@ -496,8 +496,8 @@ ttk::label    .myFrame.myChecks.myFFmpegLbl     -text "Use FFmpeg"
 checkbutton   .myFrame.myChecks.myRapidJsonCheck -offvalue "false" -onvalue "true" -variable HAVE_RAPIDJSON -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myRapidJsonLbl   -text "Use RapidJSON"
 
-checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
-ttk::label    .myFrame.myChecks.myMacGLXLbl     -text "Use X11 for windows drawing"
+checkbutton   .myFrame.myChecks.myXLibCheck     -offvalue "false" -onvalue "true" -variable HAVE_XLIB
+ttk::label    .myFrame.myChecks.myXLibLbl       -text "Use X11 for windows drawing"
 ttk::label    .myFrame.myChecks.myVtkLbl        -text "Use VTK"
 checkbutton   .myFrame.myChecks.myVtkCheck      -offvalue "false" -onvalue "true" -variable HAVE_VTK       -command wokdep:gui:UpdateList
 
@@ -632,9 +632,9 @@ grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
 if { "$::tcl_platform(platform)" == "windows" } {
   grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 4 -sticky e
   grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 5 -sticky w
-} elseif { "$::tcl_platform(os)" == "Darwin" } {
-  grid .myFrame.myChecks.myMacGLXCheck -row $aCheckRowIter -column 4 -sticky e
-  grid .myFrame.myChecks.myMacGLXLbl   -row $aCheckRowIter -column 5 -sticky w
+} else {
+  grid .myFrame.myChecks.myXLibCheck   -row $aCheckRowIter -column 4 -sticky e
+  grid .myFrame.myChecks.myXLibLbl     -row $aCheckRowIter -column 5 -sticky w
 }
 grid .myFrame.myChecks.myLzmaCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myLzmaLbl       -row $aCheckRowIter -column 7 -sticky w

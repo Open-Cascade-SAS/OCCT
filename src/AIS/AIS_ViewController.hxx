@@ -424,14 +424,14 @@ public: //! @name resize events
 
   //! Handle focus event.
   //! Default implementation does nothing.
-  virtual void ProcessFocus (bool theIsActivated)
+  virtual void ProcessFocus (bool theIsActivated) Standard_OVERRIDE
   {
     (void )theIsActivated;
   }
 
   //! Handle window close event.
   //! Default implementation does nothing.
-  virtual void ProcessClose() {}
+  virtual void ProcessClose() Standard_OVERRIDE {}
 
 public:
 

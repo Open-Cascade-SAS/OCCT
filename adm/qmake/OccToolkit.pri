@@ -59,11 +59,15 @@ win32 {
 } else {
   CSF_dl = -ldl
   CSF_ThreadLibs = -lpthread -lrt
-  CSF_OpenGlLibs = -lGL
   CSF_OpenGlesLibs = -lEGL -lGLESv2
-  CSF_TclTkLibs  = -lX11 -ltk8.6
-  CSF_XwLibs     = -lX11 -lXext -lXmu -lXi
-  CSF_MotifLibs  = -lX11
+  CSF_TclTkLibs  = -ltk8.6
+  HAVE_XLIB {
+    CSF_OpenGlLibs = -lGL
+    CSF_XwLibs = -lX11 -lXext -lXmu -lXi
+    CSF_MotifLibs  = -lX11
+  } else {
+    CSF_OpenGlLibs = -lGL -lEGL
+  }
   HAVE_FREETYPE  { CSF_fontconfig = -lfontconfig }
 }
 

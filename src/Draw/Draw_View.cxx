@@ -25,37 +25,12 @@ Draw_View::Draw_View(Standard_Integer theId,
                      Standard_Integer theX,
                      Standard_Integer theY,
                      Standard_Integer theWidth,
-                     Standard_Integer theHeight)
-: Draw_Window("Win", theX, theY, theWidth, theHeight),
-  myId       (theId),
-  myViewer   (theViewer),
-  myIsPers   (Standard_False),
-  myIs2D     (Standard_False),
-  myFocalDistance(0.0),
-  myZoom     (0.0),
-  myDx       (0),
-  myDy       (0),
-  myFrameX0  (0),
-  myFrameY0  (0),
-  myFrameX1  (0),
-  myFrameY1  (0)
-{
-  memset (myType, 0, sizeof (myType));
-}
-
-//=======================================================================
-//function : Draw_View
-//purpose  : Constructor
-//=======================================================================
-#if defined(_WIN32) || defined(__WIN32__)
-Draw_View::Draw_View(Standard_Integer theId,
-                     Draw_Viewer*     theViewer,
-                     Standard_Integer theX,
-                     Standard_Integer theY,
-                     Standard_Integer theWidth,
                      Standard_Integer theHeight,
-                     HWND             theWindow)
-: Draw_Window("Win", theX, theY, theWidth, theHeight, theWindow),
+                     Aspect_Drawable  theWindow)
+: Draw_Window ("Win",
+               NCollection_Vec2<int> (theX, theY),
+               NCollection_Vec2<int> (theWidth, theHeight),
+               0, theWindow),
   myId       (theId),
   myViewer   (theViewer),
   myIsPers   (Standard_False),
@@ -72,56 +47,28 @@ Draw_View::Draw_View(Standard_Integer theId,
   memset (myType, 0, sizeof (myType));
 }
 
-//=======================================================================
-//function : Draw_View
-//purpose  : Constructor
-//=======================================================================
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-Draw_View::Draw_View(Standard_Integer theId,
-                     Draw_Viewer*     theViewer,
-                     Standard_Integer theX,
-                     Standard_Integer theY,
-                     Standard_Integer theWidth,
-                     Standard_Integer theHeight,
-                     NSWindow*        theWindow)
-: Draw_Window(theWindow, "Win", theX, theY, theWidth, theHeight),
-  myId       (theId),
-  myViewer   (theViewer),
-  myIsPers   (Standard_False),
-  myIs2D     (Standard_False),
-  myFocalDistance(0.0),
-  myZoom     (0.0),
-  myDx       (0),
-  myDy       (0),
-  myFrameX0  (0),
-  myFrameY0  (0),
-  myFrameX1  (0),
-  myFrameY1  (0)
+//! Find window by it's XID - applicable only to X11.
+static Aspect_Drawable findWindow (const char* theWindow)
 {
-  memset (myType, 0, sizeof (myType));
-}
-#endif
-
-
-//=======================================================================
-//function : Draw_View
-//purpose  : Constructor
-//=======================================================================
-#if defined(_WIN32) || defined (__WIN32__) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
-Draw_View::Draw_View(Standard_Integer /*theId*/,
-                     Draw_Viewer*     /*theViewer*/,
-                     const char*      /*theTitle*/)
-: Draw_Window  (),
-  myId         (-1),
-  myViewer     (NULL),
+  Aspect_Drawable aWindow = 0;
+#ifdef HAVE_XLIB
+  sscanf (theWindow, "%lx", &aWindow);
 #else
+  (void )theWindow;
+#endif
+  return aWindow;
+}
+
+//=======================================================================
+//function : Draw_View
+//purpose  : Constructor
+//=======================================================================
 Draw_View::Draw_View(Standard_Integer theId,
                      Draw_Viewer*     theViewer,
                      const char*      theTitle)
-: Draw_Window  (theTitle),
+: Draw_Window  (theTitle, NCollection_Vec2<int>(0), NCollection_Vec2<int>(50), 0, findWindow (theTitle)),
   myId         (theId),
   myViewer     (theViewer),
-#endif
   myIsPers     (Standard_False),
   myIs2D       (Standard_False),
   myFocalDistance(0.0),

@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#if defined(__APPLE__) && !defined(HAVE_XLIB)
 
 #import <Cocoa/Cocoa.h>
 
@@ -121,52 +121,23 @@ Standard_Real Draw_RGBColorsArray[MAXCOLOR][3] = {{1.0,  1.0,  1.0},
 //function : Draw_Window
 //purpose  :
 //=======================================================================
-Draw_Window::Draw_Window() :
-  myWindow (NULL),
+Draw_Window::Draw_Window (const char* theTitle,
+                          const NCollection_Vec2<int>& theXY,
+                          const NCollection_Vec2<int>& theSize,
+                          Aspect_Drawable theParent,
+                          Aspect_Drawable theWindow)
+: myWindow (NULL),
   myView (NULL),
   myImageBuffer (NULL),
-  myUseBuffer (Standard_False),
-  nextWindow (firstWindow),
-  previousWindow (NULL)
+  myCurrentColor (0),
+  myUseBuffer (Standard_False)
 {
-  if (firstWindow != NULL) firstWindow->previousWindow = this;
-  firstWindow = this;
-}
-
-//=======================================================================
-//function : Draw_Window
-//purpose  :
-//=======================================================================
-Draw_Window::Draw_Window (Standard_CString theTitle,
-                          const Standard_Integer& theXLeft, const Standard_Integer& theYTop,
-                          const Standard_Integer& theWidth, const Standard_Integer& theHeight):
-  myWindow (NULL),
-  myView (NULL),
-  myImageBuffer (NULL),
-  myUseBuffer (Standard_False),
-  nextWindow (firstWindow),
-  previousWindow (NULL)
-{
-  if (firstWindow != NULL) firstWindow->previousWindow = this;
-  firstWindow = this;
-  Init (theXLeft, theYTop, theWidth, theHeight);
-  SetTitle (theTitle);
-}
-
-Draw_Window::Draw_Window (NSWindow*               theWindow, Standard_CString        theTitle,
-                          const Standard_Integer& theXLeft,  const Standard_Integer& theYTop,
-                          const Standard_Integer& theWidth,  const Standard_Integer& theHeight):
-  myWindow (NULL),
-  myView (NULL),
-  myImageBuffer (NULL),
-  myUseBuffer (Standard_False),
-  nextWindow (firstWindow),
-  previousWindow (NULL)
-{
-  myWindow = [theWindow retain];
-  if (firstWindow != NULL) firstWindow->previousWindow = this;
-  firstWindow = this;
-  Init (theXLeft, theYTop, theWidth, theHeight);
+  (void )theParent;
+  if (theWindow != 0)
+  {
+    myWindow = [(NSWindow* )theWindow retain];
+  }
+  init (theXY, theSize);
   SetTitle (theTitle);
 }
 
@@ -176,20 +147,6 @@ Draw_Window::Draw_Window (NSWindow*               theWindow, Standard_CString   
 //=======================================================================
 Draw_Window::~Draw_Window()
 {
-  if (previousWindow != NULL)
-  {
-    previousWindow->nextWindow = nextWindow;
-  }
-  else
-  {
-    firstWindow = nextWindow;
-  }
-
-  if (nextWindow != NULL)
-  {
-    nextWindow->previousWindow = previousWindow;
-  }
-
   if (myWindow != NULL)
   { 
     [myWindow release];
@@ -210,20 +167,20 @@ Draw_Window::~Draw_Window()
 }
 
 //=======================================================================
-//function : Init
+//function : init
 //purpose  :
 //=======================================================================
-void Draw_Window::Init (const Standard_Integer& theXLeft, const Standard_Integer& theYTop,
-                        const Standard_Integer& theWidth, const Standard_Integer& theHeight)
+void Draw_Window::init (const NCollection_Vec2<int>& theXY,
+                        const NCollection_Vec2<int>& theSize)
 {
   Cocoa_LocalPool aLocalPool;
 
   // converting left-bottom coordinate to left-top coordinate
-  Standard_Integer anYTop = getScreenBottom() - theYTop - theHeight;
+  Standard_Integer anYTop = getScreenBottom() - theXY.y() - theSize.y();
 
   if (myWindow == NULL)
   {
-    NSRect     aRectNs   = NSMakeRect (theXLeft, anYTop, theWidth, theHeight);
+    NSRect     aRectNs   = NSMakeRect (theXY.x(), anYTop, theSize.x(), theSize.y());
     NSUInteger aWinStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable;
 
     myWindow = [[NSWindow alloc] initWithContentRect: aRectNs
@@ -269,8 +226,8 @@ void Draw_Window::InitBuffer()
 //function : SetPosition
 //purpose  :
 //=======================================================================
-void Draw_Window::SetPosition (const Standard_Integer& theNewXpos,
-                               const Standard_Integer& theNewYpos)
+void Draw_Window::SetPosition (Standard_Integer theNewXpos,
+                               Standard_Integer theNewYpos)
 {
   NSPoint aNewPosition = NSMakePoint (theNewXpos, theNewYpos);
   [myWindow setFrameTopLeftPoint: aNewPosition];
@@ -280,8 +237,8 @@ void Draw_Window::SetPosition (const Standard_Integer& theNewXpos,
 //function : SetDimension
 //purpose  :
 //=======================================================================
-void Draw_Window::SetDimension (const Standard_Integer& theNewWidth,
-                                const Standard_Integer& theNewHeight)
+void Draw_Window::SetDimension (Standard_Integer theNewWidth,
+                                Standard_Integer theNewHeight)
 {
   NSRect aWindowRect = [myWindow frame];
   Standard_Integer aNewY = aWindowRect.origin.y + aWindowRect.size.height - theNewHeight;
@@ -347,7 +304,7 @@ TCollection_AsciiString Draw_Window::GetTitle() const
 //function :DefineColor
 //purpose  :
 //=======================================================================
-Standard_Boolean Draw_Window::DefineColor (const Standard_Integer&, Standard_CString)
+Standard_Boolean Draw_Window::DefineColor (const Standard_Integer , Standard_CString )
 {
   return Standard_True; // unused
 }
@@ -452,7 +409,8 @@ void Draw_Window::Flush()
 //function : DrawString
 //purpose  :
 //=======================================================================
-void Draw_Window::DrawString (const Standard_Integer& theXLeft, const Standard_Integer& theYTop, char* theText)
+void Draw_Window::DrawString (Standard_Integer theXLeft, Standard_Integer theYTop,
+                              const char* theText)
 {
   Cocoa_LocalPool aLocalPool;
 
@@ -477,7 +435,8 @@ void Draw_Window::DrawString (const Standard_Integer& theXLeft, const Standard_I
 //function : DrawSegments
 //purpose  :
 //=======================================================================
-void Draw_Window::DrawSegments (Segment *theSegment, const Standard_Integer& theNumberOfElements)
+void Draw_Window::DrawSegments (const Draw_XSegment* theSegments,
+                                Standard_Integer theNumberOfElements)
 {
   Cocoa_LocalPool aLocalPool;
 
@@ -498,11 +457,12 @@ void Draw_Window::DrawSegments (Segment *theSegment, const Standard_Integer& the
   }
 
 
-  for (; anIter < theNumberOfElements; anIter++)
+  for (; anIter < theNumberOfElements; ++anIter)
   {
-    NSPoint aPoint = NSMakePoint (theSegment[anIter].myXStart, myImageBuffer.size.height - theSegment[anIter].myYStart);
+    const Draw_XSegment& aSeg = theSegments[anIter];
+    NSPoint aPoint = NSMakePoint (aSeg[0].x(), myImageBuffer.size.height - aSeg[0].y());
     [aPath moveToPoint: aPoint];
-    aPoint = NSMakePoint (theSegment[anIter].myXEnd, myImageBuffer.size.height - theSegment[anIter].myYEnd);
+    aPoint = NSMakePoint (aSeg[1].x(), myImageBuffer.size.height - aSeg[1].y());
     [aPath lineToPoint: aPoint];
   }
 
@@ -540,7 +500,7 @@ void Draw_Window::Redraw()
 //function : SetColor
 //purpose  :
 //=======================================================================
-void Draw_Window::SetColor (const Standard_Integer& theColor)
+void Draw_Window::SetColor (Standard_Integer theColor)
 {
   myCurrentColor = theColor;
 }
@@ -549,7 +509,7 @@ void Draw_Window::SetColor (const Standard_Integer& theColor)
 //function : SetMode
 //purpose  :
 //=======================================================================
-void Draw_Window::SetMode (const Standard_Integer& theMode)
+void Draw_Window::SetMode (Standard_Integer theMode)
 {
   // unsupported
   (void )theMode;
@@ -597,11 +557,11 @@ Standard_Boolean Draw_Window::IsEqualWindows (const Standard_Integer& theWindowN
   return ([myWindow windowNumber] == theWindowNumber);
 }
 
-void GetNextEvent (Standard_Boolean  theWait,
-                   Standard_Integer& theWindowNumber,
-                   Standard_Integer& theX,
-                   Standard_Integer& theY,
-                   Standard_Integer& theButton)
+void Draw_Window::GetNextEvent (Standard_Boolean  theWait,
+                                Standard_Integer& theWindowNumber,
+                                Standard_Integer& theX,
+                                Standard_Integer& theY,
+                                Standard_Integer& theButton)
 {
   Cocoa_LocalPool aLocalPool;
 
@@ -642,4 +602,5 @@ void GetNextEvent (Standard_Boolean  theWait,
     theButton = 0;
   }
 }
+
 #endif // __APPLE__

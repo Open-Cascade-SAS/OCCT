@@ -17,17 +17,16 @@
 #ifdef _WIN32
 
 #include <windows.h>
-#include <DrawRessource.h>
-#include <init.h>
+
 #include <Draw_Window.hxx>
 
-#include <MainWindow.h>
-#include <CommandWindow.h>
+#include "Draw_WNTCommandWindow.pxx"
+#include "Draw_WNTInit.pxx"
+#include "Draw_WNTMainWindow.pxx"
+#include "Draw_WNTRessource.pxx"
 
 Standard_Boolean Draw_Interprete(const char* command); // Implemented in Draw.cxx
 extern Standard_Boolean Draw_IsConsoleSubsystem;
-
-//extern "C" int  compat_unlink(const char *fname); // Implemente dans TCL
 
 /*--------------------------------------------------------*\
 |  CLIENT WINDOW PROCEDURE
@@ -42,7 +41,7 @@ LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam
     {
       CreateProc (hWndFrame);
       HWND hWndClient = (HWND )GetWindowLongPtrW (hWndFrame, CLIENTWND);
-      DrawWindow::hWndClientMDI = hWndClient;
+      Draw_Window::hWndClientMDI = hWndClient;
       if (!Draw_IsConsoleSubsystem)
       {
         CreateCommandWindow (hWndFrame, 0);
@@ -82,10 +81,9 @@ BOOL CreateProc(HWND hWndFrame)
   return(TRUE);
 }
 
-
 /*--------------------------------------------------------------------------*\
 |  COMMAND PROCEDURE
-|  		Handler for message WM_COMMAND   
+|  		Handler for message WM_COMMAND
 |     It is used when Draw_IsConsoleSubsystem = Standard_False
 |     i.e. in non-console mode (see Draw_main() in Draw_Main.cxx).
 \*--------------------------------------------------------------------------*/
@@ -138,7 +136,6 @@ LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*
   return 0;
 }
 
-
 /*--------------------------------------------------------------------------*\
 |  CLIENT DESTROY PROCEDURE
 |     Handler for message WM_DESTROY.
@@ -152,4 +149,3 @@ VOID DestroyProc(HWND hWnd)
   PostQuitMessage(0);
 }
 #endif
-

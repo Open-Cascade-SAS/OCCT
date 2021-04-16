@@ -17,211 +17,78 @@
 #ifndef Draw_Window_HeaderFile
 #define Draw_Window_HeaderFile
 
+#if defined(_WIN32)
+  #include <windows.h>
+#endif
+
+#include <Aspect_Drawable.hxx>
+#include <NCollection_Vec2.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#include <memory>
 
 const Standard_Integer MAXCOLOR = 15;
+
+//! Segment definition.
+struct Draw_XSegment
+{
+  NCollection_Vec2<short> Points[2]; // same as XSegment
+
+  NCollection_Vec2<short>&       operator[](int theIndex)       { return Points[theIndex]; }
+  const NCollection_Vec2<short>& operator[](int theIndex) const { return Points[theIndex]; }
+
+  void Init (Standard_Integer theXStart, Standard_Integer theYStart, Standard_Integer theXEnd, Standard_Integer theYEnd)
+  {
+    Points[0].SetValues ((short )theXStart, (short )theYStart);
+    Points[1].SetValues ((short )theXEnd,   (short )theYEnd);
+  }
+};
+
+#if defined(_WIN32)
+
+#define DRAWCLASS L"DRAWWINDOW"
+#define DRAWTITLE L"Draw View"
+
+enum console_semaphore_value
+{
+  STOP_CONSOLE,
+  WAIT_CONSOLE_COMMAND,
+  HAS_CONSOLE_COMMAND
+};
+
+// global variable describing console state
+extern console_semaphore_value volatile console_semaphore;
+
+// Console command buffer
+#define DRAW_COMMAND_SIZE 1000
+extern wchar_t console_command[DRAW_COMMAND_SIZE + 1];
+
+// PROCEDURE DE DRAW WINDOW
+Standard_EXPORT Standard_Boolean Init_Appli(HINSTANCE,HINSTANCE,int,HWND&);
+Standard_EXPORT void Run_Appli(HWND);
+Standard_EXPORT void Destroy_Appli(HINSTANCE);
+
+#else
+
+//! Run the application.
+//! interp will be called to interpret a command and return True if the command is complete.
+void Run_Appli (Standard_Boolean (*inteprete) (const char*));
+
+//! Initialize application.
+Standard_Boolean Init_Appli();
+
+//! Destroy application.
+void Destroy_Appli();
+
+#if defined(HAVE_XLIB)
 
 typedef unsigned long Window;
 typedef unsigned long Pixmap;
 typedef unsigned long Drawable;
 
-// Definition de la class Base_Window (Definie dans Draw_Window.cxx)
-//===================================
-struct Base_Window;
-
-// Definition de la classe Segment
-//================================
-struct Segment
-{
-  short xx1;
-  short yy1;
-  short xx2;
-  short yy2;
-
-  void Init(short x1, short y1, short x2, short y2) {
-    xx1 = x1; yy1 = y1; xx2 = x2; yy2 = y2;
-  }
-
-};
-
-// Definition de la structure Event
-//=================================
-typedef struct Event
-{
-  Standard_Integer type;
-  Window window;
-  Standard_Integer button;
-  Standard_Integer x;
-  Standard_Integer y;
-} Event;
-
-// Definition de la classe Draw_Window
-//====================================
-class Draw_Window
-{
-  public :
-
-    /**
-     * Type of the callback function that is to be passed to the method
-     * AddCallbackBeforeTerminate().
-     */
-    typedef void (*FCallbackBeforeTerminate)();
-
-    /**
-     * This method registers a callback function that will be called just before exit.
-     * This is useful especially for Windows platform, on which Draw is normally 
-     * self-terminated instead of exiting.
-     */
-    Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
-
-    /**
-     * Just in case method for un-registering a callback previously registered by
-     * AddCallbackBeforeTerminate()
-     */
-    Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
-
-    Draw_Window (); // the window is not initialized
-    Draw_Window (const char* title,
-		 Standard_Integer X, Standard_Integer Y = 0,
-		 Standard_Integer DX = 50, Standard_Integer DY = 50);
-
-    Draw_Window (Window mother);
-    Draw_Window (Window mother,char* title,
-		 Standard_Integer X = 0, Standard_Integer Y = 0,
-		 Standard_Integer DX = 50, Standard_Integer DY = 50);
-    Draw_Window(const char *window);
-
-    void Init (Standard_Integer X = 0, Standard_Integer Y = 0,
-	       Standard_Integer DX = 50, Standard_Integer DY = 50);
-
-    void Init (Window mother,
-	       Standard_Integer X = 0, Standard_Integer Y = 0,
-	       Standard_Integer DX = 50, Standard_Integer DY = 50);
-
-
-    void StopWinManager();
-
-    void SetPosition (Standard_Integer NewXpos,
-		      Standard_Integer NewYpos);
-
-    void SetDimension(Standard_Integer NewDx,
-		      Standard_Integer NewDy);
-
-    void GetPosition(Standard_Integer &PosX,
-		     Standard_Integer &PosY);
-
-    Standard_Integer HeightWin() const;
-    Standard_Integer WidthWin() const;
-
-    void SetTitle (const TCollection_AsciiString& theTitle);
-    TCollection_AsciiString GetTitle() const;
-
-    //! Return true if window is displayed on the screen.
-    bool IsMapped() const;
-    void DisplayWindow();
-    void Hide();
-    void Destroy();
-    void Clear();
-    void Wait(Standard_Boolean wait = Standard_True);
-
-    Drawable GetDrawable() const;
-    // Initializes off-screen image buffer according to current window size
-    void InitBuffer();
-
-    static Standard_Boolean DefineColor(const Standard_Integer, const char*);
-    void SetColor(int);
-    void SetMode(int);
-    void DrawString(int, int, char*);
-    void DrawSegments(Segment* ,int);
-    void Redraw();
-    static void Flush();
-
-    // save snapshot
-    Standard_Boolean Save(const char* theFileName) const;
-
-    virtual ~Draw_Window ();
-
-    // X Event management
-    virtual void WExpose();
-    virtual void WButtonPress(const Standard_Integer X,
-			      const Standard_Integer Y,
-			      const Standard_Integer& button);
-    virtual void WButtonRelease(const Standard_Integer X,
-				const Standard_Integer Y,
-				const Standard_Integer& button);
-    //virtual void WKeyPress(char, KeySym& );
-    virtual void WMotionNotify(const Standard_Integer X,
-			       const Standard_Integer Y);
-
-    virtual void WConfigureNotify(const Standard_Integer X,
-				  const Standard_Integer Y,
-				  const Standard_Integer dx,
-				  const Standard_Integer dy);
-
-    virtual void WUnmapNotify();
-
-    Base_Window& base;
-    Window win;
-    Window myMother; // default : myMother is the root window
-    Pixmap myBuffer;
-
-    static Draw_Window* firstWindow;
-    Draw_Window* next;
-    Draw_Window* previous;
-
-    Standard_Boolean myUseBuffer;
-    Standard_Boolean withWindowManager;
-
-};
-
-//======================================================
-// function : Run_Appli
-// purpose : run the application
-//           interp will be called to interpret a command
-//           and return True if the command is complete
-//======================================================
-
-void Run_Appli(Standard_Boolean (*inteprete) (const char*));
-
-//======================================================
-// function : Init_Appli
-// purpose :
-//======================================================
-Standard_Boolean Init_Appli();
-
-//======================================================
-// function : Destroy_Appli()
-// purpose :
-//======================================================
-void Destroy_Appli();
-
-//======================================================
-// function : GetNextEvent()
-// purpose :
-//======================================================
-void GetNextEvent(Event&);
-
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-
-const Standard_Integer MAXCOLOR = 15;
-
-struct Segment
-{
-  Standard_Integer myXStart;
-  Standard_Integer myYStart;
-  Standard_Integer myXEnd;
-  Standard_Integer myYEnd;
-
-  void Init(short theXStart, short theYStart, short theXEnd, short theYEnd) {
-    myXStart = theXStart; myYStart = theYStart; myXEnd = theXEnd; myYEnd = theYEnd;
-  }
-
-};
-
+#elif defined(__APPLE__)
 #ifdef __OBJC__
   @class NSView;
   @class NSWindow;
@@ -233,308 +100,198 @@ struct Segment
   struct NSImage;
   struct Draw_CocoaView;
 #endif
+#endif
 
+#endif
 
+//! Draw window.
 class Draw_Window
 {
-  public :
-
-  /**
-   * Type of the callback function that is to be passed to the method
-   * AddCallbackBeforeTerminate().
-   */
-  typedef void (*FCallbackBeforeTerminate)();
-
-  /**
-   * This method registers a callback function that will be called just before exit.
-   * This is useful especially for Windows platform, on which Draw is normally 
-   * self-terminated instead of exiting.
-   */
-  Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
-
-  /**
-   * Just in case method for un-registering a callback previously registered by
-   * AddCallbackBeforeTerminate()
-   */
-  Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
-
-  Draw_Window (); // the window is not initialized
-  Draw_Window (Standard_CString        theTitle,
-               const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYTop   = 0,
-               const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
-
-  Draw_Window (NSWindow*               theWindow,     Standard_CString        theTitle,
-               const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYTop   = 0,
-               const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
-
-  void Init (const Standard_Integer& theXLeft = 0,  const Standard_Integer& theYLeft  = 0,
-             const Standard_Integer& theWidth = 50, const Standard_Integer& theHeight = 50);
-
-  virtual ~Draw_Window ();
-
-  void SetPosition (const Standard_Integer& theNewXpos,
-                    const Standard_Integer& theNewYpos);
-
-  void SetDimension (const Standard_Integer& theNewWidth,
-                     const Standard_Integer& theNewHeight);
-
-  void GetPosition (Standard_Integer &thePosX,
-                    Standard_Integer &thePosY);
-
-  Standard_Integer HeightWin() const;
-  Standard_Integer WidthWin()  const;
-
-  void  SetTitle (const TCollection_AsciiString& theTitle);
-  TCollection_AsciiString GetTitle() const;
-
-  //! Return true if window is displayed on the screen.
-  bool IsMapped() const;
-  void DisplayWindow();
-  void Hide();
-  void Destroy();
-  void Clear();
-
-  void InitBuffer();
-
-  static Standard_Boolean DefineColor (const Standard_Integer&, Standard_CString);
-  void SetColor     (const Standard_Integer& theColor);
-  void SetMode      (const Standard_Integer& theMode);
-  void DrawString   (const Standard_Integer& theX, const Standard_Integer& theY, char* theText);
-  void DrawSegments (Segment* theSegment, const Standard_Integer& theNumberOfElements);
-  void Redraw();
-  static void Flush();
-  
-  // save snapshot
-  Standard_Boolean Save (Standard_CString theFileName) const;
-  
-  Standard_Boolean IsEqualWindows (const Standard_Integer& theWindowNumber);
-
-private:
-  NSWindow*        myWindow;
-  Draw_CocoaView*  myView;
-  NSImage*         myImageBuffer;
-  Standard_Boolean myUseBuffer;
-  Standard_Integer myCurrentColor;
-
-  static Draw_Window* firstWindow;
-  Draw_Window*        nextWindow;
-  Draw_Window*        previousWindow;
-
-};
-
-//======================================================
-// function : Run_Appli
-// purpose : run the application
-//           interp will be called to interpret a command
-//           and return True if the command is complete
-//======================================================
-
-void Run_Appli(Standard_Boolean (*inteprete) (const char*));
-
-//======================================================
-// function : Init_Appli
-// purpose :
-//======================================================
-Standard_Boolean Init_Appli();
-
-//======================================================
-// function : Destroy_Appli()
-// purpose :
-//======================================================
-void Destroy_Appli();
-
-//======================================================
-// function : GetNextEvent()
-// purpose :
-//======================================================
-void GetNextEvent (Standard_Boolean  theWait,
-                   Standard_Integer& theWindowNumber,
-                   Standard_Integer& theX,
-                   Standard_Integer& theY,
-                   Standard_Integer& theButton);
-#else
-
-// Specifique WNT
-
-#include <windows.h>
-
-#define DRAWCLASS L"DRAWWINDOW"
-#define DRAWTITLE L"Draw View"
-#define MAXCOLOR  15
-
-// definition de la classe Segment
-
-class DrawWindow;
-class Segment
-{
-  friend class DrawWindow;
-  public :
-    //constructeur
-    Segment ()
-    : x1(0),
-      y1(0),
-      x2(0),
-      y2(0)
-    {
-    }
-    //destructeur
-    ~Segment () {}
-
-    //methods
-    void Init(Standard_Integer,
-	      Standard_Integer,
-	      Standard_Integer,
-	      Standard_Integer);
-  private:
-    //atributs :
-    Standard_Integer x1;
-    Standard_Integer y1;
-    Standard_Integer x2;
-    Standard_Integer y2;
-};
-
-//definition de la classe DRAWWINDOW
-
-class DrawWindow
-{
-  //constructeur
 public:
 
-  /**
-   * Type of the callback function that is to be passed to the method
-   * AddCallbackBeforeTerminate().
-   */
+  //! Type of the callback function that is to be passed to the method AddCallbackBeforeTerminate().
   typedef void (*FCallbackBeforeTerminate)();
 
-  /**
-   * This method registers a callback function that will be called just before exit.
-   * This is useful especially for Windows platform, on which Draw is normally 
-   * self-terminated instead of exiting.
-   */
-  Standard_EXPORT static void AddCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+  //! This method registers a callback function that will be called just before exit.
+  //! This is useful especially for Windows platform, on which Draw is normally self-terminated instead of exiting.
+  Standard_EXPORT static void AddCallbackBeforeTerminate (FCallbackBeforeTerminate theCB);
 
-  /**
-   * Just in case method for un-registering a callback previously registered by
-   * AddCallbackBeforeTerminate()
-   */
-  Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
+  //! Just in case method for un-registering a callback previously registered by AddCallbackBeforeTerminate().
+  Standard_EXPORT static void RemoveCallbackBeforeTerminate (FCallbackBeforeTerminate theCB);
 
-  Standard_EXPORT DrawWindow();
-  Standard_EXPORT DrawWindow(const char*, Standard_Integer, Standard_Integer,
-			Standard_Integer, Standard_Integer);
-  Standard_EXPORT DrawWindow(const char*, Standard_Integer, Standard_Integer,
-			Standard_Integer, Standard_Integer, HWND);
-  //destructeur
-  Standard_EXPORT virtual ~DrawWindow();
+  //! @sa SetColor()
+  Standard_EXPORT static Standard_Boolean DefineColor (const Standard_Integer theIndex,
+                                                       const char* theColorName);
 
-  //methods
+  //! XFlush() wrapper (X11), has no effect on other platforms.
+  Standard_EXPORT static void Flush();
+
 public:
-  Standard_EXPORT void Init(Standard_Integer, Standard_Integer,
-		       Standard_Integer, Standard_Integer);
 
-  Standard_EXPORT void SetUseBuffer(Standard_Boolean);
-  // Turns on/off usage of off-screen image buffer (can be used for redrawing optimization)
+  //! Destructor.
+  Standard_EXPORT virtual ~Draw_Window();
 
-  Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
-  // Returns Standard_True if off-screen image buffer is being used
+  //! Get window position.
+  Standard_EXPORT void GetPosition (Standard_Integer& thePosX,
+                                    Standard_Integer& thePosY);
 
-  //taille et position
-  Standard_EXPORT void SetPosition (Standard_Integer,Standard_Integer);
-  Standard_EXPORT void SetDimension(Standard_Integer,Standard_Integer);
-  Standard_EXPORT void GetPosition (Standard_Integer&,Standard_Integer&);
+  //! Set window position.
+  Standard_EXPORT void SetPosition (Standard_Integer theNewXpos,
+                                    Standard_Integer theNewYpos);
+
+  //! Return window height.
   Standard_EXPORT Standard_Integer HeightWin() const;
-  Standard_EXPORT Standard_Integer WidthWin()  const;
 
-  //Title
-  Standard_EXPORT void SetTitle (const TCollection_AsciiString& );
+  //! Return window width.
+  Standard_EXPORT Standard_Integer WidthWin() const;
+
+  //! Set window dimensions.
+  Standard_EXPORT void SetDimension (Standard_Integer theNewDx,
+                                     Standard_Integer theNewDy);
+
+  //! Return window title.
   Standard_EXPORT TCollection_AsciiString GetTitle() const;
 
-  //Affichage
-    //! Return true if window is displayed on the screen.
-    bool IsMapped() const;
+  //! Set window title.
+  Standard_EXPORT void SetTitle (const TCollection_AsciiString& theTitle);
+
+  //! Return true if window is displayed on the screen.
+  Standard_EXPORT bool IsMapped() const;
+
+  //! Display window on the screen.
   Standard_EXPORT void DisplayWindow();
+
+  //! Hide window.
   Standard_EXPORT void Hide();
+
+  //! Destroy window.
   Standard_EXPORT void Destroy();
+
+  //! Clear window content.
   Standard_EXPORT void Clear();
-  static void Flush() {} ;
 
-  // save snapshot
-  Standard_EXPORT Standard_Boolean Save(const char* theFileName) const;
+  //! Returns Standard_True if off-screen image buffer is being used
+  Standard_Boolean GetUseBuffer() const { return myUseBuffer; }
 
-  //Dessin
-  Standard_EXPORT void DrawString(int,int,char*);
-  Standard_EXPORT void DrawSegments(Segment*,int);
+  // Turns on/off usage of off-screen image buffer (can be used for redrawing optimization)
+  Standard_EXPORT void SetUseBuffer (Standard_Boolean theToUse);
 
-  Standard_EXPORT void InitBuffer();
-  // Initializes off-screen image buffer according to current window size
+  //! Set active color index for further paintings.
+  //! @sa DefineColor()
+  Standard_EXPORT void SetColor (Standard_Integer theColor);
 
+  //! Set active paint mode (3 for COPY; 6 for XOR).
+  Standard_EXPORT void SetMode  (Standard_Integer theMode);
+
+  //! Draw the string.
+  Standard_EXPORT void DrawString (Standard_Integer theX, Standard_Integer theY,
+                                   const char* theText);
+
+  //! Draw array of segments.
+  Standard_EXPORT void DrawSegments (const Draw_XSegment* theSegments,
+                                     Standard_Integer theNumberOfElements);
+
+  //! Redraw window content.
   Standard_EXPORT void Redraw();
-  // Copies an image from memory buffer to screen
 
-  //Couleur
-  Standard_EXPORT void SetColor(Standard_Integer);
-  Standard_EXPORT void SetMode(int);
-  Standard_EXPORT static Standard_Boolean DefineColor ( const Standard_Integer,const char*);
+  //! Save snapshot.
+  Standard_EXPORT Standard_Boolean Save (const char* theFileName) const;
 
-  //Gestion des Messages
-  Standard_EXPORT virtual void WExpose ();
-  Standard_EXPORT virtual void WButtonPress(const Standard_Integer,const Standard_Integer,
-				       const Standard_Integer&);
-  Standard_EXPORT virtual void WButtonRelease(const Standard_Integer,const Standard_Integer,
-					 const Standard_Integer&);
-  Standard_EXPORT virtual void WMotionNotify(const Standard_Integer,const Standard_Integer);
-  Standard_EXPORT virtual void WConfigureNotify(const Standard_Integer,const Standard_Integer,
-					   const Standard_Integer,const Standard_Integer);
-  Standard_EXPORT virtual void WUnmapNotify();
+  //! Perform window exposing.
+  virtual void WExpose() = 0;
 
-  //Gestion souris
-  Standard_EXPORT static void SelectWait   (HANDLE&,int&,int&,int&);
-  Standard_EXPORT static void SelectNoWait (HANDLE&,int&,int&,int&);
+  //! (Re)initializes off-screen image buffer according to current window size.
+  Standard_EXPORT void InitBuffer();
 
-  // Procedure de fenetre
-  Standard_EXPORT static LRESULT APIENTRY DrawProc (HWND,UINT,WPARAM,LPARAM);
+protected:
 
-private:
+  //! Main constructor.
+  //! @param theTitle  [in] window title
+  //! @param theXY     [in] top-left position
+  //! @param theSize   [in] window dimensions
+  //! @param theParent [in] optional native parent window
+  //! @param theWin    [in] optional native window
+  Standard_EXPORT Draw_Window (const char* theTitle,
+                               const NCollection_Vec2<int>& theXY,
+                               const NCollection_Vec2<int>& theSize,
+                               Aspect_Drawable theParent,
+                               Aspect_Drawable theWin);
 
-  Standard_EXPORT static HWND CreateDrawWindow(HWND,int);
-  Standard_EXPORT HDC  GetMemDC(HDC);
-  Standard_EXPORT void ReleaseMemDC(HDC);
+  //! Initialize the window.
+  Standard_EXPORT void init (const NCollection_Vec2<int>& theXY,
+                             const NCollection_Vec2<int>& theSize);
 
-  //atributs
 public:
-  HWND win;
+
+#if defined(_WIN32)
+  Standard_Boolean IsEqualWindows (HANDLE theWindow) { return myWindow == theWindow; }
+
+  Standard_EXPORT static void SelectWait   (HANDLE& theWindow, int& theX, int& theY, int& theButton);
+  Standard_EXPORT static void SelectNoWait (HANDLE& theWindow, int& theX, int& theY, int& theButton);
+  // Procedure de fenetre
+  Standard_EXPORT static LRESULT APIENTRY DrawProc (HWND, UINT, WPARAM, LPARAM);
   static HWND hWndClientMDI;
+#elif defined(HAVE_XLIB)
+  Standard_Boolean IsEqualWindows (Window theWindow) { return myWindow  == theWindow; }
+
+  //! Event structure.
+  struct Draw_XEvent
+  {
+    Standard_Integer type;
+    Window window;
+    Standard_Integer button;
+    Standard_Integer x;
+    Standard_Integer y;
+  };
+
+  //! Retrieve event.
+  static void GetNextEvent (Draw_XEvent& theEvent);
+
+  void Wait (Standard_Boolean theToWait = Standard_True);
+#elif defined(__APPLE__)
+  Standard_Boolean IsEqualWindows (const Standard_Integer& theWindowNumber);
+
+  static void GetNextEvent (Standard_Boolean  theWait,
+                            Standard_Integer& theWindowNumber,
+                            Standard_Integer& theX,
+                            Standard_Integer& theY,
+                            Standard_Integer& theButton);
+#endif
 
 private:
-  static DrawWindow* firstWindow;
-  DrawWindow* next;
-  DrawWindow* previous;
-  HBITMAP myMemHbm;
-  HBITMAP myOldHbm;
-  Standard_Boolean myUseBuffer;
+
+#if defined(_WIN32)
+  Standard_EXPORT static HWND createDrawWindow (HWND , int );
+  Standard_EXPORT HDC  getMemDC    (HDC theWinDC);
+  Standard_EXPORT void releaseMemDC(HDC theMemDC);
+#elif defined(HAVE_XLIB)
+  Drawable GetDrawable() const { return myUseBuffer ? myImageBuffer : myWindow; }
+  struct Base_Window; // opaque structure with extra Xlib parameters
+#endif
+
+private:
+
+#if defined(_WIN32)
+  HWND             myWindow;      //!< native window
+  HBITMAP          myMemHbm;
+  HBITMAP          myOldHbm;
   Standard_Integer myCurrPen;
   Standard_Integer myCurrMode;
+#elif defined(HAVE_XLIB)
+  Window           myWindow;      //!< native window
+  Window           myMother;      //!< parent native window
+  Pixmap           myImageBuffer;
+  std::unique_ptr<Base_Window> myBase;
+#elif defined(__APPLE__)
+  NSWindow*        myWindow;      //!< native window
+  Draw_CocoaView*  myView;
+  NSImage*         myImageBuffer;
+#else
+  Aspect_Drawable  myWindow;
+#endif
+  Standard_Integer myCurrentColor;
+  Standard_Boolean myUseBuffer;
+
 };
 
-typedef DrawWindow Draw_Window;
-typedef enum {
-  STOP_CONSOLE,
-  WAIT_CONSOLE_COMMAND,
-  HAS_CONSOLE_COMMAND} console_semaphore_value;
-
-// global variable describing console state
-extern console_semaphore_value volatile console_semaphore;
-
-// Console command buffer
-#define DRAW_COMMAND_SIZE 1000
-extern wchar_t console_command[DRAW_COMMAND_SIZE + 1];
-
-// PROCEDURE DE DRAW WINDOW
-
-Standard_EXPORT Standard_Boolean Init_Appli(HINSTANCE,HINSTANCE,int,HWND&);
-Standard_EXPORT void Run_Appli(HWND);
-Standard_EXPORT void Destroy_Appli(HINSTANCE);
-
-#endif
-
-#endif
+#endif // Draw_Window_HeaderFile

@@ -1491,7 +1491,11 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
     }
   } else {
     set aLibsMap(CSF_dl)           "dl"
-    set aLibsMap(CSF_OpenGlLibs)   "GL"
+    if { "$::HAVE_XLIB" == "true" } {
+      set aLibsMap(CSF_OpenGlLibs) "GL"
+    } else {
+      set aLibsMap(CSF_OpenGlLibs) "GL EGL"
+    }
     set aLibsMap(CSF_OpenGlesLibs) "EGL GLESv2"
     if { "$theOS" == "mac" || "$theOS" == "ios" } {
       set aLibsMap(CSF_objc)         "objc"
@@ -1525,8 +1529,10 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
         if { "$::HAVE_TK" == "true" } {
           set aLibsMap(CSF_TclTkLibs) "tk8.6"
         }
-        set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
-        set aLibsMap(CSF_MotifLibs)  "X11"
+        if { "$::HAVE_XLIB" == "true" } {
+          set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
+          set aLibsMap(CSF_MotifLibs)  "X11"
+        }
       }
     }
   }

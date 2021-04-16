@@ -26,6 +26,10 @@
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore46.hxx>
 
+#if !defined(HAVE_EGL) && defined(HAVE_XLIB)
+  #include <GL/glx.h>
+#endif
+
 // =======================================================================
 // function : init
 // purpose  :
@@ -572,9 +576,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
       FindProcShort (wglGetContextGPUIDAMD);
     }
   }
-#elif defined(__APPLE__)
-    //
-#else
+#elif defined(HAVE_XLIB)
     const char* aGlxExts = ::glXQueryExtensionsString ((Display* )theCtx.myDisplay, DefaultScreen ((Display* )theCtx.myDisplay));
     if (checkExtensionShort (aGlxExts, "GLX_EXT_swap_control"))
     {

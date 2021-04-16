@@ -15,16 +15,22 @@
 
 #include <Xw_Window.hxx>
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
-
 #include <Aspect_Convert.hxx>
 #include <Aspect_ScrollDelta.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowInputListener.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <Standard_NotImplemented.hxx>
 
-//#include <X11/XF86keysym.h>
+#if defined(HAVE_XLIB)
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+  #include <X11/Xatom.h>
+  //#include <X11/XF86keysym.h>
+#endif
+
+#include <Aspect_DisplayConnection.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 
@@ -57,17 +63,17 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
     throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
   }
 
+#if defined(HAVE_XLIB)
   myFBConfig = theXDisplay->GetDefaultFBConfig();
-  XVisualInfo* aVisInfo = theXDisplay->GetDefaultVisualInfo();
+  XVisualInfo* aVisInfo = theXDisplay->GetDefaultVisualInfoX();
 
   Display* aDisp   = myDisplay->GetDisplay();
   int      aScreen = DefaultScreen(aDisp);
   Window   aParent = RootWindow   (aDisp, aScreen);
 
-
   unsigned long aMask = 0;
   XSetWindowAttributes aWinAttr;
-  memset(&aWinAttr, 0, sizeof(XSetWindowAttributes));
+  memset (&aWinAttr, 0, sizeof(aWinAttr));
   aWinAttr.event_mask = ExposureMask | StructureNotifyMask;
   aMask |= CWEventMask;
   if (aVisInfo != NULL)
@@ -77,7 +83,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   aWinAttr.border_pixel = 0;
   aWinAttr.override_redirect = False;
 
-  myXWindow = XCreateWindow(aDisp, aParent,
+  myXWindow = (Window )XCreateWindow (aDisp, aParent,
                             myXLeft, myYTop, thePxWidth, thePxHeight,
                             0, aVisInfo != NULL ? aVisInfo->depth : CopyFromParent,
                             InputOutput,
@@ -96,17 +102,24 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   aSizeHints.width  = thePxWidth;
   aSizeHints.height = thePxHeight;
   aSizeHints.flags |= PSize;
-  XSetStandardProperties (aDisp, myXWindow, theTitle, theTitle, None,
+  XSetStandardProperties (aDisp, (Window )myXWindow, theTitle, theTitle, None,
                           NULL, 0, &aSizeHints);
 
   /*XTextProperty aTitleProperty;
   aTitleProperty.encoding = None;
   char* aTitle = (char* )theTitle;
   Xutf8TextListToTextProperty(aDisp, &aTitle, 1, XUTF8StringStyle, &aTitleProperty);
-  XSetWMName      (aDisp, myXWindow, &aTitleProperty);
-  XSetWMProperties(aDisp, myXWindow, &aTitleProperty, &aTitleProperty, NULL, 0, NULL, NULL, NULL);*/
+  XSetWMName      (aDisp, (Window )myXWindow, &aTitleProperty);
+  XSetWMProperties(aDisp, (Window )myXWindow, &aTitleProperty, &aTitleProperty, NULL, 0, NULL, NULL, NULL);*/
 
   XFlush (aDisp);
+#else
+  (void )theTitle;
+  if (myXWindow == 0)
+  {
+    throw Aspect_WindowDefinitionError ("Xw_Window, Unable to create window - not implemented");
+  }
+#endif
 }
 
 // =======================================================================
@@ -114,7 +127,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
 // purpose  :
 // =======================================================================
 Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
-                      const Window theXWin,
+                      const Aspect_Drawable theXWin,
                       const Aspect_FBConfig theFBConfig)
 : Aspect_Window(),
   myDisplay  (theXDisplay),
@@ -135,10 +148,11 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
     throw Aspect_WindowDefinitionError("Xw_Window, X Display connection is undefined");
   }
 
+#if defined(HAVE_XLIB)
   Display* aDisp = myDisplay->GetDisplay();
 
   XWindowAttributes aWinAttr;
-  XGetWindowAttributes (aDisp, myXWindow, &aWinAttr);
+  XGetWindowAttributes (aDisp, (Window )myXWindow, &aWinAttr);
   XVisualInfo aVisInfoTmp;
   aVisInfoTmp.visualid = aWinAttr.visual->visualid;
   aVisInfoTmp.screen   = DefaultScreen (aDisp);
@@ -151,6 +165,9 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   XFree (aVisInfo);
 
   DoResize();
+#else
+  //throw Standard_NotImplemented("Xw_Window, not implemented");
+#endif
 }
 
 // =======================================================================
@@ -161,17 +178,10 @@ Xw_Window::~Xw_Window()
 {
   if (myIsOwnWin && myXWindow != 0 && !myDisplay.IsNull())
   {
-    XDestroyWindow (myDisplay->GetDisplay(), myXWindow);
+  #if defined(HAVE_XLIB)
+    XDestroyWindow (myDisplay->GetDisplay(), (Window )myXWindow);
+  #endif
   }
-}
-
-// =======================================================================
-// function : XWindow
-// purpose  :
-// =======================================================================
-Window Xw_Window::XWindow() const
-{
-  return myXWindow;
 }
 
 // =======================================================================
@@ -189,11 +199,15 @@ Standard_Boolean Xw_Window::IsMapped() const
     return Standard_True;
   }
 
+#if defined(HAVE_XLIB)
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes aWinAttr;
-  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &aWinAttr);
+  XGetWindowAttributes (myDisplay->GetDisplay(), (Window )myXWindow, &aWinAttr);
   return aWinAttr.map_state == IsUnviewable
       || aWinAttr.map_state == IsViewable;
+#else
+  return Standard_False;
+#endif
 }
 
 // =======================================================================
@@ -207,8 +221,10 @@ void Xw_Window::Map() const
     return;
   }
 
-  XMapWindow (myDisplay->GetDisplay(), myXWindow);
+#if defined(HAVE_XLIB)
+  XMapWindow (myDisplay->GetDisplay(), (Window )myXWindow);
   XFlush (myDisplay->GetDisplay());
+#endif
 }
 
 // =======================================================================
@@ -222,7 +238,9 @@ void Xw_Window::Unmap() const
     return;
   }
 
-  XIconifyWindow (myDisplay->GetDisplay(), myXWindow, DefaultScreen(myDisplay->GetDisplay()));
+#if defined(HAVE_XLIB)
+  XIconifyWindow (myDisplay->GetDisplay(), (Window )myXWindow, DefaultScreen(myDisplay->GetDisplay()));
+#endif
 }
 
 // =======================================================================
@@ -236,9 +254,11 @@ Aspect_TypeOfResize Xw_Window::DoResize()
     return Aspect_TOR_UNKNOWN;
   }
 
+#if defined(HAVE_XLIB)
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes aWinAttr;
-  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &aWinAttr);
+  memset (&aWinAttr, 0, sizeof(aWinAttr));
+  XGetWindowAttributes (myDisplay->GetDisplay(), (Window )myXWindow, &aWinAttr);
   if (aWinAttr.map_state == IsUnmapped)
   {
     return Aspect_TOR_UNKNOWN;
@@ -270,15 +290,9 @@ Aspect_TypeOfResize Xw_Window::DoResize()
   myYTop    = aWinAttr.y;
   myYBottom = aWinAttr.y + aWinAttr.height;
   return aMode;
-}
-
-// =======================================================================
-// function : DoMapping
-// purpose  :
-// =======================================================================
-Standard_Boolean Xw_Window::DoMapping() const
-{
-  return Standard_True; // IsMapped()
+#else
+  return Aspect_TOR_UNKNOWN;
+#endif
 }
 
 // =======================================================================
@@ -292,10 +306,15 @@ Standard_Real Xw_Window::Ratio() const
     return Standard_Real(myXRight - myXLeft) / Standard_Real(myYBottom - myYTop);
   }
 
+#if defined(HAVE_XLIB)
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes aWinAttr;
-  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &aWinAttr);
+  memset (&aWinAttr, 0, sizeof(aWinAttr));
+  XGetWindowAttributes (myDisplay->GetDisplay(), (Window )myXWindow, &aWinAttr);
   return Standard_Real(aWinAttr.width) / Standard_Real(aWinAttr.height);
+#else
+  return 1.0;
+#endif
 }
 
 // =======================================================================
@@ -314,17 +333,20 @@ void Xw_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
     return;
   }
 
+#if defined(HAVE_XLIB)
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes anAttributes;
-  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &anAttributes);
+  memset (&anAttributes, 0, sizeof(anAttributes));
+  XGetWindowAttributes (myDisplay->GetDisplay(), (Window )myXWindow, &anAttributes);
   Window aChild;
-  XTranslateCoordinates (myDisplay->GetDisplay(), anAttributes.root, myXWindow,
+  XTranslateCoordinates (myDisplay->GetDisplay(), anAttributes.root, (Window )myXWindow,
                          0, 0, &anAttributes.x, &anAttributes.y, &aChild);
 
   theX1 = -anAttributes.x;
   theX2 = theX1 + anAttributes.width;
   theY1 = -anAttributes.y;
   theY2 = theY1 + anAttributes.height;
+#endif
 }
 
 // =======================================================================
@@ -341,11 +363,14 @@ void Xw_Window::Size (Standard_Integer& theWidth,
     return;
   }
 
+#if defined(HAVE_XLIB)
   XFlush (myDisplay->GetDisplay());
   XWindowAttributes aWinAttr;
-  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &aWinAttr);
+  memset (&aWinAttr, 0, sizeof(aWinAttr));
+  XGetWindowAttributes (myDisplay->GetDisplay(), (Window )myXWindow, &aWinAttr);
   theWidth  = aWinAttr.width;
   theHeight = aWinAttr.height;
+#endif
 }
 
 // =======================================================================
@@ -356,7 +381,11 @@ void Xw_Window::SetTitle (const TCollection_AsciiString& theTitle)
 {
   if (myXWindow != 0)
   {
-    XStoreName (myDisplay->GetDisplay(), myXWindow, theTitle.ToCString());
+  #if defined(HAVE_XLIB)
+    XStoreName (myDisplay->GetDisplay(), (Window )myXWindow, theTitle.ToCString());
+  #else
+    (void )theTitle;
+  #endif
   }
 }
 
@@ -371,15 +400,19 @@ void Xw_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& theDi
     return;
   }
 
+#if defined(HAVE_XLIB)
   const Handle(Aspect_DisplayConnection)& aDisp = !theDisp.IsNull() ? theDisp : myDisplay;
   Display* aDispX = aDisp->GetDisplay();
 
   XEvent anEvent;
   memset (&anEvent, 0, sizeof(anEvent));
   anEvent.type = Expose;
-  anEvent.xexpose.window = myXWindow;
-  XSendEvent (aDispX, myXWindow, False, ExposureMask, &anEvent);
+  anEvent.xexpose.window = (Window )myXWindow;
+  XSendEvent (aDispX, (Window )myXWindow, False, ExposureMask, &anEvent);
   XFlush (aDispX);
+#else
+  (void )theDisp;
+#endif
 }
 
 // =======================================================================
@@ -388,6 +421,7 @@ void Xw_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& theDi
 // =======================================================================
 Aspect_VKey Xw_Window::VirtualKeyFromNative (unsigned long theKey)
 {
+#if defined(HAVE_XLIB)
   if (theKey >= XK_0
    && theKey <= XK_9)
   {
@@ -530,6 +564,9 @@ Aspect_VKey Xw_Window::VirtualKeyFromNative (unsigned long theKey)
     case 0x1008FF29: // XF86Refresh
       return Aspect_VKey_BrowserRefresh;
   }
+#else
+  (void )theKey;
+#endif
   return Aspect_VKey_UNKNOWN;
 }
 
@@ -538,8 +575,13 @@ Aspect_VKey Xw_Window::VirtualKeyFromNative (unsigned long theKey)
 // purpose  :
 // =======================================================================
 bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
-                                XEvent& theMsg)
+                                XEvent&
+                                #if defined(HAVE_XLIB) // msvc before VS2015 had problems with (void )theMsg
+                                        theMsg
+                                #endif
+                                )
 {
+#if defined(HAVE_XLIB)
   Display* aDisplay = myDisplay->GetDisplay();
 
   // Handle event for the chosen display connection
@@ -548,7 +590,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     case ClientMessage:
     {
       if ((Atom)theMsg.xclient.data.l[0] == myDisplay->GetAtom (Aspect_XA_DELETE_WINDOW)
-       && theMsg.xclient.window == myXWindow)
+       && theMsg.xclient.window == (Window )myXWindow)
       {
         theListener.ProcessClose();
         return true;
@@ -558,7 +600,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     case FocusIn:
     case FocusOut:
     {
-      if (theMsg.xfocus.window == myXWindow)
+      if (theMsg.xfocus.window == (Window )myXWindow)
       {
         theListener.ProcessFocus (theMsg.type == FocusIn);
       }
@@ -566,7 +608,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     }
     case Expose:
     {
-      if (theMsg.xexpose.window == myXWindow)
+      if (theMsg.xexpose.window == (Window )myXWindow)
       {
         theListener.ProcessExpose();
       }
@@ -574,7 +616,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       // remove all the ExposureMask and process them at once
       for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
       {
-        if (!XCheckWindowEvent (aDisplay, myXWindow, ExposureMask, &theMsg))
+        if (!XCheckWindowEvent (aDisplay, (Window )myXWindow, ExposureMask, &theMsg))
         {
           break;
         }
@@ -587,13 +629,13 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       // remove all the StructureNotifyMask and process them at once
       for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
       {
-        if (!XCheckWindowEvent (aDisplay, myXWindow, StructureNotifyMask, &theMsg))
+        if (!XCheckWindowEvent (aDisplay, (Window )myXWindow, StructureNotifyMask, &theMsg))
         {
           break;
         }
       }
 
-      if (theMsg.xconfigure.window == myXWindow)
+      if (theMsg.xconfigure.window == (Window )myXWindow)
       {
         theListener.ProcessConfigure (true);
       }
@@ -661,7 +703,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     }
     case MotionNotify:
     {
-      if (theMsg.xmotion.window != myXWindow)
+      if (theMsg.xmotion.window != (Window )myXWindow)
       {
         return false;
       }
@@ -669,7 +711,7 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       // remove all the ButtonMotionMask and process them at once
       for (int aNbMaxEvents = XPending (aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
       {
-        if (!XCheckWindowEvent (aDisplay, myXWindow, ButtonMotionMask | PointerMotionMask, &theMsg))
+        if (!XCheckWindowEvent (aDisplay, (Window )myXWindow, ButtonMotionMask | PointerMotionMask, &theMsg))
         {
           break;
         }
@@ -694,7 +736,8 @@ bool Xw_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       return true;
     }
   }
+#else
+  (void )theListener;
+#endif
   return false;
 }
-
-#endif //  Win32 or Mac OS X

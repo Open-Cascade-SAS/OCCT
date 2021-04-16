@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#if defined(__APPLE__) && !defined(HAVE_XLIB)
 
 #import <Cocoa/Cocoa.h>
 

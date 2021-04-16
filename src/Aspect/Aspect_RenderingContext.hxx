@@ -22,7 +22,7 @@
 #ifndef _Aspect_RenderingContext_HeaderFile
 #define _Aspect_RenderingContext_HeaderFile
 
-#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#if defined(__APPLE__) && !defined(HAVE_XLIB)
   #import <TargetConditionals.h>
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     #ifdef __OBJC__

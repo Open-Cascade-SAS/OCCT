@@ -15,14 +15,15 @@
 // commercial license or contractual agreement.
 
 #ifdef _WIN32
+
 #include <windows.h>
 
 #include <Draw_Window.hxx>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <MainWindow.h>
-#include <CommandWindow.h>
+#include "Draw_WNTMainWindow.pxx"
+#include "Draw_WNTCommandWindow.pxx"
 
 #define CLIENTWND 0
 
@@ -49,10 +50,9 @@ HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
                                     0, 0, 400, 100,
                                     hWnd, NULL, hInstance, NULL);
 
-	ShowWindow(hWndCommand, SW_SHOW);	
+	ShowWindow (hWndCommand, SW_SHOW);
 	return hWndCommand;
 }
-
 
 /*--------------------------------------------------------*\
 |  COMMAND WINDOW PROCEDURE
@@ -125,7 +125,7 @@ BOOL CommandCreateProc(HWND hWnd)
 
 /*--------------------------------------------------------*\
 |  GET COMMAND
-|    
+|
 \*--------------------------------------------------------*/
 int GetCommand (HWND hWnd, wchar_t* theBuffer)
 {
@@ -141,7 +141,7 @@ int GetCommand (HWND hWnd, wchar_t* theBuffer)
     // Initialization of the 1st WORD to the nb of characters to read
     WORD* aNbMaxChar = (WORD* )aTempBuff;
     *aNbMaxChar = COMMANDSIZE - 1;
-      
+
     const int aNbCharRead = (int )SendMessageW (hWnd, EM_GETLINE, aNbLine - 1, (LPARAM )aTempBuff);
     aNbChar += aNbCharRead;
     const bool isPromp = wcsncmp (aTempBuff, THE_PROMPT, 10) == 0;
@@ -162,7 +162,7 @@ int GetCommand (HWND hWnd, wchar_t* theBuffer)
 \*--------------------------------------------------------*/
 LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
-	static LRESULT nbline; // Process the buffer of the edit window 
+	static LRESULT nbline; // Process the buffer of the edit window
   switch (wMsg)
   {
     case WM_CHAR:

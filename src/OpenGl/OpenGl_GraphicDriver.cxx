@@ -38,13 +38,15 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 #if defined(_WIN32)
   #include <WNT_Window.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+  #include <Xw_Window.hxx>
+#elif defined(__APPLE__)
   #include <Cocoa_Window.hxx>
 #else
-  #include <Xw_Window.hxx>
+  #include <Aspect_NeutralWindow.hxx>
 #endif
 
-#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(HAVE_XLIB))
   #include <X11/Xlib.h> // XOpenDisplay()
   #include <GL/glx.h>
 #endif
@@ -110,7 +112,7 @@ namespace
     }
     return aCfg;
   }
-#elif !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#elif defined(HAVE_XLIB)
   //! Search for RGBA double-buffered visual with stencil buffer.
   static int TheDoubleBuffVisual[] =
   {
@@ -157,14 +159,14 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   myEglContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
 #endif
 
-#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())
   {
     //throw Aspect_GraphicDeviceDefinitionError("OpenGl_GraphicDriver: cannot connect to X server!");
     return;
   }
 
-  Display* aDisplay = myDisplayConnection->GetDisplay();
+  Display* aDisplay = (Display* )myDisplayConnection->GetDisplayAspect();
   Bool toSync = ::getenv ("CSF_GraphicSync") != NULL
              || ::getenv ("CALL_SYNCHRO_X")  != NULL;
   XSynchronize (aDisplay, toSync);
@@ -284,12 +286,12 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   ReleaseContext();
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
 
-#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())
   {
     return Standard_False;
   }
-  Display* aDisplay = myDisplayConnection->GetDisplay();
+  Display* aDisplay = (Display* )myDisplayConnection->GetDisplayAspect();
   myEglDisplay = (Aspect_Display )eglGetDisplay (aDisplay);
 #else
   myEglDisplay = (Aspect_Display )eglGetDisplay (EGL_DEFAULT_DISPLAY);
@@ -367,7 +369,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
 {
   ReleaseContext();
 #if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
-#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())
   {
     return Standard_False;
@@ -412,8 +414,8 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
     return;
   }
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
-  Display* aDisp = myDisplayConnection->GetDisplay();
+#if defined(HAVE_XLIB)
+  Display* aDisp = (Display* )myDisplayConnection->GetDisplayAspect();
 
   XVisualInfo* aVisInfo = NULL;
   Aspect_FBConfig anFBConfig = NULL;
@@ -472,7 +474,7 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
 #endif
   if (aVisInfo != NULL)
   {
-    myDisplayConnection->SetDefaultVisualInfo (aVisInfo, anFBConfig);
+    myDisplayConnection->SetDefaultVisualInfo ((Aspect_XVisualInfo* )aVisInfo, anFBConfig);
   }
   else
   {
@@ -844,65 +846,30 @@ Handle(OpenGl_Window) OpenGl_GraphicDriver::CreateRenderWindow (const Handle(Asp
 //function : ViewExists
 //purpose  :
 //=======================================================================
-Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& AWindow, Handle(Graphic3d_CView)& theView)
+Standard_Boolean OpenGl_GraphicDriver::ViewExists (const Handle(Aspect_Window)& theWindow,
+                                                   Handle(Graphic3d_CView)& theView)
 {
-  Standard_Boolean isExist = Standard_False;
-
-  // Parse the list of views to find
-  // a view with the specified window
-
-#if defined(_WIN32) && !defined(OCCT_UWP)
-  const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
-  Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
-  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-    UIView* TheSpecifiedWindowId = THEWindow->HView();
-  #else
-    NSView* TheSpecifiedWindowId = THEWindow->HView();
-  #endif
-#elif defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(OCCT_UWP)
-  (void )AWindow;
-  int TheSpecifiedWindowId = -1;
-#else
-  const Handle(Xw_Window) THEWindow = Handle(Xw_Window)::DownCast (AWindow);
-  int TheSpecifiedWindowId = int (THEWindow->XWindow ());
-#endif
-
-  NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView);
-  for(; aViewIt.More(); aViewIt.Next())
+  // Parse the list of views to find a view with the specified window
+  const Aspect_Drawable aNativeHandle = theWindow->NativeHandle();
+  for (NCollection_Map<Handle(OpenGl_View)>::Iterator aViewIt (myMapOfView); aViewIt.More(); aViewIt.Next())
   {
     const Handle(OpenGl_View)& aView = aViewIt.Value();
-    if (aView->IsDefined() && aView->IsActive())
+    if (!aView->IsDefined()
+     || !aView->IsActive())
     {
-      const Handle(Aspect_Window) AspectWindow = aView->Window();
+      continue;
+    }
 
-#if defined(_WIN32) && !defined(OCCT_UWP)
-      const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
-      Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-      const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
-      #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-        UIView* TheWindowIdOfView = theWindow->HView();
-      #else
-        NSView* TheWindowIdOfView = theWindow->HView();
-      #endif
-#elif defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(OCCT_UWP)
-      int TheWindowIdOfView = 0;
-#else
-      const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
-      int TheWindowIdOfView = int (theWindow->XWindow ());
-#endif  // WNT
-      // Comparaison on window IDs
-      if (TheWindowIdOfView == TheSpecifiedWindowId)
-      {
-        isExist = Standard_True;
-        theView = aView;
-      }
+    const Handle(Aspect_Window) anAspectWindow = aView->Window();
+    const Aspect_Drawable aViewNativeHandle = anAspectWindow->NativeHandle();
+    if (aViewNativeHandle == aNativeHandle)
+    {
+      theView = aView;
+      return true;
     }
   }
 
-  return isExist;
+  return false;
 }
 
 //=======================================================================

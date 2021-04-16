@@ -13,6 +13,7 @@ rem Paths to 3rd-party tools and libraries
 set "aCmakeBin="
 set "aFreeType="
 set "aRapidJson="
+set "aTcl="
 
 rem Build stages to perform
 set "toCMake=1"
@@ -30,6 +31,7 @@ set "BUILD_ModelingAlgorithms=ON"
 set "BUILD_Visualization=ON"
 set "BUILD_ApplicationFramework=ON"
 set "BUILD_DataExchange=ON"
+set "BUILD_Draw=OFF"
 
 rem Optional 3rd-party libraries to enable
 set "USE_RAPIDJSON=OFF"
@@ -162,11 +164,15 @@ if ["%toCMake%"] == ["1"] (
  -D BUILD_MODULE_Visualization:BOOL="%BUILD_Visualization%" ^
  -D BUILD_MODULE_ApplicationFramework:BOOL="%BUILD_ApplicationFramework%" ^
  -D BUILD_MODULE_DataExchange:BOOL="%BUILD_DataExchange%" ^
- -D BUILD_MODULE_Draw:BOOL="OFF" ^
+ -D BUILD_MODULE_Draw:BOOL="%BUILD_Draw%" ^
  -D BUILD_DOC_Overview:BOOL="OFF" ^
  -D USE_RAPIDJSON:BOOL="%USE_RAPIDJSON%" ^
  -D 3RDPARTY_RAPIDJSON_DIR:PATH="%aRapidJson%" ^
  -D 3RDPARTY_RAPIDJSON_INCLUDE_DIR:PATH="%aRapidJson%/include" ^
+ -D 3RDPARTY_TCL_DIR:PATH="%aTcl%" ^
+ -D 3RDPARTY_TCL_INCLUDE_DIR:PATH="%aTcl%/include" ^
+ -D 3RDPARTY_TCL_LIBRARY_DIR:PATH="%aTcl%/lib" ^
+ -D 3RDPARTY_TCL_LIBRARY:FILEPATH="%aTcl%/lib/libtcl.a" ^
  "%aCasSrc%"
 
   if errorlevel 1 (

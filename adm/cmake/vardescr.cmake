@@ -196,7 +196,7 @@ ToolKit, the technology of Kitware Inc intended for general-purpose scientific
 visualization. OCCT comes with a bridge between CAD data representation and
 VTK by means of its dedicated VIS component (VTK Integration Services).")
 
-set (USE_GLX_DESCR "Indicates whether X11 OpenGl on OSX is used or not")
+set (USE_XLIB_DESCR "Indicates whether X11 is used or not")
 
 set (USE_D3D_DESCR "Indicates whether optional Direct3D wrapper in OCCT visualization module should be build or not")
 

@@ -101,12 +101,14 @@
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
   #include <WNT_HIDSpaceMouse.hxx>
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+  #include <Xw_Window.hxx>
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+#elif defined(__APPLE__)
   #include <Cocoa_Window.hxx>
 #else
-  #include <Xw_Window.hxx>
-  #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
-  #include <X11/Xutil.h>
+  #include <Aspect_NeutralWindow.hxx>
 #endif
 
 //==============================================================================
@@ -120,27 +122,23 @@ Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
 #if defined(_WIN32)
-static Handle(WNT_Window)& VT_GetWindow() {
-  static Handle(WNT_Window) WNTWin;
-  return WNTWin;
-}
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-static Handle(Cocoa_Window)& VT_GetWindow()
-{
-  static Handle(Cocoa_Window) aWindow;
-  return aWindow;
-}
+typedef WNT_Window ViewerTest_Window;
+#elif defined(HAVE_XLIB)
+typedef Xw_Window ViewerTest_Window;
+static void VProcessEvents(ClientData,int);
+#elif defined(__APPLE__)
+typedef Cocoa_Window ViewerTest_Window;
 extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
 extern void GetCocoaScreenResolution (Standard_Integer& theWidth, Standard_Integer& theHeight);
-
 #else
-static Handle(Xw_Window)& VT_GetWindow(){
-  static Handle(Xw_Window) XWWin;
-  return XWWin;
-}
-
-static void VProcessEvents(ClientData,int);
+typedef Aspect_NeutralWindow ViewerTest_Window;
 #endif
+
+static Handle(ViewerTest_Window)& VT_GetWindow()
+{
+  static Handle(ViewerTest_Window) aWindow;
+  return aWindow;
+}
 
 static Handle(Aspect_DisplayConnection)& GetDisplayConnection()
 {
@@ -1706,16 +1704,16 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   if (isNewDriver)
   {
     // Get connection string
-  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  #if defined(HAVE_XLIB)
     if (!theDisplayName.IsEmpty())
     {
       SetDisplayConnection (new Aspect_DisplayConnection (theDisplayName));
     }
     else
     {
-      ::Display* aDispX = NULL;
+      Aspect_XDisplay* aDispX = NULL;
       // create dedicated display connection instead of reusing Tk connection
-      // so that to procede events independently through VProcessEvents()/ViewerMainLoop() callbacks
+      // so that to proceed events independently through VProcessEvents()/ViewerMainLoop() callbacks
       /*Draw_Interpretor& aCommands = Draw::GetInterpretor();
       Tcl_Interp* aTclInterp = aCommands.Interp();
       Tk_Window aMainWindow = Tk_MainWindow (aTclInterp);
@@ -1753,17 +1751,20 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                      aScreenHeight = 0;
 
     // Get screen resolution
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
     RECT aWindowSize;
     GetClientRect(GetDesktopWindow(), &aWindowSize);
     aScreenHeight = aWindowSize.bottom;
     aScreenWidth = aWindowSize.right;
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+    ::Display* aDispX = (::Display* )GetDisplayConnection()->GetDisplayAspect();
+    Screen* aScreen = DefaultScreenOfDisplay(aDispX);
+    aScreenWidth  = WidthOfScreen(aScreen);
+    aScreenHeight = HeightOfScreen(aScreen);
+#elif defined(__APPLE__)
     GetCocoaScreenResolution (aScreenWidth, aScreenHeight);
 #else
-    Screen *aScreen = DefaultScreenOfDisplay(GetDisplayConnection()->GetDisplay());
-    aScreenWidth = WidthOfScreen(aScreen);
-    aScreenHeight = HeightOfScreen(aScreen);
+    // not implemented
 #endif
 
     TCollection_AsciiString anOverlappedViewId("");
@@ -1846,16 +1847,20 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                     aPxWidth, aPxHeight,
                                     Quantity_NOC_BLACK);
   VT_GetWindow()->RegisterRawInputDevices (WNT_Window::RawInputMask_SpaceMouse);
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+  VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
+                                  aTitle.ToCString(),
+                                  aPxLeft, aPxTop,
+                                  aPxWidth, aPxHeight);
+#elif defined(__APPLE__)
   VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
                                      aPxLeft, aPxTop,
                                      aPxWidth, aPxHeight);
   ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
 #else
-  VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
-                                  aTitle.ToCString(),
-                                  aPxLeft, aPxTop,
-                                  aPxWidth, aPxHeight);
+  // not implemented
+  VT_GetWindow() = new Aspect_NeutralWindow();
+  VT_GetWindow()->SetSize (aPxWidth, aPxHeight);
 #endif
   VT_GetWindow()->SetVirtual (isVirtual);
 
@@ -1890,10 +1895,10 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     a3DViewer->SetLightOn();
   }
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(HAVE_XLIB)
   if (isNewDriver)
   {
-    ::Display* aDispX = GetDisplayConnection()->GetDisplay();
+    ::Display* aDispX = (::Display* )GetDisplayConnection()->GetDisplayAspect();
     Tcl_CreateFileHandler (XConnectionNumber (aDispX), TCL_READABLE, VProcessEvents, (ClientData )aDispX);
   }
 #endif
@@ -2225,7 +2230,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     }
   }
 
-#if defined(_WIN32) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
+#if !defined(HAVE_XLIB)
   if (!aDisplayName.IsEmpty())
   {
     aDisplayName.Clear();
@@ -2495,8 +2500,8 @@ static int VHLRType (Draw_Interpretor& , Standard_Integer argc, const char** arg
 //function : FindViewIdByWindowHandle
 //purpose  : Find theView Id in the map of views by window handle
 //==============================================================================
-#if defined(_WIN32) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-TCollection_AsciiString FindViewIdByWindowHandle (Aspect_Drawable theWindowHandle)
+#if defined(_WIN32) || defined(HAVE_XLIB)
+static TCollection_AsciiString FindViewIdByWindowHandle (Aspect_Drawable theWindowHandle)
 {
   for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator
        anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
@@ -2532,10 +2537,12 @@ void ActivateView (const TCollection_AsciiString& theViewName,
     aView->Window()->SetTitle (TCollection_AsciiString("3D View - ") + theViewName + "(*)");
 #if defined(_WIN32)
     VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
-#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
+    VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
+#elif defined(__APPLE__)
     VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
 #else
-    VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
+    VT_GetWindow() = Handle(Aspect_NeutralWindow)::DownCast(ViewerTest::CurrentView()->Window());
 #endif
     SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
     if (theToUpdate)
@@ -2613,8 +2620,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   aView->Window()->Unmap();
   aView->Remove();
 
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  XFlush (GetDisplayConnection()->GetDisplay());
+#if defined(HAVE_XLIB)
+  XFlush ((::Display* )GetDisplayConnection()->GetDisplayAspect());
 #endif
 
   // Keep context opened only if the closed view is last to avoid
@@ -2642,8 +2649,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
       if(isRemoveDriver)
       {
         ViewerTest_myDrivers.UnBind2 (aCurrentContext->CurrentViewer()->Driver());
-      #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-        Tcl_DeleteFileHandler (XConnectionNumber (aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
+      #if defined(HAVE_XLIB)
+        Tcl_DeleteFileHandler (XConnectionNumber ((::Display* )aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplayAspect()));
       #endif
       }
 
@@ -3323,7 +3330,7 @@ int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
   return 0;
 }
 
-#elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#elif defined(HAVE_XLIB)
 
 int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
 {
@@ -3338,7 +3345,7 @@ int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
     ViewerTest::CurrentEventManager()->StartPickPoint (theArgVec[1], theArgVec[2], theArgVec[3]);
   }
 
-  Display* aDisplay = GetDisplayConnection()->GetDisplay();
+  Display* aDisplay = (Display* )GetDisplayConnection()->GetDisplayAspect();
   XNextEvent (aDisplay, &aReport);
 
   // Handle event for the chosen display connection
@@ -3398,7 +3405,7 @@ static void VProcessEvents (ClientData theDispX, int)
        aDriverIter (ViewerTest_myDrivers); aDriverIter.More(); aDriverIter.Next())
   {
     const Handle(Aspect_DisplayConnection)& aDispConnTmp = aDriverIter.Key2()->GetDisplayConnection();
-    if (aDispConnTmp->GetDisplay() == aDispX)
+    if ((Display* )aDispConnTmp->GetDisplayAspect() == aDispX)
     {
       aDispConn = aDispConnTmp;
       break;
@@ -3449,47 +3456,55 @@ static void VProcessEvents (ClientData theDispX, int)
     SetDisplayConnection (anActiveCtx->CurrentViewer()->Driver()->GetDisplayConnection());
   }
 }
+#elif !defined(__APPLE__)
+// =======================================================================
+// function : ViewerMainLoop
+// purpose  :
+// =======================================================================
+int ViewerMainLoop (Standard_Integer , const char** )
+{
+  // unused
+  return 0;
+}
 #endif
 
 //==============================================================================
 //function : OSWindowSetup
-//purpose  : Setup for the X11 window to be able to cath the event
+//purpose  : Setup for the X11 window to be able to catch the event
 //==============================================================================
-
-
 static void OSWindowSetup()
 {
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  // X11
+#ifdef _WIN32
+  //
 
-  Window  window   = VT_GetWindow()->XWindow();
+#elif defined(HAVE_XLIB)
+  // X11
+  Window anXWin = VT_GetWindow()->XWindow();
   SetDisplayConnection (ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
-  Display *aDisplay = GetDisplayConnection()->GetDisplay();
-  XSynchronize(aDisplay, 1);
+  Display* aDisplay = (Display* )GetDisplayConnection()->GetDisplayAspect();
+  XSynchronize (aDisplay, 1);
 
   // X11 : For keyboard on SUN
-  XWMHints wmhints;
-  wmhints.flags = InputHint;
-  wmhints.input = 1;
+  XWMHints aWmHints;
+  memset (&aWmHints, 0, sizeof(aWmHints));
+  aWmHints.flags = InputHint;
+  aWmHints.input = 1;
+  XSetWMHints (aDisplay, anXWin, &aWmHints);
 
-  XSetWMHints( aDisplay, window, &wmhints);
+  XSelectInput (aDisplay, anXWin,
+                ExposureMask | KeyPressMask | KeyReleaseMask
+              | ButtonPressMask | ButtonReleaseMask
+              | StructureNotifyMask
+              | PointerMotionMask
+              | Button1MotionMask | Button2MotionMask
+              | Button3MotionMask | FocusChangeMask);
+  Atom aDeleteWindowAtom = GetDisplayConnection()->GetAtom (Aspect_XA_DELETE_WINDOW);
+  XSetWMProtocols (aDisplay, anXWin, &aDeleteWindowAtom, 1);
 
-  XSelectInput( aDisplay, window,  ExposureMask | KeyPressMask | KeyReleaseMask |
-    ButtonPressMask | ButtonReleaseMask |
-    StructureNotifyMask |
-    PointerMotionMask |
-    Button1MotionMask | Button2MotionMask |
-    Button3MotionMask | FocusChangeMask
-    );
-  Atom aDeleteWindowAtom = GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW);
-  XSetWMProtocols(aDisplay, window, &aDeleteWindowAtom, 1);
-
-  XSynchronize(aDisplay, 0);
-
+  XSynchronize (aDisplay, 0);
 #else
-  // _WIN32
+  //
 #endif
-
 }
 
 //==============================================================================
@@ -14117,7 +14132,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vinit",
           "vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]"
     "\n\t\t:     [-exitOnClose] [-closeOnEscape] [-cloneActive] [-virtual {on|off}=off] [-2d_mode {on|off}=off]"
-  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  #if defined(HAVE_XLIB)
     "\n\t\t:     [-display displayName]"
   #endif
     "\n\t\t: Creates new View window with specified name viewName."
@@ -14126,7 +14141,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  -name {driverName/viewerName/viewName | viewerName/viewName | viewName}"
     "\n\t\t: If driverName isn't specified the driver will be shared with active view."
     "\n\t\t: If viewerName isn't specified the viewer will be shared with active view."
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(HAVE_XLIB)
     "\n\t\t:  -display HostName.DisplayNumber[:ScreenNumber]"
     "\n\t\t: Display name will be used within creation of graphic driver, when specified."
 #endif

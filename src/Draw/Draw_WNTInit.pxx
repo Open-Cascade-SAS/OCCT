@@ -25,5 +25,4 @@ VOID UnregisterAppClass(HINSTANCE);
 HWND CreateAppWindow(HINSTANCE);
 HWND CreateMDIClientWindow(HWND);
 
-
 #endif
