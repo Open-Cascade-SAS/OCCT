@@ -126,8 +126,8 @@ public:
   //! Warning S must have already been triangulated.
   void Load (const TopoDS_Shape& theShape) { myShapes.Append (theShape); }
 
-  Standard_EXPORT Handle(HLRAlgo_PolyAlgo) Algo() const;
-  
+  const Handle(HLRAlgo_PolyAlgo)& Algo() const { return myAlgo; }
+
   //! Sets the parameters of the view for this framework.
   //! These parameters are defined by an HLRAlgo_Projector object,
   //! which is returned by the Projector function on a Prs3d_Projector object.
