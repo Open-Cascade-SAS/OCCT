@@ -85,7 +85,7 @@ void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents
 Handle(StepBasic_DimensionalExponents) StepBasic_SiUnit::Dimensions() const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
 
   // attention : dimensional exponent retourne incorrect (pointeur NULL).
   // on devrait, en fonction du nom de l unite SI, construire un dimensional

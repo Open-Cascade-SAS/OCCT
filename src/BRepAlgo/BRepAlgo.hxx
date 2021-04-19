@@ -80,11 +80,10 @@ public:
   //! auto-intersection of new wires are not searched.
   Standard_EXPORT static Standard_Boolean IsValid (const TopTools_ListOfShape& theArgs, const TopoDS_Shape& theResult, const Standard_Boolean closedSolid = Standard_False, const Standard_Boolean GeomCtrl = Standard_True);
   
-  //! Checks if the shape is  "correct". If not, returns
-  //! <Standard_False>,  else   returns <Standard_True>.
-  //! This method differs from  the previous one in  the
-  //! fact that no   geometric contols (intersection  of
-  //! wires, pcurve validity) are performed.
+  //! Checks if the shape is "correct".
+  //! If not, returns FALSE, else returns TRUE.
+  //! This method differs from the previous one in the fact that no geometric controls
+  //! (intersection of wires, pcurve validity) are performed.
   Standard_EXPORT static Standard_Boolean IsTopologicallyValid (const TopoDS_Shape& S);
 
 

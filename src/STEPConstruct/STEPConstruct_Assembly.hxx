@@ -36,7 +36,7 @@ class Interface_Graph;
 //! basic data : a ShapeRepresentation, a Location ...
 //!
 //! Three ways of coding such item from a ShapeRepresentation :
-//! - do nothing : i.e. informations for assembly are ignored
+//! - do nothing : i.e. information for assembly are ignored
 //! - create a MappedItem
 //! - create a RepresentationRelationship (WithTransformation)
 class STEPConstruct_Assembly 

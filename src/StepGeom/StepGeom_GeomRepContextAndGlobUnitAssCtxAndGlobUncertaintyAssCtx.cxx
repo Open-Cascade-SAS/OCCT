@@ -69,17 +69,17 @@ void StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Init
 
   StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
   
-  // --- ANDOR componant fields : GeometricRepresentationContext ---
+  // --- ANDOR component fields : GeometricRepresentationContext ---
   
   geometricRepresentationContext = new StepGeom_GeometricRepresentationContext();
   geometricRepresentationContext->Init(aContextIdentifier, aContextType, aCoordinateSpaceDimension);
   
-  // --- ANDOR componant fields : GlobalUnitAssignedContext ---
+  // --- ANDOR component fields : GlobalUnitAssignedContext ---
   
   globalUnitAssignedContext = new StepRepr_GlobalUnitAssignedContext();
   globalUnitAssignedContext->Init(aContextIdentifier, aContextType, aUnits);
 
-  // --- ANDOR componant fields : GlobalUncertaintyAssignedContext ---
+  // --- ANDOR component fields : GlobalUncertaintyAssignedContext ---
 
   globalUncertaintyAssignedContext = new StepRepr_GlobalUncertaintyAssignedContext();
   globalUncertaintyAssignedContext->Init(aContextIdentifier, aContextType, anUncertainty);

@@ -473,7 +473,7 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires
       }
     }
   }
-  // quit withour error
+  // quit without error
   if (Update) {
     BRepCheck::Add(myMap(myShape),myOrires);
   }

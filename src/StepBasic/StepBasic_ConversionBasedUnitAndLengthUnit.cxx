@@ -28,10 +28,10 @@ void StepBasic_ConversionBasedUnitAndLengthUnit::Init(const Handle(StepBasic_Dim
 						      const Handle(TCollection_HAsciiString)& aName,
 						      const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
   
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   lengthUnit = new StepBasic_LengthUnit();
   lengthUnit->Init(aDimensions);
 }

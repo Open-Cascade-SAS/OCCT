@@ -79,7 +79,7 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
     if(C3D->IsKind(STANDARD_TYPE(Geom_Conic))) 
       MaxDeg = Min(MaxDeg,6);
  
-    Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection agains parabols ets
+    Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection against parabols ets
     try {
       OCC_CATCH_SIGNALS
       GeomConvert_ApproxCurve approx (tcurve, Tol3d, Continuity, MaxSegments, MaxDeg);
@@ -115,7 +115,7 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(G
 {
   Handle(Geom2d_BSplineCurve) aBSpline2d;
   if(C2D->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection agains parabols ets
+    Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection against parabols ets
     Geom2dConvert_ApproxCurve approx (tcurve, Tol2d, Continuity, MaxSegments, MaxDegree);
     if ( approx.HasResult() )
       aBSpline2d = approx.Curve();
@@ -241,7 +241,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
 #ifdef OCCT_DEBUG
 	Standard_Integer nbOfSpan = (anApprox.Surface()->NbUKnots()-1)*(anApprox.Surface()->NbVKnots()-1);
 	std::cout << "\terror = " << anApprox.MaxError() << "\tspans = " << nbOfSpan << std::endl;
-	std::cout << " Surface is aproximated with continuity " << (GeomAbs_Shape)cnt <<std::endl;
+	std::cout << " Surface is approximated with continuity " << (GeomAbs_Shape)cnt <<std::endl;
 #endif
 	S = anApprox.Surface();
 	Handle(Geom_BSplineSurface) Bsc = Handle(Geom_BSplineSurface)::DownCast(S);

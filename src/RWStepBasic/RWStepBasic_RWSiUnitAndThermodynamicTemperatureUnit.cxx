@@ -54,7 +54,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep
   //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
   
@@ -91,7 +91,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::ReadStep
     return;
   }
 
-  // --- Instance of plex componant SolidAngleUnit ---
+  // --- Instance of plex component SolidAngleUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,0,ach,"thermodynamic_temperature_unit")) return;
 
@@ -116,7 +116,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::WriteStep
   // --- redefined field ---
   SW.SendDerived();
   
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
   
   // --- field : prefix ---
@@ -130,7 +130,7 @@ void RWStepBasic_RWSiUnitAndThermodynamicTemperatureUnit::WriteStep
   // --- field : name ---
   SW.SendEnum(writer.EncodeName(ent->Name()));
 	
-  // --- Instance of plex componant SolidAngleUnit ---
+  // --- Instance of plex component SolidAngleUnit ---
   SW.StartEntity("THERMODYNAMIC_TEMPERATURE_UNIT");
 }
 

@@ -219,7 +219,7 @@ public:
 
   //! Move assignment.
   //! This array will borrow all the data from theOther.
-  //! The moved object will be left unitialized and should not be used anymore.
+  //! The moved object will be left uninitialized and should not be used anymore.
   NCollection_Array2& Move (NCollection_Array2& theOther)
   {
     if (&theOther == this)

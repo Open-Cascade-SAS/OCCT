@@ -39,13 +39,13 @@ class Geom2d_BSplineCurve;
 DEFINE_STANDARD_HANDLE(ProjLib_ProjectedCurve, Adaptor2d_Curve2d)
 
 //! Compute the 2d-curve.  Try to solve the particular
-//! case if possible.  Otherwize, an approximation  is
+//! case if possible.  Otherwise, an approximation  is
 //! done. For approximation some parameters are used, including 
 //! required tolerance of approximation.
 //! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from
 //! "exact" 3d projection. Since algorithm searches 2d curve on surface, required 2d tolerance is computed
 //! from 3d tolerance with help of U,V resolutions of surface.
-//! 3d and 2d tolerances have sence only for curves on surface, it defines precision of projecting and approximation
+//! 3d and 2d tolerances have sense only for curves on surface, it defines precision of projecting and approximation
 //! and have nothing to do with distance between the projected curve and the surface.
 class ProjLib_ProjectedCurve  : public Adaptor2d_Curve2d
 {
@@ -97,7 +97,7 @@ public:
 
   //! Set the parameter, which degines maximal possible distance between projected curve and surface.
   //! It uses only for projecting on not analytical surfaces.
-  //! If theMaxDist < 0, algoritm uses default value 100.*Tolerance. 
+  //! If theMaxDist < 0, algorithm uses default value 100.*Tolerance.
   //! If real distance between curve and surface more then theMaxDist, algorithm stops working.
   Standard_EXPORT void SetMaxDist(const Standard_Real theMaxDist);
 
@@ -123,7 +123,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   

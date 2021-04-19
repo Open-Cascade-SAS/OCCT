@@ -37,7 +37,7 @@ void RWStepBasic_RWConversionBasedUnitAndAreaUnit::ReadStep(const Handle(StepDat
   //data->NamedForComplex("AREA_UNIT",num0,num,ach);
   if (!data->CheckNbParams(num,0,ach,"area_unit")) return;
   
-  // --- Instance of plex componant ConversionBasedUnit ---
+  // --- Instance of plex component ConversionBasedUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
   Handle(TCollection_HAsciiString) aName;

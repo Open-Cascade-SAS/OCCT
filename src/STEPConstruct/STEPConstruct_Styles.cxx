@@ -402,7 +402,7 @@ Standard_Boolean STEPConstruct_Styles::LoadInvisStyles (Handle(TColStd_HSequence
   Handle(Interface_InterfaceModel) model = Model();
   Standard_Integer nb = model->NbEntities();
   Handle(Standard_Type) tInvisibility = STANDARD_TYPE(StepVisual_Invisibility);
-  // serach for invisibility
+  // search for invisibility
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(Standard_Transient) enti = model->Value(i);
     if ( enti->DynamicType() != tInvisibility )

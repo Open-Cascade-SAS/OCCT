@@ -117,7 +117,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
     Handle(Geom_BSplineCurve) aBSpline;
     Standard_Real Shift = 0.;
     if(myCurve->IsKind(STANDARD_TYPE(Geom_Conic))) {
-      Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(myCurve,First,Last); //protection agains parabols ets
+      Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(myCurve,First,Last); //protection against parabols ets
       GeomConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
 				      GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )

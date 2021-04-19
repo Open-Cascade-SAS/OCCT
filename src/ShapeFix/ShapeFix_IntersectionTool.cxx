@@ -209,7 +209,7 @@ Standard_Boolean ShapeFix_IntersectionTool::CutEdge(const TopoDS_Edge &edge,
         if(tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))) {
           BRep_Builder B;
           B.Range(edge,Min(pend,cut),Max(pend,cut));
-          if( Abs(pend-lp)<Precision::PConfusion() ) { // cut from the begining
+          if( Abs(pend-lp)<Precision::PConfusion() ) { // cut from the beginning
             Standard_Real cut3d = (cut-fp)*(b-a)/(lp-fp);
             B.Range(edge, a+cut3d, b, Standard_True);
             iscutline = Standard_True;
@@ -320,7 +320,7 @@ Standard_Boolean ShapeFix_IntersectionTool::SplitEdge1(const Handle(ShapeExtend_
 
 //=======================================================================
 //function : SplitEdge2
-//purpose  : auxilary: split edge[a,b] om two part e1[a,param1]
+//purpose  : auxiliary: split edge[a,b] om two part e1[a,param1]
 //                     and e2[param2,b] using vertex vert
 //                     (remove segment (param1,param2) from edge)
 //=======================================================================
@@ -716,7 +716,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
 
 //=======================================================================
 //function : CreateBoxes2d
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Bnd_Box2d CreateBoxes2d(const Handle(ShapeExtend_WireData)& sewd, 
                                       const TopoDS_Face& face,
@@ -754,7 +754,7 @@ static Bnd_Box2d CreateBoxes2d(const Handle(ShapeExtend_WireData)& sewd,
 
 //=======================================================================
 //function : SelectIntPnt
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void SelectIntPnt(const Geom2dInt_GInter& Inter,
                          IntRes2d_IntersectionPoint& IP,
@@ -785,7 +785,7 @@ static void SelectIntPnt(const Geom2dInt_GInter& Inter,
 
 //=======================================================================
 //function : FindVertAndSplitEdge
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 Standard_Boolean ShapeFix_IntersectionTool::FindVertAndSplitEdge
            (const Standard_Real param1,

@@ -44,11 +44,11 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::ReadStep(const Handle(StepData_StepR
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
   num = data->NextForComplex(num);
 
-  // --- Instance of plex componant PlaneAngleUnit ---
+  // --- Instance of plex component PlaneAngleUnit ---
   if (!data->CheckNbParams(num,0,ach,"plane_angle_unit")) return;
   num = data->NextForComplex(num);
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
 
   // --- field : prefix ---
@@ -99,10 +99,10 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::WriteStep(StepData_StepWriter& SW,
   // --- redefined field ---
   SW.SendDerived();
 
-  // --- Instance of plex componant PlaneAngleUnit ---
+  // --- Instance of plex component PlaneAngleUnit ---
   SW.StartEntity("PLANE_ANGLE_UNIT");
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
 	
   // --- field : prefix ---

@@ -37,7 +37,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   Standard_Integer num = num0;
   
   // -----------------------------------------------------------------
-  // --- Instance of plex componant GeometricRepresentationContext ---
+  // --- Instance of plex component GeometricRepresentationContext ---
   // -----------------------------------------------------------------
   
   if (!data->CheckNbParams(num,1,ach,"geometric_representation_context")) return;
@@ -51,7 +51,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   num = data->NextForComplex(num);
   
   // -------------------------------------------------------------------
-  // --- Instance of plex componant GlobalUncertaintyAssignedContext ---
+  // --- Instance of plex component GlobalUncertaintyAssignedContext ---
   // -------------------------------------------------------------------
   
   if (!data->CheckNbParams(num,1,ach,"global_uncertainty_assigned_context")) return;
@@ -75,7 +75,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::ReadS
   num = data->NextForComplex(num);
   
   // ------------------------------------------------------------
-  // --- Instance of plex componant GlobalUnitAssignedContext ---
+  // --- Instance of plex component GlobalUnitAssignedContext ---
   // ------------------------------------------------------------
   
   if (!data->CheckNbParams(num,1,ach,"global_unit_assigned_context")) return;
@@ -127,7 +127,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Write
 {
 
   // -----------------------------------------------------------------
-  // --- Instance of plex componant GeometricRepresentationContext ---
+  // --- Instance of plex component GeometricRepresentationContext ---
   // -----------------------------------------------------------------
   
   SW.StartEntity("GEOMETRIC_REPRESENTATION_CONTEXT");
@@ -137,7 +137,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Write
   SW.Send(ent->CoordinateSpaceDimension());
   
   // -------------------------------------------------------------------
-  // --- Instance of plex componant GlobalUncertaintyAssignedContext ---
+  // --- Instance of plex component GlobalUncertaintyAssignedContext ---
   // -------------------------------------------------------------------
   
   SW.StartEntity("GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT");
@@ -151,7 +151,7 @@ void RWStepGeom_RWGeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx::Write
   SW.CloseSub();
   
   // ------------------------------------------------------------
-  // --- Instance of plex componant GlobalUnitAssignedContext ---
+  // --- Instance of plex component GlobalUnitAssignedContext ---
   // ------------------------------------------------------------
   
   SW.StartEntity("GLOBAL_UNIT_ASSIGNED_CONTEXT");

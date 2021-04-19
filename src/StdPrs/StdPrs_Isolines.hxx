@@ -163,7 +163,7 @@ public:
                                             const TColStd_SequenceOfReal&       theUIsoParams,
                                             const TColStd_SequenceOfReal&       theVIsoParams);
 
-  //! Evalute sequence of parameters for drawing uv isolines for a given face.
+  //! Evaluate sequence of parameters for drawing uv isolines for a given face.
   //! @param theFace [in] the face.
   //! @param theNbIsoU [in] the number of u isolines.
   //! @param theNbIsoV [in] the number of v isolines.

@@ -383,19 +383,19 @@ public:
     return theFrom * (Element_t(1) - theT) + theTo * theT;
   }
 
-  //! Constuct DX unit vector.
+  //! Construct DX unit vector.
   static NCollection_Vec3 DX()
   {
     return NCollection_Vec3 (Element_t(1), Element_t(0), Element_t(0));
   }
 
-  //! Constuct DY unit vector.
+  //! Construct DY unit vector.
   static NCollection_Vec3 DY()
   {
     return NCollection_Vec3 (Element_t(0), Element_t(1), Element_t(0));
   }
 
-  //! Constuct DZ unit vector.
+  //! Construct DZ unit vector.
   static NCollection_Vec3 DZ()
   {
     return NCollection_Vec3 (Element_t(0), Element_t(0), Element_t(1));

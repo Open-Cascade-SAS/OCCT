@@ -67,7 +67,7 @@ void StepShape_OrientedOpenShell::SetCfsFaces(const Handle(StepShape_HArray1OfFa
 Handle(StepShape_HArray1OfFace) StepShape_OrientedOpenShell::CfsFaces() const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return openShellElement->CfsFaces();
 }
@@ -75,7 +75,7 @@ Handle(StepShape_HArray1OfFace) StepShape_OrientedOpenShell::CfsFaces() const
 Handle(StepShape_Face) StepShape_OrientedOpenShell::CfsFacesValue(const Standard_Integer num) const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return openShellElement->CfsFacesValue(num);
 }
@@ -83,7 +83,7 @@ Handle(StepShape_Face) StepShape_OrientedOpenShell::CfsFacesValue(const Standard
 Standard_Integer StepShape_OrientedOpenShell::NbCfsFaces () const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return openShellElement->NbCfsFaces();
 }

@@ -24,7 +24,7 @@
          //  *********************************** //
          //       Class methods                  //
          //                                      //
-         //  Machine-dependant values            //
+         //  Machine-dependent values            //
          //  Should be taken from include file   //
          //  *********************************** //
 
@@ -136,7 +136,7 @@ inline Standard_ShortReal     Min (const Standard_ShortReal Val1,
 // ===============================================
 
 // ==================================
-// Methods implemeted in Standard_ShortReal.cxx
+// Methods implemented in Standard_ShortReal.cxx
 // ==================================
 
 //! Computes a hash code for the given short real, in the range [1, theUpperBound]

@@ -172,8 +172,8 @@ Standard_Boolean operator > (const Quantity_Date& anOther) const
   Standard_EXPORT static Standard_Boolean IsValid (const Standard_Integer mm, const Standard_Integer dd, const Standard_Integer yy, const Standard_Integer hh, const Standard_Integer mn, const Standard_Integer ss, const Standard_Integer mis = 0, const Standard_Integer mics = 0);
   
   //! Returns true if a year is a leap year.
-  //! The leap years are divisable by 4 and not by 100 except
-  //! the years divisable by 400.
+  //! The leap years are divisible by 4 and not by 100 except
+  //! the years divisible by 400.
   static Standard_Boolean IsLeap (const Standard_Integer yy)
   {
     return ((yy % 4 == 0) && (yy % 100 != 0))

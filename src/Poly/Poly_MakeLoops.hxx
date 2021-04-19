@@ -169,7 +169,7 @@ public:
 
   //! Set a new value of orientation of a link already added earlier.
   //! It can be used with LF_None to exclude the link from consideration.
-  //! Returns the old value of orienation.
+  //! Returns the old value of orientation.
   Standard_EXPORT LinkFlag SetLinkOrientation
                    (const Link& theLink,
                     const LinkFlag theOrient);

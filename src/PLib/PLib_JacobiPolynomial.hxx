@@ -34,9 +34,9 @@ class PLib_JacobiPolynomial;
 DEFINE_STANDARD_HANDLE(PLib_JacobiPolynomial, PLib_Base)
 
 //! This class provides method  to work with Jacobi  Polynomials
-//! relativly to   an order of constraint
+//! relatively to   an order of constraint
 //! q  = myWorkDegree-2*(myNivConstr+1)
-//! Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relativly  to  the weigth W(t)
+//! Jk(t)  for k=0,q compose  the   Jacobi Polynomial  base relatively  to  the weigth W(t)
 //! iorder is the integer  value for the constraints:
 //! iorder = 0 <=> ConstraintOrder  = GeomAbs_C0
 //! iorder = 1 <=>  ConstraintOrder = GeomAbs_C1
@@ -76,7 +76,7 @@ public:
 
   //! returns  the  Jacobi  Points   for  Gauss  integration ie
   //! the positive values of the Legendre roots by increasing values
-  //! NbGaussPoints is the number of   points choosen for the  integral
+  //! NbGaussPoints is the number of   points chosen for the  integral
   //! computation.
   //! TabPoints (0,NbGaussPoints/2)
   //! TabPoints (0) is loaded only for the odd values of NbGaussPoints
@@ -89,7 +89,7 @@ public:
   //! returns the Jacobi weigths for Gauss integration only for
   //! the positive    values of the  Legendre roots   in the order they
   //! are given by the method Points
-  //! NbGaussPoints   is the number of points choosen   for  the integral
+  //! NbGaussPoints   is the number of points chosen   for  the integral
   //! computation.
   //! TabWeights  (0,NbGaussPoints/2,0,Degree)
   //! TabWeights (0,.) are only loaded for the odd values of NbGaussPoints

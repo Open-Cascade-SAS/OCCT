@@ -82,16 +82,16 @@ public:
   //! Returns data type
   Standard_EXPORT TCollection_ExtendedString DataType() const;
 
-  //! Add <theUserInfo> to the user informations
+  //! Add <theUserInfo> to the user information
   Standard_EXPORT void AddToUserInfo(const TCollection_AsciiString& theUserInfo);
 
-  //! Return the user informations
+  //! Return the user information
   Standard_EXPORT const TColStd_SequenceOfAsciiString& UserInfo() const;
 
-  //! Add <theUserInfo> to the user informations
+  //! Add <theUserInfo> to the user information
   Standard_EXPORT void AddToComments(const TCollection_ExtendedString& aComment);
 
-  //! Return the user informations
+  //! Return the user information
   Standard_EXPORT const TColStd_SequenceOfExtendedString& Comments() const;
 
   //! Returns the number of persistent objects

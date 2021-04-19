@@ -55,7 +55,7 @@
 //! The method failed, case 6
 //! The method failed, case 7
 //! The method failed, case 8
-//! The mathod failed (any of FAIL# occured)
+//! The method failed (any of FAIL# occurred)
 enum ShapeExtend_Status
 {
 ShapeExtend_OK,

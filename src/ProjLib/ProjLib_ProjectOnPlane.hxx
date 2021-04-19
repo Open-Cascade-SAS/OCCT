@@ -71,12 +71,12 @@ public:
   //! plane <Pl>.
   Standard_EXPORT ProjLib_ProjectOnPlane(const gp_Ax3& Pl, const gp_Dir& D);
   
-  //! Sets the  Curve  and perform  the projection.   if
-  //! <KeepParametrization> is true, the parametrization
+  //! Sets the  Curve  and perform  the projection.
+  //! if <KeepParametrization> is true, the parametrization
   //! of the Projected Curve <PC>  will  be the same  as
-  //! the parametrization of the initial  curve <C>.  It
-  //! meens: proj(C(u)) = PC(u) for  each u.  Otherwize,
-  //! the parametrization may change.
+  //! the parametrization of the initial  curve <C>.
+  //! It means: proj(C(u)) = PC(u) for each u.
+  //! Otherwise, the parametrization may change.
   Standard_EXPORT void Load (const Handle(Adaptor3d_Curve)& C, const Standard_Real Tolerance, const Standard_Boolean KeepParametrization = Standard_True);
   
   Standard_EXPORT const gp_Ax3& GetPlane() const;
@@ -98,10 +98,9 @@ public:
   //! intervals.
   Standard_EXPORT Standard_Integer NbIntervals (const GeomAbs_Shape S) const Standard_OVERRIDE;
   
-  //! Stores in <T> the  parameters bounding the intervals
-  //! of continuity <S>.
+  //! Stores in <T> the  parameters bounding the intervals of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   

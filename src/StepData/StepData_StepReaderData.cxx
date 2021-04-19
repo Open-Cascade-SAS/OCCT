@@ -1289,7 +1289,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer num,
         if (!sel.Matches(entent))
         {
           errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
-          //fot not suppported STEP entity
+          //fot not supported STEP entity
           if (!entent.IsNull() && entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
             sel.SetValue(entent);
         }

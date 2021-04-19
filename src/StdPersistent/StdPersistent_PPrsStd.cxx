@@ -16,7 +16,7 @@
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_PPrsStd::AISPresentation::Import
   (const Handle(TDataXtd_Presentation)& theAttribute) const
@@ -52,7 +52,7 @@ void StdPersistent_PPrsStd::AISPresentation::Import
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_PPrsStd::AISPresentation_1::Import
   (const Handle(TDataXtd_Presentation)& theAttribute) const

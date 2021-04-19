@@ -81,7 +81,7 @@ namespace
     }
   }
 
-  //! Reoder and adjust to the limit a curve's parameter values.
+  //! Reorder and adjust to the limit a curve's parameter values.
   //! @param theCurve [in] the curve.
   //! @param theLimit [in] the parameter limit value.
   //! @param theFirst [in/out] the first parameter value.
@@ -442,7 +442,7 @@ void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_Surface)& theSurfac
         Standard_Real aU1 = anEdgeCurve->FirstParameter();
         Standard_Real aU2 = anEdgeCurve->LastParameter();
 
-        // MSV 17.08.06 OCC13144: U2 occured less than U1, to overcome it
+        // MSV 17.08.06 OCC13144: U2 occurred less than U1, to overcome it
         // ensure that distance U2-U1 is not greater than aLimit*2,
         // if greater then choose an origin and use aLimit to define
         // U1 and U2 anew.

@@ -62,12 +62,12 @@ void StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface::Init(
 
 	StepGeom_BSplineSurface::Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	bSplineSurfaceWithKnots = new StepGeom_BSplineSurfaceWithKnots();
 	bSplineSurfaceWithKnots->Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect, aUMultiplicities, aVMultiplicities, aUKnots, aVKnots, aKnotSpec);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	rationalBSplineSurface = new StepGeom_RationalBSplineSurface();
 	rationalBSplineSurface->Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect, aWeightsData);

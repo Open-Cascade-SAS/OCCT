@@ -293,7 +293,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 
   if (convert) 
   {
-    // Check that gap satisfies the precision - in this case no convertation produced
+    // Check that gap satisfies the precision - in this case no conversion produced
     if (cpnt1.Distance(vpnt) < preci && cpnt2.Distance(vpnt) < preci)
       return Standard_False;
 
@@ -499,7 +499,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	  u2 = Proj.Parameter(index);
 	}
       }
-      // Ajust parameters on periodic curves
+      // Adjust parameters on periodic curves
       u1 = AdjustOnPeriodic3d(c1,reversed1,first1,last1,u1);
       u2 = AdjustOnPeriodic3d(c2,!reversed2,first2,last2,u2);
       // Check points to satisfy distance criterium
@@ -549,7 +549,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	    for (Standard_Integer i=1; i<=Extr.NbExtrema(); i++) 
             {
 	      Extr.Parameters(i,uu1,uu2);
-	      // Ajust parameters on periodic curves
+	      // Adjust parameters on periodic curves
 	      uu1 = AdjustOnPeriodic3d(c1,reversed1,first1,last1,uu1);
 	      uu2 = AdjustOnPeriodic3d(c2,!reversed2,first2,last2,uu2);
 	      pp1 = c1->Value(uu1); pp2 = c2->Value(uu2);
@@ -582,7 +582,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	      Extr.Parameters(index1,uu1,uu2);
 	    }
 	    else Extr.LowerDistanceParameters(uu1,uu2);
-	    // Ajust parameters on periodic curves
+	    // Adjust parameters on periodic curves
 	    uu1 = AdjustOnPeriodic3d(c1,reversed1,first1,last1,uu1);
 	    uu2 = AdjustOnPeriodic3d(c2,!reversed2,first2,last2,uu2);
 	    // Check points to satisfy distance criterium
@@ -602,7 +602,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
           }
 	}
       }
-      
+
       try 
       {
         OCC_CATCH_SIGNALS
@@ -648,7 +648,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       }  
     }
   }
-  
+
   if (done1 || done2) 
   {
 
@@ -701,7 +701,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 	  Context()->Replace(aOldV,anewV);
 	}
       }
-      
+
       Context()->Replace(E1,newE1);
       sbwd->Set(newE1,n1);
     }
@@ -717,7 +717,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
       SFST.SetTolerance(newE2,::Precision::Confusion(),TopAbs_EDGE);
       B.SameRange(newE2,Standard_False);
 //      B.SameParameter(newE2,Standard_False);
-      
+
       //To keep NM vertices belonging initial edges
       TopoDS_Iterator aItv(E2,Standard_False);
       for( ; aItv.More(); aItv.Next()) {
@@ -744,7 +744,7 @@ static Standard_Real AdjustOnPeriodic3d (const Handle(Geom_Curve)& c,
 
 //=======================================================================
 //function : FixGap2d
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
@@ -819,19 +819,19 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
   Standard_Real first1, last1, first2, last2;
   if (reversed1) 
   { 
-    first1 = clast1;  last1 = cfirst1; 
+    first1 = clast1;  last1 = cfirst1;
   }
-  else           
+  else
   { 
-    first1 = cfirst1; last1 = clast1;  
+    first1 = cfirst1; last1 = clast1;
   }
-  if (reversed2) 
+  if (reversed2)
   { 
-    first2 = clast2;  last2 = cfirst2; 
+    first2 = clast2;  last2 = cfirst2;
   }
-  else           
+  else
   { 
-    first2 = cfirst2; last2 = clast2;  
+    first2 = cfirst2; last2 = clast2;
   }
 
   Handle(Geom2d_Curve) pc1 = PC1, pc2 = PC2;
@@ -840,14 +840,14 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
   Standard_Boolean basic = Standard_False;
   Standard_Boolean trimmed1 = Standard_False, offset1 = Standard_False;
   Standard_Real offval1 = 0.;
-  while (!basic) 
+  while (!basic)
   {
-    if (pc1->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) 
+    if (pc1->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
       pc1 = Handle(Geom2d_TrimmedCurve)::DownCast(pc1)->BasisCurve();
       trimmed1 = Standard_True;
     }
-    else if (pc1->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve))) 
+    else if (pc1->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
     {
       Handle(Geom2d_OffsetCurve) oc = Handle(Geom2d_OffsetCurve)::DownCast(pc1);
       pc1 = oc->BasisCurve();
@@ -1150,7 +1150,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 	    if (flag1==1) IP = IS.FirstPoint();
 	    else          IP = IS.LastPoint();
 	  }
-	  // Ajust parameters on periodic curves
+	  // Adjust parameters on periodic curves
 	  Standard_Real u1 = AdjustOnPeriodic2d(pc1,reversed1,first1,last1,
 						IP.ParamOnFirst());
 	  Standard_Real u2 = AdjustOnPeriodic2d(pc2,!reversed2,first2,last2,
@@ -1177,7 +1177,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
         {
 	  Standard_Real u1, u2;
 	  Extr.LowerDistanceParameters(u1,u2);
-	  // Ajust parameters on periodic curves
+	  // Adjust parameters on periodic curves
 	  u1 = AdjustOnPeriodic2d(pc1,reversed1,first1,last1,u1);
 	  u2 = AdjustOnPeriodic2d(pc2,!reversed2,first2,last2,u2);
 	  // Check points to satisfy distance criterium
@@ -1232,7 +1232,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 	    u2 = Proj.Parameter(index);
 	  }
 	}
-	// Ajust parameters on periodic curves
+	// Adjust parameters on periodic curves
 	u1 = AdjustOnPeriodic2d(pc1,reversed1,first1,last1,u1);
 	u2 = AdjustOnPeriodic2d(pc2,!reversed2,first2,last2,u2);
 	// Process special case of projection
@@ -1283,7 +1283,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 	  if (cpnt1.Distance(ipnt2)<cpnt2.Distance(ipnt1)) u1 = ipar1;
 	  else                                             u2 = ipar2;
 	}
-	// Ajust parameters on periodic curves
+	// Adjust parameters on periodic curves
 	u1 = AdjustOnPeriodic2d(pc1,reversed1,first1,last1,u1);
 	u2 = AdjustOnPeriodic2d(pc2,!reversed2,first2,last2,u2);
 	// Check points to satisfy distance criterium
@@ -1458,7 +1458,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 		      if (flag==1) IP = IS.FirstPoint();
 		      else         IP = IS.LastPoint();
 		    }
-		    // Ajust parameters on periodic curve
+		    // Adjust parameters on periodic curve
 		    uu = AdjustOnPeriodic2d(pc,(j==1? reversed1 : !reversed2),
                                             fpar,lpar,IP.ParamOnSecond());
 		    if (j==1 && Abs(cfirst1-uu) > ::Precision::PConfusion())

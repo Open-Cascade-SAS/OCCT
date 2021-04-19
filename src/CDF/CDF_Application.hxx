@@ -137,7 +137,7 @@ public:
   PCDM_ReaderStatus GetRetrieveStatus() const { return myRetrievableStatus; }
   
   //! Reads aDoc from standard SEEKABLE stream theIStream,
-  //! the stream should support SEEK fuctionality
+  //! the stream should support SEEK functionality
   Standard_EXPORT Handle(CDM_Document) Read
     (Standard_IStream& theIStream,
      const Message_ProgressRange& theRange = Message_ProgressRange());

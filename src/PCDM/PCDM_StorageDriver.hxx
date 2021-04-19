@@ -37,7 +37,7 @@ class Storage_Schema;
 class PCDM_StorageDriver;
 DEFINE_STANDARD_HANDLE(PCDM_StorageDriver, PCDM_Writer)
 
-//! persistent implemention of storage.
+//! persistent implementation of storage.
 //!
 //! The  application  must redefine one the two Make()
 //! methods.  The first one, if  the application wants to

@@ -135,7 +135,7 @@ void RWStepShape_RWEdgeCurve::Check
   Standard_Boolean Cumulated1, Cumulated2;
 
   // 1- First Vertex != LastVertex but First VertexPoint == Last VertexPoint
-  // Remark : time comsuming process but useful !
+  // Remark : time consuming process but useful !
   // If this append, we can drop one of the two vertices and replace it 
   // everywhere it is referenced. Side effect : tolerance problem !!!
 

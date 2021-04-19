@@ -46,12 +46,12 @@ void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
   
   StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
   
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   
   geometricRepresentationContext = new StepGeom_GeometricRepresentationContext();
   geometricRepresentationContext->Init(aContextIdentifier, aContextType, aCoordinateSpaceDimension);
   
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   
   parametricRepresentationContext = new StepRepr_ParametricRepresentationContext();
   parametricRepresentationContext->Init(aContextIdentifier, aContextType);

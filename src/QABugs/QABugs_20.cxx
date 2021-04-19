@@ -1654,7 +1654,7 @@ namespace Parab2d_Bug26747
   //Focal length
   Standard_Real FocalLength;
 
-  //Coordiantes of the vertex
+  //Coordinates of the vertex
   Standard_Real VertX, VertY;
 
   //Parameter
@@ -3578,7 +3578,7 @@ static Standard_Integer OCC30990 (Draw_Interpretor& theDI, Standard_Integer theN
   // after evaluation of points inside the spans before and after the knot,
   // and ensure that result at the knot is exactly the same regardless
   // of previous evaluation (i.e. the cache is updated as necessary).
-  // Note: the points (D0) computed on different spans are slighly different
+  // Note: the points (D0) computed on different spans are slightly different
   // due to rounding, which allows us to detect this situation without
   // analysis of higher derivatives (which would show non-negligible difference).
   Standard_Integer aNbErr = 0;

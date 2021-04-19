@@ -686,7 +686,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
               std::cout << " iteration = " << i
                 <<    "\terror = " << anApprox.MaxError()
                 <<    "\tspans = " << nbOfSpan << std::endl;
-              std::cout<< " Surface is aproximated with continuity " << IntegerToGeomAbsShape(Min(aCU,aCV)) <<std::endl;
+              std::cout<< " Surface is approximated with continuity " << IntegerToGeomAbsShape(Min(aCU,aCV)) <<std::endl;
             }
 #endif
             S = anApprox.Surface();
@@ -757,7 +757,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       }
       else { 
 #ifdef OCCT_DEBUG
-        std::cout<<" Approximation iteration out. Surface is not aproximated." << std::endl;
+        std::cout<<" Approximation iteration out. Surface is not approximated." << std::endl;
 #endif
         return Standard_False;
       }
@@ -767,7 +767,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       { MaxDeg = myParameters->GMaxDegree(); continue;}
       else {
 #ifdef OCCT_DEBUG	
-        std::cout<<" Approximation iteration out. Surface is not aproximated." << std::endl;
+        std::cout<<" Approximation iteration out. Surface is not approximated." << std::endl;
 #endif
         return Standard_False;
       }
@@ -893,7 +893,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
 
   if (aCurve->IsKind(STANDARD_TYPE(Geom_Conic)) && myParameters->ConvertCurve3d()) {
     Handle(Geom_BSplineCurve) aBSpline;
-    Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(aCurve,First,Last); //protection agains parabols ets
+    Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(aCurve,First,Last); //protection against parabols ets
     GeomConvert_ApproxCurve approx (tcurve, myTol3d/*Precision::Approximation()*/, myContinuity2d, myNbMaxSeg, 6 );
     if ( approx.HasResult() )
       aBSpline = approx.Curve();
@@ -1201,7 +1201,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
 
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_Conic)) && myParameters->ConvertCurve2d()) {
     Handle(Geom2d_BSplineCurve) aBSpline2d;
-    Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(aCurve,First,Last); //protection agains parabols ets
+    Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(aCurve,First,Last); //protection against parabols ets
     Geom2dConvert_ApproxCurve approx (tcurve, myTol2d,myContinuity2d,myNbMaxSeg , 6 );
     if ( approx.HasResult() )
       aBSpline2d = approx.Curve();

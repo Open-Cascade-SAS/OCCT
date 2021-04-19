@@ -151,7 +151,7 @@ protected:
     NCollection_List<Standard_Integer> myFaces;
     NCollection_List<Standard_Integer> myEdges;
 
-    //! Indentifies the place of this Vertex in
+    //! Identifies the place of this Vertex in
     //! BRepBuilderAPI_FastSewing::myVertexVec list
     Standard_Integer myID;
   };
@@ -201,7 +201,7 @@ protected:
     //! myVertices[i] is Start point of myEdges[i]
     Standard_Integer myVertices[4];
 
-    //! Indentifies the place of this Face in
+    //! Identifies the place of this Face in
     //! BRepBuilderAPI_FastSewing::myFaceVec list
     Standard_Integer myID;
   };
@@ -245,7 +245,7 @@ protected:
     //! Value is the index of this shape in myFaceVec array
     NCollection_Sequence<Standard_Integer> myFaces;
 
-    //! Indentifies the place of this Edge in
+    //! Identifies the place of this Edge in
     //! BRepBuilderAPI_FastSewing::myEdgeVec list
     Standard_Integer myID;
 

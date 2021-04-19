@@ -53,12 +53,12 @@ void StepGeom_UniformCurveAndRationalBSplineCurve::Init(
 
 	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	rationalBSplineCurve = new StepGeom_RationalBSplineCurve();
 	rationalBSplineCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect, aWeightsData);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	uniformCurve = new StepGeom_UniformCurve();
 	uniformCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);

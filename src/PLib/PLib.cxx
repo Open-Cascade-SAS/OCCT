@@ -1189,7 +1189,7 @@ Standard_Integer PLib::EvalCubicHermite
   //
   //
   // initialise it at the stage 2 of the building algorithm
-  // for devided differences
+  // for divided differences
   //
   inverse = FirstLast[1] - FirstLast[0] ;
   inverse = 1.0e0 / inverse ;

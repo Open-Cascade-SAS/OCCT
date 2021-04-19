@@ -147,7 +147,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 //	num = data->NextForComplex(num);
 	data->NamedForComplex("B_SPLINE_SURFACE_WITH_KNOTS", "BSSWK",num0,num,ach);
 
-	// --- Instance of plex componant BSplineSurfaceWithKnots ---
+	// --- Instance of plex component BSplineSurfaceWithKnots ---
 
 	if (!data->CheckNbParams(num,5,ach,"b_spline_surface_with_knots")) return;
 
@@ -230,7 +230,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 //	num = data->NextForComplex(num);
 	data->NamedForComplex("RATIONAL_B_SPLINE_SURFACE", "RBSS",num0,num,ach);
 
-	// --- Instance of plex componant RationalBSplineSurface ---
+	// --- Instance of plex component RationalBSplineSurface ---
 
 	if (!data->CheckNbParams(num,1,ach,"rational_b_spline_surface")) return;
 
@@ -259,7 +259,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 //	num = data->NextForComplex(num);
 	data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM",num0,num,ach);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -283,7 +283,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep
 	 const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& ent) const
 {
 
-	// --- Instance of plex componant BoundedSurface ---
+	// --- Instance of plex component BoundedSurface ---
 
 	SW.StartEntity("BOUNDED_SURFACE");
 
@@ -334,7 +334,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep
 
 	SW.SendLogical(ent->SelfIntersect());
 
-	// --- Instance of plex componant BSplineSurfaceWithKnots ---
+	// --- Instance of plex component BSplineSurfaceWithKnots ---
 
 	SW.StartEntity("B_SPLINE_SURFACE_WITH_KNOTS");
 	// --- field : uMultiplicities ---
@@ -374,11 +374,11 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep
 	  case StepGeom_ktUnspecified : SW.SendEnum (ktUnspecified); break;
 	}
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
 
-	// --- Instance of plex componant RationalBSplineSurface ---
+	// --- Instance of plex component RationalBSplineSurface ---
 
 	SW.StartEntity("RATIONAL_B_SPLINE_SURFACE");
 	// --- field : weightsData ---
@@ -395,14 +395,14 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---
 
 	SW.Send(ent->Name());
 
-	// --- Instance of plex componant Surface ---
+	// --- Instance of plex component Surface ---
 
 	SW.StartEntity("SURFACE");
 }

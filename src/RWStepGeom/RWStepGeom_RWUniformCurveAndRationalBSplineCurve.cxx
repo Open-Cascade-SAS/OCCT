@@ -46,7 +46,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant BoundedCurve ---
+	// --- Instance of plex component BoundedCurve ---
 
 	if (!data->CheckNbParams(num,0,ach,"bounded_curve")) return;
 
@@ -108,19 +108,19 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant Curve ---
+	// --- Instance of plex component Curve ---
 
 	if (!data->CheckNbParams(num,0,ach,"curve")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	if (!data->CheckNbParams(num,0,ach,"geometric_representation_item")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RationalBSplineCurve ---
+	// --- Instance of plex component RationalBSplineCurve ---
 
 	if (!data->CheckNbParams(num,1,ach,"rational_b_spline_curve")) return;
 
@@ -141,7 +141,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -153,7 +153,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant UniformCurve ---
+	// --- Instance of plex component UniformCurve ---
 
 	if (!data->CheckNbParams(num,0,ach,"uniform_curve")) return;
 
@@ -168,7 +168,7 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::WriteStep
 	 const Handle(StepGeom_UniformCurveAndRationalBSplineCurve)& ent) const
 {
 
-	// --- Instance of plex componant BoundedCurve ---
+	// --- Instance of plex component BoundedCurve ---
 
 	SW.StartEntity("BOUNDED_CURVE");
 
@@ -202,15 +202,15 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::WriteStep
 
 	SW.SendLogical(ent->SelfIntersect());
 
-	// --- Instance of plex componant Curve ---
+	// --- Instance of plex component Curve ---
 
 	SW.StartEntity("CURVE");
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
 
-	// --- Instance of plex componant RationalBSplineCurve ---
+	// --- Instance of plex component RationalBSplineCurve ---
 
 	SW.StartEntity("RATIONAL_B_SPLINE_CURVE");
 	// --- field : weightsData ---
@@ -221,14 +221,14 @@ void RWStepGeom_RWUniformCurveAndRationalBSplineCurve::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---
 
 	SW.Send(ent->Name());
 
-	// --- Instance of plex componant UniformCurve ---
+	// --- Instance of plex component UniformCurve ---
 
 	SW.StartEntity("UNIFORM_CURVE");
 }

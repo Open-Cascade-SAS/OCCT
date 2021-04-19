@@ -38,7 +38,7 @@ public:
   //! Initialize fields and call ClearFlags()
   Standard_EXPORT ShapeAnalysis_ShapeContents();
   
-  //! Clears all accumulated statictics
+  //! Clears all accumulated statistics
   Standard_EXPORT void Clear();
   
   //! Clears all flags

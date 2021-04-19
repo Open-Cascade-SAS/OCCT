@@ -116,7 +116,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep
   SW.StartEntity("REPRESENTATION_ITEM");
   SW.Send(ent->Name());
 
-  // --- Instance of plex componant BoundedCurve ---
+  // --- Instance of plex component BoundedCurve ---
   SW.StartEntity("SURFACE_CURVE");
   
   // --- own field : curve3d ---

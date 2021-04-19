@@ -30,10 +30,10 @@ void StepBasic_ConversionBasedUnitAndSolidAngleUnit::Init(const Handle(StepBasic
 							  const Handle(TCollection_HAsciiString)& aName,
 							  const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
 
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   solidAngleUnit = new StepBasic_SolidAngleUnit();
   solidAngleUnit->Init(aDimensions);
 }

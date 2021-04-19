@@ -237,7 +237,7 @@
 //! Append into output value: "Name": { field dumped values }
 //! It computes Dump of the parent. The expected field is a parent class name to call ClassName::Dump.
 //! Use this macro for parent of the current class.
-//! The macros is recursive. Recursive is stoped when the depth value becomes equal to zero.
+//! The macros is recursive. Recursive is stopped when the depth value becomes equal to zero.
 //! Depth = -1 is the default value, dump here is unlimited.
 #define OCCT_DUMP_BASE_CLASS(theOStream, theDepth, theField) \
 { \

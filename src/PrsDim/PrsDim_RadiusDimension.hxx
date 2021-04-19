@@ -23,7 +23,7 @@
 
 DEFINE_STANDARD_HANDLE(PrsDim_RadiusDimension, PrsDim_Dimension)
 
-//! Radius dimension. Can be constructued:
+//! Radius dimension. Can be constructed:
 //! - On generic circle.
 //! - On generic circle with user-defined anchor point on that circle.
 //! - On generic shape containing geometry that can be measured

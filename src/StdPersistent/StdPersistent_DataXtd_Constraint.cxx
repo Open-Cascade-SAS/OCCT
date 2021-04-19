@@ -19,7 +19,7 @@
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_DataXtd_Constraint::Import
   (const Handle(TDataXtd_Constraint)& theAttribute) const

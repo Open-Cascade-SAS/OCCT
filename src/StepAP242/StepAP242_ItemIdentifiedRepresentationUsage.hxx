@@ -88,7 +88,7 @@ public:
     usedRepresentation = theUsedRepresentation;
   }
   
-  //! Retuns field UsedRepresentation
+  //! Returns field UsedRepresentation
   inline Handle(StepRepr_Representation) UsedRepresentation() const
   {
     return usedRepresentation;

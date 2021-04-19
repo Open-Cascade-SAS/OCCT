@@ -68,12 +68,13 @@ public:
   
   //! Return the  parameter on the  Ureversed surface for
   //! the point of parameter U on <me>.
-  //!
-  //! me->UReversed()->Value(me->UReversedParameter(U),V)
-  //!
+  //! @code
+  //!   me->UReversed()->Value(me->UReversedParameter(U),V)
+  //! @endcode
   //! is the same point as
-  //!
-  //! me->Value(U,V)
+  //! @code
+  //!   me->Value(U,V)
+  //! @endcode
   Standard_EXPORT Standard_Real UReversedParameter (const Standard_Real U) const Standard_OVERRIDE;
   
 
@@ -83,27 +84,28 @@ public:
   
   //! Return the  parameter on the  Vreversed surface for
   //! the point of parameter V on <me>.
-  //!
-  //! me->VReversed()->Value(U,me->VReversedParameter(V))
-  //!
+  //! @code
+  //!   me->VReversed()->Value(U,me->VReversedParameter(V))
+  //! @endcode
   //! is the same point as
-  //!
-  //! me->Value(U,V)
+  //! @code
+  //!   me->Value(U,V)
+  //! @endcode
   Standard_EXPORT Standard_Real VReversedParameter (const Standard_Real V) const Standard_OVERRIDE;
   
   //! Computes the  parameters on the  transformed  surface for
   //! the transform of the point of parameters U,V on <me>.
-  //!
-  //! me->Transformed(T)->Value(U',V')
-  //!
+  //! @code
+  //!   me->Transformed(T)->Value(U',V')
+  //! @endcode
   //! is the same point as
-  //!
-  //! me->Value(U,V).Transformed(T)
-  //!
+  //! @code
+  //!   me->Value(U,V).Transformed(T)
+  //! @endcode
   //! Where U',V' are the new values of U,V after calling
-  //!
-  //! me->TranformParameters(U,V,T)
-  //!
+  //! @code
+  //!   me->TransformParameters(U,V,T)
+  //! @endcode
   //! This methods does not change <U> and <V>
   //!
   //! It  can be redefined.  For  example on  the Plane,
@@ -112,19 +114,19 @@ public:
   
   //! Returns a 2d transformation  used to find the  new
   //! parameters of a point on the transformed surface.
-  //!
-  //! me->Transformed(T)->Value(U',V')
-  //!
+  //! @code
+  //!   me->Transformed(T)->Value(U',V')
+  //! @endcode
   //! is the same point as
-  //!
-  //! me->Value(U,V).Transformed(T)
-  //!
+  //! @code
+  //!   me->Value(U,V).Transformed(T)
+  //! @endcode
   //! Where U',V' are  obtained by transforming U,V with
-  //! th 2d transformation returned by
-  //!
-  //! me->ParametricTransformation(T)
-  //!
-  //! This methods returns an identity transformation
+  //! the 2d transformation returned by
+  //! @code
+  //!   me->ParametricTransformation(T)
+  //! @endcode
+  //! This method returns an identity transformation
   //!
   //! It  can be redefined.  For  example on  the Plane,
   //! Cylinder, Cone, Revolved and Extruded surfaces.

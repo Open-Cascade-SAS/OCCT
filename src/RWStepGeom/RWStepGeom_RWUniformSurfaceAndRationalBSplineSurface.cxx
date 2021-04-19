@@ -51,7 +51,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant BoundedSurface ---
+	// --- Instance of plex component BoundedSurface ---
 
 	if (!data->CheckNbParams(num,0,ach,"bounded_surface")) return;
 
@@ -136,13 +136,13 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	if (!data->CheckNbParams(num,0,ach,"geometric_representation_item")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RationalBSplineSurface ---
+	// --- Instance of plex component RationalBSplineSurface ---
 
 	if (!data->CheckNbParams(num,1,ach,"rational_b_spline_surface")) return;
 
@@ -169,7 +169,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -181,13 +181,13 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant Surface ---
+	// --- Instance of plex component Surface ---
 
 	if (!data->CheckNbParams(num,0,ach,"surface")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant UniformSurface ---
+	// --- Instance of plex component UniformSurface ---
 
 	if (!data->CheckNbParams(num,0,ach,"uniform_surface")) return;
 
@@ -202,7 +202,7 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::WriteStep
 	 const Handle(StepGeom_UniformSurfaceAndRationalBSplineSurface)& ent) const
 {
 
-	// --- Instance of plex componant BoundedSurface ---
+	// --- Instance of plex component BoundedSurface ---
 
 	SW.StartEntity("BOUNDED_SURFACE");
 
@@ -253,11 +253,11 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::WriteStep
 
 	SW.SendLogical(ent->SelfIntersect());
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
 
-	// --- Instance of plex componant RationalBSplineSurface ---
+	// --- Instance of plex component RationalBSplineSurface ---
 
 	SW.StartEntity("RATIONAL_B_SPLINE_SURFACE");
 	// --- field : weightsData ---
@@ -274,18 +274,18 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---
 
 	SW.Send(ent->Name());
 
-	// --- Instance of plex componant Surface ---
+	// --- Instance of plex component Surface ---
 
 	SW.StartEntity("SURFACE");
 
-	// --- Instance of plex componant UniformSurface ---
+	// --- Instance of plex component UniformSurface ---
 
 	SW.StartEntity("UNIFORM_SURFACE");
 }

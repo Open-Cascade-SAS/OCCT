@@ -296,7 +296,7 @@ public:
   const TreeNode& Root () const { return *myRoot; }
 
   /**
-   * Desctructor.
+   * Destructor.
    */
   virtual ~NCollection_UBTree () { Clear(); }
 

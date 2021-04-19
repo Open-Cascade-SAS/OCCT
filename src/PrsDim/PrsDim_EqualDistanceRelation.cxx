@@ -467,7 +467,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Pr
     gp_Circ aCirc1 = aCir1->Circ();
     gp_Circ aCirc2 = aCir2->Circ();
 
-    //To avoid circles with different orientaion
+    //To avoid circles with different orientation
     Standard_Real aTol = Precision::Confusion();
     if(aCirc2.Axis().IsOpposite(aCirc1.Axis(), aTol) ||
        aCirc2.XAxis().IsOpposite(aCirc1.XAxis(), aTol) || 

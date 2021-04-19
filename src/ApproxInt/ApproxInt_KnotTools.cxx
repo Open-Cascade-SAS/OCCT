@@ -349,7 +349,7 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
     }
   }
 
-  // II: Filter poins with too small amount of points per knot interval.
+  // II: Filter points with too small amount of points per knot interval.
   i = 1;
   theLKnots.Append(theInds(i));
   Standard_Integer anIndsPrev = theInds(i);

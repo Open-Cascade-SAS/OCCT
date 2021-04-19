@@ -178,14 +178,14 @@ protected:
 
   Standard_EXPORT PrsDim_Relation (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d = PrsMgr_TOP_AllView);
 
-  //! Calculates the presentation aPres of the the edge
+  //! Calculates the presentation aPres of the edge
   //! anEdge and the curve it defines, ProjCurve. The later
   //! is also specified by the first point FirstP and the last point LastP.
   //! The presentation includes settings for color aColor,
   //! type - aProjTOL and aCallTOL -   and width of line, aWidth.
   Standard_EXPORT void ComputeProjEdgePresentation (const Handle(Prs3d_Presentation)& aPres, const TopoDS_Edge& anEdge, const Handle(Geom_Curve)& ProjCurve, const gp_Pnt& FirstP, const gp_Pnt& LastP, const Quantity_NameOfColor aColor = Quantity_NOC_PURPLE, const Standard_Real aWidth = 2, const Aspect_TypeOfLine aProjTOL = Aspect_TOL_DASH, const Aspect_TypeOfLine aCallTOL = Aspect_TOL_DOT) const;
 
-  //! Calculates the presentation aPres of the the vertex
+  //! Calculates the presentation aPres of the vertex
   //! aVertex and the point it defines, ProjPoint.
   //! The presentation includes settings for color aColor,
   //! type - aProjTOM and aCallTOL -   and width of line, aWidth.

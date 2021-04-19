@@ -280,8 +280,8 @@ void ShapeFix_Face::Add (const TopoDS_Wire& wire)
 
 //=======================================================================
 //function : SplitWire
-//purpose  : auxilary - try to split wire (it is needed if some segments
-//           were removed in ShapeFix_Wire::FixSelfIntersection()
+//purpose  : auxiliary - try to split wire (it is needed if some segments
+//           were removed in ShapeFix_Wire::FixSelfIntersection() )
 //=======================================================================
 static Standard_Boolean SplitWire(const TopoDS_Face &face, const TopoDS_Wire& wire,
                                   TopTools_SequenceOfShape& aResWires)
@@ -349,7 +349,7 @@ static Standard_Boolean SplitWire(const TopoDS_Face &face, const TopoDS_Wire& wi
 
   if(aResWires.Length()>1) {
 #ifdef OCCT_DEBUG
-    std::cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< std::endl;
+    std::cout<<"Wire was split on "<<aResWires.Length()<<" wires"<< std::endl;
 #endif
   }
 
@@ -581,7 +581,7 @@ Standard_Boolean ShapeFix_Face::Perform()
         TopTools_SequenceOfShape aLoopWires;
         if(NeedFix ( myFixLoopWiresMode) && FixLoopWire(aLoopWires)) {
           if (aLoopWires.Length() > 1)
-            SendWarning ( wire, Message_Msg ( "FixAdvFace.FixLoopWire.MSG0" ) );// Wire was splitted on several wires
+            SendWarning ( wire, Message_Msg ( "FixAdvFace.FixLoopWire.MSG0" ) );// Wire was split on several wires
           myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE7 );
           fixed = Standard_True;
           Standard_Integer k=1;
@@ -801,9 +801,9 @@ static Standard_Real FindBestInterval (TColgp_SequenceOfPnt2d &intervals)
 
 //=======================================================================
 //function : FixAddNaturalBound
-//purpose  : 
+//purpose  :
 //=======================================================================
-// Detect missing natural bounary on spherical surfaces and add it if 
+// Detect missing natural boundary on spherical surfaces and add it if
 // necessary
 //pdn 981202: add natural bounds if missing (on sphere only)
 //:abv 28.08.01: rewritten and extended for toruses
@@ -859,7 +859,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
   if ( !IsSurfaceUVPeriodic (mySurf->Adaptor3d()) || ShapeAnalysis::IsOuterBound (myFace) ) 
     return Standard_False;
 
-  // Collect informations on free intervals in U and V
+  // Collect information on free intervals in U and V
   TColgp_SequenceOfPnt2d intU, intV, centers;
   Standard_Real SUF, SUL, SVF, SVL;
   mySurf->Bounds(SUF, SUL, SVF, SVL);
@@ -1419,7 +1419,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
 
 //=======================================================================
 //function : CheckWire
-//purpose  : auxilary for FixMissingSeam
+//purpose  : auxiliary for FixMissingSeam
 //=======================================================================
 //:i7 abv 18 Sep 98: ProSTEP TR9 r0501-ug.stp: algorithm of fixing missing seam changed
 // test whether the wire is opened on period of periodical surface
@@ -1675,7 +1675,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
   B.Add ( S, w2 );
   ShapeAnalysis::GetFaceUVBounds (TopoDS::Face(S), m2[0][0], m2[0][1], m2[1][0], m2[1][1]);
    
-  // For the case when surface is closed only in one direction it is necesary to check
+  // For the case when surface is closed only in one direction it is necessary to check
   // validity of orientation of the open wires in parametric space. 
   // In case of U closed surface wire with minimal V coordinate should be directed in positive direction by U
   // In case of V closed surface wire with minimal U coordinate should be directed in negative direction by V
@@ -2196,7 +2196,7 @@ Standard_Boolean ShapeFix_Face::FixLoopWire(TopTools_SequenceOfShape& aResWires)
   if(isDone && aResWires.Length() >1)
   {
 #ifdef OCCT_DEBUG
-    std::cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< std::endl;
+    std::cout<<"Wire was split on "<<aResWires.Length()<<" wires"<< std::endl;
 #endif
   }
 

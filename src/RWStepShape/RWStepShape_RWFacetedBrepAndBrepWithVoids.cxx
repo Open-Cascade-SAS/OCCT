@@ -36,7 +36,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant BrepWithVoids ---
+	// --- Instance of plex component BrepWithVoids ---
 
 	if (!data->CheckNbParams(num,1,ach,"brep_with_voids")) return;
 
@@ -58,13 +58,13 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant FacetedBrep ---
+	// --- Instance of plex component FacetedBrep ---
 
 	if (!data->CheckNbParams(num,0,ach,"faceted_brep")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	if (!data->CheckNbParams(num,0,ach,"geometric_representation_item")) return;
 
@@ -82,7 +82,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -95,7 +95,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep
 	
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant SolidModel ---
+	// --- Instance of plex component SolidModel ---
 
 	if (!data->CheckNbParams(num,0,ach,"solid_model")) return;
 
@@ -110,7 +110,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep
 	 const Handle(StepShape_FacetedBrepAndBrepWithVoids)& ent) const
 {
 
-	// --- Instance of plex componant BrepWithVoids ---
+	// --- Instance of plex component BrepWithVoids ---
 
 	SW.StartEntity("BREP_WITH_VOIDS");
 	// --- field : voids ---
@@ -121,11 +121,11 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant FacetedBrep ---
+	// --- Instance of plex component FacetedBrep ---
 
 	SW.StartEntity("FACETED_BREP");
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
 
@@ -136,14 +136,14 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep
 
 	SW.Send(ent->Outer());
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---
 
 	SW.Send(ent->Name());
 
-	// --- Instance of plex componant SolidModel ---
+	// --- Instance of plex component SolidModel ---
 
 	SW.StartEntity("SOLID_MODEL");
 }

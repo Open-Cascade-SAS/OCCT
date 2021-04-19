@@ -549,7 +549,7 @@ Handle(Geom2d_Curve) ShapeBuild_Edge::TransformPCurve(const Handle(Geom2d_Curve)
     if(result->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
       //gp_Pln pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
       //Handle(Geom_Curve) curve = GeomAPI::To3d(result,pln);
-      Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(result,aFirst,aLast); //protection agains parabols ets
+      Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(result,aFirst,aLast); //protection against parabols ets
       Geom2dConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
         GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )

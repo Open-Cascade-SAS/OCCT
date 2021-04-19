@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 //============================================================================
-//==== Titre: Standard_ErrorHandler.cxx
+//==== Title: Standard_ErrorHandler.cxx
 //==== Role : class "Standard_ErrorHandler" implementation.
 //============================================================================
 #include <Standard_ErrorHandler.hxx>

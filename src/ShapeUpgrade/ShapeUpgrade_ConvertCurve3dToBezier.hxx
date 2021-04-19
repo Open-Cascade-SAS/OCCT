@@ -35,7 +35,6 @@ class ShapeUpgrade_ConvertCurve3dToBezier : public ShapeUpgrade_SplitCurve3d
 
 public:
 
-  
   //! Empty constructor
   Standard_EXPORT ShapeUpgrade_ConvertCurve3dToBezier();
   
@@ -65,23 +64,13 @@ public:
   //! the split values and splitting parameters.
   Standard_EXPORT virtual void Build (const Standard_Boolean Segment) Standard_OVERRIDE;
   
-  //! Returns the list of splitted parameters in original curve
-  //! parametrisation.
+  //! Returns the list of split parameters in original curve parametrisation.
   Standard_EXPORT Handle(TColStd_HSequenceOfReal) SplitParams() const;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve3dToBezier,ShapeUpgrade_SplitCurve3d)
 
-protected:
-
-
-
-
 private:
 
-  
   //! Returns the list of bezier curves correspondent to original
   //! curve.
   Standard_EXPORT Handle(TColGeom_HSequenceOfCurve) Segments() const;
@@ -92,14 +81,8 @@ private:
   Standard_Boolean myCircleMode;
   Standard_Boolean myConicMode;
 
-
 };
 
-
 #include <ShapeUpgrade_ConvertCurve3dToBezier.lxx>
-
-
-
-
 
 #endif // _ShapeUpgrade_ConvertCurve3dToBezier_HeaderFile

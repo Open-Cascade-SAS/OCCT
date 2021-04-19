@@ -110,13 +110,13 @@ public:
   //! returns True if theType migration is identified
   //! the callback support provides a way to read a file
   //! with a incomplete schema.
-  //! ex. : A file contains 3 types a,b and c.
+  //! ex. : A file contains 3 types a, b, and c.
   //! The  application's  schema  contains  only 2
   //! type a and b. If you try to read the file in
   //! the application, you  will  have an error.To
   //! bypass this  problem  you  can  give to your
   //! application's schema  a  callback  used when
-  //! the schema dosent  know  how  to handle this
+  //! the schema doesn't know  how  to handle this
   //! type.
   Standard_EXPORT static Standard_Boolean CheckTypeMigration (const TCollection_AsciiString& theTypeName, TCollection_AsciiString& theNewName);
   

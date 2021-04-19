@@ -47,12 +47,12 @@ void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
 
 	StepRepr_RepresentationContext::Init(aContextIdentifier, aContextType);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	geometricRepresentationContext = new StepGeom_GeometricRepresentationContext();
 	geometricRepresentationContext->Init(aContextIdentifier, aContextType, aCoordinateSpaceDimension);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	globalUnitAssignedContext = new StepRepr_GlobalUnitAssignedContext();
 	globalUnitAssignedContext->Init(aContextIdentifier, aContextType, aUnits);

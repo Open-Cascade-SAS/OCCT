@@ -17,7 +17,7 @@
 // Purpose:   The class Array2 represents bi-dimensional arrays 
 //            of fixed size known at run time. 
 //            The ranges of indices are user defined.
-// Warning:   Programs clients of such class must be independant
+// Warning:   Programs clients of such class must be independent
 //            of the range of the first element. Then, a C++ for
 //            loop must be written like this
 //            for (i = A.LowerRow(); i <= A.UpperRow(); i++)

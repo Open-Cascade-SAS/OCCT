@@ -47,7 +47,7 @@ class ShapeAnalysis_TransferParametersProj : public ShapeAnalysis_TransferParame
 public:
 
   
-  //! Creats empty constructor.
+  //! Creates empty constructor.
   Standard_EXPORT ShapeAnalysis_TransferParametersProj();
   
   Standard_EXPORT ShapeAnalysis_TransferParametersProj(const TopoDS_Edge& E, const TopoDS_Face& F);

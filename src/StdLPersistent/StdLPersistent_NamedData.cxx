@@ -41,7 +41,7 @@ static typename HArray::ArrayHandle
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdLPersistent_NamedData::Import
   (const Handle(TDataStd_NamedData)& theAttribute) const

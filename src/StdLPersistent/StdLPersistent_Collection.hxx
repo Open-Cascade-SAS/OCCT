@@ -115,7 +115,7 @@ class StdLPersistent_Collection
     : public BaseT <typename StdObjMgt_Attribute<AttribClass>::SingleRef>
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
@@ -132,7 +132,7 @@ class StdLPersistent_Collection
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
 
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
 
   private:

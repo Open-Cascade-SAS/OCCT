@@ -64,7 +64,7 @@ void BOPTest::OptionCommands(Draw_Interpretor& theCommands)
                            "\t\tUsage: bglue [0 (off) / 1 (shift) / 2 (full)]",
                   __FILE__, bGlue, g);
 
-  theCommands.Add("bdrawwarnshapes", "Enables/Disables drawing of waring shapes of BOP algorithms.\n"
+  theCommands.Add("bdrawwarnshapes", "Enables/Disables drawing of warning shapes of BOP algorithms.\n"
                                      "\t\tUsage: bdrawwarnshapes 0 (do not draw) / 1 (draw warning shapes)",
                   __FILE__, bdrawwarnshapes, g);
 

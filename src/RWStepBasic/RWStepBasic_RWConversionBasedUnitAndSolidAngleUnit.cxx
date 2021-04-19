@@ -35,7 +35,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
 
@@ -65,7 +65,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant SolidAngleUnit ---
+	// --- Instance of plex component SolidAngleUnit ---
 
 	if (!data->CheckNbParams(num,0,ach,"solid_angle_unit")) return;
 
@@ -80,7 +80,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::WriteStep
 	 const Handle(StepBasic_ConversionBasedUnitAndSolidAngleUnit)& ent) const
 {
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	SW.StartEntity("CONVERSION_BASED_UNIT");
 	// --- field : name ---
@@ -97,7 +97,7 @@ void RWStepBasic_RWConversionBasedUnitAndSolidAngleUnit::WriteStep
 
 	SW.Send(ent->Dimensions());
 
-	// --- Instance of plex componant SolidAngleUnit ---
+	// --- Instance of plex component SolidAngleUnit ---
 
 	SW.StartEntity("SOLID_ANGLE_UNIT");
 }

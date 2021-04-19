@@ -167,7 +167,7 @@ L'Orientation du/des shell(s) dans le solida ete corrigee
 Solide avec connexions incorrectes, divise en plusieurs parties
 !
 .FixAdvFace.FixLoopWire.MSG0
-Wire was splitted on several wires
+Wire was split on several wires
 !
 .FixAdvFace..MSG5
 !

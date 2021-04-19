@@ -185,8 +185,8 @@ public:
   
   //! Checks the first edge is overlapped with second edge.
   //! If distance between two edges is less then theTolOverlap
-  //! edges is overlapped.
-  //! theDomainDis - length of part of edges on wich edges is overlapped.
+  //! edges are overlapped.
+  //! theDomainDis - length of part of edges on which edges are overlapped.
   Standard_EXPORT Standard_Boolean CheckOverlapping (const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2, Standard_Real& theTolOverlap, const Standard_Real theDomainDist = 0.0);
 
 

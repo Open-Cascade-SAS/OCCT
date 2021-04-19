@@ -49,7 +49,7 @@ static Standard_Integer nbint = 0;
 
 //===================================================================================
 // function :
-// putpose  :
+// purpose  :
 //===================================================================================
 Bisector_Inter::Bisector_Inter() 
 {
@@ -57,7 +57,7 @@ Bisector_Inter::Bisector_Inter()
 
 //===================================================================================
 // function :
-// putpose  :
+// purpose  :
 //===================================================================================
 Bisector_Inter::Bisector_Inter(const Bisector_Bisec&  C1, 
 			       const IntRes2d_Domain& D1, 
@@ -72,7 +72,7 @@ Bisector_Inter::Bisector_Inter(const Bisector_Bisec&  C1,
 
 //===================================================================================
 // function : ConstructSegment
-// putpose  :
+// purpose  :
 //===================================================================================
 static Handle(Geom2d_Line) ConstructSegment(const gp_Pnt2d&     PMin,
 					    const gp_Pnt2d&     PMax,
@@ -88,7 +88,7 @@ static Handle(Geom2d_Line) ConstructSegment(const gp_Pnt2d&     PMin,
 
 //===================================================================================
 // function : Perform
-// putpose  :
+// purpose  :
 //===================================================================================
 void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
 			     const IntRes2d_Domain& D1, 
@@ -208,7 +208,7 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
 
 //===================================================================================
 // function : SinglePerform
-// putpose  :
+// purpose  :
 //===================================================================================
 void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 				   const IntRes2d_Domain&         D1, 
@@ -308,7 +308,7 @@ void Bisector_Inter::SinglePerform(const Handle(Geom2d_Curve)&    CBis1,
 
 //===================================================================================
 // function : NeighbourPerform
-// putpose  : Find the intersection of 2 neighbor bissectrices curve/curve
+// purpose  : Find the intersection of 2 neighbor bissectrices curve/curve
 //            (ie Bis1 separates A and B and Bis2 separates B and C).
 //            Bis1 is parameterized by B and Bis2 by C.
 //
@@ -371,7 +371,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 
 //=====================================================================================
 // function : TestBound
-// putpose  : Test if the extremities of Bis2 are on the segment cooresponding to Bis1.
+// purpose  : Test if the extremities of Bis2 are on the segment corresponding to Bis1.
 //=====================================================================================
 void Bisector_Inter::TestBound (const Handle(Geom2d_Line)&   Bis1,
 				const IntRes2d_Domain&       D1,

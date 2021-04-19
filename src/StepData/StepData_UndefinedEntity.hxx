@@ -66,7 +66,7 @@ public:
   //! Returns True if <me> defines a Multiple Type Entity (see ANDOR)
   Standard_EXPORT Standard_Boolean IsComplex() const;
   
-  //! For a Multiple Type Entity, returns the Next "Componant"
+  //! For a Multiple Type Entity, returns the Next "Component"
   //! For more than two Types, iterative definition (Next->Next...)
   //! Returns a Null Handle for the end of the List
   Standard_EXPORT Handle(StepData_UndefinedEntity) Next() const;

@@ -174,7 +174,7 @@ public:
   Standard_EXPORT virtual Storage_Error Close() = 0;
 
 public:
-  //!@name Ouput methods
+  //!@name Output methods
 
   Standard_EXPORT virtual Storage_BaseDriver& PutReference (const Standard_Integer aValue) = 0;
   

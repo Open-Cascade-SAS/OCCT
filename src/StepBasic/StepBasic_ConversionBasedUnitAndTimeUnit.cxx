@@ -30,10 +30,10 @@ void StepBasic_ConversionBasedUnitAndTimeUnit::Init(const Handle(StepBasic_Dimen
 						    const Handle(TCollection_HAsciiString)& aName,
 						    const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
   
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   timeUnit = new StepBasic_TimeUnit();
   timeUnit->Init(aDimensions);
 }

@@ -21,7 +21,7 @@
 #include <gp_Vec.hxx>
 
 //=========================================================================
-//   Creation d une translation 3d de gp de vecteur de tanslation Vec.    +
+//   Creation d une translation 3d de gp de vecteur de translation Vec.   +
 //=========================================================================
 gce_MakeTranslation::
   gce_MakeTranslation(const gp_Vec&  Vec ) {
@@ -29,7 +29,7 @@ gce_MakeTranslation::
  }
 
 //=========================================================================
-//   Creation d une translation 3d de gp de vecteur de tanslation le      +
+//   Creation d une translation 3d de gp de vecteur de translation le     +
 //   vecteur reliant Point1 a Point2.                                     +
 //=========================================================================
 

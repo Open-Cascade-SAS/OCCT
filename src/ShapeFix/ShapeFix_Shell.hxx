@@ -61,7 +61,7 @@ public:
   
   //! Fixes orientation of faces in shell.
   //! Changes orientation of face in the shell, if it is oriented opposite
-  //! to neigbouring faces. If it is not possible to orient all faces in the
+  //! to neighbouring faces. If it is not possible to orient all faces in the
   //! shell (like in case of mebious band), this method orients only subset
   //! of faces. Other faces are stored in Error compound.
   //! Modes :

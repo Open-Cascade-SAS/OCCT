@@ -99,7 +99,7 @@ namespace {
     return theRegistry;
   }
 
-  // To initialize theRegistry map as soon as possible to be destoryed the latest
+  // To initialize theRegistry map as soon as possible to be destroyed the latest
   Handle(Standard_Type) theType = STANDARD_TYPE(Standard_Transient);
 }
 

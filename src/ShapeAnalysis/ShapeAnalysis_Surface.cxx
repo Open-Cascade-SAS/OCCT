@@ -1404,7 +1404,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
 
     //std::cout<<"Adaptor3d()->Surface().GetType() = "<<Adaptor3d()->Surface().GetType()<<std::endl;
 
-    //modified by rln on 04/12/97 in order to use theese variables later
+    //modified by rln on 04/12/97 in order to use these variables later
     Standard_Boolean UV = Standard_True;
     Standard_Real par = 0., other = 0., dist = 0.;
     Handle(Geom_Curve) iso;

@@ -50,9 +50,9 @@ class StepData_StepReaderData;
 DEFINE_STANDARD_HANDLE(StepData_StepReaderData, Interface_FileReaderData)
 
 //! Specific FileReaderData for Step
-//! Contains litteral description of entities (for each one : type
+//! Contains literal description of entities (for each one : type
 //! as a string, ident, parameter list)
-//! provides references evaluation, plus access to litteral data
+//! provides references evaluation, plus access to literal data
 //! and specific access methods (Boolean, XY, XYZ)
 class StepData_StepReaderData : public Interface_FileReaderData
 {
@@ -99,9 +99,9 @@ public:
   //! For a SubList or a Scope mark, <types> remains empty
   Standard_EXPORT void ComplexType (const Standard_Integer num, TColStd_SequenceOfAsciiString& types) const;
   
-  //! Returns the Next "Componant" for a Complex Type Entity, of
-  //! which <num> is already a Componant (the first one or a next one)
-  //! Returns 0 for a Simple Type or for the last Componant
+  //! Returns the Next "Component" for a Complex Type Entity, of
+  //! which <num> is already a Component (the first one or a next one)
+  //! Returns 0 for a Simple Type or for the last Component
   Standard_EXPORT Standard_Integer NextForComplex (const Standard_Integer num) const;
   
   //! Determines the first component which brings a given name, for
@@ -170,7 +170,7 @@ public:
   //! And if reading does not match its own description, the result
   //! will be False
   //! If <val> is not it not yet created, it will be (SelectNamed)
-  //! Usefull if a field is defined as a SelectMember, directly
+  //! useful if a field is defined as a SelectMember, directly
   //! (SELECT with no Entity as member)
   //! But SelectType also manages SelectMember (for SELECT with
   //! some members as Entity, some other not)

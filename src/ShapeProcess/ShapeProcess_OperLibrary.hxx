@@ -57,7 +57,7 @@ public:
   
   //! Applies BRepTools_Modification to a shape,
   //! taking into account sharing of components of compounds.
-  //! if theMutableInput vat is set to true then imput shape S
+  //! if theMutableInput vat is set to true then input shape S
   //! can be modified during the modification process.
   Standard_EXPORT static TopoDS_Shape ApplyModifier (const TopoDS_Shape& S, 
                                                      const Handle(ShapeProcess_ShapeContext)& context, 

@@ -25,7 +25,7 @@ static void ImportName (const Handle(TDataStd_Relation)&  theAttribute,
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <class AttribClass>
 void StdLPersistent_Dependency::instance<AttribClass>::Import

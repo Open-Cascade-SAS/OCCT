@@ -524,64 +524,67 @@ public:
   Standard_EXPORT static void IncreaseDegree (const Standard_Integer NewDegree, const TColgp_Array1OfPnt& Poles, const TColStd_Array1OfReal* Weights, TColgp_Array1OfPnt& NewPoles, TColStd_Array1OfReal* NewWeights);
   
   //! Increase the degree of a bspline (or bezier) curve
-  //! of   dimension  <Dimension>  form <Degree>      to
-  //! <NewDegree>.
+  //! of dimension theDimension form theDegree to theNewDegree.
   //!
-  //! The number of poles in the new curve is :
+  //! The number of poles in the new curve is:
+  //! @code
+  //!   Poles.Length() + (NewDegree - Degree) * Number of spans
+  //! @endcode
+  //! Where the number of spans is:
+  //! @code
+  //!   LastUKnotIndex(Mults) - FirstUKnotIndex(Mults) + 1
+  //! @endcode
+  //! for a non-periodic curve, and
+  //! @code
+  //!   Knots.Length() - 1
+  //! @endcode
+  //! for a periodic curve.
   //!
-  //! Poles.Length() + (NewDegree - Degree) * Number of spans
+  //! The multiplicities of all knots are increased by the degree elevation.
   //!
-  //! Where the number of spans is :
-  //!
-  //! LastUKnotIndex(Mults) - FirstUKnotIndex(Mults) + 1
-  //!
-  //! for a non-periodic curve
-  //!
-  //! And Knots.Length() - 1 for a periodic curve.
-  //!
-  //! The multiplicities of all  knots  are increased by
-  //! the degree elevation.
-  //!
-  //! The new knots are usually  the same knots with the
-  //! exception of  a non-periodic curve with  the first
+  //! The new knots are usually the same knots with the
+  //! exception of a non-periodic curve with the first
   //! and last multiplicity not  equal to Degree+1 where
-  //! knots are removed  form the start  and the  bottom
-  //! untils the sum of the  multiplicities is  equal to
-  //! NewDegree+1  at the  knots   corresponding  to the
+  //! knots are removed form the start and the bottom
+  //! until the sum of the multiplicities is equal to
+  //! NewDegree+1  at the knots corresponding to the
   //! first and last parameters of the curve.
   //!
-  //! Example  :  Suppose a  curve  of degree 3 starting
-  //! with following knots and multiplicities :
+  //! Example: Suppose a curve of degree 3 starting
+  //! with following knots and multiplicities:
+  //! @code
+  //!   knot : 0.  1.  2.
+  //!   mult : 1   2   1
+  //! @endcode
   //!
-  //! knot : 0.  1.  2.
-  //! mult : 1   2   1
+  //! The FirstUKnot is 2.0 because the sum of multiplicities is
+  //! @code
+  //!   Degree+1 : 1 + 2 + 1 = 4 = 3 + 1
+  //! @endcode
+  //! i.e. the first parameter of the curve is 2.0 and
+  //! will still be 2.0 after degree elevation.
+  //! Let raise this curve to degree 4.
+  //! The multiplicities are increased by 2.
   //!
-  //! The  FirstUKnot is  2.     because the   sum    of
-  //! multiplicities is Degree+1 : 1 + 2 + 1 = 4 = 3 + 1
+  //! They  become 2 3 2.
+  //! But we need a sum of multiplicities of 5 at knot 2.
+  //! So the first knot is removed and the new knots are:
+  //! @code
+  //!   knot : 1.  2.
+  //!   mult : 3   2
+  //! @endcode
+  //! The multipicity of the first knot may also be reduced if the sum is still to big.
   //!
-  //! i.e. the first parameter  of the  curve is  2. and
-  //! will still be   2.  after degree  elevation.   Let
-  //! raises this curve to degree 4.  The multiplicities
-  //! are increased by 2.
+  //! In the most common situations (periodic curve or curve with first
+  //! and last multiplicities equals to Degree+1) the knots are knot changes.
   //!
-  //! They   become 2 3  2.   But     we need a   sum of
-  //! multiplicities  of 5 at knot  2. So the first knot
-  //! is removed and the new knots are :
-  //!
-  //! knot : 1.  2.
-  //! mult : 3   2
-  //!
-  //! The multipicity   of the first  knot may   also be
-  //! reduced if the sum is still to big.
-  //!
-  //! In the  most common situations (periodic  curve or
-  //! curve with first and last multiplicities equals to
-  //! Degree+1) the knots are knot changes.
-  //!
-  //! The method IncreaseDegreeCountKnots can be used to
-  //! compute the new number of knots.
-  Standard_EXPORT static void IncreaseDegree (const Standard_Integer NewDegree, const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal* Weights, TColgp_Array1OfPnt2d& NewPoles, TColStd_Array1OfReal* NewWeights);
-  
+  //! The method IncreaseDegreeCountKnots can be used to compute the new number of knots.
+  Standard_EXPORT static void IncreaseDegree (const Standard_Integer theNewDegree,
+                                              const TColgp_Array1OfPnt2d& thePoles,
+                                              const TColStd_Array1OfReal* theWeights,
+                                              TColgp_Array1OfPnt2d& theNewPoles,
+                                              TColStd_Array1OfReal* theNewWeights);
+
   //! Set in <NbKnots> and <NbPolesToAdd> the number of Knots and
   //! Poles   of  the NotPeriodic  Curve   identical  at the
   //! periodic     curve with    a  degree    <Degree>  ,  a

@@ -74,7 +74,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
                                                  const size_t newSize);
 
   //! Re-initialize the allocator so that the next Allocate call should
-  //! start allocating in the very begining as though the allocator is just
+  //! start allocating in the very beginning as though the allocator is just
   //! constructed. Warning: make sure that all previously allocated data are
   //! no more used in your code!
   //! @param doReleaseMem

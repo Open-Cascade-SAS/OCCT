@@ -33,7 +33,7 @@ public:
   //! Create an empty projector.
   Standard_EXPORT ProjLib_ProjectOnSurface();
   
-  //! Create a projector normaly to the surface <S>.
+  //! Create a projector normally to the surface <S>.
   Standard_EXPORT ProjLib_ProjectOnSurface(const Handle(Adaptor3d_Surface)& S);
   
   Standard_EXPORT virtual ~ProjLib_ProjectOnSurface();

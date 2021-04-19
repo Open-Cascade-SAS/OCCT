@@ -249,7 +249,7 @@
 // added by skl 12.02.2004 for writing materials
 //=======================================================================
 //function : GetLabelName
-//purpose  : auxilary function: take name of label and append it to str
+//purpose  : auxiliary function: take name of label and append it to str
 //=======================================================================
 static Standard_Boolean GetLabelName (const TDF_Label &L, Handle(TCollection_HAsciiString) &str)
 {
@@ -535,13 +535,13 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
 
       TDF_LabelSequence comp;
 
-      //For case when only part of assemby structure should be written in the document
+      //For case when only part of assembly structure should be written in the document
       //if specified label is component of the assembly then
       //in order to save location of this component in the high-level assembly
-      //and save name of high-level assembly it is necessary to represent structure of high-level assembly 
-      //as assembly with one component specified by current label. 
+      //and save name of high-level assembly it is necessary to represent structure of high-level assembly
+      //as assembly with one component specified by current label.
       //For that compound containing only specified component is binded to the label of the high-level assembly.
-      //The such way full structure of high-level assembly was replaced on the assembly contaning one component.
+      //The such way full structure of high-level assembly was replaced on the assembly containing one component.
       //For case when free shape reference is (located root) also create an auxiliary assembly.
       if ( XCAFDoc_ShapeTool::IsReference ( L ) )
       {
@@ -624,7 +624,7 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
     return Standard_False;
 
   writer.WS()->ComputeGraph(Standard_True );// added by skl 03.11.2003 since we use
-                                            // writer.Transfer() wihtout compute graph
+                                            // writer.Transfer() without compute graph
 
   // write names
   if ( GetNameMode() )
@@ -879,7 +879,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
 
 //=======================================================================
 //function : FindEntities
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Integer FindEntities (const Handle(Transfer_FinderProcess) &FP,
 				      const TopoDS_Shape &S,
@@ -940,7 +940,7 @@ static Standard_Integer FindEntities (const Handle(Transfer_FinderProcess) &FP,
 
 //=======================================================================
 //function : getStyledItem
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
                                       const Handle(XCAFDoc_ShapeTool)& STool,
@@ -992,7 +992,7 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
         
         for (Standard_Integer jsi = 1; jsi <= aSelItm->NbStyles() && !found; jsi++) {
           const Handle(StepVisual_PresentationStyleAssignment)& aFatherPSA = aSelItm->StylesValue(jsi);
-          // check for PSA for top-level (not Presentation style by contex for NAUO)
+          // check for PSA for top-level (not Presentation style by context for NAUO)
           if (aFatherPSA.IsNull() || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext)))
             continue;
           resSelItem = aSelItm;
@@ -1007,7 +1007,7 @@ static Standard_Boolean getStyledItem(const TopoDS_Shape& S,
 
 //=======================================================================
 //function : setDefaultInstanceColor
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean setDefaultInstanceColor (const Handle(StepVisual_StyledItem) &aSelItm,
                                                  Handle(StepVisual_PresentationStyleAssignment)& PSA)
@@ -1015,7 +1015,7 @@ static Standard_Boolean setDefaultInstanceColor (const Handle(StepVisual_StyledI
    Standard_Boolean found = Standard_False;
   for (Standard_Integer jsi = 1; jsi <= aSelItm->NbStyles() && !found; jsi++) {
     Handle(StepVisual_PresentationStyleAssignment) aFatherPSA = aSelItm->StylesValue(jsi);
-  // check for PSA for top-level (not Presentation style by contex for NAUO)
+  // check for PSA for top-level (not Presentation style by context for NAUO)
   if (aFatherPSA.IsNull() || aFatherPSA->IsKind(STANDARD_TYPE(StepVisual_PresentationStyleByContext))) 
     return Standard_False;
           
@@ -1053,7 +1053,7 @@ static Standard_Boolean setDefaultInstanceColor (const Handle(StepVisual_StyledI
 
 //=======================================================================
 //function : MakeSTEPStyles
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
 			    const TopoDS_Shape &S,
@@ -1346,7 +1346,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
       } //end of work with CDSR
     }
     if ( !isVisible ) {
-    // create invisibility item and refer for stiledItem
+    // create invisibility item and refer for styledItem
       Handle(StepVisual_Invisibility) Invsblt = new StepVisual_Invisibility();
       Handle(StepVisual_HArray1OfInvisibleItem) HInvsblItm = 
         new StepVisual_HArray1OfInvisibleItem (1,Styles.NbStyles());
@@ -1670,7 +1670,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
     // PTV 23.01.2003 add the invisibility AFTER adding layer into the model.
     // add the invisibility for the layer
     if (isLinv) {
-      // Invisibility Item for containig invisible layers.
+      // Invisibility Item for containing invisible layers.
       Handle(StepVisual_HArray1OfInvisibleItem) HInvsblItm = new StepVisual_HArray1OfInvisibleItem (1,1);
       StepVisual_InvisibleItem InvIt;
       InvIt.SetValue( StepLayerAs );
@@ -1687,7 +1687,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
 
 //=======================================================================
 //function : getSHUOstyle
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean getSHUOstyle(const TDF_Label& aSHUOlab,
                                      const Handle(XCAFDoc_ColorTool)& CTool,
@@ -1727,7 +1727,7 @@ static Standard_Boolean getSHUOstyle(const TDF_Label& aSHUOlab,
 
 //=======================================================================
 //function : getProDefinitionOfNAUO
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean getProDefinitionOfNAUO(const Handle(XSControl_WorkSession)& WS,
                                                const TopoDS_Shape& theShape,
@@ -1774,7 +1774,7 @@ static Standard_Boolean getProDefinitionOfNAUO(const Handle(XSControl_WorkSessio
 
 //=======================================================================
 //function : writeSHUO
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
                                    const Handle(XCAFDoc_ShapeTool)& theSTool,
@@ -1878,7 +1878,7 @@ static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
 
 //=======================================================================
 //function : createSHUOStyledItem
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
                                               const Handle(StepRepr_ProductDefinitionShape)& PDS,
@@ -1986,7 +1986,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   else {
     WS->Model()->AddWithRefs ( STEPstyle ); // add as root to the model, but it is not good
 #ifdef OCCT_DEBUG
-    std::cout << "Warning: " << __FILE__ << ": adds styled item of SHUO as root, casue cannot find MDGPR" << std::endl;
+    std::cout << "Warning: " << __FILE__ << ": adds styled item of SHUO as root, cause cannot find MDGPR" << std::endl;
 #endif
   }
   // create invisibility item for the styled item
@@ -1996,7 +1996,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
       
       setDefaultInstanceColor(override, PSA);
     }
-    // create invisibility item and refer for stiledItem
+    // create invisibility item and refer for styledItem
     Handle(StepVisual_Invisibility) Invsblt = new StepVisual_Invisibility();
     Handle(StepVisual_HArray1OfInvisibleItem) HInvsblItm = 
       new StepVisual_HArray1OfInvisibleItem (1,1);
@@ -2027,7 +2027,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
   Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool( labels(1) );
   if (CTool.IsNull() )
     return Standard_False;
-  // map of transfered SHUO
+  // map of transferred SHUO
   TColStd_MapOfTransient aMapOfMainSHUO;
   // Iterate on requested shapes
   for ( Standard_Integer i=1; i <= labels.Length(); i++ ) {
@@ -2102,7 +2102,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
 
 //=======================================================================
 //function : FindPDSforDGT
-//purpose  : auxilary: find PDS for AdvancedFace or EdgeCurve for creation
+//purpose  : auxiliary: find PDS for AdvancedFace or EdgeCurve for creation
 //                     needed ShapeAspect in D&GT structure
 //=======================================================================
 static Standard_Boolean FindPDSforDGT(const Interface_Graph &aGraph,
@@ -2177,7 +2177,7 @@ static Standard_Boolean FindPDSforDGT(const Interface_Graph &aGraph,
 
 //=======================================================================
 //function : FindPDS
-//purpose  : auxilary: find Product_definition_shape entity for given entity
+//purpose  : auxiliary: find Product_definition_shape entity for given entity
 //=======================================================================
 static Handle(StepRepr_ProductDefinitionShape) FindPDS(const Interface_Graph &theGraph,
                                                        const Handle(Standard_Transient) &theEnt,
@@ -4016,7 +4016,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
 
 //=======================================================================
 //function : FindPDSforRI
-//purpose  : auxilary: 
+//purpose  : auxiliary: 
 //=======================================================================
 static Standard_Boolean FindPDSforRI(const Interface_Graph &aGraph,
                                      const Handle(Standard_Transient) &ent,

@@ -19,7 +19,7 @@
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <class AttribClass>
 void StdLPersistent_Value::integer<AttribClass>::ImportAttribute()
@@ -29,7 +29,7 @@ void StdLPersistent_Value::integer<AttribClass>::ImportAttribute()
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <class AttribClass, class HStringClass>
 void StdLPersistent_Value::string<AttribClass, HStringClass>::ImportAttribute()
@@ -45,7 +45,7 @@ void StdLPersistent_Value::string<AttribClass, HStringClass>::ImportAttribute()
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template<>
 void StdLPersistent_Value::string<TDF_Reference>::ImportAttribute()
@@ -61,7 +61,7 @@ void StdLPersistent_Value::string<TDF_Reference>::ImportAttribute()
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template<>
 void StdLPersistent_Value::string<TDataStd_UAttribute>::ImportAttribute()
@@ -69,7 +69,7 @@ void StdLPersistent_Value::string<TDataStd_UAttribute>::ImportAttribute()
 
 //=======================================================================
 //function : CreateAttribute
-//purpose  : Create an empty transient attribuite
+//purpose  : Create an empty transient attribute
 //=======================================================================
 Handle(TDF_Attribute) StdLPersistent_Value::UAttribute::CreateAttribute()
 {

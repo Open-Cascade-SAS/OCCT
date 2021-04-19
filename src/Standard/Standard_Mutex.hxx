@@ -32,14 +32,14 @@
   * @brief Mutex: a class to synchronize access to shared data. 
   *
   * This is simple encapsulation of tools provided by the
-  * operating system to syncronize access to shared data 
+  * operating system to synchronize access to shared data
   * from threads within one process.
   *
   * Current implementation is very simple and straightforward;
-  * it is just a wrapper around POSIX pthread librray on UNIX/Linux,
+  * it is just a wrapper around POSIX pthread library on UNIX/Linux,
   * and CRITICAL_SECTIONs on Windows NT. It does not provide any
-  * advanced functionaly such as recursive calls to the same mutex from 
-  * within one thread (such call will froze the execution).
+  * advanced functionality such as recursive calls to the same mutex from
+  * within one thread (such call will freeze the execution).
   *
   * Note that all the methods of that class are made inline, in order
   * to keep maximal performance. This means that a library using the mutex

@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 /*============================================================================*/
-/*==== Titre: Aspect_Display.hxx                                               */
+/*==== Title: Aspect_Display.hxx                                               */
 /*==== Role : The header file of primitive type "Display" from package        */
 /*==== "V3d"                                                           */
 /*==== Implementation:  This is a primitive type implemented with typedef     */

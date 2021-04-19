@@ -24,11 +24,11 @@
 //!
 //! The name of the enumeration
 //! corresponds to order of rotations, prefixed by type
-//! of co-ordinate system used:
+//! of coordinate system used:
 //! - Intrinsic: rotations are made around axes of rotating
-//!   co-ordinate system associated with the object
+//!   coordinate system associated with the object
 //! - Extrinsic: rotations are made around axes of fixed
-//!   (static) co-ordinate system
+//!   (static) coordinate system
 //!
 //! Two specific values are provided for most frequently used
 //! conventions: classic Euler angles (intrinsic ZXZ) and

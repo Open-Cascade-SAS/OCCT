@@ -104,7 +104,7 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
               Standard_Real  toler = BRep_Tool::Tolerance(aV);
               double dist = pl.Distance(BRep_Tool::Pnt(aV));
               if (dist > lmaxdist) lmaxdist = dist;
-              // If section was built check distance beetwen vertexes and plane of the one
+              // If section was built check distance between vertexes and plane of the one
               str[0] = 0;
               if (dist > toler)
                 Sprintf(str, "Dist=%f, Toler=%f, Param=%f FAULTY\n", dist, toler, gzmax);

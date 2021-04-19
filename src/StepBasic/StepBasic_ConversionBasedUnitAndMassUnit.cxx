@@ -41,10 +41,10 @@ void StepBasic_ConversionBasedUnitAndMassUnit::Init
    const Handle(TCollection_HAsciiString)& aName,
    const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
   
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   massUnit = new StepBasic_MassUnit();
   massUnit->Init(aDimensions);
 }

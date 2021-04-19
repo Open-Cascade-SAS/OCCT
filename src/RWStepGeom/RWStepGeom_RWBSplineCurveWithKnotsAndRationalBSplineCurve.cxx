@@ -123,7 +123,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep
 //        num =  0; //gka TRJ9
 	data->NamedForComplex("B_SPLINE_CURVE_WITH_KNOTS", "BSCWK",num0,num,ach);
 
-	// --- Instance of plex componant BSplineCurveWithKnots ---
+	// --- Instance of plex component BSplineCurveWithKnots ---
 
 	if (!data->CheckNbParams(num,3,ach,"b_spline_curve_with_knots")) return;
 
@@ -185,7 +185,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep
         //num =  0;
 	data->NamedForComplex("RATIONAL_B_SPLINE_CURVE", "RBSC",num0,num,ach);
 
-	// --- Instance of plex componant RationalBSplineCurve ---
+	// --- Instance of plex component RationalBSplineCurve ---
 
 	if (!data->CheckNbParams(num,1,ach,"rational_b_spline_curve")) return;
 
@@ -209,7 +209,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::ReadStep
         //num =  0;
 	data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM",num0,num,ach);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -230,7 +230,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep
 	 const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& ent) const
 {
 
-	// --- Instance of plex componant BoundedCurve ---
+	// --- Instance of plex component BoundedCurve ---
 
 	SW.StartEntity("BOUNDED_CURVE");
 
@@ -264,7 +264,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep
 
 	SW.SendLogical(ent->SelfIntersect());
 
-	// --- Instance of plex componant BSplineCurveWithKnots ---
+	// --- Instance of plex component BSplineCurveWithKnots ---
 
 	SW.StartEntity("B_SPLINE_CURVE_WITH_KNOTS");
 	// --- field : knotMultiplicities ---
@@ -290,15 +290,15 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep
 	  case StepGeom_ktUnspecified : SW.SendEnum (ktUnspecified); break;
 	}
 
-	// --- Instance of plex componant Curve ---
+	// --- Instance of plex component Curve ---
 
 	SW.StartEntity("CURVE");
 
-	// --- Instance of plex componant GeometricRepresentationItem ---
+	// --- Instance of plex component GeometricRepresentationItem ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
 
-	// --- Instance of plex componant RationalBSplineCurve ---
+	// --- Instance of plex component RationalBSplineCurve ---
 
 	SW.StartEntity("RATIONAL_B_SPLINE_CURVE");
 	// --- field : weightsData ---
@@ -309,7 +309,7 @@ void RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---

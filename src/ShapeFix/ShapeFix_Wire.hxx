@@ -62,7 +62,7 @@ DEFINE_STANDARD_HANDLE(ShapeFix_Wire, ShapeFix_Root)
 //! curve to vertices, or recomputing curves of the edge)
 //!
 //! When fix can be made in more than one way (e.g., either
-//! by increasing tolerance or shifting a vertex), it is choosen
+//! by increasing tolerance or shifting a vertex), it is chosen
 //! according to the flags:
 //! ModifyTopologyMode - allows modification of the topology.
 //! This flag can be set when fixing a wire on
@@ -338,12 +338,12 @@ public:
   //! - what is smaller), it should be removed
   //! It can be with no problem if its two vertices are the same
   //! Else, if lockvtx is False, it is removed and its end vertex
-  //! is put on the preceeding edge
+  //! is put on the preceding edge
   //! But if lockvtx is True, this edge must be kept ...
   Standard_EXPORT Standard_Boolean FixSmall (const Standard_Integer num, const Standard_Boolean lockvtx, const Standard_Real precsmall);
   
-  //! Fixes connected edges (preceeding and current)
-  //! Forces Vertices (end of preceeding-begin of current) to be
+  //! Fixes connected edges (preceding and current)
+  //! Forces Vertices (end of preceding-begin of current) to be
   //! the same one
   //! Tests with starting preci or, if given greater, <prec>
   //! If <prec> is -1 then MaxTolerance() is taken.
@@ -430,7 +430,7 @@ public:
   
     Standard_Boolean StatusNotches (const ShapeExtend_Status status) const;
   
-  //! Querying the status of perfomed API fixing procedures
+  //! Querying the status of performed API fixing procedures
   //! Each Status..() methods gives information about the last call to
   //! the corresponding Fix..() method of API level:
   //! OK  : no problems detected; nothing done

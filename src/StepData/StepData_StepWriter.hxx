@@ -109,7 +109,7 @@ public:
   Standard_EXPORT void SendData();
   
   //! Send an Entity of the Data Section. If it corresponds to a
-  //! Scope, also Sends the Scope informations and contained Items
+  //! Scope, also Sends the Scope information and contained Items
   Standard_EXPORT void SendEntity (const Standard_Integer nument, const StepData_WriterLib& lib);
   
   //! sets end of section; to be done before passing to next one
@@ -158,21 +158,21 @@ public:
   //! sets entity's StepType, opens brakets, starts param no to 0
   //! params are separated by comma
   //! Remark : for a Multiple Type Entity (see Express ANDOR clause)
-  //! StartComplex must be called before sending componants, then
-  //! each "Componant" must be send separately (one call to
-  //! StartEntity for each one) : the Type which preceeds is then
-  //! automaticaly closed. Once all the componants have been sent,
+  //! StartComplex must be called before sending components, then
+  //! each "Component" must be sent separately (one call to
+  //! StartEntity for each one) : the Type which precedes is then
+  //! automatically closed. Once all the components have been sent,
   //! EndComplex must be called, then and only then EndEntity
   Standard_EXPORT void StartEntity (const TCollection_AsciiString& atype);
   
   //! sends the start of a complex entity, which is a simple open
   //! bracket (without increasing braket level)
   //! It must be called JUST AFTER SendEntity and BEFORE sending
-  //! componants, each one begins by StartEntity
+  //! components, each one begins by StartEntity
   Standard_EXPORT void StartComplex();
   
   //! sends the end of a complex entity : a simple closed bracket
-  //! It must be called AFTER sending all the componants and BEFORE
+  //! It must be called AFTER sending all the components and BEFORE
   //! the final call to EndEntity
   Standard_EXPORT void EndComplex();
   
@@ -200,13 +200,13 @@ public:
   
   //! prepares adding a parameter (that is, adds ',' except for
   //! first one); normally for internal use; can be used to send
-  //! a totally empty parameter (with no litteral value)
+  //! a totally empty parameter (with no literal value)
   Standard_EXPORT void AddParam();
   
   //! sends an integer parameter
   Standard_EXPORT void Send (const Standard_Integer val);
   
-  //! sends a real parameter (wroks with FloatWriter)
+  //! sends a real parameter (works with FloatWriter)
   Standard_EXPORT void Send (const Standard_Real val);
   
   //! sends a text given as string (it will be set between '...')
@@ -232,20 +232,20 @@ public:
   //! sends a string exactly as it is given
   Standard_EXPORT void SendString (const Standard_CString val);
   
-  //! sends an enum given by String (litteral expression)
+  //! sends an enum given by String (literal expression)
   //! adds '.' around it if not done
   //! Remark : val can be computed by class EnumTool from StepData:
   //! StepWriter.SendEnum (myenum.Text(enumval));
   Standard_EXPORT void SendEnum (const TCollection_AsciiString& val);
   
-  //! sends an enum given by String (litteral expression)
+  //! sends an enum given by String (literal expression)
   //! adds '.' around it if not done
   Standard_EXPORT void SendEnum (const Standard_CString val);
   
   //! sends an array of real
   Standard_EXPORT void SendArrReal (const Handle(TColStd_HArray1OfReal)& anArr);
   
-  //! sends an undefined (optionnal absent) parameter (by '$')
+  //! sends an undefined (optional absent) parameter (by '$')
   Standard_EXPORT void SendUndef();
   
   //! sends a "Derived" parameter (by '*'). A Derived Parameter has

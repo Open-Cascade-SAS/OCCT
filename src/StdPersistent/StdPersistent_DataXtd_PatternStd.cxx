@@ -20,7 +20,7 @@
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_DataXtd_PatternStd::Import
   (const Handle(TDataXtd_PatternStd)& theAttribute) const

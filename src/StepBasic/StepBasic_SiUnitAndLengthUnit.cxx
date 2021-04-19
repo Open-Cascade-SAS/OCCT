@@ -29,13 +29,13 @@ void StepBasic_SiUnitAndLengthUnit::Init(const Standard_Boolean hasAprefix,
 					 const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   lengthUnit = new StepBasic_LengthUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();
   lengthUnit->Init(aDimensions);
 
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 

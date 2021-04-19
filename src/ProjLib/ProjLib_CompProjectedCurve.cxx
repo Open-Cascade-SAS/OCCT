@@ -1539,14 +1539,14 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
     UArr = NULL, 
     VArr = NULL;
 
-  // proccessing projection bounds
+  // processing projection bounds
   BArr = new TColStd_HArray1OfReal(1, 2*myNbCurves);
   for(i = 1; i <= myNbCurves; i++)
   {
     Bounds(i, BArr->ChangeValue(2*i - 1), BArr->ChangeValue(2*i));
   }
 
-  // proccessing curve discontinuities
+  // processing curve discontinuities
   if(NbIntCur > 1) {
     CArr = new TColStd_HArray1OfReal(1, NbIntCur - 1);
     for(i = 1; i <= CArr->Length(); i++)
@@ -1555,7 +1555,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
     }
   }
 
-  // proccessing U-surface discontinuities  
+  // processing U-surface discontinuities
   TColStd_SequenceOfReal TUdisc;
 
   for(k = 2; k <= NbIntSurU; k++) {
@@ -1620,7 +1620,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
       UArr->ChangeValue(i) = TUdisc(i);
     }
   }
-  // proccessing V-surface discontinuities
+  // processing V-surface discontinuities
   TColStd_SequenceOfReal TVdisc;
 
   for(k = 2; k <= NbIntSurV; k++)

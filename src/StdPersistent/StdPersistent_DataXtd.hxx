@@ -47,14 +47,14 @@ public:
   class Geometry : public StdObjMgt_Attribute<TDataXtd_Geometry>::SingleInt
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
   class Position : public StdObjMgt_Attribute<TDataXtd_Position>::Simple<gp_Pnt>
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 };

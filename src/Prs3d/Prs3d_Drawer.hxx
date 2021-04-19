@@ -275,7 +275,7 @@ public:
     myDeviationAngle = 20.0 * M_PI / 180.0;
   }
 
-  //! Returns true if the there is a local setting for deviation
+  //! Returns true if there is a local setting for deviation
   //! angle in this framework for a specific interactive object.
   Standard_Boolean HasOwnDeviationAngle() const { return myHasOwnDeviationAngle; }
 

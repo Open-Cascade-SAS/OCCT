@@ -112,17 +112,16 @@ public:
 
   //! Applies the substitutions requests to a shape.
   //!
-  //! <until> gives the level of type until which requests are taken
-  //! into account. For subshapes of the type <until> no rebuild
-  //! and futher exploring are done.
+  //! theUntil gives the level of type until which requests are taken into account.
+  //! For subshapes of the type <until> no rebuild and further exploring are done.
   //!
   //! NOTE: each subshape can be replaced by shape of the same type
-  //! or by shape containing only shapes of that type (for
-  //! example, TopoDS_Edge can be replaced by TopoDS_Edge,
+  //! or by shape containing only shapes of that type
+  //! (for example, TopoDS_Edge can be replaced by TopoDS_Edge,
   //! TopoDS_Wire or TopoDS_Compound containing TopoDS_Edges).
-  //! If incompatible shape type is encountered, it is ignored
-  //! and flag FAIL1 is set in Status.
-  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& shape, const TopAbs_ShapeEnum until = TopAbs_SHAPE);
+  //! If incompatible shape type is encountered, it is ignored and flag FAIL1 is set in Status.
+  Standard_EXPORT virtual TopoDS_Shape Apply (const TopoDS_Shape& theShape,
+                                              const TopAbs_ShapeEnum theUntil = TopAbs_SHAPE);
 
   //! Returns (modifiable) the flag which defines whether Location of shape take into account
   //! during replacing shapes.

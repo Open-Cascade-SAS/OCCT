@@ -57,7 +57,7 @@ public:
   //! to allow recovering connectivities after fixing or removing
   //! the small faces or parts of faces
   //! Enchains various checks on a face
-  //! inshell : to compute more informations, relevant to topology
+  //! inshell : to compute more information, relevant to topology
   Standard_EXPORT ShapeAnalysis_CheckSmallFace();
   
   //! Checks if a Face is as a Spot
@@ -86,7 +86,7 @@ public:
   //! tolerance, given or some of those of E1 and E2
   Standard_EXPORT Standard_Boolean CheckStripEdges (const TopoDS_Edge& E1, const TopoDS_Edge& E2, const Standard_Real tol, Standard_Real& dmax) const;
   
-  //! Searchs for two and only two edges up tolerance
+  //! Searches for two and only two edges up tolerance
   //! Returns True if OK, false if not 2 edges
   //! If True, returns the two edges and their maximum distance
   Standard_EXPORT Standard_Boolean FindStripEdges (const TopoDS_Face& F, TopoDS_Edge& E1, TopoDS_Edge& E2, const Standard_Real tol, Standard_Real& dmax);

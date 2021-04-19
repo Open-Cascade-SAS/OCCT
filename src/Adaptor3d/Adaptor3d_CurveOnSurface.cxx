@@ -148,8 +148,8 @@ static void CompareBounds(gp_Pnt2d& P1,
 static void Hunt(const TColStd_Array1OfReal& Arr,
 		 const Standard_Real Coord,
 		 Standard_Integer& Iloc)
-{//Warning: Hunt is used to find number of knot which equals co-ordinate component,
-  //        when co-ordinate component definitly equals a knot only.
+{//Warning: Hunt is used to find number of knot which equals coordinate component,
+  //        when coordinate component definitly equals a knot only.
   Standard_Real Tol=Precision::PConfusion()/10;
   Standard_Integer i=1; 
   while((i <= Arr.Upper()) && (Abs(Coord - Arr(i)) > Tol)){

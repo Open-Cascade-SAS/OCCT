@@ -40,7 +40,7 @@ public:
   //! Returns persistent type name
   inline Standard_CString PName() const { return "PFunction_Function"; }
 
-  //! Import transient attribuite from the persistent data.
+  //! Import transient attribute from the persistent data.
   void Import (const Handle(TFunction_Function)& theAttribute) const
   {
     theAttribute->SetDriverGUID (myDriverGUID);

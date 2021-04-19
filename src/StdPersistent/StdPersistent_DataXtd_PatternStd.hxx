@@ -50,7 +50,7 @@ public:
   //! Returns persistent type name
   inline Standard_CString PName() const { return "PDataXtd_PatternStd"; }
 
-  //! Import transient attribuite from the persistent data.
+  //! Import transient attribute from the persistent data.
   void Import (const Handle(TDataXtd_PatternStd)& theAttribute) const;
 
 private:

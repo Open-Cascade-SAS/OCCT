@@ -38,7 +38,7 @@ protected:
     //! Returns persistent type name
     Standard_CString PName() const;
 
-    //! Import transient attribuite from the persistent data
+    //! Import transient attribute from the persistent data
     virtual void ImportAttribute() {}
   };
 

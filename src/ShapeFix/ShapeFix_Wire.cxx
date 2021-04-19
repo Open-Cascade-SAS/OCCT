@@ -607,7 +607,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
 	  }
 	  if ( seq.Length() >0 ) { // supposed that edge is SP
 #ifdef OCCT_DEBUG
-	    std::cout << "Edge going over singularity detected; splitted" << std::endl;
+	    std::cout << "Edge going over singularity detected; split" << std::endl;
 #endif
       Standard_Boolean isFwd = ( E.Orientation() == TopAbs_FORWARD );
       E.Orientation ( TopAbs_FORWARD );
@@ -1024,7 +1024,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
 	boxes(i) = box;
       }
     }
-    
+
     Standard_Boolean isFail = Standard_False, isDone = Standard_False;
     for(Standard_Integer num1 = 1; num1 < nb-1; num1++) {
       Standard_Integer fin = (num1 == 1 ? nb-1 : nb);
@@ -1035,15 +1035,15 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
 	  isDone |= LastFixStatus ( ShapeExtend_DONE1 );
 	}
     }
-    
+
     if(isFail)
       myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL3 );
     if(isDone)
       myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
 #ifdef OCCT_DEBUG
     if (StatusSelfIntersection (ShapeExtend_DONE5))
-      std::cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Non ajacent intersection fixed" << std::endl;
-#endif	  
+      std::cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Non adjacent intersection fixed" << std::endl;
+#endif
 */
   }
 
@@ -2354,7 +2354,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge (const Standard_Integer 
 
 //=======================================================================
 //function : ComputeLocalDeviation
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Real ComputeLocalDeviation (const TopoDS_Edge &edge, 
 					    const gp_Pnt &pint,const gp_Pnt &pnt,
@@ -2657,7 +2657,7 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
 //function : FixIntersectingEdges
 //purpose  : 
 //=======================================================================
-//pdn 17.03.99 fixing non ajacent intersection by increasing tolerance of vertex
+//pdn 17.03.99 fixing non adjacent intersection by increasing tolerance of vertex
 
 Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num1,
 						      const Standard_Integer num2)

@@ -153,28 +153,29 @@ public:
   //! Warning: <RationalDerivates> must be dimensionned properly.
   Standard_EXPORT static void RationalDerivatives (const Standard_Integer DerivativesRequest, const Standard_Integer Dimension, Standard_Real& PolesDerivatives, Standard_Real& WeightsDerivatives, Standard_Real& RationalDerivates);
   
-  //! Performs Horner method with synthethic division
-  //! for derivatives
+  //! Performs Horner method with synthetic division for derivatives
   //! parameter <U>, with <Degree> and <Dimension>.
   //! PolynomialCoeff are stored in the following fashion
+  //! @code
   //! c0(1)      c0(2) ....       c0(Dimension)
   //! c1(1)      c1(2) ....       c1(Dimension)
   //!
   //! cDegree(1) cDegree(2) ....  cDegree(Dimension)
+  //! @endcode
   //! where the polynomial is defined as :
-  //!
+  //! @code
   //! 2                     Degree
   //! c0 + c1 X + c2 X  +  ....   cDegree X
-  //!
+  //! @endcode
   //! Results stores the result in the following format
-  //!
+  //! @code
   //! f(1)             f(2)  ....     f(Dimension)
   //! (1)           (1)              (1)
   //! f  (1)        f   (2) ....     f   (Dimension)
   //!
   //! (DerivativeRequest)            (DerivativeRequest)
   //! f  (1)                         f   (Dimension)
-  //!
+  //! @endcode
   //! this just evaluates the point at parameter U
   //!
   //! Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
@@ -188,6 +189,7 @@ public:
   //! at parameters U,V
   //!
   //! PolynomialCoeff are stored in the following fashion
+  //! @code
   //! c00(1)  ....       c00(Dimension)
   //! c10(1)  ....       c10(Dimension)
   //! ....
@@ -202,21 +204,22 @@ public:
   //! c1n(1)  ....       c1n(Dimension)
   //! ....
   //! cmn(1)  ....       cmn(Dimension)
-  //!
+  //! @endcode
   //! where the polynomial is defined as :
+  //! @code
   //! 2                 m
   //! c00 + c10 U + c20 U  +  ....  + cm0 U
   //! 2                   m
   //! + c01 V + c11 UV + c21 U V  +  ....  + cm1 U  V
   //! n               m n
   //! + .... + c0n V +  ....  + cmn U V
-  //!
+  //! @endcode
   //! with m = UDegree and n = VDegree
   //!
   //! Results stores the result in the following format
-  //!
+  //! @code
   //! f(1)             f(2)  ....     f(Dimension)
-  //!
+  //! @endcode
   //! Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
   Standard_EXPORT static void EvalPoly2Var (const Standard_Real U, const Standard_Real V, const Standard_Integer UDerivativeOrder, const Standard_Integer VDerivativeOrder, const Standard_Integer UDegree, const Standard_Integer VDegree, const Standard_Integer Dimension, Standard_Real& PolynomialCoeff, Standard_Real& Results);
   
@@ -225,11 +228,12 @@ public:
   //! with the requested derivative order
   //! Results will store things in the following format
   //! with d = DerivativeOrder
-  //!
+  //! @code
   //! [0],             [Dimension-1]              : value
   //! [Dimension],     [Dimension  + Dimension-1] : first derivative
   //!
   //! [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
+  //! @endcode
   Standard_EXPORT static Standard_Integer EvalLagrange (const Standard_Real U, const Standard_Integer DerivativeOrder, const Standard_Integer Degree, const Standard_Integer Dimension, Standard_Real& ValueArray, Standard_Real& ParameterArray, Standard_Real& Results);
   
   //! Performs the Cubic Hermite Interpolation of
@@ -237,28 +241,37 @@ public:
   //! with the requested derivative order.
   //! ValueArray stores the value at the first and
   //! last parameter. It has the following format :
+  //! @code
   //! [0],             [Dimension-1]              : value at first param
   //! [Dimension],     [Dimension  + Dimension-1] : value at last param
+  //! @endcode
   //! Derivative array stores the value of the derivatives
   //! at the first parameter and at the last parameter
   //! in the following format
+  //! @code
   //! [0],             [Dimension-1]              : derivative at
+  //! @endcode
   //! first param
+  //! @code
   //! [Dimension],     [Dimension  + Dimension-1] : derivative at
+  //! @endcode
   //! last param
   //!
   //! ParameterArray  stores the first and last parameter
   //! in the following format :
+  //! @code
   //! [0] : first parameter
   //! [1] : last  parameter
+  //! @endcode
   //!
   //! Results will store things in the following format
   //! with d = DerivativeOrder
-  //!
+  //! @code
   //! [0],             [Dimension-1]              : value
   //! [Dimension],     [Dimension  + Dimension-1] : first derivative
   //!
   //! [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
+  //! @endcode
   Standard_EXPORT static Standard_Integer EvalCubicHermite (const Standard_Real U, const Standard_Integer DerivativeOrder, const Standard_Integer Dimension, Standard_Real& ValueArray, Standard_Real& DerivativeArray, Standard_Real& ParameterArray, Standard_Real& Results);
   
   //! This build the coefficient of Hermite's polynomes on

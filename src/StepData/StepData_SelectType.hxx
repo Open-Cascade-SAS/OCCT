@@ -43,12 +43,11 @@ class StepData_SelectMember;
 //! to control an input Argument
 //!
 //! This class implies to designate each member Type by a Case
-//! Number which is a positive Integer value (this allows a faster
-//! treatement).
+//! Number which is a positive Integer value (this allows a faster treatment).
 //!
 //! With this class, a specific SelectType can :
 //! - recognize an Entity as complying or not with its definition,
-//! - storing it, with the garanty that the stored Entity complies
+//! - storing it, with the guarantee that the stored Entity complies
 //! with the definition of the SelectType
 //! - and (if judged useful) give the stored Entity under the good
 //! Type rather than simply "Transient".

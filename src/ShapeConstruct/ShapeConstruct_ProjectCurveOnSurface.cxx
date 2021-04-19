@@ -20,7 +20,7 @@
 //:p9 abv 11.03.99 PRO7226 #489490: make IsAnIsoparametric to find nearest case
 //:q1 abv 15.03.99 (pdn) PRO7226 #525030: limit NextValueOfUV() by tolerance
 //:q5 abv 19.03.99 code improvement
-//:q9 abv 23.03.99 PRO7226.stp #489490: cashe for projecting end points
+//:q9 abv 23.03.99 PRO7226.stp #489490: cache for projecting end points
 //#78 rln 12.03.99 S4135: checking spatial closure with myPreci
 //    pdn 12.03.99 S4135: creating pcurve with minimal length in the case of densed points
 //    abv 29.03.99 IsAnIsoparametric with Precision::Confusion
@@ -541,7 +541,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
                                                Standard_Integer theIdx, // Index of objective coord: 1 ~ X, 2 ~ Y
                                                Standard_Real thePeriod, // Period on objective coord
                                                Standard_Integer theSavedPoint, // Point number to choose period
-                                               Standard_Real theSavedParam) // Param from cashe to choose period
+                                               Standard_Real theSavedParam) // Param from cache to choose period
 {
   Standard_Real aSavedParam;
   Standard_Integer aSavedPoint;
@@ -846,7 +846,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   c2d = getLine(points, params, pnt2d, myPreci, isRecompute, isFromCasheLine);
   if(!c2d.IsNull())
   {
-    // fill cashe
+    // fill cache
     Standard_Boolean ChangeCycle = Standard_False;
     if(myNbCashe>0 && myCashe3d[0].Distance(points(1)) > myCashe3d[0].Distance(points(nbrPnt)) &&
        myCashe3d[0].Distance(points(nbrPnt))<Precision::Confusion())
@@ -1041,7 +1041,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
           }
           else
           {
-            //:q9 abv 23 Mar 99: use cashe as 1st approach
+            //:q9 abv 23 Mar 99: use cache as 1st approach
             Standard_Integer j; // svv #1
             for (j = 0; j < myNbCashe; ++j)
             {
@@ -1162,7 +1162,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
       while (firstX < uf)  {  firstX += Up;   pnt2d (1).SetX(firstX);  }
       while (firstX > ul)  {  firstX -= Up;   pnt2d (1).SetX(firstX);  }
     }
-    // shift first point, according to cashe
+    // shift first point, according to cache
     if (mySurf->Surface()->IsUPeriodic() && isFromCashe) {
       Standard_Real aMinParam = uf, aMaxParam = ul;
       while (aMinParam > aSavedPoint.X()) {
@@ -1230,7 +1230,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
       while (firstY < vf)  {  firstY += Vp;  pnt2d (1).SetY(firstY);  }
       while (firstY > vl)  {  firstY -= Vp;  pnt2d (1).SetY(firstY);  }
     }
-    // shift first point, according to cashe
+    // shift first point, according to cache
     if (mySurf->Surface()->IsVPeriodic() && isFromCashe) {
       Standard_Real aMinParam = vf, aMaxParam = vl;
       while (aMinParam > aSavedPoint.Y()) {
@@ -1470,7 +1470,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     }
   }
 
-  //:q9: fill cashe
+  //:q9: fill cache
   myNbCashe = 2;
   if(ChangeCycle) {  // msv 10.08.04: avoid using of uninitialised field
   //if(myCashe3d[0].Distance(points(1))>Precision::Confusion() &&

@@ -34,7 +34,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
 //  REPR_RLTS,REPR_RLTS_WITH_TR,SHAPE_REPR_RLTS
 //  But same fields as RepresentationRelationshipWithTransformation
 
-        // --- Instance of plex componant RepresentationRelationship ---
+        // --- Instance of plex component RepresentationRelationship ---
 
         Standard_Integer num = 0;  // num0;
         data->NamedForComplex("REPRESENTATION_RELATIONSHIP", "RPRRLT",num0,num,ach);
@@ -68,7 +68,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
 	//szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
 	data->ReadEntity(num, 4,"rep_2", ach, STANDARD_TYPE(StepRepr_Representation), aRep2);
 
-        // --- Instance of plex componant RepresentationRelationshipWithTransformation ---
+        // --- Instance of plex component RepresentationRelationshipWithTransformation ---
 
         data->NamedForComplex("REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION", "RRWT",num0,num,ach);
 	if (!data->CheckNbParams(num,1,ach,"representation_relationship_with_transformation")) return;
@@ -79,7 +79,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::ReadStep
 	//szv#4:S4163:12Mar99 `Standard_Boolean stat5 =` not needed
 	data->ReadEntity(num,1,"transformation_operator",ach,aTrans);
 
-        // --- Instance of plex componant ShapeRepresentationRelationship ---
+        // --- Instance of plex component ShapeRepresentationRelationship ---
 
         data->NamedForComplex("SHAPE_REPRESENTATION_RELATIONSHIP", "SHRPRL",num0,num,ach);
 	if (!data->CheckNbParams(num,0,ach,"shape_representation_relationship")) return;
@@ -95,7 +95,7 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep
 	(StepData_StepWriter& SW,
 	 const Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)& ent) const
 {
-        // --- Instance of plex componant RepresentationRelationship ---
+        // --- Instance of plex component RepresentationRelationship ---
 
   SW.StartEntity ("REPRESENTATION_RELATIONSHIP");
 
@@ -116,12 +116,12 @@ void RWStepRepr_RWShapeRepresentationRelationshipWithTransformation::WriteStep
 	SW.Send(ent->Rep2());
 
 
-        // --- Instance of plex componant RepresentationRelationshipWithTransformation ---
+        // --- Instance of plex component RepresentationRelationshipWithTransformation ---
   SW.StartEntity ("REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION");
 
 	SW.Send(ent->TransformationOperator().Value());
 
-        // --- Instance of plex componant ShapeRepresentationRelationship ---
+        // --- Instance of plex component ShapeRepresentationRelationship ---
 
   SW.StartEntity ("SHAPE_REPRESENTATION_RELATIONSHIP");
 }

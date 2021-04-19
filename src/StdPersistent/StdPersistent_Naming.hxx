@@ -48,7 +48,7 @@ public:
     //! Returns persistent type name
     inline Standard_CString PName() const { return "PNaming_NamedShape"; }
 
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     void Import (const Handle(TNaming_NamedShape)& theAttribute) const;
 
   private:
@@ -134,14 +134,14 @@ public:
   class Naming : public StdObjMgt_Attribute<TNaming_Naming>::SingleRef
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
   class Naming_1 : public Naming
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 

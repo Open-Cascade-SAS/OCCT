@@ -107,7 +107,7 @@ public:
   //! Buffer-fetching getter.
   const Type* BufferNext() const { return myPosNext; }
 
-  //! @return the index displacement from iterator intialization
+  //! @return the index displacement from iterator initialization
   //!         (first symbol has index 0)
   Standard_Integer Index() const
   {
@@ -235,7 +235,7 @@ private: //! @name private fields
 
   const Type*        myPosition;  //!< buffer position of the first element in the current symbol
   const Type*        myPosNext;   //!< buffer position of the first element in the next symbol
-  Standard_Integer   myCharIndex; //!< index displacement from iterator intialization
+  Standard_Integer   myCharIndex; //!< index displacement from iterator initialization
   Standard_Utf32Char myCharUtf32; //!< Unicode symbol stored at the current buffer position
 
 };

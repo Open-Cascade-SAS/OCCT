@@ -112,7 +112,7 @@ public:
   
   //! Returns the characteristics of the singularity specified by
   //! its rank number <num>.
-  //! That means, that it is not neccessary for <num> to be in the
+  //! That means, that it is not necessary for <num> to be in the
   //! range [1, NbSingularities] but must be not greater than
   //! possible (see ComputeSingularities).
   //! The returned characteristics are:
@@ -192,7 +192,7 @@ public:
   //! computed.
   //! The pcurve (p2d1, p2d2) is considered as degenerate if:
   //! - max distance in 3d is less than <tol>
-  //! - max distance in 2d is at least <ratio> times greather than
+  //! - max distance in 2d is at least <ratio> times greater than
   //! the Resolution computed from max distance in 3d
   //! (max3d < tol && max2d > ratio * Resolution(max3d))
   //! NOTE: <ratio> should be >1 (e.g. 10)
@@ -268,7 +268,7 @@ public:
   //! If <maxpreci> >0. and distance between solution and
   //! P3D is greater than <maxpreci>, that solution is considered
   //! as bad, and ValueOfUV() is used.
-  //! If not succeded, calls ValueOfUV()
+  //! If not succeeded, calls ValueOfUV()
   Standard_EXPORT gp_Pnt2d NextValueOfUV (const gp_Pnt2d& p2dPrev,
                                           const gp_Pnt& P3D,
                                           const Standard_Real preci,

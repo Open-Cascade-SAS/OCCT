@@ -56,12 +56,12 @@ void StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve::Init(
 
 	StepGeom_BSplineCurve::Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	bSplineCurveWithKnots = new StepGeom_BSplineCurveWithKnots();
 	bSplineCurveWithKnots->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect, aKnotMultiplicities, aKnots, aKnotSpec);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	rationalBSplineCurve = new StepGeom_RationalBSplineCurve();
 	rationalBSplineCurve->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect, aWeightsData);

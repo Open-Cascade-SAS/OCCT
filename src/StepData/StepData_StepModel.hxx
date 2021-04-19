@@ -57,7 +57,7 @@ public:
   //! returns Header entities under the form of an iterator
   Standard_EXPORT Interface_EntityIterator Header() const;
   
-  //! says if a Header entity has a specifed type
+  //! says if a Header entity has a specified type
   Standard_EXPORT Standard_Boolean HasHeaderEntity (const Handle(Standard_Type)& atype) const;
   
   //! Returns Header entity with specified type, if there is

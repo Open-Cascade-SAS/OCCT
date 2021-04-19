@@ -50,7 +50,7 @@ public:
 
   //! Main constructor.
   //! Passed pointer is stored as is (memory is NOT copied nor released with destructor).
-  //! @param theBegin pointer to the beggining of pre-allocated buffer
+  //! @param theBegin pointer to the beginning of pre-allocated buffer
   //! @param theSize  length of pre-allocated buffer
   Standard_EXPORT Standard_ArrayStreamBuffer (const char*  theBegin,
                                               const size_t theSize);
@@ -60,7 +60,7 @@ public:
 
   //! (Re)-initialize the stream.
   //! Passed pointer is stored as is (memory is NOT copied nor released with destructor).
-  //! @param theBegin pointer to the beggining of pre-allocated buffer
+  //! @param theBegin pointer to the beginning of pre-allocated buffer
   //! @param theSize  length of pre-allocated buffer
   Standard_EXPORT virtual void Init (const char*  theBegin,
                                      const size_t theSize);

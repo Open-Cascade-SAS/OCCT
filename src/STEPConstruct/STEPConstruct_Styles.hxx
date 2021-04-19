@@ -110,7 +110,7 @@ public:
   //! (which bring styles) and fills sequence of styles
   Standard_EXPORT Standard_Boolean LoadStyles();
   
-  //! Searches the STEP model for the INISIBILITY enteties
+  //! Searches the STEP model for the INISIBILITY entities
   //! (which bring styles) and fills out sequence of styles
   Standard_EXPORT Standard_Boolean LoadInvisStyles (Handle(TColStd_HSequenceOfTransient)& InvSyles) const;
   

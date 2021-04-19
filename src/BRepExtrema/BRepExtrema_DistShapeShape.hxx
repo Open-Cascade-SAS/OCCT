@@ -110,10 +110,10 @@ class BRepExtrema_DistShapeShape
   //! This support can be a Vertex, an Edge or a Face. <br>
   Standard_EXPORT TopoDS_Shape SupportOnShape2(const Standard_Integer N) const;
   //! gives the corresponding parameter t if the Nth solution <br>
-  //! is situated on an Egde of the first shape <br>
+  //! is situated on an Edge of the first shape <br>
   Standard_EXPORT void ParOnEdgeS1(const Standard_Integer N,Standard_Real& t) const;
   //! gives the corresponding parameter t if the Nth solution <br>
-  //! is situated on an Egde of the first shape <br>
+  //! is situated on an Edge of the first shape <br>
   Standard_EXPORT void ParOnEdgeS2(const Standard_Integer N,Standard_Real& t) const;
   //! gives the corresponding parameters (U,V) if the Nth solution <br>
   //! is situated on an face of the first shape <br>

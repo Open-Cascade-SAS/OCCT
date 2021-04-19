@@ -80,7 +80,7 @@ public:
   //! Returns persistent type name
   Standard_CString PName() const { return "PDataStd_NamedData"; }
 
-  //! Import transient attribuite from the persistent data.
+  //! Import transient attribute from the persistent data.
   void Import (const Handle(TDataStd_NamedData)& theAttribute) const;
 
 private:

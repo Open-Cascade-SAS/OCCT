@@ -35,7 +35,7 @@ class Geom2d_Curve;
 //! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from
 //! "exact" 3d projection. Since algorithm searches 2d curve on surface, required 2d tolerance is computed
 //! from 3d tolerance with help of U,V resolutions of surface.
-//! 3d and 2d tolerances have sence only for curves on surface, it defines precision of projecting and approximation
+//! 3d and 2d tolerances have sense only for curves on surface, it defines precision of projecting and approximation
 //! and have nothing to do with distance between the projected curve and the surface.
 class ProjLib_ComputeApproxOnPolarSurface 
 {
@@ -77,7 +77,7 @@ public:
 
   //! Set the parameter, which defines maximal possible distance between projected curve and surface.
   //! It is used only for projecting on not analytical surfaces.
-  //! If theMaxDist < 0, algoritm uses default value 100.*Tolerance. 
+  //! If theMaxDist < 0, algorithm uses default value 100.*Tolerance.
   //! If real distance between curve and surface more then theMaxDist, algorithm stops working.
   Standard_EXPORT void SetMaxDist(const Standard_Real theMaxDist);
 
@@ -95,7 +95,7 @@ public:
   //! Parameter InitCurve2d is any rough estimation of 2d result curve.
   Standard_EXPORT Handle(Geom2d_BSplineCurve) Perform (const Handle(Adaptor2d_Curve2d)& InitCurve2d, const Handle(Adaptor3d_Curve)& C, const Handle(Adaptor3d_Surface)& S);
 
-  //! Builds initial 2d curve as BSpline with degree = 1 using Extrema algoritm.
+  //! Builds initial 2d curve as BSpline with degree = 1 using Extrema algorithm.
   //! Method is used in method Perform(...).
   Standard_EXPORT Handle(Adaptor2d_Curve2d) BuildInitialCurve2d (const Handle(Adaptor3d_Curve)& Curve, const Handle(Adaptor3d_Surface)& S);
 

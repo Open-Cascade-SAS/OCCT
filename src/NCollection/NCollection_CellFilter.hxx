@@ -45,7 +45,7 @@ enum NCollection_CellFilter_Action
  * search for one bullet (more precisely, O(M) where M is number of cells covered 
  * by the bullet).
  *
- * The idea behind the algorithm is to separate each co-ordinate of the space 
+ * The idea behind the algorithm is to separate each coordinate of the space
  * into equal-size cells. Note that this works well when cell size is 
  * approximately equal to the characteristic size of the involved objects 
  * (targets and bullets; including tolerance eventually used for coincidence 
@@ -56,7 +56,7 @@ enum NCollection_CellFilter_Action
  * The target objects to be searched are added to the tool by methods Add(); 
  * each target is classified as belonging to some cell(s). The data on cells 
  * (list of targets found in each one) are stored in the hash map with key being 
- * cumulative index of the cell by all co-ordinates.
+ * cumulative index of the cell by all coordinates.
  * Thus the time needed to find targets in some cell is O(1) * O(number of 
  * targets in the cell).
  *
@@ -123,7 +123,7 @@ public:
   //! Constructor; initialized by dimension count and cell size.
   //!
   //! Note: the cell size must be ensured to be greater than
-  //! maximal co-ordinate of the involved points divided by INT_MAX,
+  //! maximal coordinate of the involved points divided by INT_MAX,
   //! in order to avoid integer overflow of cell index.
   //! 
   //! By default cell size is 0, which is invalid; thus if default
@@ -173,12 +173,12 @@ public:
   }
 
   //! Adds a target object for further search in the range of cells 
-  //! defined by two points (the first point must have all co-ordinates equal or
-  //! less than the same co-ordinate of the second point)
+  //! defined by two points (the first point must have all coordinates equal or
+  //! less than the same coordinate of the second point)
   void Add (const Target& theTarget, 
 	    const Point &thePntMin, const Point &thePntMax)
   {
-    // get cells range by minimal and maximal co-ordinates
+    // get cells range by minimal and maximal coordinates
     Cell aCellMin (thePntMin, myCellSize);
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
@@ -196,13 +196,13 @@ public:
 
   //! Find a target object in the range of cells defined by two points and
   //! remove it from the structures
-  //! (the first point must have all co-ordinates equal or
-  //! less than the same co-ordinate of the second point).
+  //! (the first point must have all coordinates equal or
+  //! less than the same coordinate of the second point).
   //! For usage of this method "operator ==" should be defined for Target.
   void Remove (const Target& theTarget, 
                const Point &thePntMin, const Point &thePntMax)
   {
-    // get cells range by minimal and maximal co-ordinates
+    // get cells range by minimal and maximal coordinates
     Cell aCellMin (thePntMin, myCellSize);
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
@@ -218,12 +218,12 @@ public:
   }
 
   //! Inspect all targets in the cells range limited by two given points
-  //! (the first point must have all co-ordinates equal or
-  //! less than the same co-ordinate of the second point)
+  //! (the first point must have all coordinates equal or
+  //! less than the same coordinate of the second point)
   void Inspect (const Point& thePntMin, const Point& thePntMax, 
                 Inspector &theInspector) 
   {
-    // get cells range by minimal and maximal co-ordinates
+    // get cells range by minimal and maximal coordinates
     Cell aCellMin (thePntMin, myCellSize);
     Cell aCellMax (thePntMax, myCellSize);
     Cell aCell = aCellMin;
@@ -254,7 +254,7 @@ protected:
   };
 
   /**
-   * Auxilary structure representing a cell in the space. 
+   * Auxiliary structure representing a cell in the space.
    * Cells are stored in the map, each cell contains list of objects 
    * that belong to that cell.
    */
@@ -501,7 +501,7 @@ struct NCollection_CellFilter_InspectorXYZ
   //! Points type
   typedef gp_XYZ Point;
 
-  //! Access to co-ordinate
+  //! Access to coordinate
   static Standard_Real Coord (int i, const Point &thePnt) { return thePnt.Coord(i+1); }
   
   //! Auxiliary method to shift point by each coordinate on given value;
@@ -524,7 +524,7 @@ struct NCollection_CellFilter_InspectorXY
   //! Points type
   typedef gp_XY Point;
 
-  //! Access to co-ordinate
+  //! Access to coordinate
   static Standard_Real Coord (int i, const Point &thePnt) { return thePnt.Coord(i+1); }
 
   //! Auxiliary method to shift point by each coordinate on given value;

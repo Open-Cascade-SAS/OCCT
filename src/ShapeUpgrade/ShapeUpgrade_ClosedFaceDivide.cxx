@@ -180,7 +180,7 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface()
 	  isUSplit = Standard_True;
 	}
 #ifdef OCCT_DEBUG
-	else std::cout << "Warning: SU_ClosedFaceDivide: Thin face, not splitted" << std::endl;
+	else std::cout << "Warning: SU_ClosedFaceDivide: Thin face, not split" << std::endl;
 #endif
       }
     }
@@ -201,7 +201,7 @@ Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface()
 	  isUSplit = Standard_False;
 	}
 #ifdef OCCT_DEBUG
-	else std::cout << "Warning: SU_ClosedFaceDivide: Thin face, not splitted" << std::endl;
+	else std::cout << "Warning: SU_ClosedFaceDivide: Thin face, not split" << std::endl;
 #endif
       }
     }

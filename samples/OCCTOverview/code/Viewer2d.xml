@@ -14,7 +14,7 @@
       <Sample name="Clear" function="ClearGrid2dSample"/>
     </MenuItem>
     <MenuItem name="Image">
-      <Sample name="Backgroung Image" function="BackgroungImage2dSample"/>
+      <Sample name="Background Image" function="BackgroundImage2dSample"/>
     </MenuItem>
   </MenuItem>
 </Menu>

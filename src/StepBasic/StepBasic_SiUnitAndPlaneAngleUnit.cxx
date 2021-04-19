@@ -29,13 +29,13 @@ void StepBasic_SiUnitAndPlaneAngleUnit::Init(const Standard_Boolean hasAprefix,
 					     const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   planeAngleUnit = new StepBasic_PlaneAngleUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();
   planeAngleUnit->Init(aDimensions);
 
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 

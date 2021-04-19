@@ -43,7 +43,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::ReadStep (const Handle(StepData_Step
   //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
   
@@ -80,7 +80,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::ReadStep (const Handle(StepData_Step
     return;
   }
 
-  // --- Instance of plex componant SolidAngleUnit ---
+  // --- Instance of plex component SolidAngleUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,0,ach,"solid_angle_unit")) return;
 
@@ -99,7 +99,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::WriteStep (StepData_StepWriter& SW,
   // --- redefined field ---
   SW.SendDerived();
   
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
   
   // --- field : prefix ---
@@ -113,7 +113,7 @@ void RWStepBasic_RWSiUnitAndSolidAngleUnit::WriteStep (StepData_StepWriter& SW,
   // --- field : name ---
   SW.SendEnum(writer.EncodeName(ent->Name()));
 	
-  // --- Instance of plex componant SolidAngleUnit ---
+  // --- Instance of plex component SolidAngleUnit ---
   SW.StartEntity("SOLID_ANGLE_UNIT");
 }
 

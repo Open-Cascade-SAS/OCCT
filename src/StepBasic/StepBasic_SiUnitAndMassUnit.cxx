@@ -39,13 +39,13 @@ void StepBasic_SiUnitAndMassUnit::Init(const Standard_Boolean hasAprefix,
                                        const StepBasic_SiUnitName aName)
 {
   // --- classe inherited fields ---
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   massUnit = new StepBasic_MassUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();
   massUnit->Init(aDimensions);
 
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
 }
 

@@ -30,10 +30,10 @@ void StepBasic_ConversionBasedUnitAndRatioUnit::Init(const Handle(StepBasic_Dime
 						     const Handle(TCollection_HAsciiString)& aName,
 						     const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
 	
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   ratioUnit = new StepBasic_RatioUnit();
   ratioUnit->Init(aDimensions);
 }

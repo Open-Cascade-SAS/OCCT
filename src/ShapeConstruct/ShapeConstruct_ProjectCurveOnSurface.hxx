@@ -101,7 +101,7 @@ public:
   //! Default value is True
   Standard_EXPORT Standard_Integer& AdjustOverDegenMode();
   
-  //! Returns the status of last Peform
+  //! Returns the status of last Perform
   Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status theStatus) const;
   
   //! Computes the projection of 3d curve onto a surface using the

@@ -123,7 +123,7 @@ void StdLPersistent_Collection::mapBase<Base>::import
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <template<class> class BaseT,
           class HArrayClass,
@@ -156,7 +156,7 @@ void StdLPersistent_Collection::instance_1<Instance>::Read
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 template <class Instance>
 void StdLPersistent_Collection::instance_1<Instance>::ImportAttribute()

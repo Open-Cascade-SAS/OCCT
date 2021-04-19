@@ -329,7 +329,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
         anException.Print(std::cout); std::cout << std::endl;
 #endif
         (void)anException;
-        TP->AddFail(C, "Exeption was raised. Curve geometry definition is incorrect");
+        TP->AddFail(C, "Exception was raised. Curve geometry definition is incorrect");
       }
     }
 
@@ -581,8 +581,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       if (hasPcurve && (isSeam || ThereIsLikeSeam)) {
 
         // -----------------------------------------------------------
-        // The Edge is a Seam Edge : The pcurve wich is FORWARD has to
-        //                           be identified
+        // The Edge is a Seam Edge : The pcurve which is FORWARD has
+        //                           to be identified
         // -----------------------------------------------------------
 
         if ((!C2d1.IsNull()) && (!C2d2.IsNull())) {

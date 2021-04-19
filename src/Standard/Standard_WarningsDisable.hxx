@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 //!@file
-//! Supresses compiler warnings.
+//! Suppresses compiler warnings.
 //!
 //! Standard_WarningsDisable.hxx disables all compiler warnings.
 //! Standard_WarningsRestore.hxx restore the previous state of warnings.

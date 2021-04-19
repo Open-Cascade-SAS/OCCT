@@ -807,7 +807,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated (const Standard_Integer nu
   //pdn allows to insert two sequences of degenerated edges (on separate bounds of surfaces)
   if ( n1 != n2 && BRep_Tool::Degenerated ( E1 ) && 
        ! sae.HasPCurve ( E1, Face() ) ) {
-    //:abv 13.05.02: OCC320 - fail (to remove edge) if two consequtive degenerated edges w/o pcurves
+    //:abv 13.05.02: OCC320 - fail (to remove edge) if two consecutive degenerated edges w/o pcurves
     if ( BRep_Tool::Degenerated ( E2 ) )
       myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
     return Standard_False;
@@ -931,7 +931,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckDegenerated (const Standard_Integer nu
   //#84 rln 18.03.99 if pcurve is not degenerate anymore, the fix is postponned
   //to ShapeFix_Wire::FixLacking
   if ( ! mySurf->IsDegenerated ( p2d1, p2d2, precVtx, 10. ) ) { //:s1 abv 22 Apr 99: PRO7226 #489490 //smh#9
-    //:abv 24.05.02: OCC320 - fail (to remove edge) if two consequtive degenerated edges w/o pcurves
+    //:abv 24.05.02: OCC320 - fail (to remove edge) if two consecutive degenerated edges w/o pcurves
     if ( BRep_Tool::Degenerated ( E2 ) )
       myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
     return Standard_False;
@@ -1235,7 +1235,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges (const Standard_Inte
 
   //:64 abv 25 Dec 97: Attention!
   // Since Intersection algorithm is not symmetrical, for consistency with BRepCheck 
-  // edge with lower order number shoud be intersecting with edge with higher one
+  // edge with lower order number should be intersecting with edge with higher one
   // i.e., for intersection of last and first edges, they should go in reversed order
   // Example: entity #38285 from bug CSR #CTS17806
   // NOTE: Tr1 and Tr2 are not reordered because they are used in the same manner

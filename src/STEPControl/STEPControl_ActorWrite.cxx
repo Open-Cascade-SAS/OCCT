@@ -581,7 +581,7 @@ static void UpdateMap (const TopoDS_Shape &shape,
 }
 */
 
-// PTV 16.09.2002 added for transfering vertices.
+// PTV 16.09.2002 added for transferring vertices.
 static Standard_Boolean transferVertex (const Handle(Transfer_FinderProcess)& FP,
                                         Handle(StepShape_HArray1OfGeometricSetSelect)& aGSS,
                                         const TopoDS_Shape& aShVrtx,
@@ -621,7 +621,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
   Handle(TransferBRep_ShapeMapper) mapper = Handle(TransferBRep_ShapeMapper)::DownCast(start);
   Handle(Transfer_Binder) binder;
 
-  // Indicates whether to use an exising NMSSR to write items to (ss; 13.11.2010)
+  // Indicates whether to use an existing NMSSR to write items to (ss; 13.11.2010)
   Standard_Boolean useExistingNMSSR = Standard_False;
 
   if (mapper.IsNull()) return binder;
@@ -1063,7 +1063,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
           // modified by PTV 16.09.2002 OCC725
           else if (aShape.ShapeType() == TopAbs_COMPOUND || 
                    aShape.ShapeType() == TopAbs_VERTEX) {
-            // it is compund with solo vertices.
+            // it is compound with solo vertices.
             Standard_Integer aNbVrtx = 0;
             Standard_Integer curNb = 0;
             TopExp_Explorer anExp (aShape, TopAbs_VERTEX);
@@ -1080,7 +1080,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
               Handle(StepShape_GeometricCurveSet) aGCSet =
                 new StepShape_GeometricCurveSet;
               aGCSet->SetName(empty);
-              // iterates on compound with vertices and trances each vertex
+              // iterates on compound with vertices and traces each vertex
               for ( anExp.ReInit() ; anExp.More(); anExp.Next() ) {
                 TopoDS_Shape aVertex = anExp.Current();
                 if ( aVertex.ShapeType() != TopAbs_VERTEX )

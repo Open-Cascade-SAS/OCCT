@@ -57,12 +57,12 @@ void StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface::Init(
 
 	StepGeom_BSplineSurface::Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	quasiUniformSurface = new StepGeom_QuasiUniformSurface();
 	quasiUniformSurface->Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	rationalBSplineSurface = new StepGeom_RationalBSplineSurface();
 	rationalBSplineSurface->Init(aName, aUDegree, aVDegree, aControlPointsList, aSurfaceForm, aUClosed, aVClosed, aSelfIntersect, aWeightsData);

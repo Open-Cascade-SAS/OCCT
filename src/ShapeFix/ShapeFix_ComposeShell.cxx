@@ -283,7 +283,7 @@ Standard_Boolean ShapeFix_ComposeShell::Status (const ShapeExtend_Status status)
 
 //=======================================================================
 //function : PointLineDeviation
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Return (signed) deviation of point from line
 static Standard_Real PointLineDeviation (const gp_Pnt2d &p, const gp_Lin2d &line)
@@ -295,7 +295,7 @@ static Standard_Real PointLineDeviation (const gp_Pnt2d &p, const gp_Lin2d &line
 
 //=======================================================================
 //function : PointLinePosition
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Define position of point relative to line
 static Standard_Integer PointLinePosition (const gp_Pnt2d &p, const gp_Lin2d &line, 
@@ -307,7 +307,7 @@ static Standard_Integer PointLinePosition (const gp_Pnt2d &p, const gp_Lin2d &li
 
 //=======================================================================
 //function : PointLinePosition
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Define position of point relative to line
 static Standard_Integer PointLinePosition (const gp_Pnt2d &p, const gp_Lin2d &line)
@@ -318,7 +318,7 @@ static Standard_Integer PointLinePosition (const gp_Pnt2d &p, const gp_Lin2d &li
 
 //=======================================================================
 //function : ParamPointsOnLine
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Compute parameter of point on line
 static inline Standard_Real ParamPointOnLine (const gp_Pnt2d &p, const gp_Lin2d &line)
@@ -328,7 +328,7 @@ static inline Standard_Real ParamPointOnLine (const gp_Pnt2d &p, const gp_Lin2d 
 
 //=======================================================================
 //function : ParamPointsOnLine
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Compute parameter of two points on line (as intersection of segment)
 static Standard_Real ParamPointsOnLine (const gp_Pnt2d &p1, const gp_Pnt2d &p2, 
@@ -354,7 +354,7 @@ static Standard_Real ParamPointsOnLine (const gp_Pnt2d &p1, const gp_Pnt2d &p2,
 
 //=======================================================================
 //function : ProjectPointOnLine
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Compute projection of point on line
 static inline gp_Pnt2d ProjectPointOnLine (const gp_Pnt2d &p, const gp_Lin2d &line)
@@ -364,7 +364,7 @@ static inline gp_Pnt2d ProjectPointOnLine (const gp_Pnt2d &p, const gp_Lin2d &li
 
 //=======================================================================
 //function : ApplyContext
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // Apply context to one edge in the wire and put result into this wire
 static Standard_Integer ApplyContext (ShapeFix_WireSegment &wire, 
@@ -415,7 +415,7 @@ static Standard_Integer ApplyContext (ShapeFix_WireSegment &wire,
 
 //=======================================================================
 //function : IsCoincided
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // check points coincidence
 static inline Standard_Boolean IsCoincided (const gp_Pnt2d &p1, const gp_Pnt2d &p2,
@@ -433,7 +433,7 @@ static inline Standard_Boolean IsCoincided (const gp_Pnt2d &p1, const gp_Pnt2d &
 
 //=======================================================================
 //function : GetPatchIndex
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 // computes index for the patch by given parameter Param
@@ -504,7 +504,7 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
     if(isNonManifold)
     {
       Handle(ShapeExtend_WireData) sbwd = new ShapeExtend_WireData ( wire ,Standard_True,Standard_False);
-      //pdn protection againts of wires w/o edges
+      //pdn protection against wires w/o edges
       Standard_Integer nbEdges =  sbwd->NbEdges();
       if(nbEdges)
       {
@@ -516,7 +516,7 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
     else
     {
       //splitting wires containing manifold and non-manifold parts on a separate
-      //wire segment    
+      //wire segment
       Handle(ShapeExtend_WireData) sbwdM = new ShapeExtend_WireData();
       Handle(ShapeExtend_WireData) sbwdNM = new ShapeExtend_WireData();
       sbwdNM->ManifoldMode() = Standard_False;
@@ -721,7 +721,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode (const Handle(ShapeExtend_Wi
 
 //=======================================================================
 //function : DistributeSplitPoints
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // After applying context to (seam) edge, distribute its indices on new edges,
 // according to their parameters on that edge
@@ -753,7 +753,7 @@ static void DistributeSplitPoints (const Handle(ShapeExtend_WireData) &sbwd,
 
 //=======================================================================
 //function : CheckByCurve3d
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Integer CheckByCurve3d (const gp_Pnt &pos,
                                         const Handle(Geom_Curve) &c3d,
@@ -769,7 +769,7 @@ static Standard_Integer CheckByCurve3d (const gp_Pnt &pos,
 
 //=======================================================================
 //function : DefinePatch
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void DefinePatch (ShapeFix_WireSegment &wire, const Standard_Integer code,
                          const Standard_Boolean isCutByU, const Standard_Integer cutIndex,
@@ -788,7 +788,7 @@ static void DefinePatch (ShapeFix_WireSegment &wire, const Standard_Integer code
 
 //=======================================================================
 //function : GetGridResolution
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Real GetGridResolution(const Handle(TColStd_HArray1OfReal) SplitValues,
                                        const Standard_Integer cutIndex)
@@ -828,7 +828,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
   // Processing edge by edge (assuming that split points are sorted along the wire)
   for ( Standard_Integer i = 1; i <= wire.NbEdges(); i++ ) {
     
-    // for already splitted seam edge, redistribute its splitting points 
+    // for already split seam edge, redistribute its splitting points 
     Standard_Integer nsplit = ApplyContext ( wire, i, Context() );
     if ( nsplit !=1 ) {
       DistributeSplitPoints ( wire.WireData(), myFace, i, nsplit, indexes, values );
@@ -1052,7 +1052,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
       }
       else vertices.Append ( V );
 
-      // When edge is about to be splitted, copy end vertices to protect
+      // When edge is about to be split, copy end vertices to protect
       // original shape from increasing tolerance after fixing SameParameter
       if ( ! splitted ) {
         //smh#8
@@ -1732,12 +1732,12 @@ void ShapeFix_ComposeShell::SplitByGrid (ShapeFix_SequenceOfWireSegment &seqw)
   Standard_Real Umin,Umax,Vmin,Vmax;
   myGrid->Bounds(Umin,Umax,Vmin,Vmax);
 
-  //value of precision to define number of patch should be the same as used in the definitin position of point realtively to seam edge (TOLINT)
+  //value of precision to define number of patch should be the same as used in the definitin position of point relatively to seam edge (TOLINT)
   Standard_Real pprec = TOLINT;//::Precision::PConfusion();
    Standard_Integer i = 1;
   if(myClosedMode)
   {
-    //for closed mode when only one patch exist and location of the splitting line is coinsident with first joint value
+    //for closed mode when only one patch exist and location of the splitting line is coincident with first joint value
     //Therefore in this case it is necessary to move all wire segments in the range of the patch between first and last joint
     //values. Then all wire segments are lie between -period and period in order to have valid split ranges after splitting.
     //Because for closed mode cut index always equal to 1 and parts of segments after splitting always should have index either (0,1) or (1,2). 
@@ -1930,7 +1930,7 @@ void ShapeFix_ComposeShell::BreakWires (ShapeFix_SequenceOfWireSegment &seqw)
 
 //=======================================================================
 //function : IsShortSegment
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // BUC60035 2053: check if wire segment is very short (in order not to skip it)
 // 0  - long
@@ -1976,7 +1976,7 @@ static Standard_Integer IsShortSegment (const ShapeFix_WireSegment &seg,
 
 //=======================================================================
 //function : IsSamePatch
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean IsSamePatch (const ShapeFix_WireSegment wire,
                                      const Standard_Integer NU,
@@ -2269,7 +2269,7 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
 
   // Check if some wires are short in 3d (lie entirely inside one vertex), 
   // and if yes try to merge them with others
-  //pdn The short seqments are stil plased in "in" sequence.
+  //pdn The short seqments are still placed in "in" sequence.
 
   for ( i=1; i <= seqw.Length(); i++ ) {
     if ( shorts(i) != 1 ||

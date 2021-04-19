@@ -42,7 +42,7 @@ public:
   
   Standard_EXPORT Sweep_NumShapeIterator();
   
-  //! Resest the NumShapeIterator on sub-shapes of <aShape>.
+  //! Reset the NumShapeIterator on sub-shapes of <aShape>.
   Standard_EXPORT void Init (const Sweep_NumShape& aShape);
   
   //! Returns True if there is a current sub-shape.

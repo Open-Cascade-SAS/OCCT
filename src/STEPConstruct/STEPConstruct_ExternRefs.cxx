@@ -199,7 +199,7 @@ Standard_Boolean STEPConstruct_ExternRefs::LoadExternRefs ()
   for (Standard_Integer adri = 1; adri <= aSeqOfADR.Length(); adri++) {
     Handle(StepAP214_AppliedDocumentReference) ADR = 
       Handle(StepAP214_AppliedDocumentReference)::DownCast(aSeqOfADR.Value(adri));
-    // looking for Product Definition Formation and exlude excess PDWAD from aSeqOfPDWAD
+    // looking for Product Definition Formation and exclude excess PDWAD from aSeqOfPDWAD
     Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) aPDWAD;    
     findPDWADandExcludeExcess( ADR, aSeqOfPDWAD, Graph(), aPDWAD );
     
@@ -223,7 +223,7 @@ Standard_Boolean STEPConstruct_ExternRefs::LoadExternRefs ()
     }
     // search for Document file
     Handle(StepBasic_DocumentFile) DocFile;
-    if ( aPDWAD.IsNull() ) { // shoudnot be begin from TRJ11
+    if ( aPDWAD.IsNull() ) { // shouldn't begin from TRJ11
       // lookinf from ADR
       subs4 = Graph().Shareds(ADR);
     } else 
@@ -326,7 +326,7 @@ Standard_CString STEPConstruct_ExternRefs::FileName (const Standard_Integer num)
       Handle(StepAP214_AppliedDocumentReference)::DownCast ( myAEIAs(num) );
 
     // PTV 28.01.2003 CAX-IF TRJ11, file ext_ref_master.stp 
-    // serach document file name by long chain ADR->D<-DPE->PDF<-PDWAD->DF
+    // search document file name by long chain ADR->D<-DPE->PDF<-PDWAD->DF
     Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) aPDWAD;
     // create an empty aSeqOfPDWAD
     TColStd_SequenceOfTransient aSeqOfPDWAD; 
@@ -335,7 +335,7 @@ Standard_CString STEPConstruct_ExternRefs::FileName (const Standard_Integer num)
     
     // search for Document file
     Interface_EntityIterator subs4;
-    if ( aPDWAD.IsNull() ) { // shoudnot be begin from TRJ11
+    if ( aPDWAD.IsNull() ) { // shouldn't begin from TRJ11
       // lookinf from ADR
       subs4 = Graph().Shareds(ADR);
     } else 
@@ -842,7 +842,7 @@ Standard_Boolean STEPConstruct_ExternRefs::addAP214ExterRef (const Handle(StepAP
 
   // create new product definition formation
   Handle(StepBasic_ProductDefinitionFormation) PDF = new StepBasic_ProductDefinitionFormation;
-  // name id taked from exapmle Standard_ExtString_ref_master.stp
+  // name id taked from example Standard_ExtString_ref_master.stp
   Handle(TCollection_HAsciiString) PDF_ID = new TCollection_HAsciiString("1");
   PDF->Init( PDF_ID, EmptyString, Product );
   

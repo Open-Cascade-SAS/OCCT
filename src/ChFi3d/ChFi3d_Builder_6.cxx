@@ -776,7 +776,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
    
  if(!ChFi3d_CheckSameParameter(checkcurve,PCurveOnFace,S1,tolC1,tolcheck)){
 #ifdef OCCT_DEBUG
-   std::cout<<"aaproximate tolerance under-valued : "<<tolC1<<" for "<<tolcheck<<std::endl;
+   std::cout<<"approximate tolerance under-valued : "<<tolC1<<" for "<<tolcheck<<std::endl;
 #endif 
     tolC1 = tolcheck;
   }

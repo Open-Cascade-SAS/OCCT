@@ -1171,7 +1171,7 @@ Standard_Boolean PrsDim_AngleDimension::IsValidPoints (const gp_Pnt& theFirstPoi
 
 //=======================================================================
 //function : isArrowVisible
-//purpose  : compares given and internal arrows types, returns true if the the type should be shown
+//purpose  : compares given and internal arrows types, returns true if the type should be shown
 //=======================================================================
 Standard_Boolean PrsDim_AngleDimension::isArrowVisible(const PrsDim_TypeOfAngleArrowVisibility theArrowType) const
 {

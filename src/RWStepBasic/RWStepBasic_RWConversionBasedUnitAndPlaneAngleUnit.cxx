@@ -63,7 +63,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep
 	 const Handle(StepBasic_ConversionBasedUnitAndPlaneAngleUnit)& ent) const
 {
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	SW.StartEntity("CONVERSION_BASED_UNIT");
 	// --- field : name ---
@@ -80,7 +80,7 @@ void RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit::WriteStep
 
 	SW.Send(ent->Dimensions());
 
-	// --- Instance of plex componant PlaneAngleUnit ---
+	// --- Instance of plex component PlaneAngleUnit ---
 
 	SW.StartEntity("PLANE_ANGLE_UNIT");
 }

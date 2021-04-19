@@ -35,7 +35,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
 
 //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
 
-  //  --- Instance of plex componant : MeasureReprItem
+  //  --- Instance of plex component : MeasureReprItem
 
   Standard_Integer num = 0;
   data->NamedForComplex("MEASURE_REPRESENTATION_ITEM","MSRPIT",num0,num,ach);
@@ -53,7 +53,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   data->ReadEntity (num, 2, "unit_component", ach, aUnitComponent);
 
 
-  //  --- Instance of plex componant : QualifiedReprItem
+  //  --- Instance of plex component : QualifiedReprItem
 
   data->NamedForComplex("QUALIFIED_REPRESENTATION_ITEM","QLRPIT",num0,num,ach);
 
@@ -76,7 +76,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   }
 
 
-  //  --- Instance of plex componant : RepresentationItem
+  //  --- Instance of plex component : RepresentationItem
 
   data->NamedForComplex("REPRESENTATION_ITEM","RPRITM",num0,num,ach);
 
@@ -99,7 +99,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
 {
 //  Complex Entity : MeasureReprItem + QualifiedreprItem : so, add ReprItem
 
-  //  --- Instance of plex componant : MeasureReprItem
+  //  --- Instance of plex component : MeasureReprItem
 
   SW.StartEntity ("MEASURE_REPRESENTATION_ITEM");
 
@@ -109,7 +109,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
   // --- inherited from measure_with_unit : unit_component ---
   SW.Send(ent->Measure()->UnitComponent().Value());
 
-  //  --- Instance of plex componant : QualifiedReprItem
+  //  --- Instance of plex component : QualifiedReprItem
 
   SW.StartEntity ("QUALIFIED_REPRESENTATION_ITEM");
 
@@ -119,7 +119,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
   for (i = 1; i <= nbq; i ++) SW.Send (ent->QualifiersValue(i).Value());
   SW.CloseSub();
 
-  //  --- Instance of plex componant : ReprsentationItem
+  //  --- Instance of plex component : RepresentationItem
 
   SW.StartEntity ("REPRESENTATION_ITEM");
 

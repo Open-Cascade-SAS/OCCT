@@ -68,7 +68,7 @@ public:
   //! @param thePntsXYZ - Set of 3d points.
   //! @param thePntsU1V1 - Set of 2d points.
   //! @param thePntsU2V2 - Set of 2d points.
-  //! @param thePars - Expected parameters assoiated with set.
+  //! @param thePars - Expected parameters associated with set.
   //! @param theApproxXYZ - Flag, existence of 3d set.
   //! @param theApproxU1V1 - Flag existence of first 2d set.
   //! @param theApproxU2V2 - Flag existence of second 2d set.
@@ -121,7 +121,7 @@ private:
   //!
   //! I: Filter too big number of points per knot interval.
   //!
-  //! II: Filter poins with too small amount of points per knot interval.
+  //! II: Filter points with too small amount of points per knot interval.
   //!
   //! III: Fill Last Knot.
   static void FilterKnots(NCollection_Sequence<Standard_Integer>& theInds, 

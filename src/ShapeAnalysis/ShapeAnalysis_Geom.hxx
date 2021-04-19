@@ -43,7 +43,7 @@ public:
   //! plane and given points
   Standard_EXPORT static Standard_Boolean NearestPlane (const TColgp_Array1OfPnt& Pnts, gp_Pln& aPln, Standard_Real& Dmax);
   
-  //! Builds transfromation object out of matrix.
+  //! Builds transformation object out of matrix.
   //! Matrix must be 3 x 4.
   //! Unit is used as multiplier.
   Standard_EXPORT static Standard_Boolean PositionTrsf (const Handle(TColStd_HArray2OfReal)& coefs, gp_Trsf& trsf, const Standard_Real unit, const Standard_Real prec);

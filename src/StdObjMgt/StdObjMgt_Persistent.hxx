@@ -61,38 +61,38 @@ public:
   virtual Standard_CString PName() const = 0;
 
   //! Import transient document from the persistent data
-  //! (to be overriden by document class;
+  //! (to be overridden by document class;
   //! does nothing by default for other classes).
   Standard_EXPORT virtual void ImportDocument
     (const Handle(TDocStd_Document)& theDocument) const;
 
-  //! Create an empty transient attribuite
-  //! (to be overriden by attribute classes;
+  //! Create an empty transient attribute
+  //! (to be overridden by attribute classes;
   //! does nothing and returns a null handle by default for other classes).
   Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
 
-  //! Get transient attribuite for the persistent data
-  //! (to be overriden by attribute classes;
+  //! Get transient attribute for the persistent data
+  //! (to be overridden by attribute classes;
   //! returns a null handle by default for non-attribute classes).
   Standard_EXPORT virtual Handle(TDF_Attribute) GetAttribute() const;
 
-  //! Import transient attribuite from the persistent data
-  //! (to be overriden by attribute classes;
+  //! Import transient attribute from the persistent data
+  //! (to be overridden by attribute classes;
   //! does nothing by default for non-attribute classes).
   Standard_EXPORT virtual void ImportAttribute();
 
   //! Get referenced ASCII string
-  //! (to be overriden by ASCII string class;
+  //! (to be overridden by ASCII string class;
   //! returns a null handle by default for other classes).
   Standard_EXPORT virtual Handle(TCollection_HAsciiString) AsciiString() const;
 
   //! Get referenced extended string
-  //! (to be overriden by extended string class;
+  //! (to be overridden by extended string class;
   //! returns a null handle by default for other classes).
   Standard_EXPORT virtual Handle(TCollection_HExtendedString) ExtString() const;
 
   //! Get a label expressed by referenced extended string
-  //! (to be overriden by extended string class;
+  //! (to be overridden by extended string class;
   //! returns a null label by default for other classes).
   Standard_EXPORT virtual TDF_Label Label (const Handle(TDF_Data)& theDF) const;
 

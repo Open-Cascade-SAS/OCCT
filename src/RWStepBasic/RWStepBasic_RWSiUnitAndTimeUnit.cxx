@@ -53,7 +53,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::ReadStep (const Handle(StepData_StepReader
   //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =`
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
 
@@ -90,7 +90,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::ReadStep (const Handle(StepData_StepReader
     return;
   }
   
-  // --- Instance of plex componant TimeUnit ---
+  // --- Instance of plex component TimeUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,0,ach,"time_unit")) return;
 
@@ -108,7 +108,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep	(StepData_StepWriter& SW,
 						 const Handle(StepBasic_SiUnitAndTimeUnit)& ent) const
 {
 
-  // --- Instance of plex componant TimeUnit ---
+  // --- Instance of plex component TimeUnit ---
   //SW.StartEntity("TIME_UNIT");
 
   // --- Instance of common supertype NamedUnit ---
@@ -118,7 +118,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep	(StepData_StepWriter& SW,
   // --- redefined field ---
   SW.SendDerived();
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
   
   // --- field : prefix ---
@@ -132,7 +132,7 @@ void RWStepBasic_RWSiUnitAndTimeUnit::WriteStep	(StepData_StepWriter& SW,
   // --- field : name ---
   SW.SendEnum(writer.EncodeName(ent->Name()));
 
-  // --- Instance of plex componant TimeUnit ---
+  // --- Instance of plex component TimeUnit ---
   SW.StartEntity("TIME_UNIT");
 
 }

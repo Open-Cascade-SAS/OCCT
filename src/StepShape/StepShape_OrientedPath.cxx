@@ -67,7 +67,7 @@ void StepShape_OrientedPath::SetEdgeList(const Handle(StepShape_HArray1OfOriente
 Handle(StepShape_HArray1OfOrientedEdge) StepShape_OrientedPath::EdgeList() const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   if (orientation)
     return pathElement->EdgeList();
   else {
@@ -80,7 +80,7 @@ Handle(StepShape_HArray1OfOrientedEdge) StepShape_OrientedPath::EdgeList() const
 Handle(StepShape_OrientedEdge) StepShape_OrientedPath::EdgeListValue(const Standard_Integer num) const
 {
 	// WARNING : the field is redefined.
-	// method body is not yet automaticly wrote
+	// method body is not yet automatically wrote
   if (orientation)
     return pathElement->EdgeListValue(num);
   else {
@@ -92,6 +92,6 @@ Handle(StepShape_OrientedEdge) StepShape_OrientedPath::EdgeListValue(const Stand
 Standard_Integer StepShape_OrientedPath::NbEdgeList () const
 {
 	// WARNING : the field is redefined.
-	// method body is not yet automaticly wrote
+	// method body is not yet automatically wrote
   return pathElement->NbEdgeList();
 }

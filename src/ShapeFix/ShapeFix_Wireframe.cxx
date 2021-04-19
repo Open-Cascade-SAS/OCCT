@@ -541,10 +541,10 @@ Standard_Boolean ShapeFix_Wireframe::CheckSmallEdges(TopTools_MapOfShape& theSma
     if (theEdgeList.Extent()) theFaceWithSmall.Bind(facet,theEdgeList);
   }
   
-  //========================================================================
-  // Author : enk 
-  // Purpose: Analizing of shape for small edges , if edge don't lie on face
-  //========================================================================
+  //=========================================================================
+  // Author : enk
+  // Purpose: Analyzing of shape for small edges, if edge doesn't lie on face
+  //=========================================================================
   for (TopExp_Explorer expw1(myShape,TopAbs_WIRE,TopAbs_FACE); expw1.More(); expw1.Next()) 
   {
     SAW.SetPrecision(Precision());
@@ -1021,7 +1021,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		}
 		else 
                 {
-                  //gka protection aginst removing circles
+                  //gka protection against removing circles
                   TopoDS_Edge ed = (take_next ? edge1 : edge2);
                   ShapeAnalysis_Edge sae;
                   Handle(Geom_Curve) c3d;
@@ -1469,7 +1469,7 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
 		}
 		else 
                 {
-                  //gka protection aginst removing circles
+                  //gka protection against removing circles
                   TopoDS_Edge ed = (take_next ? edge1 : edge2);
                   ShapeAnalysis_Edge sae;
                   Handle(Geom_Curve) c3d;

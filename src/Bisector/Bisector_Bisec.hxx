@@ -31,11 +31,11 @@ class gp_Vec2d;
 class Geom2d_Point;
 
 
-//! Bisec  provides the bisecting line between two  elements
-//! This line is trimed by a point <P> and it's contained in the domain
+//! Bisec provides the bisecting line between two elements
+//! This line is trimmed by a point <P> and it's contained in the domain
 //! defined by the two vectors <V1>, <V2> and <Sense>.
 //!
-//! Definition of  the domain:
+//! Definition of the domain:
 //! if <Sense>  is  true the bisecting line is contained in the sector
 //! defined by <-V1> and <-V2> in the sense indirect.
 //! if <Sense>  is  false the bisecting line is contained in the sector
@@ -47,7 +47,7 @@ class Geom2d_Point;
 //! corresponding to one of hyperbola's axes.
 //! if the bisector is a parabola on the focal length is smaller than
 //! <Tolerance>, the bisector is replaced by a semi_line corresponding
-//! to the axe of symetrie of the parabola.
+//! to the axe of symmetry of the parabola.
 //! if the bisector is an ellipse  and the minor radius is smaller than
 //! <Tolerance>, the bisector is replaced by a segment corresponding
 //! to the great axe of the ellipse.

@@ -225,7 +225,7 @@ void BRepGProp_Face::Normal (const Standard_Real  U,
 
 //  APO 17.04.2002 (OCC104)
 // This is functions that calculate coeff. to optimize "integration order".
-//They had been produced experementally for some hard example.
+// They had been produced experimentally for some hard example.
 static Standard_Real AS = -0.15, AL = -0.50, B = 1.0, C = 0.75, D = 0.25;
 static inline Standard_Real SCoeff(const Standard_Real Eps){
   return Eps < 0.1? AS*(B+Log10(Eps)) + C: C;

@@ -208,7 +208,7 @@ Standard_MMgrFactory::~Standard_MMgrFactory()
 // WNT MSVC++) to put destructing function in code segment that is called
 // after destructors of other (even static) objects. However, this is not 
 // done by the moment since it is compiler-dependent and there is no guarantee 
-// thatsome other object calling memory manager is not placed also in that segment...
+// that some other object calling memory manager is not placed also in that segment...
 //
 // Note that C runtime function atexit() could not help in this problem 
 // since its behaviour is the same as for destructors of static objects 

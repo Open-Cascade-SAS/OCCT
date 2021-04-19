@@ -108,7 +108,7 @@ public:
   //! This message can then be added as warning for transfer
   Standard_EXPORT Standard_CString StatusMessage (const Standard_Integer status) const;
   
-  //! Convert SI prefix defined by enumertaion to corresponding
+  //! Convert SI prefix defined by enumeration to corresponding
   //! real factor (e.g. 1e6 for mega)
   Standard_EXPORT static Standard_Real ConvertSiPrefix (const StepBasic_SiPrefix aPrefix);
 

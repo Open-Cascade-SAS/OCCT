@@ -906,12 +906,12 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const S
 
 //=======================================================================
 //function : findStyledSR
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void findStyledSR(const Handle(StepVisual_StyledItem) &style,
   Handle(StepShape_ShapeRepresentation)& aSR)
 {
-  // search Shape Represenatation for component styled item
+  // search Shape Representation for component styled item
   for (Standard_Integer j = 1; j <= style->NbStyles(); j++) {
     Handle(StepVisual_PresentationStyleByContext) PSA =
       Handle(StepVisual_PresentationStyleByContext)::DownCast(style->StylesValue(j));
@@ -930,7 +930,7 @@ static void findStyledSR(const Handle(StepVisual_StyledItem) &style,
 
 //=======================================================================
 //function : propagateColorToParts
-//purpose  : auxilary, propagate color styles from assemblies to parts
+//purpose  : auxiliary, propagate color styles from assemblies to parts
 //=======================================================================
 
 static void propagateColorToParts(const Handle(XCAFDoc_ShapeTool)& theSTool,
@@ -1575,7 +1575,7 @@ static Standard_Boolean findNextSHUOlevel(const Handle(XSControl_WorkSession) &W
 
 //=======================================================================
 //function : setSHUOintoDoc
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static TDF_Label setSHUOintoDoc(const Handle(XSControl_WorkSession) &WS,
   const Handle(StepRepr_SpecifiedHigherUsageOccurrence)& SHUO,
@@ -2175,7 +2175,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
 
 //=======================================================================
 //function : ReadDatums
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean ReadDatums(const Handle(XCAFDoc_ShapeTool) &STool,
   const Handle(XCAFDoc_DimTolTool) &DGTTool,
@@ -2586,7 +2586,7 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
 
 //=======================================================================
 //function : ReadDatums
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Transient)& theEnt,
   const TDF_Label theGDTL,
@@ -2825,7 +2825,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
     {
       if (anAtr->IsKind(STANDARD_TYPE(StepRepr_AllAroundShapeAspect)))
       {
-        // if applyed AllAround Modifier
+        // if applied AllAround Modifier
         isAllAround = Standard_True;
       }
       // dimensions and default tolerances
@@ -3193,7 +3193,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
 
 //=======================================================================
 //function : convertAngleValue
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 void convertAngleValue(
   const STEPConstruct_UnitContext& anUnitCtx,
@@ -3202,7 +3202,7 @@ void convertAngleValue(
   // convert radian to deg
   Standard_Real aFact = anUnitCtx.PlaneAngleFactor() * 180 / M_PI;
   // in order to avoid inaccuracy of calculation perform conversion
-  // only if aFact not eqaul 1 with some precision
+  // only if aFact not equal 1 with some precision
   if (fabs(1. - aFact) > Precision::Confusion())
   {
     aVal = aVal * aFact;
@@ -4079,7 +4079,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
 
 //=======================================================================
 //function : FindSolidForPDS
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 
 static Handle(StepShape_SolidModel) FindSolidForPDS(const Handle(StepRepr_ProductDefinitionShape) &PDS,

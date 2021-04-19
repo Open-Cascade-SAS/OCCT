@@ -139,8 +139,7 @@ class Poly_CoherentTriangle
   { return mypLink[iLink]; }
 
   /**
-   * Retuns the index of the connection with the given triangle, or -1 if not
-   * found.
+   * Returns the index of the connection with the given triangle, or -1 if not found.
    */
   Standard_EXPORT Standard_Integer
                            FindConnection  (const Poly_CoherentTriangle&) const;

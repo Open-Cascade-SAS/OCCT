@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 // List of changes:
-//skl 29.01.2003 - deleted one space symbol at the begining
+//skl 29.01.2003 - deleted one space symbol at the beginning
 //                 of strings from Header Section
 
 #include <Interface_Check.hxx>

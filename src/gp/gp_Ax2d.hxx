@@ -56,7 +56,7 @@ public:
 
   
   //! Creates an axis object representing X axis of
-  //! the reference co-ordinate system.
+  //! the reference coordinate system.
     gp_Ax2d();
   
 

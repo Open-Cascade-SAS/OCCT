@@ -47,7 +47,7 @@ void StdLPersistent_TreeNode::PChildren
 
 //=======================================================================
 //function : CreateAttribute
-//purpose  : Create an empty transient attribuite
+//purpose  : Create an empty transient attribute
 //=======================================================================
 Handle(TDF_Attribute) StdLPersistent_TreeNode::CreateAttribute()
 {
@@ -58,7 +58,7 @@ Handle(TDF_Attribute) StdLPersistent_TreeNode::CreateAttribute()
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdLPersistent_TreeNode::ImportAttribute()
 {

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 // Great zoom leads to non-coincidence of
-// a point and non-infinite lines passing throught this point:
+// a point and non-infinite lines passing through this point:
 
 #include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>

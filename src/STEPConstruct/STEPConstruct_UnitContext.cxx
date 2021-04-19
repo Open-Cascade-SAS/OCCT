@@ -65,7 +65,7 @@ STEPConstruct_UnitContext::STEPConstruct_UnitContext()
 {
   lengthDone = planeAngleDone = solidAngleDone = hasUncertainty = 
     areaDone = volumeDone = Standard_False;
-  //pdn file r_47-sd.stp initalize field.
+  //pdn file r_47-sd.stp initialize field.
   theUncertainty = RealLast();
 }
 
@@ -85,7 +85,7 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d)
   Handle(TCollection_HAsciiString) contextType =
    new TCollection_HAsciiString("3D Context with UNIT and UNCERTAINTY");
 
-  // Units : LengthUnit and PlaneAngleUnit (no SolidAngleUnit appliable)
+  // Units : LengthUnit and PlaneAngleUnit (no SolidAngleUnit applicable)
 
   Handle(StepBasic_NamedUnit) lengthUnit;
   Standard_CString uName = 0;

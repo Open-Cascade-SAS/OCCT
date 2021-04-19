@@ -145,19 +145,19 @@ public:
   //! returns data type
   Standard_EXPORT TCollection_ExtendedString DataType() const;
   
-  //! add <theUserInfo> to the user informations
+  //! add <theUserInfo> to the user information
   Standard_EXPORT void AddToUserInfo (const TCollection_AsciiString& anInfo);
   
-  //! return the user informations
+  //! return the user information
   Standard_EXPORT const TColStd_SequenceOfAsciiString& UserInfo() const;
   
-  //! add <theUserInfo> to the user informations
+  //! add <theUserInfo> to the user information
   Standard_EXPORT void AddToComments (const TCollection_ExtendedString& aComment);
   
-  //! return the user informations
+  //! return the user information
   Standard_EXPORT const TColStd_SequenceOfExtendedString& Comments() const;
   
-  //! the the number of persistent objects
+  //! the number of persistent objects
   //! Return:
   //! the number of persistent objects readed
   Standard_EXPORT Standard_Integer NumberOfObjects() const;

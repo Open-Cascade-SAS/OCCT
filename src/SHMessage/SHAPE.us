@@ -167,7 +167,7 @@ Orientation of shell(s) in solid was corrected
 Improperly connected solid split into several parts
 !
 .FixAdvFace.FixLoopWire.MSG0
-Wire was splitted on several wires
+Wire was split on several wires
 !
 .FixAdvFace..MSG5
 !

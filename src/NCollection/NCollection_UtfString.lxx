@@ -216,7 +216,7 @@ void NCollection_UtfString<Type>::Swap (NCollection_UtfString<Type>& theOther)
 }
 
 #if !defined(__ANDROID__)
-//! Auxiliary convertion tool.
+//! Auxiliary conversion tool.
 class NCollection_UtfStringTool
 {
 public:

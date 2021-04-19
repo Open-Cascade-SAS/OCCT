@@ -38,10 +38,10 @@ public:
   virtual Standard_CString PName() const
     { return "PDataStd_TreeNode"; }
 
-  //! Create an empty transient attribuite
+  //! Create an empty transient attribute
   Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
 
-  //! Import transient attribuite from the persistent data.
+  //! Import transient attribute from the persistent data.
   Standard_EXPORT virtual void ImportAttribute();
 
 private:

@@ -104,7 +104,7 @@ Handle(TDF_Data) StdLPersistent_Data::Import() const
   Handle(TDF_Data) aData = new TDF_Data;
   Parser (*myLabels->Array(), *myAttributes->Array()).FillLabel (aData->Root());
 
-  // Import transient attribuites from persistent data
+  // Import transient attributes from persistent data
   StdLPersistent_HArray1OfPersistent::Iterator anAttribIter (*myAttributes->Array());
   for (; anAttribIter.More(); anAttribIter.Next())
   {

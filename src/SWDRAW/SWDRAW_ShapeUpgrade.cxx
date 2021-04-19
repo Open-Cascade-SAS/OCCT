@@ -266,7 +266,7 @@ static Standard_Integer DT_ShapeConvertRev (Draw_Interpretor& di,
     return 0;
   }
   else {
-    // not a face: we can use the empty consturctor.
+    // not a face: we can use the empty constructor.
     ShapeUpgrade_ShapeDivideContinuity theTool;
     Standard_Real Tol=Draw::Atof(a[n-1]);
     theTool.SetTolerance(Tol);

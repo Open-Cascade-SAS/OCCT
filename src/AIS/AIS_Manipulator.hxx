@@ -196,7 +196,7 @@ public:
   Standard_EXPORT void StopTransform (const Standard_Boolean theToApply = Standard_True);
 
   //! Apply transformation made from mouse moving from start position
-  //! (save on the first Tranform() call and reset on DeactivateCurrentMode() call.)
+  //! (save on the first Transform() call and reset on DeactivateCurrentMode() call.)
   //! to the in/out mouse position (theX, theY)
   Standard_EXPORT gp_Trsf Transform (const Standard_Integer theX, const Standard_Integer theY,
                                      const Handle(V3d_View)& theView);
@@ -361,7 +361,7 @@ protected:
 
   Standard_EXPORT void setTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers);
 
-  //! Redefines local transformation management method to inform user of inproper use.
+  //! Redefines local transformation management method to inform user of improper use.
   //! @warning this interactive object does not support setting custom local transformation,
   //! this class solely uses this property to implement visual positioning of the manipulator
   //! without need for recomputing presentation.

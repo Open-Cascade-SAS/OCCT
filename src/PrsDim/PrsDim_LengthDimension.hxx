@@ -26,7 +26,7 @@
 
 DEFINE_STANDARD_HANDLE (PrsDim_LengthDimension, PrsDim_Dimension)
 
-//! Length dimension. Can be constructued:
+//! Length dimension. Can be constructed:
 //! - Between two generic points.
 //! - Between two vertices.
 //! - Between two faces.
@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE (PrsDim_LengthDimension, PrsDim_Dimension)
 //! In case of two points (vertices) or one linear edge the user-defined plane
 //! that includes this geometry is necessary to be set.
 //!
-//! In case of face-edge, edge-vertex or face-face lengthes the automatic plane
+//! In case of face-edge, edge-vertex or face-face lengths the automatic plane
 //! computing is allowed. For this plane the third point is found on the
 //! edge or on the face.
 //!

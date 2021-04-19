@@ -48,7 +48,7 @@
 //! Thus following calls to sprintf, atoi and other functions will use "C" locale.
 //! Destructor of this class will return original locale.
 //!
-//! Notice that this functionality is platfrom dependent and intended only to workaround alien code
+//! Notice that this functionality is platform dependent and intended only to workaround alien code
 //! that doesn't setup locale correctly.
 //!
 //! Internally you should prefer more portable C++ locale interfaces

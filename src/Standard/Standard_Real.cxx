@@ -144,7 +144,7 @@ Standard_Real Sign(const Standard_Real a, const Standard_Real b)
 }
 
 //==========================================================================
-//===== The special routines for "IEEE" and differents hardwares ===========
+//===== The special routines for "IEEE" and different hardware =============
 //==========================================================================
 union RealMap {
   double real;
@@ -153,17 +153,17 @@ union RealMap {
 
 //--------------------------------------------------------------------
 // HardwareHighBitsOfDouble :  
-//    Returns 1 if the low bits are at end.   (exemple: decmips and ALPHA )
-//    Returns 0 if the low bits are at begin. (exemple: sun, sgi, ...)
+//    Returns 1 if the low bits are at end.   (example: decmips and ALPHA )
+//    Returns 0 if the low bits are at begin. (example: sun, sgi, ...)
 //--------------------------------------------------------------------
 static int HardwareHighBitsOfDouble()
 {
   RealMap MaxDouble;
   MaxDouble.real = DBL_MAX;
   //=========================================================
-  // reperesentation of the max double in IEEE is 
-  //      "7fef ffff ffff ffff"   for the big indiens.
-  //      "ffff ffff 7fef ffff"   for the littel indiens.
+  // representation of the max double in IEEE is
+  //      "7fef ffff ffff ffff"   for the big endians.
+  //      "ffff ffff 7fef ffff"   for the little endians.
   //=========================================================
 
   if(MaxDouble.map[1] != 0xffffffff){
@@ -175,17 +175,17 @@ static int HardwareHighBitsOfDouble()
 
 //--------------------------------------------------------------------
 // HardwareLowBitsOfDouble :  
-//    Returns 0 if the low bits are at end.   (exemple: decmips )
-//    Returns 1 if the low bits are at begin. (exemple: sun, sgi, ...)
+//    Returns 0 if the low bits are at end.   (example: decmips )
+//    Returns 1 if the low bits are at begin. (example: sun, sgi, ...)
 //--------------------------------------------------------------------
 static int HardwareLowBitsOfDouble()
 {
   RealMap MaxDouble;
   MaxDouble.real = DBL_MAX;
   //=========================================================
-  // reperesentation of the max double in IEEE is 
-  //      "7fef ffff ffff ffff"   for the big indiens.
-  //      "ffff ffff 7fef ffff"   for the littel indiens.
+  // representation of the max double in IEEE is
+  //      "7fef ffff ffff ffff"   for the big endians.
+  //      "ffff ffff 7fef ffff"   for the little endians.
   //=========================================================
 
   if(MaxDouble.map[1] != 0xffffffff){
@@ -211,7 +211,7 @@ double NextAfter(const double x, const double y)
     //=========================================
     //   -oo__________0___________+oo
     //               x=y
-    //  The direction is "Null", so there is nothing after 
+    //  The direction is "Null", so there is nothing after
     //=========================================
 
   } else if (((x<y) && (x>=0.0)) || ((x>y) && (x<0.0))) {
@@ -254,9 +254,9 @@ Standard_Real     ATanh(const Standard_Real Value)
 { 
   if ( (Value <= -1.) || (Value >= 1.) ){
 #ifdef OCCT_DEBUG
-    std::cout << "Illegal agument in ATanh" << std::endl ;
+    std::cout << "Illegal argument in ATanh" << std::endl ;
 #endif
-    throw Standard_NumericError("Illegal agument in ATanh");
+    throw Standard_NumericError("Illegal argument in ATanh");
   }
 #if __QNX__
   return std::atanh(Value);
@@ -272,9 +272,9 @@ Standard_Real     ACosh (const Standard_Real Value)
 { 
   if ( Value < 1. ){
 #ifdef OCCT_DEBUG
-    std::cout << "Illegal agument in ACosh" << std::endl ;
+    std::cout << "Illegal argument in ACosh" << std::endl ;
 #endif
-    throw Standard_NumericError("Illegal agument in ACosh");
+    throw Standard_NumericError("Illegal argument in ACosh");
   }
 #if __QNX__
   return std::acosh(Value);
@@ -317,9 +317,9 @@ Standard_Real     Sinh (const Standard_Real Value)
 Standard_Real     Log (const Standard_Real Value) 
 {   if ( Value <= 0. ){
 #ifdef OCCT_DEBUG
-    std::cout << "Illegal agument in Log" << std::endl ;
+    std::cout << "Illegal argument in Log" << std::endl ;
 #endif
-    throw Standard_NumericError("Illegal agument in Log");
+    throw Standard_NumericError("Illegal argument in Log");
   } 
  return log(Value); 
 }
@@ -330,9 +330,9 @@ Standard_Real     Sqrt (const Standard_Real Value)
 { 
   if (  Value < 0. ){
 #ifdef OCCT_DEBUG
-    std::cout << "Illegal agument in Sqrt" << std::endl ;
+    std::cout << "Illegal argument in Sqrt" << std::endl ;
 #endif
-    throw Standard_NumericError("Illegal agument in Sqrt");
+    throw Standard_NumericError("Illegal argument in Sqrt");
   } 
  return sqrt(Value); 
 }

@@ -21,7 +21,7 @@
 
 //=======================================================================
 //function : Import
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_Naming::NamedShape::Import
   (const Handle(TNaming_NamedShape)& theAttribute) const
@@ -168,7 +168,7 @@ void StdPersistent_Naming::Name_2::Import
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Naming::ImportAttribute()
 {
@@ -182,7 +182,7 @@ void StdPersistent_Naming::Naming::ImportAttribute()
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
+//purpose  : Import transient attribute from the persistent data
 //=======================================================================
 void StdPersistent_Naming::Naming_1::ImportAttribute()
 {

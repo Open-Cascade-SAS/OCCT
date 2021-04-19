@@ -217,7 +217,7 @@ Standard_Boolean ShapeFix_SplitTool::CutEdge(const TopoDS_Edge &edge,
         if(tc->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))) {
           BRep_Builder B;
           B.Range(edge,Min(pend,cut),Max(pend,cut));
-          if( Abs(pend-lp)<Precision::PConfusion() ) { // cut from the begining
+          if( Abs(pend-lp)<Precision::PConfusion() ) { // cut from the beginning
             Standard_Real cut3d = (cut-fp)*(b-a)/(lp-fp);
             if(cut3d <= Precision::PConfusion())
               return Standard_False;

@@ -26,11 +26,11 @@ class StdObjMgt_Attribute : public Standard_Transient
   class base : public StdObjMgt_Persistent
   {
   public:
-    //! Create an empty transient attribuite
+    //! Create an empty transient attribute
     virtual Handle(TDF_Attribute) CreateAttribute()
       { return myTransient = new Transient; }
 
-    //! Get transient attribuite for the persistent data
+    //! Get transient attribute for the persistent data
     virtual Handle(TDF_Attribute) GetAttribute() const
       { return Handle(TDF_Attribute)(myTransient); }
 
@@ -79,7 +79,7 @@ private:
     virtual Standard_CString PName() const 
       { return myPersistent->PName(); }
 
-    //! Import transient attribuite from the persistent data
+    //! Import transient attribute from the persistent data
     virtual void ImportAttribute()
     {
       if (myPersistent && this->myTransient)

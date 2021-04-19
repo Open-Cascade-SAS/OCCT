@@ -62,7 +62,7 @@ ShapeCustom_SweptToElementary::ShapeCustom_SweptToElementary()
 
 //=======================================================================
 //function : IsToConvert
-//purpose  : auxilary (Analyze surface: is it to be converted?)
+//purpose  : auxiliary (Analyze surface: is it to be converted?)
 //=======================================================================
 static Standard_Boolean IsToConvert (const Handle(Geom_Surface) &S,
 				     Handle(Geom_SweptSurface) &SS)

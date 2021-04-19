@@ -33,7 +33,7 @@ class StdLPersistent_Value
   class integer : public StdObjMgt_Attribute<AttribClass>::SingleInt
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
@@ -42,7 +42,7 @@ class StdLPersistent_Value
   class string : public StdObjMgt_Attribute<AttribClass>::SingleRef
   {
   public:
-    //! Import transient attribuite from the persistent data.
+    //! Import transient attribute from the persistent data.
     Standard_EXPORT virtual void ImportAttribute();
   };
 
@@ -66,7 +66,7 @@ public:
   class UAttribute : public string <TDataStd_UAttribute>
   {
   public:
-    //! Create an empty transient attribuite
+    //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
     Standard_CString PName() const { return "PDataStd_UAttribute"; }
   };
@@ -74,7 +74,7 @@ public:
   class Integer : public integer <TDataStd_Integer>
   {
   public:
-    //! Create an empty transient attribuite
+    //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
     Standard_CString PName() const { return "PDataStd_Integer"; }
   };
@@ -82,7 +82,7 @@ public:
   class Name : public string <TDataStd_Name>
   {
   public:
-    //! Create an empty transient attribuite
+    //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
     Standard_CString PName() const { return "PDataStd_Name"; }
   };
@@ -90,7 +90,7 @@ public:
   class AsciiString : public string <TDataStd_AsciiString, StdLPersistent_HString::Ascii>
   {
   public:
-    //! Create an empty transient attribuite
+    //! Create an empty transient attribute
     Standard_EXPORT virtual Handle(TDF_Attribute) CreateAttribute();
     Standard_CString PName() const { return "PDataStd_AsciiString"; }
   };

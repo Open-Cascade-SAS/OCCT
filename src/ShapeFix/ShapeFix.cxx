@@ -297,7 +297,7 @@ TopoDS_Shape ShapeFix::RemoveSmallEdges (TopoDS_Shape& Shape,
 
 //=======================================================================
 //function : ReplaceVertex
-//purpose  : auxilary for FixVertexPosition
+//purpose  : auxiliary for FixVertexPosition
 //=======================================================================
 static TopoDS_Edge ReplaceVertex(const TopoDS_Edge& theEdge,
                                  const gp_Pnt theP,
@@ -327,7 +327,7 @@ static TopoDS_Edge ReplaceVertex(const TopoDS_Edge& theEdge,
 
 //=======================================================================
 //function : getNearPoint
-//purpose  : auxilary for FixVertexPosition
+//purpose  : auxiliary for FixVertexPosition
 //=======================================================================
 static Standard_Real getNearPoint(const TColgp_SequenceOfPnt& aSeq1,
                                   const TColgp_SequenceOfPnt& aSeq2,
@@ -360,7 +360,7 @@ static Standard_Real getNearPoint(const TColgp_SequenceOfPnt& aSeq1,
 
 //=======================================================================
 //function : getNearestEdges
-//purpose  : auxilary for FixVertexPosition
+//purpose  : auxiliary for FixVertexPosition
 //=======================================================================
 static Standard_Boolean getNearestEdges(TopTools_ListOfShape& theLEdges,
                                         const TopoDS_Vertex theVert,

@@ -282,7 +282,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
 
   cf = theCurve2d->FirstParameter();
   cl = theCurve2d->LastParameter();
-  //pdn cutting pcurve by suface bounds
+  //pdn cutting pcurve by surface bounds
   if (Precision::IsInfinite(cf)||Precision::IsInfinite(cl)) {
     if(theCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line))) {
       Standard_Real uf,ul,vf,vl;
@@ -357,7 +357,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       else {
         cf=-10000;
         cl= 10000;
-        //pdn not cutted by bounds
+        //pdn not cut by bounds
 #ifdef OCCT_DEBUG
         std::cout<<"Infinite Surface"<<std::endl;
 #endif	

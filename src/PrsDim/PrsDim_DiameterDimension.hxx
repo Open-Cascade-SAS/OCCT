@@ -24,7 +24,7 @@
 
 DEFINE_STANDARD_HANDLE(PrsDim_DiameterDimension, PrsDim_Dimension)
 
-//! Diameter dimension. Can be constructued:
+//! Diameter dimension. Can be constructed:
 //! - On generic circle.
 //! - On generic circle with user-defined anchor point on that circle
 //!   (dimension plane is oriented to follow the anchor point).

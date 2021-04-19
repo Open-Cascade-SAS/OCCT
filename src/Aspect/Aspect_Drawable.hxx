@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 /*============================================================================*/
-/*==== Titre: Aspect_Drawable.hxx                                               */
+/*==== Title: Aspect_Drawable.hxx                                             */
 /*==== Role : The header file of primitive type "Handle" from packages        */
 /*==== "Xw" & "WNT"                                                           */
 /*==== Implementation:  This is a primitive type implemented with typedef     */

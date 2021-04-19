@@ -51,8 +51,7 @@ public:
   //! Returns the current vertex
   Standard_EXPORT const HLRAlgo_Intersection& Current() const;
   
-  //! Returns True  if the current  vertex  is is on the
-  //! boundary of the edge.
+  //! Returns True if the current vertex is on the boundary of the edge.
   Standard_EXPORT Standard_Boolean IsBoundary() const;
   
   //! Returns  True   if   the current    vertex  is  an

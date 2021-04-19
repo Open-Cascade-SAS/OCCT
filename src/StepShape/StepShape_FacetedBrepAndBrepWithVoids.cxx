@@ -47,12 +47,12 @@ void StepShape_FacetedBrepAndBrepWithVoids::Init
 
 	StepShape_ManifoldSolidBrep::Init(aName, aOuter);
 	
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 	
 	brepWithVoids = new StepShape_BrepWithVoids();
 	brepWithVoids->Init(aName, aOuter, aVoids);
 	
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 	
 	facetedBrep = new StepShape_FacetedBrep();
 	facetedBrep->Init(aName, aOuter);

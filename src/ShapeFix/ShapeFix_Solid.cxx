@@ -465,7 +465,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
       if(!aShell.IsNull()) {
         TopoDS_Solid aSol = SolidFromShell(aShell);
         if(ShapeExtend::DecodeStatus(myStatus,ShapeExtend_DONE2)) {
-          SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientaion of shell was corrected.
+          SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientation of shell was corrected.
           Context()->Replace(tmpShape,aSol);
           tmpShape = aSol;
         }
@@ -485,7 +485,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
     TopTools_SequenceOfShape aSeqShells;
     TopTools_IndexedMapOfShape aMapSolids;
     if(CreateSolids(aResShape,aMapSolids)) {
-      SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientaion of shell was corrected.. 
+      SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientation of shell was corrected.. 
       if(aMapSolids.Extent() ==1) {
         TopoDS_Shape aResSol = aMapSolids.FindKey(1);
         if(aResShape.ShapeType() == TopAbs_SHELL && myCreateOpenSolidMode) {

@@ -272,7 +272,7 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
 
 // ============================================================================
 // Method  : STEPControl_ActorRead::Transfer
-// Purpose : recursive method that acces to the root entities and start the 
+// Purpose : recursive method that accesses the root entities and starts the 
 //           mapping
 // ============================================================================
 
@@ -809,7 +809,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     sout<<" -- Actor : case  ShapeRepr. NbItems="<<nb<<std::endl;
   #endif
   
-    // Compute unit convertion factors and geometric Accuracy
+    // Compute unit conversion factors and geometric Accuracy
   Handle(StepRepr_Representation) oldSRContext = mySRContext; //:S4136
   PrepareUnits(sr,TP);
   
@@ -1427,7 +1427,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     }
   }
   catch(Standard_Failure const&) {
-    TP->AddFail(start,"Exeption is raised. Entity was not translated.");
+    TP->AddFail(start,"Exception is raised. Entity was not translated.");
     TP->Bind(start, shbinder);
     return shbinder;
   }
@@ -1594,7 +1594,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   }
   catch(Standard_Failure const&)
   {
-    TP->AddFail(fs,"Exeption is raised. Entity was not translated.");
+    TP->AddFail(fs,"Exception is raised. Entity was not translated.");
     sb.Nullify();
     TP->Bind(fs, sb);
     return sb;

@@ -37,7 +37,6 @@ class ShapeUpgrade_ClosedFaceDivide : public ShapeUpgrade_FaceDivide
 
 public:
 
-  
   //! Creates empty  constructor.
   Standard_EXPORT ShapeUpgrade_ClosedFaceDivide();
   
@@ -48,35 +47,20 @@ public:
   //! from source face.
   Standard_EXPORT virtual Standard_Boolean SplitSurface() Standard_OVERRIDE;
   
-  //! Sets the number of cutting lines by which closed face
-  //! will be splitted. The resulting faces will be num+1.
+  //! Sets the number of cutting lines by which closed face will be split.
+  //! The resulting faces will be num+1.
   Standard_EXPORT void SetNbSplitPoints (const Standard_Integer num);
   
   //! Returns the number of splitting points
   Standard_EXPORT Standard_Integer GetNbSplitPoints() const;
 
 
-
-
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedFaceDivide,ShapeUpgrade_FaceDivide)
-
-protected:
-
-
-
 
 private:
 
-
   Standard_Integer myNbSplit;
 
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeUpgrade_ClosedFaceDivide_HeaderFile

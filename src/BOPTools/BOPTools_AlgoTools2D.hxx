@@ -189,14 +189,15 @@ public:
 
   //! Checks if CurveOnSurface of theE on theF matches with isoline of theF surface.
   //! Sets corresponding values for isTheUIso and isTheVIso variables.
+  //!
   //! ATTENTION!!!
-  //!     This method is based on comparation between direction of
-  //!   surface (which theF is based on) iso-lines and the direction
-  //!   of the edge p-curve (on theF) in middle-point of the p-curve.
-  //!     This method should be used carefully
-  //!   (e.g. BRep_Tool::IsClosed(...) together) in order to
-  //!   avoid false classification some p-curves as isoline (e.g. circle
-  //!   on a plane).
+  //! This method is based on the comparison between direction of
+  //! surface (which theF is based on) iso-lines and the direction
+  //! of the edge p-curve (on theF) in middle-point of the p-curve.
+  //!
+  //! This method should be used carefully
+  //! (e.g. BRep_Tool::IsClosed(...) together) in order to avoid
+  //! false classification some p-curves as isoline (e.g. circle on a plane).
   Standard_EXPORT static void IsEdgeIsoline(const TopoDS_Edge& theE,
                                             const TopoDS_Face& theF,
                                             Standard_Boolean& isTheUIso,

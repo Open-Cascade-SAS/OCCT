@@ -117,7 +117,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   anUnify.Build();
   const TopoDS_Shape& aFuseUnif = anUnify.Shape();
 
-  //Give the mass claculation of the shpae "aFuseUnif"
+  //Give the mass calculation of the shape "aFuseUnif"
   GProp_GProps G;
   BRepGProp::VolumeProperties(aFuseUnif, G);
   di<<" \n";
@@ -744,7 +744,7 @@ static Standard_Integer OCC825 (Draw_Interpretor& di,Standard_Integer argc, cons
 
   di << "*************************************************************\n";
   di << " CUT 1 and CUT 2 gives entirely different results during\n";
-  di << " mass computation and face triangulation, eventhough the\n";
+  di << " mass computation and face triangulation, even though the\n";
   di << " two spheres are located more or less at the same position.\n";
   di << "*************************************************************\n";
 

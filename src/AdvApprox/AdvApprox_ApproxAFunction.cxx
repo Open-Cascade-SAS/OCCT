@@ -752,7 +752,7 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer Num1DSS,
     index += 1 ;
   }
   //
-  // Ouput
+  // Output
   //
   
   Standard_Integer ErrorCode = 0,

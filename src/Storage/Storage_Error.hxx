@@ -27,17 +27,17 @@
 //! been opened in the correct mode
 //! -   Storage_VSCloseError : an error has
 //! occurred when closing the driver
-//! -   Storage_VSAlreadyOpen : the driver is   already open
-//! -   Storage_VSNotOpen : the driver is not   open
+//! -   Storage_VSAlreadyOpen : the driver is already open
+//! -   Storage_VSNotOpen : the driver is not open
 //! -   Storage_VSSectionNotFound : a section
 //! has not been found in the driver
 //! -   Storage_VSWriteError : an error occurred when writing the driver
 //! -   Storage_VSFormatError : the file format is wrong
 //! -   Storage_VSUnknownType : a type is not known from the schema
-//! -   Storage_VSTypeMismatch : trying to read   a wrong type
-//! -   Storage_VSInternalError : an internal error  has been detected
+//! -   Storage_VSTypeMismatch : trying to read a wrong type
+//! -   Storage_VSInternalError : an internal error has been detected
 //! -   Storage_VSExtCharParityError : an error
-//! has occurred while reading 16 bit characte
+//! has occurred while reading 16 bit character
 enum Storage_Error
 {
 Storage_VSOk,

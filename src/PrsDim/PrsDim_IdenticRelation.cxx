@@ -476,7 +476,7 @@ void PrsDim_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Pres
     return;
   aPrs->SetInfiniteState((isInfinite1 || isInfinite2) && myExtShape != 0);
 
-  // Treatement of the case of lines
+  // Treatment of the case of lines
   if ( curv1->IsInstance(STANDARD_TYPE(Geom_Line)) && curv2->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
     // we take the line curv1 like support
     Handle(Geom_Line) thelin;
@@ -486,7 +486,7 @@ void PrsDim_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Pres
     ComputeTwoLinesPresentation(aPrs, thelin, firstp1, lastp1, firstp2, lastp2, isInfinite1, isInfinite2);
   }
 
-  //  Treatement of the case of circles
+  //  Treatment of the case of circles
   else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Circle)) && curv2->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
     //gp_Pnt curpos;
     isCircle = Standard_True; // useful for ComputeSelection
@@ -495,7 +495,7 @@ void PrsDim_IdenticRelation::ComputeTwoEdgesPresentation(const Handle(Prs3d_Pres
   }
 
   // jfa 10/10/2000
-  //  Treatement of the case of ellipses
+  //  Treatment of the case of ellipses
   else if ( curv1->IsInstance(STANDARD_TYPE(Geom_Ellipse)) && curv2->IsInstance(STANDARD_TYPE(Geom_Ellipse)) )
       {
 	Handle(Geom_Ellipse) theEll (Handle(Geom_Ellipse)::DownCast (curv1));
@@ -577,7 +577,7 @@ void PrsDim_IdenticRelation::ComputeTwoLinesPresentation(const Handle(Prs3d_Pres
       lastp2 = lastp1;
     }
 
-    Standard_Real tabRang1[4];      // array taht contains the parameters of the 4 points
+    Standard_Real tabRang1[4];      // array that contains the parameters of the 4 points
     // ordered by increasing abscisses.
 
     gp_Pnt tabRang2[4];             // array containing the points corresponding to the

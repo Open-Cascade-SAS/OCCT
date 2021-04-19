@@ -11004,9 +11004,9 @@ Converts a surface of linear extrusion, revolution and offset surfaces into BSpl
 
 **Example:** 
 ~~~~~    
-DT_ToBspl res sh 
-== error = 5.20375663162094e-08   spans = 10 
-==  Surface is aproximated with continuity 2 
+DT_ToBspl res sh
+== error = 5.20375663162094e-08   spans = 10
+==  Surface is approximated with continuity 2
 ~~~~~
 
 @section occt_draw_10 Performance evaluation commands

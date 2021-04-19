@@ -277,13 +277,13 @@ public:
     return x() * x() + y() * y();
   }
 
-  //! Constuct DX unit vector.
+  //! Construct DX unit vector.
   static NCollection_Vec2 DX()
   {
     return NCollection_Vec2 (Element_t(1), Element_t(0));
   }
 
-  //! Constuct DY unit vector.
+  //! Construct DY unit vector.
   static NCollection_Vec2 DY()
   {
     return NCollection_Vec2 (Element_t(0), Element_t(1));

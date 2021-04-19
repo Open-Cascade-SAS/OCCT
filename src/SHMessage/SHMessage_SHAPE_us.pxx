@@ -170,7 +170,7 @@ static const char SHMessage_SHAPE_us[] =
   "Improperly connected solid split into several parts\n"
   "!\n"
   ".FixAdvFace.FixLoopWire.MSG0\n"
-  "Wire was splitted on several wires\n"
+  "Wire was split on several wires\n"
   "!\n"
   ".FixAdvFace..MSG5\n"
   "!\n"

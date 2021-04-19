@@ -41,7 +41,7 @@ public:
   //! Returns persistent type name
   inline Standard_CString PName() const { return "PDataStd_Variable"; }
 
-  //! Import transient attribuite from the persistent data.
+  //! Import transient attribute from the persistent data.
   void Import (const Handle(TDataStd_Variable)& theAttribute) const
   {
     theAttribute->Constant (myIsConstant);

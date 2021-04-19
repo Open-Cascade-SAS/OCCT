@@ -231,7 +231,7 @@ Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream,
 
 // adapted from Standard_CString.cxx
 #ifdef __APPLE__
-  // There are a lot of *_l functions availalbe on Mac OS X - we use them
+  // There are a lot of *_l functions available on Mac OS X - we use them
   #define SAVE_TL()
 #elif defined(_MSC_VER)
   // MSVCRT has equivalents with slightly different syntax
@@ -359,7 +359,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       gp_XYZ aReadVertex;
       if (!ReadVertex (aLine, aReadVertex.ChangeCoord (1), aReadVertex.ChangeCoord (2), aReadVertex.ChangeCoord (3)))
       {
-        Message::SendFail (TCollection_AsciiString ("Error: cannot read vertex co-ordinates at line ") + aNbLine);
+        Message::SendFail (TCollection_AsciiString ("Error: cannot read vertex coordinates at line ") + aNbLine);
         return false;
       }
       aVertex[i] = aReadVertex;

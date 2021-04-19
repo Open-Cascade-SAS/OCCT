@@ -408,7 +408,7 @@ void Poly_MakeLoops::markHangChain(Standard_Integer theNode, Standard_Integer th
   {
     // check if the current link is hanging:
     // if it is outcoming from aNode1 then count the number of
-    // other incoming links and vise versa;
+    // other incoming links and vice-versa;
     // if the number is zero than it is hanging
     const ListOfLink& aLinks = myHelper->GetAdjacentLinks (aNode1);
     Standard_Integer nEdges = 0;

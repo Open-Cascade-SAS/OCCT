@@ -48,7 +48,7 @@ void Resource_Unicode::ConvertSJISToUnicode(const Standard_CString fromstr,TColl
     if (issjis1(*currentstr)) {
       
       ph = ((unsigned int) *currentstr);
-      // Be Carefull with first and second !!
+      // Be Careful with first and second !!
 
       currentstr++;
 
@@ -80,7 +80,7 @@ void Resource_Unicode::ConvertEUCToUnicode(const Standard_CString fromstr,TColle
     if (iseuc(*currentstr)) {
       
       ph = ((unsigned int) *currentstr);
-      // Be Carefull with first and second !!
+      // Be Careful with first and second !!
 
       currentstr++;
 
@@ -111,7 +111,7 @@ void Resource_Unicode::ConvertGBToUnicode(const Standard_CString fromstr,TCollec
     if (isshift(*currentstr)) {
       
       ph = ((unsigned int) *currentstr);
-      // Be Carefull with first and second !!
+      // Be Careful with first and second !!
 
       currentstr++;
 

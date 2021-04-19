@@ -163,7 +163,7 @@ public:
                                    const Standard_Integer theEnd) const;
 
   //! Returns NULL-terminated Unicode string.
-  //! Should not be modifed or deleted!
+  //! Should not be modified or deleted!
   //! @return (const Type* ) pointer to string
   const Type* ToCString() const
   {

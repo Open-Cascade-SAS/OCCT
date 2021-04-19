@@ -166,7 +166,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
         }
         else
         {
-          // keep best decison
+          // keep best decision
           if ((thetol3d + thetol2d) < (KeptT3d + KeptT2d))
           {
             KeptMultiCurve = TheMultiCurve;

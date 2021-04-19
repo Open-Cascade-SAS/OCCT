@@ -117,7 +117,7 @@ Standard_Real ShapeAnalysis::AdjustToPeriod(const Standard_Real Val,
 
 //=======================================================================
 //function : ReverceSeq
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 template<class HSequence> 
 static inline void ReverseSeq (HSequence& Seq)

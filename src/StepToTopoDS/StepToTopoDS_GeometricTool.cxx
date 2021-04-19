@@ -170,7 +170,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
     }
     // the two oriented edges are not in the same wire
     if (nbOE == 1) {
-      // check is the two pcurve are not indentical ?
+      // check if the two pcurves are not identical ?
       Handle(StepGeom_Line) line1 = Handle(StepGeom_Line)::DownCast
         (StepPCurve1->ReferenceToCurve()->ItemsValue(1));
       Handle(StepGeom_Line) line2 = Handle(StepGeom_Line)::DownCast

@@ -44,12 +44,12 @@ void StepShape_LoopAndPath::Init(
 
 	StepRepr_RepresentationItem::Init(aName);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	loop = new StepShape_Loop();
 	loop->Init(aName);
 
-	// --- ANDOR componant fields ---
+	// --- ANDOR component fields ---
 
 	path = new StepShape_Path();
 	path->Init(aName, aEdgeList);

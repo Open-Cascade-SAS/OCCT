@@ -180,7 +180,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
       const  TDF_LabelList&amp; currentFunctions = iterator.Current();  
        
       //The list of current functions is iterated.  
-      TDF_ListIteratorOfLabelList  currentterator( currentFucntions );  
+      TDF_ListIteratorOfLabelList  currentterator( currentFunctions );
       for (;  currentIterator.More(); currentIterator.Next())  
       {  
         //  An interface for the function is created.  

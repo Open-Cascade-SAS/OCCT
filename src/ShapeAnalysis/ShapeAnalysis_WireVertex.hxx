@@ -41,7 +41,7 @@ class gp_XYZ;
 //! The Wire has formerly been loaded in a ShapeExtend_WireData
 //! For each Vertex, a status and some data can be attached
 //! (case found, position and parameters)
-//! Then, these informations can be used to fix problems
+//! Then, these information can be used to fix problems
 class ShapeAnalysis_WireVertex 
 {
 public:
@@ -62,10 +62,10 @@ public:
   
   //! Sets the precision for work
   //! Analysing: for each Vertex, comparison between the end of the
-  //! preceeding edge and the start of the following edge
+  //! preceding edge and the start of the following edge
   //! Each Vertex rank corresponds to the End Vertex of the Edge of
   //! same rank, in the ShapeExtend_WireData. I.E. for Vertex <num>,
-  //! Edge <num> is the preceeding one, <num+1> is the following one
+  //! Edge <num> is the preceding one, <num+1> is the following one
   Standard_EXPORT void SetPrecision (const Standard_Real preci);
   
   Standard_EXPORT void Analyze();
@@ -79,18 +79,18 @@ public:
   //! Records status "Close Coords" (at the Precision of <me>)
   Standard_EXPORT void SetClose (const Standard_Integer num);
   
-  //! <num> is the End of preceeding Edge, and its projection on the
+  //! <num> is the End of preceding Edge, and its projection on the
   //! following one lies on it at the Precision of <me>
   //! <ufol> gives the parameter on the following edge
   Standard_EXPORT void SetEnd (const Standard_Integer num, const gp_XYZ& pos, const Standard_Real ufol);
   
   //! <num> is the Start of following Edge, its projection on the
-  //! preceeding one lies on it at the Precision of <me>
-  //! <upre> gives the parameter on the preceeding edge
+  //! preceding one lies on it at the Precision of <me>
+  //! <upre> gives the parameter on the preceding edge
   Standard_EXPORT void SetStart (const Standard_Integer num, const gp_XYZ& pos, const Standard_Real upre);
   
   //! <num> is the Intersection of both Edges
-  //! <upre> is the parameter on preceeding edge, <ufol> on
+  //! <upre> is the parameter on preceding edge, <ufol> on
   //! following edge
   Standard_EXPORT void SetInters (const Standard_Integer num, const gp_XYZ& pos, const Standard_Real upre, const Standard_Real ufol);
   
@@ -123,14 +123,14 @@ public:
   //! Returns the recorded status for a vertex
   //! With its recorded position and parameters on both edges
   //! These values are relevant regarding the status:
-  //! Status  Meaning   Position  Preceeding  Following
+  //! Status  Meaning    Position  Preceding   Following
   //! 0       Same       no        no          no
   //! 1       SameCoord  no        no          no
   //! 2       Close      no        no          no
   //! 3       End        yes       no          yes
   //! 4       Start      yes       yes         no
   //! 5       Inters     yes       yes         yes
-  //! -1       Disjoined  no        no          no
+  //! -1      Disjoined  no        no          no
   Standard_EXPORT Standard_Integer Data (const Standard_Integer num, gp_XYZ& pos, Standard_Real& upre, Standard_Real& ufol) const;
   
   //! For a given status, returns the rank of the vertex which

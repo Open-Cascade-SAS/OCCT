@@ -177,7 +177,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
 //	  if (ShapeUpgrade::Debug()) std::cout<<". Correction at Knot "<<iknot<<std::endl;
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
           if(newMultiplicity == 0) {
-            //in case if knot is completelly removed
+            //in case if knot is completely removed
             //it is necessary to modify last idex and decrease current knot index
             LastInd = MyBSpline->LastUKnotIndex()-1;
             iknot--;

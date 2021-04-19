@@ -36,8 +36,8 @@ class StepRepr_ProductDefinitionShape;
 
 
 //! Provides tools for creating STEP structures associated
-//! with part (SDR), such as PRODUCT, PDF etc., as requied
-//! by current schema
+//! with part (SDR), such as PRODUCT, PDF etc., as
+//! required by current schema
 //! Also allows to investigate and modify this data
 class STEPConstruct_Part 
 {

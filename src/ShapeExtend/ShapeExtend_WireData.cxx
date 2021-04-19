@@ -303,7 +303,7 @@ void ShapeExtend_WireData::Add (const Handle(ShapeExtend_WireData) &wire,
     }
   }
   
-  //non-manifold edges for non-manifold wire shoud be added at end
+  //non-manifold edges for non-manifold wire should be added at end
   for (i=1; i <=aNMEdges.Length(); i++)
     myEdges->Append(aNMEdges.Value(i));
   

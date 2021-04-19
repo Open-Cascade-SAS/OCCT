@@ -352,7 +352,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
 
   DBRep::Set("FP",FP);
   
-//step 2. offseting the surface. 
+//step 2. offsetting the surface.
   Handle(Geom_OffsetSurface) offsurf; 
   offsurf = new Geom_OffsetSurface(BZ1, -100); 
   BRepBuilderAPI_MakeFace bzf2( offsurf, Precision::Confusion() ); 
@@ -362,7 +362,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   DBRep::Set("F2",F2);
   
 //step 3. filleting the patch. 
-//( I want to project wire of this patch on offseted surface above) 
+//( I want to project wire of this patch on offsetted surface above)
   BRepFilletAPI_MakeFillet2d fillet( FP ); 
   TopExp_Explorer Ex; 
   Ex.Init(FP, TopAbs_VERTEX); 

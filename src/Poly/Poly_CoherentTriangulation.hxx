@@ -185,7 +185,7 @@ class Poly_CoherentTriangulation : public Standard_Transient
    *   degenerated and therefore removed by this method.
    * @param pLstRemovedNode
    *   Optional parameter. If defined, then it will receive the list of arrays
-   *   where the first number is the index of removed node and the seond -
+   *   where the first number is the index of removed node and the second -
    *   the index of remaining node to which the mesh was reconnected.
    */
   Standard_EXPORT Standard_Boolean RemoveDegenerated

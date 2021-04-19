@@ -35,7 +35,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
 
@@ -53,7 +53,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant LengthUnit ---
+	// --- Instance of plex component LengthUnit ---
 
 	if (!data->CheckNbParams(num,0,ach,"length_unit")) return;
 
@@ -80,7 +80,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep
 	 const Handle(StepBasic_ConversionBasedUnitAndLengthUnit)& ent) const
 {
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	SW.StartEntity("CONVERSION_BASED_UNIT");
 	// --- field : name ---
@@ -90,7 +90,7 @@ void RWStepBasic_RWConversionBasedUnitAndLengthUnit::WriteStep
 
 	SW.Send(ent->ConversionFactor());
 
-	// --- Instance of plex componant LengthUnit ---
+	// --- Instance of plex component LengthUnit ---
 
 	SW.StartEntity("LENGTH_UNIT");
 

@@ -29,10 +29,10 @@ void StepBasic_SiUnitAndSolidAngleUnit::Init(const Standard_Boolean hasAprefix,
 					     const StepBasic_SiUnitName aName)
 {
   // --- class inherited fields ---
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
     
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   solidAngleUnit = new StepBasic_SolidAngleUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();

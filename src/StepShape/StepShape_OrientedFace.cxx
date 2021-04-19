@@ -67,7 +67,7 @@ void StepShape_OrientedFace::SetBounds(const Handle(StepShape_HArray1OfFaceBound
 Handle(StepShape_HArray1OfFaceBound) StepShape_OrientedFace::Bounds() const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return faceElement->Bounds();
 
@@ -76,7 +76,7 @@ Handle(StepShape_HArray1OfFaceBound) StepShape_OrientedFace::Bounds() const
 Handle(StepShape_FaceBound) StepShape_OrientedFace::BoundsValue(const Standard_Integer num) const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return faceElement->BoundsValue(num);
 }
@@ -84,7 +84,7 @@ Handle(StepShape_FaceBound) StepShape_OrientedFace::BoundsValue(const Standard_I
 Standard_Integer StepShape_OrientedFace::NbBounds () const
 {
   // WARNING : the field is redefined.
-  // method body is not yet automaticly wrote
+  // method body is not yet automatically wrote
   // Attention, cette modif. est juste pour la compilation  
   return faceElement->NbBounds();
 }

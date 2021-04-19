@@ -150,7 +150,7 @@ Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface ()
   SplitSurf->Init ( surf, Uf, Ul, Vf, Vl );
   SplitSurf->Perform(mySegmentMode);
 
-  // If surface was neither splitted nor modified, do nothing
+  // If surface was neither split nor modified, do nothing
   if ( ! SplitSurf->Status ( ShapeExtend_DONE ) ) return Standard_False;
     
   // if surface was modified, force copying all vertices (and edges as consequence)

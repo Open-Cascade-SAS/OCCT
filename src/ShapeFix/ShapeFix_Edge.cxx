@@ -187,11 +187,11 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
 //#12 rln 17/03/98 making this method to be more general : if a curve is
 //parallel to one iso let us translate it parallely in the direction to another
 //iso (which is located farther from aC2d). Thus, the requirement for closeness
-//to the surface bounds may be avoid.
+//to the surface bounds may be avoided.
 //For example, instead of Abs(theLoc.X()-uf) <= Tol) ... elseif (...-ul..)...
 //the comparison if (Abs(theLoc.X()-uf) <= Abs(theLoc.X()-ul)) .... can be used.
 
-//The reason of this fix #12 is that seam is not sure to lie on the bound :
+//The reason for fix #12 is that seam is not certain to lie on the bound :
 //if a surface is periodic the whole contour may be shifted (e.g. ProSTEP,
 //file ug_exhaust-A.stp entity #284920)
 
@@ -265,7 +265,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
       return theNewL2d;
     }
 */
-    // Other case not yet implemented
+    // TODO Other case not yet implemented
 #ifdef OCCT_DEBUG
     std::cout << "TranslatePCurve not performed" << std::endl;
 #endif
@@ -391,7 +391,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
 	      oldFirst += shift;
 	      oldLast += shift;
 	    }
-	    //pdn 30.06.2000 work arounf on beziers
+	    //pdn 30.06.2000 work around on beziers
 	    Standard_Real oldFirstCurve1 = oldFirst, oldLastCurve1 = oldLast;
 	    if(Curve2dPtr->IsKind(STANDARD_TYPE(Geom2d_BezierCurve))) {
 	      

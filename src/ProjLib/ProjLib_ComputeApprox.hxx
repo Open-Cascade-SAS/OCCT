@@ -32,7 +32,7 @@ class Geom2d_BezierCurve;
 //! Tolerance is maximal possible value of 3d deviation of 3d projection of projected curve from
 //! "exact" 3d projection. Since algorithm searches 2d curve on surface, required 2d tolerance is computed
 //! from 3d tolerance with help of U,V resolutions of surface.
-//! 3d and 2d tolerances have sence only for curves on surface, it defines precision of projecting and approximation
+//! 3d and 2d tolerances have sense only for curves on surface, it defines precision of projecting and approximation
 //! and have nothing to do with distance between the projected curve and the surface.
 class ProjLib_ComputeApprox 
 {

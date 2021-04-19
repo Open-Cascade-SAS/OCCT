@@ -64,7 +64,7 @@ public:
   Standard_EXPORT ShapeAnalysis_WireOrder(const Standard_Boolean mode3d, const Standard_Real tol);
   
   //! Sets new values. Clears the connexion list
-  //! If <mode3d> changes, also clears the edge list (else, doesnt)
+  //! If <mode3d> changes, also clears the edge list (else, doesn't)
   Standard_EXPORT void SetMode (const Standard_Boolean mode3d, const Standard_Real tol);
   
   //! Returns the working tolerance
@@ -121,7 +121,7 @@ public:
   //! Returns the values of the couple <num>, as 2D values
   Standard_EXPORT void XY (const Standard_Integer num, gp_XY& start2d, gp_XY& end2d) const;
   
-  //! Returns the gap between a couple and its preceeding
+  //! Returns the gap between a couple and its preceding
   //! <num> is considered ordered
   //! If <num> = 0 (D), returns the greatest gap found
   Standard_EXPORT Standard_Real Gap (const Standard_Integer num = 0) const;

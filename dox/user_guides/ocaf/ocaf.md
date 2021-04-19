@@ -1171,27 +1171,29 @@ It is possible to describe any model by means of standard OCAF attributes.
   
 @subsubsection occt_ocaf_6_2_3 Comparison  and analysis of approaches
 
-  Below are described two different model implementations: 
-  one is based on standard OCAF attributes and the other is based 
-  on the creation of a new attribute possessing all data of the model.  
-   
+  Below are described two different model implementations:
+  one is based on standard OCAF attributes and the other is based
+  on the creation of a new attribute possessing all data of the model.
+
   A load is distributed through the shape.
   The measurements are taken at particular points defined by (x, y and z) coordinates.
-  The load is represented as a projection onto X, Y and Z axes of the local co-ordinate system at each point of measurement.
-  A matrix of transformation is needed to convert the local co-ordinate system to the global one, but this is optional.
-   
-  So, we have 15 double values at each point  of measurement. 
-  If the number of such points is 100 000, for example, it means 
-  that we have to store 1 500 000 double values in the OCAF document.  
-   
-  The first  approach consists in using standard OCAF attributes. 
-  Besides, there are several  variants of how the standard attributes may be used:  
+  The load is represented as a projection onto X, Y and Z axes of the local coordinate system at each point of measurement.
+  A matrix of transformation is needed to convert the local coordinate system to the global one, but this is optional.
+
+  So, we have 15 double values at each point of measurement.
+  If the number of such points is 100 000, for example, it means
+  that we have to store 1 500 000 double values in the OCAF document.
+
+  The first approach consists in using standard OCAF attributes.
+  Besides, there are several  variants of how the standard attributes may be used:
   * Allocation of all 1 500 000 double values as one array of double values attached to one label;
   * Allocation of values of one measure of load (15 values) as one array of double values and attachment of one point of measure to one label;
-  * Allocation of each point of measure as an array of 3 double values attached to one label, the projection of load onto the local co-ordinate system  axes as another array of 3 double values attached to a sub-label, and the matrix of projection (9 values) as the third array also attached to a sub-label.  
-  
-  Certainly, other variants are also  possible.   
- 
+  * Allocation of each point of measure as an array of 3 double values attached to one label,
+    the projection of load onto the local coordinate system axes as another array of 3 double values attached to a sub-label,
+    and the matrix of projection (9 values) as the third array also attached to a sub-label.
+
+  Certainly, other variants are also possible.
+
 @figure{ocaf_tree_wp_image003.png,"Allocation of all data as one  array of double values",350}
  
   The first approach to allocation of all  data represented as one array of double values 
@@ -1560,43 +1562,45 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 
-    // The scope of functions is  defined.  
-    Handle(TFunction_Scope) scope = TFunction_Scope::Set( anyLabel );  
-     
-    // The information on  modifications in the model is received.  
-    TFunction_Logbook&amp; log = scope-GetLogbook();  
-     
-    // The iterator is iInitialized by  the scope of functions.  
-    TFunction_Iterator iterator( anyLabel );  
-    Iterator.SetUsageOfExecutionOrder( true );  
-     
-    // The function is iterated,  its  dependency is checked on the modified data and  executed if necessary.  
-    for (; iterator.more(); iterator.Next())  
-    {  
-      // The function iterator may return a list of  current functions for execution.  
-      // It might be useful for multi-threaded execution  of functions.  
-      const  TDF_LabelList&amp; currentFunctions = iterator.Current();  
-       
-      //The list of current functions is iterated.  
-      TDF_ListIteratorOfLabelList  currentterator( currentFucntions );  
-      for (;  currentIterator.More(); currentIterator.Next())  
-      {  
-        //  An interface for the function is created.  
-        TFunction_IFunction  interface( currentIterator.Value() );  
-     
-        //  The function driver is retrieved.  
-        Handle(TFunction_Driver)  driver = interface.GetDriver();  
-     
-        //  The dependency of the function on the  modified data is checked.  
-        If  (driver-MustExecute( log ))  
-        {  
-          // The function is executed.  
-          int  ret = driver-Execute( log );  
-          if ( ret ) 
-            return  false;  
-        } // end if check on modification  
-      } // end of iteration of current functions  
-    } // end of iteration of  functions.
+// The scope of functions is defined.
+Handle(TFunction_Scope) aScope = TFunction_Scope::Set (anyLabel);
+
+// The information on modifications in the model is received.
+TFunction_Logbook& aLog = aScope->GetLogbook();
+
+// The iterator is iInitialized by  the scope of functions.
+TFunction_Iterator anIterator (anyLabel);
+anIterator.SetUsageOfExecutionOrder (true);
+
+// The function is iterated,  its dependency is checked on the modified data and  executed if necessary.
+for (; anIterator.more(); anIterator.Next())
+{
+  // The function iterator may return a list of  current functions for execution.
+  // It might be useful for multi-threaded execution  of functions.
+  const TDF_LabelList& aCurrentFunctions = anIterator.Current();
+
+  // The list of current functions is iterated.
+  for (TDF_ListIteratorOfLabelList aCurrentIterator (aCurrentFunctions);
+       aCurrentIterator.More(); aCurrentIterator.Next())
+  {
+    //  An interface for the function is created.
+    TFunction_IFunction anInterface (aCurrentIterator.Value());
+
+    //  The function driver is retrieved.
+    Handle(TFunction_Driver) aDriver = anInterface.GetDriver();
+
+    //  The dependency of the function on the  modified data is checked.
+    if (aDriver->MustExecute (aLog))
+    {
+      // The function is executed.
+      int aRes = aDriver->Execute (aLog);
+      if (aRes)
+      {
+        return false;
+      }
+    }
+  }
+}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

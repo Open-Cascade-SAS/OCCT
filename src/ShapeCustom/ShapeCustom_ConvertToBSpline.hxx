@@ -38,7 +38,7 @@ class ShapeCustom_ConvertToBSpline;
 DEFINE_STANDARD_HANDLE(ShapeCustom_ConvertToBSpline, ShapeCustom_Modification)
 
 //! implement a modification for BRepTools
-//! Modifier algortihm. Converts Surface of
+//! Modifier algorithm. Converts Surface of
 //! Linear Exctrusion, Revolution and Offset
 //! surfaces into BSpline Surface according to
 //! flags.
@@ -50,17 +50,17 @@ public:
   
   Standard_EXPORT ShapeCustom_ConvertToBSpline();
   
-  //! Sets mode for convertion of Surfaces of Linear
+  //! Sets mode for conversion of Surfaces of Linear
   //! extrusion.
   Standard_EXPORT void SetExtrusionMode (const Standard_Boolean extrMode);
   
-  //! Sets mode for convertion of Surfaces of Revolution.
+  //! Sets mode for conversion of Surfaces of Revolution.
   Standard_EXPORT void SetRevolutionMode (const Standard_Boolean revolMode);
   
-  //! Sets mode for convertion of Offset surfaces.
+  //! Sets mode for conversion of Offset surfaces.
   Standard_EXPORT void SetOffsetMode (const Standard_Boolean offsetMode);
   
-  //! Sets mode for convertion of Plane surfaces.
+  //! Sets mode for conversion of Plane surfaces.
   Standard_EXPORT void SetPlaneMode (const Standard_Boolean planeMode);
   
   //! Returns Standard_True if the face <F> has  been
@@ -95,7 +95,7 @@ public:
   //! <Tol> are not significant.
   //!
   //! <NewE> is the new  edge created from  <E>.  <NewF>
-  //! is the new face created from <F>. They may be usefull.
+  //! is the new face created from <F>. They may be useful.
   Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns Standard_True if the Vertex  <V> has a new

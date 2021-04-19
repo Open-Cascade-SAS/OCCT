@@ -97,9 +97,9 @@ public:
   
   //! Queries the status of last call to Perform
   //! OK   : no splitting was done (or no call to Perform)
-  //! DONE1: some edges were splitted
-  //! DONE2: surface was splitted
-  //! FAIL1: some errors occured
+  //! DONE1: some edges were split
+  //! DONE2: surface was split
+  //! FAIL1: some errors occurred
   Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;
   
   //! Sets the tool for splitting faces.

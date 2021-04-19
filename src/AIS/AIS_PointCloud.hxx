@@ -31,7 +31,7 @@ class TColStd_HPackedMapOfInteger;
 //! The presentation supports two display modes:
 //! - Points.
 //! - Bounding box for highlighting.
-//! Presentation provides selection by bouding box.
+//! Presentation provides selection by bounding box.
 //! Selection and consequently highlighting can disabled by
 //! setting default selection mode to -1. There will be no way
 //! to select object from interactive view. Any calls to

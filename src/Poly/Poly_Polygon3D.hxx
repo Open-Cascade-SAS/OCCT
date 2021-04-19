@@ -83,9 +83,9 @@ public:
   const TColStd_Array1OfReal& Parameters() const { return myParameters->Array1(); }
 
   //! Returns the table of the parameters associated with each node in this polygon.
-  //! ChangeParameters function returnes the  array as shared. Therefore if the table is selected by
-  //! reference you can, by simply modifying it, directly modify
-  //! the data structure of this polygon.
+  //! ChangeParameters function returns the array as shared.
+  //! Therefore if the table is selected by reference you can, by simply modifying it,
+  //! directly modify the data structure of this polygon.
   TColStd_Array1OfReal& ChangeParameters() const { return myParameters->ChangeArray1(); }
 
   //! Dumps the content of me into the stream

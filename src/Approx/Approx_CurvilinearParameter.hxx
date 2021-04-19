@@ -22,13 +22,17 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_OStream.hxx>
 
-//! Approximation of a Curve to make its parameter be its
-//! curvilinear  abscissa
+//! Approximation of a Curve to make its parameter be its curvilinear abscissa.
 //! If the curve is a curve on a surface S, C2D is the corresponding Pcurve,
-//! we considere the curve is given by its representation S(C2D(u))
-//! If the curve is a curve on 2 surfaces S1 and S2 and C2D1 C2D2 are
-//! the two corresponding Pcurve, we considere the curve is given
-//! by its representation  1/2(S1(C2D1(u) + S2 (C2D2(u)))
+//! we consider the curve is given by its representation
+//! @code
+//!   S(C2D(u))
+//! @endcode
+//! If the curve is a curve on 2 surfaces S1 and S2 and C2D1 C2D2 are the two corresponding Pcurve,
+//! we consider the curve is given by its representation
+//! @code
+//!   1/2(S1(C2D1(u) + S2(C2D2(u)))
+//! @endcode
 class Approx_CurvilinearParameter 
 {
 public:
@@ -72,20 +76,11 @@ public:
   //! print the maximum errors(s)
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
   Standard_EXPORT static void ToleranceComputation (const Handle(Adaptor2d_Curve2d)& C2D, const Handle(Adaptor3d_Surface)& S, const Standard_Integer MaxNumber, const Standard_Real Tol, Standard_Real& TolV, Standard_Real& TolW);
 
+private:
 
   Standard_Integer myCase;
   Standard_Boolean myDone;
@@ -97,13 +92,6 @@ private:
   Handle(Geom2d_BSplineCurve) myCurve2d2;
   Standard_Real myMaxError2d2;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Approx_CurvilinearParameter_HeaderFile

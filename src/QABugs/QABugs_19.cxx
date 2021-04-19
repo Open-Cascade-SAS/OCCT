@@ -3696,7 +3696,7 @@ static Standard_Integer OCC25574 (Draw_Interpretor& theDI, Standard_Integer /*ar
   {
     // Iterate over rotations R(A)R(B)R(G) for each Euler angle Alpha, Beta, Gamma
     // There are three ordered axes corresponding to three rotations.
-    // Each rotation applyed with current angle around current axis.
+    // Each rotation applied with current angle around current axis.
     for (int j=0; j < 3; j++)
     {
       // note that current axis index is obtained by parsing of enumeration name!

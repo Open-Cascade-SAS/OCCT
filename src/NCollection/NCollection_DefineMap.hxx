@@ -22,7 +22,7 @@
 //              ::HashCode must be defined in the global namespace
 //              To compare two keys the function ::IsEqual must be
 //              defined in the global namespace.
-//              The performance of  a Map is conditionned  by  its
+//              The performance of  a Map is conditioned  by  its
 //              number of buckets that  should be kept greater  to
 //              the number   of keys.  This  map has  an automatic
 //              management of the number of buckets. It is resized

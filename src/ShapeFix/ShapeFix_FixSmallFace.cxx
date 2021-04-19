@@ -181,7 +181,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
   }
   theMaxDev *= 1.00001; 
   
-  //Cretate new vertex with mean point
+  //Create new vertex with mean point
   TopoDS_Vertex theSharedVertex;
   theBuilder.MakeVertex(theSharedVertex);
   theBuilder.UpdateVertex( theSharedVertex, gp_Pnt(thePosition), theMaxDev+theMaxTol/2 );
@@ -256,7 +256,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 			      }
 	}
 	myShape = Context()->Apply(myShape);
-    //Fixing of missing pcurves on new edges, if thay were inserted
+    //Fixing of missing pcurves on new edges, if they were inserted
 	if (done)
 	  {
 	    if (myShape.IsNull()) return myShape;
@@ -455,25 +455,25 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
       }
     }
   if (theFirstVer.IsNull() || theSecondVer.IsNull()) return theNewEdge;
-  //Cretate new edge 
+  //Create new edge
   theBuilder.MakeEdge(theNewEdge);
   Standard_Real f, l, fp1, lp1/*, fp2, lp2*/;
   TopLoc_Location loc;
   Handle(Geom_Curve) the3dcurve;
   the3dcurve = BRep_Tool::Curve(E1, f, l);
   Handle(Geom2d_Curve) the2dcurve1, the2dcurve2, thenew1, thenew2;
-  if (!F1.IsNull())   
+  if (!F1.IsNull())
     {
       the2dcurve1 = BRep_Tool::CurveOnSurface(E1, F1, fp1, lp1);
-      if(!the2dcurve1.IsNull() && fp1!=f && lp1!=l) GeomLib::SameRange(Precision::Confusion(), the2dcurve1, fp1, lp1, f, l, thenew1);  
+      if(!the2dcurve1.IsNull() && fp1!=f && lp1!=l) GeomLib::SameRange(Precision::Confusion(), the2dcurve1, fp1, lp1, f, l, thenew1);
     }
-      
- /* if (!F2.IsNull())   
+
+ /* if (!F2.IsNull())
     {
       the2dcurve2 = BRep_Tool::CurveOnSurface(E2, F2, fp2, lp2);
-      if(!the2dcurve2.IsNull()) GeomLib::SameRange(Precision::Confusion(), the2dcurve2, fp2, lp2, f, l, thenew2); 
+      if(!the2dcurve2.IsNull()) GeomLib::SameRange(Precision::Confusion(), the2dcurve2, fp2, lp2, f, l, thenew2);
     }*/
-  
+
   Standard_Real maxdev; 
   if ((BRep_Tool::Tolerance(theFirstVer))<=(BRep_Tool::Tolerance(theSecondVer))) 
     maxdev = (BRep_Tool::Tolerance(theSecondVer));

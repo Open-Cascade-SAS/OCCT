@@ -235,7 +235,7 @@ public:
   
   //! Gets mode for non-manifold sewing.
   //!
-  //! INTERNAL FUCTIONS ---
+  //! INTERNAL FUNCTIONS ---
     Standard_Boolean NonManifoldMode() const;
 
 

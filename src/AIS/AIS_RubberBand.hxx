@@ -27,7 +27,7 @@ DEFINE_STANDARD_HANDLE(AIS_RubberBand, AIS_InteractiveObject)
 //! Presentation for drawing rubber band selection.
 //! It supports rectangle and polygonal selection.
 //! It is constructed in 2d overlay.
-//! Default configaration is built without filling.
+//! Default configuration is built without filling.
 //! For rectangle selection use SetRectangle() method.
 //! For polygonal selection use AddPoint() and GetPoints() methods.
 class AIS_RubberBand : public AIS_InteractiveObject

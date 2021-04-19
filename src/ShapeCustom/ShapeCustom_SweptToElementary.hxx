@@ -37,7 +37,7 @@ class ShapeCustom_SweptToElementary;
 DEFINE_STANDARD_HANDLE(ShapeCustom_SweptToElementary, ShapeCustom_Modification)
 
 //! implements a modification for the BRepTools
-//! Modifier algortihm. Converts all elementary
+//! Modifier algorithm. Converts all elementary
 //! surfaces into surfaces of revolution.
 class ShapeCustom_SweptToElementary : public ShapeCustom_Modification
 {
@@ -79,7 +79,7 @@ public:
   //! <Tol> are not significant.
   //!
   //! <NewE> is the new  edge created from  <E>.  <NewF>
-  //! is the new face created from <F>. They may be usefull.
+  //! is the new face created from <F>. They may be useful.
   Standard_EXPORT Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F, const TopoDS_Edge& NewE, const TopoDS_Face& NewF, Handle(Geom2d_Curve)& C, Standard_Real& Tol) Standard_OVERRIDE;
   
   //! Returns Standard_True if the Vertex  <V> has a new

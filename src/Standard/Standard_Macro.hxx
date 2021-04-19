@@ -21,7 +21,7 @@
 # define _Standard_Macro_HeaderFile
 
 //! @def Standard_OVERRIDE
-//! Should be used in declarations of virtual methods overriden in the
+//! Should be used in declarations of virtual methods overridden in the
 //! derived classes, to cause compilation error in the case if that virtual 
 //! function disappears or changes its signature in the base class.
 //!

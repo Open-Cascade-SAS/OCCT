@@ -34,7 +34,7 @@ void RWStepBasic_RWConversionBasedUnitAndVolumeUnit::ReadStep(const Handle(StepD
 							      const Handle(StepBasic_ConversionBasedUnitAndVolumeUnit)& ent) const
 {
   Standard_Integer num = num0;
-  // --- Instance of plex componant ConversionBasedUnit ---
+  // --- Instance of plex component ConversionBasedUnit ---
   if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
   Handle(TCollection_HAsciiString) aName;
   data->ReadString (num,1,"name",ach,aName);

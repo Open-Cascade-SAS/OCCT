@@ -46,7 +46,7 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep
 
   Standard_Integer num = num0;
 
-  // --- Instance of plex componant ConversionBasedUnit ---
+  // --- Instance of plex component ConversionBasedUnit ---
   if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
   // --- field : name ---
   Handle(TCollection_HAsciiString) aName;
@@ -59,7 +59,7 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep
 
   num = data->NextForComplex(num);
 
-  // --- Instance of plex componant MassUnit ---
+  // --- Instance of plex component MassUnit ---
   if (!data->CheckNbParams(num,0,ach,"Mass_unit")) return;
 
   num = data->NextForComplex(num);
@@ -85,13 +85,13 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::WriteStep
 	(StepData_StepWriter& SW,
 	 const Handle(StepBasic_ConversionBasedUnitAndMassUnit)& ent) const
 {
-  // --- Instance of plex componant ConversionBasedUnit ---
+  // --- Instance of plex component ConversionBasedUnit ---
   SW.StartEntity("CONVERSION_BASED_UNIT");
   // --- field : name ---
   SW.Send(ent->Name());
   // --- field : conversionFactor ---
   SW.Send(ent->ConversionFactor());
-  // --- Instance of plex componant MassUnit ---
+  // --- Instance of plex component MassUnit ---
   SW.StartEntity("Mass_UNIT");
   // --- Instance of common supertype NamedUnit ---
   SW.StartEntity("NAMED_UNIT");

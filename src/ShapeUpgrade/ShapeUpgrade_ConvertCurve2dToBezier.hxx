@@ -35,35 +35,24 @@ class ShapeUpgrade_ConvertCurve2dToBezier : public ShapeUpgrade_SplitCurve2d
 
 public:
 
-  
   //! Empty constructor.
   Standard_EXPORT ShapeUpgrade_ConvertCurve2dToBezier();
-  
+
   //! Converts curve into a list of beziers, and stores the
   //! splitting parameters on original curve.
   Standard_EXPORT virtual void Compute() Standard_OVERRIDE;
-  
+
   //! Splits a list of beziers computed by Compute method according
   //! the split values and splitting parameters.
   Standard_EXPORT virtual void Build (const Standard_Boolean Segment) Standard_OVERRIDE;
-  
-  //! Returns the list of splitted parameters in original curve
-  //! parametrisation.
+
+  //! Returns the list of split parameters in original curve parametrisation.
   Standard_EXPORT Handle(TColStd_HSequenceOfReal) SplitParams() const;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve2dToBezier,ShapeUpgrade_SplitCurve2d)
 
-protected:
-
-
-
-
 private:
 
-  
   //! Returns the list of bezier curves correspondent to original
   //! curve.
   Standard_EXPORT Handle(TColGeom2d_HSequenceOfCurve) Segments() const;
@@ -71,13 +60,6 @@ private:
   Handle(TColGeom2d_HSequenceOfCurve) mySegments;
   Handle(TColStd_HSequenceOfReal) mySplitParams;
 
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeUpgrade_ConvertCurve2dToBezier_HeaderFile

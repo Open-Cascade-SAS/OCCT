@@ -39,10 +39,10 @@ void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const Standard_Boolea
                                                            const StepBasic_SiUnitName aName)
 {
   // --- class inherited fields ---
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_SiUnit::Init(hasAprefix, aPrefix, aName);
     
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   thermodynamicTemperatureUnit = new StepBasic_ThermodynamicTemperatureUnit();
   Handle(StepBasic_DimensionalExponents) aDimensions;
   aDimensions.Nullify();

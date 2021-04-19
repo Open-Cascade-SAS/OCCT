@@ -70,7 +70,7 @@ DEFINE_STANDARD_HANDLE(ShapeAnalysis_Wire, Standard_Transient)
 //!
 //! The methods of the given class match to ones of the class
 //! ShapeFix_Wire, e.g., CheckSmall and FixSmall.
-//! This class also includes some auxilary methods
+//! This class also includes some auxiliary methods
 //! (e.g., CheckOuterBound, etc.),
 //! which have no pair in ShapeFix_Wire.
 //!
@@ -84,7 +84,7 @@ DEFINE_STANDARD_HANDLE(ShapeAnalysis_Wire, Standard_Transient)
 //! corresponding Status... method.
 //! The 'advanced' functions share the single status field which
 //! contains the result of the last performed 'advanced' method.
-//! It is quried by the method LastCheckStatus().
+//! It is queried by the method LastCheckStatus().
 //!
 //! In order to prepare an analyzer, it is necessary to load a wire,
 //! set face and precision.
@@ -156,7 +156,7 @@ public:
     const Handle(ShapeAnalysis_Surface)& Surface() const;
   
   //! Performs all the checks in the following order :
-  //! CheckOrder, CheckSmall, CheckConected, CheckEdgeCurves,
+  //! CheckOrder, CheckSmall, CheckConnected, CheckEdgeCurves,
   //! CheckDegenerated, CheckSelfIntersection, CheckLacking,
   //! CheckClosed
   //! Returns: True if at least one method returned True;
@@ -178,7 +178,7 @@ public:
   //! Returns: True if at least one small edge was detected
   Standard_EXPORT Standard_Boolean CheckSmall (const Standard_Real precsmall = 0.0);
   
-  //! Checks edges geometry (consitency of 2d and 3d senses, adjasment
+  //! Checks edges geometry (consistency of 2d and 3d senses, adjasment
   //! of curves to the vertices, etc.).
   //! The order of the checks :
   //! Call ShapeAnalysis_Wire to check:
@@ -245,7 +245,7 @@ public:
   //! FAIL : algorithm failed (could not detect order)
   Standard_EXPORT Standard_Boolean CheckOrder (ShapeAnalysis_WireOrder& sawo, const Standard_Boolean isClosed = Standard_True, const Standard_Boolean mode3d = Standard_True);
   
-  //! Checks connected edges (num-th and preceeding).
+  //! Checks connected edges (num-th and preceding).
   //! Tests with starting preci from <SBWD> or  with <prec> if
   //! it is greater.
   //! Considers Vertices.
@@ -286,7 +286,7 @@ public:
   Standard_EXPORT Standard_Boolean CheckSeam (const Standard_Integer num);
   
   //! Checks for degenerated edge between two adjacent ones.
-  //! Fills parameters dgnr1 and dgnr2 with points in paramterical
+  //! Fills parameters dgnr1 and dgnr2 with points in parametric
   //! space that correspond to the singularity (either gap that
   //! needs to be filled by degenerated edge or that already filled)
   //! Returns: False if no singularity or edge is already degenerated,
@@ -309,7 +309,7 @@ public:
   
   //! Checks gap between edges in 3D (3d curves).
   //! Checks the distance between ends of 3d curves of the num-th
-  //! and preceeding edge.
+  //! and preceding edge.
   //! The distance can be queried by MinDistance3d.
   //!
   //! Returns: True if status is DONE
@@ -321,7 +321,7 @@ public:
   
   //! Checks gap between edges in 2D (pcurves).
   //! Checks the distance between ends of pcurves of the num-th
-  //! and preceeding edge.
+  //! and preceding edge.
   //! The distance can be queried by MinDistance2d.
   //!
   //! Returns: True if status is DONE
@@ -436,8 +436,8 @@ public:
   //! Status:
   //! DONE1 : If <shape> follows <SBWD>, direct sense (normal)
   //! DONE2 : If <shape> follows <SBWD>, but if reversed
-  //! DONE3 : If <shape> preceeds <SBWD>, direct sense
-  //! DONE4 : If <shape> preceeds <SBWD>, but if reversed
+  //! DONE3 : If <shape> precedes <SBWD>, direct sense
+  //! DONE4 : If <shape> precedes <SBWD>, but if reversed
   //! FAIL1 : If <shape> is neither an edge nor a wire
   //! FAIL2 : If <shape> cannot be connected to <SBWD>
   //!
@@ -464,7 +464,7 @@ public:
   //! Remark:  First method CheckShapeConnect calls this one
   Standard_EXPORT Standard_Boolean CheckShapeConnect (Standard_Real& tailhead, Standard_Real& tailtail, Standard_Real& headtail, Standard_Real& headhead, const TopoDS_Shape& shape, const Standard_Real prec = 0.0);
   
-  //! Checks existance of loop on wire and return vertices wich are loop vertices
+  //! Checks existence of loop on wire and return vertices which are loop vertices
   //! (vertices belonging to a few pairs of edges)
   Standard_EXPORT Standard_Boolean CheckLoop (TopTools_IndexedMapOfShape& aMapLoopVertices, TopTools_DataMapOfShapeListOfShape& aMapVertexEdges, TopTools_MapOfShape& aMapSmallEdges, TopTools_MapOfShape& aMapSeemEdges);
   
@@ -494,7 +494,7 @@ public:
   
     Standard_Boolean StatusLoop (const ShapeExtend_Status Status) const;
   
-  //! Querying the status of the LAST perfomed 'Advanced' checking procedure
+  //! Querying the status of the LAST performed 'Advanced' checking procedure
     Standard_Boolean LastCheckStatus (const ShapeExtend_Status Status) const;
   
   //! Returns the last lowest distance in 3D computed by

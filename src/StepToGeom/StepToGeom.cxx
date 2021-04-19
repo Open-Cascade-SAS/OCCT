@@ -1387,7 +1387,7 @@ Handle(Geom_Line) StepToGeom::MakeLine (const Handle(StepGeom_Line)& SC)
   Handle(Geom_CartesianPoint) P = MakeCartesianPoint(SC->Pnt());
   if (! P.IsNull())
   {
-    // sln 22.10.2001. CTS23496: Line is not created if direction have not been succesfully created
+    // sln 22.10.2001. CTS23496: Line is not created if direction have not been successfully created
     Handle(Geom_VectorWithMagnitude) D = MakeVectorWithMagnitude (SC->Dir());
     if (! D.IsNull())
     {
@@ -1409,7 +1409,7 @@ Handle(Geom2d_Line) StepToGeom::MakeLine2d (const Handle(StepGeom_Line)& SC)
   Handle(Geom2d_CartesianPoint) P = MakeCartesianPoint2d(SC->Pnt());
   if (! P.IsNull())
   {
-    // sln 23.10.2001. CTS23496: Line is not created if direction have not been succesfully created
+    // sln 23.10.2001. CTS23496: Line is not created if direction have not been successfully created
     Handle(Geom2d_VectorWithMagnitude) D = MakeVectorWithMagnitude2d (SC->Dir());
     if (! D.IsNull())
     {
@@ -1697,7 +1697,7 @@ Handle(Geom_SurfaceOfLinearExtrusion) StepToGeom::MakeSurfaceOfLinearExtrusion (
   Handle(Geom_Curve) C = MakeCurve (SS->SweptCurve());
   if (! C.IsNull())
   {
-    // sln 23.10.2001. CTS23496: Surface is not created if extrusion axis have not been succesfully created
+    // sln 23.10.2001. CTS23496: Surface is not created if extrusion axis have not been successfully created
     Handle(Geom_VectorWithMagnitude) V = MakeVectorWithMagnitude (SS->ExtrusionAxis());
     if (! V.IsNull())
     {
@@ -1919,7 +1919,7 @@ static Standard_Boolean  ExtractParameter
     }
   }
 // if the MasterRepresentation is unspecified:
-// if a ParameterValue exists, it is prefered
+// if a ParameterValue exists, it is preferred
 
   for ( i = 1 ; i <= nbSel ; i++) {
     StepGeom_TrimmingSelect theSel = TS->Value(i);
@@ -2149,7 +2149,7 @@ Handle(Geom2d_BSplineCurve) StepToGeom::MakeTrimmedCurve2d (const Handle(StepGeo
 
 Handle(Geom_VectorWithMagnitude) StepToGeom::MakeVectorWithMagnitude (const Handle(StepGeom_Vector)& SV)
 {
-  // sln 22.10.2001. CTS23496: Vector is not created if direction have not been succesfully created
+  // sln 22.10.2001. CTS23496: Vector is not created if direction have not been successfully created
   Handle(Geom_Direction) D = MakeDirection (SV->Orientation());
   if (! D.IsNull())
   {
@@ -2165,7 +2165,7 @@ Handle(Geom_VectorWithMagnitude) StepToGeom::MakeVectorWithMagnitude (const Hand
 
 Handle(Geom2d_VectorWithMagnitude) StepToGeom::MakeVectorWithMagnitude2d (const Handle(StepGeom_Vector)& SV)
 {
-  // sln 23.10.2001. CTS23496: Vector is not created if direction have not been succesfully created (MakeVectorWithMagnitude2d(...) function)
+  // sln 23.10.2001. CTS23496: Vector is not created if direction have not been successfully created (MakeVectorWithMagnitude2d(...) function)
   Handle(Geom2d_Direction) D = MakeDirection2d (SV->Orientation());
   if (! D.IsNull())
   {

@@ -30,10 +30,10 @@ void StepBasic_ConversionBasedUnitAndPlaneAngleUnit::Init(const Handle(StepBasic
 							  const Handle(TCollection_HAsciiString)& aName,
 							  const Handle(StepBasic_MeasureWithUnit)& aConversionFactor)
 {
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   StepBasic_ConversionBasedUnit::Init(aDimensions, aName, aConversionFactor);
 	
-  // --- ANDOR componant fields ---
+  // --- ANDOR component fields ---
   planeAngleUnit = new StepBasic_PlaneAngleUnit();
   planeAngleUnit->Init(aDimensions);
 }

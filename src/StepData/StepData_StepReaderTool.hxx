@@ -35,7 +35,7 @@ class Interface_InterfaceModel;
 
 
 //! Specific FileReaderTool for Step; works with FileReaderData
-//! provides references evaluation, plus access to litteral data
+//! provides references evaluation, plus access to literal data
 //! and specific methods defined by FileReaderTool
 //! Remarks : works with a ReaderLib to load Entities
 class StepData_StepReaderTool  : public Interface_FileReaderTool

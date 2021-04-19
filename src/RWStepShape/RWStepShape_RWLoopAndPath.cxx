@@ -35,13 +35,13 @@ void RWStepShape_RWLoopAndPath::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant Loop ---
+	// --- Instance of plex component Loop ---
 
 	if (!data->CheckNbParams(num,0,ach,"loop")) return;
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant Path ---
+	// --- Instance of plex component Path ---
 
 	if (!data->CheckNbParams(num,1,ach,"path")) return;
 
@@ -62,7 +62,7 @@ void RWStepShape_RWLoopAndPath::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
 
@@ -89,11 +89,11 @@ void RWStepShape_RWLoopAndPath::WriteStep
 	 const Handle(StepShape_LoopAndPath)& ent) const
 {
 
-	// --- Instance of plex componant Loop ---
+	// --- Instance of plex component Loop ---
 
 	SW.StartEntity("LOOP");
 
-	// --- Instance of plex componant Path ---
+	// --- Instance of plex component Path ---
 
 	SW.StartEntity("PATH");
 	// --- field : edgeList ---
@@ -104,7 +104,7 @@ void RWStepShape_RWLoopAndPath::WriteStep
 	}
 	SW.CloseSub();
 
-	// --- Instance of plex componant RepresentationItem ---
+	// --- Instance of plex component RepresentationItem ---
 
 	SW.StartEntity("REPRESENTATION_ITEM");
 	// --- field : name ---

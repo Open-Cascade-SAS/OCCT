@@ -37,7 +37,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(const Handle(StepData_StepReade
   Standard_Integer num = 0;  // num0;
   Standard_Boolean sorted = data->NamedForComplex("LENGTH_UNIT", "LNGUNT",num0,num,ach);
 
-  // --- Instance of plex componant LengthUnit ---
+  // --- Instance of plex component LengthUnit ---
   if (!data->CheckNbParams(num,0,ach,"length_unit")) return;
 
   if (!sorted) num = 0; //pdn unsorted case 
@@ -54,7 +54,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::ReadStep(const Handle(StepData_StepReade
   if (!sorted) num = 0; //pdn unsorted case 
   data->NamedForComplex("SI_UNIT", "SUNT",num0,num,ach);
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
 
   // --- field : prefix ---
@@ -99,7 +99,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::WriteStep(StepData_StepWriter& SW,
 						  const Handle(StepBasic_SiUnitAndLengthUnit)& ent) const
 {
 
-  // --- Instance of plex componant LengthUnit ---
+  // --- Instance of plex component LengthUnit ---
   SW.StartEntity("LENGTH_UNIT");
 
   // --- Instance of common supertype NamedUnit ---
@@ -109,7 +109,7 @@ void RWStepBasic_RWSiUnitAndLengthUnit::WriteStep(StepData_StepWriter& SW,
   // --- redefined field ---
   SW.SendDerived();
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
   
   // --- field : prefix ---

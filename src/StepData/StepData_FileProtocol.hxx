@@ -67,7 +67,7 @@ public:
   //! recognized by the resources
   Standard_EXPORT virtual Standard_Integer TypeNumber (const Handle(Standard_Type)& atype) const Standard_OVERRIDE;
   
-  //! Calls GlobalCheck for each of its recorded ressources
+  //! Calls GlobalCheck for each of its recorded resources
   Standard_EXPORT virtual Standard_Boolean GlobalCheck (const Interface_Graph& G, Handle(Interface_Check)& ach) const Standard_OVERRIDE;
   
   //! Returns the Schema Name attached to each class of Protocol

@@ -119,7 +119,7 @@ private:
   class ArgumentsPage;  //!< List of arguments pages, contains all text derived from Flex
   class Scope;          //!< List of scopes pages, contains all records for external processing
   class RecordsPage;    //!< List of records pages, contains all records
-  class ErrorsPage;     //!< List of errors messages, containts all errors
+  class ErrorsPage;     //!< List of errors messages, contains all errors
 
 public:
 
@@ -252,7 +252,7 @@ private:
   char* myCurrType;              //!< Type of last record read
   char* mySubArg;                //!< Ident last record (possible sub-list)
   Interface_ParamType myTypeArg; //!< Type of last argument read
-  Argument* myCurrArg;           //!< Current node of the argumets list
+  Argument* myCurrArg;           //!< Current node of the arguments list
   Record* myFirstRec;            //!< First node of the records list
   Record* myCurRec;              //!< Current node of the records list
   Record* myLastRec;             //!< Last node of the records list

@@ -125,9 +125,9 @@ void BRepTools_Substitution::Build(const TopoDS_Shape& S)
     if (!HasSubShape) {
       if (NewS.ShapeType() == TopAbs_WIRE  || NewS.ShapeType() == TopAbs_SHELL ||
 	  NewS.ShapeType() == TopAbs_SOLID || NewS.ShapeType() == TopAbs_COMPOUND)
-	//----------------------------------------------------------------
-	// Wire,Solid,Shell,Compound mut have subshape else they disapear
-	//---------------------------------------------------------------	
+	//-----------------------------------------------------------------
+	// Wire,Solid,Shell,Compound must have subshape else they disappear
+	//-----------------------------------------------------------------
 	NewS.Nullify();
     }
   }

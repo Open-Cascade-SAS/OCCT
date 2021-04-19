@@ -116,7 +116,7 @@ static Standard_Real TrueValueOfOffset(const Standard_Real theValue,
 
 //=======================================================================
 //function : UpdateBoundaries
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void UpdateBoundaries(const Handle(Geom2d_Curve)& thePCurve,
                              const Standard_Real         theFirst,
@@ -524,7 +524,7 @@ static Standard_Boolean FindClosestPoints(const TopoDS_Edge& theEdge1,
 
 //=======================================================================
 //function : ReconstructMissedSeam
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
                                   const TopTools_SequenceOfShape& theRemovedEdges,
@@ -740,7 +740,7 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
 
 //=======================================================================
 //function : SameSurf
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean SameSurf(const Handle(Geom_Surface)& theS1, const Handle(Geom_Surface)& theS2)
 {
@@ -876,7 +876,7 @@ static Standard_Boolean SameSurf(const Handle(Geom_Surface)& theS1, const Handle
 }
 //=======================================================================
 //function : TransformPCurves
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void TransformPCurves(const TopoDS_Face& theRefFace,
                              const TopoDS_Face& theFace,
@@ -1004,7 +1004,7 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
                              
 //=======================================================================
 //function : AddPCurves
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static void AddPCurves(const TopTools_SequenceOfShape& theFaces,
                        const TopoDS_Face&              theRefFace,
@@ -1029,7 +1029,7 @@ static void AddPCurves(const TopTools_SequenceOfShape& theFaces,
 
 //=======================================================================
 //function : AddOrdinaryEdges
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 // adds edges from the shape to the sequence
 // seams and equal edges are dropped
@@ -1081,7 +1081,7 @@ static Standard_Boolean AddOrdinaryEdges(TopTools_SequenceOfShape& edges,
 
 //=======================================================================
 //function : getCylinder
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface,
                                     gp_Cylinder& theOutCylinder)
@@ -1140,7 +1140,7 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface,
 
 //=======================================================================
 //function : ClearRts
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Handle(Geom_Surface) ClearRts(const Handle(Geom_Surface)& aSurface)
 {
@@ -1396,7 +1396,7 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
     PrevEdge = anEdge;
   }
   Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves
-  Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remining Vertex
+  Handle(TColStd_HArray1OfInteger)        ArrayOfIndices;  //array of the remaining Vertex
   Standard_Boolean closed_flag = Standard_False;
   GeomConvert::ConcatC1(tab_c3d,
                         tabtolvertex,
@@ -1443,7 +1443,7 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
       PrevEdge = anEdge;
     }
     Handle(TColGeom2d_HArray1OfBSplineCurve)  concatc2d;     //array of the concatenated curves
-    Handle(TColStd_HArray1OfInteger)        ArrayOfInd2d;  //array of the remining Vertex
+    Handle(TColStd_HArray1OfInteger)        ArrayOfInd2d;  //array of the remaining Vertex
     closed_flag = Standard_False;
     Geom2dConvert::ConcatC1(tab_c2d,
                             tabtolvertex,
@@ -1696,7 +1696,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
       }
 
       Handle(TColGeom2d_HArray1OfBSplineCurve)  concatc2d;     //array of the concatenated curves
-      Handle(TColStd_HArray1OfInteger)        ArrayOfInd2d;  //array of the remining Vertex
+      Handle(TColStd_HArray1OfInteger)        ArrayOfInd2d;  //array of the remaining Vertex
       Standard_Boolean aClosedFlag = Standard_False;
       Geom2dConvert::ConcatC1(tab_c2d,
         tabtolvertex,
@@ -2059,7 +2059,7 @@ Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeSubSeq(const TopTools_Sequen
     }
     if(NeedUnion) {
 #ifdef OCCT_DEBUG
-      std::cout<<"can not make analitical union => make approximation"<<std::endl;
+      std::cout<<"can not make analytical union => make approximation"<<std::endl;
 #endif
       TopoDS_Edge E = GlueEdgesWithPCurves(theChain, VF, VL);
       OutEdge = E;
@@ -2258,7 +2258,7 @@ static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
 
 //=======================================================================
 //function : MergeEdges
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeEdges(TopTools_SequenceOfShape& SeqEdges,
                                                           const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap,
@@ -3142,11 +3142,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
               Standard_Real DiffV = Abs(aPoint.Y() - CurPoint.Y());
               if (Uperiod != 0. &&
                   DiffU > CoordTol &&
-                  Abs(DiffU - Uperiod) > CoordTol) //may be is is a deg.vertex
+                  Abs(DiffU - Uperiod) > CoordTol) //may be it is a deg.vertex
                 continue;
               if (Vperiod != 0. &&
                   DiffV > CoordTol &&
-                  Abs(DiffV - Vperiod) > CoordTol) //may be is is a deg.vertex
+                  Abs(DiffV - Vperiod) > CoordTol) //may be it is a deg.vertex
                 continue;
               
               //Check: may be <CurPoint> and <aPoint> are on Period from each other

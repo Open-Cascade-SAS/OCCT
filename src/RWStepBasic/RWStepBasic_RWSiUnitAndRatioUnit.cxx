@@ -42,11 +42,11 @@ void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep	(const Handle(StepData_StepReade
   //szv#4:S4163:12Mar99 `Standard_Boolean stat1 =` not needed
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
 
-  // --- Instance of plex componant RatioUnit ---
+  // --- Instance of plex component RatioUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,0,ach,"ratio_unit")) return;
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   num = data->NextForComplex(num);
   if (!data->CheckNbParams(num,2,ach,"si_unit")) return;
 
@@ -92,7 +92,7 @@ void RWStepBasic_RWSiUnitAndRatioUnit::WriteStep(StepData_StepWriter& SW,
 						 const Handle(StepBasic_SiUnitAndRatioUnit)& ent) const
 {
   
-  // --- Instance of plex componant RatioUnit ---
+  // --- Instance of plex component RatioUnit ---
   SW.StartEntity("RATIO_UNIT");
 
   // --- Instance of common supertype NamedUnit ---
@@ -101,7 +101,7 @@ void RWStepBasic_RWSiUnitAndRatioUnit::WriteStep(StepData_StepWriter& SW,
   // --- redefined field ---
   SW.SendDerived();
 
-  // --- Instance of plex componant SiUnit ---
+  // --- Instance of plex component SiUnit ---
   SW.StartEntity("SI_UNIT");
   
   // --- field : prefix ---

@@ -156,7 +156,7 @@ void StepToTopoDS_Builder::Init
 
     if ( TP->TraceLevel() > 2 )
     {
-      sout << "Geometric Statitics : " << std::endl;
+      sout << "Geometric Statistics : " << std::endl;
       sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
       sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
       sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
@@ -263,7 +263,7 @@ void StepToTopoDS_Builder::Init
   
   if ( TP->TraceLevel() > 2 )
   {
-    sout << "Geometric Statitics : " << std::endl;
+    sout << "Geometric Statistics : " << std::endl;
     sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
     sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
     sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
@@ -478,7 +478,7 @@ void StepToTopoDS_Builder::Init
   
   if ( TP->TraceLevel() > 2 )
   {
-    sout << "Geometric Statitics : " << std::endl;
+    sout << "Geometric Statistics : " << std::endl;
     sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
     sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
     sout << "                        - C2 : " << myTool.C2Surf() << std::endl;

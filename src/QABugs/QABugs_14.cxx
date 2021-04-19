@@ -388,9 +388,9 @@ static Standard_Integer BUC60944 (Draw_Interpretor& di, Standard_Integer argc, c
   TCollection_AsciiString out;
   aPath->SystemName(out);
   if(in == out) 
-    di << "The convertion is right.\n";
+    di << "The conversion is right.\n";
   else
-    di << "Faulty : The convertion is incorrect : " << out.ToCString() << "\n";
+    di << "Faulty : The conversion is incorrect : " << out.ToCString() << "\n";
   di << out.ToCString() << "\n";
 //  std::cout << aPath->Trek() << " !" << std::endl;
   return 0;
@@ -1030,7 +1030,7 @@ static Standard_Integer OCC16485 (Draw_Interpretor& di, Standard_Integer argc, c
       return 1;
     }
 
-  // Create points with X co-ordinate from varying from 0. to 1000.
+  // Create points with X coordinate from varying from 0. to 1000.
   // anc compute cumulative bounding box by adding boxes for all the 
   // points, enlarged on tolerance
   

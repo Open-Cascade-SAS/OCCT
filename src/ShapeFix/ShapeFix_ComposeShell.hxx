@@ -67,7 +67,7 @@ DEFINE_STANDARD_HANDLE(ShapeFix_ComposeShell, ShapeFix_Root)
 //! lines in the periodic direction, as necessary to split all
 //! the wires (whole parametrical range of a face)
 //! In this mode, some regularization procedures are performed
-//! (indexation of splitted segments by patch numbers), and it is
+//! (indexation of split segments by patch numbers), and it is
 //! expected to be more reliable and robust in case of bad shapes
 //!
 //! - if ClosedMode is True, when everything on a periodic surfaces
@@ -116,7 +116,7 @@ public:
   //! resulting shape; the only result is filled context
   //! where splittings are recorded.
   //!
-  //! NOTE: If edge is splitted, it is replaced by wire, and
+  //! NOTE: If edge is split, it is replaced by wire, and
   //! order of edges in the wire corresponds to FORWARD orientation
   //! of the edge.
   Standard_EXPORT void SplitEdges();
@@ -169,13 +169,13 @@ protected:
   
   //! Splits edges in the wire by given indices of edges and
   //! parameters on them. Returns resulting wire and vertices
-  //! corresponding to splitting parameters. If two consequtive
+  //! corresponding to splitting parameters. If two consecutive
   //! splitting points are too near one to another (with tolerance
   //! of edge), edge is divided in single point. In the same way,
   //! splitting which is too near to end of edge, is not applied
   //! (end vertex is returned instead).
   //!
-  //! NOTE: If edge is splitted, it is replaced by wire, and
+  //! NOTE: If edge is split, it is replaced by wire, and
   //! order of edges in the wire corresponds to FORWARD orientation
   //! of the edge.
   Standard_EXPORT ShapeFix_WireSegment SplitWire (ShapeFix_WireSegment& wire, TColStd_SequenceOfInteger& indexes, const TColStd_SequenceOfReal& values, TopTools_SequenceOfShape& vertices, const TColStd_SequenceOfInteger& segcodes, const Standard_Boolean cutbyu, const Standard_Integer cutindex);
@@ -225,7 +225,7 @@ protected:
   //! After that, each wire segment lies on its own patch of grid.
   Standard_EXPORT void BreakWires (ShapeFix_SequenceOfWireSegment& seqw);
   
-  //! Collect set of wire segments (already splitted) into closed
+  //! Collect set of wire segments (already split) into closed
   //! wires. This is done by traversing all the segments in allowed
   //! directions, starting only from the REVERSED and FORWARD and
   //! taking EXTERNAL as necessary in fork points. Forks are detected

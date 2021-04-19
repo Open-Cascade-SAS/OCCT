@@ -50,7 +50,7 @@ public:
 
   
   //! Creates an axis object representing Z axis of
-  //! the reference co-ordinate system.
+  //! the reference coordinate system.
     gp_Ax1();
   
 

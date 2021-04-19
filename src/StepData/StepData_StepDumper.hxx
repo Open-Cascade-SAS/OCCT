@@ -35,7 +35,7 @@ class StepData_StepWriter;
 //! these features :
 //! - same form as for writing a STEP File (because it is clear
 //! and compact enough, even if the names of the fields do not
-//! appear) : thus, no additionnal resource is required
+//! appear) : thus, no additional resource is required
 //! - possibility to look for an entity itself (only its Type or
 //! with its content), an entity and it shared items (one level)
 //! or all the entities its refers to, directly or recursively.
@@ -61,7 +61,7 @@ public:
   Standard_EXPORT StepData_StepWriter& StepWriter();
   
   //! Dumps a Entity on an Messenger. Returns True if
-  //! sucess, False, if the entity to dump has not been recognized
+  //! success, False, if the entity to dump has not been recognized
   //! by the Protocol. <level> can have one of these values :
   //! - 0 : prints the TYPE only, as known in STEP Files (StepType)
   //! If <ent> has not been regognized by the Protocol, or if its
@@ -72,7 +72,7 @@ public:
   //! - 2 : dumps the entity completely, plus the item its refers to
   //! at first level (a header message designates the starting
   //! entity of the dump) <Lists Shared and Implied>
-  //! - 3 : dumps the entity and its refered items at any levels
+  //! - 3 : dumps the entity and its referred items at any levels
   //!
   //! For levels 1,2,3, the numbers displayed (form #nnn) are the
   //! numbers of the corresponding entities in the Model

@@ -29,7 +29,7 @@ namespace
   {
     // Check if number of points is invalid.
     // In this case myPolyg raises Standard_ConstructionError
-    // exception (look constructor bellow).
+    // exception (see constructor below).
     if (theNbPnts <= 0)
       return 0;
 

@@ -45,7 +45,7 @@ class TopoDS_Face;
 //! puts them in an entity called Selection (see package SelectMgr) and returns it.
 //!
 //! A Priority for the decomposed pickable objects can be given ;
-//! by default There is A Preset Hierachy:
+//! by default There is A Preset Hierarchy:
 //! Vertex             priority : 5
 //! Edge               priority : 4
 //! Wire               priority : 3
@@ -82,7 +82,7 @@ public:
   //! called to compute sensitive entities on faces.
   Standard_EXPORT static void Load (const Handle(SelectMgr_Selection)& aSelection, const TopoDS_Shape& aShape, const TopAbs_ShapeEnum aType, const Standard_Real theDeflection, const Standard_Real theDeviationAngle, const Standard_Boolean AutoTriangulation = Standard_True, const Standard_Integer aPriority = -1, const Standard_Integer NbPOnEdge = 9, const Standard_Real MaximalParameter = 500);
   
-  //! Same  functionnalities  ; the  only
+  //! Same  functionalities  ; the  only
   //! difference is that  the selectable object from which the
   //! selection comes is stored in each Sensitive EntityOwner;
   //! decomposition of <aShape> into sensitive entities following

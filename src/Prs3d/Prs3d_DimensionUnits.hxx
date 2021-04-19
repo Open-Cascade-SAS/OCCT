@@ -19,7 +19,7 @@
 #include <TCollection_AsciiString.hxx>
 
 //! This class provides units for two dimension groups:
-//! - lengthes (length, radius, diameter)
+//! - lengths (length, radius, diameter)
 //! - angles
 class Prs3d_DimensionUnits
 {

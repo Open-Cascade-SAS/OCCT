@@ -58,7 +58,7 @@ public:
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
   //! is used. Numbers of points depend on types of surfaces and  curves.
-  //! Errror of the computation is not calculated.
+  //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(const BRepGProp_Face& S, const gp_Pnt& VLocation);
   
 
@@ -117,7 +117,7 @@ public:
   //! surfaces.
   //! Non-adaptive 2D Gauss integration with predefined numbers of Gauss points
   //! is used. Numbers of points depend on types of surfaces and  curves.
-  //! Errror of the computation is not calculated.
+  //! Error of the computation is not calculated.
   Standard_EXPORT BRepGProp_Vinert(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& VLocation);
   
 

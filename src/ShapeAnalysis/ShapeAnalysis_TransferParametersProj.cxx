@@ -237,7 +237,7 @@ Standard_Real ShapeAnalysis_TransferParametersProj::Perform(const Standard_Real 
 
 //=======================================================================
 //function : CorrectParameter
-//purpose  : auxilary
+//purpose  : auxiliary
 //=======================================================================
 static Standard_Real CorrectParameter(const Handle(Geom2d_Curve) crv,
 				      const Standard_Real param)

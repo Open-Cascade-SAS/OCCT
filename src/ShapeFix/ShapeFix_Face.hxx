@@ -141,7 +141,7 @@ public:
   //! same support
     TopoDS_Face Face() const;
   
-  //! Returns resulting shape (Face or Shell if splitted)
+  //! Returns resulting shape (Face or Shell if split)
   //! To be used instead of Face() if FixMissingSeam involved
     TopoDS_Shape Result() const;
   
@@ -206,7 +206,7 @@ public:
   Standard_EXPORT Standard_Boolean FixSmallAreaWire (const Standard_Boolean theIsRemoveSmallFace);
   
   //! Detects if wire has a loop and fixes this situation by splitting on the few parts.
-  //! if wire has a loops and it was splitted Status was set to value ShapeExtend_DONE6.
+  //! if wire has a loops and it was split Status was set to value ShapeExtend_DONE6.
   Standard_EXPORT Standard_Boolean FixLoopWire (TopTools_SequenceOfShape& aResWires);
   
   //! Detects and fixes the special case when face has more than one wire

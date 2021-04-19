@@ -58,7 +58,7 @@ public:
 
   
   //! Creates an object representing the reference
-  //! co-ordinate system (OXY).
+  //! coordinate system (OXY).
     gp_Ax22d();
   
 

@@ -60,7 +60,7 @@ public:
   //!
   //! <until> gives the level of type until which requests are taken
   //! into account. For subshapes of the type <until> no rebuild
-  //! and futher exploring are done.
+  //! and further exploring are done.
   //! ACTUALLY, NOT IMPLEMENTED BELOW  TopAbs_FACE
   //!
   //! <buildmode> says how to do on a SOLID,SHELL ... if one of its
@@ -76,7 +76,7 @@ public:
   //!
   //! <until> gives the level of type until which requests are taken
   //! into account. For subshapes of the type <until> no rebuild
-  //! and futher exploring are done.
+  //! and further exploring are done.
   //!
   //! NOTE: each subshape can be replaced by shape of the same type
   //! or by shape containing only shapes of that type (for

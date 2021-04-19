@@ -28,7 +28,7 @@
 // ===============================================
 
 // ==================================
-// Methods implemeted in Standard_Real.cxx
+// Methods implemented in Standard_Real.cxx
 // ==================================
 
 //! Computes a hash code for the given real, in the range [1, theUpperBound]
@@ -76,7 +76,7 @@ inline Standard_Boolean  IsEqual (const Standard_Real Value1,
          //  *********************************** //
          //       Class methods                  //
          //                                      //
-         //  Machine-dependant values            //
+         //  Machine-dependent values            //
          //  Should be taken from include file   //
          //  *********************************** //
 
@@ -142,7 +142,7 @@ inline Standard_Integer  RealSize()
 
 
          //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
-         //   End of machine-dependant values   //
+         //   End of machine-dependent values   //
          //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
 
 
@@ -176,7 +176,7 @@ inline Standard_Real     Cos (const Standard_Real Value)
 // Epsilon : The function returns absolute value of difference
 //           between 'Value' and other nearest value of
 //           Standard_Real type.
-//           Nearest value is choseen in direction of infinity
+//           Nearest value is chosen in direction of infinity
 //           the same sign as 'Value'.
 //           If 'Value' is 0 then returns minimal positive value
 //           of Standard_Real type.

@@ -22,7 +22,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-//! Class describing a continous 3d and/or function f(u).
+//! Class describing a continuous 3d and/or function f(u).
 //! This class must be provided by the user to use the approximation algorithm FittingCurve.
 class AppCont_Function
 {

@@ -35,7 +35,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	if (!data->CheckNbParams(num,2,ach,"conversion_based_unit")) return;
 
@@ -65,7 +65,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::ReadStep
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant TimeUnit ---
+	// --- Instance of plex component TimeUnit ---
 
 	if (!data->CheckNbParams(num,0,ach,"time_unit")) return;
 
@@ -80,7 +80,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep
 	 const Handle(StepBasic_ConversionBasedUnitAndTimeUnit)& ent) const
 {
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	SW.StartEntity("CONVERSION_BASED_UNIT");
 	// --- field : name ---
@@ -90,7 +90,7 @@ void RWStepBasic_RWConversionBasedUnitAndTimeUnit::WriteStep
 
 	SW.Send(ent->ConversionFactor());
 
-	// --- Instance of plex componant TimeUnit ---
+	// --- Instance of plex component TimeUnit ---
 
 	SW.StartEntity("TIME_UNIT");
 

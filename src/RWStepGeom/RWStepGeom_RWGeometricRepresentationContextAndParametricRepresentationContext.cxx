@@ -32,7 +32,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 	Standard_Integer num = num0;
 
 
-	// --- Instance of plex componant GeometricRepresentationContext ---
+	// --- Instance of plex component GeometricRepresentationContext ---
 
 	if (!data->CheckNbParams(num,1,ach,"geometric_representation_context")) return;
 
@@ -44,7 +44,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 
 	num = data->NextForComplex(num);
 
-	// --- Instance of plex componant ParametricRepresentationContext ---
+	// --- Instance of plex component ParametricRepresentationContext ---
 
 	if (!data->CheckNbParams(num,0,ach,"parametric_representation_context")) return;
 
@@ -78,14 +78,14 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 	 const Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)& ent) const
 {
 
-	// --- Instance of plex componant GeometricRepresentationContext ---
+	// --- Instance of plex component GeometricRepresentationContext ---
 
 	SW.StartEntity("GEOMETRIC_REPRESENTATION_CONTEXT");
 	// --- field : coordinateSpaceDimension ---
 
 	SW.Send(ent->CoordinateSpaceDimension());
 
-	// --- Instance of plex componant ParametricRepresentationContext ---
+	// --- Instance of plex component ParametricRepresentationContext ---
 
 	SW.StartEntity("PARAMETRIC_REPRESENTATION_CONTEXT");
 

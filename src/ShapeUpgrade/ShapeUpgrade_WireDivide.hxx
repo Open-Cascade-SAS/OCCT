@@ -48,8 +48,8 @@ DEFINE_STANDARD_HANDLE(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
 //! Splits 3D curve and pcurve(s) of the edge on the face.
 //! Other pcurves which may be associated with the edge are simply
 //! copied.
-//! If 3D curve is splitted then pcurve on the face is splitted as
-//! well, and wice-versa.
+//! If 3D curve is split then pcurve on the face is split as
+//! well, and vice-versa.
 //! Input shape is not modified.
 //! The modifications made are recorded in external context
 //! (ShapeBuild_ReShape). This tool is applied to all edges
@@ -98,8 +98,8 @@ public:
   Standard_EXPORT const TopoDS_Wire& Wire() const;
   
   //! Queries status of last call to Perform()
-  //! OK - no edges were splitted, wire left untouched
-  //! DONE1 - some edges were splitted
+  //! OK - no edges were split, wire left untouched
+  //! DONE1 - some edges were split
   //! FAIL1 - some edges have no 3d curve (skipped)
   //! FAIL2 - some edges have no pcurve (skipped)
   Standard_EXPORT Standard_Boolean Status (const ShapeExtend_Status status) const;

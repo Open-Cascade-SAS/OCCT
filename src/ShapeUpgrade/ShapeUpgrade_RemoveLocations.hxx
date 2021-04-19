@@ -37,13 +37,13 @@ class ShapeUpgrade_RemoveLocations : public Standard_Transient
 public:
 
   
-  //! Empy constructor
+  //! Empty constructor
   Standard_EXPORT ShapeUpgrade_RemoveLocations();
   
   //! Removes all location correspodingly to RemoveLevel.
   Standard_EXPORT Standard_Boolean Remove (const TopoDS_Shape& theShape);
   
-  //! Returns shape with removed locatins.
+  //! Returns shape with removed locations.
     TopoDS_Shape GetResult() const;
   
   //! sets level starting with that location will be removed,

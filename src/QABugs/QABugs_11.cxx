@@ -1109,7 +1109,7 @@ static Standard_Integer OCC22 (Draw_Interpretor& di, Standard_Integer argc, cons
     // 4.1. Retrieve Shape
     TopoDS_Shape anInitShape = DBRep::Get(argv[2]);
     if(anInitShape.IsNull()) { di << "OCC22 FAULTY. Initial shape is not exist. Please verify input values \n"; return 0;}
-    // 4.2 Rebuid retrieved shape
+    // 4.2 Rebuild retrieved shape
     TopoDS_Shape aResultShape = aReshape->Apply(anInitShape);
     // 4.3. Create result Draw shape
     DBRep::Set(argv[1], aResultShape);
@@ -2096,7 +2096,7 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
     GCPnts_AbscissaPoint(check_curve, need_length, 0).Parameter();
   gp_Pnt check_pnt;
   check_curve.D0(check_par,check_pnt);
-  // check that points are coinsiding
+  // check that points are coinciding
   Standard_Real error_dist = pnt.Distance(check_pnt);
   if (error_dist > Precision::Confusion()) {
     //std::cout.precision(3);
@@ -2614,7 +2614,7 @@ static Standard_Integer OCC7372 (Draw_Interpretor& di, Standard_Integer argc, co
   Standard_CString CString1 = "BSplineCurve";
   DrawTrSurf::Set(CString1,bspline1);
 
-  // 4. Convers BSpline curve to Bezier segments
+  // 4. Converts BSpline curve to Bezier segments
   Geom2dConvert_BSplineCurveToBezierCurve bc(bspline1);
 
   // 5. Test the result of conversion

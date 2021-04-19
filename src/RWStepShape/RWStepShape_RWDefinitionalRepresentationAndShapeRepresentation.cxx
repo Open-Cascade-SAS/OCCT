@@ -38,7 +38,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::ReadStep
 	num = data->NextForComplex(num);
 
 
-	// --- Instance of plex componant definitional_representation ---
+	// --- Instance of plex component definitional_representation ---
 
 	if (!data->CheckNbParams(num,3,ach,"representation")) return;
 
@@ -80,7 +80,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::WriteStep
 	 const Handle(StepShape_DefinitionalRepresentationAndShapeRepresentation)& ent) const
 {
 
-	// --- Instance of plex componant ConversionBasedUnit ---
+	// --- Instance of plex component ConversionBasedUnit ---
 
 	SW.StartEntity("DEFINITIONAL_REPRESENTATION");
 
@@ -102,7 +102,7 @@ void RWStepShape_RWDefinitionalRepresentationAndShapeRepresentation::WriteStep
 
 	SW.Send(ent->ContextOfItems());
 
-	// --- Instance of plex componant LengthUnit ---
+	// --- Instance of plex component LengthUnit ---
 
 	SW.StartEntity("SHAPE_REPRESENTATION");
 

@@ -23,7 +23,7 @@ StdObjMgt_Persistent::StdObjMgt_Persistent()
 //=======================================================================
 //function : ImportDocument
 //purpose  : Import transient document from the persistent data
-//           (to be overriden by document class;
+//           (to be overridden by document class;
 //           does nothing by default for other classes).
 //=======================================================================
 void StdObjMgt_Persistent::ImportDocument
@@ -31,8 +31,8 @@ void StdObjMgt_Persistent::ImportDocument
 
 //=======================================================================
 //function : CreateAttribute
-//purpose  : Create an empty transient attribuite
-//           (to be overriden by attribute classes;
+//purpose  : Create an empty transient attribute
+//           (to be overridden by attribute classes;
 //           does nothing and returns a null handle by default for other classes)
 //=======================================================================
 Handle(TDF_Attribute) StdObjMgt_Persistent::CreateAttribute()
@@ -40,8 +40,8 @@ Handle(TDF_Attribute) StdObjMgt_Persistent::CreateAttribute()
 
 //=======================================================================
 //function : GetAttribute
-//purpose  : Get transient attribuite for the persistent data
-//           (to be overriden by attribute classes;
+//purpose  : Get transient attribute for the persistent data
+//           (to be overridden by attribute classes;
 //           returns a null handle by default for non-attribute classes)
 //=======================================================================
 Handle(TDF_Attribute) StdObjMgt_Persistent::GetAttribute() const
@@ -49,8 +49,8 @@ Handle(TDF_Attribute) StdObjMgt_Persistent::GetAttribute() const
 
 //=======================================================================
 //function : ImportAttribute
-//purpose  : Import transient attribuite from the persistent data
-//           (to be overriden by attribute classes;
+//purpose  : Import transient attribute from the persistent data
+//           (to be overridden by attribute classes;
 //           does nothing by default for non-attribute classes)
 //=======================================================================
 void StdObjMgt_Persistent::ImportAttribute() {}
@@ -58,7 +58,7 @@ void StdObjMgt_Persistent::ImportAttribute() {}
 //=======================================================================
 //function : AsciiString
 //purpose  : Get referenced ASCII string
-//           (to be overriden by ASCII string class;
+//           (to be overridden by ASCII string class;
 //           returns a null handle by default for other classes)
 //=======================================================================
 Handle(TCollection_HAsciiString) StdObjMgt_Persistent::AsciiString() const
@@ -67,7 +67,7 @@ Handle(TCollection_HAsciiString) StdObjMgt_Persistent::AsciiString() const
 //=======================================================================
 //function : ExtString
 //purpose  : Get referenced extended string
-//           (to be overriden by extended string class;
+//           (to be overridden by extended string class;
 //           returns a null handle by default for other classes)
 //=======================================================================
 Handle(TCollection_HExtendedString) StdObjMgt_Persistent::ExtString() const
@@ -76,7 +76,7 @@ Handle(TCollection_HExtendedString) StdObjMgt_Persistent::ExtString() const
 //=======================================================================
 //function : Label
 //purpose  : Get a label expressed by referenced extended string
-//           (to be overriden by extended string class;
+//           (to be overridden by extended string class;
 //           returns a null label by default for other classes)
 //=======================================================================
 TDF_Label StdObjMgt_Persistent::Label (const Handle(TDF_Data)&) const

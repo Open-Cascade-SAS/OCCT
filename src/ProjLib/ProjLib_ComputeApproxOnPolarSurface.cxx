@@ -711,7 +711,7 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
       // if there is an initialization curve: 
       // - either this is a BSpline C0, with discontinuity at the same parameters of nodes
       // and the sections C1 are taken
-      // - or this is a curve C1 and the sections of intrest are taken otherwise the curve is created.
+      // - or this is a curve C1 and the sections of interest are taken otherwise the curve is created.
       
       // initialization 2d
       Standard_Integer nbInter2d;

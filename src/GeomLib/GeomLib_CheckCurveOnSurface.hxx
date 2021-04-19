@@ -49,7 +49,7 @@ public:
                              const Standard_Real theLast,
                              const Standard_Real theTolRange = Precision::PConfusion());
 
-  //! Initializes all members by dafault values
+  //! Initializes all members by default values
   Standard_EXPORT void Init();
 
   //! Computes the max distance for the 3d curve <myCurve>
