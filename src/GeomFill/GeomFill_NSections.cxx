@@ -20,6 +20,8 @@
 // Modified:    Mon Jan 18 11:06:46 1999
 //              mise au point de D1, D2 et IsConstant
 
+#include <GeomFill_NSections.hxx>
+
 #include <BSplCLib.hxx>
 #include <Convert_ParameterisationType.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
@@ -35,14 +37,12 @@
 #include <GeomConvert.hxx>
 #include <GeomFill_AppSurf.hxx>
 #include <GeomFill_Line.hxx>
-#include <GeomFill_NSections.hxx>
 #include <GeomFill_SectionGenerator.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_Type.hxx>
 #include <TColGeom_Array1OfCurve.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -230,6 +230,25 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   ULast = 1.;
   VFirst = 0.;
   VLast = 1.;
+  myRefSurf.Nullify();
+  ComputeSurface();
+}
+
+//=======================================================================
+//function : GeomFill_NSections
+//purpose  :
+//=======================================================================
+GeomFill_NSections::GeomFill_NSections (const TColGeom_SequenceOfCurve& theNC,
+                                        const TColStd_SequenceOfReal& theNP,
+                                        const Standard_Real theUF,
+                                        const Standard_Real theUL)
+{
+  mySections = theNC;
+  myParams = theNP;
+  UFirst = theUF;
+  ULast = theUL;
+  VFirst = 0.0;
+  VLast = 1.0;
   myRefSurf.Nullify();
   ComputeSurface();
 }
