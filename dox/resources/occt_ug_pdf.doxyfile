@@ -21,7 +21,6 @@ FILE_PATTERNS          = *.md *.dox
 RECURSIVE              = YES
 SOURCE_BROWSER         = NO
 INLINE_SOURCES         = YES
-COLS_IN_ALPHA_INDEX    = 5
 GENERATE_DOCSET        = NO
 GENERATE_CHI           = NO
 GENERATE_QHP           = NO
