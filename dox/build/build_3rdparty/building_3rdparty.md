@@ -265,6 +265,18 @@ There are two types of third-party products, which are  necessary to build OCCT:
 	* FreeImage 3.14.1 - 3.16.0;
 	* VTK 6.1.0.
 
+@subsection dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
+
+**Debian-based distributives**
+
+All 3rd-party products required for building of OCCT could be installed
+from official repositories. You may install them from console using apt-get utility:
+
+    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libfreeimage-dev rapidjson-dev
+
+Building is possible with C++ compliant compiler:
+
+    sudo apt-get install g++
 
 @subsection dev_guides__building_3rdparty_linux_2_1 Tcl/Tk 
 
@@ -438,19 +450,6 @@ Download the necessary archive from https://www.vtk.org/VTK/resources/software.h
 4. Start the installation of VTK. Binaries will be installed according to the *VTK_INSTALL_PREFIX* option.
 
        make install
-
-@subsection dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
-
-**Debian-based distributives**
-
-All 3rd-party products required for building of  OCCT could be installed
-from official repositories. You may install them from  console using apt-get utility:
-
-    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libfreeimage-dev
-
-Building is possible with C++ compliant compiler:
-
-    sudo apt-get install g++
 
 @section build_3rdparty_macos Mac OS X
 

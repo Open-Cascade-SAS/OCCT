@@ -9,6 +9,10 @@
 # - Open project in Qt Creator, and call "Run qmake".
 # - Close the project in Qt Creator, open it again so that you should see the sub-modules in Project tree; call "Run qmake" again.
 # - "Run qmake" and perform Build.
+#
+# Within Debian-based Linux repository Qt Creator can be installed like this:
+# > sudo apt-get install qtcreator qtbase5-dev
+
 TEMPLATE = subdirs
 exists(custom.auto.pri) { include(custom.auto.pri) }
 exists(custom.pri)      { include(custom.pri) }
