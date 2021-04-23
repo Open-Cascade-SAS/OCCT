@@ -63,8 +63,7 @@ win32 {
   CSF_TclTkLibs  = -ltk8.6
   HAVE_XLIB {
     CSF_OpenGlLibs = -lGL
-    CSF_XwLibs = -lX11 -lXext -lXmu -lXi
-    CSF_MotifLibs  = -lX11
+    CSF_XwLibs     = -lX11
   } else {
     CSF_OpenGlLibs = -lGL -lEGL
   }

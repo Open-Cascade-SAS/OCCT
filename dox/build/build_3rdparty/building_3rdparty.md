@@ -272,7 +272,7 @@ There are two types of third-party products, which are  necessary to build OCCT:
 All 3rd-party products required for building of OCCT could be installed
 from official repositories. You may install them from console using apt-get utility:
 
-    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libxt-dev libxmu-dev libxi-dev libgl1-mesa-dev libfreeimage-dev rapidjson-dev
+    sudo apt-get install tcllib tklib tcl-dev tk-dev libfreetype-dev libx11-dev libgl1-mesa-dev libfreeimage-dev rapidjson-dev
 
 Building is possible with C++ compliant compiler:
 
@@ -624,4 +624,4 @@ in *FREEIMAGE_SRC_DIR* by the corrected file, which you can find in attachment t
   
 5. Clean temporary files 
   
-       make clean 
+       make clean

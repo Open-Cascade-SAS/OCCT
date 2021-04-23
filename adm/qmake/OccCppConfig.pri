@@ -43,6 +43,9 @@ win32 {
   QMAKE_CXXFLAGS += -fexceptions
   QMAKE_CXXFLAGS += -fvisibility=default
   DEFINES += OCC_CONVERT_SIGNALS
+  gcc {
+    QMAKE_LFLAGS += -Wl,-z,defs
+  }
   mac {
     iphoneos {
       QMAKE_IOS_DEPLOYMENT_TARGET = 8.0

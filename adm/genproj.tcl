@@ -1530,8 +1530,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
           set aLibsMap(CSF_TclTkLibs) "tk8.6"
         }
         if { "$::HAVE_XLIB" == "true" } {
-          set aLibsMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
-          set aLibsMap(CSF_MotifLibs)  "X11"
+          set aLibsMap(CSF_XwLibs)     "X11"
         }
       }
     }

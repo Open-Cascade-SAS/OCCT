@@ -80,4 +80,3 @@ Aspect_XRPoseActionData.hxx
 Aspect_XRSession.cxx
 Aspect_XRSession.hxx
 Aspect_XRTrackedDeviceRole.hxx
-Aspect_XWD.hxx
