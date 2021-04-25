@@ -51,7 +51,7 @@ struct AIS_WalkDelta
 {
   //! Empty constructor.
   AIS_WalkDelta()
-  : myIsJumping (false), myIsCrouching (false), myIsRunning (false) {}
+  : myIsDefined (false), myIsJumping (false), myIsCrouching (false), myIsRunning (false) {}
 
   //! Return translation component.
   const AIS_WalkPart& operator[] (AIS_WalkTranslation thePart) const { return myTranslation[thePart]; }
@@ -83,6 +83,12 @@ struct AIS_WalkDelta
   //! Set running state.
   void SetRunning (bool theIsRunning) { myIsRunning = theIsRunning; }
 
+  //! Return TRUE if navigation keys are pressed even if delta from the previous frame is empty.
+  bool IsDefined() const { return myIsDefined || !IsEmpty(); }
+
+  //! Set if any navigation key is pressed.
+  void SetDefined (bool theIsDefined) { myIsDefined = theIsDefined; }
+
   //! Return TRUE when both Rotation and Translation deltas are empty.
   bool IsEmpty() const { return !ToMove() && !ToRotate(); }
 
@@ -106,6 +112,7 @@ private:
 
   AIS_WalkPart myTranslation[3];
   AIS_WalkPart myRotation[3];
+  bool myIsDefined;
   bool myIsJumping;
   bool myIsCrouching;
   bool myIsRunning;

@@ -372,9 +372,6 @@ public: //! @name multi-touch input
   //! Set scale factor for adjusting tolerances for starting multi-touch gestures.
   void SetTouchToleranceScale (float theTolerance) { myTouchToleranceScale = theTolerance; }
 
-  //! Return TRUE if touches map is not empty.
-  bool HasTouchPoints() const { return !myTouchPoints.IsEmpty(); }
-
   //! Add touch point with the given ID.
   //! This method is expected to be called from UI thread.
   //! @param theId touch unique identifier
@@ -382,7 +379,7 @@ public: //! @name multi-touch input
   //! @param theClearBefore if TRUE previously registered touches will be removed
   Standard_EXPORT virtual void AddTouchPoint (Standard_Size theId,
                                               const Graphic3d_Vec2d& thePnt,
-                                              Standard_Boolean theClearBefore = false);
+                                              Standard_Boolean theClearBefore = false) Standard_OVERRIDE;
 
   //! Remove touch point with the given ID.
   //! This method is expected to be called from UI thread.
@@ -390,7 +387,7 @@ public: //! @name multi-touch input
   //! @param theClearSelectPnts if TRUE will initiate clearing of selection points
   //! @return TRUE if point has been removed
   Standard_EXPORT virtual bool RemoveTouchPoint (Standard_Size theId,
-                                                 Standard_Boolean theClearSelectPnts = false);
+                                                 Standard_Boolean theClearSelectPnts = false) Standard_OVERRIDE;
 
   //! Update touch point with the given ID.
   //! If point with specified ID was not registered before, it will be added.
@@ -398,7 +395,9 @@ public: //! @name multi-touch input
   //! @param theId touch unique identifier
   //! @param thePnt touch coordinates
   Standard_EXPORT virtual void UpdateTouchPoint (Standard_Size theId,
-                                                 const Graphic3d_Vec2d& thePnt);
+                                                 const Graphic3d_Vec2d& thePnt) Standard_OVERRIDE;
+
+  using Aspect_WindowInputListener::HasTouchPoints;
 
 public: //! @name 3d mouse input
 
@@ -749,13 +748,16 @@ protected: //! @name mouse input variables
 protected: //! @name multi-touch input variables
 
   Standard_ShortReal  myTouchToleranceScale;      //!< tolerance scale factor; 1.0 by default
+  Standard_ShortReal  myTouchClickThresholdPx;    //!< touch click threshold in pixels; 3 by default
   Standard_ShortReal  myTouchRotationThresholdPx; //!< threshold for starting one-touch rotation     gesture in pixels;  6 by default
   Standard_ShortReal  myTouchZRotationThreshold;  //!< threshold for starting two-touch Z-rotation   gesture in radians; 2 degrees by default
   Standard_ShortReal  myTouchPanThresholdPx;      //!< threshold for starting two-touch panning      gesture in pixels;  4 by default
   Standard_ShortReal  myTouchZoomThresholdPx;     //!< threshold for starting two-touch zoom (pitch) gesture in pixels;  6 by default
   Standard_ShortReal  myTouchZoomRatio;           //!< distance ratio for mapping two-touch zoom (pitch) gesture from pixels to zoom; 0.13 by default
 
-  Aspect_TouchMap     myTouchPoints;              //!< map of active touches
+  Aspect_Touch        myTouchClick;               //!< single touch position for handling clicks
+  OSD_Timer           myTouchDoubleTapTimer;      //!< timer for handling double tap
+
   Graphic3d_Vec2d     myStartPanCoord;            //!< touch coordinates at the moment of starting panning  gesture
   Graphic3d_Vec2d     myStartRotCoord;            //!< touch coordinates at the moment of starting rotating gesture
   Standard_Integer    myNbTouchesLast;            //!< number of touches within previous gesture flush to track gesture changes

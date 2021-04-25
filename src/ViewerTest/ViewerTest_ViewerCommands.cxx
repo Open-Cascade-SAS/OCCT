@@ -112,6 +112,9 @@
   #include <X11/Xutil.h>
 #elif defined(__APPLE__)
   #include <Cocoa_Window.hxx>
+#elif defined(__EMSCRIPTEN__)
+  #include <Wasm_Window.hxx>
+  #include <emscripten/emscripten.h>
 #else
   #include <Aspect_NeutralWindow.hxx>
 #endif
@@ -135,8 +138,30 @@ static void VProcessEvents(ClientData,int);
 typedef Cocoa_Window ViewerTest_Window;
 extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
 extern void GetCocoaScreenResolution (Standard_Integer& theWidth, Standard_Integer& theHeight);
+#elif defined(__EMSCRIPTEN__)
+typedef Wasm_Window ViewerTest_Window;
 #else
 typedef Aspect_NeutralWindow ViewerTest_Window;
+#endif
+
+#if defined(__EMSCRIPTEN__)
+//! Return DOM id of default WebGL canvas from Module.canvas.
+EM_JS(char*, occJSModuleCanvasId, (), {
+  const aCanvasId = Module.canvas.id;
+  const aNbBytes  = lengthBytesUTF8 (aCanvasId) + 1;
+  const aStrPtr   = Module._malloc (aNbBytes);
+  stringToUTF8 (aCanvasId, aStrPtr, aNbBytes);
+  return aStrPtr;
+});
+
+//! Return DOM id of default WebGL canvas from Module.canvas.
+static TCollection_AsciiString getModuleCanvasId()
+{
+  char* aRawId = occJSModuleCanvasId();
+  TCollection_AsciiString anId (aRawId != NULL ? aRawId : "");
+  free (aRawId);
+  return anId;
+}
 #endif
 
 static Handle(ViewerTest_Window)& VT_GetWindow()
@@ -159,8 +184,6 @@ static void SetDisplayConnection (const Handle(Aspect_DisplayConnection)& theDis
 NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>  ViewerTest_myContexts;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
-
-static void OSWindowSetup();
 
 static struct
 {
@@ -1663,15 +1686,18 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // window fit in the small screens (actual for remote desktops, see #23003).
   // The position corresponds to the window's client area, thus some
   // gap is added for window frame to be visible.
-  Standard_Integer aPxLeft   = 20;
-  Standard_Integer aPxTop    = 40;
-  Standard_Integer aPxWidth  = 409;
-  Standard_Integer aPxHeight = 409;
+  Standard_Integer aPxLeft  = 20,  aPxTop    = 40;
+  Standard_Integer aPxWidth = 409, aPxHeight = 409;
+  Standard_Boolean isDefViewSize = Standard_True;
   Standard_Boolean toCreateViewer = Standard_False;
   const Standard_Boolean isVirtual = Draw_VirtualWindows || theIsVirtual;
   if (!theViewToClone.IsNull())
   {
     theViewToClone->Window()->Size (aPxWidth, aPxHeight);
+    isDefViewSize = Standard_False;
+  #if !defined(__EMSCRIPTEN__)
+    (void )isDefViewSize;
+  #endif
   }
 
   Handle(Graphic3d_GraphicDriverFactory) aFactory = Graphic3d_GraphicDriverFactory::DefaultDriverFactory();
@@ -1692,17 +1718,29 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 
   Handle(Graphic3d_GraphicDriver) aGraphicDriver;
   ViewerTest_Names aViewNames(theViewName);
-  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName ()))
+  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
+  {
     aViewNames.SetViewName (aViewNames.GetViewerName() + "/" + CreateName<Handle(V3d_View)>(ViewerTest_myViews, "View"));
+  }
 
   if (thePxLeft != 0)
+  {
     aPxLeft = thePxLeft;
+  }
   if (thePxTop != 0)
+  {
     aPxTop = thePxTop;
+  }
   if (thePxWidth != 0)
+  {
+    isDefViewSize = Standard_False;
     aPxWidth = thePxWidth;
+  }
   if (thePxHeight != 0)
+  {
+    isDefViewSize = Standard_False;
     aPxHeight = thePxHeight;
+  }
 
   // Get graphic driver (create it or get from another view)
   const bool isNewDriver = !ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName());
@@ -1862,6 +1900,25 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                      aPxLeft, aPxTop,
                                      aPxWidth, aPxHeight);
   ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
+#elif defined(__EMSCRIPTEN__)
+  // current EGL implementation in Emscripten supports only one global WebGL canvas returned by Module.canvas property;
+  // the code should be revised for handling multiple canvas elements (which is technically also possible)
+  TCollection_AsciiString aCanvasId = getModuleCanvasId();
+  if (!aCanvasId.IsEmpty())
+  {
+    aCanvasId = TCollection_AsciiString("#") + aCanvasId;
+  }
+
+  VT_GetWindow() = new Wasm_Window (aCanvasId);
+  Graphic3d_Vec2i aRealSize;
+  VT_GetWindow()->Size (aRealSize.x(), aRealSize.y());
+  if (!isDefViewSize || (aRealSize.x() <= 0 && aRealSize.y() <= 0))
+  {
+    // Wasm_Window wraps an existing HTML element without creating a new one.
+    // Keep size defined on a web page instead of defaulting to 409x409 (as in case of other platform),
+    // but resize canvas if vinit has been called with explicitly specified dimensions.
+    VT_GetWindow()->SetSizeLogical (Graphic3d_Vec2d (aPxWidth, aPxHeight));
+  }
 #else
   // not implemented
   VT_GetWindow() = new Aspect_NeutralWindow();
@@ -1887,7 +1944,8 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   ViewerTest_myViews.Bind (aViewNames.GetViewName(), aView);
 
   // Setup for X11 or NT
-  OSWindowSetup();
+  SetDisplayConnection (ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
+  ViewerTest_EventManager::SetupWindowCallbacks (VT_GetWindow());
 
   // Set parameters for V3d_View and V3d_Viewer
   const Handle (V3d_View) aV3dView = ViewerTest::CurrentView();
@@ -2540,15 +2598,7 @@ void ActivateView (const TCollection_AsciiString& theViewName,
     ViewerTest::CurrentView (aView);
     ViewerTest::SetAISContext (anAISContext);
     aView->Window()->SetTitle (TCollection_AsciiString("3D View - ") + theViewName + "(*)");
-#if defined(_WIN32)
-    VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
-#elif defined(HAVE_XLIB)
-    VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
-#elif defined(__APPLE__)
-    VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
-#else
-    VT_GetWindow() = Handle(Aspect_NeutralWindow)::DownCast(ViewerTest::CurrentView()->Window());
-#endif
+    VT_GetWindow() = Handle(ViewerTest_Window)::DownCast(ViewerTest::CurrentView()->Window());
     SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
     if (theToUpdate)
     {
@@ -3472,45 +3522,6 @@ int ViewerMainLoop (Standard_Integer , const char** )
   return 0;
 }
 #endif
-
-//==============================================================================
-//function : OSWindowSetup
-//purpose  : Setup for the X11 window to be able to catch the event
-//==============================================================================
-static void OSWindowSetup()
-{
-#ifdef _WIN32
-  //
-
-#elif defined(HAVE_XLIB)
-  // X11
-  Window anXWin = VT_GetWindow()->XWindow();
-  SetDisplayConnection (ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
-  Display* aDisplay = (Display* )GetDisplayConnection()->GetDisplayAspect();
-  XSynchronize (aDisplay, 1);
-
-  // X11 : For keyboard on SUN
-  XWMHints aWmHints;
-  memset (&aWmHints, 0, sizeof(aWmHints));
-  aWmHints.flags = InputHint;
-  aWmHints.input = 1;
-  XSetWMHints (aDisplay, anXWin, &aWmHints);
-
-  XSelectInput (aDisplay, anXWin,
-                ExposureMask | KeyPressMask | KeyReleaseMask
-              | ButtonPressMask | ButtonReleaseMask
-              | StructureNotifyMask
-              | PointerMotionMask
-              | Button1MotionMask | Button2MotionMask
-              | Button3MotionMask | FocusChangeMask);
-  Atom aDeleteWindowAtom = GetDisplayConnection()->GetAtom (Aspect_XA_DELETE_WINDOW);
-  XSetWMProtocols (aDisplay, anXWin, &aDeleteWindowAtom, 1);
-
-  XSynchronize (aDisplay, 0);
-#else
-  //
-#endif
-}
 
 //==============================================================================
 //function : VFit

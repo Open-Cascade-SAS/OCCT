@@ -21,14 +21,12 @@
 
 #include "WasmOcctView.h"
 
-#include "WasmVKeys.h"
 #include "WasmOcctPixMap.h"
 
 #include <AIS_Shape.hxx>
 #include <AIS_ViewCube.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_NeutralWindow.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Graphic3d_CubeMapPacked.hxx>
@@ -36,6 +34,7 @@
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_ToolCylinder.hxx>
 #include <Prs3d_ToolDisk.hxx>
+#include <Wasm_Window.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
@@ -50,25 +49,6 @@
 
 namespace
 {
-  EM_JS(int, jsCanvasGetWidth, (), {
-    return Module.canvas.width;
-  });
-
-  EM_JS(int, jsCanvasGetHeight, (), {
-    return Module.canvas.height;
-  });
-
-  EM_JS(float, jsDevicePixelRatio, (), {
-    var aDevicePixelRatio = window.devicePixelRatio || 1;
-    return aDevicePixelRatio;
-  });
-
-  //! Return cavas size in pixels.
-  static Graphic3d_Vec2i jsCanvasSize()
-  {
-    return Graphic3d_Vec2i (jsCanvasGetWidth(), jsCanvasGetHeight());
-  }
-
   //! Auxiliary wrapper for loading model.
   struct ModelAsyncLoader
   {
@@ -199,7 +179,7 @@ void WasmOcctView::run()
 // ================================================================
 void WasmOcctView::initWindow()
 {
-  myDevicePixelRatio = jsDevicePixelRatio();
+  myDevicePixelRatio = emscripten_get_device_pixel_ratio();
   myCanvasId = THE_CANVAS_ID;
   const char* aTargetId = !myCanvasId.IsEmpty() ? myCanvasId.ToCString() : EMSCRIPTEN_EVENT_TARGET_WINDOW;
   const EM_BOOL toUseCapture = EM_TRUE;
@@ -340,13 +320,8 @@ bool WasmOcctView::initViewer()
     }
   }
 
-  Handle(Aspect_NeutralWindow) aWindow = new Aspect_NeutralWindow();
-  Graphic3d_Vec2i aWinSize = jsCanvasSize();
-  if (aWinSize.x() < 10 || aWinSize.y() < 10)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Warning: invalid canvas size"), Message_Warning);
-  }
-  aWindow->SetSize (aWinSize.x(), aWinSize.y());
+  Handle(Wasm_Window) aWindow = new Wasm_Window (THE_CANVAS_ID);
+  aWindow->Size (myWinSizeOld.x(), myWinSizeOld.y());
 
   myTextStyle = new Prs3d_TextAspect();
   myTextStyle->SetFont (Font_NOF_ASCII_MONO);
@@ -404,6 +379,24 @@ void WasmOcctView::initDemoScene()
 }
 
 // ================================================================
+// Function : ProcessInput
+// Purpose  :
+// ================================================================
+void WasmOcctView::ProcessInput()
+{
+  if (!myView.IsNull())
+  {
+    // Queue onRedrawView()/redrawView callback to redraw canvas after all user input is flushed by browser.
+    // Redrawing viewer on every single message would be a pointless waste of resources,
+    // as user will see only the last drawn frame due to WebGL implementation details.
+    if (++myUpdateRequests == 1)
+    {
+      emscripten_async_call (onRedrawView, this, 0);
+    }
+  }
+}
+
+// ================================================================
 // Function : UpdateView
 // Purpose  :
 // ================================================================
@@ -412,22 +405,8 @@ void WasmOcctView::UpdateView()
   if (!myView.IsNull())
   {
     myView->Invalidate();
-    updateView();
-  }
-}
-
-// ================================================================
-// Function : updateView
-// Purpose  :
-// ================================================================
-void WasmOcctView::updateView()
-{
-  if (!myView.IsNull())
-  {
-    if (++myUpdateRequests == 1)
-    {
-      emscripten_async_call (onRedrawView, this, 0);
-    }
+    // queue next onRedrawView()/redrawView()
+    ProcessInput();
   }
 }
 
@@ -452,14 +431,6 @@ void WasmOcctView::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCt
 {
   myUpdateRequests = 0;
   AIS_ViewController::handleViewRedraw (theCtx, theView);
-
-  for (NCollection_DataMap<unsigned int, Aspect_VKey>::Iterator aNavKeyIter (myNavKeyMap);
-       !myToAskNextFrame && aNavKeyIter.More(); aNavKeyIter.Next())
-  {
-    const Aspect_VKey aVKey = aNavKeyIter.Key() & ~Aspect_VKeyFlags_ALL;
-    myToAskNextFrame = myKeys.IsKeyDown (aVKey);
-  }
-
   if (myToAskNextFrame)
   {
     // ask more frames
@@ -481,23 +452,21 @@ EM_BOOL WasmOcctView::onResizeEvent (int theEventType, const EmscriptenUiEvent* 
     return EM_FALSE;
   }
 
-  Handle(Aspect_NeutralWindow) aWindow = Handle(Aspect_NeutralWindow)::DownCast (myView->Window());
-  Graphic3d_Vec2i aWinSizeOld, aWinSizeNew (jsCanvasSize());
-  if (aWinSizeNew.x() < 10 || aWinSizeNew.y() < 10)
-  {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Warning: invalid canvas size"), Message_Warning);
-  }
-  aWindow->Size (aWinSizeOld.x(), aWinSizeOld.y());
-  const float aPixelRatio = jsDevicePixelRatio();
-  if (aWinSizeNew != aWinSizeOld
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  Graphic3d_Vec2i aWinSizeNew;
+  aWindow->DoResize();
+  aWindow->Size (aWinSizeNew.x(), aWinSizeNew.y());
+  const float aPixelRatio = emscripten_get_device_pixel_ratio();
+  if (aWinSizeNew != myWinSizeOld
    || aPixelRatio != myDevicePixelRatio)
   {
+    myWinSizeOld = aWinSizeNew;
     if (myDevicePixelRatio != aPixelRatio)
     {
       myDevicePixelRatio = aPixelRatio;
       initPixelScaleRatio();
     }
-    aWindow->SetSize (aWinSizeNew.x(), aWinSizeNew.y());
+
     myView->MustBeResized();
     myView->Invalidate();
     myView->Redraw();
@@ -517,73 +486,8 @@ EM_BOOL WasmOcctView::onMouseEvent (int theEventType, const EmscriptenMouseEvent
     return EM_FALSE;
   }
 
-  Graphic3d_Vec2i aWinSize;
-  myView->Window()->Size (aWinSize.x(), aWinSize.y());
-  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->targetX, theEvent->targetY));
-  Aspect_VKeyFlags aFlags = 0;
-  if (theEvent->ctrlKey  == EM_TRUE) { aFlags |= Aspect_VKeyFlags_CTRL;  }
-  if (theEvent->shiftKey == EM_TRUE) { aFlags |= Aspect_VKeyFlags_SHIFT; }
-  if (theEvent->altKey   == EM_TRUE) { aFlags |= Aspect_VKeyFlags_ALT;   }
-  if (theEvent->metaKey  == EM_TRUE) { aFlags |= Aspect_VKeyFlags_META;  }
-
-  const bool isEmulated = false;
-  const Aspect_VKeyMouse aButtons = WasmVKeys_MouseButtonsFromNative (theEvent->buttons);
-  switch (theEventType)
-  {
-    case EMSCRIPTEN_EVENT_MOUSEMOVE:
-    {
-      if ((aNewPos.x() < 0 || aNewPos.x() > aWinSize.x()
-        || aNewPos.y() < 0 || aNewPos.y() > aWinSize.y())
-        && PressedMouseButtons() == Aspect_VKeyMouse_NONE)
-      {
-        return EM_FALSE;
-      }
-      if (UpdateMousePosition (aNewPos, aButtons, aFlags, isEmulated))
-      {
-        updateView();
-      }
-      break;
-    }
-    case EMSCRIPTEN_EVENT_MOUSEDOWN:
-    case EMSCRIPTEN_EVENT_MOUSEUP:
-    {
-      if (aNewPos.x() < 0 || aNewPos.x() > aWinSize.x()
-       || aNewPos.y() < 0 || aNewPos.y() > aWinSize.y())
-      {
-        return EM_FALSE;
-      }
-      if (UpdateMouseButtons (aNewPos, aButtons, aFlags, isEmulated))
-      {
-        updateView();
-      }
-      break;
-    }
-    case EMSCRIPTEN_EVENT_CLICK:
-    case EMSCRIPTEN_EVENT_DBLCLICK:
-    {
-      if (aNewPos.x() < 0 || aNewPos.x() > aWinSize.x()
-       || aNewPos.y() < 0 || aNewPos.y() > aWinSize.y())
-      {
-        return EM_FALSE;
-      }
-      break;
-    }
-    case EMSCRIPTEN_EVENT_MOUSEENTER:
-    {
-      break;
-    }
-    case EMSCRIPTEN_EVENT_MOUSELEAVE:
-    {
-      // there is no SetCapture() support, so that mouse unclick events outside canvas will not arrive,
-      // so we have to forget current state...
-      if (UpdateMouseButtons (aNewPos, Aspect_VKeyMouse_NONE, aFlags, isEmulated))
-      {
-        updateView();
-      }
-      break;
-    }
-  }
-  return EM_TRUE;
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessMouseEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
 }
 
 // ================================================================
@@ -598,40 +502,8 @@ EM_BOOL WasmOcctView::onWheelEvent (int theEventType, const EmscriptenWheelEvent
     return EM_FALSE;
   }
 
-  Graphic3d_Vec2i aWinSize;
-  myView->Window()->Size (aWinSize.x(), aWinSize.y());
-  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->mouse.targetX, theEvent->mouse.targetY));
-  if (aNewPos.x() < 0 || aNewPos.x() > aWinSize.x()
-   || aNewPos.y() < 0 || aNewPos.y() > aWinSize.y())
-  {
-    return EM_FALSE;
-  }
-
-  double aDelta = 0.0;
-  switch (theEvent->deltaMode)
-  {
-    case DOM_DELTA_PIXEL:
-    {
-      aDelta = theEvent->deltaY / (5.0 * myDevicePixelRatio);
-      break;
-    }
-    case DOM_DELTA_LINE:
-    {
-      aDelta = theEvent->deltaY * 8.0;
-      break;
-    }
-    case DOM_DELTA_PAGE:
-    {
-      aDelta = theEvent->deltaY >= 0.0 ? 24.0 : -24.0;
-      break;
-    }
-  }
-
-  if (UpdateZoom (Aspect_ScrollDelta (aNewPos, -aDelta)))
-  {
-    updateView();
-  }
-  return EM_TRUE;
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessWheelEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
 }
 
 // ================================================================
@@ -640,90 +512,13 @@ EM_BOOL WasmOcctView::onWheelEvent (int theEventType, const EmscriptenWheelEvent
 // ================================================================
 EM_BOOL WasmOcctView::onTouchEvent (int theEventType, const EmscriptenTouchEvent* theEvent)
 {
-  const double aClickTolerance = 5.0;
   if (myView.IsNull())
   {
     return EM_FALSE;
   }
 
-  Graphic3d_Vec2i aWinSize;
-  myView->Window()->Size (aWinSize.x(), aWinSize.y());
-  bool hasUpdates = false;
-  for (int aTouchIter = 0; aTouchIter < theEvent->numTouches; ++aTouchIter)
-  {
-    const EmscriptenTouchPoint& aTouch = theEvent->touches[aTouchIter];
-    if (!aTouch.isChanged)
-    {
-      continue;
-    }
-
-    const Standard_Size aTouchId = (Standard_Size )aTouch.identifier;
-    const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (aTouch.targetX, aTouch.targetY));
-    switch (theEventType)
-    {
-      case EMSCRIPTEN_EVENT_TOUCHSTART:
-      {
-        if (aNewPos.x() >= 0 && aNewPos.x() < aWinSize.x()
-         && aNewPos.y() >= 0 && aNewPos.y() < aWinSize.y())
-        {
-          hasUpdates = true;
-          AddTouchPoint (aTouchId, Graphic3d_Vec2d (aNewPos));
-          myClickTouch.From.SetValues (-1.0, -1.0);
-          if (myTouchPoints.Extent() == 1)
-          {
-            myClickTouch.From = Graphic3d_Vec2d (aNewPos);
-          }
-        }
-        break;
-      }
-      case EMSCRIPTEN_EVENT_TOUCHMOVE:
-      {
-        const int anOldIndex = myTouchPoints.FindIndex (aTouchId);
-        if (anOldIndex != 0)
-        {
-          hasUpdates = true;
-          UpdateTouchPoint (aTouchId, Graphic3d_Vec2d (aNewPos));
-          if (myTouchPoints.Extent() == 1
-           && (myClickTouch.From - Graphic3d_Vec2d (aNewPos)).cwiseAbs().maxComp() > aClickTolerance)
-          {
-            myClickTouch.From.SetValues (-1.0, -1.0);
-          }
-        }
-        break;
-      }
-      case EMSCRIPTEN_EVENT_TOUCHEND:
-      case EMSCRIPTEN_EVENT_TOUCHCANCEL:
-      {
-        if (RemoveTouchPoint (aTouchId))
-        {
-          if (myTouchPoints.IsEmpty()
-           && myClickTouch.From.minComp() >= 0.0)
-          {
-            if (myDoubleTapTimer.IsStarted()
-             && myDoubleTapTimer.ElapsedTime() <= myMouseDoubleClickInt)
-            {
-              myView->FitAll (0.01, false);
-              myView->Invalidate();
-            }
-            else
-            {
-              myDoubleTapTimer.Stop();
-              myDoubleTapTimer.Reset();
-              myDoubleTapTimer.Start();
-              SelectInViewer (Graphic3d_Vec2i (myClickTouch.From), AIS_SelectionScheme_Replace);
-            }
-          }
-          hasUpdates = true;
-        }
-        break;
-      }
-    }
-  }
-  if (hasUpdates)
-  {
-    updateView();
-  }
-  return hasUpdates || !myTouchPoints.IsEmpty() ? EM_TRUE : EM_FALSE;
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessTouchEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
 }
 
 // ================================================================
@@ -775,35 +570,34 @@ EM_BOOL WasmOcctView::onKeyDownEvent (int theEventType, const EmscriptenKeyboard
     return EM_FALSE;
   }
 
-  const double aTimeStamp = EventTime();
-  const Aspect_VKey aVKey = WasmVKeys_VirtualKeyFromNative (theEvent->keyCode);
-  if (aVKey == Aspect_VKey_UNKNOWN)
-  {
-    return EM_FALSE;
-  }
-  if (theEvent->repeat == EM_TRUE)
-  {
-    return EM_FALSE;
-  }
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessKeyEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+}
 
+//=======================================================================
+//function : KeyDown
+//purpose  :
+//=======================================================================
+void WasmOcctView::KeyDown (Aspect_VKey theKey,
+                            double theTime,
+                            double thePressure)
+{
   const unsigned int aModifOld = myKeys.Modifiers();
-  AIS_ViewController::KeyDown (aVKey, aTimeStamp);
+  AIS_ViewController::KeyDown (theKey, theTime, thePressure);
 
   const unsigned int aModifNew = myKeys.Modifiers();
   if (aModifNew != aModifOld
-   && navigationKeyModifierSwitch (aModifOld, aModifNew, aTimeStamp))
+   && navigationKeyModifierSwitch (aModifOld, aModifNew, theTime))
   {
     // modifier key just pressed
   }
 
   Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
-  if (myNavKeyMap.Find (aVKey | myKeys.Modifiers(), anAction)
+  if (myNavKeyMap.Find (theKey | myKeys.Modifiers(), anAction)
   &&  anAction != Aspect_VKey_UNKNOWN)
   {
-    AIS_ViewController::KeyDown (anAction, aTimeStamp);
-    UpdateView();
+    AIS_ViewController::KeyDown (anAction, theTime, thePressure);
   }
-  return EM_FALSE;
 }
 
 // ================================================================
@@ -818,32 +612,36 @@ EM_BOOL WasmOcctView::onKeyUpEvent (int theEventType, const EmscriptenKeyboardEv
     return EM_FALSE;
   }
 
-  const double aTimeStamp = EventTime();
-  const Aspect_VKey aVKey = WasmVKeys_VirtualKeyFromNative (theEvent->keyCode);
-  if (aVKey == Aspect_VKey_UNKNOWN)
-  {
-    return EM_FALSE;
-  }
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessKeyEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+}
 
+//=======================================================================
+//function : KeyUp
+//purpose  :
+//=======================================================================
+void WasmOcctView::KeyUp (Aspect_VKey theKey,
+                          double theTime)
+{
   const unsigned int aModifOld = myKeys.Modifiers();
-  AIS_ViewController::KeyUp (aVKey, aTimeStamp);
+  AIS_ViewController::KeyUp (theKey, theTime);
 
   Aspect_VKey anAction = Aspect_VKey_UNKNOWN;
-  if (myNavKeyMap.Find (aVKey | myKeys.Modifiers(), anAction)
+  if (myNavKeyMap.Find (theKey | myKeys.Modifiers(), anAction)
   &&  anAction != Aspect_VKey_UNKNOWN)
   {
-    AIS_ViewController::KeyUp (anAction, aTimeStamp);
-    UpdateView();
+    AIS_ViewController::KeyUp (anAction, theTime);
+    processKeyPress (anAction);
   }
 
   const unsigned int aModifNew = myKeys.Modifiers();
   if (aModifNew != aModifOld
-   && navigationKeyModifierSwitch (aModifOld, aModifNew, aTimeStamp))
+   && navigationKeyModifierSwitch (aModifOld, aModifNew, theTime))
   {
     // modifier key released
   }
 
-  return processKeyPress (aVKey | aModifNew) ? EM_TRUE : EM_FALSE;
+  processKeyPress (theKey | aModifNew);
 }
 
 //==============================================================================

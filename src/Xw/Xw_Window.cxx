@@ -15,7 +15,6 @@
 
 #include <Xw_Window.hxx>
 
-#include <Aspect_Convert.hxx>
 #include <Aspect_ScrollDelta.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowInputListener.hxx>
@@ -44,7 +43,6 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
                       const Standard_Integer thePxWidth,
                       const Standard_Integer thePxHeight)
 : Aspect_Window(),
-  myDisplay  (theXDisplay),
   myXWindow  (0),
   myFBConfig (NULL),
   myXLeft    (thePxLeft),
@@ -53,6 +51,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   myYBottom  (thePxTop + thePxHeight),
   myIsOwnWin (Standard_True)
 {
+  myDisplay = theXDisplay;
   if (thePxWidth <= 0 || thePxHeight <= 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Coordinate(s) out of range");
@@ -129,7 +128,6 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
                       const Aspect_Drawable theXWin,
                       const Aspect_FBConfig theFBConfig)
 : Aspect_Window(),
-  myDisplay  (theXDisplay),
   myXWindow  (theXWin),
   myFBConfig (theFBConfig),
   myXLeft    (0),
@@ -138,6 +136,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   myYBottom  (512),
   myIsOwnWin (Standard_False)
 {
+  myDisplay = theXDisplay;
   if (theXWin == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, given invalid X window");

@@ -21,7 +21,6 @@
 
 #if defined(_WIN32) && !defined(OCCT_UWP)
 
-#include <Aspect_Convert.hxx>
 #include <Aspect_ScrollDelta.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowError.hxx>

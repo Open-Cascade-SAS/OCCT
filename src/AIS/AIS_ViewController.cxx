@@ -86,6 +86,7 @@ AIS_ViewController::AIS_ViewController()
   myMouseStopDragOnUnclick (false),
   //
   myTouchToleranceScale      (1.0f),
+  myTouchClickThresholdPx    (3.0f),
   myTouchRotationThresholdPx (6.0f),
   myTouchZRotationThreshold  (float(2.0 * M_PI / 180.0)),
   myTouchPanThresholdPx      (4.0f),
@@ -1010,14 +1011,12 @@ void AIS_ViewController::AddTouchPoint (Standard_Size theId,
                                         Standard_Boolean theClearBefore)
 {
   myUI.MoveTo.ToHilight = false;
-  if (theClearBefore)
-  {
-    RemoveTouchPoint ((Standard_Size )-1);
-  }
+  Aspect_WindowInputListener::AddTouchPoint (theId, thePnt, theClearBefore);
 
-  myTouchPoints.Add (theId, Aspect_Touch (thePnt, false));
+  myTouchClick.From = Graphic3d_Vec2d (-1.0);
   if (myTouchPoints.Extent() == 1)
   {
+    myTouchClick.From = thePnt;
     myUpdateStartPointRot = true;
     myStartRotCoord = thePnt;
     if (myToAllowDragging)
@@ -1043,18 +1042,9 @@ void AIS_ViewController::AddTouchPoint (Standard_Size theId,
 bool AIS_ViewController::RemoveTouchPoint (Standard_Size theId,
                                            Standard_Boolean theClearSelectPnts)
 {
-  if (theId == (Standard_Size )-1)
+  if (!Aspect_WindowInputListener::RemoveTouchPoint (theId, theClearSelectPnts))
   {
-    myTouchPoints.Clear (false);
-  }
-  else
-  {
-    const Standard_Integer anOldExtent = myTouchPoints.Extent();
-    myTouchPoints.RemoveKey (theId);
-    if (myTouchPoints.Extent() == anOldExtent)
-    {
-      return false;
-    }
+    return false;
   }
 
   if (myTouchPoints.Extent() == 1)
@@ -1079,6 +1069,30 @@ bool AIS_ViewController::RemoveTouchPoint (Standard_Size theId,
     }
 
     myUI.Dragging.ToStop = true;
+
+    if (theId == (Standard_Size )-1)
+    {
+      // abort clicking
+      myTouchClick.From = Graphic3d_Vec2d (-1);
+    }
+    else if (myTouchClick.From.minComp() >= 0.0)
+    {
+      bool isDoubleClick = false;
+      if (myTouchDoubleTapTimer.IsStarted()
+       && myTouchDoubleTapTimer.ElapsedTime() <= myMouseDoubleClickInt)
+      {
+        isDoubleClick = true;
+      }
+      else
+      {
+        myTouchDoubleTapTimer.Stop();
+        myTouchDoubleTapTimer.Reset();
+        myTouchDoubleTapTimer.Start();
+      }
+
+      // emulate mouse click
+      UpdateMouseClick (Graphic3d_Vec2i (myTouchClick.From), Aspect_VKeyMouse_LeftButton, Aspect_VKeyFlags_NONE, isDoubleClick);
+    }
   }
   myUI.IsNewGesture = true;
   return true;
@@ -1091,13 +1105,13 @@ bool AIS_ViewController::RemoveTouchPoint (Standard_Size theId,
 void AIS_ViewController::UpdateTouchPoint (Standard_Size theId,
                                            const Graphic3d_Vec2d& thePnt)
 {
-  if (Aspect_Touch* aTouch = myTouchPoints.ChangeSeek (theId))
+  Aspect_WindowInputListener::UpdateTouchPoint (theId, thePnt);
+
+  const double aTouchTol = double(myTouchToleranceScale) * double(myTouchClickThresholdPx);
+  if (myTouchPoints.Extent() == 1
+   && (myTouchClick.From - thePnt).cwiseAbs().maxComp() > aTouchTol)
   {
-    aTouch->To = thePnt;
-  }
-  else
-  {
-    AddTouchPoint (theId, thePnt);
+    myTouchClick.From.SetValues (-1.0, -1.0);
   }
 }
 
@@ -1195,12 +1209,14 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavJump, aNewEventTime, aDuration))
   {
     myKeys.KeyUp (Aspect_VKey_NavJump, aNewEventTime);
+    aWalk.SetDefined (true);
     aWalk.SetJumping (true);
   }
   if (!aWalk.IsJumping()
    && theCrouchRatio < 1.0
    && myKeys.HoldDuration (Aspect_VKey_NavCrouch, aNewEventTime, aDuration))
   {
+    aWalk.SetDefined (true);
     aWalk.SetRunning (false);
     aWalk.SetCrouching (true);
   }
@@ -1215,6 +1231,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
     aProgress *= aRunRatio;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Forward].Value += aProgress;
     aWalk[AIS_WalkTranslation_Forward].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Forward].Duration = aDuration;
@@ -1223,6 +1240,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
     aProgress *= aRunRatio;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Forward].Value += -aProgress;
     aWalk[AIS_WalkTranslation_Forward].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Forward].Duration = aDuration;
@@ -1231,6 +1249,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
     aProgress *= aRunRatio;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Side].Value = -aProgress;
     aWalk[AIS_WalkTranslation_Side].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Side].Duration = aDuration;
@@ -1239,6 +1258,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
     aProgress *= aRunRatio;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Side].Value = aProgress;
     aWalk[AIS_WalkTranslation_Side].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Side].Duration = aDuration;
@@ -1246,6 +1266,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavLookLeft, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Yaw].Value = aProgress;
     aWalk[AIS_WalkRotation_Yaw].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Yaw].Duration = aDuration;
@@ -1253,6 +1274,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavLookRight, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Yaw].Value = -aProgress;
     aWalk[AIS_WalkRotation_Yaw].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Yaw].Duration = aDuration;
@@ -1260,6 +1282,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavLookUp, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Pitch].Value = !myToInvertPitch ? -aProgress : aProgress;
     aWalk[AIS_WalkRotation_Pitch].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Pitch].Duration = aDuration;
@@ -1267,6 +1290,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavLookDown, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Pitch].Value = !myToInvertPitch ? aProgress : -aProgress;
     aWalk[AIS_WalkRotation_Pitch].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Pitch].Duration = aDuration;
@@ -1274,6 +1298,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavRollCCW, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Roll].Value = -aProgress;
     aWalk[AIS_WalkRotation_Roll].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Roll].Duration = aDuration;
@@ -1281,6 +1306,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavRollCW, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration)) * aPressure;
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkRotation_Roll].Value = aProgress;
     aWalk[AIS_WalkRotation_Roll].Pressure = aPressure;
     aWalk[AIS_WalkRotation_Roll].Duration = aDuration;
@@ -1288,6 +1314,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavSlideUp, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Up].Value = aProgress;
     aWalk[AIS_WalkTranslation_Up].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Up].Duration = aDuration;
@@ -1295,6 +1322,7 @@ AIS_WalkDelta AIS_ViewController::FetchNavigationKeys (Standard_Real theCrouchRa
   if (myKeys.HoldDuration (Aspect_VKey_NavSlideDown, aNewEventTime, aDuration, aPressure))
   {
     double aProgress = Abs (Min (aMaxDuration, aDuration));
+    aWalk.SetDefined (true);
     aWalk[AIS_WalkTranslation_Up].Value = -aProgress;
     aWalk[AIS_WalkTranslation_Up].Pressure = aPressure;
     aWalk[AIS_WalkTranslation_Up].Duration = aDuration;
@@ -1956,6 +1984,10 @@ AIS_WalkDelta AIS_ViewController::handleNavigationKeys (const Handle(AIS_Interac
   }
   if (aWalk.IsEmpty())
   {
+    if (aWalk.IsDefined())
+    {
+      setAskNextFrame();
+    }
     return aWalk;
   }
   else if (myGL.OrbitRotation.ToRotate

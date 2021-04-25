@@ -136,9 +136,6 @@ private:
   //! Application event loop.
   void mainloop();
 
-  //! Request view redrawing.
-  void updateView();
-
   //! Flush events and redraw view.
   void redrawView();
 
@@ -146,24 +143,23 @@ private:
   virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                  const Handle(V3d_View)& theView) override;
 
+  //! Schedule processing of window input events with the next repaint event.
+  virtual void ProcessInput() override;
+
+  //! Handle key down event.
+  virtual void KeyDown (Aspect_VKey theKey,
+                        double theTime,
+                        double thePressure) override;
+
+  //! Handle key up event.
+  virtual void KeyUp (Aspect_VKey theKey,
+                      double theTime) override;
+
   //! Dump WebGL context information.
   void dumpGlInfo (bool theIsBasic);
 
   //! Initialize pixel scale ratio.
   void initPixelScaleRatio();
-
-  //! Return point from logical units to backing store.
-  Graphic3d_Vec2d convertPointToBacking (const Graphic3d_Vec2d& thePnt) const
-  {
-    return thePnt * myDevicePixelRatio;
-  }
-
-  //! Return point from logical units to backing store.
-  Graphic3d_Vec2i convertPointToBacking (const Graphic3d_Vec2i& thePnt) const
-  {
-    Graphic3d_Vec2d aPnt = Graphic3d_Vec2d (thePnt) * myDevicePixelRatio + Graphic3d_Vec2d (0.5);
-    return Graphic3d_Vec2i (aPnt);
-  }
 
 //! @name Emscripten callbacks
 private:
@@ -245,8 +241,7 @@ private:
   Handle(Prs3d_TextAspect)       myTextStyle;        //!< text style for OSD elements
   Handle(AIS_ViewCube)           myViewCube;         //!< view cube object
   TCollection_AsciiString        myCanvasId;         //!< canvas element id on HTML page
-  Aspect_Touch                   myClickTouch;       //!< single touch position for handling clicks
-  OSD_Timer                      myDoubleTapTimer;   //!< timer for handling double tap
+  Graphic3d_Vec2i                myWinSizeOld;
   float                          myDevicePixelRatio; //!< device pixel ratio for handling high DPI displays
   unsigned int                   myUpdateRequests;   //!< counter for unhandled update requests
 

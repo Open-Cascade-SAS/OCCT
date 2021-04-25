@@ -39,6 +39,15 @@
   #include <unistd.h>
 #endif
 
+#if defined(__EMSCRIPTEN__)
+  #include <emscripten/emscripten.h>
+
+  //! Returns Module.noExitRuntime flag.
+  EM_JS(bool, occJSModuleNoExitRuntime, (), {
+    return Module.noExitRuntime === true;
+  });
+#endif
+
 #ifdef HAVE_TK
 #if defined(__APPLE__) && !defined(HAVE_XLIB)
   // use forward declaration for small subset of used Tk functions
@@ -266,6 +275,9 @@ Draw_Window::Draw_Window (const char* theTitle,
   }
 
   getDrawWindowList().Append (this);
+#else
+  (void )theParent;
+  (void )theWin;
 #endif
 
   init (anXY, aSize);
@@ -843,7 +855,9 @@ void Draw_Window::DrawString (Standard_Integer theX, Standard_Integer theY,
 #elif defined(HAVE_XLIB)
   XDrawString (Draw_WindowDisplay, GetDrawable(), myBase->gc, theX, theY, (char* )theText, strlen(theText));
 #else
-  //
+  (void )theX;
+  (void )theY;
+  (void )theText;
 #endif
 }
 
@@ -1200,11 +1214,16 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
 {
   Interprete = interprete;
 
+  bool toWaitInput = true;
+#ifdef __EMSCRIPTEN__
+  toWaitInput = !occJSModuleNoExitRuntime();
+#endif
+
   // Commands will come from standard input, so set up an event handler for standard input.
   // If the input device is aEvaluate the .rc file, if one has been specified,
   // set up an event handler for standard input, and print a prompt if the input device is a terminal.
   Tcl_Channel anInChannel = Tcl_GetStdChannel(TCL_STDIN);
-  if (anInChannel)
+  if (anInChannel && toWaitInput)
   {
     Tcl_CreateChannelHandler (anInChannel, TCL_READABLE, StdinProc, (ClientData )anInChannel);
   }
@@ -1237,6 +1256,11 @@ void Run_Appli(Standard_Boolean (*interprete) (const char*))
   // When there are no windows left, Tk_MainLoop returns and we exit.
   Tk_MainLoop();
 #else
+  if (!toWaitInput)
+  {
+    return;
+  }
+
   for (;;)
   {
     Tcl_DoOneEvent (0); // practically the same as Tk_MainLoop()

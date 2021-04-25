@@ -216,6 +216,7 @@ n SelectMgr
 n StdPrs
 n StdSelect
 n V3d
+n Wasm
 n WNT
 n Xw
 n Cocoa

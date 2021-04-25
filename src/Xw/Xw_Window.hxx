@@ -93,9 +93,6 @@ public:
   //! @return native Window handle
   Aspect_Drawable XWindow() const { return myXWindow; }
 
-  //! @return connection to X Display
-  Standard_EXPORT const Handle(Aspect_DisplayConnection)& DisplayConnection() const;
-
   //! @return native Window handle
   virtual Aspect_Drawable NativeHandle() const Standard_OVERRIDE
   {
@@ -133,7 +130,6 @@ public:
 
 protected:
 
-  Handle(Aspect_DisplayConnection) myDisplay; //!< X Display connection
   Aspect_Drawable  myXWindow;  //!< XLib window handle
   Aspect_FBConfig  myFBConfig; //!< GLXFBConfig
   Standard_Integer myXLeft;    //!< left   position in pixels

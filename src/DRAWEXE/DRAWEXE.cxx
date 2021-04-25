@@ -17,6 +17,7 @@
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 #include <Message.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <Message_PrinterSystemLog.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -31,6 +32,85 @@
   #include <ViewerTest.hxx>
   #include <XSDRAWSTLVRML.hxx>
   #include <XDEDRAW.hxx>
+#endif
+
+Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
+
+//! Draw Harness interface for JavaScript.
+class DRAWEXE
+{
+public:
+  //! Evaluate Tcl command.
+  static int eval (const std::string& theCommand)
+  {
+    int aRes = 0;
+    try
+    {
+      OCC_CATCH_SIGNALS
+      //aRes = Draw::GetInterpretor().Eval (theCommand.c_str());
+      aRes = Draw_Interprete (theCommand.c_str()) ? 1 : 0;
+    }
+    catch (Standard_Failure& anExcept)
+    {
+      std::cout << "Failed to evaluate command: " << anExcept.GetMessageString() << std::endl;
+    }
+    return aRes;
+  }
+
+  //! Check if Tcl command is complete.
+  static bool isComplete (const std::string& theCommand)
+  {
+    return Draw::GetInterpretor().Complete (theCommand.c_str());
+  }
+};
+
+//! Print message to Module.printMessage callback.
+EM_JS(void, occJSPrintMessage, (const char* theStr, int theGravity), {
+  if (Module.printMessage != undefined && Module.printMessage != null) {
+    Module.printMessage (UTF8ToString(theStr), theGravity);
+  } else if (Module.print != undefined && Module.print != null) {
+    Module.print (UTF8ToString(theStr));
+  } else {
+    //console.info (UTF8ToString(theStr));
+  }
+});
+
+//! Auxiliary printer to a Module.printMessage callback accepting text and gravity.
+class DRAWEXE_WasmModulePrinter : public Message_Printer
+{
+  DEFINE_STANDARD_RTTI_INLINE(DRAWEXE_WasmModulePrinter, Message_Printer)
+public:
+
+  //! Main constructor.
+  DRAWEXE_WasmModulePrinter (const Message_Gravity theTraceLevel = Message_Info)
+  {
+    SetTraceLevel (theTraceLevel);
+  }
+
+  //! Destructor.
+  virtual ~DRAWEXE_WasmModulePrinter() {}
+
+protected:
+
+  //! Puts a message.
+  virtual void send (const TCollection_AsciiString& theString,
+                     const Message_Gravity theGravity) const Standard_OVERRIDE
+  {
+    if (theGravity >= myTraceLevel)
+    {
+      occJSPrintMessage (theString.ToCString(), (int )theGravity);
+    }
+  }
+};
+
+EMSCRIPTEN_BINDINGS(DRAWEXE) {
+  emscripten::function("eval",       &DRAWEXE::eval);
+  emscripten::function("isComplete", &DRAWEXE::isComplete);
+}
 #endif
 
 #ifdef OCCT_NO_PLUGINS
@@ -154,8 +234,13 @@ void Draw_InitAppli (Draw_Interpretor& theDI)
 {
 #if defined(__EMSCRIPTEN__)
   // open JavaScript console within the Browser to see this output
-  Handle(Message_PrinterSystemLog) aJSConsolePrinter = new Message_PrinterSystemLog ("DRAWEXE");
+  Message_Gravity aGravity = Message_Info;
+  Handle(Message_PrinterSystemLog) aJSConsolePrinter = new Message_PrinterSystemLog ("DRAWEXE", aGravity);
   Message::DefaultMessenger()->AddPrinter (aJSConsolePrinter);
+  // replace printer into std::cout by a printer into a custom callback Module.printMessage accepting message gravity
+  Message::DefaultMessenger()->RemovePrinters (STANDARD_TYPE(Message_PrinterOStream));
+  Handle(DRAWEXE_WasmModulePrinter) aJSModulePrinter = new DRAWEXE_WasmModulePrinter (aGravity);
+  Message::DefaultMessenger()->AddPrinter (aJSModulePrinter);
 #endif
 
   Draw::Commands (theDI);

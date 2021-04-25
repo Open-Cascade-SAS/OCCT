@@ -76,6 +76,70 @@ void Aspect_WindowInputListener::KeyFromAxis (Aspect_VKey theNegative,
 }
 
 // =======================================================================
+// function : AddTouchPoint
+// purpose  :
+// =======================================================================
+void Aspect_WindowInputListener::AddTouchPoint (Standard_Size theId,
+                                                const Graphic3d_Vec2d& thePnt,
+                                                Standard_Boolean theClearBefore)
+{
+  if (theClearBefore)
+  {
+    RemoveTouchPoint ((Standard_Size )-1);
+  }
+
+  myTouchPoints.Add (theId, Aspect_Touch (thePnt, false));
+}
+
+// =======================================================================
+// function : RemoveTouchPoint
+// purpose  :
+// =======================================================================
+bool Aspect_WindowInputListener::RemoveTouchPoint (Standard_Size theId,
+                                                   Standard_Boolean theClearSelectPnts)
+{
+  (void )theClearSelectPnts;
+  if (theId == (Standard_Size )-1)
+  {
+    myTouchPoints.Clear (false);
+  }
+  else
+  {
+    const Standard_Integer anOldExtent = myTouchPoints.Extent();
+    myTouchPoints.RemoveKey (theId);
+    if (myTouchPoints.Extent() == anOldExtent)
+    {
+      return false;
+    }
+  }
+
+  if (myTouchPoints.Extent() == 1)
+  {
+    // avoid incorrect transition from pinch to one finger
+    Aspect_Touch& aFirstTouch = myTouchPoints.ChangeFromIndex (1);
+    aFirstTouch.To = aFirstTouch.From;
+  }
+  return true;
+}
+
+// =======================================================================
+// function : UpdateTouchPoint
+// purpose  :
+// =======================================================================
+void Aspect_WindowInputListener::UpdateTouchPoint (Standard_Size theId,
+                                                   const Graphic3d_Vec2d& thePnt)
+{
+  if (Aspect_Touch* aTouch = myTouchPoints.ChangeSeek (theId))
+  {
+    aTouch->To = thePnt;
+  }
+  else
+  {
+    AddTouchPoint (theId, thePnt);
+  }
+}
+
+// =======================================================================
 // function : update3dMouseTranslation
 // purpose  :
 // =======================================================================

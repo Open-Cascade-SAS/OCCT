@@ -17,12 +17,39 @@
 #include <ViewerTest_EventManager.hxx>
 
 #include <AIS_AnimationCamera.hxx>
+#include <Aspect_DisplayConnection.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <Aspect_Grid.hxx>
 #include <Draw.hxx>
+#include <Message.hxx>
 #include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_V3dView.hxx>
+#include <ViewerTest.hxx>
+
+#if defined(_WIN32)
+  //
+#elif defined(HAVE_XLIB)
+  #include <Xw_Window.hxx>
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+#elif defined(__EMSCRIPTEN__)
+  #include <Wasm_Window.hxx>
+  #include <emscripten.h>
+  #include <emscripten/html5.h>
+
+  //! Callback flushing events and redrawing the WebGL canvas.
+  static void onWasmRedrawView (void* )
+  {
+    Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+    const Handle(V3d_View)& aView = ViewerTest::CurrentView();
+    const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+    if (!aViewCtrl.IsNull() && !aView.IsNull() && !aCtx.IsNull())
+    {
+      aViewCtrl->ProcessExpose();
+    }
+  }
+#endif
 
 Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 
@@ -48,7 +75,8 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
 : myCtx  (theCtx),
   myView (theView),
   myToPickPnt (Standard_False),
-  myIsTmpContRedraw (Standard_False)
+  myIsTmpContRedraw (Standard_False),
+  myUpdateRequests (0)
 {
   myViewAnimation = GlobalViewAnimation();
 
@@ -73,6 +101,9 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
   addActionHotKeys (Aspect_VKey_NavSlideRight,     Aspect_VKey_Right | Aspect_VKeyFlags_SHIFT);
   addActionHotKeys (Aspect_VKey_NavSlideUp,        Aspect_VKey_Up    | Aspect_VKeyFlags_SHIFT);
   addActionHotKeys (Aspect_VKey_NavSlideDown,      Aspect_VKey_Down  | Aspect_VKeyFlags_SHIFT);
+
+  // window could be actually not yet set to the View
+  //SetupWindowCallbacks (theView->Window());
 }
 
 //=======================================================================
@@ -87,6 +118,23 @@ ViewerTest_EventManager::~ViewerTest_EventManager()
     myViewAnimation->Stop();
     myViewAnimation->SetView (Handle(V3d_View)());
   }
+}
+
+// =======================================================================
+// function : UpdateMouseClick
+// purpose  :
+// =======================================================================
+bool ViewerTest_EventManager::UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
+                                                Aspect_VKeyMouse theButton,
+                                                Aspect_VKeyFlags theModifiers,
+                                                bool theIsDoubleClick)
+{
+  if (theIsDoubleClick && !myView.IsNull() && !myCtx.IsNull())
+  {
+    FitAllAuto (myCtx, myView);
+    return true;
+  }
+  return AIS_ViewController::UpdateMouseClick (thePoint, theButton, theModifiers, theIsDoubleClick);
 }
 
 //=======================================================================
@@ -124,7 +172,6 @@ void ViewerTest_EventManager::ProcessExpose()
 {
   if (!myView.IsNull())
   {
-    myView->Invalidate();
     FlushViewEvents (myCtx, myView, true);
   }
 }
@@ -136,6 +183,7 @@ void ViewerTest_EventManager::ProcessExpose()
 void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                                 const Handle(V3d_View)& theView)
 {
+  myUpdateRequests = 0;
   AIS_ViewController::handleViewRedraw (theCtx, theView);
 
   // On non-Windows platforms Aspect_Window::InvalidateContent() from rendering thread does not work as expected
@@ -148,10 +196,16 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
      && (!aRedrawer.IsStarted() || aRedrawer.IsPaused()))
     {
       myIsTmpContRedraw = true;
-    #ifndef _WIN32
+    #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
       aRedrawer.Start (theView->Window(), 60.0);
     #endif
     }
+
+    // ask more frames
+    ++myUpdateRequests;
+  #if defined(__EMSCRIPTEN__)
+    emscripten_async_call (onWasmRedrawView, this, 0);
+  #endif
   }
   else if (myIsTmpContRedraw)
   {
@@ -180,7 +234,9 @@ void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
       return;
     }
 
+    myView->Window()->DoResize();
     myView->MustBeResized();
+    myView->Invalidate();
     FlushViewEvents (myCtx, myView, true);
   }
 }
@@ -191,10 +247,25 @@ void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
 //==============================================================================
 void ViewerTest_EventManager::ProcessInput()
 {
-  if (!myView.IsNull())
+  if (myView.IsNull())
   {
-    FlushViewEvents (myCtx, myView, true);
+    return;
   }
+
+#if defined(__EMSCRIPTEN__)
+  // Queue onWasmRedrawView() callback to redraw canvas after all user input is flushed by browser.
+  // Redrawing viewer on every single message would be a pointless waste of resources,
+  // as user will see only the last drawn frame due to WebGL implementation details.
+  if (++myUpdateRequests == 1)
+  {
+  #if defined(__EMSCRIPTEN__)
+    emscripten_async_call (onWasmRedrawView, this, 0);
+  #endif
+  }
+#else
+  // handle synchronously
+  ProcessExpose();
+#endif
 }
 
 // =======================================================================
@@ -537,4 +608,146 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
     TCollection_AsciiString aCmd = TCollection_AsciiString ("vselmode ") + aSelMode + (toEnable ? " 1" : " 0");
     Draw_Interprete (aCmd.ToCString());
   }
+}
+
+#if defined(__EMSCRIPTEN__)
+//! Handle browser window resize event.
+static EM_BOOL onResizeCallback (int theEventType, const EmscriptenUiEvent* theEvent, void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessUiEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+  }
+  return EM_FALSE;
+}
+
+//! Handle mouse input event.
+static EM_BOOL onWasmMouseCallback (int theEventType, const EmscriptenMouseEvent* theEvent, void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+  }
+  return EM_FALSE;
+}
+
+//! Handle mouse wheel event.
+static EM_BOOL onWasmWheelCallback (int theEventType, const EmscriptenWheelEvent* theEvent, void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessWheelEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+  }
+  return EM_FALSE;
+}
+
+//! Handle touch input event.
+static EM_BOOL onWasmTouchCallback (int theEventType, const EmscriptenTouchEvent* theEvent, void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessTouchEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
+  }
+  return EM_FALSE;
+}
+
+//! Handle keyboard input event.
+static EM_BOOL onWasmKeyCallback (int theEventType, const EmscriptenKeyboardEvent* theEvent, void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    aWindow->ProcessKeyEvent (*aViewCtrl, theEventType, theEvent);
+    return EM_TRUE;
+  }
+  return EM_FALSE;
+}
+#endif
+
+// ==============================================================================
+// function : SetupWindowCallbacks
+// purpose  :
+// ==============================================================================
+void ViewerTest_EventManager::SetupWindowCallbacks (const Handle(Aspect_Window)& theWin)
+{
+#ifdef _WIN32
+  (void )theWin;
+#elif defined(HAVE_XLIB)
+  // X11
+  Window anXWin = (Window )theWin->NativeHandle();
+  Display* anXDisplay = (Display* )theWin->DisplayConnection()->GetDisplayAspect();
+  XSynchronize (anXDisplay, 1);
+
+  // X11 : For keyboard on SUN
+  XWMHints aWmHints;
+  memset (&aWmHints, 0, sizeof(aWmHints));
+  aWmHints.flags = InputHint;
+  aWmHints.input = 1;
+  XSetWMHints (anXDisplay, anXWin, &aWmHints);
+
+  XSelectInput (anXDisplay, anXWin,
+                ExposureMask | KeyPressMask | KeyReleaseMask
+              | ButtonPressMask | ButtonReleaseMask
+              | StructureNotifyMask
+              | PointerMotionMask
+              | Button1MotionMask | Button2MotionMask
+              | Button3MotionMask | FocusChangeMask);
+  Atom aDeleteWindowAtom = theWin->DisplayConnection()->GetAtom (Aspect_XA_DELETE_WINDOW);
+  XSetWMProtocols (anXDisplay, anXWin, &aDeleteWindowAtom, 1);
+
+  XSynchronize (anXDisplay, 0);
+#elif defined(__EMSCRIPTEN__)
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (theWin);
+  if (aWindow->CanvasId().IsEmpty()
+   || aWindow->CanvasId() == "#")
+  {
+    Message::SendFail ("Error: unable registering callbacks to Module.canvas");
+    return;
+  }
+
+  const char* aTargetId = aWindow->CanvasId().ToCString();
+  const EM_BOOL toUseCapture = EM_TRUE;
+  void* anOpaque = NULL; //this; // unused
+
+  // make sure to clear previously set listeners (e.g. created by another ViewerTest_EventManager instance)
+  emscripten_html5_remove_all_event_listeners();
+
+  // resize event implemented only for a window by browsers,
+  // so that if web application changes canvas size by other means it should use another way to tell OCCT about resize
+  emscripten_set_resize_callback     (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onResizeCallback);
+
+  emscripten_set_mousedown_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseup_callback    (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mousemove_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_dblclick_callback   (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_click_callback      (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseenter_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseleave_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_wheel_callback      (aTargetId, anOpaque, toUseCapture, onWasmWheelCallback);
+
+  emscripten_set_touchstart_callback (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchend_callback   (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchmove_callback  (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+  emscripten_set_touchcancel_callback(aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
+
+  // keyboard input requires a focusable element or EMSCRIPTEN_EVENT_TARGET_WINDOW
+  emscripten_set_keydown_callback    (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
+  emscripten_set_keyup_callback      (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
+#else
+  (void )theWin;
+#endif
 }

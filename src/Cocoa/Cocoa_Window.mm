@@ -26,7 +26,6 @@
 #include <Cocoa_LocalPool.hxx>
 
 #include <Image_AlienPixMap.hxx>
-#include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Cocoa_Window,Aspect_Window)

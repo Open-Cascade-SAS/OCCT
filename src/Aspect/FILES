@@ -6,7 +6,6 @@ Aspect_Background.hxx
 Aspect_CircularGrid.cxx
 Aspect_CircularGrid.hxx
 Aspect_ColorSpace.hxx
-Aspect_Convert.hxx
 Aspect_Display.hxx
 Aspect_DisplayConnection.cxx
 Aspect_DisplayConnection.hxx

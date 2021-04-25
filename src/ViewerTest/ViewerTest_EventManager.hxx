@@ -22,6 +22,7 @@
 #include <TCollection_AsciiString.hxx>
 
 class AIS_InteractiveContext;
+class Aspect_Window;
 class V3d_View;
 
 DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, Standard_Transient)
@@ -58,6 +59,9 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~ViewerTest_EventManager();
 
+  //! Setup or adjust window callbacks.
+  Standard_EXPORT static void SetupWindowCallbacks (const Handle(Aspect_Window)& theWin);
+
   //! Return interactive context.
   const Handle(AIS_InteractiveContext)& Context() const { return myCtx; }
 
@@ -74,6 +78,12 @@ public:
     myPickPntArgVec[1] = theArgY;
     myPickPntArgVec[2] = theArgZ;
   }
+
+  //! Handle mouse button click event.
+  Standard_EXPORT virtual bool UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
+                                                  Aspect_VKeyMouse theButton,
+                                                  Aspect_VKeyFlags theModifiers,
+                                                  bool theIsDoubleClick) Standard_OVERRIDE;
 
   //! Handle mouse button press/release event.
   Standard_EXPORT virtual bool UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
@@ -137,6 +147,8 @@ private:
   TCollection_AsciiString myPickPntArgVec[3];
   Standard_Boolean myToPickPnt;
   Standard_Boolean myIsTmpContRedraw;
+
+  unsigned int     myUpdateRequests; //!< counter for unhandled update requests
 
 };
 

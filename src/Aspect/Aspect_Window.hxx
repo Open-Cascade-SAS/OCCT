@@ -24,6 +24,7 @@
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_TypeOfResize.hxx>
 #include <Aspect_Drawable.hxx>
+#include <Graphic3d_Vec2.hxx>
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -36,7 +37,7 @@ DEFINE_STANDARD_HANDLE(Aspect_Window, Standard_Transient)
 //! Defines a window.
 class Aspect_Window : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Aspect_Window, Standard_Transient)
 public:
 
   //! Modifies the window background.
@@ -102,6 +103,9 @@ public:
   //! Returns native Window FB config (GLXFBConfig on Xlib)
   Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
 
+  //! Returns connection to Display or NULL.
+  const Handle(Aspect_DisplayConnection)& DisplayConnection() const { return myDisplay; }
+
   //! Sets window title.
   virtual void SetTitle (const TCollection_AsciiString& theTitle) { (void )theTitle; }
 
@@ -114,11 +118,28 @@ public:
   //! on platforms implementing thread-unsafe connections to display.
   //! NULL can be passed instead otherwise.
   virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp) { (void )theDisp; }
-  
+
+public:
+
+  //! Return device pixel ratio (logical to backing store scale factor).
+  virtual Standard_Real DevicePixelRatio() const { return 1.0; }
+
+  //! Convert point from logical units into backing store units.
+  virtual Graphic3d_Vec2d ConvertPointToBacking (const Graphic3d_Vec2d& thePnt) const
+  {
+    return thePnt * DevicePixelRatio();
+  }
+
+  //! Convert point from backing store units to logical units.
+  virtual Graphic3d_Vec2d ConvertPointFromBacking (const Graphic3d_Vec2d& thePnt) const
+  {
+    return thePnt / DevicePixelRatio();
+  }
+
+public:
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
-
-  DEFINE_STANDARD_RTTIEXT(Aspect_Window,Standard_Transient)
 
 protected:
 
@@ -127,6 +148,7 @@ protected:
 
 protected:
 
+  Handle(Aspect_DisplayConnection) myDisplay; //!< Display connection
   Aspect_Background MyBackground;
   Aspect_GradientBackground MyGradientBackground;
   Aspect_FillMethod MyBackgroundFillMethod;
