@@ -1,9 +1,4 @@
 VInspector.qrc
-VInspectorAPI_CallBack.cxx
-VInspectorAPI_CallBack.hxx
-VInspector_CallBack.cxx
-VInspector_CallBack.hxx
-VInspector_CallBackMode.hxx
 VInspector_Communicator.cxx
 VInspector_Communicator.hxx
 VInspector_ItemBase.cxx
@@ -12,13 +7,8 @@ VInspector_ItemContext.cxx
 VInspector_ItemContext.hxx
 VInspector_ItemContextProperties.cxx
 VInspector_ItemContextProperties.hxx
-VInspector_ItemHistoryElement.cxx
-VInspector_ItemHistoryElement.hxx
-VInspector_ItemHistoryRoot.cxx
-VInspector_ItemHistoryRoot.hxx
-VInspector_ItemHistoryType.cxx
-VInspector_ItemHistoryType.hxx
-VInspector_ItemHistoryTypeInfo.hxx
+VInspector_ItemGraphic3dCLight.cxx
+VInspector_ItemGraphic3dCLight.hxx
 VInspector_ItemPresentableObject.cxx
 VInspector_ItemPresentableObject.hxx
 VInspector_ItemSelectMgrViewerSelector.cxx
@@ -32,7 +22,5 @@ VInspector_Tools.cxx
 VInspector_Tools.hxx
 VInspector_ViewModel.cxx
 VInspector_ViewModel.hxx
-VInspector_ViewModelHistory.cxx
-VInspector_ViewModelHistory.hxx
 VInspector_Window.cxx
 VInspector_Window.hxx

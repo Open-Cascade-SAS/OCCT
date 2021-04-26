@@ -31,7 +31,6 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <inspector/VInspector_CallBackMode.hxx>
 #include <inspector/View_DisplayActionType.hxx>
 
 #include <inspector/TreeModel_ItemBase.hxx>

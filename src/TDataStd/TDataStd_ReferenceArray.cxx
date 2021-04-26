@@ -343,11 +343,17 @@ void TDataStd_ReferenceArray::DumpJson (Standard_OStream& theOStream, Standard_I
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  TCollection_AsciiString aLabel;
-  for (TDataStd_LabelArray1::Iterator anArrayIt (myArray->Array1()); anArrayIt.More(); anArrayIt.Next())
+  if (!myArray.IsNull())
   {
-    aLabel.Clear();
-    TDF_Tool::Entry (anArrayIt.Value(), aLabel);
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArray->Lower())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArray->Upper())
+
+    TCollection_AsciiString aLabel;
+    for (TDataStd_LabelArray1::Iterator anArrayIt (myArray->Array1()); anArrayIt.More(); anArrayIt.Next())
+    {
+      aLabel.Clear();
+      TDF_Tool::Entry (anArrayIt.Value(), aLabel);
+      OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+    }
   }
 }

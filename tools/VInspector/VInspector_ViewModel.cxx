@@ -43,8 +43,8 @@ void VInspector_ViewModel::InitColumns()
 {
   TreeModel_ModelBase::InitColumns();
 
-  SetHeaderItem (3, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
-  SetHeaderItem (4, TreeModel_HeaderSection ("SelectedOwners", -1));
+  setHeaderItem (3, TreeModel_HeaderSection ("Pointer", COLUMN_POINTER_WIDTH));
+  setHeaderItem (4, TreeModel_HeaderSection ("SelectedOwners", -1));
 }
 
 // =======================================================================

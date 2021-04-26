@@ -1,3 +1,5 @@
+ViewControl_ColorSelector.cxx
+ViewControl_ColorSelector.hxx
 ViewControl_EditType.hxx
 ViewControl_MessageDialog.cxx
 ViewControl_MessageDialog.hxx
@@ -5,6 +7,8 @@ ViewControl_PropertyView.cxx
 ViewControl_PropertyView.hxx
 ViewControl_Table.cxx
 ViewControl_Table.hxx
+ViewControl_TableItemDelegate.cxx
+ViewControl_TableItemDelegate.hxx
 ViewControl_TableModel.cxx
 ViewControl_TableModel.hxx
 ViewControl_TableModelValues.cxx

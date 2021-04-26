@@ -424,7 +424,6 @@ void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer) co
 
   OCCT_DUMP_FIELD_VALUE_GUID (theOStream, ID())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Transaction())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, UntilTransaction())
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsNew())

@@ -23,8 +23,6 @@
 #include <inspector/TInspector_Preferences.hxx>
 #include <inspector/TInspector_Window.hxx>
 
-class TInspector_ReportCallBack;
-
 //! \class TInspector_PluginParameters.
 //! \brief This is plugin parameters extended by a possibility to activate module during setting new parameters
 class TInspector_PluginParameters : public TInspectorAPI_PluginParameters
@@ -71,7 +69,6 @@ public:
 private:
 
   TInspector_Window* myWindow; //!< the current window
-  Handle(TInspector_ReportCallBack) myReportCallBack; //!< inspector report callback for automatic view update
   TInspector_Preferences* myPreferences; //!< the preferences loader
 };
 

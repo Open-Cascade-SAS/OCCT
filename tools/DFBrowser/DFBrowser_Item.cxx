@@ -18,6 +18,7 @@
 #include <inspector/DFBrowser_ItemRole.hxx>
 #include <inspector/DFBrowser_Module.hxx>
 #include <inspector/DFBrowser_Tools.hxx>
+#include <inspector/DFBrowser_Window.hxx>
 
 #include <inspector/DFBrowserPane_AttributePane.hxx>
 #include <inspector/DFBrowserPane_ItemRole.hxx>
@@ -30,8 +31,6 @@
 #include <QIcon>
 #include <QObject>
 #include <Standard_WarningsRestore.hxx>
-
-//#define USE_DUMPJSON
 
 // =======================================================================
 // function : hasAttribute
@@ -158,13 +157,14 @@ void DFBrowser_Item::initStream (Standard_OStream& theOStream) const
   if (!HasAttribute())
     return;
 
-#ifdef USE_DUMPJSON
-  Handle(TDF_Attribute) anAttribute = GetAttribute();
-  if (!anAttribute.IsNull())
-    anAttribute->DumpJson (theOStream);
-#else
-  (void)theOStream;
-#endif
+  if (DFBrowser_Window::IsUseDumpJson())
+  {
+    Handle(TDF_Attribute) anAttribute = GetAttribute();
+    if (!anAttribute.IsNull())
+    {
+      anAttribute->DumpJson (theOStream);
+    }
+  }
 }
 
 // =======================================================================

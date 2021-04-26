@@ -16,6 +16,7 @@
 #include <inspector/TreeModel_ModelBase.hxx>
 
 #include <inspector/TreeModel_ItemBase.hxx>
+#include <inspector/TreeModel_ItemProperties.hxx>
 #include <inspector/TreeModel_Tools.hxx>
 #include <inspector/TreeModel_VisibilityState.hxx>
 
@@ -46,9 +47,9 @@ TreeModel_ModelBase::TreeModel_ModelBase (QObject* theParent)
 // =======================================================================
 void TreeModel_ModelBase::InitColumns()
 {
-  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
-  SetHeaderItem (1, TreeModel_HeaderSection ("Visibility", TreeModel_ModelBase::ColumnVisibilityWidth()));
-  SetHeaderItem (2, TreeModel_HeaderSection ("Row", COLUMN_SIZE_WIDTH));
+  setHeaderItem (TreeModel_ColumnType_Name,       TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+  setHeaderItem (TreeModel_ColumnType_Visibility, TreeModel_HeaderSection ("Visibility", TreeModel_ModelBase::ColumnVisibilityWidth()));
+  setHeaderItem (TreeModel_ColumnType_Row,        TreeModel_HeaderSection ("Row", COLUMN_SIZE_WIDTH));
 }
 
 // =======================================================================
@@ -177,7 +178,7 @@ QVariant TreeModel_ModelBase::headerData (int theSection, Qt::Orientation theOri
   if (IsUseVisibilityColumn() && theSection == TreeModel_ColumnType_Visibility)
     return QVariant();
 
-  return GetHeaderItem (theSection).GetName();
+  return myHeaderValues[theSection].GetName();
 }
 
 // =======================================================================
@@ -232,23 +233,6 @@ void TreeModel_ModelBase::EmitDataChanged (const QModelIndex& theTopLeft, const 
 }
 
 // =======================================================================
-// function : SetHeaderItem
-// purpose :
-// =======================================================================
-void TreeModel_ModelBase::SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection)
-{
-  if (theSection.IsEmpty())
-  {
-    // remove section
-    myHeaderValues.remove (theColumnId);
-    myRootItems.remove (theColumnId);
-  }
-
-  myHeaderValues[theColumnId] = theSection;
-  createRoot (theColumnId);
-}
-
-// =======================================================================
 // function : Selected
 // purpose :
 // =======================================================================
@@ -296,12 +280,63 @@ QList<TreeModel_ItemBasePtr> TreeModel_ModelBase::SelectedItems (const QModelInd
 }
 
 // =======================================================================
+// function : SubItemsPresentations
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::SubItemsPresentations (const QModelIndexList& theIndices,
+                                                 NCollection_List<Handle(Standard_Transient)>& thePresentations)
+{
+  QList<TreeModel_ItemBasePtr> anItems;
+
+  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
+  {
+    TreeModel_ItemBasePtr anItem = TreeModel_ModelBase::GetItemByIndex (*anIndicesIt);
+    if (!anItem || anItems.contains (anItem))
+      continue;
+    subItemsPresentations (anItem, thePresentations);
+  }
+}
+
+// =======================================================================
+// function : subItemPresentations
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::subItemsPresentations (const TreeModel_ItemBasePtr& theItem,
+                                                 NCollection_List<Handle(Standard_Transient)>& thePresentations)
+{
+  theItem->Presentations (thePresentations);
+
+  QList<TreeModel_ItemBasePtr> anItems;
+  for (int aRowId = 0; aRowId < theItem->rowCount(); aRowId++)
+  {
+    subItemsPresentations (theItem->Child (aRowId, theItem->Column()), thePresentations);
+  }
+}
+
+// =======================================================================
 // function : createRoot
 // purpose :
 // =======================================================================
 void TreeModel_ModelBase::createRoot (const int theColumnId)
 {
   myRootItems.insert (theColumnId, createRootItem (theColumnId));
+}
+
+// =======================================================================
+// function : setHeaderItem
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::setHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection)
+{
+  if (theSection.IsEmpty())
+  {
+    // remove section
+    myHeaderValues.remove (theColumnId);
+    myRootItems.remove (theColumnId);
+  }
+
+  myHeaderValues[theColumnId] = theSection;
+  createRoot (theColumnId);
 }
 
 // =======================================================================

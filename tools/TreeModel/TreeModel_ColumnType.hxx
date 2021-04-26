@@ -24,7 +24,8 @@
 enum TreeModel_ColumnType
 {
   TreeModel_ColumnType_Name = 0, //! name column
-  TreeModel_ColumnType_Visibility //! visibility state column
+  TreeModel_ColumnType_Visibility, //! visibility state column
+  TreeModel_ColumnType_Row //! row of the item column
 };
 
 #endif

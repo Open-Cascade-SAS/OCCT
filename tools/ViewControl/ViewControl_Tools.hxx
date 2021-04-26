@@ -22,6 +22,7 @@
 
 #include <Standard_WarningsDisable.hxx>
 #include <QString>
+#include <QVariant>
 #include <Standard_WarningsRestore.hxx>
 
 class ViewControl_TableModelValues;
@@ -62,6 +63,26 @@ public:
   //! Create table of values on the current selection
   //! It is created if the selection contains only one item and it has a property item
   Standard_EXPORT static ViewControl_TableModelValues* CreateTableModelValues (QItemSelectionModel* theSelectionModel);
+
+  //! Convert real value to string value
+  //! \param theValue a short real value
+  //! \return the string value
+  Standard_EXPORT static QVariant ToVariant (const Standard_ShortReal theValue);
+
+  //! Convert real value to string value
+  //! \param theValue a real value
+  //! \return the string value
+  Standard_EXPORT static QVariant ToVariant (const Standard_Real theValue);
+
+  //! Convert real value to real value
+  //! \param theValue a string value
+  //! \return the real value
+  Standard_EXPORT static Standard_ShortReal ToShortRealValue (const QVariant& theValue);
+
+  //! Convert real value to string value
+  //! \param theValue a string value
+  //! \return the real value
+  Standard_EXPORT static Standard_Real ToRealValue (const QVariant& theValue);
 
 };
 

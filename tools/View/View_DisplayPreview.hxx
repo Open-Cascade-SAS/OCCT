@@ -58,6 +58,9 @@ public:
   //! Returns true if preview presentation is shown
   Standard_Boolean HasPreview() const { return !myPreviewPresentation.IsNull(); }
 
+  //! Custom preview selection mode
+  static Standard_Integer PreviewSelectionMode() { return 100; }
+
 private:
 
   //! Returns the current context

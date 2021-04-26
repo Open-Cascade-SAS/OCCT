@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>icons/item_shape.png</file>
+        <file>icons/item_streamValues.png</file>
+    </qresource>
+</RCC>

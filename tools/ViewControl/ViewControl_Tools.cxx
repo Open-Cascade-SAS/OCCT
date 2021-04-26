@@ -106,3 +106,39 @@ ViewControl_TableModelValues* ViewControl_Tools::CreateTableModelValues (QItemSe
   aTableValues->SetProperties (anItemProperties);
   return aTableValues;
 }
+
+// =======================================================================
+// function : ToVariant
+// purpose :
+// =======================================================================
+QVariant ViewControl_Tools::ToVariant (const Standard_ShortReal theValue)
+{
+  return QVariant (QLocale().toString (theValue));
+}
+
+// =======================================================================
+// function : ToVariant
+// purpose :
+// =======================================================================
+QVariant ViewControl_Tools::ToVariant (const Standard_Real theValue)
+{
+  return QVariant (QLocale().toString (theValue));
+}
+
+// =======================================================================
+// function : ToRealValue
+// purpose :
+// =======================================================================
+Standard_ShortReal ViewControl_Tools::ToShortRealValue (const QVariant& theValue)
+{
+  return QLocale().toFloat (theValue.toString());
+}
+
+// =======================================================================
+// function : ToRealValue
+// purpose :
+// =======================================================================
+Standard_Real ViewControl_Tools::ToRealValue (const QVariant& theValue)
+{
+  return QLocale().toDouble (theValue.toString());
+}

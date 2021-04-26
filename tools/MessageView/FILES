@@ -1,0 +1,10 @@
+MessageView_ActionsTest.cxx
+MessageView_ActionsTest.hxx
+MessageView_Communicator.cxx
+MessageView_Communicator.hxx
+MessageView_MetricStatisticModel.cxx
+MessageView_MetricStatisticModel.hxx
+MessageView_VisibilityState.cxx
+MessageView_VisibilityState.hxx
+MessageView_Window.cxx
+MessageView_Window.hxx

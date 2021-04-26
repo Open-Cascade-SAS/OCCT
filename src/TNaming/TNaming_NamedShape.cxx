@@ -1670,9 +1670,13 @@ void TNaming_NamedShape::DumpJson (Standard_OStream& theOStream, Standard_Intege
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
   
-  TCollection_AsciiString aLabel;
-  TDF_Tool::Entry (myNode->Label(), aLabel);
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  TNaming_Node* p = myNode;
+  if (p != 0L)
+  {
+    TCollection_AsciiString aLabel;
+    TDF_Tool::Entry (myNode->Label(), aLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  }
   OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myEvolution)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVersion)
 }

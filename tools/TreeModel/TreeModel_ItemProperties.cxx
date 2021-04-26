@@ -20,6 +20,7 @@
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <gp_XYZ.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <Standard_Dump.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -37,8 +38,15 @@ void TreeModel_ItemProperties::Init ()
 {
   myRowValues.Clear();
 
-  const Standard_SStream& aStream = Item()->Stream();
+  InitByStream (Item()->Stream());
+}
 
+// =======================================================================
+// function : InitByStream
+// purpose :
+// =======================================================================
+void TreeModel_ItemProperties::InitByStream (const Standard_SStream& aStream)
+{
   NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue> aValues;
   TCollection_AsciiString aStreamText = Standard_Dump::Text (aStream);
   Standard_Dump::SplitJson (aStreamText, aValues);
@@ -48,8 +56,15 @@ void TreeModel_ItemProperties::Init ()
   Standard_DumpValue aKeyValue;
   if (!aStreamParent)
   {
-    const Handle(Standard_Transient)& anItemObject = Item()->Object();
-    aKey = anItemObject.IsNull() ? "Dump" : anItemObject->DynamicType()->Name();
+    if (!Item() || Item()->Object().IsNull())
+    {
+      aKey = "Dump";
+    }
+    else
+    {
+      const Handle(Standard_Transient)& anItemObject = Item()->Object();
+      aKey = anItemObject.IsNull() ? "Dump" : anItemObject->DynamicType()->Name();
+    }
     aKeyValue = Standard_DumpValue (aStreamText, 1);
 
     myKey = aKey;
@@ -94,6 +109,11 @@ void TreeModel_ItemProperties::Init ()
       myRowValues.ChangeFromIndex (1).CustomValues.insert ((int)Qt::BackgroundRole, QColor((int)(aRed * aDelta),
         (int)(aGreen * aDelta), (int)(aBlue * aDelta)));
     }
+  }
+  // in case if the stream alert has empty key avalue, use as the key the first row value
+  if ((myKey.IsEmpty() || myKey.IsEqual ("Dump")) && myRowValues.Size() > 0)
+  {
+    myKey = myRowValues.FindFromIndex (1).Value.toString().toStdString().c_str();
   }
 }
 
@@ -165,18 +185,94 @@ ViewControl_EditType TreeModel_ItemProperties::EditType (const int, const int th
   if (theColumn == 0)
     return ViewControl_EditType_None;
 
+  Quantity_Color aColor;
+  if (Convert_Tools::ConvertStreamToColor (Item()->Stream(), aColor))
+  {
+    return ViewControl_EditType_Color;
+  }
   return ViewControl_EditType_Line;
+}
+
+// =======================================================================
+// function : ReplaceValue
+// purpose :
+// =======================================================================
+Standard_Boolean ReplaceValue (const TCollection_AsciiString& theFromValue,
+                               const TCollection_AsciiString& theToValue,
+                               Standard_DumpValue& theStreamValue)
+{
+  TCollection_AsciiString aStreamValue = theStreamValue.myValue;
+
+  int aPosition = aStreamValue.FirstLocationInSet (theFromValue, 1, aStreamValue.Length());
+  if (aPosition < 1)
+    return Standard_False;
+
+  aPosition += 2; // due to 'FirstLocationInSet' returns position taking into account '"\' as 1 position
+
+  TCollection_AsciiString aPartStart = aStreamValue.SubString(1, aPosition - 1);
+  TCollection_AsciiString aPartFinal = aStreamValue.SubString(aPosition + theFromValue.Length(),
+                                                              aStreamValue.Length());
+  theStreamValue.myValue = aPartStart + theToValue + aPartFinal;
+
+  return Standard_True;
 }
 
 // =======================================================================
 // function : SetData
 // purpose :
 // =======================================================================
-bool TreeModel_ItemProperties::SetData (const int /*theRow*/, const int theColumn, const QVariant& /*theValue*/, int)
+bool TreeModel_ItemProperties::SetData (const int theRow, const int theColumn, const QVariant& theValue, int theRole)
 {
   if (theColumn == 0)
     return false;
-  return false;
+
+  if (theRole != Qt::DisplayRole && theRole != Qt::EditRole)
+    return false;
+
+  if (myRowValues.Size() == 1 && theColumn == 1)
+  {
+    TCollection_AsciiString aStreamValue (theValue.toString().toStdString().c_str());
+    NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue> aKeyToValues;
+    if (Standard_Dump::SplitJson (aStreamValue, aKeyToValues))
+    {
+      Standard_SStream aStream;
+      aStream << aStreamValue.ToCString();
+
+      int aStartPos = 1;
+      Quantity_ColorRGBA aColor;
+      if (aColor.InitFromJson (aStream, aStartPos))
+      {
+        Standard_Real aRed, aGreen, aBlue;
+        aColor.GetRGB().Values (aRed, aGreen, aBlue, Quantity_TOC_sRGB);
+        int aDelta = 255;
+        myRowValues.ChangeFromIndex (1).CustomValues.insert ((int)Qt::BackgroundRole, QColor((int)(aRed * aDelta),
+          (int)(aGreen * aDelta), (int)(aBlue * aDelta)));
+      }
+      Standard_DumpValue aValue = aKeyToValues.FindFromIndex (1);
+      myStreamValue.myValue = aValue.myValue.ToCString();
+      myRowValues.ChangeFromIndex (1).Value = aValue.myValue.ToCString();
+
+      Item()->StoreItemProperties (theRow, theColumn, theValue);
+      return true;
+    }
+    TCollection_AsciiString aFromValue = myRowValues.ChangeFromIndex (1).Value.toString().toStdString().c_str();
+    if (ReplaceValue(aFromValue, aStreamValue, myStreamValue))
+    {
+      aStreamValue = myStreamValue.myValue;
+      if (Standard_Dump::SplitJson (aStreamValue, aKeyToValues))
+      {
+        Standard_DumpValue aValue = aKeyToValues.FindFromIndex (1);
+        myRowValues.ChangeFromIndex (1).Value = aValue.myValue.ToCString();
+
+        Item()->StoreItemProperties (theRow, theColumn, aStreamValue.ToCString());
+        return true;
+      }
+    }
+  }
+
+  myRowValues.ChangeFromIndex (theRow + 1).Value = theValue;
+  Item()->StoreItemProperties (theRow, theColumn, theValue);
+  return true;
 }
 
 // =======================================================================
@@ -185,6 +281,10 @@ bool TreeModel_ItemProperties::SetData (const int /*theRow*/, const int theColum
 // =======================================================================
 void TreeModel_ItemProperties::Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
+  if (!Item())
+  {
+    return;
+  }
   const Standard_SStream& aStream = Item()->Stream();
   Convert_Tools::ConvertStreamToPresentations (aStream, 1, -1, thePresentations);
 }

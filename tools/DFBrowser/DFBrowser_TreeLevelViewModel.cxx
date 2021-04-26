@@ -126,7 +126,7 @@ QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int th
 Qt::ItemFlags DFBrowser_TreeLevelViewModel::flags (const QModelIndex& theIndex) const
 {
   if (!theIndex.isValid())
-    return 0;
+    return Qt::NoItemFlags;
   Qt::ItemFlags aFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   return aFlags;

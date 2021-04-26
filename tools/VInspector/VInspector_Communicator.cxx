@@ -15,7 +15,6 @@
 
 #include <inspector/VInspector_Communicator.hxx>
 
-#include <inspector/VInspector_CallBack.hxx>
 #include <inspector/VInspector_Window.hxx>
 
 #include <AIS_InteractiveContext.hxx>

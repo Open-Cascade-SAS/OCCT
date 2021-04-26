@@ -73,6 +73,9 @@ public:
   //! Sets the current item
   void SetItem (const TreeModel_ItemBasePtr& theItem) { myItem = theItem; }
 
+  //! Fills properties with the stream value
+  Standard_EXPORT void InitByStream (const Standard_SStream& theStream);
+
   //! Returns the current item
   TreeModel_ItemBasePtr Item() const { return myItem; }
 
@@ -80,7 +83,7 @@ public:
   Standard_EXPORT void Init();
 
   //! If the item has internal values, they should be reset here.
-  Standard_EXPORT virtual void Reset();
+  Standard_EXPORT void Reset();
 
   //! Returns number of table rows
   //! \return an integer value
@@ -108,18 +111,18 @@ public:
   //! \param theColumn a model index column
   //! \param theRole a view role
   //! \return true if the value is changed
-  Standard_EXPORT virtual bool SetData (const int theRow, const int theColumn, const QVariant& theValue,
-                                        int theRole = Qt::DisplayRole);
+  Standard_EXPORT bool SetData (const int theRow, const int theColumn, const QVariant& theValue,
+                                int theRole = Qt::DisplayRole);
 
   //! Returns presentation of the attribute to be visualized in the view
   //! \thePresentations [out] container of presentation handles to be visualized
-  Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
+  Standard_EXPORT void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable.
   //! Additional flag for the column 1 is Qt::ItemIsEditable.
   //! \param theIndex a model index
   //! \return flags
-  Standard_EXPORT virtual Qt::ItemFlags TableFlags (const int theRow, const int theColumn) const;
+  Standard_EXPORT Qt::ItemFlags TableFlags (const int theRow, const int theColumn) const;
 
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy

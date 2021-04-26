@@ -421,7 +421,11 @@ void DFBrowserPane_TNamingNamedShape::GetReferences (const Handle(TDF_Attribute)
   }
   TopoDS_Shape aShape = getSelectedShapes();
   if (!aShape.IsNull())
-    theRefPresentation = new AIS_Shape (aShape);
+  {
+    Handle(AIS_Shape) aPresentation = new AIS_Shape (aShape);
+    aPresentation->Attributes()->SetAutoTriangulation (Standard_False);
+    theRefPresentation = aPresentation;
+  }
 }
 
 // =======================================================================

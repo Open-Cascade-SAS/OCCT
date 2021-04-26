@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
+#include <inspector/TreeModel_ColumnType.hxx>
 #include <inspector/TreeModel_ItemBase.hxx>
 #include <inspector/TreeModel_ItemProperties.hxx>
 #include <inspector/TreeModel_ItemRole.hxx>
@@ -195,7 +196,7 @@ QVariant TreeModel_ItemBase::initValue (const int theItemRole) const
 
   switch (Column())
   {
-    case 1: { return Row(); }
+    case TreeModel_ColumnType_Row: { return Row(); }
   }
 
   return QVariant();

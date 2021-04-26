@@ -96,8 +96,9 @@ void Message_PrinterToReport::send (const TCollection_AsciiString& theString,
 {
   if (!myName.IsEmpty())
   {
-    send (myName, theGravity);
+    TCollection_AsciiString aName = myName;
     myName.Clear();
+    send (aName, theGravity);
   }
 
   const Handle(Message_Report)& aReport = Report();

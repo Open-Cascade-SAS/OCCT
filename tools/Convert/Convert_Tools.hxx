@@ -38,6 +38,7 @@
 #include <QVariant>
 #include <Standard_WarningsRestore.hxx>
 
+class Geom_Line;
 class Geom_Plane;
 class Geom_Transformation;
 
@@ -85,15 +86,21 @@ public:
                                                           const gp_Pnt& thePntMax,
                                                           TopoDS_Shape& theShape);
 
+  //! Creates presentation AIS_Line
+  //! \param theLine source line
+  //! \param thePresentations container to collect new presentations
+  Standard_EXPORT static void CreatePresentation (const Handle(Geom_Line)& theLine,
+    NCollection_List<Handle(Standard_Transient)>& thePresentations);
+
   //! Creates presentation AIS_Plane
   //! \param thePlane source plane
-  //! \param thePresentations container to collect new presentation/s
+  //! \param thePresentations container to collect new presentations
   Standard_EXPORT static void CreatePresentation (const Handle(Geom_Plane)& thePlane,
     NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Creates two presentations base on gp_Trsf: box in initial place and transformed box
   //! \param thePlane source plane
-  //! \param thePresentations container to collect new presentation/s
+  //! \param thePresentations container to collect new presentations
   Standard_EXPORT static void CreatePresentation (const gp_Trsf& theTrsf,
     NCollection_List<Handle(Standard_Transient)>& thePresentations);
 

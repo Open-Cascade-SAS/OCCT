@@ -306,6 +306,11 @@ void View_Widget::mouseReleaseEvent (QMouseEvent* theEvent)
 // =======================================================================
 void View_Widget::mouseMoveEvent (QMouseEvent* theEvent)
 {
+  if (myViewer->GetView().IsNull())
+  {
+    return;
+  }
+
   myController->UpdateMousePosition (Graphic3d_Vec2i (theEvent->x(), theEvent->y()),
                                      keyMouse (theEvent->button()),
                                      keyFlag (theEvent->modifiers()), Standard_False);

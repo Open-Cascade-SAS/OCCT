@@ -51,11 +51,6 @@ public:
   //! \return the value
   Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
-  //! Returns presentation of the attribute to be visualized in the view
-  //! \thePresentations [out] container of presentation handles to be visualized
-  virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
-  { (void)thePresentations; }
-
   //! Returns transform persistent of the item or NULL
   Handle(Graphic3d_TransformPers) TransformPersistence() const { return myTransformPersistence; }
 

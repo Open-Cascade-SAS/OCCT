@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
-//! \class View_Widget
+//! \class View_ToolButton
 //! \brief It is a Qt control that implements change checked state for button by double click event
 //! Button becomes checked by double click mouse pressed and unchecked by the next press mouse
 class View_ToolButton : public QToolButton

@@ -16,8 +16,12 @@
 #include <inspector/VInspector_ItemContextProperties.hxx>
 
 #include <inspector/VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemGraphic3dCLight.hxx>
 #include <inspector/VInspector_ItemV3dViewer.hxx>
 #include <inspector/VInspector_ItemSelectMgrViewerSelector.hxx>
+
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 
 // =======================================================================
 // function : initValue
@@ -41,7 +45,24 @@ QVariant VInspector_ItemContextProperties::initValue (int theItemRole) const
 // =======================================================================
 int VInspector_ItemContextProperties::initRowCount() const
 {
-  return 2; // V3d_Viewer, SelectMgr_ViewerSelector
+  int aLightsCount = 0;
+
+  VInspector_ItemContextPtr aParentContextItem = itemDynamicCast<VInspector_ItemContext>(Parent());
+  if (aParentContextItem)
+  {
+    Handle(AIS_InteractiveContext) aContext = aParentContextItem->GetContext();
+    Handle(V3d_Viewer) aViewer = aContext->CurrentViewer();
+    if (!aViewer.IsNull())
+    {
+      if (!aViewer->ActiveViews().IsEmpty())
+      {
+        Handle(V3d_View) aView = aViewer->ActiveViews().First();
+        if (!aView.IsNull())
+          aLightsCount = aView->ActiveLights().Extent();
+      }
+    }
+  }
+  return 2 + aLightsCount; // V3d_Viewer, SelectMgr_ViewerSelector
 }
 
 // =======================================================================
@@ -52,8 +73,12 @@ TreeModel_ItemBasePtr VInspector_ItemContextProperties::createChild (int theRow,
 {
   if (theRow == 0)
     return VInspector_ItemV3dViewer::CreateItem (currentItem(), theRow, theColumn);
-
-  return VInspector_ItemSelectMgrViewerSelector::CreateItem (currentItem(), theRow, theColumn);
+  else if (theRow == 1)
+    return VInspector_ItemSelectMgrViewerSelector::CreateItem (currentItem(), theRow, theColumn);
+  else // lights
+  {
+    return VInspector_ItemGraphic3dCLight::CreateItem (currentItem(), theRow, theColumn);
+  }
 }
 
 // =======================================================================

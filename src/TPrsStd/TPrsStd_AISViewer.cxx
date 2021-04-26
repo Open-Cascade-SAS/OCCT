@@ -233,4 +233,16 @@ void TPrsStd_AISViewer::Paste (const Handle(TDF_Attribute)&,
 {
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TPrsStd_AISViewer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myInteractiveContext.get())
+}
 

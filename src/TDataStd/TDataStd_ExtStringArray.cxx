@@ -346,10 +346,16 @@ void TDataStd_ExtStringArray::DumpJson (Standard_OStream& theOStream, Standard_I
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  for (TColStd_Array1OfExtendedString::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+  if (!myValue.IsNull())
   {
-    const TCollection_ExtendedString& aValue = aValueIt.Value();
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aValue)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue->Lower())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue->Upper())
+
+    for (TColStd_Array1OfExtendedString::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+    {
+      const TCollection_ExtendedString& aValue = aValueIt.Value();
+      OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aValue)
+    }
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)

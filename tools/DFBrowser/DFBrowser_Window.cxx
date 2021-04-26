@@ -51,7 +51,7 @@
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_Protection.hxx>
-#include <OSD_Thread.hxx>
+
 #include <inspector/View_Displayer.hxx>
 #include <inspector/View_ToolBar.hxx>
 #include <inspector/View_Viewer.hxx>
@@ -62,7 +62,6 @@
 #include <inspector/ViewControl_Tools.hxx>
 
 #include <Standard_WarningsDisable.hxx>
-#include <Standard_ThreadId.hxx>
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
@@ -72,6 +71,7 @@
 #include <QList>
 #include <QMainWindow>
 #include <QItemSelectionModel>
+#include <QPushButton>
 #include <QTabWidget>
 #include <QToolBar>
 #include <QTreeView>
@@ -99,7 +99,7 @@ const int DFBROWSER_DEFAULT_POSITION_Y = 60;
 const int DEFAULT_PROPERTY_PANEL_HEIGHT = 200;
 const int DEFAULT_BROWSER_HEIGHT = 800;
 
-//#define USE_DUMPJSON
+static Standard_Boolean MyIsUseDumpJson = Standard_False;
 
 // =======================================================================
 // function : Constructor
@@ -160,23 +160,30 @@ DFBrowser_Window::DFBrowser_Window()
   connect (aLevelView, SIGNAL (indexDoubleClicked (const QModelIndex&)),
            this, SLOT (onLevelDoubleClicked (const QModelIndex&)));
 
-  // property widget
-  QDockWidget* aPropertyPanelWidget = new QDockWidget (tr ("PropertyPanel"), myMainWindow);
+  // property custom panel with specific parameters of attributes
+  QDockWidget* aPropertyPanelWidget = new QDockWidget (tr ("PropertyPanel (custom)"), myMainWindow);
   aPropertyPanelWidget->setObjectName (aPropertyPanelWidget->windowTitle());
   aPropertyPanelWidget->setTitleBarWidget (new QWidget(myMainWindow));
   aPropertyPanelWidget->setWidget (myPropertyPanel->GetControl());
   myMainWindow->addDockWidget (Qt::RightDockWidgetArea, aPropertyPanelWidget);
 
-  // property view
-#ifdef USE_DUMPJSON
-  myPropertyPanelWidget = new QDockWidget (tr ("PropertyPanel (DumpJson)"), myMainWindow);
+  // property panel
+  myUseDumpJson = new QWidget(myMainWindow);
+  QVBoxLayout* aLay = new QVBoxLayout(myUseDumpJson);
+  QPushButton* aUseDumpJson = new QPushButton ("Use DumpJson", myMainWindow);
+  aLay->addWidget (aUseDumpJson);
+  aLay->addStretch(1);
+  connect(aUseDumpJson, SIGNAL (clicked (bool)), this, SLOT (onUseDumpJson()));
+  myUseDumpJson->setVisible (false);
+
+  myPropertyPanelWidget = new QDockWidget (tr ("PropertyPanel"), myMainWindow);
   myPropertyView = new ViewControl_PropertyView (myMainWindow,
     QSize(DFBROWSER_DEFAULT_VIEW_WIDTH, DFBROWSER_DEFAULT_VIEW_HEIGHT));
   myPropertyPanelWidget->setObjectName (myPropertyPanelWidget->windowTitle());
   myPropertyPanelWidget->setTitleBarWidget (new QWidget(myMainWindow));
   myPropertyPanelWidget->setWidget (myPropertyView->GetControl());
+  updatePropertyPanelWidget();
   myMainWindow->addDockWidget (Qt::RightDockWidgetArea, myPropertyPanelWidget);
-#endif
 
   // dump view window
   QWidget* aDumpWidget = new QWidget(myMainWindow);
@@ -204,14 +211,10 @@ DFBrowser_Window::DFBrowser_Window()
   myViewWindow->Displayer()->SetAttributeColor (Quantity_Color(aHColor.red() / 255., aHColor.green() / 255.,
                                                 aHColor.blue() / 255., Quantity_TOC_sRGB), View_PresentationType_Additional);
 
-  myMainWindow->splitDockWidget (aPropertyPanelWidget, aViewDockWidget, Qt::Vertical);
+  myMainWindow->splitDockWidget (myPropertyPanelWidget, aViewDockWidget, Qt::Vertical);
+  myMainWindow->tabifyDockWidget (myPropertyPanelWidget, aPropertyPanelWidget);
 
-#ifdef USE_DUMPJSON
-  myMainWindow->tabifyDockWidget (aDumpDockWidget, myPropertyPanelWidget);
-  myMainWindow->tabifyDockWidget (myPropertyPanelWidget, aViewDockWidget);
-#else
   myMainWindow->tabifyDockWidget (aDumpDockWidget, aViewDockWidget);
-#endif
 
   myTreeView->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
 
@@ -642,6 +645,24 @@ TCollection_AsciiString DFBrowser_Window::TmpDirectory()
 }
 
 // =======================================================================
+// function : SetUseDumpJson
+// purpose :
+// =======================================================================
+void DFBrowser_Window::SetUseDumpJson (const Standard_Boolean theValue)
+{
+  MyIsUseDumpJson = theValue;
+}
+
+// =======================================================================
+// function : IsUseDumpJson
+// purpose :
+// =======================================================================
+Standard_Boolean DFBrowser_Window::IsUseDumpJson()
+{
+  return MyIsUseDumpJson;
+}
+
+// =======================================================================
 // function : onTreeViewContextMenuRequested
 // purpose :
 // =======================================================================
@@ -651,6 +672,12 @@ void DFBrowser_Window::onTreeViewContextMenuRequested (const QPoint& thePosition
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand"), SLOT (onExpand()), GetMainWindow(), this));
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand All"), SLOT (onExpandAll()), GetMainWindow(), this));
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Collapse All"), SLOT (onCollapseAll()), GetMainWindow(), this));
+
+  aMenu->addSeparator();
+  QAction* aUseDumpJsonAction = ViewControl_Tools::CreateAction (tr ("Use DumpJson"), SLOT (onUseDumpJson()), GetMainWindow(), this);
+  aUseDumpJsonAction->setCheckable(true);
+  aUseDumpJsonAction->setChecked (IsUseDumpJson());
+  aMenu->addAction (aUseDumpJsonAction);
 
   QPoint aPoint = myTreeView->mapToGlobal (thePosition);
   aMenu->exec (aPoint);
@@ -707,6 +734,20 @@ void DFBrowser_Window::onCollapseAll()
 }
 
 // =======================================================================
+// function : onUseDumpJson
+// purpose :
+// =======================================================================
+void DFBrowser_Window::onUseDumpJson()
+{
+  SetUseDumpJson(!IsUseDumpJson());
+  updatePropertyPanelWidget();
+
+  QApplication::setOverrideCursor (Qt::WaitCursor);
+  myModule->UpdateTreeModel();
+  QApplication::restoreOverrideCursor();
+}
+
+// =======================================================================
 // function : onTreeViewSelectionChanged
 // purpose :
 // =======================================================================
@@ -716,10 +757,10 @@ void DFBrowser_Window::onTreeViewSelectionChanged (const QItemSelection& theSele
   if (!myModule)
     return;
 
-#ifdef USE_DUMPJSON
-  if (myPropertyPanelWidget->toggleViewAction()->isChecked())
-    myPropertyView->Init (ViewControl_Tools::CreateTableModelValues (myTreeView->selectionModel()));
-#endif
+  if (IsUseDumpJson() && myPropertyPanelWidget->toggleViewAction()->isChecked())
+  {
+      myPropertyView->Init (ViewControl_Tools::CreateTableModelValues (myTreeView->selectionModel()));
+  }
 
   // previuos selection should be cleared in the panel selectors
   DFBrowser_AttributePaneStack* anAttributePaneStack = myPropertyPanel->GetAttributesStack();
@@ -1003,4 +1044,16 @@ void DFBrowser_Window::findPresentations (const QModelIndexList& theIndices, AIS
 
     thePresentations.Append (aPresentation);
   }
+}
+
+// =======================================================================
+// function : updatePropertyPanelWidget
+// purpose :
+// =======================================================================
+void DFBrowser_Window::updatePropertyPanelWidget()
+{
+  bool aUseDumpJson = IsUseDumpJson();
+
+  myUseDumpJson->setVisible (!aUseDumpJson);
+  myPropertyPanelWidget->setWidget (aUseDumpJson ? myPropertyView->GetControl() : myUseDumpJson);
 }

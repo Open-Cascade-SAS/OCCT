@@ -19,8 +19,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <XCAFDoc_ColorType.hxx>
+class TDF_Attribute;
 class Standard_GUID;
 class XCAFDoc_DocumentTool;
 class XCAFDoc_Location;
@@ -132,6 +134,11 @@ public:
 
   //! Returns GUID for UAttribute identifying lock flag
   Standard_EXPORT static const Standard_GUID& LockGUID();
+
+  //! Prints attribute information into a string.
+  //! @param theAtt an XDE attribute
+  //! @return the generated info value
+  Standard_EXPORT static TCollection_AsciiString AttributeInfo (const Handle(TDF_Attribute)& theAtt);
 
 };
 

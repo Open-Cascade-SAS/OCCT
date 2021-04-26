@@ -37,7 +37,7 @@ DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel (QObjec
 // =======================================================================
 void DFBrowserPane_TDataStdTreeNodeModel::InitColumns()
 {
-  SetHeaderItem (0, TreeModel_HeaderSection ("Name"));
+  setHeaderItem (0, TreeModel_HeaderSection ("Name"));
 }
 
 // =======================================================================

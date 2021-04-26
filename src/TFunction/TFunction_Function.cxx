@@ -16,6 +16,7 @@
 
 
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
@@ -184,4 +185,18 @@ Standard_OStream& TFunction_Function::Dump (Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TFunction_Function::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myDriverGUID)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFailure)
 }

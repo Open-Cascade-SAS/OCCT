@@ -21,6 +21,7 @@ enum ViewControl_EditType
 {
   ViewControl_EditType_None, //!< View widget is null
   ViewControl_EditType_Bool, //!< check box widget
+  ViewControl_EditType_Color, //!< color selector widget
   ViewControl_EditType_Double, //!< line edit widget used double validator
   ViewControl_EditType_Line, //!< line edit widget
   ViewControl_EditType_Spin, //!< spin box widget

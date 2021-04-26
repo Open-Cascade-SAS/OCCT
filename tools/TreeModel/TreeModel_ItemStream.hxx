@@ -60,6 +60,12 @@ public:
   //! \return the value
   Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
+  //! Stores values of the item properties into the item object
+  //! \param theRow the child row position
+  //! \param theColumn the child column position
+  //! \param theValue the cell value
+  Standard_EXPORT virtual void StoreItemProperties (const int theRow, const int theColumn, const QVariant& theValue) Standard_OVERRIDE;
+
 protected:
   //! Returns stream value of the item to fulfill property panel.
   //! \return stream value or dummy

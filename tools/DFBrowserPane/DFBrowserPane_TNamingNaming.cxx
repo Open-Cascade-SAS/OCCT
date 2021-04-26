@@ -175,8 +175,11 @@ Handle(Standard_Transient) DFBrowserPane_TNamingNaming::GetPresentation (const H
   }
   TopoDS_Shape aShape = aComp;
   if (!aShape.IsNull() && aHasShapes)
-    aPresentation = new AIS_Shape (aShape);
-
+  {
+    Handle(AIS_Shape) aPrs = new AIS_Shape (aShape);
+    aPrs->Attributes()->SetAutoTriangulation (Standard_False);
+    aPresentation = aPrs;
+  }
   return aPresentation;
 }
 

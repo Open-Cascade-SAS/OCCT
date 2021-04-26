@@ -14,6 +14,7 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/ViewControl_Table.hxx>
+#include <inspector/ViewControl_TableItemDelegate.hxx>
 #include <inspector/ViewControl_TableModel.hxx>
 #include <inspector/ViewControl_Tools.hxx>
 
@@ -45,6 +46,8 @@ ViewControl_Table::ViewControl_Table (QWidget* theParent)
 
   myTableView = new QTableView (myMainWidget);
   myTableView->setVerticalScrollMode (QAbstractItemView::ScrollPerPixel);
+
+  myTableView->setItemDelegate (new ViewControl_TableItemDelegate (theParent));
 
   QHeaderView* aVHeader = myTableView->verticalHeader();
   int aDefCellSize = aVHeader->minimumSectionSize();
@@ -81,6 +84,9 @@ void ViewControl_Table::Init (ViewControl_TableModelValues* theModelValues)
   aModel->SetModelValues (theModelValues);
 
   myTableView->horizontalHeader()->setVisible (theModelValues->IsHeaderVisible (Qt::Horizontal));
+
+  ViewControl_TableItemDelegate* anItemDelegate = dynamic_cast<ViewControl_TableItemDelegate*>(myTableView->itemDelegate());
+  anItemDelegate->SetModelValues (theModelValues);
 
   myTableView->verticalHeader()->setVisible (theModelValues->IsHeaderVisible (Qt::Vertical));
   int aSectionSize;

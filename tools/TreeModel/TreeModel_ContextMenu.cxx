@@ -55,7 +55,7 @@ void TreeModel_ContextMenu::onTreeViewHeaderContextMenuRequested (const QPoint& 
   int aNbSections = aModel->columnCount();
   for (int aColumnId = 0; aColumnId < aNbSections; aColumnId++)
   {
-    QAction* anAction = ViewControl_Tools::CreateAction (aModel->GetHeaderItem (aColumnId).GetName(),
+    QAction* anAction = ViewControl_Tools::CreateAction (aModel->ChangeHeaderItem (aColumnId)->GetName(),
                                                        SLOT (onColumnVisibilityChanged()), myTreeView, this);
     anAction->setCheckable (true);
     anAction->setChecked (!myTreeView->isColumnHidden (aColumnId));

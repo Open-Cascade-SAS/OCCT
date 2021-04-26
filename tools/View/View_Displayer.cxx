@@ -28,7 +28,6 @@
 
 #include <inspector/View_DisplayPreview.hxx>
 #include <inspector/View_Viewer.hxx>
-#include <inspector/View_Widget.hxx>
 
 // =======================================================================
 // function : Constructor
@@ -116,7 +115,7 @@ void View_Displayer::DisplayPresentation (const Handle(Standard_Transient)& theP
     aDisplayed.Append (aPresentation);
   }
 
-  if (!myIsKeepPresentations || myFitAllActive)
+  if (myFitAllActive)
     fitAllView();
 
   myDisplayed.Bind (theType, aDisplayed);
@@ -292,7 +291,7 @@ void View_Displayer::UpdatePreview (const View_DisplayActionType theType,
                                     const NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
   myDisplayPreview->UpdatePreview (theType, thePresentations);
-  if (!myIsKeepPresentations || myFitAllActive)
+  if (myFitAllActive)
     fitAllView();
 }
 
@@ -377,7 +376,10 @@ Handle(AIS_InteractiveObject) View_Displayer::FindPresentation (const TopoDS_Sha
 // =======================================================================
 Handle(Standard_Transient) View_Displayer::CreatePresentation (const TopoDS_Shape& theShape)
 {
-  return new AIS_Shape (theShape);
+  Handle(AIS_Shape) aPresentation = new AIS_Shape (theShape);
+  aPresentation->Attributes()->SetAutoTriangulation (Standard_False);
+
+  return aPresentation;
 }
 
 // =======================================================================

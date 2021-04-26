@@ -88,6 +88,15 @@ QVariant TreeModel_ItemStream::initValue (const int theItemRole) const
 }
 
 // =======================================================================
+// function : StoreItemProperties
+// purpose :
+// =======================================================================
+void TreeModel_ItemStream::StoreItemProperties (const int, const int, const QVariant& theValue)
+{
+  Parent()->StoreItemProperties (-1, -1, theValue);
+}
+
+// =======================================================================
 // function : initStream
 // purpose :
 // =======================================================================

@@ -27,10 +27,8 @@
 #include <inspector/DFBrowserPane_ItemRole.hxx>
 #include <inspector/DFBrowserPane_Tools.hxx>
 
-#include <inspector/DFBrowserPaneXDE_AttributePaneCreator.hxx>
-#include <inspector/DFBrowserPaneXDE_Tools.hxx>
-
 #include <XCAFApp_Application.hxx>
+#include <XCAFDoc.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QItemSelectionModel>
@@ -68,8 +66,6 @@ void DFBrowser_Module::SetApplication (const Handle(TDocStd_Application)& theApp
 
   myPaneCreators.clear();
   RegisterPaneCreator (new DFBrowserPane_AttributePaneCreator());
-  if (!theApplication.IsNull() && DFBrowserPaneXDE_Tools::IsXDEApplication (theApplication))
-    RegisterPaneCreator (new DFBrowserPaneXDE_AttributePaneCreator (myPaneCreators[0]));
 }
 
 // =======================================================================
@@ -185,8 +181,17 @@ QVariant DFBrowser_Module::GetAttributeInfo (Handle(TDF_Attribute) theAttribute,
       anAttributePane = dynamic_cast<DFBrowserPane_AttributePane*> (anAPIPane);
   }
 
+  TCollection_AsciiString anInfo;
+  if (theRole == DFBrowser_ItemRole_AdditionalInfo)
+  {
+    anInfo = XCAFDoc::AttributeInfo (theAttribute);
+  }
   QVariant aValue;
-  if (anAttributePane)
+  if (!anInfo.IsEmpty())
+  {
+    aValue = anInfo.ToCString();
+  }
+  else if (anAttributePane)
     aValue = anAttributePane->GetAttributeInfo (theAttribute,
                theRole == DFBrowser_ItemRole_AdditionalInfo ? DFBrowserPane_ItemRole_ShortInfo : theRole,
                theColumnId);

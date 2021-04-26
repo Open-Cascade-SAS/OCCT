@@ -44,7 +44,7 @@ public:
   virtual ~ViewControl_TableModelValues() {}
 
   //! Returns item table properties builder
-  Handle(TreeModel_ItemProperties) Properties() const { return myProperties; }
+  const Handle(TreeModel_ItemProperties)& Properties() const { return myProperties; }
 
   //! Sets item table properties builder
   void SetProperties (const Handle(TreeModel_ItemProperties)& theProperties) { myProperties = theProperties; }

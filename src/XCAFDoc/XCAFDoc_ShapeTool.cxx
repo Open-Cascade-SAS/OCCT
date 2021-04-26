@@ -2154,29 +2154,32 @@ void XCAFDoc_ShapeTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aShapeLabelIt (myShapeLabels); aShapeLabelIt.More(); aShapeLabelIt.Next())
   {
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aShapeLabelIt.Key())
+    const TopoDS_Shape aShape = aShapeLabelIt.Key();
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aShape)
 
     TCollection_AsciiString aShapeLabel;
     TDF_Tool::Entry (aShapeLabelIt.Value(), aShapeLabel);
     OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aShapeLabel)
   }
-  
+
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aSubShapeIt (mySubShapes); aSubShapeIt.More(); aSubShapeIt.Next())
   {
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aSubShapeIt.Key())
+    const TopoDS_Shape aSubShape = aSubShapeIt.Key();
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aSubShape)
 
-    TCollection_AsciiString aSubShape;
-    TDF_Tool::Entry (aSubShapeIt.Value(), aSubShape);
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSubShape)
+    TCollection_AsciiString aSubShapeLabel;
+    TDF_Tool::Entry (aSubShapeIt.Value(), aSubShapeLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSubShapeLabel)
   }
-  
+
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aSimpleShapeIt (mySimpleShapes); aSimpleShapeIt.More(); aSimpleShapeIt.Next())
   {
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aSimpleShapeIt.Key())
+    const TopoDS_Shape aSimpleShape = aSimpleShapeIt.Key();
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aSimpleShape)
 
-    TCollection_AsciiString aSimpleShape;
-    TDF_Tool::Entry (aSimpleShapeIt.Value(), aSimpleShape);
-    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSimpleShape)
+    TCollection_AsciiString aSimpleShapeLabel;
+    TDF_Tool::Entry (aSimpleShapeIt.Value(), aSimpleShapeLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSimpleShapeLabel)
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasSimpleShapes)

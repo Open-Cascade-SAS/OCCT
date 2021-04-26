@@ -332,11 +332,17 @@ void TDataStd_BooleanArray::DumpJson (Standard_OStream& theOStream, Standard_Int
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  for (TColStd_Array1OfByte::Iterator aValueIt (myValues->Array1()); aValueIt.More(); aValueIt.Next())
+  if (!myValues.IsNull())
   {
-    const Standard_Byte& aValue = aValueIt.Value();
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
-  }
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValues->Lower())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValues->Upper())
+
+    for (TColStd_Array1OfByte::Iterator aValueIt (myValues->Array1()); aValueIt.More(); aValueIt.Next())
+    {
+      const Standard_Byte& aValue = aValueIt.Value();
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+    }
+  }  
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLower)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpper)
 }

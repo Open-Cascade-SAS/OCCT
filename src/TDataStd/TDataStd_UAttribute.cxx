@@ -140,5 +140,7 @@ void TDataStd_UAttribute::DumpJson (Standard_OStream& theOStream, Standard_Integ
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
+
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

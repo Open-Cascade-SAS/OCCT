@@ -16,6 +16,7 @@
 #include <inspector/Convert_Tools.hxx>
 #include <inspector/Convert_TransientShape.hxx>
 
+#include <AIS_Line.hxx>
 #include <AIS_Plane.hxx>
 #include <AIS_Shape.hxx>
 #include <BRep_Builder.hxx>
@@ -24,6 +25,7 @@
 #include <BRepPreviewAPI_MakeBox.hxx>
 #include <BRepTools.hxx>
 #include <gp_XY.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Standard_Dump.hxx>
@@ -71,7 +73,9 @@ void Convert_Tools::ConvertStreamToPresentations (const Standard_SStream& theSSt
   gp_Dir aDir;
   if (aDir.InitFromJson (theSStream, aStartPos))
   {
-    thePresentations.Append (new Convert_TransientShape (BRepBuilderAPI_MakeEdge (gp::Origin(), aDir.XYZ())));
+    gp_Lin aLin (gp::Origin(), aDir);
+    Handle(Geom_Line) aGeomLine = new Geom_Line (aLin);
+    CreatePresentation (aGeomLine, thePresentations);
     return;
   }
 
@@ -213,6 +217,18 @@ Standard_Boolean Convert_Tools::CreateBoxShape (const gp_Pnt& thePntMin, const g
 //function : CreatePresentation
 //purpose  :
 //=======================================================================
+void Convert_Tools::CreatePresentation (const Handle(Geom_Line)& theLine,
+                                        NCollection_List<Handle(Standard_Transient)>& thePresentations)
+{
+  Handle(AIS_Line) aLinePrs = new AIS_Line (theLine);
+  aLinePrs->SetColor (Quantity_NOC_TOMATO);
+  thePresentations.Append (aLinePrs);
+}
+
+//=======================================================================
+//function : CreatePresentation
+//purpose  :
+//=======================================================================
 void Convert_Tools::CreatePresentation (const Handle(Geom_Plane)& thePlane,
                                         NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
@@ -248,11 +264,13 @@ void Convert_Tools::CreatePresentation (const gp_Trsf& theTrsf,
     return;
 
   Handle(AIS_Shape) aSourcePrs = new AIS_Shape (aBoxShape);
+  aSourcePrs->Attributes()->SetAutoTriangulation (Standard_False);
   aSourcePrs->SetColor (Quantity_NOC_WHITE);
   aSourcePrs->SetTransparency (0.5);
   thePresentations.Append (aSourcePrs);
 
   Handle(AIS_Shape) aTransformedPrs = new AIS_Shape (aBoxShape);
+  aTransformedPrs->Attributes()->SetAutoTriangulation (Standard_False);
   aTransformedPrs->SetColor (Quantity_NOC_TOMATO);
   aTransformedPrs->SetTransparency (0.5);
   aTransformedPrs->SetLocalTransformation (theTrsf);

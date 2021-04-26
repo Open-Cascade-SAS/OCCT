@@ -116,7 +116,9 @@ void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
     Handle(AIS_InteractiveObject) aPrs = Handle(AIS_InteractiveObject)::DownCast (anIterator.Value());
     if (!aPrs.IsNull() && aPrs->GetContext().IsNull()/*is not displayed in another context*/)
     {
-      myContext->Display (aPrs, aPreviewDisplayMode, -1/*does not participate in selection*/, Standard_True);
+      myContext->Display (aPrs, aPreviewDisplayMode,
+                          View_DisplayPreview::PreviewSelectionMode()/*participate only in custom selection*/,
+                          Standard_True);
       enableGlobalClipping(aPrs, false);
       myPreviewReadyPresentations.Append (aPrs);
     }
@@ -125,11 +127,15 @@ void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
   if (myPreviewPresentation.IsNull())
   {
     myPreviewPresentation = new AIS_Shape (aCompound);
+    myPreviewPresentation->Attributes()->SetAutoTriangulation (Standard_False);
+
     Quantity_Color aColor(Quantity_NOC_TOMATO);
     myPreviewPresentation->Attributes()->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_O_PLUS, aColor, 3.0));
     myPreviewPresentation->SetAttributes (myPreviewParameters->GetDrawer());
 
-    myContext->Display (myPreviewPresentation, aPreviewDisplayMode, -1/*does not participate in selection*/, Standard_True);
+    myContext->Display (myPreviewPresentation, aPreviewDisplayMode,
+                        View_DisplayPreview::PreviewSelectionMode()/*participate only in custom selection*/,
+                        Standard_True);
     enableGlobalClipping(myPreviewPresentation, false);
   }
   else

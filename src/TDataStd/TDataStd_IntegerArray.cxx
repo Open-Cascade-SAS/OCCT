@@ -348,10 +348,16 @@ void TDataStd_IntegerArray::DumpJson (Standard_OStream& theOStream, Standard_Int
 
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 
-  for (TColStd_Array1OfInteger::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+  if (!myValue.IsNull())
   {
-    const Standard_Integer& aValue = aValueIt.Value();
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue->Lower())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue->Upper())
+
+    for (TColStd_Array1OfInteger::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+    {
+      const Standard_Integer& aValue = aValueIt.Value();
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+     }
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)

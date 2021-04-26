@@ -138,15 +138,10 @@ public:
   //! \return the number of rows
   Standard_EXPORT virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE;
 
-  //! Returns whether the column is hidden by default
+  //! Returns header item, that can be modified
   //! \param theColumnId a column index
-  //! \return header section values container
-  TreeModel_HeaderSection GetHeaderItem (const int theColumnId) const { return myHeaderValues[theColumnId]; }
-
-  //! Sets header properties item.
-  //! \param theColumnId a column index
-  //! \param theSection a section value
-  Standard_EXPORT void SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection);
+  //! \return header section value
+  TreeModel_HeaderSection* ChangeHeaderItem (const int theColumnId) { return &myHeaderValues[theColumnId]; }
 
   //! Returns count of columns in the model
   //! \param theParent an index of the parent item
@@ -180,15 +175,32 @@ public:
   //! \return model items from the list
   Standard_EXPORT static QList<TreeModel_ItemBasePtr> SelectedItems (const QModelIndexList& theIndices);
 
+  //! Returns presentations of sub items
+  //! \param theIndices a container of selected indices
+  //! \thePresentations [out] container of presentations
+  Standard_EXPORT static void SubItemsPresentations (const QModelIndexList& theIndices,
+                                                     NCollection_List<Handle(Standard_Transient)>& thePresentations);
+
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
   virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) = 0;
 
+  //! Sets header properties item.
+  //! \param theColumnId a column index
+  //! \param theSection a section value
+  Standard_EXPORT void setHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection);
+
   //! Converts the item shared pointer to void* type
   //! \param theItem
   //!  \return an item pointer
   Standard_EXPORT static void* getIndexValue (const TreeModel_ItemBasePtr& theItem);
+
+  //! Returns presentations of sub items. Recursive method to get presentations of all children
+  //! \param theItem an item to get own presentations and presentations of children
+  //! \thePresentations [out] container of presentations found
+  static void subItemsPresentations (const TreeModel_ItemBasePtr& theItem,
+                                    NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
 private:
   //! Creates root item

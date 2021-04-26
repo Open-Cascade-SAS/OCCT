@@ -21,7 +21,6 @@
 #include <SelectMgr_EntityOwner.hxx>
 
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
-#include <inspector/VInspector_CallBack.hxx>
 #include <inspector/View_DisplayActionType.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -119,12 +118,6 @@ private slots:
   //! \param isToggled true if the property dock widget is shown
   void onPropertyPanelShown (bool isToggled);
 
-  //! Synchronization selection between history and tree view. Selection by history view
-  //! \param theSelected a selected items
-  //! \param theDeselected a deselected items
-  void onHistoryViewSelectionChanged (const QItemSelection& theSelected,
-                                      const QItemSelection& theDeselected);
-
   //! Processes selection in tree view: make presentation or owner selected in the context if corresponding
   //! check box is checked
   //! \param theSelected a selected items
@@ -133,6 +126,15 @@ private slots:
 
   //! Exports the first selected shape into ShapeViewer plugin.
   void onExportToShapeView();
+
+  //! Appends lights into the active V3d view
+  void onAddLight();
+
+  //! Removes selected light from the active V3d view
+  void onRemoveLight();
+
+  //! Switch On/Off for selected light
+  void onOnOffLight();
 
   //! Apply activated display action
   void onDisplayActionTypeClicked();
@@ -145,9 +147,6 @@ private slots:
 
   //! Collapse all levels for all selected items
   void onCollapseAll();
-
-  //! Creates a tree of inherited presentable objects
-  void OnTestAddChild();
 
 private:
 
@@ -179,6 +178,11 @@ private:
   //! \return a context of created view.
   Handle(AIS_InteractiveContext) createView();
 
+  //! Creates a new default light into V3d viewer
+  //! \param theSourceLight type of light source
+  //! \param theViewer viewer to add the created light
+  void addLight (const Graphic3d_TypeOfLightSource& theSourceLight, const Handle(V3d_Viewer)& theViewer);
+
 private:
 
   QWidget* myParent; //!< widget, comes when Init window, the window control lays in the layout, updates window title
@@ -190,8 +194,6 @@ private:
   ViewControl_PropertyView* myPropertyView; //!< property control to display model item values if exist
 
   QTreeView* myTreeView; //!< tree view of AIS content
-  QTreeView* myHistoryView; //!< history of AIS context calls
-  Handle(VInspector_CallBack) myCallBack; //!< AIS context call back, if set
 
   ViewControl_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
   View_Window* myViewWindow; //!< temporary view window, it is created if Open is called but context is still NULL

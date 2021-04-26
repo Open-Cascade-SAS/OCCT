@@ -33,13 +33,13 @@
 #include <inspector/VInspector_ToolBar.hxx>
 #include <inspector/VInspector_Tools.hxx>
 #include <inspector/VInspector_ViewModel.hxx>
-#include <inspector/VInspector_CallBack.hxx>
 #include <inspector/VInspector_Communicator.hxx>
 #include <inspector/VInspector_ItemContext.hxx>
+#include <inspector/VInspector_ItemContextProperties.hxx>
+#include <inspector/VInspector_ItemGraphic3dCLight.hxx>
 #include <inspector/VInspector_ToolBar.hxx>
 #include <inspector/VInspector_Tools.hxx>
 #include <inspector/VInspector_ViewModel.hxx>
-#include <inspector/VInspector_ViewModelHistory.hxx>
 
 #include <inspector/ViewControl_PropertyView.hxx>
 #include <inspector/ViewControl_TreeView.hxx>
@@ -77,9 +77,6 @@ const int VINSPECTOR_DEFAULT_POSITION_Y = 60;
 const int VINSPECTOR_DEFAULT_VIEW_WIDTH = 400;
 const int VINSPECTOR_DEFAULT_VIEW_HEIGHT = 1000;
 
-const int VINSPECTOR_DEFAULT_HISTORY_VIEW_WIDTH = 400;
-const int VINSPECTOR_DEFAULT_HISTORY_VIEW_HEIGHT = 50;
-
 const int VINSPECTOR_DEFAULT_VIEW_POSITION_X = 200 + 900 + 100; // TINSPECTOR_DEFAULT_POSITION_X + TINSPECTOR_DEFAULT_WIDTH + 100
 const int VINSPECTOR_DEFAULT_VIEW_POSITION_Y = 60; // TINSPECTOR_DEFAULT_POSITION_Y + 50
 
@@ -114,9 +111,8 @@ VInspector_Window::VInspector_Window()
   aTreeModel->InitColumns();
   myTreeView->setModel (aTreeModel);
   // hide Visibility column
-  TreeModel_HeaderSection anItem = aTreeModel->GetHeaderItem ((int)TreeModel_ColumnType_Visibility);
-  anItem.SetIsHidden (true);
-  aTreeModel->SetHeaderItem ((int)TreeModel_ColumnType_Visibility, anItem);
+  TreeModel_HeaderSection* anItem = aTreeModel->ChangeHeaderItem ((int)TreeModel_ColumnType_Visibility);
+  anItem->SetIsHidden (true);
 
   connect (myTreeView, SIGNAL(customContextMenuRequested(const QPoint&)),
            this, SLOT (onTreeViewContextMenuRequested(const QPoint&)));
@@ -140,40 +136,6 @@ VInspector_Window::VInspector_Window()
   myPropertyPanelWidget->setWidget (myPropertyView->GetControl());
   myMainWindow->addDockWidget (Qt::RightDockWidgetArea, myPropertyPanelWidget);
   connect (myPropertyPanelWidget->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT (onPropertyPanelShown (bool)));
-
-  myHistoryView = new ViewControl_TreeView (myMainWindow);
-  myHistoryView->setSelectionBehavior (QAbstractItemView::SelectRows);
-  ((ViewControl_TreeView*)myHistoryView)->SetPredefinedSize (QSize (VINSPECTOR_DEFAULT_HISTORY_VIEW_WIDTH,
-                                                                    VINSPECTOR_DEFAULT_HISTORY_VIEW_HEIGHT));
-  myHistoryView->setContextMenuPolicy (Qt::CustomContextMenu);
-  myHistoryView->header()->setStretchLastSection (true);
-  new TreeModel_ContextMenu (myHistoryView);
-
-  myHistoryView->setSelectionMode (QAbstractItemView::ExtendedSelection);
-  VInspector_ViewModelHistory* aHistoryModel = new VInspector_ViewModelHistory (myHistoryView);
-  aHistoryModel->InitColumns();
-  myHistoryView->setModel (aHistoryModel);
-
-  QItemSelectionModel* aSelectionModel = new QItemSelectionModel (aHistoryModel);
-  myHistoryView->setSelectionModel (aSelectionModel);
-  connect (aSelectionModel, SIGNAL (selectionChanged (const QItemSelection&, const QItemSelection&)),
-    this, SLOT (onHistoryViewSelectionChanged (const QItemSelection&, const QItemSelection&)));
-
-  anItem = aHistoryModel->GetHeaderItem (0);
-  // hide Visibility column
-  TreeModel_Tools::UseVisibilityColumn (myHistoryView, false);
-  anItem = aHistoryModel->GetHeaderItem ((int)TreeModel_ColumnType_Visibility);
-  anItem.SetIsHidden (true);
-  aHistoryModel->SetHeaderItem ((int)TreeModel_ColumnType_Visibility, anItem);
-
-  QModelIndex aParentIndex = myHistoryView->model()->index (0, 0);
-  myHistoryView->setExpanded (aParentIndex, true);
-
-  QDockWidget* aHistoryDockWidget = new QDockWidget (tr ("HistoryView"), myMainWindow);
-  aHistoryDockWidget->setObjectName (aHistoryDockWidget->windowTitle());
-  aHistoryDockWidget->setTitleBarWidget (new QWidget(myMainWindow));
-  aHistoryDockWidget->setWidget (myHistoryView);
-  myMainWindow->addDockWidget (Qt::BottomDockWidgetArea, aHistoryDockWidget);
 
   myMainWindow->resize (450, 800);
   myMainWindow->move (60, 20);
@@ -263,7 +225,6 @@ void VInspector_Window::SetPreferences (const TInspectorAPI_PreferencesDataMap& 
   if (theItem.IsEmpty())
   {
     TreeModel_Tools::SetDefaultHeaderSections (myTreeView);
-    TreeModel_Tools::SetDefaultHeaderSections (myHistoryView);
     return;
   }
 
@@ -274,9 +235,6 @@ void VInspector_Window::SetPreferences (const TInspectorAPI_PreferencesDataMap& 
     if (anItemKey.IsEqual ("geometry"))
       myMainWindow->restoreState (TreeModel_Tools::ToByteArray (anItemValue.ToCString()));
     else if (TreeModel_Tools::RestoreState (myTreeView, anItemKey.ToCString(), anItemValue.ToCString()))
-      continue;
-    else if (TreeModel_Tools::RestoreState (myHistoryView, anItemKey.ToCString(), anItemValue.ToCString(),
-                                            "history_view_"))
       continue;
     else if (View_PreviewParameters::RestoreState (displayer()->DisplayPreview()->GetPreviewParameters(), anItemKey.ToCString(),
       anItemValue.ToCString(), "preview_parameters_"))
@@ -333,14 +291,6 @@ void VInspector_Window::UpdateContent()
        aSelectionModel->select (aPresentationIndex, QItemSelectionModel::Select);
        myTreeView->scrollTo (aPresentationIndex);
     }
-  }
-
-  if (!myCallBack.IsNull())
-  {
-    VInspector_ViewModelHistory* aHistoryModel = dynamic_cast<VInspector_ViewModelHistory*>
-      (myHistoryView->model());
-    aHistoryModel->Reset();
-    aHistoryModel->EmitLayoutChanged();
   }
 }
 
@@ -417,7 +367,6 @@ bool VInspector_Window::Init (const NCollection_List<Handle(Standard_Transient)>
     return Standard_False;
 
   Handle(AIS_InteractiveContext) aContext;
-  Handle(VInspector_CallBack) aCallBack;
   Standard_Boolean isModelUpdated = Standard_False;
 
   for (NCollection_List<Handle(Standard_Transient)>::Iterator aParamsIt (theParameters); aParamsIt.More(); aParamsIt.Next())
@@ -426,22 +375,11 @@ bool VInspector_Window::Init (const NCollection_List<Handle(Standard_Transient)>
     if (aContext.IsNull())
       aContext = Handle(AIS_InteractiveContext)::DownCast (anObject);
 
-    if (aCallBack.IsNull())
-      aCallBack = Handle(VInspector_CallBack)::DownCast (anObject);
   }
   if (aViewModel->GetContext() != aContext)
     SetContext(aContext);
   else
     isModelUpdated = Standard_True;
-
-  if (!aCallBack.IsNull() && aCallBack != myCallBack)
-  {
-    myCallBack = aCallBack;
-    VInspector_ViewModelHistory* aHistoryModel = dynamic_cast<VInspector_ViewModelHistory*>
-      (myHistoryView->model());
-    myCallBack->SetContext(aContext);
-    myCallBack->SetHistoryModel(aHistoryModel);
-  }
 
   if (isModelUpdated)
     UpdateTreeModel();
@@ -461,9 +399,6 @@ void VInspector_Window::SetContext (const Handle(AIS_InteractiveContext)& theCon
   VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
   aViewModel->SetContext (theContext);
   myTreeView->setExpanded (aViewModel->index (0, 0), true);
-
-  if (!myCallBack.IsNull())
-    myCallBack->SetContext (theContext);
 
   if (myDisplayer)
     myDisplayer->SetContext (theContext);
@@ -485,6 +420,14 @@ bool VInspector_Window::OpenFile(const TCollection_AsciiString& theFileName)
   {
     aContext = createView();
     SetContext (aContext);
+
+    const Handle(V3d_Viewer) aViewer = aViewModel->GetContext()->CurrentViewer();
+    if (!aViewer.IsNull())
+    {
+      addLight (Graphic3d_TOLS_POSITIONAL, aViewer);
+      addLight (Graphic3d_TOLS_SPOT, aViewer);
+    }
+
     isModelUpdated = true;
   }
 
@@ -493,6 +436,8 @@ bool VInspector_Window::OpenFile(const TCollection_AsciiString& theFileName)
     return isModelUpdated;
 
   Handle(AIS_Shape) aPresentation = new AIS_Shape (aShape);
+  aPresentation->Attributes()->SetAutoTriangulation (Standard_False);
+
   View_Displayer* aDisplayer = myViewWindow->Displayer();
   aDisplayer->DisplayPresentation (aPresentation);
   aContext->UpdateCurrentViewer();
@@ -516,10 +461,28 @@ void VInspector_Window::onTreeViewContextMenuRequested(const QPoint& thePosition
   TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (anIndex);
   if (anItemBase)
   {
-    if (itemDynamicCast<VInspector_ItemContext> (anItemBase))
+    if (itemDynamicCast<VInspector_ItemContextProperties> (anItemBase))
     {
-      aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Export to MessageView"), SLOT (onExportToMessageView()), GetMainWindow(), this));
       aMenu->addSeparator();
+      QMenu* anExplodeMenu = aMenu->addMenu ("Add Light");
+
+      anExplodeMenu->addAction (ViewControl_Tools::CreateAction ("Ambient", SLOT (onAddLight()), myMainWindow, this));
+      anExplodeMenu->addAction (ViewControl_Tools::CreateAction ("Directional", SLOT (onAddLight()), myMainWindow, this));
+      anExplodeMenu->addAction (ViewControl_Tools::CreateAction ("Positional", SLOT (onAddLight()), myMainWindow, this));
+      anExplodeMenu->addAction (ViewControl_Tools::CreateAction ("Spot", SLOT (onAddLight()), myMainWindow, this));
+    }
+
+    if (itemDynamicCast<VInspector_ItemGraphic3dCLight> (anItemBase))
+    {
+      aMenu->addSeparator();
+      aMenu->addAction (ViewControl_Tools::CreateAction ("Remove Light", SLOT (onRemoveLight()), myMainWindow, this));
+      VInspector_ItemGraphic3dCLightPtr anItemLight = itemDynamicCast<VInspector_ItemGraphic3dCLight> (anItemBase);
+      if (!anItemLight->GetLight().IsNull())
+      {
+        bool isOn = anItemLight->GetLight()->IsEnabled();
+        aMenu->addAction (ViewControl_Tools::CreateAction (isOn ? "OFF Light" : "ON Light", SLOT (onOnOffLight()),
+                          myMainWindow, this));
+      }
     }
   }
 
@@ -534,9 +497,6 @@ void VInspector_Window::onTreeViewContextMenuRequested(const QPoint& thePosition
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand"), SLOT (onExpand()), GetMainWindow(), this));
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Expand All"), SLOT (onExpandAll()), GetMainWindow(), this));
   aMenu->addAction (ViewControl_Tools::CreateAction (tr ("Collapse All"), SLOT (onCollapseAll()), GetMainWindow(), this));
-
-  aMenu->addSeparator();
-  aMenu->addAction (ViewControl_Tools::CreateAction ("Test AddChild", SLOT (OnTestAddChild()), GetMainWindow(), this));
 
   QPoint aPoint = myTreeView->mapToGlobal (thePosition);
   aMenu->exec(aPoint);
@@ -607,25 +567,6 @@ void VInspector_Window::onTreeViewSelectionChanged (const QItemSelection&,
 }
 
 // =======================================================================
-// function : onHistoryViewSelectionChanged
-// purpose :
-// =======================================================================
-void VInspector_Window::onHistoryViewSelectionChanged (const QItemSelection& theSelected,
-                                                       const QItemSelection&)
-{
-  VInspector_ViewModelHistory* aHistoryModel = dynamic_cast<VInspector_ViewModelHistory*> (myHistoryView->model());
-  if (!aHistoryModel)
-    return;
-
-  if (theSelected.size() == 0)
-    return;
-
-  QModelIndexList aSelectedIndices = theSelected.indexes();
-  QStringList aPointers = aHistoryModel->GetSelectedPointers(aSelectedIndices.first());
-  selectTreeViewItems (aPointers);
-}
-
-// =======================================================================
 // function : onExportToShapeView
 // purpose :
 // =======================================================================
@@ -636,12 +577,7 @@ void VInspector_Window::onExportToShapeView()
 
   TCollection_AsciiString aPluginName ("TKShapeView");
   NCollection_List<Handle(Standard_Transient)> aParameters;
-  if (myParameters->FindParameters (aPluginName))
-    aParameters = myParameters->Parameters (aPluginName);
-
   NCollection_List<TCollection_AsciiString> anItemNames;
-  if (myParameters->FindSelectedNames (aPluginName))
-    anItemNames = myParameters->GetSelectedNames (aPluginName);
 
   QStringList anExportedPointers;
   if (aSelectedShapes.Extent() > 0)
@@ -661,24 +597,6 @@ void VInspector_Window::onExportToShapeView()
     }
   }
 
-  // search for objects to be exported
-  QList<TreeModel_ItemBasePtr> anItems = TreeModel_ModelBase::SelectedItems (myTreeView->selectionModel()->selectedIndexes());
-  for (QList<TreeModel_ItemBasePtr>::const_iterator anItemIt = anItems.begin(); anItemIt != anItems.end(); ++anItemIt)
-  {
-    TreeModel_ItemBasePtr anItem = *anItemIt;
-    VInspector_ItemBasePtr aVItem = itemDynamicCast<VInspector_ItemBase>(anItem);
-    if (!aVItem)
-    continue;
-
-    const Handle(Standard_Transient)& anObject = aVItem->Object();
-    if (anObject.IsNull())
-      continue;
-
-    aParameters.Append (anObject);
-    anItemNames.Append (anObject->DynamicType()->Name());
-    anExportedPointers.append (Standard_Dump::GetPointerInfo (anObject, true).ToCString());
-  }
-
   if (anExportedPointers.isEmpty())
     return;
 
@@ -696,6 +614,97 @@ void VInspector_Window::onExportToShapeView()
 
   myParameters->SetSelectedNames (aPluginName, anItemNames);
   myParameters->SetParameters (aPluginName, aParameters, myExportToShapeViewDialog->IsAccepted());
+}
+
+// =======================================================================
+// function : onAddLight
+// purpose :
+// =======================================================================
+void VInspector_Window::onAddLight()
+{
+  VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  if (!aViewModel)
+    return;
+  const Handle(V3d_Viewer) aViewer = aViewModel->GetContext()->CurrentViewer();
+  if (aViewer.IsNull())
+    return;
+
+  QAction* anAction = (QAction*)sender();
+  QString aText = anAction->text();
+
+  Graphic3d_TypeOfLightSource aLightSourceType = Graphic3d_TOLS_AMBIENT;
+
+  if (aText == "Ambient")           { aLightSourceType = Graphic3d_TOLS_AMBIENT; }
+  else if (aText == "Directional")  { aLightSourceType = Graphic3d_TOLS_DIRECTIONAL; }
+  else if (aText == "Positional")   { aLightSourceType = Graphic3d_TOLS_POSITIONAL; }
+  else if (aText == "Spot")         { aLightSourceType = Graphic3d_TOLS_SPOT; }
+  else                              { return; }
+
+  addLight(aLightSourceType, aViewer);
+}
+
+// =======================================================================
+// function : onRemoveLight
+// purpose :
+// =======================================================================
+void VInspector_Window::onRemoveLight()
+{
+  VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  const Handle(V3d_Viewer) aViewer = aViewModel ? aViewModel->GetContext()->CurrentViewer() : NULL;
+  if (aViewer.IsNull())
+  {
+    return;
+  }
+
+  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (myTreeView->selectionModel()->selectedIndexes(), 0);
+  VInspector_ItemGraphic3dCLightPtr aLightItem = itemDynamicCast<VInspector_ItemGraphic3dCLight> (
+    TreeModel_ModelBase::GetItemByIndex (anIndex));
+  if (!aLightItem)
+  {
+    return;
+  }
+
+  if (aViewer->ActiveLights().Extent() == 1) // not possible to remove the latest light
+  {
+    return;
+  }
+
+  Handle(Graphic3d_CLight) aLight = aLightItem->GetLight();
+  aViewer->DelLight (aLight);
+  aViewer->UpdateLights();
+
+  aViewer->Invalidate();
+  aViewer->Redraw();
+  UpdateTreeModel();
+}
+
+// =======================================================================
+// function : onOnOffLight
+// purpose :
+// =======================================================================
+void VInspector_Window::onOnOffLight()
+{
+  VInspector_ViewModel* aViewModel = dynamic_cast<VInspector_ViewModel*> (myTreeView->model());
+  const Handle(V3d_Viewer) aViewer = aViewModel ? aViewModel->GetContext()->CurrentViewer() : NULL;
+  if (aViewer.IsNull())
+  {
+    return;
+  }
+
+  QModelIndex anIndex = TreeModel_ModelBase::SingleSelected (myTreeView->selectionModel()->selectedIndexes(), 0);
+
+  VInspector_ItemGraphic3dCLightPtr anItemLight = itemDynamicCast<VInspector_ItemGraphic3dCLight> (
+    TreeModel_ModelBase::GetItemByIndex (anIndex));
+  if (anItemLight->GetLight().IsNull())
+    return;
+
+  bool isOn = anItemLight->GetLight()->IsEnabled();
+  anItemLight->GetLight()->SetEnabled (!isOn);
+
+  aViewer->UpdateLights();
+  aViewer->Invalidate();
+  aViewer->Redraw();
+  UpdateTreeModel();
 }
 
 // =======================================================================
@@ -758,23 +767,6 @@ void VInspector_Window::onCollapseAll()
     int aLevels = -1;
     TreeModel_Tools::SetExpanded (myTreeView, aSelectedIndices[aSelectedId], false, aLevels);
   }
-}
-
-// =======================================================================
-// function : UpdateTreeModel
-// purpose :
-// =======================================================================
-void VInspector_Window::OnTestAddChild()
-{
-  Handle(AIS_Shape) aPresentation = new AIS_Shape (BRepBuilderAPI_MakeVertex (gp_Pnt()));
-
-  aPresentation->AddChild (new AIS_Shape (BRepBuilderAPI_MakeVertex (gp_Pnt (10., 10., 10.))));
-  aPresentation->AddChild (new AIS_Shape (BRepBuilderAPI_MakeVertex (gp_Pnt(20., 10., 10.))));
-  aPresentation->AddChild (new AIS_Shape (BRepBuilderAPI_MakeVertex (gp_Pnt(30., 10., 10.))));
-
-  displayer()->DisplayPresentation (aPresentation);
-
-  UpdateTreeModel();
 }
 
 // =======================================================================
@@ -911,4 +903,33 @@ View_Displayer* VInspector_Window::displayer()
     return myViewWindow->Displayer();
 
   return myDisplayer;
+}
+
+// =======================================================================
+// function : addLight
+// purpose :
+// =======================================================================
+void VInspector_Window::addLight (const Graphic3d_TypeOfLightSource& theSourceLight,
+                                  const Handle(V3d_Viewer)& theViewer)
+{
+  Standard_Boolean aNeedDirection = theSourceLight == Graphic3d_TOLS_DIRECTIONAL ||
+                                    theSourceLight == Graphic3d_TOLS_SPOT;
+
+  Handle(Graphic3d_CLight) aLight = new Graphic3d_CLight (theSourceLight);
+  if (aNeedDirection)
+  {
+    aLight->SetDirection (gp::DZ());
+  }
+  if (theSourceLight == Graphic3d_TOLS_SPOT)
+  {
+    aLight->SetAngle ((Standard_ShortReal)M_PI - ShortRealEpsilon());
+    aLight->SetPosition (gp_Pnt (-100, -100, -100));
+  }
+
+  theViewer->AddLight (aLight);
+  theViewer->SetLightOn (aLight);
+
+  theViewer->Invalidate();
+  theViewer->Redraw();
+  UpdateTreeModel();
 }

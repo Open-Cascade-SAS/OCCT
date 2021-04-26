@@ -33,7 +33,7 @@ class View_PreviewParameters
 public:
 
   //! Constructor
-  Standard_EXPORT View_PreviewParameters ();
+  Standard_EXPORT View_PreviewParameters (const Standard_Boolean theToTransparent = Standard_True);
 
   //! Destructor
   virtual ~View_PreviewParameters() {}

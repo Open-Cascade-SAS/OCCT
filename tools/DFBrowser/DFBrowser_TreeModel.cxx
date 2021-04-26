@@ -49,7 +49,7 @@ DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent)
 // =======================================================================
 void DFBrowser_TreeModel::InitColumns()
 {
-  SetHeaderItem (0, TreeModel_HeaderSection ("Name"));
+  setHeaderItem (0, TreeModel_HeaderSection ("Name"));
 }
 
 // =======================================================================

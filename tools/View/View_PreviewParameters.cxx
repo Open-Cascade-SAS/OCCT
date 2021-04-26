@@ -16,6 +16,7 @@
 #include <inspector/View_PreviewParameters.hxx>
 
 #include <Prs3d_Drawer.hxx>
+#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
@@ -23,12 +24,11 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-View_PreviewParameters::View_PreviewParameters()
+View_PreviewParameters::View_PreviewParameters (const Standard_Boolean theToTransparent)
 {
   myDrawer = new Prs3d_Drawer();
 
   Quantity_Color aColor(Quantity_NOC_TOMATO);
-  Standard_ShortReal aTransparency = 0.8f;
 
   // point parameters
   myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_O_PLUS, aColor, 3.0));
@@ -42,10 +42,16 @@ View_PreviewParameters::View_PreviewParameters()
   myDrawer->ShadingAspect()->SetColor (aColor);
   myDrawer->ShadingAspect()->SetMaterial (aShadingMaterial);
 
-  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (aTransparency);
-  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (aTransparency);
-  myDrawer->SetTransparency (aTransparency);
+  myDrawer->SetLineAspect (new Prs3d_LineAspect (aColor, Aspect_TOL_SOLID, 1.));
 
+  if (theToTransparent)
+  {
+    Standard_ShortReal aTransparency = 0.8f;
+
+    myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (aTransparency);
+    myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (aTransparency);
+    myDrawer->SetTransparency (aTransparency);
+  }
   // common parameters
   myDrawer->SetZLayer (Graphic3d_ZLayerId_Topmost);
 }
