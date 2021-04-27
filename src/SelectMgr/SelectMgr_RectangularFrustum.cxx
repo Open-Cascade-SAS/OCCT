@@ -678,6 +678,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
         segmentSegmentDistance (aStartPnt, anEndPnt, aPickResult);
         thePickResult = SelectBasics_PickResult::Min (thePickResult, aPickResult);
       }
+      thePickResult.SetSurfaceNormal (aTriangleNormal);
       return !theClipRange.IsClipped (thePickResult.Depth());
     }
 
@@ -720,6 +721,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
       aNearestEdgeIdx2 = aNearestEdgeIdx1 == 0 ? 2 : aNearestEdgeIdx1 - 1;
     }
     segmentSegmentDistance (aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2], thePickResult);
+    thePickResult.SetSurfaceNormal (aTriangleNormal);
   }
 
   return !theClipRange.IsClipped (thePickResult.Depth());
