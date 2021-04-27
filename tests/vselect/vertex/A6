@@ -9,7 +9,9 @@ vfit
 vmoveto 0 0
 vselect 161 197
 vmoveto 0 0
+
+vdump $imagedir/${casename}_1.png
+
 vmoveto 191 319
 vmoveto 144 350
 vmoveto 161 197
-

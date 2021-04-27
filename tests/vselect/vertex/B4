@@ -6,5 +6,7 @@ vselmode 1 1
 vmoveto 26 305
 vselect 26 305
 vmoveto 204 409
-vmoveto 0 0
 
+vdump $imagedir/${casename}_1.png
+
+vmoveto 0 0

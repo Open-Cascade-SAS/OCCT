@@ -8,5 +8,7 @@ vmoveto 26 305
 vselect 26 305
 vselect 204 409 1
 vmoveto 0 0
-vmoveto 204 409
 
+vdump $imagedir/${casename}_1.png
+
+vmoveto 204 409

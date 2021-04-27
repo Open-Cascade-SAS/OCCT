@@ -7,5 +7,7 @@ vviewparams -scale 6.063093 -proj 0.524772 0.731256 0.434393 -up 0.716008 -0.104
 vfit
 vselect 0 0
 vmoveto 161 197
-vmoveto 0 0
 
+vdump $imagedir/${casename}_1.png
+
+vmoveto 0 0
