@@ -165,6 +165,11 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
 
     // Prepare the list of ids from the set of ids.
     // Iterate on input cells.
+#if (VTK_MAJOR_VERSION >= 9)
+    // Count number of different cells.
+    int aNbVerts = 0, aNbLines = 0, aNbPolys = 0, aNbStrips = 0;
+    int aNbVertPts = 0, aNbLinePts = 0, aNbPolyPts = 0, aNbStripPts = 0;
+#endif
     if (!myIdsSet.IsEmpty())
     {
       for (vtkIdType anI = 0; anI < aSize; anI++)
@@ -173,13 +178,55 @@ int IVtkTools_SubPolyDataFilter::RequestData (vtkInformation *vtkNotUsed(theRequ
         {
           // Add a cell id to output if it's value is in the set.
           anIdList->InsertNextId (anI);
+#if (VTK_MAJOR_VERSION >= 9)
+          switch (anInput->GetCellType(anI))
+          {
+            case VTK_VERTEX:
+              aNbVerts++;
+              aNbVertPts++;
+              break;
+            case VTK_POLY_VERTEX:
+              aNbVerts++;
+              aNbVertPts += anInput->GetCell(anI)->GetNumberOfPoints();
+              break;
+            case VTK_LINE:
+              aNbLines++;
+              aNbLinePts += 2;
+              break;
+            case VTK_POLY_LINE:
+              aNbLines++;
+              aNbLinePts += anInput->GetCell(anI)->GetNumberOfPoints();
+              break;
+            case VTK_TRIANGLE:
+              aNbPolys++;
+              aNbPolyPts += 3;
+              break;
+            case VTK_QUAD:
+              aNbPolys++;
+              aNbPolyPts += 4;
+              break;
+            case VTK_POLYGON:
+              aNbPolys++;
+              aNbPolyPts += anInput->GetCell(anI)->GetNumberOfPoints();
+              break;
+            case VTK_TRIANGLE_STRIP:
+              aNbStrips++;
+              aNbStripPts += anInput->GetCell(anI)->GetNumberOfPoints();
+              break;
+          }
+#endif
         }
       }
     }
 
     // Copy cells with their points according to the prepared list of cell ids.
     anOutputCellData->AllocateArrays (anInputCellData->GetNumberOfArrays());
-    anOutput->Allocate (anInput, anIdList->GetNumberOfIds());  // Allocate output cells
+    // Allocate output cells
+#if (VTK_MAJOR_VERSION >= 9)
+    anOutput->AllocateExact (aNbVerts, aNbVertPts, aNbLines, aNbLinePts, aNbPolys, aNbPolyPts, aNbStrips, aNbStripPts);
+#else
+    anOutput->Allocate (anInput, anIdList->GetNumberOfIds());
+#endif
 
     // Pass data arrays.
     // Create new arrays for output data 
