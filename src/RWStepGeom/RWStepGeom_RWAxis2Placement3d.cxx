@@ -50,26 +50,28 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep
 	// --- own field : axis ---
 
 	Handle(StepGeom_Direction) aAxis;
-	Standard_Boolean hasAaxis = Standard_True;
-	if (data->IsParamDefined(num,3)) {
+	Standard_Boolean hasAaxis = Standard_False;
+	if (data->IsParamDefined(num,3))
+	{
 	  //szv#4:S4163:12Mar99 `Standard_Boolean stat3 =` not needed
-	  data->ReadEntity(num, 3,"axis", ach, STANDARD_TYPE(StepGeom_Direction), aAxis);
+		hasAaxis = data->ReadEntity(num, 3,"axis", ach, STANDARD_TYPE(StepGeom_Direction), aAxis);
 	}
-	else {
-	  hasAaxis = Standard_False;
+	else
+	{
 	  aAxis.Nullify();
 	}
 
 	// --- own field : refDirection ---
 
 	Handle(StepGeom_Direction) aRefDirection;
-	Standard_Boolean hasArefDirection = Standard_True;
-	if (data->IsParamDefined(num,4)) {
+	Standard_Boolean hasArefDirection = Standard_False;
+	if (data->IsParamDefined(num,4))
+	{
 	  //szv#4:S4163:12Mar99 `Standard_Boolean stat4 =` not needed
-	  data->ReadEntity(num, 4,"ref_direction", ach, STANDARD_TYPE(StepGeom_Direction), aRefDirection);
+		hasArefDirection = data->ReadEntity(num, 4,"ref_direction", ach, STANDARD_TYPE(StepGeom_Direction), aRefDirection);
 	}
-	else {
-	  hasArefDirection = Standard_False;
+	else
+	{
 	  aRefDirection.Nullify();
 	}
 
