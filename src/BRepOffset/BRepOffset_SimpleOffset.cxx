@@ -20,6 +20,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepLib.hxx>
+#include <BRepLib_ValidateEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepOffset.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -34,9 +35,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-
-static const Standard_Integer NCONTROL=22;
-
 
 //=============================================================================
 //function : BRepOffset_SimpleOffset
@@ -293,15 +291,19 @@ void BRepOffset_SimpleOffset::FillEdgeData(const TopoDS_Edge& theEdge,
     const Handle(Geom2d_Curve) aC2dNew = BRep_Tool::CurveOnSurface(theEdge, aCurFace, aF, aL);
     const Handle(Adaptor2d_Curve2d) aHCurve2d = new Geom2dAdaptor_Curve(aC2dNew, aF, aL);
     const Handle(Adaptor3d_Surface) aHSurface = new GeomAdaptor_Surface(myFaceInfo.Find(aCurFace).myOffsetS);
-    Adaptor3d_CurveOnSurface aCurveOnSurf(aHCurve2d, aHSurface);
+    const Handle(Adaptor3d_CurveOnSurface) aCurveOnSurf = new Adaptor3d_CurveOnSurface(aHCurve2d, aHSurface);
 
     // Extract 3d-curve (it is not null).
-    const GeomAdaptor_Curve aCurve3d(aNED.myOffsetC, aF, aL);
+    const Handle(Adaptor3d_Curve) aCurve3d = new GeomAdaptor_Curve(aNED.myOffsetC, aF, aL);
 
     // It is necessary to compute maximal deviation (tolerance).
-    Standard_Real aMaxTol = 0.0;
-    ShapeAnalysis_Edge::ComputeDeviation(aCurve3d, aCurveOnSurf, Standard_True, aMaxTol, NCONTROL);
-    anEdgeTol = Max (anEdgeTol, aMaxTol);
+    BRepLib_ValidateEdge aValidateEdge(aCurve3d, aCurveOnSurf, Standard_True);
+    aValidateEdge.Process();
+    if (aValidateEdge.IsDone())
+    {
+      Standard_Real aMaxTol1 = aValidateEdge.GetMaxDistance();
+      anEdgeTol = Max (anEdgeTol, aMaxTol1);
+    }
   }
   aNED.myTol = Max(BRep_Tool::Tolerance(aNewEdge), anEdgeTol);
 

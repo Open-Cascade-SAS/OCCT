@@ -798,7 +798,7 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
   GeomLib_CheckCurveOnSurface aCS;
   //
   aCS.Init(theCurve3D, theSurf, theFirst, theLast, theTolRange);
-  aCS.Perform (theCurve2D, !theToRunParallel);
+  aCS.Perform (theCurve2D, theToRunParallel);
   if (!aCS.IsDone()) {
     return Standard_False;
   }

@@ -175,13 +175,6 @@ public:
   //! having respect to real first, last parameters of thePC 
   Standard_EXPORT Standard_Boolean CheckPCurveRange (const Standard_Real theFirst, const Standard_Real theLast,
                                                      const Handle(Geom2d_Curve)& thePC);
-
-  //! Computes the maximal deviation between the two curve
-  //! representations.
-  //! dev is an input/output parameter and contains the computed
-  //! deviation (should be initialized with 0. for the first call).
-  //! Used by CheckSameParameter().
-  Standard_EXPORT static Standard_Boolean ComputeDeviation (const Adaptor3d_Curve& CRef, const Adaptor3d_Curve& Other, const Standard_Boolean SameParameter, Standard_Real& dev, const Standard_Integer NCONTROL);
   
   //! Checks the first edge is overlapped with second edge.
   //! If distance between two edges is less then theTolOverlap

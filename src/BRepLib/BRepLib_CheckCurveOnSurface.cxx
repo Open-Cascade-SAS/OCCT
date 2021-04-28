@@ -79,10 +79,10 @@ void BRepLib_CheckCurveOnSurface::Init
 //function : Perform
 //purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isTheMTDisabled)
+void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
 {
   // Compute the max distance
-  Compute(myPCurve, isTheMTDisabled);
+  Compute(myPCurve, isMultiThread);
   if (ErrorStatus())
   {
     return;
@@ -92,7 +92,7 @@ void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isTheMTDisabled
   {
     // compute max distance for myPCurve2
     // (for the second curve on closed surface)
-    Compute(myPCurve2, isTheMTDisabled);
+    Compute(myPCurve2, isMultiThread);
   }
 }
 
@@ -101,7 +101,7 @@ void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isTheMTDisabled
 //purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
 void BRepLib_CheckCurveOnSurface::Compute(const Handle(Geom2d_Curve)& thePCurve,
-                                          const Standard_Boolean isTheMTDisabled)
+                                          const Standard_Boolean isMultiThread)
 {
-  myCOnSurfGeom.Perform(thePCurve, isTheMTDisabled);
+  myCOnSurfGeom.Perform(thePCurve, isMultiThread);
 }

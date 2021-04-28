@@ -17,8 +17,8 @@
 
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
-//! Computes the max distance between edge and its
-//! 2d representation on the face.
+//! Computes the max distance between edge and its 2d representation on the face.
+//! This class is not intended to process non-sameparameter edges.
 
 class BRepLib_CheckCurveOnSurface 
 {
@@ -37,9 +37,8 @@ public:
   Standard_EXPORT void Init (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
 
   //! Performs the calculation
-  //! If isTheMultyTheadDisabled == TRUE then computation will be made
-  //! without any parallelization.
-  Standard_EXPORT void Perform (const Standard_Boolean isTheMultyTheradDisabled = Standard_False);
+  //! If isMultiThread == Standard_True then computation will be performed in parallel.
+  Standard_EXPORT void Perform(const Standard_Boolean isMultiThread = Standard_True);
   
   //! Returns source 3D-Curve
   const Handle(Geom_Curve)& Curve() const
@@ -105,10 +104,9 @@ protected:
 
   //! Computes the max distance for the 3d curve of <myCOnSurfGeom>
   //! and 2d curve <thePCurve>
-  //! If isTheMultyTheadDisabled == TRUE then computation will be made
-  //! without any parallelization.
+  //! If isMultiThread == Standard_True then computation will be performed in parallel.
   Standard_EXPORT void Compute (const Handle(Geom2d_Curve)& thePCurve, 
-                                const Standard_Boolean isTheMultyTheradDisabled);
+                                const Standard_Boolean isMultiThread);
 
 private:
 

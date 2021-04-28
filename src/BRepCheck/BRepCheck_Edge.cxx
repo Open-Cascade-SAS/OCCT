@@ -22,6 +22,7 @@
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
+#include <BRepLib_ValidateEdge.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_PolygonOnTriangulation.hxx>
@@ -62,27 +63,6 @@
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Edge,BRepCheck_Result)
-
-//modified by NIZNHY-PKV Thu May 05 09:01:57 2011f
-static 
-  Standard_Boolean Validate(const Adaptor3d_Curve&,
-  const Adaptor3d_CurveOnSurface&,
-  const Standard_Real,
-  const Standard_Boolean);
-static
-  void PrintProblematicPoint(const gp_Pnt&,
-  const Standard_Real,
-  const Standard_Real);
-
-static
-  Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
-  const Adaptor3d_CurveOnSurface& aACS);
-
-//static Standard_Boolean Validate(const Adaptor3d_Curve&,
-//				 const Adaptor3d_Curve&,
-//				 const Standard_Real,
-//				 const Standard_Boolean);
-//modified by NIZNHY-PKV Thu May 05 09:02:01 2011t
 
 static const Standard_Integer NCONTROL=23;
 
@@ -397,9 +377,13 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             Handle(Geom2d_Curve) PC = cr->PCurve();
             Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(Sb);
             Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(PC,f,l);
-            Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
-            Standard_Boolean ok = Validate (*myHCurve, ACS, Tol, SameParameter);
-            if (!ok) {
+            Handle(Adaptor3d_CurveOnSurface) ACS = new Adaptor3d_CurveOnSurface(GHPC,GAHS);
+
+            BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
+            aValidateEdge.SetExitIfToleranceExceeded(Tol);
+            aValidateEdge.Process();
+            if (!aValidateEdge.IsDone() || !aValidateEdge.CheckTolerance(Tol))
+            {
               if (cr->IsCurveOnClosedSurface()) {
                 BRepCheck::Add(lst,BRepCheck_InvalidCurveOnClosedSurface);
               }
@@ -415,9 +399,13 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
             }
             if (cr->IsCurveOnClosedSurface()) {
               GHPC->Load(cr->PCurve2(),f,l); // same bounds
-              ACS.Load(GHPC, GAHS); // sans doute inutile
-              ok = Validate(*myHCurve,ACS,Tol,SameParameter);
-              if (!ok) {
+              ACS->Load(GHPC, GAHS); // sans doute inutile
+
+              BRepLib_ValidateEdge aValidateEdgeOnClosedSurf(myHCurve, ACS, SameParameter);
+              aValidateEdgeOnClosedSurf.SetExitIfToleranceExceeded(Tol);
+              aValidateEdgeOnClosedSurf.Process();
+              if (!aValidateEdgeOnClosedSurf.IsDone() || !aValidateEdgeOnClosedSurf.CheckTolerance(Tol))
+              {
                 BRepCheck::Add(lst,BRepCheck_InvalidCurveOnClosedSurface);
                 //  Modified by skv - Tue Apr 27 11:53:20 2004 Begin
                 if (SameParameter) {
@@ -470,10 +458,13 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
               myHCurve->FirstParameter(),
               myHCurve->LastParameter());
 
-            Adaptor3d_CurveOnSurface ACS(GHPC,GAHS);
+            Handle(Adaptor3d_CurveOnSurface) ACS = new Adaptor3d_CurveOnSurface(GHPC,GAHS);
 
-            Standard_Boolean ok = Validate (*myHCurve, ACS, Tol,Standard_True); // voir dub...
-            if (!ok) {
+            BRepLib_ValidateEdge aValidateEdgeProj(myHCurve, ACS, SameParameter);
+            aValidateEdgeProj.SetExitIfToleranceExceeded(Tol);
+            aValidateEdgeProj.Process();
+            if (!aValidateEdgeProj.IsDone() || !aValidateEdgeProj.CheckTolerance(Tol))
+            {
               BRepCheck::Add(lst,BRepCheck_InvalidCurveOnSurface);
             }
           }
@@ -778,158 +769,3 @@ BRepCheck_Status BRepCheck_Edge::
   return BRepCheck_NoError;
 }
 
-//=======================================================================
-//function : Validate
-//purpose  : 
-//=======================================================================
-Standard_Boolean Validate(const Adaptor3d_Curve& CRef,
-  const Adaptor3d_CurveOnSurface& Other,
-  const Standard_Real Tol,
-  const Standard_Boolean SameParameter)
-{
-  Standard_Boolean  Status, proj; 
-  Standard_Real aPC, First, Last, Error;
-  gp_Pnt  problematic_point ;
-  //
-  Status = Standard_True;
-  Error = 0.;
-  First = CRef.FirstParameter();
-  Last  = CRef.LastParameter();
-
-  aPC=Precision::PConfusion();
-  proj = (!SameParameter || 
-    Abs(Other.FirstParameter()-First) > aPC || 
-    Abs( Other.LastParameter()-Last) > aPC);
-  if (!proj)
-  {
-    Standard_Integer i;
-    Standard_Real Tol2, prm, dD;
-    gp_Pnt pref, pother;
-    //modified by NIZNHY-PKV Thu May 05 09:06:41 2011f
-    //OCC22428
-    dD=Prec(CRef, Other);//3.e-15;
-    Tol2=Tol+dD;
-    Tol2=Tol2*Tol2;
-    //Tol2=Tol*Tol;
-    //modified by NIZNHY-PKV Thu May 05 09:06:47 2011t
-
-    for (i = 0; i < NCONTROL; ++i) {
-      prm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
-      pref = CRef.Value(prm);
-      pother = Other.Value(prm);
-      if (pref.SquareDistance(pother) > Tol2) {
-        problematic_point = pref ;
-        Status = Standard_False;
-        Error  = pref.Distance(pother);
-        PrintProblematicPoint(problematic_point, Error, Tol);
-        return Status;
-        //goto FINISH ;
-      }
-    }
-  }
-  else {
-    Extrema_LocateExtPC refd,otherd;
-    Standard_Real OFirst = Other.FirstParameter();
-    Standard_Real OLast  = Other.LastParameter();
-    gp_Pnt pd = CRef.Value(First);
-    gp_Pnt pdo = Other.Value(OFirst);
-    Standard_Real distt = pd.SquareDistance(pdo);
-    if (distt > Tol*Tol) {
-      problematic_point = pd ;
-      Status = Standard_False ;
-      Error = Sqrt(distt);
-      PrintProblematicPoint(problematic_point, Error, Tol);
-      return Status;
-      //goto FINISH ;
-    }
-    pd = CRef.Value(Last);
-    pdo = Other.Value(OLast);
-    distt = pd.SquareDistance(pdo);
-    if (distt > Tol*Tol) {
-      problematic_point = pd ;
-      Status = Standard_False ;
-      Error = Sqrt(distt);
-      PrintProblematicPoint(problematic_point, Error, Tol);
-      return Status;
-      //goto FINISH ;
-    }
-
-    refd.Initialize(CRef,First,Last,CRef.Resolution(Tol));
-    otherd.Initialize(Other,OFirst,OLast,Other.Resolution(Tol));
-    for (Standard_Integer i = 2; i< NCONTROL-1; i++) {
-      Standard_Real rprm = ((NCONTROL-1-i)*First + i*Last)/(NCONTROL-1);
-      gp_Pnt pref = CRef.Value(rprm);
-      Standard_Real oprm = ((NCONTROL-1-i)*OFirst + i*OLast)/(NCONTROL-1);
-      gp_Pnt pother = Other.Value(oprm);
-      refd.Perform(pother,rprm);
-      if (!refd.IsDone() || refd.SquareDistance() > Tol * Tol) {
-        problematic_point = pref ;
-        Status = Standard_False ;
-        if (refd.IsDone()) {
-          Error = sqrt (refd.SquareDistance());
-        }
-        else {
-          Error = RealLast();
-        }
-        PrintProblematicPoint(problematic_point, Error, Tol);
-        return Status;
-        //goto FINISH ;
-      }
-      otherd.Perform(pref,oprm);
-      if (!otherd.IsDone() || otherd.SquareDistance() > Tol * Tol) {
-        problematic_point = pref ;
-        Status = Standard_False ;
-        if (otherd.IsDone()) {
-          Error = sqrt (otherd.SquareDistance());
-        }
-        else {
-          Error = RealLast();
-        }
-        PrintProblematicPoint(problematic_point, Error, Tol);
-        return Status;
-        //goto FINISH ;
-      }
-    }
-  }
-
-  return Status ;
-
-}
-
-//=======================================================================
-//function : Prec
-//purpose  : 
-//=======================================================================
-Standard_Real Prec(const Adaptor3d_Curve& aAC3D,
-                   const Adaptor3d_CurveOnSurface& aACS)
-{
-  Standard_Real aXEmax, aXC, aXS;
-  const Handle(Adaptor3d_Surface)& aAHS = aACS.GetSurface();
-  //
-  aXC = BRepCheck::PrecCurve(aAC3D);
-  aXS = BRepCheck::PrecSurface(aAHS);
-  aXEmax = (aXC>aXS) ? aXC: aXS;
-  return aXEmax;
-}
-
-//=======================================================================
-//function : PrintProblematicPoint
-//purpose  : 
-//=======================================================================
-#ifdef OCCT_DEBUG
-void PrintProblematicPoint(const gp_Pnt& problematic_point,
-  const Standard_Real Error,
-  const Standard_Real Tol)
-{
-  std::cout << " **** probleme de SameParameter au point :" << std::endl;
-  std::cout << "         " << problematic_point.Coord(1) << " " 
-    << problematic_point.Coord(2) << " " << problematic_point.Coord(3) << std::endl ;
-  std::cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << std::endl;
-}
-#else
-void PrintProblematicPoint(const gp_Pnt&,
-  const Standard_Real,
-  const Standard_Real)
-{
-}
-#endif

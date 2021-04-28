@@ -391,7 +391,7 @@ void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
 //purpose  : 
 //=======================================================================
 void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
-                                          const Standard_Boolean isTheMTDisabled)
+                                          const Standard_Boolean isMultiThread)
 {
   if( myCurve.IsNull() ||
       mySurface.IsNull() ||
@@ -440,7 +440,7 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
     GeomLib_CheckCurveOnSurface_Local aComp(myCurve, thePCurve,
                                 mySurface, anIntervals, anEpsilonRange, aNbParticles);
 
-    OSD_Parallel::For(anIntervals.Lower(), anIntervals.Upper(), aComp, isTheMTDisabled);
+    OSD_Parallel::For(anIntervals.Lower(), anIntervals.Upper(), aComp, !isMultiThread);
 
     aComp.OptimalValues(myMaxDistance, myMaxParameter);
 

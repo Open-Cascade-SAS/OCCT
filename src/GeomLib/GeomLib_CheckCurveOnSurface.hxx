@@ -54,10 +54,9 @@ public:
 
   //! Computes the max distance for the 3d curve <myCurve>
   //! and 2d curve <thePCurve>
-  //! If isTheMultyTheadDisabled == TRUE then computation will be made
-  //! without any parallelization.
+  //! If isMultiThread == Standard_True then computation will be performed in parallel.
   Standard_EXPORT void Perform(const Handle(Geom2d_Curve)& thePCurve, 
-                               const Standard_Boolean isTheMultyTheradDisabled = Standard_False);
+                               const Standard_Boolean isMultiThread = Standard_True);
 
   //! Returns my3DCurve
   const Handle(Geom_Curve)& Curve() const

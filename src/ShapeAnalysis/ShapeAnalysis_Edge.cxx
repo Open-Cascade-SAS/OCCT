@@ -22,6 +22,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
+#include <BRepLib_ValidateEdge.hxx>
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
@@ -705,74 +706,6 @@ Standard_Boolean ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edg
   return Status ( ShapeExtend_DONE );
 }
 
-
-//=======================================================================
-//static : Validate
-//purpose: For SameParameter: compute it for two curves
-//note: This function is made from Validate() in BRepCheck_Edge.cxx
-//=======================================================================
-
-Standard_Boolean ShapeAnalysis_Edge::ComputeDeviation (const Adaptor3d_Curve& CRef,
-                                                       const Adaptor3d_Curve& Other,
-                                                       const Standard_Boolean SameParameter,
-                                                       Standard_Real &dev,
-                                                       const Standard_Integer NCONTROL)
-{
-  Standard_Boolean OK = Standard_True;
-  Standard_Real dev2 = dev*dev;
-  
-  Standard_Real First = CRef.FirstParameter(), Last = CRef.LastParameter();
-  Standard_Real OFirst = Other.FirstParameter(), OLast  = Other.LastParameter(); //szv#4:S4163:12Mar99 moved
-
-  Standard_Boolean proj = (!SameParameter || First != OFirst || Last != OLast); //szv#4:S4163:12Mar99 optimized
-
-  Standard_Integer NCtrl = ( NCONTROL < 1 )? 1 : NCONTROL; //szv#4:S4163:12Mar99 anti-exception
-
-  if (!proj) {
-    for (Standard_Integer i = 0; i <= NCtrl; i++) {
-      Standard_Real prm = ((NCtrl-i)*First + i*Last)/NCtrl;
-      gp_Pnt pref = CRef.Value(prm);
-      gp_Pnt pother = Other.Value(prm);
-      Standard_Real dist2 = pref.SquareDistance(pother);
-      if ( dev2 < dist2 ) dev2 = dist2; 
-    }
-    dev = Sqrt ( dev2 );
-  }
-  else {
-    gp_Pnt pd = CRef.Value(First);
-    gp_Pnt pdo = Other.Value(OFirst);
-    Standard_Real dist2 = pd.SquareDistance(pdo);
-    if ( dev2 < dist2 ) dev = Sqrt ( dev2 = dist2 );
-
-    pd = CRef.Value(Last);
-    pdo = Other.Value(OLast);
-    dist2 = pd.SquareDistance(pdo);
-    if ( dev2 < dist2 ) dev = Sqrt ( dev2 = dist2 );
-
-    Extrema_LocateExtPC refd, otherd; //szv#4:S4163:12Mar99 warning
-    refd.Initialize(CRef,First,Last,Precision::PConfusion());
-    otherd.Initialize(Other,OFirst,OLast,Precision::PConfusion());
-
-    for (Standard_Integer i = 1; i < NCtrl; i++) { //szv#4:S4163:12Mar99 was bug
-      Standard_Real rprm = ((NCtrl-i)*First + i*Last)/NCtrl;
-      gp_Pnt pref = CRef.Value(rprm);
-      Standard_Real oprm = ((NCtrl-i)*OFirst + i*OLast)/NCtrl;
-      gp_Pnt pother = Other.Value(oprm);
-
-      refd.Perform(pother,rprm);
-      if ( ! refd.IsDone() ) OK = Standard_False;
-      else if ( dev2 < refd.SquareDistance() ) {dev2 = refd.SquareDistance(); dev = sqrt (dev2);}
-
-      otherd.Perform(pref,oprm);
-      if ( ! otherd.IsDone() ) OK = Standard_False;
-      else if ( dev2 < otherd.SquareDistance() ) {dev2 = otherd.SquareDistance(); dev = sqrt (dev2);}
-    }
-  }
-  dev *= 1.00001;//ims007 entity 8067 edge 3; 1e-07USA60022 (4255, 4-th edge) SA_Check and BRepCh find distinct points001; // ensure that dev*dev >= dev2
-  
-  return OK;
-}
-
 //=======================================================================
 //function : CheckSameParameter
 //purpose  : 
@@ -824,7 +757,7 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
   }
 
   // Create adaptor for the curve
-  GeomAdaptor_Curve aGAC(aC3D, aFirst, aLast);
+  Handle(GeomAdaptor_Curve) aGAC = new GeomAdaptor_Curve(aC3D, aFirst, aLast);
 
   Handle(Geom_Surface) aFaceSurf;
   TopLoc_Location aFaceLoc;
@@ -869,8 +802,13 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
     Handle(Geom2dAdaptor_Curve) GHPC = new Geom2dAdaptor_Curve(aPC, f, l);
     Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(aST);
 
-    Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
-    if (!ComputeDeviation(aGAC, ACS, SameParameter, maxdev, NbControl - 1))
+    Handle(Adaptor3d_CurveOnSurface) ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
+
+    BRepLib_ValidateEdge aValidateEdge(aGAC, ACS, SameParameter);
+    aValidateEdge.SetControlPointsNumber(NbControl-1);
+    aValidateEdge.Process();
+    aValidateEdge.UpdateTolerance(maxdev);
+    if (!aValidateEdge.IsDone())
     {
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
     }
@@ -890,9 +828,13 @@ Standard_Boolean ShapeAnalysis_Edge::CheckSameParameter (const TopoDS_Edge& edge
         Handle(Geom_Surface)::DownCast(aFaceSurf->Transformed(aFaceLoc.Transformation()));
       Handle(GeomAdaptor_Surface) GAHS = new GeomAdaptor_Surface(aST);
 
-      Adaptor3d_CurveOnSurface ACS(GHPC, GAHS);
+      Handle(Adaptor3d_CurveOnSurface) ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
-      if (!ComputeDeviation(aGAC, ACS, SameParameter, maxdev, NbControl - 1))
+      BRepLib_ValidateEdge aValidateEdgeOnPlane(aGAC, ACS, SameParameter);
+      aValidateEdgeOnPlane.SetControlPointsNumber(NbControl - 1);
+      aValidateEdgeOnPlane.Process();
+      aValidateEdgeOnPlane.UpdateTolerance(maxdev);
+      if (!aValidateEdgeOnPlane.IsDone())
       {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
       }

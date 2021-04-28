@@ -2007,7 +2007,8 @@ void ProcessVertex(const TopoDS_Vertex& aV,
   }
   //
   // Update Tolerance
-  TV->Tolerance(aTolMax2);
+  // with a small margin
+  TV->Tolerance(aTolMax2 + aTolMax2 * 0.0001);
 }
 
 //=======================================================================

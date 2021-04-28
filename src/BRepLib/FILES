@@ -32,4 +32,6 @@ BRepLib_MakeWire.hxx
 BRepLib_MakeWire_1.cxx
 BRepLib_ShapeModification.hxx
 BRepLib_ShellError.hxx
+BRepLib_ValidateEdge.cxx
+BRepLib_ValidateEdge.hxx
 BRepLib_WireError.hxx
