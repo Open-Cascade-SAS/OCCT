@@ -1,0 +1,18 @@
+puts "=========================================================="
+puts "OCC32332: Incorrect result of ShapeUpgrade_UnifySameDomain"
+puts "=========================================================="
+puts ""
+
+restore [locate_data_file bug32332_2.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -wire 4 -edge 12 -vertex 8
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}

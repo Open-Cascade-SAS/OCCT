@@ -53,8 +53,10 @@
 #include <IntPatch_ImpImpIntersection.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
+#include <ShapeAnalysis_Surface.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <ShapeFix_Edge.hxx>
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Shell.hxx>
@@ -1489,6 +1491,11 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
 void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& theChain,
                                                 TopoDS_Edge& theEdge)
 {
+  Standard_Real aFirst3d, aLast3d;
+  Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aFirst3d, aLast3d);
+  Standard_Real aTolEdge = BRep_Tool::Tolerance(theEdge);
+  Standard_Real aMaxTol = aTolEdge;
+  
   TopTools_SequenceOfShape aFaceSeq;
 
   const TopoDS_Edge& aFirstEdge = TopoDS::Edge(theChain.Value(1));
@@ -1686,7 +1693,6 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
       }
 
       TColStd_Array1OfReal tabtolvertex(0, aTolVerSeq.Length() - 1);
-      Standard_Real aMaxTol = 0.0;
       for (Standard_Integer i = 1; i <= aTolVerSeq.Length(); i++)
       {
         Standard_Real aTol = aTolVerSeq(i);
@@ -1725,32 +1731,51 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
   }
 
   BRep_Builder aBuilder;
-  Standard_Real aTol = BRep_Tool::Tolerance(theEdge);
 
-  //Reparametrize pcurves if needed
-  for (Standard_Integer ii = 2; ii <= ResPCurves.Length(); ii++)
+  //Check the results for consistency
+  Standard_Boolean IsBadRange = Standard_False;
+  Standard_Real aRange3d = aLast3d - aFirst3d;
+  for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
   {
-    if (Abs (ResFirsts(1) - ResFirsts(ii)) > Precision::Confusion() ||
-        Abs (ResLasts(1)  - ResLasts(ii))  > Precision::Confusion())
+    Standard_Real aRange = ResLasts(ii) - ResFirsts(ii);
+    if (Abs (aRange3d - aRange) > aMaxTol)
+      IsBadRange = Standard_True;
+  }
+  
+  if (IsBadRange)
+  {
+    for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
     {
-      Handle(Geom2d_TrimmedCurve) aTrPCurve =
-        new Geom2d_TrimmedCurve (ResPCurves(ii), ResFirsts(ii),  ResLasts(ii));
-      Handle(Geom2d_BSplineCurve) aBSplinePCurve = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
-      TColStd_Array1OfReal aKnots (1, aBSplinePCurve->NbKnots());
-      aBSplinePCurve->Knots (aKnots);
-      BSplCLib::Reparametrize (ResFirsts(1), ResLasts(1), aKnots);
-      aBSplinePCurve->SetKnots (aKnots);
-      ResPCurves(ii) = aBSplinePCurve;
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceSeq(ii));
+      Handle(Geom_Surface) aSurf = BRep_Tool::Surface (aFace);
+      Handle(ShapeAnalysis_Surface) aSAS = new ShapeAnalysis_Surface (aSurf);
+      ShapeConstruct_ProjectCurveOnSurface aToolProj;
+      aToolProj.Init (aSAS, Precision::Confusion());
+      Handle(Geom2d_Curve) aNewPCurve;
+      if (aToolProj.Perform(aCurve, aFirst3d, aLast3d, aNewPCurve))
+        ResPCurves(ii) = aNewPCurve;
+      else
+      {
+        //Reparametrize pcurve
+        Handle(Geom2d_TrimmedCurve) aTrPCurve =
+          new Geom2d_TrimmedCurve (ResPCurves(ii), ResFirsts(ii),  ResLasts(ii));
+        Handle(Geom2d_BSplineCurve) aBSplinePCurve = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
+        TColStd_Array1OfReal aKnots (1, aBSplinePCurve->NbKnots());
+        aBSplinePCurve->Knots (aKnots);
+        BSplCLib::Reparametrize (aFirst3d, aLast3d, aKnots);
+        aBSplinePCurve->SetKnots (aKnots);
+        ResPCurves(ii) = aBSplinePCurve;
+      }
+      ResFirsts(ii) = aFirst3d;
+      ResLasts(ii)  = aLast3d;
     }
   }
 
   //Reparametrize 3d curve if needed
   if (!ResPCurves.IsEmpty())
   {
-    Standard_Real aFirst, aLast;
-    Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aFirst, aLast);
-    if (Abs (aFirst - ResFirsts(1)) > Precision::Confusion() ||
-        Abs (aLast  - ResLasts(1))  > Precision::Confusion())
+    if (Abs (aFirst3d - ResFirsts(1)) > aMaxTol ||
+        Abs (aLast3d  - ResLasts(1))  > aMaxTol)
     {
       GeomAdaptor_Curve aGAcurve (aCurve);
       GeomAbs_CurveType aType = aGAcurve.GetType();
@@ -1758,12 +1783,13 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
       {
         gp_Lin aLin = aGAcurve.Line();
         gp_Dir aDir = aLin.Direction();
-        gp_Pnt aPnt = aGAcurve.Value (aFirst);
+        gp_Pnt aPnt = aGAcurve.Value (aFirst3d);
         gp_Vec anOffset = -aDir;
         anOffset *= ResFirsts(1);
         aPnt.Translate (anOffset);
         Handle(Geom_Line) aLine = new Geom_Line (aPnt, aDir);
-        aBuilder.UpdateEdge (theEdge, aLine, aTol);
+        aBuilder.UpdateEdge (theEdge, aLine, aTolEdge);
+        aBuilder.Range(theEdge, ResFirsts(1), ResLasts(1));
       }
       else if (aType == GeomAbs_Circle)
       {
@@ -1771,29 +1797,36 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
         Standard_Real aRadius = aCirc.Radius();
         gp_Ax2 aPosition = aCirc.Position();
         gp_Ax1 anAxis = aPosition.Axis();
-        Standard_Real anOffset = aFirst - ResFirsts(1);
+        Standard_Real anOffset = aFirst3d - ResFirsts(1);
         aPosition.Rotate (anAxis, anOffset);
         Handle(Geom_Circle) aCircle = new Geom_Circle (aPosition, aRadius);
-        aBuilder.UpdateEdge (theEdge, aCircle, aTol);
+        aBuilder.UpdateEdge (theEdge, aCircle, aTolEdge);
+        aBuilder.Range(theEdge, ResFirsts(1), ResLasts(1));
       }
       else //general case
       {
-        Handle(Geom_TrimmedCurve) aTrCurve =
-          new Geom_TrimmedCurve (aCurve, aFirst, aLast);
-        Handle(Geom_BSplineCurve) aBSplineCurve = GeomConvert::CurveToBSplineCurve(aTrCurve);
-        TColStd_Array1OfReal aKnots (1, aBSplineCurve->NbKnots());
-        aBSplineCurve->Knots (aKnots);
-        BSplCLib::Reparametrize (ResFirsts(1), ResLasts(1), aKnots);
-        aBSplineCurve->SetKnots (aKnots);
-        aBuilder.UpdateEdge (theEdge, aBSplineCurve, aTol);
+        for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
+        {
+          if (Abs (aFirst3d - ResFirsts(ii)) > Precision::Confusion() ||
+              Abs (aLast3d  - ResLasts(ii))  > Precision::Confusion())
+          {
+            Handle(Geom2d_TrimmedCurve) aTrPCurve =
+              new Geom2d_TrimmedCurve (ResPCurves(ii), ResFirsts(ii),  ResLasts(ii));
+            Handle(Geom2d_BSplineCurve) aBSplinePCurve = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
+            TColStd_Array1OfReal aKnots (1, aBSplinePCurve->NbKnots());
+            aBSplinePCurve->Knots (aKnots);
+            BSplCLib::Reparametrize (aFirst3d, aLast3d, aKnots);
+            aBSplinePCurve->SetKnots (aKnots);
+            ResPCurves(ii) = aBSplinePCurve;
+          }
+        }
       }
     }
-    aBuilder.Range(theEdge, ResFirsts(1), ResLasts(1));
   }
 
   for (Standard_Integer j = 1; j <= ResPCurves.Length(); j++)
   {
-    aBuilder.UpdateEdge(theEdge, ResPCurves(j), TopoDS::Face(aFaceSeq(j)), aTol);
+    aBuilder.UpdateEdge(theEdge, ResPCurves(j), TopoDS::Face(aFaceSeq(j)), aTolEdge);
   }
 }
 
