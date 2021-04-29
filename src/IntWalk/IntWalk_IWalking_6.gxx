@@ -53,7 +53,7 @@ void IntWalk_IWalking::MakeWalkingPoint
   }
   else if (Case == 11 || Case == 12)
   {
-    Standard_Real aUV[2], aFF[1], aDD[1][2];
+    Standard_Real aUV[2] = {}, aFF[1] = {}, aDD[1][2] = {};
     math_Vector UV(aUV, 1, 2);
     math_Vector FF(aFF, 1, 1);
     math_Matrix DD(aDD, 1, 1, 1, 2);

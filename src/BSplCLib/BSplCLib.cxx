@@ -2814,16 +2814,15 @@ void BSplCLib::Trimming(const Standard_Integer         Degree,
 		  	      TColStd_Array1OfReal&    NewPoles)
 {
   Standard_Integer i, nbpoles=0, nbknots=0;
-  Standard_Real kk[2];
-  Standard_Integer mm[2];
+  Standard_Real    kk[2] = { U1, U2 };
+  Standard_Integer mm[2] = { Degree, Degree };
   TColStd_Array1OfReal    K( kk[0], 1, 2 );
   TColStd_Array1OfInteger M( mm[0], 1, 2 );
-
-  K(1) = U1;  K(2) = U2;
-  mm[0] = mm[1] = Degree;
   if (!PrepareInsertKnots( Degree, Periodic, Knots, Mults, K, &M, 
 			  nbpoles, nbknots, Epsilon( U1), 0))
+  {
     throw Standard_OutOfRange();
+  }
 
   TColStd_Array1OfReal    TempPoles(1, nbpoles*Dimension);
   TColStd_Array1OfReal    TempKnots(1, nbknots);

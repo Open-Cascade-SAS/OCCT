@@ -197,10 +197,8 @@ IGESData_IGESReaderTool::IGESData_IGESReaderTool
    const IGESData_DirPart& DP, Handle(Interface_Check)& ach) const 
 { 
     
-  Standard_Integer v[17];
-  Standard_Character nom[9]; Standard_Character snum[9], theRes1[9],theRes2[9];
-  //char mess[50]; //szv#4:S4163:12Mar99 unused
-
+  Standard_Integer v[17] = {};
+  Standard_Character nom[9] = {}; Standard_Character snum[9] = {}, theRes1[9] = {}, theRes2[9] = {};
   DP.Values(v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7],v[8],v[9],v[10],v[11],
 	    v[12],v[13],v[14],v[15],v[16],theRes1,theRes2,nom,snum);
 

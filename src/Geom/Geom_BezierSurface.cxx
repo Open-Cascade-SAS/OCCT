@@ -1387,14 +1387,14 @@ void Geom_BezierSurface::D0 (const Standard_Real U,
 			     const Standard_Real V,
 			           gp_Pnt&       P ) const
 {
-  Standard_Real array_u[2];
-  Standard_Real array_v[2];
-  Standard_Integer mult_u[2];
-  Standard_Integer mult_v[2];
-  TColStd_Array1OfReal biduknots(array_u[0], 1, 2); biduknots(1) = 0.; biduknots(2) = 1.;
-  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2); bidumults.Init(UDegree() + 1);
-  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2); bidvknots(1) = 0.; bidvknots(2) = 1.;
-  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2); bidvmults.Init(VDegree() + 1);
+  Standard_Real array_u[2] = { 0.0, 1.0 };
+  Standard_Real array_v[2] = { 0.0, 1.0 };
+  Standard_Integer mult_u[2] = { UDegree() + 1, UDegree() + 1 };
+  Standard_Integer mult_v[2] = { VDegree() + 1, VDegree() + 1 };
+  TColStd_Array1OfReal biduknots(array_u[0], 1, 2);
+  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2);
+  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2);
+  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2);
   if (urational || vrational) {
     BSplSLib::D0(U, V, 1, 1, poles->Array2(),
       &weights->Array2(),
@@ -1426,14 +1426,14 @@ void Geom_BezierSurface::D1
          gp_Vec&       D1U,
          gp_Vec&       D1V ) const
 {
-  Standard_Real array_u[2];
-  Standard_Real array_v[2];
-  Standard_Integer mult_u[2];
-  Standard_Integer mult_v[2];
-  TColStd_Array1OfReal biduknots(array_u[0], 1, 2); biduknots(1) = 0.; biduknots(2) = 1.;
-  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2); bidumults.Init(UDegree() + 1);
-  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2); bidvknots(1) = 0.; bidvknots(2) = 1.;
-  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2); bidvmults.Init(VDegree() + 1);
+  Standard_Real array_u[2] = { 0.0, 1.0 };
+  Standard_Real array_v[2] = { 0.0, 1.0 };
+  Standard_Integer mult_u[2] = { UDegree() + 1, UDegree() + 1 };
+  Standard_Integer mult_v[2] = { VDegree() + 1, VDegree() + 1 };
+  TColStd_Array1OfReal biduknots(array_u[0], 1, 2);
+  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2);
+  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2);
+  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2);
   if (urational || vrational) {
     BSplSLib::D1(U, V, 1, 1, poles->Array2(),
       &weights->Array2(),
@@ -1464,14 +1464,14 @@ void Geom_BezierSurface::D2
          gp_Vec&       D1U, gp_Vec& D1V, 
          gp_Vec&       D2U, gp_Vec& D2V, gp_Vec& D2UV ) const
 {
-  Standard_Real array_u[2];
-  Standard_Real array_v[2];
-  Standard_Integer mult_u[2];
-  Standard_Integer mult_v[2];
-  TColStd_Array1OfReal biduknots(array_u[0], 1, 2); biduknots(1) = 0.; biduknots(2) = 1.;
-  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2); bidumults.Init(UDegree() + 1);
-  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2); bidvknots(1) = 0.; bidvknots(2) = 1.;
-  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2); bidvmults.Init(VDegree() + 1);
+  Standard_Real array_u[2] = { 0.0, 1.0 };
+  Standard_Real array_v[2] = { 0.0, 1.0 };
+  Standard_Integer mult_u[2] = { UDegree() + 1, UDegree() + 1 };
+  Standard_Integer mult_v[2] = { VDegree() + 1, VDegree() + 1 };
+  TColStd_Array1OfReal biduknots(array_u[0], 1, 2);
+  TColStd_Array1OfInteger bidumults(mult_u[0], 1, 2);
+  TColStd_Array1OfReal bidvknots(array_v[0], 1, 2);
+  TColStd_Array1OfInteger bidvmults(mult_v[0], 1, 2);
   if (urational || vrational) {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB 
     BSplSLib::D2(U, V, 1, 1, poles->Array2(),

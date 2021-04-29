@@ -6584,19 +6584,20 @@ L9900:
     doublereal moin11[2] = { -1.,1. };
 
     /* System generated locals */
-    integer valbas_dim1, i__1;
+    integer valbas_dim1 = 0, i__1 = 0;
 
     /* Local variables */
-    doublereal vjacc[80], herm[24];
+    doublereal vjacc[80] = {};
+    doublereal herm[24] = {};
     NCollection_Array1<doublereal> vjac (vjacc[0], 1, 80);
-    integer iord[2];
-    doublereal wval[4];
-    integer nwcof, iunit;
-    doublereal wpoly[7];
-    integer ii, jj, iorjac;
-    doublereal hermit[36]	/* was [6][3][2] */;
-    integer kk1, kk2, kk3;
-    integer khe, ier;
+    integer iord[2] = {};
+    doublereal wval[4] = {};
+    integer nwcof = 0, iunit = 0;
+    doublereal wpoly[7] = {};
+    integer ii = 0, jj = 0, iorjac = 0;
+    doublereal hermit[36] = {}; // was [6][3][2]
+    integer kk1 = 0, kk2 = 0, kk3 = 0;
+    integer khe = 0, ier = 0;
 
 
 /* ***********************************************************************
@@ -10652,12 +10653,12 @@ int mvgaus0_(integer *kindic,
 
 {
     /* System generated locals */
-    integer i__1;
+    integer i__1 = 0;
 
     /* Local variables */
-    doublereal tampc[40];
+    doublereal tampc[40] = {};
     NCollection_Array1<doublereal> tamp (tampc[0], 1, 40);
-    integer ndegl, kg, ii;
+    integer ndegl = 0, kg = 0, ii = 0;
    
 /* ********************************************************************** 
 */

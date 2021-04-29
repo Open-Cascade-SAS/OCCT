@@ -158,7 +158,7 @@ static const Standard_ExtString   voidext = { 0 };
    const Standard_Integer dd, const Standard_Integer hh,
    const Standard_Integer mn, const Standard_Integer ss) const
 {
-  char ladate[50];
+  char ladate[50] = {};
   Interface_MSG::TDate (ladate, yy,mm,dd,hh,mn,ss);
   bufasc.Clear();  bufasc.AssignCat(ladate);
   return bufasc.ToCString();

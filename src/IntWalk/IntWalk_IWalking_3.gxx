@@ -63,23 +63,23 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 //    end of conditions.
 
 {
-  Standard_Integer I, N = 0, SaveN = 0;
-  Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
+  Standard_Integer I = 0, N = 0, SaveN = 0;
+  Standard_Real aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2), UVap(aUVap,1,2);
-  Standard_Real PasC, PasCu, PasCv;
-  Standard_Boolean Arrive; // shows if the line ends
-  Standard_Boolean Cadre;  // shows if one is on border of the domain
-  Standard_Boolean ArretAjout;  //shows if one is on added point
+  Standard_Real PasC = 0.0, PasCu = 0.0, PasCv = 0.0;
+  Standard_Boolean Arrive = false; // shows if the line ends
+  Standard_Boolean Cadre = false;  // shows if one is on border of the domain
+  Standard_Boolean ArretAjout = false;  //shows if one is on added point
   IntSurf_PntOn2S Psol;
   Handle(IntWalk_TheIWLine)  CurrentLine;    // line under construction
-  Standard_Boolean Tgtend;
+  Standard_Boolean Tgtend = false;
 
   IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent = IntWalk_OK;
   
-  Standard_Integer NbDivision; 
+  Standard_Integer NbDivision = 0;
   // number of divisions of step for each section
 
-  Standard_Integer StepSign;
+  Standard_Integer StepSign = 0;
   
   ThePointOfPath PathPnt;
 

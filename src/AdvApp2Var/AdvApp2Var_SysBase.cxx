@@ -725,7 +725,7 @@ int macrgfl_(intptr_t *iadfld,
   */
   integer ifois = 1;
   
-  char cbid[1];
+  char cbid[1] = {};
   integer ibid, ienr;
   doublereal* t = 0;
   integer novfl = 0;
@@ -1867,7 +1867,7 @@ int matrsym_(const char *cnmsym,
 
 {
   /* Local variables */
-  char chainx[255];
+  char chainx[255] = {};
 
 /* ***********************************************************************
  */

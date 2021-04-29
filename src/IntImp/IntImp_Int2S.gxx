@@ -84,8 +84,8 @@ IntImp_ConstIsoparametric IntImp_Int2S:: Perform(const TColStd_Array1OfReal& Par
                                                  math_FunctionSetRoot& Rsnld,
                                                  const IntImp_ConstIsoparametric ChoixIso) 
 {
-  Standard_Real BornInfBuf[3], BornSupBuf[3], ToleranceBuf[3], UVapBuf[3];
-  Standard_Real UvresBuf[4];
+  Standard_Real BornInfBuf[3] = {}, BornSupBuf[3] = {}, ToleranceBuf[3] = {}, UVapBuf[3] = {};
+  Standard_Real UvresBuf[4] = {};
   math_Vector BornInf (BornInfBuf, 1, 3), BornSup (BornSupBuf, 1, 3),
               Tolerance (ToleranceBuf, 1, 3), UVap (UVapBuf, 1, 3);
   TColStd_Array1OfReal Uvres (UvresBuf[0], 1, 4);

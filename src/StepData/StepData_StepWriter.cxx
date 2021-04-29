@@ -770,7 +770,7 @@ void StepData_StepWriter::Send (const Standard_Integer val)
 void StepData_StepWriter::Send (const Standard_Real val)
 {
 //    Valeur flottante, expurgee de "0000" qui trainent et de "E+00"
-  char lval[24];
+  char lval[24] = {};
   Standard_Integer lng = thefloatw.Write(val,lval);
   AddParam();
   AddString(lval,lng);    // gere le format specifique : si besoin est

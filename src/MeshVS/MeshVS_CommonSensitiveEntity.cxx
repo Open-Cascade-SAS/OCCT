@@ -74,7 +74,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const Handle(SelectM
     myCOG = aCenter / anAllNodesMap.Extent();
 
     const TColStd_PackedMapOfInteger& anAllElementsMap = myDataSource->GetAllElements();
-    MeshVS_EntityType aType;
+    MeshVS_EntityType aType = MeshVS_ET_NONE;
     for (TColStd_MapIteratorOfPackedMapOfInteger anElemIter (anAllElementsMap); anElemIter.More(); anElemIter.Next())
     {
       const Standard_Integer anElemIdx = anElemIter.Key();
@@ -138,10 +138,10 @@ Standard_Integer MeshVS_CommonSensitiveEntity::Size() const
 //=======================================================================
 gp_Pnt MeshVS_CommonSensitiveEntity::getVertexByIndex (const Standard_Integer theNodeIdx) const
 {
-  Standard_Real aCoordsBuf[3];
+  Standard_Real aCoordsBuf[3] = {};
   TColStd_Array1OfReal aCoords (aCoordsBuf[0], 1, 3);
-  Standard_Integer aNbNodes;
-  MeshVS_EntityType aType;
+  Standard_Integer aNbNodes = 0;
+  MeshVS_EntityType aType = MeshVS_ET_NONE;
   if (!myDataSource->GetGeom (theNodeIdx, Standard_False, aCoords, aNbNodes, aType))
   {
     return gp_Pnt();
@@ -161,8 +161,8 @@ Select3D_BndBox3d MeshVS_CommonSensitiveEntity::Box (const Standard_Integer theI
   {
     MeshVS_Buffer aCoordsBuf (3 * myMaxFaceNodes * sizeof (Standard_Real));
     TColStd_Array1OfReal aCoords (aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    Standard_Integer aNbNodes;
-    MeshVS_EntityType aType;
+    Standard_Integer aNbNodes = 0;
+    MeshVS_EntityType aType = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom (anItemIdx, Standard_True, aCoords, aNbNodes, aType)
       || aNbNodes == 0)
     {
@@ -238,8 +238,8 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Pic
   {
     MeshVS_Buffer aCoordsBuf (3 * myMaxFaceNodes * sizeof (Standard_Real));
     TColStd_Array1OfReal aCoords (aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    Standard_Integer aNbNodes;
-    MeshVS_EntityType aType;
+    Standard_Integer aNbNodes = 0;
+    MeshVS_EntityType aType = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom (anItemIdx, Standard_True, aCoords, aNbNodes, aType)
       || aNbNodes == 0)
     {
@@ -296,8 +296,8 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::elementIsInside (SelectBasics_Sel
   {
     MeshVS_Buffer aCoordsBuf (3 * myMaxFaceNodes * sizeof (Standard_Real));
     TColStd_Array1OfReal aCoords (aCoordsBuf, 1, 3 * myMaxFaceNodes);
-    Standard_Integer aNbNodes;
-    MeshVS_EntityType aType;
+    Standard_Integer aNbNodes = 0;
+    MeshVS_EntityType aType = MeshVS_ET_NONE;
     if (!myDataSource->GetGeom (anItemIdx, Standard_True, aCoords, aNbNodes, aType)
       || aNbNodes == 0)
     {

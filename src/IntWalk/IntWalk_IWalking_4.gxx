@@ -41,31 +41,31 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 //
 // ******************************************************************** 
 {
-  Standard_Integer I,N = 0,SaveN = 0;
-  Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
+  Standard_Integer I = 0, N = 0,SaveN = 0;
+  Standard_Real aBornInf[2] = {}, aBornSup[2] = {}, aUVap[2] = {};
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2);
   math_Vector Uvap(aUVap,1,2);// parameters of current approach
-  Standard_Real PasC;  // step of advancement on the tangent
-  Standard_Real PasCu; // step of advancement current by U
-  Standard_Real PasCv; // step of advancement current by V
-  Standard_Real PasSav; // save first step of advancement
-  Standard_Boolean Arrive;// show if line ends
-  Standard_Boolean Cadre; // show if on border of the  domains
-  Standard_Boolean ArretAjout; // show if on the added point
+  Standard_Real PasC = 0.0;  // step of advancement on the tangent
+  Standard_Real PasCu = 0.0; // step of advancement current by U
+  Standard_Real PasCv = 0.0; // step of advancement current by V
+  Standard_Real PasSav = 0.0; // save first step of advancement
+  Standard_Boolean Arrive = false;// show if line ends
+  Standard_Boolean Cadre = false; // show if on border of the  domains
+  Standard_Boolean ArretAjout = false; // show if on the added point
   IntSurf_PntOn2S Psol;
   Handle(IntWalk_TheIWLine)  CurrentLine; //line under construction
   ThePointOfPath PathPnt;
   ThePointOfLoop LoopPnt;
 
-  Standard_Boolean Tgtbeg,Tgtend;
+  Standard_Boolean Tgtbeg = false, Tgtend = false;
 
-  Standard_Integer StepSign;
+  Standard_Integer StepSign = 0;
   
   IntWalk_StatusDeflection aStatus = IntWalk_OK, StatusPrecedent;
-  Standard_Integer NbDivision ;   // number of divisions of step 
+  Standard_Integer NbDivision = 0;   // number of divisions of step
   // during calculation of  1 section
 
-  Standard_Integer Ipass ;
+  Standard_Integer Ipass = 0;
   //index in the iterator of points on edge of point of passage  
 
 

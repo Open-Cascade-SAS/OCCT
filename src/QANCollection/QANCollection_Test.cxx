@@ -919,7 +919,7 @@ static Standard_Integer QANColTestSequence(Draw_Interpretor& di, Standard_Intege
 static NCollection_Array1<double> GetArrayByValue()
 {
   const int aLen = 1024;
-  double aCArray[aLen];
+  double aCArray[aLen] = {};
   NCollection_Array1<double> anArray (aCArray[0], 1, aLen);
   for (int i = 1; i <= aLen; i++)
     anArray.SetValue(i, i + 113.);
