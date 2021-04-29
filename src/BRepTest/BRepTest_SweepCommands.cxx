@@ -560,6 +560,10 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
     di << "   -CN dx dy dz : BiNormal is given by dx dy dz\n";
     di << "   -FX Tx Ty TZ [Nx Ny Nz] : Tangent and Normal are fixed\n";
     di << "   -G guide  0|1(Plan|ACR)  0|1|2(no contact|contact|contact on border) : with guide\n";
+    di << "   -SM : Set the maximum degree of approximation\n";
+    di << "         paramvalue more then 0 (100 by default)\n";
+    di << "   -DM : Set the maximum number of span of approximation\n";
+    di << "         paramvalue [1; 14] (11 by default)\n";
     return 0;
   }
 
@@ -630,6 +634,42 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
         (BRepFill_TypeOfContact)KeepContact);
     }
   }
+  else if (!strcmp(a[1], "-DM"))
+  {
+    if (n != 3)
+    {
+      di << "bad arguments !\n";
+      return 1;
+    }
+
+    if (Draw::Atoi(a[2]) > 0 && Draw::Atoi(a[2]) < 15)
+    {
+      Sweep->SetMaxDegree(Draw::Atoi(a[2]));
+    }
+    else
+    {
+      di << " -DM paramvalue must be [1; 14]\n";
+      return 1;
+    }
+  }
+  else if (!strcmp(a[1], "-SM"))
+  {
+    if (n != 3)
+    {
+      di << "bad arguments !\n";
+      return 1;
+    }
+
+    if (Draw::Atoi(a[2]) > 0)
+    {
+      Sweep->SetMaxSegments(Draw::Atoi(a[2]));
+    }
+    else
+    {
+      di << " -SM paramvalue must be more then 0\n";
+      return 1;
+    }
+  }
 
   else {
     di << "The option " << a[1] << " is unknown !\n";
@@ -637,7 +677,6 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
   }
   return 0;
 }
-
 
 //=======================================================================
 //  addsweep
@@ -985,9 +1024,9 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
   theCommands.Add("errorsweep", "errorsweep: returns the summary error on resulting surfaces reached by Sweep",
     __FILE__, errorsweep, g);
 
-  theCommands.Add("simulsweep", "simulsweep r [n] [option]"
+  theCommands.Add("simulsweep", "simulsweep r [n] [option]",
     __FILE__, simulsweep, g);
-  theCommands.Add("geompipe", "geompipe r spineedge profileedge radius [byACR [byrotate]]"
+  theCommands.Add("geompipe", "geompipe r spineedge profileedge radius [byACR [byrotate]]",
     __FILE__, geompipe, g);
 
   theCommands.Add("middlepath", "middlepath res shape startshape endshape",
