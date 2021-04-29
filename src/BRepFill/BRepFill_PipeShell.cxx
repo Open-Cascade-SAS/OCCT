@@ -1450,6 +1450,10 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
     for (Standard_Integer i = 1; i <= aVEdges->UpperRow(); i++)
     {
       const TopoDS_Shape& aVshape = aVEdges->Value(i, inde);
+      if (aVshape.IsNull())
+      {
+        continue;
+      }
       if (aVshape.ShapeType() == TopAbs_EDGE ||
           aVshape.ShapeType() == TopAbs_FACE)
         ListVshapes->Append(aVshape);

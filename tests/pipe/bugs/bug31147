@@ -1,0 +1,35 @@
+puts "============"
+puts "0031147: Modeling Algorithms - BRepOffsetAPI_MakePipeShell null access"
+puts "============"
+puts ""
+
+pload VISUALIZATION
+
+restore [locate_data_file bug31147.brep] s
+explode s e
+wire spine s_1
+wire profile s_2
+
+mksweep spine
+addsweep profile
+setsweep -SM 1000
+setsweep -DM 14
+buildsweep result -S -C 
+
+set info1 [errorsweep]
+
+set check [regexp {Tolerance on surfaces = ([0-9\-+Ee.]+)} $info1 str error]
+
+if { $error > 1.e-4 } {
+   puts "Error: bad tolerance of result"
+}
+
+vinit
+vdisplay result
+vsetdispmode 1
+vfit
+
+checkshape result
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"
