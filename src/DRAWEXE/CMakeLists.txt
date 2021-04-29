@@ -28,6 +28,20 @@ unset (EXECUTABLE_PROJECT)
 unset (CUSTOM_EXTERNLIB)
 
 if (EMSCRIPTEN)
+  # Look for Tcl version string from file tcl.h
+  set (TCL_MAJOR_VERSION  8)
+  set (TCL_MINOR_VERSION  0)
+  set (TCL_RELEASE_SERIAL 0)
+  set (TCL_VERSION_FILE "${3RDPARTY_TCL_INCLUDE_DIR}/tcl.h")
+  if (EXISTS "${TCL_VERSION_FILE}")
+    file(READ "${TCL_VERSION_FILE}" aTclHeader)
+    foreach (SOUGHT_VERSION TCL_MAJOR_VERSION TCL_MINOR_VERSION TCL_RELEASE_SERIAL)
+      string(REGEX MATCH "#define ${SOUGHT_VERSION} * [0-9]+" macrodef "${aTclHeader}")
+      string(REGEX MATCH "[0-9]+" ${SOUGHT_VERSION} "${macrodef}")
+    endforeach()
+  endif()
+  #message(STATUS "Tcl version: ${TCL_MAJOR_VERSION}.${TCL_MINOR_VERSION}.${TCL_RELEASE_SERIAL}")
+
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s WASM=1")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s MAX_WEBGL_VERSION=2")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
@@ -36,6 +50,13 @@ if (EMSCRIPTEN)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s MODULARIZE=1")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s EXPORT_NAME='createDRAWEXE'")
 
+  # Embed Draw Harness .tcl scripts at recognizable location.
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/../DrawResources@/DrawResources")
+  # Tcl will look for "init.tcl" at path "$tcl_library/init.tcl" on startup (configurable from environment variable TCL_LIBRARY)
+  # In case of WebAssembly build $tcl_library looks like "tcl8.6.11/library" by default.
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_MAJOR_VERSION}.${TCL_MINOR_VERSION}@/tcl${TCL_MAJOR_VERSION}.${TCL_MINOR_VERSION}.${TCL_RELEASE_SERIAL}/library")
+
   install(FILES ${PROJECT_NAME}.html      DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
   install(FILES ../DrawResources/lamp.ico DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
+  install(FILES ${CMAKE_BINARY_DIR}/${OS_WITH_BIT}/${COMPILER}/bin\${OCCT_INSTALL_BIN_LETTER}/${PROJECT_NAME}.data DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
 endif()
