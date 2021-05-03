@@ -43,21 +43,39 @@ public:
 
   
   Standard_EXPORT HLRAlgo_PolyInternalData(const Standard_Integer nbNod, const Standard_Integer nbTri);
-  
-  Standard_EXPORT void UpdateLinks (HLRAlgo_Array1OfTData*& TData, HLRAlgo_Array1OfPISeg*& PISeg, HLRAlgo_Array1OfPINod*& PINod);
-  
-  Standard_EXPORT Standard_Integer AddNode (HLRAlgo_PolyInternalNode::NodeData& Nod1RValues, HLRAlgo_PolyInternalNode::NodeData& Nod2RValues, HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2, const Standard_Real coef1, const Standard_Real X3, const Standard_Real Y3, const Standard_Real Z3);
-  
-  Standard_EXPORT void UpdateLinks (const Standard_Integer ip1, const Standard_Integer ip2, const Standard_Integer ip3, HLRAlgo_Array1OfTData*& TData1, HLRAlgo_Array1OfTData*& TData2, HLRAlgo_Array1OfPISeg*& PISeg1, HLRAlgo_Array1OfPISeg*& PISeg2, HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2);
-  
+
+  Standard_EXPORT void UpdateLinks (HLRAlgo_Array1OfTData& theTData,
+                                    HLRAlgo_Array1OfPISeg& thePISeg,
+                                    HLRAlgo_Array1OfPINod& thePINod);
+
+  Standard_EXPORT Standard_Integer AddNode (HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
+                                            HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
+                                            HLRAlgo_Array1OfPINod*& thePINod1,
+                                            HLRAlgo_Array1OfPINod*& thePINod2,
+                                            const Standard_Real theCoef1,
+                                            const Standard_Real theX3,
+                                            const Standard_Real theY3,
+                                            const Standard_Real theZ3);
+
+  Standard_EXPORT void UpdateLinks (const Standard_Integer theIp1,
+                                    const Standard_Integer theIp2,
+                                    const Standard_Integer theIp3,
+                                    HLRAlgo_Array1OfTData*& theTData1,
+                                    HLRAlgo_Array1OfTData*& theTData2,
+                                    HLRAlgo_Array1OfPISeg*& thePISeg1,
+                                    HLRAlgo_Array1OfPISeg*& thePISeg2,
+                                    HLRAlgo_Array1OfPINod*& thePINod1,
+                                    HLRAlgo_Array1OfPINod*& thePINod2);
+
   Standard_EXPORT void Dump() const;
   
   Standard_EXPORT void IncTData (HLRAlgo_Array1OfTData*& TData1, HLRAlgo_Array1OfTData*& TData2);
   
   Standard_EXPORT void IncPISeg (HLRAlgo_Array1OfPISeg*& PISeg1, HLRAlgo_Array1OfPISeg*& PISeg2);
-  
-  Standard_EXPORT void IncPINod (HLRAlgo_Array1OfPINod*& PINod1, HLRAlgo_Array1OfPINod*& PINod2);
-  
+
+  Standard_EXPORT void IncPINod (HLRAlgo_Array1OfPINod*& thePINod1,
+                                 HLRAlgo_Array1OfPINod*& thePINod2);
+
     void DecTData();
   
     void DecPISeg();
@@ -89,13 +107,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyInternalData,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Integer myNbTData;
   Standard_Integer myNbPISeg;
@@ -109,9 +121,7 @@ private:
   Handle(HLRAlgo_HArray1OfPISeg) myPISeg;
   Handle(HLRAlgo_HArray1OfPINod) myPINod;
 
-
 };
-
 
 #include <HLRAlgo_PolyInternalData.lxx>
 

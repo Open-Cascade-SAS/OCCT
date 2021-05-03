@@ -17,16 +17,11 @@
 #ifndef _HLRAlgo_PolyShellData_HeaderFile
 #define _HLRAlgo_PolyShellData_HeaderFile
 
-#include <Standard.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_HArray1OfTransient.hxx>
-#include <HLRAlgo_ListOfBPoint.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-
+#include <HLRAlgo_ListOfBPoint.hxx>
+#include <HLRAlgo_PolyData.hxx>
 
 class HLRAlgo_PolyShellData;
 DEFINE_STANDARD_HANDLE(HLRAlgo_PolyShellData, Standard_Transient)
@@ -41,52 +36,34 @@ public:
     Standard_Integer Min, Max;
   };
 
-  
   Standard_EXPORT HLRAlgo_PolyShellData(const Standard_Integer nbFace);
   
   Standard_EXPORT void UpdateGlobalMinMax (HLRAlgo_PolyData::Box& theBox);
   
   Standard_EXPORT void UpdateHiding (const Standard_Integer nbHiding);
-  
-    Standard_Boolean Hiding() const;
-  
-    TColStd_Array1OfTransient& PolyData();
-  
-    TColStd_Array1OfTransient& HidingPolyData();
-  
-    HLRAlgo_ListOfBPoint& Edges();
-  
-    ShellIndices& Indices()
-    {
-      return myIndices;
-    }
 
+  Standard_Boolean Hiding() const { return !myHPolHi.IsEmpty(); }
 
+  NCollection_Array1<Handle(HLRAlgo_PolyData)>& PolyData() { return myPolyg; }
 
+  NCollection_Array1<Handle(HLRAlgo_PolyData)>& HidingPolyData() { return myHPolHi; }
+
+  HLRAlgo_ListOfBPoint& Edges() { return mySegList; }
+
+  ShellIndices& Indices()
+  {
+    return myIndices;
+  }
 
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,Standard_Transient)
 
-protected:
-
-
-
-
 private:
 
-
   ShellIndices myIndices;
-  TColStd_Array1OfTransient myPolyg;
-  Handle(TColStd_HArray1OfTransient) myHPolHi;
+  NCollection_Array1<Handle(HLRAlgo_PolyData)> myPolyg;
+  NCollection_Array1<Handle(HLRAlgo_PolyData)> myHPolHi;
   HLRAlgo_ListOfBPoint mySegList;
 
-
 };
-
-
-#include <HLRAlgo_PolyShellData.lxx>
-
-
-
-
 
 #endif // _HLRAlgo_PolyShellData_HeaderFile

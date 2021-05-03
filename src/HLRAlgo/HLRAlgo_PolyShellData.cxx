@@ -14,36 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef No_Exception
-//#define No_Exception
-#endif
-
+#include <HLRAlgo_PolyShellData.hxx>
 
 #include <HLRAlgo_BiPoint.hxx>
 #include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
-#include <HLRAlgo_PolyData.hxx>
-#include <HLRAlgo_PolyShellData.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyShellData,Standard_Transient)
 
 //=======================================================================
 //function : HLRAlgo_PolyShellData
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-HLRAlgo_PolyShellData::
-HLRAlgo_PolyShellData (const Standard_Integer nbFace)
-:  myPolyg(0,nbFace)
+HLRAlgo_PolyShellData::HLRAlgo_PolyShellData (const Standard_Integer nbFace)
+: myPolyg (1, nbFace)
 {}
 
 //=======================================================================
 //function : UpdateGlobalMinMax
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void 
-HLRAlgo_PolyShellData::UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox)
+void HLRAlgo_PolyShellData::UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox)
 {
   HLRAlgo_ListIteratorOfListOfBPoint it;
   
@@ -75,25 +65,26 @@ HLRAlgo_PolyShellData::UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox)
       else if (theBox.ZMax < aPoints.PntP1.Z()) theBox.ZMax = aPoints.PntP1.Z();
     }
   }
-  Standard_Integer nbFace      = myPolyg.Upper();
-  Handle(HLRAlgo_PolyData)* pd = NULL;
-  if(nbFace > 0) pd =  (Handle(HLRAlgo_PolyData)*)&(myPolyg.ChangeValue(1));
-  
-  for (Standard_Integer i = 1; i <= nbFace; i++) {
-    (*pd)->UpdateGlobalMinMax(theBox);
-    pd++;
+  for (Standard_Integer i = myPolyg.Lower(); i <= myPolyg.Upper(); i++)
+  {
+    const Handle(HLRAlgo_PolyData)& aPd = myPolyg.ChangeValue (i);
+    aPd->UpdateGlobalMinMax (theBox);
   }
 }
 
 //=======================================================================
 //function : UpdateHiding
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void HLRAlgo_PolyShellData::
-UpdateHiding (const Standard_Integer nbHiding)
+void HLRAlgo_PolyShellData::UpdateHiding (const Standard_Integer nbHiding)
 {
   if (nbHiding > 0)
-    myHPolHi = new TColStd_HArray1OfTransient(1,nbHiding);
-  else myHPolHi.Nullify();
+  {
+    myHPolHi.Resize (1, nbHiding, false);
+  }
+  else
+  {
+    NCollection_Array1<Handle(HLRAlgo_PolyData)> anEmpty;
+    myHPolHi.Move (anEmpty);
+  }
 }

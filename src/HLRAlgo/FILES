@@ -29,7 +29,6 @@ HLRAlgo_ListIteratorOfListOfBPoint.hxx
 HLRAlgo_ListOfBPoint.hxx
 HLRAlgo_PolyAlgo.cxx
 HLRAlgo_PolyAlgo.hxx
-HLRAlgo_PolyAlgo.lxx
 HLRAlgo_PolyData.cxx
 HLRAlgo_PolyData.hxx
 HLRAlgo_PolyData.lxx
@@ -43,7 +42,6 @@ HLRAlgo_PolyInternalSegment.hxx
 HLRAlgo_PolyMask.hxx
 HLRAlgo_PolyShellData.cxx
 HLRAlgo_PolyShellData.hxx
-HLRAlgo_PolyShellData.lxx
 HLRAlgo_Projector.cxx
 HLRAlgo_Projector.hxx
 HLRAlgo_Projector.lxx
