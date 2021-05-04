@@ -329,7 +329,7 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
   * *iges-visible-transf-roots* -- selects all visible and translatable roots. 
   * *iges-blanked-roots* -- selects all blank roots, whether translatable or not. 
   * *iges-blanked-transf-roots* -- selects all blank and translatable roots. 
-  * *iges-status-independant* -- selects entities whose IGES Subordinate Status = 0. 
+  * *iges-status-independent* -- selects entities whose IGES Subordinate Status = 0.
   * *iges-bypass-group* -- selects all root entities. If a root entity is a group  (402/7 or 402/9), the entities in the group are selected. 
   * *iges-bypass-subfigure* -- selects all root entities. If a root entity is a subfigure  definition (308), the entities in the subfigure definition are selected. 
   * *iges-bypass-group-subfigure* -- selects all root entities. If a root entity is a group  (402/7 or 402/9) or a subfigure definition (308), the entities in the group and  in the subfigure definition are selected. 

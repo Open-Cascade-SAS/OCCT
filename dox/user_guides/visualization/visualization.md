@@ -574,7 +574,7 @@ It is possible to make this declaration in one of two ways:
 
 * Initially by using one of the values of the enumeration *PrsMgr_TypeOfPresentation3d*:
   * *PrsMgr_TOP_AllView*,
-  * *PrsMgr_TOP_ProjectorDependant*
+  * *PrsMgr_TOP_ProjectorDependent*
 
 * Later by using the function *PrsMgr_PresentableObject::SetTypeOfPresentation*
 

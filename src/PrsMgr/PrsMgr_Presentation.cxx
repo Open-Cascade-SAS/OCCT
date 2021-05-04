@@ -55,7 +55,7 @@ PrsMgr_Presentation::PrsMgr_Presentation (const Handle(PrsMgr_PresentationManage
   myMode                 (theMode),
   myMustBeUpdated        (Standard_False)
 {
-  if (thePrsObject->TypeOfPresentation3d() == PrsMgr_TOP_ProjectorDependant)
+  if (thePrsObject->TypeOfPresentation3d() == PrsMgr_TOP_ProjectorDependent)
   {
     SetVisual (Graphic3d_TOS_COMPUTED);
   }

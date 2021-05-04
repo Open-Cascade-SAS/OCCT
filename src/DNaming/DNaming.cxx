@@ -441,8 +441,8 @@ static void LoadFirstLevel(const TopoDS_Shape& S,
   if (S.ShapeType() == TopAbs_COMPOUND || S.ShapeType() == TopAbs_COMPSOLID) {
     TopoDS_Iterator itr(S);
     for (; itr.More(); itr.Next()) {
-      TNaming_Builder bIndependantShapes(Tagger->NewChild());
-      bIndependantShapes.Generated(itr.Value());
+      TNaming_Builder bIndependentShapes(Tagger->NewChild());
+      bIndependentShapes.Generated(itr.Value());
       if (itr.Value().ShapeType() == TopAbs_COMPOUND || itr.Value().ShapeType() == TopAbs_COMPSOLID) {
 	LoadFirstLevel(itr.Value(), Tagger);
       } else LoadNextLevels(itr.Value(), Tagger);

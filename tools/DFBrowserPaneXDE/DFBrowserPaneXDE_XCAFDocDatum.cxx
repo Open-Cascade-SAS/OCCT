@@ -41,11 +41,11 @@ void DFBrowserPaneXDE_XCAFDocDatum::GetValues (const Handle(TDF_Attribute)& theA
 
   Handle(TCollection_HAsciiString) aName = anAttr->GetName();
   Handle(TCollection_HAsciiString) aDescription = anAttr->GetDescription();
-  Handle(TCollection_HAsciiString) anIndentification = anAttr->GetIdentification();
+  Handle(TCollection_HAsciiString) anIdentification = anAttr->GetIdentification();
 
   theValues << "Name" << (!aName.IsNull() ? aName->ToCString() : QString (""))
             << "Description" << (!aDescription.IsNull() ? aDescription->ToCString() : QString (""))
-            << "Identification" << (!anIndentification.IsNull() ? anIndentification->ToCString() : QString (""));
+            << "Identification" << (!anIdentification.IsNull() ? anIdentification->ToCString() : QString (""));
 
   Handle(XCAFDimTolObjects_DatumObject) anObject = anAttr->GetObject();
   Handle(TCollection_HAsciiString) anObjectName;

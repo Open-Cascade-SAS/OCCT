@@ -104,7 +104,7 @@ void ShapeAnalysis_ShapeContents::ClearFlags()
 {
   myBigSplineMode = Standard_False;
   myIndirectMode = Standard_False;
-  myOffestSurfaceMode = Standard_False;
+  myOffsetSurfaceMode = Standard_False;
   myTrimmed3dMode = Standard_False;
   myOffsetCurveMode = Standard_False;
   myTrimmed2dMode = Standard_False;
@@ -189,7 +189,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     }
     if (surf->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
       myNbOffsetSurf++;
-      if (myOffestSurfaceMode) myOffsetSurfaceSec->Append(face);
+      if (myOffsetSurfaceMode) myOffsetSurfaceSec->Append(face);
     }
     else if (surf->IsKind(STANDARD_TYPE(Geom_BezierSurface))) {
       myNbBezierSurf++;

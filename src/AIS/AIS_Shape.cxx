@@ -102,7 +102,7 @@ void AIS_Shape::replaceWithNewOwnAspects()
 // Purpose :
 //==================================================
 AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
-: AIS_InteractiveObject (PrsMgr_TOP_ProjectorDependant),
+: AIS_InteractiveObject (PrsMgr_TOP_ProjectorDependent),
   myshape (theShape),
   myUVOrigin(0.0, 0.0),
   myUVRepeat(1.0, 1.0),

@@ -298,10 +298,10 @@ void XCAFPrs_DocumentExplorer::initRoot()
 // function : initCurrent
 // purpose  :
 // =======================================================================
-void XCAFPrs_DocumentExplorer::initCurrent (Standard_Boolean theIsAssmebly)
+void XCAFPrs_DocumentExplorer::initCurrent (Standard_Boolean theIsAssembly)
 {
   myCurrent = XCAFPrs_DocumentNode();
-  if (theIsAssmebly)
+  if (theIsAssembly)
   {
     if (myTop < 0)
     {

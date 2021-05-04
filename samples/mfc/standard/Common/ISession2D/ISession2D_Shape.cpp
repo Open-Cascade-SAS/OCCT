@@ -9,7 +9,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(ISession2D_Shape,AIS_InteractiveObject)
 
 ISession2D_Shape::ISession2D_Shape ()
-    :AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
+    :AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependent)
 {}
 
 void ISession2D_Shape::Add(const TopoDS_Shape& aShape)

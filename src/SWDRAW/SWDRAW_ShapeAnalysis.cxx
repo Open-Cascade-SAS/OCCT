@@ -469,7 +469,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di, Standard_Integer 
   if(argc > 3) {
     analyzer.ModifyBigSplineMode()=(strstr("bigspl",arg3)!=NULL);
     analyzer.ModifyIndirectMode()=(strstr("indsur",arg3)!=NULL);
-    analyzer.ModifyOffestSurfaceMode()=(strstr("ofsur",arg3)!=NULL);
+    analyzer.ModifyOffsetSurfaceMode()=(strstr("ofsur",arg3)!=NULL);
     analyzer.ModifyTrimmed3dMode()=(strstr("trc3d",arg3)!=NULL);
     analyzer.ModifyOffsetCurveMode()=(strstr("ofcur",arg3)!=NULL);
     analyzer.ModifyTrimmed2dMode()=(strstr("trc2d",arg3)!=NULL);
@@ -549,7 +549,7 @@ static Standard_Integer XSHAPE_statshape(Draw_Interpretor& di, Standard_Integer 
       DBRep::Set (nompart,sec->Value(i));
     }
   }
-  if(analyzer.ModifyOffestSurfaceMode()) {
+  if(analyzer.ModifyOffsetSurfaceMode()) {
     sec = analyzer.OffsetSurfaceSec();
     for(Standard_Integer i = 1; i <= sec->Length(); i++) {
       Sprintf(nompart,"%s_ofsur_%d",arg2,i);

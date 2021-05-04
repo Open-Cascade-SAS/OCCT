@@ -161,7 +161,7 @@ protected:
   Standard_EXPORT void initRoot();
 
   //! Initialize properties for a current label.
-  Standard_EXPORT void initCurrent (Standard_Boolean theIsAssmebly);
+  Standard_EXPORT void initCurrent (Standard_Boolean theIsAssembly);
 
 protected:
 

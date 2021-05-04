@@ -115,7 +115,7 @@ void TopoDS_Builder::Add (TopoDS_Shape& aShape,
     }
   }
   else {
-    throw TopoDS_FrozenShape("TopoDS_Buider::Add");
+    throw TopoDS_FrozenShape("TopoDS_Builder::Add");
   }
 }
 

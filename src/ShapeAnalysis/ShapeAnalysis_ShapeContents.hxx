@@ -47,121 +47,113 @@ public:
   //! Counts quantities of sun-shapes in shape and
   //! stores sub-shapes according to flags
   Standard_EXPORT void Perform (const TopoDS_Shape& shape);
-  
+
   //! Returns (modifiable) the flag which defines whether to store faces
   //! with edges if its 3D curves has more than 8192 poles.
-    Standard_Boolean& ModifyBigSplineMode();
-  
+  Standard_Boolean& ModifyBigSplineMode() { return myBigSplineMode; }
+
+  //! Returns (modifiable) the flag which defines whether to store faces on indirect surfaces.
+  Standard_Boolean& ModifyIndirectMode() { return myIndirectMode; }
+
+  //! Returns (modifiable) the flag which defines whether to store faces on offset surfaces.
+  Standard_Boolean& ModifyOffsetSurfaceMode() { return myOffsetSurfaceMode; }
+
   //! Returns (modifiable) the flag which defines whether to store faces
-  //! on indirect surfaces
-    Standard_Boolean& ModifyIndirectMode();
-  
+  //! with edges if its 3D curves are trimmed curves
+  Standard_Boolean& ModifyTrimmed3dMode() { return myTrimmed3dMode; }
+
   //! Returns (modifiable) the flag which defines whether to store faces
-  //! on offset surfaces.
-    Standard_Boolean& ModifyOffestSurfaceMode();
-  
-  //! Returns (modifiable) the flag which defines whether to store faces
-  //! with edges if ist 3D curves are trimmed curves
-    Standard_Boolean& ModifyTrimmed3dMode();
-  
-  //! Returns (modifiable) the flag which defines whether to store faces
-  //! with edges if its 3D curves and pcurves are offest curves
-    Standard_Boolean& ModifyOffsetCurveMode();
-  
+  //! with edges if its 3D curves and pcurves are offset curves
+  Standard_Boolean& ModifyOffsetCurveMode() { return myOffsetCurveMode; }
+
   //! Returns (modifiable) the flag which defines whether to store faces
   //! with edges if its  pcurves are trimmed curves
-    Standard_Boolean& ModifyTrimmed2dMode();
-  
-    Standard_Integer NbSolids() const;
-  
-    Standard_Integer NbShells() const;
-  
-    Standard_Integer NbFaces() const;
-  
-    Standard_Integer NbWires() const;
-  
-    Standard_Integer NbEdges() const;
-  
-    Standard_Integer NbVertices() const;
-  
-    Standard_Integer NbSolidsWithVoids() const;
-  
-    Standard_Integer NbBigSplines() const;
-  
-    Standard_Integer NbC0Surfaces() const;
-  
-    Standard_Integer NbC0Curves() const;
-  
-    Standard_Integer NbOffsetSurf() const;
-  
-    Standard_Integer NbIndirectSurf() const;
-  
-    Standard_Integer NbOffsetCurves() const;
-  
-    Standard_Integer NbTrimmedCurve2d() const;
-  
-    Standard_Integer NbTrimmedCurve3d() const;
-  
-    Standard_Integer NbBSplibeSurf() const;
-  
-    Standard_Integer NbBezierSurf() const;
-  
-    Standard_Integer NbTrimSurf() const;
-  
-    Standard_Integer NbWireWitnSeam() const;
-  
-    Standard_Integer NbWireWithSevSeams() const;
-  
-    Standard_Integer NbFaceWithSevWires() const;
-  
-    Standard_Integer NbNoPCurve() const;
-  
-    Standard_Integer NbFreeFaces() const;
-  
-    Standard_Integer NbFreeWires() const;
-  
-    Standard_Integer NbFreeEdges() const;
-  
-    Standard_Integer NbSharedSolids() const;
-  
-    Standard_Integer NbSharedShells() const;
-  
-    Standard_Integer NbSharedFaces() const;
-  
-    Standard_Integer NbSharedWires() const;
-  
-    Standard_Integer NbSharedFreeWires() const;
-  
-    Standard_Integer NbSharedFreeEdges() const;
-  
-    Standard_Integer NbSharedEdges() const;
-  
-    Standard_Integer NbSharedVertices() const;
-  
-    Handle(TopTools_HSequenceOfShape) BigSplineSec() const;
-  
-    Handle(TopTools_HSequenceOfShape) IndirectSec() const;
-  
-    Handle(TopTools_HSequenceOfShape) OffsetSurfaceSec() const;
-  
-    Handle(TopTools_HSequenceOfShape) Trimmed3dSec() const;
-  
-    Handle(TopTools_HSequenceOfShape) OffsetCurveSec() const;
-  
-    Handle(TopTools_HSequenceOfShape) Trimmed2dSec() const;
+  Standard_Boolean& ModifyTrimmed2dMode() { return myTrimmed2dMode; }
 
+  Standard_Integer NbSolids() const { return myNbSolids; }
 
+  Standard_Integer NbShells() const { return myNbShells; }
 
+  Standard_Integer NbFaces() const { return myNbFaces; }
 
-protected:
+  Standard_Integer NbWires() const { return myNbWires; }
 
+  Standard_Integer NbEdges() const { return myNbEdges; }
 
+  Standard_Integer NbVertices() const { return myNbVertices; }
 
+  Standard_Integer NbSolidsWithVoids() const { return myNbSolidsWithVoids; }
 
+  Standard_Integer NbBigSplines() const { return myNbBigSplines; }
+
+  Standard_Integer NbC0Surfaces() const { return myNbC0Surfaces; }
+
+  Standard_Integer NbC0Curves() const { return myNbC0Curves; }
+
+  Standard_Integer NbOffsetSurf() const { return myNbOffsetSurf; }
+
+  Standard_Integer NbIndirectSurf() const { return myNbIndirectSurf; }
+
+  Standard_Integer NbOffsetCurves() const { return myNbOffsetCurves; }
+
+  Standard_Integer NbTrimmedCurve2d() const { return myNbTrimmedCurve2d; }
+
+  Standard_Integer NbTrimmedCurve3d() const { return myNbTrimmedCurve3d; }
+
+  Standard_Integer NbBSplibeSurf() const { return myNbBSplibeSurf; }
+
+  Standard_Integer NbBezierSurf() const { return myNbBezierSurf; }
+
+  Standard_Integer NbTrimSurf() const { return myNbTrimSurf; }
+
+  Standard_Integer NbWireWitnSeam() const { return myNbWireWitnSeam; }
+
+  Standard_Integer NbWireWithSevSeams() const { return myNbWireWithSevSeams; }
+
+  Standard_Integer NbFaceWithSevWires() const { return myNbFaceWithSevWires; }
+
+  Standard_Integer NbNoPCurve() const { return myNbNoPCurve; }
+
+  Standard_Integer NbFreeFaces() const { return myNbFreeFaces; }
+
+  Standard_Integer NbFreeWires() const { return myNbFreeWires; }
+
+  Standard_Integer NbFreeEdges() const { return myNbFreeEdges; }
+
+  Standard_Integer NbSharedSolids() const { return myNbSharedSolids; }
+
+  Standard_Integer NbSharedShells() const { return myNbSharedShells; }
+
+  Standard_Integer NbSharedFaces() const { return myNbSharedFaces; }
+
+  Standard_Integer NbSharedWires() const { return myNbSharedWires; }
+
+  Standard_Integer NbSharedFreeWires() const { return myNbSharedFreeWires; }
+
+  Standard_Integer NbSharedFreeEdges() const { return myNbSharedFreeEdges; }
+
+  Standard_Integer NbSharedEdges() const { return myNbSharedEdges; }
+
+  Standard_Integer NbSharedVertices() const { return myNbSharedVertices; }
+
+  const Handle(TopTools_HSequenceOfShape)& BigSplineSec() const { return myBigSplineSec; }
+
+  const Handle(TopTools_HSequenceOfShape)& IndirectSec() const { return myIndirectSec; }
+
+  const Handle(TopTools_HSequenceOfShape)& OffsetSurfaceSec() const { return myOffsetSurfaceSec; }
+
+  const Handle(TopTools_HSequenceOfShape)& Trimmed3dSec() const { return myTrimmed3dSec; }
+
+  const Handle(TopTools_HSequenceOfShape)& OffsetCurveSec() const { return myOffsetCurveSec; }
+
+  const Handle(TopTools_HSequenceOfShape)& Trimmed2dSec() const { return myTrimmed2dSec; }
+  
+public:
+
+  Standard_DEPRECATED("ModifyOffsetSurfaceMode() should be used instead")
+  Standard_Boolean& ModifyOffestSurfaceMode() { return myOffsetSurfaceMode; }
 
 private:
-
-
 
   Standard_Integer myNbSolids;
   Standard_Integer myNbShells;
@@ -198,7 +190,7 @@ private:
   Standard_Integer myNbSharedVertices;
   Standard_Boolean myBigSplineMode;
   Standard_Boolean myIndirectMode;
-  Standard_Boolean myOffestSurfaceMode;
+  Standard_Boolean myOffsetSurfaceMode;
   Standard_Boolean myTrimmed3dMode;
   Standard_Boolean myOffsetCurveMode;
   Standard_Boolean myTrimmed2dMode;
@@ -209,14 +201,6 @@ private:
   Handle(TopTools_HSequenceOfShape) myOffsetCurveSec;
   Handle(TopTools_HSequenceOfShape) myTrimmed2dSec;
 
-
 };
-
-
-#include <ShapeAnalysis_ShapeContents.lxx>
-
-
-
-
 
 #endif // _ShapeAnalysis_ShapeContents_HeaderFile

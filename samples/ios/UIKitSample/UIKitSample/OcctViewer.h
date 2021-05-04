@@ -58,7 +58,7 @@ public:
   const Handle(V3d_View)& ActiveView() const { return myView; }
 
   //! Interactive context.
-  const Handle(AIS_InteractiveContext)& AisContex() const { return myContext; }
+  const Handle(AIS_InteractiveContext)& AisContext() const { return myContext; }
 
   //! Invalidate active viewer.
   void Invalidate()

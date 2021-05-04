@@ -26,7 +26,6 @@ ShapeAnalysis_HSequenceOfFreeBounds.hxx
 ShapeAnalysis_SequenceOfFreeBounds.hxx
 ShapeAnalysis_ShapeContents.cxx
 ShapeAnalysis_ShapeContents.hxx
-ShapeAnalysis_ShapeContents.lxx
 ShapeAnalysis_ShapeTolerance.cxx
 ShapeAnalysis_ShapeTolerance.hxx
 ShapeAnalysis_Shell.cxx

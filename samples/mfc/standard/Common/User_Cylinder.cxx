@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 //
 
 User_Cylinder::User_Cylinder(const Standard_Real R, const Standard_Real H) :
-AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
+AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependent)
 {
   BRepPrimAPI_MakeCylinder S(R,H);
   myShape = S.Shape();
@@ -38,7 +38,7 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
 }
 
 User_Cylinder::User_Cylinder(const gp_Ax2 CylAx2, const Standard_Real R, const Standard_Real H) :
-AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
+AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependent)
 
 {
   BRepPrimAPI_MakeCylinder S(CylAx2,R,H);

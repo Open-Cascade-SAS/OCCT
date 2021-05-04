@@ -93,11 +93,11 @@ public:
   
   Standard_EXPORT static Standard_Boolean ComputeSweepDir (const TopoDS_Shape& theShape, gp_Ax1& theAxis);
   
-  Standard_EXPORT static void LoadAndOrientModifiedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum GeneratedFrom, TNaming_Builder& Buider, const TopTools_DataMapOfShapeShape& SubShapesOfResult);
+  Standard_EXPORT static void LoadAndOrientModifiedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum GeneratedFrom, TNaming_Builder& Builder, const TopTools_DataMapOfShapeShape& SubShapesOfResult);
   
-  Standard_EXPORT static void LoadAndOrientGeneratedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum GeneratedFrom, TNaming_Builder& Buider, const TopTools_DataMapOfShapeShape& SubShapesOfResult);
+  Standard_EXPORT static void LoadAndOrientGeneratedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum GeneratedFrom, TNaming_Builder& Builder, const TopTools_DataMapOfShapeShape& SubShapesOfResult);
   
-  Standard_EXPORT static void LoadDeletedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum KindOfDeletedShape, TNaming_Builder& Buider);
+  Standard_EXPORT static void LoadDeletedShapes (BRepBuilderAPI_MakeShape& MakeShape, const TopoDS_Shape& ShapeIn, const TopAbs_ShapeEnum KindOfDeletedShape, TNaming_Builder& Builder);
   
   Standard_EXPORT static void LoadResult (const TDF_Label& theLabel, BRepAlgoAPI_BooleanOperation& MS);
   

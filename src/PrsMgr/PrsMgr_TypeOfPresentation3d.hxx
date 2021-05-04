@@ -17,16 +17,18 @@
 #ifndef _PrsMgr_TypeOfPresentation3d_HeaderFile
 #define _PrsMgr_TypeOfPresentation3d_HeaderFile
 
-//! To declare the type of presentation as follows
-//! -   AllView for display involving no recalculation for
-//! new projectors (points of view)in hidden line removal mode
-//! -   ProjectorDependant for display in hidden line
-//! removal mode, where every new point of view
-//! entails recalculation of the display.
+#include <Standard_Macro.hxx>
+
+//! The type of presentation.
 enum PrsMgr_TypeOfPresentation3d
 {
-PrsMgr_TOP_AllView,
-PrsMgr_TOP_ProjectorDependant
+  //! Presentation display involves no recalculation for new projectors (points of view) in hidden line removal mode.
+  PrsMgr_TOP_AllView,
+  //! Every new point of view entails recalculation of the display in hidden line removal mode.
+  PrsMgr_TOP_ProjectorDependent
 };
+
+Standard_DEPRECATED("PrsMgr_TOP_ProjectorDependent should be used instead")
+const PrsMgr_TypeOfPresentation3d PrsMgr_TOP_ProjectorDependant = PrsMgr_TOP_ProjectorDependent;
 
 #endif // _PrsMgr_TypeOfPresentation3d_HeaderFile

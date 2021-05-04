@@ -237,7 +237,7 @@ void PrsMgr_PresentableObject::SetTypeOfPresentation (const PrsMgr_TypeOfPresent
   for (PrsMgr_Presentations::Iterator aPrsIter (myPresentations); aPrsIter.More(); aPrsIter.Next())
   {
     const Handle(PrsMgr_Presentation)& aPrs  = aPrsIter.Value();
-    aPrs->SetVisual (myTypeOfPresentation3d == PrsMgr_TOP_ProjectorDependant
+    aPrs->SetVisual (myTypeOfPresentation3d == PrsMgr_TOP_ProjectorDependent
                    ? Graphic3d_TOS_COMPUTED
                    : Graphic3d_TOS_ALL);
   }
