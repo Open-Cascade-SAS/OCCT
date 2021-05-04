@@ -184,7 +184,7 @@ void TopOpeBRepBuild_WireEdgeSet::FindNeighbours()
 {
   while (mySubShapeExplorer.More()) {
     
-    // l = list of edges neighbour of edge myCurrentShape trough
+    // l = list of edges neighbour of edge myCurrentShape through
     // the vertex mySubShapeExplorer.Current(), which is a vertex of the
     // edge myCurrentShape.
     const TopoDS_Shape& V = mySubShapeExplorer.Current();

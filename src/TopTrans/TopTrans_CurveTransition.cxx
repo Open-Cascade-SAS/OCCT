@@ -86,7 +86,7 @@ void TopTrans_CurveTransition::Compare (const Standard_Real Tole,
       S = O;
   }
 
-  // It is the first comparaison for this complex transition 
+  // It is the first comparison for this complex transition
   if (Init) {
     Init=Standard_False;
     TgtFirst =T;

@@ -32,19 +32,15 @@ class TDF_Label;
 //! information. The use of this tool can works after
 //! a copy, acted by a CopyTool.
 //!
-//! * Compare(...) compares two DataSet and returns
-//! the result.
+//! * Compare(...) compares two DataSet and returns the result.
 //!
 //! * SourceUnbound(...) builds the difference between
-//! a relocation dictionnary and a source set of
-//! information.
+//! a relocation dictionary and a source set of information.
 //!
 //! * TargetUnbound(...) does the same between a
-//! relocation dictionnary and a target set of
-//! information.
+//! relocation dictionary and a target set of information.
 //!
-//! * Cut(aDataSet, anLabel) removes a set of
-//! attributes.
+//! * Cut(aDataSet, anLabel) removes a set of attributes.
 //!
 //! * IsSelfContained(...) returns true if all the
 //! labels of the attributes of the given DataSet are

@@ -61,7 +61,7 @@ public:
   
   Standard_EXPORT static void UVBOUNDS (const TopoDS_Face& F, Standard_Boolean& UPeri, Standard_Boolean& VPeri, Standard_Real& Umin, Standard_Real& Umax, Standard_Real& Vmin, Standard_Real& Vmax);
   
-  //! ajust u,v values in UVBounds of the domain of the
+  //! adjust u,v values in UVBounds of the domain of the
   //! geometric shape <S>, according to Uperiodicity and
   //! VPeriodicity of the domain.
   //! <S> is assumed to be a face.
@@ -69,7 +69,7 @@ public:
   //! not periodic in U and/or V .
   Standard_EXPORT static void AdjustOnPeriodic (const TopoDS_Shape& S, Standard_Real& u, Standard_Real& v);
   
-  //! indicates wheter shape S1 is a closing shape on S2 or not.
+  //! indicates whether shape S1 is a closing shape on S2 or not.
   Standard_EXPORT static Standard_Boolean Closed (const TopoDS_Shape& S1, const TopoDS_Shape& S2);
   
   Standard_EXPORT static Standard_Real PeriodizeParameter (const Standard_Real par, const TopoDS_Shape& EE, const TopoDS_Shape& FF);

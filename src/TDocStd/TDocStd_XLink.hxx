@@ -96,7 +96,7 @@ public:
   //! Something to do after applying <anAttDelta>.
   Standard_EXPORT virtual Standard_Boolean AfterUndo (const Handle(TDF_AttributeDelta)& anAttDelta, const Standard_Boolean forceIt = Standard_False) Standard_OVERRIDE;
   
-  //! Returns a null handle. Raise allways for ,it is
+  //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.
   Standard_EXPORT Handle(TDF_Attribute) BackupCopy() const Standard_OVERRIDE;
   

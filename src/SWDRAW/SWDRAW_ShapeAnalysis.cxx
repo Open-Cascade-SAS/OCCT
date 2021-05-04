@@ -710,7 +710,7 @@ static Standard_Integer freebounds (Draw_Interpretor& di,
 
 //=======================================================================
 //function : PrintProps
-//purpose  : auxilary for FreeBoundsProps
+//purpose  : auxiliary for FreeBoundsProps
 //=======================================================================
 static void PrintProps(Standard_Integer i,
 		       const Handle(ShapeAnalysis_FreeBoundData)& fbd,
@@ -762,7 +762,7 @@ static Standard_Integer FreeBoundsProps(Draw_Interpretor& di,
 
   Standard_Integer nb = analyzer.NbClosedFreeBounds();
   di<<"\n";
-  di<<" \tArea mm2\tLength mm\tRatio L/W\tWidth mm\tNb noth\n";
+  di<<" \tArea mm2\tLength mm\tRatio L/W\tWidth mm\tNb notch\n";
   B.MakeCompound(closed);
   if (nb) {
     di<<"Closed bounds properties\n";

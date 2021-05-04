@@ -114,7 +114,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
   // look for a vpoint with transition IN/OUT or OUT/IN
   TopOpeBRep_VPointInterIterator VPI; VPI.Init(L,checkkeep);
   
-  // With LineContructor, each RLine restricted by its vpbounds
+  // With LineConstructor, each RLine restricted by its vpbounds
   // has its restrictions IN or ON the two faces
   Standard_Boolean keeprline;
   Standard_Boolean isedge1 = L.ArcIsEdge(1);

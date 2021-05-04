@@ -106,10 +106,10 @@ void TDocStd_MultiTransactionManager::OpenCommand() {
 #ifdef OCCT_DEBUG
     std::cout << "TDocStd_MultiTransactionManager::OpenCommand(): "
             "Can't start new application transaction while a "
-            "previous one is not commited or aborted" << std::endl;
+            "previous one is not committed or aborted" << std::endl;
 #endif
     throw Standard_Failure("Can't start new application transaction"
-                            "while a previous one is not commited or aborted");
+                            "while a previous one is not committed or aborted");
   }
   myOpenTransaction = Standard_True;
   Standard_Integer i;

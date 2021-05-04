@@ -329,7 +329,7 @@ void StepToTopoDS_TranslateFace::Init
       // orientation of the surface => the underlying topological 
       // orientation are not implicitly reversed
       // this is the case in CAS.CADE => If the face_surface is reversed,
-      // the wire orientation has to be explictly reversed
+      // the wire orientation has to be explicitly reversed
       if (FaceBound->Orientation()) {
         // *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
         W.Orientation(sameSense ? TopAbs_FORWARD : TopAbs_REVERSED);

@@ -14,13 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modifed:     Portage NT 7-5-97 DPF (strcasecmp)
-
 #include <TopOpeBRep.hxx>
 
-//#ifdef _WIN32
-//#define strcasecmp strcmp Already defined
-//#endif
 //=======================================================================
 //function : Print
 //purpose  : 

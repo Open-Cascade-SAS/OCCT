@@ -27,7 +27,7 @@ class TopOpeBRepTool_ShapeExplorer : public TopExp_Explorer
 {
 public:
 
-  //! Creates an empty explorer, becomes usefull after Init.
+  //! Creates an empty explorer, becomes useful after Init.
   TopOpeBRepTool_ShapeExplorer() : myIndex(0) 
   {
   }

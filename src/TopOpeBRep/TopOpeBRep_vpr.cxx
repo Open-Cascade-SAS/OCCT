@@ -1030,7 +1030,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
     // alors qu'il est dessus)
     
     TopOpeBRepDS_Transition tOOedge;
-    // distinguish wether OOedge is the edge on which geometric line lies.
+    // distinguish whether OOedge is the edge on which geometric line lies.
     // OOedge == edge(line) ==> tOOedge = f(orientation of <edge> in <Face> FORWARD)
     // OOedge != edge(line) ==> tOOedge = f(orientation of <Face>)    
     Standard_Real OOpar1,OOpar2; Standard_Boolean isonper; FDS_LOIinfsup((*myDS),OOedge,OOparedge,PVKind,PVIndex,

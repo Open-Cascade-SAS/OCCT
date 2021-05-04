@@ -61,7 +61,7 @@ class TopoDSToStep_MakeStepVertex;
 //! MakeFacetedBrepAndBrepWithVoids
 //! MakeShellBasedSurfaceModel
 //! Each of these classes call the Builder
-//! The class tool centralizes some common informations.
+//! The class tool centralizes some common information.
 class TopoDSToStep 
 {
 public:

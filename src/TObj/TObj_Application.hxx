@@ -109,10 +109,10 @@ public:
   //! the static instance of the object (or derive your own application)
   Standard_EXPORT TObj_Application();
 
-  //! Sets an error occured on storage of a document.
+  //! Sets an error occurred on storage of a document.
   void SetError (const PCDM_StoreStatus theStatus, const TCollection_ExtendedString& theInfo);
 
-  //! Sets an error occured on reading of a document.
+  //! Sets an error occurred on reading of a document.
   void SetError (const PCDM_ReaderStatus theStatus, const TCollection_ExtendedString& theInfo);
 
  private:

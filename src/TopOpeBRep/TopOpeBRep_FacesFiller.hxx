@@ -132,7 +132,7 @@ public:
   //! of the 2 faces.
   Standard_EXPORT void GetESL (TopTools_ListOfShape& LES);
   
-  //! calling the followings ProcessVPIonR and ProcessVPonR.
+  //! calling the following ProcessVPIonR and ProcessVPonR.
   Standard_EXPORT void ProcessVPR (TopOpeBRep_FacesFiller& FF, const TopOpeBRep_VPointInter& VP);
   
   //! processing ProcessVPonR for VPI.

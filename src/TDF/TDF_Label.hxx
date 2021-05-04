@@ -133,7 +133,7 @@ public:
   //! Forgets all the attributes. Does it on also on the
   //! sub-labels if <clearChildren> is set to true. Of
   //! course, this method is compatible with Transaction
-  //! & Delta mecanisms.
+  //! & Delta mechanisms.
   Standard_EXPORT void ForgetAllAttributes (const Standard_Boolean clearChildren = Standard_True) const;
   
   //! Undo Forget action, setting its forgotten status

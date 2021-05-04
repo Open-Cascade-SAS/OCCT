@@ -32,8 +32,7 @@ class TDF_Attribute;
 class TDF_DataSet;
 DEFINE_STANDARD_HANDLE(TDF_DataSet, Standard_Transient)
 
-//! This class is a set of TDF informations like
-//! labels and attributes.
+//! This class is a set of TDF information like labels and attributes.
 class TDF_DataSet : public Standard_Transient
 {
 

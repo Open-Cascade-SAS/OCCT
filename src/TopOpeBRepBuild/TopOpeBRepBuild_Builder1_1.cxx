@@ -164,7 +164,7 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
 	
 	TCollection_AsciiString an;//=postfix+prefix+cn;
 	an+=postfix; an+=prefix; an+=cn;
-	printf("  -> Splitted Part IN : %s\n",  an.ToCString());
+	printf("  -> Split Part IN : %s\n",  an.ToCString());
 	cnt++;
       }
 
@@ -179,7 +179,7 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
 	
 	TCollection_AsciiString an;//=postfix+prefix+cn;
 	an+=postfix; an+=prefix; an+=cn;
-	printf("  -> Splitted Part OUT: %-s\n",  an.ToCString());
+	printf("  -> Split Part OUT: %-s\n",  an.ToCString());
 	cnt++;
       }
 
@@ -194,7 +194,7 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
 
 	TCollection_AsciiString an;//=postfix+prefix+cn;
 	an+=postfix; an+=prefix; an+=cn;
-	printf("  -> Splitted Part ON : %s\n",  an.ToCString());
+	printf("  -> Split Part ON : %s\n",  an.ToCString());
 	cnt++;
       } 
     }
@@ -708,13 +708,13 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
       }
     }
     else {
-      // Usual case. The Edge was splitted onto several parts: 
+      // Usual case. The Edge was split onto several parts:
       TopTools_ListIteratorOfListOfShape aLIt(aLNew);
       for (; aLIt.More(); aLIt.Next()) {
 	const TopoDS_Shape& aS = aLIt.Value();
 	aState = aDataMapOfShapeState(aS);
 	////////////////////////////////////////////////////////////////////////////
-	// **  When aState==TopAbs_IN it is not evidence that it is realy so.
+	// **  When aState==TopAbs_IN it is not evidence that it is really so.
 	// There are some cases when JYL does not define ON parts completely.
 	// So,  as we want to have right states,  we have to do it ourselves.  
 	// PKV Mon 25 Oct 1999

@@ -27,7 +27,7 @@ class TDF_RelocationTable;
 class TDataStd_GenericEmpty;
 DEFINE_STANDARD_HANDLE(TDataStd_GenericEmpty, TDF_Attribute)
 
-//! An ancestor attibute for all attributes which have no fields.
+//! An ancestor attribute for all attributes which have no fields.
 //! If an attribute inherits this one it should not have drivers for persistence.
 class TDataStd_GenericEmpty : public TDF_Attribute
 {

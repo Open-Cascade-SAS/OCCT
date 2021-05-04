@@ -211,7 +211,7 @@ Standard_Boolean TopOpeBRepTool::Regularize(const TopoDS_Face& theFace,
       //  diff = Umin<ii> - Umax<jj> : k = 1
       //  diff = Vmin<ii> - Vmax<jj> : k = 3
       Standard_Real diff = UV(ii,k) - UV(jj,k+1);
-      // IMPORTANT : for splitted faces sharing same edge, use
+      // IMPORTANT : for split faces sharing same edge, use
       // chklarge = True.
       disjoint = chklarge ? (diff >= -tol) : (diff > 0.);
       if (disjoint) {ismaller = 1; return TopAbs_OUT;}
@@ -348,13 +348,13 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
   // Filling the map <mapWlow> : with (key + item) = new face,
   //  item = (newface has holes) ? list of wires IN the wire key: empty list
 
-  // prequesitory : <mapoldWnewW> binds (non splitted wire of <F>, emptylos)
-  //                                    (splitted wire of <F>, splits of the wire)
+  // prequesitory : <mapoldWnewW> binds (non split wire of <F>, emptylos)
+  //                                    (split wire of <F>, splits of the wire)
 
   // Mapping :
   // --------
   // Filling <oldW> : list of wires of <F>
-  // Filling <mapWlow> : with (non-splitted old wire, emptylos),
+  // Filling <mapWlow> : with (non-split old wire, emptylos),
   //                          (split of old wire, emptylos)
   TopTools_ListOfShape oldW;
   Standard_Integer noldW = mapoldWnewW.Extent();

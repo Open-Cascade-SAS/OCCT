@@ -175,7 +175,7 @@ public:
   //! single contexts
   Standard_EXPORT static TopoDS_Shape FindUniqueContextSet (const TopoDS_Shape& S, const TopoDS_Shape& Context, Handle(TopTools_HArray1OfShape)& Arr);
   
-  //! Subtitutes shape in source structure
+  //! Substitutes shape in source structure
   Standard_EXPORT static Standard_Boolean SubstituteSShape (const TDF_Label& accesslabel, const TopoDS_Shape& From, TopoDS_Shape& To);
   
   //! Returns True if outer wire is found and the found wire in <theWire>.

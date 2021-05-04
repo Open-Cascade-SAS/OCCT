@@ -27,7 +27,7 @@ static Standard_Boolean STATIC_DEFINED = Standard_False;
 
 static gp_Dir FUN_nCinsideS(const gp_Dir& tgC, const gp_Dir& ngS)
 {
-  // Give us a curve C on suface S, <parOnC>, a parameter
+  // Give us a curve C on surface S, <parOnC>, a parameter
   // Purpose : compute normal vector to C, tangent to S at
   //           given point , oriented INSIDE S  
   // <tgC> : geometric tangent at point of <parOnC>
@@ -111,7 +111,7 @@ static Standard_Integer FUN_refnearest(const Standard_Real Angref, const TopAbs_
     // Analysis for tangent cases : if two boundary faces are same sided
     // and have tangent normals, if they have opposite orientations
     // we choose INTERNAL as resulting complex transition (case EXTERNAL
-    // refering to no logical case)
+    // referring to no logical case)
     if (TopAbs::Complement(Ori) == Oriref) return M_Ointernal;
     else return (Standard_Integer ) M_Unknown; // nyi FUN_RAISE
   }

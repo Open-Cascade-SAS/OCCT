@@ -18,7 +18,7 @@
 
 #include <Standard_OutOfRange.hxx>
 
-// The array of prime numbers used as consequtive steps for 
+// The array of prime numbers used as consecutive steps for
 // size of array of buckets in the map.
 // The prime numbers are used for array size with the hope that this will 
 // lead to less probablility of having the same hash codes for

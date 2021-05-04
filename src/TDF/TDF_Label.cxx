@@ -620,7 +620,7 @@ void TDF_Label::ForgetFromNode (const TDF_LabelNodePtr& fromNode,
       // The attribute has been modified in the current transaction.
       // (It has at least one backup.) We don't restore the previous
       // version before forgetting. It may generated a strange behaviour
-      // in case of forgetting, commiting, aborting...
+      // in case of forgetting, committing, aborting...
       if (fromNode->Data()->NotUndoMode()) anAttribute->BeforeForget();
       anAttribute->Forget(fromNode->Data()->Transaction());
     }

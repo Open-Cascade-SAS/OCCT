@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------
 Standard_EXPORT gp_Dir FUN_tool_nCinsideS(const gp_Dir& tgC,const gp_Dir& ngS)
 {
-  // Give us a curve C on suface S,<parOnC>,a parameter
+  // Give us a curve C on surface S,<parOnC>,a parameter
   // Purpose : compute normal vector to C,tangent to S at
   //           given point,oriented INSIDE S  
   // <tgC> : geometric tangent at point of <parOnC>

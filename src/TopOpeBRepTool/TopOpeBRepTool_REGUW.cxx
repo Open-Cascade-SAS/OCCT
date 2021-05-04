@@ -285,13 +285,13 @@ Standard_Boolean TopOpeBRepTool_REGUW::MapS()
   
   // Prequesitories :
   //        0) an edge with an INTERNAL vertex binded in <mapVedges> must be
-  //           splitted 
+  //           split 
   //           After splitting such edges, we deal only with FORWARD and       
   //           REVERSED vertices.
   //        1) a vertex belonging to a CLOSING edge is represented by 2 distinct
   //          2d points in the UV space.
   //        2) a vertex belonging to a  DEGENERATED edge has at least 2 UV rep.
-  //          (if the original degenerated edge has been splitted).
+  //          (if the original degenerated edge has been split).
   //          the bounds of the degenerated edge share the same TShape.
   //        3) a CLOSED edge binds the same vertex oriented FORWARD and REVERSED. 
   
@@ -789,7 +789,7 @@ Standard_Boolean TopOpeBRepTool_REGUW::REGU(const Standard_Integer istep,
       }//ite(loEcur)
       FINI = (nite == nE);
             
-      // if Scur = <currentW> gives only one new wire, and has no new splitted edges, <currentW>
+      // if Scur = <currentW> gives only one new wire, and has no new split edges, <currentW>
       // is valid and unchanged.
       Standard_Boolean onewok = FINI && loW.IsEmpty() && !hasnewsplits;
       if (onewok){

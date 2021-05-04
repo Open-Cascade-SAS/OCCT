@@ -36,8 +36,7 @@ DEFINE_STANDARD_HANDLE(TDocStd_XLinkRoot, TDF_Attribute)
 //! references contained in a Data from TDF. Only one
 //! instance of this class is added to the TDF_Data
 //! root label. Starting from this attribute all the
-//! Reference are linked together, to be found
-//! easely.
+//! Reference are linked together, to be found easily.
 class TDocStd_XLinkRoot : public TDF_Attribute
 {
 

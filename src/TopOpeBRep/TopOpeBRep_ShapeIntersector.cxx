@@ -1095,10 +1095,10 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	{
 	  // if one solid has shell consisted of only a face but other one has valid closed
 	  // shell we can detect current boolean operation as operation with half space object.
-	  // if shell of second solid is not valid too we cann't detect what kind of objects
+	  // if shell of second solid is not valid too we can't detect what kind of objects
 	  // we try to perform. in this case we do nothing and just return. 
 
-	  // but before we must avoid shperes, toruses and solids with a face biult on spherical surfaces
+	  // but before we must avoid spheres, toruses and solids with a face built on spherical surfaces
 	  // of revolution (SSRFS) - solids with shell of one face:
 	  // sphere (U: 0, 2PI) (V: -PI/2, PI/2),
 	  // torus  (U: 0, 2PI) (V: 0, 2PI).
@@ -1205,7 +1205,7 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
 {
   // "new solid" is a new halfspace solid consists of two faces now: the first face is a face
   // used to build halfspace solid and the second face is a new "face on infinity" specially
-  // created to constuct correct bounding box around halfspace solid with bounds more wide than
+  // created to construct correct bounding box around halfspace solid with bounds more wide than
   // previous one.
 
   // the following algorithm is used:

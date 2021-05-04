@@ -41,7 +41,7 @@ class TDocStd_MultiTransactionManager;
 //!
 //! * The standard application root class
 //!
-//! * The standard document wich contains data
+//! * The standard document which contains data
 //!
 //! * The external reference mechanism between documents
 //!

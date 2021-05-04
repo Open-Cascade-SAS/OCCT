@@ -95,7 +95,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Creates an empty explorer, becomes usefull after Init.
+  //! Creates an empty explorer, becomes useful after Init.
   Standard_EXPORT TopExp_Explorer();
   
   //! Creates an Explorer on the Shape <S>.

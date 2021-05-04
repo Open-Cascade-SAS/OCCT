@@ -155,7 +155,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape& S1,const
       //  diff = Umin<ii> - Umax<jj> : k = 1
       //  diff = Vmin<ii> - Vmax<jj> : k = 3
       Standard_Real diff = UV(ii,k) - UV(jj,k+1);
-      // IMPORTANT : for splitted faces sharing same edge, use
+      // IMPORTANT : for split faces sharing same edge, use
       // chklarge = True.
       Standard_Boolean disjoint = chklarge ? (diff >= -tol) : (diff > 0.);
       if (disjoint) return DIFF;

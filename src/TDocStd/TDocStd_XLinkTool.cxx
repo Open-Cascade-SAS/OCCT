@@ -159,7 +159,7 @@ void TDocStd_XLinkTool::UpdateLink (const TDF_Label& label)
 {
   Handle(TDF_Reference) REF;
   if (!label.FindAttribute(TDF_Reference::GetID(),REF)) {
-    throw Standard_DomainError(" TDocStd_XLinkTool::UpdateLink : not ref registred");
+    throw Standard_DomainError(" TDocStd_XLinkTool::UpdateLink : not ref registered");
   }
   TDocStd_XLinkTool XLinkTool;
   Copy (label,REF->Get());

@@ -206,9 +206,9 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
 				      TopTools_IndexedMapOfOrientedShape& MshNOK)
 {
   // Fin is the original face
-  // FF  is the splitted face
+  // FF  is the split face
 
-  // prequesitory : splitted edges, of edge ancestor a closing edge
+  // prequesitory : split edges, of edge ancestor a closing edge
   //                keep in memory the geometry of the ancestor edge,
   //                they answer True to BRep_Tool::IsClosed.
   // elsewhere : we have to get this information using geometric 

@@ -214,7 +214,7 @@ void TObj_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer 
 
 //=======================================================================
 //function : SetError
-//purpose  : Sets an error occured on storage of a document.
+//purpose  : Sets an error occurred on storage of a document.
 //=======================================================================
 
 void TObj_Application::SetError (const PCDM_StoreStatus theStatus, const TCollection_ExtendedString& theInfo)
@@ -247,7 +247,7 @@ void TObj_Application::SetError (const PCDM_StoreStatus theStatus, const TCollec
 
 //=======================================================================
 //function : SetError
-//purpose  : Sets an error occured on reading of a document.
+//purpose  : Sets an error occurred on reading of a document.
 //=======================================================================
 
 void TObj_Application::SetError(const PCDM_ReaderStatus theStatus, const TCollection_ExtendedString& theInfo)

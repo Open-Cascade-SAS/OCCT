@@ -195,7 +195,7 @@ Handle(TObj_ObjectIterator) TObj_Object::GetChildren
 
 //=======================================================================
 //function : getLabelByRank
-//purpose  : Auxiliary function to get a label and attache a name to it
+//purpose  : Auxiliary function to get a label and attach a name to it
 //           Used in debug mode only
 //=======================================================================
 

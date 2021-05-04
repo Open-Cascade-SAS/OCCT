@@ -147,7 +147,7 @@ public:
   Standard_EXPORT static Standard_Integer ValidUntil (const TDF_Label& access, const TopoDS_Shape& S);
   
   //! Returns the current shape (a Wire or a Shell) built (in the data framework)
-  //! from the the shapes of the argument named shape.
+  //! from the shapes of the argument named shape.
   //! It is used for IDENTITY name type computation.
   Standard_EXPORT static void FindShape (const TDF_LabelMap& Valid, const TDF_LabelMap& Forbiden, const Handle(TNaming_NamedShape)& Arg, TopoDS_Shape& S);
 

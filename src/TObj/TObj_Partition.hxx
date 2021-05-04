@@ -23,14 +23,14 @@
 
 
 /**
-* This class privides tool handling one of partitions (the set of
-* homogenious elements) in the OCAF based model`s data structure
+* This class provides tool handling one of partitions (the set of
+* homogeneous elements) in the OCAF based model`s data structure
 */
 
 class TObj_Partition : public TObj_Object
 {
  protected:
-  enum DataTag 
+  enum DataTag
   {
     DataTag_First = TObj_Object::DataTag_Last,
     DataTag_LastIndex,
@@ -42,22 +42,22 @@ class TObj_Partition : public TObj_Object
   * Constructor
   */
 
-  //! Constructor is protected; 
+  //! Constructor is protected;
   //! static methods are used for creation of this type of objects
   Standard_EXPORT TObj_Partition (const TDF_Label& theLabel, const Standard_Boolean theSetName = Standard_True);
-  
+
  public:
   /**
   * Method for create partition
   */
-  
+
   //! Creates a new partition on given label.
   static Standard_EXPORT Handle(TObj_Partition) Create
                         (const TDF_Label& theLabel, const Standard_Boolean theSetName = Standard_True);
-  
+
  public:
   /**
-  * Methods hanling name of the object
+  * Methods handling name of the object
   */
 
   //! Sets name of the object. partition does not check unique of own name
@@ -69,7 +69,7 @@ class TObj_Partition : public TObj_Object
   * Method for updating object afrer restoring
   */
 
-  //! Preforms updating the links and dependances of the object which are not
+  //! Performs updating the links and dependencies of the object which are not
   //! stored in persistence. Does not register the partition name
   virtual Standard_EXPORT void AfterRetrieval() Standard_OVERRIDE;
 
@@ -77,10 +77,10 @@ class TObj_Partition : public TObj_Object
   /**
   * Methods handling of the objects in partition
   */
-  
+
   //! Creates and Returns label for new object in partition.
   Standard_EXPORT TDF_Label NewLabel() const;
-  
+
   //! Sets prefix for names of the objects in partition.
   Standard_EXPORT void SetNamePrefix
                         (const Handle(TCollection_HExtendedString)& thePrefix);
@@ -88,16 +88,16 @@ class TObj_Partition : public TObj_Object
   //! Returns prefix for names of the objects in partition.
   Handle(TCollection_HExtendedString) GetNamePrefix() const
   { return myPrefix; }
-  
+
   //! Generates and returns name for new object in partition.
-  //! if theIsToChangeCount is true partition icrease own counter
+  //! if theIsToChangeCount is true partition increase own counter
   //!  to generate new name next time starting from new counter value
   Standard_EXPORT Handle(TCollection_HExtendedString) GetNewName
     ( const Standard_Boolean theIsToChangeCount = Standard_True );
-  
+
   //! Return Last index in partition (reserved);
   Standard_EXPORT Standard_Integer GetLastIndex() const;
-  
+
   //! Sets Last index in partition (reserved);
   Standard_EXPORT void SetLastIndex(const Standard_Integer theIndex);
 
@@ -105,17 +105,17 @@ class TObj_Partition : public TObj_Object
   /**
   * Methods to define partition by object
   */
-  
+
   //! Returns the partition in which object is stored. Null partition
   //! returned if not found
   static Standard_EXPORT Handle(TObj_Partition) GetPartition
                         (const Handle(TObj_Object)& theObject);
-  
+
  public:
   /**
   * Methods for updating the object
   */
-  
+
   //! Does nothing in the partition.
   virtual Standard_Boolean Update()
   {return Standard_True;}
@@ -129,14 +129,14 @@ class TObj_Partition : public TObj_Object
   //! return Standard_False is Target object is different type
   Standard_EXPORT virtual Standard_Boolean copyData
                         (const Handle(TObj_Object)& theTargetObject) Standard_OVERRIDE;
- 
+
  private:
   /**
   * fields
   */
-  
+
   //! prefix for naming of objects in the partition
-  Handle(TCollection_HExtendedString) myPrefix; 
+  Handle(TCollection_HExtendedString) myPrefix;
 
  protected:
   //! Persistence of TObj object

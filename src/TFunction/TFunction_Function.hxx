@@ -68,7 +68,7 @@ public:
   const Standard_GUID& GetDriverGUID() const { return myDriverGUID; }
 
   //! Sets the driver for this function as that
-  //! indentified by the GUID guid.
+  //! identified by the GUID guid.
   Standard_EXPORT void SetDriverGUID (const Standard_GUID& guid);
 
   //! Returns true if the execution failed

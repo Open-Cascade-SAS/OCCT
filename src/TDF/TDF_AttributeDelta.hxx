@@ -30,7 +30,7 @@ class Standard_GUID;
 class TDF_AttributeDelta;
 DEFINE_STANDARD_HANDLE(TDF_AttributeDelta, Standard_Transient)
 
-//! This class discribes the services we need to
+//! This class describes the services we need to
 //! implement Delta and Undo/Redo services.
 //!
 //! AttributeDeltas are applied in an unpredictable

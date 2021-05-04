@@ -516,7 +516,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape& FOR,
   mySDEdgeMap.Clear();
   mySourceShapes.Clear();
 
-  //we process all same domain faces during cycling throught the Shape1
+  //we process all same domain faces during cycling through the Shape1
   if(myDataStructure -> DS().AncestorRank(FOR) != 1)
     return;
 
@@ -1214,7 +1214,7 @@ void TopOpeBRepBuild_Builder1::GWESMakeFaces(const TopoDS_Shape& FF,
 
   LOF.Clear(); LOF.Assign(corrLOF);
 
-  //corect face2d
+  //correct face2d
   aLOFit.Initialize(corrLOF);
   TopTools_ListOfShape corrLOF1;
   for(; aLOFit.More(); aLOFit.Next()) {

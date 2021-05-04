@@ -69,7 +69,7 @@ public:
   Standard_EXPORT TCollection_HExtendedString(const Standard_ExtCharacter aChar);
   
   //! Initializes a HExtendedString with <length> space allocated.
-  //! and filled with <filler>.This is usefull for buffers.
+  //! and filled with <filler>. This is useful for buffers.
   Standard_EXPORT TCollection_HExtendedString(const Standard_Integer length, const Standard_ExtCharacter filler);
   
   //! Initializes a HExtendedString with a HExtendedString.

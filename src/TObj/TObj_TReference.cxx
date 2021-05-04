@@ -166,7 +166,7 @@ void TObj_TReference::Paste (const Handle(TDF_Attribute)& theInto,
   Handle(TObj_TObject) aObject, aMasterTObj;
   if (myLabel.IsNull())
   {
-    //  unvalidity if it neccessary
+    //  unvalidity if it necessary
     aReference->myLabel.Nullify();
     return;
   }

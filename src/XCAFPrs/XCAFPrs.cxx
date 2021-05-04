@@ -242,7 +242,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label& theLabel,
 
         // set style for all component from Next Usage Occurrence.
       #ifdef OCCT_DEBUG
-        std::cout << "Set the style for SHUO next_usage-occurrance" << std::endl;
+        std::cout << "Set the style for SHUO next_usage-occurrence" << std::endl;
       #endif
         /* 
         // may be work, but static it returns excess shapes. It is more faster to use OLD version.

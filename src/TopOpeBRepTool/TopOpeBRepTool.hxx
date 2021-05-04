@@ -71,7 +71,7 @@ public:
   //! the faulty shapes (edge,wire,face) to <MshNOK>.
   //! <FF> is a face descendant of <F>.
   //! <MWisOld>(wire) = 1 if wire is wire of <F>
-  //! 0    wire results from <F>'s wire splitted.
+  //! 0    wire results from <F>'s wire split.
   //! returns false if purge fails
   Standard_EXPORT static Standard_Boolean PurgeClosingEdges (const TopoDS_Face& F, const TopoDS_Face& FF, const TopTools_DataMapOfShapeInteger& MWisOld, TopTools_IndexedMapOfOrientedShape& MshNOK);
   

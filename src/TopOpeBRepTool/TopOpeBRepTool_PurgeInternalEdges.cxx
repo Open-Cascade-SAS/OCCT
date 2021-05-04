@@ -111,7 +111,7 @@ TopoDS_Shape& TopOpeBRepTool_PurgeInternalEdges::Shape()
 
 //=======================================================================
 //function : BuildList
-//purpose  : Build the map of faces with the list of inernal edges.
+//purpose  : Build the map of faces with the list of internal edges.
 //=======================================================================
 
 void TopOpeBRepTool_PurgeInternalEdges::BuildList()

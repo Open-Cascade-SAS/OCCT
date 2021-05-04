@@ -85,7 +85,7 @@ public:
   Standard_EXPORT static void OutReferences (const TDF_Label& aLabel, TDF_AttributeMap& atts);
   
   //! Returns in <atts> the referenced attributes and kept by <aFilterForReferences>.
-  //! It considers only the referers kept by <aFilterForReferers>.
+  //! It considers only the referrers kept by <aFilterForReferers>.
   //! Caution: <atts> is not cleared before use!
   Standard_EXPORT static void OutReferences (const TDF_Label& aLabel, const TDF_IDFilter& aFilterForReferers, const TDF_IDFilter& aFilterForReferences, TDF_AttributeMap& atts);
   
@@ -93,7 +93,7 @@ public:
   //! <aLabel> but located as descendant as <toRoot>
   //! instead of <fromRoot>.
   //!
-  //! Exemple :
+  //! Example :
   //!
   //! aLabel = 0:3:24:7:2:7
   //! fromRoot = 0:3:24
@@ -149,10 +149,10 @@ public:
   //! attributes content.
   Standard_EXPORT static void ExtendedDeepDump (Standard_OStream& anOS, const Handle(TDF_Data)& aDF, const TDF_IDFilter& aFilter);
   
-  //! Dumps <aLabel>, its chilren and their attributes.
+  //! Dumps <aLabel>, its children and their attributes.
   Standard_EXPORT static void DeepDump (Standard_OStream& anOS, const TDF_Label& aLabel);
   
-  //! Dumps <aLabel>, its chilren and their attributes,
+  //! Dumps <aLabel>, its children and their attributes,
   //! if their IDs are kept by <aFilter>. Dumps also the
   //! attributes content.
   Standard_EXPORT static void ExtendedDeepDump (Standard_OStream& anOS, const TDF_Label& aLabel, const TDF_IDFilter& aFilter);

@@ -245,7 +245,7 @@ void TFunction_Iterator::Next()
 	}
       }
 
-      // Ignore already passed fucntions (for the mode of ignoring the execution status).
+      // Ignore already passed functions (for the mode of ignoring the execution status).
       if (!myUsageOfExecutionStatus && myPassedFunctions.Contains(Lnext))
 	continue;
 

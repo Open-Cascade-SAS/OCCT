@@ -29,7 +29,7 @@
 #include <TCollection_HExtendedString.hxx>
 #include <Standard_Failure.hxx>
 
-//! Methods inline implimentation for HExtendedString
+//! Methods inline implementation for HExtendedString
 
 //! Computes a hash code for the given handle referred to extended string, in the range [1, theUpperBound]
 //! @param theHExtendedString the handle referred to extended string which hash code is to be computed

@@ -149,7 +149,7 @@ class TObj_Object : public Standard_Transient
 
  public:
   /**
-  * Methods hanling name of the object
+  * Methods handling name of the object
   */
 
   //! Returns the map of names of the objects
@@ -202,7 +202,7 @@ class TObj_Object : public Standard_Transient
   virtual Standard_EXPORT void RemoveAllReferences();
 
   //! Returns iterator for the objects which depend on this one.
-  //! These reffering objects may belong to other models.
+  //! These referring objects may belong to other models.
   //! theType narrows a variety of iterated objects
   virtual Standard_EXPORT Handle(TObj_ObjectIterator) GetBackReferences
                          (const Handle(Standard_Type)& theType = NULL) const;
@@ -227,7 +227,7 @@ class TObj_Object : public Standard_Transient
   //! The default implementation just clear the back references container
   virtual Standard_EXPORT void ClearBackReferences();
 
-  //! Returns TRUE if obejct has 1 or more back references
+  //! Returns TRUE if object has 1 or more back references
   Standard_EXPORT Standard_Boolean HasBackReferences() const;
   
   //! Replace reference from old object to new object.
@@ -291,7 +291,7 @@ class TObj_Object : public Standard_Transient
                          (const TObj_DeletingMode theMode = TObj_FreeOnly);
 
   //! Deletes the object from the label. Checks if object can be deleted.
-  //! Finds object on the label and detaches it by calling previos method.
+  //! Finds object on the label and detaches it by calling previous method.
   //! Returns true if there is no object on the label after detaching
   static Standard_EXPORT Standard_Boolean Detach
                          (const TDF_Label& theLabel,
@@ -336,7 +336,7 @@ class TObj_Object : public Standard_Transient
   //! Coping object with data and childs, but change name by adding string "_copy"
   //! As result return handle of new object (null handle is something wrong)
   //! NOTE: BackReferences not coping.
-  //! After clonning all objects it is neccessary to call copy references
+  //! After cloning all objects it is necessary to call copy references
   //! with the same relocation table
   virtual Standard_EXPORT Handle(TObj_Object) Clone
                          (const TDF_Label&            theTargetLabel,
@@ -415,13 +415,13 @@ class TObj_Object : public Standard_Transient
   * Method for updating object afrer restoring
   */
 
-  //! Preforms updating the links and dependances of the object which are not
+  //! Performs updating the links and dependances of the object which are not
   //! stored in persistence. Should be redefined if necessary.
   virtual Standard_EXPORT void AfterRetrieval();
 
-  //! Preforms storing the objects transient fields in OCAF document
+  //! Performs storing the objects transient fields in OCAF document
   //! which were outside transaction mechanism.
-  //! Default implementation doesnot nothing
+  //! Default implementation does nothing
   virtual Standard_EXPORT void BeforeStoring();
 
  protected:

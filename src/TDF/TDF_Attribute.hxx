@@ -70,7 +70,7 @@ DEFINE_STANDARD_HANDLE(TDF_Attribute, Standard_Transient)
 //!
 //! An attribute can be identified by its ID. Every
 //! attributes used with the same meaning (for
-//! exemple: Integer, String, Topology...) have the
+//! example: Integer, String, Topology...) have the
 //! same worldwide unique ID.
 //!
 //! Addition:
@@ -121,7 +121,7 @@ DEFINE_STANDARD_HANDLE(TDF_Attribute, Standard_Transient)
 //! algorithms. The goal of "Paste" is to transfer an
 //! attribute new contents into another attribute. The
 //! goal of "NewEmpty" is to create an attribute
-//! whithout contents, to be further filled with the
+//! without contents, to be further filled with the
 //! new contents of another one. These 2 methods must
 //! be implemented by end use inheriting classes.
 //!
@@ -206,7 +206,7 @@ public:
   Standard_EXPORT void AddAttribute (const Handle(TDF_Attribute)& other) const;
   
   //! Forgets  the Attribute of  GUID <aguid> associated
-  //! to the label of <me>. Be  carefull that if <me> is
+  //! to the label of <me>. Be  careful that if <me> is
   //! the attribute of <guid>, <me> will have a null label
   //! after this call.  If  the attribute doesn't  exist
   //! returns False. Otherwise returns True.
@@ -216,7 +216,7 @@ public:
   //! of <me>.    Does   it   on  the  sub-labels   if
   //! <clearChildren> is set  to true.  Of  course, this
   //! method  is  compatible with Transaction  &  Delta
-  //! mecanisms. Be carefull  that  if <me> will have a
+  //! mechanisms. Be careful  that  if <me> will have a
   //! null label after this call
   Standard_EXPORT void ForgetAllAttributes (const Standard_Boolean clearChildren = Standard_True) const;
   

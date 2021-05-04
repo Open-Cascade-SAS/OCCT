@@ -33,8 +33,8 @@ class TDF_RelocationTable;
 class TDocStd_Modified;
 DEFINE_STANDARD_HANDLE(TDocStd_Modified, TDF_Attribute)
 
-//! Transient     attribute   wich     register modified
-//! labels. This attribute is attached to root label.
+//! Transient attribute which register modified labels.
+//! This attribute is attached to root label.
 class TDocStd_Modified : public TDF_Attribute
 {
 

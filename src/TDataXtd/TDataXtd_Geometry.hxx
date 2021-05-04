@@ -133,9 +133,9 @@ public:
   //! Returns the GUID for geometry attributes.
   Standard_EXPORT static const Standard_GUID& GetID();
   
-  //! This and the next methods are used to  retrieve  underlying geometry of  the
-  //! NamedShape, even   if  noone Geometry   Attribute  is
-  //! associated  .  if not  found or not compliant geometry return False.
+  //! This and the next methods are used to retrieve underlying geometry of the NamedShape,
+  //! even if no Geometry Attribute is associated.
+  //! if not found or not compliant geometry return False.
   Standard_EXPORT TDataXtd_Geometry();
   
   //! Returns the type of geometric construction T of this attribute.

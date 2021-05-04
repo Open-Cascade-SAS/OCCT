@@ -336,10 +336,10 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const  TopTools_DataMapOfInte
     // For each edge of the MapSplit
     if ( e.ShapeType() == TopAbs_EDGE ) {
    
-      // get the list of splitted edges.
+      // get the list of split edges.
       TopTools_ListOfShape& LstSplit = ChangeSplit(e,state);
    
-      // for each edge of the list of splitted edges
+      // for each edge of the list of split edges
       TopTools_ListIteratorOfListOfShape itSplitEdg;
       itSplitEdg.Initialize(LstSplit);
       while ( itSplitEdg.More()) {
@@ -391,10 +391,10 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(const  TopTools_DataMapOfInte
     }
     // For each face of the MapSplit
     else if ( e.ShapeType() == TopAbs_FACE ) {
-      // get the list of splitted faces.
+      // get the list of split faces.
       TopTools_ListOfShape& LstSplit = ChangeSplit(e,state);
    
-      // for each face of the list of splitted faces
+      // for each face of the list of split faces
       TopTools_ListIteratorOfListOfShape itSplitFac;
       itSplitFac.Initialize(LstSplit);
       while ( itSplitFac.More()) {

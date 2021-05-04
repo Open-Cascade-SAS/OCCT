@@ -35,7 +35,7 @@ class Standard_Transient;
 class TDF_RelocationTable;
 DEFINE_STANDARD_HANDLE(TDF_RelocationTable, Standard_Transient)
 
-//! This is a relocation dictionnary between source
+//! This is a relocation dictionary between source
 //! and target labels, attributes or any
 //! transient(useful for copy or paste actions).
 //! Note that one target value may be the
@@ -125,7 +125,7 @@ public:
   //! explanation about the method behavior)
   Standard_EXPORT Standard_Boolean HasTransientRelocation (const Handle(Standard_Transient)& aSourceTransient, Handle(Standard_Transient)& aTargetTransient) const;
   
-  //! Clears the relocation dictionnary, but lets the
+  //! Clears the relocation dictionary, but lets the
   //! self relocation flag to its current value.
   Standard_EXPORT void Clear();
   

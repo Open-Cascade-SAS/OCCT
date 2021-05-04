@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Creates an objet with all modes set to <aMode>.
+  //! Creates an object with all modes set to <aMode>.
   Standard_EXPORT TDF_ClosureMode(const Standard_Boolean aMode = Standard_True);
   
   //! Sets the mode "Descendants" to <aStatus>.

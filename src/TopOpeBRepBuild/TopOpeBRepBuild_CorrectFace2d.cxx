@@ -291,7 +291,7 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
     myCurrentWire = TopoDS::Wire(aFExp.Current());
     priz=MakeRightWire ();
     if (priz) {
-      // This myFace contais a wire (myCurrentWire) that is not closed.
+      // This myFace contains a wire (myCurrentWire) that is not closed.
       myIsDone=Standard_True;
       myErrorStatus=3; 
       return;
@@ -564,7 +564,7 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
     if (!myCopyAvoidMap.Contains(myCurrentWire)) {  
       priz=ConnectWire (myCopyFace, myCopyAvoidMap, Standard_False);
       if (priz) {
-	// This myFace contais a wire (myCurrentWire) that is not closed.
+	// This myFace contains a wire (myCurrentWire) that is not closed.
 	myIsDone=Standard_False;
 	myErrorStatus=3; 
 	return;

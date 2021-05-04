@@ -19,7 +19,7 @@
 //              On Unix platforms:
 //              ------------------
 //                In method Read(Standard_IStream &IS), during the version 
-//                authentification we cut last '\r' in the line (which will
+//                authentication we cut last '\r' in the line (which will
 //                be present if file is in DOS coding)
 
 #include <Message_ProgressScope.hxx>

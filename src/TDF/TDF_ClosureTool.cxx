@@ -35,7 +35,7 @@
 
 //=======================================================================
 //function : Closure
-//purpose  : Builds the transitive closure whithout attribute filter.
+//purpose  : Builds the transitive closure without attribute filter.
 //=======================================================================
 
 void TDF_ClosureTool::Closure

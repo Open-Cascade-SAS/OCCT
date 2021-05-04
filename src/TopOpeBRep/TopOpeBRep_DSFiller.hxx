@@ -115,7 +115,7 @@ public:
   Standard_EXPORT void GapFiller (const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
   
   //! Update   the  data      structure  with   relevant
-  //! informations deduced from the intersections.
+  //! information deduced from the intersections.
   //!
   //! Shells containing an intersected face.
   //! Wires  containing an intersected edge.
@@ -130,7 +130,7 @@ public:
   Standard_EXPORT void Checker (const Handle(TopOpeBRepDS_HDataStructure)& HDS) const;
   
   //! Update   the  data      structure  with   relevant
-  //! informations deduced from the intersections 2d.
+  //! information deduced from the intersections 2d.
   //!
   //! Shells containing an intersected face.
   //! Wires  containing an intersected edge.

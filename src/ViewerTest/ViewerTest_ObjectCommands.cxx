@@ -1635,7 +1635,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       }
       else
       {
-        Message::SendFail ("Error: Builded surface is not a plane.");
+        Message::SendFail ("Error: Built surface is not a plane.");
         return 1;
       }
     }

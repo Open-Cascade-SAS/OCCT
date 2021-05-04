@@ -33,7 +33,7 @@ class TCollection_AsciiString;
 //! This class offers services to open, commit or
 //! abort a transaction in a more secure way than
 //! using Data from TDF. If you forget to close a
-//! transaction, it will be automaticaly aborted at
+//! transaction, it will be automatically aborted at
 //! the destruction of this object, at the closure of
 //! its scope.
 //!

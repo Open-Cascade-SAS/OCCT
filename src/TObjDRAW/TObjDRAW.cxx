@@ -84,7 +84,7 @@ class TObjDRAW_Object : public TObj_Object
   enum RefTag
   {
     RefTag_First = TObj_Object::RefTag_Last,
-    RefTag_Other, //!< here we test only one refrence to other
+    RefTag_Other, //!< here we test only one reference to other
     RefTag_Last = RefTag_First + 100 
   };
 

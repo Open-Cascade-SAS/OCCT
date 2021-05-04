@@ -37,9 +37,8 @@ class TDF_Label;
 class TDF_Data;
 DEFINE_STANDARD_HANDLE(TDF_Data, Standard_Transient)
 
-//! This class is used to manipulate a complete
-//! independant, self sufficient data structure and
-//! its services:
+//! This class is used to manipulate a complete independent,
+//! self sufficient data structure and its services:
 //!
 //! Access to the root label;
 //!
@@ -48,8 +47,7 @@ DEFINE_STANDARD_HANDLE(TDF_Data, Standard_Transient)
 //! Generation and use of Delta, depending on the time.
 //! This class uses a special allocator
 //! (see LabelNodeAllocator() method)
-//! for more efficient allocation of
-//! objects in memory.
+//! for more efficient allocation of objects in memory.
 class TDF_Data : public Standard_Transient
 {
 
@@ -71,10 +69,9 @@ public:
   //! Returns true if <aDelta> is applicable HERE and NOW.
   Standard_EXPORT Standard_Boolean IsApplicable (const Handle(TDF_Delta)& aDelta) const;
   
-  //! Apply <aDelta> to undo a set of attribute
-  //! modifications.
+  //! Apply <aDelta> to undo a set of attribute modifications.
   //!
-  //! Optionnal <withDelta> set to True indiquates a
+  //! Optional <withDelta> set to True indicates a
   //! Delta Set must be generated. (See above)
   Standard_EXPORT Handle(TDF_Delta) Undo (const Handle(TDF_Delta)& aDelta, const Standard_Boolean withDelta = Standard_False);
   
@@ -162,7 +159,7 @@ private:
   //!
   //! Raises if there is no current transaction.
   //!
-  //! Optionnal <withDelta> set to True indiquates a
+  //! Optional <withDelta> set to True indicates a
   //! Delta must be generated.
   Standard_EXPORT Handle(TDF_Delta) CommitTransaction (const Standard_Boolean withDelta = Standard_False);
   

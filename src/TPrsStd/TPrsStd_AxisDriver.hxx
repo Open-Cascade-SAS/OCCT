@@ -41,7 +41,7 @@ public:
   
   //! Build the AISObject (if null) or update it.
   //! No compute is done.
-  //! Returns <True> if informations was found
+  //! Returns <True> if information was found
   //! and AISObject updated.
   Standard_EXPORT virtual Standard_Boolean Update (const TDF_Label& aLabel, Handle(AIS_InteractiveObject)& anAISObject) Standard_OVERRIDE;
 

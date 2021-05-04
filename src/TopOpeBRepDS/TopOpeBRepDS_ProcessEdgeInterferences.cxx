@@ -461,13 +461,13 @@ Standard_EXPORT void FUN_purgeDSonSE(const Handle(TopOpeBRepDS_HDataStructure)& 
 {
   // recall  : (I1,I2) / I1=(T(F),G,S=edge), I2=(T(F),G,S=F) describes a 3d interference  
   //   
-  // purpose : attached to EIX (section egde SE), I=(T(Fsdm),G,S) /
+  // purpose : attached to EIX (section edge SE), I=(T(Fsdm),G,S) /
   //           Fsdm shares same domain with Fanc ancestor face of SE
   //            => SE has split ON near G =>
   //           I'=(T(Fsdm),G,S=Fsdm) gives bad information (3d information whereas
   //           we should only have 2d information)
   // - PRO12660 for spON(e48) - 
-  
+
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
   const TopoDS_Edge& SE = TopoDS::Edge(BDS.Shape(EIX));
   Standard_Integer rkSE = BDS.AncestorRank(SE);

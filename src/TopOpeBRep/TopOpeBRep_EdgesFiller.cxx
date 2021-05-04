@@ -126,8 +126,8 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     // xpu : 080498 : CTS20072 (e12,e3,p8) 
     //       edgesintersector called for tolerances = 0.
     //       facesintersector called for greater tolerances
-    //       we assume facesintersector's ouput data to be valid
-    //       and we use it for correcting edgesintersector's ouput data
+    //       we assume facesintersector's output data to be valid
+    //       and we use it for correcting edgesintersector's output data
     TopOpeBRepDS_ListIteratorOfListOfInterference itloI1( myPDS->ShapeInterferences(E1) );
     Standard_Integer G; TopOpeBRepDS_Kind K; 
     Standard_Boolean found = GetGeometry(itloI1,P2D,G,K);

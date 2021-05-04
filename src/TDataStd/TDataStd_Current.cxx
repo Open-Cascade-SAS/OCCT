@@ -64,7 +64,7 @@ TDF_Label TDataStd_Current::Get (const TDF_Label& access)
 //  TDF_Label current;
   Handle(TDataStd_Current) A;
   if (!access.Data()->Root().FindAttribute (TDataStd_Current::GetID(), A)) {
-    throw Standard_DomainError("TDataStd_Current::Get : not setted");
+    throw Standard_DomainError("TDataStd_Current::Get : not set");
   }  
   return A->GetLabel();
 }

@@ -66,7 +66,7 @@ class TObj_SequenceIterator : public TObj_ObjectIterator
   */
   Standard_Integer                   myIndex; //!< current index of object in sequence
   Handle(Standard_Type)              myType;  //!< type of object
-  Handle(TObj_HSequenceOfObject) myObjects;   //!< seqence of objects
+  Handle(TObj_HSequenceOfObject) myObjects;   //!< sequence of objects
 
  public:
    //! CASCADE RTTI

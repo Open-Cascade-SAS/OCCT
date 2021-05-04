@@ -200,8 +200,7 @@ public:
   //! ===================================
   Standard_EXPORT virtual Standard_Boolean AfterUndo (const Handle(TDF_AttributeDelta)& anAttDelta, const Standard_Boolean forceIt = Standard_False) Standard_OVERRIDE;
   
-  //! Returns the tree ID (default or explicit one depending
-  //! onthe Set method used).
+  //! Returns the tree ID (default or explicit one depending on the Set method used).
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;

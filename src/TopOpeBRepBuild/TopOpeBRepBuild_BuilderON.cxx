@@ -639,11 +639,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok) return;
     // ngFS, ngFOR, xxFOR :
     Standard_Real tolON = Max(tolFS,tolEG);
-    tolON *= 1.e2;//*****CAREFULL***** : xpu040998, cto 904 A3 
+    tolON *= 1.e2;//*****CAREFUL***** : xpu040998, cto 904 A3
     gp_Vec ngFS;  ok = FUN_tool_nggeomF(parEG,EG,FS,ngFS,tolON);
     if (!ok) return;
     tolON = Max(tolFOR,tolEG);
-    tolON *= 1.e2;//*****CAREFULL***** : xpu040998, cto 904 A3 
+    tolON *= 1.e2;//*****CAREFUL***** : xpu040998, cto 904 A3
     gp_Vec ngFOR; ok = FUN_tool_nggeomF(parEG,EG,FOR,ngFOR,tolON);
     if (!ok) return;
     gp_Dir xxFOR; ok = FUN_tool_getxx(FOR,EG,parEG,ngFOR,xxFOR);
@@ -1057,7 +1057,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     if (!ok) return; //nyiRAISE
     Standard_Real tolON = Max(tolEG,tolFOR);//xpu291098 cto900L7(f7,e7on)
                                   //xpu051198 PRO12953(f6,e4on)
-    tolON *= 1.e2;//*****CAREFULL***** : xpu040998, cto 904 A3 
+    tolON *= 1.e2;//*****CAREFUL***** : xpu040998, cto 904 A3
     Standard_Boolean eONFOR = (d < tolON);
     if (!eONFOR) return; 
   }

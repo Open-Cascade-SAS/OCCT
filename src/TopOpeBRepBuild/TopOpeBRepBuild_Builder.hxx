@@ -113,7 +113,7 @@ public:
   
   //! Merges  the two edges <S1> and <S2> keeping the
   //! parts in each edge of states <TB1> and <TB2>.
-  //! Booleans onA, onB, onAB indicate wheter parts of edges
+  //! Booleans onA, onB, onAB indicate whether parts of edges
   //! found as state ON respectively on first, second, and both
   //! shapes must be (or not) built.
   Standard_EXPORT void MergeEdges (const TopTools_ListOfShape& L1, const TopAbs_State TB1, const TopTools_ListOfShape& L2, const TopAbs_State TB2, const Standard_Boolean onA = Standard_False, const Standard_Boolean onB = Standard_False, const Standard_Boolean onAB = Standard_False);

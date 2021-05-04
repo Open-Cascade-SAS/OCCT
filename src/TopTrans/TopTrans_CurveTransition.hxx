@@ -62,8 +62,7 @@ public:
   //! of a Curve.
   Standard_EXPORT void Reset (const gp_Dir& Tgt, const gp_Dir& Norm, const Standard_Real Curv);
   
-  //! Initialize a Transition with the local description
-  //! of a straigth line.
+  //! Initialize a Transition with the local description of a straight line.
   Standard_EXPORT void Reset (const gp_Dir& Tgt);
   
   //! Add  a curve element to the  boundary.    If Or is

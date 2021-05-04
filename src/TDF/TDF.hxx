@@ -56,7 +56,7 @@ class TDF_IDFilter;
 //! features and data structures.
 //!
 //! The feature structure is a tree used to bind
-//! semantic informations about each feature together.
+//! semantic information about each feature together.
 //!
 //! The only one concrete   attribute defined in  this
 //! package is the TagSource attribute.This attribute

@@ -85,26 +85,26 @@ public:
 
   //! classify shape S compared with shape SRef.
   //! AvoidS is not used in classification; AvoidS may be IsNull().
-  //! (usefull to avoid ON or UNKNOWN state in special cases)
+  //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeShape (const TopoDS_Shape& S, const TopoDS_Shape& AvoidS, const TopoDS_Shape& SRef);
   
 
   //! classify shape S compared with shape SRef.
   //! LAvoidS is list of S subshapes to avoid in classification
   //! AvoidS is not used in classification; AvoidS may be IsNull().
-  //! (usefull to avoid ON or UNKNOWN state in special cases)
+  //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeShape (const TopoDS_Shape& S, const TopTools_ListOfShape& LAvoidS, const TopoDS_Shape& SRef);
   
 
   //! classify shape S compared with reference shape.
   //! AvoidS is not used in classification; AvoidS may be IsNull().
-  //! (usefull to avoid ON or UNKNOWN state in special cases)
+  //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeReference (const TopoDS_Shape& S, const TopoDS_Shape& AvoidS);
   
 
   //! classify shape S compared with reference shape.
   //! LAvoidS is list of S subshapes to avoid in classification
-  //! (usefull to avoid ON or UNKNOWN state in special cases)
+  //! (useful to avoid ON or UNKNOWN state in special cases)
   Standard_EXPORT TopAbs_State StateShapeReference (const TopoDS_Shape& S, const TopTools_ListOfShape& LAvoidS);
   
   Standard_EXPORT TopOpeBRepTool_SolidClassifier& ChangeSolidClassifier();

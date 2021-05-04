@@ -73,7 +73,7 @@ public:
   Standard_EXPORT Standard_Boolean IsSaved() const;
   
   //! returns True if document differs from the state of last saving.
-  //! this method have to be called only wroking in the transaction mode
+  //! this method have to be called only working in the transaction mode
     Standard_Boolean IsChanged() const;
   
   //! This method have to be called to show document that it has been saved
@@ -89,7 +89,7 @@ public:
   //! raise if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetName() const;
   
-  //! returns the OS  path of the  file, in wich one <me> is
+  //! returns the OS  path of the  file, in which one <me> is
   //! saved. Raise an exception if <me> is not saved.
   Standard_EXPORT TCollection_ExtendedString GetPath() const;
   
@@ -255,7 +255,7 @@ public:
   //! Sets version of the format to be used to store the document
   Standard_EXPORT void ChangeStorageFormatVersion(const TDocStd_FormatVersion theVersion);
 
-  //! Returns current storage format verison of the document.
+  //! Returns current storage format version of the document.
   Standard_EXPORT static TDocStd_FormatVersion CurrentStorageFormatVersion();
 
   //! Dumps the content of me into the stream

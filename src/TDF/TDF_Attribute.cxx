@@ -304,8 +304,8 @@ void TDF_Attribute::RemoveBackup()
     throw Standard_DomainError("Impossible to remove a nonexistent backup.");
 #endif
   myBackup->BeforeRemoval();
-  myBackup->myLabelNode = NULL; // Absolutly necessary!
-  myBackup->myNext.Nullify();   // Absolutly necessary!
+  myBackup->myLabelNode = NULL; // Absolutely necessary!
+  myBackup->myNext.Nullify();   // Absolutely necessary!
   myBackup = myBackup->myBackup;
   if (!myBackup.IsNull()) myBackup->myNext = this; // New back reference.
 }

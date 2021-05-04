@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, Standard_Transient)
 //! Each transaction of this class involvess one transaction in each modified document.
 //!
 //! The documents to be synchronized should be added explicitly to
-//! the manager; then its interface is uesd to ensure that all transactions
+//! the manager; then its interface is used to ensure that all transactions
 //! (Open/Commit, Undo/Redo) are performed synchronously in all managed documents.
 //!
 //! The current implementation does not support nested transactions
@@ -46,7 +46,7 @@ DEFINE_STANDARD_HANDLE(TDocStd_MultiTransactionManager, Standard_Transient)
 //! with TDocStd_Document class interface.
 //!
 //! NOTE: When you invoke CommitTransaction of multi transaction
-//! manager, all nested transaction of its documents will be closed (commited).
+//! manager, all nested transaction of its documents will be closed (committed).
 class TDocStd_MultiTransactionManager : public Standard_Transient
 {
 
@@ -83,7 +83,7 @@ public:
   
   //! Opens transaction in each document and sets the flag that
   //! transaction is opened. If there are already opened transactions in the documents,
-  //! these transactions will be aborted before openning new ones.
+  //! these transactions will be aborted before opening new ones.
   Standard_EXPORT void OpenCommand();
   
   //! Unsets the flag of started manager transaction and aborts
@@ -93,7 +93,7 @@ public:
   //! Commits transaction in all documents and fills the transaction manager
   //! with the documents that have been changed during the transaction.
   //! Returns True if new data has been added to myUndos.
-  //! NOTE: All nested transactions in the documents will be commited.
+  //! NOTE: All nested transactions in the documents will be committed.
   Standard_EXPORT Standard_Boolean CommitCommand();
   
   //! Makes the same steps as the previous function but defines the name for transaction.

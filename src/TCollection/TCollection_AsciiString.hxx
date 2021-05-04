@@ -69,7 +69,7 @@ public:
   Standard_EXPORT TCollection_AsciiString(const Standard_Character aChar);
   
   //! Initializes an AsciiString with <length> space allocated.
-  //! and filled with <filler>. This is usefull for buffers.
+  //! and filled with <filler>. This is useful for buffers.
   Standard_EXPORT TCollection_AsciiString(const Standard_Integer length, const Standard_Character filler);
   
   //! Initializes an AsciiString with an integer value
@@ -105,7 +105,7 @@ public:
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& astring, const TCollection_AsciiString& message);
   
   //! Creation by converting an extended string to an ascii string.
-  //! If replaceNonAscii is non-null charecter, it will be used
+  //! If replaceNonAscii is non-null character, it will be used
   //! in place of any non-ascii character found in the source string.
   //! Otherwise, creates UTF-8 unicode string.
   Standard_EXPORT TCollection_AsciiString(const TCollection_ExtendedString& astring, const Standard_Character replaceNonAscii = 0);
@@ -254,7 +254,7 @@ void operator += (const TCollection_AsciiString& other)
   //! Substitutes all the characters equal to aChar by NewChar
   //! in the AsciiString <me>.
   //! The substitution can be case sensitive.
-  //! If you don't use default case sensitive, no matter wether aChar
+  //! If you don't use default case sensitive, no matter whether aChar
   //! is uppercase or not.
   //! Example: me = "Histake" -> ChangeAll('H','M',Standard_True)
   //! gives me = "Mistake"
@@ -455,7 +455,7 @@ Standard_Boolean operator > (const TCollection_AsciiString& other) const
   //! This means no control character and no extended ASCII code.
   Standard_EXPORT Standard_Boolean IsAscii() const;
   
-  //! Removes all space characters in the begining of the string.
+  //! Removes all space characters in the beginning of the string.
   Standard_EXPORT void LeftAdjust();
   
   //! left justify
@@ -483,7 +483,7 @@ Standard_Boolean operator > (const TCollection_AsciiString& other) const
   //! of this string by its position.
     Standard_Integer Length() const;
   
-  //! Returns an index in the string <me> of the first occurence
+  //! Returns an index in the string <me> of the first occurrence
   //! of the string S in the string <me> from the starting index
   //! FromIndex to the ending index ToIndex
   //! returns zero if failure
@@ -497,7 +497,7 @@ Standard_Boolean operator > (const TCollection_AsciiString& other) const
   //! 4
   Standard_EXPORT Standard_Integer Location (const TCollection_AsciiString& other, const Standard_Integer FromIndex, const Standard_Integer ToIndex) const;
   
-  //! Returns the index of the nth occurence of the character C
+  //! Returns the index of the nth occurrence of the character C
   //! in the string <me> from the starting index FromIndex to the
   //! ending index ToIndex.
   //! Returns zero if failure.
@@ -542,7 +542,7 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
   //! ex: "3.14159267" returns 3.14159267.
   Standard_EXPORT Standard_Real RealValue() const;
   
-  //! Remove all the occurences of the character C in the string.
+  //! Remove all the occurrences of the character C in the string.
   //! Example:
   //! before
   //! me = "HellLLo", C = 'L' , CaseSensitive = True
@@ -674,7 +674,7 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
   Standard_EXPORT Standard_Integer UsefullLength() const;
   
   //! Returns character at position <where> in <me>.
-  //! If <where> is less than zero or greater than the lenght of <me>,
+  //! If <where> is less than zero or greater than the length of <me>,
   //! an exception is raised.
   //! Example:
   //! aString contains "Hello"

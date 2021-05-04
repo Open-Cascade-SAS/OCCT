@@ -30,8 +30,8 @@
 // up-to-date (current) valid attributes of a label.
 //
 // This class should not be used for standard attributes workflow.
-// Application allways knows what to search at particular label.
-// So, use IsAttribute and FindAttibute methods of
+// Application always knows what to search at particular label.
+// So, use IsAttribute and FindAttribute methods of
 // TDF_Label to check and get attributes in usual way.
 // This class may be used for processing of content of labels
 // in generic way, like copy-tool, specific save/restore algorithms,

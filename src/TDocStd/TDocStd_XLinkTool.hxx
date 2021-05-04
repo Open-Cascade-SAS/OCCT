@@ -33,8 +33,8 @@ class TDF_Label;
 //! attributes located   out of source  scope are  not
 //! copied by this algorithm.
 //! Depending  of   the called  method  an   external
-//! reference is set  in  the the target  document  to
-//! registred the externallink.
+//! reference is set  in  the target  document  to
+//! registered the externallink.
 //! Provide services to set, update and perform
 //! external references.
 //! Warning1: Nothing is provided in this class  about the
@@ -53,7 +53,7 @@ public:
   Standard_EXPORT TDocStd_XLinkTool();
   
   //! Copies the content of the label <fromsource> to the label <intarget>.
-  //! The link is registred with an XLink attribute by <intarget>
+  //! The link is registered with an XLink attribute by <intarget>
   //! label.  if  the    content  of <fromsource>   is  not
   //! self-contained,  and/or <intarget> has already an XLink
   //! attribute, an exception is raised.
@@ -74,7 +74,7 @@ public:
   Standard_EXPORT void UpdateLink (const TDF_Label& L);
   
   //! Copy    the   content     of    <fromsource>   under
-  //! <intarget>. Noone link is registred. noone check is done.
+  //! <intarget>. No link is registered. No check is done.
   //! Example
   //! Handle(TDocStd_Document) DOC, XDOC;
   //! TDF_Label L, XL;

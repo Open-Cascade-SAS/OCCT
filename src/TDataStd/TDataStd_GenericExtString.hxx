@@ -25,7 +25,7 @@ class TDF_RelocationTable;
 class TDataStd_GenericExtString;
 DEFINE_STANDARD_HANDLE(TDataStd_GenericExtString, TDF_Attribute)
 
-//! An ancestor attibute for all attributes which have TCollection_ExtendedString field.
+//! An ancestor attribute for all attributes which have TCollection_ExtendedString field.
 //! If an attribute inherits this one it should not have drivers for persistence.
 //! Also this attribute provides functionality to have on the same label same attributes with different IDs.
 class TDataStd_GenericExtString : public TDF_Attribute

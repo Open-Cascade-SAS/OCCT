@@ -48,7 +48,7 @@ class TObj_TModel : public TDF_Attribute
  public:
   //! Methods for setting and obtaining the Model object
   
-  //! Sets the the Model object
+  //! Sets the Model object
   Standard_EXPORT void Set(const Handle(TObj_Model)& theModel);
   
   //! Returns the Model object

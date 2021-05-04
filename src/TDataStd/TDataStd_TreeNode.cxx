@@ -545,7 +545,7 @@ void TDataStd_TreeNode::AfterAddition() {
 //=======================================================================
 //TreeNode : BeforeForget
 //purpose  : Disconnect the TreeNode from the tree.
-//           Backuped attribute is normaly not concerned by such an operation
+//           Backuped attribute is normally not concerned by such an operation
 //=======================================================================
 
 void TDataStd_TreeNode::BeforeForget() {

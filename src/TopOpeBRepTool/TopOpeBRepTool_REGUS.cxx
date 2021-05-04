@@ -252,7 +252,7 @@ Standard_Boolean TopOpeBRepTool_REGUS::WireToFace(const TopoDS_Face& Fanc, const
 
 Standard_Boolean TopOpeBRepTool_REGUS::SplitF(const TopoDS_Face& Fanc, TopTools_ListOfShape& FSplits) 
 {
-  // prequesitory : All edges have already been splitted, there is no 
+  // prequesitory : All edges have already been split, there is no 
   //                internal vertex on edge, except for internal edge.
   TopAbs_Orientation oAnc = Fanc.Orientation();
   TopoDS_Shape aLocalShapeFromFace = Fanc.Oriented(TopAbs_FORWARD);
@@ -699,12 +699,12 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
   ffound.Nullify();
   TopoDS_Face fref = TopoDS::Face(myf);
 
-  // Give us egde <e>, and a reference face <fref> (= <myf>)
+  // Give us edge <e>, and a reference face <fref> (= <myf>)
   // - parameter on <e> = <pare>.
   // - xxi = tangent fo face fi at pnt(e,pare) oriented INSIDE 2d(fi)
   //        normal to tge = tg(e,pare).
   // purpose : looking for ffound / 
-  //  MatterAng(xxref, xxfound) = Min{ MatterAng(xxref, xxi), xxi for fi in <lof> 
+  //  MatterAng(xxref, xxfound) = Min{ MatterAng(xxref, xxi), xxi for fi in <lof>
   //                                 providing fi reduces 3d(fref) }
   
   // <parone> :

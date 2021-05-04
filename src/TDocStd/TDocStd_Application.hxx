@@ -65,7 +65,7 @@ DEFINE_STANDARD_HANDLE(TDocStd_Application, CDF_Application)
 //! the events during the Open/Store operation, a MessageDriver
 //! based on Message_PrinterOStream may be used. In case of need client
 //! can implement his own version inheriting from Message_Printer class 
-//! and add it to the Messanger.
+//! and add it to the Messenger.
 //! Also the trace level of messages can be tuned by setting trace level (SetTraceLevel (Gravity )) for the used Printer.
 //! By default, trace level is Message_Info, so that all messages are output.
 
@@ -232,7 +232,7 @@ public:
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Retrieves aDoc from standard SEEKABLE stream theIStream.
-  //! the stream should support SEEK fuctionality
+  //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc, 
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -244,7 +244,7 @@ public:
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Save theDoc to standard SEEKABLE stream theOStream.
-  //! the stream should support SEEK fuctionality
+  //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
                                            Standard_OStream& theOStream,
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -265,7 +265,7 @@ public:
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Save theDoc TO standard SEEKABLE stream theOStream.
-  //! the stream should support SEEK fuctionality
+  //! the stream should support SEEK functionality
   Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
                                            Standard_OStream& theOStream,
                                            TCollection_ExtendedString& theStatusMessage,

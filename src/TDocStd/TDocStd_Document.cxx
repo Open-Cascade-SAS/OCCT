@@ -376,7 +376,7 @@ Standard_Boolean TDocStd_Document::CommitTransaction()
 
     }
 
-    // deny or allow modifications acording to transaction state
+    // deny or allow modifications according to transaction state
     if(myOnlyTransactionModification) {
       myData->AllowModification (myUndoTransaction.IsOpen() && myUndoLimit
                                  ? Standard_True :Standard_False);
@@ -413,7 +413,7 @@ void TDocStd_Document::AbortTransaction()
     if (myUndoFILO.Extent())
       myUndoTransaction.Open();
   }
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification) {
     myData->AllowModification (myUndoTransaction.IsOpen() && myUndoLimit
                                ? Standard_True :Standard_False);
@@ -457,7 +457,7 @@ void TDocStd_Document::OpenTransaction()
 
   if (myUndoLimit != 0) myUndoTransaction.Open();
 
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if (myOnlyTransactionModification) {
     myData->AllowModification (myUndoTransaction.IsOpen() && myUndoLimit
                                ? Standard_True :Standard_False);
@@ -490,7 +490,7 @@ void TDocStd_Document::SetUndoLimit(const Standard_Integer L)
     myUndos.RemoveFirst();
     --n;
   }
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if(myOnlyTransactionModification) {
     myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit
                               ? Standard_True :Standard_False);
@@ -595,7 +595,7 @@ Standard_Boolean TDocStd_Document::Undo()
 
   if (isOpened && undoDone) OpenTransaction();
 
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if(myOnlyTransactionModification) {
     myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit
                               ? Standard_True :Standard_False);
@@ -654,7 +654,7 @@ Standard_Boolean TDocStd_Document::Redo()
   
   if (isOpened && undoDone) OpenTransaction();
 
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if(myOnlyTransactionModification) {
     myData->AllowModification(myUndoTransaction.IsOpen() && myUndoLimit
                               ? Standard_True :Standard_False);
@@ -924,7 +924,7 @@ void TDocStd_Document::ChangeStorageFormatVersion(const TDocStd_FormatVersion th
 
 //=======================================================================
 //function : CurrentStorageFormatVersion
-//purpose  : Returns current storage format verison of the document.
+//purpose  : Returns current storage format version of the document.
 //=======================================================================
 TDocStd_FormatVersion TDocStd_Document::CurrentStorageFormatVersion()
 {

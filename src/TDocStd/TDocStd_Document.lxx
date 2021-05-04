@@ -40,7 +40,7 @@ inline Standard_Boolean
 //=======================================================================
 //function : IsModified
 //purpose  : returns True if document differs from the state of last saving.
-//           this method have to be called only wroking in the transaction mode
+//           this method have to be called only working in the transaction mode
 //=======================================================================
 
 inline Standard_Boolean
@@ -70,7 +70,7 @@ inline void TDocStd_Document::SetModificationMode
 {
   myOnlyTransactionModification = theTransactionOnly;
 
-  // deny or allow modifications acording to transaction state
+  // deny or allow modifications according to transaction state
   if(myOnlyTransactionModification) {
     myData->AllowModification(myUndoTransaction.IsOpen());
   }

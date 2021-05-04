@@ -259,7 +259,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 	  C2d->IsKind(STANDARD_TYPE(Geom2d_Line))) iaplan = Standard_True;
     }
 
-    // to be modified : cf and cl are the topological trimming prameter
+    // to be modified : cf and cl are the topological trimming parameter
     // these are computed after ! (U1 and U2) -> cf and cl instead
     if (iaplan) {
       gp_Pnt Pnt1 = CA.Value(CA.FirstParameter()), Pnt2 = CA.Value(CA.LastParameter());

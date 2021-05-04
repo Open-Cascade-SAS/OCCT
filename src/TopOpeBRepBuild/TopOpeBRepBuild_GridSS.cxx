@@ -1027,7 +1027,7 @@ static Standard_Boolean FUN_SplitEvisoONperiodicF(const Handle(TopOpeBRepDS_HDat
 // modifies : myDataStructure
 //            Scans among the interferences attached to faces for FEI with
 //            support <FS> = cylinder, geometry <EG>; adds pcurve on <FS> 
-//            for edge <EG> if necessay.
+//            for edge <EG> if necessary.
 //=======================================================================
 void TopOpeBRepBuild_Builder::SplitEvisoONperiodicF()
 {

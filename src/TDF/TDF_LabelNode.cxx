@@ -128,7 +128,7 @@ void TDF_LabelNode::RemoveAttribute
 (const Handle(TDF_Attribute)& afterAtt,
  const Handle(TDF_Attribute)& oldAtt)
 {
-  oldAtt->myFlags = 0; // Unvalid.
+  oldAtt->myFlags = 0; // Invalid.
   oldAtt->myLabelNode  = NULL;
   if (afterAtt.IsNull()) { // Removes from beginning.
     myFirstAttribute = oldAtt->myNext;
