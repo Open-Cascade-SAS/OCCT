@@ -692,7 +692,7 @@ Standard_Boolean
   myCurve->Intervals(TrimInt, tmpS);
 
   TColStd_SequenceOfReal Fusion;
-  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion);
+  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), Standard_True);
 
   return Fusion.Length() - 1;
 }
@@ -726,7 +726,7 @@ Standard_Boolean
   myCurve->Intervals(TrimInt, tmpS);
 
   TColStd_SequenceOfReal Fusion;
-  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion);
+  GeomLib::FuseIntervals(TrimInt, mySngl->Array1(), Fusion, Precision::PConfusion(), Standard_True);
 
   for (Standard_Integer i = 1; i <= Fusion.Length(); i++)
     T.ChangeValue(i) = Fusion.Value(i);
