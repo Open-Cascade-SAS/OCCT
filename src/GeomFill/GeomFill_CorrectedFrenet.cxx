@@ -882,7 +882,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
 
   frenet->Intervals(FrenetInt, S);
   EvolAroundT->Intervals(LawInt, S);
-  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion);
+  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), Standard_True);
 
   return Fusion.Length()-1;
 }
@@ -913,7 +913,7 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
   
   frenet->Intervals(FrenetInt, S);
   EvolAroundT->Intervals(LawInt, S);
-  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion);
+  GeomLib::FuseIntervals(FrenetInt, LawInt, Fusion, Precision::PConfusion(), Standard_True);
 
   for(Standard_Integer i = 1; i <= Fusion.Length(); i++)
     T.ChangeValue(i) = Fusion.Value(i);

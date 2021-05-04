@@ -412,7 +412,8 @@ void GeomLib::DensifyArray1OfReal(const Standard_Integer MinNumPoints,
 void GeomLib::FuseIntervals(const  TColStd_Array1OfReal& I1,
 			    const  TColStd_Array1OfReal& I2,
 			    TColStd_SequenceOfReal&  Seq,
-			    const Standard_Real  Epspar) 
+			    const Standard_Real  Epspar,
+                            const Standard_Boolean IsAdjustToFirstInterval)
 {
  Standard_Integer ind1=1, ind2=1;
  Standard_Real    v1, v2;
@@ -429,7 +430,14 @@ void GeomLib::FuseIntervals(const  TColStd_Array1OfReal& I1,
       v2 = I2(ind2);
       if (Abs(v1-v2)<= Epspar) {
 // Ici les elements de I1 et I2 conviennent .
-         Seq.Append((v1+v2)/2);
+        if (IsAdjustToFirstInterval)
+        {
+          Seq.Append(v1);
+        }
+        else
+        {
+          Seq.Append((v1 + v2) / 2);
+        }
 	 ind1++;
          ind2++;
        }
