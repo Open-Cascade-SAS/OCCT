@@ -19,6 +19,7 @@
 
 #include <D3DHost_GraphicDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <OpenGl_Window.hxx>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 

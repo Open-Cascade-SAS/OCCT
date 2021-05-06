@@ -17,19 +17,15 @@
 #define _OpenGl_Workspace_Header
 
 #include <Graphic3d_BufferType.hxx>
+#include <Graphic3d_PresentationAttributes.hxx>
 
 #include <OpenGl_Aspects.hxx>
-#include <OpenGl_CappingAlgo.hxx>
-#include <OpenGl_FrameBuffer.hxx>
-#include <OpenGl_Material.hxx>
-#include <OpenGl_ShaderObject.hxx>
-#include <OpenGl_ShaderProgram.hxx>
-#include <OpenGl_TextureBufferArb.hxx>
-#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Vec.hxx>
-#include <OpenGl_Window.hxx>
 
+class OpenGl_FrameBuffer;
+class OpenGl_Group;
 class OpenGl_View;
+class OpenGl_Window;
 class Image_PixMap;
 
 class OpenGl_Workspace;

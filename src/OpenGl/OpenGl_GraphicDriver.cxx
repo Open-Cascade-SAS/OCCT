@@ -25,6 +25,7 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Text.hxx>
+#include <OpenGl_Window.hxx>
 #include <OpenGl_Workspace.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>

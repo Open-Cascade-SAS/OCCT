@@ -13,16 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OSD_Timer.hxx>
+#include <OpenGl_SceneGeometry.hxx>
+
+#include <Graphic3d_GraphicDriver.hxx>
 #include <OSD_Parallel.hxx>
+#include <OSD_Timer.hxx>
 #include <Standard_Assert.hxx>
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
-#include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
+#include <OpenGl_TextureBuffer.hxx>
 
-//! Use this macro to output BVH profiling info
+// Use this macro to output BVH profiling info
 // #define RAY_TRACE_PRINT_INFO
 
 namespace

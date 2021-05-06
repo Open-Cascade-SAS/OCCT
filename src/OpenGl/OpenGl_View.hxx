@@ -16,53 +16,44 @@
 #ifndef _OpenGl_View_Header
 #define _OpenGl_View_Header
 
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-
-#include <TColStd_Array2OfReal.hxx>
-#include <NCollection_List.hxx>
-#include <math_BullardGenerator.hxx>
-
-#include <Quantity_NameOfColor.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_GradientFillMethod.hxx>
-
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CullingTool.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ToneMappingMethod.hxx>
+#include <Graphic3d_TypeOfBackground.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
+#include <math_BullardGenerator.hxx>
 
 #include <OpenGl_Aspects.hxx>
-#include <OpenGl_BackgroundArray.hxx>
-#include <OpenGl_Context.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStatsPrs.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_LayerList.hxx>
-#include <OpenGl_LineAttributes.hxx>
 #include <OpenGl_SceneGeometry.hxx>
 #include <OpenGl_Structure.hxx>
-#include <OpenGl_Window.hxx>
-#include <OpenGl_Workspace.hxx>
 #include <OpenGl_TileSampler.hxx>
 
 #include <map>
 #include <set>
 
 class Graphic3d_StructureManager;
+class OpenGl_BackgroundArray;
 class OpenGl_DepthPeeling;
 class OpenGl_GraphicDriver;
 class OpenGl_PBREnvironment;
+struct OpenGl_RaytraceMaterial;
 class OpenGl_StateCounter;
 class OpenGl_ShadowMap;
 class OpenGl_ShadowMapArray;
+class OpenGl_ShaderObject;
+class OpenGl_TextureBuffer;
 class OpenGl_TriangleSet;
 class OpenGl_Workspace;
-class OpenGl_View;
 
 DEFINE_STANDARD_HANDLE(OpenGl_View,Graphic3d_CView)
 
@@ -108,8 +99,7 @@ public:
                                           const Aspect_RenderingContext theContext) Standard_OVERRIDE;
 
   //! Returns window associated with the view.
-  virtual Handle(Aspect_Window) Window() const Standard_OVERRIDE
-  { return myWindow->PlatformWindow(); }
+  Standard_EXPORT virtual Handle(Aspect_Window) Window() const Standard_OVERRIDE;
 
   //! Returns True if the window associated to the view is defined.
   virtual Standard_Boolean IsDefined() const Standard_OVERRIDE
@@ -467,11 +457,6 @@ private:
   //! Check and update OIT compatibility with current OpenGL context's state.
   bool checkOitCompatibility (const Handle(OpenGl_Context)& theGlContext,
                               const Standard_Boolean theMSAA);
-
-  //! Chooses compatible internal color format for OIT frame buffer.
-  bool chooseOitColorConfiguration (const Handle(OpenGl_Context)& theGlContext,
-                                    const Standard_Integer theConfigIndex,
-                                    OpenGl_ColorFormats& theFormats);
 
 protected:
 
@@ -1053,27 +1038,27 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_ShaderProgram) myOutImageProgram;
 
   //! Texture buffer of data records of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) mySceneNodeInfoTexture;
+  Handle(OpenGl_TextureBuffer) mySceneNodeInfoTexture;
   //! Texture buffer of minimum points of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) mySceneMinPointTexture;
+  Handle(OpenGl_TextureBuffer) mySceneMinPointTexture;
   //! Texture buffer of maximum points of bottom-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) mySceneMaxPointTexture;
+  Handle(OpenGl_TextureBuffer) mySceneMaxPointTexture;
   //! Texture buffer of transformations of high-level BVH nodes.
-  Handle(OpenGl_TextureBufferArb) mySceneTransformTexture;
+  Handle(OpenGl_TextureBuffer) mySceneTransformTexture;
 
   //! Texture buffer of vertex coords.
-  Handle(OpenGl_TextureBufferArb) myGeometryVertexTexture;
+  Handle(OpenGl_TextureBuffer) myGeometryVertexTexture;
   //! Texture buffer of vertex normals.
-  Handle(OpenGl_TextureBufferArb) myGeometryNormalTexture;
+  Handle(OpenGl_TextureBuffer) myGeometryNormalTexture;
   //! Texture buffer of vertex UV coords.
-  Handle(OpenGl_TextureBufferArb) myGeometryTexCrdTexture;
+  Handle(OpenGl_TextureBuffer) myGeometryTexCrdTexture;
   //! Texture buffer of triangle indices.
-  Handle(OpenGl_TextureBufferArb) myGeometryTriangTexture;
+  Handle(OpenGl_TextureBuffer) myGeometryTriangTexture;
 
   //! Texture buffer of material properties.
-  Handle(OpenGl_TextureBufferArb) myRaytraceMaterialTexture;
+  Handle(OpenGl_TextureBuffer) myRaytraceMaterialTexture;
   //! Texture buffer of light source properties.
-  Handle(OpenGl_TextureBufferArb) myRaytraceLightSrcTexture;
+  Handle(OpenGl_TextureBuffer) myRaytraceLightSrcTexture;
 
   //! 1st framebuffer (FBO) to perform adaptive FSAA.
   //! Used in compatibility mode (no adaptive sampling).

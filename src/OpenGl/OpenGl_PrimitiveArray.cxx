@@ -331,7 +331,7 @@ Standard_Boolean OpenGl_PrimitiveArray::buildVBO (const Handle(OpenGl_Context)& 
   aVboAttribs->initLink (myAttribs, 0, myAttribs->NbElements, GL_NONE);
   if (!myIndices.IsNull())
   {
-    Handle(OpenGl_VertexBufferCompat) aVboIndices = new OpenGl_VertexBufferCompat();
+    Handle(OpenGl_IndexBufferCompat) aVboIndices = new OpenGl_IndexBufferCompat();
     switch (myIndices->Stride)
     {
       case 2:

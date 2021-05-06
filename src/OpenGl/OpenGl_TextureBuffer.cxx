@@ -12,20 +12,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_TextureBufferArb.hxx>
+#include <OpenGl_TextureBuffer.hxx>
 
+#include <OpenGl_ArbTBO.hxx>
+#include <OpenGl_GlCore20.hxx>
 #include <OpenGl_Context.hxx>
 #include <Standard_Assert.hxx>
 
-
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureBufferArb,OpenGl_VertexBuffer)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_TextureBuffer, OpenGl_Buffer)
 
 // =======================================================================
-// function : OpenGl_TextureBufferArb
+// function : OpenGl_TextureBuffer
 // purpose  :
 // =======================================================================
-OpenGl_TextureBufferArb::OpenGl_TextureBufferArb()
-: OpenGl_VertexBuffer(),
+OpenGl_TextureBuffer::OpenGl_TextureBuffer()
+: OpenGl_Buffer(),
   myTextureId (NO_TEXTURE),
   myTexFormat (GL_RGBA32F)
 {
@@ -33,10 +34,10 @@ OpenGl_TextureBufferArb::OpenGl_TextureBufferArb()
 }
 
 // =======================================================================
-// function : ~OpenGl_TextureBufferArb
+// function : ~OpenGl_TextureBuffer
 // purpose  :
 // =======================================================================
-OpenGl_TextureBufferArb::~OpenGl_TextureBufferArb()
+OpenGl_TextureBuffer::~OpenGl_TextureBuffer()
 {
   Release (NULL);
 }
@@ -45,7 +46,7 @@ OpenGl_TextureBufferArb::~OpenGl_TextureBufferArb()
 // function : GetTarget
 // purpose  :
 // =======================================================================
-GLenum OpenGl_TextureBufferArb::GetTarget() const
+unsigned int OpenGl_TextureBuffer::GetTarget() const
 {
   return GL_TEXTURE_BUFFER; // GL_TEXTURE_BUFFER for OpenGL 3.1+, OpenGL ES 3.2
 }
@@ -54,37 +55,37 @@ GLenum OpenGl_TextureBufferArb::GetTarget() const
 // function : Release
 // purpose  :
 // =======================================================================
-void OpenGl_TextureBufferArb::Release (OpenGl_Context* theGlCtx)
+void OpenGl_TextureBuffer::Release (OpenGl_Context* theGlCtx)
 {
   if (myTextureId != NO_TEXTURE)
   {
     // application can not handle this case by exception - this is bug in code
     Standard_ASSERT_RETURN (theGlCtx != NULL,
-      "OpenGl_TextureBufferExt destroyed without GL context! Possible GPU memory leakage...",);
+      "OpenGl_TextureBuffer destroyed without GL context! Possible GPU memory leakage...",);
 
     if (theGlCtx->IsValid())
     {
-      glDeleteTextures (1, &myTextureId);
+      theGlCtx->core20fwd->glDeleteTextures (1, &myTextureId);
     }
     myTextureId = NO_TEXTURE;
   }
-  OpenGl_VertexBuffer::Release (theGlCtx);
+  base_type::Release (theGlCtx);
 }
 
 // =======================================================================
 // function : Create
 // purpose  :
 // =======================================================================
-bool OpenGl_TextureBufferArb::Create (const Handle(OpenGl_Context)& theGlCtx)
+bool OpenGl_TextureBuffer::Create (const Handle(OpenGl_Context)& theGlCtx)
 {
-  if (!OpenGl_VertexBuffer::Create (theGlCtx))
+  if (!base_type::Create (theGlCtx))
   {
     return false;
   }
 
   if (myTextureId == NO_TEXTURE)
   {
-    glGenTextures (1, &myTextureId);
+    theGlCtx->core20fwd->glGenTextures (1, &myTextureId);
   }
   return myTextureId != NO_TEXTURE;
 }
@@ -93,10 +94,10 @@ bool OpenGl_TextureBufferArb::Create (const Handle(OpenGl_Context)& theGlCtx)
 // function : Init
 // purpose  :
 // =======================================================================
-bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLuint   theComponentsNb,
-                                    const GLsizei  theElemsNb,
-                                    const GLfloat* theData)
+bool OpenGl_TextureBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                 const unsigned int     theComponentsNb,
+                                 const Standard_Integer theElemsNb,
+                                 const float* theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -114,7 +115,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
     return false;
   }
   else if (!Create (theGlCtx)
-        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+        || !base_type::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
   {
     return false;
   }
@@ -139,10 +140,10 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 // function : Init
 // purpose  :
 // =======================================================================
-bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLuint   theComponentsNb,
-                                    const GLsizei  theElemsNb,
-                                    const GLuint*  theData)
+bool OpenGl_TextureBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                 const unsigned int     theComponentsNb,
+                                 const Standard_Integer theElemsNb,
+                                 const unsigned int*    theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -160,7 +161,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
     return false;
   }
   else if (!Create (theGlCtx)
-        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+        || !base_type::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
   {
     return false;
   }
@@ -185,10 +186,10 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 // function : Init
 // purpose  :
 // =======================================================================
-bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLuint theComponentsNb,
-                                    const GLsizei theElemsNb,
-                                    const GLushort* theData)
+bool OpenGl_TextureBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                 const unsigned int     theComponentsNb,
+                                 const Standard_Integer theElemsNb,
+                                 const unsigned short*  theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -201,7 +202,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
     return false;
   }
   else if (!Create (theGlCtx)
-        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+        || !base_type::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
   {
     return false;
   }
@@ -226,10 +227,10 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 // function : Init
 // purpose  :
 // =======================================================================
-bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
-                                    const GLuint   theComponentsNb,
-                                    const GLsizei  theElemsNb,
-                                    const GLubyte*  theData)
+bool OpenGl_TextureBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
+                                 const unsigned int     theComponentsNb,
+                                 const Standard_Integer theElemsNb,
+                                 const Standard_Byte*   theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -242,7 +243,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
     return false;
   }
   else if (!Create (theGlCtx)
-        || !OpenGl_VertexBuffer::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
+        || !base_type::Init (theGlCtx, theComponentsNb, theElemsNb, theData))
   {
     return false;
   }
@@ -267,20 +268,20 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 // function : BindTexture
 // purpose  :
 // =======================================================================
-void OpenGl_TextureBufferArb::BindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                           const Graphic3d_TextureUnit   theTextureUnit) const
+void OpenGl_TextureBuffer::BindTexture (const Handle(OpenGl_Context)& theGlCtx,
+                                        const Graphic3d_TextureUnit   theTextureUnit) const
 {
   theGlCtx->core20fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
-  glBindTexture (GetTarget(), myTextureId);
+  theGlCtx->core20fwd->glBindTexture (GetTarget(), myTextureId);
 }
 
 // =======================================================================
 // function : UnbindTexture
 // purpose  :
 // =======================================================================
-void OpenGl_TextureBufferArb::UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
-                                             const Graphic3d_TextureUnit   theTextureUnit) const
+void OpenGl_TextureBuffer::UnbindTexture (const Handle(OpenGl_Context)& theGlCtx,
+                                          const Graphic3d_TextureUnit   theTextureUnit) const
 {
   theGlCtx->core20fwd->glActiveTexture (GL_TEXTURE0 + theTextureUnit);
-  glBindTexture (GetTarget(), NO_TEXTURE);
+  theGlCtx->core20fwd->glBindTexture (GetTarget(), NO_TEXTURE);
 }

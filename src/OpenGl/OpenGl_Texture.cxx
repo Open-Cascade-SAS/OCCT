@@ -707,10 +707,10 @@ bool OpenGl_Texture::InitCompressed (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
-                                        const GLsizei                 theNbSamples,
-                                        const GLint                   theTextFormat,
-                                        const GLsizei                 theSizeX,
-                                        const GLsizei                 theSizeY)
+                                        const Standard_Integer theNbSamples,
+                                        const Standard_Integer theTextFormat,
+                                        const Standard_Integer theSizeX,
+                                        const Standard_Integer theSizeY)
 {
   if (!Create (theCtx)
     || theNbSamples > theCtx->MaxMsaaSamples()

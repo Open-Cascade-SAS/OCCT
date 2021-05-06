@@ -1,5 +1,4 @@
-// Created by: Kirill GAVRILOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2021 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,35 +11,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_IndexBuffer.hxx>
+#include <OpenGl_UniformBuffer.hxx>
 
 #include <OpenGl_Context.hxx>
 #include <Standard_Assert.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_Buffer)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_UniformBuffer, OpenGl_Buffer)
 
 // =======================================================================
-// function : OpenGl_IndexBuffer
+// function : OpenGl_UniformBuffer
 // purpose  :
 // =======================================================================
-OpenGl_IndexBuffer::OpenGl_IndexBuffer()
+OpenGl_UniformBuffer::OpenGl_UniformBuffer()
 : OpenGl_Buffer() {}
 
 // =======================================================================
 // function : GetTarget
 // purpose  :
 // =======================================================================
-unsigned int OpenGl_IndexBuffer::GetTarget() const
+unsigned int OpenGl_UniformBuffer::GetTarget() const
 {
-  return GL_ELEMENT_ARRAY_BUFFER;
-}
-
-// =======================================================================
-// function : DumpJson
-// purpose  :
-// =======================================================================
-void OpenGl_IndexBuffer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Buffer)
+  return GL_UNIFORM_BUFFER;
 }

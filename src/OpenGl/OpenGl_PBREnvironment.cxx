@@ -18,6 +18,7 @@
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShaderProgram.hxx>
 #include <OSD_Timer.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>

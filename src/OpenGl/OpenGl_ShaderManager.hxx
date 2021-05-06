@@ -18,12 +18,15 @@
 
 #include <Graphic3d_ShaderManager.hxx>
 #include <NCollection_Sequence.hxx>
+#include <OpenGl_Aspects.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_MaterialState.hxx>
 #include <OpenGl_PBREnvironment.hxx>
 #include <OpenGl_SetOfShaderPrograms.hxx>
+#include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_ShaderStates.hxx>
-#include <OpenGl_Aspects.hxx>
-#include <OpenGl_MaterialState.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_TextureSet.hxx>
 
 class OpenGl_View;
 class OpenGl_VertexBuffer;

@@ -24,6 +24,7 @@
 #include <Graphic3d_Mat4d.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
+#include <OpenGl_BackgroundArray.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
@@ -66,6 +67,30 @@ namespace
                                  const Handle(OpenGl_FrameBuffer)& theFboRef)
   {
     return checkWasFailedFbo (theFboToCheck, theFboRef->GetVPSizeX(), theFboRef->GetVPSizeY(), theFboRef->NbSamples());
+  }
+
+  //! Chooses compatible internal color format for OIT frame buffer.
+  static bool chooseOitColorConfiguration (const Handle(OpenGl_Context)& theGlContext,
+                                           const Standard_Integer theConfigIndex,
+                                           OpenGl_ColorFormats& theFormats)
+  {
+    theFormats.Clear();
+    switch (theConfigIndex)
+    {
+      case 0: // choose best applicable color format combination
+      {
+        theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
+        theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_R16F    : GL_R32F);
+        return true;
+      }
+      case 1: // choose non-optimal applicable color format combination
+      {
+        theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
+        theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
+        return true;
+      }
+    }
+    return false; // color combination does not exist
   }
 }
 
@@ -334,6 +359,15 @@ Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront (const Standard_Boolea
   const Standard_Boolean aPrevMode = myTransientDrawToFront;
   myTransientDrawToFront = theDrawToFrontBuffer;
   return aPrevMode;
+}
+
+// =======================================================================
+// function : Window
+// purpose  :
+// =======================================================================
+Handle(Aspect_Window) OpenGl_View::Window() const
+{
+  return myWindow->PlatformWindow();
 }
 
 // =======================================================================
@@ -998,12 +1032,12 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     aSizeY = myWindow->Height();
   }
 
-  const Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
-  const Standard_Integer aRendSizeY = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f);
+  const Graphic3d_Vec2i aRendSize (Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
+                                   Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
   if (aSizeX < 1
    || aSizeY < 1
-   || aRendSizeX < 1
-   || aRendSizeY < 1)
+   || aRendSize.x() < 1
+   || aRendSize.y() < 1)
   {
     myBackBufferRestored = Standard_False;
     myIsImmediateDrawn   = Standard_False;
@@ -1011,7 +1045,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // determine multisampling parameters
-  Standard_Integer aNbSamples = !myToDisableMSAA && aSizeX == aRendSizeX
+  Standard_Integer aNbSamples = !myToDisableMSAA && aSizeX == aRendSize.x()
                               ? Max (Min (myRenderParams.NbMsaaSamples, aCtx->MaxMsaaSamples()), 0)
                               : 0;
   if (aNbSamples != 0)
@@ -1037,11 +1071,10 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     || theProj == Graphic3d_Camera::Projection_Stereo
     || aNbSamples != 0
     || toUseOit
-    || aSizeX != aRendSizeX))
+    || aSizeX != aRendSize.x()))
   {
-    if (myMainSceneFbos[0]->GetVPSizeX() != aRendSizeX
-     || myMainSceneFbos[0]->GetVPSizeY() != aRendSizeY
-     || myMainSceneFbos[0]->NbSamples()  != aNbSamples)
+    if (myMainSceneFbos[0]->GetVPSize() != aRendSize
+     || myMainSceneFbos[0]->NbSamples() != aNbSamples)
     {
       if (!myTransientDrawToFront)
       {
@@ -1055,8 +1088,8 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
       // for further blitting and rendering immediate presentations on top
       if (aCtx->core20fwd != NULL)
       {
-        const bool wasFailedMain0 = checkWasFailedFbo (myMainSceneFbos[0], aRendSizeX, aRendSizeY, aNbSamples);
-        if (!myMainSceneFbos[0]->Init (aCtx, aRendSizeX, aRendSizeY, myFboColorFormat, myFboDepthFormat, aNbSamples)
+        const bool wasFailedMain0 = checkWasFailedFbo (myMainSceneFbos[0], aRendSize.x(), aRendSize.y(), aNbSamples);
+        if (!myMainSceneFbos[0]->Init (aCtx, aRendSize, myFboColorFormat, myFboDepthFormat, aNbSamples)
          && !wasFailedMain0)
         {
           TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Main FBO "
@@ -1098,9 +1131,9 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
    && myMainSceneFbos[0]->IsValid())
   {
     if (aNbSamples != 0
-     || aSizeX != aRendSizeX)
+     || aSizeX != aRendSize.x())
     {
-      hasXRBlitFbo = myXrSceneFbo->InitLazy (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, 0);
+      hasXRBlitFbo = myXrSceneFbo->InitLazy (aCtx, Graphic3d_Vec2i (aSizeX, aSizeY), myFboColorFormat, myFboDepthFormat, 0);
       if (!hasXRBlitFbo)
       {
         TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! VR FBO "
@@ -1273,10 +1306,9 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   if (toUseOit
    && myRenderParams.TransparencyMethod == Graphic3d_RTM_DEPTH_PEELING_OIT)
   {
-    if (myDepthPeelingFbos->BlendBackFboOit()->GetSizeX() != aRendSizeX
-     || myDepthPeelingFbos->BlendBackFboOit()->GetSizeY() != aRendSizeY)
+    if (myDepthPeelingFbos->BlendBackFboOit()->GetSize() != aRendSize)
     {
-      if (myDepthPeelingFbos->BlendBackFboOit()->Init (aCtx, aRendSizeX, aRendSizeY, GL_RGBA16F, 0))
+      if (myDepthPeelingFbos->BlendBackFboOit()->Init (aCtx, aRendSize, GL_RGBA16F, 0))
       {
         for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
         {
@@ -1284,7 +1316,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
           aColorFormats.Append (GL_RG32F);
           aColorFormats.Append (GL_RGBA16F);
           aColorFormats.Append (GL_RGBA16F);
-          myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->Init (aCtx, aRendSizeX, aRendSizeY, aColorFormats, 0);
+          myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->Init (aCtx, aRendSize, aColorFormats, 0);
 
           NCollection_Sequence<Handle(OpenGl_Texture)> anAttachments;
           anAttachments.Append (myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->ColorTexture (1));
@@ -1317,9 +1349,8 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
       Handle(OpenGl_FrameBuffer)& anImmediateSceneFbo    = myImmediateSceneFbos   [anFboIt];
       Handle(OpenGl_FrameBuffer)& anImmediateSceneFboOit = myImmediateSceneFbosOit[anFboIt];
       if (aMainSceneFbo->IsValid()
-       && (aMainSceneFboOit->GetVPSizeX() != aRendSizeX
-        || aMainSceneFboOit->GetVPSizeY() != aRendSizeY
-        || aMainSceneFboOit->NbSamples()  != aNbSamples))
+       && (aMainSceneFboOit->GetVPSize() != aRendSize
+        || aMainSceneFboOit->NbSamples() != aNbSamples))
       {
         Standard_Integer aColorConfig = 0;
         for (;;) // seemly responding to driver limitation (GL_FRAMEBUFFER_UNSUPPORTED)
@@ -1331,7 +1362,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
               break;
             }
           }
-          if (aMainSceneFboOit->Init (aCtx, aRendSizeX, aRendSizeY, myFboOitColorConfig, aMainSceneFbo->DepthStencilTexture(), aNbSamples))
+          if (aMainSceneFboOit->Init (aCtx, aRendSize, myFboOitColorConfig, aMainSceneFbo->DepthStencilTexture(), aNbSamples))
           {
             break;
           }
@@ -1349,11 +1380,10 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
       }
 
       if (anImmediateSceneFbo->IsValid()
-       && (anImmediateSceneFboOit->GetVPSizeX() != aRendSizeX
-        || anImmediateSceneFboOit->GetVPSizeY() != aRendSizeY
-        || anImmediateSceneFboOit->NbSamples()  != aNbSamples))
+       && (anImmediateSceneFboOit->GetVPSize() != aRendSize
+        || anImmediateSceneFboOit->NbSamples() != aNbSamples))
       {
-        if (!anImmediateSceneFboOit->Init (aCtx, aRendSizeX, aRendSizeY, myFboOitColorConfig,
+        if (!anImmediateSceneFboOit->Init (aCtx, aRendSize, myFboOitColorConfig,
                                            anImmediateSceneFbo->DepthStencilTexture(), aNbSamples))
         {
           break;
@@ -1430,7 +1460,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
        && toUseShadowMap)
       {
         OpenGl_ColorFormats aDummy;
-        if (!aShadowFbo->Init (aCtx, myRenderParams.ShadowMapResolution, myRenderParams.ShadowMapResolution, aDummy, myFboDepthFormat, 0))
+        if (!aShadowFbo->Init (aCtx, Graphic3d_Vec2i (myRenderParams.ShadowMapResolution), aDummy, myFboDepthFormat, 0))
         {
           toUseShadowMap = false;
         }
@@ -2306,20 +2336,22 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
 
   if (!toRenderGL)
   {
-    const Standard_Integer aSizeX = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeX() : myWindow->Width();
-    const Standard_Integer aSizeY = theReadDrawFbo != NULL ? theReadDrawFbo->GetVPSizeY() : myWindow->Height();
+    const Graphic3d_Vec2i aSizeXY = theReadDrawFbo != NULL
+                                  ? theReadDrawFbo->GetVPSize()
+                                  : Graphic3d_Vec2i (myWindow->Width(), myWindow->Height());
 
-    toRenderGL = !initRaytraceResources (aSizeX, aSizeY, aCtx)
+    toRenderGL = !initRaytraceResources (aSizeXY.x(), aSizeXY.y(), aCtx)
               || !updateRaytraceGeometry (OpenGl_GUM_CHECK, myId, aCtx);
 
     toRenderGL |= !myIsRaytraceDataValid; // if no ray-trace data use OpenGL
 
     if (!toRenderGL)
     {
-      myOpenGlFBO ->InitLazy (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, 0);
-
+      myOpenGlFBO ->InitLazy (aCtx, aSizeXY, myFboColorFormat, myFboDepthFormat, 0);
       if (theReadDrawFbo != NULL)
+      {
         theReadDrawFbo->UnbindBuffer (aCtx);
+      }
 
       // Prepare preliminary OpenGL output
       if (aCtx->arbFBOBlit != NULL)
@@ -2361,7 +2393,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
       myWorkspace->ResetAppliedAspect();
 
       // Ray-tracing polygonal primitive arrays
-      raytrace (aSizeX, aSizeY, theProjection, theReadDrawFbo, aCtx);
+      raytrace (aSizeXY.x(), aSizeXY.y(), theProjection, theReadDrawFbo, aCtx);
 
       // Render upper (top and topmost) OpenGL layers
       myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Upper, theReadDrawFbo, theOitAccumFbo);
@@ -2731,8 +2763,8 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
   if (aPair[0]->NbSamples() != 0)
   {
     // resolve MSAA buffers before drawing
-    if (!myOpenGlFBO ->InitLazy (aCtx, aPair[0]->GetVPSizeX(), aPair[0]->GetVPSizeY(), myFboColorFormat, myFboDepthFormat, 0)
-     || !myOpenGlFBO2->InitLazy (aCtx, aPair[0]->GetVPSizeX(), aPair[0]->GetVPSizeY(), myFboColorFormat, 0, 0))
+    if (!myOpenGlFBO ->InitLazy (aCtx, aPair[0]->GetVPSize(), myFboColorFormat, myFboDepthFormat, 0)
+     || !myOpenGlFBO2->InitLazy (aCtx, aPair[0]->GetVPSize(), myFboColorFormat, 0, 0))
     {
       aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
                          GL_DEBUG_TYPE_ERROR,
@@ -2999,33 +3031,6 @@ Standard_Boolean OpenGl_View::checkOitCompatibility (const Handle(OpenGl_Context
 
   aToDisableOIT = Standard_True;
   return Standard_False;
-}
-
-// =======================================================================
-// function : chooseOitColorConfiguration
-// purpose  :
-// =======================================================================
-bool OpenGl_View::chooseOitColorConfiguration (const Handle(OpenGl_Context)& theGlContext,
-                                               const Standard_Integer theConfigIndex,
-                                               OpenGl_ColorFormats& theFormats)
-{
-  theFormats.Clear();
-  switch (theConfigIndex)
-  {
-    case 0: // choose best applicable color format combination
-    {
-      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
-      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_R16F    : GL_R32F);
-      return true;
-    }
-    case 1: // choose non-optimal applicable color format combination
-    {
-      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
-      theFormats.Append (theGlContext->hasHalfFloatBuffer != OpenGl_FeatureNotAvailable ? GL_RGBA16F : GL_RGBA32F);
-      return true;
-    }
-  }
-  return false; // color combination does not exist
 }
 
 // =======================================================================

@@ -16,6 +16,7 @@
 #include <OpenGl_Sampler.hxx>
 
 #include <OpenGl_ArbSamplerObject.hxx>
+#include <OpenGl_Context.hxx>
 #include <OpenGl_Texture.hxx>
 #include <Standard_Assert.hxx>
 
@@ -151,10 +152,10 @@ void OpenGl_Sampler::Unbind (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Sampler::setParameter (const Handle(OpenGl_Context)& theCtx,
-                                   OpenGl_Sampler* theSampler,
-                                   GLenum theTarget,
-                                   GLenum theParam,
-                                   GLint  theValue)
+                                   OpenGl_Sampler*  theSampler,
+                                   unsigned int     theTarget,
+                                   unsigned int     theParam,
+                                   Standard_Integer theValue)
 {
   if (theSampler != NULL && theSampler->isValidSampler())
   {
@@ -186,7 +187,7 @@ void OpenGl_Sampler::SetParameters (const Handle(Graphic3d_TextureParams)& thePa
 void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
                                          const Handle(Graphic3d_TextureParams)& theParams,
                                          OpenGl_Sampler* theSampler,
-                                         const GLenum theTarget,
+                                         const unsigned int theTarget,
                                          const Standard_Integer theMaxMipLevels)
 {
   if (theSampler != NULL && theSampler->Parameters() == theParams)

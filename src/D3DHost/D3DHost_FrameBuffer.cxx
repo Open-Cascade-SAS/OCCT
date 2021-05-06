@@ -19,8 +19,9 @@
 
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_ArbFBO.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Texture.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(D3DHost_FrameBuffer,OpenGl_FrameBuffer)
 
@@ -114,9 +115,9 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dFallback (const Handle(OpenGl_Conte
                                                        const Standard_Boolean        theIsD3dEx,
                                                        const Standard_Integer        theSizeX,
                                                        const Standard_Integer        theSizeY,
-                                                       const GLint                   theDepthFormat)
+                                                       const Standard_Integer        theDepthFormat)
 {
-  const Standard_Boolean isGlInit = OpenGl_FrameBuffer::Init (theCtx, theSizeX, theSizeY, GL_RGBA8, theDepthFormat, 0);
+  const Standard_Boolean isGlInit = OpenGl_FrameBuffer::Init (theCtx, Graphic3d_Vec2i (theSizeX, theSizeY), GL_RGBA8, theDepthFormat, 0);
   myD3dFallback = Standard_True;
 
   const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
@@ -142,7 +143,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
                                                       const Standard_Boolean        theIsD3dEx,
                                                       const Standard_Integer        theSizeX,
                                                       const Standard_Integer        theSizeY,
-                                                      const GLint                   theDepthFormat)
+                                                      const Standard_Integer        theDepthFormat)
 {
   Release (theCtx.operator->());
 #if !defined(GL_ES_VERSION_2_0)

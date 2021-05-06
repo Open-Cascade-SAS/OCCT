@@ -13,7 +13,10 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_FrameBuffer.hxx>
+
 #include <OpenGl_ArbFBO.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Texture.hxx>
 
 #include <Standard_Assert.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -92,6 +95,24 @@ OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 }
 
 // =======================================================================
+// function : GetSizeX
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_FrameBuffer::GetSizeX() const
+{
+  return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeX() : 0;
+}
+
+// =======================================================================
+// function : GetSizeY
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_FrameBuffer::GetSizeY() const
+{
+  return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeY() : 0;
+}
+
+// =======================================================================
 // function : InitWrapper
 // purpose  :
 // =======================================================================
@@ -164,18 +185,17 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           const GLsizei                 theSizeX,
-                                           const GLsizei                 theSizeY,
-                                           const GLint                   theColorFormat,
-                                           const GLint                   theDepthFormat,
-                                           const GLsizei                 theNbSamples)
+                                           const Graphic3d_Vec2i& theSize,
+                                           const Standard_Integer theColorFormat,
+                                           const Standard_Integer theDepthFormat,
+                                           const Standard_Integer theNbSamples)
 {
   OpenGl_ColorFormats aColorFormats;
   if (theColorFormat != 0)
   {
     aColorFormats.Append (theColorFormat);
   }
-  return Init (theGlContext, theSizeX, theSizeY, aColorFormats, theDepthFormat, theNbSamples);
+  return Init (theGlContext, theSize, aColorFormats, theDepthFormat, theNbSamples);
 }
 
 // =======================================================================
@@ -183,11 +203,10 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           const GLsizei                 theSizeX,
-                                           const GLsizei                 theSizeY,
+                                           const Graphic3d_Vec2i&        theSize,
                                            const OpenGl_ColorFormats&    theColorFormats,
                                            const Handle(OpenGl_Texture)& theDepthStencilTexture,
-                                           const GLsizei                 theNbSamples)
+                                           const Standard_Integer        theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -226,10 +245,10 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   myIsOwnBuffer = true;
 
   // setup viewport sizes as is
-  myVPSizeX = theSizeX;
-  myVPSizeY = theSizeY;
-  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
-  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  myVPSizeX = theSize.x();
+  myVPSizeY = theSize.y();
+  const Standard_Integer aSizeX = theSize.x() > 0 ? theSize.x() : 2;
+  const Standard_Integer aSizeY = theSize.y() > 0 ? theSize.y() : 2;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
   if (theNbSamples != 0)
@@ -306,11 +325,10 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           const GLsizei                 theSizeX,
-                                           const GLsizei                 theSizeY,
+                                           const Graphic3d_Vec2i&        theSize,
                                            const OpenGl_ColorFormats&    theColorFormats,
-                                           const GLint                   theDepthFormat,
-                                           const GLsizei                 theNbSamples)
+                                           const Standard_Integer        theDepthFormat,
+                                           const Standard_Integer        theNbSamples)
 {
   myColorFormats = theColorFormats;
 
@@ -330,8 +348,8 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
   myDepthFormat = theDepthFormat;
   myNbSamples   = theNbSamples;
-  myInitVPSizeX = theSizeX;
-  myInitVPSizeY = theSizeY;
+  myInitVPSizeX = theSize.x();
+  myInitVPSizeY = theSize.y();
   if (theGlContext->arbFBO == NULL)
   {
     return Standard_False;
@@ -350,10 +368,10 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   myIsOwnDepth  = true;
 
   // setup viewport sizes as is
-  myVPSizeX = theSizeX;
-  myVPSizeY = theSizeY;
-  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
-  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  myVPSizeX = theSize.x();
+  myVPSizeY = theSize.y();
+  const Standard_Integer aSizeX = theSize.x() > 0 ? theSize.x() : 2;
+  const Standard_Integer aSizeY = theSize.y() > 0 ? theSize.y() : 2;
   bool hasStencilRB = false;
 
   // Create the textures (will be used as color buffer and depth-stencil buffer)
@@ -475,17 +493,14 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& theGlContext,
-                                               const GLsizei                 theViewportSizeX,
-                                               const GLsizei                 theViewportSizeY,
-                                               const GLint                   theColorFormat,
-                                               const GLint                   theDepthFormat,
-                                               const GLsizei                 theNbSamples)
+                                               const Graphic3d_Vec2i& theViewportSize,
+                                               const Standard_Integer theColorFormat,
+                                               const Standard_Integer theDepthFormat,
+                                               const Standard_Integer theNbSamples)
 {
   OpenGl_ColorFormats aColorFormats;
-
   aColorFormats.Append (theColorFormat);
-
-  return InitLazy (theGlContext, theViewportSizeX, theViewportSizeY, aColorFormats, theDepthFormat, theNbSamples);
+  return InitLazy (theGlContext, theViewportSize, aColorFormats, theDepthFormat, theNbSamples);
 }
 
 // =======================================================================
@@ -493,14 +508,13 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& theGlContext,
-                                               const GLsizei                 theViewportSizeX,
-                                               const GLsizei                 theViewportSizeY,
+                                               const Graphic3d_Vec2i&        theViewportSize,
                                                const OpenGl_ColorFormats&    theColorFormats,
-                                               const GLint                   theDepthFormat,
-                                               const GLsizei                 theNbSamples)
+                                               const Standard_Integer        theDepthFormat,
+                                               const Standard_Integer        theNbSamples)
 {
-  if (myVPSizeX      == theViewportSizeX
-   && myVPSizeY      == theViewportSizeY
+  if (myVPSizeX      == theViewportSize.x()
+   && myVPSizeY      == theViewportSize.y()
    && myColorFormats == theColorFormats
    && myDepthFormat  == theDepthFormat
    && myNbSamples    == theNbSamples)
@@ -508,7 +522,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
     return IsValid();
   }
 
-  return Init (theGlContext, theViewportSizeX, theViewportSizeY, theColorFormats, theDepthFormat, theNbSamples);
+  return Init (theGlContext, theViewportSize, theColorFormats, theDepthFormat, theNbSamples);
 }
 
 // =======================================================================
@@ -516,11 +530,10 @@ Standard_Boolean OpenGl_FrameBuffer::InitLazy (const Handle(OpenGl_Context)& the
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& theGlCtx,
-                                                 const GLsizei                 theSizeX,
-                                                 const GLsizei                 theSizeY,
-                                                 const GLint                   theColorFormat,
-                                                 const GLint                   theDepthFormat,
-                                                 const GLuint                  theColorRBufferFromWindow)
+                                                 const Graphic3d_Vec2i& theSize,
+                                                 const Standard_Integer theColorFormat,
+                                                 const Standard_Integer theDepthFormat,
+                                                 const unsigned int     theColorRBufferFromWindow)
 {
   myColorFormats.Clear();
   myColorFormats.Append (theColorFormat);
@@ -537,8 +550,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
 
   myDepthFormat = theDepthFormat;
   myNbSamples   = 0;
-  myInitVPSizeX = theSizeX;
-  myInitVPSizeY = theSizeY;
+  myInitVPSizeX = theSize.x();
+  myInitVPSizeY = theSize.y();
   if (theGlCtx->arbFBO == NULL)
   {
     return Standard_False;
@@ -552,10 +565,10 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   myIsOwnDepth  = true;
 
   // setup viewport sizes as is
-  myVPSizeX = theSizeX;
-  myVPSizeY = theSizeY;
-  const Standard_Integer aSizeX = theSizeX > 0 ? theSizeX : 2;
-  const Standard_Integer aSizeY = theSizeY > 0 ? theSizeY : 2;
+  myVPSizeX = theSize.x();
+  myVPSizeY = theSize.y();
+  const Standard_Integer aSizeX = theSize.x() > 0 ? theSize.x() : 2;
+  const Standard_Integer aSizeY = theSize.y() > 0 ? theSize.y() : 2;
 
   // Create the render-buffers
   if (theColorRBufferFromWindow != NO_RENDERBUFFER)
@@ -754,8 +767,8 @@ void OpenGl_FrameBuffer::SetupViewport (const Handle(OpenGl_Context)& theGlCtx)
 // function : ChangeViewport
 // purpose  :
 // =======================================================================
-void OpenGl_FrameBuffer::ChangeViewport (const GLsizei theVPSizeX,
-                                         const GLsizei theVPSizeY)
+void OpenGl_FrameBuffer::ChangeViewport (const Standard_Integer theVPSizeX,
+                                         const Standard_Integer theVPSizeY)
 {
   myVPSizeX = theVPSizeX;
   myVPSizeY = theVPSizeY;

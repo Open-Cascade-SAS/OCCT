@@ -16,8 +16,13 @@
 #include <OpenGl_View.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
+#include <OpenGl_BackgroundArray.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_VertexBuffer.hxx>
+#include <OpenGl_SceneGeometry.hxx>
+#include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_TextureBuffer.hxx>
 #include <OpenGl_GlCore44.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
@@ -1885,8 +1890,8 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
   if (myRaytraceParameters.AdaptiveScreenSampling)
   {
     Graphic3d_Vec2i aMaxViewport = myTileSampler.OffsetTilesViewportMax().cwiseMax (Graphic3d_Vec2i (theSizeX, theSizeY));
-    myRaytraceFBO1[0]->InitLazy (theGlContext, aMaxViewport.x(), aMaxViewport.y(), GL_RGBA32F, myFboDepthFormat);
-    myRaytraceFBO2[0]->InitLazy (theGlContext, aMaxViewport.x(), aMaxViewport.y(), GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO1[0]->InitLazy (theGlContext, aMaxViewport, GL_RGBA32F, myFboDepthFormat);
+    myRaytraceFBO2[0]->InitLazy (theGlContext, aMaxViewport, GL_RGBA32F, myFboDepthFormat);
     if (myRaytraceFBO1[1]->IsValid()) // second FBO not needed
     {
       myRaytraceFBO1[1]->Release (theGlContext.operator->());
@@ -1969,8 +1974,8 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
         myAccumFrames = 0; // accumulation should be restarted
       }
 
-      myRaytraceFBO1[aViewIter]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
-      myRaytraceFBO2[aViewIter]->InitLazy (theGlContext, theSizeX, theSizeY, GL_RGBA32F, myFboDepthFormat);
+      myRaytraceFBO1[aViewIter]->InitLazy (theGlContext, Graphic3d_Vec2i (theSizeX, theSizeY), GL_RGBA32F, myFboDepthFormat);
+      myRaytraceFBO2[aViewIter]->InitLazy (theGlContext, Graphic3d_Vec2i (theSizeX, theSizeY), GL_RGBA32F, myFboDepthFormat);
     }
   }
   return Standard_True;
@@ -2149,10 +2154,10 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
   if (mySceneNodeInfoTexture.IsNull()) // create scene BVH buffers
   {
-    mySceneNodeInfoTexture  = new OpenGl_TextureBufferArb;
-    mySceneMinPointTexture  = new OpenGl_TextureBufferArb;
-    mySceneMaxPointTexture  = new OpenGl_TextureBufferArb;
-    mySceneTransformTexture = new OpenGl_TextureBufferArb;
+    mySceneNodeInfoTexture  = new OpenGl_TextureBuffer();
+    mySceneMinPointTexture  = new OpenGl_TextureBuffer();
+    mySceneMaxPointTexture  = new OpenGl_TextureBuffer();
+    mySceneTransformTexture = new OpenGl_TextureBuffer();
 
     if (!mySceneNodeInfoTexture->Create  (theGlContext)
      || !mySceneMinPointTexture->Create  (theGlContext)
@@ -2166,10 +2171,10 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
   if (myGeometryVertexTexture.IsNull()) // create geometry buffers
   {
-    myGeometryVertexTexture = new OpenGl_TextureBufferArb;
-    myGeometryNormalTexture = new OpenGl_TextureBufferArb;
-    myGeometryTexCrdTexture = new OpenGl_TextureBufferArb;
-    myGeometryTriangTexture = new OpenGl_TextureBufferArb;
+    myGeometryVertexTexture = new OpenGl_TextureBuffer();
+    myGeometryNormalTexture = new OpenGl_TextureBuffer();
+    myGeometryTexCrdTexture = new OpenGl_TextureBuffer();
+    myGeometryTriangTexture = new OpenGl_TextureBuffer();
 
     if (!myGeometryVertexTexture->Create (theGlContext)
      || !myGeometryNormalTexture->Create (theGlContext)
@@ -2183,7 +2188,7 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 
   if (myRaytraceMaterialTexture.IsNull()) // create material buffer
   {
-    myRaytraceMaterialTexture = new OpenGl_TextureBufferArb();
+    myRaytraceMaterialTexture = new OpenGl_TextureBuffer();
     if (!myRaytraceMaterialTexture->Create (theGlContext))
     {
       Message::SendTrace() << "Error: Failed to create buffers for material data";
@@ -2516,7 +2521,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
 
   if (myRaytraceLightSrcTexture.IsNull()) // create light source buffer
   {
-    myRaytraceLightSrcTexture = new OpenGl_TextureBufferArb;
+    myRaytraceLightSrcTexture = new OpenGl_TextureBuffer();
   }
 
   if (myRaytraceGeometry.Sources.size() != 0 && wasUpdated)

@@ -14,6 +14,8 @@
 #include <OpenGl_FrameStatsPrs.hxx>
 
 #include <OpenGl_View.hxx>
+#include <OpenGl_IndexBuffer.hxx>
+#include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Workspace.hxx>
 

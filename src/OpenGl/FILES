@@ -14,6 +14,9 @@ OpenGl_AspectsSprite.cxx
 OpenGl_AspectsSprite.hxx
 OpenGl_AspectsTextureSet.cxx
 OpenGl_AspectsTextureSet.hxx
+OpenGl_Buffer.cxx
+OpenGl_Buffer.hxx
+OpenGl_BufferCompatT.hxx
 OpenGl_FrameStats.cxx
 OpenGl_FrameStats.hxx
 OpenGl_FrameStatsPrs.cxx
@@ -134,13 +137,14 @@ OpenGl_StencilTest.cxx
 OpenGl_StencilTest.hxx
 OpenGl_TileSampler.hxx
 OpenGl_TileSampler.cxx
-OpenGl_TextureBufferArb.cxx
+OpenGl_TextureBuffer.cxx
+OpenGl_TextureBuffer.hxx
 OpenGl_TextureBufferArb.hxx
+OpenGl_UniformBuffer.cxx
+OpenGl_UniformBuffer.hxx
 OpenGl_Vec.hxx
 OpenGl_VertexBuffer.cxx
 OpenGl_VertexBuffer.hxx
-OpenGl_VertexBuffer.lxx
-OpenGl_VertexBufferCompat.cxx
 OpenGl_VertexBufferCompat.hxx
 OpenGl_VertexBufferEditor.hxx
 OpenGl_TextBuilder.hxx

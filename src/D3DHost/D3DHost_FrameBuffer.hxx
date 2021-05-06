@@ -63,7 +63,7 @@ public:
                                                    const Standard_Boolean        theIsD3dEx,
                                                    const Standard_Integer        theSizeX,
                                                    const Standard_Integer        theSizeY,
-                                                   const GLint                   theDepthFormat);
+                                                   const Standard_Integer        theDepthFormat);
 
   //! Initializes OpenGL FBO + Direct3D surface for copying memory using fallback.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
@@ -79,7 +79,7 @@ public:
                                                     const Standard_Boolean        theIsD3dEx,
                                                     const Standard_Integer        theSizeX,
                                                     const Standard_Integer        theSizeY,
-                                                    const GLint                   theDepthFormat);
+                                                    const Standard_Integer        theDepthFormat);
 
   //! Binds Direct3D color buffer to OpenGL texture.
   Standard_EXPORT Standard_Boolean registerD3dBuffer (const Handle(OpenGl_Context)& theCtx);

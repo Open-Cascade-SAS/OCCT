@@ -16,6 +16,7 @@
 #define _OpenGl_DepthPeeling_HeaderFile
 
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_NamedResource.hxx>
 
 //! Class provides FBOs for dual depth peeling.
 class OpenGl_DepthPeeling : public OpenGl_NamedResource

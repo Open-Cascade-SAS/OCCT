@@ -16,6 +16,7 @@
 #define _OpenGl_Texture_H__
 
 #include <Graphic3d_CubeMap.hxx>
+#include <Graphic3d_Vec3.hxx>
 #include <OpenGl_TextureFormat.hxx>
 #include <OpenGl_NamedResource.hxx>
 #include <OpenGl_Sampler.hxx>
@@ -32,7 +33,7 @@ class OpenGl_Texture : public OpenGl_NamedResource
 public:
 
   //! Helpful constants
-  static const GLuint NO_TEXTURE = 0;
+  static const unsigned int NO_TEXTURE = 0;
 
   //! Return pixel size of pixel format in bytes.
   //! Note that this method considers that OpenGL natively supports this pixel format,
@@ -52,7 +53,7 @@ public:
   virtual bool IsValid() const { return myTextureId != NO_TEXTURE; }
 
   //! @return target to which the texture is bound (GL_TEXTURE_1D, GL_TEXTURE_2D)
-  GLenum GetTarget() const { return myTarget; }
+  unsigned int GetTarget() const { return myTarget; }
 
   //! @return texture width (0 LOD)
   GLsizei SizeX() const { return mySizeX; }
@@ -61,13 +62,13 @@ public:
   GLsizei SizeY() const { return mySizeY; }
 
   //! @return texture ID
-  GLuint TextureId() const { return myTextureId; }
+  unsigned int TextureId() const { return myTextureId; }
 
   //! @return texture format (not sized)
-  GLenum GetFormat() const { return myTextFormat; }
+  unsigned int GetFormat() const { return myTextFormat; }
   
   //! @return texture format (sized)
-  GLint SizedFormat() const { return mySizedFormat; }
+  Standard_Integer SizedFormat() const { return mySizedFormat; }
 
   //! Return true for GL_RED and GL_ALPHA formats.
   bool IsAlpha() const { return myIsAlpha; }
@@ -158,10 +159,10 @@ public:
 
   //! Initialize the 2D multisampling texture using glTexImage2DMultisample().
   Standard_EXPORT bool Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
-                                          const GLsizei                 theNbSamples,
-                                          const GLint                   theTextFormat,
-                                          const GLsizei                 theSizeX,
-                                          const GLsizei                 theSizeY);
+                                          const Standard_Integer theNbSamples,
+                                          const Standard_Integer theTextFormat,
+                                          const Standard_Integer theSizeX,
+                                          const Standard_Integer theSizeY);
 
   //! Allocates texture rectangle with specified format and size.
   //! \note Texture data is not initialized (will contain trash).
@@ -208,10 +209,10 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used instead")
   static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
-                             const Image_Format            theFormat,
-                             GLint&                        theTextFormat,
-                             GLenum&                       thePixelFormat,
-                             GLenum&                       theDataType)
+                             const Image_Format theFormat,
+                             Standard_Integer&  theTextFormat,
+                             unsigned int&      thePixelFormat,
+                             unsigned int&      theDataType)
   {
     OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theFormat, false);
     theTextFormat  = aFormat.InternalFormat();
@@ -222,10 +223,10 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used instead")
   static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
-                             const Image_PixMap&           theData,
-                             GLint&                        theTextFormat,
-                             GLenum&                       thePixelFormat,
-                             GLenum&                       theDataType)
+                             const Image_PixMap& theData,
+                             Standard_Integer&   theTextFormat,
+                             unsigned int&       thePixelFormat,
+                             unsigned int&       theDataType)
   {
     OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theData.Format(), false);
     theTextFormat  = aFormat.InternalFormat();
@@ -236,11 +237,11 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of separate parameters")
   bool Init (const Handle(OpenGl_Context)& theCtx,
-             const GLint                   theTextFormat,
-             const GLenum                  thePixelFormat,
-             const GLenum                  theDataType,
-             const GLsizei                 theSizeX,
-             const GLsizei                 theSizeY,
+             const Standard_Integer        theTextFormat,
+             const unsigned int            thePixelFormat,
+             const unsigned int            theDataType,
+             const Standard_Integer        theSizeX,
+             const Standard_Integer        theSizeY,
              const Graphic3d_TypeOfTexture theType,
              const Image_PixMap*           theImage = NULL)
   {
@@ -261,9 +262,9 @@ public:
 
   Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of separate parameters")
   bool Init3D (const Handle(OpenGl_Context)& theCtx,
-               const GLint  theTextFormat,
-               const GLenum thePixelFormat,
-               const GLenum theDataType,
+               const Standard_Integer theTextFormat,
+               const unsigned int     thePixelFormat,
+               const unsigned int     theDataType,
                const Standard_Integer theSizeX,
                const Standard_Integer theSizeY,
                const Standard_Integer theSizeZ,
@@ -278,7 +279,7 @@ public:
 
   //! Initializes 6 sides of cubemap.
   //! If theCubeMap is not NULL then size and format will be taken from it and corresponding arguments will be ignored.
-  //! Otherwise this parametres will be taken from arguments.
+  //! Otherwise this parameters will be taken from arguments.
   //! @param theCtx         [in] active OpenGL context
   //! @param theCubeMap     [in] cubemap definition, can be NULL
   //! @param theSize        [in] cubemap dimensions
@@ -301,13 +302,13 @@ protected:
 
   Handle(OpenGl_Sampler) mySampler; //!< texture sampler
   Standard_Size    myRevision;   //!< revision of associated data source
-  GLuint           myTextureId;  //!< GL resource ID
-  GLenum           myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
-  GLsizei          mySizeX;      //!< texture width
-  GLsizei          mySizeY;      //!< texture height
-  GLsizei          mySizeZ;      //!< texture depth
-  GLenum           myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
-  GLint            mySizedFormat;//!< internal (sized) texture format
+  unsigned int     myTextureId;  //!< GL resource ID
+  unsigned int     myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
+  Standard_Integer mySizeX;      //!< texture width
+  Standard_Integer mySizeY;      //!< texture height
+  Standard_Integer mySizeZ;      //!< texture depth
+  unsigned int     myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
+  Standard_Integer mySizedFormat;//!< internal (sized) texture format
   Standard_Integer myNbSamples;  //!< number of MSAA samples
   Standard_Integer myMaxMipLevel;//!< upper mipmap level index (0 means no mipmaps)
   bool             myIsAlpha;    //!< indicates alpha format

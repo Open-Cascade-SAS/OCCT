@@ -1,5 +1,4 @@
-// Created by: Kirill GAVRILOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2021 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,31 +11,27 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_IndexBuffer_H__
-#define _OpenGl_IndexBuffer_H__
+#ifndef _OpenGl_UniformBuffer_H__
+#define _OpenGl_UniformBuffer_H__
 
 #include <OpenGl_Buffer.hxx>
 
-//! Index buffer is just a VBO with special target (GL_ELEMENT_ARRAY_BUFFER).
-class OpenGl_IndexBuffer : public OpenGl_Buffer
+//! Uniform buffer object.
+class OpenGl_UniformBuffer : public OpenGl_Buffer
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_UniformBuffer, OpenGl_Buffer)
 public:
 
   //! Empty constructor.
-  Standard_EXPORT OpenGl_IndexBuffer();
+  Standard_EXPORT OpenGl_UniformBuffer();
 
-  //! Return buffer object target (GL_ELEMENT_ARRAY_BUFFER).
+  //! Return buffer object target (GL_UNIFORM_BUFFER).
   Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
 
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_Buffer)
+  using OpenGl_Buffer::BindBufferBase;
+  using OpenGl_Buffer::UnbindBufferBase;
+  using OpenGl_Buffer::BindBufferRange;
 
 };
 
-DEFINE_STANDARD_HANDLE(OpenGl_IndexBuffer, OpenGl_Buffer)
-
-#endif // _OpenGl_IndexBuffer_H__
+#endif // _OpenGl_UniformBuffer_H__

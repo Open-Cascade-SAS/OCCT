@@ -15,7 +15,7 @@
 #ifndef _OpenGl_VertexBufferEditor_H__
 #define _OpenGl_VertexBufferEditor_H__
 
-#include <OpenGl_VertexBuffer.hxx>
+#include <OpenGl_Buffer.hxx>
 #include <OpenGl_Context.hxx>
 
 #include <NCollection_Array1.hxx>
@@ -39,26 +39,26 @@ class OpenGl_VertexBufferEditor
 public:
 
   //! Creates empty editor
-  //! theTmpBufferLength - temporary buffer length
-  OpenGl_VertexBufferEditor (const Standard_Integer theTmpBufferLength = 0)
+  //! theTmpBufferLength [in] temporary buffer length
+  explicit OpenGl_VertexBufferEditor (const Standard_Integer theTmpBufferLength = 0)
   : myElemFrom (0),
     myElemsNb (0),
     myTmpBuffer (0, theTmpBufferLength > 0 ? (theTmpBufferLength - 1) : 2047) {}
 
   //! Creates empty editor
-  //! theTmpBuffer       - pointer to temporary buffer
-  //! theTmpBufferLength - temporary buffer length
+  //! theTmpBuffer       [in] pointer to temporary buffer
+  //! theTmpBufferLength [in] temporary buffer length
   OpenGl_VertexBufferEditor (theVec_t*              theTmpBuffer,
                              const Standard_Integer theTmpBufferLength)
   : myElemFrom (0),
     myElemsNb (0),
     myTmpBuffer (theTmpBuffer[0], 0, theTmpBufferLength - 1) {}
 
-  //! Initialize editor for specified VBO.
-  //! theGlCtx - bound OpenGL context to edit VBO
-  //! theVbo   - VBO to edit
-  Standard_Boolean Init (const Handle(OpenGl_Context)&      theGlCtx,
-                         const Handle(OpenGl_VertexBuffer)& theVbo)
+  //! Initialize editor for specified buffer object.
+  //! theGlCtx [in] bound OpenGL context to edit buffer object
+  //! theVbo   [in] buffer to edit
+  Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
+                         const Handle(OpenGl_Buffer)&  theVbo)
   {
     myGlCtx = theGlCtx;
     myVbo   = theVbo;
@@ -108,15 +108,12 @@ public:
   }
 
   //! @return assigned VBO
-  inline const Handle(OpenGl_VertexBuffer)& GetVBO() const
-  {
-    return myVbo;
-  }
+  const Handle(OpenGl_Buffer)& GetVBO() const { return myVbo; }
 
 private:
 
   Handle(OpenGl_Context)       myGlCtx;     //!< handle to current OpenGL context
-  Handle(OpenGl_VertexBuffer)  myVbo;       //!< edited VBO
+  Handle(OpenGl_Buffer)        myVbo;       //!< edited VBO
   Standard_Integer             myElemFrom;  //!< element in VBO to upload from
   Standard_Integer             myElemsNb;   //!< current element in temporary buffer
   NCollection_Array1<theVec_t> myTmpBuffer; //!< temporary array

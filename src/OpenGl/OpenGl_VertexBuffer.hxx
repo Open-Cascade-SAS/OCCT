@@ -15,26 +15,13 @@
 #ifndef _OpenGl_VertexBuffer_H__
 #define _OpenGl_VertexBuffer_H__
 
-#include <OpenGl_GlCore20.hxx>
-#include <OpenGl_Resource.hxx>
-#include <OpenGl_Context.hxx>
-#include <OpenGl_ShaderProgram.hxx>
-
-#include <Graphic3d_IndexBuffer.hxx>
+#include <OpenGl_Buffer.hxx>
+#include <Graphic3d_Buffer.hxx>
 
 //! Vertex Buffer Object - is a general storage object for vertex attributes (position, normal, color).
 //! Notice that you should use OpenGl_IndexBuffer specialization for array of indices.
-class OpenGl_VertexBuffer : public OpenGl_Resource
+class OpenGl_VertexBuffer : public OpenGl_Buffer
 {
-
-public:
-
-  //! Helpful constants
-  static const GLuint NO_BUFFER = 0;
-
-  //! Format VBO target enumeration value.
-  Standard_EXPORT static TCollection_AsciiString FormatTarget (GLenum theTarget);
-
 public:
 
   //! Create uninitialized VBO.
@@ -43,225 +30,16 @@ public:
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_VertexBuffer();
 
-  Standard_EXPORT virtual GLenum GetTarget() const;
-
-  //! Return TRUE if this is a virtual (for backward compatibility) VBO object.
-  virtual bool IsVirtual() const { return false; }
-
-  //! @return true if current object was initialized
-  inline bool IsValid() const
-  {
-    return myBufferId != NO_BUFFER;
-  }
-
-  //! @return the number of components per generic vertex attribute.
-  inline GLuint GetComponentsNb() const
-  {
-    return myComponentsNb;
-  }
-
-  //! @return number of vertex attributes / number of vertices specified within ::Init()
-  inline GLsizei GetElemsNb() const
-  {
-    return myElemsNb;
-  }
-
-  //! Overrides the number of vertex attributes / number of vertexes.
-  //! It is up to user specifying this number correct (e.g. below initial value)!
-  void SetElemsNb (GLsizei theNbElems) { myElemsNb = theNbElems; }
-
-  //! @return data type of each component in the array.
-  inline GLenum GetDataType() const
-  {
-    return myDataType;
-  }
-
-  //! @return offset to data, NULL by default
-  inline GLubyte* GetDataOffset() const
-  {
-    return myOffset;
-  }
-
-  //! Creates VBO name (id) if not yet generated.
-  //! Data should be initialized by another method.
-  Standard_EXPORT virtual bool Create (const Handle(OpenGl_Context)& theGlCtx);
-
-  //! Destroy object - will release GPU memory if any.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
-
-  //! Bind this VBO.
-  Standard_EXPORT virtual void Bind (const Handle(OpenGl_Context)& theGlCtx) const;
-
-  //! Unbind this VBO.
-  Standard_EXPORT virtual void Unbind (const Handle(OpenGl_Context)& theGlCtx) const;
-
-  //! Notice that VBO will be unbound after this call.
-  //! @param theComponentsNb - specifies the number of components per generic vertex attribute; must be 1, 2, 3, or 4;
-  //! @param theElemsNb      - elements count;
-  //! @param theData         - pointer to GLfloat data (vertices/normals etc.).
-  bool Init (const Handle(OpenGl_Context)& theGlCtx,
-             const GLuint   theComponentsNb,
-             const GLsizei  theElemsNb,
-             const GLfloat* theData)
-  {
-    return init (theGlCtx, theComponentsNb, theElemsNb, theData, GL_FLOAT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! @param theComponentsNb - specifies the number of components per generic vertex attribute; must be 1, 2, 3, or 4;
-  //! @param theElemsNb      - elements count;
-  //! @param theData         - pointer to GLuint data (indices etc.).
-  bool Init (const Handle(OpenGl_Context)& theGlCtx,
-             const GLuint  theComponentsNb,
-             const GLsizei theElemsNb,
-             const GLuint* theData)
-  {
-    return init (theGlCtx, theComponentsNb, theElemsNb, theData, GL_UNSIGNED_INT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! @param theComponentsNb - specifies the number of components per generic vertex attribute; must be 1, 2, 3, or 4;
-  //! @param theElemsNb      - elements count;
-  //! @param theData         - pointer to GLushort data (indices etc.).
-  bool Init (const Handle(OpenGl_Context)& theGlCtx,
-             const GLuint    theComponentsNb,
-             const GLsizei   theElemsNb,
-             const GLushort* theData)
-  {
-    return init (theGlCtx, theComponentsNb, theElemsNb, theData, GL_UNSIGNED_SHORT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! @param theComponentsNb - specifies the number of components per generic vertex attribute; must be 1, 2, 3, or 4;
-  //! @param theElemsNb      - elements count;
-  //! @param theData         - pointer to GLubyte data (indices/colors etc.).
-  bool Init (const Handle(OpenGl_Context)& theGlCtx,
-             const GLuint   theComponentsNb,
-             const GLsizei  theElemsNb,
-             const GLubyte* theData)
-  {
-    return init (theGlCtx, theComponentsNb, theElemsNb, theData, GL_UNSIGNED_BYTE);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! Function replaces portion of data within this VBO using glBufferSubData().
-  //! The VBO should be initialized before call.
-  //! @param theElemFrom - element id from which replace buffer data (>=0);
-  //! @param theElemsNb  - elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData     - pointer to GLfloat data.
-  bool SubData (const Handle(OpenGl_Context)& theGlCtx,
-                const GLsizei  theElemFrom,
-                const GLsizei  theElemsNb,
-                const GLfloat* theData)
-  {
-    return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_FLOAT);
-  }
-
-  //! Read back buffer sub-range.
-  //! Notice that VBO will be unbound after this call.
-  //! Function reads portion of data from this VBO using glGetBufferSubData().
-  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
-  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData    [out] destination pointer to GLfloat data.
-  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
-                   const GLsizei theElemFrom,
-                   const GLsizei theElemsNb,
-                   GLfloat* theData)
-  {
-    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_FLOAT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! Function replaces portion of data within this VBO using glBufferSubData().
-  //! The VBO should be initialized before call.
-  //! @param theElemFrom element id from which replace buffer data (>=0);
-  //! @param theElemsNb  elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData     pointer to GLuint data.
-  bool SubData (const Handle(OpenGl_Context)& theGlCtx,
-                const GLsizei theElemFrom,
-                const GLsizei theElemsNb,
-                const GLuint* theData)
-  {
-    return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_INT);
-  }
-
-  //! Read back buffer sub-range.
-  //! Notice that VBO will be unbound after this call.
-  //! Function reads portion of data from this VBO using glGetBufferSubData().
-  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
-  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData    [out] destination pointer to GLuint data.
-  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
-                   const GLsizei theElemFrom,
-                   const GLsizei theElemsNb,
-                   GLuint* theData)
-  {
-    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_INT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! Function replaces portion of data within this VBO using glBufferSubData().
-  //! The VBO should be initialized before call.
-  //! @param theElemFrom element id from which replace buffer data (>=0);
-  //! @param theElemsNb  elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData     pointer to GLushort data.
-  bool SubData (const Handle(OpenGl_Context)& theGlCtx,
-                const GLsizei   theElemFrom,
-                const GLsizei   theElemsNb,
-                const GLushort* theData)
-  {
-    return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_SHORT);
-  }
-
-  //! Read back buffer sub-range.
-  //! Notice that VBO will be unbound after this call.
-  //! Function reads portion of data from this VBO using glGetBufferSubData().
-  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
-  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData    [out] destination pointer to GLushort data.
-  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
-                   const GLsizei theElemFrom,
-                   const GLsizei theElemsNb,
-                   GLushort* theData)
-  {
-    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_SHORT);
-  }
-
-  //! Notice that VBO will be unbound after this call.
-  //! Function replaces portion of data within this VBO using glBufferSubData().
-  //! The VBO should be initialized before call.
-  //! @param theElemFrom element id from which replace buffer data (>=0);
-  //! @param theElemsNb  elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData     pointer to GLubyte data.
-  bool SubData (const Handle(OpenGl_Context)& theGlCtx,
-                const GLsizei  theElemFrom,
-                const GLsizei  theElemsNb,
-                const GLubyte* theData)
-  {
-    return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_BYTE);
-  }
-
-  //! Read back buffer sub-range.
-  //! Notice that VBO will be unbound after this call.
-  //! Function reads portion of data from this VBO using glGetBufferSubData().
-  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
-  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
-  //! @param theData    [out] destination pointer to GLubyte data.
-  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
-                   const GLsizei theElemFrom,
-                   const GLsizei theElemsNb,
-                   GLubyte* theData)
-  {
-    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_BYTE);
-  }
+  //! Return buffer target GL_ARRAY_BUFFER.
+  Standard_EXPORT virtual unsigned int GetTarget() const Standard_OVERRIDE;
 
   //! Bind this VBO to active GLSL program.
   Standard_EXPORT void BindVertexAttrib (const Handle(OpenGl_Context)& theGlCtx,
-                                         const GLuint                  theAttribLoc) const;
+                                         const unsigned int            theAttribLoc) const;
 
   //! Unbind any VBO from active GLSL program.
   Standard_EXPORT void UnbindVertexAttrib (const Handle(OpenGl_Context)& theGlCtx,
-                                           const GLuint                  theAttribLoc) const;
+                                           const unsigned int            theAttribLoc) const;
 
   //! Bind this VBO and enable specified attribute in OpenGl_Context::ActiveProgram() or FFP.
   //! @param theGlCtx - handle to bound GL context;
@@ -272,7 +50,7 @@ public:
     if (IsValid())
     {
       Bind (theCtx);
-      bindAttribute (theCtx, theMode, static_cast<GLint> (myComponentsNb), myDataType, 0, myOffset);
+      bindAttribute (theCtx, theMode, static_cast<int> (myComponentsNb), myDataType, 0, myOffset);
     }
   }
 
@@ -291,94 +69,33 @@ public:
 
 public: //! @name advanced methods
 
-  //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
-  virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE
-  {
-    return IsValid()
-         ? sizeOfGlType (myDataType) * myComponentsNb * myElemsNb
-         : 0;
-  }
-
-  //! @return size of specified GL type
-  static size_t sizeOfGlType (const GLenum theType)
-  {
-    switch (theType)
-    {
-      case GL_BYTE:
-      case GL_UNSIGNED_BYTE:  return sizeof(GLubyte);
-      case GL_SHORT:
-      case GL_UNSIGNED_SHORT: return sizeof(GLushort);
-    #ifdef GL_INT
-      case GL_INT:
-    #endif
-      case GL_UNSIGNED_INT:   return sizeof(GLuint);
-      case GL_FLOAT:          return sizeof(GLfloat);
-    #ifdef GL_DOUBLE
-      case GL_DOUBLE:         return sizeof(GLdouble);
-    #endif
-      default:                return 0;
-    }
-  }
-
-  //! Initialize buffer with new data.
-  Standard_EXPORT virtual bool init (const Handle(OpenGl_Context)& theGlCtx,
-                                     const GLuint   theComponentsNb,
-                                     const GLsizei  theElemsNb,
-                                     const void*    theData,
-                                     const GLenum   theDataType,
-                                     const GLsizei  theStride);
-
-  //! Initialize buffer with new data.
-  bool init (const Handle(OpenGl_Context)& theGlCtx,
-             const GLuint   theComponentsNb,
-             const GLsizei  theElemsNb,
-             const void*    theData,
-             const GLenum   theDataType)
-  {
-    return init (theGlCtx, theComponentsNb, theElemsNb, theData, theDataType, GLsizei(theComponentsNb) * GLsizei(sizeOfGlType (theDataType)));
-  }
-
-  //! Update part of the buffer with new data.
-  Standard_EXPORT virtual bool subData (const Handle(OpenGl_Context)& theGlCtx,
-                                        const GLsizei  theElemFrom,
-                                        const GLsizei  theElemsNb,
-                                        const void*    theData,
-                                        const GLenum   theDataType);
-
-  //! Read back buffer sub-range.
-  Standard_EXPORT virtual bool getSubData (const Handle(OpenGl_Context)& theGlCtx,
-                                           const GLsizei theElemFrom,
-                                           const GLsizei theElemsNb,
-                                           void*         theData,
-                                           const GLenum  theDataType);
-
   //! Setup array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
   //! or for FFP using bindFixed() when no program bound.
-  static void bindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
-                             const Graphic3d_TypeOfAttribute theMode,
-                             const GLint                     theNbComp,
-                             const GLenum                    theDataType,
-                             const GLsizei                   theStride,
-                             const GLvoid*                   theOffset);
+  Standard_EXPORT static void bindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
+                                             const Graphic3d_TypeOfAttribute theMode,
+                                             const Standard_Integer          theNbComp,
+                                             const unsigned int              theDataType,
+                                             const Standard_Integer          theStride,
+                                             const void*                     theOffset);
 
   //! Disable GLSL array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
   //! or for FFP using unbindFixed() when no program bound.
-  static void unbindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
-                               const Graphic3d_TypeOfAttribute theMode);
+  Standard_EXPORT static void unbindAttribute (const Handle(OpenGl_Context)&   theGlCtx,
+                                               const Graphic3d_TypeOfAttribute theMode);
 
 private:
 #if !defined(GL_ES_VERSION_2_0)
   //! Setup FFP array pointer.
-  static void bindFixed (const Handle(OpenGl_Context)&   theGlCtx,
-                         const Graphic3d_TypeOfAttribute theMode,
-                         const GLint                     theNbComp,
-                         const GLenum                    theDataType,
-                         const GLsizei                   theStride,
-                         const GLvoid*                   theOffset);
+  Standard_EXPORT static void bindFixed (const Handle(OpenGl_Context)&   theGlCtx,
+                                         const Graphic3d_TypeOfAttribute theMode,
+                                         const Standard_Integer          theNbComp,
+                                         const unsigned int              theDataType,
+                                         const Standard_Integer          theStride,
+                                         const void*                     theOffset);
 
   //! Disable FFP array pointer.
-  static void unbindFixed (const Handle(OpenGl_Context)&   theGlCtx,
-                           const Graphic3d_TypeOfAttribute theMode);
+  Standard_EXPORT static void unbindFixed (const Handle(OpenGl_Context)&   theGlCtx,
+                                           const Graphic3d_TypeOfAttribute theMode);
 
   //! Disable FFP color array pointer.
   Standard_EXPORT static void unbindFixedColor (const Handle(OpenGl_Context)& theCtx);
@@ -402,25 +119,12 @@ public: //! @name methods for interleaved attributes array
   //! Unbind all vertex attributes. Default implementation does nothing.
   Standard_EXPORT virtual void UnbindAllAttributes (const Handle(OpenGl_Context)& theGlCtx) const;
 
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
-
-protected:
-
-  GLubyte* myOffset;       //!< offset to data
-  GLuint   myBufferId;     //!< VBO name (index)
-  GLuint   myComponentsNb; //!< Number of components per generic vertex attribute, must be 1, 2, 3, or 4
-  GLsizei  myElemsNb;      //!< Number of vertex attributes / number of vertices
-  GLenum   myDataType;     //!< Data type (GL_FLOAT, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE etc.)
-
 public:
 
-  DEFINE_STANDARD_RTTIEXT(OpenGl_VertexBuffer,OpenGl_Resource) // Type definition
+  DEFINE_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Buffer)
 
 };
 
-DEFINE_STANDARD_HANDLE(OpenGl_VertexBuffer, OpenGl_Resource)
-
-#include <OpenGl_VertexBuffer.lxx>
+DEFINE_STANDARD_HANDLE(OpenGl_VertexBuffer, OpenGl_Buffer)
 
 #endif // _OpenGl_VertexBuffer_H__

@@ -15,7 +15,6 @@
 
 #include <OpenGl_Workspace.hxx>
 
-#include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
@@ -386,7 +385,7 @@ Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate (const Standard_Integer t
   const Handle(OpenGl_Context)& aCtx = GetGlContext();
   aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
   Handle(OpenGl_FrameBuffer) aFrameBuffer = new OpenGl_FrameBuffer();
-  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_SRGB8_ALPHA8, GL_DEPTH24_STENCIL8, 0))
+  if (!aFrameBuffer->Init (aCtx, Graphic3d_Vec2i (theWidth, theHeight), GL_SRGB8_ALPHA8, GL_DEPTH24_STENCIL8, 0))
   {
     aFrameBuffer->Release (aCtx.operator->());
     return Handle(OpenGl_FrameBuffer)();

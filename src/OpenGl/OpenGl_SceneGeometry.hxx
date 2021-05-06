@@ -20,7 +20,6 @@
 #include <BVH_Triangulation.hxx>
 #include <BVH_BinnedBuilder.hxx>
 #include <NCollection_StdAllocator.hxx>
-#include <OpenGl_TextureBufferArb.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Sampler.hxx>
 
