@@ -1,0 +1,29 @@
+puts "======================================================="
+puts "	0032291: General Fuse produces wrong number of solids"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug32291.brep] s
+
+explode s
+baddobjects s_1
+baddtools s_2 s_3 s_4 s_5 s_6 s_7 s_8
+bfillds
+bbuild result
+
+checkshape result
+
+checknbshapes result -vertex 79 -edge 176 -wire 112 -face 112 -shell 18 -solid 18
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 7.e-5} {
+   puts "Error: bad tolerance of result"
+}
+
+axo
+clear
+explode result So
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
