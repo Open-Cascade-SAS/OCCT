@@ -332,23 +332,19 @@ For more details, see @ref occt_user_guides__test_harness "Draw Test Harness Man
 
 @section intro_req Requirements
 
-Open CASCADE Technology is designed to be highly portable and is known to 
-work on wide range of platforms. 
-Current version is officially certified on Windows (IA-32 and x86-64), 
-Linux (x86-64), OS X / macOS (x86-64), Android (armv7 and x86), and 
-iOS (armv7, arm64) platforms. 
+Open CASCADE Technology is designed to be highly portable and is known to work on wide range of platforms.
+Current version is officially certified on Windows (x86-64), Linux (x86-64), OS X / macOS (x86-64, arm64), Android (arm64), and iOS (arm64) platforms.
 
-The tables below describe the recommended software configurations
-for which OCCT is certified to work.
+The tables below describe the recommended software configurations for which OCCT is certified to work.
 
 @subsection intro_req_cpp C++ Compiler / IDE
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2008 SP1, 2010 SP1, 2012 Update 4, 2013 Update 5, 2015 Update 3, 2017 <sup>1</sup>, 2019 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
+| Windows   | Microsoft Visual Studio: 2010 SP1, 2012 Update 4, 2013 Update 5, 2015 Update 3, 2017 <sup>1</sup>, 2019 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X / macOS | XCode 6 or newer |
-| Android   | NDK r10, GNU gcc 4.8 or newer |
+| Android   | NDK r12, GNU gcc 4.9 or newer |
 | Web       | Emscripten SDK 1.39 or newer (CLang) |
 
 1) VC++ 141 64-bit is used for regular testing and for building binary package of official release of OCCT on Windows.
@@ -368,8 +364,8 @@ https://www.opencascade.com/content/3rd-party-components
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | Optional (VR support) |
 | Direct3D 9 | Windows | Visualization | Optional (integration with GUI using Direct3D) |
-| FreeType 2.4.11-2.7.1 | https://sourceforge.net/projects/freetype/files/ | Visualization | Required |
-| FreeImage 3.17.0+ | https://sourceforge.net/projects/freeimage/files | Visualization | Optional (support of common 2D graphic formats) |
+| FreeType 2.4+ | https://www.freetype.org/download.html | Visualization | Optional (text rendering) |
+| FreeImage 3.17+ | https://sourceforge.net/projects/freeimage/files | Visualization | Optional (support of common 2D graphic formats) |
 | FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Optional (video recording) |
 | VTK 6.1+ | https://www.vtk.org/download/ | Visualization | Optional (VTK integration) |
 | Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Optional (update of STEP and ExprIntrp parsers) |
