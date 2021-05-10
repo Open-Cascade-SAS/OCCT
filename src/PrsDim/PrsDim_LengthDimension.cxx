@@ -29,6 +29,7 @@
 #include <gce_MakePln.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ExtremaSurfaceSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
@@ -36,6 +37,17 @@
 #include <TopExp_Explorer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_LengthDimension, PrsDim_Dimension)
+
+//=======================================================================
+//function : Constructor
+//purpose  :
+//=======================================================================
+PrsDim_LengthDimension::PrsDim_LengthDimension()
+: PrsDim_Dimension (PrsDim_KOD_LENGTH),
+  myHasCustomDirection (Standard_False)
+{
+  SetFlyout (15.0);
+}
 
 //=======================================================================
 //function : Constructor
@@ -354,28 +366,10 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength (const TopoDS_Edge& 
                                                              const TopoDS_Edge& theSecondEdge,
                                                              gp_Dir& theDirAttach)
 {
-  BRepAdaptor_Curve aFirstCurveAdapt (theFirstEdge);
-  if (aFirstCurveAdapt.GetType() != GeomAbs_Line)
-  {
-    return Standard_False;
-  }
-
-  BRepAdaptor_Curve aSecondCurveAdapt (theSecondEdge);
-  if (aSecondCurveAdapt.GetType() != GeomAbs_Line)
-  {
-    return Standard_False;
-  }
-
-  Handle(Geom_Curve) aFirstCurve;
-  Handle(Geom_Curve) aSecondCurve;
-
-  gp_Pnt aPoint11 (gp::Origin());
-  gp_Pnt aPoint12 (gp::Origin());
-  gp_Pnt aPoint21 (gp::Origin());
-  gp_Pnt aPoint22 (gp::Origin());
+  Handle(Geom_Curve) aFirstCurve, aSecondCurve;
+  gp_Pnt aPoint11, aPoint12, aPoint21, aPoint22;
   Standard_Boolean isFirstInfinite  = Standard_False;
   Standard_Boolean isSecondInfinite = Standard_False;
-
   if (!PrsDim::ComputeGeometry (theFirstEdge, theSecondEdge,
                                 aFirstCurve, aSecondCurve,
                                 aPoint11, aPoint12,
@@ -388,51 +382,79 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoEdgesLength (const TopoDS_Edge& 
 
   const Handle(Geom_Line) aFirstLine = Handle(Geom_Line)::DownCast (aFirstCurve);
   const Handle(Geom_Line) aSecondLine = Handle(Geom_Line)::DownCast (aSecondCurve);
-
-  if (!aFirstLine->Lin().Direction().IsParallel (aSecondLine->Lin().Direction(),Precision::Angular()))
+  if (!aFirstLine.IsNull()
+   && !aSecondLine.IsNull())
   {
-    return Standard_False;
-  }
-
-  theDirAttach = aFirstLine->Lin().Direction();
-
-  gp_Pnt aPoint;
-
-  if (!isFirstInfinite)
-  {
-    if (PrsDim::Nearest (aSecondCurve, aPoint11, aPoint21, aPoint22, aPoint))
+    if (!aFirstLine->Lin().Direction().IsParallel (aSecondLine->Lin().Direction(), Precision::Angular()))
     {
-      myFirstPoint = aPoint11;
-      mySecondPoint = aPoint;
-      return IsValidPoints (myFirstPoint, mySecondPoint);
+      return Standard_False;
     }
-    else if (PrsDim::Nearest (aSecondCurve, aPoint12, aPoint21, aPoint22, aPoint))
-    {
-      myFirstPoint = aPoint12;
-      mySecondPoint = aPoint;
-      return IsValidPoints (myFirstPoint, mySecondPoint);
-    }
-  }
 
-  if (!isSecondInfinite)
-  {
-    if (PrsDim::Nearest (aFirstCurve, aPoint21, aPoint11, aPoint12, aPoint))
+    theDirAttach = aFirstLine->Lin().Direction();
+
+    gp_Pnt aPoint;
+    if (!isFirstInfinite)
     {
-      myFirstPoint = aPoint;
-      mySecondPoint = aPoint21;
-      return IsValidPoints (myFirstPoint, mySecondPoint);
+      if (PrsDim::Nearest (aSecondCurve, aPoint11, aPoint21, aPoint22, aPoint))
+      {
+        myFirstPoint = aPoint11;
+        mySecondPoint = aPoint;
+        return IsValidPoints (myFirstPoint, mySecondPoint);
+      }
+      else if (PrsDim::Nearest (aSecondCurve, aPoint12, aPoint21, aPoint22, aPoint))
+      {
+        myFirstPoint = aPoint12;
+        mySecondPoint = aPoint;
+        return IsValidPoints (myFirstPoint, mySecondPoint);
+      }
     }
-    if (PrsDim::Nearest (aFirstCurve, aPoint22, aPoint11, aPoint12, aPoint))
+
+    if (!isSecondInfinite)
     {
-      myFirstPoint = aPoint;
-      mySecondPoint = aPoint22;
-      return IsValidPoints (myFirstPoint, mySecondPoint);
+      if (PrsDim::Nearest (aFirstCurve, aPoint21, aPoint11, aPoint12, aPoint))
+      {
+        myFirstPoint = aPoint;
+        mySecondPoint = aPoint21;
+        return IsValidPoints (myFirstPoint, mySecondPoint);
+      }
+      if (PrsDim::Nearest (aFirstCurve, aPoint22, aPoint11, aPoint12, aPoint))
+      {
+        myFirstPoint = aPoint;
+        mySecondPoint = aPoint22;
+        return IsValidPoints (myFirstPoint, mySecondPoint);
+      }
     }
   }
 
   GeomAPI_ExtremaCurveCurve anExtrema (aFirstCurve, aSecondCurve);
+  if (anExtrema.NbExtrema() == 0)
+  {
+    return false;
+  }
+
   anExtrema.NearestPoints (myFirstPoint, mySecondPoint);
-  return IsValidPoints (myFirstPoint, mySecondPoint);
+  if (!IsValidPoints (myFirstPoint, mySecondPoint))
+  {
+    return false;
+  }
+
+  if (aFirstLine.IsNull()
+   || aSecondLine.IsNull())
+  {
+    Standard_Real aParam1 = 0.0, aParam2 = 0.0;
+    anExtrema.LowerDistanceParameters (aParam1, aParam2);
+    BRepAdaptor_Curve aCurveAdaptor (theFirstEdge);
+    gp_Pnt aPoint;
+    gp_Vec aDir;
+    aCurveAdaptor.D1 (aParam1, aPoint, aDir);
+    if (aDir.SquareMagnitude() <= gp::Resolution())
+    {
+      return false;
+    }
+
+    theDirAttach = aDir;
+  }
+  return true;
 }
 
 //=======================================================================
@@ -444,10 +466,8 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeVertexLength (const TopoDS_Edge
                                                                gp_Dir& theEdgeDir,
                                                                Standard_Boolean isInfinite)
 {
-  gp_Pnt anEdgePoint1 (gp::Origin());
-  gp_Pnt anEdgePoint2 (gp::Origin());
+  gp_Pnt anEdgePoint1, anEdgePoint2;
   Handle(Geom_Curve) aCurve;
-
   if (!PrsDim::ComputeGeometry (theEdge, aCurve, anEdgePoint1, anEdgePoint2, isInfinite))
   {
     return Standard_False;
@@ -455,15 +475,39 @@ Standard_Boolean PrsDim_LengthDimension::InitEdgeVertexLength (const TopoDS_Edge
 
   myFirstPoint = BRep_Tool::Pnt (theVertex);
 
-  Handle(Geom_Line) aGeomLine (Handle(Geom_Line)::DownCast (aCurve));
-  const gp_Lin& aLin = aGeomLine->Lin();
+  if (Handle(Geom_Line) aGeomLine = Handle(Geom_Line)::DownCast (aCurve))
+  {
+    const gp_Lin aLin = aGeomLine->Lin();
 
-  // Get direction of edge to build plane automatically.
-  theEdgeDir = aLin.Direction();
+    // Get direction of edge to build plane automatically.
+    theEdgeDir = aLin.Direction();
 
-  mySecondPoint = PrsDim::Nearest (aLin, myFirstPoint);
+    mySecondPoint = PrsDim::Nearest (aLin, myFirstPoint);
+    return IsValidPoints (myFirstPoint, mySecondPoint);
+  }
 
-  return IsValidPoints (myFirstPoint, mySecondPoint);
+  GeomAPI_ProjectPointOnCurve anExtrema (myFirstPoint, aCurve);
+  if (anExtrema.NbPoints() == 0)
+  {
+    return false;
+  }
+
+  mySecondPoint = anExtrema.NearestPoint();
+  if (!IsValidPoints (myFirstPoint, mySecondPoint))
+  {
+    return false;
+  }
+
+  BRepAdaptor_Curve aCurveAdaptor (theEdge);
+  gp_Pnt aPoint;
+  gp_Vec aDir;
+  aCurveAdaptor.D1 (anExtrema.LowerDistanceParameter(), aPoint, aDir);
+  if (aDir.SquareMagnitude() <= gp::Resolution())
+  {
+    return false;
+  }
+  theEdgeDir = aDir;
+  return true;
 }
 
 //=======================================================================

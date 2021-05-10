@@ -770,26 +770,9 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         }
 
         // Face-Face case
-        if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_FACE)
+        Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension();
+        if (isPlaneCustom)
         {
-          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape1), TopoDS::Face (aShape2));
-        }
-        else if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_EDGE)
-        {
-          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape1), TopoDS::Edge (aShape2));
-        }
-        else if (aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_FACE)
-        {
-          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape2), TopoDS::Edge (aShape1));
-        }
-        else
-        {
-          if (!isPlaneCustom)
-          {
-            Message::SendFail ("Error: can not build dimension without working plane.");
-            return 1;
-          }
-          // Vertex-Vertex case
           if (aShape1.ShapeType() == TopAbs_VERTEX)
           {
             aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape1)));
@@ -798,9 +781,16 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
           {
             aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape2)));
           }
-
-          aDim = new PrsDim_LengthDimension (aShape1, aShape2, aWorkingPlane);
+          aLenDim->SetCustomPlane (aWorkingPlane);
         }
+        else if (aShape1.ShapeType() == TopAbs_VERTEX
+              && aShape2.ShapeType() == TopAbs_VERTEX)
+        {
+          Message::SendFail ("Error: can not build dimension without working plane");
+          return 1;
+        }
+        aLenDim->SetMeasuredShapes (aShape1, aShape2);
+        aDim = aLenDim;
       }
       else
       {

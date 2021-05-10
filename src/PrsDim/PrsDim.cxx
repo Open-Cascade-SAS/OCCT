@@ -233,21 +233,15 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theEdge,
                                           gp_Pnt& theLastPnt,
                                           Standard_Boolean& theIsInfinite)
 {
-  Standard_Real aFirst, aLast;
-
   BRepAdaptor_Curve anAdaptor (theEdge);
-
-  theCurve = Handle(Geom_Curve)::DownCast
-    (anAdaptor.Curve().Curve()->Transformed (anAdaptor.Trsf()));
-
+  theCurve = Handle(Geom_Curve)::DownCast (anAdaptor.Curve().Curve()->Transformed (anAdaptor.Trsf()));
   if (theCurve.IsNull())
   {
     return Standard_False;
   }
 
-  aFirst = anAdaptor.FirstParameter();
-  aLast = anAdaptor.LastParameter();
-
+  const Standard_Real aFirst = anAdaptor.FirstParameter();
+  const Standard_Real aLast  = anAdaptor.LastParameter();
   theIsInfinite = (Precision::IsInfinite (aFirst) || Precision::IsInfinite (aLast));
 
   if (theCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
@@ -288,18 +282,16 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theEdge,
     return Standard_False;
   }
 
-  Standard_Real aFirst, aLast;
   BRepAdaptor_Curve aCurveAdaptor (theEdge);
   theCurve = Handle(Geom_Curve)::DownCast (aCurveAdaptor.Curve().Curve()->Transformed (aCurveAdaptor.Trsf()));
-  aFirst = aCurveAdaptor.FirstParameter();
-  aLast = aCurveAdaptor.LastParameter();
-
   if (theCurve.IsNull())
   {
     return Standard_False;
   }
   
   theExtCurve = theCurve;
+  const Standard_Real aFirst = aCurveAdaptor.FirstParameter();
+  const Standard_Real aLast  = aCurveAdaptor.LastParameter();
   theIsInfinite = (Precision::IsInfinite (aFirst) || Precision::IsInfinite (aLast));
 
   // Checks that the projected curve is not in the plane.
@@ -309,17 +301,14 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theEdge,
     theExtCurve = Handle(Geom_TrimmedCurve)::DownCast (theExtCurve)->BasisCurve();
   }
 
-  if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+  if (Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theExtCurve))
   {
-    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theExtCurve);
     theIsOnPlane = thePlane->Pln().Contains (aLine->Lin(),
                                              Precision::Confusion(),
                                              Precision::Angular());
   }
-  else if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  else if (Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast (theExtCurve))
   {
-    Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast (theExtCurve);
-
     gp_Ax3 aCircPos (aCircle->Position());
     theIsOnPlane = aCircPos.IsCoplanar (thePlane->Pln().Position(),
                                                 Precision::Confusion(),
@@ -335,29 +324,24 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theEdge,
                                           thePlane->Pln().Axis().Direction(),
                                           Standard_False);
 
-  if (theCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+  if (Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theCurve))
   {
-    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theCurve);
     if (!theIsInfinite)
     {
       theFirstPnt = ElCLib::Value (aFirst, aLine->Lin());
       theLastPnt = ElCLib::Value (aLast, aLine->Lin());
     }
   }
-  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  else if (Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theCurve))
   {
-    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theCurve);
-
     theFirstPnt = ElCLib::Value (aFirst, aCirc->Circ());
     theLastPnt = ElCLib::Value (aLast, aCirc->Circ());
   }
-  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Ellipse)))
-    {
-      Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast (theCurve);
-
-      theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
-      theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
-    }
+  else if (Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast (theCurve))
+  {
+    theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
+    theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
+  }
   else
   {
     return Standard_False;
@@ -390,13 +374,8 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
   
   theFirstCurve = BRep_Tool::Curve (theFirstEdge, aFirstEdgeLoc, aFirst1, aLast1);
   theSecondCurve = BRep_Tool::Curve (theSecondEdge, aSecondEdgeLoc, aFirst2, aLast2);
-
-  if (theFirstCurve.IsNull())
-  {
-    return Standard_False;
-  }
-    
-  if (theSecondCurve.IsNull())
+  if (theFirstCurve.IsNull()
+   || theSecondCurve.IsNull())
   {
     return Standard_False;
   }
@@ -417,33 +396,25 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
                                                thePlane->Pln().Axis().Direction(),
                                                Standard_False);
 
-
   theSecondCurve = GeomProjLib::ProjectOnPlane (theSecondCurve, thePlane,
                                                 thePlane->Pln().Axis().Direction(),
                                                 Standard_False);
-
-
   if (theFirstCurve->IsInstance (STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     theFirstCurve = Handle(Geom_TrimmedCurve)::DownCast (theFirstCurve)->BasisCurve();
   }
-    
   if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
   {
     theSecondCurve = Handle(Geom_TrimmedCurve)::DownCast (theSecondCurve)->BasisCurve();
   }
 
-  if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Line)))
+  if (Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theFirstCurve))
   {
-    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theFirstCurve);
-
     theFirstPnt1 = ElCLib::Value (aFirst1, aLine->Lin());
     theLastPnt1 = ElCLib::Value (aLast1, aLine->Lin());
   }
-  else if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Circle)))
+  else if (Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theFirstCurve))
   {
-    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theFirstCurve);
-      
     theFirstPnt1 = ElCLib::Value (aFirst1, aCirc->Circ());
     theLastPnt1 = ElCLib::Value (aLast1, aCirc->Circ());
   }
@@ -452,17 +423,13 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
     return Standard_False;
   }
 
-  if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
-{
-    Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theSecondCurve);
-
+  if (Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (theSecondCurve))
+  {
     theFirstPnt2 = ElCLib::Value (aFirst2, aLine->Lin());
     theLastPnt2 = ElCLib::Value (aLast2, aLine->Lin());
   }
-  else if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  else if (Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theSecondCurve))
   {
-    Handle(Geom_Circle) aCirc = Handle(Geom_Circle)::DownCast (theSecondCurve);
-
     theFirstPnt2 = ElCLib::Value (aFirst2, aCirc->Circ());
     theLastPnt2 = ElCLib::Value (aLast2, aCirc->Circ());
   }
@@ -489,62 +456,60 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
                                           Standard_Boolean& theIsInfinite1,
                                           Standard_Boolean& theIsInfinite2)
 {
-    theIsInfinite1 = theIsInfinite2 = Standard_False;
-
-   if (!PrsDim::ComputeGeometry (theFirstEdge, theFirstCurve,theFirstPnt1, theLastPnt1, theIsInfinite1))
-   {
-     return Standard_False;
-   }
-
-   if (!PrsDim::ComputeGeometry (theSecondEdge, theSecondCurve,theFirstPnt2, theLastPnt2, theIsInfinite2))
-   {
-     return Standard_False;
-   }
+  theIsInfinite1 = theIsInfinite2 = Standard_False;
+  if (!PrsDim::ComputeGeometry (theFirstEdge, theFirstCurve, theFirstPnt1, theLastPnt1, theIsInfinite1))
+  {
+    return Standard_False;
+  }
+  if (!PrsDim::ComputeGeometry (theSecondEdge, theSecondCurve, theFirstPnt2, theLastPnt2, theIsInfinite2))
+  {
+    return Standard_False;
+  }
 
   if (theIsInfinite1 || theIsInfinite2)
   {
-      if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
+    if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType()
+     && theFirstCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+    {
+      gp_Lin aLin1 = Handle(Geom_Line)::DownCast (theFirstCurve)->Lin();
+      gp_Lin aLin2 = Handle(Geom_Line)::DownCast (theSecondCurve)->Lin();
+      if (theIsInfinite1)
       {
-          gp_Lin aLin1 = Handle(Geom_Line)::DownCast (theFirstCurve)->Lin();
-          gp_Lin aLin2 = Handle(Geom_Line)::DownCast (theSecondCurve)->Lin();
+        theFirstPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theFirstPnt2), aLin1);
+        theLastPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theLastPnt2), aLin1);
+      }
+      else if (theIsInfinite2)
+      {
+        theFirstPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theFirstPnt1), aLin2);
+        theLastPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theLastPnt1), aLin2);
+      }
+    }
+    else
+    {
+      if (theIsInfinite1 && !theIsInfinite2)
+      {
+        GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt2, theFirstCurve);
+        theFirstPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter());
 
-          if (theIsInfinite1)
-          {
-              theFirstPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theFirstPnt2), aLin1);
-              theLastPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theLastPnt2), aLin1);
-          }
-          else if (theIsInfinite2)
-          {
-              theFirstPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theFirstPnt1), aLin2);
-              theLastPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theLastPnt1), aLin2);
-          }
+        aProjector.Init (theLastPnt2, theFirstCurve);
+        theLastPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter());
+      }
+      else if (!theIsInfinite1 && theIsInfinite2)
+      {
+        GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt1, theSecondCurve);
+        theFirstPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter());
+
+        aProjector.Init (theLastPnt1, theSecondCurve);
+        theLastPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter());
       }
       else
       {
-        if (theIsInfinite1 && !theIsInfinite2)
-        {
-          GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt2, theFirstCurve);
-          theFirstPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter ());
-
-          aProjector.Init (theLastPnt2, theFirstCurve);
-          theLastPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter ());
-        }
-        else if (!theIsInfinite1 && theIsInfinite2)
-        {
-          GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt1, theSecondCurve);
-          theFirstPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter ());
-
-          aProjector.Init (theLastPnt1, theSecondCurve);
-          theLastPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter ());
-        }
-        else
-        {
-          return Standard_False;
-        }
+        return Standard_False;
       }
+    }
   }
 
-    return Standard_True;
+  return Standard_True;
 }
 
 //=======================================================================
@@ -553,7 +518,7 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
 //           and the 'right' geometry of the edges if one doesn't
 //           belong to the current working plane.
 //           There may be only one curve that can't belong to the
-//           current working plane ( attachement constraint)
+//           current working plane (attachment constraint)
 //           if the 2 edges belong to the current WP, <WhatProj> = 0
 //
 //           indexExt = 0 2 edges are in the current wp
@@ -619,7 +584,7 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
   Handle(Geom_Curve) aSecondSaved = theSecondCurve;
 
   // Checks that the projected curve is not in the plane
-  Standard_Boolean isFirstOnPlane,isSecondOnPlane;
+  Standard_Boolean isFirstOnPlane, isSecondOnPlane;
 
   if ((!ComputeGeomCurve (theFirstCurve, aFirst1, aLast1, theFirstPnt1, theLastPnt1, thePlane, isFirstOnPlane))
       || (!ComputeGeomCurve( theSecondCurve, aFirst2, aLast2, theFirstPnt2, theLastPnt2, thePlane,isSecondOnPlane)))
@@ -644,7 +609,8 @@ Standard_Boolean PrsDim::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
 
   if (theIsInfinite1 || theIsInfinite2)
   {
-    if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
+    if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType()
+     && theFirstCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
     {
       gp_Lin aLin1 = Handle(Geom_Line)::DownCast (theFirstCurve)->Lin();
       gp_Lin aLin2 = Handle(Geom_Line)::DownCast (theSecondCurve)->Lin();

@@ -11,7 +11,7 @@ vclear
 vaxo
 explode b F
 vdisplay b_1 b_2
-vdimension len -length -shapes b_1 b_2 -plane zox
+vdimension len -length -shapes b_1 b_2
 vfit
 
 vdump ${imagedir}/${casename}.png
