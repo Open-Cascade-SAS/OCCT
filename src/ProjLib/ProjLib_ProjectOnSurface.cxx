@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ProjLib_ProjectOnSurface.hxx>
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
@@ -26,7 +27,6 @@
 #include <Geom_BSplineCurve.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
-#include <ProjLib_ProjectOnSurface.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -154,9 +154,8 @@ myIsDone(Standard_False)
 
 //=======================================================================
 //function : ProjLib_ProjectOnSurface
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface
 (const Handle(Adaptor3d_Surface)& S ) :
 myTolerance(0.0),
@@ -165,6 +164,20 @@ myIsDone(Standard_False)
   mySurface = S;
 }
 
+//=======================================================================
+//function : Load
+//purpose  :
+//=======================================================================
+void ProjLib_ProjectOnSurface::Load (const Handle(Adaptor3d_Surface)& S)
+{
+  mySurface = S;
+  myIsDone = Standard_False;
+}
+
+//=======================================================================
+//function : Load
+//purpose  :
+//=======================================================================
 void ProjLib_ProjectOnSurface::Load(const Handle(Adaptor3d_Curve)& C,
 				    const Standard_Real  Tolerance) 
 {
@@ -267,14 +280,4 @@ Handle(Geom_BSplineCurve) ProjLib_ProjectOnSurface::BSpline() const
     (!myIsDone,
      "ProjLib_ProjectOnSurface:BSpline");
   return myResult ;
-}
-
-//=======================================================================
-//function : IsDone
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean ProjLib_ProjectOnSurface::IsDone() const 
-{
-  return myIsDone;
 }
