@@ -447,12 +447,12 @@ private:
 
   //! Find the smallest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext (const Standard_Address theNode,
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
                                                                        unsigned int& theMask);
 
   //! Find the highest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev (const Standard_Address theNode,
+  Standard_EXPORT static Standard_Integer TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
                                                                        unsigned int& theMask);
 
   //! Compute the population (i.e., the number of non-zero bits) of the 32-bit word theData.

@@ -23,8 +23,8 @@
 //function : TColStd_intMapNode_findNext
 //purpose  :
 //=======================================================================
-Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const Standard_Address theNode,
-                                                                          unsigned int&          theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
+                                                                          unsigned int& theMask)
 {
   const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*> (theNode);
   unsigned int val = aNode->Data() & theMask;
@@ -66,8 +66,8 @@ Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findNext (const 
 //function : TColStd_intMapNode_findPrev
 //purpose  :
 //=======================================================================
-Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const Standard_Address theNode,
-                                                                          unsigned int&          theMask)
+Standard_Integer TColStd_PackedMapOfInteger::TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
+                                                                          unsigned int& theMask)
 {
   const TColStd_intMapNode* aNode = reinterpret_cast<const TColStd_intMapNode*> (theNode);
   unsigned int val = aNode->Data() & theMask;
@@ -344,7 +344,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMinimalMapped () const
   if (pFoundNode)
   {
     unsigned int aFullMask (0xffffffff);
-    aResult = TColStd_intMapNode_findNext ((const Standard_Address )pFoundNode, aFullMask);
+    aResult = TColStd_intMapNode_findNext (pFoundNode, aFullMask);
   }
   return aResult;
 }
@@ -378,7 +378,7 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMaximalMapped () const
   if (pFoundNode)
   {
     unsigned int aFullMask (0xffffffff);
-    aResult = TColStd_intMapNode_findPrev ((const Standard_Address )pFoundNode, aFullMask);
+    aResult = TColStd_intMapNode_findPrev (pFoundNode, aFullMask);
   }
   return aResult;
 }
