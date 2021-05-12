@@ -49,48 +49,48 @@ public:
 public:
 
   //! Intersection test between defined axis and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                     const SelectMgr_Vec3& theBoxMax,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                        const SelectMgr_Vec3& theBoxMax,
+                                                        const SelectMgr_ViewClipRange& theClipRange,
+                                                        SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting axis intersects axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                     const SelectMgr_Vec3& theBoxMax,
-                                                     Standard_Boolean*     theInside) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                        const SelectMgr_Vec3& theBoxMax,
+                                                        Standard_Boolean*     theInside) const Standard_OVERRIDE;
 
   //! Intersection test between defined axis and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
+                                                          const SelectMgr_ViewClipRange& theClipRange,
+                                                          SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined axis and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const Standard_OVERRIDE;
 
   //! Intersection test between defined axis and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                     Select3D_TypeOfSensitivity theSensType,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                            Select3D_TypeOfSensitivity theSensType,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if selecting axis intersects line segment
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                     const gp_Pnt& thePnt2,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
+                                                            const gp_Pnt& thePnt2,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined axis and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                     const gp_Pnt& thePnt2,
-                                                     const gp_Pnt& thePnt3,
-                                                     Select3D_TypeOfSensitivity theSensType,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                             const gp_Pnt& thePnt2,
+                                                             const gp_Pnt& thePnt3,
+                                                             Select3D_TypeOfSensitivity theSensType,
+                                                             const SelectMgr_ViewClipRange& theClipRange,
+                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
 public:
 

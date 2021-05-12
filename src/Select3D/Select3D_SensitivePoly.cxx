@@ -237,7 +237,7 @@ Standard_Boolean Select3D_SensitivePoly::overlapsElement (SelectBasics_PickResul
   const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theElemIdx);
   gp_Pnt aPnt1 = myPolyg.Pnt3d (aSegmentIdx);
   gp_Pnt aPnt2 = myPolyg.Pnt3d (aSegmentIdx + 1);
-  return theMgr.Overlaps (aPnt1, aPnt2, thePickResult);
+  return theMgr.OverlapsSegment (aPnt1, aPnt2, thePickResult);
 }
 
 //==================================================
@@ -257,10 +257,10 @@ Standard_Boolean Select3D_SensitivePoly::elementIsInside (SelectBasics_Selecting
   if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
   {
     SelectBasics_PickResult aDummy;
-    return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0), myPolyg.Pnt3d (aSegmentIdx + 1), aDummy);
+    return theMgr.OverlapsSegment (myPolyg.Pnt3d (aSegmentIdx + 0), myPolyg.Pnt3d (aSegmentIdx + 1), aDummy);
   }
-  return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0))
-      && theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 1));
+  return theMgr.OverlapsPoint (myPolyg.Pnt3d (aSegmentIdx + 0))
+      && theMgr.OverlapsPoint (myPolyg.Pnt3d (aSegmentIdx + 1));
 }
 
 //==================================================

@@ -171,20 +171,20 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransf
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                           const SelectMgr_Vec3& theMaxPnt,
-                                                           const SelectMgr_ViewClipRange& theClipRange,
-                                                           SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox (const SelectMgr_Vec3& theMinPnt,
+                                                              const SelectMgr_Vec3& theMaxPnt,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsBox (theMinPnt, theMaxPnt, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -192,19 +192,19 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                           const SelectMgr_Vec3& theMaxPnt,
-                                                           Standard_Boolean* theInside) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsBox (const SelectMgr_Vec3& theMinPnt,
+                                                              const SelectMgr_Vec3& theMaxPnt,
+                                                              Standard_Boolean* theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, NULL))
+    if (anIter.Value()->OverlapsBox (theMinPnt, theMaxPnt, NULL))
     {
       if (myToAllowOverlap || theInside == NULL)
       {
@@ -243,19 +243,19 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
-                                                           const SelectMgr_ViewClipRange& theClipRange,
-                                                           SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPoint (const gp_Pnt& thePnt,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsPoint (thePnt, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -263,20 +263,20 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
-                                                           Select3D_TypeOfSensitivity theSensType,
-                                                           const SelectMgr_ViewClipRange& theClipRange,
-                                                           SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPts,
+                                                                  Select3D_TypeOfSensitivity theSensType,
+                                                                  const SelectMgr_ViewClipRange& theClipRange,
+                                                                  SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theArrayOfPts, theSensType, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsPolygon (theArrayOfPts, theSensType, theClipRange, thePickResult))
     {
       if (myToAllowOverlap)
       {
@@ -302,20 +302,20 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1Of
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsSegment
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1,
-                                                           const gp_Pnt& thePnt2,
-                                                           const SelectMgr_ViewClipRange& theClipRange,
-                                                           SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSegment (const gp_Pnt& thePnt1,
+                                                                  const gp_Pnt& thePnt2,
+                                                                  const SelectMgr_ViewClipRange& theClipRange,
+                                                                  SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt1, thePnt2, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsSegment (thePnt1, thePnt2, theClipRange, thePickResult))
     {
       if (myToAllowOverlap)
       {
@@ -336,22 +336,22 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsTriangle
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1,
-                                                           const gp_Pnt& thePnt2,
-                                                           const gp_Pnt& thePnt3,
-                                                           Select3D_TypeOfSensitivity theSensType,
-                                                           const SelectMgr_ViewClipRange& theClipRange,
-                                                           SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                                   const gp_Pnt& thePnt2,
+                                                                   const gp_Pnt& thePnt3,
+                                                                   Select3D_TypeOfSensitivity theSensType,
+                                                                   const SelectMgr_ViewClipRange& theClipRange,
+                                                                   SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt1, thePnt2, thePnt3, theSensType, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsTriangle (thePnt1, thePnt2, thePnt3, theSensType, theClipRange, thePickResult))
     {
       if (myToAllowOverlap)
       {

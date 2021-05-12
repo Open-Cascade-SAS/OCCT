@@ -254,10 +254,10 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Pic
     }
     if (aNbNodes == 3)
     {
-      return theMgr.Overlaps (gp_Pnt (aCoords (1), aCoords (2), aCoords (3)),
-                              gp_Pnt (aCoords (4), aCoords (5), aCoords (6)),
-                              gp_Pnt (aCoords (7), aCoords (8), aCoords (9)),
-                              Select3D_TOS_INTERIOR, thePickResult);
+      return theMgr.OverlapsTriangle (gp_Pnt (aCoords (1), aCoords (2), aCoords (3)),
+                                      gp_Pnt (aCoords (4), aCoords (5), aCoords (6)),
+                                      gp_Pnt (aCoords (7), aCoords (8), aCoords (9)),
+                                      Select3D_TOS_INTERIOR, thePickResult);
     }
 
     MeshVS_Buffer aFacePntsBuf (aNbNodes * 3 * sizeof (Standard_Real));
@@ -268,12 +268,12 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::overlapsElement (SelectBasics_Pic
                                             aCoords (3 * aNodeIdx - 1),
                                             aCoords (3 * aNodeIdx)));
     }
-    return theMgr.Overlaps (aFacePnts, Select3D_TOS_INTERIOR, thePickResult);
+    return theMgr.OverlapsPolygon (aFacePnts, Select3D_TOS_INTERIOR, thePickResult);
   }
   else if (mySelMethod == MeshVS_MSM_NODES)
   {
     const gp_Pnt aVert = getVertexByIndex (anItemIdx);
-    return theMgr.Overlaps (aVert, thePickResult);
+    return theMgr.OverlapsPoint (aVert, thePickResult);
   }
   return Standard_False;
 }
@@ -318,7 +318,7 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::elementIsInside (SelectBasics_Sel
       const gp_Pnt aPnt (aCoords (3 * aNodeIdx - 2),
                          aCoords (3 * aNodeIdx - 1),
                          aCoords (3 * aNodeIdx));
-      if (!theMgr.Overlaps (aPnt))
+      if (!theMgr.OverlapsPoint (aPnt))
       {
         return Standard_False;
       }
@@ -328,7 +328,7 @@ Standard_Boolean MeshVS_CommonSensitiveEntity::elementIsInside (SelectBasics_Sel
   else if (mySelMethod == MeshVS_MSM_NODES)
   {
     const gp_Pnt aVert = getVertexByIndex (anItemIdx);
-    return theMgr.Overlaps (aVert);
+    return theMgr.OverlapsPoint (aVert);
   }
   return Standard_False;
 }

@@ -58,35 +58,35 @@ public:
                                                                                const gp_GTrsf& theTrsf,
                                                                                const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                     const SelectMgr_Vec3& theMaxPnt,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theMinPnt,
+                                                        const SelectMgr_Vec3& theMaxPnt,
+                                                        const SelectMgr_ViewClipRange& theClipRange,
+                                                        SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
-                                                     const SelectMgr_Vec3& theMaxPnt,
-                                                     Standard_Boolean* theInside) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theMinPnt,
+                                                        const SelectMgr_Vec3& theMaxPnt,
+                                                        Standard_Boolean* theInside) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
+                                                          const SelectMgr_ViewClipRange& theClipRange,
+                                                          SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                     Select3D_TypeOfSensitivity theSensType,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                            Select3D_TypeOfSensitivity theSensType,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                     const gp_Pnt& thePnt2,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
+                                                            const gp_Pnt& thePnt2,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                     const gp_Pnt& thePnt2,
-                                                     const gp_Pnt& thePnt3,
-                                                     Select3D_TypeOfSensitivity theSensType,
-                                                     const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                             const gp_Pnt& thePnt2,
+                                                             const gp_Pnt& thePnt3,
+                                                             Select3D_TypeOfSensitivity theSensType,
+                                                             const SelectMgr_ViewClipRange& theClipRange,
+                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;

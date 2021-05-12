@@ -70,12 +70,12 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeMana
     if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
-      return theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aDummy)
-          && theMgr.Overlaps (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aDummy);
+      return theMgr.OverlapsTriangle (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aDummy)
+          && theMgr.OverlapsTriangle (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aDummy);
     }
     for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
     {
-      if (!theMgr.Overlaps (myVertices[aPntIdx]))
+      if (!theMgr.OverlapsPoint (myVertices[aPntIdx]))
         return Standard_False;
     }
 
@@ -84,8 +84,8 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeMana
 
   // check for overlap
   SelectBasics_PickResult aPickResult1, aPickResult2;
-  if (!theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aPickResult1)
-   && !theMgr.Overlaps (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aPickResult2))
+  if (!theMgr.OverlapsTriangle (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aPickResult1)
+   && !theMgr.OverlapsTriangle (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aPickResult2))
   {
     return Standard_False;
   }

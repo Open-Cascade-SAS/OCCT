@@ -130,51 +130,50 @@ public:
 
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                     const SelectMgr_Vec3& theBoxMax,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                        const SelectMgr_Vec3& theBoxMax,
+                                                        SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT  virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                      const SelectMgr_Vec3& theBoxMax,
-                                                      Standard_Boolean*     theInside = NULL) const Standard_OVERRIDE;
+  Standard_EXPORT  virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                         const SelectMgr_Vec3& theBoxMax,
+                                                         Standard_Boolean*     theInside = NULL) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
+                                                          SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                                     Standard_Integer theSensType,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                                            Standard_Integer theSensType,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
-                                                     Standard_Integer theSensType,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPts,
+                                                            Standard_Integer theSensType,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                     const gp_Pnt& thePnt2,
-                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
+                                                            const gp_Pnt& thePnt2,
+                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  Standard_EXPORT  virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                                                      const gp_Pnt& thePnt2,
-                                                      const gp_Pnt& thePnt3,
-                                                      Standard_Integer theSensType,
-                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
+  Standard_EXPORT  virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                              const gp_Pnt& thePnt2,
+                                                              const gp_Pnt& thePnt3,
+                                                              Standard_Integer theSensType,
+                                                              SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
@@ -270,6 +269,84 @@ public:
 
   Standard_DEPRECATED("Deprecated method - InitPolylineSelectingVolume() and Build() should be used instead")
   Standard_EXPORT void BuildSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
+
+  //! SAT intersection test between defined volume and given axis-aligned box
+  Standard_DEPRECATED ("Deprecated method - OverlapsBox() should be used instead")
+  Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                             const SelectMgr_Vec3& theBoxMax,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsBox (theBoxMin, theBoxMax, thePickResult);
+  }
+
+  //! Returns true if selecting volume is overlapped by axis-aligned bounding box
+  //! with minimum corner at point theMinPt and maximum at point theMaxPt
+  Standard_DEPRECATED ("Deprecated method - OverlapsBox() should be used instead")
+  Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
+                             const SelectMgr_Vec3& theBoxMax,
+                             Standard_Boolean*     theInside = NULL) const
+  {
+    return OverlapsBox (theBoxMin, theBoxMax, theInside);
+  }
+
+  //! Intersection test between defined volume and given point
+  Standard_DEPRECATED ("Deprecated method - OverlapsPoint() should be used instead")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsPoint (thePnt, thePickResult);
+  }
+
+  //! Intersection test between defined volume and given point
+  Standard_DEPRECATED ("Deprecated method - OverlapsPoint() should be used instead")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt) const
+  {
+    return OverlapsPoint (thePnt);
+  }
+
+  //! SAT intersection test between defined volume and given ordered set of points,
+  //! representing line segments. The test may be considered of interior part or
+  //! boundary line defined by segments depending on given sensitivity type
+  Standard_DEPRECATED ("Deprecated method - OverlapsPolygon() should be used instead")
+  Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                             Standard_Integer theSensType,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
+  }
+
+  //! SAT intersection test between defined volume and given ordered set of points,
+  //! representing line segments. The test may be considered of interior part or
+  //! boundary line defined by segments depending on given sensitivity type
+  Standard_DEPRECATED ("Deprecated method - OverlapsPolygon() should be used instead")
+  Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
+                             Standard_Integer theSensType,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
+  }
+
+  //! Checks if line segment overlaps selecting frustum
+  Standard_DEPRECATED ("Deprecated method - OverlapsSegment() should be used instead")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                             const gp_Pnt& thePnt2,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsSegment (thePnt1, thePnt2, thePickResult);
+  }
+
+  //! SAT intersection test between defined volume and given triangle. The test may
+  //! be considered of interior part or boundary line defined by triangle vertices
+  //! depending on given sensitivity type
+  Standard_DEPRECATED ("Deprecated method - OverlapsTriangle() should be used instead")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                             const gp_Pnt& thePnt2,
+                             const gp_Pnt& thePnt3,
+                             Standard_Integer theSensType,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsTriangle (thePnt1, thePnt2, thePnt3, theSensType, thePickResult);
+  }
 
 private:
   Handle(SelectMgr_BaseIntersector)      myActiveSelectingVolume;

@@ -122,15 +122,15 @@ Standard_Boolean SelectMgr_Frustum<N>::isSeparated (const gp_Pnt& thePnt1,
 }
 
 // =======================================================================
-// function : hasOverlap
+// function : hasBoxOverlap
 // purpose  : Returns true if selecting volume is overlapped by
 //            axis-aligned bounding box with minimum corner at point
 //            theMinPnt and maximum at point theMaxPnt
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinPnt,
-                                                   const SelectMgr_Vec3& theMaxPnt,
-                                                   Standard_Boolean*     theInside) const
+Standard_Boolean SelectMgr_Frustum<N>::hasBoxOverlap (const SelectMgr_Vec3& theMinPnt,
+                                                      const SelectMgr_Vec3& theMaxPnt,
+                                                      Standard_Boolean*     theInside) const
 {
   for (Standard_Integer anAxis = 0; anAxis < 3; ++anAxis)
   {
@@ -200,11 +200,11 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const SelectMgr_Vec3& theMinP
 }
 
 // =======================================================================
-// function : hasOverlap
+// function : hasPointOverlap
 // purpose  : SAT intersection test between defined volume and given point
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt) const
+Standard_Boolean SelectMgr_Frustum<N>::hasPointOverlap (const gp_Pnt& thePnt) const
 {
   const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
 
@@ -223,12 +223,12 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt) const
 }
 
 // =======================================================================
-// function : hasOverlap
+// function : hasSegmentOverlap
 // purpose  : SAT intersection test between defined volume and given segment
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
-                                                   const gp_Pnt& theEndPnt) const
+Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap (const gp_Pnt& theStartPnt,
+                                                          const gp_Pnt& theEndPnt) const
 {
   const gp_XYZ& aDir = theEndPnt.XYZ() - theStartPnt.XYZ();
   if (aDir.Modulus() < Precision::Confusion())
@@ -304,13 +304,13 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& theStartPnt,
 }
 
 // =======================================================================
-// function : hasOverlap
+// function : hasPolygonOverlap
 // purpose  : SAT intersection test between frustum given and planar convex
 //            polygon represented as ordered point set
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                   gp_Vec& theNormal) const
+Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                          gp_Vec& theNormal) const
 {
   Standard_Integer aStartIdx = theArrayOfPnts.Lower();
   Standard_Integer anEndIdx = theArrayOfPnts.Upper();
@@ -400,14 +400,14 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const TColgp_Array1OfPnt& the
 }
 
 // =======================================================================
-// function : hasOverlap
+// function : hasTriangleOverlap
 // purpose  : SAT intersection test between defined volume and given triangle
 // =======================================================================
 template <int N>
-Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
-                                                   const gp_Pnt& thePnt2,
-                                                   const gp_Pnt& thePnt3,
-                                                   gp_Vec& theNormal) const
+Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap (const gp_Pnt& thePnt1,
+                                                           const gp_Pnt& thePnt2,
+                                                           const gp_Pnt& thePnt3,
+                                                           gp_Vec& theNormal) const
 {
   const gp_XYZ aTrEdges[3] = { thePnt2.XYZ() - thePnt1.XYZ(),
                                thePnt3.XYZ() - thePnt2.XYZ(),

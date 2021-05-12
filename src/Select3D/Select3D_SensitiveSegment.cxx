@@ -47,12 +47,12 @@ Standard_Boolean Select3D_SensitiveSegment::Matches (SelectBasics_SelectingVolum
   {
     if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
-      return theMgr.Overlaps (myStart, myEnd, thePickResult);
+      return theMgr.OverlapsSegment (myStart, myEnd, thePickResult);
     }
-    return theMgr.Overlaps (myStart, thePickResult) && theMgr.Overlaps (myEnd, thePickResult);
+    return theMgr.OverlapsPoint (myStart, thePickResult) && theMgr.OverlapsPoint (myEnd, thePickResult);
   }
 
-  if (!theMgr.Overlaps (myStart, myEnd, thePickResult)) // check for overlap
+  if (!theMgr.OverlapsSegment (myStart, myEnd, thePickResult)) // check for overlap
   {
     return Standard_False;
   }

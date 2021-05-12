@@ -89,10 +89,10 @@ Standard_Boolean Select3D_SensitiveBox::Matches (SelectBasics_SelectingVolumeMan
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
     Standard_Boolean isInside = Standard_True;
-    return theMgr.Overlaps (myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
+    return theMgr.OverlapsBox (myBox.CornerMin(), myBox.CornerMax(), &isInside) && isInside;
   }
 
-  if (!theMgr.Overlaps (myBox.CornerMin(), myBox.CornerMax(), thePickResult)) // check for overlap
+  if (!theMgr.OverlapsBox (myBox.CornerMin(), myBox.CornerMax(), thePickResult)) // check for overlap
   {
     return Standard_False;
   }

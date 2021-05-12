@@ -165,83 +165,83 @@ const gp_Pnt2d& SelectMgr_BaseIntersector::GetMousePosition() const
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const SelectMgr_Vec3&,
-                                                      const SelectMgr_Vec3&,
-                                                      const SelectMgr_ViewClipRange&,
-                                                      SelectBasics_PickResult&) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsBox (const SelectMgr_Vec3&,
+                                                         const SelectMgr_Vec3&,
+                                                         const SelectMgr_ViewClipRange&,
+                                                         SelectBasics_PickResult&) const
 {
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const SelectMgr_Vec3&,
-                                                      const SelectMgr_Vec3&,
-                                                      Standard_Boolean*) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsBox (const SelectMgr_Vec3&,
+                                                         const SelectMgr_Vec3&,
+                                                         Standard_Boolean*) const
 {
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
-                                                      const SelectMgr_ViewClipRange&,
-                                                      SelectBasics_PickResult&) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsPoint (const gp_Pnt&,
+                                                           const SelectMgr_ViewClipRange&,
+                                                           SelectBasics_PickResult&) const
 {
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt& thePnt) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsPoint (const gp_Pnt& thePnt) const
 {
   (void )thePnt;
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const TColgp_Array1OfPnt&,
-                                                      Select3D_TypeOfSensitivity,
-                                                      const SelectMgr_ViewClipRange&,
-                                                      SelectBasics_PickResult&) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsPolygon (const TColgp_Array1OfPnt&,
+                                                             Select3D_TypeOfSensitivity,
+                                                             const SelectMgr_ViewClipRange&,
+                                                             SelectBasics_PickResult&) const
 {
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsTriangle
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
-                                                      const gp_Pnt&,
-                                                      const gp_Pnt&,
-                                                      Select3D_TypeOfSensitivity,
-                                                      const SelectMgr_ViewClipRange&,
-                                                      SelectBasics_PickResult&) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsTriangle (const gp_Pnt&,
+                                                              const gp_Pnt&,
+                                                              const gp_Pnt&,
+                                                              Select3D_TypeOfSensitivity,
+                                                              const SelectMgr_ViewClipRange&,
+                                                              SelectBasics_PickResult&) const
 {
   return Standard_False;
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsSegment
 // purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
-                                                      const gp_Pnt&,
-                                                      const SelectMgr_ViewClipRange&,
-                                                      SelectBasics_PickResult&) const
+Standard_Boolean SelectMgr_BaseIntersector::OverlapsSegment (const gp_Pnt&,
+                                                             const gp_Pnt&,
+                                                             const SelectMgr_ViewClipRange&,
+                                                             SelectBasics_PickResult&) const
 {
   return Standard_False;
 }

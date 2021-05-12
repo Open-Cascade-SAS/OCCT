@@ -194,12 +194,12 @@ bool SelectMgr_AxisIntersector::rayPlaneIntersection (const gp_Vec& thePlane,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                      const SelectMgr_Vec3& theBoxMax,
-                                                      Standard_Boolean*     theInside) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                         const SelectMgr_Vec3& theBoxMax,
+                                                         Standard_Boolean*     theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -218,13 +218,13 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const SelectMgr_Vec3& theB
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                      const SelectMgr_Vec3& theBoxMax,
-                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                      SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                         const SelectMgr_Vec3& theBoxMax,
+                                                         const SelectMgr_ViewClipRange& theClipRange,
+                                                         SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -250,12 +250,12 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const SelectMgr_Vec3& theB
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt,
-                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                      SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint (const gp_Pnt& thePnt,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
+                                                           SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -273,10 +273,10 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsPoint (const gp_Pnt& thePnt) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -286,13 +286,13 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt) cons
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsSegment
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt1,
-                                                      const gp_Pnt& thePnt2,
-                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                      SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsSegment (const gp_Pnt& thePnt1,
+                                                             const gp_Pnt& thePnt2,
+                                                             const SelectMgr_ViewClipRange& theClipRange,
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -306,13 +306,13 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt1,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                      Select3D_TypeOfSensitivity theSensType,
-                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                      SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                             Select3D_TypeOfSensitivity theSensType,
+                                                             const SelectMgr_ViewClipRange& theClipRange,
+                                                             SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -352,7 +352,7 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const TColgp_Array1OfPnt& 
     if (aPolyNorm.Magnitude() <= Precision::Confusion())
     {
       // treat degenerated polygon as point
-      return Overlaps (theArrayOfPnts.First(), theClipRange, thePickResult);
+      return OverlapsPoint (theArrayOfPnts.First(), theClipRange, thePickResult);
     }
     else if (!rayPlaneIntersection (aPolyNorm, theArrayOfPnts.First(), thePickResult))
     {
@@ -364,15 +364,15 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const TColgp_Array1OfPnt& 
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsTriangle
 // purpose  :
 // =======================================================================
-Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt1,
-                                                      const gp_Pnt& thePnt2,
-                                                      const gp_Pnt& thePnt3,
-                                                      Select3D_TypeOfSensitivity theSensType,
-                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                      SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                              const gp_Pnt& thePnt2,
+                                                              const gp_Pnt& thePnt3,
+                                                              Select3D_TypeOfSensitivity theSensType,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
     "Error! SelectMgr_AxisIntersector::Overlaps() should be called after selection axis initialization");
@@ -381,7 +381,7 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt1,
   {
     const gp_Pnt aPntsArrayBuf[4] = { thePnt1, thePnt2, thePnt3, thePnt1 };
     const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 4);
-    return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
+    return OverlapsPolygon (aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
@@ -394,10 +394,10 @@ Standard_Boolean SelectMgr_AxisIntersector::Overlaps (const gp_Pnt& thePnt1,
     {
       // consider degenerated triangle as point or segment
       return aTrEdges[0].SquareModulus() > gp::Resolution()
-           ? Overlaps (thePnt1, thePnt2, theClipRange, thePickResult)
+           ? OverlapsSegment (thePnt1, thePnt2, theClipRange, thePickResult)
            : (aTrEdges[1].SquareModulus() > gp::Resolution()
-            ? Overlaps (thePnt2, thePnt3, theClipRange, thePickResult)
-            : Overlaps (thePnt1, theClipRange, thePickResult));
+            ? OverlapsSegment (thePnt2, thePnt3, theClipRange, thePickResult)
+            : OverlapsPoint (thePnt1, theClipRange, thePickResult));
     }
 
     const gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};

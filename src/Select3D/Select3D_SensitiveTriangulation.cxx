@@ -259,9 +259,9 @@ Standard_Boolean Select3D_SensitiveTriangulation::Matches (SelectBasics_Selectin
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
     bool isInside = true;
-    return theMgr.Overlaps (aBndBox.CornerMin(), aBndBox.CornerMax(), &isInside) && isInside;
+    return theMgr.OverlapsBox (aBndBox.CornerMin(), aBndBox.CornerMax(), &isInside) && isInside;
   }
-  if (!theMgr.Overlaps (aBndBox.CornerMin(), aBndBox.CornerMax(), thePickResult)) // check for overlap
+  if (!theMgr.OverlapsBox (aBndBox.CornerMin(), aBndBox.CornerMax(), thePickResult)) // check for overlap
   {
     return false;
   }
@@ -356,7 +356,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
       myTriangul->Node (aSegmEndIdx)
     };
     TColgp_Array1OfPnt anEdgePntsArr (anEdgePnts[0], 1, 2);
-    Standard_Boolean isMatched = theMgr.Overlaps (anEdgePntsArr, Select3D_TOS_BOUNDARY, thePickResult);
+    Standard_Boolean isMatched = theMgr.OverlapsPolygon (anEdgePntsArr, Select3D_TOS_BOUNDARY, thePickResult);
     return isMatched;
   }
   else
@@ -366,7 +366,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::overlapsElement (SelectBasics_
     const gp_Pnt aPnt1 = myTriangul->Node (aNode1);
     const gp_Pnt aPnt2 = myTriangul->Node (aNode2);
     const gp_Pnt aPnt3 = myTriangul->Node (aNode3);
-    return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, Select3D_TOS_INTERIOR, thePickResult);
+    return theMgr.OverlapsTriangle (aPnt1, aPnt2, aPnt3, Select3D_TOS_INTERIOR, thePickResult);
   }
 }
 
@@ -391,9 +391,9 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
     if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
-      return theMgr.Overlaps (aSegmPnt1, aSegmPnt2, aDummy);
+      return theMgr.OverlapsSegment (aSegmPnt1, aSegmPnt2, aDummy);
     }
-    return theMgr.Overlaps (aSegmPnt1) && theMgr.Overlaps (aSegmPnt2);
+    return theMgr.OverlapsPoint (aSegmPnt1) && theMgr.OverlapsPoint (aSegmPnt2);
   }
   else
   {
@@ -406,11 +406,11 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
     if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
-      return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, mySensType, aDummy);
+      return theMgr.OverlapsTriangle (aPnt1, aPnt2, aPnt3, mySensType, aDummy);
     }
-    return theMgr.Overlaps (aPnt1)
-        && theMgr.Overlaps (aPnt2)
-        && theMgr.Overlaps (aPnt3);
+    return theMgr.OverlapsPoint (aPnt1)
+        && theMgr.OverlapsPoint (aPnt2)
+        && theMgr.OverlapsPoint (aPnt3);
   }
 }
 

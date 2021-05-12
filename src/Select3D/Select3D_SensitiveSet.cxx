@@ -141,9 +141,9 @@ Standard_Boolean Select3D_SensitiveSet::matches (SelectBasics_SelectingVolumeMan
   const Select3D_BndBox3d& aGlobalBox = myContent.Box();
   Standard_Boolean isFullInside = Standard_True;
 
-  if (!theMgr.Overlaps(aGlobalBox.CornerMin(),
-                       aGlobalBox.CornerMax(),
-                       &isFullInside))
+  if (!theMgr.OverlapsBox (aGlobalBox.CornerMin(),
+                           aGlobalBox.CornerMax(),
+                           &isFullInside))
   {
     return Standard_False;
   }
@@ -177,13 +177,13 @@ Standard_Boolean Select3D_SensitiveSet::matches (SelectBasics_SelectingVolumeMan
         Standard_Boolean toCheckLft = Standard_True, toCheckRgh = Standard_True;
         if (!aNode.IsFullInside)
         {
-          toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLeft.Id), aBVH->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
+          toCheckLft = theMgr.OverlapsBox (aBVH->MinPoint (aLeft.Id), aBVH->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
           if (!toCheckLft)
           {
             aLeft.IsFullInside = Standard_False;
           }
 
-          toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRight.Id), aBVH->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
+          toCheckRgh = theMgr.OverlapsBox (aBVH->MinPoint (aRight.Id), aBVH->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
           if (!toCheckRgh)
           {
             aRight.IsFullInside = Standard_False;

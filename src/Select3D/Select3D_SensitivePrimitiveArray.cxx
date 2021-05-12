@@ -988,7 +988,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
         if (myToDetectNode
          || myToDetectElem)
         {
-          if (theIsFullInside || theMgr.Overlaps (aPoint, aPickResult))
+          if (theIsFullInside || theMgr.OverlapsPoint (aPoint, aPickResult))
           {
             if (aPickResult.Depth() <= myMinDepthNode)
             {
@@ -1037,7 +1037,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
 
         if (myToDetectElem)
         {
-          if (theIsFullInside || theMgr.Overlaps (aPnts[0], aPnts[1], aPnts[2], Select3D_TOS_INTERIOR, aPickResult))
+          if (theIsFullInside || theMgr.OverlapsTriangle (aPnts[0], aPnts[1], aPnts[2], Select3D_TOS_INTERIOR, aPickResult))
           {
             if (aPickResult.Depth() <= myMinDepthElem)
             {
@@ -1056,7 +1056,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
         {
           for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
           {
-            if (theIsFullInside || theMgr.Overlaps (aPnts[aNodeIter], aPickResult))
+            if (theIsFullInside || theMgr.OverlapsPoint (aPnts[aNodeIter], aPickResult))
             {
               if (aPickResult.Depth() <= myMinDepthNode)
               {
@@ -1078,7 +1078,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
           {
             int aNode1 = aNodeIter == 0 ? 2 : (aNodeIter - 1);
             int aNode2 = aNodeIter;
-            if (theIsFullInside || theMgr.Overlaps (aPnts[aNode1], aPnts[aNode2], aPickResult))
+            if (theIsFullInside || theMgr.OverlapsSegment (aPnts[aNode1], aPnts[aNode2], aPickResult))
             {
               if (aPickResult.Depth() <= myMinDepthEdge)
               {
@@ -1147,7 +1147,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
         {
           aPoint = vecToPnt (getPosVec2 (aPointIndex));
         }
-        if (!theIsFullInside && !theMgr.Overlaps (aPoint))
+        if (!theIsFullInside && !theMgr.OverlapsPoint (aPoint))
         {
           return Standard_False;
         }
@@ -1188,9 +1188,9 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
           aPnts[2] = vecToPnt (getPosVec2 (aTriNodes[2]));
         }
 
-        if (!theIsFullInside && (   !theMgr.Overlaps (aPnts[0])
-                                 || !theMgr.Overlaps (aPnts[1])
-                                 || !theMgr.Overlaps (aPnts[2])))
+        if (!theIsFullInside && (   !theMgr.OverlapsPoint (aPnts[0])
+                                 || !theMgr.OverlapsPoint (aPnts[1])
+                                 || !theMgr.OverlapsPoint (aPnts[2])))
         {
           return Standard_False;
         }

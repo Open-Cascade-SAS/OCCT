@@ -53,14 +53,14 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
     if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
-      return theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, aDummy);
+      return theMgr.OverlapsTriangle (myPoints[0], myPoints[1], myPoints[2], mySensType, aDummy);
     }
-    return theMgr.Overlaps (myPoints[0])
-        && theMgr.Overlaps (myPoints[1])
-        && theMgr.Overlaps (myPoints[2]);
+    return theMgr.OverlapsPoint (myPoints[0])
+        && theMgr.OverlapsPoint (myPoints[1])
+        && theMgr.OverlapsPoint (myPoints[2]);
   }
 
-  if (!theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, thePickResult))
+  if (!theMgr.OverlapsTriangle (myPoints[0], myPoints[1], myPoints[2], mySensType, thePickResult))
   {
     return Standard_False;
   }

@@ -457,35 +457,35 @@ Standard_Boolean SelectMgr_RectangularFrustum::IsScalable() const
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  : Returns true if selecting volume is overlapped by
 //            axis-aligned bounding box with minimum corner at point
 //            theMinPnt and maximum at point theMaxPnt
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                         const SelectMgr_Vec3& theBoxMax,
-                                                         Standard_Boolean*     theInside) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                            const SelectMgr_Vec3& theBoxMax,
+                                                            Standard_Boolean*     theInside) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  return hasOverlap (theBoxMin, theBoxMax, theInside);
+  return hasBoxOverlap (theBoxMin, theBoxMax, theInside);
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                         const SelectMgr_Vec3& theBoxMax,
-                                                         const SelectMgr_ViewClipRange& theClipRange,
-                                                         SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                            const SelectMgr_Vec3& theBoxMax,
+                                                            const SelectMgr_ViewClipRange& theClipRange,
+                                                            SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  if (!hasOverlap (theBoxMin, theBoxMax))
+  if (!hasBoxOverlap (theBoxMin, theBoxMax))
     return Standard_False;
 
   Standard_Real aDepth = 0.0;
@@ -518,17 +518,17 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
-                                                         const SelectMgr_ViewClipRange& theClipRange,
-                                                         SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsPoint (const gp_Pnt& thePnt,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  if (!hasOverlap (thePnt))
+  if (!hasPointOverlap (thePnt))
     return Standard_False;
 
   gp_XYZ aV = thePnt.XYZ() - myNearPickedPnt.XYZ();
@@ -541,30 +541,30 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsPoint (const gp_Pnt& thePnt) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  return hasOverlap (thePnt);
+  return hasPointOverlap (thePnt);
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsSegment
 // purpose  : Checks if line segment overlaps selecting frustum
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
-                                                         const gp_Pnt& thePnt2,
-                                                         const SelectMgr_ViewClipRange& theClipRange,
-                                                         SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsSegment (const gp_Pnt& thePnt1,
+                                                                const gp_Pnt& thePnt2,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  if (!hasOverlap (thePnt1, thePnt2))
+  if (!hasSegmentOverlap (thePnt1, thePnt2))
     return Standard_False;
 
   segmentSegmentDistance (thePnt1, thePnt2, thePickResult);
@@ -573,16 +573,16 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  : SAT intersection test between defined volume and given
 //            ordered set of points, representing line segments. The test
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                         Select3D_TypeOfSensitivity theSensType,
-                                                         const SelectMgr_ViewClipRange& theClipRange,
-                                                         SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                                Select3D_TypeOfSensitivity theSensType,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
@@ -598,7 +598,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
     {
       const gp_Pnt& aStartPnt = theArrayOfPnts.Value (aPntIter);
       const gp_Pnt& aEndPnt   = theArrayOfPnts.Value (aPntIter == anUpper ? aLower : (aPntIter + 1));
-      if (hasOverlap (aStartPnt, aEndPnt))
+      if (hasSegmentOverlap (aStartPnt, aEndPnt))
       {
         aMatchingSegmentsNb++;
         segmentSegmentDistance (aStartPnt, aEndPnt, aPickResult);
@@ -612,7 +612,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
     gp_Vec aPolyNorm (gp_XYZ (RealLast(), RealLast(), RealLast()));
-    if (!hasOverlap (theArrayOfPnts, aPolyNorm))
+    if (!hasPolygonOverlap (theArrayOfPnts, aPolyNorm))
     {
       return Standard_False;
     }
@@ -620,7 +620,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
     if (aPolyNorm.Magnitude() <= Precision::Confusion())
     {
       // treat degenerated polygon as point
-      return Overlaps (theArrayOfPnts.First(), theClipRange, thePickResult);
+      return OverlapsPoint (theArrayOfPnts.First(), theClipRange, thePickResult);
     }
     else if (!segmentPlaneIntersection (aPolyNorm, theArrayOfPnts.First(), thePickResult))
     {
@@ -632,18 +632,18 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
 }
 
 // =======================================================================
-// function : Overlaps
+// function : OverlapsTriangle
 // purpose  : SAT intersection test between defined volume and given
 //            triangle. The test may be considered of interior part or
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 // =======================================================================
-Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
-                                                         const gp_Pnt& thePnt2,
-                                                         const gp_Pnt& thePnt3,
-                                                         Select3D_TypeOfSensitivity theSensType,
-                                                         const SelectMgr_ViewClipRange& theClipRange,
-                                                         SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsTriangle (const gp_Pnt& thePnt1,
+                                                                 const gp_Pnt& thePnt2,
+                                                                 const gp_Pnt& thePnt3,
+                                                                 Select3D_TypeOfSensitivity theSensType,
+                                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                                 SelectBasics_PickResult& thePickResult) const
 {
   Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
@@ -652,12 +652,12 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
   {
     const gp_Pnt aPntsArrayBuf[4] = { thePnt1, thePnt2, thePnt3, thePnt1 };
     const TColgp_Array1OfPnt aPntsArray (aPntsArrayBuf[0], 1, 4);
-    return Overlaps (aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
+    return OverlapsPolygon (aPntsArray, Select3D_TOS_BOUNDARY, theClipRange, thePickResult);
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {
     gp_Vec aTriangleNormal (gp_XYZ (RealLast(), RealLast(), RealLast()));
-    if (!hasOverlap (thePnt1, thePnt2, thePnt3, aTriangleNormal))
+    if (!hasTriangleOverlap (thePnt1, thePnt2, thePnt3, aTriangleNormal))
     {
       return Standard_False;
     }
@@ -669,10 +669,10 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     {
       // consider degenerated triangle as point or segment
       return aTrEdges[0].SquareModulus() > gp::Resolution()
-           ? Overlaps (thePnt1, thePnt2, theClipRange, thePickResult)
+           ? OverlapsSegment (thePnt1, thePnt2, theClipRange, thePickResult)
            : (aTrEdges[1].SquareModulus() > gp::Resolution()
-            ? Overlaps (thePnt2, thePnt3, theClipRange, thePickResult)
-            : Overlaps (thePnt1, theClipRange, thePickResult));
+            ? OverlapsSegment (thePnt2, thePnt3, theClipRange, thePickResult)
+            : OverlapsPoint (thePnt1, theClipRange, thePickResult));
     }
 
     const gp_Pnt aPnts[3] = {thePnt1, thePnt2, thePnt3};

@@ -270,7 +270,7 @@ Standard_Boolean Select3D_InteriorSensitivePointSet::overlapsElement (SelectBasi
   const Handle(Select3D_SensitivePoly)& aPolygon = myPlanarPolygons.Value (aPolygIdx);
   Handle(TColgp_HArray1OfPnt) aPoints;
   aPolygon->Points3D (aPoints);
-  return theMgr.Overlaps (aPoints, Select3D_TOS_INTERIOR, thePickResult);
+  return theMgr.OverlapsPolygon (aPoints, Select3D_TOS_INTERIOR, thePickResult);
 }
 
 // =======================================================================

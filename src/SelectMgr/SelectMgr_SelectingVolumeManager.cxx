@@ -329,143 +329,143 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                             const SelectMgr_Vec3& theBoxMax,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                                const SelectMgr_Vec3& theBoxMax,
+                                                                SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (theBoxMin, theBoxMax, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsBox (theBoxMin, theBoxMax, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsBox
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec3& theBoxMin,
-                                                             const SelectMgr_Vec3& theBoxMax,
-                                                             Standard_Boolean*     theInside) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                                                const SelectMgr_Vec3& theBoxMax,
+                                                                Standard_Boolean*     theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (theBoxMin, theBoxMax, theInside);
+  return myActiveSelectingVolume->OverlapsBox (theBoxMin, theBoxMax, theInside);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPoint (const gp_Pnt& thePnt,
+                                                                  SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (thePnt, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsPoint (thePnt, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPoint
 // purpose  : Intersection test between defined volume and given point
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPoint (const gp_Pnt& thePnt) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (thePnt);
+  return myActiveSelectingVolume->OverlapsPoint (thePnt);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  : SAT intersection test between defined volume and given
 //            ordered set of points, representing line segments. The test
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                                             Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPolygon (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
+                                                                    Standard_Integer theSensType,
+                                                                    SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
-                                            myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsPolygon (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
+                                                   myViewClipRange, thePickResult);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsPolygon
 // purpose  : SAT intersection test between defined volume and given
 //            ordered set of points, representing line segments. The test
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                             Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                                                    Standard_Integer theSensType,
+                                                                    SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (theArrayOfPnts, (Select3D_TypeOfSensitivity)theSensType,
-                                            myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsPolygon (theArrayOfPnts, (Select3D_TypeOfSensitivity)theSensType,
+                                                   myViewClipRange, thePickResult);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsSegment
 // purpose  : Checks if line segment overlaps selecting volume
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
-                                                             const gp_Pnt& thePt2,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsSegment (const gp_Pnt& thePt1,
+                                                                    const gp_Pnt& thePt2,
+                                                                    SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (thePt1, thePt2, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsSegment (thePt1, thePt2, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
-// function : Overlaps
+// function : OverlapsTriangle
 // purpose  : SAT intersection test between defined volume and given
 //            triangle. The test may be considered of interior part or
 //            boundary line defined by triangle vertices depending on
 //            given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt1,
-                                                             const gp_Pnt& thePt2,
-                                                             const gp_Pnt& thePt3,
-                                                             Standard_Integer theSensType,
-                                                             SelectBasics_PickResult& thePickResult) const
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsTriangle (const gp_Pnt& thePt1,
+                                                                     const gp_Pnt& thePt2,
+                                                                     const gp_Pnt& thePt3,
+                                                                     Standard_Integer theSensType,
+                                                                     SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return Standard_False;
   }
 
-  return myActiveSelectingVolume->Overlaps (thePt1, thePt2, thePt3, (Select3D_TypeOfSensitivity)theSensType,
-                                            myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsTriangle (thePt1, thePt2, thePt3, (Select3D_TypeOfSensitivity)theSensType,
+                                                    myViewClipRange, thePickResult);
 }
 
 //=======================================================================

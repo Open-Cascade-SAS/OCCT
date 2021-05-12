@@ -405,8 +405,8 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
                                         ? theMgr.ScaleAndTransform (1, aInversedTrsf, NULL)
                                         : theMgr;
-  if (!aMgr.Overlaps (aSensitivesTree->MinPoint (0),
-                      aSensitivesTree->MaxPoint (0)))
+  if (!aMgr.OverlapsBox (aSensitivesTree->MinPoint (0),
+                         aSensitivesTree->MaxPoint (0)))
   {
     return;
   }
@@ -487,10 +487,10 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     {
       const Standard_Integer aLeftChildIdx  = aSensitivesTree->Child<0> (aNode);
       const Standard_Integer aRightChildIdx = aSensitivesTree->Child<1> (aNode);
-      const Standard_Boolean isLeftChildIn  =  aMgr.Overlaps (aSensitivesTree->MinPoint (aLeftChildIdx),
-                                                              aSensitivesTree->MaxPoint (aLeftChildIdx));
-      const Standard_Boolean isRightChildIn = aMgr.Overlaps (aSensitivesTree->MinPoint (aRightChildIdx),
-                                                             aSensitivesTree->MaxPoint (aRightChildIdx));
+      const Standard_Boolean isLeftChildIn  =  aMgr.OverlapsBox (aSensitivesTree->MinPoint (aLeftChildIdx),
+                                                                 aSensitivesTree->MaxPoint (aLeftChildIdx));
+      const Standard_Boolean isRightChildIn = aMgr.OverlapsBox (aSensitivesTree->MinPoint (aRightChildIdx),
+                                                                aSensitivesTree->MaxPoint (aRightChildIdx));
       if (isLeftChildIn
           && isRightChildIn)
       {
@@ -680,7 +680,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
 
     Standard_Integer aNode = 0;
-    if (!aMgr.Overlaps (aBVHTree->MinPoint (0), aBVHTree->MaxPoint (0)))
+    if (!aMgr.OverlapsBox (aBVHTree->MinPoint (0), aBVHTree->MaxPoint (0)))
     {
       continue;
     }
@@ -694,9 +694,9 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
         const Standard_Integer aLeftChildIdx  = aBVHTree->Child<0> (aNode);
         const Standard_Integer aRightChildIdx = aBVHTree->Child<1> (aNode);
         const Standard_Boolean isLeftChildIn  =
-          aMgr.Overlaps (aBVHTree->MinPoint (aLeftChildIdx), aBVHTree->MaxPoint (aLeftChildIdx));
+          aMgr.OverlapsBox (aBVHTree->MinPoint (aLeftChildIdx), aBVHTree->MaxPoint (aLeftChildIdx));
         const Standard_Boolean isRightChildIn =
-          aMgr.Overlaps (aBVHTree->MinPoint (aRightChildIdx), aBVHTree->MaxPoint (aRightChildIdx));
+          aMgr.OverlapsBox (aBVHTree->MinPoint (aRightChildIdx), aBVHTree->MaxPoint (aRightChildIdx));
         if (isLeftChildIn
           && isRightChildIn)
         {

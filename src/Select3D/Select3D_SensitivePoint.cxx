@@ -37,7 +37,7 @@ Select3D_SensitivePoint::Select3D_SensitivePoint (const Handle(SelectMgr_EntityO
 Standard_Boolean Select3D_SensitivePoint::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
-  if (!theMgr.Overlaps (myPoint, thePickResult))
+  if (!theMgr.OverlapsPoint (myPoint, thePickResult))
   {
     return Standard_False;
   }
