@@ -345,6 +345,9 @@ TDF_LabelNode* TDF_Label::FindOrAddChild
       myLabelNode->myFirstChild = childLabelNode;
     else                 // ... somewhere.
       lastLnp->myBrother = childLabelNode;
+    // Update table for fast access to the labels.
+    if (myLabelNode->Data()->IsAccessByEntries())
+      myLabelNode->Data()->RegisterLabel (childLabelNode);
   }
 
   if (lastLnp)                               //agv 14.07.2010

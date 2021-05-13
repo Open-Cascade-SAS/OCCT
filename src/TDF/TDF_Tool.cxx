@@ -372,29 +372,42 @@ void TDF_Tool::RelocateLabel
 //purpose  : Returns the entry as an ascii string.
 //=======================================================================
 
-void TDF_Tool::Entry
-(const TDF_Label& aLabel,
- TCollection_AsciiString& anEntry)
+void TDF_Tool::Entry (const TDF_Label& aLabel, TCollection_AsciiString& anEntry)
 {
-  anEntry.Clear();
   if (!aLabel.IsNull()) {
-    TColStd_ListOfInteger Tags;
-    TDF_Tool::TagList(aLabel, Tags);
-    anEntry += TCollection_AsciiString(Tags.First());
-    Tags.RemoveFirst();
-    if (Tags.IsEmpty()) {
-      anEntry += TDF_TagSeparator; // It must be the root label case.
+    int aStrLen = 1; // initial "0" of a root label
+    TDF_Label aLab = aLabel;
+    for (; !aLab.IsRoot(); aLab = aLab.Father())
+    {
+      for (int aTag = aLab.Tag(); aTag > 9; aTag /= 10)
+        ++aStrLen;
+      aStrLen += 2; // one digit and separator
     }
-    else {
-      while (!Tags.IsEmpty()) {
-	anEntry += TDF_TagSeparator;
-	anEntry += TCollection_AsciiString(Tags.First());
-	Tags.RemoveFirst();
-      }
+        
+    if (aStrLen == 1)
+    {
+      // an exceptional case for the root label, it ends with separator
+      static const TCollection_AsciiString THE_ROOT_ENTRY = TCollection_AsciiString ('0') + TDF_TagSeparator;
+      anEntry = THE_ROOT_ENTRY;
+    }
+    else
+    {
+      anEntry = TCollection_AsciiString (aStrLen, TDF_TagSeparator);
+      Standard_Character* aPtr = const_cast<Standard_Character*>(anEntry.ToCString() + aStrLen - 1);
+      for (aLab = aLabel; !aLab.IsRoot(); aLab = aLab.Father())
+      {
+        int aTag = aLab.Tag();
+        for (; aTag > 9; --aPtr, aTag /= 10)
+          *aPtr = Standard_Character (aTag % 10) + '0';
+        *aPtr = Standard_Character (aTag) + '0';
+        aPtr -= 2;
+      }        
+      *aPtr = '0';
     }
   }
+  else
+    anEntry.Clear();
 }
-
 
 //=======================================================================
 //function : TagList
@@ -452,12 +465,18 @@ void TDF_Tool::TagList
 //purpose  : Returns the label expressed by <anEntry>.
 //=======================================================================
 
-void TDF_Tool::Label
-(const Handle(TDF_Data)& aDF,
- const TCollection_AsciiString& anEntry,
- TDF_Label& aLabel,
- const Standard_Boolean create) 
-{ TDF_Tool::Label(aDF,anEntry.ToCString(),aLabel,create); }
+void TDF_Tool::Label (const Handle(TDF_Data)& aDF,
+                      const TCollection_AsciiString& anEntry,
+                      TDF_Label& aLabel,
+                      const Standard_Boolean create) 
+{
+  Standard_Boolean isFound = Standard_False;
+  if (aDF->IsAccessByEntries())
+    isFound = aDF->GetLabel (anEntry, aLabel);
+
+  if (!isFound)
+    TDF_Tool::Label (aDF, anEntry.ToCString(), aLabel, create);
+}
 
 
 //=======================================================================
@@ -466,15 +485,20 @@ void TDF_Tool::Label
 //           and creates it if <create> is true.
 //=======================================================================
 
-void TDF_Tool::Label
-(const Handle(TDF_Data)& aDF,
- const Standard_CString  anEntry,
- TDF_Label&              aLabel,
- const Standard_Boolean  create) 
+void TDF_Tool::Label (const Handle(TDF_Data)& aDF,
+                      const Standard_CString  anEntry,
+                      TDF_Label&              aLabel,
+                      const Standard_Boolean  create) 
 {
-  TColStd_ListOfInteger tagList;
-  TDF_Tool::TagList(anEntry,tagList);
-  TDF_Tool::Label(aDF,tagList,aLabel,create);
+  Standard_Boolean isFound = Standard_False;
+  if (aDF->IsAccessByEntries())
+    isFound = aDF->GetLabel (anEntry, aLabel);
+
+  if (!isFound) {
+    TColStd_ListOfInteger tagList;
+    TDF_Tool::TagList (anEntry, tagList);
+    TDF_Tool::Label (aDF, tagList, aLabel, create);
+  }
 }
 
 

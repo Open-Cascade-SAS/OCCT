@@ -2237,3 +2237,10 @@ Both libraries can be now built simultaneously on systems providing both APIs (l
 
 Existing applications depending on OpenGL ES (mobile projects first of all) should be adjusted to link against *TKOpenGles*.
 Note that both *TKOpenGl* and *TKOpenGles* keep exporting classes with the same name, so applications should not attempt to link both libraries simultaneously.
+
+@subsection upgrade_occt760_fast_access_to_labels Fast access to OCAF label
+
+Access to an OCAF label via its entry is accelerated. In order to activate it, call *TDF_Data::SetAccessByEntries()*.
+The method *TDF_Tool::Label()*, which returns a label by an entry, becomes faster for about 10 .. 20 times.
+It has sense for applications, which use an entry as a unique key to access the data in OCAF tree.
+Also, the method *TDF_Tool::Entry()*, which returns an entry for a label, is accelerated as well.

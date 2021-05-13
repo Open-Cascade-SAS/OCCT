@@ -371,7 +371,27 @@ static Standard_Integer  DDF_CheckLabel (Draw_Interpretor& di,Standard_Integer n
   return 1;    
 }
 
-
+//=======================================================================
+//function : DDF_SetAccessByEntry
+//purpose  : SetAccessByEntry DOC 1|0
+//=======================================================================
+static Standard_Integer DDF_SetAccessByEntry (Draw_Interpretor& di, Standard_Integer nb, const char** a)
+{
+  Standard_Integer aRet = 0;
+  if (nb != 3) {
+    di << "SetAccessByEntry DOC 1|0\n";
+    aRet = 1;
+  } else {
+    Handle(TDF_Data) aDF;
+    if (DDF::GetDF(a[1], aDF)) {
+      Standard_Boolean aSet = (Draw::Atoi (a[2]) == 1);
+      aDF->SetAccessByEntries (aSet);
+    } else {
+      aRet = 1;
+    }
+  }
+  return aRet;
+}
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -415,10 +435,12 @@ void DDF::DataCommands (Draw_Interpretor& theCommands)
                    "CopyLabel (DOC, from, to)",
 		   __FILE__, CopyLabel_SCopy, g);    
 
-  theCommands.Add("CheckAttrs","CheckAttrs DocName Lab1 Lab2 ",
+  theCommands.Add ("CheckAttrs","CheckAttrs DocName Lab1 Lab2 ",
                    __FILE__, DDF_CheckAttrs, g);
 
-  theCommands.Add("CheckLabel","CheckLabel DocName Label ",
+  theCommands.Add ("CheckLabel","CheckLabel DocName Label ",
                    __FILE__, DDF_CheckLabel, g);
 
+  theCommands.Add ("SetAccessByEntry", "SetAccessByEntry DOC 1|0",
+                   __FILE__, DDF_SetAccessByEntry, g);
 }

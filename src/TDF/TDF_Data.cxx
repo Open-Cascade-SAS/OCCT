@@ -94,7 +94,8 @@ myTransaction           (0),
 myNbTouchedAtt          (0),
 myNotUndoMode           (Standard_True),
 myTime                  (0),
-myAllowModification     (Standard_True)
+myAllowModification     (Standard_True),
+myAccessByEntries       (Standard_False)
 {
   const Handle(NCollection_IncAllocator) anIncAllocator=
     new NCollection_IncAllocator (16000);
@@ -118,6 +119,7 @@ void TDF_Data::Destroy()
     Handle(TDF_Attribute) aFirst = myRoot->FirstAttribute();
     myRoot->RemoveAttribute(anEmpty, aFirst);
   }
+  myAccessByEntriesTable.Clear();
   myRoot->Destroy (myLabelNodeAllocator);
   myRoot = NULL;
 }
@@ -439,7 +441,43 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta,
   return newDelta;
 }
 
+//=======================================================================
+//function : SetAccessByEntries
+//purpose  : 
+//=======================================================================
 
+void TDF_Data::SetAccessByEntries(const Standard_Boolean aSet)
+{
+  myAccessByEntries = aSet;
+
+  myAccessByEntriesTable.Clear();
+  if (myAccessByEntries) {
+    // Add root label.
+    TCollection_AsciiString anEntry;
+    TDF_Tool::Entry (myRoot, anEntry);
+    myAccessByEntriesTable.Bind (anEntry, myRoot);
+
+    // Add all other labels.
+    TDF_ChildIterator itr (myRoot, Standard_True);
+    for (; itr.More(); itr.Next()) {
+      const TDF_Label aLabel = itr.Value();
+      TDF_Tool::Entry (aLabel, anEntry);
+      myAccessByEntriesTable.Bind (anEntry, aLabel);
+    }
+  }
+}
+
+//=======================================================================
+//function : RegisterLabel
+//purpose  : 
+//=======================================================================
+
+void TDF_Data::RegisterLabel(const TDF_Label& aLabel)
+{
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry (aLabel, anEntry);
+  myAccessByEntriesTable.Bind (anEntry, aLabel);
+}
 
 //=======================================================================
 //function : Dump
