@@ -793,6 +793,9 @@ public: //! @name Selection Filters management
   //! Returns the list of filters active in a local context.
   const SelectMgr_ListOfFilter& Filters() const { return myFilters->StoredFilters(); }
 
+  //! @return the context selection global context filter.
+  const Handle(SelectMgr_AndOrFilter)& GlobalFilter() const { return myFilters; }
+
   //! Allows you to add the filter.
   void AddFilter (const Handle(SelectMgr_Filter)& theFilter) { myFilters->Add (theFilter); }
 
