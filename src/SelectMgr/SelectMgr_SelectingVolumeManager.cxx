@@ -14,22 +14,22 @@
 // commercial license or contractual agreement.
 
 #include <SelectMgr_SelectingVolumeManager.hxx>
+
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <SelectMgr_RectangularFrustum.hxx>
+#include <SelectMgr_TriangularFrustumSet.hxx>
+
+#include <BVH_Tools.hxx>
 #include <Standard_Dump.hxx>
 
 //=======================================================================
 // function : SelectMgr_SelectingVolumeManager
 // purpose  : Creates instances of all available selecting volume types
 //=======================================================================
-SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager (Standard_Boolean theToAllocateFrustums)
+SelectMgr_SelectingVolumeManager::SelectMgr_SelectingVolumeManager()
+: myActiveSelectingVolume (NULL),
+  myToAllowOverlap (Standard_False)
 {
-  myActiveSelectionType = Unknown;
-  myToAllowOverlap = Standard_False;
-
-  if (theToAllocateFrustums)
-  {
-    mySelectingVolumes[Frustum] = new SelectMgr_RectangularFrustum();
-    mySelectingVolumes[FrustumSet] = new SelectMgr_TriangularFrustumSet();
-  }
 }
 
 //=======================================================================
@@ -51,16 +51,14 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
                                                                                       const gp_GTrsf& theTrsf,
                                                                                       const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
 {
-  SelectMgr_SelectingVolumeManager aMgr (Standard_False);
-
-  if (myActiveSelectionType == Unknown)
+  SelectMgr_SelectingVolumeManager aMgr;
+  if (myActiveSelectingVolume.IsNull())
+  {
     return aMgr;
+  }
 
-  aMgr.myActiveSelectionType = myActiveSelectionType;
-  aMgr.mySelectingVolumes[myActiveSelectionType / 2]
-    = mySelectingVolumes[myActiveSelectionType / 2]->ScaleAndTransform (theScaleFactor, theTrsf);
+  aMgr.myActiveSelectingVolume = myActiveSelectingVolume->ScaleAndTransform (theScaleFactor, theTrsf, theBuilder);
   aMgr.myToAllowOverlap = myToAllowOverlap;
-  aMgr.mySelectingVolumes[myActiveSelectionType / 2]->SetBuilder (theBuilder);
   aMgr.myViewClipPlanes = myViewClipPlanes;
   aMgr.myObjectClipPlanes = myObjectClipPlanes;
   aMgr.myViewClipRange = myViewClipRange;
@@ -74,29 +72,36 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
 //=======================================================================
 Standard_Integer SelectMgr_SelectingVolumeManager::GetActiveSelectionType() const
 {
-  return myActiveSelectionType;
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return SelectMgr_SelectionType_Unknown;
+  }
+  return myActiveSelectingVolume->GetSelectionType();
 }
 
 //=======================================================================
-// function : SetActiveSelectionType
+// function : Camera
 // purpose  :
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetActiveSelectionType (const SelectionType& theType)
+const Handle(Graphic3d_Camera)& SelectMgr_SelectingVolumeManager::Camera() const
 {
-  myActiveSelectionType = theType;
+  if (myActiveSelectingVolume.IsNull())
+  {
+    static const Handle(Graphic3d_Camera) anEmptyCamera;
+    return anEmptyCamera;
+  }
+  return myActiveSelectingVolume->Camera();
 }
 
 //=======================================================================
 // function : SetCamera
-// purpose  : Updates camera projection and orientation matrices in all
-//            selecting volumes
+// purpose  :
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetCamera (const Handle(Graphic3d_Camera) theCamera)
 {
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
-  {
-    mySelectingVolumes[anIdx]->SetCamera (theCamera);
-  }
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::SetCamera() should be called after initialization of selection volume ");
+  myActiveSelectingVolume->SetCamera (theCamera);
 }
 
 //=======================================================================
@@ -109,10 +114,9 @@ void SelectMgr_SelectingVolumeManager::SetCamera (const Graphic3d_Mat4d& theProj
                                                   const Standard_Boolean theIsOrthographic,
                                                   const Graphic3d_WorldViewProjState& theWVPState)
 {
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
-  {
-    mySelectingVolumes[anIdx]->SetCamera (theProjection, theWorldView, theIsOrthographic, theWVPState);
-  }
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::SetCamera() should be called after initialization of selection volume ");
+  myActiveSelectingVolume->SetCamera (theProjection, theWorldView, theIsOrthographic, theWVPState);
 }
 
 //=======================================================================
@@ -122,7 +126,12 @@ void SelectMgr_SelectingVolumeManager::SetCamera (const Graphic3d_Mat4d& theProj
 //=======================================================================
 const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::ProjectionMatrix() const
 {
-  return mySelectingVolumes[Frustum]->ProjectionMatrix();
+  if (myActiveSelectingVolume.IsNull())
+  {
+    static const Graphic3d_Mat4d anEmptyMatrix;
+    return anEmptyMatrix;
+  }
+  return myActiveSelectingVolume->ProjectionMatrix();
 }
 
 //=======================================================================
@@ -132,7 +141,12 @@ const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::ProjectionMatrix() cons
 //=======================================================================
 const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::WorldViewMatrix() const
 {
-  return mySelectingVolumes[Frustum]->WorldViewMatrix();
+  if (myActiveSelectingVolume.IsNull())
+  {
+    static const Graphic3d_Mat4d anEmptyMatrix;
+    return anEmptyMatrix;
+  }
+  return myActiveSelectingVolume->WorldViewMatrix();
 }
 
 //=======================================================================
@@ -142,7 +156,12 @@ const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::WorldViewMatrix() const
 //=======================================================================
 const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewProjState() const
 {
-  return mySelectingVolumes[Frustum]->WorldViewProjState();
+  if (myActiveSelectingVolume.IsNull())
+  {
+    static const Graphic3d_WorldViewProjState anEmptyState;
+    return anEmptyState;
+  }
+  return myActiveSelectingVolume->WorldViewProjState();
 }
 
 //=======================================================================
@@ -151,7 +170,23 @@ const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewP
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const
 {
-  mySelectingVolumes[Frustum]->WindowSize (theWidth, theHeight);
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return;
+  }
+  myActiveSelectingVolume->WindowSize (theWidth, theHeight);
+}
+
+//=======================================================================
+// function : SetWindowSize
+// purpose  : Updates window size in all selecting volumes
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::SetWindowSize (const Standard_Integer theWidth,
+                                                      const Standard_Integer theHeight)
+{
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::SetWindowSize() should be called after initialization of selection volume ");
+  myActiveSelectingVolume->SetWindowSize (theWidth, theHeight);
 }
 
 //=======================================================================
@@ -163,23 +198,9 @@ void SelectMgr_SelectingVolumeManager::SetViewport (const Standard_Real theX,
                                                     const Standard_Real theWidth,
                                                     const Standard_Real theHeight)
 {
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
-  {
-    mySelectingVolumes[anIdx]->SetViewport (theX, theY, theWidth, theHeight);
-  }
-}
-
-//=======================================================================
-// function : SetWindowSize
-// purpose  : Updates window size in all selecting volumes
-//=======================================================================
-void SelectMgr_SelectingVolumeManager::SetWindowSize (const Standard_Integer theWidth,
-                                                      const Standard_Integer theHeight)
-{
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
-  {
-    mySelectingVolumes[anIdx]->SetWindowSize (theWidth, theHeight);
-  }
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::SetViewport() should be called after initialization of selection volume ");
+  myActiveSelectingVolume->SetViewport (theX, theY, theWidth, theHeight);
 }
 
 //=======================================================================
@@ -188,49 +209,107 @@ void SelectMgr_SelectingVolumeManager::SetWindowSize (const Standard_Integer the
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetPixelTolerance (const Standard_Integer theTolerance)
 {
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::SetPixelTolerance() should be called after initialization of selection volume ");
+  myActiveSelectingVolume->SetPixelTolerance (theTolerance);
+}
+
+//=======================================================================
+// function : InitPointSelectingVolume
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::InitPointSelectingVolume (const gp_Pnt2d& thePoint)
+{
+  Handle(SelectMgr_RectangularFrustum) aPntVolume = Handle(SelectMgr_RectangularFrustum)::DownCast(myActiveSelectingVolume);
+  if (aPntVolume.IsNull())
   {
-    mySelectingVolumes[anIdx]->SetPixelTolerance (theTolerance);
+    aPntVolume = new SelectMgr_RectangularFrustum();
   }
+  aPntVolume->Init (thePoint);
+  myActiveSelectingVolume = aPntVolume;
+}
+
+//=======================================================================
+// function : InitBoxSelectingVolume
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::InitBoxSelectingVolume (const gp_Pnt2d& theMinPt,
+                                                               const gp_Pnt2d& theMaxPt)
+{
+  Handle(SelectMgr_RectangularFrustum) aBoxVolume = Handle(SelectMgr_RectangularFrustum)::DownCast(myActiveSelectingVolume);
+  if (aBoxVolume.IsNull())
+  {
+    aBoxVolume = new SelectMgr_RectangularFrustum();
+  }
+  aBoxVolume->Init (theMinPt, theMaxPt);
+  myActiveSelectingVolume = aBoxVolume;
+}
+
+//=======================================================================
+// function : InitPolylineSelectingVolume
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::InitPolylineSelectingVolume (const TColgp_Array1OfPnt2d& thePoints)
+{
+  Handle(SelectMgr_TriangularFrustumSet) aPolylineVolume = Handle(SelectMgr_TriangularFrustumSet)::DownCast(myActiveSelectingVolume);
+  if (aPolylineVolume.IsNull())
+  {
+    aPolylineVolume = new SelectMgr_TriangularFrustumSet();
+  }
+  aPolylineVolume->Init (thePoints);
+  myActiveSelectingVolume = aPolylineVolume;
+  aPolylineVolume->SetAllowOverlapDetection (IsOverlapAllowed());
+}
+
+//=======================================================================
+// function : InitSelectingVolume
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::InitSelectingVolume(const Handle(SelectMgr_BaseIntersector)& theVolume)
+{
+  myActiveSelectingVolume = theVolume;
 }
 
 //=======================================================================
 // function : BuildSelectingVolume
-// purpose  : Builds rectangular selecting frustum for point selection
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::BuildSelectingVolume()
+{
+  Standard_ASSERT_RAISE (!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::BuildSelectingVolume() should be called after initialization of active selection volume.");
+  myActiveSelectingVolume->Build();
+}
+
+//=======================================================================
+// function : BuildSelectingVolume
+// purpose  :
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const gp_Pnt2d& thePoint)
 {
-  if (myActiveSelectionType != Point)
-    return;
-
-  mySelectingVolumes[Frustum]->Build (thePoint);
+  InitPointSelectingVolume (thePoint);
+  myActiveSelectingVolume->Build();
 }
 
 //=======================================================================
 // function : BuildSelectingVolume
-// purpose  : Builds rectangular selecting frustum for box selection
+// purpose  :
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const gp_Pnt2d& theMinPt,
                                                              const gp_Pnt2d& theMaxPt)
 {
-  if (myActiveSelectionType != Box)
-    return;
-
-  mySelectingVolumes[Frustum]->Build (theMinPt, theMaxPt);
+  InitBoxSelectingVolume (theMinPt, theMaxPt);
+  myActiveSelectingVolume->Build();
 }
 
 //=======================================================================
 // function : BuildSelectingVolume
-// purpose  : Builds set of triangular selecting frustums for polyline
-//            selection
+// purpose  :
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1OfPnt2d& thePoints)
 {
-  if (myActiveSelectionType != Polyline)
-    return;
-
-  mySelectingVolumes[FrustumSet]->Build (thePoints);
-  Handle(SelectMgr_TriangularFrustumSet)::DownCast (mySelectingVolumes[FrustumSet])->SetAllowOverlapDetection (IsOverlapAllowed());
+  InitPolylineSelectingVolume (thePoints);
+  myActiveSelectingVolume->Build();
 }
 
 //=======================================================================
@@ -242,10 +321,12 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
                                                              const SelectMgr_Vec3& theBoxMax,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (theBoxMin, theBoxMax, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -256,10 +337,12 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
                                                              const SelectMgr_Vec3& theBoxMax,
                                                              Standard_Boolean*     theInside) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, theInside);
+  return myActiveSelectingVolume->Overlaps (theBoxMin, theBoxMax, theInside);
 }
 
 //=======================================================================
@@ -269,10 +352,12 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (thePnt, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -281,10 +366,12 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePn
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePnt) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt);
+  return myActiveSelectingVolume->Overlaps (thePnt);
 }
 
 //=======================================================================
@@ -298,11 +385,13 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp
                                                              Standard_Integer theSensType,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
-                                                                  myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
+                                            myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -316,11 +405,13 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const TColgp_Array1
                                                              Standard_Integer theSensType,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts, (Select3D_TypeOfSensitivity)theSensType,
-                                                                  myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (theArrayOfPnts, (Select3D_TypeOfSensitivity)theSensType,
+                                            myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -331,10 +422,12 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
                                                              const gp_Pnt& thePt2,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1, thePt2, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (thePt1, thePt2, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -350,11 +443,13 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
                                                              Standard_Integer theSensType,
                                                              SelectBasics_PickResult& thePickResult) const
 {
-  if (myActiveSelectionType == Unknown)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return Standard_False;
+  }
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1, thePt2, thePt3, (Select3D_TypeOfSensitivity)theSensType,
-                                                                  myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->Overlaps (thePt1, thePt2, thePt3, (Select3D_TypeOfSensitivity)theSensType,
+                                            myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -364,10 +459,11 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
 //=======================================================================
 Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_Pnt& theCOG) const
 {
-  if (myActiveSelectionType == Unknown)
-    return Standard_False;
-
-  return mySelectingVolumes[myActiveSelectionType / 2]->DistToGeometryCenter (theCOG);
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return RealLast();
+  }
+  return myActiveSelectingVolume->DistToGeometryCenter (theCOG);
 }
 
 // =======================================================================
@@ -378,12 +474,9 @@ Standard_Real SelectMgr_SelectingVolumeManager::DistToGeometryCenter (const gp_P
 // =======================================================================
 gp_Pnt SelectMgr_SelectingVolumeManager::DetectedPoint (const Standard_Real theDepth) const
 {
-  if (myActiveSelectionType != Point)
-  {
-    throw Standard_ProgramError("SelectMgr_SelectingVolumeManager::DetectedPoint() should be called only for Point selection type");
-  }
-
-  return mySelectingVolumes[Frustum]->DetectedPoint (theDepth);
+  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
+    "SelectMgr_SelectingVolumeManager::DetectedPoint() should be called after initialization of selection volume");
+  return myActiveSelectingVolume->DetectedPoint (theDepth);
 }
 
 //=======================================================================
@@ -403,7 +496,7 @@ void SelectMgr_SelectingVolumeManager::AllowOverlapDetection (const Standard_Boo
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::IsOverlapAllowed() const
 {
-  return myToAllowOverlap || myActiveSelectionType == Point;
+  return myToAllowOverlap || GetActiveSelectionType() == SelectMgr_SelectionType_Point;
 }
 
 //=======================================================================
@@ -412,11 +505,17 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::IsOverlapAllowed() const
 //=======================================================================
 const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
 {
-  if (myActiveSelectionType == Polyline)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return NULL;
-
-  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
-  return aFr->GetVertices();
+  }
+  const SelectMgr_RectangularFrustum* aRectFrustum =
+    static_cast<const SelectMgr_RectangularFrustum*> (myActiveSelectingVolume.get());
+  if (aRectFrustum == NULL)
+  {
+    return NULL;
+  }
+  return aRectFrustum->GetVertices();
 }
 
 //=======================================================================
@@ -425,11 +524,11 @@ const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
 //=======================================================================
 gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPickedPnt() const
 {
-  if (myActiveSelectionType == Polyline)
+  if (myActiveSelectingVolume.IsNull())
+  {
     return gp_Pnt();
-
-  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
-  return aFr->GetNearPnt();
+  }
+  return myActiveSelectingVolume->GetNearPnt();
 }
 
 //=======================================================================
@@ -438,11 +537,64 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPickedPnt() const
 //=======================================================================
 gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 {
-  if (myActiveSelectionType == Polyline)
-    return gp_Pnt();
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return gp_Pnt(RealLast(), RealLast(), RealLast());
+  }
+  return myActiveSelectingVolume->GetFarPnt();
+}
 
-  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
-  return aFr->GetFarPnt();
+//=======================================================================
+// function : GetViewRayDirection
+// purpose  :
+//=======================================================================
+gp_Dir SelectMgr_SelectingVolumeManager::GetViewRayDirection() const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return gp_Dir();
+  }
+  return myActiveSelectingVolume->GetViewRayDirection();
+}
+
+//=======================================================================
+// function : IsScalableActiveVolume
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::IsScalableActiveVolume() const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return Standard_False;
+  }
+  return myActiveSelectingVolume->IsScalable();
+}
+
+//=======================================================================
+// function : GetMousePosition
+// purpose  :
+//=======================================================================
+gp_Pnt2d SelectMgr_SelectingVolumeManager::GetMousePosition() const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return gp_Pnt2d(RealLast(), RealLast());
+  }
+  return myActiveSelectingVolume->GetMousePosition();
+}
+
+//=======================================================================
+// function : GetPlanes
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    thePlaneEquations.Clear();
+    return;
+  }
+  return myActiveSelectingVolume->GetPlanes (thePlaneEquations);
 }
 
 //=======================================================================
@@ -455,21 +607,26 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_S
 {
   myViewClipPlanes   = theViewPlanes;
   myObjectClipPlanes = theObjPlanes;
-  if (myActiveSelectionType != Point)
+  if (GetActiveSelectionType() != SelectMgr_SelectionType_Point)
+  {
     return;
+  }
 
   const SelectMgr_SelectingVolumeManager* aWorldSelMgr = theWorldSelMgr != NULL ? theWorldSelMgr : this;
-  const SelectMgr_RectangularFrustum* aFrustum = static_cast<const SelectMgr_RectangularFrustum*>(aWorldSelMgr->mySelectingVolumes[Frustum].get());
   myViewClipRange.SetVoid();
   if (!theViewPlanes.IsNull()
    && !theViewPlanes->IsEmpty())
   {
-    myViewClipRange.AddClippingPlanes (*theViewPlanes, gp_Ax1 (aFrustum->GetNearPnt(), aFrustum->GetViewRayDirection()));
+    myViewClipRange.AddClippingPlanes (*theViewPlanes,
+      gp_Ax1(aWorldSelMgr->myActiveSelectingVolume->GetNearPnt(),
+             aWorldSelMgr->myActiveSelectingVolume->GetViewRayDirection()));
   }
   if (!theObjPlanes.IsNull()
    && !theObjPlanes->IsEmpty())
   {
-    myViewClipRange.AddClippingPlanes (*theObjPlanes, gp_Ax1 (aFrustum->GetNearPnt(), aFrustum->GetViewRayDirection()));
+    myViewClipRange.AddClippingPlanes (*theObjPlanes,
+      gp_Ax1(aWorldSelMgr->myActiveSelectingVolume->GetNearPnt(),
+             aWorldSelMgr->myActiveSelectingVolume->GetViewRayDirection()));
   }
 }
 
@@ -492,12 +649,7 @@ void SelectMgr_SelectingVolumeManager::DumpJson (Standard_OStream& theOStream, S
 {
   OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_SelectingVolumeManager)
 
-  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
-  {
-    const Handle(SelectMgr_BaseFrustum)& aSelectingVolume = mySelectingVolumes[anIdx];
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aSelectingVolume.get())
-  }
-
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myActiveSelectingVolume.get())
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myViewClipPlanes.get())
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myObjectClipPlanes.get())
 

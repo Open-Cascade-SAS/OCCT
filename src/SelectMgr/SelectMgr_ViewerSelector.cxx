@@ -24,6 +24,7 @@
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_FrustumBuilder.hxx>
 #include <SelectMgr_SortCriterion.hxx>
 #include <SelectMgr_SensitiveEntitySet.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -79,7 +80,7 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
                                               const gp_GTrsf& theInversedTrsf,
                                               const SelectMgr_SelectingVolumeManager& theMgr) const
 {
-  if (theMgr.GetActiveSelectionType() != SelectMgr_SelectingVolumeManager::Point)
+  if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
     return;
   }
@@ -247,7 +248,7 @@ void SelectMgr_ViewerSelector::Clear()
 //=======================================================================
 Standard_Boolean SelectMgr_ViewerSelector::isToScaleFrustum (const Handle(Select3D_SensitiveEntity)& theEntity)
 {
-  return mySelectingVolumeMgr.GetActiveSelectionType() == SelectMgr_SelectingVolumeManager::Point
+  return mySelectingVolumeMgr.IsScalableActiveVolume()
     && sensitivity (theEntity) < myTolerances.Tolerance();
 }
 
@@ -292,7 +293,7 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEnti
   {
     ++aPrevCriterion->NbOwnerMatches;
     aCriterion.NbOwnerMatches = aPrevCriterion->NbOwnerMatches;
-    if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box)
+    if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Box)
     {
       if (aCriterion.IsCloserDepth (*aPrevCriterion))
       {
@@ -379,6 +380,10 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     }
     else
     {
+      if (theCamera.IsNull())
+      {
+        return;
+      }
       gp_GTrsf aTPers;
       Graphic3d_Mat4d aMat = theObject->TransformPersistence()->Compute (theCamera, theProjectionMat, theWorldViewMat, theViewportWidth, theViewportHeight);
 
@@ -446,7 +451,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   }
 
   if (!theMgr.ViewClipping().IsNull() &&
-      theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Box)
+      theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Box)
   {
     Graphic3d_BndBox3d aBBox (aSensitivesTree->MinPoint (0), aSensitivesTree->MaxPoint (0));
     // If box selection is active, and the whole sensitive tree is out of the clip planes
@@ -475,7 +480,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   Standard_Integer aHead = -1;
   Standard_Integer aNode = 0; // a root node
   SelectMgr_FrustumCache aScaledTrnsfFrustums;
-  SelectMgr_SelectingVolumeManager aTmpMgr (false);
+  SelectMgr_SelectingVolumeManager aTmpMgr;
   for (;;)
   {
     if (!aSensitivesTree->IsOuter (aNode))
@@ -513,7 +518,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     {
       bool aClipped = false;
       if (!theMgr.ViewClipping().IsNull() &&
-          theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Box)
+          theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Box)
       {
         Graphic3d_BndBox3d aBBox (aSensitivesTree->MinPoint (aNode), aSensitivesTree->MaxPoint (aNode));
         // If box selection is active, and the whole sensitive tree is out of the clip planes
@@ -569,8 +574,8 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 
   // in case of Box/Polyline selection - keep only Owners having all Entities detected
   if (mySelectingVolumeMgr.IsOverlapAllowed()
-  || (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Box
-   && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Polyline))
+  || (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Box
+   && theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Polyline))
   {
     return;
   }
@@ -599,8 +604,8 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
 
   mystored.Clear();
 
-  Standard_Integer aWidth;
-  Standard_Integer aHeight;
+  Standard_Integer aWidth = 0;
+  Standard_Integer aHeight = 0;
   mySelectingVolumeMgr.WindowSize (aWidth, aHeight);
   mySelectableObjects.UpdateBVH (mySelectingVolumeMgr.Camera(),
                                  mySelectingVolumeMgr.ProjectionMatrix(),
@@ -631,13 +636,17 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
 
     gp_GTrsf aTFrustum;
 
-    SelectMgr_SelectingVolumeManager aMgr (Standard_False);
+    SelectMgr_SelectingVolumeManager aMgr;
 
     // for 2D space selection transform selecting volumes to perform overap testing
     // directly in camera's eye space omitting the camera position, which is not
     // needed there at all
     if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent)
     {
+      if (aCamera.IsNull())
+      {
+        continue;
+      }
       const Graphic3d_Mat4d& aMat = mySelectingVolumeMgr.WorldViewMatrix();
       aTFrustum.SetValue (1, 1, aMat.GetValue (0, 0));
       aTFrustum.SetValue (1, 2, aMat.GetValue (0, 1));
@@ -653,7 +662,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       // define corresponding frustum builder parameters
       Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
       aBuilder->SetProjectionMatrix (mySelectingVolumeMgr.ProjectionMatrix(),
-                                     !aCamera.IsNull() && aCamera->IsZeroToOneDepth());
+                                     aCamera->IsZeroToOneDepth());
       aBuilder->SetWorldViewMatrix (SelectMgr_ViewerSelector_THE_IDENTITY_MAT);
       aBuilder->SetWindowSize (aWidth, aHeight);
       aMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTFrustum, aBuilder);

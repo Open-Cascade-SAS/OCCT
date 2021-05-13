@@ -2983,10 +2983,11 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectDetected (const AIS_SelectionSche
   if (theSelScheme == AIS_SelectionScheme_Replace && !myLastPicked.IsNull())
   {
     Graphic3d_Vec2i aMousePos (-1, -1);
-    if (myMainSel->GetManager().GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point)
+    gp_Pnt2d aMouseRealPos = myMainSel->GetManager().GetMousePosition();
+    if (!Precision::IsInfinite (aMouseRealPos.X()) &&
+        !Precision::IsInfinite (aMouseRealPos.Y()))
     {
-      aMousePos.SetValues ((Standard_Integer )myMainSel->GetManager().GetMousePosition().X(),
-                           (Standard_Integer )myMainSel->GetManager().GetMousePosition().Y());
+      aMousePos.SetValues ((Standard_Integer )aMouseRealPos.X(), (Standard_Integer )aMouseRealPos.Y());
     }
     if (myLastPicked->HandleMouseClick (aMousePos, Aspect_VKeyMouse_LeftButton, Aspect_VKeyFlags_NONE, false))
     {

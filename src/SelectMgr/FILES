@@ -4,6 +4,8 @@ SelectMgr_AndFilter.cxx
 SelectMgr_AndFilter.hxx
 SelectMgr_AndOrFilter.cxx
 SelectMgr_AndOrFilter.hxx
+SelectMgr_BaseIntersector.cxx
+SelectMgr_BaseIntersector.hxx
 SelectMgr_BaseFrustum.cxx
 SelectMgr_BaseFrustum.hxx
 SelectMgr_BVHThreadPool.cxx
@@ -40,6 +42,7 @@ SelectMgr_SelectionImageFiller.cxx
 SelectMgr_SelectionImageFiller.hxx
 SelectMgr_SelectionManager.cxx
 SelectMgr_SelectionManager.hxx
+SelectMgr_SelectionType.hxx
 SelectMgr_SensitiveEntity.cxx
 SelectMgr_SensitiveEntity.hxx
 SelectMgr_SensitiveEntitySet.cxx

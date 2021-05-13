@@ -33,15 +33,7 @@ class SelectBasics_SelectingVolumeManager
 {
 public:
 
-  //! Available selection types
-  enum SelectionType { Point, Box, Polyline, Unknown };
-
-public:
-
-  SelectBasics_SelectingVolumeManager()
-  : myActiveSelectionType(Unknown)
-  {
-  }
+  SelectBasics_SelectingVolumeManager() {}
 
   virtual ~SelectBasics_SelectingVolumeManager() {}
 
@@ -113,7 +105,15 @@ public:
   //! correspondingly) onto far view frustum plane
   virtual gp_Pnt GetFarPickedPnt() const = 0;
 
-  //! Return mouse coordinates for Point selection mode.
+  //! Valid only for point and rectangular selection.
+  //! Returns view ray direction
+  virtual gp_Dir GetViewRayDirection() const = 0;
+
+  //! Checks if it is possible to scale current active selecting volume
+  virtual Standard_Boolean IsScalableActiveVolume() const = 0;
+
+  //! Returns mouse coordinates for Point selection mode.
+  //! @return infinite point in case of unsupport of mouse position for this active selection volume.
   virtual gp_Pnt2d GetMousePosition() const = 0;
 
   //! Stores plane equation coefficients (in the following form:
@@ -122,10 +122,10 @@ public:
 
   //! Dumps the content of me into the stream
   virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
-  { (void)theDepth; OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myActiveSelectionType) }
-
-protected:
-  SelectionType myActiveSelectionType;      //!< Active selection type: point, box or polyline
+  {
+    (void )theOStream;
+    (void )theDepth;
+  }
 };
 
 #endif // _SelectBasics_SelectingVolumeManager_HeaderFile

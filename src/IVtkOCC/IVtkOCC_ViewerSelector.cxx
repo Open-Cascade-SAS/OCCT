@@ -48,6 +48,10 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer theXPix,
                                    const Standard_Integer theYPix,
                                    const IVtk_IView::Handle&    theView)
 {
+  gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
+                      static_cast<Standard_Real> (theYPix));
+  mySelectingVolumeMgr.InitPointSelectingVolume (aMousePos);
+
   if (myToUpdateTol)
   {
     // Compute and set a sensitivity tolerance according to the renderer (viewport).
@@ -65,7 +69,6 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer theXPix,
   Standard_Real aX = RealLast(), aY = RealLast();
   Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
 
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Point);
   theView->GetCamera (aProj, anOrient, isOrthographic);
   mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
 
@@ -75,9 +78,7 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer theXPix,
   theView->GetViewport (aX, aY, aVpWidth, aVpHeight);
   mySelectingVolumeMgr.SetViewport (aX, aY, aVpWidth, aVpHeight);
 
-  gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
-                      static_cast<Standard_Real> (theYPix));
-  mySelectingVolumeMgr.BuildSelectingVolume (aMousePos);
+  mySelectingVolumeMgr.BuildSelectingVolume();
 
   TraverseSensitives();
 }
@@ -92,6 +93,13 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer    theXMin,
                                    const Standard_Integer    theYMax,
                                    const IVtk_IView::Handle& theView)
 {
+  gp_Pnt2d aMinMousePos (static_cast<Standard_Real> (theXMin),
+                         static_cast<Standard_Real> (theYMin));
+  gp_Pnt2d aMaxMousePos (static_cast<Standard_Real> (theXMax),
+                         static_cast<Standard_Real> (theYMax));
+  mySelectingVolumeMgr.InitBoxSelectingVolume (aMinMousePos,
+                                               aMaxMousePos);
+
   if (myToUpdateTol)
   {
     // Compute and set a sensitivity tolerance according to the renderer (viewport).
@@ -109,7 +117,6 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer    theXMin,
   Standard_Real aX = RealLast(), aY = RealLast();
   Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
 
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Box);
   theView->GetCamera (aProj, anOrient, isOrthographic);
   mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
 
@@ -119,13 +126,7 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer    theXMin,
   theView->GetViewport (aX, aY, aVpWidth, aVpHeight);
   mySelectingVolumeMgr.SetViewport (aX, aY, aVpWidth, aVpHeight);
 
-  gp_Pnt2d aMinMousePos (static_cast<Standard_Real> (theXMin),
-                         static_cast<Standard_Real> (theYMin));
-  gp_Pnt2d aMaxMousePos (static_cast<Standard_Real> (theXMax),
-                         static_cast<Standard_Real> (theYMax));
-
-  mySelectingVolumeMgr.BuildSelectingVolume (aMinMousePos,
-                                             aMaxMousePos);
+  mySelectingVolumeMgr.BuildSelectingVolume();
 
   TraverseSensitives();
 }
@@ -138,7 +139,15 @@ void IVtkOCC_ViewerSelector::Pick (double**                  thePoly,
                                    const int                 theNbPoints,
                                    const IVtk_IView::Handle& theView)
 {
+  // Build TColgp_Array1OfPnt2d from input array of doubles
   TColgp_Array1OfPnt2d aPolyline (1, theNbPoints);
+  for (Standard_Integer anIt = 0; anIt < theNbPoints; anIt++)
+  {
+    gp_XY aDispPnt = thePoly[anIt][2] != 0 ? gp_XY (thePoly[anIt][0] / thePoly[anIt][2], thePoly[anIt][1] / thePoly[anIt][2])
+                                           : gp_XY (thePoly[anIt][0], thePoly[anIt][1]);
+    aPolyline.SetValue (anIt + 1, aDispPnt);
+  }
+  mySelectingVolumeMgr.InitPolylineSelectingVolume (aPolyline);
 
   if (myToUpdateTol)
   {
@@ -151,23 +160,12 @@ void IVtkOCC_ViewerSelector::Pick (double**                  thePoly,
     myToUpdateTol = Standard_False;
   }
 
-  // Build TColgp_Array1OfPnt2d from input array of doubles
-  gp_XYZ aWorldPnt;
-
-  for (Standard_Integer anIt = 0; anIt < theNbPoints; anIt++)
-  {
-    gp_XY aDispPnt = thePoly[anIt][2] != 0 ? gp_XY (thePoly[anIt][0] / thePoly[anIt][2], thePoly[anIt][1] / thePoly[anIt][2])
-                                           : gp_XY (thePoly[anIt][0], thePoly[anIt][1]);
-    aPolyline.SetValue (anIt + 1, aDispPnt);
-  }
-
   Standard_Integer aWidth = 0, aHeight = 0;
   Graphic3d_Mat4d aProj, anOrient;
   Standard_Boolean isOrthographic = Standard_False;
   Standard_Real aX = RealLast(), aY = RealLast();
   Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
 
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Polyline);
   theView->GetCamera (aProj, anOrient, isOrthographic);
   mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
 
@@ -177,7 +175,7 @@ void IVtkOCC_ViewerSelector::Pick (double**                  thePoly,
   theView->GetViewport (aX, aY, aVpWidth, aVpHeight);
   mySelectingVolumeMgr.SetViewport (aX, aY, aVpWidth, aVpHeight);
 
-  mySelectingVolumeMgr.BuildSelectingVolume (aPolyline);
+  mySelectingVolumeMgr.BuildSelectingVolume();
 
   TraverseSensitives();
 }

@@ -388,7 +388,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
   {
     const gp_Pnt aSegmPnt1 = myTriangul->Node (myFreeEdges->Value (aPrimitiveIdx * 2 + 1));
     const gp_Pnt aSegmPnt2 = myTriangul->Node (myFreeEdges->Value (aPrimitiveIdx * 2 + 2));
-    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
       return theMgr.Overlaps (aSegmPnt1, aSegmPnt2, aDummy);
@@ -403,7 +403,7 @@ Standard_Boolean Select3D_SensitiveTriangulation::elementIsInside (SelectBasics_
     const gp_Pnt aPnt1 = myTriangul->Node (aNode1);
     const gp_Pnt aPnt2 = myTriangul->Node (aNode2);
     const gp_Pnt aPnt3 = myTriangul->Node (aNode3);
-    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
       return theMgr.Overlaps (aPnt1, aPnt2, aPnt3, mySensType, aDummy);

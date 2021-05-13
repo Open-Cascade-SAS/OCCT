@@ -16,9 +16,9 @@
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <SelectMgr_FrustumBuilder.hxx>
 
 #include <SelectMgr_TriangularFrustumSet.hxx>
-#include <SelectMgr_TriangularFrustum.hxx>
 
 #define MEMORY_BLOCK_SIZE 512 * 7
 
@@ -28,42 +28,61 @@
 // =======================================================================
 SelectMgr_TriangularFrustumSet::SelectMgr_TriangularFrustumSet()
 :  myToAllowOverlap (Standard_False)
-{}
+{
+}
 
 // =======================================================================
-// function : BuildSelectingVolume
+// function : Init
+// purpose  :
+// =======================================================================
+void SelectMgr_TriangularFrustumSet::Init (const TColgp_Array1OfPnt2d& thePoints)
+{
+  if (mySelPolyline.Points.IsNull())
+  {
+    mySelPolyline.Points = new TColgp_HArray1OfPnt2d (thePoints.Lower(), thePoints.Upper());
+  }
+  mySelPolyline.Points->Resize (thePoints.Lower(), thePoints.Upper(), false);
+  *mySelPolyline.Points = thePoints;
+  mySelectionType = SelectMgr_SelectionType_Polyline;
+}
+
+// =======================================================================
+// function : Build
 // purpose  : Meshes polygon bounded by polyline. Than organizes a set of
 //            triangular frustums, where each triangle's projection onto
 //            near and far view frustum planes is considered as a frustum
 //            base
 // =======================================================================
-void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoints)
+void SelectMgr_TriangularFrustumSet::Build()
 {
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline || !mySelPolyline.Points.IsNull(),
+    "Error! SelectMgr_TriangularFrustumSet::Build() should be called after selection frustum initialization");
+
   myFrustums.Clear();
 
   Handle(NCollection_IncAllocator) anAllocator = new NCollection_IncAllocator (MEMORY_BLOCK_SIZE);
   Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure = new BRepMesh_DataStructureOfDelaun (anAllocator);
-  Standard_Integer aPtsLower = thePoints.Lower();
-  Standard_Integer aPtsUpper = thePoints.Upper();
-  IMeshData::VectorOfInteger anIndexes (thePoints.Size(), anAllocator);
-  myBoundaryPoints.Resize (aPtsLower, aPtsLower + 2 * (thePoints.Size()) - 1, Standard_False);
+  Standard_Integer aPtsLower = mySelPolyline.Points->Lower();
+  Standard_Integer aPtsUpper = mySelPolyline.Points->Upper();
+  IMeshData::VectorOfInteger anIndexes (mySelPolyline.Points->Size(), anAllocator);
+  myBoundaryPoints.Resize (aPtsLower, aPtsLower + 2 * (mySelPolyline.Points->Size()) - 1, Standard_False);
 
   for (Standard_Integer aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
-    BRepMesh_Vertex aVertex (thePoints.Value (aPtIdx).XY(), aPtIdx, BRepMesh_Frontier);
+    BRepMesh_Vertex aVertex (mySelPolyline.Points->Value (aPtIdx).XY(), aPtIdx, BRepMesh_Frontier);
     anIndexes.Append (aMeshStructure->AddNode (aVertex));
     const gp_Pnt aNearPnt = myBuilder->ProjectPntOnViewPlane (aVertex.Coord().X(), aVertex.Coord().Y(), 0.0);
     const gp_Pnt aFarPnt  = myBuilder->ProjectPntOnViewPlane (aVertex.Coord().X(), aVertex.Coord().Y(), 1.0);
     myBoundaryPoints.SetValue (aPtIdx, aNearPnt);
-    myBoundaryPoints.SetValue (aPtIdx + thePoints.Size(), aFarPnt);
+    myBoundaryPoints.SetValue (aPtIdx + mySelPolyline.Points->Size(), aFarPnt);
   }
 
   Standard_Real aPtSum = 0;
   for (Standard_Integer aIdx = aPtsLower; aIdx <= aPtsUpper; ++aIdx)
   {
-    Standard_Integer aNextIdx = (aIdx % thePoints.Length()) + 1;
-    aPtSum += (thePoints.Value (aNextIdx).Coord().X() - thePoints.Value (aIdx).Coord().X())
-              * (thePoints.Value (aNextIdx).Coord().Y() + thePoints.Value (aIdx).Coord().Y());
+    Standard_Integer aNextIdx = (aIdx % mySelPolyline.Points->Length()) + 1;
+    aPtSum += (mySelPolyline.Points->Value (aNextIdx).Coord().X() - mySelPolyline.Points->Value (aIdx).Coord().X())
+            * (mySelPolyline.Points->Value (aNextIdx).Coord().Y() + mySelPolyline.Points->Value (aIdx).Coord().Y());
   }
   Standard_Boolean isClockwiseOrdered = aPtSum < 0;
 
@@ -102,8 +121,9 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
     }
 
     Handle(SelectMgr_TriangularFrustum) aTrFrustum = new SelectMgr_TriangularFrustum();
+    aTrFrustum->Init (aPts[0], aPts[1], aPts[2]);
     aTrFrustum->SetBuilder (myBuilder);
-    aTrFrustum->Build (aPts[0], aPts[1], aPts[2]);
+    aTrFrustum->Build();
     myFrustums.Append (aTrFrustum);
   }
 
@@ -122,14 +142,18 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustumSet::ScaleAndTransform (const Standard_Integer theScale,
-                                                                                 const gp_GTrsf& theTrsf) const
+Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransform (const Standard_Integer theScale,
+                                                                                     const gp_GTrsf& theTrsf,
+                                                                                     const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
 {
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::ScaleAndTransform() should be called after selection frustum initialization");
+
   Handle(SelectMgr_TriangularFrustumSet) aRes = new SelectMgr_TriangularFrustumSet();
 
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    aRes->myFrustums.Append (Handle(SelectMgr_TriangularFrustum)::DownCast (anIter.Value()->ScaleAndTransform (theScale, theTrsf)));
+    aRes->myFrustums.Append (Handle(SelectMgr_TriangularFrustum)::DownCast (anIter.Value()->ScaleAndTransform (theScale, theTrsf, theBuilder)));
   }
 
   aRes->myBoundaryPoints.Resize (myBoundaryPoints.Lower(), myBoundaryPoints.Upper(), Standard_False);
@@ -140,6 +164,9 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustumSet::ScaleAndTransform 
     aRes->myBoundaryPoints.SetValue (anIdx, aPoint);
   }
 
+  aRes->mySelectionType = mySelectionType;
+  aRes->mySelPolyline.Points = mySelPolyline.Points;
+  aRes->SetBuilder (theBuilder);
   return aRes;
 }
 
@@ -152,6 +179,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, theClipRange, thePickResult))
@@ -169,6 +199,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
                                                            const SelectMgr_Vec3& theMaxPnt,
                                                            Standard_Boolean* theInside) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, NULL))
@@ -217,6 +250,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (thePnt, theClipRange, thePickResult))
@@ -235,6 +271,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1Of
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (theArrayOfPts, theSensType, theClipRange, thePickResult))
@@ -271,6 +310,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (thePnt1, thePnt2, theClipRange, thePickResult))
@@ -304,6 +346,9 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
     if (anIter.Value()->Overlaps (thePnt1, thePnt2, thePnt3, theSensType, theClipRange, thePickResult))
@@ -419,6 +464,16 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection (co
   }
 
   return Standard_True;
+}
+
+// =======================================================================
+// function : DetectedPoint
+// purpose  :
+// =======================================================================
+gp_Pnt SelectMgr_TriangularFrustumSet::DetectedPoint (const Standard_Real theDepth) const
+{
+  (void )theDepth;
+  throw Standard_ProgramError ("SelectMgr_TriangularFrustumSet::DetectedPoint() should not be called for Polyline selection type");
 }
 
 //=======================================================================

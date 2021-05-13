@@ -16,11 +16,8 @@
 #ifndef _SelectMgr_TriangularFrustumSet_HeaderFile
 #define _SelectMgr_TriangularFrustumSet_HeaderFile
 
-#include <NCollection_Handle.hxx>
-#include <NCollection_List.hxx>
-
-#include <SelectMgr_BaseFrustum.hxx>
 #include <SelectMgr_TriangularFrustum.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
 
 typedef NCollection_List<Handle(SelectMgr_TriangularFrustum)> SelectMgr_TriangFrustums;
 typedef NCollection_List<Handle(SelectMgr_TriangularFrustum)>::Iterator SelectMgr_TriangFrustumsIter;
@@ -37,18 +34,29 @@ class SelectMgr_TriangularFrustumSet : public SelectMgr_BaseFrustum
 {
 public:
 
+  //! Auxiliary structure to define selection polyline
+  struct SelectionPolyline
+  {
+    Handle(TColgp_HArray1OfPnt2d) Points;
+  };
+
   SelectMgr_TriangularFrustumSet();
 
   ~SelectMgr_TriangularFrustumSet() {};
 
+  //! Initializes set of triangular frustums by polyline
+  Standard_EXPORT void Init (const TColgp_Array1OfPnt2d& thePoints);
+
   //! Meshes polygon bounded by polyline. Than organizes a set of triangular frustums,
   //! where each triangle's projection onto near and far view frustum planes is
   //! considered as a frustum base
-  Standard_EXPORT virtual void Build (const TColgp_Array1OfPnt2d& thePoints) Standard_OVERRIDE;
+  //! NOTE: it should be called after Init() method
+  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
   //! Returns a copy of the frustum with all sub-volumes transformed according to the matrix given
-  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScale,
-                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScale,
+                                                                               const gp_GTrsf& theTrsf,
+                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,
@@ -80,6 +88,9 @@ public:
                                                      const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
+  //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
+  Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
+
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
@@ -102,9 +113,10 @@ private:
 
 private:
 
-  SelectMgr_TriangFrustums myFrustums;
-  TColgp_Array1OfPnt       myBoundaryPoints;
-  Standard_Boolean         myToAllowOverlap;
+  SelectMgr_TriangFrustums      myFrustums;          //!< set of triangular frustums
+  SelectionPolyline             mySelPolyline;       //!< parameters of selection polyline (it is used to build triangle frustum set)
+  TColgp_Array1OfPnt            myBoundaryPoints;    //!< boundary points
+  Standard_Boolean              myToAllowOverlap;    //!< flag to detect only fully included sensitives or not
 };
 
 #endif // _SelectMgr_TriangularFrustumSet_HeaderFile

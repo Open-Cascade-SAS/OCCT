@@ -25,6 +25,7 @@
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_SensitiveSet.hxx>
 
+class Poly_Triangle;
 class Poly_Triangulation;
 
 //! A framework to define selection of a sensitive entity made of a set of triangles.

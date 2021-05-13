@@ -50,7 +50,7 @@ Standard_Boolean Select3D_SensitiveTriangle::Matches (SelectBasics_SelectingVolu
 {
   if (!theMgr.IsOverlapAllowed())
   {
-    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
       return theMgr.Overlaps (myPoints[0], myPoints[1], myPoints[2], mySensType, aDummy);

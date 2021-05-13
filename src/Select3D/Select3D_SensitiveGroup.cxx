@@ -193,9 +193,9 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveGroup::GetConnected()
 Standard_Boolean Select3D_SensitiveGroup::Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                    SelectBasics_PickResult& thePickResult)
 {
-  const Standard_Boolean toMatchAll = theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point
+  const Standard_Boolean toMatchAll = theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point
                                    && myMustMatchAll;
-  const Standard_Boolean toCheckAll = theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point
+  const Standard_Boolean toCheckAll = theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point
                                    && myToCheckOverlapAll;
   if (!toMatchAll && !toCheckAll)
   {

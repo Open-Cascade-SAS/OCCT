@@ -225,7 +225,7 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
     Points3D (anArrayOfPnt);
     if (!theMgr.IsOverlapAllowed())
     {
-      if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+      if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
       {
         SelectBasics_PickResult aDummy;
         return theMgr.Overlaps (anArrayOfPnt, mySensType, aDummy);

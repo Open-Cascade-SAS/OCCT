@@ -23,25 +23,39 @@
 //! frustum and sensitive entities.
 //! Overlap detection tests are implemented according to the terms of separating axis
 //! theorem (SAT).
+//! NOTE: the object of this class can be created only as part of SelectMgr_TriangularFrustumSet.
 class SelectMgr_TriangularFrustum : public SelectMgr_Frustum<3>
 {
-public:
+protected:
 
   //! Creates new triangular frustum with bases of triangles with vertices theP1,
   //! theP2 and theP3 projections onto near and far view frustum planes
-  SelectMgr_TriangularFrustum() {};
+  SelectMgr_TriangularFrustum() {}
+
+public:
+
+  //! Auxiliary structure to define selection triangle
+  struct SelectionTriangle
+  {
+    gp_Pnt2d Points[3];
+  };
 
   Standard_EXPORT ~SelectMgr_TriangularFrustum();
 
+  //! Initializes selection triangle by input points
+  Standard_EXPORT void Init (const gp_Pnt2d& theP1,
+                             const gp_Pnt2d& theP2,
+                             const gp_Pnt2d& theP3);
+
   //! Creates new triangular frustum with bases of triangles with vertices theP1, theP2 and theP3
   //! projections onto near and far view frustum planes (only for triangular frustums)
-  Standard_EXPORT virtual void Build (const gp_Pnt2d& theP1,
-                                      const gp_Pnt2d& theP2,
-                                      const gp_Pnt2d& theP3) Standard_OVERRIDE;
+  //! NOTE: it should be called after Init() method
+  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
   //! Returns a copy of the frustum transformed according to the matrix given
-  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScale,
-                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScale,
+                                                                               const gp_GTrsf& theTrsf,
+                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
   // SAT Tests for different objects
 
@@ -100,7 +114,15 @@ private:
 
   void cacheVertexProjections (SelectMgr_TriangularFrustum* theFrustum) const;
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,SelectMgr_Frustum<3>)
+protected:
+
+  SelectionTriangle mySelTriangle; //!< parameters of selection triangle (it is used to build triangle frustum)
+
+public:
+
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum, SelectMgr_Frustum<3>)
+
+  friend class SelectMgr_TriangularFrustumSet;
 };
 
 #endif // _SelectMgr_TriangularFrustum_HeaderFile

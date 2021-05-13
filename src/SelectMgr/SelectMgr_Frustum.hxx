@@ -16,13 +16,7 @@
 #ifndef _SelectMgr_Frustum_HeaderFile
 #define _SelectMgr_Frustum_HeaderFile
 
-#include <BVH_Box.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
 #include <SelectMgr_BaseFrustum.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 
 //! This is an internal class containing representation of rectangular selecting frustum, created in case
 //! of point and box selection, and algorithms for overlap detection between selecting

@@ -891,7 +891,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::Matches (SelectBasics_Selecti
   myDetectedEdgeNode2 = -1;
   const bool toDetectRange = !myDetectedElemMap.IsNull() || !myDetectedNodeMap.IsNull();
   if (myGroups.IsNull()
-   || theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Point
+   || theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Point
    || !toDetectRange)
   {
     if (!matches (theMgr, thePickResult, toDetectRange))
@@ -995,7 +995,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
               myDetectedElem = myDetectedNode = aPointIndex;
               myMinDepthElem = myMinDepthNode = aPickResult.Depth();
             }
-            if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+            if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
             {
               if (!myDetectedElemMap.IsNull())
               {
@@ -1046,7 +1046,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
             }
             aResult = Standard_True;
             if (!myDetectedElemMap.IsNull()
-              && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+              && theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
             {
               myDetectedElemMap->ChangeMap().Add(aTriIndex);
             }
@@ -1064,7 +1064,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::overlapsElement (SelectBasics
                 myMinDepthNode = aPickResult.Depth();
               }
               if (!myDetectedNodeMap.IsNull()
-                && theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+                && theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
               {
                 myDetectedNodeMap->ChangeMap().Add (aTriNodes[aNodeIter]);
               }
@@ -1152,7 +1152,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
           return Standard_False;
         }
 
-        if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+        if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
         {
           if (!myDetectedElemMap.IsNull())
           {
@@ -1195,7 +1195,7 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
           return Standard_False;
         }
 
-        if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+        if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
         {
           if (!myDetectedElemMap.IsNull())
           {

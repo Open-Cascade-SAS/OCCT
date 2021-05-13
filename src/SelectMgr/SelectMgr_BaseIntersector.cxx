@@ -1,0 +1,276 @@
+// Copyright (c) 2021 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <SelectMgr_BaseIntersector.hxx>
+
+#include <Graphic3d_Camera.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseIntersector, Standard_Transient)
+
+//=======================================================================
+// function : ScaleAndTransform
+// purpose  :
+//=======================================================================
+Handle(SelectMgr_BaseIntersector) SelectMgr_BaseIntersector::ScaleAndTransform (const Standard_Integer,
+                                                                                const gp_GTrsf&,
+                                                                                const Handle(SelectMgr_FrustumBuilder)&) const
+{
+  return NULL;
+}
+
+//=======================================================================
+// function : Camera
+// purpose  :
+//=======================================================================
+const Handle(Graphic3d_Camera)& SelectMgr_BaseIntersector::Camera() const
+{
+  static const Handle(Graphic3d_Camera) anEmptyCamera;
+  return anEmptyCamera;
+}
+
+//=======================================================================
+// function : SetCamera
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::SetCamera (const Handle(Graphic3d_Camera)&)
+{
+}
+
+//=======================================================================
+// function : SetCamera
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::SetCamera (const Graphic3d_Mat4d&,
+                                           const Graphic3d_Mat4d&,
+                                           const Standard_Boolean,
+                                           const Graphic3d_WorldViewProjState&)
+{
+}
+
+//=======================================================================
+// function : ProjectionMatrix
+// purpose  :
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_BaseIntersector::ProjectionMatrix() const
+{
+  static const Graphic3d_Mat4d anEmptyMatrix;
+  return anEmptyMatrix;
+}
+
+//=======================================================================
+// function : WorldViewMatrix
+// purpose  :
+//=======================================================================
+const Graphic3d_Mat4d& SelectMgr_BaseIntersector::WorldViewMatrix() const
+{
+  static const Graphic3d_Mat4d anEmptyMatrix;
+  return anEmptyMatrix;
+}
+
+//=======================================================================
+// function : WorldViewProjState
+// purpose  :
+//=======================================================================
+const Graphic3d_WorldViewProjState& SelectMgr_BaseIntersector::WorldViewProjState() const
+{
+  static const Graphic3d_WorldViewProjState anEmptyState;
+  return anEmptyState;
+}
+
+//=======================================================================
+// function : SetPixelTolerance
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::SetPixelTolerance (const Standard_Integer)
+{
+}
+
+//=======================================================================
+// function : WindowSize
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::WindowSize (Standard_Integer&,
+                                            Standard_Integer&) const
+{
+}
+
+//=======================================================================
+// function : SetWindowSize
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::SetWindowSize (const Standard_Integer,
+                                               const Standard_Integer)
+{
+}
+
+//=======================================================================
+// function : SetViewport
+// purpose  :
+//=======================================================================
+void SelectMgr_BaseIntersector::SetViewport (const Standard_Real,
+                                             const Standard_Real,
+                                             const Standard_Real,
+                                             const Standard_Real)
+{
+}
+
+//=======================================================================
+// function : GetNearPnt
+// purpose  :
+//=======================================================================
+const gp_Pnt& SelectMgr_BaseIntersector::GetNearPnt() const
+{
+  static const gp_Pnt anEmptyPnt;
+  return anEmptyPnt;
+}
+
+//=======================================================================
+// function : GetFarPnt
+// purpose  :
+//=======================================================================
+const gp_Pnt& SelectMgr_BaseIntersector::GetFarPnt() const
+{
+  static const gp_Pnt anEmptyPnt(RealLast(), RealLast(), RealLast());
+  return anEmptyPnt;
+}
+
+//=======================================================================
+// function : GetViewRayDirection
+// purpose  :
+//=======================================================================
+const gp_Dir& SelectMgr_BaseIntersector::GetViewRayDirection() const
+{
+  static const gp_Dir anEmptyDir;
+  return anEmptyDir;
+}
+
+//=======================================================================
+// function : GetMousePosition
+// purpose  :
+//=======================================================================
+const gp_Pnt2d& SelectMgr_BaseIntersector::GetMousePosition() const
+{
+  static const gp_Pnt2d aPnt(RealLast(), RealLast());
+  return aPnt;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const SelectMgr_Vec3&,
+                                                      const SelectMgr_Vec3&,
+                                                      const SelectMgr_ViewClipRange&,
+                                                      SelectBasics_PickResult&) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const SelectMgr_Vec3&,
+                                                      const SelectMgr_Vec3&,
+                                                      Standard_Boolean*) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
+                                                      const SelectMgr_ViewClipRange&,
+                                                      SelectBasics_PickResult&) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt& thePnt) const
+{
+  (void )thePnt;
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const TColgp_Array1OfPnt&,
+                                                      Select3D_TypeOfSensitivity,
+                                                      const SelectMgr_ViewClipRange&,
+                                                      SelectBasics_PickResult&) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
+                                                      const gp_Pnt&,
+                                                      const gp_Pnt&,
+                                                      Select3D_TypeOfSensitivity,
+                                                      const SelectMgr_ViewClipRange&,
+                                                      SelectBasics_PickResult&) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : Overlaps
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::Overlaps (const gp_Pnt&,
+                                                      const gp_Pnt&,
+                                                      const SelectMgr_ViewClipRange&,
+                                                      SelectBasics_PickResult&) const
+{
+  return Standard_False;
+}
+
+//=======================================================================
+// function : DistToGeometryCenter
+// purpose  :
+//=======================================================================
+Standard_Real SelectMgr_BaseIntersector::DistToGeometryCenter (const gp_Pnt&) const
+{
+  return RealLast();
+}
+
+//=======================================================================
+// function : DetectedPoint
+// purpose  :
+//=======================================================================
+gp_Pnt SelectMgr_BaseIntersector::DetectedPoint (const Standard_Real) const
+{
+  return gp_Pnt(RealLast(), RealLast(), RealLast());
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_BaseIntersector::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySelectionType)
+}

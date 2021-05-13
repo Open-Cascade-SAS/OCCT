@@ -64,12 +64,12 @@ namespace
     //! Checks if picking ray can be used for detection.
     Standard_Boolean isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const
     {
-      if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+      if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
       {
         return Standard_False;
       }
 
-      const gp_Vec aRay (theMgr.GetNearPickedPnt(), theMgr.GetFarPickedPnt());
+      const gp_Dir aRay = theMgr.GetViewRayDirection();
       return !aRay.IsNormal (myPlaneNormal, myAngleTol);
     }
   private:

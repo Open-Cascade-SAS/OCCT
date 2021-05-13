@@ -67,7 +67,7 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeMana
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
-    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
     {
       SelectBasics_PickResult aDummy;
       return theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aDummy)

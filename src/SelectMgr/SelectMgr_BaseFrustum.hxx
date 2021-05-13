@@ -16,26 +16,14 @@
 #ifndef _SelectMgr_BaseFrustum_HeaderFile
 #define _SelectMgr_BaseFrustum_HeaderFile
 
-#include <gp_GTrsf.hxx>
-#include <Graphic3d_Camera.hxx>
-#include <Graphic3d_WorldViewProjState.hxx>
-#include <Select3D_BndBox3d.hxx>
-#include <Select3D_TypeOfSensitivity.hxx>
-#include <SelectMgr_FrustumBuilder.hxx>
-#include <SelectMgr_VectorTypes.hxx>
-#include <SelectMgr_ViewClipRange.hxx>
-#include <SelectBasics_PickResult.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
-#include <Standard_OStream.hxx>
+#include <SelectMgr_BaseIntersector.hxx>
 
 //! This class is an interface for different types of selecting frustums,
 //! defining different selection types, like point, box or polyline
 //! selection. It contains signatures of functions for detection of
 //! overlap by sensitive entity and initializes some data for building
 //! the selecting frustum
-class SelectMgr_BaseFrustum : public Standard_Transient
+class SelectMgr_BaseFrustum : public SelectMgr_BaseIntersector
 {
 public:
 
@@ -43,97 +31,71 @@ public:
   //! orthographic camera and empty frustum builder
   Standard_EXPORT SelectMgr_BaseFrustum();
 
+  //! Destructor
   virtual ~SelectMgr_BaseFrustum() {}
-
-  //! Return camera definition.
-  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
-
-  //! Passes camera projection and orientation matrices to builder
-  Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
-
-  //! Passes camera projection and orientation matrices to builder
-  Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
-                                  const Graphic3d_Mat4d& theWorldView,
-                                  const Standard_Boolean theIsOrthographic,
-                                  const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
-
-  //! @return current camera projection transformation common for all selecting volumes
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
-
-  //! @return current camera world view transformation common for all selecting volumes
-  Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
-
-  //! @return current camera world view projection transformation state
-  Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
-
-  Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTol);
-
-  Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, 
-                                      const Standard_Integer theHeight);
-
-  Standard_EXPORT void WindowSize (Standard_Integer& theWidth,
-                                   Standard_Integer& theHeight) const;
-
-  //! Passes viewport parameters to builder
-  Standard_EXPORT void SetViewport (const Standard_Real theX,
-                                    const Standard_Real theY,
-                                    const Standard_Real theWidth,
-                                    const Standard_Real theHeight);
 
   //! Nullifies the builder created in the constructor and copies the pointer given
   Standard_EXPORT void SetBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder);
 
+  //! Return camera definition.
+  virtual const Handle(Graphic3d_Camera)& Camera() const Standard_OVERRIDE { return myCamera; }
 
-  //! Builds volume according to the point and given pixel tolerance
-  virtual void Build (const gp_Pnt2d& /*thePoint*/) {}
+  //! Passes camera projection and orientation matrices to builder
+  Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE;
 
-  //! Builds volume according to the selected rectangle
-  virtual void Build (const gp_Pnt2d& /*theMinPt*/,
-                      const gp_Pnt2d& /*theMaxPt*/) {}
+  //! Passes camera projection and orientation matrices to builder
+  Standard_EXPORT virtual void SetCamera (const Graphic3d_Mat4d& theProjection,
+                                          const Graphic3d_Mat4d& theWorldView,
+                                          const Standard_Boolean theIsOrthographic,
+                                          const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState()) Standard_OVERRIDE;
 
-  //! Builds volume according to the triangle given
-  virtual void Build (const gp_Pnt2d& /*theP1*/,
-                      const gp_Pnt2d& /*theP2*/,
-                      const gp_Pnt2d& /*theP3*/) {}
+  //! @return current camera projection transformation common for all selecting volumes
+  Standard_EXPORT virtual const Graphic3d_Mat4d& ProjectionMatrix() const Standard_OVERRIDE;
 
-  //! Builds selecting volumes set according to polyline points
-  virtual void Build (const TColgp_Array1OfPnt2d& /*thePoints*/) {}
+  //! @return current camera world view transformation common for all selecting volumes
+  Standard_EXPORT virtual const Graphic3d_Mat4d& WorldViewMatrix() const Standard_OVERRIDE;
 
-  //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
-  //!            Note that this method does not perform any checks on type of the frustum.
-  //! Returns a copy of the frustum resized according to the scale factor given
-  //! and transforms it using the matrix given.
-  //! There are no default parameters, but in case if:
-  //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
-  //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer /*theScaleFactor*/,
-                                                           const gp_GTrsf& /*theTrsf*/) const
-  { 
-    return NULL; 
-  }
+  //! @return current camera world view projection transformation state
+  Standard_EXPORT virtual const Graphic3d_WorldViewProjState& WorldViewProjState() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetPixelTolerance (const Standard_Integer theTol) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void SetWindowSize (const Standard_Integer theWidth,
+                                              const Standard_Integer theHeight) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void WindowSize (Standard_Integer& theWidth,
+                                           Standard_Integer& theHeight) const Standard_OVERRIDE;
+
+  //! Passes viewport parameters to builder
+  Standard_EXPORT virtual void SetViewport (const Standard_Real theX,
+                                            const Standard_Real theY,
+                                            const Standard_Real theWidth,
+                                            const Standard_Real theHeight) Standard_OVERRIDE;
+
+
 
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
-                                                     Standard_Boolean*     theInside = NULL) const;
+                                                     Standard_Boolean*     theInside = NULL) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
   //! Does not perform depth calculation, so this method is defined as
   //! helper function for inclusion test. Therefore, its implementation
   //! makes sense only for rectangular frustum with box selection mode activated.
-  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) const;
+  Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
@@ -141,13 +103,13 @@ public:
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const;
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
@@ -157,26 +119,12 @@ public:
                                                      const gp_Pnt& thePt3,
                                                      Select3D_TypeOfSensitivity theSensType,
                                                      const SelectMgr_ViewClipRange& theClipRange,
-                                                     SelectBasics_PickResult& thePickResult) const;
-
-  //! Measures distance between 3d projection of user-picked
-  //! screen point and given point theCOG
-  Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const;
-
-  Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const;
-
-  //! Stores plane equation coefficients (in the following form:
-  //! Ax + By + Cz + D = 0) to the given vector
-  virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const
-  {
-    thePlaneEquations.Clear();
-    return;
-  }
+                                                     SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 
 protected:
   Standard_Integer    myPixelTolerance;      //!< Pixel tolerance

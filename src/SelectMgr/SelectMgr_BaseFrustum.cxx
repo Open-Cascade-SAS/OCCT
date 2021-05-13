@@ -16,13 +16,13 @@
 #include <SelectMgr_BaseFrustum.hxx>
 
 #include <Message.hxx>
-
+#include <SelectMgr_FrustumBuilder.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseFrustum,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 
 //=======================================================================
-// function : SelectMgr_SelectingVolume
+// function : SelectMgr_BaseFrustum
 // purpose  : Creates new selecting volume with pixel toletance set to 2,
 //            orthographic camera and empty frustum builder
 //=======================================================================
@@ -232,31 +232,13 @@ Standard_Boolean SelectMgr_BaseFrustum::Overlaps (const gp_Pnt& /*thePnt1*/,
 }
 
 //=======================================================================
-// function : DistToGeometryCenter
-// purpose  : Measures distance between 3d projection of user-picked
-//            screen point and given point theCOG
-//=======================================================================
-Standard_Real SelectMgr_BaseFrustum::DistToGeometryCenter (const gp_Pnt& /*theCOG*/) const
-{
-  return DBL_MAX;
-}
-
-//=======================================================================
-// function : DetectedPoint
-// purpose  :
-//=======================================================================
-gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) const
-{
-  return gp_Pnt (RealLast(), RealLast(), RealLast());
-}
-
-//=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void SelectMgr_BaseFrustum::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void SelectMgr_BaseFrustum::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_BaseFrustum)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_BaseIntersector)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic)

@@ -16,6 +16,7 @@
 #include <NCollection_Vector.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Standard_Assert.hxx>
+#include <SelectMgr_FrustumBuilder.hxx>
 
 // =======================================================================
 // function : isSeparated

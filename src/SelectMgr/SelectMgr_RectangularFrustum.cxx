@@ -13,10 +13,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <SelectMgr_RectangularFrustum.hxx>
+
+#include <BVH_Tools.hxx>
 #include <NCollection_Vector.hxx>
 #include <Poly_Array1OfTriangle.hxx>
+#include <SelectMgr_FrustumBuilder.hxx>
+#include <SelectMgr_ViewClipRange.hxx>
 
-#include <SelectMgr_RectangularFrustum.hxx>
+// =======================================================================
+// function : Constructor
+// purpose  :
+// =======================================================================
+SelectMgr_RectangularFrustum::SelectMgr_RectangularFrustum()
+  : myScale(1.0)
+{
+}
 
 // =======================================================================
 // function : segmentSegmentDistance
@@ -204,56 +216,6 @@ namespace
     // Far
     theNormals[5] = -theNormals[4];
   }
-  
-  // =======================================================================
-  // function : rayBoxIntersection
-  // purpose  : Computes an intersection of ray with box
-  //            Returns distances to the first (or 0.0 if the ray origin is inside the box) and second intersection
-  //            If the ray has no intersection with the box returns DBL_MAX
-  // =======================================================================
-  Bnd_Range rayBoxIntersection (const gp_Ax1& theRay, const gp_Pnt& theBoxMin, const gp_Pnt& theBoxMax)
-  {
-    Standard_Real aTimeMinX = -DBL_MAX;
-    Standard_Real aTimeMinY = -DBL_MAX;
-    Standard_Real aTimeMinZ = -DBL_MAX;
-    Standard_Real aTimeMaxX = DBL_MAX;
-    Standard_Real aTimeMaxY = DBL_MAX;
-    Standard_Real aTimeMaxZ = DBL_MAX;
-
-    Standard_Real aTime1;
-    Standard_Real aTime2;
-
-    if (Abs (theRay.Direction().X()) > DBL_EPSILON)
-    {
-      aTime1 = (theBoxMin.X() - theRay.Location().X()) / theRay.Direction().X();
-      aTime2 = (theBoxMax.X() - theRay.Location().X()) / theRay.Direction().X();
-
-      aTimeMinX = Min (aTime1, aTime2);
-      aTimeMaxX = Max (aTime1, aTime2);
-    }
-    if (Abs (theRay.Direction().Y()) > DBL_EPSILON)
-    {
-      aTime1 = (theBoxMin.Y() - theRay.Location().Y()) / theRay.Direction().Y();
-      aTime2 = (theBoxMax.Y() - theRay.Location().Y()) / theRay.Direction().Y();
-
-      aTimeMinY = Min (aTime1, aTime2);
-      aTimeMaxY = Max (aTime1, aTime2);
-    }
-    if (Abs (theRay.Direction().Z()) > DBL_EPSILON)
-    {
-      aTime1 = (theBoxMin.Z() - theRay.Location().Z()) / theRay.Direction().Z();
-      aTime2 = (theBoxMax.Z() - theRay.Location().Z()) / theRay.Direction().Z();
-
-      aTimeMinZ = Min (aTime1, aTime2);
-      aTimeMaxZ = Max (aTime1, aTime2);
-    }
-
-    Standard_Real aTimeMin = Max (aTimeMinX, Max (aTimeMinY, aTimeMinZ));
-    Standard_Real aTimeMax = Min (aTimeMaxX, Min (aTimeMaxY, aTimeMaxZ));
-
-    return aTimeMin > aTimeMax || aTimeMax < 0.0 ? Bnd_Range (DBL_MAX, DBL_MAX)
-      : Bnd_Range (Max (aTimeMin, 0.0), aTimeMax);
-  }
 }
 
 // =======================================================================
@@ -316,52 +278,63 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_Rectangular
 }
 
 // =======================================================================
-// function : Build
-// purpose  : Build volume according to the point and given pixel
-//            tolerance
+// function : Init
+// purpose  :
 // =======================================================================
-void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d &thePoint)
+void SelectMgr_RectangularFrustum::Init (const gp_Pnt2d &thePoint)
 {
-  myNearPickedPnt = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 0.0);
-  myFarPickedPnt = myBuilder->ProjectPntOnViewPlane (thePoint.X(), thePoint.Y(), 1.0);
-  myViewRayDir = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ();
-  myMousePos = thePoint;
+  mySelectionType = SelectMgr_SelectionType_Point;
+  mySelRectangle.SetMousePos (thePoint);
+}
 
-  gp_Pnt2d aMinPnt (thePoint.X() - myPixelTolerance * 0.5,
-                    thePoint.Y() - myPixelTolerance * 0.5);
-  gp_Pnt2d aMaxPnt (thePoint.X() + myPixelTolerance * 0.5,
-                    thePoint.Y() + myPixelTolerance * 0.5);
-
-  // calculate base frustum characteristics: vertices and edge directions
-  computeFrustum (aMinPnt, aMaxPnt, myBuilder, myVertices, myEdgeDirs);
-
-  // compute frustum normals
-  computeNormals (myEdgeDirs, myPlanes);
-
-  // compute vertices projections onto frustum normals and
-  // {i, j, k} vectors and store them to corresponding class fields
-  cacheVertexProjections (this);
-
-  myScale = 1.0;
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+void SelectMgr_RectangularFrustum::Init (const gp_Pnt2d& theMinPnt,
+                                         const gp_Pnt2d& theMaxPnt)
+{
+  mySelectionType = SelectMgr_SelectionType_Box;
+  mySelRectangle.SetMinPnt (theMinPnt);
+  mySelRectangle.SetMaxPnt (theMaxPnt);
 }
 
 // =======================================================================
 // function : Build
-// purpose  : Build volume according to the selected rectangle
+// purpose  :
 // =======================================================================
-void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
-                                          const gp_Pnt2d& theMaxPnt)
+void SelectMgr_RectangularFrustum::Build()
 {
-  myNearPickedPnt = myBuilder->ProjectPntOnViewPlane ((theMinPnt.X() + theMaxPnt.X()) * 0.5,
-                                                      (theMinPnt.Y() + theMaxPnt.Y()) * 0.5,
-                                                      0.0);
-  myFarPickedPnt = myBuilder->ProjectPntOnViewPlane ((theMinPnt.X() + theMaxPnt.X()) * 0.5,
-                                                     (theMinPnt.Y() + theMaxPnt.Y()) * 0.5,
-                                                     1.0);
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Build() should be called after selection frustum initialization");
+  gp_Pnt2d aMinPnt, aMaxPnt;
+  if (mySelectionType == SelectMgr_SelectionType_Point)
+  {
+    const gp_Pnt2d& aMousePos = mySelRectangle.MousePos();
+    myNearPickedPnt = myBuilder->ProjectPntOnViewPlane (aMousePos.X(), aMousePos.Y(), 0.0);
+    myFarPickedPnt  = myBuilder->ProjectPntOnViewPlane (aMousePos.X(), aMousePos.Y(), 1.0);
+
+    aMinPnt.SetCoord (aMousePos.X() - myPixelTolerance * 0.5,
+                      aMousePos.Y() - myPixelTolerance * 0.5);
+    aMaxPnt.SetCoord (aMousePos.X() + myPixelTolerance * 0.5,
+                      aMousePos.Y() + myPixelTolerance * 0.5);
+  }
+  else
+  {
+    aMinPnt = mySelRectangle.MinPnt();
+    aMaxPnt = mySelRectangle.MaxPnt();
+    myNearPickedPnt = myBuilder->ProjectPntOnViewPlane ((aMinPnt.X() + aMaxPnt.X()) * 0.5,
+                                                        (aMinPnt.Y() + aMaxPnt.Y()) * 0.5,
+                                                        0.0);
+    myFarPickedPnt  = myBuilder->ProjectPntOnViewPlane ((aMinPnt.X() + aMaxPnt.X()) * 0.5,
+                                                        (aMinPnt.Y() + aMaxPnt.Y()) * 0.5,
+                                                        1.0);
+  }
+
   myViewRayDir = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ();
 
   // calculate base frustum characteristics: vertices and edge directions
-  computeFrustum (theMinPnt, theMaxPnt, myBuilder, myVertices, myEdgeDirs);
+  computeFrustum (aMinPnt, aMaxPnt, myBuilder, myVertices, myEdgeDirs);
 
   // compute frustum normals
   computeNormals (myEdgeDirs, myPlanes);
@@ -384,9 +357,13 @@ void SelectMgr_RectangularFrustum::Build (const gp_Pnt2d& theMinPnt,
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 // =======================================================================
-Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                               const gp_GTrsf& theTrsf) const
+Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                                   const gp_GTrsf& theTrsf,
+                                                                                   const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
 {
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::ScaleAndTransform() should be called after selection frustum initialization");
+
   Standard_ASSERT_RAISE (theScaleFactor > 0,
     "Error! Pixel tolerance for selection should be greater than zero");
 
@@ -395,7 +372,10 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (c
   const Standard_Boolean isToTrsf  = theTrsf.Form() != gp_Identity;
 
   if (!isToScale && !isToTrsf)
+  {
+    aRes->SetBuilder (theBuilder);
     return aRes;
+  }
 
   aRes->myIsOrthographic = myIsOrthographic;
   const SelectMgr_RectangularFrustum* aRef = this;
@@ -406,10 +386,11 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (c
     aRes->myFarPickedPnt  = myFarPickedPnt;
     aRes->myViewRayDir    = myViewRayDir;
 
-    const gp_Pnt2d aMinPnt (myMousePos.X() - theScaleFactor * 0.5,
-                            myMousePos.Y() - theScaleFactor * 0.5);
-    const gp_Pnt2d aMaxPnt (myMousePos.X() + theScaleFactor * 0.5,
-                            myMousePos.Y() + theScaleFactor * 0.5);
+    const gp_Pnt2d& aMousePos = mySelRectangle.MousePos();
+    const gp_Pnt2d aMinPnt (aMousePos.X() - theScaleFactor * 0.5,
+                            aMousePos.Y() - theScaleFactor * 0.5);
+    const gp_Pnt2d aMaxPnt (aMousePos.X() + theScaleFactor * 0.5,
+                            aMousePos.Y() + theScaleFactor * 0.5);
 
     // recompute base frustum characteristics from scratch
     computeFrustum (aMinPnt, aMaxPnt, myBuilder, aRes->myVertices, aRes->myEdgeDirs);
@@ -460,9 +441,19 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_RectangularFrustum::ScaleAndTransform (c
 
   cacheVertexProjections (aRes.get());
 
-  aRes->myMousePos = myMousePos;
-
+  aRes->mySelectionType = mySelectionType;
+  aRes->mySelRectangle = mySelRectangle;
+  aRes->SetBuilder (theBuilder);
   return aRes;
+}
+
+// =======================================================================
+// function : IsScalable
+// purpose  :
+// =======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::IsScalable() const
+{
+  return mySelectionType == SelectMgr_SelectionType_Point;
 }
 
 // =======================================================================
@@ -475,6 +466,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
                                                          const SelectMgr_Vec3& theBoxMax,
                                                          Standard_Boolean*     theInside) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   return hasOverlap (theBoxMin, theBoxMax, theInside);
 }
 
@@ -488,18 +482,17 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
                                                          const SelectMgr_ViewClipRange& theClipRange,
                                                          SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   if (!hasOverlap (theBoxMin, theBoxMax))
     return Standard_False;
 
-  gp_Ax1 aRay (myNearPickedPnt, myViewRayDir);
-  Bnd_Range aRange = rayBoxIntersection (aRay,
-                                         gp_Pnt (theBoxMin.x(), theBoxMin.y(), theBoxMin.z()),
-                                         gp_Pnt (theBoxMax.x(), theBoxMax.y(), theBoxMax.z()));
-
   Standard_Real aDepth = 0.0;
-  aRange.GetMin (aDepth);
-
-  if (aDepth == DBL_MAX)
+  BVH_Ray<Standard_Real, 3> aRay(SelectMgr_Vec3(myNearPickedPnt.X(), myNearPickedPnt.Y(), myNearPickedPnt.Z()),
+                                 SelectMgr_Vec3(myViewRayDir.X(), myViewRayDir.Y(), myViewRayDir.Z()));
+  Standard_Real aTimeEnter, aTimeLeave;
+  if (!BVH_Tools<Standard_Real, 3>::RayBoxIntersection (aRay, theBoxMin, theBoxMax, aTimeEnter, aTimeLeave))
   {
     gp_Pnt aNearestPnt (RealLast(), RealLast(), RealLast());
     aNearestPnt.SetX (Max (Min (myNearPickedPnt.X(), theBoxMax.x()), theBoxMin.x()));
@@ -510,6 +503,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const SelectMgr_Vec3& t
     thePickResult.SetDepth (aDepth);
     return !theClipRange.IsClipped (thePickResult.Depth());
   }
+
+  Bnd_Range aRange(Max (aTimeEnter, 0.0), aTimeLeave);
+  aRange.GetMin (aDepth);
 
   if (!theClipRange.GetNearestDepth (aRange, aDepth))
   {
@@ -529,6 +525,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
                                                          const SelectMgr_ViewClipRange& theClipRange,
                                                          SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   if (!hasOverlap (thePnt))
     return Standard_False;
 
@@ -547,6 +546,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt,
 // =======================================================================
 Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   return hasOverlap (thePnt);
 }
 
@@ -559,6 +561,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
                                                          const SelectMgr_ViewClipRange& theClipRange,
                                                          SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   if (!hasOverlap (thePnt1, thePnt2))
     return Standard_False;
 
@@ -579,6 +584,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const TColgp_Array1OfPn
                                                          const SelectMgr_ViewClipRange& theClipRange,
                                                          SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
     Standard_Integer aMatchingSegmentsNb = -1;
@@ -637,6 +645,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
                                                          const SelectMgr_ViewClipRange& theClipRange,
                                                          SelectBasics_PickResult& thePickResult) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
   if (theSensType == Select3D_TOS_BOUNDARY)
   {
     const gp_Pnt aPntsArrayBuf[4] = { thePnt1, thePnt2, thePnt3, thePnt1 };
@@ -728,12 +739,28 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
 }
 
 // =======================================================================
+// function : GetMousePosition
+// purpose  :
+// =======================================================================
+const gp_Pnt2d& SelectMgr_RectangularFrustum::GetMousePosition() const
+{
+  if (mySelectionType == SelectMgr_SelectionType_Point)
+  {
+    return mySelRectangle.MousePos();
+  }
+  return base_type::GetMousePosition();
+}
+
+// =======================================================================
 // function : DistToGeometryCenter
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG
 // =======================================================================
 Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& theCOG) const
 {
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::DistToGeometryCenter() should be called after selection frustum initialization");
+
   return theCOG.Distance (myNearPickedPnt) * myScale;
 }
 
@@ -744,6 +771,8 @@ Standard_Real SelectMgr_RectangularFrustum::DistToGeometryCenter (const gp_Pnt& 
 // =======================================================================
 gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint (const Standard_Real theDepth) const
 {
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point,
+    "SelectMgr_RectangularFrustum::DetectedPoint() should be called only for Point selection type");
   return myNearPickedPnt.XYZ() + myViewRayDir.XYZ() * theDepth / myScale;
 }
 
@@ -780,7 +809,8 @@ void SelectMgr_RectangularFrustum::DumpJson (Standard_OStream& theOStream, Stand
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myNearPickedPnt)
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myFarPickedPnt)
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myViewRayDir)
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myMousePos)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mySelRectangle.MinPnt())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mySelRectangle.MaxPnt())
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myScale)
 }

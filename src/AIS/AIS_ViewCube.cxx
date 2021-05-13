@@ -80,7 +80,7 @@ public:
   //! Checks if picking ray can be used for detection.
   bool isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const
   {
-    if (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point)
+    if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
     {
       // disallow rectangular selection
       return false;
@@ -89,7 +89,7 @@ public:
     if (AIS_ViewCubeOwner* anOwner = dynamic_cast<AIS_ViewCubeOwner* >(myOwnerId.get()))
     {
       const Standard_Real anAngleToler = 10.0 * M_PI / 180.0;
-      const gp_Vec aRay (theMgr.GetNearPickedPnt(), theMgr.GetFarPickedPnt());
+      const gp_Dir aRay = theMgr.GetViewRayDirection();
       const gp_Dir aDir = V3d::GetProjAxis (anOwner->MainOrientation());
       return !aRay.IsNormal (aDir, anAngleToler);
     }

@@ -150,7 +150,7 @@ Standard_Boolean Select3D_SensitiveSet::matches (SelectBasics_SelectingVolumeMan
 
   Standard_Integer aMatchesNb = -1;
 
-  const bool toCheckFullInside = (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point);
+  const bool toCheckFullInside = (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point);
   if (toCheckFullInside && isFullInside)
   {
     Standard_Integer aSize = myContent.Size();

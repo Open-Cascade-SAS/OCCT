@@ -15,6 +15,8 @@
 
 #include <SelectMgr_TriangularFrustum.hxx>
 
+#include <SelectMgr_FrustumBuilder.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,Standard_Transient)
 
 SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
@@ -77,27 +79,36 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections (SelectMgr_TriangularFr
 }
 
 //=======================================================================
-// function : SelectMgr_TriangularFrustum
-// purpose  : Creates new triangular frustum with bases of triangles with
-//            vertices theP1, theP2 and theP3 projections onto near and
-//            far view frustum planes
+// function : Init
+// purpose  :
 //=======================================================================
-void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
-                                         const gp_Pnt2d& theP2,
-                                         const gp_Pnt2d& theP3)
+void SelectMgr_TriangularFrustum::Init (const gp_Pnt2d& theP1,
+                                        const gp_Pnt2d& theP2,
+                                        const gp_Pnt2d& theP3)
+{
+  mySelTriangle.Points[0] = theP1;
+  mySelTriangle.Points[1] = theP2;
+  mySelTriangle.Points[2] = theP3;
+}
+
+//=======================================================================
+// function : Build
+// purpose  :
+//=======================================================================
+void SelectMgr_TriangularFrustum::Build()
 {
   // V0_Near
-  myVertices[0] = myBuilder->ProjectPntOnViewPlane (theP1.X(), theP1.Y(), 0.0);
+  myVertices[0] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 0.0);
   // V1_Near
-  myVertices[1] = myBuilder->ProjectPntOnViewPlane (theP2.X(), theP2.Y(), 0.0);
+  myVertices[1] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 0.0);
   // V2_Near
-  myVertices[2] = myBuilder->ProjectPntOnViewPlane (theP3.X(), theP3.Y(), 0.0);
+  myVertices[2] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 0.0);
   // V0_Far
-  myVertices[3] = myBuilder->ProjectPntOnViewPlane (theP1.X(), theP1.Y(), 1.0);
+  myVertices[3] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[0].X(), mySelTriangle.Points[0].Y(), 1.0);
   // V1_Far
-  myVertices[4] = myBuilder->ProjectPntOnViewPlane (theP2.X(), theP2.Y(), 1.0);
+  myVertices[4] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[1].X(), mySelTriangle.Points[1].Y(), 1.0);
   // V2_Far
-  myVertices[5] = myBuilder->ProjectPntOnViewPlane (theP3.X(), theP3.Y(), 1.0);
+  myVertices[5] = myBuilder->ProjectPntOnViewPlane (mySelTriangle.Points[2].X(), mySelTriangle.Points[2].Y(), 1.0);
 
   // V0_Near - V0_Far
   myEdgeDirs[0] = myVertices[0].XYZ() - myVertices[3].XYZ();
@@ -128,8 +139,9 @@ void SelectMgr_TriangularFrustum::Build (const gp_Pnt2d& theP1,
 //                  as any negative value;
 //                - scale only is needed: @theTrsf must be set to gp_Identity.
 //=======================================================================
-Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer /*theScale*/,
-                                                                              const gp_GTrsf& theTrsf) const
+Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustum::ScaleAndTransform (const Standard_Integer,
+                                                                                  const gp_GTrsf& theTrsf,
+                                                                                  const Handle(SelectMgr_FrustumBuilder)&) const
 {
   Handle(SelectMgr_TriangularFrustum) aRes = new SelectMgr_TriangularFrustum();
 
@@ -158,6 +170,8 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustum::ScaleAndTransform (co
   computeFrustumNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
   cacheVertexProjections (aRes.get());
+
+  aRes->mySelTriangle = mySelTriangle;
 
   return aRes;
 }

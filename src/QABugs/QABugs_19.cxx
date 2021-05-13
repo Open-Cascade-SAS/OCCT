@@ -4145,24 +4145,22 @@ static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theA
   }
 
   SelectMgr_SelectingVolumeManager* aMgr = new SelectMgr_SelectingVolumeManager();
-  aMgr->SetActiveSelectionType (theArgNb > 4 ?
-    SelectMgr_SelectingVolumeManager::Box : SelectMgr_SelectingVolumeManager::Point);
+  if (theArgNb > 4)
+  {
+    aMgr->InitBoxSelectingVolume (aPxPnt1, aPxPnt2);
+  }
+  else
+  {
+    aMgr->InitPointSelectingVolume (aPxPnt1);
+  }
   aMgr->SetCamera (ViewerTest::CurrentView()->Camera());
   aMgr->SetPixelTolerance (ViewerTest::GetAISContext()->PixelTolerance());
   Standard_Integer aWidth, aHeight;
   ViewerTest::CurrentView()->View()->Window()->Size (aWidth, aHeight);
   aMgr->SetWindowSize (aWidth, aHeight);
-  if (theArgNb > 4)
-  {
-    aMgr->BuildSelectingVolume (aPxPnt1, aPxPnt2);
-  }
-  else
-  {
-    aMgr->BuildSelectingVolume (aPxPnt1);
-  }
+  aMgr->BuildSelectingVolume();
+
   const gp_Pnt* aVerts = aMgr->GetVertices();
-  gp_Pnt aNearPnt = aMgr->GetNearPickedPnt();
-  gp_Pnt aFarPnt  = aMgr->GetFarPickedPnt();
   BRepBuilderAPI_MakePolygon aWireBldrs[4];
 
   aWireBldrs[0].Add (gp_Pnt (aVerts[0].X(), aVerts[0].Y(), aVerts[0].Z()));
@@ -4201,6 +4199,17 @@ static Standard_Integer OCC26195 (Draw_Interpretor& theDI, Standard_Integer theA
   Handle(AIS_InteractiveObject) aCmp = new AIS_Shape (aComp);
   aCmp->SetColor (Quantity_NOC_GREEN);
   ViewerTest::Display ("c", aCmp, Standard_True, Standard_True);
+
+  gp_Pnt aNearPnt = aMgr->GetNearPickedPnt();
+  gp_Pnt aFarPnt = aMgr->GetFarPickedPnt();
+  if (Precision::IsInfinite (aFarPnt.X()) ||
+      Precision::IsInfinite (aFarPnt.Y()) ||
+      Precision::IsInfinite (aFarPnt.Z()))
+  {
+    theDI << "Near: " << aNearPnt.X() << " " << aNearPnt.Y() << " " << aNearPnt.Z() << "\n";
+    theDI << "Far: infinite point " << "\n";
+    return 0;
+  }
 
   Handle(Geom_CartesianPoint) aPnt1 = new Geom_CartesianPoint (aNearPnt);
   Handle(Geom_CartesianPoint) aPnt2 = new Geom_CartesianPoint (aFarPnt);

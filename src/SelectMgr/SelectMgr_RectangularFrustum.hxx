@@ -33,14 +33,46 @@ class SelectMgr_RectangularFrustum : public SelectMgr_Frustum<4>
 {
 public:
 
-  SelectMgr_RectangularFrustum() : myScale (1.0) {};
+  //! Auxiliary structure to define selection primitive (point or box)
+  //! In case of point selection min and max points are identical.
+  struct SelectionRectangle
+  {
+    SelectionRectangle()
+    : myMinPnt(gp_Pnt2d(RealLast(), RealLast())),
+      myMaxPnt(gp_Pnt2d(RealLast(), RealLast())) {}
 
-  //! Builds volume according to the point and given pixel tolerance
-  Standard_EXPORT virtual void Build (const gp_Pnt2d& thePoint) Standard_OVERRIDE;
+    const gp_Pnt2d& MousePos() const { return myMinPnt; }
+    void SetMousePos (const gp_Pnt2d& thePos) { myMinPnt = thePos; myMaxPnt = thePos; }
 
-  //! Builds volume according to the selected rectangle
-  Standard_EXPORT virtual void Build (const gp_Pnt2d& theMinPnt,
-                                      const gp_Pnt2d& theMaxPnt) Standard_OVERRIDE;
+    const gp_Pnt2d& MinPnt() const { return myMinPnt; }
+    void SetMinPnt (const gp_Pnt2d& theMinPnt) { myMinPnt = theMinPnt; }
+
+    const gp_Pnt2d& MaxPnt() const { return myMaxPnt; }
+    void SetMaxPnt (const gp_Pnt2d& theMaxPnt) { myMaxPnt = theMaxPnt; }
+
+  private:
+
+    gp_Pnt2d myMinPnt;
+    gp_Pnt2d myMaxPnt;
+  };
+
+  //! Creates rectangular selecting frustum.
+  Standard_EXPORT SelectMgr_RectangularFrustum();
+
+  //! Initializes volume according to the point and given pixel tolerance
+  Standard_EXPORT void Init (const gp_Pnt2d& thePoint);
+
+  //! Initializes volume according to the selected rectangle
+  Standard_EXPORT void Init (const gp_Pnt2d& theMinPnt,
+                             const gp_Pnt2d& theMaxPnt);
+
+  //! Builds volume according to internal parameters.
+  //! NOTE: it should be called after Init() method
+  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+
+  //! Checks if it is possible to scale this frustum.
+  //! It is true for frustum built on a single point.
+  Standard_EXPORT virtual Standard_Boolean IsScalable() const Standard_OVERRIDE;
 
   //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
   //!            Note that this method does not perform any checks on type of the frustum.
@@ -49,9 +81,11 @@ public:
   //! There are no default parameters, but in case if:
   //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
   //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  Standard_EXPORT virtual Handle(SelectMgr_BaseFrustum) ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                           const gp_GTrsf& theTrsf) const Standard_OVERRIDE;
-
+  //! Builder is an optional argument that represents corresponding settings for re-constructing transformed
+  //! frustum from scratch. Can be null if reconstruction is not expected furthermore.
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                               const gp_GTrsf& theTrsf,
+                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
   // SAT Tests for different objects
 
@@ -100,30 +134,31 @@ public:
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
-  //! screen point and given point theCOG
+  //! screen point and given point theCOG.
+  //! It makes sense only for frustums built on a single point.
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const Standard_OVERRIDE;
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
   //! A set of helper functions that return rectangular selecting frustum data
-  inline const gp_Pnt* GetVertices() const { return myVertices; }
+  const gp_Pnt* GetVertices() const { return myVertices; }
 
   //! Returns projection of 2d mouse picked point or projection
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto near view frustum plane
-  inline const gp_Pnt& GetNearPnt() const { return myNearPickedPnt; }
+  virtual const gp_Pnt& GetNearPnt() const Standard_OVERRIDE { return myNearPickedPnt; }
 
   //! Returns projection of 2d mouse picked point or projection
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto far view frustum plane
-  inline const gp_Pnt& GetFarPnt() const { return myFarPickedPnt; }
+  virtual const gp_Pnt& GetFarPnt() const Standard_OVERRIDE { return myFarPickedPnt; }
 
-  //! Return view ray direction.
-  const gp_Dir& GetViewRayDirection() const { return myViewRayDir; }
+  //! Returns view ray direction.
+  virtual const gp_Dir& GetViewRayDirection() const Standard_OVERRIDE { return myViewRayDir; }
 
-  //! Return mouse coordinates.
-  const gp_Pnt2d& GetMousePosition() const { return myMousePos; }
+  //! Returns current mouse coordinates.
+  Standard_EXPORT virtual const gp_Pnt2d& GetMousePosition() const Standard_OVERRIDE;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
@@ -154,10 +189,10 @@ private:
 
 private:
 
+  SelectionRectangle      mySelRectangle;              //!< parameters for selection by point or box (it is used to build frustum)
   gp_Pnt                  myNearPickedPnt;             //!< 3d projection of user-picked selection point onto near view plane
   gp_Pnt                  myFarPickedPnt;              //!< 3d projection of user-picked selection point onto far view plane
-  gp_Dir                  myViewRayDir;
-  gp_Pnt2d                myMousePos;                  //!< Mouse coordinates
+  gp_Dir                  myViewRayDir;                //!< view ray direction
   Standard_Real           myScale;                     //!< Scale factor of applied transformation, if there was any
 
 };

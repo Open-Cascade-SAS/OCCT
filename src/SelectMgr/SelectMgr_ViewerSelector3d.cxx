@@ -49,20 +49,22 @@ void SelectMgr_ViewerSelector3d::Pick (const Standard_Integer theXPix,
                                        const Handle(V3d_View)& theView)
 {
   updateZLayers (theView);
+
+  gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
+                      static_cast<Standard_Real> (theYPix));
+  mySelectingVolumeMgr.InitPointSelectingVolume (aMousePos);
+
   if(myToUpdateTolerance)
   {
     mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
     myToUpdateTolerance = Standard_False;
   }
-
   mySelectingVolumeMgr.SetCamera (theView->Camera());
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Point);
   Standard_Integer aWidth = 0, aHeight = 0;
   theView->Window()->Size (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
-  gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
-                      static_cast<Standard_Real> (theYPix));
-  mySelectingVolumeMgr.BuildSelectingVolume (aMousePos);
+
+  mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
 
   TraverseSensitives();
@@ -79,20 +81,21 @@ void SelectMgr_ViewerSelector3d::Pick (const Standard_Integer theXPMin,
                                        const Handle(V3d_View)& theView)
 {
   updateZLayers (theView);
-  mySelectingVolumeMgr.SetCamera (theView->Camera());
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Box);
-  Standard_Integer aWidth = 0, aHeight = 0;
-  theView->Window()->Size (aWidth, aHeight);
-  mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
+
   gp_Pnt2d aMinMousePos (static_cast<Standard_Real> (theXPMin),
                          static_cast<Standard_Real> (theYPMin));
   gp_Pnt2d aMaxMousePos (static_cast<Standard_Real> (theXPMax),
                          static_cast<Standard_Real> (theYPMax));
-  mySelectingVolumeMgr.BuildSelectingVolume (aMinMousePos,
-                                             aMaxMousePos);
+  mySelectingVolumeMgr.InitBoxSelectingVolume (aMinMousePos,
+                                               aMaxMousePos);
 
+  mySelectingVolumeMgr.SetCamera (theView->Camera());
+  Standard_Integer aWidth = 0, aHeight = 0;
+  theView->Window()->Size (aWidth, aHeight);
+  mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
+
+  mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
-
   TraverseSensitives();
 }
 
@@ -104,13 +107,13 @@ void SelectMgr_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
                                        const Handle(V3d_View)& theView)
 {
   updateZLayers (theView);
+
+  mySelectingVolumeMgr.InitPolylineSelectingVolume (thePolyline);
   mySelectingVolumeMgr.SetCamera (theView->Camera());
-  mySelectingVolumeMgr.SetActiveSelectionType (SelectMgr_SelectingVolumeManager::Polyline);
   Standard_Integer aWidth = 0, aHeight = 0;
   theView->Window()->Size (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
-  mySelectingVolumeMgr.BuildSelectingVolume (thePolyline);
-
+  mySelectingVolumeMgr.BuildSelectingVolume();
   mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
 
   TraverseSensitives();

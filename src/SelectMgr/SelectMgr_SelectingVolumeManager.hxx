@@ -16,27 +16,53 @@
 #ifndef _SelectMgr_SelectingVolumeManager_HeaderFile
 #define _SelectMgr_SelectingVolumeManager_HeaderFile
 
-#include <NCollection_Handle.hxx>
-
-#include <Graphic3d_Camera.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_WorldViewProjState.hxx>
-
-#include <SelectMgr_BaseFrustum.hxx>
-#include <SelectMgr_RectangularFrustum.hxx>
-#include <SelectMgr_TriangularFrustumSet.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 
+#include <SelectMgr_BaseIntersector.hxx>
+#include <SelectMgr_VectorTypes.hxx>
+#include <SelectMgr_ViewClipRange.hxx>
+
 //! This class is used to switch between active selecting volumes depending
-//! on selection type chosen by the user
+//! on selection type chosen by the user.
+//! The sample of correct selection volume initialization procedure:
+//! @code
+//!   aMgr.InitPointSelectingVolume (aMousePos);
+//!   aMgr.SetPixelTolerance (aTolerance);
+//!   aMgr.SetCamera (aCamera);
+//!   aMgr.SetWindowSize (aWidth, aHeight);
+//!   aMgr.BuildSelectingVolume();
+//! @endcode
 class SelectMgr_SelectingVolumeManager : public SelectBasics_SelectingVolumeManager
 {
 public:
 
   //! Creates instances of all available selecting volume types
-  Standard_EXPORT SelectMgr_SelectingVolumeManager (Standard_Boolean theToAllocateFrustums = Standard_True);
+  Standard_EXPORT SelectMgr_SelectingVolumeManager();
 
   virtual ~SelectMgr_SelectingVolumeManager() {}
+
+  //! Creates, initializes and activates rectangular selecting frustum for point selection
+  Standard_EXPORT void InitPointSelectingVolume (const gp_Pnt2d& thePoint);
+
+  //! Creates, initializes and activates rectangular selecting frustum for box selection
+  Standard_EXPORT void InitBoxSelectingVolume (const gp_Pnt2d& theMinPt,
+                                               const gp_Pnt2d& theMaxPt);
+
+  //! Creates, initializes and activates set of triangular selecting frustums for polyline selection
+  Standard_EXPORT void InitPolylineSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
+
+  //! Sets as active the custom selecting volume
+  Standard_EXPORT void InitSelectingVolume (const Handle(SelectMgr_BaseIntersector)& theVolume);
+
+  //! Builds previously initialized selecting volume.
+  Standard_EXPORT void BuildSelectingVolume();
+
+  //! Returns active selecting volume that was built during last
+  //! run of OCCT selection mechanism
+  const Handle(SelectMgr_BaseIntersector)& ActiveVolume() const { return myActiveSelectingVolume; }
+
+  // Returns active selection type (point, box, polyline)
+  Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
 
   //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
   //!            Note that this method does not perform any checks on type of the frustum.
@@ -50,19 +76,21 @@ public:
   //! frustum from scratch. Can be null if reconstruction is not expected furthermore.
   Standard_EXPORT virtual SelectMgr_SelectingVolumeManager ScaleAndTransform (const Standard_Integer theScaleFactor,
                                                                               const gp_GTrsf& theTrsf,
-                                                                              const Handle(SelectMgr_FrustumBuilder)& theBuilder = NULL) const;
+                                                                              const Handle(SelectMgr_FrustumBuilder)& theBuilder) const;
 
-  Standard_EXPORT virtual Standard_Integer GetActiveSelectionType() const Standard_OVERRIDE;
-
-  Standard_EXPORT void SetActiveSelectionType (const SelectionType& theType);
+public:
 
   //! Returns current camera definition.
-  const Handle(Graphic3d_Camera)& Camera() const { return mySelectingVolumes[Frustum]->Camera(); }
+  Standard_EXPORT const Handle(Graphic3d_Camera)& Camera() const;
 
   //! Updates camera projection and orientation matrices in all selecting volumes
+  //! Note: this method should be called after selection volume building
+  //! else exception will be thrown
   Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera) theCamera);
 
   //! Updates camera projection and orientation matrices in all selecting volumes
+  //! Note: this method should be called after selection volume building
+  //! else exception will be thrown
   Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
                                   const Graphic3d_Mat4d& theWorldView,
                                   const Standard_Boolean theIsOrthographic,
@@ -80,27 +108,22 @@ public:
   Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   //! Updates viewport in all selecting volumes
+  //! Note: this method should be called after selection volume building
+  //! else exception will be thrown
   Standard_EXPORT void SetViewport (const Standard_Real theX,
                                     const Standard_Real theY,
                                     const Standard_Real theWidth,
                                     const Standard_Real theHeight);
 
   //! Updates pixel tolerance in all selecting volumes
+  //! Note: this method should be called after selection volume building
+  //! else exception will be thrown
   Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
 
   //! Updates window size in all selecting volumes
+  //! Note: this method should be called after selection volume building
+  //! else exception will be thrown
   Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth, const Standard_Integer theHeight);
-
-
-  //! Builds rectangular selecting frustum for point selection
-  Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& thePoint);
-
-  //! Builds rectangular selecting frustum for box selection
-  Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& theMinPt,
-                                             const gp_Pnt2d& theMaxPt);
-
-  //! Builds set of triangular selecting frustums for polyline selection
-  Standard_EXPORT void BuildSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
 
 
   //! SAT intersection test between defined volume and given axis-aligned box
@@ -203,47 +226,50 @@ public:
   //! correspondingly) onto far view frustum plane
   Standard_EXPORT virtual gp_Pnt GetFarPickedPnt() const Standard_OVERRIDE;
 
-  //! Return mouse coordinates for Point selection mode.
-  virtual gp_Pnt2d GetMousePosition() const Standard_OVERRIDE
-  {
-    if (myActiveSelectionType != Point)
-    {
-      return gp_Pnt2d (RealLast(), RealLast());
-    }
-    const SelectMgr_RectangularFrustum* aFr = reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
-    return aFr->GetMousePosition();
-  }
+  //! Valid only for point and rectangular selection.
+  //! Returns view ray direction
+  Standard_EXPORT virtual gp_Dir GetViewRayDirection() const Standard_OVERRIDE;
 
-  //! Returns active selecting volume that was built during last
-  //! run of OCCT selection mechanism
-  Handle(SelectMgr_BaseFrustum) ActiveVolume() const
-  {
-    if (myActiveSelectionType == Unknown)
-      return Handle(SelectMgr_BaseFrustum)();
+  //! Checks if it is possible to scale current active selecting volume
+  Standard_EXPORT virtual Standard_Boolean IsScalableActiveVolume() const Standard_OVERRIDE;
 
-    return mySelectingVolumes[myActiveSelectionType / 2];
-  }
+  //! Returns mouse coordinates for Point selection mode.
+  //! @return infinite point in case of unsupport of mouse position for this active selection volume.
+  Standard_EXPORT virtual gp_Pnt2d GetMousePosition() const Standard_OVERRIDE;
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
-  virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE
-  {
-    if (myActiveSelectionType == Unknown)
-    {
-      thePlaneEquations.Clear();
-      return;
-    }
-
-    return mySelectingVolumes[myActiveSelectionType / 2]->GetPlanes (thePlaneEquations);
-  }
+  Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
+public:
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Point;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Point;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Point;
+
+  Standard_DEPRECATED("Deprecated method - InitPointSelectingVolume() and Build() methods should be used instead")
+  Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& thePoint);
+
+  Standard_DEPRECATED("Deprecated method - InitBoxSelectingVolume() and Build() should be used instead")
+  Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& theMinPt,
+                                             const gp_Pnt2d& theMaxPt);
+
+  Standard_DEPRECATED("Deprecated method - InitPolylineSelectingVolume() and Build() should be used instead")
+  Standard_EXPORT void BuildSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
 
 private:
-  enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
-
-  Handle(SelectMgr_BaseFrustum)          mySelectingVolumes[VolumeTypesNb]; //!< Array of selecting volumes
+  Handle(SelectMgr_BaseIntersector)      myActiveSelectingVolume;
   Handle(Graphic3d_SequenceOfHClipPlane) myViewClipPlanes;                  //!< view clipping planes
   Handle(Graphic3d_SequenceOfHClipPlane) myObjectClipPlanes;                //!< object clipping planes
   SelectMgr_ViewClipRange                myViewClipRange;
