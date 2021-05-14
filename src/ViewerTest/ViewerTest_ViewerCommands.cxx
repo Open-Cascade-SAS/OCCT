@@ -13550,6 +13550,12 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
       {
         aType = StdSelect_TypeOfSelectionImage_ColoredSelectionMode;
       }
+      else if (aValue == "surfnormal"
+            || aValue == "surfacenormal"
+            || aValue == "normal")
+      {
+        aType = StdSelect_TypeOfSelectionImage_SurfaceNormal;
+      }
     }
     else if (aParam == "-picked"
           || aParam == "-pickeddepth"
@@ -14946,7 +14952,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   object      color of detected object"
                    "\n\t\t:   owner       color of detected owner"
                    "\n\t\t:   selMode     color of selection mode"
-                   "\n\t\t:   entity      color of etected entity",
+                   "\n\t\t:   entity      color of etected entity"
+                   "\n\t\t:   surfNormal  normal direction values",
                    __FILE__, VDumpSelectionImage, group);
 
   theCommands.Add ("vviewcube",

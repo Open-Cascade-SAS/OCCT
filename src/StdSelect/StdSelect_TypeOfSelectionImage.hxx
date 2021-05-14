@@ -24,7 +24,8 @@ enum StdSelect_TypeOfSelectionImage
   StdSelect_TypeOfSelectionImage_ColoredDetectedObject,   //!< color of detected object
   StdSelect_TypeOfSelectionImage_ColoredEntity,           //!< random color for each entity
   StdSelect_TypeOfSelectionImage_ColoredOwner,            //!< random color for each owner
-  StdSelect_TypeOfSelectionImage_ColoredSelectionMode     //!< color of selection mode
+  StdSelect_TypeOfSelectionImage_ColoredSelectionMode,    //!< color of selection mode
+  StdSelect_TypeOfSelectionImage_SurfaceNormal            //!< normal direction values
 };
 
 #endif

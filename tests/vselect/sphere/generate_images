@@ -1,0 +1,13 @@
+puts "================================="
+puts "000032366: Visualization, SelectMgr_ViewerSelector3d::ToPixMap() - add option dumping surface normals"
+puts "Generating images based on detection of Select3D_SenstiveSphere"
+puts "================================="
+
+psphere s 1
+vdisplay -dispMode 1 s
+vfit
+vseldump $imagedir/${casename}_selmode_0.png  -type surfNormal
+vselmode 1 1
+vseldump $imagedir/${casename}_selmode_1.png  -type surfNormal
+vselmode 4 1
+vseldump $imagedir/${casename}_selmode_4.png  -type surfNormal

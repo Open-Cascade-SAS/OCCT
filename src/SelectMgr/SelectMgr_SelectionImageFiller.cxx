@@ -319,6 +319,37 @@ namespace
       myImage->SetPixelColor (theCol, theRow, aColor);
     }
   };
+
+  //! Help class for filling pixel with normal direction value.
+  class SurfaceNormalFiller : public SelectMgr_SelectionImageFiller
+  {
+  public:
+    SurfaceNormalFiller (Image_PixMap& thePixMap,
+                         SelectMgr_ViewerSelector* theSelector)
+    : SelectMgr_SelectionImageFiller (thePixMap, theSelector) {}
+
+    virtual void Fill (const Standard_Integer theCol,
+                       const Standard_Integer theRow,
+                       const Standard_Integer thePicked) Standard_OVERRIDE
+    {
+      if (thePicked <= 0
+       || thePicked > myMainSel->NbPicked())
+      {
+        myImage->SetPixelColor (theCol, theRow, Quantity_NOC_BLACK);
+      }
+      else
+      {
+        const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity (thePicked);
+        SelectBasics_PickResult aPickResult;
+        aPickedEntity->Matches (myMainSel->GetManager(), aPickResult);
+        Graphic3d_Vec3 aNormal = aPickResult.SurfaceNormal();
+        aNormal.Normalize();
+        myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (aNormal.x() * 0.5f + 0.5f, 
+                                                                    aNormal.y() * 0.5f + 0.5f,
+                                                                    aNormal.z() * 0.5f + 0.5f, 1.0f));
+      }
+    }
+  };
 }
 
 // =======================================================================
@@ -355,6 +386,10 @@ Handle(SelectMgr_SelectionImageFiller) SelectMgr_SelectionImageFiller::CreateFil
     case StdSelect_TypeOfSelectionImage_ColoredSelectionMode:
     {
       return new GeneratedSelModeColorFiller (thePixMap, theSelector);
+    }
+    case StdSelect_TypeOfSelectionImage_SurfaceNormal:
+    {
+      return new SurfaceNormalFiller (thePixMap, theSelector);
     }
   }
   return Handle(SelectMgr_SelectionImageFiller)();
