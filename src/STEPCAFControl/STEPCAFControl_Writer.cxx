@@ -302,34 +302,51 @@ void STEPCAFControl_Writer::Init (const Handle(XSControl_WorkSession)& WS,
 //function : Write
 //purpose  :
 //=======================================================================
-
-IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filename)
+IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString theFileName)
 {
-  IFSelect_ReturnStatus status = myWriter.Write ( filename );
-
-  // get directory name of the main file
-  OSD_Path mainfile ( filename );
-  mainfile.SetName ( "" );
-  mainfile.SetExtension ( "" );
-  TCollection_AsciiString dpath;
-  mainfile.SystemName ( dpath );
-
-  NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator it(myFiles);
-  for ( ; it.More(); it.Next() ) {
-    Handle(STEPCAFControl_ExternFile) EF = it.Value();
-    if ( EF->GetWriteStatus() != IFSelect_RetVoid ) continue;
-
-    // construct extern file name
-    TCollection_AsciiString fname = OSD_Path::AbsolutePath ( dpath, EF->GetName()->String() );
-    if ( fname.Length() <= 0 ) fname = EF->GetName()->String();
-#ifdef OCCT_DEBUG
-    std::cout << "Writing external file: " << fname.ToCString() << std::endl;
-#endif
-    
-    EF->SetWriteStatus ( EF->GetWS()->SendAll ( fname.ToCString() ) );
+  IFSelect_ReturnStatus aStatus = myWriter.Write (theFileName);
+  if (aStatus != IFSelect_RetDone)
+  {
+    return aStatus;
   }
 
-  return status;
+  // get directory name of the main file
+  TCollection_AsciiString aDirPath;
+  {
+    OSD_Path aMainFile (theFileName);
+    aMainFile.SetName ("");
+    aMainFile.SetExtension ("");
+    aMainFile.SystemName (aDirPath);
+  }
+
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator anExtFileIter (myFiles);
+       anExtFileIter.More(); anExtFileIter.Next())
+  {
+    Handle(STEPCAFControl_ExternFile) anExtFile = anExtFileIter.Value();
+    if (anExtFile->GetWriteStatus() != IFSelect_RetVoid)
+    {
+      continue;
+    }
+
+    // construct extern file name
+    TCollection_AsciiString aFileName = OSD_Path::AbsolutePath (aDirPath, anExtFile->GetName()->String());
+    if (aFileName.Length() <= 0)
+    {
+      aFileName = anExtFile->GetName()->String();
+    }
+#ifdef OCCT_DEBUG
+    std::cout << "Writing external file: " << aFileName << std::endl;
+#endif
+    
+    const IFSelect_ReturnStatus anExtStatus = anExtFile->GetWS()->SendAll (aFileName.ToCString());
+    anExtFile->SetWriteStatus (anExtStatus);
+    if (anExtStatus != IFSelect_RetDone)
+    {
+      aStatus = anExtStatus;
+    }
+  }
+
+  return aStatus;
 }
 
 //=======================================================================
@@ -350,6 +367,21 @@ void STEPCAFControl_Writer::prepareUnit(const TDF_Label& theLabel,
     XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
     theModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
+}
+
+//=======================================================================
+//function : WriteStream
+//purpose  :
+//=======================================================================
+IFSelect_ReturnStatus STEPCAFControl_Writer::WriteStream (std::ostream& theStream)
+{
+  if (!myFiles.IsEmpty())
+  {
+    // writing external files is unsupported via stream interface
+    return IFSelect_RetError;
+  }
+
+  return myWriter.WriteStream (theStream);
 }
 
 //=======================================================================

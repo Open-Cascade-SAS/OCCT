@@ -336,14 +336,22 @@ TCollection_ExtendedString STEPCAFControl_Reader::convertName (const TCollection
 
 //=======================================================================
 //function : ReadFile
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const Standard_CString filename)
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile (const Standard_CString theFileName)
 {
-  return myReader.ReadFile(filename);
+  return myReader.ReadFile (theFileName);
 }
 
+//=======================================================================
+//function : ReadStream
+//purpose  :
+//=======================================================================
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadStream (const Standard_CString theName,
+                                                         std::istream& theIStream)
+{
+  return myReader.ReadStream (theName, theIStream);
+}
 
 //=======================================================================
 //function : NbRootsForTransfer

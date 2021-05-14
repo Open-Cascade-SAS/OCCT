@@ -22,6 +22,8 @@
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_ProgressScope.hxx>
+#include <OSD_OpenFile.hxx>
+#include <OSD_Path.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
 #include <STEPControl_Reader.hxx>
@@ -282,8 +284,11 @@ static Standard_Integer testreadstep (Draw_Interpretor& di, Standard_Integer arg
   IFSelect_ReturnStatus readstat;
   if (useStream)
   {
-    std::ifstream aStream (filename);
-    readstat = Reader.ReadStream(filename, aStream);
+    std::ifstream aStream;
+    OSD_OpenStream (aStream, filename, std::ios::in | std::ios::binary);
+    TCollection_AsciiString aFolder, aFileNameShort;
+    OSD_Path::FolderAndFileFromPath (filename, aFolder, aFileNameShort);
+    readstat = Reader.ReadStream (aFileNameShort.ToCString(), aStream);
   }
   else
   {
@@ -435,22 +440,72 @@ static Standard_Integer stepwrite (Draw_Interpretor& di, Standard_Integer argc, 
 //=======================================================================
 static Standard_Integer testwrite (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
-  if (argc != 3)                                                                                      
-    {                                                                                             
-      di << "ERROR in " << argv[0] << "Wrong Number of Arguments.\n";                     
-      di << " Usage : " << argv[0] <<" file_name shape_name \n"; 
-      return 1;                                                                                 
+  TCollection_AsciiString aFilePath;
+  TopoDS_Shape aShape;
+  bool toTestStream = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < argc; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (argv[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-stream")
+    {
+      toTestStream = true;
     }
-  STEPControl_Writer Writer;
-  Standard_CString filename = argv[1];
-  TopoDS_Shape shape = DBRep::Get(argv[2]); 
-  IFSelect_ReturnStatus stat = Writer.Transfer(shape,STEPControl_AsIs);
-  stat = Writer.Write(filename);
-  if(stat != IFSelect_RetDone){
-    di<<"Error on writing file\n";                                                               
+    else if (aFilePath.IsEmpty())
+    {
+      aFilePath = argv[anArgIter];
+    }
+    else if (aShape.IsNull())
+    {
+      aShape = DBRep::Get (argv[anArgIter]);
+      if (aShape.IsNull())
+      {
+        di << "Syntax error: '" << argv[anArgIter] << "' is not a shape";
+        return 1;
+      }
+    }
+    else
+    {
+      di << "Syntax error: unknown argument '" << argv[anArgIter] << "'";
+      return 1;
+    }
+  }
+  if (aShape.IsNull())
+  {
+    di << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  STEPControl_Writer aWriter;
+  IFSelect_ReturnStatus aStat = aWriter.Transfer (aShape, STEPControl_AsIs);
+  if (aStat != IFSelect_RetDone)
+  {
+    di << "Error on transferring shape";
+    return 1;
+  }
+
+  if (toTestStream)
+  {
+    std::ofstream aStream;
+    OSD_OpenStream (aStream, aFilePath, std::ios::out | std::ios::binary);
+    aStat = aWriter.WriteStream (aStream);
+    aStream.close();
+    if (!aStream.good()
+      && aStat == IFSelect_RetDone)
+    {
+      aStat = IFSelect_RetFail;
+    }
+  }
+  else
+  {
+    aStat = aWriter.Write (aFilePath.ToCString());
+  }
+  if (aStat != IFSelect_RetDone)
+  {
+    di << "Error on writing file";
     return 1; 
   }
-  di<<"File Is Written\n";
+  di << "File Is Written";
   return 0;
 }
 
@@ -550,7 +605,8 @@ void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
   XSDRAWSTEP::Init();
   XSDRAW::LoadDraw(theCommands);
   theCommands.Add("stepwrite" ,    "stepwrite mode[0-4 afsmw] shape",  __FILE__, stepwrite,     g);
-  theCommands.Add("testwritestep", "testwritestep filename.stp shape", __FILE__, testwrite,     g);
+  theCommands.Add("testwritestep", "testwritestep filename.stp shape [-stream]",
+                   __FILE__, testwrite, g);
   theCommands.Add("stepread",      "stepread  [file] [f or r (type of model full or reduced)]",__FILE__, stepread,      g);
   theCommands.Add("testreadstep",  "testreadstep file shape [-stream]",__FILE__, testreadstep,  g);
   theCommands.Add("steptrans",     "steptrans shape stepax1 stepax2",  __FILE__, steptrans,     g);

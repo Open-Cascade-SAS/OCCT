@@ -70,7 +70,11 @@ public:
   //! filename will be a name of root file, all other files
   //! have names of corresponding parts
   //! Provided for use like single-file writer
-  Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString filename);
+  Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString theFileName);
+
+  //! Writes all the produced models into the stream.
+  //! Provided for use like single-file writer
+  Standard_EXPORT IFSelect_ReturnStatus WriteStream (std::ostream& theStream);
   
   //! Transfers a document (or single label) to a STEP model
   //! The mode of translation of shape is AsIs

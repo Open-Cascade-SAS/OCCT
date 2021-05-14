@@ -73,11 +73,20 @@ public:
   //! Clears the internal data structures and attaches to a new session
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT void Init (const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+
   //! Loads a file and returns the read status
-  //! Provided for use like single-file reader
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile (const Standard_CString filename);
-  
+  //! Provided for use like single-file reader.
+  //! @param theFileName [in] file to open
+  //! @return read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile (const Standard_CString theFileName);
+
+  //! Loads a file from stream and returns the read status.
+  //! @param theName [in] auxiliary stream name
+  //! @param theIStream [in] stream to read from
+  //! @return read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream (const Standard_CString theName,
+                                                    std::istream& theIStream);
+
   //! Returns number of roots recognized for transfer
   //! Shortcut for Reader().NbRootsForTransfer()
   Standard_EXPORT Standard_Integer NbRootsForTransfer();

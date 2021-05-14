@@ -18,6 +18,9 @@
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
 #include <StepData_StepModel.hxx>
+#include <StepData_Protocol.hxx>
+#include <StepData_StepWriter.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
@@ -147,14 +150,37 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
 
 //=======================================================================
 //function : Write
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-IFSelect_ReturnStatus STEPControl_Writer::Write (const Standard_CString filename)
+IFSelect_ReturnStatus STEPControl_Writer::Write (const Standard_CString theFileName)
 {
-  return thesession->SendAll(filename);
+  return thesession->SendAll (theFileName);
 }
 
+//=======================================================================
+//function : WriteStream
+//purpose  :
+//=======================================================================
+IFSelect_ReturnStatus STEPControl_Writer::WriteStream (std::ostream& theOStream)
+{
+  Handle(StepData_StepModel) aModel = Model();
+  if (aModel.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+
+  Handle(StepData_Protocol) aProtocol = Handle(StepData_Protocol)::DownCast (aModel->Protocol());
+  if (aProtocol.IsNull())
+  {
+    return IFSelect_RetFail;
+  }
+
+  StepData_StepWriter aWriter (aModel);
+  aWriter.SendModel (aProtocol);
+  return aWriter.Print (theOStream)
+       ? IFSelect_RetDone
+       : IFSelect_RetFail;
+}
 
 //=======================================================================
 //function : PrintStatsTransfer

@@ -1,0 +1,36 @@
+puts "==================================================="
+puts "0032350: Data Exchange - STEPControl_Writer.writeStream(std::ostream)"
+puts "==================================================="
+puts ""
+
+pload XDE OCAF MODELING VISUALIZATION
+
+Close D -silent
+
+set aTmpFile1 "$imagedir/${casename}_1.stp"
+set aTmpFile2 "$imagedir/${casename}_2.stp"
+
+ReadStep D [locate_data_file "as1-oc-214-mat.stp"] -stream
+
+WriteStep D "$aTmpFile1"
+WriteStep D "$aTmpFile2" -stream
+
+ReadStep D1 "$aTmpFile1"
+ReadStep D2 "$aTmpFile2"
+
+file delete "$aTmpFile1"
+file delete "$aTmpFile2"
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vfit
+vdump "$imagedir/${casename}_src.png"
+
+vclear
+XDisplay -dispMode 1 D1
+vdump "$imagedir/${casename}_out1.png"
+
+vclear
+XDisplay -dispMode 1 D2
+vdump "$imagedir/${casename}_out2.png"
