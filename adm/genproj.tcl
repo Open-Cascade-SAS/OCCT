@@ -2536,6 +2536,7 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
       lappend aCmplFlags "-DOCC_CONVERT_SIGNALS"
     }
     lappend aCmplFlags   "-Wall"
+    lappend aCmplFlags   "-Wextra"
     lappend aCmplFlags   "-fexceptions"
   }
   lappend aCmplFlagsRelease "-DNDEBUG"

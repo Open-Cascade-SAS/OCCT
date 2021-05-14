@@ -13,8 +13,8 @@ OccGitRoot = $$_PRO_FILE_PWD_/../../../..
 
 # Define compilation flags
 CONFIG += warn_on
-QMAKE_CFLAGS_WARN_ON   = -Wall
-QMAKE_CXXFLAGS_WARN_ON = -Wall
+QMAKE_CFLAGS_WARN_ON   = -Wall -Wextra
+QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra
 win32 {
   QMAKE_CFLAGS_WARN_ON   = -W4
   QMAKE_CXXFLAGS_WARN_ON = -W4
