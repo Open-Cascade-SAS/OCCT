@@ -54,6 +54,12 @@ public:
   Standard_EXPORT void Pick (const TColgp_Array1OfPnt2d& thePolyline,
                              const Handle(V3d_View)& theView);
 
+  //! Picks the sensitive entity according to the input axis.
+  //! This is geometric intersection 3D objects by axis
+  //! (camera parameters are ignored and objects with transform persistance are skipped).
+  Standard_EXPORT void Pick (const gp_Ax1& theAxis,
+                             const Handle(V3d_View)& theView);
+
   //! Dump of detection results into image.
   //! This method performs axis picking for each pixel in the image
   //! and generates a color depending on picking results and selection image type.

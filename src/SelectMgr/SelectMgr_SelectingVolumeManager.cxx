@@ -16,6 +16,7 @@
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <SelectMgr_AxisIntersector.hxx>
 #include <SelectMgr_RectangularFrustum.hxx>
 #include <SelectMgr_TriangularFrustumSet.hxx>
 
@@ -259,6 +260,21 @@ void SelectMgr_SelectingVolumeManager::InitPolylineSelectingVolume (const TColgp
   aPolylineVolume->Init (thePoints);
   myActiveSelectingVolume = aPolylineVolume;
   aPolylineVolume->SetAllowOverlapDetection (IsOverlapAllowed());
+}
+
+//=======================================================================
+// function : InitAxisSelectingVolume
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::InitAxisSelectingVolume (const gp_Ax1& theAxis)
+{
+  Handle(SelectMgr_AxisIntersector) anAxisVolume = Handle(SelectMgr_AxisIntersector)::DownCast(myActiveSelectingVolume);
+  if (anAxisVolume.IsNull())
+  {
+    anAxisVolume = new SelectMgr_AxisIntersector();
+  }
+  anAxisVolume->Init (theAxis);
+  myActiveSelectingVolume = anAxisVolume;
 }
 
 //=======================================================================

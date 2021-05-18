@@ -22,6 +22,7 @@
 
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
+#include <AIS_Axis.hxx>
 #include <AIS_CameraFrustum.hxx>
 #include <AIS_ColorScale.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -31,6 +32,7 @@
 #include <AIS_Manipulator.hxx>
 #include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
+#include <AIS_Point.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_TypeOfLine.hxx>
@@ -41,6 +43,8 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <Geom_CartesianPoint.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
@@ -92,6 +96,7 @@
 #include <V3d_SpotLight.hxx>
 #include <V3d_Trihedron.hxx>
 #include <V3d_Viewer.hxx>
+#include <UnitsAPI.hxx>
 
 #include <tcl.h>
 
@@ -7074,6 +7079,201 @@ static Standard_Integer VMoveTo (Draw_Interpretor& theDI,
     }
   }
   theDI << aTopPnt.X() << " " << aTopPnt.Y() << " " << aTopPnt.Z();
+  return 0;
+}
+
+//=======================================================================
+//function : VSelectByAxis
+//purpose  :
+//=======================================================================
+static Standard_Integer VSelectByAxis (Draw_Interpretor& theDI,
+                                       Standard_Integer theNbArgs,
+                                       const char**     theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  const Handle(V3d_View)&               aView    = ViewerTest::CurrentView();
+  if (aContext.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
+
+  TCollection_AsciiString aName;
+  gp_XYZ anAxisLocation(RealLast(), RealLast(), RealLast());
+  gp_XYZ anAxisDirection(RealLast(), RealLast(), RealLast());
+  Standard_Boolean isOnlyTop = true;
+  Standard_Boolean toShowNormal = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgStr (theArgVec[anArgIter]);
+    anArgStr.LowerCase();
+    if (anArgStr == "-display")
+    {
+      if (anArgIter + 1 >= theNbArgs)
+      {
+        Message::SendFail() << "Syntax error at argument '" << anArgStr << "'";
+        return 1;
+      }
+      aName = theArgVec[++anArgIter];
+    }
+    else if (anArgStr == "-onlytop")
+    {
+      isOnlyTop = true;
+      if (anArgIter + 1 < theNbArgs
+        && Draw::ParseOnOff (theArgVec[anArgIter + 1], isOnlyTop))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgStr == "-shownormal")
+    {
+      toShowNormal = true;
+      if (anArgIter + 1 < theNbArgs
+        && Draw::ParseOnOff (theArgVec[anArgIter + 1], toShowNormal))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (Precision::IsInfinite(anAxisLocation.X())
+          && anArgStr.IsRealValue())
+    {
+      anAxisLocation.SetX (anArgStr.RealValue());
+    }
+    else if (Precision::IsInfinite(anAxisLocation.Y())
+          && anArgStr.IsRealValue())
+    {
+      anAxisLocation.SetY (anArgStr.RealValue());
+    }
+    else if (Precision::IsInfinite(anAxisLocation.Z())
+          && anArgStr.IsRealValue())
+    {
+      anAxisLocation.SetZ (anArgStr.RealValue());
+    }
+    else if (Precision::IsInfinite(anAxisDirection.X())
+          && anArgStr.IsRealValue())
+    {
+      anAxisDirection.SetX (anArgStr.RealValue());
+    }
+    else if (Precision::IsInfinite(anAxisDirection.Y())
+          && anArgStr.IsRealValue())
+    {
+      anAxisDirection.SetY (anArgStr.RealValue());
+    }
+    else if (Precision::IsInfinite(anAxisDirection.Z())
+          && anArgStr.IsRealValue())
+    {
+      anAxisDirection.SetZ (anArgStr.RealValue());
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (Precision::IsInfinite (anAxisLocation.X()) ||
+      Precision::IsInfinite (anAxisLocation.Y()) ||
+      Precision::IsInfinite (anAxisLocation.Z()) ||
+      Precision::IsInfinite (anAxisDirection.X()) ||
+      Precision::IsInfinite (anAxisDirection.Y()) ||
+      Precision::IsInfinite (anAxisDirection.Z()))
+  {
+    Message::SendFail() << "Invalid axis location and direction";
+    return 1;
+  }
+
+  gp_Ax1 anAxis(anAxisLocation, anAxisDirection);
+  gp_Pnt aTopPnt;
+  if (!ViewerTest::CurrentEventManager()->PickAxis (aTopPnt, aContext, aView, anAxis))
+  {
+    theDI << "There are no any intersections with this axis.";
+    return 0;
+  }
+  NCollection_Sequence<gp_Pnt> aPoints;
+  NCollection_Sequence<Graphic3d_Vec3> aNormals;
+  NCollection_Sequence<Standard_Real> aNormalLengths;
+  for (Standard_Integer aPickIter = 1; aPickIter <= aContext->MainSelector()->NbPicked(); ++aPickIter)
+  {
+    const SelectMgr_SortCriterion& aPickedData = aContext->MainSelector()->PickedData (aPickIter);
+    aPoints.Append (aPickedData.Point);
+    aNormals.Append (aPickedData.Normal);
+    Standard_Real aNormalLength = 1.0;
+    if (!aPickedData.Entity.IsNull())
+    {
+      aNormalLength = 0.2 * aPickedData.Entity->BoundingBox().Size().maxComp();
+    }
+    aNormalLengths.Append (aNormalLength);
+  }
+  if (!aName.IsEmpty())
+  {
+    Standard_Boolean wasAuto = aContext->GetAutoActivateSelection();
+    aContext->SetAutoActivateSelection (false);
+
+    // Display axis
+    Quantity_Color anAxisColor = Quantity_NOC_GREEN;
+    Handle(Geom_Axis2Placement) anAx2Axis =
+      new Geom_Axis2Placement (gp_Ax2(anAxisLocation, anAxisDirection));
+    Handle(AIS_Axis) anAISAxis = new AIS_Axis (anAx2Axis, AIS_TOAX_ZAxis);
+    const Handle(Prs3d_Drawer)& anAxisDrawer = anAISAxis->Attributes();
+    anAxisDrawer->SetOwnDatumAspects();
+    Standard_Real aLength = UnitsAPI::AnyToLS (250000., "mm");
+    anAxisDrawer->DatumAspect()->SetAxisLength (aLength, aLength, aLength);
+    anAxisDrawer->DatumAspect()->SetDrawLabels (false);
+    anAxisDrawer->DatumAspect()->SetDrawArrows (true);
+    anAISAxis->SetColor (Quantity_NOC_GREEN);
+    anAISAxis->SetAxis2Placement (anAx2Axis, AIS_TOAX_ZAxis); // This is workaround to update axis length
+    ViewerTest::Display (TCollection_AsciiString(aName) + "_axis", anAISAxis, false);
+
+    // Display axis start point
+    Handle(AIS_Point) anAISStartPnt = new AIS_Point (new Geom_CartesianPoint (anAxisLocation));
+    anAISStartPnt->SetMarker (Aspect_TOM_O);
+    anAISStartPnt->SetColor (anAxisColor);
+    ViewerTest::Display (TCollection_AsciiString(aName) + "_start", anAISStartPnt, false);
+
+    Standard_Integer anIndex = 0;
+    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aPoints); aPntIter.More(); aPntIter.Next(), anIndex++)
+    {
+      const gp_Pnt& aPoint = aPntIter.Value();
+
+      // Display normals in intersection points
+      if (toShowNormal)
+      {
+        const Graphic3d_Vec3& aNormal = aNormals.Value (anIndex + 1);
+        Standard_Real aNormalLength = aNormalLengths.Value (anIndex + 1);
+        if (aNormal.SquareModulus() > ShortRealEpsilon())
+        {
+          Handle(Geom_Axis2Placement) anAx2Normal =
+            new Geom_Axis2Placement(gp_Ax2(aPoint, gp_Dir((Standard_Real )aNormal.x(), (Standard_Real )aNormal.y(), (Standard_Real )aNormal.z())));
+          Handle(AIS_Axis) anAISNormal = new AIS_Axis (anAx2Normal, AIS_TOAX_ZAxis);
+          const Handle(Prs3d_Drawer)& aNormalDrawer = anAISNormal->Attributes();
+          aNormalDrawer->SetOwnDatumAspects();
+          aNormalDrawer->DatumAspect()->SetAxisLength (aNormalLength, aNormalLength, aNormalLength);
+          aNormalDrawer->DatumAspect()->SetDrawLabels (false);
+          aNormalDrawer->DatumAspect()->SetDrawArrows (true);
+          anAISNormal->SetColor (Quantity_NOC_BLUE);
+          anAISNormal->SetAxis2Placement (anAx2Normal, AIS_TOAX_ZAxis); // This is workaround to update axis length
+          anAISNormal->SetInfiniteState (false);
+          ViewerTest::Display (TCollection_AsciiString(aName) + "_normal_" + anIndex, anAISNormal, false);
+        }
+      }
+
+      // Display intersection points
+      Handle(Geom_CartesianPoint) anIntersectPnt = new Geom_CartesianPoint (aPoint);
+      Handle(AIS_Point) anAISIntersectPoint = new AIS_Point (anIntersectPnt);
+      anAISIntersectPoint->SetMarker (Aspect_TOM_PLUS);
+      anAISIntersectPoint->SetColor (Quantity_NOC_RED);
+      ViewerTest::Display (TCollection_AsciiString(aName) + "_intersect_" + anIndex, anAISIntersectPoint, true);
+    }
+
+    aContext->SetAutoActivateSelection (wasAuto);
+  }
+
+  Standard_Integer anIndex = 0;
+  for (NCollection_Sequence<gp_Pnt>::Iterator anIter(aPoints); anIter.More(); anIter.Next(), anIndex++)
+  {
+    const gp_Pnt& aPnt = anIter.Value();
+    theDI << aPnt.X() << " " << aPnt.Y() << " " << aPnt.Z() << "\n";
+  }
   return 0;
 }
 
@@ -14528,6 +14728,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t: Emulates cursor movement to pixel position (x,y)."
     "\n\t\t:   -reset resets current highlighting",
     __FILE__, VMoveTo, group);
+  theCommands.Add ("vselaxis",
+              "vselaxis x y z dx dy dz [-onlyTop 0|1] [-display Name] [-showNormal 0|1]"
+    "\n\t\t: Provides intersection by given axis and print result intersection points"
+    "\n\t\t:   -onlyTop       switches On/Off mode to find only top point or all"
+    "\n\t\t:   -display Name  displays intersecting axis and result intersection points for debug goals"
+    "\n\t\t:   -showNormal    adds displaying of normal in intersection point or not",
+    __FILE__, VSelectByAxis, group);
   theCommands.Add ("vviewparams",
               "vviewparams [-args] [-scale [s]]"
       "\n\t\t:             [-eye [x y z]] [-at [x y z]] [-up [x y z]]"

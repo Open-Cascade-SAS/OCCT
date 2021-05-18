@@ -247,7 +247,7 @@ public: //! @name Ray-Box Intersection
     {
       if (theRayDirection[i] == 0)
       {
-        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) < 0 ?
+        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) <= 0 ?
                        (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();
         aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) < 0 ?
                        (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();

@@ -120,6 +120,22 @@ void SelectMgr_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
 }
 
 //=======================================================================
+// Function: Pick
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector3d::Pick (const gp_Ax1& theAxis,
+                                       const Handle(V3d_View)& theView)
+{
+  updateZLayers (theView);
+
+  mySelectingVolumeMgr.InitAxisSelectingVolume (theAxis);
+  mySelectingVolumeMgr.BuildSelectingVolume();
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
+
+  TraverseSensitives();
+}
+
+//=======================================================================
 // Function: DisplaySensitive.
 // Purpose : Display active primitives.
 //=======================================================================

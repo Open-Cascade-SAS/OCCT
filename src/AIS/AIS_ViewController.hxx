@@ -487,6 +487,18 @@ public:
                                           const Graphic3d_Vec2i& theCursor,
                                           bool theToStickToPickRay);
 
+  //! Pick closest point by axis.
+  //! This method is expected to be called from rendering thread.
+  //! @param theTopPnt [out] result point
+  //! @param theCtx    [in] interactive context
+  //! @param theView   [in] active view
+  //! @param theAxis   [in] selection axis
+  //! @return TRUE if result has been found
+  Standard_EXPORT virtual bool PickAxis (gp_Pnt& theTopPnt,
+                                         const Handle(AIS_InteractiveContext)& theCtx,
+                                         const Handle(V3d_View)& theView,
+                                         const gp_Ax1& theAxis);
+
   //! Compute rotation gravity center point depending on rotation mode.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual gp_Pnt GravityPoint (const Handle(AIS_InteractiveContext)& theCtx,

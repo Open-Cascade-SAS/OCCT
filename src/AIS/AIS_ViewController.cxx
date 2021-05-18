@@ -1730,6 +1730,31 @@ bool AIS_ViewController::PickPoint (gp_Pnt& thePnt,
 }
 
 // =======================================================================
+// function : PickAxis
+// purpose  :
+// =======================================================================
+bool AIS_ViewController::PickAxis (gp_Pnt& theTopPnt,
+                                   const Handle(AIS_InteractiveContext)& theCtx,
+                                   const Handle(V3d_View)& theView,
+                                   const gp_Ax1& theAxis)
+{
+  ResetPreviousMoveTo();
+
+  const Handle(StdSelect_ViewerSelector3d)& aSelector = theCtx->MainSelector();
+  aSelector->Pick (theAxis, theView);
+  if (aSelector->NbPicked() < 1)
+  {
+    return false;
+  }
+
+  const SelectMgr_SortCriterion& aPickedData = aSelector->PickedData (1);
+  theTopPnt = aPickedData.Point;
+  return !Precision::IsInfinite (theTopPnt.X())
+      && !Precision::IsInfinite (theTopPnt.Y())
+      && !Precision::IsInfinite (theTopPnt.Z());
+}
+
+// =======================================================================
 // function : GravityPoint
 // purpose  :
 // =======================================================================

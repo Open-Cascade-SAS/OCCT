@@ -51,6 +51,9 @@ public:
   //! Creates, initializes and activates set of triangular selecting frustums for polyline selection
   Standard_EXPORT void InitPolylineSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
 
+  //! Creates and activates axis selector for point selection
+  Standard_EXPORT void InitAxisSelectingVolume (const gp_Ax1& theAxis);
+
   //! Sets as active the custom selecting volume
   Standard_EXPORT void InitSelectingVolume (const Handle(SelectMgr_BaseIntersector)& theVolume);
 
