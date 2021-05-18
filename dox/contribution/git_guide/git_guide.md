@@ -152,11 +152,11 @@ The official repository contains:
   Make sure to configure Git so that the user name is equal to your username 
   on the OCCT development portal, and set SafeCrLf option to true:
 
-~~~~~
+~~~~
     > git config --global user.name "Your User Name"
     > git config --global user.email your@mail.address
     > git config --global your@mail.address
-~~~~~
+~~~~
 
 @section occt_gitguide_3 Getting access to the repository
 
@@ -213,9 +213,9 @@ The official repository contains:
   On Windows, you might need to start **Git Bash** command prompt window.
   
   Use the following command to generate SSH keys:
-~~~~~  
+~~~~
     > ssh-keygen -t rsa -C "your@mail.address"
-~~~~~  
+~~~~
 
   The last argument is an optional comment, which can be included with the public key and used to distinguish between different keys (if you have many).  The common practice is to put here your mail address or workstation name.
   
@@ -290,9 +290,9 @@ Click **Save** to input the key to the system.
 
   * From command line by command: 
 
-~~~~~  
+~~~~
     > git clone gitolite@git.dev.opencascade.org:occt <path>
-~~~~~
+~~~~
 
   where <i>\<path\></i> is the path to the new folder which will be created for the repository.
     
@@ -314,9 +314,9 @@ Click **Save** to input the key to the system.
 
 In the console:
 
-~~~~~
+~~~~
     > git checkout -b CR12345 origin/master
-~~~~~
+~~~~
   
 In TortoiseGit: 
   * Go to the local copy of the repository. 
@@ -332,9 +332,9 @@ In TortoiseGit:
   If you need to switch to another branch, use Git command checkout for that.
   In the console:
 
-~~~~~
+~~~~
     > git checkout CR12345
-~~~~~
+~~~~
   
   In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Switch/Checkout**.
  
@@ -351,11 +351,11 @@ In TortoiseGit:
   
   * In the console:
   
-~~~~~
+~~~~
     > git diff
     …
     > git commit -a -m "Write meaningful commit message here"
-~~~~~
+~~~~
 
   Option -a tells the command to automatically include (stage) files 
   that have been modified or deleted, but it will omit the new files that might have been added by you. 
@@ -363,12 +363,12 @@ In TortoiseGit:
 
   To find new unstaged files and them to commit, use commands:
 
-~~~~~
+~~~~
     > git status -s
       ?? file1.hxx 
       ?? file2.cxx
     > git add file1.hxx file2.cxx
-~~~~~
+~~~~
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu <b>Git Commit -> CR…</b>:
  
@@ -384,9 +384,9 @@ In TortoiseGit:
   
   * In the console:
 
-~~~~~  
+~~~~
     > git push "origin" CR12345:CR12345
-~~~~~
+~~~~
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu, TortoiseGit -> **Push**
 
@@ -410,9 +410,9 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
   Use Git command *fetch* with option *prune* to get the update of all branches from the remote repository and to clean your local repository from the remote branches that have been deleted.
   
   * In the console:
-~~~~~  
+~~~~
     > git fetch --prune 
-~~~~~
+~~~~
     
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Fetch**. Check in **Prune** check-box.  
   
@@ -423,9 +423,9 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
   This operation is required in particular to update your local master branch when the remote master changes.
   
   * In console:
-~~~~~  
+~~~~
     > git pull
-~~~~~    
+~~~~
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Pull**.
 
@@ -436,9 +436,9 @@ Note that the local branches of your repository are the primary place, where you
 Remove the local branches that you do not need any more. Note that you cannot delete the current branch. It means that you need to switch to another one (e.g. master) if the branch you are going to delete is the current one.
   
   * In the console:
-~~~~~ 
+~~~~
     > git branch -d CR12345
-~~~~~
+~~~~
     
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Git Show Log**.
 

@@ -168,38 +168,38 @@ To use XDE you have to set the environment variables properly. Make sure that tw
 Before working with shapes, properties, and other types of information, the global organization of an XDE Document can be queried or completed to determine if an existing Document is actually structured for use with XDE. 
 
 To find out if an existing *TDocStd_Document* is suitable for XDE, use: 
-~~~~~
+~~~~{.cpp}
 Handle(TDocStd_Document) doc... 
 if ( XCAFDoc_DocumentTool::IsXCAFDocument (doc) ) { .. yes .. } 
-~~~~~
+~~~~
 If the Document is suitable for XDE, you can perform operations and queries explained in this guide. However, if a Document is not fully structured for XDE, it must be initialized. 
 
 @subsubsection occt_xde_2_1_3 Get an Application or an Initialized Document
 If you want to retrieve an existing application or an existing document (known to be correctly structured for XDE), use: 
-~~~~~
+~~~~{.cpp}
 Handle(TDocStd_Document) aDoc; 
 Handle(XCAFApp_Application) anApp = XCAFApp_Application::GetApplication(); 
 anApp->NewDocument(;MDTV-XCAF;,aDoc); 
-~~~~~
+~~~~
 
 @subsection occt_xde_2_2 Shapes and Assemblies
 
 @subsubsection occt_xde_2_2_1 Initialize an XDE Document (Shapes)
 An XDE Document begins with a *TDocStd_Document*. Assuming you have a *TDocStd_Document* already created, you can ensure that it is correctly structured for XDE by initializing the XDE structure as follows: 
-~~~~~
+~~~~{.cpp}
 Handle(TDocStd_Document) doc... 
 Handle (XCAFDoc_ShapeTool) myAssembly = 
 XCAFDoc_DocumentTool::ShapeTool (Doc->Main()); 
 TDF_Label aLabel = myAssembly->NewShape() 
-~~~~~
+~~~~
 **Note** that the method *XCAFDoc_DocumentTool::ShapeTool* returns the *XCAFDoc_ShapeTool*. The first time this method is used, it creates the *XCAFDoc_ShapeTool*. In our example, a handle is used for the *TDocStd_Document*.
 
 @subsubsection occt_xde_2_2_2 Get a Node considered as an Assembly
 To get a node considered as an Assembly from an XDE structure, you can use the Label of the node. Assuming that you have a properly initialized *TDocStd_Document*, use: 
-~~~~~
+~~~~{.cpp}
 Handle(TDocStd_Document) doc... 
 Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool (aLabel); 
-~~~~~
+~~~~
 In the previous example, you can also get the Main Item of an XDE document, which records the root shape representation (as a Compound if it is an Assembly) by using *ShapeTool(Doc->Main())* instead of *ShapeTool(aLabel)*. 
 
 You can then query or edit this Assembly node, the Main Item or another one (*myAssembly* in our examples). 
@@ -210,9 +210,9 @@ You can then query or edit this Assembly node, the Main Item or another one (*my
 Some actions in this chapter affect the content of the document, considered as an Assembly. As a result, you will sometimes need to update various representations (including the compounds). 
 
 To update the representations, use: 
-~~~~~
+~~~~{.cpp}
 myAssembly->UpdateAssemblies(); 
-~~~~~
+~~~~
 This call performs a top-down update of the Assembly compounds stored in the document.
 
 **Note** that you have to run this method manually to actualize your Assemblies after any low-level modifications on shapes.
@@ -230,29 +230,29 @@ A shape to be added can be defined as a compound (if required), with the followi
   * If the Shape is not a compound, it is taken as a whole, without breaking it down. 
   
 To break down a Compound in the assembly structure, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean makeAssembly; 
 // True to interpret a Compound as an Assembly, 
 // False to take it as a whole 
 aLabel = myAssembly->AddShape(aShape, makeAssembly); 
-~~~~~
+~~~~
 Each node of the assembly therefore refers to its sub-shapes. 
 
 Concerning located instances of sub-shapes, the corresponding shapes, (without location) appear at distinct sub-labels. They are referred to by a shape instance, which associates a location. 
 
 @subsubsection occt_xde_2_2_5 Setting a given Shape at a given Label
 A top-level shape can be changed. In this example, no interpretation of compound is performed: 
-~~~~~
+~~~~{.cpp}
 Standard_CString LabelString ...; 
 // identifies the Label (form ;0:i:j...;) 
 TDF_Label aLabel...; 
 // A label must be present 
 myAssembly->SetShape(aLabel, aShape); 
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_2_6 Getting a Shape from a Label
 To get a shape from its Label from the top-level, use: 
-~~~~~
+~~~~{.cpp}
 TDF_Label aLabel...
 // A label must be present
 if (aLabel.IsNull()) { 
@@ -263,19 +263,19 @@ aShape = myAssembly->GetShape(aLabel);
 if (aShape.IsNull()) {
   // this label is not for a Shape
 }
-~~~~~
+~~~~
 **Note** that if the label corresponds to an assembly, the result is a compound. 
 
 @subsubsection occt_xde_2_2_7 Getting a Label from a Shape
 To get a Label, which is attached to a Shape from the top-level, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean findInstance = Standard_False; 
 // (this is default value)
 aLabel = myAssembly->FindShape(aShape [,findInstance]);
 if (aLabel.IsNull()) { 
   // no label found for this shape
 }
-~~~~~
+~~~~
 If *findInstance* is True, a search is made for the shape with the same location. If it is False (default value), a search is made among original, non-located shapes. 
 
 @subsubsection occt_xde_2_2_8 Other Queries on a Label
@@ -284,29 +284,29 @@ Various other queries can be made from a Label within the Main Item of XDE:
 #### Main Shapes
 
 To determine if a Shape is recorded (or not), use: 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsShape(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 
 To determine if the shape is top-level, i.e. was added by the *AddShape* method, use: 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsTopLevel(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 
 To get a list of top-level shapes added by the *AddShape* method, use: 
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence frshapes; 
 myAssembly->GetShapes(frshapes); 
-~~~~~
+~~~~
 
 To get all free shapes at once if the list above has only one item, use: 
-~~~~~
+~~~~{.cpp}
 TopoDS_Shape result = myAssembly->GetShape(frshapes.Value(1)); 
-~~~~~
+~~~~
 
 If there is more than one item, you must create and fill a compound, use: 
 
-~~~~~
+~~~~{.cpp}
 TopoDS_Compound C; 
 BRep_Builder B; 
 B.MakeCompound(C); 
@@ -314,72 +314,72 @@ for(Standard_Integer i=1; i=frshapes.Length(); i++) {
   TopoDS_Shape S = myAssembly->GetShape(frshapes.Value(i)); 
   B.Add(C,S); 
 } 
-~~~~~
+~~~~
 
 In our example, the result is the compound C. 
 To determine if a shape is a free shape (no reference or super-assembly), use: 
 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsFree(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 
 To get a list of Free Shapes (roots), use: 
 
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence frshapes; 
 myAssembly->GetFreeShapes(frshapes); 
-~~~~~
+~~~~
 
 To get the shapes, which use a given shape as a component, use: 
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence users; 
 Standard_Integer nbusers = myAssembly->GetUsers(aLabel,users); 
-~~~~~
+~~~~
 The count of users is contained with *nbusers*. It contains 0 if there are no users. 
 
 #### Assembly and Components
 To determine if a label is attached to the main part or to a sub-part (component), use: 
-~~~~~
+~~~~{.cpp}
 if (myAssembly->IsComponent(aLabel)) { .. yes .. } 
-~~~~~
+~~~~
 To determine whether a label is a node of a (sub-) assembly or a simple shape, use: 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsAssembly(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 
 If the label is a node of a (sub-) assembly, you can get the count of components, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean subchilds = Standard_False; //default 
 Standard_Integer nbc = myAssembly->NbComponents (aLabel [,subchilds]); 
-~~~~~
+~~~~
 
 If *subchilds* is True, commands also consider sub-levels. By default, only level one is checked. 
 
 To get component Labels themselves, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean subchilds = Standard_False; //default 
 TDF_LabelSequence comps; 
 Standard_Boolean isassembly = myAssembly->GetComponents 
 (aLabel,comps[,subchilds]); 
-~~~~~
+~~~~
 @subsubsection occt_xde_2_2_9 Instances and References for Components
 To determine if a label is a simple shape, use: 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsSimpleShape(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 To determine if a label is a located reference to another one, use: 
-~~~~~
+~~~~{.cpp}
 if ( myAssembly->IsReference(aLabel) ) { .. yes .. } 
-~~~~~
+~~~~
 If the label is a located reference, you can get the location, use: 
-~~~~~
+~~~~{.cpp}
 TopLoc_Location loc = myAssembly->GetLocation (aLabel); 
-~~~~~
+~~~~
 To get the label of a referenced original shape (also tests if it is a reference), use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean isref = myAssembly->GetReferredShape 
 (aLabel, refLabel); 
-~~~~~
+~~~~
 
 **Note** *isref* returns False if *aLabel* is not for a reference. 
 
@@ -387,55 +387,55 @@ Standard_Boolean isref = myAssembly->GetReferredShape
 In addition to the previously described *AddShape* and *SetShape*, several shape edits are possible. 
 
 To remove a Shape, and all its sub-labels, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean remsh = myAssembly->RemoveShape(aLabel); 
 // remsh is returned True if done 
-~~~~~
+~~~~
 This operation will fail if the shape is neither free nor top level.
 
 To add a Component to the Assembly, from a new shape, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean expand = Standard_False; //default 
 TDF_Label aLabel = myAssembly->AddComponent (aShape [,expand]); 
-~~~~~
+~~~~
 If *expand* is True and *aShape* is a Compound, *aShape* is broken down to produce sub-components, one for each of its sub-shapes. 
 
 To add a component to the assembly, from a previously recorded shape (the new component is defined by the label of the reference shape, and its location), use: 
-~~~~~
+~~~~{.cpp}
 TDF_Label refLabel ...; // the label of reference shape 
 TopLoc_Location loc ...; // the desired location 
 TDF_Label aLabel = myAssembly->AddComponent (refLabel, loc); 
-~~~~~
+~~~~
 To remove a component from the assembly, use: 
-~~~~~
+~~~~{.cpp}
 myAssembly->RemoveComponent (aLabel); 
-~~~~~
+~~~~
 
 @subsection occt_xde_2_4 Management of Sub-Shapes
 In addition to components of a (sub-)assembly, it is possible to have individual identification of some sub-shapes inside any shape. Therefore, you can attach specific attributes such as Colors. Some additional actions can be performed on sub-shapes that are neither top-level, nor components: 
 To add a sub-shape to a given Label, use: 
-~~~~~
+~~~~{.cpp}
 TDF_Label subLabel = myAssembly->AddSubShape (aLabel, subShape); 
-~~~~~
+~~~~
 
 To find the Label attached to a given sub-shape, use: 
-~~~~~
+~~~~{.cpp}
 TDF_Label subLabel; // new label to be computed 
 if ( myAssembly-> FindSubShape (aLabel, subShape, subLabel)) { .. yes .. } 
-~~~~~
+~~~~
 If the sub-shape is found (yes), *subLabel* is filled by the correct value. 
 
 To find the top-level simple shape (not a compound whether free or not), which contains a given sub-shape, use: 
-~~~~~
+~~~~{.cpp}
 TDF_Label mainLabel = myAssembly->FindMainShape(subShape); 
-~~~~~
+~~~~
 **Note** that there should be only one shape for a valid model. In any case, the search stops on the first one found. 
 
 To get the sub-shapes of a shape, which are recorded under a label, use: 
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence subs; 
 Standard_Boolean hassubs = myAssembly->GetSubShapes (aLabel,subs); 
-~~~~~
+~~~~
 @subsection occt_xde_2_5 Properties
 Some properties can be attached directly to shapes. These properties are: 
   * Name (standard definition from OCAF)
@@ -458,22 +458,22 @@ Name is implemented and used as a *TDataStd_Name*, which can be attached to any 
 These considerations are not specific to XDE. What is specific to data exchange is the way names are attached to entities. 
 
 To get the name attached to a label (as a reminder using OCAF), use: 
-~~~~~
+~~~~{.cpp}
 Handle(TDataStd_Name) N; 
 if ( !aLabel.FindAttribute(TDataStd_Name::GetID(),N)) { 
   // no name is attached 
 } 
 TCollection_ExtendedString name = N->Get(); 
-~~~~~
+~~~~
 
 Don't forget to consider Extended String as ASCII, for the exchange file. 
 
 To set a name to a label (as a reminder using OCAF), use: 
-~~~~~
+~~~~{.cpp}
 TCollection_ExtendedString aName ...; 
 // contains the desired name for this Label (ASCII) 
 TDataStd_Name::Set (aLabel, aName); 
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_5_2 Centroid
 A Centroid is defined by a Point to fix its position. It is handled as a property, item of the class *XCAFDoc_Centroid*, sub-class of *TDF_Attribute*. However, global methods give access to the position itself. 
@@ -483,26 +483,26 @@ This notion has been introduced in STEP, together with that of Volume, and Area,
 A centroid can be determined at any level of an assembly, thereby allowing a check of both individual simple shapes and their combinations including locations. 
 
 To get a Centroid attached to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 gp_Pnt pos; 
 Handle(XCAFDoc_Centroid) C; 
 aLabel.FindAttribute ( XCAFDoc_Centroid::GetID(), C ); 
 if ( !C.IsNull() ) pos = C->Get(); 
-~~~~~
+~~~~
 
 To set a Centroid to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 gp_Pnt pos (X,Y,Z); 
 // the position previously computed for the centroid 
 XCAFDoc_Centroid::Set ( aLabel, pos ); 
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_5_3 Area
 An Area is defined by a Real, it corresponds to the computed Area of a Shape, provided that it contains surfaces. It is handled as a property, item of the class *XCAFDoc_Area*, sub-class of *TDF_Attribute*. 
 This notion has been introduced in STEP but it is usually disregarded for a Solid, as Volume is used instead. In addition, it is attached to simple shapes, not to assemblies. 
 
 To get an area attached to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Real area; 
 Handle(XCAFDoc_Area) A; 
 L.FindAttribute ( XCAFDoc_Area::GetID(), A ); 
@@ -512,25 +512,25 @@ To set an area value to a Shape, use:
 Standard_Real area ...; 
 // value previously computed for the area 
 XCAFDoc_Area::Set ( aLabel, area ); 
-~~~~~
+~~~~
 @subsubsection occt_xde_2_5_4 Volume
 A Volume is defined by a Real and corresponds to the computed volume of a Shape, provided that it contains solids. It is handled as a property, an item of the class *XCAFDoc_Volume*, sub-class of *TDF_Attribute*. 
 This notion has been introduced in STEP. It may be attached to simple shapes or their assemblies for computing cumulated volumes and centers of gravity. 
 
 To get a Volume attached to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Real volume; 
 Handle(XCAFDoc_Volume) V; 
 L.FindAttribute ( XCAFDoc_Volume::GetID(), V ); 
 if ( !V.IsNull() ) volume = V->Get(); 
-~~~~~
+~~~~
 
 To set a volume value to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 Standard_Real volume ...; 
 // value previously computed for the volume 
 XCAFDoc_Volume::Set ( aLabel, volume ); 
-~~~~~
+~~~~
 @subsection occt_xde_2_6 Colors and Layers
 
 XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats. 
@@ -553,10 +553,10 @@ These definitions are common to various exchange formats, at least for STEP and 
 
 @subsubsection occt_xde_2_6_1 Initialization
 To query, edit, or initialize a Document to handle Colors of XCAF, use: 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_ColorTool) myColors = 
 XCAFDoc_DocumentTool::ColorTool(Doc->Main ()); 
-~~~~~
+~~~~
 This call can be used at any time. The first time it is used, a relevant structure is added to the document. This definition is used for all the following color calls and will not be repeated for these. 
 
 @subsubsection occt_xde_2_6_2 Adding a Color
@@ -566,7 +566,7 @@ There are two ways to add a color. You can:
 When the Color is added by its value *Quantity_Color*, it is added only if it has not yet been recorded (same RGB values) in the Document. 
 
 To set a Color to a Shape using a label, use:
-~~~~~
+~~~~{.cpp}
 Quantity_Color Col (red,green,blue); 
 XCAFDoc_ColorType ctype ..; 
 // can take one of these values : 
@@ -574,60 +574,60 @@ XCAFDoc_ColorType ctype ..;
 // XCAFDoc_ColorSurf : surfaces only 
 // XCAFDoc_ColorCurv : curves only 
 myColors->SetColor ( aLabel, Col, ctype ); 
-~~~~~
+~~~~
 Alternately, the Shape can be designated directly, without using its label, use: 
-~~~~~
+~~~~{.cpp}
 myColors->SetColor ( aShape, Col, ctype ); 
 // Creating and Adding a Color, explicitly 
 Quantity_Color Col (red,green,blue); 
 TDF_Label ColLabel = myColors->AddColor ( Col ); 
-~~~~~
+~~~~
 **Note** that this Color can then be named, allowing later retrieval by its Name instead of its Value. 
 
 To set a Color, identified by its Label and already recorded, to a Shape, use: 
-~~~~~
+~~~~{.cpp}
 XCAFDoc_ColorType ctype ..; // see above
 if ( myColors->SetColors ( aLabel, ColLabel, ctype) ) {.. it is done .. }
-~~~~~
+~~~~
 In this example, *aLabel* can be replaced by *aShape* directly. 
 
 @subsubsection occt_xde_2_6_3 Queries on Colors
 Various queries can be performed on colors. However, only specific queries are included in this section, not general queries using names. 
 
 To determine if a Color is attached to a Shape, for a given color type (ctype), use: 
-~~~~~
+~~~~{.cpp}
 if ( myColors->IsSet (aLabel , ctype)) { 
   // yes, there is one .. 
 } 
-~~~~~
+~~~~
 In this example, *aLabel* can be replaced by *aShape* directly. 
 
 To get the Color attached to a Shape (for any color type), use: 
-~~~~~
+~~~~{.cpp}
 Quantity_Color col; 
 // will receive the recorded value (if there is some)
 if ( !myColors->GetColor(aLabel, col) ) { 
 // sorry, no color .. 
 }
-~~~~~
+~~~~
 
 Color name can also be queried from *col.StringName* or *col.Name*. 
 In this example, *aLabel* can be replaced by *aShape* directly. 
 
 To get the Color attached to a Shape, with a specific color type, use: 
-~~~~~
+~~~~{.cpp}
 XCAFDoc_ColorType ctype ..; 
 Quantity_Color col; 
 // will receive the recorded value (if there is some) 
 if ( !myColors->GetColor(aLabel, ctype, col) ) { 
 // sorry, no color .. 
 } 
-~~~~~
+~~~~
 
 
 To get all the Colors recorded in the Document, use: 
 
-~~~~~
+~~~~{.cpp}
 Quantity_Color col; // to receive the values 
 TDF_LabelSequence ColLabels; 
 myColors->GetColors(ColLabels); 
@@ -637,28 +637,28 @@ for (i = 1; i = nbc; i ++) {
   if ( !myColors->GetColor(aLabel, col) ) continue; 
   // col receives the color n0 i .. 
 } 
-~~~~~
+~~~~
 
 To find a Color from its Value, use: 
-~~~~~
+~~~~{.cpp}
 Quantity_Color Col (red,green,blue); 
 TDF_Label ColLabel = myColors-FindColor (Col); 
 if ( !ColLabel.IsNull() ) { .. found .. } 
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_6_4 Editing Colors
 Besides adding colors, the following attribute edits can be made: 
 
 To unset a Color on a Shape, use: 
-~~~~~
+~~~~{.cpp}
 XCAFDoc_ColorType ctype ...; 
 // desired type (XCAFDoc_ColorGen for all ) 
 myColors->UnSetColor (aLabel,ctype); 
-~~~~~
+~~~~
 To remove a Color and all the references to it (so that the related shapes will become colorless), use: 
-~~~~~
+~~~~{.cpp}
 myColors->RemoveColor(ColLabel); 
-~~~~~
+~~~~
 
 @subsection occt_xde_2_7 Geometric Dimensions & Tolerances (GD\&T)
 
@@ -683,10 +683,10 @@ These definitions are common to various exchange formats, at least for STEP.
 
 @subsubsection occt_xde_2_7_1 Initialization
 To query, edit, or initialize a Document to handle GD\&Ts of XCAF, use: 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_DimTolTool) myDimTolTool = 
 XCAFDoc_DocumentTool::DimTolTool(Doc->Main()); 
-~~~~~
+~~~~
 This call can be used at any time. When it is used for the first time, a relevant structure is added to the document. This definition is used for all later GD\&T calls and is not repeated for them. 
 
 @subsubsection occt_xde_2_7_2 Adding a GD\&T
@@ -699,19 +699,19 @@ All methods create a sub-label for the corresponding GD\&T entity of the tool ma
 created entity.
 
 Here is an example of adding a new dimension:
-~~~~~
+~~~~{.cpp}
 TDF_Label aDimLabel = myDimTolTool->AddDimension();
 if (!aDimLabel.IsNull())
 {
   // error processing
 }
-~~~~~
+~~~~
 A similar approach can be used for other GD\&T types.
 
 @subsubsection occt_xde_2_7_3 Editing a GD\&T
 A newly added GD\&T entity is empty. To set its data a corresponding access object should be used as it is demonstrated
 below, where the dimension becomes a linear distance between two points.
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_Dimension) aDimAttr;
 aDimLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr);
 if (!aDimAttr.IsNull())
@@ -725,7 +725,7 @@ if (!aDimAttr.IsNull())
   //...
   aDimAttr->SetObject(aDimObject);
 }
-~~~~~
+~~~~
 A similar approach can be used for other GD\&T types.
 
 @subsubsection occt_xde_2_7_4 Linking GD\&Ts
@@ -737,14 +737,14 @@ To link a GD\&T entity with other OCAF labels (e.g. representing shapes) one sho
 These methods can take a single label or a sequence of labels. All previous links will be removed.
 
 The example below demonstrates linking of a dimension to sequences of shape labels:
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence aShapes1, aShapes2;
 aShapes1.Append(aShape11);
 //...
 aShapes2.Append(aShape21);
 //...
 aDGTTool->SetDimension(aShapes1, aShapes2, aDimLabel);
-~~~~~
+~~~~
 
 In addition, a special method *SetDatumToGeomTol* should be used to link a datum with a geometric tolerance.
 
@@ -772,14 +772,14 @@ Custom data can be stored in labels with tags beyond the ranges listed above.
 In an XDE document, Clipping planes are managed by the class *XCAFDoc_ClippingPlaneTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Clipping planes are stored in a child of the starting document label 0.1.8, where planes themselves are defined as *TDataXtd_Plane* attribute. *TDataStd_Name* attribute is used for naming.
 
 To query, edit, or initialize a Document to handle clipping planes of XCAF, use: 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_ClippingPlaneTool) myClipPlaneTool = 
 XCAFDoc_DocumentTool::ClippingPlaneTool(Doc->Main()); 
-~~~~~
+~~~~
 This call can be used at any time. When it is used for the first time, a relevant structure is added to the document. 
 
 To add a clipping plane use one of overloaded methods *AddClippingPlane*, e.g.:
-~~~~~
+~~~~{.cpp}
 gp_Pln aPln = ...
 Standard_Boolean aCapping = ...
 TDF_Label aClipPlnLbl = myClipPlaneTool->AddClippingPlane(aPln, "Name of plane", aCapping);
@@ -787,31 +787,31 @@ if (aClipPlnLbl.IsNull())
 {
   // error processing
 }
-~~~~~ 
+~~~~
 
 To remove a plane use *RemoveClippingPlane* method, e.g.:
-~~~~~
+~~~~{.cpp}
 if (!myClipPlaneTool->RemoveClippingPlane(aClipPlnLbl))
 {
   // not removed
 }
-~~~~~
+~~~~
 The plane will not be removed if it is referenced in at least one view.
 
 To change the clipping plane and its name use *UpdateClippingPlane* method, e.g.:
-~~~~~
+~~~~{.cpp}
 gp_Pln aPln = ...
 myClipPlaneTool->UpdateClippingPlane(aClipPlnLbl, aPln, "New name of plane");
-~~~~~
+~~~~
 
 Capping property can be changed using *SetCapping* method, e.g.:
-~~~~~
+~~~~{.cpp}
 Standard_Boolean aCapping = ...
 myClipPlaneTool->SetCapping(aClipPlnLbl, aCapping);
-~~~~~
+~~~~
 
 *XCAFDoc_ClippingPlaneTool* can be used to get all clipping plane labels and to check if a label belongs to the *ClippingPlane table*, e.g.:
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence aClipPlaneLbls;
 myClipPlaneTool->GetClippingPlanes(aClipPlaneLbls);
 ...
@@ -830,21 +830,21 @@ for (TDF_LabelSequence::Iterator anIt(aClipPlaneLbls); anIt.More(); anIt.Next())
     ...
   }
 }
-~~~~~
+~~~~
 
 @subsection occt_xde_2_9 Saved views
 
 In an XDE document, Views are managed by the class *XCAFDoc_ViewTool*. It works basing on the same principles as ShapeTool works with Shapes. This tool can be provided on the Main Label or on any sub-label. Views are stored in a child of the starting document label 0.1.7, where a view itself is defined as *XCAFDoc_View* sub-class of *TDF_Attribute*. Views and selected shapes, clipping planes, GD\&Ts and notes are related by Graph Nodes.
 
 To query, edit, or initialize a Document to handle views of XCAF, use: 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_ViewTool) myViewTool = 
 XCAFDoc_DocumentTool::ViewTool(Doc->Main()); 
-~~~~~
+~~~~
 This call can be used at any time. When it is used for the first time, a relevant structure is added to the document. 
 
 To add a view use *AddView* method and an access *XCAFView_Object* object to set camera parameters, e.g.:
-~~~~~
+~~~~{.cpp}
 TDF_Label aViewLbl = myViewTool->AddView();
 if (aViewLbl.IsNull())
 {
@@ -862,22 +862,22 @@ if (!aViewAttr.IsNull())
   ...
   aViewAttr->SetObject(aViewObject);
 }
-~~~~~ 
+~~~~
 
 To set shapes, clipping planes, GD\&Ts and notes selected for the view use one of overloaded *SetView* methods of *XCAFDoc_ViewTool*. 
 To set only clipping planes one should use *SetClippingPlanes* method.
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence aShapes; ...
 TDF_LabelSequence aGDTs; ...
 myViewTool->SetView(aShapes, aGDTs, aViewLbl);
 TDF_LabelSequence aClippingPlanes; ...
 myViewTool->SetClippingPlanes(aClippingPlanes, aViewLbl);
-~~~~~
+~~~~
 
 To remove a view use *RemoveView* method.
 
 To get all view labels and check if a label belongs to the View table use:
-~~~~~
+~~~~{.cpp}
 TDF_LabelSequence aViewLbls;
 myViewTool->GetViewLabels(aViewLbls);
 ...
@@ -889,7 +889,7 @@ for (TDF_LabelSequence::Iterator anIt(aViewLbls); anIt.More(); anIt.Next())
     ...
   }
 }
-~~~~~
+~~~~
 
 To get shapes, clipping planes, GD\&Ts or notes associated with a particular view use the following methods:
   * *GetRefShapeLabel* - returns a sequence of associated shape labels;
@@ -920,10 +920,10 @@ Notes binding is done through *XCAFDoc_GraphNode* attribute.
 @subsubsection occt_xde_2_10_1 Initialization
 
 To query, edit, or initialize a Document to handle custom notes of XCAF, use: 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NotesTool) myNotes = 
 XCAFDoc_DocumentTool::NotesTool(Doc->Main ()); 
-~~~~~
+~~~~
 This call can be used at any time. The first time it is used, a relevant structure is added to the document. This definition is used for all later notes calls and will not be repeated for them. 
   
 @subsubsection occt_xde_2_10_2 Creating Notes
@@ -933,25 +933,25 @@ Before annotating a Document item a note must be created using one of the follow
 - *CreateBinData* : creates a note with arbitrary binary data, e.g. contents of a file.
 
 Both methods return an instance of *XCAFDoc_Note* class.
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NotesTool) myNotes = ...
 Handle(XCAFDoc_Note) myNote = myNotes->CreateComment("User", "Timestamp", "Hello, World!");
-~~~~~
+~~~~
 This code adds a child label to label 0.1.9.1 with *XCAFDoc_NoteComment* attribute.
 
 @subsubsection occt_xde_2_10_3 Editing a Note
 An instance of *XCAFDoc_Note* class can be used for note editing.
 One may change common note data.
-~~~~~
+~~~~{.cpp}
 myNote->Set("New User", "New Timestamp");
-~~~~~
+~~~~
 To change specific data one needs to down cast *myNote* handle to the appropriate sub-class:
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NoteComment) myCommentNote = Handle(XCAFDoc_NoteComment)::DownCast(myNote);
 if (!myCommentNote.IsNull()) {
   myCommentNote->Set("New comment");
 }
-~~~~~
+~~~~
 In order to edit auxiliary note data such as text and attachment position, plane for rendering and tessellated presentation,
 one should use a transfer object *XCAFNoteObjects_NoteObject* by GetObject and SetObject methods of *XCAFDoc_Note* class.
 *XCAFNoteObjects_NoteObject* class provides the following functionality:
@@ -961,7 +961,7 @@ one should use a transfer object *XCAFNoteObjects_NoteObject* by GetObject and S
 - GetPresentation and SetPresentation methods allow to test for and specify tessellated presentation
 
 After getting, the transfer object can be edited and set back to the note:
-~~~~~
+~~~~{.cpp}
 Handle(XCAFNoteObjects_NoteObject) aNoteObj = myNote->GetObject();
 if (!aNoteObj.IsNull())
 {
@@ -971,7 +971,7 @@ if (!aNoteObj.IsNull())
   aNoteObj->SetPresentation (aS);
   myNote->SetObject (aNoteObj);
 }
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_10_4 Adding Notes
 
@@ -981,7 +981,7 @@ Once a note has been created it can be bound to a Document item using the follow
 - *AddNoteToSubshape* : binds a note to a sub-shape.
 
 All methods return a pointer to *XCAFDoc_AssemblyItemRef* attribute identifying the annotated item.
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NotesTool) myNotes = ...
 Handle(XCAFDoc_Note) myNote = ...
 TDF_Label theLabel; ...
@@ -990,7 +990,7 @@ Standard_GUID theAttrGUID; ...
 Handle(XCAFDoc_AssemblyItemRef) myRefAttr = myNotes->AddNoteToAttr(myNote->Label(), theAttrGUID);
 Standard_Integer theSubshape = 1;
 Handle(XCAFDoc_AssemblyItemRef) myRefSubshape = myNotes->AddNoteToSubshape(myNote->Label(), theSubshape);
-~~~~~
+~~~~
 This code adds three child labels with *XCAFDoc_AssemblyItemRef* attribute to label 0.1.9.2. *XCAFDoc_GraphNode* attributes are added to the child labels and note labels.
 
 @subsubsection occt_xde_2_10_5 Finding Notes
@@ -1000,7 +1000,7 @@ To find annotation labels under label 0.1.9.2 use the following *XCAFDoc_NotesTo
 - *FindAnnotatedItemAttr* : returns an annotation label for a label's attribute;
 - *FindAnnotatedItemSubshape* : returns an annotation label for a sub-shape.
 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NotesTool) myNotes = ...
 TDF_Label theLabel; ...
 TDF_Label myLabel = myNotes->FindAnnotatedItem(theLabel);
@@ -1008,7 +1008,7 @@ Standard_GUID theAttrGUID; ...
 TDF_Label myLabelAttr = myNotes->FindAnnotatedItemAttr(theLabel, theAttrGUID);
 Standard_Integer theSubshape = 1;
 TDF_Label myLabelSubshape = myNotes->FindAnnotatedItemSubshape(theLabel, theSubshape);
-~~~~~
+~~~~
 Null label will be returned if there is no corresponding annotation.
 
 To get all notes of the Document item use the following *XCAFDoc_NotesTool* methods:
@@ -1017,7 +1017,7 @@ To get all notes of the Document item use the following *XCAFDoc_NotesTool* meth
 - *GetAttrSubshape* : outputs a sequence of note labels bound to a sub-shape.
 
 All these methods return the number of notes.
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_NotesTool) myNotes = ...
 TDF_Label theLabel; ...
 TDF_LabelSequence theNotes;
@@ -1028,7 +1028,7 @@ myNotes->GetAttrNotes(theLabel, theAttrGUID, theNotesAttr);
 Standard_Integer theSubshape = 1;
 TDF_LabelSequence theNotesSubshape;
 myNotes->GetAttrSubshape(theLabel, theSubshape, theNotesSubshape);
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_10_6 Removing Notes
 
@@ -1037,7 +1037,7 @@ To remove a note use one of the following *XCAFDoc_NotesTool* methods:
 - *RemoveAttrNote* : unbinds a note from a label's attribute;
 - *RemoveSubshapeNote* : unbinds a note from a sub-shape.
 
-~~~~~
+~~~~{.cpp}
 Handle(XCAFDoc_Note) myNote = ...
 TDF_Label theLabel; ...
 myNotes->RemoveNote(myNote->Label(), theLabel);
@@ -1045,7 +1045,7 @@ Standard_GUID theAttrGUID; ...
 myRefAttr = myNotes->RemoveAttrNote(myNote->Label(), theAttrGUID);
 Standard_Integer theSubshape = 1;
 myNotes->RemoveSubshapeNote(myNote->Label(), theSubshape);
-~~~~~
+~~~~
 A note will not be deleted automatically.
 Counterpart methods to remove all notes are available, too.
   
@@ -1074,7 +1074,7 @@ The packages to manage this are *IGESCAFControl* for IGES, and *STEPCAFControl* 
 @subsubsection occt_xde_2_11_1 Reading a STEP file
 To read a STEP file by itself, use: 
 
-~~~~~
+~~~~{.cpp}
 STEPCAFControl_Reader reader; 
 IFSelect_ReturnStatus readstat = reader.ReadFile(filename); 
 // The various ways of reading a file are available here too : 
@@ -1089,13 +1089,13 @@ if ( !reader.Transfer ( doc ) ) {
 } 
 // Here, the Document has been filled from a STEP file, 
 // it is ready to use 
-~~~~~
+~~~~
 
 In addition, the reader provides methods that are applicable to document transfers and for directly querying of the data produced. 
 @subsubsection occt_xde_2_11_2 Writing a STEP file
 To write a STEP file by itself, use: 
 
-~~~~~
+~~~~{.cpp}
 STEPControl_StepModelType mode = 
 STEPControl_AsIs; 
 // Asis is the recommended value, others are available 
@@ -1111,7 +1111,7 @@ if ( ! writer.Transfer ( Doc, mode ) ) {
 } 
 // Writing the File 
 IFSelect_ReturnStatus stat = writer.Write(file-name); 
-~~~~~
+~~~~
 
 @subsubsection occt_xde_2_11_3 Reading an IGES File
 Use the same procedure as for a STEP file but with IGESCAFControl instead of STEPCAFControl. 

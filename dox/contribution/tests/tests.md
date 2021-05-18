@@ -51,9 +51,9 @@ For this it is recommended to add a file *DrawAppliInit* in the directory which 
 
 Example (Windows)
 
-~~~~~{.tcl}
+~~~~{.php}
 set env(CSF_TestDataPath) $env(CSF_TestDataPath)\;d:/occt/test-data
-~~~~~
+~~~~
 
 Note that variable *CSF_TestDataPath* is set to default value at DRAW start, pointing at the folder <i>$CASROOT/data</i>. 
 In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Similar code could be used on Linux and Mac OS X except that on non-Windows platforms colon ":" should be used as path separator instead of semicolon ";".
@@ -66,18 +66,18 @@ To run all tests, type command *testgrid*
 
 Example:
 
-~~~~~
+~~~~{.php}
 Draw[]> testgrid
-~~~~~
+~~~~
 
 To run only a subset of test cases, give masks for group, grid, and test case names to be executed.
 Each argument is a list of file masks separated with commas or spaces; by default "*" is assumed.
 
 Example:
 
-~~~~~
+~~~~{.php}
 Draw[]> testgrid bugs caf,moddata*,xde
-~~~~~
+~~~~
 
 As the tests progress, the result of each test case is reported. 
 At the end of the log a summary of test cases is output, 
@@ -86,7 +86,7 @@ including the list of detected regressions and improvements, if any.
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     Tests summary
 
     CASE 3rdparty export A1: OK 
@@ -97,7 +97,7 @@ Example:
     Total cases: 208 BAD, 31 SKIPPED, 3 IMPROVEMENT, 1791 OK
     Elapsed time: 1 Hours 14 Minutes 33.7384512019 Seconds
     Detailed logs are saved in D:/occt/results_2012-06-04T0919
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_details_results "Interpretation of test results" for details.
 
@@ -105,22 +105,22 @@ The results and detailed logs of the tests are saved by default to a new subdire
 If necessary, a non-default output directory can be specified using option <i> -outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>-overwrite</i> to allow writing results in the existing non-empty directory. 
 
 Example:
-~~~~~
+~~~~{.php}
 Draw[]> testgrid -outdir d:/occt/last_results -overwrite
-~~~~~
+~~~~
 In the output directory, a cumulative HTML report <i>summary.html</i> provides links to reports on each test case. An additional report in JUnit-style XML format can be output for use in Jenkins or other continuous integration system.
 
 To re-run the test cases, which were detected as regressions on the previous run, option <i>-regress dirname</i> should be used.
 <i>dirname</i> is a path to the directory containing the results of the previous run. Only the test cases with *FAILED* and *IMPROVEMENT* statuses will be tested.
 
 Example:
-~~~~~
+~~~~{.php}
 Draw[]> testgrid -regress d:/occt/last_results
-~~~~~
+~~~~
 
 Type <i>help testgrid</i> in DRAW prompt to get help on options supported by *testgrid* command:
 
-~~~~~
+~~~~{.php}
 Draw[3]> help testgrid
 testgrid: Run all tests, or specified group, or one grid
     Use: testgrid [groupmask [gridmask [casemask]]] [options...]
@@ -135,7 +135,7 @@ testgrid: Run all tests, or specified group, or one grid
                       Here "dirname" is a path to the directory containing the results of the previous run.
     Groups, grids, and test cases to be executed can be specified by the list of file 
     masks separated by spaces or commas; default is all (*).
-~~~~~
+~~~~
 
 @subsubsection testmanual_1_3_3 Running a Single Test
 
@@ -143,11 +143,11 @@ To run a single test, type command *test* followed by names of group, grid, and 
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     Draw[1]> test blend simple A1
     CASE blend simple A1: OK
     Draw[2]>
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 Note that normally an intermediate output of the script is not shown. The detailed log of the test can be obtained after the test execution by running command <i>"dlog get"</i>. 
 
@@ -156,7 +156,7 @@ To see intermediate commands and their output during the test execution, add one
 
 Type <i>help test</i> in DRAW prompt to get help on options supported by *test* command:
 
-~~~~~
+~~~~{.php}
 Draw[3]> help test
 test: Run specified test case
  Use: test group grid casename [options...]
@@ -174,7 +174,7 @@ test: Run specified test case
  -beep: play sound signal at the end of the test
  -errors: show all lines from the log report that are recognized as errors
         This key will be ignored if the "-echo" key is already set.
-~~~~~
+~~~~
 
 @subsubsection testmanual_intro_quick_create Creating a New Test
 
@@ -182,50 +182,50 @@ The detailed rules of creation of new tests are given in @ref testmanual_3 "Crea
 
 Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script, data files, and DRAW commands specific for this test case.
 
-1.	If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. 
-2.	Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See @ref testmanual_5_2 "the correspondence map".
-3.	In the test script:
-	*	Load all necessary DRAW modules by command *pload*.
-	*	Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
-	*	Use DRAW commands to reproduce the tested situation.
-	*	Make sure that in case of failure the test produces a message containing word "Error" or other recognized by the test system as error (add new error patterns in file parse.rules if necessary).
-	*	If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
-	*	To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
-	*	If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
-4.	To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
+1.  If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. 
+2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See @ref testmanual_5_2 "the correspondence map".
+3.  In the test script:
+  * Load all necessary DRAW modules by command *pload*.
+  * Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
+  * Use DRAW commands to reproduce the tested situation.
+  * Make sure that in case of failure the test produces a message containing word "Error" or other recognized by the test system as error (add new error patterns in file parse.rules if necessary).
+  * If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
+  * To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
+  * If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
+4.  To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
     If the data file is already present, use it for a new test instead of adding a duplicate.
     If the data file(s) are not yet present in the test database, put them to a folder and add it to the environment variable *CSF_TestDataPath* to be found by the test system.
     The location of the data files, which need to be accessed by OCC team and put to the official database, should be provided in the comment to Mantis issue, clearly indicating how the names of the files used by the test script match the actual names of the files.
     The simplest way is to attach the data files to the Mantis issue, with the same names as used by the test script.
-5.	Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
+5.  Check that the test case runs as expected (test for fix: OK with the fix, FAILED without the fix; test for existing problem: BAD), and integrate it to the Git branch created for the issue.
 
 Example:
 
 * Added files:
 
-~~~~~
+~~~~{.php}
 git status -short
 A tests/bugs/heal/data/bug210_a.brep
 A tests/bugs/heal/data/bug210_b.brep
 A tests/bugs/heal/bug210_1
 A tests/bugs/heal/bug210_2
-~~~~~
+~~~~
 
 * Test script
 
-~~~~~{.tcl}
+~~~~{.php}
 puts "OCC210 (case 1): Improve FixShape for touching wires"
 
 restore [locate_data_file bug210_a.brep] a 
 
 fixshape result a 0.01 0.01
 checkshape result
-~~~~~
+~~~~
 
 DRAW command *testfile* should be used to check the data files used by the test for possible duplication of content or names.
 The command accepts the list of paths to files to be checked (as a single argument) and gives a conclusion on each of the files, for instance:
 
-~~~~~
+~~~~{.php}
 Draw[1]> testfile [glob /my/data/path/bug12345*]
 Collecting info on test data files repository...
 Checking new file(s)...
@@ -247,7 +247,7 @@ Checking new file(s)...
 * /my/data/path/case_8_wire4.brep: error
   name is already used by existing file
   --> //server/occt_tests_data/public/brep/case_8_wire4.brep
-~~~~~
+~~~~
 
 @section testmanual_2 Organization of Test Scripts
 
@@ -284,11 +284,11 @@ The names of directories of test groups containing systematic test grids corresp
 
 Example:
 
-~~~~~
+~~~~
   caf
   mesh
   offset
-~~~~~
+~~~~
 
 Test group *bugs* is used to collect the tests coming from bug reports. Group *demo* collects tests of the test system, DRAW, samples, etc.
 
@@ -296,19 +296,19 @@ Test group *bugs* is used to collect the tests coming from bug reports. Group *d
 
 This test group contains file *grids.list*, which defines an ordered list of grids in this group in the following format:
 
-~~~~~~~~~~~~~~~~~
+~~~~
 001 gridname1
 002 gridname2
 ...
 NNN gridnameN
-~~~~~~~~~~~~~~~~~
+~~~~
 
 Example:
 
-~~~~~~~~~~~~~~~~~
+~~~~
     001 basic
     002 advanced
-~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection testmanual_2_2_3 File "begin"
 
@@ -318,10 +318,10 @@ additional Tcl functions used in test scripts.
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     pload TOPTEST ;# load topological command
     set cpulimit 300 ;# set maximum time allowed for script execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection testmanual_2_2_4 File "end"
 
@@ -332,14 +332,14 @@ Note: *TEST COMPLETED* string should be present in the output to indicate that t
 See @ref testmanual_3 "Creation and modification of tests" chapter for more information.
 
 Example:
-~~~~~
+~~~~{.php}
     if { [isdraw result] } {
         checkshape result
     } else {
         puts "Error: The result shape can not be built"
     }
     puts "TEST COMPLETED"
-~~~~~
+~~~~
 
 @subsubsection testmanual_2_2_5 File "parse.rules"
 
@@ -353,12 +353,12 @@ The rest of the line can contain a comment message, which will be added to the t
 
 Example:
 
-~~~~~
+~~~~
     FAILED /\b[Ee]xception\b/ exception
     FAILED /\bError\b/ error
     SKIPPED /Cannot open file for reading/ data file is missing
     SKIPPED /Could not read file .*, abandon/ data file is missing
-~~~~~
+~~~~
 
 Lines starting with a *#* character and blank lines are ignored to allow comments and spacing.
 
@@ -368,11 +368,11 @@ If a line matches several rules, the first one applies. Rules defined in the gri
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~
     FAILED /\\bFaulty\\b/ bad shape
     IGNORE /^Error [23]d = [\d.-]+/ debug output of blend command
     IGNORE /^Tcl Exception: tolerance ang : [\d.-]+/ blend failure
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection testmanual_2_2_6  Directory "data"
 The test group may contain subdirectory *data*, where test scripts shared by different test grids can be put. See also @ref testmanual_2_3_5 "Directory data".
@@ -386,12 +386,12 @@ Each directory contains a set of related test cases. The name of a directory sho
 
 Example:
 
-~~~~~
+~~~~
 caf
    basic
    bugs
    presentation
-~~~~~
+~~~~
 
 Here *caf* is the name of the test group and *basic*, *bugs*, *presentation*, etc. are the names of grids.
 
@@ -403,9 +403,9 @@ Usually it sets variables specific for the current grid.
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     set command bopfuse ;# command tested in this grid
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection testmanual_2_3_3 File "end"
 
@@ -415,9 +415,9 @@ Usually it executes a specific sequence of commands common for all tests in the 
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     vdump $imagedir/${casename}.png ;# makes a snap-shot of AIS viewer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection testmanual_2_3_4 File "cases.list"
 
@@ -427,9 +427,9 @@ This file should contain a single line defining the relative path to the collect
 
 Example:
 
-~~~~~
+~~~~
 ../data/simple
-~~~~~
+~~~~
 
 This option is used for creation of several grids of tests with the same data files and operations but performed with differing parameters. The common scripts are usually located place in the common 
 subdirectory of the test group, <i>data/simple</i> for example.
@@ -450,25 +450,25 @@ and produces meaningful messages that can be used to check the validity of the r
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~{.php}
     pcylinder c1 10 20 ;# create first cylinder
     pcylinder c2 5 20 ;# create second cylinder
     ttranslate c2 5 0 10 ;# translate second cylinder to x,y,z
     bsection result c1 c2 ;# create a section of two cylinders
     checksection result ;# will output error message if result is bad
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 The test case can have any name (except for the reserved names *begin, end, data, cases.list* and  *parse.rules*). 
 For systematic grids it is usually a capital English letter followed by a number.
 
 Example:
 
-~~~~~
+~~~~
     A1
     A2
     B1
     B2
-~~~~~
+~~~~
 
 Such naming facilitates compact representation of tests execution results in tabular format within HTML reports.
 
@@ -488,11 +488,11 @@ The test case name in the bugs group should be prefixed by the ID of the corresp
 
 Example:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
+~~~~
     bug12345_coaxial
     bug12345_orthogonal_1
     bug12345_orthogonal_2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 If the new test corresponds to a functionality already covered by the existing systematic test grid (e.g. group *mesh* for *BRepMesh* issues), this test can be added (or moved later by OCC team) to that grid. 
 
@@ -526,32 +526,32 @@ The test should run commands necessary to perform the tested operations, in gene
 Usually the script represents a set of commands that a person would run interactively to perform the operation and see its results, with additional comments to explain what happens.
 
 Example:
-~~~~~
+~~~~{.php}
 # Simple test of fusing box and sphere
 box b 10 10 10 
 sphere s 5
 bfuse result b s
 checkshape result
-~~~~~
+~~~~
 
 Make sure that file *parse.rules* in the grid or group directory contains a regular expression to catch possible messages indicating the failure of the test. 
 
 For instance, for catching errors reported by *checkshape* command relevant grids define a rule to recognize its report by the word *Faulty*:
 
-~~~~~
+~~~~
 FAILED /\bFaulty\b/ bad shape
-~~~~~
+~~~~
 
 For the messages generated in the script it is recommended to use the word 'Error' in the error message.
 
 Example:
 
-~~~~~
+~~~~{.php}
 set expected_length 11
 if { [expr $actual_length - $expected_length] > 0.001 } {
     puts "Error: The length of the edge should be $expected_length"
 }
-~~~~~
+~~~~
 
 At the end, the test script should output *TEST COMPLETED* string to mark a successful completion of the script. This is often done by the *end* script in the grid.
 
@@ -571,9 +571,9 @@ During execution of the test, location of such data file can be constructed usin
 
 Example:
 
-~~~~~
+~~~~{.php}
 checkresult $result $::dirname/$::groupname/$::gridname/data/${::casename}.txt
-~~~~~
+~~~~
 
 CAD models and other data files which are not going to change over time should be stored separately from the source repository.
 Use Tcl procedure *locate_data_file* to get a path to such data files, instead of coding the path explicitly. 
@@ -583,9 +583,9 @@ If the file is not found, *locate_data_file* will raise exception, and the test 
 
 Example:
 
-~~~~~
+~~~~{.php}
 stepread [locate_data_file CAROSKI_COUPELLE.step] a *
-~~~~~
+~~~~
 
 When the test needs to produce some snapshots or other artefacts, use Tcl variable *imagedir* as the location where such files should be put. 
 * Command *testgrid* sets this variable to the subdirectory of the results folder corresponding to the grid. 
@@ -601,20 +601,20 @@ The test system can recognize an image file (snapshot) and include it in HTML lo
 The image format (defined by extension) should be *png*.
 
 Example:
-~~~~~
+~~~~{.php}
 xwd $::imagedir/${::casename}.png
 vdisplay result; vfit
 vdump $::imagedir/${::casename}-axo.png
 vfront; vfit
 vdump $::imagedir/${::casename}-front.png
-~~~~~
+~~~~
 
 would produce:
-~~~~~
+~~~~
 A1.png
 A1-axo.png
 A1-front.png
-~~~~~
+~~~~
 
 Note that OCCT must be built with FreeImage support to be able to produce usable images.
 
@@ -644,26 +644,26 @@ The new test created for an unsolved problem should return BAD. The new test cre
 If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at https://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
 
 The following statement should be added to such a test script:
-~~~~~
+~~~~{.php}
 puts "TODO BugNumber ListOfPlatforms: RegularExpression"
-~~~~~
+~~~~
 
 Here:
 * *BugNumber* is the bug ID in the tracker. For example: #12345.
 * *ListOfPlatforms* is a list of platforms, at which the bug is reproduced (Linux, Windows, MacOS, or All). Note that the platform name is custom for the OCCT test system; Use procedure *checkplatform* to get the platform name.
 
 Example:
-~~~~~
+~~~~{.php}
 Draw[2]> checkplatform
 Windows
-~~~~~
+~~~~
 
 * RegularExpression is a regular expression, which should be matched against the line indicating the problem in the script output. 
 
 Example:
-~~~~~
+~~~~{.php}
 puts "TODO #22622 Mandriva2008: Abort .* an exception was raised"
-~~~~~
+~~~~
 
 The parser checks the test output and if an output line matches the *RegularExpression* then it will be assigned a BAD status instead of FAILED.
 
@@ -673,29 +673,29 @@ To mark the test as BAD for an incomplete case (when the final *TEST COMPLETE* m
 
 Example:
 
-~~~~~
+~~~~{.php}
 puts "TODO OCC22817 All: exception.+There are no suitable edges"
 puts "TODO OCC22817 All: \\*\\* Exception \\*\\*"
 puts "TODO OCC22817 All: TEST INCOMPLETE"
-~~~~~
+~~~~
 
 @subsection testmanual_3_7 Marking required output
 
 To check the obtained test output matches the expected results considered correct, add REQUIRED statement for each specific message.
 For that, the following statement should be added to the corresponding test script:
 
-~~~~~
+~~~~{.php}
 puts "REQUIRED ListOfPlatforms: RegularExpression"
-~~~~~
+~~~~
 
 Here *ListOfPlatforms* and *RegularExpression* have the same meaning as in TODO statements described above.
 
 The REQUIRED statement can also be used to mask the message that would normally be interpreted as error (according to the rules defined in *parse.rules*) but should not be considered as such within the current test.
 
 Example:
-~~~~~
+~~~~{.php}
 puts "REQUIRED Linux: Faulty shapes in variables faulty_1 to faulty_5"
-~~~~~
+~~~~
 
 This statement notifies test system that errors reported by *checkshape* command are expected in that test case, and test should be considered as OK if this message appears, despite of presence of general rule stating that 'Faulty' signals failure.
 
@@ -711,13 +711,13 @@ Note: in OCCT 6.5.3, file *DrawAppliInit* already exists in <i>$CASROOT/src/Draw
 
 For example, let us assume that *d:/occt* contains an up-to-date version of OCCT sources with tests, and the test data archive is unpacked to *d:/test-data*):
 
-~~~~~
+~~~~{.php}
 set env(CASROOT) d:/occt
 set env(CSF_TestScriptsPath) $env(CASROOT)/tests
 source $env(CASROOT)/src/DrawResources/TestCommands.tcl
 set env(CSF_TestDataPath) $env(CASROOT)/data;d:/test-data
 return
-~~~~~
+~~~~
 
 Note that on older versions of OCCT the tests are run in compatibility mode and thus not all output of the test command can be captured; this can lead to absence of some error messages (can be reported as either a failure or an improvement).
 
@@ -728,13 +728,13 @@ You can extend the test system by adding your own tests. For that it is necessar
 Use Tcl command <i>_path_separator</i> to insert a platform-dependent separator to the path list.
 
 For example:
-~~~~~
+~~~~{.php}
 set env(CSF_TestScriptsPath) \
   $env(TestScriptsPath)[_path_separator]d:/MyOCCTProject/tests
 set env(CSF_TestDataPath) \
   d:/occt/test-data[_path_separator]d:/MyOCCTProject/data
 return ;# this is to avoid an echo of the last command above in cout
-~~~~~
+~~~~
 
 @subsection testmanual_4_3 Parallel execution of tests
 
@@ -749,21 +749,21 @@ Some test results are very dependent on the characteristics of the workstation, 
 
 OCCT test system provides a dedicated command *testdiff* for comparing CPU time of execution, memory usage, and images produced by the tests.
 
-~~~~~
+~~~~{.php}
 testdiff dir1 dir2 [groupname [gridname]] [options...]
-~~~~~
+~~~~
 Here *dir1* and *dir2* are directories containing logs of two test runs.
 
 Possible options are:
 * <i>-save \<filename\> </i> -- saves the resulting log in a specified file (<i>$dir1/diff-$dir2.log</i> by default). HTML log is saved with the same name and extension .html;
 * <i>-status {same|ok|all}</i> -- allows filtering compared cases by their status:
-	* *same* -- only cases with same status are compared (default);
-	* *ok*   -- only cases with OK status in both logs are compared;
-	* *all*  -- results are compared regardless of status;
+  * *same* -- only cases with same status are compared (default);
+  * *ok*   -- only cases with OK status in both logs are compared;
+  * *all*  -- results are compared regardless of status;
 * <i>-verbose \<level\> </i> -- defines the scope of output data:
-	* 1 -- outputs only differences;
-	* 2 -- additionally outputs the list of logs and directories present in one of directories only;
-	* 3 -- (by default) additionally outputs progress messages;
+  * 1 -- outputs only differences;
+  * 2 -- additionally outputs the list of logs and directories present in one of directories only;
+  * 3 -- (by default) additionally outputs progress messages;
 * <i>-image [filename]</i> - compare images and save the resulting log in specified file (<i>$dir1/diffimage-$dir2.log</i> by default)
 * <i>-cpu [filename]</i> - compare overall CPU and save the resulting log in specified file (<i>$dir1/diffcpu-$dir2.log</i> by default)
 * <i>-memory [filename]</i> - compare memory delta and save the resulting log in specified file (<i>$dir1/diffmemory-$dir2.log</i> by default)
@@ -771,18 +771,18 @@ Possible options are:
 
 Example:
 
-~~~~~
+~~~~{.php}
 Draw[]> testdiff results/CR12345-2012-10-10T08:00 results/master-2012-10-09T21:20 
-~~~~~
+~~~~
 
 Particular tests can generate additional data that need to be compared by *testdiff* command.
 For that, for each parameter to be controlled, the test should produce the line containing keyword "COUNTER* followed by arbitrary name of the parameter, then colon and numeric value of the parameter.
 
 Example of test code:
 
-~~~~~
+~~~~{.php}
 puts "COUNTER Memory heap usage at step 5: [meminfo h]"
-~~~~~
+~~~~
 
 @section testmanual_5 APPENDIX
 
@@ -794,10 +794,10 @@ This group allows testing the interaction of OCCT and 3rdparty products.
 
 DRAW module: VISUALIZATION.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| export	| vexport	| export of images to different formats |
-| fonts	 | vtrihedron, vcolorscale, vdrawtext	| display of fonts |
+| export  | vexport | export of images to different formats |
+| fonts  | vtrihedron, vcolorscale, vdrawtext | display of fonts |
 
 
 @subsubsection testmanual_5_1_2 blend
@@ -806,15 +806,15 @@ This group allows testing blends (fillets) and related operations.
 
 DRAW module: MODELING.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| simple	| blend	| fillets on simple shapes |
-| complex	| blend 	| fillets on complex shapes, non-trivial geometry |
-| tolblend_simple	| tolblend, blend | |
-| buildevol	| buildevol	| |
-| tolblend_buildvol | 	tolblend, buildevol |	use of additional command tolblend |
-| bfuseblend	| bfuseblend	| | 
-| encoderegularity	| encoderegularity	| | 
+| simple  | blend | fillets on simple shapes |
+| complex | blend   | fillets on complex shapes, non-trivial geometry |
+| tolblend_simple | tolblend, blend | |
+| buildevol | buildevol | |
+| tolblend_buildvol |   tolblend, buildevol | use of additional command tolblend |
+| bfuseblend  | bfuseblend  | | 
+| encoderegularity  | encoderegularity  | | 
 
 @subsubsection testmanual_5_1_3 boolean
 
@@ -827,32 +827,32 @@ Grids names are based on name of the command used, with suffixes:
 * <i>_simple</i> -- for tests operating on simple shapes (boxes, cylinders, toruses, etc.);
 * <i>_complex</i> -- for tests dealing with complex shapes.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| bcommon_2d	| bcommon	| Common operation (old algorithm), 2d |
-| bcommon_complex	| bcommon	| Common operation (old algorithm), complex shapes |
-| bcommon_simple	| bcommon	| Common operation (old algorithm), simple shapes |
-| bcut_2d	| bcut | Cut operation (old algorithm), 2d |
-| bcut_complex	| bcut	| Cut operation (old algorithm), complex shapes |
-| bcut_simple	| bcut |	Cut operation (old algorithm), simple shapes |
-| bcutblend	| bcutblend	| | 
-| bfuse_2d	| bfuse	| Fuse operation (old algorithm), 2d |
-| bfuse_complex	| bfuse |	Fuse operation (old algorithm), complex shapes |
-| bfuse_simple	| bfuse	| Fuse operation (old algorithm), simple shapes |
-| bopcommon_2d	| bopcommon |	Common operation, 2d |
-| bopcommon_complex	| bopcommon	| Common operation, complex shapes | 
-| bopcommon_simple	| bopcommon	| Common operation, simple shapes |
-| bopcut_2d |	bopcut |	Cut operation, 2d |
-| bopcut_complex |	bopcut |	Cut operation, complex shapes |
-| bopcut_simple	| bopcut	| Cut operation, simple shapes |
-| bopfuse_2d	| bopfuse	| Fuse operation, 2d |
-| bopfuse_complex	| bopfuse	| Fuse operation, complex shapes |
-| bopfuse_simple	| bopfuse	| Fuse operation, simple shapes |
-| bopsection	| bopsection	| Section |
-| boptuc_2d	| boptuc	| |
-| boptuc_complex	| boptuc	| |
-| boptuc_simple	| boptuc	| |
-| bsection |	bsection	| Section (old algorithm) |
+| bcommon_2d  | bcommon | Common operation (old algorithm), 2d |
+| bcommon_complex | bcommon | Common operation (old algorithm), complex shapes |
+| bcommon_simple  | bcommon | Common operation (old algorithm), simple shapes |
+| bcut_2d | bcut | Cut operation (old algorithm), 2d |
+| bcut_complex  | bcut  | Cut operation (old algorithm), complex shapes |
+| bcut_simple | bcut |  Cut operation (old algorithm), simple shapes |
+| bcutblend | bcutblend | | 
+| bfuse_2d  | bfuse | Fuse operation (old algorithm), 2d |
+| bfuse_complex | bfuse | Fuse operation (old algorithm), complex shapes |
+| bfuse_simple  | bfuse | Fuse operation (old algorithm), simple shapes |
+| bopcommon_2d  | bopcommon | Common operation, 2d |
+| bopcommon_complex | bopcommon | Common operation, complex shapes | 
+| bopcommon_simple  | bopcommon | Common operation, simple shapes |
+| bopcut_2d | bopcut |  Cut operation, 2d |
+| bopcut_complex |  bopcut |  Cut operation, complex shapes |
+| bopcut_simple | bopcut  | Cut operation, simple shapes |
+| bopfuse_2d  | bopfuse | Fuse operation, 2d |
+| bopfuse_complex | bopfuse | Fuse operation, complex shapes |
+| bopfuse_simple  | bopfuse | Fuse operation, simple shapes |
+| bopsection  | bopsection  | Section |
+| boptuc_2d | boptuc  | |
+| boptuc_complex  | boptuc  | |
+| boptuc_simple | boptuc  | |
+| bsection |  bsection  | Section (old algorithm) |
 
 @subsubsection testmanual_5_1_4 bugs
 
@@ -867,15 +867,15 @@ This group allows testing OCAF functionality.
 
 DRAW module: OCAFKERNEL.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| basic	| | 	Basic attributes |
-| bugs	| |	Saving and restoring of document |
-| driver	| |	OCAF drivers |
-| named_shape	| |	*TNaming_NamedShape* attribute |
-| presentation	| | *AISPresentation* attributes |
-| tree	| |	Tree construction attributes |
-| xlink	 | |	XLink attributes |
+| basic | |   Basic attributes |
+| bugs  | | Saving and restoring of document |
+| driver  | | OCAF drivers |
+| named_shape | | *TNaming_NamedShape* attribute |
+| presentation  | | *AISPresentation* attributes |
+| tree  | | Tree construction attributes |
+| xlink  | |  XLink attributes |
 
 @subsubsection testmanual_5_1_6 chamfer
 
@@ -885,17 +885,17 @@ DRAW module: MODELING.
 
 The test grid name is constructed depending on the type of the tested chamfers. Additional suffix <i>_complex</i> is used for test cases involving complex geometry (e.g. intersections of edges forming a chamfer); suffix <i>_sequence</i> is used for grids where chamfers are computed sequentially.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| equal_dist	| | 	Equal distances from edge |
-| equal_dist_complex	| |	Equal distances from edge, complex shapes |
-| equal_dist_sequence	| |	Equal distances from edge, sequential operations |
-| dist_dist	| |	Two distances from edge |
-| dist_dist_complex	| |	Two distances from edge, complex shapes |
-| dist_dist_sequence	| |	Two distances from edge, sequential operations |
-| dist_angle	| |	Distance from edge and given angle |
-| dist_angle_complex	| |	Distance from edge and given angle |
-| dist_angle_sequence	| |	Distance from edge and given angle |
+| equal_dist  | |   Equal distances from edge |
+| equal_dist_complex  | | Equal distances from edge, complex shapes |
+| equal_dist_sequence | | Equal distances from edge, sequential operations |
+| dist_dist | | Two distances from edge |
+| dist_dist_complex | | Two distances from edge, complex shapes |
+| dist_dist_sequence  | | Two distances from edge, sequential operations |
+| dist_angle  | | Distance from edge and given angle |
+| dist_angle_complex  | | Distance from edge and given angle |
+| dist_angle_sequence | | Distance from edge and given angle |
 
 @subsubsection testmanual_5_1_7 de
 
@@ -903,7 +903,7 @@ This group tests reading and writing of CAD data files (iges, step) to and from 
 
 Test cases check transfer status, shape and attributes against expected reference values.
 
-| Grid	| Commands | Functionality |
+| Grid  | Commands | Functionality |
 | :---- | :----- | :------- | 
 | iges_1, iges_2, iges_3 | igesbrep, brepiges, ReadIges, WriteIges | IGES tests | 
 | step_1, step_2, step_3, step_4, step_5 | stepread, stepwrite, ReadStep, WriteStep | STEP tests |
@@ -912,11 +912,11 @@ Test cases check transfer status, shape and attributes against expected referenc
 
 This group allows demonstrating how testing cases are created, and testing DRAW commands and the test system as a whole.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| draw	|  getsource, restore	| Basic DRAW commands |
-| testsystem	| |	Testing system |
-| samples	| |	OCCT samples | 
+| draw  |  getsource, restore | Basic DRAW commands |
+| testsystem  | | Testing system |
+| samples | | OCCT samples | 
 
 
 @subsubsection testmanual_5_1_9 draft
@@ -925,9 +925,9 @@ This group allows testing draft operations.
 
 DRAW module: MODELING.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| Angle	| depouille	| Drafts with angle (inclined walls) |
+| Angle | depouille | Drafts with angle (inclined walls) |
 
 
 @subsubsection testmanual_5_1_10 feat
@@ -936,13 +936,13 @@ This group allows testing creation of features on a shape.
 
 DRAW module: MODELING (package *BRepTest*).
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| featdprism		| | |
-| featlf		| | |
-| featprism		| | |
-| featrevol		| | | 
-| featrf		| | |
+| featdprism    | | |
+| featlf    | | |
+| featprism   | | |
+| featrevol   | | | 
+| featrf    | | |
 
 @subsubsection testmanual_5_1_11 heal
 
@@ -950,28 +950,28 @@ This group allows testing the functionality provided by *ShapeHealing* toolkit.
 
 DRAW module: XSDRAW
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| fix_shape	| fixshape	| Shape healing | 
-| fix_gaps	| fixwgaps	| Fixing gaps between edges on a wire |
-| same_parameter	| sameparameter	| Fixing non-sameparameter edges |
-| same_parameter_locked	| sameparameter	| Fixing non-sameparameter edges |
-| fix_face_size	| DT_ApplySeq	| Removal of small faces |
-| elementary_to_revolution	| DT_ApplySeq	| Conversion of elementary surfaces to revolution |
-| direct_faces	| directfaces	| Correction of axis of elementary surfaces | 
-| drop_small_edges	| fixsmall	| Removal of small edges | 
-| split_angle	| DT_SplitAngle |	Splitting periodic surfaces by angle |
-| split_angle_advanced | DT_SplitAngle	| Splitting periodic surfaces by angle |
-| split_angle_standard | DT_SplitAngle	| Splitting periodic surfaces by angle |
-| split_closed_faces |	DT_ClosedSplit	| Splitting of closed faces |
-| surface_to_bspline |	DT_ToBspl	| Conversion of surfaces to b-splines |
-| surface_to_bezier | DT_ShapeConvert |	Conversion of surfaces to bezier |
-| split_continuity	| DT_ShapeDivide | Split surfaces by continuity criterion |
+| fix_shape | fixshape  | Shape healing | 
+| fix_gaps  | fixwgaps  | Fixing gaps between edges on a wire |
+| same_parameter  | sameparameter | Fixing non-sameparameter edges |
+| same_parameter_locked | sameparameter | Fixing non-sameparameter edges |
+| fix_face_size | DT_ApplySeq | Removal of small faces |
+| elementary_to_revolution  | DT_ApplySeq | Conversion of elementary surfaces to revolution |
+| direct_faces  | directfaces | Correction of axis of elementary surfaces | 
+| drop_small_edges  | fixsmall  | Removal of small edges | 
+| split_angle | DT_SplitAngle | Splitting periodic surfaces by angle |
+| split_angle_advanced | DT_SplitAngle  | Splitting periodic surfaces by angle |
+| split_angle_standard | DT_SplitAngle  | Splitting periodic surfaces by angle |
+| split_closed_faces |  DT_ClosedSplit  | Splitting of closed faces |
+| surface_to_bspline |  DT_ToBspl | Conversion of surfaces to b-splines |
+| surface_to_bezier | DT_ShapeConvert | Conversion of surfaces to bezier |
+| split_continuity  | DT_ShapeDivide | Split surfaces by continuity criterion |
 | split_continuity_advanced | DT_ShapeDivide | Split surfaces by continuity criterion |
 | split_continuity_standard | DT_ShapeDivide | Split surfaces by continuity criterion |
-| surface_to_revolution_advanced |	DT_ShapeConvertRev	| Convert elementary surfaces to revolutions, complex cases |
-| surface_to_revolution_standard |	DT_ShapeConvertRev	| Convert elementary surfaces to revolutions, simple cases |
-| update_tolerance_locked	| updatetolerance	| Update the tolerance of shape so that it satisfy the rule: toler(face)<=toler(edge)<=toler(vertex) |
+| surface_to_revolution_advanced |  DT_ShapeConvertRev  | Convert elementary surfaces to revolutions, complex cases |
+| surface_to_revolution_standard |  DT_ShapeConvertRev  | Convert elementary surfaces to revolutions, simple cases |
+| update_tolerance_locked | updatetolerance | Update the tolerance of shape so that it satisfy the rule: toler(face)<=toler(edge)<=toler(vertex) |
 
 @subsubsection testmanual_5_1_12 mesh
 
@@ -979,14 +979,14 @@ This group allows testing shape tessellation (*BRepMesh*) and shading.
 
 DRAW modules: MODELING (package *MeshTest*), VISUALIZATION (package *ViewerTest*)
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| advanced_shading	| vdisplay	| Shading, complex shapes |
-| standard_shading	| vdisplay	| Shading, simple shapes |
-| advanced_mesh	| mesh |	Meshing of complex shapes |
-| standard_mesh | mesh |	Meshing of simple shapes |
-| advanced_incmesh	| incmesh	| Meshing of complex shapes |
-| standard_incmesh	| incmesh	| Meshing of simple shapes |
+| advanced_shading  | vdisplay  | Shading, complex shapes |
+| standard_shading  | vdisplay  | Shading, simple shapes |
+| advanced_mesh | mesh |  Meshing of complex shapes |
+| standard_mesh | mesh |  Meshing of simple shapes |
+| advanced_incmesh  | incmesh | Meshing of complex shapes |
+| standard_incmesh  | incmesh | Meshing of simple shapes |
 | advanced_incmesh_parallel | incmesh | Meshing of complex shapes, parallel mode |
 | standard_incmesh_parallel | incmesh | Meshing of simple shapes, parallel mode |
 
@@ -996,14 +996,14 @@ This group allows testing creation of simple surfaces.
 
 DRAW module: MODELING (package *BRepTest*)
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| after_trim | mkface	| |
-| after_offset | mkface	| |
-| after_extsurf_and_offset	| mkface  | |	
-| after_extsurf_and_trim | mkface	| | 
-| after_revsurf_and_offset | mkface	| | 
-| mkplane | mkplane	| |
+| after_trim | mkface | |
+| after_offset | mkface | |
+| after_extsurf_and_offset  | mkface  | | 
+| after_extsurf_and_trim | mkface | | 
+| after_revsurf_and_offset | mkface | | 
+| mkplane | mkplane | |
 
 @subsubsection testmanual_5_1_14 nproject
 
@@ -1011,9 +1011,9 @@ This group allows testing normal projection of edges and wires onto a face.
 
 DRAW module: MODELING (package *BRepTest*) 
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| Base	| nproject	|  |
+| Base  | nproject  |  |
 
 @subsubsection testmanual_5_1_15 offset
 
@@ -1021,25 +1021,25 @@ This group allows testing offset functionality for curves and surfaces.
 
 DRAW module: MODELING (package *BRepTest*) 
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| compshape	| offsetcompshape	| Offset of shapes with removal of some faces | 
-| faces_type_a	| offsetparameter, offsetload, offsetperform | Offset on a subset of faces with a fillet |
-| faces_type_i 	| offsetparameter, offsetload, offsetperform | 	Offset on a subset of faces with a sharp edge |
-| shape_type_a 	| offsetparameter, offsetload, offsetperform | 	Offset on a whole shape with a fillet |
-| shape_type_i 	| offsetparameter, offsetload, offsetperform | 	Offset on a whole shape with a fillet |
-| shape	 | offsetshape	| |
-| wire_closed_outside_0_005, wire_closed_outside_0_025, wire_closed_outside_0_075, wire_closed_inside_0_005, wire_closed_inside_0_025, wire_closed_inside_0_075, wire_unclosed_outside_0_005, wire_unclosed_outside_0_025, wire_unclosed_outside_0_075	|	mkoffset | 2d offset of closed and unclosed planar wires with different offset step and directions of offset ( inside / outside ) |
-	
+| compshape | offsetcompshape | Offset of shapes with removal of some faces | 
+| faces_type_a  | offsetparameter, offsetload, offsetperform | Offset on a subset of faces with a fillet |
+| faces_type_i  | offsetparameter, offsetload, offsetperform |  Offset on a subset of faces with a sharp edge |
+| shape_type_a  | offsetparameter, offsetload, offsetperform |  Offset on a whole shape with a fillet |
+| shape_type_i  | offsetparameter, offsetload, offsetperform |  Offset on a whole shape with a fillet |
+| shape  | offsetshape  | |
+| wire_closed_outside_0_005, wire_closed_outside_0_025, wire_closed_outside_0_075, wire_closed_inside_0_005, wire_closed_inside_0_025, wire_closed_inside_0_075, wire_unclosed_outside_0_005, wire_unclosed_outside_0_025, wire_unclosed_outside_0_075  | mkoffset | 2d offset of closed and unclosed planar wires with different offset step and directions of offset ( inside / outside ) |
+  
 @subsubsection testmanual_5_1_16 pipe
 
 This group allows testing construction of pipes (sweeping of a contour along profile).
 
 DRAW module: MODELING (package *BRepTest*) 
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| Standard	| pipe	| |
+| Standard  | pipe  | |
 
 @subsubsection testmanual_5_1_17 prism
 
@@ -1047,9 +1047,9 @@ This group allows testing construction of prisms.
 
 DRAW module: MODELING (package *BRepTest*) 
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| seminf | prism	| |
+| seminf | prism  | |
 
 @subsubsection testmanual_5_1_18 sewing
 
@@ -1057,46 +1057,46 @@ This group allows testing sewing of faces by connecting edges.
 
 DRAW module: MODELING (package *BRepTest*) 
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| tol_0_01	| sewing | Sewing faces with tolerance 0.01 |
-| tol_1	| sewing | Sewing faces with tolerance 1 |
+| tol_0_01  | sewing | Sewing faces with tolerance 0.01 |
+| tol_1 | sewing | Sewing faces with tolerance 1 |
 | tol_100 | sewing | Sewing faces with tolerance 100 | 
 
 @subsubsection testmanual_5_1_19 thrusection
 
 This group allows testing construction of shell or a solid passing through a set of sections in a given sequence (loft).
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| solids	| thrusection | Lofting with resulting solid | 
-| not_solids | thrusection	| Lofting with resulting shell or face | 
+| solids  | thrusection | Lofting with resulting solid | 
+| not_solids | thrusection  | Lofting with resulting shell or face | 
 
 @subsubsection testmanual_5_1_20 xcaf
 
 This group allows  testing extended data exchange packages.
 
-| Grid	| Commands	| Functionality |
+| Grid  | Commands  | Functionality |
 | :---- | :----- | :------- | 
-| dxc, dxc_add_ACL, dxc_add_CL, igs_to_dxc, igs_add_ACL, brep_to_igs_add_CL, stp_to_dxc, stp_add_ACL, brep_to_stp_add_CL, brep_to_dxc, add_ACL_brep, brep_add_CL	| | Subgroups are divided by format of source file, by format of result file and by type of document modification. For example, *brep_to_igs* means that the source shape in brep format was added to the document, which was saved into igs format after that. The postfix *add_CL* means that colors and layers were initialized in the document before saving and the postfix *add_ACL* corresponds to the creation of assembly and initialization of colors and layers in a document before saving. |
-	
+| dxc, dxc_add_ACL, dxc_add_CL, igs_to_dxc, igs_add_ACL, brep_to_igs_add_CL, stp_to_dxc, stp_add_ACL, brep_to_stp_add_CL, brep_to_dxc, add_ACL_brep, brep_add_CL  | | Subgroups are divided by format of source file, by format of result file and by type of document modification. For example, *brep_to_igs* means that the source shape in brep format was added to the document, which was saved into igs format after that. The postfix *add_CL* means that colors and layers were initialized in the document before saving and the postfix *add_ACL* corresponds to the creation of assembly and initialization of colors and layers in a document before saving. |
+  
 
 @subsection testmanual_5_2 Mapping of OCCT functionality to grid names in group *bugs*
 
-| OCCT Module / Mantis category	| Toolkits	| Test grid in group bugs |
+| OCCT Module / Mantis category | Toolkits  | Test grid in group bugs |
 | :---------- | :--------- | :---------- | 
-| Application Framework	| PTKernel, TKPShape, TKCDF, TKLCAF, TKCAF, TKBinL, TKXmlL, TKShapeSchema, TKPLCAF, TKBin, TKXml, TKPCAF, FWOSPlugin, TKStdLSchema, TKStdSchema, TKTObj, TKBinTObj, TKXmlTObj | caf |
-| Draw	| TKDraw, TKTopTest, TKViewerTest, TKXSDRAW, TKDCAF, TKXDEDRAW, TKTObjDRAW, TKQADraw, DRAWEXE, Problems of testing system |	draw | 
+| Application Framework | PTKernel, TKPShape, TKCDF, TKLCAF, TKCAF, TKBinL, TKXmlL, TKShapeSchema, TKPLCAF, TKBin, TKXml, TKPCAF, FWOSPlugin, TKStdLSchema, TKStdSchema, TKTObj, TKBinTObj, TKXmlTObj | caf |
+| Draw  | TKDraw, TKTopTest, TKViewerTest, TKXSDRAW, TKDCAF, TKXDEDRAW, TKTObjDRAW, TKQADraw, DRAWEXE, Problems of testing system | draw | 
 | Shape Healing | TKShHealing | heal |
-| Mesh	| TKMesh, TKXMesh | mesh |
-| Data Exchange	| TKIGES	| iges |
-| Data Exchange	|	TKSTEPBase, TKSTEPAttr, TKSTEP209, TKSTEP |	step |
-| Data Exchange	|	TKSTL, TKVRML 	| stlvrml |
-| Data Exchange	| TKXSBase, TKXCAF, TKXCAFSchema, TKXDEIGES, TKXDESTEP, TKXmlXCAF, TKBinXCAF | xde |
-| Foundation Classes |	TKernel, TKMath	| fclasses |
-| Modeling_algorithms |	TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh |	modalg |
-| Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep	| moddata |
-| Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS	| vis |
+| Mesh  | TKMesh, TKXMesh | mesh |
+| Data Exchange | TKIGES  | iges |
+| Data Exchange | TKSTEPBase, TKSTEPAttr, TKSTEP209, TKSTEP | step |
+| Data Exchange | TKSTL, TKVRML   | stlvrml |
+| Data Exchange | TKXSBase, TKXCAF, TKXCAFSchema, TKXDEIGES, TKXDESTEP, TKXmlXCAF, TKBinXCAF | xde |
+| Foundation Classes |  TKernel, TKMath | fclasses |
+| Modeling_algorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
+| Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep  | moddata |
+| Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS  | vis |
 
 
 @subsection testmanual_5_3 Recommended approaches to checking test results
@@ -1106,50 +1106,50 @@ This group allows  testing extended data exchange packages.
 Run command *checkshape* on the result (or intermediate) shape and make sure that *parse.rules* of the test grid or group reports bad shapes (usually recognized by word "Faulty") as error.
 
 Example
-~~~~~
+~~~~{.php}
 checkshape result
-~~~~~
+~~~~
 
 To check the number of faults in the shape command *checkfaults* can be used.
 
 Use: checkfaults shape source_shape [ref_value=0]
 
 The default syntax of *checkfaults* command:
-~~~~~
+~~~~{.php}
 checkfaults results a_1
-~~~~~
+~~~~
 
 The command will check the number of faults in the source shape (*a_1*) and compare it
 with number of faults in the resulting shape (*result*). If shape *result* contains
 more faults, you will get an error:
-~~~~~
+~~~~{.php}
 checkfaults results a_1
 Error : Number of faults is 5
-~~~~~
+~~~~
 It is possible to set the reference value for comparison (reference value is 4):
 
-~~~~~
+~~~~{.php}
 checkfaults results a_1 4
-~~~~~
+~~~~
 
 If number of faults in the resulting shape is unstable, reference value should be set to "-1".
 As a result command *checkfaults* will return the following error:
 
-~~~~~
+~~~~{.php}
 checkfaults results a_1 -1
 Error : Number of faults is UNSTABLE
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_2 Shape tolerance
 
 The maximal tolerance of sub-shapes of each kind of the resulting shape can be extracted from output of tolerance command as follows:
 
-~~~~~
+~~~~{.php}
 set tolerance [tolerance result]
 regexp { *FACE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_face
 regexp { *EDGE +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_edgee
 regexp { *VERTEX +: +MAX=([-0-9.+eE]+)} $tolerance dummy max_vertex
-~~~~~
+~~~~
 
 It is possible to use command *checkmaxtol* to check maximal tolerance of shape and compare it with reference value.
 
@@ -1162,39 +1162,39 @@ Allowed options are:
  *   <i>-multi_tol</i> -- tolerance multiplier.
 
 The default syntax of *checkmaxtol* command for comparison with the reference value:
-~~~~~
+~~~~{.php}
 checkmaxtol result -ref 0.00001
-~~~~~
+~~~~
 
 There is an opportunity to compare max tolerance of resulting shape with max tolerance of source shape.
 In the following example command *checkmaxtol* gets max tolerance among objects *a_1* and *a_2*.
 Then it chooses the maximum value between founded tolerance and value -min_tol (0.000001)
 and multiply it on the coefficient -multi_tol (i.e. 2):
 
-~~~~~
+~~~~{.php}
 checkmaxtol result -source {a_1 a_2} -min_tol 0.000001 -multi_tol 2
-~~~~~
+~~~~
 
 If the value of maximum tolerance more than founded tolerance for comparison, the command will return an error.
 
 Also, command *checkmaxtol* can be used to get max tolerance of the shape:
 
-~~~~~
+~~~~{.php}
 set maxtol [checkmaxtol result]
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_3 Shape volume, area, or length
 
 Use command *vprops, sprops,* or *lprops* to correspondingly measure volume, area, or length of the shape produced by the test. The value can be extracted from the result of the command by *regexp*.
 
 Example:
-~~~~~
+~~~~{.php}
 # check area of shape result with 1% tolerance
 regexp {Mass +: +([-0-9.+eE]+)} [sprops result] dummy area
 if { abs($area - $expected) > 0.1 + 0.01 * abs ($area) } {
     puts "Error: The area of result shape is $area, while expected $expected"
 }
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_4 Memory leaks
 
@@ -1204,7 +1204,7 @@ To check memory leak on a particular operation, run it in a cycle, measure the m
 The command *checktrend* (defined in *tests/bugs/begin*) can be used to analyze a sequence of memory measurements and to get a statistically based evaluation of the leak presence.
 
 Example: 
-~~~~~
+~~~~{.php}
 set listmem {}
 for {set i 1} {$i < 100} {incr i} {
     # run suspect operation 
@@ -1216,13 +1216,13 @@ for {set i 1} {$i < 100} {incr i} {
         break
     }
 }
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_5 Visualization
 
 The following command sequence allows you to take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
 
-~~~~~
+~~~~{.php}
 vinit
 vclear
 vdisplay result
@@ -1230,7 +1230,7 @@ vsetdispmode 1
 vfit
 vzfit
 vdump $imagedir/${casename}_shading.png
-~~~~~
+~~~~
 
 This image will be included in the HTML log produced by *testgrid* command and will be checked for non-regression through comparison of images by command *testdiff*.
 
@@ -1245,32 +1245,32 @@ Allowed options are:
 *   <i>-vdispmode N</i> -- sets *vdispmode* for 3d viewer (default value is 1)
 *   <i>-screenshot</i> -- makes a screenshot of already created viewer
 *   The procedure can check a property of shape (length, area or volume) and compare it with value *N*:
-	* <i>-l [N]</i>
-	* <i>-s [N]</i>
-	* <i>-v [N]</i>
-	* If the current property is equal to value *N*, the shape is marked as valid in the procedure.
-	* If value *N* is not given, the procedure will mark the shape as valid if the current property is non-zero.
+  * <i>-l [N]</i>
+  * <i>-s [N]</i>
+  * <i>-v [N]</i>
+  * If the current property is equal to value *N*, the shape is marked as valid in the procedure.
+  * If value *N* is not given, the procedure will mark the shape as valid if the current property is non-zero.
 *   <i>-with {a b c}</i> -- displays shapes *a, b* and *c* together with the shape (if the shape is valid)
 *   <i>-otherwise {d e f}</i> -- displays shapes *d, e* and *f* instead of the shape (if the shape is NOT valid)
 
 Note that is required to use either option <i> -2d </i> or option <i> -3d</i>.
 
 Examples:
-~~~~~
+~~~~{.php}
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 checkview -display result -3d -path ${imagedir}/${test_image}.png
 checkview -display result_2d -2d v2d -path ${imagedir}/${test_image}.png
-~~~~~
+~~~~
 
-~~~~~
+~~~~{.php}
 box a 10 10 10
 box b 5 5 5 10 10 10
 bcut result b a
 set result_vertices [explode result v]
 checkview -display result -2d -with ${result_vertices} -otherwise { a b } -l -path ${imagedir}/${test_image}.png
-~~~~~
+~~~~
 
-~~~~~
+~~~~{.php}
 box a 10 10 10
 box b 5 5 5 10 10 10
 bcut result b a
@@ -1278,7 +1278,7 @@ vinit
 vdisplay a b
 vfit
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_6 Number of free edges
 
@@ -1290,9 +1290,9 @@ Allowed options are:
  * <i>-tol N</i> -- used tolerance (default -0.01);
  * <i>-type N</i> -- used type, possible values are "closed" and "opened" (default "closed").
 
-~~~~~
+~~~~{.php}
 checkfreebounds result 13
-~~~~~
+~~~~
 
 Option <i>-tol N</i> defines tolerance for command *freebounds*, which is used within command *checkfreebounds*.
 
@@ -1301,10 +1301,10 @@ Option <i>-type N</i> is used to select the type of counted free edges: closed o
 If the number of free edges in the resulting shape is unstable, the reference value should be set to "-1".
 As a result command *checkfreebounds* will return the following error:
 
-~~~~~
+~~~~{.php}
 checkfreebounds result -1
 Error : Number of free edges is UNSTABLE
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_7 Compare numbers
 
@@ -1312,9 +1312,9 @@ Procedure *checkreal* checks the equality of two reals with a tolerance (relativ
 
 Use: checkreal name value expected tol_abs tol_rel
 
-~~~~~
+~~~~{.php}
 checkreal "Some important value" $value 5 0.0001 0.01
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_8 Check number of sub-shapes
 
@@ -1336,9 +1336,9 @@ Allowed options are:
       the same sub-shapes with different location as different sub-shapes.
  * <i>-m msg</i> -- prints "msg" in case of error
 
-~~~~~
+~~~~{.php}
 checknbshapes result -vertex 8 -edge 4
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_9 Check pixel color
 
@@ -1354,9 +1354,9 @@ This procedure checks color with tolerance (5x5 area).
 
 Next example will compare color of point with coordinates x=100 y=100 with RGB color R=1 G=0 B=0.
 If colors are not equal, procedure will check the nearest ones points (5x5 area)
-~~~~~
+~~~~{.php}
 checkcolor 100 100 1 0 0
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_10 Compute length, area and volume of input shape
 
@@ -1375,10 +1375,10 @@ Allowed options are:
 
 Options <i> -l, -s </i> and <i> -v</i> are independent and can be used in any order. Tolerance *epsilon* is the same for all options.
 
-~~~~~
+~~~~{.php}
 checkprops result -s 6265.68 
 checkprops result -s -equal FaceBrep
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_11 Parse output dump and compare it with reference values
 
@@ -1391,9 +1391,9 @@ Allowed options are:
  * <i>-ref VALUE</i> -- list of reference values for each parameter in *NAME*; 
  * <i>-eps EPSILON</i> -- the epsilon defines relative precision of computation.
 
-~~~~~
+~~~~{.php}
 checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1 -0} {0 -1} {20 10}} -eps 0.01
-~~~~~
+~~~~
 
 @subsubsection testmanual_5_3_12 Compute length of input curve
 
@@ -1407,10 +1407,10 @@ Allowed options are:
  * <i>-equal CURVE</i> -- compares the length of input curves. Puts error if they are not equal;
  * <i>-notequal CURVE</i> -- compares the length of input curves. Puts error if they are equal.
 
-~~~~~
+~~~~{.php}
 checklength cp1 -l 7.278
 checklength res -l -equal ext_1
-~~~~~
+~~~~
 @subsubsection testmanual_5_3_13 Check maximum deflection, number of triangles and nodes in mesh
 
 Command *checktrinfo* can be used to to check the maximum deflection, as well as the number of nodes and triangles in mesh.
@@ -1438,33 +1438,33 @@ Note that options <i> -tri, -nod </i> and <i> -defl </i> do not work together wi
 Examples:
 
 Comparison with some reference values:
-~~~~~
+~~~~{.php}
 checktrinfo result -tri 129 -nod 131 -defl 0.01
-~~~~~
+~~~~
 
 Comparison with another mesh:
-~~~~~
+~~~~{.php}
 checktrinfo result -ref [tringo a]
-~~~~~
+~~~~
 
 Comparison of deflection with the max possible value:
-~~~~~
+~~~~{.php}
 checktrinfo result -max_defl 1
-~~~~~
+~~~~
 
 Check that the current values are not equal to zero:
-~~~~~
+~~~~{.php}
 checktrinfo result -tri -nod -defl
-~~~~~
+~~~~
 
 Check that the number of triangles and the number of nodes are not equal to some specific values:
-~~~~~
+~~~~{.php}
 checktrinfo result -tri !10 -nod !8
-~~~~~
+~~~~
 
 It is possible to compare current values with reference values with some tolerances.
 Use options <i>-tol_\* </i> for that.
-~~~~~
+~~~~{.php}
 checktrinfo result -defl 1 -tol_abs_defl 0.001
-~~~~~
+~~~~
 

@@ -380,7 +380,7 @@ https://www.opencascade.com/content/3rd-party-components
 | Component | Requirement |
 | --------- | ----------- |
 | Minimum memory    | 512 MB, 1 GB recommended |
-| Free disk space (complete installation) | 600 MB approx. |
+| Free disk space (complete installation) | 1,5 GB approx. |
 
 On desktop, 3D viewer for optimal performance requires graphics processing unit (GPU) supporting OpenGL 3.3 or above. 
 Ray tracing requires OpenGL 4.0+ or OpenGL 3.3+ with *GL_ARB_texture_buffer_object_rgb32* extension.

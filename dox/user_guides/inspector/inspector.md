@@ -479,10 +479,10 @@ See more detailed description of the @ref occt_draw_13_1 "tinspector" command.
 
 The simple code to start Inspector with all plugins loaded:
 
-~~~~~
+~~~~
 pload INSPECTOR
 tinspector
-~~~~~
+~~~~
 
 @figure{drawexe_tinspector.png,"tinspector",360}
 
@@ -509,7 +509,7 @@ In general, the following steps should be taken:
 
 
 Here is an example of C++ implementation:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 
 #include <inspector/TInspector_Communicator.hxx>
 
@@ -533,7 +533,7 @@ void CreateInspector()
   }
   MyTCommunicator->SetVisible (true);
 }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 Give one the following objects for a plugin using a container of parameters:
 

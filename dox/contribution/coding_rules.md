@@ -48,11 +48,11 @@ For example, method *GetCoord* returns a triple of real values and is defined fo
 Camel Case style is preferred for names.
 For example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer awidthofbox;  // this is bad
 Standard_Integer width_of_box; // this is bad
 Standard_Integer aWidthOfBox;  // this is OK
-~~~~~
+~~~~
 
 @subsection occt_coding_rules_2_2 Names of development units
 
@@ -80,9 +80,9 @@ Toolkit names are prefixed by *TK*, followed by a meaningful part of the name ex
 
 Names of public classes and other types (structures, enums, typedefs) should match the common pattern: name of the package followed by underscore and suffix (the own name of the type):
 
-~~~~~
+~~~~{.cpp}
     <package-name>_<class-name>
-~~~~~
+~~~~
 
 Static methods related to the whole package are defined in the class with the same name as package (without suffix).
 
@@ -95,9 +95,9 @@ This rule also applies to complex types constructed by instantiation of template
 Such types should be given own names using *typedef* statement, located in same-named header file.
 
 For example, see definition in the file *TColStd_IndexedDataMapOfStringString.hxx*:
-~~~~~
+~~~~{.cpp}
 typedef NCollection_IndexedDataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> TColStd_IndexedDataMapOfStringString;
-~~~~~
+~~~~
 
 ### Names of functions
 
@@ -109,7 +109,7 @@ The term **function** here is defined as:
 It is preferred to start names of public methods from an upper case character and to start names of protected and private methods from a lower case character.
 
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class MyPackage_MyClass
 {
 
@@ -123,7 +123,7 @@ private:
   void setIntegerValue (const Standard_Integer theValue);
 
 };
-~~~~~
+~~~~
 
 @subsection occt_coding_rules_2_3 Names of variables
 
@@ -137,13 +137,13 @@ The name of a variable should not start with an underscore.
 
 See the following examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer Elapsed_Time = 0; // this is bad - possible class   name
 Standard_Integer gp = 0;           // this is bad - existing package name
 Standard_Integer aGp = 0;          // this is OK
 Standard_Integer _KERNEL = 0;      // this is bad
 Standard_Integer THE_KERNEL = 0;   // this is OK
-~~~~~
+~~~~
 
 ### Names of function parameters
 
@@ -151,11 +151,11 @@ The name of a function (procedure, class method) parameter should start with pre
 
 See the following examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 void Package_MyClass::MyFunction (const gp_Pnt& p);        // this is bad
 void Package_MyClass::MyFunction (const gp_Pnt& theP);     // this is OK
 void Package_MyClass::MyFunction (const gp_Pnt& thePoint); // this is preferred
-~~~~~
+~~~~
 
 ### Names of class member variables
 
@@ -163,11 +163,11 @@ The name of a class member variable should start with prefix *my* followed by th
 
 See the following examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer counter;   // This is bad
 Standard_Integer myC;       // This is OK
 Standard_Integer myCounter; // This is preferred
-~~~~~
+~~~~
 
 ### Names of global variables
 
@@ -176,18 +176,18 @@ However, as soon as a global variable is necessary, its name should be prefixed 
 
 See the following examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer MyPackage_myGlobalVariable = 0;
 Standard_Integer MyPackage_MyClass_myGlobalVariable = 0;
-~~~~~
+~~~~
 
 Static constants within the file should be written in upper-case and begin with prefix *THE_*:
-~~~~~{.cpp}
+~~~~{.cpp}
 namespace
 {
   static const Standard_Real THE_CONSTANT_COEF = 3.14;
 };
-~~~~~
+~~~~
 
 ### Names of local variables
 
@@ -197,12 +197,12 @@ It is preferred to prefix local variable names with *a* and *an* (or *is*, *to* 
 
 See the following example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer theI;    // this is bad
 Standard_Integer i;       // this is bad
 Standard_Integer index;   // this is bad
 Standard_Integer anIndex; // this is OK
-~~~~~
+~~~~
 
 ### Avoid dummy names
 Avoid dummy names, such as <i>i, j, k</i>. Such names are meaningless and easy to mix up.
@@ -211,7 +211,7 @@ The code becomes more and more complicated when such dummy names are used there 
 
 See the following examples for preferred style:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 void Average (const Standard_Real** theArray,
               Standard_Integer      theRowsNb,
               Standard_Integer      theRowLen,
@@ -227,7 +227,7 @@ void Average (const Standard_Real** theArray,
     theResult /= Standard_Real(aRowsNb * aRowLen);
   }
 }
-~~~~~
+~~~~
 
 @section occt_coding_rules_3 Formatting rules
 
@@ -262,7 +262,7 @@ Punctuation rules follow the rules of the English language.
 * For better readability it is also recommended to surround conventional operators by a space character. 
 Examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 while (true)                            // NOT: while( true ) ...
 {
   DoSomething (theA, theB, theC, theD); // NOT: DoSomething(theA,theB,theC,theD);
@@ -271,7 +271,7 @@ for (anIter = 0; anIter < 10; ++anIter) // NOT: for (anIter=0;anIter<10;++anIter
 {
   theA = (theB + theC) * theD;          // NOT: theA=(theB+theC)*theD
 }
-~~~~~
+~~~~
 
 ### Declaration of pointers and references
 
@@ -281,7 +281,7 @@ Since declaration of several variables with mixed pointer types contrudicts this
 
 Examples:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer   *theVariable;      // not recommended
 Standard_Integer *  theVariable;      // not recommended
 Standard_Integer*   theVariable;      // this is OK
@@ -295,7 +295,7 @@ Standard_Integer ** theVariable;      // not recommended
 Standard_Integer**  theVariable;      // this is OK
 
 Standard_Integer *theA, theB, **theC; // not recommended (declare each variable independently)
-~~~~~
+~~~~
 
 ### Separate logical blocks
 
@@ -303,7 +303,7 @@ Separate logical blocks of code with one blank line and comments.
 
 See the following example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 // check arguments
 Standard_Integer anArgsNb = argCount();
 if (anArgsNb < 3 || isSmthInvalid)
@@ -318,7 +318,7 @@ if (anArgsNb < 3 || isSmthInvalid)
 // do our job
 ...
 ...
-~~~~~
+~~~~
 
 Notice that multiple blank lines should be avoided.
 
@@ -329,7 +329,7 @@ Each descriptive block should contain at least a function name and purpose descr
 
 See the following example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 // =======================================================================
 // function : TellMeSmthGood
 // purpose  : Gives me good news
@@ -347,19 +347,19 @@ void TellMeSmthBad()
 {
   ...
 }
-~~~~~
+~~~~
 
 ### Block layout [MANDATORY]
 Figure brackets <i>{ }</i> and each operator <i>(for, if, else, try, catch)</i> should be written on a dedicated line.
 
 In general, the layout should be as follows:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 while (expression)
 {
   ...
 }
-~~~~~
+~~~~
 
 Entering a block increases and leaving a block decreases the indentation by one tabulation.
 
@@ -367,7 +367,7 @@ Entering a block increases and leaving a block decreases the indentation by one 
 
 Single-line conditional operators <i>(if, while, for,</i> etc.) can be written without brackets on the following line.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 if (!myIsInit) return Standard_False; // bad
 
 if (thePtr == NULL)                   // OK
@@ -377,7 +377,7 @@ if (!theAlgo.IsNull())                // preferred
 {
   DoSomething();
 }
-~~~~~
+~~~~
 
 Having all code in the same line is less convenient for debugging.
 
@@ -386,7 +386,7 @@ Having all code in the same line is less convenient for debugging.
 In comparisons, put the variable (in the current context) on the left side and constant on the right side of expression.
 That is, the so called "Yoda style" is to be avoided.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 if (NULL != thePointer)    // Yoda style, not recommended
 if (thePointer != NULL)    // OK
 
@@ -398,13 +398,13 @@ if (anIter <= theNbValues) // OK
 
 if (THE_LIMIT == theValue) // bad style (global constant vs. variable)
 if (theValue == THE_LIMIT) // OK
-~~~~~
+~~~~
 
 ### Alignment
 
 Use alignment wherever it enhances the readability. See the following example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 MyPackage_MyClass anObject;
 Standard_Real     aMinimum = 0.0;
 Standard_Integer  aVal     = theVal;
@@ -415,7 +415,7 @@ switch (aVal)
   case 3:
   default: computeSomethingElseYet();       break;
 }
-~~~~~
+~~~~
 
 ### Indentation of comments
 
@@ -425,7 +425,7 @@ The text of the comment should be separated from the slash character by a single
 
 See the following example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 while (expression)   //bad comment
 {
   // this is a long multi-line comment
@@ -433,7 +433,7 @@ while (expression)   //bad comment
   DoSomething();     // maybe, enough
   DoSomethingMore(); // again
 }
-~~~~~
+~~~~
 
 ### Early return statement
 
@@ -441,7 +441,7 @@ Use an early return condition rather than collect indentations.
 
 Write like this:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer ComputeSumm (const Standard_Integer* theArray,
                               const Standard_Size     theSize)
 {
@@ -454,11 +454,11 @@ Standard_Integer ComputeSumm (const Standard_Integer* theArray,
   ... computing summ ...
   return aSumm;
 }
-~~~~~
+~~~~
 
 Rather than:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer ComputeSumm (const Standard_Integer* theArray,
                               const Standard_Size     theSize)
 {
@@ -469,7 +469,7 @@ Standard_Integer ComputeSumm (const Standard_Integer* theArray,
   }
   return aSumm;
 }
-~~~~~
+~~~~
 
 This helps to improve readability and reduce the unnecessary indentation depth.
 
@@ -490,7 +490,7 @@ An exception to the rule is ordering system headers generating a macros declarat
 
 The source or header file should include only minimal set of headers necessary for compilation, without duplicates (considering nested includes).
 
-~~~~~{.cpp}
+~~~~{.cpp}
 // the header file of implemented class
 #include <PackageName_ClassName.hxx>
 
@@ -506,7 +506,7 @@ The source or header file should include only minimal set of headers necessary f
 // system headers
 #include <iostream>
 #include <windows.h>
-~~~~~
+~~~~
 
 @section occt_coding_rules_4 Documentation rules
 
@@ -623,7 +623,7 @@ A class with virtual function(s) ought to have a virtual destructor.
 Declaration of overriding method should contains specifiers "virtual" and "override"
 (using Standard_OVERRIDE alias for compatibility with old compilers).
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class MyPackage_BaseClass
 {
 
@@ -641,7 +641,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Perform() Standard_OVERRIDE;
 
 };
-~~~~~
+~~~~
 
 This makes class definition more clear (virtual methods become highlighted).
 
@@ -667,20 +667,20 @@ Avoid *goto* statement unless it is really needed.
 
 Declare a cycle variable in the header of the *for()* statement if not used out of cycle.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Real aMinDist = Precision::Infinite();
 for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter (theSequence);
      aPntIter.More(); aPntIter.Next())
 {
   aMinDist = Min (aMinDist, theOrigin.Distance (aPntIter.Value()));
 }
-~~~~~
+~~~~
 
 ### Condition statements within zero
 
 Avoid usage of C-style comparison for non-boolean variables:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 void Function (Standard_Integer theValue,
                Standard_Real*   thePointer)
 {
@@ -699,7 +699,7 @@ void Function (Standard_Integer theValue,
     DoSome2();
   }
 }
-~~~~~
+~~~~
 
 @section occt_coding_rules_7 Portability issues
 
@@ -791,11 +791,11 @@ In C++ use *new* and *delete* operators instead of *malloc()* and *free()*. Try 
 
 Use the same form of new and delete.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 aPtr1 = new TypeA[n];              ... ; delete[]        aPtr1;
 aPtr2 = new TypeB();               ... ; delete          aPtr2;
 aPtr3 = Standard::Allocate (4096); ... ; Standard::Free (aPtr3);
-~~~~~
+~~~~
 
 ### Methods managing dynamical allocation [MANDATORY]
 
@@ -805,10 +805,10 @@ Define a destructor, a copy constructor and an assignment operator for classes w
 
 Every variable should be initialized.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Integer aTmpVar1;     // bad
 Standard_Integer aTmpVar2 = 0; // OK
-~~~~~
+~~~~
 
 Uninitialized variables might be kept only within performance-sensitive code blocks and only when their initialization is guaranteed by subsequent code.
 
@@ -824,12 +824,12 @@ In *operator=()* assign to all data members and check for assignment to self.
 
 Don't check floats for equality or non-equality; check for GT, GE, LT or LE.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 if (Abs (theFloat1 - theFloat2) < theTolerance)
 {
   DoSome();
 }
-~~~~~
+~~~~
 
 Package *Precision* provides standard values for SI units and widely adopted by existing modeling algorithms:
 
@@ -872,7 +872,7 @@ Generally, try to reduce misaligned accesses since they impact the performance (
 
 List class data members in the constructor's initialization list in the order they are declared.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class MyPackage_MyClass
 {
 
@@ -892,19 +892,19 @@ private:
   Standard_Integer myPropertyB;
 
 };
-~~~~~
+~~~~
 
 ### Initialization over assignment
 
 Prefer initialization over assignment in class constructors.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 MyPackage_MyClass()
 : myPropertyA (1)  // preferred
 {
   myPropertyB = 2; // not recommended
 }
-~~~~~
+~~~~
 
 ### Optimize caching
 
@@ -912,23 +912,23 @@ When programming procedures with extensive memory access, try to optimize them i
 
 On x86 this code
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Real anArray[4096][2];
 for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 {
   anArray[anIter][0] = anArray[anIter][1];
 }
-~~~~~
+~~~~
 
 is more efficient then
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Standard_Real anArray[2][4096];
 for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 {
   anArray[0][anIter] = anArray[1][anIter];
 }
-~~~~~
+~~~~
 
 since linear access does not invalidate cache too often.
 
@@ -952,7 +952,7 @@ Command arguments should be validated before usage. The user should see a human-
 
 Command should warn the user about unknown arguments, including cases when extra parameters have been pushed for the command with a fixed number of arguments.
 
-~~~~~{.cpp}
+~~~~{.cpp}
   if (theArgsNb != 3)
   {
     std::cout << "Syntax error - wrong number of arguments!\n";
@@ -971,7 +971,7 @@ Command should warn the user about unknown arguments, including cases when extra
   }
   DBRep::Set (aResName, aFaceShape);
   return 0;
-~~~~~
+~~~~
 
 ### Message printing
 
@@ -984,9 +984,9 @@ Information printed into Draw Interpreter should be well-structured to allow usa
 Any command with a long list of obligatory parameters should be considered as ill-formed by design.
 Optional parameters should start with flag name (with '-' prefix) and followed by its values:
 
-~~~~~{.tcl}
+~~~~{.php}
 myCommand -flag1 value1 value2 -flag2 value3
-~~~~~
+~~~~
 
 ### Arguments parser
 
@@ -996,7 +996,7 @@ myCommand -flag1 value1 value2 -flag2 value3
 
 Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values in C-locale.
 
-~~~~~{.cpp}
+~~~~{.cpp}
   Standard_Real aPosition[3] = {0.0, 0.0, 0.0};
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
   {
@@ -1020,7 +1020,7 @@ Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values 
       return 1;
     }
   }
-~~~~~
+~~~~
 
 @section occt_coding_rules_11 Examples
 
@@ -1051,7 +1051,7 @@ private: //! \@name private fields
 
 @endverbatim
 
-~~~~~
+~~~~{.cpp}
 #include <Package_Class.hxx>
 // ==========================================================
 // function : Square
@@ -1071,11 +1071,11 @@ void Package_Class::increment()
 {
   ++myCounter;
 }
-~~~~~
+~~~~
 
 ### TCL script for Draw Harness
 
-~~~~~{.tcl}
+~~~~{.tcl}
 # show fragments (solids) in shading with different colors
 proc DisplayColored {theShape} {
   set aSolids [uplevel #0 explode $theShape so]
@@ -1106,10 +1106,10 @@ vzbufftrihedron
 DisplayColored c
 vfit
 vdump $imagedir/${casename}.png 512 512
-~~~~~
+~~~~
 
 ### GLSL program:
-~~~~~{.fs}
+~~~~{.cpp}
 vec3 Ambient;  //!< Ambient  contribution of light sources
 vec3 Diffuse;  //!< Diffuse  contribution of light sources
 vec3 Specular; //!< Specular contribution of light sources
@@ -1149,4 +1149,4 @@ void main()
                                   normalize (View),
                                   Position);
 }
-~~~~~
+~~~~

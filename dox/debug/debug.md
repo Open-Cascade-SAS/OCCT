@@ -49,34 +49,34 @@ Open CASCADE Test Harness or @ref occt_user_guides__test_harness "DRAW" provides
 
 In some cases the objects to be inspected are available in DRAW as results of DRAW commands. In other cases, however, it is necessary to inspect intermediate objects created by the debugged algorithm. To support this, DRAW provides a set of commands allowing the developer to store intermediate objects directly from the debugger stopped at some point during the program execution (usually at a breakpoint).
 
-~~~~~
+~~~~{.php}
 const char* Draw_Eval (const char *theCommandStr)
-~~~~~
+~~~~
 
 Evaluates a DRAW command or script.
 A command is passed as a string parameter.
 
-~~~~~
+~~~~{.php}
 const char* DBRep_Set (const char* theNameStr, void* theShapePtr)
-~~~~~
+~~~~
 
 Sets the specified shape as a value of DRAW interpreter variable with the given name.
 - *theNameStr* -- the DRAW interpreter variable name to set.
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
-~~~~~
+~~~~{.php}
 const char* DBRep_SetComp (const char* theNameStr, void* theListPtr)
-~~~~~
+~~~~
 
 Makes a compound from the specified list of shapes and sets it as a value of DRAW interpreter variable with the given name.
 - *theNameStr* -- the DRAW interpreter variable name to set.
 - *theListPtr* -- a pointer to *TopTools_ListOfShape* variable.
 
-~~~~~
+~~~~{.php}
 const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
 const char* DrawTrSurf_SetPnt (const char* theNameStr, void* thePntPtr)
 const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
-~~~~~
+~~~~
 
 Sets the specified geometric object as a value of DRAW interpreter variable with the given name.
 - *theNameStr* -- the DRAW interpreter variable name to set.
@@ -90,27 +90,27 @@ All these functions are defined in *TKDraw* toolkit and return a string indicati
 
 The following functions are provided by *TKBRep* toolkit and can be used from debugger prompt:
 
-~~~~~
+~~~~{.php}
 const char* BRepTools_Write (const char* theFileNameStr, void* theShapePtr)
-~~~~~
+~~~~
 
 Saves the specified shape to a file with the given name.
 - *theFileNameStr* -- the name of the file where the shape is saved.
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
-~~~~~
+~~~~{.php}
 const char* BRepTools_Dump (void* theShapePtr)
 const char* BRepTools_DumpLoc (void* theShapePtr)
-~~~~~
+~~~~
 
 Dumps shape or its location to cout.
 - *theShapePtr* -- a pointer to *TopoDS_Shape* variable.
 
 The following function is provided by *TKMesh* toolkit:
 
-~~~~~
+~~~~{.php}
 const char* BRepMesh_Dump (void* theMeshHandlePtr, const char* theFileNameStr)
-~~~~~
+~~~~
 
 Stores mesh produced in parametric space to BREP file.
 - *theMeshHandlePtr* -- a pointer to *Handle(BRepMesh_DataStructureOfDelaun)* variable.
@@ -118,10 +118,10 @@ Stores mesh produced in parametric space to BREP file.
 
 The following functions are provided by *TKTopTest* toolkit:
 
-~~~~~
+~~~~{.php}
 const char* MeshTest_DrawLinks(const char* theNameStr, void* theFaceAttr)
 const char* MeshTest_DrawTriangles(const char* theNameStr, void* theFaceAttr)
-~~~~~
+~~~~
 
 Sets the edges or triangles from mesh data structure of type *Handle(BRepMesh_FaceAttribute)* as DRAW interpreter variables, assigning a unique name in the form "<theNameStr>_<index>" to each object.
 - *theNameStr* -- the prefix to use in names of objects.
@@ -129,9 +129,9 @@ Sets the edges or triangles from mesh data structure of type *Handle(BRepMesh_Fa
 
 The following additional function is provided by *TKGeomBase* toolkit:
 
-~~~~~
+~~~~{.php}
 const char* GeomTools_Dump (void* theHandlePtr)
-~~~~~
+~~~~
 
 Dump geometric object to cout.
 - *theHandlePtr* -- a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
@@ -174,7 +174,7 @@ It is implemented in 'vaspect' and 'boundingbox' commands.
 
 Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
 
-~~~~~
+~~~~{.java}
 "Bnd_OBB": {
    "Center": {
       "gp_XYZ": [1, 2, 3]
@@ -193,7 +193,7 @@ Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
    "HDims[2]": 0,
    "IsAABox": 1,
 }
-~~~~~
+~~~~
 
 @section occt_debug_vstudio Using Visual Studio debugger 
 
@@ -206,18 +206,18 @@ When the execution is interrupted by a breakpoint, you can use this window to ca
 For example, assume that you are debugging a function, where local variable *TopoDS_Edge* *anEdge1* is of interest.
 The following set of commands in the Command window will save this edge to file *edge1.brep*, then put it to DRAW variable *e1* and show it maximized in the axonometric DRAW view:
 
-~~~~~
+~~~~{.php}
 >? ({,,TKBRep.dll}BRepTools_Write)("d:/edge1.brep",(void*)&anEdge1)
 0x04a2f234 "d:/edge1.brep"
 >? ({,,TKDraw.dll}DBRep_Set)("e1",(void*)&anEdge1)
 0x0369eba8 "e1"
 >? ({,,TKDraw.dll}Draw_Eval)("donly e1; axo; fit")
 0x029a48f0 ""
-~~~~~
+~~~~
 
 For convenience it is possible to define aliases to commands in this window, for instance (here ">" is prompt provided by the command window; in the Immediate window this symbol should be entered manually):
 
-~~~~~
+~~~~{.php}
 >alias deval      ? ({,,TKDraw}Draw_Eval)
 >alias dsetshape  ? ({,,TKDraw}DBRep_Set)
 >alias dsetcomp   ? ({,,TKDraw}DBRep_SetComp)
@@ -229,18 +229,18 @@ For convenience it is possible to define aliases to commands in this window, for
 >alias dumploc    ? ({,,TKBRep}BRepTools_DumpLoc)
 >alias dumpmesh   ? ({,,TKMesh}BRepMesh_Dump)
 >alias dumpgeom   ? ({,,TKGeomBase}GeomTools_Dump)
-~~~~~ 
+~~~~
 
 Note that aliases are stored in the Visual Studio user's preferences and it is sufficient to define them once on a workstation. With these aliases, the above example can be reproduced easier (note the space symbol after alias name!):
 
-~~~~~
+~~~~{.php}
 >saveshape ("d:/edge1.brep",(void*)&anEdge1)
 0x04a2f234 "d:/edge1.brep"
 >dsetshape ("e1",(void*)&anEdge1)
 0x0369eba8 "e1"
 >deval ("donly e1; axo; fit")
 0x029a48f0 ""
-~~~~~
+~~~~
 
 Note that there is no guarantee that the call will succeed and will not affect the program execution, thus use this feature at your own risk. In particular, the commands interacting with window system (such as *axo*, *vinit*, etc.) are known to cause application crash when the program is built in 64-bit mode. To avoid this, it is recommended to prepare all necessary view windows in advance, and arrange these windows to avoid overlapping with the Visual Studio window, to ensure that they are visible during debug. 
 
@@ -252,7 +252,7 @@ In Visual Studio 2005-2010 the rules for this display are defined in file *autoe
 
 ### \[AutoExpand\] section 
 
-~~~~~
+~~~~{.cpp}
 ; Open CASCADE classes
 Standard_Transient=<,t> count=<count,d>
 Handle_Standard_Transient=<entity,x> count=<entity->count,d> <,t>
@@ -274,11 +274,11 @@ gp_Dir2d=<coord.x,g>, <coord.y,g>
 gp_Vec2d=<coord.x,g>, <coord.y,g>
 gp_Mat2d={<matrix[0][0],g>,<matrix[0][1],g>}, {<matrix[1][0],g>,<matrix[1][1],g>}
 gp_Ax1=loc={<loc.coord.x,g>, <loc.coord.y,g>, <loc.coord.z,g>} vdir={<vdir.coord.x,g>, <vdir.coord.y,g>, <vdir.coord.z,g>}
-~~~~~ 
+~~~~
 
 ### \[Visualizer\] section
 
-~~~~~
+~~~~{.cpp}
 ; Open CASCADE classes
 
 NCollection_Handle<*> {
@@ -342,7 +342,7 @@ Handle_TCollection_HAsciiString {
              #array( expr: ((TCollection_HAsciiString*)$e.entity)->myString.mystring[$i], 
                      size: ((TCollection_HAsciiString*)$e.entity)->myString.mylength) ) )
 }
-~~~~~
+~~~~
 
 In Visual Studio 2012 and later, visualizers can be put in a separate file in subdirectory *Visualizers*. See file *occt.natvis* for example.
 
@@ -403,7 +403,10 @@ Example of configuration steps for Ubuntu:
 
 7. Run DRAW and perform tests as usual, keeping in mind that running with sanitizer is much heavier than normal build:
 > ./draw.sh relwithdeb  <br>
-> Draw[]> testgrid -parallel 0
+
+~~~~{.php}
+Draw[]> testgrid -parallel 0
+~~~~
 
 Note that when running tests under sanitizers, behavior may be different.
 Known problems (as of CLang 6.0) are:

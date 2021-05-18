@@ -160,7 +160,7 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
 
   This is an example of the code for iteration and execution of functions.  
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 
     // The scope of functions is  defined.  
     Handle(TFunction_Scope) scope = TFunction_Scope::Set( anyLabel );  
@@ -200,14 +200,14 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
       } // end of iteration of current functions  
     } // end of iteration of  functions.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 ### Example 2: Cylinder function driver
 
   This is an example of the code for a cylinder function driver. To make the things clearer, the methods 
 <i>\::Arguments()</i>  and <i>\::Results()</i>  from the base class are also mentioned.   
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 
     // A virtual method  ::Arguments() returns a list of arguments of the function.  
     CylinderDriver::Arguments( TDF_LabelList&amp; args )  
@@ -283,4 +283,4 @@ drivers for a function  driver table with the help of *TFunction_DriverTable* cl
        
       return 0;
     }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~

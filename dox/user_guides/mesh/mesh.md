@@ -30,7 +30,7 @@ Learn more about SALOME platform on https://www.salome-platform.org
 
 The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure. This triangulation is used to visualize the shape in shaded mode.
 
-~~~~~
+~~~~{.cpp}
 #include <IMeshData_Status.hxx>
 #include <IMeshTools_Parameters.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -69,7 +69,7 @@ Standard_Boolean meshing_imeshtools_parameters()
   const Standard_Integer aStatus = aMesher.GetStatusFlags();
   return !aStatus;
 }
-~~~~~
+~~~~
 
 The default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation -- linear and angular deflections. 
 
@@ -194,7 +194,7 @@ OCCT comes with two base 2D meshing algorithms: *BRepMesh_MeshAlgoFactory* (used
 
 The following example demonstrates how it could be done from *Draw* environment:
 
-~~~~~
+~~~~{.php}
 psphere s 10
 
 ### Default Algo ###
@@ -202,11 +202,11 @@ incmesh s 0.0001 -algo default
 
 ### Delabella Algo ###
 incmesh s 0.0001 -algo delabella
-~~~~~
+~~~~
 
 The code snippet below shows passing a custom mesh factory to BRepMesh_IncrementalMesh:
 
-~~~~~
+~~~~{.cpp}
 IMeshTools_Parameters aMeshParams;
 Handle(IMeshTools_Context) aContext = new BRepMesh_Context();
 aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory()));
@@ -216,7 +216,7 @@ aMesher.SetShape (aShape);
 aMesher.ChangeParameters() = aMeshParams;
 
 aMesher.Perform (aContext);
-~~~~~
+~~~~
 
 #### Range splitter
 Range splitter tools provide functionality to generate internal surface nodes defined within the range computed using discrete model data. The base functionality is provided by *BRepMesh_DefaultRangeSplitter* which can be used without modifications in case of planar surface. The default splitter does not generate any internal node.

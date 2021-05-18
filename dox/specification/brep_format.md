@@ -35,12 +35,12 @@ Each of these methods has two arguments:
 
 The following sample code reads a shape from ASCII file and writes it to a binary one:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   TopoDS_Shape aShape;
   if (BRepTools::Read (aShape, "source_file.txt")) {
     BinTools::Write (aShape, "result_file.bin");
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
  
 @section specification__brep_format_3 Format Common Structure
  
@@ -250,7 +250,7 @@ The example record is interpreted as a line which  passes through a point *P*=(1
  
 **BNF-like Definition**
  
-~~~~
+~~~~{.cpp}
     <3D curve record 2> = "2" <_> <3D circle center> <_> <3D circle N> <_> <3D circle Dx> <_> <3D circle Dy> <_> <3D circle radius> <_\n>;  
      
     <3D circle center> = <3D point>;  
@@ -283,7 +283,7 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
     <3D curve record 3> = "3" <_> <3D ellipse center> <_> <3D ellipse N> <_> <3D ellipse Dmaj> <_> <3D ellipse Dmin> <_> <3D ellipse Rmaj> <_> <3D ellipse Rmin> <_\n>;  
      
     <3D ellipse center> = <3D point>;  
@@ -318,7 +318,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
  
 **BNF-like Definition**  
 
-~~~~
+~~~~{.cpp}
     <3D curve record 4> = "4" <_> <3D parabola origin> <_> <3D parabola N> <_> <3D parabola Dx> <_> <3D parabola Dy> <_> <3D parabola focal length> <_\n>;  
      
     <3D parabola origin> = <3D point>;  
@@ -352,7 +352,7 @@ The  example record is interpreted as a parabola in plane which passes through a
  
 **BNF-like Definition**  
 
-~~~~
+~~~~{.cpp}
     <3D curve record 5> = "5" <_> <3D hyperbola origin> <_> <3D hyperbola N> <_> <3D hyperbola Dx> <_> <3D hyperbola Dy> <_> <3D hyperbola Kx> <_> <3D hyperbola Ky> <_\n>;  
      
     <3D hyperbola origin> = <3D point>;  
@@ -428,7 +428,7 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<3D curve record 7> = "7" <_> <3D B-spline rational flag> <_> "0" <_> <3D B-spline degree> <_> 
 	<3D B-spline pole count> <_> <3D B-spline multiplicity knot count> <3D B-spline weight poles> 
 	<_\n> <3D B-spline multiplicity knots> <_\n>;
@@ -492,7 +492,7 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
  
 **BNF-like Definition**  
 
-~~~~
+~~~~{.cpp}
 	<3D curve record 8> = "8" <_> <3D trimmed curve u min> <_> <3D trimmed curve u max> <_\n> <3D curve record>;
 
 	<3D trimmed curve u min> = <real>;
@@ -764,7 +764,7 @@ where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<surface record 8> = "8" <_> <Bezier surface u rational flag> <_> <Bezier surface v rational flag> <_> <Bezier surface u degree> <_> <Bezier surface v degree> <_> 
 	<Bezier surface weight poles>;
 
@@ -1076,7 +1076,7 @@ The example record is interpreted as a line which  passes through a point *P*=(3
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<2D curve record 2> = "2" <_> <2D circle center> <_> <2D circle Dx> <_> <2D circle Dy> <_> <2D circle radius> <_\n>;
 
 	<2D circle center> = <2D point>;
@@ -1247,7 +1247,7 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<2D curve record 7> = "7" <_> <2D B-spline rational flag> <_> "0" <_> <2D B-spline degree> <_> <2D B-spline pole count> <_> <2D B-spline multiplicity knot count> <2D B-spline weight poles> <_\n> <2D B-spline multiplicity knots> <_\n>;
 
 	<2D B-spline rational flag> = <flag>;
@@ -1430,7 +1430,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<triangulations> = <triangulation header> <_\n> <triangulation records>;
 
 	<triangulation header> = "Triangulations" <_> <triangulation count>;
@@ -1785,7 +1785,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<edge data> = <_> <edge data tolerance> <_> <edge data same parameter flag> <_> edge data same range flag> <_> <edge data degenerated flag> <_\n> <edge data representations>;
 
 	<edge data tolerance> = <real>;
@@ -1855,7 +1855,7 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
  
 **BNF-like Definition**
 
-~~~~
+~~~~{.cpp}
 	<face data> = <face data natural restriction flag> <_> <face data tolerance> <_> <surface number> <_> <location number> <\n> ["2" <_> <triangulation number>];
 
 	<face data natural restriction flag> = <flag>;

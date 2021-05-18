@@ -183,9 +183,9 @@ A variable of a type manipulated by handle which is not attached to an object is
 To reference an object, we instantiate the class with one of its constructors.
 For example, in C++:
 
-~~~~~
+~~~~{.cpp}
 Handle(MyClass) anObject = new MyClass();
-~~~~~
+~~~~
 
 In Open CASCADE Technology, the Handles are specific classes that are used to safely manipulate objects allocated in the dynamic memory by reference,
 providing reference counting mechanism and automatic destruction of the object when it is not referenced.
@@ -302,15 +302,15 @@ It provides a reference counter field, inherited by all its descendant classes, 
 Objects of classes derived (directly or indirectly) from *Transient*, are normally allocated in dynamic memory using operator **new**, and manipulated by handle.
 Handle is defined as template class *opencascade::handle<>*.
 Open CASCADE Technology provides preprocessor macro *Handle()* that is historically used throughout OCCT code to name a handle:
-~~~~~{.cpp}
+~~~~{.cpp}
 Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handle<Geom_Line>"
-~~~~~
+~~~~
 
 In addition, for most OCCT classes additional *typedef* is defined for a handle, as the name of a class prefixed by *Handle_*.
 For instance, the above example can be also coded as:
-~~~~~{.cpp}
+~~~~{.cpp}
 Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handle<Geom_Line>"
-~~~~~
+~~~~
 
 #### Using a Handle
 
@@ -318,9 +318,9 @@ A handle is characterized by the object it references.
 
 Before performing any operation on a transient object, you must declare the handle.
 For example, if Point and Line are two transient classes from the Geom package, you would write:
-~~~~~
+~~~~{.cpp}
 Handle(Geom_Point) p1, p2;
-~~~~~
+~~~~
 Declaring a handle creates a null handle that does not refer to any object.
 The handle may be checked to be null by its method *IsNull()*.
 To nullify a handle, use method *Nullify()*.
@@ -338,7 +338,7 @@ To enable this feature, a class declaration should include the declaration of OC
 Header *Standard_Type.hxx* provides two variants of preprocessor macros facilitating this:
 
 * Inline variant, which declares and defines RTTI methods by a single line of code:
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <Geom_Surface.hxx>
 class Appli_ExtSurface : public Geom_Surface
 {
@@ -346,12 +346,12 @@ class Appli_ExtSurface : public Geom_Surface
 public:
   DEFINE_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
 };
-~~~~~
+~~~~
 
 * Out-of line variant, which uses one macro in the declaration (normally in the header file), and another in the implementation (in C++ source):
 
   In *Appli_ExtSurface.hxx* file:
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <Geom_Surface.hxx>
 class Appli_ExtSurface : public Geom_Surface
 {
@@ -359,13 +359,13 @@ class Appli_ExtSurface : public Geom_Surface
 public:
   DEFINE_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
 };
-~~~~~
+~~~~
 
    In *Appli_ExtSurface.cxx* file:
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <Appli_ExtSurface.hxx>
 IMPLEMENT_STANDARD_RTTIEXT(Appli_ExtSurface,Geom_Surface)
-~~~~~
+~~~~
 
 These macros define method *DynamicType()* that returns a type descriptor - handle to singleton instance of the class *Standard_Type* describing the class.
 The type descriptor stores the name of the class and the descriptor of its parent class.
@@ -375,12 +375,12 @@ Note that while inline version is easier to use, for widely used classes this me
 To get the type descriptor for a given class type, use macro *STANDARD_TYPE()* with the name of the class as argument.
 
 Example of usage:
-~~~~~{.cpp}
+~~~~{.cpp}
 if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (dynamic_cast<Geom_Line>(aCurve.get()) != 0)"
 {
 ...
 }
-~~~~~
+~~~~
 
 #### Type Conformity
 
@@ -390,12 +390,12 @@ Thus, the dynamic type of an object (also called the actual type of an object) c
 
 Consider the class *Geom_CartesianPoint*, a sub-class of *Geom_Point*; the rule of type conformity can be illustrated as follows:
 
-~~~~~
+~~~~{.cpp}
 Handle(Geom_Point) aPnt1;
 Handle(Geom_CartesianPoint) aPnt2;
 aPnt2 = new Geom_CartesianPoint();
 aPnt1 = aPnt2;  // OK, the types are compatible
-~~~~~
+~~~~
 
 The compiler sees *aPnt1* as a handle to *Geom_Point* though the actual object referenced by *aPnt1* is of the *Geom_CartesianPoint* type.
 
@@ -409,19 +409,19 @@ A handle can be converted explicitly into one of its sub-types if the actual typ
 If this is not the case, the handle is nullified (explicit type conversion is sometimes called a "safe cast").
 Consider the example below.
 
-~~~~~~
+~~~~{.cpp}
 Handle(Geom_Point) aPnt1;
 Handle(Geom_CartesianPoint) aPnt2, aPnt3;
 aPnt2 = new Geom_CartesianPoint();
 aPnt1 = aPnt2; // OK, standard assignment
 aPnt3 = Handle(Geom_CartesianPoint)::DownCast (aPnt1);
 // OK, the actual type of aPnt1 is Geom_CartesianPoint, although the static type of the handle is Geom_Point
-~~~~~~
+~~~~
 
 If conversion is not compatible with the actual type of the referenced object, the handle which was "cast" becomes null (and no exception is raised).
 So, if you require reliable services defined in a sub-class of the type seen by the handle (static type), write as follows:
 
-~~~~~~
+~~~~{.cpp}
 void MyFunction (const Handle(A) & a)
 {
   Handle(B) b =  Handle(B)::DownCast(a);
@@ -432,12 +432,12 @@ void MyFunction (const Handle(A) & a)
     // the types are incompatible
   }
 }
-~~~~~~
+~~~~
 Downcasting is used particularly with collections of objects of different types; however, these objects should inherit from the same root class.
 
 For example, with a sequence of transient objects *TColStd_SequenceOfTransient* and two classes A and B that both inherit from *Standard_Transient*, you get the following syntax:
 
-~~~~~
+~~~~{.cpp}
 Handle(A) a;
 Handle(B) b;
 Handle(Standard_Transient) t;
@@ -459,17 +459,17 @@ else
 {
   // the types are incompatible
 }
-~~~~~
+~~~~
 
 @subsubsection occt_fcug_2_2_3 Using Handles to Create Objects
 
 To create an object which is manipulated by handle, declare the handle and initialize it with the standard C++ **new** operator, immediately followed by a call to the constructor.
 The constructor can be any of those specified in the source of the class from which the object is instanced.
 
-~~~~~
+~~~~{.cpp}
 Handle(Geom_CartesianPoint) aPnt;
 aPnt = new Geom_CartesianPoint (0, 0, 0);
-~~~~~
+~~~~
 
 Unlike for a pointer, the **delete** operator does not work on a handle; the referenced object is automatically destroyed when no longer in use.
 
@@ -480,7 +480,7 @@ To invoke a method which acts on the referenced object, you translate this metho
 To test or to modify the state of the handle, the method is translated by the *dot* operator.
 The example below illustrates how to access the coordinates of an (optionally initialized) point object:
 
-~~~~~
+~~~~{.cpp}
 Handle(Geom_CartesianPoint) aCentre;
 Standard_Real x, y, z;
 if (aCentre.IsNull())
@@ -488,11 +488,11 @@ if (aCentre.IsNull())
   aCentre = new PGeom_CartesianPoint (0, 0, 0);
 }
 aCentre->Coord (x, y, z);
-~~~~~
+~~~~
 
 The example below illustrates how to access the type object of a Cartesian point:
 
-~~~~~
+~~~~{.cpp}
 Handle(Standard_Transient) aPnt = new Geom_CartesianPoint (0., 0., 0.);
 if (aPnt->DynamicType() == STANDARD_TYPE(Geom_CartesianPoint))
 {
@@ -502,7 +502,7 @@ else
 {
   std::cout << "Type check FAILED\n";
 }
-~~~~~
+~~~~
 
 *Standard_NullObject* exception will be raised if a field or a method of an object is accessed via a *Null* handle.
 
@@ -512,9 +512,9 @@ A class method is called like a static C++ function, i.e. it is called by the na
 
 For example, we can find the maximum degree of a Bezier curve:
 
-~~~~~
+~~~~{.cpp}
 Standard_Integer aDegree = Geom_BezierCurve::MaxDegree();
-~~~~~
+~~~~
 
 @subsubsection occt_fcug_2_2_5 Handle deallocation
 
@@ -529,7 +529,7 @@ The object is automatically deleted by the handle when reference counter becomes
 
 The principle of allocation can be seen in the example below.
 
-~~~~~
+~~~~{.cpp}
 ...
 {
   Handle(TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger();
@@ -549,11 +549,11 @@ The principle of allocation can be seen in the example below.
   // Here, H1 has 1 reference
 }
 // Here, H1 has no reference and the referred TColStd_HSequenceOfInteger object is deleted.
-~~~~~
+~~~~
 
 You can easily cast a reference to the handle object to <i> void* </i> by defining the following:
 
-~~~~
+~~~~{.cpp}
   void* aPointer;
   Handle(Some_Class) aHandle;
   // Here only a pointer will be copied
@@ -701,12 +701,12 @@ The following paragraphs describe recommended approaches for using exceptions wh
 #### "C++ like" Syntax
 
 The following example:
-~~~~~
+~~~~{.cpp}
 throw Standard_DomainError ("Cannot cope with this condition");
-~~~~~
+~~~~
 raises an exception of *Standard_DomainError* type with the associated message "Cannot cope with this condition", the message being optional.
 This exception may be caught by a handler of a *Standard_DomainError* type as follows:
-~~~~~
+~~~~{.cpp}
 try
 {
   OCC_CATCH_SIGNALS
@@ -716,7 +716,7 @@ catch (const Standard_DomainError& )
 {
   // handle Standard_DomainError exceptions here
 }
-~~~~~
+~~~~
 
 #### Regular usage
 
@@ -734,7 +734,7 @@ For example, if you consider the *TCollection_Array1* class used with:
 
 then, the *Value* function may be implemented as follows:
 
-~~~~~
+~~~~{.cpp}
 Item TCollection_Array1::Value (Standard_Integer theIndex) const
 {
   // where myR1 and myR2 are the lower and upper bounds of the array
@@ -744,7 +744,7 @@ Item TCollection_Array1::Value (Standard_Integer theIndex) const
   }
   return myContents[theIndex];
 }
-~~~~~
+~~~~
 
 Here validity of the index is first verified using the Lower and Upper functions in order to protect the call.
 Normally the caller ensures the index being in the valid range before calling <i>Value()</i>.
@@ -752,26 +752,26 @@ In this case the above implementation of *Value* is not optimal since the test d
  
 It is a widely used practice to include that kind of protections in a debug build of the program and exclude in release (optimized) build.
 To support this practice, the macros <i>Raise_if()</i> are provided for every OCCT exception class:
-~~~~~
+~~~~{.cpp}
 <ErrorTypeName>_Raise_if(condition, "Error message");
-~~~~~
+~~~~
 where *ErrorTypeName* is the exception type, *condition* is the logical expression leading to the raise of the exception, and *Error message* is the associated message.
   
 The entire call may be removed by defining one of the preprocessor symbols *No_Exception* or <i>No_<ErrorTypeName></i> at compile-time:
 
-~~~~~
+~~~~{.cpp}
 #define No_Exception // remove all raises
-~~~~~
+~~~~
 
 Using this syntax, the *Value* function becomes:
 
-~~~~~
+~~~~{.cpp}
 Item TCollection_Array1::Value (Standard_Integer theIndex) const
 {
   Standard_OutOfRange_Raise_if(theIndex < myR1 || theIndex > myR2, "index out of range in TCollection_Array1::Value");
   return myContents[theIndex];
 }
-~~~~~
+~~~~
 
 @subsubsection occt_fcug_2_4_3 Handling an Exception
 
@@ -788,7 +788,7 @@ The recommended location for it is first statement after opening brace of <i>try
 
 As an example, consider the exceptions of type *Standard_NumericError, Standard_Overflow, Standard_Underflow* and *Standard_DivideByZero*, where *Standard_NumericError* is the parent type of the three others.
 
-~~~~~
+~~~~{.cpp}
 void f(1)
 {
   try
@@ -805,7 +805,7 @@ void f(1)
     // ...
   }
 }
-~~~~~
+~~~~
 
 Here, the first handler will catch exceptions of *Standard_Overflow* type
 and the second one -- exceptions of *Standard_NumericError* type and all exceptions derived from it, including *Standard_Underflow* and *Standard_DivideByZero*.
@@ -813,7 +813,7 @@ and the second one -- exceptions of *Standard_NumericError* type and all excepti
 The handlers are checked in order of appearance, from the nearest to the try block to the most distant from it, until one matches the raise expression.
 For a try block, it would be a mistake to place a handler for a base exception type ahead of a handler for its derived type since that would ensure that the handler for the derived exception would never be invoked.
 
-~~~~~
+~~~~{.cpp}
 void f(1)
 {
   int i = 0;
@@ -832,7 +832,7 @@ void f(1)
   }
   . . .
 }
-~~~~~
+~~~~
 
 The exceptions form a hierarchy tree completely separated from other user defined classes.
 One exception of type *Standard_Failure* is the root of the entire exception hierarchy.
@@ -841,7 +841,7 @@ It is recommended to set up such a handler in the main routine.
 
 The main routine of a program would look like this:
 
-~~~~~
+~~~~{.cpp}
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <iostream>
@@ -859,7 +859,7 @@ int main (int argc, char* argv[])
   }
   return 1;
 }
-~~~~~
+~~~~
 
 Though standard C++ scoping rules and syntax apply to try block and handlers, note that on some platforms Open CASCADE Technology may be compiled in compatibility mode when exceptions are emulated by long jumps (see below).
 In this mode it is required that no statement precedes or follows any handler.
@@ -921,17 +921,17 @@ Foundation classes provide in the package *Plugin* a method named *Load()*, whic
 
 That method reads the information regarding available plug-ins and their locations from the resource file *Plugin* found by environment variable *CSF_PluginDefaults*:
 
-~~~~~ 
+~~~~
 $CSF_PluginDefaults/Plugin
-~~~~~
+~~~~
 
 The *Load* method looks for the library name in the resource file or registry through its GUID, for example, on UNIX:
-~~~~~
+~~~~
 ! METADATADRIVER whose value must be OS or DM.
 
 ! FW
 a148e300-5740-11d1-a904-080036aaa103.Location: libFWOSPlugin.so
-~~~~~
+~~~~
 
 Then the *Load* method loads the library according to the rules of the operating system of the host machine (for example, by using environment variables such as *LD_LIBRARY_PATH* with Unix and *PATH* with Windows).
 After that it invokes the *PLUGINFACTORY* method to return the object, which supports the required service.
@@ -941,13 +941,13 @@ The client may then call the functions supported by this object.
 
 To invoke one of the services provided by the plug-in, you may call the *Plugin::Load()* global function with the *Standard_GUID* of the requested service as follows:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 Handle(FADriver_PartStorer)::DownCast(PlugIn::Load (yourStandardGUID));
-~~~~~
+~~~~
 
 Let us take *FAFactory.hxx* and *FAFactory.cxx* as an example:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <Standard_Macro.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
@@ -957,9 +957,9 @@ class FAFactory
 public:
   Standard_EXPORT static Handle(Standard_Transient) Factory (const Standard_GUID& theGUID);
 };
-~~~~~
+~~~~
 
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <FAFactory.hxx>
 
 #include <FADriver_PartRetriever.hxx>
@@ -1004,7 +1004,7 @@ Handle(Standard_Transient) FAFactory::Factory (const Standard_GUID& theGUID)
 
 // export plugin function "PLUGINFACTORY"
 PLUGIN(FAFactory)
-~~~~~
+~~~~
 
 Application might also instantiate a factory by linking to the library and calling *FAFactory::Factory()* directly.
 
@@ -1042,14 +1042,14 @@ These definitions are now obsolete though still can be used, particularly for co
 
 Let see an example of NCollection template class instantiation for a sequence of points in the header file *MyPackage_SequenceOfPnt.hxx* (analogue of *TColgp_SequenceOfPnt*):
 
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
-~~~~~
+~~~~
 
 For the case, when sequence itself should be managed by handle, auxiliary macros *DEFINE_HSEQUENCE* can be used:
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 #include <gp_Pnt.hxx>
@@ -1057,7 +1057,7 @@ typedef NCollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 DEFINE_HSEQUENCE(MyPackage_HSequenceOfPnt, MyPackage_SequenceOfPnt)
 ...
 Handle(MyPackage_HSequenceOfPnt) aSeq = new MyPackage_HSequenceOfPnt();
-~~~~~
+~~~~
 
 See more details about available collections in following sections.
 
@@ -1302,7 +1302,7 @@ The common methods of Iterator are:
 
 Usage sample:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 typedef Ncollection_Sequence<gp_Pnt> MyPackage_SequenceOfPnt;
 void Perform (const MyPackage_SequenceOfPnt& theSequence)
 {
@@ -1312,17 +1312,17 @@ void Perform (const MyPackage_SequenceOfPnt& theSequence)
     ...
   }
 }
-~~~~~
+~~~~
 
 @subsubsection occt_fcug_3_1_5 Allocators
 
 All constructors of *NCollection* classes receive the *Allocator* object as the last parameter.
 This is an object of a type managed by Handle, inheriting *NCollection_BaseAllocator*, with the following (mandatory) methods redefined:
 
-~~~~~{.cpp}
+~~~~{.cpp}
   virtual void* Allocate (const size_t theSize) override;
   virtual void  Free (void* theAddress) override;
-~~~~~
+~~~~
 
 It is used internally every time when the collection allocates memory for its item(s) and releases this memory.
 The default value of this parameter (empty *Handle*) designates the use of *NCollection_BaseAllocator*, where the functions *Standard::Allocate* and *Standard::Free* are called.
@@ -1360,7 +1360,7 @@ Among the best suitable solutions there can be a pointer to an object, handled o
 The bounding object may have any dimension and geometry.
 The minimal interface of *TheBndType* (besides public empty and copy constructor and operator=) used in NCollection_UBTree algorithm as follows:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class MyBndType
 {
 public:
@@ -1373,7 +1373,7 @@ public:
   //! Computes the squared maximal linear extent of me (for a box it is the squared diagonal of the box).
   Standard_Real SquareExtent() const;
 };
-~~~~~
+~~~~
    
 This interface is implemented in types of Bnd package: *Bnd_Box, Bnd_Box2d, Bnd_B2x, Bnd_B3x*.
 
@@ -1384,7 +1384,7 @@ The quality of a tree is better (considering the speed of searches) if objects a
 Instantiation of *NCollection_UBTreeFiller* collects objects to be added, and then adds them at once to the given NCollection_UBTree instance in a random order using the Fisher-Yates algorithm.
 Below is the sample code that creates an instance of *NCollection_UBTree* indexed by 2D boxes (Bnd_B2f), then a selection is performed returning the objects whose bounding boxes contain the given 2D point.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 typedef NCollection_UBTree<MyData, Bnd_B2f> UBTree;
 typedef NCollection_List<MyData> ListOfSelected;
 //! Tree Selector type
@@ -1426,7 +1426,7 @@ aTreeFiller.Fill();
 MyTreeSelector aSel (aPoint2d);
 aTree.Select (aSel);
 const ListOfSelected& aSelected = aSel.ListAccepted();
-~~~~~
+~~~~
 
 ##### NCollection_CellFilter
 
@@ -1438,10 +1438,10 @@ while search with NCollection_UBTree provides logarithmic law access time.
 
 Packages *TShort*, *TColGeom*, *TColGeom2d*, *TColStd*, *TColgp* provide template instantiations (typedefs) of *NCollection* templates to standard OCCT types.
 Classes with *H* prefix in name are handle-based variants and inherit Standard_Transient.
-~~~~~{.cpp}
+~~~~{.cpp}
 typedef NCollection_Array1<gp_Vec>                  TColgp_Array1OfVec;
 typedef NCollection_Array1<TCollection_AsciiString> TColStd_Array1OfAsciiString;
-~~~~~
+~~~~
 
 Packages like *TopTools* also include definitions of collections and hash functions for complex types like shapes -- *TopTools_ShapeMapHasher*, *TopTools_MapOfShape*.
 
@@ -1525,27 +1525,27 @@ These classes also provide a data structure to represent any expression, relatio
 
 Vectors and matrices have arbitrary ranges which must be defined at declaration time and cannot be changed after declaration.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 math_Vector aVec (1, 3);
 // a vector of dimension 3 with range (1..3)
 math_Matrix aMat (0, 2, 0, 2);
 // a matrix of dimension 3x3 with range (0..2, 0..2)
 math_Vector aVec (N1, N2);
 // a vector of dimension N2-N1+1 with range (N1..N2)
-~~~~~
+~~~~
 
 Vector and Matrix objects use value semantics.
 In other words, they cannot be shared and are copied through assignment.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 math_Vector aVec1 (1, 3), aVec2 (0, 2);
 aVec2 = aVec1;
 // aVec1 is copied into aVec2; a modification of aVec1 does not affect aVec2
-~~~~~
+~~~~
 
 Vector and Matrix values may be initialized and obtained using indexes which must lie within the range definition of the vector or the matrix.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 math_Vector aVec (1, 3);
 math_Matrix aMat (1, 3, 1, 3);
 Standard_Real aValue;
@@ -1554,7 +1554,7 @@ aVec (2) = 1.0;
 aValue = aVec(1);
 aMat (1, 3) = 1.0;
 aValue = aMat (2, 2);
-~~~~~
+~~~~
 
 Some operations on Vector and Matrix objects may not be legal.
 In this case an exception is raised.
@@ -1562,12 +1562,12 @@ Two standard exceptions are used:
   * *Standard_DimensionError* exception is raised when two matrices or vectors involved in an operation are of incompatible dimensions.
   * *Standard_RangeError* exception is raised if an access outside the range definition of a vector or of a matrix is attempted.
 
-~~~~~~{.cpp}
+~~~~{.cpp}
 math_Vector aVec1 (1, 3), aVec2 (1, 2), aVec3 (0, 2);
 aVec1 = aVec2;   // error: Standard_DimensionError is raised
 aVec1 = aVec3;   // OK: ranges are not equal but dimensions are compatible
 aVec1 (0) = 2.0; // error: Standard_RangeError is raised
-~~~~~~
+~~~~
 
 @subsection occt_occt_fcug_4_3 Primitive Geometric Types
 
@@ -1649,7 +1649,7 @@ They contain:
 The example below demonstrates the use of the math_Gauss class, which implements the Gauss solution for a set of linear equations.
 The following definition is an extract from the header file of the class *math_Gauss*:
 
-~~~~~~{.cpp}
+~~~~{.cpp}
 class math_Gauss
 {
 public:
@@ -1657,11 +1657,11 @@ public:
   Standard_Boolean IsDone() const;
   void Solve (const math_Vector& B, math_Vector& X) const;
 };
-~~~~~~
+~~~~
 
 Now the main program uses the math_Gauss class to solve the equations _a*x1=b1_ and _a*x2=b2_:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <math_Vector.hxx> 
 #include <math_Matrix.hxx>
 main()
@@ -1686,12 +1686,12 @@ main()
     // StdFail_NotDone is raised
   }
 }
-~~~~~
+~~~~
 
 The next example demonstrates the use of the *math_BissecNewton* class, which implements a combination of the Newton and Bissection algorithms to find the root of a function known to lie between two bounds.
 The definition is an extract from the header file of the class *math_BissecNewton*:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class math_BissecNewton
 {
 public:
@@ -1702,12 +1702,12 @@ public:
   Standard_Boolean IsDone() const;
   Standard_Real Root();
 }; 
-~~~~~
+~~~~
 
 The abstract class *math_FunctionWithDerivative* describes the services which have to be implemented for the function _f_ which is to be used by a *math_BissecNewton* algorithm.
 The following definition corresponds to the header file of the abstract class *math_FunctionWithDerivative*:
 
-~~~~~{.cpp}
+~~~~{.cpp}
 class math_FunctionWithDerivative
 {
 public:
@@ -1715,12 +1715,12 @@ public:
   virtual Standard_Boolean Derivative (const Standard_Real x, Standard_Real& d) = 0;
   virtual Standard_Boolean Values (const Standard_Real x, Standard_Real& f, Standard_Real& d) = 0;
 };
-~~~~~
+~~~~
 
 Now the test sample uses the *math_BissecNewton* class to find the root of the equation _f(x)=x**2-4_ in the interval [1.5, 2.5].
 The function to solve is implemented in the class *myFunction* which inherits from the class *math_FunctionWithDerivative*, then the main program finds the required root.
 
-~~~~~{.cpp}
+~~~~{.cpp}
 #include <math_BissecNewton.hxx>
 #include <math_FunctionWithDerivative.hxx>
 class myFunction : public math_FunctionWithDerivative
@@ -1759,7 +1759,7 @@ main()
   else // no
   {
   }
-~~~~~
+~~~~
 
 @subsection occt_occt_fcug_4_7 Precision
 
@@ -1796,10 +1796,10 @@ The choice of precision value for parametric space depends not only on the accur
 This is because it is desirable to link parametric precision and real precision.
 If you are on a curve defined by the equation *P(t)*, you would want to have equivalence between the following:
 
-~~~~~
+~~~~{.cpp}
   Abs (t1 - t2) < ParametricPrecision
   Distance (P(t1), P(t2)) < RealPrecision
-~~~~~
+~~~~
 
 @subsubsection occt_occt_fcug_4_7_1 The Precision package
 
@@ -1832,7 +1832,7 @@ This method is used to compare two angles.
 Its current value is *Epsilon(2 *  PI)* i.e. the smallest number *x* such that *2*PI + x* is different of *2\*PI*.
 
 It can be used to check confusion of two angles as follows:
-~~~{.cpp}
+~~~~{.cpp}
 bool areEqualAngles (double theAngle1, double theAngle2)
 {
   return Abs(theAngle1  - theAngle2) < Precision::Angular();
@@ -1840,7 +1840,7 @@ bool areEqualAngles (double theAngle1, double theAngle2)
 ~~~
 
 It is also possible to check parallelism of two vectors as follows:
-~~~{.cpp}
+~~~~{.cpp}
 bool areParallelVectors (const gp_Vec& theVec1, const gp_Vec& theVec2)
 {
   return theVec1.IsParallel (theVec2, Precision::Angular());
@@ -1849,7 +1849,7 @@ bool areParallelVectors (const gp_Vec& theVec1, const gp_Vec& theVec2)
 
 Note that *Precision::Angular()* can be used on both dot and cross products because for small angles the *Sine* and the *Angle* are equivalent.
 So to test if two directions of type *gp_Dir* are perpendicular, it is legal to use the following code:
-~~~{.cpp}
+~~~~{.cpp}
 bool arePerpendicular (const gp_Dir& theDir1, const gp_Dir& theDir2)
 {
   return Abs(theDir1 * theDir2) < Precision::Angular();
@@ -1862,7 +1862,7 @@ This method is used to test 3D distances.
 The current value is *1.e-7*, in other words, 1/10 micron if the unit used is the millimeter.
 
 It can be used to check confusion of two points as follows:
-~~~{.cpp}
+~~~~{.cpp}
 bool areEqualPoints (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 {
   return thePnt1.IsEqual (thePnt2, Precision::Confusion());
@@ -1870,7 +1870,7 @@ bool areEqualPoints (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
 ~~~
 
 It is also possible to find a vector of null length:
-~~~{.cpp}
+~~~~{.cpp}
 bool isNullVector (const gp_Vec& theVec)
 {
   return theVec.Magnitude() < Precision::Confusion();

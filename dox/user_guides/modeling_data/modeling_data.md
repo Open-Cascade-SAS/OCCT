@@ -52,14 +52,14 @@ The class *Interpolate* from *GeomAPI* package allows building a constrained 3D 
 @figure{/user_guides/modeling_data/images/modeling_data_image003.png,"Approximation of a BSpline from scattered points",420}
 
 This class may be instantiated as follows:
-~~~~~ 
+~~~~{.cpp}
 GeomAPI_Interpolate Interp(Points); 
-~~~~~
+~~~~
 
 From this object, the BSpline curve may be requested as follows: 
-~~~~~
+~~~~{.cpp}
 Handle(Geom_BSplineCurve) C = Interp.Curve(); 
-~~~~~
+~~~~
 
 #### 2D Approximation
 
@@ -71,16 +71,16 @@ The class *PointsToBSpline* from GeomAPI package allows building a 3D BSplinecur
 
 The resulting BSpline curve will be C2 or second degree continuous, except where a tangency constraint is defined on a point, through which the curve passes. In this case, it will be only C1 continuous. This class is instantiated as follows: 
 
-~~~~~
+~~~~{.cpp}
 GeomAPI_PointsToBSpline 
 Approx(Points,DegMin,DegMax,Continuity, Tol); 
-~~~~~
+~~~~
 
 From this object, the BSpline curve may be requested as follows: 
 
-~~~~~
+~~~~{.cpp}
 Handle(Geom_BSplineCurve) K = Approx.Curve(); 
-~~~~~
+~~~~
 
 #### Surface Approximation 
 
@@ -184,7 +184,7 @@ The object created (or implemented) is an algorithm which can be consulted to fi
 
 If it was unsuccessful, the status gives the reason for the failure.
 
-~~~~
+~~~~{.cpp}
     gp_Pnt P1 (0.,0.,0.);
     gp_Pnt P2 (0.,10.,0.);
     gp_Pnt P3 (10.,0.,0.);
@@ -246,7 +246,7 @@ Each class from *gp* package, such as *Circ, Circ2d, Mirror, Mirror2d*, etc., ha
 
 It is possible to create a point using a *gce* package class, then question it to recover the corresponding *gp* object. 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   gp_Pnt2d Point1,Point2; 
   ...
   //Initialization of Point1 and Point2 
@@ -254,13 +254,13 @@ It is possible to create a point using a *gce* package class, then question it t
   if (L.Status() == gce_Done() ){ 
     gp_Lin2d l = L.Value(); 
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 This is useful if you are uncertain as to whether the arguments can create the *gp* object without raising an exception. In the case above, if *Point1* and *Point2* are closer than the tolerance value required by *MakeLin2d*, the function *Status* will return the enumeration *gce_ConfusedPoint*. This tells you why the *gp* object cannot be created. If you know that the points *Point1* and *Point2* are separated by the value exceeding the tolerance value, then you may create the *gp* object directly, as follows: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 gp_Lin2d l = gce_MakeLin2d(Point1,Point2); 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection occt_modat_1_2_2 Geometric entities manipulated by handle
 
@@ -363,20 +363,20 @@ The following characteristic points exist on parameterized curves in 3d space:
 Let us take an adapted curve **C**, i.e. an object which is an interface between the services provided by either a 2D curve from the package Geom2d (in case of an Adaptor_Curve2d curve) or a 3D curve from the package Geom (in case of an Adaptor_Curve curve), and the services required on the curve by the computation algorithm. The adapted curve is created in the following way: 
 
 **2D case :** 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   Handle(Geom2d_Curve) mycurve = ... ; 
   Geom2dAdaptor_Curve C (mycurve) ; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 **3D case :** 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   Handle(Geom_Curve) mycurve = ... ; 
   GeomAdaptor_Curve C (mycurve) ; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 The algorithm is then constructed with this object:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   GCPnts_UniformDeflection myAlgo () ; 
   Standard_Real Deflection = ... ; 
   myAlgo.Initialize ( C , Deflection ) ; 
@@ -390,7 +390,7 @@ The algorithm is then constructed with this object:
       ...
     } 
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 
 @subsection occt_modat_1_5 Extrema
@@ -771,7 +771,7 @@ There are no constructors for the classes inheriting from the *TopoDS_Shape* cla
 The following example shows a routine receiving an argument of the *TopoDS_Shape* type, then putting it into a variable V if it is a vertex or calling the method ProcessEdge if it is an edge. 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   #include <TopoDS_Vertex.hxx> 
   #include <TopoDS_Edge.hxx> 
   #include <TopoDS_Shape.hxx> 
@@ -796,7 +796,7 @@ The following example shows a routine receiving an argument of the *TopoDS_Shape
       // OK for compiler but an exception will be raised at run-time 
     }
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 
 
@@ -814,7 +814,7 @@ The TopExp package provides the class *TopExp_Explorer* to find all sub-objects 
 The Explorer visits the whole structure in order to find the shapes of the requested type not contained in the type to avoid. The example below shows  how to find all faces in the shape *S*: 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   void test() { 
     TopoDS_Shape S; 
     TopExp_Explorer Ex; 
@@ -822,19 +822,19 @@ The Explorer visits the whole structure in order to find the shapes of the reque
       ProcessFace(Ex.Current()); 
     } 
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 Find all the vertices which are not in an edge 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 for (Ex.Init(S,TopAbs_VERTEX,TopAbs_EDGE); ...) 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 
 Find all the faces in a SHELL, then all the faces not in a SHELL: 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   void test() { 
     TopExp_Explorer Ex1, Ex2; 
     TopoDS_Shape S; 
@@ -852,14 +852,14 @@ Find all the faces in a SHELL, then all the faces not in a SHELL:
       ProcessFace(Ex1.Current()); 
     }
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 The Explorer presumes that objects contain only objects of an equal or inferior type. For example, if searching for faces it does not look at wires, edges, or vertices to see if they contain faces. 
 
 The *MapShapes* method from *TopExp* package allows filling a Map. An exploration using the Explorer class can visit an object more than once if it is referenced more than once. For example, an edge of a solid is generally referenced by two faces. To process objects only once, they have to be placed in a Map. 
 
 **Example** 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   void TopExp::MapShapes (const TopoDS_Shape& S, 
               const TopAbs_ShapeEnum T, 
               TopTools_IndexedMapOfShape& M) 
@@ -870,7 +870,7 @@ The *MapShapes* method from *TopExp* package allows filling a Map. An exploratio
       Ex.Next(); 
     }
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 In the following example all  faces and all  edges of an object are drawn in accordance with the following rules: 
 - The faces are represented by a network of *NbIso* iso-parametric lines with *FaceIsoColor* color. 
@@ -886,7 +886,7 @@ The following steps are performed:
 3. Exploring the edges and for each of them increment the counter of faces in the array. 
 4. From the Map of edges, drawing each edge with the color corresponding to the number of faces. 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   void DrawShape ( const TopoDS_Shape& aShape, 
   const Standard_Integer nbIsos, 
   const Color FaceIsocolor, 
@@ -930,7 +930,7 @@ The following steps are performed:
       }
     } 
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @subsubsection occt_modat_5_5 Lists and Maps of Shapes
 
@@ -946,7 +946,7 @@ With a *TopTools_Map*, a set of references to Shapes can be kept without duplica
 The following example counts the size of a data structure as a number of *TShapes*. 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   #include <TopoDS_Iterator.hxx> 
   Standard_Integer Size(const TopoDS_Shape& aShape) 
   { 
@@ -959,14 +959,14 @@ The following example counts the size of a data structure as a number of *TShape
     } 
     return size; 
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 This program is incorrect if there is sharing in the data structure. 
 
 Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices with the result 9, but as the vertices are each shared by two edges this program will return 13. One solution is to put all the Shapes in a Map so as to avoid counting them twice, as in the following example: 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   #include <TopoDS_Iterator.hxx> 
   #include <TopTools_MapOfShape.hxx> 
 
@@ -990,7 +990,7 @@ Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices wi
     MapShapes(aShape,M); 
     return M.Extent();
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 **Note** For more details about Maps, refer to the *TCollection* documentation (Foundation Classes Reference Manual). 
 
@@ -999,7 +999,7 @@ The following example is more ambitious and writes a program which copies a data
 - A table of Shapes is created in parallel with the map to receive the copies. 
 - The structure is copied using the auxiliary recursive function,which copies from the map to the array. 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   #include <TopoDS_Shape.hxx> 
   #include <TopoDS_Iterator.hxx> 
   #include <TopTools_IndexedMapOfShape.hxx> 
@@ -1029,7 +1029,7 @@ The following example is more ambitious and writes a program which copies a data
       }
     } 
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 
 In the above example, the index *i* is that of the first object not treated in the Map. When *i* reaches the same size as the Map this means that everything has been treated. The treatment consists in inserting in the Map all the sub-objects, if they are not yet in the Map, they are inserted with an index greater than *i*. 
@@ -1037,7 +1037,7 @@ In the above example, the index *i* is that of the first object not treated in t
 **Note** that the objects are inserted with a local reference set to the identity and a FORWARD orientation. Only the underlying TShape is of great interest.
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   //Create an array to store the copies. 
   TopTools_Array1OfShapetheCopies(1,theMap.Extent());
 
@@ -1054,12 +1054,12 @@ In the above example, the index *i* is that of the first object not treated in t
   S.Location(aShape.Location()); 
   S.Orientation(aShape.Orientation()); 
   return S; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 Below is the auxiliary function, which copies the element of rank *i* from the map to the table. This method checks if the object has been copied; if not copied, then an empty copy is performed into the table and the copies of all the sub-elements are inserted by finding their rank in the map. 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   void AuxiliaryCopy(Standard_Integer index, 
   const TopTools_IndexedMapOfShapes& sources, 
   TopTools_Array1OfShape& copies, 
@@ -1081,7 +1081,7 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
       }
     }
   }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 **Wire Explorer**
 
@@ -1093,7 +1093,7 @@ For example, in the wire in the image we want to recuperate the edges in the ord
 
 *TopExp_Explorer*, however, recuperates the lines in any order.
  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
   TopoDS_Wire W = ...; 
   BRepTools_WireExplorer Ex; 
   for(Ex.Init(W); Ex.More(); Ex.Next()) { 
@@ -1101,7 +1101,7 @@ For example, in the wire in the image we want to recuperate the edges in the ord
     ProcessTheVertexConnectingTheCurrentEdgeToThePrevious 
     One(Ex.CurrentVertex()); 
   } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @section occt_modat_4 Properties of Shapes
 

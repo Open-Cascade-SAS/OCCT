@@ -243,9 +243,9 @@ The environment is defined in the file *custom.sh* (on Linux and OS X) or *custo
   * *ShortCut* - short-cut header files will be created, redirecting to same-named header located in *src*;
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
-~~~~~
+~~~~
        export HAVE_FREEIMAGE=false
-~~~~~
+~~~~
 
 Alternatively, or when *custom.sh* or *custom.bat* does not exist, you can launch **genconf** tool to configure environment interactively:
 
@@ -257,10 +257,10 @@ Click "Save" to store the specified configuration in *custom.sh* or *custom.bat*
 
 Launch **genproj** tool with option *cbp* to update content of *inc* folder and generate project files after changes in OCCT code affecting layout or composition of source files:
 
-~~~~~
+~~~~
   $ cd /dev/OCCT/opencascade-7.0.0
   $ ./genproj cbp
-~~~~~
+~~~~
 
 The generated Code::Blocks project are placed into subfolder *adm/&lt;OS&gt;/cbp*.
 
@@ -273,9 +273,9 @@ To start **Code::Blocks**, launch script *codeblocks.sh*.
 To build all toolkits, click **Build->Build workspace** in the menu bar.
 
 To start *DRAWEXE*, which has been built with **Code::Blocks** on Mac OS X, run the script
-~~~~~
+~~~~
    ./draw.sh cbp [d]
-~~~~~
+~~~~
 Option *d* is used if OCCT has been built in **Debug** mode.
 
 @subsection build_occt_genproj Building with Genproj tool
@@ -344,9 +344,9 @@ Launch **genproj** to update content of *inc* folder and generate project files 
 @note To use **genproj** and **genconf** tools you need to have Tcl installed and accessible by PATH.
 If Tcl is not found, the tool may prompt you to enter the path to directory where Tcl can be found.
  
-~~~~~
+~~~~
   $ genproj.bat
-~~~~~
+~~~~
 
 Note that if *custom.bat* is not present, **genproj** will start **genconf** to configure environment.
 
@@ -470,9 +470,9 @@ The environment is defined in the file *custom.sh* which can be edited directly:
   * *ShortCut* - short-cut header files will be created, redirecting to same-named header located in *src*;
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
-~~~~~
+~~~~
        export HAVE_FREEIMAGE=false
-~~~~~
+~~~~
 
 Alternatively, or when *custom.sh* does not exist, you can launch *genconf.sh* to configure environment interactively:
 
@@ -488,10 +488,10 @@ Launch **genproj** tool to update content of *inc* folder and generate project f
 
 For instance, in Terminal application:
 
-~~~~~
+~~~~
   $ cd /dev/OCCT/opencascade-7.0.0
   $ ./genproj
-~~~~~
+~~~~
 
 <h2>Building</h2>
 
@@ -513,14 +513,14 @@ To start *DRAWEXE*, which has been built with Xcode on Mac OS X, perform the fol
 1.Open Terminal application
 
 2.Enter <i>\<OCCT_ROOT_DIR\></i>:
-~~~~~
+~~~~
    cd \<OCCT_ROOT_DIR\>
-~~~~~
+~~~~
 
 3.Run the script
-~~~~~
+~~~~
    ./draw_cbp.sh xcd [d]
-~~~~~
+~~~~
 
 Option *d* is used if OCCT has been built in **Debug** mode.
 
@@ -543,9 +543,9 @@ directly:
   * *ShortCut* - short-cut header files will be created, redirecting to same-named header located in *src*;
   * "HardLink* - hard links to headers located in *src* will be created.
 * For optional  third-party libraries, set corresponding environment variable <i>HAVE_<LIBRARY_NAME></i> to either *false*,  e.g.:
-~~~~~
+~~~~
        export HAVE_FREEIMAGE=false
-~~~~~
+~~~~
 
 Alternatively, or when *custom.sh* or *custom.bat* does not exist, you can launch **genconf** tool to configure
  environment interactively:
@@ -559,10 +559,10 @@ Click "Save" to store the specified configuration in *custom.sh* or *custom.bat*
 Launch **genproj** tool with option *cbp* to update content of *inc* folder and generate project files after changes in 
 OCCT code affecting layout or composition of source files:
 
-~~~~~
+~~~~
   $ cd /dev/OCCT/opencascade-7.0.0
   $ ./genproj cbp
-~~~~~
+~~~~
 
 The generated Code::Blocks project are placed into subfolder *adm/&lt;OS&gt;/cbp*.
 
@@ -575,7 +575,7 @@ To start **Code::Blocks**, launch script *codeblocks.sh*.
 To build all toolkits, click **Build->Build workspace** in the menu bar.
 
 To start *DRAWEXE*, which has been built with **Code::Blocks** on Mac OS X, run the script
-~~~~~
+~~~~
    ./draw_cbp.sh cbp [d]
-~~~~~
+~~~~
 Option *d* is used if OCCT has been built in **Debug** mode.

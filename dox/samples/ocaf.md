@@ -128,7 +128,7 @@ ad696002-5b34-11d1-b5ba-00a0c9064368.Location: PAppStdPlugin
  
 ## Implementation of Attribute Transformation in a HXX file
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~
 \#include <TDF_Attribute.hxx>
 
 \#include <gp_Ax3.hxx>
@@ -223,11 +223,11 @@ private:
   gp_Pnt myFirstPoint;
   gp_Pnt mySecondPoint;
 }; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 ## Implementation of Attribute Transformation in a CPP file
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 \#include <MyPackage_Transformation.hxx> 
 
 //======================================================================= 
@@ -526,7 +526,7 @@ Standard_OStream& MyPackage_Transformation::Dump(Standard_OStream& anOS) const
 MyPackage_Transformation::MyPackage_Transformation():myType(gp_Identity){ 
 
 }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 ##  Implementation of typical actions with standard OCAF attributes.
 

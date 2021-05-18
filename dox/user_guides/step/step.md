@@ -119,23 +119,23 @@ For further information see 2.4 Mapping STEP entities to Open CASCADE Technology
 @subsubsection occt_step_2_3_1 Loading the STEP file
 
 Before performing any other operation you have to load the file with: 
-~~~~~
+~~~~{.cpp}
 STEPControl_Reader reader; 
 IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp");
-~~~~~
+~~~~
 Loading the file only memorizes the data, it does not translate it. 
 
 @subsubsection occt_step_2_3_2 Checking the STEP file
 This step is not obligatory. Check the loaded file with: 
-~~~~~
+~~~~{.cpp}
 reader.PrintCheckLoad(failsonly,mode); 
-~~~~~
+~~~~
 Error messages are displayed if there are invalid or incomplete STEP entities, giving you the information on the cause of error. 
 
 If *failsonly* is true only fail messages are displayed. All messages are displayed if *failsonly* is false. Your analysis of the file can be either message-oriented or entity-oriented. Choose your preference with: 
-~~~~~
+~~~~{.cpp}
 IFSelect_PrintCount mode = IFSelect_xxx 
-~~~~~
+~~~~
 Where xxx can be one of the following: 
 * *ItemsByEntity*  --       gives a sequential list of all messages per STEP entity, 
 * *CountByItem*   --   gives the number of STEP entities with their types per message 
@@ -153,14 +153,14 @@ Defines which precision value will be used during translation (see section 2.5 b
 
 Read this parameter with: 
 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic = Interface_Static::IVal("read.precision.mode");  
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.precision.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is File (0).
  
 <h4>read.precision.val:</h4>
@@ -169,14 +169,14 @@ User defined precision value. This parameter gives the precision for shape const
 This value is a basic value of tolerance in the processor. The value is in millimeters, independently of the length unit defined in the STEP file. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Real rp = Interface_Static::RVal("read.precision.val"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetRVal("read.precision.val",0.01))  
 .. error .. 
-~~~~~
+~~~~
 By default this value is 0.0001. 
 
 The value given to this parameter is a basic value for ShapeHealing algorithms and the processor. It does its best to reach it. Under certain circumstances, the value you give may not be attached to all of the entities concerned at the end of processing. STEP-to-OpenCASCADE translation does not improve the quality of the geometry in the original STEP file. This means that the value you enter may be impossible to attach to all shapes with the given quality of the geometry in the STEP file. 
@@ -185,14 +185,14 @@ The value given to this parameter is a basic value for ShapeHealing algorithms a
 Defines the maximum allowed tolerance (in mm) of the shape. It should be not less than the basic value of tolerance set in the processor (either the uncertainty from the file or *read.precision.val*). Actually, the maximum between *read.maxprecision.val* and the basis tolerance is used to define the maximum allowed tolerance. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Real rp = Interface_Static::RVal("read.maxprecision.val"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetRVal("read.maxprecision.val",0.1))  
 .. error .. 
-~~~~~
+~~~~
 
 Default value is 1. 
 Note that maximum tolerance even explicitly defined by the user may be insufficient to ensure the validity of the shape (if real geometry is of bad quality). Therefore the user is provided with an additional parameter, which allows him to choose: either he prefers to ensure the shape validity or he rigidly sets the value of maximum tolerance. In the first case there is a possibility that the tolerance will not have any upper limit, in the second case the shape may be invalid. 
@@ -203,14 +203,14 @@ Defines the mode of applying the maximum allowed tolerance. Its possible values 
 * 1 (Forced) --    maximum tolerance is used as a rigid limit, i.e. no tolerance can exceed it and if it is the case, the tolerance is trimmed by the maximum tolerance. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic = Interface_Static::IVal("read.maxprecision.mode"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.maxprecision.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 0 ("Preferred").
  
 <h4>read.stdsameparameter.mode</h4>
@@ -221,14 +221,14 @@ defines the use of *BRepLib::SameParameter*. Its possible values are:
 The functionality of *BRepLib::SameParameter* is used through *ShapeFix_Edge::SameParameter*. It ensures that the resulting edge will have the lowest tolerance taking pcurves either unmodified from the STEP file or modified by *BRepLib::SameParameter*.
  
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer mv = Interface_Static::IVal("read.stdsameparameter.mode"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if (!Interface_Static::SetIVal ("read.stdsameparameter.mode",1)) 
 .. error ..; 
-~~~~~
+~~~~
 Default value is 0 (;Off;). 
 
 <h4>read.surfacecurve.mode:</h4>
@@ -240,28 +240,28 @@ If both 2D and 3D representation of the entity are present, the computation of t
 * *3DUse_Preferred (3)* :  3D curves are used to rebuild 2D ones. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer rp = Interface_Static::IVal("read.surfacecurve.mode"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.surfacecurve.mode",3))  
 .. error .. 
-~~~~~
+~~~~
 Default value is (0). 
 
 <h4>read.encoderegularity.angle</h4>
 
 This parameter is used for call to *BRepLib::EncodeRegularity()* function which is called for the shape read from an IGES or a STEP file at the end of translation process. This function sets the regularity flag of the edge in the shell when this edge is shared by two faces. This flag shows the continuity these two faces are connected with at that edge.  
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Real era =  Interface_Static::RVal("read.encoderegularity.angle"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if (!Interface_Static::SetRVal ("read.encoderegularity.angle",0.1))  
 .. error ..; 
-~~~~~
+~~~~
 Default value is 0.01. 
 
 <h4>step.angleunit.mode</h4>
@@ -292,15 +292,15 @@ Defines the approach used for selection of top-level STEP entities for translati
 * 0 (OFF) -- *SHAPE_DEFINITION_REPRESENTATION* entities are taken as top-level ones; assembly is recognized by *CONTEXT_DEPENDENT_SHAPE_REPRESENTATION* entities. This is compatibility mode, which can be used for reading legacy STEP files produced by older versions of STEP translators and having incorrect or incomplete product information. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic = Interface_Static::IVal("read.step.product.mode");  
-~~~~~
+~~~~
 
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.step.product.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (ON).
  
 Note that the following parameters have effect only if *read.step.product.mode* is ON. 
@@ -315,15 +315,15 @@ When reading AP 209 STEP files, allows selecting either only `design' or `analys
 Note that in AP 203 and AP214 files all products should be marked as `design', so if this mode is set to `analysis', nothing will be read. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic =  Interface_Static::IVal("read.step.product.context");
-~~~~~
+~~~~
   
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal(;read.step.product.context;,1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (all).
  
 <h4>read.step.shape.repr:</h4>
@@ -340,14 +340,14 @@ Specifies preferred type of representation of the shape of the product, in case 
 When this option is not equal to 1, for products with multiple representations the representation having a type closest to the selected one in this list will be translated. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic = Interface_Static::IVal("read.step.shape.repr");  
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.step.shape.repr",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (All). 
 
 <h4>read.step.assembly.level:</h4>
@@ -359,14 +359,14 @@ Specifies which data should be read for the products found in the STEP file:
 * 4 (shape) --      Translate only shapes associated with the product, ignoring the assembly structure (if any). This can be useful to translate only a shape associated with specific product, as a complement to *assembly* mode. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic =                   Interface_Static::IVal("read.step.assembly.level"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("read.step.assembly.level",1))  
 .. error .. 
-~~~~~
+~~~~
 
 Default value is 1 (All). 
 
@@ -376,14 +376,14 @@ Defines whether shapes associated with the main *SHAPE_DEFINITION_REPRESENTATION
 * 0 (OFF) --        do not translate 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic =           Interface_Static::IVal("read.step.shape.relationship");
-~~~~~ 
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal(;read.step.shape.relationship;,1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (ON).
  
 <h4>read.step.shape.aspect:</h4>
@@ -393,15 +393,15 @@ Defines whether shapes associated with the *PRODUCT_DEFINITION_SHAPE* entity of 
 * 0 (OFF) --        do not translate 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic =                   Interface_Static::IVal("read.step.shape.aspect"); 
-~~~~~
+~~~~
 
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal(;read.step.shape.aspect;,1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (ON). 
 
 <h4>read.step.constructivegeom.relationship:</h4>
@@ -413,9 +413,9 @@ main representation of the shape (product).
 By default, the flag is set to 0 (OFF) so these entities are not translated. 
 Set this flag to 1 (ON) if you need to translate constructive geometry entities associated with the parts:
 
-~~~~~
+~~~~{.cpp}
 if (!Interface_Static::SetIVal("read.step.constructivegeom.relationship", 1)) { .. error .. }
-~~~~~
+~~~~
 
 The "CONSTRUCTIVE_GEOMETRY_REPRESENTATION" entity is translated into compound of two unlimited planar faces, 
 whose location is result of translation of corresponding "AXIS_PLACEMENT" entity.
@@ -424,7 +424,7 @@ Note that appropriate interpretation of the translated data should be done after
 The result of translation can be obtained either for the "CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP" entity,
 of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follows:
 
-~~~~~
+~~~~{.cpp}
   STEPControl_Reader aReader;
   ... // translate file and parse STEP model to find relevant axis entity
   Handle(StepGeom_Axis2Placement3d) aSTEPAxis = ...;
@@ -443,7 +443,7 @@ of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follow
       }
     }
   }
-~~~~~
+~~~~
 
 @subsubsection occt_step_2_3_4 Performing the STEP file translation
 
@@ -474,9 +474,9 @@ The following methods are used for translation:
 Each successful translation operation outputs one shape. A series of translations gives a set of shapes. 
 
 Each time you invoke *TransferOne(), TransferRoot()* or *TransferList()*, their results are accumulated and the counter of results increases. You can clear the results with: 
-~~~~~
+~~~~{.cpp}
 reader.ClearShapes(); 
-~~~~~
+~~~~
 between two translation operations, if you do not, the results from the next translation will be added to the accumulation. 
 
 *TransferRoots()* operations automatically clear all existing results before they start. 
@@ -494,9 +494,9 @@ If several individual translations follow each other, the results give a list th
 
 <h5>Checking that translation was correctly performed</h5>
 Each time you invoke *Transfer* or *TransferRoots()*,  you can display the related messages with the help of: 
-~~~~~
+~~~~{.cpp}
 reader.PrintCheckTransfer(failsonly,mode); 
-~~~~~
+~~~~
 
 This check concerns the last invocation of *Transfer* or *TransferRoots()* only. 
 
@@ -512,35 +512,35 @@ There are three selection possibilities. You can select:
 <h5>The whole file</h5>
 
 Transferring the whole file means transferring all root entities. The number of roots can be evaluated when the file is loaded: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer NbRoots = reader.NbRootsForTransfer(); 
 Standard_Integer num = reader.TransferRoots(); 
-~~~~~
+~~~~
 
 <h5>List of entities</h5>
 A list of entities can be formed by invoking *STEP214Control_Reader::GiveList* (this is a method of the parent class). 
 
 Here is a simple example of how a list is translated: 
-~~~~~
+~~~~{.cpp}
 Handle(TColStd_HSequenceOfTransient) list = reader.GiveList(); 
-~~~~~
+~~~~
 The result is a *TColStd_HSequenceOfTransient*. 
 You can either translate a list entity by entity or all at once. An entity-by-entity operation lets you check each individual entity translated. 
 
 <h5>Translating a whole list in one operation</h5>
-~~~~~
+~~~~{.cpp}
 Standard_Integer nbtrans = reader.TransferList (list); 
-~~~~~
+~~~~
 *nbtrans* gives the number of items in the list that produced a shape. 
 
 <h5>Translating a list entity by entity:</h5>
-~~~~~
+~~~~{.cpp}
 Standard_Integer i,nb = list->Length();
 for (i = 1; i <= nb; i ++) {
  Handle(Standard_Transient) ent = list->Value(i);
  Standard_Boolean OK = reader.TransferEntity (ent);
 }
-~~~~~
+~~~~
 
 <h4>Selections</h4>
 There is a number of predefined operators that can be used. They are: 
@@ -565,21 +565,21 @@ You can select an entity either by its rank or by its handle (an entity's handle
 
 <h5>Selection by rank</h5>
 Use method *StepData_StepModel::NextNumberForLabel* to find its rank with the following: 
-~~~~~
+~~~~{.cpp}
 Standard_CString label = `#...'; 
 StepData_StepModel model = reader.StepModel(); 
 rank = model->NextNumberForLabe(label, 0, Standard_False); 
-~~~~~
+~~~~
 Translate an entity specified by its rank: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean ok = reader.Transfer (rank); 
-~~~~~
+~~~~
 
 <h5>Direct selection of an entity</h5>
 *ent* is the entity. The argument is a *Handle(Standard_Transient)*. 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean ok = reader.TransferEntity (ent); 
-~~~~~
+~~~~
 
 @subsection occt_step_2_4 Mapping STEP entities to Open CASCADE Technology shapes
 Tables given in this paragraph show the mapping of STEP entities to OCCT objects. Only topological and geometrical STEP entities and entities defining assembly structures are described in this paragraph. For a full list of STEP entities, refer to Appendix A. 
@@ -777,7 +777,7 @@ The following diagram illustrates the structure of calls in reading STEP. The hi
 @figure{/user_guides/step/images/step_image003.png,"The structure of calls in reading STEP",420}
   
 @subsection occt_step_2_7 Example
-~~~~~
+~~~~{.cpp}
 #include <STEPControl_Reader.hxx> 
 #include <TopoDS_Shape.hxx> 
 #include <BRepTools.hxx> 
@@ -804,7 +804,7 @@ Standard_Integer main()
   . . . 
 
 } 
-~~~~~
+~~~~
 
 
 @section occt_step_3 Writing STEP
@@ -836,9 +836,9 @@ See also @ref occt_step_3_4 "Mapping OCCT shapes to STEP entities".
 @subsection occt_step_3_3 Description of the process
 @subsubsection occt_step_3_3_1 Initializing the process
 Before performing any other operation you have to create a writer object: 
-~~~~~
+~~~~{.cpp}
 STEPControl_Writer writer; 
-~~~~~
+~~~~
 @subsubsection occt_step_3_3_2 Setting the translation parameters
 
 The following parameters are used for the OCCT-to-STEP translation. 
@@ -855,10 +855,10 @@ Read this parameter with:
 
 Standard_Integer ic = Interface_Static::IVal("write.precision.mode"); 
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.precision.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 0. 
 
 <h4>write.precision.val</h4>
@@ -869,15 +869,15 @@ a user-defined precision value. This parameter gives the uncertainty for STEP en
 This value is stored in shape_representation in a STEP file as an uncertainty. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Real rp = Interface_Static::RVal("write.precision.val");  
-~~~~~
+~~~~
 
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetRVal("write.precision.val",0.01))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 0.0001. 
 
 <h4>write.step.assembly</h4>
@@ -887,14 +887,14 @@ writing assembly mode.
 * 2 (Auto) : writes shapes having a structure of (possibly nested) *TopoDS_Compounds* in the form of STEP assemblies, single shapes are written without assembly structures. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer rp = Interface_Static::IVal("write.step.assembly"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.step.assembly",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 0. 
 
 <h4>write.step.schema</h4>
@@ -906,14 +906,14 @@ defines the version of schema used for the output STEP file:
     * 5 or *AP242DIS*: AP242, DIS version. 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 TCollection_AsciiString schema = Interface_Static::CVal("write.step.schema"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetCVal("write.step.schema","DIS"))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 1 (;CD;). 
 For the parameter *write.step.schema* to take effect, method *STEPControl_Writer::Model(Standard_True)* should be called after changing this parameter (corresponding command in DRAW is *newmodel*).
  
@@ -929,14 +929,14 @@ This parameter indicates whether parametric curves (curves in parametric space o
 * On (1) : (default) writes pcurves to STEP file 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer wp = Interface_Static::IVal("write.surfacecurve.mode"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.surfacecurve.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is On. 
 
 <h4>write.step.unit</h4>
@@ -959,14 +959,14 @@ This parameter indicates which of free vertices writing mode is switch on.
 * 1 (Single Vertex) : Each vertex exported in its own SHAPE DEFINITION REPRESENTATION (vertex name and style are not lost, but size of STEP file increases). 
 
 Read this parameter with: 
-~~~~~
+~~~~{.cpp}
 Standard_Integer ic = Interface_Static::IVal("write.step.vertex.mode"); 
-~~~~~
+~~~~
 Modify this parameter with: 
-~~~~~
+~~~~{.cpp}
 if(!Interface_Static::SetIVal("write.step.vertex.mode",1))  
 .. error .. 
-~~~~~
+~~~~
 Default value is 0. 
  
 @subsubsection occt_step_3_3_3 Performing the Open CASCADE Technology shape translation
@@ -995,16 +995,16 @@ The following list shows which shapes can be translated in which mode:
 If *TopoDS_Compound* contains any other types besides the ones mentioned in the table, these sub-shapes will be ignored. 
 
 In case if an OCCT shape cannot be translated according to its mode the result of translation is void. 
-~~~~~
+~~~~{.cpp}
 STEP214Control_StepModelTope mode = STEP214Control_ManifoldSolidBrep; 
 IFSelect_ReturnStatus stat = writer.Transfer(shape,mode); 
-~~~~~
+~~~~
 
 @subsubsection occt_step_3_3_4 Writing the STEP file
 Write the STEP file with: 
-~~~~~
+~~~~{.cpp}
 IFSelect_ReturnStatus stat = writer.Write("filename.stp"); 
-~~~~~
+~~~~
 to give the file name. 
 
 @subsection occt_step_3_4 Mapping Open CASCADE Technology shapes to STEP entities
@@ -1116,7 +1116,7 @@ The highlighted classes are intended to translate geometry.
 
     
 @subsection occt_step_3_7 Example
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~{.cpp}
 #include <STEPControl.hxx> 
 #include <STEPControl_Writer.hxx> 
 #include <TopoDS_Shape.hxx> 
@@ -1136,7 +1136,7 @@ writer.Write(;Output.stp;);
 // writes the resulting entity in the STEP file 
 
 } 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~
 
 @section occt_step_4 Physical STEP file reading and writing
 
@@ -1228,9 +1228,9 @@ In the description of commands, square brackets ([]) are used to indicate option
  
 @subsection occt_step_6_2 Setting the interface parameters
 A set of parameters for importing and exporting STEP data is defined in the XSTEP resource file. In XSDRAW, these parameters can be viewed or changed using the command 
-~~~~~
+~~~~{.php}
 Draw:> param [<parameter_name> [<value>]] 
-~~~~~
+~~~~
 Command *param* with no arguments gives a list of all parameters with their values. When the argument *parameter_name* is specified, information about this parameter is printed (current value and short description). 
 
 The third argument is used to set a new value of the given parameter. The result of the setting is printed immediately. 
@@ -1259,14 +1259,14 @@ For reading a STEP file, the following parameters are defined (see above, @ref o
 
 It is possible either only to load a STEP file into memory (i.e. fill the *InterfaceModel* with data from the file), or to read it (i.e. load and convert all entities to OCCT shapes). 
 Loading is done by the command 
-~~~~~
+~~~~{.php}
 Draw:> xload <file_name>
-~~~~~
+~~~~
 Once the file is loaded, it is possible to investigate the structure of the loaded data. To find out how you do it, look in the beginning of the analysis subsection. 
 Reading a STEP file is done by the command 
-~~~~~
+~~~~{.php}
 Draw:> stepread <file_name> <result_shape_name> [selection] 
-~~~~~
+~~~~
 Here a dot can be used instead of a filename if the file is already loaded by xload or stepread. 
 The optional selection (see below for a description of selections) specifies a set of entities to be translated. If an asterisk `*' is given, all transferable roots are translated. If a selection is not given, the user is prompted to define a scope of transfer interactively: 
 
@@ -1301,7 +1301,7 @@ The procedure of analysis of data import can be divided into two stages:
 
 General statistics on the loaded data can be obtained by using the command 
 
-~~~~
+~~~~{.php}
 Draw:> data <symbol> 
 ~~~~
 
@@ -1333,10 +1333,10 @@ The command *listtypes* gives a list of entity types, which were encountered in 
 The list cannot be shown for all entities but for a subset of them. This subset is defined by an optional selection argument (for the list of possible values for STEP, see the table above).
  
 Two commands are used to calculate statistics on the entities in the model: 
-~~~~~
+~~~~{.php}
 Draw:> count <counter> [<selection>] 
 Draw:> listcount <counter> [<selection>] 
-~~~~~
+~~~~
 The former only prints a count of entities while the latter also gives a list of them. 
 
 The optional selection argument, if specified, defines a subset of entities, which are to be taken into account. The first argument should be one of the currently defined counters: 
@@ -1407,9 +1407,9 @@ For writing shapes to a STEP file, the following parameters are defined (see abo
 Several shapes can be written in one file. To start writing a new file, enter command *Draw:> newmodel*. 
 Actually, command *newmodel* will clear the *InterfaceModel* to empty it, and the next command will convert the specified shape to STEP entities and add them to the *InterfaceModel*: 
 
-~~~~~
+~~~~{.php}
 Draw:> stepwrite <mode> <shape_name> [<file_name>] 
-~~~~~
+~~~~
 
 The following  modes are available : 
     * *a* -- "as is" -- the mode is selected automatically depending on the type & geometry of the shape;
@@ -1419,10 +1419,10 @@ The following  modes are available :
     * *s* -- *shell_based_surface_model* 
  
 After a successful translation, if *file_name* parameter is not specified, the procedure asks you whether to write a STEP model in the file or not: 
-~~~~~
+~~~~{.php}
 execution status : 1 
 Mode (0 end, 1 file) : 
-~~~~~
+~~~~
 It is necessary to call command *newmodel* to perform a new translation of the next OCCT shape. 
 
 @section occt_step_7 Reading from and writing to STEP
@@ -1441,10 +1441,10 @@ In addition to the translation of shapes implemented in basic translator, it pro
 
 ### Load a STEP file
 Before performing any other operation, you must load a STEP file with: 
-~~~~~
+~~~~{.cpp}
 STEPCAFControl_Reader reader(XSDRAW::Session(), Standard_False); 
 IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp"); 
-~~~~~
+~~~~
 Loading the file only memorizes the data, it does not translate it. 
 
 ### Check the loaded STEP file
@@ -1456,22 +1456,22 @@ See a description of this step in section @ref occt_step_2_3_3 "Setting the tran
 
 In addition, the following parameters can be set for XDE translation of attributes: 
   *  Parameter for transferring colors: 
-~~~~~  
+~~~~{.cpp}
 reader.SetColorMode(mode); 
 // mode can be Standard_True or Standard_False 
-~~~~~
+~~~~
   *  Parameter for transferring names: 
-~~~~~    
+~~~~{.cpp}
 reader.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
-~~~~~
+~~~~
 
 ### Translate a STEP file to XDE
 
 The following function performs a translation of the whole document: 
-~~~~~
+~~~~{.cpp}
 Standard_Boolean ok = reader.Transfer(doc); 
-~~~~~
+~~~~
 where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
 
 
@@ -1585,42 +1585,42 @@ For each Saved View OCCT STEP Reader will retrieve the following attributes:
 @subsection occt_step_7_3 Writing to STEP
 
 The translation from XDE to STEP can be initialized as follows: 
-~~~~~
+~~~~{.cpp}
 STEPCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
-~~~~~
+~~~~
 
 ### Set parameters for translation from XDE to STEP
 
 The following parameters can be set for a translation of attributes to STEP: 
   *  For transferring colors: 
-~~~~~
+~~~~{.cpp}
 aWriter.SetColorMode(mode); 
 // mode can be Standard_True or Standard_False 
-~~~~~
+~~~~
   *  For transferring names: 
-~~~~~
+~~~~{.cpp}
 aWriter.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
-~~~~~
+~~~~
 
 ### Translate an XDE document to STEP
 
 You can perform the translation of document by calling the function: 
-~~~~~
+~~~~{.cpp}
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
-~~~~~
+~~~~
 where *doc*  is a variable, which contains a handle to the input document for transferring and should have a type *Handle(TDocStd_Document)*. 
 
 ### Write a STEP file
 
 Write a STEP file with: 
-~~~~~
+~~~~{.cpp}
 IFSelect_ReturnStatus statw = aWriter.WriteFile("filename.stp"); 
-~~~~~
+~~~~
 or 
-~~~~~
+~~~~{.cpp}
 IFSelect_ReturnStatus statw = writer.WriteFile (S); 
-~~~~~
+~~~~
 where *S* is *OStream*. 
 
 @subsection occt_step_7_4 Attributes written to STEP 
@@ -1649,13 +1649,13 @@ All entities, which can be imported from STEP, can be exported too.
 See the same item in section @ref occt_step_7_1 "Reading from STEP" to find more information.
 
 Note: OCCT use AP214 by default, so for GD&T exporting AP242 should be set manually:
-~~~~~
+~~~~{.cpp}
 Interface_Static::SetCVal("write.step.schema", "AP242DIS"));  
-~~~~~
+~~~~
 or
-~~~~~
+~~~~{.cpp}
 Interface_Static::SetIVal("write.step.schema", 5));  
-~~~~~
+~~~~
 ### Saved views
 Saved Views are not exported by OCCT.
 
