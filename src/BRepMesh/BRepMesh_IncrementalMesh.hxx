@@ -17,6 +17,7 @@
 #include <BRepMesh_DiscretRoot.hxx>
 #include <IMeshTools_Parameters.hxx>
 #include <IMeshTools_Context.hxx>
+#include <Standard_NumericError.hxx>
 
 //! Builds the mesh of a shape with respect of their 
 //! correctly triangulated parts 
@@ -91,6 +92,10 @@ private:
   //! Initializes specific parameters
   void initParameters()
   {
+    if (myParameters.Deflection < Precision::Confusion())
+    {
+      throw Standard_NumericError ("BRepMesh_IncrementalMesh::initParameters : invalid parameter value");
+    }
     if (myParameters.DeflectionInterior < Precision::Confusion())
     {
       myParameters.DeflectionInterior = myParameters.Deflection;
@@ -104,6 +109,10 @@ private:
             Precision::Confusion());
     }
 
+    if (myParameters.Angle < Precision::Angular())
+    {
+      throw Standard_NumericError ("BRepMesh_IncrementalMesh::initParameters : invalid parameter value");
+    }
     if (myParameters.AngleInterior < Precision::Angular())
     {
       myParameters.AngleInterior = 2.0 * myParameters.Angle;

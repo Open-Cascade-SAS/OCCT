@@ -109,101 +109,176 @@ options:\n\
         -algo {watson|delabella} changes core triangulation algorithm to one with specified id (watson is used by default)\n";
     return 0;
   }
-
-  TopoDS_Shape aShape = DBRep::Get(argv[1]);
-  if (aShape.IsNull())
-  {
-    di << " Null shapes are not allowed here\n";
-    return 0;
-  }
-
+  TopoDS_ListOfShape aListOfShapes;
   IMeshTools_Parameters aMeshParams;
-  aMeshParams.Deflection = aMeshParams.DeflectionInterior = 
-    Max(Draw::Atof(argv[2]), Precision::Confusion());
+  Standard_Boolean isDeflectionInitialized = Standard_False;
 
   Handle (IMeshTools_Context) aContext = new BRepMesh_Context;
-  if (nbarg > 3)
+  for (Standard_Integer anArgIter = 1; anArgIter < nbarg; ++anArgIter)
   {
-    Standard_Integer i = 3;
-    while (i < nbarg)
-    {
-      TCollection_AsciiString aOpt(argv[i++]);
-      aOpt.LowerCase();
+    TCollection_AsciiString aName = argv[anArgIter];
+    TCollection_AsciiString       aNameCase = aName;
+    aNameCase.LowerCase();
 
-      if (aOpt == "")
-        continue;
-      else if (aOpt == "-relative")
-        aMeshParams.Relative = Standard_True;
-      else if (aOpt == "-parallel")
-        aMeshParams.InParallel = Standard_True;
-      else if (aOpt == "-int_vert_off")
-        aMeshParams.InternalVerticesMode = Standard_False;
-      else if (aOpt == "-surf_def_off")
-        aMeshParams.ControlSurfaceDeflection = Standard_False;
-      else if (aOpt == "-adjust_min")
-        aMeshParams.AdjustMinSize = Standard_True;
-      else if (aOpt == "-force_face_def")
-        aMeshParams.ForceFaceDeflection = Standard_True;
-      else if (aOpt == "-decrease")
-        aMeshParams.AllowQualityDecrease = Standard_True;
-      else if (i < nbarg)
+    if (aNameCase == "")
+      continue;
+    else if (aNameCase == "-relative")
+      aMeshParams.Relative = Standard_True;
+    else if (aNameCase == "-parallel")
+      aMeshParams.InParallel = Standard_True;
+    else if (aNameCase == "-int_vert_off")
+      aMeshParams.InternalVerticesMode = Standard_False;
+    else if (aNameCase == "-surf_def_off")
+      aMeshParams.ControlSurfaceDeflection = Standard_False;
+    else if (aNameCase == "-adjust_min")
+      aMeshParams.AdjustMinSize = Standard_True;
+    else if (aNameCase == "-force_face_def")
+      aMeshParams.ForceFaceDeflection = Standard_True;
+    else if (aNameCase == "-decrease")
+      aMeshParams.AllowQualityDecrease = Standard_True;
+    else if (aNameCase == "-algo")
+    {
+      if (++anArgIter >= nbarg)
       {
-        if (aOpt == "-algo")
-        {
-          TCollection_AsciiString anAlgoStr (argv[i++]);
-          anAlgoStr.LowerCase();
-          if (anAlgoStr == "watson"
-           || anAlgoStr == "0")
-          {
-            aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Watson;
-            aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_MeshAlgoFactory));
-          }
-          else if (anAlgoStr == "delabella"
-                || anAlgoStr == "1")
-          {
-            aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Delabella;
-            aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory));
-          }
-          else if (anAlgoStr == "-1"
-                || anAlgoStr == "default")
-          {
-            // already handled by BRepMesh_Context constructor
-            //aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_DEFAULT;
-          }
-          else
-          {
-            di << "Syntax error at " << anAlgoStr;
-            return 1;
-          }
-        }
-        else
-        {
-          Standard_Real aVal = Draw::Atof(argv[i++]);
-          if (aOpt == "-a")
-          {
-            aMeshParams.Angle = aVal * M_PI / 180.;
-          }
-          else if (aOpt == "-ai")
-          {
-            aMeshParams.AngleInterior = aVal * M_PI / 180.;
-          }
-          else if (aOpt == "-min")
-            aMeshParams.MinSize = aVal;
-          else if (aOpt == "-di")
-          {
-            aMeshParams.DeflectionInterior = aVal;
-          }
-          else
-            --i;
-        }
+        di << "Error: wrong syntax at " << aNameCase;
+        return 1;
+      }
+      TCollection_AsciiString anAlgoStr (argv[anArgIter]);
+      anAlgoStr.LowerCase();
+      if (anAlgoStr == "watson"
+       || anAlgoStr == "0")
+      {
+        aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Watson;
+        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_MeshAlgoFactory));
+      }
+      else if (anAlgoStr == "delabella"
+            || anAlgoStr == "1")
+      {
+        aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Delabella;
+        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory));
+      }
+      else if (anAlgoStr == "-1"
+            || anAlgoStr == "default")
+      {
+        // already handled by BRepMesh_Context constructor
+        //aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_DEFAULT;
+      }
+      else
+      {
+        di << "Syntax error at " << anAlgoStr;
+        return 1;
       }
     }
+    else if (aNameCase == "-a")
+    {
+      if (++anArgIter >= nbarg)
+      {
+        di << "Error: wrong syntax at " << aNameCase;
+        return 1;
+      }
+      Standard_Real aVal = Draw::Atof (argv[anArgIter]) * M_PI / 180.;
+      if (aVal <= Precision::Angular())
+      {
+        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        return 1;
+      }
+      aMeshParams.Angle = aVal;
+    }
+    else if (aNameCase == "-ai")
+    {
+      if (++anArgIter >= nbarg)
+      {
+        di << "Error: wrong syntax at " << aNameCase;
+        return 1;
+      }
+      Standard_Real aVal = Draw::Atof (argv[anArgIter]) * M_PI / 180.;
+      if (aVal <= Precision::Angular())
+      {
+        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        return 1;
+      }
+      aMeshParams.AngleInterior = aVal;
+    }
+    else if (aNameCase == "-min")
+    {
+      if (++anArgIter >= nbarg)
+      {
+        di << "Error: wrong syntax at " << aNameCase;
+        return 1;
+      }
+      Standard_Real aVal = Draw::Atof (argv[anArgIter]);
+      if (aVal <= Precision::Confusion())
+      {
+        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        return 1;
+      }
+      aMeshParams.MinSize = aVal;
+    }
+    else if (aNameCase == "-di")
+    {
+      if (++anArgIter >= nbarg)
+      {
+        di << "Error: wrong syntax at " << aNameCase;
+        return 1;
+      }
+      Standard_Real aVal = Draw::Atof (argv[anArgIter]);
+      if (aVal <= Precision::Confusion())
+      {
+        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        return 1;
+      }
+      aMeshParams.DeflectionInterior = aVal;
+    }
+    else if (aNameCase.IsRealValue (Standard_True))
+    {
+      if (isDeflectionInitialized)
+      {
+        continue;
+      }
+      aMeshParams.Deflection = Max (Draw::Atof (argv[anArgIter]), Precision::Confusion());
+      if (aMeshParams.DeflectionInterior < Precision::Confusion())
+      {
+        aMeshParams.DeflectionInterior = aMeshParams.Deflection;
+      }
+      isDeflectionInitialized = Standard_True;
+    }
+    else
+    {
+      TopoDS_Shape aShape = DBRep::Get (aName);
+      if (aShape.IsNull())
+      {
+        di << "Syntax error: null shapes are not allowed here - " << aName <<"\n";
+        return 1;
+      }
+      aListOfShapes.Append (aShape);
+    }
+  }
+
+  if (aListOfShapes.IsEmpty())
+  {
+    Message::SendFail ("Syntax error: wrong number of arguments.");
+    return 1;
   }
 
   di << "Incremental Mesh, multi-threading "
      << (aMeshParams.InParallel ? "ON" : "OFF") << "\n";
 
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  TopoDS_Shape aShape;
+  if (aListOfShapes.Size() == 1)
+  {
+    aShape = aListOfShapes.First();
+  }
+  else
+  {
+    TopoDS_Compound aCompound;
+    BRep_Builder().MakeCompound (aCompound);
+    for (TopoDS_ListOfShape::Iterator anIterShape (aListOfShapes); anIterShape.More(); anIterShape.Next())
+    {
+      BRep_Builder().Add (aCompound, anIterShape.Value());
+    }
+    aShape = aCompound;
+  }
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
   BRepMesh_IncrementalMesh aMesher;
   aMesher.SetShape (aShape);
   aMesher.ChangeParameters() = aMeshParams;

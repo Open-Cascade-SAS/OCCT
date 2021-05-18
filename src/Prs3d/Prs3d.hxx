@@ -59,7 +59,7 @@ public:
                                       const Standard_Real theDeviationCoefficient)
   {
     const Graphic3d_Vec3d aDiag = theBndMax - theBndMin;
-    return aDiag.maxComp() * theDeviationCoefficient * 4.0;
+    return Max (aDiag.maxComp() * theDeviationCoefficient * 4.0, Precision::Confusion());
   }
 
   //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
