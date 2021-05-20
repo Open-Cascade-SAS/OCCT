@@ -1,0 +1,46 @@
+puts "================================"
+puts "	0032196: Invalid section curve"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug32136_obj.brep] s
+restore [locate_data_file bug32136_tools.brep] t
+
+explode s f
+explode t
+explode t_3 f
+
+set log [bopcurves s_44 t_3_4 -2d]
+
+if {![regexp "has no 3d curves" ${log}] ||
+    ![regexp "has no 3d points" ${log}]} {
+  puts "Error: the result contains curves or points"
+}
+
+set log [bopcurves s_2 t_3_82 -2d]
+
+if {![regexp "has no 3d curves" ${log}] ||
+    ![regexp "has no 3d points" ${log}]} {
+  puts "Error: the result contains curves or points"
+}
+
+set log [bopcurves s_2 t_3_95 -2d]
+
+if {![regexp "has no 3d curves" ${log}] ||
+    ![regexp "has no 3d points" ${log}]} {
+  puts "Error: the result contains curves or points"
+}
+
+set log [bopcurves s_2 t_3_108 -2d]
+
+if {![regexp "has no 3d curves" ${log}] ||
+    ![regexp "has no 3d points" ${log}]} {
+  puts "Error: the result contains curves or points"
+}
+
+set log [bopcurves s_52 t_3_43 -2d]
+
+if {![regexp "has no 3d curves" ${log}] ||
+    ![regexp "has no 3d points" ${log}]} {
+  puts "Error: the result contains curves or points"
+}

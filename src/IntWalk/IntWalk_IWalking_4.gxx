@@ -386,12 +386,16 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 StepSign = -1;
                 StatusPrecedent = IntWalk_OK;
                 PasC = PasSav;
-                if (aStatus == IntWalk_ArretSurPointPrecedent) {
-                  CurrentLine->AddPoint(Psol);
-                  OpenLine(0,Psol,Pnts1,Func,CurrentLine);
-                }
-                else {
-                  OpenLine(-lines.Length()-1,Psol,Pnts1,Func,CurrentLine);
+                //Check if <Psol> has been really updated
+                if (Arrive || Rajout || (!ArretAjout && Cadre && SaveN <= 0))
+                {
+                  if (aStatus == IntWalk_ArretSurPointPrecedent) {
+                    CurrentLine->AddPoint(Psol);
+                    OpenLine(0,Psol,Pnts1,Func,CurrentLine);
+                  }
+                  else {
+                    OpenLine(-lines.Length()-1,Psol,Pnts1,Func,CurrentLine);
+                  }
                 }
                 //Remove <SaveN> from <seqAlone> and, if it is first found point,
                 //from <seqAjout> too
