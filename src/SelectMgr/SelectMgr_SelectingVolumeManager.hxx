@@ -248,17 +248,21 @@ public:
 
 public:
 
+//! Deprecated static const class members aren't supported for Visual Studio prior to 2015 (vc14)
+//! and GCC >= 5.0 and GCC < 6.3 (due to bug when warning was raised without member usage).
+#if (!defined(_MSC_VER) || (_MSC_VER >= 1900)) && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
   static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Point;
+  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Box;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Point;
+  static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Polyline;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Point;
+  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Unknown;
+#endif
 
   Standard_DEPRECATED("Deprecated method - InitPointSelectingVolume() and Build() methods should be used instead")
   Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& thePoint);
