@@ -2730,7 +2730,33 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   {
     throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
   }
+  myMainSel->Pick (theXPix, theYPix, theView);
+  return moveTo (theView, theToRedrawOnUpdate);
+}
 
+//=======================================================================
+//function : MoveTo
+//purpose  :
+//=======================================================================
+AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const gp_Ax1& theAxis,
+                                                      const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean  theToRedrawOnUpdate)
+{
+  if (theView->Viewer() != myMainVwr)
+  {
+    throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
+  }
+  myMainSel->Pick (theAxis, theView);
+  return moveTo (theView, theToRedrawOnUpdate);
+}
+
+//=======================================================================
+//function : moveTo
+//purpose  :
+//=======================================================================
+AIS_StatusOfDetection AIS_InteractiveContext::moveTo (const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean  theToRedrawOnUpdate)
+{
   myCurDetected = 0;
   myCurHighlighted = 0;
   myDetectedSeq.Clear();
@@ -2741,7 +2767,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   Standard_Boolean      toUpdateViewer = Standard_False;
 
   myFilters->SetDisabledObjects (theView->View()->HiddenObjects());
-  myMainSel->Pick (theXPix, theYPix, theView);
 
   // filling of myAISDetectedSeq sequence storing information about detected AIS objects
   // (the objects must be AIS_Shapes)

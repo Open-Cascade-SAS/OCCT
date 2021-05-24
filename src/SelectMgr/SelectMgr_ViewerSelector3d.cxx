@@ -54,11 +54,7 @@ void SelectMgr_ViewerSelector3d::Pick (const Standard_Integer theXPix,
                       static_cast<Standard_Real> (theYPix));
   mySelectingVolumeMgr.InitPointSelectingVolume (aMousePos);
 
-  if(myToUpdateTolerance)
-  {
-    mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
-    myToUpdateTolerance = Standard_False;
-  }
+  mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
   mySelectingVolumeMgr.SetCamera (theView->Camera());
   Standard_Integer aWidth = 0, aHeight = 0;
   theView->Window()->Size (aWidth, aHeight);

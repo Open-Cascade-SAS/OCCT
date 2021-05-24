@@ -485,7 +485,7 @@ public:
   void SetBaseXRCamera (const Handle(Graphic3d_Camera)& theCamera) { myBaseXRCamera = theCamera; }
 
   //! Convert XR pose to world space.
-  //! @param theTrsfXR [in] transformation defined in VR local coordinate system,
+  //! @param thePoseXR [in] transformation defined in VR local coordinate system,
   //!                       oriented as Y-up, X-right and -Z-forward
   //! @return transformation defining orientation of XR pose in world space
   gp_Trsf PoseXRToWorld (const gp_Trsf& thePoseXR) const
@@ -496,6 +496,14 @@ public:
     gp_Trsf aTrsfCS;
     aTrsfCS.SetTransformation (aCameraCS, anAxVr);
     return aTrsfCS * thePoseXR;
+  }
+
+  //! Returns view direction in the world space based on XR pose.
+  //! @param thePoseXR [in] transformation defined in VR local coordinate system,
+  //!                       oriented as Y-up, X-right and -Z-forward
+  gp_Ax1 ViewAxisInWorld (const gp_Trsf& thePoseXR) const
+  {
+    return gp_Ax1 (gp::Origin(), -gp::DZ()).Transformed (PoseXRToWorld (thePoseXR));
   }
 
   //! Recomputes PosedXRCamera() based on BaseXRCamera() and head orientation.

@@ -715,7 +715,6 @@ protected:
 protected: //! @name XR input variables
 
   NCollection_Array1<Handle(AIS_XRTrackedDevice)> myXRPrsDevices; //!< array of XR tracked devices presentations
-  Handle(Graphic3d_Camera)   myXRCameraTmp;       //!< temporary camera
   Quantity_Color             myXRLaserTeleColor;  //!< color of teleport laser
   Quantity_Color             myXRLaserPickColor;  //!< color of picking  laser
   Aspect_XRTrackedDeviceRole myXRLastTeleportHand;//!< active hand for teleport

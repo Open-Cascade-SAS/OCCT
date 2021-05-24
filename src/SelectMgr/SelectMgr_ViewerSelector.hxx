@@ -329,7 +329,6 @@ protected:
   Standard_Real                                 myDepthTolerance;
   SelectMgr_TypeOfDepthTolerance                myDepthTolType;
   Standard_Boolean                              myToPreferClosest;
-  Standard_Boolean                              myToUpdateTolerance;
   SelectMgr_IndexedDataMapOfOwnerCriterion      mystored;
   SelectMgr_SelectingVolumeManager              mySelectingVolumeMgr;
   mutable SelectMgr_SelectableObjectSet         mySelectableObjects;

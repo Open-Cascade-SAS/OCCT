@@ -2288,10 +2288,6 @@ void AIS_ViewController::handleXRInput (const Handle(AIS_InteractiveContext)& th
   {
     return;
   }
-  if (myXRCameraTmp.IsNull())
-  {
-    myXRCameraTmp = new Graphic3d_Camera();
-  }
   handleXRTurnPad (theCtx, theView);
   handleXRTeleport(theCtx, theView);
   handleXRPicking (theCtx, theView);
@@ -2959,53 +2955,25 @@ Standard_Integer AIS_ViewController::handleXRMoveTo (const Handle(AIS_Interactiv
                                                      const Standard_Boolean theToHighlight)
 {
   //ResetPreviousMoveTo();
+  const gp_Ax1 aViewAxis = theView->View()->ViewAxisInWorld (thePose);
   Standard_Integer aPickResult = 0;
-
-  Handle(Graphic3d_Camera) aCamBack = theView->Camera();
-  myXRCameraTmp->Copy (aCamBack);
-  theView->View()->ComputeXRPosedCameraFromBase (*myXRCameraTmp, thePose);
-  theView->SetCamera (myXRCameraTmp);
-  Graphic3d_Vec2i aPickPixel;
-  theView->Window()->Size (aPickPixel.x(), aPickPixel.y());
-  aPickPixel /= 2;
-  const Standard_Integer aSelTolerBack = theCtx->MainSelector()->CustomPixelTolerance();
-  theCtx->MainSelector()->SetPixelTolerance (1);
-  theView->AutoZFit();
   if (theToHighlight)
   {
-    theCtx->MoveTo (aPickPixel.x(), aPickPixel.y(), theView, false);
+    theCtx->MoveTo (aViewAxis, theView, false);
     if (!theCtx->DetectedOwner().IsNull())
     {
-      // ignore 2D objects
-      for (aPickResult = 1; !theCtx->DetectedOwner()->Selectable()->TransformPersistence().IsNull(); ++aPickResult)
-      {
-        if (theCtx->HilightNextDetected (theView, false) <= 1)
-        {
-          theCtx->ClearDetected();
-          aPickResult = 0;
-          break;
-        }
-      }
+      aPickResult = 1;
     }
   }
   else
   {
-    theCtx->MainSelector()->Pick (aPickPixel.x(), aPickPixel.y(), theView);
-    for (Standard_Integer aPickIter = 1; aPickIter <= theCtx->MainSelector()->NbPicked(); ++aPickIter)
+    theCtx->MainSelector()->Pick (aViewAxis, theView);
+    if (theCtx->MainSelector()->NbPicked() >= 1)
     {
-      const SelectMgr_SortCriterion& aPickedData = theCtx->MainSelector()->PickedData (aPickIter);
-      if (!aPickedData.Entity->OwnerId()->Selectable()->TransformPersistence().IsNull())
-      {
-        // skip 2d objects
-        continue;
-      }
-
-      aPickResult = aPickIter;
-      break;
+      aPickResult = 1;
     }
   }
-  theCtx->MainSelector()->SetPixelTolerance (aSelTolerBack);
-  theView->SetCamera (aCamBack);
+
   return aPickResult;
 }
 

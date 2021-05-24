@@ -124,21 +124,29 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance (const gp_Pnt& th
                                                                 const gp_Pnt& theSegPnt2,
                                                                 SelectBasics_PickResult& thePickResult) const
 {
-  gp_XYZ anU = theSegPnt2.XYZ() - theSegPnt1.XYZ();
-  gp_XYZ aV = myAxis.Direction().XYZ();
-  gp_XYZ aW = theSegPnt1.XYZ() - myAxis.Location().XYZ();
+  const gp_XYZ anU = theSegPnt2.XYZ() - theSegPnt1.XYZ();
+  const gp_XYZ aV = myAxis.Direction().XYZ();
+  const gp_XYZ aW = theSegPnt1.XYZ() - myAxis.Location().XYZ();
 
-  gp_XYZ anUVNormVec = aV.Crossed (anU);
-  gp_XYZ anUWNormVec = aW.Crossed (anU);
-  if (anUVNormVec.Modulus() <= Precision::Confusion() ||
-      anUWNormVec.Modulus() <= Precision::Confusion())
+  const gp_XYZ anUVNormVec = aV.Crossed (anU);
+  const Standard_Real anUVNormVecMod = anUVNormVec.Modulus();
+  if (anUVNormVecMod <= Precision::Confusion())
   {
     // Lines have no intersection
     thePickResult.Invalidate();
     return false;
   }
 
-  Standard_Real aParam = anUWNormVec.Dot (anUVNormVec) / anUVNormVec.SquareModulus();
+  const gp_XYZ anUWNormVec = aW.Crossed (anU);
+  const Standard_Real anUWNormVecMod = anUWNormVec.Modulus();
+  if (anUWNormVecMod <= Precision::Confusion())
+  {
+    // Lines have no intersection
+    thePickResult.Invalidate();
+    return false;
+  }
+
+  const Standard_Real aParam = anUWNormVec.Dot (anUVNormVec) / anUVNormVecMod;
   if (aParam < 0.0)
   {
     // Intersection is out of axis start point
@@ -146,10 +154,10 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance (const gp_Pnt& th
     return false;
   }
 
-  gp_XYZ anIntersectPnt = myAxis.Location().XYZ() + aV * aParam;
-  if ((anIntersectPnt - theSegPnt1.XYZ()).SquareModulus() +
-      (anIntersectPnt - theSegPnt2.XYZ()).SquareModulus() >
-       anU.SquareModulus() + Precision::Confusion())
+  const gp_XYZ anIntersectPnt = myAxis.Location().XYZ() + aV * aParam;
+  if ((anIntersectPnt - theSegPnt1.XYZ()).Modulus() +
+      (anIntersectPnt - theSegPnt2.XYZ()).Modulus() >
+       anU.Modulus() + Precision::Confusion())
   {
     // Intersection point doesn't lie on the segment
     thePickResult.Invalidate();
@@ -417,7 +425,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle (const gp_Pnt& theP
         }
       }
       thePickResult.SetSurfaceNormal (aTriangleNormal);
-      return !theClipRange.IsClipped (thePickResult.Depth());
+      return thePickResult.IsValid()
+         && !theClipRange.IsClipped (thePickResult.Depth());
     }
 
     // check if intersection point belongs to triangle's interior part
@@ -464,7 +473,8 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsTriangle (const gp_Pnt& theP
     }
   }
 
-  return !theClipRange.IsClipped (thePickResult.Depth());
+  return thePickResult.IsValid()
+     && !theClipRange.IsClipped (thePickResult.Depth());
 }
 
 //=======================================================================

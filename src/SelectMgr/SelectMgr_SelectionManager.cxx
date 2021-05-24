@@ -593,7 +593,6 @@ void SelectMgr_SelectionManager::SetSelectionSensitivity (const Handle(SelectMgr
   {
     mySelector->myTolerances.Decrement (aPrevSens);
     mySelector->myTolerances.Add (theNewSens);
-    mySelector->myToUpdateTolerance = Standard_True;
   }
 }
 

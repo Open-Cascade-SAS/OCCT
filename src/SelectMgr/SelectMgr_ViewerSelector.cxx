@@ -163,7 +163,6 @@ SelectMgr_ViewerSelector::SelectMgr_ViewerSelector()
 : myDepthTolerance (0.0),
   myDepthTolType (SelectMgr_TypeOfDepthTolerance_SensitivityFactor),
   myToPreferClosest (Standard_True),
-  myToUpdateTolerance (Standard_True),
   myCameraScale (1.0),
   myToPrebuildBVH (Standard_False),
   myIsLeftChildQueuedFirst (Standard_False)
@@ -181,8 +180,6 @@ void SelectMgr_ViewerSelector::SetPixelTolerance (const Standard_Integer theTole
   {
     return;
   }
-
-  myToUpdateTolerance = Standard_True;
   if (theTolerance < 0)
   {
     myTolerances.ResetDefaults();
@@ -209,7 +206,6 @@ void SelectMgr_ViewerSelector::Activate (const Handle(SelectMgr_Selection)& theS
     theSelection->SetSelectionState (SelectMgr_SOS_Activated);
 
     myTolerances.Add (theSelection->Sensitivity());
-    myToUpdateTolerance = Standard_True;
   }
 }
 
@@ -229,7 +225,6 @@ void SelectMgr_ViewerSelector::Deactivate (const Handle(SelectMgr_Selection)& th
     theSelection->SetSelectionState (SelectMgr_SOS_Deactivated);
 
     myTolerances.Decrement (theSelection->Sensitivity());
-    myToUpdateTolerance = Standard_True;
   }
 }
 
@@ -626,27 +621,25 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
 
   for (Standard_Integer aBVHSetIt = 0; aBVHSetIt < SelectMgr_SelectableObjectSet::BVHSubsetNb; ++aBVHSetIt)
   {
-    SelectMgr_SelectableObjectSet::BVHSubset aBVHSubset =
-      static_cast<SelectMgr_SelectableObjectSet::BVHSubset> (aBVHSetIt);
-
+    const SelectMgr_SelectableObjectSet::BVHSubset aBVHSubset = (SelectMgr_SelectableObjectSet::BVHSubset )aBVHSetIt;
     if (mySelectableObjects.IsEmpty (aBVHSubset))
+    {
+      continue;
+    }
+    if (aCamera.IsNull()
+     && aBVHSubset != SelectMgr_SelectableObjectSet::BVHSubset_3d)
     {
       continue;
     }
 
     gp_GTrsf aTFrustum;
-
     SelectMgr_SelectingVolumeManager aMgr;
 
-    // for 2D space selection transform selecting volumes to perform overap testing
+    // for 2D space selection transform selecting volumes to perform overlap testing
     // directly in camera's eye space omitting the camera position, which is not
     // needed there at all
     if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent)
     {
-      if (aCamera.IsNull())
-      {
-        continue;
-      }
       const Graphic3d_Mat4d& aMat = mySelectingVolumeMgr.WorldViewMatrix();
       aTFrustum.SetValue (1, 1, aMat.GetValue (0, 0));
       aTFrustum.SetValue (1, 2, aMat.GetValue (0, 1));
@@ -1097,7 +1090,6 @@ void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToPreferClosest)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent())
 
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mySelectingVolumeMgr)

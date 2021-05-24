@@ -374,6 +374,14 @@ public: //! @name mouse picking logic (detection and dynamic highlighting of ent
                                                 const Handle(V3d_View)& theView,
                                                 const Standard_Boolean  theToRedrawOnUpdate);
 
+  //! Relays axis theAxis to the interactive context selectors.
+  //! This is done by the view theView passing this axis to the main viewer and updating it.
+  //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight detected object.
+  //! @sa PickingStrategy()
+  Standard_EXPORT AIS_StatusOfDetection MoveTo (const gp_Ax1& theAxis,
+                                                const Handle(V3d_View)& theView,
+                                                const Standard_Boolean  theToRedrawOnUpdate);
+
   //! Clears the list of entities detected by MoveTo() and resets dynamic highlighting.
   //! @param theToRedrawImmediate if TRUE, the main Viewer will be redrawn on update
   //! @return TRUE if viewer needs to be updated (e.g. there were actually dynamically highlighted entities)
@@ -1247,6 +1255,11 @@ protected: //! @name internal methods
                                        const Standard_Boolean               theToUpdateViewer);
   
   Standard_EXPORT void InitAttributes();
+
+  //! Highlights detected objects.
+  //! If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to update view.
+  Standard_EXPORT AIS_StatusOfDetection moveTo (const Handle(V3d_View)& theView,
+                                                const Standard_Boolean  theToRedrawOnUpdate);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
   Standard_EXPORT void unselectOwners (const Handle(AIS_InteractiveObject)& theObject);
