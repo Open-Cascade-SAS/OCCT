@@ -13673,12 +13673,6 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
                                 Standard_Integer  theArgsNb,
                                 const char**      theArgVec)
 {
-  if (theArgsNb < 2)
-  {
-    Message::SendFail() << "Syntax error: wrong number arguments for '" << theArgVec[0] << "'";
-    return 1;
-  }
-
   const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
   const Handle(V3d_View)& aView = ViewerTest::CurrentView();
   if (aContext.IsNull())
@@ -13700,7 +13694,7 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
     {
       if (++anArgIter >= theArgsNb)
       {
-        Message::SendFail ("Syntax error: wrong number parameters of flag '-depth'");
+        Message::SendFail ("Syntax error: wrong number parameters of flag '-type'");
         return 1;
       }
 
@@ -13713,10 +13707,10 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
         aType       = StdSelect_TypeOfSelectionImage_NormalizedDepth;
         anImgFormat = Image_Format_GrayF;
       }
-      if (aValue == "depthinverted"
-       || aValue == "normdepthinverted"
-       || aValue == "normalizeddepthinverted"
-       || aValue == "inverted")
+      else if (aValue == "depthinverted"
+            || aValue == "normdepthinverted"
+            || aValue == "normalizeddepthinverted"
+            || aValue == "inverted")
       {
         aType       = StdSelect_TypeOfSelectionImage_NormalizedDepthInverted;
         anImgFormat = Image_Format_GrayF;
@@ -13755,6 +13749,11 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
             || aValue == "normal")
       {
         aType = StdSelect_TypeOfSelectionImage_SurfaceNormal;
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: unknown type '" << aValue << "'";
+        return 1;
       }
     }
     else if (aParam == "-picked"
@@ -15151,7 +15150,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    __FILE__, VSelectionProperties, group);
 
   theCommands.Add ("vseldump",
-                   "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity}=depth -pickedIndex Index=1"
+                   "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity|surfNormal}=depth -pickedIndex Index=1"
                    "\n\t\t:       [-xrPose base|head=base]"
                    "\n\t\t: Generate an image based on detection results:"
                    "\n\t\t:   depth       normalized depth values"

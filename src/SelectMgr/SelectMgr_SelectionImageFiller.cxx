@@ -339,14 +339,19 @@ namespace
       }
       else
       {
-        const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity (thePicked);
-        SelectBasics_PickResult aPickResult;
-        aPickedEntity->Matches (myMainSel->GetManager(), aPickResult);
-        Graphic3d_Vec3 aNormal = aPickResult.SurfaceNormal();
+        const SelectMgr_SortCriterion& aPickedData = myMainSel->PickedData (thePicked);
+        Graphic3d_Vec3 aNormal = aPickedData.Normal;
         aNormal.Normalize();
-        myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (aNormal.x() * 0.5f + 0.5f, 
-                                                                    aNormal.y() * 0.5f + 0.5f,
-                                                                    aNormal.z() * 0.5f + 0.5f, 1.0f));
+        if (aNormal.Modulus() > 0.0f)
+        {
+          myImage->SetPixelColor (theCol, theRow, Quantity_ColorRGBA (aNormal.x() * 0.5f + 0.5f,
+                                                                      aNormal.y() * 0.5f + 0.5f,
+                                                                      aNormal.z() * 0.5f + 0.5f, 1.0f));
+        }
+        else
+        {
+          myImage->SetPixelColor (theCol, theRow, Quantity_NOC_BLACK);
+        }
       }
     }
   };
