@@ -1898,9 +1898,9 @@ struct ViewerTest_AspectsChangeSet
       Message::SendFail() << "Error: the max parameter value should be greater than zero (specified " << MaxParamValue << ")";
       isOk = Standard_False;
     }
-    if (Sensitivity <= 0 && ToSetSensitivity)
+    if (Sensitivity < 0 && ToSetSensitivity)
     {
-      Message::SendFail() << "Error: sensitivity parameter value should be positive (specified " << Sensitivity << ")";
+      Message::SendFail() << "Error: sensitivity parameter value should not be negative (specified " << Sensitivity << ")";
       isOk = Standard_False;
     }
     if (ToSetHatch == 1 && StdHatchStyle < 0 && PathToHatchPattern == "")

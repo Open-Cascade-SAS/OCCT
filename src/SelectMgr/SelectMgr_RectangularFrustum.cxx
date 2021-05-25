@@ -364,8 +364,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
   Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::ScaleAndTransform() should be called after selection frustum initialization");
 
-  Standard_ASSERT_RAISE (theScaleFactor > 0,
-    "Error! Pixel tolerance for selection should be greater than zero");
+  Standard_ASSERT_RAISE (theScaleFactor >= 0,
+    "Error! Pixel tolerance for selection should not be negative");
 
   Handle(SelectMgr_RectangularFrustum) aRes = new SelectMgr_RectangularFrustum();
   const Standard_Boolean isToScale = theScaleFactor != 1;

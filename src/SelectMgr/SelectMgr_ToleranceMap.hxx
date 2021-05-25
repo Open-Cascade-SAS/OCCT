@@ -40,7 +40,7 @@ public:
   //! Returns a current tolerance that must be applied
   Standard_Integer Tolerance() const
   {
-    if (myLargestKey < Precision::Confusion())
+    if (myLargestKey < 0)
     {
       return 2; // default tolerance value
     }

@@ -574,7 +574,7 @@ void SelectMgr_SelectionManager::SetSelectionSensitivity (const Handle(SelectMgr
                                                           const Standard_Integer theMode,
                                                           const Standard_Integer theNewSens)
 {
-  Standard_ASSERT_RAISE (theNewSens > 0, "Error! Selection sensitivity have positive value.");
+  Standard_ASSERT_RAISE (theNewSens >= 0, "Error! Selection sensitivity should not be negative value.");
   if (theObject.IsNull())
   {
     return;

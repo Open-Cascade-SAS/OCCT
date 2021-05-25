@@ -78,7 +78,7 @@ void SelectMgr_ToleranceMap::Decrement (const Standard_Integer& theTolerance)
   if (theTolerance == myLargestKey
   && *aFreq == 0)
   {
-    myLargestKey = 0;
+    myLargestKey = -1;
     for (NCollection_DataMap<Standard_Integer, Standard_Integer>::Iterator anIter (myTolerances); anIter.More(); anIter.Next())
     {
       if (anIter.Value() != 0)

@@ -50,7 +50,7 @@ public:
   //! Allows to manage sensitivity of a particular sensitive entity
   void SetSensitivityFactor (const Standard_Integer theNewSens)
   {
-    Standard_ASSERT_RAISE (theNewSens > 0, "Error! Selection sensitivity have positive value.");
+    Standard_ASSERT_RAISE (theNewSens >= 0, "Error! Selection sensitivity should not be negative value.");
     mySFactor = theNewSens;
   }
 
