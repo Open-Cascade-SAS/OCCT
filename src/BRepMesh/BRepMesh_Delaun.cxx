@@ -994,7 +994,6 @@ Standard_Boolean BRepMesh_Delaun::meshLeftPolygonOf(
     aPivotNode = aRefEdge.FirstNode();
   }
 
-
   const BRepMesh_Vertex& aStartEdgeVertexS = GetVertex( aStartNode );
   BRepMesh_Vertex        aPivotVertex      = GetVertex( aPivotNode );
 
@@ -1914,7 +1913,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
       }
 
       if (aPolyStack.IsEmpty())
-        return;
+        break;
 
       aPolygon1   = &(*aPolyStack.ChangeFirst());
       aPolyBoxes1 = &(*aPolyBoxStack.ChangeFirst());
@@ -2019,6 +2018,10 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
       aNextEdge.FirstNode() : 
       aNextEdge.LastNode();
 
+    // We have end points touch case in the polygon - ignore it
+    if (aPivotNode == aNodes[1])
+      continue;
+
     gp_Pnt2d aPivotVertex = GetVertex( aPivotNode ).Coord();
     gp_Vec2d aDistanceDir( aRefVertices[1], aPivotVertex );
 
@@ -2105,7 +2108,6 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
     myMeshData->AddLink( aNewEdges[0] ),
     myMeshData->AddLink( aNewEdges[1] ) };
 
-
   Standard_Integer anEdges[3];
   Standard_Boolean anEdgesOri[3];
   for ( Standard_Integer aTriEdgeIt = 0; aTriEdgeIt < 3; ++aTriEdgeIt )
@@ -2116,27 +2118,38 @@ void BRepMesh_Delaun::decomposeSimplePolygon(
   }
   addTriangle( anEdges, anEdgesOri, aNodes );
 
-  // Create triangle and split the source polygon on two 
-  // parts (if possible) and mesh each part as independent
-  // polygon.
-  if ( aUsedLinkId < aPolyLen )
+  if (aUsedLinkId == 3)
   {
-    thePolygon.Split(aUsedLinkId, thePolygonCut);
-    thePolygonCut.Prepend( -aNewEdgesInfo[2] );
-    thePolyBoxes.Split(aUsedLinkId, thePolyBoxesCut);
+    thePolygon.Remove  ( 1 );
+    thePolyBoxes.Remove( 1 );
+
+    thePolygon.SetValue( 1, -aNewEdgesInfo[2] );
 
     Bnd_B2d aBox;
     UpdateBndBox(aRefVertices[0].Coord(), aRefVertices[2].Coord(), aBox);
-    thePolyBoxesCut.Prepend( aBox );
+    thePolyBoxes.SetValue( 1, aBox );
   }
   else
   {
-    thePolygon.Remove  ( aPolyLen );
-    thePolyBoxes.Remove( aPolyLen );
-  }
+    // Create triangle and split the source polygon on two 
+    // parts (if possible) and mesh each part as independent
+    // polygon.
+    if ( aUsedLinkId < aPolyLen )
+    {
+      thePolygon.Split(aUsedLinkId, thePolygonCut);
+      thePolygonCut.Prepend( -aNewEdgesInfo[2] );
+      thePolyBoxes.Split(aUsedLinkId, thePolyBoxesCut);
 
-  if ( aUsedLinkId > 3 )
-  {
+      Bnd_B2d aBox;
+      UpdateBndBox(aRefVertices[0].Coord(), aRefVertices[2].Coord(), aBox);
+      thePolyBoxesCut.Prepend( aBox );
+    }
+    else
+    {
+      thePolygon.Remove  ( aPolyLen );
+      thePolyBoxes.Remove( aPolyLen );
+    }
+
     thePolygon.SetValue( 1, -aNewEdgesInfo[1] );
 
     Bnd_B2d aBox;

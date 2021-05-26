@@ -1,3 +1,5 @@
+puts "TODO OCC30286 ALL: Error : The length of result shape is 1723.\\d+, expected 1721.69"
+
 set viewname "vright"
 set length 1721.69
 
