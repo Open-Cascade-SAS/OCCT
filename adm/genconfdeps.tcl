@@ -1044,36 +1044,45 @@ proc wokdep:SearchVTK {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
         }
       }
     }
-  }
   
     # Search binary path
     if { "$::tcl_platform(platform)" == "windows" } {
-      foreach anArchIter {64 32} {
-        set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter"]
-        if { "$aVtkBinPath" == "" } {
-          set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*] "$::VCVER" "$anArchIter" ]
-          set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/bin"]
-          if { "$aVtkBinPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+      set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter"]
+      if { "$aVtkBinPath" == "" } {
+        set aPathList [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*]
+        set aPath [wokdep:Preferred $aPathList "$::VCVER" "$anArchIter" ]
+        set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/bin"]
+        if { "$aVtkBinPath" != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+        } else {
+          # Try to find in lib path
+          set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/lib"]
+          if { "$aVtkBinPath" != "" } {
+            lappend ::CSF_OPT_BIN$anArchIter "$aPath/lib"
           } else {
-            set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/lib"]
-            if { "$aVtkBinPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aPath/lib" } 
+            # We didn't find preferred binary path => search through all available VTK directories
+            foreach anIt $aPathList {
+              set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$anIt/bin"]
+              if { "$aVtkBinPath" != "" } {
+                lappend ::CSF_OPT_BIN$anArchIter "$anIt/bin"
+                break
+              } else {
+                # Try to find in lib path
+                set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$anIt/lib"]
+                if { "$aVtkBinPath" != "" } {
+                  lappend ::CSF_OPT_BIN$anArchIter "$anIt/lib"
+                }
+              }
+            }
+            if { "$aVtkBinPath" == "" } {
+              lappend anErrBin$anArchIter "Error: 'vtkCommonCore-${aVtkVer}.dll' not found (VTK)"
+              set isFound "false"
+            }
           }
         }
       }
-      
-      # We didn't find preferred binary path => search through inc path or among all available VTK directories
-      if { "$aVtkBinPath" == "" } {
-        # Try to find in lib path
-        set aPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aVtkLibPath/bin"]
-        if { "$aPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aVtkLibPath/bin"
-        } elseif { [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aVtkLibPath/lib"] != "" } {
-          lappend ::CSF_OPT_BIN$anArchIter "$aVtkLibPath/lib"
-        } else {
-           lappend anErrBin$anArchIter "Error: 'vtkCommonCore-${aVtkVer}.dll' not found (VTK)"
-           set isFound "false"
-        }
-      }
     }
+  }
 
   return "$isFound"
 }
