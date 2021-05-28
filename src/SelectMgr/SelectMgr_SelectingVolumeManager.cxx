@@ -106,66 +106,6 @@ void SelectMgr_SelectingVolumeManager::SetCamera (const Handle(Graphic3d_Camera)
 }
 
 //=======================================================================
-// function : SetCamera
-// purpose  : Updates camera projection and orientation matrices in all
-//            selecting volumes
-//=======================================================================
-void SelectMgr_SelectingVolumeManager::SetCamera (const Graphic3d_Mat4d& theProjection,
-                                                  const Graphic3d_Mat4d& theWorldView,
-                                                  const Standard_Boolean theIsOrthographic,
-                                                  const Graphic3d_WorldViewProjState& theWVPState)
-{
-  Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
-    "SelectMgr_SelectingVolumeManager::SetCamera() should be called after initialization of selection volume ");
-  myActiveSelectingVolume->SetCamera (theProjection, theWorldView, theIsOrthographic, theWVPState);
-}
-
-//=======================================================================
-// function : ProjectionMatrix
-// purpose  : Returns current projection transformation common for all
-//            selecting volumes
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::ProjectionMatrix() const
-{
-  if (myActiveSelectingVolume.IsNull())
-  {
-    static const Graphic3d_Mat4d anEmptyMatrix;
-    return anEmptyMatrix;
-  }
-  return myActiveSelectingVolume->ProjectionMatrix();
-}
-
-//=======================================================================
-// function : WorldViewMatrix
-// purpose  : Returns current world view transformation common for all
-//            selecting volumes
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_SelectingVolumeManager::WorldViewMatrix() const
-{
-  if (myActiveSelectingVolume.IsNull())
-  {
-    static const Graphic3d_Mat4d anEmptyMatrix;
-    return anEmptyMatrix;
-  }
-  return myActiveSelectingVolume->WorldViewMatrix();
-}
-
-//=======================================================================
-// function : WorldViewProjState
-// purpose  : Returns current camera world view projection transformation
-//            state common for all selecting volumes
-//=======================================================================
-const Graphic3d_WorldViewProjState& SelectMgr_SelectingVolumeManager::WorldViewProjState() const
-{
-  if (myActiveSelectingVolume.IsNull())
-  {
-    static const Graphic3d_WorldViewProjState anEmptyState;
-    return anEmptyState;
-  }
-  return myActiveSelectingVolume->WorldViewProjState();
-}
-
-//=======================================================================
 // function : WindowSize
 // purpose  :
 //=======================================================================

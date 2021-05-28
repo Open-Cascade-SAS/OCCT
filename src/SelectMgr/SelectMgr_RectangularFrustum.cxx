@@ -225,7 +225,7 @@ namespace
 // =======================================================================
 void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum) const
 {
-  if (theFrustum->myIsOrthographic)
+  if (theFrustum->Camera()->IsOrthographic())
   {
     // project vertices onto frustum normals
     // Since orthographic view volume's faces are always a pairwise translation of
@@ -377,7 +377,7 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
     return aRes;
   }
 
-  aRes->myIsOrthographic = myIsOrthographic;
+  aRes->SetCamera (myCamera);
   const SelectMgr_RectangularFrustum* aRef = this;
 
   if (isToScale)
@@ -436,6 +436,8 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
     aRes->myScale = Sqrt (aRefScale / aRes->myFarPickedPnt.SquareDistance (aRes->myNearPickedPnt));
   }
 
+  aRes->SetBuilder (theBuilder);
+
   // compute frustum normals
   computeNormals (aRes->myEdgeDirs, aRes->myPlanes);
 
@@ -443,7 +445,6 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
 
   aRes->mySelectionType = mySelectionType;
   aRes->mySelRectangle = mySelRectangle;
-  aRes->SetBuilder (theBuilder);
   return aRes;
 }
 
@@ -787,7 +788,7 @@ void SelectMgr_RectangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>
   SelectMgr_Vec4 anEquation;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 6; ++aPlaneIdx)
   {
-    const gp_Vec& aPlaneNorm = myIsOrthographic && aPlaneIdx % 2 == 1 ?
+    const gp_Vec& aPlaneNorm = Camera()->IsOrthographic() && aPlaneIdx % 2 == 1 ?
       myPlanes[aPlaneIdx - 1].Reversed() : myPlanes[aPlaneIdx];
     anEquation.x() = aPlaneNorm.X();
     anEquation.y() = aPlaneNorm.Y();

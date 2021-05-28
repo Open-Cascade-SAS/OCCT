@@ -91,25 +91,6 @@ public:
   //! else exception will be thrown
   Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera) theCamera);
 
-  //! Updates camera projection and orientation matrices in all selecting volumes
-  //! Note: this method should be called after selection volume building
-  //! else exception will be thrown
-  Standard_EXPORT void SetCamera (const Graphic3d_Mat4d& theProjection,
-                                  const Graphic3d_Mat4d& theWorldView,
-                                  const Standard_Boolean theIsOrthographic,
-                                  const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
-
-  //! @return current projection transformation common for all selecting volumes
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
-
-  //! @return current world view transformation common for all selecting volumes
-  Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
-
-  Standard_EXPORT void WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
-
-  //! @return current camera world view projection transformation state common for all selecting volumes
-  Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
-
   //! Updates viewport in all selecting volumes
   //! Note: this method should be called after selection volume building
   //! else exception will be thrown
@@ -122,6 +103,9 @@ public:
   //! Note: this method should be called after selection volume building
   //! else exception will be thrown
   Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
+
+  //! Returns window size
+  Standard_EXPORT void WindowSize (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
 
   //! Updates window size in all selecting volumes
   //! Note: this method should be called after selection volume building

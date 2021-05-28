@@ -489,6 +489,9 @@ public:
   //! @param theTile tile definition
   Standard_EXPORT void SetTile (const Graphic3d_CameraTile& theTile);
 
+  //! Sets camera parameters to make current orientation matrix identity one.
+  Standard_EXPORT void SetIdentityOrientation();
+
 //! @name Basic camera operations
 public:
 

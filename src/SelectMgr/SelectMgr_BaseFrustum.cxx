@@ -26,70 +26,23 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 // purpose  :
 //=======================================================================
 SelectMgr_BaseFrustum::SelectMgr_BaseFrustum()
-: myPixelTolerance (2),
-  myIsOrthographic (Standard_True)
+: myPixelTolerance (2)
 {
   myBuilder = new SelectMgr_FrustumBuilder();
 }
 
 //=======================================================================
 // function : SetCamera
-// purpose  : Passes camera projection and orientation matrices to builder
+// purpose  :
 //=======================================================================
 void SelectMgr_BaseFrustum::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
-  myCamera = theCamera;
-  myBuilder->SetWorldViewMatrix (theCamera->OrientationMatrix());
-  myBuilder->SetProjectionMatrix (theCamera->ProjectionMatrix(), theCamera->IsZeroToOneDepth());
-  myBuilder->SetWorldViewProjState (theCamera->WorldViewProjState());
-  myIsOrthographic = theCamera->IsOrthographic();
-  myBuilder->InvalidateViewport();
-}
-
-//=======================================================================
-// function : SetCamera
-// purpose  : Passes camera projection and orientation matrices to builder
-//=======================================================================
-void SelectMgr_BaseFrustum::SetCamera (const Graphic3d_Mat4d& theProjection,
-                                       const Graphic3d_Mat4d& theWorldView,
-                                       const Standard_Boolean theIsOrthographic,
-                                       const Graphic3d_WorldViewProjState& theWVPState)
-{
-  myCamera.Nullify();
-  myBuilder->SetWorldViewMatrix (theWorldView);
-  myBuilder->SetProjectionMatrix (theProjection, false);
-  myBuilder->SetWorldViewProjState (theWVPState);
-  myIsOrthographic = theIsOrthographic;
-}
-
-//=======================================================================
-// function : ProjectionMatrix
-// purpose  : Returns current camera projection transformation common for
-//            all selecting volumes
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_BaseFrustum::ProjectionMatrix() const
-{
-  return myBuilder->ProjectionMatrix();
-}
-
-//=======================================================================
-// function : WorldViewMatrix
-// purpose  : Returns current camera world view transformation common for
-//            all selecting volumes
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_BaseFrustum::WorldViewMatrix() const
-{
-  return myBuilder->WorldViewMatrix();
-}
-
-//=======================================================================
-// function : WorldViewProjState
-// purpose  : Returns current camera world view projection transformation
-//            state
-//=======================================================================
-const Graphic3d_WorldViewProjState& SelectMgr_BaseFrustum::WorldViewProjState() const
-{
-  return myBuilder->WorldViewProjState();
+  SelectMgr_BaseIntersector::SetCamera (theCamera);
+  if (!myBuilder.IsNull())
+  {
+    myBuilder->SetCamera (theCamera);
+    myBuilder->InvalidateViewport();
+  }
 }
 
 //=======================================================================
@@ -140,6 +93,10 @@ void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& 
 {
   myBuilder.Nullify();
   myBuilder = theBuilder;
+  if (!myBuilder.IsNull())
+  {
+    myCamera = myBuilder->Camera();
+  }
 }
 
 //=======================================================================
@@ -152,7 +109,5 @@ void SelectMgr_BaseFrustum::DumpJson (Standard_OStream& theOStream, Standard_Int
   OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_BaseIntersector)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic)
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myBuilder)
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
 }

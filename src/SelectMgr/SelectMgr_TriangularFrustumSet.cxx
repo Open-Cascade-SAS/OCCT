@@ -162,6 +162,7 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransf
     "Error! SelectMgr_TriangularFrustumSet::ScaleAndTransform() should be called after selection frustum initialization");
 
   Handle(SelectMgr_TriangularFrustumSet) aRes = new SelectMgr_TriangularFrustumSet();
+  aRes->SetCamera (myCamera);
   for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
   {
     aRes->myFrustums.Append (Handle(SelectMgr_TriangularFrustum)::DownCast (anIter.Value()->ScaleAndTransform (theScale, theTrsf, theBuilder)));

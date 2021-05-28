@@ -73,32 +73,11 @@ public:
 
 public:
 
-  //! Returns camera definition.
-  //! This method returns empty camera for the base class.
-  Standard_EXPORT virtual const Handle(Graphic3d_Camera)& Camera() const;
+  //! Return camera definition.
+  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
 
-  //! Sets camera projection and orientation matrices.
-  //! This method does nothing for the base class.
+  //! Saves camera definition.
   Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
-
-  //! Sets camera projection and orientation matrices.
-  //! This method does nothing for the base class.
-  Standard_EXPORT virtual void SetCamera (const Graphic3d_Mat4d& theProjection,
-                                          const Graphic3d_Mat4d& theWorldView,
-                                          const Standard_Boolean theIsOrthographic,
-                                          const Graphic3d_WorldViewProjState& theWVPState = Graphic3d_WorldViewProjState());
-
-  //! Returns current camera projection transformation.
-  //! This method returns empty matrix for the base class.
-  Standard_EXPORT virtual const Graphic3d_Mat4d& ProjectionMatrix() const;
-
-  //! Returns current camera world view transformation.
-  //! This method returns empty matrix for the base class.
-  Standard_EXPORT virtual const Graphic3d_Mat4d& WorldViewMatrix() const;
-
-  //! Returns current camera world view projection transformation state.
-  //! This method returns empty matrix for the base class.
-  Standard_EXPORT virtual const Graphic3d_WorldViewProjState& WorldViewProjState() const;
 
   //! Returns current window size.
   //! This method doesn't set any output values for the base class.
@@ -209,7 +188,8 @@ public:
 
 protected:
 
-  SelectMgr_SelectionType mySelectionType;
+  Handle(Graphic3d_Camera) myCamera;        //!< camera definition (if builder isn't NULL it is the same as its camera)
+  SelectMgr_SelectionType  mySelectionType; //!< type of selection
 };
 
 #endif // _SelectMgr_BaseIntersector_HeaderFile

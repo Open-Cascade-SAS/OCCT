@@ -32,24 +32,11 @@ public:
   //! Creates new frustum builder with empty matrices
   Standard_EXPORT SelectMgr_FrustumBuilder();
 
-  //! Stores current world view transformation matrix
-  Standard_EXPORT void SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldViewMatrix);
+  //! Returns current camera
+  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
 
-  //! @return current world view transformation matrix
-  Standard_EXPORT const Graphic3d_Mat4d& WorldViewMatrix() const;
-
-  //! Stores current projection matrix
-  Standard_EXPORT void SetProjectionMatrix (const Graphic3d_Mat4d& theProjection,
-                                            const Standard_Boolean theIsZeroToOneDepth);
-
-  //! @return current projection matrix
-  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
-
-  //! Stores current world view projection matrix state for the orientation and projection matrices
-  Standard_EXPORT void SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState);
-
-  //! @return current world view projection state
-  Standard_EXPORT const Graphic3d_WorldViewProjState& WorldViewProjState() const;
+  //! Stores current camera
+  Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
 
   //! Stores current window width and height
   Standard_EXPORT void SetWindowSize (const Standard_Integer theWidth,
@@ -82,19 +69,11 @@ public:
 
 private:
 
-  //! Unprojects point from NDC coords to 3d world space
-  gp_Pnt unProject (const gp_Pnt& thePnt) const;
-
-private:
-
-  Graphic3d_Mat4d                   myWorldView;
-  Graphic3d_Mat4d                   myProjection;
-  Graphic3d_WorldViewProjState      myWorldViewProjState;
+  Handle(Graphic3d_Camera)          myCamera;
   Standard_Integer                  myWidth;
   Standard_Integer                  myHeight;
   NCollection_Vec4<Standard_Real>   myViewport;
   Standard_Boolean                  myIsViewportSet;
-  Standard_Boolean                  myIsZeroToOneDepth;
 };
 
 DEFINE_STANDARD_HANDLE(SelectMgr_FrustumBuilder, Standard_Transient)

@@ -26,71 +26,20 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_FrustumBuilder,Standard_Transient)
 // purpose  : Creates new frustum builder with empty matrices
 //=======================================================================
 SelectMgr_FrustumBuilder::SelectMgr_FrustumBuilder()
-: myWorldView(),
-  myProjection(),
-  myWorldViewProjState(),
-  myWidth (INT_MAX),
+: myWidth (INT_MAX),
   myHeight (INT_MAX),
-  myIsViewportSet (Standard_False),
-  myIsZeroToOneDepth (Standard_False)
+  myIsViewportSet (Standard_False)
 {
   //
 }
 
 //=======================================================================
-// function : SetWorldViewMatrix
-// purpose  : Stores current world view transformation matrix
+// function : SetCamera
+// purpose  :
 //=======================================================================
-void SelectMgr_FrustumBuilder::SetWorldViewMatrix (const Graphic3d_Mat4d& theWorldView)
+void SelectMgr_FrustumBuilder::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
-  myWorldView = theWorldView;
-}
-
-//=======================================================================
-// function : WorldViewMatrix
-// purpose  : Returns current world view transformation matrix
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_FrustumBuilder::WorldViewMatrix() const
-{
-  return myWorldView;
-}
-
-//=======================================================================
-// function : SetProjectionMatrix
-// purpose  : Stores current projection matrix
-//=======================================================================
-void SelectMgr_FrustumBuilder::SetProjectionMatrix (const Graphic3d_Mat4d& theProjection,
-                                                    const Standard_Boolean theIsZeroToOneDepth)
-{
-  myProjection = theProjection;
-  myIsZeroToOneDepth = theIsZeroToOneDepth;
-}
-
-//=======================================================================
-// function : ProjectionMatrix
-// purpose  : Returns current projection matrix
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_FrustumBuilder::ProjectionMatrix() const
-{
-  return myProjection;
-}
-
-//=======================================================================
-// function : SetWorldViewProjState
-// purpose  : Stores current world view projection matrix state
-//=======================================================================
-void SelectMgr_FrustumBuilder::SetWorldViewProjState (const Graphic3d_WorldViewProjState& theState)
-{
-  myWorldViewProjState = theState;
-}
-
-//=======================================================================
-// function : WorldViewProjState
-// purpose  : Returns current world view projection matrix state
-//=======================================================================
-const Graphic3d_WorldViewProjState& SelectMgr_FrustumBuilder::WorldViewProjState() const
-{
-  return myWorldViewProjState;
+  myCamera = theCamera;
 }
 
 //=======================================================================
@@ -153,52 +102,6 @@ Standard_Real SelectMgr_FrustumBuilder::SignedPlanePntDist (const SelectMgr_Vec3
   return anA * thePnt.x() + aB * thePnt.y() + aC * thePnt.z();
 }
 
-//=======================================================================
-// function : safePointCast
-// purpose  :
-//=======================================================================
-static NCollection_Vec4<Standard_Real> safePointCast (const gp_Pnt& thePnt)
-{
-  Standard_Real aLim = 1e15f;
-
-  // have to deal with values greater then max float
-  gp_Pnt aSafePoint = thePnt;
-  const Standard_Real aBigFloat = aLim * 0.1f;
-  if (Abs (aSafePoint.X()) > aLim)
-    aSafePoint.SetX (aSafePoint.X() >= 0 ? aBigFloat : -aBigFloat);
-  if (Abs (aSafePoint.Y()) > aLim)
-    aSafePoint.SetY (aSafePoint.Y() >= 0 ? aBigFloat : -aBigFloat);
-  if (Abs (aSafePoint.Z()) > aLim)
-    aSafePoint.SetZ (aSafePoint.Z() >= 0 ? aBigFloat : -aBigFloat);
-
-  // convert point
-  NCollection_Vec4<Standard_Real> aPnt (aSafePoint.X(), aSafePoint.Y(), aSafePoint.Z(), 1.0);
-
-  return aPnt;
-}
-
-//=======================================================================
-// function : unProject
-// purpose  : Unprojects point from NDC coords to 3d world space
-//=======================================================================
-gp_Pnt SelectMgr_FrustumBuilder::unProject (const gp_Pnt& thePnt) const
-{
-  // inversed matrices could be cached
-  Graphic3d_Mat4d aInvView, aInvProj;
-  if (!myWorldView.Inverted (aInvView) || !myProjection.Inverted (aInvProj))
-  {
-    return gp_Pnt (0.0, 0.0, 0.0); // this case should never happen
-  }
-
-  // use compatible type of point
-  NCollection_Vec4<Standard_Real> aPnt = safePointCast (thePnt);
-  aPnt = aInvProj * aPnt; // convert to view coordinate space
-  aPnt = aInvView * aPnt; // convert to world coordinate space
-
-  const Standard_Real aInvW = 1.0 / Standard_Real (aPnt.w());
-  return gp_Pnt (aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
-}
-
 // =======================================================================
 // function : ProjectPntOnViewPlane
 // purpose  : Projects 2d screen point onto view frustum plane:
@@ -209,13 +112,17 @@ gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& the
                                                         const Standard_Real& theY,
                                                         const Standard_Real& theZ) const
 {
+  if (myCamera.IsNull())
+  {
+    return gp_Pnt();
+  }
   // map coords to NDC
   gp_Pnt anXYZ;
   if (!myIsViewportSet)
   {
     anXYZ.SetCoord (2.0 * theX / myWidth - 1.0,
                     (myHeight - 1 - theY) / myHeight * 2.0 - 1.0,
-                    myIsZeroToOneDepth ? theZ : (2.0 * theZ - 1.0));
+                    myCamera->IsZeroToOneDepth() ? theZ : (2.0 * theZ - 1.0));
   }
   else
   {
@@ -223,5 +130,5 @@ gp_Pnt SelectMgr_FrustumBuilder::ProjectPntOnViewPlane (const Standard_Real& the
                     2.0 * (theY - myHeight * myViewport.y()) / (myHeight * (myViewport.w() - myViewport.y())) - 1.0,
                     theZ);
   }
-  return unProject (anXYZ);
+  return myCamera->UnProject (anXYZ);
 }

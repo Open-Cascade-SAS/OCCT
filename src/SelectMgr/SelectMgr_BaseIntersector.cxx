@@ -37,62 +37,12 @@ SelectMgr_BaseIntersector::~SelectMgr_BaseIntersector()
 }
 
 //=======================================================================
-// function : Camera
-// purpose  :
-//=======================================================================
-const Handle(Graphic3d_Camera)& SelectMgr_BaseIntersector::Camera() const
-{
-  static const Handle(Graphic3d_Camera) anEmptyCamera;
-  return anEmptyCamera;
-}
-
-//=======================================================================
 // function : SetCamera
 // purpose  :
 //=======================================================================
-void SelectMgr_BaseIntersector::SetCamera (const Handle(Graphic3d_Camera)&)
+void SelectMgr_BaseIntersector::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
-}
-
-//=======================================================================
-// function : SetCamera
-// purpose  :
-//=======================================================================
-void SelectMgr_BaseIntersector::SetCamera (const Graphic3d_Mat4d&,
-                                           const Graphic3d_Mat4d&,
-                                           const Standard_Boolean,
-                                           const Graphic3d_WorldViewProjState&)
-{
-}
-
-//=======================================================================
-// function : ProjectionMatrix
-// purpose  :
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_BaseIntersector::ProjectionMatrix() const
-{
-  static const Graphic3d_Mat4d anEmptyMatrix;
-  return anEmptyMatrix;
-}
-
-//=======================================================================
-// function : WorldViewMatrix
-// purpose  :
-//=======================================================================
-const Graphic3d_Mat4d& SelectMgr_BaseIntersector::WorldViewMatrix() const
-{
-  static const Graphic3d_Mat4d anEmptyMatrix;
-  return anEmptyMatrix;
-}
-
-//=======================================================================
-// function : WorldViewProjState
-// purpose  :
-//=======================================================================
-const Graphic3d_WorldViewProjState& SelectMgr_BaseIntersector::WorldViewProjState() const
-{
-  static const Graphic3d_WorldViewProjState anEmptyState;
-  return anEmptyState;
+  myCamera = theCamera;
 }
 
 //=======================================================================
@@ -199,4 +149,5 @@ void SelectMgr_BaseIntersector::DumpJson (Standard_OStream& theOStream, Standard
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySelectionType)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
 }

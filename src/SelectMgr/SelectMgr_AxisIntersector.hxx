@@ -37,6 +37,10 @@ public:
   //! NOTE: it should be called after Init() method
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
+  //! Saves camera definition.
+  //! Do nothing for axis intersector (not applicable to this volume).
+  Standard_EXPORT virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) Standard_OVERRIDE;
+
   //! Returns FALSE (not applicable to this volume).
   virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
 

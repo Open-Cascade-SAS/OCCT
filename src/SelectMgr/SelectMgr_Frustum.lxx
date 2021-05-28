@@ -146,7 +146,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasBoxOverlap (const SelectMgr_Vec3& theM
     }
   }
 
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
@@ -182,7 +182,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasBoxOverlap (const SelectMgr_Vec3& theM
     // of vector with 1.0 at the position aDim and myEdgeDirs[aVolDir]
     const Standard_Integer aNext = (aDim + 1) % 3;
     const Standard_Integer aNextNext = (aDim + 2) % 3;
-    for (Standard_Integer aVolDir = 0, aDirectionsNb = myIsOrthographic ? 4 : 6; aVolDir < aDirectionsNb; ++aVolDir)
+    for (Standard_Integer aVolDir = 0, aDirectionsNb = Camera()->IsOrthographic() ? 4 : 6; aVolDir < aDirectionsNb; ++aVolDir)
     {
       gp_XYZ aDirection (DBL_MAX, DBL_MAX, DBL_MAX);
       aDirection.ChangeData()[aDim]      = 0;
@@ -206,7 +206,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasBoxOverlap (const SelectMgr_Vec3& theM
 template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasPointOverlap (const gp_Pnt& thePnt) const
 {
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
 
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
@@ -234,7 +234,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap (const gp_Pnt& theStart
   if (aDir.Modulus() < Precision::Confusion())
     return Standard_True;
 
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     Standard_Real aMinSegm = RealLast(), aMaxSegm = RealFirst();
@@ -273,7 +273,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSegmentOverlap (const gp_Pnt& theStart
     return Standard_False;
   }
 
-  Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
+  Standard_Integer aDirectionsNb = Camera()->IsOrthographic() ? 4 : 6;
   for (Standard_Integer aEdgeDirIdx = 0; aEdgeDirIdx < aDirectionsNb; ++aEdgeDirIdx)
   {
     Standard_Real aMinSegm = DBL_MAX, aMaxSegm = -DBL_MAX;
@@ -338,7 +338,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap (const TColgp_Array1OfP
     return Standard_False;
   }
 
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx <  N + 1; aPlaneIdx += anIncFactor)
   {
     Standard_Real aMaxF = RealFirst();
@@ -361,7 +361,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasPolygonOverlap (const TColgp_Array1OfP
     }
   }
 
-  Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
+  Standard_Integer aDirectionsNb = Camera()->IsOrthographic() ? 4 : 6;
   for (Standard_Integer aPntsIter = 0, aLastIdx = anEndIdx - aStartIdx, aLen = theArrayOfPnts.Length(); aPntsIter <= aLastIdx; ++aPntsIter)
   {
     const gp_XYZ aSegmDir = theArrayOfPnts.Value ((aPntsIter + 1) % aLen + aStartIdx).XYZ()
@@ -413,7 +413,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap (const gp_Pnt& thePnt1
                                thePnt3.XYZ() - thePnt2.XYZ(),
                                thePnt1.XYZ() - thePnt3.XYZ() };
 
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
@@ -446,7 +446,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasTriangleOverlap (const gp_Pnt& thePnt1
     return Standard_False;
   }
 
-  Standard_Integer aDirectionsNb = myIsOrthographic ? 4 : 6;
+  Standard_Integer aDirectionsNb = myCamera->IsOrthographic() ? 4 : 6;
   for (Standard_Integer aTriangleEdgeIdx = 0; aTriangleEdgeIdx < 3; ++aTriangleEdgeIdx)
   {
     for (Standard_Integer aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
@@ -472,7 +472,7 @@ void SelectMgr_Frustum<N>::DumpJson (Standard_OStream& theOStream, Standard_Inte
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     const gp_Vec& aPlane = myPlanes[aPlaneIdx];
@@ -489,7 +489,6 @@ void SelectMgr_Frustum<N>::DumpJson (Standard_OStream& theOStream, Standard_Inte
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic)
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myBuilder)
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
 

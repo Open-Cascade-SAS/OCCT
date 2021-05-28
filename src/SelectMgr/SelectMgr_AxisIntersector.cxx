@@ -55,6 +55,14 @@ void SelectMgr_AxisIntersector::Build()
 {
 }
 
+//=======================================================================
+// function : SetCamera
+// purpose  :
+//=======================================================================
+void SelectMgr_AxisIntersector::SetCamera (const Handle(Graphic3d_Camera)&)
+{
+}
+
 // =======================================================================
 // function : ScaleAndTransform
 // purpose  :
@@ -156,7 +164,7 @@ Standard_Boolean SelectMgr_AxisIntersector::raySegmentDistance (const gp_Pnt& th
     return false;
   }
 
-  const Standard_Real aParam = anUWNormVec.Dot (anUVNormVec) / anUVNormVecMod;
+  const Standard_Real aParam = anUWNormVec.Dot (anUVNormVec) / anUVNormVec.SquareModulus();
   if (aParam < 0.0)
   {
     // Intersection is out of axis start point

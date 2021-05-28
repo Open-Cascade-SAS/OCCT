@@ -602,14 +602,16 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
   Standard_Integer aWidth = 0;
   Standard_Integer aHeight = 0;
   mySelectingVolumeMgr.WindowSize (aWidth, aHeight);
-  mySelectableObjects.UpdateBVH (mySelectingVolumeMgr.Camera(),
-                                 mySelectingVolumeMgr.ProjectionMatrix(),
-                                 mySelectingVolumeMgr.WorldViewMatrix(),
-                                 mySelectingVolumeMgr.WorldViewProjState(),
-                                 aWidth, aHeight);
+
   const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
+  Graphic3d_Mat4d aProjectionMat, aWorldViewMat;
+  Graphic3d_WorldViewProjState aViewState;
   if (!aCamera.IsNull())
   {
+    aProjectionMat = aCamera->ProjectionMatrix();
+    aWorldViewMat = aCamera->OrientationMatrix();
+    aViewState = aCamera->WorldViewProjState();
+
     myCameraEye = aCamera->Eye().XYZ();
     myCameraDir = aCamera->Direction().XYZ();
     myCameraScale = aCamera->IsOrthographic()
@@ -618,6 +620,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     const double aPixelSize = Max (1.0 / aWidth, 1.0 / aHeight);
     myCameraScale *= aPixelSize;
   }
+  mySelectableObjects.UpdateBVH (aCamera, aProjectionMat, aWorldViewMat, aViewState, aWidth, aHeight);
 
   for (Standard_Integer aBVHSetIt = 0; aBVHSetIt < SelectMgr_SelectableObjectSet::BVHSubsetNb; ++aBVHSetIt)
   {
@@ -632,7 +635,6 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
       continue;
     }
 
-    gp_GTrsf aTFrustum;
     SelectMgr_SelectingVolumeManager aMgr;
 
     // for 2D space selection transform selecting volumes to perform overlap testing
@@ -640,23 +642,28 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     // needed there at all
     if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent)
     {
-      const Graphic3d_Mat4d& aMat = mySelectingVolumeMgr.WorldViewMatrix();
-      aTFrustum.SetValue (1, 1, aMat.GetValue (0, 0));
-      aTFrustum.SetValue (1, 2, aMat.GetValue (0, 1));
-      aTFrustum.SetValue (1, 3, aMat.GetValue (0, 2));
-      aTFrustum.SetValue (2, 1, aMat.GetValue (1, 0));
-      aTFrustum.SetValue (2, 2, aMat.GetValue (1, 1));
-      aTFrustum.SetValue (2, 3, aMat.GetValue (1, 2));
-      aTFrustum.SetValue (3, 1, aMat.GetValue (2, 0));
-      aTFrustum.SetValue (3, 2, aMat.GetValue (2, 1));
-      aTFrustum.SetValue (3, 3, aMat.GetValue (2, 2));
-      aTFrustum.SetTranslationPart (gp_XYZ (aMat.GetValue (0, 3), aMat.GetValue (1, 3), aMat.GetValue (2, 3)));
+      gp_GTrsf aTFrustum;
+      aTFrustum.SetValue (1, 1, aWorldViewMat.GetValue (0, 0));
+      aTFrustum.SetValue (1, 2, aWorldViewMat.GetValue (0, 1));
+      aTFrustum.SetValue (1, 3, aWorldViewMat.GetValue (0, 2));
+      aTFrustum.SetValue (2, 1, aWorldViewMat.GetValue (1, 0));
+      aTFrustum.SetValue (2, 2, aWorldViewMat.GetValue (1, 1));
+      aTFrustum.SetValue (2, 3, aWorldViewMat.GetValue (1, 2));
+      aTFrustum.SetValue (3, 1, aWorldViewMat.GetValue (2, 0));
+      aTFrustum.SetValue (3, 2, aWorldViewMat.GetValue (2, 1));
+      aTFrustum.SetValue (3, 3, aWorldViewMat.GetValue (2, 2));
+      aTFrustum.SetTranslationPart (gp_XYZ (aWorldViewMat.GetValue (0, 3),
+                                            aWorldViewMat.GetValue (1, 3),
+                                            aWorldViewMat.GetValue (2, 3)));
 
       // define corresponding frustum builder parameters
       Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
-      aBuilder->SetProjectionMatrix (mySelectingVolumeMgr.ProjectionMatrix(),
-                                     aCamera->IsZeroToOneDepth());
-      aBuilder->SetWorldViewMatrix (SelectMgr_ViewerSelector_THE_IDENTITY_MAT);
+      Handle(Graphic3d_Camera) aNewCamera = new Graphic3d_Camera();
+      aNewCamera->CopyMappingData (aCamera);
+      aNewCamera->SetIdentityOrientation();
+      aWorldViewMat = aNewCamera->OrientationMatrix(); // should be identity matrix
+      aProjectionMat = aNewCamera->ProjectionMatrix(); // should be the same to aProjectionMat
+      aBuilder->SetCamera (aNewCamera);
       aBuilder->SetWindowSize (aWidth, aHeight);
       aMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTFrustum, aBuilder);
     }
@@ -664,11 +671,6 @@ void SelectMgr_ViewerSelector::TraverseSensitives()
     {
       aMgr = mySelectingVolumeMgr;
     }
-
-    const Graphic3d_Mat4d& aProjectionMat   = mySelectingVolumeMgr.ProjectionMatrix();
-    const Graphic3d_Mat4d& aWorldViewMat    = aBVHSubset != SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent
-                                            ? mySelectingVolumeMgr.WorldViewMatrix()
-                                            : SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
 
     const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
 
@@ -1002,11 +1004,14 @@ void SelectMgr_ViewerSelector::RebuildObjectsTree (const Standard_Boolean theIsF
     Standard_Integer aWidth;
     Standard_Integer aHeight;
     mySelectingVolumeMgr.WindowSize (aWidth, aHeight);
-    mySelectableObjects.UpdateBVH (mySelectingVolumeMgr.Camera(),
-                                   mySelectingVolumeMgr.ProjectionMatrix(),
-                                   mySelectingVolumeMgr.WorldViewMatrix(),
-                                   mySelectingVolumeMgr.WorldViewProjState(),
-                                   aWidth, aHeight);
+    const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
+    const Graphic3d_Mat4d&       aProjMat    = !aCamera.IsNull() ? aCamera->ProjectionMatrix()
+                                                                 : SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
+    const Graphic3d_Mat4d&       anOrientMat = !aCamera.IsNull() ? aCamera->OrientationMatrix()
+                                                                 : SelectMgr_ViewerSelector_THE_IDENTITY_MAT;
+    Graphic3d_WorldViewProjState aViewState  = !aCamera.IsNull() ? aCamera->WorldViewProjState()
+                                                                 : Graphic3d_WorldViewProjState();
+    mySelectableObjects.UpdateBVH (aCamera, aProjMat, anOrientMat, aViewState, aWidth, aHeight);
   }
 }
 

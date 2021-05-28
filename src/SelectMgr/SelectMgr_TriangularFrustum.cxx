@@ -157,6 +157,7 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustum::ScaleAndTransform
                                                                                   const Handle(SelectMgr_FrustumBuilder)&) const
 {
   Handle(SelectMgr_TriangularFrustum) aRes = new SelectMgr_TriangularFrustum();
+  aRes->SetCamera (myCamera);
 
   for (Standard_Integer anIt = 0; anIt < 6; anIt++)
   {
@@ -164,8 +165,6 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustum::ScaleAndTransform
     theTrsf.Transforms (aPoint.ChangeCoord());
     aRes->myVertices[anIt] = aPoint;
   }
-
-  aRes->myIsOrthographic = myIsOrthographic;
 
   // V0_Near - V0_Far
   aRes->myEdgeDirs[0] = aRes->myVertices[0].XYZ() - aRes->myVertices[3].XYZ();
