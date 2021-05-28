@@ -47,6 +47,9 @@ public:
   //! @return The focal distance of the view
   Standard_EXPORT virtual double  GetDistance() const Standard_OVERRIDE;
 
+  //! @return The world coordinates of the camera position
+  Standard_EXPORT virtual void    GetEyePosition (double& theX, double& theY, double& theZ) const Standard_OVERRIDE;
+
   //! @return The world coordinates of the view position
   Standard_EXPORT virtual void    GetPosition (double& theX, double& theY, double& theZ) const Standard_OVERRIDE;
 
@@ -66,6 +69,12 @@ public:
 
   //! @return The current view angle (for perspective projection)
   Standard_EXPORT virtual double  GetViewAngle() const Standard_OVERRIDE;
+
+  //! @return The location of the near and far clipping planes along the direction of projection
+  Standard_EXPORT virtual void    GetClippingRange (double& theZNear, double& theZFar) const Standard_OVERRIDE;
+
+  //! @return The current view the aspect ratio
+  Standard_EXPORT virtual double  GetAspectRatio() const Standard_OVERRIDE;
 
   //! @return Two doubles containing the display coordinates of the view window center 
   Standard_EXPORT virtual void    GetViewCenter (double& theX, double& theY) const Standard_OVERRIDE;

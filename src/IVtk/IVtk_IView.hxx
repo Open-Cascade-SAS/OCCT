@@ -45,6 +45,9 @@ public:
   //! @return The focal distance of the view
   virtual double  GetDistance() const = 0;
 
+  //! @return The world coordinates of the camera position
+  virtual void    GetEyePosition (double& theX, double& theY, double& theZ) const = 0;
+
   //! @return The world coordinates of the view position
   virtual void    GetPosition (double& theX, double& theY, double& theZ) const = 0;
 
@@ -64,6 +67,12 @@ public:
 
   //! @return The current view angle (for perspective projection)
   virtual double  GetViewAngle() const = 0;
+
+  //! @return The location of the near and far clipping planes along the direction of projection
+  virtual void    GetClippingRange (double& theZNear, double& theZFar) const = 0;
+
+  //! @return The current view the aspect ratio
+  virtual double  GetAspectRatio() const = 0;
 
   //! @return Two doubles containing the display coordinates of the view window center 
   virtual void    GetViewCenter (double& theX, double& theY) const = 0;

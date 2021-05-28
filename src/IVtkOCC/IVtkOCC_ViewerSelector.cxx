@@ -41,6 +41,45 @@ IVtkOCC_ViewerSelector::~IVtkOCC_ViewerSelector()
 }
 
 //============================================================================
+// Method: ConvertVtkToOccCamera
+// Purpose:
+//============================================================================
+Handle(Graphic3d_Camera) IVtkOCC_ViewerSelector::ConvertVtkToOccCamera (const IVtk_IView::Handle& theView)
+{
+  Handle(Graphic3d_Camera) aCamera = new Graphic3d_Camera();
+  aCamera->SetZeroToOneDepth (true);
+  Standard_Boolean isOrthographic = !theView->IsPerspective();
+  aCamera->SetProjectionType (isOrthographic ? Graphic3d_Camera::Projection_Orthographic : Graphic3d_Camera::Projection_Perspective);
+  if (isOrthographic)
+  {
+    aCamera->SetScale (2 * theView->GetParallelScale());
+  }
+  else
+  {
+    aCamera->SetFOVy (theView->GetViewAngle());
+  }
+  Standard_Real aZNear = 0.0, aZFar = 0.0;
+  theView->GetClippingRange (aZNear, aZFar);
+  aCamera->SetZRange (aZNear, aZFar);
+  aCamera->SetAspect (theView->GetAspectRatio());
+  gp_XYZ anAxialScale;
+  theView->GetScale (anAxialScale.ChangeCoord (1), anAxialScale.ChangeCoord (2), anAxialScale.ChangeCoord (3));
+  aCamera->SetAxialScale (anAxialScale);
+
+  gp_XYZ anUp, aDir, anEyePos;
+  theView->GetViewUp (anUp.ChangeCoord(1), anUp.ChangeCoord(2), anUp.ChangeCoord(3));
+  theView->GetDirectionOfProjection (aDir.ChangeCoord(1), aDir.ChangeCoord(2), aDir.ChangeCoord(3));
+  theView->GetEyePosition (anEyePos.ChangeCoord(1), anEyePos.ChangeCoord(2), anEyePos.ChangeCoord(3));
+
+  aCamera->SetDistance (theView->GetDistance());
+  aCamera->SetUp (anUp);
+  aCamera->SetDirectionFromEye (aDir.Reversed());
+  aCamera->MoveEyeTo (anEyePos);
+
+  return aCamera;
+}
+
+//============================================================================
 // Method:  Pick
 // Purpose: Implements point picking
 //============================================================================
@@ -63,18 +102,13 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer theXPix,
     myToUpdateTol = Standard_False;
   }
 
+  mySelectingVolumeMgr.SetCamera (ConvertVtkToOccCamera (theView));
+
   Standard_Integer aWidth = 0, aHeight = 0;
-  Graphic3d_Mat4d aProj, anOrient;
-  Standard_Boolean isOrthographic = Standard_False;
-  Standard_Real aX = RealLast(), aY = RealLast();
-  Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
-
-  theView->GetCamera (aProj, anOrient, isOrthographic);
-  mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
-
   theView->GetWindowSize (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
-
+  Standard_Real aX = RealLast(), aY = RealLast();
+  Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
   theView->GetViewport (aX, aY, aVpWidth, aVpHeight);
   mySelectingVolumeMgr.SetViewport (aX, aY, aVpWidth, aVpHeight);
 
@@ -113,12 +147,10 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer    theXMin,
 
   Standard_Integer aWidth = 0, aHeight = 0;
   Graphic3d_Mat4d aProj, anOrient;
-  Standard_Boolean isOrthographic = Standard_False;
   Standard_Real aX = RealLast(), aY = RealLast();
   Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
 
-  theView->GetCamera (aProj, anOrient, isOrthographic);
-  mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
+  mySelectingVolumeMgr.SetCamera (ConvertVtkToOccCamera (theView));
 
   theView->GetWindowSize (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
@@ -162,12 +194,10 @@ void IVtkOCC_ViewerSelector::Pick (double**                  thePoly,
 
   Standard_Integer aWidth = 0, aHeight = 0;
   Graphic3d_Mat4d aProj, anOrient;
-  Standard_Boolean isOrthographic = Standard_False;
   Standard_Real aX = RealLast(), aY = RealLast();
   Standard_Real aVpWidth = RealLast(), aVpHeight = RealLast();
 
-  theView->GetCamera (aProj, anOrient, isOrthographic);
-  mySelectingVolumeMgr.SetCamera (aProj, anOrient, isOrthographic);
+  mySelectingVolumeMgr.SetCamera (ConvertVtkToOccCamera (theView));
 
   theView->GetWindowSize (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);

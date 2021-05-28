@@ -64,6 +64,7 @@
 #include <vtkImageWriter.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkJPEGWriter.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPNGWriter.h>
 #include <vtkPNMWriter.h>
 #include <vtkPolyDataMapper.h>
@@ -1401,6 +1402,123 @@ static Standard_Integer VtkViewProj (Draw_Interpretor& ,
   return 0;
 }
 
+//=================================================================================================
+//function : VtkViewParams
+//purpose  :
+//=================================================================================================
+static int VtkViewParams (Draw_Interpretor& theDI, Standard_Integer theArgsNb, const char** /*theArgVec*/)
+{
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
+  {
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+  else if (theArgsNb != 1)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  vtkCamera* aCam = GetRenderer()->GetActiveCamera();
+
+  gp_XYZ aViewUp, aViewProj, aViewEye, aViewAt;
+  aCam->GetViewUp (aViewUp.ChangeCoord(1), aViewUp.ChangeCoord(2), aViewUp.ChangeCoord(3));
+  aCam->GetDirectionOfProjection (aViewProj.ChangeCoord(1), aViewProj.ChangeCoord(2), aViewProj.ChangeCoord(3));
+  aViewProj.Reverse();
+  aCam->GetPosition (aViewEye.ChangeCoord(1), aViewEye.ChangeCoord(2), aViewEye.ChangeCoord(3));
+  aCam->GetFocalPoint (aViewAt.ChangeCoord(1), aViewAt.ChangeCoord(2), aViewAt.ChangeCoord(3));
+  const Standard_Real aViewScale = aCam->GetParallelScale();
+  const Standard_Real aViewAspect = GetRenderer()->GetTiledAspectRatio();
+  vtkMatrix4x4* aProjMat = aCam->GetProjectionTransformMatrix (GetRenderer()->GetTiledAspectRatio(), -1, 1);
+  vtkMatrix4x4* aViewMat = aCam->GetViewTransformMatrix();
+  // print all of the available view parameters
+  char aText[4096];
+  Sprintf (aText,
+           "Scale: %g\n"
+           "Aspect:  %g\n"
+           "Proj:  %12g %12g %12g\n"
+           "Up:    %12g %12g %12g\n"
+           "At:    %12g %12g %12g\n"
+           "Eye:   %12g %12g %12g\n"
+           "ViewMat:       %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n"
+           "ProjMat:       %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n"
+           "               %12g %12g %12g %12g\n",
+           aViewScale, aViewAspect,
+           aViewProj.X(), aViewProj.Y(), aViewProj.Z(),
+           aViewUp.X(), aViewUp.Y(), aViewUp.Z(),
+           aViewAt.X(), aViewAt.Y(), aViewAt.Z(),
+           aViewEye.X(), aViewEye.Y(), aViewEye.Z(),
+           aViewMat->GetElement (0, 0), aViewMat->GetElement(0, 1), aViewMat->GetElement(0, 2), aViewMat->GetElement(0, 3),
+           aViewMat->GetElement (1, 0), aViewMat->GetElement(1, 1), aViewMat->GetElement(1, 2), aViewMat->GetElement(1, 3),
+           aViewMat->GetElement (2, 0), aViewMat->GetElement(2, 1), aViewMat->GetElement(2, 2), aViewMat->GetElement(2, 3),
+           aViewMat->GetElement (3, 0), aViewMat->GetElement(3, 1), aViewMat->GetElement(3, 2), aViewMat->GetElement(3, 3),
+           aProjMat->GetElement (0, 0), aProjMat->GetElement(0, 1), aProjMat->GetElement(0, 2), aProjMat->GetElement(0, 3),
+           aProjMat->GetElement (1, 0), aProjMat->GetElement(1, 1), aProjMat->GetElement(1, 2), aProjMat->GetElement(1, 3),
+           aProjMat->GetElement (2, 0), aProjMat->GetElement(2, 1), aProjMat->GetElement(2, 2), aProjMat->GetElement(2, 3),
+           aProjMat->GetElement (3, 0), aProjMat->GetElement(3, 1), aProjMat->GetElement(3, 2), aProjMat->GetElement(3, 3));
+  theDI << aText;
+  return 0;
+}
+
+//=================================================================================================
+//function : VtkCamera
+//purpose  :
+//=================================================================================================
+static int VtkCamera (Draw_Interpretor& theDI, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
+  {
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+
+  vtkCamera* aCamera = GetRenderer()->GetActiveCamera();
+
+  if (theArgsNb < 2)
+  {
+    Standard_Real aZNear = 0.0, aZFar = 0.0;
+    aCamera->GetClippingRange (aZNear, aZFar);
+    theDI << "ProjType:   " << (aCamera->GetParallelProjection() ? "orthographic" : "perspective") << "\n";
+    theDI << "FOVy:       " << aCamera->GetViewAngle() << "\n";
+    theDI << "Distance:   " << aCamera->GetDistance() << "\n";
+    theDI << "ZNear:      " << aZNear << "\n";
+    theDI << "ZFar:       " << aZFar << "\n";
+    return 0;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    Standard_CString        anArg = theArgVec[anArgIter];
+    TCollection_AsciiString anArgCase(anArg);
+    anArgCase.LowerCase();
+    if (anArgCase == "-ortho"
+     || anArgCase == "-orthographic")
+    {
+      aCamera->SetParallelProjection (true);
+    }
+    else if (anArgCase == "-persp"
+          || anArgCase == "-perspective")
+    {
+      aCamera->SetParallelProjection (false);
+    }
+    else
+    {
+      Message::SendFail() << "Error: unknown argument '" << anArg << "'";
+      return 1;
+    }
+  }
+  GetRenderer()->ResetCamera();
+  GetInteractor()->Render();
+  return 0;
+}
+
 //===================================================================
 // Fubction  : VtkDump
 // Purpose   :
@@ -1732,6 +1850,20 @@ void IVtkDraw::Commands (Draw_Interpretor& theCommands)
               "ivtksettransparency name 0..1"
       "\n\t\t: Sets transparency to the object with name 'name'.",
     __FILE__, VtkSetTransparency, group);
+
+  theCommands.Add("ivtkviewparams",
+              "ivtkviewparams: Prints all current view parameters.",
+    __FILE__, VtkViewParams, group);
+
+  theCommands.Add("ivtkcamera",
+              "ivtkcamera [-ortho] [-persp]"
+      "\n\t\t: Manages camera parameters."
+      "\n\t\t: Prints current value when option called without argument."
+      "\n\t\t: Orthographic camera:"
+      "\n\t\t:   -ortho      activate orthographic projection"
+      "\n\t\t: Perspective camera:"
+      "\n\t\t:   -persp      activate perspective  projection",
+    __FILE__, VtkCamera, group);
 }
 
 //================================================================

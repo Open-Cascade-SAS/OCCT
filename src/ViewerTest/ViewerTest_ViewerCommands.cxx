@@ -7476,6 +7476,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   Standard_Boolean toSetSize     = Standard_False;
   Standard_Boolean toSetCenter2d = Standard_False;
   Standard_Real    aViewScale = aView->Scale();
+  Standard_Real    aViewAspect = aView->Camera()->Aspect();
   Standard_Real    aViewSize  = 1.0;
   Graphic3d_Vec2i  aCenter2d;
   gp_XYZ aViewProj, aViewUp, aViewAt, aViewEye;
@@ -7483,21 +7484,40 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   aView->Up   (aViewUp  .ChangeCoord (1), aViewUp  .ChangeCoord (2), aViewUp  .ChangeCoord (3));
   aView->At   (aViewAt  .ChangeCoord (1), aViewAt  .ChangeCoord (2), aViewAt  .ChangeCoord (3));
   aView->Eye  (aViewEye .ChangeCoord (1), aViewEye .ChangeCoord (2), aViewEye .ChangeCoord (3));
+  const Graphic3d_Mat4d& anOrientMat = aView->Camera()->OrientationMatrix();
+  const Graphic3d_Mat4d& aProjMat = aView->Camera()->ProjectionMatrix();
   if (theArgsNb == 1)
   {
     // print all of the available view parameters
     char aText[4096];
     Sprintf (aText,
-             "Scale: %g\n"
-             "Proj:  %12g %12g %12g\n"
-             "Up:    %12g %12g %12g\n"
-             "At:    %12g %12g %12g\n"
-             "Eye:   %12g %12g %12g\n",
-              aViewScale,
+             "Scale:  %g\n"
+             "Aspect: %g\n"
+             "Proj:   %12g %12g %12g\n"
+             "Up:     %12g %12g %12g\n"
+             "At:     %12g %12g %12g\n"
+             "Eye:    %12g %12g %12g\n"
+             "OrientMat:    %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n"
+             "ProjMat:      %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n"
+             "              %12g %12g %12g %12g\n",
+              aViewScale, aViewAspect,
               aViewProj.X(), aViewProj.Y(), aViewProj.Z(),
               aViewUp.X(),   aViewUp.Y(),   aViewUp.Z(),
               aViewAt.X(),   aViewAt.Y(),   aViewAt.Z(),
-              aViewEye.X(),  aViewEye.Y(),  aViewEye.Z());
+              aViewEye.X(),  aViewEye.Y(),  aViewEye.Z(),
+              anOrientMat.GetValue (0, 0), anOrientMat.GetValue (0, 1), anOrientMat.GetValue (0, 2), anOrientMat.GetValue (0, 3),
+              anOrientMat.GetValue (1, 0), anOrientMat.GetValue (1, 1), anOrientMat.GetValue (1, 2), anOrientMat.GetValue (1, 3),
+              anOrientMat.GetValue (2, 0), anOrientMat.GetValue (2, 1), anOrientMat.GetValue (2, 2), anOrientMat.GetValue (2, 3),
+              anOrientMat.GetValue (3, 0), anOrientMat.GetValue (3, 1), anOrientMat.GetValue (3, 2), anOrientMat.GetValue (3, 3),
+              aProjMat.GetValue (0, 0), aProjMat.GetValue (0, 1), aProjMat.GetValue (0, 2), aProjMat.GetValue (0, 3),
+              aProjMat.GetValue (1, 0), aProjMat.GetValue (1, 1), aProjMat.GetValue (1, 2), aProjMat.GetValue (1, 3),
+              aProjMat.GetValue (2, 0), aProjMat.GetValue (2, 1), aProjMat.GetValue (2, 2), aProjMat.GetValue (2, 3),
+              aProjMat.GetValue (3, 0), aProjMat.GetValue (3, 1), aProjMat.GetValue (3, 2), aProjMat.GetValue (3, 3));
     theDi << aText;
     return 0;
   }
@@ -9536,6 +9556,8 @@ static int VCamera (Draw_Interpretor& theDI,
     theDI << "IODType:    " << (aCamera->GetIODType() == Graphic3d_Camera::IODType_Absolute   ? "absolute" : "relative") << "\n";
     theDI << "ZFocus:     " << aCamera->ZFocus() << "\n";
     theDI << "ZFocusType: " << (aCamera->ZFocusType() == Graphic3d_Camera::FocusType_Absolute ? "absolute" : "relative") << "\n";
+    theDI << "ZNear:      " << aCamera->ZNear() << "\n";
+    theDI << "ZFar:       " << aCamera->ZFar() << "\n";
     return 0;
   }
 

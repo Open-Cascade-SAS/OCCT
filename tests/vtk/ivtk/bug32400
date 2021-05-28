@@ -1,0 +1,35 @@
+puts "============"
+puts "0032400: Visualization, TKIVtk - convert VTK camera to OCC"
+puts "============"
+puts ""
+
+pload MODELING VIS
+box b 1 1 1
+ivtkinit
+ivtkdisplay b
+ivtkmoveto 100 100
+
+
+psphere ss 2
+box bb -min -1 -1 2 -max 1 1 4
+ivtkinit
+ivtkdisplay bb
+ivtksetdispmode bb 1
+ivtkdisplay ss
+ivtksetdispmode ss 1
+ivtkcamera -ortho
+ivtktop
+ivtkfit
+
+ivtkcamera
+ivtkviewparams
+set point [ivtkmoveto 200 200]
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point} full p
+checkpoint "point_ortho" $p {-0.090334585045725627 0.07055554071451263 4} 0.001
+ivtkdump $imagedir/${casename}_ortho.png
+
+ivtkcamera -persp
+set point [ivtkmoveto 200 200]
+regexp {([-0-9.+eE]+ [-0-9.+eE]+ [-0-9.+eE]+)} ${point} full p
+checkpoint "point_persp" $p {-0.075846060294573109 0.059286688130282886 3.9999999999999996} 0.001
+ivtkdump $imagedir/${casename}_persp.png

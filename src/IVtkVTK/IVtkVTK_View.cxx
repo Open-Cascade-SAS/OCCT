@@ -78,6 +78,15 @@ double IVtkVTK_View::GetDistance() const
 }
 
 //================================================================
+// Function : GetEyePosition
+// Purpose  : 
+//================================================================
+void IVtkVTK_View::GetEyePosition (double& theX, double& theY, double& theZ) const
+{
+  myRenderer->GetActiveCamera()->GetPosition (theX, theY, theZ);
+}
+
+//================================================================
 // Function : GetPosition
 // Purpose  : 
 //================================================================
@@ -139,6 +148,24 @@ double IVtkVTK_View::GetParallelScale() const
 double IVtkVTK_View::GetViewAngle() const
 {
   return myRenderer->GetActiveCamera()->GetViewAngle();
+}
+
+//================================================================
+// Function : GetAspectRatio
+// Purpose  : 
+//================================================================
+double IVtkVTK_View::GetAspectRatio() const
+{
+  return myRenderer->GetTiledAspectRatio();
+}
+
+//================================================================
+// Function : GetClippingRange
+// Purpose  : 
+//================================================================
+void IVtkVTK_View::GetClippingRange (double& theZNear, double& theZFar) const
+{
+  myRenderer->GetActiveCamera()->GetClippingRange (theZNear, theZFar);
 }
 
 //================================================================
