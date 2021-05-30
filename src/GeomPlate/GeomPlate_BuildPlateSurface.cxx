@@ -302,7 +302,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
 
    Curve2d = appr.Curve2d();
  }
-#if DRAW
+#ifdef DRAW
  if (Affich) {
    char name[256];
    sprintf(name,"proj_%d",++NbProj);
@@ -1652,7 +1652,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
   if (! myIsLinear)
     {
       myPlanarSurfInit = mySurfInit;
-#if DRAW
+#ifdef DRAW
       if (Affich) {
 	char name[256];
 	sprintf(name,"planinit_%d",NbPlan+1);
@@ -1750,7 +1750,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
 	}
     }
 
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     char name[256];
     sprintf(name,"surfinit_%d",++NbPlan);
@@ -2447,7 +2447,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 	      diffDistMax = diffDist;
 	    SdiffDist+=diffDist;
 	    NdiffDist++;
-#if DRAW
+#ifdef DRAW
 	    if ((Affich) && (NbBoucle == myNbIter)) {
 	      gp_Pnt P;
 	      gp_Pnt2d P2d;
@@ -2479,7 +2479,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 		diffAngMax = diffAng;
 	      SdiffAng+=diffAng;
 	      NdiffAng++;
-#if DRAW
+#ifdef DRAW
 	      if ((Affich) && (NbBoucle == myNbIter)) {
 		gp_Pnt P;
 		LinCont->D0(U,P);	

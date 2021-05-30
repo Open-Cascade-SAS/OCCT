@@ -1598,9 +1598,9 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (CV1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, CV1.Vertex(), tol3d, tol2d);
       }
-# if CHFI3D_DEB
+#ifdef CHFI3D_DEB
       else { std::cout << "MakeExtremities : Singularity out of Vertex !!" << std::endl; }
-# endif
+#endif
     }
     return;
   }  
@@ -1663,9 +1663,9 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (cpdeb1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpdeb1.Vertex(), tol3d, tol2d);
       }
-# if CHFI3D_DEB
+#ifdef CHFI3D_DEB
       else { std::cout << "MakeExtremities : Singularity out of Vertex !!" << std::endl; }
-# endif
+#endif
     }
   }
   const Handle(ChFiDS_SurfData)& 
@@ -1725,9 +1725,9 @@ static void ChFi3d_MakeExtremities(Handle(ChFiDS_Stripe)&      Stripe,
       if (cpfin1.IsVertex()) { 
 	ChFi3d_SingularExtremity(Stripe, DStr, cpfin1.Vertex(), tol3d, tol2d);
       }
-# if CHFI3D_DEB
+#ifdef CHFI3D_DEB
       else { std::cout << "MakeExtremities : Singularity out of Vertex !!" << std::endl; }
-# endif
+#endif
     }
   }
 }

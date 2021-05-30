@@ -732,7 +732,7 @@ void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
     }
     // eap 5 Jun 2002 occ332, end modif
   }
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     DBRep::Set("PipeFirst", myFirst);
     DBRep::Set("PipeLast",  myLast);

@@ -239,7 +239,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
   Message_ProgressScope aPS(theRange, "Writing sub tree", 2, true);
   // Write label header: tag
   Standard_Integer aTag = theLabel.Tag();
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aTag = InverseInt (aTag);
 #endif
   theOS.write ((char*)&aTag, sizeof(Standard_Integer));
@@ -281,7 +281,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
   }
   // Write the end attributes list marker
   BinLDrivers_Marker anEndAttr = BinLDrivers_ENDATTRLIST;
-#if DO_INVERSE
+#ifdef DO_INVERSE
   anEndAttr = (BinLDrivers_Marker) InverseInt (anEndAttr);
 #endif
   theOS.write ((char*)&anEndAttr, sizeof(anEndAttr));
@@ -302,7 +302,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
 
   // Write the end label marker
   BinLDrivers_Marker anEndLabel = BinLDrivers_ENDLABEL;
-#if DO_INVERSE
+#ifdef DO_INVERSE
   anEndLabel = (BinLDrivers_Marker) InverseInt (anEndLabel);
 #endif
   theOS.write ((char*)&anEndLabel, sizeof(anEndLabel));

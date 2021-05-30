@@ -283,7 +283,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
       Standard_Integer aShapeSectionPos; // go to ShapeSection
       theIStream.read ((char*)&aShapeSectionPos, sizeof(Standard_Integer));
 
-#if DO_INVERSE
+#ifdef DO_INVERSE
       aShapeSectionPos = InverseInt (aShapeSectionPos);
 #endif
 #ifdef OCCT_DEBUG
@@ -440,7 +440,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
   // read the tag of a child label
   Standard_Integer aTag = BinLDrivers_ENDLABEL;
   theIS.read ((char*) &aTag, sizeof(Standard_Integer));
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aTag = InverseInt (aTag);
 #endif
   
@@ -463,7 +463,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
 
     // read the tag of the next child
     theIS.read ((char*) &aTag, sizeof(Standard_Integer));
-#if DO_INVERSE
+#ifdef DO_INVERSE
     aTag = InverseInt (aTag);
 #endif
   }

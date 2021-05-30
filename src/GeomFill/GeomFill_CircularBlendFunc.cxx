@@ -28,7 +28,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc,Approx_SweepFunction)
 
-#if DRAW
+#ifdef DRAW
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <DrawTrSurf.hxx>
@@ -281,7 +281,7 @@ Standard_Boolean GeomFill_CircularBlendFunc::D0(const Standard_Real Param,
 		      myRadius, Center,
 		      Poles,  Weigths);  
 
-#if DRAW
+#ifdef DRAW
 //  Handle(Geom_BSplineCurve) BS = 
 //    new Geom_BSplineCurve(Poles,Weights,Knots,Mults,Degree);
 //  sprintf(name,"SECT_%d",NbSections++);

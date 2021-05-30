@@ -91,7 +91,7 @@ Standard_OStream& BinObjMgt_Persistent::Write (Standard_OStream& theOS)
   Standard_Integer *aData = (Standard_Integer*) myData(1);
   // update data length
   aData[2] = mySize - BP_HEADSIZE;
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aData[0] = InverseInt (aData[0]);
   aData[1] = InverseInt (aData[1]);
   aData[2] = InverseInt (aData[2]);
@@ -131,13 +131,13 @@ Standard_IStream& BinObjMgt_Persistent::Read (Standard_IStream& theIS)
 
   // read TypeId
   theIS.read ((char*) &aData[0], BP_INTSIZE);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aData[0] = InverseInt (aData[0]);
 #endif
   if (theIS && aData[0] > 0) {
     // read Id and Length
     theIS.read ((char*)&aData[1], 2 * BP_INTSIZE);
-#if DO_INVERSE
+#ifdef DO_INVERSE
     aData[1] = InverseInt (aData[1]);
     aData[2] = InverseInt (aData[2]);
 #endif
@@ -242,7 +242,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharacter
   prepareForPut (BP_EXTCHARSIZE);
   Standard_ExtCharacter *aData =
     (Standard_ExtCharacter*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   *aData = InverseExtChar (theValue);
 #else
   *aData = theValue;
@@ -262,7 +262,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutInteger
   alignOffset (BP_INTSIZE, Standard_True);
   prepareForPut (BP_INTSIZE);
   Standard_Integer *aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   *aData = InverseInt (theValue);
 #else
   *aData = theValue;
@@ -283,19 +283,19 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutReal
   Standard_Integer nbPieces = prepareForPut (BP_REALSIZE);
   if (nbPieces > 0) {
     // the value intersects a piece boundary => go a long way
-#if DO_INVERSE
+#ifdef DO_INVERSE
     Standard_Integer aStartIndex = myIndex;
     Standard_Integer aStartOffset = myOffset;
 #endif
     putArray ((void*) &theValue, BP_REALSIZE);
-#if DO_INVERSE
+#ifdef DO_INVERSE
     inverseRealData (aStartIndex, aStartOffset, BP_REALSIZE);
 #endif
   }
   else {
     // the value fits in the current piece => put it quickly
     Standard_Real *aData = (Standard_Real*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
     *aData = InverseReal (theValue);
 #else
     *aData = theValue;
@@ -316,7 +316,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortReal
   alignOffset (BP_INTSIZE, Standard_True);
   prepareForPut (BP_SHORTREALSIZE);
   Standard_ShortReal *aData = (Standard_ShortReal*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   *aData = InverseShortReal (theValue);
 #else
   *aData = theValue;
@@ -366,12 +366,12 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtendedString
   alignOffset (BP_INTSIZE, Standard_True);
   Standard_Integer aSize = (theValue.Length() + 1) * BP_EXTCHARSIZE;
   prepareForPut (aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
   putArray ((void* )theValue.ToExtString(), aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   inverseExtCharData (aStartIndex, aStartOffset, aSize - BP_EXTCHARSIZE);
 #endif
   return *this;
@@ -390,7 +390,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutLabel
   prepareForPut ((aLen + 1) * BP_INTSIZE);
   Standard_Integer *aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
   // store nb of tags
-#if DO_INVERSE
+#ifdef DO_INVERSE
   *aData++ = InverseInt (aLen);
 #else
   *aData++ = aLen;
@@ -406,7 +406,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutLabel
         myIndex++;
         aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
       }
-#if DO_INVERSE
+#ifdef DO_INVERSE
       *aData++ = InverseInt (itTag.Value());
 #else
       *aData++ = itTag.Value();
@@ -440,7 +440,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutGUID
   anUUID.Data4[5] = aStandardUUID.Data4[5];
   anUUID.Data4[6] = aStandardUUID.Data4[6];
   anUUID.Data4[7] = aStandardUUID.Data4[7];
-#if DO_INVERSE
+#ifdef DO_INVERSE
   anUUID.Data1 = (unsigned int)   InverseInt     (anUUID.Data1);
   anUUID.Data2 = (unsigned short) InverseExtChar (anUUID.Data2);
   anUUID.Data3 = (unsigned short) InverseExtChar (anUUID.Data3);
@@ -491,12 +491,12 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray
   alignOffset (BP_EXTCHARSIZE, Standard_True);
   Standard_Integer aSize = theLength * BP_EXTCHARSIZE;
   prepareForPut (aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
   putArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   inverseExtCharData (aStartIndex, aStartOffset, aSize);
 #endif
   return *this;
@@ -514,12 +514,12 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray
   alignOffset (BP_INTSIZE, Standard_True);
   Standard_Integer aSize = theLength * BP_INTSIZE;
   prepareForPut (aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
   putArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   inverseIntData (aStartIndex, aStartOffset, aSize);
 #endif
   return *this;
@@ -537,12 +537,12 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray
   alignOffset (BP_INTSIZE, Standard_True);
   Standard_Integer aSize = theLength * BP_REALSIZE;
   prepareForPut (aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
   putArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   inverseRealData (aStartIndex, aStartOffset, aSize);
 #endif
   return *this;
@@ -560,12 +560,12 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortRealArray
   alignOffset (BP_INTSIZE, Standard_True);
   Standard_Integer aSize = theLength * BP_SHORTREALSIZE;
   prepareForPut (aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_Integer aStartIndex = myIndex;
   Standard_Integer aStartOffset = myOffset;
 #endif
   putArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   inverseShortRealData (aStartIndex, aStartOffset, aSize);
 #endif
   return *this;
@@ -615,7 +615,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharacter
   if (noMoreData (BP_EXTCHARSIZE)) return *this;
   Standard_ExtCharacter *aData =
     (Standard_ExtCharacter*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseExtChar (*aData);
 #else
   theValue = *aData;
@@ -635,7 +635,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetInteger
   alignOffset (BP_INTSIZE);
   if (noMoreData (BP_INTSIZE)) return *this;
   Standard_Integer *aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseInt (*aData);
 #else
   theValue = *aData;
@@ -665,7 +665,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetReal
     theValue = *aData;
     ((BinObjMgt_Persistent*)this)->myOffset += BP_REALSIZE;
   }
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseReal (theValue);
 #endif
   return *this;
@@ -682,7 +682,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortReal
   alignOffset (BP_INTSIZE);
   if (noMoreData (BP_SHORTREALSIZE)) return *this;
   Standard_ShortReal *aData = (Standard_ShortReal*) ((char*)myData(myIndex) + myOffset);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseShortReal (*aData);
 #else
   theValue = *aData;
@@ -784,7 +784,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtendedString
     theValue = (Standard_ExtCharacter*) aString;
     Standard::Free (aString);
   }
-#if DO_INVERSE
+#ifdef DO_INVERSE
   Standard_PExtCharacter aString = (Standard_PExtCharacter)theValue.ToExtString();
   for (Standard_Integer i=0; i < theValue.Length(); i++)
     aString[i] = InverseExtChar (aString[i]);
@@ -809,7 +809,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel
   // retrieve nb of tags
   Standard_Integer *aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
   Standard_Integer aLen = *aData++;
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aLen = InverseInt (aLen);
 #endif
   me->myOffset += BP_INTSIZE;
@@ -824,7 +824,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel
         me->myIndex++;
         aData = (Standard_Integer*) ((char*)myData(myIndex) + myOffset);
       }
-#if DO_INVERSE
+#ifdef DO_INVERSE
       aTagList.Append (InverseInt (*aData++));
 #else
       aTagList.Append (*aData++);
@@ -851,7 +851,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetGUID
     return *this;
   BinObjMgt_UUID anUUID;
   getArray (&anUUID, BP_UUIDSIZE);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   anUUID.Data1 = (unsigned int)   InverseInt     (anUUID.Data1);
   anUUID.Data2 = (unsigned short) InverseExtChar (anUUID.Data2);
   anUUID.Data3 = (unsigned short) InverseExtChar (anUUID.Data3);
@@ -912,7 +912,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray
   Standard_Integer aSize = theLength * BP_EXTCHARSIZE;
   if (noMoreData (aSize)) return *this;
   getArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   for (Standard_Integer i=0; i < theLength; i++)
     theArray[i] = InverseExtChar (theArray[i]);
 #endif
@@ -934,7 +934,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray
   Standard_Integer aSize = theLength * BP_INTSIZE;
   if (noMoreData (aSize)) return *this;
   getArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   for (Standard_Integer i=0; i < theLength; i++)
     theArray[i] = InverseInt (theArray[i]);
 #endif
@@ -956,7 +956,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray
   Standard_Integer aSize = theLength * BP_REALSIZE;
   if (noMoreData (aSize)) return *this;
   getArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   for (Standard_Integer i=0; i < theLength; i++)
     theArray[i] = InverseReal (theArray[i]);
 #endif
@@ -978,7 +978,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray
   Standard_Integer aSize = theLength * BP_SHORTREALSIZE;
   if (noMoreData (aSize)) return *this;
   getArray (theArray, aSize);
-#if DO_INVERSE
+#ifdef DO_INVERSE
   for (Standard_Integer i=0; i < theLength; i++)
     theArray[i] = InverseShortReal (theArray[i]);
 #endif

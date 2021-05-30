@@ -20,7 +20,7 @@
 typedef 
 #ifdef SOLARIS
            sigjmp_buf   
-#elif IRIX
+#elif defined(IRIX)
            sigjmp_buf   
 #else
            jmp_buf      

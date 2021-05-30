@@ -41,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGui
 
 //#include <gp_Trsf2d.hxx>
 //#include <Bnd_Box2d.hxx>
-#if DRAW
+#ifdef DRAW
 #include <DrawTrSurf.hxx>
 #endif
 

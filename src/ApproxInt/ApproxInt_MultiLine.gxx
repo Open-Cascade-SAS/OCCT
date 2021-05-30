@@ -84,7 +84,7 @@ ApproxInt_MultiLine::
                                                       U2o(u2o), V2o(v2o)
 
 {
-#if OCCT_DEBUG 
+#ifdef OCCT_DEBUG
   //if(indicemin == indicemax)
   //{
   //  cout<<"ApproxInt_MultiLine: indicemin = indicemax = " << indicemin << endl;
@@ -123,7 +123,7 @@ ApproxInt_MultiLine::
                                                       U1o(u1o), V1o(v1o),
                                                       U2o(u2o), V2o(v2o)
 {
-#if OCCT_DEBUG
+#ifdef OCCT_DEBUG
   //if(indicemin == indicemax)
   //{
   //  cout<<"ApproxInt_MultiLine: indicemin = indicemax = " << indicemin << endl;
@@ -554,7 +554,7 @@ ApproxInt_MultiLine
     P2B=P2C;
   }
 
-#if OCCT_DEBUG
+#ifdef OCCT_DEBUG
   //if (temp->NbPnts() < NbPntsToInsert + High - Low + 1)
   //{ 
   //  cout<<" *** Pas assez de points entre :"<<

@@ -62,7 +62,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationGuide,GeomFill_LocationLaw)
 
-#if DRAW
+#ifdef DRAW
 static Standard_Integer Affich = 0;
 #include <Approx_Curve3d.hxx>
 #include <DrawTrSurf.hxx>
@@ -195,7 +195,7 @@ static void InGoodPeriod(const Standard_Real Prec,
   Trans.SetIdentity();
   WithTrans = Standard_False;
 
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     Approx_Curve3d approx(myGuide, 1.e-4, 
 			  GeomAbs_C1, 

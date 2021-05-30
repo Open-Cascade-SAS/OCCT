@@ -300,7 +300,7 @@ void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
   RemLoc.Remove(myLast);
   myLast = RemLoc.GetResult();
   
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     DBRep::Set("theprof",  TheProf);
     DBRep::Set("thefirst", myFirst);

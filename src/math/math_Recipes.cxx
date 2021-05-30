@@ -12,15 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// This preprocessor directive is a kludge to get around
-// a bug in the Sun Workshop 5.0 compiler, it keeps the
-// /usr/include/memory.h file from being #included
-// with an incompatible extern "C" definition of memchr
-// October 18, 2000  <rboehne@ricardo-us.com>
-#if __SUNPRO_CC == 0x500
-#define	_MEMORY_H
-#endif
-
 //#ifndef OCCT_DEBUG
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange

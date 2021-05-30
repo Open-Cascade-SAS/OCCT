@@ -389,7 +389,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
 //  Standard_Real StartAng = 0, AvStep, Step, t;
   Standard_Real StartAng = 0, AvStep, Step;
 
-#if DRAW
+#ifdef DRAW
   Standard_Real t;
 
   if (Affich) { // Display the curve C'^C''(t)
@@ -449,7 +449,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
     HArrNormal->ChangeValue(i) = SeqNormal(i); 
   };
   
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     draw(EvolAroundT);
   }

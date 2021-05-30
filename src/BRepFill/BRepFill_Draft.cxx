@@ -285,7 +285,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     TopExp::Vertices(myWire, Vf, Vl);
     if (Vf.IsSame(Vl)) myWire.Closed(Standard_True);
   }
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     DBRep::Set("TheWire", myWire);
   }
@@ -425,7 +425,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   Handle(Geom_Plane) Plan = new (Geom_Plane)(Pt, myDir);
   Surf = new (Geom_RectangularTrimmedSurface) (Plan,-L, L, -L, L); 
 
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     char* Temp = "ThePlan" ;
     DrawTrSurf::Set(Temp, Surf);
@@ -486,7 +486,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   Handle(Geom_Curve) TC = new (Geom_TrimmedCurve) (L, 0, Length);
 
 
-#if DRAW
+#ifdef DRAW
   if (Affich > 2) {
      TC = new (Geom_Circle) (gp::XOY(), Length);
   }

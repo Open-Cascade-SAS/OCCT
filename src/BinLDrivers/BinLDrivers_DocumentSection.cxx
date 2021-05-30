@@ -133,7 +133,7 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream,
       aBufSize += sizeof(Standard_Integer);
 
     // Write the buffer: size + string
-#if DO_INVERSE
+#ifdef DO_INVERSE
     aBufSz[0] = InverseInt ((Standard_Integer)aBufSize);
 #else
     aBufSz[0] = (Standard_Integer)aBufSize;
@@ -185,7 +185,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
       int32_t(myValue[1]),
       int32_t(myIsPostRead ? 1 : 0)
     };
-#if DO_INVERSE
+#ifdef DO_INVERSE
     aValInt[0] = InverseInt(aValInt[0]);
     aValInt[1] = InverseInt(aValInt[1]);
     aValInt[2] = InverseInt(aValInt[2]);
@@ -199,7 +199,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
       myValue[1],
       uint64_t(myIsPostRead ? 1 : 0)
     };
-#if DO_INVERSE
+#ifdef DO_INVERSE
     aVal[0] = InverseUint64(aVal[0]);
     aVal[1] = InverseUint64(aVal[1]);
     aVal[2] = InverseUint64(aVal[2]);
@@ -223,7 +223,7 @@ void BinLDrivers_DocumentSection::ReadTOC
   char aBuf[512];
   Standard_Integer aNameBufferSize;
   theStream.read ((char *)&aNameBufferSize, sizeof(Standard_Integer));
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aNameBufferSize = InverseSize(aNameBufferSize);
 #endif
   if (aNameBufferSize > 0) {
@@ -236,7 +236,7 @@ void BinLDrivers_DocumentSection::ReadTOC
       // Old documents stored file position as 4-bytes values.
       int32_t aValInt[3];
       theStream.read ((char *)&aValInt[0], 3*sizeof(int32_t));
-#if DO_INVERSE
+#ifdef DO_INVERSE
       aValue[0] = InverseInt (aValInt[0]);
       aValue[1] = InverseInt (aValInt[1]);
       aValue[2] = InverseInt (aValInt[2]);
@@ -249,7 +249,7 @@ void BinLDrivers_DocumentSection::ReadTOC
     else
     {
       theStream.read ((char *)&aValue[0], 3*sizeof(uint64_t));
-#if DO_INVERSE
+#ifdef DO_INVERSE
       aValue[0] = InverseUint64 (aValue[0]);
       aValue[1] = InverseUint64 (aValue[1]);
       aValue[2] = InverseUint64 (aValue[2]);

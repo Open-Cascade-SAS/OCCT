@@ -625,7 +625,7 @@ static void BuildFace(const Handle(Geom_Surface)& S,
     }
 
   WW = B.Wire();
-#if DRAW
+#ifdef DRAW
   if (Affich)
     DBRep::Set("wire-on-face", WW);
 #endif
@@ -853,7 +853,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
     WithE4 = Standard_True;
   }
 
-#if DRAW
+#ifdef DRAW
   if (Affich) {
     DBRep::Set("Fill_Edge1", E1);
     DBRep::Set("Fill_Edge2", E2);
@@ -939,7 +939,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
     */
   }
 
-#if DRAW
+#ifdef DRAW
   if (Affich) { 
       char* Temp = "Surf_Init" ;
       DrawTrSurf::Set(Temp, Surf);
@@ -1258,7 +1258,7 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   if (ToReverseResult)
     Result.Reverse();
 
-#if DRAW
+#ifdef DRAW
   if (Affich) DBRep::Set("BoucheTrou", Result);
 #endif
 
@@ -2064,7 +2064,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
        return Standard_False;  
      }
     E = MkE.Edge();
-#if DRAW
+#ifdef DRAW
     if (Affich) {
       sprintf(name,"Surf_%d", ipath);
       char* Temp = name;

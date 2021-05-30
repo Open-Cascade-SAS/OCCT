@@ -39,7 +39,7 @@ Standard_OStream& BinTools::PutBool(Standard_OStream& OS, const Standard_Boolean
 Standard_OStream& BinTools::PutInteger(Standard_OStream& OS, const Standard_Integer aValue)
 {
   Standard_Integer anIntValue = aValue;
-#if DO_INVERSE
+#ifdef DO_INVERSE
       anIntValue = InverseInt (aValue);
 #endif
   OS.write((char*)&anIntValue, sizeof(Standard_Integer));  
@@ -54,7 +54,7 @@ Standard_OStream& BinTools::PutInteger(Standard_OStream& OS, const Standard_Inte
 Standard_OStream& BinTools::PutReal (Standard_OStream& theOS,
                                      const Standard_Real& theValue)
 {
-#if DO_INVERSE
+#ifdef DO_INVERSE
   const Standard_Real aRValue = InverseReal (theValue);
   theOS.write((char*)&aRValue, sizeof(Standard_Real));
 #else
@@ -70,7 +70,7 @@ Standard_OStream& BinTools::PutReal (Standard_OStream& theOS,
 Standard_OStream& BinTools::PutShortReal (Standard_OStream& theOS,
                                           const Standard_ShortReal& theValue)
 {
-#if DO_INVERSE
+#ifdef DO_INVERSE
   const Standard_ShortReal aValue = InverseShortReal (theValue);
   theOS.write ((char*)&aValue, sizeof(Standard_ShortReal));
 #else
@@ -87,7 +87,7 @@ Standard_OStream& BinTools::PutShortReal (Standard_OStream& theOS,
 Standard_OStream& BinTools::PutExtChar(Standard_OStream& OS, const Standard_ExtCharacter aValue)
 {
   Standard_ExtCharacter aSValue = aValue;
-#if DO_INVERSE
+#ifdef DO_INVERSE
       aSValue = InverseExtChar (aValue);
 #endif
   OS.write((char*)&aSValue, sizeof(Standard_ExtCharacter));  
@@ -105,7 +105,7 @@ Standard_IStream& BinTools::GetReal (Standard_IStream& theIS,
   {
     throw Storage_StreamTypeMismatchError();
   }
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseReal (theValue);
 #endif
   return theIS;
@@ -122,7 +122,7 @@ Standard_IStream& BinTools::GetShortReal (Standard_IStream& theIS,
   {
     throw Storage_StreamTypeMismatchError();
   }
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseShortReal (theValue);
 #endif
   return theIS;
@@ -137,7 +137,7 @@ Standard_IStream& BinTools::GetInteger(Standard_IStream& IS, Standard_Integer& a
 {
   if(!IS.read ((char*)&aValue, sizeof(Standard_Integer)))
     throw Storage_StreamTypeMismatchError();
-#if DO_INVERSE
+#ifdef DO_INVERSE
   aValue = InverseInt (aValue);
 #endif
   return IS;
@@ -152,7 +152,7 @@ Standard_IStream& BinTools::GetExtChar(Standard_IStream& IS, Standard_ExtCharact
 {
   if(!IS.read ((char*)&theValue, sizeof(Standard_ExtCharacter)))
     throw Storage_StreamTypeMismatchError();
-#if DO_INVERSE
+#ifdef DO_INVERSE
   theValue = InverseExtChar (theValue);
 #endif
   return IS;
