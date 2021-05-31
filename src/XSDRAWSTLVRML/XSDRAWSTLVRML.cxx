@@ -47,6 +47,7 @@
 #include <RWStl.hxx>
 #include <RWObj.hxx>
 #include <RWObj_CafReader.hxx>
+#include <RWObj_CafWriter.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
@@ -666,6 +667,117 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
       Draw::Set (aDestName.ToCString(), aDrawDoc);
     }
   }
+  return 0;
+}
+
+//=============================================================================
+//function : WriteObj
+//purpose  : Writes OBJ file
+//=============================================================================
+static Standard_Integer WriteObj (Draw_Interpretor& theDI,
+                                  Standard_Integer theNbArgs,
+                                  const char** theArgVec)
+{
+  TCollection_AsciiString anObjFilePath;
+  Handle(TDocStd_Document) aDoc;
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  TColStd_IndexedDataMapOfStringString aFileInfo;
+  Standard_Real aFileUnitFactor = -1.0;
+  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup, aFileCoordSys = RWMesh_CoordinateSystem_Yup;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+        if (anArgIter + 1 < theNbArgs
+     && (anArgCase == "-unit"
+      || anArgCase == "-units"
+      || anArgCase == "-fileunit"
+      || anArgCase == "-fileunits"))
+    {
+      const TCollection_AsciiString aUnitStr (theArgVec[++anArgIter]);
+      aFileUnitFactor = UnitsAPI::AnyToSI (1.0, aUnitStr.ToCString());
+      if (aFileUnitFactor <= 0.0)
+      {
+        Message::SendFail() << "Syntax error: wrong length unit '" << aUnitStr << "'";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-filecoordinatesystem"
+           || anArgCase == "-filecoordsystem"
+           || anArgCase == "-filecoordsys"))
+    {
+      if (!parseCoordinateSystem (theArgVec[++anArgIter], aFileCoordSys))
+      {
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-systemcoordinatesystem"
+           || anArgCase == "-systemcoordsystem"
+           || anArgCase == "-systemcoordsys"
+           || anArgCase == "-syscoordsys"))
+    {
+      if (!parseCoordinateSystem (theArgVec[++anArgIter], aSystemCoordSys))
+      {
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else if (anArgCase == "-comments"
+          && anArgIter + 1 < theNbArgs)
+    {
+      aFileInfo.Add ("Comments", theArgVec[++anArgIter]);
+    }
+    else if (anArgCase == "-author"
+          && anArgIter + 1 < theNbArgs)
+    {
+      aFileInfo.Add ("Author", theArgVec[++anArgIter]);
+    }
+    else if (aDoc.IsNull())
+    {
+      Standard_CString aNameVar = theArgVec[anArgIter];
+      DDocStd::GetDocument (aNameVar, aDoc, false);
+      if (aDoc.IsNull())
+      {
+        TopoDS_Shape aShape = DBRep::Get (aNameVar);
+        if (aShape.IsNull())
+        {
+          Message::SendFail() << "Syntax error: '" << aNameVar << "' is not a shape nor document";
+          return 1;
+        }
+
+        anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
+        Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
+        aShapeTool->AddShape (aShape);
+      }
+    }
+    else if (anObjFilePath.IsEmpty())
+    {
+      anObjFilePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+  if (anObjFilePath.IsEmpty())
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+
+  const Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
+  RWObj_CafWriter aWriter (anObjFilePath);
+  aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
+  aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (aSystemCoordSys);
+  aWriter.ChangeCoordinateSystemConverter().SetOutputLengthUnit (aFileUnitFactor);
+  aWriter.ChangeCoordinateSystemConverter().SetOutputCoordinateSystem (aFileCoordSys);
+  aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
   return 0;
 }
 
@@ -1782,18 +1894,20 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:                    (false by default)"
                    "\n\t\t:   -keepLate data is loaded into itself with preservation of information"
                    "\n\t\t:             about deferred storage to load/unload this data later.",
-                   "\n\t\t:   -toPrintDebugInfo print additional debug inforamtion during data reading"
+                   "\n\t\t:   -toPrintDebugInfo print additional debug information during data reading"
                    __FILE__, ReadGltf, g);
   theCommands.Add ("readgltf",
                    "readgltf shape file"
                    "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
                    __FILE__, ReadGltf, g);
   theCommands.Add ("WriteGltf",
-                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact] [-comments Text] [-author Name] [-forceUVExport] [-texturesSeparate]"
-                   "\n\t\t: Write XDE document into glTF file."
-                   "\n\t\t:   -trsfFormat preferred transformation format"
-                   "\n\t\t:   -forceUVExport always export UV coordinates"
-                   "\n\t\t:   -texturesSeparate write textures to separate files",
+                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact]"
+           "\n\t\t:                    [-comments Text] [-author Name]"
+           "\n\t\t:                    [-forceUVExport] [-texturesSeparate]"
+           "\n\t\t: Write XDE document into glTF file."
+           "\n\t\t:   -trsfFormat preferred transformation format"
+           "\n\t\t:   -forceUVExport always export UV coordinates"
+           "\n\t\t:   -texturesSeparate write textures to separate files",
                    __FILE__, WriteGltf, g);
   theCommands.Add ("writegltf",
                    "writegltf shape file",
@@ -1826,6 +1940,18 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
            "\n\t\t: Same as ReadObj but reads OBJ file into a shape instead of a document."
            "\n\t\t:   -singleFace merge OBJ content into a single triangulation Face.",
            __FILE__, ReadObj, g);
+  theCommands.Add ("WriteObj",
+                   "WriteObj Doc file [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
+           "\n\t\t:                   [-systemCoordSys {Zup|Yup}]"
+           "\n\t\t:                   [-comments Text] [-author Name]"
+           "\n\t\t: Write XDE document into OBJ file."
+           "\n\t\t:   -fileUnit       length unit of OBJ file content;"
+           "\n\t\t:   -fileCoordSys   coordinate system defined by OBJ file; Yup when not specified."
+           "\n\t\t:   -systemCoordSys system coordinate system; Zup when not specified.",
+                   __FILE__, WriteObj, g);
+  theCommands.Add ("writeobj",
+                   "writeobj shape file",
+                   __FILE__, WriteObj, g);
 
   theCommands.Add ("meshfromstl",     "creates MeshVS_Mesh from STL file",            __FILE__, createmesh,      g );
   theCommands.Add ("mesh3delem",      "creates 3d element mesh to test",              __FILE__, create3d,        g );

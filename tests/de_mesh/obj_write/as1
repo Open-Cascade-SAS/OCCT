@@ -1,0 +1,30 @@
+puts "========"
+puts "0029303: Data Exchange - add RWObj_CafWriter tool for wavefront OBJ file"
+puts "Write as1 STEP model into OBJ file"
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+Close D  -silent
+Close D1 -silent
+ReadStep D1 [locate_data_file as1-oc-214-mat.stp]
+XGetOneShape ss D1
+incmesh ss 1.0
+
+set aTmpObjBase "${imagedir}/${casename}_tmp"
+set aTmpObj "${aTmpObjBase}.obj"
+lappend occ_tmp_files $aTmpObj
+lappend occ_tmp_files "${aTmpObjBase}.mtl"
+lappend occ_tmp_files "${aTmpObjBase}_textures"
+
+WriteObj D1 "$aTmpObj"
+
+ReadObj D "$aTmpObj"
+XGetOneShape s D
+checknbshapes s -face 18 -compound 2
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vfit
+vdump ${imagedir}/${casename}.png

@@ -100,7 +100,7 @@ public:
   bool HasTexCoords() const { return !myPolyTriang.IsNull() && myPolyTriang->HasUVNodes(); }
 
   //! Return normal at specified node index with face transformation applied and face orientation applied.
-  gp_Dir NormalTransformed (Standard_Integer theNode)
+  gp_Dir NormalTransformed (Standard_Integer theNode) const
   {
     gp_Dir aNorm = normal (theNode);
     if (myTrsf.Form() != gp_Identity)
@@ -148,7 +148,7 @@ public:
   gp_Pnt node (const Standard_Integer theNode) const { return myPolyTriang->Node (theNode); }
 
   //! Return normal at specified node index without face transformation applied.
-  Standard_EXPORT gp_Dir normal (Standard_Integer theNode);
+  Standard_EXPORT gp_Dir normal (Standard_Integer theNode) const;
 
   //! Return triangle with specified index.
   Poly_Triangle triangle (Standard_Integer theElemIndex) const { return myPolyTriang->Triangle (theElemIndex); }
@@ -185,7 +185,7 @@ private:
   TopoDS_Face                     myFace;         //!< current face
   Handle(Poly_Triangulation)      myPolyTriang;   //!< triangulation of current face
   TopLoc_Location                 myFaceLocation; //!< current face location
-  BRepLProp_SLProps               mySLTool;       //!< auxiliary tool for fetching normals from surface
+  mutable BRepLProp_SLProps       mySLTool;       //!< auxiliary tool for fetching normals from surface
   BRepAdaptor_Surface             myFaceAdaptor;  //!< surface adaptor for fetching normals from surface
   Standard_Boolean                myHasNormals;   //!< flag indicating that current face has normals
   gp_Trsf                         myTrsf;         //!< current face transformation

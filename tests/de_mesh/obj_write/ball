@@ -1,0 +1,28 @@
+puts "========"
+puts "0029303: Data Exchange - add RWObj_CafWriter tool for wavefront OBJ file"
+puts "Write B-Rep model into OBJ file"
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+Close D -silent
+
+restore [locate_data_file Ball.brep] b
+incmesh b 0.1
+
+set aTmpObjBase "${imagedir}/${casename}_tmp"
+set aTmpObj "${aTmpObjBase}.obj"
+lappend occ_tmp_files $aTmpObj
+lappend occ_tmp_files "${aTmpObjBase}.mtl"
+
+writeobj b "$aTmpObj"
+
+ReadObj D "$aTmpObj"
+XGetOneShape s D
+checknbshapes s -face 2 -compound 2
+
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vaxo
+vfit
+vdump ${imagedir}/${casename}.png

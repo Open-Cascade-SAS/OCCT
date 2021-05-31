@@ -127,7 +127,7 @@ void RWMesh_FaceIterator::dispatchStyles (const TDF_Label&       theLabel,
 // function : normal
 // purpose  :
 // =======================================================================
-gp_Dir RWMesh_FaceIterator::normal (Standard_Integer theNode)
+gp_Dir RWMesh_FaceIterator::normal (Standard_Integer theNode) const
 {
   gp_Dir aNormal (gp::DZ());
   if (myPolyTriang->HasNormals())

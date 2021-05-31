@@ -21,6 +21,7 @@ Message_CompositeAlerts.hxx
 Message_ExecStatus.hxx
 Message_Gravity.hxx
 Message_HArrayOfMsg.hxx
+Message_LazyProgressScope.hxx
 Message_Level.cxx
 Message_Level.hxx
 Message_ListIteratorOfListOfMsg.hxx

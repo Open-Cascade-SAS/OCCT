@@ -83,6 +83,27 @@ public:
   //! Manage visibility.
   Standard_Boolean IsVisible() const { return myIsVisible; }
 
+  //! Return base color texture.
+  const Handle(Image_Texture)& BaseColorTexture() const
+  {
+    static const Handle(Image_Texture) THE_NULL_TEXTURE;
+    if (myMaterial.IsNull())
+    {
+      return THE_NULL_TEXTURE;
+    }
+    else if (myMaterial->HasPbrMaterial()
+         && !myMaterial->PbrMaterial().BaseColorTexture.IsNull())
+    {
+      return myMaterial->PbrMaterial().BaseColorTexture;
+    }
+    else if (myMaterial->HasCommonMaterial()
+         && !myMaterial->CommonMaterial().DiffuseTexture.IsNull())
+    {
+      return myMaterial->CommonMaterial().DiffuseTexture;
+    }
+    return THE_NULL_TEXTURE;
+  }
+
   //! Returns True if styles are the same
   //! Methods for using Style as key in maps
   Standard_Boolean IsEqual (const XCAFPrs_Style& theOther) const

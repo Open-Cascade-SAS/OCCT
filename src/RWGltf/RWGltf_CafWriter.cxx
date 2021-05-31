@@ -1068,7 +1068,7 @@ void RWGltf_CafWriter::writeAsset (const TColStd_IndexedDataMapOfStringString& t
   myWriter->Key    (RWGltf_GltfRootElementName (RWGltf_GltfRootElement_Asset));
   myWriter->StartObject();
   myWriter->Key    ("generator");
-  myWriter->String ("Open CASCADE Technology [www.opencascade.com]");
+  myWriter->String ("Open CASCADE Technology [dev.opencascade.org]");
   myWriter->Key    ("version");
   myWriter->String ("2.0"); // glTF format version
 
