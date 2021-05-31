@@ -52,6 +52,7 @@ TKStdL
 TKLCAF
 TKCDF
 TKernel
+CSF_TclTkLibs
 CSF_TclLibs
 CSF_OpenVR
 CSF_OpenGlLibs
@@ -70,6 +71,7 @@ CSF_Appkit
 CSF_IOKit
 CSF_winmm
 CSF_ThreadLibs
+CSF_dl
 CSF_wsock32
 CSF_psapi
 CSF_androidlog
