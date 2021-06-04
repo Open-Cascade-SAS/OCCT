@@ -24,38 +24,8 @@ class gp_XYZ;
 class gp_Trsf;
 class gp_GTrsf;
 
-#define Mat00 matrix[0][0]
-#define Mat01 matrix[0][1]
-#define Mat02 matrix[0][2]
-#define Mat10 matrix[1][0]
-#define Mat11 matrix[1][1]
-#define Mat12 matrix[1][2]
-#define Mat20 matrix[2][0]
-#define Mat21 matrix[2][1]
-#define Mat22 matrix[2][2]
-
-#define Nat00 aNewMat.matrix[0][0]
-#define Nat01 aNewMat.matrix[0][1]
-#define Nat02 aNewMat.matrix[0][2]
-#define Nat10 aNewMat.matrix[1][0]
-#define Nat11 aNewMat.matrix[1][1]
-#define Nat12 aNewMat.matrix[1][2]
-#define Nat20 aNewMat.matrix[2][0]
-#define Nat21 aNewMat.matrix[2][1]
-#define Nat22 aNewMat.matrix[2][2]
-
-#define Oat00 theOther.matrix[0][0]
-#define Oat01 theOther.matrix[0][1]
-#define Oat02 theOther.matrix[0][2]
-#define Oat10 theOther.matrix[1][0]
-#define Oat11 theOther.matrix[1][1]
-#define Oat12 theOther.matrix[1][2]
-#define Oat20 theOther.matrix[2][0]
-#define Oat21 theOther.matrix[2][1]
-#define Oat22 theOther.matrix[2][2]
-
-//! Describes a three column, three row matrix. This sort of
-//! object is used in various vectorial or matrix computations.
+//! Describes a three column, three row matrix.
+//! This sort of object is used in various vectorial or matrix computations.
 class gp_Mat 
 {
 public:
@@ -65,9 +35,9 @@ public:
   //! creates  a matrix with null coefficients.
   gp_Mat()
   {
-    Mat00 = Mat01 = Mat02 =
-    Mat10 = Mat11 = Mat12 =
-    Mat20 = Mat21 = Mat22 = 0.0;
+    myMat[0][0] = myMat[0][1] = myMat[0][2] =
+    myMat[1][0] = myMat[1][1] = myMat[1][2] =
+    myMat[2][0] = myMat[2][1] = myMat[2][2] = 0.0;
   }
 
   gp_Mat (const Standard_Real theA11, const Standard_Real theA12, const Standard_Real theA13,
@@ -106,9 +76,9 @@ public:
   //! The other coefficients of the matrix are not modified.
   void SetDiagonal (const Standard_Real theX1, const Standard_Real theX2, const Standard_Real theX3)
   {
-    Mat00 = theX1;
-    Mat11 = theX2;
-    Mat22 = theX3;
+    myMat[0][0] = theX1;
+    myMat[1][1] = theX2;
+    myMat[2][2] = theX3;
   }
 
   //! Modifies this matrix so that applying it to any number
@@ -121,8 +91,8 @@ public:
   //! Modifies this matrix so that it represents the Identity matrix.
   void SetIdentity()
   {
-    Mat00 = Mat11 = Mat22 = 1.0;
-    Mat01 = Mat02 = Mat10 = Mat12 = Mat20 = Mat21 = 0.0;
+    myMat[0][0] = myMat[1][1] = myMat[2][2] = 1.0;
+    myMat[0][1] = myMat[0][2] = myMat[1][0] = myMat[1][2] = myMat[2][0] = myMat[2][1] = 0.0;
   }
 
   //! Modifies this matrix so that it represents a rotation. theAng is the angular value in
@@ -148,8 +118,8 @@ public:
   //! @endcode
   void SetScale (const Standard_Real theS)
   {
-    Mat00 = Mat11 = Mat22 = theS;
-    Mat01 = Mat02 = Mat10 = Mat12 = Mat20 = Mat21 = 0.0;
+    myMat[0][0] = myMat[1][1] = myMat[2][2] = theS;
+    myMat[0][1] = myMat[0][2] = myMat[1][0] = myMat[1][2] = myMat[2][0] = myMat[2][1] = 0.0;
   }
 
   //! Assigns <theValue> to the coefficient of row theRow, column theCol of   this matrix.
@@ -157,7 +127,7 @@ public:
   void SetValue (const Standard_Integer theRow, const Standard_Integer theCol, const Standard_Real theValue)
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 3 || theCol < 1 || theCol > 3, " ");
-    matrix[theRow - 1][theCol - 1] = theValue;
+    myMat[theRow - 1][theCol - 1] = theValue;
   }
 
   //! Returns the column of theCol index.
@@ -167,9 +137,9 @@ public:
   //! Computes the determinant of the matrix.
   Standard_Real Determinant() const
   {
-    return Mat00 * (Mat11 * Mat22 - Mat21 * Mat12) -
-           Mat01 * (Mat10 * Mat22 - Mat20 * Mat12) +
-           Mat02 * (Mat10 * Mat21 - Mat20 * Mat11);
+    return myMat[0][0] * (myMat[1][1] * myMat[2][2] - myMat[2][1] * myMat[1][2]) -
+           myMat[0][1] * (myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2]) +
+           myMat[0][2] * (myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1]);
   }
 
   //! Returns the main diagonal of the matrix.
@@ -184,7 +154,7 @@ public:
   const Standard_Real& Value (const Standard_Integer theRow, const Standard_Integer theCol) const
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 3 || theCol < 1 || theCol > 3, " ");
-    return matrix[theRow - 1][theCol - 1];
+    return myMat[theRow - 1][theCol - 1];
   }
 
   const Standard_Real& operator() (const Standard_Integer theRow, const Standard_Integer theCol) const { return Value (theRow, theCol); }
@@ -194,7 +164,7 @@ public:
   Standard_Real& ChangeValue (const Standard_Integer theRow, const Standard_Integer theCol)
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 3 || theCol < 1 || theCol > 3, " ");
-    return matrix[theRow - 1][theCol - 1];
+    return myMat[theRow - 1][theCol - 1];
   }
 
   Standard_Real& operator() (const Standard_Integer theRow, const Standard_Integer theCol) { return ChangeValue (theRow, theCol); }
@@ -316,7 +286,7 @@ friend class gp_GTrsf;
 
 private:
 
-  Standard_Real matrix[3][3];
+  Standard_Real myMat[3][3];
 
 };
 
@@ -327,17 +297,17 @@ private:
 inline gp_Mat::gp_Mat (const Standard_Real theA11, const Standard_Real theA12, const Standard_Real theA13,
                        const Standard_Real theA21, const Standard_Real theA22, const Standard_Real theA23,
                        const Standard_Real theA31, const Standard_Real theA32, const Standard_Real theA33)
-  {
-    Mat00 = theA11;
-    Mat01 = theA12;
-    Mat02 = theA13;
-    Mat10 = theA21;
-    Mat11 = theA22;
-    Mat12 = theA23;
-    Mat20 = theA31;
-    Mat21 = theA32;
-    Mat22 = theA33;
-  }
+{
+  myMat[0][0] = theA11;
+  myMat[0][1] = theA12;
+  myMat[0][2] = theA13;
+  myMat[1][0] = theA21;
+  myMat[1][1] = theA22;
+  myMat[1][2] = theA23;
+  myMat[2][0] = theA31;
+  myMat[2][1] = theA32;
+  myMat[2][2] = theA33;
+}
 
 //=======================================================================
 //function : Add
@@ -345,15 +315,15 @@ inline gp_Mat::gp_Mat (const Standard_Real theA11, const Standard_Real theA12, c
 //=======================================================================
 inline void gp_Mat::Add (const gp_Mat& theOther)
 {
-  Mat00 = Mat00 + Oat00;
-  Mat01 = Mat01 + Oat01;
-  Mat02 = Mat02 + Oat02;
-  Mat10 = Mat10 + Oat10;
-  Mat11 = Mat11 + Oat11;
-  Mat12 = Mat12 + Oat12;
-  Mat20 = Mat20 + Oat20;
-  Mat21 = Mat21 + Oat21;
-  Mat22 = Mat22 + Oat22;
+  myMat[0][0] += theOther.myMat[0][0];
+  myMat[0][1] += theOther.myMat[0][1];
+  myMat[0][2] += theOther.myMat[0][2];
+  myMat[1][0] += theOther.myMat[1][0];
+  myMat[1][1] += theOther.myMat[1][1];
+  myMat[1][2] += theOther.myMat[1][2];
+  myMat[2][0] += theOther.myMat[2][0];
+  myMat[2][1] += theOther.myMat[2][1];
+  myMat[2][2] += theOther.myMat[2][2];
 }
 
 //=======================================================================
@@ -363,15 +333,15 @@ inline void gp_Mat::Add (const gp_Mat& theOther)
 inline gp_Mat gp_Mat::Added (const gp_Mat& theOther) const
 {
   gp_Mat aNewMat;
-  Nat00 = Mat00 + Oat00;
-  Nat01 = Mat01 + Oat01;
-  Nat02 = Mat02 + Oat02;
-  Nat10 = Mat10 + Oat10;
-  Nat11 = Mat11 + Oat11;
-  Nat12 = Mat12 + Oat12;
-  Nat20 = Mat20 + Oat20;
-  Nat21 = Mat21 + Oat21;
-  Nat22 = Mat22 + Oat22;
+  aNewMat.myMat[0][0] = myMat[0][0] + theOther.myMat[0][0];
+  aNewMat.myMat[0][1] = myMat[0][1] + theOther.myMat[0][1];
+  aNewMat.myMat[0][2] = myMat[0][2] + theOther.myMat[0][2];
+  aNewMat.myMat[1][0] = myMat[1][0] + theOther.myMat[1][0];
+  aNewMat.myMat[1][1] = myMat[1][1] + theOther.myMat[1][1];
+  aNewMat.myMat[1][2] = myMat[1][2] + theOther.myMat[1][2];
+  aNewMat.myMat[2][0] = myMat[2][0] + theOther.myMat[2][0];
+  aNewMat.myMat[2][1] = myMat[2][1] + theOther.myMat[2][1];
+  aNewMat.myMat[2][2] = myMat[2][2] + theOther.myMat[2][2];
   return aNewMat;
 }
 
@@ -387,16 +357,16 @@ inline void gp_Mat::Divide (const Standard_Real theScalar)
     aVal = -aVal;
   }
   Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(),"gp_Mat : Divide by 0");
-  Standard_Real anUnSurScalar = 1.0 / theScalar;
-  Mat00 *= anUnSurScalar;
-  Mat01 *= anUnSurScalar;
-  Mat02 *= anUnSurScalar;
-  Mat10 *= anUnSurScalar;
-  Mat11 *= anUnSurScalar;
-  Mat12 *= anUnSurScalar;
-  Mat20 *= anUnSurScalar;
-  Mat21 *= anUnSurScalar;
-  Mat22 *= anUnSurScalar;
+  const Standard_Real anUnSurScalar = 1.0 / theScalar;
+  myMat[0][0] *= anUnSurScalar;
+  myMat[0][1] *= anUnSurScalar;
+  myMat[0][2] *= anUnSurScalar;
+  myMat[1][0] *= anUnSurScalar;
+  myMat[1][1] *= anUnSurScalar;
+  myMat[1][2] *= anUnSurScalar;
+  myMat[2][0] *= anUnSurScalar;
+  myMat[2][1] *= anUnSurScalar;
+  myMat[2][2] *= anUnSurScalar;
 }
 
 //=======================================================================
@@ -412,16 +382,16 @@ inline gp_Mat gp_Mat::Divided (const Standard_Real theScalar) const
   }
   Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(),"gp_Mat : Divide by 0");
   gp_Mat aNewMat;
-  Standard_Real anUnSurScalar = 1.0 / theScalar;
-  Nat00 = Mat00 * anUnSurScalar;
-  Nat01 = Mat01 * anUnSurScalar;
-  Nat02 = Mat02 * anUnSurScalar;
-  Nat10 = Mat10 * anUnSurScalar;
-  Nat11 = Mat11 * anUnSurScalar;
-  Nat12 = Mat12 * anUnSurScalar;
-  Nat20 = Mat20 * anUnSurScalar;
-  Nat21 = Mat21 * anUnSurScalar;
-  Nat22 = Mat22 * anUnSurScalar;
+  const Standard_Real anUnSurScalar = 1.0 / theScalar;
+  aNewMat.myMat[0][0] = myMat[0][0] * anUnSurScalar;
+  aNewMat.myMat[0][1] = myMat[0][1] * anUnSurScalar;
+  aNewMat.myMat[0][2] = myMat[0][2] * anUnSurScalar;
+  aNewMat.myMat[1][0] = myMat[1][0] * anUnSurScalar;
+  aNewMat.myMat[1][1] = myMat[1][1] * anUnSurScalar;
+  aNewMat.myMat[1][2] = myMat[1][2] * anUnSurScalar;
+  aNewMat.myMat[2][0] = myMat[2][0] * anUnSurScalar;
+  aNewMat.myMat[2][1] = myMat[2][1] * anUnSurScalar;
+  aNewMat.myMat[2][2] = myMat[2][2] * anUnSurScalar;
   return aNewMat;
 }
 
@@ -431,25 +401,24 @@ inline gp_Mat gp_Mat::Divided (const Standard_Real theScalar) const
 //=======================================================================
 inline void gp_Mat::Multiply (const gp_Mat& theOther)
 {
-  Standard_Real aT00, aT01, aT02, aT10, aT11, aT12, aT20, aT21, aT22;
-  aT00 = Mat00 * Oat00 + Mat01 * Oat10 + Mat02 * Oat20;
-  aT01 = Mat00 * Oat01 + Mat01 * Oat11 + Mat02 * Oat21;
-  aT02 = Mat00 * Oat02 + Mat01 * Oat12 + Mat02 * Oat22;
-  aT10 = Mat10 * Oat00 + Mat11 * Oat10 + Mat12 * Oat20;
-  aT11 = Mat10 * Oat01 + Mat11 * Oat11 + Mat12 * Oat21;
-  aT12 = Mat10 * Oat02 + Mat11 * Oat12 + Mat12 * Oat22;
-  aT20 = Mat20 * Oat00 + Mat21 * Oat10 + Mat22 * Oat20;
-  aT21 = Mat20 * Oat01 + Mat21 * Oat11 + Mat22 * Oat21;
-  aT22 = Mat20 * Oat02 + Mat21 * Oat12 + Mat22 * Oat22;
-  Mat00 = aT00;
-  Mat01 = aT01;
-  Mat02 = aT02;
-  Mat10 = aT10;
-  Mat11 = aT11;
-  Mat12 = aT12;
-  Mat20 = aT20;
-  Mat21 = aT21;
-  Mat22 = aT22;
+  const Standard_Real aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0] + myMat[0][2] * theOther.myMat[2][0];
+  const Standard_Real aT01 = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1] + myMat[0][2] * theOther.myMat[2][1];
+  const Standard_Real aT02 = myMat[0][0] * theOther.myMat[0][2] + myMat[0][1] * theOther.myMat[1][2] + myMat[0][2] * theOther.myMat[2][2];
+  const Standard_Real aT10 = myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0] + myMat[1][2] * theOther.myMat[2][0];
+  const Standard_Real aT11 = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1] + myMat[1][2] * theOther.myMat[2][1];
+  const Standard_Real aT12 = myMat[1][0] * theOther.myMat[0][2] + myMat[1][1] * theOther.myMat[1][2] + myMat[1][2] * theOther.myMat[2][2];
+  const Standard_Real aT20 = myMat[2][0] * theOther.myMat[0][0] + myMat[2][1] * theOther.myMat[1][0] + myMat[2][2] * theOther.myMat[2][0];
+  const Standard_Real aT21 = myMat[2][0] * theOther.myMat[0][1] + myMat[2][1] * theOther.myMat[1][1] + myMat[2][2] * theOther.myMat[2][1];
+  const Standard_Real aT22 = myMat[2][0] * theOther.myMat[0][2] + myMat[2][1] * theOther.myMat[1][2] + myMat[2][2] * theOther.myMat[2][2];
+  myMat[0][0] = aT00;
+  myMat[0][1] = aT01;
+  myMat[0][2] = aT02;
+  myMat[1][0] = aT10;
+  myMat[1][1] = aT11;
+  myMat[1][2] = aT12;
+  myMat[2][0] = aT20;
+  myMat[2][1] = aT21;
+  myMat[2][2] = aT22;
 }
 
 //=======================================================================
@@ -458,25 +427,24 @@ inline void gp_Mat::Multiply (const gp_Mat& theOther)
 //=======================================================================
 inline void gp_Mat::PreMultiply (const gp_Mat& theOther)
 {
-  Standard_Real aT00, aT01, aT02, aT10, aT11, aT12, aT20, aT21, aT22;
-  aT00 = Oat00 * Mat00 + Oat01 * Mat10 + Oat02 * Mat20;
-  aT01 = Oat00 * Mat01 + Oat01 * Mat11 + Oat02 * Mat21;
-  aT02 = Oat00 * Mat02 + Oat01 * Mat12 + Oat02 * Mat22;
-  aT10 = Oat10 * Mat00 + Oat11 * Mat10 + Oat12 * Mat20;
-  aT11 = Oat10 * Mat01 + Oat11 * Mat11 + Oat12 * Mat21;
-  aT12 = Oat10 * Mat02 + Oat11 * Mat12 + Oat12 * Mat22;
-  aT20 = Oat20 * Mat00 + Oat21 * Mat10 + Oat22 * Mat20;
-  aT21 = Oat20 * Mat01 + Oat21 * Mat11 + Oat22 * Mat21;
-  aT22 = Oat20 * Mat02 + Oat21 * Mat12 + Oat22 * Mat22;
-  Mat00 = aT00;
-  Mat01 = aT01;
-  Mat02 = aT02;
-  Mat10 = aT10;
-  Mat11 = aT11;
-  Mat12 = aT12;
-  Mat20 = aT20;
-  Mat21 = aT21;
-  Mat22 = aT22;
+  const Standard_Real aT00 = theOther.myMat[0][0] * myMat[0][0] + theOther.myMat[0][1] * myMat[1][0] + theOther.myMat[0][2] * myMat[2][0];
+  const Standard_Real aT01 = theOther.myMat[0][0] * myMat[0][1] + theOther.myMat[0][1] * myMat[1][1] + theOther.myMat[0][2] * myMat[2][1];
+  const Standard_Real aT02 = theOther.myMat[0][0] * myMat[0][2] + theOther.myMat[0][1] * myMat[1][2] + theOther.myMat[0][2] * myMat[2][2];
+  const Standard_Real aT10 = theOther.myMat[1][0] * myMat[0][0] + theOther.myMat[1][1] * myMat[1][0] + theOther.myMat[1][2] * myMat[2][0];
+  const Standard_Real aT11 = theOther.myMat[1][0] * myMat[0][1] + theOther.myMat[1][1] * myMat[1][1] + theOther.myMat[1][2] * myMat[2][1];
+  const Standard_Real aT12 = theOther.myMat[1][0] * myMat[0][2] + theOther.myMat[1][1] * myMat[1][2] + theOther.myMat[1][2] * myMat[2][2];
+  const Standard_Real aT20 = theOther.myMat[2][0] * myMat[0][0] + theOther.myMat[2][1] * myMat[1][0] + theOther.myMat[2][2] * myMat[2][0];
+  const Standard_Real aT21 = theOther.myMat[2][0] * myMat[0][1] + theOther.myMat[2][1] * myMat[1][1] + theOther.myMat[2][2] * myMat[2][1];
+  const Standard_Real aT22 = theOther.myMat[2][0] * myMat[0][2] + theOther.myMat[2][1] * myMat[1][2] + theOther.myMat[2][2] * myMat[2][2];
+  myMat[0][0] = aT00;
+  myMat[0][1] = aT01;
+  myMat[0][2] = aT02;
+  myMat[1][0] = aT10;
+  myMat[1][1] = aT11;
+  myMat[1][2] = aT12;
+  myMat[2][0] = aT20;
+  myMat[2][1] = aT21;
+  myMat[2][2] = aT22;
 }
 
 //=======================================================================
@@ -486,15 +454,15 @@ inline void gp_Mat::PreMultiply (const gp_Mat& theOther)
 inline gp_Mat gp_Mat::Multiplied (const Standard_Real theScalar) const
 {
   gp_Mat aNewMat;
-  Nat00 = theScalar * Mat00;
-  Nat01 = theScalar * Mat01;
-  Nat02 = theScalar * Mat02;
-  Nat10 = theScalar * Mat10;
-  Nat11 = theScalar * Mat11;
-  Nat12 = theScalar * Mat12;
-  Nat20 = theScalar * Mat20;
-  Nat21 = theScalar * Mat21;
-  Nat22 = theScalar * Mat22;
+  aNewMat.myMat[0][0] = theScalar * myMat[0][0];
+  aNewMat.myMat[0][1] = theScalar * myMat[0][1];
+  aNewMat.myMat[0][2] = theScalar * myMat[0][2];
+  aNewMat.myMat[1][0] = theScalar * myMat[1][0];
+  aNewMat.myMat[1][1] = theScalar * myMat[1][1];
+  aNewMat.myMat[1][2] = theScalar * myMat[1][2];
+  aNewMat.myMat[2][0] = theScalar * myMat[2][0];
+  aNewMat.myMat[2][1] = theScalar * myMat[2][1];
+  aNewMat.myMat[2][2] = theScalar * myMat[2][2];
   return aNewMat;
 }
 
@@ -504,15 +472,15 @@ inline gp_Mat gp_Mat::Multiplied (const Standard_Real theScalar) const
 //=======================================================================
 inline void gp_Mat::Multiply (const Standard_Real theScalar)
 {
-  Mat00 *= theScalar;
-  Mat01 *= theScalar;
-  Mat02 *= theScalar;
-  Mat10 *= theScalar;
-  Mat11 *= theScalar;
-  Mat12 *= theScalar;
-  Mat20 *= theScalar;
-  Mat21 *= theScalar;
-  Mat22 *= theScalar;
+  myMat[0][0] *= theScalar;
+  myMat[0][1] *= theScalar;
+  myMat[0][2] *= theScalar;
+  myMat[1][0] *= theScalar;
+  myMat[1][1] *= theScalar;
+  myMat[1][2] *= theScalar;
+  myMat[2][0] *= theScalar;
+  myMat[2][1] *= theScalar;
+  myMat[2][2] *= theScalar;
 }
 
 //=======================================================================
@@ -521,15 +489,15 @@ inline void gp_Mat::Multiply (const Standard_Real theScalar)
 //=======================================================================
 inline void gp_Mat::Subtract (const gp_Mat& theOther)
 {
-  Mat00 -= Oat00;
-  Mat01 -= Oat01;
-  Mat02 -= Oat02;
-  Mat10 -= Oat10;
-  Mat11 -= Oat11;
-  Mat12 -= Oat12;
-  Mat20 -= Oat20;
-  Mat21 -= Oat21;
-  Mat22 -= Oat22;
+  myMat[0][0] -= theOther.myMat[0][0];
+  myMat[0][1] -= theOther.myMat[0][1];
+  myMat[0][2] -= theOther.myMat[0][2];
+  myMat[1][0] -= theOther.myMat[1][0];
+  myMat[1][1] -= theOther.myMat[1][1];
+  myMat[1][2] -= theOther.myMat[1][2];
+  myMat[2][0] -= theOther.myMat[2][0];
+  myMat[2][1] -= theOther.myMat[2][1];
+  myMat[2][2] -= theOther.myMat[2][2];
 }
 
 //=======================================================================
@@ -539,15 +507,15 @@ inline void gp_Mat::Subtract (const gp_Mat& theOther)
 inline gp_Mat gp_Mat::Subtracted (const gp_Mat& theOther) const
 {
   gp_Mat aNewMat;
-  Nat00 = Mat00 - Oat00;
-  Nat01 = Mat01 - Oat01;
-  Nat02 = Mat02 - Oat02;
-  Nat10 = Mat10 - Oat10;
-  Nat11 = Mat11 - Oat11;
-  Nat12 = Mat12 - Oat12;
-  Nat20 = Mat20 - Oat20;
-  Nat21 = Mat21 - Oat21;
-  Nat22 = Mat22 - Oat22;
+  aNewMat.myMat[0][0] = myMat[0][0] - theOther.myMat[0][0];
+  aNewMat.myMat[0][1] = myMat[0][1] - theOther.myMat[0][1];
+  aNewMat.myMat[0][2] = myMat[0][2] - theOther.myMat[0][2];
+  aNewMat.myMat[1][0] = myMat[1][0] - theOther.myMat[1][0];
+  aNewMat.myMat[1][1] = myMat[1][1] - theOther.myMat[1][1];
+  aNewMat.myMat[1][2] = myMat[1][2] - theOther.myMat[1][2];
+  aNewMat.myMat[2][0] = myMat[2][0] - theOther.myMat[2][0];
+  aNewMat.myMat[2][1] = myMat[2][1] - theOther.myMat[2][1];
+  aNewMat.myMat[2][2] = myMat[2][2] - theOther.myMat[2][2];
   return aNewMat;
 }
 
@@ -566,15 +534,15 @@ __attribute__((optnone))
 inline void gp_Mat::Transpose()
 {
   Standard_Real aTemp;
-  aTemp  = Mat01;
-  Mat01  = Mat10;
-  Mat10  = aTemp;
-  aTemp  = Mat02;
-  Mat02  = Mat20;
-  Mat20  = aTemp;
-  aTemp  = Mat12;
-  Mat12  = Mat21;
-  Mat21  = aTemp;
+  aTemp  = myMat[0][1];
+  myMat[0][1] = myMat[1][0];
+  myMat[1][0] = aTemp;
+  aTemp  = myMat[0][2];
+  myMat[0][2] = myMat[2][0];
+  myMat[2][0] = aTemp;
+  aTemp  = myMat[1][2];
+  myMat[1][2] = myMat[2][1];
+  myMat[2][1] = aTemp;
 }
 
 //=======================================================================

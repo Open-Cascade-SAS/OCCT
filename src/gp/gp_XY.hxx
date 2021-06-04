@@ -222,8 +222,8 @@ public:
   //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const gp_Mat2d& theMatrix) const
   {
-    const Standard_Address aM = (Standard_Address) &(theMatrix.Value (1, 1));
-    return gp_XY (Mat2d00 * x + Mat2d01 * y, Mat2d10 * x + Mat2d11 * y);
+    return gp_XY (theMatrix.Value (1, 1) * x + theMatrix.Value (1, 2) * y,
+                  theMatrix.Value (2, 1) * x + theMatrix.Value (2, 2) * y);
   }
 
   Standard_NODISCARD gp_XY operator*  (const gp_Mat2d& theMatrix) const { return Multiplied (theMatrix); }
@@ -349,9 +349,8 @@ private:
 //=======================================================================
 inline void gp_XY::Multiply (const gp_Mat2d& theMatrix)
 {
-  const Standard_Address aM = (Standard_Address) &(theMatrix.Value (1, 1));
-  Standard_Real aXresult = Mat2d00 * x + Mat2d01 * y;
-  y = Mat2d10 * x + Mat2d11 * y;
+  Standard_Real aXresult = theMatrix.Value (1, 1) * x + theMatrix.Value (1, 2) * y;
+  y = theMatrix.Value (2, 1) * x + theMatrix.Value (2, 2) * y;
   x = aXresult;
 }
 

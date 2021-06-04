@@ -12,8 +12,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//  10/09/97 : PMN : Correction BUC40192 (pb avec les matrices negatives)
-
 #ifndef OCCT_DEBUG
 #define No_Standard_OutOfRange
 #define No_Standard_ConstructionError
@@ -28,252 +26,277 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Dump.hxx>
 
-#define M00 ((Standard_Real*)M)[0]
-#define M01 ((Standard_Real*)M)[1]
-#define M02 ((Standard_Real*)M)[2]
-#define M10 ((Standard_Real*)M)[3]
-#define M11 ((Standard_Real*)M)[4]
-#define M12 ((Standard_Real*)M)[5]
-#define M20 ((Standard_Real*)M)[6]
-#define M21 ((Standard_Real*)M)[7]
-#define M22 ((Standard_Real*)M)[8]
-
-#define N00 ((Standard_Real*)N)[0]
-#define N01 ((Standard_Real*)N)[1]
-#define N02 ((Standard_Real*)N)[2]
-#define N10 ((Standard_Real*)N)[3]
-#define N11 ((Standard_Real*)N)[4]
-#define N12 ((Standard_Real*)N)[5]
-#define N20 ((Standard_Real*)N)[6]
-#define N21 ((Standard_Real*)N)[7]
-#define N22 ((Standard_Real*)N)[8]
-
-gp_Mat::gp_Mat (const gp_XYZ& Col1,
-		const gp_XYZ& Col2,
-		const gp_XYZ& Col3)
+// =======================================================================
+// function : gp_Mat
+// purpose  :
+// =======================================================================
+gp_Mat::gp_Mat (const gp_XYZ& theCol1,
+		            const gp_XYZ& theCol2,
+		            const gp_XYZ& theCol3)
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  M00 = Col1.X(); M10 = Col1.Y(); M20 = Col1.Z();
-  M01 = Col2.X(); M11 = Col2.Y(); M21 = Col2.Z();
-  M02 = Col3.X(); M12 = Col3.Y(); M22 = Col3.Z();
+  myMat[0][0] = theCol1.X(); myMat[1][0] = theCol1.Y(); myMat[2][0] = theCol1.Z();
+  myMat[0][1] = theCol2.X(); myMat[1][1] = theCol2.Y(); myMat[2][1] = theCol2.Z();
+  myMat[0][2] = theCol3.X(); myMat[1][2] = theCol3.Y(); myMat[2][2] = theCol3.Z();
 }
 
-void gp_Mat::SetCol (const Standard_Integer Col,
-		     const gp_XYZ& Value) {
-
-  Standard_OutOfRange_Raise_if (Col < 1 || Col > 3, " ");
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  if      (Col == 1) {
-    M00 = Value.X(); M10 = Value.Y(); M20 = Value.Z();
+// =======================================================================
+// function : SetCol
+// purpose  :
+// =======================================================================
+void gp_Mat::SetCol (const Standard_Integer theCol,
+		                 const gp_XYZ& theValue)
+{
+  Standard_OutOfRange_Raise_if (theCol < 1 || theCol > 3, " ");
+  if      (theCol == 1)
+  {
+    myMat[0][0] = theValue.X(); myMat[1][0] = theValue.Y(); myMat[2][0] = theValue.Z();
   }
-  else if (Col == 2) {
-    M01 = Value.X(); M11 = Value.Y(); M21 = Value.Z();
+  else if (theCol == 2)
+  {
+    myMat[0][1] = theValue.X(); myMat[1][1] = theValue.Y(); myMat[2][1] = theValue.Z();
   }
-  else {
-    M02 = Value.X(); M12 = Value.Y(); M22 = Value.Z();
+  else
+  {
+    myMat[0][2] = theValue.X(); myMat[1][2] = theValue.Y(); myMat[2][2] = theValue.Z();
   }
 }
 
-void gp_Mat::SetCols (const gp_XYZ& Col1,
-		      const gp_XYZ& Col2,
-		      const gp_XYZ& Col3)
+// =======================================================================
+// function : SetCols
+// purpose  :
+// =======================================================================
+void gp_Mat::SetCols (const gp_XYZ& theCol1,
+		                  const gp_XYZ& theCol2,
+		                  const gp_XYZ& theCol3)
 {
-  Mat00 = Col1.X(); Mat10 = Col1.Y(); Mat20 = Col1.Z();
-  Mat01 = Col2.X(); Mat11 = Col2.Y(); Mat21 = Col2.Z();
-  Mat02 = Col3.X(); Mat12 = Col3.Y(); Mat22 = Col3.Z();
+  myMat[0][0] = theCol1.X(); myMat[1][0] = theCol1.Y(); myMat[2][0] = theCol1.Z();
+  myMat[0][1] = theCol2.X(); myMat[1][1] = theCol2.Y(); myMat[2][1] = theCol2.Z();
+  myMat[0][2] = theCol3.X(); myMat[1][2] = theCol3.Y(); myMat[2][2] = theCol3.Z();
 }
 
-void gp_Mat::SetCross (const gp_XYZ& Ref)
+// =======================================================================
+// function : SetCross
+// purpose  :
+// =======================================================================
+void gp_Mat::SetCross (const gp_XYZ& theRef)
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  Standard_Real X = Ref.X();
-  Standard_Real Y = Ref.Y();
-  Standard_Real Z = Ref.Z();
-  M00 = M11 = M22 = 0.0;
-  M01 = - Z;  
-  M02 = Y;
-  M12 = - X;
-  M10 = Z;
-  M20 = - Y;
-  M21 = X;
+  const Standard_Real X = theRef.X();
+  const Standard_Real Y = theRef.Y();
+  const Standard_Real Z = theRef.Z();
+  myMat[0][0] = myMat[1][1] = myMat[2][2] = 0.0;
+  myMat[0][1] = -Z;
+  myMat[0][2] =  Y;
+  myMat[1][2] = -X;
+  myMat[1][0] =  Z;
+  myMat[2][0] = -Y;
+  myMat[2][1] =  X;
 }
 
-void gp_Mat::SetDot (const gp_XYZ& Ref)
+// =======================================================================
+// function : SetDot
+// purpose  :
+// =======================================================================
+void gp_Mat::SetDot (const gp_XYZ& theRef)
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  Standard_Real X = Ref.X();
-  Standard_Real Y = Ref.Y();
-  Standard_Real Z = Ref.Z();
-  M00 = X * X;
-  M11 = Y * Y;
-  M22 = Z * Z;
-  M01 = X * Y;
-  M02 = X * Z;
-  M12 = Y * Z;
-  M10 = M01;
-  M20 = M02;
-  M21 = M12;
+  const Standard_Real X = theRef.X();
+  const Standard_Real Y = theRef.Y();
+  const Standard_Real Z = theRef.Z();
+  myMat[0][0] = X * X;
+  myMat[1][1] = Y * Y;
+  myMat[2][2] = Z * Z;
+  myMat[0][1] = X * Y;
+  myMat[0][2] = X * Z;
+  myMat[1][2] = Y * Z;
+  myMat[1][0] = myMat[0][1];
+  myMat[2][0] = myMat[0][2];
+  myMat[2][1] = myMat[1][2];
 }
 
-void gp_Mat::SetRotation (const gp_XYZ& Axis,
-			  const Standard_Real Ang)
+// =======================================================================
+// function : SetRotation
+// purpose  :
+// =======================================================================
+void gp_Mat::SetRotation (const gp_XYZ& theAxis,
+			                    const Standard_Real theAng)
 {
   //    Rot = I + sin(Ang) * M + (1. - cos(Ang)) * M*M
   //    avec  M . XYZ = Axis ^ XYZ
-
-//  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  gp_XYZ V = Axis.Normalized();
-  SetCross (V);
-  Multiply (sin(Ang));
-  gp_Mat Temp;
-  Temp.SetScale (1.0);
-  Add (Temp);
-  Standard_Real A = V.X();
-  Standard_Real B = V.Y();
-  Standard_Real C = V.Z();
-  Temp.SetRow (1, gp_XYZ(- C*C - B*B,      A*B,           A*C     ));
-  Temp.SetRow (2, gp_XYZ(     A*B,      -A*A - C*C,        B*C    ));
-  Temp.SetRow (3, gp_XYZ(     A*C,          B*C,       - A*A - B*B));
-  Temp.Multiply (1.0 - cos(Ang));
-  Add (Temp);
+  const gp_XYZ aV = theAxis.Normalized();
+  SetCross (aV);
+  Multiply (sin(theAng));
+  gp_Mat aTemp;
+  aTemp.SetScale (1.0);
+  Add (aTemp);
+  const Standard_Real A = aV.X();
+  const Standard_Real B = aV.Y();
+  const Standard_Real C = aV.Z();
+  aTemp.SetRow (1, gp_XYZ(- C*C - B*B,      A*B,           A*C     ));
+  aTemp.SetRow (2, gp_XYZ(     A*B,      -A*A - C*C,        B*C    ));
+  aTemp.SetRow (3, gp_XYZ(     A*C,          B*C,       - A*A - B*B));
+  aTemp.Multiply (1.0 - cos(theAng));
+  Add (aTemp);
 }
 
-void gp_Mat::SetRow (const Standard_Integer Row,
-		     const gp_XYZ& Value)
+// =======================================================================
+// function : SetRow
+// purpose  :
+// =======================================================================
+void gp_Mat::SetRow (const Standard_Integer theRow,
+		                 const gp_XYZ& theValue)
 {
-  Standard_OutOfRange_Raise_if (Row < 1 || Row > 3, " ");
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  if      (Row == 1) {
-    M00 = Value.X(); M01 = Value.Y(); M02 = Value.Z();
+  Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 3, " ");
+  if      (theRow == 1)
+  {
+    myMat[0][0] = theValue.X(); myMat[0][1] = theValue.Y(); myMat[0][2] = theValue.Z();
   }
-  else if (Row == 2) {
-    M10 = Value.X(); M11 = Value.Y(); M12 = Value.Z();
+  else if (theRow == 2)
+  {
+    myMat[1][0] = theValue.X(); myMat[1][1] = theValue.Y(); myMat[1][2] = theValue.Z();
   }
-  else {
-    M20 = Value.X(); M21 = Value.Y(); M22 = Value.Z();
+  else
+  {
+    myMat[2][0] = theValue.X(); myMat[2][1] = theValue.Y(); myMat[2][2] = theValue.Z();
   }
 }
 
-void gp_Mat::SetRows (const gp_XYZ& Row1,
-		      const gp_XYZ& Row2,
-		      const gp_XYZ& Row3)
+// =======================================================================
+// function : SetRows
+// purpose  :
+// =======================================================================
+void gp_Mat::SetRows (const gp_XYZ& theRow1,
+		                  const gp_XYZ& theRow2,
+		                  const gp_XYZ& theRow3)
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  M00 = Row1.X(); M01 = Row1.Y(); M02 = Row1.Z();
-  M10 = Row2.X(); M11 = Row2.Y(); M12 = Row2.Z();
-  M20 = Row3.X(); M21 = Row3.Y(); M22 = Row3.Z();
+  myMat[0][0] = theRow1.X(); myMat[0][1] = theRow1.Y(); myMat[0][2] = theRow1.Z();
+  myMat[1][0] = theRow2.X(); myMat[1][1] = theRow2.Y(); myMat[1][2] = theRow2.Z();
+  myMat[2][0] = theRow3.X(); myMat[2][1] = theRow3.Y(); myMat[2][2] = theRow3.Z();
 }
 
-gp_XYZ gp_Mat::Column (const Standard_Integer Col) const
+// =======================================================================
+// function : Column
+// purpose  :
+// =======================================================================
+gp_XYZ gp_Mat::Column (const Standard_Integer theCol) const
 {
-  Standard_OutOfRange_Raise_if (Col < 1 || Col > 3, "gp_Mat::Column() - wrong index");
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  if (Col == 1) return gp_XYZ (M00,M10,M20);
-  if (Col == 2) return gp_XYZ (M01,M11,M21);
-  return gp_XYZ (M02,M12,M22);
+  Standard_OutOfRange_Raise_if (theCol < 1 || theCol > 3, "gp_Mat::Column() - wrong index");
+  if (theCol == 1) return gp_XYZ (myMat[0][0], myMat[1][0], myMat[2][0]);
+  if (theCol == 2) return gp_XYZ (myMat[0][1], myMat[1][1], myMat[2][1]);
+  return gp_XYZ (myMat[0][2], myMat[1][2], myMat[2][2]);
 }
 
-gp_XYZ gp_Mat::Diagonal () const
+// =======================================================================
+// function : Diagonal
+// purpose  :
+// =======================================================================
+gp_XYZ gp_Mat::Diagonal() const
 {
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  return gp_XYZ (M00, M11, M22);
+  return gp_XYZ (myMat[0][0], myMat[1][1], myMat[2][2]);
 }
 
-gp_XYZ gp_Mat::Row (const Standard_Integer Row) const
+// =======================================================================
+// function : Row
+// purpose  :
+// =======================================================================
+gp_XYZ gp_Mat::Row (const Standard_Integer theRow) const
 {
-  Standard_OutOfRange_Raise_if (Row < 1 || Row > 3, "gp_Mat::Row() - wrong index");
-  const Standard_Address M = (Standard_Address)&(matrix[0][0]);
-  if (Row == 1) return gp_XYZ (M00,M01,M02);
-  if (Row == 2) return gp_XYZ (M10,M11,M12);
-  return gp_XYZ (M20,M21,M22);
+  Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 3, "gp_Mat::Row() - wrong index");
+  if (theRow == 1) return gp_XYZ (myMat[0][0], myMat[0][1], myMat[0][2]);
+  if (theRow == 2) return gp_XYZ (myMat[1][0], myMat[1][1], myMat[1][2]);
+  return gp_XYZ (myMat[2][0], myMat[2][1], myMat[2][2]);
 }
 
-void gp_Mat::Invert ()
+// =======================================================================
+// function : Invert
+// purpose  :
+// =======================================================================
+void gp_Mat::Invert()
 { 
-  Standard_Real new_array[3][3] ;
-  const Standard_Address M = (Standard_Address)&(   matrix[0][0]);
-  const Standard_Address N = (Standard_Address)&(new_array[0][0]);  
-
-  //
+  Standard_Real aNewMat[3][3];
   // calcul de  la transposee de la commatrice
-  //
-  N00 = M11 * M22 - M12 * M21 ;
-  N10 = -(M10 * M22 - M20 * M12) ;
-  N20 = M10 * M21 - M20 * M11 ;
-  N01 = - (M01 * M22 - M21 * M02) ;
-  N11 = M00 * M22 - M20 * M02 ;
-  N21 = -(M00 * M21 - M20 * M01) ;
-  N02 = M01 * M12 - M11 * M02 ;
-  N12 = -(M00 * M12 - M10 * M02) ;
-  N22 = M00 * M11 - M01 * M10 ;
-  Standard_Real det =  M00 * N00 + M01* N10 + M02 * N20 ;
-  Standard_Real val = det;
-  if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat::Invert() - matrix has zero determinant");
-  det = 1.0e0 / det ;
-  M00 = N00;
-  M10 = N10;
-  M20 = N20;
-  M01 = N01;
-  M11 = N11;
-  M21 = N21;
-  M02 = N02;
-  M12 = N12;
-  M22 = N22;
-  Multiply(det) ;
+  aNewMat[0][0] =   myMat[1][1] * myMat[2][2] - myMat[1][2] * myMat[2][1];
+  aNewMat[1][0] = -(myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2]);
+  aNewMat[2][0] =   myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1];
+  aNewMat[0][1] = -(myMat[0][1] * myMat[2][2] - myMat[2][1] * myMat[0][2]);
+  aNewMat[1][1] =   myMat[0][0] * myMat[2][2] - myMat[2][0] * myMat[0][2];
+  aNewMat[2][1] = -(myMat[0][0] * myMat[2][1] - myMat[2][0] * myMat[0][1]);
+  aNewMat[0][2] =   myMat[0][1] * myMat[1][2] - myMat[1][1] * myMat[0][2];
+  aNewMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
+  aNewMat[2][2] =   myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
+  Standard_Real aDet =  myMat[0][0] * aNewMat[0][0] + myMat[0][1]* aNewMat[1][0] + myMat[0][2] * aNewMat[2][0];
+  Standard_Real aVal = aDet;
+  if (aVal < 0) aVal = -aVal;
+  Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(), "gp_Mat::Invert() - matrix has zero determinant");
+  aDet = 1.0e0 / aDet;
+  myMat[0][0] = aNewMat[0][0];
+  myMat[1][0] = aNewMat[1][0];
+  myMat[2][0] = aNewMat[2][0];
+  myMat[0][1] = aNewMat[0][1];
+  myMat[1][1] = aNewMat[1][1];
+  myMat[2][1] = aNewMat[2][1];
+  myMat[0][2] = aNewMat[0][2];
+  myMat[1][2] = aNewMat[1][2];
+  myMat[2][2] = aNewMat[2][2];
+  Multiply (aDet);
 }
 
-gp_Mat gp_Mat::Inverted () const
+// =======================================================================
+// function : Inverted
+// purpose  :
+// =======================================================================
+gp_Mat gp_Mat::Inverted() const
 { 
-  gp_Mat NewMat;
-  const Standard_Address M = (Standard_Address)&(       matrix[0][0]);
-  const Standard_Address N = (Standard_Address)&(NewMat.matrix[0][0]);
-  //
+  gp_Mat aNewMat;
   // calcul de  la transposee de la commatrice
-  //
-  N00 = M11 * M22 - M12 * M21 ;
-  N10 = -(M10 * M22 - M20 * M12) ;
-  N20 = M10 * M21 - M20 * M11 ;
-  N01 = - (M01 * M22 - M21 * M02) ;
-  N11 = M00 * M22 - M20 * M02 ;
-  N21 = -(M00 * M21 - M20 * M01) ;
-  N02 = M01 * M12 - M11 * M02 ;
-  N12 = -(M00 * M12 - M10 * M02) ;
-  N22 = M00 * M11 - M01 * M10 ;
-  Standard_Real det =  M00 * N00 + M01* N10 + M02 * N20 ;
-  Standard_Real val = det;
-  if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat::Inverted() - matrix has zero determinant");
-  det = 1.0e0 / det ;
-  NewMat.Multiply(det) ;
-  return NewMat;
+  aNewMat.myMat[0][0] =   myMat[1][1] * myMat[2][2] - myMat[1][2] * myMat[2][1];
+  aNewMat.myMat[1][0] = -(myMat[1][0] * myMat[2][2] - myMat[2][0] * myMat[1][2]);
+  aNewMat.myMat[2][0] =   myMat[1][0] * myMat[2][1] - myMat[2][0] * myMat[1][1];
+  aNewMat.myMat[0][1] = -(myMat[0][1] * myMat[2][2] - myMat[2][1] * myMat[0][2]);
+  aNewMat.myMat[1][1] =   myMat[0][0] * myMat[2][2] - myMat[2][0] * myMat[0][2];
+  aNewMat.myMat[2][1] = -(myMat[0][0] * myMat[2][1] - myMat[2][0] * myMat[0][1]);
+  aNewMat.myMat[0][2] =   myMat[0][1] * myMat[1][2] - myMat[1][1] * myMat[0][2];
+  aNewMat.myMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
+  aNewMat.myMat[2][2] =   myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
+  Standard_Real aDet =  myMat[0][0] * aNewMat.myMat[0][0] + myMat[0][1]* aNewMat.myMat[1][0] + myMat[0][2] * aNewMat.myMat[2][0];
+  Standard_Real aVal =  aDet;
+  if (aVal < 0) aVal = -aVal;
+  Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(), "gp_Mat::Inverted() - matrix has zero determinant");
+  aDet = 1.0e0 / aDet;
+  aNewMat.Multiply (aDet);
+  return aNewMat;
 }
 
-void gp_Mat::Power (const Standard_Integer N)
+// =======================================================================
+// function : Power
+// purpose  :
+// =======================================================================
+void gp_Mat::Power (const Standard_Integer theN)
 {
-  if (N == 1) { }
-  else if (N == 0)  { SetIdentity() ; }
-  else if (N == -1) { Invert(); }
+  if (theN == 1) { }
+  else if (theN == 0)  { SetIdentity(); }
+  else if (theN == -1) { Invert(); }
   else {
-    if (N < 0) { Invert(); }
-    Standard_Integer Npower = N;
+    if (theN < 0) { Invert(); }
+    Standard_Integer Npower = theN;
     if (Npower < 0) Npower = - Npower;
     Npower--;
-    gp_Mat Temp = *this;
+    gp_Mat aTemp = *this;
     for(;;) {
-      if (IsOdd(Npower)) Multiply (Temp);
+      if (IsOdd(Npower)) Multiply (aTemp);
       if (Npower == 1)   break; 
-      Temp.Multiply (Temp);
+      aTemp.Multiply (aTemp);
       Npower>>=1;
     }
   }
 }
 
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
 void gp_Mat::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Mat", 9, Mat00, Mat01, Mat02, Mat10, Mat11, Mat12, Mat20, Mat21, Mat22)
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Mat", 9,
+                          myMat[0][0], myMat[0][1], myMat[0][2],
+                          myMat[1][0], myMat[1][1], myMat[1][2],
+                          myMat[2][0], myMat[2][1], myMat[2][2])
 }

@@ -23,23 +23,8 @@ class gp_Trsf2d;
 class gp_GTrsf2d;
 class gp_XY;
 
-#define Mat2d00 ((Standard_Real*)aM)[0]
-#define Mat2d01 ((Standard_Real*)aM)[1]
-#define Mat2d10 ((Standard_Real*)aM)[2]
-#define Mat2d11 ((Standard_Real*)aM)[3]
-
-#define Nat2d00 ((Standard_Real*)aN)[0]
-#define Nat2d01 ((Standard_Real*)aN)[1]
-#define Nat2d10 ((Standard_Real*)aN)[2]
-#define Nat2d11 ((Standard_Real*)aN)[3]
-
-#define Oat2d00 ((Standard_Real*)anO)[0]
-#define Oat2d01 ((Standard_Real*)anO)[1]
-#define Oat2d10 ((Standard_Real*)anO)[2]
-#define Oat2d11 ((Standard_Real*)anO)[3]
-
-//! Describes a two column, two row matrix. This sort of
-//! object is used in various vectorial or matrix computations.
+//! Describes a two column, two row matrix.
+//! This sort of object is used in various vectorial or matrix computations.
 class gp_Mat2d 
 {
 public:
@@ -49,8 +34,7 @@ public:
   //! Creates  a matrix with null coefficients.
   gp_Mat2d()
   {
-    const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-    Mat2d00 = Mat2d01 = Mat2d10 = Mat2d11 = 0.0;
+    myMat[0][0] = myMat[0][1] = myMat[1][0] = myMat[1][1] = 0.0;
   }
 
   //! theCol1, theCol2 are the 2 columns of the matrix.
@@ -72,17 +56,15 @@ public:
   //! The other coefficients of the matrix are not modified.
   void SetDiagonal (const Standard_Real theX1, const Standard_Real theX2)
   {
-    const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-    Mat2d00 = theX1;
-    Mat2d11 = theX2;
+    myMat[0][0] = theX1;
+    myMat[1][1] = theX2;
   }
 
   //! Modifies this matrix, so that it represents the Identity matrix.
   void SetIdentity()
   {
-    const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-    Mat2d00 = Mat2d11 = 1.0;
-    Mat2d01 = Mat2d10 = 0.0;
+    myMat[0][0] = myMat[1][1] = 1.0;
+    myMat[0][1] = myMat[1][0] = 0.0;
   }
 
   //! Modifies this matrix, so that it represents a rotation. theAng is the angular
@@ -104,9 +86,8 @@ public:
   //! @endcode
   void SetScale (const Standard_Real theS)
   {
-    const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-    Mat2d00 = Mat2d11 = theS;
-    Mat2d01 = Mat2d10 = 0.0;
+    myMat[0][0] = myMat[1][1] = theS;
+    myMat[0][1] = myMat[1][0] = 0.0;
   }
 
   //! Assigns <theValue> to the coefficient of row theRow, column theCol of this matrix.
@@ -114,7 +95,7 @@ public:
   void SetValue (const Standard_Integer theRow, const Standard_Integer theCol, const Standard_Real theValue)
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 2 || theCol < 1 || theCol > 2, " ");
-    matrix[theRow - 1][theCol - 1] = theValue;
+    myMat[theRow - 1][theCol - 1] = theValue;
   }
 
   //! Returns the column of theCol index.
@@ -124,8 +105,7 @@ public:
   //! Computes the determinant of the matrix.
   Standard_Real Determinant() const
   {
-    const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-    return  Mat2d00 * Mat2d11 - Mat2d10 * Mat2d01;
+    return myMat[0][0] * myMat[1][1] - myMat[1][0] * myMat[0][1];
   }
 
   //! Returns the main diagonal of the matrix.
@@ -141,7 +121,7 @@ public:
   const Standard_Real& Value (const Standard_Integer theRow, const Standard_Integer theCol) const
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 2 || theCol < 1 || theCol > 2, " ");
-    return matrix[theRow - 1][theCol - 1];
+    return myMat[theRow - 1][theCol - 1];
   }
 
   const Standard_Real& operator() (const Standard_Integer theRow, const Standard_Integer theCol) const { return Value (theRow, theCol); }
@@ -152,7 +132,7 @@ public:
   Standard_Real& ChangeValue (const Standard_Integer theRow, const Standard_Integer theCol)
   {
     Standard_OutOfRange_Raise_if (theRow < 1 || theRow > 2 || theCol < 1 || theCol > 2, " ");
-    return matrix[theRow - 1][theCol - 1];
+    return myMat[theRow - 1][theCol - 1];
   }
 
   Standard_Real& operator() (const Standard_Integer theRow, const Standard_Integer theCol) { return ChangeValue (theRow, theCol); }
@@ -269,7 +249,7 @@ friend class gp_XY;
 
 private:
 
-  Standard_Real matrix[2][2];
+  Standard_Real myMat[2][2];
 
 };
 
@@ -279,12 +259,11 @@ private:
 //=======================================================================
 inline void gp_Mat2d::SetRotation (const Standard_Real theAng)
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
   Standard_Real aSinA = sin (theAng);
   Standard_Real aCosA = cos (theAng);
-  Mat2d00 = Mat2d11 = aCosA;
-  Mat2d01 = -aSinA;
-  Mat2d10 =  aSinA;
+  myMat[0][0] = myMat[1][1] = aCosA;
+  myMat[0][1] = -aSinA;
+  myMat[1][0] =  aSinA;
 }
 
 //=======================================================================
@@ -293,12 +272,10 @@ inline void gp_Mat2d::SetRotation (const Standard_Real theAng)
 //=======================================================================
 inline void gp_Mat2d::Add (const gp_Mat2d& theOther)
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther.matrix[0][0]);
-  Mat2d00 += Oat2d00;
-  Mat2d01 += Oat2d01;
-  Mat2d10 += Oat2d10;
-  Mat2d11 += Oat2d11;
+  myMat[0][0] += theOther.myMat[0][0];
+  myMat[0][1] += theOther.myMat[0][1];
+  myMat[1][0] += theOther.myMat[1][0];
+  myMat[1][1] += theOther.myMat[1][1];
 }
 
 //=======================================================================
@@ -308,13 +285,10 @@ inline void gp_Mat2d::Add (const gp_Mat2d& theOther)
 inline gp_Mat2d gp_Mat2d::Added (const gp_Mat2d& theOther) const
 {
   gp_Mat2d aNewMat2d;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address aN = (Standard_Address)&(aNewMat2d.matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther   .matrix[0][0]);
-  Nat2d00 = Mat2d00 + Oat2d00;
-  Nat2d01 = Mat2d01 + Oat2d01;
-  Nat2d10 = Mat2d10 + Oat2d10;
-  Nat2d11 = Mat2d11 + Oat2d11;
+  aNewMat2d.myMat[0][0] = myMat[0][0] + theOther.myMat[0][0];
+  aNewMat2d.myMat[0][1] = myMat[0][1] + theOther.myMat[0][1];
+  aNewMat2d.myMat[1][0] = myMat[1][0] + theOther.myMat[1][0];
+  aNewMat2d.myMat[1][1] = myMat[1][1] + theOther.myMat[1][1];
   return aNewMat2d;
 }
 
@@ -324,11 +298,10 @@ inline gp_Mat2d gp_Mat2d::Added (const gp_Mat2d& theOther) const
 //=======================================================================
 inline void gp_Mat2d::Divide (const Standard_Real theScalar)
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  Mat2d00 /= theScalar;
-  Mat2d01 /= theScalar;
-  Mat2d10 /= theScalar;
-  Mat2d11 /= theScalar;
+  myMat[0][0] /= theScalar;
+  myMat[0][1] /= theScalar;
+  myMat[1][0] /= theScalar;
+  myMat[1][1] /= theScalar;
 }
 
 //=======================================================================
@@ -338,12 +311,10 @@ inline void gp_Mat2d::Divide (const Standard_Real theScalar)
 inline gp_Mat2d gp_Mat2d::Divided (const Standard_Real theScalar) const
 {
   gp_Mat2d aNewMat2d;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address aN = (Standard_Address)&(aNewMat2d.matrix[0][0]);
-  Nat2d00 = Mat2d00 / theScalar;
-  Nat2d01 = Mat2d01 / theScalar;
-  Nat2d10 = Mat2d10 / theScalar;
-  Nat2d11 = Mat2d11 / theScalar;
+  aNewMat2d.myMat[0][0] = myMat[0][0] / theScalar;
+  aNewMat2d.myMat[0][1] = myMat[0][1] / theScalar;
+  aNewMat2d.myMat[1][0] = myMat[1][0] / theScalar;
+  aNewMat2d.myMat[1][1] = myMat[1][1] / theScalar;
   return aNewMat2d;
 }
 
@@ -353,15 +324,12 @@ inline gp_Mat2d gp_Mat2d::Divided (const Standard_Real theScalar) const
 //=======================================================================
 inline void gp_Mat2d::Multiply (const gp_Mat2d& theOther)
 {
-  Standard_Real aT00, aT10;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther.matrix[0][0]);
-  aT00 = Mat2d00 * Oat2d00 + Mat2d01 * Oat2d10;
-  aT10 = Mat2d10 * Oat2d00 + Mat2d11 * Oat2d10;
-  Mat2d01 = Mat2d00 * Oat2d01 + Mat2d01 * Oat2d11;
-  Mat2d11 = Mat2d10 * Oat2d01 + Mat2d11 * Oat2d11;
-  Mat2d00 = aT00;
-  Mat2d10 = aT10;
+  const Standard_Real aT00 = myMat[0][0] * theOther.myMat[0][0] + myMat[0][1] * theOther.myMat[1][0];
+  const Standard_Real aT10 = myMat[1][0] * theOther.myMat[0][0] + myMat[1][1] * theOther.myMat[1][0];
+  myMat[0][1] = myMat[0][0] * theOther.myMat[0][1] + myMat[0][1] * theOther.myMat[1][1];
+  myMat[1][1] = myMat[1][0] * theOther.myMat[0][1] + myMat[1][1] * theOther.myMat[1][1];
+  myMat[0][0] = aT00;
+  myMat[1][0] = aT10;
 }
 
 //=======================================================================
@@ -370,15 +338,16 @@ inline void gp_Mat2d::Multiply (const gp_Mat2d& theOther)
 //=======================================================================
 inline void gp_Mat2d::PreMultiply (const gp_Mat2d& theOther)
 {
-  Standard_Real aT00, aT01;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther.matrix[0][0]);
-  aT00 = Oat2d00 * Mat2d00 + Oat2d01 * Mat2d10;
-  Mat2d10 = Oat2d10 * Mat2d00 + Oat2d11 * Mat2d10;
-  aT01 = Oat2d00 * Mat2d01 + Oat2d01 * Mat2d11;
-  Mat2d11 = Oat2d10 * Mat2d01 + Oat2d11 * Mat2d11;
-  Mat2d00 = aT00;
-  Mat2d01 = aT01;
+  const Standard_Real aT00 = theOther.myMat[0][0] * myMat[0][0]
+                           + theOther.myMat[0][1] * myMat[1][0];
+  myMat[1][0] = theOther.myMat[1][0] * myMat[0][0]
+              + theOther.myMat[1][1] * myMat[1][0];
+  const Standard_Real aT01 = theOther.myMat[0][0] * myMat[0][1]
+                           + theOther.myMat[0][1] * myMat[1][1];
+  myMat[1][1] = theOther.myMat[1][0] * myMat[0][1]
+              + theOther.myMat[1][1] * myMat[1][1];
+  myMat[0][0] = aT00;
+  myMat[0][1] = aT01;
 }
 
 //=======================================================================
@@ -388,12 +357,10 @@ inline void gp_Mat2d::PreMultiply (const gp_Mat2d& theOther)
 inline gp_Mat2d gp_Mat2d::Multiplied (const Standard_Real theScalar) const
 {
   gp_Mat2d aNewMat2d;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address aN = (Standard_Address)&(aNewMat2d.matrix[0][0]);
-  Nat2d00 = Mat2d00 * theScalar;
-  Nat2d01 = Mat2d01 * theScalar;
-  Nat2d10 = Mat2d10 * theScalar;
-  Nat2d11 = Mat2d11 * theScalar;
+  aNewMat2d.myMat[0][0] = myMat[0][0] * theScalar;
+  aNewMat2d.myMat[0][1] = myMat[0][1] * theScalar;
+  aNewMat2d.myMat[1][0] = myMat[1][0] * theScalar;
+  aNewMat2d.myMat[1][1] = myMat[1][1] * theScalar;
   return aNewMat2d;
 }
 
@@ -403,11 +370,10 @@ inline gp_Mat2d gp_Mat2d::Multiplied (const Standard_Real theScalar) const
 //=======================================================================
 inline void gp_Mat2d::Multiply (const Standard_Real theScalar)
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  Mat2d00 *= theScalar;
-  Mat2d01 *= theScalar;
-  Mat2d10 *= theScalar;
-  Mat2d11 *= theScalar;
+  myMat[0][0] *= theScalar;
+  myMat[0][1] *= theScalar;
+  myMat[1][0] *= theScalar;
+  myMat[1][1] *= theScalar;
 }
 
 //=======================================================================
@@ -416,12 +382,10 @@ inline void gp_Mat2d::Multiply (const Standard_Real theScalar)
 //=======================================================================
 inline void gp_Mat2d::Subtract (const gp_Mat2d& theOther)
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther.matrix[0][0]);
-  Mat2d00 -= Oat2d00;
-  Mat2d01 -= Oat2d01;
-  Mat2d10 -= Oat2d10;
-  Mat2d11 -= Oat2d11;
+  myMat[0][0] -= theOther.myMat[0][0];
+  myMat[0][1] -= theOther.myMat[0][1];
+  myMat[1][0] -= theOther.myMat[1][0];
+  myMat[1][1] -= theOther.myMat[1][1];
 }
 
 //=======================================================================
@@ -431,13 +395,10 @@ inline void gp_Mat2d::Subtract (const gp_Mat2d& theOther)
 inline gp_Mat2d gp_Mat2d::Subtracted (const gp_Mat2d& theOther) const
 {
   gp_Mat2d aNewMat2d;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address aN = (Standard_Address)&(aNewMat2d.matrix[0][0]);
-  const Standard_Address anO = (Standard_Address)&(theOther.matrix[0][0]);
-  Nat2d00 = Mat2d00 - Oat2d00;
-  Nat2d01 = Mat2d01 - Oat2d01;
-  Nat2d10 = Mat2d10 - Oat2d10;
-  Nat2d11 = Mat2d11 - Oat2d11;
+  aNewMat2d.myMat[0][0] = myMat[0][0] - theOther.myMat[0][0];
+  aNewMat2d.myMat[0][1] = myMat[0][1] - theOther.myMat[0][1];
+  aNewMat2d.myMat[1][0] = myMat[1][0] - theOther.myMat[1][0];
+  aNewMat2d.myMat[1][1] = myMat[1][1] - theOther.myMat[1][1];
   return aNewMat2d;
 }
 
@@ -447,11 +408,9 @@ inline gp_Mat2d gp_Mat2d::Subtracted (const gp_Mat2d& theOther) const
 //=======================================================================
 inline void gp_Mat2d::Transpose()
 {
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  Standard_Real aTemp;
-  aTemp     = Mat2d01;
-  Mat2d01  = Mat2d10;
-  Mat2d10  = aTemp;
+  const Standard_Real aTemp = myMat[0][1];
+  myMat[0][1] = myMat[1][0];
+  myMat[1][0] = aTemp;
 }
 
 //=======================================================================
@@ -461,12 +420,10 @@ inline void gp_Mat2d::Transpose()
 inline gp_Mat2d gp_Mat2d::Transposed() const
 {
   gp_Mat2d aNewMat2d;
-  const Standard_Address aM = (Standard_Address)&(matrix[0][0]);
-  const Standard_Address aN = (Standard_Address)&(aNewMat2d.matrix[0][0]);
-  Nat2d10 = Mat2d01;
-  Nat2d01 = Mat2d10;
-  Nat2d00 = Mat2d00;
-  Nat2d11 = Mat2d11;
+  aNewMat2d.myMat[1][0] = myMat[0][1];
+  aNewMat2d.myMat[0][1] = myMat[1][0];
+  aNewMat2d.myMat[0][0] = myMat[0][0];
+  aNewMat2d.myMat[1][1] = myMat[1][1];
   return aNewMat2d; 
 }
 
