@@ -18,14 +18,22 @@
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseIntersector, Standard_Transient)
 
 //=======================================================================
-// function : ScaleAndTransform
+// function : SelectMgr_BaseIntersector
 // purpose  :
 //=======================================================================
-Handle(SelectMgr_BaseIntersector) SelectMgr_BaseIntersector::ScaleAndTransform (const Standard_Integer,
-                                                                                const gp_GTrsf&,
-                                                                                const Handle(SelectMgr_FrustumBuilder)&) const
+SelectMgr_BaseIntersector::SelectMgr_BaseIntersector()
+: mySelectionType (SelectMgr_SelectionType_Unknown)
 {
-  return NULL;
+  //
+}
+
+//=======================================================================
+// function : ~SelectMgr_BaseIntersector
+// purpose  :
+//=======================================================================
+SelectMgr_BaseIntersector::~SelectMgr_BaseIntersector()
+{
+  //
 }
 
 //=======================================================================
@@ -162,88 +170,6 @@ const gp_Pnt2d& SelectMgr_BaseIntersector::GetMousePosition() const
 {
   static const gp_Pnt2d aPnt(RealLast(), RealLast());
   return aPnt;
-}
-
-//=======================================================================
-// function : OverlapsBox
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsBox (const SelectMgr_Vec3&,
-                                                         const SelectMgr_Vec3&,
-                                                         const SelectMgr_ViewClipRange&,
-                                                         SelectBasics_PickResult&) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsBox
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsBox (const SelectMgr_Vec3&,
-                                                         const SelectMgr_Vec3&,
-                                                         Standard_Boolean*) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPoint
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsPoint (const gp_Pnt&,
-                                                           const SelectMgr_ViewClipRange&,
-                                                           SelectBasics_PickResult&) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPoint
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsPoint (const gp_Pnt& thePnt) const
-{
-  (void )thePnt;
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPolygon
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsPolygon (const TColgp_Array1OfPnt&,
-                                                             Select3D_TypeOfSensitivity,
-                                                             const SelectMgr_ViewClipRange&,
-                                                             SelectBasics_PickResult&) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsTriangle
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsTriangle (const gp_Pnt&,
-                                                              const gp_Pnt&,
-                                                              const gp_Pnt&,
-                                                              Select3D_TypeOfSensitivity,
-                                                              const SelectMgr_ViewClipRange&,
-                                                              SelectBasics_PickResult&) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsSegment
-// purpose  :
-//=======================================================================
-Standard_Boolean SelectMgr_BaseIntersector::OverlapsSegment (const gp_Pnt&,
-                                                             const gp_Pnt&,
-                                                             const SelectMgr_ViewClipRange&,
-                                                             SelectBasics_PickResult&) const
-{
-  return Standard_False;
 }
 
 //=======================================================================

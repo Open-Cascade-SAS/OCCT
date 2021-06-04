@@ -397,26 +397,6 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPoint (const gp_Pnt& 
 //            may be considered of interior part or boundary line defined
 //            by segments depending on given sensitivity type
 //=======================================================================
-Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPolygon (const Handle(TColgp_HArray1OfPnt)& theArrayOfPnts,
-                                                                    Standard_Integer theSensType,
-                                                                    SelectBasics_PickResult& thePickResult) const
-{
-  if (myActiveSelectingVolume.IsNull())
-  {
-    return Standard_False;
-  }
-
-  return myActiveSelectingVolume->OverlapsPolygon (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
-                                                   myViewClipRange, thePickResult);
-}
-
-//=======================================================================
-// function : OverlapsPolygon
-// purpose  : SAT intersection test between defined volume and given
-//            ordered set of points, representing line segments. The test
-//            may be considered of interior part or boundary line defined
-//            by segments depending on given sensitivity type
-//=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                                     Standard_Integer theSensType,
                                                                     SelectBasics_PickResult& thePickResult) const

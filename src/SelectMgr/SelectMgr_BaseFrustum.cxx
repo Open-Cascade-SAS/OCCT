@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 
 //=======================================================================
 // function : SelectMgr_BaseFrustum
-// purpose  : Creates new selecting volume with pixel toletance set to 2,
-//            orthographic camera and empty frustum builder
+// purpose  :
 //=======================================================================
 SelectMgr_BaseFrustum::SelectMgr_BaseFrustum()
 : myPixelTolerance (2),
@@ -141,94 +140,6 @@ void SelectMgr_BaseFrustum::SetBuilder (const Handle(SelectMgr_FrustumBuilder)& 
 {
   myBuilder.Nullify();
   myBuilder = theBuilder;
-}
-
-//=======================================================================
-// function : OverlapsBox
-// purpose  : SAT intersection test between defined volume and
-//            given axis-aligned box
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsBox (const SelectMgr_Vec3& /*theBoxMin*/,
-                                                     const SelectMgr_Vec3& /*theBoxMax*/,
-                                                     const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                     SelectBasics_PickResult& /*thePickResult*/) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsBox
-// purpose  : Intersection test between defined volume and given point
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsBox (const SelectMgr_Vec3& /*theBoxMin*/,
-                                                     const SelectMgr_Vec3& /*theBoxMax*/,
-                                                     Standard_Boolean*     /*theInside*/) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPoint
-// purpose  : Intersection test between defined volume and given point
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsPoint (const gp_Pnt& /*thePnt*/,
-                                                       const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                       SelectBasics_PickResult& ) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPoint
-// purpose  : Intersection test between defined volume and given point
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsPoint (const gp_Pnt& /*thePnt*/) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsPolygon
-// purpose  : SAT intersection test between defined volume and given
-//            ordered set of points, representing line segments. The test
-//            may be considered of interior part or boundary line defined
-//            by segments depending on given sensitivity type
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsPolygon (const TColgp_Array1OfPnt& /*theArrayOfPnts*/,
-                                                         Select3D_TypeOfSensitivity /*theSensType*/,
-                                                         const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                         SelectBasics_PickResult& ) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsTriangle
-// purpose  : SAT intersection test between defined volume and given
-//            triangle. The test may be considered of interior part or
-//            boundary line defined by triangle vertices depending on
-//            given sensitivity type
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsTriangle (const gp_Pnt& /*thePt1*/,
-                                                          const gp_Pnt& /*thePt2*/,
-                                                          const gp_Pnt& /*thePt3*/,
-                                                          Select3D_TypeOfSensitivity /*theSensType*/,
-                                                          const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                          SelectBasics_PickResult& ) const
-{
-  return Standard_False;
-}
-
-//=======================================================================
-// function : OverlapsSegment
-// purpose  : Checks if line segment overlaps selecting volume
-//=======================================================================
-Standard_Boolean SelectMgr_BaseFrustum::OverlapsSegment (const gp_Pnt& /*thePnt1*/,
-                                                         const gp_Pnt& /*thePnt2*/,
-                                                         const SelectMgr_ViewClipRange& /*theClipRange*/,
-                                                         SelectBasics_PickResult& ) const
-{
-  return Standard_False;
 }
 
 //=======================================================================

@@ -228,7 +228,7 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
       if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
       {
         SelectBasics_PickResult aDummy;
-        return theMgr.OverlapsPolygon (anArrayOfPnt, mySensType, aDummy);
+        return theMgr.OverlapsPolygon (anArrayOfPnt->Array1(), mySensType, aDummy);
       }
       for (Standard_Integer aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper(); ++aPntIdx)
       {
@@ -240,7 +240,7 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
       return Standard_True;
     }
 
-    if (!theMgr.OverlapsPolygon (anArrayOfPnt, Select3D_TOS_INTERIOR, thePickResult))
+    if (!theMgr.OverlapsPolygon (anArrayOfPnt->Array1(), Select3D_TOS_INTERIOR, thePickResult))
     {
       return Standard_False;
     }

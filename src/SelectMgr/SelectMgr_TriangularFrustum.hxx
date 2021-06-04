@@ -19,19 +19,11 @@
 #include <SelectMgr_Frustum.hxx>
 
 //! This class contains representation of triangular selecting frustum, created in case
-//! of polyline selection, and algorithms for overlap detection between selecting
-//! frustum and sensitive entities.
-//! Overlap detection tests are implemented according to the terms of separating axis
-//! theorem (SAT).
+//! of polyline selection, and algorithms for overlap detection between selecting frustum and sensitive entities.
+//! Overlap detection tests are implemented according to the terms of separating axis theorem (SAT).
 //! NOTE: the object of this class can be created only as part of SelectMgr_TriangularFrustumSet.
 class SelectMgr_TriangularFrustum : public SelectMgr_Frustum<3>
 {
-protected:
-
-  //! Creates new triangular frustum with bases of triangles with vertices theP1,
-  //! theP2 and theP3 projections onto near and far view frustum planes
-  SelectMgr_TriangularFrustum() {}
-
 public:
 
   //! Auxiliary structure to define selection triangle
@@ -40,7 +32,10 @@ public:
     gp_Pnt2d Points[3];
   };
 
-  Standard_EXPORT ~SelectMgr_TriangularFrustum();
+public:
+
+  //! Destructor.
+  Standard_EXPORT virtual ~SelectMgr_TriangularFrustum();
 
   //! Initializes selection triangle by input points
   Standard_EXPORT void Init (const gp_Pnt2d& theP1,
@@ -52,12 +47,15 @@ public:
   //! NOTE: it should be called after Init() method
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
+  //! Returns FALSE (not applicable to this volume).
+  virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
+
   //! Returns a copy of the frustum transformed according to the matrix given
   Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScale,
                                                                                const gp_GTrsf& theTrsf,
                                                                                const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
-  // SAT Tests for different objects
+public: //! @name SAT Tests for different objects
 
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theMinPnt,
@@ -75,6 +73,12 @@ public:
   Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                           SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Always returns FALSE (not applicable to this selector).
+  virtual Standard_Boolean OverlapsPoint (const gp_Pnt& ) const Standard_OVERRIDE
+  {
+    return Standard_False;
+  }
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
@@ -100,6 +104,8 @@ public:
                                                              const SelectMgr_ViewClipRange& theClipRange,
                                                              SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
+public:
+
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks
   Standard_EXPORT void Clear();
 
@@ -109,6 +115,11 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
+protected:
+
+  //! Creates an empty triangular frustum.
+  Standard_EXPORT SelectMgr_TriangularFrustum();
 
 private:
 
@@ -121,7 +132,6 @@ protected:
 public:
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum, SelectMgr_Frustum<3>)
-
   friend class SelectMgr_TriangularFrustumSet;
 };
 

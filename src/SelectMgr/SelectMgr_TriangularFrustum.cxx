@@ -17,12 +17,7 @@
 
 #include <SelectMgr_FrustumBuilder.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum,Standard_Transient)
-
-SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
-{
-  Clear();
-}
+IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_TriangularFrustum, Standard_Transient)
 
 namespace
 {
@@ -39,6 +34,24 @@ namespace
     // Far
     theNormals[4] = -theNormals[3];
   }
+}
+
+// =======================================================================
+// function : SelectMgr_TriangularFrustum
+// purpose  :
+// =======================================================================
+SelectMgr_TriangularFrustum::SelectMgr_TriangularFrustum()
+{
+  //
+}
+
+// =======================================================================
+// function : ~SelectMgr_TriangularFrustum
+// purpose  :
+// =======================================================================
+SelectMgr_TriangularFrustum::~SelectMgr_TriangularFrustum()
+{
+  Clear();
 }
 
 // =======================================================================

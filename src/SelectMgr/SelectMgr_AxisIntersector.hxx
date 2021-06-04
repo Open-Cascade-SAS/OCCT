@@ -28,7 +28,7 @@ public:
   Standard_EXPORT SelectMgr_AxisIntersector();
 
   //! Destructor
-  virtual ~SelectMgr_AxisIntersector() {}
+  Standard_EXPORT virtual ~SelectMgr_AxisIntersector();
 
   //! Initializes selecting axis according to the input one
   Standard_EXPORT void Init (const gp_Ax1& theAxis);
@@ -37,14 +37,16 @@ public:
   //! NOTE: it should be called after Init() method
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
 
+  //! Returns FALSE (not applicable to this volume).
+  virtual Standard_Boolean IsScalable() const Standard_OVERRIDE { return false; }
+
   //! IMPORTANT: Scaling doesn't make sense for this intersector.
   //! Returns a copy of the intersector transformed using the matrix given.
-  //! Builder is an optional argument that represents corresponding settings for re-constructing transformed
-  //! frustum from scratch. Can be null if reconstruction is not expected furthermore.
-  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector)
-    ScaleAndTransform (const Standard_Integer theScaleFactor,
-                       const gp_GTrsf& theTrsf,
-                       const Handle(SelectMgr_FrustumBuilder)& theBuilder = Handle(SelectMgr_FrustumBuilder)()) const Standard_OVERRIDE;
+  //! Builder is an optional argument that represents corresponding settings for re-constructing transformed frustum from scratch.
+  //! Can be null if reconstruction is not expected furthermore.
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                                               const gp_GTrsf& theTrsf,
+                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
 public:
 

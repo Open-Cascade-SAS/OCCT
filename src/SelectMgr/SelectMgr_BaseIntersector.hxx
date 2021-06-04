@@ -39,15 +39,13 @@ class SelectMgr_BaseIntersector : public Standard_Transient
 public:
 
   //! Creates new empty selecting volume
-  SelectMgr_BaseIntersector()
-  : mySelectionType (SelectMgr_SelectionType_Unknown)
-  {}
+  Standard_EXPORT SelectMgr_BaseIntersector();
 
   //! Destructor
-  virtual ~SelectMgr_BaseIntersector() {}
+  Standard_EXPORT virtual ~SelectMgr_BaseIntersector();
 
   //! Builds intersector according to internal parameters
-  virtual void Build() {}
+  virtual void Build() = 0;
 
   //! Returns selection type of this intersector
   SelectMgr_SelectionType GetSelectionType() const { return mySelectionType; }
@@ -55,27 +53,23 @@ public:
 public:
 
   //! Checks if it is possible to scale this intersector.
-  //! @return false for the base class.
-  virtual Standard_Boolean IsScalable() const { return Standard_False; }
+  virtual Standard_Boolean IsScalable() const = 0;
 
   //! Sets pixel tolerance.
   //! It makes sense only for scalable intersectors (built on a single point).
   //! This method does nothing for the base class.
   Standard_EXPORT virtual void SetPixelTolerance (const Standard_Integer theTol);
 
-  //! IMPORTANT: Scaling makes sense only for scalable intersectors (built on a single point)!
-  //!            Note that this method does not perform any checks on type of the frustum.
-  //! Returns a copy of the frustum resized according to the scale factor given
-  //! and transforms it using the matrix given.
-  //! There are no default parameters, but in case if:
-  //!    - transformation only is needed: @theScaleFactor must be initialized as any negative value;
-  //!    - scale only is needed: @theTrsf must be set to gp_Identity.
-  //! Builder is an optional argument that represents corresponding settings for re-constructing transformed
-  //! frustum from scratch. Can be null if reconstruction is not expected furthermore.
-  //! This method does nothing for the base class.
-  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScaleFactor,
-                                                                               const gp_GTrsf& theTrsf,
-                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const;
+  //! Note that this method does not perform any checks on type of the frustum.
+  //! @param theScaleFactor [in] scale factor for new intersector or negative value if undefined;
+  //!                            IMPORTANT: scaling makes sense only for scalable ::IsScalable() intersectors (built on a single point)!
+  //! @param theTrsf [in] transformation for new intersector or gp_Identity if undefined
+  //! @param theBuilder [in] an optional argument that represents corresponding settings for re-constructing transformed frustum from scratch;
+  //!                        could be NULL if reconstruction is not expected furthermore
+  //! @return a copy of the frustum resized according to the scale factor given and transforms it using the matrix given
+  virtual Handle(SelectMgr_BaseIntersector) ScaleAndTransform (const Standard_Integer theScaleFactor,
+                                                               const gp_GTrsf& theTrsf,
+                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const = 0;
 
 public:
 
@@ -150,51 +144,50 @@ public:
 public:
 
   //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
-                                                        const SelectMgr_Vec3& theBoxMax,
-                                                        const SelectMgr_ViewClipRange& theClipRange,
-                                                        SelectBasics_PickResult& thePickResult) const;
+  virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                        const SelectMgr_Vec3& theBoxMax,
+                                        const SelectMgr_ViewClipRange& theClipRange,
+                                        SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
-                                                        const SelectMgr_Vec3& theBoxMax,
-                                                        Standard_Boolean*     theInside = NULL) const;
+  virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
+                                        const SelectMgr_Vec3& theBoxMax,
+                                        Standard_Boolean*     theInside = NULL) const = 0;
 
   //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
-                                                          const SelectMgr_ViewClipRange& theClipRange,
-                                                          SelectBasics_PickResult& thePickResult) const;
+  virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
+                                          const SelectMgr_ViewClipRange& theClipRange,
+                                          SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Intersection test between defined volume and given point
-  //! Does not perform depth calculation, so this method is defined as
-  //! helper function for inclusion test. Therefore, its implementation
-  //! makes sense only for rectangular frustum with box selection mode activated.
-  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const;
+  //! Does not perform depth calculation, so this method is defined as helper function for inclusion test.
+  //! Therefore, its implementation makes sense only for rectangular frustum with box selection mode activated.
+  virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const = 0;
 
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                            Select3D_TypeOfSensitivity theSensType,
-                                                            const SelectMgr_ViewClipRange& theClipRange,
-                                                            SelectBasics_PickResult& thePickResult) const;
+  virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
+                                            Select3D_TypeOfSensitivity theSensType,
+                                            const SelectMgr_ViewClipRange& theClipRange,
+                                            SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Checks if line segment overlaps selecting frustum
-  Standard_EXPORT virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
-                                                            const gp_Pnt& thePnt2,
-                                                            const SelectMgr_ViewClipRange& theClipRange,
-                                                            SelectBasics_PickResult& thePickResult) const;
+  virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
+                                            const gp_Pnt& thePnt2,
+                                            const SelectMgr_ViewClipRange& theClipRange,
+                                            SelectBasics_PickResult& thePickResult) const = 0;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePt1,
-                                                             const gp_Pnt& thePt2,
-                                                             const gp_Pnt& thePt3,
-                                                             Select3D_TypeOfSensitivity theSensType,
-                                                             const SelectMgr_ViewClipRange& theClipRange,
-                                                             SelectBasics_PickResult& thePickResult) const;
+  virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePnt1,
+                                             const gp_Pnt& thePnt2,
+                                             const gp_Pnt& thePnt3,
+                                             Select3D_TypeOfSensitivity theSensType,
+                                             const SelectMgr_ViewClipRange& theClipRange,
+                                             SelectBasics_PickResult& thePickResult) const = 0;
 
 public:
 

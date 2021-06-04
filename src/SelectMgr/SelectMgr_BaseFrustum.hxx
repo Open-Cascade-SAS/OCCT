@@ -27,7 +27,7 @@ class SelectMgr_BaseFrustum : public SelectMgr_BaseIntersector
 {
 public:
 
-  //! Creates new selecting volume with pixel toletance set to 2,
+  //! Creates new selecting volume with pixel tolerance set to 2,
   //! orthographic camera and empty frustum builder
   Standard_EXPORT SelectMgr_BaseFrustum();
 
@@ -71,55 +71,6 @@ public:
                                             const Standard_Real theY,
                                             const Standard_Real theWidth,
                                             const Standard_Real theHeight) Standard_OVERRIDE;
-
-
-
-  //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
-                                                        const SelectMgr_Vec3& theBoxMax,
-                                                        const SelectMgr_ViewClipRange& theClipRange,
-                                                        SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
-  //! Returns true if selecting volume is overlapped by axis-aligned bounding box
-  //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theBoxMin,
-                                                        const SelectMgr_Vec3& theBoxMax,
-                                                        Standard_Boolean*     theInside = NULL) const Standard_OVERRIDE;
-
-  //! Intersection test between defined volume and given point
-  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt,
-                                                          const SelectMgr_ViewClipRange& theClipRange,
-                                                          SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
-  //! Intersection test between defined volume and given point
-  //! Does not perform depth calculation, so this method is defined as
-  //! helper function for inclusion test. Therefore, its implementation
-  //! makes sense only for rectangular frustum with box selection mode activated.
-  Standard_EXPORT virtual Standard_Boolean OverlapsPoint (const gp_Pnt& thePnt) const Standard_OVERRIDE;
-
-  //! SAT intersection test between defined volume and given ordered set of points,
-  //! representing line segments. The test may be considered of interior part or
-  //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPnts,
-                                                            Select3D_TypeOfSensitivity theSensType,
-                                                            const SelectMgr_ViewClipRange& theClipRange,
-                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
-  //! Checks if line segment overlaps selecting frustum
-  Standard_EXPORT virtual Standard_Boolean OverlapsSegment (const gp_Pnt& thePnt1,
-                                                            const gp_Pnt& thePnt2,
-                                                            const SelectMgr_ViewClipRange& theClipRange,
-                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
-  //! SAT intersection test between defined volume and given triangle. The test may
-  //! be considered of interior part or boundary line defined by triangle vertices
-  //! depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean OverlapsTriangle (const gp_Pnt& thePt1,
-                                                             const gp_Pnt& thePt2,
-                                                             const gp_Pnt& thePt3,
-                                                             Select3D_TypeOfSensitivity theSensType,
-                                                             const SelectMgr_ViewClipRange& theClipRange,
-                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;

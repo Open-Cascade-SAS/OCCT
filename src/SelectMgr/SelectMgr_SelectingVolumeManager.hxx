@@ -150,13 +150,6 @@ public:
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                                            Standard_Integer theSensType,
-                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
-
-  //! SAT intersection test between defined volume and given ordered set of points,
-  //! representing line segments. The test may be considered of interior part or
-  //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPts,
                                                             Standard_Integer theSensType,
                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
@@ -248,22 +241,6 @@ public:
 
 public:
 
-//! Deprecated static const class members aren't supported for Visual Studio prior to 2015 (vc14)
-//! and GCC >= 5.0 and GCC < 6.3 (due to bug when warning was raised without member usage).
-#if (!defined(_MSC_VER) || (_MSC_VER >= 1900)) && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
-  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
-
-  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Box;
-
-  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Polyline;
-
-  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Unknown;
-#endif
-
   Standard_DEPRECATED("Deprecated method - InitPointSelectingVolume() and Build() methods should be used instead")
   Standard_EXPORT void BuildSelectingVolume (const gp_Pnt2d& thePoint);
 
@@ -273,84 +250,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method - InitPolylineSelectingVolume() and Build() should be used instead")
   Standard_EXPORT void BuildSelectingVolume (const TColgp_Array1OfPnt2d& thePoints);
-
-  //! SAT intersection test between defined volume and given axis-aligned box
-  Standard_DEPRECATED ("Deprecated method - OverlapsBox() should be used instead")
-  Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                             const SelectMgr_Vec3& theBoxMax,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsBox (theBoxMin, theBoxMax, thePickResult);
-  }
-
-  //! Returns true if selecting volume is overlapped by axis-aligned bounding box
-  //! with minimum corner at point theMinPt and maximum at point theMaxPt
-  Standard_DEPRECATED ("Deprecated method - OverlapsBox() should be used instead")
-  Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
-                             const SelectMgr_Vec3& theBoxMax,
-                             Standard_Boolean*     theInside = NULL) const
-  {
-    return OverlapsBox (theBoxMin, theBoxMax, theInside);
-  }
-
-  //! Intersection test between defined volume and given point
-  Standard_DEPRECATED ("Deprecated method - OverlapsPoint() should be used instead")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsPoint (thePnt, thePickResult);
-  }
-
-  //! Intersection test between defined volume and given point
-  Standard_DEPRECATED ("Deprecated method - OverlapsPoint() should be used instead")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt) const
-  {
-    return OverlapsPoint (thePnt);
-  }
-
-  //! SAT intersection test between defined volume and given ordered set of points,
-  //! representing line segments. The test may be considered of interior part or
-  //! boundary line defined by segments depending on given sensitivity type
-  Standard_DEPRECATED ("Deprecated method - OverlapsPolygon() should be used instead")
-  Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                             Standard_Integer theSensType,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
-  }
-
-  //! SAT intersection test between defined volume and given ordered set of points,
-  //! representing line segments. The test may be considered of interior part or
-  //! boundary line defined by segments depending on given sensitivity type
-  Standard_DEPRECATED ("Deprecated method - OverlapsPolygon() should be used instead")
-  Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
-                             Standard_Integer theSensType,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
-  }
-
-  //! Checks if line segment overlaps selecting frustum
-  Standard_DEPRECATED ("Deprecated method - OverlapsSegment() should be used instead")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                             const gp_Pnt& thePnt2,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsSegment (thePnt1, thePnt2, thePickResult);
-  }
-
-  //! SAT intersection test between defined volume and given triangle. The test may
-  //! be considered of interior part or boundary line defined by triangle vertices
-  //! depending on given sensitivity type
-  Standard_DEPRECATED ("Deprecated method - OverlapsTriangle() should be used instead")
-  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
-                             const gp_Pnt& thePnt2,
-                             const gp_Pnt& thePnt3,
-                             Standard_Integer theSensType,
-                             SelectBasics_PickResult& thePickResult) const
-  {
-    return OverlapsTriangle (thePnt1, thePnt2, thePnt3, theSensType, thePickResult);
-  }
 
 private:
   Handle(SelectMgr_BaseIntersector)      myActiveSelectingVolume;

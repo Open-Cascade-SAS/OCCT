@@ -86,7 +86,7 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches (SelectBasics_SelectingVolu
   SelectBasics_PickResult aPickResult;
   for (MeshVS_PolyhedronVertsIter aIter (myTopology); aIter.More(); aIter.Next())
   {
-    if (theMgr.OverlapsPolygon (aIter.Value(), Select3D_TOS_INTERIOR, aPickResult))
+    if (theMgr.OverlapsPolygon (aIter.Value()->Array1(), Select3D_TOS_INTERIOR, aPickResult))
     {
       thePickResult = SelectBasics_PickResult::Min (thePickResult, aPickResult);
     }

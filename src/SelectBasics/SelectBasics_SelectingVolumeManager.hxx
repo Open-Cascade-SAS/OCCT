@@ -20,6 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectBasics_PickResult.hxx>
+#include <SelectMgr_SelectionType.hxx>
 #include <Standard_Dump.hxx>
 
 class Bnd_Box;
@@ -33,11 +34,16 @@ class SelectBasics_SelectingVolumeManager
 {
 public:
 
-  SelectBasics_SelectingVolumeManager() {}
+  //! Empty constructor.
+  SelectBasics_SelectingVolumeManager();
 
-  virtual ~SelectBasics_SelectingVolumeManager() {}
+  //! Destructor.
+  Standard_EXPORT virtual ~SelectBasics_SelectingVolumeManager();
 
+  //! Return selection type.
   virtual Standard_Integer GetActiveSelectionType() const = 0;
+
+public:
 
   //! Returns true if selecting volume is overlapped by box theBox
   virtual Standard_Boolean OverlapsBox (const NCollection_Vec3<Standard_Real>& theBoxMin,
@@ -61,12 +67,6 @@ public:
 
   //! Returns true if selecting volume is overlapped by planar convex polygon, which points
   //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
-  virtual Standard_Boolean OverlapsPolygon (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
-                                            Standard_Integer theSensType,
-                                            SelectBasics_PickResult& thePickResult) const = 0;
-
-  //! Returns true if selecting volume is overlapped by planar convex polygon, which points
-  //! are stored in theArrayOfPts, taking into account sensitivity type theSensType
   virtual Standard_Boolean OverlapsPolygon (const TColgp_Array1OfPnt& theArrayOfPts,
                                             Standard_Integer theSensType,
                                             SelectBasics_PickResult& thePickResult) const = 0;
@@ -85,12 +85,16 @@ public:
                                              Standard_Integer theSensType,
                                              SelectBasics_PickResult& thePickResult) const = 0;
 
+public:
+
   //! Calculates distance from 3d projection of user-defined selection point
   //! to the given point theCOG
   virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const = 0;
 
+  //! Return 3D point corresponding to specified depth within picking ray.
   virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const = 0;
 
+  //! Returns flag indicating if partial overlapping of entities is allowed or should be rejected.
   virtual Standard_Boolean IsOverlapAllowed() const = 0;
 
   //! Valid only for point and rectangular selection.
@@ -126,6 +130,85 @@ public:
     (void )theOStream;
     (void )theDepth;
   }
+
+public:
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsBox()")
+  Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
+                             const NCollection_Vec3<Standard_Real>& theBoxMax,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsBox (theBoxMin, theBoxMax, thePickResult);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsBox()")
+  Standard_Boolean Overlaps (const NCollection_Vec3<Standard_Real>& theBoxMin,
+                             const NCollection_Vec3<Standard_Real>& theBoxMax,
+                             Standard_Boolean*                      theInside = NULL) const
+  {
+    return OverlapsBox (theBoxMin, theBoxMax, theInside);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsPoint()")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsPoint (thePnt, thePickResult);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsPoint()")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt) const
+  {
+    return OverlapsPoint (thePnt);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsPolygon()")
+  Standard_EXPORT Standard_Boolean Overlaps (const Handle(TColgp_HArray1OfPnt)& theArrayOfPts,
+                                             Standard_Integer theSensType,
+                                             SelectBasics_PickResult& thePickResult) const;
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsPolygon()")
+  Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
+                             Standard_Integer theSensType,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsPolygon (theArrayOfPts, theSensType, thePickResult);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsSegment()")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                             const gp_Pnt& thePnt2,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsSegment (thePnt1, thePnt2, thePickResult);
+  }
+
+  Standard_DEPRECATED ("Deprecated alias for OverlapsTriangle()")
+  Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
+                             const gp_Pnt& thePnt2,
+                             const gp_Pnt& thePnt3,
+                             Standard_Integer theSensType,
+                             SelectBasics_PickResult& thePickResult) const
+  {
+    return OverlapsTriangle (thePnt1, thePnt2, thePnt3, theSensType, thePickResult);
+  }
+
+//! Deprecated static const class members aren't supported for Visual Studio prior to 2015 (vc14)
+//! and GCC >= 5.0 and GCC < 6.3 (due to bug when warning was raised without member usage).
+#if (!defined(_MSC_VER) || (_MSC_VER >= 1900)) && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Box;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Polyline;
+
+  Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
+  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Unknown;
+#endif
+
 };
 
 #endif // _SelectBasics_SelectingVolumeManager_HeaderFile
