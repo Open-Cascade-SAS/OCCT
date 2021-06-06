@@ -77,7 +77,8 @@ Standard_Boolean BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSp
                                                           const TopoDS_Face& aF)
 {
   Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft;
-  Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU, anU1;
+  Standard_Real anUPeriod = 0., anVPeriod = 0.;
+  Standard_Real aTol, a, b, aT, anU, dU, anU1;
   Standard_Real aScPr, anV, dV, anV1;
   Standard_Real aUmin, aUmax, aVmin, aVmax;
   gp_Pnt2d aP2D;
@@ -98,58 +99,64 @@ Standard_Boolean BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSp
   //
   aS->Bounds(aUmin, aUmax, aVmin, aVmax);
   //
-  bIsUPeriodic=aS->IsUPeriodic();
-  bIsVPeriodic=aS->IsVPeriodic();
-  //
-  anUPeriod = bIsUPeriodic ? aS->UPeriod() : 0.;
-  anVPeriod = bIsVPeriodic ? aS->VPeriod() : 0.;
+
+  bIsUPeriodic = aS->IsUClosed();
+  bIsVPeriodic = aS->IsVClosed();
+
+  if (bIsUPeriodic)
+    anUPeriod = aUmax - aUmin;
+  if (bIsVPeriodic)
+    anVPeriod = aVmax - aVmin;
+  
   //
   if (!bIsUPeriodic && !bIsVPeriodic) {
-    Standard_Boolean bIsUClosed, bIsVClosed;
-    Handle(Geom_BSplineSurface) aBS;
-    Handle(Geom_BezierSurface) aBZ;
+    
     Handle(Geom_RectangularTrimmedSurface) aRTS;
+    aRTS = Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
     //
-    bIsUClosed=Standard_False;
-    bIsVClosed=Standard_False;
-    aBS=Handle(Geom_BSplineSurface)::DownCast(aS);
-    aBZ=Handle(Geom_BezierSurface) ::DownCast(aS);
-    aRTS=Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
-    //
-    if (!aBS.IsNull()) {
-      bIsUClosed=aBS->IsUClosed();
-      bIsVClosed=aBS->IsVClosed();
-    }
-    else if (!aBZ.IsNull()) {
-      bIsUClosed=aBZ->IsUClosed();
-      bIsVClosed=aBZ->IsVClosed();
-    }
-    else if (!aRTS.IsNull()) {
+    if (aRTS.IsNull())
+      return Standard_False;
+    
+    else {
       Handle(Geom_Surface) aSB;
       //
-      aSB=aRTS->BasisSurface();
-      bIsUPeriodic=aSB->IsUPeriodic();
-      bIsVPeriodic=aSB->IsVPeriodic();
+      aSB = aRTS->BasisSurface();
+      bIsUPeriodic = aSB->IsUPeriodic();
+      bIsVPeriodic = aSB->IsVPeriodic();
       //
+
+      if (bIsUPeriodic || bIsVPeriodic)
+      {
+        anUPeriod = bIsUPeriodic ? aSB->UPeriod() : 0.;
+        anVPeriod = bIsVPeriodic ? aSB->VPeriod() : 0.;
+      }
+      else
+      {
+        Standard_Boolean bIsUClosed = aSB->IsUClosed();
+        Standard_Boolean bIsVClosed = aSB->IsVClosed();
+        Standard_Real aGlobalUmin, aGlobalUmax, aGlobalVmin, aGlobalVmax;
+        aSB->Bounds(aGlobalUmin, aGlobalUmax, aGlobalVmin, aGlobalVmax);
+
+        if (bIsUClosed &&
+            Abs(aUmin - aGlobalUmin) < aTol &&
+            Abs(aUmax - aGlobalUmax) < aTol)
+        {
+          bIsUPeriodic = Standard_True;
+          anUPeriod = aUmax - aUmin;
+        }
+        if (bIsVClosed &&
+            Abs(aVmin - aGlobalVmin) < aTol &&
+            Abs(aVmax - aGlobalVmax) < aTol)
+        {
+          bIsVPeriodic = Standard_True;
+          anVPeriod = aVmax - aVmin;
+        }
+      }
+      
       if (!(bIsUPeriodic || bIsVPeriodic)) {
         return Standard_False;
       }
-      anUPeriod = bIsUPeriodic ? aSB->UPeriod() : 0.;
-      anVPeriod = bIsVPeriodic ? aSB->VPeriod() : 0.;
-    }
-    //
-    if (aRTS.IsNull()) {
-      if (!bIsUClosed && !bIsVClosed) {
-        return Standard_False;
-      }
-      //
-      if (bIsUClosed) {
-        anUPeriod=aUmax-aUmin;
-      }
-      if (bIsVClosed) {
-        anVPeriod=aVmax-aVmin;
-      }
-    }
+    } //if !RTS.IsNull
   }
   //
   //---------------------------------------------------
