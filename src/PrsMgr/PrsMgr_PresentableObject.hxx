@@ -97,17 +97,21 @@ public:
   void UnsetDisplayMode() { myDrawer->SetDisplayMode (-1); }
 
   //! Returns true if the Interactive Object is in highlight mode.
+  //! @sa HilightAttributes()
   Standard_Boolean HasHilightMode() const { return !myHilightDrawer.IsNull() && myHilightDrawer->DisplayMode() != -1; }
 
   //! Returns highlight display mode.
   //! This is obsolete method for backward compatibility - use ::HilightAttributes() and ::DynamicHilightAttributes() instead.
+  //! @sa HilightAttributes()
   Standard_Integer HilightMode() const { return !myHilightDrawer.IsNull() ? myHilightDrawer->DisplayMode() : -1; }
 
   //! Sets highlight display mode.
   //! This is obsolete method for backward compatibility - use ::HilightAttributes() and ::DynamicHilightAttributes() instead.
+  //! @sa HilightAttributes()
   Standard_EXPORT void SetHilightMode (const Standard_Integer theMode);
 
   //! Unsets highlight display mode.
+  //! @sa HilightAttributes()
   void UnsetHilightMode()
   {
     if (!myHilightDrawer.IsNull())
@@ -175,14 +179,16 @@ public: //! @name presentation attributes
   virtual void SetAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myDrawer = theDrawer; }
 
   //! Returns the hilight attributes settings.
-  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalSelected and Prs3d_TypeOfHighlight_Selected defined within AIS_InteractiveContext.
+  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalSelected and Prs3d_TypeOfHighlight_Selected defined within AIS_InteractiveContext::HighlightStyle().
+  //! @sa AIS_InteractiveContext::HighlightStyle()
   const Handle(Prs3d_Drawer)& HilightAttributes() const { return myHilightDrawer; }
 
   //! Initializes the hilight drawing tool theDrawer.
   virtual void SetHilightAttributes(const Handle(Prs3d_Drawer)& theDrawer) { myHilightDrawer = theDrawer; }
 
   //! Returns the hilight attributes settings.
-  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalDynamic and Prs3d_TypeOfHighlight_Dynamic defined within AIS_InteractiveContext.
+  //! When not NULL, overrides both Prs3d_TypeOfHighlight_LocalDynamic and Prs3d_TypeOfHighlight_Dynamic defined within AIS_InteractiveContext::HighlightStyle().
+  //! @sa AIS_InteractiveContext::HighlightStyle()
   const Handle(Prs3d_Drawer)& DynamicHilightAttributes() const { return myDynHilightDrawer; }
 
   //! Initializes the dynamic hilight drawing tool.
