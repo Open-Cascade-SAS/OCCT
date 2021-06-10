@@ -88,7 +88,7 @@ protected:
     : DFBrowser_ItemBase (theParent, theRow, theColumn) {}
 
   //! Initializes the current item. It creates a backup of the specific item information
-  void initItem() const;
+  virtual void initItem() const Standard_OVERRIDE;
 
   //! Sets the item attribute
   //! \param theAttribute an item attribute

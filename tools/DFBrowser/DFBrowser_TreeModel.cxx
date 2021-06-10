@@ -32,8 +32,6 @@
 #include <QAbstractItemModel>
 #include <Standard_WarningsRestore.hxx>
 
-const int COLUMN_NAME_WIDTH = 300;
-
 // =======================================================================
 // function : Constructor
 // purpose :

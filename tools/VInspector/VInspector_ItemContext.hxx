@@ -40,7 +40,7 @@ public:
 
   //! Returns data object of the item.
   //! \return object
-  virtual const Handle(Standard_Transient)& Object() const { initItem(); return myContext; }
+  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE { initItem(); return myContext; }
 
   //! Returns number of displayed presentations
   //! \return rows count

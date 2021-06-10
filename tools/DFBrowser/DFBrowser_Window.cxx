@@ -86,18 +86,10 @@
 #endif
 #include <Standard_WarningsRestore.hxx>
 
-const int DFBROWSER_DEFAULT_WIDTH = 650;
-const int DFBROWSER_DEFAULT_HEIGHT = 350;
 const int DFBROWSER_DEFAULT_TREE_VIEW_WIDTH = 325;
 const int DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT = 500;
 const int DFBROWSER_DEFAULT_VIEW_WIDTH = 400;
 const int DFBROWSER_DEFAULT_VIEW_HEIGHT = 300;
-
-const int DFBROWSER_DEFAULT_POSITION_X = 200;
-const int DFBROWSER_DEFAULT_POSITION_Y = 60;
-
-const int DEFAULT_PROPERTY_PANEL_HEIGHT = 200;
-const int DEFAULT_BROWSER_HEIGHT = 800;
 
 static Standard_Boolean MyIsUseDumpJson = Standard_False;
 

@@ -43,7 +43,7 @@ public:
 
   //! Returns data object of the item.
   //! \return object
-  virtual const Handle(Standard_Transient)& Object() const { initItem(); return myIO; }
+  virtual const Handle(Standard_Transient)& Object() const Standard_OVERRIDE { initItem(); return myIO; }
 
   //! Returns the current interactive object, init item if it was not initialized yet
   //! \return interactive object
