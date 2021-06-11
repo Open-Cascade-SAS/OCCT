@@ -7,7 +7,7 @@ puts " ShapeFix_Wire::FixSelfIntersectingEdge does not remove a loop"
 ###########################################################
 
 pload QAcommands
-cpulimit 2000
+cpulimit 1000
 
 restore [locate_data_file OCC1642.brep] shape
 

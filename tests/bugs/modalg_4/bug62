@@ -3,7 +3,7 @@ puts "OCC62"
 puts "BUC61001"
 puts "================"
 
-cpulimit 1400
+cpulimit 1000
 restore [locate_data_file OCC62.brep] sh 
 
 #Delete invalid (in terms of bug#25109) triangulation

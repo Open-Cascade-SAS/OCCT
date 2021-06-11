@@ -6,7 +6,7 @@ puts ""
 # Section of shell by plane is incomplete
 #################################################################################
 
-cpulimit 4000
+cpulimit 1000
 
 pload DATAEXCHANGEKERNEL
 

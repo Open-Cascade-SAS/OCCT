@@ -5,7 +5,7 @@ puts "========================"
 ## Result of BOPCOMMON operation is unclosed shape in spite of source solids are valid
 ## Result of BO depends on arguments order
 ############################################################
-cpulimit 5000
+cpulimit 1000
 restore [locate_data_file OCC600_1.brep] a 
 checkshape a
 restore [locate_data_file OCC600_2.brep] b 

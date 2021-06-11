@@ -1,4 +1,4 @@
-cpulimit 2500
+cpulimit 1000
 
 restore [locate_data_file lh3d_ro1.brep] a
 isos a 0

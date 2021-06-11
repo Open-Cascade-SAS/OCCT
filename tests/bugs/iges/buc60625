@@ -5,7 +5,7 @@ puts "=================================="
 puts "It takes visual check for this BUG"
 puts "=================================="
 
-cpulimit 1500
+cpulimit 1000
 
 set l [igesbrep [locate_data_file BUC60625-1.igs] a xst-transferrable-roots] 
 

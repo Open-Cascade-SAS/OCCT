@@ -6,7 +6,7 @@ puts ""
 # Extrema_GenExtPS needs to be optimized
 ##########################################
 
-cpulimit 1500
+cpulimit 1000
 
 pload DATAEXCHANGEKERNEL
 

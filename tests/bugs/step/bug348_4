@@ -7,7 +7,7 @@ puts "========"
 ## puts "Crash on importing STEP file"
 ## JC_TURBINE.stp
 ######################################
-cpulimit 7000 
+cpulimit 1000
 
 vinit
 stepread [locate_data_file BUC61003-4.stp] a *

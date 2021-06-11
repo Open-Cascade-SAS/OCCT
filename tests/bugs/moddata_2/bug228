@@ -7,7 +7,7 @@ puts ""
 ## It's impossible to make common of the two shapes in the file attached.
 ################################################
 
-cpulimit 4000
+cpulimit 1000
 
 restore [locate_data_file OCC228.brep] a 
 explode a

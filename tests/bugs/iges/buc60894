@@ -2,7 +2,7 @@ puts "==========="
 puts "BUC60894"
 puts "==========="
 
-cpulimit 3000
+cpulimit 1000
 
 igesbrep [locate_data_file buc60894.igs] a xst-transferrable-roots
 

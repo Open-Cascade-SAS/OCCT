@@ -6,7 +6,7 @@ puts "Shape is incorrect after translation"
 puts "case 2 (JC_Turbine.igs)"
 puts ""
 
-cpulimit 3000
+cpulimit 1000
 
 igesbrep [locate_data_file OCC58b.igs] a *
 

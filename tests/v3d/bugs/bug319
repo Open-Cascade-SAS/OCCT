@@ -3,7 +3,7 @@ puts "OCC319: Wrong shading on a shape"
 puts "========"
 puts ""
 
-cpulimit 3500
+cpulimit 1000
 
 pload MODELING VISUALIZATION
 restore [locate_data_file OCC319.brep] result

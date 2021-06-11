@@ -7,7 +7,7 @@ puts ""
 ## Big tolerance after command fixshape r a 1.e-7 1
 ####################################
 
-cpulimit 3000
+cpulimit 1000
 
 restore [locate_data_file OCC547.brep] a
 

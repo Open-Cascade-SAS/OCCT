@@ -9,7 +9,7 @@ puts ""
 ## Draw hangs up during performing bfuse operation
 ####################################
 
-cpulimit 3000
+cpulimit 1000
 
 restore [locate_data_file OCC530_1.brep] c1 
 checkshape c1

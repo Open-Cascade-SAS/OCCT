@@ -6,6 +6,8 @@ if { [info exists imagedir] == 0 } {
    set imagedir .
 }
 
+cpulimit 1000
+
 set depsilon 1.e-7
 
 proc COMPUTE_HLR {viewname algotype} {

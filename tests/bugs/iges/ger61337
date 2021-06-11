@@ -2,7 +2,7 @@ puts "==========="
 puts "GER61337"
 puts "=================================="
 
-cpulimit 3000
+cpulimit 1000
 
 igesbrep [locate_data_file ger61337a.igs] a *
 

@@ -4,7 +4,7 @@ puts "SAM1660"
 puts "======="
 puts ""
 
-cpulimit 3500
+cpulimit 1000
 
 pload MODELING VISUALIZATION
 restore [locate_data_file OCC872.brep] result

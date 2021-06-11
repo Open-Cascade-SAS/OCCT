@@ -7,7 +7,7 @@ puts ""
 ##############################################################
 
 if { [regexp {Debug mode} [dversion]] } {
-   cpulimit 3000
+cpulimit 1000
 }
 
 # drill parameters (some terms taken from http://www.drill-bits.cn/drill-bits-quality.asp)

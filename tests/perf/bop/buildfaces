@@ -1,4 +1,4 @@
-cpulimit 1500
+cpulimit 1000
 
 puts "========"
 puts "CR24292"

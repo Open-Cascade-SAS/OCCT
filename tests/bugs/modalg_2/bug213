@@ -5,7 +5,7 @@ puts "========"
 ## Bug in Topological "fuse" boolean operation
 ################################################
 
-cpulimit 3500
+cpulimit 1000
 
 restore [locate_data_file OCC213-1.brep] S1 
 checkshape S1

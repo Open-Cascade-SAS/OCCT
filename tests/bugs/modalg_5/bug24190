@@ -6,7 +6,7 @@ puts ""
 # Exception raised during topological operation.
 #######################################################################
 
-cpulimit 4000
+cpulimit 1000
 
 restore [locate_data_file bug24190_itz.brep] b
 

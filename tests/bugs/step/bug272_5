@@ -2,7 +2,7 @@ puts "========"
 puts "OCC272"
 puts "========"
 
-cpulimit 7200
+cpulimit 1000
 
 stepread [locate_data_file 612319029MB-HEAD-CYLINDER.stp] a *
 

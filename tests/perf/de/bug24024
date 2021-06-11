@@ -6,7 +6,7 @@ puts ""
 # Slow import of specific STEP data
 ######################################
 
-cpulimit 1700
+cpulimit 1000
 
 dchrono h restart
 stepread [locate_data_file bug24024_slow_import.stp] a *

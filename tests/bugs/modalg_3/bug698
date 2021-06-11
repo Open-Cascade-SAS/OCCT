@@ -3,7 +3,7 @@ puts "======= OCC698 ======="
 ######################################
 ## Cut operation produces bad result on attached shapes
 ######################################
-cpulimit 10000
+cpulimit 1000
 restore [locate_data_file OCC698_1.brep] b4 
 checkshape b4
 restore [locate_data_file OCC698_2.brep] b5 

@@ -7,7 +7,7 @@ puts "========================"
 ## After reading from STEP file invalid shape was obtained.
 ########################################
  
-cpulimit 2000
+cpulimit 1000
 
 stepread [locate_data_file OCC55.stp] a *
 

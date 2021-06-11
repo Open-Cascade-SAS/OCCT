@@ -6,7 +6,7 @@ puts ""
 # Problem of reading IGES files
 ########################################################################
 
-cpulimit 2000
+cpulimit 1000
 igesread [locate_data_file OCC17026-3.iges] a *
 tpcompound result
 

@@ -6,7 +6,7 @@ puts ""
 # BRepMesh cannot build a mesh on specific geometry
 ###################################################################################
 
-cpulimit 2000
+cpulimit 1000
 
 restore [locate_data_file bug25179_nurbs-with-partial-seam.brep] result
 

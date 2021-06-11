@@ -6,7 +6,7 @@ puts ""
 ## Draw hangs up during sprops operation
 ###############################
 
-#cpulimit 9000
+cpulimit 1000
 
 restore [locate_data_file OCC503.brep] result
 

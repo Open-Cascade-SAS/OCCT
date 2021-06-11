@@ -1,4 +1,4 @@
-cpulimit 2000
+cpulimit 1000
 
 puts "================"
 puts "OCC24143"

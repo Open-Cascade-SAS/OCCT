@@ -3,7 +3,7 @@ puts "BUC60463"
 puts "============="
 puts "Section"
 puts ""
-cpulimit 1400
+cpulimit 1000
 restore [locate_data_file buc60463a.brep] a 
 checkshape a
 restore [locate_data_file buc60463b.brep] b

@@ -4,7 +4,7 @@ puts "OCC343"
 puts "================"
 puts ""
 
-cpulimit 9000
+cpulimit 1000
 pload XDE
 
 set filepath [locate_data_file lh3d_px1.igs]

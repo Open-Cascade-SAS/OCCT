@@ -3,7 +3,7 @@ puts "BUC60555"
 puts "CUT Case 1"
 puts "==========="
 #cpulim add aki 070704
-cpulimit 1600
+cpulimit 1000
 restore [locate_data_file buc60555a.brep] part 
 checkshape part
 restore [locate_data_file buc60555b.brep] trTool1

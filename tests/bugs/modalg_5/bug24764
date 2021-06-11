@@ -8,7 +8,7 @@ puts ""
 # Alien subshapes occurred in result of 'bopcheck' operation
 ######################################################################################
 
-cpulimit 2000
+cpulimit 1000
 
 restore [locate_data_file bug24764_qa.brep] a
 

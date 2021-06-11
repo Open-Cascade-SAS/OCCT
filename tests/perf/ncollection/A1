@@ -1,4 +1,4 @@
-cpulimit 5000
+cpulimit 1000
 pload QAcommands
 
 set info [QANTestNCollectionPerformance]

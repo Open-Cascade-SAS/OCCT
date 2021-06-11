@@ -1,4 +1,4 @@
-cpulimit 1500
+cpulimit 1000
 
 circle w -20 0 0 20
 mkedge w w 0 pi*2/5

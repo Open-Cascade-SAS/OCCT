@@ -4,7 +4,7 @@ puts " OCC427 "
 puts "(case 2)"
 puts "========================"
 puts ""
-cpulimit 1200
+cpulimit 1000
 proc OFFSETSHAPE {distance faces  calcul type} {
         uplevel #0 explode s f
         uplevel #0 offsetparameter 1e-7 $calcul $type

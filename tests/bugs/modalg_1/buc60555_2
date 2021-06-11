@@ -2,7 +2,7 @@ puts "============="
 puts "BUC60555"
 puts "CUT Case2"
 puts "============="
-cpulimit 1400
+cpulimit 1000
 restore [locate_data_file buc60555a.brep] part 
 checkshape part
 restore [locate_data_file buc60555b.brep] trTool1

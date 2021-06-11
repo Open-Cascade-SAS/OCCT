@@ -6,7 +6,7 @@ puts ""
 # Fuse problem of symmetrical shapes. Appendix for NPAL19789
 #######################################################################
 
-cpulimit 2500
+cpulimit 1000
 set BugNumber OCC19793
 
 puts "Load first shape ..."

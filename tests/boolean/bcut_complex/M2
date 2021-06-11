@@ -1,6 +1,6 @@
 # Original bug : fra61199
 # Date : 29June98
-cpulimit 3000
+cpulimit 1000
 restore [locate_data_file CTO904_fra61199a.rle] a 
 restore [locate_data_file CTO904_fra61199b.rle] b
 

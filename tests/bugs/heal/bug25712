@@ -6,7 +6,7 @@ puts ""
 # Non-deterministic behavior of ShapeFix_Solid
 ################################################
 
-cpulimit 2500
+cpulimit 1000
 
 set OK_shapes_1 177
 set OK_shapes_2 9

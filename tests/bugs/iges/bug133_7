@@ -9,7 +9,7 @@ puts ""
 ##Exception when translating an IGES file to Open CASCADE (loading phase).
 ################################################################
 
-cpulimit 3000
+cpulimit 1000
 
 igesbrep [locate_data_file igsBF1.igs] a *
 
