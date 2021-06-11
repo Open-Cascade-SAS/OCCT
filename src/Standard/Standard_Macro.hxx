@@ -37,6 +37,18 @@
   #define Standard_OVERRIDE
 #endif
 
+//! @def Standard_DELETE
+//! Alias for C++11 keyword "=delete" marking methods to be deleted.
+#if defined(__cplusplus) && (__cplusplus >= 201100L)
+  // part of C++11 standard
+  #define Standard_DELETE =delete
+#elif defined(_MSC_VER) && (_MSC_VER >= 1800)
+  // implemented since VS2013
+  #define Standard_DELETE =delete
+#else
+  #define Standard_DELETE
+#endif
+
 //! @def Standard_FALLTHROUGH
 //! Should be used in a switch statement immediately before a case label,
 //! if code associated with the previous case label may fall through to that

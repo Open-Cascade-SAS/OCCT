@@ -87,8 +87,8 @@ private:
 private:
 
   // disallow copies
-  Extrema_ExtCS            (Extrema_ExtCS& );
-  Extrema_ExtCS& operator= (Extrema_ExtCS& );
+  Extrema_ExtCS            (Extrema_ExtCS& ) Standard_DELETE;
+  Extrema_ExtCS& operator= (Extrema_ExtCS& ) Standard_DELETE;
 
 private:
 

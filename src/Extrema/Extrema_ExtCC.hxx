@@ -143,8 +143,8 @@ protected:
 private:
 
   // disallow copies
-  Extrema_ExtCC            (Extrema_ExtCC& );
-  Extrema_ExtCC& operator= (Extrema_ExtCC& );
+  Extrema_ExtCC            (Extrema_ExtCC& ) Standard_DELETE;
+  Extrema_ExtCC& operator= (Extrema_ExtCC& ) Standard_DELETE;
 
 private:
 

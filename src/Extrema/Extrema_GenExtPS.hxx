@@ -110,8 +110,8 @@ private:
 private:
 
   // disallow copies
-  Extrema_GenExtPS            (const Extrema_GenExtPS& );
-  Extrema_GenExtPS& operator= (const Extrema_GenExtPS& );
+  Extrema_GenExtPS            (const Extrema_GenExtPS& ) Standard_DELETE;
+  Extrema_GenExtPS& operator= (const Extrema_GenExtPS& ) Standard_DELETE;
 
 private:
 
