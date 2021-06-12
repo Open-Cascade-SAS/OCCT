@@ -17,6 +17,8 @@
 #include <Message.hxx>
 #include <Standard_Mutex.hxx>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 #if defined(__APPLE__)
   #import <TargetConditionals.h>
 #endif

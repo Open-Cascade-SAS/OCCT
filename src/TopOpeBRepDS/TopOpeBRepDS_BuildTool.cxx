@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopOpeBRepDS_BuildTool.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -65,7 +66,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_Dumper.hxx>
@@ -459,9 +459,10 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
 
 //  newtol *= 1.5;
 
-  TopoDS_Vertex Vmin,Vmax; Standard_Real parmin,parmax;
-  GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
-  
+  TopoDS_Vertex Vmin, Vmax;
+  Standard_Real parmin = 0.0, parmax = 0.0;
+  GetOrientedEdgeVertices (E, Vmin, Vmax, parmin, parmax);
+
   Standard_Real tolmin=BRep_Tool::Tolerance(Vmin);
   if(newtol>tolmin) tolmin=newtol;
   Standard_Real tolmax=BRep_Tool::Tolerance(Vmax);
@@ -546,20 +547,20 @@ void  TopOpeBRepDS_BuildTool::ApproxCurves
   // Vmin,Vmax = bounding vertices of edge <E>
   // and their parameters parmin,parmax .
 
-  TopoDS_Vertex Vmin,Vmax;Standard_Real parmin,parmax;
-  GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
+  TopoDS_Vertex Vmin, Vmax;
+  Standard_Real parmin = 0.0, parmax = 0.0;
+  GetOrientedEdgeVertices (E, Vmin, Vmax, parmin, parmax);
 
   Handle(Geom_Curve)   C3Dnew;
   Handle(Geom2d_Curve) PC1new;
   Handle(Geom2d_Curve) PC2new;
-  Standard_Real tolreached3d,tolreached2d;
-  
+  Standard_Real tolreached3d = 0.0, tolreached2d = 0.0;
   Standard_Boolean approxMade = myCurveTool.MakeCurves(parmin,parmax,
 			 C3D,PC1,PC2,F1,F2,
 			 C3Dnew,PC1new,PC2new,
 			 tolreached3d,tolreached2d);
 
-  Standard_Real newtol,newparmin,newparmax;
+  Standard_Real newtol = 0.0, newparmin = 0.0, newparmax = 0.0;
   // MSV Nov 12, 2001: if approx failed than leave old curves of degree 1
   if (!approxMade) {
     newtol = BRep_Tool::Tolerance(E);
@@ -680,20 +681,19 @@ void TopOpeBRepDS_BuildTool::ComputePCurves
 
   // get bounding vertices Vmin,Vmax supported by the new edge <E>
   // and their corresponding parameters parmin,parmax .
+  TopoDS_Vertex Vmin, Vmax;
+  Standard_Real parmin = 0.0, parmax = 0.0;
+  GetOrientedEdgeVertices (E, Vmin, Vmax, parmin, parmax);
 
-  TopoDS_Vertex Vmin,Vmax;Standard_Real parmin,parmax;
-  GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
-
-  Handle(Geom2d_Curve) PC1new;
-  Handle(Geom2d_Curve) PC2new;
-  
-  if(C3D.IsNull()) {
-    Standard_Real tolreached2d1 = Precision::Confusion(), tolreached2d2 = Precision::Confusion(), r1, r2, tol=Precision::Confusion();
+  Handle(Geom2d_Curve) PC1new, PC2new;
+  if(C3D.IsNull())
+  {
+    Standard_Real tolreached2d1 = Precision::Confusion(), tolreached2d2 = Precision::Confusion(), tol=Precision::Confusion();
     if (comppc1) PC1new = myCurveTool.MakePCurveOnFace(F1,C3D,tolreached2d1);
     if (comppc2) PC2new = myCurveTool.MakePCurveOnFace(F2,C3D,tolreached2d2);
     
-    r1 = TopOpeBRepTool_ShapeTool::Resolution3d(F1,tolreached2d1);
-    r2 = TopOpeBRepTool_ShapeTool::Resolution3d(F2,tolreached2d2);
+    Standard_Real r1 = TopOpeBRepTool_ShapeTool::Resolution3d(F1,tolreached2d1);
+    Standard_Real r2 = TopOpeBRepTool_ShapeTool::Resolution3d(F2,tolreached2d2);
     tol = Max(tol,r1);
     tol = Max(tol,r2);
     newC.Tolerance(tol);
@@ -1380,10 +1380,10 @@ void  TopOpeBRepDS_BuildTool::RecomputeBSpline1Curve
   // Vmin,Vmax = bounding vertices of edge <E>
   // and their parameters parmin,parmax .
 
-  TopoDS_Vertex Vmin,Vmax; Standard_Real parmin,parmax;
-  ::GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
+  TopoDS_Vertex Vmin, Vmax;
+  Standard_Real parmin = 0.0, parmax = 0.0;
+  ::GetOrientedEdgeVertices (E, Vmin, Vmax, parmin, parmax);
 
- 
   Handle(Geom_Curve)   C3Dnew;
   Handle(Geom2d_Curve) PC1new;
   Handle(Geom2d_Curve) PC2new;
@@ -1461,9 +1461,9 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
 
   // get bounding vertices Vmin,Vmax supported by the new edge <E>
   // and their corresponding parameters parmin,parmax .
-
-  TopoDS_Vertex Vmin,Vmax; Standard_Real parmin,parmax;
-  ::GetOrientedEdgeVertices(E,Vmin,Vmax,parmin,parmax);
+  TopoDS_Vertex Vmin, Vmax;
+  Standard_Real parmin = 0.0, parmax = 0.0;
+  ::GetOrientedEdgeVertices (E, Vmin, Vmax, parmin, parmax);
 
   if ( C3D->IsPeriodic() ) {
     // ellipse on cone : periodize parmin,parmax
@@ -1538,5 +1538,3 @@ void  TopOpeBRepDS_BuildTool::RecomputeCurveOnCone
   if (!PC1new.IsNull()) C2.Curve1(PC1new);
   if (!PC2new.IsNull()) C2.Curve2(PC2new);
 }*/ // - merge 04-07-97
-
-

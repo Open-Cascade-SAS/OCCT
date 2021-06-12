@@ -914,7 +914,7 @@ void AIS_ColorScale::drawText (const Handle(Graphic3d_Group)& theGroup,
 //=======================================================================
 Standard_Integer AIS_ColorScale::TextWidth (const TCollection_ExtendedString& theText) const
 {
-  Standard_Integer aWidth, anAscent, aDescent;
+  Standard_Integer aWidth = 0, anAscent = 0, aDescent = 0;
   TextSize (theText, myTextHeight, aWidth, anAscent, aDescent);
   return aWidth;
 }
@@ -925,7 +925,7 @@ Standard_Integer AIS_ColorScale::TextWidth (const TCollection_ExtendedString& th
 //=======================================================================
 Standard_Integer AIS_ColorScale::TextHeight (const TCollection_ExtendedString& theText) const
 {
-  Standard_Integer aWidth, anAscent, aDescent;
+  Standard_Integer aWidth = 0, anAscent = 0, aDescent = 0;
   TextSize (theText, myTextHeight, aWidth, anAscent, aDescent);
   return anAscent + aDescent;
 }
@@ -940,19 +940,14 @@ void AIS_ColorScale::TextSize (const TCollection_ExtendedString& theText,
                                Standard_Integer& theAscent,
                                Standard_Integer& theDescent) const
 {
-  if (!HasInteractiveContext())
+  Standard_ShortReal aWidth = 10.0f, anAscent = 1.0f, aDescent = 1.0f;
+  if (HasInteractiveContext())
   {
-    return;
+    const TCollection_AsciiString aText (theText);
+    const Handle(V3d_Viewer)&      aViewer = GetContext()->CurrentViewer();
+    const Handle(Graphic3d_CView)& aView   = aViewer->ActiveViewIterator().Value()->View();
+    aViewer->Driver()->TextSize (aView, aText.ToCString(), (Standard_ShortReal)theHeight, aWidth, anAscent, aDescent);
   }
-
-  Standard_ShortReal aWidth   = 10.0f;
-  Standard_ShortReal anAscent = 1.0f;
-  Standard_ShortReal aDescent = 1.0f;
-  const TCollection_AsciiString aText (theText);
-
-  const Handle(V3d_Viewer)&      aViewer = GetContext()->CurrentViewer();
-  const Handle(Graphic3d_CView)& aView   = aViewer->ActiveViewIterator().Value()->View();
-  aViewer->Driver()->TextSize (aView, aText.ToCString(), (Standard_ShortReal)theHeight, aWidth, anAscent, aDescent);
   theWidth   = (Standard_Integer)aWidth;
   theAscent  = (Standard_Integer)anAscent;
   theDescent = (Standard_Integer)aDescent;

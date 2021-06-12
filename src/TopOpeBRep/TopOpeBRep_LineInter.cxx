@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopOpeBRep_LineInter.hxx>
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
@@ -45,7 +46,6 @@
 #include <TopOpeBRep.hxx>
 #include <TopOpeBRep_Bipoint.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
-#include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
 #include <TopOpeBRep_WPointInter.hxx>
@@ -342,38 +342,43 @@ Standard_Boolean TopOpeBRep_LineInter::IsPeriodic() const
 
 //=======================================================================
 //function : Period
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 Standard_Real TopOpeBRep_LineInter::Period() const
 {
-  Standard_Real f,l;
-  Bounds(f,l);
-  return (l - f);
+  Standard_Real aFirst = 0.0, aLast = 0.0;
+  Bounds (aFirst, aLast);
+  return (aLast - aFirst);
 }
 
 //=======================================================================
 //function : Bounds
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void TopOpeBRep_LineInter::Bounds(Standard_Real& First,Standard_Real& Last) const
+void TopOpeBRep_LineInter::Bounds (Standard_Real& theFirst, Standard_Real& theLast) const
 {
-  if ( myILG.IsNull() )  {
-    TopOpeBRep_LineInter* p = (TopOpeBRep_LineInter*)this; // NYI deconst
-    p->SetOK(Standard_False);
+  theFirst = 0.0; theLast = 0.0;
+  if (myILG.IsNull())
+  {
+    TopOpeBRep_LineInter* aPtr = const_cast<TopOpeBRep_LineInter*>(this); // NYI deconst
+    aPtr->SetOK (Standard_False);
     return;
   }
-  
-  First = 0.; Last = 0.;
-  if ( IsPeriodic() )
-    Last = Curve()->Period();
-  
-  if ( myILG->HasFirstPoint() )
-    First = myILG->FirstPoint().ParameterOnLine();
 
-  if ( myILG->HasLastPoint() )
-    Last = myILG->LastPoint().ParameterOnLine();
+  if (IsPeriodic())
+  {
+    theLast = Curve()->Period();
+  }
+
+  if (myILG->HasFirstPoint())
+  {
+    theFirst = myILG->FirstPoint().ParameterOnLine();
+  }
+
+  if (myILG->HasLastPoint())
+  {
+    theLast = myILG->LastPoint().ParameterOnLine();
+  }
 }
 
 //=======================================================================

@@ -310,38 +310,37 @@ Standard_Boolean Font_TextFormatter::GlyphBoundingBox (const Standard_Integer th
                                                        Font_Rect& theBndBox) const
 {
   if (theIndex < 0 || theIndex >= Corners().Size())
+  {
     return Standard_False;
+  }
 
   const NCollection_Vec2<Standard_ShortReal>& aLeftCorner = BottomLeft (theIndex);
-  if (theIndex + 1 < myCorners.Length()) // not the last symbol
+  theBndBox.Left = aLeftCorner.x();
+  theBndBox.Right = aLeftCorner.x() + myLastSymbolWidth;
+  theBndBox.Bottom = aLeftCorner.y();
+  theBndBox.Top = theBndBox.Bottom + myLineSpacing;
+  if (theIndex + 1 >= myCorners.Length())
   {
-    const NCollection_Vec2<Standard_ShortReal>& aNextLeftCorner = BottomLeft (theIndex + 1);
-    theBndBox.Left = aLeftCorner.x();
-    theBndBox.Bottom = aLeftCorner.y();
-    theBndBox.Top = theBndBox.Bottom + myLineSpacing;
-    if (Abs (aLeftCorner.y() - aNextLeftCorner.y()) < Precision::Confusion()) // in the same row
-    {
-      theBndBox.Right = aNextLeftCorner.x();
-    }
-    else
-    {
-      // the next symbol is on the next row either by '\n' or by wrapping
-      Standard_ShortReal aLineWidth = LineWidth (LineIndex (theIndex));
-      theBndBox.Left = aLeftCorner.x();
-      switch (myAlignX)
-      {
-        case Graphic3d_HTA_LEFT:   theBndBox.Right = aLineWidth; break;
-        case Graphic3d_HTA_RIGHT:  theBndBox.Right = myBndWidth; break;
-        case Graphic3d_HTA_CENTER: theBndBox.Right = 0.5f * (myBndWidth + aLineWidth); break;
-      }
-    }
+    // the last symbol
+    return Standard_True;
   }
-  else // the last symbol
+
+  const NCollection_Vec2<Standard_ShortReal>& aNextLeftCorner = BottomLeft (theIndex + 1);
+  if (Abs (aLeftCorner.y() - aNextLeftCorner.y()) < Precision::Confusion()) // in the same row
   {
+    theBndBox.Right = aNextLeftCorner.x();
+  }
+  else
+  {
+    // the next symbol is on the next row either by '\n' or by wrapping
+    Standard_ShortReal aLineWidth = LineWidth (LineIndex (theIndex));
     theBndBox.Left = aLeftCorner.x();
-    theBndBox.Right = aLeftCorner.x() + myLastSymbolWidth;
-    theBndBox.Bottom = aLeftCorner.y();
-    theBndBox.Top = theBndBox.Bottom + myLineSpacing;
+    switch (myAlignX)
+    {
+      case Graphic3d_HTA_LEFT:   theBndBox.Right = aLineWidth; break;
+      case Graphic3d_HTA_RIGHT:  theBndBox.Right = myBndWidth; break;
+      case Graphic3d_HTA_CENTER: theBndBox.Right = 0.5f * (myBndWidth + aLineWidth); break;
+    }
   }
   return Standard_True;
 }
@@ -355,7 +354,9 @@ Standard_Boolean Font_TextFormatter::IsLFSymbol (const Standard_Integer theIndex
 {
   Font_Rect aBndBox;
   if (!GlyphBoundingBox (theIndex, aBndBox))
+  {
     return Standard_False;
+  }
 
   return Abs (aBndBox.Right - aBndBox.Left) < Precision::Confusion();
 }
@@ -402,7 +403,9 @@ Standard_Integer Font_TextFormatter::LinePositionIndex (const Standard_Integer t
 Standard_Integer Font_TextFormatter::LineIndex (const Standard_Integer theIndex) const
 {
   if (myLineSpacing < 0.0f)
+  {
     return 0;
+  }
 
   return (Standard_Integer)Abs((BottomLeft (theIndex).y() + myAscender) / myLineSpacing);
 }
@@ -414,13 +417,19 @@ Standard_Integer Font_TextFormatter::LineIndex (const Standard_Integer theIndex)
 Standard_ShortReal Font_TextFormatter::LineWidth (const Standard_Integer theIndex) const
 {
   if (theIndex < 0)
+  {
     return 0;
+  }
 
   if (theIndex < myNewLines.Length())
+  {
     return theIndex == 0 ? myNewLines[0] : myNewLines[theIndex] - myNewLines[theIndex -1];
+  }
 
   if (theIndex == myNewLines.Length()) // the last line
+  {
     return theIndex == 0 ? myPen.x() : myPen.x() - myNewLines[theIndex -1];
+  }
 
   return 0;
 }
