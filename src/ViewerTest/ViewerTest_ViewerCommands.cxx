@@ -7224,16 +7224,9 @@ static Standard_Integer VSelectByAxis (Draw_Interpretor& theDI,
     Quantity_Color anAxisColor = Quantity_NOC_GREEN;
     Handle(Geom_Axis2Placement) anAx2Axis =
       new Geom_Axis2Placement (gp_Ax2(anAxisLocation, anAxisDirection));
-    Handle(AIS_Axis) anAISAxis = new AIS_Axis (anAx2Axis, AIS_TOAX_ZAxis);
-    const Handle(Prs3d_Drawer)& anAxisDrawer = anAISAxis->Attributes();
-    anAxisDrawer->SetOwnDatumAspects();
-    Standard_Real aLength = UnitsAPI::AnyToLS (250000., "mm");
-    anAxisDrawer->DatumAspect()->SetAxisLength (aLength, aLength, aLength);
-    anAxisDrawer->DatumAspect()->SetDrawLabels (false);
-    anAxisDrawer->DatumAspect()->SetDrawArrows (true);
-    anAISAxis->SetColor (Quantity_NOC_GREEN);
-    anAISAxis->SetAxis2Placement (anAx2Axis, AIS_TOAX_ZAxis); // This is workaround to update axis length
-    ViewerTest::Display (TCollection_AsciiString(aName) + "_axis", anAISAxis, false);
+    Handle(AIS_Axis) anAISAxis = new AIS_Axis (gp_Ax1 (anAxisLocation, anAxisDirection));
+    anAISAxis->SetColor (anAxisColor);
+    ViewerTest::Display (TCollection_AsciiString (aName) + "_axis", anAISAxis, false);
 
     // Display axis start point
     Handle(AIS_Point) anAISStartPnt = new AIS_Point (new Geom_CartesianPoint (anAxisLocation));
@@ -7253,16 +7246,9 @@ static Standard_Integer VSelectByAxis (Draw_Interpretor& theDI,
         Standard_Real aNormalLength = aNormalLengths.Value (anIndex + 1);
         if (aNormal.SquareModulus() > ShortRealEpsilon())
         {
-          Handle(Geom_Axis2Placement) anAx2Normal =
-            new Geom_Axis2Placement(gp_Ax2(aPoint, gp_Dir((Standard_Real )aNormal.x(), (Standard_Real )aNormal.y(), (Standard_Real )aNormal.z())));
-          Handle(AIS_Axis) anAISNormal = new AIS_Axis (anAx2Normal, AIS_TOAX_ZAxis);
-          const Handle(Prs3d_Drawer)& aNormalDrawer = anAISNormal->Attributes();
-          aNormalDrawer->SetOwnDatumAspects();
-          aNormalDrawer->DatumAspect()->SetAxisLength (aNormalLength, aNormalLength, aNormalLength);
-          aNormalDrawer->DatumAspect()->SetDrawLabels (false);
-          aNormalDrawer->DatumAspect()->SetDrawArrows (true);
+          gp_Dir aNormalDir ((Standard_Real)aNormal.x(), (Standard_Real)aNormal.y(), (Standard_Real)aNormal.z());
+          Handle(AIS_Axis) anAISNormal = new AIS_Axis (gp_Ax1 (aPoint, aNormalDir), aNormalLength);
           anAISNormal->SetColor (Quantity_NOC_BLUE);
-          anAISNormal->SetAxis2Placement (anAx2Normal, AIS_TOAX_ZAxis); // This is workaround to update axis length
           anAISNormal->SetInfiniteState (false);
           ViewerTest::Display (TCollection_AsciiString(aName) + "_normal_" + anIndex, anAISNormal, false);
         }

@@ -34,6 +34,7 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
+#include <Standard_NumericError.hxx>
 #include <StdPrs_Curve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS.hxx>
@@ -56,7 +57,6 @@ myIsXYZAxis(Standard_False)
 
   gp_Dir thedir = myComponent->Position().Direction();
   gp_Pnt loc = myComponent->Position().Location();
-//POP  Standard_Real aLength = UnitsAPI::CurrentToLS (250000. ,"LENGTH");
   Standard_Real aLength = UnitsAPI::AnyToLS(250000., "mm");
   myPfirst = loc.XYZ() + aLength*thedir.XYZ();
   myPlast = loc.XYZ() - aLength*thedir.XYZ();
@@ -73,7 +73,6 @@ myTypeOfAxis(anAxisType),
 myIsXYZAxis(Standard_True)
 {
   Handle (Prs3d_DatumAspect) DA = new Prs3d_DatumAspect();
-//POP  Standard_Real aLength = UnitsAPI::CurrentToLS (100. ,"LENGTH"); 
   Standard_Real aLength;
   try {
     aLength = UnitsAPI::AnyToLS(100. ,"mm");
@@ -104,12 +103,36 @@ AIS_Axis::AIS_Axis(const Handle(Geom_Axis1Placement)& anAxis)
 
   gp_Dir thedir = myComponent->Position().Direction();
   gp_Pnt loc = myComponent->Position().Location();
-//POP  Standard_Real aLength = UnitsAPI::CurrentToLS (250000. ,"LENGTH");
   Standard_Real aLength = UnitsAPI::AnyToLS(250000. ,"mm"); 
   myPfirst = loc.XYZ() + aLength*thedir.XYZ();
   myPlast = loc.XYZ() - aLength*thedir.XYZ();
 }
 
+//=======================================================================
+//function : AIS_Axis
+//purpose :
+//=======================================================================
+AIS_Axis::AIS_Axis (const gp_Ax1& theAxis, const Standard_Real theLength)
+: myComponent (new Geom_Line (theAxis)),
+  myTypeOfAxis (AIS_TOAX_ZAxis),
+  myIsXYZAxis (Standard_True)
+{
+  myDir = theAxis.Direction();
+  myPfirst = theAxis.Location();
+  if (theLength <= 0 && theLength != -1)
+  {
+    throw Standard_NumericError ("AIS_Axis::AIS_Axis : invalid value for theLength parameter");
+  }
+  myVal = (theLength == -1) ? UnitsAPI::AnyToLS (250000., "mm") : theLength;
+  myPlast = myPfirst.XYZ() + myVal * myDir.XYZ();
+  SetInfiniteState();
+  Handle(Prs3d_DatumAspect) aDatumAspect = new Prs3d_DatumAspect();
+  aDatumAspect->SetDrawLabels (Standard_False);
+  myDrawer->SetDatumAspect (aDatumAspect);
+  Handle(Prs3d_LineAspect) aDefaultLineAspect = new Prs3d_LineAspect (Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0);
+  myDrawer->SetLineAspect (aDefaultLineAspect);
+  myLineAspect = myDrawer->LineAspect();
+}
 
 //=======================================================================
 //function : SetComponent
@@ -125,7 +148,6 @@ void AIS_Axis::SetComponent(const Handle(Geom_Line)& aComponent)
 
   gp_Dir thedir = myComponent->Position().Direction();
   gp_Pnt loc = myComponent->Position().Location();
-//POP  Standard_Real aLength = UnitsAPI::CurrentToLS (250000. ,"LENGTH");
   Standard_Real aLength = UnitsAPI::AnyToLS(250000. ,"mm");
   myPfirst = loc.XYZ() + aLength*thedir.XYZ();
   myPlast = loc.XYZ() - aLength*thedir.XYZ();
@@ -166,7 +188,7 @@ void AIS_Axis::Compute (const Handle(PrsMgr_PresentationManager)& ,
 		        const Standard_Integer )
 {
   thePrs->SetInfiniteState (myInfiniteState);
-  thePrs->SetDisplayPriority(5);
+  thePrs->SetDisplayPriority (5);
   if (!myIsXYZAxis)
   {
     GeomAdaptor_Curve curv (myComponent);
@@ -228,6 +250,17 @@ void AIS_Axis::SetWidth(const Standard_Real aValue)
   DA->LineAspect(Prs3d_DatumParts_YAxis)->SetWidth(aValue);
   DA->LineAspect(Prs3d_DatumParts_ZAxis)->SetWidth(aValue);
   SynchronizeAspects();
+}
+
+//=======================================================================
+//function : SetDisplayAspect
+//purpose  : 
+//=======================================================================
+void AIS_Axis::SetDisplayAspect (const Handle(Prs3d_LineAspect)& theNewLineAspect)
+{
+  myDrawer->SetLineAspect (theNewLineAspect);
+  myLineAspect = myDrawer->LineAspect();
+  SetColor (theNewLineAspect->Aspect()->Color());
 }
 
 //=======================================================================

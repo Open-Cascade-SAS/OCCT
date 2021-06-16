@@ -49,6 +49,11 @@ public:
   //! Initializes the axis1 position anAxis.
   Standard_EXPORT AIS_Axis(const Handle(Geom_Axis1Placement)& anAxis);
 
+  //! Initializes the ray as axis with start point and direction
+  //! @param[in] theAxis Start point and direction of the ray
+  //! @param[in] theLength Optional length of the ray (ray is infinite by default).
+  Standard_EXPORT AIS_Axis (const gp_Ax1& theAxis, const Standard_Real theLength = -1);
+
   //! Returns the axis entity aComponent and identifies it
   //! as a component of a shape.
   const Handle(Geom_Line)& Component() const { return myComponent; }
@@ -89,11 +94,14 @@ public:
   virtual AIS_KindOfInteractive Type() const Standard_OVERRIDE { return AIS_KindOfInteractive_Datum; }
 
   Standard_EXPORT void SetColor (const Quantity_Color& aColor) Standard_OVERRIDE;
-  
+
   Standard_EXPORT void SetWidth (const Standard_Real aValue) Standard_OVERRIDE;
-  
+
+  //! Set required visualization parameters.
+  Standard_EXPORT void SetDisplayAspect (const Handle(Prs3d_LineAspect)& theNewDatumAspect);
+
   Standard_EXPORT void UnsetColor() Standard_OVERRIDE;
-  
+
   Standard_EXPORT void UnsetWidth() Standard_OVERRIDE;
 
 private:
