@@ -438,7 +438,7 @@ bool VInspector_Window::OpenFile(const TCollection_AsciiString& theFileName)
   Handle(AIS_Shape) aPresentation = new AIS_Shape (aShape);
   aPresentation->Attributes()->SetAutoTriangulation (Standard_False);
 
-  View_Displayer* aDisplayer = myViewWindow->Displayer();
+  View_Displayer* aDisplayer = displayer();
   aDisplayer->DisplayPresentation (aPresentation);
   aContext->UpdateCurrentViewer();
 

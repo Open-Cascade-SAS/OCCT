@@ -39,6 +39,9 @@ TInspectorAPI_Communicator* TInspectorAPI_Communicator::LoadPluginLibrary
   TCollection_AsciiString aPluginLibraryName = thePluginName;
 #ifdef _WIN32
   aPluginLibraryName += ".dll";
+#elif __APPLE__
+  aPluginLibraryName.Prepend ("lib");
+  aPluginLibraryName += ".dylib";  
 #else
   aPluginLibraryName.Prepend ("lib");
   aPluginLibraryName += ".so";
