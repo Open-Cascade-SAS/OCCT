@@ -236,7 +236,7 @@ proc gendoc {args} {
         return -1
       }
     } elseif {$arg_n == "s"} {
-      if { [ lsearch $args_names "pdf" ] != -1 } {
+      if { [ lsearch $args_names "pdf" ] == -1 } {
         continue
       }
       if {$args_values(s) != "NULL"} {
