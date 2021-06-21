@@ -21,9 +21,15 @@
 #include <BRepCheck_ListOfStatus.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_Shared.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,BRepCheck_ListOfStatus,TopTools_ShapeMapHasher> BRepCheck_DataMapOfShapeListOfStatus;
-typedef NCollection_DataMap<TopoDS_Shape,BRepCheck_ListOfStatus,TopTools_ShapeMapHasher>::Iterator BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
-
+typedef NCollection_DataMap<TopoDS_Shape,
+                            Handle(NCollection_Shared <BRepCheck_ListOfStatus>),
+                            TopTools_ShapeMapHasher> 
+  BRepCheck_DataMapOfShapeListOfStatus;
+typedef NCollection_DataMap<TopoDS_Shape,
+                            Handle(NCollection_Shared <BRepCheck_ListOfStatus>),
+                            TopTools_ShapeMapHasher>::Iterator 
+  BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
 
 #endif

@@ -7618,7 +7618,7 @@ xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
 
 Syntax:
 ~~~~{.php}
-checkshape [-top] shape [result] [-short] 
+checkshape [-top] shape [result] [-short] [-parallel]
 ~~~~
 
 Where: 
@@ -7626,6 +7626,7 @@ Where:
 * *shape* -- the only required parameter, defines the name of the shape to check. 
 * *result* -- optional parameter, defines custom prefix for the output shape names.
 * *short* -- a short description of the check. 
+* *parallel* -- run check in multithread mode.
 
 **checkshape** examines the selected object for topological and geometric coherence. The object should be a three dimensional shape. 
 

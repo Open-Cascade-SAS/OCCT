@@ -19,6 +19,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <NCollection_Shared.hxx>
 
 #if defined(_WIN32)
   #include <windows.h>
@@ -168,6 +169,8 @@ private:
   pthread_mutex_t myMutex;
 #endif  
 };
+
+typedef NCollection_Shared<Standard_Mutex> Standard_HMutex;
 
 // Implementation of the method Unlock is inline, since it is 
 // just a shortcut to system function

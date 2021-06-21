@@ -1,0 +1,7 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_10"
+puts "=========="
+puts "0027814: Parallelize BRepCheck_Analyzer"
+puts "=========="
+puts ""
+
+CheckPerform [locate_data_file OCC187_from_bug_description.brep]

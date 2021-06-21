@@ -424,66 +424,11 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
 
   return 0;
 }
-//=======================================================================
-
-//  Modified by skv - Tue Apr 27 13:38:44 2004 Begin
-//=======================================================================
-//function : CHK
-//purpose  : Checks a shape
-//=======================================================================
-
-// static Standard_Integer CHK(Draw_Interpretor& theCommands,
-// 			    Standard_Integer narg, const char** a)
-// {
-//   if (narg < 2) {
-//     return 1;
-//   }
-
-//   Standard_Boolean doprint = Standard_True;
-//   if (narg == 3) { if (!strcmp(a[2],"-short")) doprint = Standard_False; }
-
-//   TopoDS_Shape S = DBRep::Get(a[1]);
-//   if (S.IsNull()) {
-//     std::cout<<"not a topological shape"<<std::endl;
-//     return 1;
-//   }
-
-//   Standard_Boolean GeomCtrl = Standard_True;
-//   if (!strcasecmp(a[0],"CHECKTOPSHAPE")) {
-//     GeomCtrl = Standard_False;
-//   }
-
-//   BRepCheck_Analyzer ana(S,GeomCtrl);
-//   if (ana.IsValid()) {
-//     theCommands<<"This shape seems to be valid";
-//   }
-//   else {
-//     theMap.Clear();
-//     nbfaulty = 0;
-//     lfaulty.Clear();
-//     theMap.Clear();
-//     if (doprint) {
-//       Print(cout,ana,S);
-//       std::cout<<"\n";
-//       theMap.Clear();
-//       if (nbfaulty !=0)
-// 	std::cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
-//       std::cout<<std::endl;
-//     }
-//     else {
-//       theCommands<<"This shape has faulty shapes";
-//     }
-//   }
-//   return 0;
-// }
 
 //=======================================================================
 //function : ContextualDump
 //purpose  : Contextual (modeling) style of output.
 //=======================================================================
-
-//void ContextualDump(const BRepCheck_Analyzer &theAna,
-//		    const TopoDS_Shape       &theShape)
 void ContextualDump(Draw_Interpretor& theCommands,
 		    const BRepCheck_Analyzer &theAna,
 		    const TopoDS_Shape       &theShape)
@@ -492,19 +437,16 @@ void ContextualDump(Draw_Interpretor& theCommands,
   nbfaulty = 0;
   lfaulty.Clear();
 
-  //Print(cout, theAna, theShape);
   Standard_SStream aSStream;
   Print(aSStream, theAna, theShape);
   theCommands << aSStream;
-  //std::cout<<"\n";
+
   theCommands<<"\n";
   theMap.Clear();
 
   if (nbfaulty !=0)
     theCommands<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
-    //std::cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
 
-  //std::cout<<std::endl;
   theCommands<<"\n";
 }
 
@@ -626,11 +568,6 @@ static void GetProblemShapes(const BRepCheck_Analyzer& Ana,
 //function : StructuralDump
 //purpose  : Structural (data exchange) style of output.
 //=======================================================================
-
-//void StructuralDump(const BRepCheck_Analyzer &theAna,
-//                    const Standard_CString   ShName,
-//                    const Standard_CString   Pref,
-//		    const TopoDS_Shape       &theShape)
 void StructuralDump(Draw_Interpretor& theCommands,
 		    const BRepCheck_Analyzer &theAna,
                     const Standard_CString   ShName,
@@ -638,10 +575,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
 		    const TopoDS_Shape       &theShape)
 {
   Standard_Integer i;
-  //std::cout << "StructuralDump" << std::endl;
-  //std::cout << " -- The Shape " << ShName << " has problems :"<<std::endl;
-  //std::cout<<"  Check                                    Count"<<std::endl;
-  //std::cout<<" ------------------------------------------------"<<std::endl;
   theCommands << " -- The Shape " << ShName << " has problems :\n";
   theCommands<<"  Check                                    Count\n";
   theCommands<<" ------------------------------------------------\n";
@@ -835,7 +768,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_v",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"VERTEX	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"VERTEX	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -850,7 +782,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_e",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"EDGE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"EDGE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -865,7 +796,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_w",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"WIRE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"WIRE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -880,7 +810,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_f",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"FACE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"FACE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -895,7 +824,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_s",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"SHELL	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"SHELL	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -910,7 +838,6 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_o",Pref);
     DBRep::Set(aName,comp);
-    //std::cout<<"SOLID	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"SOLID	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -922,22 +849,13 @@ void StructuralDump(Draw_Interpretor& theCommands,
 //function : checkshape
 //purpose  : Checks a shape
 //=======================================================================
-
-static Standard_Integer checkshape(Draw_Interpretor& theCommands,
-				   Standard_Integer narg, const char** a)
+static Standard_Integer checkshape (Draw_Interpretor& theCommands,
+                                    Standard_Integer narg, const char** a)
 {
-  if (narg == 1) {
-    //std::cout << std::endl;
-    //std::cout << "Usage : checkshape [-top] shape [result] [-short]" << std::endl;
-    //std::cout << std::endl;
-    //std::cout << "Where :" << std::endl;
-    //std::cout << "   -top   - check topology only." << std::endl;
-    //std::cout << "   shape  - the name of the shape to test." << std::endl;
-    //std::cout << "   result - the prefix of the output shape names. If it is used, structural" << std::endl;
-    //std::cout << "            output style will be used. Otherwise - contextual one." << std::endl;
-    //std::cout << "   -short - short description of check." << std::endl;
+  if (narg == 1)
+  {
     theCommands << "\n";
-    theCommands << "Usage : checkshape [-top] shape [result] [-short]\n";
+    theCommands << "Usage : checkshape [-top] shape [result] [-short] [-parallel]\n";
     theCommands << "\n";
     theCommands << "Where :\n";
     theCommands << "   -top   - check topology only.\n";
@@ -945,104 +863,118 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
     theCommands << "   result - the prefix of the output shape names. If it is used, structural\n";
     theCommands << "            output style will be used. Otherwise - contextual one.\n";
     theCommands << "   -short - short description of check.\n";
-
+    theCommands << "   -parallel - run check in parallel.\n";
     return 0;
   }
 
-  if (narg > 5) {
-    //std::cout << "Invalid number of args!!!" << std::endl;
-    //std::cout << "No args to have help." << std::endl;
+  if (narg > 6)
+  {
     theCommands << "Invalid number of args!!!\n";
     theCommands << "No args to have help.\n";
-
     return 1;
   }
 
   Standard_Boolean aGeomCtrl = Standard_True;
-  Standard_Integer aCurInd  = 1;
-
-  if (!strcmp(a[1],"-top")) {
+  Standard_Integer aCurInd = 1;
+  if (!strcmp (a[1], "-top"))
+  {
     aGeomCtrl = Standard_False;
     aCurInd++;
   }
 
-  if (aCurInd > narg - 1) {
-    //std::cout << "Invalid number of args!!!" << std::endl;
-    //std::cout << "No args to have help." << std::endl;
+  if (aCurInd > narg - 1)
+  {
     theCommands << "Invalid number of args!!!\n";
     theCommands << "No args to have help.\n";
-
     return 1;
   }
 
   Standard_CString aShapeName = a[aCurInd];
-  TopoDS_Shape     aShape     = DBRep::Get(aShapeName);
-
-  if (aShape.IsNull()) {
-    //std::cout << a[aCurInd] << " is not a topological shape!!!" << std::endl;
+  TopoDS_Shape     aShape = DBRep::Get(aShapeName);
+  if (aShape.IsNull()) 
+  {
     theCommands << a[aCurInd] << " is not a topological shape!!!\n";
-
     return 1;
   }
+  aCurInd++;
 
-  Standard_Boolean IsShortDump   = Standard_False;
+  Standard_Boolean IsShortDump = Standard_False;
   Standard_Boolean IsContextDump = Standard_True;
-  Standard_Integer aBackInd      = narg - 1;
+  Standard_Boolean IsParallel = Standard_False;
+  Standard_CString aPref(NULL);
+  if (aCurInd < narg && strncmp(a[aCurInd], "-", 1))
+  {
+    IsContextDump = Standard_False;
+    aPref = a[aCurInd];
+    aCurInd++;
+  }
 
-  if (aCurInd < aBackInd) {
-    if (!strcmp(a[aBackInd],"-short")) {
+  for (Standard_Integer anAI = aCurInd; anAI < narg; anAI++)
+  {
+    TCollection_AsciiString anArg(a[anAI]);
+    anArg.LowerCase();
+    if (anArg == "-short")
+    {
       IsShortDump = Standard_True;
-      aBackInd--;
+    }
+    else if (anArg == "-parallel")
+    {
+      IsParallel = Standard_True;
+    }
+    else
+    {
+      theCommands << "Syntax error at '" << anArg << "'";
+      return 1;
     }
   }
 
-  if (aCurInd < aBackInd - 1) {
-    //std::cout << "Invalid number of args!!!" << std::endl;
-    //std::cout << "No args to have help." << std::endl;
-    theCommands << "Invalid number of args!!!\n";
-    theCommands << "No args to have help.\n";
-
-    return 1;
-  } else if (aCurInd < aBackInd) {
-    IsContextDump = Standard_False;
-  }
-
-  try {
+  try 
+  {
     OCC_CATCH_SIGNALS
-    BRepCheck_Analyzer anAna(aShape,aGeomCtrl);
+    BRepCheck_Analyzer anAna (aShape, aGeomCtrl, IsParallel);
     Standard_Boolean   isValid = anAna.IsValid();
 
-    if (isValid) {
-      if (IsContextDump) {
-	theCommands << "This shape seems to be valid";
-      } else {
-	theCommands << " -- The Shape " << aShapeName << " looks OK";
+    if (isValid)
+    {
+      if (IsContextDump)
+      {
+        theCommands << "This shape seems to be valid";
       }
-    } else {
-      if (IsShortDump) {
-	theCommands<<"This shape has faulty shapes";
-      } else {
-	if (IsContextDump) {
-	  //ContextualDump(anAna, aShape);
-	  ContextualDump(theCommands, anAna, aShape);
-	} else {
-	  Standard_CString aPref = a[aCurInd+1];
-	  //StructuralDump(anAna, aShapeName, aPref, aShape);
-	  StructuralDump(theCommands, anAna, aShapeName, aPref, aShape);
-	}
+      else
+      {
+        theCommands << " -- The Shape " << aShapeName << " looks OK";
+      }
+    }
+    else
+    {
+      if (IsShortDump)
+      {
+        theCommands << "This shape has faulty shapes";
+      }
+      else
+      {
+        if (IsContextDump)
+        {
+          ContextualDump(theCommands, anAna, aShape);
+        }
+        else
+        {
+          StructuralDump(theCommands, anAna, aShapeName, aPref, aShape);
+        }
       }
     }
   }
-  catch(Standard_Failure const& anException) {
-    theCommands<<"checkshape exception : ";
+  catch (Standard_Failure const& anException)
+  {
+    theCommands << "checkshape exception : ";
     theCommands << anException.GetMessageString();
-    theCommands<<"\n";
+    theCommands << "\n";
     return 1;
   }
 
   return 0;
 }
-//  Modified by skv - Tue Apr 27 13:38:24 2004 End
+
 /***************************************************************/
 static void InitEpsSurf(Standard_Real& epsnl,Standard_Real& epsdis, Standard_Real& epsangk1, 
 			Standard_Real& epsangk2, Standard_Real& epsangn1, 
@@ -1725,23 +1657,11 @@ void BRepTest::CheckCommands(Draw_Interpretor& theCommands)
 
   const char* g = "TOPOLOGY Check commands";
 
-//  Modified by skv - Tue Apr 27 13:35:35 2004 Begin
   theCommands.Add("checkshape", 
 		  "checkshape : no args to have help",
 		  __FILE__,
 		  checkshape,
 		  g);
-//   theCommands.Add("checkshape", 
-// 		  "checks the validity of a shape : checkshape name,\n                      short description of check : checkshape name -short",
-// 		  __FILE__,
-// 		  CHK,
-// 		  g);
-//   theCommands.Add("checktopshape", 
-// 		  "checks the topological validity of a shape : checktopshape name",
-// 		  __FILE__,
-// 		  CHK,
-// 		  g);
-//  Modified by skv - Tue Apr 27 13:35:39 2004 End
 
   theCommands.Add("checksection", 
 		  "checks the closure of a section : checksection name [-r <RefVal>]\n"

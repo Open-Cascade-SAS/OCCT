@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BRepCheck_Analyzer.hxx>
+
 #include <BRepCheck_Edge.hxx>
 #include <BRepCheck_Face.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
@@ -24,8 +24,12 @@
 #include <BRepCheck_Solid.hxx>
 #include <BRepCheck_Vertex.hxx>
 #include <BRepCheck_Wire.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Shared.hxx>
+#include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Mutex.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <TopExp_Explorer.hxx>
@@ -35,400 +39,420 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
+//! Functor for multi-threaded execution.
+class BRepCheck_ParallelAnalyzer
+{
+public:
+  BRepCheck_ParallelAnalyzer (NCollection_Array1< NCollection_Array1<TopoDS_Shape> >& theArray,
+                              const BRepCheck_IndexedDataMapOfShapeResult& theMap)
+  : myArray (theArray),
+    myMap (theMap)
+  {
+    //
+  }
+
+  void operator() (const Standard_Integer theVectorIndex) const
+  {
+    TopExp_Explorer exp;
+    for (Standard_Integer aShapeIter = myArray[theVectorIndex].Lower();
+         aShapeIter <= myArray[theVectorIndex].Upper(); ++aShapeIter)
+    {
+      const TopoDS_Shape& aShape = myArray[theVectorIndex][aShapeIter];
+      const TopAbs_ShapeEnum aType = aShape.ShapeType();
+      const Handle(BRepCheck_Result)& aResult = myMap.FindFromKey (aShape);
+      switch (aType)
+      {
+        case TopAbs_VERTEX:
+        {
+          // modified by NIZHNY-MKK  Wed May 19 16:56:16 2004.BEGIN
+          // There is no need to check anything.
+          //       if (aShape.IsSame(S)) {
+          //  myMap(S)->Blind();
+          //       }
+          // modified by NIZHNY-MKK  Wed May 19 16:56:23 2004.END
+          break;
+        }
+        case TopAbs_EDGE:
+        {
+          try
+          {
+            Handle(BRepCheck_Edge) aResEdge = Handle(BRepCheck_Edge)::DownCast(aResult);
+            const BRepCheck_Status ste = aResEdge->CheckPolygonOnTriangulation (TopoDS::Edge (aShape));
+            if (ste != BRepCheck_NoError)
+            {
+              aResEdge->SetStatus (ste);
+            }
+          }
+          catch (Standard_Failure const& anException)
+          {
+            (void)anException;
+            if (!aResult.IsNull())
+            {
+              aResult->SetFailStatus (aShape);
+            }
+          }
+
+          TopTools_MapOfShape MapS;
+          for (exp.Init (aShape, TopAbs_VERTEX); exp.More(); exp.Next())
+          {
+            const TopoDS_Shape& aVertex = exp.Current();
+            Handle(BRepCheck_Result) aResOfVertex = myMap.FindFromKey (aVertex);
+            try
+            {
+              OCC_CATCH_SIGNALS
+              if (MapS.Add (aVertex))
+              {
+                aResOfVertex->InContext (aShape);
+              }
+            }
+            catch (Standard_Failure const& anException)
+            {
+              (void)anException;
+              if (!aResult.IsNull())
+              {
+                aResult->SetFailStatus (aShape);
+              }
+
+              if (!aResOfVertex.IsNull())
+              {
+                aResOfVertex->SetFailStatus (aVertex);
+                aResOfVertex->SetFailStatus (aShape);
+              }
+            }
+          }
+          break;
+        }
+        case TopAbs_WIRE:
+        {
+          break;
+        }
+        case TopAbs_FACE:
+        {
+          TopTools_MapOfShape MapS;
+          for (exp.Init (aShape, TopAbs_VERTEX); exp.More(); exp.Next())
+          {
+            Handle(BRepCheck_Result) aFaceVertexRes = myMap.FindFromKey (exp.Current());
+            try
+            {
+              OCC_CATCH_SIGNALS
+              if (MapS.Add (exp.Current()))
+              {
+                aFaceVertexRes->InContext (aShape);
+              }
+            }
+            catch (Standard_Failure const& anException)
+            {
+              (void)anException;
+              if (!aResult.IsNull())
+              {
+                aResult->SetFailStatus (aShape);
+              }
+              if (!aFaceVertexRes.IsNull())
+              {
+                aFaceVertexRes->SetFailStatus (exp.Current());
+                aFaceVertexRes->SetFailStatus (aShape);
+              }
+            }
+          }
+
+          Standard_Boolean performwire = Standard_True;
+          Standard_Boolean isInvalidTolerance = Standard_False;
+          MapS.Clear();
+          for (exp.Init (aShape, TopAbs_EDGE); exp.More(); exp.Next())
+          {
+            const Handle(BRepCheck_Result)& aFaceEdgeRes = myMap.FindFromKey (exp.Current());
+            try
+            {
+              OCC_CATCH_SIGNALS
+              if (MapS.Add (exp.Current()))
+              {
+                aFaceEdgeRes->InContext (aShape);
+
+                if (performwire)
+                {
+                  Standard_Mutex::Sentry aLock (aFaceEdgeRes->GetMutex());
+                  if (aFaceEdgeRes->IsStatusOnShape(aShape))
+                  {
+                    BRepCheck_ListIteratorOfListOfStatus itl (aFaceEdgeRes->StatusOnShape (aShape));
+                    for (; itl.More(); itl.Next())
+                    {
+                      const BRepCheck_Status ste = itl.Value();
+                      if (ste == BRepCheck_NoCurveOnSurface ||
+                          ste == BRepCheck_InvalidCurveOnSurface ||
+                          ste == BRepCheck_InvalidRange ||
+                          ste == BRepCheck_InvalidCurveOnClosedSurface)
+                      {
+                        performwire = Standard_False;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            catch (Standard_Failure const& anException)
+            {
+              (void)anException;
+              if (!aResult.IsNull())
+              {
+                aResult->SetFailStatus (aShape);
+              }
+              if (!aFaceEdgeRes.IsNull())
+              {
+                aFaceEdgeRes->SetFailStatus (exp.Current());
+                aFaceEdgeRes->SetFailStatus (aShape);
+              }
+            }
+          }
+
+          Standard_Boolean orientofwires = performwire;
+          for (exp.Init (aShape, TopAbs_WIRE); exp.More(); exp.Next())
+          {
+            const Handle(BRepCheck_Result)& aFaceWireRes = myMap.FindFromKey (exp.Current());
+            try
+            {
+              OCC_CATCH_SIGNALS
+              aFaceWireRes->InContext (aShape);
+
+              if (orientofwires)
+              {
+                Standard_Mutex::Sentry aLock (aFaceWireRes->GetMutex());
+                if (aFaceWireRes->IsStatusOnShape (aShape))
+                {
+                  const BRepCheck_ListOfStatus& aStatusList = aFaceWireRes->StatusOnShape (aShape);
+                  BRepCheck_ListIteratorOfListOfStatus itl (aStatusList);
+                  for (; itl.More(); itl.Next())
+                  {
+                    BRepCheck_Status ste = itl.Value();
+                    if (ste != BRepCheck_NoError)
+                    {
+                      orientofwires = Standard_False;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+            catch (Standard_Failure const& anException)
+            {
+              (void)anException;
+              if (!aResult.IsNull())
+              {
+                aResult->SetFailStatus (aShape);
+              }
+              if (!aFaceWireRes.IsNull())
+              {
+                aFaceWireRes->SetFailStatus (exp.Current());
+                aFaceWireRes->SetFailStatus (aShape);
+              }
+            }
+          }
+
+          try
+          {
+            OCC_CATCH_SIGNALS
+            const Handle(BRepCheck_Face) aFaceRes = Handle(BRepCheck_Face)::DownCast(aResult);
+            if (isInvalidTolerance)
+            {
+              aFaceRes->SetStatus (BRepCheck_InvalidToleranceValue);
+            }
+            else if (performwire)
+            {
+              if (orientofwires)
+              {
+                aFaceRes->OrientationOfWires (Standard_True);// on enregistre
+              }
+              else
+              {
+                aFaceRes->SetUnorientable();
+              }
+            }
+            else
+            {
+              aFaceRes->SetUnorientable();
+            }
+          }
+          catch (Standard_Failure const& anException)
+          {
+            (void)anException;
+            if (!aResult.IsNull())
+            {
+              aResult->SetFailStatus (aShape);
+            }
+
+            for (exp.Init (aShape, TopAbs_WIRE); exp.More(); exp.Next())
+            {
+              Handle(BRepCheck_Result) aFaceCatchRes = myMap.FindFromKey (exp.Current());
+              if (!aFaceCatchRes.IsNull())
+              {
+                aFaceCatchRes->SetFailStatus (exp.Current());
+                aFaceCatchRes->SetFailStatus (aShape);
+                aResult->SetFailStatus (exp.Current());
+              }
+            }
+          }
+          break;
+        }
+        case TopAbs_SHELL:
+        {
+          break;
+        }
+        case TopAbs_SOLID:
+        {
+          exp.Init (aShape, TopAbs_SHELL);
+          for (; exp.More(); exp.Next())
+          {
+            const TopoDS_Shape& aShell = exp.Current();
+            Handle(BRepCheck_Result) aSolidRes = myMap.FindFromKey (aShell);
+            try
+            {
+              OCC_CATCH_SIGNALS
+              aSolidRes->InContext (aShape);
+            }
+            catch (Standard_Failure const& anException)
+            {
+              (void)anException;
+              if (!aResult.IsNull())
+              {
+                aResult->SetFailStatus (aShape);
+              }
+              if (!aSolidRes.IsNull())
+              {
+                aSolidRes->SetFailStatus (exp.Current());
+                aSolidRes->SetFailStatus (aShape);
+              }
+            }
+          }
+          break;
+        }
+        default:
+        {
+          break;
+        }
+      }
+    }
+  }
+
+private:
+
+  NCollection_Array1< NCollection_Array1<TopoDS_Shape> >& myArray;
+  const BRepCheck_IndexedDataMapOfShapeResult& myMap;
+};
+
 //=======================================================================
 //function : Init
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepCheck_Analyzer::Init(const TopoDS_Shape& S,
-         const Standard_Boolean B)
+void BRepCheck_Analyzer::Init (const TopoDS_Shape& theShape,
+                               const Standard_Boolean B,
+                               const Standard_Boolean theIsParallel)
 {
-  if (S.IsNull()) {
-    throw Standard_NullObject();
+  if (theShape.IsNull())
+  {
+    throw Standard_NullObject ("BRepCheck_Analyzer::Init() - NULL shape");
   }
-  myShape = S;
+
+  myShape = theShape;
   myMap.Clear();
-  Put(S,B);
-  Perform(S);
+  Put (theShape, B, theIsParallel);
+  Perform (theIsParallel);
 }
+
 //=======================================================================
 //function : Put
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepCheck_Analyzer::Put(const TopoDS_Shape& S,
-                             const Standard_Boolean B)
+void BRepCheck_Analyzer::Put (const TopoDS_Shape& theShape,
+                              const Standard_Boolean B,
+                              const Standard_Boolean theIsParallel)
 {
-  if (!myMap.IsBound(S)) {
-    Handle(BRepCheck_Result) HR;
-    switch (S.ShapeType()) {
+  if (myMap.Contains (theShape))
+  {
+    return;
+  }
+
+  Handle(BRepCheck_Result) HR;
+  switch (theShape.ShapeType())
+  {
     case TopAbs_VERTEX:
-      HR = new BRepCheck_Vertex(TopoDS::Vertex(S));
+      HR = new BRepCheck_Vertex (TopoDS::Vertex (theShape));
       break;
     case TopAbs_EDGE:
-      HR = new BRepCheck_Edge(TopoDS::Edge(S));
-      Handle(BRepCheck_Edge)::DownCast(HR)->GeometricControls(B);
+      HR = new BRepCheck_Edge (TopoDS::Edge (theShape));
+      Handle(BRepCheck_Edge)::DownCast(HR)->GeometricControls (B);
       break;
     case TopAbs_WIRE:
-      HR = new BRepCheck_Wire(TopoDS::Wire(S));
-      Handle(BRepCheck_Wire)::DownCast(HR)->GeometricControls(B);
+      HR = new BRepCheck_Wire (TopoDS::Wire (theShape));
+      Handle(BRepCheck_Wire)::DownCast(HR)->GeometricControls (B);
       break;
     case TopAbs_FACE:
-      HR = new BRepCheck_Face(TopoDS::Face(S));
-      Handle(BRepCheck_Face)::DownCast(HR)->GeometricControls(B);
+      HR = new BRepCheck_Face (TopoDS::Face (theShape));
+      Handle(BRepCheck_Face)::DownCast(HR)->GeometricControls (B);
       break;
     case TopAbs_SHELL:
-      HR = new BRepCheck_Shell(TopoDS::Shell(S));
+      HR = new BRepCheck_Shell (TopoDS::Shell (theShape));
       break;
     case TopAbs_SOLID:
-      HR = new BRepCheck_Solid(TopoDS::Solid(S));
+      HR = new BRepCheck_Solid (TopoDS::Solid (theShape));
       break;
     case TopAbs_COMPSOLID:
     case TopAbs_COMPOUND:
       break;
     default:
       break;
-    }
-    myMap.Bind(S,HR);
-    for(TopoDS_Iterator theIterator(S);theIterator.More();theIterator.Next()) {
-      Put(theIterator.Value(),B); // performs minimum on each shape
-    }
+  }
+
+  if (!HR.IsNull())
+  {
+    HR->SetParallel (theIsParallel);
+  }
+  myMap.Add (theShape, HR);
+
+  for (TopoDS_Iterator theIterator (theShape); theIterator.More(); theIterator.Next())
+  {
+    Put (theIterator.Value(), B, theIsParallel); // performs minimum on each shape
   }
 }
+
 //=======================================================================
 //function : Perform
-//purpose  : 
+//purpose  :
 //=======================================================================
-void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
+void BRepCheck_Analyzer::Perform (Standard_Boolean theIsParallel)
 {
-  for(TopoDS_Iterator theIterator(S);theIterator.More();theIterator.Next()) 
-    Perform(theIterator.Value());
-  
-  //
-  TopAbs_ShapeEnum styp;
-  TopExp_Explorer exp;
-  //
-  styp = S.ShapeType();
-  
-  switch (styp) 
+  const Standard_Integer aMapSize = myMap.Size();
+  const Standard_Integer aMinTaskSize = 10;
+  const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+  const Standard_Integer aNbThreads = aThreadPool->NbThreads();
+  Standard_Integer aNbTasks = aNbThreads * 10;
+  Standard_Integer aTaskSize = (Standard_Integer)Ceiling ((double)aMapSize / aNbTasks);
+  if (aTaskSize < aMinTaskSize)
   {
-  case TopAbs_VERTEX: 
-    // modified by NIZHNY-MKK  Wed May 19 16:56:16 2004.BEGIN
-    // There is no need to check anything.
-    //       if (myShape.IsSame(S)) {
-    //  myMap(S)->Blind();
-    //       }
-    // modified by NIZHNY-MKK  Wed May 19 16:56:23 2004.END
-  
-    break;
-  case TopAbs_EDGE:
+    aTaskSize = aMinTaskSize;
+    aNbTasks = (Standard_Integer)Ceiling ((double)aMapSize / aTaskSize);
+  }
+
+  NCollection_Array1< NCollection_Array1<TopoDS_Shape> > aArrayOfArray (0, aNbTasks - 1);
+  for (Standard_Integer anI = 1; anI <= aMapSize; ++anI)
+  {
+    Standard_Integer aVectIndex  = (anI-1) / aTaskSize;
+    Standard_Integer aShapeIndex = (anI-1) % aTaskSize;
+    if (aShapeIndex == 0)
     {
-      Handle(BRepCheck_Result)& aRes = myMap(S);
-
-      try
+      Standard_Integer aVectorSize = aTaskSize;
+      Standard_Integer aTailSize = aMapSize - aVectIndex * aTaskSize;
+      if (aTailSize < aTaskSize)
       {
-        BRepCheck_Status ste = Handle(BRepCheck_Edge)::
-          DownCast(aRes)->CheckPolygonOnTriangulation(TopoDS::Edge(S));
-
-        if(ste != BRepCheck_NoError)
-        {
-          Handle(BRepCheck_Edge)::DownCast(aRes)->SetStatus(ste);
-        }
+        aVectorSize = aTailSize;
       }
-      catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-        std::cout<<"BRepCheck_Analyzer : ";
-        anException.Print(std::cout);  
-        std::cout<<std::endl;
-#endif
-        (void)anException;
-        if ( ! myMap(S).IsNull() )
-        {
-          myMap(S)->SetFailStatus(S);
-        }
-
-        if ( ! aRes.IsNull() )
-        {
-          aRes->SetFailStatus(S);
-        }
-      }
-
-      TopTools_MapOfShape MapS;
-      
-      for (exp.Init(S,TopAbs_VERTEX);exp.More(); exp.Next())
-      {
-        const TopoDS_Shape& aVertex = exp.Current();
-        try
-        {
-          OCC_CATCH_SIGNALS
-          if (MapS.Add(aVertex))
-            myMap(aVertex)->InContext(S);
-        }
-        catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-          std::cout<<"BRepCheck_Analyzer : ";
-          anException.Print(std::cout);  
-          std::cout<<std::endl;
-#endif
-          (void)anException;
-          if ( ! myMap(S).IsNull() )
-            myMap(S)->SetFailStatus(S);
-
-          Handle(BRepCheck_Result) aResOfVertex = myMap(aVertex);
-
-          if ( !aResOfVertex.IsNull() )
-          {
-            aResOfVertex->SetFailStatus(aVertex);
-            aResOfVertex->SetFailStatus(S);
-          }
-        }//catch(Standard_Failure)
-      }//for (exp.Init(S,TopAbs_VERTEX);exp.More(); exp.Next())
+      aArrayOfArray[aVectIndex].Resize (0, aVectorSize - 1, Standard_False);
     }
-    break;
-  case TopAbs_WIRE:
-    {
-    }
-    break;
-  case TopAbs_FACE:
-    {
-      TopTools_MapOfShape MapS;
-      for (exp.Init(S,TopAbs_VERTEX);exp.More(); exp.Next())
-      {
-        try
-        {
-          OCC_CATCH_SIGNALS
-          if (MapS.Add(exp.Current()))
-          {
-            myMap(exp.Current())->InContext(S);
-          }
-        }
-        catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-          std::cout<<"BRepCheck_Analyzer : ";
-          anException.Print(std::cout);  
-          std::cout<<std::endl;
-#endif
-          (void)anException;
-          if ( ! myMap(S).IsNull() )
-          {
-            myMap(S)->SetFailStatus(S);
-          }
-          
-          Handle(BRepCheck_Result) aRes = myMap(exp.Current());
+    aArrayOfArray[aVectIndex][aShapeIndex] = myMap.FindKey (anI);
+  }
 
-          if ( ! aRes.IsNull() )
-          {
-            aRes->SetFailStatus(exp.Current());
-            aRes->SetFailStatus(S);
-          }
-        }
-      }
-
-      Standard_Boolean performwire = Standard_True;
-      Standard_Boolean isInvalidTolerance = Standard_False;
-      MapS.Clear();
-      for (exp.Init(S,TopAbs_EDGE);exp.More(); exp.Next())
-      {
-        try
-        {
-          OCC_CATCH_SIGNALS
-          if (MapS.Add(exp.Current()))
-          {
-            Handle(BRepCheck_Result)& res = myMap(exp.Current());
-            res->InContext(S);
-            if (performwire)
-            {
-              for ( res->InitContextIterator();
-                    res->MoreShapeInContext();
-                    res->NextShapeInContext())
-              {
-                if(res->ContextualShape().IsSame(S))
-                  break;
-              }
-
-              BRepCheck_ListIteratorOfListOfStatus itl(res->StatusOnShape());
-              for (; itl.More(); itl.Next())
-              {
-                BRepCheck_Status ste = itl.Value();
-                if (ste == BRepCheck_NoCurveOnSurface  ||
-                    ste == BRepCheck_InvalidCurveOnSurface ||
-                    ste == BRepCheck_InvalidRange ||
-                    ste == BRepCheck_InvalidCurveOnClosedSurface)
-                {
-                  performwire = Standard_False;
-                  break;
-                }
-              }
-            }
-          }
-        }
-        catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-          std::cout<<"BRepCheck_Analyzer : ";
-          anException.Print(std::cout);  
-          std::cout<<std::endl;
-#endif
-          (void)anException;
-          if ( ! myMap(S).IsNull() )
-          {
-            myMap(S)->SetFailStatus(S);
-          }
-
-          Handle(BRepCheck_Result) aRes = myMap(exp.Current());
-
-          if ( ! aRes.IsNull() )
-          {
-            aRes->SetFailStatus(exp.Current());
-            aRes->SetFailStatus(S);
-          }
-        }
-      }
-
-      Standard_Boolean orientofwires = performwire;
-      for (exp.Init(S,TopAbs_WIRE);exp.More(); exp.Next())
-      {
-        try
-        {
-          OCC_CATCH_SIGNALS
-          Handle(BRepCheck_Result)& res = myMap(exp.Current());
-          res->InContext(S);
-          if (orientofwires)
-          {
-            for ( res->InitContextIterator();
-                  res->MoreShapeInContext();
-                  res->NextShapeInContext())
-            {
-              if(res->ContextualShape().IsSame(S))
-              {
-                break;
-              }
-            }
-            BRepCheck_ListIteratorOfListOfStatus itl(res->StatusOnShape());
-            for (; itl.More(); itl.Next())
-            {
-              BRepCheck_Status ste = itl.Value();
-              if (ste != BRepCheck_NoError)
-              {
-                orientofwires = Standard_False;
-                break;
-              }
-            }
-          }
-        }
-        catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-          std::cout<<"BRepCheck_Analyzer : ";
-          anException.Print(std::cout);  
-          std::cout<<std::endl;
-#endif
-          (void)anException;
-          if ( ! myMap(S).IsNull() )
-          {
-            myMap(S)->SetFailStatus(S);
-          }
-
-          Handle(BRepCheck_Result) aRes = myMap(exp.Current());
-
-          if ( ! aRes.IsNull() )
-          {
-            aRes->SetFailStatus(exp.Current());
-            aRes->SetFailStatus(S);
-          }
-        }
-      }
-
-      try
-      {
-        OCC_CATCH_SIGNALS
-        if(isInvalidTolerance)
-        {
-          Handle(BRepCheck_Face)::
-              DownCast(myMap(S))->SetStatus(BRepCheck_InvalidToleranceValue);
-        }
-        else if (performwire)
-        {
-          if (orientofwires)
-          {
-            Handle(BRepCheck_Face)::DownCast(myMap(S))->
-                        OrientationOfWires(Standard_True);// on enregistre
-          }
-          else
-          {
-            Handle(BRepCheck_Face)::DownCast(myMap(S))->SetUnorientable();
-          }
-        }
-        else
-        {
-          Handle(BRepCheck_Face)::DownCast(myMap(S))->SetUnorientable();
-        }
-      }
-      catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-        std::cout<<"BRepCheck_Analyzer : ";
-        anException.Print(std::cout);  
-        std::cout<<std::endl;
-#endif
-        (void)anException;
-        if ( ! myMap(S).IsNull() )
-        {
-          myMap(S)->SetFailStatus(S);
-        }
-
-        for (exp.Init(S,TopAbs_WIRE);exp.More(); exp.Next())
-        {
-          Handle(BRepCheck_Result) aRes = myMap(exp.Current());
-          
-          if ( ! aRes.IsNull() )
-          {
-            aRes->SetFailStatus(exp.Current());
-            aRes->SetFailStatus(S);
-            myMap(S)->SetFailStatus(exp.Current());
-          }
-        }
-      }
-    }
-    break;
-    
-  case TopAbs_SHELL:   
-    break;
-
-  case TopAbs_SOLID:
-    {
-      exp.Init(S,TopAbs_SHELL);
-      for (; exp.More(); exp.Next())
-        {
-          const TopoDS_Shape& aShell=exp.Current();
-          try 
-            {
-              OCC_CATCH_SIGNALS
-                myMap(aShell)->InContext(S);
-            }
-          catch(Standard_Failure const& anException) {
-#ifdef OCCT_DEBUG
-              std::cout<<"BRepCheck_Analyzer : ";
-              anException.Print(std::cout);  
-              std::cout<<std::endl;
-#endif
-              (void)anException;
-              if ( ! myMap(S).IsNull() )
-                {
-                  myMap(S)->SetFailStatus(S);
-                }
-              
-              //
-              Handle(BRepCheck_Result) aRes = myMap(aShell);
-              if (!aRes.IsNull() )
-                {
-                  aRes->SetFailStatus(exp.Current());
-                  aRes->SetFailStatus(S);
-                }
-            }//catch(Standard_Failure)
-        }//for (; exp.More(); exp.Next())
-    }
-  break;//case TopAbs_SOLID
-  default:
-    break;
-  }//switch (styp) {
+  BRepCheck_ParallelAnalyzer aParallelAnalyzer (aArrayOfArray, myMap);
+  OSD_Parallel::For (0, aArrayOfArray.Size(), aParallelAnalyzer, !theIsParallel);
 }
-
 
 //=======================================================================
 //function : IsValid
@@ -437,9 +461,10 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
 
 Standard_Boolean BRepCheck_Analyzer::IsValid(const TopoDS_Shape& S) const
 {
-  if (!myMap(S).IsNull()) {
+  if (!myMap.FindFromKey (S).IsNull())
+  {
     BRepCheck_ListIteratorOfListOfStatus itl;
-    itl.Initialize(myMap(S)->Status());
+    itl.Initialize (myMap.FindFromKey (S)->Status());
     if (itl.Value() != BRepCheck_NoError) { // a voir
       return Standard_False;
     }
@@ -494,7 +519,7 @@ Standard_Boolean BRepCheck_Analyzer::ValidSub
   TopExp_Explorer exp;
   for (exp.Init(S,SubType);exp.More(); exp.Next()) {
 //  for (TopExp_Explorer exp(S,SubType);exp.More(); exp.Next()) {
-    const Handle(BRepCheck_Result)& RV = myMap(exp.Current());
+    const Handle(BRepCheck_Result)& RV = myMap.FindFromKey(exp.Current());
     for (RV->InitContextIterator();
          RV->MoreShapeInContext(); 
          RV->NextShapeInContext()) {

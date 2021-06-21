@@ -56,16 +56,16 @@ BRepCheck_Vertex::BRepCheck_Vertex(const TopoDS_Vertex& V)
 
 //=======================================================================
 //function : Minimum
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void BRepCheck_Vertex::Minimum()
 {
-  if (!myMin) {
+  if (!myMin)
+  {
     // checks the existence of a point 3D
-    BRepCheck_ListOfStatus thelist;
-    myMap.Bind(myShape, thelist);
-    myMap(myShape).Append(BRepCheck_NoError);
+    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
+    BRepCheck_ListOfStatus& lst = **myMap.Bound (myShape, aNewList);
+    lst.Append (BRepCheck_NoError);
     myMin = Standard_True;
   }
 }
@@ -78,21 +78,29 @@ void BRepCheck_Vertex::Minimum()
 
 void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
 {
-  if (myMap.IsBound(S)) {
-    return;
-  }
-  BRepCheck_ListOfStatus thelist;
-  myMap.Bind(S, thelist);
+  Handle(BRepCheck_HListOfStatus) aHList;
+  {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    if (myMap.IsBound (S))
+    {
+      return;
+    }
 
-//  for (TopExp_Explorer exp(S,TopAbs_VERTEX); exp.More(); exp.Next()) {
-  TopExp_Explorer exp(S,TopAbs_VERTEX) ;
-  for ( ; exp.More(); exp.Next()) {
+    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
+    aHList = *myMap.Bound (S, aNewList);
+  }
+  BRepCheck_ListOfStatus& lst = *aHList;
+
+  TopExp_Explorer exp(S, TopAbs_VERTEX);
+  for (; exp.More(); exp.Next())
+  {
     if (exp.Current().IsSame(myShape)) {
       break;
     }
   }
-  if (!exp.More()) {
-    BRepCheck::Add(myMap(S),BRepCheck_SubshapeNotInShape);
+  if (!exp.More())
+  {
+    BRepCheck::Add (lst, BRepCheck_SubshapeNotInShape);
     return; // leaves
   }
 
@@ -102,47 +110,53 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
   gp_Pnt Controlp;
 
   TopAbs_ShapeEnum styp = S.ShapeType();
-  switch (styp) {
-
-  case TopAbs_EDGE:
+  switch (styp)
+  {
+    case TopAbs_EDGE:
     {
       // Try to find the vertex on the edge
-      
       const TopoDS_Edge& E = TopoDS::Edge(S);
       TopoDS_Iterator itv(E.Oriented(TopAbs_FORWARD));
       TopoDS_Vertex VFind;
       Standard_Boolean multiple = Standard_False;
-      while (itv.More()) {
-	const TopoDS_Vertex& VF = TopoDS::Vertex(itv.Value());
-	if (itv.Value().IsSame(myShape)) {
-	  if (VFind.IsNull()) {
-	    VFind = VF;
-	  }
-	  else {
-	    if ((VFind.Orientation() == TopAbs_FORWARD && 
-		 VF.Orientation() == TopAbs_REVERSED) ||
-		(VFind.Orientation() == TopAbs_REVERSED &&
-		 VF.Orientation() == TopAbs_FORWARD)) {
-	      // the vertex on the edge is at once F and R
-	      multiple = Standard_True; 
-	    }
-	    if (VFind.Orientation() != TopAbs_FORWARD && 
-		VFind.Orientation() != TopAbs_REVERSED) {
-	      if (VF.Orientation() == TopAbs_FORWARD ||
-		  VF.Orientation() == TopAbs_REVERSED) {
-		VFind = VF;
-	      }
-	    }
-	  }
-	}
-	itv.Next();
+      while (itv.More())
+      {
+        const TopoDS_Vertex& VF = TopoDS::Vertex(itv.Value());
+        if (itv.Value().IsSame(myShape))
+        {
+          if (VFind.IsNull())
+          {
+            VFind = VF;
+          }
+          else
+          {
+            if ((VFind.Orientation() == TopAbs_FORWARD &&
+                    VF.Orientation() == TopAbs_REVERSED) ||
+              (VFind.Orientation() == TopAbs_REVERSED &&
+                  VF.Orientation() == TopAbs_FORWARD))
+            {
+              // the vertex on the edge is at once F and R
+              multiple = Standard_True;
+            }
+            if (VFind.Orientation() != TopAbs_FORWARD &&
+                VFind.Orientation() != TopAbs_REVERSED)
+            {
+              if (VF.Orientation() == TopAbs_FORWARD ||
+                  VF.Orientation() == TopAbs_REVERSED)
+              {
+                VFind = VF;
+              }
+            }
+          }
+        }
+        itv.Next();
       }
 
       // VFind is not null for sure
       TopAbs_Orientation orv = VFind.Orientation();
 
-      Standard_Real Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol = Max(Tol,BRep_Tool::Tolerance(E)); // to check
+      Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+      Tol = Max(Tol, BRep_Tool::Tolerance(E)); // to check
       Tol *= Tol;
 
       Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&E.TShape());
@@ -150,123 +164,140 @@ void BRepCheck_Vertex::InContext(const TopoDS_Shape& S)
       const TopLoc_Location& Eloc = E.Location();
 
       BRep_ListIteratorOfListOfPointRepresentation itpr;
-      while (itcr.More()) {
-	// For each CurveRepresentation, the provided parameter is checked
-	const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
-	const TopLoc_Location& loc = cr->Location();
-	TopLoc_Location L = (Eloc * loc).Predivided(myShape.Location());
+      while (itcr.More())
+      {
+        // For each CurveRepresentation, the provided parameter is checked
+        const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+        const TopLoc_Location& loc = cr->Location();
+        TopLoc_Location L = (Eloc * loc).Predivided(myShape.Location());
 
-	if (cr->IsCurve3D()) {
-	  const Handle(Geom_Curve)& C = cr->Curve3D();
-	  if (!C.IsNull()) { // edge non degenerated
-	    itpr.Initialize(TV->Points());
-	    while (itpr.More()) {
-	      const Handle(BRep_PointRepresentation)& pr = itpr.Value();
-	      if (pr->IsPointOnCurve(C,L)) {
-		Controlp = C->Value(pr->Parameter());
-		Controlp.Transform(L.Transformation());
-		if (prep.SquareDistance(Controlp)> Tol) {
-		  BRepCheck::Add(myMap(S),BRepCheck_InvalidPointOnCurve);
-		}
-	      }
-	      itpr.Next();
-	    }
-	    if (orv == TopAbs_FORWARD || orv == TopAbs_REVERSED) {
-	      Handle(BRep_GCurve) GC (Handle(BRep_GCurve)::DownCast (cr));
-	      if (orv == TopAbs_FORWARD || multiple) {
-		Controlp = C->Value(GC->First());
-		Controlp.Transform(L.Transformation());
-		if (prep.SquareDistance(Controlp)> Tol) {
-		  BRepCheck::Add(myMap(S),BRepCheck_InvalidPointOnCurve);
-		}
-	      }
-	      if (orv == TopAbs_REVERSED || multiple) {
-		Controlp = C->Value(GC->Last());
-		Controlp.Transform(L.Transformation());
-		if (prep.SquareDistance(Controlp)> Tol) {
-		  BRepCheck::Add(myMap(S),BRepCheck_InvalidPointOnCurve);
-		}
-	      }
-	    }
-	  }
-	}
-	else if (cr->IsCurveOnSurface()) {
-	  const Handle(Geom_Surface)& Su = cr->Surface();
-	  const Handle(Geom2d_Curve)& PC = cr->PCurve();
-	  Handle(Geom2d_Curve) PC2;
-	  if (cr->IsCurveOnClosedSurface()) {
-	    PC2 = cr->PCurve2();
-	  }
-	  itpr.Initialize(TV->Points());
-	  while (itpr.More()) {
-	    const Handle(BRep_PointRepresentation)& pr = itpr.Value();
-	    if (pr->IsPointOnCurveOnSurface(PC,Su,L)) {
-	      gp_Pnt2d p2d = PC->Value(pr->Parameter());
-	      Controlp = Su->Value(p2d.X(),p2d.Y());
-	      Controlp.Transform(L.Transformation());
-	      if (prep.SquareDistance(Controlp)> Tol) {
-		BRepCheck::Add(myMap(S),
-			       BRepCheck_InvalidPointOnCurveOnSurface);
-	      }
-	    }
-	    if (!PC2.IsNull() && pr->IsPointOnCurveOnSurface(PC2,Su,L)) {
-	      gp_Pnt2d p2d = PC2->Value(pr->Parameter());
-	      Controlp = Su->Value(p2d.X(),p2d.Y());
-	      Controlp.Transform(L.Transformation());
-	      if (prep.SquareDistance(Controlp)> Tol) {
-		BRepCheck::Add(myMap(S),
-			       BRepCheck_InvalidPointOnCurveOnSurface);
-	      }
-	    }
-	    itpr.Next();
-	  }
-	}
-	itcr.Next();
+        if (cr->IsCurve3D())
+        {
+          const Handle(Geom_Curve)& C = cr->Curve3D();
+          if (!C.IsNull()) // edge non degenerated
+          {
+            itpr.Initialize(TV->Points());
+            while (itpr.More())
+            {
+              const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+              if (pr->IsPointOnCurve (C, L))
+              {
+                Controlp = C->Value (pr->Parameter());
+                Controlp.Transform (L.Transformation());
+                if (prep.SquareDistance (Controlp) > Tol)
+                {
+                  BRepCheck::Add (lst, BRepCheck_InvalidPointOnCurve);
+                }
+              }
+              itpr.Next();
+            }
+            if (orv == TopAbs_FORWARD || orv == TopAbs_REVERSED)
+            {
+              Handle(BRep_GCurve) GC = Handle(BRep_GCurve)::DownCast(cr);
+              if (orv == TopAbs_FORWARD || multiple)
+              {
+                Controlp = C->Value(GC->First());
+                Controlp.Transform(L.Transformation());
+                if (prep.SquareDistance(Controlp) > Tol)
+                {
+                  BRepCheck::Add (lst, BRepCheck_InvalidPointOnCurve);
+                }
+              }
+              if (orv == TopAbs_REVERSED || multiple)
+              {
+                Controlp = C->Value(GC->Last());
+                Controlp.Transform(L.Transformation());
+                if (prep.SquareDistance (Controlp) > Tol)
+                {
+                  BRepCheck::Add (lst, BRepCheck_InvalidPointOnCurve);
+                }
+              }
+            }
+          }
+        }
+        else if (cr->IsCurveOnSurface())
+        {
+          const Handle(Geom_Surface)& Su = cr->Surface();
+          const Handle(Geom2d_Curve)& PC = cr->PCurve();
+          Handle(Geom2d_Curve) PC2;
+          if (cr->IsCurveOnClosedSurface())
+          {
+            PC2 = cr->PCurve2();
+          }
+          itpr.Initialize(TV->Points());
+          while (itpr.More())
+          {
+            const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+            if (pr->IsPointOnCurveOnSurface(PC, Su, L))
+            {
+              gp_Pnt2d p2d = PC->Value(pr->Parameter());
+              Controlp = Su->Value(p2d.X(), p2d.Y());
+              Controlp.Transform(L.Transformation());
+              if (prep.SquareDistance(Controlp) > Tol)
+              {
+                BRepCheck::Add (lst, BRepCheck_InvalidPointOnCurveOnSurface);
+              }
+            }
+            if (!PC2.IsNull() && pr->IsPointOnCurveOnSurface (PC2, Su, L))
+            {
+              gp_Pnt2d p2d = PC2->Value(pr->Parameter());
+              Controlp = Su->Value(p2d.X(), p2d.Y());
+              Controlp.Transform(L.Transformation());
+              if (prep.SquareDistance(Controlp) > Tol)
+              {
+                BRepCheck::Add (lst, BRepCheck_InvalidPointOnCurveOnSurface);
+              }
+            }
+            itpr.Next();
+          }
+        }
+        itcr.Next();
       }
-      if (myMap(S).IsEmpty()) {
-	myMap(S).Append(BRepCheck_NoError);
+      if (lst.IsEmpty())
+      {
+        lst.Append (BRepCheck_NoError);
       }
-
+      break;
     }
-    break;
-
-  case TopAbs_FACE:
+    case TopAbs_FACE:
     {
-
       Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*) &S.TShape());
       const TopLoc_Location& Floc = S.Location();
       const TopLoc_Location& TFloc = TF->Location();
       const Handle(Geom_Surface)& Su = TF->Surface();
       TopLoc_Location L = (Floc * TFloc).Predivided(myShape.Location());
 
-      Standard_Real Tol  = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
-      Tol = Max(Tol,BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
+      Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Vertex(myShape));
+      Tol = Max (Tol, BRep_Tool::Tolerance(TopoDS::Face(S))); // to check
       Tol *= Tol;
 
       BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
-      while (itpr.More()) {
-	const Handle(BRep_PointRepresentation)& pr = itpr.Value();
-	if (pr->IsPointOnSurface(Su,L)) {
-	  Controlp = Su->Value(pr->Parameter(),pr->Parameter2());
-	  Controlp.Transform(L.Transformation());
-	  if (prep.SquareDistance(Controlp)> Tol) {
-	    BRepCheck::Add(myMap(S),BRepCheck_InvalidPointOnSurface);
-	  }
-	}
-	itpr.Next();
+      while (itpr.More())
+      {
+        const Handle(BRep_PointRepresentation)& pr = itpr.Value();
+        if (pr->IsPointOnSurface (Su, L))
+        {
+          Controlp = Su->Value (pr->Parameter(), pr->Parameter2());
+          Controlp.Transform(L.Transformation());
+          if (prep.SquareDistance(Controlp) > Tol)
+          {
+            BRepCheck::Add (lst, BRepCheck_InvalidPointOnSurface);
+          }
+        }
+        itpr.Next();
       }
-      if (myMap(S).IsEmpty()) {
-	myMap(S).Append(BRepCheck_NoError);
+      if (lst.IsEmpty())
+      {
+        lst.Append (BRepCheck_NoError);
       }
+      break;
     }
-
-  default:
-    break;
-
+    default:
+    {
+      break;
+    }
   }
-
 }
-
 
 //=======================================================================
 //function : Blind
@@ -364,5 +395,4 @@ Standard_Real BRepCheck_Vertex::Tolerance()
   }
   return sqrt(Tol*1.05);
 }
-
 

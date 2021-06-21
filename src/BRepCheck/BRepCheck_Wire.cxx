@@ -142,10 +142,10 @@ void BRepCheck_Wire::Minimum()
 {
   myCdone = Standard_False;
   myGctrl = Standard_True;
-  if (!myMin) {
-    BRepCheck_ListOfStatus thelist;
-    myMap.Bind(myShape, thelist);
-    BRepCheck_ListOfStatus& lst = myMap(myShape);
+  if (!myMin)
+  {
+    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
+    BRepCheck_ListOfStatus& lst = **myMap.Bound (myShape, aNewList);
 
     // check that the wire is "connex"
     TopExp_Explorer exp(myShape,TopAbs_EDGE);
@@ -195,53 +195,65 @@ void BRepCheck_Wire::Minimum()
 //=======================================================================
 void BRepCheck_Wire::InContext(const TopoDS_Shape& S)
 {
+  Handle(BRepCheck_HListOfStatus) aHList;
+  {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    if (myMap.IsBound (S))
+    {
+      return;
+    }
 
-  if (myMap.IsBound(S)) {
-    return;
+    Handle(BRepCheck_HListOfStatus) aNewList = new BRepCheck_HListOfStatus();
+    aHList = *myMap.Bound(S, aNewList);
   }
-  BRepCheck_ListOfStatus thelist;
-  myMap.Bind(S, thelist);
-
-  BRepCheck_ListOfStatus& lst = myMap(S);
+  BRepCheck_ListOfStatus& lst = *aHList;
 
   // check if my wire is in <S>
-  TopExp_Explorer exp(S,TopAbs_WIRE); 
-  for ( ; exp.More(); exp.Next()) {
+  TopExp_Explorer exp(S, TopAbs_WIRE);
+  for (; exp.More(); exp.Next()) {
     if (exp.Current().IsSame(myShape)) {
       break;
     }
   }
   if (!exp.More()) {
-    BRepCheck::Add(lst,BRepCheck_SubshapeNotInShape);
+    BRepCheck::Add(lst, BRepCheck_SubshapeNotInShape);
     return;
   }
 
   BRepCheck_Status st = BRepCheck_NoError;
   TopAbs_ShapeEnum styp = S.ShapeType();
-  switch (styp) {
-
-  case TopAbs_FACE:
+  switch (styp)
+  {
+    case TopAbs_FACE:
     {
-      TopoDS_Edge ed1,ed2; 
-      if (myGctrl) 
-        st = SelfIntersect(TopoDS::Face(S),ed1,ed2,Standard_True);
-      if (st != BRepCheck_NoError) break;
+      TopoDS_Edge ed1, ed2;
+      if (myGctrl)
+      {
+        st = SelfIntersect(TopoDS::Face(S), ed1, ed2, Standard_True);
+      }
+      if (st != BRepCheck_NoError) { break; }
       st = Closed();
-      if (st != BRepCheck_NoError) break;
+      if (st != BRepCheck_NoError) { break; }
       st = Orientation(TopoDS::Face(S));
-      if (st != BRepCheck_NoError) break;
+      if (st != BRepCheck_NoError) { break; }
       st = Closed2d(TopoDS::Face(S));
+      break;
     }
-    break;
-  default:
-    break;
+    default:
+    {
+      break;
+    }
   }
-  
-  if (st != BRepCheck_NoError) 
-    BRepCheck::Add(lst,st);
-      
-  if (lst.IsEmpty()) 
-    lst.Append(BRepCheck_NoError);
+
+  if (st != BRepCheck_NoError)
+  {
+    BRepCheck::Add (lst, st);
+  }
+
+  if (lst.IsEmpty())
+  {
+    lst.Append (BRepCheck_NoError);
+  }
 }
 //=======================================================================
 //function : Blind
@@ -260,17 +272,25 @@ void BRepCheck_Wire::Blind()
 //=======================================================================
 BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
 {
+  Handle(BRepCheck_HListOfStatus) aHList;
+  {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    aHList = myMap (myShape);
+  }
 
-  if (myCdone) {
-    if (Update) {
-      BRepCheck::Add(myMap(myShape),myCstat);
+  BRepCheck_ListOfStatus& aStatusList = *aHList;
+  if (myCdone)
+  {
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, myCstat);
     }
     return myCstat;
   }
 
   myCdone = Standard_True;
 
-  BRepCheck_ListIteratorOfListOfStatus itl(myMap(myShape));
+  BRepCheck_ListIteratorOfListOfStatus itl (aStatusList);
   if (itl.Value() != BRepCheck_NoError) {
     myCstat = itl.Value();
     return myCstat; // already saved 
@@ -320,8 +340,9 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
   }
   if (theNbori != mapS.Extent()) {
     myCstat = BRepCheck_NotConnected;
-    if (Update) {
-      BRepCheck::Add(myMap(myShape),myCstat);
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, myCstat);
     }
     return myCstat;
   }
@@ -343,8 +364,9 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
     }
     if (yabug) {
       myCstat = BRepCheck_RedundantEdge;
-      if (Update) {
-        BRepCheck::Add(myMap(myShape),myCstat);
+      if (Update)
+      {
+        BRepCheck::Add (aStatusList, myCstat);
       }
       return myCstat;
     }
@@ -353,15 +375,17 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
   for (Standard_Integer i = 1; i<= myMapVE.Extent(); i++) {
     if (myMapVE(i).Extent()%2 != 0) {
       myCstat=BRepCheck_NotClosed;
-      if (Update) {
-        BRepCheck::Add(myMap(myShape),myCstat);
+      if (Update)
+      {
+        BRepCheck::Add (aStatusList, myCstat);
       }
       return myCstat;
     }
   }
 
-  if (Update) {
-    BRepCheck::Add(myMap(myShape),myCstat);
+  if (Update)
+  {
+    BRepCheck::Add (aStatusList, myCstat);
   }
   return myCstat;
 }
@@ -500,14 +524,22 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 //=======================================================================
 BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
                                           const Standard_Boolean Update)
+{
+  Handle(BRepCheck_HListOfStatus) aHList;
   {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    aHList = myMap (myShape);
+  }
+  BRepCheck_ListOfStatus& aStatusList = *aHList;
+
   // 3d closure checked too
   BRepCheck_Status aClosedStat = Closed();
   if (aClosedStat != BRepCheck_NoError)
     {
     if (Update)
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
 
@@ -535,8 +567,9 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
   if (aNbOrirntedEdges==0)
     {
     if (Update)
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
 
@@ -557,9 +590,10 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
   if (aNbFoundEdges != aNbOrirntedEdges)
     {
     aClosedStat = BRepCheck_NotClosed;
-    if (Update) 
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-    
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
 
@@ -588,17 +622,19 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
   if (isFirstInfinite && isLastInfinite)
     {
     if (Update)
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
   else if (aFirstVertex.IsNull())
     {
     aClosedStat = BRepCheck_NotClosed;
     
-    if (Update) 
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-    
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
 //  Modified by Sergey KHROMOV - Mon May 13 12:42:10 2002 End
@@ -629,8 +665,9 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
     {
     aClosedStat = BRepCheck_NotClosed;
     if (Update)
-      BRepCheck::Add(myMap(myShape),aClosedStat);
-    
+    {
+      BRepCheck::Add (aStatusList, aClosedStat);
+    }
     return aClosedStat;
     }
 //  Modified by Sergey KHROMOV - Thu Jun 20 10:58:05 2002 End
@@ -652,9 +689,10 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
   if(!IsDistanceIn3DTolerance(aPntRef, aPnt, aTol3d))
     aClosedStat = BRepCheck_NotClosed;
 
-  if (Update) 
-    BRepCheck::Add(myMap(myShape),aClosedStat);
-
+  if (Update)
+  {
+    BRepCheck::Add (aStatusList, aClosedStat);
+  }
   return aClosedStat;
   }
 //=======================================================================
@@ -665,9 +703,18 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
                                              const Standard_Boolean Update)
 {
   BRepCheck_Status theOstat = Closed();
-  if (theOstat != BRepCheck_NotClosed && theOstat != BRepCheck_NoError) {
-    if (Update) {
-      BRepCheck::Add(myMap(myShape),theOstat);
+  Handle(BRepCheck_HListOfStatus) aHList;
+  {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    aHList = myMap (myShape);
+  }
+  BRepCheck_ListOfStatus& aStatusList = *aHList;
+
+  if (theOstat != BRepCheck_NotClosed && theOstat != BRepCheck_NoError)
+  {
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, theOstat);
     }
     return theOstat;
   }
@@ -794,8 +841,9 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
       if (nbconnex == 0) {
         if (myCstat == BRepCheck_NotClosed) {
           if (VL.IsNull()) {
-            if (Update) {
-              BRepCheck::Add(myMap(myShape),theOstat);
+            if (Update)
+            {
+              BRepCheck::Add (aStatusList, theOstat);
             }
             return theOstat; // leave
           }
@@ -808,9 +856,10 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
         }
         else {
           theOstat = BRepCheck_BadOrientationOfSubshape;
-          if (Update) {
-            BRepCheck::Add(myMap(myShape),theOstat);
-	    }
+          if (Update)
+          {
+            BRepCheck::Add (aStatusList, theOstat);
+          }
           return theOstat;
         }
       }
@@ -841,9 +890,10 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
 
       if (nbconnex >= 2) {
         theOstat = BRepCheck_BadOrientationOfSubshape;
-        if (Update) {
-          BRepCheck::Add(myMap(myShape),theOstat);
-          }
+        if (Update)
+        {
+          BRepCheck::Add (aStatusList, theOstat);
+        }
         return theOstat;
       }
       else if (nbconnex == 1) {
@@ -876,10 +926,11 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
       }
       else if (!Changedesens) { //nbconnex == 0
         theOstat = BRepCheck_NotClosed;
-        if (Update) {
-          BRepCheck::Add(myMap(myShape),theOstat);
-	  }
-	return theOstat;
+        if (Update)
+        {
+          BRepCheck::Add (aStatusList, theOstat);
+        }
+        return theOstat;
       }
 
       // Check the closure of the wire in 2d (not done in Closed())
@@ -888,52 +939,54 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F,
       Standard_Boolean isCheckClose = Standard_False;
 
       if (isGoFwd && !VF.IsNull()) {
-	aVRef        = VF;
-	isCheckClose = Standard_True;
+        aVRef        = VF;
+        isCheckClose = Standard_True;
       } else if (!isGoFwd && !VL.IsNull()) {
-	aVRef        = VL;
-	isCheckClose = Standard_True;
+        aVRef        = VL;
+        isCheckClose = Standard_True;
       }
 
 //       if (Index==1 && myCstat!=BRepCheck_NotClosed && 
-// 	  !VF.IsNull() && !F.IsNull()) {
+//       !VF.IsNull() && !F.IsNull()) {
       if (Index==1 && myCstat!=BRepCheck_NotClosed && 
-	  isCheckClose && !F.IsNull()) {
-	ledge.Clear();
-// 	ind = myMapVE.FindIndex(VF);
-	ind = myMapVE.FindIndex(aVRef);
-	for (TopTools_ListIteratorOfListOfShape itlsh(myMapVE(ind));
-	     itlsh.More(); itlsh.Next()) {
-	  const TopoDS_Edge & edg = TopoDS::Edge(itlsh.Value());
-	  orient = edg.Orientation();
-	  if (!theRef.IsSame(edg)) {
-	    for (vte.Init(edg,TopAbs_VERTEX);vte.More(); vte.Next()) {
-	      TopAbs_Orientation vto = vte.Current().Orientation();
-// 	      if (vto == TopAbs_REVERSED && VF.IsSame(vte.Current())) {
-	      if (vto == TopAbs_REVERSED && aVRef.IsSame(vte.Current())) {
-		ledge.Append(edg);
-		break;
-	      }
-	    }
-	  }
-	}
-// 	ChoixUV(VF, theRef, F, ledge);
-	ChoixUV(aVRef, theRef, F, ledge);
-	if (ledge.Extent()==0) {
-	  theOstat = BRepCheck_NotClosed;
-	  if (Update) {
-	    BRepCheck::Add(myMap(myShape),theOstat);
-	  }
-	  return theOstat;
-	}
+        isCheckClose && !F.IsNull()) {
+      ledge.Clear();
+//    ind = myMapVE.FindIndex(VF);
+      ind = myMapVE.FindIndex(aVRef);
+      for (TopTools_ListIteratorOfListOfShape itlsh(myMapVE(ind));
+           itlsh.More(); itlsh.Next()) {
+        const TopoDS_Edge & edg = TopoDS::Edge(itlsh.Value());
+        orient = edg.Orientation();
+        if (!theRef.IsSame(edg)) {
+          for (vte.Init(edg,TopAbs_VERTEX);vte.More(); vte.Next()) {
+            TopAbs_Orientation vto = vte.Current().Orientation();
+//          if (vto == TopAbs_REVERSED && VF.IsSame(vte.Current())) {
+            if (vto == TopAbs_REVERSED && aVRef.IsSame(vte.Current())) {
+              ledge.Append(edg);
+              break;
+            }
+          }
+        }
       }
+//    ChoixUV(VF, theRef, F, ledge);
+      ChoixUV(aVRef, theRef, F, ledge);
+      if (ledge.Extent()==0) {
+        theOstat = BRepCheck_NotClosed;
+        if (Update)
+        {
+          BRepCheck::Add (aStatusList, theOstat);
+        }
+        return theOstat;
+      }
+    }
       // End control closure 2d
 
       Index ++;
     }
   }
-  if (Update) {
-    BRepCheck::Add(myMap(myShape),theOstat);
+  if (Update)
+  {
+    BRepCheck::Add(aStatusList, theOstat);
   }
   return theOstat;
 }
@@ -946,7 +999,12 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 					       TopoDS_Edge& retE2,
 					       const Standard_Boolean Update)
 {
-
+  Handle(BRepCheck_HListOfStatus) aHList;
+  {
+    Standard_Mutex::Sentry aLock(myMutex.get());
+    aHList = myMap (myShape);
+  }
+  BRepCheck_ListOfStatus& aStatusList = *aHList;
 
   Standard_Integer i,j,Nbedges;
   Standard_Real first1,last1,first2,last2, tolint;
@@ -972,9 +1030,11 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   }
   //
   Nbedges=EMap.Extent();
-  if (!Nbedges) {
-    if (Update) {
-      BRepCheck::Add(myMap(myShape),BRepCheck_EmptyWire);
+  if (!Nbedges)
+  {
+    if (Update)
+    {
+      BRepCheck::Add (aStatusList, BRepCheck_EmptyWire);
     }
     return(BRepCheck_EmptyWire);
   }
@@ -987,13 +1047,15 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
     const TopoDS_Edge& E1 = TopoDS::Edge(EMap.FindKey(i));
     if (i == 1) {
       Handle(Geom2d_Curve) pcu = BRep_Tool::CurveOnSurface(E1, F, first1, last1);
-      if (pcu.IsNull()) {
-	retE1=E1;
-	if (Update) {
-	  BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
-	}
-	delete [] tabDom;
-	return(BRepCheck_SelfIntersectingWire);
+      if (pcu.IsNull())
+      {
+        retE1=E1;
+        if (Update)
+        {
+          BRepCheck::Add (aStatusList, BRepCheck_SelfIntersectingWire);
+        }
+        delete [] tabDom;
+        return(BRepCheck_SelfIntersectingWire);
       }
       //
       C1.Load(pcu);
@@ -1025,51 +1087,52 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
       //Standard_Integer nbs = Inter.NbSegments();
       //
       for(Standard_Integer p=1;p<=nbp;p++) {
-	const IntRes2d_IntersectionPoint& IP=Inter.Point(p);
-	const IntRes2d_Transition& Tr1 = IP.TransitionOfFirst();
-	const IntRes2d_Transition& Tr2 = IP.TransitionOfSecond();
-	if(   Tr1.PositionOnCurve() == IntRes2d_Middle
-	   || Tr2.PositionOnCurve() == IntRes2d_Middle) { 
-	  //-- Checking of points with true tolerances (ie Tol in 3d)
-	  //-- If the point of intersection is within the tolearnce of a vertex
-	  //-- this intersection is considered correct (no error)
-	  Standard_Boolean localok = Standard_False;
-	  Standard_Real f,l;
-	  TopLoc_Location L;
-	  const Handle(Geom_Curve) ConS = BRep_Tool::Curve(E1,L,f,l);
-	  if(!ConS.IsNull()) { 
-	    //-- try to test in 3d. (ParamOnSecond gives the same result)
-	    P3d = ConS->Value(IP.ParamOnFirst()); 
-	    P3d.Transform(L.Transformation());
-	    //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 Begin
-	  } 
-	  else {
-	    gp_Pnt2d aP2d  = C1.Value(IP.ParamOnFirst());
-	    P3d = HS->Value(aP2d.X(), aP2d.Y());
-	  }
-	  //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 End
-	  TopExp_Explorer ExplVtx;
-	  for(ExplVtx.Init(E1,TopAbs_VERTEX); 
-	      localok==Standard_False && ExplVtx.More();
-	      ExplVtx.Next()) { 
-	    gp_Pnt p3dvtt;
-	    Standard_Real tolvtt, p3dvttDistanceP3d;
-	    //
-	    const TopoDS_Vertex& vtt = TopoDS::Vertex(ExplVtx.Current());
-	    p3dvtt = BRep_Tool::Pnt(vtt);
-	    tolvtt =  BRep_Tool::Tolerance(vtt);
-	    tolvtt=tolvtt*tolvtt;
-	    p3dvttDistanceP3d=p3dvtt.SquareDistance(P3d);
-	    if(p3dvttDistanceP3d <=  tolvtt) { 
-	      localok=Standard_True;
-	    }
-	  }
-	  if(localok==Standard_False) { 
-	    retE1=E1;
-	    if (Update) {
-	      BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
-	      }
-	    delete [] tabDom;
+        const IntRes2d_IntersectionPoint& IP=Inter.Point(p);
+        const IntRes2d_Transition& Tr1 = IP.TransitionOfFirst();
+        const IntRes2d_Transition& Tr2 = IP.TransitionOfSecond();
+        if(   Tr1.PositionOnCurve() == IntRes2d_Middle
+           || Tr2.PositionOnCurve() == IntRes2d_Middle) {
+          //-- Checking of points with true tolerances (ie Tol in 3d)
+          //-- If the point of intersection is within the tolearnce of a vertex
+          //-- this intersection is considered correct (no error)
+          Standard_Boolean localok = Standard_False;
+          Standard_Real f,l;
+          TopLoc_Location L;
+          const Handle(Geom_Curve) ConS = BRep_Tool::Curve(E1,L,f,l);
+          if(!ConS.IsNull()) {
+            //-- try to test in 3d. (ParamOnSecond gives the same result)
+            P3d = ConS->Value(IP.ParamOnFirst());
+            P3d.Transform(L.Transformation());
+            //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 Begin
+          }
+          else {
+            gp_Pnt2d aP2d  = C1.Value(IP.ParamOnFirst());
+            P3d = HS->Value(aP2d.X(), aP2d.Y());
+          }
+          //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 End
+          TopExp_Explorer ExplVtx;
+          for(ExplVtx.Init(E1,TopAbs_VERTEX);
+              localok==Standard_False && ExplVtx.More();
+              ExplVtx.Next()) {
+            gp_Pnt p3dvtt;
+            Standard_Real tolvtt, p3dvttDistanceP3d;
+            //
+            const TopoDS_Vertex& vtt = TopoDS::Vertex(ExplVtx.Current());
+            p3dvtt = BRep_Tool::Pnt(vtt);
+            tolvtt =  BRep_Tool::Tolerance(vtt);
+            tolvtt=tolvtt*tolvtt;
+            p3dvttDistanceP3d=p3dvtt.SquareDistance(P3d);
+            if(p3dvttDistanceP3d <=  tolvtt) {
+              localok=Standard_True;
+            }
+          }
+          if(localok==Standard_False) {
+            retE1=E1;
+            if (Update)
+            {
+              BRepCheck::Add(aStatusList, BRepCheck_SelfIntersectingWire);
+            }
+            delete [] tabDom;
 #ifdef OCCT_DEBUG
 	    static Standard_Integer numpoint=0;
 	    std::cout<<"point p"<<++numpoint<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<std::endl;std::cout.flush();
@@ -1352,9 +1415,10 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    if(localok==Standard_False)	  { 
 	      retE1=E1;
 	      retE2=E2;
-	      if (Update) {
-		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
-		}
+	      if (Update)
+	      {
+	        BRepCheck::Add (aStatusList, BRepCheck_SelfIntersectingWire);
+	      }
 #ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
 	      std::cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<std::endl;
@@ -1482,8 +1546,9 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    if(localok==Standard_False)	  { 
 	      retE1=E1;
 	      retE2=E2;
-	      if (Update) {
-		BRepCheck::Add(myMap(myShape),BRepCheck_SelfIntersectingWire);
+	      if (Update)
+	      {
+	        BRepCheck::Add (aStatusList, BRepCheck_SelfIntersectingWire);
 	      }
 #ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
@@ -1500,8 +1565,9 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   } //end of for(i = 1; i <= Nbedges; i++)
   //
   delete [] tabDom;
-  if (Update) {
-    BRepCheck::Add(myMap(myShape),BRepCheck_NoError);
+  if (Update)
+  {
+    BRepCheck::Add(aStatusList, BRepCheck_NoError);
   }
   //
   return (BRepCheck_NoError);
@@ -1514,7 +1580,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 
 void BRepCheck_Wire::SetStatus(const BRepCheck_Status theStatus)
 {
-    BRepCheck::Add(myMap(myShape),theStatus);
+    BRepCheck::Add(*myMap(myShape),theStatus);
 }
 
 //=======================================================================

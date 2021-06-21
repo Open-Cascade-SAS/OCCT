@@ -22,14 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <BRepCheck_DataMapOfShapeResult.hxx>
+#include <BRepCheck_IndexedDataMapOfShapeResult.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class Standard_NullObject;
 class Standard_NoSuchObject;
 class TopoDS_Shape;
 class BRepCheck_Result;
-
 
 //! A framework to check the overall
 //! validity of a shape. For a shape to be valid in Open
@@ -44,7 +43,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs a shape validation object defined by the shape S.
   //! <S> is the  shape  to control.  <GeomControls>  If
   //! False   only topological informaions  are checked.
@@ -62,8 +60,13 @@ public:
   //! BRepCheck_InvalidToleranceValue  NYI
   //! For a wire :
   //! BRepCheck_SelfIntersectingWire
-    BRepCheck_Analyzer(const TopoDS_Shape& S, const Standard_Boolean GeomControls = Standard_True);
-  
+  BRepCheck_Analyzer (const TopoDS_Shape& S,
+                      const Standard_Boolean GeomControls = Standard_True,
+                      const Standard_Boolean theIsParallel = Standard_False)
+  {
+    Init (S, GeomControls, theIsParallel);
+  }
+
   //! <S> is the  shape  to control.  <GeomControls>  If
   //! False   only topological informaions  are checked.
   //! The geometricals controls are
@@ -80,8 +83,10 @@ public:
   //! BRepCheck_InvalidTolerance  NYI
   //! For a wire :
   //! BRepCheck_SelfIntersectingWire
-  Standard_EXPORT void Init (const TopoDS_Shape& S, const Standard_Boolean GeomControls = Standard_True);
-  
+  Standard_EXPORT void Init (const TopoDS_Shape& S,
+                             const Standard_Boolean GeomControls = Standard_True,
+                             const Standard_Boolean theIsParallel = Standard_False);
+
   //! <S> is a  subshape of the  original shape. Returns
   //! <STandard_True> if no default has been detected on
   //! <S> and any of its subshape.
@@ -126,40 +131,31 @@ public:
   //! surface of the reference face), this checks that |C(t) - S(P(t))|
   //! is less than or equal to tolerance, where tolerance is the tolerance
   //! value coded on the edge.
-    Standard_Boolean IsValid() const;
-  
-    const Handle(BRepCheck_Result)& Result (const TopoDS_Shape& SubS) const;
+  Standard_Boolean IsValid() const
+  {
+    return IsValid (myShape);
+  }
 
-
-
-
-protected:
-
-
-
-
+  const Handle(BRepCheck_Result)& Result (const TopoDS_Shape& theSubS) const
+  {
+    return myMap.FindFromKey (theSubS);
+  }
 
 private:
 
-  
-  Standard_EXPORT void Put (const TopoDS_Shape& S, const Standard_Boolean Gctrl);
-  
-  Standard_EXPORT void Perform (const TopoDS_Shape& S);
-  
+  Standard_EXPORT void Put (const TopoDS_Shape& S,
+                            const Standard_Boolean Gctrl,
+                            const Standard_Boolean theIsParallel);
+
+  Standard_EXPORT void Perform (Standard_Boolean theIsParallel);
+
   Standard_EXPORT Standard_Boolean ValidSub (const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const;
 
+private:
 
   TopoDS_Shape myShape;
-  BRepCheck_DataMapOfShapeResult myMap;
-
+  BRepCheck_IndexedDataMapOfShapeResult myMap;
 
 };
-
-
-#include <BRepCheck_Analyzer.lxx>
-
-
-
-
 
 #endif // _BRepCheck_Analyzer_HeaderFile

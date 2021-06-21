@@ -1,4 +1,7 @@
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Created on: 1995-12-06
+// Created by: Jacques GOUSSARD
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,10 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef BRepCheck_DataMapOfShapeResult_HeaderFile
+#define BRepCheck_DataMapOfShapeResult_HeaderFile
 
-#ifndef BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus_HeaderFile
-#define BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus_HeaderFile
+#include <TopoDS_Shape.hxx>
+#include <BRepCheck_Result.hxx>
+#include <TopTools_OrientedShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 
-#include <BRepCheck_DataMapOfShapeListOfStatus.hxx>
+typedef NCollection_IndexedDataMap<TopoDS_Shape,Handle(BRepCheck_Result),TopTools_OrientedShapeMapHasher> BRepCheck_IndexedDataMapOfShapeResult;
+
 
 #endif
