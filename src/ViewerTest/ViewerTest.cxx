@@ -3144,6 +3144,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-setsilhouette"
           || anArg == "-outline"
           || anArg == "-outlined"
+          || anArg == "-drawsilhouette"
           || anArg == "-silhouette")
     {
       bool toDrawOutline = true;
