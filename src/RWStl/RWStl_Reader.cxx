@@ -135,6 +135,7 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   OSD_OpenStream (aBuf, theFile, std::ios::in | std::ios::binary);
   if (!aBuf.is_open())
   {
+    Message::SendFail (TCollection_AsciiString("Error: file '") + theFile + "' is not found");
     return Standard_False;
   }
 
