@@ -143,6 +143,10 @@ echo ^</pre^>>> "%aWorkDir%\VERSION.html"
 echo Start building OCCT for %aPlatformAndCompiler%
 echo Start building OCCT for %aPlatformAndCompiler%>> %aLogFile%
 
+echo --->> %aLogFile%
+call emcc --version >> %aLogFile%
+echo --->> %aLogFile%
+
 pushd "%aWorkDir%"
 
 set "aTimeZERO=%TIME%"

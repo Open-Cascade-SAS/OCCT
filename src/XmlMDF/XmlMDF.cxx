@@ -178,6 +178,8 @@ Standard_Boolean XmlMDF::FromTo (const XmlObjMgt_Element&           theElement,
       // check for error
       if (subcount < 0)
         return Standard_False;
+
+      (void )count; // unused but set for debug
       count += subcount;
     }
     //anElem = (const XmlObjMgt_Element &) anElem.getNextSibling();

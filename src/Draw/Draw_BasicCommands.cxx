@@ -453,11 +453,16 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
   di << "Architecture: ARM 32-bit\n";
   #endif
 #elif defined(__EMSCRIPTEN__)
+  di << "Architecture: WASM "
   #if defined(__LP64__)
-  di << "Architecture: WASM 64-bit\n";
+     << "64-bit"
   #else
-  di << "Architecture: WASM 32-bit\n";
+     << "32-bit"
   #endif
+  #if defined(__wasm_simd128__)
+     << " SIMD128"
+  #endif
+     << "\n";
 #else
   di << "Architecture: unrecognized\n";
 #endif
@@ -482,7 +487,13 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
   #include <sys/param.h>
   di << "OS: BSD (BSD = " << BSD << ")\n";
 #elif defined(__EMSCRIPTEN__)
-  di << "OS: WebAssembly (Emscripten SDK " << __EMSCRIPTEN_major__ << "." << __EMSCRIPTEN_minor__ << "." << __EMSCRIPTEN_tiny__ << ")\n";
+  di << "OS: WebAssembly (Emscripten SDK " << __EMSCRIPTEN_major__ << "." << __EMSCRIPTEN_minor__ << "." << __EMSCRIPTEN_tiny__
+  #ifdef __EMSCRIPTEN_PTHREADS__
+     << "; pthreads ON"
+  #else
+     << "; pthreads OFF"
+  #endif
+     << ")\n";
 #else
   di << "OS: unrecognized\n";
 #endif

@@ -39,7 +39,6 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
                                                NCollection_Array1<gp_Pnt>&   theFix)
 {
   Standard_Integer aMaxIter = 15;
-  Standard_Integer j, i2;
   NCollection_Array1<gp_Pnt>   aTabP(1, Max (myNbP, 1)),     aPrevP(1, Max (myNbP, 1));
   NCollection_Array1<gp_Pnt2d> aTabP2d(1,  Max (myNbP2d, 1)), aPrevP2d(1,  Max (myNbP2d, 1));
   Standard_Real aMult = ((theU - theU0) > (theU1 - theU)) ? 1.0: -1.0;
@@ -60,17 +59,18 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
     {
       aCurrDist = 0.0;
 
-      i2 = 1;
-      for (j = 1; j <= myNbP; j++)
+      Standard_Integer i2 = 1;
+      for (Standard_Integer j = 1; j <= myNbP; j++)
       {
         aCurrDist += aTabP(j).Distance(aPrevP(j));
         i2 += 3;
       }
-      for (j = 1; j <= myNbP2d; j++)
+      for (Standard_Integer j = 1; j <= myNbP2d; j++)
       {
         aCurrDist += aTabP2d(j).Distance(aPrevP2d(j));
         i2 += 2;
       }
+      (void )i2; // unused but set for debug
 
       // from the third iteration
       if (anIter > 2 && aCurrDist / aPrevDist > 10.0)

@@ -209,36 +209,38 @@ static Standard_Integer transform(Draw_Interpretor& ,Standard_Integer n,const ch
 
 static Standard_Integer deform(Draw_Interpretor& di,Standard_Integer n,const char** a)
 {
-  if (n <= 1) return 1;
-  
-  Standard_Integer last = n;
-  
+  if (n != 6)
+  {
+    di << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
   gp_Trsf T;
   gp_GTrsf GT(T);
-  
+
 //  gp_Mat rot(Draw::Atof(a[last-3]),0,0,0,Draw::Atof(a[last-2]),0,0,0,Draw::Atof(a[last-1]));
   gp_Mat rot(Draw::Atof(a[3]),0,0,0,Draw::Atof(a[4]),0,0,0,Draw::Atof(a[5]));
   GT.SetVectorialPart(rot);
-  last -= 3;
   BRepBuilderAPI_GTransform gtrf(GT);
   BRepBuilderAPI_NurbsConvert nbscv;
+  //  Standard_Integer last = n - 3;
   //  for (Standard_Integer i = 1; i < last; i++) {
-  //    TopoDS_Shape S = DBRep::Get(a[i]);
-  TopoDS_Shape S = DBRep::Get(a[2]);    
-  if (S.IsNull()) {
-    //std::cout << a[2] << " is not a valid shape" << std::endl;
-    di << a[2] << " is not a valid shape\n";
+  //    TopoDS_Shape aShape = DBRep::Get(a[i]);
+  TopoDS_Shape aShape = DBRep::Get(a[2]);
+  if (aShape.IsNull())
+  {
+    di << "Syntax error: '" << a[2] << "' is not a valid shape";
+    return 1;
   }
-  else {
-    gtrf.Perform(S);
-    if (gtrf.IsDone()){
-      DBRep::Set(a[1],gtrf.Shape());
-    }
-    else {
-      return 1;
-    }
+
+  gtrf.Perform (aShape);
+  if (!gtrf.IsDone())
+  {
+    di << "Error: transformation failed";
+    return 1;
   }
-  
+
+  DBRep::Set (a[1], gtrf.Shape());
   return 0;
 }
 

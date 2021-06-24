@@ -223,7 +223,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
     Standard_Integer aNbFacePrimitives = 0;
     Standard_Integer aNbVolmPrimitives = 0;
     Standard_Integer aNbEdgePrimitives = 0;
-    Standard_Integer aNbLinkPrimitives = 0;
+    //Standard_Integer aNbLinkPrimitives = 0;
 
     for (it.Reset(); it.More(); it.Next())
     {
@@ -247,7 +247,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       }
       else if (aType == MeshVS_ET_Link)
       {
-        aNbLinkPrimitives += aNbNodes - 1; // add link segments
+        //aNbLinkPrimitives += aNbNodes - 1; // add link segments
       }
       else if (aType == MeshVS_ET_Face)
       {

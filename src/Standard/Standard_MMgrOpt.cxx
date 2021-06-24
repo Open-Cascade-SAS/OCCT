@@ -538,6 +538,8 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )
       aNextPool = * (Standard_Size **) aNextPool; // get next pool
     }
     const Standard_Integer iLast = iPool - 1;
+
+    (void )nPool; // unused but set for debug
     nPool += iPool;
 
     // scan free blocks, find corresponding pools and increment
@@ -631,6 +633,7 @@ Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )
     aPrevPool = (aFreePools[iLastFree] == iLast
                  ? aPrev
                  : aPools[iLast]);
+    (void )nPoolFreed; // unused but set for debug
     nPoolFreed += iLastFree + 1;
   }
 

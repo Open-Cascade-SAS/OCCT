@@ -1544,7 +1544,9 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
 	{ Standard_Integer NbPoint= (Standard_Integer )( NTPoint*(myLinCont->Value(i)->Length())/LenT);
 	  if (NbPoint<10)
 	    NbPoint=10;
-	  Npt+=NbPoint;
+
+	  (void )Npt; // unused but set for debug
+	  Npt += NbPoint;
 	}
       // Table containing a cloud of points for calculation of the plane
       Handle(TColgp_HArray1OfPnt) Pts = new TColgp_HArray1OfPnt(1,20*NTLinCont+NTPntCont);
@@ -2418,8 +2420,8 @@ VerifSurface(const Standard_Integer NbBoucle)
 
       EcartContraintesMil (i,tdist,tang,tcourb);
 
-      Standard_Real diffDistMax=0,SdiffDist=0;
-      Standard_Real diffAngMax=0,SdiffAng=0;
+      Standard_Real diffDistMax=0, diffAngMax=0;
+      //Standard_Real SdiffDist=0, SdiffAng=0;
       Standard_Integer NdiffDist=0,NdiffAng=0;
 
    
@@ -2445,7 +2447,7 @@ VerifSurface(const Standard_Integer NbBoucle)
             diffDist = diffDist/LinCont->G0Criterion(U);
 	    if (diffDist>diffDistMax)
 	      diffDistMax = diffDist;
-	    SdiffDist+=diffDist;
+	    //SdiffDist+=diffDist;
 	    NdiffDist++;
 #ifdef DRAW
 	    if ((Affich) && (NbBoucle == myNbIter)) {
@@ -2477,7 +2479,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 	      diffAng=diffAng/myLinCont->Value(i)->G1Criterion(U);
 	      if (diffAng>diffAngMax)
 		diffAngMax = diffAng;
-	      SdiffAng+=diffAng;
+	      //SdiffAng+=diffAng;
 	      NdiffAng++;
 #ifdef DRAW
 	      if ((Affich) && (NbBoucle == myNbIter)) {

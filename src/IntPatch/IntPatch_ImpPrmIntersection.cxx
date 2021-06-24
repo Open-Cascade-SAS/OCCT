@@ -1975,7 +1975,8 @@ static void ToSmooth( const Handle(IntSurf_LineOn2S)& Line,
 
   Standard_Integer startp = (IsFirst) ? 2 : (Line->NbPoints() - NbTestPnts - 2);
   Standard_Integer ip = 0;
-  Standard_Real Uc = 0., Vc = 0., Un = 0., Vn = 0., DDU = 0., DDV = 0.;
+  Standard_Real Uc = 0., Vc = 0., Un = 0., Vn = 0., DDU = 0.;
+  //Standard_Real DDV = 0.;
 
   for(ip = startp; ip <= NbTestPnts; ip++) {
     if(IsReversed) {
@@ -1987,7 +1988,7 @@ static void ToSmooth( const Handle(IntSurf_LineOn2S)& Line,
       Line->Value(ip+1).ParametersOnS1(Un,Vn);
     }
     DDU += fabs(fabs(Uc)-fabs(Un));
-    DDV += fabs(fabs(Vc)-fabs(Vn));
+    //DDV += fabs(fabs(Vc)-fabs(Vn));
 
     if(ip > startp) {
       Standard_Real DP = Line->Value(ip).Value().Distance(Line->Value(ip-1).Value());
@@ -1996,7 +1997,7 @@ static void ToSmooth( const Handle(IntSurf_LineOn2S)& Line,
   }
 
   DDU /= (Standard_Real) NbTestPnts + 1;
-  DDV /= (Standard_Real) NbTestPnts + 1;
+  //DDV /= (Standard_Real) NbTestPnts + 1;
 
   D3D /= (Standard_Real) NbTestPnts + 1;
 

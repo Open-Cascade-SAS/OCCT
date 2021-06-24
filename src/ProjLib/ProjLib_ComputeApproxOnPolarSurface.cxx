@@ -808,15 +808,12 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
 	return Handle(Geom2d_BSplineCurve)();
       }
       
-
-
-      Standard_Real iinter, ip1inter;
-      Standard_Integer nbK2d, deg;
-      nbK2d = BSC2d->NbKnots(); deg = BSC2d->Degree();
+      Standard_Integer nbK2d = BSC2d->NbKnots();
+      Standard_Integer deg = BSC2d->Degree();
 
       for(i = 2;i <= nbInter;i++) {
-	iinter = Inter.Value(i);
-	ip1inter = Inter.Value(i+1);
+	Standard_Real iinter = Inter.Value(i);
+	Standard_Real ip1inter = Inter.Value(i+1);
 	// general case 3d
 	GTC->SetTrim(iinter, ip1inter);
 	AHC = new GeomAdaptor_Curve(GTC);
@@ -852,6 +849,8 @@ Handle(Geom2d_BSplineCurve) ProjLib_ComputeApproxOnPolarSurface::Perform
 	    return Handle(Geom2d_BSplineCurve)();
 	  }
 	  LOfBSpline2d.Append(BSC2d);
+
+	  (void )nbK2d; // unused but set for debug
 	  nbK2d += BSC2d->NbKnots() - 1;
 	  deg = Max(deg, BSC2d->Degree());
 	}

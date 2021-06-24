@@ -278,6 +278,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
       else if(Pos2 == IntRes2d_End) PosSegment|=8;
     }
   }
+  (void )PosSegment;
 }
 //======================================================================
 

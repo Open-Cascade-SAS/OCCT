@@ -928,6 +928,8 @@ int macrmsg_(const char *,//crout,
 /*  READING OF THE LANGUAGE : */
     /* Parameter adjustments */
   ct -= ct_len;
+  (void )ct; // unused
+
   --xt;
   --it;
   
