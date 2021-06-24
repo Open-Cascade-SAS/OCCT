@@ -31,6 +31,7 @@
 #include <TDF_Data.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx> 
+#include <PCDM_ReaderFilter.hxx>
 
 #include <OSD_Path.hxx>
 #include <OSD_OpenFile.hxx>
@@ -128,43 +129,73 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
 {   
   if (nb >= 3) {
     TCollection_ExtendedString path (a[1], Standard_True); 
+    Standard_CString DocName = a[2];
     Handle(TDocStd_Application) A = DDocStd::GetApplication();
     Handle(TDocStd_Document) D;
-    Standard_Integer insession = A->IsInSession(path);
-    if (insession > 0) {  
-      di <<"document " << insession << "  is already in session\n";
-      return 0;
-    }
     PCDM_ReaderStatus theStatus;
 
     Standard_Boolean anUseStream = Standard_False;
+    Handle(PCDM_ReaderFilter) aFilter = new PCDM_ReaderFilter;
     for ( Standard_Integer i = 3; i < nb; i++ )
     {
-      if (!strcmp (a[i], "-stream"))
+      TCollection_AsciiString anArg(a[i]);
+      if (anArg == "-append")
+      {
+        aFilter->Mode() = PCDM_ReaderFilter::AppendMode_Protect;
+      }
+      else if (anArg == "-overwrite")
+      {
+        aFilter->Mode() = PCDM_ReaderFilter::AppendMode_Overwrite;
+      }
+      else if (anArg == "-stream")
       {
         di << "standard SEEKABLE stream is used\n";
         anUseStream = Standard_True;
-        break;
+      }
+      else if (anArg.StartsWith("-skip"))
+      {
+        TCollection_AsciiString anAttrType = anArg.SubString(6, anArg.Length());
+        aFilter->AddSkipped(anAttrType);
+      }
+      else if (anArg.StartsWith("-read"))
+      {
+        TCollection_AsciiString aValue = anArg.SubString(6, anArg.Length());
+        if (aValue.Value(1) == '0') // path
+        {
+          aFilter->AddPath(aValue);
+        }
+        else // attribute to read
+        {
+          aFilter->AddRead(aValue);
+        }
       }
     }
 
+    if (aFilter->IsAppendMode() && !DDocStd::GetDocument(DocName, D, Standard_False))
+    {
+      di << "for append mode document " << DocName << " must be already created\n";
+      return 1;
+    }
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
       std::ifstream aFileStream;
       OSD_OpenStream (aFileStream, path, std::ios::in | std::ios::binary);
 
-      theStatus = A->Open (aFileStream, D, aProgress->Start());
+      theStatus = A->Open (aFileStream, D, aFilter, aProgress->Start());
     }
     else
     {
-      theStatus = A->Open (path, D, aProgress->Start());
+      theStatus = A->Open (path, D, aFilter , aProgress->Start());
     }
     if (theStatus == PCDM_RS_OK && !D.IsNull())
     {
-      Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
-      TDataStd_Name::Set(D->GetData()->Root(),a[2]);
-      Draw::Set(a[2],DD);
+      if (!aFilter->IsAppendMode())
+      {
+        Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument (D);
+        TDataStd_Name::Set (D->GetData()->Root(), DocName);
+        Draw::Set (DocName, DD);
+      }
       return 0; 
     } 
     else
@@ -579,7 +610,13 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  __FILE__, DDocStd_NewDocument, g);  
 
   theCommands.Add("Open",
-		  "Open path docname [-stream]",
+		  "Open path docname [-stream] [-skipAttribute] [-readAttribute] [-readPath] [-append|-overwrite]"
+       "\n\t\t The options are:"
+       "\n\t\t   -stream : opens path as a stream"
+       "\n\t\t   -skipAttribute : class name of the attribute to skip during open, for example -skipTDF_Reference"
+       "\n\t\t   -readAttribute : class name of the attribute to read only during open, for example -readTDataStd_Name loads only such attributes"
+       "\n\t\t   -append : to read file into already existing document once again, append new attributes and don't touch existing"
+       "\n\t\t   -overwrite : to read file into already existing document once again, overwriting existing attributes",
 		  __FILE__, DDocStd_Open, g);   
 
   theCommands.Add("SaveAs",

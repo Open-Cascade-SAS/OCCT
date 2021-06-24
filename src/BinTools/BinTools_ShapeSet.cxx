@@ -54,37 +54,13 @@
 #include <Message_ProgressRange.hxx>
 
 #include <string.h>
-//#define MDTV_DEB 1
 
-const Standard_CString BinTools_ShapeSet::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] =
-{
-  "",
-  "Open CASCADE Topology V1 (c)",
-  "Open CASCADE Topology V2 (c)",
-  "Open CASCADE Topology V3 (c)",
-  "Open CASCADE Topology V4, (c) Open Cascade"
-};
-
-//=======================================================================
-//function : operator << (gp_Pnt)
-//purpose  : 
-//=======================================================================
-
-static Standard_OStream& operator <<(Standard_OStream& OS, const gp_Pnt P)
-{
-  BinTools::PutReal(OS, P.X());
-  BinTools::PutReal(OS, P.Y());
-  BinTools::PutReal(OS, P.Z());
-  return OS;
-}
 //=======================================================================
 //function : BinTools_ShapeSet
 //purpose  :
 //=======================================================================
 BinTools_ShapeSet::BinTools_ShapeSet ()
-: myFormatNb (BinTools_FormatVersion_CURRENT),
-  myWithTriangles (Standard_False),
-  myWithNormals(Standard_False)
+  : BinTools_ShapeSetBase ()
 {}
 
 //=======================================================================
@@ -94,28 +70,6 @@ BinTools_ShapeSet::BinTools_ShapeSet ()
 
 BinTools_ShapeSet::~BinTools_ShapeSet()
 {}
-
-//=======================================================================
-//function : SetFormatNb
-//purpose  : 
-//=======================================================================
-void BinTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
-{
-  Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_LOWER &&
-                         theFormatNb <= BinTools_FormatVersion_UPPER,
-    "Error: unsupported BinTools version.", );
-
-  myFormatNb = theFormatNb;
-}
-
-//=======================================================================
-//function : FormatNb
-//purpose  : 
-//=======================================================================
-Standard_Integer BinTools_ShapeSet::FormatNb() const
-{
-  return myFormatNb;
-}
 
 //=======================================================================
 //function : Clear
@@ -139,18 +93,18 @@ void  BinTools_ShapeSet::Clear()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer  BinTools_ShapeSet::Add(const TopoDS_Shape& theShape)
+Standard_Integer BinTools_ShapeSet::Add (const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull()) return 0;
   myLocations.Add(theShape.Location());
   TopoDS_Shape aS2 = theShape;
-  aS2.Location(TopLoc_Location());
-  Standard_Integer anIndex = myShapes.FindIndex(aS2);
+  aS2.Location (TopLoc_Location());
+  Standard_Integer anIndex = myShapes.FindIndex (aS2);
   if (anIndex == 0) {
-    AddGeometry(aS2);
-    for (TopoDS_Iterator its(aS2,Standard_False,Standard_False);its.More(); its.Next())
-      Add(its.Value());
-    anIndex = myShapes.Add(aS2);
+    AddShape  (aS2);
+    for (TopoDS_Iterator its (aS2, Standard_False, Standard_False); its.More(); its.Next())
+      Add (its.Value());
+    anIndex = myShapes.Add (aS2);
   }
   return anIndex;
 }
@@ -161,9 +115,9 @@ Standard_Integer  BinTools_ShapeSet::Add(const TopoDS_Shape& theShape)
 //purpose  : 
 //=======================================================================
 
-const TopoDS_Shape&  BinTools_ShapeSet::Shape(const Standard_Integer theIndx)const 
+const TopoDS_Shape& BinTools_ShapeSet::Shape (const Standard_Integer theIndx)
 {
-  return myShapes(theIndx);
+  return myShapes (theIndx);
 }
 
 //=======================================================================
@@ -171,9 +125,9 @@ const TopoDS_Shape&  BinTools_ShapeSet::Shape(const Standard_Integer theIndx)con
 //purpose  : 
 //=======================================================================
 
-Standard_Integer BinTools_ShapeSet::Index(const TopoDS_Shape& theShape) const
+Standard_Integer BinTools_ShapeSet::Index (const TopoDS_Shape& theShape) const
 {
-  return myShapes.FindIndex(theShape);
+  return myShapes.FindIndex (theShape);
 }
 
 //=======================================================================
@@ -181,7 +135,7 @@ Standard_Integer BinTools_ShapeSet::Index(const TopoDS_Shape& theShape) const
 //purpose  : 
 //=======================================================================
 
-const BinTools_LocationSet&  BinTools_ShapeSet::Locations()const 
+const BinTools_LocationSet&  BinTools_ShapeSet::Locations() const 
 {
   return myLocations;
 }
@@ -202,7 +156,7 @@ BinTools_LocationSet&  BinTools_ShapeSet::ChangeLocations()
 //purpose  : 
 //=======================================================================
 
-void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
+void BinTools_ShapeSet::AddShape (const TopoDS_Shape& S)
 {
   // Add the geometry
   
@@ -259,7 +213,7 @@ void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
         mySurfaces.Add(CR->Surface2());
         ChangeLocations().Add(CR->Location2());
       }
-      else if (myWithTriangles) { 
+      else if (IsWithTriangles()) { 
         if (CR->IsPolygon3D()) {
           if (!CR->Polygon3D().IsNull()) {
             myPolygons3D.Add(CR->Polygon3D());
@@ -292,7 +246,7 @@ void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
   else if (S.ShapeType() == TopAbs_FACE) {
 
     // Add the surface geometry
-    Standard_Boolean needNormals(myWithNormals);
+    Standard_Boolean needNormals (IsWithNormals());
     Handle(BRep_TFace) TF = Handle(BRep_TFace)::DownCast(S.TShape());
     if (!TF->Surface().IsNull())
     {
@@ -302,8 +256,7 @@ void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
     {
       needNormals = Standard_True;
     }
-    if (myWithTriangles
-     || TF->Surface().IsNull())
+    if (IsWithTriangles() || TF->Surface().IsNull())
     {
       Handle(Poly_Triangulation) Tr = TF->Triangulation();
       if (!Tr.IsNull()) myTriangulations.Add(Tr, needNormals);
@@ -346,10 +299,10 @@ void  BinTools_ShapeSet::WriteGeometry (Standard_OStream& OS,
 //=======================================================================
 
 void  BinTools_ShapeSet::Write (Standard_OStream& OS,
-                                const Message_ProgressRange& theRange)const
+                                const Message_ProgressRange& theRange)
 {
   // write the copyright
-  OS << "\n" << THE_ASCII_VERSIONS[myFormatNb] << "\n";
+  OS << "\n" << THE_ASCII_VERSIONS[FormatNb()] << "\n";
 
   //-----------------------------------------
   // write the locations
@@ -378,13 +331,13 @@ void  BinTools_ShapeSet::Write (Standard_OStream& OS,
   // subshapes are written first
   for (i = 1; i <= nbShapes && aPSinner.More(); i++, aPSinner.Next()) {
 
-    const TopoDS_Shape& S = myShapes(i);
+    const TopoDS_Shape& S = myShapes (i);
     
     // Type
     OS << (Standard_Byte)S.ShapeType();
 
     // Geometry
-    WriteGeometry(S,OS);
+    WriteShape (S, OS);
 
     // Flags
     BinTools::PutBool(OS, S.Free()? 1:0);
@@ -410,11 +363,9 @@ void  BinTools_ShapeSet::Write (Standard_OStream& OS,
 //function : Read
 //purpose  : 
 //=======================================================================
-
 void  BinTools_ShapeSet::Read (Standard_IStream& IS,
                                const Message_ProgressRange& theRange)
 {
-
   Clear();
 
   // Check the version
@@ -454,7 +405,6 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
   //-----------------------------------------
   // read the locations
   //-----------------------------------------
-
   myLocations.Read(IS);
   //-----------------------------------------
   // read the geometry
@@ -479,54 +429,13 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
   IS >> nbShapes;
   IS.get();//remove lf 
   Message_ProgressScope aPSinner(aPSouter.Next(), "Reading Shapes", nbShapes);
-  for (int i = 1; i <= nbShapes && aPSinner.More(); i++, aPSinner.Next()) {
-
+  for (int i = 1; i <= nbShapes && aPSinner.More(); i++, aPSinner.Next())
+  {
     TopoDS_Shape S;
-    
-    //Read type and create empty shape.
-
-    TopAbs_ShapeEnum T = (TopAbs_ShapeEnum) IS.get();
-
-    ReadGeometry(T,IS,S);
-    
-    // Set the flags
-    Standard_Boolean aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv;
-    BinTools::GetBool(IS, aFree);
-    BinTools::GetBool(IS, aMod);
-    BinTools::GetBool(IS, aChecked);
-    BinTools::GetBool(IS, anOrient);
-    BinTools::GetBool(IS, aClosed);
-    BinTools::GetBool(IS, anInf);
-    BinTools::GetBool(IS, aConv);
-
-    // sub-shapes
-    TopoDS_Shape SS;
-    do {
-      Read(SS,IS,nbShapes);
-      if (!SS.IsNull())
-	AddShapes(S,SS);
-    } while(!SS.IsNull());
-
-    S.Free(aFree);
-    S.Modified(aMod);
-    if (myFormatNb != BinTools_FormatVersion_VERSION_2
-     && myFormatNb != BinTools_FormatVersion_VERSION_3)
-    {
-      aChecked = false; // force check at reading
-    }
-    S.Checked (aChecked);
-    S.Orientable(anOrient);
-    S.Closed    (aClosed);
-    S.Infinite  (anInf);
-    S.Convex    (aConv);
-    // check
-
-    if (myFormatNb == BinTools_FormatVersion_VERSION_1)
-      if(T == TopAbs_FACE) {
-	const TopoDS_Face& F = TopoDS::Face(S);
-	BRepTools::Update(F);
-      }
-    myShapes.Add(S);
+    TopAbs_ShapeEnum T = (TopAbs_ShapeEnum)IS.get();
+    ReadShape (T, IS, S);
+    ReadFlagsAndSubs (S, T, IS, nbShapes);
+    myShapes.Add (S);
   }
 }
 
@@ -536,7 +445,7 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
 //=======================================================================
 
 void  BinTools_ShapeSet::Write (const TopoDS_Shape& S, 
-                                Standard_OStream& OS)const
+                                Standard_OStream& OS)
 {
   if (S.IsNull()) 
 
@@ -544,29 +453,75 @@ void  BinTools_ShapeSet::Write (const TopoDS_Shape& S,
   else {    
 // {TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL} 
     OS << (Standard_Byte) S.Orientation();
-    BinTools::PutInteger(OS, myShapes.Extent() - myShapes.FindIndex(S.Located(TopLoc_Location())) + 1);
-    BinTools::PutInteger(OS, Locations().Index(S.Location()));
+    BinTools::PutInteger (OS, myShapes.Extent() - myShapes.FindIndex (S.Located (TopLoc_Location())) + 1);
+    BinTools::PutInteger (OS, Locations().Index (S.Location()));
   }    
 }
 
 //=======================================================================
-//function : Read
+//function : ReadFlagsAndSubs
 //purpose  : 
 //=======================================================================
 
-void  BinTools_ShapeSet::Read (TopoDS_Shape& S, Standard_IStream& IS,
-                               const Standard_Integer nbshapes)const 
+void BinTools_ShapeSet::ReadFlagsAndSubs(TopoDS_Shape& S, const TopAbs_ShapeEnum T,
+  Standard_IStream& IS, const Standard_Integer nbShapes)
+{
+  // Set the flags
+  Standard_Boolean aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv;
+  BinTools::GetBool(IS, aFree);
+  BinTools::GetBool(IS, aMod);
+  BinTools::GetBool(IS, aChecked);
+  BinTools::GetBool(IS, anOrient);
+  BinTools::GetBool(IS, aClosed);
+  BinTools::GetBool(IS, anInf);
+  BinTools::GetBool(IS, aConv);
+
+  // sub-shapes
+  TopoDS_Shape SS;
+  do {
+    ReadSubs(SS, IS, nbShapes);
+    if (!SS.IsNull())
+      AddShapes(S, SS);
+  } while (!SS.IsNull());
+
+  S.Free(aFree);
+  S.Modified(aMod);
+  if (FormatNb() != BinTools_FormatVersion_VERSION_2 &&
+      FormatNb() != BinTools_FormatVersion_VERSION_3)
+  {
+    aChecked = false; // force check at reading
+  }
+  S.Checked (aChecked);
+  S.Orientable (anOrient);
+  S.Closed (aClosed);
+  S.Infinite (anInf);
+  S.Convex (aConv);
+  // check
+
+  if (FormatNb() == BinTools_FormatVersion_VERSION_1)
+    if (T == TopAbs_FACE) {
+      const TopoDS_Face& F = TopoDS::Face(S);
+      BRepTools::Update(F);
+    }
+}
+
+//=======================================================================
+//function : ReadSubs
+//purpose  : 
+//=======================================================================
+void BinTools_ShapeSet::ReadSubs(TopoDS_Shape& S, Standard_IStream& IS,
+                                 const Standard_Integer nbshapes)
 {
   Standard_Character aChar = '\0';
   IS >> aChar;
-  if(aChar == '*')
+  if (aChar == '*')
     S = TopoDS_Shape();
   else {
     TopAbs_Orientation anOrient;
     anOrient = (TopAbs_Orientation)aChar;
     Standard_Integer anIndx;
     BinTools::GetInteger(IS, anIndx);
-    S = myShapes(nbshapes - anIndx + 1);
+    S = Shape (nbshapes - anIndx + 1);
     S.Orientation(anOrient);
 
     Standard_Integer l;
@@ -580,25 +535,31 @@ void  BinTools_ShapeSet::Read (TopoDS_Shape& S, Standard_IStream& IS,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_ShapeSet::ReadGeometry (Standard_IStream& IS,
-                                       const Message_ProgressRange& theRange)
+void BinTools_ShapeSet::ReadGeometry (Standard_IStream& IS,
+                                      const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, "Reading geomentry", 6);
+
+  Message_ProgressScope aPS(theRange, "Reading geometry", 6);
   myCurves2d.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
+
   myCurves.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
+
   ReadPolygon3D(IS, aPS.Next());
   if (!aPS.More())
     return;
+
   ReadPolygonOnTriangulation(IS, aPS.Next());
   if (!aPS.More())
     return;
+
   mySurfaces.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
+
   ReadTriangulation(IS, aPS.Next());
 }
 
@@ -607,8 +568,8 @@ void  BinTools_ShapeSet::ReadGeometry (Standard_IStream& IS,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S, 
-                                        Standard_OStream&   OS)const 
+void BinTools_ShapeSet::WriteShape (const TopoDS_Shape& S, 
+                                    Standard_OStream&   OS) const 
 {
 // Write the geometry
   try {
@@ -714,8 +675,8 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
 	  BinTools::PutReal(OS, last);
 
         // Write UV Points for higher performance
-	  if (myFormatNb == BinTools_FormatVersion_VERSION_2
-	   || myFormatNb == BinTools_FormatVersion_VERSION_3)
+	  if (FormatNb() == BinTools_FormatVersion_VERSION_2
+	   || FormatNb() == BinTools_FormatVersion_VERSION_3)
 	    {
 	      gp_Pnt2d Pf,Pl;
 	      if (CR->IsCurveOnClosedSurface()) {
@@ -743,7 +704,7 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
 	  
 	}
 
-	else if (myWithTriangles) { 
+	else if (IsWithTriangles()) { 
 	  if (CR->IsPolygon3D()) {
 	    Handle(BRep_Polygon3D) GC = Handle(BRep_Polygon3D)::DownCast(itrc.Value());
 	    if (!GC->Polygon3D().IsNull()) {
@@ -793,8 +754,7 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
                                : 0);
       BinTools::PutInteger (OS, Locations().Index (TF->Location()));
 
-      if (myWithTriangles
-       || TF->Surface().IsNull())
+      if (IsWithTriangles() || TF->Surface().IsNull())
       {
 	if (!(TF->Triangulation()).IsNull()) {
 	  OS << (Standard_Byte) 2;
@@ -815,308 +775,307 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
 }
 
 //=======================================================================
-//function : ReadGeometry
+//function : ReadShape
 //purpose  : 
 //=======================================================================
 
-void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T, 
-                                       Standard_IStream&      IS, 
-                                       TopoDS_Shape&          S)
+void  BinTools_ShapeSet::ReadShape (const TopAbs_ShapeEnum T,
+                                    Standard_IStream&      IS,
+                                    TopoDS_Shape&          S)
 {
   // Read the geometry
 
-  Standard_Integer val, c,pc,pc2 = 0,s,s2,l,l2,t, pt, pt2 = 0;
-  Standard_Real tol,X,Y,Z,first,last,p1 = 0.,p2;
-  Standard_Real PfX,PfY,PlX,PlY;
+  Standard_Integer val, c, pc, pc2 = 0, s, s2, l, l2, t, pt, pt2 = 0;
+  Standard_Real tol, X, Y, Z, first, last, p1 = 0., p2;
+  Standard_Real PfX, PfY, PlX, PlY;
   gp_Pnt2d aPf, aPl;
   Standard_Boolean closed, bval;
   GeomAbs_Shape reg = GeomAbs_C0;
   try {
     OCC_CATCH_SIGNALS
-    switch (T) {
+      switch (T) {
 
 
-    //---------
-    // vertex
-    //---------
+        //---------
+        // vertex
+        //---------
 
-    case TopAbs_VERTEX :
+      case TopAbs_VERTEX:
       {
-//       Standard_Integer aPos = IS.tellg();      
-//       std::cout << "\nPOS = " << aPos << std::endl;
-	TopoDS_Vertex& V = TopoDS::Vertex(S);
+        TopoDS_Vertex& V = TopoDS::Vertex(S);
 
-      // Read the point geometry
-	BinTools::GetReal(IS, tol);
-	BinTools::GetReal(IS, X);
-	BinTools::GetReal(IS, Y);
-	BinTools::GetReal(IS, Z);
-	gp_Pnt aPnt (X, Y, Z);
-	myBuilder.MakeVertex (V, aPnt, tol);
-	Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V.TShape());
+        // Read the point geometry
+        BinTools::GetReal(IS, tol);
+        BinTools::GetReal(IS, X);
+        BinTools::GetReal(IS, Y);
+        BinTools::GetReal(IS, Z);
+        gp_Pnt aPnt(X, Y, Z);
+        myBuilder.MakeVertex(V, aPnt, tol);
+        Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V.TShape());
 
-	BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
-	TopLoc_Location L;
-	do {
-	  if(myFormatNb == BinTools_FormatVersion_VERSION_3) {
-	    val = (Standard_Integer)IS.get();//case {0|1|2|3}
-	    if (val > 0 && val <= 3) 
-	      BinTools::GetReal(IS, p1); 
-	  } else {
-        std::streampos aPos = IS.tellg();
-	    BinTools::GetReal(IS, p1); 	    
-	    val = (Standard_Integer)IS.get();//case {0|1|2|3}
+        BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
+        TopLoc_Location L;
+        do {
+          if (FormatNb() == BinTools_FormatVersion_VERSION_3) {
+            val = (Standard_Integer)IS.get();//case {0|1|2|3}
+            if (val > 0 && val <= 3)
+              BinTools::GetReal(IS, p1);
+          }
+          else {
+            std::streampos aPos = IS.tellg();
+            BinTools::GetReal(IS, p1);
+            val = (Standard_Integer)IS.get();//case {0|1|2|3}
 #ifdef OCCT_DEBUG
-	    std::cout << "\nVal = " << val <<std::endl;   
+            std::cout << "\nVal = " << val << std::endl;
 #endif	  
-	    if(val != 1 && val !=2 && val !=3){
-	      IS.seekg(aPos);
-	      val = (Standard_Integer)IS.get();
-	      if (val > 0 && val <= 3) 
-		BinTools::GetReal(IS, p1);
-	    }
-	  }
-	  Handle(BRep_PointRepresentation) PR;
-	  switch (val) {
-	  case 0 :
-	    break;
-	    
-	  case 1 :
-	    {
-	      BinTools::GetInteger(IS, c);
-	      if (myCurves.Curve(c).IsNull())
-		break;
-	      Handle(BRep_PointOnCurve) POC =
-		new BRep_PointOnCurve(p1,
-				      myCurves.Curve(c),
-				      L);
-	      PR = POC;
-	    }
-	    break;
-	    
-	  case 2 :
-	    {
-	      BinTools::GetInteger(IS, pc);
-	      BinTools::GetInteger(IS, s);
-	      if (myCurves2d.Curve2d(pc).IsNull() ||
-		  mySurfaces.Surface(s).IsNull())
-		break;
-	      
-	      Handle(BRep_PointOnCurveOnSurface) POC =
-		new BRep_PointOnCurveOnSurface(p1,
-					       myCurves2d.Curve2d(pc),
-					       mySurfaces.Surface(s),
-					       L);
-	      PR = POC;
-	    }
-	    break;
-	    
-	  case 3 :
-	    {
-	      BinTools::GetReal(IS, p2);
-	      BinTools::GetInteger(IS, s);
-	      if (mySurfaces.Surface(s).IsNull())
-		break;
-	      
-	      Handle(BRep_PointOnSurface) POC =
-		new BRep_PointOnSurface(p1,p2,
-					mySurfaces.Surface(s),
-					L);
-	      PR = POC;
-	    }
-	    break;
-	    
-	  default:
-	    {
-              Standard_SStream aMsg;
-	      aMsg << "BinTools_SurfaceSet::ReadGeometry: UnExpected BRep_PointRepresentation = "<< val <<std::endl;
-	      throw Standard_Failure(aMsg.str().c_str());
-	      }
-	  }
-	  
-	  if (val > 0) {
-	    BinTools::GetInteger(IS, l);//Locations index
-	    
-	    if (!PR.IsNull()) {
-	      PR->Location(Locations().Location(l));
-	      lpr.Append(PR);
-	    }
-	  }
-	} while (val > 0);
+            if (val != 1 && val != 2 && val != 3) {
+              IS.seekg(aPos);
+              val = (Standard_Integer)IS.get();
+              if (val > 0 && val <= 3)
+                BinTools::GetReal(IS, p1);
+            }
+          }
+          Handle(BRep_PointRepresentation) PR;
+          switch (val) {
+          case 0:
+            break;
+
+          case 1:
+          {
+            BinTools::GetInteger(IS, c);
+            if (myCurves.Curve(c).IsNull())
+              break;
+            Handle(BRep_PointOnCurve) POC =
+              new BRep_PointOnCurve(p1,
+                myCurves.Curve(c),
+                L);
+            PR = POC;
+          }
+          break;
+
+          case 2:
+          {
+            BinTools::GetInteger(IS, pc);
+            BinTools::GetInteger(IS, s);
+            if (myCurves2d.Curve2d(pc).IsNull() ||
+              mySurfaces.Surface(s).IsNull())
+              break;
+
+            Handle(BRep_PointOnCurveOnSurface) POC =
+              new BRep_PointOnCurveOnSurface(p1,
+                myCurves2d.Curve2d(pc),
+                mySurfaces.Surface(s),
+                L);
+            PR = POC;
+          }
+          break;
+
+          case 3:
+          {
+            BinTools::GetReal(IS, p2);
+            BinTools::GetInteger(IS, s);
+            if (mySurfaces.Surface(s).IsNull())
+              break;
+
+            Handle(BRep_PointOnSurface) POC =
+              new BRep_PointOnSurface(p1, p2,
+                mySurfaces.Surface(s),
+                L);
+            PR = POC;
+          }
+          break;
+
+          default:
+          {
+            Standard_SStream aMsg;
+            aMsg << "BinTools_SurfaceSet::ReadGeometry: UnExpected BRep_PointRepresentation = " << val << std::endl;
+            throw Standard_Failure(aMsg.str().c_str());
+          }
+          }
+
+          if (val > 0) {
+            BinTools::GetInteger(IS, l);//Locations index
+
+            if (!PR.IsNull()) {
+              PR->Location(Locations().Location(l));
+              lpr.Append(PR);
+            }
+          }
+        } while (val > 0);
       }
       break;
-      
+
 
       //---------
       // edge
       //---------
 
 
-    case TopAbs_EDGE :
+      case TopAbs_EDGE:
 
-      // Create an edge
+        // Create an edge
       {
         TopoDS_Edge& E = TopoDS::Edge(S);
-        
+
         myBuilder.MakeEdge(E);
-        
+
         // Read the curve geometry 
-	BinTools::GetReal(IS, tol);
-	BinTools::GetBool(IS, bval);
+        BinTools::GetReal(IS, tol);
+        BinTools::GetBool(IS, bval);
         myBuilder.SameParameter(E, bval);
 
-	BinTools::GetBool(IS, bval);
-        myBuilder.SameRange(E,bval);
+        BinTools::GetBool(IS, bval);
+        myBuilder.SameRange(E, bval);
 
-	BinTools::GetBool(IS, bval);
-        myBuilder.Degenerated(E,bval);
-        
+        BinTools::GetBool(IS, bval);
+        myBuilder.Degenerated(E, bval);
+
         do {
-	  val = (Standard_Integer)IS.get();//{0|1|2|3|4|5|6|7}
-	  // -0- no representation
-	  // -1- Curve 3D
-	  // -2- Curve on surf
-	  // -3- Curve on closed surf
-	  // -4- Regularity
-	  // -5- Polygon3D
-	  // -6- Polygon on triangulation
-	  // -7- Polygon on closed triangulation
+          val = (Standard_Integer)IS.get();//{0|1|2|3|4|5|6|7}
+          // -0- no representation
+          // -1- Curve 3D
+          // -2- Curve on surf
+          // -3- Curve on closed surf
+          // -4- Regularity
+          // -5- Polygon3D
+          // -6- Polygon on triangulation
+          // -7- Polygon on closed triangulation
 
           switch (val) {
-	  case 0:
-	    break;
-
-          case 1 :                               // -1- Curve 3D
-	    BinTools::GetInteger(IS, c);
-	    BinTools::GetInteger(IS, l);
-	    if (!myCurves.Curve(c).IsNull()) {
-	      myBuilder.UpdateEdge(E,myCurves.Curve(c),
-				   Locations().Location(l),tol);
-	    }
-	    BinTools::GetReal(IS, first);
-	    BinTools::GetReal(IS, last);
-	    if (!myCurves.Curve(c).IsNull()) {
-	      Standard_Boolean Only3d = Standard_True;
-	      myBuilder.Range(E,first,last,Only3d);
-	    }
+          case 0:
             break;
-            
-            
-          case 2 : // -2- Curve on surf
-          case 3 : // -3- Curve on closed surf
+
+          case 1:                               // -1- Curve 3D
+            BinTools::GetInteger(IS, c);
+            BinTools::GetInteger(IS, l);
+            if (!myCurves.Curve(c).IsNull()) {
+              myBuilder.UpdateEdge(E, myCurves.Curve(c),
+                Locations().Location(l), tol);
+            }
+            BinTools::GetReal(IS, first);
+            BinTools::GetReal(IS, last);
+            if (!myCurves.Curve(c).IsNull()) {
+              Standard_Boolean Only3d = Standard_True;
+              myBuilder.Range(E, first, last, Only3d);
+            }
+            break;
+
+
+          case 2: // -2- Curve on surf
+          case 3: // -3- Curve on closed surf
             closed = (val == 3);
-	     BinTools::GetInteger(IS, pc);
+            BinTools::GetInteger(IS, pc);
             if (closed) {
-	      BinTools::GetInteger(IS, pc2);
-	      reg = (GeomAbs_Shape)IS.get();
+              BinTools::GetInteger(IS, pc2);
+              reg = (GeomAbs_Shape)IS.get();
             }
 
             // surface, location
-	    BinTools::GetInteger(IS, s);
-	    BinTools::GetInteger(IS, l);
+            BinTools::GetInteger(IS, s);
+            BinTools::GetInteger(IS, l);
 
             // range
-	    BinTools::GetReal(IS, first);
-	    BinTools::GetReal(IS, last);
+            BinTools::GetReal(IS, first);
+            BinTools::GetReal(IS, last);
 
             // read UV Points // for XML Persistence higher performance
-            if (myFormatNb == BinTools_FormatVersion_VERSION_2
-             || myFormatNb == BinTools_FormatVersion_VERSION_3)
+            if (FormatNb() == BinTools_FormatVersion_VERSION_2
+             || FormatNb() == BinTools_FormatVersion_VERSION_3)
             {
-	      BinTools::GetReal(IS, PfX);
-	      BinTools::GetReal(IS, PfY);
-	      BinTools::GetReal(IS, PlX);
-	      BinTools::GetReal(IS, PlY);
-              aPf = gp_Pnt2d(PfX,PfY);
-              aPl = gp_Pnt2d(PlX,PlY);
+              BinTools::GetReal(IS, PfX);
+              BinTools::GetReal(IS, PfY);
+              BinTools::GetReal(IS, PlX);
+              BinTools::GetReal(IS, PlY);
+              aPf = gp_Pnt2d(PfX, PfY);
+              aPl = gp_Pnt2d(PlX, PlY);
             }
 
-	    if (myCurves2d.Curve2d(pc).IsNull() ||
-		(closed && myCurves2d.Curve2d(pc2).IsNull()) ||
-		mySurfaces.Surface(s).IsNull())
-	      break;
-	    
+            if (myCurves2d.Curve2d(pc).IsNull() ||
+              (closed && myCurves2d.Curve2d(pc2).IsNull()) ||
+              mySurfaces.Surface(s).IsNull())
+              break;
+
             if (closed) {
-              if (myFormatNb == BinTools_FormatVersion_VERSION_2
-               || myFormatNb == BinTools_FormatVersion_VERSION_3)
+              if (FormatNb() == BinTools_FormatVersion_VERSION_2
+               || FormatNb() == BinTools_FormatVersion_VERSION_3)
               {
-                myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
-                                     myCurves2d.Curve2d(pc2),
-                                     mySurfaces.Surface(s),
-                                     Locations().Location(l),tol,
-                                     aPf, aPl);
+                myBuilder.UpdateEdge(E, myCurves2d.Curve2d(pc),
+                  myCurves2d.Curve2d(pc2),
+                  mySurfaces.Surface(s),
+                  Locations().Location(l), tol,
+                  aPf, aPl);
               }
               else
               {
-                myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
-                                     myCurves2d.Curve2d(pc2),
-                                     mySurfaces.Surface(s),
-                                     Locations().Location(l),tol);
+                myBuilder.UpdateEdge(E, myCurves2d.Curve2d(pc),
+                  myCurves2d.Curve2d(pc2),
+                  mySurfaces.Surface(s),
+                  Locations().Location(l), tol);
               }
 
               myBuilder.Continuity(E,
-                                   mySurfaces.Surface(s),
-                                   mySurfaces.Surface(s),
-                                   Locations().Location(l),
-                                   Locations().Location(l),
-                                   reg);
+                mySurfaces.Surface(s),
+                mySurfaces.Surface(s),
+                Locations().Location(l),
+                Locations().Location(l),
+                reg);
             }
             else
             {
-              if (myFormatNb == BinTools_FormatVersion_VERSION_2
-               || myFormatNb == BinTools_FormatVersion_VERSION_3)
+              if (FormatNb() == BinTools_FormatVersion_VERSION_2
+               || FormatNb() == BinTools_FormatVersion_VERSION_3)
               {
-                myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
-                                     mySurfaces.Surface(s),
-                                     Locations().Location(l),tol,
-                                     aPf, aPl);
+                myBuilder.UpdateEdge(E, myCurves2d.Curve2d(pc),
+                  mySurfaces.Surface(s),
+                  Locations().Location(l), tol,
+                  aPf, aPl);
               }
               else
               {
-                myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
-                                     mySurfaces.Surface(s),
-                                     Locations().Location(l),tol);
+                myBuilder.UpdateEdge(E, myCurves2d.Curve2d(pc),
+                  mySurfaces.Surface(s),
+                  Locations().Location(l), tol);
               }
             }
             myBuilder.Range(E,
-                            mySurfaces.Surface(s),
-                            Locations().Location(l),
-                            first,last);
+              mySurfaces.Surface(s),
+              Locations().Location(l),
+              first, last);
             break;
-            
-          case 4 : // -4- Regularity
-	    reg = (GeomAbs_Shape)IS.get();
-	    BinTools::GetInteger(IS, s);
-	    BinTools::GetInteger(IS, l);
-	    BinTools::GetInteger(IS, s2);
-	    BinTools::GetInteger(IS, l2);
-	    if (mySurfaces.Surface(s).IsNull() ||
-		mySurfaces.Surface(s2).IsNull())
-	      break;
+
+          case 4: // -4- Regularity
+            reg = (GeomAbs_Shape)IS.get();
+            BinTools::GetInteger(IS, s);
+            BinTools::GetInteger(IS, l);
+            BinTools::GetInteger(IS, s2);
+            BinTools::GetInteger(IS, l2);
+            if (mySurfaces.Surface(s).IsNull() ||
+              mySurfaces.Surface(s2).IsNull())
+              break;
             myBuilder.Continuity(E,
-                                 mySurfaces.Surface(s),
-                                 mySurfaces.Surface(s2),
-                                 Locations().Location(l),
-                                 Locations().Location(l2),
-                                 reg);
-            break;
-	    
-          case 5 : // -5- Polygon3D                     
-	    BinTools::GetInteger(IS, c);
-	    BinTools::GetInteger(IS, l);
-//??? Bug?  myBuilder.UpdateEdge(E,myPolygons3D(c));
-	    myBuilder.UpdateEdge(E, myPolygons3D(c), Locations().Location(l));
+              mySurfaces.Surface(s),
+              mySurfaces.Surface(s2),
+              Locations().Location(l),
+              Locations().Location(l2),
+              reg);
             break;
 
-          case 6 : // -6- Polygon on triangulation
-          case 7 : // -7- Polygon on closed triangulation
+          case 5: // -5- Polygon3D                     
+            BinTools::GetInteger(IS, c);
+            BinTools::GetInteger(IS, l);
+            //??? Bug?  myBuilder.UpdateEdge(E,myPolygons3D(c));
+            myBuilder.UpdateEdge(E, myPolygons3D(c), Locations().Location(l));
+            break;
+
+          case 6: // -6- Polygon on triangulation
+          case 7: // -7- Polygon on closed triangulation
             closed = (val == 7);
-	    BinTools::GetInteger(IS, pt);
-            if (closed) 
-	      BinTools::GetInteger(IS, pt2);
+            BinTools::GetInteger(IS, pt);
+            if (closed)
+              BinTools::GetInteger(IS, pt2);
 
-	    BinTools::GetInteger(IS, t);
-	    BinTools::GetInteger(IS, l);
+            BinTools::GetInteger(IS, t);
+            BinTools::GetInteger(IS, l);
             if (closed)
             {
               myBuilder.UpdateEdge (E, myNodes(pt), myNodes(pt2), myTriangulations.FindKey(t), Locations().Location(l));
@@ -1127,102 +1086,102 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
             }
             // range            
             break;
-	  default:
-	    {
-              Standard_SStream aMsg;
-	      aMsg <<"Unexpected Curve Representation ="<< val << std::endl;
-	      throw Standard_Failure(aMsg.str().c_str());
-	    }
-            
+          default:
+          {
+            Standard_SStream aMsg;
+            aMsg << "Unexpected Curve Representation =" << val << std::endl;
+            throw Standard_Failure(aMsg.str().c_str());
+          }
+
           }
         } while (val > 0);
       }
       break;
 
 
-    //---------
-    // wire
-    //---------
+      //---------
+      // wire
+      //---------
 
-    case TopAbs_WIRE :
-      myBuilder.MakeWire(TopoDS::Wire(S));
-      break;
+      case TopAbs_WIRE:
+        myBuilder.MakeWire(TopoDS::Wire(S));
+        break;
 
 
-    //---------
-    // face
-    //---------
+        //---------
+        // face
+        //---------
 
-    case TopAbs_FACE :
+      case TopAbs_FACE:
       {
-    // create a face :
-	TopoDS_Face& F = TopoDS::Face(S);
-	myBuilder.MakeFace(F);
-	BinTools::GetBool(IS, bval); //NaturalRestriction flag
-	BinTools::GetReal(IS, tol);
-	BinTools::GetInteger(IS, s); //surface indx
-	BinTools::GetInteger(IS, l); //location indx
-	myBuilder.UpdateFace (F,
-                        s > 0 ? mySurfaces.Surface(s) : Handle(Geom_Surface)(),
-			                  Locations().Location(l),
-                        tol);
-	myBuilder.NaturalRestriction (F, bval);
-    
-	Standard_Byte aByte = (Standard_Byte)IS.get();
-      // cas triangulation
-	if(aByte == 2) {
-	  BinTools::GetInteger(IS, s);
+        // create a face :
+        TopoDS_Face& F = TopoDS::Face(S);
+        myBuilder.MakeFace(F);
+        BinTools::GetBool(IS, bval); //NaturalRestriction flag
+        BinTools::GetReal(IS, tol);
+        BinTools::GetInteger(IS, s); //surface indx
+        BinTools::GetInteger(IS, l); //location indx
+        myBuilder.UpdateFace(F,
+          s > 0 ? mySurfaces.Surface(s) : Handle(Geom_Surface)(),
+          Locations().Location(l),
+          tol);
+        myBuilder.NaturalRestriction(F, bval);
+
+        Standard_Byte aByte = (Standard_Byte)IS.get();
+        // cas triangulation
+        if (aByte == 2) {
+          BinTools::GetInteger(IS, s);
 	  myBuilder.UpdateFace(TopoDS::Face(S), myTriangulations.FindKey(s));
-	}
+        }
       }
       break;
 
 
-    //---------
-    // shell
-    //---------
+      //---------
+      // shell
+      //---------
 
-    case TopAbs_SHELL :
-      myBuilder.MakeShell(TopoDS::Shell(S));
-      break;
-
-
-    //---------
-    // solid
-    //---------
-
-    case TopAbs_SOLID :
-      myBuilder.MakeSolid(TopoDS::Solid(S));
-      break;
+      case TopAbs_SHELL:
+        myBuilder.MakeShell(TopoDS::Shell(S));
+        break;
 
 
-    //---------
-    // compsolid
-    //---------
+        //---------
+        // solid
+        //---------
 
-    case TopAbs_COMPSOLID :
-      myBuilder.MakeCompSolid(TopoDS::CompSolid(S));
-      break;
+      case TopAbs_SOLID:
+        myBuilder.MakeSolid(TopoDS::Solid(S));
+        break;
 
 
-    //---------
-    // compound
-    //---------
+        //---------
+        // compsolid
+        //---------
 
-    case TopAbs_COMPOUND :
-      myBuilder.MakeCompound(TopoDS::Compound(S));
-      break;
+      case TopAbs_COMPSOLID:
+        myBuilder.MakeCompSolid(TopoDS::CompSolid(S));
+        break;
 
-    default:
+
+        //---------
+        // compound
+        //---------
+
+      case TopAbs_COMPOUND:
+        myBuilder.MakeCompound(TopoDS::Compound(S));
+        break;
+
+      default:
       {
         Standard_SStream aMsg;
-        aMsg << "Unexpected topology type = "<< T <<std::endl;
+        aMsg << "Unexpected topology type = " << T << std::endl;
         throw Standard_Failure(aMsg.str().c_str());
         break;
       }
-    }
+      }
   }
-  catch(Standard_Failure const& anException) {
+  catch (Standard_Failure const& anException) {
     Standard_SStream aMsg;
     aMsg << "EXCEPTION in BinTools_ShapeSet::ReadGeometry(S,OS)" << std::endl;
     aMsg << anException << std::endl;
@@ -1230,19 +1189,16 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
   }
 }
 
-
-
 //=======================================================================
 //function : AddShapes
 //purpose  : 
 //=======================================================================
 
-void  BinTools_ShapeSet::AddShapes(TopoDS_Shape&       S1, 
-                                    const TopoDS_Shape& S2)
+void BinTools_ShapeSet::AddShapes(TopoDS_Shape&       S1, 
+                                  const TopoDS_Shape& S2)
 {
   myBuilder.Add(S1,S2);
 }
-
 
 //=======================================================================
 //function : WritePolygonOnTriangulation
@@ -1492,7 +1448,7 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
       BinTools::PutInteger(OS, aNbNodes);
       BinTools::PutInteger(OS, aNbTriangles);
       BinTools::PutBool(OS, aTriangulation->HasUVNodes() ? 1 : 0);
-      if (myFormatNb >= BinTools_FormatVersion_VERSION_4)
+      if (FormatNb() >= BinTools_FormatVersion_VERSION_4)
       {
         BinTools::PutBool(OS, (aTriangulation->HasNormals() && NeedToWriteNormals) ? 1 : 0);
       }
@@ -1526,7 +1482,7 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
       }
 
       // write the normals
-      if (myFormatNb >= BinTools_FormatVersion_VERSION_4)
+      if (FormatNb() >= BinTools_FormatVersion_VERSION_4)
       {
         if (aTriangulation->HasNormals() && NeedToWriteNormals)
         {
@@ -1581,7 +1537,7 @@ void BinTools_ShapeSet::ReadTriangulation (Standard_IStream& IS,
       BinTools::GetInteger(IS, aNbNodes);
       BinTools::GetInteger(IS, aNbTriangles);
       BinTools::GetBool(IS, hasUV);
-      if (myFormatNb >= BinTools_FormatVersion_VERSION_4)
+      if (FormatNb() >= BinTools_FormatVersion_VERSION_4)
       {
         BinTools::GetBool(IS, hasNormals);
       }
@@ -1618,6 +1574,7 @@ void BinTools_ShapeSet::ReadTriangulation (Standard_IStream& IS,
         BinTools::GetInteger(IS, aTriNodes[2]);
         aTriangulation->SetTriangle (aTriIter, Poly_Triangle (aTriNodes[0], aTriNodes[1], aTriNodes[2]));
       }
+      //IS.ignore(sizeof(Standard_Real) * (hasUV ? 5 : 3) * aNbNodes + sizeof(Standard_Integer) * 3 * aNbTriangles);
 
       if (hasNormals)
       {

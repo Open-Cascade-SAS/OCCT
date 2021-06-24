@@ -42,7 +42,7 @@ Standard_OStream& BinTools::PutInteger(Standard_OStream& OS, const Standard_Inte
 #ifdef DO_INVERSE
       anIntValue = InverseInt (aValue);
 #endif
-  OS.write((char*)&anIntValue, sizeof(Standard_Integer));  
+  OS.write ((char*)&anIntValue, sizeof (Standard_Integer));  
   return OS;
 }
 
@@ -56,9 +56,9 @@ Standard_OStream& BinTools::PutReal (Standard_OStream& theOS,
 {
 #ifdef DO_INVERSE
   const Standard_Real aRValue = InverseReal (theValue);
-  theOS.write((char*)&aRValue, sizeof(Standard_Real));
+  theOS.write ((char*)&aRValue, sizeof (Standard_Real));
 #else
-  theOS.write((char*)&theValue, sizeof(Standard_Real));
+  theOS.write ((char*)&theValue, sizeof (Standard_Real));
 #endif
   return theOS;
 }
@@ -200,7 +200,7 @@ void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
   BinTools_ShapeSet aShapeSet;
   aShapeSet.SetWithTriangles(Standard_True);
   aShapeSet.Read (theStream, theRange);
-  aShapeSet.Read (theShape, theStream, aShapeSet.NbShapes());
+  aShapeSet.ReadSubs (theShape, theStream, aShapeSet.NbShapes());
 }
 
 //=======================================================================

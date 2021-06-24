@@ -51,9 +51,9 @@ void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
     Handle(BinMNaming_NamedShapeDriver)::DownCast (aNSDriver);
   
   Handle(BinMXCAFDoc_LocationDriver) aLocationDriver = new BinMXCAFDoc_LocationDriver (theMsgDrv);
-  if( !aNamedShapeDriver.IsNull() )
+  if (!aNamedShapeDriver.IsNull())
   {
-    aLocationDriver->SetSharedLocations( &(aNamedShapeDriver->GetShapesLocations()) );
+    aLocationDriver->SetNSDriver (aNamedShapeDriver);
   }
   
   theDriverTable->AddDriver( aLocationDriver);

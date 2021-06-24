@@ -26,6 +26,7 @@
 #include <Standard_IStream.hxx>
 
 #include <Message_ProgressRange.hxx>
+#include <BinTools_OStream.hxx>
 
 class Standard_OutOfRange;
 class Geom_Surface;
@@ -67,7 +68,7 @@ public:
   
   //! Dumps the surface on the stream in binary
   //! format that can be read back.
-  Standard_EXPORT static void WriteSurface (const Handle(Geom_Surface)& S, Standard_OStream& OS);
+  Standard_EXPORT static void WriteSurface (const Handle(Geom_Surface)& S, BinTools_OStream& OS);
   
   //! Reads the surface  from  the stream.  The  surface  is
   //! assumed   to have  been  written  with  the Write

@@ -67,13 +67,16 @@ enum TDocStd_FormatVersion
                                        //!< * BIN, XML: TopTools_FormatVersion_CURRENT changed to 3 and 
                                        //!< BinTools_FormatVersion_CURRENT changed to 4 to preserve per-vertex normal 
                                        //!< information in case of triangulation-only Faces [#0031136]
-  TDocStd_FormatVersion_CURRENT = TDocStd_FormatVersion_VERSION_11 //!< Current version
+  TDocStd_FormatVersion_VERSION_12,    //!< OCCT 7.6.0
+                                       //!< * BIN: New binary format for fast reading of part of OCAF document [#0031918]
+
+  TDocStd_FormatVersion_CURRENT = TDocStd_FormatVersion_VERSION_12 //!< Current version
 };
 
 enum
 {
   TDocStd_FormatVersion_LOWER   = TDocStd_FormatVersion_VERSION_2,
-  TDocStd_FormatVersion_UPPER   = TDocStd_FormatVersion_VERSION_11
+  TDocStd_FormatVersion_UPPER   = TDocStd_FormatVersion_VERSION_12
 };
 
 

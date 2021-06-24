@@ -18,6 +18,8 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <BinTools_LocationSet.hxx>
 #include <BinTools_ShapeSet.hxx>
+#include <BinTools_ShapeWriter.hxx>
+#include <BinTools_ShapeReader.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
@@ -36,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
 
 #define SHAPESET "SHAPE_SECTION"
 //=======================================================================
-static Standard_Character EvolutionToChar(const TNaming_Evolution theEvol)
+static Standard_Character EvolutionToChar (const TNaming_Evolution theEvol)
 {
   switch(theEvol) {
     case TNaming_PRIMITIVE    : return 'P';
@@ -51,7 +53,7 @@ static Standard_Character EvolutionToChar(const TNaming_Evolution theEvol)
 }
 
 //=======================================================================
-static TNaming_Evolution EvolutionToEnum(const Standard_Character theEvol)
+static TNaming_Evolution EvolutionToEnum (const Standard_Character theEvol)
 {
   switch(theEvol) {
     case 'P': return TNaming_PRIMITIVE;
@@ -65,7 +67,7 @@ static TNaming_Evolution EvolutionToEnum(const Standard_Character theEvol)
   }
 }
 //=======================================================================
-static Standard_Character OrientationToChar(const TopAbs_Orientation theOrient)
+static Standard_Character OrientationToChar (const TopAbs_Orientation theOrient)
 {
   switch(theOrient) {
     case TopAbs_FORWARD    : return 'F';
@@ -77,7 +79,7 @@ static Standard_Character OrientationToChar(const TopAbs_Orientation theOrient)
   }
 }
 //=======================================================================
-static TopAbs_Orientation CharToOrientation(const Standard_Character  theCharOrient)
+static TopAbs_Orientation CharToOrientation (const Standard_Character  theCharOrient)
 {
   switch(theCharOrient) {
     case 'F':  return TopAbs_FORWARD;
@@ -92,45 +94,45 @@ static TopAbs_Orientation CharToOrientation(const Standard_Character  theCharOri
 //=======================================================================
 static void TranslateTo (const TopoDS_Shape&            theShape,
                          BinObjMgt_Persistent&          theResult,
-                         BinTools_ShapeSet&            theShapeSet)
+                         BinTools_ShapeSet*             theShapeSet)
 {
   // Check for empty shape
   if (theShape.IsNull()) {
-    theResult.PutInteger(-1);
-    theResult.PutInteger(-1);
-    theResult.PutInteger(-1);
+    theResult.PutInteger (-1);
+    theResult.PutInteger (-1);
+    theResult.PutInteger (-1);
     return;
   }
   // Add to shape set both TShape and Location contained in <theShape>
-  const Standard_Integer aTShapeID = theShapeSet.Add (theShape);
+  const Standard_Integer aTShapeID = theShapeSet->Add (theShape);
   const Standard_Integer aLocID =
-    theShapeSet.Locations().Index (theShape.Location());
+    theShapeSet->Locations().Index (theShape.Location());
 
   // Fill theResult with shape parameters: TShape ID, Location, Orientation
   theResult << aTShapeID;
   theResult << aLocID;
-  theResult << OrientationToChar(theShape.Orientation());
+  theResult << OrientationToChar (theShape.Orientation());
 }
 //=======================================================================
 static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
                          TopoDS_Shape&                  theResult,
-                         BinTools_ShapeSet&            theShapeSet)
+                         BinTools_ShapeSet*            theShapeSet)
 {
   Standard_Integer aShapeID, aLocID;
   Standard_Character aCharOrient;
   Standard_Boolean Ok = theSource >> aShapeID; //TShapeID;
   if(!Ok) return 1;
   // Read TShape and Orientation
-  if (aShapeID <= 0 || aShapeID > theShapeSet.NbShapes())
+  if (aShapeID <= 0 || aShapeID > theShapeSet->NbShapes())
     return 1;
   Ok = theSource >> aLocID;
   if(!Ok) return 1;
   Ok = theSource >> aCharOrient;
   if(!Ok) return 1;
-  TopAbs_Orientation anOrient = CharToOrientation(aCharOrient);
+  TopAbs_Orientation anOrient = CharToOrientation (aCharOrient);
 
-  theResult.TShape      (theShapeSet.Shape(aShapeID).TShape());//TShape
-  theResult.Location    (theShapeSet.Locations().Location (aLocID)); //Location
+  theResult.TShape      (theShapeSet->Shape (aShapeID).TShape());//TShape
+  theResult.Location    (theShapeSet->Locations().Location (aLocID)); //Location
   theResult.Orientation (anOrient);//Orientation
   return 0;
 }
@@ -142,7 +144,11 @@ static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
 
 BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver
                         (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name())
+     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()),
+       myShapeSet (NULL),
+       myWithTriangles (Standard_False),
+       myWithNormals  (Standard_False),
+       myIsQuickPart (Standard_False)
 {
 }
 
@@ -166,11 +172,11 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
                                  const Handle(TDF_Attribute)& theTarget,
                                  BinObjMgt_RRelocationTable&  ) const
 {
-  Handle(TNaming_NamedShape) aTAtt= Handle(TNaming_NamedShape)::DownCast(theTarget);
+  Handle(TNaming_NamedShape) aTAtt= Handle(TNaming_NamedShape)::DownCast (theTarget);
   Standard_Integer aNbShapes;
   theSource >> aNbShapes;
   TDF_Label aLabel = theTarget->Label ();
-  TNaming_Builder   aBuilder   (aLabel);
+  TNaming_Builder aBuilder (aLabel);
   Standard_Integer aVer;
   Standard_Boolean ok = theSource >> aVer;
   if(!ok) return Standard_False;
@@ -178,10 +184,13 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
   Standard_Character aCharEvol;
   ok = theSource >> aCharEvol;
   if(!ok) return Standard_False;
-  TNaming_Evolution anEvol  = EvolutionToEnum(aCharEvol); //Evolution
-  aTAtt->SetVersion(anEvol);
+  TNaming_Evolution anEvol  = EvolutionToEnum (aCharEvol); //Evolution
+  aTAtt->SetVersion (anEvol);
 
-  BinTools_ShapeSet& aShapeSet = (BinTools_ShapeSet&) myShapeSet;
+  BinTools_ShapeSetBase* aShapeSet = const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet (Standard_True);
+  Standard_IStream* aDirectStream = NULL;
+  if (myIsQuickPart) // enables direct reading of shapes from the stream
+    aDirectStream = const_cast<BinObjMgt_Persistent*>(&theSource)->GetIStream();
 
   NCollection_List<TopoDS_Shape> anOldShapes, aNewShapes;
   for (Standard_Integer i = 1; i <= aNbShapes; i++)
@@ -189,10 +198,20 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
     TopoDS_Shape anOldShape, aNewShape;
 
     if (anEvol != TNaming_PRIMITIVE)
-      if (TranslateFrom (theSource, anOldShape, aShapeSet)) return Standard_False;
+    {
+      if (myIsQuickPart)
+        aShapeSet->Read (*aDirectStream, anOldShape);
+      else
+        if (TranslateFrom (theSource, anOldShape, static_cast<BinTools_ShapeSet*>(aShapeSet))) return Standard_False;
+    }
 
     if (anEvol != TNaming_DELETE)
-      if (TranslateFrom (theSource, aNewShape, aShapeSet)) return Standard_False;
+    {
+      if (myIsQuickPart)
+        aShapeSet->Read (*aDirectStream, aNewShape);
+      else
+        if (TranslateFrom (theSource, aNewShape, static_cast<BinTools_ShapeSet*>(aShapeSet))) return Standard_False;
+    }
 
     // Here we add shapes in reverse order because TNaming_Builder also adds them in reverse order.
     anOldShapes.Prepend (anOldShape);
@@ -246,24 +265,38 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
   for (TNaming_Iterator SItr (aSAtt); SItr.More (); SItr.Next ()) NbShapes++;
   //--------------------------------------------------------------
 
-  BinTools_ShapeSet& aShapeSet = (BinTools_ShapeSet&) myShapeSet;
+  BinTools_ShapeSetBase* aShapeSet = const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet (Standard_False);
   TNaming_Evolution anEvol = aSAtt->Evolution();
   
   theTarget << NbShapes;
   theTarget << aSAtt->Version();
-  theTarget << EvolutionToChar(anEvol);
- 
+  theTarget << EvolutionToChar (anEvol);
+
+
+  Standard_OStream* aDirectStream = NULL;
+  if (myIsQuickPart) // enables direct writing of shapes to the stream
+    aDirectStream = theTarget.GetOStream();
 
   Standard_Integer i = 1;  
-  for (TNaming_Iterator SIterator(aSAtt) ;SIterator.More(); SIterator.Next()) {
-    const TopoDS_Shape& OldShape = SIterator.OldShape();
-    const TopoDS_Shape& NewShape = SIterator.NewShape();
+  for (TNaming_Iterator SIterator(aSAtt); SIterator.More(); SIterator.Next()) {
+    const TopoDS_Shape& anOldShape = SIterator.OldShape();
+    const TopoDS_Shape& aNewShape = SIterator.NewShape();
     
-    if ( anEvol != TNaming_PRIMITIVE ) 
-      TranslateTo (OldShape, theTarget, aShapeSet); 
+    if (anEvol != TNaming_PRIMITIVE)
+    {
+      if (myIsQuickPart)
+        aShapeSet->Write (anOldShape, *aDirectStream);
+      else
+        TranslateTo (anOldShape, theTarget, static_cast<BinTools_ShapeSet*>(aShapeSet));
+    }
 
-    if (anEvol != TNaming_DELETE) 
-      TranslateTo (NewShape, theTarget, aShapeSet);
+    if (anEvol != TNaming_DELETE)
+    {
+      if (myIsQuickPart)
+        aShapeSet->Write (aNewShape, *aDirectStream);
+      else
+        TranslateTo (aNewShape, theTarget, static_cast<BinTools_ShapeSet*>(aShapeSet));
+    }
     
     i++;
   }
@@ -280,18 +313,18 @@ void BinMNaming_NamedShapeDriver::WriteShapeSection (Standard_OStream& theOS,
                                                      const Standard_Integer theDocVer,
                                                      const Message_ProgressRange& theRange)
 {
-  theOS << SHAPESET; 
+  myIsQuickPart = Standard_False;
+  theOS << SHAPESET;
   if (theDocVer >= TDocStd_FormatVersion_VERSION_11)
   {
-    myShapeSet.SetFormatNb(BinTools_FormatVersion_VERSION_4);
+    ShapeSet (Standard_False)->SetFormatNb (BinTools_FormatVersion_VERSION_4);
   }
   else
   {
-    myShapeSet.SetFormatNb(BinTools_FormatVersion_VERSION_1);
+    ShapeSet (Standard_False)->SetFormatNb (BinTools_FormatVersion_VERSION_1);
   }
-
-  myShapeSet.Write (theOS, theRange);
-  myShapeSet.Clear();
+  ShapeSet (Standard_False)->Write (theOS, theRange);
+  ShapeSet (Standard_False)->Clear();
 }
 
 //=======================================================================
@@ -301,7 +334,12 @@ void BinMNaming_NamedShapeDriver::WriteShapeSection (Standard_OStream& theOS,
 
 void BinMNaming_NamedShapeDriver::Clear()
 {
-  myShapeSet.Clear();
+  if (myShapeSet)
+  {
+    myShapeSet->Clear();
+    delete myShapeSet;
+    myShapeSet = NULL;
+  }
 }
 
 //=======================================================================
@@ -312,15 +350,51 @@ void BinMNaming_NamedShapeDriver::Clear()
 void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS,
                                                     const Message_ProgressRange& theRange)
 {
+  myIsQuickPart = Standard_False;
   // check section title string; note that some versions of OCCT (up to 6.3.1) 
   // might avoid writing shape section if it is empty
   std::streamoff aPos = theIS.tellg();
   TCollection_AsciiString aSectionTitle;
   theIS >> aSectionTitle;
   if(aSectionTitle.Length() > 0 && aSectionTitle == SHAPESET) {
-    myShapeSet.Clear();
-    myShapeSet.Read (theIS, theRange);
+    BinTools_ShapeSetBase* aShapeSet = ShapeSet (Standard_True);
+    aShapeSet->Clear();
+    aShapeSet->Read (theIS, theRange);
   }
   else
-    theIS.seekg(aPos); // no shape section is present, try to return to initial point
+    theIS.seekg (aPos); // no shape section is present, try to return to initial point
+}
+
+//=======================================================================
+//function : ShapeSet
+//purpose  : 
+//=======================================================================
+
+BinTools_ShapeSetBase* BinMNaming_NamedShapeDriver::ShapeSet (const Standard_Boolean theReading)
+{
+  if (!myShapeSet)
+  {
+    if (myIsQuickPart)
+    {
+      if (theReading)
+        myShapeSet = new BinTools_ShapeReader();
+      else
+        myShapeSet = new BinTools_ShapeWriter();
+    }
+    else
+      myShapeSet = new BinTools_ShapeSet();
+    myShapeSet->SetWithTriangles(myWithTriangles);
+    myShapeSet->SetWithNormals(myWithNormals);
+  }
+  return myShapeSet;
+}
+
+//=======================================================================
+//function : GetShapesLocations
+//purpose  : 
+//=======================================================================
+BinTools_LocationSet& BinMNaming_NamedShapeDriver::GetShapesLocations() const
+{
+  BinTools_ShapeSetBase* aShapeSet = const_cast<BinMNaming_NamedShapeDriver*>(this)->ShapeSet (Standard_False);
+  return static_cast<BinTools_ShapeSet*>(aShapeSet)->ChangeLocations();
 }

@@ -29,6 +29,7 @@ public:
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)&       theNewDocument,
                                      const Handle(CDM_Application)&    theApplication,
+                                     const Handle(PCDM_ReaderFilter)&  theFilter = Handle(PCDM_ReaderFilter)(),
                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Override pure virtual method (raises exception Standard_NotImplemented) 
@@ -36,6 +37,7 @@ public:
                                      const Handle(Storage_Data)&    theStorageData,
                                      const Handle(CDM_Document)&    theDoc,
                                      const Handle(CDM_Application)& theApplication,
+                                     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)

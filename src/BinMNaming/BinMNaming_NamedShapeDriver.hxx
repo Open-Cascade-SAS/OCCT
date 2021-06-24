@@ -64,33 +64,35 @@ public:
   Standard_EXPORT void Clear();
 
   //! Return true if shape should be stored with triangles.
-  Standard_Boolean IsWithTriangles() const { return myShapeSet.IsWithTriangles(); }
+  Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
   //! Return true if shape should be stored with triangulation normals.
-  Standard_Boolean IsWithNormals() const { return myShapeSet.IsWithNormals(); }
-
+  Standard_Boolean IsWithNormals() const { return myWithNormals; }
   //! set whether to store triangulation
-  void SetWithTriangles (const Standard_Boolean isWithTriangles) { myShapeSet.SetWithTriangles(isWithTriangles); }
+  void SetWithTriangles (const Standard_Boolean isWithTriangles);
   //! set whether to store triangulation with normals
-  void SetWithNormals (const Standard_Boolean isWithNormals) { myShapeSet.SetWithNormals(isWithNormals); }
-  
-  
+  void SetWithNormals (const Standard_Boolean isWithNormals);
   //! get the shapes locations
-  BinTools_LocationSet& GetShapesLocations();
+  Standard_EXPORT BinTools_LocationSet& GetShapesLocations() const;
 
+  //! Sets the flag for quick part of the document access: shapes are stored in the attribute.
+  Standard_EXPORT void EnableQuickPart(const Standard_Boolean theValue) { myIsQuickPart = theValue; }
+  //! Returns true if quick part of the document access is enabled: shapes are stored in the attribute.
+  Standard_EXPORT Standard_Boolean IsQuickPart() { return myIsQuickPart; }
 
-
+  //! Returns shape-set of the needed type
+  Standard_EXPORT BinTools_ShapeSetBase* ShapeSet (const Standard_Boolean theReading);
 
   DEFINE_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
-
-protected:
-
-
 
 
 private:
 
 
-  BinTools_ShapeSet myShapeSet;
+  BinTools_ShapeSetBase *myShapeSet;
+  Standard_Boolean myWithTriangles;
+  Standard_Boolean myWithNormals;
+  //! Enables storing of whole shape data just in the attribute, not in a separated shapes section
+  Standard_Boolean myIsQuickPart;
 
 };
 

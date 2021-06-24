@@ -549,7 +549,7 @@ void TDocStd_Document::ClearRedos()
 //=======================================================================
 //function : Undo
 //purpose  : 
-// Some importante notice:
+// Some important notice:
 // 1) The most recent undo delta is at the end of the list.
 // 2) Removing the LAST item of a list is tedious, but it is done only on
 //    Undo. Remove first is done at each command if the limit is reached!
@@ -623,7 +623,6 @@ Standard_Boolean TDocStd_Document::Redo()
 {
   Standard_Boolean isOpened = myUndoTransaction.IsOpen();
   Standard_Boolean undoDone = Standard_False;
-  // TDF_Label currentObjectLabel = CurrentLabel();//Sauve pour usage ulterieur.
   if (!myRedos.IsEmpty()) {
     // should test the applicability before.
     // Reset the transaction

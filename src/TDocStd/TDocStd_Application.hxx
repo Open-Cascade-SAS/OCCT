@@ -227,19 +227,25 @@ public:
   //! In order not to override a version of aDoc which
   //! is already in memory, this method can be made
   //! to depend on the value returned by IsInSession.
+  //! It is possible to filter out some attributes or
+  //! parts of the retrieved tree by theFilter.
   Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& path, 
-                                          Handle(TDocStd_Document)& aDoc,
+                                          Handle(TDocStd_Document)& theDoc,
+                                          const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Retrieves aDoc from standard SEEKABLE stream theIStream.
   //! the stream should support SEEK functionality
-  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc, 
+  //! It is possible to filter out some attributes or
+  //! parts of the retrieved tree by theFilter.
+  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc,
+                                          const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
   
   //! Save the  active document  in the file  <name> in the
   //! path <path> ; o verwrites  the file  if  it already exists.
-  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc,
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
                                            const TCollection_ExtendedString& path,
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -253,13 +259,13 @@ public:
   //! Exceptions:
   //! Standard_NotImplemented if the document
   //! was not retrieved in the applicative session by using Open.
-  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc,
+  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& theDoc,
                                          const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Save the  active document  in the file  <name> in the
   //! path <path>  .  overwrite  the file  if  it
   //! already exist.
-  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc,
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
                                            const TCollection_ExtendedString& path,
                                            TCollection_ExtendedString& theStatusMessage,
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -272,7 +278,7 @@ public:
                                            const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Save the document overwriting the previous file
-  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc,
+  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& theDoc,
                                          TCollection_ExtendedString& theStatusMessage,
                                          const Message_ProgressRange& theRange = Message_ProgressRange());
 

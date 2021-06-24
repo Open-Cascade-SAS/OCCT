@@ -55,6 +55,7 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
+#include <PCDM_ReaderFilter.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_AISPresentation.hxx>
@@ -206,31 +207,65 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
   Handle(DDocStd_DrawDocument) DD;
   Handle(TDocStd_Application) A = DDocStd::GetApplication();
 
-  if ( argc != 3 )
+  if ( argc < 3 )
   {
-    di << "invalid number of arguments. Usage:\t XOpen filename docname\n";
+    di << "invalid number of arguments. Usage:\t XOpen filename docname [-skipAttribute] [-readAttribute] [-readPath] [-append|-overwrite]\n";
     return 1;
   }
 
   TCollection_AsciiString Filename = argv[1];
   Standard_CString DocName = argv[2];
 
-  if ( DDocStd::GetDocument(DocName, D, Standard_False) )
+  Handle(PCDM_ReaderFilter) aFilter = new PCDM_ReaderFilter;
+  for (Standard_Integer i = 3; i < argc; i++)
   {
-    di << "document with name " << DocName << " already exists\n";
+    TCollection_AsciiString anArg(argv[i]);
+    if (anArg == "-append")
+    {
+      aFilter->Mode() = PCDM_ReaderFilter::AppendMode_Protect;
+    }
+    else if (anArg == "-overwrite")
+    {
+      aFilter->Mode() = PCDM_ReaderFilter::AppendMode_Overwrite;
+    }
+    else if (anArg.StartsWith("-skip"))
+    {
+      TCollection_AsciiString anAttrType = anArg.SubString(6, anArg.Length());
+      aFilter->AddSkipped(anAttrType);
+    }
+    else if (anArg.StartsWith("-read"))
+    {
+      TCollection_AsciiString aValue = anArg.SubString(6, anArg.Length());
+      if (aValue.Value(1) == '0') // path
+      {
+        aFilter->AddPath(aValue);
+      }
+      else // attribute to read
+      {
+        aFilter->AddRead(aValue);
+      }
+    }
+  }
+
+  if (aFilter->IsAppendMode() && !DDocStd::GetDocument (DocName, D, Standard_False))
+  {
+    di << "for append mode document " << DocName << " must be already created\n";
     return 1;
   }
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
-  if ( A->Open(Filename, D, aProgress->Start()) != PCDM_RS_OK )
+  if ( A->Open (Filename, D, aFilter, aProgress->Start()) != PCDM_RS_OK )
   {
     di << "cannot open XDE document\n";
     return 1;
   }
 
-  DD = new DDocStd_DrawDocument(D);
-  TDataStd_Name::Set(D->GetData()->Root(), DocName);
-  Draw::Set(DocName, DD);
+  if (!aFilter->IsAppendMode())
+  {
+    DD = new DDocStd_DrawDocument (D);
+    TDataStd_Name::Set (D->GetData()->Root(), DocName);
+    Draw::Set (DocName, DD);
+  }
 
   di << "document " << DocName << " opened\n";
 
@@ -1245,8 +1280,13 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   di.Add ("XSave","[Doc Path] \t: Save Doc or first document in session",
 		   __FILE__, saveDoc, g);
 
-  di.Add ("XOpen","Path Doc \t: Open XDE Document with name Doc from Path",
-          __FILE__, openDoc, g);
+  di.Add ("XOpen","Path Doc [-skipAttribute] [-readAttribute] [-readPath] [-append|-overwrite]\t: Open XDE Document with name Doc from Path"
+          "\n\t\t The options are:"
+          "\n\t\t   -skipAttribute : class name of the attribute to skip during open, for example -skipTDF_Reference"
+          "\n\t\t   -readAttribute : class name of the attribute to read only during open, for example -readTDataStd_Name loads only such attributes"
+          "\n\t\t   -append : to read file into already existing document once again, append new attributes and don't touch existing"
+          "\n\t\t   -overwrite : to read file into already existing document once again, overwriting existing attributes",
+    __FILE__, openDoc, g);
 
   di.Add ("Xdump","Doc [int deep (0/1)] \t: Print information about tree's structure",
 		   __FILE__, dump, g);

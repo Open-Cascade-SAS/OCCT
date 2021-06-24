@@ -112,42 +112,15 @@ Standard_Integer  BinTools_SurfaceSet::Index
 }
 
 //=======================================================================
-//function : operator << (gp_Pnt)
-//purpose  : 
-//=======================================================================
-
-static Standard_OStream& operator <<(Standard_OStream& OS, const gp_Pnt P)
-{
-  BinTools::PutReal(OS, P.X());
-  BinTools::PutReal(OS, P.Y());
-  BinTools::PutReal(OS, P.Z());
-  return OS;
-}
-
-//=======================================================================
-//function : operator << (gp_Dir)
-//purpose  : 
-//=======================================================================
-
-static Standard_OStream& operator <<(Standard_OStream& OS, const gp_Dir D)
-{
-  BinTools::PutReal(OS, D.X());
-  BinTools::PutReal(OS, D.Y());
-  BinTools::PutReal(OS, D.Z());
-  return OS;
-}
-
-
-//=======================================================================
 //function : operator <<(Geom_Plane)
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Plane)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_Plane)& S)
 {
   OS << (Standard_Byte)PLANE;
   gp_Pln P = S->Pln();
-  OS << P.Location();//Pnt
+  OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
   OS << P.XAxis().Direction();
   OS << P.YAxis().Direction();
@@ -160,15 +133,15 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Pla
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_CylindricalSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_CylindricalSurface)& S)
 {
   OS << (Standard_Byte)CYLINDER;
   gp_Cylinder P = S->Cylinder();
-  OS << P.Location();//Pnt
+  OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
   OS << P.XAxis().Direction();
   OS << P.YAxis().Direction();
-  BinTools::PutReal(OS, P.Radius());
+  OS << P.Radius();
   return OS;
 }
 
@@ -178,16 +151,16 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Cyl
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_ConicalSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_ConicalSurface)& S)
 {
   OS << (Standard_Byte)CONE;
   gp_Cone P = S->Cone();
-  OS << P.Location();//Pnt
+  OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
   OS << P.XAxis().Direction();
   OS << P.YAxis().Direction();
-  BinTools::PutReal(OS, P.RefRadius());
-  BinTools::PutReal(OS, P.SemiAngle());
+  OS << P.RefRadius();
+  OS << P.SemiAngle();
   return OS;
 }
 
@@ -197,15 +170,15 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Con
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_SphericalSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_SphericalSurface)& S)
 {
   OS << (Standard_Byte)SPHERE;
   gp_Sphere P = S->Sphere();
-  OS << P.Location();//Pnt
+  OS << P.Location(); // Pnt
   OS << P.Position().Axis().Direction();
   OS << P.XAxis().Direction();
   OS << P.YAxis().Direction();
-  BinTools::PutReal(OS, P.Radius());
+  OS << P.Radius();
   return OS;
 }
 
@@ -215,16 +188,16 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Sph
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_ToroidalSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_ToroidalSurface)& S)
 {
   OS << (Standard_Byte)TORUS;
   gp_Torus P = S->Torus();
-  OS << P.Location();//Pnt
+  OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
   OS << P.XAxis().Direction();
   OS << P.YAxis().Direction();
-  BinTools::PutReal(OS, P.MajorRadius());
-  BinTools::PutReal(OS, P.MinorRadius());
+  OS << P.MajorRadius();
+  OS << P.MinorRadius();
   return OS;
 }
 
@@ -234,11 +207,11 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Tor
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_SurfaceOfLinearExtrusion)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_SurfaceOfLinearExtrusion)& S)
 {
   OS << (Standard_Byte)LINEAREXTRUSION;
   OS << S->Direction();
-  BinTools_CurveSet::WriteCurve(S->BasisCurve(),OS);
+  BinTools_CurveSet::WriteCurve (S->BasisCurve(), OS);
   return OS;
 }
 
@@ -248,12 +221,12 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Sur
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_SurfaceOfRevolution)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_SurfaceOfRevolution)& S)
 {
   OS << (Standard_Byte)REVOLUTION;
   OS << S->Location();
   OS << S->Direction();
-  BinTools_CurveSet::WriteCurve(S->BasisCurve(),OS);
+  BinTools_CurveSet::WriteCurve (S->BasisCurve(), OS);
   return OS;
 }
 
@@ -263,27 +236,25 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Sur
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_BezierSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_BezierSurface)& S)
 {
   OS << (Standard_Byte)BEZIER;
   Standard_Boolean urational = S->IsURational() ? 1:0;
   Standard_Boolean vrational = S->IsVRational() ? 1:0;
-  BinTools::PutBool(OS, urational); //rational
-  BinTools::PutBool(OS, vrational);
-//  std::cout << "Bezier Surface:"<< std::endl;
-//  std::cout << "\turational = "<<urational<<" vrational = " <<vrational<<std::endl;
+  OS << urational; // rational
+  OS << vrational;
 
-// poles and weights
+  // poles and weights
   Standard_Integer i,j,udegree,vdegree;
   udegree = S->UDegree();
   vdegree = S->VDegree();
-  BinTools::PutExtChar(OS, (Standard_ExtCharacter)udegree);
-  BinTools::PutExtChar(OS, (Standard_ExtCharacter)vdegree);
+  OS << (Standard_ExtCharacter)udegree;
+  OS << (Standard_ExtCharacter)vdegree;
   for (i = 1; i <= udegree+1; i++) {
     for (j = 1; j <= vdegree+1; j++) {
-      OS << S->Pole(i,j); //Pnt
+      OS << S->Pole (i,j); // Pnt
       if (urational || vrational) {
-	BinTools::PutReal(OS, S->Weight(i,j));//Real
+	      OS << S->Weight (i,j); // Real
       }
     }
   }
@@ -296,17 +267,17 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Bez
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_BSplineSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_BSplineSurface)& S)
 {
   OS << (Standard_Byte)BSPLINE;
   Standard_Boolean urational = S->IsURational() ? 1:0;
   Standard_Boolean vrational = S->IsVRational() ? 1:0;
   Standard_Boolean uperiodic = S->IsUPeriodic() ? 1:0;
   Standard_Boolean vperiodic = S->IsVPeriodic() ? 1:0;
-  BinTools::PutBool(OS, urational); 
-  BinTools::PutBool(OS, vrational); 
-  BinTools::PutBool(OS, uperiodic); 
-  BinTools::PutBool(OS, vperiodic); 
+  OS << urational;
+  OS << vrational; 
+  OS << uperiodic;
+  OS << vperiodic;
 
 // poles and weights
   Standard_Integer i,j,udegree,vdegree,nbupoles,nbvpoles,nbuknots,nbvknots;
@@ -316,28 +287,28 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_BSp
   nbvpoles = S->NbVPoles();
   nbuknots = S->NbUKnots();
   nbvknots = S->NbVKnots();
-  BinTools::PutExtChar(OS, (Standard_ExtCharacter) udegree);
-  BinTools::PutExtChar(OS, (Standard_ExtCharacter) vdegree);
-  BinTools::PutInteger(OS, nbupoles);
-  BinTools::PutInteger(OS, nbvpoles);
-  BinTools::PutInteger(OS, nbuknots);
-  BinTools::PutInteger(OS, nbvknots);
+  OS << (Standard_ExtCharacter) udegree;
+  OS << (Standard_ExtCharacter) vdegree;
+  OS << nbupoles;
+  OS << nbvpoles;
+  OS << nbuknots;
+  OS << nbvknots;
   for (i = 1; i <= nbupoles; i++) {
     for (j = 1; j <= nbvpoles; j++) {
-      OS << S->Pole(i,j); //Pnt
+      OS << S->Pole (i,j); // Pnt
       if (urational || vrational)
-	BinTools::PutReal(OS, S->Weight(i,j));//Real	
+	      OS << S->Weight (i,j); // Real	
     }
   }
 
   for (i = 1; i <= nbuknots; i++) {
-    BinTools::PutReal(OS,S->UKnot(i));
-    BinTools::PutInteger(OS, S->UMultiplicity(i));
+    OS << S->UKnot (i);
+    OS << S->UMultiplicity (i);
   }
 
   for (i = 1; i <= nbvknots; i++) {
-    BinTools::PutReal(OS,S->VKnot(i));
-    BinTools::PutInteger(OS, S->VMultiplicity(i));
+    OS << S->VKnot (i);
+    OS << S->VMultiplicity (i);
   }
   return OS;
 }
@@ -348,16 +319,13 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_BSp
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_RectangularTrimmedSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_RectangularTrimmedSurface)& S)
 {
   OS << (Standard_Byte)RECTANGULAR;
   Standard_Real U1,U2,V1,V2;
   S->Bounds(U1,U2,V1,V2);
-  BinTools::PutReal(OS, U1);
-  BinTools::PutReal(OS, U2);
-  BinTools::PutReal(OS, V1);
-  BinTools::PutReal(OS, V2);
-  BinTools_SurfaceSet::WriteSurface(S->BasisSurface(),OS);
+  OS << U1 << U2 << V1 << V2;
+  BinTools_SurfaceSet::WriteSurface (S->BasisSurface(), OS);
   return OS;
 }
 
@@ -367,11 +335,11 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Rec
 //purpose  : 
 //=======================================================================
 
-static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_OffsetSurface)& S)
+static BinTools_OStream& operator <<(BinTools_OStream& OS, const Handle(Geom_OffsetSurface)& S)
 {
   OS << (Standard_Byte)OFFSET;
-  BinTools::PutReal(OS, S->Offset());
-  BinTools_SurfaceSet::WriteSurface(S->BasisSurface(),OS);
+  OS << S->Offset();
+  BinTools_SurfaceSet::WriteSurface (S->BasisSurface(), OS);
   return OS;
 }
 
@@ -381,8 +349,8 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Off
 //purpose  : 
 //=======================================================================
 
-void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
-					Standard_OStream& OS)
+void BinTools_SurfaceSet::WriteSurface (const Handle(Geom_Surface)& S,
+  BinTools_OStream& OS)
 {
   Handle(Standard_Type) TheType = S->DynamicType();
   try {
@@ -442,10 +410,11 @@ void  BinTools_SurfaceSet::Write (Standard_OStream& OS,
 {
 
   Standard_Integer i, nbsurf = myMap.Extent();
-  Message_ProgressScope aPS(theRange, "Writing surfases", nbsurf);
+  Message_ProgressScope aPS(theRange, "Writing surfaces", nbsurf);
   OS << "Surfaces "<< nbsurf << "\n";
+  BinTools_OStream aStream (OS);
   for (i = 1; i <= nbsurf && aPS.More(); i++, aPS.Next()) {
-    WriteSurface(Handle(Geom_Surface)::DownCast(myMap(i)),OS);
+    WriteSurface(Handle(Geom_Surface)::DownCast(myMap(i)), aStream);
   }
 
 }

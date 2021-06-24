@@ -35,6 +35,7 @@
 #include <BinObjMgt_PInteger.hxx>
 #include <BinObjMgt_PReal.hxx>
 #include <BinObjMgt_PShortReal.hxx>
+#include <BinObjMgt_Position.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Address.hxx>
@@ -261,13 +262,13 @@ const BinObjMgt_Persistent& operator >> (Standard_GUID& theValue) const
   //! Indicates an error after Get methods or SetPosition
     Standard_Boolean IsError() const;
   Standard_Boolean operator !() const
-{
-  return IsError();
-}
+  {
+    return IsError();
+  }
   
   //! Indicates a good state after Get methods or SetPosition
     Standard_Boolean IsOK() const;
-operator Standard_Boolean () const { return IsOK(); }
+  operator Standard_Boolean () const { return IsOK(); }
   
   //! Initializes me to reuse again
   Standard_EXPORT void Init();
@@ -289,8 +290,9 @@ operator Standard_Boolean () const { return IsOK(); }
   
   //! Stores <me> to the stream.
   //! inline Standard_OStream& operator<< (Standard_OStream&,
-  //! BinObjMgt_Persistent&) is also available
-  Standard_EXPORT Standard_OStream& Write (Standard_OStream& theOS);
+  //! BinObjMgt_Persistent&) is also available.
+  //! If theDirectStream is true, after this data the direct stream data is stored.
+  Standard_EXPORT Standard_OStream& Write (Standard_OStream& theOS, const Standard_Boolean theDirectStream = Standard_False);
   
   //! Retrieves <me> from the stream.
   //! inline Standard_IStream& operator>> (Standard_IStream&,
@@ -300,19 +302,23 @@ operator Standard_Boolean () const { return IsOK(); }
   //! Frees the allocated memory;
   //! This object can be reused after call to Init
   Standard_EXPORT void Destroy();
-~BinObjMgt_Persistent()
-{
-  Destroy();
-}
+  ~BinObjMgt_Persistent()
+  {
+    Destroy();
+  }
 
-
-
-
-protected:
-
-
-
-
+  //! Sets the stream for direct writing
+  Standard_EXPORT void SetOStream (Standard_OStream& theStream) { myOStream = &theStream; }
+  //! Sets the stream for direct reading
+  Standard_EXPORT void SetIStream (Standard_IStream& theStream) { myIStream = &theStream; }
+  //! Gets the stream for and enables direct writing
+  Standard_EXPORT Standard_OStream* GetOStream();
+  //! Gets the stream for and enables direct reading
+  Standard_EXPORT Standard_IStream* GetIStream();
+  //! Returns true if after this record a direct writing to the stream is performed.
+  Standard_EXPORT Standard_Boolean IsDirect() { return myDirectWritingIsEnabled; }
+  //! Returns the start position of the direct writing in the stream
+  Standard_EXPORT Handle(BinObjMgt_Position) StreamStart() { return myStreamStart; }
 
 private:
 
@@ -358,8 +364,10 @@ private:
   Standard_Integer myOffset;
   Standard_Integer mySize;
   Standard_Boolean myIsError;
-
-
+  Standard_OStream* myOStream; ///< stream to write in case direct writing is enabled
+  Standard_IStream* myIStream; ///< stream to write in case direct reading is enabled
+  Standard_Boolean myDirectWritingIsEnabled;
+  Handle(BinObjMgt_Position) myStreamStart; ///< position where the direct writing to the script is started
 };
 
 

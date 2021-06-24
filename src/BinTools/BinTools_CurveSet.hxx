@@ -26,6 +26,7 @@
 #include <Standard_IStream.hxx>
 
 #include <Message_ProgressRange.hxx>
+#include <BinTools_OStream.hxx>
 
 class Standard_OutOfRange;
 class Geom_Curve;
@@ -67,7 +68,7 @@ public:
   
   //! Dumps the curve on the stream in binary format
   //! that can be read back.
-  Standard_EXPORT static void WriteCurve (const Handle(Geom_Curve)& C, Standard_OStream& OS);
+  Standard_EXPORT static void WriteCurve (const Handle(Geom_Curve)& C, BinTools_OStream& OS);
   
   //! Reads the curve  from  the stream.  The  curve  is
   //! assumed  to have  been  written  with  the Write

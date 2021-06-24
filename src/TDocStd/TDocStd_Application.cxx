@@ -21,6 +21,7 @@
 #include <CDF_Store.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
+#include <PCDM_ReaderFilter.hxx>
 #include <Plugin.hxx>
 #include <Plugin_Failure.hxx>
 #include <Resource_Manager.hxx>
@@ -161,7 +162,7 @@ Standard_Integer TDocStd_Application::NbDocuments() const
 //purpose  :
 //=======================================================================
 
-void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocStd_Document)& aDoc) const
+void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocStd_Document)& theDoc) const
 {
   CDF_DirectoryIterator it (myDirectory);
   Standard_Integer current = 0;
@@ -170,7 +171,7 @@ void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocSt
     if (index == current) {
       Handle(TDocStd_Document) D =
         Handle(TDocStd_Document)::DownCast(it.Document());
-      aDoc = D;
+      theDoc = D;
       return;
     }
   }
@@ -181,12 +182,12 @@ void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocSt
 //purpose  :
 //=======================================================================
 
-void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format, Handle(CDM_Document)& aDoc)
+void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format, Handle(CDM_Document)& theDoc)
 {
   Handle(TDocStd_Document) D = new TDocStd_Document(format);
   InitDocument (D);
   CDF_Application::Open(D); // add the document in the session
-  aDoc = D;
+  theDoc = D;
 }
 
 //=======================================================================
@@ -195,11 +196,11 @@ void TDocStd_Application::NewDocument(const TCollection_ExtendedString& format, 
 //         : Internally it calls a virtual method NewDocument() with CDM_Document object.
 //=======================================================================
 
-void TDocStd_Application::NewDocument (const TCollection_ExtendedString& format, Handle(TDocStd_Document)& aDoc)
+void TDocStd_Application::NewDocument (const TCollection_ExtendedString& format, Handle(TDocStd_Document)& theDoc)
 {
   Handle(CDM_Document) aCDMDoc;
   NewDocument (format, aCDMDoc);
-  aDoc = Handle(TDocStd_Document)::DownCast (aCDMDoc);
+  theDoc = Handle(TDocStd_Document)::DownCast (aCDMDoc);
 }
 
 //=======================================================================
@@ -216,20 +217,20 @@ void TDocStd_Application::InitDocument(const Handle(CDM_Document)& /*aDoc*/) con
 //purpose  :
 //=======================================================================
 
-void TDocStd_Application::Close(const Handle(TDocStd_Document)& aDoc)
+void TDocStd_Application::Close(const Handle(TDocStd_Document)& theDoc)
 {
-  if (aDoc.IsNull())
+  if (theDoc.IsNull())
   {
     return;
   }
 
   Handle(TDocStd_Owner) Owner;
-  if (aDoc->Main().Root().FindAttribute(TDocStd_Owner::GetID(),Owner)) {
+  if (theDoc->Main().Root().FindAttribute(TDocStd_Owner::GetID(),Owner)) {
     Handle(TDocStd_Document) emptyDoc;
     Owner->SetDocument(emptyDoc);
   }
-  aDoc->BeforeClose();
-  CDF_Application::Close(aDoc);
+  theDoc->BeforeClose();
+  CDF_Application::Close(theDoc);
 }
 
 //=======================================================================
@@ -267,7 +268,8 @@ Standard_Integer TDocStd_Application::IsInSession (const TCollection_ExtendedStr
 //=======================================================================
 
 PCDM_ReaderStatus TDocStd_Application::Open (const TCollection_ExtendedString& path, 
-                                             Handle(TDocStd_Document)& aDoc, 
+                                             Handle(TDocStd_Document)& theDoc,
+                                             const Handle(PCDM_ReaderFilter)& theFilter,
                                              const Message_ProgressRange& theRange)
 {
   PCDM_ReaderStatus status = PCDM_RS_DriverFailure;
@@ -276,7 +278,7 @@ PCDM_ReaderStatus TDocStd_Application::Open (const TCollection_ExtendedString& p
   TCollection_ExtendedString file = tool.Name();
   file += ".";
   file += tool.Extension();
-  status = CanRetrieve(directory, file);
+  status = CanRetrieve(directory, file, !theFilter.IsNull() && theFilter->IsAppendMode());
 
   if (status != PCDM_RS_OK)
   {
@@ -287,9 +289,10 @@ PCDM_ReaderStatus TDocStd_Application::Open (const TCollection_ExtendedString& p
   {
     OCC_CATCH_SIGNALS
     Handle(TDocStd_Document) D =
-      Handle(TDocStd_Document)::DownCast(Retrieve(directory, file, Standard_True, theRange));
-    CDF_Application::Open(D);
-    aDoc = D;
+      Handle(TDocStd_Document)::DownCast(Retrieve(directory, file, Standard_True, theFilter, theRange));
+    if (theFilter.IsNull() || !theFilter->IsAppendMode())
+      CDF_Application::Open(D);
+    theDoc = D;
   }
   catch (Standard_Failure const& anException)
   {
@@ -316,17 +319,20 @@ PCDM_ReaderStatus TDocStd_Application::Open (const TCollection_ExtendedString& p
 //=======================================================================
 PCDM_ReaderStatus TDocStd_Application::Open (Standard_IStream& theIStream,
                                              Handle(TDocStd_Document)& theDoc,
+                                             const Handle(PCDM_ReaderFilter)& theFilter,
                                              const Message_ProgressRange& theRange)
 { 
   try
   {
     OCC_CATCH_SIGNALS
-    Handle(TDocStd_Document) D = Handle(TDocStd_Document)::DownCast(Read(theIStream, theRange));
+    Handle(CDM_Document) aCDMDoc = theDoc;
+    Read(theIStream, aCDMDoc, theFilter, theRange);
+    // Read calls NewDocument of TDocStd_Application, so, it should the TDocStd_Document in the result anyway
+    theDoc = Handle(TDocStd_Document)::DownCast(aCDMDoc);
 
-    if (!D.IsNull())
+    if (!theDoc.IsNull() && (theFilter.IsNull() || !theFilter->IsAppendMode()))
     {
-      CDF_Application::Open(D);
-      theDoc = D;
+      CDF_Application::Open(theDoc);
     }
   }
 
@@ -346,7 +352,7 @@ PCDM_ReaderStatus TDocStd_Application::Open (Standard_IStream& theIStream,
 //purpose  :
 //=======================================================================
 
-PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& D, 
+PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& theDoc,
                                               const TCollection_ExtendedString& path,
                                               const Message_ProgressRange& theRange)
 {
@@ -355,8 +361,8 @@ PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& D,
   TCollection_ExtendedString file = tool.Name();
   file+=".";
   file+=tool.Extension();
-  D->Open(this);
-  CDF_Store storer (D);
+  theDoc->Open(this);
+  CDF_Store storer (theDoc);
   if (!storer.SetFolder(directory))
   {
     TCollection_ExtendedString aMsg ("TDocStd_Application::SaveAs() - folder ");
@@ -378,7 +384,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& D,
     }
   }
   if(storer.StoreStatus() == PCDM_SS_OK)
-    D->SetSaved();
+    theDoc->SetSaved();
 #ifdef OCCT_DEBUG
   std::cout<<"TDocStd_Application::SaveAs(): The status = "<<storer.StoreStatus()<<std::endl;
 #endif

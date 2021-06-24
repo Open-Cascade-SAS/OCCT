@@ -45,6 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalD
 void StdLDrivers_DocumentRetrievalDriver::Read (const TCollection_ExtendedString& theFileName,
                                                 const Handle(CDM_Document)&       theNewDocument,
                                                 const Handle(CDM_Application)&                  ,
+                                                const Handle(PCDM_ReaderFilter)&                ,
                                                 const Message_ProgressRange&     /*theRange*/)
 {
   // Read header data and persistent document
@@ -229,6 +230,7 @@ void StdLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
                                                 const Handle(Storage_Data)&     /*theStorageData*/,
                                                 const Handle(CDM_Document)&     /*theDoc*/,
                                                 const Handle(CDM_Application)&  /*theApplication*/,
+                                                const Handle(PCDM_ReaderFilter)&/*theFilter*/,
                                                 const Message_ProgressRange&    /*theRange*/)
 {
   throw Standard_NotImplemented("Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");

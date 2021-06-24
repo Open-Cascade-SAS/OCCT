@@ -69,10 +69,7 @@ void PCDM_ReadWriter::Open (const Handle(Storage_BaseDriver)&   aDriver,
 //purpose  : 
 //=======================================================================
 
-//Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader(const TCollection_ExtendedString& aFileName) {
-
-Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader
-                                           (const TCollection_ExtendedString&)
+Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader (const TCollection_ExtendedString&)
 {
   return (new PCDM_ReadWriter_1);
 }
@@ -82,7 +79,7 @@ Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader
 //purpose  : 
 //=======================================================================
 
-Handle(PCDM_ReadWriter) PCDM_ReadWriter::Writer ()
+Handle(PCDM_ReadWriter) PCDM_ReadWriter::Writer()
 {
   return (new PCDM_ReadWriter_1);
 }

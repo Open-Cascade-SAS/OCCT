@@ -26,6 +26,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TNaming_NamedShape.hxx>
 
@@ -64,7 +65,7 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
 {
   // Read Shapes
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape),aDriver))
+  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape),aDriver))
   {
     try {
       OCC_CATCH_SIGNALS
@@ -75,7 +76,7 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
     catch(Standard_Failure const& anException) {
       const TCollection_ExtendedString aMethStr
         ("BinDrivers_DocumentRetrievalDriver: ");
-      myMsgDriver ->Send(aMethStr + "error of Shape Section " +
+      myMsgDriver->Send(aMethStr + "error of Shape Section " +
         anException.GetMessageString(), Message_Fail);
     }
   }
@@ -85,7 +86,7 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
 //function : CheckShapeSection
 //purpose  : 
 //=======================================================================
-void BinDrivers_DocumentRetrievalDriver::CheckShapeSection(
+void BinDrivers_DocumentRetrievalDriver::CheckShapeSection (
                               const Storage_Position& /*ShapeSectionPos*/,
                               Standard_IStream& /*IS*/)
 {}
@@ -98,13 +99,32 @@ void BinDrivers_DocumentRetrievalDriver::Clear()
 {
   // Clear NamedShape driver
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
     Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
-      Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+      Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
     aNamedShapeDriver->Clear();
   }
   BinLDrivers_DocumentRetrievalDriver::Clear();
 }
 
+//=======================================================================
+//function : EnableQuickPartReading
+//purpose  : 
+//=======================================================================
+void BinDrivers_DocumentRetrievalDriver::EnableQuickPartReading (
+  const Handle(Message_Messenger)& theMessageDriver, Standard_Boolean theValue)
+{
+  if (myDrivers.IsNull())
+    myDrivers = AttributeDrivers (theMessageDriver);
+  if (myDrivers.IsNull())
+    return;
 
+  Handle(BinMDF_ADriver) aDriver;
+  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  if (aShapesDriver.IsNull())
+    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+
+  aShapesDriver->EnableQuickPart (theValue);
+}

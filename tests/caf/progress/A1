@@ -25,9 +25,7 @@ set output [SaveAs Doc ${imagedir}/testA1.cbf]
 Close Doc
 
 # Test data
-set ctr { "0%" "Writing document" "Writing sub tree"
-    "Writing geometry" "Writing 2D curves" "Writing curves"
-    "Writing surfases" "Writing shapes" "100%" }
+set ctr { "0%" "Writing document" "Writing sub tree" "100%" }
 
 foreach data ${ctr} {
     if ![regexp $data $output] {

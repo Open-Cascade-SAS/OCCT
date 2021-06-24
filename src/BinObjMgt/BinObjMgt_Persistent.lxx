@@ -34,6 +34,7 @@ inline void BinObjMgt_Persistent::SetId (const Standard_Integer theId)
 inline void BinObjMgt_Persistent::SetTypeId (const Standard_Integer theTypeId)
 {
   ((Standard_Integer*) myData(1)) [0] = theTypeId;
+  myStreamStart.Nullify();
 }
 
 //=======================================================================

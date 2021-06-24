@@ -103,6 +103,7 @@ public:
     (const TCollection_ExtendedString& aFolder,
      const TCollection_ExtendedString& aName,
      const Standard_Boolean UseStorageConfiguration = Standard_True,
+     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
      const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! This method retrieves  a  document from the database.
@@ -124,22 +125,27 @@ public:
      const TCollection_ExtendedString& aName, 
      const TCollection_ExtendedString& aVersion, 
      const Standard_Boolean UseStorageConfiguration = Standard_True,
+     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
      const Message_ProgressRange& theRange = Message_ProgressRange());
   
-  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder,
-                                                 const TCollection_ExtendedString& aName);
+  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& theFolder,
+                                                 const TCollection_ExtendedString& theName,
+                                                 const bool theAppendMode);
   
-  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder,
-                                                 const TCollection_ExtendedString& aName,
-                                                 const TCollection_ExtendedString& aVersion);
+  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& theFolder,
+                                                 const TCollection_ExtendedString& theName,
+                                                 const TCollection_ExtendedString& theVersion,
+                                                 const bool theAppendMode);
   
   //! Checks  status  after  Retrieve
   PCDM_ReaderStatus GetRetrieveStatus() const { return myRetrievableStatus; }
   
-  //! Reads aDoc from standard SEEKABLE stream theIStream,
+  //! Reads theDocument from standard SEEKABLE stream theIStream,
   //! the stream should support SEEK functionality
-  Standard_EXPORT Handle(CDM_Document) Read
+  Standard_EXPORT void Read
     (Standard_IStream& theIStream,
+     Handle(CDM_Document)& theDocument,
+     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
      const Message_ProgressRange& theRange = Message_ProgressRange());
  
   //! Returns instance of read driver for specified format.
@@ -209,19 +215,21 @@ private:
   Standard_EXPORT Handle(CDM_Document) Retrieve
     (const Handle(CDM_MetaData)& aMetaData, 
      const Standard_Boolean UseStorageConfiguration, 
+     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT Handle(CDM_Document) Retrieve
     (const Handle(CDM_MetaData)& aMetaData,
      const Standard_Boolean UseStorageConfiguration, 
      const Standard_Boolean IsComponent, 
+     const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
      const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData) Standard_OVERRIDE;
   
   Standard_EXPORT CDF_TypeOfActivation TypeOfActivation (const Handle(CDM_MetaData)& aMetaData);
   
-  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const Handle(CDM_MetaData)& aMetaData);
+  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const Handle(CDM_MetaData)& aMetaData, const bool theAppendMode);
 
 protected:
 

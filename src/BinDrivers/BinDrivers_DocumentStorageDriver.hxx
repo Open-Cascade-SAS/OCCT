@@ -61,6 +61,13 @@ public:
   Standard_EXPORT void SetWithNormals(const Handle(Message_Messenger)& theMessageDriver,
                                          const Standard_Boolean theWithTriangulation);
 
+  //! Enables writing in the quick part access mode.
+  Standard_EXPORT void EnableQuickPartWriting(const Handle(Message_Messenger)& theMessageDriver,
+                                              const Standard_Boolean theValue) Standard_OVERRIDE;
+
+  //! Clears the NamedShape driver
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
 
 };

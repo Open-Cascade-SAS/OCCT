@@ -57,6 +57,10 @@ public:
   //! Clears the NamedShape driver
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
+  //! Enables reading in the quick part access mode.
+  Standard_EXPORT virtual void EnableQuickPartReading
+    (const Handle(Message_Messenger)& theMessageDriver, Standard_Boolean theValue) Standard_OVERRIDE;
+
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
 

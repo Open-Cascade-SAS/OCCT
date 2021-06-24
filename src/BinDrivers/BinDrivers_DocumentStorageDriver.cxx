@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_Document
 //function : BinDrivers_DocumentStorageDriver
 //purpose  : Constructor
 //=======================================================================
-BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver ()
+BinDrivers_DocumentStorageDriver::BinDrivers_DocumentStorageDriver()
 {
 }
 
@@ -61,7 +61,7 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithTriangles() const
 
   Handle(BinMDF_ADriver) aDriver;
   myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
   return !aShapesDriver.IsNull()
        && aShapesDriver->IsWithTriangles();
 }
@@ -84,13 +84,53 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Me
 
   Handle(BinMDF_ADriver) aDriver;
   myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
   if (aShapesDriver.IsNull())
   {
-    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
   }
 
   aShapesDriver->SetWithTriangles (theWithTriangulation);
+}
+
+void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting (const Handle(Message_Messenger)& theMessageDriver,
+                                                               const Standard_Boolean theValue)
+{
+  if (myDrivers.IsNull())
+  {
+    myDrivers = AttributeDrivers (theMessageDriver);
+  }
+  if (myDrivers.IsNull())
+  {
+    return;
+  }
+
+  Handle(BinMDF_ADriver) aDriver;
+  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+  if (aShapesDriver.IsNull())
+  {
+    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
+  }
+
+  aShapesDriver->EnableQuickPart (theValue);
+}
+
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+void BinDrivers_DocumentStorageDriver::Clear()
+{
+  // Clear NamedShape driver
+  Handle(BinMDF_ADriver) aDriver;
+  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  {
+    Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
+      Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
+    aNamedShapeDriver->Clear();
+  }
+  BinLDrivers_DocumentStorageDriver::Clear();
 }
 
 //=======================================================================
@@ -105,8 +145,8 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
   return !aShapesDriver.IsNull()
     && aShapesDriver->IsWithNormals();
 }
@@ -115,12 +155,12 @@ Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
 //function : SetWithNormals
 //purpose  :
 //=======================================================================
-void BinDrivers_DocumentStorageDriver::SetWithNormals(const Handle(Message_Messenger)& theMessageDriver,
+void BinDrivers_DocumentStorageDriver::SetWithNormals (const Handle(Message_Messenger)& theMessageDriver,
   const Standard_Boolean theWithNormals)
 {
   if (myDrivers.IsNull())
   {
-    myDrivers = AttributeDrivers(theMessageDriver);
+    myDrivers = AttributeDrivers (theMessageDriver);
   }
   if (myDrivers.IsNull())
   {
@@ -128,14 +168,14 @@ void BinDrivers_DocumentStorageDriver::SetWithNormals(const Handle(Message_Messe
   }
 
   Handle(BinMDF_ADriver) aDriver;
-  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
-  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
   if (aShapesDriver.IsNull())
   {
-    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
+    throw Standard_NotImplemented ("Internal Error - TNaming_NamedShape is not found!");
   }
 
-  aShapesDriver->SetWithNormals(theWithNormals);
+  aShapesDriver->SetWithNormals (theWithNormals);
 }
 
 //=======================================================================
@@ -151,7 +191,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
   
   Handle(BinMDF_ADriver) aDriver;
-  if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
+  if (myDrivers->GetDriver (STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {
     try { 
       OCC_CATCH_SIGNALS
@@ -159,7 +199,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
       aNamedShapeDriver->WriteShapeSection (theOS, theDocVer, theRange);
     }
-    catch(Standard_Failure const& anException) {
+    catch (Standard_Failure const& anException) {
       TCollection_ExtendedString anErrorStr ("BinDrivers_DocumentStorageDriver, Shape Section :");
       myMsgDriver->Send (anErrorStr  + anException.GetMessageString(), Message_Fail);
     }

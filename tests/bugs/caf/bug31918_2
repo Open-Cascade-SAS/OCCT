@@ -1,0 +1,123 @@
+puts "==========="
+puts "0031918: Application Framework - New binary format for fast reading part of OCAF document"
+puts "==========="
+
+pload XDE
+
+NewDocument D0 BinOcaf
+
+# creates part-shape by the given sizes
+proc store_part {nx ny dx dy dz entry} {
+  global D0
+  box b1 0 0 0 [expr $nx + .5] [expr $ny + .5] 1
+  box b2 0.5 0.5 0 [expr $nx - .5] [expr $nx - .5] 0.4
+  cut base b1 b2
+
+  set command "compound"
+  for {set x 0} {$x < $nx} {incr x} {
+    for {set y 0} {$y < $ny} {incr y} {
+      pcylinder c${x}_$y 0.25 1.01
+      ttranslate c${x}_$y [expr $x+.75] [expr $y+.75] 0.39
+      set command "$command c${x}_$y"
+    }
+  }
+  eval "$command cc"
+  bop base cc
+  bopfuse part
+  ttranslate part $dx $dy $dz
+  Label D0 $entry
+  SetShape D0 $entry part
+}
+
+store_part 16 16 0 0 0 0:1:1
+
+for {set n 1} {$n < 5} {incr n} {
+  store_part 4 4 $n $n $n 0:2:$n
+  store_part 4 4 [expr 16-4-$n] $n $n 0:2:[expr $n+4]
+  store_part 4 4 $n [expr 16-4-$n] $n 0:2:[expr $n+8]
+  store_part 4 4 [expr 16-4-$n] [expr 16-4-$n] $n 0:2:[expr $n+12]
+}
+store_part 6 6 5 5 5 0:3:1
+store_part 4 4 6 6 6 0:3:2
+GetShape D0 0:3:2 top2
+
+set docname ${imagedir}/doc_${casename}.cbf
+set save_time [lindex [time {
+  SaveAs D0 ${docname}
+}] 0]
+puts "Save time $save_time mcs"
+
+Close D0
+
+set whole_time [lindex [time {
+  Open ${docname} D1
+  Close D1
+} 20] 0]
+puts "Whole document open time $whole_time mcs"
+
+set half_time1 [lindex [time {
+  Open ${docname} D2 -read0:1 -read0:3
+  Close D2
+} 20] 0]
+puts "First half of document open time $half_time1 mcs"
+
+set half_time2 [lindex [time {
+  Open ${docname} D3 -read0:2
+  Close D3
+} 20] 0]
+puts "Second half of document open time $half_time2 mcs"
+
+# Check that open of two halfs of the document separately is not too much slower than open of the whole
+if { [expr ($half_time1 + $half_time2) * 0.9] > $whole_time } {
+  puts "Error : loading of half of the document content is too slow relatively to the whole document load"
+}
+
+Open ${docname} D4 -read0:3:2
+GetShape D4 0:3:2 opened_top2
+checkshape opened_top2
+
+# check shapes are the same before open and after
+if {[string first [whatis top2] [whatis opened_top2]] != 7} {
+  puts "Error : saved and opened shapes are different"
+}
+Open ${docname} D4 -append -read0:1 -read0:2
+GetShape D4 0:1:1 s
+checkshape s
+for {set n 1} {$n < 16} {incr n} {
+  GetShape D4 0:2:$n s
+  checkshape s
+}
+Close D4
+
+set no_shapes_time [lindex [time {
+  Open ${docname} D5 -skipTNaming_NamedShape
+  Close D5
+} 20] 0]
+puts "Document without shapes open time $no_shapes_time mcs"
+
+# Check that open of the document without shapes is much faster than open of the whole
+if { [expr $no_shapes_time * 20] > $whole_time } {
+  puts "Error : loading of the document without shapes is too slow relatively to the whole document load"
+}
+
+# check shapes storage with triangulations
+set length_wo_tirangulation [string length [dump s]]
+vinit
+vdisplay top2 -displaymode 1
+NewDocument D6 BinOcaf
+UndoLimit D6 10
+SetShape D6 0:1 top2
+StoreTriangulation 1
+SaveAs D6 ${docname}
+Close D6
+
+Open ${docname} D7
+GetShape D7 0:1 top3
+Close D7
+
+checkshape top3
+
+set length_with_tirangulation [string length [dump top3]]
+if { [expr $length_with_tirangulation / 7] < $length_wo_tirangulation } {
+  puts "Error : looks like shape stored with triangulation loaded without trianulation"
+}

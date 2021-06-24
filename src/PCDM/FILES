@@ -9,6 +9,8 @@ PCDM_DriverError.hxx
 PCDM_Reader.cxx
 PCDM_Reader.hxx
 PCDM_Reader.lxx
+PCDM_ReaderFilter.cxx
+PCDM_ReaderFilter.hxx
 PCDM_ReaderStatus.hxx
 PCDM_ReadWriter.cxx
 PCDM_ReadWriter.hxx

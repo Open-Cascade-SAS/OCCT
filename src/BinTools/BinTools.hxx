@@ -53,7 +53,7 @@ public:
   Standard_EXPORT static Standard_OStream& PutBool (Standard_OStream& OS, const Standard_Boolean theValue);
   
   Standard_EXPORT static Standard_OStream& PutExtChar (Standard_OStream& OS, const Standard_ExtCharacter theValue);
-  
+
   Standard_EXPORT static Standard_IStream& GetReal (Standard_IStream& IS, Standard_Real& theValue);
 
   Standard_EXPORT static Standard_IStream& GetShortReal (Standard_IStream& IS, Standard_ShortReal& theValue);

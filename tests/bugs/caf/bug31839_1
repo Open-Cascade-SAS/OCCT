@@ -1,0 +1,141 @@
+puts "==========="
+puts "0031839: Application Framework - Add ability to partially load OCAF document"
+puts "==========="
+
+# This test checks partial opening of the document with integer and real attributes
+# and then partial appending (reading into the same document).
+
+NewDocument D0 BinOcaf
+UndoLimit D0 10
+
+# number of labels of objects in the document
+set labs 100
+# number of sub-labels of each object
+set sublabs 10
+
+NewCommand D0
+
+# store at each object-label sub-labels with two attributes at each
+set creation_time [lindex [time {
+  for {set i 1} {$i <= $labs} {incr i} {
+    set lab [Label D0 0:1:${i}]
+    SetName D0 ${lab} Object$i
+    for {set ii 1} {$ii <= $sublabs} {incr ii} {
+      set sublab [Label D0 ${lab}:$ii]
+      SetInteger D0 ${sublab} 10
+      SetReal D0 ${sublab} 12.3
+    }
+  }
+}] 0]
+
+set commit_time [lindex [time {
+  CommitCommand D0
+}] 0]
+
+
+puts "Tree creation time $creation_time mcs"
+puts "Creation commit time $commit_time mcs"
+
+set docname ${imagedir}/doc_${casename}.cbf
+SaveAs D0 ${docname}
+Close D0
+
+set open_time [lindex [time {
+  Open ${docname} D1
+}] 0]
+
+puts "Full document open time $open_time mcs"
+
+set attributes [Attributes D1 0:1:1:1]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] < 0} {
+  puts "Error: full document is opened incorrectly"
+}
+
+Close D1
+
+set open_noint_time [lindex [time {
+  Open ${docname} D2 -skipTDataStd_Integer
+}] 0]
+
+puts "Document without integers open time $open_noint_time mcs"
+
+set attributes [Attributes D2 0:1:1:1]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] >= 0} {
+  puts "Error: document open without integers contains wrong attributes"
+}
+
+set open_oneint_time [lindex [time {
+  Open ${docname} D2 -append -read0:1:1:1
+}] 0]
+
+puts "Read of one integer time $open_oneint_time mcs"
+
+set attributes [Attributes D2 0:1:1:1]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] < 0} {
+  puts "Error: document open with one integer contains wrong attributes"
+}
+
+set attributes [Attributes D2 0:1:1:10]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] >= 0} {
+  puts "Error: document open with one integer contains wrong attributes at label 10"
+}
+
+set open_nineint_time [lindex [time {
+  Open ${docname} D2 -append -read0:1:1
+}] 0]
+puts "Read of nine integer time $open_nineint_time mcs"
+
+set attributes [Attributes D2 0:1:1:10]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] < 0} {
+  puts "Error: document open with nine integer contains wrong attributes at label 10"
+}
+
+set attributes [Attributes D2 0:1:1:5]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] < 0} {
+  puts "Error: document open with nine integer contains wrong attributes at label 5"
+}
+
+set attributes [Attributes D2 0:1:2:5]
+if {[lsearch $attributes TDataStd_Real] < 0 || [lsearch $attributes TDataStd_Integer] >= 0} {
+  puts "Error: document open with nine integer contains wrong attributes at the second object"
+}
+
+SetInteger D2 0:1:1:5 21
+SetReal D2 0:1:1:7 32.1
+
+set open_overwrite_time [lindex [time {
+  Open ${docname} D2 -overwrite -read0:1:1
+}] 0]
+puts "Overwrite of ten integers time $open_overwrite_time mcs"
+
+
+set value [GetInteger D2 0:1:1:5]
+if {$value != 10} {
+  puts "Error: integer is overwritten incorrectly"
+}
+
+set value [GetReal D2 0:1:1:7]
+if {$value != 12.3} {
+  puts "Error: real is overwritten incorrectly"
+}
+
+SetInteger D2 0:1:1:5 21
+SetReal D2 0:1:1:7 32.1
+
+set open_append_time [lindex [time {
+  Open ${docname} D2 -append -read0:1:1
+}] 0]
+puts "Append of ten integers time $open_overwrite_time mcs"
+
+
+set value [GetInteger D2 0:1:1:5]
+if {$value != 21} {
+  puts "Error: integer is overwritten by append"
+}
+
+set value [GetReal D2 0:1:1:7]
+if {$value != 32.1} {
+  puts "Error: real is overwritten by append"
+}
+
+Close D2

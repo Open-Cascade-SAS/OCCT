@@ -2211,6 +2211,15 @@ BRep and Binary BRep Shape formats (only in case of triangulation-only Faces, wi
 Versions of formats have been changed (11 for BinOCAF, 10 for XmlOCAF, 4 for BRep Shape and 3 for Binary BRep Shape).
 Files written with the new version will not be readable by applications of old versions.
 
+@subsection upgrade_760_changesBinaryFormat Changes in storage of binary document format
+
+All kinds of binary document formats since the new version 12 saved with support of partial reading (sub-set of labels and sub-set of attributes).
+For that the shapes data structures are stored with the related NamedShape attributes in the file, not in the particular section in the start of the document.
+Also, size allocated for each label is stored in the file. This allows to skip big parts of document in partial reading mode if needed.
+
+As a result, the new binary files become some smaller, but default reading and writing of documents may take some more time (depenging on the environment), up to 15 percents slower in the worse cases.
+Backward compatibility (loading of old documents in the newer version) is still fully supported, as well as writing the older versions of the document.
+
 @subsection upgrade_occt760_poly Changes in *Poly* package and *Poly_Triangulation* class
 
 *Poly_Triangulation* does no more provide access to internal array structures: methods Nodes(), ChangeNode(), Triangles(), ChangeTriangle(), UVNodes(), ChangeUVNode(), Normals() have been removed.

@@ -15,6 +15,7 @@
 
 
 #include <BinObjMgt_Persistent.hxx>
+#include <BinObjMgt_Position.hxx>
 #include <FSD_FileHeader.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -52,7 +53,10 @@ BinObjMgt_Persistent::BinObjMgt_Persistent ()
      : myIndex (1),
        myOffset(BP_HEADSIZE),
        mySize  (BP_HEADSIZE),
-       myIsError (Standard_False)
+       myIsError (Standard_False),
+       myOStream (NULL),
+       myIStream (NULL),
+       myDirectWritingIsEnabled (Standard_False)
 {
   Init();
 }
@@ -76,6 +80,7 @@ void BinObjMgt_Persistent::Init ()
   myOffset = BP_HEADSIZE;
   mySize = BP_HEADSIZE;
   myIsError = Standard_False;
+  myDirectWritingIsEnabled = Standard_False;
 }
 
 //=======================================================================
@@ -85,13 +90,20 @@ void BinObjMgt_Persistent::Init ()
 //           const BinObjMgt_Persistent&) is also available
 //=======================================================================
 
-Standard_OStream& BinObjMgt_Persistent::Write (Standard_OStream& theOS)
+Standard_OStream& BinObjMgt_Persistent::Write (Standard_OStream& theOS, const Standard_Boolean theDirectStream)
 {
+  if (myDirectWritingIsEnabled)
+  { // if direct writing was enabled, everything is already written, just pass this stage
+    myDirectWritingIsEnabled = Standard_False;
+    return theOS;
+  }
   Standard_Integer nbWritten = 0;
   Standard_Integer *aData = (Standard_Integer*) myData(1);
   // update data length
   aData[2] = mySize - BP_HEADSIZE;
-#ifdef DO_INVERSE
+  if (theDirectStream)
+    aData[1] = -aData[1];
+#if DO_INVERSE
   aData[0] = InverseInt (aData[0]);
   aData[1] = InverseInt (aData[1]);
   aData[2] = InverseInt (aData[2]);
@@ -141,7 +153,10 @@ Standard_IStream& BinObjMgt_Persistent::Read (Standard_IStream& theIS)
     aData[1] = InverseInt (aData[1]);
     aData[2] = InverseInt (aData[2]);
 #endif
-    if (theIS && aData[1] > 0 && aData[2] > 0) {
+    myDirectWritingIsEnabled = aData[1] < 0;
+    if (myDirectWritingIsEnabled)
+      aData[1] = -aData[1];
+    if (theIS && aData[2] > 0) {
       mySize += aData[2];
       // read remaining data
       Standard_Integer nbRead = BP_HEADSIZE;
@@ -1163,4 +1178,29 @@ void BinObjMgt_Persistent::inverseShortRealData
       anOffset = 0;
     }
   }
+}
+
+//=======================================================================
+//function : GetOStream
+//purpose  : Gets the stream for and enables direct writing
+//=======================================================================
+
+Standard_OStream* BinObjMgt_Persistent::GetOStream()
+{
+  Write (*myOStream, Standard_True); // finishes already stored data save
+  myStreamStart = new BinObjMgt_Position (*myOStream);
+  myStreamStart->WriteSize (*myOStream, Standard_True);
+  myDirectWritingIsEnabled = Standard_True;
+  return myOStream;
+}
+
+//=======================================================================
+//function : GetOStream
+//purpose  : Gets the stream for and enables direct writing
+//=======================================================================
+Standard_IStream* BinObjMgt_Persistent::GetIStream()
+{
+  // skip the stream size first
+  myIStream->seekg (sizeof (uint64_t), std::ios_base::cur);
+  return myIStream;
 }

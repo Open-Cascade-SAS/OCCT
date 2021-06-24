@@ -745,6 +745,32 @@ To open the document from a file where it has been previously saved, you can use
 app->Open("/tmp/example.caf", doc); 
 ~~~~
 
+For binary formats only the part of the stored document can be loaded. For that the *PCDM_ReadingFilter* class could be used. It is possible to define which attributes must be loaded or omitted,
+or to define one or several entries for sub-tree that must be loaded only. The following example opens document *doc*, but reads only "0:1:2" label and its sub-labels and only *TDataStd_Name* attributes on them.
+
+~~~~{.cpp}
+Handle(PCDM_ReaderFilter) filter = new PCDM_ReaderFilter("0:1:2");
+filter->AddRead("TDataStd_Name");
+app->Open("example.cbf", doc, filter); 
+~~~~
+
+Also, using filters, part of the document can be appended into the already loaded document from the same file. For an example, to read into the previously opened *doc* all attributes, except *TDataStd_Name* and *TDataStd_Integer*:
+
+~~~~{.cpp}
+Handle(PCDM_ReaderFilter) filter2 = new PCDM_ReaderFilter(PCDM_ReaderFilter::AppendMode_Protect);
+filter2->AddSkipped("TDataStd_Name");
+filter2->AddSkipped("TDataStd_Integer");
+app->Open("example.cbf", doc, filter2); 
+~~~~
+
+*PCDM_ReaderFilter::AppendMode_Protect* means that if the loading algorithm finds already existing attribute in the document, it will not be overwritten by attibute from the loading file. If it is needed to
+substitute the existing attributes, the reading mode *PCDM_ReaderFilter::AppendMode_Overwrite* must be used instead.
+
+*AddRead* and *AddSkipped* methods for attributes should not be used in one filter. If it is so, *AddSkipped* attributes are ignored during the read.
+
+Appending to the document content of already loaded file may be performed several times with the same or different parts of the document loaded. For that the filter reading mode must be *PCDM_ReaderFilter::AppendMode_Protect*
+or *PCDM_ReaderFilter::AppendMode_Overwrite*, which enables the "append" mode of document open. If the filter is empty or null or skipped in arguments, it opens document with "append" mode disabled and any loading limitations.
+
 @subsubsection occt_ocaf_4_3_5 Cutting, copying and pasting inside a document
 
 To cut, copy and paste inside a document, use the class *TDF_CopyLabel*.
