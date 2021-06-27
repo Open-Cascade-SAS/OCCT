@@ -197,8 +197,6 @@ static struct
 //  EVENT GLOBAL VARIABLES
 //==============================================================================
 
-Standard_Boolean TheIsAnimating = Standard_False;
-
 namespace
 {
 
@@ -3325,11 +3323,6 @@ static LRESULT WINAPI AdvViewerWindowProc (HWND theWinHandle,
       }
       return 0;
     }
-    case WM_LBUTTONDOWN:
-    {
-      TheIsAnimating = Standard_False;
-    }
-    Standard_FALLTHROUGH
     default:
     {
       const Handle(V3d_View)& aView = ViewerTest::CurrentView();
@@ -3426,14 +3419,6 @@ int ViewerMainLoop (Standard_Integer theNbArgs, const char** theArgVec)
       }
       break;
     }
-    case ButtonPress:
-    {
-      if (aReport.xbutton.button == Button1)
-      {
-        TheIsAnimating = Standard_False;
-      }
-    }
-    Standard_FALLTHROUGH
     default:
     {
       const Handle(V3d_View)& aView = ViewerTest::CurrentView();
@@ -7294,6 +7279,7 @@ namespace
   //! The animation calling the Draw Harness command.
   class ViewerTest_AnimationProc : public AIS_Animation
   {
+    DEFINE_STANDARD_RTTI_INLINE(ViewerTest_AnimationProc, AIS_Animation)
   public:
 
     //! Main constructor.
@@ -7358,6 +7344,85 @@ namespace
     Draw_Interpretor*       myDrawInter;
     TCollection_AsciiString myCommand;
 
+  };
+
+  //! Auxiliary animation holder.
+  class ViewerTest_AnimationHolder : public AIS_AnimationCamera
+  {
+    DEFINE_STANDARD_RTTI_INLINE(ViewerTest_AnimationHolder, AIS_AnimationCamera)
+  public:
+    ViewerTest_AnimationHolder (const Handle(AIS_Animation)& theAnim,
+                                const Handle(V3d_View)& theView,
+                                const Standard_Boolean theIsFreeView)
+    : AIS_AnimationCamera ("ViewerTest_AnimationHolder", Handle(V3d_View)())
+    {
+      if (theAnim->Timer().IsNull())
+      {
+        theAnim->SetTimer (new Media_Timer());
+      }
+      myTimer = theAnim->Timer();
+      myView = theView;
+      if (theIsFreeView)
+      {
+        myCamStart = new Graphic3d_Camera (theView->Camera());
+      }
+      Add (theAnim);
+    }
+
+    //! Start playback.
+    virtual void StartTimer (const Standard_Real    theStartPts,
+                             const Standard_Real    thePlaySpeed,
+                             const Standard_Boolean theToUpdate,
+                             const Standard_Boolean theToStopTimer) Standard_OVERRIDE
+    {
+      base_type::StartTimer (theStartPts, thePlaySpeed, theToUpdate, theToStopTimer);
+      if (theToStopTimer)
+      {
+        abortPlayback();
+      }
+    }
+
+    //! Pause animation.
+    virtual void Pause() Standard_OVERRIDE
+    {
+      myState = AnimationState_Paused;
+      // default implementation would stop all children,
+      // but we want to keep wrapped animation paused
+      myAnimations.First()->Pause();
+      abortPlayback();
+    }
+
+    //! Stop animation.
+    virtual void Stop() Standard_OVERRIDE
+    {
+      base_type::Stop();
+      abortPlayback();
+    }
+
+    //! Process one step of the animation according to the input time progress, including all children.
+    virtual void updateWithChildren (const AIS_AnimationProgress& thePosition) Standard_OVERRIDE
+    {
+      Handle(V3d_View) aView = myView;
+      if (!aView.IsNull()
+       && !myCamStart.IsNull())
+      {
+        myCamStart->Copy (aView->Camera());
+      }
+      base_type::updateWithChildren (thePosition);
+      if (!aView.IsNull()
+       && !myCamStart.IsNull())
+      {
+        aView->Camera()->Copy (myCamStart);
+      }
+    }
+  private:
+    void abortPlayback()
+    {
+      if (!myView.IsNull())
+      {
+        myView.Nullify();
+      }
+    }
   };
 
   //! Replace the animation with the new one.
@@ -7853,6 +7918,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
   Standard_Real aPlayStartTime = anAnimation->StartPts();
   Standard_Real aPlayDuration  = anAnimation->Duration();
   Standard_Boolean isFreeCamera = Standard_False;
+  Standard_Boolean toPauseOnClick = Standard_True;
   Standard_Boolean isLockLoop   = Standard_False;
 
   // video recording parameters
@@ -7922,6 +7988,14 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
         aPlayDuration = Draw::Atof (theArgVec[anArgIter]);
       }
     }
+    else if (anArg == "-pause")
+    {
+      anAnimation->Pause();
+    }
+    else if (anArg == "-stop")
+    {
+      anAnimation->Stop();
+    }
     else if (anArg == "-playspeed"
           || anArg == "-speed")
     {
@@ -7936,13 +8010,22 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
           || anArg == "-lockloop"
           || anArg == "-playlockloop")
     {
-      isLockLoop = Standard_True;
+      isLockLoop = Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArg == "-freecamera"
+          || anArg == "-nofreecamera"
           || anArg == "-playfreecamera"
-          || anArg == "-freelook")
+          || anArg == "-noplayfreecamera"
+          || anArg == "-freelook"
+          || anArg == "-nofreelook")
     {
-      isFreeCamera = Standard_True;
+      isFreeCamera = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
+    }
+    else if (anArg == "-pauseonclick"
+          || anArg == "-nopauseonclick"
+          || anArg == "-nopause")
+    {
+      toPauseOnClick = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     // video recodring options
     else if (anArg == "-rec"
@@ -8298,155 +8381,118 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
     }
   }
 
+  ViewerTest::CurrentEventManager()->AbortViewAnimation();
+  ViewerTest::CurrentEventManager()->SetObjectsAnimation (Handle(AIS_Animation)());
   if (!toPlay && aRecFile.IsEmpty())
   {
     return 0;
   }
 
   // Start animation timeline and process frame updating.
-  TheIsAnimating = Standard_True;
-  const Standard_Boolean wasImmediateUpdate = aView->SetImmediateUpdate (Standard_False);
-  Handle(Graphic3d_Camera) aCameraBack = new Graphic3d_Camera (aView->Camera());
-  anAnimation->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True, aPlayDuration <= 0.0);
-  if (isFreeCamera)
+  if (aRecParams.FpsNum <= 0
+  && !isLockLoop)
   {
-    aView->Camera()->Copy (aCameraBack);
+    Handle(ViewerTest_AnimationHolder) aHolder = new ViewerTest_AnimationHolder (anAnimation, aView, isFreeCamera);
+    aHolder->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True, aPlayDuration <= 0.0);
+    ViewerTest::CurrentEventManager()->SetPauseObjectsAnimation (toPauseOnClick);
+    ViewerTest::CurrentEventManager()->SetObjectsAnimation (aHolder);
+    ViewerTest::CurrentEventManager()->ProcessExpose();
+    return 0;
   }
 
+  // Perform video recording
+  const Standard_Boolean wasImmediateUpdate = aView->SetImmediateUpdate (Standard_False);
   const Standard_Real anUpperPts = aPlayStartTime + aPlayDuration;
-  if (aRecParams.FpsNum <= 0)
+  anAnimation->StartTimer (aPlayStartTime, aPlaySpeed, Standard_True, aPlayDuration <= 0.0);
+
+  OSD_Timer aPerfTimer;
+  aPerfTimer.Start();
+
+  Handle(Image_VideoRecorder) aRecorder;
+  ImageFlipper aFlipper;
+  Handle(Draw_ProgressIndicator) aProgress;
+  if (!aRecFile.IsEmpty())
   {
-    while (!anAnimation->IsStopped())
+    if (aRecParams.Width  <= 0
+     || aRecParams.Height <= 0)
     {
-      aCameraBack->Copy (aView->Camera());
-      const Standard_Real aPts = anAnimation->UpdateTimer();
-      if (isFreeCamera)
-      {
-        aView->Camera()->Copy (aCameraBack);
-      }
-
-      if (aPts >= anUpperPts)
-      {
-        anAnimation->Pause();
-        break;
-      }
-
-      if (aView->IsInvalidated())
-      {
-        aView->Redraw();
-      }
-      else
-      {
-        aView->RedrawImmediate();
-      }
-
-      if (!isLockLoop)
-      {
-        // handle user events
-        theDI.Eval ("after 1 set waiter 1");
-        theDI.Eval ("vwait waiter");
-      }
-      if (!TheIsAnimating)
-      {
-        anAnimation->Pause();
-        theDI << aPts;
-        break;
-      }
+      aView->Window()->Size (aRecParams.Width, aRecParams.Height);
     }
 
-    if (aView->IsInvalidated())
+    aRecorder = new Image_VideoRecorder();
+    if (!aRecorder->Open (aRecFile.ToCString(), aRecParams))
     {
-      aView->Redraw();
+      Message::SendFail ("Error: failed to open video file for recording");
+      return 0;
+    }
+
+    aProgress = new Draw_ProgressIndicator (theDI, 1);
+  }
+
+  // Manage frame-rated animation here
+  Standard_Real aPts = aPlayStartTime;
+  int64_t aNbFrames = 0;
+  Message_ProgressScope aPS(Message_ProgressIndicator::Start(aProgress),
+                            "Video recording, sec", Max(1, Standard_Integer(aPlayDuration / aPlaySpeed)));
+  Standard_Integer aSecondsProgress = 0;
+  for (; aPts <= anUpperPts && aPS.More();)
+  {
+    Standard_Real aRecPts = 0.0;
+    if (aRecParams.FpsNum > 0)
+    {
+      aRecPts = aPlaySpeed * ((Standard_Real(aRecParams.FpsDen) / Standard_Real(aRecParams.FpsNum)) * Standard_Real(aNbFrames));
     }
     else
     {
-      aView->RedrawImmediate();
+      aRecPts = aPlaySpeed * aPerfTimer.ElapsedTime();
     }
-  }
-  else
-  {
-    OSD_Timer aPerfTimer;
-    aPerfTimer.Start();
 
-    Handle(Image_VideoRecorder) aRecorder;
-    ImageFlipper aFlipper;
-    Handle(Draw_ProgressIndicator) aProgress;
-    if (!aRecFile.IsEmpty())
+    aPts = aPlayStartTime + aRecPts;
+    ++aNbFrames;
+    if (!anAnimation->Update (aPts))
     {
-      if (aRecParams.Width  <= 0
-       || aRecParams.Height <= 0)
-      {
-        aView->Window()->Size (aRecParams.Width, aRecParams.Height);
-      }
+      break;
+    }
 
-      aRecorder = new Image_VideoRecorder();
-      if (!aRecorder->Open (aRecFile.ToCString(), aRecParams))
+    if (!aRecorder.IsNull())
+    {
+      V3d_ImageDumpOptions aDumpParams;
+      aDumpParams.Width          = aRecParams.Width;
+      aDumpParams.Height         = aRecParams.Height;
+      aDumpParams.BufferType     = Graphic3d_BT_RGBA;
+      aDumpParams.StereoOptions  = V3d_SDO_MONO;
+      aDumpParams.ToAdjustAspect = Standard_True;
+      if (!aView->ToPixMap (aRecorder->ChangeFrame(), aDumpParams))
       {
-        Message::SendFail ("Error: failed to open video file for recording");
+        Message::SendFail ("Error: view dump is failed");
         return 0;
       }
-
-      aProgress = new Draw_ProgressIndicator (theDI, 1);
+      aFlipper.FlipY (aRecorder->ChangeFrame());
+      if (!aRecorder->PushFrame())
+      {
+        return 0;
+      }
     }
-
-    // Manage frame-rated animation here
-    Standard_Real aPts = aPlayStartTime;
-    int64_t aNbFrames = 0;
-    Message_ProgressScope aPS(Message_ProgressIndicator::Start(aProgress),
-                              "Video recording, sec", Max(1, Standard_Integer(aPlayDuration / aPlaySpeed)));
-    Standard_Integer aSecondsProgress = 0;
-    for (; aPts <= anUpperPts && aPS.More();)
+    else
     {
-      const Standard_Real aRecPts = aPlaySpeed * ((Standard_Real(aRecParams.FpsDen) / Standard_Real(aRecParams.FpsNum)) * Standard_Real(aNbFrames));
-      aPts = aPlayStartTime + aRecPts;
-      ++aNbFrames;
-      if (!anAnimation->Update (aPts))
-      {
-        break;
-      }
-
-      if (!aRecorder.IsNull())
-      {
-        V3d_ImageDumpOptions aDumpParams;
-        aDumpParams.Width          = aRecParams.Width;
-        aDumpParams.Height         = aRecParams.Height;
-        aDumpParams.BufferType     = Graphic3d_BT_RGBA;
-        aDumpParams.StereoOptions  = V3d_SDO_MONO;
-        aDumpParams.ToAdjustAspect = Standard_True;
-        if (!aView->ToPixMap (aRecorder->ChangeFrame(), aDumpParams))
-        {
-          Message::SendFail ("Error: view dump is failed");
-          return 0;
-        }
-        aFlipper.FlipY (aRecorder->ChangeFrame());
-        if (!aRecorder->PushFrame())
-        {
-          return 0;
-        }
-      }
-      else
-      {
-        aView->Redraw();
-      }
-
-      while (aSecondsProgress < Standard_Integer(aRecPts / aPlaySpeed))
-      {
-        aPS.Next();
-        ++aSecondsProgress;
-      }
+      aView->Redraw();
     }
 
-    aPerfTimer.Stop();
-    anAnimation->Stop();
-    const Standard_Real aRecFps = Standard_Real(aNbFrames) / aPerfTimer.ElapsedTime();
-    theDI << "Average FPS: " << aRecFps << "\n"
-          << "Nb. Frames: "  << Standard_Real(aNbFrames);
-
-    aView->Redraw();
+    while (aSecondsProgress < Standard_Integer(aRecPts / aPlaySpeed))
+    {
+      aPS.Next();
+      ++aSecondsProgress;
+    }
   }
 
+  aPerfTimer.Stop();
+  anAnimation->Stop();
+  const Standard_Real aRecFps = Standard_Real(aNbFrames) / aPerfTimer.ElapsedTime();
+  theDI << "Average FPS: " << aRecFps << "\n"
+        << "Nb. Frames: "  << Standard_Real(aNbFrames);
+
+  aView->Redraw();
   aView->SetImmediateUpdate (wasImmediateUpdate);
-  TheIsAnimating = Standard_False;
   return 0;
 }
 
@@ -14740,10 +14786,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
             "List existing animations:"
     "\n\t\t:  vanim"
     "\n\t\t: Animation playback:"
-    "\n\t\t:  vanim name -play|-resume [playFrom [playDuration]]"
-    "\n\t\t:            [-speed Coeff] [-freeLook] [-lockLoop]"
+    "\n\t\t:  vanim name {-play|-resume|-pause|-stop} [playFrom [playDuration]]"
+    "\n\t\t:            [-speed Coeff] [-freeLook] [-noPauseOnClick] [-lockLoop]"
     "\n\t\t:   -speed    playback speed (1.0 is normal speed)"
     "\n\t\t:   -freeLook skip camera animations"
+    "\n\t\t:   -noPauseOnClick do not pause animation on mouse click"
     "\n\t\t:   -lockLoop disable any interactions"
     "\n\t\t:"
     "\n\t\t: Animation definition:"
@@ -14791,7 +14838,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   -vcodec  video codec identifier (ffv1, mjpeg, etc.)"
     "\n\t\t:   -pix_fmt image pixel format (yuv420p, rgb24, etc.)"
     "\n\t\t:   -crf     constant rate factor (specific to codec)"
-    "\n\t\t:   -preset  codec parameters preset (specific to codec)"
+    "\n\t\t:   -preset  codec parameters preset (specific to codec)",
     __FILE__, VAnimation, group);
 
   theCommands.Add("vchangeselected",

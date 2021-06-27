@@ -34,6 +34,7 @@
 #include <Quantity_ColorRGBA.hxx>
 #include <Standard_Mutex.hxx>
 
+class AIS_Animation;
 class AIS_AnimationCamera;
 class AIS_InteractiveObject;
 class AIS_InteractiveContext;
@@ -76,6 +77,18 @@ public:
 
   //! Interrupt active view animation.
   Standard_EXPORT void AbortViewAnimation();
+
+  //! Return objects animation; empty (but not NULL) animation by default.
+  const Handle(AIS_Animation)& ObjectsAnimation() const { return myObjAnimation; }
+
+  //! Set object animation to be handled within handleViewRedraw().
+  void SetObjectsAnimation (const Handle(AIS_Animation)& theAnimation) { myObjAnimation = theAnimation; }
+
+  //! Return TRUE if object animation should be paused on mouse click; FALSE by default.
+  bool ToPauseObjectsAnimation() const { return myToPauseObjAnimation; }
+
+  //! Set if object animation should be paused on mouse click.
+  void SetPauseObjectsAnimation (bool theToPause) { myToPauseObjAnimation = theToPause; }
 
   //! Return TRUE if continuous redrawing is enabled; FALSE by default.
   //! This option would request a next viewer frame to be completely redrawn right after current frame is finished.
@@ -713,6 +726,8 @@ protected:
   Standard_Boolean    myHasThrust;                //!< flag indicating active thrust
 
   Handle(AIS_AnimationCamera) myViewAnimation;    //!< view animation
+  Handle(AIS_Animation)       myObjAnimation;     //!< objects animation
+  Standard_Boolean       myToPauseObjAnimation;   //!< flag to pause objects animation on mouse click; FALSE by default
   Handle(AIS_RubberBand) myRubberBand;            //!< Rubber-band presentation
   Handle(SelectMgr_EntityOwner) myDragOwner;      //!< detected owner of currently dragged object
   Handle(AIS_InteractiveObject) myDragObject;     //!< currently dragged object

@@ -147,6 +147,12 @@ public:
   //! Return elapsed time.
   Standard_Real ElapsedTime() const { return !myTimer.IsNull() ? myTimer->ElapsedTime() : 0.0; }
 
+  //! Return playback timer.
+  const Handle(Media_Timer)& Timer() const { return myTimer; }
+
+  //! Set playback timer.
+  void SetTimer (const Handle(Media_Timer)& theTimer) { myTimer = theTimer; }
+
 public:
 
   //! Start animation. This method changes status of the animation to Started.

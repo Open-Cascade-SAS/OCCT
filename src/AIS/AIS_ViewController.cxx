@@ -63,6 +63,8 @@ AIS_ViewController::AIS_ViewController()
   myHasThrust (false),
   //
   myViewAnimation (new AIS_AnimationCamera ("AIS_ViewController_ViewAnimation", Handle(V3d_View)())),
+  myObjAnimation (new AIS_Animation ("AIS_ViewController_ObjectsAnimation")),
+  myToPauseObjAnimation (false),
   myPrevMoveTo (-1, -1),
   myHasHlrOnBeforeRotation (false),
   //
@@ -610,6 +612,14 @@ bool AIS_ViewController::UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
                                            bool theIsDoubleClick)
 {
   (void )theIsDoubleClick;
+
+  if (myToPauseObjAnimation
+  && !myObjAnimation.IsNull()
+  && !myObjAnimation->IsStopped())
+  {
+    myObjAnimation->Pause();
+  }
+
   AIS_SelectionScheme aScheme = AIS_SelectionScheme_UNKNOWN;
   if (myMouseSelectionSchemes.Find (theButton | theModifiers, aScheme))
   {
@@ -2940,6 +2950,14 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
    && !myViewAnimation->IsStopped())
   {
     myViewAnimation->UpdateTimer();
+    ResetPreviousMoveTo();
+    setAskNextFrame();
+  }
+
+  if (!myObjAnimation.IsNull()
+   && !myObjAnimation->IsStopped())
+  {
+    myObjAnimation->UpdateTimer();
     ResetPreviousMoveTo();
     setAskNextFrame();
   }
