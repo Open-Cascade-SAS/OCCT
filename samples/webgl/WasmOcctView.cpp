@@ -21,12 +21,11 @@
 
 #include "WasmOcctView.h"
 
-#include "WasmOcctPixMap.h"
-
 #include <AIS_Shape.hxx>
 #include <AIS_ViewCube.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_DisplayConnection.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Graphic3d_CubeMapPacked.hxx>
@@ -82,8 +81,8 @@ namespace
     static void onImageRead (const char* theFilePath)
     {
       Handle(Graphic3d_CubeMapPacked) aCubemap;
-      Handle(WasmOcctPixMap) anImage = new WasmOcctPixMap();
-      if (anImage->Init (theFilePath))
+      Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+      if (anImage->Load (theFilePath))
       {
         aCubemap = new Graphic3d_CubeMapPacked (anImage);
       }

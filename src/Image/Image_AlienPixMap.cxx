@@ -35,6 +35,8 @@
   #ifdef _MSC_VER
     #pragma comment(lib, "Ole32.lib")
   #endif
+#elif defined(__EMSCRIPTEN__)
+  #include <emscripten/emscripten.h>
 #endif
 
 #include <Image_AlienPixMap.hxx>
@@ -494,6 +496,12 @@ void Image_AlienPixMap::Clear()
     FreeImage_Unload (myLibImage);
     myLibImage = NULL;
   }
+#elif defined(__EMSCRIPTEN__)
+  if (myLibImage != NULL)
+  {
+    free ((void* )myLibImage);
+    myLibImage = NULL;
+  }
 #endif
 }
 
@@ -797,6 +805,39 @@ bool Image_AlienPixMap::Load (std::istream& theStream,
   }
 
   return Load (&aBuff.ChangeFirst(), aBuff.Size(), theFilePath);
+}
+#elif defined(__EMSCRIPTEN__)
+bool Image_AlienPixMap::Load (std::istream& ,
+                              const TCollection_AsciiString& )
+{
+  Clear();
+  Message::SendFail ("Error: no image library available for decoding stream");
+  return false;
+}
+bool Image_AlienPixMap::Load (const Standard_Byte* theData,
+                              Standard_Size theLength,
+                              const TCollection_AsciiString& theImagePath)
+{
+  Clear();
+  if (theData != NULL)
+  {
+    (void )theLength;
+    Message::SendFail ("Error: no image library available for decoding in-memory buffer");
+    return false;
+  }
+
+  int aSizeX = 0, aSizeY = 0;
+  char* anImgData = emscripten_get_preloaded_image_data (theImagePath.ToCString(), &aSizeX, &aSizeY);
+  if (anImgData == NULL)
+  {
+    Message::SendFail() << "Error: image '" << theImagePath << "' is not preloaded";
+    return false;
+  }
+
+  Image_PixMap::InitWrapper (Image_Format_RGBA, (Standard_Byte* )anImgData, aSizeX, aSizeY);
+  SetTopDown (true);
+  myLibImage = (FIBITMAP* )anImgData;
+  return true;
 }
 #else
 bool Image_AlienPixMap::Load (std::istream& ,

@@ -35,11 +35,9 @@ file(GLOB SOURCES
   *.cpp
 )
 source_group ("Headers" FILES
-  WasmOcctView.h
-  WasmOcctPixMap.h)
+  WasmOcctView.h)
 source_group ("Sources" FILES
   WasmOcctView.cpp
-  WasmOcctPixMap.cpp
   main.cpp)
 
 # FreeType
