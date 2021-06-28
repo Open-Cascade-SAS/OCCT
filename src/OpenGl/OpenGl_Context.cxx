@@ -74,25 +74,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
 #ifdef __EMSCRIPTEN__
   #include <emscripten.h>
   #include <emscripten/html5.h>
-
-  //! Check if WebGL extension is available and activate it
-  //! (usage of extension without activation will generate errors).
-  static bool checkEnableWebGlExtension (const OpenGl_Context& theCtx,
-                                         const char* theExtName)
-  {
-    if (!theCtx.CheckExtension (theExtName))
-    {
-      return false;
-    }
-    if (EMSCRIPTEN_WEBGL_CONTEXT_HANDLE aWebGlCtx = emscripten_webgl_get_current_context())
-    {
-      if (emscripten_webgl_enable_extension (aWebGlCtx, theExtName))
-      {
-        return true;
-      }
-    }
-    return false;
-  }
 #endif
 
 namespace
@@ -892,7 +873,25 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
     Messenger()->Send ("TKOpenGL: glGetString (GL_EXTENSIONS) has returned NULL! No GL context?", Message_Warning);
     return Standard_False;
   }
-  return CheckExtension (anExtString, theExtName);
+  if (!CheckExtension (anExtString, theExtName))
+  {
+    return Standard_False;
+  }
+
+#ifdef __EMSCRIPTEN__
+  //! Check if WebGL extension is available and activate it
+  //! (usage of extension without activation will generate errors).
+  if (EMSCRIPTEN_WEBGL_CONTEXT_HANDLE aWebGlCtx = emscripten_webgl_get_current_context())
+  {
+    if (emscripten_webgl_enable_extension (aWebGlCtx, theExtName))
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+#else
+  return Standard_True;
+#endif
 }
 
 // =======================================================================
@@ -1700,14 +1699,14 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     mySupportedFormats->Add (Image_Format_AlphaF);
     mySupportedFormats->Add (Image_Format_RGBF);
     mySupportedFormats->Add (Image_Format_RGBAF);
-    if (hasHalfFloatBuffer)
+    if (hasHalfFloatBuffer != OpenGl_FeatureNotAvailable)
     {
       mySupportedFormats->Add (Image_Format_RGBAF_half);
     }
     if (arbTexRG)
     {
       mySupportedFormats->Add (Image_Format_RGF);
-      if (hasHalfFloatBuffer)
+      if (hasHalfFloatBuffer != OpenGl_FeatureNotAvailable)
       {
         mySupportedFormats->Add (Image_Format_RGF_half);
       }
@@ -1722,7 +1721,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 
 #ifdef __EMSCRIPTEN__
-  if (checkEnableWebGlExtension (*this, "GL_WEBGL_compressed_texture_s3tc")) // GL_WEBGL_compressed_texture_s3tc_srgb for sRGB formats
+  if (CheckExtension ("GL_WEBGL_compressed_texture_s3tc")) // GL_WEBGL_compressed_texture_s3tc_srgb for sRGB formats
   {
     mySupportedFormats->Add (Image_CompressedFormat_RGB_S3TC_DXT1);
     mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT1);
@@ -1730,7 +1729,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT5);
   }
   if (!extPDS
-    && checkEnableWebGlExtension (*this, "GL_WEBGL_depth_texture"))
+    && CheckExtension ("GL_WEBGL_depth_texture"))
   {
     extPDS = true; // WebGL 1.0 extension (in WebGL 2.0 core)
   }
@@ -2012,7 +2011,7 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     addInfo (theDict, "GLvendor",    (const char*)::glGetString (GL_VENDOR));
     addInfo (theDict, "GLdevice",    (const char*)::glGetString (GL_RENDERER));
   #ifdef __EMSCRIPTEN__
-    if (checkEnableWebGlExtension (*this, "GL_WEBGL_debug_renderer_info"))
+    if (CheckExtension ("GL_WEBGL_debug_renderer_info"))
     {
       if (const char* aVendor = (const char*)::glGetString (0x9245))
       {

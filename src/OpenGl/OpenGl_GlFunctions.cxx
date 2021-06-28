@@ -455,12 +455,25 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
     theCtx.hasDrawBuffers = OpenGl_FeatureInExtensions;
   }
 
-  theCtx.hasFloatBuffer     = isGlGreaterEqualShort (3, 2) ? OpenGl_FeatureInCore :
-                              checkExtensionShort ("GL_EXT_color_buffer_float") ? OpenGl_FeatureInExtensions
-                                                                                : OpenGl_FeatureNotAvailable;
-  theCtx.hasHalfFloatBuffer = isGlGreaterEqualShort (3, 2) ? OpenGl_FeatureInCore :
-                              checkExtensionShort ("GL_EXT_color_buffer_half_float") ? OpenGl_FeatureInExtensions
-                                                                                     : OpenGl_FeatureNotAvailable;
+  // float textures available since OpenGL ES 3.0+,
+  // but renderable only since 3.2+ or with extension
+  theCtx.hasFloatBuffer = theCtx.hasHalfFloatBuffer = OpenGl_FeatureNotAvailable;
+  if (isGlGreaterEqualShort (3, 2))
+  {
+    theCtx.hasFloatBuffer = theCtx.hasHalfFloatBuffer = OpenGl_FeatureInCore;
+  }
+  else
+  {
+    if (checkExtensionShort ("GL_EXT_color_buffer_float"))
+    {
+      theCtx.hasFloatBuffer = isGlGreaterEqualShort (3, 0) ? OpenGl_FeatureInCore : OpenGl_FeatureInExtensions;
+    }
+    if (checkExtensionShort ("GL_EXT_color_buffer_half_float"))
+    {
+      // GL_HALF_FLOAT_OES for OpenGL ES 2.0 and GL_HALF_FLOAT for OpenGL ES 3.0+
+      theCtx.hasHalfFloatBuffer = isGlGreaterEqualShort (3, 0) ? OpenGl_FeatureInCore : OpenGl_FeatureInExtensions;
+    }
+  }
 
   theCtx.oesSampleVariables = checkExtensionShort ("GL_OES_sample_variables");
   theCtx.oesStdDerivatives  = checkExtensionShort ("GL_OES_standard_derivatives");
