@@ -13699,6 +13699,11 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
       {
         aType = StdSelect_TypeOfSelectionImage_ColoredEntity;
       }
+      else if (aValue == "entitytypecolor"
+            || aValue == "entitytype")
+      {
+        aType = StdSelect_TypeOfSelectionImage_ColoredEntityType;
+      }
       else if (aValue == "ownercolor"
             || aValue == "owner")
       {
@@ -15148,7 +15153,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    __FILE__, VSelectionProperties, group);
 
   theCommands.Add ("vseldump",
-                   "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity|surfNormal}=depth -pickedIndex Index=1"
+                   "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity|entityType|surfNormal}=depth -pickedIndex Index=1"
                    "\n\t\t:       [-xrPose base|head=base]"
                    "\n\t\t: Generate an image based on detection results:"
                    "\n\t\t:   depth       normalized depth values"
@@ -15156,7 +15161,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   object      color of detected object"
                    "\n\t\t:   owner       color of detected owner"
                    "\n\t\t:   selMode     color of selection mode"
-                   "\n\t\t:   entity      color of etected entity"
+                   "\n\t\t:   entity      color of detected entity"
+                   "\n\t\t:   entityType  color of detected entity type"
                    "\n\t\t:   surfNormal  normal direction values",
                    __FILE__, VDumpSelectionImage, group);
 

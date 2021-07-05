@@ -329,6 +329,36 @@ Standard_Boolean SelectMgr_TriangularFrustum::OverlapsSphere (const gp_Pnt& theC
   return hasSphereOverlap (theCenter, theRadius);
 }
 
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                const Standard_Real theTopRad,
+                                                                const Standard_Real theHeight,
+                                                                const gp_Trsf& theTrsf,
+                                                                const SelectMgr_ViewClipRange& theClipRange,
+                                                                SelectBasics_PickResult& thePickResult) const
+{
+  (void)theClipRange;
+  (void)thePickResult;
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf);
+}
+
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                const Standard_Real theTopRad,
+                                                                const Standard_Real theHeight,
+                                                                const gp_Trsf& theTrsf,
+                                                                Standard_Boolean* theInside) const
+{
+  (void) theInside;
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf);
+}
+
 // =======================================================================
 // function : Clear
 // purpose  : Nullifies the handle for corresponding builder instance to prevent

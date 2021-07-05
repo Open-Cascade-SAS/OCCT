@@ -93,7 +93,33 @@ protected:
                                      const Standard_Real theRadius,
                                      Standard_Boolean* theInside = NULL) const;
 
+  //! Intersection test between defined volume and given cylinder (or cone).
+  Standard_Boolean hasCylinderOverlap (const Standard_Real theBottomRad,
+                                       const Standard_Real theTopRad,
+                                       const Standard_Real theHeight,
+                                       const gp_Trsf& theTrsf,
+                                       Standard_Boolean* theInside = NULL) const;
+
+  //! Checking whether the point thePnt is inside the shape with borders theVertices.
+  //! thePnt and theVertices lie in the same plane.
+  Standard_Boolean IsDotInside (const gp_Pnt& thePnt,
+                                const TColgp_Array1OfPnt& theVertices) const;
+
 private:
+
+  //! Return true if one segment enclosed between the points thePnt1Seg1 and thePnt2Seg1
+  //! intersects another segment that enclosed between thePnt1Seg2 and thePnt2Seg2.
+  Standard_Boolean isSegmentsIntersect (const gp_Pnt& thePnt1Seg1,
+                                        const gp_Pnt& thePnt2Seg1,
+                                        const gp_Pnt& thePnt1Seg2,
+                                        const gp_Pnt& thePnt2Seg2) const;
+
+  //! Checking whether the borders theVertices of the shape intersect
+  //! the cylinder (or cone) end face with the center theCenter and radius theRadius
+  Standard_Boolean isIntersectCylinderEndFace (const Standard_Real theRad,
+                                               const gp_Pnt& theCenter,
+                                               const gp_Trsf& theTrsf,
+                                               const TColgp_Array1OfPnt& theVertices) const;
 
   //! Checks if AABB and frustum are separated along the given axis
   Standard_Boolean isSeparated (const SelectMgr_Vec3& theBoxMin,

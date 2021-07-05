@@ -498,6 +498,123 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsSphere (const gp_Pnt& t
   return Standard_False;
 }
 
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                   const Standard_Real theTopRad,
+                                                                   const Standard_Real theHeight,
+                                                                   const gp_Trsf& theTrsf,
+                                                                   const SelectMgr_ViewClipRange& theClipRange,
+                                                                   SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theClipRange, thePickResult))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                   const Standard_Real theTopRad,
+                                                                   const Standard_Real theHeight,
+                                                                   const gp_Trsf& theTrsf,
+                                                                   Standard_Boolean* theInside) const
+{
+  const gp_Dir aCylNorm (gp::DZ().Transformed (theTrsf));
+  const gp_Pnt aBottomCenter (gp::Origin().Transformed (theTrsf));
+  const gp_Pnt aTopCenter = aBottomCenter.XYZ() + aCylNorm.XYZ() * theHeight;
+
+  const gp_Vec aVecPlane1 (myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[1]);
+  const gp_Vec aVecPlane2 (myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[2]);
+
+  const gp_Dir aDirNorm (aVecPlane1.Crossed (aVecPlane2));
+  const Standard_Real anAngle = aCylNorm.Angle (aDirNorm);
+  const Standard_Real aCosAngle = Cos (anAngle);
+  const gp_Pln aPln (myFrustums.First()->myVertices[0], aDirNorm);
+  Standard_Real aCoefA, aCoefB, aCoefC, aCoefD;
+  aPln.Coefficients (aCoefA, aCoefB, aCoefC, aCoefD);
+
+  const Standard_Real aTBottom = -(aBottomCenter.XYZ().Dot (aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot (aDirNorm);
+  const gp_Pnt aBottomCenterProject (aCoefA * aTBottom + aBottomCenter.X(),
+                                     aCoefB * aTBottom + aBottomCenter.Y(),
+                                     aCoefC * aTBottom + aBottomCenter.Z());
+
+  const Standard_Real aTTop = -(aTopCenter.XYZ().Dot (aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot (aDirNorm);
+  const gp_Pnt aTopCenterProject (aCoefA * aTTop + aTopCenter.X(),
+                                  aCoefB * aTTop + aTopCenter.Y(),
+                                  aCoefC * aTTop + aTopCenter.Z());
+
+  gp_XYZ aCylNormProject;
+  const gp_XYZ aTopBottomVec = aTopCenterProject.XYZ() - aBottomCenterProject.XYZ();
+  const Standard_Real aTopBottomDist = aTopBottomVec.Modulus();
+  if (aTopBottomDist > 0.0)
+  {
+    aCylNormProject = aTopBottomVec / aTopBottomDist;
+  }
+
+  gp_Pnt aPoints[6];
+  aPoints[0] = aBottomCenterProject.XYZ() - aCylNormProject * theBottomRad * Abs (aCosAngle);
+  aPoints[1] = aTopCenterProject.XYZ()    + aCylNormProject * theTopRad * Abs (aCosAngle);
+  const gp_Dir aDirEndFaces = (aCylNorm.IsParallel (aDirNorm, Precision::Angular()))
+                             ? gp::DY().Transformed (theTrsf)
+                             : aCylNorm.Crossed (aDirNorm);
+
+  aPoints[2] = aTopCenterProject.XYZ()    + aDirEndFaces.XYZ() * theTopRad;
+  aPoints[3] = aTopCenterProject.XYZ()    - aDirEndFaces.XYZ() * theTopRad;
+  aPoints[4] = aBottomCenterProject.XYZ() + aDirEndFaces.XYZ() * theBottomRad;
+  aPoints[5] = aBottomCenterProject.XYZ() - aDirEndFaces.XYZ() * theBottomRad;
+
+  gp_Pnt aVerticesBuf[3];
+  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, 2);
+
+  bool isCylInsideTriangSet = true;
+  for (int i = 0; i < 6; ++i)
+  {
+    bool isInside = false;
+    for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+    {
+
+      for (int anIdx = 0; anIdx < 3; anIdx++)
+      {
+        aVertices[anIdx] = anIter.Value()->myVertices[anIdx];
+      }
+      if (anIter.Value()->IsDotInside (aPoints[i], aVertices))
+      {
+        isInside = true;
+        break;
+      }
+    }
+    isCylInsideTriangSet &= isInside;
+  }
+  if (theInside != NULL)
+  {
+    *theInside &= isCylInsideTriangSet;
+  }
+  if (isCylInsideTriangSet)
+  {
+    return true;
+  }
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theInside))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 // =======================================================================
 // function : GetPlanes
 // purpose  :

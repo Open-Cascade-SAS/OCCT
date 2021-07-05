@@ -419,6 +419,40 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsSphere (const gp_Pnt&
 }
 
 //=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                     const Standard_Real theTopRad,
+                                                                     const Standard_Real theHeight,
+                                                                     const gp_Trsf& theTrsf,
+                                                                     SelectBasics_PickResult& thePickResult) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return false;
+  }
+  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, myViewClipRange, thePickResult);
+}
+
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                     const Standard_Real theTopRad,
+                                                                     const Standard_Real theHeight,
+                                                                     const gp_Trsf& theTrsf,
+                                                                     Standard_Boolean* theInside) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return false;
+  }
+  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theInside);
+}
+
+//=======================================================================
 // function : DistToGeometryCenter
 // purpose  : Measures distance between 3d projection of user-picked
 //            screen point and given point theCOG

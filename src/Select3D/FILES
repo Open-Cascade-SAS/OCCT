@@ -13,6 +13,8 @@ Select3D_SensitiveCircle.cxx
 Select3D_SensitiveCircle.hxx
 Select3D_SensitiveCurve.cxx
 Select3D_SensitiveCurve.hxx
+Select3D_SensitiveCylinder.cxx
+Select3D_SensitiveCylinder.hxx
 Select3D_SensitiveEntity.cxx
 Select3D_SensitiveEntity.hxx
 Select3D_SensitiveFace.cxx

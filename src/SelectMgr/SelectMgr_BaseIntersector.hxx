@@ -181,6 +181,23 @@ public:
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const = 0;
 
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                             const Standard_Real theTopRad,
+                                             const Standard_Real theHeight,
+                                             const gp_Trsf& theTrsf,
+                                             const SelectMgr_ViewClipRange& theClipRange,
+                                             SelectBasics_PickResult& thePickResult) const = 0;
+
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                             const Standard_Real theTopRad,
+                                             const Standard_Real theHeight,
+                                             const gp_Trsf& theTrsf,
+                                             Standard_Boolean* theInside = NULL) const = 0;
+
 public:
 
   //! Measures distance between 3d projection of user-picked
@@ -205,6 +222,16 @@ public:
                                                                   const gp_Dir& theRayDir,
                                                                   Standard_Real& theTimeEnter,
                                                                   Standard_Real& theTimeLeave) const;
+
+  //! Checks whether the ray that starts at the point theLoc and directs with the direction theRayDir intersects
+  //! with the cylinder (or cone) with radiuses theBottomRad and theTopRad and height theHeights
+  Standard_EXPORT virtual Standard_Boolean RayCylinderIntersection (const Standard_Real theBottomRadius,
+                                                                    const Standard_Real theTopRadius,
+                                                                    const Standard_Real theHeight,
+                                                                    const gp_Pnt& theLoc,
+                                                                    const gp_Dir& theRayDir,
+                                                                    Standard_Real& theTimeEnter,
+                                                                    Standard_Real& theTimeLeave) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseIntersector,Standard_Transient)
 

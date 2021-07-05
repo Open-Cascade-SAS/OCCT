@@ -740,6 +740,65 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsTriangle (const gp_Pnt& t
   return !theClipRange.IsClipped (thePickResult.Depth());
 }
 
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                 const Standard_Real theTopRad,
+                                                                 const Standard_Real theHeight,
+                                                                 const gp_Trsf& theTrsf,
+                                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                                 SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  const gp_Trsf aTrsfInv = theTrsf.Inverted();
+  const gp_Pnt  aLoc     = myNearPickedPnt.Transformed (aTrsfInv);
+  const gp_Dir  aRayDir  = myViewRayDir   .Transformed (aTrsfInv);
+  if (!RayCylinderIntersection (theBottomRad, theTopRad, theHeight, aLoc, aRayDir, aTimeEnter, aTimeLeave))
+  {
+    return Standard_False;
+  }
+  thePickResult.SetDepth (aTimeEnter * myScale);
+  if (theClipRange.IsClipped (thePickResult.Depth()))
+  {
+    thePickResult.SetDepth (aTimeLeave * myScale);
+  }
+  const gp_Pnt aPntOnCylinder (aLoc.XYZ() + aRayDir.XYZ() * thePickResult.Depth());
+  if (Abs (aPntOnCylinder.Z()) < Precision::Confusion())
+  {
+    thePickResult.SetSurfaceNormal (-gp::DZ().Transformed (theTrsf));
+  }
+  else if (Abs (aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
+  {
+    thePickResult.SetSurfaceNormal (gp::DZ().Transformed (theTrsf));
+  }
+  else
+  {
+    thePickResult.SetSurfaceNormal (gp_Vec (aPntOnCylinder.X(), aPntOnCylinder.Y(), 0.0).Transformed (theTrsf));
+  }
+  thePickResult.SetPickedPoint (aPntOnCylinder);
+  return !theClipRange.IsClipped (thePickResult.Depth());
+}
+
+//=======================================================================
+// function : OverlapsCylinder
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_Real theBottomRad,
+                                                                 const Standard_Real theTopRad,
+                                                                 const Standard_Real theHeight,
+                                                                 const gp_Trsf& theTrsf,
+                                                                 Standard_Boolean* theInside) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theInside);
+}
+
 // =======================================================================
 // function : GetMousePosition
 // purpose  :

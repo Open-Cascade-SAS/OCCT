@@ -27,6 +27,9 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <gp_Circ.hxx>
 #include <Poly_Array1OfTriangle.hxx>
@@ -37,6 +40,7 @@
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveCurve.hxx>
+#include <Select3D_SensitiveCylinder.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveFace.hxx>
 #include <Select3D_SensitiveGroup.hxx>
@@ -268,6 +272,142 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
     {
       TopTools_IndexedMapOfShape aSubfacesMap;
       TopExp::MapShapes (theShape, TopAbs_FACE, aSubfacesMap);
+      if (aSubfacesMap.Extent() == 2) // detect cone
+      {
+        const TopoDS_Face* aFaces[2] =
+        {
+          &TopoDS::Face (aSubfacesMap.FindKey (1)),
+          &TopoDS::Face (aSubfacesMap.FindKey (2))
+        };
+
+        TopLoc_Location aLocSurf;
+        const Handle(Geom_Surface)* aSurfaces[2] =
+        {
+          &BRep_Tool::Surface (*aFaces[0], aLocSurf),
+          &BRep_Tool::Surface (*aFaces[1], aLocSurf)
+        };
+
+        Standard_Integer aConIndex = 0;
+        Handle(Geom_ConicalSurface) aGeomCone = Handle(Geom_ConicalSurface)::DownCast (*aSurfaces[0]);
+        Handle(Geom_Plane) aGeomPln;
+        if (!aGeomCone.IsNull())
+        {
+          aGeomPln = Handle(Geom_Plane)::DownCast (*aSurfaces[1]);
+        }
+        else
+        {
+          aConIndex = 1;
+          aGeomCone = Handle(Geom_ConicalSurface)::DownCast (*aSurfaces[1]);
+          aGeomPln  = Handle(Geom_Plane)::DownCast (*aSurfaces[0]);
+        }
+        if (!aGeomCone.IsNull()
+         && !aGeomPln.IsNull()
+         &&  aGeomPln->Position().Direction().IsEqual (aGeomCone->Position().Direction(), Precision::Angular()))
+        {
+          const gp_Cone aCone = BRepAdaptor_Surface (*aFaces[aConIndex]).Cone();
+          const Standard_Real aRad1 = aCone.RefRadius();
+          const Standard_Real aHeight = (aRad1 != 0.0)
+                                       ? aRad1 / Abs (Tan (aCone.SemiAngle()))
+                                       : aCone.Location().Distance (aGeomPln->Location());
+          const Standard_Real aRad2 = (aRad1 != 0.0) ? 0.0 : Tan (aCone.SemiAngle()) * aHeight;
+          gp_Trsf aTrsf;
+          aTrsf.SetTransformation (aCone.Position(), gp_Ax3());
+          Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad1, aRad2, aHeight, aTrsf);
+          theSelection->Add (aSensSCyl);
+          break;
+        }
+      }
+      if (aSubfacesMap.Extent() == 3) // detect cylinder or truncated cone
+      {
+        const TopoDS_Face* aFaces[3] =
+        {
+          &TopoDS::Face (aSubfacesMap.FindKey (1)),
+          &TopoDS::Face (aSubfacesMap.FindKey (2)),
+          &TopoDS::Face (aSubfacesMap.FindKey (3))
+        };
+
+        TopLoc_Location aLocSurf;
+        const Handle(Geom_Surface)* aSurfaces[3] =
+        {
+          &BRep_Tool::Surface (*aFaces[0], aLocSurf),
+          &BRep_Tool::Surface (*aFaces[1], aLocSurf),
+          &BRep_Tool::Surface (*aFaces[2], aLocSurf)
+        };
+
+        Standard_Integer aConIndex = -1, aNbPlanes = 0;
+        Handle(Geom_ConicalSurface) aGeomCone;
+        Handle(Geom_CylindricalSurface) aGeomCyl;
+        Handle(Geom_Plane) aGeomPlanes[2];
+        for (Standard_Integer aSurfIter = 0; aSurfIter < 3; ++aSurfIter)
+        {
+          const Handle(Geom_Surface)& aSurf = *aSurfaces[aSurfIter];
+          if (aConIndex == -1)
+          {
+            aGeomCone = Handle (Geom_ConicalSurface)::DownCast (aSurf);
+            if (!aGeomCone.IsNull())
+            {
+              aConIndex = aSurfIter;
+              continue;
+            }
+            aGeomCyl = Handle (Geom_CylindricalSurface)::DownCast (aSurf);
+            if (!aGeomCyl.IsNull())
+            {
+              aConIndex = aSurfIter;
+              continue;
+            }
+          }
+          if (aNbPlanes < 2)
+          {
+            aGeomPlanes[aNbPlanes] = Handle(Geom_Plane)::DownCast (aSurf);
+            if (!aGeomPlanes[aNbPlanes].IsNull())
+            {
+              ++aNbPlanes;
+            }
+          }
+        }
+
+        if (!aGeomCone.IsNull())
+        {
+          if (!aGeomPlanes[0].IsNull()
+           && !aGeomPlanes[1].IsNull()
+           &&  aGeomPlanes[0]->Position().Direction().IsEqual (aGeomCone->Position().Direction(), Precision::Angular())
+           &&  aGeomPlanes[1]->Position().Direction().IsEqual (aGeomCone->Position().Direction(), Precision::Angular()))
+          {
+            const gp_Cone aCone = BRepAdaptor_Surface (*aFaces[aConIndex]).Cone();
+            const Standard_Real aRad1 = aCone.RefRadius();
+            const Standard_Real aHeight = aGeomPlanes[0]->Location().Distance (aGeomPlanes[1]->Location());
+            gp_Trsf aTrsf;
+            aTrsf.SetTransformation (aCone.Position(), gp_Ax3());
+            const Standard_Real aTriangleHeight = (aCone.SemiAngle() > 0.0)
+                                                ?  aRad1 / Tan (aCone.SemiAngle())
+                                                :  aRad1 / Tan (Abs (aCone.SemiAngle())) - aHeight;
+            const Standard_Real aRad2 = (aCone.SemiAngle() > 0.0)
+                                       ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
+                                       : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
+            Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad1, aRad2, aHeight, aTrsf);
+            theSelection->Add (aSensSCyl);
+            break;
+          }
+        }
+        else if (!aGeomCyl.IsNull())
+        {
+          if (!aGeomPlanes[0].IsNull()
+           && !aGeomPlanes[1].IsNull()
+           &&  aGeomPlanes[0]->Position().Direction().IsEqual (aGeomCyl->Position().Direction(), Precision::Angular())
+           &&  aGeomPlanes[1]->Position().Direction().IsEqual (aGeomCyl->Position().Direction(), Precision::Angular()))
+          {
+            const gp_Cylinder aCyl = BRepAdaptor_Surface (*aFaces[aConIndex]).Cylinder();
+            const Standard_Real aRad = aCyl.Radius();
+            const Standard_Real aHeight = aGeomPlanes[0]->Location().Distance (aGeomPlanes[1]->Location());
+            gp_Trsf aTrsf;
+            aTrsf.SetTransformation (aCyl.Position(), gp_Ax3());
+            Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad, aRad, aHeight, aTrsf);
+            theSelection->Add (aSensSCyl);
+            break;
+          }
+        }
+      }
+
       for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
       {
         ComputeSensitive (aSubfacesMap (aShIndex), theOwner,

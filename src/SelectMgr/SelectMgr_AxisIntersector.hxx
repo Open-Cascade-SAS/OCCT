@@ -111,6 +111,23 @@ public:
                                                            const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                                             const Standard_Real theTopRad,
+                                                             const Standard_Real theHeight,
+                                                             const gp_Trsf& theTrsf,
+                                                             const SelectMgr_ViewClipRange& theClipRange,
+                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                                             const Standard_Real theTopRad,
+                                                             const Standard_Real theHeight,
+                                                             const gp_Trsf& theTrsf,
+                                                             Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
+
 public:
 
   //! Measures distance between start axis point and given point theCOG.

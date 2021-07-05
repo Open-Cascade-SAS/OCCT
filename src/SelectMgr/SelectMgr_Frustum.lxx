@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <gp_Pln.hxx>
 #include <NCollection_Vector.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Standard_Assert.hxx>
@@ -147,7 +148,6 @@ Standard_Boolean SelectMgr_Frustum<N>::hasBoxOverlap (const SelectMgr_Vec3& theM
   }
 
   const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
-
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     const gp_XYZ& aPlane = myPlanes[aPlaneIdx].XYZ();
@@ -207,7 +207,6 @@ template <int N>
 Standard_Boolean SelectMgr_Frustum<N>::hasPointOverlap (const gp_Pnt& thePnt) const
 {
   const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
-
   for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
   {
     const Standard_Real aPointProj = myPlanes[aPlaneIdx].XYZ().Dot (thePnt.XYZ());
@@ -514,6 +513,259 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap (const gp_Pnt& thePnt,
   const gp_Pnt aCenterProj = thePnt.XYZ() - aNorm.XYZ() * thePnt.XYZ().Dot (aNorm.XYZ());
   Standard_Boolean isBoundaryInside = Standard_False;
   return IsBoundaryIntersectSphere (aCenterProj, theRadius, aNorm, aBoundaries, isBoundaryInside);
+}
+
+// =======================================================================
+// function : IsDotInside
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::IsDotInside (const gp_Pnt& thePnt,
+                                                    const TColgp_Array1OfPnt& theVertices) const
+{
+  Standard_Real anAngle = 0.0;
+  for (Standard_Integer aVertIdx = 0; aVertIdx < theVertices.Size(); aVertIdx++)
+  {
+    const gp_Pnt aVert1 = theVertices[aVertIdx];
+    const gp_Pnt aVert2 = (aVertIdx == (theVertices.Size() - 1) ? theVertices[0] : theVertices[aVertIdx + 1]);
+    const gp_Vec aVec1 (thePnt, aVert1);
+    const gp_Vec aVec2 (thePnt, aVert2);
+    anAngle += aVec1.Angle (aVec2);
+  }
+  if (Abs (anAngle - 2.0 * M_PI) < Precision::Angular())
+  {
+    return true;
+  }
+  return false;
+}
+
+// =======================================================================
+// function : isSegmentsIntersect
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::isSegmentsIntersect (const gp_Pnt& thePnt1Seg1,
+                                                            const gp_Pnt& thePnt2Seg1,
+                                                            const gp_Pnt& thePnt1Seg2,
+                                                            const gp_Pnt& thePnt2Seg2) const
+{
+  const gp_Mat aMatPln (thePnt2Seg1.X() - thePnt1Seg1.X(), thePnt2Seg1.Y() - thePnt1Seg1.Y(), thePnt2Seg1.Z() - thePnt1Seg1.Z(),
+                        thePnt1Seg2.X() - thePnt1Seg1.X(), thePnt1Seg2.Y() - thePnt1Seg1.Y(), thePnt1Seg2.Z() - thePnt1Seg1.Z(),
+                        thePnt2Seg2.X() - thePnt1Seg1.X(), thePnt2Seg2.Y() - thePnt1Seg1.Y(), thePnt2Seg2.Z() - thePnt1Seg1.Z());
+  if (Abs (aMatPln.Determinant()) > Precision::Confusion())
+  {
+    return false;
+  }
+
+  Standard_Real aFst[4] = {thePnt1Seg1.X(), thePnt2Seg1.X(), thePnt1Seg2.X(), thePnt2Seg2.X()};
+  Standard_Real aSnd[4] = {thePnt1Seg1.Y(), thePnt2Seg1.Y(), thePnt1Seg2.Y(), thePnt2Seg2.Y()};
+  if (aFst[0] == aFst[2] && aFst[1] == aFst[3])
+  {
+    aFst[0] = thePnt1Seg1.Z();
+    aFst[1] = thePnt2Seg1.Z();
+    aFst[2] = thePnt1Seg2.Z();
+    aFst[3] = thePnt2Seg2.Z();
+  }
+  if (aSnd[0] == aSnd[2]
+   && aSnd[1] == aSnd[3])
+  {
+    aSnd[0] = thePnt1Seg1.Z();
+    aSnd[1] = thePnt2Seg1.Z();
+    aSnd[2] = thePnt1Seg2.Z();
+    aSnd[3] = thePnt2Seg2.Z();
+  }
+  const gp_Mat2d aMat (gp_XY (aFst[0] - aFst[1], aSnd[0] - aSnd[1]),
+                       gp_XY (aFst[3] - aFst[2], aSnd[3] - aSnd[2]));
+
+  const gp_Mat2d aMatU (gp_XY (aFst[0] - aFst[2], aSnd[0] - aSnd[2]),
+                        gp_XY (aFst[3] - aFst[2], aSnd[3] - aSnd[2]));
+
+  const gp_Mat2d aMatV (gp_XY (aFst[0] - aFst[1], aSnd[0] - aSnd[1]),
+                        gp_XY (aFst[0] - aFst[2], aSnd[0] - aSnd[2]));
+  if (aMat.Determinant() == 0.0)
+  {
+    return false;
+  }
+
+  const Standard_Real anU = aMatU.Determinant() / aMat.Determinant();
+  const Standard_Real aV  = aMatV.Determinant() / aMat.Determinant();
+  if (anU >= 0.0 && anU <= 1.0
+   && aV  >= 0.0 && aV  <= 1.0)
+  {
+    return true;
+  }
+  return false;
+}
+
+// =======================================================================
+// function : isIntersectCylinderEndFace
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::isIntersectCylinderEndFace (const Standard_Real theRad,
+                                                                   const gp_Pnt& theCenter,
+                                                                   const gp_Trsf& theTrsf,
+                                                                   const TColgp_Array1OfPnt& theVertices) const
+{
+  const gp_Trsf aTrsfInv = theTrsf.Inverted();
+  const gp_Dir aRayDir = gp_Dir (myEdgeDirs[N == 4 ? 4 : 0]).Transformed (aTrsfInv);
+  if (aRayDir.Z() == 0.0)
+  {
+    return false;
+  }
+
+  for (Standard_Integer anIdx = theVertices.Lower(); anIdx <= theVertices.Upper(); anIdx++)
+  {
+    const gp_Pnt aPntStart = theVertices.Value (anIdx).Transformed (aTrsfInv);
+    const gp_Pnt aPntFinish = anIdx == theVertices.Upper()
+                            ? theVertices.Value (theVertices.Lower()).Transformed (aTrsfInv)
+                            : theVertices.Value (anIdx + 1).Transformed (aTrsfInv);
+
+    // Project points on the end face plane
+    const Standard_Real aParam1 = (theCenter.Z() - aPntStart.Z()) / aRayDir.Z();
+    const Standard_Real aX1 = aPntStart.X() + aRayDir.X() * aParam1;
+    const Standard_Real anY1 = aPntStart.Y() + aRayDir.Y() * aParam1;
+
+    const Standard_Real aParam2 = (theCenter.Z() - aPntFinish.Z()) / aRayDir.Z();
+    const Standard_Real aX2 = aPntFinish.X() + aRayDir.X() * aParam2;
+    const Standard_Real anY2 = aPntFinish.Y() + aRayDir.Y() * aParam2;
+
+    // Solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
+    const Standard_Real anA = (aX1 - aX2) * (aX1 - aX2) + (anY1 - anY2) * (anY1 - anY2);
+    const Standard_Real aK = aX1 * (aX2 - aX1) + anY1 * (anY2 - anY1);
+    const Standard_Real aC = aX1 * aX1 + anY1 * anY1 - theRad * theRad;
+
+    const Standard_Real aDiscr = aK * aK - anA * aC;
+    if (aDiscr >= 0.0)
+    {
+      const Standard_Real aT1 = (-aK + Sqrt (aDiscr)) / anA;
+      const Standard_Real aT2 = (-aK - Sqrt (aDiscr)) / anA;
+      if ((aT1 >= 0 && aT1 <= 1) || (aT2 >= 0 && aT2 <= 1))
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// =======================================================================
+// function : hasCylinderOverlap
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap (const Standard_Real theBottomRad,
+                                                           const Standard_Real theTopRad,
+                                                           const Standard_Real theHeight,
+                                                           const gp_Trsf& theTrsf,
+                                                           Standard_Boolean* theInside) const
+{
+  const gp_Dir aCylNorm (gp::DZ().Transformed (theTrsf));
+  const gp_Pnt aBottomCenter (gp::Origin().Transformed (theTrsf));
+  const gp_Pnt aTopCenter = aBottomCenter.XYZ() + aCylNorm.XYZ() * theHeight;
+
+  const gp_Dir aViewRayDir = gp_Dir (myEdgeDirs[N == 4 ? 4 : 0]);
+  const gp_Pln aPln (myVertices[0], aViewRayDir);
+  Standard_Real aCoefA, aCoefB, aCoefC, aCoefD;
+  aPln.Coefficients (aCoefA, aCoefB, aCoefC, aCoefD);
+
+  const Standard_Real aTBottom = -(aBottomCenter.XYZ().Dot (aViewRayDir.XYZ()) + aCoefD);
+  const gp_Pnt aBottomCenterProject (aCoefA * aTBottom + aBottomCenter.X(),
+                                     aCoefB * aTBottom + aBottomCenter.Y(),
+                                     aCoefC * aTBottom + aBottomCenter.Z());
+  const Standard_Real aTTop = -(aTopCenter.XYZ().Dot (aViewRayDir.XYZ()) + aCoefD);
+  const gp_Pnt aTopCenterProject (aCoefA * aTTop + aTopCenter.X(),
+                                  aCoefB * aTTop + aTopCenter.Y(),
+                                  aCoefC * aTTop + aTopCenter.Z());
+  gp_Vec aCylNormProject (0, 0, 0);
+  if (aTopCenterProject.Distance (aBottomCenterProject)  > 0.0)
+  {
+    aCylNormProject = gp_Vec ((aTopCenterProject.XYZ() - aBottomCenterProject.XYZ())
+                             / aTopCenterProject.Distance (aBottomCenterProject));
+  }
+
+  gp_Pnt aPoints[6];
+  const gp_Dir aDirEndFaces = (aCylNorm.IsParallel (aViewRayDir, Precision::Angular()))
+                             ? gp::DY().Transformed (theTrsf)
+                             : aCylNorm.Crossed (aViewRayDir);
+
+  const Standard_Real anAngle = aCylNorm.Angle (aViewRayDir);
+  aPoints[0] = aBottomCenterProject.XYZ() - aCylNormProject.XYZ() * theBottomRad * Abs (Cos (anAngle));
+  aPoints[1] = aBottomCenterProject.XYZ() + aDirEndFaces.XYZ() * theBottomRad;
+  aPoints[2] = aTopCenterProject.XYZ() + aDirEndFaces.XYZ() * theTopRad;
+  aPoints[3] = aTopCenterProject.XYZ() + aCylNormProject.XYZ() * theTopRad * Abs (Cos (anAngle));
+  aPoints[4] = aTopCenterProject.XYZ() - aDirEndFaces.XYZ() * theTopRad;
+  aPoints[5] = aBottomCenterProject.XYZ() - aDirEndFaces.XYZ() * theBottomRad;
+  const TColgp_Array1OfPnt aPointsArr (aPoints[0], 0, 5);
+
+  gp_Pnt aVerticesBuf[N];
+  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, N - 1);
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  if (anIncFactor == 2)
+  {
+    const Standard_Integer anIndices[] = { 0, 2, 6, 4 };
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIndices[anIdx]]);
+    }
+  }
+  else
+  {
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIdx]);
+    }
+  }
+  for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+  {
+    if ((aCylNormProject.Dot (aCylNormProject) == 0.0
+     && aVertices.Value (anIdx).Distance (aPoints[0]) <= Max (theTopRad, theBottomRad))
+     || IsDotInside (aVertices.Value (anIdx), aPointsArr))
+    {
+      if (theInside != NULL)
+      {
+        *theInside = false;
+      }
+      return true;
+    }
+  }
+
+  for (Standard_Integer anIdx = aVertices.Lower(); anIdx <= aVertices.Upper(); anIdx++)
+  {
+    const gp_Pnt aPnt1Seg = aVertices[anIdx];
+    const gp_Pnt aPnt2Seg = (anIdx == aVertices.Upper()) ? aVertices[aVertices.Lower()] : aVertices[anIdx + 1];
+    if (isSegmentsIntersect (aPoints[1], aPoints[2], aPnt1Seg, aPnt2Seg)
+     || isSegmentsIntersect (aPoints[4], aPoints[5], aPnt1Seg, aPnt2Seg)
+     || isSegmentsIntersect (aPoints[4], aPoints[2], aPnt1Seg, aPnt2Seg)
+     || isSegmentsIntersect (aPoints[1], aPoints[5], aPnt1Seg, aPnt2Seg))
+    {
+      if (theInside != NULL)
+      {
+        *theInside = false;
+      }
+      return true;
+    }
+  }
+
+  if (isIntersectCylinderEndFace (theBottomRad, gp_Pnt (0, 0, 0), theTrsf, aVertices)
+   || isIntersectCylinderEndFace (theTopRad, gp_Pnt (0, 0, theHeight), theTrsf, aVertices))
+  {
+    if (theInside != NULL)
+    {
+      *theInside = false;
+    }
+    return true;
+  }
+  bool isCylInsideRec = true;
+  for (int i = 0; i < 6; ++i)
+  {
+    isCylInsideRec &= IsDotInside (aPoints[i], aVertices);
+  }
+  if (theInside != NULL)
+  {
+    *theInside &= isCylInsideRec;
+  }
+  return isCylInsideRec;
 }
 
 //=======================================================================

@@ -67,6 +67,56 @@ namespace
     NCollection_DataMap<Handle(Select3D_SensitiveEntity), Quantity_Color> myMapEntityColors;
   };
 
+  //! Help class for filling pixel with random color.
+  class GeneratedEntityTypeColorFiller : public SelectMgr_SelectionImageFiller
+  {
+  public:
+    GeneratedEntityTypeColorFiller (Image_PixMap& thePixMap,
+                                    SelectMgr_ViewerSelector* theSelector)
+    : SelectMgr_SelectionImageFiller (thePixMap, theSelector)
+    {
+      // generate per-entity colors in the order as they have been activated
+      for (SelectMgr_SelectableObjectSet::Iterator anObjIter (theSelector->SelectableObjects()); anObjIter.More(); anObjIter.Next())
+      {
+        const Handle(SelectMgr_SelectableObject)& anObj = anObjIter.Value();
+        for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anObj->Selections()); aSelIter.More(); aSelIter.Next())
+        {
+          const Handle(SelectMgr_Selection)& aSel = aSelIter.Value();
+          for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (aSel->Entities()); aSelEntIter.More(); aSelEntIter.Next())
+          {
+            const Handle(SelectMgr_SensitiveEntity)& aSens = aSelEntIter.Value();
+            if (!myMapEntityColors.IsBound (aSens->BaseSensitive()->DynamicType()))
+            {
+              Quantity_Color aColor;
+              randomPastelColor (aColor);
+              myMapEntityColors.Bind (aSens->BaseSensitive()->DynamicType(), aColor);
+            }
+          }
+        }
+      }
+    }
+
+    virtual void Fill (const Standard_Integer theCol,
+                       const Standard_Integer theRow,
+                       const Standard_Integer thePicked) Standard_OVERRIDE
+    {
+      if (thePicked < 1
+       || thePicked > myMainSel->NbPicked())
+      {
+        myImage->SetPixelColor (theCol, theRow, Quantity_Color(Quantity_NOC_BLACK));
+        return;
+      }
+
+      const Handle(Select3D_SensitiveEntity)& aPickedEntity = myMainSel->PickedEntity (thePicked);
+      Quantity_Color aColor (Quantity_NOC_BLACK);
+      myMapEntityColors.Find (aPickedEntity->DynamicType(), aColor);
+      myImage->SetPixelColor (theCol, theRow, aColor);
+    }
+
+  protected:
+    NCollection_DataMap<Handle(Standard_Type), Quantity_Color> myMapEntityColors;
+  };
+
   //! Help class for filling pixel with normalized depth of ray.
   class NormalizedDepthFiller : public SelectMgr_SelectionImageFiller
   {
@@ -383,6 +433,10 @@ Handle(SelectMgr_SelectionImageFiller) SelectMgr_SelectionImageFiller::CreateFil
     case StdSelect_TypeOfSelectionImage_ColoredEntity:
     {
       return new GeneratedEntityColorFiller (thePixMap, theSelector);
+    }
+    case StdSelect_TypeOfSelectionImage_ColoredEntityType:
+    {
+      return new GeneratedEntityTypeColorFiller (thePixMap, theSelector);
     }
     case StdSelect_TypeOfSelectionImage_ColoredOwner:
     {

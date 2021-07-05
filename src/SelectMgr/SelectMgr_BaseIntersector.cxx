@@ -14,6 +14,9 @@
 #include <SelectMgr_BaseIntersector.hxx>
 
 #include <Graphic3d_Camera.hxx>
+#include <gp_Ax3.hxx>
+
+#include <algorithm>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_BaseIntersector, Standard_Transient)
 
@@ -162,6 +165,132 @@ Standard_Boolean SelectMgr_BaseIntersector::RaySphereIntersection (const gp_Pnt&
     theTimeLeave = aTime1;
   }
   return Standard_True;
+}
+
+//=======================================================================
+// function : RayCylinderIntersection
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection (const Standard_Real theBottomRadius,
+                                                                     const Standard_Real theTopRadius,
+                                                                     const Standard_Real theHeight,
+                                                                     const gp_Pnt& theLoc,
+                                                                     const gp_Dir& theRayDir,
+                                                                     Standard_Real& theTimeEnter,
+                                                                     Standard_Real& theTimeLeave) const
+{
+  Standard_Integer aNbIntersections = 0;
+  Standard_Real anIntersections[4] = { RealLast(), RealLast(), RealLast(), RealLast() };
+  //NCollection_Vector<Standard_Real> anIntersections; // vector for all intersections
+  // Check intersections with end faces
+  // point of intersection theRayDir and z = 0
+  if (theRayDir.Z() != 0)
+  {
+    const Standard_Real aTime1 = (0 - theLoc.Z()) / theRayDir.Z();
+    const Standard_Real aX1 = theLoc.X() + theRayDir.X() * aTime1;
+    const Standard_Real anY1 = theLoc.Y() + theRayDir.Y() * aTime1;
+    if (aX1 * aX1 + anY1 * anY1 <= theBottomRadius * theBottomRadius)
+    {
+      anIntersections[aNbIntersections++] = aTime1;
+    }
+    // point of intersection theRayDir and z = theHeight
+    const Standard_Real aTime2 = (theHeight - theLoc.Z()) / theRayDir.Z();
+    const Standard_Real aX2 = theLoc.X() + theRayDir.X() * aTime2;
+    const Standard_Real anY2 = theLoc.Y() + theRayDir.Y() * aTime2;
+    if (aX2 * aX2 + anY2 * anY2 <= theTopRadius * theTopRadius)
+    {
+      anIntersections[aNbIntersections++] = aTime2;
+    }
+  }
+  // ray intersection with cone / truncated cone
+  if (theTopRadius != theBottomRadius)
+  {
+    const Standard_Real aTriangleHeight = Min (theBottomRadius, theTopRadius) * theHeight /
+                                         (Abs (theBottomRadius - theTopRadius));
+    gp_Ax3 aSystem;
+    if (theBottomRadius > theTopRadius)
+    {
+      aSystem.SetLocation (gp_Pnt (0, 0, theHeight + aTriangleHeight));
+      aSystem.SetDirection (-gp::DZ());
+    }
+    else
+    {
+      aSystem.SetLocation (gp_Pnt (0, 0, -aTriangleHeight));
+      aSystem.SetDirection (gp::DZ());
+    }
+    gp_Trsf aTrsfCone;
+    aTrsfCone.SetTransformation (gp_Ax3(), aSystem);
+    const gp_Pnt aPnt (theLoc.Transformed (aTrsfCone));
+    const gp_Dir aDir (theRayDir.Transformed (aTrsfCone));
+    const Standard_Real aMaxRad = Max (theBottomRadius, theTopRadius);
+    const Standard_Real aConeHeight = theHeight + aTriangleHeight;
+
+    // solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
+    const Standard_Real anA = aDir.X() * aDir.X() / (aMaxRad * aMaxRad)
+                            + aDir.Y() * aDir.Y() / (aMaxRad * aMaxRad)
+                            - aDir.Z() * aDir.Z() / (aConeHeight * aConeHeight);
+    const Standard_Real aK = aDir.X() * aPnt.X() / (aMaxRad * aMaxRad)
+                           + aDir.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
+                           - aDir.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
+    const Standard_Real aC = aPnt.X() * aPnt.X() / (aMaxRad * aMaxRad)
+                           + aPnt.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
+                           - aPnt.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
+    Standard_Real aDiscr = aK * aK - anA * aC;
+    if (aDiscr > 0)
+    {
+      const Standard_Real aTimeEnterCone = (-aK - Sqrt (aDiscr)) / anA;
+      const Standard_Real aTimeLeaveCone = (-aK + Sqrt (aDiscr)) / anA;
+      const Standard_Real aZFromRoot1 = aPnt.Z() + aTimeEnterCone * aDir.Z();
+      const Standard_Real aZFromRoot2 = aPnt.Z() + aTimeLeaveCone * aDir.Z();
+
+      if (aZFromRoot1 > aTriangleHeight && aZFromRoot1 < aConeHeight)
+      {
+        anIntersections[aNbIntersections++] = aTimeEnterCone;
+      }
+      if (aZFromRoot2 > aTriangleHeight && aZFromRoot2 < aConeHeight)
+      {
+        anIntersections[aNbIntersections++] = aTimeLeaveCone;
+      }
+    }
+  }
+  else // ray intersection with cylinder
+  {
+    const gp_Pnt2d aLoc2d (theLoc.X(), theLoc.Y());
+    const gp_Vec2d aRayDir2d (theRayDir.X(), theRayDir.Y());
+
+    // solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
+    const Standard_Real anA = aRayDir2d.Dot (aRayDir2d);
+    const Standard_Real aK = aLoc2d.XY().Dot (aRayDir2d.XY());
+    const Standard_Real aC = aLoc2d.XY().Dot (aLoc2d.XY()) - theTopRadius * theTopRadius;
+    const Standard_Real aDiscr = aK * aK - anA * aC;
+    if (aDiscr > 0)
+    {
+      const Standard_Real aRoot1 = (-aK + Sqrt (aDiscr)) / anA;
+      const Standard_Real aRoot2 = (-aK - Sqrt (aDiscr)) / anA;
+      const Standard_Real aZFromRoot1 = theLoc.Z() + aRoot1 * theRayDir.Z();
+      const Standard_Real aZFromRoot2 = theLoc.Z() + aRoot2 * theRayDir.Z();
+      if (aZFromRoot1 > 0 && aZFromRoot1 < theHeight)
+      {
+        anIntersections[aNbIntersections++] = aRoot1;
+      }
+      if (aZFromRoot2 > 0 && aZFromRoot2 < theHeight)
+      {
+        anIntersections[aNbIntersections++] = aRoot2;
+      }
+    }
+  }
+  if (aNbIntersections == 0)
+  {
+    return false;
+  }
+
+  std::sort (anIntersections, anIntersections + aNbIntersections);
+  theTimeEnter = anIntersections[0];
+  if (aNbIntersections > 1)
+  {
+    theTimeLeave = anIntersections[1];
+  }
+  return true;
 }
 
 //=======================================================================

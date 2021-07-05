@@ -97,6 +97,22 @@ public:
                                            const Standard_Real theRadius,
                                            Standard_Boolean* theInside = NULL) const = 0;
 
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                             const Standard_Real theTopRad,
+                                             const Standard_Real theHeight,
+                                             const gp_Trsf& theTrsf,
+                                             SelectBasics_PickResult& thePickResult) const = 0;
+
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                             const Standard_Real theTopRad,
+                                             const Standard_Real theHeight,
+                                             const gp_Trsf& theTrsf,
+                                             Standard_Boolean* theInside = NULL) const = 0;
+
 public:
 
   //! Calculates distance from 3d projection of user-defined selection point

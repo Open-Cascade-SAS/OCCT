@@ -162,6 +162,22 @@ public:
                                                            const Standard_Real theRadius,
                                                            Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
 
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                                             const Standard_Real theTopRad,
+                                                             const Standard_Real theHeight,
+                                                             const gp_Trsf& theTrsf,
+                                                             SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
+  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  Standard_EXPORT virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
+                                                             const Standard_Real theTopRad,
+                                                             const Standard_Real theHeight,
+                                                             const gp_Trsf& theTrsf,
+                                                             Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
+
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const Standard_OVERRIDE;
