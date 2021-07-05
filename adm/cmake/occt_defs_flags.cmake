@@ -123,7 +123,9 @@ if ("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
   # Optimize size of binaries
   set (CMAKE_SHARED_LINKER_FLAGS "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS}")
 elseif(MINGW)
-  add_definitions(-D_WIN32_WINNT=0x0501)
+  add_definitions(-D_WIN32_WINNT=0x0601)
+  # _WIN32_WINNT=0x0601 (use Windows 7 SDK)
+  #set (CMAKE_SYSTEM_VERSION "6.1")
   # workaround bugs in mingw with vtable export
   set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols")
 

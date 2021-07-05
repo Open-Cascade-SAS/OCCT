@@ -154,9 +154,14 @@ public:
   Standard_EXPORT virtual bool ProcessMessage (Aspect_WindowInputListener& theListener,
                                                MSG& theMsg);
 
+private:
+
+  class TouchInputHelper;
+
 protected:
 
   Handle(WNT_WClass) myWClass;
+  Handle(TouchInputHelper) myTouchInputHelper;
   Aspect_Handle    myHWindow;
   Aspect_Handle    myHParentWindow;
   Standard_Integer myXLeft;

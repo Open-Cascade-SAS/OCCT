@@ -33,6 +33,114 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(WNT_Window, Aspect_Window)
 
+#ifndef MOUSEEVENTF_FROMTOUCH
+#define MOUSEEVENTF_FROMTOUCH 0xFF515700
+#endif
+
+//! Auxiliary tool for handling WM_TOUCH events.
+//! Dynamically loads functions from User32 available since Win7 and later.
+class WNT_Window::TouchInputHelper : public Standard_Transient
+{
+public:
+  typedef BOOL (WINAPI *RegisterTouchWindow_t)(HWND hwnd, ULONG ulFlags);
+  typedef BOOL (WINAPI *UnregisterTouchWindow_t)(HWND hwnd);
+  typedef BOOL (WINAPI *GetTouchInputInfo_t)(HTOUCHINPUT hTouchInput,
+                                             UINT cInputs,
+                                             PTOUCHINPUT pInputs,
+                                             int         cbSize);
+  typedef BOOL (WINAPI *CloseTouchInputHandle_t)(HTOUCHINPUT hTouchInput);
+
+  typedef NCollection_LocalArray<TOUCHINPUT, 16> InnerTouchArray;
+
+public:
+
+  //! Main constructor.
+  TouchInputHelper()
+  : myRegisterTouchWindow (NULL),
+    myUnregisterTouchWindow (NULL),
+    myGetTouchInputInfo (NULL),
+    myCloseTouchInputHandle (NULL),
+    myIsRegistered (false)
+  {
+    HMODULE aUser32Module = GetModuleHandleW (L"User32");
+    if (aUser32Module != NULL)
+    {
+      // User32 should be already loaded
+      myRegisterTouchWindow   = (RegisterTouchWindow_t   )GetProcAddress (aUser32Module, "RegisterTouchWindow");
+      myUnregisterTouchWindow = (UnregisterTouchWindow_t )GetProcAddress (aUser32Module, "UnregisterTouchWindow");
+      myGetTouchInputInfo     = (GetTouchInputInfo_t     )GetProcAddress (aUser32Module, "GetTouchInputInfo");
+      myCloseTouchInputHandle = (CloseTouchInputHandle_t )GetProcAddress (aUser32Module, "CloseTouchInputHandle");
+    }
+  }
+
+  //! Return TRUE if window has been registered.
+  bool IsRegistered() const { return myIsRegistered; }
+
+  //! Register window to receive WM_TOUCH events.
+  bool Register (HWND theWin)
+  {
+    if (myRegisterTouchWindow == NULL)
+    {
+      return false;
+    }
+
+    if (myRegisterTouchWindow (theWin, TWF_FINETOUCH))
+    {
+      myIsRegistered = true;
+      return true;
+    }
+    //Message::SendTrace() << "RegisterTouchWindow() FAILED";
+    return false;
+  }
+
+  //! Array of touches retrieved from HTOUCHINPUT.
+  class TouchInputInfo : public InnerTouchArray
+  {
+  public:
+    //! Main constructor.
+    TouchInputInfo (const TouchInputHelper& theHelper,
+                    const MSG& theMsg)
+    : InnerTouchArray (0),
+      myHelper (&theHelper),
+      myHInput ((HTOUCHINPUT )theMsg.lParam)
+    {
+      const int aNbTouches = LOWORD(theMsg.wParam);
+      if (aNbTouches > 0
+       && theHelper.myGetTouchInputInfo != NULL)
+      {
+        InnerTouchArray::Allocate (aNbTouches);
+        TOUCHINPUT* aTouches = InnerTouchArray::operator TOUCHINPUT*();
+        if (!theHelper.myGetTouchInputInfo (myHInput, aNbTouches, aTouches, sizeof(TOUCHINPUT)))
+        {
+          InnerTouchArray::Deallocate();
+        }
+      }
+    }
+
+    //! Destructor.
+    ~TouchInputInfo()
+    {
+      if (myHelper->myCloseTouchInputHandle != NULL)
+      {
+        myHelper->myCloseTouchInputHandle (myHInput);
+      }
+    }
+
+  private:
+    const TouchInputHelper* myHelper;
+    HTOUCHINPUT myHInput;
+  };
+
+private:
+
+  RegisterTouchWindow_t   myRegisterTouchWindow;
+  UnregisterTouchWindow_t myUnregisterTouchWindow;
+  GetTouchInputInfo_t     myGetTouchInputInfo;
+  CloseTouchInputHandle_t myCloseTouchInputHandle;
+  bool                    myIsRegistered;
+
+};
+
 // =======================================================================
 // function : WNT_Window
 // purpose  :
@@ -690,6 +798,12 @@ int WNT_Window::RegisterRawInputDevices (unsigned int theRawDeviceMask)
 bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
                                  MSG& theMsg)
 {
+  if (myTouchInputHelper.IsNull())
+  {
+    myTouchInputHelper = new TouchInputHelper();
+    myTouchInputHelper->Register ((HWND )myHWindow);
+  }
+
   switch (theMsg.message)
   {
     case WM_CLOSE:
@@ -753,6 +867,19 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
     {
+      const LPARAM anExtraInfo = GetMessageExtraInfo();
+      bool isEmulated = false;
+      if ((anExtraInfo & MOUSEEVENTF_FROMTOUCH) == MOUSEEVENTF_FROMTOUCH)
+      {
+        isEmulated = true;
+        if (!myTouchInputHelper.IsNull()
+          && myTouchInputHelper->IsRegistered())
+        {
+          //Message::SendTrace ("Skipping mouse message emulated from touches...");
+          break;
+        }
+      }
+
       const Graphic3d_Vec2i aPos (LOWORD(theMsg.lParam), HIWORD(theMsg.lParam));
       const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theMsg.wParam);
       Aspect_VKeyMouse aButton = Aspect_VKeyMouse_NONE;
@@ -777,12 +904,12 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       {
         SetFocus  (theMsg.hwnd);
         SetCapture(theMsg.hwnd);
-        theListener.PressMouseButton (aPos, aButton, aFlags, false);
+        theListener.PressMouseButton (aPos, aButton, aFlags, isEmulated);
       }
       else
       {
         ReleaseCapture();
-        theListener.ReleaseMouseButton (aPos, aButton, aFlags, false);
+        theListener.ReleaseMouseButton (aPos, aButton, aFlags, isEmulated);
       }
       theListener.ProcessInput();
       return true;
@@ -867,6 +994,68 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
 
       WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData, aRawInput->data.hid.dwSizeHid);
       if (theListener.Update3dMouse (aSpaceData))
+      {
+        InvalidateContent (Handle(Aspect_DisplayConnection)());
+      }
+      return true;
+    }
+    case WM_TOUCH:
+    {
+      if (theMsg.hwnd != (HWND )myHWindow
+       || myTouchInputHelper.IsNull())
+      {
+        return false;
+      }
+
+      TouchInputHelper::TouchInputInfo aSrcTouches (*myTouchInputHelper, theMsg);
+      if (aSrcTouches.Size() < 1)
+      {
+        break;
+      }
+
+      Graphic3d_Vec2i aWinTopLeft, aWinBotRight;
+      Position (aWinTopLeft.x(),  aWinTopLeft.y(),
+                aWinBotRight.x(), aWinBotRight.y());
+
+      bool hasUpdates = false;
+      for (size_t aTouchIter = 0; aTouchIter < aSrcTouches.Size(); ++aTouchIter)
+      {
+        const TOUCHINPUT& aTouchSrc = aSrcTouches[aTouchIter];
+        const Standard_Size aTouchId = (Standard_Size )aTouchSrc.dwID;
+        //const Standard_Size aDeviceId = (Standard_Size )aTouchSrc.hSource;
+
+        const Graphic3d_Vec2i aSize = aWinBotRight - aWinTopLeft;
+        const Graphic3d_Vec2d aNewPos2d = Graphic3d_Vec2d (double(aTouchSrc.x), double(aTouchSrc.y)) * 0.01
+                                        - Graphic3d_Vec2d (aWinTopLeft);
+        const Graphic3d_Vec2i aNewPos2i = Graphic3d_Vec2i (aNewPos2d + Graphic3d_Vec2d (0.5));
+        if ((aTouchSrc.dwFlags & TOUCHEVENTF_DOWN) == TOUCHEVENTF_DOWN)
+        {
+          if (aNewPos2i.x() >= 0 && aNewPos2i.x() < aSize.x()
+           && aNewPos2i.y() >= 0 && aNewPos2i.y() < aSize.y())
+          {
+            hasUpdates = true;
+            theListener.AddTouchPoint (aTouchId, aNewPos2d);
+          }
+        }
+        else if ((aTouchSrc.dwFlags & TOUCHEVENTF_MOVE) == TOUCHEVENTF_MOVE)
+        {
+          const int anOldIndex = theListener.TouchPoints().FindIndex (aTouchId);
+          if (anOldIndex != 0)
+          {
+            hasUpdates = true;
+            theListener.UpdateTouchPoint (aTouchId, aNewPos2d);
+          }
+        }
+        else if ((aTouchSrc.dwFlags & TOUCHEVENTF_UP) == TOUCHEVENTF_UP)
+        {
+          if (theListener.RemoveTouchPoint (aTouchId))
+          {
+            hasUpdates = true;
+          }
+        }
+      }
+
+      if (hasUpdates)
       {
         InvalidateContent (Handle(Aspect_DisplayConnection)());
       }

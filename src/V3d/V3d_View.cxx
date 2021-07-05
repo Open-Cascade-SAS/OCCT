@@ -2961,6 +2961,7 @@ void V3d_View::Scale (const Handle(Graphic3d_Camera)& theCamera,
   {
     theCamera->SetScale (Max (theSizeXv, theSizeYv * anAspect));
   }
+  Invalidate();
 }
 
 // =======================================================================
@@ -2983,6 +2984,7 @@ void V3d_View::Translate (const Handle(Graphic3d_Camera)& theCamera,
   aPanTrsf.SetTranslation (aCameraPan);
 
   theCamera->Transform (aPanTrsf);
+  Invalidate();
 }
 
 // =======================================================================
