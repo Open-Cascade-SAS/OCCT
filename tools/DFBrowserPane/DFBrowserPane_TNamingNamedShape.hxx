@@ -51,7 +51,7 @@ public:
 
   //! Initializes the content of the pane by the parameter attribute
   //! \param theAttribute an OCAF attribute
-  Standard_EXPORT void Init (const Handle(TDF_Attribute)& theAttribute);
+  Standard_EXPORT virtual void Init (const Handle(TDF_Attribute)& theAttribute) Standard_OVERRIDE;
 
   //! Returns information for the given attribute
   //! \param theAttribute a current attribute

@@ -35,8 +35,7 @@
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
-const int DEFAULT_COLUMN_WIDTH = 500;
-const int DEFAULT_ICON_SIZE = 40;
+static const int DEFAULT_ICON_SIZE = 40;
 
 // =======================================================================
 // function : Constructor

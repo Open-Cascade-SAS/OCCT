@@ -85,7 +85,7 @@ protected:
   virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
 
   //! Initializes the current item. It creates a backup of the specific item information
-  virtual void initItem() const {}
+  virtual void initItem() const Standard_OVERRIDE {}
 
 protected:
 

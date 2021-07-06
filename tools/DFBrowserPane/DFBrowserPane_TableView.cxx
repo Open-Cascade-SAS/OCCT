@@ -27,8 +27,6 @@
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
-static const int DEFAULT_ROW_HEIGHT = 30;
-
 // =======================================================================
 // function : Constructor
 // purpose :

@@ -40,16 +40,15 @@
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
-const int FONT_POINT_SIZE = 18;
-const int ICON_SIZE = 40;
+static const int ICON_SIZE = 40;
 
-const int OPEN_DIALOG_WIDTH = 550;
-const int OPEN_DIALOG_HEIGHT = 200;
+static const int OPEN_DIALOG_WIDTH = 550;
+static const int OPEN_DIALOG_HEIGHT = 200;
 
-const int MARGIN_DIALOG = 4;
-const int SPACING_DIALOG = 2;
+static const int MARGIN_DIALOG = 4;
+static const int SPACING_DIALOG = 2;
 
-const int RECENT_FILES_CACHE_SIZE = 10;
+static const int RECENT_FILES_CACHE_SIZE = 10;
 
 TInspector_Communicator* MyCommunicator;
 

@@ -55,7 +55,7 @@ protected:
   //! Returns data value for the role.
   //! \param theItemRole a value role
   //! \return the value
-  virtual QVariant initValue(const int theItemRole) const;
+  virtual QVariant initValue(const int theItemRole) const Standard_OVERRIDE;
 
   //! \return number of children.
   virtual int initRowCount() const Standard_OVERRIDE { return myShapes.Size(); }

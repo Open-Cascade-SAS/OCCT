@@ -79,7 +79,9 @@ void TInspector_Preferences::StorePreferences()
   QTextStream aTextStream (&aFile);
   QStringList aDocumentStr = aDomDocument.toString().split ("\n");
   for (QStringList::ConstIterator aContentIt = aDocumentStr.begin(); aContentIt != aDocumentStr.end(); ++aContentIt)
-    aTextStream << *aContentIt << endl;
+  {
+    aTextStream << *aContentIt << '\n';
+  }
   aFile.close();
 }
 

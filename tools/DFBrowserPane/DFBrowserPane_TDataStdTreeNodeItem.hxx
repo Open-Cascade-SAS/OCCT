@@ -97,7 +97,7 @@ protected:
     : TreeModel_ItemBase (theParent, theRow, theColumn), myIsCurrentItem (false) {}
 
   //! Initializes the current item. It creates a backup of the specific item information
-  void initItem() const;
+  virtual void initItem() const Standard_OVERRIDE;
 
   //! Returns number of children attributes, initializes item is necessary
   int getRowCount() const;

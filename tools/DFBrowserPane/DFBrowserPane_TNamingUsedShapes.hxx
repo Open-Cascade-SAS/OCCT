@@ -58,7 +58,7 @@ public:
 protected:
   //! Defines widths of table columns
   //! \return container of widths
-  Standard_EXPORT virtual QMap<int, int> getTableColumnWidths() const;
+  Standard_EXPORT virtual QMap<int, int> getTableColumnWidths() const Standard_OVERRIDE;
 
 };
 

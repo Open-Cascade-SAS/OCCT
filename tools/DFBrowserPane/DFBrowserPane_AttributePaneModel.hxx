@@ -104,7 +104,7 @@ public:
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable
   //! \param theIndex a model index
   //! \return flags
-  Qt::ItemFlags flags (const QModelIndex& theIndex) const
+  virtual Qt::ItemFlags flags (const QModelIndex& theIndex) const Standard_OVERRIDE
   { return theIndex.isValid() ? Qt::ItemIsEnabled | Qt::ItemIsSelectable : Qt::NoItemFlags; }
 
 private:

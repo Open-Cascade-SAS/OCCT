@@ -162,7 +162,9 @@ QModelIndex TreeModel_ModelBase::parent (const QModelIndex& theIndex) const
 Qt::ItemFlags TreeModel_ModelBase::flags (const QModelIndex& theIndex) const
 {
   if (!theIndex.isValid())
-    return 0;
+  {
+    return Qt::ItemFlags();
+  }
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 

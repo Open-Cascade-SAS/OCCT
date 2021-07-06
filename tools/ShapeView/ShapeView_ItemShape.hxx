@@ -82,7 +82,7 @@ public:
   //! Returns data value for the role.
   //! \param theRole a value role
   //! \return the value
-  Standard_EXPORT virtual QVariant initValue(const int theRole) const;
+  Standard_EXPORT virtual QVariant initValue(const int theRole) const Standard_OVERRIDE;
 
   //! \return number of children.
   Standard_EXPORT virtual int initRowCount() const Standard_OVERRIDE;

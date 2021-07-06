@@ -49,11 +49,7 @@
 #include <QWidget>
 #include <Standard_WarningsRestore.hxx>
 
-const int COLUMN_EXPORT_WIDTH = 20;
-const int COLUMN_TYPE_WIDTH = 70;
-const int COLUMN_POINTER_WIDTH = 110;
-const int COLUMN_REFERENCE_WIDTH = 90;
-const int COLUMN_EVOLUTION_WIDTH = 90;
+static const int COLUMN_EXPORT_WIDTH = 20;
 
 // =======================================================================
 // function : Constructor

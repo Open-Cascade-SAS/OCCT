@@ -62,22 +62,16 @@
 #include <QVBoxLayout>
 #include <Standard_WarningsRestore.hxx>
 
-const int DEFAULT_TEXT_VIEW_WIDTH = 800;
-const int DEFAULT_TEXT_VIEW_HEIGHT = 700;
-const int DEFAULT_TEXT_VIEW_POSITION_X = 430;
-const int DEFAULT_TEXT_VIEW_POSITION_Y = 30;
-const int DEFAULT_TEXT_VIEW_DELTA = 100;
+static const int DEFAULT_SHAPE_VIEW_WIDTH = 900;
+static const int DEFAULT_SHAPE_VIEW_HEIGHT = 450;
+static const int DEFAULT_SHAPE_VIEW_POSITION_X = 60;
+static const int DEFAULT_SHAPE_VIEW_POSITION_Y = 60;
 
-const int DEFAULT_SHAPE_VIEW_WIDTH = 900;
-const int DEFAULT_SHAPE_VIEW_HEIGHT = 450;
-const int DEFAULT_SHAPE_VIEW_POSITION_X = 60;
-const int DEFAULT_SHAPE_VIEW_POSITION_Y = 60;
+static const int SHAPEVIEW_DEFAULT_TREE_VIEW_WIDTH = 600;
+static const int SHAPEVIEW_DEFAULT_TREE_VIEW_HEIGHT = 500;
 
-const int SHAPEVIEW_DEFAULT_TREE_VIEW_WIDTH = 600;
-const int SHAPEVIEW_DEFAULT_TREE_VIEW_HEIGHT = 500;
-
-const int SHAPEVIEW_DEFAULT_VIEW_WIDTH = 300;
-const int SHAPEVIEW_DEFAULT_VIEW_HEIGHT = 1000;
+static const int SHAPEVIEW_DEFAULT_VIEW_WIDTH = 300;
+static const int SHAPEVIEW_DEFAULT_VIEW_HEIGHT = 1000;
 
 // =======================================================================
 // function : Constructor

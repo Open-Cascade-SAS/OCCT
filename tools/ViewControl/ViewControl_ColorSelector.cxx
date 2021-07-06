@@ -105,7 +105,7 @@ public:
   //! \param theColumn a model index column
   //! \param theRole a view role
   //! \return true if the value is changed
-  virtual bool SetData (const int theRow, const int theColumn, const QVariant& theValue, int)
+  virtual bool SetData (const int theRow, const int theColumn, const QVariant& theValue, int) Standard_OVERRIDE
   {
     if (theColumn != 1 || theRow < 2 || theRow > 5)
       return false;
@@ -138,7 +138,7 @@ public:
 
   //! Returns editable flag for color RGB and alpha rows
   //! \return flags
-  Qt::ItemFlags Flags (const QModelIndex& theIndex) const
+  virtual Qt::ItemFlags Flags (const QModelIndex& theIndex) const Standard_OVERRIDE
   {
     Qt::ItemFlags aFlags = ViewControl_TableModelValues::Flags (theIndex);
 
