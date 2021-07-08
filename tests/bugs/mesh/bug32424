@@ -1,0 +1,18 @@
+puts "======="
+puts "0032424: Mesh - Slow triangulation of a simple shape."
+puts "======="
+puts ""
+cpulimit 3
+
+restore [locate_data_file bug32424.brep] result
+
+incmesh result 0.17 -a 20
+
+checktrinfo result -tri 16168 -nod 8206
+
+vinit
+vdefaults -autoTriang 0
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

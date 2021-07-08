@@ -11,7 +11,7 @@ dchrono t restart
 incmesh a_1 0.01 1
 dchrono t stop counter incmesh
 
-checktrinfo a_1 -tri 743149 -nod 372395 -defl 0.081028355715069861
+checktrinfo a_1 -tri 525271 -nod 263456 -defl 0.081028355715069861
 
 set log [tricheck a_1]
 if { [llength $log] != 0 } {

@@ -15,7 +15,7 @@ vdefaults -autoTriang 0
 
 tclean result
 incmesh result 0.004 -a 14
-checktrinfo result -tri 70560 -nod 39946 -defl 0.22962869401103247
+checktrinfo result -tri 70556 -nod 39944 -defl 0.22962869401103247
 
 vdisplay result -redisplay
 vfit
@@ -23,7 +23,7 @@ checkview -screenshot -3d -path ${imagedir}/${test_image}_default.png
 
 tclean result
 incmesh result 0.004 -a 14 -force_face_def
-checktrinfo result -tri 292560 -nod 150946 -defl 0.04579460790575135
+checktrinfo result -tri 292556 -nod 150944 -defl 0.04579460790575135
 
 vdisplay result -redisplay
 vfit
