@@ -12,7 +12,7 @@ vfit
  
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
-checktrinfo result -tri 323820 -nod 161951 -defl 0.00096399964870812682
+checktrinfo result -tri 62936 -nod 31509 -defl 0.00096399964870812682
 
 set log [tricheck result]
 if { [llength $log] != 0 } {

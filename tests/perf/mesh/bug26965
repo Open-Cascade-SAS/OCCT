@@ -16,4 +16,4 @@ dchrono h
 vfit
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
-checktrinfo a -tri 217070 -nod 108740 -defl 0.098772787476728782
+checktrinfo a -tri 14764 -nod 7587 -defl 0.098772787476728782
