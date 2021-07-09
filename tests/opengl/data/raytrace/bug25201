@@ -22,7 +22,7 @@ vdisplay s1 s2
 vsetmaterial s1 Gold
 vsetmaterial s2 Silver
 vsetlocation s1 0.0 0.1 0.0
-vlight -change 0 -dir 0.667 -0.667 -0.333
+vlight -change 0 -dir 0.667 -0.667 -0.333 -smoothAngle 6 -intensity 100
 vturnview 3.0 -1.2 -0.1
 vfit
 
@@ -33,8 +33,6 @@ vrenderparams -rayDepth 12
 
 set aModeNum 0
 
-vlight change 0 sm 0.1
-vlight change 0 int 100
 vbsdf s1 roughness 6400
 
 vfps 200

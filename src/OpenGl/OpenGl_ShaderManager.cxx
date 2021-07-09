@@ -54,8 +54,11 @@ namespace
     const Graphic3d_Vec4& aLightColor = theLight.PackedColor();
     switch (theLight.Type())
     {
-      case Graphic3d_TOLS_AMBIENT    : break; // handled by separate if-clause at beginning of method
-      case Graphic3d_TOLS_DIRECTIONAL:
+      case Graphic3d_TypeOfLightSource_Ambient:
+      {
+        break; // handled by separate if-clause at beginning of method
+      }
+      case Graphic3d_TypeOfLightSource_Directional:
       {
         // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
         const OpenGl_Vec4 anInfDir = -theLight.PackedDirectionRange();
@@ -70,7 +73,7 @@ namespace
         theCtx->core11ffp->glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
         break;
       }
-      case Graphic3d_TOLS_POSITIONAL:
+      case Graphic3d_TypeOfLightSource_Positional:
       {
         // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
         const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
@@ -86,7 +89,7 @@ namespace
         theCtx->core11ffp->glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
         break;
       }
-      case Graphic3d_TOLS_SPOT:
+      case Graphic3d_TypeOfLightSource_Spot:
       {
         const OpenGl_Vec4 aPosition (static_cast<float>(theLight.Position().X()), static_cast<float>(theLight.Position().Y()), static_cast<float>(theLight.Position().Z()), 1.0f);
         theCtx->core11ffp->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
@@ -464,7 +467,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     if (!aLight.IsEnabled()) // has no affect with Graphic3d_LightSet::IterationFilter_ExcludeDisabled - here just for consistency
     {
       // if it is desired to keep disabled light in the same order - we can replace it with a black light so that it will have no influence on result
-      aLightType = -1; // Graphic3d_TOLS_AMBIENT can be used instead
+      aLightType = -1; // Graphic3d_TypeOfLightSource_Ambient can be used instead
       aLightParams.Color = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 0.0f);
       ++aLightsNb;
       continue;
@@ -478,11 +481,11 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     aLightParams.Parameters = aLight.PackedParams();
     switch (aLight.Type())
     {
-      case Graphic3d_TOLS_AMBIENT:
+      case Graphic3d_TypeOfLightSource_Ambient:
       {
         break;
       }
-      case Graphic3d_TOLS_DIRECTIONAL:
+      case Graphic3d_TypeOfLightSource_Directional:
       {
         if (aLight.IsHeadlight())
         {
@@ -496,7 +499,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
         }
         break;
       }
-      case Graphic3d_TOLS_SPOT:
+      case Graphic3d_TypeOfLightSource_Spot:
       {
         if (aLight.IsHeadlight())
         {
@@ -510,7 +513,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
         }
       }
       Standard_FALLTHROUGH
-      case Graphic3d_TOLS_POSITIONAL:
+      case Graphic3d_TypeOfLightSource_Positional:
       {
         if (aLight.IsHeadlight())
         {

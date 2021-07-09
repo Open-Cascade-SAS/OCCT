@@ -33,6 +33,9 @@ public:
   //! Empty constructor, which should be followed by light source properties configuration.
   Standard_EXPORT Graphic3d_CLight (Graphic3d_TypeOfLightSource theType);
 
+  //! Copy parameters from another light source excluding source type.
+  Standard_EXPORT void CopyFrom (const Handle(Graphic3d_CLight)& theLight);
+
   //! Returns the Type of the Light, cannot be changed after object construction.
   Graphic3d_TypeOfLightSource Type() const { return myType; }
 

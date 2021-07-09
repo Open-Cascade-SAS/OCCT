@@ -62,9 +62,9 @@ vrenderparams -rayTrace -fsaa on -reflections off -shadows off
 vcamera -persp -fovy 25
 vviewparams -eye 14 -14 6.8 -up 0 0 1 -at 4 -4 0 -scale 70
 vsetdispmode 1
-vlight def
-vlight add directional direction 1 -2 -10 head 1 color white
-vlight add directional direction 0 -10 0 head 1 color white
+vlight -defaults
+vlight dirlight1 -type DIRECTIONAL -direction 1 -2 -10 -head 1 -color WHITE
+vlight dirlight2 -type DIRECTIONAL -direction 0 -10 0  -head 1 -color WHITE
 
 # display boxes
 vdisplay b1 b2 b3 b4 b5 b6 b7 b8 b9 b10

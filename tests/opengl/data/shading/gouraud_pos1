@@ -28,8 +28,8 @@ vfit
 # setup light
 vcaps -ffp 0
 vrenderparams -shadingModel vert
-vlight clear
-vlight add positional pos $anX 0 0.001 color RED1 headLight 0
+vlight -clear
+vlight pntlight -type POSITIONAL -pos $anX 0 0.001 -color RED1 -headLight 0
 
 set aColor1 [vreadpixel 205 180 rgb name]
 set aColor2 [vreadpixel 205 210 rgb name]

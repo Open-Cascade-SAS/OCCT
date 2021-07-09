@@ -10,7 +10,6 @@ tclean f
 
 # draw box
 vclear
-vclose ALL
 vinit View1
 vdefaults -absDefl 0.5
 vsetdispmode 1
@@ -21,14 +20,10 @@ vrotate -0.5 0.0 0.0
 vfit
 
 # setup lights
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight add ambient                color WHITE
-vlight add directional dir  1 0 0 color GREEN headlight 1
-vlight add directional dir -1 0 0 color RED1  headlight 1
+vlight -clear
+vlight amblight  -type AMBIENT                 -color WHITE
+vlight dirlight1 -type DIRECTIONAL -dir  1 0 0 -color GREEN -headlight 1
+vlight dirlight2 -type DIRECTIONAL -dir -1 0 0 -color RED1  -headlight 1
 
 # take snapshot with fixed pipeline
 vdump $::imagedir/${::casename}_OFF.png

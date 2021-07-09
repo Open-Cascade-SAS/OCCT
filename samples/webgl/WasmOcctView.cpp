@@ -313,7 +313,7 @@ bool WasmOcctView::initViewer()
   for (V3d_ListOfLight::Iterator aLightIter (aViewer->ActiveLights()); aLightIter.More(); aLightIter.Next())
   {
     const Handle(V3d_Light)& aLight = aLightIter.Value();
-    if (aLight->Type() == Graphic3d_TOLS_DIRECTIONAL)
+    if (aLight->Type() == Graphic3d_TypeOfLightSource_Directional)
     {
       aLight->SetCastShadows (true);
     }

@@ -13,10 +13,10 @@ vdefaults -absDefl 0.5
 vdisplay -dispMode 1 f
 
 # setup lights
-vlight clear
-vlight add ambient                color WHITE
-vlight add directional dir  1 0 0 color GREEN headlight 1
-vlight add directional dir -1 0 0 color RED1  headlight 1
+vlight -clear
+vlight amblight  -type AMBIENT                 -color WHITE
+vlight dirlight1 -type DIRECTIONAL -dir  1 0 0 -color GREEN -headlight 1
+vlight dirlight2 -type DIRECTIONAL -dir -1 0 0 -color RED1  -headlight 1
 
 vrenderparams -shadingModel flat
 vdump $::imagedir/${::casename}.png

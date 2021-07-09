@@ -28,8 +28,8 @@ vfit
 # setup light
 vcaps -ffp 0
 vrenderparams -shadingModel vert
-vlight clear
-vlight add spotLight pos $anX 0 0.001 dir 0 0 -1 angle 60 constAtten 0.1 exponent 0.1 color RED1 headLight 0
+vlight -clear
+vlight spot -type SPOTLIGHT -pos $anX 0 0.001 -dir 0 0 -1 -spotAngle 60 -constAtten 0.1 -exponent 0.1 -color RED1 -headLight 0
 
 set aColor1 [vreadpixel 205 180 rgb name]
 set aColor2 [vreadpixel 205 220 rgb name]

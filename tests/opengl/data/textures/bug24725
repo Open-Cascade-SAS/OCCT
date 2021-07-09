@@ -13,8 +13,8 @@ box b 1 2 3
 vdisplay b
 vsetdispmode 1
 vtexture b 0
-vlight clear
-vlight add ambient color white
+vlight -clear
+vlight amblight -type AMBIENT -color WHITE
 vfit
 
 vtexture b -modulate off

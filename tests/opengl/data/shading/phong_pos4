@@ -17,7 +17,7 @@ vfit
 
 # define lights
 set THE_COLORS { RED1 YELLOW BLUE CYAN PURPLE WHITE HOTPINK GREEN MAGENTA MAGENTA3 }
-vlight clear
+vlight -clear
 set aNbColors 10
 set aLightIndex 0
 set aConstAtten 0.1

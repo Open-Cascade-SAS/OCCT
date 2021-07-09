@@ -14,10 +14,10 @@ vaspects b -material Brass
 vfit
 
 puts "=== Add light sources and display their presentations ==="
-vlight -add ambient -color WHITE -name AMBIENT -display
-vlight -add directional -dir 0 1 0 -name DIR -color GREEN -display
-vlight -add spotlight  -pos 50 25 25 -dir -1 0 0 -intensity 1000000000 -name SPOT -color RED -display
-vlight -add positional -pos 25 25 50 -intensity 10000000000 -range 20 -name POSITIONAL -color BLUE -display
+vlight AMBIENT    -type AMBIENT -color WHITE -display
+vlight DIR        -type DIRECTIONAL -dir 0 1 0 -color GREEN -display
+vlight SPOT       -type SPOTLIGHT  -pos 50 25 25 -dir -1 0 0 -intensity 1000000000 -color RED -display
+vlight POSITIONAL -type POSITIONAL -pos 25 25 50 -intensity 10000000000 -range 20 -color BLUE -display
 
 vdump $imagedir/${casename}_def.png
 

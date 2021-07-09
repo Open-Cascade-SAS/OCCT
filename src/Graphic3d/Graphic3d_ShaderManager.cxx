@@ -1168,7 +1168,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
         for (Graphic3d_LightSet::Iterator aLightIter (theLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
              aLightIter.More(); aLightIter.Next())
         {
-          if (aLightIter.Value()->Type() == Graphic3d_TOLS_DIRECTIONAL
+          if (aLightIter.Value()->Type() == Graphic3d_TypeOfLightSource_Directional
            && aLightIter.Value()->ToCastShadows())
           {
             aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
@@ -1182,11 +1182,11 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       {
         switch (aLightIter.Value()->Type())
         {
-          case Graphic3d_TOLS_AMBIENT:
+          case Graphic3d_TypeOfLightSource_Ambient:
           {
             break; // skip ambient
           }
-          case Graphic3d_TOLS_DIRECTIONAL:
+          case Graphic3d_TypeOfLightSource_Directional:
           {
             if (theNbShadowMaps > 0
              && aLightIter.Value()->ToCastShadows())
@@ -1197,13 +1197,13 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
             ++anIndex;
             break;
           }
-          case Graphic3d_TOLS_POSITIONAL:
+          case Graphic3d_TypeOfLightSource_Positional:
           {
             aLightsLoop = aLightsLoop + EOL"    occPointLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
             ++anIndex;
             break;
           }
-          case Graphic3d_TOLS_SPOT:
+          case Graphic3d_TypeOfLightSource_Spot:
           {
             aLightsLoop = aLightsLoop + EOL"    occSpotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
             ++anIndex;
@@ -1220,7 +1220,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
         EOL"    for (int anIndex = 0; anIndex < occLightSourcesCount; ++anIndex)"
         EOL"    {"
         EOL"      int aType = occLight_Type (anIndex);";
-      if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_DIRECTIONAL) > 0)
+      if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Directional) > 0)
       {
         isFirstInLoop = false;
         aLightsLoop +=
@@ -1229,7 +1229,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
           EOL"        occDirectionalLight (anIndex, theNormal, theView, theIsFront, 1.0);"
           EOL"      }";
       }
-      if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_POSITIONAL) > 0)
+      if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Positional) > 0)
       {
         if (!isFirstInLoop)
         {
@@ -1242,7 +1242,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
           EOL"        occPointLight (anIndex, theNormal, theView, aPoint, theIsFront);"
           EOL"      }";
       }
-      if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_SPOT) > 0)
+      if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Spot) > 0)
       {
         if (!isFirstInLoop)
         {
@@ -1267,7 +1267,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       aLightsFunc += Shaders_PBRIllumination_glsl;
     }
 
-    if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_DIRECTIONAL) == 1
+    if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Directional) == 1
      && theNbLights == 1
      && !theIsPBR
      && theNbShadowMaps == 0)
@@ -1276,7 +1276,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       aLightsLoop = EOL"    directionalLightFirst(theNormal, theView, theIsFront, 1.0);";
       aLightsFunc += THE_FUNC_directionalLightFirst;
     }
-    else if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_DIRECTIONAL) > 0)
+    else if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Directional) > 0)
     {
       if (theNbShadowMaps > 0)
       {
@@ -1284,11 +1284,11 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       }
       aLightsFunc += theIsPBR ? Shaders_PBRDirectionalLight_glsl : Shaders_PhongDirectionalLight_glsl;
     }
-    if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_POSITIONAL) > 0)
+    if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Positional) > 0)
     {
       aLightsFunc += theIsPBR ? Shaders_PBRPointLight_glsl : Shaders_PhongPointLight_glsl;
     }
-    if (theLights->NbEnabledLightsOfType (Graphic3d_TOLS_SPOT) > 0)
+    if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Spot) > 0)
     {
       aLightsFunc += theIsPBR ? Shaders_PBRSpotLight_glsl : Shaders_PhongSpotLight_glsl;
     }

@@ -25,6 +25,7 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Message.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Stream.hxx>
@@ -873,128 +874,154 @@ static Standard_Boolean Alphabetic(char c)
 
 static Standard_Real Parse(char*&);
 
-static Standard_Real ParseValue(char*& name)
+static Standard_Real ParseValue (char*& theName)
 {
-  while (*name == ' ' || *name == '\t') name++;
+  while (*theName == ' ' || *theName == '\t') { ++theName; }
   Standard_Real x = 0;
-  switch (*name) {
-
-  case '\0' :
-    break;
-
-  case '(' :
-    name++;
-    x = Parse(name);
-    if (*name != ')') 
-      std::cout << "Mismatched parenthesis" << std::endl;
-    name++;
-    break;
-
-  case '+' :
-    name++;
-    x = ParseValue(name);
-    break;
-
-  case '-' :
-    name++;
-    x = - ParseValue(name);
-    break;
-
-    default :
+  switch (*theName)
+  {
+    case '\0':
+    {
+      break;
+    }
+    case '(':
+    {
+      ++theName;
+      x = Parse (theName);
+      if (*theName != ')')
       {
-	// process a string
-	
-	char* p = name;
-	while (Numeric(*p)) p++;
-	// process scientific notation
-	if ((*p == 'e') || (*p == 'E')) {
-	  if (Numeric(*(p+1)) || *(p+1) == '+' || *(p+1) == '-')
-	    p+= 2;
-	}
-	while (Numeric(*p) || Alphabetic(*p)) p++;
-	char c = *p;
-	*p = '\0';
-	
-	if (Numeric(*name))   // numeric literal
-	  x = Atof(name);
-	else if (!Draw::Get((Standard_CString) name,x)) {  // variable
-	  
-	  // search for a function ...
-	  *p = c;
-	  // count arguments
-	  Standard_Integer argc = 1;
-	  char* q = p;
-	  while ((*q == ' ') || (*q == '\t')) q++;
-	  if (*q == '(') {
-	    Standard_Integer pc = 1;
-	    argc = 2;
-	    q++;
-	    while ((pc > 0) && *q) {
-	      if (*q == '(') pc++;
-	      if (*q == ')') pc--;
-	      if ((pc == 1) && (*q == ',')) argc++;
-	      q++;
-	    }
-	    if (pc > 0) {
-	      std::cout << "Unclosed parenthesis"<< std::endl;
-	      x = 0;
-	    }
-	    else {
-	      // build function call 
-	      // replace , and first and last () by space
-	      if (argc > 1) {
-		Standard_Integer i = 2;
-		while (*p != '(') p++;
-		*p = ' ';
-		p++;
-		pc = 1;
-		while (pc > 0) {
-		  if (*p == '(') pc++;
-		  if (*p == ')') pc--;
-		  if ((pc == 1) && (*p == ',')) {
-		    *p = ' ';
-		    p++;
-		    i++;
-		  }
-		  else
-		    p++;
-		}
-		*(p-1) = '\0';
-		c = *p;
-
-    Draw_Interpretor& aCommands = Draw::GetInterpretor();
-
-		// call the function, save the current result
-		char* sv = 0;
-		if (*aCommands.Result()) {
-		  sv = new char [strlen(aCommands.Result())];
-		  strcpy(sv,aCommands.Result());
-		  aCommands.Reset();
-		}
-		if (aCommands.Eval(name) != 0) {
-		  std::cout << "Call of function " << name << " failed" << std::endl;
-		  x = 0;
-		}
-		else
-		  x = Atof(aCommands.Result());
-		aCommands.Reset();
-		if (sv) {
-		  aCommands << sv;
-		  delete [] sv;
-		}
-	      }
-	    }
-	  }
-	  else
-	    Draw_ParseFailed = Standard_True;
-	}
-	*p = c;
-	name = p;
+        std::cout << "Mismatched parenthesis" << std::endl;
       }
+      ++theName;
+      break;
+    }
+    case '+':
+    {
+      ++theName;
+      x = ParseValue (theName);
+      break;
+    }
+    case '-':
+    {
+      ++theName;
+      x = - ParseValue (theName);
+      break;
+    }
+    default:
+    {
+      // process a string
+      char* p = theName;
+      while (Numeric (*p)) { ++p; }
+      // process scientific notation
+      if ((*p == 'e') || (*p == 'E'))
+      {
+        if (Numeric (*(p+1)) || *(p+1) == '+' || *(p+1) == '-')
+        {
+          p+= 2;
+        }
+      }
+      while (Numeric (*p) || Alphabetic (*p)) { p++; }
+      char c = *p;
+      *p = '\0';
+
+      if (Numeric (*theName))   // numeric literal
+      {
+        x = Atof (theName);
+      }
+      else if (!Draw::Get ((Standard_CString )theName, x)) // variable
+      {
+        // search for a function ...
+        *p = c;
+        // count arguments
+        Standard_Integer argc = 1;
+        char* q = p;
+        while ((*q == ' ') || (*q == '\t')) { ++q; }
+        if (*q == '(')
+        {
+          Standard_Integer pc = 1;
+          argc = 2;
+          q++;
+          while ((pc > 0) && *q)
+          {
+            if (*q == '(') { ++pc; }
+            if (*q == ')') { --pc; }
+            if ((pc == 1) && (*q == ',')) { ++argc; }
+            ++q;
+          }
+          if (pc > 0)
+          {
+            std::cout << "Unclosed parenthesis"<< std::endl;
+            x = 0;
+          }
+          else
+          {
+            // build function call
+            // replace , and first and last () by space
+            if (argc > 1)
+            {
+              Standard_Integer i = 2;
+              while (*p != '(') { ++p; }
+              *p = ' ';
+              ++p;
+              pc = 1;
+              while (pc > 0)
+              {
+                if (*p == '(') { ++pc; }
+                if (*p == ')') { --pc; }
+                if ((pc == 1) && (*p == ','))
+                {
+                  *p = ' ';
+                  ++p;
+                  ++i;
+                }
+                else
+                {
+                  ++p;
+                }
+              }
+              *(p-1) = '\0';
+              c = *p;
+
+              Draw_Interpretor& aCommands = Draw::GetInterpretor();
+
+              // call the function, save the current result
+              TCollection_AsciiString sv (aCommands.Result());
+              if (*aCommands.Result())
+              {
+                aCommands.Reset();
+              }
+              if (aCommands.Eval (theName) != 0)
+              {
+                std::cout << "Call of function " << theName << " failed" << std::endl;
+                x = 0;
+              }
+              else
+              {
+                x = Atof (aCommands.Result());
+              }
+              aCommands.Reset();
+              if (!sv.IsEmpty())
+              {
+                aCommands << sv;
+              }
+            }
+          }
+        }
+        else
+        {
+          Draw_ParseFailed = Standard_True;
+        }
+      }
+      *p = c;
+      theName = p;
+    }
     break;
-    
   }
-  while (*name == ' ' || *name == '\t') name++;
+
+  while (*theName == ' ' || *theName == '\t')
+  {
+    ++theName;
+  }
   return x;
 }
 
@@ -1055,17 +1082,16 @@ static Standard_Real Parse(char*& name)
 // function : Atof
 // purpose  :
 //=======================================================================
-Standard_Real Draw::Atof(const Standard_CString name)
+Standard_Real Draw::Atof(const Standard_CString theName)
 {
   // copy the string
-  char* n = new char[1+strlen(name)];
-  char* b = n;
-  strcpy(n,name);
+  NCollection_Array1<char> aBuff (0, (Standard_Integer )strlen (theName));
+  char* n = &aBuff.ChangeFirst();
+  strcpy (n, theName);
   Draw_ParseFailed = Standard_False;
   Standard_Real x = Parse(n);
   while ((*n == ' ') || (*n == '\t')) n++;
   if (*n) Draw_ParseFailed = Standard_True;
-  delete [] b;
   return x;
 }
 

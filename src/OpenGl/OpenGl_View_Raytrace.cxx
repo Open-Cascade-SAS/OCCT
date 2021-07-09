@@ -2440,7 +2440,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
          aLightIter.More(); aLightIter.Next())
     {
       const Graphic3d_CLight& aLight = *aLightIter.Value();
-      if (aLight.Type() != Graphic3d_TOLS_DIRECTIONAL)
+      if (aLight.Type() != Graphic3d_TypeOfLightSource_Directional)
       {
         aLightSources.push_back (aLightIter.Value());
       }
@@ -2449,7 +2449,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
     for (Graphic3d_LightSet::Iterator aLightIter (myLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
          aLightIter.More(); aLightIter.Next())
     {
-      if (aLightIter.Value()->Type() == Graphic3d_TOLS_DIRECTIONAL)
+      if (aLightIter.Value()->Type() == Graphic3d_TypeOfLightSource_Directional)
       {
         aLightSources.push_back (aLightIter.Value());
       }
@@ -2484,7 +2484,7 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
                          -aLight.PackedDirectionRange().z(),
                          0.0f);
 
-    if (aLight.Type() != Graphic3d_TOLS_DIRECTIONAL)
+    if (aLight.Type() != Graphic3d_TypeOfLightSource_Directional)
     {
       aPosition = BVH_Vec4f (static_cast<float>(aLight.Position().X()),
                              static_cast<float>(aLight.Position().Y()),

@@ -11,7 +11,7 @@ vinit View1 -width 1024 -height 768
 vaxo
 vcaps -ffp 0
 vrenderparams -shadingModel phong
-vlight clear
+vlight -clear
 
 set THE_LIGHTS {
   { -1 -1 -1 RED1 }

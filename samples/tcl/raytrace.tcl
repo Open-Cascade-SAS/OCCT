@@ -31,7 +31,7 @@ vsetcolor glass brown
 vsettransparency glass 0.6
 
 # add light source for shadows
-vlight new spot pos -100 -100 300
+vlight spot -type SPOT -pos -100 -100 300
 
 # set white background and fit view
 vbackground -color WHITE

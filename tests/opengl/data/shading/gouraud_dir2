@@ -9,14 +9,10 @@ vclose ALL
 vinit View1
 vcaps -ffp 0
 vrenderparams -shadingModel vert
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight delete 0
-vlight add ambient                color WHITE
-vlight add directional dir  1 0 0 color GREEN headlight 1
-vlight add directional dir -1 0 0 color RED1  headlight 1
+vlight -clear
+vlight amblight  -type AMBIENT                 -color WHITE
+vlight dirlight1 -type DIRECTIONAL -dir  1 0 0 -color GREEN -headlight 1
+vlight dirlight2 -type DIRECTIONAL -dir -1 0 0 -color RED1  -headlight 1
 
 # display shape
 restore [locate_data_file occ/fuse.brep] f

@@ -243,17 +243,15 @@ ttranslate crpk_47 18.0 27.6 0
 
 eval compound $lrpk brpk
 
-# show result in plain 3d viewer
+# show result in 3d viewer
+vinit View1
+vclear
+vsetdispmode 1
+vrenderparams -msaa 8
+vlight -clear
+vlight amblight -type AMBIENT
+vlight dirlight -type DIRECTIONAL -direction 1 -1 -2 -head 1
 if [info exists i7_show_3dview] {
-  vinit Driver1/Viewer1/View1
-  vclear 
-  vsetdispmode 1
-  vrenderparams -msaa 8
-
-  vlight clear
-  vlight add amb
-  vlight add directional direction 1 -1 -2 head 1
-
   vdisplay case
   vsetcolor case GRAY70
 
@@ -318,12 +316,8 @@ XSetColor D rpk1 GRAY70
 XSetColor D rpk2 80664D
 XSetColor D rpk3 GRAY70
 
-XShow D
-vlight clear
-vlight add amb
-vlight add directional direction 1 -1 -2 head 1
-vsetdispmode 1
-vrenderparams -msaa 8
+# display in 3D Viewer
+XDisplay -dispMode 1 D -explore
 vfit
 
 # save to STEP if variable i7_save_xde is defined (specifies file name)

@@ -211,8 +211,8 @@ vviewparams -size 170.508
 
 # Restore light source parameters
 vlight -clear
-vlight -add ambient
-vlight -add directional -direction -0.303949 -0.434084 -0.848048 -smoothness 0.3 -intensity 12
+vlight -add AMBIENT -name amblight
+vlight -add DIRECTIONAL -direction -0.303949 -0.434084 -0.848048 -smoothAngle 17 -intensity 12 -name dirlight
 
 # Load environment map
 vtextureenv on 1

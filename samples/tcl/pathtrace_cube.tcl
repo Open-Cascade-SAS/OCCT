@@ -15,7 +15,7 @@ vglinfo
 
 # setup light sources
 vlight -clear
-vlight -add positional -head 0 -pos 0.5 0.5 0.85 -sm 0.06 -int 30.0
+vlight -add POSITIONAL -headLight 0 -pos 0.5 0.5 0.85 -smoothRadius 0.06 -intensity 30.0 -name pntlight
 
 vvbo 0
 vsetdispmode 1

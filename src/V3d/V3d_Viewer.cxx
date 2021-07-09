@@ -439,8 +439,11 @@ void V3d_Viewer::SetDefaultLights()
     DelLight (aLight);
   }
 
-  Handle(V3d_DirectionalLight) aDirLight  = new V3d_DirectionalLight (V3d_Zneg, Quantity_NOC_WHITE, Standard_True);
-  Handle(V3d_AmbientLight)     anAmbLight = new V3d_AmbientLight (Quantity_NOC_WHITE);
+  Handle(V3d_DirectionalLight) aDirLight = new V3d_DirectionalLight (V3d_Zneg, Quantity_NOC_WHITE);
+  aDirLight->SetName ("headlight");
+  aDirLight->SetHeadlight (true);
+  Handle(V3d_AmbientLight) anAmbLight = new V3d_AmbientLight (Quantity_NOC_WHITE);
+  anAmbLight->SetName ("amblight");
   AddLight (aDirLight);
   AddLight (anAmbLight);
   SetLightOn (aDirLight);

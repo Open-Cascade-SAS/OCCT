@@ -10,7 +10,6 @@ tclean f
 
 # draw box
 vclear
-vclose ALL
 vinit View1
 vdefaults -absDefl 0.5
 vsetdispmode 1

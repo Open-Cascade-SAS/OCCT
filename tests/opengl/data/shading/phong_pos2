@@ -32,12 +32,12 @@ set THE_LIGHTS {
   { -4 -1  0 MAGENTA }
   {  4 -1  0 MAGENTA3 }
 }
-vlight clear
+vlight -clear
 for { set aLightIter 1 } { $aLightIter <= 10 } { incr aLightIter } {
   set aLight [lindex $THE_LIGHTS [expr $aLightIter - 1]]
   set aColor [lindex $aLight 3]
   set aPos [list [lindex $aLight 0] [lindex $aLight 1] [lindex $aLight 2]]
-  vlight add positional pos {*}$aPos color $aColor headLight 0
+  vlight pntlight${aLightIter} -type POSITIONAL -pos {*}$aPos -color $aColor -headLight 0
   vpoint v${aLightIter} {*}$aPos
   vdrawtext t${aLightIter} "light${aLightIter} $aColor" -pos {*}$aPos -color $aColor
   vdump $::imagedir/${::casename}_${aLightIter}.png

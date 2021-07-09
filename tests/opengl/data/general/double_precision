@@ -43,7 +43,7 @@ vdisplay -top -dispMode 1 -trsfPers zoom -trsfPersPos 1000 0 0 zp
 vclipplane pln -equation -1 0 0 1000 -set
 
 # check positional lights
-vlight add positional pos 1000 0 0.001 color RED1 headlight 0
+vlight pntlight -type POSITIONAL -pos 1000 0 0.001 -color RED1 -headlight 0
 
 vremove f1000
 vmoveto 220 220

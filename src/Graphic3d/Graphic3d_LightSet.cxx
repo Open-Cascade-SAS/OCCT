@@ -22,10 +22,10 @@ namespace
   //! Suffixes identifying light source type.
   static const char THE_LIGHT_KEY_LETTERS[Graphic3d_TypeOfLightSource_NB] =
   {
-    'a', // Graphic3d_TOLS_AMBIENT
-    'd', // Graphic3d_TOLS_DIRECTIONAL
-    'p', // Graphic3d_TOLS_POSITIONAL
-    's'  // Graphic3d_TOLS_SPOT
+    'a', // Graphic3d_TypeOfLightSource_Ambient
+    'd', // Graphic3d_TypeOfLightSource_Directional
+    'p', // Graphic3d_TypeOfLightSource_Positional
+    's'  // Graphic3d_TypeOfLightSource_Spot
   };
 }
 
@@ -126,7 +126,7 @@ Standard_Size Graphic3d_LightSet::UpdateRevision()
     }
 
     myLightTypesEnabled[aLight->Type()] += 1;
-    if (aLight->Type() == Graphic3d_TOLS_AMBIENT)
+    if (aLight->Type() == Graphic3d_TypeOfLightSource_Ambient)
     {
       myAmbient += aLight->PackedColor() * aLight->Intensity();
     }
@@ -145,12 +145,12 @@ Standard_Size Graphic3d_LightSet::UpdateRevision()
   }
   aKeyLong[aLightLast] = '\0';
   myAmbient.a() = 1.0f;
-  myNbEnabled = myLightTypesEnabled[Graphic3d_TOLS_DIRECTIONAL]
-              + myLightTypesEnabled[Graphic3d_TOLS_POSITIONAL]
-              + myLightTypesEnabled[Graphic3d_TOLS_SPOT];
+  myNbEnabled = myLightTypesEnabled[Graphic3d_TypeOfLightSource_Directional]
+              + myLightTypesEnabled[Graphic3d_TypeOfLightSource_Positional]
+              + myLightTypesEnabled[Graphic3d_TypeOfLightSource_Spot];
   myKeyEnabledLong  = aKeyLong;
-  myKeyEnabledShort = TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TOLS_DIRECTIONAL] > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TOLS_DIRECTIONAL] : '\0')
-                    + TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TOLS_POSITIONAL]  > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TOLS_POSITIONAL]  : '\0')
-                    + TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TOLS_SPOT]        > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TOLS_SPOT]        : '\0');
+  myKeyEnabledShort = TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TypeOfLightSource_Directional] > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TypeOfLightSource_Directional] : '\0')
+                    + TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TypeOfLightSource_Positional]  > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TypeOfLightSource_Positional]  : '\0')
+                    + TCollection_AsciiString (myLightTypesEnabled[Graphic3d_TypeOfLightSource_Spot]        > 0 ? THE_LIGHT_KEY_LETTERS[Graphic3d_TypeOfLightSource_Spot]        : '\0');
   return myRevision;
 }

@@ -88,7 +88,7 @@ public:
       for (; myIter.More(); myIter.Next())
       {
         if ((myFilter & IterationFilter_ExcludeAmbient) != 0
-         && myIter.Key()->Type() == Graphic3d_TOLS_AMBIENT)
+         && myIter.Key()->Type() == Graphic3d_TypeOfLightSource_Ambient)
         {
           continue;
         }

@@ -8,12 +8,12 @@ vinit View1
 vlight -clear
 vbackground -color GRAY
 vrenderparams -shadingModel PHONG
-vlight -add ambient -COLOR WHITE -intensity 0.1
+vlight amblight -type AMBIENT -color WHITE -intensity 0.1
 box b 0 0 0 30 30 30
 vdisplay b -dispMode 1
 vsetmaterial b Brass
 vfit
-vlight -add spotlight -pos 15 -10 15 -dir 0 1 0 -name aSpotLight -color RED -display
+vlight aSpotLight -type SPOTLIGHT -pos 15 -10 15 -dir 0 1 0 -color RED -display
 
 puts "=== Attach manipulator ==="
 vmanipulator m -attach aSpotLight -adjustPosition location 

@@ -75,10 +75,10 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
   myOpposMarkerType (Aspect_TOM_O_POINT),
   mySize (50),
   myNbArrows (5),
-  myNbSplitsQuadric (theLight->Type() == Graphic3d_TOLS_AMBIENT ? 10 : 30),
+  myNbSplitsQuadric (theLight->Type() == Graphic3d_TypeOfLightSource_Ambient ? 10 : 30),
   myNbSplitsArrow (20),
-  myIsZoomable (theLight->Type() == Graphic3d_TOLS_POSITIONAL
-             || theLight->Type() == Graphic3d_TOLS_SPOT),
+  myIsZoomable (theLight->Type() == Graphic3d_TypeOfLightSource_Positional
+             || theLight->Type() == Graphic3d_TypeOfLightSource_Spot),
   myToDisplayName (true),
   myToDisplayRange (true),
   myToSwitchOnClick (true)
@@ -101,7 +101,7 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
   myDrawer->ArrowAspect()->Aspect()->SetMarkerType (Aspect_TOM_EMPTY);
   myDrawer->ArrowAspect()->Aspect()->SetMarkerScale (2.0f);
   myArrowLineAspectShadow = new Graphic3d_AspectLine3d (Quantity_NOC_BLACK, Aspect_TOL_SOLID,
-                                                        theLight->Type() != Graphic3d_TOLS_AMBIENT ? 3.0f : 1.0f);
+                                                        theLight->Type() != Graphic3d_TypeOfLightSource_Ambient ? 3.0f : 1.0f);
 
   myDrawer->SetupOwnShadingAspect();
   myDrawer->ShadingAspect()->SetColor (aColor);
@@ -155,7 +155,7 @@ void AIS_LightSource::updateLightAspects()
   myDrawer->ArrowAspect()  ->SetColor (aColor);
   myDrawer->ArrowAspect()->Aspect()->ChangeFrontMaterial().SetColor (aColor);
 
-  if (myLightSource->Type() == Graphic3d_TOLS_DIRECTIONAL)
+  if (myLightSource->Type() == Graphic3d_TypeOfLightSource_Directional)
   {
     const Standard_Real anAngleTol = 2.0 * M_PI / 180.0;
     Aspect_TypeOfMarker aDirMark = Aspect_TOM_EMPTY;
@@ -179,7 +179,7 @@ void AIS_LightSource::updateLightTransformPersistence()
   Handle(Graphic3d_TransformPers) aTrsfPers = myTransformPersistence;
   switch (myLightSource->Type())
   {
-    case Graphic3d_TOLS_AMBIENT:
+    case Graphic3d_TypeOfLightSource_Ambient:
     {
       if (!myIsZoomable)
       {
@@ -194,7 +194,7 @@ void AIS_LightSource::updateLightTransformPersistence()
       }
       break;
     }
-    case Graphic3d_TOLS_DIRECTIONAL:
+    case Graphic3d_TypeOfLightSource_Directional:
     {
       Graphic3d_TransModeFlags aMode = myLightSource->IsHeadlight() ? Graphic3d_TMF_2d : Graphic3d_TMF_TriedronPers;
       if (myIsZoomable)
@@ -221,8 +221,8 @@ void AIS_LightSource::updateLightTransformPersistence()
       }
       break;
     }
-    case Graphic3d_TOLS_POSITIONAL:
-    case Graphic3d_TOLS_SPOT:
+    case Graphic3d_TypeOfLightSource_Positional:
+    case Graphic3d_TypeOfLightSource_Spot:
     {
       Graphic3d_TransModeFlags aMode = myLightSource->IsHeadlight()
                                      ? Graphic3d_TMF_CameraPers
@@ -265,7 +265,7 @@ void AIS_LightSource::updateLightLocalTransformation()
   myLocalTransformation.Nullify();
   switch (myLightSource->Type())
   {
-    case Graphic3d_TOLS_AMBIENT:
+    case Graphic3d_TypeOfLightSource_Ambient:
     {
       if (myIsZoomable)
       {
@@ -275,7 +275,7 @@ void AIS_LightSource::updateLightLocalTransformation()
       }
       break;
     }
-    case Graphic3d_TOLS_DIRECTIONAL:
+    case Graphic3d_TypeOfLightSource_Directional:
     {
       const gp_Pnt aLightPos = (myIsZoomable && !myLightSource->IsHeadlight())
                              ? myLightSource->DisplayPosition()
@@ -286,7 +286,7 @@ void AIS_LightSource::updateLightLocalTransformation()
       myLocalTransformation = new TopLoc_Datum3D (aTrsf);
       break;
     }
-    case Graphic3d_TOLS_POSITIONAL:
+    case Graphic3d_TypeOfLightSource_Positional:
     {
       if (myIsZoomable)
       {
@@ -296,7 +296,7 @@ void AIS_LightSource::updateLightLocalTransformation()
       }
       break;
     }
-    case Graphic3d_TOLS_SPOT:
+    case Graphic3d_TypeOfLightSource_Spot:
     {
       gp_Trsf aTrsf;
       const gp_Ax2 anAx2 (myIsZoomable ? myLightSource->Position() : gp::Origin(), -myLightSource->Direction());
@@ -317,11 +317,11 @@ void AIS_LightSource::setLocalTransformation (const Handle(TopLoc_Datum3D)& theT
   const gp_Trsf aTrsf = theTrsf->Transformation();
   switch (myLightSource->Type())
   {
-    case Graphic3d_TOLS_AMBIENT:
+    case Graphic3d_TypeOfLightSource_Ambient:
     {
       break;
     }
-    case Graphic3d_TOLS_DIRECTIONAL:
+    case Graphic3d_TypeOfLightSource_Directional:
     {
       gp_Dir aNewDir = (-gp::DZ()).Transformed (aTrsf);
       myLightSource->SetDirection (aNewDir);
@@ -332,13 +332,13 @@ void AIS_LightSource::setLocalTransformation (const Handle(TopLoc_Datum3D)& theT
       }
       break;
     }
-    case Graphic3d_TOLS_POSITIONAL:
+    case Graphic3d_TypeOfLightSource_Positional:
     {
       gp_Pnt aNewPos = gp::Origin().Transformed (aTrsf);
       myLightSource->SetPosition (aNewPos);
       break;
     }
-    case Graphic3d_TOLS_SPOT:
+    case Graphic3d_TypeOfLightSource_Spot:
     {
       gp_Pnt aNewPos = gp::Origin().Transformed (aTrsf);
       myLightSource->SetPosition (aNewPos);
@@ -379,10 +379,10 @@ void AIS_LightSource::Compute (const Handle(PrsMgr_PresentationManager)& ,
 
   switch (myLightSource->Type())
   {
-    case Graphic3d_TOLS_AMBIENT:     computeAmbient    (thePrs, theMode); break;
-    case Graphic3d_TOLS_DIRECTIONAL: computeDirectional(thePrs, theMode); break;
-    case Graphic3d_TOLS_POSITIONAL:  computePositional (thePrs, theMode); break;
-    case Graphic3d_TOLS_SPOT:        computeSpot       (thePrs, theMode); break;
+    case Graphic3d_TypeOfLightSource_Ambient:     computeAmbient    (thePrs, theMode); break;
+    case Graphic3d_TypeOfLightSource_Directional: computeDirectional(thePrs, theMode); break;
+    case Graphic3d_TypeOfLightSource_Positional:  computePositional (thePrs, theMode); break;
+    case Graphic3d_TypeOfLightSource_Spot:        computeSpot       (thePrs, theMode); break;
   }
 
   if (myToDisplayName)
