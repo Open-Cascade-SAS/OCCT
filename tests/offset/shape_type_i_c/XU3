@@ -1,7 +1,3 @@
-puts "TODO OCC27414 ALL: Error: The command cannot be built"
-puts "TODO OCC27414 ALL: gives an empty result"
-puts "TODO OCC27414 ALL: TEST INCOMPLETE"
-
 puts "========"
 puts "0031307: Modeling Algorithms - Offset algorithm produces incorrect result in mode Complete join type Intersection"
 puts "========"
@@ -15,8 +11,7 @@ offsetonface s_9 7
 offsetperform result
 
 checkprops result -s 222993 -v 1.87721e+06
-checknbshapes result -shell 1 -solid 1
 
-#unifysamedom result_unif result
-#checknbshapes result_unif -vertex 26 -edge 39 -wire 15 -face 15 -shell 1 -solid 1
-#checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 26 -edge 39 -wire 15 -face 15 -shell 1 -solid 1
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

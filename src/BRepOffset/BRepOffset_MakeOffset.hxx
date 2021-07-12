@@ -217,7 +217,7 @@ private:
   //! Currently the Complete intersection mode is limited to work only on planar cases.
   Standard_EXPORT void BuildSplitsOfExtendedFaces(const TopTools_ListOfShape& theLF,
                                                   const BRepOffset_Analyse& theAnalyse,
-                                                  Handle(BRepAlgo_AsDes)& theAsDes,
+                                                  const Handle(BRepAlgo_AsDes)& theAsDes,
                                                   TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
                                                   TopTools_DataMapOfShapeShape& theFacesOrigins,
                                                   TopTools_DataMapOfShapeShape& theETrimEInf,
@@ -226,7 +226,7 @@ private:
   //! Building of the splits of the already trimmed offset faces for mode Complete
   //! and joint type Intersection.
   Standard_EXPORT void BuildSplitsOfTrimmedFaces(const TopTools_ListOfShape& theLF,
-                                                 Handle(BRepAlgo_AsDes)& theAsDes,
+                                                 const Handle(BRepAlgo_AsDes)& theAsDes,
                                                  BRepAlgo_Image& theImage);
 
   Standard_Real myOffset;
