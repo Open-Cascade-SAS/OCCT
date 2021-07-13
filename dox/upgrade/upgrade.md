@@ -2264,17 +2264,6 @@ Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
 BRepAlgoApi_Cut(S1, S2, aProgress->Start()); // method Start() creates range for usage in cut algorithm
 ~~~~
 
-@subsection upgrade_occt760_old_bop_removed Removal of old Boolean operations algorithm (BRepAlgo_BooleanOperation)
-
-* The method *BRepAlgo_Tool::Deboucle3D* has been removed as duplicating. The corresponding method from *BRepOffset_Tool* class has to be used instead.
-* The API classes from *BRepAlgo* package performing old Boolean operations algorithm have been removed:
-  - *BRepAlgo_BooleanOperation*
-  - *BRepAlgo_Fuse*
-  - *BRepAlgo_Common*
-  - *BRepAlgo_Cut*
-  - *BRepAlgo_Section*
-  The corresponding classes from the *BRepAlgoAPI* package have to be used instead.
-
 @subsection upgrade_occt760_change_check_to_adaptors Changes in BRepLib_CheckCurveOnSurface & GeomLib_CheckCurveOnSurface interfaces
 
 Now the classes accept adaptors instead objects as input parameters.
@@ -2293,3 +2282,14 @@ void Init (const Handle(Adaptor3d_Curve)& theCurve, const Standard_Real theTolRa
 void Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
              const Standard_Boolean isMultiThread);
 ~~~~
+
+@subsection upgrade_occt760_old_bop_removed Removal of old Boolean operations algorithm (BRepAlgo_BooleanOperation)
+
+* The method *BRepAlgo_Tool::Deboucle3D* has been removed as duplicating. The corresponding method from *BRepOffset_Tool* class has to be used instead.
+* The API classes from *BRepAlgo* package performing old Boolean operations algorithm have been removed:
+  - *BRepAlgo_BooleanOperation*
+  - *BRepAlgo_Fuse*
+  - *BRepAlgo_Common*
+  - *BRepAlgo_Cut*
+  - *BRepAlgo_Section*
+  The corresponding classes from the *BRepAlgoAPI* package have to be used instead.

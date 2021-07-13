@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
@@ -30,6 +31,7 @@
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -1333,9 +1335,16 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge& theE,
     first = Max(first, C2d->FirstParameter());
     last = Min(last, C2d->LastParameter());
   }
+  const Handle(Adaptor3d_Curve) aGeomAdaptorCurve = new GeomAdaptor_Curve(C3d, first, last);
 
-  GeomLib_CheckCurveOnSurface CT(C3d, S, first, last);
-  CT.Perform(C2d);
+  Handle(Adaptor2d_Curve2d) aGeom2dAdaptorCurve   = new Geom2dAdaptor_Curve(C2d, first, last);
+  Handle(GeomAdaptor_Surface) aGeomAdaptorSurface = new GeomAdaptor_Surface(S);
+
+  Handle(Adaptor3d_CurveOnSurface) anAdaptor3dCurveOnSurface =
+    new Adaptor3d_CurveOnSurface(aGeom2dAdaptorCurve, aGeomAdaptorSurface);
+
+  GeomLib_CheckCurveOnSurface CT(aGeomAdaptorCurve);
+  CT.Perform(anAdaptor3dCurveOnSurface);
   if(CT.IsDone())
   {
     newtol = CT.MaxDistance();

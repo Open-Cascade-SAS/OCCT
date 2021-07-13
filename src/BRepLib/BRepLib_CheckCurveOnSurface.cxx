@@ -12,8 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepLib_CheckCurveOnSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TopoDS.hxx>
@@ -36,9 +40,7 @@ BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface
 //function : Init
 //purpose  : 
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Init
-  (const TopoDS_Edge& theEdge,
-   const TopoDS_Face& theFace)
+void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace)
 {
   myCOnSurfGeom.Init();
 
@@ -53,26 +55,34 @@ void BRepLib_CheckCurveOnSurface::Init
     return;
   }
   
-  //
-  TopLoc_Location aLocE, aLocF, aLocC2D;
-  Standard_Real aFirst = 0.0, aLast = 0.0;
-  //
   // 3D curve initialization
-  const Handle(Geom_Curve)& aC3dTmp = BRep_Tool::Curve(theEdge, aLocE, aFirst, aLast);
-  const Handle(Geom_Curve) aC3d(Handle(Geom_Curve)::DownCast(aC3dTmp->Transformed(aLocE.Transformation())));
+  const Handle(Adaptor3d_Curve) anAdaptor3dCurve = new BRepAdaptor_Curve(theEdge);
 
   // Surface initialization
-  const Handle(Geom_Surface)& aSTmp = BRep_Tool::Surface(theFace, aLocF);
-  const Handle(Geom_Surface) aS(Handle(Geom_Surface)::DownCast(aSTmp->Transformed(aLocF.Transformation())));
-  //
+
+  TopLoc_Location aLocation;
+  Standard_Real aFirstParam, aLastParam;
+
+  Handle(Geom2d_Curve) aGeom2dCurve = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirstParam, aLastParam);
+  Handle(Geom_Surface) aGeomSurface = BRep_Tool::Surface(theFace);
+
   // 2D curves initialization 
-  myPCurve = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirst, aLast);
+  Handle(Adaptor2d_Curve2d) anAdaptorCurve = 
+    new Geom2dAdaptor_Curve(aGeom2dCurve, aFirstParam, aLastParam);
+  Handle(GeomAdaptor_Surface) aGeomAdaptorSurface = new GeomAdaptor_Surface(aGeomSurface);
+
+  myAdaptorCurveOnSurface = new Adaptor3d_CurveOnSurface(anAdaptorCurve, aGeomAdaptorSurface);
 
   if(BRep_Tool::IsClosed(theEdge, theFace))
-    myPCurve2 = BRep_Tool::CurveOnSurface(TopoDS::Edge(theEdge.Reversed()),
-                                          theFace, aFirst, aLast);
+  {
+    Handle(Geom2d_Curve) aGeom2dReversedCurve = 
+      BRep_Tool::CurveOnSurface(TopoDS::Edge(theEdge.Reversed()), theFace, aFirstParam, aLastParam);
+    Handle(Adaptor2d_Curve2d) anAdaptorReversedCurve =
+      new Geom2dAdaptor_Curve(aGeom2dReversedCurve, aFirstParam, aLastParam);
+     myAdaptorCurveOnSurface2 = new Adaptor3d_CurveOnSurface(anAdaptorReversedCurve, aGeomAdaptorSurface);
+  }
 
-  myCOnSurfGeom.Init(aC3d, aS, aFirst, aLast);
+  myCOnSurfGeom.Init(anAdaptor3dCurve);
 }
 
 //=======================================================================
@@ -82,17 +92,17 @@ void BRepLib_CheckCurveOnSurface::Init
 void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
 {
   // Compute the max distance
-  Compute(myPCurve, isMultiThread);
+  Compute(myAdaptorCurveOnSurface, isMultiThread);
   if (ErrorStatus())
   {
     return;
   }
   //
-  if (!myPCurve2.IsNull())
+  if (!myAdaptorCurveOnSurface2.IsNull())
   {
-    // compute max distance for myPCurve2
+    // compute max distance for myAdaptorCurveOnSurface2
     // (for the second curve on closed surface)
-    Compute(myPCurve2, isMultiThread);
+    Compute(myAdaptorCurveOnSurface2, isMultiThread);
   }
 }
 
@@ -100,8 +110,8 @@ void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
 //function : Compute
 //purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Compute(const Handle(Geom2d_Curve)& thePCurve,
+void BRepLib_CheckCurveOnSurface::Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
                                           const Standard_Boolean isMultiThread)
 {
-  myCOnSurfGeom.Perform(thePCurve, isMultiThread);
+  myCOnSurfGeom.Perform(theCurveOnSurface, isMultiThread);
 }

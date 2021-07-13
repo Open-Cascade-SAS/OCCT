@@ -38,38 +38,7 @@ public:
 
   //! Performs the calculation
   //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  Standard_EXPORT void Perform(const Standard_Boolean isMultiThread = Standard_True);
-  
-  //! Returns source 3D-Curve
-  const Handle(Geom_Curve)& Curve() const
-  {
-    return myCOnSurfGeom.Curve();
-  }  
-
-  //! Returns mine 2D-Curve
-  const Handle(Geom2d_Curve)& PCurve() const
-  {
-    return myPCurve;
-  }
-  
-  //! Returns 2nd 2D-Curve (if it exists, e.g. for seam-edge)
-  const Handle(Geom2d_Curve)& PCurve2() const
-  {
-    return myPCurve2;
-  }
-  
-  //! Returns source surface
-  const Handle(Geom_Surface)& Surface() const
-  {
-    return myCOnSurfGeom.Surface();
-  }
-  
-  //! Returns first and last parameter of the curves
-  //! (2D- and 3D-curves are considered to have same range)
-  void Range (Standard_Real& theFirst, Standard_Real& theLast)
-  {
-    myCOnSurfGeom.Range(theFirst, theLast);
-  }
+  Standard_EXPORT void Perform(const Standard_Boolean isMultiThread = Standard_False);
   
   //! Returns true if the max distance has been found
   Standard_Boolean IsDone() const
@@ -103,16 +72,16 @@ public:
 protected:
 
   //! Computes the max distance for the 3d curve of <myCOnSurfGeom>
-  //! and 2d curve <thePCurve>
+  //! and 2d curve <theCurveOnSurface>
   //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  Standard_EXPORT void Compute (const Handle(Geom2d_Curve)& thePCurve, 
+  Standard_EXPORT void Compute (const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
                                 const Standard_Boolean isMultiThread);
 
 private:
 
   GeomLib_CheckCurveOnSurface myCOnSurfGeom;
-  Handle(Geom2d_Curve) myPCurve;
-  Handle(Geom2d_Curve) myPCurve2;
+  Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface;
+  Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface2;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

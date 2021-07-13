@@ -36,6 +36,8 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
+typedef NCollection_Array1<Handle(Adaptor3d_Curve)> Array1OfHCurve;
+
 class GeomLib_CheckCurveOnSurface_TargetFunc;
 
 static 
@@ -46,11 +48,11 @@ Standard_Boolean MinComputing(
                 Standard_Real& theBestValue,
                 Standard_Real& theBestParameter);
 
-static Standard_Integer FillSubIntervals( const Handle(Geom_Curve)& theCurve3d,
-                                          const Handle(Geom2d_Curve)& theCurve2d,
+static Standard_Integer FillSubIntervals( const Handle(Adaptor3d_Curve)& theCurve3d,
+                                          const Handle(Adaptor2d_Curve2d)& theCurve2d,
                                           const Standard_Real theFirst,
                                           const Standard_Real theLast,
-                                          Standard_Integer &theNbParticles,
+                                          Standard_Integer& theNbParticles,
                                           TColStd_Array1OfReal* const theSubIntervals = 0);
 
 //=======================================================================
@@ -62,11 +64,11 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
 {
  public:
   GeomLib_CheckCurveOnSurface_TargetFunc( const Adaptor3d_Curve& theC3D,
-                                          const Adaptor3d_Curve& theAdCS,
+                                          const Adaptor3d_Curve& theCurveOnSurface,
                                           const Standard_Real theFirst,
                                           const Standard_Real theLast):
   myCurve1(theC3D),
-  myCurve2(theAdCS),
+  myCurve2(theCurveOnSurface),
   myFirst(theFirst),
   myLast(theLast)
   {
@@ -214,7 +216,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc :
   }
   
  private:
-  GeomLib_CheckCurveOnSurface_TargetFunc operator=(GeomLib_CheckCurveOnSurface_TargetFunc&);
+  GeomLib_CheckCurveOnSurface_TargetFunc operator=(GeomLib_CheckCurveOnSurface_TargetFunc&) Standard_DELETE;
 
   //checks if the function can be computed when its parameter is
   //equal to theParam
@@ -237,50 +239,43 @@ class GeomLib_CheckCurveOnSurface_Local
 {
 public:
   GeomLib_CheckCurveOnSurface_Local(
-              const Handle(Geom_Curve)& theCurve3D,
-              const Handle(Geom2d_Curve)& theCurve2D,
-              const Handle(Geom_Surface)& theSurface,
-              const TColStd_Array1OfReal& theIntervalsArr,
-              const Standard_Real theEpsilonRange,
-              const Standard_Integer theNbParticles):
-  myCurve3D(theCurve3D),
-  myCurve2D(theCurve2D),
-  mySurface(theSurface),
-  mySubIntervals(theIntervalsArr),
-  myEpsilonRange(theEpsilonRange),
-  myNbParticles(theNbParticles),
-  myArrOfDist(theIntervalsArr.Lower(), theIntervalsArr.Upper()-1),
-  myArrOfParam(theIntervalsArr.Lower(), theIntervalsArr.Upper()-1)
+    const Array1OfHCurve& theCurveArray,
+    const Array1OfHCurve& theCurveOnSurfaceArray,
+    const TColStd_Array1OfReal& theIntervalsArr,
+    const Standard_Real theEpsilonRange,
+    const Standard_Integer theNbParticles):
+    myCurveArray(theCurveArray),
+    myCurveOnSurfaceArray(theCurveOnSurfaceArray),
+    mySubIntervals(theIntervalsArr),
+    myEpsilonRange(theEpsilonRange),
+    myNbParticles(theNbParticles),
+    myArrOfDist(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1),
+    myArrOfParam(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1)
   {
   }
   
-  void operator()(const Standard_Integer& theIndex) const
+  void operator()(Standard_Integer theThreadIndex, Standard_Integer theElemIndex) const
   {
     //For every sub-interval (which is set by mySubIntervals array) this method
     //computes optimal value of GeomLib_CheckCurveOnSurface_TargetFunc function.
     //This optimal value will be put in corresponding (depending on theIndex - the
     //identificator of the current interval in mySubIntervals array) cell of 
     //myArrOfDist and myArrOfParam arrays.
-    const GeomAdaptor_Curve anAC(myCurve3D);
-    const Handle(Adaptor2d_Curve2d) anAd2dC = new Geom2dAdaptor_Curve(myCurve2D);
-    const Handle(Adaptor3d_Surface) anAdS = new GeomAdaptor_Surface(mySurface);
-
-    const Adaptor3d_CurveOnSurface anACS(anAd2dC, anAdS);
-
-    GeomLib_CheckCurveOnSurface_TargetFunc aFunc( anAC, anACS,
-                                                  mySubIntervals.Value(theIndex),
-                                                  mySubIntervals.Value(theIndex+1));
+    GeomLib_CheckCurveOnSurface_TargetFunc aFunc(*(myCurveArray.Value(theThreadIndex).get()),
+                                                 *(myCurveOnSurfaceArray.Value(theThreadIndex).get()),
+                                                 mySubIntervals.Value(theElemIndex),
+                                                 mySubIntervals.Value(theElemIndex + 1));
 
     Standard_Real aMinDist = RealLast(), aPar = 0.0;
-    if(!MinComputing(aFunc, myEpsilonRange, myNbParticles, aMinDist, aPar))
+    if (!MinComputing(aFunc, myEpsilonRange, myNbParticles, aMinDist, aPar))
     {
-      myArrOfDist(theIndex) = RealLast();
-      myArrOfParam(theIndex) = aFunc.FirstParameter();
+      myArrOfDist(theElemIndex) = RealLast();
+      myArrOfParam(theElemIndex) = aFunc.FirstParameter();
       return;
     }
 
-    myArrOfDist(theIndex) = aMinDist;
-    myArrOfParam(theIndex) = aPar;
+    myArrOfDist(theElemIndex) = aMinDist;
+    myArrOfParam(theElemIndex) = aPar;
   }
 
   //Returns optimal value (inverse of square of maximal distance)
@@ -302,10 +297,11 @@ public:
   }
 
 private:
-  GeomLib_CheckCurveOnSurface_Local operator=(GeomLib_CheckCurveOnSurface_Local&);
-  const Handle(Geom_Curve)& myCurve3D;
-  const Handle(Geom2d_Curve)& myCurve2D;
-  const Handle(Geom_Surface)& mySurface;
+  GeomLib_CheckCurveOnSurface_Local operator=(const GeomLib_CheckCurveOnSurface_Local&) Standard_DELETE;
+
+private:
+  const Array1OfHCurve& myCurveArray;
+  const Array1OfHCurve& myCurveOnSurfaceArray;
 
   const TColStd_Array1OfReal& mySubIntervals;
   const Standard_Real myEpsilonRange;
@@ -320,8 +316,6 @@ private:
 //=======================================================================
 GeomLib_CheckCurveOnSurface::GeomLib_CheckCurveOnSurface()
 :
-  myFirst(0.),
-  myLast(0.),
   myErrorStatus(0),
   myMaxDistance(RealLast()),
   myMaxParameter(0.),
@@ -334,15 +328,9 @@ GeomLib_CheckCurveOnSurface::GeomLib_CheckCurveOnSurface()
 //purpose  : 
 //=======================================================================
 GeomLib_CheckCurveOnSurface::
-  GeomLib_CheckCurveOnSurface(const Handle(Geom_Curve)& theCurve,
-                              const Handle(Geom_Surface)& theSurface,
-                              const Standard_Real theFirst,
-                              const Standard_Real theLast,
+  GeomLib_CheckCurveOnSurface(const Handle(Adaptor3d_Curve)& theCurve,
                               const Standard_Real theTolRange):
   myCurve(theCurve),
-  mySurface(theSurface),
-  myFirst(theFirst),
-  myLast(theLast),
   myErrorStatus(0),
   myMaxDistance(RealLast()),
   myMaxParameter(0.),
@@ -357,9 +345,6 @@ GeomLib_CheckCurveOnSurface::
 void GeomLib_CheckCurveOnSurface::Init()
 {
   myCurve.Nullify();
-  mySurface.Nullify();
-  myFirst = 0.0;
-  myLast = 0.0;
   myErrorStatus = 0;
   myMaxDistance = RealLast();
   myMaxParameter = 0.0;
@@ -370,16 +355,10 @@ void GeomLib_CheckCurveOnSurface::Init()
 //function : Init
 //purpose  : 
 //=======================================================================
-void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
-                                        const Handle(Geom_Surface)& theSurface,
-                                        const Standard_Real theFirst,
-                                        const Standard_Real theLast,
+void GeomLib_CheckCurveOnSurface::Init( const Handle(Adaptor3d_Curve)& theCurve,
                                         const Standard_Real theTolRange)
 {
   myCurve = theCurve;
-  mySurface = theSurface;
-  myFirst = theFirst;
-  myLast = theLast;
   myErrorStatus = 0;
   myMaxDistance = RealLast();
   myMaxParameter = 0.0;
@@ -390,21 +369,18 @@ void GeomLib_CheckCurveOnSurface::Init( const Handle(Geom_Curve)& theCurve,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
+void GeomLib_CheckCurveOnSurface::Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
                                           const Standard_Boolean isMultiThread)
 {
   if( myCurve.IsNull() ||
-      mySurface.IsNull() ||
-      thePCurve.IsNull())
+      theCurveOnSurface.IsNull())
   {
     myErrorStatus = 1;
     return;
   }
 
-  if(((myCurve->FirstParameter() - myFirst) > myTolRange) ||
-     ((myCurve->LastParameter() - myLast) < -myTolRange) ||
-     ((thePCurve->FirstParameter() - myFirst) > myTolRange) ||
-     ((thePCurve->LastParameter() - myLast) < -myTolRange))
+  if ((myCurve->FirstParameter() - theCurveOnSurface->FirstParameter() >  myTolRange) ||
+      (myCurve->LastParameter()  - theCurveOnSurface->LastParameter()  < -myTolRange))
   {
     myErrorStatus = 2;
     return;
@@ -421,9 +397,9 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
   //at least one particle in every monotonicity interval. Therefore,
   //number of particles should be equal to n. 
 
-  const Standard_Integer aNbSubIntervals = 
-                              FillSubIntervals( myCurve, thePCurve,
-                                                myFirst, myLast, aNbParticles);
+  const Standard_Integer aNbSubIntervals =
+    FillSubIntervals(myCurve, theCurveOnSurface->GetCurve(),
+                     myCurve->FirstParameter(), myCurve->LastParameter(), aNbParticles);
 
   if(!aNbSubIntervals)
   {
@@ -431,22 +407,45 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
     return;
   }
 
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
 
-    TColStd_Array1OfReal anIntervals(1, aNbSubIntervals+1);
-    FillSubIntervals(myCurve, thePCurve, myFirst, myLast, aNbParticles, &anIntervals);
+    TColStd_Array1OfReal anIntervals(1, aNbSubIntervals + 1);
+    FillSubIntervals(myCurve, theCurveOnSurface->GetCurve(),
+                     myCurve->FirstParameter(), myCurve->LastParameter(), aNbParticles, &anIntervals);
 
-    GeomLib_CheckCurveOnSurface_Local aComp(myCurve, thePCurve,
-                                mySurface, anIntervals, anEpsilonRange, aNbParticles);
-
-    OSD_Parallel::For(anIntervals.Lower(), anIntervals.Upper(), aComp, !isMultiThread);
-
+    const Standard_Integer aNbThreads = isMultiThread ? Min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch()) : 1;
+    Array1OfHCurve aCurveArray(0, aNbThreads - 1);
+    Array1OfHCurve aCurveOnSurfaceArray(0, aNbThreads - 1);
+    for (Standard_Integer anI = 0; anI < aNbThreads; ++anI)
+    {
+      aCurveArray.SetValue(anI, aNbThreads > 1 ? myCurve->ShallowCopy() : myCurve);
+      aCurveOnSurfaceArray.SetValue(anI, aNbThreads > 1
+                                    ? theCurveOnSurface->ShallowCopy()
+                                    : static_cast<const Handle(Adaptor3d_Curve)&> (theCurveOnSurface));
+    }
+    GeomLib_CheckCurveOnSurface_Local aComp(aCurveArray, aCurveOnSurfaceArray, anIntervals,
+                                            anEpsilonRange, aNbParticles);
+    if (aNbThreads > 1)
+    {
+      const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher aLauncher(*aThreadPool, aNbThreads);
+      aLauncher.Perform(anIntervals.Lower(), anIntervals.Upper(), aComp);
+    }
+    else
+    {
+      for (Standard_Integer anI = anIntervals.Lower(); anI < anIntervals.Upper(); ++anI)
+      {
+        aComp(0, anI);
+      }
+    }
     aComp.OptimalValues(myMaxDistance, myMaxParameter);
 
     myMaxDistance = sqrt(Abs(myMaxDistance));
   }
-  catch (Standard_Failure const&) {
+  catch (Standard_Failure const&)
+  {
     myErrorStatus = 3;
   }
 }
@@ -458,11 +457,11 @@ void GeomLib_CheckCurveOnSurface::Perform(const Handle(Geom2d_Curve)& thePCurve,
 //            (fills theSubIntervals array).
 //            Returns number of subintervals.
 //=======================================================================
-Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
-                                  const Handle(Geom2d_Curve)& theCurve2d,
+Standard_Integer FillSubIntervals(const Handle(Adaptor3d_Curve)& theCurve3d,
+                                  const Handle(Adaptor2d_Curve2d)& theCurve2d,
                                   const Standard_Real theFirst,
                                   const Standard_Real theLast,
-                                  Standard_Integer &theNbParticles,
+                                  Standard_Integer& theNbParticles,
                                   TColStd_Array1OfReal* const theSubIntervals)
 {
   const Standard_Integer aMaxKnots = 101;
@@ -475,33 +474,18 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
   Standard_Boolean isTrimmed3D = Standard_False, isTrimmed2D = Standard_False;
 
   //
-  if (theCurve3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+  if (theCurve3d->GetType() == GeomAbs_BSplineCurve)
   {
-    aBS3DCurv = Handle(Geom_BSplineCurve)::
-                      DownCast(Handle(Geom_TrimmedCurve)::
-                      DownCast(theCurve3d)->BasisCurve());
-    isTrimmed3D = Standard_True;
+    aBS3DCurv = theCurve3d->BSpline();
   }
-  else
+  if (theCurve2d->GetType() == GeomAbs_BSplineCurve)
   {
-    aBS3DCurv = Handle(Geom_BSplineCurve)::DownCast(theCurve3d);
+    aBS2DCurv = theCurve2d->BSpline();
   }
 
-  if (theCurve2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
-  {
-    aBS2DCurv = Handle(Geom2d_BSplineCurve)::
-                      DownCast(Handle(Geom2d_TrimmedCurve)::
-                      DownCast(theCurve2d)->BasisCurve());
-    isTrimmed2D = Standard_True;
-  }
-  else
-  {
-    aBS2DCurv = Handle(Geom2d_BSplineCurve)::DownCast(theCurve2d);
-  }
+  Handle(TColStd_HArray1OfReal) anArrKnots3D, anArrKnots2D;
 
-  Handle(TColStd_HArray1OfReal) anArrKnots3D,  anArrKnots2D; 
- 
-  if(!aBS3DCurv.IsNull())
+  if (!aBS3DCurv.IsNull())
   {
     if(aBS3DCurv->NbKnots() <= aMaxKnots)
     {
