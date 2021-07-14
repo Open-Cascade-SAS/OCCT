@@ -46,19 +46,31 @@ public:
   
   //! Creates an algorithm to classify the Point  P with
   //! Tolerance <T> on the face <F>.
-  Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face& F, const gp_Pnt2d& P, const Standard_Real Tol);
-  
+  //! Recommended to use Bnd_Box if the number of edges > 10
+  //! and the geometry is mostly spline
+  Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face& theF, const gp_Pnt2d& theP, const Standard_Real theTol, 
+                   const Standard_Boolean theUseBndBox = Standard_False, const Standard_Real theGapCheckTol = 0.1);
+
   //! Classify  the Point  P  with  Tolerance <T> on the
   //! face described by <F>.
-  Standard_EXPORT void Perform (const TopoDS_Face& F, const gp_Pnt2d& P, const Standard_Real Tol);
+  //! Recommended to use Bnd_Box if the number of edges > 10
+  //! and the geometry is mostly spline
+  Standard_EXPORT void Perform (const TopoDS_Face& theF, const gp_Pnt2d& theP, const Standard_Real theTol, 
+                   const Standard_Boolean theUseBndBox = Standard_False, const Standard_Real theGapCheckTol = 0.1);
   
   //! Creates an algorithm to classify the Point  P with
   //! Tolerance <T> on the face <F>.
-  Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face& F, const gp_Pnt& P, const Standard_Real Tol);
+  //! Recommended to use Bnd_Box if the number of edges > 10
+  //! and the geometry is mostly spline
+  Standard_EXPORT BRepClass_FaceClassifier(const TopoDS_Face& theF, const gp_Pnt& theP, const Standard_Real theTol,
+                   const Standard_Boolean theUseBndBox = Standard_False, const Standard_Real theGapCheckTol = 0.1);
   
   //! Classify  the Point  P  with  Tolerance <T> on the
   //! face described by <F>.
-  Standard_EXPORT void Perform (const TopoDS_Face& F, const gp_Pnt& P, const Standard_Real Tol);
+  //! Recommended to use Bnd_Box if the number of edges > 10
+  //! and the geometry is mostly spline
+  Standard_EXPORT void Perform (const TopoDS_Face& theF, const gp_Pnt& theP, const Standard_Real theTol,
+                   const Standard_Boolean theUseBndBox = Standard_False, const Standard_Real theGapCheckTol = 0.1);
 
 
 

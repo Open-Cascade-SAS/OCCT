@@ -129,7 +129,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
     {
       T.SetCoord ( y, -x);
     }
-    Standard_Real ParamInit = RealLast();
+    Standard_Real ParamInit = Precision::Infinite();
     Standard_Real TolInit   = 0.00001;
     Standard_Boolean APointExist = Standard_False;
 

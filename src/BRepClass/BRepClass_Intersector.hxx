@@ -47,19 +47,6 @@ public:
   //! <U>.
   Standard_EXPORT void LocalGeometry (const BRepClass_Edge& E, const Standard_Real U, gp_Dir2d& T, gp_Dir2d& N, Standard_Real& C) const;
 
-  //! Returns the maximum tolerance
-  Standard_Real MaxTolerance()
-  {
-    return myMaxTolerance;
-  }
-
-  //! Sets the maximum tolerance at 
-  //! which to start checking in the intersector
-  void SetMaxTolerance(const Standard_Real theValue)
-  {
-    myMaxTolerance = theValue;
-  }
-
 
 
 protected:
@@ -71,7 +58,6 @@ protected:
 private:
 
 
-  Standard_Real myMaxTolerance;
 
 
 };

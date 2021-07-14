@@ -15,6 +15,8 @@
 // commercial license or contractual agreement.
 
 
+#include <Bnd_Box2d.hxx>
+#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -53,10 +55,10 @@ static
 Standard_Boolean CheckOn(IntRes2d_IntersectionPoint& thePntInter,
                          const TopoDS_Face& theF,
                          const gp_Lin2d& theL,
-                         Geom2dAdaptor_Curve& theCur,
-                         Standard_Real theTolZ,
-                         Standard_Real theFin,
-                         Standard_Real theDeb);
+                         const Geom2dAdaptor_Curve& theCur,
+                         Standard_Real& theTolZ,
+                         const Standard_Real theFin,
+                         const Standard_Real theDeb);
 
 static
 void CheckSkip(Geom2dInt_GInter& theInter,
@@ -66,20 +68,91 @@ void CheckSkip(Geom2dInt_GInter& theInter,
                const IntRes2d_Domain& theDL,
                Geom2dAdaptor_Curve& theCur,
                const Geom2dAdaptor_Curve& theCGA,
-               Standard_Real theFin,
-               Standard_Real theDeb,
-               Standard_Real theMaxTol,
-               gp_Pnt2d thePdeb,
-               gp_Pnt2d thePfin);
+               Standard_Real& theFin,
+               Standard_Real& theDeb,
+               const Standard_Real theMaxTol,
+               gp_Pnt2d& thePdeb,
+               gp_Pnt2d& thePfin);
 
+static
+Standard_Real MaxTol2DCurEdge(const TopoDS_Vertex& theV1,
+                              const TopoDS_Vertex& theV2,
+                              const TopoDS_Face& theF,
+                              const Standard_Real theTol);
+
+static
+Standard_Boolean IsInter(Bnd_Box2d& theBox,
+                         const gp_Lin2d& theL,
+                         const Standard_Real theP);
 
 //=======================================================================
 //function : BRepClass_Intersector
 //purpose  : 
 //=======================================================================
 
-BRepClass_Intersector::BRepClass_Intersector() : myMaxTolerance(0.1)
+BRepClass_Intersector::BRepClass_Intersector()
 {
+}
+
+//=======================================================================
+//function : MaxTol2DCurEdge
+//purpose  :
+//=======================================================================
+Standard_Real MaxTol2DCurEdge(const TopoDS_Vertex& theV1,
+                              const TopoDS_Vertex& theV2,
+                              const TopoDS_Face& theF,
+                              const Standard_Real theTol)
+{
+  Standard_Real aTolV3D1, aTolV3D2;
+  if (theV1.IsNull())
+  {
+    aTolV3D1 = 0.0;
+  }
+  else
+  {
+    aTolV3D1 = BRep_Tool::Tolerance(theV1);
+  }
+  if (theV2.IsNull())
+  {
+    aTolV3D2 = 0.0;
+  }
+  else
+  {
+    aTolV3D2 = BRep_Tool::Tolerance(theV2);
+  }
+  Standard_Real aTol2D, anUr, aVr;
+ 
+  Standard_Real aTolV3D = Max(aTolV3D1, aTolV3D2);
+  BRepAdaptor_Surface aS(theF, Standard_False);
+
+  anUr = aS.UResolution(aTolV3D);
+  aVr = aS.VResolution(aTolV3D);
+  aTol2D = Max(anUr, aVr);
+  //
+  aTol2D = Max(aTol2D, theTol);
+  return aTol2D;
+}
+
+//=======================================================================
+//function : IsInter
+//purpose  :
+//=======================================================================
+Standard_Boolean IsInter(Bnd_Box2d& theBox,
+                         const gp_Lin2d& theL,
+                         const Standard_Real theP)
+{
+  Standard_Boolean aStatusInter = Standard_True;
+  if (Precision::IsInfinite(theP))
+  {
+    aStatusInter = theBox.IsOut(theL);
+  }
+  else
+  {
+    gp_Pnt2d aPntF = theL.Location();
+    gp_Pnt2d aPntL = ElCLib::Value(theP, theL);
+    aStatusInter = theBox.IsOut(aPntF, aPntL);
+  }
+  return !aStatusInter;
 }
 
 //=======================================================================
@@ -89,10 +162,10 @@ BRepClass_Intersector::BRepClass_Intersector() : myMaxTolerance(0.1)
 Standard_Boolean CheckOn(IntRes2d_IntersectionPoint& thePntInter,
                          const TopoDS_Face& theF,
                          const gp_Lin2d& theL,
-                         Geom2dAdaptor_Curve& theCur,
-                         Standard_Real theTolZ,
-                         Standard_Real theFin,
-                         Standard_Real theDeb)
+                         const Geom2dAdaptor_Curve& theCur,
+                         Standard_Real& theTolZ,
+                         const Standard_Real theFin,
+                         const Standard_Real theDeb)
 {
   Extrema_ExtPC2d anExtPC2d(theL.Location(), theCur);
   Standard_Real aMinDist = RealLast();
@@ -153,11 +226,11 @@ void CheckSkip(Geom2dInt_GInter& theInter,
                const IntRes2d_Domain& theDL,
                Geom2dAdaptor_Curve& theCur,
                const Geom2dAdaptor_Curve& theCGA,
-               Standard_Real theFin,
-               Standard_Real theDeb,
-               Standard_Real theMaxTol,
-               gp_Pnt2d thePdeb,
-               gp_Pnt2d thePfin)
+               Standard_Real& theFin,
+               Standard_Real& theDeb,
+               const Standard_Real theMaxTol,
+               gp_Pnt2d& thePdeb,
+               gp_Pnt2d& thePfin)
 {
   if (theE.Edge().IsNull() || theE.Face().IsNull())
   {
@@ -272,10 +345,10 @@ void CheckSkip(Geom2dInt_GInter& theInter,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void  BRepClass_Intersector::Perform(const gp_Lin2d& L, 
-                                     const Standard_Real P, 
-                                     const Standard_Real Tol, 
-                                     const BRepClass_Edge& E)
+void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
+  const Standard_Real P,
+  const Standard_Real Tol,
+  const BRepClass_Edge& E)
 {
   Standard_Real deb = 0.0, fin = 0.0, aTolZ = Tol;
   Handle(Geom2d_Curve) aC2D;
@@ -284,69 +357,92 @@ void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
   const TopoDS_Face& F = E.Face();
 
   //
-  aC2D=BRep_Tool::CurveOnSurface(EE, F, deb, fin);
+  aC2D = BRep_Tool::CurveOnSurface(EE, F, deb, fin);
   if (aC2D.IsNull()) {
     done = Standard_False; // !IsDone()
     return;
   }
   //
-  Geom2dAdaptor_Curve C(aC2D, deb, fin);
+  Bnd_Box2d aBond;
+  gp_Pnt2d aPntF;
+  Standard_Boolean anUseBndBox = E.UseBndBox();
+  if (anUseBndBox)
+  {
+    BndLib_Add2dCurve::Add(aC2D, deb, fin, 0., aBond);
+    aBond.SetGap(aTolZ);
+    aPntF = L.Location();
+  }
   //
-  deb = C.FirstParameter();
-  fin = C.LastParameter();
+  Geom2dAdaptor_Curve C(aC2D, deb, fin);
   //
   // Case of "ON": direct check of belonging to edge
   // taking into account the tolerance
-  Standard_Boolean aStatusOn = Standard_False;
-  IntRes2d_IntersectionPoint aPntInter;
-
-  aStatusOn = CheckOn(aPntInter, F, L, C, aTolZ, fin, deb);
-  if (aStatusOn)
+  if (!anUseBndBox || (anUseBndBox && !aBond.IsOut(aPntF)))
   {
-    Append(aPntInter);
-    done = Standard_True;
-    return;
+    Standard_Boolean aStatusOn = Standard_False;
+    IntRes2d_IntersectionPoint aPntInter;
+
+    aStatusOn = CheckOn(aPntInter, F, L, C, aTolZ, fin, deb);
+    if (aStatusOn)
+    {
+      Append(aPntInter);
+      done = Standard_True;
+      return;
+    }
   }
-  
-  //  
-  gp_Pnt2d pdeb,pfin;
-  C.D0(deb,pdeb);
-  C.D0(fin,pfin);
+  // 
+  if (anUseBndBox)
+  {
+    TopoDS_Vertex aVF, aVL;
+    TopExp::Vertices(EE, aVF, aVL);
+
+    aTolZ = MaxTol2DCurEdge(aVF, aVL, F, Tol);
+    aBond.SetGap(aTolZ);
+
+    if (!IsInter(aBond, L, P))
+    {
+      done = Standard_False;
+      return;
+    }
+  }
+  gp_Pnt2d pdeb, pfin;
+  C.D0(deb, pdeb);
+  C.D0(fin, pfin);
   Standard_Real toldeb = 1.e-5, tolfin = 1.e-5;
 
   IntRes2d_Domain DL;
   //
-  if(P!=RealLast()) {
-    DL.SetValues(L.Location(),0.,Precision::PConfusion(),ElCLib::Value(P,L),P,Precision::PConfusion());
+  if (P != RealLast()) {
+    DL.SetValues(L.Location(), 0., Precision::PConfusion(), ElCLib::Value(P, L), P, Precision::PConfusion());
   }
-  else { 
-    DL.SetValues(L.Location(),0.,Precision::PConfusion(),Standard_True);
+  else {
+    DL.SetValues(L.Location(), 0., Precision::PConfusion(), Standard_True);
   }
 
-  IntRes2d_Domain DE(pdeb,deb,toldeb,pfin,fin,tolfin);
+  IntRes2d_Domain DE(pdeb, deb, toldeb, pfin, fin, tolfin);
   // temporary periodic domain
   if (C.Curve()->IsPeriodic()) {
     DE.SetEquivalentParameters(C.FirstParameter(),
-      C.FirstParameter() + 
+      C.FirstParameter() +
       C.Curve()->LastParameter() -
       C.Curve()->FirstParameter());
   }
 
-  Handle(Geom2d_Line) GL= new Geom2d_Line(L);
+  Handle(Geom2d_Line) GL = new Geom2d_Line(L);
   Geom2dAdaptor_Curve CGA(GL);
-  Geom2dInt_GInter Inter(CGA,DL,C,DE,
+  Geom2dInt_GInter Inter(CGA, DL, C, DE,
     Precision::PConfusion(),
     Precision::PIntersection());
   //
   // The check is for hitting the intersector to
   // a vertex with high tolerance
-  if (Inter.IsEmpty()) 
+  if (Inter.IsEmpty())
   {
-    CheckSkip(Inter, L, E, aC2D, DL, 
-      C, CGA, fin, deb, MaxTolerance(), pdeb, pfin);
+    CheckSkip(Inter, L, E, aC2D, DL,
+      C, CGA, fin, deb, E.MaxTolerance(), pdeb, pfin);
   }
 
- // 
+  // 
   SetValues(Inter);
 }
 

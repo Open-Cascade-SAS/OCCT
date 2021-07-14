@@ -57,6 +57,33 @@ const TopoDS_Face& Face() const;
   //! Finds and sets the next Edge for the current
   Standard_EXPORT void SetNextEdge(const TopTools_IndexedDataMapOfShapeListOfShape& theMapVE);
 
+  //! Returns the maximum tolerance
+  Standard_Real MaxTolerance() const
+  {
+    return myMaxTolerance;
+  }
+
+  //! Sets the maximum tolerance at 
+  //! which to start checking in the intersector
+  void SetMaxTolerance(const Standard_Real theValue)
+  {
+    myMaxTolerance = theValue;
+  }
+
+  //! Returns true if we are using boxes
+  //! in the intersector
+  Standard_Boolean UseBndBox() const
+  {
+    return myUseBndBox;
+  }
+
+  //! Sets the status of whether we are
+  //! using boxes or not
+  void SetUseBndBox(const Standard_Boolean theValue)
+  {
+    myUseBndBox = theValue;
+  }
+
 
 protected:
 
@@ -71,6 +98,8 @@ private:
   TopoDS_Edge myEdge;
   TopoDS_Face myFace;
   TopoDS_Edge myNextEdge;
+  Standard_Real myMaxTolerance;
+  Standard_Boolean myUseBndBox;
 
 };
 

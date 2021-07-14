@@ -18,7 +18,6 @@
 #include <Bnd_Box2d.hxx>
 #include <gp.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Stream.hxx>
@@ -249,6 +248,80 @@ Standard_Boolean Bnd_Box2d::IsOut (const gp_Pnt2d& P) const
     else if (!(Flags & YmaxMask) && (Y > (Ymax+Gap))) return Standard_True;
     else return Standard_False;
   }
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  :
+//=======================================================================
+
+Standard_Boolean Bnd_Box2d::IsOut(const gp_Lin2d& theL) const
+{
+  if (IsWhole())
+  {
+    return Standard_False;
+  }
+  if (IsVoid())
+  {
+    return Standard_True;
+  }
+  Standard_Real aXMin, aXMax, aYMin, aYMax;
+  Get(aXMin, aYMin, aXMax, aYMax);
+
+  gp_XY aCenter((aXMin + aXMax) / 2, (aYMin + aYMax) / 2);
+  gp_XY aHeigh(Abs(aXMax - aCenter.X()), Abs(aYMax - aCenter.Y()));
+
+  const Standard_Real aProd[3] = {
+    theL.Direction().XY() ^ (aCenter - theL.Location().XY()),
+    theL.Direction().X() * aHeigh.Y(),
+    theL.Direction().Y() * aHeigh.X()
+  };
+  Standard_Boolean aStatus = (Abs(aProd[0]) > (Abs(aProd[1]) + Abs(aProd[2])));
+  return aStatus;
+}
+
+//=======================================================================
+//function : IsOut
+//purpose  :
+//=======================================================================
+
+Standard_Boolean Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const
+{
+  if (IsWhole())
+  {
+    return Standard_False;
+  }
+  if (IsVoid())
+  {
+    return Standard_True;
+  }
+  
+  Standard_Boolean aStatus = Standard_True;
+  Standard_Real aLocXMin, aLocXMax, aLocYMin, aLocYMax;
+  Get(aLocXMin, aLocYMin, aLocXMax, aLocYMax);
+
+  //// Intersect the line containing the segment.
+  const gp_XY aSegDelta(theP1.XY() - theP0.XY());
+
+  gp_XY aCenter((aLocXMin + aLocXMax) / 2, (aLocYMin + aLocYMax) / 2);
+  gp_XY aHeigh(Abs(aLocXMax - aCenter.X()), Abs(aLocYMax - aCenter.Y()));
+
+  const Standard_Real aProd[3] = {
+    aSegDelta ^ (aCenter - theP0.XY()),
+    aSegDelta.X() * aHeigh.Y(),
+    aSegDelta.Y() * aHeigh.X()
+  };
+
+  if((Abs(aProd[0]) <= (Abs(aProd[1]) + Abs(aProd[2]))))
+  {
+    // Intersection with line detected; check the segment as bounding box
+    const gp_XY aHSeg(0.5 * aSegDelta.X(), 0.5 * aSegDelta.Y());
+    const gp_XY aHSegAbs(Abs(aHSeg.X()), Abs(aHSeg.Y()));
+    aStatus = ((Abs((theP0.XY() + aHSeg - aCenter).X()) >
+      (aHeigh + aHSegAbs).X()) || (Abs((theP0.XY() + aHSeg - aCenter).Y()) >
+      (aHeigh + aHSegAbs).Y()));
+  }
+  return aStatus;
 }
 
 //=======================================================================

@@ -36,14 +36,17 @@ static const Standard_Real Probing_Step = 0.2111;
 //purpose  : 
 //=======================================================================
 
-BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) :
+BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F) : 
        myFace(F),
        myCurEdgeInd(1),
        myCurEdgePar(Probing_Start),
+       myMaxTolerance(0.1),
+       myUseBndBox(Standard_False),
        myUMin (Precision::Infinite()),
        myUMax (-Precision::Infinite()),
        myVMin (Precision::Infinite()),
        myVMax (-Precision::Infinite())
+       
 {
   myFace.Orientation(TopAbs_FORWARD);
 }
@@ -338,5 +341,7 @@ void  BRepClass_FaceExplorer::CurrentEdge(BRepClass_Edge& E,
   E.Face() = myFace;
   Or = E.Edge().Orientation();
   E.SetNextEdge(myMapVE);
+  E.SetMaxTolerance(myMaxTolerance);
+  E.SetUseBndBox(myUseBndBox);
 }
 

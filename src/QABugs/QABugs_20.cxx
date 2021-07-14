@@ -2069,6 +2069,123 @@ static Standard_Integer OCC27875(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <BRepClass_FaceClassifier.hxx>
+static Standard_Integer OCC27884(Draw_Interpretor& theDI,
+  Standard_Integer  theArgNb,
+  const char**      theArgVec)
+{
+  if (theArgNb != 4) {
+    return 0;
+  }
+  Standard_Real aCheck = Draw::Atof(theArgVec[3]);
+  Handle(Geom_Curve) aCur = DrawTrSurf::GetCurve(theArgVec[1]);
+
+  const Handle(Standard_Type)& aType = aCur->DynamicType();
+
+  Standard_Real aF = aCur->FirstParameter();
+  Standard_Real aL = aCur->LastParameter();
+
+  Standard_Real number_points = Draw::Atof(theArgVec[2]);
+  Standard_Real aSig = (aL - aF) / (number_points - 1);
+
+  TopTools_ListOfShape aLE;
+
+  gp_Pnt aP, aPF, aPL;
+  aPF = aCur->Value(aF);
+  aP = aPF;
+
+  for (Standard_Integer i = 1; i < number_points; i++)
+  {
+    TopoDS_Edge anE;
+    aL = aF + (i * aSig);
+    aPL = aCur->Value(aL);
+    if (aCheck == 2)
+    {
+      if (i % 2 == 1)
+      {
+        anE = BRepBuilderAPI_MakeEdge(aPF, aPL);
+      }
+      else
+      {
+        if (aType == STANDARD_TYPE(Geom_BSplineCurve))
+        {
+          Handle(Geom_BSplineCurve) aCurCopy = Handle(Geom_BSplineCurve)::DownCast(aCur->Copy());
+          aCurCopy->Segment(aL - aSig, aL);
+          anE = BRepBuilderAPI_MakeEdge(aCurCopy);
+        }
+        else
+        {
+          Handle(Geom_TrimmedCurve) aTCur = new Geom_TrimmedCurve(aCur, aL - aSig, aL);
+          anE = BRepBuilderAPI_MakeEdge(aTCur);
+        }
+      }
+      aPF = aPL;
+    }
+    else
+    {
+      if (aCheck == 0)
+      {
+        anE = BRepBuilderAPI_MakeEdge(aPF, aPL);
+        aPF = aPL;
+      }
+      if (aCheck == 1)
+      {
+        if (aType == STANDARD_TYPE(Geom_BSplineCurve))
+        {
+          Handle(Geom_BSplineCurve) aCurCopy = Handle(Geom_BSplineCurve)::DownCast(aCur->Copy());
+          aCurCopy->Segment(aL - aSig, aL);
+          anE = BRepBuilderAPI_MakeEdge(aCurCopy);
+        }
+        else
+        {
+          Handle(Geom_TrimmedCurve) aTCur = new Geom_TrimmedCurve(aCur, aL - aSig, aL);
+          anE = BRepBuilderAPI_MakeEdge(aTCur);
+        }
+      }
+    }
+    aLE.Append(anE);
+  }
+  if (!aCur->IsClosed())
+  {
+    TopoDS_Edge anE = BRepBuilderAPI_MakeEdge(aPL, aP);
+    aLE.Append(anE);
+  }
+
+  BRepBuilderAPI_MakeWire aWire;
+  aWire.Add(aLE);
+  TopoDS_Face aFace = BRepBuilderAPI_MakeFace(aWire.Wire());
+  
+  //
+  
+  Standard_Real anUMin, anUMax, aVMin, aVMax;
+  BRepTools::UVBounds(aFace, anUMin, anUMax, aVMin, aVMax);
+  gp_Pnt2d aP2d(anUMin - ((anUMax + anUMin) / 2), aVMin - ((aVMax + aVMin) / 2));
+  
+  const Standard_Real aTol = BRep_Tool::Tolerance(aFace);
+
+  BRepClass_FaceClassifier aClassifier;
+
+  OSD_Timer timer;
+  timer.Start();
+  for (Standard_Integer i = 1; i <= 100; i++)
+  {
+    aClassifier.Perform(aFace, aP2d, aTol, Standard_True);
+  }
+  timer.Stop();
+  Standard_Real aTimer1 = timer.UserTimeCPU();
+  timer.Reset();
+  timer.Start();
+  for (Standard_Integer i = 1; i <= 100; i++)
+  {
+    aClassifier.Perform(aFace, aP2d, aTol, Standard_False);
+  }
+  timer.Stop();
+  Standard_Real aTimer2 = timer.UserTimeCPU();
+  theDI << "Improving time: " << (aTimer2 - aTimer1) / aTimer2 * 100 << " %\n";
+
+  return 0;
+}
+
 
 #include <TDF_Tool.hxx>
 #include <XCAFDoc_View.hxx>
@@ -3901,6 +4018,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   theCommands.Add ("OCC27552", "OCC27552", __FILE__, OCC27552, group); 
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
+  theCommands.Add("OCC27884", "OCC27884: Possible improvement for 2d classifier", __FILE__, OCC27884, group);
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
   theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
   theCommands.Add("OCC28784", "OCC28784 result shape", __FILE__, OCC28784, group);

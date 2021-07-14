@@ -124,7 +124,7 @@ Standard_Integer b2dclassify (Draw_Interpretor& theDI,
                               const char**      theArgVec)
 {
   if (theArgNb < 3)  {
-    theDI << " use b2dclassify Face Point2d [Tol]\n";
+    theDI << " use b2dclassify Face Point2d [Tol] [UseBox] [GapCheckTol]\n";
     return 1;
   }
 
@@ -144,9 +144,11 @@ Standard_Integer b2dclassify (Draw_Interpretor& theDI,
   const TopoDS_Face&  aF   = TopoDS::Face(aS);
   const Standard_Real aTol = (theArgNb == 4) ? 
     Draw::Atof (theArgVec[3]) : BRep_Tool::Tolerance (aF);
-  
+  const Standard_Boolean anUseBox = (theArgNb == 5 && Draw::Atof(theArgVec[4]) == 0) ?
+    Standard_False : Standard_True;
+  const Standard_Real aGapCheckTol = (theArgNb == 6) ? Draw::Atof(theArgVec[5]) : 0.1;
   BRepClass_FaceClassifier aClassifier;
-  aClassifier.Perform(aF, aP, aTol);
+  aClassifier.Perform(aF, aP, aTol, anUseBox, aGapCheckTol);
   PrintState (theDI, aClassifier.State());
   //
   return 0;
