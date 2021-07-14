@@ -33,7 +33,7 @@
 #include <GProp.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Vector.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -1584,17 +1584,17 @@ static Standard_Integer readbrep (Draw_Interpretor& theDI,
   bool isBinaryFormat = true;
   {
     // probe file header to recognize format
-    std::ifstream aFile;
-    OSD_OpenStream (aFile, aFileName, std::ios::in | std::ios::binary);
-    if (!aFile.is_open())
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFileName, std::ios::in | std::ios::binary);
+    if (aFile.get() == NULL)
     {
       theDI << "Error: cannot read the file '" << aFileName << "'";
       return 1;
     }
 
     char aStringBuf[255] = {};
-    aFile.read (aStringBuf, 255);
-    if (aFile.fail())
+    aFile->read (aStringBuf, 255);
+    if (aFile->fail())
     {
       theDI << "Error: cannot read the file '" << aFileName << "'";
       return 1;

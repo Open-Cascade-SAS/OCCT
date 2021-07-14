@@ -18,6 +18,7 @@
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
@@ -724,19 +725,18 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   if (aFullLen64 < std::numeric_limits<uint32_t>::max())
   {
     {
-      std::ifstream aBinFile;
-      OSD_OpenStream (aBinFile, myBinFileNameFull.ToCString(), std::ios::in | std::ios::binary);
-      if (!aBinFile.is_open()
-       || !aBinFile.good())
+      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      opencascade::std::shared_ptr<std::istream> aBinFile = aFileSystem->OpenIStream (myBinFileNameFull, std::ios::in | std::ios::binary);
+      if (aBinFile.get() == NULL || !aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' cannot be opened");
         return false;
       }
       char aBuffer[4096];
-      for (; aBinFile.good();)
+      for (; aBinFile->good();)
       {
-        aBinFile.read (aBuffer, 4096);
-        const Standard_Integer aReadLen = (Standard_Integer )aBinFile.gcount();
+        aBinFile->read (aBuffer, 4096);
+        const Standard_Integer aReadLen = (Standard_Integer )aBinFile->gcount();
         if (aReadLen == 0)
         {
           break;

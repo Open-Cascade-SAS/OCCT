@@ -17,6 +17,7 @@
 #include <BinTools.hxx>
 #include <BinTools_ShapeSet.hxx>
 #include <FSD_FileHeader.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
 
@@ -233,12 +234,13 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape,
 Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString theFile,
                                  const Message_ProgressRange& theRange)
 {
-  std::filebuf aBuf;
-  OSD_OpenStream (aBuf, theFile, std::ios::in | std::ios::binary);
-  if (!aBuf.is_open())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  if (aStream.get() == NULL)
+  {
     return Standard_False;
+  }
 
-  Standard_IStream aStream (&aBuf);
-  Read (theShape, aStream, theRange);
-  return aStream.good();
+  Read (theShape, *aStream, theRange);
+  return aStream->good();
 }

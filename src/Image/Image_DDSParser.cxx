@@ -16,7 +16,7 @@
 #include <Image_PixMap.hxx>
 #include <Image_SupportedFormats.hxx>
 #include <Message.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_CompressedPixMap, Standard_Transient)
 
@@ -67,21 +67,19 @@ Handle(Image_CompressedPixMap) Image_DDSParser::Load (const Handle(Image_Support
                                                       const Standard_Integer theFaceIndex,
                                                       const int64_t theFileOffset)
 {
-  std::ifstream aFile;
-  OSD_OpenStream (aFile, theFile.ToCString(), std::ios::in | std::ios::binary);
-
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
   char aHeader[128] = {};
-  if (!aFile.is_open()
-   || !aFile.good())
+  if (aFile.get() == NULL || !aFile->good())
   {
     return Handle(Image_CompressedPixMap)();
   }
   if (theFileOffset != 0)
   {
-    aFile.seekg ((std::streamoff )theFileOffset, std::ios::beg);
+    aFile->seekg ((std::streamoff )theFileOffset, std::ios::beg);
   }
-  aFile.read (aHeader, 128);
-  Standard_Size aNbReadBytes = (Standard_Size )aFile.gcount();
+  aFile->read (aHeader, 128);
+  Standard_Size aNbReadBytes = (Standard_Size )aFile->gcount();
   if (aNbReadBytes < 128
    || ::memcmp (aHeader, "DDS ", 4) != 0)
   {
@@ -115,11 +113,11 @@ Handle(Image_CompressedPixMap) Image_DDSParser::Load (const Handle(Image_Support
   const Standard_Size anOffset = aDef->FaceBytes() * theFaceIndex;
   if (anOffset != 0)
   {
-    aFile.seekg ((std::streamoff )anOffset, std::ios::cur);
+    aFile->seekg ((std::streamoff )anOffset, std::ios::cur);
   }
   Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Image_PixMap::DefaultAllocator(), aDef->FaceBytes());
-  aFile.read ((char* )aBuffer->ChangeData(), aDef->FaceBytes());
-  aNbReadBytes = (Standard_Size )aFile.gcount();
+  aFile->read ((char* )aBuffer->ChangeData(), aDef->FaceBytes());
+  aNbReadBytes = (Standard_Size )aFile->gcount();
   if (aNbReadBytes < aDef->FaceBytes())
   {
     Message::SendFail (TCollection_AsciiString ("DDS Reader error - unable to read face #") + theFaceIndex + " data from file\n" + theFile);

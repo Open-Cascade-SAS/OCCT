@@ -389,7 +389,7 @@ static Standard_Integer OCC361bug (Draw_Interpretor& di, Standard_Integer nb, co
 
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_AlienPixMap.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
 //=======================================================================
@@ -459,35 +459,34 @@ static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs
   }
   else
   {
-    std::ifstream aFile;
-    OSD_OpenStream (aFile, anImgPath.ToCString(), std::ios::in | std::ios::binary);
-    if (!aFile.is_open())
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (anImgPath, std::ios::in | std::ios::binary);
+    if (aFile.get() == NULL)
     {
       std::cout << "Syntax error: image file '" << anImgPath << "' cannot be found\n";
       return 1;
     }
     if (anOffset != 0)
     {
-      aFile.seekg (anOffset);
+      aFile->seekg (anOffset);
     }
 
     if (aSrc == 2)
     {
-      aFile.seekg (0, std::ios::end);
-      Standard_Integer aLen = (Standard_Integer )aFile.tellg() - anOffset;
-      aFile.seekg (anOffset);
+      aFile->seekg (0, std::ios::end);
+      Standard_Integer aLen = (Standard_Integer )aFile->tellg() - anOffset;
+      aFile->seekg (anOffset);
       if (aLen <= 0)
       {
         std::cout << "Syntax error: wrong offset\n";
         return 1;
       }
       NCollection_Array1<Standard_Byte> aBuff (1, aLen);
-      if (!aFile.read ((char* )&aBuff.ChangeFirst(), aBuff.Size()))
+      if (!aFile->read ((char* )&aBuff.ChangeFirst(), aBuff.Size()))
       {
         std::cout << "Error: unable to read file\n";
         return 1;
       }
-      aFile.close();
       if (!anImage->Load (&aBuff.ChangeFirst(), aBuff.Size(), anImgPath))
       {
         return 0;
@@ -495,7 +494,7 @@ static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs
     }
     else
     {
-      if (!anImage->Load (aFile, anImgPath))
+      if (!anImage->Load (*aFile, anImgPath))
       {
         return 0;
       }

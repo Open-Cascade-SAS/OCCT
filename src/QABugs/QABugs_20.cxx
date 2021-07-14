@@ -2269,7 +2269,7 @@ static Standard_Integer OCC28829 (Draw_Interpretor&, Standard_Integer, const cha
 
 #include <NCollection_Buffer.hxx>
 #include <DDocStd_DrawDocument.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Application.hxx>
@@ -2290,22 +2290,22 @@ static Standard_Integer OCC28887 (Draw_Interpretor&, Standard_Integer theNbArgs,
   const TCollection_AsciiString aName     (theArgVec[2]);
   Handle(NCollection_Buffer) aBuffer;
   {
-    std::ifstream aFile;
-    OSD_OpenStream (aFile, aFilePath.ToCString(), std::ios::binary | std::ios::in);
-    if (!aFile.is_open())
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFilePath, std::ios::binary | std::ios::in);
+    if (aFile.get() == NULL)
     {
       std::cout << "Error: input file '" << aFilePath << "' cannot be read\n";
       return 1;
     }
-    aFile.seekg (0, std::ios_base::end);
-    const int64_t aFileLength = int64_t (aFile.tellg());
+    aFile->seekg (0, std::ios_base::end);
+    const int64_t aFileLength = int64_t (aFile->tellg());
     if (aFileLength > int64_t (std::numeric_limits<ptrdiff_t>::max())
      || aFileLength < 1)
     {
       std::cout << "Error: input file '" << aFilePath << "' is too large\n";
       return 1;
     }
-    aFile.seekg (0, std::ios_base::beg);
+    aFile->seekg (0, std::ios_base::beg);
 
     aBuffer = new NCollection_Buffer (NCollection_BaseAllocator::CommonBaseAllocator());
     if (!aBuffer->Allocate (size_t(aFileLength)))
@@ -2314,8 +2314,8 @@ static Standard_Integer OCC28887 (Draw_Interpretor&, Standard_Integer theNbArgs,
       return 1;
     }
 
-    aFile.read ((char* )aBuffer->ChangeData(), aBuffer->Size());
-    if (!aFile.good())
+    aFile->read ((char* )aBuffer->ChangeData(), aBuffer->Size());
+    if (!aFile->good())
     {
       std::cout << "Error: input file '" << aFilePath << "' reading failure\n";
       return 1;

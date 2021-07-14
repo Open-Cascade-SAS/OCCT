@@ -37,6 +37,7 @@
 
 #include <BinTObjDrivers.hxx>
 #include <XmlTObjDrivers.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 
 #include <stdio.h>
@@ -251,9 +252,9 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
     aModel = new TObjDRAW_Model();
     if (anUseStream)
     {
-      std::ifstream aFileStream;
-      OSD_OpenStream (aFileStream, aPath, std::ios::in | std::ios::binary);
-      isLoaded = aModel->Load (aFileStream);
+      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
+      isLoaded = aModel->Load (*aFileStream);
     }
     else
       isLoaded = aModel->Load (aPath);

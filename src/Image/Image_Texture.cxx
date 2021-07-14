@@ -19,6 +19,7 @@
 #include <Image_SupportedFormats.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_Texture, Standard_Transient)
@@ -185,22 +186,22 @@ Handle(Image_PixMap) Image_Texture::loadImageOffset (const TCollection_AsciiStri
     return Handle(Image_PixMap)();
   }
 
-  std::ifstream aFile;
-  OSD_OpenStream (aFile, thePath.ToCString(), std::ios::in | std::ios::binary);
-  if (!aFile)
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (thePath, std::ios::in | std::ios::binary);
+  if (aFile.get() == NULL)
   {
     Message::SendFail (TCollection_AsciiString ("Error: Image file '") + thePath + "' cannot be opened");
     return Handle(Image_PixMap)();
   }
-  aFile.seekg ((std::streamoff )theOffset, std::ios_base::beg);
-  if (!aFile.good())
+  aFile->seekg ((std::streamoff )theOffset, std::ios_base::beg);
+  if (!aFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("Error: Image is defined with invalid file offset '") + thePath + "'");
     return Handle(Image_PixMap)();
   }
 
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
-  if (!anImage->Load (aFile, thePath))
+  if (!anImage->Load (*aFile, thePath))
   {
     return Handle(Image_PixMap)();
   }
@@ -251,24 +252,24 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
   }
   else
   {
-    std::ifstream aFileIn;
-    OSD_OpenStream (aFileIn, myImagePath.ToCString(), std::ios::in | std::ios::binary);
-    if (!aFileIn)
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    opencascade::std::shared_ptr<std::istream> aFileIn = aFileSystem->OpenIStream (myImagePath, std::ios::in | std::ios::binary);
+    if (aFileIn.get() == NULL)
     {
       Message::SendFail (TCollection_AsciiString ("Error: Unable to open file '") + myImagePath + "'");
       return false;
     }
     if (myOffset >= 0)
     {
-      aFileIn.seekg ((std::streamoff )myOffset, std::ios_base::beg);
-      if (!aFileIn.good())
+      aFileIn->seekg ((std::streamoff )myOffset, std::ios_base::beg);
+      if (!aFileIn->good())
       {
         Message::SendFail (TCollection_AsciiString ("Error: Image is defined with invalid file offset '") + myImagePath + "'");
         return false;
       }
     }
 
-    if (!aFileIn.read (aBuffer, THE_PROBE_SIZE))
+    if (!aFileIn->read (aBuffer, THE_PROBE_SIZE))
     {
       Message::SendFail (TCollection_AsciiString ("Error: unable to read image file '") + myImagePath + "'");
       return false;
@@ -355,9 +356,9 @@ Standard_Boolean Image_Texture::WriteImage (std::ostream& theStream,
     return true;
   }
 
-  std::ifstream aFileIn;
-  OSD_OpenStream (aFileIn, myImagePath.ToCString(), std::ios::in | std::ios::binary);
-  if (!aFileIn)
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFileIn = aFileSystem->OpenIStream (myImagePath, std::ios::in | std::ios::binary);
+  if (aFileIn.get() == NULL)
   {
     Message::SendFail (TCollection_AsciiString ("Error: Unable to open file ") + myImagePath + "!");
     return false;
@@ -366,8 +367,8 @@ Standard_Boolean Image_Texture::WriteImage (std::ostream& theStream,
   int64_t aLen = myLength;
   if (myOffset >= 0)
   {
-    aFileIn.seekg ((std::streamoff )myOffset, std::ios_base::beg);
-    if (!aFileIn.good())
+    aFileIn->seekg ((std::streamoff )myOffset, std::ios_base::beg);
+    if (!aFileIn->good())
     {
       Message::SendFail (TCollection_AsciiString ("Error: Image is defined with invalid file offset '") + myImagePath + "'");
       return false;
@@ -375,9 +376,9 @@ Standard_Boolean Image_Texture::WriteImage (std::ostream& theStream,
   }
   else
   {
-    aFileIn.seekg (0, std::ios_base::end);
-    aLen = (int64_t )aFileIn.tellg();
-    aFileIn.seekg (0, std::ios_base::beg);
+    aFileIn->seekg (0, std::ios_base::end);
+    aLen = (int64_t )aFileIn->tellg();
+    aFileIn->seekg (0, std::ios_base::beg);
   }
 
   Standard_Integer aChunkSize = 4096;
@@ -388,7 +389,7 @@ Standard_Boolean Image_Texture::WriteImage (std::ostream& theStream,
     {
       aChunkSize = Standard_Integer(aLen - aChunkIter);
     }
-    if (!aFileIn.read ((char* )&aBuffer.ChangeFirst(), aChunkSize))
+    if (!aFileIn->read ((char* )&aBuffer.ChangeFirst(), aChunkSize))
     {
       Message::SendFail (TCollection_AsciiString ("Error: unable to read image file '") + myImagePath + "'");
       return false;

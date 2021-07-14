@@ -27,7 +27,7 @@
 #include <Message_Messenger.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <PCDM_Document.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -77,15 +77,15 @@ void BinLDrivers_DocumentRetrievalDriver::Read
                           const Handle(PCDM_ReaderFilter)&  theFilter,
                           const Message_ProgressRange&      theRange)
 {
-  std::ifstream aFileStream;
-  OSD_OpenStream (aFileStream, theFileName, std::ios::in | std::ios::binary);
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (theFileName, std::ios::in | std::ios::binary);
 
-  if (aFileStream.is_open() && aFileStream.good())
+  if (aFileStream.get() != NULL && aFileStream->good())
   {
     Handle(Storage_Data) dData;
-    TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat (aFileStream, dData);
+    TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat (*aFileStream, dData);
 
-    Read (aFileStream, dData, theNewDocument, theApplication, theFilter, theRange);
+    Read (*aFileStream, dData, theNewDocument, theApplication, theFilter, theRange);
     if (!theRange.More())
     {
       myReaderStatus = PCDM_RS_UserBreak;

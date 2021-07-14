@@ -22,7 +22,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <FSD_BinaryFile.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
@@ -131,26 +131,23 @@ namespace
 Standard_Boolean RWStl_Reader::Read (const char* theFile,
                                      const Message_ProgressRange& theProgress)
 {
-  std::filebuf aBuf;
-  OSD_OpenStream (aBuf, theFile, std::ios::in | std::ios::binary);
-  if (!aBuf.is_open())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  if (aStream.get() == NULL)
   {
     Message::SendFail (TCollection_AsciiString("Error: file '") + theFile + "' is not found");
     return Standard_False;
   }
-
-  Standard_IStream aStream (&aBuf);
-
   // get length of file to feed progress indicator in Ascii mode
-  aStream.seekg (0, aStream.end);
-  std::streampos theEnd = aStream.tellg();
-  aStream.seekg (0, aStream.beg);
+  aStream->seekg (0, aStream->end);
+  std::streampos theEnd = aStream->tellg();
+  aStream->seekg (0, aStream->beg);
 
   // binary STL files cannot be shorter than 134 bytes 
   // (80 bytes header + 4 bytes facet count + 50 bytes for one facet);
   // thus assume files shorter than 134 as Ascii without probing
   // (probing may bring stream to fail state if EOF is reached)
-  bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (aStream, true));
+  bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (*aStream, true));
 
   Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
 
@@ -160,25 +157,25 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   // For this reason use infinite (logarithmic) progress scale,
   // but in special mode so that the first cycle will take ~ 70% of it
   Message_ProgressScope aPS (theProgress, NULL, 1, true);
-  while (aStream.good())
+  while (aStream->good())
   {
     if (isAscii)
     {
-      if (!ReadAscii (aStream, aBuffer, theEnd, aPS.Next(2)))
+      if (!ReadAscii (*aStream, aBuffer, theEnd, aPS.Next (2)))
       {
         break;
       }
     }
     else
     {
-      if (!ReadBinary (aStream, aPS.Next(2)))
+      if (!ReadBinary (*aStream, aPS.Next (2)))
       {
         break;
       }
     }
-    aStream >> std::ws; // skip any white spaces
+    *aStream >> std::ws; // skip any white spaces
   }
-  return ! aStream.fail();
+  return ! aStream->fail();
 }
 
 //==============================================================================

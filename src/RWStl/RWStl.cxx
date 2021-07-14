@@ -18,6 +18,7 @@
 #include <Message_ProgressScope.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_File.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWStl_Reader.hxx>
 
@@ -153,16 +154,15 @@ Handle(Poly_Triangulation) RWStl::ReadBinary (const OSD_Path& theFile,
   TCollection_AsciiString aPath;
   theFile.SystemName (aPath);
 
-  std::filebuf aBuf;
-  OSD_OpenStream (aBuf, aPath, std::ios::in | std::ios::binary);
-  if (!aBuf.is_open())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
+  if (aStream.get() == NULL)
   {
     return Handle(Poly_Triangulation)();
   }
-  Standard_IStream aStream (&aBuf);
 
   Reader aReader;
-  if (!aReader.ReadBinary (aStream, theProgress))
+  if (!aReader.ReadBinary (*aStream, theProgress))
   {
     return Handle(Poly_Triangulation)();
   }

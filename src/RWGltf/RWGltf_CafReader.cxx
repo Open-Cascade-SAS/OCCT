@@ -23,7 +23,7 @@
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <OSD_CachedFileSystem.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_ThreadPool.hxx>
 
 #include <fstream>
@@ -189,10 +189,9 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   Message_ProgressScope aPSentry (theProgress, "Reading glTF", 2);
   aPSentry.Show();
 
-  std::ifstream aFile;
-  OSD_OpenStream (aFile, theFile.ToCString(), std::ios::in | std::ios::binary);
-  if (!aFile.is_open()
-   || !aFile.good())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  if (aFile.get() == NULL || !aFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is not found");
     return false;
@@ -200,7 +199,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
 
   bool isBinaryFile = false;
   char aGlbHeader[12] = {};
-  aFile.read (aGlbHeader, sizeof(aGlbHeader));
+  aFile->read (aGlbHeader, sizeof (aGlbHeader));
   int64_t aBinBodyOffset  = 0;
   int64_t aBinBodyLen     = 0;
   int64_t aJsonBodyOffset = 0;
@@ -219,7 +218,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
       }
 
       char aHeader1[8] = {};
-      aFile.read (aHeader1, sizeof(aHeader1));
+      aFile->read (aHeader1, sizeof (aHeader1));
 
       const uint32_t* aSceneLen    = (const uint32_t* )(aHeader1 + 0);
       const uint32_t* aSceneFormat = (const uint32_t* )(aHeader1 + 4);
@@ -241,16 +240,16 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
         Message::SendWarning (TCollection_AsciiString ("File '") + theFile + "' is written using unknown version " + int(*aVer));
       }
 
-      for (int aChunkIter = 0; !aFile.eof() && aChunkIter < 2; ++aChunkIter)
+      for (int aChunkIter = 0; !aFile->eof() && aChunkIter < 2; ++aChunkIter)
       {
         char aChunkHeader2[8] = {};
-        if (int64_t(aFile.tellg()) + int64_t(sizeof(aChunkHeader2)) > int64_t(*aLen))
+        if (int64_t (aFile->tellg()) + int64_t (sizeof (aChunkHeader2)) > int64_t (*aLen))
         {
           break;
         }
 
-        aFile.read (aChunkHeader2, sizeof(aChunkHeader2));
-        if (!aFile.good())
+        aFile->read (aChunkHeader2, sizeof (aChunkHeader2));
+        if (!aFile->good())
         {
           Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is written using unsupported format");
           return false;
@@ -260,26 +259,26 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
         const uint32_t* aChunkType = (const uint32_t* )(aChunkHeader2 + 4);
         if (*aChunkType == 0x4E4F534A)
         {
-          aJsonBodyOffset = int64_t(aFile.tellg());
-          aJsonBodyLen    = int64_t(*aChunkLen);
+          aJsonBodyOffset = int64_t (aFile->tellg());
+          aJsonBodyLen    = int64_t (*aChunkLen);
         }
         else if (*aChunkType == 0x004E4942)
         {
-          aBinBodyOffset = int64_t(aFile.tellg());
-          aBinBodyLen    = int64_t(*aChunkLen);
+          aBinBodyOffset = int64_t (aFile->tellg());
+          aBinBodyLen    = int64_t (*aChunkLen);
         }
         if (*aChunkLen != 0)
         {
-          aFile.seekg (*aChunkLen, std::ios_base::cur);
+          aFile->seekg (*aChunkLen, std::ios_base::cur);
         }
       }
 
-      aFile.seekg ((std::streamoff )aJsonBodyOffset, std::ios_base::beg);
+      aFile->seekg ((std::streamoff )aJsonBodyOffset, std::ios_base::beg);
     }
   }
   else
   {
-    aFile.seekg (0, std::ios_base::beg);
+    aFile->seekg (0, std::ios_base::beg);
   }
 
   TCollection_AsciiString anErrPrefix = TCollection_AsciiString ("File '") + theFile + "' defines invalid glTF!\n";
@@ -303,7 +302,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
 
 #ifdef HAVE_RAPIDJSON
   rapidjson::ParseResult aRes;
-  rapidjson::IStreamWrapper aFileStream (aFile);
+  rapidjson::IStreamWrapper aFileStream (*aFile);
   if (isBinaryFile)
   {
     aRes = aDoc.ParseStream<rapidjson::kParseStopWhenDoneFlag, rapidjson::UTF8<>, rapidjson::IStreamWrapper> (aFileStream);

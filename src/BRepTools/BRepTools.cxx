@@ -747,15 +747,16 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
                                  const BRep_Builder& B,
                                  const Message_ProgressRange& theProgress)
 {
-  std::filebuf fic;
-  std::istream in(&fic);
-  OSD_OpenStream (fic, File, std::ios::in);
-  if(!fic.is_open()) return Standard_False;
-  
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (File, std::ios::in);
+  if (aStream.get() == NULL)
+  {
+    return Standard_False;
+  }
   BRepTools_ShapeSet SS(B);
-  SS.Read(in, theProgress);
+  SS.Read (*aStream, theProgress);
   if(!SS.NbShapes()) return Standard_False;
-  SS.Read(Sh,in);
+  SS.Read (Sh,*aStream);
   return Standard_True;
 }
 

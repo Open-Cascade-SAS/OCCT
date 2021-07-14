@@ -22,8 +22,8 @@
 #include <LDOM_DocumentType.hxx>
 #include <LDOM_LDOMImplementation.hxx>
 #include <LDOMParser.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_OpenFile.hxx>
 #include <PCDM_Document.hxx>
 #include <PCDM_DOMHeaderParser.hxx>
 #include <Standard_Type.hxx>
@@ -175,12 +175,12 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
   myReaderStatus = PCDM_RS_DriverFailure;
   myFileName = theFileName;
 
-  std::ifstream aFileStream;
-  OSD_OpenStream (aFileStream, myFileName, std::ios::in);
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (myFileName, std::ios::in);
 
-  if (aFileStream.is_open() && aFileStream.good())
+  if (aFileStream.get() != NULL && aFileStream->good())
   {
-    Read (aFileStream, NULL, theNewDocument, theApplication, theFilter, theRange);
+    Read (*aFileStream, NULL, theNewDocument, theApplication, theFilter, theRange);
   }
   else
   {

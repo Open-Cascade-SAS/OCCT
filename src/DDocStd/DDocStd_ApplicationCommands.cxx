@@ -33,6 +33,7 @@
 #include <TDF_Tool.hxx> 
 #include <PCDM_ReaderFilter.hxx>
 
+#include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_OpenFile.hxx>
 #include <TDocStd_PathParser.hxx>
@@ -179,10 +180,10 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
-      std::ifstream aFileStream;
-      OSD_OpenStream (aFileStream, path, std::ios::in | std::ios::binary);
+      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (path, std::ios::in | std::ios::binary);
 
-      theStatus = A->Open (aFileStream, D, aFilter, aProgress->Start());
+      theStatus = A->Open (*aFileStream, D, aFilter, aProgress->Start());
     }
     else
     {

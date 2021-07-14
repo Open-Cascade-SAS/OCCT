@@ -41,6 +41,7 @@ extern Draw_Viewer dout;
 #include <errno.h>
 
 #include <OSD_Environment.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
 
 Standard_Boolean Draw_ParseFailed = Standard_True;
@@ -142,19 +143,17 @@ static Standard_Integer restore (Draw_Interpretor& theDI,
 
   const char* aFileName = theArgVec[1];
   const char* aVarName  = theArgVec[2];
-  
-  std::filebuf aFileBuf;
-  std::istream aStream (&aFileBuf);
-  OSD_OpenStream (aFileBuf, aFileName, std::ios::in);
-  if (!aFileBuf.is_open())
+
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aFileName, std::ios::in);
+  if (aStream.get() == NULL)
   {
     theDI << "Error: cannot open file for reading: '" << aFileName << "'";
     return 1;
   }
-
   char aType[255] = {};
-  aStream >> aType;
-  if (aStream.fail())
+  *aStream >> aType;
+  if (aStream->fail())
   {
     theDI << "Error: cannot read file: '" << aFileName << "'";
     return 1;
@@ -163,12 +162,12 @@ static Standard_Integer restore (Draw_Interpretor& theDI,
   {
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
     Draw::SetProgressBar (aProgress);
-    Handle(Draw_Drawable3D) aDrawable = Draw_Drawable3D::Restore (aType, aStream);
+    Handle(Draw_Drawable3D) aDrawable = Draw_Drawable3D::Restore (aType, *aStream);
     if (aDrawable.IsNull())
     {
       // assume that this file stores a DBRep_DrawableShape variable
-      aStream.seekg (0, std::ios::beg);
-      aDrawable = Draw_Drawable3D::Restore ("DBRep_DrawableShape", aStream);
+      aStream->seekg (0, std::ios::beg);
+      aDrawable = Draw_Drawable3D::Restore ("DBRep_DrawableShape", *aStream);
     }
     if (aDrawable.IsNull())
     {
