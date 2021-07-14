@@ -222,25 +222,55 @@ public:
   //! }
   Standard_EXPORT Standard_Integer IsInSession (const TCollection_ExtendedString& path) const;
   
-  //! Retrieves the document aDoc stored under the
-  //! name aName in the directory directory.
-  //! In order not to override a version of aDoc which
-  //! is already in memory, this method can be made
-  //! to depend on the value returned by IsInSession.
-  //! It is possible to filter out some attributes or
-  //! parts of the retrieved tree by theFilter.
-  Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& path, 
+  //! Retrieves the document from specified file.
+  //! In order not to override a version of the document which is already in memory,
+  //! this method can be made to depend on the value returned by IsInSession.
+  //! @param[in]  thePath   file path to open
+  //! @param[out] theDoc    result document
+  //! @param[in]  theFilter optional filter to skip attributes or parts of the retrieved tree
+  //! @param[in]  theRange  optional progress indicator
+  //! @return reading status
+  Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& thePath,
                                           Handle(TDocStd_Document)& theDoc,
-                                          const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
+                                          const Handle(PCDM_ReaderFilter)& theFilter,
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! Retrieves aDoc from standard SEEKABLE stream theIStream.
-  //! the stream should support SEEK functionality
-  //! It is possible to filter out some attributes or
-  //! parts of the retrieved tree by theFilter.
-  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc,
-                                          const Handle(PCDM_ReaderFilter)& theFilter = Handle(PCDM_ReaderFilter)(),
+  //! Retrieves the document from specified file.
+  //! In order not to override a version of the document which is already in memory,
+  //! this method can be made to depend on the value returned by IsInSession.
+  //! @param[in]  thePath  file path to open
+  //! @param[out] theDoc   result document
+  //! @param[in]  theRange optional progress indicator
+  //! @return reading status
+  PCDM_ReaderStatus Open (const TCollection_ExtendedString& thePath,
+                          Handle(TDocStd_Document)& theDoc,
+                          const Message_ProgressRange& theRange = Message_ProgressRange())
+  {
+    return Open (thePath, theDoc, Handle(PCDM_ReaderFilter)(), theRange);
+  }
+
+  //! Retrieves document from standard stream.
+  //! @param[in,out] theIStream input seekable stream
+  //! @param[out]    theDoc     result document
+  //! @param[in]     theFilter  optional filter to skip attributes or parts of the retrieved tree
+  //! @param[in]     theRange   optional progress indicator
+  //! @return reading status
+  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream,
+                                          Handle(TDocStd_Document)& theDoc,
+                                          const Handle(PCDM_ReaderFilter)& theFilter,
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
+
+  //! Retrieves document from standard stream.
+  //! @param[in,out] theIStream input seekable stream
+  //! @param[out]    theDoc     result document
+  //! @param[in]     theRange   optional progress indicator
+  //! @return reading status
+  PCDM_ReaderStatus Open (Standard_IStream& theIStream,
+                          Handle(TDocStd_Document)& theDoc,
+                          const Message_ProgressRange& theRange = Message_ProgressRange())
+  {
+    return Open (theIStream, theDoc, Handle(PCDM_ReaderFilter)(), theRange);
+  }
 
   
   //! Save the  active document  in the file  <name> in the
