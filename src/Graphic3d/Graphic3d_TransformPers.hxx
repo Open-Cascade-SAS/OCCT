@@ -293,12 +293,14 @@ public:
   //! @param theWorldView  world-view matrix to modify
   //! @param theViewportWidth  viewport width
   //! @param theViewportHeight viewport height
+  //! @param theAnchor if not NULL, overrides anchor point
   template<class T>
   void Apply (const Handle(Graphic3d_Camera)& theCamera,
               const NCollection_Mat4<T>& theProjection,
               NCollection_Mat4<T>& theWorldView,
               const Standard_Integer theViewportWidth,
-              const Standard_Integer theViewportHeight) const;
+              const Standard_Integer theViewportHeight,
+              const gp_Pnt* theAnchor = NULL) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
@@ -347,7 +349,8 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
                                      const NCollection_Mat4<T>& theProjection,
                                      NCollection_Mat4<T>& theWorldView,
                                      const Standard_Integer theViewportWidth,
-                                     const Standard_Integer theViewportHeight) const
+                                     const Standard_Integer theViewportHeight,
+                                     const gp_Pnt* theAnchor) const
 {
   (void )theViewportWidth;
   (void )theProjection;
@@ -453,7 +456,15 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
   {
     // Compute reference point for transformation in untransformed projection space.
     NCollection_Mat4<Standard_Real> aWorldView = theCamera->OrientationMatrix();
-    Graphic3d_TransformUtils::Translate (aWorldView, myParams.Params3d.PntX, myParams.Params3d.PntY, myParams.Params3d.PntZ);
+    if (theAnchor != NULL)
+    {
+      Graphic3d_TransformUtils::Translate (aWorldView, theAnchor->X(), theAnchor->Y(), theAnchor->Z());
+    }
+    else
+    {
+      Graphic3d_TransformUtils::Translate (aWorldView, myParams.Params3d.PntX, myParams.Params3d.PntY, myParams.Params3d.PntZ);
+    }
+
     if ((myMode & Graphic3d_TMF_RotatePers) != 0)
     {
       // lock rotation by nullifying rotation component

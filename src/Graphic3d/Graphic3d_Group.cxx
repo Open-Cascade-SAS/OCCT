@@ -141,6 +141,23 @@ Standard_Boolean Graphic3d_Group::IsEmpty() const
 }
 
 // =======================================================================
+// function : SetTransformPersistence
+// purpose  :
+// =======================================================================
+void Graphic3d_Group::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
+{
+  if (myTrsfPers != theTrsfPers)
+  {
+    myTrsfPers = theTrsfPers;
+    if (!IsDeleted()
+     && !theTrsfPers.IsNull())
+    {
+      myStructure->CStructure()->SetGroupTransformPersistence (true);
+    }
+  }
+}
+
+// =======================================================================
 // function : SetMinMaxValues
 // purpose  :
 // =======================================================================
@@ -457,6 +474,8 @@ void Graphic3d_Group::DumpJson (Standard_OStream& theOStream, Standard_Integer t
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTrsfPers.get())
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStructure)
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBounds)

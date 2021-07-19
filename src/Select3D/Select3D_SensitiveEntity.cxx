@@ -40,7 +40,8 @@ void Select3D_SensitiveEntity::DumpJson (Standard_OStream& theOStream, Standard_
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myOwnerId.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySFactor)
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTrsfPers.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySFactor)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbSubElements());
 

@@ -287,6 +287,24 @@ public:
     theMat.SetValue (3, 3, static_cast<T> (1));
   }
 
+  //! Convert transformation from 4x4 matrix.
+  template<class T>
+  void SetMat4 (const NCollection_Mat4<T>& theMat)
+  {
+    shape = gp_Other;
+    scale = 0.0;
+    matrix.SetValue (1, 1, theMat.GetValue (0, 0));
+    matrix.SetValue (1, 2, theMat.GetValue (0, 1));
+    matrix.SetValue (1, 3, theMat.GetValue (0, 2));
+    matrix.SetValue (2, 1, theMat.GetValue (1, 0));
+    matrix.SetValue (2, 2, theMat.GetValue (1, 1));
+    matrix.SetValue (2, 3, theMat.GetValue (1, 2));
+    matrix.SetValue (3, 1, theMat.GetValue (2, 0));
+    matrix.SetValue (3, 2, theMat.GetValue (2, 1));
+    matrix.SetValue (3, 3, theMat.GetValue (2, 2));
+    loc.SetCoord (theMat.GetValue (0, 3), theMat.GetValue (1, 3), theMat.GetValue (2, 3));
+  }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 

@@ -134,12 +134,8 @@ public:
 
   //! Updates outdated BVH trees and remembers the last state of the
   //! camera view-projection matrices and viewport (window) dimensions.
-  Standard_EXPORT void UpdateBVH (const Handle(Graphic3d_Camera)& theCamera,
-                                  const Graphic3d_Mat4d& theProjectionMat,
-                                  const Graphic3d_Mat4d& theWorldViewMat,
-                                  const Graphic3d_WorldViewProjState& theViewState,
-                                  const Standard_Integer theViewportWidth,
-                                  const Standard_Integer theViewportHeight);
+  Standard_EXPORT void UpdateBVH (const Handle(Graphic3d_Camera)& theCam,
+                                  const Graphic3d_Vec2i& theWinSize);
 
   //! Marks every BVH subset for update.
   Standard_EXPORT void MarkDirty();
@@ -190,6 +186,15 @@ private:
   {
     if (theObject->TransformPersistence().IsNull())
     {
+      const PrsMgr_Presentations& aPresentations = theObject->Presentations();
+      for (PrsMgr_Presentations::Iterator aPrsIter (aPresentations); aPrsIter.More(); aPrsIter.Next())
+      {
+        const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.ChangeValue();
+        if (aPrs3d->CStructure()->HasGroupTransformPersistence())
+        {
+          return SelectMgr_SelectableObjectSet::BVHSubset_3dPersistent;
+        }
+      }
       return SelectMgr_SelectableObjectSet::BVHSubset_3d;
     }
     else if (theObject->TransformPersistence()->Mode() == Graphic3d_TMF_2d)
@@ -221,9 +226,8 @@ private:
   opencascade::handle<BVH_Tree<Standard_Real, 3> >           myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
   Handle(Select3D_BVHBuilder3d)                              myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
   Standard_Boolean                                           myIsDirty[BVHSubsetNb]; //!< Dirty flag for each subset
-  Graphic3d_WorldViewProjState                               myLastViewState; //!< Last view-projection state used for construction of BVH
-  Standard_Integer                                           myLastWidth; //!< Last viewport's (window's) width used for construction of BVH
-  Standard_Integer                                           myLastHeight; //!< Last viewport's (window's) height used for construction of BVH
+  Graphic3d_WorldViewProjState                               myLastViewState;        //!< Last view-projection state used for construction of BVH
+  Graphic3d_Vec2i                                            myLastWinSize;          //!< Last viewport's (window's) width used for construction of BVH
   friend class Iterator;
 };
 

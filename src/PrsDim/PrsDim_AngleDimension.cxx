@@ -691,8 +691,14 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager)& ,
 
   aFirstArrowBegin  = aFirstAttach;
   aSecondArrowBegin = aSecondAttach;
-  aFirstArrowEnd    = aFirstAttach.Translated (-aFirstArrowVec);
-  aSecondArrowEnd   = aSecondAttach.Translated (-aSecondArrowVec);
+  aFirstArrowEnd    = aFirstAttach;
+  aSecondArrowEnd   = aSecondAttach;
+
+  if (aDimensionAspect->ArrowAspect()->IsZoomable())
+  {
+    aFirstArrowEnd.Translate (-aFirstArrowVec);
+    aSecondArrowEnd.Translate (-aSecondArrowVec);
+  }
 
   // Group1: stenciling text and the angle dimension arc
   thePresentation->NewGroup();

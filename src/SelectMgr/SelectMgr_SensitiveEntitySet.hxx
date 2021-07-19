@@ -28,8 +28,8 @@
 typedef NCollection_IndexedMap<Handle(SelectMgr_SensitiveEntity)> SelectMgr_IndexedMapOfHSensitive;
 typedef NCollection_DataMap<Handle(SelectMgr_EntityOwner), Standard_Integer> SelectMgr_MapOfOwners;
 
-//! This class is used to store all calculated sensitive entites of one selectable
-//! object. It provides an interface for building BVH tree which is used to speed-up
+//! This class is used to store all calculated sensitive entities of one selectable object.
+//! It provides an interface for building BVH tree which is used to speed-up
 //! the performance of searching for overlap among sensitives of one selectable object
 class SelectMgr_SensitiveEntitySet : public BVH_PrimitiveSet3d
 {
@@ -79,6 +79,9 @@ public:
   //! Returns map of owners.
   const SelectMgr_MapOfOwners& Owners() const { return myOwnersMap; }
 
+  //! Returns map of entities.
+  Standard_Boolean HasEntityWithPersistence() const { return myHasEntityWithPersistence; }
+
 protected:
 
   //! Adds entity owner to the map of owners (or increases its counter if it is already there).
@@ -89,8 +92,9 @@ protected:
 
 private:
 
-  SelectMgr_IndexedMapOfHSensitive mySensitives;     //!< Map of entities and its corresponding index in BVH
-  SelectMgr_MapOfOwners myOwnersMap;                 //!< Map of entity owners and its corresponding number of sensitives
+  SelectMgr_IndexedMapOfHSensitive mySensitives; //!< Map of entities and its corresponding index in BVH
+  SelectMgr_MapOfOwners            myOwnersMap;  //!< Map of entity owners and its corresponding number of sensitives
+  Standard_Boolean  myHasEntityWithPersistence;  //!< flag if some of sensitive entity has own transform persistence
 };
 
 #endif // _SelectMgr_SensitiveEntitySet_HeaderFile

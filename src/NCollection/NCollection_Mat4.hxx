@@ -597,6 +597,17 @@ public:
     return anInv;
   }
 
+  //! Return determinant of the 3x3 sub-matrix.
+  Element_t DeterminantMat3() const
+  {
+    return (GetValue (0, 0) * GetValue (1, 1) * GetValue (2, 2)
+          + GetValue (0, 1) * GetValue (1, 2) * GetValue (2, 0)
+          + GetValue (0, 2) * GetValue (1, 0) * GetValue (2, 1))
+         - (GetValue (0, 2) * GetValue (1, 1) * GetValue (2, 0)
+          + GetValue (0, 0) * GetValue (1, 2) * GetValue (2, 1)
+          + GetValue (0, 1) * GetValue (1, 0) * GetValue (2, 2));
+  }
+
   //! Return adjoint (adjugate matrix, e.g. conjugate transpose).
   Standard_NODISCARD NCollection_Mat4<Element_t> Adjoint() const
   {

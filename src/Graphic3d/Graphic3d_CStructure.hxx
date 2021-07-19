@@ -33,6 +33,7 @@ class Graphic3d_StructureManager;
 //! Low-level graphic structure interface
 class Graphic3d_CStructure : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 protected:
 
   //! Auxiliary wrapper to iterate through structure list.
@@ -88,6 +89,12 @@ public:
 
   //! Set transformation persistence.
   virtual void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) { myTrsfPers = theTrsfPers; }
+
+  //! Return TRUE if some groups might have transform persistence; FALSE by default.
+  bool HasGroupTransformPersistence() const { return myHasGroupTrsf; }
+
+  //! Set if some groups might have transform persistence.
+  void SetGroupTransformPersistence (bool theValue) { myHasGroupTrsf = theValue; }
 
   //! @return associated clip planes
   const Handle(Graphic3d_SequenceOfHClipPlane)& ClipPlanes() const
@@ -198,23 +205,13 @@ public:
 
 public:
 
-  int                      Id;
-  Graphic3d_ZLayerId       myZLayer;
-  int                      Priority;
-  int                      PreviousPriority;
-
-  int   ContainsFacet;
-
   Handle(Graphic3d_ViewAffinity) ViewAffinity; //!< view affinity mask
 
-  unsigned IsInfinite     : 1;
-  unsigned stick          : 1; //!< displaying state - should be set when structure has been added to scene graph (but can be in hidden state)
-  unsigned highlight      : 1;
-  unsigned visible        : 1; //!< visibility flag - can be used to suppress structure while leaving it in the scene graph
-  unsigned HLRValidation  : 1;
-  unsigned IsForHighlight : 1;
-  unsigned IsMutable      : 1;
-  unsigned Is2dText       : 1;
+  Standard_Integer Id;
+  Standard_Integer Priority;
+  Standard_Integer PreviousPriority;
+
+  Standard_Integer ContainsFacet;
 
 protected:
 
@@ -231,12 +228,23 @@ protected:
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
+  Graphic3d_ZLayerId myZLayer;
+
   mutable Standard_Boolean myIsCulled; //!< A status specifying is structure needs to be rendered after BVH tree traverse
   Standard_Boolean myBndBoxClipCheck;  //!< Flag responsible for checking of bounding box clipping before drawing of object
 
+  Standard_Boolean myHasGroupTrsf;     //!< flag specifying that some groups might have transform persistence
+
 public:
 
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient) // Type definition
+  unsigned IsInfinite     : 1;
+  unsigned stick          : 1; //!< displaying state - should be set when structure has been added to scene graph (but can be in hidden state)
+  unsigned highlight      : 1;
+  unsigned visible        : 1; //!< visibility flag - can be used to suppress structure while leaving it in the scene graph
+  unsigned HLRValidation  : 1;
+  unsigned IsForHighlight : 1;
+  unsigned IsMutable      : 1;
+  unsigned Is2dText       : 1;
 
 };
 

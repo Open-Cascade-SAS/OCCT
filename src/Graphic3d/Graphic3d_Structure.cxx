@@ -86,6 +86,7 @@ void Graphic3d_Structure::clear (const Standard_Boolean theWithDestruction)
   GraphicClear (theWithDestruction);
 
   myCStructure->ContainsFacet = 0;
+  myCStructure->SetGroupTransformPersistence (false);
   myStructureManager->Clear (this, theWithDestruction);
 
   Update (true);
@@ -802,6 +803,11 @@ Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord() const
   Graphic3d_BndBox4f aBnd;
   for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
+    if (!aGroupIter.Value()->TransformPersistence().IsNull())
+    {
+      continue; // should be translated to current view orientation to make sense
+    }
+
     aBnd.Combine (aGroupIter.Value()->BoundingBox());
   }
   return aBnd;

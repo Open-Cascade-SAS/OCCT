@@ -51,6 +51,12 @@ public:
   //! Returns the current value of the length used when drawing an arrow.
   Standard_Real Length() const { return myLength; }
 
+  //! Turns usage of arrow zoomable on/off
+  void SetZoomable (bool theIsZoomable) { myIsZoomable = theIsZoomable; }
+
+  //! Returns TRUE when the Arrow Zoomable is on; TRUE by default.
+  bool IsZoomable() const { return myIsZoomable; }
+
   void SetColor (const Quantity_Color& theColor) { myArrowAspect->SetColor (theColor); }
   
   const Handle(Graphic3d_AspectLine3d)& Aspect() const { return myArrowAspect; }
@@ -65,6 +71,7 @@ protected:
   Handle(Graphic3d_AspectLine3d) myArrowAspect;
   Standard_Real myAngle;
   Standard_Real myLength;
+  Standard_Boolean myIsZoomable;
 
 };
 

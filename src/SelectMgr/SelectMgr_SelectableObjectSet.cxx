@@ -114,8 +114,7 @@ namespace
                                  const Handle(Graphic3d_Camera)& theCamera,
                                  const Graphic3d_Mat4d& theProjectionMat,
                                  const Graphic3d_Mat4d& theWorldViewMat,
-                                 const Standard_Integer theWidth,
-                                 const Standard_Integer theHeight)
+                                 const Graphic3d_Vec2i& theWinSize)
     : myObjects (theObjects)
     {
       myBoundings.ReSize (myObjects.Size());
@@ -125,15 +124,51 @@ namespace
 
         Bnd_Box aBoundingBox;
         anObject->BoundingBox (aBoundingBox);
-        if (aBoundingBox.IsVoid()
-         || anObject->TransformPersistence().IsNull())
+        if (!aBoundingBox.IsVoid()
+         && !anObject->TransformPersistence().IsNull())
+        {
+          anObject->TransformPersistence()->Apply (theCamera,
+                                                   theProjectionMat, theWorldViewMat,
+                                                   theWinSize.x(), theWinSize.y(),
+                                                   aBoundingBox);
+        }
+
+        // processing presentations with own transform persistence
+        for (PrsMgr_Presentations::Iterator aPrsIter (anObject->Presentations()); aPrsIter.More(); aPrsIter.Next())
+        {
+          const Handle(PrsMgr_Presentation)& aPrs3d = aPrsIter.Value();
+          if (!aPrs3d->CStructure()->HasGroupTransformPersistence())
+          {
+            continue;
+          }
+
+          for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aPrs3d->Groups()); aGroupIter.More(); aGroupIter.Next())
+          {
+            const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
+            const Graphic3d_BndBox4f& aBndBox = aGroup->BoundingBox();
+            if (aGroup->TransformPersistence().IsNull()
+            || !aBndBox.IsValid())
+            {
+              continue;
+            }
+
+            Bnd_Box aGroupBox;
+            aGroupBox.Update (aBndBox.CornerMin().x(), aBndBox.CornerMin().y(), aBndBox.CornerMin().z(),
+                              aBndBox.CornerMax().x(), aBndBox.CornerMax().y(), aBndBox.CornerMax().z());
+            aGroup->TransformPersistence()->Apply (theCamera,
+                                                   theProjectionMat, theWorldViewMat,
+                                                   theWinSize.x(), theWinSize.y(),
+                                                   aGroupBox);
+            aBoundingBox.Add (aGroupBox);
+          }
+        }
+
+        if (aBoundingBox.IsVoid())
         {
           myBoundings.Add (new Select3D_HBndBox3d());
         }
         else
         {
-          anObject->TransformPersistence()->Apply (theCamera, theProjectionMat, theWorldViewMat, theWidth, theHeight, aBoundingBox);
-
           const gp_Pnt aMin = aBoundingBox.CornerMin();
           const gp_Pnt aMax = aBoundingBox.CornerMax();
           myBoundings.Add (new Select3D_HBndBox3d (Select3D_Vec3 (aMin.X(), aMin.Y(), aMin.Z()),
@@ -205,8 +240,6 @@ namespace
 // Purpose :
 //=============================================================================
 SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
-: myLastWidth (0),
-  myLastHeight (0)
 {
   myBVH[BVHSubset_2dPersistent] = new BVH_Tree<Standard_Real, 3>();
   myBVH[BVHSubset_3dPersistent] = new BVH_Tree<Standard_Real, 3>();
@@ -311,12 +344,8 @@ void SelectMgr_SelectableObjectSet::ChangeSubset (const Handle(SelectMgr_Selecta
 // Function: UpdateBVH
 // Purpose :
 //=============================================================================
-void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& theCamera,
-                                               const Graphic3d_Mat4d& theProjectionMat,
-                                               const Graphic3d_Mat4d& theWorldViewMat,
-                                               const Graphic3d_WorldViewProjState& theViewState,
-                                               const Standard_Integer theViewportWidth,
-                                               const Standard_Integer theViewportHeight)
+void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& theCam,
+                                               const Graphic3d_Vec2i& theWinSize)
 {
   // -----------------------------------------
   // check and update 3D BVH tree if necessary
@@ -333,20 +362,24 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
     myIsDirty[BVHSubset_3d] = Standard_False;
   }
 
-  if (!theCamera.IsNull())
+  if (!theCam.IsNull())
   {
-    const Standard_Boolean isWindowSizeChanged =
-      (myLastHeight != theViewportHeight) || (myLastWidth != theViewportWidth);
+    const Standard_Boolean           isWinSizeChanged = myLastWinSize != theWinSize;
+    const Graphic3d_Mat4d&              aProjMat      = theCam->ProjectionMatrix();
+    const Graphic3d_Mat4d&              aWorldViewMat = theCam->OrientationMatrix();
+    const Graphic3d_WorldViewProjState& aViewState    = theCam->WorldViewProjState();
 
     // -----------------------------------------------------
     // check and update 3D persistence BVH tree if necessary
     // -----------------------------------------------------
-    if (!IsEmpty (BVHSubset_3dPersistent) &&
-         (myIsDirty[BVHSubset_3dPersistent] || myLastViewState.IsChanged (theViewState) || isWindowSizeChanged))
+    if (!IsEmpty (BVHSubset_3dPersistent)
+     && (myIsDirty[BVHSubset_3dPersistent]
+      || myLastViewState.IsChanged (aViewState)
+      || isWinSizeChanged))
     {
       // construct adaptor over private fields to provide direct access for the BVH builder
       BVHBuilderAdaptorPersistent anAdaptor (myObjects[BVHSubset_3dPersistent],
-        theCamera, theProjectionMat, theWorldViewMat, theViewportWidth, theViewportHeight);
+                                             theCam, aProjMat, aWorldViewMat, theWinSize);
 
       // update corresponding BVH tree data structure
       myBuilder[BVHSubset_3dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_3dPersistent].get(), anAdaptor.Box());
@@ -355,12 +388,14 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
     // -----------------------------------------------------
     // check and update 2D persistence BVH tree if necessary
     // -----------------------------------------------------
-    if (!IsEmpty (BVHSubset_2dPersistent) &&
-         (myIsDirty[BVHSubset_2dPersistent] || myLastViewState.IsProjectionChanged (theViewState) || isWindowSizeChanged))
+    if (!IsEmpty (BVHSubset_2dPersistent)
+     && (myIsDirty[BVHSubset_2dPersistent]
+      || myLastViewState.IsProjectionChanged (aViewState)
+      || isWinSizeChanged))
     {
       // construct adaptor over private fields to provide direct access for the BVH builder
       BVHBuilderAdaptorPersistent anAdaptor (myObjects[BVHSubset_2dPersistent],
-        theCamera, theProjectionMat, SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT, theViewportWidth, theViewportHeight);
+                                             theCam, aProjMat, SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT, theWinSize);
 
       // update corresponding BVH tree data structure
       myBuilder[BVHSubset_2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_2dPersistent].get(), anAdaptor.Box());
@@ -371,12 +406,11 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
     myIsDirty[BVHSubset_2dPersistent] = Standard_False;
 
     // keep last view state
-    myLastViewState = theViewState;
+    myLastViewState = aViewState;
   }
 
   // keep last window state
-  myLastWidth  = theViewportWidth;
-  myLastHeight = theViewportHeight;
+  myLastWinSize = theWinSize;
 }
 
 //=============================================================================
@@ -412,6 +446,6 @@ void SelectMgr_SelectableObjectSet::DumpJson (Standard_OStream& theOStream, Stan
     TCollection_AsciiString separator;
     OCCT_DUMP_FIELD_VALUE_STRING (theOStream, separator)
   }
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastWidth)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastHeight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastWinSize.x())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastWinSize.y())
 }

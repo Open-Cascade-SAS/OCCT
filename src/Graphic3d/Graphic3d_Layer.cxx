@@ -171,6 +171,18 @@ inline bool isInfiniteBndBox (const Graphic3d_BndBox3d& theBndBox)
       || Abs (theBndBox.CornerMin().z()) >= ShortRealLast();
 }
 
+//! Extend bounding box with another box.
+static void addBox3dToBndBox (Bnd_Box& theResBox,
+                              const Graphic3d_BndBox3d& theBox)
+{
+  // skip too big boxes to prevent float overflow at camera parameters calculation
+  if (theBox.IsValid() && !isInfiniteBndBox (theBox))
+  {
+    theResBox.Add (gp_Pnt (theBox.CornerMin().x(), theBox.CornerMin().y(), theBox.CornerMin().z()));
+    theResBox.Add (gp_Pnt (theBox.CornerMax().x(), theBox.CornerMax().y(), theBox.CornerMax().z()));
+  }
+}
+
 // =======================================================================
 // function : BoundingBox
 // purpose  :
@@ -222,6 +234,22 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
           }
         }
 
+        if (!theToIncludeAuxiliary
+          && aStructure->HasGroupTransformPersistence())
+        {
+          // add per-group transform-persistence point in a bounding box
+          for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
+          {
+            const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
+            if (!aGroup->TransformPersistence().IsNull()
+              && aGroup->TransformPersistence()->IsZoomOrRotate())
+            {
+              const gp_Pnt anAnchor = aGroup->TransformPersistence()->AnchorPoint();
+              myBoundingBox[aBoxId].Add (anAnchor);
+            }
+          }
+        }
+
         Graphic3d_BndBox3d aBox = aStructure->BoundingBox();
         if (!aBox.IsValid())
         {
@@ -239,14 +267,7 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
         {
           aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
         }
-
-        // skip too big boxes to prevent float overflow at camera parameters calculation
-        if (aBox.IsValid()
-        && !isInfiniteBndBox (aBox))
-        {
-          myBoundingBox[aBoxId].Add (gp_Pnt (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z()));
-          myBoundingBox[aBoxId].Add (gp_Pnt (aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z()));
-        }
+        addBox3dToBndBox (myBoundingBox[aBoxId], aBox);
       }
     }
 
@@ -268,25 +289,38 @@ Bnd_Box Graphic3d_Layer::BoundingBox (Standard_Integer theViewId,
     {
       continue;
     }
-    else if (aStructure->TransformPersistence().IsNull()
-         || !aStructure->TransformPersistence()->IsTrihedronOr2d())
+
+    // handle per-group transformation persistence specifically
+    if (aStructure->HasGroupTransformPersistence())
+    {
+      for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (aStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
+      {
+        const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
+        const Graphic3d_BndBox4f& aBoxF = aGroup->BoundingBox();
+        if (aGroup->TransformPersistence().IsNull()
+        || !aBoxF.IsValid())
+        {
+          continue;
+        }
+
+        Graphic3d_BndBox3d aBoxCopy (Graphic3d_Vec3d (aBoxF.CornerMin().xyz()),
+                                     Graphic3d_Vec3d (aBoxF.CornerMax().xyz()));
+        aGroup->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBoxCopy);
+        addBox3dToBndBox (aResBox, aBoxCopy);
+      }
+    }
+
+    const Graphic3d_BndBox3d& aStructBox = aStructure->BoundingBox();
+    if (!aStructBox.IsValid()
+     ||  aStructure->TransformPersistence().IsNull()
+     || !aStructure->TransformPersistence()->IsTrihedronOr2d())
     {
       continue;
     }
 
-    Graphic3d_BndBox3d aBox = aStructure->BoundingBox();
-    if (!aBox.IsValid())
-    {
-      continue;
-    }
-
-    aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBox);
-    if (aBox.IsValid()
-    && !isInfiniteBndBox (aBox))
-    {
-      aResBox.Add (gp_Pnt (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z()));
-      aResBox.Add (gp_Pnt (aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z()));
-    }
+    Graphic3d_BndBox3d aBoxCopy = aStructBox;
+    aStructure->TransformPersistence()->Apply (theCamera, aProjectionMat, aWorldViewMat, theWindowWidth, theWindowHeight, aBoxCopy);
+    addBox3dToBndBox (aResBox, aBoxCopy);
   }
 
   return aResBox;

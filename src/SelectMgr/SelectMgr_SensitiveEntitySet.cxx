@@ -15,6 +15,7 @@
 
 #include <SelectMgr_SensitiveEntitySet.hxx>
 
+#include <Graphic3d_TransformPers.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 
@@ -47,6 +48,10 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
   {
     addOwner (theEntity->BaseSensitive()->OwnerId());
   }
+  if (!theEntity->BaseSensitive()->TransformPersistence().IsNull())
+  {
+    myHasEntityWithPersistence = Standard_True;
+  }
   MarkDirty();
 }
 
@@ -59,16 +64,21 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
 {
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    if (!aSelEntIter.Value()->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
+    const Handle(SelectMgr_SensitiveEntity)& aSensEnt = aSelEntIter.Value();
+    if (!aSensEnt->BaseSensitive()->IsKind (STANDARD_TYPE(Select3D_SensitiveEntity)))
     {
-      aSelEntIter.Value()->ResetSelectionActiveStatus();
+      aSensEnt->ResetSelectionActiveStatus();
       continue;
     }
 
     const Standard_Integer anExtent = mySensitives.Extent();
-    if (mySensitives.Add (aSelEntIter.Value()) > anExtent)
+    if (mySensitives.Add (aSensEnt) > anExtent)
     {
-      addOwner (aSelEntIter.Value()->BaseSensitive()->OwnerId());
+      addOwner (aSensEnt->BaseSensitive()->OwnerId());
+    }
+    if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
+    {
+      myHasEntityWithPersistence = Standard_True;
     }
   }
   MarkDirty();
@@ -107,7 +117,13 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
 //=======================================================================
 Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box (const Standard_Integer theIndex) const
 {
-  return GetSensitiveById (theIndex)->BaseSensitive()->BoundingBox();
+  const Handle(Select3D_SensitiveEntity)& aSensitive = GetSensitiveById (theIndex)->BaseSensitive();
+  if (!aSensitive->TransformPersistence().IsNull())
+  {
+    return Select3D_BndBox3d();
+  }
+
+  return aSensitive->BoundingBox();
 }
 
 //=======================================================================

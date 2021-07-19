@@ -146,6 +146,27 @@ protected:
   //! Render the bounding box.
   Standard_EXPORT void renderBoundingBox(const Handle(OpenGl_Workspace)& theWorkspace) const;
 
+  //! Apply transform persistence into context.
+  //! It disables shadows on non-3d objects when toEnable is true and restores otherwise.
+  //! @param[in]  theCtx current context
+  //! @param[in]  theTrsfPers transform persistence
+  //! @param[in]  theIsLocal specifies if transform persistence is defined locally or to entire presentation
+  //! @param[out] theOldCastShadows state of the previous cast shadows state
+  Standard_EXPORT void applyPersistence (const Handle(OpenGl_Context)& theCtx,
+                                         const Handle(Graphic3d_TransformPers)& theTrsfPersistence,
+                                         const Standard_Boolean theIsLocal,
+                                         Standard_Boolean& theOldCastShadows) const;
+
+  //! Restore context from transform persistence changes.
+  //! @param[in] theCtx current context
+  //! @param[in] theTrsfPers transform persistence
+  //! @param[in] theIsLocal specifies if transform persistence is defined locally or to entire presentation
+  //! @param[in] theOldCastShadows state of the previous cast shadows state
+  Standard_EXPORT void revertPersistence (const Handle(OpenGl_Context)& theCtx,
+                                          const Handle(Graphic3d_TransformPers)& theTrsfPersistence,
+                                          const Standard_Boolean theIsLocal,
+                                          const Standard_Boolean theOldCastShadows) const;
+
 protected:
 
   OpenGl_Structure*          myInstancedStructure;

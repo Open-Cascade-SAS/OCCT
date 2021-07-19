@@ -281,8 +281,7 @@ protected:
                                        const Handle(Graphic3d_Camera)& theCamera,
                                        const Graphic3d_Mat4d& theProjectionMat,
                                        const Graphic3d_Mat4d& theWorldViewMat,
-                                       const Standard_Integer theViewportWidth,
-                                       const Standard_Integer theViewportHeight);
+                                       const Graphic3d_Vec2i& theWinSize);
 
   //! Internal function that checks if a particular sensitive
   //! entity theEntity overlaps current selecting volume precisely

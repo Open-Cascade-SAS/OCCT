@@ -26,7 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect, Prs3d_BasicAspect)
 Prs3d_ArrowAspect::Prs3d_ArrowAspect()
 : myArrowAspect (new Graphic3d_AspectLine3d (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_SOLID, 1.0)),
   myAngle (M_PI / 180.0 * 10.0),
-  myLength(1.0)
+  myLength (1.0),
+  myIsZoomable (Standard_True)
 {
   //
 }
