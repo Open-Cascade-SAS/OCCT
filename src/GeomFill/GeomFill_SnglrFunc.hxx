@@ -44,6 +44,9 @@ public:
 
   
   Standard_EXPORT GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC);
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
   
   Standard_EXPORT void SetRatio (const Standard_Real Ratio);
   

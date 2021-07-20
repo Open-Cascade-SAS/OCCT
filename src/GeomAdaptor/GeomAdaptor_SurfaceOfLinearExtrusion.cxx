@@ -59,6 +59,39 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() const
+{
+  Handle(GeomAdaptor_SurfaceOfLinearExtrusion) aCopy = new GeomAdaptor_SurfaceOfLinearExtrusion();
+
+  if (!myBasisCurve.IsNull())
+  {
+    aCopy->myBasisCurve = myBasisCurve->ShallowCopy();
+  }
+  aCopy->myDirection  = myDirection;
+  aCopy->myHaveDir    = myHaveDir;
+
+  aCopy->mySurface        = mySurface;
+  aCopy->myUFirst         = myUFirst;
+  aCopy->myULast          = myULast;
+  aCopy->myVFirst         = myVFirst;
+  aCopy->myVLast          = myVLast;
+  aCopy->myTolU           = myTolU;
+  aCopy->myTolV           = myTolV;
+  aCopy->myBSplineSurface = myBSplineSurface;
+
+  aCopy->mySurfaceType = mySurfaceType;
+  if (!myNestedEvaluator.IsNull())
+  {
+    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+  }
+
+  return aCopy;
+}
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

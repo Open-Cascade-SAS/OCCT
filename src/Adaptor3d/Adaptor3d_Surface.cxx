@@ -44,6 +44,15 @@ Adaptor3d_Surface::~Adaptor3d_Surface()
 }
 
 //=======================================================================
+//function : ShallowCopy()
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Surface) Adaptor3d_Surface::ShallowCopy() const
+{
+  throw Standard_NotImplemented("Adaptor3d_Surface::ShallowCopy");
+}
+//=======================================================================
 //function : FirstUParameter
 //purpose  : 
 //=======================================================================

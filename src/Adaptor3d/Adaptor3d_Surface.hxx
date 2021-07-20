@@ -59,6 +59,9 @@ class Adaptor3d_Surface : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
 public:
 
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const;
+
   Standard_EXPORT virtual Standard_Real FirstUParameter() const;
   
   Standard_EXPORT virtual Standard_Real LastUParameter() const;

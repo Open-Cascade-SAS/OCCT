@@ -54,6 +54,9 @@ public:
     Load (theCurve, theUFirst, theULast);
   }
 
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 

@@ -41,6 +41,16 @@ Adaptor2d_Curve2d::~Adaptor2d_Curve2d()
 }
 
 //=======================================================================
+//function : ShallowCopy()
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_Curve2d) Adaptor2d_Curve2d::ShallowCopy() const
+{  
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::ShallowCopy");
+}
+
+//=======================================================================
 //function : FirstParameter
 //purpose  : 
 //=======================================================================

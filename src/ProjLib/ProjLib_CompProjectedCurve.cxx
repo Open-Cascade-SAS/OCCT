@@ -632,6 +632,36 @@ ProjLib_CompProjectedCurve::ProjLib_CompProjectedCurve
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_Curve2d) ProjLib_CompProjectedCurve::ShallowCopy() const
+{
+  Handle(ProjLib_CompProjectedCurve) aCopy = new ProjLib_CompProjectedCurve();
+
+  if (!mySurface.IsNull())
+  {
+    aCopy->mySurface = mySurface->ShallowCopy();
+  }
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve = myCurve->ShallowCopy();
+  }
+  aCopy->myNbCurves    = myNbCurves;
+  aCopy->mySequence    = mySequence;
+  aCopy->myTolU        = myTolU;
+  aCopy->myTolV        = myTolV;
+  aCopy->myMaxDist     = myMaxDist;
+  aCopy->myUIso        = myUIso;
+  aCopy->myVIso        = myVIso;
+  aCopy->mySnglPnts    = mySnglPnts;
+  aCopy->myMaxDistance = myMaxDistance;
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
@@ -1274,7 +1304,10 @@ void ProjLib_CompProjectedCurve::D0(const Standard_Real U,gp_Pnt2d& P) const
       break;
     }
   }
-  if (!found) throw Standard_DomainError("ProjLib_CompProjectedCurve::D0");
+  if (!found)
+  {
+    throw Standard_DomainError("ProjLib_CompProjectedCurve::D0");
+  }
 
   Standard_Real U0, V0;
 

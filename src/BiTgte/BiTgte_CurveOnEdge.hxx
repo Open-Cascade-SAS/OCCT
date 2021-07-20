@@ -57,6 +57,9 @@ public:
   Standard_EXPORT BiTgte_CurveOnEdge();
   
   Standard_EXPORT BiTgte_CurveOnEdge(const TopoDS_Edge& EonF, const TopoDS_Edge& Edge);
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
   
   Standard_EXPORT void Init (const TopoDS_Edge& EonF, const TopoDS_Edge& Edge);
   

@@ -57,6 +57,9 @@ class ChFiDS_ElSpine  : public Adaptor3d_Curve
 public:
 
   Standard_EXPORT ChFiDS_ElSpine();
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Real FirstParameter() const Standard_OVERRIDE;
   

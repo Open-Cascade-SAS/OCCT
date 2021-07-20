@@ -447,6 +447,35 @@ myIsApprox  (Standard_False)
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) ProjLib_ProjectOnPlane::ShallowCopy() const
+{
+  Handle(ProjLib_ProjectOnPlane) aCopy = new ProjLib_ProjectOnPlane();
+
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve = myCurve->ShallowCopy();
+  }
+  aCopy->myPlane = myPlane;
+  aCopy->myDirection = myDirection;
+  aCopy->myKeepParam = myKeepParam;
+  aCopy->myFirstPar = myFirstPar;
+  aCopy->myLastPar = myLastPar;
+  aCopy->myTolerance = myTolerance;
+  aCopy->myType = myType;
+  if (!myResult.IsNull())
+  {
+    aCopy->myResult = Handle(GeomAdaptor_Curve)::DownCast(myResult->ShallowCopy());
+  }
+  aCopy->myIsApprox = myIsApprox;
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Project
 //purpose  : Returns the projection of a point <Point> on a plane 
 //           <ThePlane>  along a direction <TheDir>.

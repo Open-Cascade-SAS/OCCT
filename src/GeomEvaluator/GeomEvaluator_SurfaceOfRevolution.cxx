@@ -203,3 +203,20 @@ gp_Vec GeomEvaluator_SurfaceOfRevolution::DN(
   return aResult;
 }
 
+Handle(GeomEvaluator_Surface) GeomEvaluator_SurfaceOfRevolution::ShallowCopy() const
+{
+  Handle(GeomEvaluator_SurfaceOfRevolution) aCopy;
+  if (!myBaseAdaptor.IsNull())
+  {
+    aCopy = new GeomEvaluator_SurfaceOfRevolution(myBaseAdaptor->ShallowCopy(), 
+                                                  myRotAxis.Direction(), myRotAxis.Location());
+  }
+  else
+  {
+    aCopy = new GeomEvaluator_SurfaceOfRevolution(myBaseCurve, 
+                                                  myRotAxis.Direction(), myRotAxis.Location());
+  }
+
+  return aCopy;
+}
+

@@ -57,6 +57,9 @@ public:
   //! WFirst,WLast define the bounds of the Offset curve.
   Standard_EXPORT Adaptor2d_OffsetCurve(const Handle(Adaptor2d_Curve2d)& C, const Standard_Real Offset, const Standard_Real WFirst, const Standard_Real WLast);
   
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
+
   //! Changes  the curve.  The Offset is reset to 0.
   Standard_EXPORT void Load (const Handle(Adaptor2d_Curve2d)& S);
   

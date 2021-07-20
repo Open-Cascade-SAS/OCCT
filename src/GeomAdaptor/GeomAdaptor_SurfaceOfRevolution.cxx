@@ -59,6 +59,41 @@ GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::ShallowCopy() const
+{
+  Handle(GeomAdaptor_SurfaceOfRevolution) aCopy = new GeomAdaptor_SurfaceOfRevolution();
+
+  if (!myBasisCurve.IsNull())
+  {
+    aCopy->myBasisCurve = myBasisCurve->ShallowCopy();
+  }
+  aCopy->myAxis       = myAxis;
+  aCopy->myHaveAxis   = myHaveAxis;
+  aCopy->myAxeRev     = myAxeRev;
+
+  aCopy->mySurface        = mySurface;
+  aCopy->myUFirst         = myUFirst;
+  aCopy->myULast          = myULast;
+  aCopy->myVFirst         = myVFirst;
+  aCopy->myVLast          = myVLast;
+  aCopy->myTolU           = myTolU;
+  aCopy->myTolV           = myTolV;
+  aCopy->myBSplineSurface = myBSplineSurface;
+
+  aCopy->mySurfaceType     = mySurfaceType;
+  if (!myNestedEvaluator.IsNull())
+  {
+    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+  }
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

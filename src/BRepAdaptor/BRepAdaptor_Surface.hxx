@@ -68,6 +68,9 @@ public:
   //! the  parameter  range  in   the  UV space  of  the
   //! restriction.
   Standard_EXPORT BRepAdaptor_Surface(const TopoDS_Face& F, const Standard_Boolean R = Standard_True);
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
   
   //! Sets the surface to the geometry of <F>.
   Standard_EXPORT void Initialize (const TopoDS_Face& F, const Standard_Boolean Restriction = Standard_True);

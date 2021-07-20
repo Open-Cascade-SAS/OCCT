@@ -63,6 +63,8 @@ public:
                             const Standard_Integer theDerU,
                             const Standard_Integer theDerV) const Standard_OVERRIDE;
 
+  Standard_EXPORT Handle(GeomEvaluator_Surface) ShallowCopy() const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_OffsetSurface,GeomEvaluator_Surface)
 
 private:

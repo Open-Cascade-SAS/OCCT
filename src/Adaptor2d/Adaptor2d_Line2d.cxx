@@ -54,6 +54,22 @@ Adaptor2d_Line2d::Adaptor2d_Line2d()
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+ Handle(Adaptor2d_Curve2d) Adaptor2d_Line2d::ShallowCopy() const
+ {
+   Handle(Adaptor2d_Line2d) aCopy = new Adaptor2d_Line2d();
+
+   aCopy->myUfirst = myUfirst;
+   aCopy->myUlast  = myUlast;
+   aCopy->myAx2d   = myAx2d;
+
+   return aCopy;
+ }
+
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

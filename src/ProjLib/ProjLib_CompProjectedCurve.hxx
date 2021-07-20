@@ -45,6 +45,9 @@ public:
   //! if MaxDist < 0 then algorithm works as above.
   Standard_EXPORT ProjLib_CompProjectedCurve(const Handle(Adaptor3d_Surface)& S, const Handle(Adaptor3d_Curve)& C, const Standard_Real TolU, const Standard_Real TolV, const Standard_Real MaxDist);
   
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const Standard_OVERRIDE;
+
   //! computes a set of projected point and determine the
   //! continuous parts of the projected  curves. The  points
   //! corresponding to a projection on the bounds of the surface are

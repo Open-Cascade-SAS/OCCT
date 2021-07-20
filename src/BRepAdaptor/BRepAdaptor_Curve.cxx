@@ -74,6 +74,30 @@ BRepAdaptor_Curve::BRepAdaptor_Curve(const TopoDS_Edge& E,
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) BRepAdaptor_Curve::ShallowCopy() const
+{
+  Handle(BRepAdaptor_Curve) aCopy = new BRepAdaptor_Curve();
+
+  aCopy->myTrsf  = myTrsf;
+
+  const Handle(Adaptor3d_Curve) aCurve = myCurve.ShallowCopy();
+  const GeomAdaptor_Curve& aGeomCurve = *(Handle(GeomAdaptor_Curve)::DownCast(aCurve));
+  aCopy->myCurve = aGeomCurve;
+
+  if (!myConSurf.IsNull())
+  {
+    aCopy->myConSurf = Handle(Adaptor3d_CurveOnSurface)::DownCast(myConSurf->ShallowCopy());
+  }
+  aCopy->myEdge    = myEdge;
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Reset
 //purpose  :
 //=======================================================================

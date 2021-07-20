@@ -44,6 +44,8 @@ public:
   virtual gp_Vec DN(const Standard_Real theU,
                     const Standard_Integer theDerU) const = 0;
 
+  virtual Handle(GeomEvaluator_Curve) ShallowCopy() const = 0;
+
   DEFINE_STANDARD_RTTI_INLINE(GeomEvaluator_Curve,Standard_Transient)
 };
 

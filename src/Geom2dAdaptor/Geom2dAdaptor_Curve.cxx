@@ -66,6 +66,28 @@ static const Standard_Real PosTol = Precision::PConfusion() / 2;
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dAdaptor_Curve, Adaptor2d_Curve2d)
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_Curve2d) Geom2dAdaptor_Curve::ShallowCopy() const
+{
+  Handle(Geom2dAdaptor_Curve) aCopy = new Geom2dAdaptor_Curve();
+
+  aCopy->myCurve           = myCurve;
+  aCopy->myTypeCurve       = myTypeCurve;
+  aCopy->myFirst           = myFirst;
+  aCopy->myLast            = myLast;
+  aCopy->myBSplineCurve    = myBSplineCurve;
+  if(!myNestedEvaluator.IsNull())
+  {
+    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+  }
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : LocalContinuity
 //purpose  : Computes the Continuity of a BSplineCurve 
 //           between the parameters U1 and U2

@@ -82,6 +82,9 @@ public:
   //! the face.
   Standard_EXPORT BRepAdaptor_Curve(const TopoDS_Edge& E, const TopoDS_Face& F);
 
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+
   //! Reset currently loaded curve (undone Load()).
   Standard_EXPORT void Reset();
 

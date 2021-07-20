@@ -54,6 +54,9 @@ class Adaptor2d_Curve2d : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Adaptor2d_Curve2d, Standard_Transient)
 public:
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor2d_Curve2d) ShallowCopy() const;
   
   Standard_EXPORT virtual Standard_Real FirstParameter() const;
   

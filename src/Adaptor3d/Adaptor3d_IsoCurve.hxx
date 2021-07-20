@@ -49,6 +49,9 @@ public:
   //! iso. WFirst,WLast define the bounds of the iso.
   Standard_EXPORT Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& S, const GeomAbs_IsoType Iso, const Standard_Real Param, const Standard_Real WFirst, const Standard_Real WLast);
   
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+
   //! Changes  the surface.  The  iso  is  reset  to
   //! NoneIso.
   Standard_EXPORT void Load (const Handle(Adaptor3d_Surface)& S);

@@ -64,7 +64,24 @@ BiTgte_CurveOnEdge::BiTgte_CurveOnEdge(const TopoDS_Edge& theEonF,
   Init(theEonF, theEdge);
 }
 
+//=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
 
+Handle(Adaptor3d_Curve) BiTgte_CurveOnEdge::ShallowCopy() const
+{
+  Handle(BiTgte_CurveOnEdge) aCopy = new BiTgte_CurveOnEdge();
+
+  aCopy->myEdge = myEdge;
+  aCopy->myEonF = myEonF;
+  aCopy->myCurv = myCurv;
+  aCopy->myConF = myConF;
+  aCopy->myType = myType;
+  aCopy->myCirc = myCirc;
+
+  return aCopy;
+}
 //=======================================================================
 //function : Init
 //purpose  : 

@@ -91,6 +91,25 @@ Adaptor2d_OffsetCurve::Adaptor2d_OffsetCurve(
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_Curve2d) Adaptor2d_OffsetCurve::ShallowCopy() const
+{
+  Handle(Adaptor2d_OffsetCurve) aCopy = new Adaptor2d_OffsetCurve();
+
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve  = myCurve->ShallowCopy();
+  }
+  aCopy->myOffset = myOffset;
+  aCopy->myFirst  = myFirst;
+  aCopy->myLast   = myLast;
+
+  return aCopy;
+}
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

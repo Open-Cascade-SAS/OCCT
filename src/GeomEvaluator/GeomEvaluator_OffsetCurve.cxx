@@ -117,6 +117,21 @@ gp_Vec GeomEvaluator_OffsetCurve::DN(const Standard_Real theU,
   return aDN;
 }
 
+Handle(GeomEvaluator_Curve) GeomEvaluator_OffsetCurve::ShallowCopy() const
+{
+  Handle(GeomEvaluator_OffsetCurve) aCopy;
+  if (!myBaseAdaptor.IsNull())
+  {
+    aCopy = new GeomEvaluator_OffsetCurve(Handle(GeomAdaptor_Curve)::DownCast(myBaseAdaptor->ShallowCopy()),
+                                          myOffset, myOffsetDir);
+  }
+  else
+  {
+    aCopy = new GeomEvaluator_OffsetCurve(myBaseCurve, myOffset, myOffsetDir);
+  }
+  return aCopy;
+}
+
 
 void GeomEvaluator_OffsetCurve::BaseD0(const Standard_Real theU,
                                              gp_Pnt& theValue) const

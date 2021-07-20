@@ -719,6 +719,40 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) Adaptor3d_CurveOnSurface::ShallowCopy() const
+{
+  Handle(Adaptor3d_CurveOnSurface) aCopy = new Adaptor3d_CurveOnSurface();
+
+  if (!mySurface.IsNull())
+  {
+    aCopy->mySurface = mySurface->ShallowCopy();
+  }
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve = myCurve->ShallowCopy();
+  }
+  aCopy->myType      = myType;
+  aCopy->myCirc      = myCirc;
+  aCopy->myLin       = myLin;
+  if (!myFirstSurf.IsNull())
+  {
+    aCopy->myFirstSurf = myFirstSurf->ShallowCopy();
+  }
+  if (!myLastSurf.IsNull())
+  {
+    aCopy->myLastSurf = myLastSurf->ShallowCopy();
+  }
+  aCopy->myIntervals = myIntervals;
+  aCopy->myIntCont   = myIntCont;
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

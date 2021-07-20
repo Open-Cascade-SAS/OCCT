@@ -70,6 +70,9 @@ public:
   //! raises  if the direction  <D>  is parallel  to the
   //! plane <Pl>.
   Standard_EXPORT ProjLib_ProjectOnPlane(const gp_Ax3& Pl, const gp_Dir& D);
+
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
   
   //! Sets the  Curve  and perform  the projection.
   //! if <KeepParametrization> is true, the parametrization

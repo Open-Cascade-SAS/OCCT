@@ -79,6 +79,34 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
   Initialize(theWire, theIsAC, theFirst, theLast, theTolerance);
 }
 
+//=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) BRepAdaptor_CompCurve::ShallowCopy() const
+{
+  Handle(BRepAdaptor_CompCurve) aCopy = new BRepAdaptor_CompCurve();
+
+  aCopy->myWire   = myWire;
+  aCopy->TFirst   = TFirst;
+  aCopy->TLast    = TLast;
+  aCopy->PTol     = PTol;
+  aCopy->myCurves = new (BRepAdaptor_HArray1OfCurve) (1, myCurves->Size());
+  for (Standard_Integer anI = 1; anI <= myCurves->Size(); ++anI)
+  {
+    const Handle(Adaptor3d_Curve) aCurve = myCurves->Value(anI).ShallowCopy();
+    const BRepAdaptor_Curve& aBrepCurve = *(Handle(BRepAdaptor_Curve)::DownCast(aCurve));
+    aCopy->myCurves->SetValue(anI, aBrepCurve);
+  }
+  aCopy->myKnots  = myKnots;
+  aCopy->CurIndex = CurIndex;
+  aCopy->Forward  = Forward;
+  aCopy->IsbyAC   = IsbyAC;
+
+  return aCopy;
+}
+
  void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
 					const Standard_Boolean AC)
 {

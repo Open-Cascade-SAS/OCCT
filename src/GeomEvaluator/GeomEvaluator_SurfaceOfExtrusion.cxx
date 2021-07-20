@@ -119,3 +119,18 @@ gp_Vec GeomEvaluator_SurfaceOfExtrusion::DN(
   return aResult;
 }
 
+Handle(GeomEvaluator_Surface) GeomEvaluator_SurfaceOfExtrusion::ShallowCopy() const
+{
+  Handle(GeomEvaluator_SurfaceOfExtrusion) aCopy;
+  if (!myBaseAdaptor.IsNull())
+  {
+    aCopy = new GeomEvaluator_SurfaceOfExtrusion(myBaseAdaptor->ShallowCopy(), myDirection);
+  }
+  else
+  {
+    aCopy = new GeomEvaluator_SurfaceOfExtrusion(myBaseCurve, myDirection);
+  }
+
+  return aCopy;
+}
+

@@ -74,6 +74,9 @@ public:
   //! <W>.
   Standard_EXPORT BRepAdaptor_CompCurve(const TopoDS_Wire& W, const Standard_Boolean KnotByCurvilinearAbcissa, const Standard_Real First, const Standard_Real Last, const Standard_Real Tol);
   
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Curve) ShallowCopy() const Standard_OVERRIDE;
+
   //! Sets the  wire <W>.
   Standard_EXPORT void Initialize (const TopoDS_Wire& W, const Standard_Boolean KnotByCurvilinearAbcissa);
   

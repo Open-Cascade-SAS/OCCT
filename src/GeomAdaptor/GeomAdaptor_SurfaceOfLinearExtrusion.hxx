@@ -57,6 +57,9 @@ public:
   //! Thew Curve and the Direction are loaded.
   Standard_EXPORT GeomAdaptor_SurfaceOfLinearExtrusion(const Handle(Adaptor3d_Curve)& C, const gp_Dir& V);
   
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
+
   //! Changes the Curve
   Standard_EXPORT void Load (const Handle(Adaptor3d_Curve)& C);
   

@@ -61,6 +61,9 @@ public:
     Load (theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
 
+  //! Shallow copy of adaptor
+  Standard_EXPORT virtual Handle(Adaptor3d_Surface) ShallowCopy() const Standard_OVERRIDE;
+
   void Load (const Handle(Geom_Surface)& theSurf)
   {
     if (theSurf.IsNull()) { throw Standard_NullObject("GeomAdaptor_Surface::Load"); }
@@ -257,7 +260,7 @@ private:
   //! \param theV second parameter to identify the span for caching
   Standard_EXPORT void RebuildCache (const Standard_Real theU, const Standard_Real theV) const;
 
-private:
+  protected:
 
   Handle(Geom_Surface) mySurface;
   Standard_Real myUFirst;
@@ -270,7 +273,6 @@ private:
   Handle(Geom_BSplineSurface) myBSplineSurface; ///< B-spline representation to prevent downcasts
   mutable Handle(BSplSLib_Cache) mySurfaceCache; ///< Cached data for B-spline or Bezier surface
 
-protected:
   GeomAbs_SurfaceType mySurfaceType;
   Handle(GeomEvaluator_Surface) myNestedEvaluator; ///< Calculates values of nested complex surfaces (offset surface, surface of extrusion or revolution)
 };

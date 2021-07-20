@@ -371,6 +371,33 @@ ProjLib_ProjectedCurve::ProjLib_ProjectedCurve
   Perform(C);
 }
 
+//=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor2d_Curve2d) ProjLib_ProjectedCurve::ShallowCopy() const
+{
+  Handle(ProjLib_ProjectedCurve) aCopy = new ProjLib_ProjectedCurve();
+
+  aCopy->myTolerance   = myTolerance;
+  if (!mySurface.IsNull())
+  {
+    aCopy->mySurface = mySurface->ShallowCopy();
+  }
+  if (!myCurve.IsNull())
+  {
+    aCopy->myCurve = myCurve->ShallowCopy();
+  }
+  aCopy->myResult      = myResult;
+  aCopy->myDegMin      = myDegMin;
+  aCopy->myDegMax      = myDegMax;
+  aCopy->myMaxSegments = myMaxSegments;
+  aCopy->myMaxDist     = myMaxDist;
+  aCopy->myBndPnt      = myBndPnt;
+
+  return aCopy;
+}
 
 //=======================================================================
 //function : Load

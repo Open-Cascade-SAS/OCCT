@@ -29,6 +29,18 @@ GeomFill_SnglrFunc::GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC) :
 {
 }
 
+//=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) GeomFill_SnglrFunc::ShallowCopy() const
+{
+  Handle(GeomFill_SnglrFunc) aCopy = new GeomFill_SnglrFunc(myHCurve->ShallowCopy());
+  aCopy->ratio = ratio;
+  return aCopy;
+}
+
 void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
 {
   ratio = Ratio;

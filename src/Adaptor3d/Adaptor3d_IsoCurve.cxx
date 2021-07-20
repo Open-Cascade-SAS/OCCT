@@ -105,6 +105,27 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_Surface)& theS,
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) Adaptor3d_IsoCurve::ShallowCopy() const
+{
+  Handle(Adaptor3d_IsoCurve) aCopy = new Adaptor3d_IsoCurve();
+
+  if (!mySurface.IsNull())
+  {
+    aCopy->mySurface = mySurface->ShallowCopy();
+  }
+  aCopy->myIso       = myIso;
+  aCopy->myFirst     = myFirst;
+  aCopy->myLast      = myLast;
+  aCopy->myParameter = myParameter;
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================

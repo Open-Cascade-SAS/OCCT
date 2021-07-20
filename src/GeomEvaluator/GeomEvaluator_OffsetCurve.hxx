@@ -59,6 +59,8 @@ public:
   Standard_EXPORT gp_Vec DN(const Standard_Real theU,
                             const Standard_Integer theDeriv) const Standard_OVERRIDE;
 
+  Standard_EXPORT virtual Handle(GeomEvaluator_Curve) ShallowCopy() const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(GeomEvaluator_OffsetCurve,GeomEvaluator_Curve)
 
 private:

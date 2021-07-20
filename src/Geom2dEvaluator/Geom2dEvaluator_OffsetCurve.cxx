@@ -113,6 +113,22 @@ gp_Vec2d Geom2dEvaluator_OffsetCurve::DN(const Standard_Real theU,
   return aDN;
 }
 
+Handle(Geom2dEvaluator_Curve) Geom2dEvaluator_OffsetCurve::ShallowCopy() const
+{
+  Handle(Geom2dEvaluator_OffsetCurve) aCopy;
+  if (!myBaseAdaptor.IsNull())
+  {
+    aCopy = new Geom2dEvaluator_OffsetCurve(Handle(Geom2dAdaptor_Curve)::DownCast(myBaseAdaptor->ShallowCopy()),
+                                            myOffset);
+  }
+  else
+  {
+    aCopy = new Geom2dEvaluator_OffsetCurve(myBaseCurve, myOffset);
+  }
+
+  return aCopy;
+}
+
 
 void Geom2dEvaluator_OffsetCurve::BaseD0(const Standard_Real theU,
                                                gp_Pnt2d& theValue) const

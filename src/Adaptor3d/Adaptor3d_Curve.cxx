@@ -42,6 +42,16 @@ Adaptor3d_Curve::~Adaptor3d_Curve()
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Curve) Adaptor3d_Curve::ShallowCopy() const
+{
+  throw Standard_NotImplemented("Adaptor3d_Curve::ShallowCopy");
+}
+
+//=======================================================================
 //function : FirstParameter
 //purpose  : 
 //=======================================================================

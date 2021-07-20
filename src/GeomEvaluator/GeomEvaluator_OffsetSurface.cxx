@@ -408,6 +408,22 @@ gp_Vec GeomEvaluator_OffsetSurface::DN(
   }
 }
 
+Handle(GeomEvaluator_Surface) GeomEvaluator_OffsetSurface::ShallowCopy() const
+{
+  Handle(GeomEvaluator_OffsetSurface) aCopy;
+  if (!myBaseAdaptor.IsNull())
+  {
+    aCopy = new GeomEvaluator_OffsetSurface(Handle(GeomAdaptor_Surface)::DownCast(myBaseAdaptor->ShallowCopy()),
+                                          myOffset, myOscSurf);
+  }
+  else
+  {
+    aCopy = new GeomEvaluator_OffsetSurface(myBaseSurf, myOffset, myOscSurf);
+  }
+
+  return aCopy;
+}
+
 
 void GeomEvaluator_OffsetSurface::BaseD0(const Standard_Real theU, const Standard_Real theV,
                                          gp_Pnt& theValue) const

@@ -115,6 +115,33 @@ GeomAbs_Shape LocalContinuity(Standard_Integer         Degree,
 }
 
 //=======================================================================
+//function : ShallowCopy
+//purpose  : 
+//=======================================================================
+
+Handle(Adaptor3d_Surface) GeomAdaptor_Surface::ShallowCopy() const
+{
+  Handle(GeomAdaptor_Surface) aCopy = new GeomAdaptor_Surface();
+
+  aCopy->mySurface         = mySurface;
+  aCopy->myUFirst          = myUFirst;
+  aCopy->myULast           = myULast;
+  aCopy->myVFirst          = myVFirst;
+  aCopy->myVLast           = myVLast;
+  aCopy->myTolU            = myTolU;
+  aCopy->myTolV            = myTolV;
+  aCopy->myBSplineSurface  = myBSplineSurface;
+
+  aCopy->mySurfaceType     = mySurfaceType;
+  if (!myNestedEvaluator.IsNull())
+  {
+    aCopy->myNestedEvaluator = myNestedEvaluator->ShallowCopy();
+  }
+
+  return aCopy;
+}
+
+//=======================================================================
 //function : Load
 //purpose  : 
 //=======================================================================
