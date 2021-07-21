@@ -19,6 +19,8 @@
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_PCurve.hxx>
 #include <OSD_Parallel.hxx>
+#include <BRepLib.hxx>
+#include <Poly_TriangulationParameters.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelPostProcessor, IMeshTools_ModelAlgo)
 
@@ -157,6 +159,47 @@ namespace
 
     Handle(IMeshData_Model) myModel;
   };
+
+  //! Estimates and updates deflection of triangulations for corresponding faces.
+  class DeflectionEstimator
+  {
+  public:
+    //! Constructor
+    DeflectionEstimator (const Handle(IMeshData_Model)& theModel,
+                         const IMeshTools_Parameters&   theParams)
+      : myModel  (theModel)
+      , myParams (new Poly_TriangulationParameters (
+          theParams.Deflection, theParams.Angle, theParams.MinSize))
+    {
+    }
+
+    //! Main functor.
+    void operator()(const Standard_Integer theFaceIndex) const
+    {
+      const IMeshData::IFaceHandle& aDFace = myModel->GetFace (theFaceIndex);
+      if (aDFace->IsSet (IMeshData_Failure) ||
+          aDFace->IsSet (IMeshData_Reused))
+      {
+        return;
+      }
+
+      BRepLib::UpdateDeflection (aDFace->GetFace());
+
+      TopLoc_Location aLoc;
+      const Handle(Poly_Triangulation)& aTriangulation =
+        BRep_Tool::Triangulation (aDFace->GetFace(), aLoc);
+      
+      if (!aTriangulation.IsNull())
+      {
+        aTriangulation->Parameters (myParams);
+      }
+    }
+
+  private:
+
+    Handle(IMeshData_Model)              myModel;
+    Handle(Poly_TriangulationParameters) myParams;
+  };
 }
 
 //=======================================================================
@@ -181,7 +224,7 @@ BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor()
 //=======================================================================
 Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
   const Handle(IMeshData_Model)& theModel,
-  const IMeshTools_Parameters&   /*theParameters*/,
+  const IMeshTools_Parameters&   theParameters,
   const Message_ProgressRange&   theRange)
 {
   (void )theRange;
@@ -191,6 +234,10 @@ Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
   }
 
   // TODO: Force single threaded solution due to data races on edges sharing the same TShape
-  OSD_Parallel::For(0, theModel->EdgesNb(), PolygonCommitter(theModel), Standard_True/*!theParameters.InParallel*/);
+  OSD_Parallel::For (0, theModel->EdgesNb(), PolygonCommitter (theModel), Standard_True/*!theParameters.InParallel*/);
+
+  // Estimate deflection here due to BRepLib::EstimateDeflection requires
+  // existence of both Poly_Triangulation and Poly_PolygonOnTriangulation.
+  OSD_Parallel::For (0, theModel->FacesNb(), DeflectionEstimator (theModel, theParameters), !theParameters.InParallel);
   return Standard_True;
 }

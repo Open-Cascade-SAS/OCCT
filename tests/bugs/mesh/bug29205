@@ -14,7 +14,7 @@ vviewparams -scale 67.9853 -proj 0.680425 -0.732509 -0.0212714 -up -0.0316277 -0
  
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
-checktrinfo result -tri 8 -nod 10 -defl 6.8481042509220045e-05
+checktrinfo result -tri 8 -nod 10 -defl 0.16816650423537197 -tol_abs_defl 1e-6
 
 set log [tricheck result]
 if { [llength $log] != 0 } {

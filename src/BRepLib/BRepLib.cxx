@@ -2435,6 +2435,174 @@ Standard_Boolean BRepLib::
 }
 
 //=======================================================================
+//function : UpdateDeflection
+//purpose  : 
+//=======================================================================
+namespace
+{
+  //! Tool to estimate deflection of the given UV point
+  //! with regard to its representation in 3D space.
+  struct EvalDeflection
+  {
+    BRepAdaptor_Surface Surface;
+
+    //! Initializes tool with the given face.
+    EvalDeflection (const TopoDS_Face& theFace)
+      : Surface (theFace)
+    {
+    }
+
+    //! Evaluates deflection of the given 2d point from its 3d representation.
+    Standard_Real Eval (const gp_Pnt2d& thePoint2d, const gp_Pnt& thePoint3d)
+    {
+      gp_Pnt aPnt;
+      Surface.D0 (thePoint2d.X (), thePoint2d.Y (), aPnt);
+      return (thePoint3d.XYZ () - aPnt.XYZ ()).SquareModulus ();
+    }
+  };
+
+  //! Represents link of triangulation.
+  struct Link
+  {
+    Standard_Integer Node[2];
+
+    //! Constructor
+    Link (const Standard_Integer theNode1, const Standard_Integer theNode2)
+    {
+      Node[0] = theNode1;
+      Node[1] = theNode2;
+    }
+
+    //! Computes a hash code for the this link
+    Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+    {
+      return ::HashCode (Node[0] + Node[1], theUpperBound);
+    }
+
+    //! Returns true if this link has the same nodes as the other.
+    Standard_Boolean IsEqual (const Link& theOther) const
+    {
+      return ((Node[0] == theOther.Node[0] && Node[1] == theOther.Node[1]) ||
+              (Node[0] == theOther.Node[1] && Node[1] == theOther.Node[0]));
+    }
+
+    //! Alias for IsEqual.
+    Standard_Boolean operator ==(const Link& theOther) const
+    {
+      return IsEqual (theOther);
+    }
+  };
+
+  //! Computes a hash code for the given link
+  inline Standard_Integer HashCode (const Link& theLink, const Standard_Integer theUpperBound)
+  {
+    return theLink.HashCode (theUpperBound);
+  }
+}
+
+void BRepLib::UpdateDeflection (const TopoDS_Shape& theShape)
+{
+  TopExp_Explorer anExpFace (theShape, TopAbs_FACE);
+  for (; anExpFace.More(); anExpFace.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (anExpFace.Current());
+    const Handle(Geom_Surface) aSurf = BRep_Tool::Surface (aFace);
+    if (aSurf.IsNull())
+    {
+      continue;
+    }
+
+    TopLoc_Location aLoc;
+    const Handle(Poly_Triangulation)& aPT = BRep_Tool::Triangulation (aFace, aLoc);
+    if (aPT.IsNull() || !aPT->HasUVNodes())
+    {
+      continue;
+    }
+
+    // Collect all nodes of degenerative edges and skip elements
+    // build upon them due to huge distortions introduced by passage
+    // from UV space to 3D.
+    NCollection_Map<Standard_Integer> aDegNodes;
+    TopExp_Explorer anExpEdge (aFace, TopAbs_EDGE);
+    for (; anExpEdge.More(); anExpEdge.Next())
+    {
+      const TopoDS_Edge& aEdge = TopoDS::Edge (anExpEdge.Current());
+      if (BRep_Tool::Degenerated (aEdge))
+      {
+        const Handle(Poly_PolygonOnTriangulation)& aPolygon = BRep_Tool::PolygonOnTriangulation (aEdge, aPT, aLoc);
+        if (aPolygon.IsNull ())
+        {
+          continue;
+        }
+
+        for (Standard_Integer aNodeIt = aPolygon->Nodes().Lower(); aNodeIt <= aPolygon->Nodes().Upper(); ++aNodeIt)
+        {
+          aDegNodes.Add (aPolygon->Node (aNodeIt));
+        }
+      }
+    }
+
+    EvalDeflection aTool (aFace);
+    NCollection_Map<Link> aLinks;
+    Standard_Real aSqDeflection = 0.;
+    const gp_Trsf& aTrsf = aLoc.Transformation();
+    for (Standard_Integer aTriIt = 1; aTriIt <= aPT->NbTriangles(); ++aTriIt)
+    {
+      const Poly_Triangle& aTriangle = aPT->Triangle (aTriIt);
+
+      int aNode[3];
+      aTriangle.Get (aNode[0], aNode[1], aNode[2]);
+      if (aDegNodes.Contains (aNode[0]) ||
+          aDegNodes.Contains (aNode[1]) ||
+          aDegNodes.Contains (aNode[2]))
+      {
+        continue;
+      }
+
+      const gp_Pnt aP3d[3] = {
+        aPT->Node (aNode[0]).Transformed (aTrsf),
+        aPT->Node (aNode[1]).Transformed (aTrsf),
+        aPT->Node (aNode[2]).Transformed (aTrsf)
+      };
+
+      const gp_Pnt2d aP2d[3] = {
+        aPT->UVNode (aNode[0]),
+        aPT->UVNode (aNode[1]),
+        aPT->UVNode (aNode[2])
+      };
+
+      // Check midpoint of triangle.
+      const gp_Pnt   aMid3d_t = (aP3d[0].XYZ() + aP3d[1].XYZ() + aP3d[2].XYZ()) / 3.;
+      const gp_Pnt2d aMid2d_t = (aP2d[0].XY () + aP2d[1].XY () + aP2d[2].XY ()) / 3.;
+
+      aSqDeflection = Max (aSqDeflection, aTool.Eval (aMid2d_t, aMid3d_t));
+
+      for (Standard_Integer i = 0; i < 3; ++i)
+      {
+        const Standard_Integer j = (i + 1) % 3;
+        const Link aLink (aNode[i], aNode[j]);
+        if (!aLinks.Add (aLink))
+        {
+          // Do not estimate boundary links due to high distortions at the edge.
+          const gp_Pnt&   aP3d1 = aP3d[i];
+          const gp_Pnt&   aP3d2 = aP3d[j];
+
+          const gp_Pnt2d& aP2d1 = aP2d[i];
+          const gp_Pnt2d& aP2d2 = aP2d[j];
+
+          const gp_Pnt   aMid3d_l = (aP3d1.XYZ() + aP3d2.XYZ()) / 2.;
+          const gp_Pnt2d aMid2d_l = (aP2d1.XY () + aP2d2.XY ()) / 2.;
+
+          aSqDeflection = Max (aSqDeflection, aTool.Eval (aMid2d_l, aMid3d_l));
+        }
+      }
+    }
+
+    aPT->Deflection (Sqrt (aSqDeflection));
+  }
+}
+
+//=======================================================================
 //function : SortFaces
 //purpose  : 
 //=======================================================================

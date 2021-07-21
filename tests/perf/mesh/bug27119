@@ -25,7 +25,7 @@ regexp { deflection +([-0-9.+eE]+)} $tri_info full def
 
 set ref_tri 7857
 set ref_nod 7859
-set ref_def 1e-5
+set ref_def 1.5252689837551246e-12
 set tol_rel 0.01
 
 # Computes deviation of the value from specified one

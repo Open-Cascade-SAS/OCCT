@@ -29,6 +29,8 @@
 
 class OSD_FileSystem;
 class Poly_Triangulation;
+class Poly_TriangulationParameters;
+
 DEFINE_STANDARD_HANDLE(Poly_Triangulation, Standard_Transient)
 
 //! Provides a triangulation for a surface, a set of surfaces, or
@@ -106,6 +108,12 @@ public:
   //! Sets the deflection of this triangulation to theDeflection.
   //! See more on deflection in Polygon2D
   void Deflection (const Standard_Real theDeflection) { myDeflection = theDeflection; }
+
+  //! Returns initial set of parameters used to generate this triangulation.
+  const Handle(Poly_TriangulationParameters)& Parameters() const { return myParams; }
+
+  //! Updates initial set of parameters used to generate this triangulation.
+  void Parameters (const Handle(Poly_TriangulationParameters)& theParams) { myParams = theParams; }
 
   //! Clears internal arrays of nodes and all attributes.
   Standard_EXPORT virtual void Clear();
@@ -378,6 +386,7 @@ protected:
   NCollection_Array1<gp_Vec3f> myNormals;
   Poly_MeshPurpose             myPurpose;
 
+  Handle(Poly_TriangulationParameters) myParams;
 };
 
 #endif // _Poly_Triangulation_HeaderFile

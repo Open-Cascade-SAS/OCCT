@@ -23,6 +23,7 @@
 #include <IMeshData_PCurve.hxx>
 #include <OSD_Parallel.hxx>
 #include <BRepMesh_ConeRangeSplitter.hxx>
+#include <Poly_TriangulationParameters.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
 
@@ -55,8 +56,15 @@ namespace
 
       if (!aTriangulation.IsNull())
       {
+        // If there is an info about initial parameters, use it due to deflection kept
+        // by Poly_Triangulation is generally an estimation upon generated mesh and can
+        // be either less or even greater than specified value.
+        const Handle(Poly_TriangulationParameters)& aSourceParams = aTriangulation->Parameters();
+        const Standard_Real aDeflection = (!aSourceParams.IsNull() && aSourceParams->HasDeflection()) ?
+          aSourceParams->Deflection() : aTriangulation->Deflection();
+
         Standard_Boolean isTriangulationConsistent = 
-          BRepMesh_Deflection::IsConsistent (aTriangulation->Deflection(),
+          BRepMesh_Deflection::IsConsistent (aDeflection,
                                              aDFace->GetDeflection(),
                                              myAllowQualityDecrease);
 

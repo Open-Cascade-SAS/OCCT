@@ -15,7 +15,7 @@ incmesh f 0.01 -a 90
 isos f 0
 triangles f
 
-checktrinfo f -tri 2220 -nod 1232 -defl 0.0093553610383019445
+checktrinfo f -tri 2220 -nod 1232 -defl 0.0099011902071009586 -tol_abs_defl 1e-6
 smallview +X+Y
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -20,7 +20,7 @@ regexp {([0-9]+) triangles} $trinfo_r str nbtri_r
 
 
 # check deflections
-checktrinfo s -tri -defl 0.001 -tol_abs_defl 1e-6
+checktrinfo s -tri -defl 0.00072921907260989653 -tol_abs_defl 1e-6
 checktrinfo r -tri -max_defl 0.001 -tol_abs_defl 1e-6
 
 # compare number of triangles, allow twice more

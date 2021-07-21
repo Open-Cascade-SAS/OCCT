@@ -7,6 +7,10 @@ vinit View1
 BUC60857
 vfit
 
+sewing BUC60857_BLUE  1e-7 BUC60857_BLUE
+sewing BUC60857_RED   1e-7 BUC60857_RED
+sewing BUC60857_GREEN 1e-7 BUC60857_GREEN
+
 set Property_BLUE [sprops BUC60857_BLUE]
 set area_BLUE [lindex ${Property_BLUE} 2]
 

@@ -243,7 +243,6 @@ void BRepMesh_BaseMeshAlgo::commitSurfaceTriangulation()
 
   collectNodes(aTriangulation);
 
-  aTriangulation->Deflection(myDFace->GetDeflection());
   BRepMesh_ShapeTool::AddInFace(myDFace->GetFace(), aTriangulation);
 }
 

@@ -268,7 +268,7 @@ unifysamedom r res
 incmesh r 0.1
 trinfo r
 
-checktrinfo r -defl 0.1 -tol_abs_defl 0.01 -tol_rel_defl 0.01
+checktrinfo r -defl 0.049761016978299343 -tol_abs_defl 0.01 -tol_rel_defl 0.01
 
 vinit
 vsetdispmode 1

@@ -250,6 +250,10 @@ public:
   //! Returns TRUE if any correction is done.
   Standard_EXPORT static Standard_Boolean EnsureNormalConsistency (const TopoDS_Shape& S, const Standard_Real theAngTol = 0.001, const Standard_Boolean ForceComputeNormals = Standard_False);
 
+  //! Updates value of deflection in Poly_Triangulation of faces
+  //! by the maximum deviation measured on existing triangulation.
+  Standard_EXPORT static void UpdateDeflection (const TopoDS_Shape& S);
+
   //! Calculates the bounding sphere around the set of vertexes from the theLV list.
   //! Returns the center (theNewCenter) and the radius (theNewTol) of this sphere.
   //! This can be used to construct the new vertex which covers the given set of
