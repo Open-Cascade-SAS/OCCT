@@ -1,0 +1,17 @@
+puts "========"
+puts "0032482: Visualization - Object owner isn't removed from picked owner when object is removed"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 1 2 3
+box b2 -0.5 -0.5 -0.5 3 2 1
+vinit View1
+vdisplay -dispMode 1 b1 b2
+vfit
+vmoveto 200 200
+vstate -entities
+vremove b1
+vstate -entities
+
+vdump $imagedir/${casename}.png

@@ -682,6 +682,8 @@ void AIS_InteractiveContext::Remove (const Handle(AIS_InteractiveObject)& theIOb
 //=======================================================================
 void AIS_InteractiveContext::RemoveAll (const Standard_Boolean theToUpdateViewer)
 {
+  ClearDetected();
+
   AIS_ListOfInteractive aList;
   ObjectsInside (aList);
   for (AIS_ListOfInteractive::Iterator aListIterator (aList); aListIterator.More(); aListIterator.Next())
@@ -1899,7 +1901,6 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   theIObj->ErasePresentations (true); // make sure highlighting presentations are properly erased
 
   // Object removes from Detected sequence
-  Standard_DISABLE_DEPRECATION_WARNINGS
   for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper();)
   {
     Handle(SelectMgr_EntityOwner) aPicked = myMainSel->Picked (myDetectedSeq (aDetIter));
@@ -1927,7 +1928,6 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
       aDetIter++;
     }
   }
-  Standard_ENABLE_DEPRECATION_WARNINGS
 
   // remove IO from the selection manager to avoid memory leaks
   const Handle(SelectMgr_SelectableObject)& anObj = theIObj; // to avoid ambiguity

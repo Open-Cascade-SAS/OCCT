@@ -84,9 +84,6 @@ class SelectMgr_ViewerSelector : public Standard_Transient
   friend class SelectMgr_SelectionManager;
 public:
 
-  //! Empties all the tables, removes all selections...
-  Standard_EXPORT void Clear();
-
   //! Returns custom pixel tolerance value.
   Standard_Integer CustomPixelTolerance() const { return myTolerances.CustomTolerance(); }
 
@@ -99,8 +96,8 @@ public:
   //! Returns the largest pixel tolerance.
   Standard_Integer PixelTolerance() const { return myTolerances.Tolerance(); }
 
-  //! Sorts the detected entites by priority and distance.
-  Standard_EXPORT virtual void SortResult();
+  //! Sorts the detected entities by priority and distance.
+  Standard_EXPORT virtual void SortResult() const;
 
   //! Returns the picked element with the highest priority,
   //! and which is the closest to the last successful mouse position.
@@ -144,6 +141,9 @@ public:
   //! Clears picking results.
   Standard_EXPORT void ClearPicked();
 
+  //! Empties all the tables, removes all selections...
+  void Clear() { ClearPicked(); }
+
   //! Returns the entity Owner for the object picked at specified position.
   //! @param theRank rank of detected object within range 1...NbPicked()
   Standard_EXPORT Handle(SelectMgr_EntityOwner) Picked (const Standard_Integer theRank) const;
@@ -160,6 +160,9 @@ public:
   //! for the object picked at specified position.
   //! @param theRank rank of detected object within range 1...NbPicked()
   gp_Pnt PickedPoint (const Standard_Integer theRank) const { return PickedData (theRank).Point; }
+
+  //! Remove picked entities associated with specified object.
+  Standard_EXPORT Standard_Boolean RemovePicked (const Handle(SelectMgr_SelectableObject)& theObject);
 
   Standard_EXPORT Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
 
@@ -341,7 +344,8 @@ protected:
   Standard_Boolean                              myToPrebuildBVH;
   Handle(SelectMgr_BVHThreadPool)               myBVHThreadPool;
 
-  Handle(TColStd_HArray1OfInteger)             myIndexes;
+  mutable TColStd_Array1OfInteger              myIndexes;
+  mutable Standard_Boolean                     myIsSorted;
   Standard_Boolean                             myIsLeftChildQueuedFirst;
   SelectMgr_MapOfObjectSensitives              myMapOfObjectSensitives;
 
