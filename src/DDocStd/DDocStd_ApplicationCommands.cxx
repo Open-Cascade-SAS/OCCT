@@ -35,7 +35,6 @@
 
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_OpenFile.hxx>
 #include <TDocStd_PathParser.hxx>
 #include <XmlLDrivers.hxx>
 
@@ -298,9 +297,9 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
-      std::ofstream aFileStream;
-      OSD_OpenStream (aFileStream, path, std::ios::out | std::ios::binary);
-      theStatus = A->SaveAs (D, aFileStream, aProgress->Start());
+      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+      opencascade::std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (path, std::ios::out | std::ios::binary);
+      theStatus = A->SaveAs (D, *aFileStream, aProgress->Start());
     }
     else
     {

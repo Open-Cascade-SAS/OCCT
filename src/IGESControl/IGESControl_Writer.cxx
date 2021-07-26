@@ -38,7 +38,7 @@
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Transient.hxx>
@@ -253,17 +253,21 @@ Standard_Boolean IGESControl_Writer::Write
 Standard_Boolean IGESControl_Writer::Write
   (const Standard_CString file, const Standard_Boolean fnes)
 {
-  std::ofstream fout;
-  OSD_OpenStream(fout,file,std::ios::out);
-  if (!fout) return Standard_False;
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (file, std::ios::out);
+  if (aStream.get() == NULL)
+  {
+    return Standard_False;
+  }
 #ifdef OCCT_DEBUG
   std::cout<<" Ecriture fichier ("<< (fnes ? "fnes" : "IGES") <<"): "<<file<<std::endl;
 #endif
-  Standard_Boolean res = Write (fout,fnes);
+  Standard_Boolean res = Write (*aStream,fnes);
 
   errno = 0;
-  fout.close();
-  res = fout.good() && res && !errno;
+  aStream->flush();
+  res = aStream->good() && res && !errno;
+  aStream.reset();
 
   return res;
 }

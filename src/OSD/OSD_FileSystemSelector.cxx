@@ -83,6 +83,31 @@ Standard_Boolean OSD_FileSystemSelector::IsOpenIStream (const opencascade::std::
 }
 
 //=======================================================================
+// function : IsOpenOStream
+// purpose :
+//=======================================================================
+Standard_Boolean OSD_FileSystemSelector::IsOpenOStream (const opencascade::std::shared_ptr<std::ostream>& theStream) const
+{
+  opencascade::std::shared_ptr<OSD_OStreamBuffer> aFileStream = opencascade::std::dynamic_pointer_cast<OSD_OStreamBuffer> (theStream);
+  if (aFileStream.get() == NULL)
+  {
+    return false;
+  }
+  for (NCollection_List<Handle(OSD_FileSystem)>::Iterator aProtIter (myProtocols); aProtIter.More(); aProtIter.Next())
+  {
+    const Handle(OSD_FileSystem)& aFileSystem = aProtIter.Value();
+    if (aFileSystem->IsSupportedPath (TCollection_AsciiString (aFileStream->Url().c_str())))
+    {
+      if (aFileSystem->IsOpenOStream (theStream))
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//=======================================================================
 // function : OpenIStream
 // purpose :
 //=======================================================================
@@ -106,6 +131,27 @@ opencascade::std::shared_ptr<std::istream> OSD_FileSystemSelector::OpenIStream (
   return opencascade::std::shared_ptr<std::istream>();
 }
 
+//=======================================================================
+// function : OpenOStream
+// purpose :
+//=======================================================================
+opencascade::std::shared_ptr<std::ostream> OSD_FileSystemSelector::OpenOStream (const TCollection_AsciiString& theUrl,
+                                                                                const std::ios_base::openmode theMode)
+{
+  for (NCollection_List<Handle(OSD_FileSystem)>::Iterator aProtIter (myProtocols); aProtIter.More(); aProtIter.Next())
+  {
+    const Handle(OSD_FileSystem)& aFileSystem = aProtIter.Value();
+    if (aFileSystem->IsSupportedPath (theUrl))
+    {
+      opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theUrl, theMode);
+      if (aStream.get() != NULL)
+      {
+        return aStream;
+      }
+    }
+  }
+  return opencascade::std::shared_ptr<std::ostream>();
+}
 
 //=======================================================================
 // function : OpenStreamBuffer

@@ -35,6 +35,15 @@ Standard_Boolean OSD_CachedFileSystem::IsOpenIStream (const opencascade::std::sh
 }
 
 //=======================================================================
+// function : IsOpenOStream
+// purpose :
+//=======================================================================
+Standard_Boolean OSD_CachedFileSystem::IsOpenOStream (const opencascade::std::shared_ptr<std::ostream>& theStream) const
+{
+  return OSD_FileSystem::DefaultFileSystem()->IsOpenOStream (theStream);
+}
+
+//=======================================================================
 // function : OpenIStream
 // purpose :
 //=======================================================================
@@ -53,6 +62,16 @@ opencascade::std::shared_ptr<std::istream> OSD_CachedFileSystem::OpenIStream (co
 }
 
 //=======================================================================
+// function : OpenOStream
+// purpose :
+//=======================================================================
+opencascade::std::shared_ptr<std::ostream> OSD_CachedFileSystem::OpenOStream (const TCollection_AsciiString& theUrl,
+                                                                              const std::ios_base::openmode theMode)
+{
+  return OSD_FileSystem::DefaultFileSystem()->OpenOStream (theUrl, theMode);
+}
+
+//=======================================================================
 // function : OpenStreamBuffer
 // purpose :
 //=======================================================================
@@ -61,6 +80,10 @@ opencascade::std::shared_ptr<std::streambuf> OSD_CachedFileSystem::OpenStreamBuf
                                                                                      const int64_t theOffset,
                                                                                      int64_t* theOutBufSize)
 {
+  if ((theMode & std::ios::out) == std::ios::out)
+  {
+    return OSD_FileSystem::DefaultFileSystem()->OpenStreamBuffer (theUrl, theMode, theOffset, theOutBufSize);
+  }
   if (myStream.Url != theUrl)
   {
     myStream.Url = theUrl;

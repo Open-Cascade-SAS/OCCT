@@ -91,10 +91,10 @@ static Standard_Integer save (Draw_Interpretor& theDI,
   }
 
   const char* aName = theArgVec[2];
-  std::ofstream aStream;
-  aStream.precision (15);
-  OSD_OpenStream (aStream, aName, std::ios::out);
-  if (!aStream.is_open() || !aStream.good())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (aName, std::ios::out);
+  aStream->precision (15);
+  if (aStream.get() == NULL || !aStream->good())
   {
     theDI << "Error: cannot open file for writing " << aName;
     return 1;
@@ -104,21 +104,21 @@ static Standard_Integer save (Draw_Interpretor& theDI,
   {
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
     Standard_CString aToolTypeName = aDrawable->DynamicType()->Name();
-    aStream << aToolTypeName << "\n";
+    *aStream << aToolTypeName << "\n";
     Draw::SetProgressBar (aProgress);
-    aDrawable->Save (aStream);
+    aDrawable->Save (*aStream);
   }
   catch (const Standard_NotImplemented& )
   {
     theDI << "Error: no method for saving " << theArgVec[1];
     return 1;
   }
-  aStream << "\n";
-  aStream << "0\n\n";
+  *aStream << "\n";
+  *aStream << "0\n\n";
   Draw::SetProgressBar (Handle(Draw_ProgressIndicator)());
 
   errno = 0;
-  const Standard_Boolean aRes = aStream.good() && !errno;
+  const Standard_Boolean aRes = aStream->good() && !errno;
   if (!aRes)
   {
     theDI << "Error: file has not been written";

@@ -98,3 +98,21 @@ opencascade::std::shared_ptr<std::istream> OSD_FileSystem::OpenIStream (const TC
   }
   return aNewStream;
 }
+
+//=======================================================================
+// function : OpenOStream
+// purpose :
+//=======================================================================
+opencascade::std::shared_ptr<std::ostream> OSD_FileSystem::OpenOStream (const TCollection_AsciiString& theUrl,
+                                                                        const std::ios_base::openmode theMode)
+{
+  opencascade::std::shared_ptr<std::ostream> aNewStream;
+  opencascade::std::shared_ptr<std::streambuf> aFileBuf = OpenStreamBuffer (theUrl, theMode | std::ios_base::out);
+  if (aFileBuf.get() == NULL)
+  {
+    return opencascade::std::shared_ptr<std::ostream>();
+  }
+
+  aNewStream.reset(new OSD_OStreamBuffer (theUrl.ToCString(), aFileBuf));
+  return aNewStream;
+}

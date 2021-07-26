@@ -21,7 +21,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <Message.hxx>
 #include <OSD_File.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
@@ -637,23 +637,24 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     Graphic3d_Vec4i (5, 1, 4, 8)
   };
 
-  std::ofstream aMatFile, anObjFile, anHtmlFile;
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aMatFile, anObjFile, aHtmlFile;
   if (aDumpFile.EndsWith (".obj")
    || aDumpFile.EndsWith (".mtl"))
   {
     const TCollection_AsciiString aMatFilePath  = aDumpFile.SubString (1, aDumpFile.Length() - 3) + "mtl";
     const TCollection_AsciiString anObjFilePath = aDumpFile.SubString (1, aDumpFile.Length() - 3) + "obj";
 
-    OSD_OpenStream (aMatFile,  aMatFilePath.ToCString(),  std::ios::out | std::ios::binary);
-    if (!aMatFile.is_open())
+    aMatFile = aFileSystem->OpenOStream (aMatFilePath, std::ios::out | std::ios::binary);
+    if (aMatFile.get() == NULL)
     {
       Message::SendFail ("Error: unable creating material file");
       return 0;
     }
     if (!aDumpFile.EndsWith (".mtl"))
     {
-      OSD_OpenStream (anObjFile, anObjFilePath.ToCString(), std::ios::out | std::ios::binary);
-      if (!anObjFile.is_open())
+      anObjFile = aFileSystem->OpenOStream (anObjFilePath, std::ios::out | std::ios::binary);
+      if (anObjFile.get() == NULL)
       {
         Message::SendFail ("Error: unable creating OBJ file");
         return 0;
@@ -661,19 +662,19 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
 
       TCollection_AsciiString anMtlName, aFolder;
       OSD_Path::FolderAndFileFromPath (aMatFilePath, aFolder, anMtlName);
-      anObjFile << "mtllib " << anMtlName << "\n";
+      *anObjFile << "mtllib " << anMtlName << "\n";
     }
   }
   else if (aDumpFile.EndsWith (".htm")
         || aDumpFile.EndsWith (".html"))
   {
-    OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
-    if (!anHtmlFile.is_open())
+    aHtmlFile = aFileSystem->OpenOStream (aDumpFile, std::ios::out | std::ios::binary);
+    if (aHtmlFile.get() == NULL)
     {
       Message::SendFail ("Error: unable creating HTML file");
       return 0;
     }
-    anHtmlFile << "<html>\n"
+    *aHtmlFile << "<html>\n"
                   "<head><title>OCCT Material table</title></head>\n"
                   "<body>\n"
                   "<table border='1'><tbody>\n"
@@ -743,45 +744,45 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     const Graphic3d_Vec3 aSpecular  = (Graphic3d_Vec3 )aMat.SpecularColor();
     const Graphic3d_Vec3 anEmission = (Graphic3d_Vec3 )aMat.EmissiveColor();
     const Standard_Real  aShiness  = aMat.Shininess() * 1000.0;
-    if (aMatFile.is_open())
+    if (aMatFile.get() != NULL)
     {
-      aMatFile << "newmtl " << aMatName << "\n";
-      aMatFile << "Ka " << Quantity_Color::Convert_LinearRGB_To_sRGB (anAmbient) << "\n";
-      aMatFile << "Kd " << Quantity_Color::Convert_LinearRGB_To_sRGB (aDiffuse)  << "\n";
-      aMatFile << "Ks " << Quantity_Color::Convert_LinearRGB_To_sRGB (aSpecular) << "\n";
-      aMatFile << "Ns " << aShiness  << "\n";
+      *aMatFile << "newmtl " << aMatName << "\n";
+      *aMatFile << "Ka " << Quantity_Color::Convert_LinearRGB_To_sRGB (anAmbient) << "\n";
+      *aMatFile << "Kd " << Quantity_Color::Convert_LinearRGB_To_sRGB (aDiffuse)  << "\n";
+      *aMatFile << "Ks " << Quantity_Color::Convert_LinearRGB_To_sRGB (aSpecular) << "\n";
+      *aMatFile << "Ns " << aShiness  << "\n";
       if (aMat.Transparency() >= 0.0001)
       {
-        aMatFile << "Tr " << aMat.Transparency() << "\n";
+        *aMatFile << "Tr " << aMat.Transparency() << "\n";
       }
-      aMatFile << "\n";
+      *aMatFile << "\n";
     }
-    else if (anHtmlFile.is_open())
+    else if (aHtmlFile.get() != NULL)
     {
-      anHtmlFile << "<tr>\n";
-      anHtmlFile << "<td>" << aMat.StringName() << "</td>\n";
-      anHtmlFile << "<td>" << (aMat.MaterialType() == Graphic3d_MATERIAL_PHYSIC ? "PHYSIC" : "ASPECT")  << "</td>\n";
-      anHtmlFile << "<td>" << aMat.Transparency() << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (aMat.PBRMaterial().Color().GetRGB()) << (Graphic3d_Vec3 )aMat.PBRMaterial().Color().GetRGB() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.PBRMaterial().Metallic() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.PBRMaterial().NormalizedRoughness() << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aMat.PBRMaterial().Emission())) << aMat.PBRMaterial().Emission() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.PBRMaterial().IOR() << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anAmbient))  << anAmbient  << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aDiffuse))   << aDiffuse   << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aSpecular))  << aSpecular  << "</td>\n";
-      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anEmission)) << anEmission << "</td>\n";
-      anHtmlFile << "<td>" << aMat.Shininess() << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Kc << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Kd << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Ks << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Kt << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Le << "</td>\n";
-      anHtmlFile << "<td>" << aMat.BSDF().Absorption << "</td>\n";
-      anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "</td>\n";
-      anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "</td>\n";
-      anHtmlFile << "<td>" << aMat.RefractionIndex() << "</td>\n";
-      anHtmlFile << "</tr>\n";
+      *aHtmlFile << "<tr>\n";
+      *aHtmlFile << "<td>" << aMat.StringName() << "</td>\n";
+      *aHtmlFile << "<td>" << (aMat.MaterialType() == Graphic3d_MATERIAL_PHYSIC ? "PHYSIC" : "ASPECT")  << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.Transparency() << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (aMat.PBRMaterial().Color().GetRGB()) << (Graphic3d_Vec3 )aMat.PBRMaterial().Color().GetRGB() << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.PBRMaterial().Metallic() << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.PBRMaterial().NormalizedRoughness() << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aMat.PBRMaterial().Emission())) << aMat.PBRMaterial().Emission() << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.PBRMaterial().IOR() << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anAmbient))  << anAmbient  << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aDiffuse))   << aDiffuse   << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aSpecular))  << aSpecular  << "</td>\n";
+      *aHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anEmission)) << anEmission << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.Shininess() << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Kc << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Kd << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Ks << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Kt << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Le << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.BSDF().Absorption << "</td>\n";
+      *aHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "</td>\n";
+      *aHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "</td>\n";
+      *aHtmlFile << "<td>" << aMat.RefractionIndex() << "</td>\n";
+      *aHtmlFile << "</tr>\n";
     }
     else
     {
@@ -808,20 +809,20 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       theDI << "  RefractionIndex:        " << aMat.RefractionIndex() << "\n";
     }
 
-    if (anObjFile.is_open())
+    if (anObjFile.get() != NULL)
     {
-      anObjFile << "g " << aMatName << "\n";
-      anObjFile << "usemtl " << aMatName << "\n";
+      *anObjFile << "g " << aMatName << "\n";
+      *anObjFile << "usemtl " << aMatName << "\n";
       for (Standard_Integer aVertIter = 0; aVertIter < 8; ++aVertIter)
       {
-        anObjFile << "v " << (aBoxVerts[aVertIter] + Graphic3d_Vec3 (3.0f * anX, -3.0f * anY, 0.0f)) << "\n";
+        *anObjFile << "v " << (aBoxVerts[aVertIter] + Graphic3d_Vec3 (3.0f * anX, -3.0f * anY, 0.0f)) << "\n";
       }
-      anObjFile << "s off\n";
+      *anObjFile << "s off\n";
       for (Standard_Integer aFaceIter = 0; aFaceIter < 6; ++aFaceIter)
       {
-        anObjFile << "f " << (aBoxQuads[aFaceIter] + Graphic3d_Vec4i (8 * aMatIndex)) << "\n";
+        *anObjFile << "f " << (aBoxQuads[aFaceIter] + Graphic3d_Vec4i (8 * aMatIndex)) << "\n";
       }
-      anObjFile << "\n";
+      *anObjFile << "\n";
       if (++anX > 5)
       {
         anX = 0;
@@ -830,9 +831,9 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     }
   }
 
-  if (anHtmlFile.is_open())
+  if (aHtmlFile.get() != NULL)
   {
-    anHtmlFile << "</tbody></table>\n</body>\n</html>\n";
+    *aHtmlFile << "</tbody></table>\n</body>\n</html>\n";
   }
   return 0;
 }
@@ -892,7 +893,8 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     }
   }
 
-  std::ofstream anHtmlFile;
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aHtmlFile;
   TCollection_AsciiString aFileNameBase, aFolder;
   if (aDumpFile.EndsWith (".htm")
    || aDumpFile.EndsWith (".html"))
@@ -929,13 +931,13 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
 
   if (!aDumpFile.IsEmpty())
   {
-    OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
-    if (!anHtmlFile.is_open())
+    aHtmlFile = aFileSystem->OpenOStream (aDumpFile, std::ios::out | std::ios::binary);
+    if (aHtmlFile.get() == NULL)
     {
       Message::SendFail ("Error: unable creating HTML file");
       return 0;
     }
-    anHtmlFile << "<html>\n"
+    *aHtmlFile << "<html>\n"
                << "<head><title>OCCT Color table</title></head>\n"
                << "<body>\n"
                << "<table border='1'><tbody>\n"
@@ -957,7 +959,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     const TCollection_AsciiString aColName  = Quantity_Color::StringName (aColIter.Value());
     const TCollection_AsciiString anSRgbHex = Quantity_Color::ColorToHex (aCol);
     const Graphic3d_Vec3i anSRgbInt ((Graphic3d_Vec3 )aCol * 255.0f);
-    if (anHtmlFile.is_open())
+    if (aHtmlFile.get() != NULL)
     {
       const TCollection_AsciiString anImgPath = aFileNameBase + "_" + aColName + ".png";
       if (!aView.IsNull())
@@ -972,14 +974,14 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
         }
       }
 
-      anHtmlFile << "<tr>\n";
-      anHtmlFile << "<td style='background-color:" << anSRgbHex << "'><pre>       </pre></td>\n";
-      anHtmlFile << "<td><img src='" << (!aView.IsNull() ? anImgPath : "") << "'></img></td>\n";
-      anHtmlFile << "<td style='text-align:left'>" << aColName << "</td>\n";
-      anHtmlFile << "<td style='text-align:left'><pre>" << anSRgbHex << "</pre></td>\n";
-      anHtmlFile << "<td style='text-align:left'>(" << anSRgbInt.r() << " " << anSRgbInt.g() << " " << anSRgbInt.b() << ")</td>\n";
-      anHtmlFile << "<td style='text-align:left'>(" << aCol.Red() << " " << aCol.Green() << " " << aCol.Blue() << ")</td>\n";
-      anHtmlFile << "</tr>\n";
+      *aHtmlFile << "<tr>\n";
+      *aHtmlFile << "<td style='background-color:" << anSRgbHex << "'><pre>       </pre></td>\n";
+      *aHtmlFile << "<td><img src='" << (!aView.IsNull() ? anImgPath : "") << "'></img></td>\n";
+      *aHtmlFile << "<td style='text-align:left'>" << aColName << "</td>\n";
+      *aHtmlFile << "<td style='text-align:left'><pre>" << anSRgbHex << "</pre></td>\n";
+      *aHtmlFile << "<td style='text-align:left'>(" << anSRgbInt.r() << " " << anSRgbInt.g() << " " << anSRgbInt.b() << ")</td>\n";
+      *aHtmlFile << "<td style='text-align:left'>(" << aCol.Red() << " " << aCol.Green() << " " << aCol.Blue() << ")</td>\n";
+      *aHtmlFile << "</tr>\n";
     }
     else
     {
@@ -994,9 +996,9 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     ViewerTest::RemoveView (aView);
   }
 
-  if (anHtmlFile.is_open())
+  if (aHtmlFile.get() != NULL)
   {
-    anHtmlFile << "</tbody></table>\n</body>\n</html>\n";
+    *aHtmlFile << "</tbody></table>\n</body>\n</html>\n";
   }
   return 0;
 }
@@ -1085,20 +1087,19 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
     aNbSamples = 1024;
   }
 
-  std::ofstream aFile;
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aFile = aFileSystem->OpenOStream (aFilePath, std::ios::out | std::ios::trunc);
 
-  OSD_OpenStream (aFile, aFilePath, std::ios::out | std::ios::binary);
-
-  if (!aFile.good())
+  if (aFile.get() == NULL || !aFile->good())
   {
     Message::SendFail() << "Error: unable to write to " << aFilePath;
     return 1;
   }
 
-  aFile << "//this file has been generated by vgenenvlut draw command\n";
-  aFile << "static unsigned int Textures_EnvLUTSize = " << aTableSize << ";\n\n";
-  aFile << "static float Textures_EnvLUT[] =\n";
-  aFile << "{\n";
+  *aFile << "//this file has been generated by vgenenvlut draw command\n";
+  *aFile << "static unsigned int Textures_EnvLUTSize = " << aTableSize << ";\n\n";
+  *aFile << "static float Textures_EnvLUT[] =\n";
+  *aFile << "{\n";
 
   Handle(Image_PixMap) aPixMap = new Image_PixMap();
   aPixMap->InitZero (Image_Format_RGF, aTableSize, aTableSize);
@@ -1112,44 +1113,43 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
     aCounter = 0;
     for (int x = 0; x < aTableSize; ++x)
     {
-      aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).x()) << ",";
-      aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).y()) << ",";
+      *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).x()) << ",";
+      *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(aTableSize - 1 - y, x).y()) << ",";
       if (++aCounter % aNumbersInRow == 0)
       {
-        aFile << "\n";
+        *aFile << "\n";
       }
       else if (x != aTableSize - 1)
       {
-        aFile << " ";
+        *aFile << " ";
       }
     }
-    aFile << "\n";
+    *aFile << "\n";
     if (aTableSize % aNumbersInRow != 0)
     {
-      aFile << "\n";
+      *aFile << "\n";
     }
   }
 
   aCounter = 0;
   for (int x = 0; x < aTableSize - 1; ++x)
   {
-    aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).x()) << ",";
-    aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).y()) << ",";
+    *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).x()) << ",";
+    *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, x).y()) << ",";
     if (++aCounter % aNumbersInRow == 0)
     {
-      aFile << "\n";
+      *aFile << "\n";
     }
     else
     {
-      aFile << " ";
+      *aFile << " ";
     }
   }
 
-  aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).x()) << ",";
-  aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).y()) << "\n";
+  *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).x()) << ",";
+  *aFile << envLutWriteToFile (aPixMap->Value<Graphic3d_Vec3>(0, aTableSize - 1).y()) << "\n";
 
-  aFile << "};";
-  aFile.close();
+  *aFile << "};";
 
   return 0;
 }

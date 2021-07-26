@@ -31,6 +31,9 @@ public:
   //! Returns TRUE if current input stream is opened for reading operations.
   Standard_EXPORT virtual Standard_Boolean IsOpenIStream (const opencascade::std::shared_ptr<std::istream>& theStream) const Standard_OVERRIDE;
 
+  //! Returns TRUE if current output stream is opened for writing operations.
+  Standard_EXPORT virtual Standard_Boolean IsOpenOStream (const opencascade::std::shared_ptr<std::ostream>& theStream) const Standard_OVERRIDE;
+
   //! Opens stream buffer for specified file URL.
   Standard_EXPORT virtual opencascade::std::shared_ptr<std::streambuf> OpenStreamBuffer
                           (const TCollection_AsciiString& theUrl,

@@ -26,7 +26,7 @@
 #include <Interface_UndefinedContent.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Protocol.hxx>
@@ -100,10 +100,10 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   DeclareAndCast(StepData_Protocol,stepro,ctx.Protocol());
   if (stepmodel.IsNull() || stepro.IsNull()) return Standard_False;
 
-  std::ofstream fout;
-  OSD_OpenStream(fout,ctx.FileName(),std::ios::out|std::ios::trunc);
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out | std::ios::trunc);
 
-  if (!fout || !fout.is_open()) {
+  if (aStream.get() == NULL) {
     ctx.CCheck(0)->AddFail("Step File could not be created");
     sout<<" Step File could not be created : " << ctx.FileName() << std::endl; return 0;
   }
@@ -130,12 +130,13 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   for (chl.Start(); chl.More(); chl.Next())
     ctx.CCheck(chl.Number())->GetMessages(chl.Value());
   sout<<" Write ";
-  Standard_Boolean isGood = SW.Print(fout);                 
+  Standard_Boolean isGood = SW.Print (*aStream);                 
   sout<<" Done"<<std::endl;
       
   errno = 0;
-  fout.close();
-  isGood = fout.good() && isGood && !errno;
+  aStream->flush();
+  isGood = aStream->good() && isGood && !errno;
+  aStream.reset();
   if(errno)
     sout << strerror(errno) << std::endl;
   return isGood;  

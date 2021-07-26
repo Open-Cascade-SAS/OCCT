@@ -19,7 +19,6 @@
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_FileSystem.hxx>
-#include <OSD_OpenFile.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <Poly_Triangulation.hxx>
@@ -359,10 +358,10 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   myBinDataMap.Clear();
   myBinDataLen64 = 0;
 
-  std::ofstream aBinFile;
-  OSD_OpenStream (aBinFile, myBinFileNameFull.ToCString(), std::ios::out | std::ios::binary);
-  if (!aBinFile.is_open()
-   || !aBinFile.good())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aBinFile = aFileSystem->OpenOStream (myBinFileNameFull, std::ios::out | std::ios::binary);
+  if (aBinFile.get() == NULL
+   || !aBinFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be created");
     return false;
@@ -373,7 +372,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   Standard_Integer aNbAccessors = 0;
 
   // write positions
-  myBuffViewPos.ByteOffset = aBinFile.tellp();
+  myBuffViewPos.ByteOffset = aBinFile->tellp();
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
        aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
   {
@@ -394,9 +393,9 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
       }
 
       RWGltf_GltfFace aGltfFace;
-      saveNodes (aGltfFace, aBinFile, aFaceIter, aNbAccessors);
+      saveNodes (aGltfFace, *aBinFile, aFaceIter, aNbAccessors);
 
-      if (!aBinFile.good())
+      if (!aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
@@ -405,7 +404,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
       myBinDataMap.Bind (aFaceIter.Face(), aGltfFace);
     }
   }
-  myBuffViewPos.ByteLength = (int64_t )aBinFile.tellp() - myBuffViewPos.ByteOffset;
+  myBuffViewPos.ByteLength = (int64_t )aBinFile->tellp() - myBuffViewPos.ByteOffset;
   if (!aPSentryBin.More())
   {
     return false;
@@ -413,7 +412,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   aPSentryBin.Next();
 
   // write normals
-  myBuffViewNorm.ByteOffset = aBinFile.tellp();
+  myBuffViewNorm.ByteOffset = aBinFile->tellp();
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
        aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
   {
@@ -436,16 +435,16 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
         continue;
       }
 
-      saveNormals (aGltfFace, aBinFile, aFaceIter, aNbAccessors);
+      saveNormals (aGltfFace, *aBinFile, aFaceIter, aNbAccessors);
 
-      if (!aBinFile.good())
+      if (!aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
   }
-  myBuffViewNorm.ByteLength = (int64_t )aBinFile.tellp() - myBuffViewNorm.ByteOffset;
+  myBuffViewNorm.ByteLength = (int64_t )aBinFile->tellp() - myBuffViewNorm.ByteOffset;
   if (!aPSentryBin.More())
   {
     return false;
@@ -453,7 +452,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   aPSentryBin.Next();
 
   // write texture coordinates
-  myBuffViewTextCoord.ByteOffset = aBinFile.tellp();
+  myBuffViewTextCoord.ByteOffset = aBinFile->tellp();
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
        aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
   {
@@ -477,16 +476,16 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
         continue;
       }
 
-      saveTextCoords (aGltfFace, aBinFile, aFaceIter, aNbAccessors);
+      saveTextCoords (aGltfFace, *aBinFile, aFaceIter, aNbAccessors);
 
-      if (!aBinFile.good())
+      if (!aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
   }
-  myBuffViewTextCoord.ByteLength = (int64_t )aBinFile.tellp() - myBuffViewTextCoord.ByteOffset;
+  myBuffViewTextCoord.ByteLength = (int64_t )aBinFile->tellp() - myBuffViewTextCoord.ByteOffset;
   if (!aPSentryBin.More())
   {
     return false;
@@ -494,7 +493,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   aPSentryBin.Next();
 
   // write indices
-  myBuffViewInd.ByteOffset = aBinFile.tellp();
+  myBuffViewInd.ByteOffset = aBinFile->tellp();
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
        aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
   {
@@ -518,16 +517,16 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
         continue;
       }
 
-      saveIndices (aGltfFace, aBinFile, aFaceIter, aNbAccessors);
+      saveIndices (aGltfFace, *aBinFile, aFaceIter, aNbAccessors);
 
-      if (!aBinFile.good())
+      if (!aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
   }
-  myBuffViewInd.ByteLength = (int64_t )aBinFile.tellp() - myBuffViewInd.ByteOffset;
+  myBuffViewInd.ByteLength = (int64_t )aBinFile->tellp() - myBuffViewInd.ByteOffset;
 
   if (myIsBinary
    && myToEmbedTexturesInGlb)
@@ -551,7 +550,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
           continue;
         }
 
-        myMaterialMap->AddGlbImages (aBinFile, aFaceIter.FaceStyle());
+        myMaterialMap->AddGlbImages (*aBinFile, aFaceIter.FaceStyle());
       }
     }
   }
@@ -575,13 +574,14 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   }
   // myMaterialMap->FlushGlbBufferViews() will put image bufferView's IDs at the end of list
 
-  myBinDataLen64 = aBinFile.tellp();
-  aBinFile.close();
-  if (!aBinFile.good())
+  myBinDataLen64 = aBinFile->tellp();
+  aBinFile->flush();
+  if (!aBinFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
     return false;
   }
+  aBinFile.reset();
   return true;
 }
 
@@ -605,10 +605,10 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   const Standard_Integer aDefSceneId      = 0;
 
   const TCollection_AsciiString aFileNameGltf = myFile;
-  std::ofstream aGltfContentFile;
-  OSD_OpenStream (aGltfContentFile, aFileNameGltf.ToCString(), std::ios::out | std::ios::binary);
-  if (!aGltfContentFile.is_open()
-   || !aGltfContentFile.good())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aGltfContentFile = aFileSystem->OpenOStream (aFileNameGltf, std::ios::out | std::ios::binary);
+  if (aGltfContentFile.get() == NULL
+   || !aGltfContentFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be created");
     return false;
@@ -621,11 +621,11 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     uint32_t aContentLength = 0;
     uint32_t aContentType   = 0x4E4F534A;
 
-    aGltfContentFile.write (aMagic, 4);
-    aGltfContentFile.write ((const char* )&aVersion,       sizeof(aVersion));
-    aGltfContentFile.write ((const char* )&aLength,        sizeof(aLength));
-    aGltfContentFile.write ((const char* )&aContentLength, sizeof(aContentLength));
-    aGltfContentFile.write ((const char* )&aContentType,   sizeof(aContentType));
+    aGltfContentFile->write (aMagic, 4);
+    aGltfContentFile->write ((const char* )&aVersion,       sizeof(aVersion));
+    aGltfContentFile->write ((const char* )&aLength,        sizeof(aLength));
+    aGltfContentFile->write ((const char* )&aContentLength, sizeof(aContentLength));
+    aGltfContentFile->write ((const char* )&aContentType,   sizeof(aContentType));
   }
 
   // Prepare an indexed map of scene nodes (without assemblies) in correct order.
@@ -665,7 +665,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     }
   }
 
-  rapidjson::OStreamWrapper aFileStream (aGltfContentFile);
+  rapidjson::OStreamWrapper aFileStream (*aGltfContentFile);
   myWriter.reset (new RWGltf_GltfOStreamWriter (aFileStream));
 
   myWriter->StartObject();
@@ -700,32 +700,32 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
 
   if (!myIsBinary)
   {
-    aGltfContentFile.close();
-    if (!aGltfContentFile.good())
+    aGltfContentFile->flush();
+    if (!aGltfContentFile->good())
     {
       Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written");
       return false;
     }
+    aGltfContentFile.reset();
     return true;
   }
 
-  int64_t aContentLen64 = (int64_t )aGltfContentFile.tellp() - 20;
+  int64_t aContentLen64 = (int64_t )aGltfContentFile->tellp() - 20;
   while (aContentLen64 % 4 != 0)
   {
-    aGltfContentFile.write (" ", 1);
+    aGltfContentFile->write (" ", 1);
     ++aContentLen64;
   }
 
   const uint32_t aBinLength = (uint32_t )myBinDataLen64;
   const uint32_t aBinType   = 0x004E4942;
-  aGltfContentFile.write ((const char*)&aBinLength, 4);
-  aGltfContentFile.write ((const char*)&aBinType,   4);
+  aGltfContentFile->write ((const char*)&aBinLength, 4);
+  aGltfContentFile->write ((const char*)&aBinType,   4);
 
   const int64_t aFullLen64 = aContentLen64 + 20 + myBinDataLen64 + 8;
   if (aFullLen64 < std::numeric_limits<uint32_t>::max())
   {
     {
-      const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
       opencascade::std::shared_ptr<std::istream> aBinFile = aFileSystem->OpenIStream (myBinFileNameFull, std::ios::in | std::ios::binary);
       if (aBinFile.get() == NULL || !aBinFile->good())
       {
@@ -741,7 +741,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
         {
           break;
         }
-        aGltfContentFile.write (aBuffer, aReadLen);
+        aGltfContentFile->write (aBuffer, aReadLen);
       }
     }
     OSD_Path aBinFilePath (myBinFileNameFull);
@@ -759,17 +759,17 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
 
   const uint32_t aLength        = (uint32_t )aFullLen64;
   const uint32_t aContentLength = (uint32_t )aContentLen64;
-  aGltfContentFile.seekp (8);
-  aGltfContentFile.write ((const char* )&aLength,        4);
-  aGltfContentFile.write ((const char* )&aContentLength, 4);
+  aGltfContentFile->seekp (8);
+  aGltfContentFile->write ((const char* )&aLength,        4);
+  aGltfContentFile->write ((const char* )&aContentLength, 4);
 
-  aGltfContentFile.close();
-  if (!aGltfContentFile.good())
+  aGltfContentFile->flush();
+  if (!aGltfContentFile->good())
   {
     Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written");
     return false;
   }
-
+  aGltfContentFile.reset();
   myWriter.reset();
   return true;
 #else

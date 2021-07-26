@@ -36,7 +36,7 @@
 #include <Interface_ReportEntity.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Transient.hxx>
@@ -101,9 +101,10 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   DeclareAndCast(IGESData_Protocol,prot,ctx.Protocol());
 
   if (igesmod.IsNull() || prot.IsNull()) return Standard_False;
-  std::ofstream fout;
-  OSD_OpenStream(fout,ctx.FileName(),std::ios::out );
-  if (!fout) {
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out);
+  if (aStream.get() == NULL)
+  {
     ctx.CCheck(0)->AddFail("IGES File could not be created");
     sout<<" - IGES File could not be created : " << ctx.FileName() << std::endl; return 0;
   }
@@ -128,11 +129,12 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   VW.SendModel(prot);            
   sout<<" Write ";
   if (themodefnes) VW.WriteMode() = 10;
-  Standard_Boolean status = VW.Print(fout);                sout<<" Done"<<std::endl;
+  Standard_Boolean status = VW.Print (*aStream);                sout<<" Done"<<std::endl;
 
   errno = 0;
-  fout.close();
-  status = fout.good() && status && !errno;
+  aStream->flush();
+  status = aStream->good() && status && !errno;
+  aStream.reset();
   if(errno)
     sout << strerror(errno) << std::endl;
 

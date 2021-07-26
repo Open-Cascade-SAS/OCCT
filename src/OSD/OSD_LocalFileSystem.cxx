@@ -43,6 +43,21 @@ Standard_Boolean OSD_LocalFileSystem::IsOpenIStream (const opencascade::std::sha
 }
 
 //=======================================================================
+// function : IsOpenOStream
+// purpose :
+//=======================================================================
+Standard_Boolean OSD_LocalFileSystem::IsOpenOStream (const opencascade::std::shared_ptr<std::ostream>& theStream) const
+{
+  opencascade::std::shared_ptr<OSD_OStreamBuffer> aFileStream = opencascade::std::dynamic_pointer_cast<OSD_OStreamBuffer> (theStream);
+  if (aFileStream.get() == NULL)
+  {
+    return false;
+  }
+  const std::filebuf* aFileBuf = dynamic_cast<const std::filebuf*> (aFileStream->rdbuf());
+  return (aFileBuf != NULL) ? aFileBuf->is_open() : false;
+}
+
+//=======================================================================
 // function : OpenStreamBuffer
 // purpose :
 //=======================================================================

@@ -35,6 +35,9 @@ public:
   //! Returns TRUE if current input stream is opened for reading operations.
   virtual Standard_Boolean IsOpenIStream (const opencascade::std::shared_ptr<std::istream>& theStream) const = 0;
 
+  //! Returns TRUE if current output stream is opened for writing operations.
+  virtual Standard_Boolean IsOpenOStream(const opencascade::std::shared_ptr<std::ostream>& theStream) const = 0;
+
   //! Opens stream for specified file URL for reading operations (std::istream).
   //! Default implementation create a stream from file buffer returned by OSD_FileSystem::OpenFileBuffer().
   //! @param theUrl       [in] path to open
@@ -48,6 +51,14 @@ public:
                            const std::ios_base::openmode theMode,
                            const int64_t theOffset = 0,
                            const opencascade::std::shared_ptr<std::istream>& theOldStream = opencascade::std::shared_ptr<std::istream>());
+
+  //! Opens stream for specified file URL for writing operations (std::ostream).
+  //! Default implementation create a stream from file buffer returned by OSD_FileSystem::OpenFileBuffer().
+  //! @param theUrl       [in] path to open
+  //! @param theMode      [in] flags describing the requested output mode for the stream (std::ios_base::out will be implicitly added)
+  //! @return pointer to newly created opened stream or NULL in case of failure.
+  Standard_EXPORT virtual opencascade::std::shared_ptr<std::ostream> OpenOStream (const TCollection_AsciiString& theUrl,
+                                                                                  const std::ios_base::openmode theMode);
 
   //! Opens stream buffer for specified file URL.
   //! @param theUrl        [in]  path to open

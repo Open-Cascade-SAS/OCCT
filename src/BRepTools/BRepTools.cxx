@@ -38,7 +38,6 @@
 #include <gp_Vec2d.hxx>
 #include <Message.hxx>
 #include <OSD_FileSystem.hxx>
-#include <OSD_OpenFile.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
@@ -707,12 +706,14 @@ Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
                                     const TopTools_FormatVersion theVersion,
                                     const Message_ProgressRange& theProgress)
 {
-  std::ofstream os;
-  OSD_OpenStream(os, theFile, std::ios::out);
-  if (!os.is_open() || !os.good())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out);
+  if (aStream.get() == NULL || !aStream->good())
+  {
     return Standard_False;
+  }
 
-  Standard_Boolean isGood = (os.good() && !os.eof());
+  Standard_Boolean isGood = (aStream->good() && !aStream->eof());
   if(!isGood)
     return isGood;
 
@@ -720,19 +721,19 @@ Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
   SS.SetFormatNb (theVersion);
   SS.Add (theShape);
 
-  os << "DBRep_DrawableShape\n";  // for easy Draw read
-  SS.Write(os, theProgress);
-  isGood = os.good();
+  *aStream << "DBRep_DrawableShape\n";  // for easy Draw read
+  SS.Write (*aStream, theProgress);
+  isGood = aStream->good();
   if (isGood)
   {
-    SS.Write (theShape, os);
+    SS.Write (theShape, *aStream);
   }
-  os.flush();
-  isGood = os.good();
+  aStream->flush();
+  isGood = aStream->good();
 
   errno = 0;
-  os.close();
-  isGood = os.good() && isGood && !errno;
+  isGood = aStream->good() && isGood && !errno;
+  aStream.reset();
 
   return isGood;
 }
