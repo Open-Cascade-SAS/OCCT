@@ -334,7 +334,9 @@ public:
   }
 
 private:
+  BRepCheck_ParallelAnalyzer& operator=(const BRepCheck_ParallelAnalyzer&) Standard_DELETE;
 
+private:
   NCollection_Array1< NCollection_Array1<TopoDS_Shape> >& myArray;
   const BRepCheck_IndexedDataMapOfShapeResult& myMap;
 };
