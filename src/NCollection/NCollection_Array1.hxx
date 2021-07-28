@@ -390,11 +390,10 @@ public:
                const Standard_Boolean theToCopyData)
   {
     Standard_RangeError_Raise_if (theUpper < theLower, "NCollection_Array1::Resize");
-    const Standard_Integer anOldLen   = Length();
-    const Standard_Integer aNewLen    = theUpper - theLower + 1;
-    const Standard_Integer aLowerOld  = myLowerBound;
+    const Standard_Integer anOldLen = Length();
+    const Standard_Integer aNewLen  = theUpper - theLower + 1;
 
-    TheItemType* aBeginOld = &myData[aLowerOld];
+    TheItemType* aBeginOld = myData != NULL ? &myData[myLowerBound] : NULL;
     myLowerBound = theLower;
     myUpperBound = theUpper;
     if (aNewLen == anOldLen)
