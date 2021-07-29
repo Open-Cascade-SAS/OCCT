@@ -730,7 +730,7 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr,
     Standard_Integer npi;
     Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
     //
-    domain.Get(Xmax, Ymax, Zmax, Xmin, Ymin, Zmin);
+    domain.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     //
     for (npi=0; npi<nbPi; npi++) {
       Xmin=Min(Xmin, xint[npi]);
@@ -1007,30 +1007,271 @@ Standard_Integer Intf_Tool::Inters3d(const gp_Hypr& theCurv,
   return aNbDiffPoints;
 }
 
+//=======================================================================
+//function : Inters3d
+//purpose  : 
+//=======================================================================
+
+Standard_Integer Intf_Tool::Inters3d(const gp_Parab& theCurv,
+                    const Bnd_Box& Domain)
+{
+  Standard_Integer nbpi=0;
+  Standard_Integer npi;
+  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+
+  Domain.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+  if (!Domain.IsOpenXmin()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln(1., 0., 0., -xmin),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          yint[nbpi] = Inters1.Point(npi).Y();
+          zint[nbpi] = Inters1.Point(npi).Z();
+          if (ymin <= yint[nbpi] && yint[nbpi] < ymax &&
+            zmin <= zint[nbpi] && zint[nbpi] < zmax) {
+              xint[nbpi] = xmin;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 1;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  if (!Domain.IsOpenYmin()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln( 0., 1., 0., -ymin),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          xint[nbpi] = Inters1.Point(npi).X();
+          zint[nbpi] = Inters1.Point(npi).Z();
+          if (xmin < xint[nbpi] && xint[nbpi] <= xmax &&
+            zmin <= zint[nbpi] && zint[nbpi] < zmax) {
+              yint[nbpi] = ymin;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 2;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  if (!Domain.IsOpenZmin()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln( 0., 0., 1., -zmin),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          xint[nbpi] = Inters1.Point(npi).X();
+          yint[nbpi] = Inters1.Point(npi).Y();
+          if (xmin < xint[nbpi] && xint[nbpi] <= xmax &&
+            ymin < yint[nbpi] && yint[nbpi] <= ymax) {
+              zint[nbpi] = zmin;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 3;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  if (!Domain.IsOpenXmax()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln(-1., 0., 0., xmax),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          yint[nbpi] = Inters1.Point(npi).Y();
+          zint[nbpi] = Inters1.Point(npi).Z();
+          if (ymin < yint[nbpi] && yint[nbpi] <= ymax &&
+            zmin < zint[nbpi] && zint[nbpi] <= zmax) {
+              xint[nbpi] = xmax;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 4;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  if (!Domain.IsOpenYmax()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln( 0.,-1., 0., ymax),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          xint[nbpi] = Inters1.Point(npi).X();
+          zint[nbpi] = Inters1.Point(npi).Z();
+          if (xmin <= xint[nbpi] && xint[nbpi] < xmax &&
+            zmin < zint[nbpi] && zint[nbpi] <= zmax) {
+              yint[nbpi] = ymax;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 5;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  if (!Domain.IsOpenZmax()) {
+    IntAna_IntConicQuad Inters1(theCurv, 
+      gp_Pln( 0., 0.,-1., zmax),
+      Precision::Angular());
+    if (Inters1.IsDone()) {
+      if (!Inters1.IsInQuadric()) {
+        for (npi = 1; npi <= Inters1.NbPoints(); npi++) {
+          xint[nbpi] = Inters1.Point(npi).X();
+          yint[nbpi] = Inters1.Point(npi).Y();
+          if (xmin <= xint[nbpi] && xint[nbpi] < xmax &&
+            ymin <= yint[nbpi] && yint[nbpi] < ymax) {
+              zint[nbpi] = zmax;
+              parint[nbpi] = Inters1.ParamOnConic(npi);
+              bord[nbpi] = 6;
+              nbpi++;
+          }
+        }
+      }
+    }
+  }
+
+  Standard_Integer aNbDiffPoints = nbpi;
+
+  //Sort parint and check if parint contains several
+  //matched values. If that is true they will be deleted.
+  for (Standard_Integer i = nbpi - 1; i > 0 ; i--) {
+    for (Standard_Integer j = 0; j < i; j++) {
+      if (parint[i] <= parint[j]) {
+        std::swap(parint[i], parint[j]);
+        std::swap(zint[i], zint[j]);
+        std::swap(yint[i], yint[j]);
+        std::swap(xint[i], xint[j]);
+        std::swap(bord[i], bord[j]);
+      }
+
+      if ((i < nbpi - 1) && IsEqual(parint[i], parint[i+1])) {
+        aNbDiffPoints--;
+        for (Standard_Integer k = i; k < aNbDiffPoints; k++) {
+          parint[k] = parint[k+1];
+          zint[k] = zint[k+1];
+          yint[k] = yint[k+1];
+          xint[k] = xint[k+1];
+          bord[k] = bord[k+1];
+        }
+      }
+    }
+  }
+
+  return aNbDiffPoints;
+}
 
 //=======================================================================
 //function : ParabBox
 //purpose  : 
 //=======================================================================
 
-void  Intf_Tool::ParabBox(const gp_Parab&, 
-			 const Bnd_Box& domain, 
-			 Bnd_Box& boxParab)
+void  Intf_Tool::ParabBox(const gp_Parab& theParab,
+            const Bnd_Box& domain, 
+            Bnd_Box& boxParab)
 {
   nbSeg=0;
   boxParab.SetVoid();
-  if        (domain.IsWhole()) {
+  if (domain.IsWhole()) {
     boxParab.SetWhole();
     nbSeg=1;
     beginOnCurve[0]=-Precision::Infinite();
     endOnCurve[0]=Precision::Infinite();
     return;
   }
-  else if   (domain.IsVoid())  return;
+  else if (domain.IsVoid()) return;
 
-  
+  Standard_Integer nbPi = Inters3d(theParab, domain);
+
+  if (nbPi > 0) {
+    Standard_Integer npi;
+    Standard_Real Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+
+    domain.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+
+    for (npi = 0; npi < nbPi; npi++) {
+      Xmin = Min(Xmin, xint[npi]);
+      Xmax = Max(Xmax, xint[npi]);
+      Ymin = Min(Ymin, yint[npi]);
+      Ymax = Max(Ymax, yint[npi]);
+      Zmin = Min(Zmin, zint[npi]);
+      Zmax = Max(Zmax, yint[npi]);
+    }
+
+    boxParab.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+
+    gp_Pnt Pn;
+    gp_Vec Tan;
+    Standard_Real sinan = 0;
+    Standard_Boolean out = Standard_True;
+
+    for (npi = 0; npi < nbPi; npi++) {
+      ElCLib::D1(parint[npi], theParab, Pn, Tan);
+      switch (bord[npi]) {
+        case 1: sinan = gp_XYZ(1., 0., 0.) * Tan.XYZ(); break;
+        case 2: sinan = gp_XYZ(0., 1., 0.) * Tan.XYZ(); break;
+        case 3: sinan = gp_XYZ(0., 0., 1.) * Tan.XYZ(); break;
+        case 4: sinan = gp_XYZ(-1., 0., 0.) * Tan.XYZ(); break;
+        case 5: sinan = gp_XYZ(0., -1., 0.) * Tan.XYZ(); break;
+        case 6: sinan = gp_XYZ(0., 0., -1.) * Tan.XYZ(); break;
+      }
+      if (Abs(sinan) > Precision::Angular()) {
+        if (sinan > 0.) {
+          out = Standard_False;
+          beginOnCurve[nbSeg] = parint[npi];
+          nbSeg++;
+        }
+        else {
+          if (out) {
+            beginOnCurve[nbSeg] = -Precision::Infinite();
+            nbSeg++;
+          }
+          endOnCurve[nbSeg - 1] = parint[npi];
+          out = Standard_True;
+
+          Standard_Integer ipmin;
+          if (beginOnCurve[nbSeg - 1] < -10.) ipmin = -10;
+          else ipmin = (Standard_Integer)(beginOnCurve[nbSeg - 1]);
+
+          Standard_Integer ipmax;
+          if (endOnCurve[nbSeg - 1] > 10.) ipmax = 10;
+          else ipmax = (Standard_Integer)(endOnCurve[nbSeg - 1]);
+          
+          ipmin = ipmin * 10 + 1;
+          ipmax = ipmax * 10 - 1;
+          Standard_Integer ip, pas = 1;
+          for (ip = ipmin; ip <= ipmax; ip += pas) {
+            boxParab.Add(ElCLib::Value(Standard_Real(ip) / 10., theParab));
+            if (Abs(ip) <= 10) pas = 1;
+            else               pas = 10;
+          }
+        }
+      }
+    }
+  }
+  else if (!domain.IsOut(ElCLib::Value(0., theParab))) {
+    boxParab = domain;
+    beginOnCurve[0] = -Precision::Infinite();
+    endOnCurve[0] = Precision::Infinite();
+    nbSeg = 1;
+  }
 }
-
 
 //=======================================================================
 //function : NbSegments
