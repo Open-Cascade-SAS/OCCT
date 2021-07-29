@@ -31,7 +31,6 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_SelectionManager.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <TopLoc_Location.hxx>
@@ -110,7 +109,6 @@ namespace
 AIS_InteractiveContext::AIS_InteractiveContext(const Handle(V3d_Viewer)& MainViewer):
 myMainPM (new PrsMgr_PresentationManager (MainViewer->StructureManager())),
 myMainVwr(MainViewer),
-myMainSel(new StdSelect_ViewerSelector3d()),
 myToHilightSelected(Standard_True),
 mySelection(new AIS_Selection()),
 myFilters (new SelectMgr_AndOrFilter(SelectMgr_FilterType_OR)),
@@ -121,7 +119,7 @@ myPickingStrategy (SelectMgr_PickingStrategy_FirstAcceptable),
 myAutoHilight(Standard_True),
 myIsAutoActivateSelMode(Standard_True)
 {
-  mgrSelector = new SelectMgr_SelectionManager (myMainSel);
+  mgrSelector = new SelectMgr_SelectionManager (new StdSelect_ViewerSelector3d());
 
   myStyles[Prs3d_TypeOfHighlight_None]          = myDefaultDrawer;
   myStyles[Prs3d_TypeOfHighlight_Selected]      = new Prs3d_Drawer();
@@ -1867,7 +1865,7 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   // Object removes from Detected sequence
   for (Standard_Integer aDetIter = myDetectedSeq.Lower(); aDetIter <= myDetectedSeq.Upper();)
   {
-    Handle(SelectMgr_EntityOwner) aPicked = myMainSel->Picked (myDetectedSeq (aDetIter));
+    Handle(SelectMgr_EntityOwner) aPicked = MainSelector()->Picked (myDetectedSeq (aDetIter));
     Handle(AIS_InteractiveObject) anObj;
     if (!aPicked.IsNull())
     {
@@ -1970,7 +1968,7 @@ Standard_Boolean AIS_InteractiveContext::ClearDetected (Standard_Boolean theToRe
     clearDynamicHighlight();
   }
   myLastPicked.Nullify();
-  myMainSel->ClearPicked();
+  MainSelector()->ClearPicked();
   if (toUpdate && theToRedrawImmediate)
   {
     myMainVwr->RedrawImmediate();
@@ -2023,7 +2021,7 @@ Standard_Integer AIS_InteractiveContext::IsoNumber (const AIS_TypeOfIso theType)
 //=======================================================================
 void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecision)
 {
-  myMainSel->SetPixelTolerance (thePrecision);
+  MainSelector()->SetPixelTolerance (thePrecision);
 }
 
 //=======================================================================
@@ -2032,7 +2030,7 @@ void AIS_InteractiveContext::SetPixelTolerance (const Standard_Integer thePrecis
 //=======================================================================
 Standard_Integer AIS_InteractiveContext::PixelTolerance() const
 {
-  return myMainSel->PixelTolerance();
+  return MainSelector()->PixelTolerance();
 }
 
 //=======================================================================
@@ -2164,7 +2162,7 @@ Graphic3d_ZLayerId AIS_InteractiveContext::GetZLayer (const Handle(AIS_Interacti
 //=======================================================================
 void AIS_InteractiveContext::RebuildSelectionStructs()
 {
-  myMainSel->RebuildObjectsTree (Standard_True);
+  MainSelector()->RebuildObjectsTree (Standard_True);
 }
 
 //=======================================================================
@@ -2613,7 +2611,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  th
   {
     throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
   }
-  myMainSel->Pick (theXPix, theYPix, theView);
+  MainSelector()->Pick (theXPix, theYPix, theView);
   return moveTo (theView, theToRedrawOnUpdate);
 }
 
@@ -2629,7 +2627,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const gp_Ax1& theAxis,
   {
     throw Standard_ProgramError ("AIS_InteractiveContext::MoveTo() - invalid argument");
   }
-  myMainSel->Pick (theAxis, theView);
+  MainSelector()->Pick (theAxis, theView);
   return moveTo (theView, theToRedrawOnUpdate);
 }
 
@@ -2653,12 +2651,12 @@ AIS_StatusOfDetection AIS_InteractiveContext::moveTo (const Handle(V3d_View)& th
 
   // filling of myAISDetectedSeq sequence storing information about detected AIS objects
   // (the objects must be AIS_Shapes)
-  const Standard_Integer aDetectedNb = myMainSel->NbPicked();
+  const Standard_Integer aDetectedNb = MainSelector()->NbPicked();
   Standard_Integer aNewDetected = 0;
   Standard_Boolean toIgnoreDetTop = Standard_False;
   for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
   {
-    Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aDetIter);
+    Handle(SelectMgr_EntityOwner) anOwner = MainSelector()->Picked (aDetIter);
     if (anOwner.IsNull()
      || !myFilters->IsOk (anOwner))
     {
@@ -2688,7 +2686,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::moveTo (const Handle(V3d_View)& th
     // selection in current selection mode. It is necessary to check the current detected
     // entity and hilight it only if the detected entity is not the same as
     // previous detected (IsForcedHilight call)
-    Handle(SelectMgr_EntityOwner) aNewPickedOwner = myMainSel->Picked (aNewDetected);
+    Handle(SelectMgr_EntityOwner) aNewPickedOwner = MainSelector()->Picked (aNewDetected);
     if (aNewPickedOwner == myLastPicked && !aNewPickedOwner->IsForcedHilight())
     {
       return myLastPicked->IsSelected()
@@ -2809,15 +2807,15 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectRectangle (const Graphic3d_Vec2i&
   }
 
   myLastActiveView = theView.get();
-  myMainSel->Pick (thePntMin.x(), thePntMin.y(), thePntMax.x(), thePntMax.y(), theView);
+  MainSelector()->Pick (thePntMin.x(), thePntMin.y(), thePntMax.x(), thePntMax.y(), theView);
 
   AIS_NArray1OfEntityOwner aPickedOwners;
-  if (myMainSel->NbPicked() > 0)
+  if (MainSelector()->NbPicked() > 0)
   {
-    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
-    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    aPickedOwners.Resize (1, MainSelector()->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= MainSelector()->NbPicked(); ++aPickIter)
     {
-      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+      aPickedOwners.SetValue (aPickIter, MainSelector()->Picked (aPickIter));
     }
   }
 
@@ -2838,15 +2836,15 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectPolygon (const TColgp_Array1OfPnt
   }
 
   myLastActiveView = theView.get();
-  myMainSel->Pick (thePolyline, theView);
+  MainSelector()->Pick (thePolyline, theView);
 
   AIS_NArray1OfEntityOwner aPickedOwners;
-  if (myMainSel->NbPicked() > 0)
+  if (MainSelector()->NbPicked() > 0)
   {
-    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
-    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    aPickedOwners.Resize (1, MainSelector()->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= MainSelector()->NbPicked(); ++aPickIter)
     {
-      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+      aPickedOwners.SetValue (aPickIter, MainSelector()->Picked (aPickIter));
     }
   }
 
@@ -2867,15 +2865,15 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectPoint (const Graphic3d_Vec2i&    
   }
 
   myLastActiveView = theView.get();
-  myMainSel->Pick (thePnt.x(), thePnt.y(), theView);
+  MainSelector()->Pick (thePnt.x(), thePnt.y(), theView);
 
   AIS_NArray1OfEntityOwner aPickedOwners;
-  if (myMainSel->NbPicked() > 0)
+  if (MainSelector()->NbPicked() > 0)
   {
-    aPickedOwners.Resize (1, myMainSel->NbPicked(), false);
-    for (Standard_Integer aPickIter = 1; aPickIter <= myMainSel->NbPicked(); ++aPickIter)
+    aPickedOwners.Resize (1, MainSelector()->NbPicked(), false);
+    for (Standard_Integer aPickIter = 1; aPickIter <= MainSelector()->NbPicked(); ++aPickIter)
     {
-      aPickedOwners.SetValue (aPickIter, myMainSel->Picked (aPickIter));
+      aPickedOwners.SetValue (aPickIter, MainSelector()->Picked (aPickIter));
     }
   }
 
@@ -2891,7 +2889,7 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectDetected (const AIS_SelectionSche
   if (theSelScheme == AIS_SelectionScheme_Replace && !myLastPicked.IsNull())
   {
     Graphic3d_Vec2i aMousePos (-1, -1);
-    gp_Pnt2d aMouseRealPos = myMainSel->GetManager().GetMousePosition();
+    gp_Pnt2d aMouseRealPos = MainSelector()->GetManager().GetMousePosition();
     if (!Precision::IsInfinite (aMouseRealPos.X()) &&
         !Precision::IsInfinite (aMouseRealPos.Y()))
     {
@@ -3030,7 +3028,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select (const AIS_NArray1OfEntityOwner&
     }
   }
 
-  mySelection->SelectOwners (theOwners, theSelScheme, myMainSel->GetManager().IsOverlapAllowed(), myFilters);
+  mySelection->SelectOwners (theOwners, theSelScheme, MainSelector()->GetManager().IsOverlapAllowed(), myFilters);
 
   if (myAutoHilight)
   {
@@ -3612,7 +3610,7 @@ Standard_Integer AIS_InteractiveContext::HilightNextDetected (const Handle(V3d_V
   {
     myCurHighlighted = myDetectedSeq.Lower();
   }
-  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  const Handle(SelectMgr_EntityOwner)& anOwner = MainSelector()->Picked (myDetectedSeq (myCurHighlighted));
   if (anOwner.IsNull())
   {
     return 0;
@@ -3647,7 +3645,7 @@ Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V
   {
     myCurHighlighted = myDetectedSeq.Upper();
   }
-  const Handle(SelectMgr_EntityOwner)& anOwner = myMainSel->Picked (myDetectedSeq (myCurHighlighted));
+  const Handle(SelectMgr_EntityOwner)& anOwner = MainSelector()->Picked (myDetectedSeq (myCurHighlighted));
   if (anOwner.IsNull())
   {
     return 0;
@@ -3672,7 +3670,7 @@ Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V
 Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedCurrentOwner() const
 {
   return MoreDetected()
-       ? myMainSel->Picked (myDetectedSeq (myCurDetected))
+       ? MainSelector()->Picked (myDetectedSeq (myCurDetected))
        : Handle(SelectMgr_EntityOwner)();
 }
 
@@ -3699,7 +3697,7 @@ const TopoDS_Shape& AIS_InteractiveContext::DetectedCurrentShape() const
 Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() const
 {
   return MoreDetected()
-       ? Handle(AIS_InteractiveObject)::DownCast (myMainSel->Picked (myDetectedSeq (myCurDetected))->Selectable())
+       ? Handle(AIS_InteractiveObject)::DownCast (MainSelector()->Picked (myDetectedSeq (myCurDetected))->Selectable())
        : Handle(AIS_InteractiveObject)();
 }
 
@@ -3930,7 +3928,7 @@ void AIS_InteractiveContext::SubIntensityOff (const Handle(AIS_InteractiveObject
 //=======================================================================
 void AIS_InteractiveContext::DisplayActiveSensitive(const Handle(V3d_View)& theView)
 {
-  myMainSel->DisplaySensitive (theView);
+  MainSelector()->DisplaySensitive (theView);
 }
 
 //=======================================================================
@@ -3949,7 +3947,7 @@ void AIS_InteractiveContext::DisplayActiveSensitive (const Handle(AIS_Interactiv
   for (TColStd_ListIteratorOfListOfInteger aModeIter ((*aStatus)->SelectionModes()); aModeIter.More(); aModeIter.Next())
   {
     const Handle(SelectMgr_Selection)& aSel = theObj->Selection (aModeIter.Value());
-    myMainSel->DisplaySensitive (aSel, theObj->Transformation(), theView, Standard_False);
+    MainSelector()->DisplaySensitive (aSel, theObj->Transformation(), theView, Standard_False);
   }
 }
 
@@ -3959,7 +3957,7 @@ void AIS_InteractiveContext::DisplayActiveSensitive (const Handle(AIS_Interactiv
 //=======================================================================
 void AIS_InteractiveContext::ClearActiveSensitive (const Handle(V3d_View)& theView)
 {
-  myMainSel->ClearSensitive (theView);
+  MainSelector()->ClearSensitive (theView);
 }
 
 //=======================================================================
@@ -4091,7 +4089,6 @@ void AIS_InteractiveContext::DumpJson (Standard_OStream& theOStream, Standard_In
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mgrSelector.get())
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainPM.get())
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainVwr.get())
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainSel.get())
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastActiveView)
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastPicked.get())

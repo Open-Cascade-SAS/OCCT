@@ -38,6 +38,7 @@
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_ListOfFilter.hxx>
 #include <SelectMgr_PickingStrategy.hxx>
+#include <SelectMgr_SelectionManager.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -45,7 +46,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <Quantity_Color.hxx>
 
-class SelectMgr_SelectionManager;
 class V3d_Viewer;
 class V3d_View;
 class TopLoc_Location;
@@ -800,7 +800,7 @@ public: //! @name common properties
 
   const Handle(PrsMgr_PresentationManager)& MainPrsMgr() const { return myMainPM; }
 
-  const Handle(StdSelect_ViewerSelector3d)& MainSelector() const { return myMainSel; }
+  const Handle(StdSelect_ViewerSelector3d)& MainSelector() const { return mgrSelector->Selector(); }
 
   //! Updates the current viewer.
   Standard_EXPORT void UpdateCurrentViewer();
@@ -1457,7 +1457,6 @@ protected: //! @name internal fields
   Handle(SelectMgr_SelectionManager) mgrSelector;
   Handle(PrsMgr_PresentationManager) myMainPM;
   Handle(V3d_Viewer) myMainVwr;
-  Handle(StdSelect_ViewerSelector3d) myMainSel;
   V3d_View* myLastActiveView;
   Handle(SelectMgr_EntityOwner) myLastPicked;
   Standard_Boolean myToHilightSelected;

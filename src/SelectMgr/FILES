@@ -67,5 +67,4 @@ SelectMgr_ViewClipRange.cxx
 SelectMgr_ViewClipRange.hxx
 SelectMgr_ViewerSelector.cxx
 SelectMgr_ViewerSelector.hxx
-SelectMgr_ViewerSelector3d.cxx
 SelectMgr_ViewerSelector3d.hxx

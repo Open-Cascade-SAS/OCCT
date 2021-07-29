@@ -23,14 +23,17 @@
 #include <Precision.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
+#include <SelectMgr.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
-#include <SelectMgr_SortCriterion.hxx>
+#include <SelectMgr_SelectionImageFiller.hxx>
 #include <SelectMgr_SensitiveEntitySet.hxx>
+#include <SelectMgr_SortCriterion.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
+#include <V3d_View.hxx>
 
 #include <algorithm>
 
@@ -294,6 +297,30 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEnti
     aCriterion.NbOwnerMatches = 1;
     updatePoint3d (aCriterion, aPickResult, theEntity, theInversedTrsf, theMgr);
     mystored.Add (anOwner, aCriterion);
+  }
+}
+
+//=======================================================================
+// Function: updateZLayers
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::updateZLayers (const Handle(V3d_View)& theView)
+{
+  myZLayerOrderMap.Clear();
+  TColStd_SequenceOfInteger aZLayers;
+  theView->Viewer()->GetAllZLayers (aZLayers);
+  Standard_Integer aPos = 0;
+  Standard_Boolean isPrevDepthWrite = true;
+  for (TColStd_SequenceOfInteger::Iterator aLayerIter (aZLayers); aLayerIter.More(); aLayerIter.Next())
+  {
+    Graphic3d_ZLayerSettings aSettings = theView->Viewer()->ZLayerSettings (aLayerIter.Value());
+    if (aSettings.ToClearDepth()
+     || isPrevDepthWrite != aSettings.ToEnableDepthWrite())
+    {
+      ++aPos;
+    }
+    isPrevDepthWrite = aSettings.ToEnableDepthWrite();
+    myZLayerOrderMap.Bind (aLayerIter.Value(), aPos);
   }
 }
 
@@ -1126,6 +1153,208 @@ void SelectMgr_ViewerSelector::AllowOverlapDetection (const Standard_Boolean the
 }
 
 //=======================================================================
+// Function: Pick
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::Pick (const Standard_Integer theXPix,
+                                     const Standard_Integer theYPix,
+                                     const Handle(V3d_View)& theView)
+{
+  updateZLayers (theView);
+
+  gp_Pnt2d aMousePos (static_cast<Standard_Real> (theXPix),
+                      static_cast<Standard_Real> (theYPix));
+  mySelectingVolumeMgr.InitPointSelectingVolume (aMousePos);
+
+  mySelectingVolumeMgr.SetPixelTolerance (myTolerances.Tolerance());
+  mySelectingVolumeMgr.SetCamera (theView->Camera());
+  Standard_Integer aWidth = 0, aHeight = 0;
+  theView->Window()->Size (aWidth, aHeight);
+  mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
+
+  mySelectingVolumeMgr.BuildSelectingVolume();
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
+
+  TraverseSensitives();
+}
+
+//=======================================================================
+// Function: Pick
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::Pick (const Standard_Integer theXPMin,
+                                     const Standard_Integer theYPMin,
+                                     const Standard_Integer theXPMax,
+                                     const Standard_Integer theYPMax,
+                                     const Handle(V3d_View)& theView)
+{
+  updateZLayers (theView);
+
+  gp_Pnt2d aMinMousePos (static_cast<Standard_Real> (theXPMin),
+                         static_cast<Standard_Real> (theYPMin));
+  gp_Pnt2d aMaxMousePos (static_cast<Standard_Real> (theXPMax),
+                         static_cast<Standard_Real> (theYPMax));
+  mySelectingVolumeMgr.InitBoxSelectingVolume (aMinMousePos,
+                                               aMaxMousePos);
+
+  mySelectingVolumeMgr.SetCamera (theView->Camera());
+  Standard_Integer aWidth = 0, aHeight = 0;
+  theView->Window()->Size (aWidth, aHeight);
+  mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
+
+  mySelectingVolumeMgr.BuildSelectingVolume();
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
+  TraverseSensitives();
+}
+
+//=======================================================================
+// Function: Pick
+// Purpose : Selection using a polyline
+//=======================================================================
+void SelectMgr_ViewerSelector::Pick (const TColgp_Array1OfPnt2d& thePolyline,
+                                     const Handle(V3d_View)& theView)
+{
+  updateZLayers (theView);
+
+  mySelectingVolumeMgr.InitPolylineSelectingVolume (thePolyline);
+  mySelectingVolumeMgr.SetCamera (theView->Camera());
+  Standard_Integer aWidth = 0, aHeight = 0;
+  theView->Window()->Size (aWidth, aHeight);
+  mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
+  mySelectingVolumeMgr.BuildSelectingVolume();
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
+
+  TraverseSensitives();
+}
+
+//=======================================================================
+// Function: Pick
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::Pick (const gp_Ax1& theAxis,
+                                     const Handle(V3d_View)& theView)
+{
+  updateZLayers (theView);
+
+  mySelectingVolumeMgr.InitAxisSelectingVolume (theAxis);
+  mySelectingVolumeMgr.BuildSelectingVolume();
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)(), NULL);
+
+  TraverseSensitives();
+}
+
+//=======================================================================
+//function : ToPixMap
+//purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_ViewerSelector::ToPixMap (Image_PixMap& theImage,
+                                                     const Handle(V3d_View)& theView,
+                                                     const StdSelect_TypeOfSelectionImage theType,
+                                                     const Standard_Integer               thePickedIndex)
+{
+  if (theImage.IsEmpty())
+  {
+    throw Standard_ProgramError ("SelectMgr_ViewerSelector::ToPixMap() has been called with empty image");
+  }
+
+  Handle(SelectMgr_SelectionImageFiller) aFiller = SelectMgr_SelectionImageFiller::CreateFiller (theImage, this, theType);
+  if (aFiller.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const Standard_Integer aSizeX = static_cast<Standard_Integer> (theImage.SizeX());
+  const Standard_Integer aSizeY = static_cast<Standard_Integer> (theImage.SizeY());
+  for (Standard_Integer aRowIter = 0; aRowIter < aSizeY; ++aRowIter)
+  {
+    for (Standard_Integer aColIter = 0; aColIter < aSizeX; ++aColIter)
+    {
+      Pick (aColIter, aRowIter, theView);
+      aFiller->Fill (aColIter, aRowIter, thePickedIndex);
+    }
+  }
+  aFiller->Flush();
+  return Standard_True;
+}
+
+//=======================================================================
+// Function: DisplaySensitive.
+// Purpose : Display active primitives.
+//=======================================================================
+void SelectMgr_ViewerSelector::DisplaySensitive (const Handle(V3d_View)& theView)
+{
+  for (SelectMgr_SelectableObjectSet::Iterator aSelectableIt (mySelectableObjects); aSelectableIt.More(); aSelectableIt.Next())
+  {
+    Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
+    const Handle (SelectMgr_SelectableObject)& anObj = aSelectableIt.Value();
+    for (SelectMgr_SequenceOfSelection::Iterator aSelIter (anObj->Selections()); aSelIter.More(); aSelIter.Next())
+    {
+      if (aSelIter.Value()->GetSelectionState() == SelectMgr_SOS_Activated)
+      {
+        SelectMgr::ComputeSensitivePrs (aStruct, aSelIter.Value(), anObj->Transformation(), anObj->TransformPersistence());
+      }
+    }
+
+    myStructs.Append (aStruct);
+  }
+
+  for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructs); aStructIter.More(); aStructIter.Next())
+  {
+    Handle(Graphic3d_Structure)& aStruct = aStructIter.ChangeValue();
+    aStruct->SetDisplayPriority (10);
+    aStruct->Display();
+  }
+
+  theView->Update();
+}
+
+//=======================================================================
+// Function: ClearSensitive
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::ClearSensitive (const Handle(V3d_View)& theView)
+{
+  for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructs); aStructIter.More(); aStructIter.Next())
+  {
+    const Handle(Graphic3d_Structure)& aPrs = aStructIter.ChangeValue();
+    aPrs->Erase();
+    aPrs->Clear();
+    aPrs->Remove();
+  }
+  myStructs.Clear();
+
+  if (!theView.IsNull())
+  {
+    theView->Update();
+  }
+}
+
+//=======================================================================
+//function : DisplaySenstive
+//purpose  :
+//=======================================================================
+void SelectMgr_ViewerSelector::DisplaySensitive (const Handle(SelectMgr_Selection)& theSel,
+                                                 const gp_Trsf& theTrsf,
+                                                 const Handle(V3d_View)& theView,
+                                                 const Standard_Boolean theToClearOthers)
+{
+  if (theToClearOthers)
+  {
+    ClearSensitive (theView);
+  }
+
+  Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (theView->Viewer()->StructureManager());
+
+  SelectMgr::ComputeSensitivePrs (aStruct, theSel, theTrsf, Handle(Graphic3d_TransformPers)());
+
+  myStructs.Append (aStruct);
+  myStructs.Last()->SetDisplayPriority (10);
+  myStructs.Last()->Display();
+
+  theView->Update();
+}
+
+//=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================
@@ -1159,6 +1388,13 @@ void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsLeftChildQueuedFirst)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMapOfObjectSensitives.Extent())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myStructs.Length())
+  for (Graphic3d_SequenceOfStructure::Iterator aStructsIt (myStructs); aStructsIt.More(); aStructsIt.Next())
+  {
+    const Handle(Graphic3d_Structure)& aStructure = aStructsIt.Value();
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aStructure)
+  }
 }
 
 //=======================================================================
