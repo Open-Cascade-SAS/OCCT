@@ -1246,7 +1246,9 @@ void ProjLib_ComputeApprox::Perform
 
     //Return curve home
     Standard_Real UFirst = F.FirstParameter();
-    gp_Pnt P3d = C->Value( UFirst );
+    Standard_Real ULast = F.LastParameter();
+    Standard_Real Umid = (UFirst + ULast)/2;
+    gp_Pnt P3d = C->Value (Umid);
     Standard_Real u = 0., v = 0.;
     switch (SType)
     {
@@ -1301,7 +1303,7 @@ void ProjLib_ComputeApprox::Perform
     if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
     {
       Standard_Real aNbPer;
-      gp_Pnt2d P2d = F.Value(UFirst);
+      gp_Pnt2d P2d = F.Value (Umid);
       du = u - P2d.X();
       du = (du < 0) ? (du - Precision::PConfusion()) : 
         (du + Precision::PConfusion());
