@@ -824,6 +824,12 @@ public: //! @name common properties
                                       const AIS_KindOfInteractive WhichKind = AIS_KindOfInteractive_None,
                                       const Standard_Integer WhichSignature = -1) const;
 
+  //! Create iterator through all objects registered in context.
+  AIS_DataMapIteratorOfDataMapOfIOStatus ObjectIterator() const
+  {
+    return AIS_DataMapIteratorOfDataMapOfIOStatus (myObjects);
+  }
+
   //! Rebuilds 1st level of BVH selection forcibly
   Standard_EXPORT void RebuildSelectionStructs();
 
