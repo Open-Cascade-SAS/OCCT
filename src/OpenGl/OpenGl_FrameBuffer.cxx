@@ -644,7 +644,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
   Release (theGlCtx.operator->());
 
   GLint anFbo = GLint(NO_FRAMEBUFFER);
-  ::glGetIntegerv (GL_FRAMEBUFFER_BINDING, &anFbo);
+  theGlCtx->core11fwd->glGetIntegerv (GL_FRAMEBUFFER_BINDING, &anFbo);
   if (anFbo == GLint(NO_FRAMEBUFFER))
   {
     return Standard_False;
@@ -666,14 +666,14 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
     theGlCtx->arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, &aColorId);
     myGlColorRBufferId = aColorId;
   }
+  else if (aColorType == GL_TEXTURE)
+  {
+    // myColorTextures[0]->InitWrapper() - not implemented, just skip it
+  }
   else if (aColorType != GL_NONE)
   {
-    TCollection_ExtendedString aMsg = "OpenGl_FrameBuffer::InitWrapper(), color attachment of unsupported type has been skipped!";
-    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                           GL_DEBUG_TYPE_ERROR,
-                           0,
-                           GL_DEBUG_SEVERITY_HIGH,
-                           aMsg);
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "OpenGl_FrameBuffer::InitWrapper(), color attachment of unsupported type has been skipped!");
   }
 
   if (aDepthType == GL_RENDERBUFFER)
@@ -681,14 +681,14 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
     theGlCtx->arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, &aDepthId);
     myGlDepthRBufferId = aDepthId;
   }
+  else if (aDepthType == GL_TEXTURE)
+  {
+    // myDepthStencilTexture->InitWrapper() - not implemented, just skip it
+  }
   else if (aDepthType != GL_NONE)
   {
-    TCollection_ExtendedString aMsg = "OpenGl_FrameBuffer::InitWrapper(), depth attachment of unsupported type has been skipped!";
-    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                           GL_DEBUG_TYPE_ERROR,
-                           0,
-                           GL_DEBUG_SEVERITY_HIGH,
-                           aMsg);
+    theGlCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "OpenGl_FrameBuffer::InitWrapper(), depth attachment of unsupported type has been skipped!");
   }
 
   // retrieve dimensions
@@ -696,12 +696,16 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
   if (aRBuffer != NO_RENDERBUFFER)
   {
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, aRBuffer);
-    theGlCtx->arbFBO->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &myVPSizeX);
-    theGlCtx->arbFBO->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myVPSizeY);
+    theGlCtx->arbFBO->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &myInitVPSizeX);
+    theGlCtx->arbFBO->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myInitVPSizeY);
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
   }
 
-  return aRBuffer != NO_RENDERBUFFER;
+  GLint aViewport[4] = {};
+  theGlCtx->core11fwd->glGetIntegerv (GL_VIEWPORT, aViewport);
+  myVPSizeX = aViewport[2];
+  myVPSizeY = aViewport[3];
+  return Standard_True;
 }
 
 // =======================================================================
@@ -713,10 +717,10 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
   if (isValidFrameBuffer())
   {
     // application can not handle this case by exception - this is bug in code
-    Standard_ASSERT_RETURN (theGlCtx != NULL,
+    Standard_ASSERT_RETURN (!myIsOwnBuffer || theGlCtx != NULL,
       "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...",);
-    if (theGlCtx->IsValid()
-     && myIsOwnBuffer)
+    if (myIsOwnBuffer
+     && theGlCtx->IsValid())
     {
       theGlCtx->arbFBO->glDeleteFramebuffers (1, &myGlFBufferId);
       if (myGlColorRBufferId != NO_RENDERBUFFER)
