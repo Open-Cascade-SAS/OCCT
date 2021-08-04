@@ -355,7 +355,7 @@ void OpenGl_GraduatedTrihedron::renderGridPlane (const Handle(OpenGl_Workspace)&
                                                  const GridAxes& theGridAxes,
                                                  OpenGl_Mat4& theMat) const
 {
-  const Graphic3d_AxisAspect& aCurAspect = myData.AxisAspect (theIndex);
+  const Graphic3d_GraduatedTrihedron::AxisAspect& aCurAspect = myData.AxisAspectAt (theIndex);
   if (aCurAspect.TickmarksNumber() <= 0)
   {
     return;
@@ -475,7 +475,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
                                                       const GridAxes& theGridAxes,
                                                       const Standard_ShortReal theDpix) const
 {
-  const Graphic3d_AxisAspect& aCurAspect = myData.AxisAspect (theIndex);
+  const Graphic3d_GraduatedTrihedron::AxisAspect& aCurAspect = myData.AxisAspectAt (theIndex);
   if (!aCurAspect.ToDrawName() && !aCurAspect.ToDrawValues())
   {
     return;
@@ -566,9 +566,8 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   OpenGl_Vec3 anOldMin = myMin;
   OpenGl_Vec3 anOldMax = myMax;
 
-  if (myData.CubicAxesCallback)
+  if (myData.CubicAxesCallback(theWorkspace->View()))
   {
-    myData.CubicAxesCallback (myData.PtrView);
     if (!myAxes[0].Line.IsInitialized()
      || !myAxes[1].Line.IsInitialized()
      || !myAxes[2].Line.IsInitialized()
@@ -719,7 +718,7 @@ void OpenGl_GraduatedTrihedron::SetMinMax (const OpenGl_Vec3& theMin, const Open
 // method  : OpenGl_GraduatedTrihedron::Axis constructor
 // purpose :
 // =======================================================================
-OpenGl_GraduatedTrihedron::Axis::Axis (const Graphic3d_AxisAspect& theAspect,
+OpenGl_GraduatedTrihedron::Axis::Axis (const Graphic3d_GraduatedTrihedron::AxisAspect& theAspect,
                                        const OpenGl_Vec3&          theDirection)
 : Direction (theDirection),
   Tickmark  (NULL),

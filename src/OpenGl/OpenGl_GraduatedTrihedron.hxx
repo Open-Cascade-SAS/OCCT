@@ -81,7 +81,8 @@ private:
 
   public:
 
-    Axis (const Graphic3d_AxisAspect& theAspect = Graphic3d_AxisAspect(),
+    Axis (const Graphic3d_GraduatedTrihedron::AxisAspect& theAspect =
+                Graphic3d_GraduatedTrihedron::AxisAspect(),
           const OpenGl_Vec3& theDirection = OpenGl_Vec3 (1.0f, 0.0f, 0.0f));
 
     ~Axis();

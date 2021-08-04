@@ -433,8 +433,7 @@ static void SetMinMaxValuesCallback (Graphic3d_CView* theView)
 void OpenGl_View::GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron& theTrihedronData)
 {
   myGTrihedronData = theTrihedronData;
-  myGTrihedronData.PtrView = this;
-  myGTrihedronData.CubicAxesCallback = SetMinMaxValuesCallback;
+  myGTrihedronData.SetCubicAxesCallback (SetMinMaxValuesCallback);
   myGraduatedTrihedron.SetValues (myGTrihedronData);
   myToShowGradTrihedron = true;
 }
@@ -445,7 +444,6 @@ void OpenGl_View::GraduatedTrihedronDisplay (const Graphic3d_GraduatedTrihedron&
 // =======================================================================
 void OpenGl_View::GraduatedTrihedronErase()
 {
-  myGTrihedronData.PtrView = NULL;
   myGraduatedTrihedron.Release (myWorkspace->GetGlContext().operator->());
   myToShowGradTrihedron = false;
 }
