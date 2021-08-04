@@ -217,7 +217,14 @@ public: //! @name highlighting management
   //! If a new highlight style is created, its presentation Zlayer should be checked,
   //! otherwise highlighting might not work as expected.
   void SetHighlightStyle (const Prs3d_TypeOfHighlight theStyleType,
-                          const Handle(Prs3d_Drawer)& theStyle) { myStyles[theStyleType] = theStyle; }
+                          const Handle(Prs3d_Drawer)& theStyle)
+  {
+    myStyles[theStyleType] = theStyle;
+    if (theStyleType == Prs3d_TypeOfHighlight_None)
+    {
+      myDefaultDrawer = theStyle;
+    }
+  }
 
   //! Returns current dynamic highlight style settings corresponding to Prs3d_TypeOfHighlight_Dynamic.
   //! This is just a short-cut to HighlightStyle(Prs3d_TypeOfHighlight_Dynamic).
@@ -778,6 +785,14 @@ public: //! @name common properties
   //! This contains all the color and line attributes which can be used by interactive objects which do not have their own attributes.
   const Handle(Prs3d_Drawer)& DefaultDrawer() const { return myDefaultDrawer; }
 
+  //! Sets the default attribute manager; should be set at context creation time.
+  //! Warning - this setter doesn't update links to the default drawer of already displayed objects!
+  void SetDefaultDrawer (const Handle(Prs3d_Drawer)& theDrawer)
+  {
+    myDefaultDrawer = theDrawer;
+    myStyles[Prs3d_TypeOfHighlight_None] = myDefaultDrawer;
+  }
+
   //! Returns the current viewer.
   const Handle(V3d_Viewer)& CurrentViewer() const { return myMainVwr; }
 
@@ -996,7 +1011,7 @@ public: //! @name tessellation deviation properties for automatic triangulation
   //! The default value is 0.001.
   //! In drawing shapes, however, you are allowed to ask for a relative deviation.
   //! This deviation will be: SizeOfObject * DeviationCoefficient.
-  Standard_EXPORT void SetDeviationCoefficient (const Standard_Real theCoefficient);
+  void SetDeviationCoefficient (const Standard_Real theCoefficient) { myDefaultDrawer->SetDeviationCoefficient (theCoefficient); }
   
   //! Returns the deviation coefficient.
   //! Drawings of curves or patches are made with respect to a maximal chordal deviation.
@@ -1010,12 +1025,12 @@ public: //! @name tessellation deviation properties for automatic triangulation
   //! The default value is 0.001.
   //! In drawing shapes, however, you are allowed to ask for a relative deviation.
   //! This deviation will be: SizeOfObject * DeviationCoefficient.
-  Standard_EXPORT Standard_Real DeviationCoefficient() const;
+  Standard_Real DeviationCoefficient() const { return myDefaultDrawer->DeviationCoefficient(); }
 
   //! default 20 degrees
-  Standard_EXPORT void SetDeviationAngle (const Standard_Real anAngle);
+  void SetDeviationAngle (const Standard_Real theAngle) { myDefaultDrawer->SetDeviationAngle (theAngle); }
 
-  Standard_EXPORT Standard_Real DeviationAngle() const;
+  Standard_Real DeviationAngle() const { return myDefaultDrawer->DeviationAngle(); }
 
 public: //! @name HLR (Hidden Line Removal) display attributes
 
@@ -1024,19 +1039,19 @@ public: //! @name HLR (Hidden Line Removal) display attributes
   //! Color: Quantity_NOC_YELLOW
   //! Type of line: Aspect_TOL_DASH
   //! Width: 1.
-  Standard_EXPORT Handle(Prs3d_LineAspect) HiddenLineAspect() const;
+  const Handle(Prs3d_LineAspect)& HiddenLineAspect() const { return myDefaultDrawer->HiddenLineAspect(); }
 
   //! Sets the hidden line aspect anAspect.
   //! Aspect defines display attributes for hidden lines in HLR projections.
-  Standard_EXPORT void SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& anAspect) const;
+  void SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& theAspect) const { myDefaultDrawer->SetHiddenLineAspect (theAspect); }
 
   //! returns Standard_True if the hidden lines are to be drawn.
   //! By default the hidden lines are not drawn.
-  Standard_EXPORT Standard_Boolean DrawHiddenLine() const;
+  Standard_Boolean DrawHiddenLine() const { return myDefaultDrawer->DrawHiddenLine(); }
 
-  Standard_EXPORT void EnableDrawHiddenLine() const;
+  void EnableDrawHiddenLine() const { myDefaultDrawer->EnableDrawHiddenLine(); }
 
-  Standard_EXPORT void DisableDrawHiddenLine() const;
+  void DisableDrawHiddenLine() const { myDefaultDrawer->DisableDrawHiddenLine(); }
 
 public: //! @name iso-line display attributes
 
@@ -1047,11 +1062,11 @@ public: //! @name iso-line display attributes
   Standard_EXPORT Standard_Integer IsoNumber (const AIS_TypeOfIso WhichIsos = AIS_TOI_Both);
   
   //! Returns True if drawing isoparameters on planes is enabled.
-  Standard_EXPORT void IsoOnPlane (const Standard_Boolean SwitchOn);
+  void IsoOnPlane (const Standard_Boolean theToSwitchOn) { myDefaultDrawer->SetIsoOnPlane (theToSwitchOn); }
   
   //! Returns True if drawing isoparameters on planes is enabled.
   //! if <forUIsos> = False,
-  Standard_EXPORT Standard_Boolean IsoOnPlane() const;
+  Standard_Boolean IsoOnPlane() const { return myDefaultDrawer->IsoOnPlane(); }
 
   //! Enables or disables on-triangulation build for isolines for a particular object.
   //! In case if on-triangulation builder is disabled, default on-plane builder will compute isolines for the object given.
@@ -1060,10 +1075,10 @@ public: //! @name iso-line display attributes
 
   //! Enables or disables on-triangulation build for isolines for default drawer.
   //! In case if on-triangulation builder is disabled, default on-plane builder will compute isolines for the object given.
-  Standard_EXPORT void IsoOnTriangulation (const Standard_Boolean theToSwitchOn);
+  void IsoOnTriangulation (const Standard_Boolean theToSwitchOn) { myDefaultDrawer->SetIsoOnTriangulation (theToSwitchOn); }
 
   //! Returns true if drawing isolines on triangulation algorithm is enabled.
-  Standard_EXPORT Standard_Boolean IsoOnTriangulation() const;
+  Standard_Boolean IsoOnTriangulation() const { return myDefaultDrawer->IsoOnTriangulation(); }
 
 //! @name obsolete methods
 public:

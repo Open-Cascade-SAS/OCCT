@@ -1129,42 +1129,6 @@ TopLoc_Location AIS_InteractiveContext::Location (const Handle(AIS_InteractiveOb
 }
 
 //=======================================================================
-//function : SetDeviationCoefficient
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetDeviationCoefficient (const Standard_Real theCoefficient)
-{
-  myDefaultDrawer->SetDeviationCoefficient (theCoefficient);
-}
-
-//=======================================================================
-//function : SetDeviationAngle
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetDeviationAngle (const Standard_Real theAngle)
-{
-  myDefaultDrawer->SetDeviationAngle (theAngle);
-}
-
-//=======================================================================
-//function : DeviationAngle
-//purpose  : Gets  deviationAngle
-//=======================================================================
-Standard_Real AIS_InteractiveContext::DeviationAngle() const
-{
-  return myDefaultDrawer->DeviationAngle();
-}
-
-//=======================================================================
-//function : DeviationCoefficient
-//purpose  :
-//=======================================================================
-Standard_Real AIS_InteractiveContext::DeviationCoefficient() const
-{
-  return myDefaultDrawer->DeviationCoefficient();
-}
-
-//=======================================================================
 //function : SetDisplayMode
 //purpose  :
 //=======================================================================
@@ -2015,51 +1979,6 @@ Standard_Boolean AIS_InteractiveContext::ClearDetected (Standard_Boolean theToRe
 }
 
 //=======================================================================
-//function : DrawHiddenLine
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_InteractiveContext::DrawHiddenLine() const
-{
-  return myDefaultDrawer->DrawHiddenLine();
-}
-
-//=======================================================================
-//function : EnableDrawHiddenLine
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::EnableDrawHiddenLine() const
-{
-  myDefaultDrawer->EnableDrawHiddenLine();
-}
-
-//=======================================================================
-//function : DisableDrawHiddenLine 
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::DisableDrawHiddenLine() const
-{
-  myDefaultDrawer->DisableDrawHiddenLine();
-}
-
-//=======================================================================
-//function : HiddenLineAspect
-//purpose  :
-//=======================================================================
-Handle (Prs3d_LineAspect) AIS_InteractiveContext::HiddenLineAspect() const
-{
-  return myDefaultDrawer->HiddenLineAspect();
-}
-
-//=======================================================================
-//function : SetHiddenLineAspect
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& theAspect) const
-{
-  myDefaultDrawer->SetHiddenLineAspect (theAspect);
-}
-
-//=======================================================================
 //function : SetIsoNumber
 //purpose  :
 //=======================================================================
@@ -2096,42 +2015,6 @@ Standard_Integer AIS_InteractiveContext::IsoNumber (const AIS_TypeOfIso theType)
                             : -1;
   }
   return 0;
-}
-
-//=======================================================================
-//function : IsoOnPlane
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::IsoOnPlane (const Standard_Boolean theToSwitchOn)
-{
-  myDefaultDrawer->SetIsoOnPlane (theToSwitchOn);
-}
-
-//=======================================================================
-//function : IsoOnPlane
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_InteractiveContext::IsoOnPlane() const
-{
-  return myDefaultDrawer->IsoOnPlane();
-}
-
-//=======================================================================
-//function : IsoOnTriangulation
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::IsoOnTriangulation (const Standard_Boolean theToSwitchOn)
-{
-  myDefaultDrawer->SetIsoOnTriangulation (theToSwitchOn);
-}
-
-//=======================================================================
-//function : IsoOnTriangulation
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_InteractiveContext::IsoOnTriangulation() const
-{
-  return myDefaultDrawer->IsoOnTriangulation();
 }
 
 //=======================================================================
