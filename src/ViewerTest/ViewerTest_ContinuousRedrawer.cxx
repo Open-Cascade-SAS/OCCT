@@ -17,6 +17,7 @@
 #include <Aspect_Window.hxx>
 #include <OSD.hxx>
 #include <OSD_Timer.hxx>
+#include <V3d_View.hxx>
 
 // =======================================================================
 // function : Instance
@@ -55,14 +56,14 @@ ViewerTest_ContinuousRedrawer::~ViewerTest_ContinuousRedrawer()
 // function : Start
 // purpose  :
 // =======================================================================
-void ViewerTest_ContinuousRedrawer::Start (const Handle(Aspect_Window)& theWindow,
+void ViewerTest_ContinuousRedrawer::Start (const Handle(V3d_View)& theView,
                                            Standard_Real theTargetFps)
 {
-  if (myWindow != theWindow
+  if (myView != theView
    || myTargetFps != theTargetFps)
   {
     Stop();
-    myWindow = theWindow;
+    myView = theView;
     myTargetFps = theTargetFps;
   }
 
@@ -84,13 +85,13 @@ void ViewerTest_ContinuousRedrawer::Start (const Handle(Aspect_Window)& theWindo
 }
 
 // =======================================================================
-// function : Start
+// function : Stop
 // purpose  :
 // =======================================================================
-void ViewerTest_ContinuousRedrawer::Stop (const Handle(Aspect_Window)& theWindow)
+void ViewerTest_ContinuousRedrawer::Stop (const Handle(V3d_View)& theView)
 {
-  if (!theWindow.IsNull()
-    && myWindow != theWindow)
+  if (!theView.IsNull()
+    && myView != theView)
   {
     return;
   }
@@ -103,11 +104,11 @@ void ViewerTest_ContinuousRedrawer::Stop (const Handle(Aspect_Window)& theWindow
   myWakeEvent.Set();
   myThread.Wait();
   myToStop = false;
-  myWindow.Nullify();
+  myView.Nullify();
 }
 
 // =======================================================================
-// function : doThreadLoop
+// function : Pause
 // purpose  :
 // =======================================================================
 void ViewerTest_ContinuousRedrawer::Pause()
@@ -153,13 +154,15 @@ void ViewerTest_ContinuousRedrawer::doThreadLoop()
       const Standard_Real aDuration = aTimeNew - aTimeOld;
       if (aDuration >= aTargetDur)
       {
-        myWindow->InvalidateContent (aDisp);
+        myView->Invalidate();
+        myView->Window()->InvalidateContent (aDisp);
         aTimeOld = aTimeNew;
       }
     }
     else
     {
-      myWindow->InvalidateContent (aDisp);
+      myView->Invalidate();
+      myView->Window()->InvalidateContent (aDisp);
     }
 
     OSD::MilliSecSleep (1);

@@ -37,6 +37,7 @@
 AIS_ViewController::AIS_ViewController()
 : myLastEventsTime    (0.0),
   myToAskNextFrame    (false),
+  myIsContinuousRedraw(false),
   myMinCamDistance    (1.0),
   myRotationMode      (AIS_RotationMode_BndBoxActive),
   myNavigationMode    (AIS_NavigationMode_Orbit),
@@ -2943,6 +2944,10 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
     setAskNextFrame();
   }
 
+  if (myIsContinuousRedraw)
+  {
+    myToAskNextFrame = true;
+  }
   if (theView->View()->IsActiveXR())
   {
     // VR requires continuous rendering

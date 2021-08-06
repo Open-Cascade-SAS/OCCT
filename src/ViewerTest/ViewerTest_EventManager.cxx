@@ -197,7 +197,7 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
     {
       myIsTmpContRedraw = true;
     #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
-      aRedrawer.Start (theView->Window(), 60.0);
+      aRedrawer.Start (theView, 60.0);
     #endif
     }
 

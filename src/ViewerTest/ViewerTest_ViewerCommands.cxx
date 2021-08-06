@@ -2668,7 +2668,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
   Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
   ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
-  aRedrawer.Stop (aView->Window());
+  aRedrawer.Stop (aView);
 
   // Remove view resources
   ViewerTest_myViews.UnBind1(theViewName);
@@ -2683,7 +2683,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   // unused empty contexts
   if (!aCurrentContext.IsNull())
   {
-    // Check if there are more difined views in the viewer
+    // Check if there are more defined views in the viewer
     if ((isContextRemoved || ViewerTest_myContexts.Size() != 1)
      && aCurrentContext->CurrentViewer()->DefinedViews().IsEmpty())
     {
@@ -3703,9 +3703,21 @@ static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char**
       }
 
       ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
-      if (Abs (aFps) >= 1.0)
+      ViewerTest::CurrentEventManager()->SetContinuousRedraw (false);
+      if (aFps >= 1.0)
       {
-        aRedrawer.Start (aView->Window(), aFps);
+        aRedrawer.Start (aView, aFps);
+      }
+      else if (aFps < 0.0)
+      {
+        if (ViewerTest::GetViewerFromContext()->ActiveViews().Extent() == 1)
+        {
+          aRedrawer.Stop();
+          ViewerTest::CurrentEventManager()->SetContinuousRedraw (true);
+          ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), ViewerTest::CurrentView(), true);
+          continue;
+        }
+        aRedrawer.Start (aView, aFps);
       }
       else
       {

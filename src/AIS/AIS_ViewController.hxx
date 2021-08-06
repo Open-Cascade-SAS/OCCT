@@ -77,6 +77,13 @@ public:
   //! Interrupt active view animation.
   Standard_EXPORT void AbortViewAnimation();
 
+  //! Return TRUE if continuous redrawing is enabled; FALSE by default.
+  //! This option would request a next viewer frame to be completely redrawn right after current frame is finished.
+  bool IsContinuousRedraw() const { return myIsContinuousRedraw; }
+
+  //! Enable or disable continuous updates.
+  void SetContinuousRedraw (bool theToEnable) { myIsContinuousRedraw = theToEnable; }
+
 public: //! @name global parameters
 
   //! Return camera rotation mode, AIS_RotationMode_BndBoxActive by default.
@@ -679,6 +686,7 @@ protected:
 
   Standard_Real       myLastEventsTime;           //!< last fetched events timer value for computing delta/progress
   Standard_Boolean    myToAskNextFrame;           //!< flag indicating that another frame should be drawn right after this one
+  Standard_Boolean    myIsContinuousRedraw;       //!< continuous redrawing (without immediate rendering optimization)
 
   Standard_Real       myMinCamDistance;           //!< minimal camera distance for zoom operation
   AIS_RotationMode    myRotationMode;             //!< rotation mode

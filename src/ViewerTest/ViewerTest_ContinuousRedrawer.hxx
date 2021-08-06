@@ -20,6 +20,7 @@
 #include <Standard_Type.hxx>
 
 class Aspect_Window;
+class V3d_View;
 
 //! Auxiliary tool performing continuous redraws of specified window.
 //! Tool creates an extra working thread pushing content invalidation messages to specific window using Aspect_Window::InvalidateContent() method.
@@ -39,11 +40,11 @@ public:
   bool IsStarted() const { return myThread.GetId() != 0; }
 
   //! Start thread.
-  Standard_EXPORT void Start (const Handle(Aspect_Window)& theWindow,
+  Standard_EXPORT void Start (const Handle(V3d_View)& theView,
                               Standard_Real theTargetFps);
 
   //! Stop thread.
-  Standard_EXPORT void Stop (const Handle(Aspect_Window)& theWindow = NULL);
+  Standard_EXPORT void Stop (const Handle(V3d_View)& theView = NULL);
 
   //! Return TRUE if redrawer thread is in paused state.
   bool IsPaused() const { return myToPause; }
@@ -68,7 +69,7 @@ private:
   ViewerTest_ContinuousRedrawer();
 
 private:
-  Handle(Aspect_Window) myWindow; //!< window to invalidate
+  Handle(V3d_View)   myView;      //!< view to invalidate
   OSD_Thread         myThread;    //!< working thread
   Standard_Mutex     myMutex;     //!< mutex for accessing common variables
   Standard_Condition myWakeEvent; //!< event to wake up working thread
