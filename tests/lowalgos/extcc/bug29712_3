@@ -17,9 +17,19 @@ line c2 3 4 0 1 0 0
 trim c1 c1 0 1
 trim c2 c2 0 1
 
-if { ![regexp {No solutions!} [extrema c1 c2] ] } {
+extrema c1 c2
+
+if { ![isdraw ext_1 ] } {
   puts "Error in Extrema-algorithm"
 } else {
   puts "Extrema-algorithm works properly"
 }
 
+renamevar ext_1 e1
+extrema c2 c1
+
+if { ![isdraw ext_1 ] } {
+  puts "Error in Extrema-algorithm"
+} else {
+  puts "Extrema-algorithm works properly"
+}

@@ -46,13 +46,24 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT Extrema_ExtCC(const Standard_Real TolC1 = 1.0e-10, const Standard_Real TolC2 = 1.0e-10);
+  Standard_EXPORT Extrema_ExtCC(const Standard_Real TolC1 = 1.0e-10,
+                                const Standard_Real TolC2 = 1.0e-10);
   
   //! It calculates all the distances.
-  Standard_EXPORT Extrema_ExtCC(const Adaptor3d_Curve& C1, const Adaptor3d_Curve& C2, const Standard_Real TolC1 = 1.0e-10, const Standard_Real TolC2 = 1.0e-10);
+  Standard_EXPORT Extrema_ExtCC(const Adaptor3d_Curve& C1,
+                                const Adaptor3d_Curve& C2,
+                                const Standard_Real TolC1 = 1.0e-10,
+                                const Standard_Real TolC2 = 1.0e-10);
   
   //! It calculates all the distances.
-  Standard_EXPORT Extrema_ExtCC(const Adaptor3d_Curve& C1, const Adaptor3d_Curve& C2, const Standard_Real U1, const Standard_Real U2, const Standard_Real V1, const Standard_Real V2, const Standard_Real TolC1 = 1.0e-10, const Standard_Real TolC2 = 1.0e-10);
+  Standard_EXPORT Extrema_ExtCC(const Adaptor3d_Curve& C1,
+                                const Adaptor3d_Curve& C2,
+                                const Standard_Real U1,
+                                const Standard_Real U2,
+                                const Standard_Real V1,
+                                const Standard_Real V2,
+                                const Standard_Real TolC1 = 1.0e-10,
+                                const Standard_Real TolC2 = 1.0e-10);
 
   //! Initializes but does not perform algorithm.
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C1,
@@ -72,9 +83,14 @@ public:
   
   Standard_EXPORT void SetCurve (const Standard_Integer theRank, const Adaptor3d_Curve& C);
   
-  Standard_EXPORT void SetCurve (const Standard_Integer theRank, const Adaptor3d_Curve& C, const Standard_Real Uinf, const Standard_Real Usup);
+  Standard_EXPORT void SetCurve (const Standard_Integer theRank,
+                                 const Adaptor3d_Curve& C,
+                                 const Standard_Real Uinf,
+                                 const Standard_Real Usup);
   
-  Standard_EXPORT void SetRange (const Standard_Integer theRank, const Standard_Real Uinf, const Standard_Real Usup);
+  Standard_EXPORT void SetRange (const Standard_Integer theRank,
+                                 const Standard_Real Uinf,
+                                 const Standard_Real Usup);
   
   Standard_EXPORT void SetTolerance (const Standard_Integer theRank, const Standard_Real Tol);
   
@@ -94,13 +110,22 @@ public:
   
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Points (const Standard_Integer N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const;
+  Standard_EXPORT void Points (const Standard_Integer N,
+                               Extrema_POnCurv& P1,
+                               Extrema_POnCurv& P2) const;
   
   //! if the curve is a trimmed curve,
   //! dist11 is a square distance between the point on C1
   //! of parameter FirstParameter and the point of
   //! parameter FirstParameter on C2.
-  Standard_EXPORT void TrimmedSquareDistances (Standard_Real& dist11, Standard_Real& distP12, Standard_Real& distP21, Standard_Real& distP22, gp_Pnt& P11, gp_Pnt& P12, gp_Pnt& P21, gp_Pnt& P22) const;
+  Standard_EXPORT void TrimmedSquareDistances (Standard_Real& dist11,
+                                               Standard_Real& distP12,
+                                               Standard_Real& distP21,
+                                               Standard_Real& distP22,
+                                               gp_Pnt& P11,
+                                               gp_Pnt& P12,
+                                               gp_Pnt& P21,
+                                               gp_Pnt& P22) const;
 
   //! Set flag for single extrema computation. Works on parametric solver only.
   Standard_EXPORT void SetSingleSolutionFlag (const Standard_Boolean theSingleSolutionFlag);
@@ -151,17 +176,17 @@ private:
   Standard_Boolean myIsFindSingleSolution; // Default value is false.
   Extrema_ECC myECC;
   Standard_Boolean myDone;
-  Standard_Boolean myIsPar;
+  Standard_Boolean myIsParallel;
   Extrema_SequenceOfPOnCurv mypoints;
   TColStd_SequenceOfReal mySqDist;
   const Adaptor3d_Curve* myC[2];
   Standard_Real myInf[2];
   Standard_Real mySup[2];
   Standard_Real myTol[2];
-  gp_Pnt P1f;
-  gp_Pnt P1l;
-  gp_Pnt P2f;
-  gp_Pnt P2l;
+  gp_Pnt myP1f;
+  gp_Pnt myP1l;
+  gp_Pnt myP2f;
+  gp_Pnt myP2l;
   Standard_Real mydist11;
   Standard_Real mydist12;
   Standard_Real mydist21;

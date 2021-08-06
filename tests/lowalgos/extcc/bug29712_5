@@ -16,13 +16,18 @@ line c2 5 0 0 0 0 1
 trim c1 c1 -1.0e100 5
 trim c2 c2 10 20
 
-if { ![regexp {No solutions!} [extrema c1 c2] ] } {
+extrema c1 c2
+
+if { ![isdraw ext_1 ] } {
   puts "Error in Extrema-algorithm"
 } else {
   puts "Extrema-algorithm works properly"
 }
 
-if { ![regexp {No solutions!} [extrema c2 c1] ] } {
+renamevar ext_1 e1
+extrema c2 c1
+
+if { ![isdraw ext_1 ] } {
   puts "Error in Extrema-algorithm"
 } else {
   puts "Extrema-algorithm works properly"
