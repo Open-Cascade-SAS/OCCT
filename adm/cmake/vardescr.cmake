@@ -176,6 +176,9 @@ set (USE_RAPIDJSON_DESCR
 "Indicates whether RapidJSON product should be used in OCCT DataExchange
 module for support of JSON-based formats like glTF")
 
+set (USE_DRACO_DESCR
+"Indicates whether Draco mesh decoding library should be used by glTF reader")
+
 set (USE_EGL_DESCR
 "Indicates whether EGL should be used in OCCT visualization
 module instead of conventional OpenGL context creation APIs")

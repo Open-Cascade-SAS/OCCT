@@ -21,11 +21,63 @@
 #include <Standard_ArrayStreamBuffer.hxx>
 #include <Standard_ReadBuffer.hxx>
 
+#ifdef HAVE_DRACO
+  #include <draco/compression/decode.h>
+#endif
+
 namespace
 {
   static const Standard_Integer   THE_LOWER_TRI_INDEX  = 1;
   static const Standard_Integer   THE_LOWER_NODE_INDEX = 1;
   static const Standard_ShortReal THE_NORMAL_PREC2 = 0.001f;
+
+#ifdef HAVE_DRACO
+  //! Return array type from Draco attribute type.
+  static RWGltf_GltfArrayType arrayTypeFromDraco (draco::GeometryAttribute::Type theType)
+  {
+    switch (theType)
+    {
+      case draco::GeometryAttribute::POSITION:  return RWGltf_GltfArrayType_Position;
+      case draco::GeometryAttribute::NORMAL:    return RWGltf_GltfArrayType_Normal;
+      case draco::GeometryAttribute::COLOR:     return RWGltf_GltfArrayType_Color;
+      case draco::GeometryAttribute::TEX_COORD: return RWGltf_GltfArrayType_TCoord0;
+      default:                                  return RWGltf_GltfArrayType_UNKNOWN;
+    }
+  }
+
+  //! Return layout from Draco number of components.
+  static RWGltf_GltfAccessorLayout layoutFromDraco (int8_t theNbComps)
+  {
+    switch (theNbComps)
+    {
+      case 1: return RWGltf_GltfAccessorLayout_Scalar;
+      case 2: return RWGltf_GltfAccessorLayout_Vec2;
+      case 3: return RWGltf_GltfAccessorLayout_Vec3;
+      case 4: return RWGltf_GltfAccessorLayout_Vec4;
+    }
+    return RWGltf_GltfAccessorLayout_UNKNOWN;
+  }
+
+  //! Return component type from Draco data type.
+  static RWGltf_GltfAccessorCompType compTypeFromDraco (draco::DataType theType)
+  {
+    switch (theType)
+    {
+      case draco::DT_INT8:    return RWGltf_GltfAccessorCompType_Int8;
+      case draco::DT_UINT8:   return RWGltf_GltfAccessorCompType_UInt8;
+      case draco::DT_INT16:   return RWGltf_GltfAccessorCompType_Int16;
+      case draco::DT_UINT16:  return RWGltf_GltfAccessorCompType_UInt16;
+      case draco::DT_INT32:
+      case draco::DT_UINT32:  return RWGltf_GltfAccessorCompType_UInt32;
+      //case draco::DT_INT64:
+      //case draco::DT_UINT64:
+      case draco::DT_FLOAT32: return RWGltf_GltfAccessorCompType_Float32;
+      //case draco::DT_FLOAT64:
+      //case draco::DT_BOOL:
+      default:                return RWGltf_GltfAccessorCompType_UNKNOWN;
+    }
+  }
+#endif
 }
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_TriangulationReader, RWMesh_TriangulationReader)
@@ -104,9 +156,10 @@ bool RWGltf_TriangulationReader::readFileData (const Handle(RWGltf_GltfLatePrimi
     (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
   if (aSharedStream.get() == NULL)
   {
-    reportError (TCollection_AsciiString("Buffer '") + theSourceGltfMesh->Id() + "refers to invalid file '" + theGltfData.StreamUri + "'.");
+    reportError (TCollection_AsciiString("Buffer '") + theSourceGltfMesh->Id() + "' refers to invalid file '" + theGltfData.StreamUri + "'.");
     return false;
   }
+
   if (!readBuffer (theSourceGltfMesh, theDestMesh, *aSharedStream.get(), theGltfData.Accessor, theGltfData.Type))
   {
     return false;
@@ -150,6 +203,218 @@ bool RWGltf_TriangulationReader::loadStreamData (const Handle(RWMesh_Triangulati
 }
 
 // =======================================================================
+// function : readDracoBuffer
+// purpose  :
+// =======================================================================
+bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
+                                                  const RWGltf_GltfPrimArrayData& theGltfData,
+                                                  const Handle(Poly_Triangulation)& theDestMesh,
+                                                  const Handle(OSD_FileSystem)& theFileSystem) const
+{
+  const TCollection_AsciiString& aName = theSourceGltfMesh->Id();
+  const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
+  opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
+  if (aSharedStream.get() == NULL)
+  {
+    reportError (TCollection_AsciiString("Buffer '") + aName + "' refers to invalid file '" + theGltfData.StreamUri + "'.");
+    return false;
+  }
+
+#ifdef HAVE_DRACO
+  std::vector<char> aReadData;
+  aReadData.resize (theGltfData.StreamLength);
+  aSharedStream->read (aReadData.data(), (std::streamsize )theGltfData.StreamLength);
+  if (!aSharedStream->good())
+  {
+    reportError (TCollection_AsciiString("Buffer '") + aName + "' refers to file that cannot be read '" + theGltfData.StreamUri + "'.");
+    return false;
+  }
+
+  draco::DecoderBuffer aDracoBuf;
+  aDracoBuf.Init (aReadData.data(), aReadData.size());
+
+  draco::Decoder aDracoDecoder;
+  draco::StatusOr<std::unique_ptr<draco::Mesh>> aDracoStat = aDracoDecoder.DecodeMeshFromBuffer (&aDracoBuf);
+  if (!aDracoStat.ok() || aDracoStat.value().get() == NULL)
+  {
+    reportError (TCollection_AsciiString("Buffer '") + aName + "' refers to Draco data that cannot be decoded '" + theGltfData.StreamUri + "'.");
+    return false;
+  }
+
+  const Standard_Integer aNbNodes = (Standard_Integer )aDracoStat.value()->num_points();
+  const Standard_Integer aNbTris  = (Standard_Integer )aDracoStat.value()->num_faces();
+  if (aNbNodes < 0)
+  {
+    reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines an empty array.");
+    return false;
+  }
+  if ((int64_t )aDracoStat.value()->num_points() > std::numeric_limits<Standard_Integer>::max())
+  {
+    reportError (TCollection_AsciiString ("Buffer '") + aName + "' defines too big array.");
+    return false;
+  }
+  if (!setNbPositionNodes (theDestMesh, aNbNodes))
+  {
+    return false;
+  }
+
+  if (aNbTris > 0
+  && !setNbTriangles (theDestMesh, aNbTris))
+  {
+    return false;
+  }
+
+  // copy vertex attributes
+  for (int32_t anAttrIter = 0; anAttrIter < aDracoStat.value()->num_attributes(); ++anAttrIter)
+  {
+    const draco::PointAttribute*      anAttrib      = aDracoStat.value()->attribute (anAttrIter);
+    const RWGltf_GltfArrayType        aWrapType     = arrayTypeFromDraco(anAttrib->attribute_type());
+    const RWGltf_GltfAccessorLayout   aWrapLayout   = layoutFromDraco   (anAttrib->num_components());
+    const RWGltf_GltfAccessorCompType aWrapCompType = compTypeFromDraco (anAttrib->data_type());
+    switch (aWrapType)
+    {
+      case RWGltf_GltfArrayType_Position:
+      {
+        if (aWrapCompType != RWGltf_GltfAccessorCompType_Float32
+         || aWrapLayout != RWGltf_GltfAccessorLayout_Vec3)
+        {
+          reportError (TCollection_AsciiString ("Buffer '") + aName + "' has unsupported position data type.");
+          return false;
+        }
+
+        for (Standard_Integer aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
+        {
+          const Graphic3d_Vec3* aVec3 = reinterpret_cast<const Graphic3d_Vec3* >(anAttrib->GetAddressOfMappedIndex (draco::PointIndex (aVertIter)));
+          if (aVec3 == NULL)
+          {
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
+            return false;
+          }
+
+          gp_Pnt anXYZ (aVec3->x(), aVec3->y(), aVec3->z());
+          myCoordSysConverter.TransformPosition (anXYZ.ChangeCoord());
+          setNodePosition (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, anXYZ);
+        }
+      }
+      case RWGltf_GltfArrayType_Normal:
+      {
+        if (aWrapCompType != RWGltf_GltfAccessorCompType_Float32
+         || aWrapLayout != RWGltf_GltfAccessorLayout_Vec3)
+        {
+          Message::SendTrace (TCollection_AsciiString() + "Vertex normals in unsupported format have been skipped while reading glTF triangulation '" + aName + "'");
+          break;
+        }
+
+        if (!setNbNormalNodes (theDestMesh, aNbNodes))
+        {
+          return false;
+        }
+
+        for (Standard_Integer aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
+        {
+          const Graphic3d_Vec3* aVec3 = reinterpret_cast<const Graphic3d_Vec3* >(anAttrib->GetAddressOfMappedIndex (draco::PointIndex (aVertIter)));
+          if (aVec3 == NULL)
+          {
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
+            return false;
+          }
+          if (aVec3->SquareModulus() >= THE_NORMAL_PREC2)
+          {
+            Graphic3d_Vec3 aVec3Copy = *aVec3;
+            myCoordSysConverter.TransformNormal (aVec3Copy);
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, aVec3Copy);
+          }
+          else
+          {
+            setNodeNormal (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Vec3f(0.0, 0.0, 1.0));
+          }
+        }
+        break;
+      }
+      case RWGltf_GltfArrayType_TCoord0:
+      {
+        if (aWrapCompType != RWGltf_GltfAccessorCompType_Float32
+         || aWrapLayout != RWGltf_GltfAccessorLayout_Vec2)
+        {
+          Message::SendTrace (TCollection_AsciiString() + "Vertex UV coordinates in unsupported format have been skipped while reading glTF triangulation '" + aName + "'");
+          break;
+        }
+
+        if (!setNbUVNodes (theDestMesh, aNbNodes))
+        {
+          return false;
+        }
+
+        for (int aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
+        {
+          const Graphic3d_Vec2* aVec2 = reinterpret_cast<const Graphic3d_Vec2* >(anAttrib->GetAddressOfMappedIndex (draco::PointIndex (aVertIter)));
+          if (aVec2 == NULL)
+          {
+            reportError (TCollection_AsciiString ("Buffer '") + aName + "' reading error.");
+            return false;
+          }
+
+          // Y should be flipped (relative to image layout used by OCCT)
+          float aTexY = 1.0f - aVec2->y();
+          setNodeUV (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, gp_Pnt2d (aVec2->x(), aTexY));
+        }
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+  }
+
+  // copy triangles
+  Standard_Integer aLastTriIndex = 0;
+  for (Standard_Integer aFaceIter = 0; aFaceIter < aNbTris; ++aFaceIter)
+  {
+    const draco::Mesh::Face& aFace = aDracoStat.value()->face (draco::FaceIndex (aFaceIter));
+    Poly_Triangle aVec3;
+    aVec3.ChangeValue (1) = THE_LOWER_NODE_INDEX + aFace[0].value();
+    aVec3.ChangeValue (2) = THE_LOWER_NODE_INDEX + aFace[1].value();
+    aVec3.ChangeValue (3) = THE_LOWER_NODE_INDEX + aFace[2].value();
+    const Standard_Integer wasSet = setTriangle (theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
+    if (!wasSet)
+    {
+      reportError (TCollection_AsciiString ("Buffer '") + aName + "' refers to invalid indices.");
+    }
+    if (wasSet > 0)
+    {
+      ++aLastTriIndex;
+    }
+  }
+
+  const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+  if (aNbDegenerate > 0)
+  {
+    if (aNbDegenerate == aNbTris)
+    {
+      Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' has been skipped (all elements are degenerative in)");
+      return false;
+    }
+    theSourceGltfMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
+    if (myLoadingStatistic == NULL && myToPrintDebugMessages)
+    {
+      Message::SendTrace (TCollection_AsciiString() + aNbDegenerate
+                          + " degenerate triangles have been skipped while reading glTF triangulation '" + aName + "'");
+    }
+    if (!setNbTriangles (theDestMesh, aLastTriIndex, true))
+    {
+      return false;
+    }
+  }
+  return true;
+#else
+  (void )theDestMesh;
+  reportError (TCollection_AsciiString ("Buffer '") + aName + "' refers to unsupported compressed data.");
+  return false;
+#endif
+}
+
+// =======================================================================
 // function : load
 // purpose  :
 // =======================================================================
@@ -164,22 +429,39 @@ bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)&
     return false;
   }
 
+  bool hasCompressed = false;
   for (NCollection_Sequence<RWGltf_GltfPrimArrayData>::Iterator aDataIter (aSourceGltfMesh->Data()); aDataIter.More(); aDataIter.Next())
   {
     const RWGltf_GltfPrimArrayData& aData = aDataIter.Value();
+    const TCollection_AsciiString& aName = aSourceGltfMesh->Id();
     if (!aData.StreamData.IsNull())
     {
-      Message::SendWarning (TCollection_AsciiString("Buffer '") + aSourceGltfMesh->Id() +
+      Message::SendWarning (TCollection_AsciiString("Buffer '") + aName +
         "' contains stream data that cannot be loaded during deferred data loading.");
       continue;
     }
     else if (aData.StreamUri.IsEmpty())
     {
-      reportError (TCollection_AsciiString ("Buffer '") + aSourceGltfMesh->Id() + "' does not define uri.");
+      reportError (TCollection_AsciiString ("Buffer '") + aName + "' does not define uri.");
       return false;
     }
 
-    if (!readFileData (aSourceGltfMesh, aData, theDestMesh, theFileSystem))
+    if (aData.Accessor.IsCompressed)
+    {
+      if (hasCompressed)
+      {
+        // already decoded (compressed stream defines all attributes at once)
+        continue;
+      }
+      if (!readDracoBuffer (aSourceGltfMesh, aData, theDestMesh, theFileSystem))
+      {
+        return false;
+      }
+
+      // keep decoding - there are might be uncompressed attributes in addition to compressed
+      hasCompressed = true;
+    }
+    else if (!readFileData (aSourceGltfMesh, aData, theDestMesh, theFileSystem))
     {
       return false;
     }

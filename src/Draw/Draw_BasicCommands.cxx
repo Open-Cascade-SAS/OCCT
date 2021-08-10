@@ -389,6 +389,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "RapidJSON disabled\n";
 #endif
+#ifdef HAVE_DRACO
+  di << "Draco enabled (HAVE_DRACO)\n";
+#else
+  di << "Draco disabled\n";
+#endif
 #ifdef HAVE_VTK
   di << "VTK enabled (HAVE_VTK)\n";
 #else

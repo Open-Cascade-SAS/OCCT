@@ -78,7 +78,7 @@ public:
   //! Add primitive array data element.
   Standard_EXPORT RWGltf_GltfPrimArrayData& AddPrimArrayData (RWGltf_GltfArrayType theType);
 
-  //! Return TRUE if there is deferred storege and some triangulation data
+  //! Return TRUE if there is deferred storage and some triangulation data
   //! that can be loaded using LoadDeferredData().
   virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
   {

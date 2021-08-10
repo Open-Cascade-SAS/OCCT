@@ -196,7 +196,8 @@ protected:
   Standard_EXPORT bool gltfParseAccessor (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                           const TCollection_AsciiString& theName,
                                           const RWGltf_JsonValue& theAccessor,
-                                          const RWGltf_GltfArrayType theType);
+                                          const RWGltf_GltfArrayType theType,
+                                          const RWGltf_JsonValue* theCompBuffView);
 
   //! Parse buffer view.
   Standard_EXPORT bool gltfParseBufferView (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,

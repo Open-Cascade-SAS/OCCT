@@ -370,6 +370,7 @@ https://www.opencascade.com/content/3rd-party-components
 | VTK 6.1+ | https://www.vtk.org/download/ | Visualization | Optional (VTK integration) |
 | Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Optional (update of STEP and ExprIntrp parsers) |
 | RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Optional (reading glTF files) |
+| Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Optional (reading compressed glTF files) |
 | Tcl/Tk 8.6.3+ <br> or ActiveTcl 8.6 | https://www.tcl.tk/software/tcltk/download.html <br> https://www.activestate.com/activetcl/downloads | DRAW Test Harness | Required |
 | Qt Desktop: Qt 4.8.6+ <br> Android: Qt 5.3.2+ | https://www.qt.io/download/ | Samples and demos | Optional (Qt samples) |
 | Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | Required |
@@ -641,6 +642,10 @@ on this tool.
 
 **RapidJSON** is an Open Source JSON parser and generator for C++.
 RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.org/).
+
+**Draco** is an Open Source JSON parser and generator for C++.
+Draco is optionally used by OCCT for reading glTF files using KHR_draco_mesh_compression extension (https://github.com/google/draco).
+Draco is available under Apache 2.0 license.
 
 **DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).
 DejaVu Sans (basic Latin sub-set) is used by OCCT as fallback font when no system font is available.

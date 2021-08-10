@@ -1447,6 +1447,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
   if { "$::HAVE_LIBLZMA" == "true" } {
     set aLibsMap(CSF_LIBLZMA) "liblzma"
   }
+  if { "$::HAVE_DRACO" == "true" } {
+    set aLibsMap(CSF_Draco) "draco"
+  }
   if { "$::HAVE_OPENVR" == "true" } {
     set aLibsMap(CSF_OpenVR) "openvr_api"
   }

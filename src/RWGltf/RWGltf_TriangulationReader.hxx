@@ -97,6 +97,16 @@ protected:
                                            const RWGltf_GltfAccessor& theAccessor,
                                            RWGltf_GltfArrayType theType) const;
 
+  //! Reads primitive array from file data compressed in Draco format.
+  //! @param theSourceGltfMesh source glTF triangulation
+  //! @param theGltfData       primitive array element (Uri of file stream should not be empty)
+  //! @param theDestMesh       triangulation to be modified
+  //! @param theFileSystem     shared file system to read from
+  Standard_EXPORT virtual bool readDracoBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
+                                                const RWGltf_GltfPrimArrayData& theGltfData,
+                                                const Handle(Poly_Triangulation)& theDestMesh,
+                                                const Handle(OSD_FileSystem)& theFileSystem) const;
+
 protected:
 
   Handle(Poly_Triangulation) myTriangulation;

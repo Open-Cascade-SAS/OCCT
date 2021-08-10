@@ -75,6 +75,13 @@ if (USE_TK)
   endif()
 endif()
 
+# Draco
+if (USE_DRACO)
+  set (CSF_Draco "draco")
+else()
+  set (CSF_Draco)
+endif()
+
 if (WIN32)
   set (CSF_advapi32      "advapi32.lib")
   set (CSF_gdi32         "gdi32.lib")

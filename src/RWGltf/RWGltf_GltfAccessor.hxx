@@ -33,6 +33,7 @@ public:
   RWGltf_GltfAccessorLayout   Type;          //!< layout type
   RWGltf_GltfAccessorCompType ComponentType; //!< component type
   Graphic3d_BndBox3d          BndBox;        //!< bounding box
+  bool                        IsCompressed;  //!< flag indicating KHR_draco_mesh_compression
 
   //! Empty constructor.
   RWGltf_GltfAccessor()
@@ -41,7 +42,8 @@ public:
     Count (0),
     ByteStride (0),
     Type (RWGltf_GltfAccessorLayout_UNKNOWN),
-    ComponentType (RWGltf_GltfAccessorCompType_UNKNOWN) {}
+    ComponentType (RWGltf_GltfAccessorCompType_UNKNOWN),
+    IsCompressed (false) {}
 
 };
 

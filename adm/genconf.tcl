@@ -227,6 +227,10 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_RAPIDJSON" == "true" } {
     wokdep:SearchRapidJson anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+  if { "$::HAVE_DRACO" == "true" } {
+    set aDummy {}
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs aDummy aDummy "draco" "draco/compression/decode.h" "draco" {"draco"}
+  }
 
   if {"$::BUILD_Inspector" == "true" } {
     set ::CHECK_QT "true"
@@ -495,6 +499,8 @@ ttk::label    .myFrame.myChecks.myFFmpegLbl     -text "Use FFmpeg"
 #ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myChecks.myRapidJsonCheck -offvalue "false" -onvalue "true" -variable HAVE_RAPIDJSON -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myRapidJsonLbl   -text "Use RapidJSON"
+checkbutton   .myFrame.myChecks.myDracoCheck    -offvalue "false" -onvalue "true" -variable HAVE_DRACO     -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myDracoLbl      -text "Use Draco"
 
 checkbutton   .myFrame.myChecks.myXLibCheck     -offvalue "false" -onvalue "true" -variable HAVE_XLIB
 ttk::label    .myFrame.myChecks.myXLibLbl       -text "Use X11 for windows drawing"
@@ -627,8 +633,9 @@ grid .myFrame.myChecks.myQtLbl        -row $aCheckRowIter -column 13 -sticky w
 incr aCheckRowIter
 grid .myFrame.myChecks.myFImageCheck   -row $aCheckRowIter -column 0 -sticky e
 grid .myFrame.myChecks.myFImageLbl     -row $aCheckRowIter -column 1 -sticky w
-grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 2 -sticky e
-grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 3 -sticky w
+grid .myFrame.myChecks.myDracoCheck    -row $aCheckRowIter -column 2 -sticky e
+grid .myFrame.myChecks.myDracoLbl      -row $aCheckRowIter -column 3 -sticky w
+
 if { "$::tcl_platform(platform)" == "windows" } {
   grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 4 -sticky e
   grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 5 -sticky w
@@ -655,6 +662,11 @@ if { "$::tcl_platform(platform)" == "windows" } {
   grid .myFrame.myChecks.myInspectorBuild      -row $aCheckRowIter -column 12 -sticky e
   grid .myFrame.myChecks.myInspectorLbl        -row $aCheckRowIter -column 13 -sticky w
 }
+
+incr aCheckRowIter
+
+grid .myFrame.myChecks.myTbbCheck      -row $aCheckRowIter -column 12 -sticky e
+grid .myFrame.myChecks.myTbbLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
 

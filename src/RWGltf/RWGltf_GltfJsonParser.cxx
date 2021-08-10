@@ -35,8 +35,9 @@
 namespace
 {
   //! Material extension.
-  const char THE_KHR_materials_common[] = "KHR_materials_common";
-  const char THE_KHR_binary_glTF[]      = "KHR_binary_glTF";
+  static const char THE_KHR_materials_common[] = "KHR_materials_common";
+  static const char THE_KHR_binary_glTF[]      = "KHR_binary_glTF";
+  static const char THE_KHR_draco_mesh_compression[] = "KHR_draco_mesh_compression";
 
   //! Data buffer referring to a portion of another buffer.
   class RWGltf_SubBuffer : public NCollection_Buffer
@@ -1404,6 +1405,14 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
   const RWGltf_JsonValue* anIndices = findObjectMember (thePrimArray, "indices");
   const RWGltf_JsonValue* aMaterial = findObjectMember (thePrimArray, "material");
   const RWGltf_JsonValue* aModeVal  = findObjectMember (thePrimArray, "mode");
+  const RWGltf_JsonValue* anExtVal  = findObjectMember (thePrimArray, "extensions");
+  const RWGltf_JsonValue* aDracoVal = anExtVal != NULL
+                                    ? findObjectMember (*anExtVal, THE_KHR_draco_mesh_compression)
+                                    : NULL;
+  const RWGltf_JsonValue* aDracoBuf = aDracoVal != NULL
+                                    ? findObjectMember (*aDracoVal, "bufferView")
+                                    : NULL;
+
   RWGltf_GltfPrimitiveMode aMode = RWGltf_GltfPrimitiveMode_Triangles;
   if (anAttribs == NULL
   || !anAttribs->IsObject())
@@ -1473,7 +1482,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
       reportGltfError ("Primitive array attribute accessor key '" + anAttribId + "' points to non-existing object.");
       return false;
     }
-    else if (!gltfParseAccessor (theMeshData, anAttribId, *anAccessor, aType))
+    else if (!gltfParseAccessor (theMeshData, anAttribId, *anAccessor, aType, aDracoBuf))
     {
       return false;
     }
@@ -1498,7 +1507,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
       reportGltfError ("Primitive array indices accessor key '" + anIndicesId + "' points to non-existing object.");
       return false;
     }
-    else if (!gltfParseAccessor (theMeshData, anIndicesId, *anAccessor, RWGltf_GltfArrayType_Indices))
+    else if (!gltfParseAccessor (theMeshData, anIndicesId, *anAccessor, RWGltf_GltfArrayType_Indices, aDracoBuf))
     {
       return false;
     }
@@ -1518,12 +1527,17 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
 bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                                const TCollection_AsciiString& theName,
                                                const RWGltf_JsonValue& theAccessor,
-                                               const RWGltf_GltfArrayType theType)
+                                               const RWGltf_GltfArrayType theType,
+                                               const RWGltf_JsonValue* theCompBuffView)
 {
   RWGltf_GltfAccessor aStruct;
   const RWGltf_JsonValue* aTypeStr        = findObjectMember (theAccessor, "type");
-  const RWGltf_JsonValue* aBufferViewName = findObjectMember (theAccessor, "bufferView");
-  const RWGltf_JsonValue* aByteOffset     = findObjectMember (theAccessor, "byteOffset");
+  const RWGltf_JsonValue* aBufferViewName = theCompBuffView == NULL
+                                          ? findObjectMember (theAccessor, "bufferView")
+                                          : theCompBuffView;
+  const RWGltf_JsonValue* aByteOffset     = theCompBuffView == NULL
+                                          ? findObjectMember (theAccessor, "byteOffset")
+                                          : 0;
   const RWGltf_JsonValue* aByteStride     = findObjectMember (theAccessor, "byteStride"); // byteStride was part of bufferView in glTF 1.0
   const RWGltf_JsonValue* aCompType       = findObjectMember (theAccessor, "componentType");
   const RWGltf_JsonValue* aCount          = findObjectMember (theAccessor, "count");
@@ -1534,6 +1548,7 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimi
     return false;
   }
   aStruct.Type = RWGltf_GltfParseAccessorType (aTypeStr->GetString());
+  aStruct.IsCompressed = theCompBuffView != NULL;
   if (aStruct.Type == RWGltf_GltfAccessorLayout_UNKNOWN)
   {
     reportGltfError ("Accessor '" + theName + "' has invalid type.");
@@ -1767,6 +1782,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
     aData.Accessor = theAccessor;
     aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
+    aData.StreamLength = theView.ByteLength;
     aData.StreamUri = myFilePath;
     return true;
   }
@@ -1785,6 +1801,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
     aData.Accessor = theAccessor;
     aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
+    aData.StreamLength = 0;
     if (!myDecodedBuffers.Find (theName, aData.StreamData))
     {
       // it is better decoding in multiple threads
@@ -1819,6 +1836,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
     aData.Accessor = theAccessor;
     aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
+    aData.StreamLength = theView.ByteLength;
     aData.StreamUri = myFolder + anUri;
     if (myExternalFiles != NULL)
     {
