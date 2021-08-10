@@ -191,7 +191,9 @@ XCAFDoc_VisMaterialPBR XCAFDoc_VisMaterial::ConvertToPbrMaterial()
   aPbrMat.BaseColorTexture = myCommonMat.DiffuseTexture;
   aPbrMat.BaseColor.SetRGB (myCommonMat.DiffuseColor);
   aPbrMat.BaseColor.SetAlpha (1.0f - myCommonMat.Transparency);
-  aPbrMat.Metallic  = Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor);
+  aPbrMat.Metallic  = myCommonMat.Transparency <= ShortRealEpsilon()
+                    ? Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor)
+                    : 0.0f;
   aPbrMat.Roughness = Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess);
   aPbrMat.EmissiveFactor = myCommonMat.EmissiveColor;
   return aPbrMat;
@@ -218,7 +220,9 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     {
       Graphic3d_PBRMaterial aPbr;
       aPbr.SetColor (myCommonMat.DiffuseColor);
-      aPbr.SetMetallic (Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor));
+      aPbr.SetMetallic (myCommonMat.Transparency <= ShortRealEpsilon()
+                      ? Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor)
+                      : 0.0f);
       aPbr.SetRoughness (Graphic3d_PBRMaterial::RoughnessFromSpecular (myCommonMat.SpecularColor, myCommonMat.Shininess));
       aPbr.SetEmission (myCommonMat.EmissiveColor);
       theAspect.SetPBRMaterial (aPbr);

@@ -420,6 +420,7 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
     aPbrMat.BaseColor.SetRGB (theStyle.GetColorSurf());
     if (theStyle.GetColorSurfRGBA().Alpha() < 1.0f)
     {
+      aPbrMat.Metallic = 0.0f;
       aPbrMat.BaseColor.SetAlpha (theStyle.GetColorSurfRGBA().Alpha());
     }
   }
