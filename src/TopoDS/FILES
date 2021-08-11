@@ -19,7 +19,6 @@ TopoDS_HShape.hxx
 TopoDS_HShape.lxx
 TopoDS_Iterator.cxx
 TopoDS_Iterator.hxx
-TopoDS_Iterator.lxx
 TopoDS_ListIteratorOfListOfShape.hxx
 TopoDS_ListOfShape.hxx
 TopoDS_LockedShape.hxx

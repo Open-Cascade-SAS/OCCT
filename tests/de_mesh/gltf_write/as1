@@ -1,0 +1,24 @@
+puts "========"
+puts "0032530: Data Exchange, RWGltf_CafWriter - add option merging Faces within the Part"
+puts "========"
+
+Close D0 -silent
+ReadStep D0 [locate_data_file as1-oc-214-mat.stp]
+XGetOneShape ss D0
+incmesh ss 1.0
+
+set aTmpGltf1 "${imagedir}/${casename}_tmp1.glb"
+set aTmpGltf2 "${imagedir}/${casename}_tmp2.glb"
+lappend occ_tmp_files $aTmpGltf1
+lappend occ_tmp_files $aTmpGltf2
+
+WriteGltf D0 "$aTmpGltf1"
+WriteGltf D0 "$aTmpGltf2" -mergeFaces
+
+ReadGltf D1 "$aTmpGltf1"
+XGetOneShape s1 D1
+checknbshapes s1 -face 160 -compound 28
+
+ReadGltf D "$aTmpGltf2"
+XGetOneShape s2 D
+checknbshapes s2 -face 18 -compound 10

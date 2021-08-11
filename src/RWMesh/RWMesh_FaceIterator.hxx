@@ -39,6 +39,13 @@ public:
                                        const Standard_Boolean theToMapColors = false,
                                        const XCAFPrs_Style&   theStyle = XCAFPrs_Style());
 
+  //! Auxiliary constructor.
+  Standard_EXPORT RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
+                                       const XCAFPrs_Style& theStyle = XCAFPrs_Style());
+
+  //! Return explored shape.
+  const TopoDS_Shape& ExploredShape() const { return myFaceIter.ExploredShape(); }
+
   //! Return true if iterator points to the valid triangulation.
   bool More() const { return !myPolyTriang.IsNull(); }
 

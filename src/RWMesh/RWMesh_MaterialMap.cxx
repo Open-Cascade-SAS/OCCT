@@ -38,6 +38,10 @@ RWMesh_MaterialMap::RWMesh_MaterialMap (const TCollection_AsciiString& theFile)
   TCollection_AsciiString aFileName, aFileExt;
   OSD_Path::FolderAndFileFromPath (theFile, myFolder, aFileName);
   OSD_Path::FileNameAndExtension (aFileName, myShortFileNameBase, aFileExt);
+  if (myFolder.IsEmpty())
+  {
+    myFolder = ".";
+  }
 }
 
 // =======================================================================
@@ -216,6 +220,7 @@ bool RWMesh_MaterialMap::CreateTextureFolder()
   OSD_Directory aResDir (aResFolderPath);
   if (!aResDir.Exists())
   {
+    Message::SendFail() << "Failed to create textures folder '" << myFolder << "'";
     return false;
   }
   const OSD_Protection aParentProt = aResDir.Protection();
@@ -233,6 +238,7 @@ bool RWMesh_MaterialMap::CreateTextureFolder()
   if (aTexDir.Failed())
   {
     // fallback to the same folder as output model file
+    Message::SendFail() << "Failed to create textures folder '" << myTexFolder << "'";
     myTexFolder = myFolder;
     myTexFolderShort.Clear();
     return true;

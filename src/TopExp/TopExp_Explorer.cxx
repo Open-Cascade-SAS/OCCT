@@ -17,14 +17,11 @@
 #define No_Standard_NoMoreObject
 #define No_Standard_NoSuchObject
 
+#include <TopExp_Explorer.hxx>
 
-#include <Standard.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <TopAbs.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Shape.hxx>
 
 // macro to compare two types of shapes
 // always True if the first one is SHAPE

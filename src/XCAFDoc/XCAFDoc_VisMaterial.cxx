@@ -240,6 +240,11 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
       theAspect.SetAlpha        (myPbrMat.BaseColor.Alpha());
       theAspect.SetSpecularColor(Quantity_Color (Graphic3d_Vec3 (myPbrMat.Metallic)));
       theAspect.SetShininess    (1.0f - myPbrMat.Roughness);
+      if (theAspect.Shininess() < 0.01f)
+      {
+        // clamp too small shininess values causing visual artifacts on corner view angles
+        theAspect.SetShininess (0.01f);
+      }
       theAspect.SetEmissiveColor (Quantity_Color (myPbrMat.EmissiveFactor.cwiseMin (Graphic3d_Vec3 (1.0f))));
     }
 

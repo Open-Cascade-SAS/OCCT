@@ -99,6 +99,21 @@ public:
   //! Set flag to write image textures into GLB file (binary gltf export).
   void SetToEmbedTexturesInGlb (Standard_Boolean theToEmbedTexturesInGlb) { myToEmbedTexturesInGlb = theToEmbedTexturesInGlb; }
 
+  //! Return flag to merge faces within a single part; FALSE by default.
+  bool ToMergeFaces() const { return myToMergeFaces; }
+
+  //! Set flag to merge faces within a single part.
+  //! May reduce JSON size thanks to smaller number of primitive arrays.
+  void SetMergeFaces (bool theToMerge) { myToMergeFaces = theToMerge; }
+
+  //! Return flag to prefer keeping 16-bit indexes while merging face; FALSE by default.
+  bool ToSplitIndices16() const { return myToSplitIndices16; }
+
+  //! Set flag to prefer keeping 16-bit indexes while merging face.
+  //! Has effect only with ToMergeFaces() option turned ON.
+  //! May reduce binary data size thanks to smaller triangle indexes.
+  void SetSplitIndices16 (bool theToSplit) { myToSplitIndices16 = theToSplit; }
+
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
   //! @param theDocument    [in] input document
@@ -262,6 +277,14 @@ protected:
   //! @param theMaterialMap  [in] map of materials
   Standard_EXPORT virtual void writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
+  //! Write a primitive array to RWGltf_GltfRootElement_Meshes section.
+  //! @param[in]     theGltfFace     face to write
+  //! @param[in]     theName         primitive array name
+  //! @param[in,out] theToStartPrims flag indicating that primitive array has been started
+  Standard_EXPORT virtual void writePrimArray (const RWGltf_GltfFace& theGltfFace,
+                                               const TCollection_AsciiString& theName,
+                                               bool& theToStartPrims);
+
   //! Write RWGltf_GltfRootElement_Nodes section.
   //! @param theDocument     [in] input document
   //! @param theRootLabels   [in] list of root shapes to export
@@ -295,6 +318,10 @@ protected:
 
 protected:
 
+  typedef NCollection_IndexedDataMap<TopoDS_Shape, Handle(RWGltf_GltfFaceList), TopTools_ShapeMapHasher> ShapeToGltfFaceMap;
+
+protected:
+
   TCollection_AsciiString                       myFile;              //!< output glTF file
   TCollection_AsciiString                       myBinFileNameFull;   //!< output file with binary data (full  path)
   TCollection_AsciiString                       myBinFileNameShort;  //!< output file with binary data (short path)
@@ -304,6 +331,8 @@ protected:
   Standard_Boolean                              myIsBinary;          //!< flag to write into binary glTF format (.glb)
   Standard_Boolean                              myIsForcedUVExport;  //!< export UV coordinates even if there are no mapped texture
   Standard_Boolean                              myToEmbedTexturesInGlb; //!< flag to write image textures into GLB file
+  Standard_Boolean                              myToMergeFaces;      //!< flag to merge faces within a single part
+  Standard_Boolean                              myToSplitIndices16;  //!< flag to prefer keeping 16-bit indexes while merging face
   RWMesh_CoordinateSystemConverter              myCSTrsf;            //!< transformation from OCCT to glTF coordinate system
   XCAFPrs_Style                                 myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
 
@@ -314,8 +343,7 @@ protected:
   RWGltf_GltfBufferView                         myBuffViewNorm;      //!< current buffer view with nodes normals
   RWGltf_GltfBufferView                         myBuffViewTextCoord; //!< current buffer view with nodes UV coordinates
   RWGltf_GltfBufferView                         myBuffViewInd;       //!< current buffer view with triangulation indexes
-  NCollection_DataMap<TopoDS_Shape, RWGltf_GltfFace,
-                      TopTools_ShapeMapHasher>  myBinDataMap;        //!< map for TopoDS_Face to glTF face (merging duplicates)
+  ShapeToGltfFaceMap                            myBinDataMap;        //!< map for TopoDS_Face to glTF face (merging duplicates)
   int64_t                                       myBinDataLen64;      //!< length of binary file
 
 };

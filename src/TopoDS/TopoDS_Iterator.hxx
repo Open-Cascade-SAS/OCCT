@@ -17,19 +17,11 @@
 #ifndef _TopoDS_Iterator_HeaderFile
 #define _TopoDS_Iterator_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
+#include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_ListIteratorOfListOfShape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
-#include <Standard_Boolean.hxx>
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
-
 
 //! Iterates on the underlying shape underlying a given
 //! TopoDS_Shape object, providing access to its
@@ -42,10 +34,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates an empty Iterator.
-    TopoDS_Iterator();
-  
+  TopoDS_Iterator() {}
+
   //! Creates an Iterator on <S> sub-shapes.
   //! Note:
   //! - If cumOri is true, the function composes all
@@ -53,8 +44,13 @@ public:
   //! - If cumLoc is true, the function multiplies all
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
-    TopoDS_Iterator(const TopoDS_Shape& S, const Standard_Boolean cumOri = Standard_True, const Standard_Boolean cumLoc = Standard_True);
-  
+  TopoDS_Iterator (const TopoDS_Shape& S,
+                   const Standard_Boolean cumOri = Standard_True,
+                   const Standard_Boolean cumLoc = Standard_True)
+  {
+    Initialize (S, cumOri,cumLoc);
+  }
+
   //! Initializes this iterator with shape S.
   //! Note:
   //! - If cumOri is true, the function composes all
@@ -66,8 +62,8 @@ public:
   
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-    Standard_Boolean More() const;
-  
+  Standard_Boolean More() const { return myShapes.More(); }
+
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
   //! Exceptions
@@ -78,34 +74,19 @@ public:
   //! this iterator is scanning.
   //! Exceptions
   //! Standard_NoSuchObject if there is no current sub-shape.
-    const TopoDS_Shape& Value() const;
-
-
-
-
-protected:
-
-
-
-
+  const TopoDS_Shape& Value() const
+  {
+    Standard_NoSuchObject_Raise_if(!More(),"TopoDS_Iterator::Value");  
+    return myShape;
+  }
 
 private:
-
-
 
   TopoDS_Shape myShape;
   TopoDS_ListIteratorOfListOfShape myShapes;
   TopAbs_Orientation myOrientation;
   TopLoc_Location myLocation;
 
-
 };
-
-
-#include <TopoDS_Iterator.lxx>
-
-
-
-
 
 #endif // _TopoDS_Iterator_HeaderFile

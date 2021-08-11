@@ -54,6 +54,28 @@ RWMesh_FaceIterator::RWMesh_FaceIterator (const TDF_Label&       theLabel,
 }
 
 // =======================================================================
+// function : RWMesh_FaceIterator
+// purpose  :
+// =======================================================================
+RWMesh_FaceIterator::RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
+                                          const XCAFPrs_Style& theStyle)
+: myDefStyle (theStyle),
+  myToMapColors (true),
+  mySLTool  (1, 1e-12),
+  myHasNormals (false),
+  myIsMirrored (false),
+  myHasFaceColor (false)
+{
+  if (theShape.IsNull())
+  {
+    return;
+  }
+
+  myFaceIter.Init (theShape, TopAbs_FACE);
+  Next();
+}
+
+// =======================================================================
 // function : dispatchStyles
 // purpose  :
 // =======================================================================

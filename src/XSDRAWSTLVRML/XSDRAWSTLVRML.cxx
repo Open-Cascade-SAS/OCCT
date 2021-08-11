@@ -148,6 +148,27 @@ static bool parseNameFormat (const char* theArg,
   return true;
 }
 
+//! Parse RWMesh_CoordinateSystem enumeration.
+static bool parseCoordinateSystem (const char* theArg,
+                                   RWMesh_CoordinateSystem& theSystem)
+{
+  TCollection_AsciiString aCSStr (theArg);
+  aCSStr.LowerCase();
+  if (aCSStr == "zup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Zup;
+  }
+  else if (aCSStr == "yup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Yup;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
+
 //=============================================================================
 //function : ReadGltf
 //purpose  : Reads glTF file
@@ -333,7 +354,9 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
   TColStd_IndexedDataMapOfStringString aFileInfo;
   RWGltf_WriterTrsfFormat aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
+  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
   bool toForceUVExport = false, toEmbedTexturesInGlb = true;
+  bool toMergeFaces = false, toSplitIndices16 = false;
   RWMesh_NameFormat aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
   RWMesh_NameFormat aMeshNameFormat = RWMesh_NameFormat_Product;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
@@ -358,6 +381,40 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
        && Draw::ParseOnOff (theArgVec[anArgIter + 1], toForceUVExport))
       {
         ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-mergefaces")
+    {
+      toMergeFaces = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toMergeFaces))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-splitindices16"
+          || anArgCase == "-splitindexes16"
+          || anArgCase == "-splitindices"
+          || anArgCase == "-splitindexes"
+          || anArgCase == "-splitind")
+    {
+      toSplitIndices16 = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toSplitIndices16))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArgCase == "-systemcoordinatesystem"
+           || anArgCase == "-systemcoordsystem"
+           || anArgCase == "-systemcoordsys"
+           || anArgCase == "-syscoordsys"))
+    {
+      if (!parseCoordinateSystem (theArgVec[++anArgIter], aSystemCoordSys))
+      {
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
+        return 1;
       }
     }
     else if (anArgCase == "-trsfformat"
@@ -456,8 +513,10 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   aWriter.SetMeshNameFormat (aMeshNameFormat);
   aWriter.SetForcedUVExport (toForceUVExport);
   aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
+  aWriter.SetMergeFaces (toMergeFaces);
+  aWriter.SetSplitIndices16 (toSplitIndices16);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
-  aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (RWMesh_CoordinateSystem_Zup);
+  aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (aSystemCoordSys);
   aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
   return 0;
 }
@@ -548,27 +607,6 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
   }
   DBRep::Set (aShapeName.ToCString(), aShape);
   return 0;
-}
-
-//! Parse RWMesh_CoordinateSystem enumeration.
-static Standard_Boolean parseCoordinateSystem (const char* theArg,
-                                               RWMesh_CoordinateSystem& theSystem)
-{
-  TCollection_AsciiString aCSStr (theArg);
-  aCSStr.LowerCase();
-  if (aCSStr == "zup")
-  {
-    theSystem = RWMesh_CoordinateSystem_Zup;
-  }
-  else if (aCSStr == "yup")
-  {
-    theSystem = RWMesh_CoordinateSystem_Yup;
-  }
-  else
-  {
-    return Standard_False;
-  }
-  return Standard_True;
 }
 
 //=============================================================================
@@ -1985,14 +2023,18 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
                    __FILE__, ReadGltf, g);
   theCommands.Add ("WriteGltf",
-                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact]"
+                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}]=compact"
+           "\n\t\t:                    [-systemCoordSys {Zup|Yup}]=Zup"
            "\n\t\t:                    [-comments Text] [-author Name]"
-           "\n\t\t:                    [-forceUVExport] [-texturesSeparate]"
-           "\n\t\t:                    [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}=instOrProd]"
-           "\n\t\t:                    [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}=product]"
+           "\n\t\t:                    [-forceUVExport]=0 [-texturesSeparate]=0 [-mergeFaces]=0 [-splitIndices16]=0"
+           "\n\t\t:                    [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=instOrProd"
+           "\n\t\t:                    [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
            "\n\t\t: Write XDE document into glTF file."
            "\n\t\t:   -trsfFormat preferred transformation format"
-           "\n\t\t:   -forceUVExport always export UV coordinates"
+           "\n\t\t:   -systemCoordSys system coordinate system; Zup when not specified"
+           "\n\t\t:   -mergeFaces     merge Faces within the same Mesh"
+           "\n\t\t:   -splitIndices16 split Faces to keep 16-bit indices when -mergeFaces is enabled"
+           "\n\t\t:   -forceUVExport  always export UV coordinates"
            "\n\t\t:   -texturesSeparate write textures to separate files"
            "\n\t\t:   -nodeNameFormat name format for Nodes"
            "\n\t\t:   -meshNameFormat name format for Meshes",

@@ -17,19 +17,8 @@
 #ifndef _TopExp_Explorer_HeaderFile
 #define _TopExp_Explorer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <TopExp_Stack.hxx>
-#include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
-
 
 //! An Explorer is a Tool to visit  a Topological Data
 //! Structure form the TopoDS package.
@@ -117,10 +106,9 @@ public:
   //! ToFind it has no effect on the search.
   Standard_EXPORT void Init (const TopoDS_Shape& S, const TopAbs_ShapeEnum ToFind, const TopAbs_ShapeEnum ToAvoid = TopAbs_SHAPE);
   
-  //! Returns  True if  there are   more  shapes in  the
-  //! exploration.
-    Standard_Boolean More() const;
-  
+  //! Returns True if there are more shapes in the exploration.
+  Standard_Boolean More() const { return hasMore; }
+
   //! Moves to the next Shape in the exploration.
   //! Exceptions
   //! Standard_NoMoreObject if there are no more shapes to explore.
@@ -135,15 +123,17 @@ public:
   //! Exceptions
   //! Standard_NoSuchObject if this explorer has no more shapes to explore.
   Standard_EXPORT const TopoDS_Shape& Current() const;
-  
-  //! Reinitialize  the    exploration with the original
-  //! arguments.
+
+  //! Reinitialize the exploration with the original arguments.
   Standard_EXPORT void ReInit();
-  
+
+  //! Return explored shape.
+  const TopoDS_Shape& ExploredShape() const { return myShape; }
+
   //! Returns the current depth of the exploration. 0 is
   //! the shape to explore itself.
-    Standard_Integer Depth() const;
-  
+  Standard_Integer Depth() const { return myTop; }
+
   //! Clears the content of the explorer. It will return
   //! False on More().
     void Clear();
@@ -154,18 +144,7 @@ public:
   Destroy();
 }
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TopExp_Stack myStack;
   Standard_Integer myTop;
@@ -175,14 +154,21 @@ private:
   TopAbs_ShapeEnum toFind;
   TopAbs_ShapeEnum toAvoid;
 
-
 };
 
+#include <TopoDS_Iterator.hxx>
 
-#include <TopExp_Explorer.lxx>
-
-
-
-
+inline void TopExp_Explorer::Clear()
+{
+  hasMore = Standard_False;
+  if (myTop > 0)
+  {
+    for (int i = 1; i <= myTop; i++)
+    {
+      myStack[i].~TopoDS_Iterator();
+    }
+  }
+  myTop = 0;
+}
 
 #endif // _TopExp_Explorer_HeaderFile
