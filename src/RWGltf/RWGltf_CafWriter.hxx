@@ -22,6 +22,7 @@
 #include <RWGltf_GltfFace.hxx>
 #include <RWGltf_WriterTrsfFormat.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
+#include <RWMesh_NameFormat.hxx>
 #include <XCAFPrs_Style.hxx>
 
 #include <memory>
@@ -65,6 +66,18 @@ public:
 
   //! Set preferred transformation format for writing into glTF file.
   void SetTransformationFormat (RWGltf_WriterTrsfFormat theFormat) { myTrsfFormat = theFormat; }
+
+  //! Return name format for exporting Nodes; RWMesh_NameFormat_InstanceOrProduct by default.
+  RWMesh_NameFormat NodeNameFormat() const { return myNodeNameFormat; }
+
+  //! Set name format for exporting Nodes.
+  void SetNodeNameFormat (RWMesh_NameFormat theFormat) { myNodeNameFormat = theFormat; }
+
+  //! Return name format for exporting Meshes; RWMesh_NameFormat_Product by default.
+  RWMesh_NameFormat MeshNameFormat() const { return myMeshNameFormat; }
+
+  //! Set name format for exporting Meshes.
+  void SetMeshNameFormat (RWMesh_NameFormat theFormat) { myMeshNameFormat = theFormat; }
 
   //! Return TRUE to export UV coordinates even if there are no mapped texture; FALSE by default.
   bool IsForcedUVExport() const { return myIsForcedUVExport; }
@@ -144,6 +157,14 @@ protected:
 
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
   Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh (const RWMesh_FaceIterator& theFaceIter);
+
+  //! Generate name for specified labels.
+  //! @param[in] theFormat   name format to apply
+  //! @param[in] theLabel    instance label
+  //! @param[in] theRefLabel product label
+  Standard_EXPORT virtual TCollection_AsciiString formatName (RWMesh_NameFormat theFormat,
+                                                              const TDF_Label& theLabel,
+                                                              const TDF_Label& theRefLabel) const;
 
   //! Write mesh nodes into binary file.
   //! @param theGltfFace [out] glTF face definition
@@ -278,6 +299,8 @@ protected:
   TCollection_AsciiString                       myBinFileNameFull;   //!< output file with binary data (full  path)
   TCollection_AsciiString                       myBinFileNameShort;  //!< output file with binary data (short path)
   RWGltf_WriterTrsfFormat                       myTrsfFormat;        //!< transformation format to write into glTF file
+  RWMesh_NameFormat                             myNodeNameFormat;    //!< name format for exporting Nodes
+  RWMesh_NameFormat                             myMeshNameFormat;    //!< name format for exporting Meshes
   Standard_Boolean                              myIsBinary;          //!< flag to write into binary glTF format (.glb)
   Standard_Boolean                              myIsForcedUVExport;  //!< export UV coordinates even if there are no mapped texture
   Standard_Boolean                              myToEmbedTexturesInGlb; //!< flag to write image textures into GLB file

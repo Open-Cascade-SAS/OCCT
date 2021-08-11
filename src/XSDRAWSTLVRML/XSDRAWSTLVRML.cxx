@@ -90,6 +90,64 @@ extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theNam
                                            const Handle(AIS_InteractiveObject)& theAISObj,
                                            Standard_Boolean theReplaceIfExists = Standard_True);
 
+//! Parse RWMesh_NameFormat enumeration.
+static bool parseNameFormat (const char* theArg,
+                             RWMesh_NameFormat& theFormat)
+{
+  TCollection_AsciiString aName (theArg);
+  aName.LowerCase();
+  if (aName == "empty")
+  {
+    theFormat = RWMesh_NameFormat_Empty;
+  }
+  else if (aName == "product"
+        || aName == "prod")
+  {
+    theFormat = RWMesh_NameFormat_Product;
+  }
+  else if (aName == "instance"
+        || aName == "inst")
+  {
+    theFormat = RWMesh_NameFormat_Instance;
+  }
+  else if (aName == "instanceorproduct"
+        || aName == "instance||product"
+        || aName == "instance|product"
+        || aName == "instorprod"
+        || aName == "inst||prod"
+        || aName == "inst|prod")
+  {
+    theFormat = RWMesh_NameFormat_InstanceOrProduct;
+  }
+  else if (aName == "productorinstance"
+        || aName == "product||instance"
+        || aName == "product|instance"
+        || aName == "prodorinst"
+        || aName == "prod||inst"
+        || aName == "prod|inst")
+  {
+    theFormat = RWMesh_NameFormat_ProductOrInstance;
+  }
+  else if (aName == "productandinstance"
+        || aName == "prodandinst"
+        || aName == "product&instance"
+        || aName == "prod&inst")
+  {
+    theFormat = RWMesh_NameFormat_ProductAndInstance;
+  }
+  else if (aName == "productandinstanceandocaf"
+        || aName == "verbose"
+        || aName == "debug")
+  {
+    theFormat = RWMesh_NameFormat_ProductAndInstanceAndOcaf;
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
 //=============================================================================
 //function : ReadGltf
 //purpose  : Reads glTF file
@@ -276,6 +334,8 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   TColStd_IndexedDataMapOfStringString aFileInfo;
   RWGltf_WriterTrsfFormat aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
   bool toForceUVExport = false, toEmbedTexturesInGlb = true;
+  RWMesh_NameFormat aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
+  RWMesh_NameFormat aMeshNameFormat = RWMesh_NameFormat_Product;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
@@ -318,6 +378,28 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
         aTrsfFormat = RWGltf_WriterTrsfFormat_TRS;
       }
       else
+      {
+        Message::SendFail() << "Syntax error at '" << anArgCase << "'";
+        return 1;
+      }
+    }
+    else if (anArgCase == "-nodenameformat"
+          || anArgCase == "-nodename")
+    {
+      ++anArgIter;
+      if (anArgIter >= theNbArgs
+      || !parseNameFormat (theArgVec[anArgIter], aNodeNameFormat))
+      {
+        Message::SendFail() << "Syntax error at '" << anArgCase << "'";
+        return 1;
+      }
+    }
+    else if (anArgCase == "-meshnameformat"
+          || anArgCase == "-meshname")
+    {
+      ++anArgIter;
+      if (anArgIter >= theNbArgs
+      || !parseNameFormat (theArgVec[anArgIter], aMeshNameFormat))
       {
         Message::SendFail() << "Syntax error at '" << anArgCase << "'";
         return 1;
@@ -370,6 +452,8 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
 
   RWGltf_CafWriter aWriter (aGltfFilePath, anExt.EndsWith (".glb"));
   aWriter.SetTransformationFormat (aTrsfFormat);
+  aWriter.SetNodeNameFormat (aNodeNameFormat);
+  aWriter.SetMeshNameFormat (aMeshNameFormat);
   aWriter.SetForcedUVExport (toForceUVExport);
   aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
@@ -1904,10 +1988,14 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact]"
            "\n\t\t:                    [-comments Text] [-author Name]"
            "\n\t\t:                    [-forceUVExport] [-texturesSeparate]"
+           "\n\t\t:                    [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}=instOrProd]"
+           "\n\t\t:                    [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}=product]"
            "\n\t\t: Write XDE document into glTF file."
            "\n\t\t:   -trsfFormat preferred transformation format"
            "\n\t\t:   -forceUVExport always export UV coordinates"
-           "\n\t\t:   -texturesSeparate write textures to separate files",
+           "\n\t\t:   -texturesSeparate write textures to separate files"
+           "\n\t\t:   -nodeNameFormat name format for Nodes"
+           "\n\t\t:   -meshNameFormat name format for Meshes",
                    __FILE__, WriteGltf, g);
   theCommands.Add ("writegltf",
                    "writegltf shape file",

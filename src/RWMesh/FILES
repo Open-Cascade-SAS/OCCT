@@ -1,3 +1,5 @@
+RWMesh.cxx
+RWMesh.hxx
 RWMesh_CoordinateSystem.hxx
 RWMesh_CoordinateSystemConverter.cxx
 RWMesh_CoordinateSystemConverter.hxx
@@ -7,6 +9,7 @@ RWMesh_FaceIterator.cxx
 RWMesh_FaceIterator.hxx
 RWMesh_MaterialMap.cxx
 RWMesh_MaterialMap.hxx
+RWMesh_NameFormat.hxx
 RWMesh_NodeAttributes.hxx
 RWMesh_TriangulationReader.cxx
 RWMesh_TriangulationReader.hxx

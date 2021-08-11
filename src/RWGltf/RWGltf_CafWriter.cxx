@@ -27,6 +27,7 @@
 #include <RWGltf_GltfPrimitiveMode.hxx>
 #include <RWGltf_GltfRootElement.hxx>
 #include <RWGltf_GltfSceneNodeMap.hxx>
+#include <RWMesh.hxx>
 #include <RWMesh_FaceIterator.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Tool.hxx>
@@ -79,19 +80,6 @@ namespace
   {
     theStream.write ((const char* )theTri.GetData(), sizeof(theTri));
   }
-
-#ifdef HAVE_RAPIDJSON
-  //! Read name attribute.
-  static TCollection_AsciiString readNameAttribute (const TDF_Label& theRefLabel)
-  {
-    Handle(TDataStd_Name) aNodeName;
-    if (!theRefLabel.FindAttribute (TDataStd_Name::GetID(), aNodeName))
-    {
-      return TCollection_AsciiString();
-    }
-    return TCollection_AsciiString (aNodeName->Get());
-  }
-#endif
 }
 
 //================================================================
@@ -102,6 +90,8 @@ RWGltf_CafWriter::RWGltf_CafWriter (const TCollection_AsciiString& theFile,
                                     Standard_Boolean theIsBinary)
 : myFile          (theFile),
   myTrsfFormat    (RWGltf_WriterTrsfFormat_Compact),
+  myNodeNameFormat(RWMesh_NameFormat_InstanceOrProduct),
+  myMeshNameFormat(RWMesh_NameFormat_Product),
   myIsBinary      (theIsBinary),
   myIsForcedUVExport (false),
   myToEmbedTexturesInGlb (true),
@@ -125,6 +115,17 @@ RWGltf_CafWriter::RWGltf_CafWriter (const TCollection_AsciiString& theFile,
 RWGltf_CafWriter::~RWGltf_CafWriter()
 {
   myWriter.reset();
+}
+
+//================================================================
+// Function : formatName
+// Purpose  :
+//================================================================
+TCollection_AsciiString RWGltf_CafWriter::formatName (RWMesh_NameFormat theFormat,
+                                                      const TDF_Label& theLabel,
+                                                      const TDF_Label& theRefLabel) const
+{
+  return RWMesh::FormatName (theFormat, theLabel, theRefLabel);
 }
 
 //================================================================
@@ -660,7 +661,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     else
     {
       // glTF disallows empty meshes / primitive arrays
-      const TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.RefLabel);
+      const TCollection_AsciiString aNodeName = formatName (RWMesh_NameFormat_ProductOrInstance, aDocNode.Label, aDocNode.RefLabel);
       Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without triangulation data");
     }
   }
@@ -1294,7 +1295,7 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
   for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter (theSceneNodeMap); aSceneNodeIter.More(); aSceneNodeIter.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
-    const TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.RefLabel);
+    const TCollection_AsciiString aNodeName = formatName (myMeshNameFormat, aDocNode.Label, aDocNode.RefLabel);
 
     bool toStartPrims = true;
     Standard_Integer aNbFacesInNode = 0;
@@ -1309,8 +1310,11 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
       {
         toStartPrims = false;
         myWriter->StartObject();
-        myWriter->Key ("name");
-        myWriter->String (aNodeName.ToCString());
+        if (!aNodeName.IsEmpty())
+        {
+          myWriter->Key ("name");
+          myWriter->String (aNodeName.ToCString());
+        }
         myWriter->Key ("primitives");
         myWriter->StartArray();
       }
@@ -1520,13 +1524,12 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
       }
     }
     {
-      TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.Label);
-      if (aNodeName.IsEmpty())
+      const TCollection_AsciiString aNodeName = formatName (myNodeNameFormat, aDocNode.Label, aDocNode.RefLabel);
+      if (!aNodeName.IsEmpty())
       {
-        aNodeName = readNameAttribute (aDocNode.RefLabel);
+        myWriter->Key ("name");
+        myWriter->String (aNodeName.ToCString());
       }
-      myWriter->Key ("name");
-      myWriter->String (aNodeName.ToCString());
     }
     myWriter->EndObject();
   }
