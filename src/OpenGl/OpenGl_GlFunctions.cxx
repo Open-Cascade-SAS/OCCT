@@ -1505,26 +1505,30 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
        && FindProcShort (glGetTextureSubImage)
        && FindProcShort (glGetCompressedTextureSubImage)
        && FindProcShort (glGetGraphicsResetStatus)
-       && FindProcShort (glGetnCompressedTexImage)
-       && FindProcShort (glGetnTexImage)
-       && FindProcShort (glGetnUniformdv)
        && FindProcShort (glGetnUniformfv)
        && FindProcShort (glGetnUniformiv)
        && FindProcShort (glGetnUniformuiv)
        && FindProcShort (glReadnPixels)
-       && FindProcShort (glGetnMapdv)
-       && FindProcShort (glGetnMapfv)
-       && FindProcShort (glGetnMapiv)
-       && FindProcShort (glGetnPixelMapfv)
-       && FindProcShort (glGetnPixelMapuiv)
-       && FindProcShort (glGetnPixelMapusv)
-       && FindProcShort (glGetnPolygonStipple)
-       && FindProcShort (glGetnColorTable)
-       && FindProcShort (glGetnConvolutionFilter)
-       && FindProcShort (glGetnSeparableFilter)
-       && FindProcShort (glGetnHistogram)
-       && FindProcShort (glGetnMinmax)
        && FindProcShort (glTextureBarrier);
+  bool hasGetnTexImage = has45
+                      && FindProcShort (glGetnCompressedTexImage)
+                      && FindProcShort (glGetnTexImage)
+                      && FindProcShort (glGetnUniformdv);
+  if (has45 && !hasGetnTexImage)
+  {
+    // Intel driver exports only ARB-suffixed functions in a violation to OpenGL 4.5 specs
+    hasGetnTexImage = checkExtensionShort ("GL_ARB_robustness")
+                   && theCtx.FindProc ("glGetnCompressedTexImageARB", this->glGetnCompressedTexImage)
+                   && theCtx.FindProc ("glGetnTexImageARB",           this->glGetnTexImage)
+                   && theCtx.FindProc ("glGetnUniformdvARB",          this->glGetnUniformdv);
+    has45 = hasGetnTexImage;
+    if (hasGetnTexImage)
+    {
+      Message::SendTrace() << "Warning! glGetnCompressedTexImage function required by OpenGL 4.5 specs is not found.\n"
+                              "A non-standard glGetnCompressedTexImageARB fallback will be used instead.\n"
+                              "Please report this issue to OpenGL driver vendor '" << theCtx.myVendor << "'.";
+    }
+  }
   if (has45)
   {
     theCtx.core45 = (OpenGl_GlCore45* )this;
@@ -1537,9 +1541,26 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
 
   has46 = isGlGreaterEqualShort (4, 6)
        && FindProcShort (glSpecializeShader)
-       && FindProcShort (glMultiDrawArraysIndirectCount)
-       && FindProcShort (glMultiDrawElementsIndirectCount)
        && FindProcShort (glPolygonOffsetClamp);
+
+  bool hasIndParams = has46
+                   && FindProcShort (glMultiDrawArraysIndirectCount)
+                   && FindProcShort (glMultiDrawElementsIndirectCount);
+  if (has46 && !hasIndParams)
+  {
+    // Intel driver exports only ARB-suffixed functions in a violation to OpenGL 4.6 specs
+    hasIndParams = checkExtensionShort ("GL_ARB_indirect_parameters")
+                && theCtx.FindProc ("glMultiDrawArraysIndirectCountARB",   this->glMultiDrawArraysIndirectCount)
+                && theCtx.FindProc ("glMultiDrawElementsIndirectCountARB", this->glMultiDrawElementsIndirectCount);
+    has46 = hasIndParams;
+    if (hasIndParams)
+    {
+      Message::SendTrace() << "Warning! glMultiDrawArraysIndirectCount function required by OpenGL 4.6 specs is not found.\n"
+                              "A non-standard glMultiDrawArraysIndirectCountARB fallback will be used instead.\n"
+                              "Please report this issue to OpenGL driver vendor '" << theCtx.myVendor << "'.";
+    }
+  }
+
   if (has46)
   {
     theCtx.core46 = (OpenGl_GlCore46* )this;
