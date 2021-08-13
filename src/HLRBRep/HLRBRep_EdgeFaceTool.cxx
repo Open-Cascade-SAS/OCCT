@@ -45,17 +45,17 @@ Standard_Real HLRBRep_EdgeFaceTool::CurvatureValue
   Standard_Real nmu2   = D1U*D1U;
   Standard_Real nmv2   = D1V*D1V;
   Standard_Real det = nmu2 * nmv2 - d1ud1v * d1ud1v;
-  Standard_Real alfa = ( d1ut * nmv2 - d1vt * d1ud1v ) / det;
-  Standard_Real beta = ( d1vt * nmu2 - d1ut * d1ud1v ) / det;
-  gp_Vec Nm = D1U ^ D1V;
-  if (Nm.Magnitude() > gp::Resolution()) {
+  if (det > gp::Resolution()) {
+    Standard_Real alfa = (d1ut * nmv2 - d1vt * d1ud1v) / det;
+    Standard_Real beta = (d1vt * nmu2 - d1ut * d1ud1v) / det;
+    Standard_Real alfa2 = alfa * alfa;
+    Standard_Real beta2 = beta * beta;
+    Standard_Real alfabeta = alfa * beta;
+    gp_Vec Nm = D1U ^ D1V;
     Nm.Normalize();
-    Standard_Real alfa2 = alfa*alfa;
-    Standard_Real beta2 = beta*beta;
-    Standard_Real alfabeta = alfa*beta;
-    Standard_Real N = (Nm*D2U)*alfa2  + 2*(Nm*D2UV)*alfabeta + (Nm*D2V)*beta2;
-    Standard_Real D = nmu2    *alfa2  + 2*d1ud1v   *alfabeta + nmv2    *beta2;
-    return N/D;
+    Standard_Real N = (Nm * D2U) * alfa2 + 2 * (Nm * D2UV) * alfabeta + (Nm * D2V) * beta2;
+    Standard_Real D = nmu2 * alfa2 + 2 * d1ud1v * alfabeta + nmv2 * beta2;
+    return N / D;
   }
   return 0.;
 }

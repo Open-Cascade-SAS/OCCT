@@ -1543,43 +1543,45 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
 	    V = gp_Dir(0,0,-1);
 	  }
 	  V.Transform(TI);
-	  Standard_Real curv = HLRBRep_EdgeFaceTool::CurvatureValue
-	    (iFaceGeom,pu,pv,V);
-	  gp_Vec Nm = mySLProps.Normal();
-	  if (curv == 0) {
+	  if (mySLProps.IsNormalDefined()) {
+	    Standard_Real curv = HLRBRep_EdgeFaceTool::CurvatureValue
+	      (iFaceGeom,pu,pv,V);
+	    gp_Vec Nm = mySLProps.Normal();
+	    if (curv == 0) {
 #ifdef OCCT_DEBUG
-	    std::cout << "HLRBRep_Data::OrientOutLine " << I;
-	    std::cout << " Edge " << myFE << " : ";
-	    std::cout << "CurvatureValue == 0." << std::endl;
+	      std::cout << "HLRBRep_Data::OrientOutLine " << I;
+	      std::cout << " Edge " << myFE << " : ";
+	      std::cout << "CurvatureValue == 0." << std::endl;
 #endif
-	  }
-	  if (curv > 0)
-	    Nm.Reverse();
-	  Tg.Transform(T);
-	  Pt.Transform(T);
-	  Nm.Transform(T);
-	  Nm.Cross(Tg);
-	  if (Tg.Magnitude() < gp::Resolution()) {
-#ifdef OCCT_DEBUG
-	    std::cout << "HLRBRep_Data::OrientOutLine " << I;
-	    std::cout << " Edge " << myFE << " : ";
-	    std::cout << "Tg.Magnitude() == 0." << std::endl;
-#endif  
-	  }
-	  if (myProj.Perspective())
-	    r = Nm.Z() * myProj.Focus() - 
-	      ( Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z() );
-	  else
-	    r = Nm.Z();
-	  myFEOri = (r > 0) ? TopAbs_FORWARD : TopAbs_REVERSED;
-	  if (!FD.Cut() && FD.Closed() && FirstInversion) {
-	    if ((eb1->Orientation(ie1) == myFEOri) != 
-		(FD.Orientation() == TopAbs_FORWARD)) {
-	      FirstInversion = Standard_False;
-	      inverted = Standard_True;
 	    }
+	    if (curv > 0)
+	      Nm.Reverse();
+	    Tg.Transform(T);
+	    Pt.Transform(T);
+	    Nm.Transform(T);
+	    Nm.Cross(Tg);
+	    if (Tg.Magnitude() < gp::Resolution()) {
+#ifdef OCCT_DEBUG
+	      std::cout << "HLRBRep_Data::OrientOutLine " << I;
+	      std::cout << " Edge " << myFE << " : ";
+	      std::cout << "Tg.Magnitude() == 0." << std::endl;
+#endif  
+	    }
+	    if (myProj.Perspective())
+	      r = Nm.Z() * myProj.Focus() -
+	      (Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z());
+	    else
+	      r = Nm.Z();
+	    myFEOri = (r > 0) ? TopAbs_FORWARD : TopAbs_REVERSED;
+	    if (!FD.Cut() && FD.Closed() && FirstInversion) {
+	      if ((eb1->Orientation(ie1) == myFEOri) !=
+		(FD.Orientation() == TopAbs_FORWARD)) {
+		FirstInversion = Standard_False;
+		inverted = Standard_True;
+	      }
+	    }
+	    eb1->Orientation(ie1, myFEOri);
 	  }
-	  eb1->Orientation(ie1,myFEOri);
 	}
 	else {
 #ifdef OCCT_DEBUG
@@ -1627,19 +1629,21 @@ void HLRBRep_Data::OrientOthEdge (const Standard_Integer I,
 	if (HLRBRep_EdgeFaceTool::UVPoint(p,myFEGeom,iFaceGeom,pu,pv)) {
 	  gp_Pnt Pt = EC.Value3D(p);
 	  mySLProps.SetParameters(pu,pv);
-	  gp_Vec Nm = mySLProps.Normal();
-	  Pt.Transform(T);
-	  Nm.Transform(T);
-	  if (myProj.Perspective()) {
-	    r = Nm.Z() * myProj.Focus() - 
-	      ( Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z() );
-	  }
-	  else {
-	    r = Nm.Z();
-	  }
-	  if (r < 0) {
-	    myFEOri = TopAbs::Reverse(myFEOri);
-	    eb1->Orientation(ie1,myFEOri);
+	  if (mySLProps.IsNormalDefined()) {
+	    gp_Vec Nm = mySLProps.Normal();
+	    Pt.Transform(T);
+	    Nm.Transform(T);
+	    if (myProj.Perspective()) {
+	      r = Nm.Z() * myProj.Focus() -
+		(Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z());
+	    }
+	    else {
+	      r = Nm.Z();
+	    }
+	    if (r < 0) {
+	      myFEOri = TopAbs::Reverse(myFEOri);
+	      eb1->Orientation(ie1, myFEOri);
+	    }
 	  }
 	}
 #ifdef OCCT_DEBUG
