@@ -42,5 +42,6 @@ rem set USE_FFMPEG=OFF
 rem set USE_FREEIMAGE=OFF
 rem set USE_GLES2=OFF
 rem set USE_RAPIDJSON=OFF
+rem set USE_DRACO=OFF
 rem set USE_TBB=OFF
 rem set USE_VTK=OFF

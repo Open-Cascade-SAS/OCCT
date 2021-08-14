@@ -17,6 +17,7 @@ export aBuildRoot=work
 export aFreeType=
 export aFreeImage=
 export aRapidJson=
+export aDraco=
 
 # build stages to perform
 export toCMake=1
@@ -35,6 +36,7 @@ export BUILD_Draw=ON
 
 export USE_FREEIMAGE=ON
 export USE_RAPIDJSON=OFF
+export USE_DRACO=OFF
 
 export MACOSX_DEPLOYMENT_TARGET=10.10
 #export anAbi=arm64
@@ -106,6 +108,10 @@ if [[ $toCMake == 1 ]]; then
   -D USE_RAPIDJSON:BOOL="$USE_RAPIDJSON" \
   -D 3RDPARTY_RAPIDJSON_DIR:PATH="$aRapidJson" \
   -D 3RDPARTY_RAPIDJSON_INCLUDE_DIR:PATH="$aRapidJson/include" \
+  -D USE_DRACO:BOOL="$USE_DRACO" \
+  -D 3RDPARTY_DRACO_DIR:PATH="$aDraco" \
+  -D 3RDPARTY_DRACO_INCLUDE_DIR:FILEPATH="$aDraco/include" \
+  -D 3RDPARTY_DRACO_LIBRARY_DIR:PATH="$aDraco/lib" \
   -D USE_FREEIMAGE:BOOL="$USE_FREEIMAGE" \
   -D 3RDPARTY_FREEIMAGE_DIR:PATH="$aFreeImage" \
   -D 3RDPARTY_FREEIMAGE_INCLUDE_DIR:FILEPATH="$aFreeImage/include" \

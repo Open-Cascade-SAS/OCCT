@@ -13,6 +13,7 @@ rem Paths to 3rd-party tools and libraries
 set "anNdkPath="
 set "aFreeType="
 set "aRapidJson="
+set "aDraco="
 
 rem Build stages to perform
 set "toCMake=1"
@@ -34,7 +35,9 @@ set "BUILD_ApplicationFramework=ON"
 set "BUILD_DataExchange=ON"
 
 rem Optional 3rd-party libraries to enable
+set "USE_FREETYPE=ON"
 set "USE_RAPIDJSON=OFF"
+set "USE_DRACO=OFF"
 
 rem Archive tool
 set "THE_7Z_PARAMS=-t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
@@ -162,6 +165,7 @@ if ["%toCMake%"] == ["1"] (
  -D BUILD_MODULE_DataExchange:BOOL="%BUILD_DataExchange%" ^
  -D BUILD_MODULE_Draw:BOOL="OFF" ^
  -D BUILD_DOC_Overview:BOOL="OFF" ^
+ -D USE_FREETYPE:BOOL="%USE_FREETYPE%" ^
  -D 3RDPARTY_FREETYPE_DIR:PATH="%aFreeType%" ^
  -D 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2:FILEPATH="%aFreeType%/include" ^
  -D 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build:FILEPATH="%aFreeType%/include" ^
@@ -170,6 +174,11 @@ if ["%toCMake%"] == ["1"] (
  -D USE_RAPIDJSON:BOOL="%USE_RAPIDJSON%" ^
  -D 3RDPARTY_RAPIDJSON_DIR:PATH="%aRapidJson%" ^
  -D 3RDPARTY_RAPIDJSON_INCLUDE_DIR:PATH="%aRapidJson%/include" ^
+ -D USE_DRACO:BOOL="%USE_DRACO%" ^
+ -D 3RDPARTY_DRACO_DIR:PATH="%aDraco%" ^
+ -D 3RDPARTY_DRACO_INCLUDE_DIR:FILEPATH="%aDraco%/include" ^
+ -D 3RDPARTY_DRACO_LIBRARY_DIR:PATH="%aDraco%/libs/%anAbi%" ^
+ -D 3RDPARTY_DRACO_LIBRARY:FILEPATH="%aDraco%/libs/%anAbi%/libfreetype.so" ^
  "%aCasSrc%"
 
   if errorlevel 1 (

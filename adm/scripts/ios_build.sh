@@ -17,6 +17,7 @@ export aBuildRoot=work
 export aFreeType=
 export aFreeImage=
 export aRapidJson=
+export aDraco=
 
 # build stages to perform
 export toSimulator=0
@@ -34,8 +35,10 @@ export BUILD_Visualization=ON
 export BUILD_ApplicationFramework=ON
 export BUILD_DataExchange=ON
 
+export USE_FREETYPE=ON
 export USE_FREEIMAGE=OFF
 export USE_RAPIDJSON=OFF
+export USE_DRACO=OFF
 
 export IPHONEOS_DEPLOYMENT_TARGET=8.0
 export anAbi=arm64
@@ -117,13 +120,18 @@ if [[ $toCMake == 1 ]]; then
   -D INSTALL_DIR_LIB:STRING="lib" \
   -D INSTALL_DIR_RESOURCE:STRING="src" \
   -D INSTALL_NAME_DIR:STRING="@executable_path/../Frameworks" \
+  -D USE_FREETYPE:BOOL="$USE_FREETYPE" \
   -D 3RDPARTY_FREETYPE_DIR:PATH="$aFreeType" \
   -D 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2:FILEPATH="$aFreeType/include" \
   -D 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build:FILEPATH="$aFreeType/include" \
   -D 3RDPARTY_FREETYPE_LIBRARY_DIR:PATH="$aFreeType/lib" \
-  -D USE_RAPIDJSON:BOOL="ON" \
+  -D USE_RAPIDJSON:BOOL="$USE_RAPIDJSON" \
   -D 3RDPARTY_RAPIDJSON_DIR:PATH="$aRapidJson" \
   -D 3RDPARTY_RAPIDJSON_INCLUDE_DIR:PATH="$aRapidJson/include" \
+  -D USE_DRACO:BOOL="$USE_DRACO" \
+  -D 3RDPARTY_DRACO_DIR:PATH="$aDraco" \
+  -D 3RDPARTY_DRACO_INCLUDE_DIR:FILEPATH="$aDraco/include" \
+  -D 3RDPARTY_DRACO_LIBRARY_DIR:PATH="$aDraco/lib" \
   -D USE_FREEIMAGE:BOOL="$USE_FREEIMAGE" \
   -D 3RDPARTY_FREEIMAGE_DIR:PATH="$aFreeImage" \
   -D 3RDPARTY_FREEIMAGE_INCLUDE_DIR:FILEPATH="$aFreeImage/include" \

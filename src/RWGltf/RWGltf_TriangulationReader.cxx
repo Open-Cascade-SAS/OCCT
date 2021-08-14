@@ -22,7 +22,9 @@
 #include <Standard_ReadBuffer.hxx>
 
 #ifdef HAVE_DRACO
+  #include <Standard_WarningsDisable.hxx>
   #include <draco/compression/decode.h>
+  #include <Standard_WarningsRestore.hxx>
 #endif
 
 namespace

@@ -60,6 +60,7 @@ CSF_OpenGlesLibs
 CSF_FFmpeg
 CSF_FreeImagePlus
 CSF_FREETYPE
+CSF_Draco
 CSF_user32
 CSF_advapi32
 CSF_XwLibs

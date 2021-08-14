@@ -3,6 +3,7 @@ export PATH=/Applications/CMake.app/Contents/bin:$PATH
 export aFreeType="$aSrcRoot/../3rdparty/freetype-2.10.4-macos"
 export aFreeImage="$aSrcRoot/../3rdparty/freeimage-3.18-macos"
 export aRapidJson="$aSrcRoot/../3rdparty/rapidjson-1.1.0"
+export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-macos"
 
 # Uncomment to customize building steps
 #export aBuildRoot=work
@@ -20,6 +21,7 @@ export aRapidJson="$aSrcRoot/../3rdparty/rapidjson-1.1.0"
 #export BUILD_Draw=ON
 
 #export USE_RAPIDJSON=ON
+#export USE_DRACO=ON
 #export USE_FREEIMAGE=ON
 
 #export MACOSX_DEPLOYMENT_TARGET=10.10

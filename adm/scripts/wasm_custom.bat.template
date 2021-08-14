@@ -1,7 +1,8 @@
 rem Environment configuration template for wasm_build.bat (to be renamed as wasm_custom.bat)
 set "EMSDK_ROOT=%aCasSrc%\..\emsdk"
-set "aFreeType=%aCasSrc%\..\3rdparty\freetype-2.7.1-wasm"
+set "aFreeType=%aCasSrc%\..\3rdparty\freetype-2.7.1-wasm32"
 rem set "aRapidJson=%aCasSrc%\..\3rdparty\rapidjson-1.1.0"
+rem set "aDraco=%aCasSrc%\..\3rdparty\draco-1.4.1-wasm32"
 rem set "aCmakeBin=%ProgramW6432%\CMake\bin"
 
 rem Uncomment to customize building steps
@@ -24,3 +25,4 @@ rem set "BUILD_ApplicationFramework=ON"
 rem set "BUILD_DataExchange=ON"
 
 rem set "USE_RAPIDJSON=OFF"
+rem set "USE_DRACO=ON"

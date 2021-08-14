@@ -13,6 +13,7 @@ rem Paths to 3rd-party tools and libraries
 set "aCmakeBin="
 set "aFreeType="
 set "aRapidJson="
+set "aDraco="
 set "aTcl="
 
 rem Build stages to perform
@@ -34,7 +35,9 @@ set "BUILD_DataExchange=ON"
 set "BUILD_Draw=OFF"
 
 rem Optional 3rd-party libraries to enable
+set "USE_FREETYPE=ON"
 set "USE_RAPIDJSON=OFF"
+set "USE_DRACO=OFF"
 
 rem Archive tool
 set "THE_7Z_PARAMS=-t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
@@ -159,9 +162,6 @@ if ["%toCMake%"] == ["1"] (
  -D INSTALL_DIR:PATH="%aDestDir%" ^
  -D INSTALL_DIR_INCLUDE:STRING="inc" ^
  -D INSTALL_DIR_RESOURCE:STRING="src" ^
- -D 3RDPARTY_FREETYPE_DIR:PATH="%aFreeType%" ^
- -D 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2:FILEPATH="%aFreeType%/include" ^
- -D 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build:FILEPATH="%aFreeType%/include" ^
  -D BUILD_MODULE_FoundationClasses:BOOL="ON" ^
  -D BUILD_MODULE_ModelingData:BOOL="%BUILD_ModelingData%" ^
  -D BUILD_MODULE_ModelingAlgorithms:BOOL="%BUILD_ModelingAlgorithms%" ^
@@ -170,14 +170,23 @@ if ["%toCMake%"] == ["1"] (
  -D BUILD_MODULE_DataExchange:BOOL="%BUILD_DataExchange%" ^
  -D BUILD_MODULE_Draw:BOOL="%BUILD_Draw%" ^
  -D BUILD_DOC_Overview:BOOL="OFF" ^
+ -D USE_FREETYPE:BOOL="%USE_FREETYPE%" ^
+ -D 3RDPARTY_FREETYPE_DIR:PATH="%aFreeType%" ^
+ -D 3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2:FILEPATH="%aFreeType%/include" ^
+ -D 3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build:FILEPATH="%aFreeType%/include" ^
  -D USE_RAPIDJSON:BOOL="%USE_RAPIDJSON%" ^
  -D 3RDPARTY_RAPIDJSON_DIR:PATH="%aRapidJson%" ^
  -D 3RDPARTY_RAPIDJSON_INCLUDE_DIR:PATH="%aRapidJson%/include" ^
+ -D USE_DRACO:BOOL="%USE_DRACO%" ^
+ -D 3RDPARTY_DRACO_DIR:PATH="%aDraco%" ^
+ -D 3RDPARTY_DRACO_INCLUDE_DIR:FILEPATH="%aDraco%/include" ^
+ -D 3RDPARTY_DRACO_LIBRARY_DIR:PATH="%aDraco%/lib" ^
+ -D 3RDPARTY_DRACO_LIBRARY:FILEPATH="%aDraco%/lib/libdraco.a" ^
+ -D USE_TK:BOOL="OFF" ^
  -D 3RDPARTY_TCL_DIR:PATH="%aTcl%" ^
  -D 3RDPARTY_TCL_INCLUDE_DIR:PATH="%aTcl%/include" ^
  -D 3RDPARTY_TCL_LIBRARY_DIR:PATH="%aTcl%/lib" ^
  -D 3RDPARTY_TCL_LIBRARY:FILEPATH="%aTcl%/lib/libtcl.a" ^
- -D USE_TK:BOOL="OFF" ^
  "%aCasSrc%"
 
   if errorlevel 1 (

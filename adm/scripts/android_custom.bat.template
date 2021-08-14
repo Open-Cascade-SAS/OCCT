@@ -6,6 +6,7 @@ rem set "PATH=c:\CMake\bin;%PATH%"
 rem set "anNdkPath=c:/android-ndk-r12"
 rem set "aFreeType=c:/freetype-2.7.1-android"
 rem set "aRapidJson=c:/rapidjson-1.1.0"
+rem set "aDraco=c:/draco-1.4.1-android"
 
 rem Uncomment to customize building steps
 rem set "aBuildRoot=%~dp0..\..\work"
@@ -28,4 +29,5 @@ rem set "BUILD_ApplicationFramework=ON"
 rem set "BUILD_DataExchange=ON"
 
 rem Optional 3rd-party libraries to enable
-rem set USE_RAPIDJSON=ON
+rem set "USE_RAPIDJSON=ON"
+rem set "USE_DRACO=ON"
