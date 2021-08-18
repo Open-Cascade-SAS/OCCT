@@ -63,7 +63,7 @@ public:
   //! Returns True if the distances are found.
   Standard_EXPORT Standard_Boolean IsDone() const;
   
-  //! Returns True if the curve is on a parallel surface.
+  //! Returns True if the surfaces are parallel
   Standard_EXPORT Standard_Boolean IsParallel() const;
   
   //! Returns the number of extremum distances.
