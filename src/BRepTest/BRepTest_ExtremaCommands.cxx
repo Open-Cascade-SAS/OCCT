@@ -64,19 +64,45 @@ static Standard_Integer distance (Draw_Interpretor& di,
 
 static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n != 4 && n != 5 )
+  if (n < 4 || n > 6)
+  {
     return 1;
+  }
 
   const char *ns1 = (a[2]), *ns2 = (a[3]), *ns0 = (a[1]);
   TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
 
   Standard_Real aDeflection = Precision::Confusion();
-  if (n == 5)
+  Standard_Integer anIndex = 4;
+  if (n >= 5 && a[4][0] != '-')
+  {
     aDeflection = Draw::Atof(a[4]);
+    anIndex++;
+  }
+
+  Standard_Boolean isMultiThread = Standard_False;
+  for (Standard_Integer anI = anIndex; anI < n; anI++)
+  {
+    TCollection_AsciiString anArg(a[anI]);
+    anArg.LowerCase();
+    if (anArg == "-parallel")
+    {
+      isMultiThread = Standard_True;
+    }
+    else
+    {
+      di << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+  }
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-  BRepExtrema_DistShapeShape dst(S1 ,S2, aDeflection, Extrema_ExtFlag_MINMAX,
-                                 Extrema_ExtAlgo_Grad, aProgress->Start());
+  BRepExtrema_DistShapeShape dst;
+  dst.LoadS1(S1);
+  dst.LoadS2(S2);
+  dst.SetDeflection(aDeflection);
+  dst.SetMultiThread(isMultiThread);
+  dst.Perform(aProgress->Start());
 
   if (dst.IsDone()) 
   { 
@@ -412,7 +438,10 @@ void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
                    aGroup);
 
   theCommands.Add ("distmini",
-                   "distmini name Shape1 Shape2 [deflection]",
+                   "distmini name Shape1 Shape2 [deflection] [-parallel]",
+                   "\n\t\t: Searches minimal distance between two shapes."
+                   "\n\t\t: The option is:"
+                   "\n\t\t:   -parallel : calculate distance in multithreaded mode"
                    __FILE__,
                    distmini,
                    aGroup);
