@@ -23,6 +23,7 @@
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 #include <Draw.hxx>
@@ -73,7 +74,9 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
   if (n == 5)
     aDeflection = Draw::Atof(a[4]);
 
-  BRepExtrema_DistShapeShape dst(S1 ,S2, aDeflection);
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  BRepExtrema_DistShapeShape dst(S1 ,S2, aDeflection, Extrema_ExtFlag_MINMAX,
+                                 Extrema_ExtAlgo_Grad, aProgress->Start());
 
   if (dst.IsDone()) 
   { 

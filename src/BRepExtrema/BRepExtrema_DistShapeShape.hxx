@@ -21,6 +21,7 @@
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <gp_Pnt.hxx>
+#include <Message_ProgressRange.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Standard_OStream.hxx>
@@ -39,9 +40,18 @@ class BRepExtrema_DistShapeShape
   Standard_EXPORT BRepExtrema_DistShapeShape();
   //! computation of the minimum distance (value and pair of points) using default deflection <br>
   //! Default value is Precision::Confusion(). <br>
-  Standard_EXPORT BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape1,const TopoDS_Shape& Shape2,const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape1,
+                                             const TopoDS_Shape& Shape2,
+                                             const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
+                                             const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad,
+                                             const Message_ProgressRange& theRange = Message_ProgressRange());
   //! create tool and load both shapes into it <br>
-  Standard_EXPORT BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape1,const TopoDS_Shape& Shape2,const Standard_Real theDeflection,const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad);
+  Standard_EXPORT BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape1,
+                                             const TopoDS_Shape& Shape2,
+                                             const Standard_Real theDeflection,
+                                             const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
+                                             const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad,
+                                             const Message_ProgressRange& theRange = Message_ProgressRange());
   
   void SetDeflection(const Standard_Real theDeflection)
   {
@@ -56,7 +66,8 @@ class BRepExtrema_DistShapeShape
   //!          to specify a maximum deviation of extreme distances <br>
   //!          from the minimum one. <br>
   //!          Returns IsDone status. <br>
-  Standard_EXPORT Standard_Boolean Perform();
+  //! theProgress - progress indicator of algorithm
+  Standard_EXPORT Standard_Boolean Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
   //! True if the minimum distance is found. <br>
   Standard_Boolean IsDone() const
   { 
@@ -137,7 +148,17 @@ class BRepExtrema_DistShapeShape
 private:
 
   //! computes the minimum distance between two maps of shapes (Face,Edge,Vertex) <br>
-  Standard_EXPORT void DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,const TopTools_IndexedMapOfShape& Map2,const Bnd_SeqOfBox& LBox1,const Bnd_SeqOfBox& LBox2);
+  Standard_Boolean DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,
+                                  const TopTools_IndexedMapOfShape& Map2,
+                                  const Bnd_SeqOfBox&               LBox1,
+                                  const Bnd_SeqOfBox&               LBox2,
+                                  const Message_ProgressRange&      theRange);
+
+  Standard_Boolean SolidTreatment(const TopoDS_Shape& theShape,
+                                  const TopTools_IndexedMapOfShape& theMap,
+                                  const Message_ProgressRange& theRange);
+
+private:
 
   Standard_Real myDistRef;
   Standard_Boolean myIsDone;
