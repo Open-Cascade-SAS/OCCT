@@ -226,7 +226,7 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
   }
 
   // map of vertices to know if the wire is open
-  TopTools_MapOfShape vmap;
+  TopTools_IndexedMapOfShape vmap;
   //  map of infinite edges
   TopTools_MapOfShape anInfEmap;
 
@@ -254,15 +254,23 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
 
       // add or remove in the vertex map
       V1.Orientation(TopAbs_FORWARD);
-      if (!vmap.Add(V1))
-        vmap.Remove(V1);
+      Standard_Integer currsize = vmap.Extent(), 
+                       ind = vmap.Add(V1);
+      if (currsize >= ind)
+      {
+        vmap.RemoveKey(V1);
+      }
     }
 
     if (!V2.IsNull())
     {
       V2.Orientation(TopAbs_REVERSED);
-      if (!vmap.Add(V2))
-        vmap.Remove(V2);
+      Standard_Integer currsize = vmap.Extent(),
+                       ind = vmap.Add(V2);
+      if (currsize >= ind)
+      {
+        vmap.RemoveKey(V2);
+      }
     }
 
     if (V1.IsNull() || V2.IsNull())
@@ -295,12 +303,21 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
 
   // if vmap is not empty the wire is open, let us find the first vertex
   if (!vmap.IsEmpty()) {
-    TopTools_MapIteratorOfMapOfShape itt(vmap);
-    while (itt.Key().Orientation() != TopAbs_FORWARD) {
-      itt.Next();
-      if (!itt.More()) break;
+    //TopTools_MapIteratorOfMapOfShape itt(vmap);
+    //while (itt.Key().Orientation() != TopAbs_FORWARD) {
+    //  itt.Next();
+    //  if (!itt.More()) break;
+    //}
+    //if (itt.More()) V1 = TopoDS::Vertex(itt.Key());
+    Standard_Integer ind = 0;
+    for (ind = 1; ind <= vmap.Extent(); ++ind)
+    {
+      if (vmap(ind).Orientation() == TopAbs_FORWARD)
+      {
+        V1 = TopoDS::Vertex(vmap(ind));
+        break;
+      }
     }
-    if (itt.More()) V1 = TopoDS::Vertex(itt.Key());
   }
   else {
     //   The wire is infinite Try to find the first vertex. It may be NULL.

@@ -1,0 +1,56 @@
+puts "========="
+puts "0030422: Modeling Data - Random behaviour of BRepAdaptor_CompCurve"
+puts "========="
+puts ""
+
+vertex vf1 0 0 0
+vertex vf2 1 0 0 
+vertex vf3 2 0 0 
+vertex vf4 3 0 0
+vertex vf5 4 0 0
+##
+edge ef1 vf1 vf2 
+edge ef2 vf2 vf3
+edge ef3 vf3 vf4
+edge ef4 vf5 vf4
+##
+shape wf w
+add ef1 wf 
+add ef2 wf
+add ef3 wf
+add ef4 wf
+##
+wexplo wf
+#
+if {![isdraw WEDGE_3] } {
+  puts "Error: wire explorer failed"
+} else {
+  unset WEDGE_1
+  unset WEDGE_2
+  unset WEDGE_3
+}
+##
+vertex  vs5 4 0 0
+vertex  vs2 1 0 0
+vertex  vs3 2 0 0
+vertex  vs4 3 0 0
+vertex  vs1 0 0 0
+##
+edge  es1  vs1  vs2
+edge  es2  vs2  vs3
+edge  es3  vs3  vs4
+edge  es4  vs5  vs4
+##
+shape  ws w
+add  es1  ws
+add  es4  ws
+add  es3  ws
+add  es2  ws
+##
+wexplo  ws
+#
+if {![isdraw WEDGE_3] } {
+  puts "Error: wire explorer failed"
+}
+
+
