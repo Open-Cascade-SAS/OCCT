@@ -1,0 +1,65 @@
+puts "================"
+puts "0030046: Modeling Data - Cannot find necessary projection of the curve"
+puts "================"
+puts ""
+
+set BugNumber OCC30046
+
+restore [locate_data_file bug30046_cur.brep] c
+restore [locate_data_file bug30046_sur.brep] s
+
+gproject result c s 1.e-3 -2d 1 -3d 1
+gproject result_maxdist c s 1.e-7 2. -2d 1 -3d 1
+
+regexp {is ([-0-9.+eE]+)} [length result2d_1] full ll
+set len_result2d $ll
+
+regexp {is ([-0-9.+eE]+)} [length result_maxdist2d_1] full ll
+set len_result_maxdist2d $ll
+
+if {$len_result2d < $len_result_maxdist2d} {
+  puts "Faulty ${BugNumber}: length of a 2d projection, built with a smaller tolerance, must be less";
+}
+
+regexp {is ([-0-9.+eE]+)} [length result_1] full ll
+set len_result $ll
+
+regexp {is ([-0-9.+eE]+)} [length result_maxdist_1] full ll
+set len_result_maxdist $ll
+
+if {$len_result < $len_result_maxdist} {
+  puts "Faulty ${BugNumber}: length of a 3d projection, built with a smaller tolerance, must be less";
+}
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+set bounds_result2d_1 [gbounding result2d_1]
+regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $bounds_result2d_1 full v1_x v1_y v2_x v2_y
+
+set expected_v1_x 0.050141663706179646
+checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
+
+set expected_v1_y 0.00039517687539122789
+checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
+
+set expected_v2_x 0.24709337491832356
+checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
+
+set expected_v2_y 0.00044697332650299172
+checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}
+  
+set bounds_result_maxdist_1 [gbounding result_maxdist2d_1]
+regexp { *([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $bounds_result_maxdist_1 full v1_x v1_y v2_x v2_y 
+
+set expected_v1_x 0.050141663706179958
+checkreal "v1_x" ${v1_x} ${expected_v1_x} ${tol_abs} ${tol_rel}
+
+set expected_v1_y 0.00039517687539122805
+checkreal "v1_y" ${v1_y} ${expected_v1_y} ${tol_abs} ${tol_rel}
+
+set expected_v2_x 0.24708119728076677
+checkreal "v2_x" ${v2_x} ${expected_v2_x} ${tol_abs} ${tol_rel}
+
+set expected_v2_y 0.00044696841766235214
+checkreal "v2_y" ${v2_y} ${expected_v2_y} ${tol_abs} ${tol_rel}

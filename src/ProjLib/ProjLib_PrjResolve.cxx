@@ -81,7 +81,7 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
 //    if (!S1.IsDone()) { return; }
 //  }
 //  else {
-  math_NewtonFunctionSetRoot SR (F, Tol, 1.e-10);
+  math_NewtonFunctionSetRoot SR (F, Tol, FuncTol);
   SR.Perform(F, Start, BInf, BSup);
 //    if (!SR.IsDone()) { return; }
   if (!SR.IsDone())
@@ -100,8 +100,8 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
 
   Standard_Real ExtraU , ExtraV;
 //  if(!StrictInside) {
-    ExtraU = Tol2d.X();
-    ExtraV = Tol2d.Y();
+    ExtraU = 2. * Tol2d.X();
+    ExtraV = 2. * Tol2d.Y();
 //  }
   if (mySolution.X() > Inf.X() - Tol2d.X() && mySolution.X() < Inf.X()) mySolution.SetX(Inf.X());
   if (mySolution.X() > Sup.X() && mySolution.X() < Sup.X() + Tol2d.X()) mySolution.SetX(Sup.X()); 
@@ -119,7 +119,9 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_
     
     F.Value(X, FVal);   
 
-    if ((FVal(1)*FVal(1) + FVal(2)*FVal(2)) > FuncTol) myDone = Standard_False;
+    if (!SR.IsDone()) {
+      if ((FVal(1)*FVal(1) + FVal(2)*FVal(2)) > FuncTol) myDone = Standard_False;
+    }
   }
 
 

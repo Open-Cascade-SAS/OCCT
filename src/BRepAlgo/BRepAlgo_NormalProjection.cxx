@@ -355,6 +355,10 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 #endif
 	    Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d);
             appr.Perform(myMaxSeg, myMaxDegree, myContinuity, Only3d, Only2d);
+
+        if (appr.MaxError3d() > 1.e3 * myTol3d)
+          continue;
+
 #ifdef OCCT_DEBUG_CHRONO
 	    ResultChron(chr_approx,t_approx);
 	    approx_count++;

@@ -261,134 +261,135 @@ static Standard_Integer to3d (Draw_Interpretor& , Standard_Integer n, const char
 
 static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  
-  char newname[1024];
-  char* temp = newname;
-  char newname1[10];
-  char* temp1 = newname1;
-  char name[100];
-  Standard_Integer ONE = 1;
+  TCollection_AsciiString newname;
+  TCollection_AsciiString newname1;
 
-  if (n == 3)
-    Sprintf(name,"p");
-  else if (n == 4) {
-    Sprintf(name,"%s",a[1]);
-    ONE = 2;
+  if (n < 4)
+  {
+    di << "gproject waits 3 or more arguments\n";
+    return 1;
   }
-  else {
-   di << "gproject wait 2 or 3 arguments\n";
-   return 1;
-  } 
 
-  Handle(Geom_Curve) Cur = DrawTrSurf::GetCurve(a[ONE]);
-  Handle(Geom_Surface) Sur = DrawTrSurf::GetSurface(a[ONE+1]);
+  TCollection_AsciiString name = a[1];
+
+  Handle(Geom_Curve) Cur = DrawTrSurf::GetCurve(a[2]);
+  Handle(Geom_Surface) Sur = DrawTrSurf::GetSurface(a[3]);
   if (Cur.IsNull() || Sur.IsNull()) return 1;
 
   Handle(GeomAdaptor_Curve) hcur = new GeomAdaptor_Curve(Cur);
   Handle(GeomAdaptor_Surface) hsur = new GeomAdaptor_Surface(Sur);
 
+  Standard_Integer index = 4;
+  Standard_Real aTol3d = 1.e-6;
+  Standard_Real aMaxDist = -1.0;
 
-  Standard_Real myTol3d = 1.e-6;
-  GeomAbs_Shape myContinuity = GeomAbs_C2;
-  Standard_Integer myMaxDegree = 14, myMaxSeg = 16;
+  if (n > 4 && a[4][0] != '-')
+  {
+    aTol3d = Draw::Atof(a[4]);
+    index = 5;
 
+    if (n > 5 && a[5][0] != '-')
+    {
+      aMaxDist = Draw::Atof(a[5]);
+      index = 6;
+    }
+  }
 
-  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve (hsur, hcur, myTol3d/10, myTol3d/10);
+  Handle(ProjLib_HCompProjectedCurve) HProjector = new ProjLib_HCompProjectedCurve(aTol3d, hsur, hcur, aMaxDist);
   ProjLib_CompProjectedCurve& Projector = *HProjector;
 
-  Standard_Integer k;
-  Standard_Real Udeb, Ufin, UIso, VIso;
-  Standard_Boolean Only2d, Only3d;
-  gp_Pnt2d P2d, Pdeb, Pfin;
-  gp_Pnt P;
-  Handle(Adaptor2d_Curve2d) HPCur;
-  Handle(Geom2d_Curve) PCur2d; // Only for isoparametric projection
+  GeomAbs_Shape aContinuity = GeomAbs_C2;
+  Standard_Integer aMaxDegree, aMaxSeg;
+  Standard_Boolean aProj2d;
+  Standard_Boolean aProj3d;
 
-  for(k = 1; k <= Projector.NbCurves(); k++){
-    Sprintf(newname,"%s_%d",name,k);
-    Sprintf(newname1,"%s2d_%d",name,k);
-    if(Projector.IsSinglePnt(k, P2d)){
-//      std::cout<<"Part "<<k<<" of the projection is punctual"<<std::endl;
-      Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
-      DrawTrSurf::Set(temp, P);
-      DrawTrSurf::Set(temp1, P2d);
-      di<<temp<<" is 3d projected curve\n";
-      di<<temp1<<" is pcurve\n";
+  while (index + 1 < n)
+  {
+    if (a[index][0] != '-') return 1;
+
+    if (a[index][1] == 'c')
+    {
+      Standard_CString aContinuityName = a[index + 1];
+      if (!strcmp(aContinuityName, "C0"))
+      {
+        aContinuity = GeomAbs_C0;
+      }
+      else if (!strcmp(aContinuityName, "C1"))
+      {
+        aContinuity = GeomAbs_C1;
+      }
+      else if (!strcmp(aContinuityName, "C2"))
+      {
+        aContinuity = GeomAbs_C2;
+      }
+
+      Projector.SetContinuity(aContinuity);
+    }
+    else if (a[index][1] == 'd')
+    {
+      aMaxDegree = Draw::Atoi(a[index + 1]);
+      aMaxDegree = aMaxDegree > 25 ? 25 : aMaxDegree;
+      Projector.SetMaxDegree(aMaxDegree);
+    }
+    else if (a[index][1] == 's')
+    {
+      aMaxSeg = Draw::Atoi(a[index + 1]);
+      Projector.SetMaxSeg(aMaxSeg);
+    }
+    else if (!strcmp(a[index], "-2d"))
+    {
+      aProj2d = Draw::Atoi(a[index + 1]) > 0 ? Standard_True : Standard_False;
+      Projector.SetProj2d(aProj2d);
+    }
+    else if (!strcmp(a[index], "-3d"))
+    {
+      aProj3d = Draw::Atoi(a[index + 1]) > 0 ? Standard_True : Standard_False;
+      Projector.SetProj3d(aProj3d);
+    }
+
+    index += 2;
+  }
+
+  Projector.Perform();
+
+  for (Standard_Integer k = 1; k <= Projector.NbCurves(); k++) {
+    newname  = name +   "_" + TCollection_AsciiString(k);
+    newname1 = name + "2d_" + TCollection_AsciiString(k);
+
+    if (Projector.ResultIsPoint(k))
+    {
+      if (Projector.GetProj2d())
+      {
+        DrawTrSurf::Set(newname1.ToCString(), Projector.GetResult2dP(k));
+        di << newname1 << " is pcurve\n";
+      }
+      if (Projector.GetProj3d())
+      {
+        DrawTrSurf::Set(newname.ToCString(), Projector.GetResult3dP(k));
+        di << newname << " is 3d projected curve\n";
+      }
     }
     else {
-      Only2d = Only3d = Standard_False;
-      Projector.Bounds(k, Udeb, Ufin);
-      gp_Dir2d Dir; // Only for isoparametric projection
-      
-      if (Projector.IsUIso(k, UIso)) {
-//      std::cout<<"Part "<<k<<" of the projection is U-isoparametric curve"<<std::endl;
-        Projector.D0(Udeb, Pdeb);
-        Projector.D0(Ufin, Pfin);
-        Udeb = Pdeb.Y();
-        Ufin = Pfin.Y();
-        if (Udeb > Ufin) {
-          Dir = gp_Dir2d(0, -1);
-          Udeb = - Udeb;
-          Ufin = - Ufin;
-        }
-        else Dir = gp_Dir2d(0, 1);
-        PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(UIso, 0), Dir), Udeb, Ufin);
-        HPCur = new Geom2dAdaptor_Curve(PCur2d);
-        Only3d = Standard_True;
+      if (Projector.GetProj2d())
+      {
+        DrawTrSurf::Set(newname1.ToCString(), Projector.GetResult2dC(k));
+
+        di << newname1 << " is pcurve\n";
+        di << " Tolerance reached in 2d is " << Projector.GetResult2dUApproxError(k)
+            << ";  " << Projector.GetResult2dVApproxError(k) << "\n";
       }
-      else if(Projector.IsVIso(k, VIso)) {
-//      std::cout<<"Part "<<k<<" of the projection is V-isoparametric curve"<<std::endl;
-        Projector.D0(Udeb, Pdeb);
-        Projector.D0(Ufin, Pfin);
-        Udeb = Pdeb.X();
-        Ufin = Pfin.X();
-        if (Udeb > Ufin) {
-          Dir = gp_Dir2d(-1, 0);
-          Udeb = - Udeb;
-          Ufin = - Ufin;
-        }
-        else Dir = gp_Dir2d(1, 0);
-        PCur2d = new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0, VIso), Dir), Udeb, Ufin);
-        HPCur = new Geom2dAdaptor_Curve(PCur2d);
-        Only3d = Standard_True;
-      }
-      else HPCur = HProjector;
-      
-      if(Projector.MaxDistance(k) <= myTol3d)
-        Only2d = Standard_True;
-      
-      if(Only2d && Only3d) {
-        Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve (GeomAdaptor::MakeCurve (*hcur), Ufin, Udeb);
-        DrawTrSurf::Set(temp, OutCur);
-        DrawTrSurf::Set(temp1, PCur2d);
-        di<<temp<<" is 3d projected curve\n";
-        di<<temp1<<" is pcurve\n";
-        return 0;
-        }
-      else {
-        Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d);
-        appr.Perform(myMaxSeg, myMaxDegree, myContinuity, Only3d, Only2d);
-        if(!Only3d) {
-	  PCur2d = appr.Curve2d();
-	  di << " Error in 2d is " << appr.MaxError2dU()
-	       << ";  "  << appr.MaxError2dV() << "\n"; 
-	}
-        if(Only2d) {
-          Handle(Geom_Curve) OutCur = new Geom_TrimmedCurve (GeomAdaptor::MakeCurve (*hcur), Ufin, Udeb);
-          DrawTrSurf::Set(temp, OutCur);
-          }
-        else {
-	  di << " Error in 3d is " <<  appr.MaxError3d() << "\n";
-	  DrawTrSurf::Set(temp, appr.Curve3d());
-	}
-        DrawTrSurf::Set(temp1, PCur2d);
-        di<<temp<<" is 3d projected curve\n";
-        di<<temp1<<" is pcurve\n";
+      if (Projector.GetProj3d())
+      {
+        DrawTrSurf::Set(newname.ToCString(), Projector.GetResult3dC(k));
+
+        di << newname << " is 3d projected curve\n";
+        di << " Tolerance reached in 3d is " << Projector.GetResult3dApproxError(k) << "\n";
       }
     }
   }
-return 0;
+  return 0;
 }
+
 //=======================================================================
 //function : project
 //purpose  : 
@@ -1801,9 +1802,15 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
 		  to3d,g);
 
   theCommands.Add("gproject",
-		  "gproject : [projectname] curve surface",
-		  __FILE__,
-		  gproject,g);
+                  "gproject projectname curve surface [tolerance [maxdist]]\n"
+                  "\t\t[-c continuity][-d maxdegree][-s maxsegments][-2d proj2d][-3d proj3d]\n"
+                  "\t\t-c continuity  : set curve continuity (C0, C1, C2) for approximation\n"
+                  "\t\t-d maxdegree   : set max possible degree of result for approximation\n"
+                  "\t\t-s maxsegments : set max value of parametric intervals the projected curve for approximation\n"
+                  "\t\t-2d proj2d     : set necessity of 2d results (0 or 1)\n"
+                  "\t\t-3d proj3d     : set necessity of 3d results (0 or 1)",
+                  __FILE__,
+                  gproject,g);
   
   theCommands.Add("project",
 		  "project : no args to have help",

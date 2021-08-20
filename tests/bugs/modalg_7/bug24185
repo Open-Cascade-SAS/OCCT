@@ -1,5 +1,3 @@
-puts "TODO OCC24185 ALL: Error : The length of result shape is"
-
 puts "========"
 puts "OCC24185"
 puts "========"
@@ -11,7 +9,7 @@ puts ""
 restore [locate_data_file bug24185_face.brep] f
 restore [locate_data_file bug24185_wire.brep] w
 
-nproject result w f
+nproject result w f 1.e-4 1
 
 checkshape result
 checkprops result -l 11.06
