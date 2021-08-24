@@ -18,6 +18,9 @@ donly ww
 openoffset res ww 1 -10
 renamevar res_1 result
 
+vori ww 
+vori result
+
 fit
 
 checkprops result -l 533.593 

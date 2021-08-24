@@ -12,10 +12,14 @@ smallview
 display a
 fit
 
+vori a
+
 if [catch { openoffset resoffset a 1 10 i } ] {
   puts "Error : mkoffset is wrong"
 } else {
   renamevar resoffset_1 result
+
+vori result
 
   checkprops result -l 159.96 
 checkshape result 
