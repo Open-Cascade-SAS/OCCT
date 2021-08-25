@@ -2861,14 +2861,14 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
   {
     myRaytraceFBO1[aFBOIdx]->BindBuffer (theGlContext);
 
-    glClear (GL_DEPTH_BUFFER_BIT); // render the image with depth
+    theGlContext->core11fwd->glClear (GL_DEPTH_BUFFER_BIT); // render the image with depth
   }
 
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
   if (myRenderParams.IsAntialiasingEnabled)
   {
-    glDisable (GL_DEPTH_TEST); // improve jagged edges without depth buffer
+    theGlContext->core11fwd->glDisable (GL_DEPTH_TEST); // improve jagged edges without depth buffer
 
     // bind ray-tracing output image as input
     myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, OpenGl_RT_FsaaInputTexture);
@@ -2924,7 +2924,7 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
     const Handle(OpenGl_FrameBuffer)& aRenderImageFramebuffer = myRaytraceFBO2[aFBOIdx];
     const Handle(OpenGl_FrameBuffer)& aDepthSourceFramebuffer = myRaytraceFBO1[aFBOIdx];
 
-    glEnable (GL_DEPTH_TEST);
+    theGlContext->core11fwd->glEnable (GL_DEPTH_TEST);
 
     // Display filtered image
     theGlContext->BindProgram (myOutImageProgram);
@@ -3032,11 +3032,13 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
     // extend viewport here, so that tiles at boundaries (cut tile size by target rendering viewport)
     // redirected to inner tiles (full tile size) are drawn entirely
     const Graphic3d_Vec2i anOffsetViewport = myTileSampler.OffsetTilesViewport (myAccumFrames > 1); // shrunk offsets texture will be uploaded since 3rd frame
-    glViewport (0, 0, anOffsetViewport.x(), anOffsetViewport.y());
+    theGlContext->core11fwd->glViewport (0, 0, anOffsetViewport.x(), anOffsetViewport.y());
   }
+  const NCollection_Vec4<bool> aColorMask = theGlContext->ColorMaskRGBA();
+  theGlContext->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
 
   // Generate for the given RNG seed
-  glDisable (GL_DEPTH_TEST);
+  theGlContext->core11fwd->glDisable (GL_DEPTH_TEST);
 
   // Adaptive Screen Sampling computes the same overall amount of samples per frame redraw as normal Path Tracing,
   // but distributes them unequally across pixels (grouped in tiles), so that some pixels do not receive new samples at all.
@@ -3070,10 +3072,11 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   }
   aRenderImageFramebuffer->UnbindBuffer (theGlContext);
 
+  theGlContext->SetColorMaskRGBA (aColorMask);
   if (myRaytraceParameters.AdaptiveScreenSampling
    && myRaytraceParameters.AdaptiveScreenSamplingAtomic)
   {
-    glViewport (0, 0, theSizeX, theSizeY);
+    theGlContext->core11fwd->glViewport (0, 0, theSizeX, theSizeY);
   }
   return true;
 }
@@ -3125,7 +3128,7 @@ Standard_Boolean OpenGl_View::runPathtraceOut (const Graphic3d_Camera::Projectio
   aRenderImageFramebuffer->ColorTexture()->Bind (theGlContext, OpenGl_RT_PrevAccumTexture);
 
   // Copy accumulated image with correct depth values
-  glEnable (GL_DEPTH_TEST);
+  theGlContext->core11fwd->glEnable (GL_DEPTH_TEST);
   theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
 
   aRenderImageFramebuffer->ColorTexture()->Unbind (theGlContext, OpenGl_RT_PrevAccumTexture);
@@ -3190,7 +3193,7 @@ Standard_Boolean OpenGl_View::raytrace (const Standard_Integer        theSizeX,
         0, GL_DEBUG_SEVERITY_MEDIUM, "Error: Failed to acquire OpenGL image textures");
     }
 
-    glDisable (GL_BLEND);
+    theGlContext->core11fwd->glDisable (GL_BLEND);
 
     const Standard_Boolean aResult = runRaytraceShaders (theSizeX,
                                                          theSizeY,

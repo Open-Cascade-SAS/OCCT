@@ -35,7 +35,7 @@ OpenGl_Caps::OpenGl_Caps()
   swapInterval      (1),
   useZeroToOneDepth (Standard_False),
   buffersNoSwap     (Standard_False),
-  buffersOpaqueAlpha(Standard_False),
+  buffersOpaqueAlpha(Standard_True),
   contextStereo     (Standard_False),
   contextDebug      (Standard_False),
   contextSyncDebug  (Standard_False),
@@ -54,8 +54,7 @@ OpenGl_Caps::OpenGl_Caps()
   glslDumpLevel     (OpenGl_ShaderProgramDumpLevel_Off)
 {
 #if defined(__EMSCRIPTEN__)
-  buffersNoSwap      = true; // swap has no effect in WebGL
-  buffersOpaqueAlpha = true; // avoid unexpected blending of canvas with page background
+  buffersNoSwap    = true; // swap has no effect in WebGL
 #endif
 #ifdef OCCT_DEBUG
   contextDebug     = true;

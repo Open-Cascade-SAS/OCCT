@@ -56,7 +56,7 @@ public: //! @name context creation parameters
    * (e.g. it could be opaque or not in case of transparent material).
    * With alpha writes disabled, color buffer will be kept opaque.
    *
-   * OFF by default.
+   * ON by default.
    */
   Standard_Boolean buffersOpaqueAlpha;
 
