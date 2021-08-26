@@ -23,7 +23,7 @@ vori result
 
 fit
 
-checkprops result -l 354.958 
+checkprops result -l 386.077 
 checkshape result 
 checksection result
 
