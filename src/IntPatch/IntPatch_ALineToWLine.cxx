@@ -676,7 +676,11 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
             IntPatch_Point aLVtx = theALine->Vertex(i);
             aLVtx.SetValue(aVertP2S);
             aLVtx.SetTolerance(aVertToler);
-            aLVtx.SetParameter(aNewVertexParam);
+            Standard_Real aParam = aLVtx.ParameterOnLine();
+            if (Abs(aParam - theLPar) <= Precision::PConfusion()) //in the case of closed curve,
+              aLVtx.SetParameter(-1); //we don't know yet the number of points in the curve
+            else
+              aLVtx.SetParameter(aNewVertexParam);
             aSeqVertex(++aNewVertID) = aLVtx;
             hasVertexBeenChecked(i) = Standard_True;
             isFound = Standard_True;
@@ -748,7 +752,9 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
     for(Standard_Integer i = aSeqVertex.Lower(); i <= aNewVertID; i++)
     {
-      const IntPatch_Point& aVtx = aSeqVertex(i);
+      IntPatch_Point aVtx = aSeqVertex(i);
+      if (aVtx.ParameterOnLine() == -1) //in the case of closed curve,
+        aVtx.SetParameter (aWLine->NbPnts()); //we set the last parameter
       aWLine->AddVertex(aVtx);
     }
 
@@ -756,7 +762,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
     //the method ComputeVertexParameters can reduce the number of points in <aWLine>
     aWLine->ComputeVertexParameters(myTol3D);
-
+    
     if (aWLine->NbPnts() > 1)
     {
       aWLine->EnablePurging(Standard_False);
