@@ -38,6 +38,9 @@ set (BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR
 Corresponding environment variable (CSF_FPE) can be changed manually
 in custom.bat/sh scripts without regeneration by CMake.")
 
+set (BUILD_FORCE_RelWithDebInfo_DESCR
+"Generate PDB files within normal Release build.")
+
 set (BUILD_USE_PCH_DESCR
 "Use precompiled headers to accelerate the build.
 Precompiled headers are generated automatically by Cotire tool.")

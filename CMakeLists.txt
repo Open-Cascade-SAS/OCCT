@@ -91,6 +91,16 @@ if (NOT DEFINED BUILD_RELEASE_DISABLE_EXCEPTIONS)
   set (BUILD_RELEASE_DISABLE_EXCEPTIONS ON CACHE BOOL "${BUILD_RELEASE_DISABLE_EXCEPTIONS_DESCR}")
 endif()
 
+if (MSVC)
+  set (BUILD_FORCE_RelWithDebInfo OFF CACHE BOOL "${BUILD_FORCE_RelWithDebInfo_DESCR}")
+else()
+  set (BUILD_FORCE_RelWithDebInfo OFF)
+endif()
+
+if (BUILD_FORCE_RelWithDebInfo)
+  set (CMAKE_CONFIGURATION_TYPES Release Debug CACHE INTERNAL "" FORCE)
+endif()
+
 # option to enable or disable use of precompiled headers
 if (NOT DEFINED BUILD_USE_PCH)
   set (BUILD_USE_PCH OFF CACHE BOOL "${BUILD_USE_PCH_DESCR}")
