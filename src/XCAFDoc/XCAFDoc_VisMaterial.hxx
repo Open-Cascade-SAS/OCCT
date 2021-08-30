@@ -69,29 +69,41 @@ public:
   //! Fill in graphic aspects.
   Standard_EXPORT void FillAspect (const Handle(Graphic3d_Aspects)& theAspect) const;
 
-  //! Return TRUE if metal-roughness PBR material is defined.
+  //! Return TRUE if metal-roughness PBR material is defined; FALSE by default.
   Standard_Boolean HasPbrMaterial() const { return myPbrMat.IsDefined; }
 
   //! Return metal-roughness PBR material.
+  //! Note that default constructor creates an empty material (@sa XCAFDoc_VisMaterialPBR::IsDefined).
   const XCAFDoc_VisMaterialPBR& PbrMaterial() const { return myPbrMat; }
 
   //! Setup metal-roughness PBR material.
   Standard_EXPORT void SetPbrMaterial (const XCAFDoc_VisMaterialPBR& theMaterial);
 
   //! Setup undefined metal-roughness PBR material.
-  void UnsetPbrMaterial() { SetPbrMaterial (XCAFDoc_VisMaterialPBR()); }
+  void UnsetPbrMaterial()
+  {
+    XCAFDoc_VisMaterialPBR anEmpty;
+    anEmpty.IsDefined = false;
+    SetPbrMaterial (anEmpty);
+  }
 
-  //! Return TRUE if common material is defined.
+  //! Return TRUE if common material is defined; FALSE by default.
   Standard_Boolean HasCommonMaterial() const { return myCommonMat.IsDefined; }
 
   //! Return common material.
+  //! Note that default constructor creates an empty material (@sa XCAFDoc_VisMaterialCommon::IsDefined).
   const XCAFDoc_VisMaterialCommon& CommonMaterial() const { return myCommonMat; }
 
   //! Setup common material.
   Standard_EXPORT void SetCommonMaterial (const XCAFDoc_VisMaterialCommon& theMaterial);
 
   //! Setup undefined common material.
-  void UnsetCommonMaterial() { SetCommonMaterial (XCAFDoc_VisMaterialCommon()); }
+  void UnsetCommonMaterial()
+  {
+    XCAFDoc_VisMaterialCommon anEmpty;
+    anEmpty.IsDefined = false;
+    SetCommonMaterial (anEmpty);
+  }
 
   //! Return base color.
   Standard_EXPORT Quantity_ColorRGBA BaseColor() const;

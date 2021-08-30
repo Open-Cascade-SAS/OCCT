@@ -40,7 +40,8 @@ XCAFDoc_VisMaterial::XCAFDoc_VisMaterial()
   myAlphaCutOff (0.5f),
   myFaceCulling (Graphic3d_TypeOfBackfacingModel_Auto)
 {
-  //
+  myPbrMat   .IsDefined = false;
+  myCommonMat.IsDefined = false;
 }
 
 //=======================================================================

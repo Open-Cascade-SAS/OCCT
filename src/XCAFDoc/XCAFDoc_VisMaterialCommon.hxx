@@ -33,7 +33,7 @@ struct XCAFDoc_VisMaterialCommon
   Quantity_Color          EmissiveColor;   //!< emission color
   Standard_ShortReal      Shininess;       //!< shininess value
   Standard_ShortReal      Transparency;    //!< transparency value within [0, 1] range with 0 meaning opaque
-  Standard_Boolean        IsDefined;       //!< defined flag; FALSE by default
+  Standard_Boolean        IsDefined;       //!< defined flag; TRUE by default
 
   //! Empty constructor.
   XCAFDoc_VisMaterialCommon()
@@ -43,7 +43,7 @@ struct XCAFDoc_VisMaterialCommon
     EmissiveColor(0.0, 0.0, 0.0, Quantity_TOC_RGB),
     Shininess (1.0f),
     Transparency (0.0f),
-    IsDefined (Standard_False) {}
+    IsDefined (Standard_True) {}
 
   //! Compare two materials.
   Standard_Boolean IsEqual (const XCAFDoc_VisMaterialCommon& theOther) const
