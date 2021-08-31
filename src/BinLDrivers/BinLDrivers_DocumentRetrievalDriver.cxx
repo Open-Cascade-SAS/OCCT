@@ -226,7 +226,6 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   mySections.Clear();
   myPAtt.Init();
   Handle(TDF_Data) aData = (!theFilter.IsNull() && theFilter->IsAppendMode()) ? aDoc->GetData() : new TDF_Data();
-  std::streampos aDocumentPos = -1;
 
   Message_ProgressScope aPS (theRange, "Reading data", 3);
   Standard_Boolean aQuickPart = IsQuickPart (aFileVer);
@@ -246,29 +245,33 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
       return;
     }
 
-    aDocumentPos = theIStream.tellg(); // position of root label
 
     BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
-    for (; anIterS.More(); anIterS.Next()) {
-      BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
-      if (aCurSection.IsPostRead() == Standard_False) {
-        theIStream.seekg ((std::streampos) aCurSection.Offset());
-        if (aCurSection.Name().IsEqual (SHAPESECTION_POS))
-        {
-          ReadShapeSection (aCurSection, theIStream, false, aPS.Next());
-          if (!aPS.More())
+    // if there is only empty section, do not call tellg and seekg
+    if (!mySections.IsEmpty() && (mySections.Size() > 1 || !anIterS.Value().Name().IsEqual(ENDSECTION_POS)))
+    {
+      std::streampos aDocumentPos = theIStream.tellg(); // position of root label
+      for (; anIterS.More(); anIterS.Next()) {
+        BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
+        if (aCurSection.IsPostRead() == Standard_False) {
+          theIStream.seekg ((std::streampos) aCurSection.Offset());
+          if (aCurSection.Name().IsEqual (SHAPESECTION_POS))
           {
-            myReaderStatus = PCDM_RS_UserBreak;
-            return;
+            ReadShapeSection (aCurSection, theIStream, false, aPS.Next());
+            if (!aPS.More())
+            {
+              myReaderStatus = PCDM_RS_UserBreak;
+              return;
+            }
           }
+          else if (!aCurSection.Name().IsEqual (ENDSECTION_POS))
+            ReadSection (aCurSection, theDoc, theIStream);
         }
-        else if (!aCurSection.Name().IsEqual (ENDSECTION_POS))
-          ReadSection (aCurSection, theDoc, theIStream);
       }
+      theIStream.seekg(aDocumentPos);
     }
   } else { //aFileVer < 3
-    aDocumentPos = theIStream.tellg(); // position of root label
-
+    std::streampos aDocumentPos = theIStream.tellg(); // position of root label
     // retrieve SHAPESECTION_POS string
     char aShapeSecLabel[SIZEOFSHAPELABEL + 1];
     aShapeSecLabel[SIZEOFSHAPELABEL] = 0x00;
@@ -309,10 +312,10 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
         }
       }
     }
+    theIStream.seekg(aDocumentPos);
   } // end of reading Sections or shape section
 
   // Return to read of the Document structure
-  theIStream.seekg(aDocumentPos);
 
   // read the header (tag) of the root label
   Standard_Integer aTag;
