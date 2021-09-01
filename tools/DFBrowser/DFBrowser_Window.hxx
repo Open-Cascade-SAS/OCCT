@@ -35,7 +35,6 @@
 class DFBrowser_DumpView;
 class DFBrowser_Module;
 class DFBrowser_PropertyPanel;
-class DFBrowser_Thread;
 class DFBrowser_TreeLevelLine;
 
 class ViewControl_MessageDialog;
@@ -92,12 +91,12 @@ public:
   //! Fills controls of the plugin by parameters:
   //! - Find TDocStd_Application and fills OCAF tree model if it differs from the current application
   //! - Fine AIS_InteractiveObject and fills View if it if it differs from the current context
-  //! - If it is the first call, it creates module, start thread to cache application information, fills selection models
+  //! - If it is the first call, it creates module, fills selection models
   //! \param theParameters a parameters container
   Standard_EXPORT void Init (const NCollection_List<Handle(Standard_Transient)>& theParameters);
 
   //! Opens application by the name, it may be either OCAF document or STEP file.
-  //! Before opening it cleans tree view history, current selections, stop threads(if it was started),
+  //! Before opening it cleans tree view history, current selections,
   //! reset OCAF tree view model. After opening document, it fills all controls by the created application.
   //! \param theFileName a file name to be opened
   Standard_EXPORT void OpenFile (const TCollection_AsciiString& theFileName);
@@ -107,9 +106,6 @@ public:
 
   //! Returns the current module
   DFBrowser_Module* GetModule() const { return myModule; }
-
-  //! Clears thread cache
-  Standard_EXPORT void ClearThreadCache();
 
   //! Returns tree level line control
   DFBrowser_TreeLevelLine* GetTreeLevelLine() const { return myTreeLevelLine; }
@@ -126,7 +122,7 @@ public:
 
 private slots:
 
-  //! Cleans history in tree level line, clears cache of thread processing, starts threads for application
+  //! Cleans history in tree level line
   void onBeforeUpdateTreeModel();
 
   //! Shows context menu for tree view selected item. It contains clear view or BREP operations items
@@ -233,7 +229,6 @@ private:
   ViewControl_PropertyView* myPropertyView; //!< property control to display model item values if exist
   View_Window* myViewWindow; //!< V3d view to visualize presentations/references if it can be build for a selected item
   DFBrowser_DumpView* myDumpView; //!< Text editor where "Dump" method output is shown
-  DFBrowser_Thread* myThread; //!< Threads manipulator, starting thread items, listens finalizing
   ViewControl_MessageDialog* myExportToShapeViewDialog; //!< dialog about exporting TopoDS_Shape to ShapeView plugin
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< contains application, context, files that should be opened
   QString myOpenedFileName; //!< cached name of opened file between parent is set, apply it by parent setting and nullify

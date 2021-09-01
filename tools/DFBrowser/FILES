@@ -30,11 +30,6 @@ DFBrowser_SearchLineModel.cxx
 DFBrowser_SearchLineModel.hxx
 DFBrowser_SearchView.cxx
 DFBrowser_SearchView.hxx
-DFBrowser_Thread.cxx
-DFBrowser_Thread.hxx
-DFBrowser_ThreadItem.hxx
-DFBrowser_ThreadItemSearch.cxx
-DFBrowser_ThreadItemSearch.hxx
 DFBrowser_Tools.cxx
 DFBrowser_Tools.hxx
 DFBrowser_TreeLevelLine.cxx

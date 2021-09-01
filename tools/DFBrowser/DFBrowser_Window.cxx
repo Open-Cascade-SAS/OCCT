@@ -31,8 +31,6 @@
 #include <inspector/DFBrowser_PropertyPanel.hxx>
 #include <inspector/DFBrowser_SearchLine.hxx>
 #include <inspector/DFBrowser_SearchView.hxx>
-#include <inspector/DFBrowser_Thread.hxx>
-#include <inspector/DFBrowser_ThreadItemSearch.hxx>
 #include <inspector/DFBrowser_Tools.hxx>
 #include <inspector/DFBrowser_TreeLevelLine.hxx>
 #include <inspector/DFBrowser_TreeLevelView.hxx>
@@ -209,8 +207,6 @@ DFBrowser_Window::DFBrowser_Window()
   myMainWindow->tabifyDockWidget (aDumpDockWidget, aViewDockWidget);
 
   myTreeView->resize (DFBROWSER_DEFAULT_TREE_VIEW_WIDTH, DFBROWSER_DEFAULT_TREE_VIEW_HEIGHT);
-
-  myThread = new DFBrowser_Thread (this);
 }
 
 // =======================================================================
@@ -457,8 +453,7 @@ void DFBrowser_Window::Init (const NCollection_List<Handle(Standard_Transient)>&
   //! expand first three levels: CUSTOM
   QModelIndex aParentIndex = aModel->index (0, 0);
   setExpandedLevels (myTreeView, aParentIndex, 3/*levels*/);
-
-  myThread->ProcessApplication();
+  
   myModule->SetInitialTreeViewSelection();
 }
 
@@ -469,7 +464,6 @@ void DFBrowser_Window::Init (const NCollection_List<Handle(Standard_Transient)>&
 void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
 {
   QApplication::setOverrideCursor (Qt::WaitCursor);
-  myThread->TerminateThread();
 
   myTreeLevelLine->ClearHistory();
   QItemSelectionModel* aSelectionModel = myModule->GetOCAFViewSelectionModel();
@@ -479,7 +473,6 @@ void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
     QModelIndex anIndex;
     aSelectionModel->select (anIndex, QItemSelectionModel::ClearAndSelect);
   }
-  ClearThreadCache();
 
   myTreeLevelLine->ClearHistory();
 
@@ -520,7 +513,6 @@ void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
     QModelIndex aParentIndex = anOCAFViewModel->index (0, 0);
     setExpandedLevels (myTreeView, aParentIndex, 3/*levels*/);
 
-    myThread->ProcessApplication();
     myModule->SetInitialTreeViewSelection();
     QApplication::restoreOverrideCursor();
   }
@@ -592,17 +584,6 @@ void DFBrowser_Window::setOCAFModel (QAbstractItemModel* theModel)
 void DFBrowser_Window::onBeforeUpdateTreeModel()
 {
   myTreeLevelLine->ClearHistory();
-  ClearThreadCache();
-  myThread->ProcessApplication();
-}
-
-// =======================================================================
-// function : ClearThreadCache
-// purpose :
-// =======================================================================
-void DFBrowser_Window::ClearThreadCache()
-{
-  DFBrowser_ThreadItemSearch::ClearValues (GetTreeLevelLine()->GetSearchLine());
 }
 
 // =======================================================================
