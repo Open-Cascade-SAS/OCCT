@@ -263,21 +263,19 @@ void math_DirectPolynomialRoots::Solve(const Standard_Real a,
   Q = Ydemi + SdiscrQ0;
   P1 = Ademi - P0;
   Q1 = Ydemi - SdiscrQ0;
-//  Modified by skv - Wed Apr 14 16:05:24 2004 IDEM(Airbus) Begin
-  Standard_Real eps;
+  //
+  Standard_Real anEps = 100 * EPSILON;
 
-  eps = Epsilon(100.*Max(Ademi, P0));
-  if (Abs(P) <= eps)
+  if (Abs(P) <= anEps)
     P = 0.;
-  if (Abs(P1) <= eps)
+  if (Abs(P1) <= anEps)
     P1 = 0.;
 
-  eps = Epsilon(100.*Max(Ydemi, SdiscrQ0));
-  if (Abs(Q) <= eps)
+  if (Abs(Q) <= anEps)
     Q = 0.;
-  if (Abs(Q1) <= eps)
+  if (Abs(Q1) <= anEps)
     Q1 = 0.;
-//  Modified by skv - Wed Apr 14 16:05:24 2004 IDEM(Airbus) End
+  //
   Ademi = 1.0;
 
   math_DirectPolynomialRoots ASol2(Ademi, P,  Q);
