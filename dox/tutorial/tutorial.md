@@ -18,7 +18,7 @@ From a programming standpoint, Open CASCADE Technology is designed to enhance yo
 
 To illustrate the use of classes provided in the 3D geometric modeling toolkits, you will create a bottle as shown:
 
-@figure{/tutorial/images/tutorial_image001.png,"",240}
+@figure{/tutorial/images/tutorial_image001.png,"",240} height=350px
 
 In the tutorial we will create, step-by-step, a function that will model a bottle as shown above. You will find the complete source code of this tutorial, including the very function *MakeBottle* in the distribution of Open CASCADE Technology. The function body is provided in the file samples/qt/Tutorial/src/MakeBottle.cxx.
 
@@ -34,7 +34,7 @@ We first define the bottle specifications as follows:
 
 In addition, we decide that the bottle's profile (base) will be centered on the origin of the global Cartesian coordinate system.
 
-@figure{/tutorial/images/tutorial_image002.png,"",240}
+@figure{/tutorial/images/tutorial_image002.png,"",240} height=350px
 
 This modeling requires four steps:
 
@@ -145,16 +145,16 @@ However, the *TopoDS* package provides only the data structure of the topologica
 To create an edge, you use the BRepBuilderAPI_MakeEdge class with the previously computed curves:
 
 ~~~~{.cpp}
-    TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aSegment1);
-    TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge(aArcOfCircle);
-    TopoDS_Edge aEdge3 = BRepBuilderAPI_MakeEdge(aSegment2);
+    TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aSegment1);
+    TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(aArcOfCircle);
+    TopoDS_Edge anEdge3 = BRepBuilderAPI_MakeEdge(aSegment2);
 ~~~~
 
-In Open CASCADE Technology, you can create edges in several ways. One possibility is to create an edge directly from two points, in which case the underlying geometry of this edge is a line, bounded by two vertices being automatically computed from the two input points. For example, aEdge1 and aEdge3 could have been computed in a simpler way:
+In Open CASCADE Technology, you can create edges in several ways. One possibility is to create an edge directly from two points, in which case the underlying geometry of this edge is a line, bounded by two vertices being automatically computed from the two input points. For example, anEdge1 and anEdge3 could have been computed in a simpler way:
 
 ~~~~{.cpp}
-    TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aPnt1, aPnt3);
-    TopoDS_Edge aEdge2 = BRepBuilderAPI_MakeEdge(aPnt4, aPnt5);
+    TopoDS_Edge anEdge1 = BRepBuilderAPI_MakeEdge(aPnt1, aPnt3);
+    TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(aPnt4, aPnt5);
 ~~~~
 
 To connect the edges, you need to create a wire with the *BRepBuilderAPI_MakeWire* class. There are two ways of building a wire with this class:
@@ -165,7 +165,7 @@ To connect the edges, you need to create a wire with the *BRepBuilderAPI_MakeWir
 When building a wire from less than four edges, as in the present case, you can use the constructor directly as follows:
 
 ~~~~{.cpp}
-    TopoDS_Wire aWire = BRepBuilderAPI_MakeWire(aEdge1, aEdge2, aEdge3);
+    TopoDS_Wire aWire = BRepBuilderAPI_MakeWire(anEdge1, anEdge2, anEdge3);
 ~~~~
 
 
@@ -250,7 +250,7 @@ The bottle's profile is almost finished. You have created two wires: *aWire* and
 @subsection OCCT_TUTORIAL_SUB3_1 Prism the Profile
 
 
-To compute the main body of the bottle, you need to create a solid shape. The simplest way is to use the previously created profile and to sweep it along a direction. The *Prism* functionality of Open CASCADE Technology is the most appropriate for that task. It accepts a shape and a direction as input and generates a new shape according to the following rules:
+To compute the main body of the bottle, you need to create a solid shape. The simplest way is to use the previously created profile and sweep it along a direction. The *Prism* functionality of Open CASCADE Technology is the most appropriate for that task. It accepts a shape and a direction as input and generates a new shape according to the following rules:
 
 | Shape  | Generates          |
 | :----- | :----------------- |
@@ -260,7 +260,7 @@ To compute the main body of the bottle, you need to create a solid shape. The si
 | Face   | Solid              |
 | Shell  | Compound of Solids |
 
-@figure{/tutorial/images/tutorial_image007.png,"",240}
+@figure{/tutorial/images/tutorial_image007.png,"",240} height=350px
 
 Your current profile is a wire. Referring to the Shape/Generates table, you need to compute a face out of its wire to generate a solid.
 To create a face, use the *BRepBuilderAPI_MakeFace* class. As previously explained, a face is a part of a surface bounded by a closed wire. Generally, *BRepBuilderAPI_MakeFace* computes a face out of a surface and one or more wires.
@@ -297,7 +297,7 @@ For our purposes, we will specify that fillets must be:
   * applied on all edges of the shape
   * have a radius of *myThickness* / 12
 
-@figure{/tutorial/images/tutorial_image008.png,"",240}
+@figure{/tutorial/images/tutorial_image008.png,"",240} height=350px
 
 To apply fillets on the edges of a shape, you use the *BRepFilletAPI_MakeFillet* class. This class is normally used as follows:
 
@@ -353,7 +353,7 @@ Once this is done, you perform the last step of the procedure by asking for the 
 
 To add a neck to the bottle, you will create a cylinder and fuse it to the body. The cylinder is to be positioned on the top face of the body with a radius of *myThickness* / 4. and a height of *myHeight* / 10.
 
-@figure{/tutorial/images/tutorial_image009.png,"",240}
+@figure{/tutorial/images/tutorial_image009.png,"",240} height=350px
 
 To position the cylinder, you need to define a coordinate system with the *gp_Ax2* class defining a right-handed coordinate system from a point and two directions - the main (Z) axis direction and the X direction (the Y direction is computed from these two).
 To align the neck with the center of the top face, being in the global coordinate system (0, 0, *myHeight*), with its normal on the global Z axis, your local coordinate system can be defined as follows:
@@ -395,7 +395,7 @@ In Open CASCADE Technology, a hollowed solid is called a *Thick* *Solid* and is 
   * Create a parallel wall W2 from W1 at a distance D. If D is positive, W2 will be outside the initial solid, otherwise it will be inside.
   * Compute a solid from the two walls W1 and W2.
 
-@figure{/tutorial/images/tutorial_image010.png,"",240}
+@figure{/tutorial/images/tutorial_image010.png,"",240} height=350px
     
 To compute a thick solid, you create an instance of the *BRepOffsetAPI_MakeThickSolid* class by giving the following information:
     
@@ -438,7 +438,6 @@ To compare a given type with the type you seek, use the *STANDARD_TYPE* macro, w
 
 ~~~~{.cpp}
     if(aSurface->DynamicType() == STANDARD_TYPE(Geom_Plane)){
-    //
     }
 ~~~~
 
@@ -478,9 +477,9 @@ The collection for shapes can be found in the *TopTools* package. As *BRepOffset
 All the necessary data are now available so you can create your hollowed solid by calling the *BRepOffsetAPI_MakeThickSolid* MakeThickSolidByJoin method:
 
 ~~~~{.cpp}
-    BRepOffsetAPI_MakeThickSolid BodyMaker;
-    BodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
-    myBody = BodyMaker.Shape();
+    BRepOffsetAPI_MakeThickSolid aSolidMaker;
+    aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+    myBody = aSolidMaker.Shape();
 ~~~~
 
 
@@ -493,7 +492,7 @@ All the necessary data are now available so you can create your hollowed solid b
 Up to now, you have learned how to create edges out of 3D curves.
 You will now learn how to create an edge out of a 2D curve and a surface.
 To learn this aspect of Open CASCADE Technology, you will build helicoidal profiles out of 2D curves on cylindrical surfaces. The theory is more complex than in previous steps, but applying it is very simple.
-As a first step, you compute these cylindrical surfaces. You are already familiar with curves of the *Geom* package. Now you can create a cylindrical surface (*Geom_CylindricalSurface*) using:
+As a first step, you compute these cylindrical surfaces. You are already familiar with the curves of the *Geom* package. Now you can create a cylindrical surface (*Geom_CylindricalSurface*) using:
 
   * a coordinate system;
   * a radius.
@@ -604,7 +603,7 @@ As the parametric equation of an ellipse is P(U) = O + (MajorRadius * cos(U) * X
 ~~~~
 
 The last step consists in defining the segment, which is the same for the two profiles: a line limited by the first and the last point of one of the arcs.
-To access the point corresponding to the parameter of a curve or a surface, you use the Value or D0 method (meaning 0th derivative), D1 method is for first derivative, D2 for the second one.
+To access the point corresponding to the parameter of a curve or a surface, you use the Value or D0 method (meaning 0th derivative), D1 method is for the first derivative, D2 for the second one.
 
 ~~~~{.cpp}
     gp_Pnt2d anEllipsePnt1 = anEllipse1->Value(0);
@@ -698,7 +697,7 @@ You are almost done building the bottle. Use the *TopoDS_Compound* and *BRep_Bui
 
 Congratulations! Your bottle is complete. Here is the result snapshot of the Tutorial application:
 
-@figure{/tutorial/images/tutorial_image019.png,"",320}
+@figure{/tutorial/images/tutorial_image019.png,"",320} height=450px
 
 We hope that this tutorial has provided you with a feel for the industrial strength power of Open CASCADE Technology.
 If you want to know more and develop major projects using Open CASCADE Technology, we invite you to study our training, support, and consulting services on our site at https://www.opencascade.com/content/technology-support. Our professional services can maximize the power of your Open CASCADE Technology applications.
@@ -796,9 +795,9 @@ Complete definition of MakeBottle function (defined in the file src/MakeBottle.c
 
         TopTools_ListOfShape facesToRemove;
         facesToRemove.Append(faceToRemove);
-        BRepOffsetAPI_MakeThickSolid BodyMaker;
-        BodyMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
-        myBody = BodyMaker.Shape();
+        BRepOffsetAPI_MakeThickSolid aSolidMaker;
+        aSolidMaker.MakeThickSolidByJoin(myBody, facesToRemove, -myThickness / 50, 1.e-3);
+        myBody = aSolidMaker.Shape();
         // Threading : Create Surfaces
         Handle(Geom_CylindricalSurface) aCyl1 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 0.99);
         Handle(Geom_CylindricalSurface) aCyl2 = new Geom_CylindricalSurface(neckAx2, myNeckRadius * 1.05);
