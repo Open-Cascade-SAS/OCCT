@@ -25,6 +25,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepBuilderAPI_Command.hxx>
 #include <Standard_Boolean.hxx>
+#include <Message_ProgressRange.hxx>
 class StdFail_NotDone;
 class TopoDS_Shape;
 
@@ -42,7 +43,7 @@ public:
 
   //! This is  called by  Shape().  It does  nothing but
   //! may be redefined.
-  Standard_EXPORT virtual void Build();
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Returns a shape built by the shape construction algorithm.
   //! Raises exception StdFail_NotDone if the shape was not built.

@@ -181,7 +181,7 @@ const TopoDS_Shell&  BRepPrimAPI_MakeBox::Shell()
 //purpose  : 
 //=======================================================================
 
-void BRepPrimAPI_MakeBox::Build()
+void BRepPrimAPI_MakeBox::Build(const Message_ProgressRange& /*theRange*/)
 {
   Solid();
 }

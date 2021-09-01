@@ -52,10 +52,11 @@ BRepAlgoAPI_Common::~BRepAlgoAPI_Common()
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
-                                       const TopoDS_Shape& S2)
+                                       const TopoDS_Shape& S2,
+                                       const Message_ProgressRange& theRange)
 : BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_COMMON)
 {
-  Build();
+  Build(theRange);
 }
 //=======================================================================
 //function : BRepAlgoAPI_Common
@@ -63,10 +64,11 @@ BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1,
 //=======================================================================
 BRepAlgoAPI_Common::BRepAlgoAPI_Common(const TopoDS_Shape& S1, 
                                        const TopoDS_Shape& S2,
-                                       const BOPAlgo_PaveFiller& aDSF)
+                                       const BOPAlgo_PaveFiller& aDSF,
+                                       const Message_ProgressRange& theRange)
 : BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_COMMON)
 {
-  Build();
+  Build(theRange);
 }
 
 

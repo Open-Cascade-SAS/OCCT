@@ -157,7 +157,7 @@ public: //! @name Setting input data for the algorithm
 public: //! @name Performing the operation
 
   //! Performs the operation
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 public: //! @name History Methods

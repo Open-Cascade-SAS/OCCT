@@ -282,7 +282,7 @@ public:
     ChFi2d_ConstructionError Status() const;
   
   //! Update the result and set the Done flag
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 

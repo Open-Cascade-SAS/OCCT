@@ -96,7 +96,7 @@ public: //! @name Constructors
 public: //! @name Performing the operation
 
   //! Performs the construction of the solids from the given faces
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 public: //! @name Getting the bounding boxes of the created solids
 
@@ -114,23 +114,23 @@ protected: //! @name Protected methods performing the operation
   //! - that are alone but given twice with different orientation.
   //! These faces will be put into the map *myShapesToAvoid* and will be
   //! avoided in shells construction, but will be classified later on.
-  Standard_EXPORT virtual void PerformShapesToAvoid() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Build all possible closed shells from the given faces.
   //! The method fills the following maps:
   //! - myLoops - Created closed shells;
   //! - myLoopsInternal - The shells created from unused faces.
-  Standard_EXPORT virtual void PerformLoops() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Classifies the created shells on the Holes and Growths.
   //! Creates the solids from the Growths shells.
   //! Puts the Hole shells into the closest Growths solids.
-  Standard_EXPORT virtual void PerformAreas() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Classifies the unused faces relatively the created solids.
   //! Puts the classified faces into the closest solids as internal shells.
   //! Warns the user about unclassified faces if any.
-  Standard_EXPORT virtual void PerformInternalShapes() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternalShapes(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
 private:
 

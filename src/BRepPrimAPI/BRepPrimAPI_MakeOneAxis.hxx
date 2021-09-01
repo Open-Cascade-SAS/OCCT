@@ -43,7 +43,7 @@ public:
   Standard_EXPORT virtual Standard_Address OneAxis() = 0;
   
   //! Stores the solid in myShape.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns the lateral face of the rotational primitive.
   Standard_EXPORT const TopoDS_Face& Face();

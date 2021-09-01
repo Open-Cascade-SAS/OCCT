@@ -332,7 +332,7 @@ BRepOffsetAPI_MiddlePath::BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape,
 //purpose  : 
 //=======================================================================
 
-void BRepOffsetAPI_MiddlePath::Build()
+void BRepOffsetAPI_MiddlePath::Build(const Message_ProgressRange& /*theRange*/)
 {
   TopTools_ListIteratorOfListOfShape itl;
   

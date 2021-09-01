@@ -113,7 +113,7 @@ public:
                                             const Standard_Boolean RemoveIntEdges = Standard_False);
 
   // Does nothing.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns the list  of shapes modified from the shape
   //! <S>.

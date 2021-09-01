@@ -33,7 +33,7 @@
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepFeat_SplitShape::Build ()
+void BRepFeat_SplitShape::Build (const Message_ProgressRange& /*theRange*/)
 {
   mySShape.Perform(myWOnShape);
   if (mySShape.IsDone()) {

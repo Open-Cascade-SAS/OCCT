@@ -53,12 +53,31 @@ protected:
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
   //! Combine the result of section operation
-  Standard_EXPORT virtual void BuildSection();
+  Standard_EXPORT virtual void BuildSection(const Message_ProgressRange& theRange);
 
   //! Performs calculations using prepared Filler object <thePF>
-  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternal1(const BOPAlgo_PaveFiller& thePF, const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
-private:
+protected:
+
+  //! List of operations to be supported by the Progress Indicator.
+  //! Override the whole enumeration here since the constant operations are also
+  //! going to be overridden.
+  enum BOPAlgo_PIOperation
+  {
+    PIOperation_TreatVertices = 0,
+    PIOperation_TreatEdges,
+    PIOperation_BuildSection,
+    PIOperation_FillHistory,
+    PIOperation_PostTreat,
+    PIOperation_Last
+  };
+
+  //! Filling steps for constant operations
+  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+
+  //! Filling steps for all other operations
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 };
 

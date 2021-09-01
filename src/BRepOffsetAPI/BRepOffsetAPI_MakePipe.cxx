@@ -77,7 +77,7 @@ const BRepFill_Pipe& BRepOffsetAPI_MakePipe::Pipe() const
 //purpose  : 
 //=======================================================================
 
-void BRepOffsetAPI_MakePipe::Build() 
+void BRepOffsetAPI_MakePipe::Build(const Message_ProgressRange& /*theRange*/)
 {
   myShape = myPipe.Shape();
   //Check for emptiness of result

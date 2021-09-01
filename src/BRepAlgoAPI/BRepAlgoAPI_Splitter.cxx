@@ -35,7 +35,7 @@ BRepAlgoAPI_Splitter::BRepAlgoAPI_Splitter(const BOPAlgo_PaveFiller& thePF)
 // function: Build
 // purpose: 
 //=======================================================================
-void BRepAlgoAPI_Splitter::Build()
+void BRepAlgoAPI_Splitter::Build(const Message_ProgressRange& theRange)
 {
   // Set Not Done status by default
   NotDone();
@@ -50,6 +50,7 @@ void BRepAlgoAPI_Splitter::Build()
   }
 
   // If necessary perform intersection of the argument shapes
+  Message_ProgressScope aPS(theRange, "Performing Split operation", myIsIntersectionNeeded ? 100 : 30);
   if (myIsIntersectionNeeded)
   {
     // Combine Arguments and Tools for intersection into a single list
@@ -58,7 +59,7 @@ void BRepAlgoAPI_Splitter::Build()
       aLArgs.Append(it.Value());
 
     // Perform intersection
-    IntersectShapes(aLArgs);
+    IntersectShapes(aLArgs, aPS.Next(70));
     if (HasErrors())
       return;
   }
@@ -69,5 +70,5 @@ void BRepAlgoAPI_Splitter::Build()
   ((BOPAlgo_Splitter*)myBuilder)->SetTools(myTools);
 
   // Build result shape basing on the intersection results
-  BuildResult();
+  BuildResult(aPS.Next(30));
 }

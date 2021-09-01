@@ -293,7 +293,7 @@ public:
   //! intersection of 4 or more edges of the shape, or
   //! -   the intersection of the fillet with a face which limits
   //! the contour is not fully contained in this face.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Reinitializes this algorithm, thus canceling the effects of the Build function.
   //! This function allows modifications to be made to the

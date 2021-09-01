@@ -146,7 +146,7 @@ const TopTools_ListOfShape* BOPAlgo_Builder::LocModified(const TopoDS_Shape& the
 //function : PrepareHistory
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::PrepareHistory()
+void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
 {
   if (!HasHistory())
     return;
@@ -166,13 +166,19 @@ void BOPAlgo_Builder::PrepareHistory()
   // - Shapes that have no trace in the result shape. Add them as Deleted
   //   during the operation.
   Standard_Integer aNbS = myDS->NbSourceShapes();
-  for (Standard_Integer i = 0; i < aNbS; ++i)
+  Message_ProgressScope aPS(theRange, "Preparing history information", aNbS);
+  for (Standard_Integer i = 0; i < aNbS; ++i, aPS.Next())
   {
     const TopoDS_Shape& aS = myDS->Shape(i);
 
     // Check if History information is available for this kind of shape.
     if (!BRepTools_History::IsSupportedType(aS))
       continue;
+
+    if (UserBreak(aPS))
+    {
+      return;
+    }
 
     Standard_Boolean isModified = Standard_False;
 

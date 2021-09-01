@@ -124,7 +124,7 @@ static void FindSolid(const TopoDS_Shape& theSolIn,
 // function: Perform
 // purpose: Performs the removal of the requested faces from the input shape
 //=======================================================================
-void BOPAlgo_RemoveFeatures::Perform()
+void BOPAlgo_RemoveFeatures::Perform(const Message_ProgressRange& /*theRange*/)
 {
   try
   {

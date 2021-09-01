@@ -26,6 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Message_ProgressRange.hxx>
 
 
 //! The class Check provides a diagnostic tool for checking the validity
@@ -66,9 +67,11 @@ public: //! @name Constructors
   //!                       on small edges or not; by default it is set to TRUE;
   //! @param bTestSI [in] - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
+  //! @param theRange [in] - parameter to use progress indicator
   Standard_EXPORT BRepAlgoAPI_Check(const TopoDS_Shape& theS,
                                     const Standard_Boolean bTestSE = Standard_True,
-                                    const Standard_Boolean bTestSI = Standard_True);
+                                    const Standard_Boolean bTestSI = Standard_True,
+                                    const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Constructor for checking the couple of shapes.
   //! Additionally to the validity checks of each given shape,
@@ -83,11 +86,13 @@ public: //! @name Constructors
   //!                       on small edges or not; by default it is set to TRUE;
   //! @param bTestSI [in] - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
+  //! @param theRange [in] - parameter to use progress indicator
   Standard_EXPORT BRepAlgoAPI_Check(const TopoDS_Shape& theS1,
                                     const TopoDS_Shape& theS2,
                                     const BOPAlgo_Operation theOp = BOPAlgo_UNKNOWN,
                                     const Standard_Boolean bTestSE = Standard_True,
-                                    const Standard_Boolean bTestSI = Standard_True);
+                                    const Standard_Boolean bTestSI = Standard_True,
+                                    const Message_ProgressRange& theRange = Message_ProgressRange());
 
 
 public: //! @name Initializing the algorithm
@@ -141,7 +146,7 @@ public: //! @name Initializing the algorithm
 public: //! @name Performing the operation
 
   //! Performs the check.
-  Standard_EXPORT void Perform();
+  Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
 
 
 public: //! @name Getting the results.

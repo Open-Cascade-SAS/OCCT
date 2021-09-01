@@ -138,7 +138,7 @@ public: //! @name Setting options
 public: //! @name Performing the operation
 
   //! Performs the algorithm
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 public: //! @name Result simplification
@@ -250,10 +250,10 @@ protected: //! @name Setting options to the Intersection tool
 protected: //! @name Protected methods for shapes intersection and building result
 
   //! Intersects the given shapes with the intersection tool
-  Standard_EXPORT void IntersectShapes(const TopTools_ListOfShape& theArgs);
+  Standard_EXPORT void IntersectShapes(const TopTools_ListOfShape& theArgs, const Message_ProgressRange& theRange);
 
   //! Builds the resulting shape
-  Standard_EXPORT void BuildResult();
+  Standard_EXPORT void BuildResult(const Message_ProgressRange& theRange = Message_ProgressRange());
 
 
 protected: //! @name Clearing the contents of the algorithm

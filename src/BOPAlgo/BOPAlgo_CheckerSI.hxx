@@ -46,7 +46,7 @@ public:
   Standard_EXPORT BOPAlgo_CheckerSI();
   Standard_EXPORT virtual ~BOPAlgo_CheckerSI();
   
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Sets the level of checking shape on self-interference.<br>
   //! It defines which interferences will be checked:<br>
@@ -64,29 +64,29 @@ public:
 
 protected:
 
-  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Treats the intersection results
   Standard_EXPORT void PostTreat();
 
-  Standard_EXPORT void CheckFaceSelfIntersection();
+  Standard_EXPORT void CheckFaceSelfIntersection(const Message_ProgressRange& theRange);
 
   //! Methods for intersection with solids
 
   //! Vertex/Solid intersection
-  Standard_EXPORT virtual void PerformVZ();
+  Standard_EXPORT virtual void PerformVZ(const Message_ProgressRange& theRange);
 
   //! Edge/Solid intersection
-  Standard_EXPORT virtual void PerformEZ();
+  Standard_EXPORT virtual void PerformEZ(const Message_ProgressRange& theRange);
 
   //! Face/Solid intersection
-  Standard_EXPORT virtual void PerformFZ();
+  Standard_EXPORT virtual void PerformFZ(const Message_ProgressRange& theRange);
 
   //! Solid/Solid intersection
-  Standard_EXPORT virtual void PerformZZ();
+  Standard_EXPORT virtual void PerformZZ(const Message_ProgressRange& theRange);
 
   //! Used for intersection of edges and faces with solids
-  Standard_EXPORT virtual void PerformSZ(const TopAbs_ShapeEnum aTS);
+  Standard_EXPORT virtual void PerformSZ(const TopAbs_ShapeEnum aTS, const Message_ProgressRange& theRange);
 
   Standard_Integer myLevelOfCheck;
 

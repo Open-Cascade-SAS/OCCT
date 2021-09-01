@@ -1,0 +1,117 @@
+puts "============================================"
+puts "0021264: Modeling Algorithms - Progress indicator for Boolean operations"
+puts "============================================"
+puts ""
+ 
+proc isTracked { theOutput } {
+  if {![regexp "Progress" $theOutput]} {
+    puts "Error: progress is not tracked"
+  }
+}
+ 
+XProgress +t
+ 
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+
+# check that progress is tracked for boolean operations
+ 
+# bop + operations
+
+set log [bop b1 b2]
+isTracked $log
+ 
+set log [bopfuse r]
+isTracked $log
+ 
+set log [bopcommon r]
+isTracked $log
+ 
+set log [bopcut r]
+isTracked $log
+ 
+set log [boptuc r]
+isTracked $log
+ 
+set log [bopsection r]
+isTracked $log
+
+ 
+# b[operation]
+ 
+set log [bfuse r b1 b2]
+isTracked $log
+ 
+set log [bcommon r b1 b2]
+isTracked $log
+ 
+set log [bcut r b1 b2]
+isTracked $log
+ 
+set log [btuc r b1 b2]
+isTracked $log
+ 
+set log [bsection r b1 b2]
+isTracked $log
+
+  
+# bfillds + bbop
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+ 
+set log [bfillds]
+isTracked $log
+ 
+set log [bbop r 0]
+isTracked $log
+ 
+set log [bbop r 1]
+isTracked $log
+
+set log [bbop r 2]
+isTracked $log
+ 
+set log [bbop r 3]
+isTracked $log
+ 
+set log [bbop r 4]
+isTracked $log
+ 
+set log [bbuild r]
+isTracked $log
+ 
+set log [bsplit r]
+isTracked $log
+ 
+
+# API
+ 
+set log [bapibop r 0]
+isTracked $log
+
+set log [bapibop r 1]
+isTracked $log
+ 
+set log [bapibop r 2]
+isTracked $log
+ 
+set log [bapibop r 3]
+isTracked $log
+ 
+set log [bapibop r 4]
+isTracked $log
+
+set log [bapibuild r]
+isTracked $log
+
+set log [bapisplit r]
+isTracked $log
+ 
+
+# bopcheck
+
+set log [bopcheck r]
+isTracked $log

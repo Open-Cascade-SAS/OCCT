@@ -74,13 +74,13 @@ static void UpdateVertices(const TopoDS_Edge& aE,
 //class    : BOPAlgo_SplitEdge
 //purpose  : 
 //=======================================================================
-class BOPAlgo_SplitEdge : public BOPAlgo_Algo  {
+class BOPAlgo_SplitEdge : public BOPAlgo_ParallelAlgo  {
  
  public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_SplitEdge() :
-    BOPAlgo_Algo() {
+    BOPAlgo_ParallelAlgo() {
     myT1=0.;
     myT2=0.;
     myTol = 0.;
@@ -139,7 +139,11 @@ class BOPAlgo_SplitEdge : public BOPAlgo_Algo  {
   }
   //
   virtual void Perform () {
-    BOPAlgo_Algo::UserBreak();
+    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     myTol = BOPAlgo_Tools::ComputeToleranceOfCB(myCB, myDS, myContext);
     BOPTools_AlgoTools::MakeSplitEdge(myE, 
                                       myV1, myT1, 
@@ -175,13 +179,13 @@ typedef NCollection_Vector<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
 //class    : BOPAlgo_MPC
 //purpose  : 
 //=======================================================================
-class BOPAlgo_MPC : public BOPAlgo_Algo  {
+class BOPAlgo_MPC : public BOPAlgo_ParallelAlgo  {
  
  public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_MPC() : 
-    BOPAlgo_Algo(),
+    BOPAlgo_ParallelAlgo(),
     myFlag(Standard_False) {
   };
   //
@@ -233,6 +237,11 @@ class BOPAlgo_MPC : public BOPAlgo_Algo  {
   }
   //
   virtual void Perform() {
+    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -355,8 +364,17 @@ class BOPAlgo_BPC {
   Standard_Boolean IsToUpdate() const {
     return myToUpdate;
   }
+  void SetRange(const Message_ProgressRange& theRange)
+  {
+    myRange = theRange;
+  }
   //
   void Perform() {
+    Message_ProgressScope aPS(myRange, NULL, 1);
+    if (!aPS.More())
+    {
+      return;
+    }
     BRepLib::BuildPCurveForEdgeOnPlane(myE, myF, myCurve, myToUpdate);
   };
   //
@@ -365,6 +383,8 @@ class BOPAlgo_BPC {
   TopoDS_Face myF;
   Handle(Geom2d_Curve) myCurve;
   Standard_Boolean myToUpdate;
+private:
+  Message_ProgressRange myRange;
 };
 //=======================================================================
 typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
@@ -373,10 +393,11 @@ typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
 // function: MakeSplitEdges
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::MakeSplitEdges()
+void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
 {
   BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->ChangePaveBlocksPool();
   Standard_Integer aNbPBP = aPBP.Length();
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
   if(!aNbPBP) {
     return;
   }
@@ -397,6 +418,10 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
   //
   for (i = 0; i < aNbPBP; ++i)
   {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     BOPDS_ListOfPaveBlock& aLPB = aPBP(i);
     //
     aItPB.Initialize(aLPB);
@@ -484,19 +509,29 @@ void BOPAlgo_PaveFiller::MakeSplitEdges()
         aBSE.SetCommonBlock(aCB);
       }
       aBSE.SetDS(myDS);
-      if (myProgressScope != NULL)
-      {
-        aBSE.SetProgressIndicator(*myProgressScope);
-      }
     } // for (; aItPB.More(); aItPB.Next()) {
   }  // for (i=0; i<aNbPBP; ++i) {      
   //
   aNbVBSE=aVBSE.Length();
+  Message_ProgressScope aPS(aPSOuter.Next(), "Splitting edges", aNbVBSE);
+  for (k = 0; k < aNbVBSE; k++)
+  {
+    BOPAlgo_SplitEdge& aBSE = aVBSE.ChangeValue(k);
+    aBSE.SetProgressRange(aPS.Next());
+  }
   //======================================================
   BOPTools_Parallel::Perform (myRunParallel, aVBSE, myContext);
   //======================================================
+  if (HasErrors())
+  {
+    return;
+  }
   //
   for (k=0; k < aNbVBSE; ++k) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     BOPAlgo_SplitEdge& aBSE=aVBSE(k);
     //
     const TopoDS_Edge& aSp=aBSE.SplitEdge();
@@ -566,8 +601,9 @@ Standard_Integer BOPAlgo_PaveFiller::SplitEdge(const Standard_Integer nE,
 // function: MakePCurves
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::MakePCurves()
+void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
   if (myAvoidBuildPCurve ||
       (!mySectionAttribute.PCurveOnS1() && !mySectionAttribute.PCurveOnS2()))
     return;
@@ -583,6 +619,10 @@ void BOPAlgo_PaveFiller::MakePCurves()
   //
   aNbFI=aFIP.Length();
   for (i=0; i<aNbFI; ++i) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     const BOPDS_FaceInfo& aFI=aFIP(i);
     nF1=aFI.Index();
     //
@@ -599,10 +639,6 @@ void BOPAlgo_PaveFiller::MakePCurves()
       BOPAlgo_MPC& aMPC=aVMPC.Appended();
       aMPC.SetEdge(aE);
       aMPC.SetFace(aF1F);
-      if (myProgressScope != NULL)
-      {
-        aMPC.SetProgressIndicator(*myProgressScope);
-      }
     }
     //
     // On
@@ -666,10 +702,6 @@ void BOPAlgo_PaveFiller::MakePCurves()
 
       aMPC.SetEdge(aE);
       aMPC.SetFace(aF1F);
-      if (myProgressScope != NULL)
-      {
-        aMPC.SetProgressIndicator(*myProgressScope);
-      }
     }
   }// for (i=0; i<aNbFI; ++i) {
   //
@@ -719,10 +751,6 @@ void BOPAlgo_PaveFiller::MakePCurves()
               aMPC.SetEdge(aE);
               aMPC.SetFace(aFf[m]);
               aMPC.SetFlag(Standard_True);
-              if (myProgressScope != NULL)
-              {
-                aMPC.SetProgressIndicator(*myProgressScope);
-              }
             }
           }
         }
@@ -730,14 +758,28 @@ void BOPAlgo_PaveFiller::MakePCurves()
     }// for (i=0; i<aNbFF; ++i) {
   }//if (bPCurveOnS1 || bPCurveOnS2 ) {
   //
+  Message_ProgressScope aPS(aPSOuter.Next(), "Projecting edges on faces", aVMPC.Length());
+  for (i = 0; i < aVMPC.Length(); i++)
+  {
+    BOPAlgo_MPC& aMPC = aVMPC.ChangeValue(i);
+    aMPC.SetProgressRange(aPS.Next());
+  }
   //======================================================
   BOPTools_Parallel::Perform (myRunParallel, aVMPC, myContext);
   //======================================================
+  if (HasErrors())
+  {
+    return;
+  }
 
   // Add warnings of the failed projections and update edges with new pcurves
   Standard_Integer aNb = aVMPC.Length();
   for (i = 0; i < aNb; ++i)
   {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     const BOPAlgo_MPC& aMPC = aVMPC(i);
     if (aMPC.HasErrors())
     {
@@ -804,7 +846,7 @@ void UpdateVertices(const TopoDS_Edge& aE,
 // function: Prepare
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::Prepare()
+void BOPAlgo_PaveFiller::Prepare(const Message_ProgressRange& theRange)
 {
   if (myNonDestructive) {
     // do not allow storing pcurves in original edges if non-destructive mode is on
@@ -821,6 +863,7 @@ void BOPAlgo_PaveFiller::Prepare()
   TopTools_IndexedMapOfShape aMF;
   //
   aNb=3;
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
   for(i=0; i<aNb; ++i) {
     myIterator->Initialize(aType[i], aType[2]);
     for (; myIterator->More(); myIterator->Next()) {
@@ -853,14 +896,27 @@ void BOPAlgo_PaveFiller::Prepare()
     }
   }
   //
+  Message_ProgressScope aPS(aPSOuter.Next(), "Building 2d curves on planar faces", aVBPC.Length());
+  for (i = 0; i < aVBPC.Length(); i++)
+  {
+    BOPAlgo_BPC& aBPC = aVBPC.ChangeValue(i);
+    aBPC.SetRange(aPS.Next());
+  }
   //======================================================
   BOPTools_Parallel::Perform (myRunParallel, aVBPC);
   //======================================================
-
+  if (UserBreak(aPS))
+  {
+    return;
+  }
   // pcurves are built, and now update edges
   BRep_Builder aBB;
   TopoDS_Edge E;
   for (i = 0; i < aVBPC.Length(); i++) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     const BOPAlgo_BPC& aBPC=aVBPC(i);
     if (aBPC.IsToUpdate()) {
       Standard_Real aTolE = BRep_Tool::Tolerance(aBPC.GetEdge());

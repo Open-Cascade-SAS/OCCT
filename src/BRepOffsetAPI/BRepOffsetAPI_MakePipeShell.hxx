@@ -241,7 +241,7 @@ public:
   Standard_EXPORT void Simulate (const Standard_Integer NumberOfSection, TopTools_ListOfShape& Result);
   
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Transforms the sweeping Shell in Solid.
   //! If a propfile is not closed returns False

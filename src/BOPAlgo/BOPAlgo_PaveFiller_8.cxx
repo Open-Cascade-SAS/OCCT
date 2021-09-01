@@ -62,8 +62,10 @@ static
 //function : ProcessDE
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::ProcessDE()
+void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+
   Standard_Integer nF, aNb, nE, nV, nVSD, aNbPB;
   Handle(NCollection_BaseAllocator) aAllocator;
   Handle(BOPDS_PaveBlock) aPBD;
@@ -89,7 +91,7 @@ void BOPAlgo_PaveFiller::ProcessDE()
         //nV,nE,nF
         //
         if (aSIF.ShapeType() == TopAbs_FACE) {
-          // 1. Find PaveBlocks that are go through nV for nF
+          // 1. Find PaveBlocks that go through nV for nF
           FindPaveBlocks(nV, nF, aLPBOut);
           aNbPB=aLPBOut.Extent();
           if (aNbPB) {
@@ -130,6 +132,10 @@ void BOPAlgo_PaveFiller::ProcessDE()
           aPBD=aLPBD.First();
           aPBD->SetEdge(nEn);
         }
+      }
+      if (UserBreak(aPSOuter))
+      {
+        return;
       }
     }
   }

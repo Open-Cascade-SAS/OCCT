@@ -43,12 +43,12 @@
 //class    : BOPAlgo_VertexFace
 //purpose  : 
 //=======================================================================
-class BOPAlgo_VertexFace : public BOPAlgo_Algo {
+class BOPAlgo_VertexFace : public BOPAlgo_ParallelAlgo {
  public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_VertexFace() : 
-    BOPAlgo_Algo(),
+    BOPAlgo_ParallelAlgo(),
     myIV(-1), myIF(-1),
     myFlag(-1), myT1(-1.),  myT2(-1.), myTolVNew(-1.) {
   }
@@ -107,7 +107,11 @@ class BOPAlgo_VertexFace : public BOPAlgo_Algo {
   }
   //
   virtual void Perform() {
-    BOPAlgo_Algo::UserBreak();
+    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -138,13 +142,14 @@ typedef NCollection_Vector<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
 // function: PerformVF
 // purpose: 
 //=======================================================================
-void BOPAlgo_PaveFiller::PerformVF()
+void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
 {
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_FACE);
   Standard_Integer iSize = myIterator->ExpectedLength();
   //
   Standard_Integer nV, nF;
   //
+  Message_ProgressScope aPSOuter(theRange, NULL, 10);
   if (myGlue == BOPAlgo_GlueFull) {
     // there is no need to intersect vertices with faces in this mode
     // just initialize FaceInfo for all faces
@@ -175,8 +180,11 @@ void BOPAlgo_PaveFiller::PerformVF()
   // Avoid repeated intersection of the same vertex with face in case
   // the group of vertices formed a single SD vertex
   NCollection_DataMap<BOPDS_Pair, TColStd_MapOfInteger, BOPDS_PairMapHasher> aMVFPairs;
-
   for (; myIterator->More(); myIterator->Next()) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     myIterator->Value(nV, nF);
     //
     if (myDS->IsSubShape(nV, nF)) {
@@ -217,18 +225,29 @@ void BOPAlgo_PaveFiller::PerformVF()
     aVertexFace.SetVertex(aV);
     aVertexFace.SetFace(aF);
     aVertexFace.SetFuzzyValue(myFuzzyValue);
-    if (myProgressScope != NULL)
-    {
-      aVertexFace.SetProgressIndicator(*myProgressScope);
-    }
+    
   }//for (; myIterator->More(); myIterator->Next()) {
   //
   aNbVF=aVVF.Length();
+  Message_ProgressScope aPS(aPSOuter.Next(9), "Performing Vertex-Face intersection", aNbVF);
+  for (k = 0; k < aNbVF; k++)
+  {
+    BOPAlgo_VertexFace& aVertexFace = aVVF.ChangeValue(k);
+    aVertexFace.SetProgressRange(aPS.Next());
+  }
   //================================================================
   BOPTools_Parallel::Perform (myRunParallel, aVVF, myContext);
   //================================================================
+  if (UserBreak(aPSOuter))
+  {
+    return;
+  }
   //
   for (k=0; k < aNbVF; ++k) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     const BOPAlgo_VertexFace& aVertexFace=aVVF(k);
     // 
     iFlag=aVertexFace.Flag();

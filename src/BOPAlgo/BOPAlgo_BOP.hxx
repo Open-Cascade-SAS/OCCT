@@ -84,7 +84,7 @@ public:
   
   Standard_EXPORT BOPAlgo_Operation Operation() const;
   
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
   
@@ -92,15 +92,16 @@ protected:
   
   //! Performs calculations using prepared Filler
   //! object <thePF>
-  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF) Standard_OVERRIDE;
-  
+  Standard_EXPORT virtual void PerformInternal1 (const BOPAlgo_PaveFiller& thePF,
+                                                 const Message_ProgressRange& theRange) Standard_OVERRIDE;
+
   Standard_EXPORT virtual void BuildResult (const TopAbs_ShapeEnum theType) Standard_OVERRIDE;
   
-  Standard_EXPORT void BuildShape();
+  Standard_EXPORT void BuildShape(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void BuildRC();
+  Standard_EXPORT void BuildRC(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void BuildSolid();
+  Standard_EXPORT void BuildSolid(const Message_ProgressRange& theRange);
   
   //! Treatment of the cases with empty shapes.<br>
   //! It returns TRUE if there is nothing to do, i.e.
@@ -112,6 +113,18 @@ protected:
   //! has failed. In case of positive check, run different procedure
   //! for building the result shape.
   Standard_EXPORT virtual Standard_Boolean CheckArgsForOpenSolid();
+
+protected:
+
+  //! Extend list of operations to be supported by the Progress Indicator
+  enum BOPAlgo_PIOperation
+  {
+    PIOperation_BuildShape = BOPAlgo_ToolsProvider::PIOperation_Last,
+    PIOperation_Last
+  };
+
+  //! Fill PI steps
+  Standard_EXPORT virtual void fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 protected:
 

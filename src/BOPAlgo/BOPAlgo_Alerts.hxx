@@ -18,6 +18,9 @@
 
 #include <TopoDS_AlertWithShape.hxx>
 
+//! Boolean operation was stopped by user
+DEFINE_SIMPLE_ALERT(BOPAlgo_AlertUserBreak)
+
 //! Boolean operation of given type is not allowed on the given inputs
 DEFINE_SIMPLE_ALERT(BOPAlgo_AlertBOPNotAllowed)
 

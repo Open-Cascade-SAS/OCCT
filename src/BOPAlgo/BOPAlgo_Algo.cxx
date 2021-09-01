@@ -18,6 +18,8 @@
 
 #include <BOPAlgo_Algo.hxx>
 
+#include <TColStd_MapOfInteger.hxx>
+
 //=======================================================================
 // function: 
 // purpose: 
@@ -59,4 +61,68 @@ void BOPAlgo_Algo::CheckData()
 void BOPAlgo_Algo::CheckResult()
 {
   GetReport()->Clear(Message_Fail);
+}
+
+//=======================================================================
+// function: analyzeProgress
+// purpose: 
+//=======================================================================
+void BOPAlgo_Algo::analyzeProgress(const Standard_Real theWhole,
+                                   BOPAlgo_PISteps& theSteps) const
+{
+  Standard_Real aWhole = theWhole;
+
+  // Fill progress steps for constant operations
+  fillPIConstants(theWhole, theSteps);
+
+  TColStd_Array1OfReal& aSteps = theSteps.ChangeSteps();
+  TColStd_MapOfInteger aMIConst;
+  for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+  {
+    if (aSteps(i) > 0.)
+    {
+      aMIConst.Add(i);
+      aWhole -= aSteps(i);
+    }
+  }
+
+  // Fill progress steps for other operations
+  fillPISteps(theSteps);
+
+  Standard_Real aSum = 0.;
+  for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+  {
+    if (!aMIConst.Contains(i))
+    {
+      aSum += aSteps(i);
+    }
+  }
+
+  // Normalize steps
+  if (aSum > 0.)
+  {
+    for (Standard_Integer i = aSteps.Lower(); i <= aSteps.Upper(); ++i)
+    {
+      if (!aMIConst.Contains(i))
+      {
+        aSteps(i) = aWhole * aSteps(i) / aSum;
+      }
+    }
+  }
+}
+
+//=======================================================================
+// function: fillPIConstants
+// purpose: 
+//=======================================================================
+void BOPAlgo_Algo::fillPIConstants (const Standard_Real, BOPAlgo_PISteps&) const
+{
+}
+
+//=======================================================================
+// function: fillPISteps
+// purpose: 
+//=======================================================================
+void BOPAlgo_Algo::fillPISteps(BOPAlgo_PISteps&) const
+{
 }

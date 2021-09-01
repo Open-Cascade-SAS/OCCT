@@ -2253,3 +2253,13 @@ Access to an OCAF label via its entry is accelerated. In order to activate it, c
 The method *TDF_Tool::Label()*, which returns a label by an entry, becomes faster for about 10 .. 20 times.
 It has sense for applications, which use an entry as a unique key to access the data in OCAF tree.
 Also, the method *TDF_Tool::Entry()*, which returns an entry for a label, is accelerated as well.
+
+@subsection upgrade_occt760_bop_progress_indicator Progress indicator in Boolean operations
+
+Method SetProgressIndicator() has been removed due to Progress indicator mechanism refactoring.
+To enable progress indicator and user break in Boolean operations user has to pass progress range as a parameter to Perform or Build method.
+For example:
+~~~~
+Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+BRepAlgoApi_Cut(S1, S2, aProgress->Start()); // method Start() creates range for usage in cut algorithm
+~~~~

@@ -339,7 +339,7 @@ void BRepOffsetAPI_ThruSections::CheckCompatibility(const Standard_Boolean check
 //purpose  : 
 //=======================================================================
 
-void BRepOffsetAPI_ThruSections::Build()
+void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/)
 {
   //Check set of section for right configuration of punctual sections
   Standard_Integer i;

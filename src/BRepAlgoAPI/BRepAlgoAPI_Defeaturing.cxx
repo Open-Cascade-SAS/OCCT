@@ -21,7 +21,7 @@
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepAlgoAPI_Defeaturing::Build()
+void BRepAlgoAPI_Defeaturing::Build(const Message_ProgressRange& /*theRange*/)
 {
   // Set not done state for the operation
   NotDone();

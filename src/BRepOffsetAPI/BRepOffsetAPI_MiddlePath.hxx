@@ -43,7 +43,7 @@ public:
   //! a wire or a face
   Standard_EXPORT BRepOffsetAPI_MiddlePath(const TopoDS_Shape& aShape, const TopoDS_Shape& StartShape, const TopoDS_Shape& EndShape);
   
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 

@@ -54,7 +54,7 @@ Standard_EXPORT virtual ~BOPAlgo_BuilderFace();
   Standard_EXPORT const TopoDS_Face& Face() const;
   
   //! Performs the algorithm
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT TopAbs_Orientation Orientation() const;
 
@@ -63,40 +63,27 @@ protected:
   //! Collect the edges that
   //! a) are internal
   //! b) are the same and have different orientation
-  Standard_EXPORT virtual void PerformShapesToAvoid() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) Standard_OVERRIDE;
   
   //! Build draft wires
   //! a)myLoops - draft wires that consist of
   //! boundary edges
   //! b)myLoopsInternal - draft wires that contains
   //! inner edges
-  Standard_EXPORT virtual void PerformLoops() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformLoops(const Message_ProgressRange& theRange) Standard_OVERRIDE;
   
   //! Build draft faces that contains boundary edges
-  Standard_EXPORT virtual void PerformAreas() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformAreas(const Message_ProgressRange& theRange) Standard_OVERRIDE;
   
   //! Build finalized faces with internals
-  Standard_EXPORT virtual void PerformInternalShapes() Standard_OVERRIDE;
+  Standard_EXPORT virtual void PerformInternalShapes(const Message_ProgressRange& theRange) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
 
+protected:
 
   TopoDS_Face myFace;
   TopAbs_Orientation myOrientation;
-
-
-private:
-
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BOPAlgo_BuilderFace_HeaderFile

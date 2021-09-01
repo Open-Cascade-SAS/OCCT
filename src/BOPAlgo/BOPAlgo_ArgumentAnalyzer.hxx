@@ -97,7 +97,7 @@ Standard_EXPORT virtual ~BOPAlgo_ArgumentAnalyzer();
     Standard_Boolean& CurveOnSurfaceMode();
   
   //! performs analysis
-  Standard_EXPORT void Perform();
+  Standard_EXPORT void Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! result of test
   Standard_EXPORT Standard_Boolean HasFaulty() const;
@@ -114,7 +114,7 @@ protected:
   
   Standard_EXPORT void TestTypes();
   
-  Standard_EXPORT void TestSelfInterferences();
+  Standard_EXPORT void TestSelfInterferences(const Message_ProgressRange& theRange);
   
   Standard_EXPORT void TestSmallEdge();
   

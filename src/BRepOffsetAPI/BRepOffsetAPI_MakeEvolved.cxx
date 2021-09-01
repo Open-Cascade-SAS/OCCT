@@ -114,7 +114,7 @@ const BRepFill_Evolved& BRepOffsetAPI_MakeEvolved::Evolved() const
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepOffsetAPI_MakeEvolved::Build()
+void BRepOffsetAPI_MakeEvolved::Build(const Message_ProgressRange& /*theRange*/)
 {
   if (myEvolved.IsDone())
   {

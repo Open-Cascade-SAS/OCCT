@@ -89,7 +89,7 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
   
   //! Main function to build the result of the
   //! local operation required.
-  Standard_EXPORT void PerformResult();
+  Standard_EXPORT void PerformResult(const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Rebuilds faces in accordance with the kept parts of the tool.
   Standard_EXPORT void RebuildFaces();
@@ -112,12 +112,12 @@ Standard_EXPORT virtual ~BRepFeat_Builder();
 
 protected:
 
-  
   //! Prepares builder of local operation.
   Standard_EXPORT virtual void Prepare() Standard_OVERRIDE;
   
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeShape& theDraftSolids) Standard_OVERRIDE;
+  Standard_EXPORT virtual void FillIn3DParts (TopTools_DataMapOfShapeShape& theDraftSolids,
+                                              const Message_ProgressRange& theRange) Standard_OVERRIDE;
 
   //! Avoid the check for open solids and always use the splits
   //! of solids for building the result shape.

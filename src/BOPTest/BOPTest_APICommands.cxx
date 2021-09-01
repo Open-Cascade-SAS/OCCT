@@ -29,6 +29,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
+#include <Draw_ProgressIndicator.hxx>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -130,7 +132,8 @@ Standard_Integer bapibop(Draw_Interpretor& di,
   pBuilder->SetUseOBB(BOPTest_Objects::UseOBB());
   pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  pBuilder->Build();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  pBuilder->Build(aProgress->Start());
   pBuilder->SimplifyResult(BOPTest_Objects::UnifyEdges(),
                            BOPTest_Objects::UnifyFaces(),
                            BOPTest_Objects::Angular());
@@ -197,7 +200,8 @@ Standard_Integer bapibuild(Draw_Interpretor& di,
   aBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  aBuilder.Build();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  aBuilder.Build(aProgress->Start());
   aBuilder.SimplifyResult(BOPTest_Objects::UnifyEdges(),
                           BOPTest_Objects::UnifyFaces(),
                           BOPTest_Objects::Angular());
@@ -257,7 +261,8 @@ Standard_Integer bapisplit(Draw_Interpretor& di,
   aSplitter.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
   // performing operation
-  aSplitter.Build();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  aSplitter.Build(aProgress->Start());
   aSplitter.SimplifyResult(BOPTest_Objects::UnifyEdges(),
                            BOPTest_Objects::UnifyFaces(),
                            BOPTest_Objects::Angular());

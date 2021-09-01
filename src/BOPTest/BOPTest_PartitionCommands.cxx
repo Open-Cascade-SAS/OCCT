@@ -31,6 +31,7 @@
 #include <OSD_Timer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #include <stdio.h>
 #include <string.h>
@@ -138,7 +139,8 @@ Standard_Integer bfillds(Draw_Interpretor& di,
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  aPF.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  aPF.Perform(aProgress->Start());
   BOPTest::ReportAlerts(aPF.GetReport());
   if (aPF.HasErrors()) {
     return 0;
@@ -210,11 +212,12 @@ Standard_Integer bbuild(Draw_Interpretor& di,
   aBuilder.SetCheckInverted(BOPTest_Objects::CheckInverted());
   aBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
   //
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  aBuilder.PerformWithFiller(aPF); 
+  aBuilder.PerformWithFiller(aPF, aProgress->Start()); 
   BOPTest::ReportAlerts(aBuilder.GetReport());
 
   // Set history of GF operation into the session
@@ -327,10 +330,12 @@ Standard_Integer bbop(Draw_Interpretor& di,
   pBuilder->SetCheckInverted(BOPTest_Objects::CheckInverted());
   pBuilder->SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  //
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  pBuilder->PerformWithFiller(aPF);
+  pBuilder->PerformWithFiller(aPF, aProgress->Start());
   BOPTest::ReportAlerts(pBuilder->GetReport());
 
   // Set history of Boolean operation into the session
@@ -404,7 +409,8 @@ Standard_Integer bsplit(Draw_Interpretor& di,
   aTimer.Start();
   //
   // perform the operation
-  pSplitter->PerformWithFiller(aPF);
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  pSplitter->PerformWithFiller(aPF, aProgress->Start());
   //
   aTimer.Stop();
   BOPTest::ReportAlerts(pSplitter->GetReport());
@@ -567,9 +573,9 @@ Standard_Integer buildbop(Draw_Interpretor& di,
 
   // Create new report for the operation
   Handle(Message_Report) aReport = new Message_Report;
-
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
   // Build specific operation
-  pBuilder->BuildBOP(aLObjects, aLTools, anOp, aReport);
+  pBuilder->BuildBOP(aLObjects, aLTools, anOp, aProgress->Start(), aReport);
 
   // Report alerts of the operation
   BOPTest::ReportAlerts(aReport);

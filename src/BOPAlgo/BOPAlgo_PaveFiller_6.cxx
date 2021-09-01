@@ -92,14 +92,14 @@ static Standard_Real ToleranceFF(const BRepAdaptor_Surface& aBAS1,
 //=======================================================================
 class BOPAlgo_FaceFace : 
   public IntTools_FaceFace,
-  public BOPAlgo_Algo {
+  public BOPAlgo_ParallelAlgo {
 
  public:
   DEFINE_STANDARD_ALLOC
 
   BOPAlgo_FaceFace() : 
     IntTools_FaceFace(),  
-    BOPAlgo_Algo(),
+    BOPAlgo_ParallelAlgo(),
     myIF1(-1), myIF2(-1), myTolFF(1.e-7) {
   }
   //
@@ -153,7 +153,11 @@ class BOPAlgo_FaceFace :
   const gp_Trsf& Trsf() const { return myTrsf; }
   //
   virtual void Perform() {
-    BOPAlgo_Algo::UserBreak();
+    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -231,10 +235,11 @@ typedef NCollection_Vector<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
 //function : PerformFF
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::PerformFF()
+void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 {
   myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
   Standard_Integer iSize = myIterator->ExpectedLength();
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
   if (!iSize) {
     return; 
   }
@@ -269,6 +274,10 @@ void BOPAlgo_PaveFiller::PerformFF()
   // Initialize interferences
   myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
   for (; myIterator->More(); myIterator->Next()) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     myIterator->Value(nF1, nF2);
 
     if (myGlue == BOPAlgo_GlueOff)
@@ -309,10 +318,6 @@ void BOPAlgo_PaveFiller::PerformFF()
       //
       aFaceFace.SetParameters(bApprox, bCompC2D1, bCompC2D2, anApproxTol);
       aFaceFace.SetFuzzyValue(myFuzzyValue);
-      if (myProgressScope != NULL)
-      {
-        aFaceFace.SetProgressIndicator(*myProgressScope);
-      }
     }
     else {
       // for the Glue mode just add all interferences of that type
@@ -323,13 +328,28 @@ void BOPAlgo_PaveFiller::PerformFF()
     }
   }//for (; myIterator->More(); myIterator->Next()) {
   //
+  Standard_Integer k, aNbFaceFace = aVFaceFace.Length();;
+  Message_ProgressScope aPS(aPSOuter.Next(), "Performing Face-Face intersection", aNbFaceFace);
+  for (k = 0; k < aNbFaceFace; k++)
+  {
+    BOPAlgo_FaceFace& aFaceFace = aVFaceFace.ChangeValue(k);
+    aFaceFace.SetProgressRange(aPS.Next());
+  }
   //======================================================
   // Perform intersection
   BOPTools_Parallel::Perform (myRunParallel, aVFaceFace);
+  if (UserBreak(aPSOuter))
+  {
+    return;
+  }
   //======================================================
   // Treatment of the results
-  Standard_Integer k, aNbFaceFace = aVFaceFace.Length();
+
   for (k = 0; k < aNbFaceFace; ++k) {
+    if (UserBreak(aPSOuter))
+    {
+      return;
+    }
     BOPAlgo_FaceFace& aFaceFace = aVFaceFace(k);
     aFaceFace.Indices(nF1, nF2);
     if (!aFaceFace.IsDone() || aFaceFace.HasErrors()) {
@@ -377,6 +397,10 @@ void BOPAlgo_PaveFiller::PerformFF()
     //
     BOPDS_VectorOfCurve& aVNC = aFF.ChangeCurves();
     for (Standard_Integer i = 1; i <= aNbCurves; ++i) {
+      if (UserBreak(aPSOuter))
+      {
+        return;
+      }
       Bnd_Box aBox;
       const IntTools_Curve& aIC = aCvsX(i);
       Standard_Boolean bIsValid = IntTools_Tools::CheckCurve(aIC, aBox);
@@ -427,14 +451,16 @@ static void UpdateSavedTolerance(const BOPDS_PDS& theDS,
 //function : MakeBlocks
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::MakeBlocks()
+void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPSOuter(theRange, NULL, 4);
   if (myGlue != BOPAlgo_GlueOff) {
     return;
   }
   //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
   Standard_Integer aNbFF = aFFs.Length();
+  Message_ProgressScope aPS(aPSOuter.Next(), "Building section edges", aNbFF);
   if (!aNbFF) {
     return;
   }
@@ -472,9 +498,11 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   // Map of PaveBlocks with the faces to which it has to be added
   BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap;
   //
-  for (i=0; i<aNbFF; ++i) {
-    //
-    UserBreak();
+  for (i=0; i<aNbFF; ++i, aPS.Next()) {
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     //
     BOPDS_InterfFF& aFF=aFFs(i);
     aFF.Indices(nF1, nF2);
@@ -781,7 +809,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
 
   // post treatment
   MakeSDVerticesFF(aDMVLV, aDMNewSD);
-  PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroPB, aVertsOnRejectedPB, aAllocator);
+  PostTreatFF(aMSCPB, aDMExEdges, aDMNewSD, aMicroPB, aVertsOnRejectedPB, aAllocator, aPSOuter.Next(2));
   if (HasErrors()) {
     return;
   }
@@ -795,7 +823,8 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   //
   // Treat possible common zones by trying to put each section edge
   // into all faces, not participated in creation of that edge, as IN edge
-  PutSEInOtherFaces();
+
+  PutSEInOtherFaces(aPSOuter.Next());
   //
   //-----------------------------------------------------scope t
   aMVStick.Clear();
@@ -841,7 +870,8 @@ void BOPAlgo_PaveFiller::PostTreatFF
      TColStd_DataMapOfIntegerInteger& aDMNewSD,
      const BOPDS_IndexedMapOfPaveBlock& theMicroPB,
      const TopTools_IndexedMapOfShape& theVertsOnRejectedPB,
-     const Handle(NCollection_BaseAllocator)& theAllocator)
+     const Handle(NCollection_BaseAllocator)& theAllocator,
+     const Message_ProgressRange& theRange)
 {
   Standard_Integer aNbS = theMSCPB.Extent();
   if (!aNbS) {
@@ -1022,14 +1052,12 @@ void BOPAlgo_PaveFiller::PostTreatFF
     }
   }
   //
+  Message_ProgressScope aPS(theRange, "Intersection of section edges", 1);
+
   // 2 Fuse shapes
-  if (myProgressScope != NULL)
-  {
-    aPF.SetProgressIndicator(*myProgressScope);
-  }
   aPF.SetRunParallel(myRunParallel);
   aPF.SetArguments(aLS);
-  aPF.Perform();
+  aPF.Perform(aPS.Next());
   if (aPF.HasErrors()) {
     AddError (new BOPAlgo_AlertPostTreatFF);
     return;
@@ -3663,7 +3691,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
 //function : PutSEInOtherFaces
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::PutSEInOtherFaces()
+void BOPAlgo_PaveFiller::PutSEInOtherFaces(const Message_ProgressRange& theRange)
 {
   // Try to intersect each section edge with the faces
   // not participated in its creation
@@ -3673,6 +3701,7 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces()
 
   BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
   const Standard_Integer aNbFF = aFFs.Length();
+  Message_ProgressScope aPS(theRange, NULL, 1);
   for (Standard_Integer i = 0; i < aNbFF; ++i)
   {
     const BOPDS_VectorOfCurve& aVNC = aFFs(i).Curves();
@@ -3686,7 +3715,7 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces()
     }
   }
   // Perform intersection of collected pave blocks
-  ForceInterfEF(aMPBScAll, Standard_False);
+  ForceInterfEF(aMPBScAll, aPS.Next(), Standard_False);
 }
 
 //=======================================================================

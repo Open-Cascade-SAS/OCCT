@@ -41,7 +41,7 @@ public:
   
   Standard_EXPORT ShapeConstruct_MakeTriangulation(const TopoDS_Wire& wire, const Standard_Real prec = 0.0);
   
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean IsDone() const Standard_OVERRIDE;
 

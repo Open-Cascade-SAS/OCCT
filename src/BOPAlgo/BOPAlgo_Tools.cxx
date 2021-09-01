@@ -1143,7 +1143,7 @@ typedef NCollection_Vector<BOPAlgo_ShapeBox> BOPAlgo_VectorOfShapeBox;
 //class : BOPAlgo_FillIn3DParts
 //purpose : Auxiliary class for faces classification in parallel mode
 //=======================================================================
-class BOPAlgo_FillIn3DParts : public BOPAlgo_Algo
+class BOPAlgo_FillIn3DParts : public BOPAlgo_ParallelAlgo
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -1262,7 +1262,11 @@ private:
 //=======================================================================
 void BOPAlgo_FillIn3DParts::Perform()
 {
-  BOPAlgo_Algo::UserBreak();
+  Message_ProgressScope aPSOuter(myProgressRange, NULL, 2);
+  if (UserBreak(aPSOuter))
+  {
+    return;
+  }
 
   myInFaces.Clear();
 
@@ -1334,6 +1338,8 @@ void BOPAlgo_FillIn3DParts::Perform()
       MapEdgesAndFaces(aVShapeBox(aIVec(k)).Shape(), aMEFP, anAlloc);
   }
 
+  aPSOuter.Next();
+
   // Map of Edge-Face connection, necessary for solid classification.
   // It will be filled when first classification is performed.
   TopTools_IndexedDataMapOfShapeListOfShape aMEFDS(1, anAlloc);
@@ -1341,8 +1347,13 @@ void BOPAlgo_FillIn3DParts::Perform()
   // Fence map to avoid processing of the same faces twice
   TopTools_MapOfShape aMFDone(1, anAlloc);
 
-  for (k = 0; k < aNbFP; ++k)
+  Message_ProgressScope aPSLoop (aPSOuter.Next(), NULL, aNbFP);
+  for (k = 0; k < aNbFP; ++k, aPSLoop.Next())
   {
+    if (UserBreak (aPSLoop))
+    {
+      return;
+    }
     Standard_Integer nFP = aIVec(k);
     const TopoDS_Face& aFP = (*(TopoDS_Face*)&aVShapeBox(nFP).Shape());
     if (!aMFDone.Add(aFP))
@@ -1491,9 +1502,12 @@ void BOPAlgo_Tools::ClassifyFaces(const TopTools_ListOfShape& theFaces,
                                   Handle(IntTools_Context)& theContext,
                                   TopTools_IndexedDataMapOfShapeListOfShape& theInParts,
                                   const TopTools_DataMapOfShapeBox& theShapeBoxMap,
-                                  const TopTools_DataMapOfShapeListOfShape& theSolidsIF)
+                                  const TopTools_DataMapOfShapeListOfShape& theSolidsIF,
+                                  const Message_ProgressRange& theRange)
 {
   Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
+
+  Message_ProgressScope aPSOuter(theRange, NULL, 10);
 
   // Fill the vector of shape box with faces and its bounding boxes
   BOPAlgo_VectorOfShapeBox aVSB(256, anAlloc);
@@ -1501,6 +1515,11 @@ void BOPAlgo_Tools::ClassifyFaces(const TopTools_ListOfShape& theFaces,
   TopTools_ListIteratorOfListOfShape aItLF(theFaces);
   for (; aItLF.More(); aItLF.Next())
   {
+    if (!aPSOuter.More())
+    {
+      return;
+    }
+
     const TopoDS_Shape& aF = aItLF.Value();
     // Append face to the vector of shape box
     BOPAlgo_ShapeBox& aSB = aVSB.Appended();
@@ -1568,14 +1587,20 @@ void BOPAlgo_Tools::ClassifyFaces(const TopTools_ListOfShape& theFaces,
     aFIP.SetShapeBoxVector(aVSB);
   }
 
+  // Close preparation task
+  aPSOuter.Next();
+  // Set progress range for each task to be run in parallel
+  Standard_Integer aNbS = aVFIP.Length();
+  Message_ProgressScope aPSParallel(aPSOuter.Next(9), "Classification of faces relatively solids", aNbS);
+  for (Standard_Integer iFS = 0; iFS < aNbS; ++iFS)
+  {
+    aVFIP.ChangeValue(iFS).SetProgressRange(aPSParallel.Next());
+  }
   // Perform classification
   //================================================================
   BOPTools_Parallel::Perform (theRunParallel, aVFIP, theContext);
   //================================================================
-
   // Analyze the results and fill the resulting map
-
-  Standard_Integer aNbS = aVFIP.Length();
   for (Standard_Integer i = 0; i < aNbS; ++i)
   {
     BOPAlgo_FillIn3DParts& aFIP = aVFIP(i);

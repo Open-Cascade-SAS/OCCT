@@ -48,8 +48,12 @@ void BOPAlgo_MakerVolume::CheckData()
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BOPAlgo_MakerVolume::Perform()
+void BOPAlgo_MakerVolume::Perform(const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPS(theRange, "Performing MakeVolume operation", 10);
+  Standard_Real anInterPart = myIntersect ? 9 : 0.5;
+  Standard_Real aBuildPart = 10. - anInterPart;
+
   GetReport()->Clear();
   //
   if (myEntryPoint == 1) {
@@ -86,18 +90,14 @@ void BOPAlgo_MakerVolume::Perform()
   }
   //
   pPF->SetRunParallel(myRunParallel);
-  if (myProgressScope != NULL)
-  {
-    pPF->SetProgressIndicator(*myProgressScope);
-  }
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
   pPF->SetUseOBB(myUseOBB);
-  pPF->Perform();
+  pPF->Perform(aPS.Next(anInterPart));
   //
   myEntryPoint = 1;
-  PerformInternal(*pPF);
+  PerformInternal(*pPF, aPS.Next(aBuildPart));
 }
 
 //=======================================================================
@@ -105,8 +105,9 @@ void BOPAlgo_MakerVolume::Perform()
 //purpose  : 
 //=======================================================================
 void BOPAlgo_MakerVolume::PerformInternal1
-  (const BOPAlgo_PaveFiller& theFiller)
+  (const BOPAlgo_PaveFiller& theFiller, const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPS(theRange, "Building volumes", 100);
   myPaveFiller = (BOPAlgo_PaveFiller*)&theFiller;
   myDS = myPaveFiller->PDS();
   myContext = myPaveFiller->Context();
@@ -123,25 +124,28 @@ void BOPAlgo_MakerVolume::PerformInternal1
     return;
   }
   //
+  BOPAlgo_PISteps aSteps(PIOperation_Last);
+  analyzeProgress(100., aSteps);
+
   // 3. Fill Images
-  // 3.1. Vertice
   if (myIntersect) {
-    FillImagesVertices();
+    // 3.1. Vertices
+    FillImagesVertices(aPS.Next(aSteps.GetStep(PIOperation_TreatVertices)));
     if (HasErrors()) {
       return;
     }
     // 3.2. Edges
-    FillImagesEdges();
+    FillImagesEdges(aPS.Next(aSteps.GetStep(PIOperation_TreatEdges)));
     if (HasErrors()) {
       return;
     }
     // 3.3. Wires
-    FillImagesContainers(TopAbs_WIRE);
+    FillImagesContainers(TopAbs_WIRE, aPS.Next(aSteps.GetStep(PIOperation_TreatWires)));
     if (HasErrors()) {
       return;
     }
     // 3.4. Faces
-    FillImagesFaces();
+    FillImagesFaces(aPS.Next(aSteps.GetStep(PIOperation_TreatFaces)));
     if (HasErrors()) {
       return;
     }
@@ -160,7 +164,7 @@ void BOPAlgo_MakerVolume::PerformInternal1
   MakeBox(aBoxFaces);
   //
   // 6. Make volumes
-  BuildSolids(aLSR);
+  BuildSolids(aLSR, aPS.Next(aSteps.GetStep(PIOperation_BuildSolids)));
   if (HasErrors()) {
     return;
   }
@@ -175,10 +179,30 @@ void BOPAlgo_MakerVolume::PerformInternal1
   BuildShape(aLSR);
   //
   // 10. History
-  PrepareHistory();
+  PrepareHistory(aPS.Next(aSteps.GetStep(PIOperation_FillHistory)));
+  if (HasErrors()) {
+    return;
+  }
   //
   // 11. Post-treatment 
-  PostTreat();  
+  PostTreat(aPS.Next(aSteps.GetStep(PIOperation_PostTreat)));
+}
+
+//=======================================================================
+//function : fillPISteps
+//purpose  : 
+//=======================================================================
+void BOPAlgo_MakerVolume::fillPISteps(BOPAlgo_PISteps& theSteps) const
+{
+  NbShapes aNbShapes = getNbShapes();
+  if (myIntersect)
+  {
+    theSteps.SetStep(PIOperation_TreatVertices, aNbShapes.NbVertices());
+    theSteps.SetStep(PIOperation_TreatEdges, aNbShapes.NbEdges());
+    theSteps.SetStep(PIOperation_TreatWires, aNbShapes.NbWires());
+    theSteps.SetStep(PIOperation_TreatFaces, 50 * aNbShapes.NbFaces());
+  }
+  theSteps.SetStep(PIOperation_BuildSolids, 50 * aNbShapes.NbFaces());
 }
 
 //=======================================================================
@@ -187,7 +211,6 @@ void BOPAlgo_MakerVolume::PerformInternal1
 //=======================================================================
 void BOPAlgo_MakerVolume::CollectFaces()
 {
-  UserBreak();
   //
   Standard_Integer i, aNbShapes;
   TopTools_ListIteratorOfListOfShape aIt;
@@ -226,7 +249,6 @@ void BOPAlgo_MakerVolume::CollectFaces()
 //=======================================================================
 void BOPAlgo_MakerVolume::MakeBox(TopTools_MapOfShape& theBoxFaces)
 {
-  UserBreak();
   //
   Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax, anExt;
   //
@@ -251,16 +273,15 @@ void BOPAlgo_MakerVolume::MakeBox(TopTools_MapOfShape& theBoxFaces)
 //function : BuildSolids
 //purpose  : 
 //=======================================================================
-void BOPAlgo_MakerVolume::BuildSolids(TopTools_ListOfShape& theLSR)
+void BOPAlgo_MakerVolume::BuildSolids(TopTools_ListOfShape& theLSR,
+                                      const Message_ProgressRange& theRange)
 {
-  UserBreak();
-  //
   BOPAlgo_BuilderSolid aBS;
   //
   aBS.SetShapes(myFaces);
   aBS.SetRunParallel(myRunParallel);
   aBS.SetAvoidInternalShapes(myAvoidInternalShapes);
-  aBS.Perform();
+  aBS.Perform(theRange);
   if (aBS.HasErrors())
   {
     AddError (new BOPAlgo_AlertSolidBuilderFailed); // SolidBuilder failed
@@ -279,7 +300,6 @@ void BOPAlgo_MakerVolume::BuildSolids(TopTools_ListOfShape& theLSR)
 void BOPAlgo_MakerVolume::RemoveBox(TopTools_ListOfShape&      theLSR,
                                     const TopTools_MapOfShape& theBoxFaces)
 {
-  UserBreak();
   //
   TopTools_ListIteratorOfListOfShape aIt;
   TopExp_Explorer aExp;
@@ -335,8 +355,6 @@ void BOPAlgo_MakerVolume::FillInternalShapes(const TopTools_ListOfShape& theLSR)
   if (myAvoidInternalShapes) {
     return;
   }
-
-  UserBreak();
 
   // Get all non-compound shapes
   TopTools_ListOfShape aLSC;

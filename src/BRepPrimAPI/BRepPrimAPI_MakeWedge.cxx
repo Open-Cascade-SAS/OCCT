@@ -119,7 +119,7 @@ const TopoDS_Shell&  BRepPrimAPI_MakeWedge::Shell()
 //purpose  : 
 //=======================================================================
 
-void BRepPrimAPI_MakeWedge::Build()
+void BRepPrimAPI_MakeWedge::Build(const Message_ProgressRange& /*theRange*/)
 {
   BRep_Builder B;
   B.MakeSolid(TopoDS::Solid(myShape));

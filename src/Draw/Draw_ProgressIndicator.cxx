@@ -100,7 +100,7 @@ void Draw_ProgressIndicator::Show (const Message_ProgressScope& theScope, const 
 
   // unless show is forced, show updated state only if at least 1% progress has been reached since the last update
   Standard_Real aPosition = GetPosition();
-  if ( ! force && aPosition < 1. && Abs (aPosition - myLastPosition) < myUpdateThreshold)
+  if ( ! force && (1. - aPosition) > Precision::Confusion() && Abs (aPosition - myLastPosition) < myUpdateThreshold)
     return; // return if update interval has not elapsed
 
   myLastPosition = aPosition;

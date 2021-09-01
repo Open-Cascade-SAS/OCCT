@@ -64,11 +64,22 @@ class BOPAlgo_CBK {
     return *myPCB;
   }
   //
+  void SetProgressRange(const Message_ProgressRange& theRange)
+  {
+    myProgressRange = theRange;
+  }
+  //
   void Perform() {
+    Message_ProgressScope aPS(myProgressRange, NULL, 1);
+    if (!aPS.More())
+    {
+      return;
+    }
     BOPAlgo_ShellSplitter::SplitBlock(*myPCB);
   }
  protected:
   BOPTools_ConnexityBlock *myPCB;
+  Message_ProgressRange myProgressRange;
 };
 //=======================================================================
 typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
@@ -133,14 +144,19 @@ const TopTools_ListOfShape& BOPAlgo_ShellSplitter::Shells()const
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BOPAlgo_ShellSplitter::Perform()
+void BOPAlgo_ShellSplitter::Perform(const Message_ProgressRange& theRange)
 {
   GetReport()->Clear();
+  Message_ProgressScope aPS(theRange, "Building shells", 1);
   //
   BOPTools_AlgoTools::MakeConnexityBlocks
     (myStartShapes, TopAbs_EDGE, TopAbs_FACE, myLCB);
-  //
-  MakeShells();
+  if (UserBreak (aPS))
+  {
+    return;
+  }
+
+  MakeShells(aPS.Next());
 }
 
 //=======================================================================
@@ -535,7 +551,7 @@ void RefineShell(TopoDS_Shell& theShell,
 //function : MakeShells
 //purpose  : 
 //=======================================================================
-void BOPAlgo_ShellSplitter::MakeShells()
+void BOPAlgo_ShellSplitter::MakeShells(const Message_ProgressRange& theRange)
 {
   Standard_Boolean bIsRegular;
   Standard_Integer aNbVCBK, k;
@@ -543,10 +559,15 @@ void BOPAlgo_ShellSplitter::MakeShells()
   TopTools_ListIteratorOfListOfShape aIt;
   BOPAlgo_VectorOfCBK aVCBK;
   //
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
   myShells.Clear();
   //
   aItCB.Initialize(myLCB);
   for (; aItCB.More(); aItCB.Next()) {
+    if (UserBreak (aPSOuter))
+    {
+      return;
+    }
     BOPTools_ConnexityBlock& aCB=aItCB.ChangeValue();
     bIsRegular=aCB.IsRegular();
     if (bIsRegular) {
@@ -564,6 +585,11 @@ void BOPAlgo_ShellSplitter::MakeShells()
   }
   //
   aNbVCBK=aVCBK.Length();
+  Message_ProgressScope aPSParallel(aPSOuter.Next(), NULL, aNbVCBK);
+  for (Standard_Integer iS = 0; iS < aNbVCBK; ++iS)
+  {
+    aVCBK.ChangeValue(iS).SetProgressRange(aPSParallel.Next());
+  }
   //===================================================
   BOPTools_Parallel::Perform (myRunParallel, aVCBK);
   //===================================================

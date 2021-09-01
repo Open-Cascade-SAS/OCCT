@@ -269,7 +269,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 //function : Build
 //purpose  : compute the section
 //=======================================================================
-  void BRepAlgo_Section::Build()
+  void BRepAlgo_Section::Build(const Message_ProgressRange& /*theRange*/)
 {
   if (myS1Changed || 
       myS2Changed ||

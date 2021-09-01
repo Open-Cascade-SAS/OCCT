@@ -213,45 +213,76 @@
 //function : PerformResult
 //purpose  : 
 //=======================================================================
-  void BRepFeat_Builder::PerformResult()
+  void BRepFeat_Builder::PerformResult(const Message_ProgressRange& theRange)
 {
   myOperation = myFuse ? BOPAlgo_FUSE : BOPAlgo_CUT;
-  //
-  if (!myShapes.IsEmpty()) {
-    //
-    Prepare(); 
-    //
-    RebuildFaces();
-    //
-    FillImagesContainers(TopAbs_SHELL);
-    if (HasErrors()) {
-      return;
-    }
-    //
-    FillImagesSolids();
-    if (HasErrors()) {
-      return;
-    }
-    //
-    CheckSolidImages();
-    //
-    BuildResult(TopAbs_SOLID);
-    if (HasErrors()) {
-      return;
-    }
-    // 
-    FillImagesCompounds();
-    if (HasErrors()) {
-      return;
-    }
-    //
-    BuildResult(TopAbs_COMPOUND);
-    if (HasErrors()) {
-      return;
+  if (myShapes.IsEmpty())
+  {
+    BuildShape(theRange);
+    return;
+  }
+  
+  Standard_Real aWhole = 100.;
+  Message_ProgressScope aPS(theRange, "BRepFeat_Builder", aWhole);
+  Standard_Real aBSPart = 15;
+  aWhole -= aBSPart;
+
+  // Compute PI steps 
+  const Standard_Integer aSize = 4;
+  NCollection_Array1<Standard_Real> aSteps(0, aSize - 1);
+  {
+    for (Standard_Integer i = 0; i < aSize; ++i)
+      aSteps(i) = 0.;
+
+    NbShapes aNbShapes = getNbShapes();
+    Standard_Real aTreatFaces = 5 * aNbShapes.NbFaces();
+    Standard_Real aTreatShells = aNbShapes.NbShells();
+    Standard_Real aTreatSolids = 20 * aNbShapes.NbSolids();
+    Standard_Real aTreatCompounds = aNbShapes.NbCompounds();
+
+    Standard_Real aSum = aTreatFaces + aTreatShells + aTreatSolids + aTreatCompounds;
+    if (aSum > 0)
+    {
+      aSteps(0) = aTreatFaces * aWhole / aSum;
+      aSteps(1) = aTreatShells * aWhole / aSum;
+      aSteps(2) = aTreatSolids * aWhole / aSum;
+      aSteps(3) = aTreatCompounds * aWhole / aSum;
     }
   }
   //
-  BuildShape();
+  Prepare();
+  //
+  RebuildFaces();
+  aPS.Next(aSteps(0));
+  //
+  FillImagesContainers(TopAbs_SHELL, aPS.Next(aSteps(1)));
+  if (HasErrors()) {
+    return;
+  }
+  //
+  FillImagesSolids(aPS.Next(aSteps(2)));
+  if (HasErrors()) {
+    return;
+  }
+  //
+  CheckSolidImages();
+  //
+  BuildResult(TopAbs_SOLID);
+  if (HasErrors()) {
+    return;
+  }
+  // 
+  FillImagesCompounds(aPS.Next(aSteps(3)));
+  if (HasErrors()) {
+    return;
+  }
+  //
+  BuildResult(TopAbs_COMPOUND);
+  if (HasErrors()) {
+    return;
+  }
+  //
+  BuildShape(aPS.Next(aBSPart));
 }
 
 //=======================================================================
@@ -732,11 +763,12 @@
 //function : FillIn3DParts
 //purpose  : 
 //=======================================================================
-  void BRepFeat_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids)
+  void BRepFeat_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
+                                       const Message_ProgressRange& theRange)
 {
   GetReport()->Clear();
 
-  BOPAlgo_Builder::FillIn3DParts(theDraftSolids);
+  BOPAlgo_Builder::FillIn3DParts(theDraftSolids, theRange);
 
   // Clear the IN parts of the solids from the removed faces
   TopTools_DataMapOfShapeListOfShape::Iterator itM(myInParts);

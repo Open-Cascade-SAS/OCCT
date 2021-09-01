@@ -158,7 +158,7 @@ Standard_EXPORT virtual ~BRepAlgoAPI_Section();
   //! Performs the algorithm
   //! Filling interference Data Structure (if it is necessary)
   //! Building the result of the operation.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
 
   //! get the face of the first part giving section edge <E>.

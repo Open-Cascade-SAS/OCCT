@@ -722,7 +722,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     TopTools_ListOfShape aLO, aLT;
     aLO.Append(Sol1);
     aLT.Append(Sol2);
-    aBuilder.BuildBOP(aLO, aLT, BOPAlgo_CUT);
+    aBuilder.BuildBOP(aLO, aLT, BOPAlgo_CUT, Message_ProgressRange());
     if (!aBuilder.HasErrors())
     {
       TopoDS_Solid aCutMin;
@@ -769,7 +769,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
         aLO.Clear();
         aLO.Append(aCutMin);
-        aGluer.BuildBOP(aLO, State1, aLT, State2);
+        aGluer.BuildBOP(aLO, State1, aLT, State2, Message_ProgressRange());
 
         if (!aGluer.HasErrors())
         {
@@ -791,7 +791,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     aLO.Append(Sol1);
     aLT.Append(Sol2);
 
-    aBuilder.BuildBOP(aLO, State1, aLT, State2);
+    aBuilder.BuildBOP(aLO, State1, aLT, State2, Message_ProgressRange());
     if (aBuilder.HasErrors())
       return Standard_False;
 

@@ -73,40 +73,47 @@ static
 //function : FillImagesSolids
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::FillImagesSolids()
+void BOPAlgo_Builder::FillImagesSolids(const Message_ProgressRange& theRange)
 {
-  Standard_Boolean bHasSolids;
-  Standard_Integer i, aNbS;
-  //
-  bHasSolids=Standard_False;
-  aNbS=myDS->NbSourceShapes();
-  for (i=0; i<aNbS; ++i) {
-    const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    if (aSI.ShapeType()==TopAbs_SOLID) {
-      bHasSolids=!bHasSolids;
+  Standard_Integer i = 0, aNbS = myDS->NbSourceShapes();
+  for (i = 0; i < aNbS; ++i) {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
+    if (aSI.ShapeType() == TopAbs_SOLID)
+    {
       break;
     }
   }
-  //
-  if (!bHasSolids) {
+  if (i >= aNbS) {
     return;
   }
 
+  Message_ProgressScope aPS(theRange, "Building splits of solids", 10);
   // Draft solids
   TopTools_DataMapOfShapeShape aDraftSolids;
   // Find all IN faces for all IN faces
-  FillIn3DParts(aDraftSolids);
+  FillIn3DParts(aDraftSolids, aPS.Next(4));
+  if (HasErrors())
+  {
+    return;
+  }
   // Build split of the solids
-  BuildSplitSolids(aDraftSolids);
+  BuildSplitSolids(aDraftSolids, aPS.Next(5));
+  if (HasErrors())
+  {
+    return;
+  }
   // Fill solids with internal parts
-  FillInternalShapes();
+  FillInternalShapes(aPS.Next());
 }
 //=======================================================================
 //function : FillIn3DParts
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids)
+void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids,
+                                    const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPS(theRange, NULL, 2);
+
   Handle(NCollection_BaseAllocator) anAlloc = new NCollection_IncAllocator;
 
   // Find all faces that are IN solids
@@ -126,6 +133,11 @@ void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_FACE)
       continue;
+
+    if (UserBreak(aPS))
+    {
+      return;
+    }
 
     const TopoDS_Shape& aS = aSI.Shape();
     const TopTools_ListOfShape* pLSIm = myImages.Seek(aS);
@@ -160,8 +172,13 @@ void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids
   {
     BOPDS_ShapeInfo& aSI = myDS->ChangeShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_SOLID)
+    {
       continue;
-
+    }
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     const TopoDS_Shape& aS = aSI.Shape();
     const TopoDS_Solid& aSolid = (*(TopoDS_Solid*)(&aS));
     //
@@ -186,12 +203,17 @@ void BOPAlgo_Builder::FillIn3DParts(TopTools_DataMapOfShapeShape& theDraftSolids
   TopTools_IndexedDataMapOfShapeListOfShape anInParts;
 
   BOPAlgo_Tools::ClassifyFaces(aLFaces, aLSolids, myRunParallel,
-                               myContext, anInParts, aShapeBoxMap, aSolidsIF);
+                               myContext, anInParts, aShapeBoxMap,
+                               aSolidsIF, aPS.Next());
 
   // Analyze the results of classification
   Standard_Integer aNbSol = aDraftSolid.Extent();
   for (i = 1; i <= aNbSol; ++i)
   {
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     const TopoDS_Solid& aSolid = TopoDS::Solid(aDraftSolid.FindKey(i));
     const TopoDS_Solid& aSDraft = TopoDS::Solid(aDraftSolid(i));
     const TopTools_ListOfShape& aLInFaces = anInParts.FindFromKey(aSDraft);
@@ -335,8 +357,30 @@ public:
   //! Returns the solid
   const TopoDS_Solid& Solid() const { return mySolid; }
 
+  //! Sets progress range
+  void SetProgressRange(const Message_ProgressRange& theRange)
+  {
+    myRange = theRange;
+  }
+
+  // New perform method, using own progress range
+  void Perform()
+  {
+    Message_ProgressScope aPS(myRange, NULL, 1);
+    if (!aPS.More())
+    {
+      return;
+    }
+    BOPAlgo_BuilderSolid::Perform(aPS.Next());
+  }
+
+private:
+  //! Disable the range enabled method
+  virtual void Perform(const Message_ProgressRange&/* theRange*/) {}
+
 private:
   TopoDS_Solid mySolid; //!< Solid to split
+  Message_ProgressRange myRange;
 };
 
 // Vector of Solid Builders
@@ -346,7 +390,8 @@ typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
 //function : BuildSplitSolids
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSolids)
+void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSolids,
+                                       const Message_ProgressRange& theRange)
 {
   Standard_Boolean bFlagSD;
   Standard_Integer i, aNbS;
@@ -361,6 +406,7 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
   BOPTools_MapOfSet aMST(100, aAlr0);
   BOPAlgo_VectorOfBuilderSolid aVBS;
   //
+  Message_ProgressScope aPSOuter (theRange, NULL, 10);
   // 0. Find same domain solids for non-interfered solids
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -368,6 +414,10 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
     //
     if (aSI.ShapeType()!=TopAbs_SOLID) {
       continue;
+    }
+    if (UserBreak(aPSOuter))
+    {
+      return;
     }
     //
     const TopoDS_Shape& aS=aSI.Shape();
@@ -432,19 +482,26 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
     aBS.SetRunParallel(myRunParallel);
-    if (myProgressScope != NULL)
-    {
-      aBS.SetProgressIndicator(*myProgressScope);
-    }
   }//for (i=0; i<aNbS; ++i) {
   //
   Standard_Integer k, aNbBS;
   //
   aNbBS=aVBS.Length();
+  // Set progress range for each task to be run in parallel
+  Message_ProgressScope aPSParallel(aPSOuter.Next(9), "Splitting solids", aNbBS);
+  for (Standard_Integer iS = 0; iS < aNbBS; iS++)
+  {
+    BOPAlgo_SplitSolid& aSplitSolid = aVBS.ChangeValue(iS);
+    aSplitSolid.SetProgressRange(aPSParallel.Next());
+  }
   //
   //===================================================
   BOPTools_Parallel::Perform (myRunParallel, aVBS);
   //===================================================
+  if (UserBreak(aPSOuter))
+  {
+    return;
+  }
   //
   for (k = 0; k < aNbBS; ++k)
   {
@@ -521,7 +578,7 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
 //function :FillInternalShapes 
 //purpose  : 
 //=======================================================================
-void BOPAlgo_Builder::FillInternalShapes()
+void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
 {
   Standard_Integer i, j,  aNbS, aNbSI, aNbSx;
   TopAbs_ShapeEnum aType;
@@ -543,6 +600,8 @@ void BOPAlgo_Builder::FillInternalShapes()
   TopTools_ListOfShape aLArgs(aAllocator);
   TopTools_ListOfShape aLSC(aAllocator);
   TopTools_ListOfShape aLSI(aAllocator);
+
+  Message_ProgressScope aPS(theRange, NULL, 10);
   //
   // 1. Shapes to process
   //
@@ -596,7 +655,11 @@ void BOPAlgo_Builder::FillInternalShapes()
       }
     }
   }
-  
+  if (UserBreak(aPS))
+  {
+    return;
+  }
+
   aNbSI=aMSI.Extent();
   //
   // 2. Internal vertices, edges from source solids
@@ -610,8 +673,10 @@ void BOPAlgo_Builder::FillInternalShapes()
     if (aSI.ShapeType()!=TopAbs_SOLID) {
       continue;
     }
-    //
-    UserBreak();
+    if (UserBreak(aPS))
+    {
+      return;
+    }
     //
     const TopoDS_Shape& aS=aSI.Shape();
     //
@@ -681,11 +746,16 @@ void BOPAlgo_Builder::FillInternalShapes()
   if (!aNbSI) {
     return;
   }
+
+  aPS.Next();
   //
   // 5 Settle internal vertices and edges into solids
   aMx.Clear();
+
+  Message_ProgressScope aPSLoop(aPS.Next(9), "Looking for internal shapes", aLSd.Size());
+
   aIt.Initialize(aLSd);
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next(), aPSLoop.Next()) {
     TopoDS_Solid aSd=TopoDS::Solid(aIt.Value());
     //
     aIt1.Initialize(aLSI);

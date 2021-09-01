@@ -52,11 +52,12 @@ BRepAlgoAPI_Cut::~BRepAlgoAPI_Cut()
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
-                                 const TopoDS_Shape& S2)
+                                 const TopoDS_Shape& S2,
+                                 const Message_ProgressRange& theRange)
 :
   BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_CUT)
 {
-  Build();
+  Build(theRange);
 }
 //=======================================================================
 //function : BRepAlgoAPI_Cut
@@ -65,10 +66,11 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1,
 BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1, 
                                  const TopoDS_Shape& S2,
                                  const BOPAlgo_PaveFiller& aDSF,
-                                 const Standard_Boolean bFWD)
+                                 const Standard_Boolean bFWD,
+                                 const Message_ProgressRange& theRange)
 : 
   BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, 
                                (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
 {
-  Build();
+  Build(theRange);
 }

@@ -201,7 +201,7 @@ public: //! @name Setting input data for the algorithm
 public: //! @name Performing the operation
 
   //! Performs the operation
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 public: //! @name Clearing the contents of the algorithm

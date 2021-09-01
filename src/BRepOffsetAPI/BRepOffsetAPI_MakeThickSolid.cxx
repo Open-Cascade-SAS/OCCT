@@ -89,7 +89,7 @@ void BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple(const TopoDS_Shape& th
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepOffsetAPI_MakeThickSolid::Build()
+void BRepOffsetAPI_MakeThickSolid::Build(const Message_ProgressRange& /*theRange*/)
 {
 }
 

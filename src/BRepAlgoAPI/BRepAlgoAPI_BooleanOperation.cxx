@@ -138,7 +138,7 @@ BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation
 //function : Build
 //purpose  :
 //=======================================================================
-void BRepAlgoAPI_BooleanOperation::Build()
+void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
 {
   // Set Not Done status by default
   NotDone();
@@ -167,6 +167,27 @@ void BRepAlgoAPI_BooleanOperation::Build()
     }
   }
 
+  TCollection_AsciiString aPSName;
+  switch (myOperation)
+  {
+    case BOPAlgo_COMMON:
+      aPSName = "Performing COMMON operation";
+      break;
+    case BOPAlgo_FUSE:
+      aPSName = "Performing FUSE operation";
+      break;
+    case BOPAlgo_CUT:
+    case BOPAlgo_CUT21:
+      aPSName = "Performing CUT operation";
+      break;
+    case BOPAlgo_SECTION:
+      aPSName = "Performing SECTION operation";
+      break;
+    default:
+      return;
+  }
+
+  Message_ProgressScope aPS(theRange, aPSName, myIsIntersectionNeeded ? 100 : 30);
   // If necessary perform intersection of the argument shapes
   if (myIsIntersectionNeeded)
   {
@@ -176,7 +197,7 @@ void BRepAlgoAPI_BooleanOperation::Build()
       aLArgs.Append(it.Value());
 
     // Perform intersection
-    IntersectShapes(aLArgs);
+    IntersectShapes(aLArgs, aPS.Next(70));
     if (HasErrors())
     {
       if (aDumpOper.IsDump())
@@ -203,7 +224,11 @@ void BRepAlgoAPI_BooleanOperation::Build()
   }
 
   // Build the result
-  BuildResult();
+  BuildResult(aPS.Next(30));
+  if (HasErrors())
+  {
+    return;
+  }
 
   if (aDumpOper.IsDump()) {
     Standard_Boolean isDumpRes = myShape.IsNull() ||

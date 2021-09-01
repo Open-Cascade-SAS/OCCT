@@ -26,7 +26,7 @@
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepFeat_Gluer::Build()
+void BRepFeat_Gluer::Build(const Message_ProgressRange& /*theRange*/)
 {
   myGluer.Perform();
   if (myGluer.IsDone()) {

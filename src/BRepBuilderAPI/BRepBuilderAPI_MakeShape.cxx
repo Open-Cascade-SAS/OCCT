@@ -36,7 +36,7 @@ BRepBuilderAPI_MakeShape::BRepBuilderAPI_MakeShape()
 //purpose  : 
 //=======================================================================
 
-void BRepBuilderAPI_MakeShape::Build()
+void BRepBuilderAPI_MakeShape::Build(const Message_ProgressRange& /*theRange*/)
 {
 }
 

@@ -61,7 +61,7 @@ BRepOffsetAPI_NormalProjection::BRepOffsetAPI_NormalProjection()
   myNormalProjector.Compute3d(With3d);
 }
 
- void BRepOffsetAPI_NormalProjection::Build() 
+ void BRepOffsetAPI_NormalProjection::Build(const Message_ProgressRange& /*theRange*/)
 {
   myNormalProjector.Build();
   myShape = myNormalProjector.Projection();

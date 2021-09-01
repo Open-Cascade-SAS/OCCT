@@ -58,7 +58,7 @@ public:
   //! Returns the context
   Standard_EXPORT const Handle(IntTools_Context)& Context();
 
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   static void MakeWire(TopTools_ListOfShape& theLE, TopoDS_Wire& theW);
   
@@ -70,7 +70,7 @@ protected:
 
   Standard_EXPORT virtual void CheckData() Standard_OVERRIDE;
   
-  Standard_EXPORT void MakeWires();
+  Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 
   BOPAlgo_PWireEdgeSet myWES;
   BOPTools_ListOfConnexityBlock myLCB;

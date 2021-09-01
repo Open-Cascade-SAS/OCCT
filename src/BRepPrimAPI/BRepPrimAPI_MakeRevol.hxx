@@ -81,7 +81,7 @@ public:
   Standard_EXPORT const BRepSweep_Revol& Revol() const;
   
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns the first shape of the revol  (coinciding with
   //! the generating shape).

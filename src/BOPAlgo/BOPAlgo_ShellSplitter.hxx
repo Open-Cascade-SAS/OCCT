@@ -51,7 +51,7 @@ Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
   Standard_EXPORT const TopTools_ListOfShape& StartElements() const;
   
   //! performs the algorithm
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! returns the loops
   Standard_EXPORT const TopTools_ListOfShape& Shells() const;
@@ -61,7 +61,7 @@ Standard_EXPORT virtual ~BOPAlgo_ShellSplitter();
 
 protected:
 
-  Standard_EXPORT void MakeShells();
+  Standard_EXPORT void MakeShells(const Message_ProgressRange& theRange);
 
 
   TopTools_ListOfShape myStartShapes;

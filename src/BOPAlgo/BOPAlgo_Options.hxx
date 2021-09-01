@@ -30,8 +30,6 @@ class Message_ProgressScope;
 //! - *Parallel processing mode* - provides the possibility to perform operation in parallel mode;
 //! - *Fuzzy tolerance* - additional tolerance for the operation to detect
 //!                       touching or coinciding cases;
-//! - *Progress indicator* - provides interface to track the progress of
-//!                          operation and stop the operation by user's break.
 //! - *Using the Oriented Bounding Boxes* - Allows using the Oriented Bounding Boxes of the shapes
 //!                          for filtering the intersections.
 //!
@@ -153,12 +151,6 @@ public:
   }
 
 public:
-  //!@name Progress indicator
-
-  //! Set the Progress Indicator object.
-  Standard_EXPORT void SetProgressIndicator(const Message_ProgressScope& theProgress);
-
-public:
   //!@name Usage of Oriented Bounding boxes
 
   //! Enables/Disables the usage of OBB
@@ -175,9 +167,8 @@ public:
 
 protected:
 
-  //! Breaks the execution if the break signal
-  //! is indicated by myProgressIndicator.
-  Standard_EXPORT void UserBreak() const;
+  //! Adds error to the report if the break signal was caught. Returns true in this case, false otherwise.
+  Standard_EXPORT Standard_Boolean UserBreak(const Message_ProgressScope& thePS);
 
 protected:
 
@@ -185,7 +176,6 @@ protected:
   Handle(Message_Report) myReport;
   Standard_Boolean myRunParallel;
   Standard_Real myFuzzyValue;
-  const Message_ProgressScope* myProgressScope;
   Standard_Boolean myUseOBB;
 
 };

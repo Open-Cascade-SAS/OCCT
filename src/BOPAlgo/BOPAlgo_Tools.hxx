@@ -31,6 +31,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <Standard_Integer.hxx>
+#include <Message_ProgressRange.hxx>
 
 class BOPDS_PaveBlock;
 class BOPDS_CommonBlock;
@@ -184,7 +185,8 @@ public:
                                             Handle(IntTools_Context)& theContext,
                                             TopTools_IndexedDataMapOfShapeListOfShape& theInParts,
                                             const TopTools_DataMapOfShapeBox& theShapeBoxMap = TopTools_DataMapOfShapeBox(),
-                                            const TopTools_DataMapOfShapeListOfShape& theSolidsIF = TopTools_DataMapOfShapeListOfShape());
+                                            const TopTools_DataMapOfShapeListOfShape& theSolidsIF = TopTools_DataMapOfShapeListOfShape(),
+                                            const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Classifies the given parts relatively the given solids and
   //! fills the solids with the parts classified as INTERNAL.

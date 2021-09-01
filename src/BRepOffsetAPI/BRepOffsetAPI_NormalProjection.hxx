@@ -91,7 +91,7 @@ public:
   
   //! Builds the result of the projection as a compound of
   //! wires. Tries to build oriented wires.
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns true if the object was correctly built by the shape
   //! construction algorithm.

@@ -80,13 +80,13 @@ protected:
   
   Standard_EXPORT BOPAlgo_BuilderArea(const Handle(NCollection_BaseAllocator)& theAllocator);
   
-  virtual void PerformShapesToAvoid() = 0;
+  virtual void PerformShapesToAvoid(const Message_ProgressRange& theRange) = 0;
   
-  virtual void PerformLoops() = 0;
+  virtual void PerformLoops(const Message_ProgressRange& theRange) = 0;
   
-  virtual void PerformAreas() = 0;
+  virtual void PerformAreas(const Message_ProgressRange& theRange) = 0;
   
-  virtual void PerformInternalShapes() = 0;
+  virtual void PerformInternalShapes(const Message_ProgressRange& theRange) = 0;
 
 
   Handle(IntTools_Context) myContext;

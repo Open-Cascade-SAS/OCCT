@@ -106,8 +106,10 @@ BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid()
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BuilderSolid::Perform()
+void BOPAlgo_BuilderSolid::Perform(const Message_ProgressRange& theRange)
 {
+  Message_ProgressScope aPS (theRange, NULL, 100);  
+
   GetReport()->Clear();
   //
   if (myShapes.IsEmpty())
@@ -130,39 +132,28 @@ void BOPAlgo_BuilderSolid::Perform()
     aBB.Add(aC, aF);
   }
   //
-  UserBreak();
-  //
-  PerformShapesToAvoid();
+  PerformShapesToAvoid (aPS.Next(1));
   if (HasErrors()) {
     return;
   }
   //
-  UserBreak();
-  //
-  PerformLoops();
+  PerformLoops (aPS.Next(10));
   if (HasErrors()) {
     return;
   }
   //
-  UserBreak();
-  //
-  PerformAreas();
+  PerformAreas (aPS.Next(80));
   if (HasErrors()) {
     return;
   }
   //
-  UserBreak();
-  //
-  PerformInternalShapes();
-  if (HasErrors()) {
-    return;
-  }
+  PerformInternalShapes (aPS.Next(9));
 }
 //=======================================================================
 //function :PerformShapesToAvoid
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
+void BOPAlgo_BuilderSolid::PerformShapesToAvoid(const Message_ProgressRange& theRange)
 {
   Standard_Boolean bFound;
   Standard_Integer i, iCnt, aNbE, aNbF;
@@ -172,8 +163,13 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
   //
   myShapesToAvoid.Clear();
   //
+  Message_ProgressScope aPS(theRange, NULL, 1);
+  //
   iCnt=0;
   for(;;) {
+    if (UserBreak(aPS)) {
+      return;
+    }
     ++iCnt;
     bFound=Standard_False;
     //
@@ -242,7 +238,7 @@ void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
 //function : PerformLoops
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BuilderSolid::PerformLoops()
+void BOPAlgo_BuilderSolid::PerformLoops(const Message_ProgressRange& theRange)
 {
   Standard_Integer i, aNbSh;
   TopTools_ListIteratorOfListOfShape aIt;
@@ -255,7 +251,9 @@ void BOPAlgo_BuilderSolid::PerformLoops()
     NCollection_BaseAllocator::CommonBaseAllocator();
   BOPAlgo_ShellSplitter aSSp(aAlr);
   //
-  // 1. Shells Usual
+  Message_ProgressScope aMainScope (theRange, "Building shells", 10); 
+
+  // 1. Shells Usual 
   aIt.Initialize (myShapes);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Face& aF=*((TopoDS_Face*)&aIt.Value());
@@ -275,9 +273,10 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   }
   //
   aSSp.SetRunParallel(myRunParallel);
-  aSSp.Perform();
+  aSSp.Perform(aMainScope.Next(9));
   if (aSSp.HasErrors()) {
     // add warning status
+    if (aMainScope.More())
     {
       TopoDS_Compound aFacesSp;
       BRep_Builder().MakeCompound(aFacesSp);
@@ -314,6 +313,9 @@ void BOPAlgo_BuilderSolid::PerformLoops()
       aMP.Add(aF);
     }
   }
+  if (UserBreak (aMainScope)) {
+    return;
+  }
   // 
   // b. collect all edges that are to avoid
   aNbSh = myShapesToAvoid.Extent();
@@ -333,6 +335,9 @@ void BOPAlgo_BuilderSolid::PerformLoops()
     }
   }
   //=================================================
+  if (UserBreak (aMainScope)) {
+    return;
+  }
   //
   // 3.Internal Shells
   myLoopsInternal.Clear();
@@ -349,6 +354,9 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   }
   //
   for (i = 1; i <= aNbSh; ++i) {
+    if (UserBreak(aMainScope)) {
+      return;
+    }
     const TopoDS_Shape& aFF = myShapesToAvoid(i);
     if (!AddedFacesMap.Add(aFF)) {
       continue;
@@ -385,7 +393,7 @@ void BOPAlgo_BuilderSolid::PerformLoops()
 //function : PerformAreas
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BuilderSolid::PerformAreas()
+void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
 {
   myAreas.Clear();
   BRep_Builder aBB;
@@ -397,10 +405,17 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   // If the analyzed shell contains any of the hole faces, it is considered as growth.
   TopTools_IndexedMapOfShape aMHF;
 
+  Message_ProgressScope aMainScope(theRange, "Building solids", 10);
+
   // Analyze the shells
+  Message_ProgressScope aPSClass(aMainScope.Next(5), "Classify solids", myLoops.Size());
   TopTools_ListIteratorOfListOfShape aItLL(myLoops);
-  for (; aItLL.More(); aItLL.Next())
+  for (; aItLL.More(); aItLL.Next(), aPSClass.Next())
   {
+    if (UserBreak (aPSClass))
+    {
+      return;
+    }
     const TopoDS_Shape& aShell = aItLL.Value();
 
     Standard_Boolean bIsGrowth = IsGrowthShell(aShell, aMHF);
@@ -464,9 +479,14 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   // Find outer growth shell that is most close to each hole shell
   TopTools_IndexedDataMapOfShapeShape aHoleSolidMap;
 
+  Message_ProgressScope aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Size());
   TopTools_ListIteratorOfListOfShape aItLS(aNewSolids);
-  for (; aItLS.More(); aItLS.Next())
+  for (; aItLS.More(); aItLS.Next(), aPSH.Next())
   {
+    if (UserBreak (aPSH))
+    {
+      return;
+    }
     const TopoDS_Shape& aSolid = aItLS.Value();
 
     // Build box
@@ -522,9 +542,14 @@ void BOPAlgo_BuilderSolid::PerformAreas()
   }
 
   // Add Holes to Solids and add them to myAreas
+  Message_ProgressScope aPSU (aMainScope.Next(), NULL, aNewSolids.Size());
   aItLS.Initialize(aNewSolids);
-  for ( ; aItLS.More(); aItLS.Next())
+  for ( ; aItLS.More(); aItLS.Next(), aPSU.Next())
   {
+    if (UserBreak (aPSU))
+    {
+      return;
+    }
     TopoDS_Solid& aSolid = *(TopoDS_Solid*)&aItLS.Value();
     const TopTools_ListOfShape* pLHoles = aSolidHolesMap.Seek(aSolid);
     if (pLHoles)
@@ -569,7 +594,7 @@ void BOPAlgo_BuilderSolid::PerformAreas()
 //function : PerformInternalShapes
 //purpose  : 
 //=======================================================================
-void BOPAlgo_BuilderSolid::PerformInternalShapes()
+void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& theRange)
 {
   if (myAvoidInternalShapes)
     // user-defined option to avoid internal parts is in force
@@ -578,6 +603,8 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
   if (myLoopsInternal.IsEmpty())
     // no internal parts
     return;
+
+  Message_ProgressScope aMainScope (theRange, "Adding internal shapes", 2);
 
   // Get all faces to classify
   TopTools_IndexedMapOfShape aMFs;
@@ -610,6 +637,11 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
     return;
   }
 
+  if (UserBreak (aMainScope))
+  {
+    return;
+  }
+
   // Classify faces relatively solids
 
   // Prepare list of faces to classify
@@ -622,15 +654,27 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes()
   TopTools_IndexedDataMapOfShapeListOfShape aMSLF;
 
   // Perform classification
-  BOPAlgo_Tools::ClassifyFaces(aLFaces, myAreas, myRunParallel, myContext, aMSLF, myBoxes);
+  BOPAlgo_Tools::ClassifyFaces(aLFaces,
+                               myAreas,
+                               myRunParallel,
+                               myContext,
+                               aMSLF,
+                               myBoxes,
+                               TopTools_DataMapOfShapeListOfShape(),
+                               aMainScope.Next());
 
   // Update Solids by internal Faces
 
   TopTools_MapOfShape aMFDone;
 
   Standard_Integer aNbS = aMSLF.Extent();
-  for (i = 1; i <= aNbS; ++i)
+  Message_ProgressScope aPSLoop(aMainScope.Next(), NULL, aNbS);
+  for (i = 1; i <= aNbS; ++i, aPSLoop.Next())
   {
+    if (UserBreak (aPSLoop))
+    {
+      return;
+    }
     const TopoDS_Shape& aSolid = aMSLF.FindKey(i);
     TopoDS_Shape *pSolid = (TopoDS_Shape*)&aSolid;
 

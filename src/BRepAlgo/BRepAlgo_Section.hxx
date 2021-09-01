@@ -264,7 +264,7 @@ public:
   //! You may also have combined these computation
   //! options: look at the example given above to illustrate
   //! the use of the constructors.
-  Standard_EXPORT void Build() Standard_OVERRIDE;
+  Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Identifies the ancestor faces of the new
   //! intersection edge E resulting from the last

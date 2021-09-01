@@ -176,7 +176,7 @@ public:
   Standard_EXPORT const TopTools_ListOfShape& ModifiedFaces() const;
   
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT void CorrectWires();
   

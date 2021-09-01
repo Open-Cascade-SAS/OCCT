@@ -144,7 +144,7 @@ Standard_Integer BRepOffsetAPI_MakeFilling::Add( const Standard_Real U,
 //function : Build
 //purpose  : builds the resulting face
 //======================================================================
-void BRepOffsetAPI_MakeFilling::Build() 
+void BRepOffsetAPI_MakeFilling::Build(const Message_ProgressRange& /*theRange*/)
 {
   myFilling.Build();
   myShape = myFilling.Face();

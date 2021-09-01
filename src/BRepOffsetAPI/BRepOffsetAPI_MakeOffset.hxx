@@ -79,7 +79,7 @@ public:
   Standard_EXPORT void Perform (const Standard_Real Offset, const Standard_Real Alt = 0.0);
   
   //! Builds the resulting shape (redefined from MakeShape).
-  Standard_EXPORT virtual void Build() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! returns a list of the created shapes
   //! from the shape <S>.

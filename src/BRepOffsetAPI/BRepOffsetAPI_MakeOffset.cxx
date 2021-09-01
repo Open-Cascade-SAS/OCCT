@@ -373,7 +373,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
 //purpose  : 
 //=======================================================================
 
-void BRepOffsetAPI_MakeOffset::Build()
+void BRepOffsetAPI_MakeOffset::Build(const Message_ProgressRange& /*theRange*/)
 {
   Done();
 }

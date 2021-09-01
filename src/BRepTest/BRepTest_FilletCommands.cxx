@@ -52,6 +52,7 @@
 #include <TopAbs.hxx>
 #include <DrawTrSurf.hxx>
 #include <Message.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #include <stdio.h>
 
@@ -357,23 +358,24 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   }
 
   BOPAlgo_PaveFiller theDSFiller;
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  Message_ProgressScope aPS(aProgress->Start(), NULL, 10);
   TopTools_ListOfShape aLS;
   aLS.Append(S1); 
   aLS.Append(S2); 
   theDSFiller.SetArguments(aLS);
   //
-  theDSFiller.Perform();
+  theDSFiller.Perform(aPS.Next(8));
   if (theDSFiller.HasErrors()) {
     Message::SendFail() << "Check types of the arguments, please";
     return 1;
   }
 
   BRepAlgoAPI_BooleanOperation* pBuilder=NULL;
-
   if (fuse)
-    pBuilder = new BRepAlgoAPI_Fuse( S1, S2, theDSFiller );
+    pBuilder = new BRepAlgoAPI_Fuse( S1, S2, theDSFiller, aPS.Next(2) );
   else
-    pBuilder = new BRepAlgoAPI_Cut ( S1, S2, theDSFiller );
+    pBuilder = new BRepAlgoAPI_Cut ( S1, S2, theDSFiller, Standard_True, aPS.Next(2));
 
   Standard_Boolean anIsDone = pBuilder->IsDone();
   if (!anIsDone)

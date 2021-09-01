@@ -27,7 +27,7 @@
 //function : Build
 //purpose  :
 //=======================================================================
-void BRepPreviewAPI_MakeBox::Build()
+void BRepPreviewAPI_MakeBox::Build(const Message_ProgressRange& /*theRange*/)
 {
   gp_Pnt anLocation = myWedge.Axes().Location();
 

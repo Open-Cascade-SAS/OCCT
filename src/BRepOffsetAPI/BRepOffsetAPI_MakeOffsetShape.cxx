@@ -90,7 +90,7 @@ const BRepOffset_MakeOffset& BRepOffsetAPI_MakeOffsetShape::MakeOffset() const
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepOffsetAPI_MakeOffsetShape::Build()
+void BRepOffsetAPI_MakeOffsetShape::Build(const Message_ProgressRange& /*theRange*/)
 {
 }
 

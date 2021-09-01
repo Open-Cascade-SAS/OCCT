@@ -60,7 +60,7 @@ public:
   Standard_EXPORT BOPAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
 
   //! Performs the operation
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
 protected:
 

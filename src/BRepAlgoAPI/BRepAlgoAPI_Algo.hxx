@@ -53,7 +53,6 @@ public:
   using BOPAlgo_Options::DumpWarnings;
   using BOPAlgo_Options::ClearWarnings;
   using BOPAlgo_Options::GetReport;
-  using BOPAlgo_Options::SetProgressIndicator;
   using BOPAlgo_Options::SetUseOBB;
 
 protected:

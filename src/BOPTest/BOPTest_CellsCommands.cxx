@@ -25,6 +25,8 @@
 
 #include <BRepTest_Objects.hxx>
 
+#include <Draw_ProgressIndicator.hxx>
+
 static Standard_Integer bcbuild (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bcaddall (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bcremoveall (Draw_Interpretor&, Standard_Integer, const char**);
@@ -116,9 +118,9 @@ Standard_Integer bcbuild(Draw_Interpretor& di,
   aCBuilder.SetUseOBB(BOPTest_Objects::UseOBB());
   aCBuilder.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
   //
-  aCBuilder.PerformWithFiller(aPF); 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  aCBuilder.PerformWithFiller(aPF, aProgress->Start()); 
   BOPTest::ReportAlerts(aCBuilder.GetReport());
-
   // Store the history of the Cells Builder into the session
   if (BRepTest_Objects::IsHistoryNeeded())
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);

@@ -102,14 +102,15 @@ const TopoDS_Shape& BOPAlgo_CellsBuilder::GetAllParts() const
 //function : PerformInternal1
 //purpose  : 
 //=======================================================================
-void BOPAlgo_CellsBuilder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller)
+void BOPAlgo_CellsBuilder::PerformInternal1(const BOPAlgo_PaveFiller& theFiller, const Message_ProgressRange& theRange)
 {
   // Avoid filling history after GF operation as later
   // in this method the result shape will be nullified
   Standard_Boolean isHistory = HasHistory();
   SetToFillHistory(Standard_False);
   // Perform splitting of the arguments
-  BOPAlgo_Builder::PerformInternal1(theFiller);
+  Message_ProgressScope aPS(theRange, "Performing MakeCells operation", 1);
+  BOPAlgo_Builder::PerformInternal1(theFiller, aPS.Next());
   if (HasErrors()) {
     return;
   }
@@ -296,7 +297,7 @@ void BOPAlgo_CellsBuilder::AddToResult(const TopTools_ListOfShape& theLSToTake,
   //
   if (!theUpdate) {
     if (bChanged) {
-      PrepareHistory();
+      PrepareHistory(Message_ProgressRange());
     }
   }
   else {
@@ -329,7 +330,7 @@ void BOPAlgo_CellsBuilder::AddAllToResult(const Standard_Integer theMaterial,
   }
   //
   if (!theUpdate) {
-    PrepareHistory();
+    PrepareHistory(Message_ProgressRange());
   }
   else {
     RemoveInternalBoundaries();
@@ -419,7 +420,7 @@ void BOPAlgo_CellsBuilder::RemoveFromResult(const TopTools_ListOfShape& theLSToT
   if (bChanged) {
     myShape = aResult;
     //
-    PrepareHistory();
+    PrepareHistory(Message_ProgressRange());
   }
 }
 
@@ -438,7 +439,7 @@ void BOPAlgo_CellsBuilder::RemoveAllFromResult()
   myShapeMaterial.Clear();
   myMapModified.Clear();
   //
-  PrepareHistory();
+  PrepareHistory(Message_ProgressRange());
 }
 
 //=======================================================================
@@ -598,7 +599,7 @@ void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
     //
     myShape = aResult;
     //
-    PrepareHistory();
+    PrepareHistory(Message_ProgressRange());
   }
 }
 

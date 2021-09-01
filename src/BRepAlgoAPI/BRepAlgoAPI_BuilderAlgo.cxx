@@ -87,14 +87,15 @@ void BRepAlgoAPI_BuilderAlgo::Clear()
 //function : Build
 //purpose  : 
 //=======================================================================
-void BRepAlgoAPI_BuilderAlgo::Build()
+void BRepAlgoAPI_BuilderAlgo::Build(const Message_ProgressRange& theRange)
 {
   // Setting not done status
   NotDone();
   // Destroy the tools if necessary
   Clear();
+  Message_ProgressScope aPS(theRange, "Performing General Fuse operation", 100);
   // If necessary perform intersection of the argument shapes
-  IntersectShapes(myArguments);
+  IntersectShapes(myArguments, aPS.Next(70));
   if (HasErrors())
     return;
 
@@ -102,16 +103,15 @@ void BRepAlgoAPI_BuilderAlgo::Build()
   myBuilder = new BOPAlgo_Builder(myAllocator);
   // Set arguments to builder
   myBuilder->SetArguments(myArguments);
-
   // Build the result basing on intersection results
-  BuildResult();
+  BuildResult(aPS.Next(30));
 }
 
 //=======================================================================
 //function : IntersectShapes
 //purpose  : Intersects the given shapes with the intersection tool
 //=======================================================================
-void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArgs)
+void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArgs, const Message_ProgressRange& theRange)
 {
   if (!myIsIntersectionNeeded)
     return;
@@ -125,10 +125,7 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArg
   myDSFiller->SetArguments(theArgs);
   // Set options for intersection
   myDSFiller->SetRunParallel(myRunParallel);
-  if (myProgressScope != NULL)
-  {
-    myDSFiller->SetProgressIndicator(*myProgressScope);
-  }
+  
   myDSFiller->SetFuzzyValue(myFuzzyValue);
   myDSFiller->SetNonDestructive(myNonDestructive);
   myDSFiller->SetGlue(myGlue);
@@ -136,7 +133,7 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArg
   // Set Face/Face intersection options to the intersection algorithm
   SetAttributes();
   // Perform intersection
-  myDSFiller->Perform();
+  myDSFiller->Perform(theRange);
   // Check for the errors during intersection
   GetReport()->Merge(myDSFiller->GetReport());
 }
@@ -144,18 +141,15 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArg
 //function : BuildResult
 //purpose  : Builds the result shape
 //=======================================================================
-void BRepAlgoAPI_BuilderAlgo::BuildResult()
+void BRepAlgoAPI_BuilderAlgo::BuildResult(const Message_ProgressRange& theRange)
 {
   // Set options to the builder
   myBuilder->SetRunParallel(myRunParallel);
-  if (myProgressScope != NULL)
-  {
-    myBuilder->SetProgressIndicator(*myProgressScope);
-  }
+
   myBuilder->SetCheckInverted(myCheckInverted);
   myBuilder->SetToFillHistory(myFillHistory);
   // Perform building of the result with pre-calculated intersections
-  myBuilder->PerformWithFiller(*myDSFiller);
+  myBuilder->PerformWithFiller(*myDSFiller, theRange);
   // Merge the warnings of the Building part
   GetReport()->Merge(myBuilder->GetReport());
   // Check for the errors

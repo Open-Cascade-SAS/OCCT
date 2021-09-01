@@ -109,7 +109,7 @@ const BRepSweep_Revol&  BRepPrimAPI_MakeRevol::Revol() const
 //purpose  : 
 //=======================================================================
 
-void  BRepPrimAPI_MakeRevol::Build()
+void  BRepPrimAPI_MakeRevol::Build(const Message_ProgressRange& /*theRange*/)
 {
   if (myIsBuild)
   {

@@ -26,6 +26,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <OSD_Timer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopExp_Explorer.hxx>
@@ -243,7 +244,8 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   OSD_Timer aTimer;
   aTimer.Start();
   //
-  aChecker.Perform();
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  aChecker.Perform(aProgress->Start());
   //
   aTimer.Stop();
   //
@@ -549,9 +551,9 @@ Standard_Integer bopargcheck (Draw_Interpretor& di,
     }
   }
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);  
   // run checker
-  aChecker.Perform();
-
+  aChecker.Perform(aProgress->Start());
   // process result of checking
   if(!aChecker.HasFaulty()) {
     di << "Shape(s) seem(s) to be valid for BOP."  << "\n";

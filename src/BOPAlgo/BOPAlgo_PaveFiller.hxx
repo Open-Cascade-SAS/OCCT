@@ -158,7 +158,7 @@ public:
   //! a copy of a sub-shape is created in the result if it is needed to be updated.
   Standard_EXPORT Standard_Boolean NonDestructive() const;
 
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   
 
@@ -204,20 +204,21 @@ protected:
    
   Standard_EXPORT Standard_Boolean IsPrimary() const;
 
-  Standard_EXPORT virtual void PerformInternal();
+  Standard_EXPORT virtual void PerformInternal(const Message_ProgressRange& theRange);
   
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Init();
+  Standard_EXPORT virtual void Init(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void Prepare();
+  Standard_EXPORT void Prepare(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT virtual void PerformVV();
+  Standard_EXPORT virtual void PerformVV(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT virtual void PerformVE();
+  Standard_EXPORT virtual void PerformVE(const Message_ProgressRange& theRange);
 
   //! Performs the intersection of the vertices with edges.
   Standard_EXPORT void IntersectVE(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& theVEPairs,
+                                   const Message_ProgressRange& theRange,
                                    const Standard_Boolean bAddInterfs = Standard_True);
 
   //! Splits the Pave Blocks of the given edges with the extra paves.<br>
@@ -230,30 +231,30 @@ protected:
   //! of the Pave Blocks will also form a Common Block.
   Standard_EXPORT void SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
                                        const Standard_Boolean theAddInterfs);
+
+  Standard_EXPORT virtual void PerformVF(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT virtual void PerformVF();
+  Standard_EXPORT virtual void PerformEE(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT virtual void PerformEE();
+  Standard_EXPORT virtual void PerformEF(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT virtual void PerformEF();
-  
-  Standard_EXPORT virtual void PerformFF();
+  Standard_EXPORT virtual void PerformFF(const Message_ProgressRange& theRange);
   
   Standard_EXPORT void TreatVerticesEE();
   
   Standard_EXPORT void MakeSDVerticesFF(const TColStd_DataMapOfIntegerListOfInteger& aDMVLV,
                                         TColStd_DataMapOfIntegerInteger& theDMNewSD);
 
-  Standard_EXPORT void MakeSplitEdges();
+  Standard_EXPORT void MakeSplitEdges(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void MakeBlocks();
+  Standard_EXPORT void MakeBlocks(const Message_ProgressRange& theRange);
   
-  Standard_EXPORT void MakePCurves();
+  Standard_EXPORT void MakePCurves(const Message_ProgressRange& theRange);
 
   Standard_EXPORT Standard_Integer MakeSDVertices(const TColStd_ListOfInteger& theVertIndices,
                                                   const Standard_Boolean theAddInterfs = 1);
   
-  Standard_EXPORT void ProcessDE();
+  Standard_EXPORT void ProcessDE(const Message_ProgressRange& theRange);
   
   Standard_EXPORT void FillShrunkData (Handle(BOPDS_PaveBlock)& thePB);
   
@@ -269,6 +270,7 @@ protected:
   //! Performs intersection of new vertices, obtained in E/E and E/F intersections
   Standard_EXPORT void PerformNewVertices(BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
                                           const Handle(NCollection_BaseAllocator)& theAllocator,
+                                          const Message_ProgressRange& theRange,
                                           const Standard_Boolean theIsEEIntersection = Standard_True);
   
   Standard_EXPORT Standard_Boolean CheckFacePaves (const TopoDS_Vertex& theVnew,
@@ -341,7 +343,8 @@ protected:
                                     TColStd_DataMapOfIntegerInteger& theDMNewSD,
                                     const BOPDS_IndexedMapOfPaveBlock& theMicroPB,
                                     const TopTools_IndexedMapOfShape& theVertsOnRejectedPB,
-                                    const Handle(NCollection_BaseAllocator)& theAllocator);
+                                    const Handle(NCollection_BaseAllocator)& theAllocator,
+                                    const Message_ProgressRange& theRange);
   
   Standard_EXPORT void FindPaveBlocks (const Standard_Integer theV,
                                        const Standard_Integer theF,
@@ -564,7 +567,7 @@ protected:
   //! If the intersection says that the section edge is lying on the face
   //! it will be added into FaceInfo structure of the face as IN edge
   //! and will be used for splitting.
-  Standard_EXPORT void PutSEInOtherFaces();
+  Standard_EXPORT void PutSEInOtherFaces(const Message_ProgressRange& theRange);
 
   //! Analyzes the results of interferences of sub-shapes of the shapes
   //! looking for self-interfering entities by the following rules:<br>
@@ -581,22 +584,23 @@ protected:
                                                     const TopoDS_Shape& theS2);
 
   //! Repeat intersection of sub-shapes with increased vertices.
-  Standard_EXPORT void RepeatIntersection();
+  Standard_EXPORT void RepeatIntersection(const Message_ProgressRange& theRange);
 
   //! Updates vertices of CommonBlocks with real tolerance of CB.
   Standard_EXPORT void UpdateVerticesOfCB();
 
   //! The method looks for the additional common blocks among pairs of edges
   //! with the same bounding vertices.
-  Standard_EXPORT void ForceInterfEE();
+  Standard_EXPORT void ForceInterfEE(const Message_ProgressRange& theRange);
 
   //! The method looks for the additional edge/face common blocks
   //! among pairs of edge/face having the same vertices.
-  Standard_EXPORT void ForceInterfEF();
+  Standard_EXPORT void ForceInterfEF(const Message_ProgressRange& theRange);
 
   //! Performs intersection of given pave blocks
   //! with all faces from arguments.
   Standard_EXPORT void ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB,
+                                     const Message_ProgressRange& theRange,
                                      const Standard_Boolean theAddInterf);
 
   //! When all section edges are created and no increase of the tolerance
@@ -630,6 +634,13 @@ protected:
       : First (theFirst), Last (theLast), Distance (theDistance)
     {}
   };
+
+protected: //! Analyzing Progress steps
+
+  //! Filling steps for constant operations
+  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
+  //! Filling steps for all other operations
+  Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 protected: //! Fields
 

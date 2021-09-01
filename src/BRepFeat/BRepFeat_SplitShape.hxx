@@ -109,7 +109,7 @@ public:
   Standard_EXPORT const TopTools_ListOfShape& Right() const;
   
   //! Builds the cut and the resulting faces and edges as well.
-  Standard_EXPORT void Build() Standard_OVERRIDE;
+  Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns true if the shape has been deleted.
   Standard_EXPORT virtual Standard_Boolean IsDeleted (const TopoDS_Shape& S) Standard_OVERRIDE;
