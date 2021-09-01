@@ -8,7 +8,6 @@ CDF_FWOSDriver.cxx
 CDF_FWOSDriver.hxx
 CDF_MetaDataDriver.cxx
 CDF_MetaDataDriver.hxx
-CDF_MetaDataDriverError.hxx
 CDF_MetaDataDriverFactory.cxx
 CDF_MetaDataDriverFactory.hxx
 CDF_Store.cxx

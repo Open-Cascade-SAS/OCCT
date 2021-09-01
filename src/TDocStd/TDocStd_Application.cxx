@@ -383,8 +383,10 @@ PCDM_StoreStatus TDocStd_Application::SaveAs (const Handle(TDocStd_Document)& th
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
-  if(storer.StoreStatus() == PCDM_SS_OK)
+  if (storer.StoreStatus() == PCDM_SS_OK)
     theDoc->SetSaved();
+  else if (!MessageDriver().IsNull())
+    MessageDriver()->Send (storer.AssociatedStatusText(), Message_Fail);
 #ifdef OCCT_DEBUG
   std::cout<<"TDocStd_Application::SaveAs(): The status = "<<storer.StoreStatus()<<std::endl;
 #endif

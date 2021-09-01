@@ -194,6 +194,9 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
     case PCDM_SS_UserBreak:
       di << "Storage error: user break\n";
       break;
+    case PCDM_SS_UnrecognizedFormat:
+      di << "Storage error: unrecognized document storage format " << D->StorageFormat() << "\n";
+      break;
   }
 
   return 0;
