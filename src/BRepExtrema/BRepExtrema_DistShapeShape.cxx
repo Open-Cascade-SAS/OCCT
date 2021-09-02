@@ -147,7 +147,6 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap (const TopTools_Inde
       }
     }
   }
-
   std::stable_sort(aPairList.begin(), aPairList.end(), BRepExtrema_CheckPair_Comparator);
   Message_ProgressRange aDistRange(aTwinScope.Next(0.7));
   Message_ProgressScope aDistScope(aDistRange, NULL, aPairList.Size());
@@ -198,6 +197,64 @@ Standard_Boolean BRepExtrema_DistShapeShape::DistanceMapMap (const TopTools_Inde
         if (myDistRef > aDistTool.DistValue())
         {
           myDistRef = aDistTool.DistValue();
+        }
+      }
+    }
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : DistanceVertVert
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepExtrema_DistShapeShape::DistanceVertVert(const TopTools_IndexedMapOfShape& theMap1,
+                                                              const TopTools_IndexedMapOfShape& theMap2,
+                                                              const Message_ProgressRange& theRange)
+{
+  const Standard_Integer aCount1 = theMap1.Extent();
+  const Standard_Integer aCount2 = theMap2.Extent();
+
+  Message_ProgressScope aScope(theRange, NULL, aCount1);
+
+  for (Standard_Integer anIdx1 = 1; anIdx1 <= aCount1; ++anIdx1)
+  {
+    aScope.Next();
+    if (!aScope.More())
+    {
+      return Standard_False;
+    }
+    const TopoDS_Vertex& aVertex1 = TopoDS::Vertex(theMap1.FindKey(anIdx1));
+    const gp_Pnt aPoint1 = BRep_Tool::Pnt(aVertex1);
+    for (Standard_Integer anIdx2 = 1; anIdx2 <= aCount2; ++anIdx2)
+    {
+      const TopoDS_Vertex& aVertex2 = TopoDS::Vertex(theMap2.FindKey(anIdx2));
+      const gp_Pnt aPoint2 = BRep_Tool::Pnt(aVertex2);
+
+      const Standard_Real aDist = aPoint1.Distance(aPoint2);
+      if (aDist < myDistRef - myEps)
+      {
+        mySolutionsShape1.Clear();
+        mySolutionsShape2.Clear();
+
+        const BRepExtrema_SolutionElem Sol1(aDist, aPoint1, BRepExtrema_IsVertex, aVertex1);
+        const BRepExtrema_SolutionElem Sol2(aDist, aPoint2, BRepExtrema_IsVertex, aVertex2);
+        mySolutionsShape1.Append(Sol1);
+        mySolutionsShape2.Append(Sol2);
+
+        myDistRef = aDist;
+      }
+      else if (fabs(aDist - myDistRef) < myEps)
+      {
+        const BRepExtrema_SolutionElem Sol1(aDist, aPoint1, BRepExtrema_IsVertex, aVertex1);
+        const BRepExtrema_SolutionElem Sol2(aDist, aPoint2, BRepExtrema_IsVertex, aVertex2);
+        mySolutionsShape1.Append(Sol1);
+        mySolutionsShape2.Append(Sol2);
+
+        if (myDistRef > aDist)
+        {
+          myDistRef = aDist;
         }
       }
     }
@@ -408,7 +465,7 @@ Standard_Boolean BRepExtrema_DistShapeShape::Perform(const Message_ProgressRange
     else
       myDistRef= 1.e30; //szv:!!!
 
-    if(!DistanceMapMap (myMapV1, myMapV2, myBV1, myBV2, aRootScope.Next()))
+    if(!DistanceVertVert(myMapV1, myMapV2, aRootScope.Next()))
     {
       return Standard_False;
     }

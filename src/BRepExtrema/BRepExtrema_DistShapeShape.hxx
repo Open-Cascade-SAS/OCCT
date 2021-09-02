@@ -154,6 +154,11 @@ private:
                                   const Bnd_SeqOfBox&               LBox2,
                                   const Message_ProgressRange&      theRange);
 
+  //! computes the minimum distance between two maps of vertices <br>
+  Standard_Boolean DistanceVertVert(const TopTools_IndexedMapOfShape& theMap1,
+                                    const TopTools_IndexedMapOfShape& theMap2,
+                                    const Message_ProgressRange& theRange);
+
   Standard_Boolean SolidTreatment(const TopoDS_Shape& theShape,
                                   const TopTools_IndexedMapOfShape& theMap,
                                   const Message_ProgressRange& theRange);
