@@ -43,18 +43,6 @@
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
-// on MSVC, use #pragma to define name of the Tcl library to link with,
-// depending on Tcl version number
-#ifdef _MSC_VER
-// two helper macros are needed to convert version number macro to string literal
-#define STRINGIZE1(a) #a
-#define STRINGIZE2(a) STRINGIZE1(a)
-#pragma comment (lib, "tcl" STRINGIZE2(TCL_MAJOR_VERSION) STRINGIZE2(TCL_MINOR_VERSION) ".lib")
-#pragma comment (lib, "tk"  STRINGIZE2(TCL_MAJOR_VERSION) STRINGIZE2(TCL_MINOR_VERSION) ".lib")
-#undef STRINGIZE2
-#undef STRINGIZE1
-#endif
-
 extern Standard_Boolean Draw_ParseFailed;
 
 Standard_EXPORT Draw_Viewer dout;
