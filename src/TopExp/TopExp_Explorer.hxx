@@ -18,6 +18,7 @@
 #define _TopExp_Explorer_HeaderFile
 
 #include <TopExp_Stack.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! An Explorer is a Tool to visit  a Topological Data
@@ -136,39 +137,21 @@ public:
 
   //! Clears the content of the explorer. It will return
   //! False on More().
-    void Clear();
-  
-  Standard_EXPORT void Destroy();
-~TopExp_Explorer()
-{
-  Destroy();
-}
+  Standard_EXPORT void Clear();
+
+  //! Destructor.
+  Standard_EXPORT ~TopExp_Explorer();
 
 private:
 
   TopExp_Stack myStack;
+  TopoDS_Shape myShape;
   Standard_Integer myTop;
   Standard_Integer mySizeOfStack;
-  TopoDS_Shape myShape;
-  Standard_Boolean hasMore;
   TopAbs_ShapeEnum toFind;
   TopAbs_ShapeEnum toAvoid;
+  Standard_Boolean hasMore;
 
 };
-
-#include <TopoDS_Iterator.hxx>
-
-inline void TopExp_Explorer::Clear()
-{
-  hasMore = Standard_False;
-  if (myTop > 0)
-  {
-    for (int i = 1; i <= myTop; i++)
-    {
-      myStack[i].~TopoDS_Iterator();
-    }
-  }
-  myTop = 0;
-}
 
 #endif // _TopExp_Explorer_HeaderFile

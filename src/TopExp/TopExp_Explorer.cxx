@@ -33,49 +33,49 @@ static const Standard_Integer theStackSize = 20;
 
 //=======================================================================
 //function : TopExp_Explorer
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-TopExp_Explorer::TopExp_Explorer() :
-    myStack(0L),myTop(-1),hasMore(Standard_False)
+TopExp_Explorer::TopExp_Explorer()
+: myStack (0L),
+  myTop (-1),
+  mySizeOfStack (theStackSize),
+  toFind  (TopAbs_SHAPE),
+  toAvoid (TopAbs_SHAPE),
+  hasMore (Standard_False)
 {
   myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize*sizeof(TopoDS_Iterator));
-  mySizeOfStack = theStackSize;
 }
-
 
 //=======================================================================
 //function : TopExp_Explorer
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-TopExp_Explorer::TopExp_Explorer(const TopoDS_Shape& S, 
-				 const TopAbs_ShapeEnum ToFind, 
-				 const TopAbs_ShapeEnum ToAvoid):
-       myStack(0L),myTop(-1),hasMore(Standard_False)
-
+TopExp_Explorer::TopExp_Explorer (const TopoDS_Shape& theS,
+                                  const TopAbs_ShapeEnum theToFind,
+                                  const TopAbs_ShapeEnum theToAvoid)
+: myStack (0L),
+  myTop (-1),
+  mySizeOfStack (theStackSize),
+  toFind  (theToFind),
+  toAvoid (theToAvoid),
+  hasMore (Standard_False)
 {
   myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize*sizeof(TopoDS_Iterator));
-  mySizeOfStack = theStackSize;
-  Init(S,ToFind,ToAvoid);
+
+  Init (theS, theToFind, theToAvoid);
 }
 
 
 //=======================================================================
 //function : Init
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void  TopExp_Explorer::Init(const TopoDS_Shape& S, 
 			    const TopAbs_ShapeEnum ToFind, 
 			    const TopAbs_ShapeEnum ToAvoid)
 {
-  if(myTop >=0) {
-    for(int i=0;i<= myTop; i++)
-      myStack[i].~TopoDS_Iterator();
-  }
-  
-  myTop   = -1;
+  Clear();
+
   myShape = S;
   toFind  = ToFind;
   toAvoid = ToAvoid;
@@ -131,18 +131,11 @@ const TopoDS_Shape&  TopExp_Explorer::Current()const
     return myShape;
 }
 
-
 //=======================================================================
 //function : Next
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4291) // to avoid warning when using new(buffer) syntax
-#endif
-
-void  TopExp_Explorer::Next()
+void TopExp_Explorer::Next()
 {
   Standard_Integer NewSize;
   TopoDS_Shape ShapTop;
@@ -219,28 +212,40 @@ void  TopExp_Explorer::Next()
   hasMore = Standard_False;
 }
 
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
 //=======================================================================
 //function : ReInit
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  TopExp_Explorer::ReInit()
+void TopExp_Explorer::ReInit()
 {
   Init(myShape,toFind,toAvoid);
 }
 
-void  TopExp_Explorer::Destroy()
+//=======================================================================
+//function : ~TopExp_Explorer
+//purpose  :
+//=======================================================================
+TopExp_Explorer::~TopExp_Explorer()
 {
-  if (myStack) 
-    {
-      for(int i=0;i<= myTop; i++)myStack[i].~TopoDS_Iterator();
-      Standard::Free(myStack);
-    }
+  Clear();
+  if (myStack)
+  {
+    Standard::Free(myStack);
+  }
   mySizeOfStack = 0;
   myStack = 0L;
 }
 
+//=======================================================================
+//function : Clear
+//purpose  :
+//=======================================================================
+void TopExp_Explorer::Clear()
+{
+  hasMore = Standard_False;
+  for (int i = 0; i <= myTop; ++i)
+  {
+    myStack[i].~TopoDS_Iterator();
+  }
+  myTop = -1;
+}
