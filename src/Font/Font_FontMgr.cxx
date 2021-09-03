@@ -41,10 +41,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
   #include <windows.h>
   #include <stdlib.h>
 
-  #if defined(_MSC_VER) && defined(HAVE_FREETYPE)
-    #pragma comment (lib, "freetype.lib")
-  #endif
-
   namespace
   {
     // list of supported extensions
