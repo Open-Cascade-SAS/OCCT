@@ -197,8 +197,8 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire& aWire,
 
 //#11 ItW.Init(ForwardWire, aTool.CurrentFace());
 //#11 for (;ItW.More();ItW.Next()) {
-    Handle(ShapeFix_Wire) STW = new ShapeFix_Wire;
-    STW->Load (ForwardWire);
+    Handle(ShapeFix_Wire) STW =
+      new ShapeFix_Wire(ForwardWire, aTool.CurrentFace(), Precision::Confusion());
     STW->FixReorder();
     Handle(ShapeExtend_WireData) sbwd = STW->WireData();
     Standard_Integer nb = sbwd->NbEdges();
