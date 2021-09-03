@@ -1,5 +1,3 @@
-puts "TODO OCC25989 ALL: Error : The volume of result shape is"
-
 puts "========"
 puts "OCC25989"
 puts "========"
