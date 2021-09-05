@@ -402,6 +402,12 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
         hasProductName = true;
         setShapeName (aNewRefLabel, aShapeType, aShapeAttribs.Name, theLabel, theParentName);
       }
+      else if (aShapeAttribs.Name.IsEmpty()
+           && !aRefShapeAttribs.Name.IsEmpty())
+      {
+        // copy name from Product
+        setShapeName (aNewLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+      }
     }
     else
     {

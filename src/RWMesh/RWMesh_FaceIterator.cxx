@@ -42,12 +42,13 @@ RWMesh_FaceIterator::RWMesh_FaceIterator (const TDF_Label&       theLabel,
     return;
   }
 
-  aShape.Location (theLocation);
+  aShape.Location (theLocation, false);
   myFaceIter.Init (aShape, TopAbs_FACE);
 
   if (theToMapColors)
   {
     dispatchStyles (theLabel, theLocation, theStyle);
+    myStyles.Bind (aShape, theStyle);
   }
 
   Next();

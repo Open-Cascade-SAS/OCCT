@@ -1340,51 +1340,27 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
     return true;
   }
 
+  const TCollection_AsciiString aUserName ((aName != NULL && aName->IsString()) ? aName->GetString() : "");
+
   BRep_Builder aBuilder;
   TopoDS_Compound aMeshShape;
   int aNbFaces = 0;
   for (rapidjson::Value::ConstValueIterator aPrimArrIter = aPrims->Begin();
        aPrimArrIter != aPrims->End(); ++aPrimArrIter)
   {
-    TCollection_AsciiString aUserName;
-    if (aName != NULL
-     && aName->IsString())
-    {
-      aUserName = aName->GetString();
-    }
-
-    Handle(RWGltf_GltfLatePrimitiveArray) aMeshData = new RWGltf_GltfLatePrimitiveArray (theMeshId, aUserName);
-    if (!gltfParsePrimArray (aMeshData, theMeshId, *aPrimArrIter))
+    TopoDS_Shape aFace;
+    if (!gltfParsePrimArray (aFace, theMeshId, aUserName, *aPrimArrIter))
     {
       return false;
     }
 
-    if (!aMeshData->Data().IsEmpty())
+    if (!aFace.IsNull())
     {
       if (aMeshShape.IsNull())
       {
         aBuilder.MakeCompound (aMeshShape);
       }
-
-      TopoDS_Face aFace;
-      aBuilder.MakeFace (aFace, aMeshData);
       aBuilder.Add (aMeshShape, aFace);
-      if (myAttribMap != NULL
-       && aMeshData->HasStyle())
-      {
-        RWMesh_NodeAttributes aShapeAttribs;
-        aShapeAttribs.RawName = aUserName;
-
-        // assign material and not color
-        //aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
-
-        Handle(XCAFDoc_VisMaterial) aMat;
-        myMaterials.Find (!aMeshData->MaterialPbr().IsNull() ? aMeshData->MaterialPbr()->Id : aMeshData->MaterialCommon()->Id, aMat);
-        aShapeAttribs.Style.SetMaterial (aMat);
-
-        myAttribMap->Bind (aFace, aShapeAttribs);
-      }
-      myFaceList.Append (aFace);
       ++aNbFaces;
     }
   }
@@ -1405,8 +1381,9 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
 // function : gltfParsePrimArray
 // purpose  :
 // =======================================================================
-bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
+bool RWGltf_GltfJsonParser::gltfParsePrimArray (TopoDS_Shape& thePrimArrayShape,
                                                 const TCollection_AsciiString& theMeshId,
+                                                const TCollection_AsciiString& theMeshName,
                                                 const RWGltf_JsonValue& thePrimArray)
 {
   const RWGltf_JsonValue* anAttribs = findObjectMember (thePrimArray, "attributes");
@@ -1447,22 +1424,69 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
     Message::SendWarning (TCollection_AsciiString() + "Primitive array within Mesh '" + theMeshId + "' skipped due to unsupported mode");
     return true;
   }
-  theMeshData->SetPrimitiveMode (aMode);
 
-  // assign material
+  const TCollection_AsciiString aMatId      = aMaterial != NULL ? getKeyString (*aMaterial) : TCollection_AsciiString();
+  const TCollection_AsciiString anIndicesId = anIndices != NULL ? getKeyString (*anIndices) : TCollection_AsciiString();
+  Handle(RWGltf_MaterialMetallicRoughness) aMatPbr;
+  Handle(RWGltf_MaterialCommon) aMatCommon;
+  Handle(XCAFDoc_VisMaterial) aMat;
   if (aMaterial != NULL)
   {
-    Handle(RWGltf_MaterialMetallicRoughness) aMatPbr;
-    if (myMaterialsPbr.Find (getKeyString (*aMaterial), aMatPbr))
+    if (myMaterialsPbr.Find (aMatId, aMatPbr))
     {
-      theMeshData->SetMaterialPbr (aMatPbr);
+      myMaterials.Find (aMatPbr->Id, aMat);
     }
+    if (myMaterialsCommon.Find (aMatId, aMatCommon))
+    {
+      if (aMat.IsNull())
+      {
+        myMaterials.Find (aMatCommon->Id, aMat);
+      }
+    }
+  }
 
-    Handle(RWGltf_MaterialCommon) aMatCommon;
-    if (myMaterialsCommon.Find (getKeyString (*aMaterial), aMatCommon))
+  // try reusing already loaded primitive array - generate a unique id
+  TCollection_AsciiString aPrimArrayId, aPrimArrayIdWithMat;
+  aPrimArrayId += TCollection_AsciiString (aMode);
+  aPrimArrayId += TCollection_AsciiString (":") + anIndicesId;
+  for (rapidjson::Value::ConstMemberIterator anAttribIter = anAttribs->MemberBegin();
+       anAttribIter != anAttribs->MemberEnd(); ++anAttribIter)
+  {
+    const TCollection_AsciiString anAttribId = getKeyString (anAttribIter->value);
+    aPrimArrayId += TCollection_AsciiString (":") + anAttribId;
+  }
+  aPrimArrayIdWithMat = aPrimArrayId + TCollection_AsciiString ("::") + aMatId;
+  if (myShapeMap[ShapeMapGroup_PrimArray].Find (aPrimArrayIdWithMat, thePrimArrayShape))
+  {
+    return true;
+  }
+  else if (myShapeMap[ShapeMapGroup_PrimArray].Find (aPrimArrayId, thePrimArrayShape))
+  {
+    if (myAttribMap != NULL)
     {
-      theMeshData->SetMaterialCommon (aMatCommon);
+      // sharing just triangulation is not much useful
+      //Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (TopoDS::Face (thePrimArrayShape), aDummy));
+      //TopoDS_Face aFaceCopy; BRep_Builder().MakeFace (aFaceCopy, aLateData);
+
+      // make a located Face copy
+      TopoDS_Shape aFaceCopy = thePrimArrayShape;
+      aFaceCopy.Location (TopLoc_Location (gp_Trsf()));
+      RWMesh_NodeAttributes aShapeAttribs;
+      aShapeAttribs.RawName = theMeshName;
+      aShapeAttribs.Style.SetMaterial (aMat);
+      myAttribMap->Bind (aFaceCopy, aShapeAttribs);
+      myShapeMap[ShapeMapGroup_PrimArray].Bind (aPrimArrayIdWithMat, aFaceCopy);
+      thePrimArrayShape = aFaceCopy;
     }
+    return true;
+  }
+
+  Handle(RWGltf_GltfLatePrimitiveArray) aMeshData = new RWGltf_GltfLatePrimitiveArray (theMeshId, theMeshName);
+  aMeshData->SetPrimitiveMode (aMode);
+  if (aMaterial != NULL)
+  {
+    aMeshData->SetMaterialPbr (aMatPbr);
+    aMeshData->SetMaterialCommon (aMatCommon);
   }
 
   bool hasPositions = false;
@@ -1490,7 +1514,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
       reportGltfError ("Primitive array attribute accessor key '" + anAttribId + "' points to non-existing object.");
       return false;
     }
-    else if (!gltfParseAccessor (theMeshData, anAttribId, *anAccessor, aType, aDracoBuf))
+    else if (!gltfParseAccessor (aMeshData, anAttribId, *anAccessor, aType, aDracoBuf))
     {
       return false;
     }
@@ -1507,7 +1531,6 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
 
   if (anIndices != NULL)
   {
-    const TCollection_AsciiString anIndicesId = getKeyString (*anIndices);
     const RWGltf_JsonValue* anAccessor = myGltfRoots[RWGltf_GltfRootElement_Accessors].FindChild (*anIndices);
     if (anAccessor == NULL
     || !anAccessor->IsObject())
@@ -1515,16 +1538,38 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
       reportGltfError ("Primitive array indices accessor key '" + anIndicesId + "' points to non-existing object.");
       return false;
     }
-    else if (!gltfParseAccessor (theMeshData, anIndicesId, *anAccessor, RWGltf_GltfArrayType_Indices, aDracoBuf))
+    else if (!gltfParseAccessor (aMeshData, anIndicesId, *anAccessor, RWGltf_GltfArrayType_Indices, aDracoBuf))
     {
       return false;
     }
   }
   else
   {
-    theMeshData->SetNbDeferredTriangles (theMeshData->NbDeferredNodes() / 3);
+    aMeshData->SetNbDeferredTriangles (aMeshData->NbDeferredNodes() / 3);
   }
 
+  if (!aMeshData->Data().IsEmpty())
+  {
+    TopoDS_Face aFace;
+    BRep_Builder aBuilder;
+    aBuilder.MakeFace (aFace, aMeshData);
+    if (myAttribMap != NULL
+     && aMeshData->HasStyle())
+    {
+      RWMesh_NodeAttributes aShapeAttribs;
+      aShapeAttribs.RawName = theMeshName;
+
+      // assign material and not color
+      //aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
+      aShapeAttribs.Style.SetMaterial (aMat);
+
+      myAttribMap->Bind (aFace, aShapeAttribs);
+    }
+    myFaceList.Append (aFace);
+    myShapeMap[ShapeMapGroup_PrimArray].Bind (aPrimArrayId, aFace);
+    myShapeMap[ShapeMapGroup_PrimArray].Bind (aPrimArrayIdWithMat, aFace);
+    thePrimArrayShape = aFace;
+  }
   return true;
 }
 
@@ -1873,6 +1918,7 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
     return;
   }
 
+  TopoDS_Shape aShape = theShape;
   if (!theLoc.IsIdentity())
   {
     if (!theShape.Location().IsIdentity())
@@ -1896,31 +1942,32 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
     aUserName = theId;
   }
 
-  myShapeMap[theGroup].Bind (theId, theShape);
   if (myAttribMap != NULL)
   {
     RWMesh_NodeAttributes aShapeAttribs;
-    aShapeAttribs.Name    = aUserName;
-    aShapeAttribs.RawName = theId;
+    aShapeAttribs.Name = aUserName;
+    if (myIsGltf1)
+    {
+      aShapeAttribs.RawName = theId;
+    }
     if (theShape.ShapeType() == TopAbs_FACE)
     {
-      TopLoc_Location aDummy;
-      if (Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (TopoDS::Face (theShape), aDummy)))
+      RWMesh_NodeAttributes aFaceAttribs;
+      if (myAttribMap->Find (aShape, aFaceAttribs))
       {
-        if (aLateData->HasStyle())
-        {
-          // assign material and not color
-          //aShapeAttribs.Style.SetColorSurf (aLateData->BaseColor());
-
-          Handle(XCAFDoc_VisMaterial) aMat;
-          myMaterials.Find (!aLateData->MaterialPbr().IsNull() ? aLateData->MaterialPbr()->Id : aLateData->MaterialCommon()->Id, aMat);
-          aShapeAttribs.Style.SetMaterial (aMat);
-        }
+        aShapeAttribs.Style.SetMaterial (aFaceAttribs.Style.Material());
         if (aShapeAttribs.Name.IsEmpty()
          && myUseMeshNameAsFallback)
         {
           // fallback using Mesh name
-          aShapeAttribs.Name = aLateData->Name();
+          aShapeAttribs.Name = aFaceAttribs.RawName;
+        }
+        else if (!aFaceAttribs.Name.IsEmpty()
+               && theLoc.IsIdentity()
+               && theGroup == ShapeMapGroup_Nodes)
+        {
+          // keep Product name (from Mesh) separated from Instance name (from Node)
+          theShape.Location (TopLoc_Location (gp_Trsf()) * theShape.Location(), Standard_False);
         }
       }
     }
@@ -1955,8 +2002,20 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
         aShapeAttribs.Name = aMeshName;
       }
     }
+    else if (!aShapeAttribs.Name.IsEmpty()
+           && theGroup == ShapeMapGroup_Nodes)
+    {
+      RWMesh_NodeAttributes anOldAttribs;
+      if (myAttribMap->Find (aShape, anOldAttribs)
+      && !anOldAttribs.Name.IsEmpty())
+      {
+        // keep Product name (from Mesh) separated from Instance name (from Node)
+        theShape.Location (TopLoc_Location (gp_Trsf()) * theShape.Location(), Standard_False);
+      }
+    }
     myAttribMap->Bind (theShape, aShapeAttribs);
   }
+  myShapeMap[theGroup].Bind (theId, theShape);
 }
 #endif
 

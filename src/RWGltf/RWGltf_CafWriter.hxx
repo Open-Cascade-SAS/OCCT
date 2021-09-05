@@ -318,7 +318,31 @@ protected:
 
 protected:
 
-  typedef NCollection_IndexedDataMap<TopoDS_Shape, Handle(RWGltf_GltfFaceList), TopTools_ShapeMapHasher> ShapeToGltfFaceMap;
+  //! Shape + Style pair.
+  struct RWGltf_StyledShape
+  {
+    TopoDS_Shape  Shape;
+    XCAFPrs_Style Style;
+
+    RWGltf_StyledShape() {}
+    explicit RWGltf_StyledShape (const TopoDS_Shape& theShape) : Shape (theShape) {}
+    explicit RWGltf_StyledShape (const TopoDS_Shape&  theShape,
+                                 const XCAFPrs_Style& theStyle) : Shape (theShape), Style (theStyle) {}
+  public:
+    //! Computes a hash code.
+    static Standard_Integer HashCode (const RWGltf_StyledShape& theShape, Standard_Integer theUpperBound)
+    {
+      return theShape.Shape.HashCode (theUpperBound);
+    }
+    //! Equality comparison.
+    static Standard_Boolean IsEqual (const RWGltf_StyledShape& theS1, const RWGltf_StyledShape& theS2)
+    {
+      return theS1.Shape.IsSame (theS2.Shape)
+          && theS1.Style.IsEqual(theS2.Style);
+    }
+  };
+
+  typedef NCollection_IndexedDataMap<RWGltf_StyledShape, Handle(RWGltf_GltfFaceList), RWGltf_StyledShape> ShapeToGltfFaceMap;
 
 protected:
 

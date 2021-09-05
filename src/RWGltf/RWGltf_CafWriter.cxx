@@ -434,13 +434,14 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
     RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
     if (myToMergeFaces)
     {
-      if (myBinDataMap.Contains (aFaceIter.ExploredShape()))
+      RWGltf_StyledShape aStyledShape (aFaceIter.ExploredShape(), aDocNode.Style);
+      if (myBinDataMap.Contains (aStyledShape))
       {
         continue;
       }
 
       Handle(RWGltf_GltfFaceList) aGltfFaceList = new RWGltf_GltfFaceList();
-      myBinDataMap.Add (aFaceIter.ExploredShape(), aGltfFaceList);
+      myBinDataMap.Add (aStyledShape, aGltfFaceList);
       for (; aFaceIter.More() && aPSentryBin.More(); aFaceIter.Next())
       {
         if (toSkipFaceMesh (aFaceIter))
@@ -489,8 +490,9 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
     {
       for (; aFaceIter.More() && aPSentryBin.More(); aFaceIter.Next())
       {
+        RWGltf_StyledShape aStyledShape (aFaceIter.Face(), aFaceIter.FaceStyle());
         if (toSkipFaceMesh (aFaceIter)
-         || myBinDataMap.Contains (aFaceIter.Face()))
+         || myBinDataMap.Contains (aStyledShape))
         {
           continue;
         }
@@ -500,13 +502,14 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
         aGltfFace->Shape = aFaceIter.Face();
         aGltfFace->Style = aFaceIter.FaceStyle();
         aGltfFaceList->Append (aGltfFace);
-        myBinDataMap.Add (aFaceIter.Face(), aGltfFaceList);
+        myBinDataMap.Add (aStyledShape, aGltfFaceList);
       }
     }
   }
 
   Standard_Integer aNbAccessors = 0;
   NCollection_Map<Handle(RWGltf_GltfFaceList)> aWrittenFaces;
+  NCollection_DataMap<TopoDS_Shape, Handle(RWGltf_GltfFace), TopTools_ShapeMapHasher> aWrittenPrimData;
   for (Standard_Integer aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
   {
     const RWGltf_GltfArrayType anArrType = (RWGltf_GltfArrayType )anArrTypes[aTypeIter];
@@ -521,6 +524,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
     }
     aBuffView->ByteOffset = aBinFile->tellp();
     aWrittenFaces.Clear (false);
+    aWrittenPrimData.Clear (false);
     for (ShapeToGltfFaceMap::Iterator aBinDataIter (myBinDataMap); aBinDataIter.More() && aPSentryBin.More(); aBinDataIter.Next())
     {
       const Handle(RWGltf_GltfFaceList)& aGltfFaceList = aBinDataIter.Value();
@@ -532,6 +536,41 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
       for (RWGltf_GltfFaceList::Iterator aGltfFaceIter (*aGltfFaceList); aGltfFaceIter.More() && aPSentryBin.More(); aGltfFaceIter.Next())
       {
         const Handle(RWGltf_GltfFace)& aGltfFace = aGltfFaceIter.Value();
+
+        Handle(RWGltf_GltfFace) anOldGltfFace;
+        if (aWrittenPrimData.Find (aGltfFace->Shape, anOldGltfFace))
+        {
+          switch (anArrType)
+          {
+            case RWGltf_GltfArrayType_Position:
+            {
+              aGltfFace->NodePos = anOldGltfFace->NodePos;
+              break;
+            }
+            case RWGltf_GltfArrayType_Normal:
+            {
+              aGltfFace->NodeNorm = anOldGltfFace->NodeNorm;
+              break;
+            }
+            case RWGltf_GltfArrayType_TCoord0:
+            {
+              aGltfFace->NodeUV = anOldGltfFace->NodeUV;
+              break;
+            }
+            case RWGltf_GltfArrayType_Indices:
+            {
+              aGltfFace->Indices = anOldGltfFace->Indices;
+              break;
+            }
+            default:
+            {
+              break;
+            }
+          }
+          continue;
+        }
+        aWrittenPrimData.Bind (aGltfFace->Shape, aGltfFace);
+
         for (RWMesh_FaceIterator aFaceIter (aGltfFace->Shape, aGltfFace->Style); aFaceIter.More() && aPSentryBin.More(); aFaceIter.Next())
         {
           switch (anArrType)
@@ -864,6 +903,8 @@ void RWGltf_CafWriter::writeAccessors (const RWGltf_GltfSceneNodeMap& )
     RWGltf_GltfArrayType_Indices
   };
   NCollection_Map<Handle(RWGltf_GltfFaceList)> aWrittenFaces;
+  NCollection_Map<int> aWrittenIds;
+  int aNbAccessors = 0;
   for (Standard_Integer aTypeIter = 0; aTypeIter < 4; ++aTypeIter)
   {
     const RWGltf_GltfArrayType anArrType = (RWGltf_GltfArrayType )anArrTypes[aTypeIter];
@@ -883,21 +924,71 @@ void RWGltf_CafWriter::writeAccessors (const RWGltf_GltfSceneNodeMap& )
         {
           case RWGltf_GltfArrayType_Position:
           {
+            const int anAccessorId = aGltfFace->NodePos.Id;
+            if (anAccessorId == RWGltf_GltfAccessor::INVALID_ID
+            || !aWrittenIds.Add (anAccessorId))
+            {
+              break;
+            }
+
+            if (anAccessorId != aNbAccessors)
+            {
+              throw Standard_ProgramError ("Internal error: RWGltf_CafWriter::writeAccessors()");
+            }
+            ++aNbAccessors;
             writePositions (*aGltfFace);
             break;
           }
           case RWGltf_GltfArrayType_Normal:
           {
+            const int anAccessorId = aGltfFace->NodeNorm.Id;
+            if (anAccessorId == RWGltf_GltfAccessor::INVALID_ID
+            || !aWrittenIds.Add (anAccessorId))
+            {
+              break;
+            }
+
+            if (anAccessorId != aNbAccessors)
+            {
+              throw Standard_ProgramError ("Internal error: RWGltf_CafWriter::writeAccessors()");
+            }
+            ++aNbAccessors;
             writeNormals (*aGltfFace);
             break;
           }
           case RWGltf_GltfArrayType_TCoord0:
           {
+            const int anAccessorId = aGltfFace->NodeUV.Id;
+            if (anAccessorId == RWGltf_GltfAccessor::INVALID_ID
+            || !aWrittenIds.Add (anAccessorId)
+             )
+            {
+              break;
+            }
+
+            if (anAccessorId != aNbAccessors)
+            {
+              throw Standard_ProgramError ("Internal error: RWGltf_CafWriter::writeAccessors()");
+            }
+            ++aNbAccessors;
             writeTextCoords (*aGltfFace);
             break;
           }
           case RWGltf_GltfArrayType_Indices:
           {
+            const int anAccessorId = aGltfFace->Indices.Id;
+            if (anAccessorId == RWGltf_GltfAccessor::INVALID_ID
+            || !aWrittenIds.Add (anAccessorId)
+             )
+            {
+              break;
+            }
+
+            if (anAccessorId != aNbAccessors)
+            {
+              throw Standard_ProgramError ("Internal error: RWGltf_CafWriter::writeAccessors()");
+            }
+            ++aNbAccessors;
             writeIndices (*aGltfFace);
             break;
           }
@@ -1420,7 +1511,8 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
 
       Handle(RWGltf_GltfFaceList) aGltfFaceList;
       aShape.Location (TopLoc_Location());
-      myBinDataMap.FindFromKey (aShape, aGltfFaceList);
+      RWGltf_StyledShape aStyledShape (aShape, aDocNode.Style);
+      myBinDataMap.FindFromKey (aStyledShape, aGltfFaceList);
       if (!aWrittenFaces.Add (aGltfFaceList))
       {
         continue;
@@ -1441,7 +1533,8 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
           continue;
         }
 
-        const Handle(RWGltf_GltfFaceList)& aGltfFaceList = myBinDataMap.FindFromKey (aFaceIter.Face());
+        RWGltf_StyledShape aStyledShape (aFaceIter.Face(), aFaceIter.FaceStyle());
+        const Handle(RWGltf_GltfFaceList)& aGltfFaceList = myBinDataMap.FindFromKey (aStyledShape);
         if (!aWrittenFaces.Add (aGltfFaceList))
         {
           continue;

@@ -188,7 +188,8 @@ protected:
                                       const RWGltf_JsonValue& theMesh);
 
   //! Parse primitive array.
-  Standard_EXPORT bool gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
+  Standard_EXPORT bool gltfParsePrimArray (TopoDS_Shape& thePrimArrayShape,
+                                           const TCollection_AsciiString& theMeshId,
                                            const TCollection_AsciiString& theMeshName,
                                            const RWGltf_JsonValue& thePrimArray);
 
@@ -284,8 +285,9 @@ protected:
   //! Groups for re-using shapes.
   enum ShapeMapGroup
   {
-    ShapeMapGroup_Nodes,  //!< nodes
-    ShapeMapGroup_Meshes, //!< meshes
+    ShapeMapGroup_Nodes,     //!< nodes
+    ShapeMapGroup_Meshes,    //!< meshes
+    ShapeMapGroup_PrimArray, //!< primitive array
   };
 
   //! Bind name attribute.
@@ -416,7 +418,7 @@ protected:
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)> myMaterialsPbr;
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialCommon)> myMaterialsCommon;
   NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myMaterials;
-  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> myShapeMap[2];
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> myShapeMap[3];
 
   NCollection_DataMap<TCollection_AsciiString, bool> myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, Handle(NCollection_Buffer)> myDecodedBuffers;

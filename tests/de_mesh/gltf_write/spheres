@@ -1,0 +1,56 @@
+puts "========"
+puts "0032107: Data Exchange, RWGltf_CafReader - reading glTF document back loses sharing"
+puts "========"
+
+vclear
+vclose ALL
+Close *
+source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl
+vdump "${imagedir}/${casename}_0.png"
+
+set aTmpGltf1  "${imagedir}/${casename}_tmp1.glb"
+set aTmpGltf1m "${imagedir}/${casename}_tmp1m.glb"
+set aTmpGltf2  "${imagedir}/${casename}_tmp2.glb"
+set aTmpGltf2m "${imagedir}/${casename}_tmp2m.glb"
+lappend occ_tmp_files $aTmpGltf1
+lappend occ_tmp_files $aTmpGltf1m
+lappend occ_tmp_files $aTmpGltf2
+lappend occ_tmp_files $aTmpGltf2m
+
+WriteGltf D "$aTmpGltf1"
+puts [file size "$aTmpGltf1"]
+WriteGltf D "$aTmpGltf1m" -mergeFaces
+puts [file size "$aTmpGltf1m"]
+
+ReadGltf D1 "$aTmpGltf1"
+XGetOneShape s1 D1
+checknbshapes s1 -face 26 -compound 22
+vclear
+XDisplay D1 -dispMode 1
+vdump "${imagedir}/${casename}_1.png"
+
+ReadGltf D1m "$aTmpGltf1m"
+XGetOneShape s1m D1m
+checknbshapes s1m -face 5 -compound 18
+vclear
+XDisplay D1m -dispMode 1
+vdump "${imagedir}/${casename}_1m.png"
+
+WriteGltf D1  "$aTmpGltf2"
+puts [file size "$aTmpGltf2"]
+WriteGltf D1m "$aTmpGltf2m" -mergeFaces
+puts [file size "$aTmpGltf2m"]
+
+ReadGltf D2 "$aTmpGltf2"
+XGetOneShape s2 D2
+checknbshapes s2 -face 26 -compound 22
+vclear
+XDisplay D2 -dispMode 1
+vdump "${imagedir}/${casename}_2.png"
+
+ReadGltf D2m "$aTmpGltf2m"
+XGetOneShape s2m D2m
+checknbshapes s2m -face 5 -compound 18
+vclear
+XDisplay D2m -dispMode 1
+vdump "${imagedir}/${casename}_2m.png"

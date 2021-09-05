@@ -17,8 +17,8 @@ WriteGltf D0 "$aTmpGltf2" -mergeFaces
 
 ReadGltf D1 "$aTmpGltf1"
 XGetOneShape s1 D1
-checknbshapes s1 -face 160 -compound 28
+checknbshapes s1 -face 53 -compound 28
 
 ReadGltf D "$aTmpGltf2"
 XGetOneShape s2 D
-checknbshapes s2 -face 18 -compound 10
+checknbshapes s2 -face 5 -compound 10
