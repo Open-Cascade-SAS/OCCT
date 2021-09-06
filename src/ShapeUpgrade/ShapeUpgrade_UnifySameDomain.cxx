@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -61,7 +62,6 @@
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Shell.hxx>
 #include <ShapeFix_Wire.hxx>
-#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <Standard_Type.hxx>
 #include <TColGeom2d_Array1OfBSplineCurve.hxx>
 #include <TColGeom2d_HArray1OfBSplineCurve.hxx>
@@ -2235,17 +2235,21 @@ static Standard_Boolean GetLineEdgePoints(const TopoDS_Edge& theInpEdge, gp_Pnt&
   return Standard_True;
 }
 
-//=======================================================================
-//function : GenerateSubSeq
-//purpose  : Generates sub-sequences of edges from sequence of edges
-//Edges from each subsequences can be merged into the one edge  
-//=======================================================================
+struct ShapeUpgrade_UnifySameDomain::SubSequenceOfEdges
+{
+  TopTools_SequenceOfShape SeqsEdges;
+  TopoDS_Edge UnionEdges;
+};
 
-static void GenerateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
-                            NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
-                            Standard_Boolean IsClosed, double theAngTol, double theLinTol, 
-                            const TopTools_MapOfShape& AvoidEdgeVrt,
-                            const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap)
+//=======================================================================
+//function : generateSubSeq
+//purpose  :
+//=======================================================================
+void ShapeUpgrade_UnifySameDomain::generateSubSeq (const TopTools_SequenceOfShape& anInpEdgeSeq,
+                                                   NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
+                                                   Standard_Boolean IsClosed, double theAngTol, double theLinTol,
+                                                   const TopTools_MapOfShape& AvoidEdgeVrt,
+                                                   const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap)
 {
   Standard_Boolean isOk = Standard_False;
   TopoDS_Edge edge1, edge2;
@@ -2377,7 +2381,7 @@ Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeEdges(TopTools_SequenceOfSha
 
     // split chain by vertices at which merging is not possible
     NCollection_Sequence<SubSequenceOfEdges> aOneSeq;
-    GenerateSubSeq(aChain, aOneSeq, IsClosed, myAngTol, myLinTol, VerticesToAvoid, theVFmap);
+    generateSubSeq(aChain, aOneSeq, IsClosed, myAngTol, myLinTol, VerticesToAvoid, theVFmap);
 
     // put sub-chains in the result
     SeqOfSubSeqOfEdges.Append(aOneSeq);
