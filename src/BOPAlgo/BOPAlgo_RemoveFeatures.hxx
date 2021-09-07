@@ -231,11 +231,11 @@ protected: //! @name Protected methods performing the removal
   //! Prepares the faces to remove:
   //! - Gets only faces contained in the input solids;
   //! - Builds connected blocks of faces creating separate features to remove.
-  Standard_EXPORT void PrepareFeatures();
+  Standard_EXPORT void PrepareFeatures(const Message_ProgressRange& theRange);
 
   //! Removes the features and fills the created gaps by extension of the adjacent faces.
   //! Processes each feature separately.
-  Standard_EXPORT void RemoveFeatures();
+  Standard_EXPORT void RemoveFeatures(const Message_ProgressRange& theRange);
 
   //! Remove the single feature from the shape.
   //! @param theFeature [in] The feature to remove;
@@ -253,17 +253,21 @@ protected: //! @name Protected methods performing the removal
                                      const Standard_Boolean theHasAdjacentFaces,
                                      const TopTools_IndexedDataMapOfShapeListOfShape& theAdjFaces,
                                      const Handle(BRepTools_History)& theAdjFacesHistory,
-                                     const Standard_Boolean theSolidsHistoryNeeded);
+                                     const Standard_Boolean theSolidsHistoryNeeded,
+                                     const Message_ProgressRange& theRange);
 
   //! Updates history with the removed features
-  Standard_EXPORT void UpdateHistory();
+  Standard_EXPORT void UpdateHistory(const Message_ProgressRange& theRange);
 
   //! Simplifies the result by removing extra edges and vertices created
   //! during removal of the features.
-  Standard_EXPORT void SimplifyResult();
+  Standard_EXPORT void SimplifyResult(const Message_ProgressRange& theRange);
 
   //! Post treatment - restore the type of the initial shape
   Standard_EXPORT void PostTreat();
+
+  //! Filling steps for constant operations
+  Standard_EXPORT void fillPIConstants(const Standard_Real theWhole, BOPAlgo_PISteps& theSteps) const Standard_OVERRIDE;
 
 protected: //! @name Fields
 

@@ -25,6 +25,7 @@
 
 #include <DBRep.hxx>
 #include <Draw.hxx>
+#include <Draw_ProgressIndicator.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -98,9 +99,9 @@ Standard_Integer RemoveFeatures(Draw_Interpretor& theDI,
   }
 
   aRF.SetToFillHistory(BRepTest_Objects::IsHistoryNeeded());
-
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
   // Perform the removal
-  aRF.Build();
+  aRF.Build(aProgress->Start());
 
   // Check for the errors/warnings
   BOPTest::ReportAlerts(aRF.GetReport());
