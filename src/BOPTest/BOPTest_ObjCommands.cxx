@@ -14,26 +14,26 @@
 
 
 #include <BOPTest.hxx>
+
 #include <BOPTest_Objects.hxx>
+
 #include <DBRep.hxx>
+
 #include <Draw_Interpretor.hxx>
+
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+
 #include <TopTools_ListOfShape.hxx>
 
-#include <stdio.h>
-//
-//
-//
-static Standard_Integer baddobjects (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer baddobjects   (Draw_Interpretor& , Standard_Integer , const char** );
 static Standard_Integer bclearobjects (Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer baddtools   (Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer bcleartools (Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer baddcompound(Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer baddctools  (Draw_Interpretor& , Standard_Integer , const char** );
-static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const char**);
+static Standard_Integer baddtools     (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer bcleartools   (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer baddcompound  (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer baddctools    (Draw_Interpretor& , Standard_Integer , const char** );
+static Standard_Integer bclear        (Draw_Interpretor&, Standard_Integer, const char**);
 
-//
 //=======================================================================
 //function :ObjCommands
 //purpose  : 
@@ -46,25 +46,56 @@ static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const cha
   // Chapter's name
   const char* g = "BOPTest commands";
   // Commands
-  theCommands.Add("baddobjects"    , "use baddobjects s1 s2 ..." , __FILE__, baddobjects, g);
-  theCommands.Add("bclearobjects"  , "use bclearobjects"         , __FILE__, bclearobjects, g);
-  theCommands.Add("baddtools"      , "use baddtools s1 s2 ..."   , __FILE__, baddtools, g);
-  theCommands.Add("bcleartools"    , "use bcleartools"           , __FILE__, bcleartools, g);
-  theCommands.Add("baddcompound"   , "use baddcompound c"        , __FILE__, baddcompound, g);
-  theCommands.Add("baddctools"     , "use baddctools c"          , __FILE__, baddctools, g);
-  theCommands.Add("bclear" , "use bclear"        , __FILE__, bclear, g);
+  theCommands.Add("baddobjects", "Adds objects for Boolean/GF/Split/Cells operations.\n"
+                  "\t\tThe command has cumulative effect, thus can be used several times for single operation.\n"
+                  "\t\tFor new operation the objects have to be cleared by bclearobjects or bclear commands.\n"
+                  "\t\tUsage: baddobjects s1 s2 ...",
+                  __FILE__, baddobjects, g);
+
+  theCommands.Add("bclearobjects", "Clears the objects previously added for Boolean/GF/Split/Cells operations.\n"
+                  "\t\tUsage: bclearobjects",
+                  __FILE__, bclearobjects, g);
+
+  theCommands.Add("baddtools", "Adds tools for Boolean/GF/Split/Cells operations.\n"
+                  "\t\tThe command has cumulative effect, thus can be used several times for single operation.\n"
+                  "\t\tFor new operation the tools have to be cleared by bcleartools or bclear commands.\n"
+                  "\t\tUsage: baddtools s1 s2 ...",
+                  __FILE__, baddtools, g);
+
+  theCommands.Add("bcleartools", "Clears the tools previously added for Boolean/GF/Split/Cells operations.\n"
+                  "\t\tUsage: bcleartools",
+                  __FILE__, bcleartools, g);
+
+  theCommands.Add("baddcompound", "Command for adding multiple objects for Boolean/GF/Split/Cells operations grouped in one object.\n"
+                  "\t\tGiven object will be exploded on first level sub-shapes and each of these sub-shapes will act as a separate object.\n"
+                  "\t\tThe command has cumulative effect, thus can be used several times for single operation.\n"
+                  "\t\tFor new operation the objects have to be cleared by bclearobjects or bclear commands.\n"
+                  "\t\tUsage: baddcompound c",
+                 __FILE__, baddcompound, g);
+
+  theCommands.Add("baddctools", "Command for adding multiple tools for Boolean/GF/Split/Cells operations grouped in one object.\n"
+                  "\t\tGiven object will be exploded on first level sub-shapes and each of these sub-shapes will act as a separate tool.\n"
+                  "\t\tThe command has cumulative effect, thus can be used several times for single operation.\n"
+                  "\t\tFor new operation the tools have to be cleared by bcleartools or bclear commands.\n"
+                  "\t\tUsage: baddctools c",
+                  __FILE__, baddctools, g);
+
+  theCommands.Add("bclear" , "Clears both objects and tools previously added for Boolean/GF/Split/Cells operations.\n"
+                  "\t\tUsage: bclear",
+                  __FILE__, bclear, g);
 }
+
 //=======================================================================
 //function : baddcompound
 //purpose  : 
 //=======================================================================
-Standard_Integer baddcompound (Draw_Interpretor& , 
-                               Standard_Integer n, 
+Standard_Integer baddcompound (Draw_Interpretor& di,
+                               Standard_Integer n,
                                const char** a)
 {
-  if (n<2) {
-    printf(" use baddcompound c\n");
-    return 0;
+  if (n < 2) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   //
   TopoDS_Iterator aIt;
@@ -85,13 +116,13 @@ Standard_Integer baddcompound (Draw_Interpretor& ,
 //function : baddctools
 //purpose  : 
 //=======================================================================
-Standard_Integer baddctools (Draw_Interpretor& , 
-                             Standard_Integer n, 
+Standard_Integer baddctools (Draw_Interpretor& di,
+                             Standard_Integer n,
                              const char** a)
 {
-  if (n<2) {
-    printf(" use baddctools c\n");
-    return 0;
+  if (n < 2) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   //
   TopoDS_Iterator aIt;
@@ -113,13 +144,13 @@ Standard_Integer baddctools (Draw_Interpretor& ,
 //function :baddobjects
 //purpose  : 
 //=======================================================================
-Standard_Integer baddobjects (Draw_Interpretor& , 
-                              Standard_Integer n, 
+Standard_Integer baddobjects (Draw_Interpretor& di,
+                              Standard_Integer n,
                               const char** a)
 {
-  if (n<2) {
-    printf(" use baddobjects s1 s2 ...\n");
-    return 0;
+  if (n < 2) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   //
   Standard_Integer i;
@@ -137,13 +168,13 @@ Standard_Integer baddobjects (Draw_Interpretor& ,
 //function : bclearobjects
 //purpose  : 
 //=======================================================================
-Standard_Integer bclearobjects (Draw_Interpretor& , 
-                                Standard_Integer n, 
-                                const char** )
+Standard_Integer bclearobjects (Draw_Interpretor& di,
+                                Standard_Integer n,
+                                const char** a)
 {
-  if (n!=1) {
-    printf(" use bclearobjects\n");
-    return 0;
+  if (n != 1) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   TopTools_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aLS.Clear();
@@ -154,13 +185,13 @@ Standard_Integer bclearobjects (Draw_Interpretor& ,
 //function : baddtools
 //purpose  : 
 //=======================================================================
-Standard_Integer baddtools (Draw_Interpretor& , 
-                            Standard_Integer n, 
+Standard_Integer baddtools (Draw_Interpretor& di,
+                            Standard_Integer n,
                             const char** a)
 {
-  if (n<2) {
-    printf(" use baddtools s1 s2 ...\n");
-    return 0;
+  if (n < 2) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   //
   Standard_Integer i;
@@ -178,13 +209,13 @@ Standard_Integer baddtools (Draw_Interpretor& ,
 //function : bcleartools
 //purpose  : 
 //=======================================================================
-Standard_Integer bcleartools (Draw_Interpretor& ,
-                              Standard_Integer n, 
-                              const char** )
+Standard_Integer bcleartools (Draw_Interpretor& di,
+                              Standard_Integer n,
+                              const char** a)
 {
-  if (n!=1) {
-    printf(" use bcleartools\n");
-    return 0;
+  if (n != 1) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   TopTools_ListOfShape& aLS=BOPTest_Objects::Tools();
   aLS.Clear();
@@ -195,13 +226,13 @@ Standard_Integer bcleartools (Draw_Interpretor& ,
 //function : bclear
 //purpose  : 
 //=======================================================================
-Standard_Integer bclear(Draw_Interpretor& di, 
-                        Standard_Integer n, 
-                        const char** ) 
+Standard_Integer bclear(Draw_Interpretor& di,
+                        Standard_Integer n,
+                        const char** a)
 {
-  if (n!=1) {
-    di << " use bclear\n";
-    return 0;
+  if (n != 1) {
+    di.PrintHelp(a[0]);
+    return 1;
   }
   //
   BOPTest_Objects::Clear(); 

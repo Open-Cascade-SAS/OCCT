@@ -142,3 +142,48 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
     }
   }
 }
+
+//=======================================================================
+//function : GetOperationType
+//purpose  : 
+//=======================================================================
+BOPAlgo_Operation BOPTest::GetOperationType(const Standard_CString theOp)
+{
+  TCollection_AsciiString anOp(theOp);
+  anOp.LowerCase();
+
+  if (anOp.IsIntegerValue())
+  {
+    // Check if the given value satisfies the enumeration.
+    Standard_Integer iOp = anOp.IntegerValue();
+    if (iOp >= 0 && iOp <= 4)
+    {
+      return static_cast<BOPAlgo_Operation>(iOp);
+    }
+    return BOPAlgo_UNKNOWN;
+  }
+
+  // Check for the meaningful symbolic operation parameter
+  if (anOp == "common")
+  {
+    return BOPAlgo_COMMON;
+  }
+  else if (anOp == "fuse")
+  {
+    return BOPAlgo_FUSE;
+  }
+  else if (anOp == "cut")
+  {
+    return BOPAlgo_CUT;
+  }
+  else if (anOp == "tuc" || anOp == "cut21")
+  {
+    return BOPAlgo_CUT21;
+  }
+  else if (anOp == "section")
+  {
+    return BOPAlgo_SECTION;
+  }
+
+  return BOPAlgo_UNKNOWN;
+}

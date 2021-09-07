@@ -69,8 +69,15 @@ baddcompound bx
 baddcompound by
 baddcompound bz
 
-# intersection step 
-bfillds -t
+# intersection step in serial mode
+brunparallel 0
+regexp {Tps: +([-0-9.+eE]+)} [bfillds -t] full Tps1
 
-# intersection step 
-bfillds -t -s
+# intersection step in parallel mode
+brunparallel 1
+regexp {Tps: +([-0-9.+eE]+)} [bfillds -t] full Tps2
+
+# parallel execution is expected to be at least 20% faster than serial execution
+if {${Tps2} > [dval 0.8*${Tps1}]} {
+  puts "Error: Parallel execution does not give expected performance speed up"
+}

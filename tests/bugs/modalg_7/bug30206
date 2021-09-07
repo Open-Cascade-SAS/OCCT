@@ -1,0 +1,84 @@
+puts "============================================"
+puts "0030206: Improve API of commands bbop and bapibop"
+puts "============================================"
+puts ""
+
+box b1 10 10 10
+box b2 5 5 5 10 10 10
+
+bclearobjects
+bcleartools
+baddobjects b1
+baddtools b2
+bfillds
+
+bcommon r0 b1 b2
+bbop r0_1 0
+bbop r0_2 common
+bapibop r0_3 0
+bapibop r0_4 common
+
+checknbshapes r0_1 -ref [nbshapes r0]
+checknbshapes r0_2 -ref [nbshapes r0]
+checknbshapes r0_3 -ref [nbshapes r0]
+checknbshapes r0_4 -ref [nbshapes r0]
+
+
+bfuse r1 b1 b2
+bbop r1_1 1
+bbop r1_2 fuse
+bapibop r1_3 1
+bapibop r1_4 fuse
+
+checknbshapes r1_1 -ref [nbshapes r1]
+checknbshapes r1_2 -ref [nbshapes r1]
+checknbshapes r1_3 -ref [nbshapes r1]
+checknbshapes r1_4 -ref [nbshapes r1]
+
+
+bcut r2 b1 b2
+bbop r2_1 2
+bbop r2_2 cut
+bapibop r2_3 2
+bapibop r2_4 cut
+
+checknbshapes r2_1 -ref [nbshapes r2]
+checknbshapes r2_2 -ref [nbshapes r2]
+checknbshapes r2_3 -ref [nbshapes r2]
+checknbshapes r2_4 -ref [nbshapes r2]
+
+
+btuc r3 b1 b2
+bbop r3_1 3
+bbop r3_2 tuc
+bbop r3_3 cut21
+bapibop r3_4 3
+bapibop r3_5 tuc
+bapibop r3_6 cut21
+
+checknbshapes r3_1 -ref [nbshapes r3]
+checknbshapes r3_2 -ref [nbshapes r3]
+checknbshapes r3_3 -ref [nbshapes r3]
+checknbshapes r3_4 -ref [nbshapes r3]
+checknbshapes r3_5 -ref [nbshapes r3]
+checknbshapes r3_6 -ref [nbshapes r3]
+
+
+bsection r4 b1 b2
+bbop r4_1 4
+bbop r4_2 section
+bapibop r4_3 4
+bapibop r4_4 section
+
+checknbshapes r4_1 -ref [nbshapes r4]
+checknbshapes r4_2 -ref [nbshapes r4]
+checknbshapes r4_3 -ref [nbshapes r4]
+checknbshapes r4_4 -ref [nbshapes r4]
+
+if {![regexp "Invalid operation type" [bbop r 5]]} {
+  puts "Error: incorrect parameter is not treated"
+}
+
+if {![regexp "Invalid operation type" [bbop r f]]} {
+  puts "Error: incorrect parameter is not treated"
+}
