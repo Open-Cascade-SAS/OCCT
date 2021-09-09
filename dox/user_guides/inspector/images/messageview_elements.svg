@@ -1,0 +1,21 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+ <g id="Layer_1">
+  <title>Layer 1</title>
+  <rect stroke="#ff56ff" id="svg_1" height="296.99999" width="297.00002" y="1.6" x="1" stroke-width="4" fill="#ffffff"/>
+  <rect id="svg_3" height="120" width="136" y="22.6" x="153" stroke-width="4" stroke="#ff56ff" fill="#ff56ff"/>
+  <rect stroke="#ff56ff" id="svg_4" height="259.99999" width="126.99999" y="18.6" x="16" stroke-width="4" fill="#ff56ff"/>
+  <rect stroke="#ff56ff" id="svg_5" height="122" width="131" y="155.6" x="156" stroke-width="4" fill="#ff56ff"/>
+  <rect stroke="#ff56ff" id="svg_6" height="41.00001" width="125" y="87.6" x="17" stroke-width="4" fill="#ffffff"/>
+  <rect id="svg_7" height="3" width="2" y="364.6" x="89" stroke-width="4" stroke="#ff56ff" fill="#ffffff"/>
+  <rect stroke="#ffffff" id="svg_8" height="41.00001" width="117" y="126.6" x="21" stroke-width="4" fill="#ffffff"/>
+  <rect stroke="#ff56ff" id="svg_9" height="41.00001" width="125" y="63.6" x="164" stroke-width="4" fill="#ffffff"/>
+  <rect stroke="#ff56ff" id="svg_10" height="64.00001" width="114.00001" y="158.6" x="159" stroke-width="4" fill="#ffffff"/>
+  <rect stroke="#ff56ff" id="svg_11" height="41.00001" width="101.00001" y="215.6" x="184" stroke-width="4" fill="#ffffff"/>
+  <text transform="matrix(0.742836 0 0 0.850555 6.17194 14.6433)" stroke="#ff56ff" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_13" y="119.6" x="24" stroke-width="0" fill="#000000">Message report</text>
+  <text style="cursor: move;" transform="matrix(0.742836 0 0 0.850555 6.17194 46.6433)" stroke="#ff56ff" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_14" y="118.4243" x="24" stroke-width="0" fill="#000000">tree view</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_15" y="90.6" x="167" stroke-width="0" stroke="#ff56ff" fill="#000000">Dump panel</text>
+  <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_16" y="245.6" x="190" stroke-width="0" stroke="#ff56ff" fill="#000000">3D View</text>
+  <text transform="matrix(0.784367 0 0 0.769922 36.8545 36.9383)" stroke="#ff56ff" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_17" y="181.6" x="157" stroke-width="0" fill="#000000">Property panel</text>
+  <text transform="matrix(0.884685 0 0 0.774516 20.9874 38.7657)" stroke="#ff56ff" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_18" y="206.5113" x="176.34827" stroke-width="0" fill="#000000">(custom)</text>
+ </g>
+</svg>

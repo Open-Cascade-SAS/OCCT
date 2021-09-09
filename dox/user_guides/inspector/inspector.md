@@ -18,6 +18,7 @@ Inspector has a plugin-oriented architecture. The current release contains the f
 | @ref occt_inspector_2_2 "DFBrowser"| OCAF | *TDocStd_Application* |
 | @ref occt_inspector_2_3 "VInspector"| Visualization | *AIS_InteractiveContext* |
 | @ref occt_inspector_2_4 "ShapeView"| Modeling Data | *TopoDS_Shape* |
+| @ref occt_inspector_2_5 "MessageView"| Modeling Data | *Message_Report* |
 
 
 Each plugin implements logic of a corresponding OCCT component.
@@ -102,10 +103,16 @@ Context pop-up menu:
 | Expand All | Expands the whole tree of the selected item. |
 | Collapse All | Collapses the whole tree of the selected item. |
 
-
 <b>Property Panel</b>
 
-Property panel is used to display the content of *Label* or *Attribute* tree view items or Search result view.
+Property panel is used to display the result of <b>TDF_Attribute::Dump()</b> or <b>TDF_Label::Dump()</b> of the selected tree view item.
+The information is shown in one table.
+
+@figure{property_panel.png,"PropertyPanel",360}
+
+<b>Property Panel (custom)</b>
+
+Property panel (custom) is used to display the content of *Label* or *Attribute* tree view items or Search result view.
 The information is usually shown in one or several tables.
 
 *TDF_Attribute* has the following content in the Property Panel:
@@ -114,28 +121,28 @@ The information is usually shown in one or several tables.
 <tr><th>Type</th><th>Description</th><th>Content</th></tr>
 <tr><td><i>TDF_Label</i></td>
     <td> a table of [entry or attribute name, value]</td>
-    <td>@figure{property_panel_label.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_label.png, "",140}</td></tr>
 <tr><td><i>TDocStd_Owner</i>,<br> Simple type attributes, <br> List type attributes</td>
     <td>a table of [method name, value]</td>
-    <td>@figure{property_panel_simple_type.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_simple_type.png, "",140}</td></tr>
 <tr><td><i>TDataStd_BooleanArray</i>,<br> <i>TDataStd_ByteArray</i>,<br> other Array type attributes</td>
     <td>2 controls: <br> - a table of [array bound, value], <br> - a table of [method name, value] </td>
-    <td>@figure{property_panel_array.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_array.png, "",140}</td></tr>
 <tr><td><i>TDataStd_TreeNode</i></td>
     <td>2 controls: <br> - a table of [Tree ID, value] (visible only if Tree ID() != ID() ), <br> - a tree view of tree nodes starting from *Root()* of the tree node. The current tree node has <b>dark blue</b> text.</td>
-    <td>@figure{property_panel_tree_node.png, "",140} </td></tr>
+    <td>@figure{property_panel_custom_tree_node.png, "",140} </td></tr>
 <tr><td><i>TDataStd_NamedData</i></td>
     <td>tab bar of attribute elements, each tab has a table of [name, value]</td>
-    <td>@figure{property_panel_named_data.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_named_data.png, "",140}</td></tr>
 <tr><td><i>TNaming_UsedShapes</i></td>
     <td>a table of all shapes handled by the framework</td>
-    <td>@figure{property_panel_tnaming_used_shapes.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_tnaming_used_shapes.png, "",140}</td></tr>
 <tr><td><i>TNaming_NamedShape</i></td>
     <td>2 controls: <br> - a table of [method name, value] including CurrentShape/OriginalShape methods result of <i>TNaming_Tools</i>, <br> - an evolution table. <br> Tables contain buttons for @ref occt_shape_export "TopoDS_Shape export".</td>
-    <td>@figure{property_panel_tnaming_named_shape.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_tnaming_named_shape.png, "",140}</td></tr>
 <tr><td><i>TNaming_Naming</i></td>
     <td>2 controls: <br> - a table of <i>TNaming_Name</i> values,<br> - a table of [method name, value]</td>
-    <td>@figure{property_panel_tnaming_naming.png, "",140}</td></tr>
+    <td>@figure{property_panel_custom_tnaming_naming.png, "",140}</td></tr>
 </table>
 
 
@@ -203,17 +210,17 @@ Selection of tree view item updates content of the following controls:
 
 @figure{dfbrowser_selection_in_tree_view.svg,"",360}
 
-<b>Property Panel item selection </b>
+<b>Property Panel (custom) item selection </b>
 
-If the property panel shows content of *TDF_Label*:
+If the property panel (custom) shows content of *TDF_Label*:
   * selection of the table row highlights the corresponding item in the tree view,
   * double click on the table row selects this item in the tree view.
 
-If the property panel shows content of *TDF_Attribute* that has reference to another attribute, selection of this reference:
+If the property panel (custom) shows content of *TDF_Attribute* that has reference to another attribute, selection of this reference:
   * highlights the referenced item in the tree view,
   * displays additional presentation in the 3D view if it can be created.
 
-@figure{property_panel_item_selection.svg,"",360}
+@figure{property_panel_custom_item_selection.svg,"",360}
 
 Attributes having references:
 
@@ -281,27 +288,6 @@ Context popup menu in tree view:
 
 This button synchronizes the plugin content with the current state of *AIS_InteractiveContext* and updates the presence of items and their current selection.
 
-<b>Selection controls</b>
-
-Selection controls switch on/off the possibility to set selection in the context from VInspector plugin.
-
-| Action | Tree view item | Functionality |
-| :----- | :----- | :----- |
-| Select Presentations | *AIS_InteractiveObject* | Calls *AddOrRemoveSelected* of interactive object for the selected item. |
-| Select Owners | *SelectMgr_EntityOwner* or <br> *SelectMgr_SensitiveEntity* | Calls *AddOrRemoveSelected* of *SelectMgr_EntityOwner* for the selected item. |
-
-Note that the initial selection in the context will be cleared.
-If the button is toggled, the button selection is active. Only one button may be toggled at the moment.
-
-
-<b>History view</b>
-
-At present, the History view is under implementation and may be used only in a custom application where Inspector is loaded.
-
-To fill this view, *VInspectorAPI_CallBack* should be redefined in the application and send signals about some actions applied to the context.
-After that, the call back should be given as a parameter in the plugin.
-If done, new items will be created in the history view for each action.
-
 @subsubsection occt_inspector_2_3_3 Elements cooperation
 
 *VInspector* marks the presentations currently selected in *AIS_InteractiveContext* with a blue background in tree items. Use **Update** button to synchronize VInspector selected items state to the context.
@@ -320,6 +306,14 @@ Selection change:
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
 @figure{vinspector_tree_columns.png, "Vinspector tree header context menu",360}
 
+Use the setting Lights (position, color) in the view.
+@figure{vinspector_light_setting.png, "Vinspector light setting",360}
+
+@subsubsection occt_inspector_2_3_5 VInspector property panel
+
+Property panel shows the result of <b>AIS_InteractiveContext::Dump()</b> or <b>AIS_InteractiveObject::Dump()</b>.
+@figure{vinspector_property_panel.png, "Vinspector property panel",360}
+
 @subsection occt_inspector_2_4 ShapeView Plugin
 
 @subsubsection occt_inspector_2_4_1 Overview
@@ -328,7 +322,13 @@ Use context pop-up menu on the tree view header to select, which columns should 
 
 This plugin visualizes content of *TopoDS_Shape* in a tree view.
 
-@subsubsection occt_inspector_2_4_2 Elements
+@subsubsection occt_inspector_2_4_2 Property panel
+
+Property panel shows properties for TopoDS_Shape based on DumpJson.
+
+@figure{shapeview_property_panel.png, "ShapeView Property panel",360}
+
+@subsubsection occt_inspector_2_4_3 Elements
 
 @figure{shapeview_elements.svg,"ShapeView Elements",360}
 
@@ -351,15 +351,56 @@ Context pop-up menu in tree view:
 | Close All BREP views | Closes all opened text views. |
 | BREP directory | Displays the folder, where temporary BREP files have been stored. |
 
-@subsubsection occt_inspector_2_4_3 Elements cooperation
+@subsubsection occt_inspector_2_4_4 Elements cooperation
 
 Selection of one or several items in *TopoDS_Shape* View creates its *AIS_Shape* presentation and displays it in the 3D View.
 
-@subsubsection occt_inspector_2_4_4 ShapeView tree view columns
+@subsubsection occt_inspector_2_4_5 ShapeView tree view columns
 
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
 @figure{shapeview_tree_columns.png, "ShapeView tree header context menu",360}
 
+@subsection occt_inspector_2_5 MessageView Plugin
+
+MessageView plugin is used to display content of Message_Report.
+
+@subsubsection occt_inspector_2_5_1 Message report tree view
+
+Message report tree view shows the content of the Message_Report.
+
+Context pop-up menu in message report tree view:
+| Action | Functionality |
+| :----- | :----- |
+| Export Report | Exports the report as json file. |
+| WallClock Metric statistic | Creates the table  that sums the number of calls and the time spent on the functionality inside the value and shows it in Property panel (custom). It's necessary to activate "WallClock metric". |
+| Preview children presentations | Displays presentations of children items of selected items if found. |
+| Deactivate | Deactivates all types of metrics for the current report. |
+| Activate | Appends items to activate report metrics. |
+| Clear | Clears message report. |
+| Activate metric | Switches active state in report for clicked type of metric. |
+| Test metric | Sends several alerts to check metric of message-alert-tool mechanism. |
+| Test Message_Messenger | Sends several alerts to check property panel/presentations of messenger-alert-tool mechanism. |
+| Test Tree of messages | Sends several alerts to check tree of alerts. |
+
+@figure{messageview_pop_up_menu.png, "MessageView pop-up menu",360}
+
+@subsubsection occt_inspector_2_5_2 3D View
+
+3D View shows the selected item (TopoDS_Shape) in message report tree view.
+@figure{messageview_view.png, "MessageView 3D View",360}
+
+@subsubsection occt_inspector_2_5_3 Dump panel
+
+Shows Dump() information of the selected item if the item has Dump().
+@figure{messageview_dump_panel.png, "MessageView 3D View",360}
+
+@subsubsection occt_inspector_2_5_4 Property panel (custom)
+
+Shows the table for WallClock Metric statistic option.
+@figure{messageview_property_panel_custom.png, "MessageView 3D View",360}
+
+@subsubsection occt_inspector_2_5_5 Elements
+@figure{messageview_elements.svg, "MessageView elements",360}
 
 @section occt_inspector_3 Common controls
 
@@ -400,7 +441,9 @@ This control for OCCT 3D viewer creates visualization view components and allows
 | Context | Allows choosing another context that should be used in the plugin. The following contexts are available:<br> **Own** - the context of this view, <br> **External** - the context of the @ref occt_inspector_4_3 "external application", which initializes the plugin, <br> **None** - the visualization is not performed at all (useful if the presentation is too complex). |
 | Multi/Single | The buttons define what to do with the previously displayed objects: <br> **Multi** displays new presentations together with already displayed ones, <br> **Single** removes all previously displayed presentations. |
 | Clean | Removes all displayed presentations. |
-| Fit All,<br> Fit Area,<br> Zoom,<br> Pan,<br> Rotation | Scene manipulation actions<br> (Fit All is checkable. If checked(by double click), display/hide of new objects will perform **Fit All** of the scene.) |
+| Trihedron display | Shows the trihedron. |
+| View cube display | Shows the view cube. |
+| Fit All | Scene manipulation actions<br> (Fit All is checkable. If checked(by double click), display/hide of new objects will perform **Fit All** of the scene.) |
 | Display Mode | Sets *AIS_Shading* or *AIS_WireFrame* display mode for all presentations. |
 
 Context popup menu:
@@ -420,7 +463,7 @@ View preferences store the current view orientation.
 Context menu contains:
 | Element | Functionality |
 | :----- | :----- |
-| Tree Level Line,<br> PropertyPanel,<br> Dump, <br> View| Names of dock widgets in the active plugin. If the button is checked, dock widget is visible. |
+| Tree Level Line,<br> PropertyPanel,<br> PropertyPanel (custom),<br> Dump, <br> View| Names of dock widgets in the active plugin. If the button is checked, dock widget is visible. |
 | Store Preferences | Creates ".tinspector.xml" preferences file with the current settings for each plugin.<br> This file is created in TEMP/TMP directory (by default) or in a user-defined directory. |
 | Remove Preferences | Removes preferences file. After the Inspector is restarted, default values will be applied. |
 
@@ -487,7 +530,7 @@ tinspector
 @figure{drawexe_tinspector.png,"tinspector",360}
 
 This command does the following:
-- all available Plugins are presented in the Inspector. These are @ref occt_inspector_2_2 "DFBrowser", @ref occt_inspector_2_3 "VInspector" and  @ref occt_inspector_2_4 "ShapeView";
+- all available Plugins are presented in the Inspector. These are @ref occt_inspector_2_2 "DFBrowser", @ref occt_inspector_2_3 "VInspector", @ref occt_inspector_2_4 "ShapeView" and  @ref occt_inspector_2_5 "MessageView";
 - DFBrowser is the active plugin;
 - OCAF tree is empty.
 
@@ -527,6 +570,7 @@ void CreateInspector()
     MyTCommunicator->RegisterPlugin ("TKDFBrowser");
     MyTCommunicator->RegisterPlugin ("TKVInspector");
     MyTCommunicator->RegisterPlugin ("TKShapeView");
+    MyTCommunicator->RegisterPlugin ("TKMessageView");
 
     MyTCommunicator->Init (aParameters);
     MyTCommunicator->Activate ("TKDFBrowser");
@@ -542,6 +586,7 @@ Give one the following objects for a plugin using a container of parameters:
 | *TKDFBrowser* | *TDocStd_Application* |
 | *TKVInspector* | *AIS_InteractiveContext* |
 | *TKShapeView* | *TopoDS_TShape* |
+| *TKMessageView* | *Message_Report* |
 
 
 @section occt_inspector_5 Build procedure
@@ -567,11 +612,13 @@ Distribution of plugin packages :
 | *DFBrowser*, <br> *DFBrowserPane*, <br> *DFBrowserPaneXDE*, <br> *TKDFBrowser* | DFBrowser |
 | *VInspector*, <br> *TKVInspector*  | VInspector |
 | *ShapeView*, <br> *TKShapeView* | ShapeView |
+| *MessageView*, <br> *TKMessageView* | MessageView |
 
 Other packages:
 | Source packages| Used in |
 | :----- | :----- |
 | *TInspectorAPI*, <br> *TKInspectorAPI* | Interface for connection to plugin. |
+| *ViewControl*, <br> *TKTreeModel* | Classes for property view, table, table model. |
 | *TreeModel*, <br> *TKTreeView* | Items-oriented model to simplify work with GUI tree control. |
 | *View*, <br> *TKView* | 3D View component. |
 | *TInspector*, <br> *TKTInspector*  | Inspector window, where plugins are placed. |
