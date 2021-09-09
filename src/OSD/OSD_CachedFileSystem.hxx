@@ -16,7 +16,7 @@
 
 #include <OSD_FileSystem.hxx>
 
-//! File system keeping last stream created by OSD_FileSystem::DefaultFileSystem() to be reused for opening a stream with the same URL.
+//! File system keeping last stream created by linked file system (OSD_FileSystem::DefaultFileSystem() by default) to be reused for opening a stream with the same URL.
 //! Note that as file is kept in opened state, application will need destroying this object to ensure all files being closed.
 //! This interface could be handy in context of reading numerous objects pointing to the same file (at different offset).
 //! Make sure to create a dedicated OSD_CachedFileSystem for each working thread to avoid data races.
@@ -26,7 +26,13 @@ class OSD_CachedFileSystem : public OSD_FileSystem
 public:
 
   //! Constructor.
-  OSD_CachedFileSystem() {}
+  Standard_EXPORT OSD_CachedFileSystem (const Handle(OSD_FileSystem)& theLinkedFileSystem = Handle(OSD_FileSystem)());
+
+  //! Return linked file system; initialized with OSD_FileSystem::DefaultFileSystem() by default.
+  const Handle(OSD_FileSystem)& LinkedFileSystem() const { return myLinkedFS; }
+
+  //! Sets linked file system.
+  void SetLinkedFileSystem (const Handle(OSD_FileSystem)& theLinkedFileSystem) { myLinkedFS = theLinkedFileSystem; }
 
   //! Returns TRUE if URL defines a supported protocol.
   Standard_EXPORT virtual Standard_Boolean IsSupportedPath (const TCollection_AsciiString& theUrl) const Standard_OVERRIDE;
@@ -73,7 +79,8 @@ protected:
 
 protected:
 
-  OSD_CachedStream myStream;
+  OSD_CachedStream       myStream;   //!< active cached stream
+  Handle(OSD_FileSystem) myLinkedFS; //!< linked file system to open files
 
 };
 
