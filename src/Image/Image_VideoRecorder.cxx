@@ -431,6 +431,11 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec (const Image_VideoParams& t
 Standard_Boolean Image_VideoRecorder::writeVideoFrame (const Standard_Boolean theToFlush)
 {
 #ifdef HAVE_FFMPEG
+  if (myImgSrcRgba.Format() != Image_Format_RGBA)
+  {
+    throw Standard_ProgramError ("Image_VideoRecorder, unsupported image format");
+  }
+
   int aResAv = 0;
   AVCodecContext* aCodecCtx = myVideoStream->codec;
   if (!theToFlush)
