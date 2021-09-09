@@ -43,6 +43,12 @@ public:
   //! Set flag to ignore nodes without Geometry.
   void SetSkipEmptyNodes (bool theToSkip) { myToSkipEmptyNodes = theToSkip; }
 
+  //! Return TRUE if all scenes in the document should be loaded, FALSE by default which means only main (default) scene will be loaded.
+  bool ToLoadAllScenes() const { return myToLoadAllScenes; }
+
+  //! Set flag to flag to load all scenes in the document, FALSE by default which means only main (default) scene will be loaded.
+  void SetLoadAllScenes (bool theToLoadAll) { myToLoadAllScenes = theToLoadAll; }
+
   //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
   bool ToUseMeshNameAsFallback() { return myUseMeshNameAsFallback; }
 
@@ -106,6 +112,7 @@ protected:
 
   Standard_Boolean myToParallel;            //!< flag to use multithreading; FALSE by default
   Standard_Boolean myToSkipEmptyNodes;      //!< ignore nodes without Geometry; TRUE by default
+  Standard_Boolean myToLoadAllScenes;       //!< flag to load all scenes in the document, FALSE by default
   Standard_Boolean myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   Standard_Boolean myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
   Standard_Boolean myToSkipLateDataLoading; //!< flag to skip triangulation loading

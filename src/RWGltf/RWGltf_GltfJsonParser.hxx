@@ -111,6 +111,9 @@ public:
   //! Set flag to ignore nodes without Geometry, TRUE by default.
   void SetSkipEmptyNodes (bool theToSkip) { myToSkipEmptyNodes = theToSkip; }
 
+  //! Set flag to flag to load all scenes in the document, FALSE by default which means only main (default) scene will be loaded.
+  void SetLoadAllScenes (bool theToLoadAll) { myToLoadAllScenes = theToLoadAll; }
+
   //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
   void SetMeshNameAsFallback (bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
 
@@ -432,6 +435,7 @@ protected:
   bool                      myIsBinary;       //!< binary document
   bool                      myIsGltf1;        //!< obsolete glTF 1.0 version format
   bool                      myToSkipEmptyNodes; //!< ignore nodes without Geometry
+  bool                      myToLoadAllScenes;  //!< flag to load all scenes in the document, FALSE by default
   bool                      myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   bool                      myToProbeHeader;  //!< flag to probe header without full reading, FALSE by default
 

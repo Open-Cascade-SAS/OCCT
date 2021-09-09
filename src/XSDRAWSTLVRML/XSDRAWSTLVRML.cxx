@@ -187,6 +187,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   Standard_Boolean toSkipLateDataLoading = Standard_False;
   Standard_Boolean toKeepLateData = Standard_True;
   Standard_Boolean toPrintDebugInfo = Standard_False;
+  Standard_Boolean toLoadAllScenes = Standard_False;
   Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -242,6 +243,15 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       toKeepLateData = Standard_True;
       if (anArgIter + 1 < theNbArgs
        && Draw::ParseOnOff (theArgVec[anArgIter + 1], toKeepLateData))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-allscenes")
+    {
+      toLoadAllScenes = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toLoadAllScenes))
       {
         ++anArgIter;
       }
@@ -322,6 +332,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   aReader.SetToSkipLateDataLoading (toSkipLateDataLoading);
   aReader.SetToKeepLateData (toKeepLateData);
   aReader.SetToPrintDebugMessages (toPrintDebugInfo);
+  aReader.SetLoadAllScenes (toLoadAllScenes);
   if (toListExternalFiles)
   {
     aReader.ProbeHeader (aFilePath);
@@ -2032,6 +2043,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:                    (false by default)"
                    "\n\t\t:   -keepLate data is loaded into itself with preservation of information"
                    "\n\t\t:             about deferred storage to load/unload this data later.",
+                   "\n\t\t:   -allScenes load all scenes defined in the document instead of default one (false by default)"
                    "\n\t\t:   -toPrintDebugInfo print additional debug information during data reading"
                    __FILE__, ReadGltf, g);
   theCommands.Add ("readgltf",

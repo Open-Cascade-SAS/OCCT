@@ -168,6 +168,7 @@ protected:
 RWGltf_CafReader::RWGltf_CafReader()
 : myToParallel (false),
   myToSkipEmptyNodes (true),
+  myToLoadAllScenes (false),
   myUseMeshNameAsFallback (true),
   myIsDoublePrecision (false),
   myToSkipLateDataLoading (false),
@@ -290,6 +291,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   aDoc.SetErrorPrefix (anErrPrefix);
   aDoc.SetCoordinateSystemConverter (myCoordSysConverter);
   aDoc.SetSkipEmptyNodes (myToSkipEmptyNodes);
+  aDoc.SetLoadAllScenes (myToLoadAllScenes);
   aDoc.SetMeshNameAsFallback (myUseMeshNameAsFallback);
   if (!theToProbe)
   {

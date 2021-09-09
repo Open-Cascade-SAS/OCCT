@@ -186,6 +186,7 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser (TopTools_SequenceOfShape& theRootS
   myIsBinary (false),
   myIsGltf1 (false),
   myToSkipEmptyNodes (true),
+  myToLoadAllScenes (false),
   myUseMeshNameAsFallback (true),
   myToProbeHeader (false)
 {
@@ -236,7 +237,8 @@ bool RWGltf_GltfJsonParser::gltfParseRoots()
 
   for (int aRootNameIter = 0; aRootNameIter < RWGltf_GltfRootElement_NB_MANDATORY; ++aRootNameIter)
   {
-    if (myGltfRoots[aRootNameIter].IsNull())
+    if (myGltfRoots[aRootNameIter].IsNull()
+     && aRootNameIter != RWGltf_GltfRootElement_Scene)
     {
       reportGltfError ("Member '" + RWGltf_GltfRootElementName ((RWGltf_GltfRootElement )aRootNameIter) + "' is not found.");
       return false;
@@ -984,8 +986,49 @@ bool RWGltf_GltfJsonParser::gltfParseTextureInBufferView (Handle(Image_Texture)&
 // =======================================================================
 bool RWGltf_GltfJsonParser::gltfParseScene (const Message_ProgressRange& theProgress)
 {
+  const RWGltf_JsonValue* aScenes = myGltfRoots[RWGltf_GltfRootElement_Scenes].Root();
+  if (myToLoadAllScenes
+  && !myIsGltf1
+  &&  aScenes->IsArray()
+  &&  aScenes->Size() > 1)
+  {
+    Message_ProgressScope aPS (theProgress, "Parsing scenes", aScenes->Size());
+    for (rapidjson::Value::ConstValueIterator aSceneIter = aScenes->Begin(); aSceneIter != aScenes->End(); ++aSceneIter)
+    {
+      if (!aPS.More())
+      {
+        return false;
+      }
+      Message_ProgressRange aRange = aPS.Next();
+      const RWGltf_JsonValue* aSceneNodes = findObjectMember (*aSceneIter, "nodes");
+      if (aSceneNodes == NULL
+      || !aSceneNodes->IsArray())
+      {
+        reportGltfWarning ("Empty scene '" + getKeyString (*aSceneIter) + "'.");
+      }
+      if (!gltfParseSceneNodes (*myRootShapes, *aSceneNodes, aRange))
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // search default scene
-  const RWGltf_JsonValue* aDefScene = myGltfRoots[RWGltf_GltfRootElement_Scenes].FindChild (*myGltfRoots[RWGltf_GltfRootElement_Scene].Root());
+  const RWGltf_JsonValue* aDefScene = NULL;
+  if (!myGltfRoots[RWGltf_GltfRootElement_Scene].IsNull())
+  {
+    aDefScene = myGltfRoots[RWGltf_GltfRootElement_Scenes].FindChild (*myGltfRoots[RWGltf_GltfRootElement_Scene].Root());
+  }
+  else if (!myIsGltf1)
+  {
+    rapidjson::Value::ConstValueIterator aSceneIter = aScenes->Begin();
+    if (aSceneIter != aScenes->End())
+    {
+      aDefScene = aSceneIter;
+      reportGltfWarning ("Default scene is undefined, the first one will be loaded.");
+    }
+  }
   if (aDefScene == NULL)
   {
     reportGltfError ("Default scene is not found.");

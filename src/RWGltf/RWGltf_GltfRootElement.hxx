@@ -20,7 +20,7 @@ enum RWGltf_GltfRootElement
 {
   RWGltf_GltfRootElement_Asset,        //!< "asset"       element, mandatory
   RWGltf_GltfRootElement_Scenes,       //!< "scenes"      element, mandatory
-  RWGltf_GltfRootElement_Scene,        //!< "scene"       element, mandatory
+  RWGltf_GltfRootElement_Scene,        //!< "scene"       element, optional
   RWGltf_GltfRootElement_Nodes,        //!< "nodes"       element, mandatory
   RWGltf_GltfRootElement_Meshes,       //!< "meshes"      element, mandatory
   RWGltf_GltfRootElement_Accessors,    //!< "accessors"   element, mandatory
