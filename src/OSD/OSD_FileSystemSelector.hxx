@@ -27,12 +27,12 @@ public:
   //! Constructor.
   OSD_FileSystemSelector() {}
 
-  //! Registers file system within the global file system selector returned by OSD_FileSystem::DefaultFileSystem().
+  //! Registers file system within this selector.
   //! @param theFileSystem  [in] file system to register
   //! @param theIsPreferred [in] add to the beginning of the list when TRUE, or add to the end otherwise
   Standard_EXPORT void AddProtocol (const Handle(OSD_FileSystem)& theFileSystem, bool theIsPreferred = false);
 
-  //! Unregisters file system within the global file system selector returned by OSD_FileSystem::DefaultFileSystem().
+  //! Unregisters file system within this selector.
   Standard_EXPORT void RemoveProtocol (const Handle(OSD_FileSystem)& theFileSystem);
 
 public:

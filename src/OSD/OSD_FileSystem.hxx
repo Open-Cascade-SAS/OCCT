@@ -24,8 +24,17 @@ class OSD_FileSystem : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(OSD_FileSystem, Standard_Transient)
 public:
 
-  //! Returns a global file system, which a selector between registered file systems.
+  //! Returns a global file system, which a selector between registered file systems (OSD_FileSystemSelector).
   Standard_EXPORT static const Handle(OSD_FileSystem)& DefaultFileSystem();
+
+  //! Registers file system within the global file system selector returned by OSD_FileSystem::DefaultFileSystem().
+  //! Note that registering protocols is not thread-safe operation and expected to be done once at application startup.
+  //! @param[in] theFileSystem  file system to register
+  //! @param[in] theIsPreferred add to the beginning of the list when TRUE, or add to the end otherwise
+  Standard_EXPORT static void AddDefaultProtocol (const Handle(OSD_FileSystem)& theFileSystem, bool theIsPreferred = false);
+
+  //! Unregisters file system within the global file system selector returned by OSD_FileSystem::DefaultFileSystem().
+  Standard_EXPORT static void RemoveDefaultProtocol (const Handle(OSD_FileSystem)& theFileSystem);
 
 public:
 

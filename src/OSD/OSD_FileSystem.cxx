@@ -55,6 +55,26 @@ const Handle(OSD_FileSystem)& OSD_FileSystem::DefaultFileSystem()
 }
 
 //=======================================================================
+// function : AddDefaultProtocol
+// purpose :
+//=======================================================================
+void OSD_FileSystem::AddDefaultProtocol (const Handle(OSD_FileSystem)& theFileSystem, bool theIsPreferred)
+{
+  Handle(OSD_FileSystemSelector) aFileSelector = Handle(OSD_FileSystemSelector)::DownCast (DefaultFileSystem());
+  aFileSelector->AddProtocol (theFileSystem, theIsPreferred);
+}
+
+//=======================================================================
+// function : RemoveDefaultProtocol
+// purpose :
+//=======================================================================
+void OSD_FileSystem::RemoveDefaultProtocol (const Handle(OSD_FileSystem)& theFileSystem)
+{
+  Handle(OSD_FileSystemSelector) aFileSelector = Handle(OSD_FileSystemSelector)::DownCast (DefaultFileSystem());
+  aFileSelector->RemoveProtocol (theFileSystem);
+}
+
+//=======================================================================
 // function : openIStream
 // purpose :
 //=======================================================================
