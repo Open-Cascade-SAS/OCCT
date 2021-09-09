@@ -36,11 +36,13 @@ public:
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
-  //! Attach a texture image
+  //! Attach a texture image.
+  //! Resets the active FBO to 0.
   Standard_EXPORT void AttachDepthTexture (const Handle(OpenGl_Context)& theCtx,
                                            const Handle(OpenGl_Texture)& theDepthStencilTexture);
 
-  //! Detach a texture image
+  //! Detach a texture image.
+  //! Resets the active FBO to 0.
   Standard_EXPORT void DetachDepthTexture (const Handle(OpenGl_Context)& theCtx);
 
   //! Returns additional buffers for ping-pong

@@ -1219,6 +1219,13 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
         }
       }
       aView->DepthPeelingFbos()->DetachDepthTexture (aCtx);
+
+      // Bind the framebuffer for reading depth and writing final color
+      // after DetachDepthTexture() because after the function it's unbinded.
+      if (theReadDrawFbo)
+      {
+        theReadDrawFbo->BindBuffer (aCtx);
+      }
       break;
     }
   }
