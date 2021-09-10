@@ -216,7 +216,9 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     }
 
     NSView* aView = (NSView* )myPlatformWindow->NativeHandle();
+  Standard_DISABLE_DEPRECATION_WARNINGS
     [aGLContext setView: aView];
+  Standard_ENABLE_DEPRECATION_WARNINGS
     isCore = (aTryCore == 1);
   }
 
@@ -273,7 +275,9 @@ void OpenGl_Window::Resize()
   #else
     // check backing store change (moving to another screen)
     NSOpenGLContext* aGLCtx = myGlContext->myGContext;
+  Standard_DISABLE_DEPRECATION_WARNINGS
     NSView* aView = [aGLCtx view];
+  Standard_ENABLE_DEPRECATION_WARNINGS
     if (![aView respondsToSelector: @selector(convertSizeToBacking:)])
     {
       return;
@@ -353,7 +357,9 @@ void OpenGl_Window::Init()
   aDefFbo.Nullify();
 #else
   NSOpenGLContext* aGLCtx  = myGlContext->myGContext;
+Standard_DISABLE_DEPRECATION_WARNINGS
   NSView*          aView   = [aGLCtx view];
+Standard_ENABLE_DEPRECATION_WARNINGS
   NSRect           aBounds = [aView bounds];
 
   // we should call this method each time when window is resized

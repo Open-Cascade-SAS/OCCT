@@ -22,6 +22,8 @@
 #ifndef _Aspect_RenderingContext_HeaderFile
 #define _Aspect_RenderingContext_HeaderFile
 
+#include <Standard_Macro.hxx>
+
 #if defined(__APPLE__) && !defined(HAVE_XLIB)
   #import <TargetConditionals.h>
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
@@ -37,7 +39,9 @@
     #else
       struct NSOpenGLContext;
     #endif
+    Standard_DISABLE_DEPRECATION_WARNINGS
     typedef NSOpenGLContext* Aspect_RenderingContext;
+    Standard_ENABLE_DEPRECATION_WARNINGS
   #endif
 #else
   typedef void* Aspect_RenderingContext; // GLXContext under UNIX
