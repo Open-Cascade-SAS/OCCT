@@ -1384,10 +1384,9 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces (const Message_ProgressRang
   // show inverted edges
   TopoDS_Compound aCEInverted;
   BRep_Builder().MakeCompound (aCEInverted);
-  TopTools_MapIteratorOfMapOfShape aItM (myInvertedEdges);
-  for (; aItM.More(); aItM.Next())
+  for (i = 1; i <= myInvertedEdges.Extent(); ++i)
   {
-    BRep_Builder().Add (aCEInverted, aItM.Value());
+    BRep_Builder().Add (aCEInverted, myInvertedEdges(i));
   }
 #endif
 
@@ -2131,7 +2130,9 @@ void BRepOffset_BuildOffsetFaces::FindInvalidEdges (const TopoDS_Face& theF,
       {
         Standard_Boolean bSkip = Standard_True;
 
-        // Allow the edge to be analyzed if it is:
+        // It seems the edge originated from not connected edges and cannot be
+        // considered as correctly classified as it may fill some undesired parts.
+        // Still, allow the edge to be accounted for local analysis if it is:
         // * originated from more than two faces
         // * unanimously considered valid or invalid
         // * not a boundary edge in the splits
@@ -2544,7 +2545,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidFaces (TopTools_ListOfShape& theLFI
   // 1. Some of the edges are valid for this face.
   Standard_Boolean bHasValid, bAllValid, bAllInvalid, bHasReallyInvalid, bAllInvNeutral;
   Standard_Boolean bValid, bValidLoc, bInvalid, bInvalidLoc, bNeutral, bInverted;
-  Standard_Boolean bIsInvalidByInverted;
+  Standard_Boolean bIsInvalidByInverted, bHasInverted;
   Standard_Integer aNbChecked;
   //
   Standard_Boolean bTreatInvertedAsInvalid = (theLFImages.Extent() == 1);
@@ -2579,6 +2580,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidFaces (TopTools_ListOfShape& theLFI
     bHasReallyInvalid = Standard_False;
     bAllInvNeutral = Standard_True;
     bIsInvalidByInverted = Standard_True;
+    bHasInverted = Standard_False;
     aNbChecked = 0;
     //
     const TopoDS_Wire& aWIm = BRepTools::OuterWire (aFIm);
@@ -2628,6 +2630,7 @@ void BRepOffset_BuildOffsetFaces::FindInvalidFaces (TopTools_ListOfShape& theLFI
       bAllInvalid &= (bInvalid || bInvalidLoc);
       bAllInvNeutral &= (bAllInvalid && bNeutral);
       bIsInvalidByInverted &= (bInvalidLoc || bInverted);
+      bHasInverted |= bInverted;
     }
     //
     if (!aNbChecked)
@@ -2638,6 +2641,13 @@ void BRepOffset_BuildOffsetFaces::FindInvalidFaces (TopTools_ListOfShape& theLFI
     //
     if (!bHasReallyInvalid && (bAllInvNeutral && !bHasValid) && (aNbChecked > 1))
     {
+      if (bHasInverted)
+      {
+        // The part seems to be filled due to overlapping of parts rather than
+        // due to multi-connection of faces. No need to remove the part.
+        aItLF.Next();
+        continue;
+      }
       // remove edges from neutral
       TopExp::MapShapes (aFIm, TopAbs_EDGE, aMENRem);
       // remove face
@@ -3084,49 +3094,35 @@ Standard_Boolean BRepOffset_BuildOffsetFaces::CheckInverted (const TopoDS_Edge& 
     return Standard_False;
   }
   //
-  // find vertices common for all edges in the lists
+  // find vertices common for the max number of edges in the lists
   for (i = 0; i < 2; ++i)
   {
     const TopTools_ListOfShape& aLOE = !i ? aLOE1 : aLOE2;
     TopoDS_Vertex& aVO = !i ? aVO1 : aVO2;
-    //
-    const TopoDS_Shape& aEO = aLOE.First();
-    TopExp_Explorer aExpV (aEO, TopAbs_VERTEX);
-    for (; aExpV.More(); aExpV.Next())
+
+    TopTools_IndexedDataMapOfShapeListOfShape aDMVELoc;
+    for (TopTools_ListOfShape::Iterator itLOE (aLOE); itLOE.More(); itLOE.Next())
     {
-      const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&aExpV.Current();
-      //
-      Standard_Boolean bVertValid = Standard_True;
-      TopTools_ListIteratorOfListOfShape aItLOE (aLOE);
-      for (aItLOE.Next(); aItLOE.More(); aItLOE.Next())
+      TopExp::MapShapesAndAncestors (itLOE.Value(), TopAbs_VERTEX, TopAbs_EDGE, aDMVELoc);
+    }
+
+    Standard_Integer aNbEMax = 0;
+    for (Standard_Integer j = 1; j <= aDMVELoc.Extent(); ++j)
+    {
+      Standard_Integer aNbE = aDMVELoc (j).Extent();
+      if (aNbE > 1 && aNbE > aNbEMax)
       {
-        const TopoDS_Shape& aEOx = aItLOE.Value();
-        TopExp_Explorer aExpVx (aEOx, TopAbs_VERTEX);
-        for (; aExpVx.More(); aExpVx.Next())
-        {
-          const TopoDS_Shape& aVx = aExpVx.Current();
-          if (aVx.IsSame (aV))
-          {
-            break;
-          }
-        }
-        //
-        if (!aExpVx.More())
-        {
-          bVertValid = Standard_False;
-          break;
-        }
-      }
-      //
-      if (bVertValid)
-      {
-        aVO = aV;
-        break;
+        aVO = TopoDS::Vertex (aDMVELoc.FindKey (j));
+        aNbEMax = aNbE;
       }
     }
+    if (aVO.IsNull())
+    {
+      return Standard_False;
+    }
   }
-  //
-  if (aVO1.IsNull() || aVO2.IsNull() || aVO1.IsSame (aVO2))
+
+  if (aVO1.IsSame (aVO2))
   {
     return Standard_False;
   }
