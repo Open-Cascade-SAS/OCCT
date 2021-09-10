@@ -2573,7 +2573,11 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
 {
   // creating map of edge faces for the whole shape
   TopTools_IndexedDataMapOfShapeListOfShape aGMapEdgeFaces;
-  TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, aGMapEdgeFaces);
+
+  TopTools_IndexedMapOfShape aFaceMap;
+  TopExp::MapShapes (myShape, TopAbs_FACE, aFaceMap);
+  for (Standard_Integer i = 1; i <= aFaceMap.Extent(); i++)
+    TopExp::MapShapesAndAncestors (aFaceMap(i), TopAbs_EDGE, TopAbs_FACE, aGMapEdgeFaces);
   
   // unify faces in each shell separately
   TopExp_Explorer exps;
