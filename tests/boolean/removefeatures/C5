@@ -8,7 +8,7 @@ compound s_11 s_12 s_17 gap2
 removefeatures res1 s gap1
 checkshape res1
 checkprops res1 -s 1200 -v 1875
-checknbshapes res1 -vertex 21 -edge 35 -wire 17 -face 17 -shell 2 -solid 2
+checknbshapes res1 -vertex 19 -edge 31 -wire 15 -face 15 -shell 2 -solid 2
 CheckIsFeatureRemoved gap1 {e f}
 
 # check that the common face is still shared
@@ -32,7 +32,7 @@ checkprops m1 -s 600 -v 1000
 removefeatures res2 s gap2
 checkshape res2
 checkprops res2 -s 1200 -v 1875
-checknbshapes res2 -vertex 21 -edge 35 -wire 17 -face 17 -shell 2 -solid 2
+checknbshapes res2 -vertex 19 -edge 31 -wire 15 -face 15 -shell 2 -solid 2
 CheckIsFeatureRemoved gap2 {e f}
 
 # get history of the operation

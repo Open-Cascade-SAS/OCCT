@@ -1,0 +1,18 @@
+puts "======================================================================================="
+puts "OCC32561: UnifySameDomain does nothing while it is expected to union two pairs of faces"
+puts "======================================================================================="
+puts ""
+
+restore [locate_data_file bug32561.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -solid 64 -shell 64 -face 233 -wire 233 -edge 284 -vertex 116
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
