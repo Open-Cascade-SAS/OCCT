@@ -323,7 +323,7 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
   {
     // copy all values including line edge aspect
     *myAspectFaceHl.Aspect() = *myAspectsSet->Aspect();
-    myAspectFaceHl.Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+    myAspectFaceHl.Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
     myAspectFaceHl.Aspect()->SetInteriorColor (myView->BackgroundColor().GetRGB());
     myAspectFaceHl.Aspect()->SetDistinguish (false);
     myAspectFaceHl.SetNoLighting();
@@ -340,8 +340,8 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
     myGlContext->BindTextures (aTextureSet, Handle(OpenGl_ShaderProgram)());
   }
 
-  if ((myView->ShadingModel() == Graphic3d_TOSM_PBR
-    || myView->ShadingModel() == Graphic3d_TOSM_PBR_FACET)
+  if ((myView->ShadingModel() == Graphic3d_TypeOfShadingModel_Pbr
+    || myView->ShadingModel() == Graphic3d_TypeOfShadingModel_PbrFacet)
    && !myView->myPBREnvironment.IsNull()
    &&  myView->myPBREnvironment->IsNeededToBeBound())
   {

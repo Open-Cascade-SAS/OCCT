@@ -86,7 +86,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
       OpenGl_Vec3 (aMin.x(), aMin.y(), aMax.z())
     };
 
-    aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, false, Handle(OpenGl_ShaderProgram)());
+    aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID, Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, false, Handle(OpenGl_ShaderProgram)());
     aCtx->SetColor4fv (theWorkspace->InteriorColor());
     aCtx->core11fwd->glDisable (GL_LIGHTING);
     aCtx->core11ffp->glEnableClientState (GL_VERTEX_ARRAY);

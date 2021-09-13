@@ -396,7 +396,7 @@ void PrsDim_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentat
     Handle(Graphic3d_AspectFillArea3d) aShadingStyle = new Graphic3d_AspectFillArea3d();
     aShadingStyle->SetInteriorStyle (Aspect_IS_SOLID);
     aShadingStyle->SetColor (myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
-    aShadingStyle->SetShadingModel (Graphic3d_TOSM_UNLIT);
+    aShadingStyle->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
     aShadingStyle->SetPolygonOffset (aPolOffset);
 
     aGroup->SetPrimitivesAspect (aShadingStyle);

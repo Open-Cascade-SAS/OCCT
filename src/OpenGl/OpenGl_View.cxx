@@ -572,7 +572,7 @@ void OpenGl_View::SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTex
   Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (theTextureMap);
   anAspect->SetInteriorStyle (Aspect_IS_SOLID);
   anAspect->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
-  anAspect->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  anAspect->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   anAspect->SetTextureSet (aTextureSet);
   anAspect->SetTextureMapOn (true);
 
@@ -1193,8 +1193,8 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // process PBR environment
-  if (myRenderParams.ShadingModel == Graphic3d_TOSM_PBR
-   || myRenderParams.ShadingModel == Graphic3d_TOSM_PBR_FACET)
+  if (myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_Pbr
+   || myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_PbrFacet)
   {
     if (!myPBREnvironment.IsNull()
       && myPBREnvironment->SizesAreDifferent (myRenderParams.PbrEnvPow2Size,
@@ -1424,7 +1424,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // allocate shadow maps
-  const Handle(Graphic3d_LightSet)& aLights = myRenderParams.ShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
+  const Handle(Graphic3d_LightSet)& aLights = myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_Unlit ? myNoShadingLight : myLights;
   if (!aLights.IsNull())
   {
     aLights->UpdateRevision();
@@ -2094,7 +2094,7 @@ void OpenGl_View::renderShadowMap (const Handle(OpenGl_ShadowMap)& theShadowMap)
 
   aCtx->ShaderManager()->UpdateMaterialState();
   aCtx->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4());
-  aCtx->ShaderManager()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  aCtx->ShaderManager()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
 
   const Handle(OpenGl_FrameBuffer)& aShadowBuffer = theShadowMap->FrameBuffer();
   aShadowBuffer->BindBuffer    (aCtx);
@@ -2162,7 +2162,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   myBVHSelector.CacheClipPtsProjections();
 
   const Handle(OpenGl_ShaderManager)& aManager = aContext->ShaderManager();
-  const Handle(Graphic3d_LightSet)&   aLights  = myRenderParams.ShadingModel == Graphic3d_TOSM_UNLIT ? myNoShadingLight : myLights;
+  const Handle(Graphic3d_LightSet)&   aLights  = myRenderParams.ShadingModel == Graphic3d_TypeOfShadingModel_Unlit ? myNoShadingLight : myLights;
   Standard_Size aLightsRevision = 0;
   if (!aLights.IsNull())
   {

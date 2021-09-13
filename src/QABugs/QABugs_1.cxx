@@ -506,7 +506,7 @@ static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs
   aPrs->SetDisplayMode (AIS_Shaded);
   aPrs->Attributes()->SetupOwnShadingAspect();
   const Handle(Graphic3d_AspectFillArea3d)& anAspect = aPrs->Attributes()->ShadingAspect()->Aspect();
-  anAspect->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  anAspect->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   anAspect->SetTextureMapOn (true);
   anAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (anImage));
   if (anImage->IsTopDown())

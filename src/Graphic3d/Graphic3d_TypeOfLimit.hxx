@@ -33,7 +33,7 @@ enum Graphic3d_TypeOfLimit
   Graphic3d_TypeOfLimit_HasSRGB,                        //!< indicates whether sRGB rendering is supported
   Graphic3d_TypeOfLimit_HasBlendedOit,                  //!< indicates whether necessary GL extensions for Weighted, Blended OIT available (without MSAA).
   Graphic3d_TypeOfLimit_HasBlendedOitMsaa,              //!< indicates whether necessary GL extensions for Weighted, Blended OIT available (with MSAA).
-  Graphic3d_TypeOfLimit_HasFlatShading,                 //!< indicates whether Flat shading (Graphic3d_TOSM_FACET) is supported
+  Graphic3d_TypeOfLimit_HasFlatShading,                 //!< indicates whether Flat shading (Graphic3d_TypeOfShadingModel_PhongFacet) is supported
   Graphic3d_TypeOfLimit_HasMeshEdges,                   //!< indicates whether advanced mesh edges presentation is supported
   Graphic3d_TypeOfLimit_IsWorkaroundFBO,                //!< indicates whether workaround for Intel driver problem with empty FBO for images with big width is applied.
   Graphic3d_TypeOfLimit_NB                              //!< number of elements in this enumeration

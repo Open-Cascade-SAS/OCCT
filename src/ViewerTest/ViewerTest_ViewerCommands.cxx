@@ -11333,13 +11333,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     theDI << "shadingModel: ";
     switch (aView->ShadingModel())
     {
-      case Graphic3d_TOSM_DEFAULT:   theDI << "default";   break;
-      case Graphic3d_TOSM_UNLIT:     theDI << "unlit";     break;
-      case Graphic3d_TOSM_FACET:     theDI << "flat";      break;
-      case Graphic3d_TOSM_VERTEX:    theDI << "gouraud";   break;
-      case Graphic3d_TOSM_FRAGMENT:  theDI << "phong";     break;
-      case Graphic3d_TOSM_PBR:       theDI << "pbr";       break;
-      case Graphic3d_TOSM_PBR_FACET: theDI << "pbr_facet"; break;
+      case Graphic3d_TypeOfShadingModel_DEFAULT:    theDI << "default";   break;
+      case Graphic3d_TypeOfShadingModel_Unlit:      theDI << "unlit";     break;
+      case Graphic3d_TypeOfShadingModel_PhongFacet: theDI << "flat";      break;
+      case Graphic3d_TypeOfShadingModel_Gouraud:    theDI << "gouraud";   break;
+      case Graphic3d_TypeOfShadingModel_Phong:      theDI << "phong";     break;
+      case Graphic3d_TypeOfShadingModel_Pbr:        theDI << "pbr";       break;
+      case Graphic3d_TypeOfShadingModel_PbrFacet:   theDI << "pbr_facet"; break;
     }
     theDI << "\n";
     {
@@ -12130,13 +12130,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       {
         switch (aView->ShadingModel())
         {
-          case Graphic3d_TOSM_DEFAULT:   theDI << "default";   break;
-          case Graphic3d_TOSM_UNLIT:     theDI << "unlit ";    break;
-          case Graphic3d_TOSM_FACET:     theDI << "flat ";     break;
-          case Graphic3d_TOSM_VERTEX:    theDI << "gouraud ";  break;
-          case Graphic3d_TOSM_FRAGMENT:  theDI << "phong ";    break;
-          case Graphic3d_TOSM_PBR:       theDI << "pbr";       break;
-          case Graphic3d_TOSM_PBR_FACET: theDI << "pbr_facet"; break;
+          case Graphic3d_TypeOfShadingModel_DEFAULT:    theDI << "default";   break;
+          case Graphic3d_TypeOfShadingModel_Unlit:      theDI << "unlit ";    break;
+          case Graphic3d_TypeOfShadingModel_PhongFacet: theDI << "flat ";     break;
+          case Graphic3d_TypeOfShadingModel_Gouraud:    theDI << "gouraud ";  break;
+          case Graphic3d_TypeOfShadingModel_Phong:      theDI << "phong ";    break;
+          case Graphic3d_TypeOfShadingModel_Pbr:        theDI << "pbr";       break;
+          case Graphic3d_TypeOfShadingModel_PbrFacet:   theDI << "pbr_facet"; break;
         }
         continue;
       }
@@ -12146,9 +12146,9 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         Message::SendFail() << "Syntax error at argument '" << anArg << "'";
       }
 
-      Graphic3d_TypeOfShadingModel aModel = Graphic3d_TOSM_DEFAULT;
+      Graphic3d_TypeOfShadingModel aModel = Graphic3d_TypeOfShadingModel_DEFAULT;
       if (ViewerTest::ParseShadingModel (theArgVec[anArgIter], aModel)
-       && aModel != Graphic3d_TOSM_DEFAULT)
+       && aModel != Graphic3d_TypeOfShadingModel_DEFAULT)
       {
         aView->SetShadingModel (aModel);
       }

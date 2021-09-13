@@ -49,7 +49,7 @@ public:
   //! Modifies the interior type used for rendering
   void SetInteriorStyle (const Aspect_InteriorStyle theStyle) { myInteriorStyle = theStyle; }
 
-  //! Returns shading model; Graphic3d_TOSM_DEFAULT by default.
+  //! Returns shading model; Graphic3d_TypeOfShadingModel_DEFAULT by default.
   //! Graphic3d_TOSM_DEFAULT means that Shading Model set as default for entire Viewer will be used.
   Graphic3d_TypeOfShadingModel ShadingModel() const { return myShadingModel; }
 

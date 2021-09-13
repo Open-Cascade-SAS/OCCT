@@ -128,7 +128,7 @@ OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
 : Graphic3d_ShaderManager (Aspect_GraphicsLibrary_OpenGL),
 #endif
   myFfpProgram (new OpenGl_ShaderProgramFFP()),
-  myShadingModel (Graphic3d_TOSM_VERTEX),
+  myShadingModel (Graphic3d_TypeOfShadingModel_Gouraud),
   myUnlitPrograms (new OpenGl_SetOfPrograms()),
   myContext  (theContext),
   myHasLocalOrigin (Standard_False)
@@ -318,7 +318,7 @@ void OpenGl_ShaderManager::UpdateLightSourceState()
 // =======================================================================
 void OpenGl_ShaderManager::SetShadingModel (const Graphic3d_TypeOfShadingModel theModel)
 {
-  if (theModel == Graphic3d_TOSM_DEFAULT)
+  if (theModel == Graphic3d_TypeOfShadingModel_DEFAULT)
   {
     throw Standard_ProgramError ("OpenGl_ShaderManager::SetShadingModel() - attempt to set invalid Shading Model!");
   }
@@ -1055,7 +1055,7 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
   {
     // manage FFP lighting
     myContext->SetShadeModel (theShadingModel);
-    if (theShadingModel == Graphic3d_TOSM_UNLIT)
+    if (theShadingModel == Graphic3d_TypeOfShadingModel_Unlit)
     {
       myContext->core11fwd->glDisable (GL_LIGHTING);
     }
@@ -1078,7 +1078,7 @@ Standard_Boolean OpenGl_ShaderManager::BindFontProgram (const Handle(OpenGl_Shad
   if (!theCustomProgram.IsNull()
     || myContext->caps->ffpEnable)
   {
-    return bindProgramWithState (theCustomProgram, Graphic3d_TOSM_UNLIT);
+    return bindProgramWithState (theCustomProgram, Graphic3d_TypeOfShadingModel_Unlit);
   }
 
   if (myFontProgram.IsNull())
@@ -1092,7 +1092,7 @@ Standard_Boolean OpenGl_ShaderManager::BindFontProgram (const Handle(OpenGl_Shad
     }
   }
 
-  return bindProgramWithState (myFontProgram, Graphic3d_TOSM_UNLIT);
+  return bindProgramWithState (myFontProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
 // =======================================================================

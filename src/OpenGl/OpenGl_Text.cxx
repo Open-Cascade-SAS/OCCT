@@ -640,7 +640,7 @@ void OpenGl_Text::drawRect (const Handle(OpenGl_Context)& theCtx,
   }
 
   // bind unlit program
-  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TOSM_UNLIT,
+  theCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TypeOfShadingModel_Unlit,
                                             Graphic3d_AlphaMode_Opaque, Standard_False, Standard_False,
                                             Handle(OpenGl_ShaderProgram)());
 

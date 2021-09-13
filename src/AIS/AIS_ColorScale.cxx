@@ -133,7 +133,7 @@ AIS_ColorScale::AIS_ColorScale()
 {
   SetDisplayMode (0);
   myDrawer->SetupOwnShadingAspect();
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Opaque);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorColor (Quantity_NOC_WHITE);
 }

@@ -1468,8 +1468,8 @@ The following items are required to determine the three colors of reflection:
   * Coefficient of ambient reflection;
   * Coefficient of specular reflection.
 
-Common material properties are used within Gouraud and Phong shading models (Graphic3d_TOSM_FACET, Graphic3d_TOSM_VERTEX and Graphic3d_TOSM_FRAGMENT).
-Within PBR shading model (Graphic3d_TOSM_PBR and Graphic3d_TOSM_PBR_FACET), material properties are defined by the following *Graphic3d_PBRMaterial* properties (Graphic3d_MaterialAspect::PBRMaterial()):
+Common material properties are used within Phong shading model (Graphic3d_TypeOfShadingModel_Phong, Graphic3d_TypeOfShadingModel_PhongFacet and Graphic3d_TypeOfShadingModel_Gouraud).
+Within PBR shading model (Graphic3d_TypeOfShadingModel_Pbr and Graphic3d_TypeOfShadingModel_PbrFacet), material properties are defined by the following *Graphic3d_PBRMaterial* properties (Graphic3d_MaterialAspect::PBRMaterial()):
   * Albedo (main color);
   * Metallic factor;
   * Roughness factor;

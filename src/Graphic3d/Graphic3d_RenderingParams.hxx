@@ -96,7 +96,7 @@ public:
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
   : Method                      (Graphic3d_RM_RASTERIZATION),
-    ShadingModel                (Graphic3d_TOSM_FRAGMENT),
+    ShadingModel                (Graphic3d_TypeOfShadingModel_Phong),
     TransparencyMethod          (Graphic3d_RTM_BLEND_UNORDERED),
     Resolution                  (THE_DEFAULT_RESOLUTION),
     FontHinting                 (Font_Hinting_Off),
@@ -189,7 +189,7 @@ public:
 public: //! @name general parameters
 
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
-  Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TOSM_FRAGMENT by default
+  Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TypeOfShadingModel_Phong by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
   unsigned int                      Resolution;                  //!< Pixels density (PPI), defines scaling factor for parameters like text size
                                                                  //!  (when defined in screen-space units rather than in 3D) to be properly displayed

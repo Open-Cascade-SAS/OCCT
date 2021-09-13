@@ -25,7 +25,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   myBackInteriorColor   (Quantity_NOC_CYAN1),
   myEdgeColor           (Quantity_NOC_WHITE),
   myInteriorStyle       (Aspect_IS_SOLID),
-  myShadingModel        (Graphic3d_TOSM_DEFAULT),
+  myShadingModel        (Graphic3d_TypeOfShadingModel_DEFAULT),
   myFaceCulling         (Graphic3d_TypeOfBackfacingModel_Auto),
   myAlphaMode           (Graphic3d_AlphaMode_BlendAuto),
   myAlphaCutoff         (0.5f),

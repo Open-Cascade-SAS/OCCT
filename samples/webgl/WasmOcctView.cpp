@@ -307,7 +307,7 @@ bool WasmOcctView::initViewer()
 
   Handle(V3d_Viewer) aViewer = new V3d_Viewer (aDriver);
   aViewer->SetComputedMode (false);
-  aViewer->SetDefaultShadingModel (Graphic3d_TOSM_FRAGMENT);
+  aViewer->SetDefaultShadingModel (Graphic3d_TypeOfShadingModel_Phong);
   aViewer->SetDefaultLights();
   aViewer->SetLightOn();
   for (V3d_ListOfLight::Iterator aLightIter (aViewer->ActiveLights()); aLightIter.More(); aLightIter.Next())

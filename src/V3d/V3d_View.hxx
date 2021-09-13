@@ -688,7 +688,7 @@ public:
   //! the visual axis measured from the Y axis of the screen.
   Standard_EXPORT Standard_Real Twist() const;
 
-  //! Returns the current shading model; Graphic3d_TOSM_FRAGMENT by default.
+  //! Returns the current shading model; Graphic3d_TypeOfShadingModel_Phong by default.
   Standard_EXPORT Graphic3d_TypeOfShadingModel ShadingModel() const;
 
   //! Defines the shading model for the visualization.

@@ -510,7 +510,7 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
   if (aGlContext->core20fwd != NULL)
   {
     aGlContext->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), anAspect->Aspect()->EdgeLineType(),
-                                                  Graphic3d_TOSM_UNLIT, Graphic3d_AlphaMode_Opaque, Standard_False,
+                                                  Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, Standard_False,
                                                   anAspect->ShaderProgramRes (aGlContext));
   }
   aGlContext->SetSampleAlphaToCoverage (aGlContext->ShaderManager()->MaterialState().HasAlphaCutoff());
@@ -935,7 +935,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     updateVBO (aCtx);
   }
 
-  Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TOSM_UNLIT;
+  Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TypeOfShadingModel_Unlit;
   anAspectFace = theWorkspace->ApplyAspects (false); // do not bind textures before binding the program
   const Handle(OpenGl_TextureSet)& aTextureSet = theWorkspace->TextureSet();
   const bool toEnableEnvMap = !aTextureSet.IsNull()

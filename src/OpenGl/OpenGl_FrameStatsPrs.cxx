@@ -413,7 +413,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     }
     aCtx->ApplyModelViewMatrix();
 
-    aCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TOSM_UNLIT,
+    aCtx->ShaderManager()->BindFaceProgram (Handle(OpenGl_TextureSet)(), Graphic3d_TypeOfShadingModel_Unlit,
                                             Graphic3d_AlphaMode_Blend, true, false,
                                             Handle(OpenGl_ShaderProgram)());
     aCtx->SetColor4fv (OpenGl_Vec4 (1.0f, 1.0f, 1.0f, 1.0f));

@@ -153,7 +153,7 @@ public:
   //! Gives the default visualization mode.
   void SetDefaultVisualization (const V3d_TypeOfVisualization theType) { myVisualization = theType; }
 
-  //! Returns the default type of Shading; Graphic3d_TOSM_FRAGMENT by default.
+  //! Returns the default type of Shading; Graphic3d_TypeOfShadingModel_Phong by default.
   Graphic3d_TypeOfShadingModel DefaultShadingModel() const { return myDefaultRenderingParams.ShadingModel; }
 
   //! Gives the default type of SHADING.

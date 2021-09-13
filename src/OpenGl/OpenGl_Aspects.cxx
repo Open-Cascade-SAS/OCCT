@@ -43,7 +43,7 @@ namespace
 // =======================================================================
 OpenGl_Aspects::OpenGl_Aspects()
 : myAspect (new Graphic3d_Aspects()),
-  myShadingModel (Graphic3d_TOSM_UNLIT)
+  myShadingModel (Graphic3d_TypeOfShadingModel_Unlit)
 {
   myAspect->SetInteriorStyle (Aspect_IS_SOLID);
   myAspect->SetInteriorColor (Quantity_NOC_WHITE);
@@ -59,7 +59,7 @@ OpenGl_Aspects::OpenGl_Aspects()
 // purpose  :
 // =======================================================================
 OpenGl_Aspects::OpenGl_Aspects (const Handle(Graphic3d_Aspects)& theAspect)
-: myShadingModel (Graphic3d_TOSM_DEFAULT)
+: myShadingModel (Graphic3d_TypeOfShadingModel_DEFAULT)
 {
   SetAspect (theAspect);
 }
@@ -73,13 +73,13 @@ void OpenGl_Aspects::SetAspect (const Handle(Graphic3d_Aspects)& theAspect)
   myAspect = theAspect;
 
   const Graphic3d_MaterialAspect& aMat = theAspect->FrontMaterial();
-  myShadingModel = theAspect->ShadingModel() != Graphic3d_TOSM_UNLIT
+  myShadingModel = theAspect->ShadingModel() != Graphic3d_TypeOfShadingModel_Unlit
                 && (aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
                  || aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
                  || aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
                  || aMat.ReflectionMode (Graphic3d_TOR_EMISSION))
                  ? theAspect->ShadingModel()
-                 : Graphic3d_TOSM_UNLIT;
+                 : Graphic3d_TypeOfShadingModel_Unlit;
 
   // invalidate resources
   myResTextureSet.UpdateRediness (myAspect);

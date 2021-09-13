@@ -1092,7 +1092,7 @@ void Graphic3d_CView::CopySettings (const Handle(Graphic3d_CView)& theOther)
 // =======================================================================
 void Graphic3d_CView::SetShadingModel (Graphic3d_TypeOfShadingModel theModel)
 {
-  if (theModel == Graphic3d_TOSM_DEFAULT)
+  if (theModel == Graphic3d_TypeOfShadingModel_DEFAULT)
   {
     throw Standard_ProgramError ("Graphic3d_CView::SetShadingModel() - attempt to set invalid Shading Model!");
   }

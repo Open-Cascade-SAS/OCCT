@@ -2419,7 +2419,7 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
       anAlphaCutoff = 0.285f;
     }
   }
-  if (theAspect->ShadingModel() == Graphic3d_TOSM_UNLIT)
+  if (theAspect->ShadingModel() == Graphic3d_TypeOfShadingModel_Unlit)
   {
     if (anAlphaCutoff == aMatState.AlphaCutoff())
     {
@@ -2725,8 +2725,8 @@ void OpenGl_Context::SetShadeModel (Graphic3d_TypeOfShadingModel theModel)
 #if !defined(GL_ES_VERSION_2_0)
   if (core11ffp != NULL)
   {
-    const Standard_Integer aModel = theModel == Graphic3d_TOSM_FACET
-                                 || theModel == Graphic3d_TOSM_PBR_FACET ? GL_FLAT : GL_SMOOTH;
+    const Standard_Integer aModel = theModel == Graphic3d_TypeOfShadingModel_PhongFacet
+                                 || theModel == Graphic3d_TypeOfShadingModel_PbrFacet ? GL_FLAT : GL_SMOOTH;
     if (myShadeModel == aModel)
     {
       return;

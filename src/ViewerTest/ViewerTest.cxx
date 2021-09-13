@@ -340,43 +340,43 @@ Standard_Boolean ViewerTest::ParseShadingModel (Standard_CString              th
    || aTypeStr == "color"
    || aTypeStr == "none")
   {
-    theModel = Graphic3d_TOSM_UNLIT;
+    theModel = Graphic3d_TypeOfShadingModel_Unlit;
   }
   else if (aTypeStr == "flat"
         || aTypeStr == "facet")
   {
-    theModel = Graphic3d_TOSM_FACET;
+    theModel = Graphic3d_TypeOfShadingModel_PhongFacet;
   }
   else if (aTypeStr == "gouraud"
         || aTypeStr == "vertex"
         || aTypeStr == "vert")
   {
-    theModel = Graphic3d_TOSM_VERTEX;
+    theModel = Graphic3d_TypeOfShadingModel_Gouraud;
   }
   else if (aTypeStr == "phong"
         || aTypeStr == "fragment"
         || aTypeStr == "frag"
         || aTypeStr == "pixel")
   {
-    theModel = Graphic3d_TOSM_FRAGMENT;
+    theModel = Graphic3d_TypeOfShadingModel_Phong;
   }
   else if (aTypeStr == "pbr")
   {
-    theModel = Graphic3d_TOSM_PBR;
+    theModel = Graphic3d_TypeOfShadingModel_Pbr;
   }
   else if (aTypeStr == "pbr_facet")
   {
-    theModel = Graphic3d_TOSM_PBR_FACET;
+    theModel = Graphic3d_TypeOfShadingModel_PbrFacet;
   }
   else if (aTypeStr == "default"
         || aTypeStr == "def")
   {
-    theModel = Graphic3d_TOSM_DEFAULT;
+    theModel = Graphic3d_TypeOfShadingModel_DEFAULT;
   }
   else if (aTypeStr.IsIntegerValue())
   {
     const int aTypeInt = aTypeStr.IntegerValue();
-    if (aTypeInt <= Graphic3d_TOSM_DEFAULT || aTypeInt >= Graphic3d_TypeOfShadingModel_NB)
+    if (aTypeInt <= Graphic3d_TypeOfShadingModel_DEFAULT || aTypeInt >= Graphic3d_TypeOfShadingModel_NB)
     {
       return Standard_False;
     }
@@ -1815,7 +1815,7 @@ struct ViewerTest_AspectsChangeSet
     ToSetHatch                 (0),
     StdHatchStyle              (-1),
     ToSetShadingModel          (0),
-    ShadingModel               (Graphic3d_TOSM_DEFAULT),
+    ShadingModel               (Graphic3d_TypeOfShadingModel_DEFAULT),
     ToSetInterior              (0),
     InteriorStyle              (Aspect_IS_SOLID),
     ToSetDrawSilhouette (0),
@@ -1909,7 +1909,7 @@ struct ViewerTest_AspectsChangeSet
       isOk = Standard_False;
     }
     if (ToSetShadingModel == 1
-    && (ShadingModel < Graphic3d_TOSM_DEFAULT || ShadingModel > Graphic3d_TOSM_PBR_FACET))
+    && (ShadingModel < Graphic3d_TypeOfShadingModel_DEFAULT || ShadingModel > Graphic3d_TypeOfShadingModel_PbrFacet))
     {
       Message::SendFail() << "Error: unknown shading model " << ShadingModelName << ".";
       isOk = Standard_False;
@@ -3114,7 +3114,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     else if (anArg == "-unsetshadingmodel")
     {
       aChangeSet->ToSetShadingModel = -1;
-      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
+      aChangeSet->ShadingModel = Graphic3d_TypeOfShadingModel_DEFAULT;
     }
     else if (anArg == "-setinterior"
           || anArg == "-setinteriorstyle"
@@ -3243,7 +3243,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
       aChangeSet->StdHatchStyle = -1;
       aChangeSet->PathToHatchPattern.Clear();
       aChangeSet->ToSetShadingModel = -1;
-      aChangeSet->ShadingModel = Graphic3d_TOSM_DEFAULT;
+      aChangeSet->ShadingModel = Graphic3d_TypeOfShadingModel_DEFAULT;
       aChangeSet->ToSetInterior = -1;
       aChangeSet->InteriorStyle = Aspect_IS_SOLID;
       aChangeSet->ToSetDrawSilhouette = -1;

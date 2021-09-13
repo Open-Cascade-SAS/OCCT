@@ -200,7 +200,7 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
   aMat.SetColor (aColor);
   myDrawer->SetArrowAspect (new Prs3d_ArrowAspect());
   myDrawer->ArrowAspect()->SetColor (aColor);
-  myDrawer->ArrowAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  myDrawer->ArrowAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   myDrawer->ArrowAspect()->Aspect()->ChangeFrontMaterial() = aMat;
   myDrawer->ArrowAspect()->Aspect()->SetMarkerType (Aspect_TOM_EMPTY);
   myDrawer->ArrowAspect()->Aspect()->SetMarkerScale (2.0f);
@@ -211,7 +211,7 @@ AIS_LightSource::AIS_LightSource (const Handle(Graphic3d_CLight)& theLight)
   myDrawer->ShadingAspect()->SetColor (aColor);
   myDrawer->ShadingAspect()->SetMaterial (aMat);
   myDrawer->ShadingAspect()->SetTransparency (0.5f);
-  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
 
   myDrawer->SetTextAspect (new Prs3d_TextAspect());
   myDrawer->TextAspect()->Aspect()->SetDisplayType (Aspect_TODT_SHADOW);
