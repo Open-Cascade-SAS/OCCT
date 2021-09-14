@@ -386,10 +386,33 @@ static const Standard_Integer aMinNbBadDistr = 15;
 static const Standard_Integer aNbSingleBezier = 30;
 
 //=========================================================================
+// function : IsSurfPlaneLike
+// purpose  : Define is surface plane like or not.
+//            Static subfunction in DeleteByTube.
+//=========================================================================
+static Standard_Boolean IsSurfPlaneLike(const Handle(Adaptor3d_Surface)   &theS)
+{
+  if (theS->GetType() == GeomAbs_Plane)
+  {
+    return Standard_True;
+  }
+
+  if (theS->GetType() == GeomAbs_BSplineSurface)
+  {
+    if (theS->UDegree() == 1 && theS->VDegree() == 1)
+    {
+      return Standard_True;
+    }
+  }
+
+  return Standard_False;
+}
+//=========================================================================
 // function : DeleteByTube
 // purpose  : Check and delete points using tube criteria.
 //            Static subfunction in ComputePurgedWLine.
 //=========================================================================
+
 static Handle(IntPatch_WLine)
   DeleteByTube(const Handle(IntPatch_WLine)       &theWLine,
                const Handle(Adaptor3d_Surface)   &theS1,
@@ -419,6 +442,7 @@ static Handle(IntPatch_WLine)
   gp_Vec2d aBase2dVec2(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
   gp_Pnt   aBase3dPnt = theWLine->Point(1).Value();
   gp_Vec   aBase3dVec(theWLine->Point(1).Value(), theWLine->Point(2).Value());
+  Standard_Real aPrevStep = aBase3dVec.SquareMagnitude();
 
   // Choose base tolerance and scale it to pipe algorithm.
   const Standard_Real aBaseTolerance = Precision::Approximation();
@@ -431,6 +455,8 @@ static Handle(IntPatch_WLine)
   Standard_Real aTol3d = aBaseTolerance * aBaseTolerance;
 
   const Standard_Real aLimitCoeff = 0.99 * 0.99;
+  const Standard_Real aMaxSqrRatio = 15. * 15.;
+  Standard_Boolean isPlanePlane = IsSurfPlaneLike(theS1) && IsSurfPlaneLike(theS2);
   for(i = 3; i <= theWLine->NbPnts(); i++)
   {
     Standard_Boolean isDeleteState = Standard_False;
@@ -466,14 +492,27 @@ static Handle(IntPatch_WLine)
       if (Min(aStepOnS1, aStepOnS2) >= aLimitCoeff * Max(aStepOnS1, aStepOnS2))
       {
         // Set hash flag to "Delete" state.
-        isDeleteState = Standard_True;
-        aNewPointsHash.SetValue(i - 1, 1);
+        Standard_Real aCurrStep = aBase3dPnt.SquareDistance(aPnt3d);
+        Standard_Real aSqrRatio = 0.;
+        if (!isPlanePlane)
+        {
+          aSqrRatio = aPrevStep / aCurrStep;
+          if (aSqrRatio < 1.)
+          {
+            aSqrRatio = 1. / aSqrRatio;
+          }        
+        }
+        if (aSqrRatio < aMaxSqrRatio)
+        {
+          isDeleteState = Standard_True;
+          aNewPointsHash.SetValue(i - 1, 1);
 
-        // Change middle point.
-        UonS1[1] = UonS1[2];
-        UonS2[1] = UonS2[2];
-        VonS1[1] = VonS1[2];
-        VonS2[1] = VonS2[2];
+          // Change middle point.
+          UonS1[1] = UonS1[2];
+          UonS2[1] = UonS2[2];
+          VonS1[1] = VonS1[2];
+          VonS2[1] = VonS2[2];
+        }
       }
     }
 
@@ -496,6 +535,8 @@ static Handle(IntPatch_WLine)
       aBase2dVec2.SetCoord(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]);
       aBase3dPnt = theWLine->Point(i - 1).Value();
       aBase3dVec = gp_Vec(theWLine->Point(i - 1).Value(), theWLine->Point(i).Value());
+
+      aPrevStep = aBase3dVec.SquareMagnitude();
 
       aNbPnt++;
     }
