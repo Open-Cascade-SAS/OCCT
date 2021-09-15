@@ -27,6 +27,7 @@ class OpenGl_Sampler : public OpenGl_Resource
 {
   friend class OpenGl_Context;
   friend class OpenGl_Texture;
+  friend class OpenGl_Text;
   DEFINE_STANDARD_RTTIEXT(OpenGl_Sampler, OpenGl_Resource)
 public:
 

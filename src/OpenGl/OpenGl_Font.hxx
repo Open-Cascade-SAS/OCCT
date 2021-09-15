@@ -114,6 +114,12 @@ public:
                                     const Standard_Utf32Char      theUChar,
                                     Tile&                         theGlyph);
 
+  //! @return first texture.
+  const Handle(OpenGl_Texture)& Texture() const
+  {
+    return myTextures.First();
+  }
+
 protected:
 
   //! Render new glyph to the texture.

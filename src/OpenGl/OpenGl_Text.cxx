@@ -16,6 +16,7 @@
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_ShaderStates.hxx>
@@ -780,16 +781,10 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 #if !defined(GL_ES_VERSION_2_0)
   // activate texture unit
-  GLint aTexEnvParam = GL_REPLACE;
-  if (theCtx->core11ffp != NULL)
+  if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
   {
-    theCtx->core11fwd->glDisable (GL_TEXTURE_1D);
-    theCtx->core11fwd->glEnable  (GL_TEXTURE_2D);
-    theCtx->core11ffp->glGetTexEnviv (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &aTexEnvParam);
-    if (aTexEnvParam != GL_REPLACE)
-    {
-      theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    }
+    const Handle(OpenGl_Texture)& aTexture = myFont->Texture();
+    OpenGl_Sampler::applyGlobalTextureParams (theCtx, *aTexture, aTexture->Sampler()->Parameters());
   }
 #endif
 
@@ -861,9 +856,10 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core11ffp != NULL)
+  if (theCtx->core11ffp != NULL && theCtx->ActiveProgram().IsNull())
   {
-    theCtx->core11ffp->glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
+    const Handle(OpenGl_Texture)& aTexture = myFont->Texture();
+    OpenGl_Sampler::resetGlobalTextureParams (theCtx, *aTexture, aTexture->Sampler()->Parameters());
   }
 #endif
 
