@@ -78,6 +78,13 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
                     || checkExtensionShort ("GL_OES_rgb8_rgba8");
   theCtx.hasTexSRGB  = isGlGreaterEqualShort (3, 0);
   theCtx.hasFboSRGB  = isGlGreaterEqualShort (3, 0);
+  if (!isGlGreaterEqualShort (3, 0)
+    && checkExtensionShort ("GL_EXT_sRGB"))
+  {
+    // limited support
+    theCtx.hasTexSRGB = true;
+    theCtx.hasFboSRGB = true;
+  }
   theCtx.hasFboRenderMipmap = isGlGreaterEqualShort (3, 0)
                            || checkExtensionShort ("GL_OES_fbo_render_mipmap");
   theCtx.hasSRGBControl = checkExtensionShort ("GL_EXT_sRGB_write_control");

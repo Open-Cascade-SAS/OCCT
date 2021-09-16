@@ -336,10 +336,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
      || theSizeXY.y() != aHeightP2)
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Error: Mipmap NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
+                           TCollection_AsciiString ("Warning: Mipmap NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
                            " are not supported by OpenGL ES 2.0 [" + myResourceId +"]");
-      Release (theCtx.get());
-      return false;
+      myMaxMipLevel = 0;
     }
   }
 #endif
@@ -1012,6 +1011,20 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     return false;
   }
 
+#if defined(GL_ES_VERSION_2_0)
+  if (theToGenMipmap
+  && !theCtx->IsGlGreaterEqual (3, 0)
+  &&  (aFormat.PixelFormat() == GL_SRGB_EXT
+    || aFormat.PixelFormat() == GL_SRGB_ALPHA_EXT))
+  {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Warning, GL_EXT_sRGB disallows generation of mipmaps - fallback using non-sRGB format")
+                         + " [" + myResourceId +"]");
+    aFormat.SetPixelFormat   (aFormat.PixelFormat() == GL_SRGB_EXT ? GL_RGB  : GL_RGBA);
+    aFormat.SetInternalFormat(aFormat.PixelFormat() == GL_SRGB_EXT ? GL_RGB8 : GL_RGBA8);
+  }
+#endif
+
   myTarget = GL_TEXTURE_CUBE_MAP;
   myNbSamples = 1;
   mySizeX = (GLsizei )theSize;
@@ -1132,7 +1145,11 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     if (anErr != GL_NO_ERROR)
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Unable to initialize side of cubemap. Error ") + OpenGl_Context::FormatGlError (anErr));
+                           TCollection_AsciiString ("Error: cubemap side  ") + (int )theSize + "x" + (int )theSize
+                           + " IF: " + OpenGl_TextureFormat::FormatFormat (anIntFormat)
+                           + " PF: " + OpenGl_TextureFormat::FormatFormat (aFormat.PixelFormat())
+                           + " DT: " + OpenGl_TextureFormat::FormatDataType (aFormat.DataType())
+                           + " can not be created with error " + OpenGl_Context::FormatGlError (anErr) + ".");
       Unbind (theCtx);
       Release (theCtx.get());
       return false;

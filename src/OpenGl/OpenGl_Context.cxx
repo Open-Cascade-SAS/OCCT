@@ -1650,8 +1650,15 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       GL_BACK;
     #endif
     GLint aWinColorEncoding = 0; // GL_LINEAR
-    arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, aDefWinBuffer, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &aWinColorEncoding);
-    ResetErrors (true);
+    bool toSkipCheck = false;
+  #if defined(GL_ES_VERSION_2_0)
+    toSkipCheck = !IsGlGreaterEqual (3, 0);
+  #endif
+    if (!toSkipCheck)
+    {
+      arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, aDefWinBuffer, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &aWinColorEncoding);
+      ResetErrors (true);
+    }
     myIsSRgbWindow = aWinColorEncoding == GL_SRGB;
 
     // On desktop OpenGL, pixel formats are almost always sRGB-ready, even when not requested;

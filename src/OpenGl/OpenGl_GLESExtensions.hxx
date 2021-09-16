@@ -33,6 +33,10 @@ typedef double GLclampd;
 // GL_EXT_texture_format_BGRA8888
 #define GL_BGRA_EXT     0x80E1 // same as GL_BGRA on desktop
 
+// GL_EXT_sRGB
+#define GL_SRGB_EXT       0x8C40 // GL_SRGB_EXT
+#define GL_SRGB_ALPHA_EXT 0x8C42 // GL_SRGB_ALPHA_EXT
+
 #define GL_R16          0x822A
 #define GL_RGB4         0x804F
 #define GL_RGB5         0x8050
