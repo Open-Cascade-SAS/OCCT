@@ -338,7 +338,7 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
     
     myFirstSect = GeomConvert::CurveToBSplineCurve(Circ,Convert_QuasiAngular);
   }
-  
+
   if (myType <= 3 && myType >=1 ) {
     
     for (Standard_Integer i = 2; i <= myNbSections; i++) {
@@ -605,16 +605,33 @@ void GeomFill_SweepSectionGenerator::Section
     Standard_Real Alpha = U - myAdpPath->FirstParameter();
     Alpha /= myAdpPath->LastParameter() - myAdpPath->FirstParameter();
     
-    Standard_Real U1 = 
-      ( 1- Alpha) * myAdpFirstSect->FirstParameter() +
-	Alpha     * myAdpFirstSect->LastParameter();
-    
+    Standard_Real U1 = ( 1- Alpha) * myAdpFirstSect->FirstParameter() +
+      Alpha     * myAdpFirstSect->LastParameter();
+
+    if (myAdpFirstSect->GetType() == GeomAbs_Line)
+    {
+      if (Precision::IsInfinite(myAdpFirstSect->FirstParameter()) ||
+        Precision::IsInfinite(myAdpFirstSect->LastParameter()))
+      {
+        gp_Lin aLine = myAdpFirstSect->Line();
+        U1 = ElCLib::Parameter(aLine, PPath);
+      }
+    }
     gp_Pnt P1 = myAdpFirstSect->Value(U1);
     
     Standard_Real U2 = 
       ( 1- Alpha) * myAdpLastSect->FirstParameter() +
 	Alpha     * myAdpLastSect->LastParameter();
-    
+
+    if (myAdpLastSect->GetType() == GeomAbs_Line)
+    {
+      if (Precision::IsInfinite(myAdpLastSect->FirstParameter()) ||
+        Precision::IsInfinite(myAdpLastSect->LastParameter()))
+      {
+        gp_Lin aLine = myAdpLastSect->Line();
+        U2 = ElCLib::Parameter(aLine, PPath);
+      }
+    }
     gp_Pnt P2 = myAdpLastSect->Value(U2);
     
     gp_Ax2 Axis;

@@ -1,0 +1,24 @@
+puts "============"
+puts "0031631: Modeling Algorithms - Invalid result of Pipe builder"
+puts "============"
+puts ""
+
+pload ALL
+
+restore [locate_data_file bug31631_1.brep] path
+restore [locate_data_file bug31631_2.brep] sup1
+restore [locate_data_file bug31631_3.brep] sup2
+
+tuyau res1 path sup1 sup2 6.35001275
+
+tuyau res2 path sup2 sup1 6.35001275
+
+mkface face1 res1
+mkface face2 res2
+
+checkprops face1 -s 352.49
+checkprops face2 -s 352.49
+
+checkview -display face1 -3d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"
