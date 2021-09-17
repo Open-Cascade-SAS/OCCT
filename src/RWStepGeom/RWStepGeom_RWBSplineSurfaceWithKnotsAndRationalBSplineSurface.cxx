@@ -261,15 +261,21 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep
 
 	// --- Instance of plex component RepresentationItem ---
 
-	if (!data->CheckNbParams(num,1,ach,"representation_item")) return;
-
 	// --- field : name ---
 
 	Handle(TCollection_HAsciiString) aName;
-	//szv#4:S4163:12Mar99 `Standard_Boolean stat14 =` not needed
-	data->ReadString (num,1,"name",ach,aName);
 
-//	num = data->NextForComplex(num);
+  if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
+    aName = new TCollection_HAsciiString("");
+  }
+  else
+  {
+    //szv#4:S4163:12Mar99 `Standard_Boolean stat14 =` not needed
+    data->ReadString(num, 1, "name", ach, aName);
+  }
+
+  //	num = data->NextForComplex(num);
 	data->NamedForComplex("SURFACE", "SRFC",num0,num,ach);
 
 	//--- Initialisation of the red entity ---

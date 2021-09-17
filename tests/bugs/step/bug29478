@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC29478"
+puts "============"
+puts ""
+#####################################################
+# Crash because bSplineSurfaceWithKnots is NULL
+#####################################################
+
+set aFilePath [locate_data_file bug29478.stp]
+testreadstep "$aFilePath" orig
+checkshape orig
