@@ -237,13 +237,42 @@ typedef NCollection_Vector<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 {
+  // Update face info for all Face/Face intersection pairs
+  // and also for the rest of the faces with FaceInfo already initialized,
+  // i.e. anyhow touched faces.
   myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
   Standard_Integer iSize = myIterator->ExpectedLength();
-  Message_ProgressScope aPSOuter(theRange, NULL, 1);
-  if (!iSize) {
-    return; 
+
+  // Collect faces from intersection pairs
+  TColStd_MapOfInteger aMIFence;
+  Standard_Integer nF1, nF2;
+  for (; myIterator->More(); myIterator->Next())
+  {
+    myIterator->Value(nF1, nF2);
+    aMIFence.Add (nF1);
+    aMIFence.Add (nF2);
   }
-  //
+  // Collect the rest of the touched faces
+  for (Standard_Integer i = 0; i < myDS->NbSourceShapes(); ++i)
+  {
+    const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo (i);
+    if (aSI.ShapeType() == TopAbs_FACE && aSI.HasReference())
+    {
+      aMIFence.Add (i);
+    }
+  }
+  // Update face info
+  myDS->UpdateFaceInfoOn (aMIFence);
+  myDS->UpdateFaceInfoIn (aMIFence);
+
+  if (!iSize)
+  {
+    // no intersection pairs found
+    return;
+  }
+
+  Message_ProgressScope aPSOuter(theRange, NULL, 1);
+
   BOPDS_VectorOfInterfFF& aFFs = myDS->InterfFF();
   aFFs.SetIncrement(iSize);
   //
@@ -255,23 +284,8 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
   // Post-processing options
   Standard_Boolean bSplitCurve = Standard_False;
   //
-  // Fence map to store faces with updated FaceInfo structure
-  TColStd_MapOfInteger aMIFence;
   // Prepare the pairs of faces for intersection
   BOPAlgo_VectorOfFaceFace aVFaceFace;
-  Standard_Integer nF1, nF2;
-  //
-  for (; myIterator->More(); myIterator->Next()) {
-    myIterator->Value(nF1, nF2);
-
-    aMIFence.Add (nF1);
-    aMIFence.Add (nF2);
-  }
-  // Update face info
-  myDS->UpdateFaceInfoOn (aMIFence);
-  myDS->UpdateFaceInfoIn (aMIFence);
-
-  // Initialize interferences
   myIterator->Initialize(TopAbs_FACE, TopAbs_FACE);
   for (; myIterator->More(); myIterator->Next()) {
     if (UserBreak(aPSOuter))

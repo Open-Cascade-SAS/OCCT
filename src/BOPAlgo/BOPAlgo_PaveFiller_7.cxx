@@ -634,6 +634,7 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
     for (j = 1; j <= aNbPBIn; ++j) {
       const Handle(BOPDS_PaveBlock)& aPB = aMPBIn(j);
       nE=aPB->Edge();
+      Standard_ASSERT(nE >= 0, "Face information is not up to date", continue);
       const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE)));
       //
       BOPAlgo_MPC& aMPC=aVMPC.Appended();

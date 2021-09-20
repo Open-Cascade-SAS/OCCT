@@ -471,6 +471,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     for (j=1; j<=aNbPBIn; ++j) {
       const Handle(BOPDS_PaveBlock)& aPB=aMPBIn(j);
       nSp=aPB->Edge();
+      Standard_ASSERT(nSp >= 0, "Face information is not up to date", continue);
       aSp=(*(TopoDS_Edge*)(&myDS->Shape(nSp)));
       //
       aSp.Orientation(TopAbs_FORWARD);

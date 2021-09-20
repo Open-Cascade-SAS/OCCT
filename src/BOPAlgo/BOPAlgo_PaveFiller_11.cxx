@@ -152,6 +152,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
           Standard_Integer iPB, aNbPB = aMPBF.Extent();
           for (iPB = 1; iPB <= aNbPB; ++iPB) {
             const Handle(BOPDS_PaveBlock)& aPB = aMPBF(iPB);
+            Standard_ASSERT(aPB->HasEdge(), "Face information is not up to date", continue);
             const TopoDS_Shape& aE = myDS->Shape(aPB->Edge());
             // add connection
             TopTools_IndexedMapOfShape* pMSOr = aMCSI.ChangeSeek(aE);
