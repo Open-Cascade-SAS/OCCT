@@ -4147,6 +4147,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   }
 
   int  toModulate     = -1;
+  int  toSetSRgb      = -1;
   bool toSetFilter    = false;
   bool toSetAniso     = false;
   bool toSetTrsfAngle = false;
@@ -4305,15 +4306,15 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       Message::SendFail() << "Syntax error: unexpected argument '" << aName << "'";
       return 1;
     }
-    else if (aNameCase == "-modulate")
+    else if (aNameCase == "-modulate"
+          || aNameCase == "-nomodulate")
     {
-      bool toModulateBool = true;
-      if (anArgIter + 1 < theArgsNb
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toModulateBool))
-      {
-        ++anArgIter;
-      }
-      toModulate = toModulateBool ? 1 : 0;
+      toModulate = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
+    }
+    else if (aNameCase == "-srgb"
+          || aNameCase == "-nosrgb")
+    {
+      toSetSRgb = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
     else if ((aNameCase == "-setfilter"
            || aNameCase == "-filter")
@@ -4636,6 +4637,10 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     if (toModulate != -1)
     {
       aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetModulate (toModulate == 1);
+    }
+    if (toSetSRgb != -1)
+    {
+      aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->SetColorMap (toSetSRgb == 1);
     }
     if (toSetTrsfAngle)
     {
@@ -6818,7 +6823,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
                    "\n\t\t:          [-tex0 Image0] [-tex1 Image1] [...]"
                    "\n\t\t:          [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]"
                    "\n\t\t:          [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]"
-                   "\n\t\t:          [-modulate {on|off}]"
+                   "\n\t\t:          [-modulate {on|off}] [-srgb {on|off}]=on"
                    "\n\t\t:          [-setFilter {nearest|bilinear|trilinear}]"
                    "\n\t\t:          [-setAnisoFilter {off|low|middle|quality}]"
                    "\n\t\t:          [-default]"
@@ -6829,6 +6834,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
                    "\n\t\t:   -origin    Setup texture origin  for generating coordinates; (0, 0) by default"
                    "\n\t\t:   -repeat    Setup texture repeat  for generating coordinates; (1, 1) by default"
                    "\n\t\t:   -modulate  Enable or disable texture color modulation"
+                   "\n\t\t:   -srgb      Prefer sRGB texture format when applicable; TRUE by default"
                    "\n\t\t:   -trsfAngle Setup dynamic texture coordinates transformation - rotation angle"
                    "\n\t\t:   -trsfTrans Setup dynamic texture coordinates transformation - translation vector"
                    "\n\t\t:   -trsfScale Setup dynamic texture coordinates transformation - scale vector"

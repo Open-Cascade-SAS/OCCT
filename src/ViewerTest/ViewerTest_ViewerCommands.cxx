@@ -191,1226 +191,33 @@ static struct
   Quantity_Color GradientColor1;
   Quantity_Color GradientColor2;
   Aspect_GradientFillMethod FillMethod;
+
+  //! Sets the gradient filling for a background in a default viewer.
+  void SetDefaultGradient()
+  {
+    for (NCollection_DoubleMap<TCollection_AsciiString, Handle (AIS_InteractiveContext)>::Iterator aCtxIter (ViewerTest_myContexts);
+         aCtxIter.More(); aCtxIter.Next())
+    {
+      const Handle (V3d_Viewer)& aViewer = aCtxIter.Value()->CurrentViewer();
+      aViewer->SetDefaultBgGradientColors (GradientColor1, GradientColor2, FillMethod);
+    }
+  }
+
+  //! Sets the color used for filling a background in a default viewer.
+  void SetDefaultColor()
+  {
+    for (NCollection_DoubleMap<TCollection_AsciiString, Handle (AIS_InteractiveContext)>::Iterator aCtxIter (ViewerTest_myContexts);
+         aCtxIter.More(); aCtxIter.Next())
+    {
+      const Handle (V3d_Viewer)& aViewer = aCtxIter.Value()->CurrentViewer();
+      aViewer->SetDefaultBackgroundColor (FlatColor);
+    }
+  }
+
 } ViewerTest_DefaultBackground = { Quantity_NOC_BLACK, Quantity_NOC_BLACK, Quantity_NOC_BLACK, Aspect_GFM_NONE };
 
 //==============================================================================
 //  EVENT GLOBAL VARIABLES
-//==============================================================================
-
-namespace
-{
-
-  //! Checks if some set is a subset of other set
-  //! @tparam TheSuperSet the type of the superset
-  //! @tparam TheSubSet the type of the subset
-  //! @param theSuperSet the superset
-  //! @param theSubSet the subset to be checked
-  //! @return true if the superset includes subset, or false otherwise
-  template <typename TheSuperSet, typename TheSubSet>
-  static bool includes (const TheSuperSet& theSuperSet, const TheSubSet& theSubSet)
-  {
-    return std::includes (theSuperSet.begin(), theSuperSet.end(), theSubSet.begin(), theSubSet.end());
-  }
-
-  //! A variable set of keys for command-line options.
-  //! It includes a set of mandatory keys and a set of all possible keys.
-  class CommandOptionKeyVariableSet
-  {
-  public:
-    //! Default constructor
-    CommandOptionKeyVariableSet()
-    {
-    }
-
-    //! Constructor
-    //! @param theMandatoryKeySet the set of the mandatory option keys
-    //! @param theAdditionalKeySet the set of additional options that could be omitted
-    CommandOptionKeyVariableSet (
-      const ViewerTest_CommandOptionKeySet& theMandatoryKeySet,
-      const ViewerTest_CommandOptionKeySet& theAdditionalKeySet = ViewerTest_CommandOptionKeySet())
-    : myMandatoryKeySet (theMandatoryKeySet)
-    {
-      std::set_union (theMandatoryKeySet.begin(),
-                      theMandatoryKeySet.end(),
-                      theAdditionalKeySet.begin(),
-                      theAdditionalKeySet.end(),
-                      std::inserter (myFullKeySet, myFullKeySet.begin()));
-    }
-
-    //! Checks if the set of option keys fits to the current variable set (it must contain all mandatory keys
-    //! and be contained in the full key set)
-    //! @param theCheckedKeySet the set of option keys to be checked
-    bool IsInSet (const ViewerTest_CommandOptionKeySet& theCheckedKeySet) const
-    {
-      return includes (theCheckedKeySet, myMandatoryKeySet) && includes (myFullKeySet, theCheckedKeySet);
-    }
-
-  private:
-    //! A set of mandatory command-line option keys
-    ViewerTest_CommandOptionKeySet myMandatoryKeySet;
-
-    //! A full set of command-line option keys (includes mandatory and additional option keys)
-    ViewerTest_CommandOptionKeySet myFullKeySet;
-  };
-
-  //! Gets some code by its name
-  //! @tparam TheCode the type of a code to be found
-  //! @param theCodeNameMap the map from code names to codes
-  //! @param theCodeName the name of a code to be found
-  //! @param theCode the code to be found
-  //! @return true if a code is found, or false otherwise
-  template <typename TheCode>
-  static bool getSomeCodeByName (const std::map<TCollection_AsciiString, TheCode>& theCodeNameMap,
-                                 TCollection_AsciiString                           theCodeName,
-                                 TheCode&                                          theCode)
-  {
-    theCodeName.LowerCase();
-    const typename std::map<TCollection_AsciiString, TheCode>::const_iterator aCodeIterator = theCodeNameMap.find (
-      theCodeName);
-    if (aCodeIterator == theCodeNameMap.end())
-    {
-      return false;
-    }
-    theCode = aCodeIterator->second;
-    return true;
-  }
-
-  // Defines possible commands related to background changing
-  enum BackgroundCommand
-  {
-    BackgroundCommand_Main,              //!< The main command that manages other commands through options
-    BackgroundCommand_Image,             //!< Sets an image as a background
-    BackgroundCommand_ImageMode,         //!< Changes a background image mode
-    BackgroundCommand_Gradient,          //!< Sets a gradient as a background
-    BackgroundCommand_GradientMode,      //!< Changes a background gradient mode
-    BackgroundCommand_Color,             //!< Fills background with a specified color
-    BackgroundCommand_Default            //!< Sets the background default color or gradient
-  };
-
-  //! Map from background command names to its codes
-  typedef std::map<TCollection_AsciiString, BackgroundCommand> BackgroundCommandNameMap;
-
-  //! Creates a map from background command names to its codes
-  //! @return a map from background command names to its codes
-  static BackgroundCommandNameMap createBackgroundCommandNameMap()
-  {
-    BackgroundCommandNameMap aBackgroundCommandNameMap;
-    aBackgroundCommandNameMap["vbackground"]      = BackgroundCommand_Main;
-    aBackgroundCommandNameMap["vsetbg"]           = BackgroundCommand_Image;
-    aBackgroundCommandNameMap["vsetbgmode"]       = BackgroundCommand_ImageMode;
-    aBackgroundCommandNameMap["vsetgradientbg"]   = BackgroundCommand_Gradient;
-    aBackgroundCommandNameMap["vsetgrbgmode"]     = BackgroundCommand_GradientMode;
-    aBackgroundCommandNameMap["vsetcolorbg"]      = BackgroundCommand_Color;
-    aBackgroundCommandNameMap["vsetdefaultbg"]    = BackgroundCommand_Default;
-    return aBackgroundCommandNameMap;
-  }
-
-  //! Gets a background command by its name
-  //! @param theBackgroundCommandName the name of the background command
-  //! @param theBackgroundCommand the background command to be found
-  //! @return true if a background command is found, or false otherwise
-  static bool getBackgroundCommandByName (const TCollection_AsciiString& theBackgroundCommandName,
-                                          BackgroundCommand&             theBackgroundCommand)
-  {
-    static const BackgroundCommandNameMap THE_BACKGROUND_COMMAND_NAME_MAP = createBackgroundCommandNameMap();
-    return getSomeCodeByName (THE_BACKGROUND_COMMAND_NAME_MAP, theBackgroundCommandName, theBackgroundCommand);
-  }
-
-  //! Map from background image fill method names to its codes
-  typedef std::map<TCollection_AsciiString, Aspect_FillMethod> BackgroundImageFillMethodNameMap;
-
-  //! Creates a map from background image fill method names to its codes
-  //! @return a map from background image fill method names to its codes
-  static BackgroundImageFillMethodNameMap createBackgroundImageFillMethodNameMap()
-  {
-    BackgroundImageFillMethodNameMap aBackgroundImageFillMethodNameMap;
-    aBackgroundImageFillMethodNameMap["none"]     = Aspect_FM_NONE;
-    aBackgroundImageFillMethodNameMap["centered"] = Aspect_FM_CENTERED;
-    aBackgroundImageFillMethodNameMap["tiled"]    = Aspect_FM_TILED;
-    aBackgroundImageFillMethodNameMap["stretch"]  = Aspect_FM_STRETCH;
-    return aBackgroundImageFillMethodNameMap;
-  }
-
-  //! Gets a background image fill method by its name
-  //! @param theBackgroundImageFillMethodName the name of the background image fill method
-  //! @param theBackgroundImageFillMethod the background image fill method to be found
-  //! @return true if a background image fill method is found, or false otherwise
-  static bool getBackgroundImageFillMethodByName (const TCollection_AsciiString& theBackgroundImageFillMethodName,
-                                                  Aspect_FillMethod&             theBackgroundImageFillMethod)
-  {
-    static const BackgroundImageFillMethodNameMap THE_BACKGROUND_IMAGE_FILL_METHOD_NAME_MAP =
-      createBackgroundImageFillMethodNameMap();
-    return getSomeCodeByName (THE_BACKGROUND_IMAGE_FILL_METHOD_NAME_MAP,
-                              theBackgroundImageFillMethodName,
-                              theBackgroundImageFillMethod);
-  }
-
-  //! Map from background gradient fill method names to its codes
-  typedef std::map<TCollection_AsciiString, Aspect_GradientFillMethod> BackgroundGradientFillMethodNameMap;
-
-  //! Creates a map from background gradient fill method names to its codes
-  //! @return a map from background gradient fill method names to its codes
-  static BackgroundGradientFillMethodNameMap createBackgroundGradientFillMethodNameMap()
-  {
-    BackgroundGradientFillMethodNameMap aBackgroundGradientFillMethodNameMap;
-    aBackgroundGradientFillMethodNameMap["none"]       = Aspect_GFM_NONE;
-    aBackgroundGradientFillMethodNameMap["hor"]        = Aspect_GFM_HOR;
-    aBackgroundGradientFillMethodNameMap["horizontal"] = Aspect_GFM_HOR;
-    aBackgroundGradientFillMethodNameMap["ver"]        = Aspect_GFM_VER;
-    aBackgroundGradientFillMethodNameMap["vertical"]   = Aspect_GFM_VER;
-    aBackgroundGradientFillMethodNameMap["diag1"]      = Aspect_GFM_DIAG1;
-    aBackgroundGradientFillMethodNameMap["diagonal1"]  = Aspect_GFM_DIAG1;
-    aBackgroundGradientFillMethodNameMap["diag2"]      = Aspect_GFM_DIAG2;
-    aBackgroundGradientFillMethodNameMap["diagonal2"]  = Aspect_GFM_DIAG2;
-    aBackgroundGradientFillMethodNameMap["corner1"]    = Aspect_GFM_CORNER1;
-    aBackgroundGradientFillMethodNameMap["corner2"]    = Aspect_GFM_CORNER2;
-    aBackgroundGradientFillMethodNameMap["corner3"]    = Aspect_GFM_CORNER3;
-    aBackgroundGradientFillMethodNameMap["corner4"]    = Aspect_GFM_CORNER4;
-    return aBackgroundGradientFillMethodNameMap;
-  }
-
-  //! Gets a gradient fill method by its name
-  //! @param theBackgroundGradientFillMethodName the name of the gradient fill method
-  //! @param theBackgroundGradientFillMethod the gradient fill method to be found
-  //! @return true if a gradient fill method is found, or false otherwise
-  static bool getBackgroundGradientFillMethodByName (const TCollection_AsciiString& theBackgroundGradientFillMethodName,
-                                                     Aspect_GradientFillMethod&     theBackgroundGradientFillMethod)
-  {
-    static const BackgroundGradientFillMethodNameMap THE_BACKGROUND_GRADIENT_FILL_METHOD_NAME_MAP =
-      createBackgroundGradientFillMethodNameMap();
-    return getSomeCodeByName (THE_BACKGROUND_GRADIENT_FILL_METHOD_NAME_MAP,
-                              theBackgroundGradientFillMethodName,
-                              theBackgroundGradientFillMethod);
-  }
-
-  //! Changes the background in accordance with passed command line options
-  class BackgroundChanger
-  {
-  public:
-    //! Constructor. Prepares the command parser
-    BackgroundChanger()
-    {
-      prepareCommandParser();
-    }
-
-    //! Processes the command line and changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @param theNumberOfCommandLineArguments the number of passed command line arguments
-    //! @param theCommandLineArguments the array of command line arguments
-    bool ProcessCommandLine (Draw_Interpretor&        theDrawInterpretor,
-                             const Standard_Integer   theNumberOfCommandLineArguments,
-                             const char* const* const theCommandLineArguments)
-    {
-      const char* const aBackgroundCommandName = theCommandLineArguments[0];
-      BackgroundCommand aBackgroundCommand = BackgroundCommand_Main;
-      if (!getBackgroundCommandByName (aBackgroundCommandName, aBackgroundCommand))
-      {
-        return false;
-      }
-      addCommandDescription (aBackgroundCommand);
-      myCommandParser.Parse (theNumberOfCommandLineArguments, theCommandLineArguments);
-      return processCommandOptions (aBackgroundCommandName, aBackgroundCommand, theDrawInterpretor);
-    }
-
-  private:
-    //! The type of functions that are able to set gradient background filling
-    typedef void SetGradientFunction (const Quantity_Color& /* theColor1 */,
-                                      const Quantity_Color& /* theColor2 */,
-                                      const Aspect_GradientFillMethod /* theGradientMode */);
-
-    //! The type of functions that are able to fill a background with a specific color
-    typedef void SetColorFunction (const Quantity_Color& /* theColor */);
-
-    //! the command parser used to parse command line options and its arguments
-    ViewerTest_CmdParser myCommandParser;
-
-    //! the option key for the command that sets an image as a background
-    ViewerTest_CommandOptionKey myImageOptionKey;
-
-    //! the option key for the command that sets a background image fill type
-    ViewerTest_CommandOptionKey myImageModeOptionKey;
-
-    //! the option key for the command that sets a gradient filling for the background
-    ViewerTest_CommandOptionKey myGradientOptionKey;
-
-    //! the option key for the command that sets a background gradient filling method
-    ViewerTest_CommandOptionKey myGradientModeOptionKey;
-
-    //! the option key for the command that fills background with a specific color
-    ViewerTest_CommandOptionKey myColorOptionKey;
-
-    //! the option key for the command that sets default background gradient or color
-    ViewerTest_CommandOptionKey myDefaultOptionKey;
-
-    //! the option key for the command that sets an environment cubemap as a background
-    ViewerTest_CommandOptionKey myCubeMapOptionKey;
-
-    //! the option key for the command that defines order of tiles in one image packed cubemap
-    ViewerTest_CommandOptionKey myCubeMapOrderOptionKey;
-
-    //! the option key for the command that sets inversion of Z axis for background cubemap
-    ViewerTest_CommandOptionKey myCubeMapInvertedZOptionKey;
-
-    //! the option key for the command that allows skip IBL map generation
-    ViewerTest_CommandOptionKey myCubeMapDoNotGenPBREnvOptionKey;
-
-    //! the variable set of options that are allowed for the old scenario (without any option passed)
-    CommandOptionKeyVariableSet myUnnamedOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting an environment cubemap as background
-    CommandOptionKeyVariableSet myCubeMapOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting an image as a background
-    CommandOptionKeyVariableSet myImageOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting a background image fill type
-    CommandOptionKeyVariableSet myImageModeOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting a gradient filling for the background
-    CommandOptionKeyVariableSet myGradientOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting a background gradient filling method
-    CommandOptionKeyVariableSet myGradientModeOptionVariableSet;
-
-    //! the variable set of options that are allowed for filling a background with a specific color
-    CommandOptionKeyVariableSet myColorOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting a default background gradient
-    CommandOptionKeyVariableSet myDefaultGradientOptionVariableSet;
-
-    //! the variable set of options that are allowed for setting a default background color
-    CommandOptionKeyVariableSet myDefaultColorOptionVariableSet;
-
-    //! the variable set of options that are allowed for printing help
-    CommandOptionKeyVariableSet myHelpOptionVariableSet;
-
-    //! Adds options to command parser
-    void addOptionsToCommandParser()
-    {
-      myImageOptionKey     = myCommandParser.AddOption ("imageFile|image|imgFile|img",
-                                                    "filename of image used as background");
-      myImageModeOptionKey = myCommandParser.AddOption (
-        "imageMode|imgMode", "image fill type, should be one of CENTERED, TILED, STRETCH, NONE");
-      myGradientOptionKey = myCommandParser.AddOption ("gradient|grad|gr",
-                                                       "sets background gradient starting and ending colors");
-      myGradientModeOptionKey =
-        myCommandParser.AddOption ("gradientMode|gradMode|gradMd|grMode|grMd",
-                                   "gradient fill method, should be one of NONE, HOR[IZONTAL], VER[TICAL], "
-                                   "DIAG[ONAL]1, DIAG[ONAL]2, CORNER1, CORNER2, CORNER3, CORNER4");
-      myColorOptionKey   = myCommandParser.AddOption ("color|col", "background color");
-      myDefaultOptionKey = myCommandParser.AddOption ("default|def", "sets background default gradient or color");
-
-      myCubeMapOptionKey           = myCommandParser.AddOption ("cubemap|cmap|cm", "background cubemap");
-      myCubeMapOrderOptionKey      = myCommandParser.AddOption ("order|o", "order of sides in one image packed cubemap");
-      myCubeMapInvertedZOptionKey = myCommandParser.AddOption (
-        "invertedz|invz|iz", "whether Z axis is inverted or not during background cubemap rendering");
-      myCubeMapDoNotGenPBREnvOptionKey = myCommandParser.AddOption ("nopbrenv", "whether IBL map generation should be skipped");
-    }
-
-    //! Creates option sets used to determine if a passed option set is valid or not
-    void createOptionSets()
-    {
-      ViewerTest_CommandOptionKeySet anUnnamedOptionSet;
-      anUnnamedOptionSet.insert (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
-      myUnnamedOptionVariableSet = CommandOptionKeyVariableSet (anUnnamedOptionSet);
-
-      ViewerTest_CommandOptionKeySet aCubeMapOptionSet;
-      aCubeMapOptionSet.insert (myCubeMapOptionKey);
-      ViewerTest_CommandOptionKeySet aCubeMapAdditionalOptionKeySet;
-      aCubeMapAdditionalOptionKeySet.insert (myCubeMapInvertedZOptionKey);
-      aCubeMapAdditionalOptionKeySet.insert (myCubeMapDoNotGenPBREnvOptionKey);
-      aCubeMapAdditionalOptionKeySet.insert (myCubeMapOrderOptionKey);
-      myCubeMapOptionVariableSet     = CommandOptionKeyVariableSet (aCubeMapOptionSet, aCubeMapAdditionalOptionKeySet);
-
-      ViewerTest_CommandOptionKeySet anImageOptionSet;
-      anImageOptionSet.insert (myImageOptionKey);
-      ViewerTest_CommandOptionKeySet anImageModeOptionSet;
-      anImageModeOptionSet.insert (myImageModeOptionKey);
-      myImageOptionVariableSet     = CommandOptionKeyVariableSet (anImageOptionSet, anImageModeOptionSet);
-      myImageModeOptionVariableSet = CommandOptionKeyVariableSet (anImageModeOptionSet);
-
-      ViewerTest_CommandOptionKeySet aGradientOptionSet;
-      aGradientOptionSet.insert (myGradientOptionKey);
-      ViewerTest_CommandOptionKeySet aGradientModeOptionSet;
-      aGradientModeOptionSet.insert (myGradientModeOptionKey);
-      myGradientOptionVariableSet     = CommandOptionKeyVariableSet (aGradientOptionSet, aGradientModeOptionSet);
-      myGradientModeOptionVariableSet = CommandOptionKeyVariableSet (aGradientModeOptionSet);
-
-      ViewerTest_CommandOptionKeySet aColorOptionSet;
-      aColorOptionSet.insert (myColorOptionKey);
-      myColorOptionVariableSet = CommandOptionKeyVariableSet (aColorOptionSet);
-
-      aGradientOptionSet.insert (myDefaultOptionKey);
-      myDefaultGradientOptionVariableSet = CommandOptionKeyVariableSet (aGradientOptionSet, aGradientModeOptionSet);
-      aColorOptionSet.insert (myDefaultOptionKey);
-      myDefaultColorOptionVariableSet = CommandOptionKeyVariableSet (aColorOptionSet);
-
-      ViewerTest_CommandOptionKeySet aHelpOptionSet;
-      aHelpOptionSet.insert (ViewerTest_CmdParser::THE_HELP_COMMAND_OPTION_KEY);
-      myHelpOptionVariableSet = CommandOptionKeyVariableSet (aHelpOptionSet);
-    }
-
-    //! Prepares the command parser. Adds options and creates option sets used to determine
-    //! if a passed option set is valid or not
-    void prepareCommandParser()
-    {
-      addOptionsToCommandParser();
-      createOptionSets();
-    }
-
-    //! Adds a command description to the command parser
-    //! @param theBackgroundCommand the key of the command which description is added to the command parser
-    void addCommandDescription (const BackgroundCommand theBackgroundCommand)
-    {
-      std::string aDescription;
-      bool        isMainCommand = false;
-      switch (theBackgroundCommand)
-      {
-        case BackgroundCommand_Main:
-          aDescription  = "Command: vbackground (changes background or some background settings)";
-          isMainCommand = true;
-          break;
-        case BackgroundCommand_Image:
-          aDescription = "Command: vsetbg (loads image as a background)";
-          break;
-        case BackgroundCommand_ImageMode:
-          aDescription = "Command: vsetbgmode (changes background fill type)";
-          break;
-        case BackgroundCommand_Gradient:
-          aDescription = "Command: vsetgradientbg (mounts gradient background)";
-          break;
-        case BackgroundCommand_GradientMode:
-          aDescription = "Command: vsetgradientbgmode (changes gradient background fill method)";
-          break;
-        case BackgroundCommand_Color:
-          aDescription = "Command: vsetcolorbg (sets color background)";
-          break;
-        case BackgroundCommand_Default:
-          aDescription = "Command: vsetdefaultbg (sets default viewer background gradient or fill color)";
-          break;
-        default:
-          return;
-      }
-      if (!isMainCommand)
-      {
-        aDescription += "\nThis command is obsolete. Use vbackground instead.";
-      }
-      myCommandParser.SetDescription (aDescription);
-    }
-
-    //! Check if a viewer is needed to be initialized
-    //! @param theBackgroundCommand the key of the command that changes the background
-    //! @return true if processing was successful, or false otherwise
-    bool checkViewerIsNeeded (const BackgroundCommand theBackgroundCommand) const
-    {
-      const bool                           isMain             = (theBackgroundCommand == BackgroundCommand_Main);
-      const ViewerTest_CommandOptionKeySet aUsedOptions       = myCommandParser.GetUsedOptions();
-      const bool                           aViewerIsNotNeeded =
-        (theBackgroundCommand == BackgroundCommand_Default)
-        || (myDefaultGradientOptionVariableSet.IsInSet (aUsedOptions) && isMain)
-        || (myDefaultColorOptionVariableSet.IsInSet (aUsedOptions) && isMain)
-        || myHelpOptionVariableSet.IsInSet (aUsedOptions);
-      return !aViewerIsNotNeeded;
-    }
-
-    //! Check if a viewer is initialized
-    //! @param theBackgroundCommandName the name of the command that changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @return true if a viewer is initialized, or false otherwise
-    static bool checkViewerIsInitialized (const char* const theBackgroundCommandName,
-                                          Draw_Interpretor& theDrawInterpretor)
-    {
-      const Handle (AIS_InteractiveContext)& anAISContext = ViewerTest::GetAISContext();
-      if (anAISContext.IsNull())
-      {
-        theDrawInterpretor << "Use 'vinit' command before executing '" << theBackgroundCommandName << "' command.\n";
-        return false;
-      }
-      return true;
-    }
-
-    //! Processes command options
-    //! @param theBackgroundCommandName the name of the command that changes the background
-    //! @param theBackgroundCommand the key of the command that changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @return true if processing was successful, or false otherwise
-    bool processCommandOptions (const char* const       theBackgroundCommandName,
-                                const BackgroundCommand theBackgroundCommand,
-                                Draw_Interpretor&       theDrawInterpretor) const
-    {
-      if (myCommandParser.HasNoOption())
-      {
-        return printHelp (theBackgroundCommandName, theDrawInterpretor);
-      }
-      if (checkViewerIsNeeded (theBackgroundCommand)
-          && !checkViewerIsInitialized (theBackgroundCommandName, theDrawInterpretor))
-      {
-        return false;
-      }
-      if (myCommandParser.HasOnlyUnnamedOption())
-      {
-        return processUnnamedOption (theBackgroundCommand);
-      }
-      return processNamedOptions (theBackgroundCommandName, theBackgroundCommand, theDrawInterpretor);
-    }
-
-    //! Processes the unnamed option
-    //! @param theBackgroundCommand the key of the command that changes the background
-    //! @return true if processing was successful, or false otherwise
-    bool processUnnamedOption (const BackgroundCommand theBackgroundCommand) const
-    {
-      switch (theBackgroundCommand)
-      {
-        case BackgroundCommand_Main:
-          return false;
-        case BackgroundCommand_Image:
-          return processImageUnnamedOption();
-        case BackgroundCommand_ImageMode:
-          return processImageModeUnnamedOption();
-        case BackgroundCommand_Gradient:
-          return processGradientUnnamedOption();
-        case BackgroundCommand_GradientMode:
-          return processGradientModeUnnamedOption();
-        case BackgroundCommand_Color:
-          return processColorUnnamedOption();
-        case BackgroundCommand_Default:
-          return processDefaultUnnamedOption();
-        default:
-          return false;
-      }
-    }
-
-    //! Processes the image unnamed option
-    //! @return true if processing was successful, or false otherwise
-    bool processImageUnnamedOption() const
-    {
-      const std::size_t aNumberOfImageUnnamedOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
-      if ((aNumberOfImageUnnamedOptionArguments != 1) && (aNumberOfImageUnnamedOptionArguments != 2))
-      {
-        return false;
-      }
-      std::string anImageFileName;
-      if (!myCommandParser.Arg (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, 0, anImageFileName))
-      {
-        return false;
-      }
-      Aspect_FillMethod anImageMode = Aspect_FM_CENTERED;
-      if (aNumberOfImageUnnamedOptionArguments == 2)
-      {
-        std::string anImageModeString;
-        if (!myCommandParser.Arg (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, 1, anImageModeString))
-        {
-          return false;
-        }
-        if (!getBackgroundImageFillMethodByName (anImageModeString.c_str(), anImageMode))
-        {
-          return false;
-        }
-      }
-      setImage (anImageFileName.c_str(), anImageMode);
-      return true;
-    }
-
-    //! Processes the image mode unnamed option
-    //! @return true if processing was successful, or false otherwise
-    bool processImageModeUnnamedOption() const
-    {
-      return processImageModeOptionSet (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
-    }
-
-    //! Processes the gradient unnamed option
-    //! @param theSetGradient the function used to set a background gradient filling
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientUnnamedOption (SetGradientFunction* const theSetGradient = setGradient) const
-    {
-      const Standard_Integer aNumberOfGradientUnnamedOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
-      if (aNumberOfGradientUnnamedOptionArguments < 2)
-      {
-        return false;
-      }
-
-      Standard_Integer anArgumentIndex = 0;
-      Quantity_Color   aColor1;
-      if (!myCommandParser.ArgColor (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, anArgumentIndex, aColor1))
-      {
-        return false;
-      }
-      if (anArgumentIndex >= aNumberOfGradientUnnamedOptionArguments)
-      {
-        return false;
-      }
-
-      Quantity_Color aColor2;
-      if (!myCommandParser.ArgColor (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, anArgumentIndex, aColor2))
-      {
-        return false;
-      }
-      if (anArgumentIndex > aNumberOfGradientUnnamedOptionArguments)
-      {
-        return false;
-      }
-
-      Aspect_GradientFillMethod aGradientMode = Aspect_GFM_HOR;
-      if (anArgumentIndex == aNumberOfGradientUnnamedOptionArguments - 1)
-      {
-        std::string anGradientModeString;
-
-        if (!myCommandParser.Arg (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY,
-                                  anArgumentIndex,
-                                  anGradientModeString))
-        {
-          return false;
-        }
-        if (!getBackgroundGradientFillMethodByName (anGradientModeString.c_str(), aGradientMode))
-        {
-          return false;
-        }
-        ++anArgumentIndex;
-      }
-      if (anArgumentIndex != aNumberOfGradientUnnamedOptionArguments)
-      {
-        return false;
-      }
-      theSetGradient (aColor1, aColor2, aGradientMode);
-      return true;
-    }
-
-    //! Processes the gradient mode unnamed option
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientModeUnnamedOption() const
-    {
-      return processGradientModeOptionSet (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY);
-    }
-
-    //! Processes the color unnamed option
-    //! @param theSetColor the function used to set a background color
-    //! @return true if processing was successful, or false otherwise
-    bool processColorUnnamedOption (SetColorFunction* const theSetColor = setColor) const
-    {
-      return processColorOptionSet (ViewerTest_CmdParser::THE_UNNAMED_COMMAND_OPTION_KEY, theSetColor);
-    }
-
-    //! Processes the default back unnamed option
-    //! @return true if processing was successful, or false otherwise
-    bool processDefaultUnnamedOption() const
-    {
-      if (processGradientUnnamedOption (setDefaultGradient))
-      {
-        return true;
-      }
-      return processColorUnnamedOption (setDefaultColor);
-    }
-
-    //! Processes named options
-    //! @param theBackgroundCommandName the name of the command that changes the background
-    //! @param theBackgroundCommand the key of the command that changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @return true if processing was successful, or false otherwise
-    bool processNamedOptions (const char* const       theBackgroundCommandName,
-                              const BackgroundCommand theBackgroundCommand,
-                              Draw_Interpretor&       theDrawInterpretor) const
-    {
-      const bool                           isMain       = (theBackgroundCommand == BackgroundCommand_Main);
-      const ViewerTest_CommandOptionKeySet aUsedOptions = myCommandParser.GetUsedOptions();
-      if (myCubeMapOptionVariableSet.IsInSet (aUsedOptions) && isMain)
-      {
-        return processCubeMapOptionSet();
-      }
-      if (myImageOptionVariableSet.IsInSet (aUsedOptions)
-          && (isMain || (theBackgroundCommand == BackgroundCommand_Image)))
-      {
-        return processImageOptionSet();
-      }
-      if (myImageModeOptionVariableSet.IsInSet (aUsedOptions)
-          && (isMain || (theBackgroundCommand == BackgroundCommand_ImageMode)))
-      {
-        return processImageModeOptionSet();
-      }
-      if (myGradientOptionVariableSet.IsInSet (aUsedOptions)
-          && (isMain || (theBackgroundCommand == BackgroundCommand_Gradient)))
-      {
-        return processGradientOptionSet();
-      }
-      if (myGradientModeOptionVariableSet.IsInSet (aUsedOptions)
-          && (isMain || (theBackgroundCommand == BackgroundCommand_GradientMode)))
-      {
-        return processGradientModeOptionSet();
-      }
-      if (myColorOptionVariableSet.IsInSet (aUsedOptions)
-          && (isMain || (theBackgroundCommand == BackgroundCommand_Color)))
-      {
-        return processColorOptionSet();
-      }
-      if ((myDefaultGradientOptionVariableSet.IsInSet (aUsedOptions) && isMain)
-          || (myGradientOptionVariableSet.IsInSet (aUsedOptions)
-              && (theBackgroundCommand == BackgroundCommand_Default)))
-      {
-        return processDefaultGradientOptionSet();
-      }
-      if ((myDefaultColorOptionVariableSet.IsInSet (aUsedOptions) && isMain)
-          || (myColorOptionVariableSet.IsInSet (aUsedOptions) && (theBackgroundCommand == BackgroundCommand_Default)))
-      {
-        return processDefaultColorOptionSet();
-      }
-      if (myHelpOptionVariableSet.IsInSet (aUsedOptions))
-      {
-        return processHelpOptionSet (theBackgroundCommandName, theDrawInterpretor);
-      }
-      return false;
-    }
-
-    //! Process the cubemap option set in named and unnamed case.
-    //! @return true if processing was successful, or false otherwise
-    bool processCubeMapOptionSet() const
-    {
-      NCollection_Array1<TCollection_AsciiString> aFilePaths;
-
-      if (!processCubeMapOptions (aFilePaths))
-      {
-        return false;
-      }
-
-      Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
-
-      if (myCommandParser.HasOption (myCubeMapOrderOptionKey))
-      {
-        if (!processCubeMapOrderOptions (anOrder))
-        {
-          return false;
-        }
-      }
-
-      bool aZIsInverted = false;
-      if (myCommandParser.HasOption (myCubeMapInvertedZOptionKey))
-      {
-        if (!processCubeMapInvertedZOptionSet())
-        {
-          return false;
-        }
-        aZIsInverted = true;
-      }
-
-      bool aToGenPBREnv = true;
-      if (myCommandParser.HasOption (myCubeMapDoNotGenPBREnvOptionKey))
-      {
-        if (!processCubeMapDoNotGenPBREnvOptionSet())
-        {
-          return false;
-        }
-        aToGenPBREnv = false;
-      }
-
-      setCubeMap (aFilePaths, anOrder.Validated(), aZIsInverted, aToGenPBREnv);
-      return true;
-    }
-
-    //! Processes the image option set
-    //! @return true if processing was successful, or false otherwise
-    bool processImageOptionSet() const
-    {
-      std::string anImageFileName;
-      if (!processImageOption (anImageFileName))
-      {
-        return false;
-      }
-      Aspect_FillMethod anImageMode = Aspect_FM_CENTERED;
-      if (myCommandParser.HasOption (myImageModeOptionKey) && !processImageModeOption (anImageMode))
-      {
-        return false;
-      }
-      setImage (anImageFileName.c_str(), anImageMode);
-      return true;
-    }
-
-    //! Processes the image mode option set
-    //! @return true if processing was successful, or false otherwise
-    bool processImageModeOptionSet() const
-    {
-      return processImageModeOptionSet (myImageModeOptionKey);
-    }
-
-    //! Processes the image mode option set
-    //! @param theImageModeOptionKey the key of the option that is interpreted as an image mode option
-    //! @return true if processing was successful, or false otherwise
-    bool processImageModeOptionSet (const ViewerTest_CommandOptionKey theImageModeOptionKey) const
-    {
-      Aspect_FillMethod anImageMode = Aspect_FM_NONE;
-      if (!processImageModeOption (theImageModeOptionKey, anImageMode))
-      {
-        return false;
-      }
-      setImageMode (anImageMode);
-      return true;
-    }
-
-    //! Processes the gradient option set
-    //! @param theSetGradient the function used to set a background gradient filling
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientOptionSet (SetGradientFunction* const theSetGradient = setGradient) const
-    {
-      Quantity_Color aColor1;
-      Quantity_Color aColor2;
-      if (!processGradientOption (aColor1, aColor2))
-      {
-        return false;
-      }
-      Aspect_GradientFillMethod aGradientMode = Aspect_GFM_HOR;
-      if (myCommandParser.HasOption (myGradientModeOptionKey) && !processGradientModeOption (aGradientMode))
-      {
-        return false;
-      }
-      theSetGradient (aColor1, aColor2, aGradientMode);
-      return true;
-    }
-
-    //! Processes the gradient mode option set
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientModeOptionSet() const
-    {
-      return processGradientModeOptionSet (myGradientModeOptionKey);
-    }
-
-    //! Processes the gradient mode option set
-    //! @param theGradientModeOptionKey the key of the option that is interpreted as a gradient mode option
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientModeOptionSet (const ViewerTest_CommandOptionKey theGradientModeOptionKey) const
-    {
-      Aspect_GradientFillMethod aGradientMode = Aspect_GFM_NONE;
-      if (!processGradientModeOption (theGradientModeOptionKey, aGradientMode))
-      {
-        return false;
-      }
-      setGradientMode (aGradientMode);
-      return true;
-    }
-
-    //! Processes the color option set
-    //! @param theSetColor the function used to set a background color
-    //! @return true if processing was successful, or false otherwise
-    bool processColorOptionSet (SetColorFunction* const theSetColor = setColor) const
-    {
-      return processColorOptionSet (myColorOptionKey, theSetColor);
-    }
-
-    //! Processes the default color option set
-    //! @return true if processing was successful, or false otherwise
-    bool processDefaultGradientOptionSet() const
-    {
-      return processGradientOptionSet (setDefaultGradient);
-    }
-
-    //! Processes the default gradient option set
-    //! @return true if processing was successful, or false otherwise
-    bool processDefaultColorOptionSet() const
-    {
-      return processColorOptionSet (setDefaultColor);
-    }
-
-    //! Processes the color option set
-    //! @param theColorOptionKey the key of the option that is interpreted as a color option
-    //! @param theSetColor the function used to set a background color
-    //! @return true if processing was successful, or false otherwise
-    bool processColorOptionSet (const ViewerTest_CommandOptionKey theColorOptionKey,
-                                SetColorFunction* const           theSetColor = setColor) const
-    {
-      Quantity_Color aColor;
-      if (!processColorOption (theColorOptionKey, aColor))
-      {
-        return false;
-      }
-      theSetColor (aColor);
-      return true;
-    }
-
-    //! Processes the help option set
-    //! @param theBackgroundCommandName the name of the command that changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @return true if processing was successful, or false otherwise
-    bool processHelpOptionSet (const char* const theBackgroundCommandName, Draw_Interpretor& theDrawInterpretor) const
-    {
-      const Standard_Integer aNumberOfHelpOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        ViewerTest_CmdParser::THE_HELP_COMMAND_OPTION_KEY);
-      if (aNumberOfHelpOptionArguments != 0)
-      {
-        return false;
-      }
-      return printHelp (theBackgroundCommandName, theDrawInterpretor);
-    }
-
-    //! Processes the cubemap option
-    //! @param theFilePaths the array of filenames of cubemap sides
-    //! @return true if processing was successful, or false otherwise
-    bool processCubeMapOptions (NCollection_Array1<TCollection_AsciiString> &theFilePaths) const
-    {
-      const Standard_Integer aNumberOfCubeMapOptionArguments = myCommandParser.GetNumberOfOptionArguments (myCubeMapOptionKey);
-
-      if (aNumberOfCubeMapOptionArguments != 1
-       && aNumberOfCubeMapOptionArguments != 6)
-      {
-        return false;
-      }
-
-      theFilePaths.Resize(0, aNumberOfCubeMapOptionArguments - 1, Standard_False);
-
-      for (int i = 0; i < aNumberOfCubeMapOptionArguments; ++i)
-      {
-        std::string aCubeMapFileName;
-        if (!myCommandParser.Arg (myCubeMapOptionKey, i, aCubeMapFileName))
-        {
-          return false;
-        }
-        theFilePaths[i] = aCubeMapFileName.c_str();
-      }
-
-      return true;
-    }
-
-    //! Processes the inverted z cubemap option
-    //! @return true if processing was successful, or false otherwise
-    bool processCubeMapInvertedZOptionSet () const
-    {
-      const Standard_Integer aNumberOfCubeMapZInversionOptionArguments =
-        myCommandParser.GetNumberOfOptionArguments (myCubeMapInvertedZOptionKey);
-
-      if (aNumberOfCubeMapZInversionOptionArguments != 0)
-      {
-        return false;
-      }
-
-      return true;
-    }
-
-    //! Processes the option allowing to skip IBM maps generation
-    //! @return true if processing was successful, or false otherwise
-    bool processCubeMapDoNotGenPBREnvOptionSet() const
-    {
-      const Standard_Integer aNumberOfCubeMapDoNotGenPBREnvOptionArguments =
-        myCommandParser.GetNumberOfOptionArguments(myCubeMapDoNotGenPBREnvOptionKey);
-
-      if (aNumberOfCubeMapDoNotGenPBREnvOptionArguments != 0)
-      {
-        return false;
-      }
-
-      return true;
-    }
-
-    //! Processes the tiles order option
-    //! @param theOrder the array of indexes if cubemap sides in tile grid
-    //! @return true if processing was successful, or false otherwise
-    bool processCubeMapOrderOptions (Graphic3d_CubeMapOrder& theOrder) const
-    {
-      const Standard_Integer aNumberOfCubeMapOrderOptionArguments = myCommandParser.GetNumberOfOptionArguments(
-        myCubeMapOrderOptionKey);
-
-      if (aNumberOfCubeMapOrderOptionArguments != 6)
-      {
-        return false;
-      }
-
-
-      for (unsigned int i = 0; i < 6; ++i)
-      {
-        std::string anOrderItem;
-        if (!myCommandParser.Arg (myCubeMapOrderOptionKey, i, anOrderItem)) 
-        {
-          return false;
-        }
-
-        theOrder.Set (Graphic3d_CubeMapSide (i),
-                      static_cast<unsigned char> (Draw::Atoi (anOrderItem.c_str())));
-      }
-
-      return theOrder.IsValid();
-    }
-
-    //! Processes the image option
-    //! @param theImageFileName the filename of the image to be used as a background
-    //! @return true if processing was successful, or false otherwise
-    bool processImageOption (std::string& theImageFileName) const
-    {
-      const Standard_Integer aNumberOfImageOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        myImageOptionKey);
-      if (aNumberOfImageOptionArguments != 1)
-      {
-        return false;
-      }
-      std::string anImageFileName;
-      if (!myCommandParser.Arg (myImageOptionKey, 0, anImageFileName))
-      {
-        return false;
-      }
-      theImageFileName = anImageFileName;
-      return true;
-    }
-
-    //! Processes the image mode option
-    //! @param theImageMode the fill type used for a background image
-    //! @return true if processing was successful, or false otherwise
-    bool processImageModeOption (Aspect_FillMethod& theImageMode) const
-    {
-      return processImageModeOption (myImageModeOptionKey, theImageMode);
-    }
-
-    //! Processes the image mode option
-    //! @param theImageModeOptionKey the key of the option that is interpreted as an image mode option
-    //! @param theImageMode the fill type used for a background image
-    //! @return true if processing was successful, or false otherwise
-    bool processImageModeOption (const ViewerTest_CommandOptionKey theImageModeOptionKey,
-                                 Aspect_FillMethod&                theImageMode) const
-    {
-      return processModeOption (theImageModeOptionKey, getBackgroundImageFillMethodByName, theImageMode);
-    }
-
-    //! Processes the gradient option
-    //! @param theColor1 the gradient starting color
-    //! @param theColor2 the gradient ending color
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientOption (Quantity_Color& theColor1, Quantity_Color& theColor2) const
-    {
-      Standard_Integer anArgumentIndex = 0;
-      Quantity_Color   aColor1;
-      if (!myCommandParser.ArgColor (myGradientOptionKey, anArgumentIndex, aColor1))
-      {
-        return false;
-      }
-      Quantity_Color aColor2;
-      if (!myCommandParser.ArgColor (myGradientOptionKey, anArgumentIndex, aColor2))
-      {
-        return false;
-      }
-      const Standard_Integer aNumberOfGradientOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        myGradientOptionKey);
-      if (anArgumentIndex != aNumberOfGradientOptionArguments)
-      {
-        return false;
-      }
-      theColor1 = aColor1;
-      theColor2 = aColor2;
-      return true;
-    }
-
-    //! Processes the gradient mode option
-    //! @param theGradientMode the fill method used for a background gradient filling
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientModeOption (Aspect_GradientFillMethod& theGradientMode) const
-    {
-      return processGradientModeOption (myGradientModeOptionKey, theGradientMode);
-    }
-
-    //! Processes the gradient mode option
-    //! @param theGradientModeOptionKey the key of the option that is interpreted as a gradient mode option
-    //! @param theGradientMode the fill method used for a background gradient filling
-    //! @return true if processing was successful, or false otherwise
-    bool processGradientModeOption (const ViewerTest_CommandOptionKey theGradientModeOptionKey,
-                                    Aspect_GradientFillMethod&        theGradientMode) const
-    {
-      return processModeOption (theGradientModeOptionKey, getBackgroundGradientFillMethodByName, theGradientMode);
-    }
-
-    //! Processes some mode option
-    //! @tparam TheMode the type of a mode to be processed
-    //! @param theModeOptionKey the key of the option that is interpreted as a mode option
-    //! @param theMode a mode to be processed
-    //! @return true if processing was successful, or false otherwise
-    template <typename TheMode>
-    bool processModeOption (const ViewerTest_CommandOptionKey theModeOptionKey,
-                            bool (*const theGetModeByName) (const TCollection_AsciiString& /* theModeName */,
-                                                            TheMode& /* theMode */),
-                            TheMode& theMode) const
-    {
-      const Standard_Integer aNumberOfModeOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        theModeOptionKey);
-      if (aNumberOfModeOptionArguments != 1)
-      {
-        return false;
-      }
-      std::string aModeString;
-      if (!myCommandParser.Arg (theModeOptionKey, 0, aModeString))
-      {
-        return false;
-      }
-      TheMode aMode = TheMode();
-      if (!theGetModeByName (aModeString.c_str(), aMode))
-      {
-        return false;
-      }
-      theMode = aMode;
-      return true;
-    }
-
-    //! Processes the color option
-    //! @param theColor a color used for filling a background
-    //! @return true if processing was successful, or false otherwise
-    bool processColorOption (Quantity_Color& theColor) const
-    {
-      return processColorOption (myColorOptionKey, theColor);
-    }
-
-    //! Processes the color option
-    //! @param theColorOptionKey the key of the option that is interpreted as a color option
-    //! @param theColor a color used for filling a background
-    //! @return true if processing was successful, or false otherwise
-    bool processColorOption (const ViewerTest_CommandOptionKey theColorOptionKey, Quantity_Color& theColor) const
-    {
-      Standard_Integer anArgumentIndex = 0;
-      Quantity_Color   aColor;
-      if (!myCommandParser.ArgColor (theColorOptionKey, anArgumentIndex, aColor))
-      {
-        return false;
-      }
-      const Standard_Integer aNumberOfColorOptionArguments = myCommandParser.GetNumberOfOptionArguments (
-        theColorOptionKey);
-      if (anArgumentIndex != aNumberOfColorOptionArguments)
-      {
-        return false;
-      }
-      theColor = aColor;
-      return true;
-    }
-
-    //! Prints helping message
-    //! @param theBackgroundCommandName the name of the command that changes the background
-    //! @param theDrawInterpretor the interpreter of the Draw Harness application
-    //! @return true if printing was successful, or false otherwise
-    static bool printHelp (const char* const theBackgroundCommandName, Draw_Interpretor& theDrawInterpretor)
-    {
-      return theDrawInterpretor.PrintHelp (theBackgroundCommandName) == TCL_OK;
-    }
-
-    //! Sets the cubemap as a background
-    //! @param theFileNames the array of filenames of packed or multifile cubemap
-    //! @param theOrder array of cubemap sides indexes mapping them from tiles in packed cubemap
-    static void setCubeMap (const NCollection_Array1<TCollection_AsciiString>& theFileNames,
-                            const Graphic3d_ValidatedCubeMapOrder              theOrder = Graphic3d_CubeMapOrder::Default(),
-                            bool                                               theZIsInverted = false,
-                            bool                                               theToGenPBREnv = true)
-    {
-      const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      Handle(Graphic3d_CubeMap) aCubeMap;
-
-      if (theFileNames.Size() == 1)
-        aCubeMap = new Graphic3d_CubeMapPacked(theFileNames[0], theOrder);
-      else
-        aCubeMap = new Graphic3d_CubeMapSeparate(theFileNames);
-
-      aCubeMap->SetZInversion (theZIsInverted);
-
-      aCubeMap->GetParams()->SetFilter(Graphic3d_TOTF_BILINEAR);
-      aCubeMap->GetParams()->SetRepeat(Standard_False);
-      aCubeMap->GetParams()->SetTextureUnit(Graphic3d_TextureUnit_EnvMap);
-
-      aCurrentView->SetBackgroundCubeMap (aCubeMap, theToGenPBREnv, Standard_True);
-    }
-
-    //! Sets the image as a background
-    //! @param theImageFileName the filename of the image to be used as a background
-    //! @param theImageMode the fill type used for a background image
-    static void setImage (const Standard_CString theImageFileName, const Aspect_FillMethod theImageMode)
-    {
-      const Handle (V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      aCurrentView->SetBackgroundImage (theImageFileName, theImageMode, Standard_True);
-    }
-
-    //! Sets the fill type used for a background image
-    //! @param theImageMode the fill type used for a background image
-    static void setImageMode (const Aspect_FillMethod theImageMode)
-    {
-      const Handle (V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      aCurrentView->SetBgImageStyle (theImageMode, Standard_True);
-    }
-
-    //! Sets the gradient filling for a background
-    //! @param theColor1 the gradient starting color
-    //! @param theColor2 the gradient ending color
-    //! @param theGradientMode the fill method used for a background gradient filling
-    static void setGradient (const Quantity_Color&           theColor1,
-                             const Quantity_Color&           theColor2,
-                             const Aspect_GradientFillMethod theGradientMode)
-    {
-      const Handle (V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      aCurrentView->SetBgGradientColors (theColor1, theColor2, theGradientMode, Standard_True);
-    }
-
-    //! Sets the fill method used for a background gradient filling
-    //! @param theGradientMode the fill method used for a background gradient filling
-    static void setGradientMode (const Aspect_GradientFillMethod theGradientMode)
-    {
-      const Handle (V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      aCurrentView->SetBgGradientStyle (theGradientMode, Standard_True);
-    }
-
-    //! Sets the color used for filling a background
-    //! @param theColor the color used for filling a background
-    static void setColor (const Quantity_Color& theColor)
-    {
-      const Handle (V3d_View)& aCurrentView = ViewerTest::CurrentView();
-      aCurrentView->SetBgGradientStyle (Aspect_GFM_NONE);
-      aCurrentView->SetBackgroundColor (theColor);
-      aCurrentView->Update();
-    }
-
-    //! Sets the gradient filling for a background in a default viewer
-    //! @param theColor1 the gradient starting color
-    //! @param theColor2 the gradient ending color
-    //! @param theGradientMode the fill method used for a background gradient filling
-    static void setDefaultGradient (const Quantity_Color&           theColor1,
-                                    const Quantity_Color&           theColor2,
-                                    const Aspect_GradientFillMethod theGradientMode)
-    {
-      ViewerTest_DefaultBackground.GradientColor1 = theColor1;
-      ViewerTest_DefaultBackground.GradientColor2 = theColor2;
-      ViewerTest_DefaultBackground.FillMethod     = theGradientMode;
-      setDefaultGradient();
-    }
-
-    //! Sets the color used for filling a background in a default viewer
-    //! @param theColor the color used for filling a background
-    static void setDefaultColor (const Quantity_Color& theColor)
-    {
-      ViewerTest_DefaultBackground.GradientColor1 = Quantity_Color();
-      ViewerTest_DefaultBackground.GradientColor2 = Quantity_Color();
-      ViewerTest_DefaultBackground.FillMethod     = Aspect_GFM_NONE;
-      ViewerTest_DefaultBackground.FlatColor      = theColor;
-      setDefaultGradient();
-      setDefaultColor();
-    }
-
-    //! Sets the gradient filling for a background in a default viewer.
-    //! Gradient settings are taken from ViewerTest_DefaultBackground structure
-    static void setDefaultGradient()
-    {
-      for (NCollection_DoubleMap<TCollection_AsciiString, Handle (AIS_InteractiveContext)>::Iterator
-             anInteractiveContextIterator (ViewerTest_myContexts);
-           anInteractiveContextIterator.More();
-           anInteractiveContextIterator.Next())
-      {
-        const Handle (V3d_Viewer)& aViewer = anInteractiveContextIterator.Value()->CurrentViewer();
-        aViewer->SetDefaultBgGradientColors (ViewerTest_DefaultBackground.GradientColor1,
-                                             ViewerTest_DefaultBackground.GradientColor2,
-                                             ViewerTest_DefaultBackground.FillMethod);
-      }
-    }
-
-    //! Sets the color used for filling a background in a default viewer.
-    //! The color value is taken from ViewerTest_DefaultBackground structure
-    static void setDefaultColor()
-    {
-      for (NCollection_DoubleMap<TCollection_AsciiString, Handle (AIS_InteractiveContext)>::Iterator
-             anInteractiveContextIterator (ViewerTest_myContexts);
-           anInteractiveContextIterator.More();
-           anInteractiveContextIterator.Next())
-      {
-        const Handle (V3d_Viewer)& aViewer = anInteractiveContextIterator.Value()->CurrentViewer();
-        aViewer->SetDefaultBackgroundColor (ViewerTest_DefaultBackground.FlatColor);
-      }
-    }
-  };
-
-} // namespace
-
 //==============================================================================
 
 #ifdef _WIN32
@@ -3769,36 +2576,421 @@ static int VPick (Draw_Interpretor& ,
   return 0;
 }
 
-namespace
+//! Parse image fill method.
+static bool parseImageMode (const TCollection_AsciiString& theName,
+                            Aspect_FillMethod& theMode)
 {
-
-  //! Changes the background
-  //! @param theDrawInterpretor the interpreter of the Draw Harness application
-  //! @param theNumberOfCommandLineArguments the number of passed command line arguments
-  //! @param theCommandLineArguments the array of command line arguments
-  //! @return TCL_OK if changing was successful, or TCL_ERROR otherwise
-  static int vbackground (Draw_Interpretor&      theDrawInterpretor,
-                          const Standard_Integer theNumberOfCommandLineArguments,
-                          const char** const     theCommandLineArguments)
+  TCollection_AsciiString aName = theName;
+  aName.LowerCase();
+  if (aName == "none")
   {
-    if (theNumberOfCommandLineArguments < 1)
-    {
-      return TCL_ERROR;
-    }
-    BackgroundChanger aBackgroundChanger;
-    if (!aBackgroundChanger.ProcessCommandLine (theDrawInterpretor,
-                                                theNumberOfCommandLineArguments,
-                                                theCommandLineArguments))
-    {
-      theDrawInterpretor << "Wrong command arguments.\n"
-                            "Type 'help "
-                         << theCommandLineArguments[0] << "' for information about command options and its arguments.\n";
-      return TCL_ERROR;
-    }
-    return TCL_OK;
+    theMode = Aspect_FM_NONE;
+  }
+  else if (aName == "centered")
+  {
+    theMode = Aspect_FM_CENTERED;
+  }
+  else if (aName == "tiled")
+  {
+    theMode = Aspect_FM_TILED;
+  }
+  else if (aName == "stretch")
+  {
+    theMode = Aspect_FM_STRETCH;
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
+//! Parse gradient fill method.
+static bool parseGradientMode (const TCollection_AsciiString& theName,
+                               Aspect_GradientFillMethod& theMode)
+{
+  TCollection_AsciiString aName = theName;
+  aName.LowerCase();
+  if (aName == "none")
+  {
+    theMode = Aspect_GFM_NONE;
+  }
+  else if (aName == "hor"
+        || aName == "horizontal")
+  {
+    theMode = Aspect_GFM_HOR;
+  }
+  else if (aName == "ver"
+        || aName == "vert"
+        || aName == "vertical")
+  {
+    theMode = Aspect_GFM_VER;
+  }
+  else if (aName == "diag"
+        || aName == "diagonal"
+        || aName == "diag1"
+        || aName == "diagonal1")
+  {
+    theMode = Aspect_GFM_DIAG1;
+  }
+  else if (aName == "diag2"
+        || aName == "diagonal2")
+  {
+    theMode = Aspect_GFM_DIAG2;
+  }
+  else if (aName == "corner1")
+  {
+    theMode = Aspect_GFM_CORNER1;
+  }
+  else if (aName == "corner2")
+  {
+    theMode = Aspect_GFM_CORNER2;
+  }
+  else if (aName == "corner3")
+  {
+    theMode = Aspect_GFM_CORNER3;
+  }
+  else if (aName == "corner4")
+  {
+    theMode = Aspect_GFM_CORNER4;
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
+//==============================================================================
+//function : VBackground
+//purpose  :
+//==============================================================================
+static int VBackground (Draw_Interpretor& theDI,
+                        Standard_Integer  theNbArgs,
+                        const char**      theArgVec)
+{
+  if (theNbArgs < 2)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
   }
 
-} // namespace
+  const TCollection_AsciiString aCmdName (theArgVec[0]);
+  bool isDefault = aCmdName == "vsetdefaultbg";
+  Standard_Integer aNbColors = 0;
+  Quantity_ColorRGBA aColors[2];
+
+  Aspect_GradientFillMethod aGradientMode = Aspect_GFM_NONE;
+  bool hasGradientMode = false;
+
+  TCollection_AsciiString anImagePath;
+  Aspect_FillMethod anImageMode = Aspect_FM_CENTERED;
+  bool hasImageMode = false;
+
+  NCollection_Sequence<TCollection_AsciiString> aCubeMapSeq;
+  Graphic3d_CubeMapOrder aCubeOrder = Graphic3d_CubeMapOrder::Default();
+  bool isCubeZInverted = false, isCubeGenPBREnv = true;
+  bool isSRgb = true;
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else if (anArg == "-default"
+          || anArg == "-def")
+    {
+      isDefault = true;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-imagefile"
+           || anArg == "-imgfile"
+           || anArg == "-image"
+           || anArg == "-img"))
+    {
+      anImagePath = theArgVec[++anArgIter];
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && aCubeMapSeq.IsEmpty()
+          && (anArg == "-cubemap"
+           || anArg == "-cmap"
+           || anArg == "-cm"))
+    {
+      aCubeMapSeq.Append (theArgVec[++anArgIter]);
+      for (Standard_Integer aCubeSideIter = 1; anArgIter + aCubeSideIter < theNbArgs; ++aCubeSideIter)
+      {
+        TCollection_AsciiString aSideArg (theArgVec[anArgIter + aCubeSideIter]);
+        if (!aSideArg.IsEmpty()
+          && aSideArg.Value (1) == '-')
+        {
+          break;
+        }
+
+        aCubeMapSeq.Append (aSideArg);
+        if (aCubeMapSeq.Size() == 6)
+        {
+          anArgIter += 5;
+          break;
+        }
+      }
+
+      if (aCubeMapSeq.Size() > 1
+       && aCubeMapSeq.Size() < 6)
+      {
+        aCubeMapSeq.Remove (2, aCubeMapSeq.Size());
+      }
+    }
+    else if (anArgIter + 6 < theNbArgs
+          && anArg == "-order")
+    {
+      for (Standard_Integer aCubeSideIter = 0; aCubeSideIter < 6; ++aCubeSideIter)
+      {
+        Standard_Integer aSideArg = 0;
+        if (!Draw::ParseInteger (theArgVec[anArgIter + aCubeSideIter + 1], aSideArg)
+         || aSideArg < 0
+         || aSideArg > 5)
+        {
+          theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+          return 1;
+        }
+        aCubeOrder.Set ((Graphic3d_CubeMapSide )aCubeSideIter, (unsigned char )aSideArg);
+      }
+      if (!aCubeOrder.IsValid())
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+      anArgIter += 6;
+    }
+    else if (anArg == "-invertedz"
+          || anArg == "-noinvertedz"
+          || anArg == "-invz"
+          || anArg == "-noinvz")
+    {
+      isCubeZInverted = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArg == "-pbrenv"
+          || anArg == "-nopbrenv")
+    {
+      isCubeGenPBREnv = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArg == "-srgb"
+          || anArg == "-nosrgb")
+    {
+      isSRgb = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNbColors < 2
+          && (anArg == "-color"
+           || anArg == "-col"))
+    {
+      Standard_Integer aNbParsed = Draw::ParseColor (theNbArgs - (anArgIter + 1),
+                                                     theArgVec + (anArgIter + 1),
+                                                     aColors[aNbColors].ChangeRGB());
+      if (aNbParsed == 0)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+      anArgIter += aNbParsed;
+      ++aNbColors;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-gradientmode"
+           || anArg == "-gradmode"
+           || anArg == "-gradmd"
+           || anArg == "-grmode"
+           || anArg == "-grmd")
+          && parseGradientMode (theArgVec[anArgIter + 1], aGradientMode))
+    {
+      ++anArgIter;
+      hasGradientMode = true;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-imagemode"
+           || anArg == "-imgmode"
+           || anArg == "-imagemd"
+           || anArg == "-imgmd")
+          && parseImageMode (theArgVec[anArgIter + 1], anImageMode))
+    {
+      ++anArgIter;
+      hasImageMode = true;
+    }
+    else if (aNbColors == 0
+          && anArgIter + 2 < theNbArgs
+          && (anArg == "-gradient"
+           || anArg == "-grad"
+           || anArg == "-gr"))
+    {
+      Standard_Integer aNbParsed1 = Draw::ParseColor (theNbArgs - (anArgIter + 1),
+                                                      theArgVec + (anArgIter + 1),
+                                                      aColors[aNbColors].ChangeRGB());
+      anArgIter += aNbParsed1;
+      ++aNbColors;
+      if (aNbParsed1 == 0)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+      Standard_Integer aNbParsed2 = Draw::ParseColor (theNbArgs - (anArgIter + 1),
+                                                      theArgVec + (anArgIter + 1),
+                                                      aColors[aNbColors].ChangeRGB());
+      anArgIter += aNbParsed2;
+      ++aNbColors;
+      if (aNbParsed2 == 0)
+      {
+        theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+    }
+    else if (parseGradientMode (theArgVec[anArgIter], aGradientMode))
+    {
+      hasGradientMode = true;
+    }
+    else if (aNbColors < 2
+          && (Quantity_ColorRGBA::ColorFromName(theArgVec[anArgIter], aColors[aNbColors])
+           || Quantity_ColorRGBA::ColorFromHex (theArgVec[anArgIter], aColors[aNbColors])))
+    {
+      ++aNbColors;
+    }
+    else if (anImagePath.IsEmpty()
+         &&  aNbColors == 0
+         && !hasGradientMode
+         &&  aCubeMapSeq.IsEmpty())
+    {
+      anImagePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (!isDefault
+   && aView.IsNull())
+  {
+    theDI << "Error: no active viewer";
+    return 1;
+  }
+  else if (isDefault
+       &&  aNbColors == 0
+       && !hasGradientMode)
+  {
+    theDI << "Syntax error at '-default'";
+    return 1;
+  }
+
+  if (aNbColors == 1)
+  {
+    if (isDefault)
+    {
+      ViewerTest_DefaultBackground.GradientColor1 = Quantity_Color();
+      ViewerTest_DefaultBackground.GradientColor2 = Quantity_Color();
+      ViewerTest_DefaultBackground.FillMethod     = Aspect_GFM_NONE;
+      ViewerTest_DefaultBackground.FlatColor      = aColors[0].GetRGB();
+      ViewerTest_DefaultBackground.SetDefaultGradient();
+      ViewerTest_DefaultBackground.SetDefaultColor();
+    }
+    else
+    {
+      aView->SetBgGradientStyle (hasGradientMode ? aGradientMode : Aspect_GFM_NONE);
+      aView->SetBackgroundColor (aColors[0].GetRGB());
+    }
+  }
+  else if (aNbColors == 2)
+  {
+    if (isDefault)
+    {
+      ViewerTest_DefaultBackground.GradientColor1 = aColors[0].GetRGB();
+      ViewerTest_DefaultBackground.GradientColor2 = aColors[1].GetRGB();
+      if (hasGradientMode)
+      {
+        ViewerTest_DefaultBackground.FillMethod = aGradientMode;
+      }
+      else if (ViewerTest_DefaultBackground.FillMethod == Aspect_GFM_NONE)
+      {
+        ViewerTest_DefaultBackground.FillMethod = Aspect_GFM_VER;
+      }
+      ViewerTest_DefaultBackground.SetDefaultGradient();
+    }
+    else
+    {
+      if (!hasGradientMode)
+      {
+        aGradientMode = aView->GradientBackground().BgGradientFillMethod();
+        if (aGradientMode == Aspect_GFM_NONE)
+        {
+          aGradientMode = Aspect_GFM_VER;
+        }
+      }
+      aView->SetBgGradientColors (aColors[0].GetRGB(), aColors[1].GetRGB(), aGradientMode);
+    }
+  }
+  else if (hasGradientMode)
+  {
+    if (isDefault)
+    {
+      ViewerTest_DefaultBackground.FillMethod = aGradientMode;
+      ViewerTest_DefaultBackground.SetDefaultGradient();
+    }
+    else
+    {
+      aView->SetBgGradientStyle (aGradientMode);
+    }
+  }
+
+  if (!anImagePath.IsEmpty())
+  {
+    Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2Dmanual (anImagePath);
+    aTextureMap->DisableModulate();
+    aTextureMap->SetColorMap (isSRgb);
+    if (!aTextureMap->IsDone())
+    {
+      theDI << "Syntax error at '" << anImagePath << "'";
+      return 1;
+    }
+    aView->SetBackgroundImage (aTextureMap, anImageMode);
+  }
+  else if (hasImageMode)
+  {
+    aView->SetBgImageStyle (anImageMode);
+  }
+
+  if (!aCubeMapSeq.IsEmpty())
+  {
+    Handle(Graphic3d_CubeMap) aCubeMap;
+    if (aCubeMapSeq.Size() == 1)
+    {
+      aCubeMap = new Graphic3d_CubeMapPacked (aCubeMapSeq.First(), aCubeOrder.Validated());
+    }
+    else
+    {
+      NCollection_Array1<TCollection_AsciiString> aCubeMapArr (0, 5);
+      Standard_Integer aCubeSide = 0;
+      for (NCollection_Sequence<TCollection_AsciiString>::Iterator aFileIter (aCubeMapSeq); aFileIter.More(); aFileIter.Next(), ++aCubeSide)
+      {
+        aCubeMapArr[aCubeSide] = aFileIter.Value();
+      }
+      aCubeMap = new Graphic3d_CubeMapSeparate (aCubeMapArr);
+    }
+
+    aCubeMap->SetZInversion (isCubeZInverted);
+    aCubeMap->SetColorMap (isSRgb);
+
+    aCubeMap->GetParams()->SetFilter (Graphic3d_TOTF_BILINEAR);
+    aCubeMap->GetParams()->SetRepeat (false);
+    aCubeMap->GetParams()->SetTextureUnit (Graphic3d_TextureUnit_EnvMap);
+
+    aView->SetBackgroundCubeMap (aCubeMap, isCubeGenPBREnv);
+  }
+
+  return 0;
+}
 
 //==============================================================================
 //function : VScale
@@ -14459,94 +13651,59 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vclear          : vclear"
     "\n\t\t: remove all the object from the viewer",
     __FILE__,VClear,group);
-  theCommands.Add (
-    "vbackground",
-    "Changes background or some background settings.\n"
-    "\n"
-    "Usage:\n"
-    "  vbackground -imageFile ImageFile [-imageMode FillType]\n"
-    "  vbackground -imageMode FillType\n"
-    "  vbackground -gradient Color1 Color2 [-gradientMode FillMethod]\n"
-    "  vbackground -gradientMode FillMethod\n"
-    "  vbackground -cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]\n"
-    "  vbackground -color Color\n"
-    "  vbackground -default -gradient Color1 Color2 [-gradientMode FillType]\n"
-    "  vbackground -default -color Color\n"
-    "  vbackground -help\n"
-    "\n"
-    "Options:\n"
-    "  -imageFile    (-imgFile, -image, -img):             sets filename of image used as background\n"
-    "  -imageMode    (-imgMode, -imageMd, -imgMd):         sets image fill type\n"
-    "  -gradient     (-grad, -gr):                         sets background gradient starting and ending colors\n"
-    "  -gradientMode (-gradMode, -gradMd, -grMode, -grMd): sets gradient fill method\n"
-    "  -cubemap      (-cmap, -cm):                         sets environment cubemap as background\n"
-    "  -invertedz    (-invz, -iz):                         sets inversion of Z axis for background cubemap rendering\n"
-    "  -order        (-o):                                 defines order of tiles in one image cubemap\n"
-    "                                                      (has no effect in case of multi image cubemaps)\n"
-    "  -color        (-col):                               sets background color\n"
-    "  -default      (-def):                               sets background default gradient or color\n"
-    "  -help         (-h):                                 outputs short help message\n"
-    "\n"
-    "Arguments:\n"
-    "  Color:        Red Green Blue  - where Red, Green, Blue must be integers within the range [0, 255]\n"
-    "                                  or reals within the range [0.0, 1.0]\n"
-    "                ColorName       - one of WHITE, BLACK, RED, GREEN, BLUE, etc.\n"
-    "                #HHH, [#]HHHHHH - where H is a hexadecimal digit (0 .. 9, a .. f, or A .. F)\n"
-    "  FillMethod:   one of NONE, HOR[IZONTAL], VER[TICAL], DIAG[ONAL]1, DIAG[ONAL]2, CORNER1, CORNER2, CORNER3, "
-    "CORNER4\n"
-    "  FillType:     one of CENTERED, TILED, STRETCH, NONE\n"
-    "  ImageFile:    a name of the file with the image used as a background\n"
-    "  CubemapFilei: a name of the file with one image packed cubemap or names of separate files with every cubemap side\n"
-    "  TileIndexi:   a cubemap side index in range [0, 5] for i tile of one image packed cubemap\n",
+  theCommands.Add ("vbackground",
+           "vbackground [-color Color [-default]]"
+    "\n\t\t:            [-gradient Color1 Color2 [-default]"
+    "\n\t\t:            [-gradientMode {NONE|HORIZONTAL|VERTICAL|DIAG1|DIAG2|CORNER1|CORNER2|CORNER3}]=VERT]"
+    "\n\t\t:            [-imageFile ImageFile [-imageMode {CENTERED|TILED|STRETCH|NONE}]=CENTERED [-srgb {0|1}]=1]"
+    "\n\t\t:            [-cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]=0 [-pbrEnv {0|1}]=1]"
+    "\n\t\t: Changes background or some background settings."
+    "\n\t\t:  -color        sets background color"
+    "\n\t\t:  -gradient     sets background gradient starting and ending colors"
+    "\n\t\t:  -gradientMode sets gradient fill method"
+    "\n\t\t:  -default      sets background default gradient or color"
+    "\n\t\t:  -imageFile    sets filename of image used as background"
+    "\n\t\t:  -imageMode    sets image fill type"
+    "\n\t\t:  -cubemap      sets environment cubemap as background"
+    "\n\t\t:  -invertedz    sets inversion of Z axis for background cubemap rendering; FALSE when unspecified"
+    "\n\t\t:  -pbrEnv       sets PBR environment baking flag while updating cubemap; TRUE when unspecified"
+    "\n\t\t:  -srgb         prefer sRGB texture format when applicable; TRUE when unspecified"
+    "\n\t\t:  -order        defines order of tiles in one image cubemap"
+    "\n\t\t:    TileIndexi defubes an index in range [0, 5] for i tile of one image packed cubemap"
+    "\n\t\t:               (has no effect in case of multi-image cubemaps)",
     __FILE__,
-    vbackground,
+    VBackground,
     group);
   theCommands.Add ("vsetbg",
-                   "Loads image as background."
-                   "\n\t\t: vsetbg ImageFile [FillType]"
-                   "\n\t\t: vsetbg -imageFile ImageFile [-imageMode FillType]"
                    "\n\t\t: Alias for 'vbackground -imageFile ImageFile [-imageMode FillType]'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add ("vsetbgmode",
-                   "Changes background image fill type."
-                   "\n\t\t: vsetbgmode [-imageMode] FillType"
                    "\n\t\t: Alias for 'vbackground -imageMode FillType'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add ("vsetgradientbg",
-                   "Mounts gradient background."
-                   "\n\t\t: vsetgradientbg Color1 Color2 [FillMethod]"
-                   "\n\t\t: vsetgradientbg -gradient Color1 Color2 [-gradientMode FillMethod]"
                    "\n\t\t: Alias for 'vbackground -gradient Color1 Color2 -gradientMode FillMethod'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add ("vsetgrbgmode",
-                   "Changes gradient background fill method."
-                   "\n\t\t: vsetgrbgmode [-gradientMode] FillMethod"
                    "\n\t\t: Alias for 'vbackground -gradientMode FillMethod'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add ("vsetcolorbg",
-                   "Sets background color."
-                   "\n\t\t: vsetcolorbg [-color] Color."
                    "\n\t\t: Alias for 'vbackground -color Color'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add ("vsetdefaultbg",
-                   "Sets default viewer background fill color (flat/gradient)."
-                   "\n\t\t: vsetdefaultbg Color1 Color2 [FillMethod]"
-                   "\n\t\t: vsetdefaultbg -gradient Color1 Color2 [-gradientMode FillMethod]"
-                   "\n\t\t: Alias for 'vbackground -default -gradient Color1 Color2 [-gradientMode FillMethod]'."
-                   "\n\t\t: vsetdefaultbg [-color] Color"
-                   "\n\t\t: Alias for 'vbackground -default -color Color'.",
+                   "\n\t\t: Alias for 'vbackground -default -gradient Color1 Color2 [-gradientMode FillMethod]'"
+                   "\n\t\t:   and for 'vbackground -default -color Color'.",
                    __FILE__,
-                   vbackground,
+                   VBackground,
                    group);
   theCommands.Add("vscale",
     "vscale          : vscale X Y Z",
