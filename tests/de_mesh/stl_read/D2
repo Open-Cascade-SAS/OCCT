@@ -1,0 +1,29 @@
+puts "========"
+puts "0032580: Data Exchange, STL - add option splitting nodes at sharp corners"
+puts "Test readstl with various merge nodes parameters"
+puts "========" 
+
+pload XDE VISUALIZATION MODELING
+readstl s1 [locate_data_file shape.stl]
+checktrinfo s1 -tri 494 -nod 249
+readstl s2 [locate_data_file shape.stl] -mergeAngle 45
+checktrinfo s2 -tri 494 -nod 413
+
+vinit View1
+vdisplay -dispMode 1 s1
+vaspects s1 -faceBoundaryDraw 1
+vfit
+vdump ${imagedir}/${casename}_mergeall.png
+
+vclear
+vdisplay -dispMode 1 s2
+vaspects s2 -faceBoundaryDraw 1
+vdump ${imagedir}/${casename}_merge45.png
+
+tcopy -mesh s1 s3
+trmergenodes s3 -angle 60
+vclear
+vdisplay -dispMode 1 s3
+vaspects s3 -faceBoundaryDraw 1
+vdump ${imagedir}/${casename}_merge60.png
+checktrinfo s3 -tri 494 -nod 411

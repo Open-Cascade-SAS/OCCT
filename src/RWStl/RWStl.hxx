@@ -43,12 +43,24 @@ public:
   //! Read specified STL file and returns its content as triangulation.
   //! In case of error, returns Null handle.
   Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const OSD_Path& theFile,
-                                                              const Message_ProgressRange& aProgInd = Message_ProgressRange());
+                                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read specified STL file and returns its content as triangulation.
   //! In case of error, returns Null handle.
+  static Handle(Poly_Triangulation) ReadFile (const Standard_CString theFile,
+                                              const Message_ProgressRange& theProgress = Message_ProgressRange())
+  {
+    return ReadFile (theFile, M_PI / 2.0, theProgress);
+  }
+
+  //! Read specified STL file and returns its content as triangulation.
+  //! @param[in] theFile file path to read
+  //! @param[in] theMergeAngle maximum angle in radians between triangles to merge equal nodes; M_PI/2 means ignore angle
+  //! @param[in] theProgress progress indicator
+  //! @return result triangulation or NULL in case of error
   Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const Standard_CString theFile,
-                                                              const Message_ProgressRange& aProgInd = Message_ProgressRange());
+                                                              const Standard_Real theMergeAngle,
+                                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Read triangulation from a binary STL file
   //! In case of error, returns Null handle.

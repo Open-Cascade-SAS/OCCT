@@ -41,6 +41,7 @@
 #include <Message_ProgressRange.hxx>
 #include <OSD_OpenFile.hxx>
 #include <Poly_Connect.hxx>
+#include <Poly_MergeNodesTool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -1432,6 +1433,150 @@ static Standard_Integer triedgepoints(Draw_Interpretor& di, Standard_Integer nba
 }
 
 //=======================================================================
+//function : TrMergeNodes
+//purpose  :
+//=======================================================================
+static Standard_Integer TrMergeNodes (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs < 2)
+  {
+    theDI << "Syntax error: not enough arguments";
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get (theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDI << "Syntax error: '" << theArgVec[1] << "' is not a shape";
+    return 1;
+  }
+
+  Standard_Real aMergeAngle = M_PI / 4.0, aMergeToler = 0.0;
+  bool toForce = false;
+  TCollection_AsciiString aResFace;
+  for (Standard_Integer anArgIter = 2; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgIter + 1 < theNbArgs
+     && (anArgCase == "-angle"
+      || anArgCase == "-smoothangle"
+      || anArgCase == "-mergeangle")
+     && Draw::ParseReal (theArgVec[anArgIter + 1], aMergeAngle))
+    {
+      if (aMergeAngle < 0.0 || aMergeAngle > 90.0)
+      {
+        theDI << "Syntax error: angle should be within [0,90] range";
+        return 1;
+      }
+
+      ++anArgIter;
+      aMergeAngle = aMergeAngle * M_PI / 180.0;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArgCase == "-tolerance"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aMergeToler))
+    {
+      if (aMergeToler < 0.0)
+      {
+        theDI << "Syntax error: tolerance should be within >=0";
+        return 1;
+      }
+
+      ++anArgIter;
+    }
+    else if (anArgCase == "-force")
+    {
+      toForce = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArgCase == "-oneface")
+    {
+      aResFace = theArgVec[++anArgIter];
+    }
+    else
+    {
+      theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  Standard_Integer aNbNodesOld = 0, aNbTrisOld = 0;
+  Standard_Integer aNbNodesNew = 0, aNbTrisNew = 0;
+  if (!aResFace.IsEmpty())
+  {
+    TopLoc_Location aFaceLoc;
+    Poly_MergeNodesTool aMergeTool (aMergeAngle, aMergeToler);
+    for (TopExp_Explorer aFaceIter (aShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value());
+      Handle(Poly_Triangulation) aTris = BRep_Tool::Triangulation (aFace, aFaceLoc);
+      if (aTris.IsNull()
+       || aTris->NbNodes() < 3
+       || aTris->NbTriangles() < 1)
+      {
+        continue;
+      }
+
+      aNbNodesOld += aTris->NbNodes();
+      aNbTrisOld  += aTris->NbTriangles();
+      aMergeTool.AddTriangulation (aTris, aFaceLoc, aFace.Orientation() == TopAbs_REVERSED);
+    }
+    Handle(Poly_Triangulation) aNewTris = aMergeTool.Result();
+    if (aNewTris.IsNull())
+    {
+      theDI << "Error: empty result";
+      return 0;
+    }
+
+    aNbNodesNew += aNewTris->NbNodes();
+    aNbTrisNew  += aNewTris->NbTriangles();
+    TopoDS_Face aFace;
+    BRep_Builder().MakeFace (aFace, aNewTris);
+    DBRep::Set (aResFace.ToCString(), aFace);
+  }
+  else
+  {
+    TopTools_MapOfShape aProcessedFaces;
+    TopLoc_Location aDummy;
+    for (TopExp_Explorer aFaceIter (aShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    {
+      const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value());
+      if (!aProcessedFaces.Add (aFace.Located (TopLoc_Location())))
+      {
+        continue;
+      }
+
+      Handle(Poly_Triangulation) aTris = BRep_Tool::Triangulation (aFace, aDummy);
+      if (aTris.IsNull()
+       || aTris->NbNodes() < 3
+       || aTris->NbTriangles() < 1)
+      {
+        continue;
+      }
+
+      aNbNodesOld += aTris->NbNodes();
+      aNbTrisOld  += aTris->NbTriangles();
+      Poly_MergeNodesTool aMergeTool (aMergeAngle, aMergeToler, aTris->NbTriangles());
+      aMergeTool.AddTriangulation (aTris);
+      if (toForce
+       || aMergeTool.NbNodes()    != aTris->NbNodes()
+       || aMergeTool.NbElements() != aTris->NbTriangles())
+      {
+        BRep_Builder().UpdateFace (aFace, aMergeTool.Result(), false);
+      }
+
+      aTris = BRep_Tool::Triangulation (aFace, aDummy);
+      aNbNodesNew += aTris->NbNodes();
+      aNbTrisNew  += aTris->NbTriangles();
+    }
+  }
+  theDI << "Old, Triangles: " << aNbTrisOld << ", Nodes: " << aNbNodesOld << "\n";
+  theDI << "New, Triangles: " << aNbTrisNew << ", Nodes: " << aNbNodesNew << "\n";
+  return 0;
+}
+
+//=======================================================================
 //function : correctnormals
 //purpose  : Corrects normals in shape triangulation nodes (...)
 //=======================================================================
@@ -1499,5 +1644,13 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
                   "\n\t\t:   '-loadSingleExact' - make loaded and active ONLY exactly specified triangulation. All other triangulations"
                   "\n\t\t:                      will be unloaded. If triangulation with such Index doesn't exist do nothing",
                   __FILE__, TrLateLoad, g);
+  theCommands.Add("trmergenodes",
+                  "trmergenodes shapeName"
+                  "\n\t\t:   [-angle Angle] [-tolerance Value] [-oneFace Result]"
+                  "\n\t\t: Merging nodes within triangulation data."
+                  "\n\t\t:   -angle     merge angle upper limit in degrees; 45 when unspecified"
+                  "\n\t\t:   -tolerance linear tolerance to merge nodes; 0.0 when unspecified"
+                  "\n\t\t:   -oneFace   create a new single Face with specified name for the whole triangulation",
+                  __FILE__, TrMergeNodes, g);
   theCommands.Add("correctnormals", "correctnormals shape",__FILE__, correctnormals, g);
 }

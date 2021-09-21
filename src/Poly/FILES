@@ -22,6 +22,8 @@ Poly_ListOfTriangulation.hxx
 Poly_MakeLoops.cxx
 Poly_MakeLoops.hxx
 Poly_MeshPurpose.hxx
+Poly_MergeNodesTool.cxx
+Poly_MergeNodesTool.hxx
 Poly_Polygon2D.cxx
 Poly_Polygon2D.hxx
 Poly_Polygon3D.cxx

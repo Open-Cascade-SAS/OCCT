@@ -107,13 +107,15 @@ namespace
 }
 
 //=============================================================================
-//function : Read
+//function : ReadFile
 //purpose  :
 //=============================================================================
 Handle(Poly_Triangulation) RWStl::ReadFile (const Standard_CString theFile,
+                                            const Standard_Real theMergeAngle,
                                             const Message_ProgressRange& theProgress)
 {
   Reader aReader;
+  aReader.SetMergeAngle (theMergeAngle);
   aReader.Read (theFile, theProgress);
   // note that returned bool value is ignored intentionally -- even if something went wrong,
   // but some data have been read, we at least will return these data

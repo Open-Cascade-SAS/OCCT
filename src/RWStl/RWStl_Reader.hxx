@@ -35,6 +35,9 @@ class RWStl_Reader : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(RWStl_Reader, Standard_Transient)
 public:
 
+  //! Default constructor.
+  Standard_EXPORT RWStl_Reader();
+
   //! Reads data from STL file (either binary or Ascii).
   //! This function supports reading multi-domain STL files formed by concatenation of several "plain" files.
   //! The mesh nodes are not merged between domains.
@@ -80,6 +83,26 @@ public:
   //! Callback function to be implemented in descendant.
   //! Should create new triangle built on specified nodes in the target model.
   virtual void AddTriangle (Standard_Integer theN1, Standard_Integer theN2, Standard_Integer theN3) = 0;
+
+public:
+
+  //! Return merge tolerance; M_PI/2 by default - all nodes are merged regardless angle between triangles.
+  Standard_Real MergeAngle() const { return myMergeAngle; }
+
+  //! Set merge angle in radians.
+  //! Specify something like M_PI/4 (45 degrees) to avoid merge nodes between triangles at sharp corners.
+  void SetMergeAngle (Standard_Real theAngleRad) { myMergeAngle = theAngleRad; }
+
+  //! Return linear merge tolerance; 0.0 by default (only 3D points with exactly matching coordinates are merged).
+  double MergeTolerance() const { return myMergeTolearance; }
+
+  //! Set linear merge tolerance.
+  void SetMergeTolerance (double theTolerance) { myMergeTolearance = theTolerance; }
+
+protected:
+
+  Standard_Real myMergeAngle;
+  Standard_Real myMergeTolearance;
 
 };
 

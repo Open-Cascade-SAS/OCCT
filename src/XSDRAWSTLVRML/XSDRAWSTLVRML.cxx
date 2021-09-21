@@ -574,6 +574,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
 {
   TCollection_AsciiString aShapeName, aFilePath;
   bool toCreateCompOfTris = false;
+  double aMergeAngle = M_PI / 2.0;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgc; ++anArgIter)
   {
     TCollection_AsciiString anArg (theArgv[anArgIter]);
@@ -595,6 +596,32 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
         ++anArgIter;
       }
     }
+    else if (anArg == "-mergeangle"
+          || anArg == "-smoothangle"
+          || anArg == "-nomergeangle"
+          || anArg == "-nosmoothangle")
+    {
+      if (anArg.StartsWith ("-no"))
+      {
+        aMergeAngle = M_PI / 2.0;
+      }
+      else
+      {
+        aMergeAngle = M_PI / 4.0;
+        if (anArgIter + 1 < theArgc
+         && Draw::ParseReal (theArgv[anArgIter + 1], aMergeAngle))
+        {
+          if (aMergeAngle < 0.0 || aMergeAngle > 90.0)
+          {
+            theDI << "Syntax error: angle should be within [0,90] range";
+            return 1;
+          }
+
+          ++anArgIter;
+          aMergeAngle = aMergeAngle * M_PI / 180.0;
+        }
+      }
+    }
     else
     {
       Message::SendFail() << "Syntax error: unknown argument '" << theArgv[anArgIter] << "'";
@@ -612,7 +639,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
   {
     // Read STL file to the triangulation.
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
-    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(), aProgress->Start());
+    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(), aMergeAngle, aProgress->Start());
 
     TopoDS_Face aFace;
     BRep_Builder aB;
@@ -2073,10 +2100,11 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",
-                   "readstl shape file [-brep]"
+                   "readstl shape file [-brep] [-mergeAngle Angle]"
                    "\n\t\t: Reads STL file and creates a new shape with specified name."
                    "\n\t\t: When -brep is specified, creates a Compound of per-triangle Faces."
-                   "\n\t\t: Single triangulation-only Face is created otherwise (default).",
+                   "\n\t\t: Single triangulation-only Face is created otherwise (default)."
+                   "\n\t\t: -mergeAngle specifies maximum angle in degrees between triangles to merge equal nodes; disabled by default.",
                    __FILE__, readstl, g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
   theCommands.Add ("ReadObj",

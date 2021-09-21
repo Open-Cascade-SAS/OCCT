@@ -24,6 +24,7 @@
 #include <FSD_BinaryFile.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_Timer.hxx>
+#include <Poly_MergeNodesTool.hxx>
 #include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
 
@@ -43,53 +44,50 @@ namespace
   static const size_t THE_BUFFER_SIZE = 1024;
 
   //! Auxiliary tool for merging nodes during STL reading.
-  class MergeNodeTool
+  class MergeNodeTool : public Poly_MergeNodesTool
   {
   public:
 
     //! Constructor
-    MergeNodeTool (RWStl_Reader* theReader)
-    : myReader (theReader),
-      myMap (1024, new NCollection_IncAllocator (1024 * 1024))
+    MergeNodeTool (RWStl_Reader* theReader,
+                   const Standard_Integer theNbFacets = -1)
+    : Poly_MergeNodesTool (theReader->MergeAngle(), 0.0, theNbFacets),
+      myReader (theReader),
+      myNodeIndexMap (1024, new NCollection_IncAllocator (1024 * 1024))
     {
+      // avoid redundant allocations as final triangulation is managed by RWStl_Reader subclass
+      ChangeOutput().Nullify();
     }
 
     //! Add new triangle
-    int AddNode (double theX, double theY, double theZ)
+    void AddTriangle (const gp_XYZ theElemNodes[3])
     {
-      // use existing node if found at the same point
-      gp_XYZ aPnt (theX, theY, theZ);
+      Poly_MergeNodesTool::AddTriangle (theElemNodes);
 
-      Standard_Integer anIndex = -1;
-      if (myMap.Find (aPnt, anIndex))
+      // remap node indices returned by RWStl_Reader::AddNode();
+      // this is a waste of time for most cases of sequential index adding, but preserved for keeping RWStl_Reader interface
+      int aNodesSrc[3] = { ElementNodeIndex (0), ElementNodeIndex (1), ElementNodeIndex (2) };
+      int aNodesRes[3] = { -1, -1, -1 };
+      for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
       {
-        return anIndex;
+        // use existing node if found at the same point
+        if (!myNodeIndexMap.Find (aNodesSrc[aNodeIter], aNodesRes[aNodeIter]))
+        {
+          aNodesRes[aNodeIter] = myReader->AddNode (theElemNodes[aNodeIter]);
+          myNodeIndexMap.Bind (aNodesSrc[aNodeIter], aNodesRes[aNodeIter]);
+        }
       }
-
-      anIndex = myReader->AddNode (aPnt);
-      myMap.Bind (aPnt, anIndex);
-      return anIndex;
-    }
-
-  public:
-
-    static Standard_Boolean IsEqual (const gp_XYZ& thePnt1, const gp_XYZ& thePnt2)
-    {
-      return (thePnt1 - thePnt2).SquareModulus() < Precision::SquareConfusion();
-    }
-
-    //! Computes a hash code for the point, in the range [1, theUpperBound]
-    //! @param thePoint the point which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    static Standard_Integer HashCode (const gp_XYZ& thePoint, const Standard_Integer theUpperBound)
-    {
-      return ::HashCode (thePoint.X() * M_LN10 + thePoint.Y() * M_PI + thePoint.Z() * M_E, theUpperBound);
+      if (aNodesRes[0] != aNodesRes[1]
+       && aNodesRes[1] != aNodesRes[2]
+       && aNodesRes[2] != aNodesRes[0])
+      {
+        myReader->AddTriangle (aNodesRes[0], aNodesRes[1], aNodesRes[2]);
+      }
     }
 
   private:
     RWStl_Reader* myReader;
-    NCollection_DataMap<gp_XYZ, Standard_Integer, MergeNodeTool> myMap;
+    NCollection_DataMap<Standard_Integer, Standard_Integer> myNodeIndexMap;
   };
 
   //! Read a Little Endian 32 bits float
@@ -124,10 +122,20 @@ namespace
 }
 
 //==============================================================================
+//function : RWStl_Reader
+//purpose  :
+//==============================================================================
+RWStl_Reader::RWStl_Reader()
+: myMergeAngle (M_PI/2.0),
+  myMergeTolearance (0.0)
+{
+  //
+}
+
+//==============================================================================
 //function : Read
 //purpose  :
 //==============================================================================
-
 Standard_Boolean RWStl_Reader::Read (const char* theFile,
                                      const Message_ProgressRange& theProgress)
 {
@@ -301,6 +309,9 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
   }
 
   MergeNodeTool aMergeTool (this);
+  aMergeTool.SetMergeAngle (myMergeAngle);
+  aMergeTool.SetMergeTolerance (myMergeTolearance);
+
   Standard_CLocaleSentry::clocale_t aLocale = Standard_CLocaleSentry::GetCLocale();
   (void)aLocale; // to avoid warning on GCC where it is actually not used
   SAVE_TL() // for GCC only, set C locale globally
@@ -373,13 +384,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
     aNbLine += 5;
 
     // add triangle
-    int n1 = aMergeTool.AddNode (aVertex[0].X(), aVertex[0].Y(), aVertex[0].Z());
-    int n2 = aMergeTool.AddNode (aVertex[1].X(), aVertex[1].Y(), aVertex[1].Z());
-    int n3 = aMergeTool.AddNode (aVertex[2].X(), aVertex[2].Y(), aVertex[2].Z());
-    if (n1 != n2 && n2 != n3 && n3 != n1)
-    {
-      AddTriangle (n1, n2, n3);
-    }
+    aMergeTool.AddTriangle (aVertex);
 
     theBuffer.ReadLine (theStream, aLineLen); // skip "endloop"
     theBuffer.ReadLine (theStream, aLineLen); // skip "endfacet"
@@ -421,7 +426,9 @@ Standard_Boolean RWStl_Reader::ReadBinary (Standard_IStream& theStream,
   // number of facets is stored as 32-bit integer at position 80
   const Standard_Integer aNbFacets = *(int32_t*)(aHeader + 80);
 
-  MergeNodeTool aMergeTool (this);
+  MergeNodeTool aMergeTool (this, aNbFacets);
+  aMergeTool.SetMergeAngle (myMergeAngle);
+  aMergeTool.SetMergeTolerance (myMergeTolearance);
 
   // don't trust the number of triangles which is coded in the file
   // sometimes it is wrong, and with this technique we don't need to swap endians for integer
@@ -455,18 +462,13 @@ Standard_Boolean RWStl_Reader::ReadBinary (Standard_IStream& theStream,
 
     // get points from buffer
 //    readStlFloatVec3 (aBufferPtr); // skip normal
-    gp_XYZ aP1 = readStlFloatVec3 (aBufferPtr + aVec3Size);
-    gp_XYZ aP2 = readStlFloatVec3 (aBufferPtr + aVec3Size * 2);
-    gp_XYZ aP3 = readStlFloatVec3 (aBufferPtr + aVec3Size * 3);
-
-    // add triangle
-    int n1 = aMergeTool.AddNode (aP1.X(), aP1.Y(), aP1.Z());
-    int n2 = aMergeTool.AddNode (aP2.X(), aP2.Y(), aP2.Z());
-    int n3 = aMergeTool.AddNode (aP3.X(), aP3.Y(), aP3.Z());
-    if (n1 != n2 && n2 != n3 && n3 != n1)
+    gp_XYZ aTriNodes[3] =
     {
-      AddTriangle (n1, n2, n3);
-    }
+      readStlFloatVec3 (aBufferPtr + aVec3Size),
+      readStlFloatVec3 (aBufferPtr + aVec3Size * 2),
+      readStlFloatVec3 (aBufferPtr + aVec3Size * 3)
+    };
+    aMergeTool.AddTriangle (aTriNodes);
   }
 
   return aPS.More();
