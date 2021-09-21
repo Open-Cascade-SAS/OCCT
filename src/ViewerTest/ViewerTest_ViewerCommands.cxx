@@ -214,7 +214,7 @@ static struct
     }
   }
 
-} ViewerTest_DefaultBackground = { Quantity_NOC_BLACK, Quantity_NOC_BLACK, Quantity_NOC_BLACK, Aspect_GFM_NONE };
+} ViewerTest_DefaultBackground = { Quantity_NOC_BLACK, Quantity_NOC_BLACK, Quantity_NOC_BLACK, Aspect_GradientFillMethod_None };
 
 //==============================================================================
 //  EVENT GLOBAL VARIABLES
@@ -2613,46 +2613,51 @@ static bool parseGradientMode (const TCollection_AsciiString& theName,
   aName.LowerCase();
   if (aName == "none")
   {
-    theMode = Aspect_GFM_NONE;
+    theMode = Aspect_GradientFillMethod_None;
   }
   else if (aName == "hor"
         || aName == "horizontal")
   {
-    theMode = Aspect_GFM_HOR;
+    theMode = Aspect_GradientFillMethod_Horizontal;
   }
   else if (aName == "ver"
         || aName == "vert"
         || aName == "vertical")
   {
-    theMode = Aspect_GFM_VER;
+    theMode = Aspect_GradientFillMethod_Vertical;
   }
   else if (aName == "diag"
         || aName == "diagonal"
         || aName == "diag1"
         || aName == "diagonal1")
   {
-    theMode = Aspect_GFM_DIAG1;
+    theMode = Aspect_GradientFillMethod_Diagonal1;
   }
   else if (aName == "diag2"
         || aName == "diagonal2")
   {
-    theMode = Aspect_GFM_DIAG2;
+    theMode = Aspect_GradientFillMethod_Diagonal2;
   }
   else if (aName == "corner1")
   {
-    theMode = Aspect_GFM_CORNER1;
+    theMode = Aspect_GradientFillMethod_Corner1;
   }
   else if (aName == "corner2")
   {
-    theMode = Aspect_GFM_CORNER2;
+    theMode = Aspect_GradientFillMethod_Corner2;
   }
   else if (aName == "corner3")
   {
-    theMode = Aspect_GFM_CORNER3;
+    theMode = Aspect_GradientFillMethod_Corner3;
   }
   else if (aName == "corner4")
   {
-    theMode = Aspect_GFM_CORNER4;
+    theMode = Aspect_GradientFillMethod_Corner4;
+  }
+  else if (aName == "ellip"
+        || aName == "elliptical")
+  {
+    theMode = Aspect_GradientFillMethod_Elliptical;
   }
   else
   {
@@ -2680,7 +2685,7 @@ static int VBackground (Draw_Interpretor& theDI,
   Standard_Integer aNbColors = 0;
   Quantity_ColorRGBA aColors[2];
 
-  Aspect_GradientFillMethod aGradientMode = Aspect_GFM_NONE;
+  Aspect_GradientFillMethod aGradientMode = Aspect_GradientFillMethod_None;
   bool hasGradientMode = false;
 
   TCollection_AsciiString anImagePath;
@@ -2891,14 +2896,14 @@ static int VBackground (Draw_Interpretor& theDI,
     {
       ViewerTest_DefaultBackground.GradientColor1 = Quantity_Color();
       ViewerTest_DefaultBackground.GradientColor2 = Quantity_Color();
-      ViewerTest_DefaultBackground.FillMethod     = Aspect_GFM_NONE;
+      ViewerTest_DefaultBackground.FillMethod     = Aspect_GradientFillMethod_None;
       ViewerTest_DefaultBackground.FlatColor      = aColors[0].GetRGB();
       ViewerTest_DefaultBackground.SetDefaultGradient();
       ViewerTest_DefaultBackground.SetDefaultColor();
     }
     else
     {
-      aView->SetBgGradientStyle (hasGradientMode ? aGradientMode : Aspect_GFM_NONE);
+      aView->SetBgGradientStyle (hasGradientMode ? aGradientMode : Aspect_GradientFillMethod_None);
       aView->SetBackgroundColor (aColors[0].GetRGB());
     }
   }
@@ -2912,9 +2917,9 @@ static int VBackground (Draw_Interpretor& theDI,
       {
         ViewerTest_DefaultBackground.FillMethod = aGradientMode;
       }
-      else if (ViewerTest_DefaultBackground.FillMethod == Aspect_GFM_NONE)
+      else if (ViewerTest_DefaultBackground.FillMethod == Aspect_GradientFillMethod_None)
       {
-        ViewerTest_DefaultBackground.FillMethod = Aspect_GFM_VER;
+        ViewerTest_DefaultBackground.FillMethod = Aspect_GradientFillMethod_Vertical;
       }
       ViewerTest_DefaultBackground.SetDefaultGradient();
     }
@@ -2923,9 +2928,9 @@ static int VBackground (Draw_Interpretor& theDI,
       if (!hasGradientMode)
       {
         aGradientMode = aView->GradientBackground().BgGradientFillMethod();
-        if (aGradientMode == Aspect_GFM_NONE)
+        if (aGradientMode == Aspect_GradientFillMethod_None)
         {
-          aGradientMode = Aspect_GFM_VER;
+          aGradientMode = Aspect_GradientFillMethod_Vertical;
         }
       }
       aView->SetBgGradientColors (aColors[0].GetRGB(), aColors[1].GetRGB(), aGradientMode);
@@ -13654,7 +13659,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vbackground",
            "vbackground [-color Color [-default]]"
     "\n\t\t:            [-gradient Color1 Color2 [-default]"
-    "\n\t\t:            [-gradientMode {NONE|HORIZONTAL|VERTICAL|DIAG1|DIAG2|CORNER1|CORNER2|CORNER3}]=VERT]"
+    "\n\t\t:            [-gradientMode {NONE|HORIZONTAL|VERTICAL|DIAG1|DIAG2|CORNER1|CORNER2|CORNER3|ELLIPTICAL}]=VERT]"
     "\n\t\t:            [-imageFile ImageFile [-imageMode {CENTERED|TILED|STRETCH|NONE}]=CENTERED [-srgb {0|1}]=1]"
     "\n\t\t:            [-cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]=0 [-pbrEnv {0|1}]=1]"
     "\n\t\t: Changes background or some background settings."

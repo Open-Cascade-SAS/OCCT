@@ -22,7 +22,7 @@ Aspect_GradientBackground::Aspect_GradientBackground () {
 
   SetColor( Black );
   MyColor2 = Black;
-  MyGradientMethod = Aspect_GFM_NONE;   
+  MyGradientMethod = Aspect_GradientFillMethod_None;
 
 }
 

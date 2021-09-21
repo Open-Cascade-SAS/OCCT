@@ -16,68 +16,45 @@
 #ifndef _Aspect_GradientBackground_HeaderFile
 #define _Aspect_GradientBackground_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Quantity_Color.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_Background.hxx>
-class Quantity_Color;
 
-
-//! This class allows the definition of
-//! a window gradient background.
+//! This class allows the definition of a window gradient background.
 class Aspect_GradientBackground  : public Aspect_Background
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Creates a window gradient background.
-  //! Default colors : Quantity_NOC_BLACK.
-  //! Default fill method : Aspect_GFM_NONE
+  //! Default color is Quantity_NOC_BLACK.
+  //! Default fill method is Aspect_GradientFillMethod_None.
   Standard_EXPORT Aspect_GradientBackground();
-  
-  //! Creates a window gradient background with colours <AColor1, AColor2>.
-  Standard_EXPORT Aspect_GradientBackground(const Quantity_Color& AColor1, const Quantity_Color& AColor2, const Aspect_GradientFillMethod AMethod = Aspect_GFM_HOR);
-  
-  //! Modifies the colours of the window gradient background <me>.
-  Standard_EXPORT void SetColors (const Quantity_Color& AColor1, const Quantity_Color& AColor2, const Aspect_GradientFillMethod AMethod = Aspect_GFM_HOR);
-  
-  //! Returns colours of the window gradient background <me>.
-  Standard_EXPORT void Colors (Quantity_Color& AColor1, Quantity_Color& AColor2) const;
-  
+
+  //! Creates a window gradient background with two colours.
+  Standard_EXPORT Aspect_GradientBackground (const Quantity_Color& theColor1,
+                                             const Quantity_Color& theColor2,
+                                             const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
+
+  //! Modifies the colours of the window gradient background.
+  Standard_EXPORT void SetColors (const Quantity_Color& theColor1,
+                                  const Quantity_Color& theColor2,
+                                  const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal);
+
+  //! Returns colours of the window gradient background.
+  Standard_EXPORT void Colors (Quantity_Color& theColor1, Quantity_Color& theColor2) const;
+
   //! Returns the current gradient background fill mode.
   Standard_EXPORT Aspect_GradientFillMethod BgGradientFillMethod() const;
-  
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Quantity_Color MyColor2;
   Aspect_GradientFillMethod MyGradientMethod;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Aspect_GradientBackground_HeaderFile

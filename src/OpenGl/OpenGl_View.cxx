@@ -967,7 +967,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
         || myBackgroundType == Graphic3d_TOB_TEXTURE)
   {
     // Drawing background gradient if:
-    // - gradient fill type is not Aspect_GFM_NONE and
+    // - gradient fill type is not Aspect_GradientFillMethod_None and
     // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
     if (myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined()
       && (!myTextureParams->Aspect()->ToMapTexture()

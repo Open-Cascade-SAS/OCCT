@@ -25,19 +25,19 @@
 // purpose :
 // =======================================================================
 OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground theType)
-: OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_TRIANGLESTRIPS, NULL, NULL, NULL),
+: OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_TRIANGLES, NULL, NULL, NULL),
   myType (theType),
   myFillMethod (Aspect_FM_NONE),
   myViewWidth (0),
   myViewHeight (0),
   myToUpdate (Standard_False)
 {
-  myDrawMode = GL_TRIANGLE_STRIP;
+  myDrawMode = GL_TRIANGLES;
   myIsFillType = true;
 
   myGradientParams.color1 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
   myGradientParams.color2 = OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 1.0f);
-  myGradientParams.type   = Aspect_GFM_NONE;
+  myGradientParams.type   = Aspect_GradientFillMethod_None;
 }
 
 // =======================================================================
@@ -112,7 +112,7 @@ bool OpenGl_BackgroundArray::IsDefined() const
 {
   switch (myType)
   {
-    case Graphic3d_TOB_GRADIENT: return myGradientParams.type != Aspect_GFM_NONE;
+    case Graphic3d_TOB_GRADIENT: return myGradientParams.type != Aspect_GradientFillMethod_None;
     case Graphic3d_TOB_TEXTURE:  return myFillMethod          != Aspect_FM_NONE;
     case Graphic3d_TOB_CUBEMAP:  return Standard_True;
     case Graphic3d_TOB_NONE:     return Standard_False;
@@ -136,6 +136,16 @@ void OpenGl_BackgroundArray::invalidateData()
 Standard_Boolean OpenGl_BackgroundArray::init (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+
+  if (myIndices.IsNull())
+  {
+    myIndices = new Graphic3d_IndexBuffer (Graphic3d_Buffer::DefaultAllocator());
+  }
+  if (myAttribs.IsNull())
+  {
+    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
+  }
+
   switch (myType)
   {
     case Graphic3d_TOB_GRADIENT:
@@ -195,10 +205,6 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
     { Graphic3d_TOA_COLOR, Graphic3d_TOD_VEC3 }
   };
 
-  if (myAttribs.IsNull())
-  {
-    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
-  }
   if (!myAttribs->Init (4, aGragientAttribInfo, 2))
   {
     return Standard_False;
@@ -218,7 +224,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
 
   switch (myGradientParams.type)
   {
-    case Aspect_GFM_HOR:
+    case Aspect_GradientFillMethod_Horizontal:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[1] = myGradientParams.color2.ChangeData();
@@ -226,7 +232,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color1.ChangeData();
       break;
     }
-    case Aspect_GFM_VER:
+    case Aspect_GradientFillMethod_Vertical:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[1] = myGradientParams.color1.ChangeData();
@@ -234,7 +240,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color1.ChangeData();
       break;
     }
-    case Aspect_GFM_DIAG1:
+    case Aspect_GradientFillMethod_Diagonal1:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[3] = myGradientParams.color1.ChangeData();
@@ -245,7 +251,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[2] = aDiagCorner2;
       break;
     }
-    case Aspect_GFM_DIAG2:
+    case Aspect_GradientFillMethod_Diagonal2:
     {
       aCorners[1] = myGradientParams.color1.ChangeData();
       aCorners[2] = myGradientParams.color2.ChangeData();
@@ -256,7 +262,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = aDiagCorner2;
       break;
     }
-    case Aspect_GFM_CORNER1:
+    case Aspect_GradientFillMethod_Corner1:
     {
       aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
       aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
@@ -269,7 +275,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
-    case Aspect_GFM_CORNER2:
+    case Aspect_GradientFillMethod_Corner2:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[1] = myGradientParams.color1.ChangeData();
@@ -277,7 +283,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
-    case Aspect_GFM_CORNER3:
+    case Aspect_GradientFillMethod_Corner3:
     {
       aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
       aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
@@ -290,7 +296,7 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
-    case Aspect_GFM_CORNER4:
+    case Aspect_GradientFillMethod_Corner4:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[1] = myGradientParams.color2.ChangeData();
@@ -298,7 +304,53 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
       aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
-    case Aspect_GFM_NONE:
+    case Aspect_GradientFillMethod_Elliptical:
+    {
+      // construction of a circle circumscribed about a view rectangle
+      // using parametric equation (scaled by aspect ratio and centered)
+      const Standard_Integer aSubdiv = 64;
+      if (!myAttribs->Init (aSubdiv + 2, aGragientAttribInfo, 2))
+      {
+        return Standard_False;
+      }
+
+      OpenGl_Vec2 anEllipVerts[aSubdiv + 2];
+      anEllipVerts[0] = OpenGl_Vec2 (float (myViewWidth) / 2.0f, float (myViewHeight) / 2.0f);
+      Standard_Real aTetta = (M_PI * 2.0) / aSubdiv;
+      Standard_Real aParam = 0.0;
+      for (Standard_Integer anIt = 1; anIt < aSubdiv + 2; ++anIt)
+      {
+        anEllipVerts[anIt] = OpenGl_Vec2 (float (Cos (aParam) * Sqrt (2.0) * myViewWidth  / 2.0 + myViewWidth  / 2.0f),
+                                          float (Sin (aParam) * Sqrt (2.0) * myViewHeight / 2.0 + myViewHeight / 2.0f));
+
+        aParam += aTetta;
+      }
+      for (Standard_Integer anIt = 0; anIt < aSubdiv + 2; ++anIt)
+      {
+        OpenGl_Vec2* aVertData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue (anIt));
+        *aVertData = anEllipVerts[anIt];
+
+        OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue (anIt) + myAttribs->AttributeOffset (1));
+        *aColorData = myGradientParams.color2.rgb();
+      }
+      // the central vertex is colored in different way
+      OpenGl_Vec3* aColorData = reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue (0) + myAttribs->AttributeOffset (1));
+      *aColorData = myGradientParams.color1.rgb();
+
+      if (!myIndices->Init<unsigned short> (3 * aSubdiv))
+      {
+        return Standard_False;
+      }
+      for (Standard_Integer aCurTri = 0; aCurTri < aSubdiv; aCurTri++)
+      {
+        myIndices->SetIndex (aCurTri * 3 + 0, 0);
+        myIndices->SetIndex (aCurTri * 3 + 1, aCurTri + 1);
+        myIndices->SetIndex (aCurTri * 3 + 2, aCurTri + 2);
+      }
+
+      return Standard_True;
+    }
+    case Aspect_GradientFillMethod_None:
     {
       break;
     }
@@ -313,6 +365,15 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
     *aColorData = theCtx->Vec4FromQuantityColor (OpenGl_Vec4(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2], 1.0f)).rgb();
   }
 
+  if (!myIndices->Init<unsigned short>(6))
+  {
+    return Standard_False;
+  }
+  const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 2, 1, 3, 2};
+  for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
+  {
+    myIndices->SetIndex (aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
+  }
   return Standard_True;
 }
 
@@ -328,10 +389,6 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
     { Graphic3d_TOA_UV,  Graphic3d_TOD_VEC2 }
   };
 
-  if (myAttribs.IsNull())
-  {
-    myAttribs = new Graphic3d_Buffer (Graphic3d_Buffer::DefaultAllocator());
-  }
   if (!myAttribs->Init (4, aTextureAttribInfo, 2))
   {
     return Standard_False;
@@ -386,6 +443,16 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
   aData[0] = OpenGl_Vec2 (-anOffsetX, aCoef * anOffsetY);
   aData[1] = OpenGl_Vec2 (0.0f, aCoef * aTexRangeY);
 
+  if (!myIndices->Init<unsigned short>(6))
+  {
+    return Standard_False;
+  }
+  const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 2, 1, 3, 2};
+  for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
+  {
+    myIndices->SetIndex (aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
+  }
+
   return Standard_True;
 }
 
@@ -406,7 +473,7 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
     myIndices = new Graphic3d_IndexBuffer (Graphic3d_Buffer::DefaultAllocator());
   }
   if (!myAttribs->Init (8, aCubeMapAttribInfo, 1)
-   || !myIndices->Init<unsigned short> (14))
+   || !myIndices->Init<unsigned short> (6 * 3 * 2))
   {
     return Standard_False;
   }
@@ -423,10 +490,18 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
     aData[7].SetValues ( 1.0,  1.0, -1.0);
   }
   {
-    const unsigned short THE_BOX_TRISTRIP[14] = { 0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1 };
-    for (unsigned int aVertIter = 0; aVertIter < 14; ++aVertIter)
+    const unsigned short THE_BOX_TRIS[] =
     {
-      myIndices->SetIndex (aVertIter, THE_BOX_TRISTRIP[aVertIter]);
+      0, 1, 2, 2, 1, 3, // top face
+      1, 5, 7, 1, 7, 3, // right face
+      0, 6, 4, 0, 2, 6, // left face
+      4, 6, 5, 6, 7, 5, // bottom face
+      0, 5, 1, 0, 4, 5, // front face
+      2, 7, 6, 2, 3, 7  // back face
+    };
+    for (unsigned int aVertIter = 0; aVertIter < 6 * 3 * 2; ++aVertIter)
+    {
+      myIndices->SetIndex (aVertIter, THE_BOX_TRIS[aVertIter]);
     }
   }
 

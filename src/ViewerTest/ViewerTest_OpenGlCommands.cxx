@@ -926,7 +926,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     ViewerTest::ViewerInit (0, 0, anImgParams.Width, anImgParams.Height, "TmpDriver/TmpViewer/TmpView");
     aView = ViewerTest::CurrentView();
     aView->SetImmediateUpdate (false);
-    aView->SetBgGradientStyle (Aspect_GFM_NONE, false);
+    aView->SetBgGradientStyle (Aspect_GradientFillMethod_None, false);
   }
 
   if (!aDumpFile.IsEmpty())

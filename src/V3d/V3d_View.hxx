@@ -188,11 +188,11 @@ public:
   //! and the fill method (horizontal by default).
   Standard_EXPORT void SetBgGradientColors (const Quantity_Color& theColor1,
                                             const Quantity_Color& theColor2,
-                                            const Aspect_GradientFillMethod theFillStyle = Aspect_GFM_HOR,
+                                            const Aspect_GradientFillMethod theFillStyle = Aspect_GradientFillMethod_Horizontal,
                                             const Standard_Boolean theToUpdate = Standard_False);
 
   //! Defines the gradient background fill method of the view.
-  Standard_EXPORT void SetBgGradientStyle (const Aspect_GradientFillMethod theMethod = Aspect_GFM_HOR,
+  Standard_EXPORT void SetBgGradientStyle (const Aspect_GradientFillMethod theMethod = Aspect_GradientFillMethod_Horizontal,
                                            const Standard_Boolean theToUpdate = Standard_False);
 
   //! Defines the background texture of the view by supplying the texture image file name
