@@ -52,6 +52,10 @@ set CSF_OPT_LIB32 [list]
 set CSF_OPT_LIB64 [list]
 set CSF_OPT_BIN32 [list]
 set CSF_OPT_BIN64 [list]
+set CSF_OPT_LIB32D [list]
+set CSF_OPT_LIB64D [list]
+set CSF_OPT_BIN32D [list]
+set CSF_OPT_BIN64D [list]
 
 if { "$tcl_platform(pointerSize)" == "4" } {
   set ARCH "32"
@@ -114,6 +118,35 @@ if { [info exists ::env(CSF_OPT_BIN32)] } {
 }
 if { [info exists ::env(CSF_OPT_BIN64)] } {
   set CSF_OPT_BIN64 [split "$::env(CSF_OPT_BIN64)" $::SYS_PATH_SPLITTER]
+}
+
+if { [info exists ::env(CSF_OPT_LIB32D)] } {
+  set CSF_OPT_LIB32D [split "$::env(CSF_OPT_LIB32D)" $::SYS_PATH_SPLITTER]
+  foreach aLibIter $::CSF_OPT_LIB32 {
+    set aPos [lsearch -exact $::CSF_OPT_LIB32D $aLibIter]
+    set ::CSF_OPT_LIB32D [lreplace $::CSF_OPT_LIB32D $aPos $aPos]
+  }
+}
+if { [info exists ::env(CSF_OPT_LIB64D)] } {
+  set CSF_OPT_LIB64D [split "$::env(CSF_OPT_LIB64D)" $::SYS_PATH_SPLITTER]
+  foreach aLibIter $::CSF_OPT_LIB64 {
+    set aPos [lsearch -exact $::CSF_OPT_LIB64D $aLibIter]
+    set ::CSF_OPT_LIB64D [lreplace $::CSF_OPT_LIB64D $aPos $aPos]
+  }
+}
+if { [info exists ::env(CSF_OPT_BIN32D)] } {
+  set CSF_OPT_BIN32D [split "$::env(CSF_OPT_BIN32D)" $::SYS_PATH_SPLITTER]
+  foreach aLibIter $::CSF_OPT_BIN32 {
+    set aPos [lsearch -exact $::CSF_OPT_BIN32D $aLibIter]
+    set ::CSF_OPT_BIN32D [lreplace $::CSF_OPT_BIN32D $aPos $aPos]
+  }
+}
+if { [info exists ::env(CSF_OPT_BIN64D)] } {
+  set CSF_OPT_BIN64D [split "$::env(CSF_OPT_BIN64D)" $::SYS_PATH_SPLITTER]
+  foreach aLibIter $::CSF_OPT_BIN64 {
+    set aPos [lsearch -exact $::CSF_OPT_BIN64D $aLibIter]
+    set ::CSF_OPT_BIN64D [lreplace $::CSF_OPT_BIN64D $aPos $aPos]
+  }
 }
 
 # Search header file in $::CSF_OPT_INC and standard paths
@@ -316,6 +349,12 @@ proc wokdep:SearchStandardLibrary {theErrInc theErrLib32 theErrLib64 theErrBin32
           lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
           lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
           set hasLib true
+
+          set aLibDPath [wokdep:SearchLib "$theCheckLib" "$anArchIter" "$aPath/libd"]
+          if { "$aLibDPath" != "" } {
+            lappend ::CSF_OPT_LIB${anArchIter}D "$aPath/libd"
+            lappend ::CSF_OPT_BIN${anArchIter}D "$aPath/bind"
+          }
           break
         }
       }
@@ -1287,6 +1326,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile "rem Additional libraries (32-bit) search paths"
     puts $aFile "set \"CSF_OPT_LIB32=$aStringLib32\""
 
+    set aStringLib32d [join $::CSF_OPT_LIB32D $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLib32d [regsub -all "$::PRODUCTS_PATH" $aStringLib32d "%PRODUCTS_PATH%"]
+    }
+    puts $aFile ""
+    puts $aFile "rem Additional debug libraries (32-bit) search paths"
+    if { "$aStringLib32d" != "" && "$aStringLib32" != "" } {
+      puts $aFile "set \"CSF_OPT_LIB32D=$aStringLib32d;%CSF_OPT_LIB32%\""
+    } else {
+      puts $aFile "set \"CSF_OPT_LIB32D=$aStringLib32d\""
+    }
+
     set aStringLib64 [join $::CSF_OPT_LIB64 $::SYS_PATH_SPLITTER]
     if { "$::PRODUCTS_PATH" != "" } {
       set aStringLib64 [regsub -all "$::PRODUCTS_PATH" $aStringLib64 "%PRODUCTS_PATH%"]
@@ -1294,6 +1345,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile ""
     puts $aFile "rem Additional libraries (64-bit) search paths"
     puts $aFile "set \"CSF_OPT_LIB64=$aStringLib64\""
+
+    set aStringLib64d [join $::CSF_OPT_LIB64D $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLib64d [regsub -all "$::PRODUCTS_PATH" $aStringLib64d "%PRODUCTS_PATH%"]
+    }
+    puts $aFile ""
+    puts $aFile "rem Additional debug libraries (64-bit) search paths"
+    if { "$aStringLib64d" != "" && "$aStringLib64" != "" } {
+      puts $aFile "set \"CSF_OPT_LIB64D=$aStringLib64d;%CSF_OPT_LIB64%\""
+    } else {
+      puts $aFile "set \"CSF_OPT_LIB64D=$aStringLib64d\""
+    }
 
     set aStringBin32 [join $::CSF_OPT_BIN32 $::SYS_PATH_SPLITTER]
     if { "$::PRODUCTS_PATH" != "" } {
@@ -1303,6 +1366,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile "rem Additional (32-bit) search paths"
     puts $aFile "set \"CSF_OPT_BIN32=$aStringBin32\""
 
+    set aStringBin32d [join $::CSF_OPT_BIN32D $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBin32d [regsub -all "$::PRODUCTS_PATH" $aStringBin32d "%PRODUCTS_PATH%"]
+    }
+    puts $aFile ""
+    puts $aFile "rem Additional debug (32-bit) search paths"
+    if { "$aStringBin32d" != "" && "$aStringBin32" != "" } {
+      puts $aFile "set \"CSF_OPT_BIN32D=$aStringBin32d;%CSF_OPT_BIN32%\""
+    } else {
+      puts $aFile "set \"CSF_OPT_BIN32D=$aStringBin32d\""
+    }
+
     set aStringBin64 [join $::CSF_OPT_BIN64 $::SYS_PATH_SPLITTER]
     if { "$::PRODUCTS_PATH" != "" } {
       set aStringBin64 [regsub -all "$::PRODUCTS_PATH" $aStringBin64 "%PRODUCTS_PATH%"]
@@ -1310,6 +1385,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile ""
     puts $aFile "rem Additional (64-bit) search paths"
     puts $aFile "set \"CSF_OPT_BIN64=$aStringBin64\""
+
+    set aStringBin64d [join $::CSF_OPT_BIN64D $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBin64d [regsub -all "$::PRODUCTS_PATH" $aStringBin64d "%PRODUCTS_PATH%"]
+    }
+    puts $aFile ""
+    puts $aFile "rem Additional debug (64-bit) search paths"
+    if { "$aStringBin64d" != "" && "$aStringBin64" != "" } {
+      puts $aFile "set \"CSF_OPT_BIN64D=$aStringBin64d;%CSF_OPT_BIN64%\""
+    } else {
+      puts $aFile "set \"CSF_OPT_BIN64D=$aStringBin64d\""
+    }
 
     close $aFile
   } else {
@@ -1352,6 +1439,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile "# Additional libraries ($::ARCH-bit) search paths"
     puts $aFile "export CSF_OPT_LIB$::ARCH=\"[set aStringLib]\""
 
+    set aStringLibD [join [set ::CSF_OPT_LIB${::ARCH}D] $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringLibD [regsub -all "$::PRODUCTS_PATH" $aStringLibD "\${PRODUCTS_PATH}"]
+    }
+    puts $aFile ""
+    puts $aFile "# Additional debug libraries ($::ARCH-bit) search paths"
+    if { "$aStringLibD" != "" && "$aStringLib" != "" } {
+      puts $aFile "export CSF_OPT_LIB${::ARCH}D=\"[set aStringLibD]:\$CSF_OPT_LIB${::ARCH}\""
+    } else {
+      puts $aFile "export CSF_OPT_LIB${::ARCH}D=\"[set aStringLibD]\""
+    }
+
     set aStringBin [join [set ::CSF_OPT_BIN$::ARCH] $::SYS_PATH_SPLITTER]
     if { "$::PRODUCTS_PATH" != "" } {
       set aStringBin [regsub -all "$::PRODUCTS_PATH" $aStringBin "\${PRODUCTS_PATH}"]
@@ -1359,6 +1458,18 @@ proc wokdep:SaveCustom {} {
     puts $aFile ""
     puts $aFile "# Additional ($::ARCH-bit) search paths"
     puts $aFile "export CSF_OPT_BIN$::ARCH=\"[set aStringBin]\""
+
+    set aStringBinD [join [set ::CSF_OPT_BIN${::ARCH}D] $::SYS_PATH_SPLITTER]
+    if { "$::PRODUCTS_PATH" != "" } {
+      set aStringBinD [regsub -all "$::PRODUCTS_PATH" $aStringBinD "\${PRODUCTS_PATH}"]
+    }
+    puts $aFile ""
+    puts $aFile "# Additional debug ($::ARCH-bit) search paths"
+    if { "$aStringBinD" != "" && "$aStringBin" != "" } {
+      puts $aFile "export CSF_OPT_BIN${::ARCH}D=\"[set aStringBinD]:\$CSF_OPT_BIN${::ARCH}\""
+    } else {
+      puts $aFile "export CSF_OPT_BIN${::ARCH}D=\"[set aStringBinD]\""
+    }
 
     close $aFile
   }
@@ -1396,6 +1507,27 @@ proc wokdep:SaveCustom {} {
       }
       puts $aFile "INCLUDEPATH += \"${anIncPath}\""
     }
+
+    puts $aFile ""
+    puts $aFile "CONFIG(debug, debug|release) {"
+    puts $aFile "  # Additional debug libraries search paths"
+    foreach aLibPath [set ::CSF_OPT_LIB${::ARCH}D] {
+      if { "$::PRODUCTS_PATH" != "" } {
+        set aLibPath [regsub -all "$::PRODUCTS_PATH" $aLibPath "\$\$\{PRODUCTS_PATH\}"]
+      }
+      puts $aFile "  LIBS += -L\"${aLibPath}\""
+    }
+    if { "$::tcl_platform(platform)" == "windows" } {
+      puts $aFile ""
+      puts $aFile "  # Additional debug DLLs search paths"
+      foreach aDllPath [set ::CSF_OPT_BIN${::ARCH}D] {
+        if { "$::PRODUCTS_PATH" != "" } {
+          set aDllPath [regsub -all "$::PRODUCTS_PATH" $aDllPath "\$\$\{PRODUCTS_PATH\}"]
+        }
+        puts $aFile "  LIBS += -L\"${aDllPath}\""
+      }
+    }
+    puts $aFile "}"
 
     puts $aFile ""
     puts $aFile "# Additional libraries search paths"

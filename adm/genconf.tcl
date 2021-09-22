@@ -56,6 +56,7 @@ lappend ::SYS_PRJNAME_LIST "Qt Creator (.pro)"
 
 set aPrjIndex [lsearch $::SYS_PRJFMT_LIST $::PRJFMT]
 set ::PRJNAME [lindex $::SYS_PRJNAME_LIST $aPrjIndex]
+set ::CONFIG "Release"
 
 set SYS_VS_LIST {}
 set SYS_VC_LIST {}
@@ -138,6 +139,13 @@ proc wokdep:gui:Close {} {
   exit
 }
 
+proc wokdep:gui:configSuffix {} {
+  if { "$::CONFIG" == "Debug" } {
+    return "D"
+  }
+  return ""
+}
+
 proc wokdep:gui:SwitchConfig {} {
   set ::PRJFMT [lindex $::SYS_PRJFMT_LIST [.myFrame.myPrjFrame.myPrjCombo current]]
   set ::VCVER  [lindex $::SYS_VC_LIST     [.myFrame.myVsFrame.myVsCombo current]]
@@ -148,16 +156,15 @@ proc wokdep:gui:SwitchConfig {} {
   set ::CSF_OPT_LIB64 {}
   set ::CSF_OPT_BIN32 {}
   set ::CSF_OPT_BIN64 {}
+  set ::CSF_OPT_LIB32D {}
+  set ::CSF_OPT_LIB64D {}
+  set ::CSF_OPT_BIN32D {}
+  set ::CSF_OPT_BIN64D {}
   wokdep:gui:UpdateList
 }
 
 proc wokdep:gui:SwitchArch {} {
-  if { "$::ARCH" == "32" } {
-    wokdep:gui:Show32Bitness ::aRowIter
-  }
-  if { "$::ARCH" == "64" } {
-    wokdep:gui:Show64Bitness ::aRowIter
-  }
+  wokdep:gui:Show3264Bitness ::aRowIter
 
   if { [llength [grid info .myFrame.mySave]] != 0 } {
     grid forget .myFrame.mySave .myFrame.myClose
@@ -245,10 +252,25 @@ proc wokdep:gui:UpdateList {} {
   }
 
   .myFrame.myIncErrLbl   configure -text [join $anIncErrs   "\n"]
-  .myFrame.myLib32ErrLbl configure -text [join $anLib32Errs "\n"]
-  .myFrame.myLib64ErrLbl configure -text [join $anLib64Errs "\n"]
-  .myFrame.myBin32ErrLbl configure -text [join $anBin32Errs "\n"]
-  .myFrame.myBin64ErrLbl configure -text [join $anBin64Errs "\n"]
+  .myFrame.myLib32_ErrLbl  configure -text [join $anLib32Errs "\n"]
+  .myFrame.myLib64_ErrLbl  configure -text [join $anLib64Errs "\n"]
+  .myFrame.myBin32_ErrLbl  configure -text [join $anBin32Errs "\n"]
+  .myFrame.myBin64_ErrLbl  configure -text [join $anBin64Errs "\n"]
+
+  .myFrame.myLib32D_ErrLbl configure -text [join $anLib32Errs "\n"]
+  .myFrame.myLib64D_ErrLbl configure -text [join $anLib64Errs "\n"]
+  .myFrame.myBin32D_ErrLbl configure -text [join $anBin32Errs "\n"]
+  .myFrame.myBin64D_ErrLbl configure -text [join $anBin64Errs "\n"]
+
+  # merge duplicates
+  set ::CSF_OPT_LIB32  [lsort -unique $::CSF_OPT_LIB32]
+  set ::CSF_OPT_LIB64  [lsort -unique $::CSF_OPT_LIB64]
+  set ::CSF_OPT_BIN32  [lsort -unique $::CSF_OPT_BIN32]
+  set ::CSF_OPT_BIN64  [lsort -unique $::CSF_OPT_BIN64]
+  set ::CSF_OPT_LIB32D [lsort -unique $::CSF_OPT_LIB32D]
+  set ::CSF_OPT_LIB64D [lsort -unique $::CSF_OPT_LIB64D]
+  set ::CSF_OPT_BIN32D [lsort -unique $::CSF_OPT_BIN32D]
+  set ::CSF_OPT_BIN64D [lsort -unique $::CSF_OPT_BIN64D]
 }
 
 proc wokdep:gui:BrowseVcVars {} {
@@ -274,34 +296,20 @@ proc wokdep:gui:AddIncPath {} {
   }
 }
 
-proc wokdep:gui:AddLib32Path {} {
+proc wokdep:gui:AddLibPath {} {
+  set aCfg [wokdep:gui:configSuffix]
   set aResult [tk_chooseDirectory -title "Choose a directory"]
   if { "$aResult" != "" } {
-    lappend ::CSF_OPT_LIB32 "$aResult"
+    lappend ::CSF_OPT_LIB${::ARCH}${aCfg} "$aResult"
     wokdep:gui:UpdateList
   }
 }
 
-proc wokdep:gui:AddLib64Path {} {
+proc wokdep:gui:AddBinPath {} {
+  set aCfg [wokdep:gui:configSuffix]
   set aResult [tk_chooseDirectory -title "Choose a directory"]
   if { "$aResult" != "" } {
-    lappend ::CSF_OPT_LIB64 "$aResult"
-    wokdep:gui:UpdateList
-  }
-}
-
-proc wokdep:gui:AddBin32Path {} {
-  set aResult [tk_chooseDirectory -title "Choose a directory"]
-  if { "$aResult" != "" } {
-    lappend ::CSF_OPT_BIN32 "$aResult"
-    wokdep:gui:UpdateList
-  }
-}
-
-proc wokdep:gui:AddBin64Path {} {
-  set aResult [tk_chooseDirectory -title "Choose a directory"]
-  if { "$aResult" != "" } {
-    lappend ::CSF_OPT_BIN64 "$aResult"
+    lappend ::CSF_OPT_BIN${::ARCH}${aCfg} "$aResult"
     wokdep:gui:UpdateList
   }
 }
@@ -314,34 +322,20 @@ proc wokdep:gui:RemoveIncPath {} {
   wokdep:gui:UpdateList
 }
 
-proc wokdep:gui:RemoveLib32Path {} {
-  set aSelIndices [.myFrame.myLib32List curselection]
+proc wokdep:gui:RemoveLibPath {} {
+  set aCfg [wokdep:gui:configSuffix]
+  set aSelIndices [.myFrame.myLib${::ARCH}${aCfg}_List curselection]
   if { [llength $aSelIndices] != 0 } {
-    .myFrame.myLib32List delete [lindex $aSelIndices 0]
+    .myFrame.myLib${::ARCH}${aCfg}_List delete [lindex $aSelIndices 0]
   }
   wokdep:gui:UpdateList
 }
 
-proc wokdep:gui:RemoveLib64Path {} {
-  set aSelIndices [.myFrame.myLib64List curselection]
+proc wokdep:gui:RemoveBinPath {} {
+  set aCfg [wokdep:gui:configSuffix]
+  set aSelIndices [.myFrame.myBin${::ARCH}${aCfg}_List curselection]
   if { [llength $aSelIndices] != 0 } {
-    .myFrame.myLib64List delete [lindex $aSelIndices 0]
-  }
-  wokdep:gui:UpdateList
-}
-
-proc wokdep:gui:RemoveBin32Path {} {
-  set aSelIndices [.myFrame.myBin32List curselection]
-  if { [llength $aSelIndices] != 0 } {
-    .myFrame.myBin32List delete [lindex $aSelIndices 0]
-  }
-  wokdep:gui:UpdateList
-}
-
-proc wokdep:gui:RemoveBin64Path {} {
-  set aSelIndices [.myFrame.myBin64List curselection]
-  if { [llength $aSelIndices] != 0 } {
-    .myFrame.myBin64List delete [lindex $aSelIndices 0]
+    .myFrame.myBin${::ARCH}${aCfg}_List delete [lindex $aSelIndices 0]
   }
   wokdep:gui:UpdateList
 }
@@ -351,109 +345,73 @@ proc wokdep:gui:ResetIncPath {} {
   wokdep:gui:UpdateList
 }
 
-proc wokdep:gui:ResetLib32Path {} {
-  set ::CSF_OPT_LIB32 {}
+proc wokdep:gui:ResetLibPath {} {
+  set ::CSF_OPT_LIB${::ARCH}  {}
+  set ::CSF_OPT_LIB${::ARCH}D {}
+  set ::CSF_OPT_BIN${::ARCH}  {}
+  set ::CSF_OPT_BIN${::ARCH}D {}
   wokdep:gui:UpdateList
 }
 
-proc wokdep:gui:ResetLib64Path {} {
-  set ::CSF_OPT_LIB64 {}
-  wokdep:gui:UpdateList
-}
-
-proc wokdep:gui:ResetBin32Path {} {
-  set ::CSF_OPT_BIN32 {}
-  wokdep:gui:UpdateList
-}
-
-proc wokdep:gui:ResetBin64Path {} {
-  set ::CSF_OPT_BIN64 {}
-  wokdep:gui:UpdateList
-}
-
-proc wokdep:gui:Show32Bitness { theRowIter } {
+proc wokdep:gui:Show3264Bitness { theRowIter } {
   upvar $theRowIter aRowIter
 
-  if { [llength [grid info .myFrame.myLib64Lbl]] != 0 } {
-    grid forget .myFrame.myLib64Lbl .myFrame.myLib64List   .myFrame.myLib64Scrl
-    grid forget .myFrame.myLib64Add .myFrame.myLib64Remove .myFrame.myLib64Clear .myFrame.myLib64ErrLbl
-    grid forget .myFrame.myBin64Lbl .myFrame.myBin64List   .myFrame.myBin64Scrl
-    grid forget .myFrame.myBin64Add .myFrame.myBin64Remove .myFrame.myBin64Clear .myFrame.myBin64ErrLbl
+  set aArchOld ""
+  set aCfg [wokdep:gui:configSuffix]
+  if { "$::ARCH" == "32" } {
+    set aArchOld "64"
+  } else {
+    set aArchOld "32"
   }
 
-  # Additional libraries (32-bit) search paths
-  grid .myFrame.myLib32Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
-  incr aRowIter
-  grid .myFrame.myLib32List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
-  grid .myFrame.myLib32Scrl   -row $aRowIter -column 5 -rowspan 4
-  grid .myFrame.myLib32Add    -row $aRowIter -column 6
-  incr aRowIter
-  #grid .myFrame.myLib32Edit   -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myLib32Remove -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myLib32Clear  -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myLib32ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
-  incr aRowIter
-
-  # Additional executables (32-bit) search paths
-  grid .myFrame.myBin32Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
-  incr aRowIter
-  grid .myFrame.myBin32List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
-  grid .myFrame.myBin32Scrl   -row $aRowIter -column 5 -rowspan 4
-  grid .myFrame.myBin32Add    -row $aRowIter -column 6
-  incr aRowIter
-  #grid .myFrame.myBin32Edit   -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myBin32Remove -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myBin32Clear  -row $aRowIter -column 6
-  incr aRowIter
-  grid .myFrame.myBin32ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
-  incr aRowIter
-}
-
-proc wokdep:gui:Show64Bitness { theRowIter } {
-  upvar $theRowIter aRowIter
-
-  if { [llength [grid info .myFrame.myLib32Lbl]] != 0 } {
-    grid forget .myFrame.myLib32Lbl .myFrame.myLib32List   .myFrame.myLib32Scrl
-    grid forget .myFrame.myLib32Add .myFrame.myLib32Remove .myFrame.myLib32Clear .myFrame.myLib32ErrLbl
-    grid forget .myFrame.myBin32Lbl .myFrame.myBin32List   .myFrame.myBin32Scrl
-    grid forget .myFrame.myBin32Add .myFrame.myBin32Remove .myFrame.myBin32Clear .myFrame.myBin32ErrLbl
+  set aCfgOld "D"
+  if { "$::CONFIG" == "Debug" } { set aCfgOld "" }
+  set aDelArch ${aArchOld}${aCfg}
+  if { [llength [grid info .myFrame.myLib${aDelArch}_Lbl]] != 0 } {
+    grid forget .myFrame.myLib${aDelArch}_Lbl .myFrame.myLib${aDelArch}_List   .myFrame.myLib${aDelArch}_Scrl
+    grid forget .myFrame.myLib${aDelArch}_Add .myFrame.myLib${aDelArch}_Remove .myFrame.myLib${aDelArch}_Clear .myFrame.myLib${aDelArch}_ErrLbl
+    grid forget .myFrame.myBin${aDelArch}_Lbl .myFrame.myBin${aDelArch}_List   .myFrame.myBin${aDelArch}_Scrl
+    grid forget .myFrame.myBin${aDelArch}_Add .myFrame.myBin${aDelArch}_Remove .myFrame.myBin${aDelArch}_Clear .myFrame.myBin${aDelArch}_ErrLbl
+  }
+  set aDelCfg ${::ARCH}${aCfgOld}
+  if { [llength [grid info .myFrame.myLib${aDelCfg}_Lbl]] != 0 } {
+    grid forget .myFrame.myLib${aDelCfg}_Lbl .myFrame.myLib${aDelCfg}_List   .myFrame.myLib${aDelCfg}_Scrl
+    grid forget .myFrame.myLib${aDelCfg}_Add .myFrame.myLib${aDelCfg}_Remove .myFrame.myLib${aDelCfg}_Clear .myFrame.myLib${aDelCfg}_ErrLbl
+    grid forget .myFrame.myBin${aDelCfg}_Lbl .myFrame.myBin${aDelCfg}_List   .myFrame.myBin${aDelCfg}_Scrl
+    grid forget .myFrame.myBin${aDelCfg}_Add .myFrame.myBin${aDelCfg}_Remove .myFrame.myBin${aDelCfg}_Clear .myFrame.myBin${aDelCfg}_ErrLbl
   }
 
-  # Additional libraries (64-bit) search paths
-  grid .myFrame.myLib64Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
+  set aNewCfg ${::ARCH}${aCfg}
+  # Additional libraries search paths
+  grid .myFrame.myLib${aNewCfg}_Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
   incr aRowIter
-  grid .myFrame.myLib64List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
-  grid .myFrame.myLib64Scrl   -row $aRowIter -column 5 -rowspan 4
-  grid .myFrame.myLib64Add    -row $aRowIter -column 6
+  grid .myFrame.myLib${aNewCfg}_List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
+  grid .myFrame.myLib${aNewCfg}_Scrl   -row $aRowIter -column 5 -rowspan 4
+  grid .myFrame.myLib${aNewCfg}_Add    -row $aRowIter -column 6
   incr aRowIter
-  #grid .myFrame.myLib64Edit   -row $aRowIter -column 6
+  #grid .myFrame.myLib${aNewCfg}_Edit   -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myLib64Remove -row $aRowIter -column 6
+  grid .myFrame.myLib${aNewCfg}_Remove -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myLib64Clear  -row $aRowIter -column 6
+  grid .myFrame.myLib${aNewCfg}_Clear  -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myLib64ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
+  grid .myFrame.myLib${aNewCfg}_ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
   incr aRowIter
 
-  # Additional executables (64-bit) search paths
-  grid .myFrame.myBin64Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
+  # Additional executables search paths
+  grid .myFrame.myBin${aNewCfg}_Lbl    -row $aRowIter -column 0 -columnspan 10 -sticky w
   incr aRowIter
-  grid .myFrame.myBin64List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
-  grid .myFrame.myBin64Scrl   -row $aRowIter -column 5 -rowspan 4
-  grid .myFrame.myBin64Add    -row $aRowIter -column 6
+  grid .myFrame.myBin${aNewCfg}_List   -row $aRowIter -column 0 -rowspan 4 -columnspan 5
+  grid .myFrame.myBin${aNewCfg}_Scrl   -row $aRowIter -column 5 -rowspan 4
+  grid .myFrame.myBin${aNewCfg}_Add    -row $aRowIter -column 6
   incr aRowIter
-  #grid .myFrame.myBin64Edit   -row $aRowIter -column 6
+  #grid .myFrame.myBin${aNewCfg}_Edit   -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myBin64Remove -row $aRowIter -column 6
+  grid .myFrame.myBin${aNewCfg}_Remove -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myBin64Clear  -row $aRowIter -column 6
+  grid .myFrame.myBin${aNewCfg}_Clear  -row $aRowIter -column 6
   incr aRowIter
-  grid .myFrame.myBin64ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
+  grid .myFrame.myBin${aNewCfg}_ErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
   incr aRowIter
 }
 
@@ -463,6 +421,7 @@ ttk::combobox .myFrame.myPrjFrame.myPrjCombo   -values $SYS_PRJNAME_LIST -state 
 ttk::label    .myFrame.myVsFrame.myVsLbl       -text "Visual Studio configuration:" -padding {5 5 20 5}
 ttk::combobox .myFrame.myVsFrame.myVsCombo     -values $SYS_VS_LIST -state readonly -textvariable VSVER -width 40
 ttk::combobox .myFrame.myVsFrame.myArchCombo   -values { {32} {64} } -textvariable ARCH -state readonly -width 6
+ttk::combobox .myFrame.myVsFrame.myConfigCombo -values { {Release} {Debug} } -textvariable CONFIG -state readonly -width 6
 entry         .myFrame.myVcEntry     -textvariable VCVER  -width 10
 entry         .myFrame.myVcVarsEntry -textvariable VCVARS -width 70
 ttk::button   .myFrame.myVcBrowseBtn -text "Browse" -command wokdep:gui:BrowseVcVars
@@ -535,44 +494,84 @@ ttk::button   .myFrame.myIncClear  -text "Reset"   -command wokdep:gui:ResetIncP
 ttk::label    .myFrame.myIncErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
 
 # Additional libraries (32-bit) search paths
-ttk::label    .myFrame.myLib32Lbl    -text "Additional libraries (32-bit) search paths:" -padding {5 5 80 5}
-scrollbar     .myFrame.myLib32Scrl   -command ".myFrame.myLib32List yview"
-listbox       .myFrame.myLib32List   -listvariable CSF_OPT_LIB32 -width 80 -height 5 -yscrollcommand ".myFrame.myLib32Scrl set"
-ttk::button   .myFrame.myLib32Add    -text "Add"     -command wokdep:gui:AddLib32Path
-ttk::button   .myFrame.myLib32Edit   -text "Edit"
-ttk::button   .myFrame.myLib32Remove -text "Remove"  -command wokdep:gui:RemoveLib32Path
-ttk::button   .myFrame.myLib32Clear  -text "Reset"   -command wokdep:gui:ResetLib32Path
-ttk::label    .myFrame.myLib32ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+ttk::label    .myFrame.myLib32_Lbl    -text "Additional libraries (32-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myLib32_Scrl   -command ".myFrame.myLib32_List yview"
+listbox       .myFrame.myLib32_List   -listvariable CSF_OPT_LIB32 -width 80 -height 5 -yscrollcommand ".myFrame.myLib32_Scrl set"
+ttk::button   .myFrame.myLib32_Add    -text "Add"     -command wokdep:gui:AddLibPath
+ttk::button   .myFrame.myLib32_Edit   -text "Edit"
+ttk::button   .myFrame.myLib32_Remove -text "Remove"  -command wokdep:gui:RemoveLibPath
+ttk::button   .myFrame.myLib32_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myLib32_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+
+# Additional debug libraries (32-bit) search paths
+ttk::label    .myFrame.myLib32D_Lbl    -text "Additional debug libraries (32-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myLib32D_Scrl   -command ".myFrame.myLib32D_List yview"
+listbox       .myFrame.myLib32D_List   -listvariable CSF_OPT_LIB32D -width 80 -height 5 -yscrollcommand ".myFrame.myLib32D_Scrl set"
+ttk::button   .myFrame.myLib32D_Add    -text "Add"     -command wokdep:gui:AddLibPath
+ttk::button   .myFrame.myLib32D_Edit   -text "Edit"
+ttk::button   .myFrame.myLib32D_Remove -text "Remove"  -command wokdep:gui:RemoveLibPath
+ttk::button   .myFrame.myLib32D_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myLib32D_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
 
 # Additional libraries (64-bit) search paths
-ttk::label    .myFrame.myLib64Lbl    -text "Additional libraries (64-bit) search paths:" -padding {5 5 80 5}
-scrollbar     .myFrame.myLib64Scrl   -command ".myFrame.myLib64List yview"
-listbox       .myFrame.myLib64List   -listvariable CSF_OPT_LIB64 -width 80 -height 5 -yscrollcommand ".myFrame.myLib64Scrl set"
-ttk::button   .myFrame.myLib64Add    -text "Add"     -command wokdep:gui:AddLib64Path
-ttk::button   .myFrame.myLib64Edit   -text "Edit"
-ttk::button   .myFrame.myLib64Remove -text "Remove"  -command wokdep:gui:RemoveLib64Path
-ttk::button   .myFrame.myLib64Clear  -text "Reset"   -command wokdep:gui:ResetLib64Path
-ttk::label    .myFrame.myLib64ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+ttk::label    .myFrame.myLib64_Lbl    -text "Additional libraries (64-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myLib64_Scrl   -command ".myFrame.myLib64_List yview"
+listbox       .myFrame.myLib64_List   -listvariable CSF_OPT_LIB64 -width 80 -height 5 -yscrollcommand ".myFrame.myLib64_Scrl set"
+ttk::button   .myFrame.myLib64_Add    -text "Add"     -command wokdep:gui:AddLibPath
+ttk::button   .myFrame.myLib64_Edit   -text "Edit"
+ttk::button   .myFrame.myLib64_Remove -text "Remove"  -command wokdep:gui:RemoveLibPath
+ttk::button   .myFrame.myLib64_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myLib64_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+
+# Additional debug libraries (64-bit) search paths
+ttk::label    .myFrame.myLib64D_Lbl    -text "Additional debug libraries (64-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myLib64D_Scrl   -command ".myFrame.myLib64D_List yview"
+listbox       .myFrame.myLib64D_List   -listvariable CSF_OPT_LIB64D -width 80 -height 5 -yscrollcommand ".myFrame.myLib64D_Scrl set"
+ttk::button   .myFrame.myLib64D_Add    -text "Add"     -command wokdep:gui:AddLibPath
+ttk::button   .myFrame.myLib64D_Edit   -text "Edit"
+ttk::button   .myFrame.myLib64D_Remove -text "Remove"  -command wokdep:gui:RemoveLibPath
+ttk::button   .myFrame.myLib64D_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myLib64D_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
 
 # Additional executables (32-bit) search paths
-ttk::label    .myFrame.myBin32Lbl    -text "Additional executables (32-bit) search paths:" -padding {5 5 80 5}
-scrollbar     .myFrame.myBin32Scrl   -command ".myFrame.myBin32List yview"
-listbox       .myFrame.myBin32List   -listvariable CSF_OPT_BIN32 -width 80 -height 5 -yscrollcommand ".myFrame.myBin32Scrl set"
-ttk::button   .myFrame.myBin32Add    -text "Add"     -command wokdep:gui:AddBin32Path
-ttk::button   .myFrame.myBin32Edit   -text "Edit"
-ttk::button   .myFrame.myBin32Remove -text "Remove"  -command wokdep:gui:RemoveBin32Path
-ttk::button   .myFrame.myBin32Clear  -text "Reset"   -command wokdep:gui:ResetBin32Path
-ttk::label    .myFrame.myBin32ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+ttk::label    .myFrame.myBin32_Lbl    -text "Additional executables (32-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myBin32_Scrl   -command ".myFrame.myBin32_List yview"
+listbox       .myFrame.myBin32_List   -listvariable CSF_OPT_BIN32 -width 80 -height 5 -yscrollcommand ".myFrame.myBin32_Scrl set"
+ttk::button   .myFrame.myBin32_Add    -text "Add"     -command wokdep:gui:AddBinPath
+ttk::button   .myFrame.myBin32_Edit   -text "Edit"
+ttk::button   .myFrame.myBin32_Remove -text "Remove"  -command wokdep:gui:RemoveBinPath
+ttk::button   .myFrame.myBin32_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myBin32_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+
+# Additional debug executables (32-bit) search paths
+ttk::label    .myFrame.myBin32D_Lbl    -text "Additional debug executables (32-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myBin32D_Scrl   -command ".myFrame.myBin32D_List yview"
+listbox       .myFrame.myBin32D_List   -listvariable CSF_OPT_BIN32D -width 80 -height 5 -yscrollcommand ".myFrame.myBin32D_Scrl set"
+ttk::button   .myFrame.myBin32D_Add    -text "Add"     -command wokdep:gui:AddBinPath
+ttk::button   .myFrame.myBin32D_Edit   -text "Edit"
+ttk::button   .myFrame.myBin32D_Remove -text "Remove"  -command wokdep:gui:RemoveBinPath
+ttk::button   .myFrame.myBin32D_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myBin32D_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
 
 # Additional executables (64-bit) search paths
-ttk::label    .myFrame.myBin64Lbl    -text "Additional executables (64-bit) search paths:" -padding {5 5 80 5}
-scrollbar     .myFrame.myBin64Scrl   -command ".myFrame.myBin64List yview"
-listbox       .myFrame.myBin64List   -listvariable CSF_OPT_BIN64 -width 80 -height 5 -yscrollcommand ".myFrame.myBin64Scrl set"
-ttk::button   .myFrame.myBin64Add    -text "Add"     -command wokdep:gui:AddBin64Path
-ttk::button   .myFrame.myBin64Edit   -text "Edit"
-ttk::button   .myFrame.myBin64Remove -text "Remove"  -command wokdep:gui:RemoveBin64Path
-ttk::button   .myFrame.myBin64Clear  -text "Reset"   -command wokdep:gui:ResetBin64Path
-ttk::label    .myFrame.myBin64ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+ttk::label    .myFrame.myBin64_Lbl    -text "Additional executables (64-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myBin64_Scrl   -command ".myFrame.myBin64_List yview"
+listbox       .myFrame.myBin64_List   -listvariable CSF_OPT_BIN64 -width 80 -height 5 -yscrollcommand ".myFrame.myBin64_Scrl set"
+ttk::button   .myFrame.myBin64_Add    -text "Add"     -command wokdep:gui:AddBinPath
+ttk::button   .myFrame.myBin64_Edit   -text "Edit"
+ttk::button   .myFrame.myBin64_Remove -text "Remove"  -command wokdep:gui:RemoveBinPath
+ttk::button   .myFrame.myBin64_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myBin64_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
+
+# Additional debug executables (64-bit) search paths
+ttk::label    .myFrame.myBin64D_Lbl    -text "Additional debug executables (64-bit) search paths:" -padding {5 5 80 5}
+scrollbar     .myFrame.myBin64D_Scrl   -command ".myFrame.myBin64D_List yview"
+listbox       .myFrame.myBin64D_List   -listvariable CSF_OPT_BIN64D -width 80 -height 5 -yscrollcommand ".myFrame.myBin64D_Scrl set"
+ttk::button   .myFrame.myBin64D_Add    -text "Add"     -command wokdep:gui:AddBinPath
+ttk::button   .myFrame.myBin64D_Edit   -text "Edit"
+ttk::button   .myFrame.myBin64D_Remove -text "Remove"  -command wokdep:gui:RemoveBinPath
+ttk::button   .myFrame.myBin64D_Clear  -text "Reset"   -command wokdep:gui:ResetLibPath
+ttk::label    .myFrame.myBin64D_ErrLbl -text "Error: " -foreground red -padding {5 5 5 5}
 
 # Bottom
 ttk::button   .myFrame.mySave  -text "Save"  -command wokdep:SaveCustom
@@ -583,16 +582,21 @@ ttk::button   .myFrame.myClose -text "Close" -command wokdep:gui:Close
 grid .myFrame.myPrjFrame            -row $aRowIter -column 0 -columnspan 10 -sticky w
 grid .myFrame.myPrjFrame.myPrjLbl   -row 0 -column 0
 grid .myFrame.myPrjFrame.myPrjCombo -row 0 -column 1
-incr aRowIter
 if { "$tcl_platform(platform)" == "windows" } {
+  incr aRowIter
   grid .myFrame.myVsFrame               -row $aRowIter -column 0 -columnspan 10 -sticky w
   grid .myFrame.myVsFrame.myVsLbl       -row 0 -column 0
   grid .myFrame.myVsFrame.myVsCombo     -row 0 -column 1 -padx 5
   grid .myFrame.myVsFrame.myArchCombo   -row 0 -column 2
+  grid .myFrame.myVsFrame.myConfigCombo -row 0 -column 3
   incr aRowIter
   grid .myFrame.myVcEntry     -row $aRowIter -column 0
   grid .myFrame.myVcVarsEntry -row $aRowIter -column 1 -columnspan 4 -sticky w
   grid .myFrame.myVcBrowseBtn -row $aRowIter -column 6
+  incr aRowIter
+} else {
+  grid .myFrame.myVsFrame               -row $aRowIter -column 4 -sticky w
+  grid .myFrame.myVsFrame.myConfigCombo -row 0 -column 0
   incr aRowIter
 }
 
@@ -686,15 +690,8 @@ incr aRowIter
 grid .myFrame.myIncErrLbl -row $aRowIter -column 0 -columnspan 10 -sticky w
 incr aRowIter
 
-# Additional 32-bit search paths
-if { "$ARCH" == "32" } {
-  wokdep:gui:Show32Bitness aRowIter
-}
-
-# Additional 64-bit search paths
-if { "$ARCH" == "64" } {
-  wokdep:gui:Show64Bitness aRowIter
-}
+# Additional search paths
+wokdep:gui:Show3264Bitness aRowIter
 
 # Bottom section
 grid .myFrame.mySave  -row $aRowIter -column 4 -columnspan 2
@@ -708,6 +705,9 @@ bind .myFrame.myVsFrame.myVsCombo <<ComboboxSelected>> {
   wokdep:gui:SwitchConfig
 }
 bind .myFrame.myVsFrame.myArchCombo <<ComboboxSelected>> {
+  wokdep:gui:SwitchArch
+}
+bind .myFrame.myVsFrame.myConfigCombo <<ComboboxSelected>> {
   wokdep:gui:SwitchArch
 }
 
