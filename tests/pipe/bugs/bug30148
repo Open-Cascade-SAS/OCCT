@@ -1,0 +1,13 @@
+puts "============="
+puts "OCC30148: Modeling Algorithms - exc-eption in BRepOffestAPI_MakePipe for some periodic BSpline spines"
+puts "============="
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug30148_1.brep] profile
+restore [locate_data_file bug30148_2.brep] spine
+
+pipe pipe spine profile
+
+puts "TEST COMPLETED"
