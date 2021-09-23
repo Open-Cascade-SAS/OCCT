@@ -31,6 +31,7 @@
 #include <RWGltf_GltfSceneNodeMap.hxx>
 #include <RWMesh.hxx>
 #include <RWMesh_FaceIterator.hxx>
+#include <Standard_Version.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
@@ -1207,7 +1208,7 @@ void RWGltf_CafWriter::writeAsset (const TColStd_IndexedDataMapOfStringString& t
   myWriter->Key    (RWGltf_GltfRootElementName (RWGltf_GltfRootElement_Asset));
   myWriter->StartObject();
   myWriter->Key    ("generator");
-  myWriter->String ("Open CASCADE Technology [dev.opencascade.org]");
+  myWriter->String ("Open CASCADE Technology " OCC_VERSION_STRING " [dev.opencascade.org]");
   myWriter->Key    ("version");
   myWriter->String ("2.0"); // glTF format version
 
