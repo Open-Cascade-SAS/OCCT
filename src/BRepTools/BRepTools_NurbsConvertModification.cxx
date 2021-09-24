@@ -493,11 +493,23 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       {
         //Surface is periodic, checking curve2d domain 
         //Old domain
-        gp_Pnt2d aPf = C2d->Value(f2d);
+        Standard_Real aMinDist = Precision::Infinite();
+        if (S->IsUPeriodic())
+        {
+          aMinDist = Min(0.5 * S->UPeriod(), aMinDist);
+        }
+        if (S->IsVPeriodic())
+        {
+          aMinDist = Min(0.5 * S->VPeriod(), aMinDist);
+        }
+        aMinDist *= aMinDist;
+        //Old domain
+        Standard_Real t = 0.5 * (f2d + l2d);
+        gp_Pnt2d aPf = C2d->Value(t);
         //New domain
-        gp_Pnt2d aNewPf = Curve2d->Value(f2d);
+        gp_Pnt2d aNewPf = Curve2d->Value(t);
         gp_Vec2d aT(aNewPf, aPf);
-        if (aT.SquareMagnitude() > Precision::SquarePConfusion())
+        if (aT.SquareMagnitude() > aMinDist)
         {
           Curve2d = Handle(Geom2d_Curve)::DownCast(Curve2d->Translated(aT));
         }
