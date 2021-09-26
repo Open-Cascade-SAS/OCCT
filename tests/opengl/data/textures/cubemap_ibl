@@ -1,0 +1,25 @@
+puts "============"
+puts "0032590: Visualization, V3d_View - improve API for setting Image Based Lighting"
+puts "============"
+puts ""
+
+set aCubeMapLabs [locate_data_file cubemap_labels.png]
+
+pload MODELING VISUALIZATION
+
+# PBR doesn't work with Compatible Profile on macOS
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+
+vclear
+vclose ALL
+source $env(CSF_OCCTSamplesPath)/tcl/vis_pbr_spheres.tcl
+vcamera -fovy 100
+
+vbackground -cubemap $aCubeMapLabs -pbrEnv noIBL
+vdump $imagedir/${casename}_1.png
+
+vbackground -pbrEnv IBL
+vdump $imagedir/${casename}_2.png
+
+vbackground BLACK -pbrEnv KEEP
+vdump $imagedir/${casename}_3.png

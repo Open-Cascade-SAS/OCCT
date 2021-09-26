@@ -26,6 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
 //=======================================================================
 Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theMgr)
 : myBgColor                (Quantity_NOC_BLACK),
+  myBackgroundType         (Graphic3d_TOB_NONE),
   myStructureManager       (theMgr),
   myCamera                 (new Graphic3d_Camera()),
   myHiddenObjects          (new Graphic3d_NMapOfTransient()),

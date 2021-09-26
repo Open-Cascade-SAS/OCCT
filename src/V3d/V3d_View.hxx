@@ -175,6 +175,8 @@ public:
   //! displayed objects.
   Standard_EXPORT void ZFitAll (const Standard_Real theScaleFactor = 1.0) const;
 
+public:
+
   //! Defines the background color of the view by the color definition type and the three corresponding values.
   Standard_EXPORT void SetBackgroundColor (const Quantity_TypeOfColor theType,
                                            const Standard_Real theV1,
@@ -217,17 +219,24 @@ public:
                                              Standard_Boolean                 theToUpdatePBREnv = Standard_True,
                                              Standard_Boolean                 theToUpdate = Standard_False);
 
-  //! Generates PBR specular probe and irradiance map
-  //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
-  //! The source of environment data is background cubemap.
-  //! If PBR is unavailable it does nothing.
-  //! If PBR is available but there is no cubemap being set to background it clears all IBL maps (see 'ClearPBREnvironment').
-  Standard_EXPORT void GeneratePBREnvironment (Standard_Boolean theToUpdate = Standard_False);
+  //! Returns TRUE if IBL (Image Based Lighting) from background cubemap is enabled.
+  Standard_EXPORT Standard_Boolean IsImageBasedLighting() const;
 
-  //! Fills PBR specular probe and irradiance map with white color.
-  //! So that environment indirect illumination will be constant and will be fully controlled by ambient light sources.
-  //! If PBR is unavailable it does nothing.
-  Standard_EXPORT void ClearPBREnvironment (Standard_Boolean theToUpdate = Standard_False);
+  //! Enables or disables IBL (Image Based Lighting) from background cubemap.
+  //! Has no effect if PBR is not used.
+  //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
+  //! @param[in] theToUpdate redraw the view
+  Standard_EXPORT void SetImageBasedLighting (Standard_Boolean theToEnableIBL,
+                                              Standard_Boolean theToUpdate = Standard_False);
+
+  //! Activates IBL from background cubemap.
+  void GeneratePBREnvironment (Standard_Boolean theToUpdate = Standard_False) { SetImageBasedLighting (Standard_True, theToUpdate); }
+
+  //! Disables IBL from background cubemap; fills PBR specular probe and irradiance map with white color.
+  void ClearPBREnvironment (Standard_Boolean theToUpdate = Standard_False) { SetImageBasedLighting (Standard_True, theToUpdate); }
+
+  //! Sets the environment texture to use. No environment texture by default.
+  Standard_EXPORT void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTexture);
 
   //! Definition of an axis from its origin and
   //! its orientation .
@@ -236,8 +245,7 @@ public:
   Standard_EXPORT void SetAxis (const Standard_Real X, const Standard_Real Y, const Standard_Real Z,
                                 const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz);
 
-  //! Sets the environment texture to use. No environment texture by default.
-  Standard_EXPORT void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTexture);
+public:
 
   //! Defines the visualization type in the view.
   Standard_EXPORT void SetVisualization (const V3d_TypeOfVisualization theType);

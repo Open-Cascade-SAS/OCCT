@@ -530,25 +530,22 @@ void V3d_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap
 }
 
 //=============================================================================
-//function : GeneratePBREnvironment
+//function : IsImageBasedLighting
 //purpose  :
 //=============================================================================
-void V3d_View::GeneratePBREnvironment (Standard_Boolean theToUpdate)
+Standard_Boolean V3d_View::IsImageBasedLighting() const
 {
-  myView->GeneratePBREnvironment();
-  if (myImmediateUpdate || theToUpdate)
-  {
-    Redraw();
-  }
+  return !myView->IBLCubeMap().IsNull();
 }
 
 //=============================================================================
-//function : ClearPBREnvironment
+//function : SetImageBasedLighting
 //purpose  :
 //=============================================================================
-void V3d_View::ClearPBREnvironment (Standard_Boolean theToUpdate)
+void V3d_View::SetImageBasedLighting (Standard_Boolean theToEnableIBL,
+                                      Standard_Boolean theToUpdate)
 {
-  myView->ClearPBREnvironment();
+  myView->SetImageBasedLighting (theToEnableIBL);
   if (myImmediateUpdate || theToUpdate)
   {
     Redraw();

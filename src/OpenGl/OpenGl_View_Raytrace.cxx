@@ -1422,7 +1422,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
     }
     myTileSampler.SetSize (myRenderParams, myRaytraceParameters.AdaptiveScreenSampling ? Graphic3d_Vec2i (theSizeX, theSizeY) : Graphic3d_Vec2i (0, 0));
 
-    const bool isCubemapForBack = !myBackgroundCubeMap.IsNull();
+    const bool isCubemapForBack = !myCubeMapBackground.IsNull();
     if (myRaytraceParameters.CubemapForBack != isCubemapForBack)
     {
       myRaytraceParameters.CubemapForBack = isCubemapForBack;
@@ -2694,8 +2694,8 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
                           toDisableEnvironmentMap ? 0 : 1);
   if (myRaytraceParameters.CubemapForBack)
   {
-    theProgram->SetUniform (theGlContext, "uZCoeff", myBackgroundCubeMap->ZIsInverted() ? -1 :  1);
-    theProgram->SetUniform (theGlContext, "uYCoeff", myBackgroundCubeMap->IsTopDown()   ?  1 : -1);
+    theProgram->SetUniform (theGlContext, "uZCoeff", myCubeMapBackground->ZIsInverted() ? -1 :  1);
+    theProgram->SetUniform (theGlContext, "uYCoeff", myCubeMapBackground->IsTopDown()   ?  1 : -1);
     theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uEnvMapForBack],
                             myBackgroundType == Graphic3d_TOB_CUBEMAP ? 1 : 0);
   }

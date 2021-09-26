@@ -35,6 +35,7 @@
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
+#include <Graphic3d_TypeOfBackground.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_TypeOfVisualization.hxx>
 #include <Graphic3d_Vec3.hxx>
@@ -359,6 +360,8 @@ public:
   //! Returns reference to current rendering parameters and effect settings.
   Graphic3d_RenderingParams& ChangeRenderingParams() { return myRenderParams; }
 
+public:
+
   //! Returns background  fill color.
   virtual Aspect_Background Background() const { return Aspect_Background (myBgColor.GetRGB()); }
 
@@ -372,7 +375,13 @@ public:
   virtual void SetGradientBackground (const Aspect_GradientBackground& theBackground) = 0;
 
   //! Returns background image texture map.
-  virtual Handle(Graphic3d_TextureMap) BackgroundImage() = 0;
+  const Handle(Graphic3d_TextureMap)& BackgroundImage() { return myBackgroundImage; }
+
+  //! Returns cubemap being set last time on background.
+  const Handle(Graphic3d_CubeMap)& BackgroundCubeMap() const { return myCubeMapBackground; }
+
+  //! Returns cubemap being set last time on background.
+  const Handle(Graphic3d_CubeMap)& IBLCubeMap() const { return myCubeMapIBL; }
 
   //! Sets image texture or environment cubemap as background.
   //! @param theTextureMap [in] source to set a background;
@@ -388,27 +397,25 @@ public:
   //! Sets background image fill style.
   virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) = 0;
 
-  //! Returns cubemap being set last time on background.
-  virtual Handle(Graphic3d_CubeMap) BackgroundCubeMap() const = 0;
+  //! Returns background type.
+  Graphic3d_TypeOfBackground BackgroundType() const { return myBackgroundType; }
 
-  //! Generates PBR specular probe and irradiance map
-  //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
-  //! The source of environment data is background cubemap.
-  //! If PBR is unavailable it does nothing.
-  //! If PBR is available but there is no cubemap being set to background it clears all IBL maps (see 'ClearPBREnvironment').
-  virtual void GeneratePBREnvironment() = 0;
+  //! Sets background type.
+  void SetBackgroundType (Graphic3d_TypeOfBackground theType) { myBackgroundType = theType; }
 
-  //! Fills PBR specular probe and irradiance map with white color.
-  //! So that environment indirect illumination will be constant
-  //! and will be fully controlled by ambient light sources.
-  //! If PBR is unavailable it does nothing.
-  virtual void ClearPBREnvironment() = 0;
+  //! Enables or disables IBL (Image Based Lighting) from background cubemap.
+  //! Has no effect if PBR is not used.
+  //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
+  //! @param[in] theToUpdate redraw the view
+  virtual void SetImageBasedLighting (Standard_Boolean theToEnableIBL) = 0;
 
   //! Returns environment texture set for the view.
-  virtual Handle(Graphic3d_TextureEnv) TextureEnv() const = 0; 
+  const Handle(Graphic3d_TextureEnv)& TextureEnv() const { return myTextureEnvData; }
 
   //! Sets environment texture for the view.
   virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) = 0;
+
+public:
 
   //! Returns list of lights of the view.
   virtual const Handle(Graphic3d_LightSet)& Lights() const = 0;
@@ -568,7 +575,14 @@ protected:
 
   Standard_Integer myId;
   Graphic3d_RenderingParams myRenderParams;
-  Quantity_ColorRGBA        myBgColor;
+
+  Quantity_ColorRGBA           myBgColor;
+  Handle(Graphic3d_TextureMap) myBackgroundImage;
+  Handle(Graphic3d_CubeMap)    myCubeMapBackground;  //!< Cubemap displayed at background
+  Handle(Graphic3d_CubeMap)    myCubeMapIBL;         //!< Cubemap used for environment lighting
+  Handle(Graphic3d_TextureEnv) myTextureEnvData;
+  Graphic3d_TypeOfBackground   myBackgroundType;     //!< Current type of background
+
   Handle(Graphic3d_StructureManager) myStructureManager;
   Handle(Graphic3d_Camera)  myCamera;
   Graphic3d_SequenceOfStructure myStructsToCompute;

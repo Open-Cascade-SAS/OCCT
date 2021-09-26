@@ -129,9 +129,8 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myIsImmediateDrawn     (Standard_False),
   myTextureParams   (new OpenGl_Aspects()),
   myCubeMapParams   (new OpenGl_Aspects()),
-  myBackgroundType  (Graphic3d_TOB_NONE),
   myPBREnvState     (OpenGl_PBREnvState_NONEXISTENT),
-  myPBREnvRequest   (OpenGl_PBREnvRequest_NONE),
+  myPBREnvRequest   (Standard_False),
   // ray-tracing fields initialization
   myRaytraceInitStatus     (OpenGl_RT_NONE),
   myIsRaytraceDataValid    (Standard_False),
@@ -553,49 +552,62 @@ void OpenGl_View::SetGradientBackground (const Aspect_GradientBackground& theBac
 void OpenGl_View::SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
                                       Standard_Boolean theToUpdatePBREnv)
 {
+  Handle(Graphic3d_TextureMap) aNewMap = theTextureMap;
   if (theTextureMap.IsNull()
   || !theTextureMap->IsDone())
+  {
+    if (!theTextureMap.IsNull())
+    {
+      Message::SendFail ("Error: unable to set image background");
+    }
+    aNewMap.Nullify();
+  }
+
+  Handle(Graphic3d_CubeMap) aCubeMap = Handle(Graphic3d_CubeMap)::DownCast (aNewMap);
+  if (theToUpdatePBREnv)
+  {
+    // update PBR environment
+    const TCollection_AsciiString anIdOld = !myCubeMapIBL.IsNull()
+                                           ? myCubeMapIBL->GetId()
+                                           : TCollection_AsciiString();
+    const TCollection_AsciiString anIdNew = !aCubeMap.IsNull()
+                                           ? aCubeMap->GetId()
+                                           : TCollection_AsciiString();
+    if (anIdNew != anIdOld)
+    {
+      myPBREnvRequest = true;
+    }
+    myCubeMapIBL = aCubeMap;
+  }
+
+  if (aNewMap.IsNull())
   {
     if (myBackgroundType == Graphic3d_TOB_TEXTURE
      || myBackgroundType == Graphic3d_TOB_CUBEMAP)
     {
       myBackgroundType = Graphic3d_TOB_NONE;
-      if (theToUpdatePBREnv)
-      {
-        myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
-      }
     }
     return;
   }
 
   Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
-  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (theTextureMap);
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (aNewMap);
   anAspect->SetInteriorStyle (Aspect_IS_SOLID);
   anAspect->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
   anAspect->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   anAspect->SetTextureSet (aTextureSet);
   anAspect->SetTextureMapOn (true);
 
-  if (Handle(Graphic3d_Texture2D) aTextureMap = Handle(Graphic3d_Texture2D)::DownCast (theTextureMap))
+  if (Handle(Graphic3d_Texture2D) aTextureMap = Handle(Graphic3d_Texture2D)::DownCast (aNewMap))
   {
-    if (theToUpdatePBREnv && myBackgroundType == Graphic3d_TOB_CUBEMAP)
-    {
-      myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
-    }
-
     myTextureParams->SetAspect (anAspect);
     myBackgroundType  = Graphic3d_TOB_TEXTURE;
     myBackgroundImage = aTextureMap;
     return;
   }
 
-  if (Handle(Graphic3d_CubeMap) aCubeMap = Handle(Graphic3d_CubeMap)::DownCast (theTextureMap))
+  if (!aCubeMap.IsNull())
   {
-    if (theToUpdatePBREnv)
-    {
-      myPBREnvRequest = OpenGl_PBREnvRequest_BAKE;
-    }
-
     aCubeMap->SetMipmapsGeneration (Standard_True);
     if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
     {
@@ -610,11 +622,41 @@ void OpenGl_View::SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTex
     myWorkspace->ApplyAspects();
 
     myBackgroundType = Graphic3d_TOB_CUBEMAP;
-    myBackgroundCubeMap = aCubeMap;
+    myCubeMapBackground = aCubeMap;
     return;
   }
 
   throw Standard_ProgramError ("OpenGl_View::SetBackgroundImage() - invalid texture map set for background");
+}
+
+// =======================================================================
+// function : SetImageBasedLighting
+// purpose  :
+// =======================================================================
+void OpenGl_View::SetImageBasedLighting (Standard_Boolean theToEnableIBL)
+{
+  if (!theToEnableIBL
+    || myBackgroundType != Graphic3d_TOB_CUBEMAP)
+  {
+    if (!myCubeMapIBL.IsNull())
+    {
+      myPBREnvRequest = true;
+      myCubeMapIBL.Nullify();
+    }
+    return;
+  }
+
+  const TCollection_AsciiString anIdOld = !myCubeMapIBL.IsNull()
+                                         ? myCubeMapIBL->GetId()
+                                         : TCollection_AsciiString();
+  const TCollection_AsciiString anIdNew = !myCubeMapBackground.IsNull()
+                                         ? myCubeMapBackground->GetId()
+                                         : TCollection_AsciiString();
+  if (anIdNew != anIdOld)
+  {
+    myPBREnvRequest = true;
+  }
+  myCubeMapIBL = myCubeMapBackground;
 }
 
 // =======================================================================
@@ -633,15 +675,6 @@ Aspect_FillMethod OpenGl_View::BackgroundImageStyle() const
 void OpenGl_View::SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle)
 {
   myBackgrounds[Graphic3d_TOB_TEXTURE]->SetTextureFillMethod (theFillStyle);
-}
-
-// =======================================================================
-// function : BackgroundCubeMap
-// purpose  :
-// =======================================================================
-Handle(Graphic3d_CubeMap) OpenGl_View::BackgroundCubeMap() const
-{
-  return myBackgroundCubeMap;
 }
 
 // =======================================================================
@@ -955,8 +988,8 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
 
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
   {
-    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myBackgroundCubeMap->ZIsInverted() ? -1 : 1);
-    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myBackgroundCubeMap->IsTopDown() ? 1 : -1);
+    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myCubeMapBackground->ZIsInverted() ? -1 : 1);
+    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myCubeMapBackground->IsTopDown() ? 1 : -1);
     const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myCubeMapParams);
 
     myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace, theProjection);
@@ -1203,7 +1236,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
       myPBREnvironment->Release (aCtx.get());
       myPBREnvironment.Nullify();
       myPBREnvState = OpenGl_PBREnvState_NONEXISTENT;
-      myPBREnvRequest = OpenGl_PBREnvRequest_BAKE;
+      myPBREnvRequest = true;
       ++myLightsRevision;
     }
 
@@ -1297,7 +1330,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
         myWorkspace->ApplyAspects();
       }
     }
-    processPBREnvRequest (aCtx);
+    updatePBREnvironment (aCtx);
   }
 
   // create color and coverage accumulation buffers required for OIT algorithm
@@ -3042,19 +3075,51 @@ Standard_Boolean OpenGl_View::checkPBRAvailability() const
 }
 
 // =======================================================================
-// function : bakePBREnvironment
+// function : updatePBREnvironment
 // purpose  :
 // =======================================================================
-void OpenGl_View::bakePBREnvironment (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::updatePBREnvironment (const Handle(OpenGl_Context)& theCtx)
 {
-  const Handle(OpenGl_TextureSet)& aTextureSet = myCubeMapParams->TextureSet (theCtx);
-  if (!aTextureSet.IsNull()
-   && !aTextureSet->IsEmpty())
+  if (myPBREnvState != OpenGl_PBREnvState_CREATED
+  || !myPBREnvRequest)
+  {
+    myPBREnvRequest = false;
+    return;
+  }
+
+  myPBREnvRequest = false;
+
+  Handle(OpenGl_TextureSet) aGlTextureSet;
+  OpenGl_Aspects* aTmpGlAspects = NULL;
+  if (!myCubeMapIBL.IsNull()
+    && myCubeMapIBL == myCubeMapBackground)
+  {
+    aGlTextureSet = myCubeMapParams->TextureSet (theCtx);
+  }
+  else if (!myCubeMapIBL.IsNull())
+  {
+    myCubeMapIBL->SetMipmapsGeneration (Standard_True);
+
+    Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+    {
+      Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (myCubeMapIBL);
+      anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+      anAspect->SetTextureSet (aTextureSet);
+      anAspect->SetTextureMapOn (true);
+    }
+
+    aTmpGlAspects = new OpenGl_Aspects();
+    aTmpGlAspects->SetAspect (anAspect);
+    aGlTextureSet = aTmpGlAspects->TextureSet (theCtx);
+  }
+
+  if (!aGlTextureSet.IsNull()
+   && !aGlTextureSet->IsEmpty())
   {
     myPBREnvironment->Bake (theCtx,
-                            aTextureSet->First(),
-                            myBackgroundCubeMap->ZIsInverted(),
-                            myBackgroundCubeMap->IsTopDown(),
+                            aGlTextureSet->First(),
+                            myCubeMapIBL->ZIsInverted(),
+                            myCubeMapIBL->IsTopDown(),
                             myRenderParams.PbrEnvBakingDiffNbSamples,
                             myRenderParams.PbrEnvBakingSpecNbSamples,
                             myRenderParams.PbrEnvBakingProbability);
@@ -3063,31 +3128,6 @@ void OpenGl_View::bakePBREnvironment (const Handle(OpenGl_Context)& theCtx)
   {
     myPBREnvironment->Clear (theCtx);
   }
-}
-
-// =======================================================================
-// function : clearPBREnvironment
-// purpose  :
-// =======================================================================
-void OpenGl_View::clearPBREnvironment (const Handle(OpenGl_Context)& theCtx)
-{
-  myPBREnvironment->Clear (theCtx);
-}
-
-// =======================================================================
-// function : clearPBREnvironment
-// purpose  :
-// =======================================================================
-void OpenGl_View::processPBREnvRequest (const Handle(OpenGl_Context)& theCtx)
-{
-  if (myPBREnvState == OpenGl_PBREnvState_CREATED)
-  {
-    switch (myPBREnvRequest)
-    {
-      case OpenGl_PBREnvRequest_NONE:  return;
-      case OpenGl_PBREnvRequest_BAKE:  bakePBREnvironment  (theCtx); break;
-      case OpenGl_PBREnvRequest_CLEAR: clearPBREnvironment (theCtx); break;
-    }
-  }
-  myPBREnvRequest = OpenGl_PBREnvRequest_NONE;
+  aGlTextureSet.Nullify();
+  OpenGl_Element::Destroy (theCtx.get(), aTmpGlAspects);
 }

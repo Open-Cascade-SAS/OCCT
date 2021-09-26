@@ -2694,8 +2694,10 @@ static int VBackground (Draw_Interpretor& theDI,
 
   NCollection_Sequence<TCollection_AsciiString> aCubeMapSeq;
   Graphic3d_CubeMapOrder aCubeOrder = Graphic3d_CubeMapOrder::Default();
-  bool isCubeZInverted = false, isCubeGenPBREnv = true;
+  bool isCubeZInverted = false;
   bool isSRgb = true;
+
+  int toUseIBL = 1;
 
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
@@ -2780,9 +2782,36 @@ static int VBackground (Draw_Interpretor& theDI,
       isCubeZInverted = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArg == "-pbrenv"
-          || anArg == "-nopbrenv")
+          || anArg == "-nopbrenv"
+          || anArg == "-ibl"
+          || anArg == "-noibl")
     {
-      isCubeGenPBREnv = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+      toUseIBL = !anArg.StartsWith ("-no") ? 1 : 0;
+      if (anArgIter + 1 < theNbArgs)
+      {
+        TCollection_AsciiString anIblArg (theArgVec[anArgIter + 1]);
+        anIblArg.LowerCase();
+        if (anIblArg == "keep"
+         || anIblArg == "-1")
+        {
+          toUseIBL = -1;
+          ++anArgIter;
+        }
+        else if (anIblArg == "ibl"
+              || anIblArg == "1"
+              || anIblArg == "on")
+        {
+          toUseIBL = !anArg.StartsWith ("-no") ? 1 : 0;
+          ++anArgIter;
+        }
+        else if (anIblArg == "noibl"
+              || anIblArg == "0"
+              || anIblArg == "off")
+        {
+          toUseIBL = !anArg.StartsWith ("-no") ? 0 : 1;
+          ++anArgIter;
+        }
+      }
     }
     else if (anArg == "-srgb"
           || anArg == "-nosrgb")
@@ -2905,6 +2934,10 @@ static int VBackground (Draw_Interpretor& theDI,
     {
       aView->SetBgGradientStyle (hasGradientMode ? aGradientMode : Aspect_GradientFillMethod_None);
       aView->SetBackgroundColor (aColors[0].GetRGB());
+      if (toUseIBL != -1)
+      {
+        aView->SetBackgroundCubeMap (Handle(Graphic3d_CubeMap)(), true);
+      }
     }
   }
   else if (aNbColors == 2)
@@ -2934,6 +2967,10 @@ static int VBackground (Draw_Interpretor& theDI,
         }
       }
       aView->SetBgGradientColors (aColors[0].GetRGB(), aColors[1].GetRGB(), aGradientMode);
+      if (toUseIBL != -1)
+      {
+        aView->SetBackgroundCubeMap (Handle(Graphic3d_CubeMap)(), true);
+      }
     }
   }
   else if (hasGradientMode)
@@ -2991,7 +3028,12 @@ static int VBackground (Draw_Interpretor& theDI,
     aCubeMap->GetParams()->SetRepeat (false);
     aCubeMap->GetParams()->SetTextureUnit (Graphic3d_TextureUnit_EnvMap);
 
-    aView->SetBackgroundCubeMap (aCubeMap, isCubeGenPBREnv);
+    aView->SetBackgroundCubeMap (aCubeMap, toUseIBL != -1);
+  }
+  if (toUseIBL != -1
+  && !aView.IsNull())
+  {
+    aView->SetImageBasedLighting (toUseIBL == 1);
   }
 
   return 0;
@@ -13661,7 +13703,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:            [-gradient Color1 Color2 [-default]"
     "\n\t\t:            [-gradientMode {NONE|HORIZONTAL|VERTICAL|DIAG1|DIAG2|CORNER1|CORNER2|CORNER3|ELLIPTICAL}]=VERT]"
     "\n\t\t:            [-imageFile ImageFile [-imageMode {CENTERED|TILED|STRETCH|NONE}]=CENTERED [-srgb {0|1}]=1]"
-    "\n\t\t:            [-cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]=0 [-pbrEnv {0|1}]=1]"
+    "\n\t\t:            [-cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]=0]"
+    "\n\t\t:            [-pbrEnv {ibl|noibl|keep}]"
     "\n\t\t: Changes background or some background settings."
     "\n\t\t:  -color        sets background color"
     "\n\t\t:  -gradient     sets background gradient starting and ending colors"
@@ -13671,7 +13714,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  -imageMode    sets image fill type"
     "\n\t\t:  -cubemap      sets environment cubemap as background"
     "\n\t\t:  -invertedz    sets inversion of Z axis for background cubemap rendering; FALSE when unspecified"
-    "\n\t\t:  -pbrEnv       sets PBR environment baking flag while updating cubemap; TRUE when unspecified"
+    "\n\t\t:  -pbrEnv       sets on/off Image Based Lighting (IBL) from background cubemap for PBR"
     "\n\t\t:  -srgb         prefer sRGB texture format when applicable; TRUE when unspecified"
     "\n\t\t:  -order        defines order of tiles in one image cubemap"
     "\n\t\t:    TileIndexi defubes an index in range [0, 5] for i tile of one image packed cubemap"

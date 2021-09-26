@@ -16,15 +16,11 @@
 #ifndef _OpenGl_View_Header
 #define _OpenGl_View_Header
 
-#include <Aspect_FillMethod.hxx>
-#include <Aspect_GradientFillMethod.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CullingTool.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ToneMappingMethod.hxx>
-#include <Graphic3d_TypeOfBackground.hxx>
-#include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <math_BullardGenerator.hxx>
@@ -41,7 +37,6 @@
 #include <map>
 #include <set>
 
-class Graphic3d_StructureManager;
 class OpenGl_BackgroundArray;
 class OpenGl_DepthPeeling;
 class OpenGl_GraphicDriver;
@@ -206,9 +201,6 @@ public:
   //! Sets gradient background fill colors.
   Standard_EXPORT virtual void SetGradientBackground (const Aspect_GradientBackground& theBackground) Standard_OVERRIDE;
 
-  //! Returns background image texture map.
-  virtual Handle(Graphic3d_TextureMap) BackgroundImage() Standard_OVERRIDE { return myBackgroundImage; }
-
   //! Sets image texture or environment cubemap as background.
   //! @param theTextureMap [in] source to set a background;
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
@@ -217,37 +209,24 @@ public:
   Standard_EXPORT virtual void SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
                                                    Standard_Boolean theToUpdatePBREnv = Standard_True) Standard_OVERRIDE;
 
+  //! Sets environment texture for the view.
+  Standard_EXPORT virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) Standard_OVERRIDE;
+
   //! Returns background image fill style.
   Standard_EXPORT virtual Aspect_FillMethod BackgroundImageStyle() const Standard_OVERRIDE;
 
   //! Sets background image fill style.
   Standard_EXPORT virtual void SetBackgroundImageStyle (const Aspect_FillMethod theFillStyle) Standard_OVERRIDE;
 
-  //! Returns cubemap being set last time on background.
-  Standard_EXPORT Handle(Graphic3d_CubeMap) BackgroundCubeMap() const Standard_OVERRIDE;
-
-  //! Generates PBR specular probe and irradiance map
-  //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
-  //! The source of environment data is background cubemap.
-  //! If PBR is unavailable it does nothing.
-  //! If PBR is available but there is no cubemap being set to background it clears all IBL maps (see 'ClearPBREnvironment').
-  virtual void GeneratePBREnvironment() Standard_OVERRIDE { myPBREnvRequest = OpenGl_PBREnvRequest_BAKE; }
-
-  //! Fills PBR specular probe and irradiance map with white color.
-  //! So that environment indirect illumination will be constant
-  //! and will be fully controlled by ambient light sources.
-  //! If PBR is unavailable it does nothing.
-  virtual void ClearPBREnvironment() Standard_OVERRIDE { myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR; }
+  //! Enables or disables IBL (Image Based Lighting) from background cubemap.
+  //! Has no effect if PBR is not used.
+  //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
+  //! @param[in] theToUpdate redraw the view
+  Standard_EXPORT virtual void SetImageBasedLighting (Standard_Boolean theToEnableIBL) Standard_OVERRIDE;
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
   Standard_EXPORT unsigned int SpecIBLMapLevels() const;
-
-  //! Returns environment texture set for the view.
-  virtual Handle(Graphic3d_TextureEnv) TextureEnv() const Standard_OVERRIDE { return myTextureEnvData; }
-
-  //! Sets environment texture for the view.
-  Standard_EXPORT virtual void SetTextureEnv (const Handle(Graphic3d_TextureEnv)& theTextureEnv) Standard_OVERRIDE;
 
   //! Returns local camera origin currently set for rendering, might be modified during rendering.
   const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
@@ -470,8 +449,6 @@ protected:
   gp_XYZ                          myLocalOrigin;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myToShowGradTrihedron;
-  Handle(Graphic3d_TextureMap)    myBackgroundImage;
-  Handle(Graphic3d_TextureEnv)    myTextureEnvData;
   Graphic3d_GraduatedTrihedron    myGTrihedronData;
 
   Handle(Graphic3d_LightSet)      myNoShadingLight;
@@ -494,8 +471,6 @@ protected:
 
   OpenGl_GraduatedTrihedron myGraduatedTrihedron;
   OpenGl_FrameStatsPrs      myFrameStatsPrs;
-
-  Handle(OpenGl_TextureSet) myTextureEnv;
 
   //! Framebuffers for OpenGL output.
   Handle(OpenGl_FrameBuffer) myOpenGlFBO;
@@ -532,9 +507,8 @@ protected: //! @name Background parameters
 
   OpenGl_Aspects*            myTextureParams;                     //!< Stores texture and its parameters for textured background
   OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
-  Handle(Graphic3d_CubeMap)  myBackgroundCubeMap;                 //!< Cubemap has been set as background
-  Graphic3d_TypeOfBackground myBackgroundType;                    //!< Current type of background
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
+  Handle(OpenGl_TextureSet)  myTextureEnv;
 
 protected: //! @name methods related to PBR
 
@@ -543,14 +517,7 @@ protected: //! @name methods related to PBR
 
   //! Generates IBL maps used in PBR pipeline.
   //! If background cubemap is not set clears all IBL maps.
-  Standard_EXPORT void bakePBREnvironment (const Handle(OpenGl_Context)& theCtx);
-
-  //! Fills all IBL maps with white color.
-  //! So that environment lighting is considered to be constant and is completely controls by ambient light sources.
-  Standard_EXPORT void clearPBREnvironment (const Handle(OpenGl_Context)& theCtx);
-
-  //! Process requests to generate or to clear PBR environment.
-  Standard_EXPORT void processPBREnvRequest (const Handle(OpenGl_Context)& theCtx);
+  Standard_EXPORT void updatePBREnvironment (const Handle(OpenGl_Context)& theCtx);
 
 protected: //! @name fields and types related to PBR
 
@@ -562,17 +529,9 @@ protected: //! @name fields and types related to PBR
     OpenGl_PBREnvState_CREATED
   };
 
-  //! Type of action which can be done with PBR environment.
-  enum PBREnvironmentRequest
-  {
-    OpenGl_PBREnvRequest_NONE,
-    OpenGl_PBREnvRequest_BAKE,
-    OpenGl_PBREnvRequest_CLEAR
-  };
-
   Handle(OpenGl_PBREnvironment) myPBREnvironment; //!< manager of IBL maps used in PBR pipeline
   PBREnvironmentState           myPBREnvState;    //!< state of PBR environment
-  PBREnvironmentRequest         myPBREnvRequest;  //!< type of action is requested to be done with PBR environment
+  Standard_Boolean              myPBREnvRequest;  //!< update PBR environment
 
 protected: //! @name data types related to ray-tracing
 
@@ -761,7 +720,7 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables depth-of-field effect (path tracing, perspective camera).
     Standard_Boolean DepthOfField;
 
-    //! Enables/disables cubemap backgraund.
+    //! Enables/disables cubemap background.
     Standard_Boolean CubemapForBack;
 
     //! Tone mapping method for path tracing.
