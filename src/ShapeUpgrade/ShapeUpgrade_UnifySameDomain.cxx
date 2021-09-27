@@ -689,43 +689,67 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
   }
   else
   {
-    TopoDS_Edge aSeam = aRemovedEdge;
-    aSeam.Orientation(TopAbs_FORWARD);
-    Handle(Geom2d_Curve) PC1 = BRep_Tool::CurveOnSurface(aSeam, theFrefFace, Param1, Param2);
-    aSeam.Reverse();
-    Handle(Geom2d_Curve) PC2 = BRep_Tool::CurveOnSurface(aSeam, theFrefFace, Param1, Param2);
-    Standard_Boolean IsSeam = (PC1 != PC2);
-    if (!IsSeam) //it was not a seam
+    MissedSeam = aRemovedEdge;
+    MissedSeam.Orientation(TopAbs_FORWARD);
+    if (!theCurVertex.IsSame(V1))
+      MissedSeam.Reverse();
+  }
+
+  if (!BRep_Tool::IsClosed (MissedSeam, theFrefFace))
+  {
+    //make edge a real seam edge with 2 pcurves on ref face
+    Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnSurface (MissedSeam, theFrefFace, Param1, Param2);
+    gp_Pnt2d aP2d = aPC->Value(Param1);
+    if (Abs(aP2d.Coord(IndCoord) - theCurPoint.Coord(IndCoord)) > thePeriod/2)
     {
-      aCoord = theCurPoint.Coord(IndCoord);
-      gp_Pnt2d PointOnRemovedEdge = PC1->Value(Param1);
-      Standard_Real CoordOfRemovededge = PointOnRemovedEdge.Coord(IndCoord);
-      if (Abs(aCoord - CoordOfRemovededge) > thePeriod/2)
-      {
-        Standard_Real Sign = (aCoord > CoordOfRemovededge)? 1 : -1;
-        Offset *= Sign;
-        PC1 = Handle(Geom2d_Curve)::DownCast(PC2->Copy());
-        PC1->Translate(Offset);
-      }
+      Standard_Real anOffset = 0.;
+      if (aP2d.Coord(IndCoord) < theCurPoint.Coord(IndCoord))
+        anOffset = thePeriod;
       else
-      {
-        if (SeamDir > 0)
-          Offset *= -1;
-        PC2 = Handle(Geom2d_Curve)::DownCast(PC1->Copy());
-        PC2->Translate(Offset);
-      }
+        anOffset = -thePeriod;
+
+      if (theIsU)
+        Offset.SetCoord (anOffset, 0.);
+      else
+        Offset.SetCoord (0., anOffset);
+
+      aPC->Translate(Offset);
     }
-    if (theCurVertex.IsSame(V1))
-      BB.UpdateEdge(MissedSeam, PC1, PC2, theFrefFace, 0.);
+    gp_Pnt2d aFirstP2d, aLastP2d;
+    if (MissedSeam.Orientation() == TopAbs_FORWARD)
+    {
+      aFirstP2d = aPC->Value(Param1);
+      aLastP2d  = aPC->Value(Param2);
+    }
     else
     {
-      if (IsSeam)
-        BB.UpdateEdge(MissedSeam, PC1, PC2, theFrefFace, 0.);
-      else
-        BB.UpdateEdge(MissedSeam, PC2, PC1, theFrefFace, 0.);
-      
-      MissedSeam.Reverse();
+      aFirstP2d = aPC->Value(Param2);
+      aLastP2d  = aPC->Value(Param1);
     }
+    if (theIsU)
+    {
+      if (aFirstP2d.Y() < aLastP2d.Y())
+        Offset.SetCoord (-thePeriod, 0.);
+      else
+        Offset.SetCoord (thePeriod, 0.);
+    }
+    else
+    {
+      if (aFirstP2d.X() < aLastP2d.X())
+        Offset.SetCoord (0., thePeriod);
+      else
+        Offset.SetCoord (0., -thePeriod);
+    }
+    Handle(Geom2d_Curve) AnotherPC = Handle(Geom2d_Curve)::DownCast(aPC->Copy());
+    AnotherPC->Translate(Offset);
+    TopoDS_Edge F_MissedSeam = MissedSeam;
+    F_MissedSeam.Orientation (TopAbs_FORWARD);
+    Handle(Geom2d_Curve) NullPC;
+    BB.UpdateEdge (F_MissedSeam, NullPC, theFrefFace, 0.);
+    if (MissedSeam.Orientation() == TopAbs_FORWARD)
+      BB.UpdateEdge (F_MissedSeam, aPC, AnotherPC, theFrefFace, 0.);
+    else
+      BB.UpdateEdge (F_MissedSeam, AnotherPC, aPC, theFrefFace, 0.);
   }
 
   BB.Continuity(MissedSeam, theFrefFace, theFrefFace, aContinuity);
@@ -957,12 +981,17 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
 
   BRep_Builder BB;
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
+  TopTools_MapOfShape aEmap;
   for (; Explo.More(); Explo.Next())
   {
-    const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+    TopoDS_Edge anEdge = TopoDS::Edge(Explo.Current());
     if (BRep_Tool::Degenerated(anEdge) && ToModify)
       continue;
-    if (BRepTools::IsReallyClosed(anEdge, theFace))
+    
+    if (ToProject && BRep_Tool::IsClosed(anEdge, theFace))
+      continue;
+    
+    if (!aEmap.Add(anEdge))
       continue;
 
     Standard_Real fpar, lpar;
@@ -970,36 +999,51 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
     if (!PCurveOnRef.IsNull() && !(ToModify || ToProject))
       continue;
 
-    Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
-    Handle(Geom2d_Curve) aNewPCurve;
-    if (ToProject)
-    {
-      Handle(Geom_Curve) aC3d = BRep_Tool::Curve(anEdge, fpar, lpar);
-      aC3d = new Geom_TrimmedCurve(aC3d, fpar, lpar);
-      Standard_Real tol = BRep_Tool::Tolerance(anEdge);
-      tol = Min(tol, Precision::Approximation());
-      aNewPCurve =
-        GeomProjLib::Curve2d(aC3d, RefSurf);
-    }
-    else
-    {
-      aNewPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
-    }
-    if (ToTranslate)
-      aNewPCurve->Translate(gp_Vec2d(0., aTranslation));
-    if (Y_Reverse)
-      aNewPCurve->Mirror(gp::OX2d());
-    if (X_Reverse)
-    {
-      aNewPCurve->Mirror(gp::OY2d());
-      aNewPCurve->Translate(gp_Vec2d(2*M_PI, 0.));
-    }
-    if (ToRotate)
-      aNewPCurve->Translate(gp_Vec2d(anAngle, 0.));
+    Handle(Geom2d_Curve) PCurves [2], NewPCurves [2];
+    anEdge.Orientation (TopAbs_FORWARD);
+    PCurves[0] = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+    anEdge.Reverse();
+    PCurves[1] = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
 
-    theMapEdgesWithTemporaryPCurves.Add(anEdge);
+    Standard_Integer NbPcurves = (PCurves[0] == PCurves[1])? 1 : 2;
+
+    for (Standard_Integer ii = 0; ii < NbPcurves; ii++)
+    {
+      if (ToProject)
+      {
+        Handle(Geom_Curve) aC3d = BRep_Tool::Curve(anEdge, fpar, lpar);
+        aC3d = new Geom_TrimmedCurve(aC3d, fpar, lpar);
+        Standard_Real tol = BRep_Tool::Tolerance(anEdge);
+        tol = Min(tol, Precision::Approximation());
+        NewPCurves[ii] =
+          GeomProjLib::Curve2d(aC3d, RefSurf);
+      }
+      else
+      {
+        NewPCurves[ii] = Handle(Geom2d_Curve)::DownCast(PCurves[ii]->Copy());
+      }
+      if (ToTranslate)
+        NewPCurves[ii]->Translate(gp_Vec2d(0., aTranslation));
+      if (Y_Reverse)
+        NewPCurves[ii]->Mirror(gp::OX2d());
+      if (X_Reverse)
+      {
+        NewPCurves[ii]->Mirror(gp::OY2d());
+        NewPCurves[ii]->Translate(gp_Vec2d(2*M_PI, 0.));
+      }
+      if (ToRotate)
+        NewPCurves[ii]->Translate(gp_Vec2d(anAngle, 0.));
+    }
+
+    anEdge.Orientation (TopAbs_FORWARD);
     
-    BB.UpdateEdge(anEdge, aNewPCurve, theRefFace, 0.);
+    theMapEdgesWithTemporaryPCurves.Add(anEdge);
+
+    if (NbPcurves == 1)
+      BB.UpdateEdge(anEdge, NewPCurves[0], theRefFace, 0.);
+    else
+      BB.UpdateEdge(anEdge, NewPCurves[0], NewPCurves[1], theRefFace, 0.);
+    
     BB.Range(anEdge, fpar, lpar);
   }
 }

@@ -1,0 +1,20 @@
+puts "================================================="
+puts "OCC32581: UnifySameDomain produces invalid result"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug32581.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -t -solid 3 -shell 3 -face 14 -wire 16 -edge 31 -vertex 20
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 63178.1 -v 1e+06
