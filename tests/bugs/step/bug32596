@@ -1,0 +1,18 @@
+puts "===================================="
+puts "0032596: \[REGRESSION\] Data Exchange, STEP Reader - OCCT 7.6.0dev does not open file correctly"
+puts "===================================="
+puts ""
+
+# Read file
+testreadstep [locate_data_file bug32596_abc_0_13.step] res
+
+checkshape res
+checknbshapes res -face 99 -wire 118 -edge 232 -vertex 144
+
+vinit View1
+vright
+vdisplay -dispMode 1 res
+vfit
+if { [vreadpixel 200 200 -rgb -name] != "BLACK" } {
+  puts "Error: Incorrect shape"
+}

@@ -256,16 +256,17 @@ void StepToTopoDS_TranslateFace::Init
         //  "If the face has only one bound and this is of type vertex_loop, then the interior of the face is the domain of the face_surface.face_geometry.
         //   In such a case the underlying surface shall be closed (e.g. a spherical_surface.)"
         //  - natural bounds are applied only in case if VertexLoop is only the one  defined face bound.
-        if (NbBnd == 1) {
+        if (NbBnd == 1)
+        {
           BRepBuilderAPI_MakeFace mf(GeomSurf, Precision());
           for (TopoDS_Iterator it(mf); it.More(); it.Next())
+          {
             B.Add(F, it.Value());
-
+          }
+          continue;
         }
-        continue;
-
       }
-    
+
     if (GeomSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
       continue;
     }
