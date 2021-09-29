@@ -119,6 +119,9 @@ public:
   //! Return device pixel ratio (logical to backing store scale factor).
   virtual Standard_Real DevicePixelRatio() const Standard_OVERRIDE { return myDevicePixelRatio; }
 
+  //! Sets device pixel ratio for a window with IsVirtual() flag.
+  void SetDevicePixelRatio (Standard_Real theDevicePixelRatio) { myDevicePixelRatio = theDevicePixelRatio; }
+
   //! Invalidate entire window content through generation of Expose event.
   Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
 
