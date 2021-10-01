@@ -175,6 +175,16 @@ proc wokdep:gui:SwitchArch {} {
   grid .myFrame.myClose -row $::aRowIter -column 6 -columnspan 2
 }
 
+# update label text and visibility
+font create wokdep:gui:EmptyFont -size -1
+proc wokdep:gui:SetLabelText {theLabel theText} {
+  set aFont TkDefaultFont
+  if { $theText == "" } {
+    set aFont wokdep:gui:EmptyFont
+  }
+  $theLabel configure -text $theText -font $aFont
+}
+
 proc wokdep:gui:UpdateList {} {
   set anIncErrs   {}
   set anLib32Errs {}
@@ -251,16 +261,18 @@ proc wokdep:gui:UpdateList {} {
     wokdep:SearchJDK     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
 
-  .myFrame.myIncErrLbl   configure -text [join $anIncErrs   "\n"]
-  .myFrame.myLib32_ErrLbl  configure -text [join $anLib32Errs "\n"]
-  .myFrame.myLib64_ErrLbl  configure -text [join $anLib64Errs "\n"]
-  .myFrame.myBin32_ErrLbl  configure -text [join $anBin32Errs "\n"]
-  .myFrame.myBin64_ErrLbl  configure -text [join $anBin64Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myIncErrLbl [join $anIncErrs   "\n"]
 
-  .myFrame.myLib32D_ErrLbl configure -text [join $anLib32Errs "\n"]
-  .myFrame.myLib64D_ErrLbl configure -text [join $anLib64Errs "\n"]
-  .myFrame.myBin32D_ErrLbl configure -text [join $anBin32Errs "\n"]
-  .myFrame.myBin64D_ErrLbl configure -text [join $anBin64Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myIncErrLbl     [join $anIncErrs   "\n"]
+  wokdep:gui:SetLabelText .myFrame.myLib32_ErrLbl  [join $anLib32Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myLib64_ErrLbl  [join $anLib64Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myBin32_ErrLbl  [join $anBin32Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myBin64_ErrLbl  [join $anBin64Errs "\n"]
+
+  wokdep:gui:SetLabelText .myFrame.myLib32D_ErrLbl [join $anLib32Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myLib64D_ErrLbl [join $anLib64Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myBin32D_ErrLbl [join $anBin32Errs "\n"]
+  wokdep:gui:SetLabelText .myFrame.myBin64D_ErrLbl [join $anBin64Errs "\n"]
 
   # merge duplicates
   set ::CSF_OPT_LIB32  [lsort -unique $::CSF_OPT_LIB32]
