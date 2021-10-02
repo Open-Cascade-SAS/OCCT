@@ -26,7 +26,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <BOPAlgo_BuilderArea.hxx>
 #include <NCollection_BaseAllocator.hxx>
-class TopoDS_Face;
 
 
 //! The algorithm to build new faces from the given faces and

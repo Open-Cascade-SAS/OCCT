@@ -41,7 +41,6 @@ class AIS_InteractiveContext;
 class AIS_Point;
 class AIS_RubberBand;
 class AIS_XRTrackedDevice;
-class Graphic3d_Camera;
 class SelectMgr_EntityOwner;
 class V3d_View;
 class WNT_HIDSpaceMouse;

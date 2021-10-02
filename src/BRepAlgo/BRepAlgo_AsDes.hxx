@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_ConstructionError;
 class TopoDS_Shape;
 
 

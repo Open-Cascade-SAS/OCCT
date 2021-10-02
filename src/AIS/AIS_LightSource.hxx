@@ -20,7 +20,6 @@
 #include <Graphic3d_CLight.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
-class Prs3d_ShadingAspect;
 class Select3D_SensitiveSphere;
 
 //! Interactive object for a light source.

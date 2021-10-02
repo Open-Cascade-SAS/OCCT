@@ -26,8 +26,6 @@
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Wire;
-class IMeshTools_Context;
-class IMeshData_Wire;
 
 //! Builds discrete model of a shape by adding faces and free edges.
 //! Computes deflection for corresponded shape and checks whether it

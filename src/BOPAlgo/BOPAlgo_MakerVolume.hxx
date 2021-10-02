@@ -26,7 +26,6 @@
 #include <TopoDS_Solid.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-class TopoDS_Solid;
 class BOPAlgo_PaveFiller;
 
 

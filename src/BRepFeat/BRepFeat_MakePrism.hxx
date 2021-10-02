@@ -31,10 +31,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Geom_Curve;
-class Standard_ConstructionError;
-class TopoDS_Shape;
 class TopoDS_Face;
-class gp_Dir;
 class TopoDS_Edge;
 
 

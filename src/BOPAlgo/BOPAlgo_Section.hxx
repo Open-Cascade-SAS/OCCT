@@ -23,7 +23,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <TopTools_ListOfShape.hxx>
 class BOPAlgo_PaveFiller;
-class TopoDS_Shape;
 
 
 

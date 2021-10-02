@@ -21,9 +21,6 @@
 #include <Standard_Transient.hxx>
 #include <IMeshData_Types.hxx>
 
-class Bnd_Box;
-class TopoDS_Face;
-class TopoDS_Edge;
 struct IMeshTools_Parameters;
 
 //! Auxiliary tool encompassing methods to compute deflection of shapes.

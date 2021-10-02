@@ -28,7 +28,6 @@ class gp_Vec;
 class Geom2d_Curve;
 class Geom_Curve;
 class BRepAdaptor_Surface;
-class ProjLib_ProjectedCurve;
 class IntTools_Context;
 
 

@@ -36,11 +36,6 @@
 #include <BRepFill_TransitionStyle.hxx>
 class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class TopoDS_Wire;
-class TopoDS_Shape;
 class TopoDS_Edge;
 
 

@@ -26,7 +26,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class Standard_ConstructionError;
 class TopoDS_Shape;
 
 

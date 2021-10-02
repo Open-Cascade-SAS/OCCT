@@ -20,8 +20,6 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <IntSurf_Transition.hxx>
 
-class Standard_DomainError;
-class IntSurf_Transition;
 
 //! Definition of an intersection point between a line
 //! and a restriction on a surface.

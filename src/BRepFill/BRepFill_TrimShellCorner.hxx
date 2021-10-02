@@ -31,10 +31,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BOPDS_PDS.hxx>
-class gp_Ax2;
-class TopoDS_Face;
-class TopoDS_Wire;
-class TopoDS_Shape;
 
 
 //! Trims sets of faces in the corner to make proper parts of pipe

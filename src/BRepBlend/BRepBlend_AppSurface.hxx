@@ -33,9 +33,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class Approx_SweepFunction;
 
 

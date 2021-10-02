@@ -31,7 +31,6 @@
 #include <Precision.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class BOPDS_DS;
 class IntTools_Context;
 
 //! The class BOPDS_Iterator is

@@ -22,14 +22,6 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMXCAFDoc_CentroidDriver;
-class BinMXCAFDoc_ColorDriver;
-class BinMXCAFDoc_GraphNodeDriver;
-class BinMXCAFDoc_LengthUnitDriver;
-class BinMXCAFDoc_LocationDriver;
-class BinMXCAFDoc_DatumDriver;
-class BinMXCAFDoc_DimTolDriver;
-class BinMXCAFDoc_MaterialDriver;
 
 
 

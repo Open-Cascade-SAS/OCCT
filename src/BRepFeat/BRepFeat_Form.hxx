@@ -32,7 +32,6 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Shape;
 class Geom_Curve;
 class LocOpe_Gluer;
 class BRepAlgoAPI_BooleanOperation;

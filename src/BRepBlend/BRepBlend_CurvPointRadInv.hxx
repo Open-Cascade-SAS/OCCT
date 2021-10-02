@@ -29,7 +29,6 @@
 #include <Standard_Real.hxx>
 
 class math_Matrix;
-class gp_Pnt;
 
 
 //! Function of reframing between a point and a curve.

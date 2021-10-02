@@ -33,7 +33,6 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-class Standard_DomainError;
 class math_Matrix;
 class gp_Pnt;
 class Blend_Point;

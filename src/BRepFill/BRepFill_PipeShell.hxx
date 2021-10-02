@@ -39,14 +39,9 @@
 class Law_Function;
 class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
-class Standard_DomainError;
-class StdFail_NotDone;
-class TopoDS_Wire;
 class gp_Ax2;
 class gp_Dir;
-class TopoDS_Shape;
 class TopoDS_Vertex;
-class BRepFill_Section;
 class gp_Trsf;
 class BRepFill_Sweep;
 

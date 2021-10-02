@@ -21,9 +21,7 @@
 #include <Precision.hxx>
 
 class BRepAdaptor_Curve;
-class gp_Pnt;
 class gp_Pnt2d;
-class gp_Dir;
 class BRepMesh_DefaultRangeSplitter;
 
 //! Tool class accumulating common geometrical functions as well as 

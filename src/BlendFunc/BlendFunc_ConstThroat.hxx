@@ -27,8 +27,6 @@
 #include <TColgp_Array1OfVec2d.hxx>
 
 class math_Matrix;
-class gp_Lin;
-class Blend_Point;
 
 //! Class for a function used to compute a symmetric chamfer
 //! with constant throat that is the height of isosceles triangle in section

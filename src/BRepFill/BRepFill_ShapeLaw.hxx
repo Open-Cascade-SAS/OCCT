@@ -31,7 +31,6 @@ class Law_Function;
 class TopoDS_Vertex;
 class TopoDS_Wire;
 class GeomFill_SectionLaw;
-class TopoDS_Shape;
 class TopoDS_Edge;
 
 

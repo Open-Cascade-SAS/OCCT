@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 class Draw_Text3D;
 class TopoDS_Shape;
-class Draw_Color;
 class gp_Pnt;
 class Draw_Display;
 

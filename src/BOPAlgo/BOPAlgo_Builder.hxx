@@ -38,8 +38,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
 class TopoDS_Shape;
-class BOPAlgo_PaveFiller;
-class TopoDS_Solid;
 
 //!
 //! The class is a General Fuse algorithm - base algorithm for the

@@ -22,9 +22,7 @@
 #include <SelectMgr_SelectableObject.hxx>
 
 class AIS_InteractiveContext;
-class Graphic3d_MaterialAspect;
 class Prs3d_BasicAspect;
-class Bnd_Box;
 class V3d_View;
 
 //! Defines a class of objects with display and selection services.

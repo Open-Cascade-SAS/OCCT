@@ -27,8 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class BRepFill_LocationLaw;
-class TopoDS_Shape;
-class gp_Trsf;
 
 
 //! Place a shape in a local axis coordinate

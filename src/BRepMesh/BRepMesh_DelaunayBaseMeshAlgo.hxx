@@ -20,8 +20,6 @@
 #include <NCollection_Shared.hxx>
 #include <IMeshTools_Parameters.hxx>
 
-class BRepMesh_DataStructureOfDelaun;
-class BRepMesh_Delaun;
 
 //! Class provides base functionality to build face triangulation using Dealunay approach.
 //! Performs generation of mesh using raw data from model.

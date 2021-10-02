@@ -33,7 +33,6 @@ class gp_Pnt2d;
 class Adaptor3d_HVertex;
 class IntSurf_Transition;
 class BRepBlend_Extremity;
-class Blend_Point;
 
 //! This  class processes data  resulting  from
 //! Blend_CSWalking  taking  in consideration the Surface

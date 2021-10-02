@@ -22,8 +22,6 @@
 #include <BOPAlgo_Operation.hxx>
 
 #include <Draw_Interpretor.hxx>
-class BOPTest_Objects;
-class BOPTest_DrawableShape;
 class Message_Report;
 
 class BOPTest 

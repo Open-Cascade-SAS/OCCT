@@ -23,7 +23,6 @@
 #include <GeomPlate_CurveConstraint.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
 
 class BRepFill_CurveConstraint;
 DEFINE_STANDARD_HANDLE(BRepFill_CurveConstraint, GeomPlate_CurveConstraint)

@@ -53,7 +53,6 @@ class TCollection_ExtendedString;
 class Prs3d_LineAspect;
 class Prs3d_BasicAspect;
 class TopoDS_Shape;
-class SelectMgr_EntityOwner;
 class SelectMgr_Filter;
 
 //! The Interactive Context allows you to manage graphic behavior and selection of Interactive Objects in one or more viewers.

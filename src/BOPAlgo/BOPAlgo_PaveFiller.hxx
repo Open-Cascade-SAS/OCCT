@@ -53,10 +53,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class IntTools_Context;
-class BOPDS_DS;
-class BOPAlgo_SectionAttribute;
 class BOPDS_PaveBlock;
-class BOPDS_CommonBlock;
 class gp_Pnt;
 class BOPDS_Curve;
 class TopoDS_Vertex;

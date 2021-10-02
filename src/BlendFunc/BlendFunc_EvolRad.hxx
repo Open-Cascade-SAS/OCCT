@@ -36,7 +36,6 @@
 #include <TColgp_Array1OfVec2d.hxx>
 
 class Law_Function;
-class math_Matrix;
 class gp_Circ;
 class Blend_Point;
 

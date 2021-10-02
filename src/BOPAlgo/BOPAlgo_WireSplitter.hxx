@@ -26,7 +26,6 @@
 #include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopTools_ListOfShape.hxx>
-class BOPAlgo_WireEdgeSet;
 class TopoDS_Wire;
 class TopoDS_Face;
 

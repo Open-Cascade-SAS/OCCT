@@ -36,10 +36,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
 class BRepBlend_Line;
-class Standard_OutOfRange;
 class Blend_AppFunction;
-class gp_Pnt;
-class Blend_Point;
 
 
 class BRepBlend_AppFuncRoot;

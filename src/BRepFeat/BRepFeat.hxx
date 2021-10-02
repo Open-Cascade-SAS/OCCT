@@ -34,18 +34,6 @@ class TopoDS_Face;
 class BRepTopAdaptor_FClass2d;
 class Geom2dAdaptor_Curve;
 class TopoDS_Solid;
-class BRepFeat_Builder;
-class BRepFeat_MakeCylindricalHole;
-class BRepFeat_SplitShape;
-class BRepFeat_Form;
-class BRepFeat_RibSlot;
-class BRepFeat_MakePrism;
-class BRepFeat_MakeRevol;
-class BRepFeat_MakePipe;
-class BRepFeat_Gluer;
-class BRepFeat_MakeDPrism;
-class BRepFeat_MakeLinearForm;
-class BRepFeat_MakeRevolutionForm;
 
 
 //! BRepFeat is necessary for the

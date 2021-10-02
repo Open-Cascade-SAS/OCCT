@@ -24,7 +24,6 @@
 
 class Geom_Plane;
 class Geom_Axis2Placement;
-class gp_Pnt;
 
 //! Constructs plane datums to be used in construction of
 //! composite shapes.

@@ -22,7 +22,6 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <IMeshData_Types.hxx>
 
-class TopoDS_Face;
 class Geom_Surface;
 class Geom2d_Curve;
 struct IMeshTools_Parameters;

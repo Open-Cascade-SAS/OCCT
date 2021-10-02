@@ -32,34 +32,6 @@ class TopoDS_Shape;
 class gp_Ax3;
 class gp_Pnt;
 class gp_Vec;
-class BRepFill_Generator;
-class BRepFill_SectionLaw;
-class BRepFill_ShapeLaw;
-class BRepFill_NSections;
-class BRepFill_Draft;
-class BRepFill_LocationLaw;
-class BRepFill_DraftLaw;
-class BRepFill_Edge3DLaw;
-class BRepFill_EdgeOnSurfLaw;
-class BRepFill_ACRLaw;
-class BRepFill_Pipe;
-class BRepFill_PipeShell;
-class BRepFill_Evolved;
-class BRepFill_Sweep;
-class BRepFill_CompatibleWires;
-class BRepFill_OffsetWire;
-class BRepFill_OffsetAncestors;
-class BRepFill_ApproxSeewing;
-class BRepFill_ComputeCLine;
-class BRepFill_TrimSurfaceTool;
-class BRepFill_TrimEdgeTool;
-class BRepFill_SectionPlacement;
-class BRepFill_Section;
-class BRepFill_TrimShellCorner;
-class BRepFill_CurveConstraint;
-class BRepFill_Filling;
-class BRepFill_FaceAndOrder;
-class BRepFill_EdgeFaceAndOrder;
 
 
 

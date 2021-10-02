@@ -31,14 +31,9 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 class Geom_Curve;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class TopoDS_Edge;
 class gp_Pnt;
 class gp_Vec;
 class gp_Lin;
-class gp_Circ;
 class gp_Elips;
 class gp_Hypr;
 class gp_Parab;

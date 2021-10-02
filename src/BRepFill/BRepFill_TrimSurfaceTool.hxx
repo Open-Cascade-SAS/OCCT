@@ -28,9 +28,6 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom2d_Curve;
-class Standard_NoSuchObject;
-class TopoDS_Face;
-class TopoDS_Edge;
 class gp_Pnt2d;
 class Geom_Curve;
 

@@ -33,8 +33,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <ChFiDS_SecHArray1.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
-class StdFail_NotDone;
-class Standard_NoSuchObject;
 class TopoDS_Shape;
 class TopoDS_Edge;
 class Law_Function;

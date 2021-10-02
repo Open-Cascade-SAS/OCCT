@@ -26,7 +26,6 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class BOPDS_DS;
 
 
 //! The class BOPDS_SubIterator is used to compute intersections between

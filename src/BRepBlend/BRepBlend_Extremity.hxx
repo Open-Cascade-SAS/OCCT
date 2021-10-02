@@ -28,10 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Adaptor3d_HVertex;
-class Standard_DomainError;
-class Standard_OutOfRange;
-class gp_Pnt;
-class gp_Vec;
 class IntSurf_Transition;
 class BRepBlend_PointOnRst;
 

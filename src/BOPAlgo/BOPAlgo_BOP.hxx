@@ -27,7 +27,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-class TopoDS_Shape;
 class BOPAlgo_PaveFiller;
 
 //!

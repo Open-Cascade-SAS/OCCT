@@ -31,8 +31,6 @@
 #include <GeomFill_PipeError.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class TopoDS_Wire;
 class GeomFill_LocationLaw;
 class TopoDS_Edge;
 class TopoDS_Vertex;

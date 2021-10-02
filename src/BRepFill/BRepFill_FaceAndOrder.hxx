@@ -23,8 +23,6 @@
 
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_Shape.hxx>
-class BRepFill_Filling;
-class TopoDS_Face;
 
 
 //! A structure containing Face and Order of constraint

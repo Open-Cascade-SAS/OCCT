@@ -21,7 +21,6 @@
 #include <IMeshData_Types.hxx>
 #include <BRepMesh_VertexTool.hxx>
 
-class BRepMesh_Vertex;
 class BRepMesh_Edge;
 
 //! Describes the data structure necessary for the mesh algorithms in 

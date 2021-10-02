@@ -27,7 +27,6 @@
 #include <BOPAlgo_ListOfCheckResult.hxx>
 #include <Standard_Real.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class TopoDS_Shape;
 
 
 //! check the validity of argument(s) for Boolean Operations

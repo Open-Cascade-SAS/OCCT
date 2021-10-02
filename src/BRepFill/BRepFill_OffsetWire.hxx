@@ -34,12 +34,6 @@
 #include <BRepFill_DataMapOfOrientedShapeListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-class Standard_ConstructionError;
-class Standard_NoSuchObject;
-class TopoDS_Face;
-class BRepMAT2d_BisectingLocus;
-class BRepMAT2d_LinkTopoBilo;
-class TopoDS_Shape;
 class Bisector_Bisec;
 class BRepFill_TrimEdgeTool;
 

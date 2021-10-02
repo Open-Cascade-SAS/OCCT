@@ -21,7 +21,6 @@
 #include <gp_XY.hxx>
 #include <IMeshData_Types.hxx>
 
-class BRepMesh_Vertex;
 
 //! Describes data structure intended to keep mesh nodes 
 //! defined in UV space and implements functionality 

@@ -34,12 +34,9 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Shape;
-class gp_Pnt;
 class TopoDS_Edge;
 class Geom_Plane;
 class gp_Dir;
-class TopoDS_Face;
 class Geom_Curve;
 class TopoDS_Vertex;
 class LocOpe_Gluer;

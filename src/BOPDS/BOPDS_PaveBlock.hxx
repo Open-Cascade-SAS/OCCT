@@ -28,8 +28,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_MapOfInteger.hxx>
-class BOPDS_Pave;
-class Bnd_Box;
 
 
 class BOPDS_PaveBlock;

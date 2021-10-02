@@ -28,9 +28,6 @@
 #include <TopTools_SequenceOfShape.hxx>
 
 class LocOpe_WiresOnShape;
-class StdFail_NotDone;
-class Standard_ConstructionError;
-class Standard_NoSuchObject;
 class TopoDS_Shape;
 class TopoDS_Wire;
 class TopoDS_Face;

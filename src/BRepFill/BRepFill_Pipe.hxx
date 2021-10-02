@@ -34,10 +34,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class BRepFill_LocationLaw;
-class Standard_DomainError;
-class StdFail_NotDone;
-class TopoDS_Wire;
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Vertex;

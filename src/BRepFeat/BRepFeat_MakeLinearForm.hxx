@@ -30,10 +30,8 @@
 #include <Standard_Boolean.hxx>
 class Geom_Curve;
 class Geom_Plane;
-class Standard_ConstructionError;
 class TopoDS_Shape;
 class TopoDS_Wire;
-class gp_Vec;
 class TopoDS_Edge;
 class TopoDS_Face;
 class gp_Pnt;

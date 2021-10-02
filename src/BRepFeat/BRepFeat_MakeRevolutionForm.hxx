@@ -29,10 +29,8 @@
 #include <BRepFeat_RibSlot.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Plane;
-class Standard_ConstructionError;
 class TopoDS_Shape;
 class TopoDS_Wire;
-class gp_Ax1;
 class TopoDS_Edge;
 class TopoDS_Face;
 class gp_Pnt;

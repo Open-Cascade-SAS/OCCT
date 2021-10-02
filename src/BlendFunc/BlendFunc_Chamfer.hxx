@@ -33,8 +33,6 @@ class math_Matrix;
 class gp_Pnt;
 class gp_Vec;
 class gp_Vec2d;
-class gp_Lin;
-class Blend_Point;
 
 //! Class for a function used to compute a "ordinary" chamfer:
 //! when distances from spine to surfaces are constant

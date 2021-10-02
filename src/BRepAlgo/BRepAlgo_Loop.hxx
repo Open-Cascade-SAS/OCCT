@@ -27,7 +27,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepAlgo_Image.hxx>
-class TopoDS_Face;
 class TopoDS_Edge;
 
 

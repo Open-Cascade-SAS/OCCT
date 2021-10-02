@@ -23,7 +23,6 @@
 #include <BRepMesh_Delaun.hxx>
 #include <BRepMesh_MeshTool.hxx>
 
-class BRepMesh_DataStructureOfDelaun;
 
 //! Class provides base functionality to build face triangulation using custom triangulation algorithm.
 //! Performs generation of mesh using raw data from model.

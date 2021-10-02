@@ -23,7 +23,6 @@
 #include <Poly_Triangulation.hxx>
 
 class BRepMesh_DataStructureOfDelaun;
-class BRepMesh_Delaun;
 
 //! Class provides base functionality for algorithms building face triangulation.
 //! Performs initialization of BRepMesh_DataStructureOfDelaun and nodes map structures.

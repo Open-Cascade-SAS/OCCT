@@ -35,7 +35,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
 
-class math_Matrix;
 class gp_Circ;
 class Blend_Point;
 class gp_Ax1;

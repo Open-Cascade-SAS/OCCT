@@ -23,10 +23,6 @@
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMDataXtd_GeometryDriver;
-class BinMDataXtd_ConstraintDriver;
-class BinMDataXtd_PatternStdDriver;
-class BinMDataXtd_TriangulationDriver;
 
 //! Storage and Retrieval drivers for modelling attributes.
 class BinMDataXtd 

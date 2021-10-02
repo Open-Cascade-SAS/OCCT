@@ -29,7 +29,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <ChFiDS_SecHArray1.hxx>
-class StdFail_NotDone;
 class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;

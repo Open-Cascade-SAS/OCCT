@@ -26,20 +26,6 @@
 
 class gp_Pnt2d;
 class gp_Vec;
-class BlendFunc_ConstRad;
-class BlendFunc_ConstRadInv;
-class BlendFunc_Ruled;
-class BlendFunc_RuledInv;
-class BlendFunc_EvolRad;
-class BlendFunc_EvolRadInv;
-class BlendFunc_CSConstRad;
-class BlendFunc_CSCircular;
-class BlendFunc_Corde;
-class BlendFunc_Chamfer;
-class BlendFunc_ChamfInv;
-class BlendFunc_ChAsym;
-class BlendFunc_ChAsymInv;
-class BlendFunc_Tensor;
 
 
 //! This package provides a set of generic functions, that can

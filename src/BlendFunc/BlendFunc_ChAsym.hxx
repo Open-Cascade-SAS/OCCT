@@ -32,7 +32,6 @@
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
 
-class math_Matrix;
 class gp_Lin;
 class Blend_Point;
 

@@ -32,7 +32,6 @@ class Blend_CurvPointFuncInv;
 class Adaptor3d_HVertex;
 class IntSurf_Transition;
 class BRepBlend_Extremity;
-class Blend_Point;
 
 
 //! This  class processes the  data  resulting from

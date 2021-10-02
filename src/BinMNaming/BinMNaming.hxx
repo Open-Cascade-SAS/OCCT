@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMNaming_NamedShapeDriver;
-class BinMNaming_NamingDriver;
 
 
 //! Storage/Retrieval drivers for TNaming attributes
