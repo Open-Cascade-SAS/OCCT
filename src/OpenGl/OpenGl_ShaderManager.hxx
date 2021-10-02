@@ -228,7 +228,10 @@ public:
   }
 
   //! Generates shader program to render environment cubemap as background.
-  Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetBgCubeMapProgram ();
+  Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetBgCubeMapProgram();
+
+  //! Generates shader program to render correctly colored quad.
+  Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetColoredQuadProgram();
 
   //! Resets PBR shading models to corresponding non-PBR ones if PBR is not allowed.
   static Graphic3d_TypeOfShadingModel PBRShadingModelFallback (Graphic3d_TypeOfShadingModel theShadingModel,
@@ -769,7 +772,8 @@ protected:
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
   Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram[3]; //!< programs for IBL maps generation used in PBR pipeline (0 for Diffuse; 1 for Specular; 2 for fallback)
-  Handle(Graphic3d_ShaderProgram)    myBgCubeMapProgram;   //!< program for background cubemap rendering
+  Handle(Graphic3d_ShaderProgram)    myBgCubeMapProgram;       //!< program for background cubemap rendering
+  Handle(Graphic3d_ShaderProgram)    myColoredQuadProgram;     //!< program for correct quad rendering
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs
 

@@ -127,10 +127,11 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myTransientDrawToFront (Standard_True),
   myBackBufferRestored   (Standard_False),
   myIsImmediateDrawn     (Standard_False),
-  myTextureParams   (new OpenGl_Aspects()),
-  myCubeMapParams   (new OpenGl_Aspects()),
-  myPBREnvState     (OpenGl_PBREnvState_NONEXISTENT),
-  myPBREnvRequest   (Standard_False),
+  myTextureParams     (new OpenGl_Aspects()),
+  myCubeMapParams     (new OpenGl_Aspects()),
+  myColoredQuadParams (new OpenGl_Aspects()),
+  myPBREnvState       (OpenGl_PBREnvState_NONEXISTENT),
+  myPBREnvRequest     (Standard_False),
   // ray-tracing fields initialization
   myRaytraceInitStatus     (OpenGl_RT_NONE),
   myIsRaytraceDataValid    (Standard_False),
@@ -192,6 +193,7 @@ OpenGl_View::~OpenGl_View()
 
   OpenGl_Element::Destroy (NULL, myTextureParams);
   OpenGl_Element::Destroy (NULL, myCubeMapParams);
+  OpenGl_Element::Destroy (NULL, myColoredQuadParams);
 }
 
 // =======================================================================
@@ -541,7 +543,16 @@ void OpenGl_View::SetGradientBackground (const Aspect_GradientBackground& theBac
   Quantity_Color aColor1, aColor2;
   theBackground.Colors (aColor1, aColor2);
   myBackgrounds[Graphic3d_TOB_GRADIENT]->SetGradientParameters (aColor1, aColor2, theBackground.BgGradientFillMethod());
-
+  if (theBackground.BgGradientFillMethod() >= Aspect_GradientFillMethod_Corner1
+   && theBackground.BgGradientFillMethod() <= Aspect_GradientFillMethod_Corner4)
+  {
+    if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+    {
+      myColoredQuadParams->Aspect()->SetShaderProgram(aCtx->ShaderManager()->GetColoredQuadProgram());
+      myColoredQuadParams->Aspect()->ShaderProgram()->PushVariableVec3 ("uColor1", aColor1.Rgb());
+      myColoredQuadParams->Aspect()->ShaderProgram()->PushVariableVec3 ("uColor2", aColor2.Rgb());
+    }
+  }
   myBackgroundType = Graphic3d_TOB_GRADIENT;
 }
 
@@ -1007,7 +1018,19 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_CENTERED
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_NONE))
     {
-      myBackgrounds[Graphic3d_TOB_GRADIENT]->Render(theWorkspace, theProjection);
+      if (myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientFillMethod() >= Aspect_GradientFillMethod_Corner1
+       && myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientFillMethod() <= Aspect_GradientFillMethod_Corner4)
+      {
+        const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myColoredQuadParams);
+
+        myBackgrounds[Graphic3d_TOB_GRADIENT]->Render (theWorkspace, theProjection);
+
+        theWorkspace->SetAspects (anOldAspectFace);
+      }
+      else
+      {
+        myBackgrounds[Graphic3d_TOB_GRADIENT]->Render (theWorkspace, theProjection);
+      }
     }
 
     // Drawing background image if it is defined

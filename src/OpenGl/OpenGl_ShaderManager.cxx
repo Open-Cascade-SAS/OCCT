@@ -1398,6 +1398,19 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
 }
 
 // =======================================================================
+// function : GetColoredQuadProgram
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetColoredQuadProgram ()
+{
+  if (myColoredQuadProgram.IsNull())
+  {
+    myColoredQuadProgram = getColoredQuadProgram();
+  }
+  return myColoredQuadProgram;
+}
+
+// =======================================================================
 // function : bindProgramWithState
 // purpose  :
 // =======================================================================

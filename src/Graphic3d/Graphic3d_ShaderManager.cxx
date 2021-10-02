@@ -2093,3 +2093,37 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgCubeMapProgram() c
   aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   return aProgSrc;
 }
+
+// =======================================================================
+// function : getColoredQuadProgram
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getColoredQuadProgram() const
+{
+  Handle(Graphic3d_ShaderProgram) aProgSrc = new Graphic3d_ShaderProgram();
+
+  Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec3 uColor1", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec3 uColor2", Graphic3d_TOS_FRAGMENT));
+
+  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
+  + EOL"void main()"
+    EOL"{"
+    EOL"  TexCoord    = occTexCoord.st;"
+    EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;"
+    EOL"}";
+
+  TCollection_AsciiString aSrcFrag = TCollection_AsciiString()
+  + EOL"void main()"
+    EOL"{"
+    EOL"  vec3 c1 = mix (uColor1, uColor2, TexCoord.x);"
+    EOL"  occSetFragColor (vec4 (mix (uColor2, c1, TexCoord.y), 1.0));"
+    EOL"}";
+
+  defaultGlslVersion (aProgSrc, "colored_quad", 0);
+  aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+
+  return aProgSrc;
+}

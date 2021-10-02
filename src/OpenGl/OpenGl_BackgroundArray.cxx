@@ -209,13 +209,22 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
   {
     return Standard_False;
   }
+  if (!myIndices->Init<unsigned short>(6))
+  {
+    return Standard_False;
+  }
+  const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 3, 1, 2, 3};
+  for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
+  {
+    myIndices->SetIndex (aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
+  }
 
   OpenGl_Vec2 aVertices[4] =
   {
     OpenGl_Vec2(float(myViewWidth), 0.0f),
     OpenGl_Vec2(float(myViewWidth), float(myViewHeight)),
-    OpenGl_Vec2(0.0f,               0.0f),
-    OpenGl_Vec2(0.0f,               float(myViewHeight))
+    OpenGl_Vec2(0.0f,               float(myViewHeight)),
+    OpenGl_Vec2(0.0f,               0.0f)
   };
 
   float* aCorners[4]     = {};
@@ -236,73 +245,65 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
       aCorners[1] = myGradientParams.color1.ChangeData();
-      aCorners[2] = myGradientParams.color2.ChangeData();
-      aCorners[3] = myGradientParams.color1.ChangeData();
+      aCorners[2] = myGradientParams.color1.ChangeData();
+      aCorners[3] = myGradientParams.color2.ChangeData();
       break;
     }
     case Aspect_GradientFillMethod_Diagonal1:
     {
       aCorners[0] = myGradientParams.color2.ChangeData();
-      aCorners[3] = myGradientParams.color1.ChangeData();
-      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[0][0] + aCorners[3][0]);
-      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[0][1] + aCorners[3][1]);
-      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[0][2] + aCorners[3][2]);
+      aCorners[2] = myGradientParams.color1.ChangeData();
+      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[0][0] + aCorners[2][0]);
+      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[0][1] + aCorners[2][1]);
+      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[0][2] + aCorners[2][2]);
       aCorners[1] = aDiagCorner1;
-      aCorners[2] = aDiagCorner2;
+      aCorners[3] = aDiagCorner2;
       break;
     }
     case Aspect_GradientFillMethod_Diagonal2:
     {
       aCorners[1] = myGradientParams.color1.ChangeData();
-      aCorners[2] = myGradientParams.color2.ChangeData();
-      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[1][0] + aCorners[2][0]);
-      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[1][1] + aCorners[2][1]);
-      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[1][2] + aCorners[2][2]);
+      aCorners[3] = myGradientParams.color2.ChangeData();
+      aDiagCorner1[0] = aDiagCorner2[0] = 0.5f * (aCorners[1][0] + aCorners[3][0]);
+      aDiagCorner1[1] = aDiagCorner2[1] = 0.5f * (aCorners[1][1] + aCorners[3][1]);
+      aDiagCorner1[2] = aDiagCorner2[2] = 0.5f * (aCorners[1][2] + aCorners[3][2]);
       aCorners[0] = aDiagCorner1;
-      aCorners[3] = aDiagCorner2;
+      aCorners[2] = aDiagCorner2;
       break;
     }
     case Aspect_GradientFillMethod_Corner1:
-    {
-      aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
-      aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
-      aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
-      aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
-
-      aCorners[0] = myGradientParams.color2.ChangeData();
-      aCorners[1] = myGradientParams.color1.ChangeData();
-      aCorners[2] = myGradientParams.color2.ChangeData();
-      aCorners[3] = myGradientParams.color2.ChangeData();
-      break;
-    }
     case Aspect_GradientFillMethod_Corner2:
-    {
-      aCorners[0] = myGradientParams.color2.ChangeData();
-      aCorners[1] = myGradientParams.color1.ChangeData();
-      aCorners[2] = myGradientParams.color2.ChangeData();
-      aCorners[3] = myGradientParams.color2.ChangeData();
-      break;
-    }
     case Aspect_GradientFillMethod_Corner3:
-    {
-      aVertices[0] = OpenGl_Vec2(float(myViewWidth), float(myViewHeight));
-      aVertices[1] = OpenGl_Vec2(0.0f,               float(myViewHeight));
-      aVertices[2] = OpenGl_Vec2(float(myViewWidth), 0.0f);
-      aVertices[3] = OpenGl_Vec2(0.0f,               0.0f);
-
-      aCorners[0] = myGradientParams.color2.ChangeData();
-      aCorners[1] = myGradientParams.color2.ChangeData();
-      aCorners[2] = myGradientParams.color1.ChangeData();
-      aCorners[3] = myGradientParams.color2.ChangeData();
-      break;
-    }
     case Aspect_GradientFillMethod_Corner4:
     {
-      aCorners[0] = myGradientParams.color2.ChangeData();
-      aCorners[1] = myGradientParams.color2.ChangeData();
-      aCorners[2] = myGradientParams.color1.ChangeData();
-      aCorners[3] = myGradientParams.color2.ChangeData();
-      break;
+      Graphic3d_Attribute aCornerAttribInfo[] =
+      {
+        { Graphic3d_TOA_POS,   Graphic3d_TOD_VEC2 },
+        { Graphic3d_TOA_UV,    Graphic3d_TOD_VEC2 }
+      };
+
+      OpenGl_Vec2 anUVs[4] =
+      {
+        OpenGl_Vec2 (1.0f, 0.0f),
+        OpenGl_Vec2 (1.0f, 1.0f),
+        OpenGl_Vec2 (0.0f, 1.0f),
+        OpenGl_Vec2 (0.0f, 0.0f)
+      };
+
+      if (!myAttribs->Init (4, aCornerAttribInfo, 2))
+      {
+        return Standard_False;
+      }
+      for (Standard_Integer anIt = 0; anIt < 4; ++anIt)
+      {
+        OpenGl_Vec2* aVertData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue (anIt));
+        *aVertData = aVertices[anIt];
+
+        OpenGl_Vec2* anUvData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue (anIt) + myAttribs->AttributeOffset (1));
+        // cyclically move highlighted corner depending on myGradientParams.type
+        *anUvData = anUVs[(anIt + myGradientParams.type - Aspect_GradientFillMethod_Corner1) % 4];
+      }
+      return Standard_True;
     }
     case Aspect_GradientFillMethod_Elliptical:
     {
@@ -365,15 +366,6 @@ Standard_Boolean OpenGl_BackgroundArray::createGradientArray (const Handle(OpenG
     *aColorData = theCtx->Vec4FromQuantityColor (OpenGl_Vec4(aCorners[anIt][0], aCorners[anIt][1], aCorners[anIt][2], 1.0f)).rgb();
   }
 
-  if (!myIndices->Init<unsigned short>(6))
-  {
-    return Standard_False;
-  }
-  const unsigned short THE_FS_QUAD_TRIS[6] = {0, 1, 2, 1, 3, 2};
-  for (unsigned int aVertIter = 0; aVertIter < 6; ++aVertIter)
-  {
-    myIndices->SetIndex (aVertIter, THE_FS_QUAD_TRIS[aVertIter]);
-  }
   return Standard_True;
 }
 

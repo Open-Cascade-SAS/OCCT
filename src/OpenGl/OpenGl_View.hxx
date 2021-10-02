@@ -507,6 +507,7 @@ protected: //! @name Background parameters
 
   OpenGl_Aspects*            myTextureParams;                     //!< Stores texture and its parameters for textured background
   OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
+  OpenGl_Aspects*            myColoredQuadParams;                 //!< Stores parameters for gradient (corner mode) background
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
   Handle(OpenGl_TextureSet)  myTextureEnv;
 
