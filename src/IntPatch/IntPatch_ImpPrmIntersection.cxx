@@ -81,6 +81,11 @@ static
                               const Standard_Real theToler2D,
                               const Standard_Real thePeriod);
 
+static
+  Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf,
+                             const Standard_Real theStep);
+
+
 //=======================================================================
 //function : IsSeamOrPole
 //purpose  : 
@@ -482,6 +487,81 @@ void Recadre(const Standard_Boolean ,
 }
 
 //=======================================================================
+//function : GetLocalStep
+//purpose  : 
+//=======================================================================
+Standard_Real GetLocalStep(const Handle(Adaptor3d_Surface)& theSurf,
+                                  const Standard_Real theStep)
+{
+  Standard_Real aLocalStep = theStep;
+  if (theSurf->UContinuity() > GeomAbs_C0 && theSurf->VContinuity() > GeomAbs_C0)
+  {
+    GeomAbs_SurfaceType aSType = theSurf->GetType();
+
+    if (aSType == GeomAbs_BezierSurface || aSType == GeomAbs_BSplineSurface)
+    {
+      Standard_Real aMinRes = Precision::Infinite();
+      Standard_Integer aMaxDeg = 0;
+      const Standard_Real aLimRes = 1.e-10;
+
+      aMinRes = Min(theSurf->UResolution(Precision::Confusion()),
+                    theSurf->VResolution(Precision::Confusion()));
+      aMaxDeg = Max(theSurf->UDegree(), theSurf->VDegree());
+      if (aMinRes < aLimRes && aMaxDeg > 3)
+      {
+        aLocalStep = 0.0001;
+      }
+    }
+  }
+  if (theSurf->UContinuity() == GeomAbs_C0)
+  {
+    Standard_Integer aNbInt = theSurf->NbUIntervals(GeomAbs_C1);
+    if (aNbInt > 1)
+    {
+      TColStd_Array1OfReal anInts(1, aNbInt + 1);
+      theSurf->UIntervals(anInts, GeomAbs_C1);
+      Standard_Integer i;
+      Standard_Real aMinInt = Precision::Infinite();
+      for (i = 1; i <= aNbInt; ++i)
+      {
+        aMinInt = Min(aMinInt, anInts(i + 1) - anInts(i));
+      }
+
+      aMinInt /= theSurf->LastUParameter() - theSurf->FirstUParameter();
+      if (aMinInt < 0.002)
+      {
+        aLocalStep = 0.0001;
+      }
+    }
+
+  }
+
+  if (theSurf->VContinuity() == GeomAbs_C0)
+  {
+    Standard_Integer aNbInt = theSurf->NbVIntervals(GeomAbs_C1);
+    if (aNbInt > 1)
+    {
+      TColStd_Array1OfReal anInts(1, aNbInt + 1);
+      theSurf->VIntervals(anInts, GeomAbs_C1);
+      Standard_Integer i;
+      Standard_Real aMinInt = Precision::Infinite();
+      for (i = 1; i <= aNbInt; ++i)
+      {
+        aMinInt = Min(aMinInt, anInts(i + 1) - anInts(i));
+      }
+
+      aMinInt /= theSurf->LastVParameter() - theSurf->FirstVParameter();
+      if (aMinInt < 0.002)
+      {
+        aLocalStep = 0.0001;
+      }
+    }
+  }
+
+  aLocalStep = Min(theStep, aLocalStep);
+  return aLocalStep;
+}
+//=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
@@ -587,35 +667,10 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_Surface)& Surf
   }
   //
   Standard_Real aLocalPas = Pas;
-   GeomAbs_SurfaceType aSType = reversed ? Surf1->GetType() : Surf2->GetType();
-
-  if (aSType == GeomAbs_BezierSurface || aSType == GeomAbs_BSplineSurface)
-  {
-    Standard_Real aMinRes = Precision::Infinite();
-    GeomAbs_Shape aCont = GeomAbs_C0;
-    Standard_Integer aMaxDeg = 0;
-    const Standard_Real aLimRes = 1.e-10;
-
-    if (reversed)
-    {
-      aMinRes = Min(Surf1->UResolution(Precision::Confusion()),
-        Surf1->VResolution(Precision::Confusion()));
-      aCont = (GeomAbs_Shape)Min(Surf1->UContinuity(), Surf1->VContinuity());
-      aMaxDeg = Max(Surf1->UDegree(), Surf1->VDegree());
-    }
-    else
-    {
-      aMinRes = Min(Surf2->UResolution(Precision::Confusion()),
-        Surf2->VResolution(Precision::Confusion()));
-      aCont = (GeomAbs_Shape)Min(Surf2->UContinuity(), Surf2->VContinuity());
-      aMaxDeg = Max(Surf2->UDegree(), Surf2->VDegree());
-    }
-
-    if (aMinRes < aLimRes && aCont > GeomAbs_C0 && aMaxDeg > 3)
-    {
-      aLocalPas = Min(Pas, 0.0001);
-    }
-  }
+  if (reversed)
+    aLocalPas = GetLocalStep(Surf1, Pas);
+  else
+    aLocalPas = GetLocalStep(Surf2, Pas);
 
   Func.SetImplicitSurface(Quad);
   Func.Set(IntSurf_QuadricTool::Tolerance(Quad));
