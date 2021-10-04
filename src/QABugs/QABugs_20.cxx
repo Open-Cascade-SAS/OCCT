@@ -3515,6 +3515,53 @@ static Standard_Integer OCC30708_2 (Draw_Interpretor& di, Standard_Integer, cons
 }
 
 //=======================================================================
+//function : OCC30747
+//purpose  :
+//=======================================================================
+#include <Geom2d_Circle.hxx>
+#include <GCE2d_MakeCircle.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
+static Standard_Integer OCC30747(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgV)
+{
+  if (theArgc < 2)
+  {
+    return 1;
+  }
+
+  const Handle(Geom2d_Circle) aCirc = GCE2d_MakeCircle(gp_Pnt2d(0, 0), 50);
+
+  Standard_Real aF = aCirc->FirstParameter();
+  Standard_Real aL = aCirc->LastParameter();
+  Standard_Real aNb = 10;
+  Standard_Real aDelta = (aF + aL) / aNb;
+  Handle(Geom2d_TrimmedCurve) aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
+  Geom2dConvert_CompCurveToBSplineCurve aRes(aFTrim);
+  for (Standard_Integer anId = 1; anId < aNb; anId++)
+  {
+    Handle(Geom2d_TrimmedCurve) aLTrim;
+    if (anId == (aNb - 1))
+    {
+      aLTrim = new Geom2d_TrimmedCurve(aCirc, anId * aDelta, aF);
+    }
+    else
+    {
+      aLTrim = new Geom2d_TrimmedCurve(aCirc, anId * aDelta, (anId + 1) * aDelta);
+    }
+    aRes.Add(aLTrim, Precision::PConfusion());
+  }
+
+  if (!aRes.BSplineCurve()->IsClosed())
+  {
+    theDI << "Error: curve isn't closed";
+    return 1;
+  }
+
+  DrawTrSurf::Set(theArgV[1], aRes.BSplineCurve());
+  return 0;
+}
+
+//=======================================================================
 //function : OCC30869
 //purpose  :
 //=======================================================================
@@ -4042,6 +4089,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
   theCommands.Add("OCC29195", "OCC29195 [nbRep] doc1 [doc2 [doc3 [doc4]]]", __FILE__, OCC29195, group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
+  theCommands.Add("OCC30747", "OCC30747: create a closed curve", __FILE__, OCC30747, group);
   theCommands.Add("OCC30990", "OCC30990 surface", __FILE__, OCC30990, group);
 
   theCommands.Add("QAStartsWith",

@@ -1,0 +1,8 @@
+puts "================================================================="
+puts "OCC30747: Modeling Algorithms - 2d Curves concatenator doesn't properly process closed contours."
+puts "================================================================="
+puts ""
+
+pload QAcommands
+
+OCC30747 res

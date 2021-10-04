@@ -84,59 +84,53 @@ Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
   }
 
   myTol = Tolerance;
+  const Standard_Real aSqTol = Tolerance * Tolerance;
 
   Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
+  Standard_Real d1 = myCurve->Pole(1).SquareDistance(Bs->Pole(1));
+  Standard_Real d2 = myCurve->Pole(1).SquareDistance(Bs->Pole(LBs));
+
+  Standard_Boolean isBeforeReversed = (myCurve->Pole(1).SquareDistance(Bs->Pole(1)) < aSqTol) && (d1 < d2);
+  Standard_Boolean isBefore = (myCurve->Pole(1).SquareDistance(Bs->Pole(LBs)) < aSqTol) || isBeforeReversed;
+
+  d1 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(1));
+  d2 = myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs));
+
+  Standard_Boolean isAfterReversed = (myCurve->Pole(LCb).SquareDistance(Bs->Pole(LBs)) < aSqTol) && (d2 < d1);
+  Standard_Boolean isAfter = (myCurve->Pole(LCb).SquareDistance(Bs->Pole(1)) < aSqTol) || isAfterReversed;
   
-  // myCurve est elle fermee ?
-  if (myCurve->Pole(LCb).Distance(myCurve->Pole(1)) < myTol){
-    if(After){
-      // Ajout Apres ?
-      Standard_Real d1 = myCurve->Pole(LCb).Distance(Bs->Pole(1));
-      Standard_Real d2 = myCurve->Pole(LCb).Distance(Bs->Pole(LBs));
-      if (d2 < d1) {
-        Bs->Reverse();
-        d1 = d2;
-      }
-      if (d1 < myTol) {
-	Add(myCurve, Bs, Standard_True);
-	return Standard_True;
-      }
+  // myCurve and NewCurve together form a closed curve
+  if (isBefore && isAfter)
+  {
+    if (After)
+    {
+      isBefore = Standard_False;
     }
-    else{
-      // Ajout avant ?  
-      Standard_Real d1 = myCurve->Pole(1).Distance(Bs->Pole(1));
-      Standard_Real d2 = myCurve->Pole(1).Distance(Bs->Pole(LBs));
-      if (d1 < d2) {
-        Bs->Reverse();
-        d2 = d1;
-      }
-      if (d2 < myTol) {
-	Add(Bs, myCurve, Standard_False);
-	return Standard_True;
-      }
+    else
+    {
+      isAfter = Standard_False;
     }
   }
-  // Ajout Apres ?
-  else {
+  if (isAfter)
+    {
+    if (isAfterReversed)
+    {
+      Bs->Reverse();
+    }
+    Add(myCurve, Bs, Standard_True);
+    return Standard_True;
+    
+  }
+  else if (isBefore)
+  {
+    if (isBeforeReversed)
+    {
+      Bs->Reverse();
+    }
+    Add(Bs, myCurve, Standard_False);
+    return Standard_True;
+  }
 
-    Standard_Real d1 = myCurve->Pole(LCb).Distance(Bs->Pole(1));
-    Standard_Real d2 = myCurve->Pole(LCb).Distance(Bs->Pole(LBs));
-    if (( d1  < myTol) || ( d2 < myTol)) {
-      if (d2 < d1) {Bs->Reverse();}
-      Add(myCurve, Bs, Standard_True);
-      return Standard_True;
-    }
-  // Ajout avant ?  
-    else { 
-      d1 = myCurve->Pole(1).Distance(Bs->Pole(1));
-      d2 = myCurve->Pole(1).Distance(Bs->Pole(LBs));
-      if ( (d1 < myTol) || (d2 < myTol)) {
-	if (d1 < d2) {Bs->Reverse();}
-	Add(Bs, myCurve, Standard_False );
-	return Standard_True;
-      }
-    }
-  }  
   return Standard_False;
 }
 

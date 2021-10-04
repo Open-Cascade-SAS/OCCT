@@ -262,8 +262,9 @@ static void ExtendC2d (Handle(Geom2d_BSplineCurve)& aRes,
   aSegment = (FirstOrLast == 0)?
     new Geom2d_TrimmedCurve(aSegLine, ParOnLin, 0.) :
     new Geom2d_TrimmedCurve(aSegLine, 0., ParOnLin);
-
-  aCompCurve.Add(aSegment, aTol);
+  
+  Standard_Boolean anAfter = FirstOrLast != 0;
+  aCompCurve.Add(aSegment, aTol, anAfter);
   aRes = aCompCurve.BSplineCurve();
 }
 
