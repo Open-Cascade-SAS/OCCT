@@ -259,7 +259,6 @@ protected:
   Aspect_TypeOfMarker              myCodirMarkerType;       //!< icon of arrow co-directional to camera direction (look from)
   Aspect_TypeOfMarker              myOpposMarkerType;       //!< icon of arrow opposite to camera direction (look at)
 
-  Graphic3d_Vec2i  myStartTransform;    //!< position of starting transformation
   gp_Trsf          myLocTrsfStart;      //!< object transformation before transformation
   Standard_Real    mySize;              //!< presentation size
   Standard_Integer myNbArrows;          //!< number of directional light arrows
