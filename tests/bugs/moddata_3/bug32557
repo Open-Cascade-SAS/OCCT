@@ -4,7 +4,13 @@ puts "==========================================================="
 puts ""
 
 restore [locate_data_file bug32557.brep] f
-
 nurbsconvert bf f
 checkmaxtol bf -ref 1.1e-7
 
+restore [locate_data_file bug32557_1.brep] f
+nurbsconvert bf f
+checkmaxtol bf -ref 1.1e-5
+
+restore [locate_data_file bug32557_2.brep] f
+nurbsconvert bf f
+checkmaxtol bf -ref 0.0002570

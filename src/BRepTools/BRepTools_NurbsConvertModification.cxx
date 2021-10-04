@@ -504,10 +504,9 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
         }
         aMinDist *= aMinDist;
         //Old domain
-        Standard_Real t = 0.5 * (f2d + l2d);
-        gp_Pnt2d aPf = C2d->Value(t);
+        gp_Pnt2d aPf = C2d->Value(f2d);
         //New domain
-        gp_Pnt2d aNewPf = Curve2d->Value(t);
+        gp_Pnt2d aNewPf = Curve2d->Value(f2d);
         gp_Vec2d aT(aNewPf, aPf);
         if (aT.SquareMagnitude() > aMinDist)
         {
