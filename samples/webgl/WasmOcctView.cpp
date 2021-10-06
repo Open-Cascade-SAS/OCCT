@@ -185,12 +185,16 @@ void WasmOcctView::initWindow()
   emscripten_set_resize_callback     (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onResizeCallback);
 
   emscripten_set_mousedown_callback  (aTargetId, this, toUseCapture, onMouseCallback);
-  emscripten_set_mouseup_callback    (aTargetId, this, toUseCapture, onMouseCallback);
-  emscripten_set_mousemove_callback  (aTargetId, this, toUseCapture, onMouseCallback);
+  // bind these events to window to track mouse movements outside of canvas
+  //emscripten_set_mouseup_callback    (aTargetId, this, toUseCapture, onMouseCallback);
+  //emscripten_set_mousemove_callback  (aTargetId, this, toUseCapture, onMouseCallback);
+  //emscripten_set_mouseleave_callback (aTargetId, this, toUseCapture, onMouseCallback);
+  emscripten_set_mouseup_callback    (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onMouseCallback);
+  emscripten_set_mousemove_callback  (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onMouseCallback);
+
   emscripten_set_dblclick_callback   (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_click_callback      (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_mouseenter_callback (aTargetId, this, toUseCapture, onMouseCallback);
-  emscripten_set_mouseleave_callback (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_wheel_callback      (aTargetId, this, toUseCapture, onWheelCallback);
 
   emscripten_set_touchstart_callback (aTargetId, this, toUseCapture, onTouchCallback);
@@ -474,6 +478,21 @@ EM_BOOL WasmOcctView::onResizeEvent (int theEventType, const EmscriptenUiEvent* 
   return EM_TRUE;
 }
 
+//! Update canvas bounding rectangle.
+EM_JS(void, jsUpdateBoundingClientRect, (), {
+  Module._myCanvasRect = Module.canvas.getBoundingClientRect();
+});
+
+//! Get canvas bounding top.
+EM_JS(int, jsGetBoundingClientTop, (), {
+  return Math.round(Module._myCanvasRect.top);
+});
+
+//! Get canvas bounding left.
+EM_JS(int, jsGetBoundingClientLeft, (), {
+  return Math.round(Module._myCanvasRect.left);
+});
+
 // ================================================================
 // Function : onMouseEvent
 // Purpose  :
@@ -486,6 +505,17 @@ EM_BOOL WasmOcctView::onMouseEvent (int theEventType, const EmscriptenMouseEvent
   }
 
   Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  if (theEventType == EMSCRIPTEN_EVENT_MOUSEMOVE
+   || theEventType == EMSCRIPTEN_EVENT_MOUSEUP)
+  {
+    // these events are bound to EMSCRIPTEN_EVENT_TARGET_WINDOW, and coordinates should be converted
+    jsUpdateBoundingClientRect();
+    EmscriptenMouseEvent anEvent = *theEvent;
+    anEvent.targetX -= jsGetBoundingClientLeft();
+    anEvent.targetY -= jsGetBoundingClientTop();
+    return aWindow->ProcessMouseEvent (*this, theEventType, &anEvent) ? EM_TRUE : EM_FALSE;
+  }
+
   return aWindow->ProcessMouseEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
 }
 

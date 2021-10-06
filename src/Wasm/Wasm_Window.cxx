@@ -290,10 +290,13 @@ bool Wasm_Window::ProcessMouseEvent (Aspect_WindowInputListener& theListener,
     case EMSCRIPTEN_EVENT_MOUSEDOWN:
     case EMSCRIPTEN_EVENT_MOUSEUP:
     {
-      if (aNewPos2i.x() < 0 || aNewPos2i.x() > mySize.x()
-       || aNewPos2i.y() < 0 || aNewPos2i.y() > mySize.y())
+      if (theEventType == EMSCRIPTEN_EVENT_MOUSEDOWN)
       {
-        return false;
+        if (aNewPos2i.x() < 0 || aNewPos2i.x() > mySize.x()
+         || aNewPos2i.y() < 0 || aNewPos2i.y() > mySize.y())
+        {
+          return false;
+        }
       }
       if (theListener.UpdateMouseButtons (aNewPos2i, aButtons, aFlags, isEmulated))
       {

@@ -624,6 +624,21 @@ static EM_BOOL onResizeCallback (int theEventType, const EmscriptenUiEvent* theE
   return EM_FALSE;
 }
 
+//! Update canvas bounding rectangle.
+EM_JS(void, occJSUpdateBoundingClientRect, (), {
+  Module._myCanvasRect = Module.canvas.getBoundingClientRect();
+});
+
+//! Get canvas bounding top.
+EM_JS(int, occJSGetBoundingClientTop, (), {
+  return Math.round(Module._myCanvasRect.top);
+});
+
+//! Get canvas bounding left.
+EM_JS(int, occJSGetBoundingClientLeft, (), {
+  return Math.round(Module._myCanvasRect.left);
+});
+
 //! Handle mouse input event.
 static EM_BOOL onWasmMouseCallback (int theEventType, const EmscriptenMouseEvent* theEvent, void* )
 {
@@ -632,6 +647,17 @@ static EM_BOOL onWasmMouseCallback (int theEventType, const EmscriptenMouseEvent
    && !ViewerTest::CurrentView().IsNull())
   {
     Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    if (theEventType == EMSCRIPTEN_EVENT_MOUSEMOVE
+     || theEventType == EMSCRIPTEN_EVENT_MOUSEUP)
+    {
+      // these events are bound to EMSCRIPTEN_EVENT_TARGET_WINDOW, and coordinates should be converted
+      occJSUpdateBoundingClientRect();
+      EmscriptenMouseEvent anEvent = *theEvent;
+      anEvent.targetX -= occJSGetBoundingClientLeft();
+      anEvent.targetY -= occJSGetBoundingClientTop();
+      return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, &anEvent) ? EM_TRUE : EM_FALSE;
+    }
+
     return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
@@ -730,13 +756,17 @@ void ViewerTest_EventManager::SetupWindowCallbacks (const Handle(Aspect_Window)&
   // so that if web application changes canvas size by other means it should use another way to tell OCCT about resize
   emscripten_set_resize_callback     (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onResizeCallback);
 
+  // bind these events to window to track mouse movements outside of canvas
+  //emscripten_set_mouseup_callback    (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  //emscripten_set_mousemove_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  //emscripten_set_mouseleave_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mouseup_callback    (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onWasmMouseCallback);
+  emscripten_set_mousemove_callback  (EMSCRIPTEN_EVENT_TARGET_WINDOW, anOpaque, toUseCapture, onWasmMouseCallback);
+
   emscripten_set_mousedown_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mouseup_callback    (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mousemove_callback  (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
   emscripten_set_dblclick_callback   (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
   emscripten_set_click_callback      (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
   emscripten_set_mouseenter_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
-  emscripten_set_mouseleave_callback (aTargetId, anOpaque, toUseCapture, onWasmMouseCallback);
   emscripten_set_wheel_callback      (aTargetId, anOpaque, toUseCapture, onWasmWheelCallback);
 
   emscripten_set_touchstart_callback (aTargetId, anOpaque, toUseCapture, onWasmTouchCallback);
