@@ -1,0 +1,28 @@
+puts "===================================="
+puts "0032310: Data Exchange - Invalid STEP export/import of backslashes in names \[Regression since OCCT 7.5.0\]"
+puts "===================================="
+puts ""
+
+pload DCAF
+Close D -silent
+
+XNewDoc D
+box box 1 1 1
+XAddShape D box
+
+SetName D 0:1:1:1 "a'''\\b\n\t\\c\\\\\\\\"
+set original_name [GetName D 0:1:1:1]
+
+WriteStep D "$imagedir/${casename}.stp"
+Close D
+
+ReadStep D "$imagedir/${casename}.stp"
+set imported_name [GetName D 0:1:1:1]
+
+file delete "$imagedir/${casename}.stp"
+
+if {$original_name != $imported_name} {
+  puts "Error: 'Incorrect exporting name: $original_name != $imported_name"
+}
+
+Close D

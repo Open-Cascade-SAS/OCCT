@@ -20,7 +20,7 @@ if { [GetName D 0:1:1:2] != "π" } {
   puts "Error:  name has been lost on conversion \X2\ directive"
 }
 puts {# STEP string: 'Expression: \X2\03B103B2\X0\\\X2\03B3\X0\*\X2\03C0\X0\'}
-if { [GetName D 0:1:1:3] != "Expression: αβ\\γ*π" } {
+if { [GetName D 0:1:1:3] != "Expression: αβ\\X2\\03B3*π" } {
   puts "Error:  name has been lost on conversion \X2\ directive"
 }
 puts {# STEP string: '\X4\0001F7CA\X0\'}

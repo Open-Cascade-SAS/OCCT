@@ -74,7 +74,7 @@ static Standard_Integer acceptvoid = 0;
 
 //! Convert unsigned character to hexadecimal system, 
 //! if character hasn't representation in this system, returns 0.
-static Standard_Integer convertCharacterTo16bit(const unsigned char theCharacter)
+static Standard_Integer convertCharacterTo16bit(const Standard_ExtCharacter theCharacter)
 {
   switch (theCharacter)
   {
@@ -88,12 +88,12 @@ static Standard_Integer convertCharacterTo16bit(const unsigned char theCharacter
     case '7': return 7;
     case '8': return 8;
     case '9': return 9;
-    case 'A': return 10;
-    case 'B': return 11;
-    case 'C': return 12;
-    case 'D': return 13;
-    case 'E': return 14;
-    case 'F': return 15;
+    case 'A': case 'a': return 10;
+    case 'B': case 'b': return 11;
+    case 'C': case 'c': return 12;
+    case 'D': case 'd': return 13;
+    case 'E': case 'e': return 14;
+    case 'F': case 'f': return 15;
     default : return 0;
   }
 }
@@ -102,201 +102,220 @@ static Standard_Integer convertCharacterTo16bit(const unsigned char theCharacter
 //function : cleanText
 //purpose  : 
 //=======================================================================
-
 void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& theVal) const
 {
-  Standard_Integer n = theVal->Length();    // string size before reduction
-  theVal->Remove(n);
-  theVal->Remove(1);
-  // Don't forget to treat the special characters
-  for (Standard_Integer i = n - 2; i > 0; i--) {
-    char aChar = theVal->Value(i);
-    if (aChar == '\n')
-    { theVal->Remove(i);      if (i < n-2) aChar = theVal->Value(i);  }
-    if (aChar == '\'' && i < n - 2) {
-      if (theVal->Value(i + 1) == '\'') { theVal->Remove(i + 1);    continue; }
-    }
-    if (aChar == '\\' && i < n - 3) {
-      if (theVal->Value(i + 2) == '\\') {
-        if (theVal->Value(i + 1) == 'N')
-	      {  theVal->SetValue(i,'\n');    theVal->Remove(i+1,2);  continue;  }
-        if (theVal->Value(i + 1) == 'T')
-	      {  theVal->SetValue(i,'\t');    theVal->Remove(i+1,2);  continue;  }
-      }
-    }
-  }
-
-  // pass through without conversion the control directives
-  if (mySourceCodePage == Resource_FormatType_NoConversion)
+  if (theVal->Length() == 2)
+  {
+    theVal->Clear();
     return;
-
-  Standard_Integer aFirstCharInd = 1; // begin index of substring to conversion before the control directives
-  Standard_Integer aLastCharInd = 1; // end index of substring to conversion before the control directives
-  TCollection_ExtendedString aTempExtString; // string for characters within control directives
-  TCollection_ExtendedString anOutputExtString; // string for conversion in UTF-8
-  Resource_FormatType aLocalFormatType = Resource_FormatType_iso8859_1; // a code page for a "\S\" control directive
-  for (Standard_Integer i = 1; i <= theVal->Length(); ++i)
-  {
-    unsigned char aChar = theVal->Value(i);
-    if (aChar != '\\' || (theVal->Length() - i) < 3) // does not contain the control directive
-    {
-      continue;
-    }
-    Standard_Integer aLocalLastCharInd = i - 1;
-    Standard_Boolean isConverted = Standard_False;
-    // Encoding ISO 8859 characters within a string;
-    // ("\P{N}\") control directive;
-    // indicates code page for ("\S\") control directive;
-    // {N}: "A", "B", "C", "D", "E", "F", "G", "H", "I";
-    // "A" identifies ISO 8859-1; "B" identifies ISO 8859-2, etc.
-    if (theVal->Value(i + 1) == 'P' && theVal->Length() - i > 3 && theVal->Value(i + 3) == '\\')
-    {
-      Standard_Character aPageId = UpperCase (theVal->Value(i + 2));
-      if (aPageId >= 'A' && aPageId <= 'I')
-      {
-        aLocalFormatType = (Resource_FormatType)(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
-      }
-      else
-      {
-        thecheck->AddWarning("String control directive \\P*\\ with an unsupported symbol in place of *");
-      }
-
-      isConverted = Standard_True;
-      i += 3;
-    }
-    // Encoding ISO 8859 characters within a string;
-    // ("\S\") control directive;
-    // converts followed a LATIN CODEPOINT character.
-    else if (theVal->Value(i + 1) == 'S' && theVal->Length() - i > 2 && theVal->Value(i + 2) == '\\')
-    {
-      Standard_Character aResChar = theVal->Value(i + 3) | 0x80;
-      const char aStrForCovert[2] = { aResChar, '\0' };
-      Resource_Unicode::ConvertFormatToUnicode(aLocalFormatType, aStrForCovert, aTempExtString);
-      isConverted = Standard_True;
-      i += 3;
-    }
-    // Encoding U+0000 to U+00FF in a string
-    // ("\X\") control directive;
-    // converts followed two hexadecimal character.
-    else if (theVal->Value(i + 1) == 'X' && theVal->Length() - i > 3 && theVal->Value(i + 2) == '\\')
-    {
-      Standard_Character aResChar = (char)convertCharacterTo16bit(theVal->Value(i + 3));
-      aResChar = (aResChar << 4) | (char)convertCharacterTo16bit(theVal->Value(i + 4));
-      const char aStrForCovert[2] = { aResChar, '\0' };
-      aTempExtString = TCollection_ExtendedString(aStrForCovert, Standard_False); // pass through without conversion
-      isConverted = Standard_True;
-      i += 4;
-    }
-    // Encoding ISO 10646 characters within a string
-    // ("\X{N}\") control directive;
-    // {N}: "0", "2", "4";
-    // "\X2\" or "\X4\" converts followed a hexadecimal character sequence;
-    // "\X0\" indicate the end of the "\X2\" or "\X4\".
-    else if (theVal->Value(i + 1) == 'X' && theVal->Length() - i > 2 && theVal->Value(i + 3) == '\\')
-    {
-      Standard_Integer aFirstInd = i + 3;
-      Standard_Integer aLastInd = i;
-      Standard_Boolean isClosed = Standard_False;
-      for (; i <= theVal->Length() && !isClosed; ++i) // find the end of the "\X2\" or "\X4\" by an external "i"
-      {
-        if (theVal->Length() - i > 2 && theVal->Value(i) == '\\' && theVal->Value(i + 1) == 'X' && theVal->Value(i + 2) == '0' && theVal->Value(i + 3) == '\\')
-        {
-          aLastInd = i - 1;
-          i = i + 2;
-          isClosed = Standard_True;
-        }
-      }
-      if (!isClosed) // "\X0\" not exists
-      {
-        aLastInd = theVal->Length();
-      }
-      TCollection_AsciiString aBitString;
-      aBitString = TCollection_AsciiString(theVal->ToCString() + aFirstInd, aLastInd - aFirstInd);
-      aBitString.UpperCase(); // make valid for conversion into 16-bit
-      // "\X2\" control directive;
-      // followed by multiples of four or three hexadecimal characters. 
-      // Encoding in UTF-16
-      if (theVal->Value(aFirstInd - 1) == '2' && theVal->Length() - aFirstInd > 3)
-      {
-        Standard_Integer anIterStep = (aBitString.Length() % 4 == 0) ? 4 : 3;
-        if (aBitString.Length() % anIterStep)
-        {
-          aTempExtString.AssignCat('?');
-          thecheck->AddWarning("String control directive \\X2\\ is followed by number of digits not multiple of 4");
-        }
-        else
-        {
-          Standard_Integer aStrLen = aBitString.Length() / anIterStep;
-          Standard_Utf16Char aUtfCharacter = '\0';
-          for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen * anIterStep; ++aCharInd)
-          {
-            aUtfCharacter |= convertCharacterTo16bit(aBitString.Value(aCharInd));
-            if (aCharInd % anIterStep == 0)
-            {
-              aTempExtString.AssignCat(aUtfCharacter);
-              aUtfCharacter = '\0';
-            }
-            aUtfCharacter = aUtfCharacter << 4;
-          }
-        }
-      }
-      // "\X4\" control directive;
-      // followed by multiples of eight hexadecimal characters. 
-      // Encoding in UTF-32
-      else if (theVal->Value(aFirstInd - 1) == '4' && theVal->Length() - aFirstInd  > 7)
-      {
-        if (aBitString.Length() % 8)
-        {
-          aTempExtString.AssignCat('?');
-          thecheck->AddWarning("String control directive \\X4\\ is followed by number of digits not multiple of 8");
-        }
-        else
-        {
-          Standard_Integer aStrLen = aBitString.Length() / 8;
-          Standard_Utf32Char aUtfCharacter[2] = {'\0', '\0'};
-          for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen * 8; ++aCharInd)
-          {
-            aUtfCharacter[0] |= convertCharacterTo16bit(aBitString.Value(aCharInd));
-            if (aCharInd % 8 == 0)
-            {
-              NCollection_Utf32Iter aUtfIter(aUtfCharacter);
-              Standard_Utf16Char aStringBuffer[3];
-              Standard_Utf16Char* aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
-              *aUtfPntr++ = '\0';
-              TCollection_ExtendedString aUtfString(aStringBuffer);
-              aTempExtString.AssignCat(aUtfString);
-              aUtfCharacter[0] = '\0';
-            }
-            aUtfCharacter[0] = aUtfCharacter[0] << 4;
-          }
-        }
-      }
-      isConverted = Standard_True;
-    }
-    if (isConverted) // find the control directive
-    {
-      TCollection_ExtendedString anExtString;
-      if (aFirstCharInd <= aLocalLastCharInd)
-      {
-        Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->SubString(aFirstCharInd, aLocalLastCharInd)->ToCString(), anExtString);
-      }
-      anOutputExtString.AssignCat(anExtString);
-      anOutputExtString.AssignCat(aTempExtString);
-      aFirstCharInd = i + 1;
-      aLastCharInd = aFirstCharInd;
-      aTempExtString.Clear();
-    }
   }
-  if (aLastCharInd <= theVal->Length())
+  TCollection_ExtendedString aResString;
+  const Standard_Boolean toConversion = mySourceCodePage != Resource_FormatType_NoConversion;
+  Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->ToCString() + 1, aResString);
+  Standard_Integer aResStringSize = aResString.Length() - 1; // skip the last apostrophe
+  TCollection_ExtendedString aTempExtString; // string for characters within control directives
+  Standard_Integer aSetCharInd = 1; // index to set value to result string
+  Resource_FormatType aLocalFormatType = Resource_FormatType_iso8859_1; // a code page for a "\S\" control directive
+  for (Standard_Integer aStringInd = 1; aStringInd <= aResStringSize; ++aStringInd)
   {
-    Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->ToCString() + aLastCharInd - 1, aTempExtString);
-    anOutputExtString.AssignCat(aTempExtString);
+    const Standard_ExtCharacter aChar = aResString.Value(aStringInd);
+    aSetCharInd = aStringInd;
+    if (aChar == '\\' && aStringInd <= aResStringSize - 3) // can contains the control directive
+    {
+      Standard_Boolean isConverted = Standard_False;
+      const Standard_ExtCharacter aDirChar = aResString.Value(aStringInd + 1);
+      const Standard_Boolean isSecSlash = aResString.Value(aStringInd + 2) == '\\';
+      const Standard_Boolean isThirdSlash = aResString.Value(aStringInd + 3) == '\\';
+      // Encoding ISO 8859 characters within a string;
+      // ("\P{N}\") control directive;
+      // indicates code page for ("\S\") control directive;
+      // {N}: "A", "B", "C", "D", "E", "F", "G", "H", "I";
+      // "A" identifies ISO 8859-1; "B" identifies ISO 8859-2, etc.
+      if (aDirChar == 'P' && isThirdSlash)
+      {
+        const Standard_Character aPageId =
+          UpperCase(static_cast<Standard_Character>(aResString.Value(aStringInd + 2) & 255));
+        if (aPageId >= 'A' && aPageId <= 'I')
+        {
+          aLocalFormatType = (Resource_FormatType)(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
+        }
+        else
+        {
+          thecheck->AddWarning("String control directive \\P*\\ with an unsupported symbol in place of *");
+        }
+        isConverted = Standard_True;
+        aStringInd += 3;
+      }
+      // Encoding ISO 8859 characters within a string;
+      // ("\S\") control directive;
+      // converts followed a LATIN CODEPOINT character.
+      else if (aDirChar == 'S' && isSecSlash)
+      {
+        Standard_Character aResChar = static_cast<Standard_Character>(aResString.Value(aStringInd + 3) | 0x80);
+        const char aStrForCovert[2] = { aResChar, '\0' };
+        Resource_Unicode::ConvertFormatToUnicode(aLocalFormatType, aStrForCovert, aTempExtString);
+        isConverted = Standard_True;
+        aStringInd += 3;
+      }
+      // Encoding U+0000 to U+00FF in a string
+      // ("\X\") control directive;
+      // converts followed two hexadecimal character.
+      else if (aDirChar == 'X' && aStringInd <= aResStringSize - 4 && isSecSlash)
+      {
+        Standard_Character aResChar = (char)convertCharacterTo16bit(aResString.Value(aStringInd + 3));
+        aResChar = (aResChar << 4) | (char)convertCharacterTo16bit(aResString.Value(aStringInd + 4));
+        const char aStrForConvert[2] = { aResChar, '\0' };
+        aTempExtString = TCollection_ExtendedString(aStrForConvert, Standard_False); // pass through without conversion
+        isConverted = Standard_True;
+        aStringInd += 4;
+      }
+      // Encoding ISO 10646 characters within a string
+      // ("\X{N}\") control directive;
+      // {N}: "0", "2", "4";
+      // "\X2\" or "\X4\" converts followed a hexadecimal character sequence;
+      // "\X0\" indicate the end of the "\X2\" or "\X4\".
+      else if (aDirChar == 'X' && isThirdSlash)
+      {
+        Standard_Integer aFirstInd = aStringInd + 3;
+        Standard_Integer aLastInd = aStringInd;
+        Standard_Boolean isClosed = Standard_False;
+        // find the end of the "\X2\" or "\X4\" by an external "aStringInd"
+        for (; aStringInd <= aResStringSize && !isClosed; ++aStringInd)
+        {
+          if (aResStringSize - aStringInd > 2 && aResString.Value(aStringInd) == '\\' &&
+            aResString.Value(aStringInd + 1) == 'X' && aResString.Value(aStringInd + 2) == '0' &&
+            aResString.Value(aStringInd + 3) == '\\')
+          {
+            aLastInd = aStringInd - 1;
+            aStringInd = aStringInd + 2;
+            isClosed = Standard_True;
+          }
+        }
+        if (!isClosed) // "\X0\" not exists
+        {
+          aLastInd = aStringInd = aResStringSize;
+        }
+        const Standard_Integer aStrLen = aLastInd - aFirstInd;
+        // "\X2\" control directive;
+        // followed by multiples of four or three hexadecimal characters. 
+        // Encoding in UTF-16
+        if (aResString.Value(aFirstInd - 1) == '2' && aResStringSize - aFirstInd > 3)
+        {
+          Standard_Integer anIterStep = (aStrLen % 4 == 0) ? 4 : 3;
+          if (aStrLen % anIterStep)
+          {
+            aTempExtString.AssignCat('?');
+            thecheck->AddWarning("String control directive \\X2\\ is followed by number of digits not multiple of 4");
+          }
+          else
+          {
+            Standard_Utf16Char aUtfCharacter = '\0';
+            for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen; ++aCharInd)
+            {
+              aUtfCharacter |= convertCharacterTo16bit(aResString.Value(aCharInd + aFirstInd));
+              if (aCharInd % anIterStep == 0)
+              {
+                aTempExtString.AssignCat(aUtfCharacter);
+                aUtfCharacter = '\0';
+              }
+              aUtfCharacter = aUtfCharacter << 4;
+            }
+          }
+        }
+        // "\X4\" control directive;
+        // followed by multiples of eight hexadecimal characters. 
+        // Encoding in UTF-32
+        else if (aResString.Value(aFirstInd - 1) == '4' && aResStringSize - aFirstInd > 7)
+        {
+          if (aStrLen % 8)
+          {
+            aTempExtString.AssignCat('?');
+            thecheck->AddWarning("String control directive \\X4\\ is followed by number of digits not multiple of 8");
+          }
+          else
+          {
+            Standard_Utf32Char aUtfCharacter[2] = { '\0', '\0' };
+            for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen; ++aCharInd)
+            {
+              aUtfCharacter[0] |= convertCharacterTo16bit(aResString.Value(aCharInd + aFirstInd));
+              if (aCharInd % 8 == 0)
+              {
+                NCollection_Utf32Iter aUtfIter(aUtfCharacter);
+                Standard_Utf16Char aStringBuffer[3];
+                Standard_Utf16Char* aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
+                *aUtfPntr++ = '\0';
+                TCollection_ExtendedString aUtfString(aStringBuffer);
+                aTempExtString.AssignCat(aUtfString);
+                aUtfCharacter[0] = '\0';
+              }
+              aUtfCharacter[0] = aUtfCharacter[0] << 4;
+            }
+          }
+        }
+        isConverted = Standard_True;
+      }
+      if (isConverted) // find the control directive
+      {
+        if (toConversion) // else skip moving
+        {
+          aResStringSize -= aStringInd - aSetCharInd - aTempExtString.Length() + 1; // change the string size to remove unused symbols
+          aResString.SetValue(aSetCharInd, aTempExtString);
+          aSetCharInd += aTempExtString.Length(); // move to the new position
+          aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
+          aStringInd = aSetCharInd - 1;
+          aResString.Trunc(aResStringSize);;
+        }
+        aTempExtString.Clear();
+        continue;
+      }
+    }
+    if (aStringInd <= aResStringSize - 1)
+    {
+      const Standard_ExtCharacter aCharNext = aResString.Value(aStringInd + 1);
+      if (aCharNext == aChar && (aChar == '\'' || aChar == '\\'))
+      {
+        aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd); // move the string,removing one symbol
+        aResStringSize--; // change the string size to remove unused symbol
+        aResString.Trunc(aResStringSize);
+      }
+      else if (aChar == '\\')
+      {
+        const Standard_Boolean isDirective =
+          aStringInd <= aResStringSize - 2 && aResString.Value(aStringInd + 2) == '\\';
+        if (isDirective)
+        {
+          if (aCharNext == 'N')
+          {
+            aResString.SetValue(aSetCharInd++, '\n');
+            aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
+            aResStringSize-=2; // change the string size to remove unused symbols
+            aResString.Trunc(aResStringSize);
+            continue;
+          }
+          else if (aCharNext == 'T')
+          {
+            aResString.SetValue(aSetCharInd++, '\t');
+            aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
+            aResStringSize-=2; // change the string size to remove unused symbols
+            aResString.Trunc(aResStringSize);
+            continue;
+          }
+        }
+      }
+    }
+    if (aChar == '\n')
+    {
+      aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
+      aResStringSize--;
+      aResString.Trunc(aResStringSize);
+      aStringInd--;
+    }
   }
   theVal->Clear();
-  TCollection_AsciiString aTmpString(anOutputExtString, 0);
+  aResString.Trunc(aResStringSize); // trunc the last apostrophe
+  TCollection_AsciiString aTmpString(aResString, 0);
   theVal->AssignCat(aTmpString.ToCString());
 }
-
 
 //  -------------  METHODES  -------------
 
