@@ -32,3 +32,12 @@ regexp {Mass\s:\s*([0-9\.]+)} $aLProps2 dummy anArea2
 if {abs($anArea1 - $anArea2) > 1e-8 * $anArea1} {
   puts "Error: invalid area $anArea1 instead of $anArea2"
 }
+
+set THE_REF_DUMP {
+INSTANCE FACE 0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+PART FACE 0:1:1:2 "mesh_helmet_LP_13930damagedHelmet"
+
+Free Shapes: 1
+INSTANCE FACE  0:1:1:1 (refers to 0:1:1:2) "node_damagedHelmet_-6514"
+}
+checkXDump D $THE_REF_DUMP

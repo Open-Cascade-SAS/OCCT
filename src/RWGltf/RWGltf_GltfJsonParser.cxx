@@ -1349,7 +1349,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
     }
   }
 
-  if (aNbSubShapes == 1)
+  if (aChildShapes.IsEmpty()
+   && aNbSubShapes == 1)
   {
     theNodeShape = TopoDS_Iterator (aNodeShape).Value();
   }

@@ -494,6 +494,9 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
 
         anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
         Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
+        // auto-naming doesn't generate meaningful instance names
+        //aShapeTool->SetAutoNaming (false);
+        aNodeNameFormat = RWMesh_NameFormat_Product;
         aShapeTool->AddShape (aShape);
       }
     }

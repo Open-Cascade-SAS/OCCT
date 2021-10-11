@@ -31,5 +31,15 @@ close $fd
 
 ReadGltf D ${imagedir}/${casename}.gltf
 XGetOneShape s D
-checknbshapes s -face 1 -compound 0
+checknbshapes s -face 1 -compound 1
 checktrinfo s -tri 12 -nod 24
+
+set THE_REF_DUMP {
+INSTANCE COMPOUND 0:1:1:1 (refers to 0:1:1:2) "Mesh"
+PART COMPOUND 0:1:1:2 "Mesh"
+	FACE 0:1:1:2:1
+
+Free Shapes: 1
+INSTANCE COMPOUND  0:1:1:1 (refers to 0:1:1:2) "Mesh"
+}
+checkXDump D $THE_REF_DUMP
