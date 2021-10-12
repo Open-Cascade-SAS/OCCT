@@ -29,13 +29,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
-class Standard_DomainError;
-class Standard_NoSuchObject;
-class Standard_NoMoreObject;
 class TopoDS_Wire;
-class TopoDS_Face;
-class TopoDS_Edge;
-class TopoDS_Vertex;
 
 
 //! The WireExplorer is a tool to explore the edges of

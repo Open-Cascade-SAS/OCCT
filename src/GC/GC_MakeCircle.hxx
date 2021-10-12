@@ -24,7 +24,6 @@
 #include <GC_Root.hxx>
 #include <Geom_Circle.hxx>
 
-class StdFail_NotDone;
 class gp_Circ;
 class gp_Ax2;
 class gp_Pnt;

@@ -36,7 +36,6 @@
 
 #include <Message_ProgressRange.hxx>
 
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Face;

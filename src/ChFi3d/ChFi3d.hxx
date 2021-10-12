@@ -29,10 +29,6 @@
 class BRepAdaptor_Surface;
 class TopoDS_Edge;
 class TopoDS_Face;
-class ChFi3d_Builder;
-class ChFi3d_ChBuilder;
-class ChFi3d_FilBuilder;
-class ChFi3d_SearchSing;
 
 
 //! creation of spatial fillets on a solid.

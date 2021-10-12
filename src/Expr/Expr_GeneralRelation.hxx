@@ -23,8 +23,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class Standard_NumericError;
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 class TCollection_AsciiString;

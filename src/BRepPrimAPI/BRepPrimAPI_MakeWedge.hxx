@@ -24,10 +24,7 @@
 #include <BRepPrim_Wedge.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
 class gp_Ax2;
-class BRepPrim_Wedge;
 class TopoDS_Shell;
 class TopoDS_Solid;
 

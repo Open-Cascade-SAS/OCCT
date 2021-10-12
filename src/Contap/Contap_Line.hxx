@@ -31,8 +31,6 @@
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 class IntSurf_LineOn2S;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class IntSurf_PntOn2S;
 class gp_Lin;
 class gp_Circ;

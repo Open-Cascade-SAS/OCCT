@@ -30,7 +30,6 @@
 #include <GeomAbs_JoinType.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
-class BRepOffset_MakeOffset;
 
 
 //! Describes functions to build a shell out of a shape. The

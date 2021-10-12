@@ -24,10 +24,6 @@
 #include <Standard_Real.hxx>
 class TopoDS_Face;
 class gp_Dir;
-class Draft_Modification;
-class Draft_FaceInfo;
-class Draft_EdgeInfo;
-class Draft_VertexInfo;
 
 
 

@@ -27,12 +27,6 @@
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Expr_GeneralExpression;
-class Expr_NotAssigned;
-class Standard_OutOfRange;
-class Standard_NumericError;
-class Expr_InvalidAssignment;
-class Expr_InvalidOperand;
-class Expr_NotEvaluable;
 class TCollection_AsciiString;
 
 

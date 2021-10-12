@@ -29,10 +29,6 @@
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
-class Storage_StreamTypeMismatchError;
-class Storage_StreamFormatError;
-class Storage_StreamWriteError;
-class Storage_StreamExtCharParityError;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 class Storage_HeaderData;

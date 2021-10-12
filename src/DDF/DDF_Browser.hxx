@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 class TDF_Data;
 class Draw_Display;
-class Draw_Drawable3D;
 class TCollection_AsciiString;
 class TDF_Label;
 

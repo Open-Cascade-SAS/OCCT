@@ -36,19 +36,6 @@ class Geom_Plane;
 class TopoDS_Shape;
 class TopoDS_Solid;
 class TopoDS_Face;
-class BRepLib_Command;
-class BRepLib_MakeShape;
-class BRepLib_MakeVertex;
-class BRepLib_MakeEdge;
-class BRepLib_MakeEdge2d;
-class BRepLib_MakePolygon;
-class BRepLib_MakeFace;
-class BRepLib_MakeWire;
-class BRepLib_MakeShell;
-class BRepLib_MakeSolid;
-class BRepLib_FindSurface;
-class BRepLib_FuseEdges;
-class BRepLib_CheckCurveOnSurface;
 class BRepTools_ReShape;
 
 

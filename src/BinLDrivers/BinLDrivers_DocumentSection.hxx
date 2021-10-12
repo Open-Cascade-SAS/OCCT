@@ -27,7 +27,6 @@
 #include <Message_ProgressIndicator.hxx>
 #include <TDocStd_FormatVersion.hxx>
 
-class TCollection_AsciiString;
 
 
 //! More or less independent part of the saved/restored document

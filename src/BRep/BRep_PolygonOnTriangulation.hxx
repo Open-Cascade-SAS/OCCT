@@ -25,7 +25,6 @@
 class Poly_PolygonOnTriangulation;
 class Poly_Triangulation;
 class TopLoc_Location;
-class BRep_CurveRepresentation;
 
 
 class BRep_PolygonOnTriangulation;

@@ -24,7 +24,6 @@
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class BRepToIGES_BREntity;
 class IGESData_IGESEntity;
 class TopoDS_Shape;
 class TopoDS_Vertex;

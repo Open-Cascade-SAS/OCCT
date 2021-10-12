@@ -29,8 +29,6 @@
 #include <Standard_Real.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Wire;
-class TopoDS_Face;
-class BRepFill_Evolved;
 class TopoDS_Shape;
 
 

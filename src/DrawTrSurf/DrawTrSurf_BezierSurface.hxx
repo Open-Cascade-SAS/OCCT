@@ -21,7 +21,6 @@
 #include <DrawTrSurf_Surface.hxx>
 
 class Geom_BezierSurface;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BezierSurface, DrawTrSurf_Surface)
 

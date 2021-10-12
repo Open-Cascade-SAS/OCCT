@@ -26,8 +26,6 @@
 #include <BRepBuilderAPI_Command.hxx>
 #include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
-class StdFail_NotDone;
-class TopoDS_Shape;
 
 
 //! This    is  the  root     class for     all  shape

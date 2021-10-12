@@ -27,8 +27,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Draw_Drawable3D.hxx>
-class gp_Pnt;
-class Draw_Color;
 class Draw_Display;
 
 

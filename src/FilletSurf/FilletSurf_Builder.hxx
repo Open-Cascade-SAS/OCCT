@@ -28,8 +28,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <FilletSurf_StatusType.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class TopoDS_Shape;
 class Geom_Surface;
 class TopoDS_Face;

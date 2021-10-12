@@ -26,7 +26,6 @@
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Face;
-class ChFi2d_Builder;
 
 
 //! This package contains the algorithms used to build

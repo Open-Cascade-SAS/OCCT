@@ -26,8 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 class BRepBuilderAPI_Sewing;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
 class TopoDS_Shape;
 class TopoDS_Edge;
 

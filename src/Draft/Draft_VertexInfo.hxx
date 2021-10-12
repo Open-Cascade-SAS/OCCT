@@ -27,10 +27,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
-class Standard_NoMoreObject;
 class TopoDS_Edge;
-class gp_Pnt;
 
 
 

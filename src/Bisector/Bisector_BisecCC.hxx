@@ -29,13 +29,9 @@
 #include <Bisector_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom2d_Curve;
-class Standard_DomainError;
-class Standard_RangeError;
-class gp_Pnt2d;
 class Geom2d_Geometry;
 class gp_Trsf2d;
 class gp_Vec2d;
-class Bisector_PolyBis;
 
 
 class Bisector_BisecCC;

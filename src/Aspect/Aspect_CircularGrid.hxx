@@ -24,9 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Aspect_Grid.hxx>
 
-class Standard_NegativeValue;
-class Standard_NullValue;
-class Standard_NumericError;
 
 class Aspect_CircularGrid : public Aspect_Grid
 {

@@ -24,7 +24,6 @@
 
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
-class Storage_BaseDriver;
 
 DEFINE_STANDARD_HANDLE(FSD_CmpFile,FSD_File)
 

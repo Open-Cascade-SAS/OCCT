@@ -28,7 +28,6 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_Array2OfReal.hxx>
 class PLib_Base;
-class Standard_DimensionError;
 
 
 class FEmTool_Curve;

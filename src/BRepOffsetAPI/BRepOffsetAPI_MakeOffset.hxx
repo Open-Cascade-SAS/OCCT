@@ -28,8 +28,6 @@
 #include <BRepFill_ListOfOffsetWire.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
-class TopoDS_Face;
 class TopoDS_Wire;
 class TopoDS_Shape;
 

@@ -24,7 +24,6 @@
 #include <Draw_Interpretor.hxx>
 class TDF_Data;
 class Draw_Display;
-class Draw_Drawable3D;
 
 
 class DDF_Data;

@@ -25,7 +25,6 @@
 
 class TopoDS_Edge;
 class TopoDS_Face;
-class gp_Pnt;
 
 class BRepExtrema_ExtCF
 {

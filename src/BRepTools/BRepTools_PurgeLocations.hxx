@@ -20,9 +20,7 @@
 #include <BRepTools_ReShape.hxx>
 #include <TopTools_LocationSet.hxx>
 
-class TopoDS_Shape;
 
-class BRepTools_PurgeLocations;
 
 //! Removes location datums, which satisfy conditions:
 //! aTrsf.IsNegative() || (Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())

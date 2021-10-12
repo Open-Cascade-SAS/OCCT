@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-class StdFail_NotDone;
 
 
 //! Root class for all commands in BRepBuilderAPI.

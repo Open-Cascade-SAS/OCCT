@@ -26,10 +26,8 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
-class Standard_DomainError;
 class BRepClass3d_SolidExplorer;
 class gp_Pnt;
-class TopoDS_Face;
 
 
 //! Provides an algorithm to classify a point in a solid.

@@ -33,10 +33,6 @@
 #include <Standard_Integer.hxx>
 class Extrema_ExtPExtS;
 class Extrema_ExtPRevS;
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
-class gp_Pnt;
 class Adaptor3d_Surface;
 class Extrema_POnSurf;
 

@@ -29,11 +29,6 @@
 #include <CDM_Application.hxx>
 #include <Standard_OStream.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
-class Standard_NoSuchObject;
-class CDM_Reference;
-class CDM_Document;
-class TCollection_ExtendedString;
-class CDM_Application;
 
 
 class CDM_MetaData;

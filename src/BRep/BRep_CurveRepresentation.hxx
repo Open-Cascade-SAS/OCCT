@@ -24,8 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
-class Standard_DomainError;
-class TopLoc_Location;
 class Geom_Surface;
 class Poly_Triangulation;
 class Geom_Curve;

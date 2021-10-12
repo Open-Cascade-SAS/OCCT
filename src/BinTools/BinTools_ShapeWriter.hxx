@@ -20,7 +20,6 @@
 #include <NCollection_Map.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-class TopLoc_Location;
 class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;

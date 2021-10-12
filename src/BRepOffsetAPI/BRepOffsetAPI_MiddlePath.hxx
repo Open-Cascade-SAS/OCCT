@@ -26,7 +26,6 @@
 #include <TopTools_MapOfShape.hxx>
 #include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-class TopoDS_Shape;
 
 
 //! Describes functions to build a middle path of a

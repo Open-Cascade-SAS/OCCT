@@ -28,12 +28,7 @@
 #include <gp_Dir.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Circ.hxx>
-class StdFail_NotDone;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class gp_Sphere;
-class gp_Dir;
-class gp_Pnt;
 class gp_Cylinder;
 class gp_Cone;
 class gp_Lin;

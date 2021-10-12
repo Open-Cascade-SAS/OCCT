@@ -30,8 +30,6 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_ListOfTriangulation.hxx>
 
-class Standard_NullObject;
-class Standard_DomainError;
 class TopoDS_Face;
 class Geom_Surface;
 class TopLoc_Location;

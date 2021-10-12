@@ -32,7 +32,6 @@
 #include <Standard_IStream.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
-class BRep_Builder;
 class TopoDS_Shape;
 
 

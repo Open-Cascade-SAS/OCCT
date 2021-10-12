@@ -24,7 +24,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
 class TopoDS_Shape;
 
 

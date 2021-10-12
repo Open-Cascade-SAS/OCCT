@@ -27,9 +27,6 @@ class TDF_Data;
 class TDF_Label;
 class Standard_GUID;
 class TDF_Attribute;
-class DDF_Data;
-class DDF_Browser;
-class DDF_Transaction;
 
 
 //! Provides facilities to manipulate data framework

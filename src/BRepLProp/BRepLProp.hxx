@@ -24,10 +24,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Real.hxx>
 class BRepAdaptor_Curve;
-class BRepLProp_CurveTool;
-class BRepLProp_SurfaceTool;
-class BRepLProp_CLProps;
-class BRepLProp_SLProps;
 
 
 //! These global functions compute the degree of

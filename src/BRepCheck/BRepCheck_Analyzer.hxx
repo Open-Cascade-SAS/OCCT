@@ -25,9 +25,6 @@
 #include <BRepCheck_IndexedDataMapOfShapeResult.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class BRepCheck_Result;
 
 //! A framework to check the overall

@@ -31,7 +31,6 @@ class gp_Circ2d;
 class gp_Elips2d;
 class gp_Hypr2d;
 class gp_Parab2d;
-class Extrema_POnCurv2d;
 
 
 //! It calculates all the distance between two elementary

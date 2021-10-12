@@ -28,7 +28,6 @@
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
 
-class Standard_DomainError;
 class Adaptor3d_HVertex;
 class gp_Pnt2d;
 class gp_Pnt;

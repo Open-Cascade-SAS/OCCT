@@ -28,7 +28,6 @@
 #include <Standard_Real.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
-class BRepFill_Pipe;
 
 
 //! Describes functions to build pipes.

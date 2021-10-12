@@ -29,7 +29,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Face;
 class DBRep_Face;
-class TopoDS_Shape;
 class TopTools_OrientedShapeMapHasher;
 
 //! Creation of isoparametric curves.

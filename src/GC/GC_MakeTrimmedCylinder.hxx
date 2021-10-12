@@ -24,11 +24,9 @@
 #include <GC_Root.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 
-class StdFail_NotDone;
 class gp_Pnt;
 class gp_Circ;
 class gp_Ax1;
-class gp_Cylinder;
 
 
 //! Implements construction algorithms for a trimmed

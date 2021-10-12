@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_ConstructionError;
 class gp_Pnt;
 class gp_Dir;
 class gp_Trsf;

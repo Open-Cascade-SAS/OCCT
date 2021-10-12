@@ -27,7 +27,6 @@
 class Geom2d_Curve;
 class Geom_Surface;
 class TopLoc_Location;
-class gp_Pnt2d;
 class gp_Pnt;
 class BRep_CurveRepresentation;
 

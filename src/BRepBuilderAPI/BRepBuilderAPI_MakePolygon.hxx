@@ -24,7 +24,6 @@
 #include <BRepLib_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Boolean.hxx>
-class StdFail_NotDone;
 class gp_Pnt;
 class TopoDS_Vertex;
 class TopoDS_Edge;

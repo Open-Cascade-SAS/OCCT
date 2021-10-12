@@ -19,7 +19,6 @@
 
 #include <Standard_Type.hxx>
 
-class Standard_NotImplemented;
 class CDM_MetaData;
 class TCollection_ExtendedString;
 class CDM_Document;

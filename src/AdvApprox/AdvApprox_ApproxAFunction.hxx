@@ -37,8 +37,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Standard_OStream.hxx>
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class AdvApprox_Cutting;
 
 

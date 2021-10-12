@@ -22,7 +22,6 @@
 #include <DrawTrSurf_Surface.hxx>
 
 class Geom_BSplineSurface;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineSurface, DrawTrSurf_Surface)
 

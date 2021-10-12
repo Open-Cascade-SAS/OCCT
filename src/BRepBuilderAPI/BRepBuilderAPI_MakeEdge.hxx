@@ -26,7 +26,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepBuilderAPI_EdgeError.hxx>
-class StdFail_NotDone;
 class TopoDS_Vertex;
 class gp_Pnt;
 class gp_Lin;

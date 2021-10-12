@@ -31,9 +31,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class Standard_ConstructionError;
-class Standard_NullObject;
-class TopoDS_Shape;
 class TopoDS_Vertex;
 class TopoDS_Edge;
 

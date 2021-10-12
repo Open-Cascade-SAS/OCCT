@@ -20,13 +20,8 @@
 #include <FSD_FStream.hxx>
 #include <Storage_BaseDriver.hxx>
 
-class Storage_StreamTypeMismatchError;
-class Storage_StreamFormatError;
-class Storage_StreamWriteError;
-class Storage_StreamExtCharParityError;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
-class Storage_BaseDriver;
 
 DEFINE_STANDARD_HANDLE(FSD_File,Storage_BaseDriver)
 

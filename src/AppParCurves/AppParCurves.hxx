@@ -26,23 +26,6 @@
 #include <Standard_Real.hxx>
 #include <math_IntegerVector.hxx>
 class math_Matrix;
-class AppParCurves_MultiPoint;
-class AppParCurves_MultiCurve;
-class AppParCurves_MultiBSpCurve;
-class AppParCurves_ConstraintCouple;
-class AppParCurves_LeastSquare;
-class AppParCurves_ResolConstraint;
-class AppParCurves_Function;
-class AppParCurves_BSpFunction;
-class AppParCurves_Gradient;
-class AppParCurves_Gradient_BFGS;
-class AppParCurves_ParLeastSquare;
-class AppParCurves_ResConstraint;
-class AppParCurves_ParFunction;
-class AppParCurves_BSpGradient;
-class AppParCurves_BSpGradient_BFGS;
-class AppParCurves_BSpParLeastSquare;
-class AppParCurves_BSpParFunction;
 
 
 //! Parallel Approximation in n curves.

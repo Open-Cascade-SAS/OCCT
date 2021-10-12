@@ -28,7 +28,6 @@
 #include <Message_ProgressRange.hxx>
 #include <BinTools_OStream.hxx>
 
-class Standard_OutOfRange;
 class Geom2d_Curve;
 
 

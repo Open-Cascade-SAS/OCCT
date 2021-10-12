@@ -28,7 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <math_Function.hxx>
 #include <Standard_Address.hxx>
-class BRepGProp_Face;
 class gp_Pnt;
 
 

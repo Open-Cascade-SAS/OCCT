@@ -23,8 +23,6 @@
 #include <TopoDS_Edge.hxx>
 #include <Draw_Color.hxx>
 #include <Standard_Transient.hxx>
-class TopoDS_Edge;
-class Draw_Color;
 
 
 class DBRep_Edge;

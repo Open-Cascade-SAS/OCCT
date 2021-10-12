@@ -28,13 +28,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 class Expr_GeneralExpression;
-class Standard_OutOfRange;
-class Standard_DimensionMismatch;
-class Standard_NumericError;
-class Expr_NotEvaluable;
-class TCollection_AsciiString;
 class Expr_NamedUnknown;
-class Expr_GeneralFunction;
 
 
 class Expr_NamedFunction;

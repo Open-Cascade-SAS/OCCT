@@ -24,16 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Geom2d_Curve;
-class Bisector_Curve;
-class Bisector_BisecAna;
-class Bisector_BisecPC;
-class Bisector_BisecCC;
-class Bisector_Bisec;
-class Bisector_Inter;
-class Bisector_PointOnBis;
-class Bisector_PolyBis;
-class Bisector_FunctionH;
-class Bisector_FunctionInter;
 
 
 //! This package provides the bisecting line between two

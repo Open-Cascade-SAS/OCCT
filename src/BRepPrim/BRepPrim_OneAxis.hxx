@@ -30,16 +30,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
-class BRepPrim_Builder;
-class gp_Ax2;
-class TopoDS_Face;
-class TopoDS_Edge;
 class gp_Pnt2d;
-class TopoDS_Shell;
-class TopoDS_Wire;
-class TopoDS_Vertex;
 
 
 //! Algorithm to  build  primitives with  one  axis of

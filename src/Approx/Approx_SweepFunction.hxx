@@ -31,8 +31,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
-class Standard_NotImplemented;
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

@@ -28,9 +28,6 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class TopoDS_Face;
 class TopoDS_Edge;
 class gp_Pnt;

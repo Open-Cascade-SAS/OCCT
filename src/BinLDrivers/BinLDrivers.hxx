@@ -22,10 +22,6 @@ class Standard_Transient;
 class Standard_GUID;
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class TCollection_AsciiString;
-class BinLDrivers_DocumentStorageDriver;
-class BinLDrivers_DocumentRetrievalDriver;
-class BinLDrivers_DocumentSection;
 class TDocStd_Application;
 
 class BinLDrivers 

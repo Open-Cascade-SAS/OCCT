@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Boolean.hxx>
-class Aspect_IdentDefinitionError;
 
 
 //! This class permits the creation and control of integer identifiers.

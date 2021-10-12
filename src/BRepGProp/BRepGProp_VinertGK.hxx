@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Address.hxx>
 class BRepGProp_Face;
-class gp_Pnt;
 class BRepGProp_Domain;
 class gp_Pln;
 

@@ -27,9 +27,6 @@
 #include <IntSurf_Transition.hxx>
 
 class Adaptor3d_HVertex;
-class Standard_DomainError;
-class gp_Pnt;
-class IntSurf_Transition;
 
 
 //! Definition of a vertex on the contour line.

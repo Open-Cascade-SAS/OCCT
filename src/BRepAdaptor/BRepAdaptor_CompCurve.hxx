@@ -32,11 +32,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-class Standard_NullObject;
-class Standard_DomainError;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class TopoDS_Wire;
 class TopoDS_Edge;
 class gp_Pnt;
 class gp_Vec;

@@ -24,7 +24,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepLib_MakeShape.hxx>
 #include <BRepLib_ShapeModification.hxx>
-class StdFail_NotDone;
 class TopoDS_CompSolid;
 class TopoDS_Shell;
 class TopoDS_Solid;

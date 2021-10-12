@@ -28,8 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Convert_ParameterisationType.hxx>
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class gp_Pnt2d;
 
 

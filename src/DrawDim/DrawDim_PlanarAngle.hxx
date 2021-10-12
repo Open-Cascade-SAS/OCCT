@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <DrawDim_PlanarDimension.hxx>
 class TopoDS_Face;
-class TopoDS_Shape;
 class Draw_Display;
 
 

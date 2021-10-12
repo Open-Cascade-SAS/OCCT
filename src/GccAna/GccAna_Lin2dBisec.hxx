@@ -27,8 +27,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class gp_Lin2d;
 class gp_Pnt2d;
 

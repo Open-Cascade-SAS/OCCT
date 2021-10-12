@@ -27,8 +27,6 @@
 #include <GProp_ValueType.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Function.hxx>
-class BRepGProp_Face;
-class gp_Pnt;
 class gp_XYZ;
 
 

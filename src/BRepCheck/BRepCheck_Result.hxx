@@ -27,9 +27,6 @@
 #include <BRepCheck_DataMapOfShapeListOfStatus.hxx>
 #include <BRepCheck_ListOfStatus.hxx>
 
-class BRepCheck_ParallelAnalyzer;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 
 DEFINE_STANDARD_HANDLE(BRepCheck_Result, Standard_Transient)
 

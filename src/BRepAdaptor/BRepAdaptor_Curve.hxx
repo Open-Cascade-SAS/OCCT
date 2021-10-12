@@ -29,14 +29,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-class Standard_NullObject;
-class Standard_DomainError;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class TopoDS_Edge;
 class TopoDS_Face;
-class gp_Trsf;
-class GeomAdaptor_Curve;
 class Adaptor3d_CurveOnSurface;
 class gp_Pnt;
 class gp_Vec;

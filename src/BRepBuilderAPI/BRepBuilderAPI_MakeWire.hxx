@@ -26,7 +26,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <BRepBuilderAPI_WireError.hxx>
-class StdFail_NotDone;
 class TopoDS_Edge;
 class TopoDS_Wire;
 class TopoDS_Vertex;

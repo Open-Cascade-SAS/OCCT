@@ -26,10 +26,6 @@
 #include <gp_Circ2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Real.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class gp_Circ2d;
-class gp_Pnt2d;
 class GccInt_Bisec;
 
 

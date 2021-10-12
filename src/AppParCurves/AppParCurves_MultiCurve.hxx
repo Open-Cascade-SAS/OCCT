@@ -28,9 +28,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class Standard_OutOfRange;
-class Standard_DimensionError;
-class Standard_ConstructionError;
 class AppParCurves_MultiPoint;
 class gp_Pnt;
 class gp_Pnt2d;

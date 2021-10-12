@@ -33,11 +33,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
 class ChFiDS_SurfData;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class gp_Pnt;
-class gp_Vec;
 class gp_Ax1;
 class Geom_Curve;
 class gp_Lin;

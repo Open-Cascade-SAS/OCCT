@@ -44,9 +44,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_OStream.hxx>
 class Approx_SweepFunction;
-class StdFail_NotDone;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class AdvApprox_Cutting;
 
 

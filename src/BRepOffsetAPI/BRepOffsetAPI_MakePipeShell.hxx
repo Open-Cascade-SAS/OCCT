@@ -30,8 +30,6 @@
 #include <Standard_Integer.hxx>
 #include <BRepBuilderAPI_TransitionMode.hxx>
 #include <TopTools_ListOfShape.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
 class TopoDS_Wire;
 class gp_Ax2;
 class gp_Dir;

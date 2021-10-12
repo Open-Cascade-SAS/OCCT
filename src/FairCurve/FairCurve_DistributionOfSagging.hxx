@@ -28,7 +28,6 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class FairCurve_BattenLaw;
 
 
 //! Compute the Sagging Distribution

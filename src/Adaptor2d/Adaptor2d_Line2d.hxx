@@ -29,9 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class gp_Pnt2d;
 class gp_Dir2d;
 class gp_Lin2d;

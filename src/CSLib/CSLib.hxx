@@ -29,8 +29,6 @@
 #include <TColgp_Array2OfVec.hxx>
 class gp_Vec;
 class gp_Dir;
-class CSLib_Class2d;
-class CSLib_NormalPolyDef;
 
 
 //! This package implements functions for basis geometric

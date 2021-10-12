@@ -32,9 +32,7 @@
 
 class Adaptor3d_Curve;
 class Extrema_POnCurv;
-class gp_Pnt;
 class Extrema_ExtElC;
-class Extrema_ECC;
 
 
 //! It calculates all the distance between two curves.

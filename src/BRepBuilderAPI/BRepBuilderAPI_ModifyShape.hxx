@@ -26,9 +26,6 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class BRepTools_Modification;
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 
 
 //! Implements   the  methods   of MakeShape for   the

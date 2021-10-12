@@ -25,8 +25,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <BRepLib_MakeShape.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
-class TopoDS_Vertex;
 class gp_Pnt;
 class gp_Lin;
 class gp_Circ;

@@ -38,9 +38,6 @@ class gp_Cylinder;
 class gp_Cone;
 class gp_Sphere;
 class gp_Torus;
-class BndLib_Add3dCurve;
-class BndLib_Add2dCurve;
-class BndLib_AddSurface;
 
 
 //! The BndLib package provides functions to add a geometric primitive to a bounding box.

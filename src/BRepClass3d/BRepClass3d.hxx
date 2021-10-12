@@ -23,11 +23,6 @@
 
 class TopoDS_Shell;
 class TopoDS_Solid;
-class BRepClass3d_Intersector3d;
-class BRepClass3d_SolidExplorer;
-class BRepClass3d_SolidPassiveClassifier;
-class BRepClass3d_SClassifier;
-class BRepClass3d_SolidClassifier;
 
 
 

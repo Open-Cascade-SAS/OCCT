@@ -24,8 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Drawable3D.hxx>
-class gp_Circ;
-class Draw_Color;
 class Draw_Display;
 
 

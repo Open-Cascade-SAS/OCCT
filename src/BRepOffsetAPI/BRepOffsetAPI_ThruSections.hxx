@@ -33,7 +33,6 @@
 #include <Standard_Integer.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopTools_Array1OfShape.hxx>
-class Standard_DomainError;
 class TopoDS_Wire;
 class TopoDS_Vertex;
 class TopoDS_Shape;

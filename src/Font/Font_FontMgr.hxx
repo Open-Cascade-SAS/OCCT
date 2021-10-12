@@ -28,7 +28,6 @@
 #include <NCollection_Shared.hxx>
 #include <TColStd_SequenceOfHAsciiString.hxx>
 
-class Font_SystemFont;
 class TCollection_HAsciiString;
 class NCollection_Buffer;
 

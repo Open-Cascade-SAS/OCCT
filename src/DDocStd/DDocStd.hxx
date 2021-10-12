@@ -28,7 +28,6 @@ class TDocStd_Document;
 class TDF_Label;
 class Standard_GUID;
 class TDF_Attribute;
-class DDocStd_DrawDocument;
 
 
 //! This package   provides Draw services to test  CAF

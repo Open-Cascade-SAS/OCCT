@@ -23,7 +23,6 @@
 
 #include <CDM_ListIteratorOfListOfDocument.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
 class CDF_Directory;
 class CDM_Document;
 

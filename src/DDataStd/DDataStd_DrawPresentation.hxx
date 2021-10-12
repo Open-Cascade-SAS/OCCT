@@ -25,7 +25,6 @@
 class Draw_Drawable3D;
 class TDF_Label;
 class Standard_GUID;
-class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_AttributeDelta;
 

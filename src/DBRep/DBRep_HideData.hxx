@@ -27,8 +27,6 @@
 #include <HLRBRep_ListOfBPoint.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Trsf;
-class TopoDS_Shape;
 class Draw_Display;
 class Draw_Color;
 

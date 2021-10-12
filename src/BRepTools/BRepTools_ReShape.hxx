@@ -26,7 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
-class TopoDS_Shape;
 class TopoDS_Vertex;
 
 // resolve name collisions with X11 headers

@@ -24,12 +24,9 @@
 #include <GC_Root.hxx>
 #include <Geom_ConicalSurface.hxx>
 
-class StdFail_NotDone;
 class gp_Ax2;
 class gp_Cone;
 class gp_Pnt;
-class gp_Ax1;
-class gp_Lin;
 
 
 //! This class implements the following algorithms used

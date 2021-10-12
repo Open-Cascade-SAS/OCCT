@@ -40,10 +40,7 @@
 
 #include <Message_ProgressRange.hxx>
 class BRepAlgo_AsDes;
-class TopoDS_Shape;
 class TopoDS_Face;
-class BRepOffset_Analyse;
-class BRepAlgo_Image;
 class BRepOffset_Inter3d;
 
 

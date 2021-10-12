@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Standard_OutOfRange;
 class BRepAdaptor_Curve;
 class gp_Pnt;
 class gp_Vec;

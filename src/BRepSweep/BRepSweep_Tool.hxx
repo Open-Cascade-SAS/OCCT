@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
-class Standard_OutOfRange;
 class TopoDS_Shape;
 
 

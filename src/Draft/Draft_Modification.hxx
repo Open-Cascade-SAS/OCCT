@@ -33,11 +33,6 @@
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
-class StdFail_NotDone;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
-class TopoDS_Shape;
-class TopoDS_Face;
 class gp_Dir;
 class gp_Pln;
 class Geom_Surface;

@@ -26,9 +26,7 @@
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
 
-class TopoDS_Vertex;
 class gp_Pnt2d;
-class Adaptor3d_HVertex;
 
 
 class BRepTopAdaptor_HVertex;

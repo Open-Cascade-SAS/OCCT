@@ -26,11 +26,7 @@
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
 
-class gp_Pnt;
-class gp_Dir;
 class math_Matrix;
-class gp_Vec;
-class gp_Dir2d;
 
 
 //! This class describes the function on a parametric surface.

@@ -27,8 +27,6 @@
 #include <BRepLib_ShapeModification.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 

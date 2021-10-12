@@ -27,10 +27,8 @@
 #include <Standard_IStream.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-class Standard_NoSuchObject;
 class Standard_GUID;
 class CDM_Document;
-class TCollection_ExtendedString;
 class PCDM_Reader;
 class CDM_MetaData;
 class PCDM_RetrievalDriver;

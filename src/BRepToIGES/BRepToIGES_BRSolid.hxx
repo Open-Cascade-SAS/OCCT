@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepToIGES_BREntity.hxx>
-class BRepToIGES_BREntity;
 class IGESData_IGESEntity;
 class TopoDS_Shape;
 class TopoDS_Solid;

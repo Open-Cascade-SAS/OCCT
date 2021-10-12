@@ -29,7 +29,6 @@
 #include <CDM_MetaDataLookUpTable.hxx>
 #include <Message_ProgressRange.hxx>
 
-class CDM_Reference;
 class CDM_MetaData;
 class CDM_Document;
 class Resource_Manager;

@@ -29,9 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class gp_Pnt;
 class gp_Vec;
 class Geom_BezierCurve;

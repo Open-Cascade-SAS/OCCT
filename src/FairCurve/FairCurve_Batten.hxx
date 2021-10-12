@@ -30,9 +30,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_OStream.hxx>
-class Standard_NegativeValue;
-class Standard_NullValue;
-class gp_Pnt2d;
 class gp_Vec2d;
 class Geom2d_BSplineCurve;
 

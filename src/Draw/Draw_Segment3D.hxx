@@ -23,8 +23,6 @@
 #include <gp_Pnt.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Drawable3D.hxx>
-class gp_Pnt;
-class Draw_Color;
 class Draw_Display;
 
 

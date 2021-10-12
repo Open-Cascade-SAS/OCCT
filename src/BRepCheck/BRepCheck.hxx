@@ -26,14 +26,6 @@ class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Edge;
 class Adaptor3d_Curve;
-class BRepCheck_Result;
-class BRepCheck_Vertex;
-class BRepCheck_Edge;
-class BRepCheck_Wire;
-class BRepCheck_Face;
-class BRepCheck_Shell;
-class BRepCheck_Solid;
-class BRepCheck_Analyzer;
 
 
 //! This package  provides tools to check the validity

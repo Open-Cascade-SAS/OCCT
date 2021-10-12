@@ -23,11 +23,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnSurf.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
 class gp_Pnt;
 class Adaptor3d_Surface;
-class Extrema_POnSurf;
 
 
 //! With a close point, it calculates the distance

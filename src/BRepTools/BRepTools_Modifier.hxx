@@ -35,9 +35,6 @@
 #include <TopLoc_Location.hxx>
 #include <Message_ProgressRange.hxx>
 
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class BRepTools_Modification;
 class Geom_Curve;
 class Geom_Surface;

@@ -28,8 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Face;
-class Draw_Color;
 
 
 class DBRep_Face;

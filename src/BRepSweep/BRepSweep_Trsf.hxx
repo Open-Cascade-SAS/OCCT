@@ -28,7 +28,6 @@
 class BRep_Builder;
 class TopoDS_Shape;
 class Sweep_NumShape;
-class TopLoc_Location;
 
 
 //! This class is inherited from NumLinearRegularSweep

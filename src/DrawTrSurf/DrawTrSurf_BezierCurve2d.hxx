@@ -21,7 +21,6 @@
 #include <DrawTrSurf_Curve2d.hxx>
 
 class Geom2d_BezierCurve;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BezierCurve2d, DrawTrSurf_Curve2d)
 

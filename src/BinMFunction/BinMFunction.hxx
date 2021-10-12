@@ -22,9 +22,6 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMFunction_FunctionDriver;
-class BinMFunction_GraphNodeDriver;
-class BinMFunction_ScopeDriver;
 
 
 //! Storage and Retrieval drivers for TFunction modelling attributes.

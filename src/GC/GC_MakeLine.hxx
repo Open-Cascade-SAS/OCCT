@@ -24,7 +24,6 @@
 #include <GC_Root.hxx>
 #include <Geom_Line.hxx>
 
-class StdFail_NotDone;
 class gp_Ax1;
 class gp_Lin;
 class gp_Pnt;

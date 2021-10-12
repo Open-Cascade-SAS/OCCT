@@ -28,7 +28,6 @@
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-class Standard_NoSuchObject;
 class AdvApp2Var_Iso;
 class AdvApp2Var_Node;
 

@@ -31,7 +31,6 @@
 class TopoDS_Face;
 class TopoDS_Wire;
 class Geom2d_Curve;
-class TopoDS_Shape;
 
 
 //! Construct an explorer from wires, face, set of curves

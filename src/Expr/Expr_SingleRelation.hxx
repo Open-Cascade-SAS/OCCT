@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Expr_GeneralExpression;
-class Standard_OutOfRange;
-class Expr_GeneralRelation;
 class Expr_NamedUnknown;
 
 

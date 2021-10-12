@@ -22,7 +22,6 @@
 #include <DrawTrSurf_Curve2d.hxx>
 
 class Geom2d_BSplineCurve;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineCurve2d, DrawTrSurf_Curve2d)
 

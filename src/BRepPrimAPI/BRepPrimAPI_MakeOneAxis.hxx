@@ -23,7 +23,6 @@
 
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Address.hxx>
-class StdFail_NotDone;
 class TopoDS_Face;
 class TopoDS_Shell;
 class TopoDS_Solid;

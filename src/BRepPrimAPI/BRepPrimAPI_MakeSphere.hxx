@@ -25,10 +25,8 @@
 #include <BRepPrimAPI_MakeOneAxis.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Address.hxx>
-class Standard_DomainError;
 class gp_Pnt;
 class gp_Ax2;
-class BRepPrim_Sphere;
 
 
 //! Describes functions to build spheres or portions of spheres.

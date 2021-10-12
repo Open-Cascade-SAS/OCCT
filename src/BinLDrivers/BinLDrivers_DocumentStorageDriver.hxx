@@ -32,7 +32,6 @@
 #include <TDocStd_FormatVersion.hxx>
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class TCollection_ExtendedString;
 class CDM_Document;
 class TDF_Label;
 class TCollection_AsciiString;

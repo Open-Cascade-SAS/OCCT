@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_TFace.hxx>
 class Geom_Surface;
-class TopLoc_Location;
 class TopoDS_TShape;
 
 class BRep_TFace;

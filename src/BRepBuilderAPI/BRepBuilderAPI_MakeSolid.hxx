@@ -24,7 +24,6 @@
 #include <BRepLib_MakeSolid.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Boolean.hxx>
-class StdFail_NotDone;
 class TopoDS_CompSolid;
 class TopoDS_Shell;
 class TopoDS_Solid;

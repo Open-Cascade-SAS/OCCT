@@ -28,8 +28,6 @@
 #include <TopAbs_State.hxx>
 #include <TopoDS_Face.hxx>
 class gp_Lin;
-class TopoDS_Face;
-class gp_Pnt;
 
 
 

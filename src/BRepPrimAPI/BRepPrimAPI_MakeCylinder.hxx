@@ -25,9 +25,7 @@
 #include <BRepPrimAPI_MakeOneAxis.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Address.hxx>
-class Standard_DomainError;
 class gp_Ax2;
-class BRepPrim_Cylinder;
 
 
 //! Describes functions to build cylinders or portions of  cylinders.

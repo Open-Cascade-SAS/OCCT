@@ -32,15 +32,6 @@ class gp_Lin;
 class gp_Circ;
 class TopoDS_Face;
 class gp_Pln;
-class DrawDim_Dimension;
-class DrawDim_Angle;
-class DrawDim_Distance;
-class DrawDim_Radius;
-class DrawDim_PlanarDimension;
-class DrawDim_PlanarAngle;
-class DrawDim_PlanarDistance;
-class DrawDim_PlanarRadius;
-class DrawDim_PlanarDiameter;
 
 
 //! This package provides Drawable Dimensions.

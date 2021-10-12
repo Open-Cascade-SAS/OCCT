@@ -25,12 +25,8 @@
 #include <Standard_Real.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
 class Adaptor3d_Curve;
 class Adaptor3d_Surface;
-class Extrema_POnCurv;
-class Extrema_POnSurf;
 
 
 //! With two close points it calculates the distance

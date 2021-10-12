@@ -30,13 +30,6 @@
 #include <TColStd_Array2OfBoolean.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
-class Standard_RangeError;
-class Standard_DomainError;
-class BRepSweep_Builder;
-class TopoDS_Shape;
-class Sweep_NumShape;
 
 
 //! This  a generic  class  is  used   to build Sweept

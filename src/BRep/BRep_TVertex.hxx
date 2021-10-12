@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <BRep_ListOfPointRepresentation.hxx>
 #include <TopoDS_TVertex.hxx>
-class gp_Pnt;
 class TopoDS_TShape;
 
 

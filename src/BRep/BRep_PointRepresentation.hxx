@@ -24,8 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
-class TopLoc_Location;
 class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;

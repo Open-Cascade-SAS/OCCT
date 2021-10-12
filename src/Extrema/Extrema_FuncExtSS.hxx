@@ -29,7 +29,6 @@
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
-class Standard_OutOfRange;
 class Adaptor3d_Surface;
 class math_Matrix;
 class Extrema_POnSurf;

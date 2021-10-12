@@ -22,7 +22,6 @@
 #include <Draw_Interpretor.hxx>
 
 class Geom2d_Curve;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_Curve2d, DrawTrSurf_Drawable)
 

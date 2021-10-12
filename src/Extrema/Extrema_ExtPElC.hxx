@@ -25,15 +25,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnCurv.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class gp_Pnt;
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;
 class gp_Hypr;
 class gp_Parab;
-class Extrema_POnCurv;
 
 
 //! It calculates all the distances between a point

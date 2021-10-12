@@ -31,7 +31,6 @@
 
 class Adaptor2d_Curve2d;
 class Extrema_POnCurv2d;
-class gp_Pnt2d;
 class Extrema_ExtElC2d;
 class Extrema_ECC2d;
 

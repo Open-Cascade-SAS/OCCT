@@ -23,7 +23,6 @@
 
 #include <Standard_Real.hxx>
 #include <BRepPrim_Revolution.hxx>
-class Standard_DomainError;
 class gp_Pnt;
 class gp_Ax2;
 class TopoDS_Face;

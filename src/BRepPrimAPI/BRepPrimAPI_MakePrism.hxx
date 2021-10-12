@@ -28,7 +28,6 @@
 class TopoDS_Shape;
 class gp_Vec;
 class gp_Dir;
-class BRepSweep_Prism;
 
 
 //! Describes functions to build linear swept topologies, called prisms.

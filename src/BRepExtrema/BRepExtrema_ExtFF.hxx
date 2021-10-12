@@ -22,7 +22,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Face;
-class gp_Pnt;
 
 class BRepExtrema_ExtFF
 {

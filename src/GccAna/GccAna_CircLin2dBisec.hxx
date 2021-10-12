@@ -25,10 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Lin2d.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class gp_Circ2d;
-class gp_Lin2d;
 class GccInt_Bisec;
 
 

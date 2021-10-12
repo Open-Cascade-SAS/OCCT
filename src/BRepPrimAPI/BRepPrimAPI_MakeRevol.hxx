@@ -29,7 +29,6 @@
 #include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class gp_Ax1;
-class BRepSweep_Revol;
 
 
 //! Class to make revolved sweep topologies.

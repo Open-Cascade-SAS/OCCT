@@ -25,8 +25,6 @@
 #include <TopoDS_Face.hxx>
 class Geom_Surface;
 class Geom_Curve;
-class Standard_DomainError;
-class TopoDS_Face;
 
 
 

@@ -27,9 +27,6 @@
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_TypeMismatch;
 class Adaptor3d_Surface;
 class Extrema_POnSurf;
 

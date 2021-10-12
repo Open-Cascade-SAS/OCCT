@@ -30,11 +30,6 @@
 #include <Message_ProgressRange.hxx>
 
 class TopoDS_Shape;
-class BinTools_ShapeSet;
-class BinTools_Curve2dSet;
-class BinTools_CurveSet;
-class BinTools_SurfaceSet;
-class BinTools_LocationSet;
 
 
 //! Tool to keep shapes in binary format

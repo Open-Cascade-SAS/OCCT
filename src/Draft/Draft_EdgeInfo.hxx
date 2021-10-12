@@ -27,9 +27,6 @@
 #include <Standard_Real.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
-class Standard_DomainError;
-class TopoDS_Face;
-class gp_Pnt;
 
 
 

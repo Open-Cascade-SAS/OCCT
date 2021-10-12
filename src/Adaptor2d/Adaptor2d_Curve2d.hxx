@@ -29,9 +29,6 @@
 #include <Standard_Handle.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class gp_Pnt2d;
 class gp_Vec2d;
 class Geom2d_BezierCurve;

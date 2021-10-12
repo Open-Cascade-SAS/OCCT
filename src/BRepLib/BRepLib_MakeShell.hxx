@@ -25,7 +25,6 @@
 #include <BRepLib_MakeShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class Geom_Surface;
 class TopoDS_Shell;
 

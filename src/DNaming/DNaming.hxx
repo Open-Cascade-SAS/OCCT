@@ -42,17 +42,6 @@ class TDF_Label;
 class BRepAlgoAPI_BooleanOperation;
 class TDF_Data;
 class TCollection_AsciiString;
-class DNaming_BoxDriver;
-class DNaming_CylinderDriver;
-class DNaming_SphereDriver;
-class DNaming_SelectionDriver;
-class DNaming_BooleanOperationDriver;
-class DNaming_FilletDriver;
-class DNaming_TransformationDriver;
-class DNaming_PrismDriver;
-class DNaming_RevolutionDriver;
-class DNaming_PointDriver;
-class DNaming_Line3DDriver;
 
 
 

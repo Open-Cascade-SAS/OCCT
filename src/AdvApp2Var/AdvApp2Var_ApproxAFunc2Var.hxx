@@ -34,8 +34,6 @@
 #include <TColGeom_HArray1OfSurface.hxx>
 #include <AdvApp2Var_EvaluatorFunc2Var.hxx>
 #include <Standard_OStream.hxx>
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class AdvApprox_Cutting;
 class AdvApp2Var_Criterion;
 class Geom_BSplineSurface;

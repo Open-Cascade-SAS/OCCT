@@ -26,10 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Geom_Surface;
-class Standard_NullObject;
-class TopLoc_Location;
 class gp_Pnt;
-class BRep_CurveRepresentation;
 
 
 class BRep_CurveOn2Surfaces;

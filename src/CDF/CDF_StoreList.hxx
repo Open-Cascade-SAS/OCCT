@@ -29,7 +29,6 @@
 #include <Message_ProgressIndicator.hxx>
 
 class CDM_Document;
-class Standard_NoSuchObject;
 class CDM_MetaData;
 class TCollection_ExtendedString;
 

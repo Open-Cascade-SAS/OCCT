@@ -24,9 +24,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-class Standard_NullObject;
-class TopoDS_Edge;
-class TopoDS_Face;
 
 
 //! The Curve2d from BRepAdaptor allows to use an Edge

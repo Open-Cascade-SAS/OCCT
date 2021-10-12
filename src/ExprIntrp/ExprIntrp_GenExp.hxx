@@ -23,7 +23,6 @@
 #include <Standard_Boolean.hxx>
 #include <ExprIntrp_Generator.hxx>
 class Expr_GeneralExpression;
-class Standard_NoSuchObject;
 class TCollection_AsciiString;
 
 

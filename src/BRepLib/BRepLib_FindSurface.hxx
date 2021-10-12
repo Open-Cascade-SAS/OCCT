@@ -25,9 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <TopLoc_Location.hxx>
 class Geom_Surface;
-class Standard_NoSuchObject;
 class TopoDS_Shape;
-class TopLoc_Location;
 
 
 //! Provides an  algorithm to find  a Surface  through a

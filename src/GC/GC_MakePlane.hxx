@@ -24,8 +24,6 @@
 #include <GC_Root.hxx>
 #include <Geom_Plane.hxx>
 
-class StdFail_NotDone;
-class gp_Ax2;
 class gp_Pln;
 class gp_Pnt;
 class gp_Dir;

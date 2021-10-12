@@ -23,8 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 class GccInt_Bisec;
-class Standard_ConstructionError;
-class StdFail_NotDone;
 class gp_Lin2d;
 class gp_Pnt2d;
 

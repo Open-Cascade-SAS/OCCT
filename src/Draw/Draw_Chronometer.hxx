@@ -24,9 +24,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
-class OSD_Timer;
 class Draw_Display;
-class Draw_Drawable3D;
 
 
 class Draw_Chronometer;

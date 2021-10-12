@@ -24,9 +24,7 @@
 #include <Draw_Color.hxx>
 #include <Standard_Integer.hxx>
 #include <Draw_Drawable2D.hxx>
-class Draw_Color;
 class gp_Pnt2d;
-class gp_Ax22d;
 class Draw_Display;
 
 

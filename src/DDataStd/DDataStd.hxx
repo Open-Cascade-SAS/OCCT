@@ -24,9 +24,6 @@
 #include <Draw_Interpretor.hxx>
 #include <Standard_OStream.hxx>
 class TDataXtd_Constraint;
-class DDataStd_DrawPresentation;
-class DDataStd_DrawDriver;
-class DDataStd_TreeBrowser;
 
 
 //! commands for Standard Attributes.

@@ -24,11 +24,6 @@
 #include <Standard_Boolean.hxx>
 class ExprIntrp_Generator;
 class TCollection_AsciiString;
-class ExprIntrp_Generator;
-class ExprIntrp_GenExp;
-class ExprIntrp_GenFct;
-class ExprIntrp_GenRel;
-class ExprIntrp_Analysis;
 
 
 //! Describes an interpreter for GeneralExpressions,

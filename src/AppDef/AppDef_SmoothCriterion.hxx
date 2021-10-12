@@ -28,8 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Standard_NotImplemented;
-class Standard_DomainError;
 class FEmTool_Curve;
 class math_Matrix;
 

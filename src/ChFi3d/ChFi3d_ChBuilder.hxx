@@ -30,8 +30,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 
-class Standard_ConstructionError;
-class Standard_DomainError;
 class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;

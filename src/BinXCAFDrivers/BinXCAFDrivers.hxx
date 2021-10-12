@@ -22,8 +22,6 @@ class Standard_Transient;
 class Standard_GUID;
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinXCAFDrivers_DocumentStorageDriver;
-class BinXCAFDrivers_DocumentRetrievalDriver;
 class TDocStd_Application;
 
 class BinXCAFDrivers 

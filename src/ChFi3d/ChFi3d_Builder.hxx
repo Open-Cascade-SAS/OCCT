@@ -37,9 +37,6 @@
 
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepBuild_HBuilder;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
 class TopoDS_Edge;
 class ChFiDS_Spine;
 class TopoDS_Vertex;

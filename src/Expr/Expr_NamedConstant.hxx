@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Standard_OutOfRange;
 class TCollection_AsciiString;
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;

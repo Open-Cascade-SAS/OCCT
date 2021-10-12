@@ -25,15 +25,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnSurf.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class gp_Pnt;
 class gp_Cylinder;
 class gp_Pln;
 class gp_Cone;
 class gp_Torus;
 class gp_Sphere;
-class Extrema_POnSurf;
 
 
 //! It calculates all the extremum distances

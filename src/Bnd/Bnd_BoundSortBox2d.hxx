@@ -28,9 +28,6 @@
 #include <TColStd_HArray1OfListOfInteger.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-class Standard_NullValue;
-class Standard_MultiplyDefined;
-class Bnd_Box2d;
 
 
 //! A tool to compare a 2D bounding box with a set of 2D

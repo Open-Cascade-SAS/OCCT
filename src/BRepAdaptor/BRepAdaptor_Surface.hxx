@@ -25,10 +25,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TopoDS_Face.hxx>
 
-class Standard_OutOfRange;
-class Standard_DomainError;
-class Standard_NoSuchObject;
-class gp_Trsf;
 class gp_Pnt;
 class gp_Vec;
 class gp_Pln;

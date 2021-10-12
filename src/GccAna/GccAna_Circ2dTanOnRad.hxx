@@ -30,10 +30,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <GccEnt_Position.hxx>
-class Standard_NegativeValue;
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class GccEnt_BadQualifier;
 class GccEnt_QualifiedCirc;
 class gp_Lin2d;
 class GccEnt_QualifiedLin;

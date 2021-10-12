@@ -28,9 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
-class Standard_ConstructionError;
-class Standard_NoSuchObject;
-class StdFail_NotDone;
 class TopoDS_Shape;
 class TopoDS_Edge;
 

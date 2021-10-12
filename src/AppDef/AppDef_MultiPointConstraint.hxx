@@ -27,9 +27,6 @@
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColgp_HArray1OfVec2d.hxx>
 
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class Standard_DimensionError;
 class gp_Vec;
 class gp_Vec2d;
 

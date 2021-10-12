@@ -28,16 +28,6 @@
 class TopoDS_Shape;
 class GProp_GProps;
 class gp_Pln;
-class BRepGProp_EdgeTool;
-class BRepGProp_Face;
-class BRepGProp_Domain;
-class BRepGProp_Cinert;
-class BRepGProp_Sinert;
-class BRepGProp_Vinert;
-class BRepGProp_VinertGK;
-class BRepGProp_UFunction;
-class BRepGProp_TFunction;
-class gp_XYZ;
 
 
 //! Provides global functions to compute a shape's global

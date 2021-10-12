@@ -23,7 +23,6 @@
 
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Shape;

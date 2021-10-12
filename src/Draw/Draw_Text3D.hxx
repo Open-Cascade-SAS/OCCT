@@ -26,8 +26,6 @@
 #include <Standard_Real.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Standard_CString.hxx>
-class gp_Pnt;
-class Draw_Color;
 class Draw_Display;
 
 

@@ -23,8 +23,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Standard_Boolean.hxx>
-class TCollection_AsciiString;
-class Expr_GeneralExpression;
 
 
 class Expr_NamedExpression;

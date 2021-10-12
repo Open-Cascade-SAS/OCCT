@@ -33,12 +33,9 @@
 class BinMDF_ADriverTable;
 class Message_Messenger;
 class TCollection_ExtendedString;
-class PCDM_Document;
 class CDM_Document;
 class CDM_Application;
 class TDF_Label;
-class TCollection_AsciiString;
-class Storage_HeaderData;
 class BinLDrivers_DocumentSection;
 
 

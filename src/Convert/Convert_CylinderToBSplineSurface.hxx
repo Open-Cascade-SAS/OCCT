@@ -23,7 +23,6 @@
 
 #include <Convert_ElementarySurfaceToBSplineSurface.hxx>
 #include <Standard_Real.hxx>
-class Standard_DomainError;
 class gp_Cylinder;
 
 

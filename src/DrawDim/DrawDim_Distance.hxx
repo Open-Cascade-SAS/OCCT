@@ -22,7 +22,6 @@
 
 #include <TopoDS_Face.hxx>
 #include <DrawDim_Dimension.hxx>
-class TopoDS_Face;
 class Draw_Display;
 
 

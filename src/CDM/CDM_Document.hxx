@@ -29,12 +29,7 @@
 
 class CDM_MetaData;
 class CDM_Application;
-class Standard_NoSuchObject;
-class Standard_Failure;
-class Standard_DomainError;
 class CDM_Reference;
-class CDM_ReferenceIterator;
-class TCollection_ExtendedString;
 class Resource_Manager;
 
 class CDM_Document;

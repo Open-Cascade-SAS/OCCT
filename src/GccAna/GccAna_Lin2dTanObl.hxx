@@ -29,9 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <GccEnt_Position.hxx>
-class Standard_OutOfRange;
-class GccEnt_BadQualifier;
-class StdFail_NotDone;
 class gp_Pnt2d;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;

@@ -22,7 +22,6 @@
 #include <Draw_Interpretor.hxx>
 
 class Geom_Surface;
-class Draw_Color;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_Surface, DrawTrSurf_Drawable)
 

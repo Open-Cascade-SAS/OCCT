@@ -30,9 +30,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 class FEmTool_ProfileMatrix;
-class StdFail_NotDone;
-class Standard_DimensionError;
-class Standard_DomainError;
 class math_Matrix;
 
 

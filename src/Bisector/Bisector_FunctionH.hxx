@@ -27,8 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Geom2d_Curve;
-class gp_Pnt2d;
-class gp_Vec2d;
 
 
 //! H(v) = (T1  .P2(v) - P1) * ||T(v)||  -

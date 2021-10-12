@@ -24,8 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_NoSuchObject;
-class CDF_DirectoryIterator;
 class CDM_Document;
 
 

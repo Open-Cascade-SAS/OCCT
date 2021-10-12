@@ -24,10 +24,6 @@
 #include <Expr_GeneralExpression.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class Standard_NumericError;
-class Expr_InvalidOperand;
-class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 
 

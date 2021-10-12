@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class Bisector_PointOnBis;
 class gp_Trsf2d;
 
 

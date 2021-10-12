@@ -24,10 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnCurv.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
 class Adaptor3d_Curve;
-class Extrema_POnCurv;
 
 
 //! It calculates the distance between two curves with

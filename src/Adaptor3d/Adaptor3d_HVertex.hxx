@@ -21,7 +21,6 @@
 #include <gp_Pnt2d.hxx>
 #include <TopAbs_Orientation.hxx>
 
-class gp_Pnt2d;
 
 class Adaptor3d_HVertex;
 DEFINE_STANDARD_HANDLE(Adaptor3d_HVertex, Standard_Transient)

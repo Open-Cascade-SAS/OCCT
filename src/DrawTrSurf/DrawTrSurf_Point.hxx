@@ -23,8 +23,6 @@
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 
-class Draw_Color;
-class gp_Pnt2d;
 
 DEFINE_STANDARD_HANDLE(DrawTrSurf_Point, Draw_Drawable3D)
 

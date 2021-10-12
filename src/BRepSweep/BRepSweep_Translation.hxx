@@ -25,11 +25,9 @@
 #include <Standard_Boolean.hxx>
 #include <BRepSweep_Trsf.hxx>
 #include <TopAbs_Orientation.hxx>
-class Standard_ConstructionError;
 class TopoDS_Shape;
 class Sweep_NumShape;
 class TopLoc_Location;
-class gp_Vec;
 
 
 //! Provides   an  algorithm   to   build  object   by

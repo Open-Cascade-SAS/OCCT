@@ -25,8 +25,6 @@
 #include <Draw_Drawable2D.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
-class gp_Pnt2d;
-class Draw_Color;
 class Draw_Display;
 
 

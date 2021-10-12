@@ -34,7 +34,6 @@
 
 class CDF_StoreList;
 class CDM_Document;
-class TCollection_ExtendedString;
 
 
 

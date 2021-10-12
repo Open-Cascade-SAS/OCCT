@@ -26,7 +26,6 @@
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 
 class BRepTopAdaptor_TopolTool;
-class StdFail_NotDone;
 class TopoDS_Shape;
 class GeomAdaptor_Curve;
 class gp_Lin;

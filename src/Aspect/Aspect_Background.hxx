@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Quantity_Color.hxx>
-class Quantity_Color;
 
 
 //! This class allows the definition of

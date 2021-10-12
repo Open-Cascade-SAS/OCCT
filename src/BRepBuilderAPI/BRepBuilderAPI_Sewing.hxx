@@ -44,9 +44,6 @@
 #include <Message_ProgressRange.hxx>
 
 class BRepTools_ReShape;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;
 class Geom_Surface;

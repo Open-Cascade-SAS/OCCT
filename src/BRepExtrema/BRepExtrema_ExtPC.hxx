@@ -20,7 +20,6 @@
 
 class TopoDS_Vertex;
 class TopoDS_Edge;
-class gp_Pnt;
 
 
 class BRepExtrema_ExtPC

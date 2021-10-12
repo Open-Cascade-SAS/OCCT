@@ -31,10 +31,7 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_UBTree.hxx>
 
-class StdFail_NotDone;
-class TopoDS_Edge;
 class TopoDS_Wire;
-class TopoDS_Vertex;
 
 //! Provides methods to build wires.
 //!

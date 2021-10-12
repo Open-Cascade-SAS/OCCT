@@ -26,9 +26,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
-class Standard_DomainError;
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
 

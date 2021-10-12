@@ -22,7 +22,6 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMDocStd_XLinkDriver;
 
 
 //! Storage and Retrieval drivers for TDocStd modelling attributes.

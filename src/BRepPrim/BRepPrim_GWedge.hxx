@@ -31,17 +31,8 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRepPrim_Direction.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
-class BRepPrim_Builder;
-class gp_Ax2;
-class TopoDS_Shell;
-class TopoDS_Face;
 class gp_Pln;
-class TopoDS_Wire;
-class TopoDS_Edge;
 class gp_Lin;
-class TopoDS_Vertex;
 class gp_Pnt;
 
 

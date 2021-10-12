@@ -27,9 +27,6 @@
 #include <FairCurve_AnalysisCode.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-class Standard_NegativeValue;
-class Standard_NullValue;
-class Standard_DomainError;
 class gp_Pnt2d;
 class gp_Vec2d;
 

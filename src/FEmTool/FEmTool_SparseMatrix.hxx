@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-class StdFail_NotDone;
 
 
 class FEmTool_SparseMatrix;

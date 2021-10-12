@@ -29,9 +29,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Transient.hxx>
 
-class ChFiDS_FaceInterference;
-class ChFiDS_CommonPoint;
-class gp_Pnt2d;
 
 
 class ChFiDS_SurfData;

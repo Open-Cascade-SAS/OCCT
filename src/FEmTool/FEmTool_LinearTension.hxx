@@ -27,9 +27,6 @@
 #include <TColStd_HArray2OfInteger.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
-class Standard_NotImplemented;
-class Standard_DomainError;
-class math_Matrix;
 
 
 class FEmTool_LinearTension;

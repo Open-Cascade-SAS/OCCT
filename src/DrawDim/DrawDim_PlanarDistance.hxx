@@ -23,7 +23,6 @@
 #include <TopoDS_Shape.hxx>
 #include <DrawDim_PlanarDimension.hxx>
 class TopoDS_Face;
-class TopoDS_Shape;
 class Draw_Display;
 class gp_Pnt;
 class TopoDS_Edge;
