@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(glfw-occt-demo)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/adm/cmake" ${CMAKE_MODULE_PATH})
+
 set(CMAKE_CXX_STANDARD 11)
 set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
@@ -24,15 +26,14 @@ source_group ("Sources" FILES
 find_package(OpenGL REQUIRED)
 
 # Open CASCADE Technology
-find_package(OpenCASCADE REQUIRED NO_DEFAULT_PATH)
-if (OpenCASCADE_FOUND)
-  message (STATUS "Using OpenCASCADE from \"${OpenCASCADE_DIR}\"" )
-  INCLUDE_DIRECTORIES(${OpenCASCADE_INCLUDE_DIR})
-  LINK_DIRECTORIES(${OpenCASCADE_LIBRARY_DIR})
+find_package (OpenCASCADE REQUIRED)
+if (NOT OpenCASCADE_FOUND)
+  message (FATAL_ERROR "coult not find OpenCASCADE, please set OpenCASCADE_DIR variable" )
 else()
-  message (WARNING "Could not find OpenCASCADE, please set OpenCASCADE_DIR variable." )
-  set (OCCT_LIBRARY_DIR)
-  set (OCCT_BIN_DIR)
+  message (STATUS "Using OpenCASCADE from \"${OpenCASCADE_INSTALL_PREFIX}\"" )
+  message (STATUS "OpenCASCADE_INCLUDE_DIR=${OpenCASCADE_INCLUDE_DIR}")
+  message (STATUS "OpenCASCADE_LIBRARY_DIR=${OpenCASCADE_LIBRARY_DIR}")
+  INCLUDE_DIRECTORIES(${OpenCASCADE_INCLUDE_DIR})
 endif()
 
 SET(OpenCASCADE_LIBS 

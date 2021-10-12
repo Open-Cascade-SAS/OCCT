@@ -55,7 +55,7 @@ GlfwOcctWindow::GlfwOcctWindow (int theWidth, int theHeight, const TCollection_A
     myYBottom = myYTop + aHeight;
 
   #if !defined(_WIN32) && !defined(__APPLE__)
-    myDisplay = new Aspect_DisplayConnection (glfwGetX11Display());
+    myDisplay = new Aspect_DisplayConnection ((Aspect_XDisplay* )glfwGetX11Display());
   #endif
   }
 }
