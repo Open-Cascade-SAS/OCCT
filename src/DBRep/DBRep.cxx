@@ -1456,12 +1456,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     aParam.LowerCase();
     if (aParam == "-binary")
     {
-      isBinaryFormat = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isBinaryFormat))
-      {
-        ++anArgIter;
-      }
+      isBinaryFormat = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (aParam == "-version"
           && anArgIter + 1 < theNbArgs)
@@ -1476,26 +1471,12 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     else if (aParam == "-notriangles"
           || aParam == "-triangles")
     {
-      isWithTriangles = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isWithTriangles))
-      {
-        ++anArgIter;
-      }
-      if (aParam == "-notriangles")
-      {
-        isWithTriangles = !isWithTriangles;
-      }
+      isWithTriangles = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (aParam == "-nonormals"
           || aParam == "-normals")
     {
-      isWithNormals = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isWithNormals))
-      {
-        ++anArgIter;
-      }
+      isWithNormals = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
       if (aParam == "-nonormals")
       {
         isWithNormals = !isWithNormals;
@@ -1530,9 +1511,16 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI);
   if (isBinaryFormat)
   {
-    if (aVersion > BinTools_FormatVersion_VERSION_3)
+    if (aVersion > BinTools_FormatVersion_UPPER)
     {
       theDI << "Syntax error: unknown format version";
+      return 1;
+    }
+    if (isWithNormals
+     && aVersion > 0
+     && aVersion < BinTools_FormatVersion_VERSION_4)
+    {
+      theDI << "Error: vertex normals require binary format version 4 or later";
       return 1;
     }
 
@@ -1547,9 +1535,16 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
   }
   else
   {
-    if (aVersion > TopTools_FormatVersion_VERSION_2)
+    if (aVersion > TopTools_FormatVersion_UPPER)
     {
       theDI << "Syntax error: unknown format version";
+      return 1;
+    }
+    if (isWithNormals
+     && aVersion > 0
+     && aVersion < TopTools_FormatVersion_VERSION_3)
+    {
+      theDI << "Error: vertex normals require ascii format version 3 or later";
       return 1;
     }
 
@@ -1729,14 +1724,16 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                     "\n\t\t   +|-g :  switch on/off graphical mode of Progress Indicator",
                     XProgress,"DE: General");
   theCommands.Add("writebrep",
-                  "writebrep shape filename [-binary=off] [-version Version=4] [-noTriangles=off]"
+                  "writebrep shape filename [-binary {0|1}]=0 [-version Version]=4"
+                  "\n\t\t:                          [-triangles {0|1}]=1 [-normals {0|1}]=0"
                   "\n\t\t: Save the shape in the ASCII (default) or binary format file."
                   "\n\t\t:  -binary  write into the binary format (ASCII when unspecified)"
                   "\n\t\t:  -version a number of format version to save;"
                   "\n\t\t:           ASCII  versions: 1, 2 and 3    (3 for ASCII  when unspecified);"
                   "\n\t\t:           Binary versions: 1, 2, 3 and 4 (4 for Binary when unspecified)."
-                  "\n\t\t:  -noTriangles skip triangulation data (OFF when unspecified)."
-                  "\n\t\t:           Ignored (always written) if face defines only triangulation (no surface).",
+                  "\n\t\t:  -triangles write triangulation data (TRUE when unspecified)."
+                  "\n\t\t:           Ignored (always written) if face defines only triangulation (no surface)."
+                  "\n\t\t:  -normals include vertex normals while writing triangulation data (FALSE when unspecified).",
                   __FILE__, writebrep, g);
   theCommands.Add("readbrep",
                   "readbrep filename shape"
