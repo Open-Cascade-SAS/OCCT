@@ -39,6 +39,7 @@ Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
   Standard_Real lgmin = 10 * Precision::PConfusion();
   Standard_Integer i;
   Standard_Real cut, mil=(a+b)/2, dist;
+  Standard_Boolean isfound = Standard_False;
 
   cut = mil;
 
@@ -48,15 +49,19 @@ Standard_Boolean AdvApprox_PrefAndRec::Value(const Standard_Real a,
     if ( dist > Abs(mil-myPrefCutting.Value(i))) {
       cut = myPrefCutting.Value(i);
       dist = Abs(mil-cut);
+      isfound = Standard_True;
     }
   }
 
 // Recheche d'une decoupe recommende
-  dist = Abs((a-b)/2);
-  for ( i=1; i<=myRecCutting.Length(); i++) {
-    if ((dist-lgmin) > Abs(mil-myRecCutting.Value(i))) {
-      cut = myRecCutting.Value(i);
-      dist = Abs(mil-cut);
+  if (!isfound)
+  {
+    dist = Abs((a-b)/2);
+    for ( i=1; i<=myRecCutting.Length(); i++) {
+      if ((dist-lgmin) > Abs(mil-myRecCutting.Value(i))) {
+        cut = myRecCutting.Value(i);
+        dist = Abs(mil-cut);
+      }
     }
   }
     

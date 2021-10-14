@@ -165,6 +165,10 @@ public:
 
   static Standard_Real OffsetValue (const Handle(Adaptor3d_Surface)& theSurf) { return theSurf->OffsetValue(); }
 
+  Standard_EXPORT static Standard_Boolean IsSurfG1 (const Handle(Adaptor3d_Surface)& theSurf,
+                                                    const Standard_Boolean theAlongU,
+                                                    const Standard_Real theAngTol = Precision::Angular());
+
   Standard_EXPORT static Standard_Integer NbSamplesU (const Handle(Adaptor3d_Surface)& S);
 
   Standard_EXPORT static Standard_Integer NbSamplesV (const Handle(Adaptor3d_Surface)& S);

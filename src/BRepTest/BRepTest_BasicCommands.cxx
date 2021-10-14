@@ -1225,7 +1225,7 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
   Standard_Real Tol = 1.e-4;        
   Standard_Real Tol2d;
   Standard_Real MaxDistance = 1.e-3;
-  GeomAbs_Shape Continuity = GeomAbs_C2;  
+  GeomAbs_Shape Continuity = GeomAbs_C1;  
   Standard_Integer MaxDeg = 14;           
   Standard_Integer MaxSeg = 16;           
 
@@ -1259,7 +1259,7 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
 
   if(n > arg) {
     if (Draw::Atoi(a[arg]) == 0) Continuity = GeomAbs_C0;
-    else if (Draw::Atoi(a[arg]) == 1) Continuity = GeomAbs_C1;
+    else if (Draw::Atoi(a[arg]) == 2) Continuity = GeomAbs_C2;
     arg++;
   }
 

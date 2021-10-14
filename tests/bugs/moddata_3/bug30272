@@ -1,0 +1,48 @@
+puts "================"
+puts "0030272: Modeling Algorithms - Incorrect work of gproject"
+puts "================"
+puts ""
+
+set BugNumber OCC30272
+
+set tol_abs 1.0e-4
+set tol_rel 0.0001
+
+restore [locate_data_file bug30272_cur.brep] c
+restore [locate_data_file bug30272_sur.brep] s
+
+set result_C0 [gproject result_C0 c s 1.0e-3 -3d 1 -c C0]
+regexp {2d is ([-0-9.+eE]+);..([-0-9.+eE]+)} $result_C0 full 2dUError_C0 2dVError_C0
+regexp {3d is ([-0-9.+eE]+)} $result_C0 full 3dError_C0
+
+set expected_2dUError_C0 8.5166415968648575e-06
+set expected_2dVError_C0 1.9383641349197776e-07
+set expected_3dError_C0 0.00039481100189762405
+
+checkreal "2dUError_C0" ${2dUError_C0} ${expected_2dUError_C0} ${tol_abs} ${tol_rel}
+checkreal "2dVError_C0" ${2dVError_C0} ${expected_2dVError_C0} ${tol_abs} ${tol_rel}
+checkreal "3dError_C0" ${3dError_C0} ${expected_3dError_C0} ${tol_abs} ${tol_rel}
+
+set result_C1 [gproject result_C1 c s 1.0e-3 -3d 1 -c C1]
+regexp {2d is ([-0-9.+eE]+);..([-0-9.+eE]+)} $result_C1 full 2dUError_C1 2dVError_C1
+regexp {3d is ([-0-9.+eE]+)} $result_C1 full 3dError_C1
+
+set expected_2dUError_C1 1.1207913216250422e-05
+set expected_2dVError_C1 1.9546900926719333e-07
+set expected_3dError_C1 0.00029305148512110709
+
+checkreal "2dUError_C1" ${2dUError_C1} ${expected_2dUError_C1} ${tol_abs} ${tol_rel}
+checkreal "2dVError_C1" ${2dVError_C1} ${expected_2dVError_C1} ${tol_abs} ${tol_rel}
+checkreal "3dError_C1" ${3dError_C1} ${expected_3dError_C1} ${tol_abs} ${tol_rel}
+
+set result_C2 [gproject result_C2 c s 1.0e-3 -3d 1 -c C2]
+regexp {2d is ([-0-9.+eE]+);..([-0-9.+eE]+)} $result_C2 full 2dUError_C2 2dVError_C2
+regexp {3d is ([-0-9.+eE]+)} $result_C2 full 3dError_C2
+
+set expected_2dUError_C2 1.1368572775344132e-05
+set expected_2dVError_C2 1.8525211887318316e-07
+set expected_3dError_C2 0.00024049581776618967
+
+checkreal "2dUError_C2" ${2dUError_C2} ${expected_2dUError_C2} ${tol_abs} ${tol_rel}
+checkreal "2dVError_C2" ${2dVError_C2} ${expected_2dVError_C2} ${tol_abs} ${tol_rel}
+checkreal "3dError_C2" ${3dError_C2} ${expected_3dError_C2} ${tol_abs} ${tol_rel}

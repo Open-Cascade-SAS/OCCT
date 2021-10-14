@@ -17,8 +17,11 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_NoSuchObject.hxx>
@@ -97,4 +100,80 @@ Standard_Integer Adaptor3d_HSurfaceTool::NbSamplesV(const Handle(Adaptor3d_Surfa
     if (n<5)   n = 5;
   }
   return n;
+}
+
+Standard_Boolean Adaptor3d_HSurfaceTool::IsSurfG1(const Handle(Adaptor3d_Surface)& theSurf,
+                                                  const Standard_Boolean theAlongU,
+                                                  const Standard_Real theAngTol)
+{
+  Standard_Real aUf, aUl, aVf, aVl;
+  aUf = theSurf->FirstUParameter();
+  aUl = theSurf->LastUParameter();
+  aVf = theSurf->FirstVParameter();
+  aVl = theSurf->LastVParameter();
+
+  Handle(Adaptor3d_Surface) aS = theSurf;
+  Handle(Adaptor3d_Curve) aC;
+
+  Handle(Geom_BSplineSurface) aBS;
+  Handle(Geom_BSplineCurve) aBC;
+
+  if (aS->GetType() == GeomAbs_OffsetSurface)
+  {
+    aS = aS->BasisSurface();
+  }
+
+  if (aS->GetType() == GeomAbs_SurfaceOfRevolution ||
+      aS->GetType() == GeomAbs_SurfaceOfExtrusion)
+  {
+    aC = aS->BasisCurve();
+  }
+
+  if (!aC.IsNull())
+  {
+    if (aC->GetType() == GeomAbs_OffsetCurve)
+    {
+      Handle(Geom_OffsetCurve) aOC = aC->OffsetCurve();
+      aC = new GeomAdaptor_Curve(aOC->BasisCurve());
+    }
+
+    if (aC->GetType() == GeomAbs_BSplineCurve)
+    {
+      if ((theAlongU && aS->GetType() == GeomAbs_SurfaceOfExtrusion) ||
+          (!theAlongU && aS->GetType() == GeomAbs_SurfaceOfRevolution))
+      {
+        aBC = aC->BSpline();
+      }
+    }
+  }
+
+  if (aS->GetType() == GeomAbs_BSplineSurface)
+  {
+    aBS = aS->BSpline();
+
+    if (theAlongU)
+    {
+      const Standard_Real anIsoPar = (aVf + aVl) / 2.0;
+      aBC = Handle(Geom_BSplineCurve)::DownCast(aBS->VIso(anIsoPar));
+    }
+    else
+    {
+      const Standard_Real anIsoPar = (aUf + aUl) / 2.0;
+      aBC = Handle(Geom_BSplineCurve)::DownCast(aBS->UIso(anIsoPar));
+    }
+  }
+
+  if(!aBC.IsNull())
+  {
+    if (theAlongU)
+    {
+      return aBC->IsG1(aUf, aUl, theAngTol);
+    }
+    else
+    {
+      return aBC->IsG1(aVf, aVl, theAngTol);
+    }
+  }
+
+  return Standard_False;
 }

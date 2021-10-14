@@ -152,7 +152,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 {
   myTol3d = 1.e-4;
   myTol2d = Pow(myTol3d, 2./3);
-  myContinuity = GeomAbs_C2;
+  myContinuity = GeomAbs_C1;
   myMaxDegree = 14;
   myMaxSeg    = 16;
 }

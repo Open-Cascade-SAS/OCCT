@@ -1785,6 +1785,22 @@ Standard_Real ProjLib_CompProjectedCurve::LastParameter() const
 }
 
 //=======================================================================
+//function : Continuity
+//purpose  : 
+//=======================================================================
+
+GeomAbs_Shape ProjLib_CompProjectedCurve::Continuity() const
+{
+  GeomAbs_Shape ContC  = myCurve->Continuity();
+  GeomAbs_Shape ContSu = mySurface->UContinuity();
+  if ( ContSu < ContC) ContC = ContSu;
+  GeomAbs_Shape ContSv = mySurface->VContinuity();
+  if ( ContSv < ContC) ContC = ContSv;
+
+  return ContC;
+}
+
+//=======================================================================
 //function : MaxDistance
 //purpose  : 
 //=======================================================================

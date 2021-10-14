@@ -158,6 +158,9 @@ public:
   //! which  has  a  projection  on  S.
   Standard_EXPORT Standard_Real LastParameter() const Standard_OVERRIDE;
   
+  //! Returns the Continuity used in the approximation.
+  Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
+
   //! Returns  the number  of  intervals which  define
   //! an  S  continuous  part  of  the  projected  curve
   Standard_EXPORT Standard_Integer NbIntervals (const GeomAbs_Shape S) const Standard_OVERRIDE;
