@@ -229,6 +229,9 @@ public:
   //! Generates shader program to render environment cubemap as background.
   Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetBgCubeMapProgram();
 
+  //! Generates shader program to render skydome background.
+  Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetBgSkydomeProgram();
+
   //! Generates shader program to render correctly colored quad.
   Standard_EXPORT const Handle(Graphic3d_ShaderProgram)& GetColoredQuadProgram();
 
@@ -772,6 +775,7 @@ protected:
 
   Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram[3]; //!< programs for IBL maps generation used in PBR pipeline (0 for Diffuse; 1 for Specular; 2 for fallback)
   Handle(Graphic3d_ShaderProgram)    myBgCubeMapProgram;       //!< program for background cubemap rendering
+  Handle(Graphic3d_ShaderProgram)    myBgSkydomeProgram;       //!< program for background cubemap rendering
   Handle(Graphic3d_ShaderProgram)    myColoredQuadProgram;     //!< program for correct quad rendering
 
   Handle(OpenGl_ShaderProgram)       myStereoPrograms[Graphic3d_StereoMode_NB]; //!< standard stereo programs

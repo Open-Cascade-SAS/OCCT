@@ -1375,6 +1375,19 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
 }
 
 // =======================================================================
+// function : GetBgSkydomeProgram
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgSkydomeProgram ()
+{
+  if (myBgSkydomeProgram.IsNull())
+  {
+    myBgSkydomeProgram = getBgSkydomeProgram();
+  }
+  return myBgSkydomeProgram;
+}
+
+// =======================================================================
 // function : GetColoredQuadProgram
 // purpose  :
 // =======================================================================

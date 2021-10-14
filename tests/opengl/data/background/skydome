@@ -1,0 +1,43 @@
+puts "============"
+puts "0032606: Visualization - add a shader for sky"
+puts "============"
+puts ""
+
+set THE_DIM 256
+
+pload MODELING VISUALIZATION
+psphere s 1
+
+vinit View1 -width 768 -height 512
+vcamera -persp -fovy 120
+
+chrono t restart
+vbackground -skydome -size $THE_DIM -cloud 0.3 -sunDir 1.0 0.5 0.0 -time 10 -fog 0.3
+chrono t show
+vaxo
+vdump $imagedir/${casename}_day.png
+
+chrono t restart
+vbackground -skydome -size $THE_DIM -cloud 0.3 -sunDir 1.0 -0.5 0.0 -time -10 -fog 0.05
+chrono t show
+vaxo
+vdump $imagedir/${casename}_night.png
+
+chrono t restart
+vbackground -skydome -size $THE_DIM -cloud 0.15 -sunDir 1.0 0.15 0.0 -time 10
+chrono t show
+vaxo
+vdump $imagedir/${casename}_sunset.png
+
+chrono t restart
+vbackground -skydome -size $THE_DIM
+chrono t show
+vaxo
+vdump $imagedir/${casename}_defaults.png
+
+vdisplay -dispMode 1 s
+vfit
+vaspects s -material SILVER
+vrenderparams -shadingModel pbr
+vlight headlight -enabled 0
+vdump $imagedir/${casename}_pbr.png

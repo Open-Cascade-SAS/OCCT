@@ -379,7 +379,7 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
                                             OpenGl_FrameBuffer*    theOitAccumFbo,
                                             const Standard_Boolean theToDrawImmediate);
 
-  //! Draw background (gradient / image)
+  //! Draw background (gradient / image / cubemap)
   Standard_EXPORT virtual void drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
                                                Graphic3d_Camera::Projection theProjection);
 
@@ -507,6 +507,12 @@ protected: //! @name Background parameters
   OpenGl_Aspects*            myColoredQuadParams;                 //!< Stores parameters for gradient (corner mode) background
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
   Handle(OpenGl_TextureSet)  myTextureEnv;
+  Handle(OpenGl_Texture)     mySkydomeTexture;
+
+protected: //! @name methods related to skydome background
+
+  //! Generates skydome cubemap.
+  Standard_EXPORT void updateSkydomeBg (const Handle(OpenGl_Context)& theCtx);
 
 protected: //! @name methods related to PBR
 

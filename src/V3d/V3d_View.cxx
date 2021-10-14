@@ -530,6 +530,16 @@ void V3d_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap
 }
 
 //=============================================================================
+//function : SetBackgroundSkydome
+//purpose  :
+//=============================================================================
+void V3d_View::SetBackgroundSkydome (const Aspect_SkydomeBackground& theAspect,
+                                     Standard_Boolean theToUpdatePBREnv)
+{
+  myView->SetBackgroundSkydome (theAspect, theToUpdatePBREnv);
+}
+
+//=============================================================================
 //function : IsImageBasedLighting
 //purpose  :
 //=============================================================================

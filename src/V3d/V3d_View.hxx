@@ -219,6 +219,15 @@ public:
                                              Standard_Boolean                 theToUpdatePBREnv = Standard_True,
                                              Standard_Boolean                 theToUpdate = Standard_False);
 
+  //! Returns skydome aspect;
+  const Aspect_SkydomeBackground& BackgroundSkydome() const { return myView->BackgroundSkydome(); }
+
+  //! Sets skydome aspect
+  //! @param theAspect cubemap generation parameters
+  //! @param theToUpdatePBREnv defines whether IBL maps will be generated or not
+  Standard_EXPORT void SetBackgroundSkydome (const Aspect_SkydomeBackground& theAspect,
+                                             Standard_Boolean theToUpdatePBREnv = Standard_True);
+
   //! Returns TRUE if IBL (Image Based Lighting) from background cubemap is enabled.
   Standard_EXPORT Standard_Boolean IsImageBasedLighting() const;
 

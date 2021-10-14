@@ -142,6 +142,9 @@ protected:
   //! Generates shader program to render environment cubemap as background.
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getBgCubeMapProgram() const;
 
+  //! Generates shader program to render skydome background.
+  Standard_EXPORT Handle(Graphic3d_ShaderProgram) getBgSkydomeProgram() const;
+
   //! Generates shader program to render correctly colored quad.
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getColoredQuadProgram() const;
 

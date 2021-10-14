@@ -24,6 +24,7 @@ srcinc:::PathtraceBase.fs
 srcinc:::RaytraceBase.vs
 srcinc:::RaytraceSmooth.fs
 srcinc:::TangentSpaceNormal.glsl
+srcinc:::SkydomBackground.fs
 Shaders_Declarations_glsl.pxx
 Shaders_DeclarationsImpl_glsl.pxx
 Shaders_DirectionalLightShadow_glsl.pxx
@@ -48,3 +49,4 @@ Shaders_PathtraceBase_fs.pxx
 Shaders_RaytraceBase_vs.pxx
 Shaders_RaytraceSmooth_fs.pxx
 Shaders_TangentSpaceNormal_glsl.pxx
+Shaders_SkydomBackground_fs.pxx

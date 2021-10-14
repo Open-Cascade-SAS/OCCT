@@ -32,6 +32,7 @@
 #include "../Shaders/Shaders_PhongPointLight_glsl.pxx"
 #include "../Shaders/Shaders_PhongSpotLight_glsl.pxx"
 #include "../Shaders/Shaders_PointLightAttenuation_glsl.pxx"
+#include "../Shaders/Shaders_SkydomBackground_fs.pxx"
 #include "../Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderManager, Standard_Transient)
@@ -2091,6 +2092,43 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgCubeMapProgram() c
   aProgSrc->SetNbClipPlanesMax (0);
   aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
   aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+  return aProgSrc;
+}
+
+// =======================================================================
+// function : getBgSkydomeProgram
+// purpose  :
+// =======================================================================
+Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getBgSkydomeProgram() const
+{
+  Handle(Graphic3d_ShaderProgram) aProgSrc = new Graphic3d_ShaderProgram();
+
+  Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append (Graphic3d_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
+  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
+  + EOL"void main()"
+    EOL"{"
+    EOL"  gl_Position = vec4 (occVertex.xy, 0.0, 1.0);"
+    EOL"  TexCoord    = 0.5 * gl_Position.xy + vec2 (0.5);"
+    EOL"}";
+
+  TCollection_AsciiString aSrcFrag = Shaders_SkydomBackground_fs;
+
+  if (myGapi == Aspect_GraphicsLibrary_OpenGL)
+  {
+    aProgSrc->SetHeader ("#version 130");
+  }
+  else if (myGapi == Aspect_GraphicsLibrary_OpenGLES)
+  {
+    if (IsGapiGreaterEqual (3, 0))
+    {
+      aProgSrc->SetHeader ("#version 300 es");
+    }
+  }
+  aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX, aUniforms, aStageInOuts));
+  aProgSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+
   return aProgSrc;
 }
 

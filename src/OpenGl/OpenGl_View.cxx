@@ -998,13 +998,17 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
 
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
   {
-    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myCubeMapBackground->ZIsInverted() ? -1 : 1);
-    myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myCubeMapBackground->IsTopDown() ? 1 : -1);
-    const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myCubeMapParams);
+    updateSkydomeBg (aCtx);
+    if (!myCubeMapParams->Aspect()->ShaderProgram().IsNull())
+    {
+      myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myCubeMapBackground->ZIsInverted() ? -1 : 1);
+      myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myCubeMapBackground->IsTopDown() ? 1 : -1);
+      const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myCubeMapParams);
 
-    myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace, theProjection);
+      myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace, theProjection);
 
-    theWorkspace->SetAspects (anOldAspectFace);
+      theWorkspace->SetAspects (anOldAspectFace);
+    }
   }
   else if (myBackgroundType == Graphic3d_TOB_GRADIENT
         || myBackgroundType == Graphic3d_TOB_TEXTURE)
@@ -3081,6 +3085,97 @@ Standard_Boolean OpenGl_View::checkOitCompatibility (const Handle(OpenGl_Context
 }
 
 // =======================================================================
+// function : updateSkydomeBg
+// purpose  :
+// =======================================================================
+void OpenGl_View::updateSkydomeBg (const Handle(OpenGl_Context)& theCtx)
+{
+  if (!myToUpdateSkydome)
+  {
+    return;
+  }
+
+  myToUpdateSkydome = false;
+
+  // Set custom shader
+  Handle(OpenGl_ShaderProgram) aProg;
+  Handle(Graphic3d_ShaderProgram) aProxy = theCtx->ShaderManager()->GetBgSkydomeProgram();
+  TCollection_AsciiString anUnused;
+  theCtx->ShaderManager()->Create (aProxy, anUnused, aProg);
+  Handle(OpenGl_ShaderProgram) aPrevProgram = theCtx->ActiveProgram();
+  theCtx->BindProgram (aProg);
+
+  // Setup uniforms
+  aProg->SetUniform (theCtx, "uSunDir", OpenGl_Vec3((float )mySkydomeAspect.SunDirection().X(),
+                                                    (float )mySkydomeAspect.SunDirection().Y(),
+                                                    (float )mySkydomeAspect.SunDirection().Z()));
+  aProg->SetUniform (theCtx, "uCloudy", mySkydomeAspect.Cloudiness());
+  aProg->SetUniform (theCtx, "uTime",   mySkydomeAspect.TimeParameter());
+  aProg->SetUniform (theCtx, "uFog",    mySkydomeAspect.Fogginess());
+
+  // Create and prepare framebuffer
+  GLint aPrevFBO = 0;
+  theCtx->core11fwd->glGetIntegerv (GL_FRAMEBUFFER_BINDING, &aPrevFBO);
+  GLuint anFBO = 0;
+  theCtx->arbFBO->glGenFramebuffers (1, &anFBO);
+  theCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, anFBO);
+
+  const Standard_Integer anOldViewport[4] = {theCtx->Viewport()[0], theCtx->Viewport()[1], theCtx->Viewport()[2], theCtx->Viewport()[3]};
+  const Standard_Integer aViewport[4] = {0, 0, mySkydomeAspect.Size(), mySkydomeAspect.Size()};
+  theCtx->ResizeViewport (aViewport);
+
+  // Fullscreen triangle
+  Handle(OpenGl_VertexBuffer) aVBO = new OpenGl_VertexBuffer();
+  const float aTriangle[] = {-1.0, -1.0, 3.0, -1.0, -1.0, 3.0};
+  aVBO->Init (theCtx, 2, 3, aTriangle);
+  aVBO->BindAttribute (theCtx, Graphic3d_TypeOfAttribute::Graphic3d_TOA_POS);
+  aVBO->Bind (theCtx);
+
+  if (mySkydomeTexture.IsNull())
+  {
+    mySkydomeTexture = new OpenGl_Texture();
+    mySkydomeTexture->Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_BILINEAR);
+  }
+  if (mySkydomeTexture->SizeX() != mySkydomeAspect.Size())
+  {
+    mySkydomeTexture->Release (theCtx.get());
+    mySkydomeTexture->InitCubeMap (theCtx, NULL, mySkydomeAspect.Size(),
+                                   Image_Format_RGB, false, false);
+  }
+
+  // init aspects if needed
+  if (myCubeMapParams->TextureSet (theCtx).IsNull())
+  {
+    myCubeMapParams->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
+    myCubeMapParams->Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
+    myCubeMapParams->Aspect()->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
+    myCubeMapParams->Aspect()->SetShaderProgram (theCtx->ShaderManager()->GetBgCubeMapProgram());
+    Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (1);
+    myCubeMapParams->Aspect()->SetTextureSet (aTextureSet);
+    myCubeMapParams->Aspect()->SetTextureMapOn (true);
+    myCubeMapParams->SynchronizeAspects();
+  }
+
+  myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", 1);
+  myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", 1);
+
+  for (Standard_Integer aSideIter = 0; aSideIter < 6; aSideIter++)
+  {
+    aProg->SetUniform (theCtx, "uSide", aSideIter);
+    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + aSideIter,
+                                            mySkydomeTexture->TextureId(), 0);
+    theCtx->core15->glDrawArrays (GL_TRIANGLES, 0, 3);
+  }
+  theCtx->arbFBO->glDeleteFramebuffers (1, &anFBO);
+  aVBO->Release (theCtx.get());
+
+  myCubeMapParams->TextureSet (theCtx)->ChangeFirst() = mySkydomeTexture;
+  theCtx->BindProgram (aPrevProgram);
+  theCtx->ResizeViewport (anOldViewport);
+  theCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, aPrevFBO);
+}
+
+// =======================================================================
 // function : checkPBRAvailability
 // purpose  :
 // =======================================================================
@@ -3096,6 +3191,12 @@ Standard_Boolean OpenGl_View::checkPBRAvailability() const
 // =======================================================================
 void OpenGl_View::updatePBREnvironment (const Handle(OpenGl_Context)& theCtx)
 {
+  if (myBackgroundType == Graphic3d_TOB_CUBEMAP
+   && myToUpdateSkydome)
+  {
+    updateSkydomeBg (theCtx);
+  }
+
   if (myPBREnvState != OpenGl_PBREnvState_CREATED
   || !myPBREnvRequest)
   {

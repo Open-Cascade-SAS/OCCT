@@ -14,6 +14,7 @@
 #include <Graphic3d_CView.hxx>
 
 #include <Aspect_OpenVRSession.hxx>
+#include <Graphic3d_CubeMapPacked.hxx>
 #include <Graphic3d_Layer.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_StructureManager.hxx>
@@ -27,6 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
 Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theMgr)
 : myBgColor                (Quantity_NOC_BLACK),
   myBackgroundType         (Graphic3d_TOB_NONE),
+  myToUpdateSkydome        (Standard_False),
   myStructureManager       (theMgr),
   myCamera                 (new Graphic3d_Camera()),
   myHiddenObjects          (new Graphic3d_NMapOfTransient()),
@@ -50,6 +52,25 @@ Graphic3d_CView::~Graphic3d_CView()
   if (!IsRemoved())
   {
     myStructureManager->UnIdentification (this);
+  }
+}
+
+// =======================================================================
+// function : SetBackgroundSkydome
+// purpose  :
+// =======================================================================
+void Graphic3d_CView::SetBackgroundSkydome (const Aspect_SkydomeBackground& theAspect,
+                                            Standard_Boolean theToUpdatePBREnv)
+{
+  myToUpdateSkydome = true;
+  mySkydomeAspect = theAspect;
+  myCubeMapBackground = new Graphic3d_CubeMapPacked ("");
+  SetBackgroundType (Graphic3d_TOB_CUBEMAP);
+  if (theToUpdatePBREnv
+      && !myCubeMapIBL.IsNull())
+  {
+    SetImageBasedLighting (false);
+    SetImageBasedLighting (true);
   }
 }
 

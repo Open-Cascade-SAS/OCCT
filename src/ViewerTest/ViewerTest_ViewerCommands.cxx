@@ -2692,6 +2692,9 @@ static int VBackground (Draw_Interpretor& theDI,
   Aspect_FillMethod anImageMode = Aspect_FM_CENTERED;
   bool hasImageMode = false;
 
+  bool isSkydomeBg = false;
+  Aspect_SkydomeBackground aSkydomeAspect;
+
   NCollection_Sequence<TCollection_AsciiString> aCubeMapSeq;
   Graphic3d_CubeMapOrder aCubeOrder = Graphic3d_CubeMapOrder::Default();
   bool isCubeZInverted = false;
@@ -2721,6 +2724,48 @@ static int VBackground (Draw_Interpretor& theDI,
            || anArg == "-img"))
     {
       anImagePath = theArgVec[++anArgIter];
+    }
+    else if (anArg == "-skydome"
+          || anArg == "-sky")
+    {
+      isSkydomeBg = true;
+    }
+    else if (anArgIter + 3 < theNbArgs
+          && isSkydomeBg
+          && anArg == "-sundir")
+    {
+      float aX = (float) Draw::Atof (theArgVec[++anArgIter]);
+      float aY = (float) Draw::Atof (theArgVec[++anArgIter]);
+      float aZ = (float) Draw::Atof (theArgVec[++anArgIter]);
+      aSkydomeAspect.SetSunDirection (gp_Dir(aX, aY, aZ));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && isSkydomeBg
+          && anArg == "-cloud")
+    {
+      float aCloudy = (float) Draw::Atof (theArgVec[++anArgIter]);
+      aSkydomeAspect.SetCloudiness (aCloudy);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && isSkydomeBg
+          && anArg == "-time")
+    {
+      float aTime = (float) Draw::Atof (theArgVec[++anArgIter]);
+      aSkydomeAspect.SetTimeParameter (aTime);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && isSkydomeBg
+          && anArg == "-fog")
+    {
+      float aFoggy = (float) Draw::Atof (theArgVec[++anArgIter]);
+      aSkydomeAspect.SetFogginess (aFoggy);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && isSkydomeBg
+          && anArg == "-size")
+    {
+      Standard_Integer aSize = Draw::Atoi (theArgVec[++anArgIter]);
+      aSkydomeAspect.SetSize (aSize);
     }
     else if (anArgIter + 1 < theNbArgs
           && aCubeMapSeq.IsEmpty()
@@ -3001,6 +3046,11 @@ static int VBackground (Draw_Interpretor& theDI,
   else if (hasImageMode)
   {
     aView->SetBgImageStyle (anImageMode);
+  }
+
+  if (isSkydomeBg)
+  {
+    aView->SetBackgroundSkydome (aSkydomeAspect, toUseIBL != -1);
   }
 
   if (!aCubeMapSeq.IsEmpty())
@@ -13809,6 +13859,8 @@ vbackground [-color Color [-default]]
     [-gradientMode {NONE|HORIZONTAL|VERTICAL|DIAG1|DIAG2|CORNER1|CORNER2|CORNER3|ELLIPTICAL}]=VERT]
     [-imageFile ImageFile [-imageMode {CENTERED|TILED|STRETCH|NONE}]=CENTERED [-srgb {0|1}]=1]
     [-cubemap CubemapFile1 [CubeMapFiles2-5] [-order TilesIndexes1-6] [-invertedz]=0]
+    [-skydome [-sunDir X Y Z=0 1 0] [-cloud Cloudy=0.2] [-time Time=0.0]
+              [-fog Haze=0.0] [-size SizePx=512]]
     [-pbrEnv {ibl|noibl|keep}]
 Changes background or some background settings.
  -color        sets background color
@@ -13824,6 +13876,13 @@ Changes background or some background settings.
  -order        defines order of tiles in one image cubemap
                TileIndexi defubes an index in range [0, 5] for i tile of one image packed cubemap
                (has no effect in case of multi-image cubemaps).
+Skydome background parameters (generated cubemap):
+ -skydome      sets procedurally generated skydome as background
+ -sunDir       sets direction to the sun, direction with negative y component represents moon direction (-x, -y, -z)
+ -cloud        sets cloud intensity (0.0 - clear sky, 1.0 - very high cloudy)
+ -time         might be tweaked to slightly change appearance of clouds
+ -fog          sets mist intensity (0.0 - no mist at all, 1.0 - high mist)
+ -size         sets size in pixels of cubemap side
 )" /* [vbackground] */);
 
   addCmd ("vsetbg", VBackground, /* [vsetbg] */ R"(

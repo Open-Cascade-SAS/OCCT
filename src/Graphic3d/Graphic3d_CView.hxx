@@ -16,6 +16,7 @@
 
 #include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
+#include <Aspect_SkydomeBackground.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Camera.hxx>
@@ -396,6 +397,13 @@ public:
   //! Sets background type.
   void SetBackgroundType (Graphic3d_TypeOfBackground theType) { myBackgroundType = theType; }
 
+  //! Returns skydome aspect;
+  const Aspect_SkydomeBackground& BackgroundSkydome() const { return mySkydomeAspect; }
+
+  //! Sets skydome aspect
+  Standard_EXPORT void SetBackgroundSkydome (const Aspect_SkydomeBackground& theAspect,
+                                             Standard_Boolean theToUpdatePBREnv = Standard_True);
+
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
@@ -574,6 +582,8 @@ protected:
   Handle(Graphic3d_CubeMap)    myCubeMapIBL;         //!< Cubemap used for environment lighting
   Handle(Graphic3d_TextureEnv) myTextureEnvData;
   Graphic3d_TypeOfBackground   myBackgroundType;     //!< Current type of background
+  Aspect_SkydomeBackground     mySkydomeAspect;
+  Standard_Boolean             myToUpdateSkydome;
 
   Handle(Graphic3d_StructureManager) myStructureManager;
   Handle(Graphic3d_Camera)  myCamera;
