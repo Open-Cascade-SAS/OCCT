@@ -121,8 +121,12 @@ if not "%DevEnvDir%" == "" (
   for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "DevEnvDir=%%i\Common7\IDE\"
   )
+) else if /I "%VCFMT%" == "vc143" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[17.0,17.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "DevEnvDir=%%i\Common7\IDE\"
+  )
 ) else if /I "%VCFMT%" == "vclang" (
-  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,17.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "DevEnvDir=%%i\Common7\IDE\"
   )
 ) else if /I "%VCFMT%" == "gcc" (
@@ -137,6 +141,7 @@ if not "%DevEnvDir%" == "" (
   echo vc14  = VS 2015
   echo vc141 = VS 2017
   echo vc142 = VS 2019
+  echo vc143 = VS 2022
   echo vclang = VS 2019 with ClangCL toolset
   exit /B
 )
@@ -167,10 +172,15 @@ if /I "%VCFMT%" == "vc9" (
     set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
   ) 
   set "VCPlatformToolSet=v142"
-) else if /I "%VCFMT%" == "vclang" (
-  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+) else if /I "%VCFMT%" == "vc143" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[17.0,17.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
   ) 
+  set "VCPlatformToolSet=v143"
+) else if /I "%VCFMT%" == "vclang" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,17.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+  )
   set "VCPlatformToolSet=ClangCL"
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
