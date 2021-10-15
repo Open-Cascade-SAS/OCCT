@@ -2618,11 +2618,29 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
   TopExp::MapShapes (myShape, TopAbs_FACE, aFaceMap);
   for (Standard_Integer i = 1; i <= aFaceMap.Extent(); i++)
     TopExp::MapShapesAndAncestors (aFaceMap(i), TopAbs_EDGE, TopAbs_FACE, aGMapEdgeFaces);
+
+  // creating map of free boundaries
+  TopTools_MapOfShape aFreeBoundMap;
+  // look at only shells not belonging to solids
+  TopExp_Explorer anExplo (myShape, TopAbs_SHELL, TopAbs_SOLID);
+  for (; anExplo.More(); anExplo.Next())
+  {
+    const TopoDS_Shape& aShell = anExplo.Current();
+    TopTools_IndexedDataMapOfShapeListOfShape aEFmap;
+    TopExp::MapShapesAndAncestors (aShell, TopAbs_EDGE, TopAbs_FACE, aEFmap);
+    for (Standard_Integer ii = 1; ii <= aEFmap.Extent(); ii++)
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (aEFmap.FindKey(ii));
+      const TopTools_ListOfShape& aFaceList = aEFmap(ii);
+      if (!BRep_Tool::Degenerated (anEdge) && aFaceList.Extent() == 1)
+        aFreeBoundMap.Add (anEdge);
+    }
+  }
   
   // unify faces in each shell separately
   TopExp_Explorer exps;
   for (exps.Init(myShape, TopAbs_SHELL); exps.More(); exps.Next())
-    IntUnifyFaces(exps.Current(), aGMapEdgeFaces);
+    IntUnifyFaces(exps.Current(), aGMapEdgeFaces, aFreeBoundMap);
 
   // gather all faces out of shells in one compound and unify them at once
   BRep_Builder aBB;
@@ -2633,7 +2651,7 @@ void ShapeUpgrade_UnifySameDomain::UnifyFaces()
     aBB.Add(aCmp, exps.Current());
 
   if (nbf > 0)
-    IntUnifyFaces(aCmp, aGMapEdgeFaces);
+    IntUnifyFaces(aCmp, aGMapEdgeFaces, aFreeBoundMap);
   
   myShape = myContext->Apply(myShape);
 }
@@ -2662,7 +2680,8 @@ static void SetFixWireModes(ShapeFix_Face& theSff)
 //=======================================================================
 
 void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape,
-   TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces)
+                                                 TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
+                                                 const TopTools_MapOfShape& theFreeBoundMap)
 {
   // creating map of edge faces for the shape
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
@@ -2719,7 +2738,9 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
 
       // get connectivity of the edge in the global shape
       const TopTools_ListOfShape& aGList = theGMapEdgeFaces.FindFromKey(edge);
-      if (!myAllowInternal && (aGList.Extent() != 2 || myKeepShapes.Contains(edge))) {
+      if (!myAllowInternal &&
+          (aGList.Extent() != 2 || myKeepShapes.Contains(edge) || theFreeBoundMap.Contains(edge)))
+      {
         // non manifold case is not processed unless myAllowInternal
         continue;
       }
@@ -2807,7 +2828,8 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
         if (aLF.Extent() == 2) {
           const TopoDS_Shape& aE = aMapEF.FindKey(i);
           const TopTools_ListOfShape& aGLF = theGMapEdgeFaces.FindFromKey(aE);
-          if (aGLF.Extent() > 2 || myKeepShapes.Contains(aE)) {
+          if (aGLF.Extent() > 2 || myKeepShapes.Contains(aE) || theFreeBoundMap.Contains(aE))
+          {
             aKeepEdges.Append(aE);
           }
         }
