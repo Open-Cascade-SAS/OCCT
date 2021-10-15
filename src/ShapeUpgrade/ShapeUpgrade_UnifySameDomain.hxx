@@ -169,7 +169,8 @@ protected:
   Standard_EXPORT void UnifyEdges();
 
   void IntUnifyFaces(const TopoDS_Shape& theInpShape,
-                     TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces);
+                     TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces,
+                     const TopTools_MapOfShape& theFreeBoundMap);
 
   //! Splits the sequence of edges into the sequence of chains
   Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
