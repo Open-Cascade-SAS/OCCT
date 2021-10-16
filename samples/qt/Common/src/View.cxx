@@ -95,6 +95,7 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   myCurZoom = 0;
   setAttribute(Qt::WA_PaintOnScreen);
   setAttribute(Qt::WA_NoSystemBackground);
+  setAttribute(Qt::WA_NativeWindow);
 
   myDefaultGestures = myMouseGestureMap;
   myCurrentMode = CurAction3d_Nothing;
@@ -106,8 +107,6 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
   setBackgroundRole( QPalette::NoRole );//NoBackground );
   // set focus policy to threat QContextMenuEvent from keyboard  
   setFocusPolicy( Qt::StrongFocus );
-  setAttribute( Qt::WA_PaintOnScreen );
-  setAttribute( Qt::WA_NoSystemBackground );
   init();
 }
 
