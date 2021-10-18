@@ -12,6 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef Standard_math_HeaderFile
+#define Standard_math_HeaderFile
+
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
@@ -33,3 +36,5 @@ Standard_EXPORT double __cdecl atanh ( double );
 
 #endif  /* _MSC_VER */
 
+
+#endif

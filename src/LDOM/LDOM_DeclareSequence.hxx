@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Sequence_Declare_HeaderFile
-#define _Sequence_Declare_HeaderFile
+#ifndef LDOM_DeclareSequence_HeaderFile
+#define LDOM_DeclareSequence_HeaderFile
 
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>

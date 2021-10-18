@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef OpenGl_Element_Header
-#define OpenGl_Element_Header
+#ifndef OpenGl_Element_HeaderFile
+#define OpenGl_Element_HeaderFile
 
 #include <OpenGl_RenderFilter.hxx>
 #include <Standard_Type.hxx>

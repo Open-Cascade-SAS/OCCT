@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _CHAMFERAPI_H_
-#define _CHAMFERAPI_H_
+#ifndef ChFi2d_ChamferAPI_HeaderFile
+#define ChFi2d_ChamferAPI_HeaderFile
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>

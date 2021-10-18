@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef OPENGL_FRAME_BUFFER_H
-#define OPENGL_FRAME_BUFFER_H
+#ifndef OpenGl_FrameBuffer_HeaderFile
+#define OpenGl_FrameBuffer_HeaderFile
 
 #include <OpenGl_Resource.hxx>
 

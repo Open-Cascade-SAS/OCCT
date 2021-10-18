@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_ArbDbg_H__
-#define _OpenGl_ArbDbg_H__
+#ifndef OpenGl_ArbDbg_HeaderFile
+#define OpenGl_ArbDbg_HeaderFile
 
 #include <OpenGl_GlFunctions.hxx>
 

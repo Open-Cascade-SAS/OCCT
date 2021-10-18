@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_TextureBufferArb_H__
-#define _OpenGl_TextureBufferArb_H__
+#ifndef OpenGl_TextureBufferArb_HeaderFile
+#define OpenGl_TextureBufferArb_HeaderFile
 
 #include <OpenGl_TextureBuffer.hxx>
 

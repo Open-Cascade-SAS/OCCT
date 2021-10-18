@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Xw_Window_H__
-#define _Xw_Window_H__
+#ifndef Xw_Window_HeaderFile
+#define Xw_Window_HeaderFile
 
 #include <Aspect_Window.hxx>
 

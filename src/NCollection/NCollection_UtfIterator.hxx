@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _NCollection_UtfIterator_H__
-#define _NCollection_UtfIterator_H__
+#ifndef NCollection_UtfIterator_HeaderFile
+#define NCollection_UtfIterator_HeaderFile
 
 #include <Standard_Handle.hxx>
 

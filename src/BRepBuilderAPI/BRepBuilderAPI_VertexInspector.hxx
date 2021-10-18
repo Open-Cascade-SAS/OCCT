@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepBuilderAPI_VertexInspector_Header
-#define _BRepBuilderAPI_VertexInspector_Header
+#ifndef BRepBuilderAPI_VertexInspector_HeaderFile
+#define BRepBuilderAPI_VertexInspector_HeaderFile
 
 #include <TColStd_ListOfInteger.hxx>
 #include <NCollection_Vector.hxx>

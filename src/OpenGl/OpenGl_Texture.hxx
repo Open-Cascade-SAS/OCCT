@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Texture_H__
-#define _OpenGl_Texture_H__
+#ifndef OpenGl_Texture_HeaderFile
+#define OpenGl_Texture_HeaderFile
 
 #include <Graphic3d_CubeMap.hxx>
 #include <Graphic3d_Vec3.hxx>

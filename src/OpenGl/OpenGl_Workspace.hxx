@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Workspace_Header
-#define _OpenGl_Workspace_Header
+#ifndef OpenGl_Workspace_HeaderFile
+#define OpenGl_Workspace_HeaderFile
 
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_PresentationAttributes.hxx>

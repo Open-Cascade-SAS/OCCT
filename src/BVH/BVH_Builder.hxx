@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_Builder_Header
-#define _BVH_Builder_Header
+#ifndef BVH_Builder_HeaderFile
+#define BVH_Builder_HeaderFile
 
 #include <BVH_Set.hxx>
 #include <BVH_BinaryTree.hxx>

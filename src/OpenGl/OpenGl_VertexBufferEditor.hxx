@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_VertexBufferEditor_H__
-#define _OpenGl_VertexBufferEditor_H__
+#ifndef OpenGl_VertexBufferEditor_HeaderFile
+#define OpenGl_VertexBufferEditor_HeaderFile
 
 #include <OpenGl_Buffer.hxx>
 #include <OpenGl_Context.hxx>

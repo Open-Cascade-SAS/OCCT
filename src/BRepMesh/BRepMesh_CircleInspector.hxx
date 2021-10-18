@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BRepMesh_CircleInspector_Header
-#define BRepMesh_CircleInspector_Header
+#ifndef BRepMesh_CircleInspector_HeaderFile
+#define BRepMesh_CircleInspector_HeaderFile
 
 #include <IMeshData_Types.hxx>
 #include <BRepMesh_Circle.hxx>

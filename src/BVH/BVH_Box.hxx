@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_Box_Header
-#define _BVH_Box_Header
+#ifndef BVH_Box_HeaderFile
+#define BVH_Box_HeaderFile
 
 #include <BVH_Constants.hxx>
 #include <BVH_Types.hxx>

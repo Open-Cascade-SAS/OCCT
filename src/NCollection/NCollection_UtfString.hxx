@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _NCollection_UtfString_H__
-#define _NCollection_UtfString_H__
+#ifndef NCollection_UtfString_HeaderFile
+#define NCollection_UtfString_HeaderFile
 
 #include <NCollection_UtfIterator.hxx>
 

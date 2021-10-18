@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Clipping_H__
-#define _OpenGl_Clipping_H__
+#ifndef OpenGl_Clipping_HeaderFile
+#define OpenGl_Clipping_HeaderFile
 
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <NCollection_Vector.hxx>

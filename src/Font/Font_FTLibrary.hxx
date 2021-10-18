@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Font_FTLibrary_H__
-#define _Font_FTLibrary_H__
+#ifndef Font_FTLibrary_HeaderFile
+#define Font_FTLibrary_HeaderFile
 
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>

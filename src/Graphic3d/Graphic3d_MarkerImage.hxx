@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_MarkerImage_H__
-#define _Graphic3d_MarkerImage_H__
+#ifndef Graphic3d_MarkerImage_HeaderFile
+#define Graphic3d_MarkerImage_HeaderFile
 
 #include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_Vec4.hxx>

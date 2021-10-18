@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_Vec_H__
-#define _Graphic3d_Vec_H__
+#ifndef Graphic3d_Vec_HeaderFile
+#define Graphic3d_Vec_HeaderFile
 
 #include <Graphic3d_Vec2.hxx>
 #include <Graphic3d_Vec3.hxx>

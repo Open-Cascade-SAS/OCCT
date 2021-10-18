@@ -11,6 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef Interface_Translates_HeaderFile
+#define Interface_Translates_HeaderFile
+
 //  Interface_Translates.hxx
 
 //  This set of macros provides some simple translation formula, i.e.
@@ -81,3 +84,5 @@ if (!seq.IsNull()) {\
     for (nument = numlow; nument <= numup; nument ++)\
       seq->Append(arr->Value(nument));\
   }
+
+#endif

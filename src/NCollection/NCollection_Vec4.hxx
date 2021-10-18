@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _NCollection_Vec4_H__
-#define _NCollection_Vec4_H__
+#ifndef NCollection_Vec4_HeaderFile
+#define NCollection_Vec4_HeaderFile
 
 #include <NCollection_Vec3.hxx>
 

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef MeshVS_BUILDERPRIORITY_HXX
-#define MeshVS_BUILDERPRIORITY_HXX
+#ifndef MeshVS_BuilderPriority_HeaderFile
+#define MeshVS_BuilderPriority_HeaderFile
 
 typedef Standard_Integer MeshVS_BuilderPriority;
 

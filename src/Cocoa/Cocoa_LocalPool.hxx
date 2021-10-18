@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef __Cocoa_LocalPool_h_
-#define __Cocoa_LocalPool_h_
+#ifndef Cocoa_LocalPool_HeaderFile
+#define Cocoa_LocalPool_HeaderFile
 
 #if defined(__clang__) && (__clang_major__ >= 4)
 #if __has_feature(objc_arc)

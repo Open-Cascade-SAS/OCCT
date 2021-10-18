@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_Point_H__
-#define _StdPrs_Point_H__
+#ifndef StdPrs_Point_HeaderFile
+#define StdPrs_Point_HeaderFile
 
 #include <Geom_Point.hxx>
 #include <Prs3d_Point.hxx>

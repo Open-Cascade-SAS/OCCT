@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_Types_Header
-#define _BVH_Types_Header
+#ifndef BVH_Types_HeaderFile
+#define BVH_Types_HeaderFile
 
 // Use this macro to switch between STL and OCCT vector types
 #define _BVH_USE_STD_VECTOR_

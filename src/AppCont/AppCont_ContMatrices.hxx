@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef math_ContMatrices_HeaderFile
-#define math_ContMatrices_HeaderFile
+#ifndef AppCont_ContMatrices_HeaderFile
+#define AppCont_ContMatrices_HeaderFile
 #include <math_Vector.hxx>
 #include <Standard_Real.hxx>
 

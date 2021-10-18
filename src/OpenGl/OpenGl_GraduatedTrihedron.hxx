@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GraduatedTrihedron_Header
-#define _OpenGl_GraduatedTrihedron_Header
+#ifndef OpenGl_GraduatedTrihedron_HeaderFile
+#define OpenGl_GraduatedTrihedron_HeaderFile
 
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <gp_Ax1.hxx>

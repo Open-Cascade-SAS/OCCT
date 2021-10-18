@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_ArbIns_H__
-#define _OpenGl_ArbIns_H__
+#ifndef OpenGl_ArbIns_HeaderFile
+#define OpenGl_ArbIns_HeaderFile
 
 #include <OpenGl_GlFunctions.hxx>
 

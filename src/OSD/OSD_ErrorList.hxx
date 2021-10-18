@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef List_Of_Errors
-#define List_Of_Errors
+#ifndef OSD_ErrorList_HeaderFile
+#define OSD_ErrorList_HeaderFile
 #include <OSD_WhoAmI.hxx>
 #include <errno.h>
 

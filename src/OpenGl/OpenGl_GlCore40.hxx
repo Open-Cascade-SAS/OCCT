@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GlCore40_Header
-#define _OpenGl_GlCore40_Header
+#ifndef OpenGl_GlCore40_HeaderFile
+#define OpenGl_GlCore40_HeaderFile
 
 #include <OpenGl_GlCore33.hxx>
 

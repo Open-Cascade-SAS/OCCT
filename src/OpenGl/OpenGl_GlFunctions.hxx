@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GlFunctions_Header
-#define _OpenGl_GlFunctions_Header
+#ifndef OpenGl_GlFunctions_HeaderFile
+#define OpenGl_GlFunctions_HeaderFile
 
 // required for correct APIENTRY definition
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)

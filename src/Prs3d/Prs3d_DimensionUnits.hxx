@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Prs3d_DimensionUnits_Header
-#define _Prs3d_DimensionUnits_Header
+#ifndef Prs3d_DimensionUnits_HeaderFile
+#define Prs3d_DimensionUnits_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
 

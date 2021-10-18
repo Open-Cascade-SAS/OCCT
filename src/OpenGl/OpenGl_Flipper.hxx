@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef OpenGl_Flipper_Header
-#define OpenGl_Flipper_Header
+#ifndef OpenGl_Flipper_HeaderFile
+#define OpenGl_Flipper_HeaderFile
 
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Vec.hxx>

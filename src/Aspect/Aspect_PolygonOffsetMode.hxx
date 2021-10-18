@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef ASPECT_POLYGONOFFSETMODE_HEADER
-#define ASPECT_POLYGONOFFSETMODE_HEADER
+#ifndef Aspect_PolygonOffsetMode_HeaderFile
+#define Aspect_PolygonOffsetMode_HeaderFile
 
 // Enumeration for polygon offset modes
 

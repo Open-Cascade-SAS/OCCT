@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Standard_CLocaleSentry_H__
-#define _Standard_CLocaleSentry_H__
+#ifndef Standard_CLocaleSentry_HeaderFile
+#define Standard_CLocaleSentry_HeaderFile
 
 #include <Standard_Macro.hxx>
 

@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_HLRFace_H__
-#define _StdPrs_HLRFace_H__
+#ifndef StdPrs_HLRShape_HeaderFile
+#define StdPrs_HLRShape_HeaderFile
 
 #include <StdPrs_HLRShapeI.hxx>
 

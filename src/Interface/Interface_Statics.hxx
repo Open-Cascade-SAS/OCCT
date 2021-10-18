@@ -11,6 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef Interface_Statics_HeaderFile
+#define Interface_Statics_HeaderFile
+
 //  Macros to help static Handles not to be "constructed" before main run
 //  In order to avoid it, the Handle to be statically reserved is encapsulated
 //  in a structure itself designated through a Null Pointer :
@@ -90,3 +93,5 @@ Handle(type)& var = var##_s->H;
 #define InitHandleVal(type,var,value) \
 if(!var##_s) { var##_s=new type##_struc; var##_s->H=value; }\
 Handle(type)& var = var##_s->H;
+
+#endif

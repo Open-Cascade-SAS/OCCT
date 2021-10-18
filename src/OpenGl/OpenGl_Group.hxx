@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Group_Header
-#define _OpenGl_Group_Header
+#ifndef OpenGl_Group_HeaderFile
+#define OpenGl_Group_HeaderFile
 
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>

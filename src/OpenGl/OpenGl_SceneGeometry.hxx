@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_SceneGeometry_Header
-#define _OpenGl_SceneGeometry_Header
+#ifndef OpenGl_SceneGeometry_HeaderFile
+#define OpenGl_SceneGeometry_HeaderFile
 
 #include <BVH_Geometry.hxx>
 #include <BVH_Triangulation.hxx>

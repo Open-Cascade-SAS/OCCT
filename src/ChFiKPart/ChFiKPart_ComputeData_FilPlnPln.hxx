@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef ChFiKPart_ComputeData_PlnPln_HeaderFile
-#define ChFiKPart_ComputeData_PlnPln_HeaderFile
+#ifndef ChFiKPart_ComputeData_FilPlnPln_HeaderFile
+#define ChFiKPart_ComputeData_FilPlnPln_HeaderFile
 
 Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 				      const Handle(ChFiDS_SurfData)& Data, 

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_ObjectSet_Header
-#define _BVH_ObjectSet_Header
+#ifndef BVH_ObjectSet_HeaderFile
+#define BVH_ObjectSet_HeaderFile
 
 #include <BVH_Set.hxx>
 #include <BVH_Object.hxx>

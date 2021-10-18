@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Prs3d_Point_H__
-#define _Prs3d_Point_H__
+#ifndef Prs3d_Point_HeaderFile
+#define Prs3d_Point_HeaderFile
 
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_Group.hxx>

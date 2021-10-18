@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef Convert_CosAndSinEvalFunction_HeaderFile
+#define Convert_CosAndSinEvalFunction_HeaderFile
+
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-
-#ifndef _Convert_CosAnSinEvalFunction_HeaderFile
-#define _Convert_CosAnSinEvalFunction_HeaderFile
 
 typedef void   Convert_CosAndSinEvalFunction(Standard_Real,
 					     const Standard_Integer,

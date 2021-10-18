@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Image_PixMapData_H__
-#define _Image_PixMapData_H__
+#ifndef Image_PixMapData_HeaderFile
+#define Image_PixMapData_HeaderFile
 
 #include <Image_Color.hxx>
 #include <NCollection_Buffer.hxx>

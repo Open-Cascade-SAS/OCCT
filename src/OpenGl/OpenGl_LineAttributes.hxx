@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_LineAttributes_Header
-#define _OpenGl_LineAttributes_Header
+#ifndef OpenGl_LineAttributes_HeaderFile
+#define OpenGl_LineAttributes_HeaderFile
 
 #include <OpenGl_Resource.hxx>
 

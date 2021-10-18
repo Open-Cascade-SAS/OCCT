@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Context_H__
-#define _OpenGl_Context_H__
+#ifndef OpenGl_Context_HeaderFile
+#define OpenGl_Context_HeaderFile
 
 #include <Aspect_Handle.hxx>
 #include <Aspect_HatchStyle.hxx>

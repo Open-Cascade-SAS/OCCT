@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_RenderFilter_H__
-#define _OpenGl_RenderFilter_H__
+#ifndef OpenGl_RenderFilter_HeaderFile
+#define OpenGl_RenderFilter_HeaderFile
 
 //! Filter for rendering elements.
 enum OpenGl_RenderFilter

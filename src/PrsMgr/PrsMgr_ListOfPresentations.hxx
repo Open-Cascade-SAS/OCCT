@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _PrsMgr_ListOfPresentations_H__
-#define _PrsMgr_ListOfPresentations_H__
+#ifndef PrsMgr_ListOfPresentations_HeaderFile
+#define PrsMgr_ListOfPresentations_HeaderFile
 
 #include <NCollection_List.hxx>
 #include <Prs3d_Presentation.hxx>

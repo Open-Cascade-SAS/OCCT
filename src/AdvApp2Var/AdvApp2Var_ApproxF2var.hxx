@@ -17,8 +17,8 @@
 |  de l'approximation a deux variables
 |  a utiliser dans AdvApp2Var
 |--------------------------------------------------------------*/
-#ifndef ApproxF2var_HeaderFile
-#define ApproxF2var_HeaderFile
+#ifndef AdvApp2Var_ApproxF2var_HeaderFile
+#define AdvApp2Var_ApproxF2var_HeaderFile
 
 #include <Standard_Macro.hxx>
 #include <AdvApp2Var_Data_f2c.hxx>

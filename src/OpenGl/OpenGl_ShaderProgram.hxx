@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_ShaderProgram_Header
-#define _OpenGl_ShaderProgram_Header
+#ifndef OpenGl_ShaderProgram_HeaderFile
+#define OpenGl_ShaderProgram_HeaderFile
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Sequence.hxx>

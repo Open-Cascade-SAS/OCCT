@@ -14,11 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef Convert_PolynomialCosAndSin_HeaderFile
+#define Convert_PolynomialCosAndSin_HeaderFile
+
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-
-#ifndef _Convert_PolynomialCosAnSin_HeaderFile
-#define _Convert_PolynomialCosAnSin_HeaderFile
 
 void BuildPolynomialCosAndSin
   (const Standard_Real,

@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_Vertex_H__
-#define _StdPrs_Vertex_H__
+#ifndef StdPrs_Vertex_HeaderFile
+#define StdPrs_Vertex_HeaderFile
 
 #include <Prs3d_Point.hxx>
 #include <Prs3d_Drawer.hxx>

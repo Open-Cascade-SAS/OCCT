@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_SweepPlaneBuilder_Header
-#define _BVH_SweepPlaneBuilder_Header
+#ifndef BVH_SweepPlaneBuilder_HeaderFile
+#define BVH_SweepPlaneBuilder_HeaderFile
 
 #include <BVH_QueueBuilder.hxx>
 #include <BVH_QuickSorter.hxx>

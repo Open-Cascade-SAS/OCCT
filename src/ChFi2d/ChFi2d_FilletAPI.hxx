@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _CHFI2D_FILLETAPI_H_
-#define _CHFI2D_FILLETAPI_H_
+#ifndef ChFi2d_FilletAPI_HeaderFile
+#define ChFi2d_FilletAPI_HeaderFile
 
 #include <ChFi2d_FilletAlgo.hxx>
 #include <ChFi2d_AnaFilletAlgo.hxx>

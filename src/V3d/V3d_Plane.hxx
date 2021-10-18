@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _V3d_Plane_H__
-#define _V3d_Plane_H__
+#ifndef V3d_Plane_HeaderFile
+#define V3d_Plane_HeaderFile
 
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_Structure.hxx>

@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_BufferType_H__
-#define _Graphic3d_BufferType_H__
+#ifndef Graphic3d_BufferType_HeaderFile
+#define Graphic3d_BufferType_HeaderFile
 
 //! Define buffers available for dump
 enum Graphic3d_BufferType

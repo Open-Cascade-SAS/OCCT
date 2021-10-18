@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Cocoa_Window_H__
-#define _Cocoa_Window_H__
+#ifndef Cocoa_Window_HeaderFile
+#define Cocoa_Window_HeaderFile
 
 #if defined(__APPLE__)
   #import <TargetConditionals.h>

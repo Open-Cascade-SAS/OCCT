@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_WFShape_H__
-#define _StdPrs_WFShape_H__
+#ifndef StdPrs_WFShape_HeaderFile
+#define StdPrs_WFShape_HeaderFile
 
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>

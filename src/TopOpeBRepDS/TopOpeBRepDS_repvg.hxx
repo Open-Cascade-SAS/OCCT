@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _TopOpeBRepDS_regpv_HeaderFile
-#define _TopOpeBRepDS_regpv_HeaderFile
+#ifndef TopOpeBRepDS_repvg_HeaderFile
+#define TopOpeBRepDS_repvg_HeaderFile
 
 #include <TopOpeBRepDS_define.hxx>
 Standard_EXPORT void FDS_repvg

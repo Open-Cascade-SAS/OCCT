@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef BinLDrivers_VectorOfDocumentSection_H
-#define BinLDrivers_VectorOfDocumentSection_H
+#ifndef BinLDrivers_VectorOfDocumentSection_HeaderFile
+#define BinLDrivers_VectorOfDocumentSection_HeaderFile
 
 #include <NCollection_Vector.hxx>
 #include <BinLDrivers_DocumentSection.hxx>

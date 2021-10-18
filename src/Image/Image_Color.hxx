@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Image_Color_H__
-#define _Image_Color_H__
+#ifndef Image_Color_HeaderFile
+#define Image_Color_HeaderFile
 
 #include <Standard.hxx>
 

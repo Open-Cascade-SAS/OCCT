@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_IndexBuffer_H__
-#define _OpenGl_IndexBuffer_H__
+#ifndef OpenGl_IndexBuffer_HeaderFile
+#define OpenGl_IndexBuffer_HeaderFile
 
 #include <OpenGl_Buffer.hxx>
 

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_View_Header
-#define _OpenGl_View_Header
+#ifndef OpenGl_View_HeaderFile
+#define OpenGl_View_HeaderFile
 
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CullingTool.hxx>

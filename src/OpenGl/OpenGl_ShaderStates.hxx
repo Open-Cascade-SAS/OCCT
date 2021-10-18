@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_State_HeaderFile
-#define _OpenGl_State_HeaderFile
+#ifndef OpenGl_ShaderStates_HeaderFile
+#define OpenGl_ShaderStates_HeaderFile
 
 #include <Graphic3d_RenderTransparentMethod.hxx>
 #include <NCollection_List.hxx>

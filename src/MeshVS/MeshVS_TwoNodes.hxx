@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef __TWO_NODES_STRUCT_HEADER__
-#define __TWO_NODES_STRUCT_HEADER__
+#ifndef MeshVS_TwoNodes_HeaderFile
+#define MeshVS_TwoNodes_HeaderFile
 
 #ifndef _Standard_HeaderFile
 #include <Standard.hxx>

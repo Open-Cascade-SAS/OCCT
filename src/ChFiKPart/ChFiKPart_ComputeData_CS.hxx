@@ -14,14 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef ChFiKPart_ComputeData_CS_HeaderFile
+#define ChFiKPart_ComputeData_CS_HeaderFile
+
 #include <Adaptor3d_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Circ.hxx>
-
-#ifndef ChFiKPart_ComputeData_CS_HeaderFile
-#define ChFiKPart_ComputeData_CS_HeaderFile
-
 
 void ChFiKPart_CornerSpine(const Handle(Adaptor3d_Surface)& S1, 
 			   const Handle(Adaptor3d_Surface)& S2,

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Image_Diff_H__
-#define _Image_Diff_H__
+#ifndef Image_Diff_HeaderFile
+#define Image_Diff_HeaderFile
 
 #include <Image_PixMap.hxx>
 #include <TCollection_AsciiString.hxx>

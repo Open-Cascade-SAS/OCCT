@@ -12,6 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef IntImp_ComputeTangence_HeaderFile
+#define IntImp_ComputeTangence_HeaderFile
+
 #include <gp_Vec.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 
@@ -21,3 +24,5 @@ Standard_EXPORT Standard_Boolean IntImp_ComputeTangence(const gp_Vec DPuv[],
 							const Standard_Real EpsUV[],
 							Standard_Real Tgduv[],
 							IntImp_ConstIsoparametric TabIso[]); 
+
+#endif

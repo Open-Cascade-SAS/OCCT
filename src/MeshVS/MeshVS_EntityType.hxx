@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef MeshVS_ENTITYTYPEHXX
-#define MeshVS_ENTITYTYPEHXX
+#ifndef MeshVS_EntityType_HeaderFile
+#define MeshVS_EntityType_HeaderFile
 
 typedef enum
 {

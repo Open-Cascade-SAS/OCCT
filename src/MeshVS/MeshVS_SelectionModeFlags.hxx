@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef MeshVS_SELECTION_MODE_FLAGS_HXX
-#define MeshVS_SELECTION_MODE_FLAGS_HXX
+#ifndef MeshVS_SelectionModeFlags_HeaderFile
+#define MeshVS_SelectionModeFlags_HeaderFile
 
 typedef enum
 {

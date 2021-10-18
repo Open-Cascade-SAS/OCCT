@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef MeshVS_DISPLAY_MODE_FLAGS_HXX
-#define MeshVS_DISPLAY_MODE_FLAGS_HXX
+#ifndef MeshVS_DisplayModeFlags_HeaderFile
+#define MeshVS_DisplayModeFlags_HeaderFile
 
 typedef Standard_Integer MeshVS_DisplayModeFlags;
 

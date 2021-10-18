@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BVH_SpatialMedianBuilder_Header
-#define _BVH_SpatialMedianBuilder_Header
+#ifndef BVH_SpatialMedianBuilder_HeaderFile
+#define BVH_SpatialMedianBuilder_HeaderFile
 
 #include <BVH_BinnedBuilder.hxx>
 #include <BVH_Box.hxx>

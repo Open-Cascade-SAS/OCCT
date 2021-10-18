@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_Caps_H__
-#define _OpenGl_Caps_H__
+#ifndef OpenGl_Caps_HeaderFile
+#define OpenGl_Caps_HeaderFile
 
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>

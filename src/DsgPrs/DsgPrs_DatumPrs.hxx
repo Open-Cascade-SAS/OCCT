@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _DsgPrs_DatumPrs_H__
-#define _DsgPrs_DatumPrs_H__
+#ifndef DsgPrs_DatumPrs_HeaderFile
+#define DsgPrs_DatumPrs_HeaderFile
 
 #include <gp_Ax2.hxx>
 #include <Prs3d_Drawer.hxx>

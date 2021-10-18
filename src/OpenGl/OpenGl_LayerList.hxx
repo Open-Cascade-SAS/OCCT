@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_LayerList_Header
-#define _OpenGl_LayerList_Header
+#ifndef OpenGl_LayerList_HeaderFile
+#define OpenGl_LayerList_HeaderFile
 
 #include <OpenGl_Layer.hxx>
 #include <OpenGl_LayerFilter.hxx>

@@ -15,8 +15,8 @@
 //============================================================================
 //======================================================= IntAna2d_Outils.hxx
 //============================================================================
-#ifndef IntAna2d_Outil_HeaderFile
-#define IntAna2d_Outil_HeaderFile
+#ifndef IntAna2d_Outils_HeaderFile
+#define IntAna2d_Outils_HeaderFile
 
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>

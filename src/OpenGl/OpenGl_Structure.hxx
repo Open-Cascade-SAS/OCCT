@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef OpenGl_Structure_Header
-#define OpenGl_Structure_Header
+#ifndef OpenGl_Structure_HeaderFile
+#define OpenGl_Structure_HeaderFile
 
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>

@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _NCollection_Vec2_H__
-#define _NCollection_Vec2_H__
+#ifndef NCollection_Vec2_HeaderFile
+#define NCollection_Vec2_HeaderFile
 
 #include <cmath> // std::sqrt()
 

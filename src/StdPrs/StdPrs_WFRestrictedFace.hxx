@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StdPrs_WFRestrictedFace_H__
-#define _StdPrs_WFRestrictedFace_H__
+#ifndef StdPrs_WFRestrictedFace_HeaderFile
+#define StdPrs_WFRestrictedFace_HeaderFile
 
 #include <BRepAdaptor_Surface.hxx>
 #include <Prs3d_Drawer.hxx>

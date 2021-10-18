@@ -12,8 +12,8 @@
 // commercial license or contractual agreement.
 
 // AdvApp2Var_Data_f2c.hxx
-#ifndef Data_f2c_HeaderFile
-#define Data_f2c_HeaderFile
+#ifndef AdvApp2Var_Data_f2c_HeaderFile
+#define AdvApp2Var_Data_f2c_HeaderFile
 
 #ifndef F2CTYPE_DEFINED
 typedef int integer;

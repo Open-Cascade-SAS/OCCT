@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_ExtGS_H__
-#define _OpenGl_ExtGS_H__
+#ifndef OpenGl_ExtGS_HeaderFile
+#define OpenGl_ExtGS_HeaderFile
 
 #include <OpenGl_GlFunctions.hxx>
 

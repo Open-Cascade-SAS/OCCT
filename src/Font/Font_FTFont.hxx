@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Font_FTFont_H__
-#define _Font_FTFont_H__
+#ifndef Font_FTFont_HeaderFile
+#define Font_FTFont_HeaderFile
 
 #include <Font_FontAspect.hxx>
 #include <Font_Hinting.hxx>

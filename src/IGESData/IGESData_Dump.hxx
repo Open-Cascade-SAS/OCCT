@@ -11,6 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef IGESData_Dump_HeaderFile
+#define IGESData_Dump_HeaderFile
+
 //		       --------------------------
 //			    IGESData_Dump.hxx
 //		       --------------------------
@@ -307,3 +310,5 @@ if (str.IsNull()) S << "(undefined)";\
     }\
   }\
 }
+
+#endif

@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Image_AlienPixMap_H__
-#define _Image_AlienPixMap_H__
+#ifndef Image_AlienPixMap_HeaderFile
+#define Image_AlienPixMap_HeaderFile
 
 #include <Image_PixMap.hxx>
 
