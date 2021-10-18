@@ -20,6 +20,8 @@
 #include <Message_PrinterOStream.hxx>
 #include <Message_PrinterSystemLog.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <OSD.hxx>
+#include <OSD_Thread.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 #ifdef OCCT_NO_PLUGINS
@@ -39,6 +41,16 @@ Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 #if defined(__EMSCRIPTEN__)
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
+#include <emscripten/threading.h>
+
+//! Signal async command completion to Module.evalAsyncCompleted callback.
+EM_JS(void, occJSEvalAsyncCompleted, (int theResult), {
+  if (Module.evalAsyncCompleted != undefined) {
+    Module.evalAsyncCompleted (theResult);
+  } else {
+    console.error ("Module.evalAsyncCompleted() is undefined");
+  }
+});
 
 //! Draw Harness interface for JavaScript.
 class DRAWEXE
@@ -66,6 +78,41 @@ public:
   {
     return Draw::GetInterpretor().Complete (theCommand.c_str());
   }
+
+  //! Evaluate Tcl command asynchronously.
+  static void evalAsync (const std::string& theCommand)
+  {
+  #if defined(__EMSCRIPTEN_PTHREADS__)
+    std::string* aCmdPtr = new std::string (theCommand);
+    OSD_Thread aThread (&evalAsyncEntry);
+    aThread.Run (aCmdPtr);
+  #else
+    // fallback synchronous implementation
+    int aRes = eval (theCommand);
+    occJSEvalAsyncCompleted (aRes);
+  #endif
+  }
+
+#if defined(__EMSCRIPTEN_PTHREADS__)
+private:
+  //! Thread entry for async command execution.
+  static Standard_Address evalAsyncEntry (Standard_Address theData)
+  {
+    OSD::SetSignal (false);
+    std::string* aCmdPtr = (std::string* )theData;
+    const std::string aCmd = *aCmdPtr;
+    delete aCmdPtr;
+    int aRes = eval (aCmd);
+    emscripten_async_run_in_main_runtime_thread (EM_FUNC_SIG_VI, evalAsyncCompletedEntry, aRes);
+    return 0;
+  }
+
+  //! Notify Module.evalAsyncCompleted about async cmd completion.
+  static void evalAsyncCompletedEntry (int theResult)
+  {
+    occJSEvalAsyncCompleted (theResult);
+  }
+#endif
 };
 
 //! Print message to Module.printMessage callback.
@@ -109,6 +156,7 @@ protected:
 
 EMSCRIPTEN_BINDINGS(DRAWEXE) {
   emscripten::function("eval",       &DRAWEXE::eval);
+  emscripten::function("evalAsync",  &DRAWEXE::evalAsync);
   emscripten::function("isComplete", &DRAWEXE::isComplete);
 }
 #endif
