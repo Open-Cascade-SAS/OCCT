@@ -41,7 +41,9 @@
   #include <stdlib.h>
   #include <sys/param.h>
   #include <sys/time.h>
+  #if !defined(__EMSCRIPTEN__)
   #include <pwd.h>       // For command getpwuid
+  #endif
   #include <unistd.h>
 #endif
 

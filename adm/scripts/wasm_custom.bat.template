@@ -24,5 +24,6 @@ rem set "BUILD_Visualization=ON"
 rem set "BUILD_ApplicationFramework=ON"
 rem set "BUILD_DataExchange=ON"
 
-rem set "USE_RAPIDJSON=OFF"
+rem set "USE_RAPIDJSON=ON"
 rem set "USE_DRACO=ON"
+rem set "USE_PTHREADS=ON"

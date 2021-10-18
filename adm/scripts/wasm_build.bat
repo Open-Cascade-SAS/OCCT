@@ -38,6 +38,7 @@ rem Optional 3rd-party libraries to enable
 set "USE_FREETYPE=ON"
 set "USE_RAPIDJSON=OFF"
 set "USE_DRACO=OFF"
+set "USE_PTHREADS=OFF"
 
 rem Archive tool
 set "THE_7Z_PARAMS=-t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
@@ -59,9 +60,14 @@ for /f %%i in ('git symbolic-ref --short HEAD') do ( set "aGitBranch=%%i" )
 
 set "aBuildType=Release"
 set "aBuildTypePrefix="
+set "anExtraCxxFlags="
+if /I ["%USE_PTHREADS%"] == ["ON"] (
+  set "anExtraCxxFlags=-pthread"
+  set "aBuildTypePrefix=%aBuildTypePrefix%-pthread"
+)
 if ["%toDebug%"] == ["1"] (
   set "aBuildType=Debug"
-  set "aBuildTypePrefix=-debug"
+  set "aBuildTypePrefix=%aBuildTypePrefix%-debug"
 )
 
 call :cmakeGenerate
@@ -159,6 +165,7 @@ if ["%toCMake%"] == ["1"] (
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
  -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
  -D BUILD_LIBRARY_TYPE:STRING="Static" ^
+ -D CMAKE_CXX_FLAGS="%anExtraCxxFlags%" ^
  -D INSTALL_DIR:PATH="%aDestDir%" ^
  -D INSTALL_DIR_INCLUDE:STRING="inc" ^
  -D INSTALL_DIR_RESOURCE:STRING="src" ^
@@ -256,6 +263,7 @@ if ["%toCMake%"] == ["1"] (
   cmake -G "MinGW Makefiles" ^
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
  -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
+ -D CMAKE_CXX_FLAGS="%anExtraCxxFlags%" ^
  -D CMAKE_INSTALL_PREFIX:PATH="%aDestDirSmpl%" ^
  -D SOURCE_MAP_BASE:STRING="%sourceMapBase%" ^
  -D OpenCASCADE_DIR:PATH="%aDestDir%/lib/cmake/opencascade" ^

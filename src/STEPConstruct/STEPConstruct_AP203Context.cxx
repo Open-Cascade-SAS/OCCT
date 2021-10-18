@@ -60,8 +60,8 @@
 #include <StepAP203_HArray1OfApprovedItem.hxx>
 #include <StepBasic_ProductCategory.hxx>
 
-#ifndef _WIN32
-# include <pwd.h>
+#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+  #include <pwd.h>
 #endif
 
 //=======================================================================
@@ -180,12 +180,19 @@ Handle(StepBasic_PersonAndOrganization) STEPConstruct_AP203Context::DefaultPerso
     // construct person`s name
     OSD_Process sys;
     TCollection_AsciiString user (sys.UserName());
-#if !defined(_WIN32) && !defined(__ANDROID__)	
-    if ( !user.IsEmpty() ) {
-      struct passwd *pwd = getpwnam ( user.ToCString() );
-      if ( pwd ) user = pwd->pw_gecos;
+#if !defined(_WIN32) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+    if (!user.IsEmpty())
+    {
+      struct passwd* aPwd = getpwnam (user.ToCString());
+      if (aPwd != NULL)
+      {
+        user = aPwd->pw_gecos;
+      }
     }
-    else user = "Unknown";
+    else
+    {
+      user = "Unknown";
+    }
 #endif
     Handle(TCollection_HAsciiString) fname = new TCollection_HAsciiString ("");
     Handle(TCollection_HAsciiString) lname = new TCollection_HAsciiString ("");

@@ -21,6 +21,8 @@ set "toInstall=1"
 set "toDebug=0"
 set "sourceMapBase="
 
+set "USE_PTHREADS=OFF"
+
 rem Configuration file
 if exist "%~dp0wasm_custom.bat" call "%~dp0wasm_custom.bat"
 
@@ -30,9 +32,14 @@ if not ["%aCmakeBin%"] == [""] ( set "PATH=%aCmakeBin%;%PATH%" )
 
 set "aBuildType=Release"
 set "aBuildTypePrefix="
+set "anExtraCxxFlags="
+if /I ["%USE_PTHREADS%"] == ["ON"] (
+  set "anExtraCxxFlags=-pthread"
+  set "aBuildTypePrefix=%aBuildTypePrefix%-pthread"
+)
 if ["%toDebug%"] == ["1"] (
   set "aBuildType=Debug"
-  set "aBuildTypePrefix=-debug"
+  set "aBuildTypePrefix=%aBuildTypePrefix%-debug"
 )
 
 call :cmakeGenerate
@@ -64,6 +71,7 @@ if ["%toCMake%"] == ["1"] (
   cmake -G "MinGW Makefiles" ^
  -D CMAKE_TOOLCHAIN_FILE:FILEPATH="%aToolchain%" ^
  -D CMAKE_BUILD_TYPE:STRING="%aBuildType%" ^
+ -D CMAKE_CXX_FLAGS="%anExtraCxxFlags%" ^
  -D CMAKE_INSTALL_PREFIX:PATH="%aDestDirSmpl%" ^
  -D SOURCE_MAP_BASE:STRING="%sourceMapBase%" ^
  -D OpenCASCADE_DIR:PATH="%aDestDirOcct%/lib/cmake/opencascade" ^
