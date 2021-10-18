@@ -699,6 +699,8 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
   {
     //make edge a real seam edge with 2 pcurves on ref face
     Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnSurface (MissedSeam, theFrefFace, Param1, Param2);
+    Handle(Geom2d_Curve) aCopyPC = Handle(Geom2d_Curve)::DownCast(aPC->Copy());
+    
     gp_Pnt2d aP2d = aPC->Value(Param1);
     if (Abs(aP2d.Coord(IndCoord) - theCurPoint.Coord(IndCoord)) > thePeriod/2)
     {
@@ -713,18 +715,18 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
       else
         Offset.SetCoord (0., anOffset);
 
-      aPC->Translate(Offset);
+      aCopyPC->Translate(Offset);
     }
     gp_Pnt2d aFirstP2d, aLastP2d;
     if (MissedSeam.Orientation() == TopAbs_FORWARD)
     {
-      aFirstP2d = aPC->Value(Param1);
-      aLastP2d  = aPC->Value(Param2);
+      aFirstP2d = aCopyPC->Value(Param1);
+      aLastP2d  = aCopyPC->Value(Param2);
     }
     else
     {
-      aFirstP2d = aPC->Value(Param2);
-      aLastP2d  = aPC->Value(Param1);
+      aFirstP2d = aCopyPC->Value(Param2);
+      aLastP2d  = aCopyPC->Value(Param1);
     }
     if (theIsU)
     {
@@ -740,16 +742,16 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
       else
         Offset.SetCoord (0., -thePeriod);
     }
-    Handle(Geom2d_Curve) AnotherPC = Handle(Geom2d_Curve)::DownCast(aPC->Copy());
+    Handle(Geom2d_Curve) AnotherPC = Handle(Geom2d_Curve)::DownCast(aCopyPC->Copy());
     AnotherPC->Translate(Offset);
     TopoDS_Edge F_MissedSeam = MissedSeam;
     F_MissedSeam.Orientation (TopAbs_FORWARD);
     Handle(Geom2d_Curve) NullPC;
     BB.UpdateEdge (F_MissedSeam, NullPC, theFrefFace, 0.);
     if (MissedSeam.Orientation() == TopAbs_FORWARD)
-      BB.UpdateEdge (F_MissedSeam, aPC, AnotherPC, theFrefFace, 0.);
+      BB.UpdateEdge (F_MissedSeam, aCopyPC, AnotherPC, theFrefFace, 0.);
     else
-      BB.UpdateEdge (F_MissedSeam, AnotherPC, aPC, theFrefFace, 0.);
+      BB.UpdateEdge (F_MissedSeam, AnotherPC, aCopyPC, theFrefFace, 0.);
   }
 
   BB.Continuity(MissedSeam, theFrefFace, theFrefFace, aContinuity);
