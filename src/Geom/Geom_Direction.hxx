@@ -22,9 +22,7 @@
 
 #include <Geom_Vector.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
 class gp_Dir;
-class Geom_Vector;
 class gp_Trsf;
 class Geom_Geometry;
 

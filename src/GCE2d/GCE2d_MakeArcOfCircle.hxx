@@ -24,7 +24,6 @@
 #include <GCE2d_Root.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 
-class StdFail_NotDone;
 class gp_Circ2d;
 class gp_Pnt2d;
 class gp_Vec2d;

@@ -49,7 +49,6 @@
 
 class Aspect_XRSession;
 class Graphic3d_CView;
-class Graphic3d_GraphicDriver;
 class Graphic3d_Layer;
 class Graphic3d_StructureManager;
 

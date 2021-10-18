@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Hyperbola;
-class StdFail_NotDone;
 class Geom2d_Hyperbola;
 class Geom_Hyperbola;
 

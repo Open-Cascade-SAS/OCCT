@@ -24,13 +24,6 @@
 #include <Standard_Real.hxx>
 class gp_Pnt;
 class gp_Mat;
-class GProp_GProps;
-class GProp_PGProps;
-class GProp_CelGProps;
-class GProp_SelGProps;
-class GProp_VelGProps;
-class GProp_PrincipalProps;
-class GProp_PEquation;
 
 
 

@@ -25,8 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
-class Standard_DimensionError;
-class Standard_RangeError;
 class math_Matrix;
 
 

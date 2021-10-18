@@ -43,9 +43,6 @@
 #include <TopAbs_State.hxx>
 #include <HLRAlgo_InterferenceList.hxx>
 class BRepTopAdaptor_TopolTool;
-class StdFail_UndefinedDerivative;
-class HLRAlgo_Projector;
-class HLRAlgo_Interference;
 class gp_Dir2d;
 class HLRBRep_EdgeData;
 class HLRBRep_FaceData;

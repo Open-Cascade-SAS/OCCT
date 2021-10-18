@@ -22,7 +22,6 @@
 #include <Standard_OStream.hxx>
 
 class Geom2d_BSplineCurve;
-class Standard_OutOfRange;
 class Geom2d_Curve;
 
 //! A framework to convert a 2D curve to a BSpline.

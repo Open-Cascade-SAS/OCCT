@@ -26,7 +26,6 @@
 #include <HLRBRep_TypeOfResultingEdge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
 
 
 //! This class builds reflect lines on a shape

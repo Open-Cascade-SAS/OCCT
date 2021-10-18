@@ -31,11 +31,9 @@ class Interface_Protocol;
 class IFSelect_AppliedModifiers;
 class Interface_HGraph;
 class IFSelect_GeneralModifier;
-class Standard_NoSuchObject;
 class Interface_Graph;
 class Standard_Transient;
 class Interface_Check;
-class Interface_CheckIterator;
 
 
 //! This class gathers various information used by File Modifiers

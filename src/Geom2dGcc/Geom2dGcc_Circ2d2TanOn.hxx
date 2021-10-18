@@ -30,9 +30,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <GccEnt_Position.hxx>
-class StdFail_NotDone;
-class GccEnt_BadQualifier;
-class Standard_OutOfRange;
 class Geom2dGcc_QualifiedCurve;
 class Geom2dAdaptor_Curve;
 class Geom2d_Point;

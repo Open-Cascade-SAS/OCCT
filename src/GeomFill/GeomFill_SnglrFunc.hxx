@@ -29,8 +29,6 @@
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-class Standard_OutOfRange;
-class Standard_DomainError;
 class gp_Pnt;
 class gp_Vec;
 

@@ -23,7 +23,6 @@
 #include <Graphic3d_NameOfTextureEnv.hxx>
 #include <Graphic3d_TextureRoot.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class TCollection_AsciiString;
 
 

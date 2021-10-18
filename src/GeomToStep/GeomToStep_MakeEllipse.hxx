@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Ellipse;
-class StdFail_NotDone;
 class gp_Elips;
 class Geom_Ellipse;
 class Geom2d_Ellipse;

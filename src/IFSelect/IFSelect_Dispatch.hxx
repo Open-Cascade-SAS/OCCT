@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class IFSelect_Selection;
-class Interface_InterfaceError;
 class IFSelect_SelectionIterator;
 class TCollection_AsciiString;
 class Interface_EntityIterator;

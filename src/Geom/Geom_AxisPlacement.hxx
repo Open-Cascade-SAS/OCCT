@@ -23,8 +23,6 @@
 #include <gp_Ax1.hxx>
 #include <Geom_Geometry.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
-class gp_Ax1;
 class gp_Dir;
 class gp_Pnt;
 

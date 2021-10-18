@@ -31,7 +31,6 @@
 #include <TColStd_Array1OfReal.hxx>
 
 class GeomFill_DraftTrihedron;
-class GeomFill_LocationLaw;
 
 DEFINE_STANDARD_HANDLE(GeomFill_LocationDraft, GeomFill_LocationLaw)
 

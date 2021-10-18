@@ -22,10 +22,6 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMDF_ADriver;
-class BinMDF_ReferenceDriver;
-class BinMDF_TagSourceDriver;
-class BinMDF_ADriverTable;
 
 
 //! This package provides classes and methods to

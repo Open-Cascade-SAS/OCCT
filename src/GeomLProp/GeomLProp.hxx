@@ -25,10 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class Geom_Curve;
-class GeomLProp_CurveTool;
-class GeomLProp_SurfaceTool;
-class GeomLProp_CLProps;
-class GeomLProp_SLProps;
 
 
 //! These global functions compute the degree of

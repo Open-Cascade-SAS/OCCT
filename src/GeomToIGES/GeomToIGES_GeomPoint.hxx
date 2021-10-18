@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToIGES_GeomEntity.hxx>
-class GeomToIGES_GeomEntity;
 class IGESGeom_Point;
 class Geom_Point;
 class Geom_CartesianPoint;

@@ -20,12 +20,6 @@
 #include <gp_Dir.hxx>
 #include <GeomAdaptor_Surface.hxx>
 
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class gp_Dir;
-class gp_Pnt;
-class gp_Vec;
 class gp_Pln;
 class gp_Cylinder;
 class gp_Cone;

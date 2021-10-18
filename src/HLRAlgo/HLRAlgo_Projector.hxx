@@ -26,10 +26,7 @@
 #include <Standard_Real.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec2d.hxx>
-class Standard_NoSuchObject;
 class gp_Ax2;
-class gp_Trsf;
-class gp_Vec2d;
 class gp_Vec;
 class gp_Pnt;
 class gp_Pnt2d;

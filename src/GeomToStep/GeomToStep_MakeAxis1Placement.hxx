@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Axis1Placement;
-class StdFail_NotDone;
 class gp_Ax1;
 class gp_Ax2d;
 class Geom_Axis1Placement;

@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <GeomFill_Boundary.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Pnt;
 class gp_Vec;
 
 

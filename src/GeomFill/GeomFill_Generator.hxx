@@ -24,8 +24,6 @@
 #include <GeomFill_Profiler.hxx>
 #include <Standard_Real.hxx>
 class Geom_Surface;
-class StdFail_NotDone;
-class Standard_DomainError;
 
 
 //! Create a surface using generating lines.  Inherits

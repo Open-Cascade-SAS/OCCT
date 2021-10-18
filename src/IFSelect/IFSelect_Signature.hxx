@@ -26,7 +26,6 @@
 #include <Interface_SignType.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
-class TCollection_AsciiString;
 class Standard_Transient;
 class Interface_InterfaceModel;
 

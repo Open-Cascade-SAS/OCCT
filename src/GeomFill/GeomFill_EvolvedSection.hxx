@@ -32,7 +32,6 @@
 class Geom_Curve;
 class Law_Function;
 class Geom_BSplineCurve;
-class Standard_OutOfRange;
 class Geom_BSplineSurface;
 class gp_Pnt;
 

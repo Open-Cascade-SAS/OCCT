@@ -24,7 +24,6 @@
 #include <GCE2d_Root.hxx>
 #include <Geom2d_Parabola.hxx>
 
-class StdFail_NotDone;
 class gp_Parab2d;
 class gp_Ax22d;
 class gp_Ax2d;

@@ -28,11 +28,8 @@
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <Standard_Real.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class gp_Pnt;
 class Geom_Surface;
-class Extrema_ExtPS;
 
 
 

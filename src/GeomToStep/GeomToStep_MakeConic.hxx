@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Conic;
-class StdFail_NotDone;
 class Geom_Conic;
 class Geom2d_Conic;
 

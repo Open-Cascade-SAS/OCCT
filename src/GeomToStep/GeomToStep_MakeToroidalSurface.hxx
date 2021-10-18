@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_ToroidalSurface;
-class StdFail_NotDone;
 class Geom_ToroidalSurface;
 
 

@@ -29,7 +29,6 @@
 #include <gp_Pnt.hxx>
 class GeomFill_LocationLaw;
 class Geom_Curve;
-class StdFail_NotDone;
 class Geom_Geometry;
 class gp_Trsf;
 class gp_Mat;

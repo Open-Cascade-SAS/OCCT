@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-class gp_Pnt;
 class gp_Vec;
 
 

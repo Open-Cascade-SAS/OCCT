@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
-class StdFail_NotDone;
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
 

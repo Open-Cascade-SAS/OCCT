@@ -28,10 +28,7 @@
 #include <IFGraph_SubPartsIterator.hxx>
 class IFSelect_ShareOut;
 class IFSelect_Dispatch;
-class Standard_NoSuchObject;
-class Interface_InterfaceError;
 class Interface_InterfaceModel;
-class Interface_Graph;
 class IFSelect_PacketList;
 class Interface_EntityIterator;
 class TCollection_AsciiString;

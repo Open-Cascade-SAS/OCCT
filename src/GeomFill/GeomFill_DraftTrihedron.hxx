@@ -27,10 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class gp_Vec;
-class GeomFill_TrihedronLaw;
 
 
 class GeomFill_DraftTrihedron;

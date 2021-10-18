@@ -26,9 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
-class Interface_InterfaceError;
-class Standard_OutOfRange;
-class Standard_Transient;
 class IFSelect_Dispatch;
 class IFSelect_GeneralModifier;
 class IFSelect_Modifier;

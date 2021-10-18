@@ -48,11 +48,9 @@ class Interface_HGraph;
 class Interface_GTool;
 
 class IFSelect_ModelCopier;
-class Standard_DomainError;
 class IFSelect_Signature;
 class TCollection_HAsciiString;
 class Interface_Graph;
-class Interface_CheckIterator;
 class IFSelect_IntParam;
 class IFSelect_Selection;
 class Interface_EntityIterator;

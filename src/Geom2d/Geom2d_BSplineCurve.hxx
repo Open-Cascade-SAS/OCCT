@@ -33,13 +33,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-class Standard_ConstructionError;
-class Standard_DimensionError;
-class Standard_DomainError;
-class Standard_OutOfRange;
-class Standard_RangeError;
-class Standard_NoSuchObject;
-class Geom2d_UndefinedDerivative;
 class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Trsf2d;

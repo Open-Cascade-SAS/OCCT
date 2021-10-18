@@ -27,8 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
-class Standard_DomainError;
-class TCollection_AsciiString;
 class IFSelect_SessionPilot;
 
 

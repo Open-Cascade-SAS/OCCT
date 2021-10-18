@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Plane;
-class StdFail_NotDone;
 class gp_Pln;
 class Geom_Plane;
 

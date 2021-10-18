@@ -35,11 +35,6 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 class GeomFill_TrihedronWithGuide;
 class GeomFill_SectionLaw;
-class Standard_NotImplemented;
-class Standard_ConstructionError;
-class Standard_OutOfRange;
-class gp_Mat;
-class GeomFill_LocationLaw;
 class gp_Vec;
 class gp_Pnt;
 class Geom_Curve;

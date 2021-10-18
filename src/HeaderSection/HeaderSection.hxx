@@ -22,11 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class HeaderSection_Protocol;
-class HeaderSection_Protocol;
-class HeaderSection_FileName;
-class HeaderSection_FileDescription;
-class HeaderSection_FileSchema;
-class HeaderSection_HeaderRecognizer;
 
 
 

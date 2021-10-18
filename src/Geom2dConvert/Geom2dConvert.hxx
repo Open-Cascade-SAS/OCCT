@@ -31,10 +31,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 class Geom2d_BSplineCurve;
 class Geom2d_Curve;
-class Geom2dConvert_BSplineCurveKnotSplitting;
-class Geom2dConvert_BSplineCurveToBezierCurve;
-class Geom2dConvert_CompCurveToBSplineCurve;
-class Geom2dConvert_ApproxCurve;
 
 
 

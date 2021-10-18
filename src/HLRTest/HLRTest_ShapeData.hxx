@@ -22,7 +22,6 @@
 
 #include <Draw_Color.hxx>
 #include <Standard_Transient.hxx>
-class Draw_Color;
 
 
 class HLRTest_ShapeData;

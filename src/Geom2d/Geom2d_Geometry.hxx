@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
 class gp_Pnt2d;
 class gp_Ax2d;
 class gp_Vec2d;

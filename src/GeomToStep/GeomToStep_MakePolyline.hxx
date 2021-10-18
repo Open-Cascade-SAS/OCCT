@@ -25,7 +25,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 class StepGeom_Polyline;
-class StdFail_NotDone;
 
 
 //! This class implements the mapping between an Array1 of points

@@ -23,7 +23,6 @@
 
 #include <GeomFill_FillingStyle.hxx>
 class Geom_BezierSurface;
-class Standard_ConstructionError;
 class Geom_BezierCurve;
 
 

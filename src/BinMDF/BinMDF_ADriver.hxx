@@ -28,9 +28,7 @@
 #include <BinObjMgt_SRelocationTable.hxx>
 class Message_Messenger;
 class TDF_Attribute;
-class TCollection_AsciiString;
 class BinObjMgt_Persistent;
-class TCollection_ExtendedString;
 
 
 class BinMDF_ADriver;

@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IFSelect_SessionPilot;
 
 

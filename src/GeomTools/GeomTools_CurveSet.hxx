@@ -28,7 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
-class Standard_OutOfRange;
 class Geom_Curve;
 
 

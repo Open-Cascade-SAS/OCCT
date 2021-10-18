@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Hatch_LineForm.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class gp_Lin2d;
 class gp_Dir2d;
 class gp_Pnt2d;

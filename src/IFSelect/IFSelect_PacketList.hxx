@@ -29,8 +29,6 @@
 #include <Standard_CString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class Interface_InterfaceModel;
-class Interface_InterfaceError;
-class Standard_Transient;
 class Interface_EntityIterator;
 
 

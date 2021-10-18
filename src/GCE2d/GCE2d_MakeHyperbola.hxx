@@ -24,7 +24,6 @@
 #include <GCE2d_Root.hxx>
 #include <Geom2d_Hyperbola.hxx>
 
-class StdFail_NotDone;
 class gp_Hypr2d;
 class gp_Ax2d;
 class gp_Ax22d;

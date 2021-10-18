@@ -25,8 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Shape;
-class HLRTopoBRep_Data;
 class HLRAlgo_Projector;
 class TopoDS_Face;
 

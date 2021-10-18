@@ -24,8 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Hatch_Line;
-class Hatch_Hatcher;
 
 
 //! Stores an intersection on a line represented by :

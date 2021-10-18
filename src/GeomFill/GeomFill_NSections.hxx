@@ -33,7 +33,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom_BSplineSurface;
-class Standard_OutOfRange;
 class gp_Pnt;
 class Geom_Curve;
 

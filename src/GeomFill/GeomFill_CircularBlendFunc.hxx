@@ -34,8 +34,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
 
-class Standard_OutOfRange;
-class gp_Pnt;
 
 
 class GeomFill_CircularBlendFunc;

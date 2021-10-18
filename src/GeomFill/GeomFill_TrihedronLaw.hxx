@@ -22,8 +22,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-class Standard_OutOfRange;
-class Standard_NotImplemented;
 class gp_Vec;
 
 

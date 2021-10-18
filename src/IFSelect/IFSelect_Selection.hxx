@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class Interface_InterfaceError;
 class Interface_EntityIterator;
 class Interface_Graph;
 class IFSelect_SelectionIterator;

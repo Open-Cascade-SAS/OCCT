@@ -25,7 +25,6 @@
 #include <IFSelect_HSeqOfSelection.hxx>
 #include <IFSelect_TSeqOfSelection.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
 class IFSelect_Selection;
 
 //! Defines an Iterator on a list of Selections

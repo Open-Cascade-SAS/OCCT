@@ -26,9 +26,6 @@
 #include <TColGeom_Array2OfBezierSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Geom_BSplineSurface;
-class Standard_DimensionError;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class Geom_BezierSurface;
 
 

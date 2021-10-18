@@ -24,7 +24,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
 class Geom_Curve;
-class gp_Dir;
 
 
 class Geom_SweptSurface;

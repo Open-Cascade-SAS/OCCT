@@ -36,10 +36,6 @@
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Ax1.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class BRepAdaptor_Surface;
 class TopoDS_Face;
 class gp_Pnt;
 class gp_Vec;

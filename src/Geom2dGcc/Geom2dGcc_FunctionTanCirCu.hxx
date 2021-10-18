@@ -26,8 +26,6 @@
 #include <Standard_Real.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Circ2d;
-class Geom2dAdaptor_Curve;
 
 
 //! This abstract class describes a Function of 1 Variable

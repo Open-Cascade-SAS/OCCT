@@ -29,7 +29,6 @@
 #include <Approx_ParametrizationType.hxx>
 #include <TColStd_Array2OfReal.hxx>
 class Geom_BSplineSurface;
-class StdFail_NotDone;
 
 
 //! This class is used to approximate or interpolate

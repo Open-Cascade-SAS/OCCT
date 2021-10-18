@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class IFSelect_IntParam;
-class Interface_InterfaceError;
 class TCollection_AsciiString;
 class Interface_Graph;
 class IFGraph_SubPartsIterator;

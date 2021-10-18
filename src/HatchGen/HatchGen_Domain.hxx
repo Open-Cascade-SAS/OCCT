@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <HatchGen_PointOnHatching.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
-class HatchGen_PointOnHatching;
 
 
 

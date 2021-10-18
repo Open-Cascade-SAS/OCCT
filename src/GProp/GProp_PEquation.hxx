@@ -27,11 +27,8 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
 class gp_Pln;
 class gp_Lin;
-class gp_Pnt;
-class gp_Vec;
 
 
 //! A framework to analyze a collection - or cloud

@@ -35,9 +35,6 @@
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class BRepAdaptor_Curve;
 class gp_Pnt;
 class gp_Vec;

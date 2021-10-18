@@ -24,9 +24,6 @@
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
 
-class Standard_OutOfRange;
-class Standard_NotImplemented;
-class gp_Pnt;
 
 
 class GeomFill_TrihedronWithGuide;

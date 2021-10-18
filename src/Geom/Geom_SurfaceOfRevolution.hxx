@@ -26,13 +26,9 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_RangeError;
-class Geom_UndefinedDerivative;
 class Geom_Curve;
 class gp_Ax1;
 class gp_Dir;
-class gp_Pnt;
 class gp_Ax2;
 class gp_Trsf;
 class gp_GTrsf2d;

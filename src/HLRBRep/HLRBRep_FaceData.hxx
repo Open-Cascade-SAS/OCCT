@@ -29,7 +29,6 @@
 #include <Standard_Integer.hxx>
 class HLRAlgo_WiresBlock;
 class TopoDS_Face;
-class HLRBRep_Surface;
 
 
 

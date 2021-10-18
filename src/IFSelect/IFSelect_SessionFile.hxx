@@ -31,7 +31,6 @@
 #include <Standard_Character.hxx>
 
 class IFSelect_WorkSession;
-class TCollection_AsciiString;
 class Standard_Transient;
 
 //! A SessionFile is intended to manage access between a

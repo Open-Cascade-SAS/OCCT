@@ -23,7 +23,6 @@
 #include <gp_Hypr2d.hxx>
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
-class gp_Hypr2d;
 
 
 class GccInt_BHyper;

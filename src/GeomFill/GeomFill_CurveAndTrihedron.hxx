@@ -32,11 +32,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class GeomFill_TrihedronLaw;
-class Standard_OutOfRange;
-class gp_Mat;
-class GeomFill_LocationLaw;
-class gp_Vec;
-class gp_Pnt;
 
 
 class GeomFill_CurveAndTrihedron;

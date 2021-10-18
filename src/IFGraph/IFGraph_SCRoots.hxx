@@ -24,7 +24,6 @@
 #include <IFGraph_StrongComponants.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_Graph;
-class IFGraph_StrongComponants;
 
 
 //! determines strong components in a graph which are Roots

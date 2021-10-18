@@ -29,7 +29,6 @@ class Interface_EntityIterator;
 class Interface_Graph;
 class Standard_Transient;
 class Interface_InterfaceModel;
-class TCollection_AsciiString;
 
 
 class IFSelect_SelectFlag;

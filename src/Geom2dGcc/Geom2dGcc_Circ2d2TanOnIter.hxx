@@ -26,13 +26,10 @@
 #include <GccEnt_Position.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class GccEnt_QualifiedCirc;
 class Geom2dGcc_QCurve;
 class gp_Lin2d;
 class GccEnt_QualifiedLin;
-class gp_Pnt2d;
-class gp_Circ2d;
 class Geom2dAdaptor_Curve;
 
 

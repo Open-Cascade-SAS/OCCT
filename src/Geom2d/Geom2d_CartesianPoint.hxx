@@ -23,7 +23,6 @@
 #include <gp_Pnt2d.hxx>
 #include <Geom2d_Point.hxx>
 #include <Standard_Real.hxx>
-class gp_Pnt2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 

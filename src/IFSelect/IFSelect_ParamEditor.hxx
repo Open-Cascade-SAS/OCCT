@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class Interface_TypedValue;
-class TCollection_AsciiString;
 class IFSelect_EditForm;
 class TCollection_HAsciiString;
 class Standard_Transient;

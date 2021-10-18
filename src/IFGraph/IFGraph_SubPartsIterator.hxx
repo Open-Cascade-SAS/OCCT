@@ -25,10 +25,6 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Interface_InterfaceError;
-class Interface_Graph;
 class Interface_InterfaceModel;
 class Standard_Transient;
 class Interface_EntityIterator;

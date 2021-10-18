@@ -23,7 +23,6 @@
 #include <gp_Pnt2d.hxx>
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
-class gp_Pnt2d;
 
 
 class GccInt_BPoint;

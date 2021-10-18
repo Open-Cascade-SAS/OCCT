@@ -25,7 +25,6 @@
 #include <Graphic3d_TypeOfTexture.hxx>
 #include <Image_PixMap.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class TCollection_AsciiString;
 
 

@@ -27,8 +27,6 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
-class Standard_DimensionError;
-class Standard_DomainError;
 class gp_Pnt;
 
 

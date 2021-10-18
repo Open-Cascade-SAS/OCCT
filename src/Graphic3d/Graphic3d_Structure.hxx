@@ -33,7 +33,6 @@
 class Graphic3d_StructureManager;
 class Graphic3d_DataStructureManager;
 class Bnd_Box;
-class gp_Pnt;
 
 DEFINE_STANDARD_HANDLE(Graphic3d_Structure, Standard_Transient)
 

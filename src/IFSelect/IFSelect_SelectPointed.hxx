@@ -25,7 +25,6 @@
 #include <IFSelect_SelectBase.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Standard_Integer.hxx>
-class Interface_InterfaceError;
 class Standard_Transient;
 class Interface_CopyControl;
 class IFSelect_Transformer;

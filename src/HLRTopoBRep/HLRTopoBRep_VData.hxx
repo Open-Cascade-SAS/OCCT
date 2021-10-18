@@ -23,7 +23,6 @@
 
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
-class TopoDS_Shape;
 
 
 

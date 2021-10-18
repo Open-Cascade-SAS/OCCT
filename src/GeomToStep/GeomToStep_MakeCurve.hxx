@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Curve;
-class StdFail_NotDone;
 class Geom_Curve;
 class Geom2d_Curve;
 

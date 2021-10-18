@@ -31,7 +31,6 @@
 #include <GeomAbs_Shape.hxx>
 class Geom_Curve;
 class Geom_BSplineCurve;
-class Standard_OutOfRange;
 class Geom_BSplineSurface;
 class gp_Pnt;
 

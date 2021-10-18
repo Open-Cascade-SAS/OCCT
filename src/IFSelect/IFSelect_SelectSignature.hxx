@@ -29,7 +29,6 @@
 #include <Standard_Boolean.hxx>
 class IFSelect_Signature;
 class IFSelect_SignCounter;
-class TCollection_AsciiString;
 class Standard_Transient;
 class Interface_Graph;
 class Interface_InterfaceModel;

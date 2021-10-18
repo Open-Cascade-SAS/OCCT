@@ -25,7 +25,6 @@
 #include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
-class HLRBRep_EdgeInterferenceTool;
 class HLRAlgo_Intersection;
 
 

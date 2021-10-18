@@ -29,9 +29,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <GeomAbs_Shape.hxx>
-class Standard_NotImplemented;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class Geom_BSplineSurface;
 class gp_Pnt;
 class Geom_Curve;

@@ -26,10 +26,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class Geom2d_Curve;
-class Standard_OutOfRange;
-class Standard_NullObject;
 class gp_Pnt2d;
-class Geom2dInt_GInter;
 
 
 //! This class implements methods for computing

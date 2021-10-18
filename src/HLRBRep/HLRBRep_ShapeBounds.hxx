@@ -25,7 +25,6 @@
 
 #include <Standard_Integer.hxx>
 class HLRTopoBRep_OutLiner;
-class Standard_Transient;
 
 
 //! Contains  a Shape and the  bounds of its vertices,

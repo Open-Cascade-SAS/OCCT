@@ -28,7 +28,6 @@
 #include <TColgp_Array1OfVec2d.hxx>
 
 class Geom_BSplineCurve;
-class Standard_RangeError;
 class Geom_Curve;
 class gp_Trsf;
 

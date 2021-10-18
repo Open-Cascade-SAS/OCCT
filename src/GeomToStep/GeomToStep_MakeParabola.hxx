@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Parabola;
-class StdFail_NotDone;
 class Geom2d_Parabola;
 class Geom_Parabola;
 

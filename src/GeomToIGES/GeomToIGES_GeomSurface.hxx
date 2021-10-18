@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomToIGES_GeomEntity.hxx>
-class GeomToIGES_GeomEntity;
 class IGESData_IGESEntity;
 class Geom_Surface;
 class Geom_BoundedSurface;

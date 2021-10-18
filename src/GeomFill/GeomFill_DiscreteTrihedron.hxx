@@ -29,9 +29,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class GeomFill_Frenet;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class GeomFill_TrihedronLaw;
 class gp_Vec;
 
 

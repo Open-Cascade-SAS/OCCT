@@ -27,11 +27,6 @@
 class HLRAlgo_Projector;
 class TopoDS_Shape;
 class HLRTopoBRep_OutLiner;
-class HLRTest_ShapeData;
-class HLRTest_DrawableEdgeTool;
-class HLRTest_DrawablePolyEdgeTool;
-class HLRTest_Projector;
-class HLRTest_OutLiner;
 
 
 //! This package   is  a test  of  the    Hidden Lines

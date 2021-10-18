@@ -31,8 +31,6 @@
 #include <GeomPlate_SequenceOfAij.hxx>
 class Geom_Plane;
 class Geom_Line;
-class Standard_NoSuchObject;
-class gp_Vec;
 
 
 //! This class computes an average inertial plane with an

@@ -24,7 +24,6 @@
 #include <GccEnt_Position.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Standard_Boolean.hxx>
-class Geom2dAdaptor_Curve;
 
 
 //! Describes functions for building a qualified 2D curve.

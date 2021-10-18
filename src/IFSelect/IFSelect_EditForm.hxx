@@ -30,7 +30,6 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class IFSelect_Editor;
-class Standard_Transient;
 class Interface_InterfaceModel;
 class IFSelect_ListEditor;
 class TCollection_HAsciiString;

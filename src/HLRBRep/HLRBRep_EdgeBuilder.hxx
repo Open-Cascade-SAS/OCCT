@@ -26,9 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 class HLRBRep_AreaLimit;
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class HLRBRep_VertexList;
 class HLRAlgo_Intersection;
 

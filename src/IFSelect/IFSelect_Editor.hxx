@@ -31,12 +31,10 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
-class Standard_OutOfRange;
 class Interface_TypedValue;
 class IFSelect_EditForm;
 class TCollection_HAsciiString;
 class IFSelect_ListEditor;
-class Standard_Transient;
 class Interface_InterfaceModel;
 
 

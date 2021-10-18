@@ -37,8 +37,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 class Geom_Surface;
 class GeomPlate_Surface;
-class Standard_ConstructionError;
-class Standard_RangeError;
 class GeomPlate_CurveConstraint;
 class GeomPlate_PointConstraint;
 class gp_Pnt2d;

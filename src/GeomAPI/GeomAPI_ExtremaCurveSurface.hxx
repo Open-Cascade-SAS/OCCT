@@ -24,12 +24,9 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtCS.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class Geom_Curve;
 class Geom_Surface;
 class gp_Pnt;
-class Extrema_ExtCS;
 
 
 //! Describes functions for computing all the extrema

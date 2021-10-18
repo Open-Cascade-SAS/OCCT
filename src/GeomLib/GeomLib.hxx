@@ -38,16 +38,6 @@ class Adaptor3d_Curve;
 class Geom_BSplineSurface;
 class Geom_BezierSurface;
 class Geom_Surface;
-class gp_Pnt2d;
-class GeomLib_MakeCurvefromApprox;
-class GeomLib_Interpolate;
-class GeomLib_DenominatorMultiplier;
-class GeomLib_CheckBSplineCurve;
-class GeomLib_Check2dBSplineCurve;
-class GeomLib_IsPlanarSurface;
-class GeomLib_Tool;
-class GeomLib_PolyFunc;
-class GeomLib_LogSample;
 
 typedef class Adaptor2d_Curve2d Adaptor2d_Curve2d;
 

@@ -26,9 +26,6 @@
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
 #include <Standard_Boolean.hxx>
-class GProp_UndefinedAxis;
-class gp_Vec;
-class gp_Pnt;
 
 
 

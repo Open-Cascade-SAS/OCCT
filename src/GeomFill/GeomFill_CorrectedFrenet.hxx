@@ -34,10 +34,6 @@
 #include <GeomFill_Trihedron.hxx>
 class GeomFill_Frenet;
 class Law_Function;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
-class GeomFill_TrihedronLaw;
-class gp_Vec;
 
 class GeomFill_CorrectedFrenet;
 DEFINE_STANDARD_HANDLE(GeomFill_CorrectedFrenet, GeomFill_TrihedronLaw)

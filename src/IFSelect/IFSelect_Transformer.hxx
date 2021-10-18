@@ -26,7 +26,6 @@ class Interface_Graph;
 class Interface_Protocol;
 class Interface_CheckIterator;
 class Interface_InterfaceModel;
-class Standard_Transient;
 class TCollection_AsciiString;
 
 class IFSelect_Transformer;

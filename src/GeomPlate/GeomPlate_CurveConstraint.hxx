@@ -22,8 +22,6 @@
 
 class Geom2d_Curve;
 class Law_Function;
-class Standard_ConstructionError;
-class GeomLProp_SLProps;
 class gp_Pnt;
 class gp_Vec;
 

@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface;
-class StdFail_NotDone;
 class Geom_BSplineSurface;
 
 

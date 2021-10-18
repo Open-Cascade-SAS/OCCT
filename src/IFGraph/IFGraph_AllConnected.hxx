@@ -23,7 +23,6 @@
 
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
-class Interface_Graph;
 class Standard_Transient;
 
 

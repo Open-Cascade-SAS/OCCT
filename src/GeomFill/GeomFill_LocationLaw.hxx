@@ -24,8 +24,6 @@
 #include <TColgp_Array1OfVec2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-class Standard_NotImplemented;
-class Standard_OutOfRange;
 class gp_Mat;
 class gp_Vec;
 class gp_Pnt;

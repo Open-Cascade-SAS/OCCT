@@ -23,7 +23,6 @@
 
 #include <Geom2dAdaptor_Curve.hxx>
 #include <TopAbs_Orientation.hxx>
-class Geom2dAdaptor_Curve;
 
 
 

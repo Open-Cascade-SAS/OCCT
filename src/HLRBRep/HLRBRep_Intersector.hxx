@@ -28,9 +28,7 @@
 #include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class StdFail_UndefinedDerivative;
 class gp_Lin;
-class IntRes2d_IntersectionPoint;
 class IntCurveSurface_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 class IntCurveSurface_IntersectionSegment;

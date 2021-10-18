@@ -30,7 +30,6 @@ class Interface_Protocol;
 class IFSelect_ContextWrite;
 class Interface_EntityIterator;
 class Interface_CopyTool;
-class Standard_Transient;
 
 class IFSelect_WorkLibrary;
 DEFINE_STANDARD_HANDLE(IFSelect_WorkLibrary, Standard_Transient)

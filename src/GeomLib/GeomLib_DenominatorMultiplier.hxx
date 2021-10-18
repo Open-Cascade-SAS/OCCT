@@ -24,8 +24,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 class Geom_BSplineSurface;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 
 
 //! this defines an evaluator for a function of 2 variables

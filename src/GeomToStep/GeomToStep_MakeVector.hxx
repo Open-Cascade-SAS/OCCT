@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Vector;
-class StdFail_NotDone;
 class gp_Vec;
 class gp_Vec2d;
 class Geom_Vector;

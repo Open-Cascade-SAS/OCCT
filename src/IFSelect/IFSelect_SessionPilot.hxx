@@ -31,9 +31,7 @@
 #include <IFSelect_ReturnStatus.hxx>
 #include <IFSelect_PrintCount.hxx>
 class IFSelect_WorkSession;
-class Standard_Transient;
 class IFSelect_WorkLibrary;
-class TCollection_AsciiString;
 class IFSelect_SignCounter;
 
 class IFSelect_SessionPilot;

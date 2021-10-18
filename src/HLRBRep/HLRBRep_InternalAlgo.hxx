@@ -27,8 +27,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_Data;
-class Standard_OutOfRange;
-class HLRAlgo_Projector;
 class HLRTopoBRep_OutLiner;
 class HLRBRep_ShapeBounds;
 

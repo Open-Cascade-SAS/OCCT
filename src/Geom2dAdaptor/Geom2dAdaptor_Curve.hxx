@@ -28,8 +28,6 @@
 #include <Standard_NullObject.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-class Standard_OutOfRange;
-class Standard_DomainError;
 class gp_Vec2d;
 class gp_Lin2d;
 class gp_Circ2d;

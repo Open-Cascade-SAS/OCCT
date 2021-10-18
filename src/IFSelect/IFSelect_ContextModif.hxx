@@ -29,15 +29,12 @@
 #include <Standard_CString.hxx>
 class Interface_Protocol;
 class Interface_CopyControl;
-class Standard_NoSuchObject;
-class Interface_Graph;
 class Interface_CopyTool;
 class Interface_EntityIterator;
 class Interface_InterfaceModel;
 class Standard_Transient;
 class IFSelect_GeneralModifier;
 class Interface_Check;
-class Interface_CheckIterator;
 
 
 //! This class gathers various information used by Model Modifiers

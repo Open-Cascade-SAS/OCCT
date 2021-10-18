@@ -33,14 +33,6 @@ class Geom_BSplineCurve;
 class Geom_BSplineSurface;
 class Geom_Curve;
 class Geom_Surface;
-class GeomConvert_BSplineCurveKnotSplitting;
-class GeomConvert_BSplineSurfaceKnotSplitting;
-class GeomConvert_BSplineCurveToBezierCurve;
-class GeomConvert_CompCurveToBSplineCurve;
-class GeomConvert_BSplineSurfaceToBezierSurface;
-class GeomConvert_CompBezierSurfacesToBSplineSurface;
-class GeomConvert_ApproxSurface;
-class GeomConvert_ApproxCurve;
 
 
 //! The GeomConvert package provides some global functions as follows

@@ -22,7 +22,6 @@
 
 #include <IFSelect_Selection.hxx>
 #include <Standard_Boolean.hxx>
-class IFSelect_Selection;
 class IFSelect_SelectionIterator;
 
 

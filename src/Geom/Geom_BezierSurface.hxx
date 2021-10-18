@@ -33,10 +33,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
-class Standard_ConstructionError;
-class Standard_DimensionError;
-class Standard_RangeError;
-class Standard_OutOfRange;
 class gp_Pnt;
 class gp_Vec;
 class Geom_Curve;

@@ -31,9 +31,6 @@
 class GeomFill_LocationLaw;
 class GeomFill_SectionLaw;
 class Geom_Surface;
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class Geom2d_Curve;
 
 

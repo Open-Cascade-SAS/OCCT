@@ -27,7 +27,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Real.hxx>
 class HLRBRep_Data;
-class HLRAlgo_Intersection;
 class gp_Dir;
 class HLRAlgo_Interference;
 

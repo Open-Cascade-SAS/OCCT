@@ -35,7 +35,6 @@
 #include <Bnd_Box.hxx>
 
 //! Forward declaration
-class Graphic3d_WorldViewProjState;
 
 //! Camera class provides object-oriented approach to setting up projection
 //! and orientation properties of 3D view.

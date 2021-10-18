@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Transient.hxx>
-class HLRAlgo_Intersection;
 
 
 class HLRBRep_AreaLimit;

@@ -24,9 +24,6 @@
 #include <Geom_Conic.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_DomainError;
-class Standard_RangeError;
 class gp_Hypr;
 class gp_Ax2;
 class gp_Ax1;

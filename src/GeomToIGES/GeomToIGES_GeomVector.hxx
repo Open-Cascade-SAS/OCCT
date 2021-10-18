@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToIGES_GeomEntity.hxx>
-class GeomToIGES_GeomEntity;
 class IGESGeom_Direction;
 class Geom_Vector;
 class Geom_VectorWithMagnitude;

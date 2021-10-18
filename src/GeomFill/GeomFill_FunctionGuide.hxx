@@ -33,7 +33,6 @@ class GeomFill_SectionLaw;
 class Geom_Curve;
 class Geom_Surface;
 class gp_Pnt;
-class gp_XYZ;
 class math_Matrix;
 class gp_Vec;
 

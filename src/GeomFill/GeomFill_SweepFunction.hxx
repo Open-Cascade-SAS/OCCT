@@ -35,7 +35,6 @@
 #include <GeomAbs_Shape.hxx>
 class GeomFill_LocationLaw;
 class GeomFill_SectionLaw;
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

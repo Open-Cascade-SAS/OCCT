@@ -26,12 +26,8 @@
 #include <GccEnt_Position.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Real.hxx>
-class GccEnt_BadQualifier;
-class StdFail_NotDone;
 class Geom2dGcc_QCurve;
-class gp_Pnt2d;
 class GccEnt_QualifiedCirc;
-class gp_Lin2d;
 
 
 //! This class implements the algorithms used to

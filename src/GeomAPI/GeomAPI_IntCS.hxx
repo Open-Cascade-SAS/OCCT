@@ -25,8 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class Geom_Surface;
 class gp_Pnt;
 

@@ -23,31 +23,6 @@
 
 class Geom2dGcc_QualifiedCurve;
 class Geom2dAdaptor_Curve;
-class Geom2dGcc_CurveTool;
-class Geom2dGcc_QualifiedCurve;
-class Geom2dGcc_Circ2d3Tan;
-class Geom2dGcc_Circ2d2TanRad;
-class Geom2dGcc_Circ2d2TanOn;
-class Geom2dGcc_Circ2dTanOnRad;
-class Geom2dGcc_Circ2dTanCen;
-class Geom2dGcc_Lin2d2Tan;
-class Geom2dGcc_Lin2dTanObl;
-class Geom2dGcc_QCurve;
-class Geom2dGcc_CurveToolGeo;
-class Geom2dGcc_Circ2d2TanOnGeo;
-class Geom2dGcc_Circ2d2TanRadGeo;
-class Geom2dGcc_Circ2dTanCenGeo;
-class Geom2dGcc_Circ2dTanOnRadGeo;
-class Geom2dGcc_Circ2d3TanIter;
-class Geom2dGcc_FunctionTanCuCuCu;
-class Geom2dGcc_Circ2d2TanOnIter;
-class Geom2dGcc_FunctionTanCuCuOnCu;
-class Geom2dGcc_Lin2dTanOblIter;
-class Geom2dGcc_FunctionTanObl;
-class Geom2dGcc_Lin2d2TanIter;
-class Geom2dGcc_FunctionTanCuCu;
-class Geom2dGcc_FunctionTanCuPnt;
-class Geom2dGcc_FunctionTanCirCu;
 
 
 //! The Geom2dGcc package describes qualified 2D

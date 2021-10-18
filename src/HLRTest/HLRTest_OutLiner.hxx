@@ -26,7 +26,6 @@
 class HLRTopoBRep_OutLiner;
 class TopoDS_Shape;
 class Draw_Display;
-class Draw_Drawable3D;
 
 
 class HLRTest_OutLiner;

@@ -27,12 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomEvaluator_OffsetSurface.hxx>
-class Geom_Surface;
-class Standard_ConstructionError;
-class Standard_RangeError;
-class Standard_NoSuchObject;
-class Geom_UndefinedDerivative;
-class Geom_UndefinedValue;
 class Geom_Curve;
 class gp_Pnt;
 class gp_Vec;

@@ -24,9 +24,6 @@
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class AdvApprox_ApproxAFunction;
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;
 

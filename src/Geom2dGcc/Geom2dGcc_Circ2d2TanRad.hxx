@@ -30,10 +30,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <GccEnt_Position.hxx>
-class Standard_OutOfRange;
-class GccEnt_BadQualifier;
-class StdFail_NotDone;
-class Standard_NegativeValue;
 class Geom2dGcc_QualifiedCurve;
 class Geom2d_Point;
 class GccAna_Circ2d2TanRad;

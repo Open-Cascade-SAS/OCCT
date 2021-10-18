@@ -29,8 +29,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Approx_ParametrizationType.hxx>
 class Geom2d_BSplineCurve;
-class StdFail_NotDone;
-class Standard_OutOfRange;
 
 
 //! This  class  is  used  to  approximate a  BsplineCurve

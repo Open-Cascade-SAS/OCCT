@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class Law_Function;
-class Adaptor3d_CurveOnSurface;
 class gp_Pnt;
 class gp_Vec;
 

@@ -30,9 +30,6 @@
 #include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
-class Standard_DimensionError;
-class Standard_NotImplemented;
-class Standard_ConstructionError;
 
 
 //! An algorithm to convert a grid of adjacent

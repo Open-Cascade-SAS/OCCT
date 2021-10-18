@@ -25,16 +25,6 @@
 #include <Geom_Curve.hxx>
 
 class gp_Pln;
-class GeomAPI_ProjectPointOnCurve;
-class GeomAPI_ProjectPointOnSurf;
-class GeomAPI_ExtremaCurveCurve;
-class GeomAPI_ExtremaCurveSurface;
-class GeomAPI_ExtremaSurfaceSurface;
-class GeomAPI_PointsToBSpline;
-class GeomAPI_PointsToBSplineSurface;
-class GeomAPI_Interpolate;
-class GeomAPI_IntSS;
-class GeomAPI_IntCS;
 
 
 //! The   GeomAPI   package  provides  an  Application

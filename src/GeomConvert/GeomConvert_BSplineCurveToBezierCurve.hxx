@@ -26,9 +26,6 @@
 #include <TColGeom_Array1OfBezierCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Geom_BSplineCurve;
-class Standard_DimensionError;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class Geom_BezierCurve;
 
 

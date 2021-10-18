@@ -22,7 +22,6 @@
 
 #include <IFSelect_SelectAnyList.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class Standard_Transient;
 class Interface_EntityIterator;
 

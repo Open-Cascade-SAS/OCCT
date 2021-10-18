@@ -24,7 +24,6 @@
 #include <GccEnt_Position.hxx>
 #include <gp_Lin2d.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Lin2d;
 
 
 //! Describes a qualified 2D line.

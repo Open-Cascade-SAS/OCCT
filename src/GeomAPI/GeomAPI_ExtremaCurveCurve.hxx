@@ -27,11 +27,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
 class Geom_Curve;
-class gp_Pnt;
-class Extrema_ExtCC;
 
 
 //! Describes functions for computing all the extrema

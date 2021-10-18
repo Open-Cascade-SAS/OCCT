@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class IFSelect_Signature;
-class TCollection_AsciiString;
 class Standard_Transient;
 class Interface_Graph;
 class Interface_EntityIterator;

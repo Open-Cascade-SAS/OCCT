@@ -32,11 +32,6 @@
 #include <gp_Pnt2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-class Standard_NoSuchObject;
-class Standard_DomainError;
-class Standard_OutOfRange;
-class StdFail_UndefinedDerivative;
-class BRepAdaptor_Curve;
 class TopoDS_Edge;
 class gp_Pnt;
 class gp_Vec;

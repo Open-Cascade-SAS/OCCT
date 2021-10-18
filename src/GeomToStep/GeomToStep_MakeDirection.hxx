@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Direction;
-class StdFail_NotDone;
 class gp_Dir;
 class gp_Dir2d;
 class Geom_Direction;

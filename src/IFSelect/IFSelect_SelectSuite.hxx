@@ -26,12 +26,9 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-class Interface_InterfaceError;
 class IFSelect_Selection;
-class IFSelect_SelectDeduct;
 class Interface_EntityIterator;
 class Interface_Graph;
-class TCollection_AsciiString;
 
 
 class IFSelect_SelectSuite;

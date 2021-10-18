@@ -24,7 +24,6 @@
 #include <gp_Circ2d.hxx>
 #include <GccEnt_Position.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Circ2d;
 
 
 //! Creates a qualified 2d Circle.

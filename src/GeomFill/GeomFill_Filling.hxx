@@ -27,7 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-class Standard_NoSuchObject;
 
 
 //! Root class for Filling;

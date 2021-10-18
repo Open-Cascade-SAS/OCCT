@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_BoundedCurve;
-class StdFail_NotDone;
 class Geom_BoundedCurve;
 class Geom2d_BoundedCurve;
 

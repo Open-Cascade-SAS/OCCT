@@ -24,7 +24,6 @@
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Standard_Integer.hxx>
-class Interface_Graph;
 class Standard_Transient;
 class Interface_EntityIterator;
 

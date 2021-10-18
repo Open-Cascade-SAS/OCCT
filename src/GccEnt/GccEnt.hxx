@@ -27,8 +27,6 @@ class GccEnt_QualifiedLin;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;
 class gp_Circ2d;
-class GccEnt_QualifiedLin;
-class GccEnt_QualifiedCirc;
 
 
 //! This package provides an implementation of the qualified

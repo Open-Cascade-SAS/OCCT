@@ -27,13 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <Geom2dEvaluator_OffsetCurve.hxx>
 
-class Geom2d_Curve;
-class Standard_ConstructionError;
-class Standard_RangeError;
-class Standard_NoSuchObject;
-class Geom2d_UndefinedDerivative;
-class Geom2d_UndefinedValue;
-class Standard_NotImplemented;
 class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Trsf2d;

@@ -26,7 +26,6 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Standard_Boolean.hxx>
-class Interface_Graph;
 class Standard_Transient;
 class Interface_EntityIterator;
 

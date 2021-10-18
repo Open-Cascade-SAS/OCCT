@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_CartesianPoint;
-class StdFail_NotDone;
 class gp_Pnt;
 class gp_Pnt2d;
 class Geom_CartesianPoint;

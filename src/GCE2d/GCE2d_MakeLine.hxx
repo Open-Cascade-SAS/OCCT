@@ -24,7 +24,6 @@
 #include <GCE2d_Root.hxx>
 #include <Geom2d_Line.hxx>
 
-class StdFail_NotDone;
 class gp_Ax2d;
 class gp_Lin2d;
 class gp_Pnt2d;

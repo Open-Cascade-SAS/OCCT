@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 class StepGeom_Circle;
-class StdFail_NotDone;
 class gp_Circ;
 class Geom_Circle;
 class Geom2d_Circle;

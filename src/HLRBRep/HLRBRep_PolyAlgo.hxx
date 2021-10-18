@@ -35,7 +35,6 @@
 #include <TopTools_SequenceOfShape.hxx>
 
 class Geom_Surface;
-class HLRAlgo_Projector;
 class TopoDS_Edge;
 class HLRAlgo_PolyInternalData;
 class HLRAlgo_EdgeStatus;

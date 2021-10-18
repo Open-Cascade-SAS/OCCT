@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 class GeomFill_Boundary;
 class Law_Function;
-class gp_Pnt;
 class gp_Vec;
 
 

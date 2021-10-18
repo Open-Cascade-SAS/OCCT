@@ -30,8 +30,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <GccEnt_Position.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class Geom2dGcc_QualifiedCurve;
 class Geom2d_Point;
 class GccAna_Circ2d3Tan;

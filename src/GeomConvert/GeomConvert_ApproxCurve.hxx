@@ -22,8 +22,6 @@
 #include <Standard_OStream.hxx>
 
 class Geom_BSplineCurve;
-class Standard_OutOfRange;
-class Standard_ConstructionError;
 class Geom_Curve;
 
 //! A framework to convert a 3D curve to a 3D BSpline.
