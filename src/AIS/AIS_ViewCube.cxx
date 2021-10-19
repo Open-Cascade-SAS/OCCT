@@ -27,13 +27,13 @@
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ToolDisk.hxx>
 #include <Prs3d_ToolSphere.hxx>
-#include <Select3D_SensitivePrimitiveArray.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 #include <V3d.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCube, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCubeOwner, SelectMgr_EntityOwner)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_ViewCubeSensitive, Select3D_SensitivePrimitiveArray)
 
 namespace
 {
@@ -56,46 +56,48 @@ namespace
   }
 }
 
-//! Simple sensitive element for picking by point only.
-class AIS_ViewCubeSensitive : public Select3D_SensitivePrimitiveArray
+//=======================================================================
+//function : AIS_ViewCubeSensitive
+//purpose  :
+//=======================================================================
+AIS_ViewCubeSensitive::AIS_ViewCubeSensitive (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                              const Handle(Graphic3d_ArrayOfTriangles)& theTris)
+: Select3D_SensitivePrimitiveArray (theOwner)
 {
-  DEFINE_STANDARD_RTTI_INLINE(AIS_ViewCubeSensitive, Select3D_SensitivePrimitiveArray)
-public:
-  //! Constructor.
-  AIS_ViewCubeSensitive (const Handle(SelectMgr_EntityOwner)& theOwner,
-                         const Handle(Graphic3d_ArrayOfTriangles)& theTris)
-  : Select3D_SensitivePrimitiveArray (theOwner)
+  InitTriangulation (theTris->Attributes(), theTris->Indices(), TopLoc_Location());
+}
+
+//=======================================================================
+//function : Matches
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_ViewCubeSensitive::Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                 SelectBasics_PickResult& thePickResult)
+{
+  return isValidRay (theMgr) && Select3D_SensitivePrimitiveArray::Matches (theMgr, thePickResult);
+}
+
+//=======================================================================
+//function : isValidRay
+//purpose  :
+//=======================================================================
+bool AIS_ViewCubeSensitive::isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const
+{
+  if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
   {
-    InitTriangulation (theTris->Attributes(), theTris->Indices(), TopLoc_Location());
+    // disallow rectangular selection
+    return false;
   }
 
-  //! Checks whether element overlaps current selecting volume.
-  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
-                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE
+  if (AIS_ViewCubeOwner* anOwner = dynamic_cast<AIS_ViewCubeOwner* >(myOwnerId.get()))
   {
-    return isValidRay (theMgr)
-        && Select3D_SensitivePrimitiveArray::Matches (theMgr, thePickResult);
+    const Standard_Real anAngleToler = 10.0 * M_PI / 180.0;
+    const gp_Dir aRay = theMgr.GetViewRayDirection();
+    const gp_Dir aDir = V3d::GetProjAxis (anOwner->MainOrientation());
+    return !aRay.IsNormal (aDir, anAngleToler);
   }
-
-  //! Checks if picking ray can be used for detection.
-  bool isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const
-  {
-    if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
-    {
-      // disallow rectangular selection
-      return false;
-    }
-
-    if (AIS_ViewCubeOwner* anOwner = dynamic_cast<AIS_ViewCubeOwner* >(myOwnerId.get()))
-    {
-      const Standard_Real anAngleToler = 10.0 * M_PI / 180.0;
-      const gp_Dir aRay = theMgr.GetViewRayDirection();
-      const gp_Dir aDir = V3d::GetProjAxis (anOwner->MainOrientation());
-      return !aRay.IsNormal (aDir, anAngleToler);
-    }
-    return true;
-  }
-};
+  return true;
+}
 
 //=======================================================================
 //function : IsBoxSide

@@ -24,6 +24,7 @@
 #include <Prs3d_TextAspect.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <V3d_TypeOfOrientation.hxx>
+#include <Select3D_SensitivePrimitiveArray.hxx>
 
 class AIS_AnimationCamera;
 class AIS_ViewCubeOwner;
@@ -721,6 +722,27 @@ public:
 protected:
 
   V3d_TypeOfOrientation myMainOrient; //!< new orientation to set
+
+};
+
+//! Simple sensitive element for picking by point only.
+class AIS_ViewCubeSensitive : public Select3D_SensitivePrimitiveArray
+{
+  DEFINE_STANDARD_RTTIEXT(AIS_ViewCubeSensitive, Select3D_SensitivePrimitiveArray)
+public:
+
+  //! Constructor.
+  Standard_EXPORT AIS_ViewCubeSensitive (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                         const Handle(Graphic3d_ArrayOfTriangles)& theTris);
+
+  //! Checks whether element overlaps current selecting volume.
+  Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                    SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
+
+protected:
+
+  //! Checks if picking ray can be used for detection.
+  Standard_EXPORT bool isValidRay (const SelectBasics_SelectingVolumeManager& theMgr) const;
 
 };
 
