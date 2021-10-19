@@ -4847,6 +4847,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
   Standard_Integer   anObjHighMode  = -2;
   Standard_Boolean   toSetTrsfPers  = Standard_False;
   Standard_Boolean   toEcho         = Standard_True;
+  Standard_Integer   isAutoTriang   = -1;
   Handle(Graphic3d_TransformPers) aTrsfPers;
   TColStd_SequenceOfAsciiString aNamesOfDisplayIO;
   AIS_DisplayStatus aDispStatus = AIS_DS_None;
@@ -5048,6 +5049,17 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     {
       toReDisplay = Standard_True;
     }
+    else if (aNameCase == "-autotr"
+          || aNameCase == "-autotrian"
+          || aNameCase == "-autotriang"
+          || aNameCase == "-autotriangulation"
+          || aNameCase == "-noautotr"
+          || aNameCase == "-noautotrian"
+          || aNameCase == "-noautotriang"
+          || aNameCase == "-noautotriangulation")
+    {
+      isAutoTriang = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter) ? 1 : 0;
+    }
     else if (aNameCase == "-erased"
           || aNameCase == "-load")
     {
@@ -5088,6 +5100,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
         {
           aShape->SetZLayer (aZLayer);
+        }
+        if (isAutoTriang != -1)
+        {
+          aShape->Attributes()->SetAutoTriangulation (isAutoTriang == 1);
         }
         if (toSetTrsfPers)
         {
@@ -5156,6 +5172,10 @@ static int VDisplay2 (Draw_Interpretor& theDI,
     if (aZLayer != Graphic3d_ZLayerId_UNKNOWN)
     {
       aShape->SetZLayer (aZLayer);
+    }
+    if (isAutoTriang != -1)
+    {
+      aShape->Attributes()->SetAutoTriangulation (isAutoTriang == 1);
     }
     if (toSetTrsfPers)
     {
@@ -6554,7 +6574,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-dispMode mode] [-highMode mode]"
       "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
       "\n\t\t:          [-redisplay] [-erased]"
-      "\n\t\t:          [-noecho]"
+      "\n\t\t:          [-noecho] [-autoTriangulation {0|1}]"
       "\n\t\t:          name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects."
       "\n\t\t: Option -local enables displaying of objects in local"
@@ -6583,7 +6603,8 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:  -dispmode    Sets display mode for objects."
       "\n\t\t:  -highmode    Sets hilight mode for objects."
       "\n\t\t:  -redisplay   Recomputes presentation of objects."
-      "\n\t\t:  -noecho      Avoid printing of command results.",
+      "\n\t\t:  -noecho      Avoid printing of command results."
+      "\n\t\t:  -autoTriang  Enable/disable auto-triangulation for displayed shape."
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vnbdisplayed",

@@ -1,3 +1,3 @@
 set command incmesh
 set group standard
-set parallel -parallel
+set parallel 1

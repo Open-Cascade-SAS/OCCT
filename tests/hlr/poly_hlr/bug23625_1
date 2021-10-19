@@ -13,6 +13,6 @@ restore [locate_data_file bug23625_a1.brep] a
 # workaround bug 0031426 until fix
 vinit View1
 vdefaults -autoTriang 0
-incmesh a 7.6 12
+incmesh a 7.6
 
 COMPUTE_HLR $viewname $algotype

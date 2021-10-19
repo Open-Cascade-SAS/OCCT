@@ -10,10 +10,8 @@ pload MODELING VISUALIZATION
 vinit View1
 vclear
 vaxo
-vsetdispmode 1
-vdefaults -autoTriang off
 pcone c 0 5 10
-vdisplay c
+vdisplay c -dispMode 1 -autoTriang off
 vfit
 
 set aColor [vreadpixel 200 77 rgb name]

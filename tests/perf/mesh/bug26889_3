@@ -8,7 +8,7 @@ pload XDE
 stepread [locate_data_file bug26889_export.step] a *
 
 dchrono t restart
-incmesh a_1 1.0 1
+incmesh a_1 1.0 -parallel
 dchrono t stop counter incmesh
 
 checktrinfo a_1 -tri 12469 -nod 6503 -defl 1.2783003174746328 -tol_abs_defl 1e-6

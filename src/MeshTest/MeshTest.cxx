@@ -42,6 +42,9 @@
 #include <OSD_OpenFile.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_MergeNodesTool.hxx>
+#include <Poly_TriangulationParameters.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <BRep_CurveRepresentation.hxx>
@@ -80,83 +83,71 @@ OSD_Chronometer chIsos, chPointsOnIsos;
 //function : incrementalmesh
 //purpose  : 
 //=======================================================================
-static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer nbarg, const char** argv)
+static Standard_Integer incrementalmesh (Draw_Interpretor& theDI,
+                                         Standard_Integer theNbArgs,
+                                         const char** theArgVec)
 {
-  if (nbarg < 3)
+  if (theNbArgs < 3)
   {
-    di << "\
-Builds triangular mesh for the shape\n\
-usage: incmesh Shape LinearDeflection [options]\n\
-options:\n\
-        -a val          angular deflection for edges in deg\n\
-                        (default ~28.64 deg = 0.5 rad)\n\n\
-        -ai val         angular deflection inside of faces in deg\n\
-                        (default ~57.29 deg = 1 rad)\n\n\
-        -di val         Linear deflection used to tessellate the face interior.\n\
-        -min            minimum size parameter limiting size of triangle's\n\
-                        edges to prevent sinking into amplification in case\n\
-                        of distorted curves and surfaces\n\n\
-        -relative       notifies that relative deflection is used\n\
-                        (switched off by default)\n\n\
-        -int_vert_off   disables insertion of internal vertices into mesh\n\
-                        (enabled by default)\n\
-        -surf_def_off   disables control of deflection of mesh from real\n\
-                        surface (enabled by default)\n\
-        -parallel       enables parallel execution (switched off by default)\n\
-        -adjust_min     enables local adjustment of min size depending on edge size (switched off by default)\n\
-        -force_face_def disables usage of shape tolerances for computing face deflection (switched off by default)\n\
-        -decrease       enforces the meshing of the shape even if current mesh satisfies the new criteria\
-                        (switched off by default).\n\
-        -algo {watson|delabella} changes core triangulation algorithm to one with specified id (watson is used by default)\n";
-    return 0;
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
   }
+
   TopoDS_ListOfShape aListOfShapes;
   IMeshTools_Parameters aMeshParams;
-  Standard_Boolean isDeflectionInitialized = Standard_False;
+  bool hasDefl = false, hasAngDefl = false, isPrsDefl = false;
 
-  Handle (IMeshTools_Context) aContext = new BRepMesh_Context;
-  for (Standard_Integer anArgIter = 1; anArgIter < nbarg; ++anArgIter)
+  Handle(IMeshTools_Context) aContext = new BRepMesh_Context();
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    TCollection_AsciiString aName = argv[anArgIter];
-    TCollection_AsciiString       aNameCase = aName;
+    TCollection_AsciiString aNameCase (theArgVec[anArgIter]);
     aNameCase.LowerCase();
-
-    if (aNameCase == "")
-      continue;
-    else if (aNameCase == "-relative")
-      aMeshParams.Relative = Standard_True;
-    else if (aNameCase == "-parallel")
-      aMeshParams.InParallel = Standard_True;
-    else if (aNameCase == "-int_vert_off")
-      aMeshParams.InternalVerticesMode = Standard_False;
-    else if (aNameCase == "-surf_def_off")
-      aMeshParams.ControlSurfaceDeflection = Standard_False;
-    else if (aNameCase == "-adjust_min")
-      aMeshParams.AdjustMinSize = Standard_True;
-    else if (aNameCase == "-force_face_def")
-      aMeshParams.ForceFaceDeflection = Standard_True;
-    else if (aNameCase == "-decrease")
-      aMeshParams.AllowQualityDecrease = Standard_True;
-    else if (aNameCase == "-algo")
+    if (aNameCase == "-relative"
+     || aNameCase == "-norelative")
     {
-      if (++anArgIter >= nbarg)
-      {
-        di << "Error: wrong syntax at " << aNameCase;
-        return 1;
-      }
-      TCollection_AsciiString anAlgoStr (argv[anArgIter]);
+      aMeshParams.Relative = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-parallel"
+          || aNameCase == "-noparallel")
+    {
+      aMeshParams.InParallel = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-int_vert_off")
+    {
+      aMeshParams.InternalVerticesMode = !Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-surf_def_off")
+    {
+      aMeshParams.ControlSurfaceDeflection = !Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-adjust_min")
+    {
+      aMeshParams.AdjustMinSize = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-force_face_def")
+    {
+      aMeshParams.ForceFaceDeflection = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-decrease")
+    {
+      aMeshParams.AllowQualityDecrease = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (aNameCase == "-algo"
+          && anArgIter + 1 < theNbArgs)
+    {
+      TCollection_AsciiString anAlgoStr (theArgVec[++anArgIter]);
       anAlgoStr.LowerCase();
       if (anAlgoStr == "watson"
        || anAlgoStr == "0")
       {
         aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Watson;
-        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_MeshAlgoFactory));
+        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_MeshAlgoFactory()));
       }
       else if (anAlgoStr == "delabella"
             || anAlgoStr == "1")
       {
         aMeshParams.MeshAlgo = IMeshTools_MeshAlgoType_Delabella;
-        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory));
+        aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory()));
       }
       else if (anAlgoStr == "-1"
             || anAlgoStr == "default")
@@ -166,89 +157,82 @@ options:\n\
       }
       else
       {
-        di << "Syntax error at " << anAlgoStr;
+        theDI << "Syntax error at '" << anAlgoStr << "'";
         return 1;
       }
     }
-    else if (aNameCase == "-a")
+    else if ((aNameCase == "-prs"
+           || aNameCase == "-presentation"
+           || aNameCase == "-vis"
+           || aNameCase == "-visualization")
+         && !isPrsDefl)
     {
-      if (++anArgIter >= nbarg)
-      {
-        di << "Error: wrong syntax at " << aNameCase;
-        return 1;
-      }
-      Standard_Real aVal = Draw::Atof (argv[anArgIter]) * M_PI / 180.;
+      isPrsDefl = true;
+    }
+    else if ((aNameCase == "-angular"
+           || aNameCase == "-angdefl"
+           || aNameCase == "-angulardeflection"
+           || aNameCase == "-a")
+          && anArgIter + 1 < theNbArgs)
+    {
+      Standard_Real aVal = Draw::Atof (theArgVec[++anArgIter]) * M_PI / 180.;
       if (aVal <= Precision::Angular())
       {
-        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        theDI << "Syntax error: invalid input parameter '" << theArgVec[anArgIter] << "'";
         return 1;
       }
       aMeshParams.Angle = aVal;
+      hasAngDefl = true;
     }
-    else if (aNameCase == "-ai")
+    else if (aNameCase == "-ai"
+          && anArgIter + 1 < theNbArgs)
     {
-      if (++anArgIter >= nbarg)
-      {
-        di << "Error: wrong syntax at " << aNameCase;
-        return 1;
-      }
-      Standard_Real aVal = Draw::Atof (argv[anArgIter]) * M_PI / 180.;
+      Standard_Real aVal = Draw::Atof (theArgVec[++anArgIter]) * M_PI / 180.;
       if (aVal <= Precision::Angular())
       {
-        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        theDI << "Syntax error: invalid input parameter '" << theArgVec[anArgIter] << "'";
         return 1;
       }
       aMeshParams.AngleInterior = aVal;
     }
-    else if (aNameCase == "-min")
+    else if (aNameCase == "-min"
+          && anArgIter + 1 < theNbArgs)
     {
-      if (++anArgIter >= nbarg)
-      {
-        di << "Error: wrong syntax at " << aNameCase;
-        return 1;
-      }
-      Standard_Real aVal = Draw::Atof (argv[anArgIter]);
+      Standard_Real aVal = Draw::Atof (theArgVec[++anArgIter]);
       if (aVal <= Precision::Confusion())
       {
-        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        theDI << "Syntax error: invalid input parameter '" << theArgVec[anArgIter] << "'";
         return 1;
       }
       aMeshParams.MinSize = aVal;
     }
-    else if (aNameCase == "-di")
+    else if (aNameCase == "-di"
+          && anArgIter + 1 < theNbArgs)
     {
-      if (++anArgIter >= nbarg)
-      {
-        di << "Error: wrong syntax at " << aNameCase;
-        return 1;
-      }
-      Standard_Real aVal = Draw::Atof (argv[anArgIter]);
+      Standard_Real aVal = Draw::Atof (theArgVec[++anArgIter]);
       if (aVal <= Precision::Confusion())
       {
-        di << "Syntax error: invalid input parameter '" << argv[anArgIter] << "'";
+        theDI << "Syntax error: invalid input parameter '" << theArgVec[anArgIter] << "'";
         return 1;
       }
       aMeshParams.DeflectionInterior = aVal;
     }
-    else if (aNameCase.IsRealValue (Standard_True))
+    else if (aNameCase.IsRealValue (true)
+         && !hasDefl)
     {
-      if (isDeflectionInitialized)
-      {
-        continue;
-      }
-      aMeshParams.Deflection = Max (Draw::Atof (argv[anArgIter]), Precision::Confusion());
+      aMeshParams.Deflection = Max (Draw::Atof (theArgVec[anArgIter]), Precision::Confusion());
       if (aMeshParams.DeflectionInterior < Precision::Confusion())
       {
         aMeshParams.DeflectionInterior = aMeshParams.Deflection;
       }
-      isDeflectionInitialized = Standard_True;
+      hasDefl = true;
     }
     else
     {
-      TopoDS_Shape aShape = DBRep::Get (aName);
+      TopoDS_Shape aShape = DBRep::Get (theArgVec[anArgIter]);
       if (aShape.IsNull())
       {
-        di << "Syntax error: null shapes are not allowed here - " << aName <<"\n";
+        theDI << "Syntax error: null shapes are not allowed here '" << theArgVec[anArgIter] << "'\n";
         return 1;
       }
       aListOfShapes.Append (aShape);
@@ -261,8 +245,8 @@ options:\n\
     return 1;
   }
 
-  di << "Incremental Mesh, multi-threading "
-     << (aMeshParams.InParallel ? "ON" : "OFF") << "\n";
+  theDI << "Incremental Mesh, multi-threading "
+        << (aMeshParams.InParallel ? "ON" : "OFF") << "\n";
 
   TopoDS_Shape aShape;
   if (aListOfShapes.Size() == 1)
@@ -279,64 +263,55 @@ options:\n\
     }
     aShape = aCompound;
   }
-  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
-  BRepMesh_IncrementalMesh aMesher;
-  aMesher.SetShape (aShape);
-  aMesher.ChangeParameters() = aMeshParams;
 
-  aMesher.Perform (aContext, aProgress->Start());
-
-  di << "Meshing statuses: ";
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
-  if (!aStatus)
+  if (isPrsDefl)
   {
-    di << "NoError";
-  }
-  else
-  {
-    Standard_Integer i;
-    for (i = 0; i < 9; i++)
+    Handle(Prs3d_Drawer) aDrawer = new Prs3d_Drawer();
+    if (hasDefl)
     {
-      Standard_Integer aFlag = aStatus & (1 << i);
-      if (aFlag)
-      {
-        switch ((IMeshData_Status) aFlag)
-        {
-        case IMeshData_OpenWire:
-          di << "OpenWire ";
-          break;
-        case IMeshData_SelfIntersectingWire:
-          di << "SelfIntersectingWire ";
-          break;
-        case IMeshData_Failure:
-          di << "Failure ";
-          break;
-        case IMeshData_ReMesh:
-          di << "ReMesh ";
-          break;
-        case IMeshData_UnorientedWire:
-          di << "UnorientedWire ";
-          break;
-        case IMeshData_TooFewPoints:
-          di << "TooFewPoints ";
-          break;
-        case IMeshData_Outdated:
-          di << "Outdated ";
-          break;
-        case IMeshData_Reused:
-          di << "Reused ";
-          break;
-        case IMeshData_UserBreak:
-          di << "User break";
-          break;
-        case IMeshData_NoError:
-        default:
-          break;
-        }
-      }
+      aDrawer->SetDeviationCoefficient (aMeshParams.Deflection);
+    }
+    aMeshParams.Deflection = StdPrs_ToolTriangulatedShape::GetDeflection (aShape, aDrawer);
+    if (!hasAngDefl)
+    {
+      aMeshParams.Angle = aDrawer->DeviationAngle();
     }
   }
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+  BRepMesh_IncrementalMesh aMesher;
+  aMesher.SetShape (aShape);
+  aMesher.ChangeParameters() = aMeshParams;
+  aMesher.Perform (aContext, aProgress->Start());
+
+  theDI << "Meshing statuses: ";
+  const Standard_Integer aStatus = aMesher.GetStatusFlags();
+  if (aStatus == 0)
+  {
+    theDI << "NoError";
+    return 0;
+  }
+
+  for (Standard_Integer i = 0; i < 9; i++)
+  {
+    Standard_Integer aFlag = aStatus & (1 << i);
+    if (aFlag)
+    {
+      switch ((IMeshData_Status) aFlag)
+      {
+        case IMeshData_OpenWire:             theDI << "OpenWire "; break;
+        case IMeshData_SelfIntersectingWire: theDI << "SelfIntersectingWire "; break;
+        case IMeshData_Failure:              theDI << "Failure "; break;
+        case IMeshData_ReMesh:               theDI << "ReMesh "; break;
+        case IMeshData_UnorientedWire:       theDI << "UnorientedWire "; break;
+        case IMeshData_TooFewPoints:         theDI << "TooFewPoints "; break;
+        case IMeshData_Outdated:             theDI << "Outdated "; break;
+        case IMeshData_Reused:               theDI << "Reused "; break;
+        case IMeshData_UserBreak:            theDI << "UserBreak "; break;
+        case IMeshData_NoError: break;
+      }
+    }
+  }
   return 0;
 }
 
@@ -757,7 +732,7 @@ static Standard_Integer trianglesinfo (Draw_Interpretor& theDI, Standard_Integer
   TopExp_Explorer anExp;
   Handle(Poly_Triangulation) aTriangulation;
   TopLoc_Location aLoc;
-  Standard_Real aMaxDeflection = 0.0;
+  Standard_Real aMaxDeflection = 0.0, aMeshingDefl = -1.0, aMeshingAngDefl = -1.0, aMeshingMinSize = -1.0;
   Standard_Integer aNbFaces = 0, aNbEmptyFaces = 0, aNbTriangles = 0, aNbNodes = 0, aNbRepresentations = 0;
   NCollection_IndexedDataMap<Standard_Integer, TriangulationStat> aLODsStat;
   NCollection_Vector<Standard_Integer> aNbLODs;
@@ -770,9 +745,12 @@ static Standard_Integer trianglesinfo (Draw_Interpretor& theDI, Standard_Integer
     {
       aNbTriangles += aTriangulation->NbTriangles();
       aNbNodes += aTriangulation->NbNodes();
-      if (aTriangulation->Deflection() > aMaxDeflection)
+      aMaxDeflection = Max (aMaxDeflection, aTriangulation->Deflection());
+      if (!aTriangulation->Parameters().IsNull())
       {
-        aMaxDeflection = aTriangulation->Deflection();
+        aMeshingDefl    = Max (aMeshingDefl,    aTriangulation->Parameters()->Deflection());
+        aMeshingAngDefl = Max (aMeshingAngDefl, aTriangulation->Parameters()->Angle());
+        aMeshingMinSize = Max (aMeshingMinSize, aTriangulation->Parameters()->MinSize());
       }
     }
     else
@@ -868,6 +846,18 @@ static Standard_Integer trianglesinfo (Draw_Interpretor& theDI, Standard_Integer
   theDI << "                    " << aNbNodes << " nodes.\n";
   theDI << "                    " << aNbRepresentations << " polygons on triangulation.\n";
   theDI << "Maximal deflection " << aMaxDeflection << "\n";
+  if (aMeshingDefl > 0.0)
+  {
+    theDI << "Meshing deflection " << aMeshingDefl << "\n";
+  }
+  if (aMeshingAngDefl > 0.0)
+  {
+    theDI << "Meshing angular deflection " << (aMeshingAngDefl * 180.0 / M_PI) << "\n";
+  }
+  if (aMeshingMinSize > 0.0)
+  {
+    theDI << "Meshing min size " << aMeshingMinSize << "\n";
+  }
 
   if (aNbLODs.Size() > 0)
   {
@@ -1613,7 +1603,32 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
 
   g = "Mesh Commands";
 
-  theCommands.Add("incmesh","Builds triangular mesh for the shape, run w/o args for help",__FILE__, incrementalmesh, g);
+  theCommands.Add("incmesh",
+    "incmesh Shape LinDefl [-angular Angle]=28.64 [-prs]"
+    "\n\t\t:   [-relative {0|1}]=0 [-parallel {0|1}]=0 [-min Size]"
+    "\n\t\t:   [-algo {watson|delabella}]=watson"
+    "\n\t\t:   [-di Value] [-ai Angle]=57.29"
+    "\n\t\t:   [-int_vert_off {0|1}]=0 [-surf_def_off {0|1}]=0 [-adjust_min {0|1}]=0"
+    "\n\t\t:   [-force_face_def {0|1}]=0 [-decrease {0|1}]=0"
+    "\n\t\t: Builds triangular mesh for the shape."
+    "\n\t\t:  LinDefl         linear deflection to control mesh quality;"
+    "\n\t\t:  -angular        angular deflection for edges in deg (~28.64 deg = 0.5 rad by default);"
+    "\n\t\t:  -prs            apply default meshing parameters for visualization purposes"
+    "\n\t\t:                  (20 deg angular deflection, 0.001 of bounding box linear deflection);"
+    "\n\t\t:  -relative       notifies that relative deflection is used (FALSE by default);"
+    "\n\t\t:  -parallel       enables parallel execution (FALSE by default);"
+    "\n\t\t:  -algo           changes core triangulation algorithm to one with specified id (watson by default);"
+    "\n\t\t:  -min            minimum size parameter limiting size of triangle's edges to prevent sinking"
+    "\n\t\t:                  into amplification in case of distorted curves and surfaces;"
+    "\n\t\t:  -di             linear deflection used to tessellate the face interior;"
+    "\n\t\t:  -ai             angular deflection inside of faces in deg (~57.29 deg = 1 rad by default);"
+    "\n\t\t:  -int_vert_off   disables insertion of internal vertices into mesh (enabled by default);"
+    "\n\t\t:  -surf_def_off   disables control of deflection of mesh from real surface (enabled by default);"
+    "\n\t\t:  -adjust_min     enables local adjustment of min size depending on edge size (FALSE by default);"
+    "\n\t\t:  -force_face_def disables usage of shape tolerances for computing face deflection (FALSE by default);"
+    "\n\t\t:  -decrease       enforces the meshing of the shape even if current mesh satisfies the new criteria"
+    "\n\t\t:                  (FALSE by default).",
+  __FILE__, incrementalmesh, g);
   theCommands.Add("tessellate","Builds triangular mesh for the surface, run w/o args for help",__FILE__, tessellate, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
 

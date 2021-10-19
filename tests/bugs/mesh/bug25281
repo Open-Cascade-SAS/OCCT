@@ -10,7 +10,7 @@ pload XDE
 
 param xstep.cascade.unit M
 stepread [locate_data_file bug25281_tess_infloop_extract.step] a *
-incmesh a_1 0.0002 1
+incmesh a_1 0.0002 -parallel
 
 checktrinfo a_1 -tri -nod
 

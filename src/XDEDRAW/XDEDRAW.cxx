@@ -644,12 +644,14 @@ private:
   XDEDRAW_XDisplayTool()
   : myDispMode(-2),
     myHiMode  (-2),
+    myIsAutoTriang (-1),
     myToPrefixDocName (Standard_True),
     myToGetNames (Standard_True),
     myToExplore  (Standard_False) {}
 
   //! Display single label.
-  Standard_Integer displayLabel (const TDF_Label& theLabel,
+  Standard_Integer displayLabel (Draw_Interpretor& theDI,
+                                 const TDF_Label& theLabel,
                                  const TCollection_AsciiString& theNamePrefix,
                                  const TopLoc_Location& theLoc,
                                  TCollection_AsciiString& theOutDispList)
@@ -701,7 +703,7 @@ private:
         const TopLoc_Location aLoc = theLoc * XCAFDoc_ShapeTool::GetLocation (theLabel);
         for (TDF_ChildIterator aChildIter (aRefLabel); aChildIter.More(); aChildIter.Next())
         {
-          if (displayLabel (aChildIter.Value(), aName, aLoc, theOutDispList) == 1)
+          if (displayLabel (theDI, aChildIter.Value(), aName, aLoc, theOutDispList) == 1)
           {
             return 1;
           }
@@ -723,7 +725,7 @@ private:
       }
       if (!aPrs->AcceptDisplayMode (myDispMode))
       {
-        std::cout << "Syntax error: " << aPrs->DynamicType()->Name() << " rejects " << myDispMode << " display mode\n";
+        theDI << "Syntax error: " << aPrs->DynamicType()->Name() << " rejects " << myDispMode << " display mode";
         return 1;
       }
       else
@@ -736,10 +738,14 @@ private:
       if (myHiMode != -1
       && !aPrs->AcceptDisplayMode (myHiMode))
       {
-        std::cout << "Syntax error: " << aPrs->DynamicType()->Name() << " rejects " << myHiMode << " display mode\n";
+        theDI << "Syntax error: " << aPrs->DynamicType()->Name() << " rejects " << myHiMode << " display mode";
         return 1;
       }
       aPrs->SetHilightMode (myHiMode);
+    }
+    if (myIsAutoTriang != -1)
+    {
+      aPrs->Attributes()->SetAutoTriangulation (myIsAutoTriang == 1);
     }
 
     ViewerTest::Display (aName, aPrs, false);
@@ -755,7 +761,7 @@ private:
     Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
     if (aContext.IsNull())
     {
-      std::cout << "Error: no active view!\n";
+      theDI << "Error: no active viewer";
       return 1;
     }
 
@@ -784,6 +790,17 @@ private:
             && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsIntegerValue())
       {
         myHiMode = TCollection_AsciiString (theArgVec[++anArgIter]).IntegerValue();
+      }
+      else if (anArgCase == "-autotr"
+            || anArgCase == "-autotrian"
+            || anArgCase == "-autotriang"
+            || anArgCase == "-autotriangulation"
+            || anArgCase == "-noautotr"
+            || anArgCase == "-noautotrian"
+            || anArgCase == "-noautotriang"
+            || anArgCase == "-noautotriangulation")
+      {
+        myIsAutoTriang = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter) ? 1 : 0;
       }
       else if (anArgCase == "-docprefix"
             || anArgCase == "-nodocprefix")
@@ -857,7 +874,7 @@ private:
             if (!myDoc.IsNull()
               && myDoc != aDoc)
             {
-              std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+              theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
               return 1;
             }
             myDoc = aDoc;
@@ -866,7 +883,7 @@ private:
         }
         if (myDoc.IsNull())
         {
-          std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+          theDI << "Syntax error at '" << theArgVec[anArgIter] << "'";
           return 1;
         }
 
@@ -875,7 +892,7 @@ private:
         if (aLabel.IsNull()
         || !XCAFDoc_ShapeTool::IsShape (aLabel))
         {
-          std::cout << "Syntax error: " << aValue << " is not a valid shape label\n";
+          theDI << "Syntax error: " << aValue << " is not a valid shape label";
           return 1;
         }
         myLabels.Append (aLabel);
@@ -883,7 +900,7 @@ private:
     }
     if (myDoc.IsNull())
     {
-      std::cout << "Syntax error: not enough arguments\n";
+      theDI << "Syntax error: not enough arguments";
       return 1;
     }
     if (myLabels.IsEmpty())
@@ -894,7 +911,7 @@ private:
     for (TDF_LabelSequence::Iterator aLabIter (myLabels); aLabIter.More(); aLabIter.Next())
     {
       const TDF_Label& aLabel = aLabIter.Value();
-      if (displayLabel (aLabel, myToPrefixDocName ? myDocName + ":" : "", TopLoc_Location(), myOutDispList) == 1)
+      if (displayLabel (theDI, aLabel, myToPrefixDocName ? myDocName + ":" : "", TopLoc_Location(), myOutDispList) == 1)
       {
         return 1;
       }
@@ -920,6 +937,7 @@ private:
   TDF_LabelSequence        myLabels;          //!< labels to display
   Standard_Integer         myDispMode;        //!< shape display mode
   Standard_Integer         myHiMode;          //!< shape highlight mode
+  Standard_Integer         myIsAutoTriang;    //!< auto-triangulation mode
   Standard_Boolean         myToPrefixDocName; //!< flag to prefix objects with document name
   Standard_Boolean         myToGetNames;      //!< flag to use label names or tags
   Standard_Boolean         myToExplore;       //!< flag to explore assembles
@@ -1394,7 +1412,7 @@ void XDEDRAW::Init(Draw_Interpretor& di)
 
   di.Add ("XDisplay",
           "XDisplay Doc [label1 [label2 [...]]] [-explore {on|off}] [-docPrefix {on|off}] [-names {on|off}]"
-          "\n\t\t:      [-noupdate] [-dispMode Mode] [-highMode Mode]"
+          "\n\t\t:      [-noupdate] [-dispMode Mode] [-highMode Mode] [-autoTriangulation {0|1}]"
           "\n\t\t: Displays document (parts) in 3D Viewer."
           "\n\t\t:  -dispMode    Presentation display mode."
           "\n\t\t:  -highMode    Presentation highlight mode."
@@ -1402,7 +1420,8 @@ void XDEDRAW::Init(Draw_Interpretor& di)
           "\n\t\t:  -names       Use object names instead of label tag; TRUE by default."
           "\n\t\t:  -explore     Explode labels to leaves; FALSE by default."
           "\n\t\t:  -outDispList Set the TCL variable to the list of displayed object names."
-          "\n\t\t:               (instead of printing them to draw interpreter)",
+          "\n\t\t:               (instead of printing them to draw interpreter)"
+          "\n\t\t:  -autoTriang  Enable/disable auto-triangulation for displayed shapes.",
           __FILE__, XDEDRAW_XDisplayTool::XDisplay, g);
 
   di.Add ("XWdump","Doc filename.{gif|xwd|bmp} \t: Dump contents of viewer window to XWD, GIF or BMP file",

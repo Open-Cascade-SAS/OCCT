@@ -999,7 +999,7 @@ proc checktrinfo {shape args} {
 
     # get current number of faces, triangles and nodes, value of max deflection
     set tri_info [trinfo ${shape}]
-    set triinfo_pattern "(\[0-9\]+) +faces(.*\[^0-9]\(\[0-9\]+) +empty faces)?.*\[^0-9]\(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*deflection +(\[-0-9.+eE\]+)"
+    set triinfo_pattern "(\[0-9\]+) +faces(.*\[^0-9]\(\[0-9\]+) +empty faces)?.*\[^0-9]\(\[0-9\]+) +triangles.*\[^0-9]\(\[0-9\]+) +nodes.*Maximal deflection +(\[-0-9.+eE\]+)"
     if {![regexp "${triinfo_pattern}" ${tri_info} dump cur_nb_faces tmp cur_nb_empty_faces cur_nb_triangles cur_nb_nodes cur_deflection]} {
         puts "Error: command trinfo prints empty info"
     }
