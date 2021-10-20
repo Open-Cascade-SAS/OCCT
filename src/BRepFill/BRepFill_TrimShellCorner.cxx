@@ -890,6 +890,11 @@ Standard_Boolean BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape& Com
     if (LastEdge.IsNull())
       return Standard_False;
 
+    if (FirstEdge.IsNull() || LastEdge.IsNull())
+    {
+      return Standard_False;
+    }
+
     BB.Add(NewWire, FirstEdge);
 
     if (!FirstEdge.IsSame(LastEdge))
