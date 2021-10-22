@@ -42,6 +42,11 @@ function updateCanvasSize()
 window.onresize = updateCanvasSize;
 updateCanvasSize();
 
+// capture keyboard input on mouse click
+occViewerCanvas.tabIndex = -1;
+occViewerCanvas.onclick = (theEvent) => { occViewerCanvas.focus() };
+occViewerCanvas.focus();
+
 //! Check browser support.
 function isWasmSupported()
 {
@@ -78,6 +83,7 @@ fileInput.onchange = function()
     OccViewerModule.openFromMemory (aFile.name, aDataBuffer, aDataArray.length, true);
     //OccViewerModule._free (aDataBuffer); will be freed by called method
     OccViewerModule.displayGround (true);
+    occViewerCanvas.focus();
   };
   aReader.readAsArrayBuffer(aFile);
 };

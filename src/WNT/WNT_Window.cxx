@@ -815,12 +815,12 @@ bool WNT_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
       }
       return false;
     }
-    case WM_ACTIVATE:
+    case WM_SETFOCUS:
+    case WM_KILLFOCUS:
     {
       if (theMsg.hwnd == (HWND )myHWindow)
       {
-        theListener.ProcessFocus (LOWORD(theMsg.wParam) == WA_CLICKACTIVE
-                               || LOWORD(theMsg.wParam) == WA_ACTIVE);
+        theListener.ProcessFocus (theMsg.message == WM_SETFOCUS);
         return true;
       }
       return false;

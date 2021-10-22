@@ -655,7 +655,8 @@ static EM_BOOL onWasmMouseCallback (int theEventType, const EmscriptenMouseEvent
       EmscriptenMouseEvent anEvent = *theEvent;
       anEvent.targetX -= occJSGetBoundingClientLeft();
       anEvent.targetY -= occJSGetBoundingClientTop();
-      return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, &anEvent) ? EM_TRUE : EM_FALSE;
+      aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, &anEvent);
+      return EM_FALSE;
     }
 
     return aWindow->ProcessMouseEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
@@ -699,6 +700,19 @@ static EM_BOOL onWasmKeyCallback (int theEventType, const EmscriptenKeyboardEven
     Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
     aWindow->ProcessKeyEvent (*aViewCtrl, theEventType, theEvent);
     return EM_TRUE;
+  }
+  return EM_FALSE;
+}
+
+//! Handle focus change event.
+static EM_BOOL onWasmFocusCallback (int theEventType, const EmscriptenFocusEvent* theEvent, void*)
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull()
+   && !ViewerTest::CurrentView().IsNull())
+  {
+    Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (ViewerTest::CurrentView()->Window());
+    return aWindow->ProcessFocusEvent (*aViewCtrl, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
   }
   return EM_FALSE;
 }
@@ -777,6 +791,9 @@ void ViewerTest_EventManager::SetupWindowCallbacks (const Handle(Aspect_Window)&
   // keyboard input requires a focusable element or EMSCRIPTEN_EVENT_TARGET_WINDOW
   emscripten_set_keydown_callback    (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
   emscripten_set_keyup_callback      (aTargetId, anOpaque, toUseCapture, onWasmKeyCallback);
+  //emscripten_set_focus_callback    (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
+  //emscripten_set_focusin_callback  (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
+  emscripten_set_focusout_callback   (aTargetId, anOpaque, toUseCapture, onWasmFocusCallback);
 #else
   (void )theWin;
 #endif

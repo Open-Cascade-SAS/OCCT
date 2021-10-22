@@ -202,9 +202,12 @@ void WasmOcctView::initWindow()
   emscripten_set_touchmove_callback  (aTargetId, this, toUseCapture, onTouchCallback);
   emscripten_set_touchcancel_callback(aTargetId, this, toUseCapture, onTouchCallback);
 
-  //emscripten_set_keypress_callback   (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyCallback);
-  emscripten_set_keydown_callback    (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyDownCallback);
-  emscripten_set_keyup_callback      (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyUpCallback);
+  //emscripten_set_keypress_callback   (aTargetId, this, toUseCapture, onKeyCallback);
+  emscripten_set_keydown_callback    (aTargetId, this, toUseCapture, onKeyDownCallback);
+  emscripten_set_keyup_callback      (aTargetId, this, toUseCapture, onKeyUpCallback);
+  //emscripten_set_focus_callback    (aTargetId, this, toUseCapture, onFocusCallback);
+  //emscripten_set_focusin_callback  (aTargetId, this, toUseCapture, onFocusCallback);
+  emscripten_set_focusout_callback   (aTargetId, this, toUseCapture, onFocusCallback);
 }
 
 // ================================================================
@@ -513,7 +516,8 @@ EM_BOOL WasmOcctView::onMouseEvent (int theEventType, const EmscriptenMouseEvent
     EmscriptenMouseEvent anEvent = *theEvent;
     anEvent.targetX -= jsGetBoundingClientLeft();
     anEvent.targetY -= jsGetBoundingClientTop();
-    return aWindow->ProcessMouseEvent (*this, theEventType, &anEvent) ? EM_TRUE : EM_FALSE;
+    aWindow->ProcessMouseEvent (*this, theEventType, &anEvent);
+    return EM_FALSE;
   }
 
   return aWindow->ProcessMouseEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
@@ -585,6 +589,24 @@ bool WasmOcctView::navigationKeyModifierSwitch (unsigned int theModifOld,
     }
   }
   return hasActions;
+}
+
+// ================================================================
+// Function : onFocusEvent
+// Purpose  :
+// ================================================================
+EM_BOOL WasmOcctView::onFocusEvent (int theEventType, const EmscriptenFocusEvent* theEvent)
+{
+  if (myView.IsNull()
+   || (theEventType != EMSCRIPTEN_EVENT_FOCUS
+    && theEventType != EMSCRIPTEN_EVENT_FOCUSIN // about to receive focus
+    && theEventType != EMSCRIPTEN_EVENT_FOCUSOUT))
+  {
+    return EM_FALSE;
+  }
+
+  Handle(Wasm_Window) aWindow = Handle(Wasm_Window)::DownCast (myView->Window());
+  return aWindow->ProcessFocusEvent (*this, theEventType, theEvent) ? EM_TRUE : EM_FALSE;
 }
 
 // ================================================================

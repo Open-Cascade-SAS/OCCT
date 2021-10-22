@@ -181,6 +181,9 @@ private:
   //! Key up event.
   EM_BOOL onKeyUpEvent (int theEventType, const EmscriptenKeyboardEvent* theEvent);
 
+  //! Focus change event.
+  EM_BOOL onFocusEvent (int theEventType, const EmscriptenFocusEvent* theEvent);
+
 //! @name Emscripten callbacks (static functions)
 private:
 
@@ -204,6 +207,9 @@ private:
 
   static EM_BOOL onKeyUpCallback (int theEventType, const EmscriptenKeyboardEvent* theEvent, void* theView)
   { return ((WasmOcctView* )theView)->onKeyUpEvent (theEventType, theEvent); }
+
+  static EM_BOOL onFocusCallback (int theEventType, const EmscriptenFocusEvent* theEvent, void* theView)
+  { return ((WasmOcctView* )theView)->onFocusEvent (theEventType, theEvent); }
 
 private:
 

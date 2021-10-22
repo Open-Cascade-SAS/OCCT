@@ -243,6 +243,12 @@ bool Wasm_Window::ProcessMessage (Aspect_WindowInputListener& theListener,
     {
       return ProcessUiEvent (theListener, theEventType, (const EmscriptenUiEvent* )theEvent);
     }
+    case EMSCRIPTEN_EVENT_FOCUS:
+    case EMSCRIPTEN_EVENT_FOCUSIN:
+    case EMSCRIPTEN_EVENT_FOCUSOUT:
+    {
+      return ProcessFocusEvent (theListener, theEventType, (const EmscriptenFocusEvent* )theEvent);
+    }
   }
   return false;
 #else
@@ -533,6 +539,29 @@ bool Wasm_Window::ProcessUiEvent (Aspect_WindowInputListener& theListener,
   (void )theEventType;
 #endif
   theListener.ProcessConfigure (true);
+  return true;
+}
+
+// =======================================================================
+// function : ProcessFocusEvent
+// purpose  :
+// =======================================================================
+bool Wasm_Window::ProcessFocusEvent (Aspect_WindowInputListener& theListener,
+                                     int theEventType, const EmscriptenFocusEvent* )
+{
+  bool isActivated = false;
+#if defined(__EMSCRIPTEN__)
+  if (theEventType != EMSCRIPTEN_EVENT_FOCUS
+   && theEventType != EMSCRIPTEN_EVENT_FOCUSIN // about to receive focus
+   && theEventType != EMSCRIPTEN_EVENT_FOCUSOUT)
+  {
+    return false;
+  }
+  isActivated = theEventType == EMSCRIPTEN_EVENT_FOCUS;
+#else
+  (void )theEventType;
+#endif
+  theListener.ProcessFocus (isActivated);
   return true;
 }
 

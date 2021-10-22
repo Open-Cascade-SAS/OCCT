@@ -441,10 +441,13 @@ public: //! @name resize events
   virtual void ProcessInput() Standard_OVERRIDE {}
 
   //! Handle focus event.
-  //! Default implementation does nothing.
+  //! Default implementation resets cached input state (pressed keys).
   virtual void ProcessFocus (bool theIsActivated) Standard_OVERRIDE
   {
-    (void )theIsActivated;
+    if (!theIsActivated)
+    {
+      ResetViewInput();
+    }
   }
 
   //! Handle window close event.

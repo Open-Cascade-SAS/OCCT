@@ -28,6 +28,7 @@ struct EmscriptenWheelEvent;
 struct EmscriptenTouchEvent;
 struct EmscriptenKeyboardEvent;
 struct EmscriptenUiEvent;
+struct EmscriptenFocusEvent;
 
 //! This class defines WebAssembly window (HTML5 canvas) intended for creation of OpenGL (WebGL) context.
 //!
@@ -174,6 +175,14 @@ public:
   //! @return TRUE if message has been processed
   Standard_EXPORT virtual bool ProcessUiEvent (Aspect_WindowInputListener& theListener,
                                                int theEventType, const EmscriptenUiEvent* theEvent);
+
+  //! Process a focus input change message.
+  //! @param[in,out] theListener listener to redirect message
+  //! @param[in] theEventType message type to process
+  //! @param[in] theEvent message to process
+  //! @return TRUE if message has been processed
+  Standard_EXPORT virtual bool ProcessFocusEvent (Aspect_WindowInputListener& theListener,
+                                                  int theEventType, const EmscriptenFocusEvent* theEvent);
 
 protected:
 
