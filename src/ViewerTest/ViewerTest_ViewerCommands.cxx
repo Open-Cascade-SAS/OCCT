@@ -7140,6 +7140,11 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
       }
     }
   }
+  if (anAnimation.IsNull())
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
 
   if (anArgIter >= theArgNb)
   {
