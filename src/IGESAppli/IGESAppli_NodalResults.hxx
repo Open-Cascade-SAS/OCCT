@@ -27,8 +27,6 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESDimen_GeneralNote;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESAppli_Node;
 
 

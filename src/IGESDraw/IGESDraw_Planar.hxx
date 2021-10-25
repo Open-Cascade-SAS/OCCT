@@ -25,8 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
 class IGESGeom_TransformationMatrix;
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 
 
 class IGESDraw_Planar;

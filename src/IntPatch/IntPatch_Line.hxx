@@ -25,8 +25,6 @@
 #include <IntSurf_TypeTrans.hxx>
 #include <IntSurf_Situation.hxx>
 #include <Standard_Transient.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
 
 
 class IntPatch_Line;

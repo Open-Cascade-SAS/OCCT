@@ -31,7 +31,6 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 class Interface_InterfaceModel;
 class Interface_IntVal;
-class Standard_NoSuchObject;
 class Interface_Check;
 class Standard_Transient;
 

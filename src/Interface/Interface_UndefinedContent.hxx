@@ -27,13 +27,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Interface_ParamType.hxx>
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Interface_InterfaceMismatch;
-class Interface_InterfaceError;
-class Standard_Transient;
 class TCollection_HAsciiString;
-class Interface_EntityList;
 class Interface_CopyTool;
 
 

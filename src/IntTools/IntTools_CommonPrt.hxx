@@ -27,9 +27,6 @@
 #include <IntTools_SequenceOfRanges.hxx>
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
-class TopoDS_Edge;
-class IntTools_Range;
-class gp_Pnt;
 
 
 //! The class  is  to  describe a  common  part

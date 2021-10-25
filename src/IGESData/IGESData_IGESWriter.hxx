@@ -35,8 +35,6 @@
 #include <Standard_OStream.hxx>
 
 class IGESData_IGESModel;
-class Interface_InterfaceMismatch;
-class Interface_FloatWriter;
 class IGESData_Protocol;
 class IGESData_GlobalSection;
 class IGESData_IGESEntity;

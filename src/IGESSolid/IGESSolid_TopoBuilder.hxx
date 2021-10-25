@@ -32,7 +32,6 @@ class IGESData_IGESEntity;
 class IGESSolid_Loop;
 class IGESSolid_EdgeList;
 class IGESSolid_VertexList;
-class Standard_DomainError;
 class gp_XYZ;
 
 

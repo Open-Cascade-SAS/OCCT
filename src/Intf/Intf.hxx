@@ -25,14 +25,6 @@
 #include <Standard_Boolean.hxx>
 class gp_Pnt;
 class gp_XYZ;
-class Intf_Polygon2d;
-class Intf_SectionPoint;
-class Intf_SectionLine;
-class Intf_TangentZone;
-class Intf_Interference;
-class Intf_Tool;
-class Intf_InterferencePolygon2d;
-class Intf_InterferencePolygonPolyhedron;
 
 
 //! Interference computation  between polygons, lines  and

@@ -26,20 +26,8 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 class IGESToBRep_AlgoContainer;
 class IGESData_IGESEntity;
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;
-class IGESToBRep_CurveAndSurface;
-class IGESToBRep_BasicSurface;
-class IGESToBRep_BasicCurve;
-class IGESToBRep_TopoSurface;
-class IGESToBRep_TopoCurve;
-class IGESToBRep_BRepEntity;
-class IGESToBRep_IGESBoundary;
-class IGESToBRep_Reader;
-class IGESToBRep_Actor;
-class IGESToBRep_AlgoContainer;
-class IGESToBRep_ToolContainer;
 
 
 //! Provides tools in order to transfer IGES entities

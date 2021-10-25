@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <gp_XY.hxx>
 #include <IGESData_IGESEntity.hxx>
-class gp_XY;
 class gp_Pnt2d;
 
 

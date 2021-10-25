@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESDimen_DimensionDisplayData;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

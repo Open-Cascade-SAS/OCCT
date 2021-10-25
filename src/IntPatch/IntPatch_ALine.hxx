@@ -24,7 +24,6 @@
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <TColStd_ListOfReal.hxx>
 
-class IntAna_Curve;
 class IntPatch_Point;
 class IntPatch_ALine;
 

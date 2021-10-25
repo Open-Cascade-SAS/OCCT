@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
 class Intf_SectionPoint;
 
 

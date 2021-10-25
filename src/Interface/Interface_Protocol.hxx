@@ -24,8 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
-class Interface_InterfaceError;
-class Standard_Transient;
 class Interface_Graph;
 class Interface_Check;
 class Interface_InterfaceModel;

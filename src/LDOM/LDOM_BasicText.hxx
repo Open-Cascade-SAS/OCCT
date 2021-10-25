@@ -19,10 +19,7 @@
 #include <LDOM_BasicNode.hxx>
 #include <LDOMBasicString.hxx>
 
-class LDOM_Node;
 class LDOM_CharacterData;
-class LDOMParser;
-class LDOM_BasicElement;
 
 //  Class LDOM_BasicText
 //

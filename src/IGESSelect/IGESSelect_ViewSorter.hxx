@@ -27,7 +27,6 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Standard_Integer.hxx>
 class IGESData_IGESModel;
-class Standard_Transient;
 class IGESData_IGESEntity;
 class Interface_InterfaceModel;
 class Interface_Graph;

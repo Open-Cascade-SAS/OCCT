@@ -27,9 +27,6 @@
 #include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class gp_XYZ;
 class gp_Pnt;
 
 

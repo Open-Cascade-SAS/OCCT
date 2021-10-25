@@ -22,47 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESBasic_Protocol;
-class IGESBasic_SubfigureDef;
-class IGESBasic_Group;
-class IGESBasic_GroupWithoutBackP;
-class IGESBasic_SingleParent;
-class IGESBasic_ExternalRefFileIndex;
-class IGESBasic_OrderedGroup;
-class IGESBasic_OrderedGroupWithoutBackP;
-class IGESBasic_Hierarchy;
-class IGESBasic_ExternalReferenceFile;
-class IGESBasic_Name;
-class IGESBasic_AssocGroupType;
-class IGESBasic_SingularSubfigure;
-class IGESBasic_ExternalRefFileName;
-class IGESBasic_ExternalRefFile;
-class IGESBasic_ExternalRefName;
-class IGESBasic_ExternalRefLibName;
-class IGESBasic_ToolSubfigureDef;
-class IGESBasic_ToolGroup;
-class IGESBasic_ToolGroupWithoutBackP;
-class IGESBasic_ToolSingleParent;
-class IGESBasic_ToolExternalRefFileIndex;
-class IGESBasic_ToolOrderedGroup;
-class IGESBasic_ToolOrderedGroupWithoutBackP;
-class IGESBasic_ToolHierarchy;
-class IGESBasic_ToolExternalReferenceFile;
-class IGESBasic_ToolName;
-class IGESBasic_ToolAssocGroupType;
-class IGESBasic_ToolSingularSubfigure;
-class IGESBasic_ToolExternalRefFileName;
-class IGESBasic_ToolExternalRefFile;
-class IGESBasic_ToolExternalRefName;
-class IGESBasic_ToolExternalRefLibName;
-class IGESBasic_Protocol;
-class IGESBasic_ReadWriteModule;
-class IGESBasic_GeneralModule;
-class IGESBasic_SpecificModule;
-class IGESBasic_HArray1OfHArray1OfInteger;
-class IGESBasic_HArray1OfHArray1OfReal;
-class IGESBasic_HArray1OfHArray1OfXY;
-class IGESBasic_HArray1OfHArray1OfXYZ;
-class IGESBasic_HArray1OfHArray1OfIGESEntity;
 
 
 //! This package represents basic entities from IGES

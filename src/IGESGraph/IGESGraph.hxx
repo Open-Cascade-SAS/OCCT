@@ -22,38 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESGraph_Protocol;
-class IGESGraph_LineFontDefTemplate;
-class IGESGraph_LineFontDefPattern;
-class IGESGraph_TextFontDef;
-class IGESGraph_TextDisplayTemplate;
-class IGESGraph_Color;
-class IGESGraph_DefinitionLevel;
-class IGESGraph_NominalSize;
-class IGESGraph_DrawingSize;
-class IGESGraph_DrawingUnits;
-class IGESGraph_IntercharacterSpacing;
-class IGESGraph_LineFontPredefined;
-class IGESGraph_HighLight;
-class IGESGraph_Pick;
-class IGESGraph_UniformRectGrid;
-class IGESGraph_ToolLineFontDefTemplate;
-class IGESGraph_ToolLineFontDefPattern;
-class IGESGraph_ToolTextFontDef;
-class IGESGraph_ToolTextDisplayTemplate;
-class IGESGraph_ToolColor;
-class IGESGraph_ToolDefinitionLevel;
-class IGESGraph_ToolNominalSize;
-class IGESGraph_ToolDrawingSize;
-class IGESGraph_ToolDrawingUnits;
-class IGESGraph_ToolIntercharacterSpacing;
-class IGESGraph_ToolLineFontPredefined;
-class IGESGraph_ToolHighLight;
-class IGESGraph_ToolPick;
-class IGESGraph_ToolUniformRectGrid;
-class IGESGraph_Protocol;
-class IGESGraph_ReadWriteModule;
-class IGESGraph_GeneralModule;
-class IGESGraph_SpecificModule;
 
 
 //! This package contains the group of classes necessary

@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Interface_InterfaceError;
 
 
 //! Auxiliary class for ParamReader.

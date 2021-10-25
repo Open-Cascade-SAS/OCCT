@@ -29,8 +29,6 @@
 #include <IntSurf_Situation.hxx>
 #include <IntSurf_TypeTrans.hxx>
 
-class Standard_DomainError;
-class Standard_OutOfRange;
 class IntPatch_Point;
 class IntSurf_PntOn2S;
 

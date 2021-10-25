@@ -28,7 +28,6 @@
 #include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
 
 
 //! This class gives a set of functions to manage and use a list

@@ -24,7 +24,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_SingleParentEntity.hxx>
 class IGESData_IGESEntity;
-class Standard_OutOfRange;
 
 
 class IGESBasic_SingleParent;

@@ -21,10 +21,7 @@
 #include <IGESData_GlobalSection.hxx>
 #include <Interface_InterfaceModel.hxx>
 
-class Interface_InterfaceError;
-class IGESData_GlobalSection;
 class IGESData_IGESEntity;
-class Interface_InterfaceModel;
 class Interface_Check;
 class Standard_Transient;
 class TCollection_HAsciiString;

@@ -28,10 +28,7 @@
 #include <Adaptor2d_Curve2d.hxx>
 
 class Adaptor3d_HVertex;
-class Standard_DomainError;
 class gp_Pnt;
-class IntSurf_Transition;
-class IntSurf_PntOn2S;
 
 
 //! Definition of an intersection point between two surfaces.

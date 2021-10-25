@@ -27,11 +27,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class Standard_NullObject;
 class Standard_Transient;
-class IGESData_IGESEntity;
 
 
 class IGESDefs_GenericData;

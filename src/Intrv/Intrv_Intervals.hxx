@@ -23,7 +23,6 @@
 
 #include <Intrv_SequenceOfInterval.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class Intrv_Interval;
 
 

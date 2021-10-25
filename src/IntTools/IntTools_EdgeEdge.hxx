@@ -29,10 +29,7 @@
 #include <IntTools_SequenceOfRanges.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class Geom_Curve;
-class TopoDS_Edge;
-class IntTools_Range;
 class Bnd_Box;
-class BRepAdaptor_Curve;
 
 
 

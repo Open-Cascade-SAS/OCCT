@@ -26,8 +26,6 @@
 #include <IntCurveSurface_SequenceOfSeg.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class IntCurveSurface_IntersectionPoint;
 class IntCurveSurface_IntersectionSegment;
 

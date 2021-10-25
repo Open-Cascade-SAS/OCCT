@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class Interface_Graph;
 class Standard_Transient;
-class Interface_EntityIterator;
 
 
 //! Defines general form for classes of graph algorithms on

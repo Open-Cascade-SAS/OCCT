@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_SelectDeduct.hxx>
-class Interface_InterfaceError;
 class Interface_EntityIterator;
 class Interface_Graph;
 class TCollection_AsciiString;

@@ -23,7 +23,6 @@
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESSolid_BooleanTree;
-class gp_XYZ;
 class gp_Pnt;
 
 

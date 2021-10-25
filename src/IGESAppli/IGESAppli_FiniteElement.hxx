@@ -24,7 +24,6 @@
 #include <IGESAppli_HArray1OfNode.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-class Standard_OutOfRange;
 class IGESAppli_Node;
 
 

@@ -24,8 +24,6 @@
 #include <IGESSolid_HArray1OfLoop.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-class IGESData_IGESEntity;
-class Standard_OutOfRange;
 class IGESSolid_Loop;
 
 

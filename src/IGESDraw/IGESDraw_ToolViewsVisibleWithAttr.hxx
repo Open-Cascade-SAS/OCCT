@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
 class IGESDraw_ViewsVisibleWithAttr;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

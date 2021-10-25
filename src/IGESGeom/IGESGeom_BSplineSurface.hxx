@@ -27,8 +27,6 @@
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

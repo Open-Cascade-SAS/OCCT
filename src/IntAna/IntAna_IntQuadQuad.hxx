@@ -26,14 +26,9 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class Standard_DomainError;
 class gp_Cylinder;
 class IntAna_Quadric;
 class gp_Cone;
-class IntAna_Curve;
-class gp_Pnt;
 
 
 //! This class provides the analytic intersection between a

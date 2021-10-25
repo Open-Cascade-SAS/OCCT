@@ -23,7 +23,6 @@
 #include <IntPolyh_ArrayOfTriangles.hxx>
 #include <IntPolyh_ArrayOfEdges.hxx>
 
-class IntPolyh_StartPoint;
 
 //! The class represents the triangle built from three IntPolyh points
 //! and three IntPolyh edges.

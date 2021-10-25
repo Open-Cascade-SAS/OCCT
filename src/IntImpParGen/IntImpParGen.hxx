@@ -28,10 +28,6 @@ class gp_Vec2d;
 class IntRes2d_Transition;
 class IntRes2d_Domain;
 class gp_Pnt2d;
-class IntImpParGen_ImpTool;
-class IntImpParGen_ImpParTool;
-class IntImpParGen_Intersector;
-class IntImpParGen_MyImpParTool;
 
 
 //! Gives a generic algorithm to intersect Implicit Curves

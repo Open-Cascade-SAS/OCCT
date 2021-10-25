@@ -44,7 +44,6 @@ class TopoDS_Vertex;
 class gp_Pnt2d;
 class IntTools_Curve;
 class Bnd_Box;
-class TopoDS_Shape;
 class Bnd_OBB;
 
 //! The intersection Context contains geometrical

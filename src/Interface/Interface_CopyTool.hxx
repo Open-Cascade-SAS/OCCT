@@ -31,8 +31,6 @@ class Interface_CopyControl;
 class Interface_CopyMap;
 class Standard_Transient;
 class Interface_GeneralModule;
-class Interface_InterfaceError;
-class Interface_GeneralLib;
 class Interface_Protocol;
 class Interface_EntityIterator;
 

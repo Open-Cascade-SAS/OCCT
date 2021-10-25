@@ -25,7 +25,6 @@
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_TypeTrans.hxx>
 #include <IntRes2d_Situation.hxx>
-class Standard_DomainError;
 
 
 //! Definition of    the  type  of   transition    near an

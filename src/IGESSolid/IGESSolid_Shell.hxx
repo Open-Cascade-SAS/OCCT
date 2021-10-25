@@ -25,8 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESSolid_Face;
 
 

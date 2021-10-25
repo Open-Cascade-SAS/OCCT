@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESGeom_SplineSurface;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

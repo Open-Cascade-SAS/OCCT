@@ -31,11 +31,7 @@
 class Interface_Check;
 class TCollection_HAsciiString;
 class Interface_GTool;
-class Standard_OutOfRange;
-class Standard_NoSuchObject;
-class Interface_InterfaceMismatch;
 class Interface_Protocol;
-class Standard_Transient;
 class Interface_ReportEntity;
 class Interface_CheckIterator;
 class Interface_GeneralLib;

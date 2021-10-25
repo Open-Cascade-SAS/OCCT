@@ -23,8 +23,6 @@
 
 class TopoDS_Face;
 class TopoDS_Edge;
-class IMeshData_Face;
-class IMeshData_Edge;
 
 //! Interface class representing discrete model of a shape.
 class IMeshData_Model : public IMeshData_Shape

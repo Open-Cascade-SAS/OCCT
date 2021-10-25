@@ -24,7 +24,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-class Standard_OutOfRange;
 
 
 class IGESDefs_MacroDef;

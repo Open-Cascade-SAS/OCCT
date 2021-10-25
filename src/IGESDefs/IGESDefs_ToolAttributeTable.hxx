@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESDefs_AttributeTable;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

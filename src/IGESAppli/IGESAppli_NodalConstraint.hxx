@@ -24,7 +24,6 @@
 #include <IGESDefs_HArray1OfTabularData.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESAppli_Node;
-class Standard_OutOfRange;
 class IGESDefs_TabularData;
 
 

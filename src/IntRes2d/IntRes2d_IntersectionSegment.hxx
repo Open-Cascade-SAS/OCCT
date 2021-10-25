@@ -23,8 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-class Standard_DomainError;
-class IntRes2d_IntersectionPoint;
 
 
 //! Definition of an intersection curve between

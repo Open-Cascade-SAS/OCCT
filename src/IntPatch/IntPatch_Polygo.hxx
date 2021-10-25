@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Intf_Polygon2d.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class gp_Pnt2d;
 
 

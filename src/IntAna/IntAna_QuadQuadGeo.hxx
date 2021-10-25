@@ -27,15 +27,11 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_DomainError;
-class Standard_OutOfRange;
 class gp_Pln;
 class gp_Cylinder;
 class gp_Sphere;
 class gp_Cone;
 class gp_Torus;
-class gp_Pnt;
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;

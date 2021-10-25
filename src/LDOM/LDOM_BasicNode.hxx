@@ -18,9 +18,7 @@
 
 #include <LDOM_Node.hxx>
 
-class LDOM_BasicElement;
 class LDOM_NullPtr;
-class LDOMParser;
 
 //  Block of comments describing class LDOM_BasicNode
 //

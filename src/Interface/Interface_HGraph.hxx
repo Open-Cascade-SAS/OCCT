@@ -23,8 +23,6 @@
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
-class Interface_Graph;
 class Interface_InterfaceModel;
 class Interface_GeneralLib;
 class Interface_Protocol;

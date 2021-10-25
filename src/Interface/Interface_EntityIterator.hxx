@@ -26,8 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Interface_IntVal;
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
 class Standard_Transient;
 
 

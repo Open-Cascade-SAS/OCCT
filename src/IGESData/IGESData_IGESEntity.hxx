@@ -32,11 +32,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Type.hxx>
 class TCollection_HAsciiString;
-class Interface_InterfaceError;
-class IGESData_ReadWriteModule;
-class IGESData_GeneralModule;
-class IGESData_IGESReaderTool;
-class IGESData_DirChecker;
 class IGESData_IGESType;
 class IGESData_LineFontEntity;
 class IGESData_LevelListEntity;
@@ -46,7 +41,6 @@ class IGESData_LabelDisplayEntity;
 class IGESData_ColorEntity;
 class gp_GTrsf;
 class Interface_EntityIterator;
-class Interface_EntityList;
 
 
 class IGESData_IGESEntity;

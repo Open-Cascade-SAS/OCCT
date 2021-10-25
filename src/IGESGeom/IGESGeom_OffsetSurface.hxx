@@ -23,8 +23,6 @@
 #include <gp_XYZ.hxx>
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
-class IGESData_IGESEntity;
-class gp_XYZ;
 class gp_Vec;
 
 

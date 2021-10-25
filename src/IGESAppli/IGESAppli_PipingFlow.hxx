@@ -27,8 +27,6 @@
 #include <IGESGraph_HArray1OfTextDisplayTemplate.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 class IGESDraw_ConnectPoint;
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;

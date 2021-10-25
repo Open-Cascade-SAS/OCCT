@@ -35,7 +35,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 class Interface_ParamList;
 class Interface_Check;
-class Interface_InterfaceError;
 class IGESData_IGESEntity;
 class IGESData_IGESReaderData;
 class IGESData_ParamCursor;

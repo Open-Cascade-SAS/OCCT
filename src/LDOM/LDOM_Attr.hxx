@@ -19,7 +19,6 @@
 #include <LDOM_Node.hxx>
 
 class LDOM_BasicAttribute;
-class LDOM_Element;
 
 //  Class LDOM_Attr
 //

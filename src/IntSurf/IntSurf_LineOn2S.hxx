@@ -28,7 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class Standard_OutOfRange;
 class IntSurf_PntOn2S;
 
 

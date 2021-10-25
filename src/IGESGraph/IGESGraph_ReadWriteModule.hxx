@@ -22,7 +22,6 @@
 
 #include <IGESData_ReadWriteModule.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESData_IGESEntity;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

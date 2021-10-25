@@ -30,7 +30,6 @@ class gp_Circ2d;
 class gp_Parab2d;
 class gp_Hypr2d;
 class gp_Lin2d;
-class gp_Ax22d;
 
 
 //! This class represents a conic from gp as a

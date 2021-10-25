@@ -25,7 +25,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
 class gp_Pnt;
 class gp_Vec;
 

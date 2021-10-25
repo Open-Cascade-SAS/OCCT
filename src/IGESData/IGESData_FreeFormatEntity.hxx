@@ -27,8 +27,6 @@
 #include <Interface_ParamType.hxx>
 #include <Standard_CString.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
-class Standard_OutOfRange;
-class Interface_InterfaceError;
 class IGESData_IGESEntity;
 class TCollection_HAsciiString;
 class IGESData_IGESWriter;

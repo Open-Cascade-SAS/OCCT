@@ -24,7 +24,6 @@
 #include <gp_XY.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class gp_XY;
 class gp_Pnt2d;
 class gp_Pnt;
 class gp_Dir;

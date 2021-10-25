@@ -29,8 +29,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESGraph_TextFontDef;
 class gp_Pnt;
 class TCollection_HAsciiString;

@@ -31,11 +31,7 @@
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_Range.hxx>
 class IntTools_Context;
-class TopoDS_Edge;
-class TopoDS_Face;
-class IntTools_Range;
 class gp_Pnt;
-class BRepAdaptor_Surface;
 class IntTools_CommonPrt;
 
 //! The class provides Edge/Face intersection algorithm to determine

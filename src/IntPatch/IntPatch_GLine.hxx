@@ -33,8 +33,6 @@
 #include <gp_Elips.hxx>
 #include <gp_Parab.hxx>
 #include <gp_Hypr.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;

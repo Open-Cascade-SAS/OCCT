@@ -20,8 +20,6 @@
 #include <Standard_Type.hxx>
 
 class Interface_HGraph;
-class Standard_DomainError;
-class Interface_InterfaceError;
 class Interface_InterfaceModel;
 class Interface_GeneralLib;
 class Interface_GTool;

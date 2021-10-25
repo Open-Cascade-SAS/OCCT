@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
-class gp_XYZ;
 class gp_Pnt;
 class gp_Dir;
 

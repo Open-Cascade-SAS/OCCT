@@ -22,56 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESGeom_Protocol;
-class IGESGeom_CircularArc;
-class IGESGeom_CompositeCurve;
-class IGESGeom_ConicArc;
-class IGESGeom_CopiousData;
-class IGESGeom_Plane;
-class IGESGeom_Line;
-class IGESGeom_SplineCurve;
-class IGESGeom_SplineSurface;
-class IGESGeom_Point;
-class IGESGeom_RuledSurface;
-class IGESGeom_SurfaceOfRevolution;
-class IGESGeom_TabulatedCylinder;
-class IGESGeom_Direction;
-class IGESGeom_TransformationMatrix;
-class IGESGeom_Flash;
-class IGESGeom_BSplineCurve;
-class IGESGeom_BSplineSurface;
-class IGESGeom_OffsetCurve;
-class IGESGeom_OffsetSurface;
-class IGESGeom_Boundary;
-class IGESGeom_CurveOnSurface;
-class IGESGeom_BoundedSurface;
-class IGESGeom_TrimmedSurface;
-class IGESGeom_ToolCircularArc;
-class IGESGeom_ToolCompositeCurve;
-class IGESGeom_ToolConicArc;
-class IGESGeom_ToolCopiousData;
-class IGESGeom_ToolPlane;
-class IGESGeom_ToolLine;
-class IGESGeom_ToolSplineCurve;
-class IGESGeom_ToolSplineSurface;
-class IGESGeom_ToolPoint;
-class IGESGeom_ToolRuledSurface;
-class IGESGeom_ToolSurfaceOfRevolution;
-class IGESGeom_ToolTabulatedCylinder;
-class IGESGeom_ToolDirection;
-class IGESGeom_ToolTransformationMatrix;
-class IGESGeom_ToolFlash;
-class IGESGeom_ToolBSplineCurve;
-class IGESGeom_ToolBSplineSurface;
-class IGESGeom_ToolOffsetCurve;
-class IGESGeom_ToolOffsetSurface;
-class IGESGeom_ToolBoundary;
-class IGESGeom_ToolCurveOnSurface;
-class IGESGeom_ToolBoundedSurface;
-class IGESGeom_ToolTrimmedSurface;
-class IGESGeom_Protocol;
-class IGESGeom_ReadWriteModule;
-class IGESGeom_GeneralModule;
-class IGESGeom_SpecificModule;
 
 
 //! This package consists of B-Rep and CSG Solid entities

@@ -23,7 +23,6 @@
 #include <IFSelect_SelectExplore.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Interface_InterfaceError;
 class Standard_Transient;
 class Interface_Graph;
 class Interface_EntityIterator;

@@ -24,10 +24,7 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class TCollection_HAsciiString;
-class IGESData_IGESEntity;
 
 
 class IGESBasic_ExternalRefFileIndex;

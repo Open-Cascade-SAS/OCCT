@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESDimen_GeneralNote;
-class Standard_OutOfRange;
 class IGESDimen_LeaderArrow;
 
 

@@ -26,7 +26,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
 class IGESGraph_TextFontDef;
-class gp_XYZ;
 class gp_Pnt;
 
 

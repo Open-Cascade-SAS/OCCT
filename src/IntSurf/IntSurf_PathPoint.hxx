@@ -28,11 +28,6 @@
 #include <TColgp_HSequenceOfXY.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class StdFail_UndefinedDerivative;
-class Standard_OutOfRange;
-class gp_Pnt;
-class gp_Vec;
-class gp_Dir2d;
 
 
 

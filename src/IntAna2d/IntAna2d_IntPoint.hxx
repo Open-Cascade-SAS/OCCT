@@ -24,8 +24,6 @@
 #include <Standard_Real.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
-class gp_Pnt2d;
 
 
 //! Geometrical intersection between two 2d elements.

@@ -28,7 +28,6 @@ class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
 class IGESGeom_SplineSurface;
 class Geom_BSplineSurface;
-class IGESConvGeom_GeomBuilder;
 
 
 //! This package is intended to gather geometric conversion which

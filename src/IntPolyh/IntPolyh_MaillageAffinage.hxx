@@ -28,7 +28,6 @@
 #include <IntPolyh_ArrayOfSectionLines.hxx>
 #include <IntPolyh_ArrayOfTangentZones.hxx>
 
-class Bnd_Box;
 class IntPolyh_StartPoint;
 
 //! Low-level algorithm to compute intersection of the surfaces

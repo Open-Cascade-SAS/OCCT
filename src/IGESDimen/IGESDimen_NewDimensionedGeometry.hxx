@@ -26,9 +26,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
-class IGESData_IGESEntity;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

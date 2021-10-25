@@ -22,7 +22,6 @@
 
 #include <IGESData_Protocol.hxx>
 #include <Standard_Integer.hxx>
-class IGESData_Protocol;
 class Interface_Protocol;
 
 class IGESData_FileProtocol;

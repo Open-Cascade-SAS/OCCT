@@ -29,7 +29,6 @@
 #include <TColStd_HArray1OfListOfInteger.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 
-class Standard_DomainError;
 class Interface_GeneralLib;
 class Interface_Protocol;
 class Interface_GTool;

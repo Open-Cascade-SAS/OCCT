@@ -25,8 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 
 
 class IGESSolid_BooleanTree;

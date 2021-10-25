@@ -28,8 +28,6 @@
 #include <Interface_ParamType.hxx>
 #include <MoniTool_ValueType.hxx>
 class TCollection_HAsciiString;
-class Standard_Transient;
-class Interface_InterfaceError;
 
 
 class Interface_TypedValue;

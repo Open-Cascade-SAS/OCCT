@@ -19,7 +19,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
-class LDOM_Document;
 class LDOM_BasicElement;
 class LDOM_MemManager;
 class LDOMBasicString;

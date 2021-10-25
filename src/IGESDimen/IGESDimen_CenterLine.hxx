@@ -25,7 +25,6 @@
 #include <TColgp_HArray1OfXY.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

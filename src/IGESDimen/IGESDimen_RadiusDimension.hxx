@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
-class gp_XY;
 class gp_Pnt2d;
 class gp_Pnt;
 

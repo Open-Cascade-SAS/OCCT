@@ -27,7 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
 
-class IGESToBRep_CurveAndSurface;
 class TopoDS_Shape;
 class IGESData_IGESEntity;
 class TopoDS_Vertex;

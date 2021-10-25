@@ -27,7 +27,6 @@
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class IGESToBRep_CurveAndSurface;
 class TopoDS_Shape;
 class IGESData_IGESEntity;
 class TopoDS_Face;

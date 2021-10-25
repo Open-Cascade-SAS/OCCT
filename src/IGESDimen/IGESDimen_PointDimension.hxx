@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
-class IGESData_IGESEntity;
 class IGESGeom_CircularArc;
 class IGESGeom_CompositeCurve;
 

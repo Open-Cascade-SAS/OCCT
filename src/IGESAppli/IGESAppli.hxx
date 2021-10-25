@@ -22,48 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESAppli_Protocol;
-class IGESAppli_Node;
-class IGESAppli_FiniteElement;
-class IGESAppli_NodalDisplAndRot;
-class IGESAppli_NodalResults;
-class IGESAppli_ElementResults;
-class IGESAppli_Flow;
-class IGESAppli_PipingFlow;
-class IGESAppli_RegionRestriction;
-class IGESAppli_LevelFunction;
-class IGESAppli_LineWidening;
-class IGESAppli_DrilledHole;
-class IGESAppli_ReferenceDesignator;
-class IGESAppli_PinNumber;
-class IGESAppli_PartNumber;
-class IGESAppli_FlowLineSpec;
-class IGESAppli_LevelToPWBLayerMap;
-class IGESAppli_PWBArtworkStackup;
-class IGESAppli_PWBDrilledHole;
-class IGESAppli_NodalConstraint;
-class IGESAppli_ToolNode;
-class IGESAppli_ToolFiniteElement;
-class IGESAppli_ToolNodalDisplAndRot;
-class IGESAppli_ToolNodalResults;
-class IGESAppli_ToolElementResults;
-class IGESAppli_ToolFlow;
-class IGESAppli_ToolPipingFlow;
-class IGESAppli_ToolRegionRestriction;
-class IGESAppli_ToolLevelFunction;
-class IGESAppli_ToolLineWidening;
-class IGESAppli_ToolDrilledHole;
-class IGESAppli_ToolReferenceDesignator;
-class IGESAppli_ToolPinNumber;
-class IGESAppli_ToolPartNumber;
-class IGESAppli_ToolFlowLineSpec;
-class IGESAppli_ToolLevelToPWBLayerMap;
-class IGESAppli_ToolPWBArtworkStackup;
-class IGESAppli_ToolPWBDrilledHole;
-class IGESAppli_ToolNodalConstraint;
-class IGESAppli_Protocol;
-class IGESAppli_ReadWriteModule;
-class IGESAppli_GeneralModule;
-class IGESAppli_SpecificModule;
 
 
 //! This package represents collection of miscellaneous

@@ -25,8 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class TCollection_HAsciiString;
 
 

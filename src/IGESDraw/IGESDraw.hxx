@@ -22,38 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESDraw_Protocol;
-class IGESDraw_ConnectPoint;
-class IGESDraw_NetworkSubfigureDef;
-class IGESDraw_ViewsVisible;
-class IGESDraw_ViewsVisibleWithAttr;
-class IGESDraw_LabelDisplay;
-class IGESDraw_Planar;
-class IGESDraw_SegmentedViewsVisible;
-class IGESDraw_Drawing;
-class IGESDraw_DrawingWithRotation;
-class IGESDraw_View;
-class IGESDraw_RectArraySubfigure;
-class IGESDraw_CircArraySubfigure;
-class IGESDraw_NetworkSubfigure;
-class IGESDraw_PerspectiveView;
-class IGESDraw_ToolConnectPoint;
-class IGESDraw_ToolNetworkSubfigureDef;
-class IGESDraw_ToolViewsVisible;
-class IGESDraw_ToolViewsVisibleWithAttr;
-class IGESDraw_ToolLabelDisplay;
-class IGESDraw_ToolPlanar;
-class IGESDraw_ToolSegmentedViewsVisible;
-class IGESDraw_ToolDrawing;
-class IGESDraw_ToolDrawingWithRotation;
-class IGESDraw_ToolView;
-class IGESDraw_ToolRectArraySubfigure;
-class IGESDraw_ToolCircArraySubfigure;
-class IGESDraw_ToolNetworkSubfigure;
-class IGESDraw_ToolPerspectiveView;
-class IGESDraw_Protocol;
-class IGESDraw_ReadWriteModule;
-class IGESDraw_GeneralModule;
-class IGESDraw_SpecificModule;
 
 
 //! This package contains the group of classes necessary for

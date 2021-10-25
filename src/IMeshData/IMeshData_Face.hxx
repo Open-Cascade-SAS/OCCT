@@ -25,7 +25,6 @@
 #include <IMeshData_Types.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
-class IMeshData_Wire;
 class TopoDS_Wire;
 
 //! Interface class representing discrete model of a face.

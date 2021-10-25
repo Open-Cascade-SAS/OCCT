@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESGeom_Line;
-class IGESData_IGESEntity;
 
 
 class IGESGeom_SurfaceOfRevolution;

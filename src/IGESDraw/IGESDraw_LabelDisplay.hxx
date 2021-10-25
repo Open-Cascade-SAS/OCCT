@@ -27,8 +27,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESData_ViewKindEntity;
 class gp_Pnt;
 class IGESDimen_LeaderArrow;

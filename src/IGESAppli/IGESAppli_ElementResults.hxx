@@ -29,8 +29,6 @@
 class IGESDimen_GeneralNote;
 class IGESBasic_HArray1OfHArray1OfInteger;
 class IGESBasic_HArray1OfHArray1OfReal;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESAppli_FiniteElement;
 
 

@@ -26,8 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Interface_CheckStatus.hxx>
-class Standard_Transient;
-class Standard_OutOfRange;
 class Message_Msg;
 class TCollection_HAsciiString;
 

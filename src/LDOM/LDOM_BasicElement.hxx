@@ -22,10 +22,7 @@
 #include <LDOMBasicString.hxx>
 #include <LDOM_Node.hxx>
 
-class LDOM_XmlReader;
-class LDOMParser;
 class LDOM_NodeList;
-class LDOM_Element;
 class LDOM_BasicAttribute;
 
 //  Class LDOM_BasicElement

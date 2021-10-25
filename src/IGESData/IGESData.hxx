@@ -22,45 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESData_Protocol;
-class IGESData_Protocol;
-class IGESData_IGESModel;
-class IGESData_IGESEntity;
-class IGESData_LineFontEntity;
-class IGESData_LevelListEntity;
-class IGESData_TransfEntity;
-class IGESData_ViewKindEntity;
-class IGESData_LabelDisplayEntity;
-class IGESData_ColorEntity;
-class IGESData_NameEntity;
-class IGESData_SingleParentEntity;
-class IGESData_UndefinedEntity;
-class IGESData_FreeFormatEntity;
-class IGESData_GlobalSection;
-class IGESData_DefSwitch;
-class IGESData_DirChecker;
-class IGESData_IGESReaderData;
-class IGESData_IGESReaderTool;
-class IGESData_ParamReader;
-class IGESData_ParamCursor;
-class IGESData_DirPart;
-class IGESData_IGESType;
-class IGESData_FileRecognizer;
-class IGESData_IGESWriter;
-class IGESData_IGESDumper;
-class IGESData_BasicEditor;
-class IGESData_ToolLocation;
-class IGESData_GeneralModule;
-class IGESData_DefaultGeneral;
-class IGESData_ReadWriteModule;
-class IGESData_SpecificModule;
-class IGESData_DefaultSpecific;
-class IGESData_FileProtocol;
-class IGESData_WriterLib;
-class IGESData_SpecificLib;
-class IGESData_GlobalNodeOfWriterLib;
-class IGESData_NodeOfWriterLib;
-class IGESData_GlobalNodeOfSpecificLib;
-class IGESData_NodeOfSpecificLib;
 
 
 //! basic description of an IGES Interface

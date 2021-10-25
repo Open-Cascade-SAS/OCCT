@@ -26,8 +26,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfXYZ;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class IGESDimen_GeneralNote;
 class IGESAppli_Node;
 class gp_XYZ;

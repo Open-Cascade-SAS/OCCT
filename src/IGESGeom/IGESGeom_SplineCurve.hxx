@@ -25,8 +25,6 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Real.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 
 
 class IGESGeom_SplineCurve;

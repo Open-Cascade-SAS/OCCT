@@ -24,8 +24,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 class Standard_Transient;
 
 

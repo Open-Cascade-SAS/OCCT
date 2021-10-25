@@ -22,56 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESDimen_Protocol;
-class IGESDimen_CenterLine;
-class IGESDimen_Section;
-class IGESDimen_WitnessLine;
-class IGESDimen_AngularDimension;
-class IGESDimen_CurveDimension;
-class IGESDimen_DiameterDimension;
-class IGESDimen_FlagNote;
-class IGESDimen_GeneralLabel;
-class IGESDimen_GeneralNote;
-class IGESDimen_NewGeneralNote;
-class IGESDimen_LeaderArrow;
-class IGESDimen_LinearDimension;
-class IGESDimen_OrdinateDimension;
-class IGESDimen_PointDimension;
-class IGESDimen_RadiusDimension;
-class IGESDimen_GeneralSymbol;
-class IGESDimen_SectionedArea;
-class IGESDimen_DimensionedGeometry;
-class IGESDimen_NewDimensionedGeometry;
-class IGESDimen_DimensionUnits;
-class IGESDimen_DimensionTolerance;
-class IGESDimen_DimensionDisplayData;
-class IGESDimen_BasicDimension;
-class IGESDimen_ToolCenterLine;
-class IGESDimen_ToolSection;
-class IGESDimen_ToolWitnessLine;
-class IGESDimen_ToolAngularDimension;
-class IGESDimen_ToolCurveDimension;
-class IGESDimen_ToolDiameterDimension;
-class IGESDimen_ToolFlagNote;
-class IGESDimen_ToolGeneralLabel;
-class IGESDimen_ToolGeneralNote;
-class IGESDimen_ToolNewGeneralNote;
-class IGESDimen_ToolLeaderArrow;
-class IGESDimen_ToolLinearDimension;
-class IGESDimen_ToolOrdinateDimension;
-class IGESDimen_ToolPointDimension;
-class IGESDimen_ToolRadiusDimension;
-class IGESDimen_ToolGeneralSymbol;
-class IGESDimen_ToolSectionedArea;
-class IGESDimen_ToolDimensionedGeometry;
-class IGESDimen_ToolNewDimensionedGeometry;
-class IGESDimen_ToolDimensionUnits;
-class IGESDimen_ToolDimensionTolerance;
-class IGESDimen_ToolDimensionDisplayData;
-class IGESDimen_ToolBasicDimension;
-class IGESDimen_Protocol;
-class IGESDimen_ReadWriteModule;
-class IGESDimen_GeneralModule;
-class IGESDimen_SpecificModule;
 
 
 //! This package represents Entities applied to Dimensions

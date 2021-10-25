@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESBasic_Group;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;
@@ -34,7 +33,6 @@ class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
 class IGESData_IGESDumper;
-class Message_Messenger;
 
 
 //! Tool to work on a Group. Called by various Modules

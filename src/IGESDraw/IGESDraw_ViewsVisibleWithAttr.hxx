@@ -28,9 +28,6 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class IGESData_ViewKindEntity;
 class IGESData_LineFontEntity;
 class IGESGraph_Color;
 class IGESData_IGESEntity;

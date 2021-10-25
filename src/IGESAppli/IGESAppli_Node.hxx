@@ -24,7 +24,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESGeom_TransformationMatrix;
-class gp_XYZ;
 class gp_Pnt;
 class IGESData_TransfEntity;
 

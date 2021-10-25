@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 class Interface_ParamList;
-class Standard_OutOfRange;
 class Interface_FileParameter;
 
 

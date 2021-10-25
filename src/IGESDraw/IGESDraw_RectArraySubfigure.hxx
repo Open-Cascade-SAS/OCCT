@@ -26,9 +26,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class IGESData_IGESEntity;
-class Standard_OutOfRange;
-class gp_XYZ;
 class gp_Pnt;
 
 

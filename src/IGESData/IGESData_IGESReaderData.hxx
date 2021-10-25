@@ -32,9 +32,7 @@
 #include <Interface_ParamType.hxx>
 class Interface_ParamSet;
 class Interface_Check;
-class IGESData_GlobalSection;
 class IGESData_DirPart;
-class IGESData_IGESType;
 
 
 class IGESData_IGESReaderData;

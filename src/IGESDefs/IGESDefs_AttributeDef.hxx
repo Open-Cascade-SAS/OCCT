@@ -28,12 +28,8 @@
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class Standard_NullObject;
 class IGESGraph_TextDisplayTemplate;
 class Standard_Transient;
-class IGESData_IGESEntity;
 
 
 class IGESDefs_AttributeDef;

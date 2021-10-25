@@ -26,7 +26,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
-class Standard_OutOfRange;
 
 
 class IGESGraph_LineFontDefPattern;

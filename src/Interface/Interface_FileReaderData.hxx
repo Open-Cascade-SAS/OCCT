@@ -29,11 +29,9 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Interface_ParamSet;
-class Standard_NoSuchObject;
 class TCollection_AsciiString;
 class Interface_FileParameter;
 class Interface_ParamList;
-class Standard_Transient;
 
 
 class Interface_FileReaderData;

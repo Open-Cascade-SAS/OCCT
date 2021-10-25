@@ -22,7 +22,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <IntTools_PntOnFace.hxx>
-class IntTools_PntOnFace;
 
 
 //! Contains two points PntOnFace from IntTools and a flag

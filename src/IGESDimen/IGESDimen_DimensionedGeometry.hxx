@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-class IGESData_IGESEntity;
-class Standard_OutOfRange;
 
 
 class IGESDimen_DimensionedGeometry;

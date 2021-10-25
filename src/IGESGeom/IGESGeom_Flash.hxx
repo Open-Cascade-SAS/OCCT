@@ -25,9 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class IGESData_IGESEntity;
-class Standard_OutOfRange;
-class gp_XY;
 class gp_Pnt2d;
 class gp_Pnt;
 

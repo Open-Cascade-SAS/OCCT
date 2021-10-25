@@ -25,9 +25,6 @@
 #include <Standard_Real.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-class gp_Pnt;
-class gp_Vec;
-class gp_Vec2d;
 
 
 //! Definition of a point solution of the

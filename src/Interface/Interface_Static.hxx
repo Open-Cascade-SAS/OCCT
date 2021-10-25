@@ -33,8 +33,6 @@
 #include <Standard_Character.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class TCollection_HAsciiString;
-class Standard_Transient;
-class Interface_InterfaceError;
 
 class Interface_Static;
 DEFINE_STANDARD_HANDLE(Interface_Static, Interface_TypedValue)

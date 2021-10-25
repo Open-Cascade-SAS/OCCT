@@ -23,10 +23,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
 class Interface_FileReaderData;
 class Interface_Check;
-class Standard_Transient;
 
 
 class Interface_ReaderModule;

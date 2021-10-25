@@ -21,7 +21,6 @@
 #include <LDOM_CDATASection.hxx>
 #include <LDOM_Comment.hxx>
 
-class LDOM_MemManager;
 
 //  Class LDOM_Document
 

@@ -30,9 +30,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 class IGESData_IGESEntity;
 class ShapeExtend_WireData;
-class IGESToBRep_CurveAndSurface;
-class TopoDS_Face;
-class gp_Trsf2d;
 
 
 class IGESToBRep_IGESBoundary;

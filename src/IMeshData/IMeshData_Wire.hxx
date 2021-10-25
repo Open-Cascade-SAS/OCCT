@@ -23,7 +23,6 @@
 #include <TopoDS.hxx>
 #include <IMeshData_Types.hxx>
 
-class IMeshData_Edge;
 
 //! Interface class representing discrete model of a wire.
 //! Wire should represent an ordered set of edges.

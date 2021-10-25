@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <IntPatch_Polygo.hxx>
 #include <Standard_Integer.hxx>
-class Standard_ConstructionError;
 class Bnd_Box2d;
 class gp_Pnt2d;
 

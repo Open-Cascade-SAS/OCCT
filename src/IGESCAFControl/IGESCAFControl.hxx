@@ -22,8 +22,6 @@
 
 #include <Standard_Integer.hxx>
 class Quantity_Color;
-class IGESCAFControl_Reader;
-class IGESCAFControl_Writer;
 
 
 //! Provides high-level API to translate IGES file

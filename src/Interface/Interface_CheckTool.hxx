@@ -25,13 +25,11 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_GTool;
-class Interface_CheckFailure;
 class Interface_InterfaceModel;
 class Interface_Protocol;
 class Interface_Graph;
 class Interface_HGraph;
 class Standard_Transient;
-class Interface_ShareTool;
 class Interface_Check;
 class Interface_CheckIterator;
 class Interface_EntityIterator;

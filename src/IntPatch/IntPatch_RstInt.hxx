@@ -19,7 +19,6 @@
 
 #include <Adaptor3d_Surface.hxx>
 
-class Standard_DomainError;
 class IntPatch_Line;
 class Adaptor3d_TopolTool;
 

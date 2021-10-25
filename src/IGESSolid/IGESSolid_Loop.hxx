@@ -27,9 +27,6 @@
 #include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfInteger;
 class IGESBasic_HArray1OfHArray1OfIGESEntity;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 
 
 class IGESSolid_Loop;

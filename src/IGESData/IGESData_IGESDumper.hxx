@@ -26,7 +26,6 @@
 #include <Standard_OStream.hxx>
 
 class IGESData_IGESModel;
-class Interface_InterfaceError;
 class IGESData_Protocol;
 class IGESData_IGESEntity;
 

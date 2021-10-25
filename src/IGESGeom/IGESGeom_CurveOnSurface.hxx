@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
-class IGESData_IGESEntity;
 
 
 class IGESGeom_CurveOnSurface;

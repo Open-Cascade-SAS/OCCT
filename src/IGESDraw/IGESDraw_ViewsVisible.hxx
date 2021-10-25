@@ -25,8 +25,6 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class IGESData_ViewKindEntity;
 class IGESData_IGESEntity;
 
 

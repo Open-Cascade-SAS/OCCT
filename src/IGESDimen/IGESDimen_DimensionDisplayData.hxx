@@ -25,8 +25,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 
 
 class IGESDimen_DimensionDisplayData;

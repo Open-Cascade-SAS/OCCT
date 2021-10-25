@@ -27,7 +27,6 @@
 #include <TopAbs_State.hxx>
 
 class BRepTopAdaptor_TopolTool;
-class TopoDS_Face;
 class gp_Lin;
 class gp_Pnt;
 class IntCurveSurface_HInter;

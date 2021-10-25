@@ -26,8 +26,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESSolid_Shell;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 
 
 class IGESSolid_ManifoldSolid;

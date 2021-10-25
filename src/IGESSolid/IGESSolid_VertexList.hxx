@@ -23,7 +23,6 @@
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class gp_Pnt;
 
 

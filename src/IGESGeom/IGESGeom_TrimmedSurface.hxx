@@ -24,9 +24,7 @@
 #include <IGESGeom_HArray1OfCurveOnSurface.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class IGESData_IGESEntity;
 class IGESGeom_CurveOnSurface;
-class Standard_OutOfRange;
 
 
 class IGESGeom_TrimmedSurface;

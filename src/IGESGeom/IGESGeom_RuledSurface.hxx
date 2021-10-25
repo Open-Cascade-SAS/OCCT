@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class IGESData_IGESEntity;
 
 
 class IGESGeom_RuledSurface;

@@ -28,8 +28,6 @@ class Interface_Protocol;
 class Interface_FileReaderData;
 class Interface_InterfaceModel;
 class Message_Messenger;
-class Standard_DomainError;
-class Standard_NoSuchObject;
 class Interface_Check;
 class Standard_Transient;
 class Interface_GeneralLib;

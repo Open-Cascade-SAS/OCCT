@@ -24,10 +24,7 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
-class IGESData_IGESEntity;
 class IGESBasic_HArray1OfHArray1OfIGESEntity;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 
 
 class IGESGeom_Boundary;

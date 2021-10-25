@@ -28,8 +28,6 @@
 class IGESDraw_NetworkSubfigureDef;
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
-class Standard_OutOfRange;
-class gp_XYZ;
 class IGESDraw_ConnectPoint;
 
 

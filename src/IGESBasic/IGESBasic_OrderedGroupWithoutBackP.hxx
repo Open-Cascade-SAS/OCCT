@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESBasic_Group.hxx>
-class Standard_OutOfRange;
 
 
 class IGESBasic_OrderedGroupWithoutBackP;

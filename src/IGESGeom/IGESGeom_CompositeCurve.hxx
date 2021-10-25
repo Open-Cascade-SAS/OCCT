@@ -23,8 +23,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class IGESData_IGESEntity;
 
 
 class IGESGeom_CompositeCurve;

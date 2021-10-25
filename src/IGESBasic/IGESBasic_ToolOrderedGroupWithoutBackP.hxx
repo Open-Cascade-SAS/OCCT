@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DomainError;
 class IGESBasic_OrderedGroupWithoutBackP;
 class IGESData_IGESReaderData;
 class IGESData_ParamReader;

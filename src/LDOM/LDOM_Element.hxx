@@ -19,7 +19,6 @@
 #include <LDOM_Attr.hxx>
 #include <LDOM_NodeList.hxx>
 
-class LDOMParser;
 class LDOM_BasicElement;
 
 //  Class LDOM_Element

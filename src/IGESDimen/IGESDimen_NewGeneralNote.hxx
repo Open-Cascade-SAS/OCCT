@@ -30,12 +30,8 @@
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
-class gp_XYZ;
 class gp_Pnt;
 class TCollection_HAsciiString;
-class IGESData_IGESEntity;
 
 
 class IGESDimen_NewGeneralNote;

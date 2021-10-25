@@ -27,8 +27,6 @@
 #include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 class IGESBasic_HArray1OfHArray1OfReal;
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 
 
 class IGESDefs_TabularData;

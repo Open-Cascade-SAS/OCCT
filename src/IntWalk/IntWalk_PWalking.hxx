@@ -26,7 +26,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <IntWalk_StatusDeflection.hxx>
 
-class IntSurf_LineOn2S;
 class gp_Pnt;
 
 //! This class implements an algorithm to determine the

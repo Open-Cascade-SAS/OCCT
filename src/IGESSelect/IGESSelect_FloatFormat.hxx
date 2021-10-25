@@ -26,7 +26,6 @@
 #include <IGESSelect_FileModifier.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-class TCollection_AsciiString;
 class IFSelect_ContextWrite;
 class IGESData_IGESWriter;
 

@@ -30,7 +30,6 @@
 #include <TopAbs_State.hxx>
 #include <memory>
 
-class TopoDS_Face;
 class gp_Pnt2d;
 
 //! Class provides an algorithm to classify a 2d Point

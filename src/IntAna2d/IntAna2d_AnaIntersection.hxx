@@ -24,15 +24,12 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IntAna2d_IntPoint.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
 class gp_Lin2d;
 class gp_Circ2d;
 class IntAna2d_Conic;
 class gp_Elips2d;
 class gp_Parab2d;
 class gp_Hypr2d;
-class IntAna2d_IntPoint;
 
 
 //! Implementation of the analytical intersection between:

@@ -26,7 +26,6 @@
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 class IGESDimen_WitnessLine;
-class Standard_OutOfRange;
 
 
 class IGESDimen_LinearDimension;

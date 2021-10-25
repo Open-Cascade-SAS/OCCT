@@ -23,7 +23,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_LevelListEntity.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 
 
 class IGESGraph_DefinitionLevel;

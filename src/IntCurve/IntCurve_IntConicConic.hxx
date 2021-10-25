@@ -24,7 +24,6 @@
 #include <IntCurve_IntImpConicParConic.hxx>
 #include <IntRes2d_Intersection.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
 class gp_Lin2d;
 class IntRes2d_Domain;
 class gp_Circ2d;

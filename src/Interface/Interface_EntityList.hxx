@@ -24,10 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
-class Standard_Transient;
-class Standard_OutOfRange;
-class Interface_InterfaceError;
-class Standard_NullObject;
 class Interface_EntityIterator;
 
 

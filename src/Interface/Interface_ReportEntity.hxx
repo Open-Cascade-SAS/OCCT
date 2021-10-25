@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_Check;
-class Standard_Transient;
 
 
 class Interface_ReportEntity;

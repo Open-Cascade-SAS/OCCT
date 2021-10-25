@@ -22,25 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class IGESDefs_Protocol;
-class IGESDefs_AssociativityDef;
-class IGESDefs_MacroDef;
-class IGESDefs_UnitsData;
-class IGESDefs_AttributeDef;
-class IGESDefs_TabularData;
-class IGESDefs_GenericData;
-class IGESDefs_AttributeTable;
-class IGESDefs_ToolAssociativityDef;
-class IGESDefs_ToolMacroDef;
-class IGESDefs_ToolUnitsData;
-class IGESDefs_ToolAttributeDef;
-class IGESDefs_ToolTabularData;
-class IGESDefs_ToolGenericData;
-class IGESDefs_ToolAttributeTable;
-class IGESDefs_Protocol;
-class IGESDefs_ReadWriteModule;
-class IGESDefs_GeneralModule;
-class IGESDefs_SpecificModule;
-class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
 
 
 //! To embody general definitions of Entities
