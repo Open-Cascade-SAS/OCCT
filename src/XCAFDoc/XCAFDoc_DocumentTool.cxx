@@ -249,6 +249,19 @@ TDF_Label XCAFDoc_DocumentTool::VisMaterialLabel (const TDF_Label& theLabel)
   return XCAFDoc_ShapeTool::Set(ShapesLabel(acces));
 }
 
+ //=======================================================================
+//function : CheckShapeTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckShapeTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(1, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_ShapeTool::GetID());
+}
 
 //=======================================================================
 //function : ColorTool
@@ -258,6 +271,20 @@ TDF_Label XCAFDoc_DocumentTool::VisMaterialLabel (const TDF_Label& theLabel)
 Handle(XCAFDoc_ColorTool) XCAFDoc_DocumentTool::ColorTool (const TDF_Label& acces) 
 {
   return XCAFDoc_ColorTool::Set(ColorsLabel(acces));
+}
+
+ //=======================================================================
+ //function : CheckColorTool
+ //purpose  :
+ //=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckColorTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(2, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_ColorTool::GetID());
 }
 
 //=======================================================================
@@ -270,6 +297,20 @@ Handle(XCAFDoc_VisMaterialTool) XCAFDoc_DocumentTool::VisMaterialTool (const TDF
 }
 
 //=======================================================================
+//function : CheckVisMaterialTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckVisMaterialTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(10, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_VisMaterialTool::GetID());
+}
+
+//=======================================================================
 //function : LayerTool
 //purpose  : 
 //=======================================================================
@@ -279,6 +320,19 @@ Handle(XCAFDoc_LayerTool) XCAFDoc_DocumentTool::LayerTool (const TDF_Label& acce
   return XCAFDoc_LayerTool::Set(LayersLabel(acces));
 }
 
+//=======================================================================
+//function : CheckLayerTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckLayerTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(3, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_LayerTool::GetID());
+}
 
 //=======================================================================
 //function : DimTolTool
@@ -290,6 +344,19 @@ Handle(XCAFDoc_DimTolTool) XCAFDoc_DocumentTool::DimTolTool(const TDF_Label& acc
   return XCAFDoc_DimTolTool::Set(DGTsLabel(acces));
 }
 
+//=======================================================================
+//function : CheckDimTolTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckDimTolTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(4, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_DimTolTool::GetID());
+}
 
 //=======================================================================
 //function : MaterialTool
@@ -299,6 +366,20 @@ Handle(XCAFDoc_DimTolTool) XCAFDoc_DocumentTool::DimTolTool(const TDF_Label& acc
 Handle(XCAFDoc_MaterialTool) XCAFDoc_DocumentTool::MaterialTool(const TDF_Label& acces) 
 {
   return XCAFDoc_MaterialTool::Set(MaterialsLabel(acces));
+}
+
+//=======================================================================
+//function : CheckMaterialTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckMaterialTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(5, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_MaterialTool::GetID());
 }
 
 //=======================================================================
@@ -312,6 +393,20 @@ Handle(XCAFDoc_ViewTool) XCAFDoc_DocumentTool::ViewTool(const TDF_Label& acces)
 }
 
 //=======================================================================
+//function : CheckViewTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckViewTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(7, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_ViewTool::GetID());
+}
+
+//=======================================================================
 //function : ClippingPlaneTool
 //purpose  : 
 //=======================================================================
@@ -322,13 +417,40 @@ Handle(XCAFDoc_ClippingPlaneTool) XCAFDoc_DocumentTool::ClippingPlaneTool(const 
 }
 
 //=======================================================================
-//function : ClippingPlaneTool
-//purpose  : 
+//function : CheckClippingPlaneTool
+//purpose  :
 //=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckClippingPlaneTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(8, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_ClippingPlaneTool::GetID());
+}
 
+//=======================================================================
+//function : NotesTool
+//purpose  :
+//=======================================================================
 Handle(XCAFDoc_NotesTool) XCAFDoc_DocumentTool::NotesTool(const TDF_Label& acces)
 {
   return XCAFDoc_NotesTool::Set(NotesLabel(acces));
+}
+
+//=======================================================================
+//function : CheckNotesTool
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::CheckNotesTool(const TDF_Label& theAcces)
+{
+  TDF_Label aLabel = DocLabel(theAcces).FindChild(9, Standard_False);
+  if (aLabel.IsNull())
+  {
+    return Standard_False;
+  }
+  return aLabel.IsAttribute(XCAFDoc_NotesTool::GetID());
 }
 
 //=======================================================================

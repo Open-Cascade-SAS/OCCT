@@ -1,0 +1,154 @@
+puts "============================================================================"
+puts "0028104: Data Exchange - Extract sub-assembly (XDE)"
+puts "============================================================================"
+puts ""
+
+pload DCAF
+
+Close D0 -silent
+Close D1 -silent
+Close D2 -silent
+Close D3 -silent
+Close D4 -silent
+Close D5 -silent
+Close D6 -silent
+
+box b1 0 0 0 10 10 10
+box b2 0 0 0 10 10 10 
+box b3 0 0 0 10 10 10 
+compound b1 b2 b3 c 
+
+XOpen [locate_data_file bug30189.xbf] D0
+
+XNewDoc D2
+XAddShape D2 c
+XNewDoc D3
+XAddShape D3 c
+XNewDoc D4
+XAddShape D4 c
+XNewDoc D5
+XAddShape D5 c
+XNewDoc D6
+XAddShape D6 c
+
+# All copy
+XNewDoc D1
+XExtract D1 D0 0:1:1:1
+# Exctact part
+XExtract D2 D0 0:1:1:3
+# Exctact component
+XExtract D3 D0 0:1:1:2:1
+# Exctact part as a component
+XExtract D4 0:1:1:1 D0 0:1:1:3
+# Exctact compontnt as a component
+XExtract D5 0:1:1:1 D0 0:1:1:2:1
+# Exctact compontnt as a component
+XExtract D6 0:1:1:1 D0 0:1:1:2:1 0:1:1:2:2 0:1:1:2:3 0:1:1:3
+
+# checking labels structure and number of colors and shape
+set err_compare_ref ""
+set statD0 [XStat D0]
+set statD1 [XStat D1]
+set cur_list [split $statD0 \n]
+set ref_list [split $statD1 \n]
+set nb_ref [llength $ref_list]
+set nb_cur [llength $cur_list]
+set ref_Compare 0
+set isNextLayer 0; set isNextColor 0
+for { set i 0 } { $i < $nb_cur } { incr i } {
+  set refstr [lindex $ref_list $i]
+  set curstr [lindex $cur_list $i]
+  set isOK 1
+  if {[regexp "Number of colors" $refstr]} {
+    set isNextColor 1
+  } elseif {[regexp "Number of layers" $refstr]} {
+    set isNextLayer 1
+  } elseif {$isNextLayer || $isNextColor} {
+    set refProp [split $refstr " "]
+  set curProp [split $curstr " "]
+  if {[llength $refProp] != [llength $curProp]} {
+    set isOK 0
+  } else {
+    for { set j 0 } { $j < [llength $refProp] && $isOK} { incr j } {
+      set isFind 0
+      for { set k 0 } { $k < [llength $refProp] && $isOK} { incr k } {
+        if {[lindex $refProp  $j] == [lindex $curProp  $k]} {
+          set isFind 1
+        break
+        }
+      }
+      set isOK $isFind
+    }
+  }
+  set isNextLayer 0;  set isNextColor 0
+  } elseif {$refstr != $curstr} {
+    set isOK 0
+  }
+  if {!$isOK} {
+    incr ref_Compare
+  append err_compare_ref " Reference data - $refstr\n"
+  append err_compare_ref " Current data   - $curstr\n"
+  append err_compare_ref "----------------------------------------------\n"
+  }
+}
+
+if { $ref_Compare > 0} {
+  puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
+} else {
+  puts "Comparison of current result with reference data - OK\n"
+}
+
+XGetOneShape res0 D0
+XGetOneShape res1 D1
+compare res0 res1
+
+set propsD2 [XCheckProps D2]
+if { ![regexp "0:1:1:5  +\"nut" $propsD2] } {
+  puts "Error: Incorrectly extracted shapes from D0 0:1:1:3 to D2"
+}
+if { ![regexp "RED" [XGetAllColors D2]] } {
+  puts "Error: Incorrectly extracted attributes from D0 0:1:1:3 to D2"
+}
+
+set propsD3 [XCheckProps D3]
+if { ![regexp "0:1:1:5  +\"nut" $propsD3] && ![regexp "0:1:1:6  +\"nut_1" $propsD3] } {
+  puts "Error: Incorrectly extracted shapes from D0 0:1:1:2:1 to D3"
+}
+if { ![regexp "RED" [XGetAllColors D3]] } {
+  puts "Error: Incorrectly extracted attributes from D0 0:1:1:2:1 to D3"
+}
+
+set dumpD4 [Xdump D4]
+if { ![regexp "PART SOLID 0:1:1:5  +\"nut" $dumpD4] && ![regexp "refers to 0:1:1:5" $dumpD4] } {
+  puts "Error: Incorrectly extracted shapes from D0 0:1:1:3 to D4 0:1:1:1"
+}
+if { ![regexp "RED" [XGetAllColors D4]] } {
+  puts "Error: Incorrectly extracted attributes from D0 0:1:1:3 to D4 0:1:1:1"
+}
+
+set dumpD5 [Xdump D5]
+if { ![regexp "PART SOLID 0:1:1:5 \"nut" $dumpD5] && ![regexp "refers to 0:1:1:5')' \"nut_1" $dumpD5] } {
+  puts "Error: Incorrectly extracted shapes from D0 0:1:1:2:1 to D5 0:1:1:1"
+}
+if { ![regexp "RED" [XGetAllColors D5]] } {
+  puts "Error: Incorrect XExtract D0 0:1:1:2:1 D5 0:1:1:1"
+}
+
+set dumpD6 [Xdump D6]
+if { ![regexp "nut_1" $dumpD6] && ![regexp "nut_2" $dumpD6] && ![regexp "rod_1'" $dumpD6] && ![regexp "refers to 0:1:1:5" $dumpD6]} {
+  puts "Error: Incorrectly extracted shapes from D0 0:1:1:2:1 0:1:1:2:2 0:1:1:2:3 0:1:1:3 to D6 0:1:1:1"
+}
+set colorD6 [XGetAllColors D6]
+if { ![regexp "RED" $colorD6] && ![regexp "DARKGOLDENROD1" $colorD6]} {
+  puts "Error: Incorrectly extracted attributes from D0 0:1:1:2:1 0:1:1:2:2 0:1:1:2:3 0:1:1:3 to D6 0:1:1:1"
+}
+
+checkprops res0 -equal res1
+
+Close D0 -silent
+Close D1 -silent
+Close D2 -silent
+Close D3 -silent
+Close D4 -silent
+Close D5 -silent
+Close D6 -silent

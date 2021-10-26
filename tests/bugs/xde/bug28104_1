@@ -1,0 +1,81 @@
+puts "============================================================================"
+puts "0028104: Data Exchange - Extract sub-assembly (XDE)"
+puts "============================================================================"
+puts ""
+
+pload DCAF
+
+Close D0 -silent
+Close D1 -silent
+
+# Reading step file
+ReadStep D0 [locate_data_file as1-oc-214-mat.stp]
+
+# All copy
+XNewDoc D1
+XExtract D1 D0 0:1:1:1
+
+# checking Props, labels structure and number of colors and shape
+set err_compare_ref ""
+set statD0 [XStat D0]
+set statD1 [XStat D1]
+set cur_list [split $statD0 \n]
+set ref_list [split $statD1 \n]
+set nb_ref [llength $ref_list]
+set nb_cur [llength $cur_list]
+set ref_Compare 0
+set isNextLayer 0; set isNextColor 0
+for { set i 0 } { $i < $nb_cur } { incr i } {
+  set refstr [lindex $ref_list $i]
+  set curstr [lindex $cur_list $i]
+  set isOK 1
+  if {[regexp "Number of colors" $refstr]} {
+    set isNextColor 1
+  } elseif {[regexp "Number of layers" $refstr]} {
+    set isNextLayer 1
+  } elseif {$isNextLayer || $isNextColor} {
+    set refProp [split $refstr " "]
+  set curProp [split $curstr " "]
+  if {[llength $refProp] != [llength $curProp]} {
+    set isOK 0
+  } else {
+    for { set j 0 } { $j < [llength $refProp] && $isOK} { incr j } {
+      set isFind 0
+      for { set k 0 } { $k < [llength $refProp] && $isOK} { incr k } {
+        if {[lindex $refProp  $j] == [lindex $curProp  $k]} {
+          set isFind 1
+        break
+        }
+      }
+      set isOK $isFind
+    }
+  }
+  set isNextLayer 0;  set isNextColor 0
+  } elseif {$refstr != $curstr} {
+    set isOK 0
+  }
+  if {!$isOK} {
+    incr ref_Compare
+  append err_compare_ref " Reference data - $refstr\n"
+  append err_compare_ref " Current data   - $curstr\n"
+  append err_compare_ref "----------------------------------------------\n"
+  }
+}
+
+if { $ref_Compare > 0} {
+  puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
+} else {
+  puts "Comparison of current result with reference data - OK\n"
+}
+
+XGetOneShape res0 D0
+XGetOneShape res1 D1
+set propsD0 [XCheckProps D0]
+set propsD1 [XCheckProps D1]
+if { $propsD0 != $propsD1 } {
+  puts "Error: Incorrect extraction of shape properties"
+}
+checkprops res0 -equal res1
+
+Close D0 -silent
+Close D1 -silent

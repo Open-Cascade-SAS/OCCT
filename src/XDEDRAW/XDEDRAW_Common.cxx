@@ -579,6 +579,10 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
   return 0;
 }
 
+//=======================================================================
+//function : Expand
+//purpose  :
+//=======================================================================
 static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 3) {
@@ -626,6 +630,68 @@ static Standard_Integer Expand (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
+//=======================================================================
+//function : Extract
+//purpose  :
+//=======================================================================
+static Standard_Integer Extract(Draw_Interpretor& di,
+                                Standard_Integer argc,
+                                const char** argv)
+{
+  if (argc < 4)
+  {
+    di << "Use: " << argv[0] << "dstDoc [dstAssmblSh] srcDoc srcLabel1 srcLabel2 ...\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aSrcDoc, aDstDoc;
+  DDocStd::GetDocument(argv[1], aDstDoc);
+  if (aDstDoc.IsNull())
+  {
+    di << "Error " << argv[1] << " is not a document\n";
+    return 1;
+  }
+  TDF_Label aDstLabel;
+  Standard_Integer anArgInd = 3;
+  TDF_Tool::Label(aDstDoc->GetData(), argv[2], aDstLabel);
+  Handle(XCAFDoc_ShapeTool) aDstShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDstDoc->Main());
+  if (aDstLabel.IsNull())
+  {
+    aDstLabel = aDstShapeTool->Label();
+    anArgInd = 2; // to get Src Doc
+  }
+  DDocStd::GetDocument(argv[anArgInd++], aSrcDoc);
+  if (aSrcDoc.IsNull())
+  {
+    di << "Error " << argv[anArgInd] << " is not a document\n";
+    return 1;
+  }
+
+  TDF_LabelSequence aSrcShapes;
+  for (; anArgInd < argc; anArgInd++)
+  {
+    TDF_Label aSrcLabel;
+    TDF_Tool::Label(aSrcDoc->GetData(), argv[anArgInd], aSrcLabel);
+    if (aSrcLabel.IsNull())
+    {
+      di << "[" << argv[anArgInd] << "] is not valid Src label\n";
+      return 1;
+    }
+    aSrcShapes.Append(aSrcLabel);
+  }
+  if (aSrcShapes.IsEmpty())
+  {
+    di << "Error: No Shapes to extract\n";
+    return 1;
+  }
+
+  if (!XCAFDoc_Editor::Extract(aSrcShapes, aDstLabel))
+  {
+    di << "Error: Cannot extract labels\n";
+    return 1;
+  }
+  return 0;
+}
 
 //=======================================================================
 //function : WriteVrml
@@ -695,6 +761,9 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
 
   di.Add("XExpand", "XExpand Doc recursively(0/1) or XExpand Doc recursively(0/1) label1 label2 ..."  
           "or XExpand Doc recursively(0/1) shape1 shape2 ...",__FILE__, Expand, g);
+  di.Add("XExtract", "XExtract dstDoc [dstAssmblSh] srcDoc srcLabel1 srcLabel2 ...\t"
+    "Extracts given srcLabel1 srcLabel2 ... from srcDoc into given Doc or assembly shape",
+    __FILE__, Extract, g);
 
   di.Add("WriteVrml", "Doc filename [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 0 by default]", __FILE__, WriteVrml, g);
 
