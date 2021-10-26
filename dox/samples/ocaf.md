@@ -1,4 +1,4 @@
-﻿OCAF Usage {#samples__ocaf}
+﻿OCAF: Usage Tutorial {#samples__ocaf}
 ========
 
 ## Getting  Started

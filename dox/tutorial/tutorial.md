@@ -1,4 +1,4 @@
- Tutorial {#occt__tutorial}
+Modeling: Bottle Tutorial {#occt__tutorial}
 =======
 
 @tableofcontents

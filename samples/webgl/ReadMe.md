@@ -1,4 +1,4 @@
-OCCT WebGL Viewer sample {#occt_samples_webgl}
+WebGL: 3D Viewer (JavaScript|C++|WebAssembly) {#occt_samples_webgl}
 ================== 
 
 This sample demonstrates simple way of using OCCT libraries in Web application written in C++ and translated into WebAssembly module using Emscripten SDK (emsdk):
@@ -6,6 +6,9 @@ https://emscripten.org/
 
 Sample consists of the Open CASCADE 3D Viewer with a button for opening a model in BREP format.
 The sample requires a WebGL 2.0 capable browser supporting WebAssembly 1.0 (Wasm).
+The sample could be found within OCCT repository in folder `/samples/webgl/`.
+
+@figure{sample_webgl.png,"",240} height=408px
 
 Installation and configuration:
  1. Install Emscripten SDK and activate minimal configuration (Python, Java and CLang) following *emsdk* documentation. Activate also MinGW when building sample on Windows host.

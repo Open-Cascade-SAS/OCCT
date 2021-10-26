@@ -6,6 +6,8 @@
 
 tutorial/tutorial.md
 
+samples/novice_guide.md
+
 upgrade/upgrade.md
 
 user_guides/foundation_classes/foundation_classes.md

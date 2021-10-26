@@ -1,8 +1,9 @@
-Direct3D CSharp sample {#samples_csharp_direct3d}
-================== 
+.NET: D3D/OpenGL Viewer (C#|C++/CLI|WPF) {#samples_csharp_direct3d}
+==================
 	
 This sample demonstrates how to use OCCT and DirectX libraries in <b>.Net</b> application
 written using **CSharp** and **Windows Presentation Foundation** (WPF).
+The sample could be found within OCCT repository in folder `/samples/CSharp/`.
 
 The connection between .Net, OCCT (C++) and DirectX level is provided by proxy libraries,
 **OCCProxy** and **D3DProxy**, written in C++/CLI. The proxy library **OCCProxy**  contains a single

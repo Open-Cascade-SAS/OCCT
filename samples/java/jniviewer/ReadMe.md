@@ -1,7 +1,8 @@
-OCCT JniViewer sample for Android {#samples_java_android_occt}
+Android: 3D Viewer (Java|C++|Android SDK|JNI) {#samples_java_android_occt}
 ================== 
 
 This sample demonstrates simple way of using OCCT libraries in Android application written using Java.
+The sample could be found within OCCT repository in folder `/samples/java/jniviewer/`.
 
 The connection between Java and OCCT (C++) level is provided by proxy library, libTKJniSample.so, written in C++ with exported JNI methods of Java class OcctJniRenderer.
 The proxy library contains single C++ class OcctJni_Viewer encapsulating OCCT viewer and providing functionality to manipulate this viewer
@@ -12,6 +13,8 @@ Alternative method is available, wrapping individual OCCT classes to Java equiva
 and the code can be programmed on Java level similarly to C++ one.
 See description of OCCT Java Wrapper in Advanced Samples and Tools on OCCT web site at 
 https://www.opencascade.com/content/advanced-samples-and-tools
+
+@figure{samples_java_android_occt.jpg}
 
 Install Android Studio 4.0+ and install building tools (check Tools -> SDK Manager):
 - Android SDK (API level 21 or higher).

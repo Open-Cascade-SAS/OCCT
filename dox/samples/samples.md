@@ -1,176 +1,56 @@
 ﻿Tutorials and Samples {#samples}
 =====================
 
-Tutorial: Modelling a Bottle
-----------------------------
-The Qt programming tutorial teaches how to use Open CASCADE Technology services to model a 3D object. 
-The purpose of the tutorial is not to explain all OCCT classes but 
-to help start thinking in terms of the Open CASCADE Technology.
+- @subpage samples__tutorials
+  * @ref samples__novice_guide
+    <br>A document providing an introductory information to newcomers.
+  * @ref samples__draw_scripts
+    <br>A set of demo scripts demonstrating OCCT functionality from DRAW.
+    These scripts can be also considered as a tutorials on **Tcl** usage within @ref occt_user_guides__test_harness "Draw Harness".
+  * @ref occt__tutorial
+    <br>A programming tutorial teaching how to use OCCT services to model a 3D object.
+    See also @ref samples_qt_tutorial
+  * @ref samples__ocaf
+    <br>A set of code snippets performing typical actions with @ref occt_user_guides__ocaf "OCAF" services for newcomers.
+  * @ref samples__ocaf_func
+    <br>A simple example dedicated to the usage of "Function Mechanism" of @ref occt_user_guides__ocaf "OCCT Application Framework".
+- @subpage samples__projects
+  * @ref samples_qt_iesample
+    <br>A cross-platform multi-document 3D Viewer sample with CAD import / export functionality based on **Qt Widgets** framework.
+  * @ref samples_qml_android_occt
+    <br>A cross-platform 3D Viewer sample with CAD import based on **QtQuick** framework.
+  * @ref samples_qt_tutorial
+    <br>A cross-platform sample application based on **Qt Widgets** framework and implementing @ref occt__tutorial.
+  * @ref samples_qt_overview
+    <br>A sample application interactively demonstrating OCCT C++ usage with code snippets for newcomers.
+  * @ref samples_mfc_standard
+    <br>A set of projects for Windows platform demonstrating OCCT usage based on **Microsoft Foundation Class** (**MFC**) library.
+  * @ref samples_csharp_occt
+    <br>A Multi-document 3D Viewer sample with CAD import / export functionality based on .NET and **Windows Forms** or **WPF**.
+  * @ref samples_csharp_direct3d
+    <br>3D Viewer sample wrapped into Direct3D context based on .NET and **Windows Presentation Foundation** (**WPF**).
+  * @ref occt_samples_webgl
+    <br>3D Viewer sample based on **Emscripten SDK** representing a static HTML page to be opened in Web Browser.
+  * @ref samples_java_android_occt
+    <br>3D Viewer sample with CAD import for Android mobile platform based on Android SDK and JNI layer.
+  * @ref occt_samples_ios_uikit
+    <br>3D Viewer sample for iOS platform based on Apple **UIKit** framework.
 
-This tutorial assumes that  the user has experience in using and setting up C++. 
-From the viewpoint of programming, Open CASCADE Technology is designed 
-to enhance user's C++ tools with high performance modeling classes, methods and functions. 
-The combination of these resources allows creating substantial applications.
+@page samples__tutorials Tutorials and Demos
+- @subpage samples__novice_guide
+- @subpage samples__draw_scripts
+- @subpage occt__tutorial
+- @subpage samples__ocaf
+- @subpage samples__ocaf_func
 
-Read more about @subpage occt__tutorial
-
-MFC
----------
-
-Visual C++ programming samples containing 10 Visual C++ projects 
-illustrating how to use a particular module or functionality.
-
-The list of MFC samples:
-
-  * Geometry
-  * Modeling
-  * Viewer2d
-  * Viewer3d
-  * ImportExport
-  * Ocaf
-  * Triangulation
-  * HLR
-  * Animation
-  * Convert
-
-@figure{/samples/images/samples_mvc.png}
-
-**Remarks:**
-
-  * MFC samples are available only on Windows platform;
-  * To start a sample use Open CASCADE Technology\\Samples\\Mfc\\ item of the Start\\Programs menu;
-  * Read carefully readme.txt to learn about launching and compilation options.
-
-See @subpage samples_mfc_standard "Readme" for details.
-
-Qt
----
-
- OCCT includes several samples based on Qt application framework.
-These samples are available on all supported desktop platforms.
-
-To start a sample on Windows use Open CASCADE Technology\\Samples\\Qt\\ item of the Start\\Programs menu.
-
- Import Export
--------------
-
- Import Export programming sample contains 3D Viewer and Import / Export functionality.
-
-@figure{/samples/images/samples_qt.png}
-
- Tutorial
----------
-
-The Qt programming tutorial teaches how to use Open CASCADE Technology services to model a 3D object. 
-The purpose of the tutorial is not to explain all OCCT classes but 
-to help start thinking in terms of the Open CASCADE Technology.
-
-This tutorial assumes that  the user has experience in using and setting up C++. 
-From the viewpoint of programming, Open CASCADE Technology is designed 
-to enhance user's C++ tools with high performance modeling classes, methods and functions. 
-The combination of these resources allows creating substantial applications.
-
-**See also:** @ref occt__tutorial "OCCT Tutorial"
-
-Overview
----------
- 
-The Qt application providing samples for basic usage of C++ API of various OCCT functionality.
-
-The samples are organized in several categories according to relevant module of OCCT:
- 
- * Geometry
- * Topology,
- * Triangulation
- * DataExchange
- * OCAF
- * Viewer 2d
- * Viewer 3d
- 
-Each sample presents geometry view, C++ code fragment and sample output window.
- 
-@figure{/samples/images/sample_overview_qt.png}
- 
-See \subpage samples_qt_overview "Readme" for details.
-
-C#
----
-
-C# sample demonstrates integration of OCCT 3D Viewer and Import / Export functionality into .NET applications (using Windows Forms and WPF front ends).
-
-@figure{/samples/images/samples_c__ie.png}
-
-Import:
-
-  * BRep
-  * Iges
-  * Step
-
-Export: 
-
-  * Brep
-  * Iges
-  * Step
-  * Stl
-  * Vrml
-
-See @subpage samples_csharp_occt "C# sample Readme" for details.
-
-There is also another C# example with the same functionality, which demonstrates the integration of Direct3D Viewer into .NET applications using WPF front end.
-
-See @subpage samples_csharp_direct3d "Direct3D C# sample Readme" for details.
-
-Android
----------
-
-There are two samples are representing usage OCCT framework on Android mobile platform. They represent an OCCT-based 3D-viewer with CAD import support in formats BREP, STEP and IGES: jniviewer (java) and AndroidQt (qt+qml)
-
-jniviewer
-@figure{/samples/images/samples_java_android_occt.jpg}
-Java -- See @subpage samples_java_android_occt "Android Java sample Readme" for details.
-
-AndroidQt
-@figure{/samples/images/samples_qml_android_occt.jpg}
-Qt -- See \subpage samples_qml_android_occt "Android Qt sample Readme" for details.
-
-iOS
----
-
-There is a sample demonstrating usage of OCCT on iOS with Apple UIKit framework.
-
-@figure{/samples/images/sample_ios_uikit.png}
-
-See @subpage occt_samples_ios_uikit "iOS sample Readme" for details.
-
-Web
----------
-
-WebGL Viewer sample demonstrating usage of OCCT 3D Viewer in Web browser with Emscripten SDK can be found in `samples/webgl`.
-
-@figure{/samples/images/sample_webgl.png}
-
-See @subpage occt_samples_webgl "WebGL sample Readme" for details.
-
-OCAF Usage Sample
-------------------
-
-The provided set of samples dedicates to get initial knowledge about typical actions with OCAF services.  It may be 
-useful for newcomers.
-
-Read more about @subpage samples__ocaf
-
-OCAF Function Mechanism Usage
------------------------------
-
-This simple example dedicates to the usage of "Function Mechanism" of OCCT Application Framework. It represents a "nail" 
-composed by a cone and two cylinders of different radius and height.
- 
-Read more about @subpage samples__ocaf_func
-
-Draw Demo Scripts
-------------------
-
-A set of demo scripts demonsrates using OCCT functionality from DRAW. These scripts can be also considered as a 
-tutorials on tcl usage within Draw.
-
-Read more about @subpage samples__draw_scripts
+@page samples__projects Sample Projects
+- @subpage samples_qt_iesample
+- @subpage samples_qml_android_occt
+- @subpage samples_qt_tutorial
+- @subpage samples_qt_overview
+- @subpage samples_mfc_standard
+- @subpage samples_csharp_occt
+- @subpage samples_csharp_direct3d
+- @subpage occt_samples_webgl
+- @subpage samples_java_android_occt
+- @subpage occt_samples_ios_uikit

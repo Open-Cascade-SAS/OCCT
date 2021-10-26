@@ -1,5 +1,21 @@
-Qt OCCT Overview samples {#samples_qt_overview}
+Qt: OCCT Overview (C++|Qt Widgets) {#samples_qt_overview}
 ==========
+
+The Overview Qt application provides code snippets for basic usage of C++ API of various OCCT functionality.
+The samples are organized in several categories according to relevant module of OCCT:
+
+ * Geometry
+ * Topology
+ * Triangulation
+ * DataExchange
+ * OCAF
+ * Viewer 2d
+ * Viewer 3d
+
+Each sample presents geometry view, C++ code fragment and sample output window.
+This sample is described in the @ref samples__novice_guide "Novice guide" for new users.
+
+@figure{sample_overview_qt.png}
 
 1. Contents
 -----------------------

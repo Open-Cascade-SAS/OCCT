@@ -1,11 +1,14 @@
-OCCT AndroidQt sample for Android {#samples_qml_android_occt}
+Qt: 3D Viewer (C++|QtQuick|QML) {#samples_qml_android_occt}
 ================== 
 
 This sample demonstrates a simple way of using OCCT libraries in Android application written using Qt/Qml.
+The sample could be found within OCCT repository in folder `/samples/qt/AndroidQt/`.
 
 The connection between Qt/Qml and OCCT (C++) level is provided by proxy library, libAndroidQt.so, written in C++.
 The proxy library contains single C++ class AndroidQt encapsulating OCCT viewer and providing functionality to manipulate this viewer
 and to import OCCT shapes from supported format of CAD file (BREP).
+
+@figure{samples_qml_android_occt.jpg}
 
 Requirements for building sample:
 * Java Development Kit 1.7 or higher

@@ -1,11 +1,14 @@
-OCCT sample for iOS {#occt_samples_ios_uikit}
+iOS: 3D Viewer (Objective-C++|UIKit) {#occt_samples_ios_uikit}
 ================== 
 
 UIKitSample consists of the Open CASCADE 3D Viewer which provides import of STEP files and toolbar with three buttons.
+The sample could be found within OCCT repository in folder `/samples/ios/UIKitSample/`.
 
 The first and second buttons serve for import hardcoded STEP files. The third button displays "About" dialog.
 
 The viewer supports zoom, pan and rotate actions. The viewer supports selection of solids as well.
+
+@figure{sample_ios_uikit.png}
 
 Installation and configuration:
     1. Make sure you are running Mac OS version 10.12.1 or above and properly installed XCode version 8.1 or above.

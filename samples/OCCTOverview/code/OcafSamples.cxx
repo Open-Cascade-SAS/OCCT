@@ -311,7 +311,7 @@ void OcafSamples::ModifyBoxOcafSample()
     Handle(TFunction_Function) aFunction;
     if (!aLabel.FindAttribute(TFunction_Function::GetID(), aFunction))
     {
-      myResult << "Object cannot be modify.";
+      myResult << "Object cannot be modified.";
       return;
     }
     // Get the Standard_GUID of the TFunction_FunctionDriver of the selected object TFunction_Function attribute
@@ -413,7 +413,7 @@ void OcafSamples::ModifyCylinderOcafSample()
     Handle(TFunction_Function) aFunction;
     if (!aLabel.FindAttribute(TFunction_Function::GetID(), aFunction))
     {
-      myResult << "Object cannot be modify.";
+      myResult << "Object cannot be modified.";
       return;
     }
     // Get the Standard_GUID of the TFunction_FunctionDriver of the selected object TFunction_Function attribute

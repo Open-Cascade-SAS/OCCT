@@ -1,5 +1,20 @@
-MFC samples {#samples_mfc_standard}
+MFC: OCCT Samples (C++|MFC) {#samples_mfc_standard}
 ==========
+
+Visual C++ programming samples for Windows platform containing illustrating how to use a particular module or functionality, including the following MFC samples:
+
+  * Geometry
+  * Modeling
+  * Viewer2d
+  * Viewer3d
+  * ImportExport
+  * Ocaf
+  * Triangulation
+  * HLR
+  * Animation
+  * Convert
+
+@figure{samples_mvc.png}
 
 1. Contents 
 -----------------------
