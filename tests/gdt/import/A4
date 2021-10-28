@@ -414,9 +414,9 @@ set ref_data {
  0:1:1:2:157 Shape.160
  	 0:1:4:32 Dimension.160.1 ( N "diameter" T 15, V 20, VL 0.29999999999999999, VU 0.29999999999999999, P 0 )
  0:1:1:2:158 Shape.161
- 	 0:1:4:33 Dimension.161.1 ( N "angle" T 11, V 90, VL 1, VU 1, Q 3, P 0 )
+ 	 0:1:4:33 Dimension.161.1 ( N "angle" T 11, V 90, VL 1, VU 1, AQ 3, P 0 )
  0:1:1:2:159 Shape.162
- 	 0:1:4:33 Dimension.162.1 ( N "angle" T 11, V 90, VL 1, VU 1, Q 3, P 0 )
+ 	 0:1:4:33 Dimension.162.1 ( N "angle" T 11, V 90, VL 1, VU 1, AQ 3, P 0 )
  0:1:1:3:1 Shape.163
  	 0:1:4:19 GeomTolerance.163.1 ( N "Position surface profile.4" T 12 TV 0, V 0.5 )
  	 	 0:1:4:20 Datum.163.1.1 ( N "Position surface profile.4" )

@@ -3939,11 +3939,11 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       Handle(StepShape_AngularLocation) aDim = new StepShape_AngularLocation();
       StepShape_AngleRelator aRelator = StepShape_Equal;
       if (anObject->HasQualifier()) {
-        XCAFDimTolObjects_DimensionQualifier aQualifier = anObject->GetQualifier();
+        XCAFDimTolObjects_AngularQualifier aQualifier = anObject->GetAngularQualifier();
         switch (aQualifier) {
-          case XCAFDimTolObjects_DimensionQualifier_Min: aRelator = StepShape_Small;
+          case XCAFDimTolObjects_AngularQualifier_Small : aRelator = StepShape_Small;
             break;
-          case XCAFDimTolObjects_DimensionQualifier_Max: aRelator = StepShape_Large;
+          case XCAFDimTolObjects_AngularQualifier_Large : aRelator = StepShape_Large;
             break;
           default: aRelator = StepShape_Equal;
         }
@@ -3969,11 +3969,11 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
       Handle(StepShape_AngularSize) aDim = new StepShape_AngularSize();
       StepShape_AngleRelator aRelator = StepShape_Equal;
       if (anObject->HasQualifier()) {
-        XCAFDimTolObjects_DimensionQualifier aQualifier = anObject->GetQualifier();
+        XCAFDimTolObjects_AngularQualifier aQualifier = anObject->GetAngularQualifier();
         switch (aQualifier) {
-          case XCAFDimTolObjects_DimensionQualifier_Min: aRelator = StepShape_Small;
+          case XCAFDimTolObjects_AngularQualifier_Small: aRelator = StepShape_Small;
             break;
-          case XCAFDimTolObjects_DimensionQualifier_Max: aRelator = StepShape_Large;
+          case XCAFDimTolObjects_AngularQualifier_Large: aRelator = StepShape_Large;
             break;
           default: aRelator = StepShape_Equal;
         }

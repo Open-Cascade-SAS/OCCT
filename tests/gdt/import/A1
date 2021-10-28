@@ -79,9 +79,9 @@ set ref_data {
  0:1:1:1:22 Shape.23
  	 0:1:4:21 Dimension.23.1 ( N "diameter" T 15, V 20, VL 0.050000000000000003, VU 0.10000000000000001, P 0 )
  0:1:1:1:23 Shape.24
- 	 0:1:4:22 Dimension.24.1 ( N "angle" T 11, V 60, VL 0.5, VU 0.5, Q 3, P 0 )
+ 	 0:1:4:22 Dimension.24.1 ( N "angle" T 11, V 60, VL 0.5, VU 0.5, AQ 3, P 0 )
  0:1:1:1:24 Shape.25
- 	 0:1:4:22 Dimension.25.1 ( N "angle" T 11, V 60, VL 0.5, VU 0.5, Q 3, P 0 )
+ 	 0:1:4:22 Dimension.25.1 ( N "angle" T 11, V 60, VL 0.5, VU 0.5, AQ 3, P 0 )
  0:1:1:1:25 Shape.26
  	 0:1:4:23 Dimension.26.1 ( N "diameter" T 15, LB 34.799999999999997, UB 35.200000000000003, P 0 )
  0:1:1:1:26 Shape.27

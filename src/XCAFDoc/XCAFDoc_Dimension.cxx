@@ -38,6 +38,7 @@ enum ChildLab
   ChildLab_Type = 1,
   ChildLab_Value,
   ChildLab_Qualifier,
+  ChildLab_AngularQualifier,
   ChildLab_Class,
   ChildLab_Dec,
   ChildLab_Modifiers,
@@ -121,6 +122,8 @@ void XCAFDoc_Dimension::SetObject (const Handle(XCAFDimTolObjects_DimensionObjec
   }
 
   Handle(TDataStd_Integer) aQualifier = TDataStd_Integer::Set(Label().FindChild(ChildLab_Qualifier), theObject->GetQualifier());
+
+  Handle(TDataStd_Integer) anAngularQualifier = TDataStd_Integer::Set(Label().FindChild(ChildLab_AngularQualifier), theObject->GetAngularQualifier());
  
   Standard_Boolean aH;
   XCAFDimTolObjects_DimensionFormVariance aF;
@@ -313,6 +316,12 @@ Handle(XCAFDimTolObjects_DimensionObject) XCAFDoc_Dimension::GetObject()  const
   if(Label().FindChild(ChildLab_Qualifier).FindAttribute(TDataStd_Integer::GetID(), aQualifier))
   {
     anObj->SetQualifier((XCAFDimTolObjects_DimensionQualifier)aQualifier->Get());
+  }
+
+  Handle(TDataStd_Integer) anAngularQualifier;
+  if (Label().FindChild(ChildLab_AngularQualifier).FindAttribute(TDataStd_Integer::GetID(), anAngularQualifier))
+  {
+    anObj->SetAngularQualifier((XCAFDimTolObjects_AngularQualifier)anAngularQualifier->Get());
   }
  
   Handle(TDataStd_IntegerArray) aClass;

@@ -28,5 +28,6 @@ XCAFDimTolObjects_DimensionObjectSequence.hxx
 XCAFDimTolObjects_GeomToleranceObjectSequence.hxx
 XCAFDimTolObjects_DataMapOfToleranceDatum.hxx
 XCAFDimTolObjects_ToleranceZoneAffectedPlane.hxx
+XCAFDimTolObjects_AngularQualifier.hxx
 
 

@@ -3541,11 +3541,11 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         //get qualifier for angular value
         aType = XCAFDimTolObjects_DimensionType_Size_Angular;
         if (anAngSize->AngleSelection() == StepShape_Equal)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Avg);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Equal);
         else if (anAngSize->AngleSelection() == StepShape_Large)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Max);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Large);
         else if (anAngSize->AngleSelection() == StepShape_Small)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Min);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Small);
       }
     }
     else
@@ -3557,11 +3557,11 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         //get qualifier for angular value
         aType = XCAFDimTolObjects_DimensionType_Location_Angular;
         if (anAngLoc->AngleSelection() == StepShape_Equal)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Avg);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Equal);
         else if (anAngLoc->AngleSelection() == StepShape_Large)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Max);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Large);
         else if (anAngLoc->AngleSelection() == StepShape_Small)
-          aDimObj->SetQualifier(XCAFDimTolObjects_DimensionQualifier_Min);
+          aDimObj->SetAngularQualifier(XCAFDimTolObjects_AngularQualifier_Small);
       }
     }
     if (aType == XCAFDimTolObjects_DimensionType_Location_None)

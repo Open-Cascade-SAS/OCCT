@@ -168,6 +168,8 @@ static Standard_Integer DumpDGTs (Draw_Interpretor& di, Standard_Integer argc, c
           }
           if (aDimTolObj->HasQualifier())
             di << ", Q " << aDimTolObj->GetQualifier();
+          if (aDimTolObj->HasAngularQualifier())
+            di << ", AQ " << aDimTolObj->GetAngularQualifier();
           if (aDimTolObj->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
           {
             gp_Dir aD;

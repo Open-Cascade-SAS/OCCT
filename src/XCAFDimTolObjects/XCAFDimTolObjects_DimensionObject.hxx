@@ -40,6 +40,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>
+#include <XCAFDimTolObjects_AngularQualifier.hxx>
 
 class XCAFDimTolObjects_DimensionObject;
 DEFINE_STANDARD_HANDLE(XCAFDimTolObjects_DimensionObject, Standard_Transient)
@@ -68,6 +69,15 @@ public:
   
   //! Returns True if the object has dimension qualifier.
   Standard_EXPORT Standard_Boolean HasQualifier() const;
+
+  //! Sets angular qualifier as small, large or equal.
+  Standard_EXPORT void SetAngularQualifier(const XCAFDimTolObjects_AngularQualifier theAngularQualifier);
+
+  //! Returns angular qualifier.
+  Standard_EXPORT XCAFDimTolObjects_AngularQualifier GetAngularQualifier() const;
+
+  //! Returns True if the object has angular qualifier.
+  Standard_EXPORT Standard_Boolean HasAngularQualifier() const;
   
   //! Sets a specific type of dimension.
   Standard_EXPORT void SetType (const XCAFDimTolObjects_DimensionType theTyupe);
@@ -302,6 +312,7 @@ private:
   XCAFDimTolObjects_DimensionType myType;
   Handle(TColStd_HArray1OfReal) myVal;
   XCAFDimTolObjects_DimensionQualifier myQualifier;
+  XCAFDimTolObjects_AngularQualifier myAngularQualifier;
   Standard_Boolean myIsHole;
   XCAFDimTolObjects_DimensionFormVariance myFormVariance;
   XCAFDimTolObjects_DimensionGrade myGrade;
