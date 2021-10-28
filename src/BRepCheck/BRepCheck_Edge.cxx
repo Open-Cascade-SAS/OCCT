@@ -75,6 +75,7 @@ BRepCheck_Edge::BRepCheck_Edge(const TopoDS_Edge& E)
 {
   Init(E);
   myGctrl = Standard_True;
+  myIsExactMethod = Standard_False;
 }
 
 //=======================================================================
@@ -321,6 +322,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
       BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
       Standard_Real eps = Precision::PConfusion();
+      Standard_Boolean toRunParallel = !myMutex.IsNull();
       while (itcr.More()) {
         const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
         if (cr != myCref && cr->IsCurveOnSurface(Su,L)) {
@@ -385,6 +387,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
             BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
             aValidateEdge.SetExitIfToleranceExceeded(Tol);
+            aValidateEdge.SetExactMethod(myIsExactMethod);
+            aValidateEdge.SetParallel(toRunParallel);
             aValidateEdge.Process();
             if (!aValidateEdge.IsDone() || !aValidateEdge.CheckTolerance(Tol))
             {
@@ -407,6 +411,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
               BRepLib_ValidateEdge aValidateEdgeOnClosedSurf(myHCurve, ACS, SameParameter);
               aValidateEdgeOnClosedSurf.SetExitIfToleranceExceeded(Tol);
+              aValidateEdgeOnClosedSurf.SetExactMethod(myIsExactMethod);
+              aValidateEdgeOnClosedSurf.SetParallel(toRunParallel);
               aValidateEdgeOnClosedSurf.Process();
               if (!aValidateEdgeOnClosedSurf.IsDone() || !aValidateEdgeOnClosedSurf.CheckTolerance(Tol))
               {
@@ -466,6 +472,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
 
             BRepLib_ValidateEdge aValidateEdgeProj(myHCurve, ACS, SameParameter);
             aValidateEdgeProj.SetExitIfToleranceExceeded(Tol);
+            aValidateEdgeProj.SetExactMethod(myIsExactMethod);
+            aValidateEdgeProj.SetParallel(toRunParallel);
             aValidateEdgeProj.Process();
             if (!aValidateEdgeProj.IsDone() || !aValidateEdgeProj.CheckTolerance(Tol))
             {

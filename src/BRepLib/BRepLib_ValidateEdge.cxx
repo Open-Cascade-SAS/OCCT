@@ -17,6 +17,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepCheck.hxx>
 #include <Extrema_LocateExtPC.hxx>
+#include <GeomLib_CheckCurveOnSurface.hxx>
 
 //=============================================================================
 //function : BRepLib_ValidateEdge
@@ -32,7 +33,9 @@ BRepLib_ValidateEdge::BRepLib_ValidateEdge(Handle(Adaptor3d_Curve) theReferenceC
   myToleranceForChecking(0),
   myCalculatedDistance(0),
   myExitIfToleranceExceeded(Standard_False),
-  myIsDone(Standard_False)
+  myIsDone(Standard_False),
+  myIsExactMethod(Standard_False),
+  myIsMultiThread(Standard_False)
 { }
 
 //=============================================================================
@@ -96,6 +99,22 @@ void BRepLib_ValidateEdge::SetExitIfToleranceExceeded(Standard_Real theTolerance
 //purpose  : 
 //=============================================================================
 void BRepLib_ValidateEdge::Process()
+{
+  if (myIsExactMethod && mySameParameter)
+  {
+    processExact();
+  }
+  else
+  {
+    processApprox();
+  }
+}
+
+//=============================================================================
+//function : processApprox
+//purpose  : 
+//=============================================================================
+void BRepLib_ValidateEdge::processApprox()
 {
   myIsDone = Standard_True;
   Standard_Real aSquareToleranceForChecking = myToleranceForChecking * myToleranceForChecking;
@@ -212,3 +231,20 @@ void BRepLib_ValidateEdge::Process()
   }
   myCalculatedDistance = Sqrt(aMaxSquareDistance);
 }
+
+//=============================================================================
+//function : processExact
+//purpose  : 
+//=============================================================================
+void BRepLib_ValidateEdge::processExact()
+{
+  GeomLib_CheckCurveOnSurface aCheckCurveOnSurface(myReferenceCurve);
+  aCheckCurveOnSurface.SetParallel(myIsMultiThread);
+  aCheckCurveOnSurface.Perform(myOtherCurve);
+  myIsDone = aCheckCurveOnSurface.IsDone();
+  if (myIsDone)
+  {
+    myCalculatedDistance = aCheckCurveOnSurface.MaxDistance();
+  }
+}
+

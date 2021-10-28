@@ -2293,3 +2293,22 @@ void Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
   - *BRepAlgo_Cut*
   - *BRepAlgo_Section*
   The corresponding classes from the *BRepAlgoAPI* package have to be used instead.
+  
+@section upgrade_occt770 Upgrade to OCCT 7.7.0
+
+@subsection upgrade_occt770_parallel_flag_removed Removed parameter theIsParallel from Put/Compute/Perform
+ 
+theIsParallel parameter has been removed from Put/Compute/Perform from the next classes:
+ - BRepCheck_Analyzer
+ - BRepCheck_Edge
+ - BRepLib_ValidateEdge
+ - GeomLib_CheckCurveOnSurface
+ - BRepLib_CheckCurveOnSurface
+
+Now, to set this flag, it is necessary to use method SetParallel()
+For example:
+~~~~{.cpp}
+BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
+aValidateEdge.SetParallel(toRunParallel);
+aValidateEdge.Process();
+~~~~ 

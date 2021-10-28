@@ -807,7 +807,8 @@ Standard_Boolean IntTools_Tools::ComputeTolerance
     new Adaptor3d_CurveOnSurface(aGeom2dAdaptorCurve, aGeomAdaptorSurface);
 
   aCS.Init(aGeomAdaptorCurve, theTolRange);
-  aCS.Perform(anAdaptor3dCurveOnSurface, theToRunParallel);
+  aCS.SetParallel(theToRunParallel);
+  aCS.Perform(anAdaptor3dCurveOnSurface);
   if (!aCS.IsDone()) {
     return Standard_False;
   }

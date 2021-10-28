@@ -27,7 +27,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Default constructor
-  BRepLib_CheckCurveOnSurface() {}
+  BRepLib_CheckCurveOnSurface() 
+    : myIsParallel(Standard_False)
+  {
+  }
   
   //! Constructor
   Standard_EXPORT BRepLib_CheckCurveOnSurface(const TopoDS_Edge& theEdge,
@@ -37,8 +40,8 @@ public:
   Standard_EXPORT void Init (const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
 
   //! Performs the calculation
-  //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  Standard_EXPORT void Perform(const Standard_Boolean isMultiThread = Standard_False);
+  //! If myIsParallel == Standard_True then computation will be performed in parallel.
+  Standard_EXPORT void Perform();
   
   //! Returns true if the max distance has been found
   Standard_Boolean IsDone() const
@@ -46,6 +49,18 @@ public:
     return myCOnSurfGeom.ErrorStatus() == 0;
   }
   
+  //! Sets parallel flag
+  void SetParallel(const Standard_Boolean theIsParallel)
+  {
+    myIsParallel = theIsParallel;
+  }
+
+  //! Returns true if parallel flag is set
+  Standard_Boolean IsParallel()
+  {
+    return myIsParallel;
+  }
+
   //! Returns error status
   //! The possible values are:
   //! 0 - OK;
@@ -74,14 +89,14 @@ protected:
   //! Computes the max distance for the 3d curve of <myCOnSurfGeom>
   //! and 2d curve <theCurveOnSurface>
   //! If isMultiThread == Standard_True then computation will be performed in parallel.
-  Standard_EXPORT void Compute (const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
-                                const Standard_Boolean isMultiThread);
+  Standard_EXPORT void Compute (const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface);
 
 private:
 
   GeomLib_CheckCurveOnSurface myCOnSurfGeom;
   Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface;
   Handle(Adaptor3d_CurveOnSurface) myAdaptorCurveOnSurface2;
+  Standard_Boolean myIsParallel;
 };
 
 #endif // _BRepLib_CheckCurveOnSurface_HeaderFile

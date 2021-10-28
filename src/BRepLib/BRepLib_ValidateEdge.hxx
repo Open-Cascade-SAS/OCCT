@@ -21,8 +21,9 @@
 class Adaptor3d_Curve;
 class Adaptor3d_CurveOnSurface;
 
-//! Computes the max distance between 3D-curve and curve on 
-//! surface in fixed points number
+//! Computes the max distance between 3D-curve and curve on surface.
+//! This class uses 2 methods: approximate using finite
+//! number of points (default) and exact 
 class BRepLib_ValidateEdge
 {
 public:
@@ -31,25 +32,54 @@ public:
                                        const Handle(Adaptor3d_CurveOnSurface) theOtherCurve,
                                        Standard_Boolean theSameParameter);
 
+  //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
+  //! is false, faster, but possible not correct result) or exact calculating by using 
+  //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
+  //! Exact method is used only when edge is SameParameter.
+  //! Default method is calculating in finite number of points
+  void SetExactMethod(Standard_Boolean theIsExact)
+  {
+    myIsExactMethod = theIsExact;
+  }
+
+  //! Returns true if exact method selected
+  Standard_Boolean IsExactMethod()
+  {
+    return myIsExactMethod;
+  }
+
+  //! Sets parallel flag
+  void SetParallel(Standard_Boolean theIsMultiThread)
+  {
+    myIsMultiThread = theIsMultiThread;
+  }
+
+  //! Returns true if parallel flag is set
+  Standard_Boolean IsParallel()
+  {
+    return myIsMultiThread;
+  }
+
   //! Set control points number (if you need a value other than 22)
   void SetControlPointsNumber(Standard_Integer theControlPointsNumber)
   {
     myControlPointsNumber = theControlPointsNumber;
   }
 
-  //! Sets the maximal allowed distance in the Process() function. If the distance greater than 
-  //! theToleranceForChecking the Process() function stops. Use this for best performance 
-  //! in case of checking of tolerance.
-  Standard_EXPORT void SetExitIfToleranceExceeded(Standard_Real theToleranceForChecking);
+  //! Sets limit to compute a distance in the Process() function. If the distance greater than 
+  //! theToleranceForChecking the Process() function stopped. Use this in case checking of 
+  //! tolerance for best performcnce. Has no effect in case using exact method.
+  void SetExitIfToleranceExceeded(Standard_Real theToleranceForChecking);
 
   //! Computes the max distance for the 3d curve <myReferenceCurve>
   //! and curve on surface <myOtherCurve>. If the SetExitIfToleranceExceeded()
   //!  function was called before <myCalculatedDistance> contains first 
-  //! greater than SetExitIfToleranceExceeded() parameter value
+  //! greater than SetExitIfToleranceExceeded() parameter value. In case 
+  //! using exact method always computes real max distance.
   Standard_EXPORT void Process();
 
   //! Returns true if the distance has been found for all points
-  Standard_Boolean IsDone()
+  Standard_Boolean IsDone() const
   {
     return myIsDone;
   }
@@ -67,6 +97,12 @@ private:
   //! Adds some margin for distance checking
   Standard_Real correctTolerance(Standard_Real theTolerance);
 
+  //! Calculating in finite number of points
+  void processApprox();
+
+  //! Calculating by using BRepLib_CheckCurveOnSurface class
+  void processExact();
+
 private:
   Handle(Adaptor3d_Curve) myReferenceCurve;
   Handle(Adaptor3d_CurveOnSurface) myOtherCurve;
@@ -76,6 +112,8 @@ private:
   Standard_Real myCalculatedDistance;
   Standard_Boolean myExitIfToleranceExceeded;
   Standard_Boolean myIsDone;
+  Standard_Boolean myIsExactMethod;
+  Standard_Boolean myIsMultiThread;
 };
 
-#endif  // _BRepLib_ValidateEdge_HeaderFile
+#endif // _BRepLib_ValidateEdge_HeaderFile

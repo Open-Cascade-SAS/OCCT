@@ -59,9 +59,12 @@ public:
   //! BRepCheck_SelfIntersectingWire
   BRepCheck_Analyzer (const TopoDS_Shape& S,
                       const Standard_Boolean GeomControls = Standard_True,
-                      const Standard_Boolean theIsParallel = Standard_False)
+                      const Standard_Boolean theIsParallel = Standard_False,
+                      const Standard_Boolean theIsExact = Standard_False)
+    : myIsParallel(theIsParallel),
+      myIsExact(theIsExact)
   {
-    Init (S, GeomControls, theIsParallel);
+    Init (S, GeomControls);
   }
 
   //! <S> is the  shape  to control.  <GeomControls>  If
@@ -81,8 +84,35 @@ public:
   //! For a wire :
   //! BRepCheck_SelfIntersectingWire
   Standard_EXPORT void Init (const TopoDS_Shape& S,
-                             const Standard_Boolean GeomControls = Standard_True,
-                             const Standard_Boolean theIsParallel = Standard_False);
+                             const Standard_Boolean GeomControls = Standard_True);
+
+  //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
+  //! is false, faster, but possible not correct result) or exact calculating by using 
+  //! BRepLib_CheckCurveOnSurface class (if theIsExact is true, slowly, but more correctly).
+  //! Exact method is used only when edge is SameParameter.
+  //! Default method is calculating in finite number of points
+  void SetExactMethod(const Standard_Boolean theIsExact)
+  {
+    myIsExact = theIsExact;
+  }
+
+  //! Returns true if exact method selected
+  Standard_Boolean IsExactMethod()
+  {
+    return myIsExact;
+  }
+
+  //! Sets parallel flag
+  void SetParallel(const Standard_Boolean theIsParallel)
+  {
+    myIsParallel = theIsParallel;
+  }
+
+  //! Returns true if parallel flag is set
+  Standard_Boolean IsParallel()
+  {
+    return myIsParallel;
+  }
 
   //! <S> is a  subshape of the  original shape. Returns
   //! <STandard_True> if no default has been detected on
@@ -141,10 +171,9 @@ public:
 private:
 
   Standard_EXPORT void Put (const TopoDS_Shape& S,
-                            const Standard_Boolean Gctrl,
-                            const Standard_Boolean theIsParallel);
+                            const Standard_Boolean Gctrl);
 
-  Standard_EXPORT void Perform (Standard_Boolean theIsParallel);
+  Standard_EXPORT void Perform();
 
   Standard_EXPORT Standard_Boolean ValidSub (const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const;
 
@@ -152,6 +181,8 @@ private:
 
   TopoDS_Shape myShape;
   BRepCheck_IndexedDataMapOfShapeResult myMap;
+  Standard_Boolean myIsParallel;
+  Standard_Boolean myIsExact;
 
 };
 

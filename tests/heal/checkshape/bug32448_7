@@ -1,0 +1,8 @@
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_1943"
+puts "=========="
+puts "0032448: Provide exact validating (as option) using GeomLib_CheckCurveOnSurface"
+puts "=========="
+puts ""
+
+restore [locate_data_file OCC187_from_bug_description.brep] b
+checkshape b -exact -parallel

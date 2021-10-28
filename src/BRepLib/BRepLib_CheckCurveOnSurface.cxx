@@ -32,6 +32,7 @@
 BRepLib_CheckCurveOnSurface::BRepLib_CheckCurveOnSurface
                                             ( const TopoDS_Edge& theEdge,
                                               const TopoDS_Face& theFace)
+  : myIsParallel(Standard_False)
 {
   Init(theEdge, theFace);
 }
@@ -89,10 +90,10 @@ void BRepLib_CheckCurveOnSurface::Init(const TopoDS_Edge& theEdge, const TopoDS_
 //function : Perform
 //purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
+void BRepLib_CheckCurveOnSurface::Perform()
 {
   // Compute the max distance
-  Compute(myAdaptorCurveOnSurface, isMultiThread);
+  Compute(myAdaptorCurveOnSurface);
   if (ErrorStatus())
   {
     return;
@@ -102,7 +103,7 @@ void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
   {
     // compute max distance for myAdaptorCurveOnSurface2
     // (for the second curve on closed surface)
-    Compute(myAdaptorCurveOnSurface2, isMultiThread);
+    Compute(myAdaptorCurveOnSurface2);
   }
 }
 
@@ -110,8 +111,8 @@ void BRepLib_CheckCurveOnSurface::Perform(const Standard_Boolean isMultiThread)
 //function : Compute
 //purpose  : if isTheMTDisabled == TRUE parallelization is not used
 //=======================================================================
-void BRepLib_CheckCurveOnSurface::Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
-                                          const Standard_Boolean isMultiThread)
+void BRepLib_CheckCurveOnSurface::Compute(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface)
 {
-  myCOnSurfGeom.Perform(theCurveOnSurface, isMultiThread);
+  myCOnSurfGeom.SetParallel(myIsParallel);
+  myCOnSurfGeom.Perform(theCurveOnSurface);
 }
