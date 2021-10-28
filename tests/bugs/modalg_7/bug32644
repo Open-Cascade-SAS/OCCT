@@ -1,0 +1,22 @@
+puts "================================================="
+puts "OCC32644: Modeling Algorithms - Empty result of section operation"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug32644_face.brep] f
+restore [locate_data_file bug32644_wire.brep] w
+
+bclearobjects
+bcleartools
+baddobjects f
+baddtools w
+bfillds
+
+bbop result 4
+checkprops result -l 2.06
+checksection result -r 2
+checknbshapes result -edge 2
+
+bsplit rsplit
+checkshape rsplit
+checknbshapes rsplit -face 2

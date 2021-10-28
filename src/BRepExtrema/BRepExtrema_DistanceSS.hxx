@@ -26,111 +26,116 @@ class TopoDS_Vertex;
 class TopoDS_Edge;
 class TopoDS_Face;
 
-
-//!  This class allows to compute minimum distance between two shapes <br>
-//! (face edge vertex) and is used in DistShapeShape class. <br>
+//! This class allows to compute minimum distance between two brep shapes
+//! (face edge vertex) and is used in DistShapeShape class.
 class BRepExtrema_DistanceSS
 {
- public:
+public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! computes the distance between two Shapes ( face edge vertex). <br>
-  BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
-                                         const Bnd_Box& B1, const Bnd_Box& B2,
-                                         const Standard_Real DstRef,
-                                         const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
-                                         const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad)
-  : myDstRef(DstRef), myModif(Standard_False), myEps(Precision::Confusion()), myFlag(F), myAlgo(A)
+public: //! @name Constructor from two shapes
+
+  //! Computes the distance between two Shapes (face edge vertex).
+  //! @param theS1 - First shape
+  //! @param theS2 - Second shape
+  //! @param theBox1 - Bounding box of first shape
+  //! @param theBox2 - Bounding box of second shape
+  //! @param theDstRef - Initial distance between the shapes to start with
+  //! @param theDeflection - Maximum deviation of extreme distances from the minimum
+  //!                        one (default is Precision::Confusion()).
+  //! @param theExtFlag - Specifies which extrema solutions to look for
+  //!                     (default is MINMAX, applied only to point-face extrema)
+  //! @param theExtAlgo - Specifies which extrema algorithm is to be used
+  //!                     (default is Grad algo, applied only to point-face extrema)
+  BRepExtrema_DistanceSS(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2,
+                         const Bnd_Box& theBox1, const Bnd_Box& theBox2,
+                         const Standard_Real theDstRef,
+                         const Standard_Real theDeflection = Precision::Confusion(),
+                         const Extrema_ExtFlag theExtFlag = Extrema_ExtFlag_MINMAX,
+                         const Extrema_ExtAlgo theExtAlgo = Extrema_ExtAlgo_Grad)
+  :
+    myDstRef(theDstRef),
+    myModif(Standard_False),
+    myEps(theDeflection),
+    myFlag(theExtFlag),
+    myAlgo(theExtAlgo)
   {
-    Perform(S1, S2, B1, B2);
+    Perform(theS1, theS2, theBox1, theBox2);
   }
-  //! computes the distance between two Shapes ( face edge vertex). <br>
-  //! Parameter theDeflection is used to specify a maximum deviation <br>
-  //! of extreme distances from the minimum one. <br>
-  //! Default value is Precision::Confusion(). <br>
-  BRepExtrema_DistanceSS(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
-                                         const Bnd_Box& B1, const Bnd_Box& B2,
-                                         const Standard_Real DstRef, const Standard_Real aDeflection,
-                                         const Extrema_ExtFlag F = Extrema_ExtFlag_MINMAX,
-                                         const Extrema_ExtAlgo A = Extrema_ExtAlgo_Grad)
-  : myDstRef(DstRef), myModif(Standard_False), myEps(aDeflection), myFlag(F), myAlgo(A)
-  {
-    Perform(S1, S2, B1, B2);
-  }
-  //! True if the distance has been computed <br>
+
+public: //! @name Results
+
+  //! Returns true if the distance has been computed, false otherwise.
   Standard_Boolean IsDone() const
   {
     return myModif;
   }
-  //! returns the distance value <br>
+
+  //! Returns the distance value.
   Standard_Real DistValue() const
   {
     return myDstRef;
   }
-  //! returns the list of solutions on the first shape <br>
+
+  //! Returns the list of solutions on the first shape.
   const BRepExtrema_SeqOfSolution& Seq1Value() const
   {
-    return SeqSolShape1;
+    return mySeqSolShape1;
   }
-  //! returns the list of solutions on the second shape <br>
+
+  //! Returns the list of solutions on the second shape.
   const BRepExtrema_SeqOfSolution& Seq2Value() const
   {
-    return SeqSolShape2;
-  }
-  //! sets the flag controlling minimum and maximum search
-  void SetFlag(const Extrema_ExtFlag F)
-  {
-    myFlag = F;
-  }
-  //! sets the flag controlling ...
-  void SetAlgo(const Extrema_ExtAlgo A)
-  {
-    myAlgo = A;
+    return mySeqSolShape2;
   }
 
- private:
+private: //! @name private methods performing the search
 
-  //! computes the distance between two Shapes ( face edge vertex) <br>
-  Standard_EXPORT void Perform(const TopoDS_Shape& S1,const TopoDS_Shape& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  //! Computes the distance between two Shapes (face edge vertex).
+  //! General method to sort out the shape types and call the specific method.
+  Standard_EXPORT void Perform(const TopoDS_Shape& theS1, const TopoDS_Shape& theS2,
+                               const Bnd_Box& theBox1,    const Bnd_Box& theBox2);
 
-  //! computes the distance between two vertices <br>
-  void Perform(const TopoDS_Vertex& S1,const TopoDS_Vertex& S2);
-  //! computes the minimum distance between a vertex and an edge <br>
-  void Perform(const TopoDS_Vertex& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2);
-  //! computes the minimum distance between a vertex and a face <br>
-  void Perform(const TopoDS_Vertex& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  //! Computes the distance between two vertices.
+  void Perform(const TopoDS_Vertex& S1, const TopoDS_Vertex& S2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
-  //! computes the minimum distance between an edge and a vertex <br>
-  void Perform(const TopoDS_Edge& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2);
-  /*{
-    Perform(S2, S1, B2, B1);
-  }*/
-  //! computes the minimum distance between two edges <br>
-  void Perform(const TopoDS_Edge& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2);
-  //! computes the minimum distance an edge and a face <br>
-  void Perform(const TopoDS_Edge& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  //! Computes the minimum distance between a vertex and an edge.
+  void Perform(const TopoDS_Vertex& theS1, const TopoDS_Edge& theS2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
-  //! computes the minimum distance betwwen a face and a vertex <br>
-  void Perform(const TopoDS_Face& S1,const TopoDS_Vertex& S2,const Bnd_Box& B1,const Bnd_Box& B2);
-  /*{
-    Perform(S2, S1, B2, B1);
-  }*/
-  //! computes the minimum distance between a face and an edge <br>
-  void Perform(const TopoDS_Face& S1,const TopoDS_Edge& S2,const Bnd_Box& B1,const Bnd_Box& B2);
-  /*{
-    Perform(S2, S1, B2, B1);
-  }*/
-  //! computes the minimum distance between two faces <br>
-  void Perform(const TopoDS_Face& S1,const TopoDS_Face& S2,const Bnd_Box& B1,const Bnd_Box& B2);
+  //! Computes the minimum distance between a vertex and a face.
+  void Perform(const TopoDS_Vertex& theS1, const TopoDS_Face& theS2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
 
-  BRepExtrema_SeqOfSolution SeqSolShape1;
-  BRepExtrema_SeqOfSolution SeqSolShape2;
-  Standard_Real myDstRef;
-  Standard_Boolean myModif;
-  Standard_Real myEps;
-  Extrema_ExtFlag myFlag;
-  Extrema_ExtAlgo myAlgo;
+  //! Computes the minimum distance between two edges.
+  void Perform(const TopoDS_Edge& theS1, const TopoDS_Edge& theS2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+
+  //! Computes the minimum distance between an edge and a face.
+  void Perform(const TopoDS_Edge& theS1, const TopoDS_Face& theS2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+
+  //! Computes the minimum distance between two faces.
+  void Perform(const TopoDS_Face& theS1, const TopoDS_Face& theS2,
+               BRepExtrema_SeqOfSolution& theSeqSolShape1,
+               BRepExtrema_SeqOfSolution& theSeqSolShape2);
+
+private: //! @name Fields
+
+  BRepExtrema_SeqOfSolution mySeqSolShape1; //!< Solutions on the first shape
+  BRepExtrema_SeqOfSolution mySeqSolShape2; //!< Solutions on the second shape
+  Standard_Real myDstRef;   //!< The minimal distance found
+  Standard_Boolean myModif; //!< Flag indicating whether the solution was improved or not
+  Standard_Real myEps;      //!< Deflection
+  Extrema_ExtFlag myFlag;   //!< Extrema flag indicating what solutions to look for
+  Extrema_ExtAlgo myAlgo;   //!< Extrema algo to be used to look for solutions
 };
 
 #endif
