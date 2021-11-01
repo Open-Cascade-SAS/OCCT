@@ -236,9 +236,11 @@ proc gendoc {args} {
         return -1
       }
     } elseif {$arg_n == "s"} {
-      if { [ lsearch $args_names "pdf" ] == -1 } {
+      if { [ lsearch $args_names "pdf" ] != -1 } {
+        puts "Warning: search is not used with PDF and will be ignored."
         continue
       }
+
       if {$args_values(s) != "NULL"} {
         set SEARCH_MODE $args_values(s)
       } else {
@@ -247,16 +249,16 @@ proc gendoc {args} {
       }
     } elseif {$arg_n == "mathjax"} {
       if { [ lsearch $args_names "pdf" ] != -1 } {
-        set possible_mathjax_loc $args_values(mathjax)
-        if {[file exist [file join $possible_mathjax_loc $mathjax_js_name]]} {
-          set MATHJAX_LOCATION $args_values(mathjax)
-          puts "$MATHJAX_LOCATION"
-        } else {
-          puts "Warning: $mathjax_js_name is not found in $possible_mathjax_loc."
-          puts "         MathJax will be used from $MATHJAX_LOCATION"
-        }
+        puts "Warning: MathJax is not used with PDF and will be ignored."
+      }
+
+      set possible_mathjax_loc $args_values(mathjax)
+      if {[file exist [file join $possible_mathjax_loc $mathjax_js_name]]} {
+        set MATHJAX_LOCATION $args_values(mathjax)
+        puts "$MATHJAX_LOCATION"
       } else {
-        puts "Warning: MathJax is not used with pdf and will be ignored."
+        puts "Warning: $mathjax_js_name is not found in $possible_mathjax_loc."
+        puts "         MathJax will be used from $MATHJAX_LOCATION"
       }
     } else {
       puts "\nWrong argument: $arg_n"
