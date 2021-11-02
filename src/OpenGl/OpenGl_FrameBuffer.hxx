@@ -165,9 +165,26 @@ public:
 
   //! (Re-)initialize FBO with properties taken from another FBO.
   Standard_Boolean InitLazy (const Handle(OpenGl_Context)& theGlCtx,
-                             const OpenGl_FrameBuffer&     theFbo)
+                             const OpenGl_FrameBuffer& theFbo,
+                             const Standard_Boolean theToKeepMsaa = true)
   {
-    return InitLazy (theGlCtx, Graphic3d_Vec2i (theFbo.myVPSizeX, theFbo.myVPSizeY), theFbo.myColorFormats, theFbo.myDepthFormat, theFbo.myNbSamples);
+    return InitLazy (theGlCtx, Graphic3d_Vec2i (theFbo.myVPSizeX, theFbo.myVPSizeY), theFbo.myColorFormats, theFbo.myDepthFormat, theToKeepMsaa ? theFbo.myNbSamples : 0);
+  }
+
+  //! (Re-)initialize FBO with specified dimensions.
+  //! The Render Buffer Objects will be used for Color, Depth and Stencil attachments (as opposite to textures).
+  //! @param theGlCtx        currently bound OpenGL context
+  //! @param theSize         render buffer width x height
+  //! @param theColorFormats list of color render buffer sized format, e.g. GL_RGBA8; list should define only one element
+  //! @param theDepthFormat  depth-stencil render buffer sized format, e.g. GL_DEPTH24_STENCIL8
+  //! @param theNbSamples    MSAA number of samples (0 means normal render buffer)
+  Standard_Boolean InitRenderBuffer (const Handle(OpenGl_Context)& theGlCtx,
+                                     const Graphic3d_Vec2i& theSize,
+                                     const OpenGl_ColorFormats& theColorFormats,
+                                     const Standard_Integer theDepthFormat,
+                                     const Standard_Integer theNbSamples = 0)
+  {
+    return initRenderBuffer (theGlCtx, theSize, theColorFormats, theDepthFormat, theNbSamples, 0);
   }
 
   //! (Re-)initialize FBO with specified dimensions.
@@ -176,12 +193,12 @@ public:
   //! @param theSize        render buffer width x height
   //! @param theColorFormat color         render buffer sized format, e.g. GL_RGBA8
   //! @param theDepthFormat depth-stencil render buffer sized format, e.g. GL_DEPTH24_STENCIL8
-  //! @param theColorRBufferFromWindow when specified - should be ID of already initialized RB object, which will be released within this class
+  //! @param theColorRBufferFromWindow should be ID of already initialized RB object, which will be released within this class
   Standard_EXPORT Standard_Boolean InitWithRB (const Handle(OpenGl_Context)& theGlCtx,
                                                const Graphic3d_Vec2i& theSize,
                                                const Standard_Integer theColorFormat,
                                                const Standard_Integer theDepthFormat,
-                                               const unsigned int     theColorRBufferFromWindow = 0);
+                                               const unsigned int     theColorRBufferFromWindow);
 
   //! Initialize class from currently bound FBO.
   //! Retrieved OpenGL objects will not be destroyed on Release.
@@ -220,8 +237,14 @@ public:
   //! Returns the depth-stencil texture.
   const Handle(OpenGl_Texture)& DepthStencilTexture() const { return myDepthStencilTexture; }
 
+  //! Returns TRUE if color Render Buffer is defined.
+  bool IsColorRenderBuffer() const { return myGlColorRBufferId != NO_RENDERBUFFER; }
+
   //! Returns the color Render Buffer.
   unsigned int ColorRenderBuffer() const { return myGlColorRBufferId; }
+
+  //! Returns TRUE if depth Render Buffer is defined.
+  bool IsDepthStencilRenderBuffer() const { return myGlDepthRBufferId != NO_RENDERBUFFER; }
 
   //! Returns the depth Render Buffer.
   unsigned int DepthStencilRenderBuffer() const { return myGlDepthRBufferId; }
@@ -230,6 +253,21 @@ public:
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
 public:
+
+  //! (Re-)initialize FBO with specified dimensions.
+  //! The Render Buffer Objects will be used for Color, Depth and Stencil attachments (as opposite to textures).
+  //! @param theGlCtx        currently bound OpenGL context
+  //! @param theSize         render buffer width x height
+  //! @param theColorFormats list of color render buffer sized format, e.g. GL_RGBA8
+  //! @param theDepthFormat  depth-stencil render buffer sized format, e.g. GL_DEPTH24_STENCIL8
+  //! @param theNbSamples    MSAA number of samples (0 means normal render buffer)
+  //! @param theColorRBufferFromWindow when specified - should be ID of already initialized RB object, which will be released within this class
+  Standard_EXPORT Standard_Boolean initRenderBuffer (const Handle(OpenGl_Context)& theGlCtx,
+                                                     const Graphic3d_Vec2i& theSize,
+                                                     const OpenGl_ColorFormats& theColorFormats,
+                                                     const Standard_Integer theDepthFormat,
+                                                     const Standard_Integer theNbSamples,
+                                                     const unsigned int     theColorRBufferFromWindow);
 
   //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking Graphic3d_Vec2i")

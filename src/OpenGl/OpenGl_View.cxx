@@ -1106,6 +1106,11 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   {
     aNbSamples = OpenGl_Context::GetPowerOfTwo (aNbSamples, aCtx->MaxMsaaSamples());
   }
+  // Only MSAA textures can be blit into MSAA target,
+  // while render buffers could be resolved only into non-MSAA targets.
+  // As result, within obsolete OpenGL ES 3.0 context, we may create only one MSAA render buffer for main scene content
+  // and blit it into non-MSAA immediate FBO.
+  const bool hasTextureMsaa = aCtx->HasTextureMultisampling();
 
   bool toUseOit = myRenderParams.TransparencyMethod != Graphic3d_RTM_BLEND_UNORDERED
                && checkOitCompatibility (aCtx, aNbSamples > 0);
@@ -1156,7 +1161,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     if (myMainSceneFbos[0]->IsValid() && (toInitImmediateFbo || myImmediateSceneFbos[0]->IsValid()))
     {
       const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
-      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0])
+      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0], hasTextureMsaa)
        && !wasFailedImm0)
       {
         TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO "
@@ -1200,7 +1205,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
         && myMainSceneFbos[0]->IsValid())
   {
     const bool wasFailedMain1 = checkWasFailedFbo (myMainSceneFbos[1], myMainSceneFbos[0]);
-    if (!myMainSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0])
+    if (!myMainSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0], true)
      && !wasFailedMain1)
     {
       TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Main FBO (second) "
@@ -1221,14 +1226,14 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     {
       const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
       const bool wasFailedImm1 = checkWasFailedFbo (myImmediateSceneFbos[1], myMainSceneFbos[0]);
-      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0])
+      if (!myImmediateSceneFbos[0]->InitLazy (aCtx, *myMainSceneFbos[0], hasTextureMsaa)
        && !wasFailedImm0)
       {
         TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO (first) "
                                         + printFboFormat (myImmediateSceneFbos[0]) + " initialization has failed";
         aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
       }
-      if (!myImmediateSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0])
+      if (!myImmediateSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0], hasTextureMsaa)
        && !wasFailedImm1)
       {
         TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! Immediate FBO (first) "
@@ -2649,9 +2654,22 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
   aCtx->SetColorMask (true); // restore default alpha component write state
 
   const bool toApplyGamma = aCtx->ToRenderSRGB() != aCtx->IsFrameBufferSRGB();
-  if (aCtx->arbFBOBlit != NULL
-  && !toApplyGamma
-  &&  theReadFbo->NbSamples() != 0)
+  bool toDrawTexture = true;
+  if (aCtx->arbFBOBlit != NULL)
+  {
+    if (!toApplyGamma
+     &&  theReadFbo->NbSamples() != 0)
+    {
+      toDrawTexture = false;
+    }
+    if (theReadFbo->IsColorRenderBuffer())
+    {
+      // render buffers could be resolved only via glBlitFramebuffer()
+      toDrawTexture = false;
+    }
+  }
+
+  if (!toDrawTexture)
   {
     GLbitfield aCopyMask = 0;
     theReadFbo->BindReadBuffer (aCtx);

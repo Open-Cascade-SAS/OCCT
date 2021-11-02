@@ -785,7 +785,9 @@ void OpenGl_Window::Init()
       aDefFbo = new OpenGl_FrameBuffer();
     }
 
-    if (!aDefFbo->InitWithRB (myGlContext, Graphic3d_Vec2i (myWidth, myHeight), GL_RGBA8, GL_DEPTH24_STENCIL8))
+    OpenGl_ColorFormats aColorFormats;
+    aColorFormats.Append (GL_RGBA8);
+    if (!aDefFbo->InitRenderBuffer (myGlContext, Graphic3d_Vec2i (myWidth, myHeight), aColorFormats, GL_DEPTH24_STENCIL8))
     {
       TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO creation failed");
       throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());

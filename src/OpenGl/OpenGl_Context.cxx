@@ -184,6 +184,13 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myClippingState (),
   myGlLibHandle (NULL),
   myFuncs (new OpenGl_GlFunctions()),
+  myGapi (
+#if defined(GL_ES_VERSION_2_0)
+    Aspect_GraphicsLibrary_OpenGLES
+#else
+    Aspect_GraphicsLibrary_OpenGL
+#endif
+  ),
   mySupportedFormats (new Image_SupportedFormats()),
   myAnisoMax   (1),
   myTexClamp   (GL_CLAMP_TO_EDGE),
@@ -200,6 +207,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myGlVerMinor (0),
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
+  myHasMsaaTextures (Standard_False),
   myIsGlNormalizeEnabled (Standard_False),
   mySpriteTexUnit (Graphic3d_TextureUnit_PointSprite),
   myHasRayTracing (Standard_False),
@@ -1386,6 +1394,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   // read version
   myGlVerMajor = 0;
   myGlVerMinor = 0;
+  myHasMsaaTextures = false;
   myMaxMsaaSamples = 0;
   myMaxDrawBuffers = 1;
   myMaxColorAttachments = 1;
@@ -1573,25 +1582,26 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myClippingState.Init();
 
 #if defined(GL_ES_VERSION_2_0)
-  if (IsGlGreaterEqual (3, 1)
-   && myFuncs->glTexStorage2DMultisample != NULL)
+  if (IsGlGreaterEqual (3, 0))
   {
-    // MSAA RenderBuffers have been defined in OpenGL ES 3.0,
-    // but MSAA Textures - only in OpenGL ES 3.1+
+    // MSAA RenderBuffers have been defined in OpenGL ES 3.0, but MSAA Textures - only in OpenGL ES 3.1+
+    myHasMsaaTextures = IsGlGreaterEqual (3, 1)
+                     && myFuncs->glTexStorage2DMultisample != NULL;
     ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
   }
 #else
   if (core30 != NULL)
   {
-    // MSAA RenderBuffers have been defined in OpenGL 3.0,
-    // but MSAA Textures - only in OpenGL 3.2+
+    // MSAA RenderBuffers have been defined in OpenGL 3.0, but MSAA Textures - only in OpenGL 3.2+
     if (core32 != NULL)
     {
+      myHasMsaaTextures = true;
       ::glGetIntegerv (GL_MAX_SAMPLES, &myMaxMsaaSamples);
     }
     else if (CheckExtension ("GL_ARB_texture_multisample")
           && myFuncs->glTexImage2DMultisample != NULL)
     {
+      myHasMsaaTextures = true;
       GLint aNbColorSamples = 0, aNbDepthSamples = 0;
       ::glGetIntegerv (GL_MAX_COLOR_TEXTURE_SAMPLES, &aNbColorSamples);
       ::glGetIntegerv (GL_MAX_DEPTH_TEXTURE_SAMPLES, &aNbDepthSamples);
@@ -1599,6 +1609,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
   }
 #endif
+  if (myMaxMsaaSamples <= 1)
+  {
+    myHasMsaaTextures = false;
+  }
 
 #if !defined(GL_ES_VERSION_2_0)
   if (core32 != NULL && isCoreProfile)
@@ -2368,6 +2382,32 @@ Handle(OpenGl_FrameBuffer) OpenGl_Context::SetDefaultFrameBuffer (const Handle(O
   Handle(OpenGl_FrameBuffer) aFbo = myDefaultFbo;
   myDefaultFbo = theFbo;
   return aFbo;
+}
+
+// =======================================================================
+// function : IsRender
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::IsRender() const
+{
+#if !defined(GL_ES_VERSION_2_0)
+  return myRenderMode == GL_RENDER;
+#else
+  return Standard_True;
+#endif
+}
+
+// =======================================================================
+// function : IsFeedback
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::IsFeedback() const
+{
+#if !defined(GL_ES_VERSION_2_0)
+  return myRenderMode == GL_FEEDBACK;
+#else
+  return Standard_False;
+#endif
 }
 
 // =======================================================================

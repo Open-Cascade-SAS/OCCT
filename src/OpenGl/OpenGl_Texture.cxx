@@ -712,9 +712,12 @@ bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
                                         const Standard_Integer theSizeY)
 {
   if (!Create (theCtx)
-    || theNbSamples > theCtx->MaxMsaaSamples()
-    || theNbSamples < 1)
+   ||  theNbSamples > theCtx->MaxMsaaSamples()
+   ||  theNbSamples < 1)
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: MSAA texture ") + theSizeX + "x" + theSizeY + "@" + myNbSamples
+                         + " exceeds samples limit: " + theCtx->MaxMsaaSamples() + ".");
     return false;
   }
 
@@ -724,26 +727,42 @@ bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
   if(theSizeX > theCtx->MaxTextureSize()
   || theSizeY > theCtx->MaxTextureSize())
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: MSAA texture ") + theSizeX + "x" + theSizeY + "@" + myNbSamples
+                         + " exceeds size limit: " + theCtx->MaxTextureSize() + "x" + theCtx->MaxTextureSize() + ".");
     return false;
   }
 
   Bind (theCtx);
   //myTextFormat = theTextFormat;
   mySizedFormat = theTextFormat;
-#if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->Functions()->glTexStorage2DMultisample != NULL)
+  if (theCtx->HasTextureMultisampling()
+   && theCtx->Functions()->glTexStorage2DMultisample != NULL)
   {
     theCtx->Functions()->glTexStorage2DMultisample (myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
   }
-  else
+#if !defined(GL_ES_VERSION_2_0)
+  else if (theCtx->HasTextureMultisampling()
+        && theCtx->Functions()->glTexImage2DMultisample != NULL)
   {
     theCtx->Functions()->glTexImage2DMultisample   (myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
   }
-#else
-  theCtx->Functions()  ->glTexStorage2DMultisample (myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
 #endif
-  if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
+  else
   {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: MSAA textures are not supported by hardware.");
+    Unbind (theCtx);
+    return false;
+  }
+
+  const GLenum aTexImgErr = theCtx->core11fwd->glGetError();
+  if (aTexImgErr != GL_NO_ERROR)
+  {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: MSAA texture ") + theSizeX + "x" + theSizeY + "@" + myNbSamples
+                         + " IF: " + OpenGl_TextureFormat::FormatFormat (theTextFormat)
+                         + " cannot be created with error " + OpenGl_Context::FormatGlError (aTexImgErr) + ".");
     Unbind (theCtx);
     return false;
   }

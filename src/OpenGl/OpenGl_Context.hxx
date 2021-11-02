@@ -20,6 +20,7 @@
 #include <Aspect_HatchStyle.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_Display.hxx>
+#include <Aspect_GraphicsLibrary.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <NCollection_DataMap.hxx>
@@ -330,6 +331,9 @@ public:
     return (theFuncPtr != NULL);
   }
 
+  //! Return active graphics library.
+  Aspect_GraphicsLibrary GraphicsLibrary() const { return myGapi; }
+
   //! @return true if detected GL version is greater or equal to requested one.
   inline Standard_Boolean IsGlGreaterEqual (const Standard_Integer theVerMajor,
                                             const Standard_Integer theVerMinor) const
@@ -367,24 +371,10 @@ public:
   Standard_EXPORT Standard_Boolean SetSwapInterval (const Standard_Integer theInterval);
 
   //! Return true if active mode is GL_RENDER (cached state)
-  Standard_Boolean IsRender() const
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    return myRenderMode == GL_RENDER;
-  #else
-    return Standard_True;
-  #endif
-  }
+  Standard_EXPORT Standard_Boolean IsRender() const;
 
   //! Return true if active mode is GL_FEEDBACK (cached state)
-  Standard_Boolean IsFeedback() const
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    return myRenderMode == GL_FEEDBACK;
-  #else
-    return Standard_False;
-  #endif
-  }
+  Standard_EXPORT Standard_Boolean IsFeedback() const;
 
   //! This function retrieves information from GL about free GPU memory that is:
   //!  - OS-dependent. On some OS it is per-process and on others - for entire system.
@@ -480,11 +470,9 @@ public:
   //! @return true if texture parameters GL_TEXTURE_BASE_LEVEL/GL_TEXTURE_MAX_LEVEL are supported.
   Standard_Boolean HasTextureBaseLevel() const
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    return IsGlGreaterEqual (1, 2);
-  #else
-    return IsGlGreaterEqual (3, 0);
-  #endif
+    return myGapi == Aspect_GraphicsLibrary_OpenGLES
+         ? IsGlGreaterEqual (3, 0)
+         : IsGlGreaterEqual (1, 2);
   }
 
   //! Return map of supported texture formats.
@@ -506,6 +494,9 @@ public:
 
   //! Return texture unit to be used for sprites (Graphic3d_TextureUnit_PointSprite by default).
   Graphic3d_TextureUnit SpriteTextureUnit() const { return mySpriteTexUnit; }
+
+  //! @return true if MSAA textures are supported.
+  Standard_Boolean HasTextureMultisampling() const { return myHasMsaaTextures; }
 
   //! @return value for GL_MAX_SAMPLES
   Standard_Integer MaxMsaaSamples() const { return myMaxMsaaSamples; }
@@ -721,16 +712,8 @@ public:
   Standard_EXPORT Standard_Boolean IncludeMessage (const unsigned int theSource,
                                                    const unsigned int theId);
 
-  //! @return true if OpenGl context supports left and
-  //! right rendering buffers.
-  Standard_Boolean HasStereoBuffers() const
-  {
-  #if !defined(GL_ES_VERSION_2_0)
-    return myIsStereoBuffers;
-  #else
-    return Standard_False;
-  #endif
-  }
+  //! @return true if OpenGl context supports left and right rendering buffers.
+  Standard_Boolean HasStereoBuffers() const { return myIsStereoBuffers; }
 
 public: //! @name methods to alter or retrieve current state
 
@@ -1110,6 +1093,7 @@ private: // context info
   void*            myGlLibHandle;          //!< optional handle to GL library
   NCollection_Handle<OpenGl_GlFunctions>
                    myFuncs;                //!< mega structure for all GL functions
+  Aspect_GraphicsLibrary myGapi;           //!< GAPI name
   Handle(Image_SupportedFormats)
                    mySupportedFormats;     //!< map of supported texture formats
   Standard_Integer myAnisoMax;             //!< maximum level of anisotropy texture filter
@@ -1127,6 +1111,7 @@ private: // context info
   Standard_Integer myGlVerMinor;           //!< cached GL version minor number
   Standard_Boolean myIsInitialized;        //!< flag indicates initialization state
   Standard_Boolean myIsStereoBuffers;      //!< context supports stereo buffering
+  Standard_Boolean myHasMsaaTextures;      //!< context supports MSAA textures
   Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
                                            //!< Used to tell OpenGl that normals should be normalized
   Graphic3d_TextureUnit mySpriteTexUnit;   //!< sampler2D occSamplerPointSprite, texture unit for point sprite texture
