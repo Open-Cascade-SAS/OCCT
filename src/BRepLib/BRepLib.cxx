@@ -2423,7 +2423,7 @@ Standard_Boolean BRepLib::
 
       gp_Vec3f aNorm1f, aNorm2f;
       aPT1->Normal (aFNodF1, aNorm1f);
-      aPT1->Normal (aFNodF2, aNorm2f);
+      aPT2->Normal (aFNodF2, aNorm2f);
       const gp_XYZ aNorm1 (aNorm1f.x(), aNorm1f.y(), aNorm1f.z());
       const gp_XYZ aNorm2 (aNorm2f.x(), aNorm2f.y(), aNorm2f.z());
       const Standard_Real aDot = aNorm1 * aNorm2;
