@@ -1,0 +1,43 @@
+puts "================================="
+puts "0032652: Visualization - Select3D_SensitiveCylinder returns wrong 3D point on transformed shape"
+puts "Check picking of transformed sphere"
+puts "================================="
+
+pload MODELING VISUALIZATION
+psphere    s 10
+fscale     s 0 0 0 0.1
+trotate    s 0 0 0 1 1 0 25
+ttranslate s 2500 3500 1000
+
+vinit View1
+vlight headlight -head 0
+
+# check Select3D_SensitiveTriangulation
+vclear
+vaxo
+tcopy s ss
+incmesh ss 1.0
+tclean  ss -geom
+vdisplay -dispmode 1 ss
+vfit
+vselaxis 2500 3498 1000 0 1 0 -display a -showNormal
+set aPntTris [vmoveto 200 200]
+vpoint pp {*}$aPntTris
+checkpoint aPntTris_p $aPntTris {2500.54 3499.41 1000.6} 0.1
+if { ![string match "*Select3D_SensitiveTriangulation*" [vstate -entities]] } { puts "Error: triangulation should be detected" }
+vfit
+vdump $imagedir/${casename}_prs_tris.png
+vseldump $imagedir/${casename}_selnorm_tris.png -type surfNormal
+
+# check Select3D_SensitiveSphere
+vclear
+vdisplay -dispmode 1 s
+vfit
+vselaxis 2500 3498 1000 0 1 0 -display a -showNormal
+set aPntSph [vmoveto 200 200]
+vpoint pp {*}$aPntSph
+checkpoint aPntSph_p $aPntSph {2500.54 3499.41 1000.6} 0.1
+if { ![string match "*Select3D_SensitiveSphere*" [vstate -entities]] } { puts "Error: sphere should be detected" }
+vfit
+vdump $imagedir/${casename}_prs_sph.png
+vseldump $imagedir/${casename}_selnorm_sph.png -type surfNormal

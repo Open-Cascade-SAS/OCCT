@@ -280,11 +280,11 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
           &TopoDS::Face (aSubfacesMap.FindKey (2))
         };
 
-        TopLoc_Location aLocSurf;
+        TopLoc_Location aLocSurf[2];
         const Handle(Geom_Surface)* aSurfaces[2] =
         {
-          &BRep_Tool::Surface (*aFaces[0], aLocSurf),
-          &BRep_Tool::Surface (*aFaces[1], aLocSurf)
+          &BRep_Tool::Surface (*aFaces[0], aLocSurf[0]),
+          &BRep_Tool::Surface (*aFaces[1], aLocSurf[1])
         };
 
         Standard_Integer aConIndex = 0;
@@ -308,7 +308,7 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
           const Standard_Real aRad1 = aCone.RefRadius();
           const Standard_Real aHeight = (aRad1 != 0.0)
                                        ? aRad1 / Abs (Tan (aCone.SemiAngle()))
-                                       : aCone.Location().Distance (aGeomPln->Location());
+                                       : aCone.Location().Distance (aGeomPln->Location().Transformed (aLocSurf[aConIndex == 0 ? 1 : 0]));
           const Standard_Real aRad2 = (aRad1 != 0.0) ? 0.0 : Tan (aCone.SemiAngle()) * aHeight;
           gp_Trsf aTrsf;
           aTrsf.SetTransformation (aCone.Position(), gp_Ax3());
@@ -326,18 +326,19 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
           &TopoDS::Face (aSubfacesMap.FindKey (3))
         };
 
-        TopLoc_Location aLocSurf;
+        TopLoc_Location aLocSurf[3];
         const Handle(Geom_Surface)* aSurfaces[3] =
         {
-          &BRep_Tool::Surface (*aFaces[0], aLocSurf),
-          &BRep_Tool::Surface (*aFaces[1], aLocSurf),
-          &BRep_Tool::Surface (*aFaces[2], aLocSurf)
+          &BRep_Tool::Surface (*aFaces[0], aLocSurf[0]),
+          &BRep_Tool::Surface (*aFaces[1], aLocSurf[1]),
+          &BRep_Tool::Surface (*aFaces[2], aLocSurf[2])
         };
 
         Standard_Integer aConIndex = -1, aNbPlanes = 0;
         Handle(Geom_ConicalSurface) aGeomCone;
         Handle(Geom_CylindricalSurface) aGeomCyl;
         Handle(Geom_Plane) aGeomPlanes[2];
+        const TopLoc_Location* aGeomPlanesLoc[2];
         for (Standard_Integer aSurfIter = 0; aSurfIter < 3; ++aSurfIter)
         {
           const Handle(Geom_Surface)& aSurf = *aSurfaces[aSurfIter];
@@ -361,6 +362,7 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
             aGeomPlanes[aNbPlanes] = Handle(Geom_Plane)::DownCast (aSurf);
             if (!aGeomPlanes[aNbPlanes].IsNull())
             {
+              aGeomPlanesLoc[aNbPlanes] = &aLocSurf[aSurfIter];
               ++aNbPlanes;
             }
           }
@@ -375,7 +377,8 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
           {
             const gp_Cone aCone = BRepAdaptor_Surface (*aFaces[aConIndex]).Cone();
             const Standard_Real aRad1 = aCone.RefRadius();
-            const Standard_Real aHeight = aGeomPlanes[0]->Location().Distance (aGeomPlanes[1]->Location());
+            const Standard_Real aHeight = aGeomPlanes[0]->Location().Transformed (*aGeomPlanesLoc[0])
+                               .Distance (aGeomPlanes[1]->Location().Transformed (*aGeomPlanesLoc[1]));
             gp_Trsf aTrsf;
             aTrsf.SetTransformation (aCone.Position(), gp_Ax3());
             const Standard_Real aTriangleHeight = (aCone.SemiAngle() > 0.0)
@@ -398,7 +401,8 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
           {
             const gp_Cylinder aCyl = BRepAdaptor_Surface (*aFaces[aConIndex]).Cylinder();
             const Standard_Real aRad = aCyl.Radius();
-            const Standard_Real aHeight = aGeomPlanes[0]->Location().Distance (aGeomPlanes[1]->Location());
+            const Standard_Real aHeight = aGeomPlanes[0]->Location().Transformed (*aGeomPlanesLoc[0])
+                               .Distance (aGeomPlanes[1]->Location().Transformed (*aGeomPlanesLoc[1]));
             gp_Trsf aTrsf;
             aTrsf.SetTransformation (aCyl.Position(), gp_Ax3());
             Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad, aRad, aHeight, aTrsf);
@@ -410,7 +414,7 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
 
       for (Standard_Integer aShIndex = 1; aShIndex <= aSubfacesMap.Extent(); ++aShIndex)
       {
-        ComputeSensitive (aSubfacesMap (aShIndex), theOwner,
+        ComputeSensitive (aSubfacesMap.FindKey (aShIndex), theOwner,
                           theSelection,
                           theDeflection, theDeviationAngle, theNbPOnEdge, theMaxParam, isAutoTriangulation);
       }

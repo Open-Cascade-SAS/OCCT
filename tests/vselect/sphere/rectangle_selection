@@ -3,6 +3,9 @@ puts "0032182: Visualization - add Select3D_SensitiveSphere"
 puts "Tests rectangular selection of Select3D_SenstiveSphere"
 puts "================================="
 
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
 psphere s1 1
 psphere s2 1
 psphere s3 1

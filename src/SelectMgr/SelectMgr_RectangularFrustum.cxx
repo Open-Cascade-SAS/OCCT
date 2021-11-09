@@ -753,20 +753,24 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
 {
   Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
-  Standard_Real aTimeEnter = 0.0, aTimeLeave = 0.0;
+  Standard_Real aTimes[2] = { 0.0, 0.0 };
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
   const gp_Pnt  aLoc     = myNearPickedPnt.Transformed (aTrsfInv);
   const gp_Dir  aRayDir  = myViewRayDir   .Transformed (aTrsfInv);
-  if (!RayCylinderIntersection (theBottomRad, theTopRad, theHeight, aLoc, aRayDir, aTimeEnter, aTimeLeave))
+  if (!RayCylinderIntersection (theBottomRad, theTopRad, theHeight, aLoc, aRayDir, aTimes[0], aTimes[1]))
   {
     return Standard_False;
   }
-  thePickResult.SetDepth (aTimeEnter * myScale);
+
+  Standard_Integer aResTime = 0;
+  thePickResult.SetDepth (aTimes[aResTime] * myScale);
   if (theClipRange.IsClipped (thePickResult.Depth()))
   {
-    thePickResult.SetDepth (aTimeLeave * myScale);
+    aResTime = 1;
+    thePickResult.SetDepth (aTimes[aResTime] * myScale);
   }
-  const gp_Pnt aPntOnCylinder (aLoc.XYZ() + aRayDir.XYZ() * thePickResult.Depth());
+
+  const gp_Pnt aPntOnCylinder = aLoc.XYZ() + aRayDir.XYZ() * aTimes[aResTime];
   if (Abs (aPntOnCylinder.Z()) < Precision::Confusion())
   {
     thePickResult.SetSurfaceNormal (-gp::DZ().Transformed (theTrsf));
@@ -779,7 +783,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
   {
     thePickResult.SetSurfaceNormal (gp_Vec (aPntOnCylinder.X(), aPntOnCylinder.Y(), 0.0).Transformed (theTrsf));
   }
-  thePickResult.SetPickedPoint (aPntOnCylinder);
+  thePickResult.SetPickedPoint (aPntOnCylinder.Transformed (theTrsf));
   return !theClipRange.IsClipped (thePickResult.Depth());
 }
 

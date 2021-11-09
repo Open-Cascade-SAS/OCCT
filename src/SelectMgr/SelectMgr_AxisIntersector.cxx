@@ -543,7 +543,11 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsSphere (const gp_Pnt& theCen
     return Standard_False;
   }
 
+  const gp_Pnt aPntOnSphere (myAxis.Location().XYZ() + myAxis.Direction().XYZ() * aDepth);
+  const gp_Vec aNormal (aPntOnSphere.XYZ() - theCenter.XYZ());
   thePickResult.SetDepth (aDepth);
+  thePickResult.SetPickedPoint (aPntOnSphere);
+  thePickResult.SetSurfaceNormal (aNormal);
   return Standard_True;
 }
 
@@ -576,7 +580,22 @@ Standard_Boolean SelectMgr_AxisIntersector::OverlapsCylinder (const Standard_Rea
   {
     return false;
   }
+
+  const gp_Pnt aPntOnCylinder = aLoc.XYZ() + aRayDir.XYZ() * aDepth;
   thePickResult.SetDepth (aDepth);
+  thePickResult.SetPickedPoint (aPntOnCylinder.Transformed (theTrsf));
+  if (Abs (aPntOnCylinder.Z()) < Precision::Confusion())
+  {
+    thePickResult.SetSurfaceNormal (-gp::DZ().Transformed (theTrsf));
+  }
+  else if (Abs (aPntOnCylinder.Z() - theHeight) < Precision::Confusion())
+  {
+    thePickResult.SetSurfaceNormal (gp::DZ().Transformed (theTrsf));
+  }
+  else
+  {
+    thePickResult.SetSurfaceNormal (gp_Vec (aPntOnCylinder.X(), aPntOnCylinder.Y(), 0.0).Transformed (theTrsf));
+  }
   return true;
 }
 

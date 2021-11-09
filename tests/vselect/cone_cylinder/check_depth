@@ -3,6 +3,9 @@ puts "0032281: Visualization - add Select3D_SensitiveCylinder"
 puts "Tests depth value returned by Select3D_SensitiveCylinder"
 puts "================================="
 
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
 pcylinder cyl 10 20
 vdisplay cyl -dispmode 1
 vfit
