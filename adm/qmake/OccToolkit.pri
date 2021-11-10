@@ -26,6 +26,7 @@ HAVE_FFMPEG    { CSF_FFmpeg = -lavcodec -lavformat -lswscale -lavutil }
 HAVE_TBB       { CSF_TBB = -ltbb -ltbbmalloc }
 HAVE_ZLIB      { CSF_ZLIB = -lzlib }
 HAVE_LIBLZMA   { CSF_LIBLZMA = -lliblzma }
+HAVE_DRACO     { CSF_Draco = -ldraco }
 win32 {
   CSF_kernel32   = -lkernel32
   CSF_advapi32   = -ladvapi32

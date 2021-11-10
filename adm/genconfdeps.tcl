@@ -1251,13 +1251,13 @@ proc wokdep:SearchX11 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
     return "$isFound"
   }
 
-  set aXmuLibPath [wokdep:SearchLib "Xmu" "$::ARCH"]
-  if { "$aXmuLibPath" == "" } {
-    set aXmuLibPath [wokdep:SearchLib "Xmu" "$::ARCH" "/usr/X11/lib"]
-    if { "$aXmuLibPath" != "" } {
+  set aX11LibPath [wokdep:SearchLib "X11" "$::ARCH"]
+  if { "$aX11LibPath" == "" } {
+    set aX11LibPath [wokdep:SearchLib "X11" "$::ARCH" "/usr/X11/lib"]
+    if { "$aX11LibPath" != "" } {
       #lappend ::CSF_OPT_LIB$::ARCH "/usr/X11/lib"
     } else {
-      lappend anErrLib$::ARCH "Error: '${::SYS_LIB_PREFIX}Xmu.${::SYS_LIB_SUFFIX}' not found (X11)"
+      lappend anErrLib$::ARCH "Error: '${::SYS_LIB_PREFIX}X11.${::SYS_LIB_SUFFIX}' not found (X11)"
       set isFound "false"
     }
   }
