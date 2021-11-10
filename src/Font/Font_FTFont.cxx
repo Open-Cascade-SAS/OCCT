@@ -653,7 +653,7 @@ float Font_FTFont::AdvanceY (Standard_Utf32Char theUCharNext) const
 Standard_Integer Font_FTFont::GlyphsNumber (bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
-  Standard_Integer aNbGlyphs = myFTFace->num_glyphs;
+  Standard_Integer aNbGlyphs = (Standard_Integer )myFTFace->num_glyphs;
   if (theToIncludeFallback)
   {
     for (Standard_Integer aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)

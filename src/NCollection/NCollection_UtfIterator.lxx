@@ -54,7 +54,7 @@ const unsigned char NCollection_UtfIterator<Type>::UTF8_BYTES_MINUS_ONE[256] =
 //! This table contains as many values as there might be trailing bytes
 //! in a UTF-8 sequence.
 template<typename Type>
-const unsigned long NCollection_UtfIterator<Type>::offsetsFromUTF8[6] =
+const Standard_Utf32Char NCollection_UtfIterator<Type>::offsetsFromUTF8[6] =
 {
   0x00000000UL, 0x00003080UL, 0x000E2080UL,
   0x03C82080UL, 0xFA082080UL, 0x82082080UL
@@ -95,17 +95,17 @@ inline void NCollection_UtfIterator<Type>::readUTF8()
 }
 
 // magic numbers
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF8_BYTE_MASK = 0xBF;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF8_BYTE_MARK = 0x80;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_START = 0xD800;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_END   = 0xDBFF;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_START  = 0xDC00;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_END    = 0xDFFF;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_SHIFT = 10;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF32_MAX_BMP   = 0x0000FFFFUL;
-template<typename Type> const unsigned long NCollection_UtfIterator<Type>::UTF32_MAX_LEGAL = 0x0010FFFFUL;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MASK = 0xBF;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF8_BYTE_MARK = 0x80;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_START = 0xD800;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_END   = 0xDBFF;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_START  = 0xDC00;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_END    = 0xDFFF;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_HIGH_SHIFT = 10;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_BASE   = 0x0010000UL;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF16_SURROGATE_LOW_MASK   = 0x3FFUL;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_BMP   = 0x0000FFFFUL;
+template<typename Type> const Standard_Utf32Char NCollection_UtfIterator<Type>::UTF32_MAX_LEGAL = 0x0010FFFFUL;
 
 // =======================================================================
 // function : readUTF16

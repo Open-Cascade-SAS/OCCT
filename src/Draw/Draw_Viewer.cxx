@@ -1084,7 +1084,7 @@ void Draw_Viewer::Select (Standard_Integer& theId,
   theId = MAXVIEW;
   while (theId >= MAXVIEW)
   {
-    Standard_Integer aWindowNumber = 0;
+    long aWindowNumber = 0;
     Draw_Window::GetNextEvent (theToWait, aWindowNumber, theX, theY, theButton);
     if (theY < 0)
     {

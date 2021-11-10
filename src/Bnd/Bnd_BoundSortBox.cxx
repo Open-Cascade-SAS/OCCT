@@ -97,12 +97,12 @@
 #define DIMAXIS 20
 
 #if DEBUG
-static long unsigned   APPELREJECTION=0L;
-static long unsigned   REJECTNIV0=0L;
-static long unsigned   REJECTNIV1=0L;
-static long unsigned   NBCOMPARE=0L;
-static long unsigned   NBBOITES=0L;
-static long unsigned   NBBOITESATESTER=0L;
+static unsigned int APPELREJECTION=0L;
+static unsigned int REJECTNIV0=0L;
+static unsigned int REJECTNIV1=0L;
+static unsigned int NBCOMPARE=0L;
+static unsigned int NBBOITES=0L;
+static unsigned int NBBOITESATESTER=0L;
 #endif
 //=======================================================================
 static Standard_Integer  ComputeSize(const Standard_Integer n) { 
@@ -113,7 +113,7 @@ static Standard_Integer  ComputeSize(const Standard_Integer n) {
   return(8);
 }
 //=======================================================================
-static long unsigned _P2[32] = { 1,2,4,8,  16,32,64,128,  256,512,1024,2048,
+static unsigned int _P2[32] = { 1,2,4,8,  16,32,64,128,  256,512,1024,2048,
 				 4096,8192,16384,32768,
 				 65536,131072,262144,524288,
 				 1048576,2097152,4194304,8388608,
@@ -130,12 +130,12 @@ public:
   Standard_Integer _BASE;
   Standard_Integer _BASEM1;
   
-  long unsigned ind;
-  long unsigned Isize;
+  unsigned int ind;
+  unsigned int Isize;
   Standard_Integer ssize;
   Standard_Real Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
   
-  long unsigned *p;
+  unsigned int* p;
   Standard_Integer **axisX;
   Standard_Integer **axisY;
   Standard_Integer **axisZ;
@@ -152,9 +152,9 @@ public:
   void AppendAxisY(const Standard_Integer i,const Standard_Integer v);
   void AppendAxisZ(const Standard_Integer i,const Standard_Integer v);
 
-  void Add(long unsigned t) { int o=t&31;    int k=t>>5;    p[k]|=_P2[o];          }
-  int Val(long unsigned t)  { int o=t&31;    int k=t>>5;    return(p[k]&_P2[o]);   }
-  void Raz(long unsigned t) { int o=t&31;    int k=t>>5;    p[k]&= ~(_P2[o]);      }
+  void Add (unsigned int t) { int o=t&31;    int k=t>>5;    p[k]|=_P2[o];          }
+  int  Val (unsigned int t) { int o=t&31;    int k=t>>5;    return(p[k]&_P2[o]);   }
+  void Raz (unsigned int t) { int o=t&31;    int k=t>>5;    p[k]&= ~(_P2[o]);      }
   
   Standard_Integer NbAxisX(const Standard_Integer i) {   return(axisX[0][i]);   }
   Standard_Integer NbAxisY(const Standard_Integer i) {   return(axisY[0][i]);   }
@@ -220,10 +220,10 @@ BSB_T3Bits::BSB_T3Bits(int size)
   default : {  _DECAL=3;   _DECAL2= 6;   _BASE=  8;  _BASEM1=  7;  break; } 
   }
   Standard_Integer i ;    
-  long unsigned nb = (size*size*size)>>5;
+  unsigned int nb = (size*size*size)>>5;
   Isize = nb;
   ssize = size;
-  p = new long unsigned [nb];
+  p = new unsigned int[nb];
   do { p[--nb]=0; } while(nb);
 
   axisX = (Standard_Integer **) malloc((size+1)*sizeof(Standard_Integer *));
@@ -457,7 +457,7 @@ void Bnd_BoundSortBox::SortBoxes()
 	  for (lacaseX=firstcaseX; lacaseX<=lastcaseX; lacaseX++) {
 	    for (lacaseY=firstcaseY; lacaseY<=lastcaseY; lacaseY++) {
 	      for (lacaseZ=firstcaseZ; lacaseZ<=lastcaseZ; lacaseZ++) {
-		long unsigned t=Map->GrilleInteger(lacaseX-1,lacaseY-1,lacaseZ-1);
+                unsigned int t = Map->GrilleInteger(lacaseX-1,lacaseY-1,lacaseZ-1);
 		Map->Add(t);
 	      }
 	    }
@@ -578,7 +578,7 @@ void Bnd_BoundSortBox::Add(const Bnd_Box& theBox,
       for (theGapX=firstGapX; theGapX<=lastGapX; theGapX++) {
 	for (theGapY=firstGapY; theGapY<=lastGapY; theGapY++) {
 	  for (theGapZ=firstGapZ; theGapZ<=lastGapZ; theGapZ++) {
-	    long unsigned t=Map->GrilleInteger(theGapX-1,theGapY-1,theGapZ-1);
+            unsigned int t = Map->GrilleInteger(theGapX-1,theGapY-1,theGapZ-1);
 	    Map->Add(t);
 	  }
 	}
@@ -668,7 +668,7 @@ const TColStd_ListOfInteger& Bnd_BoundSortBox::Compare (const Bnd_Box& theBox)
   for(Standard_Integer i=i0; touch==Standard_False && i<=i1;i++) { 
     for(Standard_Integer j=j0; touch==Standard_False && j<=j1;j++) { 
       for(Standard_Integer k=k0;  touch==Standard_False && k<=k1;k++) {
-	long unsigned t=Map->GrilleInteger(i,j,k);
+        unsigned int t = Map->GrilleInteger(i,j,k);
 	if(Map->Val(t)) { 
 	  touch = Standard_True;
 	}

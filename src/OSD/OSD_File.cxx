@@ -782,7 +782,7 @@ void OSD_File::Read (TCollection_AsciiString& theBuffer,
 #ifdef _WIN32
   Read (&aBuffer.ChangeFirst(), theNbBytes, aNbBytesRead);
 #else
-  aNbBytesRead = read (myFileChannel, &aBuffer.ChangeFirst(), theNbBytes);
+  aNbBytesRead = (Standard_Integer )read (myFileChannel, &aBuffer.ChangeFirst(), theNbBytes);
   if (aNbBytesRead == -1)
   {
     aNbBytesRead = 0;
@@ -1078,7 +1078,7 @@ void OSD_File::Read (const Standard_Address  theBuffer,
   theNbReadBytes = (Standard_Integer )aNbReadBytes;
 #else
   theNbReadBytes = 0;
-  int aNbReadBytes = read (myFileChannel, (char* )theBuffer, theNbBytes);
+  int aNbReadBytes = (Standard_Integer )read (myFileChannel, (char* )theBuffer, theNbBytes);
   if (aNbReadBytes == -1)
   {
     myError.SetValue (errno, Iam, "Read");
@@ -1131,7 +1131,7 @@ void OSD_File::Write (const Standard_Address theBuffer,
     _osd_wnt_set_error (myError, OSD_WFile);
   }
 #else
-  const int aNbWritten = write (myFileChannel, (const char* )theBuffer, theNbBytes);
+  const int aNbWritten = (Standard_Integer )write (myFileChannel, (const char* )theBuffer, theNbBytes);
   if (aNbWritten == -1)
   {
     myError.SetValue (errno, Iam, "Write");

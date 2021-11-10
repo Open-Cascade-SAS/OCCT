@@ -552,13 +552,13 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
   return isSuccess;
 }
 
-Standard_Boolean Draw_Window::IsEqualWindows (const Standard_Integer& theWindowNumber)
+Standard_Boolean Draw_Window::IsEqualWindows (const long theWindowNumber)
 {
   return ([myWindow windowNumber] == theWindowNumber);
 }
 
 void Draw_Window::GetNextEvent (Standard_Boolean  theWait,
-                                Standard_Integer& theWindowNumber,
+                                long&             theWindowNumber,
                                 Standard_Integer& theX,
                                 Standard_Integer& theY,
                                 Standard_Integer& theButton)

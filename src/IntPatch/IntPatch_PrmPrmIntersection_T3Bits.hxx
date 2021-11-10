@@ -24,57 +24,40 @@
 #include <Standard_Address.hxx>
 #include <Standard_Integer.hxx>
 
-
-
 class IntPatch_PrmPrmIntersection_T3Bits 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT IntPatch_PrmPrmIntersection_T3Bits(const Standard_Integer size);
-  
-  Standard_EXPORT void Destroy();
-~IntPatch_PrmPrmIntersection_T3Bits()
-{
-  Destroy();
-}
-  
-    void Add (const Standard_Integer t);
-  
-    Standard_Integer Val (const Standard_Integer t) const;
-  
-    void Raz (const Standard_Integer t);
-  
+
+  Standard_EXPORT ~IntPatch_PrmPrmIntersection_T3Bits();
+
+  void Add (const Standard_Integer t)
+  {
+    p[t>>5] |= (1<<(((unsigned int)t)&31));
+  }
+
+  Standard_Integer Val (const Standard_Integer t) const
+  {
+    return (p[t>>5] & (1<<(((unsigned int)t)&31)));
+  }
+
+  void Raz (const Standard_Integer t)
+  {
+    p[t>>5] &= ~(1<<(((unsigned int)t)&31));
+  }
+
   Standard_EXPORT void ResetAnd();
   
   Standard_EXPORT Standard_Integer And (IntPatch_PrmPrmIntersection_T3Bits& Oth, Standard_Integer& indiceprecedent);
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-
-
-  Standard_Address p;
+  Standard_Integer* p;
   Standard_Integer Isize;
 
-
 };
-
-
-#include <IntPatch_PrmPrmIntersection_T3Bits.lxx>
-
-
-
-
 
 #endif // _IntPatch_PrmPrmIntersection_T3Bits_HeaderFile

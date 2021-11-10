@@ -1368,7 +1368,7 @@ static Standard_Integer OCC24137 (Draw_Interpretor& theDI, Standard_Integer theN
   const TopoDS_Shape aShapeV = DBRep::Get (aVertName);
   const Standard_Real aUFrom = Atof (theArgv[anArgIter++]);
   const Standard_Real aVFrom = Atof (theArgv[anArgIter++]);
-  const Standard_Integer aNbIts = (anArgIter < theNArg) ? atol (theArgv[anArgIter++]) : 100;
+  const Standard_Integer aNbIts = (anArgIter < theNArg) ? Draw::Atoi (theArgv[anArgIter++]) : 100;
   if (aShapeF.IsNull() || aShapeF.ShapeType() != TopAbs_FACE)
     {
       std::cout << "Error: " << aFaceName << " shape is null / not a face" << std::endl;

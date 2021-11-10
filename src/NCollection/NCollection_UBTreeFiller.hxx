@@ -145,21 +145,27 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType,TheBndType>::Fill ()
   Standard_Integer i, nbAdd = mySeqPtr.Length();
   // Fisher-Yates randomization
   if (myIsFullRandom)
-    for (i = nbAdd; i > 0; i--) { 
-      unsigned int ind = myRandGen();
+  {
+    for (i = nbAdd; i > 0; i--)
+    {
+      unsigned int ind = (unsigned int )myRandGen();
       ind = ind % i;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add (aObjBnd.myObj, aObjBnd.myBnd);
       mySeqPtr(ind) = mySeqPtr(i-1);
     }
+  }
   else
-    for (i = nbAdd; i > 0; i--) { 
-      unsigned int ind = myRandGen();
+  {
+    for (i = nbAdd; i > 0; i--)
+    {
+      unsigned int ind = (unsigned int )myRandGen();
       ind = i - (ind % i) - 1;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add (aObjBnd.myObj, aObjBnd.myBnd);
       mySeqPtr(ind) = mySeqPtr(i-1);
     }
+  }
   mySeqPtr.Clear();
   return nbAdd;
 }

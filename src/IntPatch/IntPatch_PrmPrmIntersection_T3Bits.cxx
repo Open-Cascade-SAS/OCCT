@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <IntPatch_PrmPrmIntersection_T3Bits.hxx>
 
 IntPatch_PrmPrmIntersection_T3Bits::IntPatch_PrmPrmIntersection_T3Bits(const Standard_Integer size)
@@ -23,12 +22,12 @@ IntPatch_PrmPrmIntersection_T3Bits::IntPatch_PrmPrmIntersection_T3Bits(const Sta
   Standard_Integer nb = (size*size*size)>>5;
   Isize = nb;
   p = new Standard_Integer [nb];
-  do { ((Standard_Integer *) p)[--nb]=0; } while(nb);
+  do { p[--nb] = 0; } while(nb);
 }
 
-void IntPatch_PrmPrmIntersection_T3Bits::Destroy()
+IntPatch_PrmPrmIntersection_T3Bits::~IntPatch_PrmPrmIntersection_T3Bits()
 {
-  if(p) { delete[] ((Standard_Integer*)p); p=NULL; }
+  if (p) { delete[] p; p = NULL; }
 }
 
 void IntPatch_PrmPrmIntersection_T3Bits::ResetAnd()
@@ -42,10 +41,10 @@ Standard_Integer IntPatch_PrmPrmIntersection_T3Bits::And(IntPatch_PrmPrmIntersec
   int k=indice>>5;
   while(k<Isize)
   {
-    Standard_Integer r=((Standard_Integer *) p)[k] & ((Standard_Integer *) Oth.p)[k];
+    Standard_Integer r = p[k] & Oth.p[k];
     if(r)
     {
-      unsigned long int c=0;
+      unsigned int c = 0;
       do
       {
         if(r&1)

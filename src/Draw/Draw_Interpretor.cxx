@@ -690,7 +690,7 @@ TCollection_AsciiString Draw_Interpretor::GetLog ()
   char buffer[BUFSIZE + 1];
   for (;;)
   {
-    int nbRead = read (myFDLog, buffer, BUFSIZE);
+    int nbRead = (int )read (myFDLog, buffer, BUFSIZE);
     if (nbRead <= 0)
     {
       break;

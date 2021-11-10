@@ -183,11 +183,15 @@ int static copy_file( const char* src, const char* trg )
   const int BUFSIZE=4096;
   char buf[BUFSIZE];
   int n=0;
-  while ( ( n = read ( fds, buf, BUFSIZE )) >0 )
+  while ((n = (int )read (fds, buf, BUFSIZE)) > 0)
   {
-    if ( write ( fdo, buf, n ) != n ) { // writing error
-      if ( ! errno )
+    if ( write ( fdo, buf, n ) != n )
+    {
+      // writing error
+      if (!errno)
+      {
         errno = ENOSPC;
+      }
       break;
     }
   }

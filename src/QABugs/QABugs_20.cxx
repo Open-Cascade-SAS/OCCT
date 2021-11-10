@@ -3104,6 +3104,7 @@ static Standard_Integer OCC30391(Draw_Interpretor& theDI,
 #include <TDF_ChildIterator.hxx>
 #include <TDocStd_PathParser.hxx>
 #include <OSD.hxx>
+#include <OSD_Parallel.hxx>
 #include <OSD_Thread.hxx>
 #include <OSD_Environment.hxx>
 typedef NCollection_Sequence <TCollection_AsciiString> SequenceOfDocNames;
@@ -3193,31 +3194,6 @@ void* threadFunction(void* theArgs)
   return args->res;
 }
 
-int getNumCores()
-{
-#ifdef WIN32
-  SYSTEM_INFO sysinfo;
-  GetSystemInfo(&sysinfo);
-  return sysinfo.dwNumberOfProcessors;
-#elif MACOS
-  int nm[2];
-  size_t len = 4;
-  uint32_t count;
-
-  nm[0] = CTL_HW; nm[1] = HW_AVAILCPU;
-  sysctl(nm, 2, &count, &len, NULL, 0);
-
-  if (count < 1) {
-    nm[1] = HW_NCPU;
-    sysctl(nm, 2, &count, &len, NULL, 0);
-    if (count < 1) { count = 1; }
-  }
-  return count;
-#else
-  return sysconf(_SC_NPROCESSORS_ONLN);
-#endif
-}
-
 //=======================================================================
 //function : OCC29195
 //purpose  : 
@@ -3231,7 +3207,7 @@ static Standard_Integer OCC29195(Draw_Interpretor&, Standard_Integer theArgC, co
     std::cout << "\ndocN - names (5 in each group) of OCAF documents names (3 input files, 2 output)\n" << std::endl;
     return 1;
   }
-  int iThread(0), nbThreads(0), off(0);
+  int iThread(0), off(0);
   if (TCollection_AsciiString(theArgV[1]).IsIntegerValue())
   {
     nbREP = TCollection_AsciiString(theArgV[1]).IntegerValue();
@@ -3243,7 +3219,7 @@ static Standard_Integer OCC29195(Draw_Interpretor&, Standard_Integer theArgC, co
     return 0;
   }
   Standard_Integer aNbFiles = (theArgC - off - 1) / 5;
-  nbThreads = getNumCores();
+  int nbThreads = OSD_Parallel::NbLogicalProcessors();
   if (aNbFiles < nbThreads)
   {
     nbThreads = aNbFiles;

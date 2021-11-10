@@ -853,7 +853,7 @@ void Draw_Window::DrawString (Standard_Integer theX, Standard_Integer theY,
   }
   ReleaseDC (myWindow, hDC);
 #elif defined(HAVE_XLIB)
-  XDrawString (Draw_WindowDisplay, GetDrawable(), myBase->gc, theX, theY, (char* )theText, strlen(theText));
+  XDrawString (Draw_WindowDisplay, GetDrawable(), myBase->gc, theX, theY, (char* )theText, (int )strlen(theText));
 #else
   (void )theX;
   (void )theY;

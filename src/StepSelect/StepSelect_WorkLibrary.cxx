@@ -67,13 +67,12 @@ Standard_Integer  StepSelect_WorkLibrary::ReadFile
    Handle(Interface_InterfaceModel)& model,
    const Handle(Interface_Protocol)& protocol) const
 {
-  long status = 1;
   DeclareAndCast(StepData_Protocol,stepro,protocol);
   if (stepro.IsNull()) return 1;
   Handle(StepData_StepModel) stepmodel  = new StepData_StepModel;
   model  = stepmodel;
-  status = StepFile_Read(name, 0, stepmodel, stepro);
-  return status;
+  Standard_Integer aStatus = StepFile_Read(name, 0, stepmodel, stepro);
+  return aStatus;
 }
 
 Standard_Integer  StepSelect_WorkLibrary::ReadStream (const Standard_CString theName,
@@ -81,13 +80,12 @@ Standard_Integer  StepSelect_WorkLibrary::ReadStream (const Standard_CString the
                                                       Handle(Interface_InterfaceModel)& model,
                                                       const Handle(Interface_Protocol)& protocol) const
 {
-  long status = 1;
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull()) return 1;
   Handle(StepData_StepModel) stepmodel = new StepData_StepModel;
   model = stepmodel;
-  status = StepFile_Read(theName, &theIStream, stepmodel, stepro);
-  return status;
+  Standard_Integer aStatus = StepFile_Read(theName, &theIStream, stepmodel, stepro);
+  return aStatus;
 }
 
 

@@ -1720,7 +1720,7 @@ multadd(Bigint *b, int m, int a MTd)	/* multiply by m and add a */
 			Bfree(b MTa);
 			b = b1;
 			}
-		b->x[wds++] = carry;
+                b->x[wds++] = (ULong )carry;
 		b->wds = wds;
 		}
 	return b;
@@ -1889,7 +1889,7 @@ mult(Bigint *a, Bigint *b MTd)
 				*xc++ = z & FFFFFFFF;
 				}
 				while(x < xae);
-			*xc = carry;
+                        *xc = (ULong )carry;
 			}
 		}
 #else
@@ -2704,7 +2704,7 @@ rshift(Bigint *b, int k)
 			while(x < xe)
 				*x1++ = *x++;
 		}
-	if ((b->wds = x1 - b->x) == 0)
+        if ((b->wds = int(x1 - b->x)) == 0)
 		b->x[0] = 0;
 	}
 
@@ -2913,7 +2913,7 @@ gethex( const char **sp, U *rvp, int rounding, int sign MTd)
 		word1(rvp) = Big1;
 		return;
 		}
-	n = s1 - s0 - 1;
+        n = int(s1 - s0 - 1);
 	for(k = 0; n > (1 << (kshift-2)) - 1; n >>= 1)
 		k++;
 	b = Balloc(k MTa);
@@ -2942,7 +2942,7 @@ gethex( const char **sp, U *rvp, int rounding, int sign MTd)
 		n += 4;
 		}
 	*x++ = L;
-	b->wds = n = x - b->x;
+        b->wds = n = int(x - b->x);
 	n = ULbits*n - hi0bits(L);
 	nbits = Nbits;
 	lostbits = 0;
@@ -3559,7 +3559,7 @@ Strtod(const char *s00, char **se)
 			z = 10*z + c - '0';
 #endif
 	nd0 = nd;
-	bc.dp0 = bc.dp1 = s - s0;
+        bc.dp0 = bc.dp1 = int(s - s0);
 	for(s1 = s; s1 > s0 && *--s1 == '0'; )
 		++nz1;
 #ifdef USE_LOCALE
@@ -3583,13 +3583,13 @@ Strtod(const char *s00, char **se)
 #endif
 	if (c == '.') {
 		c = *++s;
-		bc.dp1 = s - s0;
+                bc.dp1 = int(s - s0);
 		bc.dplen = bc.dp1 - bc.dp0;
 		if (!nd) {
 			for(; c == '0'; c = *++s)
 				nz++;
 			if (c > '0' && c <= '9') {
-				bc.dp0 = s0 - s;
+                                bc.dp0 = int(s0 - s);
 				bc.dp1 = bc.dp0 + bc.dplen;
 				s0 = s;
 				nf += nz;
@@ -4126,14 +4126,14 @@ Strtod(const char *s00, char **se)
 			yz /= 10;
 			e1 += 1;
 			}
-		y = yz / 100000000;
+                y = ULong(yz / 100000000);
 		}
 	else if (nd > 9) {
 		i = nd - 9;
-		y = (yz >> i) / pfive[i-1];
+                y = ULong((yz >> i) / pfive[i-1]);
 		}
 	else
-		y = yz;
+                y = ULong(yz);
 	dval(&rv) = yz;
 #endif /*}*/
 

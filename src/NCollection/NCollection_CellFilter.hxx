@@ -253,6 +253,9 @@ protected:
     ListNode *Next;
   };
 
+  //! Cell index type.
+  typedef Standard_Integer Cell_IndexType;
+
   /**
    * Auxiliary structure representing a cell in the space.
    * Cells are stored in the map, each cell contains list of objects 
@@ -270,14 +273,14 @@ protected:
     {
       for (int i = 0; i < theCellSize.Size(); i++)
       {
-          Standard_Real val = (Standard_Real)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+          Standard_Real aVal = (Standard_Real)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
           //If the value of index is greater than
           //INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
           //of index is less than INT_MIN it is increased correspondingly for the absolute
           //value of INT_MIN.
-          index[i] = long((val > INT_MAX - 1) ? fmod(val, (Standard_Real) INT_MAX) 
-                                               : (val < INT_MIN + 1) ? fmod(val, (Standard_Real) INT_MIN)
-                                                                     : val);
+          index[i] = Cell_IndexType((aVal > INT_MAX - 1) ? fmod(aVal, (Standard_Real) INT_MAX)
+                                                         : (aVal < INT_MIN + 1) ? fmod(aVal, (Standard_Real) INT_MIN)
+                                                                                : aVal);
       }
     }
 
@@ -324,19 +327,19 @@ protected:
     {
       // number of bits per each dimension in the hash code
       const std::size_t aDim       = index.Size();
-      const std::size_t aShiftBits = (BITS (long) - 1) / aDim;
-      unsigned int      aCode      = 0;
+      const std::size_t aShiftBits = (BITS (Cell_IndexType) - 1) / aDim;
+      std::size_t       aCode      = 0;
 
       for (std::size_t i = 0; i < aDim; ++i)
       {
-        aCode = (aCode << aShiftBits) ^ index[i];
+        aCode = (aCode << aShiftBits) ^ std::size_t(index[i]);
       }
 
       return ::HashCode(aCode, theUpperBound);
     }
 
   public:
-    NCollection_LocalArray<long, 10> index;
+    NCollection_LocalArray<Cell_IndexType, 10> index;
     ListNode *Objects;
   };
   
@@ -383,14 +386,19 @@ protected:
 		   const Cell& theCellMin, const Cell& theCellMax, 
                    const Target& theTarget)
   {
-    int start = theCellMin.index[idim];
-    int end   = theCellMax.index[idim];
-    for (int i=start; i <= end; i++) {
+    const Cell_IndexType aStart = theCellMin.index[idim];
+    const Cell_IndexType anEnd  = theCellMax.index[idim];
+    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    {
       theCell.index[idim] = i;
       if ( idim ) // recurse
+      {
         iterateAdd (idim-1, theCell, theCellMin, theCellMax, theTarget);
+      }
       else // add to this cell
+      {
         add (theCell, theTarget);
+      }
     }
   }
   
@@ -426,14 +434,19 @@ protected:
                       const Cell& theCellMin, const Cell& theCellMax, 
                       const Target& theTarget)
   {
-    int start = theCellMin.index[idim];
-    int end   = theCellMax.index[idim];
-    for (int i=start; i <= end; i++) {
+    const Cell_IndexType aStart = theCellMin.index[idim];
+    const Cell_IndexType anEnd  = theCellMax.index[idim];
+    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    {
       theCell.index[idim] = i;
       if ( idim ) // recurse
+      {
         iterateRemove (idim-1, theCell, theCellMin, theCellMax, theTarget);
+      }
       else // remove from this cell
+      {
         remove (theCell, theTarget);
+      }
     }
   }
 
@@ -469,14 +482,19 @@ protected:
 	               const Cell& theCellMin, const Cell& theCellMax, 
                        Inspector& theInspector) 
   {
-    int start = theCellMin.index[idim];
-    int end   = theCellMax.index[idim];
-    for (int i=start; i <= end; i++) {
+    const Cell_IndexType aStart = theCellMin.index[idim];
+    const Cell_IndexType anEnd  = theCellMax.index[idim];
+    for (Cell_IndexType i = aStart; i <= anEnd; ++i)
+    {
       theCell.index[idim] = i;
       if ( idim ) // recurse
+      {
         iterateInspect (idim-1, theCell, theCellMin, theCellMax, theInspector);
+      }
       else // inspect this cell
+      {
         inspect (theCell, theInspector);
+      }
     }
   }
 

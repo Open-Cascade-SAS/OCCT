@@ -64,7 +64,6 @@ IntPatch_PrmPrmIntersection.hxx
 IntPatch_PrmPrmIntersection.lxx
 IntPatch_PrmPrmIntersection_T3Bits.cxx
 IntPatch_PrmPrmIntersection_T3Bits.hxx
-IntPatch_PrmPrmIntersection_T3Bits.lxx
 IntPatch_RLine.cxx
 IntPatch_RLine.hxx
 IntPatch_RLine.lxx

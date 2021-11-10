@@ -39,6 +39,10 @@ win32 {
   DEFINES += _SCL_SECURE_NO_WARNINGS
 } else {
   CONFIG += c++11
+  clang {
+    QMAKE_CFLAGS_WARN_ON   += -Wshorten-64-to-32
+    QMAKE_CXXFLAGS_WARN_ON += -Wshorten-64-to-32
+  }
   QMAKE_CFLAGS   += -fexceptions
   QMAKE_CXXFLAGS += -fexceptions
   QMAKE_CXXFLAGS += -fvisibility=default

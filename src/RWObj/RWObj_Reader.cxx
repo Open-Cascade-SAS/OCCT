@@ -329,7 +329,7 @@ void RWObj_Reader::pushIndices (const char* thePos)
   for (Standard_Integer aNode = 0;; ++aNode)
   {
     Graphic3d_Vec3i a3Indices (-1, -1, -1);
-    a3Indices[0] = strtol (thePos, &aNext, 10) - 1;
+    a3Indices[0] = int(strtol (thePos, &aNext, 10) - 1);
     if (aNext == thePos)
     {
       break;
@@ -340,14 +340,14 @@ void RWObj_Reader::pushIndices (const char* thePos)
     if (*thePos == '/')
     {
       ++thePos;
-      a3Indices[1] = strtol (thePos, &aNext, 10) - 1;
+      a3Indices[1] = int(strtol (thePos, &aNext, 10) - 1);
       thePos = aNext;
 
       // parse Normal index
       if (*thePos == '/')
       {
         ++thePos;
-        a3Indices[2] = strtol (thePos, &aNext, 10) - 1;
+        a3Indices[2] = int(strtol (thePos, &aNext, 10) - 1);
         thePos = aNext;
       }
     }
