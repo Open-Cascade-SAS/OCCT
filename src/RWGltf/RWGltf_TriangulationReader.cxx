@@ -297,6 +297,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePr
           myCoordSysConverter.TransformPosition (anXYZ.ChangeCoord());
           setNodePosition (theDestMesh, THE_LOWER_NODE_INDEX + aVertIter, anXYZ);
         }
+        break;
       }
       case RWGltf_GltfArrayType_Normal:
       {
