@@ -35,6 +35,8 @@
     <br>3D Viewer sample with CAD import for Android mobile platform based on Android SDK and JNI layer.
   * @ref occt_samples_ios_uikit
     <br>3D Viewer sample for iOS platform based on Apple **UIKit** framework.
+  * @ref occt_samples_glfw
+    <br>A cross-platform 3D Viewer sample using **GLFW** library.
 
 @page samples__tutorials Tutorials and Demos
 - @subpage samples__novice_guide
@@ -54,3 +56,4 @@
 - @subpage occt_samples_webgl
 - @subpage samples_java_android_occt
 - @subpage occt_samples_ios_uikit
+- @subpage occt_samples_glfw
