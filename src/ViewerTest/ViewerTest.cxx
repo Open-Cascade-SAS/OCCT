@@ -535,7 +535,6 @@ static void GetTypeAndSignfromString (const char* theName,
 #include <AIS_Shape.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <AIS_MapOfInteractive.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_EventManager.hxx>

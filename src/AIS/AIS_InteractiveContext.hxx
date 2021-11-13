@@ -20,7 +20,6 @@
 #include <AIS_DataMapOfIOStatus.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <AIS_DisplayStatus.hxx>
-#include <AIS_ClearMode.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_Selection.hxx>

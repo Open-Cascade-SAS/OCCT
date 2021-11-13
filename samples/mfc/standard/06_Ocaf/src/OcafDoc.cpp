@@ -814,18 +814,18 @@ void COcafDoc::OnObjectDelete()
 
 	D->NewCommand();
 
-	AIS_SequenceOfInteractive aSequence;
-	for(myAISContext->InitSelected();
-      myAISContext->MoreSelected();
-      myAISContext->NextSelected())
-        aSequence.Append(myAISContext->SelectedInteractive());
-	
-	for(int iter=1;iter <=aSequence.Length();iter++)
+	AIS_ListOfInteractive aList;
+	for (myAISContext->InitSelected(); myAISContext->MoreSelected(); myAISContext->NextSelected())
+  {
+		aList.Append(myAISContext->SelectedInteractive());
+  }
+
+	for (AIS_ListOfInteractive::Iterator anIter (aList); anIter.More(); anIter.Next())
 	{
-		if (myAISContext->DisplayStatus(aSequence(iter)) == AIS_DS_Displayed)
+		Handle(AIS_InteractiveObject) aPrs = anIter.Value();
+		if (myAISContext->DisplayStatus (aPrs) == AIS_DS_Displayed)
  		{
- 			Handle(TPrsStd_AISPresentation) CurrentPrs
- 				= Handle(TPrsStd_AISPresentation)::DownCast(aSequence(iter)->GetOwner()); 
+ 			Handle(TPrsStd_AISPresentation) CurrentPrs = Handle(TPrsStd_AISPresentation)::DownCast(aPrs->GetOwner());
  			TDataStd_Integer::Set(CurrentPrs->Label(), 0);
  			CurrentPrs->Erase(1);
  		}

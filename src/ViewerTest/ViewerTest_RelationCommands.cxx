@@ -19,9 +19,6 @@
 #include <AIS_Circle.hxx>
 #include <AIS_DisplayMode.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_ListIteratorOfListOfInteractive.hxx>
-#include <AIS_ListOfInteractive.hxx>
-#include <AIS_MapOfInteractive.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_Shape.hxx>
 #include <PrsDim_AngleDimension.hxx>

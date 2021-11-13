@@ -41,7 +41,6 @@
 #include <AIS_DisplayMode.hxx>
 #include <AIS_PointCloud.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <AIS_MapOfInteractive.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>

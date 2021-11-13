@@ -28,14 +28,11 @@
 # define true TRUE
 #endif
 
-#pragma warning(  disable : 4244 )        // Issue warning 4244
 #include <Standard_ShortReal.hxx>
-#pragma warning(  default : 4244 )        // Issue warning 4244
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_SequenceOfInteractive.hxx>
 #include <AIS_Trihedron.hxx>
 
 #include <Aspect_Background.hxx>
