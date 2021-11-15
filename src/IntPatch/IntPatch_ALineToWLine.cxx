@@ -433,10 +433,32 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     if(aStep < Epsilon(theLPar))
       break;
 
+    Standard_Boolean isStepReduced = Standard_False;
+    Standard_Real aLPar = theLPar;
+
+    for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+    {
+      if (hasVertexBeenChecked(i))
+        continue;
+
+      aLPar = aVertexParams(i);
+      if (Abs(aLPar - aParameter) < aPrmTol)
+        continue;
+
+      break;
+    }
+
+    if ((aStep - (aLPar - aParameter) > aPrmTol) &&
+        (Abs(aLPar - aParameter) > aPrmTol))
+    {
+      aStep = Max((aLPar - aParameter) / 5, 1.e-5); 
+      isStepReduced = Standard_True;
+    }
+
     Standard_Integer aNewVertID = 0;
     aLinOn2S = new IntSurf_LineOn2S;
     
-    const Standard_Real aStepMin = 0.1*aStep, aStepMax = 10.0*aStep;
+    Standard_Real aStepMin = 0.1 * aStep, aStepMax = 10.0 * aStep;
 
     Standard_Boolean isLast = Standard_False;
     Standard_Real aPrevParam = aParameter;
@@ -586,8 +608,12 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       {
         if (isPointValid)
         {
-          StepComputing(theALine, aPOn2S, theLPar, aParameter, aTgMagn,
-                        aStepMin, aStepMax, myTol3D, aStep);
+          if (!isStepReduced)
+          {
+            StepComputing(theALine, aPOn2S, theLPar, aParameter, aTgMagn,
+                          aStepMin, aStepMax, myTol3D, aStep);
+          }
+
           AddPointIntoLine(aLinOn2S, anArrPeriods, aPOn2S);
           aPrevLPoint = aPOn2S;
         }
@@ -694,6 +720,38 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       if ((aPrePointExist != IntPatch_SPntNone) && (aLinOn2S->NbPoints() > 1))
         break;
+
+      if (isStepReduced)
+      {
+        isStepReduced = Standard_False;
+
+        aStep = (theLPar - aParameter) / (Standard_Real)(myNbPointsInWline - 1);
+        if(aStep < Epsilon(theLPar))
+          break;
+  
+        aLPar = aVertexParams(aNbVert);
+        for (Standard_Integer i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
+        {
+          if (hasVertexBeenChecked(i))
+            continue;
+  
+          aLPar = aVertexParams(i);
+          if (Abs(aLPar - aParameter) < aPrmTol)
+            continue;
+  
+          break;
+        }
+
+        if ((aStep - (aLPar - aParameter) > aPrmTol) &&
+            (Abs(aLPar - aParameter) > aPrmTol))
+        {
+          aStep = Max((aLPar - aParameter) / 5, 1.e-5);
+          isStepReduced = Standard_True;
+        }
+  
+        aStepMin = 0.1 * aStep;
+        aStepMax = 10.0 * aStep;
+      }
     }//for(; !isLast; aParameter += aStep)
 
     if(aLinOn2S->NbPoints() < 2)

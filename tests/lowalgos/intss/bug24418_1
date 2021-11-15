@@ -1,5 +1,3 @@
-puts "TODO OCC24418 ALL: Error in ii_2: T="
-
 puts "========"
 puts "OCC24418"
 puts "========"

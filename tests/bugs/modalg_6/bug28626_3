@@ -20,7 +20,7 @@ bopsection result
 
 checkshape result
 
-checknbshapes result -edge 5 -vertex 6
+checknbshapes result -edge 4 -vertex 5
 
 checkmaxtol result -ref 6.02982e-007
 
