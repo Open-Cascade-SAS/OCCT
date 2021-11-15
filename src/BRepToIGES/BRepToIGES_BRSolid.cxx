@@ -306,7 +306,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRSolid ::TransferCompound(const TopoDS_C
       AddWarning(start," an Edge is a null entity");
     }
     else {
-      IShape = BW.TransferEdge(S, Standard_False);
+      TopTools_DataMapOfShapeShape anEmptyMap;
+      IShape = BW.TransferEdge(S, anEmptyMap, Standard_False);
       if (!IShape.IsNull()) Seq->Append(IShape);
     }
   }

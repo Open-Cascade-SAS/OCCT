@@ -1,0 +1,45 @@
+puts "============"
+puts "0026174: Data Exchange, IGES - Loss of color after the second write of file"
+puts "============"
+
+pload XDE
+catch { Close D }
+catch { Close D1 }
+
+box b 0 0 0 10 10 10
+compound b c
+XNewDoc D
+XAddShape D c 1
+XSetColor D 0:1:1:1:1 1 0 0
+
+WriteIges D $imagedir/${casename}_orig.igs
+XGetOneShape res D
+set dump [dump res]
+if { [regexp "Dump of 24 Curve2ds" $dump] != 1 } {
+  puts "Error: incorrect Curve transfer"
+}
+WriteIges D $imagedir/${casename}_comp.igs
+ReadIges D1 $imagedir/${casename}_comp.igs
+XGetOneShape res1 D1
+
+vinit view1
+vclear
+XDisplay D1 0:1:1:1
+vfit
+set ColorD1 [string trim [vreadpixel 204 204 name]]
+if {$ColorD1 != "RED 1"} {
+  puts "Error: expected color of shape from Document1 is RED."
+}
+
+catch {[file delete $imagedir/${casename}_orig.igs]}
+catch {[file delete $imagedir/${casename}_comp.igs]}
+
+checkprops res -equal res1
+set color_orig [XGetAllColors D]
+set color_comp [XGetAllColors D1]
+if { $color_orig != $color_comp } {
+  puts "Error: incorrect color transfer"
+}
+
+checknbshapes res -vertex 8 -edge 12 -wire 6 -face 6
+checkview -screenshot -3d -path $imagedir/${test_image}.png

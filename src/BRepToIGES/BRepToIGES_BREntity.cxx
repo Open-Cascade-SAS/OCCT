@@ -146,7 +146,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape
     TopoDS_Edge E =  TopoDS::Edge(start);
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    res = BW.TransferEdge(E, Standard_False);
+    TopTools_DataMapOfShapeShape anEmptyMap;
+    res = BW.TransferEdge(E, anEmptyMap, Standard_False);
   }  
   else if (start.ShapeType() == TopAbs_WIRE) {
     TopoDS_Wire W =  TopoDS::Wire(start);

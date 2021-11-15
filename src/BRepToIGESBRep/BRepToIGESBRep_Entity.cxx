@@ -303,7 +303,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferShape
     TopoDS_Edge E =  TopoDS::Edge(start);
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    res = BW.TransferEdge(E, Standard_False);
+    TopTools_DataMapOfShapeShape anEmptyMap;
+    res = BW.TransferEdge(E, anEmptyMap, Standard_False);
     return res;
   }  
   else if (start.ShapeType() == TopAbs_WIRE) {
@@ -357,7 +358,8 @@ Handle(IGESData_IGESEntity)  BRepToIGESBRep_Entity::TransferEdge (const TopoDS_E
 {
   BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
-  return BR.TransferEdge (myedge, Standard_True);
+  TopTools_DataMapOfShapeShape anEmptyMap;
+  return BR.TransferEdge (myedge, anEmptyMap, Standard_True);
 }
 
 
@@ -375,7 +377,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferEdge (const TopoDS_Ed
 
   BRepToIGES_BRWire BR(*this);
   BR.SetModel(GetModel());
-  ICurve2d = BR.TransferEdge (myedge, myface, Length, Standard_True);
+  TopTools_DataMapOfShapeShape anEmptyMap;
+  ICurve2d = BR.TransferEdge (myedge, myface, anEmptyMap, Length, Standard_True);
 
   // curve 3d is obligatory. If it does not exist it is created and stored in "myCurves".
   // If the edge is degenerated, there is no associated 3d. So "edge-tuple" 
@@ -897,7 +900,8 @@ Handle(IGESData_IGESEntity) BRepToIGESBRep_Entity::TransferCompound (const TopoD
 
     BRepToIGES_BRWire BW(*this);
     BW.SetModel(GetModel());
-    IShape = BW.TransferEdge(S, Standard_False);
+    TopTools_DataMapOfShapeShape anEmptyMap;
+    IShape = BW.TransferEdge(S, anEmptyMap, Standard_False);
     if (!IShape.IsNull()) Seq->Append(IShape);
   }
 
