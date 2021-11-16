@@ -26,7 +26,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-class StepData_Protocol;
 class Interface_Protocol;
 class Interface_Graph;
 class Interface_Check;

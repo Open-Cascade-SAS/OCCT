@@ -19,7 +19,6 @@
 #include <Standard_TypeDef.hxx>
 
 class Poly_CoherentTriangle;
-class Poly_CoherentTriangulation;
 
 /**
  * Link between two mesh nodes that is created by existing triangle(s).

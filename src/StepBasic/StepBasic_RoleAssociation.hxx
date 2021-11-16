@@ -22,7 +22,6 @@
 #include <StepBasic_RoleSelect.hxx>
 #include <Standard_Transient.hxx>
 class StepBasic_ObjectRole;
-class StepBasic_RoleSelect;
 
 
 class StepBasic_RoleAssociation;

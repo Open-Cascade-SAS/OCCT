@@ -22,7 +22,6 @@
 #include <Standard_Real.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_SurfaceSection.hxx>
-class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepElement_UniformSurfaceSection;

@@ -21,10 +21,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class StdObjMgt_Persistent;
-class Storage_Schema;
-class TCollection_AsciiString;
 
-class Storage_Root;
 DEFINE_STANDARD_HANDLE(StdStorage_Root, Standard_Transient)
 
 //! Describes a named persistent root 

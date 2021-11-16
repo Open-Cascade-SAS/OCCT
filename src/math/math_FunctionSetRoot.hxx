@@ -27,10 +27,7 @@
 #include <Standard_Integer.hxx>
 #include <math_IntegerVector.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class Standard_DimensionError;
 class math_FunctionSetWithDerivatives;
-class math_Matrix;
 
 
 //! The math_FunctionSetRoot class calculates the root

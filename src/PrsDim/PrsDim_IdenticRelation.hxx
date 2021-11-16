@@ -26,7 +26,6 @@
 class TopoDS_Shape;
 class Geom_Plane;
 class Geom_Line;
-class gp_Pnt;
 class Geom_Circle;
 class Geom_Ellipse;
 class TopoDS_Wire;

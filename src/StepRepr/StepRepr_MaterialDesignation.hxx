@@ -23,7 +23,6 @@
 #include <StepRepr_CharacterizedDefinition.hxx>
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
-class StepRepr_CharacterizedDefinition;
 
 
 class StepRepr_MaterialDesignation;

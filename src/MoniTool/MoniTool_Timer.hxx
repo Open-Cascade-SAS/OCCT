@@ -26,7 +26,6 @@
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
 #include <MoniTool_DataMapOfTimer.hxx>
-class OSD_Timer;
 
 
 class MoniTool_Timer;

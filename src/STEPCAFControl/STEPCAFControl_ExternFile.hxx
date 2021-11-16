@@ -25,7 +25,6 @@
 #include <Standard_Transient.hxx>
 class XSControl_WorkSession;
 class TCollection_HAsciiString;
-class TDF_Label;
 
 
 class STEPCAFControl_ExternFile;

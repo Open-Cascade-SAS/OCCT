@@ -25,7 +25,6 @@
 #include <gp_Pnt2d.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class gp_Pnt2d;
 
 
 class MAT2d_Connexion;

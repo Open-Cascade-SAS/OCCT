@@ -22,8 +22,6 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
-class Standard_ConstructionError;
-class Standard_OutOfRange;
 
 //! A framework to define a sensitive 3D curve.
 //! In some cases this class can raise Standard_ConstructionError and

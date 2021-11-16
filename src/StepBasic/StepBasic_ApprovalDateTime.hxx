@@ -23,7 +23,6 @@
 #include <StepBasic_DateTimeSelect.hxx>
 #include <Standard_Transient.hxx>
 class StepBasic_Approval;
-class StepBasic_DateTimeSelect;
 
 
 class StepBasic_ApprovalDateTime;

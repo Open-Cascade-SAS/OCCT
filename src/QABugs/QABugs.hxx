@@ -21,8 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Draw_Interpretor.hxx>
-class QABugs_MyText;
-class QABugs_PresentableObject;
 
 
 

@@ -30,10 +30,7 @@
 
 class XSControl_WorkSession;
 class TDocStd_Document;
-class TCollection_AsciiString;
 class STEPCAFControl_ExternFile;
-class STEPControl_Reader;
-class TDF_Label;
 class TopoDS_Shape;
 class XCAFDoc_ShapeTool;
 class StepRepr_RepresentationItem;

@@ -22,7 +22,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
-class TopoDS_Shape;
 
 
 class ShapeFix_SplitCommonVertex;

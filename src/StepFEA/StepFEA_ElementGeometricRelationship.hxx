@@ -23,8 +23,6 @@
 #include <StepElement_ElementAspect.hxx>
 #include <Standard_Transient.hxx>
 class StepElement_AnalysisItemWithinRepresentation;
-class StepFEA_ElementOrElementGroup;
-class StepElement_ElementAspect;
 
 
 class StepFEA_ElementGeometricRelationship;

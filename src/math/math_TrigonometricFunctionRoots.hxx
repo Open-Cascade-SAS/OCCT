@@ -26,9 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class Standard_RangeError;
 
 
 //! This class implements the solutions of the equation

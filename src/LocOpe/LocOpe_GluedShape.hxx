@@ -25,7 +25,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <LocOpe_GeneratedShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Vertex;

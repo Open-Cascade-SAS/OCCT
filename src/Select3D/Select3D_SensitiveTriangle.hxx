@@ -21,8 +21,6 @@
 #include <Select3D_SensitivePoly.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 
-class Standard_ConstructionError;
-class Standard_OutOfRange;
 
 //! A framework to define selection of triangles in a view.
 //! This comes into play in the detection of meshing and triangulation in surfaces.

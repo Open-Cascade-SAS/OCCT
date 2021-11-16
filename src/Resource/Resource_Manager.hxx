@@ -29,10 +29,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_ExtString.hxx>
-class Standard_TypeMismatch;
-class Resource_NoSuchResource;
-class Standard_OutOfRange;
-class TCollection_AsciiString;
 
 
 class Resource_Manager;

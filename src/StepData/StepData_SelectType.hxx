@@ -28,7 +28,6 @@
 #include <StepData_Logical.hxx>
 #include <Standard_Real.hxx>
 class Standard_Transient;
-class Standard_TypeMismatch;
 class StepData_PDescr;
 class StepData_SelectMember;
 

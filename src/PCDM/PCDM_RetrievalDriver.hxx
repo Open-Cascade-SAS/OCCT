@@ -26,8 +26,6 @@
 
 class CDM_MetaData;
 class Message_Messenger;
-class TCollection_AsciiString;
-class TCollection_ExtendedString;
 
 class PCDM_RetrievalDriver;
 DEFINE_STANDARD_HANDLE(PCDM_RetrievalDriver, PCDM_Reader)

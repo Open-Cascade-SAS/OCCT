@@ -23,7 +23,6 @@
 
 #include <Plate_LinearXYZConstraint.hxx>
 #include <TColgp_SequenceOfXY.hxx>
-class Plate_LinearXYZConstraint;
 
 
 //! force a set of UV points to translate without deformation

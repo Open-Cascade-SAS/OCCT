@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class gp_XY;
 class gp_Lin;
-class Plate_LinearScalarConstraint;
 
 
 //! constraint a point to belong to a straight line

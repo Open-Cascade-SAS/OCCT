@@ -24,7 +24,6 @@
 #include <StepData_HArray1OfField.hxx>
 #include <StepData_FieldList.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class StepData_Field;
 
 

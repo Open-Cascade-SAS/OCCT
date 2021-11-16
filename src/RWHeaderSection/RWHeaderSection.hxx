@@ -21,11 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-class RWHeaderSection_ReadWriteModule;
-class RWHeaderSection_GeneralModule;
-class RWHeaderSection_RWFileName;
-class RWHeaderSection_RWFileDescription;
-class RWHeaderSection_RWFileSchema;
 
 
 

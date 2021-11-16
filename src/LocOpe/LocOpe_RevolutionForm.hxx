@@ -29,10 +29,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <gp_Pnt.hxx>
 #include <TopTools_ListOfShape.hxx>
-class Standard_NoSuchObject;
-class StdFail_NotDone;
-class TopoDS_Shape;
-class gp_Ax1;
 
 
 //! Defines a revolution form (using Revol from BRepSweep)

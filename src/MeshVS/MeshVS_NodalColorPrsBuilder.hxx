@@ -30,7 +30,6 @@
 
 class MeshVS_Mesh;
 class MeshVS_DataSource;
-class Quantity_Color;
 class Graphic3d_Texture2D;
 class Graphic3d_ArrayOfPrimitives;
 

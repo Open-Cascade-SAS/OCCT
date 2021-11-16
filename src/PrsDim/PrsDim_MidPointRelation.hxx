@@ -20,7 +20,6 @@
 
 class Geom_Plane;
 class gp_Lin;
-class gp_Pnt;
 class gp_Circ;
 class gp_Elips;
 

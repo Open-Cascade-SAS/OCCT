@@ -28,7 +28,6 @@
 
 #include <NCollection_List.hxx>
 
-class OpenGl_GraphicDriver;
 
 DEFINE_STANDARD_HANDLE(OpenGl_Structure, Graphic3d_CStructure)
 typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;

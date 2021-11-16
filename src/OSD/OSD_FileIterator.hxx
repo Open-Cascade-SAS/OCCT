@@ -21,9 +21,7 @@
 #include <OSD_Error.hxx>
 #include <TCollection_AsciiString.hxx>
 
-class OSD_OSDError;
 class OSD_Path;
-class OSD_File;
 
 //! Manages a breadth-only search for files in the specified Path.
 //! There is no specific order of results.

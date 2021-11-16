@@ -25,10 +25,6 @@
 #include <OSD_Error.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_NullObject;
-class OSD_OSDError;
-class TCollection_AsciiString;
 
 
 //! Management of system environment variables

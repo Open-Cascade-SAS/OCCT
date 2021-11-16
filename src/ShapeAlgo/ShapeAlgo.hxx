@@ -21,8 +21,6 @@
 #include <Standard_Handle.hxx>
 
 class ShapeAlgo_AlgoContainer;
-class ShapeAlgo_ToolContainer;
-class ShapeAlgo_AlgoContainer;
 
 
 

@@ -23,7 +23,6 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 
 
 //! This class gives a default sample (constant difference

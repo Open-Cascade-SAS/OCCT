@@ -26,8 +26,6 @@
 class  OpenGl_Element;
 struct OpenGl_ElementNode;
 class  OpenGl_Group;
-class  OpenGl_Structure;
-class  OpenGl_PrimitiveArray;
 
 namespace OpenGl_Raytrace
 {

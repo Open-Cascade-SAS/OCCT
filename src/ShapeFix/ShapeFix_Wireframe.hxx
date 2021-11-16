@@ -28,7 +28,6 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <ShapeExtend_Status.hxx>
-class TopoDS_Shape;
 
 
 class ShapeFix_Wireframe;

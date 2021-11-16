@@ -30,27 +30,6 @@
 class TopoDS_Shape;
 class ShapeExtend_BasicMsgRegistrator;
 class ShapeBuild_ReShape;
-class ShapeFix_Root;
-class ShapeFix_EdgeProjAux;
-class ShapeFix_Edge;
-class ShapeFix_Wire;
-class ShapeFix_Face;
-class ShapeFix_FixSmallFace;
-class ShapeFix_FixSmallSolid;
-class ShapeFix_WireVertex;
-class ShapeFix_Wireframe;
-class ShapeFix_FreeBounds;
-class ShapeFix_FaceConnect;
-class ShapeFix_Shell;
-class ShapeFix_Solid;
-class ShapeFix_ShapeTolerance;
-class ShapeFix_Shape;
-class ShapeFix_EdgeConnect;
-class ShapeFix_ComposeShell;
-class ShapeFix_SplitCommonVertex;
-class ShapeFix_WireSegment;
-class ShapeFix_IntersectionTool;
-class ShapeFix_SplitTool;
 
 
 //! This package provides algorithms for fixing

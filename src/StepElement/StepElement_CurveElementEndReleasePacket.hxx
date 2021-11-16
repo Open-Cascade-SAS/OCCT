@@ -22,7 +22,6 @@
 #include <StepElement_CurveElementFreedom.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
-class StepElement_CurveElementFreedom;
 
 
 class StepElement_CurveElementEndReleasePacket;

@@ -30,7 +30,6 @@
 #include <Standard_Real.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
-class TopoDS_Shape;
 class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Compound;

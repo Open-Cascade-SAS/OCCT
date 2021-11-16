@@ -34,7 +34,6 @@ typedef NCollection_Vector<Poly_CoherentLink>::Iterator
 
 //! Definition of HANDLE object using Standard_DefineHandle.hxx
 #include <Standard_Type.hxx>
-class Poly_CoherentTriangulation;
 DEFINE_STANDARD_HANDLE (Poly_CoherentTriangulation, Standard_Transient)
 
 /**

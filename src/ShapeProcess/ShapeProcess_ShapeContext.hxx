@@ -28,7 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 class ShapeExtend_MsgRegistrator;
-class TopoDS_Shape;
 class ShapeBuild_ReShape;
 class BRepTools_Modifier;
 class Message_Msg;

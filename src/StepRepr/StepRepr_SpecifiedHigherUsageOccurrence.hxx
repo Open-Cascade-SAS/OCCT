@@ -21,7 +21,6 @@
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <Standard_Boolean.hxx>
-class StepRepr_AssemblyComponentUsage;
 class StepRepr_NextAssemblyUsageOccurrence;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;

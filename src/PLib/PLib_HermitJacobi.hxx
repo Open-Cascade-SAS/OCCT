@@ -27,7 +27,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Real.hxx>
 class PLib_JacobiPolynomial;
-class Standard_ConstructionError;
 
 
 class PLib_HermitJacobi;

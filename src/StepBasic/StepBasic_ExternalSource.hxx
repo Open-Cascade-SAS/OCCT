@@ -21,7 +21,6 @@
 
 #include <StepBasic_SourceItem.hxx>
 #include <Standard_Transient.hxx>
-class StepBasic_SourceItem;
 
 
 class StepBasic_ExternalSource;

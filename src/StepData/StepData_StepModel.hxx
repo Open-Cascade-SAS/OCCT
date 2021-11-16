@@ -22,9 +22,7 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Resource_FormatType.hxx>
 
-class Standard_NoSuchObject;
 class Standard_Transient;
-class Interface_InterfaceModel;
 class Interface_EntityIterator;
 class Interface_Check;
 class TCollection_HAsciiString;

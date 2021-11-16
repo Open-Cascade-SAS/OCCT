@@ -18,7 +18,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-class Poly_CoherentTrianguation;
 class Poly_CoherentLink;
 
 /**

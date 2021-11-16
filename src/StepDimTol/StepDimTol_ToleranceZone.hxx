@@ -25,9 +25,7 @@
 #include <StepDimTol_ToleranceZoneForm.hxx>
 #include <StepDimTol_ToleranceZoneTarget.hxx>
 
-class StepDimTol_HArray1OfToleranceZoneTarget;
 class TCollection_HAsciiString;
-class StepBasic_MeasureWithUnit;
 
 // Avoid possible conflict with SetForm macro defined by windows.h
 #ifdef SetForm

@@ -26,7 +26,6 @@
 #include <ShapeFix_Root.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Compound;

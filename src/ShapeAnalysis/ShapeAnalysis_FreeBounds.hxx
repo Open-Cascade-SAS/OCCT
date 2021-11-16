@@ -27,7 +27,6 @@
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 class TopoDS_Shape;
-class TopoDS_Compound;
 
 
 //! This class is intended to output free bounds of the shape.

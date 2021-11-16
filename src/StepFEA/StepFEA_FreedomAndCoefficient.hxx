@@ -22,8 +22,6 @@
 #include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <Standard_Transient.hxx>
-class StepFEA_DegreeOfFreedom;
-class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepFEA_FreedomAndCoefficient;

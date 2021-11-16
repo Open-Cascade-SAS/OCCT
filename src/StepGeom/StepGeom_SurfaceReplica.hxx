@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_Surface.hxx>
-class StepGeom_Surface;
 class StepGeom_CartesianTransformationOperator3d;
 class TCollection_HAsciiString;
 

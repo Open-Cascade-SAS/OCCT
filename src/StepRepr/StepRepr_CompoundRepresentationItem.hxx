@@ -23,7 +23,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
-class StepRepr_RepresentationItem;
 
 
 class StepRepr_CompoundRepresentationItem;

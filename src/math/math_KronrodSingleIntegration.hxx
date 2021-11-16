@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
-class StdFail_NotDone;
 class math_Function;
 
 

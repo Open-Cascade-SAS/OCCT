@@ -24,7 +24,6 @@
 #include <StepDimTol_GeometricToleranceModifier.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
-class StepDimTol_HArray1OfGeometricToleranceModifier;
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepDimTol_GeometricToleranceTarget;

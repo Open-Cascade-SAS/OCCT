@@ -25,7 +25,6 @@
 #include <MAT_Side.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class Geom2d_Curve;
 class Geom2d_TrimmedCurve;
 

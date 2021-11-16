@@ -27,10 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <OSD_OEMType.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_ConstructionError;
-class Standard_NullObject;
-class OSD_OSDError;
-class TCollection_AsciiString;
 
 
 //! Carries information about a Host

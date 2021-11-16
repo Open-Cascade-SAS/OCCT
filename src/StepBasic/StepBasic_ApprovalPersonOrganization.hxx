@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 class StepBasic_Approval;
 class StepBasic_ApprovalRole;
-class StepBasic_PersonOrganizationSelect;
 
 
 class StepBasic_ApprovalPersonOrganization;

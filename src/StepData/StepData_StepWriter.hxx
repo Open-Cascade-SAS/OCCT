@@ -34,8 +34,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <Standard_OStream.hxx>
 class StepData_StepModel;
-class Interface_InterfaceMismatch;
-class Interface_FloatWriter;
 class StepData_Protocol;
 class StepData_WriterLib;
 class TCollection_AsciiString;
@@ -46,7 +44,6 @@ class StepData_SelectMember;
 class StepData_FieldList;
 class StepData_ESDescr;
 class Standard_Transient;
-class Interface_CheckIterator;
 
 
 //! manages atomic file writing, under control of StepModel (for

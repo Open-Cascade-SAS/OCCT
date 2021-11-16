@@ -25,7 +25,6 @@
 #include <StepBasic_SiPrefix.hxx>
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_SolidAngleUnit;
-class StepBasic_DimensionalExponents;
 
 
 class StepBasic_SiUnitAndSolidAngleUnit;

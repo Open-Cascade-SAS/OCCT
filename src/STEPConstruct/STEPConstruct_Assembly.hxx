@@ -24,10 +24,8 @@
 #include <Standard_Boolean.hxx>
 class StepShape_ShapeDefinitionRepresentation;
 class StepShape_ShapeRepresentation;
-class Standard_Transient;
 class StepGeom_Axis2Placement3d;
 class StepRepr_NextAssemblyUsageOccurrence;
-class Interface_InterfaceModel;
 class StepShape_ContextDependentShapeRepresentation;
 class Interface_Graph;
 

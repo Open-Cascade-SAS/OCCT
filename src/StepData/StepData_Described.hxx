@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 class StepData_EDescr;
-class Interface_InterfaceMismatch;
 class StepData_Simple;
 class StepData_Field;
 class Interface_Check;

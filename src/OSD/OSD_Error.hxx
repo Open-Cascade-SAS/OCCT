@@ -25,8 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <OSD_WhoAmI.hxx>
 #include <Standard_Boolean.hxx>
-class OSD_OSDError;
-class TCollection_AsciiString;
 
 
 //! Accurate management of OSD specific errors.

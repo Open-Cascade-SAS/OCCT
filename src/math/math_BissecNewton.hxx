@@ -26,7 +26,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
 class math_FunctionWithDerivative;
 
 

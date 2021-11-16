@@ -28,8 +28,6 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class Plate_PinpointConstraint;
 
 

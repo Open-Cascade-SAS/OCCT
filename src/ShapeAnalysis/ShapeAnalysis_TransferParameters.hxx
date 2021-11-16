@@ -26,8 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Edge;
-class TopoDS_Face;
 
 
 class ShapeAnalysis_TransferParameters;

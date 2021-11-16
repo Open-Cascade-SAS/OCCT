@@ -27,9 +27,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
-class Standard_OutOfRange;
-class StdFail_NotDone;
-class Standard_NumericError;
 class math_FunctionWithDerivative;
 class math_FunctionSample;
 

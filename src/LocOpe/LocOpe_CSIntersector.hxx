@@ -30,9 +30,6 @@
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
-class StdFail_NotDone;
-class Standard_OutOfRange;
-class TopoDS_Shape;
 class LocOpe_PntFace;
 
 

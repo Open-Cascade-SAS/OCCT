@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_Point.hxx>
-class StepGeom_Point;
 class StepGeom_CartesianTransformationOperator;
 class TCollection_HAsciiString;
 

@@ -31,8 +31,6 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
-class Poly_Triangle;
-class TopoDS_Face;
 class TopLoc_Location;
 
 //! Tool for computing isoline representation for a face or surface.

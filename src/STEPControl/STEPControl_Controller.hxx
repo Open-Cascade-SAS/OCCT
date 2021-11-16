@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
-class Transfer_ActorOfTransientProcess;
 class XSControl_WorkSession;
 class TopoDS_Shape;
 class Transfer_FinderProcess;

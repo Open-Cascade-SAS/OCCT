@@ -27,7 +27,6 @@
 #include <MAT_Side.hxx>
 class MAT_BasicElt;
 class MAT_Node;
-class Standard_DomainError;
 
 
 class MAT_Arc;

@@ -36,7 +36,6 @@
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>
 
-class gp_Dir;
 
 class ShapePersistent_Geom_Curve : private ShapePersistent_Geom
 {

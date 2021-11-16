@@ -25,7 +25,6 @@
 class Graphic3d_ArrayOfSegments;
 class Graphic3d_ArrayOfTriangles;
 class TopoDS_Shape;
-class gp_Pnt2d;
 class BRep_Builder;
 class TopoDS_Compound;
 

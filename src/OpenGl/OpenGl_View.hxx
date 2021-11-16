@@ -39,15 +39,12 @@
 
 class OpenGl_BackgroundArray;
 class OpenGl_DepthPeeling;
-class OpenGl_GraphicDriver;
 class OpenGl_PBREnvironment;
 struct OpenGl_RaytraceMaterial;
-class OpenGl_StateCounter;
 class OpenGl_ShadowMap;
 class OpenGl_ShadowMapArray;
 class OpenGl_ShaderObject;
 class OpenGl_TextureBuffer;
-class OpenGl_TriangleSet;
 class OpenGl_Workspace;
 
 DEFINE_STANDARD_HANDLE(OpenGl_View,Graphic3d_CView)

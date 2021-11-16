@@ -20,8 +20,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
-class Standard_ConstructionError;
-class Standard_OutOfRange;
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and

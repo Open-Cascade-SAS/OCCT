@@ -26,10 +26,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class LocOpe_GeneratedShape;
-class StdFail_NotDone;
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class TopoDS_Face;
 
 

@@ -27,27 +27,6 @@ class TopoDS_Wire;
 class TopoDS_Face;
 class TopoDS_Edge;
 class TopoDS_Shape;
-class LocOpe_SplitShape;
-class LocOpe_WiresOnShape;
-class LocOpe_Spliter;
-class LocOpe_Generator;
-class LocOpe_GeneratedShape;
-class LocOpe_GluedShape;
-class LocOpe_Prism;
-class LocOpe_Revol;
-class LocOpe_Pipe;
-class LocOpe_DPrism;
-class LocOpe_LinearForm;
-class LocOpe_RevolutionForm;
-class LocOpe_Gluer;
-class LocOpe_FindEdges;
-class LocOpe_FindEdgesInFace;
-class LocOpe_PntFace;
-class LocOpe_CurveShapeIntersector;
-class LocOpe_CSIntersector;
-class LocOpe_BuildShape;
-class LocOpe_SplitDrafts;
-class LocOpe_BuildWires;
 
 
 //! Provides  tools to implement local     topological

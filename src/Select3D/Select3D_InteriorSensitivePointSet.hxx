@@ -24,7 +24,6 @@
 #include <Select3D_SensitivePoly.hxx>
 #include <Select3D_SensitiveSet.hxx>
 
-class gp_Pnt;
 class SelectMgr_EntityOwner;
 
 typedef NCollection_Vector<Handle(Select3D_SensitivePoly)> Select3D_VectorOfHPoly;

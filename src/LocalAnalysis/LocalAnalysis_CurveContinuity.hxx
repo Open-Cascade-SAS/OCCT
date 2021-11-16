@@ -25,7 +25,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <LocalAnalysis_StatusErrorType.hxx>
-class StdFail_NotDone;
 class Geom_Curve;
 class GeomLProp_CLProps;
 

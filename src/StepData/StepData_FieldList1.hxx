@@ -24,8 +24,6 @@
 #include <StepData_Field.hxx>
 #include <StepData_FieldList.hxx>
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
-class StepData_Field;
 
 
 //! Describes a list of ONE field

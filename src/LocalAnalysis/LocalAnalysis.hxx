@@ -24,8 +24,6 @@
 
 class LocalAnalysis_SurfaceContinuity;
 class LocalAnalysis_CurveContinuity;
-class LocalAnalysis_SurfaceContinuity;
-class LocalAnalysis_CurveContinuity;
 
 //! This package gives tools to check the local continuity
 //! between two  points situated  on two curves or two surfaces.

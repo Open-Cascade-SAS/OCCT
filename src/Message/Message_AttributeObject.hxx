@@ -16,7 +16,6 @@
 
 #include <Message_Attribute.hxx>
 
-class Standard_Transient;
 
 //! Alert object storing a transient object
 class Message_AttributeObject : public Message_Attribute

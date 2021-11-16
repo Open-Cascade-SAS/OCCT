@@ -23,7 +23,6 @@
 #include <OSD_LockType.hxx>
 #include <OSD_OpenMode.hxx>
 
-class Standard_ProgramError;
 class OSD_Path;
 class OSD_Protection;
 

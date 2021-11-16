@@ -22,8 +22,6 @@
 #include <OSD_Path.hxx>
 #include <OSD_Error.hxx>
 
-class OSD_OSDError;
-class Standard_ProgramError;
 class OSD_Protection;
 class Quantity_Date;
 

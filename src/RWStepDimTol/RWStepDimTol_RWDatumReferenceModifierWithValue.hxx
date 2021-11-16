@@ -26,7 +26,6 @@ class StepData_StepReaderData;
 class Interface_Check;
 class StepDimTol_DatumReferenceModifierWithValue;
 class StepData_StepWriter;
-class Interface_EntityIterator;
 
 
 //! Read & Write tool for DatumReferenceModifierWithValue

@@ -21,7 +21,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Message_Gravity.hxx>
-class Standard_Transient;
 class Message_Msg;
 class TopoDS_Shape;
 

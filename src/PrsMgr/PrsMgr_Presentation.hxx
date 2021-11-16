@@ -22,11 +22,8 @@
 
 class PrsMgr_PresentationManager;
 class PrsMgr_PresentableObject;
-class Quantity_Color;
 class Graphic3d_Camera;
 class Prs3d_Drawer;
-class Graphic3d_Structure;
-class Graphic3d_DataStructureManager;
 
 DEFINE_STANDARD_HANDLE(PrsMgr_Presentation, Graphic3d_Structure)
 

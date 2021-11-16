@@ -25,10 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class StdFail_NotDone;
-class Standard_NullObject;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class LocOpe_WiresOnShape;
 
 

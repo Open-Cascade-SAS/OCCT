@@ -26,11 +26,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_ConstructionError;
-class Standard_NoSuchObject;
-class Standard_NoMoreObject;
-class TopoDS_Shape;
-class TopoDS_Face;
 class TopoDS_Edge;
 
 

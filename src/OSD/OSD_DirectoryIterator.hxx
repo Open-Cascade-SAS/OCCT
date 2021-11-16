@@ -27,10 +27,7 @@
 #include <Standard_Address.hxx>
 #include <OSD_Error.hxx>
 #include <Standard_Boolean.hxx>
-class OSD_OSDError;
 class OSD_Path;
-class TCollection_AsciiString;
-class OSD_Directory;
 
 
 //! Manages a breadth-only search for sub-directories in the specified

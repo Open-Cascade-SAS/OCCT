@@ -28,7 +28,6 @@
 #include <Quantity_NameOfColor.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 class StdSelect_Shape;
-class TopoDS_Shape;
 class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;
 class TopLoc_Location;

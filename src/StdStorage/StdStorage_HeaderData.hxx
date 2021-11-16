@@ -25,8 +25,6 @@
 #include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
 class Storage_BaseDriver;
-class TCollection_AsciiString;
-class TCollection_ExtendedString;
 
 class StdStorage_HeaderData;
 DEFINE_STANDARD_HANDLE(StdStorage_HeaderData, Standard_Transient)

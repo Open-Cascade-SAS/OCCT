@@ -19,7 +19,6 @@
 
 #include <NCollection_IndexedDataMap.hxx>
 
-class Message_Alert;
 class Message_AlertExtended;
 
 //! Alert object storing alert metrics values.

@@ -27,8 +27,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-class Interface_Protocol;
-class Standard_Transient;
 class Interface_InterfaceModel;
 class StepData_EDescr;
 class StepData_ESDescr;

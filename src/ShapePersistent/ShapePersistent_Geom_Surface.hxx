@@ -40,8 +40,6 @@
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
 
-class gp_Dir;
-class gp_Pnt;
 
 
 class ShapePersistent_Geom_Surface : private ShapePersistent_Geom

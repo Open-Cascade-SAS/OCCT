@@ -23,7 +23,6 @@
 #include <SelectMgr_SelectionType.hxx>
 #include <Standard_Dump.hxx>
 
-class Bnd_Box;
 class gp_Pnt;
 
 //! This class provides an interface for selecting volume manager,

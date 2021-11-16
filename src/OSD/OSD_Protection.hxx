@@ -23,9 +23,6 @@
 
 #include <OSD_SingleProtection.hxx>
 #include <Standard_Integer.hxx>
-class OSD_FileNode;
-class OSD_File;
-class OSD_Directory;
 
 
 //! This  class provides data to manage file protection

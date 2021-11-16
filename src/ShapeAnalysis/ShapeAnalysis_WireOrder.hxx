@@ -26,7 +26,6 @@
 #include <TColgp_HSequenceOfXYZ.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-class Standard_TypeMismatch;
 class gp_XYZ;
 class gp_XY;
 

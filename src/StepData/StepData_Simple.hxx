@@ -25,10 +25,8 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class Interface_InterfaceMismatch;
 class StepData_ESDescr;
 class StepData_Field;
-class StepData_FieldListN;
 class Interface_Check;
 class Interface_EntityIterator;
 

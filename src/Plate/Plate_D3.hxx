@@ -22,9 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_XYZ.hxx>
-class Plate_GtoCConstraint;
-class Plate_FreeGtoCConstraint;
-class gp_XYZ;
 
 
 //! define an order 3 derivatives of a 3d valued

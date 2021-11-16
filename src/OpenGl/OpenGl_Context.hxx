@@ -96,7 +96,6 @@ class Graphic3d_Camera;
 class Graphic3d_PresentationAttributes;
 class OpenGl_Aspects;
 class OpenGl_FrameBuffer;
-class OpenGl_Sampler;
 class OpenGl_ShaderProgram;
 class OpenGl_ShaderManager;
 class OpenGl_FrameStats;

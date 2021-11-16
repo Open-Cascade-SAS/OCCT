@@ -24,7 +24,6 @@
 #include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>
 #include <StepGeom_Curve.hxx>
 #include <Standard_Integer.hxx>
-class StepGeom_Curve;
 class TCollection_HAsciiString;
 class StepGeom_PcurveOrSurface;
 

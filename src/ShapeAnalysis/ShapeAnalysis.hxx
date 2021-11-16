@@ -28,22 +28,6 @@ class TopoDS_Face;
 class ShapeExtend_WireData;
 class TopoDS_Shape;
 class TopoDS_Vertex;
-class ShapeAnalysis_Geom;
-class ShapeAnalysis_Curve;
-class ShapeAnalysis_Surface;
-class ShapeAnalysis_Edge;
-class ShapeAnalysis_Wire;
-class ShapeAnalysis_WireOrder;
-class ShapeAnalysis_WireVertex;
-class ShapeAnalysis_CheckSmallFace;
-class ShapeAnalysis_Shell;
-class ShapeAnalysis_ShapeTolerance;
-class ShapeAnalysis_ShapeContents;
-class ShapeAnalysis_FreeBounds;
-class ShapeAnalysis_FreeBoundData;
-class ShapeAnalysis_FreeBoundsProperties;
-class ShapeAnalysis_TransferParameters;
-class ShapeAnalysis_TransferParametersProj;
 
 
 //! This package is intended to analyze geometrical objects

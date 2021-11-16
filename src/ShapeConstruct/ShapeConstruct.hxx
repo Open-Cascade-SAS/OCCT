@@ -35,10 +35,6 @@ class Geom_BSplineSurface;
 class Geom_Surface;
 class TopoDS_Face;
 class TopoDS_Edge;
-class ShapeConstruct_Curve;
-class ShapeConstruct_ProjectCurveOnSurface;
-class ShapeConstruct_CompBezierCurvesToBSplineCurve;
-class ShapeConstruct_MakeTriangulation;
 
 
 //! This package provides new algorithms for constructing

@@ -25,7 +25,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-class Standard_OutOfRange;
 class gp_Pln;
 class gp_Trsf;
 

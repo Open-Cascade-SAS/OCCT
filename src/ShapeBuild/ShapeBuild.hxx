@@ -22,9 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class Geom_Plane;
-class ShapeBuild_Vertex;
-class ShapeBuild_Edge;
-class ShapeBuild_ReShape;
 
 
 //! This package provides basic building tools for other packages in ShapeHealing.

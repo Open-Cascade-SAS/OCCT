@@ -20,8 +20,6 @@
 #include <Storage_BaseDriver.hxx>
 #include <PCDM_TypeOfFileDriver.hxx>
 
-class CDM_Document;
-class PCDM_StorageDriver;
 class TCollection_AsciiString;
 
 class PCDM 

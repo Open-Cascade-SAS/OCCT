@@ -27,7 +27,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
-class StdFail_NotDone;
 
 
 //! This class finds eigen values and vectors of

@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Quantity_PeriodDefinitionError;
 
 //! Manages date intervals. For example, a Period object
 //! gives the interval between two dates.

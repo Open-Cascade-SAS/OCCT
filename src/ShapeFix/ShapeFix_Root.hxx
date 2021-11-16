@@ -31,7 +31,6 @@
 
 class ShapeBuild_ReShape;
 class ShapeExtend_BasicMsgRegistrator;
-class TopoDS_Shape;
 class Message_Msg;
 
 

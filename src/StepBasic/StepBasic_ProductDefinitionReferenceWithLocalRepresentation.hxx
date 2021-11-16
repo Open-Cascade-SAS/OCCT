@@ -23,7 +23,6 @@
 
 class StepBasic_ExternalSource;
 
-class StepBasic_ProductDefinition;
 DEFINE_STANDARD_HANDLE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation, StepBasic_ProductDefinition)
 
 

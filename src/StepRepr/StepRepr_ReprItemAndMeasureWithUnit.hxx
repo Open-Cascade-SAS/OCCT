@@ -22,7 +22,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 class StepRepr_MeasureRepresentationItem;
 class StepBasic_MeasureWithUnit;
-class StepRepr_RepresentationItem;
 
 
 class StepRepr_ReprItemAndMeasureWithUnit;

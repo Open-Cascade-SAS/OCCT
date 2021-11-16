@@ -22,7 +22,6 @@
 
 #include <StepBasic_SiUnit.hxx>
 class StepBasic_VolumeUnit;
-class StepBasic_DimensionalExponents;
 
 
 class StepBasic_SiUnitAndVolumeUnit;

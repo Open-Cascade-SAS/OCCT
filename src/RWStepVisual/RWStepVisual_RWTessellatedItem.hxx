@@ -25,7 +25,6 @@ class StepData_StepReaderData;
 class Interface_Check;
 class  StepVisual_TessellatedItem;
 class StepData_StepWriter;
-class Interface_EntityIterator;
 
 //! Read & Write Module for AnnotationOccurrence
 class RWStepVisual_RWTessellatedItem 

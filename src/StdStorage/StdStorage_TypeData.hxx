@@ -25,9 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
-class Standard_NoSuchObject;
 class Storage_BaseDriver;
-class TCollection_AsciiString;
 
 class StdStorage_TypeData;
 DEFINE_STANDARD_HANDLE(StdStorage_TypeData, Standard_Transient)

@@ -24,7 +24,6 @@
 #include <OSD_Error.hxx>
 #include <TCollection_AsciiString.hxx>
 
-class OSD_OSDError;
 class Quantity_Date;
 class OSD_Path;
 

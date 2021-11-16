@@ -27,10 +27,6 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
-class Standard_ConstructionError;
-class Standard_NoSuchObject;
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Wire;

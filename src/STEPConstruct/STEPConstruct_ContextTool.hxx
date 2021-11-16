@@ -30,7 +30,6 @@ class StepBasic_ApplicationProtocolDefinition;
 class StepGeom_Axis2Placement3d;
 class StepData_StepModel;
 class TCollection_HAsciiString;
-class STEPConstruct_AP203Context;
 class STEPConstruct_Part;
 class STEPConstruct_Assembly;
 

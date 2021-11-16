@@ -25,7 +25,6 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_CurveElementSectionDefinition.hxx>
 class TCollection_HAsciiString;
-class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepElement_CurveElementSectionDerivedDefinitions;

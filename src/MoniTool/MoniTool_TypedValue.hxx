@@ -34,9 +34,6 @@
 #include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 class TCollection_HAsciiString;
-class Standard_Transient;
-class Standard_ConstructionError;
-class TCollection_AsciiString;
 
 class MoniTool_TypedValue;
 DEFINE_STANDARD_HANDLE(MoniTool_TypedValue, Standard_Transient)

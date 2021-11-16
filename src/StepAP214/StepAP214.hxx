@@ -22,51 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class StepAP214_Protocol;
-class StepAP214_AutoDesignDateAndPersonItem;
-class StepAP214_AutoDesignDateAndTimeItem;
-class StepAP214_AutoDesignDatedItem;
-class StepAP214_AutoDesignGeneralOrgItem;
-class StepAP214_AutoDesignOrganizationItem;
-class StepAP214_AutoDesignGroupedItem;
-class StepAP214_AutoDesignPresentedItemSelect;
-class StepAP214_AutoDesignReferencingItem;
-class StepAP214_DateAndTimeItem;
-class StepAP214_DateItem;
-class StepAP214_ApprovalItem;
-class StepAP214_OrganizationItem;
-class StepAP214_DocumentReferenceItem;
-class StepAP214_GroupItem;
-class StepAP214_PersonAndOrganizationItem;
-class StepAP214_PresentedItemSelect;
-class StepAP214_SecurityClassificationItem;
-class StepAP214_Protocol;
-class StepAP214_AutoDesignApprovalAssignment;
-class StepAP214_AutoDesignActualDateAndTimeAssignment;
-class StepAP214_AutoDesignNominalDateAndTimeAssignment;
-class StepAP214_AutoDesignActualDateAssignment;
-class StepAP214_AutoDesignNominalDateAssignment;
-class StepAP214_AutoDesignGroupAssignment;
-class StepAP214_AutoDesignOrganizationAssignment;
-class StepAP214_AutoDesignDateAndPersonAssignment;
-class StepAP214_AutoDesignPersonAndOrganizationAssignment;
-class StepAP214_AutoDesignPresentedItem;
-class StepAP214_AutoDesignSecurityClassificationAssignment;
-class StepAP214_AutoDesignDocumentReference;
-class StepAP214_AppliedApprovalAssignment;
-class StepAP214_AppliedDateAndTimeAssignment;
-class StepAP214_AppliedDateAssignment;
-class StepAP214_AppliedGroupAssignment;
-class StepAP214_AppliedOrganizationAssignment;
-class StepAP214_AppliedPersonAndOrganizationAssignment;
-class StepAP214_AppliedPresentedItem;
-class StepAP214_AppliedSecurityClassificationAssignment;
-class StepAP214_AppliedDocumentReference;
-class StepAP214_AppliedExternalIdentificationAssignment;
-class StepAP214_Class;
-class StepAP214_ExternalIdentificationItem;
-class StepAP214_ExternallyDefinedClass;
-class StepAP214_ExternallyDefinedGeneralProperty;
-class StepAP214_RepItemGroup;
 
 
 //! Complete AP214 CC1 , Revision 4

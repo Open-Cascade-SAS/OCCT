@@ -27,7 +27,6 @@ class Interface_Check;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 class StepVisual_SurfaceStyleTransparent;
-class Interface_EntityIterator;
 
 //! Read & Write tool for SurfaceStyleTransparent
 class RWStepVisual_RWSurfaceStyleTransparent

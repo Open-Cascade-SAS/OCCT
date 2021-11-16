@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <StepData_Logical.hxx>
 #include <StepGeom_Surface.hxx>
-class StepGeom_Surface;
 class TCollection_HAsciiString;
 
 

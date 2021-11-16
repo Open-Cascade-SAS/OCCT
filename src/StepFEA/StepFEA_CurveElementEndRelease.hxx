@@ -22,7 +22,6 @@
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
 #include <Standard_Transient.hxx>
-class StepFEA_CurveElementEndCoordinateSystem;
 
 
 class StepFEA_CurveElementEndRelease;

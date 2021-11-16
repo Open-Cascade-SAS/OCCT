@@ -24,12 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <Standard_Boolean.hxx>
-class ShapeExtend_ComplexCurve;
-class ShapeExtend_CompositeSurface;
-class ShapeExtend_WireData;
-class ShapeExtend_BasicMsgRegistrator;
-class ShapeExtend_MsgRegistrator;
-class ShapeExtend_Explorer;
 
 
 //! This package provides general tools and data structures common

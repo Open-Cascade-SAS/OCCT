@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TCollection_ExtendedString.hxx>
-class TCollection_ExtendedString;
 
 
 

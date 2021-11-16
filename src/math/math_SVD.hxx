@@ -27,9 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class Standard_DimensionError;
-class math_Matrix;
 
 
 //! SVD implements the solution of a set of N linear equations

@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_DomainError;
 class Interface_FileReaderData;
 class TCollection_AsciiString;
 class Interface_Check;

@@ -21,7 +21,6 @@
 
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <Standard_Transient.hxx>
-class StepElement_MeasureOrUnspecifiedValue;
 
 
 class StepElement_SurfaceSection;

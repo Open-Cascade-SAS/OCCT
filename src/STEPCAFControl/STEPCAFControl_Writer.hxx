@@ -37,7 +37,6 @@
 
 class XSControl_WorkSession;
 class TDocStd_Document;
-class TCollection_AsciiString;
 class STEPCAFControl_ExternFile;
 class TopoDS_Shape;
 

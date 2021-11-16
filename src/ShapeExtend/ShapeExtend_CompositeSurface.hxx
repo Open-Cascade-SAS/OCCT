@@ -29,7 +29,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-class Geom_Surface;
 class gp_Pnt2d;
 class gp_Trsf2d;
 class gp_Trsf;

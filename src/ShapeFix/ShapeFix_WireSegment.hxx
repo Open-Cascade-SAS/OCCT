@@ -28,7 +28,6 @@
 #include <Standard_Integer.hxx>
 class ShapeExtend_WireData;
 class TopoDS_Wire;
-class TopoDS_Vertex;
 class TopoDS_Edge;
 
 

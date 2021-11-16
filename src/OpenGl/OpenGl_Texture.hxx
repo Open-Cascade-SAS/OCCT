@@ -23,8 +23,6 @@
 #include <Graphic3d_TextureUnit.hxx>
 #include <Graphic3d_TypeOfTexture.hxx>
 
-class Graphic3d_TextureParams;
-class Image_PixMap;
 
 //! Texture resource.
 class OpenGl_Texture : public OpenGl_NamedResource

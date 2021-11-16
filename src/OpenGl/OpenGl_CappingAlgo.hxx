@@ -19,7 +19,6 @@
 #include <OpenGl_Group.hxx>
 
 // Forward declaration
-class OpenGl_CappingPlaneResource;
 class OpenGl_Structure;
 
 //! Capping surface rendering algorithm.

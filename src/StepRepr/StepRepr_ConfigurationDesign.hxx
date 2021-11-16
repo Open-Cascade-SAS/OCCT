@@ -23,7 +23,6 @@
 #include <StepRepr_ConfigurationDesignItem.hxx>
 #include <Standard_Transient.hxx>
 class StepRepr_ConfigurationItem;
-class StepRepr_ConfigurationDesignItem;
 
 
 class StepRepr_ConfigurationDesign;

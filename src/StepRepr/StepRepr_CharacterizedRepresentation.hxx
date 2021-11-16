@@ -22,7 +22,6 @@
 #include <StepRepr_Representation.hxx>
 class TCollection_HAsciiString;
 class StepRepr_RepresentationContext;
-class StepRepr_RepresentationItem;
 
 
 class StepRepr_CharacterizedRepresentation;

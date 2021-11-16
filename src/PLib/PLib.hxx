@@ -31,10 +31,6 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <GeomAbs_Shape.hxx>
 class math_Matrix;
-class PLib_Base;
-class PLib_JacobiPolynomial;
-class PLib_HermitJacobi;
-class PLib_DoubleJacobiPolynomial;
 
 
 //! PLib means Polynomial  functions library.  This pk

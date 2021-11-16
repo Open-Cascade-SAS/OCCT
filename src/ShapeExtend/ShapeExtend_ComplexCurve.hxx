@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-class Geom_Curve;
 class gp_Trsf;
 class gp_Pnt;
 class gp_Vec;

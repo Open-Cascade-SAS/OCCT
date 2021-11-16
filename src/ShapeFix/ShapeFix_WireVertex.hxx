@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 class TopoDS_Wire;
 class ShapeExtend_WireData;
-class ShapeAnalysis_WireVertex;
 
 
 //! Fixing disconnected edges in the wire

@@ -26,11 +26,6 @@
 
 class ShapeProcess_Operator;
 class ShapeProcess_Context;
-class ShapeProcess_Context;
-class ShapeProcess_ShapeContext;
-class ShapeProcess_Operator;
-class ShapeProcess_UOperator;
-class ShapeProcess_OperLibrary;
 
 //! Shape Processing module
 //! allows to define and apply general Shape Processing as a

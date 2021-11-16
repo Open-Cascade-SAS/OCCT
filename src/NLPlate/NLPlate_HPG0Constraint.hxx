@@ -25,7 +25,6 @@
 #include <NLPlate_HGPPConstraint.hxx>
 #include <Standard_Integer.hxx>
 class gp_XY;
-class gp_XYZ;
 
 
 class NLPlate_HPG0Constraint;

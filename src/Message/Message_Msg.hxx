@@ -24,7 +24,6 @@
 #include <TCollection_HExtendedString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
-class TCollection_ExtendedString;
 class TCollection_AsciiString;
 class TCollection_HAsciiString;
 class TCollection_HExtendedString;

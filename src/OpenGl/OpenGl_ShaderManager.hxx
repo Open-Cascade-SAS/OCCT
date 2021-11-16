@@ -28,7 +28,6 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_TextureSet.hxx>
 
-class OpenGl_View;
 class OpenGl_VertexBuffer;
 
 //! List of shader programs.

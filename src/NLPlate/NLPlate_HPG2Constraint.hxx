@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 class gp_XY;
 class Plate_D1;
-class Plate_D2;
 
 
 class NLPlate_HPG2Constraint;

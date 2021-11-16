@@ -22,7 +22,6 @@
 
 #include <StepBasic_SiUnit.hxx>
 class StepBasic_AreaUnit;
-class StepBasic_DimensionalExponents;
 
 
 class StepBasic_SiUnitAndAreaUnit;

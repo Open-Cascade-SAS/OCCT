@@ -23,7 +23,6 @@
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Element.hxx>
 
-class OpenGl_Group;
 class OpenGl_Structure;
 
 struct OpenGl_ElementNode

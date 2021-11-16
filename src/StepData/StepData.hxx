@@ -22,45 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class StepData_Protocol;
-class StepData_StepModel;
-class StepData_UndefinedEntity;
-class StepData_SelectType;
-class StepData_Field;
-class StepData_SelectMember;
-class StepData_SelectInt;
-class StepData_SelectReal;
-class StepData_SelectNamed;
-class StepData_SelectArrReal;
-class StepData_PDescr;
-class StepData_FieldList;
-class StepData_FieldList1;
-class StepData_FieldListN;
-class StepData_FieldListD;
-class StepData_EDescr;
-class StepData_ESDescr;
-class StepData_ECDescr;
-class StepData_Described;
-class StepData_Simple;
-class StepData_Plex;
-class StepData_FreeFormEntity;
-class StepData_Protocol;
-class StepData_GeneralModule;
-class StepData_FileRecognizer;
-class StepData_FileProtocol;
-class StepData_HeaderTool;
-class StepData_EnumTool;
-class StepData_DescrProtocol;
-class StepData_DescrGeneral;
-class StepData_DescrReadWrite;
-class StepData_StepReaderData;
-class StepData_StepReaderTool;
-class StepData_ReadWriteModule;
-class StepData_StepWriter;
-class StepData_StepDumper;
-class StepData_WriterLib;
-class StepData_DefaultGeneral;
-class StepData_GlobalNodeOfWriterLib;
-class StepData_NodeOfWriterLib;
 
 
 //! Gives basic data definition for Step Interface.

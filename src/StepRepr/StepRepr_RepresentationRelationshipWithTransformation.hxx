@@ -24,7 +24,6 @@
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 class TCollection_HAsciiString;
 class StepRepr_Representation;
-class StepRepr_Transformation;
 
 
 class StepRepr_RepresentationRelationshipWithTransformation;

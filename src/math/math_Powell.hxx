@@ -28,10 +28,7 @@
 #include <math_Status.hxx>
 #include <math_Matrix.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class Standard_DimensionError;
 class math_MultipleVarFunction;
-class math_Matrix;
 
 
 

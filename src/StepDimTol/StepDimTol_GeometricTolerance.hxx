@@ -23,7 +23,6 @@
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
-class StepDimTol_GeometricToleranceTarget;
 class StepRepr_ShapeAspect;
 
 

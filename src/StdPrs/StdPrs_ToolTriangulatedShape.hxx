@@ -22,11 +22,9 @@
 #include <TColgp_Array1OfDir.hxx>
 
 class TopoDS_Face;
-class TopLoc_Location;
 class TopoDS_Shape;
 class Prs3d_Drawer;
 class Poly_Triangulation;
-class Poly_Connect;
 
 class StdPrs_ToolTriangulatedShape
 {

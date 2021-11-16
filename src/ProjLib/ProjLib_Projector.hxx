@@ -31,13 +31,6 @@
 #include <Standard_Real.hxx>
 class Geom2d_BSplineCurve;
 class Geom2d_BezierCurve;
-class Standard_NoSuchObject;
-class Standard_NotImplemented;
-class gp_Lin2d;
-class gp_Circ2d;
-class gp_Elips2d;
-class gp_Hypr2d;
-class gp_Parab2d;
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;

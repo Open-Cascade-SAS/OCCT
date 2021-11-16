@@ -24,8 +24,6 @@
 #include <SelectMgr_SequenceOfOwner.hxx>
 
 class SelectMgr_EntityOwner;
-class Standard_NotImplemented;
-class SelectMgr_SelectionManager;
 
 //! A framework to supply the structure of the object to be selected.
 //! At the first pick, this structure is created by calling the appropriate algorithm and retaining this framework for further picking.

@@ -26,7 +26,6 @@
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Wire;
 
 
 class ShapeAnalysis_FreeBoundData;

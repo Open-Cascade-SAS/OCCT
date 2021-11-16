@@ -25,8 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
-class TopoDS_Face;
-class TopoDS_Edge;
 class Geom2d_Curve;
 
 

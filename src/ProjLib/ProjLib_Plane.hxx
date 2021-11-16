@@ -23,8 +23,6 @@
 
 #include <gp_Pln.hxx>
 #include <ProjLib_Projector.hxx>
-class Standard_NoSuchObject;
-class gp_Pln;
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;

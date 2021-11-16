@@ -30,16 +30,6 @@ class Transfer_TransientProcess;
 class Transfer_Binder;
 class StepShape_ShapeDefinitionRepresentation;
 class StepShape_ContextDependentShapeRepresentation;
-class STEPConstruct_Tool;
-class STEPConstruct_UnitContext;
-class STEPConstruct_Part;
-class STEPConstruct_Assembly;
-class STEPConstruct_Styles;
-class STEPConstruct_ValidationProps;
-class STEPConstruct_ExternRefs;
-class STEPConstruct_AP203Context;
-class STEPConstruct_ContextTool;
-class STEPConstruct_PointHasher;
 
 
 //! Defines tools for creation and investigation STEP constructs

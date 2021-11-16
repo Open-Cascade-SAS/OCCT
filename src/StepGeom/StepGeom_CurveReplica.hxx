@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_Curve.hxx>
-class StepGeom_Curve;
 class StepGeom_CartesianTransformationOperator;
 class TCollection_HAsciiString;
 

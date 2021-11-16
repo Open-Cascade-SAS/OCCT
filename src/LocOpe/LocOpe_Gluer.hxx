@@ -29,10 +29,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class StdFail_NotDone;
-class Standard_NoSuchObject;
-class Standard_ConstructionError;
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 

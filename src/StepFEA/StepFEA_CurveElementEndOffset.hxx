@@ -22,7 +22,6 @@
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Transient.hxx>
-class StepFEA_CurveElementEndCoordinateSystem;
 
 
 class StepFEA_CurveElementEndOffset;

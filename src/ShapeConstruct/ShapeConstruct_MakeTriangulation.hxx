@@ -26,7 +26,6 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Wire;
 
 
 

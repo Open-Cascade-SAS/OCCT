@@ -52,7 +52,6 @@
   typedef rapidjson::Document::ValueType RWGltf_JsonValue;
 #endif
 
-class Message_ProgressIndicator;
 
 //! INTERNAL tool for parsing glTF document (JSON structure).
 class RWGltf_GltfJsonParser

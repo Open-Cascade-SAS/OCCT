@@ -27,11 +27,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <gp_Pnt.hxx>
 #include <TopTools_ListOfShape.hxx>
-class Standard_NoSuchObject;
-class StdFail_NotDone;
-class TopoDS_Shape;
-class gp_Vec;
-class gp_Pnt;
 
 
 //! Defines a linear form (using Prism from BRepSweep)

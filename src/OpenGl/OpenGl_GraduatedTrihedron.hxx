@@ -26,7 +26,6 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Text.hxx>
 
-class OpenGl_View;
 
 //! This class allows to render Graduated Trihedron, i.e. trihedron with grid.
 //! it is based on Graphic3d_GraduatedTrihedron parameters and support its customization

@@ -23,7 +23,6 @@
 #include <Standard_Real.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 class TCollection_HAsciiString;
-class StepFEA_SymmetricTensor23d;
 
 
 class StepFEA_FeaSecantCoefficientOfLinearThermalExpansion;

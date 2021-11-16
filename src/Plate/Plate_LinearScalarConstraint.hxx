@@ -27,8 +27,6 @@
 #include <TColgp_Array1OfXYZ.hxx>
 #include <TColgp_Array2OfXYZ.hxx>
 #include <Standard_Integer.hxx>
-class Standard_DimensionMismatch;
-class Standard_OutOfRange;
 class Plate_PinpointConstraint;
 class gp_XYZ;
 

@@ -24,12 +24,8 @@
 #include <Standard_Integer.hxx>
 #include <StdStorage_MapOfRoots.hxx>
 #include <StdStorage_HSequenceOfRoots.hxx>
-class Standard_NoSuchObject;
-class Storage_Schema;
 class Storage_BaseDriver;
 class StdStorage_Root;
-class TCollection_AsciiString;
-class StdObjMgt_Persistent;
 
 class StdStorage_RootData;
 DEFINE_STANDARD_HANDLE(StdStorage_RootData, Standard_Transient)

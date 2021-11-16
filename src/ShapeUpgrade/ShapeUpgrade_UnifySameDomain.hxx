@@ -31,7 +31,6 @@
 #include <Geom_Plane.hxx>
 #include <Precision.hxx>
 class ShapeBuild_ReShape;
-class TopoDS_Shape;
 
 
 class ShapeUpgrade_UnifySameDomain;

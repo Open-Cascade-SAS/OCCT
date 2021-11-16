@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
-class MoniTool_AttrList;
 
 
 class MoniTool_Element;

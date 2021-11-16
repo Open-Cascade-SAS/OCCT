@@ -25,8 +25,6 @@ class Interface_Protocol;
 class StepData_StepModel;
 class IFSelect_Signature;
 class IFSelect_SelectSignature;
-class STEPEdit_EditContext;
-class STEPEdit_EditSDR;
 
 
 //! Provides tools to exploit and edit a set of STEP data :

@@ -25,7 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class gp_XY;
 class gp_XYZ;
 class Plate_D1;
 class Plate_D2;

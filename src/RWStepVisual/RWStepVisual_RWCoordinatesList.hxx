@@ -25,7 +25,6 @@
 class Interface_Check;
 class  StepVisual_CoordinatesList;
 class StepData_StepWriter;
-class Interface_EntityIterator;
 
 //! Read & Write Module for AnnotationOccurrence
 class RWStepVisual_RWCoordinatesList 

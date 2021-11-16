@@ -27,8 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <math_Status.hxx>
 #include <Standard_OStream.hxx>
-class Standard_DimensionError;
-class StdFail_NotDone;
 class math_MultipleVarFunctionWithGradient;
 
 

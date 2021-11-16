@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
-class Interface_InterfaceMismatch;
 class StepData_ECDescr;
 class StepData_Simple;
 class StepData_Field;

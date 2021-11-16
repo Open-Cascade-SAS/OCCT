@@ -18,7 +18,6 @@
 
 #include <Standard_Type.hxx>
 
-class Standard_Transient;
 class OpenGl_Context;
 
 //! Interface for OpenGl resource with following meaning:

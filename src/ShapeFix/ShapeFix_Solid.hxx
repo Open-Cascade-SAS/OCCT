@@ -28,7 +28,6 @@
 #include <Standard_Real.hxx>
 class ShapeFix_Shell;
 class TopoDS_Solid;
-class Message_ProgressScope;
 class TopoDS_Shell;
 class ShapeExtend_BasicMsgRegistrator;
 

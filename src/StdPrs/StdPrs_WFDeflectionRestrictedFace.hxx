@@ -22,7 +22,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 
-class Bnd_Box;
 
 //! A framework to provide display of U and V
 //! isoparameters of faces, while allowing you to impose

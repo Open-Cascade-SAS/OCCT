@@ -24,7 +24,6 @@
 
 #include <Message_ProgressIndicator.hxx>
 
-class PCDM_DriverError;
 class CDM_Document;
 class TCollection_ExtendedString;
 

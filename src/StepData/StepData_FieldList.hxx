@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-class Standard_OutOfRange;
 class StepData_Field;
 class Interface_EntityIterator;
 

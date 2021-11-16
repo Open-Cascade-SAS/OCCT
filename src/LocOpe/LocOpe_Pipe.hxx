@@ -27,10 +27,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-class Standard_NoSuchObject;
-class Standard_DomainError;
 class TopoDS_Wire;
-class TopoDS_Shape;
 class Geom_Curve;
 
 

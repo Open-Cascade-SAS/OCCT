@@ -18,8 +18,6 @@
 #include <Standard_Handle.hxx>
 #include <Standard_Integer.hxx>
 
-class StdStorage_BucketOfPersistent;
-class StdStorage_BucketIterator;
 class StdObjMgt_Persistent;
 
 class StdStorage_Bucket 

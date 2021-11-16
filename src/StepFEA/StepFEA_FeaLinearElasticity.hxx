@@ -22,7 +22,6 @@
 #include <StepFEA_SymmetricTensor43d.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>
 class TCollection_HAsciiString;
-class StepFEA_SymmetricTensor43d;
 
 
 class StepFEA_FeaLinearElasticity;

@@ -22,7 +22,6 @@
 #include <StepAP242_IdAttributeSelect.hxx>
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
-class StepAP242_IdAttributeSelect;
 
 class StepAP242_IdAttribute;
 DEFINE_STANDARD_HANDLE(StepAP242_IdAttribute, Standard_Transient)

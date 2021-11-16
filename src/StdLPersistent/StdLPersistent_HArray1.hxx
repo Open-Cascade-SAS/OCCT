@@ -28,9 +28,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 
-class TCollection_HExtendedString;
-class TDF_Label;
-class TDF_Data;
 
 
 DEFINE_HARRAY1 (StdLPersistent_HArray1OfPersistent,

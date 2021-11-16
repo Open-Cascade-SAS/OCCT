@@ -26,7 +26,6 @@
 #include <Storage_Data.hxx>
 #include <Message_ProgressRange.hxx>
 
-class PCDM_DriverError;
 class CDM_Document;
 class TCollection_ExtendedString;
 class CDM_Application;

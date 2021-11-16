@@ -27,7 +27,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-class StepData_Field;
 
 
 class StepData_SelectNamed;

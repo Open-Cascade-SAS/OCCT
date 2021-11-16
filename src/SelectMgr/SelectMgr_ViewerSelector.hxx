@@ -37,9 +37,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
-class Graphic3d_Structure;
-class Graphic3d_TransformPers;
-class SelectMgr_SelectionManager;
 class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;
 class Select3D_SensitiveEntity;

@@ -24,7 +24,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Shape;
 
 
 class ShapeUpgrade_RemoveLocations;

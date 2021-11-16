@@ -26,38 +26,6 @@
 #include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
-class ShapeUpgrade_Tool;
-class ShapeUpgrade_EdgeDivide;
-class ShapeUpgrade_ClosedEdgeDivide;
-class ShapeUpgrade_WireDivide;
-class ShapeUpgrade_FaceDivide;
-class ShapeUpgrade_ClosedFaceDivide;
-class ShapeUpgrade_FaceDivideArea;
-class ShapeUpgrade_ShapeDivide;
-class ShapeUpgrade_ShapeDivideArea;
-class ShapeUpgrade_ShapeDivideContinuity;
-class ShapeUpgrade_ShapeDivideAngle;
-class ShapeUpgrade_ShapeConvertToBezier;
-class ShapeUpgrade_ShapeDivideClosed;
-class ShapeUpgrade_ShapeDivideClosedEdges;
-class ShapeUpgrade_SplitCurve;
-class ShapeUpgrade_SplitCurve2d;
-class ShapeUpgrade_SplitCurve2dContinuity;
-class ShapeUpgrade_ConvertCurve2dToBezier;
-class ShapeUpgrade_SplitCurve3d;
-class ShapeUpgrade_SplitCurve3dContinuity;
-class ShapeUpgrade_ConvertCurve3dToBezier;
-class ShapeUpgrade_SplitSurface;
-class ShapeUpgrade_SplitSurfaceContinuity;
-class ShapeUpgrade_SplitSurfaceAngle;
-class ShapeUpgrade_ConvertSurfaceToBezierBasis;
-class ShapeUpgrade_SplitSurfaceArea;
-class ShapeUpgrade_ShellSewing;
-class ShapeUpgrade_FixSmallCurves;
-class ShapeUpgrade_FixSmallBezierCurves;
-class ShapeUpgrade_RemoveLocations;
-class ShapeUpgrade_RemoveInternalWires;
-class ShapeUpgrade_UnifySameDomain;
 
 
 //! This package provides tools for splitting and converting shapes by some criteria.

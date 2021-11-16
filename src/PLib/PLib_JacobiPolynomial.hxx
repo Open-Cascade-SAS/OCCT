@@ -27,7 +27,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <Standard_Real.hxx>
-class Standard_ConstructionError;
 
 
 class PLib_JacobiPolynomial;

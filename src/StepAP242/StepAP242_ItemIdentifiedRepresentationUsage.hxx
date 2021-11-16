@@ -26,7 +26,6 @@
 
 class TCollection_HAsciiString;
 class StepRepr_Representation;
-class StepAP242_ItemIdentifiedRepresentationUsageDefinition;
 class StepRepr_RepresentationItem;
 
 class StepAP242_ItemIdentifiedRepresentationUsage;

@@ -27,7 +27,6 @@
 #include <OpenGl_Context.hxx>
 
 class Aspect_Window;
-class Quantity_Color;
 class OpenGl_Structure;
 class OpenGl_View;
 class OpenGl_Window;

@@ -25,8 +25,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
-class TopoDS_Compound;
 
 
 //! This class is intended to output free bounds of the shape

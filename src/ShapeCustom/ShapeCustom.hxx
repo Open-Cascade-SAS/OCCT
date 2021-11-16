@@ -33,17 +33,6 @@ class BRepTools_Modification;
 class BRepTools_Modifier;
 class ShapeBuild_ReShape;
 class ShapeCustom_RestrictionParameters;
-class ShapeCustom_Surface;
-class ShapeCustom_Curve;
-class ShapeCustom_Curve2d;
-class ShapeCustom_RestrictionParameters;
-class ShapeCustom_Modification;
-class ShapeCustom_DirectModification;
-class ShapeCustom_TrsfModification;
-class ShapeCustom_BSplineRestriction;
-class ShapeCustom_ConvertToRevolution;
-class ShapeCustom_SweptToElementary;
-class ShapeCustom_ConvertToBSpline;
 
 
 //! This package is intended to

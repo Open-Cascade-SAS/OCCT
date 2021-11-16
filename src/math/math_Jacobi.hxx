@@ -27,8 +27,6 @@
 #include <math_Vector.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class StdFail_NotDone;
-class math_Matrix;
 
 
 
