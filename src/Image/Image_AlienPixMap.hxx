@@ -19,6 +19,7 @@
 #include <Image_PixMap.hxx>
 
 class TCollection_AsciiString;
+struct IWICPalette;
 struct FIBITMAP;
 
 //! Image class that support file reading/writing operations using auxiliary image library.
@@ -57,21 +58,41 @@ public:
                              const TCollection_AsciiString& theFileName);
 
   //! Read image data from memory buffer.
-  //! @param theData     memory pointer to read from;
-  //!                    when NULL, function will attempt to open theFileName file
-  //! @param theLength   memory buffer length
-  //! @param theFileName optional file name
+  //! @param[in] theData     memory pointer to read from;
+  //!                        when NULL, function will attempt to open theFileName file
+  //! @param[in] theLength   memory buffer length
+  //! @param[in] theFileName optional file name
   Standard_EXPORT bool Load (const Standard_Byte* theData,
-                             Standard_Size theLength,
+                             const Standard_Size theLength,
                              const TCollection_AsciiString& theFileName);
 
-  //! Write image data to file using file extension to determine compression format.
-  Standard_EXPORT bool Save (const TCollection_AsciiString& theFileName);
+  //! Write image data to file.
+  //! @param[in] theFileName file name to save
+  bool Save (const TCollection_AsciiString& theFileName)
+  {
+    return Save (NULL, 0, theFileName);
+  }
+
+  //! Write image data to stream.
+  //! @param[out] theStream   stream where to write
+  //! @param[in] theExtension image format
+  Standard_EXPORT bool Save (std::ostream& theStream,
+                             const TCollection_AsciiString& theExtension);
+
+  //! Write image data to file or memory buffer using file extension to determine format.
+  //! @param[out] theBuffer  buffer pointer where to write
+  //!                        when NULL, function write image data to theFileName file
+  //! @param[in] theLength   memory buffer length
+  //! @param[in] theFileName file name to save;
+  //!                        when theBuffer isn't NULL used only to determine format
+  Standard_EXPORT bool Save (Standard_Byte* theBuffer,
+                             const Standard_Size theLength,
+                             const TCollection_AsciiString& theFileName);
 
   //! Initialize image plane with required dimensions.
-  //! thePixelFormat - if specified pixel format doesn't supported by image library
-  //!                  than nearest supported will be used instead!
-  //! theSizeRowBytes - may be ignored by this class and required alignment will be used instead!
+  //! @param[in] thePixelFormat  if specified pixel format doesn't supported by image library
+  //!                            than nearest supported will be used instead!
+  //! @param[in] theSizeRowBytes may be ignored by this class and required alignment will be used instead!
   Standard_EXPORT virtual bool InitTrash (Image_Format        thePixelFormat,
                                           const Standard_Size theSizeX,
                                           const Standard_Size theSizeY,
@@ -84,12 +105,13 @@ public:
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   //! Performs gamma correction on image.
-  //! theGamma - gamma value to use; a value of 1.0 leaves the image alone
+  //! @param[in] theGamma - gamma value to use; a value of 1.0 leaves the image alone
   Standard_EXPORT bool AdjustGamma (const Standard_Real theGammaCorr);
 
-private:
-
-  FIBITMAP* myLibImage;
+#if !defined(HAVE_FREEIMAGE) && defined(_WIN32)
+  //! Returns image palette.
+  IWICPalette* GetPalette() const { return myPalette; }
+#endif
 
 private:
 
@@ -107,6 +129,13 @@ private:
 
   //! Built-in PPM export
   Standard_EXPORT bool savePPM (const TCollection_AsciiString& theFileName) const;
+
+  FIBITMAP* getImageToDump (const Standard_Integer theFormat);
+
+private:
+
+  FIBITMAP* myLibImage;
+  IWICPalette* myPalette;
 
 };
 

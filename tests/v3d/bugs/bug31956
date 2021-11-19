@@ -1,0 +1,41 @@
+puts "============"
+puts "0031956: Visualization - provide Image_AlienPixMap::Save() writing into a memory buffer instead of a file"
+puts "============"
+puts ""
+
+set anImg1 [locate_data_file chataignier.gif]
+set anImg2 [locate_data_file hatch_1.png]
+
+pload VISUALIZATION QAcommands
+vclear
+vinit View1
+vtop
+
+OCC30182 t $anImg1 -fileName; vfit
+vdump $imagedir/${casename}_1.png
+
+OCC30182 t $anImg2 -fileName; vfit
+vdump $imagedir/${casename}_2.png
+
+vclear
+
+OCC31956 t $anImg1; vfit
+vdump $imagedir/${casename}_test_1.png
+
+OCC31956 t $anImg2; vfit
+vdump $imagedir/${casename}_test_2.png
+
+vclear
+
+OCC31956 t $anImg1 -stream $imagedir/${casename}_temp_1.gif; vfit
+vdump $imagedir/${casename}_test_1s.png
+
+OCC31956 t $anImg2 -stream $imagedir/${casename}_temp_2.png; vfit
+vdump $imagedir/${casename}_test_2s.png
+
+if { [diffimage $imagedir/${casename}_test_1.png $imagedir/${casename}_1.png -toleranceOfColor 0.1] != 0 } { puts "Error difference in 1st image" }
+if { [diffimage $imagedir/${casename}_test_2.png $imagedir/${casename}_2.png -toleranceOfColor 0.1] != 0 } { puts "Error difference in 2nd image" }
+
+if { [diffimage $imagedir/${casename}_test_1s.png $imagedir/${casename}_1.png -toleranceOfColor 0.1] != 0 } { puts "Error difference in 1st image (using stream)" }
+if { [diffimage $imagedir/${casename}_test_2s.png $imagedir/${casename}_2.png -toleranceOfColor 0.1] != 0 } { puts "Error difference in 2nd image (using stream)" }
+
