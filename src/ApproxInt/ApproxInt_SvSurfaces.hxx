@@ -38,16 +38,14 @@ class IntSurf_PntOn2S;
 //! the solver used in intersection algorithm and required values are calculated.
 //! if myUseSolver = false, u1, v1, u2, v2 are considered as "exact" intersection points on two surfaces
 //! and required values are calculated directly using u1, v1, u2, v2
-//! 
-
-
-class ApproxInt_SvSurfaces 
+class ApproxInt_SvSurfaces
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  ApproxInt_SvSurfaces() : myUseSolver (false) {}
+
   //! returns True if Tg,Tguv1 Tguv2 can be computed.
   Standard_EXPORT virtual Standard_Boolean Compute (Standard_Real& u1, Standard_Real& v1,
                                                     Standard_Real& u2, Standard_Real& v2,
@@ -82,35 +80,20 @@ public:
                                                             gp_Vec2d& Tg) = 0;
   Standard_EXPORT virtual ~ApproxInt_SvSurfaces();
 
-  Standard_EXPORT virtual void SetUseSolver(const Standard_Boolean theUseSol)
+  void SetUseSolver (const Standard_Boolean theUseSol)
   {
     myUseSolver = theUseSol;
   }
 
-  Standard_EXPORT virtual Standard_Boolean GetUseSolver() const
+  virtual Standard_Boolean GetUseSolver() const
   {
     return myUseSolver;
   }
 
-
-protected:
-
-  
-
-
-
 private:
 
-Standard_Boolean myUseSolver;
-
-
+  Standard_Boolean myUseSolver;
 
 };
-
-
-
-
-
-
 
 #endif // _ApproxInt_SvSurfaces_HeaderFile
