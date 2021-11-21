@@ -1967,21 +1967,6 @@ vsensera
 ~~~~
 
 Erases active entities. 
-
-@subsubsection occt_draw_4_3_23 vr
-
-Syntax:
-~~~~{.php}
-vr filename
-~~~~
-
-Reads shape from BREP-format file and displays it in the viewer. 
-
-**Example:** 
-~~~~{.php}
-vinit 
-vr myshape.brep
-~~~~
  
 @subsubsection occt_draw_4_3_24 vstate
 

@@ -110,8 +110,6 @@ public:
 
   Standard_EXPORT static void ViewerCommands (Draw_Interpretor& theCommands);
 
-  Standard_EXPORT static void MyCommands (Draw_Interpretor& theCommands);
-
   Standard_EXPORT static void RelationCommands (Draw_Interpretor& theCommands);
 
   Standard_EXPORT static void ObjectCommands (Draw_Interpretor& theCommands);

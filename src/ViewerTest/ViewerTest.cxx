@@ -6193,19 +6193,6 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
   return 0;
 }
 
-static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a)
-{
-  std::ifstream s(a[1]);
-  BRep_Builder builder;
-  TopoDS_Shape shape;
-  BRepTools::Read(shape, s, builder);
-  DBRep::Set(a[1], shape);
-  Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-  Handle(AIS_Shape) ais = new AIS_Shape(shape);
-  Ctx->Display (ais, Standard_True);
-  return 0;
-}
-
 //===============================================================================================
 //function : VBsdf
 //purpose  :
@@ -6900,11 +6887,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "vtypes : list of known types and signatures in AIS - To be Used in vpickobject command for selection with filters",
 		  VIOTypes,group);
 
-  theCommands.Add("vr",
-      "vr filename"
-      "\n\t\t: Reads shape from BREP-format file and displays it in the viewer. ",
-		  __FILE__,vr, group);
-
   theCommands.Add("vselfilter",
     "vselfilter [-contextfilter {AND|OR}]"
     "\n         [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]"
@@ -6944,147 +6926,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
 }
 
-//=====================================================================
-//========================= for testing Draft and Rib =================
-//=====================================================================
-#include <BRepOffsetAPI_MakeThickSolid.hxx>
-#include <DBRep.hxx>
-#include <TopoDS_Face.hxx>
-#include <gp_Pln.hxx>
-#include <BRepOffsetAPI_DraftAngle.hxx>
-#include <Precision.hxx>
-#include <BRepAlgo.hxx>
-#include <OSD_Environment.hxx>
-#include <DrawTrSurf.hxx>
-
-//=======================================================================
-//function : IsValid
-//purpose  :
-//=======================================================================
-static Standard_Boolean IsValid(const TopTools_ListOfShape& theArgs,
-				const TopoDS_Shape& theResult,
-				const Standard_Boolean closedSolid,
-				const Standard_Boolean GeomCtrl)
-{
-  OSD_Environment check ("DONT_SWITCH_IS_VALID") ;
-  TCollection_AsciiString checkValid = check.Value();
-  Standard_Boolean ToCheck = Standard_True;
-  if (!checkValid.IsEmpty()) {
-#ifdef OCCT_DEBUG
-    std::cout <<"DONT_SWITCH_IS_VALID positionnee a :"<<checkValid.ToCString()<<"\n";
-#endif
-    if ( checkValid=="true" || checkValid=="TRUE" ) {
-      ToCheck= Standard_False;
-    }
-  } else {
-#ifdef OCCT_DEBUG
-    std::cout <<"DONT_SWITCH_IS_VALID non positionne\n";
-#endif
-  }
-  Standard_Boolean IsValid = Standard_True;
-  if (ToCheck)
-    IsValid = BRepAlgo::IsValid(theArgs,theResult,closedSolid,GeomCtrl) ;
-  return IsValid;
-
-}
-
-//===============================================================================
-// TDraft : test draft, uses AIS Viewer
-// Solid Face Plane Angle  Reverse
-//===============================================================================
-static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-{
-  if (argc < 5) return 1;
-// argv[1] - TopoDS_Shape Solid
-// argv[2] - TopoDS_Shape Face
-// argv[3] - TopoDS_Shape Plane
-// argv[4] - Standard_Real Angle
-// argv[5] - Standard_Integer Reverse
-
-//  Sprintf(prefix, argv[1]);
-  Standard_Real anAngle = 0;
-  Standard_Boolean Rev = Standard_False;
-  Standard_Integer rev = 0;
-  TopoDS_Shape Solid  = DBRep::Get (argv[1]);
-  TopoDS_Shape face   = DBRep::Get (argv[2]);
-  TopoDS_Face Face    = TopoDS::Face(face);
-  TopoDS_Shape Plane  = DBRep::Get (argv[3]);
-  if (Plane.IsNull ()) {
-    di << "TEST : Plane is NULL\n";
-    return 1;
-  }
-  anAngle = Draw::Atof(argv[4]);
-  anAngle = 2*M_PI * anAngle / 360.0;
-  gp_Pln aPln;
-  Handle( Geom_Surface )aSurf;
-  PrsDim_KindOfSurface aSurfType;
-  Standard_Real Offset;
-  gp_Dir aDir;
-  if(argc > 4) { // == 5
-    rev = Draw::Atoi(argv[5]);
-    Rev = (rev)? Standard_True : Standard_False;
-  }
-
-  TopoDS_Face face2 = TopoDS::Face(Plane);
-  if(!PrsDim::GetPlaneFromFace(face2, aPln, aSurf, aSurfType, Offset))
-    {
-      di << "TEST : Can't find plane\n";
-      return 1;
-    }
-
-  aDir = aPln.Axis().Direction();
-  if (!aPln.Direct())
-    aDir.Reverse();
-  if (Plane.Orientation() == TopAbs_REVERSED)
-    aDir.Reverse();
-  di << "TEST : gp::Resolution() = " << gp::Resolution() << "\n";
-
-  BRepOffsetAPI_DraftAngle Draft (Solid);
-
-  if(Abs(anAngle)< Precision::Angular()) {
-    di << "TEST : NULL angle\n";
-    return 1;}
-
-  if(Rev) anAngle = - anAngle;
-  Draft.Add (Face, aDir, anAngle, aPln);
-  Draft.Build ();
-  if (!Draft.IsDone())  {
-    di << "TEST : Draft Not DONE \n";
-    return 1;
-  }
-  TopTools_ListOfShape Larg;
-  Larg.Append(Solid);
-  if (!IsValid(Larg,Draft.Shape(),Standard_True,Standard_False)) {
-    di << "TEST : DesignAlgo returns Not valid\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
-  Handle(AIS_Shape) ais = new AIS_Shape(Draft.Shape());
-
-  if ( !ais.IsNull() ) {
-    ais->SetColor(DEFAULT_COLOR);
-    ais->SetMaterial(DEFAULT_MATERIAL);
-    // Display the AIS_Shape without redraw
-    Ctx->Display(ais, Standard_False);
-
-    const char *Name = "draft1";
-    Handle(AIS_InteractiveObject) an_object;
-    if (GetMapOfAIS().Find2(Name, an_object))
-    {
-      if (!an_object.IsNull())
-      {
-        Ctx->Remove (an_object, Standard_True);
-      }
-      GetMapOfAIS().UnBind2 (Name);
-    }
-    GetMapOfAIS().Bind(ais, Name);
-//  DBRep::Set("draft", ais->Shape());
-  }
-  Ctx->Display(ais, Standard_True);
-  return 0;
-}
-
 //==============================================================================
 //function : splitParameter
 //purpose  : Split parameter string to parameter name and parameter value
@@ -7109,20 +6950,6 @@ Standard_Boolean ViewerTest::SplitParameter (const TCollection_AsciiString& theS
   }
 
   return Standard_True;
-}
-
-//============================================================================
-//  MyCommands
-//============================================================================
-void ViewerTest::MyCommands( Draw_Interpretor& theCommands)
-{
-
-  DrawTrSurf::BasicCommands(theCommands);
-  const char* group = "Check Features Operations commands";
-
-  theCommands.Add("Draft","Draft    Solid Face Plane Angle Reverse",
-		  __FILE__,
-		  &TDraft,group); //Draft_Modification
 }
 
 //==============================================================================
