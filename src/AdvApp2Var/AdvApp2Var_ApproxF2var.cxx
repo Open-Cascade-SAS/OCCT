@@ -732,7 +732,6 @@ int mma1fdi_(integer *ndimen,
 
 
     /* Parameter adjustments */
-    uvfonc -= 3;
     diftab_dim1 = *nbroot / 2 + 1;
     diftab_offset = diftab_dim1;
     diftab -= diftab_offset;
@@ -778,13 +777,13 @@ int mma1fdi_(integer *ndimen,
     if (*isofav == 1) {
 	ideru = *ideriv;
 	iderv = 0;
-	d__1 = (uvfonc[4] - uvfonc[3]) / 2.;
+	d__1 = (uvfonc[1] - uvfonc[0]) / 2.;
 	renor = AdvApp2Var_MathBase::pow__di(&d__1, ideriv);
 /*    if Iso-V, derive by V of order IDERIV */
     } else {
 	ideru = 0;
 	iderv = *ideriv;
-	d__1 = (uvfonc[6] - uvfonc[5]) / 2.;
+	d__1 = (uvfonc[3] - uvfonc[2]) / 2.;
 	renor = AdvApp2Var_MathBase::pow__di(&d__1, ideriv);
     }
 
@@ -794,8 +793,8 @@ int mma1fdi_(integer *ndimen,
 */
 
     (*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (ndimen, 
-	      &uvfonc[3], 
-	      &uvfonc[5], 
+	      &uvfonc[0],
+	      &uvfonc[2],
 	      isofav, 
 	      tconst, 
 	      &nbp, 
@@ -862,11 +861,11 @@ int mma1fdi_(integer *ndimen,
 /*    If Iso-U, derive by V till order IORDRE */
 	if (*isofav == 1) {
 /* --> Factor of normalisation 1st derivative. */
-	    bid1 = (uvfonc[6] - uvfonc[5]) / 2.;
+	    bid1 = (uvfonc[3] - uvfonc[2]) / 2.;
 	    i__1 = *iordre;
 	    for (iderv = 1; iderv <= i__1; ++iderv) {
 		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
-            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+            ndimen, &uvfonc[0], &uvfonc[2], isofav, tconst, &
 			nbp, ttable, &ideru, &iderv, &contr1[(iderv + 1) * 
 			contr1_dim1 + 1], iercod);
 		if (*iercod > 0) {
@@ -877,7 +876,7 @@ int mma1fdi_(integer *ndimen,
 	    i__1 = *iordre;
 	    for (iderv = 1; iderv <= i__1; ++iderv) {
 		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
-            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+            ndimen, &uvfonc[0], &uvfonc[2], isofav, tconst, &
 			nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
 			iderv + 1) * contr2_dim1 + 1], iercod);
 		if (*iercod > 0) {
@@ -888,11 +887,11 @@ int mma1fdi_(integer *ndimen,
 /*    If Iso-V, derive by U till order IORDRE */
 	} else {
 /* --> Factor of normalization  1st derivative. */
-	    bid1 = (uvfonc[4] - uvfonc[3]) / 2.;
+	    bid1 = (uvfonc[1] - uvfonc[0]) / 2.;
 	    i__1 = *iordre;
 	    for (ideru = 1; ideru <= i__1; ++ideru) {
 		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
-            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+            ndimen, &uvfonc[0], &uvfonc[2], isofav, tconst, &
 			nbp, ttable, &ideru, &iderv, &contr1[(ideru + 1) * 
 			contr1_dim1 + 1], iercod);
 		if (*iercod > 0) {
@@ -903,7 +902,7 @@ int mma1fdi_(integer *ndimen,
 	    i__1 = *iordre;
 	    for (ideru = 1; ideru <= i__1; ++ideru) {
 		(*const_cast <AdvApp2Var_EvaluatorFunc2Var*> (&foncnp)).Evaluate (
-            ndimen, &uvfonc[3], &uvfonc[5], isofav, tconst, &
+            ndimen, &uvfonc[0], &uvfonc[2], isofav, tconst, &
 			nbp, &ttable[*nbroot + 1], &ideru, &iderv, &contr2[(
 			ideru + 1) * contr2_dim1 + 1], iercod);
 		if (*iercod > 0) {
