@@ -7184,7 +7184,7 @@ static Standard_Integer VAnimation (Draw_Interpretor& theDI,
           || anArg == "-del"
           || anArg == "-delete")
     {
-      if (!aParentAnimation.IsNull())
+      if (aParentAnimation.IsNull())
       {
         ViewerTest_AnimationTimelineMap.UnBind (anAnimation->Name());
       }
