@@ -739,14 +739,12 @@ void Geom_BezierSurface::InsertPoleRowAfter (const Standard_Integer UIndex,
 
   Handle(TColStd_HArray2OfReal) nweights;
 
-  if (urational || vrational) {
-    nweights = 
-      new TColStd_HArray2OfReal(1,poles->ColLength()+1,1,poles->RowLength());
+  if (urational || vrational)
+  {
+    nweights = new TColStd_HArray2OfReal(1,poles->ColLength()+1,1,poles->RowLength());
 
-//    TColStd_Array1OfReal CWeights(nweights->LowerCol(),nweights->UpperCol(),
-//				  1.0); ???????????
-    TColStd_Array1OfReal CWeights(1.0,
-                                  nweights->LowerCol(),nweights->UpperCol());
+    TColStd_Array1OfReal CWeights (nweights->LowerCol(), nweights->UpperCol());
+    CWeights.Init (1.0);
 
     AddRatPoleRow (poles->Array2(), weights->Array2(),
 		   CPoles, CWeights, UIndex,
