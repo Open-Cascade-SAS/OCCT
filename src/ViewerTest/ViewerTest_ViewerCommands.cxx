@@ -9007,6 +9007,85 @@ static int VCamera (Draw_Interpretor& theDI,
       }
       ViewerTest::CurrentEventManager()->SetLockOrbitZUp (toLockUp);
     }
+    else if (anArgCase == "-rotationmode"
+          || anArgCase == "-rotmode")
+    {
+      AIS_RotationMode aRotMode = AIS_RotationMode_BndBoxActive;
+      TCollection_AsciiString aRotStr ((anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : "");
+      aRotStr.LowerCase();
+      if (aRotStr == "bndboxactive"
+       || aRotStr == "active")
+      {
+        aRotMode = AIS_RotationMode_BndBoxActive;
+      }
+      else if (aRotStr == "picklast"
+            || aRotStr == "pick")
+      {
+        aRotMode = AIS_RotationMode_PickLast;
+      }
+      else if (aRotStr == "pickcenter")
+      {
+        aRotMode = AIS_RotationMode_PickCenter;
+      }
+      else if (aRotStr == "cameraat"
+            || aRotStr == "cameracenter")
+      {
+        aRotMode = AIS_RotationMode_CameraAt;
+      }
+      else if (aRotStr == "bndboxscene"
+            || aRotStr == "boxscene")
+      {
+        aRotMode = AIS_RotationMode_BndBoxScene;
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+
+      ViewerTest::CurrentEventManager()->SetRotationMode (aRotMode);
+      ++anArgIter;
+    }
+    else if (anArgCase == "-navigationmode"
+          || anArgCase == "-navmode")
+    {
+      AIS_NavigationMode aNavMode = AIS_NavigationMode_Orbit;
+      TCollection_AsciiString aNavStr ((anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : "");
+      aNavStr.LowerCase();
+      if (aNavStr == "orbit")
+      {
+        aNavMode = AIS_NavigationMode_Orbit;
+      }
+      else if (aNavStr == "flight"
+            || aNavStr == "fly"
+            || aNavStr == "copter"
+            || aNavStr == "helicopter")
+      {
+        aNavMode = AIS_NavigationMode_FirstPersonFlight;
+      }
+      else if (aNavStr == "walk"
+            || aNavStr == "shooter")
+      {
+        aNavMode = AIS_NavigationMode_FirstPersonWalk;
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+        return 1;
+      }
+
+      Handle(ViewerTest_EventManager) aViewMgr = ViewerTest::CurrentEventManager();
+      aViewMgr->SetNavigationMode (aNavMode);
+      if (aNavMode == AIS_NavigationMode_Orbit)
+      {
+        aViewMgr->ChangeMouseGestureMap().Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateOrbit);
+      }
+      else
+      {
+        aViewMgr->ChangeMouseGestureMap().Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateView);
+      }
+      ++anArgIter;
+    }
     else if (anArgCase == "-fov"
           || anArgCase == "-fovy"
           || anArgCase == "-fovx"
@@ -14066,6 +14145,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:         [-iod [Distance]] [-iodType    [absolute|relative]]"
       "\n\t\t:         [-zfocus [Value]] [-zfocusType [absolute|relative]]"
       "\n\t\t:         [-fov2d  [Angle]] [-lockZup {0|1}]"
+      "\n\t\t:         [-rotationMode {active|pick|pickCenter|cameraAt|scene}]"
+      "\n\t\t:         [-navigationMode {orbit|walk|flight}]"
       "\n\t\t:         [-xrPose base|head=base]"
       "\n\t\t: Manages camera parameters."
       "\n\t\t: Displays frustum when presentation name PrsName is specified."
@@ -14078,6 +14159,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:   -fov2d      field of view limit for 2d on-screen elements"
       "\n\t\t:   -distance   distance of eye from camera center"
       "\n\t\t:   -lockZup    lock Z up (tunrtable mode)"
+      "\n\t\t:   -rotationMode rotation mode (gravity point)"
+      "\n\t\t:   -navigationMode navigation mode"
       "\n\t\t: Stereoscopic camera:"
       "\n\t\t:   -stereo     perspective  projection (stereo)"
       "\n\t\t:   -leftEye    perspective  projection (left  eye)"
