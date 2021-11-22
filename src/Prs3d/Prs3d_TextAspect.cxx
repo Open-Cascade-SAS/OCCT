@@ -26,7 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_TextAspect, Prs3d_BasicAspect)
 // purpose  :
 // =======================================================================
 Prs3d_TextAspect::Prs3d_TextAspect()
-: myTextAspect (new Graphic3d_AspectText3d (Quantity_Color (Quantity_NOC_YELLOW), Font_NOF_ASCII_TRIPLEX, 1.0, 0.0)),
+: myTextAspect (new Graphic3d_AspectText3d (Quantity_Color (Quantity_NOC_YELLOW), Font_NOF_SERIF, 1.0, 0.0)),
   myHeight(16.0),
   myHorizontalJustification (Graphic3d_HTA_LEFT),
   myVerticalJustification (Graphic3d_VTA_BOTTOM),

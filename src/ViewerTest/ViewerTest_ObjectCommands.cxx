@@ -2355,7 +2355,6 @@ static int VDrawText (Draw_Interpretor& theDI,
   {
     isNewPrs = Standard_True;
     aTextPrs = new AIS_TextLabel();
-    aTextPrs->SetFont ("Courier");
   }
 
   aTextPrs->SetText (aText);
