@@ -1411,36 +1411,31 @@ Standard_Boolean STEPCAFControl_Writer::WriteNames (const Handle(XSControl_WorkS
 
     // get name
     Handle(TCollection_HAsciiString) hName = new TCollection_HAsciiString;
-    if ( ! GetLabelName (L, hName) ) continue;
-//    Handle(TDataStd_Name) N;
-//    if ( ! L.FindAttribute ( TDataStd_Name::GetID(), N ) ) continue;
-//    TCollection_ExtendedString name = N->Get();
-//    if ( name.Length() <=0 ) continue;
+    if (GetLabelName (L, hName))
+    {
+      // find target STEP entity for the current shape
+      if ( ! myLabels.IsBound ( L ) ) continue; // not recorded as translated, skip
+      TopoDS_Shape S = myLabels.Find ( L );
 
-    // find target STEP entity for the current shape
-//    TopoDS_Shape S;
-//    if ( ! XCAFDoc_ShapeTool::GetShape ( L, S ) ) continue;
-    if ( ! myLabels.IsBound ( L ) ) continue; // not recorded as translated, skip
-    TopoDS_Shape S = myLabels.Find ( L );
-
-    Handle(StepShape_ShapeDefinitionRepresentation) SDR;
-    Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
-    if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
+      Handle(StepShape_ShapeDefinitionRepresentation) SDR;
+      Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
+      if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
 #ifdef OCCT_DEBUG
-      std::cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << std::endl;
+        std::cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
-      continue;
+        continue;
+      }
+
+      // set the name to the PRODUCT
+      Handle(StepRepr_PropertyDefinition) PropD = SDR->Definition().PropertyDefinition();
+      if ( PropD.IsNull() ) continue;
+      Handle(StepBasic_ProductDefinition) PD = PropD->Definition().ProductDefinition();
+      if ( PD.IsNull() ) continue;
+      Handle(StepBasic_Product) Prod = PD->Formation()->OfProduct();
+
+      Prod->SetId ( hName );
+      Prod->SetName ( hName );
     }
-
-    // set the name to the PRODUCT
-    Handle(StepRepr_PropertyDefinition) PropD = SDR->Definition().PropertyDefinition();
-    if ( PropD.IsNull() ) continue;
-    Handle(StepBasic_ProductDefinition) PD = PropD->Definition().ProductDefinition();
-    if ( PD.IsNull() ) continue;
-    Handle(StepBasic_Product) Prod = PD->Formation()->OfProduct();
-
-    Prod->SetId ( hName );
-    Prod->SetName ( hName );
 
     // write names for components of assemblies
     if ( XCAFDoc_ShapeTool::IsAssembly ( L ) ) {
@@ -1453,14 +1448,14 @@ Standard_Boolean STEPCAFControl_Writer::WriteNames (const Handle(XSControl_WorkS
 	TDF_Label Lref;
 	if ( ! XCAFDoc_ShapeTool::GetReferredShape ( lab, Lref ) || 
 	     ! myLabels.IsBound ( Lref ) ) continue;
-	S = myLabels.Find ( Lref );
+        TopoDS_Shape S = myLabels.Find ( Lref );
 	S.Move ( XCAFDoc_ShapeTool::GetLocation ( lab ) );
 	
 	hName = new TCollection_HAsciiString;
 	if ( ! GetLabelName (lab, hName) ) continue;
 	
 	// find the target CDSR corresponding to a shape
-	mapper = TransferBRep::ShapeMapper ( FP, S );
+        Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
 	Handle(Transfer_Binder) binder = FP->Find ( mapper );
 	Handle(StepShape_ContextDependentShapeRepresentation) CDSR;
 	if ( ! FP->FindTypedTransient (mapper,STANDARD_TYPE(StepShape_ContextDependentShapeRepresentation), CDSR) ) 
