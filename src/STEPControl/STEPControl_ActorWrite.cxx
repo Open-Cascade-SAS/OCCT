@@ -1466,15 +1466,15 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   // if shape itself not yet translated, do it now
   //:abv 20.05.02: see comment in TransferShape(): added "! iasdr ||"
   Handle(Transfer_Binder) resprod = TransientResult(sdr);  //KA - OCC7141(skl 10.11.2004)
+  bool isJustTransferred = false;
   if ( ! iasdr || resbind.IsNull() ) {
     resbind = TransferShape(mapper, sdr, FP, shapeGroup, isManifold, theProgress);
+    if (resbind.IsNull())
+      return resbind;
     Handle(Transfer_Binder) oldbind = FP->Find ( mapper );
     if ( ! oldbind.IsNull() && !resbind.IsNull()) resbind->AddResult ( oldbind );
-    FP->Bind (mapper,resbind);
-    resprod=resbind; //KA - OCC7141(skl 10.11.2004)
+    isJustTransferred = true;
   }
-  if (resprod.IsNull())
-    return resprod;
 
   // A new resbind may have been produced
 //  DeclareAndCast(Transfer_SimpleBinderOfTransient,restrans,resbind);
@@ -1498,20 +1498,28 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   //KA: we need only the current subshape in resprod, since the binder is copied
   //    in Transfershape which calls Transfersubshape   [ OCC7141(skl 10.11.2004) ]
   if ( ! iasdr ) {
-    resprod->AddResult ( TransientResult ( SDRTool.SDRValue() ) );
-    resbind->AddResult ( TransientResult ( SDRTool.SDRValue() ) ); //KA - OCC7141(skl 10.11.2004)
+    resprod->AddResult (TransientResult (sdr));
+    if (resprod != resbind)
+      resbind->AddResult (TransientResult (sdr)); //KA - OCC7141(skl 10.11.2004)
     roots->Append ( myContext.GetRootsForPart ( SDRTool ) );
   }
   for ( Standard_Integer i=1; i <= roots->Length(); i++ ) {
     resprod->AddResult ( TransientResult ( roots->Value(i) ) );
-    resbind->AddResult ( TransientResult ( roots->Value(i) ) );  //KA - OCC7141(skl 10.11.2004)
+    if (resprod != resbind)
+      resbind->AddResult (TransientResult (roots->Value(i)));  //KA - OCC7141(skl 10.11.2004)
   }
+  if (isJustTransferred)
+  {
+    // We make CDSR of the current shape preceding CDSR of any subshapes,
+    // therefore add resbind at the end.
+    resprod->AddResult (resbind);
+    FP->Bind (mapper, resprod);
+  }
+
   myContext.NextIndex();
 
-  //FP->Bind (mapper,resprod); //KA - OCC7141(skl 10.11.2004)
-
   // abv 16.10.00: bind CDSR (et al) to located shape in order to be able to track instances
-  if ( mapper != start ) {
+  if (mapper != start && aLoc.Form() != gp_Identity) {
     Handle(Transfer_Binder) bnd = FP->Find ( start );
     for ( Standard_Integer j=1; j <= roots->Length(); j++ ) 
       if ( bnd.IsNull() ) bnd = TransientResult ( roots->Value(j) );
