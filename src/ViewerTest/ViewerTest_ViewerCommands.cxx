@@ -13729,7 +13729,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:             for example '+Z' will show front of the model,"
     "\n\t\t:             '-X-Y+Z' will define left axonometrical view."
     "\n\t\t:   -frame    define camera Up and Right directions (regardless Up convention);"
-    "\n\t\t:             for example '+X+Z' will show front of the model with Z-up."
+    "\n\t\t:             for example '+X+Z' will show front of the model with Z-up.",
     __FILE__,VViewProj,group);
   theCommands.Add("vtop" ,
     "vtop or <T>      : Top view. Orientation +X+Y" ,
@@ -13754,7 +13754,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__,VViewProj,group);
   theCommands.Add("vpick" ,
     "vpick           : vpick X Y Z [shape subshape] ( all variables as string )",
-    VPick,group);
+    __FILE__, VPick, group);
   theCommands.Add("vfit",
     "vfit or <F> [-selected] [-noupdate]"
     "\n\t\t: [-selected] fits the scene according to bounding box of currently selected objects",

@@ -1267,7 +1267,7 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
 
   theCommands.Add("BUC60856","BUC60856",__FILE__,BUC60856,group);
 
-  theCommands.Add("coordload","load coord from file",__FILE__,coordload);
+  theCommands.Add("coordload","load coord from file",__FILE__,coordload,group);
 
   theCommands.Add("TestMem","TestMem",__FILE__,TestMem,group);
   theCommands.Add("BUC60945","BUC60945",__FILE__,TestMem,group);

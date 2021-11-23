@@ -757,15 +757,15 @@ void  BRepTest::FilletCommands(Draw_Interpretor& theCommands)
   theCommands.Add("rollingball",
 		  "rollingball  r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
 		  __FILE__,
-		  rollingball);
+		  rollingball, g);
 
   theCommands.Add("brollingball",
 		  "brollingball r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
 		  __FILE__,
-		  rollingball);
+		  rollingball, g);
 
   theCommands.Add("trollingball",
 		  "trollingball r S radius [stopf1 ..] @ [f1 f2 ..] @ [e1 ..]",
 		  __FILE__,
-		  rollingball);
+		  rollingball, g);
 }

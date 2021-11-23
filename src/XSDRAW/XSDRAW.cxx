@@ -123,23 +123,34 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
   XSDRAW::RemoveCommand("exit");
 
 //  if (!getenv("WBHOSTTOP")) XSDRAW::RemoveCommand("xsnew");
-  Handle(TColStd_HSequenceOfAsciiString) list =
-    IFSelect_Activator::Commands(0);
-  TCollection_AsciiString com;
-  Standard_Integer i, nb = list->Length();
-  for (i = 1; i <= nb; i ++) {
-    Handle(IFSelect_Activator) act;
-    Standard_Integer nact, num = -1;
-    char help[200];
-    com = list->Value(i);
+  Handle(TColStd_HSequenceOfAsciiString) list = IFSelect_Activator::Commands (0);
+  for (TColStd_HSequenceOfAsciiString::Iterator aCmdIter (*list); aCmdIter.More(); aCmdIter.Next())
+  {
+    Standard_Integer num = -1;
+    const TCollection_AsciiString& aCmd = aCmdIter.Value();
     if (!theolds.IsEmpty())
-      theolds.Find(com, num);
-    if (num == 0) continue;
-    if (!IFSelect_Activator::Select(com.ToCString(),nact,act))
-      Sprintf (help,"type :  xhelp %s for help",com.ToCString());
-    else if (!act.IsNull()) strcpy(help,act->Help(nact));
-    if (num < 0) theCommands.Add (com.ToCString(),help,XSTEPDRAWRUN,act->Group());
-    else theCommands.Add (thenews->Value(num).ToCString(),help,XSTEPDRAWRUN,act->Group());
+    {
+      theolds.Find (aCmd, num);
+    }
+    if (num == 0)
+    {
+      continue;
+    }
+
+    Standard_Integer nact = 0;
+    Handle(IFSelect_Activator) anAct;
+    TCollection_AsciiString aHelp;
+    if (!IFSelect_Activator::Select (aCmd.ToCString(), nact, anAct))
+    {
+      aHelp = TCollection_AsciiString("type :  xhelp ") + aCmd + " for help";
+    }
+    else if (!anAct.IsNull())
+    {
+      aHelp = anAct->Help (nact);
+    }
+
+    const TCollection_AsciiString& aCmdName = num < 0 ? aCmd : thenews->Value (num);
+    theCommands.Add (aCmdName.ToCString(), aHelp.ToCString(), "", XSTEPDRAWRUN, anAct->Group());
   }
 }
 

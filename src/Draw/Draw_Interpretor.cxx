@@ -316,14 +316,11 @@ void Draw_Interpretor::add (const Standard_CString          theCommandName,
 {
   Standard_ASSERT_RAISE (myInterp != NULL, "Attempt to add command to Null interpretor");
 
-  Standard_PCharacter aName  = (Standard_PCharacter )theCommandName;
-  Standard_PCharacter aHelp  = (Standard_PCharacter )theHelp;
-  Standard_PCharacter aGroup = (Standard_PCharacter )theGroup;
-  Tcl_CreateCommand (myInterp, aName, CommandCmd, (ClientData )theCallback, CommandDelete);
+  Tcl_CreateCommand (myInterp, theCommandName, CommandCmd, (ClientData )theCallback, CommandDelete);
 
   // add the help
-  Tcl_SetVar2 (myInterp, "Draw_Helps",  aName,  aHelp, TCL_GLOBAL_ONLY);
-  Tcl_SetVar2 (myInterp, "Draw_Groups", aGroup, aName,
+  Tcl_SetVar2 (myInterp, "Draw_Helps",  theCommandName,  theHelp, TCL_GLOBAL_ONLY);
+  Tcl_SetVar2 (myInterp, "Draw_Groups", theGroup, theCommandName,
 	             TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
 
   // add path to source file (keep not more than two last subdirectories)
@@ -344,8 +341,10 @@ void Draw_Interpretor::add (const Standard_CString          theCommandName,
   TCollection_AsciiString aSrcPath;
   aPath.SystemName (aSrcPath);
   if (aSrcPath.Value(1) == '/')
+  {
     aSrcPath.Remove(1);
-  Tcl_SetVar2 (myInterp, "Draw_Files", aName, aSrcPath.ToCString(), TCL_GLOBAL_ONLY);
+  }
+  Tcl_SetVar2 (myInterp, "Draw_Files", theCommandName, aSrcPath.ToCString(), TCL_GLOBAL_ONLY);
 }
 
 //=======================================================================

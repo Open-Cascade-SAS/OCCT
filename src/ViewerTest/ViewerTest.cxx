@@ -6590,7 +6590,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:  -highmode    Sets hilight mode for objects."
       "\n\t\t:  -redisplay   Recomputes presentation of objects."
       "\n\t\t:  -noecho      Avoid printing of command results."
-      "\n\t\t:  -autoTriang  Enable/disable auto-triangulation for displayed shape."
+      "\n\t\t:  -autoTriang  Enable/disable auto-triangulation for displayed shape.",
       __FILE__, VDisplay2, group);
 
   theCommands.Add ("vnbdisplayed",
@@ -6863,12 +6863,12 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   theCommands.Add("vtexrepeat",
                   "vtexrepeat name RepeatU RepeatV"
                   "\n\t\t: Alias for vtexture name -setRepeat RepeatU RepeatV.",
-		  VTexture,group);
+		  __FILE__, VTexture, group);
 
   theCommands.Add("vtexdefault",
                   "vtexdefault name"
                   "\n\t\t: Alias for vtexture name -default.",
-		  VTexture,group);
+		  __FILE__, VTexture, group);
 
   theCommands.Add("vstate",
       "vstate [-entities] [-hasSelected] [name1] ... [nameN]"
@@ -6885,7 +6885,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vtypes",
 		  "vtypes : list of known types and signatures in AIS - To be Used in vpickobject command for selection with filters",
-		  VIOTypes,group);
+		  __FILE__, VIOTypes, group);
 
   theCommands.Add("vselfilter",
     "vselfilter [-contextfilter {AND|OR}]"

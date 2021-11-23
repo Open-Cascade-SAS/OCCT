@@ -1819,7 +1819,8 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
   
   theCommands.Add("projonplane",
 		  "projonplane r C3d Plane [dx dy dz] [0/1]",
-		  projonplane);
+		  __FILE__,
+		  projonplane, g);
 
   theCommands.Add("bisec",
 		  "bisec result line/circle/point line/circle/point",

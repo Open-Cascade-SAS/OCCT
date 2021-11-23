@@ -1709,8 +1709,6 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                   "setflags shape_name flag1[flag2...]\n sets flags for shape(free, modified, checked, orientable, closed, infinite, convex, locked), for example <setflags a free> or <setflags a -free> if necessary unflag ",
                   __FILE__,setFlags,g);
 
-//  theCommands.Add("dumpmmgt",
-//		  "dump le contenu du gestionnaire de memoire",__FILE__,dumpmmgt,g);
   theCommands.Add("purgemmgt",
 		  "returns the free memory from the system to the memory manager",
 		  __FILE__,purgemmgt,g);
@@ -1722,7 +1720,7 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                     "\n\t\t   +|-t :  switch on/off output to tcl of Progress Indicator"
                     "\n\t\t   +|-c :  switch on/off output to cout of Progress Indicator"
                     "\n\t\t   +|-g :  switch on/off graphical mode of Progress Indicator",
-                    XProgress,"DE: General");
+                   __FILE__, XProgress,"DE: General");
   theCommands.Add("writebrep",
                   "writebrep shape filename [-binary {0|1}]=0 [-version Version]=4"
                   "\n\t\t:                          [-triangles {0|1}]=1 [-normals {0|1}]=0"

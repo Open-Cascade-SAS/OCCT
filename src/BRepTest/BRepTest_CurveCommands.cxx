@@ -1915,11 +1915,11 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("mkoffset",
     "mkoffset result face/compound of wires  nboffset stepoffset [jointype(a/i) [alt]]",__FILE__,
-    mkoffset);
+    mkoffset,g);
 
   theCommands.Add("openoffset",
     "openoffset result face/wire nboffset stepoffset [jointype(a/i)]",__FILE__,
-    openoffset);
+    openoffset,g);
 
   theCommands.Add("mkedge",
     "mkedge edge curve [surface] [pfirst plast] [vfirst [pfirst] vlast [plast]] ",__FILE__,
@@ -1967,11 +1967,11 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
     edgeintersector,g);
 
   theCommands.Add("build3d",
-    "build3d S [tol]",
+    "build3d S [tol]",__FILE__,
     build3d, g);
 
   theCommands.Add("reducepcurves",
-    "reducepcurves shape1 shape2 ...",
+    "reducepcurves shape1 shape2 ...",__FILE__,
     reducepcurves, g);
 
   theCommands.Add("concatC0wire",

@@ -3075,7 +3075,7 @@ void XDEDRAW_GDTs::InitCommands(Draw_Interpretor& di)
   di.Add("XGetGDTAffectedPlane", "XGetGDTAffectedPlane Doc GDT_Label Plane"
     "Returns affected plane into Plane",
     __FILE__, getGDTAffectedPlane, g);
-  di.Add("XGetGDTSemanticName", "XGetGDTSemanticName Doc GDT_Label"
+  di.Add("XGetGDTSemanticName", "XGetGDTSemanticName Doc GDT_Label",
     __FILE__, getGDTSemanticName, g);
 
   di.Add("XSetGDTSemanticName", "XSetGDTSemanticName Doc GDT_Label Name"
