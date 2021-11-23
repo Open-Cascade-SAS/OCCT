@@ -636,15 +636,21 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   rlimit rlp;
   rlp.rlim_max = RLIM_INFINITY;
   if (n <= 1)
+  {
     rlp.rlim_cur = RLIM_INFINITY;
+  }
   else
+  {
     rlp.rlim_cur = GetCpuLimit (a[1]);
-  CPU_LIMIT = rlp.rlim_cur;
+  }
 
-  int status;
-  status=setrlimit(RLIMIT_CPU,&rlp);
-  if (status !=0)
-    di << "status cpulimit setrlimit : " << status << "\n";
+  CPU_LIMIT = (clock_t )rlp.rlim_cur;
+
+  int aStatus = setrlimit (RLIMIT_CPU, &rlp);
+  if (aStatus != 0)
+  {
+    di << "status cpulimit setrlimit : " << aStatus << "\n";
+  }
 
   // set signal handler to print a message before death
   struct sigaction act, oact;

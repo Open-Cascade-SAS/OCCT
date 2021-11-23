@@ -276,14 +276,19 @@ bool Wasm_Window::ProcessMouseEvent (Aspect_WindowInputListener& theListener,
   if (theEvent->metaKey  == EM_TRUE) { aFlags |= Aspect_VKeyFlags_META;  }
 
   const bool isEmulated = false;
-  const Aspect_VKeyMouse aButtons = Wasm_Window::MouseButtonsFromNative (theEvent->buttons);
+  const Aspect_VKeyMouse aButtonsOld = theListener.PressedMouseButtons();
+  Aspect_VKeyMouse aButtons = Wasm_Window::MouseButtonsFromNative (theEvent->buttons);
+  if (theEventType != EMSCRIPTEN_EVENT_MOUSEDOWN)
+  {
+    aButtons &= aButtonsOld; // filter out unexpected buttons
+  }
   switch (theEventType)
   {
     case EMSCRIPTEN_EVENT_MOUSEMOVE:
     {
       if ((aNewPos2i.x() < 0 || aNewPos2i.x() > mySize.x()
         || aNewPos2i.y() < 0 || aNewPos2i.y() > mySize.y())
-        && theListener.PressedMouseButtons() == Aspect_VKeyMouse_NONE)
+        && aButtonsOld == Aspect_VKeyMouse_NONE)
       {
         return false;
       }
