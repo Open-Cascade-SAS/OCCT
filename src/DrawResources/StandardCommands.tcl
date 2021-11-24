@@ -30,51 +30,56 @@ set tcl_prompt2 {puts -nonewline "> "}
 #################################################
 # the help command in TCL
 #################################################
-proc help {{command ""} {helpstring ""} {group "Procedures"}} {
+proc help {{theCommand ""} {theHelpString ""} {theGroup "Procedures"}} {
   global Draw_Helps Draw_Groups
-  if {$command == ""} {
+  if {$theCommand == ""} {
     # help general
-    foreach h [lsort [array names Draw_Groups]] {
-      dputs -intense "\n\n$h"
-      set i 0
-      foreach f [lsort $Draw_Groups($h)] {
-        if {$i == 0} {
-          puts ""
-          puts -nonewline "  "
+    set aCmdWidth 15
+    foreach aGrpIter [lsort [array names Draw_Groups]] {
+      dputs -intense "\n\n$aGrpIter"
+      set i 1
+      set aLine ""
+      foreach aCmdIter [lsort $Draw_Groups($aGrpIter)] {
+        if {$i == 1} {
+          puts -nonewline "$aLine\n"
+          set aLine "  "
         }
-        puts -nonewline $f
-        for {set j [string length $f]} {$j < 15} {incr j} {
-          puts -nonewline " "
+
+        append aLine $aCmdIter
+        set aLineLen [string length $aLine]
+        for {set j [expr $aLineLen + 1]} {$j < [expr $aCmdWidth * $i + 2]} {incr j} {
+          append aLine " "
         }
+        append aLine " "
         incr i
-        if {$i == 4} {set i 0}
+        if {$i == 5} {set i 1}
       }
-      puts ""
+      puts "$aLine"
     }
-  } elseif {$helpstring == ""} {
+  } elseif {$theHelpString == ""} {
     # help function
-    set isfound 0
+    set isFound 0
     foreach f [lsort [array names Draw_Helps]] {
-      if {[string match $command $f]} {
+      if {[string match $theCommand $f]} {
         dputs -nonewline -intense $f
         for {set j [string length $f]} {$j < 15} {incr j} {
           puts -nonewline " "
         }
         puts " : $Draw_Helps($f)"
-        set isfound 1
+        set isFound 1
       }
     }
-    if {!$isfound} {
-      if {[string first * $command] != -1} {
+    if {!$isFound} {
+      if {[string first * $theCommand] != -1} {
         puts "No matching commands found!"
       } else {
-        puts "No help found for '$command'! Please try 'help $command*' to find matching commands."
+        puts "No help found for '$theCommand'! Please try 'help $theCommand*' to find matching commands."
       }
     }
   } else {
     # set help
-    lappend Draw_Groups($group) $command
-    set Draw_Helps($command) $helpstring
+    lappend Draw_Groups($theGroup) $theCommand
+    set Draw_Helps($theCommand) $theHelpString
   }
   flush stdout
 }
