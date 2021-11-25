@@ -300,9 +300,9 @@ void XCAFDoc_Editor::CloneMetaData(const TDF_Label& theSrcLabel,
   {
     return;
   }
-  const Standard_Boolean toCopyColor = theToCopyColor & XCAFDoc_DocumentTool::CheckColorTool(theSrcLabel);
-  const Standard_Boolean toCopyLayer = theToCopyLayer & XCAFDoc_DocumentTool::CheckLayerTool(theSrcLabel);
-  const Standard_Boolean toCopyMaterial = theToCopyMaterial & XCAFDoc_DocumentTool::CheckMaterialTool(theSrcLabel);
+  const Standard_Boolean toCopyColor = theToCopyColor && XCAFDoc_DocumentTool::CheckColorTool(theSrcLabel);
+  const Standard_Boolean toCopyLayer = theToCopyLayer && XCAFDoc_DocumentTool::CheckLayerTool(theSrcLabel);
+  const Standard_Boolean toCopyMaterial = theToCopyMaterial && XCAFDoc_DocumentTool::CheckMaterialTool(theSrcLabel);
   const Standard_Boolean toCopyVisMaterial = XCAFDoc_DocumentTool::CheckVisMaterialTool(theSrcLabel);
   // Colors
   if (toCopyColor)
@@ -473,13 +473,5 @@ void XCAFDoc_Editor::CloneMetaData(const TDF_Label& theSrcLabel,
       aRefName.Insert(1, "=>");
       TDataStd_Name::Set(theDstLabel, aRefName);
     }
-  }
-  else
-  {
-    Standard_SStream Stream;
-    TopoDS_Shape aShape = aDstShapeTool->GetShape(theDstLabel);
-    TopAbs::Print(aShape.ShapeType(), Stream);
-    TCollection_AsciiString aName(Stream.str().c_str());
-    TDataStd_Name::Set(theDstLabel, TCollection_ExtendedString(aName));
   }
 }
