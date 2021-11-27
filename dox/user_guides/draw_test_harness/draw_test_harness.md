@@ -1302,232 +1302,110 @@ See also: @ref occt_draw_4_1_11 "pick" command.
 @subsubsection occt_draw_4_2_1 vinit
 
 Syntax:
-~~~~{.php}
-vinit 
-~~~~
-Creates a new View window with the specified *view_name*.
-By default the view is created in the viewer and in the graphic driver shared with the active view.
-
-~~~~{.php}
-name = {driverName/viewerName/viewName | viewerName/viewName | viewName}
-~~~~
-
-If *driverName* is not specified the driver will be shared with the active view.
-If *viewerName* is not specified the viewer will be shared with the active view.
+@snippet ViewerTest_ViewerCommands.cxx vinit
 
 @subsubsection occt_draw_4_2_2 vhelp
 
 Syntax:
-~~~~{.php}
-vhelp 
-~~~~
-Displays help in the 3D viewer window. The help consists in a list of hotkeys and their functionalities. 
+@snippet ViewerTest_ViewerCommands.cxx vhelp
 
 @subsubsection occt_draw_4_2_3 vtop
 
 Syntax:
-~~~~{.php}
-vtop 
-~~~~
+@snippet ViewerTest_ViewerCommands.cxx vtop
 
-Displays top view in the 3D viewer window. Orientation +X+Y.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-box b 10 10 10 
-vdisplay b 
-vfit 
-vtop 
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vtop
 ~~~~
 
 @subsubsection occt_draw_4_2_4 vaxo
 
 Syntax:
+@snippet ViewerTest_ViewerCommands.cxx vaxo
+
+**Example:**
 ~~~~{.php}
-vaxo 
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vaxo
 ~~~~
 
-Displays axonometric view in the 3D viewer window. Orientation +X-Y+Z.
-
-**Example:** 
-~~~~{.php}
-vinit 
-box b 10 10 10 
-vdisplay b 
-vfit 
-vaxo 
-~~~~
-
-@subsubsection occt_draw_4_2_5 vsetbg
+@subsubsection occt_draw_4_2_5 vbackground
 
 Syntax:
-~~~~{.php}
-vsetbg imagefile [filltype] 
-~~~~
-
-Loads image file as background. *filltype* must be NONE, CENTERED, TILED or STRETCH. 
-
-**Example:** 
-~~~~{.php}
-vinit 
-vsetbg myimage.brep CENTERED 
-~~~~
+@snippet ViewerTest_ViewerCommands.cxx vbackground
 
 @subsubsection occt_draw_4_2_6 vclear
 
 Syntax:
-~~~~{.php}
-vclear 
-~~~~
-Removes all objects from the viewer. 
+@snippet ViewerTest_ViewerCommands.cxx vclear
 
 @subsubsection occt_draw_4_2_7 vrepaint
 
 Syntax:
-~~~~{.php}
-vrepaint 
-~~~~
-Forcibly redisplays the shape in the 3D viewer window. 
+@snippet ViewerTest_ViewerCommands.cxx vrepaint
 
 @subsubsection occt_draw_4_2_8 vfit
 
 Syntax:
-~~~~{.php}
-vfit 
-~~~~
-Automatic zoom/panning. Objects in the view are visualized to occupy the maximum surface. 
+@snippet ViewerTest_ViewerCommands.cxx vfit
 
 @subsubsection occt_draw_4_2_9 vzfit
 
 Syntax:
-~~~~{.php}
-vzfit 
-~~~~
-
-Automatic depth panning. Objects in the view are visualized to occupy the maximum 3d space. 
+@snippet ViewerTest_ViewerCommands.cxx vzfit
 
 @subsubsection occt_draw_4_2_10  vreadpixel
 
 Syntax:
-~~~~{.php}
-vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [name] 
-~~~~
-Read pixel value for active view.
-
+@snippet ViewerTest_ViewerCommands.cxx vreadpixel
 
 @subsubsection occt_draw_4_2_11  vselect
 
 Syntax:
-~~~~{.php}
-vselect x1 y1 [x2 y2 [x3 y3 ... xn yn]] [-allowoverlap 0|1] [shift_selection = 0|1]
-~~~~
-
-Emulates different types of selection:
-
-  * single mouse click selection
-  * selection with a rectangle having the upper left and bottom right corners in <i>(x1,y1)</i> and <i>(x2,y2)</i> respectively
-  * selection with a polygon having the corners in pixel positions <i>(x1,y1), (x2,y2),…, (xn,yn)</i>
-  * <i> -allowoverlap </i> manages overlap and inclusion detection in rectangular selection. If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected, otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion.
-  * any of these selections if shift_selection is set to 1.
+@snippet ViewerTest_ViewerCommands.cxx vselect
 
 @subsubsection occt_draw_4_2_12  vmoveto
 
 Syntax:
-
-~~~~{.php}
-vmoveto x y
-~~~~
-Emulates cursor movement to pixel position (x,y).
+@snippet ViewerTest_ViewerCommands.cxx vmoveto
 
 @subsubsection occt_draw_4_2_13  vviewparams
 
 Syntax:
-~~~~{.php}
-vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]] [-proj [x y z]] [-center x y] [-size sx]
-~~~~
-Gets or sets the current view parameters.
-* If called without arguments, all view parameters are printed.
-* The options are:
-*   -scale [s]    : prints or sets the relative scale of viewport.
-*   -eye [x y z]  : prints or sets the eye location.
-*   -at [x y z]   : prints or sets the view center.
-*   -up [x y z]   : prints or sets the up vector direction.
-*   -proj [x y z] : prints or sets the view direction.
-*   -center x y   : sets the screen center location in pixels.
-*   -size [sx]    : prints viewport projection width and height sizes or changes the size of its maximum dimension.
+@snippet ViewerTest_ViewerCommands.cxx vviewparams
 
 @subsubsection occt_draw_4_2_14  vchangeselected
 
 Syntax:
-~~~~{.php}
-vchangeselected shape
-~~~~
-Adds a shape to selection or removes one from it.
+@snippet ViewerTest_ViewerCommands.cxx vchangeselected
 
 @subsubsection occt_draw_4_2_16  vnbselected
 
 Syntax:
-~~~~{.php}
-vnbselected
-~~~~
-Returns the number of selected objects in the interactive context.
+@snippet ViewerTest_ViewerCommands.cxx vnbselected
 
 @subsubsection occt_draw_4_2_19  vhlr
 
 Syntax:
-~~~~{.php}
-vhlr is_enabled={on|off} [show_hidden={1|0}]
-~~~~
-Hidden line removal algorithm:
- * <i>is_enabled</i> applies HLR algorithm.
- * <i>show_hidden</i> if equals to 1, hidden lines are drawn as dotted ones.
+@snippet ViewerTest_ViewerCommands.cxx vhlr
 
 @subsubsection occt_draw_4_2_20  vhlrtype
 
 Syntax:
-~~~~{.php}
-vhlrtype  algo_type={algo|polyalgo} [shape_1 ... shape_n]
-~~~~
-
-Changes the type of HLR algorithm used for shapes.
-If the algo_type is algo, the exact HLR algorithm is used, otherwise the polygonal algorithm is used for defined shapes. 
-
-If no shape is specified through the command arguments, the given HLR algorithm_type is applied to all *AIS_Shape* instances in the current context, and the command also changes the default HLR algorithm type.
-
-**Note** that this command works with instances of *AIS_Shape* or derived classes only, other interactive object types are ignored.
+@snippet ViewerTest_ViewerCommands.cxx vhlrtype
 
 @subsubsection occt_draw_4_2_21 vcamera
 
 Syntax:
-~~~~{.php}
-vcamera [-ortho] [-projtype]
-        [-persp]
-        [-fovy   [Angle]] [-distance [Distance]]
-        [-stereo] [-leftEye] [-rightEye]
-        [-iod [Distance]] [-iodType    [absolute|relative]]
-        [-zfocus [Value]] [-zfocusType [absolute|relative]]
-~~~~
-
-Manages camera parameters.
-Prints the current value when the option is called without argument.
-
-Orthographic camera:
- * -ortho -- activates orthographic projection.
- 
-Perspective camera:
- * -persp -- activated perspective  projection (mono);
- * -fovy  -- field of view in y axis, in degrees;
- * -distance -- distance of eye from the camera center.
- 
-Stereoscopic camera:
- * -stereo -- perspective  projection (stereo);
- * -leftEye -- perspective  projection (left  eye);
- * -rightEye -- perspective  projection (right eye);
- * -iod -- intraocular distance value;
- * -iodType -- distance type, absolute or relative;
- * -zfocus -- stereographic focus value;
- * -zfocusType -- focus type, absolute or relative.
+@snippet ViewerTest_ViewerCommands.cxx vcamera
 
 **Example:**
 ~~~~{.php}
@@ -1541,20 +1419,7 @@ vcamera -persp
 @subsubsection occt_draw_4_2_22 vstereo
 
 Syntax:
-~~~~{.php}
-vstereo [0|1] [-mode Mode] [-reverse {0|1}] [-anaglyph Filter]
-~~~~
-
-Defines the stereo output mode. The following modes are available:
- * quadBuffer -- OpenGL QuadBuffer stereo, requires driver support. Should be called BEFORE *vinit*!
- * anaglyph         -- Anaglyph glasses;
- * rowInterlaced    -- row-interlaced display;
- * columnInterlaced -- column-interlaced display;
- * chessBoard       -- chess-board output;
- * sideBySide       -- horizontal pair;
- * overUnder        -- vertical pair;
-Available Anaglyph filters for -anaglyph:
- * redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple.
+@snippet ViewerTest_ViewerCommands.cxx vstereo
 
 **Example:**
 ~~~~{.php}
@@ -1568,252 +1433,189 @@ vcamera -lefteye
 vcamera -righteye
 ~~~~
 
-@subsubsection occt_draw_4_2_23 vfrustumculling
-
-Syntax:
-~~~~{.php}
-vfrustumculling [toEnable]
-~~~~
-
-Enables/disables objects clipping.
-
-
 @subsection occt_draw_4_3 AIS viewer -- display commands
 
 @subsubsection occt_draw_4_3_1 vdisplay
 
 Syntax:
+@snippet ViewerTest.cxx vdisplay
+
+**Example:**
 ~~~~{.php}
-vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]
-         [-trsfPers {pan|zoom|rotate|trihedron|full|none}=none] [-trsfPersPos X Y [Z]] [-3d|-2d|-2dTopDown]
-         [-dispMode mode] [-highMode mode]
-         [-layer index] [-top|-topmost|-overlay|-underlay]
-         [-redisplay]
-         name1 [name2] ... [name n]
-~~~~
-
-Displays named objects.
-Option <i>-local</i> enables display of objects in the local selection context.
-Local selection context will be opened if there is not any.
-
-* *noupdate* suppresses viewer redraw call.
-* *mutable* enables optimization for mutable objects.
-* *neutral* draws objects in the main viewer.
-* *layer* sets z-layer for objects. It can use <i>-overlay|-underlay|-top|-topmost</i> instead of <i>-layer index</i> for the default z-layers.
-* *top* draws objects on top of main presentations but below the topmost level.
-* *topmost* draws in overlay for 3D presentations with independent Depth.
-* *overlay* draws objects in overlay for 2D presentations (On-Screen-Display).
-* *underlay* draws objects in underlay for 2D presentations (On-Screen-Display).
-* *selectable|-noselect* controls selection of objects.
-* *trsfPers* sets transform persistence flags. Flag *full* allows to pan, zoom and rotate.
-* *trsfPersPos* sets an anchor point for transform persistence.
-* *2d|-2dTopDown* displays object in screen coordinates.
-* *dispmode* sets display mode for objects.
-* *highmode* sets highlight mode for objects.
-* *redisplay* recomputes presentation of objects.
-
-**Example:** 
-~~~~{.php}
-vinit 
-box b 40 40 40 10 10 10 
-psphere s 20 
-vdisplay s b 
-vfit 
+vinit
+box b 40 40 40 10 10 10
+psphere s 20
+vdisplay s b
+vfit
 ~~~~
 
 @subsubsection occt_draw_4_3_2 vdonly
 
 Syntax:
-~~~~{.php}
-vdonly [-noupdate|-update] [name1] ...  [name n]
-~~~~
+@snippet ViewerTest.cxx vdonly
 
-Displays only selected or named objects. If there are no selected or named objects, nothing is done. 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-box b 40 40 40 10 10 10 
-psphere s 20 
-vdonly b 
+vinit
+box b 40 40 40 10 10 10
+psphere s 20
+vdonly b
 vfit
 ~~~~
  
 @subsubsection occt_draw_4_3_3 vdisplayall
 
 Syntax:
-~~~~{.php}
-vdisplayall [-local]
-~~~~
+@snippet ViewerTest.cxx vdisplayall
 
-Displays all erased interactive objects (see vdir and vstate).
-Option <i>-local</i> enables displaying objects in the local selection context.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-box b 40 40 40 10 10 10 
-psphere s 20 
-vdisplayall 
-vfit 
+vinit
+box b 40 40 40 10 10 10
+psphere s 20
+vdisplayall
+vfit
 ~~~~
 
 @subsubsection occt_draw_4_3_4 verase
 
 Syntax:
-~~~~{.php}
-verase [name1] [name2] … [name n]
-~~~~
+@snippet ViewerTest.cxx verase
 
-Erases some selected or named objects. If there are no selected or named objects, the whole viewer is erased. 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-box b1 40 40 40 10 10 10 
-box b2 -40 -40 -40 10 10 10 
-psphere s 20 
-vdisplayall 
-vfit 
-# erase only first box 
-verase b1 
-# erase second box and sphere 
+vinit
+box b1  40  40  40 10 10 10
+box b2 -40 -40 -40 10 10 10
+psphere s 20
+vdisplayall
+vfit
+# erase only first box
+verase b1
+# erase second box and sphere
 verase
 ~~~~
 
 @subsubsection occt_draw_4_3_5 veraseall
 
 Syntax:
-~~~~{.php}
-veraseall
-~~~~
-
-Erases all objects displayed in the viewer. 
+@snippet ViewerTest.cxx veraseall
 
 **Example:**
 ~~~~{.php}
-vinit 
-box b1 40 40 40 10 10 10 
-box b2 -40 -40 -40 10 10 10 
-psphere s 20 
-vdisplayall 
-vfit 
-# erase only first box 
-verase b1 
-# erase second box and sphere 
+vinit
+box b1  40  40  40 10 10 10
+box b2 -40 -40 -40 10 10 10
+psphere s 20
+vdisplayall
+vfit
+# erase only first box
+verase b1
+# erase second box and sphere
 verseall
 ~~~~
 
 @subsubsection occt_draw_4_3_6 vsetdispmode
 
 Syntax:
-~~~~{.php}
-vsetdispmode [name] mode(0,1,2,3)
-~~~~
+@snippet ViewerTest.cxx vsetdispmode
 
-Sets display mode for all, selected or named objects. 
-* *0* (*WireFrame*), 
-* *1* (*Shading*), 
-* *2* (*Quick HideLineremoval*), 
-* *3* (*Exact HideLineremoval*). 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-box b 10 10 10 
-vdisplay b 
-vsetdispmode 1 
+vinit
+box b 10 10 10
+vdisplay b
+vsetdispmode 1
 vfit
 ~~~~
  
 @subsubsection occt_draw_4_3_7 vdisplaytype
 
 Syntax:
-~~~~{.php}
-vdisplaytype type
-~~~~
-
-Displays all objects of a given type. 
-The following types are possible: *Point*, *Axis*, *Trihedron*, *PlaneTrihedron*, *Line*, *Circle*, *Plane*, *Shape*, *ConnectedShape*, *MultiConn.Shape*, *ConnectedInter.*, *MultiConn.*, *Constraint* and *Dimension*. 
+@snippet ViewerTest.cxx vdisplaytype
 
 @subsubsection occt_draw_4_3_8 verasetype
 
 Syntax:
-~~~~{.php}
-verasetype type
-~~~~
-
-Erases all objects of a given type. 
-Possible type is *Point*, *Axis*, *Trihedron*, *PlaneTrihedron*, *Line*, *Circle*, *Plane*, *Shape*, *ConnectedShape*, *MultiConn.Shape*, *ConnectedInter.*, *MultiConn.*, *Constraint* and *Dimension*. 
+@snippet ViewerTest.cxx verasetype
 
 @subsubsection occt_draw_4_3_9 vtypes
 
 Syntax:
-~~~~{.php}
-vtypes
-~~~~
-
-Makes a list of known types and signatures in AIS. 
+@snippet ViewerTest.cxx vtypes
 
 @subsubsection occt_draw_4_3_10 vaspects
 
 Syntax:
-~~~~{.php}
-vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]
-         [-setVisibility 0|1]
-         [-setColor ColorName] [-setcolor R G B] [-unsetColor]
-         [-setMaterial MatName] [-unsetMaterial]
-         [-setTransparency Transp] [-unsetTransparency]
-         [-setWidth LineWidth] [-unsetWidth]
-         [-setLineType {solid|dash|dot|dotDash}] [-unsetLineType]
-         [-freeBoundary {off/on | 0/1}]
-         [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]
-         [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]
-         [-subshapes subname1 [subname2 [...]]]
-         [-isoontriangulation 0|1]
-         [-setMaxParamValue {value}]
-
-~~~~
-
-Manages presentation properties of all, selected or named objects.
-* *-subshapes* -- assigns presentation properties to the specified sub-shapes.
-* *-defaults* -- assigns presentation properties to all objects that do not have their own specified properties and to all objects to be displayed in the future.
-If *-defaults* option is used there should not be any names of objects and *-subshapes* specifier.
+@snippet ViewerTest.cxx vaspects
 
 Aliases:
 ~~~~{.php}
 vsetcolor [-noupdate|-update] [name] ColorName
-
 ~~~~
-
 
 Manages presentation properties (color, material, transparency) of all objects, selected or named.
 
-**Color**. The *ColorName* can be: *BLACK*, *MATRAGRAY*, *MATRABLUE*, *ALICEBLUE*, *ANTIQUEWHITE*, *ANTIQUEWHITE1*, *ANTIQUEWHITE2*, *ANTIQUEWHITE3*, *ANTIQUEWHITE4*, *AQUAMARINE1*, *AQUAMARINE2*, *AQUAMARINE4*, *AZURE*, *AZURE2*, *AZURE3*, *AZURE4*, *BEIGE*, *BISQUE*, *BISQUE2*, *BISQUE3*, *BISQUE4*, *BLANCHEDALMOND*, *BLUE1*, *BLUE2*, *BLUE3*, *BLUE4*, *BLUEVIOLET*, *BROWN*, *BROWN1*, *BROWN2*, *BROWN3*, *BROWN4*, *BURLYWOOD*, *BURLYWOOD1*, *BURLYWOOD2*, *BURLYWOOD3*, *BURLYWOOD4*, *CADETBLUE*, *CADETBLUE1*, *CADETBLUE2*, *CADETBLUE3*, *CADETBLUE4*, *CHARTREUSE*, *CHARTREUSE1*, *CHARTREUSE2*, *CHARTREUSE3*, *CHARTREUSE4*, *CHOCOLATE*, *CHOCOLATE1*, *CHOCOLATE2*, *CHOCOLATE3*, *CHOCOLATE4*, *CORAL*, *CORAL1*, *CORAL2*, *CORAL3*, *CORAL4*, *CORNFLOWERBLUE*, *CORNSILK1*, *CORNSILK2*, *CORNSILK3*, *CORNSILK4*, *CYAN1*, *CYAN2*, *CYAN3*, *CYAN4*, *DARKGOLDENROD*, *DARKGOLDENROD1*, *DARKGOLDENROD2*, *DARKGOLDENROD3*, *DARKGOLDENROD4*, *DARKGREEN*, *DARKKHAKI*, *DARKOLIVEGREEN*, *DARKOLIVEGREEN1*, *DARKOLIVEGREEN2*, *DARKOLIVEGREEN3*, *DARKOLIVEGREEN4*, *DARKORANGE*, *DARKORANGE1*, *DARKORANGE2*, *DARKORANGE3*, *DARKORANGE4*, *DARKORCHID*, *DARKORCHID1*, *DARKORCHID2*, *DARKORCHID3*, *DARKORCHID4*, *DARKSALMON*, *DARKSEAGREEN*, *DARKSEAGREEN1*, *DARKSEAGREEN2*, *DARKSEAGREEN3*, *DARKSEAGREEN4*, *DARKSLATEBLUE*, *DARKSLATEGRAY1*, *DARKSLATEGRAY2*, *DARKSLATEGRAY3*, *DARKSLATEGRAY4*, *DARKSLATEGRAY*, *DARKTURQUOISE*, *DARKVIOLET*, *DEEPPINK*, *DEEPPINK2*, *DEEPPINK3*, *DEEPPINK4*, *DEEPSKYBLUE1*, *DEEPSKYBLUE2*, *DEEPSKYBLUE3*, *DEEPSKYBLUE4*, *DODGERBLUE1*, *DODGERBLUE2*, *DODGERBLUE3*, *DODGERBLUE4*, *FIREBRICK*, *FIREBRICK1*, *FIREBRICK2*, *FIREBRICK3*, *FIREBRICK4*, *FLORALWHITE*, *FORESTGREEN*, *GAINSBORO*, *GHOSTWHITE*, *GOLD*, *GOLD1*, *GOLD2*, *GOLD3*, *GOLD4*, *GOLDENROD*, *GOLDENROD1*, *GOLDENROD2*, *GOLDENROD3*, *GOLDENROD4*, *GRAY*, *GRAY0*, *GRAY1*, *GRAY10*, *GRAY11*, *GRAY12*, *GRAY13*, *GRAY14*, *GRAY15*, *GRAY16*, *GRAY17*, *GRAY18*, *GRAY19*, *GRAY2*, *GRAY20*, *GRAY21*, *GRAY22*, *GRAY23*, *GRAY24*, *GRAY25*, *GRAY26*, *GRAY27*, *GRAY28*, *GRAY29*, *GRAY3*, *GRAY30*, *GRAY31*, *GRAY32*, *GRAY33*, *GRAY34*, *GRAY35*, *GRAY36*, *GRAY37*, *GRAY38*, *GRAY39*, *GRAY4*, *GRAY40*, *GRAY41*, *GRAY42*, *GRAY43*, *GRAY44*, *GRAY45*, *GRAY46*, *GRAY47*, *GRAY48*, *GRAY49*, *GRAY5*, *GRAY50*, *GRAY51*, *GRAY52*, *GRAY53*, *GRAY54*, *GRAY55*, *GRAY56*, *GRAY57*, *GRAY58*, *GRAY59*, *GRAY6*, *GRAY60*, *GRAY61*, *GRAY62*, *GRAY63*, *GRAY64*, *GRAY65*, *GRAY66*, *GRAY67*, *GRAY68*, *GRAY69*, *GRAY7*, *GRAY70*, *GRAY71*, *GRAY72*, *GRAY73*, *GRAY74*, *GRAY75*, *GRAY76*, *GRAY77*, *GRAY78*, *GRAY79*, *GRAY8*, *GRAY80*, *GRAY81*, *GRAY82*, *GRAY83*, *GRAY85*, *GRAY86*, *GRAY87*, *GRAY88*, *GRAY89*, *GRAY9*, *GRAY90*, *GRAY91*, *GRAY92*, *GRAY93*, *GRAY94*, *GRAY95*, *GREEN*, *GREEN1*, *GREEN2*, *GREEN3*, *GREEN4*, *GREENYELLOW*, *GRAY97*, *GRAY98*, *GRAY99*, *HONEYDEW*, *HONEYDEW2*, *HONEYDEW3*, *HONEYDEW4*, *HOTPINK*, *HOTPINK1*, *HOTPINK2*, *HOTPINK3*, *HOTPINK4*, *INDIANRED*, *INDIANRED1*, *INDIANRED2*, *INDIANRED3*, *INDIANRED4*, *IVORY*, *IVORY2*, *IVORY3*, *IVORY4*, *KHAKI*, *KHAKI1*, *KHAKI2*, *KHAKI3*, *KHAKI4*, *LAVENDER*, *LAVENDERBLUSH1*, *LAVENDERBLUSH2*, *LAVENDERBLUSH3*, *LAVENDERBLUSH4*, *LAWNGREEN*, *LEMONCHIFFON1*, *LEMONCHIFFON2*, *LEMONCHIFFON3*, *LEMONCHIFFON4*, *LIGHTBLUE*, *LIGHTBLUE1*, *LIGHTBLUE2*, *LIGHTBLUE3*, *LIGHTBLUE4*, *LIGHTCORAL*, *LIGHTCYAN1*, *LIGHTCYAN2*, *LIGHTCYAN3*, *LIGHTCYAN4*, *LIGHTGOLDENROD*, *LIGHTGOLDENROD1*, *LIGHTGOLDENROD2*, *LIGHTGOLDENROD3*, *LIGHTGOLDENROD4*, *LIGHTGOLDENRODYELLOW*, *LIGHTGRAY*, *LIGHTPINK*, *LIGHTPINK1*, *LIGHTPINK2*, *LIGHTPINK3*, *LIGHTPINK4*, *LIGHTSALMON1*, *LIGHTSALMON2*, *LIGHTSALMON3*, *LIGHTSALMON4*, *LIGHTSEAGREEN*, *LIGHTSKYBLUE*, *LIGHTSKYBLUE1*, *LIGHTSKYBLUE2*, *LIGHTSKYBLUE3*, *LIGHTSKYBLUE4*, *LIGHTSLATEBLUE*, *LIGHTSLATEGRAY*, *LIGHTSTEELBLUE*, *LIGHTSTEELBLUE1*, *LIGHTSTEELBLUE2*, *LIGHTSTEELBLUE3*, *LIGHTSTEELBLUE4*, *LIGHTYELLOW*, *LIGHTYELLOW2*, *LIGHTYELLOW3*, *LIGHTYELLOW4*, *LIMEGREEN*, *LINEN*, *MAGENTA1*, *MAGENTA2*, *MAGENTA3*, *MAGENTA4*, *MAROON*, *MAROON1*, *MAROON2*, *MAROON3*, *MAROON4*, *MEDIUMAQUAMARINE*, *MEDIUMORCHID*, *MEDIUMORCHID1*, *MEDIUMORCHID2*, *MEDIUMORCHID3*, *MEDIUMORCHID4*, *MEDIUMPURPLE*, *MEDIUMPURPLE1*, *MEDIUMPURPLE2*, *MEDIUMPURPLE3*, *MEDIUMPURPLE4*, *MEDIUMSEAGREEN*, *MEDIUMSLATEBLUE*, *MEDIUMSPRINGGREEN*, *MEDIUMTURQUOISE*, *MEDIUMVIOLETRED*, *MIDNIGHTBLUE*, *MINTCREAM*, *MISTYROSE*, *MISTYROSE2*, *MISTYROSE3*, *MISTYROSE4*, *MOCCASIN*, *NAVAJOWHITE1*, *NAVAJOWHITE2*, *NAVAJOWHITE3*, *NAVAJOWHITE4*, *NAVYBLUE*, *OLDLACE*, *OLIVEDRAB*, *OLIVEDRAB1*, *OLIVEDRAB2*, *OLIVEDRAB3*, *OLIVEDRAB4*, *ORANGE*, *ORANGE1*, *ORANGE2*, *ORANGE3*, *ORANGE4*, *ORANGERED*, *ORANGERED1*, *ORANGERED2*, *ORANGERED3*, *ORANGERED4*, *ORCHID*, *ORCHID1*, *ORCHID2*, *ORCHID3*, *ORCHID4*, *PALEGOLDENROD*, *PALEGREEN*, *PALEGREEN1*, *PALEGREEN2*, *PALEGREEN3*, *PALEGREEN4*, *PALETURQUOISE*, *PALETURQUOISE1*, *PALETURQUOISE2*, *PALETURQUOISE3*, *PALETURQUOISE4*, *PALEVIOLETRED*, *PALEVIOLETRED1*, *PALEVIOLETRED2*, *PALEVIOLETRED3*, *PALEVIOLETRED4*, *PAPAYAWHIP*, *PEACHPUFF*, *PEACHPUFF2*, *PEACHPUFF3*, *PEACHPUFF4*, *PERU*, *PINK*, *PINK1*, *PINK2*, *PINK3*, *PINK4*, *PLUM*, *PLUM1*, *PLUM2*, *PLUM3*, *PLUM4*, *POWDERBLUE*, *PURPLE*, *PURPLE1*, *PURPLE2*, *PURPLE3*, *PURPLE4*, *RED*, *RED1*, *RED2*, *RED3*, *RED4*, *ROSYBROWN*, *ROSYBROWN1*, *ROSYBROWN2*, *ROSYBROWN3*, *ROSYBROWN4*, *ROYALBLUE*, *ROYALBLUE1*, *ROYALBLUE2*, *ROYALBLUE3*, *ROYALBLUE4*, *SADDLEBROWN*, *SALMON*, *SALMON1*, *SALMON2*, *SALMON3*, *SALMON4*, *SANDYBROWN*, *SEAGREEN*, *SEAGREEN1*, *SEAGREEN2*, *SEAGREEN3*, *SEAGREEN4*, *SEASHELL*, *SEASHELL2*, *SEASHELL3*, *SEASHELL4*, *BEET*, *TEAL*, *SIENNA*, *SIENNA1*, *SIENNA2*, *SIENNA3*, *SIENNA4*, *SKYBLUE*, *SKYBLUE1*, *SKYBLUE2*, *SKYBLUE3*, *SKYBLUE4*, *SLATEBLUE*, *SLATEBLUE1*, *SLATEBLUE2*, *SLATEBLUE3*, *SLATEBLUE4*, *SLATEGRAY1*, *SLATEGRAY2*, *SLATEGRAY3*, *SLATEGRAY4*, *SLATEGRAY*, *SNOW*, *SNOW2*, *SNOW3*, *SNOW4*, *SPRINGGREEN*, *SPRINGGREEN2*, *SPRINGGREEN3*, *SPRINGGREEN4*, *STEELBLUE*, *STEELBLUE1*, *STEELBLUE2*, *STEELBLUE3*, *STEELBLUE4*, *TAN*, *TAN1*, *TAN2*, *TAN3*, *TAN4*, *THISTLE*, *THISTLE1*, *THISTLE2*, *THISTLE3*, *THISTLE4*, *TOMATO*, *TOMATO1*, *TOMATO2*, *TOMATO3*, *TOMATO4*, *TURQUOISE*, *TURQUOISE1*, *TURQUOISE2*, *TURQUOISE3*, *TURQUOISE4*, *VIOLET*, *VIOLETRED*, *VIOLETRED1*, *VIOLETRED2*, *VIOLETRED3*, *VIOLETRED4*, *WHEAT*, *WHEAT1*, *WHEAT2*, *WHEAT3*, *WHEAT4*, *WHITE*, *WHITESMOKE*, *YELLOW*, *YELLOW1*, *YELLOW2*, *YELLOW3*, *YELLOW4* and *YELLOWGREEN*.
+**Color** name can be: *BLACK*, *MATRAGRAY*, *MATRABLUE*, *ALICEBLUE*, *ANTIQUEWHITE*, *ANTIQUEWHITE1*, *ANTIQUEWHITE2*, *ANTIQUEWHITE3*, *ANTIQUEWHITE4*,
+*AQUAMARINE1*, *AQUAMARINE2*, *AQUAMARINE4*, *AZURE*, *AZURE2*, *AZURE3*, *AZURE4*, *BEIGE*, *BISQUE*, *BISQUE2*, *BISQUE3*, *BISQUE4*, *BLANCHEDALMOND*, *BLUE1*, *BLUE2*, *BLUE3*, *BLUE4*, *BLUEVIOLET*,
+*BROWN*, *BROWN1*, *BROWN2*, *BROWN3*, *BROWN4*, *BURLYWOOD*, *BURLYWOOD1*, *BURLYWOOD2*, *BURLYWOOD3*, *BURLYWOOD4*, *CADETBLUE*, *CADETBLUE1*, *CADETBLUE2*, *CADETBLUE3*, *CADETBLUE4*,
+*CHARTREUSE*, *CHARTREUSE1*, *CHARTREUSE2*, *CHARTREUSE3*, *CHARTREUSE4*, *CHOCOLATE*, *CHOCOLATE1*, *CHOCOLATE2*, *CHOCOLATE3*, *CHOCOLATE4*, *CORAL*, *CORAL1*, *CORAL2*, *CORAL3*, *CORAL4*,
+*CORNFLOWERBLUE*, *CORNSILK1*, *CORNSILK2*, *CORNSILK3*, *CORNSILK4*, *CYAN1*, *CYAN2*, *CYAN3*, *CYAN4*, *DARKGOLDENROD*, *DARKGOLDENROD1*, *DARKGOLDENROD2*, *DARKGOLDENROD3*, *DARKGOLDENROD4*, *DARKGREEN*,
+*DARKKHAKI*, *DARKOLIVEGREEN*, *DARKOLIVEGREEN1*, *DARKOLIVEGREEN2*, *DARKOLIVEGREEN3*, *DARKOLIVEGREEN4*, *DARKORANGE*, *DARKORANGE1*, *DARKORANGE2*, *DARKORANGE3*, *DARKORANGE4*,
+*DARKORCHID*, *DARKORCHID1*, *DARKORCHID2*, *DARKORCHID3*, *DARKORCHID4*, *DARKSALMON*, *DARKSEAGREEN*, *DARKSEAGREEN1*, *DARKSEAGREEN2*, *DARKSEAGREEN3*, *DARKSEAGREEN4*, *DARKSLATEBLUE*,
+*DARKSLATEGRAY1*, *DARKSLATEGRAY2*, *DARKSLATEGRAY3*, *DARKSLATEGRAY4*, *DARKSLATEGRAY*, *DARKTURQUOISE*, *DARKVIOLET*, *DEEPPINK*, *DEEPPINK2*, *DEEPPINK3*, *DEEPPINK4*,
+*DEEPSKYBLUE1*, *DEEPSKYBLUE2*, *DEEPSKYBLUE3*, *DEEPSKYBLUE4*, *DODGERBLUE1*, *DODGERBLUE2*, *DODGERBLUE3*, *DODGERBLUE4*, *FIREBRICK*, *FIREBRICK1*, *FIREBRICK2*, *FIREBRICK3*, *FIREBRICK4*,
+*FLORALWHITE*, *FORESTGREEN*, *GAINSBORO*, *GHOSTWHITE*, *GOLD*, *GOLD1*, *GOLD2*, *GOLD3*, *GOLD4*, *GOLDENROD*, *GOLDENROD1*, *GOLDENROD2*, *GOLDENROD3*, *GOLDENROD4*,
+*GRAY*, *GRAY0*, *GRAY1*, *GRAY10*, *GRAY11*, *GRAY12*, *GRAY13*, *GRAY14*, *GRAY15*, *GRAY16*, *GRAY17*, *GRAY18*, *GRAY19*, *GRAY2*, *GRAY20*, *GRAY21*, *GRAY22*, *GRAY23*, *GRAY24*, *GRAY25*,
+*GRAY26*, *GRAY27*, *GRAY28*, *GRAY29*, *GRAY3*, *GRAY30*, *GRAY31*, *GRAY32*, *GRAY33*, *GRAY34*, *GRAY35*, *GRAY36*, *GRAY37*, *GRAY38*, *GRAY39*, *GRAY4*, *GRAY40*, *GRAY41*, *GRAY42*, *GRAY43*, *GRAY44*, *GRAY45*,
+*GRAY46*, *GRAY47*, *GRAY48*, *GRAY49*, *GRAY5*, *GRAY50*, *GRAY51*, *GRAY52*, *GRAY53*, *GRAY54*, *GRAY55*, *GRAY56*, *GRAY57*, *GRAY58*, *GRAY59*, *GRAY6*, *GRAY60*, *GRAY61*, *GRAY62*, *GRAY63*, *GRAY64*, *GRAY65*,
+*GRAY66*, *GRAY67*, *GRAY68*, *GRAY69*, *GRAY7*, *GRAY70*, *GRAY71*, *GRAY72*, *GRAY73*, *GRAY74*, *GRAY75*, *GRAY76*, *GRAY77*, *GRAY78*, *GRAY79*, *GRAY8*, *GRAY80*, *GRAY81*, *GRAY82*, *GRAY83*, *GRAY85*,
+*GRAY86*, *GRAY87*, *GRAY88*, *GRAY89*, *GRAY9*, *GRAY90*, *GRAY91*, *GRAY92*, *GRAY93*, *GRAY94*, *GRAY95*, *GREEN*, *GREEN1*, *GREEN2*, *GREEN3*, *GREEN4*, *GREENYELLOW*, *GRAY97*, *GRAY98*, *GRAY99*,
+*HONEYDEW*, *HONEYDEW2*, *HONEYDEW3*, *HONEYDEW4*, *HOTPINK*, *HOTPINK1*, *HOTPINK2*, *HOTPINK3*, *HOTPINK4*, *INDIANRED*, *INDIANRED1*, *INDIANRED2*, *INDIANRED3*, *INDIANRED4*,
+*IVORY*, *IVORY2*, *IVORY3*, *IVORY4*, *KHAKI*, *KHAKI1*, *KHAKI2*, *KHAKI3*, *KHAKI4*, *LAVENDER*, *LAVENDERBLUSH1*, *LAVENDERBLUSH2*, *LAVENDERBLUSH3*, *LAVENDERBLUSH4*, *LAWNGREEN*,
+*LEMONCHIFFON1*, *LEMONCHIFFON2*, *LEMONCHIFFON3*, *LEMONCHIFFON4*, *LIGHTBLUE*, *LIGHTBLUE1*, *LIGHTBLUE2*, *LIGHTBLUE3*, *LIGHTBLUE4*, *LIGHTCORAL*, *LIGHTCYAN1*, *LIGHTCYAN2*, *LIGHTCYAN3*, *LIGHTCYAN4*,
+*LIGHTGOLDENROD*, *LIGHTGOLDENROD1*, *LIGHTGOLDENROD2*, *LIGHTGOLDENROD3*, *LIGHTGOLDENROD4*, *LIGHTGOLDENRODYELLOW*, *LIGHTGRAY*, *LIGHTPINK*, *LIGHTPINK1*, *LIGHTPINK2*, *LIGHTPINK3*, *LIGHTPINK4*,
+*LIGHTSALMON1*, *LIGHTSALMON2*, *LIGHTSALMON3*, *LIGHTSALMON4*, *LIGHTSEAGREEN*, *LIGHTSKYBLUE*, *LIGHTSKYBLUE1*, *LIGHTSKYBLUE2*, *LIGHTSKYBLUE3*, *LIGHTSKYBLUE4*, *LIGHTSLATEBLUE*, *LIGHTSLATEGRAY*,
+*LIGHTSTEELBLUE*, *LIGHTSTEELBLUE1*, *LIGHTSTEELBLUE2*, *LIGHTSTEELBLUE3*, *LIGHTSTEELBLUE4*, *LIGHTYELLOW*, *LIGHTYELLOW2*, *LIGHTYELLOW3*, *LIGHTYELLOW4*, *LIMEGREEN*, *LINEN*,
+*MAGENTA1*, *MAGENTA2*, *MAGENTA3*, *MAGENTA4*, *MAROON*, *MAROON1*, *MAROON2*, *MAROON3*, *MAROON4*, *MEDIUMAQUAMARINE*, *MEDIUMORCHID*, *MEDIUMORCHID1*, *MEDIUMORCHID2*, *MEDIUMORCHID3*, *MEDIUMORCHID4*,
+*MEDIUMPURPLE*, *MEDIUMPURPLE1*, *MEDIUMPURPLE2*, *MEDIUMPURPLE3*, *MEDIUMPURPLE4*, *MEDIUMSEAGREEN*, *MEDIUMSLATEBLUE*, *MEDIUMSPRINGGREEN*, *MEDIUMTURQUOISE*, *MEDIUMVIOLETRED*, *MIDNIGHTBLUE*, *MINTCREAM*,
+*MISTYROSE*, *MISTYROSE2*, *MISTYROSE3*, *MISTYROSE4*, *MOCCASIN*, *NAVAJOWHITE1*, *NAVAJOWHITE2*, *NAVAJOWHITE3*, *NAVAJOWHITE4*, *NAVYBLUE*, *OLDLACE*, *OLIVEDRAB*,
+*OLIVEDRAB1*, *OLIVEDRAB2*, *OLIVEDRAB3*, *OLIVEDRAB4*, *ORANGE*, *ORANGE1*, *ORANGE2*, *ORANGE3*, *ORANGE4*, *ORANGERED*, *ORANGERED1*, *ORANGERED2*, *ORANGERED3*, *ORANGERED4*,
+*ORCHID*, *ORCHID1*, *ORCHID2*, *ORCHID3*, *ORCHID4*, *PALEGOLDENROD*, *PALEGREEN*, *PALEGREEN1*, *PALEGREEN2*, *PALEGREEN3*, *PALEGREEN4*,
+*PALETURQUOISE*, *PALETURQUOISE1*, *PALETURQUOISE2*, *PALETURQUOISE3*, *PALETURQUOISE4*, *PALEVIOLETRED*, *PALEVIOLETRED1*, *PALEVIOLETRED2*, *PALEVIOLETRED3*, *PALEVIOLETRED4*, *PAPAYAWHIP*,
+*PEACHPUFF*, *PEACHPUFF2*, *PEACHPUFF3*, *PEACHPUFF4*, *PERU*, *PINK*, *PINK1*, *PINK2*, *PINK3*, *PINK4*, *PLUM*, *PLUM1*, *PLUM2*, *PLUM3*, *PLUM4*, *POWDERBLUE*, *PURPLE*, *PURPLE1*, *PURPLE2*, *PURPLE3*, *PURPLE4*,
+*RED*, *RED1*, *RED2*, *RED3*, *RED4*, *ROSYBROWN*, *ROSYBROWN1*, *ROSYBROWN2*, *ROSYBROWN3*, *ROSYBROWN4*, *ROYALBLUE*, *ROYALBLUE1*, *ROYALBLUE2*, *ROYALBLUE3*, *ROYALBLUE4*, *SADDLEBROWN*,
+*SALMON*, *SALMON1*, *SALMON2*, *SALMON3*, *SALMON4*, *SANDYBROWN*, *SEAGREEN*, *SEAGREEN1*, *SEAGREEN2*, *SEAGREEN3*, *SEAGREEN4*, *SEASHELL*, *SEASHELL2*, *SEASHELL3*, *SEASHELL4*, *BEET*, *TEAL*,
+*SIENNA*, *SIENNA1*, *SIENNA2*, *SIENNA3*, *SIENNA4*, *SKYBLUE*, *SKYBLUE1*, *SKYBLUE2*, *SKYBLUE3*, *SKYBLUE4*, *SLATEBLUE*, *SLATEBLUE1*, *SLATEBLUE2*, *SLATEBLUE3*, *SLATEBLUE4*,
+*SLATEGRAY1*, *SLATEGRAY2*, *SLATEGRAY3*, *SLATEGRAY4*, *SLATEGRAY*, *SNOW*, *SNOW2*, *SNOW3*, *SNOW4*, *SPRINGGREEN*, *SPRINGGREEN2*, *SPRINGGREEN3*, *SPRINGGREEN4*,
+*STEELBLUE*, *STEELBLUE1*, *STEELBLUE2*, *STEELBLUE3*, *STEELBLUE4*, *TAN*, *TAN1*, *TAN2*, *TAN3*, *TAN4*, *THISTLE*, *THISTLE1*, *THISTLE2*, *THISTLE3*, *THISTLE4*, *TOMATO*, *TOMATO1*, *TOMATO2*, *TOMATO3*, *TOMATO4*,
+*TURQUOISE*, *TURQUOISE1*, *TURQUOISE2*, *TURQUOISE3*, *TURQUOISE4*, *VIOLET*, *VIOLETRED*, *VIOLETRED1*, *VIOLETRED2*, *VIOLETRED3*, *VIOLETRED4*, *WHEAT*, *WHEAT1*, *WHEAT2*, *WHEAT3*, *WHEAT4*, *WHITE*, *WHITESMOKE*,
+*YELLOW*, *YELLOW1*, *YELLOW2*, *YELLOW3*, *YELLOW4* and *YELLOWGREEN*.
 ~~~~{.php}
-vaspects    [name] [-setcolor ColorName] [-setcolor R G B] [-unsetcolor]
+vaspects    [name] [-setColor ColorName] [-setColor R G B] [-unsetColor]
 vsetcolor   [name] ColorName
 vunsetcolor [name]
 ~~~~
 
-**Transparency. The *Transp* may be between 0.0 (opaque) and 1.0 (fully transparent).
+**Transparency** may be between 0.0 (opaque) and 1.0 (fully transparent).
 **Warning**: at 1.0 the shape becomes invisible.
 ~~~~{.php}
-vaspects           [name] [-settransparency Transp] [-unsettransparency]
-vsettransparency   [name] Transp
+vaspects           [name] [-setTransparency Value] [-unsetTransparency]
+vsettransparency   [name] Value
 vunsettransparency [name]
 ~~~~
 
-**Material**. The *MatName* can be *BRASS*, *BRONZE*, *COPPER*, *GOLD*, *PEWTER*, *PLASTER*, *PLASTIC*, *SILVER*, *STEEL*, *STONE*, *SHINY_PLASTIC*, *SATIN*, *METALIZED*, *NEON_GNC*, *CHROME*, *ALUMINIUM*, *OBSIDIAN*, *NEON_PHC*, *JADE*, *WATER*, *GLASS*, *DIAMOND* or *CHARCOAL*.
+**Material** name can be *BRASS*, *BRONZE*, *COPPER*, *GOLD*, *PEWTER*, *PLASTER*, *PLASTIC*, *SILVER*, *STEEL*, *STONE*, *SHINY_PLASTIC*, *SATIN*,
+*METALIZED*, *NEON_GNC*, *CHROME*, *ALUMINIUM*, *OBSIDIAN*, *NEON_PHC*, *JADE*, *WATER*, *GLASS*, *DIAMOND* or *CHARCOAL*.
 ~~~~{.php}
-vaspects       [name] [-setmaterial MatName] [-unsetmaterial]
-vsetmaterial   [name] MatName
+vaspects       [name] [-setMaterial MaterialName] [-unsetMaterial]
+vsetmaterial   [name] MaterialName
 vunsetmaterial [name]
 ~~~~
 
-**Line width**. Specifies width of the edges. The *LineWidth* may be between 0.0 and 10.0.
+**Line width** specifies width of the edges. The width value may be between 0.0 and 10.0.
 ~~~~{.php}
-vaspects    [name] [-setwidth LineWidth] [-unsetwidth]
+vaspects    [name] [-setWidth LineWidth] [-unsetWidth]
 vsetwidth   [name] LineWidth
 vunsetwidth [name]
 ~~~~
@@ -1826,23 +1628,14 @@ vdisplay b
 vfit
 
 vsetdispmode b 1
-vaspects -setcolor red -settransparency 0.2
+vaspects -setColor red -setTransparency 0.2
 vrotate 10 10 10
 ~~~~
-
-
-
-
-
 
 @subsubsection occt_draw_4_3_11 vsetshading
 
 Syntax:
-~~~~{.php}
-vsetshading shapename [coefficient]
-~~~~
-
-Sets deflection coefficient that defines the quality of the shape’s representation in the shading mode. Default coefficient is 0.0008. 
+@snippet ViewerTest.cxx vsetshading
 
 **Example:** 
 ~~~~{.php}
@@ -1857,76 +1650,22 @@ vsetshading s 0.005
 @subsubsection occt_draw_4_3_12 vunsetshading
 
 Syntax:
-~~~~{.php}
-vunsetshading [shapename]
-~~~~
-
-Sets default deflection coefficient (0.0008) that defines the quality of the shape’s representation in the shading mode.
-
-@subsubsection occt_draw_4_3_13 vsetam
-
-Syntax:
-~~~~{.php}
-vsetam [shapename] mode
-~~~~
-
-Activates selection mode for all selected or named shapes: 
-* *0* for *shape* itself, 
-* *1* (*vertices*), 
-* *2* (*edges*), 
-* *3* (*wires*), 
-* *4* (*faces*), 
-* *5* (*shells*),
-* *6* (*solids*),
-* *7* (*compounds*).
- 
-**Example:** 
-~~~~{.php}
-vinit 
-box b 10 10 10 
-vdisplay b 
-vfit 
-vsetam b 2
-~~~~
- 
-@subsubsection occt_draw_4_3_14 vunsetam
-
-Syntax:
-~~~~{.php}
-vunsetam
-~~~~
-
-Deactivates all selection modes for all shapes. 
+@snippet ViewerTest.cxx vunsetshading
 
 @subsubsection occt_draw_4_3_15 vdump
 
 Syntax:
-~~~~{.php}
-vdump <filename>.{png|bmp|jpg|gif} [-width Width -height Height]
-      [-buffer rgb|rgba|depth=rgb]
-      [-stereo mono|left|right|blend|sideBySide|overUnder=mono]
-
-~~~~
-
-Extracts the contents of the viewer window to a image file.
+@snippet ViewerTest.cxx vdump
 
 @subsubsection occt_draw_4_3_16 vdir
 
 Syntax:
-~~~~{.php}
-vdir
-~~~~
-
-Displays the list of displayed objects. 
+@snippet ViewerTest.cxx vdir
 
 @subsubsection occt_draw_4_3_17 vsub
 
 Syntax:
-~~~~{.php}
-vsub 0/1(on/off)[shapename]
-~~~~
-
-Hilights/unhilights named or selected objects which are displayed at neutral state with subintensity color.
+@snippet ViewerTest.cxx vsub
  
 **Example:** 
 ~~~~{.php}
@@ -1942,77 +1681,27 @@ vsub b 1
 @subsubsection occt_draw_4_3_20 vsensdis
 
 Syntax:
-~~~~{.php}
-vsensdis
-~~~~
-
-Displays active entities (sensitive entities of one of the standard types corresponding to active selection modes). 
-
-Standard entity types are those defined in Select3D package: 
-  * sensitive box
-  * sensitive face
-  * sensitive curve
-  * sensitive segment
-  * sensitive circle
-  * sensitive point
-  * sensitive triangulation
-  * sensitive triangle
-Custom (application-defined) sensitive entity types are not processed by this command. 
+@snippet ViewerTest.cxx vsensdis
 
 @subsubsection occt_draw_4_3_21 vsensera
 
 Syntax:
-~~~~{.php}
-vsensera
-~~~~
+@snippet ViewerTest.cxx vsensera
 
-Erases active entities. 
- 
 @subsubsection occt_draw_4_3_24 vstate
 
 Syntax:
-~~~~{.php}
-vstate [-entities] [-hasSelected] [name1] ... [nameN]
-~~~~
-
-Reports show/hidden state for selected or named objects:
- * *entities* -- prints low-level information about detected entities;
- * *hasSelected* -- prints 1 if the context has a selected shape and 0 otherwise.
+@snippet ViewerTest.cxx vstate
 
 @subsubsection occt_draw_4_3_25 vraytrace
 
 Syntax:
-~~~~{.php}
-vraytrace [0/1]
-~~~~
-
-Turns on/off ray tracing renderer.
+@snippet ViewerTest_ViewerCommands.cxx vraytrace
 
 @subsubsection occt_draw_4_3_26 vrenderparams
 
 Syntax:
-~~~~{.php}
-vrenderparams [-rayTrace|-raster] [-rayDepth 0..10] [-shadows {on|off}]
-              [-reflections {on|off}] [-fsaa {on|off}] [-gleam {on|off}]
-              [-gi {on|off}] [-brng {on|off}] [-env {on|off}]
-              [-shadin {color|flat|gouraud|phong}]
-~~~~
-
-Manages rendering parameters:
-* rayTrace     -- Enables  GPU ray-tracing
-* raster       -- Disables GPU ray-tracing
-* rayDepth     -- Defines maximum ray-tracing depth
-* shadows      -- Enables/disables shadows rendering
-* reflections  -- Enables/disables specular reflections
-* fsaa         -- Enables/disables adaptive anti-aliasing
-* gleam        -- Enables/disables transparency shadow effects
-* gi           -- Enables/disables global illumination effects
-* brng         -- Enables/disables blocked RNG (fast coherent PT)
-* env          -- Enables/disables environment map background
-* shadingModel -- Controls shading model from enumeration color, flat, gouraud, phong
-
-Unlike *vcaps*, these parameters dramatically change visual properties.
-The command is intended to control presentation quality depending on hardware capabilities and performance.
+@snippet ViewerTest_ViewerCommands.cxx vrenderparams
 
 **Example:**
 ~~~~{.php}
@@ -2023,59 +1712,17 @@ vfit
 vraytrace 1
 vrenderparams -shadows 1 -reflections 1 -fsaa 1
 ~~~~
-@subsubsection occt_draw_4_3_27 vshaderprog
+@subsubsection occt_draw_4_3_27 vshader
 
 Syntax:
-~~~~{.php}
-   'vshaderprog [name] pathToVertexShader pathToFragmentShader'
-or 'vshaderprog [name] off'   to disable GLSL program
-or 'vshaderprog [name] phong' to enable per-pixel lighting calculations
-~~~~
-
-Enables rendering using a shader program.
-
-@subsubsection occt_draw_4_3_28 vsetcolorbg
-
-Syntax:
-~~~~{.php}
-vsetcolorbg r g b
-~~~~
-
-Sets background color.
-
-**Example:**
-~~~~{.php}
-vinit
-vsetcolorbg 200 0 200
-~~~~
+@snippet ViewerTest_OpenGlCommands.cxx vshader
 
 @subsection occt_draw_4_4 AIS viewer -- object commands
 
 @subsubsection occt_draw_4_4_1 vtrihedron
 
 Syntax:
-~~~~{.php}
-vtrihedron name [-dispMode {wf|sh|wireframe|shading}]
-                [-origin x y z ]
-                [-zaxis u v w -xaxis u v w ]
-                [-drawaxes {X|Y|Z|XY|YZ|XZ|XYZ}]
-                [-hidelabels {on|off}]"
-                [-label {XAxis|YAxis|ZAxis} value]"
-                [-attribute {XAxisLength|YAxisLength|ZAxisLength
-                                        |TubeRadiusPercent|ConeRadiusPercent"
-                                        |ConeLengthPercent|OriginRadiusPercent"
-                                        |ShadingNumberOfFacettes} value]"
-                [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
-                                        |XOZAxis|Whole} {r g b | colorName}]"
-                [-textcolor {r g b | colorName}]"
-                [-arrowscolor {r g b | colorName}]"
-                [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
-                                        |YArrow|ZArrow|XOYAxis|YOZAxis"
-                                        |XOZAxis|Whole} value]
-
-~~~~
-
-Creates a new *AIS_Trihedron* object or changes existing trihedron. If no argument is set, the default trihedron (0XYZ) is created.
+@snippet ViewerTest_ObjectCommands.cxx vtrihedron
 
 **Example:** 
 ~~~~{.php}
@@ -2091,21 +1738,12 @@ vtrihedron t2 -color ZAxis|Origin Quantity_NOC_BLUE1
 @subsubsection occt_draw_4_4_2 vplanetri
 
 Syntax:
-~~~~{.php}
-vplanetri name
-~~~~
-
-Creates a plane from a trihedron selection. If no arguments are set, the default plane is created. 
-
+@snippet ViewerTest_ObjectCommands.cxx vplanetri
 
 @subsubsection occt_draw_4_4_3 vsize
 
 Syntax:
-~~~~{.php}
-vsize [name] [size]
-~~~~
-
-Changes the size of a named or selected trihedron. If the name is not defined: it affects the selected trihedrons otherwise nothing is done. If the value is not defined, it is set to 100 by default.
+@snippet ViewerTest_ObjectCommands.cxx vsize
  
 **Example:** 
 ~~~~{.php}
@@ -2118,11 +1756,7 @@ vsize tr2 400
 @subsubsection occt_draw_4_4_4 vaxis
 
 Syntax:
-~~~~{.php}
-vaxis name [Xa Ya Za Xb Yb Zb]
-~~~~
-
-Creates an axis. If  the values are not defined, an axis is created by interactive selection of two vertices or one edge
+@snippet ViewerTest_ObjectCommands.cxx vaxis
  
 **Example:** 
 ~~~~{.php}
@@ -2134,234 +1768,144 @@ vaxis axe1 0 0 0 1 0 0
 @subsubsection occt_draw_4_4_5 vaxispara
 
 Syntax:
-~~~~{.php}
-vaxispara name
-~~~~
-
-Creates an axis by interactive selection of an edge and a vertex. 
+@snippet ViewerTest_ObjectCommands.cxx vaxispara
 
 @subsubsection occt_draw_4_4_6 vaxisortho
 
 Syntax:
-~~~~{.php}
-vaxisotrho name
-~~~~
-
-Creates an axis by interactive selection of an edge and a vertex. The axis will be orthogonal to the selected edge. 
+@snippet ViewerTest_ObjectCommands.cxx vaxisortho
 
 @subsubsection occt_draw_4_4_7 vpoint
 
 Syntax:
-~~~~{.php}
-vpoint name [Xa Ya Za]
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vpoint
 
-Creates a point from coordinates. If the values are not defined, a point is created by interactive selection of a vertice or an edge (in the center of the edge). 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vpoint p 0 0 0 
+vinit
+vpoint p 0 0 0
 ~~~~
 
 @subsubsection occt_draw_4_4_8 vplane
 
 Syntax:
-~~~~{.php}
-vplane name [AxisName] [PointName] 
-vplane name [PointName] [PointName] [PointName] 
-vplane name [PlaneName] [PointName]
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vplane
 
-Creates a plane from named or interactively selected entities.
-TypeOfSensitivity:
- * 0 -- Interior
- * 1 -- Boundary
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vpoint p1 0 50 0 
-vaxis axe1 0 0 0 0 0 1 
-vtrihedron tr 
-vplane plane1 axe1 p1 
+vinit
+vpoint p1 0 50 0
+vaxis axe1 0 0 0 0 0 1
+vtrihedron tr
+vplane plane1 axe1 p1
 ~~~~
 
 @subsubsection occt_draw_4_4_9 vplanepara
 
 Syntax:
-~~~~{.php}
-vplanepara name
-~~~~
-
-Creates a plane from interactively selected vertex and face. 
+@snippet ViewerTest_ObjectCommands.cxx vplanepara
 
 @subsubsection occt_draw_4_4_10 vplaneortho
 
 Syntax:
-~~~~{.php}
-vplaneortho name
-~~~~
-
-Creates a plane from interactive selected face and coplanar edge. 
+@snippet ViewerTest_ObjectCommands.cxx vplaneortho
 
 @subsubsection occt_draw_4_4_11 vline
 
 Syntax:
-~~~~{.php}
-vline name [PointName] [PointName] 
-vline name [Xa Ya Za Xb Yb Zb]
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vline
 
-Creates a line from coordinates, named or interactively selected vertices. 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vtrihedron tr 
-vpoint p1 0 50 0 
-vpoint p2 50 0 0 
-vline line1 p1 p2 
-vline line2 0 0 0 50 0 1 
+vinit
+vtrihedron tr
+vpoint p1 0 50 0
+vpoint p2 50 0 0
+vline line1 p1 p2
+vline line2 0 0 0 50 0 1
 ~~~~
 
 @subsubsection occt_draw_4_4_12 vcircle
 
 Syntax:
-~~~~{.php}
-vcircle name [PointName PointName PointName IsFilled] 
-vcircle name [PlaneName PointName Radius IsFilled] 
-~~~~
-
-Creates a circle from named or interactively selected entities.  Parameter IsFilled is defined as 0 or 1.
+@snippet ViewerTest_ObjectCommands.cxx vcircle
  
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vtrihedron tr 
-vpoint p1 0 50 0 
-vpoint p2 50 0 0 
-vpoint p3 0 0 0 
+vinit
+vtrihedron tr
+vpoint p1 0 50 0
+vpoint p2 50 0 0
+vpoint p3 0 0 0
 vcircle circle1 p1 p2 p3 1
 ~~~~
 
 @subsubsection occt_draw_4_4_13 vtri2d
 
 Syntax:
-~~~~{.php}
-vtri2d name
-~~~~
-
-Creates a plane with a 2D trihedron from an interactively selected face. 
+@snippet ViewerTest_ObjectCommands.cxx vtri2d
 
 @subsubsection occt_draw_4_4_14 vselmode
 
 Syntax:
-~~~~{.php}
-vselmode [object] mode_number is_turned_on=(1|0)
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vselmode
 
-Sets the selection mode for an object. If the object value is not defined, the selection mode is set for all displayed objects. 
-*Mode_number* is a non-negative integer encoding different interactive object classes.
-For shapes the following *mode_number* values are allowed:
- * 0 -- shape
- * 1 -- vertex
- * 2 -- edge
- * 3 -- wire
- * 4 -- face
- * 5 -- shell
- * 6 -- solid
- * 7 -- compsolid
- * 8 -- compound
-*is_turned_on* is:
- * 1 if mode is to be switched on
- * 0 if mode is to be switched off
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vpoint p1 0 0 0 
-vpoint p2 50 0 0 
-vpoint p3 25 40 0 
-vtriangle triangle1 p1 p2 p3 
+vinit
+vpoint p1 0 0 0
+vpoint p2 50 0 0
+vpoint p3 25 40 0
+vtriangle triangle1 p1 p2 p3
 ~~~~
 
 @subsubsection occt_draw_4_4_15 vconnect
 
 Syntax:
-~~~~{.php}
-vconnect vconnect name Xo Yo Zo object1 object2 ... [color=NAME]
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vconnect
 
-Creates *AIS_ConnectedInteractive* object from the input object and location and displays it.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vpoint p1 0 0 0 
-vpoint p2 50 0 0 
-vsegment segment p1 p2 
-restore CrankArm.brep obj 
-vdisplay obj 
+vinit
+vpoint p1 0 0 0
+vpoint p2 50 0 0
+vsegment segment p1 p2
+restore CrankArm.brep obj
+vdisplay obj
 vconnect new obj 100100100 1 0 0 0 0 1
 ~~~~
 
 @subsubsection occt_draw_4_4_16 vtriangle
 
 Syntax:
-~~~~{.php}
-vtriangle name PointName PointName PointName
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vtriangle
 
-Creates and displays a filled triangle from named points. 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-vpoint p1 0 0 0 
-vpoint p2 50 0 0 
-vpoint p3 25 40 0 
+vinit
+vpoint p1 0 0 0
+vpoint p2 50 0 0
+vpoint p3 25 40 0
 vtriangle triangle1 p1 p2 p3
 ~~~~
 
 @subsubsection occt_draw_4_4_17 vsegment
 
 Syntax:
-~~~~{.php}
-vsegment name PointName PointName 
-~~~~
+@snippet ViewerTest_ObjectCommands.cxx vsegment
 
-Creates and displays a segment from named points. 
-
-**Example:** 
+**Example:**
 ~~~~{.php}
-Vinit 
-vpoint p1 0 0 0 
-vpoint p2 50 0 0 
-vsegment segment p1 p2 
+vinit
+vpoint p1 0 0 0
+vpoint p2 50 0 0
+vsegment segment p1 p2
 ~~~~
 
 @subsubsection occt_draw_4_4_18 vpointcloud
 
 Syntax:
-~~~~{.php}
-vpointcloud name shape [-randColor] [-normals] [-noNormals]
-~~~~
-
-Creates an interactive object for an arbitrary set of points from the triangulated shape.
-Additional options:
- * *randColor* -- generates a random color per point;
- * *normals*   -- generates a normal per point (default);
- * *noNormals* -- does not generate a normal per point.
-
-~~~~{.php}
-vpointcloud name x y z r npts {surface|volume} [-randColor] [-normals] [-noNormals]
-~~~~
-Creates an arbitrary set of points (npts) randomly distributed on a spheric surface or within a spheric volume (x y z r).
-Additional options:
- * *randColor* -- generates a random color per point;
- * *normals*   -- generates a normal per point (default);
- * *noNormals* -- does not generate a normal per point.
+@snippet ViewerTest_ObjectCommands.cxx vpointcloud
 
 **Example:**
 ~~~~{.php}
@@ -2373,32 +1917,12 @@ vfit
 @subsubsection occt_draw_4_4_19 vclipplane
 
 Syntax:
-~~~~{.php}
-vclipplane maxplanes <view_name> -- gets plane limit for the view.
-vclipplane create <plane_name> -- creates a new plane.
-vclipplane delete <plane_name> -- deletes a plane.
-vclipplane clone <source_plane> <plane_name> -- clones the plane definition.
-vclipplane set/unset <plane_name> object <object list> -- sets/unsets the plane for an IO.
-vclipplane set/unset <plane_name> view <view list> -- sets/unsets plane for a view.
-vclipplane change <plane_name> on/off -- turns clipping on/off.
-vclipplane change <plane_name> equation <a> <b> <c> <d> -- changes plane equation.
-vclipplane change <plane_name> capping on/off -- turns capping on/off.
-vclipplane change <plane_name> capping color <r> <g> <b> -- sets color.
-vclipplane change <plane name> capping texname <texture> -- sets texture.
-vclipplane change <plane_name> capping texscale <sx> <sy> -- sets texture scale.
-vclipplane change <plane_name> capping texorigin <tx> <ty> -- sets texture origin.
-vclipplane change <plane_name> capping texrotate <angle> -- sets texture rotation.
-vclipplane change <plane_name> capping hatch on/off/<id> -- sets hatching mask.
-~~~~
-
-Manages clipping planes
+@snippet ViewerTest_ViewerCommands.cxx vclipplane
 
 **Example:**
 ~~~~{.php}
 vinit
-vclipplane create pln1
-vclipplane change pln1 equation 1 0 0 -0.1
-vclipplane set pln1 view Driver1/Viewer1/View1
+vclipplane pln1 -equation 1 0 0 -0.1 -set Driver1/Viewer1/View1
 box b 100 100 100
 vdisplay b
 vsetdispmode 1
@@ -2410,23 +1934,11 @@ vselect 100 100
 @subsubsection occt_draw_4_4_20 vdimension
 
 Syntax:
-~~~~{.php}
-vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape3]]
-                [-text 3d|2d wf|sh|wireframe|shading IntegerSize]
-                [-label left|right|hcenter|hfit top|bottom|vcenter|vfit]
-                [-arrow external|internal|fit] [{-arrowlength|-arlen} RealArrowLength]
-                [{-arrowangle|-arangle} ArrowAngle(degrees)] [-plane xoy|yoz|zox]
-                [-flyout FloatValue -extension FloatValue]
-				[-autovalue] [-value CustomRealValue] [-textvalue CustomTextValue]
-                [-dispunits DisplayUnitsString]
-                [-modelunits ModelUnitsString] [-showunits | -hideunits]
-~~~~
-
-Builds angle, length, radius or diameter dimension interactive object **name**.
+@snippet ViewerTest_RelationCommands.cxx vdimension
 
 **Attention:** length dimension can't be built without working plane.
 
-**Example:** 
+**Example:**
 ~~~~{.php}
 vinit
 vpoint p1 0 0 0
@@ -2444,25 +1956,9 @@ vfit
 @subsubsection occt_draw_4_4_21 vdimparam
 
 Syntax:
-~~~~{.php}
-vdimparam name [-text 3d|2d wf|sh|wireframe|shading IntegerSize]
-               [-label left|right|hcenter|hfit top|bottom|vcenter|vfit]
-               [-arrow external|internal|fit]
-               [{-arrowlength|-arlen} RealArrowLength]
-               [{-arrowangle|-arangle} ArrowAngle(degrees)]
-               [-plane xoy|yoz|zox]
-               [-flyout FloatValue -extension FloatValue]
-               [-autovalue]
-               [-value CustomRealValue]
-               [-textvalue CustomTextValue]
-               [-dispunits DisplayUnitsString]
-               [-modelunits ModelUnitsString]
-               [-showunits | -hideunits]
-~~~~
+@snippet ViewerTest_RelationCommands.cxx vdimparam
 
-Sets parameters for angle, length, radius and diameter dimension **name**.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
 vinit
 vpoint p1 0 0 0
@@ -2477,14 +1973,9 @@ vdimparam dim1 -autovalue
 @subsubsection occt_draw_4_4_22 vangleparam
 
 Syntax:
-~~~~{.php}
-vangleparam name [-type interior|exterior]
-                 [-showarrow first|second|both|none]
-~~~~
+@snippet ViewerTest_RelationCommands.cxx vangleparam
 
-Sets parameters for angle dimension **name**.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
 vinit
 vpoint p1 0 0 0
@@ -2498,14 +1989,9 @@ vangleparam dim1 -type exterior -showarrow first
 @subsubsection occt_draw_4_4_23 vlengthparam
 
 Syntax:
-~~~~{.php}
-vlengthparam name [-type interior|exterior]
-                  [-showarrow first|second|both|none]
-~~~~
+@snippet ViewerTest_RelationCommands.cxx vlengthparam
 
-Sets parameters for length dimension **name**.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
 vinit
 vpoint p1 20 20 0
@@ -2520,16 +2006,9 @@ vlengthparam dim1 -direction ox
 @subsubsection occt_draw_4_4_24 vmovedim
 
 Syntax:
-~~~~{.php}
-vmovedim [name] [x y z]
-~~~~
+@snippet ViewerTest_RelationCommands.cxx vmovedim
 
-Moves picked or named (if **name** parameter is defined) dimension
-to picked mouse position or input point with coordinates **x**,**y**,**z**.
-Text label of dimension **name** is moved to position, another parts of dimension
-are adjusted.
-
-**Example:** 
+**Example:**
 ~~~~{.php}
 vinit
 vpoint p1 0 0 0
@@ -2538,6 +2017,14 @@ vdimension dim1 -length -plane xoy -shapes p1 p2
 vmovedim dim1 -10 30 0
 ~~~~
 
+@subsubsection occt_draw_4_4_25  vtexture
+
+Syntax:
+@snippet ViewerTest.cxx vtexture
+
+Texture mapping allows you to map textures on a shape.
+Textures are texture image files and several are predefined.
+You can control the number of occurrences of the texture on a face, the position of a texture and the scale factor of the texture.
 
 @subsection occt_draw_4_5 AIS viewer -- Mesh Visualization Service
 
@@ -8159,78 +7646,6 @@ if (BRepTest_Objects::IsHistoryNeeded())
 
 The method *BRepTest_Objects::IsHistoryNeeded()* controls if the history is needed to be filled in the algorithm and saved into the session after the algorithm is done (*setfillhistory* command controls this option in DRAW).
 
-
-@subsection occt_draw_7_12  Texture Mapping to a Shape
-
-Texture mapping allows you to map textures on a shape. Textures are texture image files and several are predefined. You can control the number of occurrences of the texture on a face, the position of a texture and the scale factor of the texture. 
-
-@subsubsection occt_draw_7_12_1  vtexture
-
-Syntax:
-~~~~{.php}
-vtexture NameOfShape TextureFile 
-vtexture NameOfShape 
-vtexture NameOfShape ? 
-vtexture NameOfShape IdOfTexture 
-~~~~
-
-**TextureFile** identifies the file containing the texture you want. The same syntax without **TextureFile** disables texture mapping. The question-mark <b>?</b> lists available textures. **IdOfTexture** allows applying predefined textures. 
-
-@subsubsection occt_draw_7_12_2  vtexscale
-
-Syntax:
-~~~~{.php}
-vtexscale NameOfShape ScaleU ScaleV 
-vtexscale NameOfShape ScaleUV 
-vtexscale NameOfShape 
-~~~~
-
-*ScaleU* and *Scale V* allow scaling the texture according to the U and V parameters individually, while *ScaleUV* applies the same scale to both parameters. 
-
-The syntax without *ScaleU*, *ScaleV* or *ScaleUV* disables texture scaling. 
-
-@subsubsection occt_draw_7_12_3  vtexorigin
-
-Syntax:
-~~~~{.php}
-vtexorigin NameOfShape UOrigin VOrigin 
-vtexorigin NameOfShape UVOrigin 
-vtexorigin NameOfShape 
-~~~~
-
-*UOrigin* and *VOrigin* allow placing the texture according to the U and V parameters individually, while *UVOrigin* applies the same position value to both parameters. 
-
-The syntax without *UOrigin*, *VOrigin* or *UVOrigin* disables origin positioning. 
-
-@subsubsection occt_draw_7_12_4  vtexrepeat
-
-Syntax:
-~~~~{.php}
-vtexrepeat NameOfShape URepeat VRepeat 
-vtexrepeat NameOfShape UVRepeat 
-vtexrepeat NameOfShape 
-~~~~
-
-*URepeat* and *VRepeat* allow repeating the texture along the U and V parameters individually, while *UVRepeat* applies the same number of repetitions for both parameters. 
-
-The same syntax without *URepeat*, *VRepeat* or *UVRepeat* disables texture repetition. 
-
-@subsubsection occt_draw_7_12_5  vtexdefault
-
-Syntax:
-~~~~{.php}
-vtexdefault NameOfShape 
-~~~~
-
-*Vtexdefault* sets or resets the texture mapping default parameters. 
-
-The defaults are: 
-
- * *URepeat = VRepeat = 1* no repetition 
- * *UOrigin = VOrigin = 1*  origin set at (0,0) 
- * *UScale = VScale = 1*  texture covers 100% of the face 
- 
- 
 @section occt_draw_bop Boolean Operations Commands
 
 This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for performing, analyzing, debugging the algorithm in Boolean Component.

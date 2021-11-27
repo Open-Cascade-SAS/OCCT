@@ -59,13 +59,28 @@ proc help {{theCommand ""} {theHelpString ""} {theGroup "Procedures"}} {
   } elseif {$theHelpString == ""} {
     # help function
     set isFound 0
-    foreach f [lsort [array names Draw_Helps]] {
-      if {[string match $theCommand $f]} {
-        dputs -nonewline -intense $f
-        for {set j [string length $f]} {$j < 15} {incr j} {
-          puts -nonewline " "
+    foreach aCmdIter [lsort [array names Draw_Helps]] {
+      if {[string match $theCommand $aCmdIter]} {
+        dputs -nonewline -intense $aCmdIter
+        set aLines [split $Draw_Helps($aCmdIter) "\n"]
+        set aNbLines [llength $aLines]
+        set isFirstLine 0
+        for {set aLineIter 0} {$aLineIter < $aNbLines} {incr aLineIter} {
+          set aLine [lindex $aLines $aLineIter]
+          if { "$aLine" == "" && ($aLineIter == 0 || $aLineIter == [expr $aNbLines - 1]) } { continue }
+          if { $isFirstLine == 0 } {
+            set isFirstLine 1
+            for {set j [string length $aCmdIter]} {$j < 15} {incr j} {
+              puts -nonewline " "
+            }
+            puts -nonewline " : "
+          } else {
+            if { ![string match "\t\t:*" $aLine] } {
+              puts -nonewline "                : "
+            }
+          }
+          puts -nonewline "${aLine}\n"
         }
-        puts " : $Draw_Helps($f)"
         set isFound 1
       }
     }

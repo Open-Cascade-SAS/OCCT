@@ -835,6 +835,7 @@ proc OCCDoc_MakeDoxyfile {docType outDir tagFileDir {doxyFileName} {generatorMod
     puts $doxyFile "PROJECT_NUMBER         = $occt_version"
     puts $doxyFile "OUTPUT_DIRECTORY       = $outDir/."
     puts $doxyFile "PROJECT_LOGO           = [OCCDoc_GetDoxDir]/resources/occ_logo.png"
+    puts $doxyFile "EXAMPLE_PATH           = [OCCDoc_GetSourceDir $productsPath]"
 
     set PARAM_INPUT "INPUT                 ="
     set PARAM_IMAGEPATH "IMAGE_PATH        = [OCCDoc_GetDoxDir]/resources/ "

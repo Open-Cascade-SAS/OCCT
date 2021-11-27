@@ -6819,389 +6819,396 @@ static int VNormals (Draw_Interpretor& theDI,
 
 void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 {
-  const char *group ="AISObjects";
+  const char* aGroup = "AIS Viewer";
+  const char* aFileName = __FILE__;
+  auto addCmd = [&](const char* theName, Draw_Interpretor::CommandFunction theFunc, const char* theHelp)
+  {
+    theCommands.Add (theName, theHelp, aFileName, theFunc, aGroup);
+  };
 
-  theCommands.Add ("vtrihedron",
-                   "vtrihedron : vtrihedron name"
-                   "\n\t\t: [-dispMode {wireframe|shading} ]"
-                   "\n\t\t: [-origin x y z ]"
-                   "\n\t\t: [-zaxis u v w -xaxis u v w ]"
-                   "\n\t\t: [-drawAxes {X|Y|Z|XY|YZ|XZ|XYZ}]"
-                   "\n\t\t: [-hideLabels {on|off}]"
-                   "\n\t\t: [-hideArrows {on|off}]"
-                   "\n\t\t: [-label {XAxis|YAxis|ZAxis} value]"
-                   "\n\t\t: [-attribute {XAxisLength|YAxisLength|ZAxisLength"
-                   "\n\t\t:             |TubeRadiusPercent|ConeRadiusPercent"
-                   "\n\t\t:             |ConeLengthPercent|OriginRadiusPercent"
-                   "\n\t\t:             |ShadingNumberOfFacettes} value]"
-                   "\n\t\t: [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
-                   "\n\t\t:         |XOZAxis|Whole} {r g b | colorName}]"
-                   "\n\t\t: [-textColor  [XAxis|YAxis|ZAxis] {r g b | colorName}]"
-                   "\n\t\t: [-arrowColor [XAxis|YAxis|ZAxis] {r g b | colorName}]"
-                   "\n\t\t: [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
-                   "\n\t\t:            |YArrow|ZArrow|XOYAxis|YOZAxis"
-                   "\n\t\t:            |XOZAxis|Whole} value]"
-                   "\n\t\t:"
-                   "\n\t\t: Creates a new *AIS_Trihedron* object or changes parameters of "
-                   "\n\t\t: existing trihedron. If no argument is set,"
-                   "\n\t\t: the default trihedron (0XYZ) is created."
-                   "\n\t\t: -dispMode mode of visualization: wf - wireframe,"
-                   "\n\t\t:                                  sh - shading."
-                   "\n\t\t:               Default value is wireframe."
-                   "\n\t\t: -origin allows to set trihedron location."
-                   "\n\t\t: -zaxis/-xaxis allows to set trihedron X and Z"
-                   "\n\t\t:               directions. The directions should"
-                   "\n\t\t:               be orthogonal. Y direction is calculated."
-                   "\n\t\t: -drawAxes allows to set what axes are drawn in the"
-                   "\n\t\t:           trihedron, default state is XYZ"
-                   "\n\t\t: -hideLabels allows to show/hide trihedron labels"
-                   "\n\t\t: -hideArrows allows to show/hide trihedron arrows"
-                   "\n\t\t: -label allows to change default X/Y/Z titles of axes"
-                   "\n\t\t: -attribute sets parameters of trihedron"
-                   "\n\t\t: -color sets color properties of parts of trihedron"
-                   "\n\t\t: -textColor sets color properties of trihedron labels"
-                   "\n\t\t: -arrowColor sets color properties of trihedron arrows"
-                   "\n\t\t: -priority allows to change default selection priority"
-                   "\n\t\t: of trihedron components",
-                   __FILE__,VTrihedron,group);
+  addCmd ("vtrihedron", VTrihedron, /* [vtrihedron] */ R"(
+vtrihedron name
+           [-dispMode {wireframe|shading} ]
+           [-origin x y z ]
+           [-zaxis u v w -xaxis u v w ]
+           [-drawAxes {X|Y|Z|XY|YZ|XZ|XYZ}]
+           [-hideLabels {on|off}]
+           [-hideArrows {on|off}]
+           [-label {XAxis|YAxis|ZAxis} value]
+           [-attribute {XAxisLength|YAxisLength|ZAxisLength
+                       |TubeRadiusPercent|ConeRadiusPercent
+                       |ConeLengthPercent|OriginRadiusPercent
+                       |ShadingNumberOfFacettes} value]
+           [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis
+                   |XOZAxis|Whole} {r g b | colorName}]
+           [-textColor  [XAxis|YAxis|ZAxis] {r g b | colorName}]
+           [-arrowColor [XAxis|YAxis|ZAxis] {r g b | colorName}]
+           [-priority {Origin|XAxis|YAxis|ZAxis|XArrow
+                      |YArrow|ZArrow|XOYAxis|YOZAxis
+                      |XOZAxis|Whole} value]
 
-  theCommands.Add("vtri2d",
-    "vtri2d Name"
-    "\n\t\t: Creates a plane with a 2D trihedron from an interactively selected face.",
-    __FILE__,VTrihedron2D ,group);
+Creates/changes *AIS_Trihedron* object.
+ -dispMode   mode of visualization: wf - wireframe,
+                                    sh - shading;
+             default value is wireframe;
+ -origin     allows to set trihedron location;
+ -zaxis/-xaxis allows to set trihedron X and Z directions;
+             the directions should be orthogonal;
+             Y direction is calculated;
+ -drawAxes   allows to set what axes are drawn in the
+             trihedron, default state is XYZ;
+ -hideLabels allows to show/hide trihedron labels;
+ -hideArrows allows to show/hide trihedron arrows;
+ -label      allows to change default X/Y/Z titles of axes;
+ -attribute  sets parameters of trihedron;
+ -color      sets color properties of parts of trihedron;
+ -textColor  sets color properties of trihedron labels;
+ -arrowColor sets color properties of trihedron arrows;
+ -priority   allows to change default selection priority
+             of trihedron components.
+)" /* [vtrihedron] */);
 
-  theCommands.Add("vplanetri",
-    "vplanetri name"
-    "\n\t\t: Create a plane from a trihedron selection. If no arguments are set, the default",
-    __FILE__,VPlaneTrihedron ,group);
+  addCmd ("vtri2d", VTrihedron2D, /* [vtri2d] */ R"(
+vtri2d Name : Creates a plane with a 2D trihedron from an interactively selected face.
+)" /* [vtri2d] */);
 
-  theCommands.Add("vsize",
-    "vsize       : vsize [name(Default=Current)] [size(Default=100)] "
-    "\n\t\t: Changes the size of a named or selected trihedron."
-    "\n\t\t: If the name is not defined: it affects the selected trihedrons otherwise nothing is done."
-    "\n\t\t: If the value is not defined: it is set to 100 by default.",
-    __FILE__,VSize,group);
+  addCmd ("vplanetri", VPlaneTrihedron, /* [vplanetri] */ R"(
+vplanetri name
+Create a plane from a trihedron selection.
+If no arguments are set, the default plane is created.
+)" /* [vplanetri] */);
 
-  theCommands.Add("vaxis",
-    "vaxis name [Xa] [Ya] [Za] [Xb] [Yb] [Zb]"
-    "\n\t\t: Creates an axis. If  the values are not defined, an axis is created by interactive selection of two vertices or one edge",
-    __FILE__,VAxisBuilder,group);
+  addCmd ("vsize", VSize, /* [vsize] */ R"(
+vsize [name(Default=Current)] [size(Default=100)]
+Changes the size of a named or selected trihedron.
+If the name is not defined: it affects the selected trihedrons otherwise nothing is done.
+If the value is not defined: it is set to 100 by default.
+)" /* [vsize] */);
 
-  theCommands.Add("vaxispara",
-    "vaxispara name "
-    "\n\t\t: Creates an axis by interactive selection of an edge and a vertex.",
-    __FILE__,VAxisBuilder,group);
+  addCmd ("vaxis", VAxisBuilder, /* [vaxis] */ R"(
+vaxis name [Xa] [Ya] [Za] [Xb] [Yb] [Zb]
+Creates an axis. If  the values are not defined,
+an axis is created by interactive selection of two vertices or one edge.
+)" /* [vaxis] */);
 
-  theCommands.Add("vaxisortho",
-    "vaxisortho name "
-    "\n\t\t: Creates an axis by interactive selection of an edge and a vertex. The axis will be orthogonal to the selected edge.",
-    __FILE__,VAxisBuilder,group);
+  addCmd ("vaxispara", VAxisBuilder, /* [vaxispara] */ R"(
+vaxispara name
+Creates an axis by interactive selection of an edge and a vertex.
+)" /* [vaxispara] */);
 
-  theCommands.Add("vpoint",
-    "vpoint name [X Y [Z]] [-2d] [-nosel]"
-    "\n\t\t: Creates a point from coordinates."
-    "\n\t\t: If the values are not defined, a point is created from selected vertex or edge (center)."
-    "\n\t\t:  -2d    defines on-screen 2D point from top-left window corner"
-    "\n\t\t:  -nosel creates non-selectable presentation",
-    __FILE__,VPointBuilder,group);
+  addCmd ("vaxisortho", VAxisBuilder, /* [vaxisortho] */ R"(
+vaxisortho name
+Creates an axis by interactive selection of an edge and a vertex.
+The axis will be orthogonal to the selected edge.
+)" /* [vaxisortho] */);
 
-  theCommands.Add("vplane",
-    "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity {0|1}]"
-    "\n\t\t: Creates a plane from named or interactively selected entities."
-    "\n\t\t: TypeOfSensitivity:"
-    "\n\t\t:   0 - Interior"
-    "\n\t\t:   1 - Boundary",
-    __FILE__,VPlaneBuilder,group);
+  addCmd ("vpoint", VPointBuilder, /* [vpoint] */ R"(
+vpoint name [X Y [Z]] [-2d] [-nosel]
+Creates a point from coordinates.
+If the values are not defined, a point is created from selected vertex or edge (center).
+ -2d    defines on-screen 2D point from top-left window corner;
+ -nosel creates non-selectable presentation.
+)" /* [vpoint] */);
 
-  theCommands.Add ("vchangeplane", "vchangeplane usage: \n"
-    "   vchangeplane <plane_name>"
-    " [x=center_x y=center_y z=center_z]"
-    " [dx=dir_x dy=dir_y dz=dir_z]"
-    " [sx=size_x sy=size_y]"
-    " [minsize=value]"
-    " [noupdate]\n"
-    "   - changes parameters of the plane:\n"
-    "   - x y z     - center\n"
-    "   - dx dy dz  - normal\n"
-    "   - sx sy     - plane sizes\n"
-    "   - noupdate  - do not update/redisplay the plane in context\n"
-    "   Please enter coordinates in format \"param=value\" in arbitrary order.",
-    __FILE__, VChangePlane, group);
+  addCmd ("vplane", VPlaneBuilder, /* [vplane] */ R"(
+vplane PlaneName [AxisName/PlaneName/PointName]
+       [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity {0|1}]
+Creates a plane from named or interactively selected entities. TypeOfSensitivity:
+  0 - Interior;
+  1 - Boundary.
+)" /* [vplane] */);
 
-  theCommands.Add("vplanepara",
-    "vplanepara  PlaneName  "
-    "\n\t\t: Creates a plane from interactively selected vertex and face.",
-    __FILE__,VPlaneBuilder,group);
+  addCmd ("vchangeplane", VChangePlane, /* [vchangeplane] */ R"(
+vchangeplane plane_name
+             [x=center_x y=center_y z=center_z]
+             [dx=dir_x dy=dir_y dz=dir_z]
+             [sx=size_x sy=size_y]
+             [minsize=value]
+             [noupdate]
+Changes parameters of the plane:
+ - x y z     - center
+ - dx dy dz  - normal
+ - sx sy     - plane sizes
+ - noupdate  - do not update/redisplay the plane in context
+Please enter coordinates in format "param=value" in arbitrary order.
+)" /* [vchangeplane] */);
 
-  theCommands.Add("vplaneortho",
-    "vplaneortho  PlaneName  "
-    "\n\t\t: Creates a plane from interactive selected face and coplanar edge. ",
-    __FILE__,VPlaneBuilder,group);
+  addCmd ("vplanepara", VPlaneBuilder, /* [vplanepara] */ R"(
+vplanepara  PlaneName
+Creates a plane from interactively selected vertex and face.
+)" /* [vplanepara] */);
 
-  theCommands.Add("vline",
-    "vline LineName [Xa/PointName] [Ya/PointName] [Za] [Xb] [Yb] [Zb]  "
-    "\n\t\t: Creates a line from coordinates, named or interactively selected vertices. ",
-    __FILE__,VLineBuilder,group);
+  addCmd ("vplaneortho", VPlaneBuilder, /* [vplaneortho] */ R"(
+vplaneortho  PlaneName
+Creates a plane from interactive selected face and coplanar edge.
+)" /* [vplaneortho] */);
 
-  theCommands.Add("vcircle",
-    "vcircle CircleName [PointName PointName PointName IsFilled]\n\t\t\t\t\t[PlaneName PointName Radius IsFilled]"
-    "\n\t\t: Creates a circle from named or interactively selected entities."
-    "\n\t\t: Parameter IsFilled is defined as 0 or 1.",
-    __FILE__,VCircleBuilder,group);
+  addCmd ("vline", VLineBuilder, /* [vline] */ R"(
+vline LineName [Xa/PointName] [Ya/PointName] [Za] [Xb] [Yb] [Zb]
+Creates a line from coordinates, named or interactively selected vertices.
+)" /* [vline] */);
 
-  theCommands.Add ("vdrawtext",
-                   "vdrawtext name text"
-                   "\n\t\t: [-pos X=0 Y=0 Z=0]"
-                   "\n\t\t: [-color {R G B|name}=yellow]"
-                   "\n\t\t: [-halign {left|center|right}=left]"
-                   "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
-                   "\n\t\t: [-angle angle=0]"
-                   "\n\t\t: [-zoom {0|1}=0]"
-                   "\n\t\t: [-height height=16]"
-                   "\n\t\t: [-wrapping width=40]"
-                   "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
-                   "\n\t\t: [-font font=Times]"
-                   "\n\t\t: [-2d]"
-                   "\n\t\t: [-perspos {X Y Z}=0 0 0], where"
-                   "\n\t\t X and Y define the coordinate origin in 2d space relative to the view window"
-                   "\n\t\t Example: X=0 Y=0 is center, X=1 Y=1 is upper right corner etc..."
-                   "\n\t\t Z coordinate defines the gap from border of view window (except center position)."
-                   "\n\t\t: [-disptype {blend|decal|shadow|subtitle|dimension|normal}=normal}"
-                   "\n\t\t: [-subcolor {R G B|name}=white]"
-                   "\n\t\t: [-noupdate]"
-                   "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]"
-                   "\n\t\t: [-flipping]"
-                   "\n\t\t: [-ownanchor {0|1}=1]"
-                   "\n\t\t: Display text label at specified position.",
-    __FILE__, VDrawText, group);
+  addCmd ("vcircle", VCircleBuilder, /* [vcircle] */ R"(
+vcircle CircleName [PointName PointName PointName IsFilled]
+                   [PlaneName PointName Radius IsFilled]
+Creates a circle from named or interactively selected entities.
+Parameter IsFilled is defined as 0 or 1.
+)" /* [vcircle] */);
 
-  theCommands.Add("vdrawsphere",
-    "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0] [ToPrintInfo=1]\n",
-    __FILE__,VDrawSphere,group);
+  addCmd ("vdrawtext", VDrawText, /* [vdrawtext] */ R"(
+vdrawtext name text
+          [-pos X Y Z]={0 0 0}
+          [-color {R G B|name}]=yellow
+          [-halign {left|center|right}]=left
+          [-valign {top|center|bottom|topfirstline}}]=bottom
+          [-angle angle]=0
+          [-zoom {0|1}]=0
+          [-height height]=16
+          [-wrapping width]=40
+          [-aspect {regular|bold|italic|boldItalic}]=regular
+          [-font font]=Times
+          [-2d] [-perspos {X Y Z}]={0 0 0}
+          [-disptype {blend|decal|shadow|subtitle|dimension|normal}}=normal
+          [-subcolor {R G B|name}]=white
+          [-noupdate]
+          [-plane NormX NormY NormZ DirX DirY DirZ]
+          [-flipping] [-ownanchor {0|1}]=1
+Display text label at specified position.
+Within -perspos, X and Y define the coordinate origin in 2d space relative to the view window.
+Example: X=0 Y=0 is center, X=1 Y=1 is upper right corner etc...
+Z coordinate defines the gap from border of view window (except center position).
+)" /* [vdrawtext] */);
 
-  theCommands.Add ("vlocation",
-                "vlocation name"
-      "\n\t\t:   [-reset] [-copyFrom otherName]"
-      "\n\t\t:   [-translate    X Y [Z]] [-rotate    x y z dx dy dz angle] [-scale    [X Y Z] scale]"
-      "\n\t\t:   [-pretranslate X Y [Z]] [-prerotate x y z dx dy dz angle] [-prescale [X Y Z] scale]"
-      "\n\t\t:   [-mirror x y z dx dy dz] [-premirror x y z dx dy dz]"
-      "\n\t\t:   [-setLocation X Y [Z]] [-setRotation QX QY QZ QW] [-setScale [X Y Z] scale]"
-      "\n\t\t: Object local transformation management:"
-      "\n\t\t:   -reset        resets transformation to identity"
-      "\n\t\t:   -translate    applies translation vector"
-      "\n\t\t:   -rotate       applies rotation around axis"
-      "\n\t\t:   -scale        applies scale factor with optional anchor"
-      "\n\t\t:   -mirror       applies mirror transformation"
-      "\n\t\t:   -pretranslate pre-multiplies translation vector"
-      "\n\t\t:   -prerotate    pre-multiplies rotation around axis"
-      "\n\t\t:   -prescale     pre-multiplies scale  transformation"
-      "\n\t\t:   -premirror    pre-multiplies mirror transformation"
-      "\n\t\t:   -setLocation  overrides translation part"
-      "\n\t\t:   -setRotation  overrides rotation part with specified quaternion"
-      "\n\t\t:   -setScale     overrides scale factor",
-        __FILE__, VSetLocation, group);
-  theCommands.Add ("vsetlocation",
-                   "alias for vlocation",
-        __FILE__, VSetLocation, group);
-  theCommands.Add ("vchild",
-                   "vchild parent [-add] [-remove] [-ignoreParentTrsf {0|1}] child1 [child2] [...]"
-      "\n\t\t: Command for testing low-level presentation connections."
-      "\n\t\t: vconnect command should be used instead.",
-        __FILE__, VChild, group);
-  theCommands.Add("vparent",
-    "vparent parent [-ignoreVisu]"
-    "\n\t\t: Command for testing object properties as parent in the hierarchy."
-    "\n\t\t: Arguments:"
-    "\n\t\t:   -ignoreVisu do not propagate the visual state (display/erase/color) to children objects",
-    __FILE__, VParent, group);
-  theCommands.Add ("vcomputehlr",
-                "vcomputehlr shapeInput hlrResult [-algoType {algo|polyAlgo}=polyAlgo]"
-      "\n\t\t:   [eyeX eyeY eyeZ dirX dirY dirZ upX upY upZ]"
-      "\n\t\t:   [-showTangentEdges {on|off}=off] [-nbIsolines N=0] [-showHiddenEdges {on|off}=off]"
-      "\n\t\t: Arguments:"
-      "\n\t\t:  shapeInput - name of the initial shape"
-      "\n\t\t:  hlrResult - result HLR object from initial shape"
-      "\n\t\t:  eye, dir are eye position and look direction"
-      "\n\t\t:  up is the look up direction vector"
-      "\n\t\t:  -algoType HLR algorithm to use"
-      "\n\t\t:  -showTangentEdges include tangent edges"
-      "\n\t\t:  -nbIsolines include isolines"
-      "\n\t\t:  -showHiddenEdges include hidden edges"
-      "\n\t\t: Use vtop to see projected HLR shape.",
-    __FILE__, VComputeHLR, group);
+  addCmd ("vdrawsphere", VDrawSphere, /* [vdrawsphere] */ R"(
+vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0] [ToPrintInfo=1]
+)" /* [vdrawsphere] */);
 
-  theCommands.Add("vdrawparray",
-                "vdrawparray name TypeOfArray={points|segments|polylines|triangles"
-      "\n\t\t:                                |trianglefans|trianglestrips|quads|quadstrips|polygons}"
-      "\n\t\t:              [-deinterleaved|-mutable]"
-      "\n\t\t:              [vertex={'v' x y z [normal={'n' nx ny nz}] [color={'c' r g b}] [texel={'t' tx ty}]]"
-      "\n\t\t:              [bound= {'b' nbVertices [bound_color={'c' r g b}]]"
-      "\n\t\t:              [edge=  {'e' vertexId]"
-      "\n\t\t:              [-shape shapeName] [-patch]"
-      "\n\t\t: Commands create an Interactive Object for specified Primitive Array definition (Graphic3d_ArrayOfPrimitives)"
-      "\n\t\t: with the main purpose is covering various combinations by tests",
-    __FILE__,VDrawPArray,group);
+  addCmd ("vlocation", VSetLocation, /* [vlocation] */ R"(
+vlocation name
+    [-reset] [-copyFrom otherName]
+    [-translate    X Y [Z]] [-rotate    x y z dx dy dz angle] [-scale    [X Y Z] scale]
+    [-pretranslate X Y [Z]] [-prerotate x y z dx dy dz angle] [-prescale [X Y Z] scale]
+    [-mirror x y z dx dy dz] [-premirror x y z dx dy dz]
+    [-setLocation X Y [Z]] [-setRotation QX QY QZ QW] [-setScale [X Y Z] scale]
+Object local transformation management:
+ -reset        resets transformation to identity
+ -translate    applies translation vector
+ -rotate       applies rotation around axis
+ -scale        applies scale factor with optional anchor
+ -mirror       applies mirror transformation
+ -pretranslate pre-multiplies translation vector
+ -prerotate    pre-multiplies rotation around axis
+ -prescale     pre-multiplies scale  transformation
+ -premirror    pre-multiplies mirror transformation
+ -setLocation  overrides translation part
+ -setRotation  overrides rotation part with specified quaternion
+ -setScale     overrides scale factor
+)" /* [vlocation] */);
 
-  theCommands.Add("vconnect", 
-    "vconnect name Xo Yo Zo object1 object2 ... [color=NAME]"
-    "\n\t\t: Creates and displays AIS_ConnectedInteractive object from input object and location.",
-    __FILE__, VConnect, group);
+  addCmd ("vsetlocation", VSetLocation, /* [vsetlocation] */ R"(
+Alias for vlocation
+)" /* [vsetlocation] */);
 
-  theCommands.Add("vconnectto",
-    "vconnectto : instance_name Xo Yo Zo object [-nodisplay|-noupdate|-update]"
-    "  Makes an instance 'instance_name' of 'object' with position (Xo Yo Zo)."
-    "\n\t\t:   -nodisplay - only creates interactive object, but not displays it",
-    __FILE__, VConnectTo,group);
+  addCmd ("vchild", VChild, /* [vchild] */ R"(
+vchild parent [-add] [-remove] [-ignoreParentTrsf {0|1}] child1 [child2] [...]
+Command for testing low-level presentation connections.
+vconnect command should be used instead.
+)" /* [vchild] */);
 
-  theCommands.Add("vdisconnect",
-    "vdisconnect assembly_name (object_name | object_number | 'all')"
-    "  Disconnects all objects from assembly or disconnects object by name or number (use vlistconnected to enumerate assembly children).",
-    __FILE__,VDisconnect,group);
+  addCmd ("vparent", VParent, /* [vparent] */ R"(
+vparent parent [-ignoreVisu]
+Command for testing object properties as parent in the hierarchy.
+ -ignoreVisu do not propagate the visual state (display/erase/color) to children objects
+)" /* [vparent] */);
 
-  theCommands.Add("vaddconnected",
-    "vaddconnected assembly_name object_name"
-    "Adds object to assembly.",
-    __FILE__,VAddConnected,group);
+  addCmd ("vcomputehlr", VComputeHLR, /* [vcomputehlr] */ R"(
+vcomputehlr shapeInput hlrResult [-algoType {algo|polyAlgo}=polyAlgo]
+    [eyeX eyeY eyeZ dirX dirY dirZ upX upY upZ]
+    [-showTangentEdges {on|off}=off] [-nbIsolines N=0] [-showHiddenEdges {on|off}=off]
+Arguments:
+  shapeInput - name of the initial shape
+  hlrResult  - result HLR object from initial shape
+  eye, dir are eye position and look direction
+  up is the look up direction vector
+ -algoType HLR algorithm to use
+ -showTangentEdges include tangent edges
+ -nbIsolines include isolines
+ -showHiddenEdges include hidden edges
+Use vtop to see projected HLR shape.
+)" /* [vcomputehlr] */);
 
-  theCommands.Add("vlistconnected",
-    "vlistconnected assembly_name"
-    "Lists objects in assembly.",
-    __FILE__,VListConnected,group);
+  addCmd ("vdrawparray", VDrawPArray, /* [vdrawparray] */ R"(
+vdrawparray name TypeOfArray={points|segments|polylines|triangles
+                   |trianglefans|trianglestrips|quads|quadstrips|polygons}
+            [-deinterleaved|-mutable]
+            [vertex={'v' x y z [normal={'n' nx ny nz}] [color={'c' r g b}] [texel={'t' tx ty}]]
+            [bound= {'b' nbVertices [bound_color={'c' r g b}]]
+            [edge=  {'e' vertexId]
+            [-shape shapeName] [-patch]
+Commands create an Interactive Object for specified Primitive Array definition
+with the main purpose is covering various combinations by tests.
+)" /* [vdrawparray] */);
 
+  addCmd ("vconnect", VConnect, /* [vconnect] */ R"(
+vconnect name Xo Yo Zo object1 object2 ... [color=NAME]
+Creates and displays AIS_ConnectedInteractive object from input object and location.
+)" /* [vconnect] */);
 
-  theCommands.Add("vselmode", 
-                "vselmode [object] selectionMode {on|off}"
-      "\n\t\t:            [{-add|-set|-globalOrLocal}=-globalOrLocal]"
-      "\n\t\t: Switches selection mode for the specified object or for all objects in context."
-      "\n\t\t: Selection mode is either an integer number specific to Interactive Object,"
-      "\n\t\t: or sub-shape type in case of AIS_Shape:"
-      "\n\t\t:   Shape, Vertex, Edge, Wire, Face, Shell, Solid, CompSolid, Compound"
-      "\n\t\t: The integer mode 0 (Shape in case of AIS_Shape) is reserved for selecting object as whole."
-      "\n\t\t: Additional options:"
-      "\n\t\t:  -add           already activated selection modes will be left activated"
-      "\n\t\t:  -set           already activated selection modes will be deactivated"
-      "\n\t\t:  -globalOrLocal (default) if new mode is Global selection mode,"
-      "\n\t\t:                 then active local selection modes will be deactivated"
-      "\n\t\t:                 and the samthen active local selection modes will be deactivated",
-    __FILE__, VSetSelectionMode, group);
+  addCmd ("vconnectto", VConnectTo, /* [vconnectto] */ R"(
+vconnectto instance_name Xo Yo Zo object [-nodisplay|-noupdate|-update]
+Makes an instance 'instance_name' of 'object' with position (Xo Yo Zo).
+ -nodisplay - only creates interactive object, but not displays it.
+)" /* [vconnectto] */);
 
-  theCommands.Add("vselnext",
-    "vselnext : hilight next detected",
-    __FILE__, VSelectionNext, group);
+  addCmd ("vdisconnect", VDisconnect, /* [vdisconnect] */ R"(
+vdisconnect assembly_name {object_name|object_number|'all'}
+Disconnects all objects from assembly or disconnects object by name or number.
+Use vlistconnected to enumerate assembly children.
+)" /* [vdisconnect] */);
 
-  theCommands.Add("vselprev",
-    "vselnext : hilight previous detected",
-    __FILE__, VSelectionPrevious, group);
+  addCmd ("vaddconnected", VAddConnected, /* [vaddconnected] */ R"(
+vaddconnected assembly_name object_name
+Adds object to assembly.
+)" /* [vaddconnected] */);
 
-  theCommands.Add("vtriangle",
-    "vtriangle Name PointName PointName PointName"
-    "\n\t\t: Creates and displays a filled triangle from named points.", 
-    __FILE__, VTriangle,group);
+  addCmd ("vlistconnected", VListConnected, /* [vlistconnected] */ R"(
+vlistconnected assembly_name
+Lists objects in assembly.
+)" /* [vlistconnected] */);
 
-  theCommands.Add("vsegment",
-    "vsegment Name PointName PointName"
-    "\n\t\t: Creates and displays a segment from named points.", 
-    __FILE__, VTriangle,group);
+  addCmd ("vselmode", VSetSelectionMode, /* [vselmode] */ R"(
+vselmode [object] selectionMode {on|off}
+         [{-add|-set|-globalOrLocal}=-globalOrLocal]
+Switches selection mode for the specified object or for all objects in context.
+Selection mode is either an integer number specific to Interactive Object,
+or sub-shape type in case of AIS_Shape:
+  Shape, Vertex, Edge, Wire, Face, Shell, Solid, CompSolid, Compound
+The integer mode 0 (Shape in case of AIS_Shape) is reserved for selecting object as whole.
+Additional options:
+ -add           already activated selection modes will be left activated
+ -set           already activated selection modes will be deactivated
+ -globalOrLocal (default) if new mode is Global selection mode,
+                then active local selection modes will be deactivated
+                and the samthen active local selection modes will be deactivated
+)" /* [vselmode] */);
 
-  theCommands.Add ("vtorus",
-                   "vtorus name [R1 R2 [Angle1=0 Angle2=360] [Angle=360]]"
-                   "\n\t\t:             [-radius R1] [-pipeRadius R2]"
-                   "\n\t\t:             [-pipeAngle Angle=360] [-segmentAngle1 Angle1=0 -segmentAngle2 Angle2=360]"
-                   "\n\t\t:             [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]"
-                   "\n\t\t: Creates and displays a torus or torus segment."
-                   "\n\t\t: Parameters of the torus :"
-                   "\n\t\t: - R1     distance from the center of the pipe to the center of the torus"
-                   "\n\t\t: - R2     radius of the pipe"
-                   "\n\t\t: - Angle1 first angle to create a torus ring segment"
-                   "\n\t\t: - Angle2 second angle to create a torus ring segment"
-                   "\n\t\t: - Angle  angle to create a torus pipe segment",
-                   __FILE__, VTorus, group);
+  addCmd ("vselnext", VSelectionNext, /* [vselnext] */ R"(
+vselnext : hilight next detected
+)" /* [vselnext] */);
 
-  theCommands.Add ("vcylinder",
-                   "vcylinder name [R1 R2 Height] [-height H] [-radius R] [-bottomRadius R1 -topRadius R2]"
-                   "\n\t\t:                [-nbSlices Number=100] [-noupdate]"
-                   "\n\t\t: Creates and displays a cylinder."
-                   "\n\t\t: Parameters of the cylinder :"
-                   "\n\t\t: - R1     cylinder bottom radius"
-                   "\n\t\t: - R2     cylinder top radius"
-                   "\n\t\t: - Height cylinder height",
-                   __FILE__, VCylinder, group);
+  addCmd ("vselprev", VSelectionPrevious, /* [vselprev] */ R"(
+vselnext : hilight previous detected
+)" /* [vselprev] */);
 
-  theCommands.Add ("vsphere",
-                   "vsphere name [-radius] R"
-                   "\n\t\t:              [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]"
-                   "\n\t\t: Creates and displays a sphere.",
-                   __FILE__, VSphere, group);
+  addCmd ("vtriangle", VTriangle, /* [vtriangle] */ R"(
+vtriangle Name PointName PointName PointName
+Creates and displays a filled triangle from named points.
+)" /* [vtriangle] */);
 
-  theCommands.Add("vobjzlayer",
-    "vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object",
-    __FILE__, VObjZLayer, group);
+  addCmd ("vsegment", VTriangle, /* [vsegment] */ R"(
+vsegment Name PointName PointName
+Creates and displays a segment from named points.
+)" /* [vsegment] */);
+
+  addCmd ("vtorus", VTorus, /* [vtorus] */ R"(
+vtorus name [R1 R2 [Angle1=0 Angle2=360] [Angle=360]]
+       [-radius R1] [-pipeRadius R2]
+       [-pipeAngle Angle=360] [-segmentAngle1 Angle1=0 -segmentAngle2 Angle2=360]
+       [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]
+Creates and displays a torus or torus segment.
+Parameters of the torus:
+ - R1     distance from the center of the pipe to the center of the torus
+ - R2     radius of the pipe
+ - Angle1 first angle to create a torus ring segment
+ - Angle2 second angle to create a torus ring segment
+ - Angle  angle to create a torus pipe segment
+)" /* [vtorus] */);
+
+  addCmd ("vcylinder", VCylinder, /* [vcylinder] */ R"(
+vcylinder name [R1 R2 Height] [-height H] [-radius R] [-bottomRadius R1 -topRadius R2]
+               [-nbSlices Number=100] [-noupdate]
+Creates and displays a cylinder.
+Parameters of the cylinder:
+ - R1     cylinder bottom radius
+ - R2     cylinder top radius
+ - Height cylinder height
+)" /* [vcylinder] */);
+
+  addCmd ("vsphere", VSphere, /* [vsphere] */ R"(
+vsphere name [-radius] R
+             [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]
+Creates and displays a sphere.
+)" /* [vsphere] */);
+
+  addCmd ("vobjzlayer", VObjZLayer, /* [vobjzlayer] */ R"(
+vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object
+)" /* [vobjzlayer] */);
   
-  theCommands.Add("vpolygonoffset",
-    "vpolygonoffset : [object [mode factor units]] - sets/gets polygon offset parameters for an object, without arguments prints the default values",
-    __FILE__, VPolygonOffset, group);
+  addCmd ("vpolygonoffset", VPolygonOffset, /* [vpolygonoffset] */ R"(
+vpolygonoffset [object [mode factor units]]
+Sets/gets polygon offset parameters for an object; without arguments prints the default values
+)" /* [vpolygonoffset] */);
 
-  theCommands.Add ("vmarkerstest",
-                   "vmarkerstest: name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]\n",
-                   __FILE__, VMarkersTest, group);
+  addCmd ("vmarkerstest", VMarkersTest, /* [vmarkerstest] */ R"(
+vmarkerstest: name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]
+)" /* [vmarkerstest] */);
 
-  theCommands.Add ("text2brep",
-                   "text2brep: name text"
-                   "\n\t\t: [-pos X=0 Y=0 Z=0]"
-                   "\n\t\t: [-halign {left|center|right}=left]"
-                   "\n\t\t: [-valign {top|center|bottom|topfirstline}=bottom}]"
-                   "\n\t\t: [-height height=16]"
-                   "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
-                   "\n\t\t: [-font font=Courier] [-strict {strict|aliases|any}=any]"
-                   "\n\t\t: [-composite {on|off}=off]"
-                   "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]",
-                   __FILE__, TextToBRep, group);
-  theCommands.Add ("vfont",
-                            "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
-                   "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]"
-                   "\n\t\t:        [-findAll fontNameMask] [-findInfo fontName]"
-                   "\n\t\t:        [-unicodeFallback {on|off}]"
-                   "\n\t\t:        [-clear] [-init] [-list] [-names]"
-                   "\n\t\t:        [-aliases [aliasName]] [-addAlias Alias FontName] [-removeAlias Alias FontName] [-clearAlias Alias] [-clearAliases]"
-                   "\n\t\t: Work with font registry - register font, list available fonts, find font."
-                   "\n\t\t: -findAll  is same as -find, but can print more than one font when mask is passed."
-                   "\n\t\t: -findInfo is same as -find, but prints complete font information instead of family name.",
-                   __FILE__, VFont, group);
+  addCmd ("text2brep", TextToBRep, /* [text2brep] */ R"(
+text2brep name text"
+          [-pos X=0 Y=0 Z=0]"
+          [-halign {left|center|right}=left]"
+          [-valign {top|center|bottom|topfirstline}=bottom}]"
+          [-height height=16]"
+          [-aspect {regular|bold|italic|boldItalic}=regular]"
+          [-font font=Courier] [-strict {strict|aliases|any}=any]"
+          [-composite {on|off}=off]"
+          [-plane NormX NormY NormZ DirX DirY DirZ]",
+)" /* [text2brep] */);
 
-  theCommands.Add ("vvertexmode",
-                   "vvertexmode [name | -set {isolated | all | inherited} [name1 name2 ...]]\n"
-                   "vvertexmode - prints the default vertex draw mode\n"
-                   "vvertexmode name - prints the vertex draw mode of the given object\n"
-                   "vvertexmode -set {isolated | all | inherited} - sets the default vertex draw mode and updates the mode for all displayed objects\n"
-                   "vvertexmode -set {isolated | all | inherited} name1 name2 ... - sets the vertex draw mode for the specified object(s)\n",
-                   __FILE__, VVertexMode, group);
+  addCmd ("vfont", VFont, /* [vfont] */ R"(
+vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]
+      [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]]
+      [-verbose {on|off}]
+      [-findAll fontNameMask] [-findInfo fontName]
+      [-unicodeFallback {on|off}]
+      [-clear] [-init] [-list] [-names]
+      [-aliases [aliasName]] [-addAlias Alias FontName] [-removeAlias Alias FontName]
+      [-clearAlias Alias] [-clearAliases]
+Work with font registry - register font, list available fonts, find font.
+ -findAll  is same as -find, but can print more than one font when mask is passed.
+ -findInfo is same as -find, but prints complete font information instead of family name.
+)" /* [vfont] */);
 
-  theCommands.Add ("vpointcloud",
-                   "vpointcloud name shape [-randColor] [-normals] [-noNormals] [-uv]"
-                   "\n\t\t: Create an interactive object for arbitrary set of points"
-                   "\n\t\t: from triangulated shape."
-                   "\n"
-                   "vpointcloud name x y z r npts {surface|volume}\n"
-                   "            ... [-randColor] [-normals] [-noNormals] [-uv]"
-                   "\n\t\t: Create arbitrary set of points (npts) randomly distributed"
-                   "\n\t\t: on spheric surface or within spheric volume (x y z r)."
-                   "\n\t\t:"
-                   "\n\t\t: Additional options:"
-                   "\n\t\t:  -randColor - generate random color per point"
-                   "\n\t\t:  -normals   - generate normal per point (default)"
-                   "\n\t\t:  -noNormals - do not generate normal per point"
-                   "\n",
-                   __FILE__, VPointCloud, group);
+  addCmd ("vvertexmode", VVertexMode, /* [vvertexmode] */ R"(
+vvertexmode [name | -set {isolated|all|inherited} [name1 name2 ...]]
+Sets the vertex draw mode for the specified object(s)
+or sets default vertex draw mode and updates the mode for all displayed objects.
+Prints the default vertex draw mode without -set parameter.
+)" /* [vvertexmode] */);
 
-  theCommands.Add("vpriority",
-    "vpriority [-noupdate|-update] name [value]\n\t\t  prints or sets the display priority for an object",
-    __FILE__,
-    VPriority, group);
+  addCmd ("vpointcloud", VPointCloud, /* [vpointcloud] */ R"(
+vpointcloud name shape [-randColor] [-normals] [-noNormals] [-uv]
+Create an interactive object for arbitrary set of points from triangulated shape.
 
-  theCommands.Add ("vnormals",
-                   "vnormals usage:\n"
-                   "vnormals Shape [{on|off}=on] [-length {10}] [-nbAlongU {1}] [-nbAlongV {1}] [-nbAlong {1}]"
-                   "\n\t\t:        [-useMesh] [-oriented {0}1}=0]"
-                   "\n\t\t:  Displays/Hides normals calculated on shape geometry or retrieved from triangulation",
-                   __FILE__, VNormals, group);
+vpointcloud name x y z r npts {surface|volume}
+            ... [-randColor] [-normals] [-noNormals] [-uv]
+Create arbitrary set of points (npts) randomly distributed
+on spheric surface or within spheric volume (x y z r).
+
+Additional options:
+ -randColor - generate random color per point
+ -normals   - generate normal per point (default)
+ -noNormals - do not generate normal per point
+)" /* [vpointcloud] */);
+
+  addCmd ("vpriority", VPriority, /* [vpriority] */ R"(
+vpriority [-noupdate|-update] name [value]
+Prints or sets the display priority for an object.
+)" /* [vpriority] */);
+
+  addCmd ("vnormals", VNormals, /* [vnormals] */ R"(
+vnormals Shape [{on|off}=on] [-length {10}] [-nbAlongU {1}] [-nbAlongV {1}] [-nbAlong {1}]
+               [-useMesh] [-oriented {0}1}=0]
+Displays/Hides normals calculated on shape geometry or retrieved from triangulation
+)" /* [vnormals] */);
 }

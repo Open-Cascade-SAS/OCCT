@@ -6542,388 +6542,377 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
   ViewerTest::FilletCommands(theCommands);
   ViewerTest::OpenGlCommands(theCommands);
 
-  const char *group = "AIS_Display";
+  const char* aGroup = "AIS Viewer";
+  const char* aFileName = __FILE__;
+  auto addCmd = [&](const char* theName, Draw_Interpretor::CommandFunction theFunc, const char* theHelp)
+  {
+    theCommands.Add (theName, theHelp, aFileName, theFunc, aGroup);
+  };
 
   // display
-  theCommands.Add("visos",
-      "visos [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]\n"
-      "\tIf last 3 optional parameters are not set prints numbers of U-, V- isolines and IsoOnPlane.\n",
-      __FILE__, visos, group);
+  addCmd ("visos", visos, /* [visos] */ R"(
+visos [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]
+If last 3 optional parameters are not set prints numbers of U-, V- isolines and IsoOnPlane.
+)" /* [visos] */);
 
-  theCommands.Add("vdisplay",
-              "vdisplay [-noupdate|-update] [-local] [-mutable] [-neutral]"
-      "\n\t\t:          [-trsfPers {zoom|rotate|zoomRotate|none}=none]"
-      "\n\t\t:                            [-trsfPersPos X Y [Z]] [-3d]"
-      "\n\t\t:          [-2d|-trihedron [{top|bottom|left|right|topLeft"
-      "\n\t\t:                           |topRight|bottomLeft|bottomRight}"
-      "\n\t\t:                                         [offsetX offsetY]]]"
-      "\n\t\t:          [-dispMode mode] [-highMode mode]"
-      "\n\t\t:          [-layer index] [-top|-topmost|-overlay|-underlay]"
-      "\n\t\t:          [-redisplay] [-erased]"
-      "\n\t\t:          [-noecho] [-autoTriangulation {0|1}]"
-      "\n\t\t:          name1 [name2] ... [name n]"
-      "\n\t\t: Displays named objects."
-      "\n\t\t: Option -local enables displaying of objects in local"
-      "\n\t\t: selection context. Local selection context will be opened"
-      "\n\t\t: if there is not any."
-      "\n\t\t:  -noupdate    Suppresses viewer redraw call."
-      "\n\t\t:  -mutable     Enables optimizations for mutable objects."
-      "\n\t\t:  -neutral     Draws objects in main viewer."
-      "\n\t\t:  -erased      Loads the object into context, but does not display it."
-      "\n\t\t:  -layer       Sets z-layer for objects."
-      "\n\t\t:               Alternatively -overlay|-underlay|-top|-topmost"
-      "\n\t\t:               options can be used for the default z-layers."
-      "\n\t\t:  -top         Draws object on top of main presentations"
-      "\n\t\t:               but below topmost."
-      "\n\t\t:  -topmost     Draws in overlay for 3D presentations."
-      "\n\t\t:               with independent Depth."
-      "\n\t\t:  -overlay     Draws objects in overlay for 2D presentations."
-      "\n\t\t:               (On-Screen-Display)"
-      "\n\t\t:  -underlay    Draws objects in underlay for 2D presentations."
-      "\n\t\t:               (On-Screen-Display)"
-      "\n\t\t:  -selectable|-noselect Controls selection of objects."
-      "\n\t\t:  -trsfPers    Sets a transform persistence flags."
-      "\n\t\t:  -trsfPersPos Sets an anchor point for transform persistence."
-      "\n\t\t:  -2d          Displays object in screen coordinates."
-      "\n\t\t:               (DY looks up)"
-      "\n\t\t:  -dispmode    Sets display mode for objects."
-      "\n\t\t:  -highmode    Sets hilight mode for objects."
-      "\n\t\t:  -redisplay   Recomputes presentation of objects."
-      "\n\t\t:  -noecho      Avoid printing of command results."
-      "\n\t\t:  -autoTriang  Enable/disable auto-triangulation for displayed shape.",
-      __FILE__, VDisplay2, group);
+  addCmd ("vdisplay", VDisplay2, /* [vdisplay] */ R"(
+vdisplay [-noupdate|-update] [-mutable] [-neutral]
+         [-trsfPers {zoom|rotate|zoomRotate|none}=none]
+            [-trsfPersPos X Y [Z]] [-3d]
+            [-2d|-trihedron [{top|bottom|left|right|topLeft
+                            |topRight|bottomLeft|bottomRight}
+              [offsetX offsetY]]]
+         [-dispMode mode] [-highMode mode]
+         [-layer index] [-top|-topmost|-overlay|-underlay]
+         [-redisplay] [-erased]
+         [-noecho] [-autoTriangulation {0|1}]
+         name1 [name2] ... [name n]
+Displays named objects.
+ -noupdate    Suppresses viewer redraw call.
+ -mutable     Enables optimizations for mutable objects.
+ -neutral     Draws objects in main viewer.
+ -erased      Loads the object into context, but does not display it.
+ -layer       Sets z-layer for objects.
+              Alternatively -overlay|-underlay|-top|-topmost
+              options can be used for the default z-layers.
+ -top         Draws object on top of main presentations
+              but below topmost.
+ -topmost     Draws in overlay for 3D presentations.
+              with independent Depth.
+ -overlay     Draws objects in overlay for 2D presentations.
+              (On-Screen-Display)
+ -underlay    Draws objects in underlay for 2D presentations.
+              (On-Screen-Display)
+ -selectable|-noselect Controls selection of objects.
+ -trsfPers    Sets a transform persistence flags.
+ -trsfPersPos Sets an anchor point for transform persistence.
+ -2d          Displays object in screen coordinates.
+              (DY looks up)
+ -dispmode    Sets display mode for objects.
+ -highmode    Sets hilight mode for objects.
+ -redisplay   Recomputes presentation of objects.
+ -noecho      Avoid printing of command results.
+ -autoTriang  Enable/disable auto-triangulation for displayed shape.
+)" /* [vdisplay] */);
 
-  theCommands.Add ("vnbdisplayed",
-      "vnbdisplayed"
-      "\n\t\t: Returns number of displayed objects",
-      __FILE__, VNbDisplayed, group);
+  addCmd ("vnbdisplayed", VNbDisplayed, /* [vnbdisplayed] */ R"(
+vnbdisplayed : Returns number of displayed objects
+)" /* [vnbdisplayed] */);
 
-  theCommands.Add ("vupdate",
-      "vupdate name1 [name2] ... [name n]"
-      "\n\t\t: Updates named objects in interactive context",
-      __FILE__, VUpdate, group);
+  addCmd ("vupdate", VUpdate, /* [vupdate] */ R"(
+vupdate name1 [name2] ... [name n]
+Updates named objects in interactive context
+)" /* [vupdate] */);
 
-  theCommands.Add("verase",
-      "verase [-noupdate|-update] [-local] [name1] ...  [name n] [-noerror]"
-      "\n\t\t: Erases selected or named objects."
-      "\n\t\t: If there are no selected or named objects the whole viewer is erased."
-      "\n\t\t: Option -local enables erasing of selected or named objects without"
-      "\n\t\t: closing local selection context."
-      "\n\t\t: Option -noerror prevents exception on non-existing objects.",
-      __FILE__, VErase, group);
+  addCmd ("verase", VErase, /* [verase] */ R"(
+verase [-noupdate|-update] [name1] ...  [name n] [-noerror]
+Erases selected or named objects.
+If there are no selected or named objects the whole viewer is erased.
+Option -noerror prevents exception on non-existing objects.
+)" /* [verase] */);
 
-  theCommands.Add("vremove",
-      "vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n] [-noerror]"
-      "or vremove [-context] -all to remove all objects"
-      "\n\t\t: Removes selected or named objects."
-      "\n\t\t  If -context is in arguments, the objects are not deleted"
-      "\n\t\t  from the map of objects and names."
-      "\n\t\t: Option -local enables removing of selected or named objects without"
-      "\n\t\t: closing local selection context. Empty local selection context will be"
-      "\n\t\t: closed."
-      "\n\t\t: Option -noupdate suppresses viewer redraw call."
-      "\n\t\t: Option -noinfo suppresses displaying the list of removed objects."
-      "\n\t\t: Option -noerror prevents exception on non-existing objects.",
-      __FILE__, VRemove, group);
+  addCmd ("vremove", VRemove, /* [vremove] */ R"(
+vremove [-noupdate|-update] [-context] [-all] [-noinfo] [name1] ...  [name n] [-noerror]
+or vremove [-context] -all to remove all objects
+Removes selected or named objects.
+ -context  do not delete object from the map of objects and names;
+ -noupdate suppresses viewer redraw call;
+ -noinfo   suppresses displaying the list of removed objects;
+ -noerror  prevents exception on non-existing objects.
+)" /* [vremove] */);
 
-  theCommands.Add("vdonly",
-		  "vdonly [-noupdate|-update] [name1] ...  [name n]"
-      "\n\t\t: Displays only selected or named objects",
-		  __FILE__,VDonly2,group);
+  addCmd ("vdonly", VDonly2, /* [vdonly] */ R"(
+vdonly [-noupdate|-update] [name1] ...  [name n]
+Displays only selected or named objects.
+)" /* [vdonly] */);
 
-  theCommands.Add("vdisplayall",
-      "vdisplayall"
-      "\n\t\t: Displays all erased interactive objects (see vdir and vstate).",
-      __FILE__, VDisplayAll, group);
+  addCmd ("vdisplayall", VDisplayAll, /* [vdisplayall] */ R"(
+vdisplayall : Displays all erased interactive objects (see vdir and vstate).
+)" /* [vdisplayall] */);
 
-  theCommands.Add("veraseall",
-      "veraseall"
-      "\n\t\t: Erases all objects displayed in the viewer.",
-      __FILE__, VErase, group);
+  addCmd ("veraseall", VErase, /* [veraseall] */ R"(
+veraseall : Erases all objects displayed in the viewer.
+)" /* [veraseall] */);
 
-  theCommands.Add("verasetype",
-      "verasetype <Type>"
-      "\n\t\t: Erase all the displayed objects of one given kind (see vtypes)",
-      __FILE__, VEraseType, group);
-  theCommands.Add("vbounding",
-              "vbounding [-noupdate|-update] [-mode] name1 [name2 [...]]"
-      "\n\t\t:           [-print] [-hide]"
-      "\n\t\t: Temporarily display bounding box of specified Interactive"
-      "\n\t\t: Objects, or print it to console if -print is specified."
-      "\n\t\t: Already displayed box might be hidden by -hide option.",
-		  __FILE__,VBounding,group);
+  addCmd ("verasetype", VEraseType, /* [verasetype] */ R"(
+verasetype <Type>
+Erase all the displayed objects of one given kind (see vtypes).
+The following types are possible:
+  Point, Axis, Trihedron, PlaneTrihedron, Line, Circle, Plane, Shape,
+  ConnectedShape, MultiConn.Shape, ConnectedInter., MultiConn., Constraint and Dimension.
+)" /* [verasetype] */);
 
-  theCommands.Add("vdisplaytype",
-		  "vdisplaytype        : vdisplaytype <Type> <Signature> \n\t display all the objects of one given kind (see vtypes) which are stored the AISContext ",
-		  __FILE__,VDisplayType,group);
+  addCmd ("vbounding", VBounding, /* [vbounding] */ R"(
+vbounding [-noupdate|-update] [-mode] name1 [name2 [...]]
+          [-print] [-hide]
+Temporarily display bounding box of specified Interactive Objects,
+or print it to console if -print is specified.
+Already displayed box might be hidden by -hide option.
+)" /* [vbounding] */);
 
-  theCommands.Add("vsetdispmode",
-		  "vsetdispmode [name] mode(1,2,..)"
-      "\n\t\t: Sets display mode for all, selected or named objects.",
-		  __FILE__,VDispMode,group);
+  addCmd ("vdisplaytype", VDisplayType, /* [vdisplaytype] */ R"(
+vdisplaytype <Type> <Signature>
+Display all the objects of one given kind (see vtypes) which are stored the interactive context.
+The following types are possible:
+  Point, Axis, Trihedron, PlaneTrihedron, Line, Circle, Plane, Shape,
+  ConnectedShape, MultiConn.Shape, ConnectedInter., MultiConn., Constraint and Dimension.
+)" /* [vdisplaytype] */);
 
-  theCommands.Add("vunsetdispmode",
-		  "vunsetdispmode [name]"
-      "\n\t\t: Unsets custom display mode for selected or named objects.",
-		  __FILE__,VDispMode,group);
+  addCmd ("vsetdispmode", VDispMode, /* [vsetdispmode] */ R"(
+vsetdispmode [name] mode(1,2,..)
+Sets display mode for all, selected or named objects.
+In case of a shape presentation, 0 defines WireFrame, and 1 defines Shading display modes.
+)" /* [vsetdispmode] */);
 
-  theCommands.Add("vdir",
-              "vdir [mask] [-list]"
-      "\n\t\t: Lists all objects displayed in 3D viewer"
-      "\n\t\t:    mask - name filter like prefix*"
-      "\n\t\t:   -list - format list with new-line per name; OFF by default",
-		  __FILE__,VDir,group);
+  addCmd ("vunsetdispmode", VDispMode, /* [vunsetdispmode] */ R"(
+vunsetdispmode [name]
+Unsets custom display mode for selected or named objects.
+)" /* [vunsetdispmode] */);
 
-#ifdef HAVE_FREEIMAGE
-  #define DUMP_FORMATS "{png|bmp|jpg|gif}"
-#else
-  #define DUMP_FORMATS "{ppm}"
-#endif
-  theCommands.Add("vdump",
-              "vdump <filename>." DUMP_FORMATS " [-width Width -height Height]"
-      "\n\t\t:       [-buffer rgb|rgba|depth=rgb]"
-      "\n\t\t:       [-stereo mono|left|right|blend|sideBySide|overUnder=mono]"
-      "\n\t\t:       [-xrPose base|head|handLeft|handRight=base]"
-      "\n\t\t:       [-tileSize Size=0]"
-      "\n\t\t: Dumps content of the active view into image file",
-		  __FILE__,VDump,group);
+  addCmd ("vdir", VDir, /* [vdir] */ R"(
+vdir [mask] [-list]
+Lists all objects displayed in 3D viewer
+  mask - name filter like prefix*
+ -list - format list with new-line per name; OFF by default
+)" /* [vdir] */);
 
-  theCommands.Add("vsub",      "vsub 0/1 (off/on) [obj]        : Subintensity(on/off) of selected objects",
-		  __FILE__,VSubInt,group);
+  addCmd ("vdump", VDump, /* [vdump] */ R"(
+vdump <filename>.png [-width Width -height Height]
+      [-buffer rgb|rgba|depth=rgb]
+      [-stereo mono|left|right|blend|sideBySide|overUnder=mono]
+      [-xrPose base|head|handLeft|handRight=base]
+      [-tileSize Size=0]
+Dumps content of the active view into image file.
+)" /* [vdump] */);
 
-  theCommands.Add("vaspects",
-              "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subname1 [subname2 [...]]]"
-      "\n\t\t:          [-visibility {0|1}]"
-      "\n\t\t:          [-color {ColorName | R G B}] [-unsetColor]"
-      "\n\t\t:          [-backfaceColor Color]"
-      "\n\t\t:          [-material MatName] [-unsetMaterial]"
-      "\n\t\t:          [-transparency Transp] [-unsetTransparency]"
-      "\n\t\t:          [-width LineWidth] [-unsetWidth]"
-      "\n\t\t:          [-lineType {solid|dash|dot|dotDash|0xHexPattern} [-stippleFactor factor]]"
-      "\n\t\t:          [-unsetLineType]"
-      "\n\t\t:          [-markerType {.|+|x|O|xcircle|pointcircle|ring1|ring2|ring3|ball|ImagePath}]"
-      "\n\t\t:          [-unsetMarkerType]"
-      "\n\t\t:          [-markerSize Scale] [-unsetMarkerSize]"
-      "\n\t\t:          [-freeBoundary {0|1}]"
-      "\n\t\t:          [-freeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
-      "\n\t\t:          [-freeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
-      "\n\t\t:          [-isoOnTriangulation 0|1]"
-      "\n\t\t:          [-maxParamValue {value}]"
-      "\n\t\t:          [-sensitivity {selection_mode} {value}]"
-      "\n\t\t:          [-shadingModel {unlit|flat|gouraud|phong|pbr|pbr_facet}]"
-      "\n\t\t:          [-unsetShadingModel]"
-      "\n\t\t:          [-interior {solid|hatch|hidenline|point}] [-setHatch HatchStyle]"
-      "\n\t\t:          [-unsetInterior]"
-      "\n\t\t:          [-faceBoundaryDraw {0|1}] [-mostContinuity {c0|g1|c1|g2|c2|c3|cn}]"
-      "\n\t\t:          [-faceBoundaryWidth LineWidth] [-faceBoundaryColor R G B] [-faceBoundaryType LineType]"
-      "\n\t\t:          [-drawEdges {0|1}] [-edgeType LineType] [-edgeColor R G B] [-quadEdges {0|1}]"
-      "\n\t\t:          [-drawSilhouette {0|1}]"
-      "\n\t\t:          [-alphaMode {opaque|mask|blend|maskblend|blendauto} [alphaCutOff=0.5]]"
-      "\n\t\t:          [-dumpJson]"
-      "\n\t\t:          [-dumpCompact {0|1}]"
-      "\n\t\t:          [-dumpDepth depth]"
-      "\n\t\t: Manage presentation properties of all, selected or named objects."
-      "\n\t\t: When -subshapes is specified than following properties will be assigned to specified sub-shapes."
-      "\n\t\t: When -defaults is specified than presentation properties will be"
-      "\n\t\t: assigned to all objects that have not their own specified properties"
-      "\n\t\t: and to all objects to be displayed in the future."
-      "\n\t\t: If -defaults is used there should not be any objects' names nor -subshapes specifier."
-      "\n\t\t: See also vlistcolors and vlistmaterials to list named colors and materials"
-      "\n\t\t: accepted by arguments -material and -color",
-		  __FILE__,VAspects,group);
+  addCmd ("vsub", VSubInt, /* [vsub] */ R"(
+vsub 0/1 (off/on) [obj] : Subintensity(on/off) of selected objects
+)" /* [vsub] */);
 
-  theCommands.Add("vsetcolor",
-      "vsetcolor [-noupdate|-update] [name] ColorName"
-      "\n\t\t: Sets color for all, selected or named objects."
-      "\n\t\t: Alias for vaspects -setcolor [name] ColorName.",
-		  __FILE__,VAspects,group);
+  addCmd ("vaspects", VAspects, /* [vaspects] */ R"(
+vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subname1 [subname2 [...]]]
+         [-visibility {0|1}]
+         [-color {ColorName | R G B}] [-unsetColor]
+         [-backfaceColor Color]
+         [-material MatName] [-unsetMaterial]
+         [-transparency Transp] [-unsetTransparency]
+         [-width LineWidth] [-unsetWidth]
+         [-lineType {solid|dash|dot|dotDash|0xHexPattern} [-stippleFactor factor]]
+           [-unsetLineType]
+         [-markerType {.|+|x|O|xcircle|pointcircle|ring1|ring2|ring3|ball|ImagePath}]
+           [-unsetMarkerType]
+         [-markerSize Scale] [-unsetMarkerSize]
+         [-freeBoundary {0|1}]
+           [-freeBoundaryWidth Width] [-unsetFreeBoundaryWidth]
+           [-freeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]
+         [-isoOnTriangulation 0|1]
+         [-maxParamValue {value}]
+         [-sensitivity {selection_mode} {value}]
+         [-shadingModel {unlit|flat|gouraud|phong|pbr|pbr_facet}]
+           [-unsetShadingModel]
+         [-interior {solid|hatch|hidenline|point}] [-setHatch HatchStyle]
+           [-unsetInterior]
+         [-faceBoundaryDraw {0|1}] [-mostContinuity {c0|g1|c1|g2|c2|c3|cn}]
+         [-faceBoundaryWidth LineWidth] [-faceBoundaryColor R G B] [-faceBoundaryType LineType]
+         [-drawEdges {0|1}] [-edgeType LineType] [-edgeColor R G B] [-quadEdges {0|1}]
+         [-drawSilhouette {0|1}]
+         [-alphaMode {opaque|mask|blend|maskblend|blendauto} [alphaCutOff=0.5]]
+         [-dumpJson] [-dumpCompact {0|1}] [-dumpDepth depth]
+Manage presentation properties of all, selected or named objects.
+When -subshapes is specified than following properties will be assigned to specified sub-shapes.
+When -defaults is specified than presentation properties will be
+assigned to all objects that have not their own specified properties
+and to all objects to be displayed in the future.
+If -defaults is used there should not be any objects' names nor -subshapes specifier.
+See also vlistcolors and vlistmaterials to list named colors and materials
+accepted by arguments -material and -color
+)" /* [vaspects] */);
 
-  theCommands.Add("vunsetcolor",
-		  "vunsetcolor [-noupdate|-update] [name]"
-      "\n\t\t: Resets color for all, selected or named objects."
-      "\n\t\t: Alias for vaspects -unsetcolor [name].",
-		  __FILE__,VAspects,group);
+  addCmd ("vsetcolor", VAspects, /* [vsetcolor] */ R"(
+vsetcolor [-noupdate|-update] [name] ColorName
+Sets color for all, selected or named objects.
+Alias for vaspects -setcolor [name] ColorName.
+)" /* [vsetcolor] */);
 
-  theCommands.Add("vsettransparency",
-		  "vsettransparency [-noupdate|-update] [name] Coefficient"
-      "\n\t\t: Sets transparency for all, selected or named objects."
-      "\n\t\t: The Coefficient may be between 0.0 (opaque) and 1.0 (fully transparent)."
-      "\n\t\t: Alias for vaspects -settransp [name] Coefficient.",
-		  __FILE__,VAspects,group);
+  addCmd ("vunsetcolor", VAspects, /* [vunsetcolor] */ R"(
+vunsetcolor [-noupdate|-update] [name]
+Resets color for all, selected or named objects.
+Alias for vaspects -unsetcolor [name].
+)" /* [vunsetcolor] */);
 
-  theCommands.Add("vunsettransparency",
-		  "vunsettransparency [-noupdate|-update] [name]"
-      "\n\t\t: Resets transparency for all, selected or named objects."
-      "\n\t\t: Alias for vaspects -unsettransp [name].",
-		  __FILE__,VAspects,group);
+  addCmd ("vsettransparency", VAspects, /* [vsettransparency] */ R"(
+vsettransparency [-noupdate|-update] [name] Coefficient
+Sets transparency for all, selected or named objects.
+The Coefficient may be between 0.0 (opaque) and 1.0 (fully transparent).
+Alias for vaspects -settransp [name] Coefficient.
+)" /* [vsettransparency] */);
 
-  theCommands.Add("vsetmaterial",
-		  "vsetmaterial [-noupdate|-update] [name] MaterialName"
-      "\n\t\t: Alias for vaspects -setmaterial [name] MaterialName.",
-		  __FILE__,VAspects,group);
+  addCmd ("vunsettransparency", VAspects, /* [vunsettransparency] */ R"(
+vunsettransparency [-noupdate|-update] [name]
+Resets transparency for all, selected or named objects.
+Alias for vaspects -unsettransp [name].
+)" /* [vunsettransparency] */);
 
-  theCommands.Add("vunsetmaterial",
-		  "vunsetmaterial [-noupdate|-update] [name]"
-      "\n\t\t: Alias for vaspects -unsetmaterial [name].",
-		  __FILE__,VAspects,group);
+  addCmd ("vsetmaterial", VAspects, /* [vsetmaterial] */ R"(
+vsetmaterial [-noupdate|-update] [name] MaterialName
+n\t\t: Alias for vaspects -setmaterial [name] MaterialName.
+)" /* [vsetmaterial] */);
 
-  theCommands.Add("vsetwidth",
-		  "vsetwidth [-noupdate|-update] [name] width(0->10)"
-      "\n\t\t: Alias for vaspects -setwidth [name] width.",
-		  __FILE__,VAspects,group);
+  addCmd ("vunsetmaterial", VAspects, /* [vunsetmaterial] */ R"(
+vunsetmaterial [-noupdate|-update] [name]
+Alias for vaspects -unsetmaterial [name].
+)" /* [vunsetmaterial] */);
 
-  theCommands.Add("vunsetwidth",
-		  "vunsetwidth [-noupdate|-update] [name]"
-      "\n\t\t: Alias for vaspects -unsetwidth [name].",
-		  __FILE__,VAspects,group);
+  addCmd ("vsetwidth", VAspects, /* [vsetwidth] */ R"(
+vsetwidth [-noupdate|-update] [name] width(0->10)
+Alias for vaspects -setwidth [name] width.
+)" /* [vsetwidth] */);
 
-  theCommands.Add("vsetinteriorstyle",
-    "vsetinteriorstyle [-noupdate|-update] [name] Style"
-    "\n\t\t: Alias for vaspects -setInterior [name] Style.",
-		  __FILE__,VAspects,group);
+  addCmd ("vunsetwidth", VAspects, /* [vunsetwidth] */ R"(
+vunsetwidth [-noupdate|-update] [name]
+Alias for vaspects -unsetwidth [name].
+)" /* [vunsetwidth] */);
 
-  theCommands.Add ("vsetedgetype",
-    "vsetedgetype [name] [-type {solid, dash, dot}] [-color R G B] [-width value]"
-    "\n\t\t: Alias for vaspects [name] -setEdgeType Type.",
-      __FILE__, VAspects, group);
+  addCmd ("vsetinteriorstyle", VAspects, /* [vsetinteriorstyle] */ R"(
+vsetinteriorstyle [-noupdate|-update] [name] Style
+Alias for vaspects -setInterior [name] Style.
+)" /* [vsetinteriorstyle] */);
 
-  theCommands.Add ("vunsetedgetype",
-    "vunsetedgetype [name]"
-    "\n\t\t: Alias for vaspects [name] -unsetEdgeType.",
-      __FILE__, VAspects, group);
+  addCmd ("vsetedgetype", VAspects, /* [vsetedgetype] */ R"(
+vsetedgetype [name] [-type {solid, dash, dot}] [-color R G B] [-width value]
+Alias for vaspects [name] -setEdgeType Type.
+)" /* [vsetedgetype] */);
 
-  theCommands.Add ("vshowfaceboundary",
-    "vshowfaceboundary [name]"
-    "\n\t\t: Alias for vaspects [name] -setFaceBoundaryDraw on",
-      __FILE__, VAspects, group);
+  addCmd ("vunsetedgetype", VAspects, /* [vunsetedgetype] */ R"(
+vunsetedgetype [name] : Alias for vaspects [name] -unsetEdgeType.
+)" /* [vunsetedgetype] */);
 
-  theCommands.Add("vsensdis",
-      "vsensdis : Display active entities (sensitive entities of one of the standard types corresponding to active selection modes)."
-      "\n\t\t: Standard entity types are those defined in Select3D package:"
-      "\n\t\t: - sensitive box"
-      "\n\t\t: - sensitive face"
-      "\n\t\t: - sensitive curve"
-      "\n\t\t: - sensitive segment"
-      "\n\t\t: - sensitive circle"
-      "\n\t\t: - sensitive point"
-      "\n\t\t: - sensitive triangulation"
-      "\n\t\t: - sensitive triangle"
-      "\n\t\t: Custom(application - defined) sensitive entity types are not processed by this command.",
-      __FILE__,VDispSensi,group);
+  addCmd ("vshowfaceboundary", VAspects, /* [vshowfaceboundary] */ R"(
+vshowfaceboundary [name]: Alias for vaspects [name] -setFaceBoundaryDraw on.
+)" /* [vshowfaceboundary] */);
 
-  theCommands.Add("vsensera",
-      "vsensera : erase active entities",
-      __FILE__,VClearSensi,group);
+  addCmd ("vsensdis", VDispSensi, /* [vsensdis] */ R"(
+vsensdis : Display active entities
+(sensitive entities of one of the standard types corresponding to active selection modes).
+Standard entity types are those defined in Select3D package:
+ - sensitive box, face, curve, segment, circle, point, triangulation, triangle.
+Custom (application-defined) sensitive entity types are not processed by this command.
+)" /* [vsensdis] */);
 
-  theCommands.Add("vsetshading",
-      "vsetshading  : vsetshading name Quality(default=0.0008) "
-      "\n\t\t: Sets deflection coefficient that defines the quality of the shape representation in the shading mode.",
-      __FILE__,VShading,group);
+  addCmd ("vsensera", VClearSensi, /* [vsensera] */ R"(
+vsensera : erase active entities
+)" /* [vsensera] */);
 
-  theCommands.Add("vunsetshading",
-      "vunsetshading :vunsetshading name "
-      "\n\t\t: Sets default deflection coefficient (0.0008) that defines the quality of the shape representation in the shading mode.",
-      __FILE__,VShading,group);
+  addCmd ("vsetshading", VShading, /* [vsetshading] */ R"(
+vsetshading name Quality(default=0.0008)
+Sets deflection coefficient that defines the quality of the shape representation in the shading mode.
+)" /* [vsetshading] */);
 
-  theCommands.Add ("vtexture",
-                   "vtexture [-noupdate|-update] name [ImageFile|IdOfTexture|off]"
-                   "\n\t\t:          [-tex0 Image0] [-tex1 Image1] [...]"
-                   "\n\t\t:          [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]"
-                   "\n\t\t:          [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]"
-                   "\n\t\t:          [-modulate {on|off}] [-srgb {on|off}]=on"
-                   "\n\t\t:          [-setFilter {nearest|bilinear|trilinear}]"
-                   "\n\t\t:          [-setAnisoFilter {off|low|middle|quality}]"
-                   "\n\t\t:          [-default]"
-                   "\n\t\t: The texture can be specified by filepath"
-                   "\n\t\t: or as ID (0<=IdOfTexture<=20) specifying one of the predefined textures."
-                   "\n\t\t: The options are:"
-                   "\n\t\t:   -scale     Setup texture scaling for generating coordinates; (1, 1) by default"
-                   "\n\t\t:   -origin    Setup texture origin  for generating coordinates; (0, 0) by default"
-                   "\n\t\t:   -repeat    Setup texture repeat  for generating coordinates; (1, 1) by default"
-                   "\n\t\t:   -modulate  Enable or disable texture color modulation"
-                   "\n\t\t:   -srgb      Prefer sRGB texture format when applicable; TRUE by default"
-                   "\n\t\t:   -trsfAngle Setup dynamic texture coordinates transformation - rotation angle"
-                   "\n\t\t:   -trsfTrans Setup dynamic texture coordinates transformation - translation vector"
-                   "\n\t\t:   -trsfScale Setup dynamic texture coordinates transformation - scale vector"
-                   "\n\t\t:   -setFilter Setup texture filter"
-                   "\n\t\t:   -setAnisoFilter Setup anisotropic filter for texture with mip-levels"
-                   "\n\t\t:   -default   Sets texture mapping default parameters",
-                    __FILE__, VTexture, group);
+  addCmd ("vunsetshading", VShading, /* [vunsetshading] */ R"(
+vunsetshading name
+Sets default deflection coefficient (0.0008) that defines the quality of the shape representation in the shading mode.
+)" /* [vunsetshading] */);
 
-  theCommands.Add("vtexscale",
-                  "vtexscale name ScaleU ScaleV"
-                  "\n\t\t: Alias for vtexture name -setScale ScaleU ScaleV.",
-		  __FILE__,VTexture,group);
+  addCmd ("vtexture", VTexture, /* [vtexture] */ R"(
+vtexture [-noupdate|-update] name [ImageFile|IdOfTexture|off]
+         [-tex0 Image0] [-tex1 Image1] [...]
+         [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]
+         [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]
+         [-modulate {on|off}] [-srgb {on|off}]=on
+         [-setFilter {nearest|bilinear|trilinear}]
+         [-setAnisoFilter {off|low|middle|quality}]
+         [-default]
+The texture can be specified by filepath
+or as ID (0<=IdOfTexture<=20) specifying one of the predefined textures.
+The options are:
+ -scale     Setup texture scaling for generating coordinates; (1, 1) by default
+ -origin    Setup texture origin  for generating coordinates; (0, 0) by default
+ -repeat    Setup texture repeat  for generating coordinates; (1, 1) by default
+ -modulate  Enable or disable texture color modulation
+ -srgb      Prefer sRGB texture format when applicable; TRUE by default
+ -trsfAngle Setup dynamic texture coordinates transformation - rotation angle
+ -trsfTrans Setup dynamic texture coordinates transformation - translation vector
+ -trsfScale Setup dynamic texture coordinates transformation - scale vector
+ -setFilter Setup texture filter
+ -setAnisoFilter Setup anisotropic filter for texture with mip-levels
+ -default   Sets texture mapping default parameters
+)" /* [vtexture] */);
 
-  theCommands.Add("vtexorigin",
-                  "vtexorigin name OriginU OriginV"
-                  "\n\t\t: Alias for vtexture name -setOrigin OriginU OriginV.",
-		  __FILE__,VTexture,group);
+  addCmd ("vtexscale", VTexture, /* [vtexscale] */ R"(
+vtexscale name ScaleU ScaleV
+Alias for vtexture name -setScale ScaleU ScaleV.
+)" /* [vtexscale] */);
 
-  theCommands.Add("vtexrepeat",
-                  "vtexrepeat name RepeatU RepeatV"
-                  "\n\t\t: Alias for vtexture name -setRepeat RepeatU RepeatV.",
-		  __FILE__, VTexture, group);
+  addCmd ("vtexorigin", VTexture, /* [vtexorigin] */ R"(
+vtexorigin name OriginU OriginV
+Alias for vtexture name -setOrigin OriginU OriginV.
+)" /* [vtexorigin] */);
 
-  theCommands.Add("vtexdefault",
-                  "vtexdefault name"
-                  "\n\t\t: Alias for vtexture name -default.",
-		  __FILE__, VTexture, group);
+  addCmd ("vtexrepeat", VTexture, /* [vtexrepeat] */ R"(
+vtexrepeat name RepeatU RepeatV
+Alias for vtexture name -setRepeat RepeatU RepeatV.
+)" /* [vtexrepeat] */);
 
-  theCommands.Add("vstate",
-      "vstate [-entities] [-hasSelected] [name1] ... [nameN]"
-      "\n\t\t: Reports show/hidden state for selected or named objects"
-      "\n\t\t:   -entities - print low-level information about detected entities"
-      "\n\t\t:   -hasSelected - prints 1 if context has selected shape and 0 otherwise",
-		  __FILE__,VState,group);
+  addCmd ("vtexdefault", VTexture, /* [vtexdefault] */ R"(
+vtexdefault name : Alias for vtexture name -default.
+)" /* [vtexdefault] */);
 
-  theCommands.Add("vpickshapes",
-                  "vpickshape subtype(VERTEX,EDGE,WIRE,FACE,SHELL,SOLID) [name1 or .] [name2 or .] [name n or .]"
-                  "\n\t\t: Hold Ctrl and pick object by clicking Left mouse button."
-                  "\n\t\t: Hold also Shift for multiple selection.",
-                  __FILE__, VPickShape, group);
+  addCmd ("vstate", VState, /* [vstate] */ R"(
+vstate [-entities] [-hasSelected] [name1] ... [nameN]
+Reports show/hidden state for selected or named objects.
+ -entities    prints low-level information about detected entities;
+ -hasSelected prints 1 if context has selected shape and 0 otherwise.
+)" /* [vstate] */);
 
-  theCommands.Add("vtypes",
-		  "vtypes : list of known types and signatures in AIS - To be Used in vpickobject command for selection with filters",
-		  __FILE__, VIOTypes, group);
+  addCmd ("vpickshapes", VPickShape, /* [vpickshapes] */ R"(
+vpickshape subtype(VERTEX,EDGE,WIRE,FACE,SHELL,SOLID) [name1 or .] [name2 or .] [name n or .]
+Hold Ctrl and pick object by clicking Left mouse button.
+Hold also Shift for multiple selection.
+)" /* [vpickshapes] */);
 
-  theCommands.Add("vselfilter",
-    "vselfilter [-contextfilter {AND|OR}]"
-    "\n         [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]"
-    "\n         [-secondtype {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]"
-    "\n         [-clear]"
-    "\nSets selection shape type filter in context or remove all filters."
-    "\n    : Option -contextfilter : To define a selection filter for two or more types of entity,"
-    "\n                              use value AND (OR by default)."
-    "\n    : Option -type set type of selection filter. Filters are applied with Or combination."
-    "\n    : Option -clear remove all filters in context",
-		  __FILE__,VSelFilter,group);
+  addCmd ("vtypes", VIOTypes, /* [vtypes] */ R"(
+vtypes : list of known types and signatures in AIS.
+To be Used in vpickobject command for selection with filters.
+)" /* [vtypes] */);
 
-  theCommands.Add("vpickselected", "vpickselected [name]: extract selected shape.",
-    __FILE__, VPickSelected, group);
+  addCmd ("vselfilter", VSelFilter, /* [vselfilter] */ R"(
+vselfilter [-contextfilter {AND|OR}]
+           [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]
+           [-secondtype {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]
+           [-clear]
+Sets selection shape type filter in context or remove all filters.
+ -contextfilter to define a selection filter for two or more types of entity,
+                use value AND (OR by default).
+ -type  set type of selection filter; filters are applied with Or combination.
+ -clear remove all filters in context.
+)" /* [vselfilter] */);
 
-  theCommands.Add ("vloadselection",
-    "vloadselection [-context] [name1] ... [nameN] : allows to load selection"
-    "\n\t\t: primitives for the shapes with names given without displaying them.",
-    __FILE__, VLoadSelection, group);
+  addCmd ("vpickselected", VPickSelected, /* [vpickselected] */ R"(
+vpickselected [name]: extract selected shape.
+)" /* [vpickselected] */);
 
-  theCommands.Add("vbsdf", "vbsdf [name] [options]"
-    "\nAdjusts parameters of material BSDF:"
-    "\n    -help : Shows this message"
-    "\n    -print : Print BSDF"
-    "\n    -kd : Weight of the Lambertian BRDF"
-    "\n    -kr : Weight of the reflection BRDF"
-    "\n    -kt : Weight of the transmission BTDF"
-    "\n    -ks : Weight of the glossy Blinn BRDF"
-    "\n    -le : Self-emitted radiance"
-    "\n    -fresnel : Fresnel coefficients; Allowed fresnel formats are: Constant x,"
-    "\n               Schlick x y z, Dielectric x, Conductor x y"
-    "\n    -roughness : Roughness of material (Blinn's exponent)"
-    "\n    -absorpcoeff : Absorption coefficient (only for transparent material)"
-    "\n    -absorpcolor : Absorption color (only for transparent material)"
-    "\n    -normalize : Normalize BSDF coefficients",
-    __FILE__, VBsdf, group);
+  addCmd ("vloadselection", VLoadSelection, /* [vloadselection] */ R"(
+vloadselection [-context] [name1] ... [nameN]
+Allows to load selection primitives for the shapes with names given without displaying them.
+)" /* [vloadselection] */);
 
+  addCmd ("vbsdf", VBsdf, /* [vbsdf] */ R"(
+vbsdf [name] [options]
+nAdjusts parameters of material BSDF:
+ -help    shows this message
+ -print   print BSDF
+ -kd      weight of the Lambertian BRDF
+ -kr      weight of the reflection BRDF
+ -kt      weight of the transmission BTDF
+ -ks      weight of the glossy Blinn BRDF
+ -le      self-emitted radiance
+ -fresnel Fresnel coefficients; Allowed fresnel formats are: Constant x,
+          Schlick x y z, Dielectric x, Conductor x y
+ -roughness   roughness of material (Blinn's exponent)
+ -absorpcoeff absorption coefficient (only for transparent material)
+ -absorpcolor absorption color (only for transparent material)
+ -normalize   normalize BSDF coefficients
+)" /* [vbsdf] */);
 }
 
 //==============================================================================
