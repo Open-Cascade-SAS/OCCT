@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_AttributeMap.hxx>
-class TDF_Label;
 class TopoDS_Shape;
 class TNaming_NamedShape;
 

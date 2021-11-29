@@ -27,8 +27,6 @@ class XCAFDoc_ShapeTool;
 class TDF_Label;
 class Standard_GUID;
 class TCollection_HAsciiString;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class XCAFDoc_MaterialTool;

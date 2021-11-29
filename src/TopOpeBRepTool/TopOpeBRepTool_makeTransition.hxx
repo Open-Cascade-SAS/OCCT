@@ -27,9 +27,6 @@
 #include <gp_Pnt2d.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
-class TopoDS_Edge;
-class TopoDS_Face;
-class gp_Pnt2d;
 
 
 

@@ -28,7 +28,6 @@
 
 class XSAlgo_ToolContainer;
 class TopoDS_Shape;
-class Standard_Transient;
 class TopoDS_Edge;
 class TopoDS_Face;
 class Transfer_TransientProcess;

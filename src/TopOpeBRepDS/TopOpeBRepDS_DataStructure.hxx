@@ -39,13 +39,6 @@
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 class Geom_Surface;
-class TopOpeBRepDS_SurfaceExplorer;
-class TopOpeBRepDS_CurveExplorer;
-class TopOpeBRepDS_PointExplorer;
-class TopOpeBRepDS_Surface;
-class TopOpeBRepDS_Curve;
-class TopOpeBRepDS_Point;
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_ShapeWithState;

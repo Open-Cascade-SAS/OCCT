@@ -24,7 +24,6 @@
 #include <gp_Trsf2d.hxx>
 #include <Standard_Real.hxx>
 class gp_Pnt2d;
-class gp_Trsf2d;
 
 
 //! Implements an elementary construction algorithm for

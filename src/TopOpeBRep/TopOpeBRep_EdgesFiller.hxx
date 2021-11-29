@@ -34,11 +34,9 @@
 #include <TopOpeBRepDS_Config.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Shape;
-class TopOpeBRep_EdgesIntersector;
 class TopOpeBRep_Point2d;
 class TopOpeBRepDS_Transition;
 class TopOpeBRepDS_Interference;
-class TopoDS_Edge;
 
 
 //! Fills a TopOpeBRepDS_DataStructure with Edge/Edge

@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
-class TopoDS_Shape;
 
 
 class TopOpeBRepBuild_Pave;

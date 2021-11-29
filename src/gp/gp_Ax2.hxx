@@ -19,8 +19,6 @@
 #include <gp_Dir.hxx>
 #include <Precision.hxx>
 
-class Standard_ConstructionError;
-class gp_Pnt;
 class gp_Trsf;
 class gp_Vec;
 

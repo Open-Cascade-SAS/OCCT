@@ -24,8 +24,6 @@
 #include <TopOpeBRepDS_Point.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_GeometryData.hxx>
-class TopOpeBRepDS_DataStructure;
-class TopOpeBRepDS_Point;
 
 
 

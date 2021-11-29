@@ -24,7 +24,6 @@
 #include <TCollection_ExtendedString.hxx>
 
 class TObj_TNameContainer;
-class TObj_Partition;
 class TCollection_HExtendedString;
 class TDocStd_Document;
 class TObj_CheckModel;

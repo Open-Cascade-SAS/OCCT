@@ -25,7 +25,6 @@
 #include <NCollection_Handle.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-class Standard_Transient;
 
 
 typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)> StepVisual_VectorOfHSequenceOfInteger;

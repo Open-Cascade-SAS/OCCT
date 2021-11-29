@@ -28,10 +28,8 @@
 class TDF_Label;
 class Standard_GUID;
 class TFunction_Logbook;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
-class TFunction_Logbook;
 DEFINE_STANDARD_HANDLE(TFunction_Logbook, TDF_Attribute)
 
 //! This class contains information which is written and

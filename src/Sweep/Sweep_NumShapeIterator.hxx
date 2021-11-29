@@ -25,9 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
-class Standard_NoMoreObject;
-class Standard_NoSuchObject;
-class Sweep_NumShape;
 
 
 //! This class provides iteration services required by

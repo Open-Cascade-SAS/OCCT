@@ -24,9 +24,7 @@
 #include <gp_Circ.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Ax2;
-class gp_Circ;
 class gp_Pnt;
 class gp_Dir;
 class gp_Pln;

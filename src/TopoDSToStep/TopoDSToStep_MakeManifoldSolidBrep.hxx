@@ -25,7 +25,6 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_ManifoldSolidBrep;
-class StdFail_NotDone;
 class TopoDS_Shell;
 class Transfer_FinderProcess;
 class TopoDS_Solid;

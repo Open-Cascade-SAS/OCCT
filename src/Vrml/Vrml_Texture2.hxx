@@ -25,7 +25,6 @@
 #include <Vrml_Texture2Wrap.hxx>
 #include <Standard_OStream.hxx>
 class Vrml_SFImage;
-class TCollection_AsciiString;
 
 
 //! defines a Texture2 node of VRML specifying properties of geometry

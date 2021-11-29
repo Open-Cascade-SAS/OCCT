@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoMoreObject;
 
 
 //! Iterator on the elements of a block.

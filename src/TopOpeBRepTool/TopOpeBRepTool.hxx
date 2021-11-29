@@ -30,27 +30,6 @@
 #include <TopOpeBRepTool_OutCurveType.hxx>
 class TopoDS_Face;
 class TopoDS_Solid;
-class TopOpeBRepTool_GeomTool;
-class TopOpeBRepTool_AncestorsTool;
-class TopOpeBRepTool_C2DF;
-class TopOpeBRepTool_SolidClassifier;
-class TopOpeBRepTool_CurveTool;
-class TopOpeBRepTool_HBoxTool;
-class TopOpeBRepTool_BoxSort;
-class TopOpeBRepTool_ShapeExplorer;
-class TopOpeBRepTool_ShapeTool;
-class TopOpeBRepTool_ShapeClassifier;
-class TopOpeBRepTool_connexity;
-class TopOpeBRepTool_face;
-class TopOpeBRepTool_CLASSI;
-class TopOpeBRepTool_TOOL;
-class TopOpeBRepTool_CORRISO;
-class TopOpeBRepTool_REGUW;
-class TopOpeBRepTool_REGUS;
-class TopOpeBRepTool_makeTransition;
-class TopOpeBRepTool_mkTondgE;
-class TopOpeBRepTool_PurgeInternalEdges;
-class TopOpeBRepTool_FuseEdges;
 
 
 //! This package provides services used by the TopOpeBRep

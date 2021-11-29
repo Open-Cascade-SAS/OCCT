@@ -23,33 +23,6 @@
 #include <Standard_Boolean.hxx>
 class Standard_GUID;
 class TCollection_ExtendedString;
-class TDF_Data;
-class TDF_Label;
-class TDF_Attribute;
-class TDF_TagSource;
-class TDF_Reference;
-class TDF_ClosureMode;
-class TDF_ClosureTool;
-class TDF_CopyTool;
-class TDF_CopyLabel;
-class TDF_ComparisonTool;
-class TDF_Transaction;
-class TDF_Delta;
-class TDF_AttributeDelta;
-class TDF_DeltaOnAddition;
-class TDF_DeltaOnForget;
-class TDF_DeltaOnResume;
-class TDF_DeltaOnRemoval;
-class TDF_DeltaOnModification;
-class TDF_DefaultDeltaOnRemoval;
-class TDF_DefaultDeltaOnModification;
-class TDF_ChildIterator;
-class TDF_ChildIDIterator;
-class TDF_DataSet;
-class TDF_RelocationTable;
-class TDF_Tool;
-class TDF_LabelMapHasher;
-class TDF_IDFilter;
 
 
 //! This package provides data framework for binding

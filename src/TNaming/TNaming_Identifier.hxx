@@ -28,8 +28,6 @@
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TNaming_NamedShape;
-class TDF_Label;
-class TopoDS_Shape;
 class TNaming_Localizer;
 
 

@@ -24,8 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 
-class Standard_OutOfRange;
-class gp_XY;
 class gp_Ax2d;
 class gp_Trsf2d;
 class gp_Vec2d;

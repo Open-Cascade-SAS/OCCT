@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 class TopOpeBRepDS_DataStructure;
-class TopOpeBRepDS_Surface;
 
 
 

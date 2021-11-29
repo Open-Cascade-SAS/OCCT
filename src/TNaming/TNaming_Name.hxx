@@ -31,8 +31,6 @@
 #include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 class TNaming_NamedShape;
-class TopoDS_Shape;
-class TDF_Label;
 class TDF_RelocationTable;
 
 

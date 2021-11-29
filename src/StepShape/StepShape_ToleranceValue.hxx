@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-class StepBasic_MeasureWithUnit;
 
 
 class StepShape_ToleranceValue;

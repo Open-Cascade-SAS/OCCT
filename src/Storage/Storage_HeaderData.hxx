@@ -27,10 +27,7 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
-class Storage_Schema;
 class Storage_BaseDriver;
-class TCollection_AsciiString;
-class TCollection_ExtendedString;
 
 
 class Storage_HeaderData;

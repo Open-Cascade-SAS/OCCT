@@ -24,7 +24,6 @@
 #include <TDF_Attribute.hxx>
 class Standard_GUID;
 class TDF_Label;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

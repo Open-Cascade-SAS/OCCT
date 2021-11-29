@@ -24,8 +24,6 @@
 #include <gp_Vec.hxx>
 #include <Vrml_SFRotation.hxx>
 #include <Standard_OStream.hxx>
-class gp_Vec;
-class Vrml_SFRotation;
 
 
 //! defines a Transform of VRML specifying transform

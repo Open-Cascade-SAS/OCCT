@@ -27,7 +27,6 @@
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-class TopOpeBRepTool_GeomTool;
 class Geom_Curve;
 class Geom2d_Curve;
 class TopoDS_Shape;

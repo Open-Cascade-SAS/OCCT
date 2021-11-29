@@ -23,7 +23,6 @@
 
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
-class TopoDS_Shape;
 
 
 //! represent shape + a list of shape

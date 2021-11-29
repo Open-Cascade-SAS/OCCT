@@ -24,8 +24,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class gp_Trsf;
-class gp_Mat;
 
 // Avoid possible conflict with SetForm macro defined by windows.h
 #ifdef SetForm

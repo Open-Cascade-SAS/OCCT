@@ -28,21 +28,6 @@ class Units_UnitsDictionary;
 class Units_Quantity;
 class Units_Lexicon;
 class Units_Dimensions;
-class Units_Dimensions;
-class Units_Unit;
-class Units_ShiftedUnit;
-class Units_Token;
-class Units_ShiftedToken;
-class Units_Quantity;
-class Units_UnitsDictionary;
-class Units_UnitsSystem;
-class Units_Explorer;
-class Units_Sentence;
-class Units_MathSentence;
-class Units_UnitSentence;
-class Units_Lexicon;
-class Units_UnitsLexicon;
-class Units_Measurement;
 
 
 //! This  package provides all the  facilities  to create

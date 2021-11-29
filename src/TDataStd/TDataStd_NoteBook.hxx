@@ -29,8 +29,6 @@ class TDF_Label;
 class Standard_GUID;
 class TDataStd_Real;
 class TDataStd_Integer;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class TDataStd_NoteBook;

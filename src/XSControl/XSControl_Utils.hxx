@@ -32,7 +32,6 @@
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-class Standard_TypeMismatch;
 class Standard_Transient;
 class TCollection_HAsciiString;
 class TCollection_AsciiString;

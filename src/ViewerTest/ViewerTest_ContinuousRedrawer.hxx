@@ -19,7 +19,6 @@
 #include <Standard_Mutex.hxx>
 #include <Standard_Type.hxx>
 
-class Aspect_Window;
 class V3d_View;
 
 //! Auxiliary tool performing continuous redraws of specified window.

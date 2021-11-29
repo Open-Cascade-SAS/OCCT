@@ -27,7 +27,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
-class TopoDS_Solid;
 class TCollection_AsciiString;
 
 

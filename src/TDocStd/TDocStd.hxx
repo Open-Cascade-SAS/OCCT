@@ -22,19 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_IDList.hxx>
-class TDocStd_Application;
-class TDocStd_Document;
-class TDocStd_Context;
-class TDocStd_XLink;
-class TDocStd_XLinkIterator;
-class TDocStd_XLinkTool;
-class TDocStd_Owner;
-class TDocStd_Modified;
-class TDocStd_XLinkRoot;
-class TDocStd_PathParser;
-class TDocStd_CompoundDelta;
-class TDocStd_ApplicationDelta;
-class TDocStd_MultiTransactionManager;
 
 
 //! This package define  CAF main classes.

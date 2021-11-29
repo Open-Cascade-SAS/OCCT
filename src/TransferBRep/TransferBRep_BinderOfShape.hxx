@@ -24,8 +24,6 @@
 #include <Transfer_Binder.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
-class Transfer_TransferFailure;
-class TopoDS_Shape;
 
 
 class TransferBRep_BinderOfShape;

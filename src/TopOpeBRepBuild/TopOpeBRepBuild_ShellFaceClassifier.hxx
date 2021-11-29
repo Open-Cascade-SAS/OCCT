@@ -31,7 +31,6 @@
 #include <TopOpeBRepBuild_CompositeClassifier.hxx>
 #include <TopAbs_State.hxx>
 class TopOpeBRepBuild_BlockBuilder;
-class TopoDS_Shape;
 
 
 

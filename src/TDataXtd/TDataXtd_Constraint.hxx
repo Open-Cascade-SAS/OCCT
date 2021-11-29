@@ -27,7 +27,6 @@
 #include <Standard_OStream.hxx>
 
 class TDataStd_Real;
-class TDF_Attribute;
 class Standard_GUID;
 class TDF_Label;
 class TNaming_NamedShape;

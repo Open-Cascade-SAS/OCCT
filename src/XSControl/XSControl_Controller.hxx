@@ -35,15 +35,12 @@
 
 class IFSelect_WorkLibrary;
 class Interface_Protocol;
-class IFSelect_Signature;
 class Transfer_ActorOfTransientProcess;
 class Transfer_ActorOfFinderProcess;
-class Standard_DomainError;
 class XSControl_WorkSession;
 class Interface_InterfaceModel;
 class Transfer_FinderProcess;
 class TopoDS_Shape;
-class Interface_CheckIterator;
 
 class XSControl_Controller;
 DEFINE_STANDARD_HANDLE(XSControl_Controller, Standard_Transient)

@@ -25,8 +25,6 @@
 #include <Standard_OStream.hxx>
 #include <gp_Trsf.hxx>
 class TopLoc_Datum3D;
-class TopLoc_Location;
-class TopLoc_SListOfItemLocation;
 
 
 //! An ItemLocation is an elementary coordinate system

@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class Storage_CallBack;
-class TCollection_AsciiString;
 
 
 class Storage_TypedCallBack;

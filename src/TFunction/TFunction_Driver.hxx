@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>
-class TDF_Label;
 class TFunction_Logbook;
 
 

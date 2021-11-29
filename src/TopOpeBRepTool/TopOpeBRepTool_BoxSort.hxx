@@ -30,8 +30,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepTool_HBoxTool;
-class TopoDS_Shape;
-class Bnd_Box;
 
 
 

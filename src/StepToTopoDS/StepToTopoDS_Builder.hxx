@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
-class StdFail_NotDone;
 class StepShape_ManifoldSolidBrep;
 class Transfer_TransientProcess;
 class StepShape_BrepWithVoids;
@@ -39,7 +38,6 @@ class StepShape_GeometricSet;
 class StepShape_EdgeBasedWireframeModel;
 class StepShape_FaceBasedSurfaceModel;
 class Transfer_ActorOfTransientProcess;
-class TopoDS_Shape;
 
 
 

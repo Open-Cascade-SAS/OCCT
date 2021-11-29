@@ -27,7 +27,6 @@
 #include <Standard_Boolean.hxx>
 class Geom2d_Curve;
 class TopOpeBRepDS_Transition;
-class TopOpeBRepDS_Interference;
 
 
 class TopOpeBRepDS_SurfaceCurveInterference;

@@ -22,7 +22,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
-class TopoDS_Shape;
 
 
 class TopoDS_HShape;

@@ -27,7 +27,6 @@
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
-class TopOpeBRepDS_DataStructure;
 
 
 

@@ -23,7 +23,6 @@
 
 #include <gp_Vec.hxx>
 #include <Standard_OStream.hxx>
-class gp_Vec;
 
 
 //! defines a Translation of VRML specifying transform

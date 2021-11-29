@@ -26,8 +26,6 @@
 #include <Quantity_Color.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_OStream.hxx>
-class Quantity_Color;
-class gp_Vec;
 
 
 //! specifies a spot light node of VRML nodes specifying

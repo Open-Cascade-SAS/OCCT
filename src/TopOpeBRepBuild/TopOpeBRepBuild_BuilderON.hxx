@@ -28,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Shape;
 class TopOpeBRepDS_Interference;
 
 

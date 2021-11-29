@@ -20,11 +20,8 @@
 #include <TDataStd_GenericExtString.hxx>
 #include <Standard_OStream.hxx>
 
-class Standard_DomainError;
 class TDF_Label;
 class TCollection_ExtendedString;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class TDataStd_Name;

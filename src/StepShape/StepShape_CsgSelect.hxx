@@ -24,7 +24,6 @@
 #include <StepShape_CsgPrimitive.hxx>
 #include <Standard_Integer.hxx>
 class StepShape_BooleanResult;
-class StepShape_CsgPrimitive;
 
 
 

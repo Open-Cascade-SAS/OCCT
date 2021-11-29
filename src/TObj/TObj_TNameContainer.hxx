@@ -22,7 +22,6 @@
 #include <TObj_Container.hxx>
 #include <TDF_Attribute.hxx>
 
-class TObj_TNameContainer;
 
 /** 
 * This class provides OCAF Attribute to storing the unique names of object in

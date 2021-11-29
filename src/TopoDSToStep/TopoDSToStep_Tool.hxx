@@ -32,11 +32,6 @@
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
 class StepShape_TopologicalRepresentationItem;
-class TopoDS_Shell;
-class TopoDS_Face;
-class TopoDS_Wire;
-class TopoDS_Edge;
-class TopoDS_Vertex;
 
 
 //! This Tool Class provides Information to build

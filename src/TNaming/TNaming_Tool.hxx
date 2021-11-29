@@ -27,7 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-class TNaming_Localizer;
 class TNaming_NamedShape;
 class TNaming_OldShapeIterator;
 class TopoDS_Shape;

@@ -32,9 +32,7 @@
 class TDF_Data;
 class TDF_Delta;
 class TDF_Label;
-class TCollection_ExtendedString;
 class TCollection_AsciiString;
-class CDM_Document;
 class TDocStd_CompoundDelta;
 
 

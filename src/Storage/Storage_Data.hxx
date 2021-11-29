@@ -33,8 +33,6 @@ class Storage_HeaderData;
 class Storage_RootData;
 class Storage_TypeData;
 class Storage_InternalData;
-class Storage_Schema;
-class TCollection_AsciiString;
 class TCollection_ExtendedString;
 class Standard_Persistent;
 class Storage_Root;

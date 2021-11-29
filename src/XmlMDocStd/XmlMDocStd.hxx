@@ -22,7 +22,6 @@
 
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMDocStd_XLinkDriver;
 
 
 //! Driver for TDocStd_XLink

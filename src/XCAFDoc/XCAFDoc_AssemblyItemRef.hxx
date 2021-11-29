@@ -22,7 +22,6 @@
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_AssemblyItemId.hxx>
 
-class TDF_Data;
 class TDF_RelocationTable;
 
 class XCAFDoc_AssemblyItemRef;

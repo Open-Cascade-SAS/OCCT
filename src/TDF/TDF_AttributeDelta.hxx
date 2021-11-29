@@ -23,7 +23,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Attribute;
-class TDF_Label;
 class Standard_GUID;
 
 

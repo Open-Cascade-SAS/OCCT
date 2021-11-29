@@ -26,7 +26,6 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_TopologicalRepresentationItem;
-class StdFail_NotDone;
 class TopoDS_Shape;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;

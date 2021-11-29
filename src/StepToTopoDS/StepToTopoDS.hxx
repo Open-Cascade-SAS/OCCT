@@ -31,24 +31,6 @@
 #include <Standard_CString.hxx>
 #include <StepToTopoDS_GeometricToolError.hxx>
 class TCollection_HAsciiString;
-class StepToTopoDS_Root;
-class StepToTopoDS_TranslateShell;
-class StepToTopoDS_TranslateFace;
-class StepToTopoDS_TranslateEdgeLoop;
-class StepToTopoDS_TranslateEdge;
-class StepToTopoDS_TranslateVertex;
-class StepToTopoDS_TranslatePolyLoop;
-class StepToTopoDS_TranslateVertexLoop;
-class StepToTopoDS_TranslateCompositeCurve;
-class StepToTopoDS_TranslateCurveBoundedSurface;
-class StepToTopoDS_Builder;
-class StepToTopoDS_MakeTransformed;
-class StepToTopoDS_GeometricTool;
-class StepToTopoDS_Tool;
-class StepToTopoDS_CartesianPointHasher;
-class StepToTopoDS_PointPair;
-class StepToTopoDS_PointPairHasher;
-class StepToTopoDS_NMTool;
 
 
 //! This package implements the mapping between AP214

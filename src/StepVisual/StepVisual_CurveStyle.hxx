@@ -25,8 +25,6 @@
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepVisual_Colour;
-class StepVisual_CurveStyleFontSelect;
-class StepBasic_SizeSelect;
 
 
 class StepVisual_CurveStyle;

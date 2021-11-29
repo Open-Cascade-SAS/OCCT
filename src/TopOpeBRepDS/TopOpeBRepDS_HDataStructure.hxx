@@ -33,7 +33,6 @@
 #include <Standard_Real.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 class TopoDS_Shape;
-class TopOpeBRepDS_DataStructure;
 class TopOpeBRepDS_Surface;
 class TopOpeBRepDS_CurveIterator;
 class TopOpeBRepDS_Curve;

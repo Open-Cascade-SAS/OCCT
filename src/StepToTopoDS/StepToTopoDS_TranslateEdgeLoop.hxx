@@ -25,14 +25,12 @@
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
 #include <Standard_Boolean.hxx>
-class StdFail_NotDone;
 class StepShape_FaceBound;
 class TopoDS_Face;
 class Geom_Surface;
 class StepGeom_Surface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-class TopoDS_Shape;
 
 
 

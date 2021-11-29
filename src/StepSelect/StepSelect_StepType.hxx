@@ -24,7 +24,6 @@
 #include <IFSelect_Signature.hxx>
 #include <Standard_CString.hxx>
 class StepData_Protocol;
-class Interface_InterfaceError;
 class Interface_Protocol;
 class Standard_Transient;
 class Interface_InterfaceModel;

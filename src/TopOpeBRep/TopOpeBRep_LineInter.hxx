@@ -39,12 +39,8 @@ class IntPatch_RLine;
 class IntPatch_WLine;
 class IntPatch_GLine;
 class BRepAdaptor_Surface;
-class TopoDS_Face;
 class TopOpeBRep_VPointInter;
-class TopOpeBRep_WPointInter;
 class Geom_Curve;
-class TopoDS_Shape;
-class TopOpeBRepDS_Transition;
 class TCollection_AsciiString;
 class TopOpeBRep_Bipoint;
 

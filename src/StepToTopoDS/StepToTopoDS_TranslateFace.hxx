@@ -24,11 +24,9 @@
 #include <StepToTopoDS_TranslateFaceError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-class StdFail_NotDone;
 class StepShape_FaceSurface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-class TopoDS_Shape;
 
 
 

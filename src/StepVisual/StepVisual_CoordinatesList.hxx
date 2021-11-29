@@ -20,7 +20,6 @@
 #include <Standard_Handle.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <StepVisual_TessellatedItem.hxx>
-class Standard_Transient;
 
 DEFINE_STANDARD_HANDLE(StepVisual_CoordinatesList,StepVisual_TessellatedItem)
 class StepVisual_CoordinatesList  : public StepVisual_TessellatedItem

@@ -25,7 +25,6 @@
 class Standard_GUID;
 class TDF_Label;
 class TopoDS_Shape;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

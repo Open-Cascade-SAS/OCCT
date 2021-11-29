@@ -22,9 +22,6 @@
 
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMFunction_FunctionDriver;
-class XmlMFunction_ScopeDriver;
-class XmlMFunction_GraphNodeDriver;
 
 
 

@@ -19,8 +19,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class gp_Trsf2d;
-class gp_GTrsf2d;
 class gp_XY;
 
 //! Describes a two column, two row matrix.

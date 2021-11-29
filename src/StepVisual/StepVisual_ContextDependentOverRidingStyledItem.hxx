@@ -25,7 +25,6 @@
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
-class StepRepr_RepresentationItem;
 class StepVisual_StyledItem;
 class StepVisual_StyleContextSelect;
 

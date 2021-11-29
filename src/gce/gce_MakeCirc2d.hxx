@@ -25,10 +25,8 @@
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-class StdFail_NotDone;
 class gp_Ax2d;
 class gp_Ax22d;
-class gp_Circ2d;
 class gp_Pnt2d;
 
 

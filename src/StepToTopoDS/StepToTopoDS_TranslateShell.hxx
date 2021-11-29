@@ -26,11 +26,9 @@
 #include <StepToTopoDS_Root.hxx>
 #include <Message_ProgressRange.hxx>
 
-class StdFail_NotDone;
 class StepShape_ConnectedFaceSet;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-class TopoDS_Shape;
 
 
 

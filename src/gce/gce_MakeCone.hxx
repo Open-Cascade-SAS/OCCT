@@ -24,9 +24,7 @@
 #include <gp_Cone.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Ax2;
-class gp_Cone;
 class gp_Pnt;
 class gp_Ax1;
 class gp_Lin;

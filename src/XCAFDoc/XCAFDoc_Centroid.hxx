@@ -25,8 +25,6 @@
 #include <Standard_OStream.hxx>
 class Standard_GUID;
 class TDF_Label;
-class gp_Pnt;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

@@ -23,7 +23,6 @@
 class StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect;
 class TCollection_HAsciiString;
 
-class StepGeom_GeometricRepresentationItem;
 DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingUnion, StepGeom_GeometricRepresentationItem)
 
 class StepVisual_CameraModelD3MultiClippingUnion : public StepGeom_GeometricRepresentationItem

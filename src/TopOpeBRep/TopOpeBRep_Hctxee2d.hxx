@@ -25,11 +25,8 @@
 #include <IntRes2d_Domain.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Edge;
 class BRepAdaptor_Surface;
 class TopoDS_Shape;
-class Geom2dAdaptor_Curve;
-class IntRes2d_Domain;
 
 
 class TopOpeBRep_Hctxee2d;

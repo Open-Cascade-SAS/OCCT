@@ -27,7 +27,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 #include <Standard_Integer.hxx>
-class gp_Dir;
 
 
 //! This algorithm  is used to  compute the transition

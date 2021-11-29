@@ -24,10 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Boolean.hxx>
 class TDF_Data;
-class Standard_DomainError;
-class Standard_NullObject;
 class TDF_Delta;
-class TCollection_AsciiString;
 
 
 //! This class offers services to open, commit or

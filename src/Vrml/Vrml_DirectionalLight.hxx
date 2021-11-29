@@ -26,8 +26,6 @@
 #include <Quantity_Color.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_OStream.hxx>
-class Quantity_Color;
-class gp_Vec;
 
 
 //! defines a directional  light node of VRML specifying

@@ -24,11 +24,8 @@
 #include <TDF_LabelSequence.hxx>
 #include <Standard_Integer.hxx>
 
-class XCAFDoc_ShapeTool;
-class XCAFDoc_DimTolTool;
 class TDF_Label;
 class Standard_GUID;
-class TDF_Attribute;
 
 
 class XCAFDoc_ViewTool;

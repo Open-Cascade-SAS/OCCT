@@ -29,9 +29,7 @@
 #include <XmlObjMgt_SRelocationTable.hxx>
 class Message_Messenger;
 class TDF_Attribute;
-class TCollection_AsciiString;
 class XmlObjMgt_Persistent;
-class TCollection_ExtendedString;
 
 
 class XmlMDF_ADriver;

@@ -21,9 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-class Standard_NullObject;
-class TopoDS_FrozenShape;
-class TopoDS_UnCompatibleShapes;
 class TopoDS_Shape;
 class TopoDS_TShape;
 class TopoDS_Wire;

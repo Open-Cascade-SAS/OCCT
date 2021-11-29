@@ -22,7 +22,6 @@
 
 #include <TopoDS_TShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class TopoDS_TShape;
 
 
 class TopoDS_TCompound;

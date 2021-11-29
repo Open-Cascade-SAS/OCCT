@@ -27,7 +27,6 @@
 #include <Standard_IStream.hxx>
 #include <Message_ProgressRange.hxx>
 
-class Standard_OutOfRange;
 class TopLoc_Location;
 
 

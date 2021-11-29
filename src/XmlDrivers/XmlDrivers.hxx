@@ -22,8 +22,6 @@ class Standard_Transient;
 class Standard_GUID;
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlDrivers_DocumentStorageDriver;
-class XmlDrivers_DocumentRetrievalDriver;
 class TDocStd_Application;
 
 class XmlDrivers 

@@ -21,9 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Draw_Interpretor.hxx>
-class XSDRAWSTLVRML_DataSource;
-class XSDRAWSTLVRML_DataSource3D;
-class XSDRAWSTLVRML_DrawableMesh;
 
 
 

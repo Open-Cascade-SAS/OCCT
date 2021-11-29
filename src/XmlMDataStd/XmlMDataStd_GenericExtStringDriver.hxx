@@ -26,7 +26,6 @@ class TDF_Attribute;
 class XmlObjMgt_Persistent;
 
 
-class XmlMDataStd_NameDriver;
 DEFINE_STANDARD_HANDLE(XmlMDataStd_GenericExtStringDriver, XmlMDF_ADriver)
 
 //! Attribute Driver.

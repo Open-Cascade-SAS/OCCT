@@ -24,7 +24,6 @@
 #include <TopoDSToStep_MakeEdgeError.hxx>
 #include <TopoDSToStep_Root.hxx>
 class StepShape_TopologicalRepresentationItem;
-class StdFail_NotDone;
 class TopoDS_Edge;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;

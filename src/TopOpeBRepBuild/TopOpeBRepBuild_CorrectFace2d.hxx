@@ -29,13 +29,11 @@
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 #include <Standard_Address.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
-class TopoDS_Face;
 class TopoDS_Edge;
 class gp_Pnt2d;
 class TopoDS_Shape;
 class gp_Vec2d;
 class Geom2d_Curve;
-class TopoDS_Wire;
 class Bnd_Box2d;
 
 

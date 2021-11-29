@@ -26,9 +26,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_NullObject;
-class TopoDS_Shape;
 
 
 //! remove from  a shape, the  internal edges that are

@@ -23,7 +23,6 @@
 #include <StepShape_CsgSelect.hxx>
 #include <StepShape_SolidModel.hxx>
 class TCollection_HAsciiString;
-class StepShape_CsgSelect;
 
 
 class StepShape_CsgSolid;

@@ -24,9 +24,7 @@
 #include <gp_Cylinder.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Ax2;
-class gp_Cylinder;
 class gp_Pnt;
 class gp_Ax1;
 class gp_Circ;

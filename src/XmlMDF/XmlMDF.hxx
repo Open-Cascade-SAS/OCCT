@@ -33,10 +33,6 @@ class TDF_Data;
 class XmlMDF_ADriverTable;
 class TDF_Label;
 class Message_Messenger;
-class XmlMDF_ADriver;
-class XmlMDF_TagSourceDriver;
-class XmlMDF_ReferenceDriver;
-class XmlMDF_ADriverTable;
 
 
 //! This package provides classes and methods to

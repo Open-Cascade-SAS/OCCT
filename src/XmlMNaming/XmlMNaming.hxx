@@ -23,9 +23,6 @@
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMNaming_NamedShapeDriver;
-class XmlMNaming_NamingDriver;
-class XmlMNaming_Shape1;
 
 
 

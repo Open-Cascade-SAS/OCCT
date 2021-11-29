@@ -24,8 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class Standard_Persistent;
-class Storage_Schema;
-class TCollection_AsciiString;
 
 
 class Storage_Root;

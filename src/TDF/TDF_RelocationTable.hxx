@@ -29,7 +29,6 @@
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class TDF_Attribute;
-class Standard_Transient;
 
 
 class TDF_RelocationTable;

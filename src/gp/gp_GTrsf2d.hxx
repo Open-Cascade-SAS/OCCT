@@ -22,8 +22,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
-class gp_Trsf2d;
-class gp_Mat2d;
 
 //! Defines a non persistent transformation in 2D space.
 //! This transformation is a general transformation.

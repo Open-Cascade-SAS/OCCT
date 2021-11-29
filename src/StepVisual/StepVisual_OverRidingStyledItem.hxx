@@ -22,9 +22,7 @@
 
 #include <StepVisual_StyledItem.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
-class StepVisual_StyledItem;
 class TCollection_HAsciiString;
-class StepRepr_RepresentationItem;
 
 
 class StepVisual_OverRidingStyledItem;

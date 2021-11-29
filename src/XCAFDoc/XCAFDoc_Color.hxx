@@ -27,8 +27,6 @@
 class Standard_GUID;
 class TDF_Label;
 class Quantity_Color;
-class Quantity_ColorRGBA;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

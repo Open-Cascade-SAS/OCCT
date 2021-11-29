@@ -26,8 +26,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class Units_NoSuchUnit;
-class Units_NoSuchType;
 class TCollection_AsciiString;
 
 

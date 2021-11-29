@@ -30,8 +30,6 @@ class Standard_GUID;
 class TDF_Label;
 class TNaming_NamedShape;
 class TopoDS_Shape;
-class TNaming_Name;
-class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_DataSet;
 class TDF_IDFilter;

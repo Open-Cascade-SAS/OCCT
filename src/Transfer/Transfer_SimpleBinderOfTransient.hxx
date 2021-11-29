@@ -24,9 +24,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_Transient;
-class Transfer_TransferFailure;
-class Transfer_Binder;
 
 
 class Transfer_SimpleBinderOfTransient;

@@ -39,14 +39,6 @@ class Message_Msg;
 class TransferBRep_TransferResultInfo;
 class Interface_CheckIterator;
 class Interface_InterfaceModel;
-class TransferBRep_Reader;
-class TransferBRep_ShapeInfo;
-class TransferBRep_BinderOfShape;
-class TransferBRep_ShapeBinder;
-class TransferBRep_ShapeListBinder;
-class TransferBRep_ShapeMapper;
-class TransferBRep_OrientedShapeMapper;
-class TransferBRep_TransferResultInfo;
 
 
 //! This package gathers services to simply read files and convert

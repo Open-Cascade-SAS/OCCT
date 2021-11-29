@@ -21,8 +21,6 @@
 #include <Standard_Handle.hxx>
 
 class XSAlgo_AlgoContainer;
-class XSAlgo_ToolContainer;
-class XSAlgo_AlgoContainer;
 
 
 

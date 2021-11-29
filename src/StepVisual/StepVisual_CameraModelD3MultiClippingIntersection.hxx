@@ -23,7 +23,6 @@
 class StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect;
 class TCollection_HAsciiString;
 
-class StepGeom_GeometricRepresentationItem;
 DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClippingIntersection, StepGeom_GeometricRepresentationItem)
 
 class StepVisual_CameraModelD3MultiClippingIntersection : public StepGeom_GeometricRepresentationItem

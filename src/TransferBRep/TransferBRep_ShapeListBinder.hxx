@@ -27,8 +27,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class Standard_TypeMismatch;
-class Standard_OutOfRange;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 class TopoDS_Edge;

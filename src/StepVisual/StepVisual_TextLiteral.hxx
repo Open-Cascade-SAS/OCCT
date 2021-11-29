@@ -25,8 +25,6 @@
 #include <StepVisual_FontSelect.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
-class StepGeom_Axis2Placement;
-class StepVisual_FontSelect;
 
 
 class StepVisual_TextLiteral;

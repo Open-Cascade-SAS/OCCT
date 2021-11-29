@@ -28,7 +28,6 @@
 
 class StepGeom_Axis2Placement3d;
 class StepGeom_CartesianTransformationOperator3d;
-class gp_Trsf;
 class TopoDS_Shape;
 class StepRepr_MappedItem;
 class Transfer_TransientProcess;

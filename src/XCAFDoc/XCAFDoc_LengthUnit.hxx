@@ -25,8 +25,6 @@
 #include <Standard_GUID.hxx>
 
 class TDF_Label;
-class TCollection_AsciiString;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

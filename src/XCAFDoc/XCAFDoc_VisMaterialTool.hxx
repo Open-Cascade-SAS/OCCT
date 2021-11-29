@@ -19,7 +19,6 @@
 #include <TDF_LabelSequence.hxx>
 
 class TopoDS_Shape;
-class Quantity_ColorRGBA;
 class XCAFDoc_ShapeTool;
 class XCAFDoc_VisMaterial;
 

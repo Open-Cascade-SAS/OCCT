@@ -24,17 +24,6 @@
 #include <Standard_OStream.hxx>
 #include <TDataXtd_GeometryEnum.hxx>
 #include <TDataXtd_ConstraintEnum.hxx>
-class TDataXtd_Position;
-class TDataXtd_Constraint;
-class TDataXtd_Placement;
-class TDataXtd_Geometry;
-class TDataXtd_Point;
-class TDataXtd_Axis;
-class TDataXtd_Plane;
-class TDataXtd_Pattern;
-class TDataXtd_PatternStd;
-class TDataXtd_Shape;
-class TDataXtd_Triangulation;
 
 //! This  package  defines  extension of standard attributes for
 //! modelling  (mainly for work with geometry).

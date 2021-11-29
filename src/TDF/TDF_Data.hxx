@@ -28,9 +28,6 @@
 #include <TDF_Label.hxx>
 #include <Standard_OStream.hxx>
 #include <NCollection_DataMap.hxx>
-class Standard_NoMoreObject;
-class TDF_Transaction;
-class TDF_LabelNode;
 class TDF_Delta;
 class TDF_Label;
 

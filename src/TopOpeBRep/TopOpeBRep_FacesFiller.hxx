@@ -41,18 +41,12 @@
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRep_FFDumper;
 class TopoDS_Shape;
-class TopOpeBRep_FacesIntersector;
-class TopOpeBRep_PointClassifier;
-class TopOpeBRep_LineInter;
 class TopOpeBRep_VPointInter;
 class TopOpeBRep_VPointInterClassifier;
 class TopOpeBRep_VPointInterIterator;
-class TopOpeBRepDS_Transition;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Point;
-class TopoDS_Face;
 class gp_Pnt;
-class TopOpeBRepDS_DataStructure;
 
 
 //! Fills a DataStructure from TopOpeBRepDS with the result

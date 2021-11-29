@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 class TDF_Label;
 class TopLoc_Location;
-class XCAFPrs_Driver;
-class XCAFPrs_Style;
 
 
 //! Presentation (visualiation, selection etc.) tools for

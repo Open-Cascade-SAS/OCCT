@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 class Transfer_TransientProcess;
 class Interface_InterfaceModel;
-class Interface_InterfaceError;
 class Standard_Transient;
 
 

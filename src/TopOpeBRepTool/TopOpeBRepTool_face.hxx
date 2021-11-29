@@ -24,8 +24,6 @@
 #include <TopoDS_Wire.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Face.hxx>
-class TopoDS_Wire;
-class TopoDS_Face;
 
 
 

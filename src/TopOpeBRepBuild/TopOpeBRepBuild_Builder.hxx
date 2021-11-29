@@ -50,8 +50,6 @@
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <Standard_Address.hxx>
 class TopOpeBRepDS_HDataStructure;
-class Standard_NoSuchObject;
-class TopOpeBRepBuild_HBuilder;
 class TopOpeBRepTool_ShapeExplorer;
 class TopOpeBRepBuild_ShapeSet;
 class TopOpeBRepBuild_EdgeBuilder;

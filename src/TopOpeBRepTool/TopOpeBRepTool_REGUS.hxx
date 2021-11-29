@@ -28,7 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-class TopoDS_Shape;
 class TopoDS_Face;
 class TopoDS_Edge;
 

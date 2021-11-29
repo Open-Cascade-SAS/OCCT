@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 class StepGeom_CartesianPoint;
-class StepToTopoDS_PointPairHasher;
 
 
 //! Stores a pair of Points from step

@@ -22,12 +22,9 @@
 
 #include <Transfer_TransferDispatch.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
-class Interface_InterfaceError;
 class Interface_InterfaceModel;
 class Interface_GeneralLib;
 class Interface_Protocol;
-class Transfer_ActorOfTransientProcess;
-class Transfer_TransferDispatch;
 class Transfer_Binder;
 class Standard_Transient;
 class Transfer_TransientProcess;

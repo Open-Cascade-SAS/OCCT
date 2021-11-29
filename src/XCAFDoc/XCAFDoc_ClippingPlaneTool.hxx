@@ -17,6 +17,7 @@
 #define _XCAFDoc_ClippingPlaneTool_HeaderFile
 
 #include <gp_Pln.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDataStd_GenericEmpty.hxx>
 

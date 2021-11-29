@@ -24,7 +24,6 @@
 #include <TopOpeBRep_PLineInter.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-class TopOpeBRep_LineInter;
 class TopOpeBRep_VPointInter;
 
 

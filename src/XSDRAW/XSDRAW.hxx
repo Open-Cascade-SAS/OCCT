@@ -33,8 +33,6 @@ class Transfer_TransientProcess;
 class Transfer_FinderProcess;
 class XSControl_TransferReader;
 class TCollection_AsciiString;
-class XSDRAW_Functions;
-class XSDRAW_Vars;
 
 
 //! Basic package to work functions of X-STEP (IFSelect & Co)

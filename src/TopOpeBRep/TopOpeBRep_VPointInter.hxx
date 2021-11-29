@@ -29,10 +29,7 @@
 #include <Standard_Real.hxx>
 #include <IntSurf_Transition.hxx>
 #include <Standard_OStream.hxx>
-class Standard_DomainError;
-class IntPatch_Point;
 class gp_Pnt;
-class TopoDS_Shape;
 class gp_Pnt2d;
 class TopoDS_Edge;
 class TopoDS_Face;

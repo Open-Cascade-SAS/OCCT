@@ -22,7 +22,6 @@
 #include <TopoDS_Shape.hxx>
 
 class TDocStd_Document;
-class XCAFDoc_ShapeTool;
 class XCAFDoc_ColorTool;
 class XCAFDoc_VisMaterialTool;
 

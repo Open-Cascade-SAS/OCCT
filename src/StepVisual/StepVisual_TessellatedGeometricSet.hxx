@@ -24,7 +24,6 @@
 //#include <NCollection_DefineHArray1.hxx>
 #include <NCollection_Handle.hxx>
 
-class Standard_Transient;
 
 typedef NCollection_Array1<Handle(StepVisual_TessellatedItem)> StepVisual_Array1OfTessellatedItem;
 

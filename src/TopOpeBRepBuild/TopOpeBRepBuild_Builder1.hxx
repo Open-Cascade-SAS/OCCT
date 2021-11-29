@@ -35,10 +35,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-class TopOpeBRepBuild_HBuilder;
 class TopOpeBRepDS_BuildTool;
 class TopOpeBRepDS_HDataStructure;
-class TopoDS_Shape;
 class TopOpeBRepBuild_GTopo;
 class TopOpeBRepBuild_ShellFaceSet;
 class TopOpeBRepBuild_WireEdgeSet;

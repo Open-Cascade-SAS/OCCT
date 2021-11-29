@@ -29,7 +29,6 @@
 #include <TDocStd_FormatVersion.hxx>
 
 class XmlMDF_ADriverTable;
-class TCollection_ExtendedString;
 class CDM_Document;
 class TCollection_AsciiString;
 class Message_Messenger;

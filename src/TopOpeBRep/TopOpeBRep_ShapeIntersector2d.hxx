@@ -28,8 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepTool_HBoxTool;
-class TopoDS_Shape;
-class TopOpeBRep_EdgesIntersector;
 
 
 //! Intersect two shapes.

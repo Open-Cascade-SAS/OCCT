@@ -24,7 +24,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_StyledItemTarget.hxx>
 #include <Standard_Integer.hxx>
-class StepRepr_RepresentationItem;
 class TCollection_HAsciiString;
 class StepVisual_PresentationStyleAssignment;
 

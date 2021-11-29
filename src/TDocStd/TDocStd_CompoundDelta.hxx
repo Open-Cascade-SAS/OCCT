@@ -19,7 +19,6 @@
 #include <Standard_Type.hxx>
 
 #include <TDF_Delta.hxx>
-class TDocStd_Document;
 
 
 class TDocStd_CompoundDelta;

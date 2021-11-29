@@ -31,8 +31,6 @@ class TDF_Label;
 class TCollection_ExtendedString;
 class TDataStd_Real;
 class TDataStd_Expression;
-class TCollection_AsciiString;
-class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_DataSet;
 

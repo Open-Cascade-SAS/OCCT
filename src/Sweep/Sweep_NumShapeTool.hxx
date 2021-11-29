@@ -26,8 +26,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_OutOfRange;
-class Sweep_NumShape;
 
 
 //! This class provides  the indexation and  type analysis

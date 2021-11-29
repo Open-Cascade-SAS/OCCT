@@ -23,45 +23,6 @@
 
 #include <Standard_OStream.hxx>
 #include <Standard_CString.hxx>
-class Vrml_SFImage;
-class Vrml_SFRotation;
-class Vrml_AsciiText;
-class Vrml_Cone;
-class Vrml_Cube;
-class Vrml_Cylinder;
-class Vrml_IndexedFaceSet;
-class Vrml_IndexedLineSet;
-class Vrml_PointSet;
-class Vrml_Sphere;
-class Vrml_Coordinate3;
-class Vrml_FontStyle;
-class Vrml_Info;
-class Vrml_LOD;
-class Vrml_Material;
-class Vrml_MaterialBinding;
-class Vrml_Normal;
-class Vrml_NormalBinding;
-class Vrml_Texture2;
-class Vrml_Texture2Transform;
-class Vrml_TextureCoordinate2;
-class Vrml_ShapeHints;
-class Vrml_MatrixTransform;
-class Vrml_Rotation;
-class Vrml_Scale;
-class Vrml_Transform;
-class Vrml_Translation;
-class Vrml_OrthographicCamera;
-class Vrml_PerspectiveCamera;
-class Vrml_DirectionalLight;
-class Vrml_PointLight;
-class Vrml_SpotLight;
-class Vrml_Group;
-class Vrml_Separator;
-class Vrml_Switch;
-class Vrml_TransformSeparator;
-class Vrml_WWWAnchor;
-class Vrml_WWWInline;
-class Vrml_Instancing;
 
 
 //! Vrml package  implements the specification  of the

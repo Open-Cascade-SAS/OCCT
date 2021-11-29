@@ -25,8 +25,6 @@
 
 class Transfer_TransientProcess;
 class Interface_InterfaceModel;
-class Standard_NoSuchObject;
-class Transfer_TransferFailure;
 class Transfer_ActorOfTransientProcess;
 class Standard_Transient;
 class Interface_Protocol;

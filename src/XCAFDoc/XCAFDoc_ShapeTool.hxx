@@ -34,8 +34,6 @@ class Standard_GUID;
 class TDF_Label;
 class TopoDS_Shape;
 class TopLoc_Location;
-class TDF_Attribute;
-class TDF_RelocationTable;
 class XCAFDoc_GraphNode;
 
 

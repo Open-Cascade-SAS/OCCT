@@ -28,11 +28,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
-class Standard_NullObject;
-class Standard_OutOfRange;
-class Standard_NumericError;
-class Standard_NegativeValue;
-class TCollection_ExtendedString;
 class TCollection_HAsciiString;
 
 

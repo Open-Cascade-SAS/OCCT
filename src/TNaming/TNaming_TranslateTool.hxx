@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-class Standard_TypeMismatch;
 class TopoDS_Shape;
 
 

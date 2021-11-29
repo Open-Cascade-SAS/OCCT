@@ -26,9 +26,6 @@
 #include <TColStd_ListOfInteger.hxx>
 
 class TDF_Label;
-class gp_Pnt;
-class Standard_GUID;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

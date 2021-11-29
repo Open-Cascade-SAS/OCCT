@@ -38,29 +38,6 @@ class TopoDS_Face;
 class TopoDS_Wire;
 class TopoDS_Solid;
 class TopoDS_Shell;
-class TNaming_CopyShape;
-class TNaming_TranslateTool;
-class TNaming_Translator;
-class TNaming_NamedShape;
-class TNaming_UsedShapes;
-class TNaming_Builder;
-class TNaming_Tool;
-class TNaming_Iterator;
-class TNaming_NewShapeIterator;
-class TNaming_OldShapeIterator;
-class TNaming_SameShapeIterator;
-class TNaming_Name;
-class TNaming_Naming;
-class TNaming_Selector;
-class TNaming_DeltaOnRemoval;
-class TNaming_DeltaOnModification;
-class TNaming_RefShape;
-class TNaming_Scope;
-class TNaming_Identifier;
-class TNaming_Localizer;
-class TNaming_ShapesSet;
-class TNaming_IteratorOnShapesSet;
-class TNaming_NamingTool;
 
 
 //! A topological attribute can be seen as a hook

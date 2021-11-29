@@ -24,7 +24,6 @@
 #include <gp_Trsf.hxx>
 class gp_Vec;
 class gp_Pnt;
-class gp_Trsf;
 
 
 //! This class implements elementary construction algorithms for a

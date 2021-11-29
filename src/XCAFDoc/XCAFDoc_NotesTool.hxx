@@ -24,7 +24,6 @@ class Standard_GUID;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 #include <TColStd_HArray1OfByte.hxx>
-class TDF_RelocationTable;
 class XCAFDoc_Note;
 class XCAFDoc_AssemblyItemId;
 class XCAFDoc_AssemblyItemRef;

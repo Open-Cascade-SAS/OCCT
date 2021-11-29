@@ -33,11 +33,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopOpeBRepTool_HBoxTool;
-class TopoDS_Shape;
-class TopoDS_Face;
-class TopOpeBRep_FacesIntersector;
-class TopOpeBRep_EdgesIntersector;
-class TopOpeBRep_FaceEdgeIntersector;
 
 
 //! Intersect two shapes.

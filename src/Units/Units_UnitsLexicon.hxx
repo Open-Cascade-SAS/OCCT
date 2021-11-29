@@ -24,8 +24,6 @@
 #include <Units_Lexicon.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
-class TCollection_HAsciiString;
-class TCollection_AsciiString;
 
 
 class Units_UnitsLexicon;

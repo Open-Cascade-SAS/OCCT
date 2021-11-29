@@ -24,8 +24,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <Standard_Transient.hxx>
-class TopoDS_Shape;
-class TopOpeBRepBuild_BlockIterator;
 
 
 class TopOpeBRepBuild_Loop;

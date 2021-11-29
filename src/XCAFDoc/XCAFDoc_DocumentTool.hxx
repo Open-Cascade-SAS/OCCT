@@ -35,8 +35,6 @@ class XCAFDoc_MaterialTool;
 class XCAFDoc_NotesTool;
 class XCAFDoc_ViewTool;
 class XCAFDoc_VisMaterialTool;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class XCAFDoc_DocumentTool;

@@ -23,7 +23,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_OStream.hxx>
-class TCollection_AsciiString;
 
 
 //! defines a Info node of VRML specifying properties of geometry

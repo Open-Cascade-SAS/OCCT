@@ -24,12 +24,10 @@
 #include <StepToTopoDS_TranslatePolyLoopError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-class StdFail_NotDone;
 class StepShape_PolyLoop;
 class StepToTopoDS_Tool;
 class Geom_Surface;
 class TopoDS_Face;
-class TopoDS_Shape;
 
 
 

@@ -26,7 +26,6 @@ class gp_Pnt2d;
 class gp_Ax2d;
 class gp_Lin2d;
 class gp_Dir2d;
-class gp_Trsf2d;
 
 
 //! This class implements elementary construction algorithms for a

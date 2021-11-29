@@ -31,9 +31,6 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_DataMapOfOrientedShapeInteger.hxx>
-class TopoDS_Face;
-class GeomAdaptor_Surface;
-class TopoDS_Shape;
 class TopoDS_Edge;
 class TopOpeBRepTool_C2DF;
 class TopoDS_Vertex;

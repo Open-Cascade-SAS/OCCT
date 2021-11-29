@@ -25,7 +25,6 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_ShellBasedSurfaceModel;
-class StdFail_NotDone;
 class TopoDS_Face;
 class Transfer_FinderProcess;
 class TopoDS_Shell;

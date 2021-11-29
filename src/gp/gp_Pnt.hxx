@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 
-class gp_XYZ;
-class Standard_OutOfRange;
 class gp_Ax1;
 class gp_Ax2;
 class gp_Trsf;

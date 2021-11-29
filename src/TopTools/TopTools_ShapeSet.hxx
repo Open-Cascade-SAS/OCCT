@@ -30,7 +30,6 @@
 #include <TopTools_FormatVersion.hxx>
 
 class TopoDS_Shape;
-class TopTools_LocationSet;
 class TCollection_AsciiString;
 
 

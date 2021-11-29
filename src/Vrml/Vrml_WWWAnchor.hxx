@@ -24,7 +24,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Vrml_WWWAnchorMap.hxx>
 #include <Standard_OStream.hxx>
-class TCollection_AsciiString;
 
 
 //! defines a WWWAnchor node of VRML specifying group properties.

@@ -26,7 +26,6 @@
 #include <Interface_CheckStatus.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
-class Standard_Transient;
 class Transfer_Binder;
 class Interface_Check;
 class Transfer_TransientProcess;

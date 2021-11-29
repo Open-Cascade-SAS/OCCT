@@ -30,7 +30,6 @@
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 class TopoDS_Shape;
-class TopoDS_Face;
 class gp_Pnt2d;
 class gp_Vec2d;
 class TopoDS_Edge;

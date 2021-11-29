@@ -28,8 +28,6 @@ class TDF_Label;
 class Standard_GUID;
 class TCollection_ExtendedString;
 class TopoDS_Shape;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class XCAFDoc_LayerTool;

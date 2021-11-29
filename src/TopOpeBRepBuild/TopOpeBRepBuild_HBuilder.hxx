@@ -30,10 +30,8 @@
 #include <TopAbs_State.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
-class Standard_NoSuchObject;
 class TopOpeBRepDS_BuildTool;
 class TopOpeBRepDS_HDataStructure;
-class TopoDS_Shape;
 class TopOpeBRepBuild_Builder;
 
 

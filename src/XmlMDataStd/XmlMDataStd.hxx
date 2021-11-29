@@ -21,29 +21,6 @@
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMDataStd_GenericExtStringDriver;
-class XmlMDataStd_IntegerDriver;
-class XmlMDataStd_RealDriver;
-class XmlMDataStd_IntegerArrayDriver;
-class XmlMDataStd_RealArrayDriver;
-class XmlMDataStd_ExtStringArrayDriver;
-class XmlMDataStd_UAttributeDriver;
-class XmlMDataStd_VariableDriver;
-class XmlMDataStd_ExpressionDriver;
-class XmlMDataStd_RelationDriver;
-class XmlMDataStd_TreeNodeDriver;
-class XmlMDataStd_GenericEmptyDriver;
-class XmlMDataStd_IntegerListDriver;
-class XmlMDataStd_RealListDriver;
-class XmlMDataStd_ExtStringListDriver;
-class XmlMDataStd_BooleanListDriver;
-class XmlMDataStd_ReferenceListDriver;
-class XmlMDataStd_BooleanArrayDriver;
-class XmlMDataStd_ReferenceArrayDriver;
-class XmlMDataStd_ByteArrayDriver;
-class XmlMDataStd_NamedDataDriver;
-class XmlMDataStd_AsciiStringDriver;
-class XmlMDataStd_IntPackedMapDriver;
 
 
 //! Storage and Retrieval drivers for modelling attributes.

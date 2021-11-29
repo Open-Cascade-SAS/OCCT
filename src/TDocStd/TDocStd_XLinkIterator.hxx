@@ -22,7 +22,6 @@
 
 #include <TDocStd_XLinkPtr.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoMoreObject;
 class TDocStd_Document;
 
 

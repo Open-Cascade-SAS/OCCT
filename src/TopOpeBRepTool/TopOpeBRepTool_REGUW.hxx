@@ -35,9 +35,6 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Dir2d.hxx>
 class TopoDS_Face;
-class TopoDS_Shape;
-class TopoDS_Edge;
-class TopoDS_Vertex;
 class TopOpeBRepTool_connexity;
 
 

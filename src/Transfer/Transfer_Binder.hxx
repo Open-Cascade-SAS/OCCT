@@ -27,7 +27,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 class Interface_Check;
-class Transfer_TransferFailure;
 
 // resolve name collisions with X11 headers
 #ifdef Status

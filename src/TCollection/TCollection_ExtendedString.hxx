@@ -31,10 +31,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_PCharacter.hxx>
-class Standard_NullObject;
-class Standard_OutOfRange;
-class Standard_NumericError;
-class Standard_NegativeValue;
 class TCollection_AsciiString;
 
 

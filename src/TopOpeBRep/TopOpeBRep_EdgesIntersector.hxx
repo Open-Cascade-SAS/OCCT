@@ -33,7 +33,6 @@
 #include <TopOpeBRepDS_Config.hxx>
 
 class Bnd_Box;
-class Geom2dAdaptor_Curve;
 class BRepAdaptor_Surface;
 class TCollection_AsciiString;
 class TopOpeBRep_Point2d;

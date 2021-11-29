@@ -32,7 +32,6 @@
 #include <Standard_Transient.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <Standard_OStream.hxx>
-class HLRAlgo_Projector;
 
 
 class VrmlConverter_Projector;

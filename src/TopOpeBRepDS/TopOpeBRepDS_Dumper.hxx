@@ -30,15 +30,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopOpeBRepDS_HDataStructure;
-class Geom_Curve;
-class Geom2d_Curve;
-class gp_Pnt;
-class gp_Pnt2d;
-class Geom_BSplineCurve;
-class Geom2d_BSplineCurve;
 class TCollection_AsciiString;
 class TopoDS_Shape;
-class TopOpeBRepDS_Interference;
 
 
 

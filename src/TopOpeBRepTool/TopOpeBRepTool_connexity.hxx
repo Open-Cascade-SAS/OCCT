@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
-class TopoDS_Shape;
 
 
 

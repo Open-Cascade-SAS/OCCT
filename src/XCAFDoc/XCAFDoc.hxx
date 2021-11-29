@@ -24,27 +24,6 @@
 #include <XCAFDoc_ColorType.hxx>
 class TDF_Attribute;
 class Standard_GUID;
-class XCAFDoc_DocumentTool;
-class XCAFDoc_Location;
-class XCAFDoc_Color;
-class XCAFDoc_DimTol;
-class XCAFDoc_Dimension;
-class XCAFDoc_GeomTolerance;
-class XCAFDoc_Datum;
-class XCAFDoc_Material;
-class XCAFDoc_Volume;
-class XCAFDoc_Area;
-class XCAFDoc_Centroid;
-class XCAFDoc_ClippingPlaneTool;
-class XCAFDoc_ShapeTool;
-class XCAFDoc_ShapeMapTool;
-class XCAFDoc_ColorTool;
-class XCAFDoc_DimTolTool;
-class XCAFDoc_LayerTool;
-class XCAFDoc_MaterialTool;
-class XCAFDoc_GraphNode;
-class XCAFDoc_Editor;
-class XCAFDoc_ViewTool;
 
 
 //! Definition of general structure of DECAF document

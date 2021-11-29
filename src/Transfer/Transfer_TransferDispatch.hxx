@@ -23,7 +23,6 @@
 
 #include <Interface_CopyTool.hxx>
 #include <Standard_Boolean.hxx>
-class Interface_InterfaceError;
 class Interface_InterfaceModel;
 class Interface_GeneralLib;
 class Interface_Protocol;

@@ -21,7 +21,6 @@
 #include <Standard_OutOfRange.hxx>
 
 class gp_Vec2d;
-class gp_XY;
 class gp_Ax2d;
 class gp_Trsf2d;
 

@@ -19,7 +19,6 @@
 
 #include <V3d_Light.hxx>
 
-class V3d_Viewer;
 
 //! Creation of an ambient light source in a viewer.
 class V3d_AmbientLight : public Graphic3d_CLight

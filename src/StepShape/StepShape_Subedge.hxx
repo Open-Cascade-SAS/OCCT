@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_Edge.hxx>
-class StepShape_Edge;
 class TCollection_HAsciiString;
 class StepShape_Vertex;
 

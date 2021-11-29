@@ -28,8 +28,6 @@
 
 struct VrmlData_InBuffer;
 class VrmlData_Scene;
-class gp_XY;
-class gp_XYZ;
 class TCollection_AsciiString;
 
 /**

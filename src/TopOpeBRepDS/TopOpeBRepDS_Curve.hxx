@@ -28,7 +28,6 @@
 #include <Standard_OStream.hxx>
 class Geom_Curve;
 class TopOpeBRepDS_Interference;
-class TopoDS_Shape;
 class Geom2d_Curve;
 
 

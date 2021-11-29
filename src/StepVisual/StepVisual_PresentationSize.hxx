@@ -23,7 +23,6 @@
 #include <StepVisual_PresentationSizeAssignmentSelect.hxx>
 #include <Standard_Transient.hxx>
 class StepVisual_PlanarBox;
-class StepVisual_PresentationSizeAssignmentSelect;
 
 
 class StepVisual_PresentationSize;

@@ -24,19 +24,6 @@
 class XSControl_WorkSession;
 class IFSelect_SessionPilot;
 class XSControl_Vars;
-class XSControl_Controller;
-class XSControl_TransferReader;
-class XSControl_TransferWriter;
-class XSControl_WorkSession;
-class XSControl_SelectForTransfer;
-class XSControl_SignTransferStatus;
-class XSControl_ConnectedShapes;
-class XSControl_Reader;
-class XSControl_Writer;
-class XSControl_Functions;
-class XSControl_FuncShape;
-class XSControl_Utils;
-class XSControl_Vars;
 
 
 //! This package provides complements to IFSelect & Co for

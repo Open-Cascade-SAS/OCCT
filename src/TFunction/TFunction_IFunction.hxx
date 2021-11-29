@@ -26,7 +26,6 @@
 #include <TFunction_ExecutionStatus.hxx>
 #include <TFunction_DoubleMapOfIntegerLabel.hxx>
 #include <Standard_Integer.hxx>
-class TDF_Label;
 class Standard_GUID;
 class TFunction_Logbook;
 class TFunction_Driver;

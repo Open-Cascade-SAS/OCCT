@@ -21,7 +21,6 @@
 
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_HArray1OfFace.hxx>
-class StepShape_ConnectedFaceSet;
 class TCollection_HAsciiString;
 
 

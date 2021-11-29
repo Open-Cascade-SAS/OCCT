@@ -22,8 +22,6 @@
 #include <StepShape_ToleranceMethodDefinition.hxx>
 #include <StepShape_DimensionalCharacteristic.hxx>
 #include <Standard_Transient.hxx>
-class StepShape_ToleranceMethodDefinition;
-class StepShape_DimensionalCharacteristic;
 
 
 class StepShape_PlusMinusTolerance;

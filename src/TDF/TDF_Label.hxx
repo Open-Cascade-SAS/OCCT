@@ -26,14 +26,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <TDF_AttributeIndexedMap.hxx>
-class Standard_DomainError;
-class Standard_OutOfRange;
-class Standard_NullObject;
-class TDF_ChildIterator;
 class TDF_Attribute;
-class TDF_AttributeIterator;
 class TDF_Data;
-class TDF_LabelMapHasher;
 class Standard_GUID;
 class TDF_IDFilter;
 

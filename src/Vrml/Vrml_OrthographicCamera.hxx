@@ -25,8 +25,6 @@
 #include <Vrml_SFRotation.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
-class gp_Vec;
-class Vrml_SFRotation;
 
 
 //! specifies a OrthographicCamera node of VRML specifying properties of cameras.

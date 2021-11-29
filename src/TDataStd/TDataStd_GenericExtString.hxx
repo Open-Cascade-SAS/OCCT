@@ -18,8 +18,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_GUID.hxx>
 
-class Standard_GUID;
-class TDF_Label;
 class TDF_RelocationTable;
 
 class TDataStd_GenericExtString;

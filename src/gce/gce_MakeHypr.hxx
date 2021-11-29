@@ -24,10 +24,8 @@
 #include <gp_Hypr.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Ax2;
 class gp_Pnt;
-class gp_Hypr;
 
 
 //! This class implements the following algorithms used to

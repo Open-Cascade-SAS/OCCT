@@ -23,9 +23,6 @@ class Standard_GUID;
 class TCollection_AsciiString;
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlLDrivers_DocumentStorageDriver;
-class XmlLDrivers_DocumentRetrievalDriver;
-class XmlLDrivers_NamespaceDef;
 class TDocStd_Application;
 
 class XmlLDrivers 

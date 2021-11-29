@@ -31,21 +31,6 @@ class Transfer_FinderProcess;
 class TopoDS_Shape;
 class Standard_Transient;
 class TopoDSToStep_Tool;
-class TopoDSToStep_Root;
-class TopoDSToStep_MakeManifoldSolidBrep;
-class TopoDSToStep_MakeBrepWithVoids;
-class TopoDSToStep_MakeFacetedBrep;
-class TopoDSToStep_MakeFacetedBrepAndBrepWithVoids;
-class TopoDSToStep_MakeShellBasedSurfaceModel;
-class TopoDSToStep_MakeGeometricCurveSet;
-class TopoDSToStep_Builder;
-class TopoDSToStep_WireframeBuilder;
-class TopoDSToStep_Tool;
-class TopoDSToStep_FacetedTool;
-class TopoDSToStep_MakeStepFace;
-class TopoDSToStep_MakeStepWire;
-class TopoDSToStep_MakeStepEdge;
-class TopoDSToStep_MakeStepVertex;
 
 
 //! This package implements the mapping between CAS.CAD

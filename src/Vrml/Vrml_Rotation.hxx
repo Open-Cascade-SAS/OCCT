@@ -23,7 +23,6 @@
 
 #include <Vrml_SFRotation.hxx>
 #include <Standard_OStream.hxx>
-class Vrml_SFRotation;
 
 
 //! defines a Rotation node of VRML specifying matrix and transform properties.

@@ -31,11 +31,6 @@
 class TopoDS_Shape;
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Face;
-class TopOpeBRep_ShapeIntersector;
-class TopOpeBRep_ShapeIntersector2d;
-class TopOpeBRep_FacesFiller;
-class TopOpeBRep_EdgesFiller;
-class TopOpeBRep_FaceEdgeFiller;
 
 
 //! Provides class  methods  to  fill  a datastructure

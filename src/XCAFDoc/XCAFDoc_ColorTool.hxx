@@ -29,8 +29,6 @@ class Standard_GUID;
 class Quantity_Color;
 class Quantity_ColorRGBA;
 class TopoDS_Shape;
-class TDF_Attribute;
-class TDF_RelocationTable;
 
 
 class XCAFDoc_ColorTool;

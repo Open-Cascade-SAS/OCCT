@@ -25,10 +25,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 
-class TDataStd_DeltaOnModificationOfIntPackedMap;
 class Standard_GUID;
 class TDF_Label;
-class TDF_Attribute;
 class TDF_RelocationTable;
 class TDF_DeltaOnModification;
 

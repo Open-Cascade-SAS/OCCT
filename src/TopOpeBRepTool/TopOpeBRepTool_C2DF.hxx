@@ -25,7 +25,6 @@
 #include <TopoDS_Face.hxx>
 #include <Standard_Boolean.hxx>
 class Geom2d_Curve;
-class TopoDS_Face;
 
 
 

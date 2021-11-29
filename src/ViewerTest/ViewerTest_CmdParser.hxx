@@ -24,8 +24,6 @@
 #include <set>
 #include <string>
 
-class Quantity_Color;
-class Quantity_ColorRGBA;
 class gp_Vec;
 class gp_Pnt;
 

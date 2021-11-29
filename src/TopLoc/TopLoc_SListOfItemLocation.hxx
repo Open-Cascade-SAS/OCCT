@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 class TopLoc_SListNodeOfItemLocation;
-class Standard_NoSuchObject;
 class TopLoc_ItemLocation;
 
 

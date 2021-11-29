@@ -23,7 +23,6 @@
 #include <StepVisual_InvisibilityContext.hxx>
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_HArray1OfInvisibleItem.hxx>
-class StepVisual_InvisibilityContext;
 
 
 class StepVisual_ContextDependentInvisibility;

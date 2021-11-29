@@ -27,14 +27,6 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
 class Storage_CallBack;
-class Storage_StreamFormatError;
-class TCollection_AsciiString;
-class Storage_BaseDriver;
-class Storage_Data;
-class Storage_HeaderData;
-class Storage_TypeData;
-class Storage_RootData;
-class Standard_Persistent;
 
 
 class Storage_Schema;

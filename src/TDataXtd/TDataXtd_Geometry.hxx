@@ -33,7 +33,6 @@ class gp_Elips;
 class gp_Pln;
 class gp_Cylinder;
 class Standard_GUID;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

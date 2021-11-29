@@ -32,8 +32,6 @@
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
-class TopoDS_Shape;
-class TCollection_AsciiString;
 
 
 

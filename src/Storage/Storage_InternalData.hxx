@@ -25,7 +25,6 @@
 #include <Storage_HPArray.hxx>
 #include <Storage_MapOfCallBack.hxx>
 #include <Standard_Transient.hxx>
-class Storage_Schema;
 
 
 class Storage_InternalData;

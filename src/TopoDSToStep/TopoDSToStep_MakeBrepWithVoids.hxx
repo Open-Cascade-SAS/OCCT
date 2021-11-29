@@ -25,7 +25,6 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_BrepWithVoids;
-class StdFail_NotDone;
 class TopoDS_Solid;
 class Transfer_FinderProcess;
 

@@ -24,7 +24,6 @@
 #include <StepShape_BooleanOperand.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class TCollection_HAsciiString;
-class StepShape_BooleanOperand;
 
 
 class StepShape_BooleanResult;

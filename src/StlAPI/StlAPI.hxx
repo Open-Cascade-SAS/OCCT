@@ -24,8 +24,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Shape;
-class StlAPI_Writer;
-class StlAPI_Reader;
 
 //! Offers the API for STL data manipulation.
 class StlAPI

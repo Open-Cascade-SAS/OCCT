@@ -28,7 +28,6 @@ class StepGeom_CompositeCurve;
 class Transfer_TransientProcess;
 class StepGeom_Surface;
 class Geom_Surface;
-class TopoDS_Wire;
 
 
 //! Translate STEP entity composite_curve to TopoDS_Wire

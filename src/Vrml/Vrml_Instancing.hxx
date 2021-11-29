@@ -23,7 +23,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_OStream.hxx>
-class TCollection_AsciiString;
 
 
 //! defines  "instancing" - using  the  same  instance  of  a  node

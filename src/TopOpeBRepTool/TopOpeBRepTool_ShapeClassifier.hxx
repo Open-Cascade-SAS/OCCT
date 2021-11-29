@@ -33,10 +33,6 @@
 #include <gp_Pnt2d.hxx>
 #include <TopOpeBRepTool_SolidClassifier.hxx>
 #include <TopTools_ListOfShape.hxx>
-class TopoDS_Shape;
-class TopOpeBRepTool_SolidClassifier;
-class gp_Pnt2d;
-class gp_Pnt;
 
 
 

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_SolidModel.hxx>
-class StepShape_SolidModel;
 class StepGeom_CartesianTransformationOperator3d;
 class TCollection_HAsciiString;
 

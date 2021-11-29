@@ -30,7 +30,6 @@
 class Interface_InterfaceModel;
 class Transfer_ResultFromTransient;
 class Transfer_TransientProcess;
-class Standard_Transient;
 class Interface_CheckIterator;
 
 

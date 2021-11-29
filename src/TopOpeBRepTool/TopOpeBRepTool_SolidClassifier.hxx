@@ -28,9 +28,7 @@
 #include <TopoDS_Solid.hxx>
 #include <BRep_Builder.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Solid;
 class gp_Pnt;
-class TopoDS_Shell;
 
 
 

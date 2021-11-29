@@ -25,7 +25,6 @@ class StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect;
 class StepVisual_ViewVolume;
 class TCollection_HAsciiString;
 
-class StepVisual_CameraModelD3;
 DEFINE_STANDARD_HANDLE(StepVisual_CameraModelD3MultiClipping, StepVisual_CameraModelD3)
 
 class StepVisual_CameraModelD3MultiClipping : public StepVisual_CameraModelD3

@@ -30,9 +30,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
-class TopoDS_Edge;
-class TopoDS_Face;
-class gp_Pnt2d;
 
 
 

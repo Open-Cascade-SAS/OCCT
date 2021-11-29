@@ -26,13 +26,8 @@
 #include <TDF_Attribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
-class TNaming_Builder;
-class TNaming_Iterator;
-class TNaming_NewShapeIterator;
-class TNaming_OldShapeIterator;
 class Standard_GUID;
 class TopoDS_Shape;
-class TDF_Attribute;
 class TDF_DeltaOnModification;
 class TDF_DeltaOnRemoval;
 class TDF_RelocationTable;

@@ -27,11 +27,8 @@
 #include <Standard_Integer.hxx>
 #include <Storage_HSeqOfRoot.hxx>
 #include <Standard_Boolean.hxx>
-class Standard_NoSuchObject;
-class Storage_Schema;
 class Storage_BaseDriver;
 class Storage_Root;
-class TCollection_AsciiString;
 class Standard_Persistent;
 
 

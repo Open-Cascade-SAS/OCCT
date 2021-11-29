@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TCollection_AsciiString.hxx>
-class TCollection_AsciiString;
 
 
 

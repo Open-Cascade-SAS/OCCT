@@ -28,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-class TopoDS_Shape;
 class TopOpeBRepDS_Interference;
 
 

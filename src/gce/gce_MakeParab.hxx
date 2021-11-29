@@ -24,11 +24,9 @@
 #include <gp_Parab.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Ax2;
 class gp_Ax1;
 class gp_Pnt;
-class gp_Parab;
 
 
 //! This class implements the following algorithms used to

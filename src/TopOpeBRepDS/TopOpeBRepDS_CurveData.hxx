@@ -23,8 +23,6 @@
 
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_GeometryData.hxx>
-class TopOpeBRepDS_DataStructure;
-class TopOpeBRepDS_Curve;
 
 
 

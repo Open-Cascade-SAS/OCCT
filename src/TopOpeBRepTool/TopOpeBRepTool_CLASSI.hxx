@@ -29,7 +29,6 @@
 #include <Standard_Real.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-class TopoDS_Face;
 class TopoDS_Shape;
 class Bnd_Box2d;
 class TopOpeBRepTool_face;

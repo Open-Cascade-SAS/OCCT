@@ -22,7 +22,6 @@
 
 #include <StepVisual_AreaOrView.hxx>
 #include <StepVisual_Colour.hxx>
-class StepVisual_AreaOrView;
 
 
 class StepVisual_BackgroundColour;

@@ -23,7 +23,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
-class VrmlAPI_Writer;
 
 
 //! API for writing to VRML 1.0

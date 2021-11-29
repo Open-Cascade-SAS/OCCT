@@ -44,11 +44,9 @@ class Graphic3d_AspectMarker3d;
 class Graphic3d_GraphicDriver;
 class Graphic3d_Group;
 class Graphic3d_Structure;
-class V3d_BadValue;
 class V3d_CircularGrid;
 class V3d_RectangularGrid;
 class V3d_View;
-class Quantity_Color;
 
 //! Defines services on Viewer type objects.
 //! The methods of this class allow editing and

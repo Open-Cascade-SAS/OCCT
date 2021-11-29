@@ -26,7 +26,6 @@
 class StepShape_SolidModel;
 class StepShape_HalfSpaceSolid;
 class StepShape_BooleanResult;
-class StepShape_CsgPrimitive;
 
 
 

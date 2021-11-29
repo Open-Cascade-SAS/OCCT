@@ -27,8 +27,6 @@
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
-class TopoDS_Vertex;
-class TopoDS_Edge;
 
 
 

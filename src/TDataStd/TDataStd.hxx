@@ -24,45 +24,6 @@
 #include <TDF_IDList.hxx>
 #include <Standard_OStream.hxx>
 #include <TDataStd_RealEnum.hxx>
-class TDataStd_Current;
-class TDataStd_Name;
-class TDataStd_Comment;
-class TDataStd_Integer;
-class TDataStd_IntegerArray;
-class TDataStd_Real;
-class TDataStd_RealArray;
-class TDataStd_ExtStringArray;
-class TDataStd_UAttribute;
-class TDataStd_TreeNode;
-class TDataStd_ChildNodeIterator;
-class TDataStd_Directory;
-class TDataStd_NoteBook;
-class TDataStd_Expression;
-class TDataStd_Relation;
-class TDataStd_Variable;
-class TDataStd_DeltaOnModificationOfIntArray;
-class TDataStd_DeltaOnModificationOfRealArray;
-class TDataStd_DeltaOnModificationOfExtStringArray;
-class TDataStd_DeltaOnModificationOfIntPackedMap;
-class TDataStd_DeltaOnModificationOfByteArray;
-class TDataStd_Tick;
-class TDataStd_AsciiString;
-class TDataStd_IntPackedMap;
-class TDataStd_IntegerList;
-class TDataStd_RealList;
-class TDataStd_ExtStringList;
-class TDataStd_BooleanList;
-class TDataStd_ReferenceList;
-class TDataStd_BooleanArray;
-class TDataStd_ReferenceArray;
-class TDataStd_ByteArray;
-class TDataStd_NamedData;
-class TDataStd_HDataMapOfStringInteger;
-class TDataStd_HDataMapOfStringReal;
-class TDataStd_HDataMapOfStringString;
-class TDataStd_HDataMapOfStringByte;
-class TDataStd_HDataMapOfStringHArray1OfInteger;
-class TDataStd_HDataMapOfStringHArray1OfReal;
 
 
 //! This  package  defines   standard attributes for

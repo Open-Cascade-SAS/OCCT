@@ -32,7 +32,6 @@
 #include <TDocStd_Document.hxx>
 
 class Resource_Manager;
-class Standard_NoSuchObject;
 class CDM_Document;
 class TCollection_ExtendedString;
 

@@ -23,7 +23,6 @@
 
 #include <TopoDSToStep_Root.hxx>
 class StepShape_GeometricCurveSet;
-class StdFail_NotDone;
 class TopoDS_Shape;
 class Transfer_FinderProcess;
 

@@ -35,11 +35,9 @@
 #include <TopAbs_State.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class TopoDS_Shape;
 class gp_Pnt;
 class gp_Pnt2d;
 class TopOpeBRepDS_Transition;
-class TopoDS_Vertex;
 
 
 //! Describes the intersection of a face and an edge.

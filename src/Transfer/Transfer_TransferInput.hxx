@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-class Transfer_TransferFailure;
 class Interface_EntityIterator;
 class Transfer_TransferIterator;
 class Transfer_TransientProcess;

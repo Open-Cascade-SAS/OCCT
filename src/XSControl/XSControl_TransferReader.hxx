@@ -33,7 +33,6 @@ class Interface_InterfaceModel;
 class Interface_HGraph;
 class Transfer_ActorOfTransientProcess;
 class Transfer_TransientProcess;
-class Standard_Transient;
 class Transfer_ResultFromModel;
 class TopoDS_Shape;
 class Interface_CheckIterator;

@@ -25,11 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <TDF_AttributeIndexedMap.hxx>
-class Standard_DomainError;
-class TDF_Data;
 class TDF_Label;
-class TDF_LabelNode;
-class TDF_AttributeIterator;
 class TDF_DeltaOnForget;
 class Standard_GUID;
 class TDF_AttributeDelta;

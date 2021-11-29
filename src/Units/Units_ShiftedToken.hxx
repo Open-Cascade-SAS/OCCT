@@ -25,7 +25,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class Units_Dimensions;
-class Units_Token;
 
 
 class Units_ShiftedToken;

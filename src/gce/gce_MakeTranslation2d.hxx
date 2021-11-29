@@ -24,7 +24,6 @@
 #include <gp_Trsf2d.hxx>
 class gp_Vec2d;
 class gp_Pnt2d;
-class gp_Trsf2d;
 
 
 //! This class implements elementary construction algorithms for a

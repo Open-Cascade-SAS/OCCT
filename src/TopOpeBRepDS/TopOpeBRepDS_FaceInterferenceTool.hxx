@@ -29,10 +29,8 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Curve;
-class gp_Pnt;
 
 
 //! a tool computing complex transition on Face.

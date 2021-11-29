@@ -27,7 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-class TopoDS_Shape;
 class TopOpeBRep_VPointInter;
 class TopOpeBRep_PointClassifier;
 

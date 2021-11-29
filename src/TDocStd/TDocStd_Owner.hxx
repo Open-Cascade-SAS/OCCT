@@ -25,7 +25,6 @@
 class TDocStd_Document;
 class Standard_GUID;
 class TDF_Data;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

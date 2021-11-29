@@ -20,7 +20,6 @@
 #include <Standard_Handle.hxx>
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
-class Standard_Transient;
 
 DEFINE_STANDARD_HANDLE(StepVisual_TessellatedItem, StepGeom_GeometricRepresentationItem)
 class StepVisual_TessellatedItem  : public StepGeom_GeometricRepresentationItem

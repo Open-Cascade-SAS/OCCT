@@ -26,7 +26,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-class TCollection_HAsciiString;
 class TCollection_AsciiString;
 class Units_Dimensions;
 

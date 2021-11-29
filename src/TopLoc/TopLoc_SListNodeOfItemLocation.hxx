@@ -23,8 +23,6 @@
 #include <TopLoc_SListOfItemLocation.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <Standard_Transient.hxx>
-class TopLoc_ItemLocation;
-class TopLoc_SListOfItemLocation;
 
 
 class TopLoc_SListNodeOfItemLocation;

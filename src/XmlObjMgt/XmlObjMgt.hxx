@@ -28,9 +28,6 @@
 #include <Standard_Real.hxx>
 class TCollection_ExtendedString;
 class TCollection_AsciiString;
-class XmlObjMgt_Persistent;
-class XmlObjMgt_GP;
-class XmlObjMgt_Array1;
 
 
 //! This package defines services to manage the storage

@@ -22,17 +22,6 @@
 
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMXCAFDoc_CentroidDriver;
-class XmlMXCAFDoc_ColorDriver;
-class XmlMXCAFDoc_GraphNodeDriver;
-class XmlMXCAFDoc_LengthUnitDriver;
-class XmlMXCAFDoc_LocationDriver;
-class XmlMXCAFDoc_DatumDriver;
-class XmlMXCAFDoc_DimTolDriver;
-class XmlMXCAFDoc_MaterialDriver;
-class XmlMXCAFDoc_NoteDriver;
-class XmlMXCAFDoc_NoteCommentDriver;
-class XmlMXCAFDoc_NoteBinDataDriver;
 
 
 //! Storage and Retrieval drivers for modelling attributes.

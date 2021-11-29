@@ -22,7 +22,6 @@
 #include <StepShape_DimensionalCharacteristic.hxx>
 #include <Standard_Transient.hxx>
 class StepShape_ShapeDimensionRepresentation;
-class StepShape_DimensionalCharacteristic;
 
 
 class StepShape_DimensionalCharacteristicRepresentation;

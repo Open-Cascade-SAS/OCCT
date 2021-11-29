@@ -28,7 +28,6 @@ class gp_Lin;
 class gp_Dir;
 class gp_Pln;
 class gp_Ax2;
-class gp_Trsf;
 
 
 //! This class mplements elementary construction algorithms for a

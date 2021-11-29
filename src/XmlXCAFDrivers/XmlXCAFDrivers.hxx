@@ -20,8 +20,6 @@
 
 class Standard_Transient;
 class Standard_GUID;
-class XmlXCAFDrivers_DocumentRetrievalDriver;
-class XmlXCAFDrivers_DocumentStorageDriver;
 class TDocStd_Application;
 
 class XmlXCAFDrivers 

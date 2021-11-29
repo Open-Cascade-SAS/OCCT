@@ -23,7 +23,6 @@
 #include <StepVisual_PresentationRepresentationSelect.hxx>
 #include <Standard_Transient.hxx>
 class StepVisual_PresentedItem;
-class StepVisual_PresentationRepresentationSelect;
 
 
 class StepVisual_PresentedItemRepresentation;

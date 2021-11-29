@@ -30,7 +30,6 @@ class TopoDS_Shape;
 class TopoDS_Vertex;
 class TopoDS_Edge;
 class TopoDS_Wire;
-class TopExp_Explorer;
 
 
 //! This package   provides  basic tools  to   explore the

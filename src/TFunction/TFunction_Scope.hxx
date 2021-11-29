@@ -28,7 +28,6 @@
 class TDF_Label;
 class Standard_GUID;
 class TFunction_Logbook;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

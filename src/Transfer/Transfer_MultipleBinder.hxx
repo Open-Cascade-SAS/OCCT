@@ -26,8 +26,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
-class Transfer_TransferFailure;
-class Standard_OutOfRange;
 class Standard_Transient;
 
 

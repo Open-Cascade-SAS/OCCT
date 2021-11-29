@@ -24,7 +24,6 @@
 #include <StepVisual_PlanarExtent.hxx>
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
-class StepGeom_Axis2Placement;
 
 
 class StepVisual_PlanarBox;

@@ -33,7 +33,6 @@
 #include <TopOpeBRepDS_Config.hxx>
 class TopOpeBRep_Hctxff2d;
 class TopOpeBRep_Hctxee2d;
-class TopOpeBRep_EdgesIntersector;
 
 // resolve name collisions with X11 headers
 #ifdef Status

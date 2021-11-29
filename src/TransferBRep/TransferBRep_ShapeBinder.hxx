@@ -22,7 +22,6 @@
 
 #include <TransferBRep_BinderOfShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-class Standard_TypeMismatch;
 class TopoDS_Shape;
 class TopoDS_Vertex;
 class TopoDS_Edge;

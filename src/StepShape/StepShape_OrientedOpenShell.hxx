@@ -24,7 +24,6 @@
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_HArray1OfFace.hxx>
 #include <Standard_Integer.hxx>
-class StepShape_OpenShell;
 class TCollection_HAsciiString;
 class StepShape_Face;
 

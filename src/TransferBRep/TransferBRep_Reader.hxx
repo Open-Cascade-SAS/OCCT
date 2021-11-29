@@ -31,7 +31,6 @@ class Interface_Protocol;
 class Transfer_ActorOfTransientProcess;
 class Interface_InterfaceModel;
 class Transfer_TransientProcess;
-class Standard_OutOfRange;
 class Interface_CheckIterator;
 class TopoDS_Shape;
 class Standard_Transient;

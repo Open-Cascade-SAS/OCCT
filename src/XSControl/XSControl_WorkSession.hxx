@@ -26,9 +26,7 @@
 class XSControl_Controller;
 class XSControl_TransferReader;
 class XSControl_Vars;
-class Message_Messenger;
 class Transfer_TransientProcess;
-class Standard_Transient;
 class Interface_InterfaceModel;
 class Transfer_FinderProcess;
 class TopoDS_Shape;

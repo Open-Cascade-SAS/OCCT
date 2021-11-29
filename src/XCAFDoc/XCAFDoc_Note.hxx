@@ -22,7 +22,6 @@
 #include <TDF_LabelSequence.hxx>
 #include <XCAFNoteObjects_NoteObject.hxx>
 
-class Standard_GUID;
 class TDF_RelocationTable;
 
 //! A base note attribute.

@@ -24,10 +24,6 @@
 #include <Standard_OStream.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Shape;
-class TopTools_ShapeMapHasher;
-class TopTools_OrientedShapeMapHasher;
-class TopTools_LocationSet;
-class TopTools_ShapeSet;
 
 
 //! The  TopTools package provides   utilities for the

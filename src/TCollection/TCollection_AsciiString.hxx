@@ -29,11 +29,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-class Standard_NullObject;
-class Standard_OutOfRange;
-class Standard_NumericError;
-class Standard_NegativeValue;
-class TCollection_HAsciiString;
 class TCollection_ExtendedString;
 
 //! Class defines a variable-length sequence of 8-bit characters.

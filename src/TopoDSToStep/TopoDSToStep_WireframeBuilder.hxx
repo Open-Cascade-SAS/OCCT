@@ -26,7 +26,6 @@
 #include <TopoDSToStep_Root.hxx>
 #include <Standard_Boolean.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
-class StdFail_NotDone;
 class TopoDS_Shape;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;

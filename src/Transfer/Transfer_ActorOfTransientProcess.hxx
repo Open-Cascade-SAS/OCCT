@@ -25,7 +25,6 @@ class Transfer_Binder;
 class Standard_Transient;
 class Transfer_ProcessForTransient;
 class Transfer_TransientProcess;
-class Message_ProgressScope;
 
 class Transfer_ActorOfTransientProcess;
 DEFINE_STANDARD_HANDLE(Transfer_ActorOfTransientProcess, Transfer_ActorOfProcessForTransient)

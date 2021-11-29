@@ -22,10 +22,8 @@
 #include <TDocStd_XLinkPtr.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_OStream.hxx>
-class TDocStd_XLinkIterator;
 class Standard_GUID;
 class TDF_Data;
-class TDF_Attribute;
 class TDF_RelocationTable;
 
 

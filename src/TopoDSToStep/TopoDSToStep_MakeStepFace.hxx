@@ -24,7 +24,6 @@
 #include <TopoDSToStep_MakeFaceError.hxx>
 #include <TopoDSToStep_Root.hxx>
 class StepShape_TopologicalRepresentationItem;
-class StdFail_NotDone;
 class TopoDS_Face;
 class TopoDSToStep_Tool;
 class Transfer_FinderProcess;

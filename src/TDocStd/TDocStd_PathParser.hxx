@@ -23,7 +23,6 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
-class TCollection_ExtendedString;
 
 
 //! parse an OS path

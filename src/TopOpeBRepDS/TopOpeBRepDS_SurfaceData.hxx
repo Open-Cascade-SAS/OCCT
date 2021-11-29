@@ -23,8 +23,6 @@
 
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_GeometryData.hxx>
-class TopOpeBRepDS_DataStructure;
-class TopOpeBRepDS_Surface;
 
 
 

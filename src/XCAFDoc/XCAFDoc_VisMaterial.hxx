@@ -16,6 +16,7 @@
 
 #include <Graphic3d_AlphaMode.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_VisMaterialCommon.hxx>
 #include <XCAFDoc_VisMaterialPBR.hxx>

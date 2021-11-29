@@ -24,7 +24,6 @@
 #include <IFSelect_ReturnStatus.hxx>
 #include <Transfer_FinderProcess.hxx>
 class XSControl_Controller;
-class Standard_Transient;
 class Interface_InterfaceModel;
 class TopoDS_Shape;
 class Interface_CheckIterator;

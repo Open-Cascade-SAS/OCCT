@@ -24,11 +24,9 @@
 #include <gp_Dir2d.hxx>
 #include <gce_Root.hxx>
 #include <Standard_Real.hxx>
-class StdFail_NotDone;
 class gp_Vec2d;
 class gp_XY;
 class gp_Pnt2d;
-class gp_Dir2d;
 
 
 //! This class implements the following algorithms used

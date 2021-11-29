@@ -26,7 +26,6 @@
 #include <Standard_Boolean.hxx>
 class StepGeom_CurveBoundedSurface;
 class Transfer_TransientProcess;
-class TopoDS_Face;
 
 
 //! Translate curve_bounded_surface into TopoDS_Face
