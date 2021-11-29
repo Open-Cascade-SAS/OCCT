@@ -25,7 +25,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_for_each.h>
 #include <tbb/blocked_range.h>
-#include <tbb/task_scheduler_init.h>
+#if TBB_VERSION_MAJOR < 2021
+  #include <tbb/task_scheduler_init.h>
+#endif
 Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=======================================================================
@@ -38,12 +40,16 @@ void OSD_Parallel::forEachExternal (UniversalIterator& theBegin,
                                     const FunctorInterface& theFunctor,
                                     Standard_Integer theNbItems)
 {
+#if TBB_VERSION_MAJOR >= 2021
+  // task_scheduler_init is removed,
+  // exceptions are captured without proxy tbb::captured_exception object
+  (void )theNbItems;
+  tbb::parallel_for_each (theBegin, theEnd, theFunctor);
+#else
   try
   {
     const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
-    const Standard_Integer aNbThreads = theNbItems > 0 ?
-      aThreadPool->NbDefaultThreadsToLaunch() : -1;
-
+    const Standard_Integer aNbThreads = theNbItems > 0 ? aThreadPool->NbDefaultThreadsToLaunch() : -1;
     tbb::task_scheduler_init aScheduler (aNbThreads);
     tbb::parallel_for_each (theBegin, theEnd, theFunctor);
   }
@@ -51,6 +57,7 @@ void OSD_Parallel::forEachExternal (UniversalIterator& theBegin,
   {
     throw Standard_ProgramError (anException.what());
   }
+#endif
 }
 
 #endif /* HAVE_TBB */
