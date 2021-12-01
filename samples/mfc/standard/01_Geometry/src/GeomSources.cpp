@@ -983,6 +983,7 @@ if(NbResults>0){                                          \n\
 
  Handle(ISession_Surface) aSurface = new ISession_Surface(SP);
  Handle(Prs3d_Drawer) CurDrawer = aSurface->Attributes();
+ CurDrawer->SetOwnLineAspects();
  CurDrawer->UIsoAspect()->SetNumber(10);
  CurDrawer->VIsoAspect()->SetNumber(10);
  aDoc->GetAISContext()->SetLocalAttributes(aSurface, CurDrawer, Standard_False);

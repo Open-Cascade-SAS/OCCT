@@ -36,6 +36,7 @@ IVtkOCC_Shape::IVtkOCC_Shape (const TopoDS_Shape& theShape,
   {
     // these old defaults have been moved from IVtkOCC_ShapeMesher constructor
     myOCCTDrawer->SetDeviationCoefficient (0.0001); // Aspect_TOD_RELATIVE
+    myOCCTDrawer->SetupOwnDefaults();
   }
   buildSubShapeIdMap();
 }

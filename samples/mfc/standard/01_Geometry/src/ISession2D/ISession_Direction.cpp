@@ -51,7 +51,7 @@ ISession_Direction::ISession_Direction (const gp_Pnt2d& aPnt2d,
   myDir (gp_Dir(aDir2d.X(),aDir2d.Y(),0.0)),
   myLength (aLength)
 {
-  myArrowLength = myDrawer->ArrowAspect()->Length();
+  myArrowLength = 1.0;
 }
 
 ISession_Direction::ISession_Direction (const gp_Pnt2d& aPnt2d,
@@ -60,7 +60,7 @@ ISession_Direction::ISession_Direction (const gp_Pnt2d& aPnt2d,
   myDir (gp_Dir(aVec2d.X(), aVec2d.Y(), 0.0))
 {
   myLength = aVec2d.Magnitude();
-  myArrowLength = myDrawer->ArrowAspect()->Length();
+  myArrowLength = 1.0;
 }
 
 

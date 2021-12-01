@@ -2297,7 +2297,7 @@ void Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
 @section upgrade_occt770 Upgrade to OCCT 7.7.0
 
 @subsection upgrade_occt770_parallel_flag_removed Removed parameter theIsParallel from Put/Compute/Perform
- 
+
 theIsParallel parameter has been removed from Put/Compute/Perform from the next classes:
  - BRepCheck_Analyzer
  - BRepCheck_Edge
@@ -2311,4 +2311,10 @@ For example:
 BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
 aValidateEdge.SetParallel(toRunParallel);
 aValidateEdge.Process();
-~~~~ 
+~~~~
+
+@subsection upgrade_occt770_drawer_aspects Prs3d_Drawer aspects
+
+`Prs3d_Drawer` getters no more implicitly create "default" aspects.
+If specific property has not been set before to this drawer instance nor to linked drawer instance, then NULL property will be returned.
+Make sure to set property beforehand or to call `SetOwn*` / `SetupOwn*` methods to derive from defaults.

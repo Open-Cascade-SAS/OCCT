@@ -171,6 +171,7 @@ static Handle(PipelinePtr) PipelineByActorName (const TCollection_AsciiString& t
 static Handle(Prs3d_Drawer) createDefaultDrawer()
 {
   Handle(Prs3d_Drawer) aGlobalDrawer = new Prs3d_Drawer();
+  aGlobalDrawer->SetupOwnDefaults();
   aGlobalDrawer->SetTypeOfDeflection (Aspect_TOD_RELATIVE);
   aGlobalDrawer->SetDeviationCoefficient (0.0001);
   return aGlobalDrawer;

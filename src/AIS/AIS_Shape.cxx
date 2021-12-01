@@ -355,16 +355,28 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   StdSelect::SetDrawerForBRepOwner(aSelection,myDrawer);
 }
 
-void AIS_Shape::Color( Quantity_Color& aColor ) const {
-  aColor = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
+void AIS_Shape::Color (Quantity_Color& theColor) const
+{
+  if (const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect())
+  {
+    theColor = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
+  }
 }
 
-Graphic3d_NameOfMaterial AIS_Shape::Material() const {
-  return (myDrawer->ShadingAspect()->Material(myCurrentFacingModel)).Name();
+Graphic3d_NameOfMaterial AIS_Shape::Material() const
+{
+  const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect();
+  return !aShading.IsNull()
+        ? aShading->Material(myCurrentFacingModel).Name()
+        : Graphic3d_NameOfMaterial_DEFAULT;
 }
 
-Standard_Real AIS_Shape::Transparency() const {
-  return myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+Standard_Real AIS_Shape::Transparency() const
+{
+  const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect();
+  return !aShading.IsNull()
+        ? aShading->Transparency(myCurrentFacingModel)
+        : 0.0;
 }
 
 //=======================================================================
@@ -639,9 +651,10 @@ void AIS_Shape::setMaterial (const Handle(Prs3d_Drawer)&     theDrawer,
                              const Standard_Boolean          theToKeepColor,
                              const Standard_Boolean          theToKeepTransp) const
 {
+  theDrawer->SetupOwnShadingAspect();
+
   const Quantity_Color aColor  = theDrawer->ShadingAspect()->Color (myCurrentFacingModel);
   const Standard_Real  aTransp = theDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
-  theDrawer->SetupOwnShadingAspect();
   theDrawer->ShadingAspect()->SetMaterial (theMaterial, myCurrentFacingModel);
 
   if (theToKeepColor)

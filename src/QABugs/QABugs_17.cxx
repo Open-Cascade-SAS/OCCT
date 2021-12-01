@@ -1033,117 +1033,6 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-#include <Graphic3d_MaterialAspect.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_ShadingAspect.hxx>
-//=======================================================================
-//function : OCC1174_1
-//purpose  : 
-//=======================================================================
-static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " shape\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
-  if(anAISContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  TopoDS_Shape aShape = DBRep::Get(argv[1]);
-
-  Handle(AIS_Shape) anAisIO = new AIS_Shape(aShape);
-
-  Quantity_Color aColF(0.0, 0.4, 0.0, Quantity_TOC_sRGB);
-  Quantity_Color aColB(0.0, 0.0, 0.6, Quantity_TOC_sRGB);
-
-  Handle(Prs3d_Drawer) aDrawer = anAisIO->Attributes();
-  Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
-
-  Graphic3d_MaterialAspect aFront = aShadingAspect->Material(Aspect_TOFM_FRONT_SIDE);
-  aFront.SetAmbientColor(aColF);
-  aFront.SetDiffuseColor(aColF);
-  aFront.SetSpecularColor(aColF);
-  aFront.SetEmissiveColor(Quantity_NOC_BLACK);
-  aFront.SetTransparency(0.0);
-  aShadingAspect->SetMaterial(aFront,Aspect_TOFM_FRONT_SIDE);
-
-  Graphic3d_MaterialAspect aBack = aShadingAspect->Material(Aspect_TOFM_BACK_SIDE);
-  aBack.SetAmbientColor(aColB);
-  aBack.SetDiffuseColor(aColB);
-  aBack.SetSpecularColor(aColB);
-  aBack.SetEmissiveColor(Quantity_NOC_BLACK);
-  aBack.SetTransparency(0.0);
-  aShadingAspect->SetMaterial(aBack,Aspect_TOFM_BACK_SIDE);
-
-  aDrawer->SetShadingAspect (aShadingAspect);
-
-  anAISContext->Display (anAisIO, 1, 0, Standard_True);
-
-  Standard_Real r, g, b; 
-  aShadingAspect->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_sRGB);
-  di << "Info: color on front side (" << r << "," << g << "," << b << ")\n";
-  aShadingAspect->Color(Aspect_TOFM_BACK_SIDE).Values(r,g,b, Quantity_TOC_sRGB);
-  di << "Info: color on back side (" << r << "," << g << "," << b << ")\n";
-
-  return 0;
-}
-
-//=======================================================================
-//function : OCC1174_2
-//purpose  : 
-//=======================================================================
-static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " shape\n";
-    return 1;
-  }
-
-  Handle(AIS_InteractiveContext) AISContext = ViewerTest::GetAISContext();
-  if(AISContext.IsNull()) 
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  TopoDS_Shape sh = DBRep::Get(argv[1]);
-
-  Handle(AIS_Shape) ais = new AIS_Shape(sh); 
-  AISContext->Display (ais, 1, 0, Standard_False);
-  AISContext->SetMaterial (ais, Graphic3d_NameOfMaterial_ShinyPlastified, Standard_False);
-
-  Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_sRGB);
-  Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_sRGB);
-  Handle(Prs3d_ShadingAspect) sa = ais->Attributes()->ShadingAspect(); 
-
-  Graphic3d_MaterialAspect front = sa->Material(Aspect_TOFM_FRONT_SIDE); 
-  front.SetAmbientColor(colf); 
-  front.SetDiffuseColor(colf); 
-  front.SetSpecularColor(colf); 
-  front.SetEmissiveColor(Quantity_NOC_BLACK);
-  front.SetTransparency (0.4f);
-  sa->SetMaterial(front,Aspect_TOFM_FRONT_SIDE); 
-
-  Graphic3d_MaterialAspect back = sa->Material(Aspect_TOFM_BACK_SIDE); 
-  back.SetAmbientColor(colb); 
-  back.SetDiffuseColor(colb); 
-  back.SetSpecularColor(colb); 
-  back.SetEmissiveColor(Quantity_NOC_BLACK);
-  back.SetTransparency (0.2f);
-  sa->SetMaterial(back,Aspect_TOFM_BACK_SIDE); 
-
-  AISContext->Redisplay (ais, 1, 0);
-
-  return 0;
-}
-
 #include <TopoDS_Solid.hxx>
 #include <BRepFeat_MakeDPrism.hxx>
 //=======================================================================
@@ -1502,9 +1391,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC813", "OCC813 U V", __FILE__, OCC813, group);
   theCommands.Add ("OCC814", "OCC814", __FILE__, OCC814, group);
   theCommands.Add ("OCC884", "OCC884 result shape [toler [maxtoler]]", __FILE__, OCC884, group);
-
-  theCommands.Add ("OCC1174_1", "OCC1174_1 shape", __FILE__, OCC1174_1, group);
-  theCommands.Add ("OCC1174_2", "OCC1174_2 shape", __FILE__, OCC1174_2, group);
 
   theCommands.Add ("OCCN1", "OCCN1 angle fuse(1 for boss / 0 for slot) length", __FILE__, OCCN1, group);
   theCommands.Add ("OCCN2", "OCCN2", __FILE__, OCCN2, group);

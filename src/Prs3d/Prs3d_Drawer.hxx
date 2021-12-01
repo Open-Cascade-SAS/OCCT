@@ -55,6 +55,9 @@ public:
   //! Default constructor.
   Standard_EXPORT Prs3d_Drawer();
 
+  //! Setup all own aspects with default values.
+  Standard_EXPORT void SetupOwnDefaults();
+
   //! Sets the type of chordal deflection.
   //! This indicates whether the deflection value is absolute or relative to the size of the object.
   Standard_EXPORT void SetTypeOfDeflection (const Aspect_TypeOfDeflection theTypeOfDeflection);
@@ -83,58 +86,66 @@ public:
   //!   Prs3d_DeflectionCurve
   //!   Prs3d_WFDeflectionSurface
   //!   Prs3d_WFDeflectionRestrictedFace
-  Standard_EXPORT void SetMaximalChordialDeviation (const Standard_Real theChordialDeviation);
+  void SetMaximalChordialDeviation (const Standard_Real theChordialDeviation)
+  {
+    myChordialDeviation = theChordialDeviation;
+  }
 
-  //! Returns the maximal chordal deviation. The default value is 0.1.
+  //! Returns the maximal chordal deviation. The default value is 0.0001.
   //! Drawings of curves or patches are made with respect to an absolute maximal chordal deviation.
   Standard_Real MaximalChordialDeviation() const
   {
-    return myHasOwnChordialDeviation || myLink.IsNull()
+    return myChordialDeviation > 0.0
          ? myChordialDeviation
-         : myLink->MaximalChordialDeviation();
+         : (!myLink.IsNull()
+           ? myLink->MaximalChordialDeviation()
+           : 0.0001);
   }
 
   //! Returns true if the drawer has a maximal chordial deviation setting active.
-  Standard_Boolean HasOwnMaximalChordialDeviation() const { return myHasOwnChordialDeviation; }
+  Standard_Boolean HasOwnMaximalChordialDeviation() const { return myChordialDeviation > 0.0; }
 
   //! Resets HasOwnMaximalChordialDeviation() flag, e.g. undoes SetMaximalChordialDeviation().
   void UnsetOwnMaximalChordialDeviation()
   {
-    myHasOwnChordialDeviation = false;
-    myChordialDeviation = 0.0001;
+    myChordialDeviation = -1.0;
   }
 
   //! Sets the type of HLR algorithm used by drawer's interactive objects
   Standard_EXPORT void SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR);
 
   //! Returns the type of HLR algorithm currently in use.
-  Standard_EXPORT Prs3d_TypeOfHLR TypeOfHLR();
+  Standard_EXPORT Prs3d_TypeOfHLR TypeOfHLR() const;
 
   //! Returns true if the type of HLR is not equal to Prs3d_TOH_NotSet.
   Standard_Boolean HasOwnTypeOfHLR() const { return (myTypeOfHLR != Prs3d_TOH_NotSet); }
 
   //! Defines the maximum value allowed for the first and last
   //! parameters of an infinite curve.
-  Standard_EXPORT void SetMaximalParameterValue (const Standard_Real theValue);
+  void SetMaximalParameterValue (const Standard_Real theValue)
+  {
+    myMaximalParameterValue = theValue;
+  }
 
-  //! Sets the maximum value allowed for the first and last
-  //! parameters of an infinite curve. By default, this value is 500000.
+  //! Sets the maximum value allowed for the first and last parameters of an infinite curve.
+  //! By default, this value is 500000.
   Standard_Real MaximalParameterValue() const
   {
-    return myHasOwnMaximalParameterValue || myLink.IsNull()
+    return myMaximalParameterValue > 0.0
          ? myMaximalParameterValue
-         : myLink->MaximalParameterValue();
+         : (!myLink.IsNull()
+           ? myLink->MaximalParameterValue()
+           : 500000.0);
   }
 
   //! Returns true if the drawer has a maximum value allowed for the first and last
   //! parameters of an infinite curve setting active.
-  Standard_Boolean HasOwnMaximalParameterValue() const { return myHasOwnMaximalParameterValue; }
+  Standard_Boolean HasOwnMaximalParameterValue() const { return myMaximalParameterValue > 0.0; }
 
   //! Resets HasOwnMaximalParameterValue() flag, e.g. undoes SetMaximalParameterValue().
   void UnsetOwnMaximalParameterValue()
   {
-    myHasOwnMaximalParameterValue = false;
-    myMaximalParameterValue = 500000.0;
+    myMaximalParameterValue = -1.0;
   }
 
   //! Sets IsoOnPlane on or off by setting the parameter theIsEnabled to true or false.
@@ -180,24 +191,28 @@ public:
   Standard_EXPORT void SetIsoOnTriangulation (const Standard_Boolean theToEnable);
 
   //! Sets the discretisation parameter theValue.
-  Standard_EXPORT void SetDiscretisation (const Standard_Integer theValue);
+  void SetDiscretisation (const Standard_Integer theValue)
+  {
+    myNbPoints = theValue;
+  }
 
   //! Returns the discretisation setting. 
   Standard_Integer Discretisation() const
   {
-    return myHasOwnNbPoints || myLink.IsNull()
+    return myNbPoints != -1
          ? myNbPoints
-         : myLink->Discretisation();
+         : (!myLink.IsNull()
+           ? myLink->Discretisation()
+           : 30);
   }
 
   //! Returns true if the drawer has discretisation setting active.
-  Standard_Boolean HasOwnDiscretisation() const { return myHasOwnNbPoints; }
+  Standard_Boolean HasOwnDiscretisation() const { return myNbPoints != -1; }
 
   //! Resets HasOwnDiscretisation() flag, e.g. undoes SetDiscretisation().
   void UnsetOwnDiscretisation()
   {
-    myHasOwnNbPoints = false;
-    myNbPoints = 30;
+    myNbPoints = -1;
   }
 
   //! Sets the deviation coefficient theCoefficient.
@@ -222,27 +237,28 @@ public:
   //! SizeOfObject * DeviationCoefficient.
   Standard_Real DeviationCoefficient() const
   {
-    return HasOwnDeviationCoefficient() || myLink.IsNull()
+    return myDeviationCoefficient > 0.0
          ? myDeviationCoefficient
-         : myLink->DeviationCoefficient();
+         : (!myLink.IsNull()
+           ? myLink->DeviationCoefficient()
+           : 0.001);
   }
 
   //! Resets HasOwnDeviationCoefficient() flag, e.g. undoes previous SetDeviationCoefficient().
   void SetDeviationCoefficient()
   {
-    myHasOwnDeviationCoefficient = Standard_False;
-    myDeviationCoefficient = 0.001;
+    myDeviationCoefficient = -1.0;
   }
 
   //! Returns true if there is a local setting for deviation
   //! coefficient in this framework for a specific interactive object.
-  Standard_Boolean HasOwnDeviationCoefficient() const { return myHasOwnDeviationCoefficient; }
+  Standard_Boolean HasOwnDeviationCoefficient() const { return myDeviationCoefficient > 0.0; }
 
   //! Saves the previous value used for the chordal
   //! deviation coefficient. 
   Standard_Real PreviousDeviationCoefficient() const
   {
-    return myHasOwnDeviationCoefficient
+    return HasOwnDeviationCoefficient()
          ? myPreviousDeviationCoefficient
          : 0.0;
   }
@@ -250,7 +266,7 @@ public:
   //! Updates the previous value used for the chordal deviation coefficient to the current state.
   void UpdatePreviousDeviationCoefficient()
   {
-    if (myHasOwnDeviationCoefficient)
+    if (HasOwnDeviationCoefficient())
     {
       myPreviousDeviationCoefficient = DeviationCoefficient();
     }
@@ -263,26 +279,27 @@ public:
   //! Returns the value for deviation angle in radians, 20 * M_PI / 180 by default.
   Standard_Real DeviationAngle() const
   {
-    return HasOwnDeviationAngle() || myLink.IsNull()
+    return myDeviationAngle > 0.0
          ? myDeviationAngle
-         : myLink->DeviationAngle();
+         : (!myLink.IsNull()
+           ? myLink->DeviationAngle()
+           : 20.0 * M_PI / 180.0);
   }
 
   //! Resets HasOwnDeviationAngle() flag, e.g. undoes previous SetDeviationAngle().
   void SetDeviationAngle()
   {
-    myHasOwnDeviationAngle = Standard_False;
-    myDeviationAngle = 20.0 * M_PI / 180.0;
+    myDeviationAngle = -1.0;
   }
 
   //! Returns true if there is a local setting for deviation
   //! angle in this framework for a specific interactive object.
-  Standard_Boolean HasOwnDeviationAngle() const { return myHasOwnDeviationAngle; }
+  Standard_Boolean HasOwnDeviationAngle() const { return myDeviationAngle > 0.0; }
 
   //! Returns the previous deviation angle
   Standard_Real PreviousDeviationAngle() const
   {
-    return myHasOwnDeviationAngle
+    return HasOwnDeviationAngle()
          ? myPreviousDeviationAngle
          : 0.0;
   }
@@ -290,7 +307,7 @@ public:
   //! Updates the previous deviation angle to the current value
   void UpdatePreviousDeviationAngle()
   {
-    if (myHasOwnDeviationAngle)
+    if (HasOwnDeviationAngle())
     {
       myPreviousDeviationAngle = DeviationAngle();
     }
@@ -320,64 +337,54 @@ public:
     myIsAutoTriangulated = true;
   }
 
-  //! Defines the attributes which are used when drawing an
-  //! U isoparametric curve of a face. Defines the number
-  //! of U isoparametric curves to be drawn for a single face.
-  //! The LineAspect for U isoparametric lines can be edited
-  //! (methods SetColor, SetTypeOfLine, SetWidth, SetNumber)
-  //! The default values are:
-  //!   COLOR       : Quantity_NOC_GRAY75
-  //!   TYPE OF LINE: Aspect_TOL_SOLID
-  //!   WIDTH       : 0.5
+  //! Defines own attributes for drawing an U isoparametric curve of a face,
+  //! settings from linked Drawer or NULL if neither was set.
   //!
   //! These attributes are used by the following algorithms:
   //!   Prs3d_WFDeflectionSurface
   //!   Prs3d_WFDeflectionRestrictedFace
-  Standard_EXPORT const Handle(Prs3d_IsoAspect)& UIsoAspect();
+  Standard_EXPORT const Handle(Prs3d_IsoAspect)& UIsoAspect() const;
 
-  Standard_EXPORT void SetUIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect);
+  void SetUIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
+  {
+    myUIsoAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! UIso aspect that overrides the one in the link.
-  Standard_Boolean HasOwnUIsoAspect() const { return myHasOwnUIsoAspect; }
+  Standard_Boolean HasOwnUIsoAspect() const { return !myUIsoAspect.IsNull(); }
 
-  //! Defines the attributes which are used when drawing an
-  //! V isoparametric curve of a face. Defines the number
-  //! of V isoparametric curves to be drawn for a single face.
-  //! The LineAspect for V isoparametric lines can be edited
-  //! (methods SetColor, SetTypeOfLine, SetWidth, SetNumber)
-  //! The default values are:
-  //!   COLOR       : Quantity_NOC_GRAY82
-  //!   TYPE OF LINE: Aspect_TOL_SOLID
-  //!   WIDTH       : 0.5
+  //! Defines own attributes for drawing an V isoparametric curve of a face,
+  //! settings from linked Drawer or NULL if neither was set.
   //!
   //! These attributes are used by the following algorithms:
   //!   Prs3d_WFDeflectionSurface
   //!   Prs3d_WFDeflectionRestrictedFace
-  Standard_EXPORT const Handle(Prs3d_IsoAspect)& VIsoAspect();
+  Standard_EXPORT const Handle(Prs3d_IsoAspect)& VIsoAspect() const;
 
   //! Sets the appearance of V isoparameters - theAspect.
-  Standard_EXPORT void SetVIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect);
+  void SetVIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
+  {
+    myVIsoAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! VIso aspect that overrides the one in the link.
-  Standard_Boolean HasOwnVIsoAspect() const { return myHasOwnVIsoAspect; }
+  Standard_Boolean HasOwnVIsoAspect() const { return !myVIsoAspect.IsNull(); }
 
-  //! Returns wire aspect settings.
-  //! The LineAspect for the free boundaries can be edited.
-  //! The default values are:
-  //!   Color: Quantity_NOC_GREEN
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
+  //! Returns own wire aspect settings, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the algorithm Prs3d_WFShape.
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& WireAspect();
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& WireAspect() const;
 
   //! Sets the parameter theAspect for display of wires.
-  Standard_EXPORT void SetWireAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetWireAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myWireAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! wire aspect that overrides the one in the link.
-  Standard_Boolean HasOwnWireAspect() const { return myHasOwnWireAspect; }
+  Standard_Boolean HasOwnWireAspect() const { return !myWireAspect.IsNull(); }
 
   //! Sets WireDraw on or off by setting the parameter theIsEnabled to true or false.
   Standard_EXPORT void SetWireDraw(const Standard_Boolean theIsEnabled);
@@ -401,43 +408,46 @@ public:
     myWireDraw = true;
   }
 
-  //! Returns the point aspect setting. The default values are
-  //!   Color: Quantity_NOC_YELLOW
-  //!   Type of marker: Aspect_TOM_PLUS
-  //!   Scale: 1.0
+  //! Returns own point aspect setting, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the algorithms Prs3d_Point.
-  Standard_EXPORT const Handle(Prs3d_PointAspect)& PointAspect();
+  Standard_EXPORT const Handle(Prs3d_PointAspect)& PointAspect() const;
 
   //! Sets the parameter theAspect for display attributes of points
-  Standard_EXPORT void SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect);
+  void SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect)
+  {
+    myPointAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! point aspect that overrides the one in the link.
-  Standard_Boolean HasOwnPointAspect() const { return myHasOwnPointAspect; }
+  Standard_Boolean HasOwnPointAspect() const { return !myPointAspect.IsNull(); }
 
-  //! Sets own point aspect.
+  //! Sets own point aspect, which is a yellow Aspect_TOM_PLUS marker by default.
   //! Returns FALSE if the drawer already has its own attribute for point aspect.
   Standard_EXPORT Standard_Boolean SetupOwnPointAspect (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
-  //! Returns settings for line aspects.
-  //! These settings can be edited. The default values are:
-  //!   Color: Quantity_NOC_YELLOW
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
+  //! Returns own settings for line aspects, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the following algorithms:
   //!   Prs3d_Curve
   //!   Prs3d_Line
   //!   Prs3d_HLRShape
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& LineAspect();
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& LineAspect() const;
 
   //! Sets the parameter theAspect for display attributes of lines.
-  Standard_EXPORT void SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myLineAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! line aspect that overrides the one in the link.
-  Standard_Boolean HasOwnLineAspect() const { return myHasOwnLineAspect; }
+  Standard_Boolean HasOwnLineAspect() const { return !myLineAspect.IsNull(); }
 
-  //! Sets own line aspects.
+  //! Sets own line aspects, which are
+  //! single U and single V gray75 solid isolines (::UIsoAspect(), ::VIsoAspect()),
+  //! red wire (::WireAspect()), yellow line (::LineAspect()),
+  //! yellow seen line (::SeenLineAspect()), dashed yellow hidden line (::HiddenLineAspect()),
+  //! green free boundary (::FreeBoundaryAspect()), yellow unfree boundary (::UnFreeBoundaryAspect()).
   //! Returns FALSE if own line aspect are already set.
   Standard_EXPORT Standard_Boolean SetOwnLineAspects (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
@@ -445,73 +455,74 @@ public:
   //! Returns FALSE if own line for datums are already set.
   Standard_EXPORT Standard_Boolean SetOwnDatumAspects (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
-  //! Returns settings for text aspect.
-  //! These settings can be edited. The default value is:
-  //! - Color: Quantity_NOC_YELLOW
-  Standard_EXPORT const Handle(Prs3d_TextAspect)& TextAspect();
+  //! Returns own settings for text aspect, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_TextAspect)& TextAspect() const;
 
   //! Sets the parameter theAspect for display attributes of text.
-  Standard_EXPORT void SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect);
+  void SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect)
+  {
+    myTextAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! text aspect that overrides the one in the link.
-  Standard_Boolean HasOwnTextAspect() const { return myHasOwnTextAspect; }
+  Standard_Boolean HasOwnTextAspect() const { return !myTextAspect.IsNull(); }
 
-  //! Returns settings for shading aspects.
-  //! These settings can be edited. The default values are:
-  //! -   Color: Quantity_NOC_YELLOW
-  //! -   Material: Graphic3d_NameOfMaterial_Brass
-  //! Shading aspect is obtained through decomposition of
-  //! 3d faces into triangles, each side of each triangle
-  //! being a chord of the corresponding curved edge in the face.
-  //! Reflection of light in each projector perspective is then calculated for each of the
-  //! resultant triangular planes.
-  Standard_EXPORT const Handle(Prs3d_ShadingAspect)& ShadingAspect();
+  //! Returns own settings for shading aspects, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_ShadingAspect)& ShadingAspect() const;
 
   //! Sets the parameter theAspect for display attributes of shading.
-  Standard_EXPORT  void SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theAspect);
+  void SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theAspect)
+  {
+    myShadingAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! shading aspect that overrides the one in the link.
-  Standard_Boolean HasOwnShadingAspect() const { return myHasOwnShadingAspect; }
+  Standard_Boolean HasOwnShadingAspect() const { return !myShadingAspect.IsNull(); }
 
-  //! Sets own shading aspect.
+  //! Sets own shading aspect, which is Graphic3d_NameOfMaterial_Brass material by default.
   //! Returns FALSE if the drawer already has its own attribute for shading aspect.
   Standard_EXPORT Standard_Boolean SetupOwnShadingAspect (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
-  //! Returns settings for seen line aspects.
-  //! These settings can be edited. The default values are:
-  //!   Color: Quantity_NOC_YELLOW
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& SeenLineAspect();
+  //! Returns own settings for seen line aspects, settings of linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& SeenLineAspect() const;
 
   //! Sets the parameter theAspect for the display of seen lines in hidden line removal mode.
-  Standard_EXPORT void SetSeenLineAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetSeenLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    mySeenLineAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! seen line aspect that overrides the one in the link.
-  Standard_Boolean HasOwnSeenLineAspect() const { return myHasOwnSeenLineAspect; }
+  Standard_Boolean HasOwnSeenLineAspect() const { return !mySeenLineAspect.IsNull(); }
 
-  //! Returns settings for the appearance of planes.
-  Standard_EXPORT const Handle(Prs3d_PlaneAspect)& PlaneAspect();
+  //! Returns own settings for the appearance of planes, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_PlaneAspect)& PlaneAspect() const;
 
   //! Sets the parameter theAspect for the display of planes. 
-  Standard_EXPORT void SetPlaneAspect (const Handle(Prs3d_PlaneAspect)& theAspect);
+  void SetPlaneAspect (const Handle(Prs3d_PlaneAspect)& theAspect)
+  {
+    myPlaneAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! plane aspect that overrides the one in the link.
-  Standard_Boolean HasOwnPlaneAspect() const { return myHasOwnPlaneAspect; }
+  Standard_Boolean HasOwnPlaneAspect() const { return !myPlaneAspect.IsNull(); }
 
-  //! Returns the attributes for display of arrows.
-  Standard_EXPORT const Handle(Prs3d_ArrowAspect)& ArrowAspect();
+  //! Returns own attributes for display of arrows, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_ArrowAspect)& ArrowAspect() const;
 
   //! Sets the parameter theAspect for display attributes of arrows.
-  Standard_EXPORT void SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect);
+  void SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect)
+  {
+    myArrowAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! arrow aspect that overrides the one in the link.
-  Standard_Boolean HasOwnArrowAspect() const { return myHasOwnArrowAspect; }
+  Standard_Boolean HasOwnArrowAspect() const { return !myArrowAspect.IsNull(); }
 
   //! Enables the drawing of an arrow at the end of each line.
   //! By default the arrows are not drawn.
@@ -537,19 +548,18 @@ public:
     myLineArrowDraw = false;
   }
 
-  //! Returns settings for hidden line aspects.
-  //! These settings can be edited. The default values are:
-  //!   Color: Quantity_NOC_YELLOW
-  //!   Type of line: Aspect_TOL_DASH
-  //!   Width: 1.0
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& HiddenLineAspect();
+  //! Returns own settings for hidden line aspects, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& HiddenLineAspect() const;
 
   //! Sets the parameter theAspect for the display of hidden lines in hidden line removal mode.
-  Standard_EXPORT void SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myHiddenLineAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! hidden lines aspect that overrides the one in the link.
-  Standard_Boolean HasOwnHiddenLineAspect() const { return myHasOwnHiddenLineAspect; }
+  Standard_Boolean HasOwnHiddenLineAspect() const { return !myHiddenLineAspect.IsNull(); }
 
   //! Returns Standard_True if the hidden lines are to be drawn.
   //! By default the hidden lines are not drawn.
@@ -577,19 +587,18 @@ public:
     myDrawHiddenLine = false;
   }
 
-  //! Returns settings for the appearance of vectors.
-  //! These settings can be edited. The default values are:
-  //!   Color: Quantity_NOC_SKYBLUE
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& VectorAspect();
+  //! Returns own settings for the appearance of vectors, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& VectorAspect() const;
 
   //! Sets the modality theAspect for the display of vectors.
-  Standard_EXPORT void SetVectorAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetVectorAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myVectorAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! vector aspect that overrides the one in the link.
-  Standard_Boolean HasOwnVectorAspect() const { return myHasOwnVectorAspect; }
+  Standard_Boolean HasOwnVectorAspect() const { return !myVectorAspect.IsNull(); }
 
   //! Sets the mode of visualization of vertices of a TopoDS_Shape instance.
   //! By default, only stand-alone vertices (not belonging topologically to an edge) are drawn,
@@ -600,60 +609,56 @@ public:
   Standard_EXPORT void SetVertexDrawMode (const Prs3d_VertexDrawMode theMode);
 
   //! Returns the current mode of visualization of vertices of a TopoDS_Shape instance.
-  Standard_EXPORT Prs3d_VertexDrawMode VertexDrawMode();
+  Standard_EXPORT Prs3d_VertexDrawMode VertexDrawMode() const;
 
   //! Returns true if the vertex draw mode is not equal to <b>Prs3d_VDM_Inherited</b>. 
   //! This means that individual vertex draw mode value (i.e. not inherited from the global 
   //! drawer) is used for a specific interactive object.
   Standard_Boolean HasOwnVertexDrawMode() const { return (myVertexDrawMode != Prs3d_VDM_Inherited); }
 
-  //! Returns settings for the appearance of datums.
-  //! These settings can be edited. The default values for the three axes are:
-  //!   Color: Quantity_NOC_PEACHPUFF
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
-  Standard_EXPORT const Handle(Prs3d_DatumAspect)& DatumAspect();
+  //! Returns own settings for the appearance of datums, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_DatumAspect)& DatumAspect() const;
 
   //! Sets the modality theAspect for the display of datums.
-  Standard_EXPORT void SetDatumAspect (const Handle(Prs3d_DatumAspect)& theAspect);
+  void SetDatumAspect (const Handle(Prs3d_DatumAspect)& theAspect)
+  {
+    myDatumAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! datum aspect that overrides the one in the link.
-  Standard_Boolean HasOwnDatumAspect() const { return myHasOwnDatumAspect; }
+  Standard_Boolean HasOwnDatumAspect() const { return !myDatumAspect.IsNull(); }
 
-  //! The LineAspect for the wire can be edited.
-  //! The default values are:
-  //!   Color: Quantity_NOC_ORANGE
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
+  //! Returns own LineAspect for section wire, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the algorithm Prs3d_WFShape.
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& SectionAspect();
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& SectionAspect() const;
 
   //! Sets the parameter theAspect for display attributes of sections. 
-  Standard_EXPORT void SetSectionAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetSectionAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    mySectionAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! section aspect that overrides the one in the link.
-  Standard_Boolean HasOwnSectionAspect() const { return myHasOwnSectionAspect; }
+  Standard_Boolean HasOwnSectionAspect() const { return !mySectionAspect.IsNull(); }
 
   //! Sets the parameter theAspect for the display of free boundaries.
   //! The method sets aspect owned by the drawer that will be used during
   //! visualization instead of the one set in link.
-  Standard_EXPORT void SetFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myFreeBoundaryAspect = theAspect;
+  }
 
-  //! Returns the values for presentation of free boundaries,
-  //! in other words, boundaries which are not shared.
-  //! The LineAspect for the  free boundaries can be edited.
-  //! The default values are:
-  //!   Color: Quantity_NOC_GREEN
-  //!   Type of line: Aspect_TOL_SOLID
-  //!   Width: 1.0
+  //! Returns own settings for presentation of free boundaries, settings from linked Drawer or NULL if neither was set.
+  //! In other words, this settings affect boundaries which are not shared.
   //! These attributes are used by the algorithm Prs3d_WFShape
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& FreeBoundaryAspect();
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& FreeBoundaryAspect() const;
 
   //! Returns true if the drawer has its own attribute for
   //! free boundaries aspect that overrides the one in the link.
-  Standard_Boolean HasOwnFreeBoundaryAspect() const { return myHasOwnFreeBoundaryAspect; }
+  Standard_Boolean HasOwnFreeBoundaryAspect() const { return !myFreeBoundaryAspect.IsNull(); }
 
   //! Enables or disables drawing of free boundaries for shading presentations.
   //! The method sets drawing flag owned by the drawer that will be used during
@@ -685,20 +690,18 @@ public:
   //! Sets the parameter theAspect for the display of shared boundaries.
   //! The method sets aspect owned by the drawer that will be used during
   //! visualization instead of the one set in link.
-  Standard_EXPORT void SetUnFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetUnFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myUnFreeBoundaryAspect = theAspect;
+  }
 
-  //! Returns settings for shared boundary line aspects.
-  //! The LineAspect for the unfree boundaries can be edited.
-  //! The default values are:
-  //! Color: Quantity_NOC_YELLOW
-  //! Type of line: Aspect_TOL_SOLID
-  //! Width: 1.
+  //! Returns own settings for shared boundary line aspects, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the algorithm Prs3d_WFShape
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& UnFreeBoundaryAspect();
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& UnFreeBoundaryAspect() const;
 
   //! Returns true if the drawer has its own attribute for
   //! unfree boundaries aspect that overrides the one in the link.
-  Standard_Boolean HasOwnUnFreeBoundaryAspect() const { return myHasOwnUnFreeBoundaryAspect; }
+  Standard_Boolean HasOwnUnFreeBoundaryAspect() const { return !myUnFreeBoundaryAspect.IsNull(); }
 
   //! Enables or disables drawing of shared boundaries for shading presentations.
   //! The method sets drawing flag owned by the drawer that will be used during
@@ -730,16 +733,19 @@ public:
   //! The method sets line aspect owned by the drawer that will be used during
   //! visualization instead of the one set in link.
   //! theAspect is the line aspect that determines the look of the face boundaries.
-  Standard_EXPORT void SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect);
+  void SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
+  {
+    myFaceBoundaryAspect = theAspect;
+  }
 
-  //! Returns line aspect of face boundaries.
-  Standard_EXPORT const Handle(Prs3d_LineAspect)& FaceBoundaryAspect();
+  //! Returns own line aspect of face boundaries, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_LineAspect)& FaceBoundaryAspect() const;
 
   //! Returns true if the drawer has its own attribute for
   //! face boundaries aspect that overrides the one in the link.
-  Standard_Boolean HasOwnFaceBoundaryAspect() const { return myHasOwnFaceBoundaryAspect; }
+  Standard_Boolean HasOwnFaceBoundaryAspect() const { return !myFaceBoundaryAspect.IsNull(); }
 
-  //! Sets own face boundary aspect.
+  //! Sets own face boundary aspect, which is a black solid line by default.
   //! Returns FALSE if the drawer already has its own attribute for face boundary aspect.
   Standard_EXPORT Standard_Boolean SetupOwnFaceBoundaryAspect (const Handle(Prs3d_Drawer)& theDefaults = Handle(Prs3d_Drawer)());
 
@@ -787,17 +793,20 @@ public:
   //! Unset the most edge continuity class for face boundaries.
   void UnsetFaceBoundaryUpperContinuity() { myFaceBoundaryUpperContinuity = -1; }
 
-  //! Returns settings for the appearance of dimensions. 
-  Standard_EXPORT const Handle(Prs3d_DimensionAspect)& DimensionAspect();
+  //! Returns own settings for the appearance of dimensions, settings from linked Drawer or NULL if neither was set.
+  Standard_EXPORT const Handle(Prs3d_DimensionAspect)& DimensionAspect() const;
 
   //! Sets the settings for the appearance of dimensions.
   //! The method sets aspect owned by the drawer that will be used during
   //! visualization instead of the one set in link.
-  Standard_EXPORT void SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theAspect);
+  void SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theAspect)
+  {
+    myDimensionAspect = theAspect;
+  }
 
   //! Returns true if the drawer has its own attribute for
   //! the appearance of dimensions that overrides the one in the link.
-  Standard_Boolean HasOwnDimensionAspect() const { return myHasOwnDimensionAspect; }
+  Standard_Boolean HasOwnDimensionAspect() const { return !myDimensionAspect.IsNull(); }
 
   //! Sets dimension length model units for computing of dimension presentation.
   //! The method sets value owned by the drawer that will be used during
@@ -900,7 +909,7 @@ public:
 public:
 
   //! Returns the drawer to which the current object references.
-  const Handle(Prs3d_Drawer)& Link() { return myLink; }
+  const Handle(Prs3d_Drawer)& Link() const { return myLink; }
 
   //! Returns true if the current object has a link on the other drawer.
   Standard_Boolean HasLink() const { return !myLink.IsNull(); }
@@ -953,19 +962,14 @@ protected:
   Handle(Prs3d_Drawer)          myLink;
 
   Standard_Integer              myNbPoints;
-  Standard_Boolean              myHasOwnNbPoints;
   Standard_Real                 myMaximalParameterValue;
-  Standard_Boolean              myHasOwnMaximalParameterValue;
   Standard_Real                 myChordialDeviation;
-  Standard_Boolean              myHasOwnChordialDeviation;
   Aspect_TypeOfDeflection       myTypeOfDeflection;
   Standard_Boolean              myHasOwnTypeOfDeflection;
   Prs3d_TypeOfHLR               myTypeOfHLR;
   Standard_Real                 myDeviationCoefficient;
   Standard_Real                 myPreviousDeviationCoefficient;
-  Standard_Boolean              myHasOwnDeviationCoefficient;
   Standard_Real                 myDeviationAngle;
-  Standard_Boolean              myHasOwnDeviationAngle;
   Standard_Real                 myPreviousDeviationAngle;
   Standard_Boolean              myIsoOnPlane;
   Standard_Boolean              myHasOwnIsoOnPlane;
@@ -975,57 +979,39 @@ protected:
   Standard_Boolean              myHasOwnIsAutoTriangulated;
 
   Handle(Prs3d_IsoAspect)       myUIsoAspect;
-  Standard_Boolean              myHasOwnUIsoAspect;
   Handle(Prs3d_IsoAspect)       myVIsoAspect;
-  Standard_Boolean              myHasOwnVIsoAspect;
   Handle(Prs3d_LineAspect)      myWireAspect;
-  Standard_Boolean              myHasOwnWireAspect;
   Standard_Boolean              myWireDraw;
   Standard_Boolean              myHasOwnWireDraw;
   Handle(Prs3d_PointAspect)     myPointAspect;
-  Standard_Boolean              myHasOwnPointAspect;
   Handle(Prs3d_LineAspect)      myLineAspect;
-  Standard_Boolean              myHasOwnLineAspect;
   Handle(Prs3d_TextAspect)      myTextAspect;
-  Standard_Boolean              myHasOwnTextAspect;
   Handle(Prs3d_ShadingAspect)   myShadingAspect;
-  Standard_Boolean              myHasOwnShadingAspect;
   Handle(Prs3d_PlaneAspect)     myPlaneAspect;
-  Standard_Boolean              myHasOwnPlaneAspect;
   Handle(Prs3d_LineAspect)      mySeenLineAspect;
-  Standard_Boolean              myHasOwnSeenLineAspect;
   Handle(Prs3d_ArrowAspect)     myArrowAspect;
-  Standard_Boolean              myHasOwnArrowAspect;
   Standard_Boolean              myLineArrowDraw;
   Standard_Boolean              myHasOwnLineArrowDraw;
   Handle(Prs3d_LineAspect)      myHiddenLineAspect;
-  Standard_Boolean              myHasOwnHiddenLineAspect;
   Standard_Boolean              myDrawHiddenLine;
   Standard_Boolean              myHasOwnDrawHiddenLine;
   Handle(Prs3d_LineAspect)      myVectorAspect;
-  Standard_Boolean              myHasOwnVectorAspect;
   Prs3d_VertexDrawMode          myVertexDrawMode;
   Handle(Prs3d_DatumAspect)     myDatumAspect;
-  Standard_Boolean              myHasOwnDatumAspect;
   Handle(Prs3d_LineAspect)      mySectionAspect;
-  Standard_Boolean              myHasOwnSectionAspect;
 
   Handle(Prs3d_LineAspect)      myFreeBoundaryAspect;
-  Standard_Boolean              myHasOwnFreeBoundaryAspect;
   Standard_Boolean              myFreeBoundaryDraw;
   Standard_Boolean              myHasOwnFreeBoundaryDraw;
   Handle(Prs3d_LineAspect)      myUnFreeBoundaryAspect;
-  Standard_Boolean              myHasOwnUnFreeBoundaryAspect;
   Standard_Boolean              myUnFreeBoundaryDraw;
   Standard_Boolean              myHasOwnUnFreeBoundaryDraw;
   Handle(Prs3d_LineAspect)      myFaceBoundaryAspect;
   Standard_Integer              myFaceBoundaryUpperContinuity; //!< the most edge continuity class (GeomAbs_Shape) to be included to face boundaries presentation, or -1 if undefined
-  Standard_Boolean              myHasOwnFaceBoundaryAspect;
   Standard_Boolean              myFaceBoundaryDraw;
   Standard_Boolean              myHasOwnFaceBoundaryDraw;
 
   Handle(Prs3d_DimensionAspect) myDimensionAspect;
-  Standard_Boolean              myHasOwnDimensionAspect;
   Prs3d_DimensionUnits          myDimensionModelUnits;
   Standard_Boolean              myHasOwnDimLengthModelUnits;
   Standard_Boolean              myHasOwnDimAngleModelUnits;

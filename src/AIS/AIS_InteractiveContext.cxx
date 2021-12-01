@@ -128,6 +128,7 @@ myIsAutoActivateSelMode(Standard_True)
   myStyles[Prs3d_TypeOfHighlight_LocalDynamic]  = new Prs3d_Drawer();
   myStyles[Prs3d_TypeOfHighlight_SubIntensity]  = new Prs3d_Drawer();
 
+  myDefaultDrawer->SetupOwnDefaults();
   myDefaultDrawer->SetZLayer(Graphic3d_ZLayerId_Default);
   myDefaultDrawer->SetDisplayMode(0);
   {
@@ -704,11 +705,15 @@ void AIS_InteractiveContext::HilightWithColor(const Handle(AIS_InteractiveObject
                                               const Standard_Boolean theIsToUpdate)
 {
   if (theObj.IsNull())
+  {
     return;
+  }
 
   setContextToObject (theObj);
   if (!myObjects.IsBound (theObj))
+  {
     return;
+  }
 
   const Handle(AIS_GlobalStatus)& aStatus = myObjects (theObj);
   aStatus->SetHilightStatus (Standard_True);
@@ -720,7 +725,9 @@ void AIS_InteractiveContext::HilightWithColor(const Handle(AIS_InteractiveObject
   }
 
   if (theIsToUpdate)
+  {
     myMainVwr->Update();
+  }
 }
 
 //=======================================================================
@@ -2298,6 +2305,33 @@ void AIS_InteractiveContext::SetTransformPersistence (const Handle(AIS_Interacti
 gp_Pnt AIS_InteractiveContext::GravityPoint (const Handle(V3d_View)& theView) const
 {
   return theView->GravityPoint();
+}
+
+//=======================================================================
+//function : setContextToObject
+//purpose  :
+//=======================================================================
+void AIS_InteractiveContext::setContextToObject (const Handle(AIS_InteractiveObject)& theObj)
+{
+  if (theObj->HasInteractiveContext())
+  {
+    if (theObj->myCTXPtr != this)
+    {
+      throw Standard_ProgramError("AIS_InteractiveContext - object has been already displayed in another context!");
+    }
+  }
+  else
+  {
+    theObj->SetContext (this);
+  }
+
+  for (PrsMgr_ListOfPresentableObjectsIter aPrsIter (theObj->Children()); aPrsIter.More(); aPrsIter.Next())
+  {
+    if (Handle(AIS_InteractiveObject) aChild = Handle(AIS_InteractiveObject)::DownCast (aPrsIter.Value()))
+    {
+      setContextToObject (aChild);
+    }
+  }
 }
 
 //=======================================================================

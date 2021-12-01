@@ -5026,7 +5026,7 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
   if (!isTri)
   {
     aPrs->Attributes()->SetupOwnShadingAspect();
-    aPrs->Attributes()->ShadingAspect()->Aspect()->SetColor (aPrs->Attributes()->LineAspect()->Aspect()->Color());
+    aPrs->Attributes()->ShadingAspect()->Aspect()->SetColor (Quantity_NOC_YELLOW);
   }
   ViewerTest::Display (argv[1], aPrs);
   return 0;

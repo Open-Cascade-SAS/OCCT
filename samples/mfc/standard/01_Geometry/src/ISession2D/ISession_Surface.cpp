@@ -26,6 +26,7 @@ void ISession_Surface::Compute (const Handle(PrsMgr_PresentationManager)& ,
   Handle(GeomAdaptor_Surface) anAdaptorHSurface = new GeomAdaptor_Surface (mySurface);
 
   Handle(Prs3d_Drawer) aPoleDrawer = new Prs3d_Drawer();
+  aPoleDrawer->SetOwnLineAspects();
   aPoleDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_YELLOW3, Aspect_TOL_SOLID, 1.0));
   switch (theMode)
   {

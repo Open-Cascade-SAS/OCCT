@@ -1395,20 +1395,7 @@ protected: //! @name internal methods
   }
 
   //! Assign the context to the object or throw exception if object was already assigned to another context.
-  void setContextToObject (const Handle(AIS_InteractiveObject)& theObj)
-  {
-    if (theObj->HasInteractiveContext())
-    {
-      if (theObj->myCTXPtr != this)
-      {
-        throw Standard_ProgramError("AIS_InteractiveContext - object has been already displayed in another context!");
-      }
-    }
-    else
-    {
-      theObj->SetContext (this);
-    }
-  }
+  Standard_EXPORT void setContextToObject (const Handle(AIS_InteractiveObject)& theObj);
 
   //! Return display mode for highlighting.
   Standard_Integer getHilightMode (const Handle(AIS_InteractiveObject)& theObj,

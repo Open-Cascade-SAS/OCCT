@@ -48,19 +48,14 @@ namespace
 // purpose  :
 // =======================================================================
 Prs3d_Drawer::Prs3d_Drawer()
-: myNbPoints                      (30),
-  myHasOwnNbPoints                (Standard_False),
-  myMaximalParameterValue         (500000.),
-  myHasOwnMaximalParameterValue   (Standard_False),
-  myChordialDeviation             (0.0001),
-  myHasOwnChordialDeviation       (Standard_False),
+: myNbPoints                      (-1),
+  myMaximalParameterValue         (-1.0),
+  myChordialDeviation             (-1.0),
   myTypeOfDeflection              (Aspect_TOD_RELATIVE),
   myHasOwnTypeOfDeflection        (Standard_False),
   myTypeOfHLR                     (Prs3d_TOH_NotSet),
-  myDeviationCoefficient          (0.001),
-  myHasOwnDeviationCoefficient    (Standard_False),
-  myDeviationAngle                (20.0 * M_PI / 180.0),
-  myHasOwnDeviationAngle          (Standard_False),
+  myDeviationCoefficient          (-1.0),
+  myDeviationAngle                (-1.0),
   myIsoOnPlane                    (Standard_False),
   myHasOwnIsoOnPlane              (Standard_False),
   myIsoOnTriangulation            (Standard_False),
@@ -68,40 +63,22 @@ Prs3d_Drawer::Prs3d_Drawer()
   myIsAutoTriangulated            (Standard_True),
   myHasOwnIsAutoTriangulated      (Standard_False),
 
-  myHasOwnUIsoAspect          (Standard_False),
-  myHasOwnVIsoAspect          (Standard_False),
-  myHasOwnWireAspect          (Standard_False),
   myWireDraw                  (Standard_True),
   myHasOwnWireDraw            (Standard_False),
-  myHasOwnPointAspect         (Standard_False),
-  myHasOwnLineAspect          (Standard_False),
-  myHasOwnTextAspect          (Standard_False),
-  myHasOwnShadingAspect       (Standard_False),
-  myHasOwnPlaneAspect         (Standard_False),
-  myHasOwnSeenLineAspect      (Standard_False),
-  myHasOwnArrowAspect         (Standard_False),
   myLineArrowDraw             (Standard_False),
   myHasOwnLineArrowDraw       (Standard_False),
-  myHasOwnHiddenLineAspect    (Standard_False),
   myDrawHiddenLine            (Standard_False),
   myHasOwnDrawHiddenLine      (Standard_False),
-  myHasOwnVectorAspect        (Standard_False),
   myVertexDrawMode            (Prs3d_VDM_Inherited),
-  myHasOwnDatumAspect         (Standard_False),
-  myHasOwnSectionAspect       (Standard_False),
 
-  myHasOwnFreeBoundaryAspect   (Standard_False),
   myFreeBoundaryDraw           (Standard_True),
   myHasOwnFreeBoundaryDraw     (Standard_False),
-  myHasOwnUnFreeBoundaryAspect (Standard_False),
   myUnFreeBoundaryDraw         (Standard_True),
   myHasOwnUnFreeBoundaryDraw   (Standard_False),
   myFaceBoundaryUpperContinuity(-1),
-  myHasOwnFaceBoundaryAspect   (Standard_False),
   myFaceBoundaryDraw           (Standard_False),
   myHasOwnFaceBoundaryDraw     (Standard_False),
 
-  myHasOwnDimensionAspect       (Standard_False),
   myHasOwnDimLengthModelUnits   (Standard_False),
   myHasOwnDimAngleModelUnits    (Standard_False),
   myHasOwnDimLengthDisplayUnits (Standard_False),
@@ -114,6 +91,25 @@ Prs3d_Drawer::Prs3d_Drawer()
 }
 
 // =======================================================================
+// function : SetupOwnDefaults
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetupOwnDefaults()
+{
+  myNbPoints = 30;
+  myMaximalParameterValue = 500000.0;
+  myChordialDeviation    = 0.0001;
+  myDeviationCoefficient = 0.001;
+  myDeviationAngle       = 20.0 * M_PI / 180.0;
+  SetupOwnShadingAspect();
+  SetupOwnPointAspect();
+  SetOwnDatumAspects();
+  SetOwnLineAspects();
+  SetTextAspect (new Prs3d_TextAspect());
+  SetDimensionAspect (new Prs3d_DimensionAspect());
+}
+
+// =======================================================================
 // function : SetTypeOfDeflection
 // purpose  :
 // =======================================================================
@@ -122,17 +118,6 @@ void Prs3d_Drawer::SetTypeOfDeflection (const Aspect_TypeOfDeflection theTypeOfD
 {
   myHasOwnTypeOfDeflection = Standard_True;
   myTypeOfDeflection       = theTypeOfDeflection;
-}
-
-// =======================================================================
-// function : SetMaximalChordialDeviation
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetMaximalChordialDeviation (const Standard_Real theChordialDeviation)
-{
-  myHasOwnChordialDeviation = Standard_True;
-  myChordialDeviation       = theChordialDeviation;
 }
 
 // =======================================================================
@@ -150,18 +135,17 @@ void Prs3d_Drawer::SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR)
 // purpose  : gets type of HLR algorithm
 // =======================================================================
 
-Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR()
+Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR() const
 {
-  if (!HasOwnTypeOfHLR())
+  if (HasOwnTypeOfHLR())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->TypeOfHLR();
-    }
-    // Prs3d_TOH_PolyAlgo is default value for this setting.
-    myTypeOfHLR = Prs3d_TOH_PolyAlgo;
+    return myTypeOfHLR;
   }
-  return myTypeOfHLR;
+  else if (!myLink.IsNull())
+  {
+    return myLink->TypeOfHLR();
+  }
+  return Prs3d_TOH_PolyAlgo;
 }
 
 // =======================================================================
@@ -175,17 +159,6 @@ void Prs3d_Drawer::SetIsoOnTriangulation (const Standard_Boolean theToEnable)
 }
 
 // =======================================================================
-// function : SetMaximalParameterValue
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetMaximalParameterValue (const Standard_Real theValue)
-{
-  myHasOwnMaximalParameterValue = Standard_True;
-  myMaximalParameterValue       = theValue;
-}
-
-// =======================================================================
 // function : SetIsoOnPlane
 // purpose  :
 // =======================================================================
@@ -194,17 +167,6 @@ void Prs3d_Drawer::SetIsoOnPlane (const Standard_Boolean theIsEnabled)
 {
   myHasOwnIsoOnPlane = Standard_True;
   myIsoOnPlane       = theIsEnabled;
-}
-
-// =======================================================================
-// function : SetDiscretisation
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetDiscretisation (const Standard_Integer theValue) 
-{
-  myHasOwnNbPoints = Standard_True;
-  myNbPoints       = theValue;
 }
 
 //=======================================================================
@@ -216,7 +178,6 @@ void Prs3d_Drawer::SetDeviationCoefficient (const Standard_Real theCoefficient)
 {
   myPreviousDeviationCoefficient = DeviationCoefficient();
   myDeviationCoefficient         = theCoefficient;
-  myHasOwnDeviationCoefficient   = Standard_True;
 }
 
 //=======================================================================
@@ -228,7 +189,6 @@ void Prs3d_Drawer::SetDeviationAngle (const Standard_Real theAngle)
 {
   myPreviousDeviationAngle = DeviationAngle();
   myDeviationAngle         = theAngle;
-  myHasOwnDeviationAngle   = Standard_True;
 }
 
 // =======================================================================
@@ -247,31 +207,14 @@ void Prs3d_Drawer::SetAutoTriangulation (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FreeBoundaryAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FreeBoundaryAspect() const
 {
-  if (!HasOwnFreeBoundaryAspect())
+  if (myFreeBoundaryAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->FreeBoundaryAspect();
-    }
-    if (myFreeBoundaryAspect.IsNull())
-    {
-      myFreeBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FreeBoundary, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->FreeBoundaryAspect();
   }
   return myFreeBoundaryAspect;
-}
-
-// =======================================================================
-// function : FreeBoundaryAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myFreeBoundaryAspect = theAspect;
-  myHasOwnFreeBoundaryAspect = !myFreeBoundaryAspect.IsNull();
 }
 
 // =======================================================================
@@ -290,31 +233,14 @@ void Prs3d_Drawer::SetFreeBoundaryDraw (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::UnFreeBoundaryAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::UnFreeBoundaryAspect() const
 {
-  if (!HasOwnUnFreeBoundaryAspect())
+  if (myUnFreeBoundaryAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->UnFreeBoundaryAspect();
-    }
-    if (myUnFreeBoundaryAspect.IsNull())
-    {
-      myUnFreeBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_UnFreeBoundary, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->UnFreeBoundaryAspect();
   }
   return myUnFreeBoundaryAspect;
-}
-
-// =======================================================================
-// function : SetUnFreeBoundaryAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetUnFreeBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myUnFreeBoundaryAspect = theAspect;
-  myHasOwnUnFreeBoundaryAspect = !myUnFreeBoundaryAspect.IsNull();
 }
 
 // =======================================================================
@@ -333,31 +259,14 @@ void Prs3d_Drawer::SetUnFreeBoundaryDraw (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FaceBoundaryAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::FaceBoundaryAspect() const
 {
-  if (!HasOwnFaceBoundaryAspect())
+  if (myFaceBoundaryAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->FaceBoundaryAspect();
-    }
-    if (myFaceBoundaryAspect.IsNull())
-    {
-      myFaceBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FaceBoundary, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->FaceBoundaryAspect();
   }
   return myFaceBoundaryAspect;
-}
-
-// =======================================================================
-// function : SetFaceBoundaryAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetFaceBoundaryAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myFaceBoundaryAspect = theAspect;
-  myHasOwnFaceBoundaryAspect = !myFaceBoundaryAspect.IsNull();
 }
 
 // =======================================================================
@@ -376,31 +285,14 @@ void Prs3d_Drawer::SetFaceBoundaryDraw (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_DimensionAspect)& Prs3d_Drawer::DimensionAspect()
+const Handle(Prs3d_DimensionAspect)& Prs3d_Drawer::DimensionAspect() const
 {
-  if (!HasOwnDimensionAspect())
+  if (myDimensionAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->DimensionAspect();
-    }
-    if (myDimensionAspect.IsNull())
-    {
-      myDimensionAspect = new Prs3d_DimensionAspect;
-    }
+    return myLink->DimensionAspect();
   }
   return myDimensionAspect;
-}
-
-// =======================================================================
-// function : SetDimensionAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theAspect)
-{
-  myDimensionAspect = theAspect;
-  myHasOwnDimensionAspect = !myDimensionAspect.IsNull();
 }
 
 // =======================================================================
@@ -452,31 +344,14 @@ void Prs3d_Drawer::SetDimAngleDisplayUnits (const TCollection_AsciiString& theUn
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::UIsoAspect()
+const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::UIsoAspect() const
 {
-  if (!HasOwnUIsoAspect())
+  if (myUIsoAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->UIsoAspect();
-    }
-    if (myUIsoAspect.IsNull())
-    {
-      myUIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    }
+    return myLink->UIsoAspect();
   }
   return myUIsoAspect;
-}
-
-// =======================================================================
-// function : SetUIsoAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetUIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
-{
-  myUIsoAspect = theAspect;
-  myHasOwnUIsoAspect = !myUIsoAspect.IsNull();
 }
 
 // =======================================================================
@@ -484,31 +359,14 @@ void Prs3d_Drawer::SetUIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::VIsoAspect()
+const Handle(Prs3d_IsoAspect)& Prs3d_Drawer::VIsoAspect() const
 {
-  if (!HasOwnVIsoAspect())
+  if (myVIsoAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->VIsoAspect();
-    }
-    if (myVIsoAspect.IsNull())
-    {
-      myVIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    }
+    return myLink->VIsoAspect();
   }
   return myVIsoAspect;
-}
-
-// =======================================================================
-// function : SetVIsoAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetVIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
-{
-  myVIsoAspect = theAspect;
-  myHasOwnVIsoAspect= !myVIsoAspect.IsNull();
 }
 
 // =======================================================================
@@ -516,31 +374,14 @@ void Prs3d_Drawer::SetVIsoAspect (const Handle(Prs3d_IsoAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::WireAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::WireAspect() const
 {
-  if (!HasOwnWireAspect())
+  if (myWireAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->WireAspect();
-    }
-    if (myWireAspect.IsNull())
-    {
-      myWireAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Wire, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->WireAspect();
   }
   return myWireAspect;
-}
-
-// =======================================================================
-// function : SetWireAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetWireAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myWireAspect = theAspect;
-  myHasOwnWireAspect = !myWireAspect.IsNull();
 }
 
 // =======================================================================
@@ -559,18 +400,12 @@ void Prs3d_Drawer::SetWireDraw (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_PointAspect)& Prs3d_Drawer::PointAspect()
+const Handle(Prs3d_PointAspect)& Prs3d_Drawer::PointAspect() const
 {
-  if (!HasOwnPointAspect())
+  if (myPointAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->PointAspect();
-    }
-    if (myPointAspect.IsNull())
-    {
-      myPointAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
-    }
+    return myLink->PointAspect();
   }
   return myPointAspect;
 }
@@ -581,33 +416,19 @@ const Handle(Prs3d_PointAspect)& Prs3d_Drawer::PointAspect()
 // =======================================================================
 Standard_Boolean Prs3d_Drawer::SetupOwnPointAspect (const Handle(Prs3d_Drawer)& theDefaults)
 {
-  if (myHasOwnPointAspect)
+  if (!myPointAspect.IsNull())
   {
     return Standard_False;
   }
 
   myPointAspect = new Prs3d_PointAspect (Aspect_TOM_PLUS, Quantity_NOC_YELLOW, 1.0);
-  if (!theDefaults.IsNull() && theDefaults != this)
+  const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
+  if (const Prs3d_PointAspect* aLinked = !aLink.IsNull() ? aLink->PointAspect().get() : NULL)
   {
-    *myPointAspect->Aspect() = *theDefaults->PointAspect()->Aspect();
+    *myPointAspect->Aspect() = *aLinked->Aspect();
   }
-  else if (!myLink.IsNull())
-  {
-    *myPointAspect->Aspect() = *myLink->PointAspect()->Aspect();
-  }
-  myHasOwnPointAspect = Standard_True;
+
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetPointAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect)
-{
-  myPointAspect = theAspect;
-  myHasOwnPointAspect = !myPointAspect.IsNull();
 }
 
 // =======================================================================
@@ -615,31 +436,14 @@ void Prs3d_Drawer::SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::LineAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::LineAspect() const
 {
-  if (!HasOwnLineAspect())
+  if (myLineAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->LineAspect();
-    }
-    if (myLineAspect.IsNull())
-    {
-      myLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Line, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->LineAspect();
   }
   return myLineAspect;
-}
-
-// =======================================================================
-// function : SetLineAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myLineAspect = theAspect;
-  myHasOwnLineAspect = !myLineAspect.IsNull();
 }
 
 // =======================================================================
@@ -647,31 +451,14 @@ void Prs3d_Drawer::SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_TextAspect)& Prs3d_Drawer::TextAspect()
+const Handle(Prs3d_TextAspect)& Prs3d_Drawer::TextAspect() const
 {
-  if (!HasOwnTextAspect())
+  if (myTextAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->TextAspect();
-    }
-    if (myTextAspect.IsNull())
-    {
-      myTextAspect = new Prs3d_TextAspect();
-    }
+    return myLink->TextAspect();
   }
   return myTextAspect;
-}
-
-// =======================================================================
-// function : SetTextAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect)
-{
-  myTextAspect = theAspect;
-  myHasOwnTextAspect = !myTextAspect.IsNull();
 }
 
 // =======================================================================
@@ -679,18 +466,12 @@ void Prs3d_Drawer::SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_ShadingAspect)& Prs3d_Drawer::ShadingAspect()
+const Handle(Prs3d_ShadingAspect)& Prs3d_Drawer::ShadingAspect() const
 {
-  if (!HasOwnShadingAspect())
+  if (myShadingAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->ShadingAspect();
-    }
-    if (myShadingAspect.IsNull())
-    {
-      myShadingAspect = new Prs3d_ShadingAspect();
-    }
+    return myLink->ShadingAspect();
   }
   return myShadingAspect;
 }
@@ -701,33 +482,18 @@ const Handle(Prs3d_ShadingAspect)& Prs3d_Drawer::ShadingAspect()
 // =======================================================================
 Standard_Boolean Prs3d_Drawer::SetupOwnShadingAspect (const Handle(Prs3d_Drawer)& theDefaults)
 {
-  if (myHasOwnShadingAspect)
+  if (!myShadingAspect.IsNull())
   {
     return Standard_False;
   }
 
   myShadingAspect = new Prs3d_ShadingAspect();
-  if (!theDefaults.IsNull() && theDefaults != this)
+  const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
+  if (const Prs3d_ShadingAspect* aLinked = !aLink.IsNull() ? aLink->ShadingAspect().get() : NULL)
   {
-    *myShadingAspect->Aspect() = *theDefaults->ShadingAspect()->Aspect();
+    *myShadingAspect->Aspect() = *aLinked->Aspect();
   }
-  else if (!myLink.IsNull())
-  {
-    *myShadingAspect->Aspect() = *myLink->ShadingAspect()->Aspect();
-  }
-  myHasOwnShadingAspect = Standard_True;
   return Standard_True;
-}
-
-// =======================================================================
-// function : SetShadingAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theAspect)
-{
-  myShadingAspect = theAspect;
-  myHasOwnShadingAspect = !myShadingAspect.IsNull();
 }
 
 // =======================================================================
@@ -735,31 +501,14 @@ void Prs3d_Drawer::SetShadingAspect (const Handle(Prs3d_ShadingAspect)& theAspec
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_PlaneAspect)& Prs3d_Drawer::PlaneAspect()
+const Handle(Prs3d_PlaneAspect)& Prs3d_Drawer::PlaneAspect() const
 {
-  if (!HasOwnPlaneAspect())
+  if (myPlaneAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->PlaneAspect();
-    }
-    if (myPlaneAspect.IsNull())
-    {
-      myPlaneAspect = new Prs3d_PlaneAspect();
-    }
+    return myLink->PlaneAspect();
   }
   return myPlaneAspect;
-}
-
-// =======================================================================
-// function : SetPlaneAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetPlaneAspect (const Handle(Prs3d_PlaneAspect)& theAspect)
-{
-  myPlaneAspect = theAspect;
-  myHasOwnPlaneAspect = !myPlaneAspect.IsNull();
 }
 
 // =======================================================================
@@ -767,31 +516,14 @@ void Prs3d_Drawer::SetPlaneAspect (const Handle(Prs3d_PlaneAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SeenLineAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SeenLineAspect() const
 {
-  if (!HasOwnSeenLineAspect())
+  if (mySeenLineAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->SeenLineAspect();
-    }
-    if (mySeenLineAspect.IsNull())
-    {
-      mySeenLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_SeenLine, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->SeenLineAspect();
   }
   return mySeenLineAspect;
-}
-
-// =======================================================================
-// function : SetSeenLineAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetSeenLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  mySeenLineAspect = theAspect;
-  myHasOwnSeenLineAspect = !mySeenLineAspect.IsNull();
 }
 
 // =======================================================================
@@ -799,31 +531,14 @@ void Prs3d_Drawer::SetSeenLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_ArrowAspect)& Prs3d_Drawer::ArrowAspect()
+const Handle(Prs3d_ArrowAspect)& Prs3d_Drawer::ArrowAspect() const
 {
-  if (!HasOwnArrowAspect())
+  if (myArrowAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->ArrowAspect();
-    }
-    if (myArrowAspect.IsNull())
-    {
-      myArrowAspect = new Prs3d_ArrowAspect();
-    }
+    return myLink->ArrowAspect();
   }
   return myArrowAspect;
-}
-
-// =======================================================================
-// function : SetArrowAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect)
-{
-  myArrowAspect = theAspect;
-  myHasOwnArrowAspect = !myArrowAspect.IsNull();
 }
 
 // =======================================================================
@@ -842,31 +557,14 @@ void Prs3d_Drawer::SetLineArrowDraw (const Standard_Boolean theIsEnabled)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::HiddenLineAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::HiddenLineAspect() const
 {
-  if (!HasOwnHiddenLineAspect())
+  if (myHiddenLineAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->HiddenLineAspect();
-    }
-    if (myHiddenLineAspect.IsNull())
-    {
-      myHiddenLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_HiddenLine, Aspect_TOL_DASH, 1.0);
-    }
+    return myLink->HiddenLineAspect();
   }
   return myHiddenLineAspect;
-}
-
-// =======================================================================
-// function : SetHiddenLineAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetHiddenLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myHiddenLineAspect = theAspect;
-  myHasOwnHiddenLineAspect = !myHiddenLineAspect.IsNull();
 }
 
 // =======================================================================
@@ -896,31 +594,14 @@ void Prs3d_Drawer::DisableDrawHiddenLine()
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::VectorAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::VectorAspect() const
 {
-  if (!HasOwnVectorAspect())
+  if (myVectorAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->VectorAspect();
-    }
-    if (myVectorAspect.IsNull())
-    {
-      myVectorAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Vector, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->VectorAspect();
   }
   return myVectorAspect;
-}
-
-// =======================================================================
-// function : SetVectorAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetVectorAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  myVectorAspect = theAspect;
-  myHasOwnVectorAspect = !myVectorAspect.IsNull();
 }
 
 // =======================================================================
@@ -940,18 +621,17 @@ void Prs3d_Drawer::SetVertexDrawMode (const Prs3d_VertexDrawMode theMode)
 // purpose  :
 // =======================================================================
 
-Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode()
+Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode() const
 {
-  if (!HasOwnVertexDrawMode())
+  if (HasOwnVertexDrawMode())
   {
-      if (!myLink.IsNull())
-      {
-          return myLink->VertexDrawMode();
-      }
-      // Prs3d_VDM_Isolated is default value for this setting.
-      myVertexDrawMode = Prs3d_VDM_Isolated;
+    return myVertexDrawMode;
   }
-  return myVertexDrawMode;
+  else if (!myLink.IsNull())
+  {
+    return myLink->VertexDrawMode();
+  }
+  return Prs3d_VDM_Isolated;
 }
 
 // =======================================================================
@@ -959,31 +639,14 @@ Prs3d_VertexDrawMode Prs3d_Drawer::VertexDrawMode()
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_DatumAspect)& Prs3d_Drawer::DatumAspect()
+const Handle(Prs3d_DatumAspect)& Prs3d_Drawer::DatumAspect() const
 {
-  if (!HasOwnDatumAspect())
+  if (myDatumAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->DatumAspect();
-    }
-    if (myDatumAspect.IsNull())
-    {
-      myDatumAspect = new Prs3d_DatumAspect();
-    }
+    return myLink->DatumAspect();
   }
   return myDatumAspect;
-}
-
-// =======================================================================
-// function : SetDatumAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetDatumAspect (const Handle(Prs3d_DatumAspect)& theAspect)
-{
-  myDatumAspect = theAspect;
-  myHasOwnDatumAspect = !myDatumAspect.IsNull();
 }
 
 // =======================================================================
@@ -991,31 +654,14 @@ void Prs3d_Drawer::SetDatumAspect (const Handle(Prs3d_DatumAspect)& theAspect)
 // purpose  :
 // =======================================================================
 
-const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SectionAspect()
+const Handle(Prs3d_LineAspect)& Prs3d_Drawer::SectionAspect() const
 {
-  if (!HasOwnSectionAspect())
+  if (mySectionAspect.IsNull()
+  && !myLink.IsNull())
   {
-    if (!myLink.IsNull())
-    {
-      return myLink->SectionAspect();
-    }
-    if (mySectionAspect.IsNull())
-    {
-      mySectionAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Section, Aspect_TOL_SOLID, 1.0);
-    }
+    return myLink->SectionAspect();
   }
   return mySectionAspect;
-}
-
-// =======================================================================
-// function : SetSectionAspect
-// purpose  :
-// =======================================================================
-
-void Prs3d_Drawer::SetSectionAspect (const Handle(Prs3d_LineAspect)& theAspect)
-{
-  mySectionAspect = theAspect;
-  myHasOwnSectionAspect = !mySectionAspect.IsNull();
 }
 
 // =======================================================================
@@ -1049,25 +695,6 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myDimensionAspect.Nullify();
   mySectionAspect.Nullify();
 
-  myHasOwnUIsoAspect           = Standard_False;
-  myHasOwnVIsoAspect           = Standard_False;
-  myHasOwnWireAspect           = Standard_False;
-  myHasOwnPointAspect          = Standard_False;
-  myHasOwnLineAspect           = Standard_False;
-  myHasOwnTextAspect           = Standard_False;
-  myHasOwnShadingAspect        = Standard_False;
-  myHasOwnPlaneAspect          = Standard_False;
-  myHasOwnSeenLineAspect       = Standard_False;
-  myHasOwnArrowAspect          = Standard_False;
-  myHasOwnHiddenLineAspect     = Standard_False;
-  myHasOwnVectorAspect         = Standard_False;
-  myHasOwnDatumAspect          = Standard_False;
-  myHasOwnSectionAspect        = Standard_False;
-  myHasOwnFreeBoundaryAspect   = Standard_False;
-  myHasOwnUnFreeBoundaryAspect = Standard_False;
-  myHasOwnFaceBoundaryAspect   = Standard_False;
-  myHasOwnDimensionAspect      = Standard_False;
-
   UnsetOwnDiscretisation();
   UnsetOwnMaximalParameterValue();
   UnsetOwnTypeOfDeflection();
@@ -1098,18 +725,17 @@ void Prs3d_Drawer::ClearLocalAttributes()
 // =======================================================================
 Standard_Boolean Prs3d_Drawer::SetupOwnFaceBoundaryAspect (const Handle(Prs3d_Drawer)& theDefaults)
 {
-  if (myHasOwnFaceBoundaryAspect)
+  if (!myFaceBoundaryAspect.IsNull())
   {
     return false;
   }
 
   myFaceBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FaceBoundary, Aspect_TOL_SOLID, 1.0);
-  myHasOwnFaceBoundaryAspect = true;
 
   const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (!aLink.IsNull())
+  if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->FaceBoundaryAspect().get() : NULL)
   {
-    *myFaceBoundaryAspect->Aspect() = *aLink->FaceBoundaryAspect()->Aspect();
+    *myFaceBoundaryAspect->Aspect() = *aLinked->Aspect();
   }
   return true;
 }
@@ -1122,86 +748,78 @@ Standard_Boolean Prs3d_Drawer::SetOwnLineAspects (const Handle(Prs3d_Drawer)& th
 {
   bool isUpdateNeeded = false;
   const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (!myHasOwnUIsoAspect)
+  if (myUIsoAspect.IsNull())
   {
     isUpdateNeeded = true;
     myUIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    if (!aLink.IsNull())
+    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->UIsoAspect().get() : NULL)
     {
-      *myUIsoAspect->Aspect() = *aLink->UIsoAspect()->Aspect();
-      myUIsoAspect->SetNumber (aLink->UIsoAspect()->Number());
+      *myUIsoAspect->Aspect() = *aLinked->Aspect();
+      myUIsoAspect->SetNumber (aLinked->Number());
     }
-    myHasOwnUIsoAspect = true;
   }
-  if (!myHasOwnVIsoAspect)
+  if (myVIsoAspect.IsNull())
   {
     isUpdateNeeded = true;
     myVIsoAspect = new Prs3d_IsoAspect (Quantity_NOC_GRAY75, Aspect_TOL_SOLID, 1.0, 1);
-    if (!aLink.IsNull())
+    if (const Prs3d_IsoAspect* aLinked = !aLink.IsNull() ? aLink->VIsoAspect().get() : NULL)
     {
-      *myVIsoAspect->Aspect() = *aLink->VIsoAspect()->Aspect();
-      myVIsoAspect->SetNumber (aLink->VIsoAspect()->Number());
+      *myVIsoAspect->Aspect() = *aLinked->Aspect();
+      myVIsoAspect->SetNumber (aLinked->Number());
     }
-    myHasOwnVIsoAspect = true;
   }
-  if (!myHasOwnWireAspect)
+  if (myWireAspect.IsNull())
   {
     isUpdateNeeded = true;
     myWireAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Wire, Aspect_TOL_SOLID, 1.0);
-    myHasOwnWireAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->WireAspect().get() : NULL)
     {
-      *myWireAspect->Aspect() = *aLink->WireAspect()->Aspect();
+      *myWireAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnLineAspect)
+  if (myLineAspect.IsNull())
   {
     isUpdateNeeded = true;
     myLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Line, Aspect_TOL_SOLID, 1.0);
-    myHasOwnLineAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->LineAspect().get() : NULL)
     {
-      *myLineAspect->Aspect() = *aLink->LineAspect()->Aspect();
+      *myLineAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnSeenLineAspect)
+  if (mySeenLineAspect.IsNull())
   {
     isUpdateNeeded = true;
     mySeenLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_SeenLine, Aspect_TOL_SOLID, 1.0);
-    myHasOwnSeenLineAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SeenLineAspect().get() : NULL)
     {
-      *mySeenLineAspect->Aspect() = *aLink->SeenLineAspect()->Aspect();
+      *mySeenLineAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnHiddenLineAspect)
+  if (myHiddenLineAspect.IsNull())
   {
     isUpdateNeeded = true;
     myHiddenLineAspect = new Prs3d_LineAspect (THE_DEF_COLOR_HiddenLine, Aspect_TOL_DASH, 1.0);
-    myHasOwnHiddenLineAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->HiddenLineAspect().get() : NULL)
     {
-      *myHiddenLineAspect->Aspect() = *aLink->HiddenLineAspect()->Aspect();
+      *myHiddenLineAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnFreeBoundaryAspect)
+  if (myFreeBoundaryAspect.IsNull())
   {
     isUpdateNeeded = true;
     myFreeBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_FreeBoundary, Aspect_TOL_SOLID, 1.0);
-    myHasOwnFreeBoundaryAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->FreeBoundaryAspect().get() : NULL)
     {
-      *myFreeBoundaryAspect->Aspect() = *aLink->FreeBoundaryAspect()->Aspect();
+      *myFreeBoundaryAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnUnFreeBoundaryAspect)
+  if (myUnFreeBoundaryAspect.IsNull())
   {
     isUpdateNeeded = true;
     myUnFreeBoundaryAspect = new Prs3d_LineAspect (THE_DEF_COLOR_UnFreeBoundary, Aspect_TOL_SOLID, 1.0);
-    myHasOwnUnFreeBoundaryAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->UnFreeBoundaryAspect().get() : NULL)
     {
-      *myUnFreeBoundaryAspect->Aspect() = *aLink->UnFreeBoundaryAspect()->Aspect();
+      *myUnFreeBoundaryAspect->Aspect() = *aLinked->Aspect();
     }
   }
   isUpdateNeeded = SetupOwnFaceBoundaryAspect (theDefaults) || isUpdateNeeded;
@@ -1216,48 +834,42 @@ Standard_Boolean Prs3d_Drawer::SetOwnDatumAspects (const Handle(Prs3d_Drawer)& t
 {
   bool isUpdateNeeded = false;
   const Handle(Prs3d_Drawer)& aLink = (!theDefaults.IsNull() && theDefaults != this) ? theDefaults : myLink;
-  if (!myHasOwnVectorAspect)
+  if (myVectorAspect.IsNull())
   {
     isUpdateNeeded = true;
     myVectorAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Vector, Aspect_TOL_SOLID, 1.0);
-    myHasOwnVectorAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->VectorAspect().get() : NULL)
     {
-      *myVectorAspect->Aspect() = *aLink->VectorAspect()->Aspect();
+      *myVectorAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnSectionAspect)
+  if (mySectionAspect.IsNull())
   {
     isUpdateNeeded = true;
     mySectionAspect = new Prs3d_LineAspect (THE_DEF_COLOR_Section, Aspect_TOL_SOLID, 1.0);
-    myHasOwnSectionAspect = true;
-    if (!aLink.IsNull())
+    if (const Prs3d_LineAspect* aLinked = !aLink.IsNull() ? aLink->SectionAspect().get() : NULL)
     {
-      *mySectionAspect->Aspect() = *aLink->SectionAspect()->Aspect();
+      *mySectionAspect->Aspect() = *aLinked->Aspect();
     }
   }
-  if (!myHasOwnPlaneAspect)
+  if (myPlaneAspect.IsNull())
   {
     isUpdateNeeded = true;
     myPlaneAspect = new Prs3d_PlaneAspect();
-    myHasOwnPlaneAspect = true;
   }
-  if (!myHasOwnArrowAspect)
+  if (myArrowAspect.IsNull())
   {
     isUpdateNeeded = true;
     myArrowAspect = new Prs3d_ArrowAspect();
-    myHasOwnArrowAspect = true;
   }
-  if (!myHasOwnDatumAspect)
+  if (myDatumAspect.IsNull())
   {
     isUpdateNeeded = true;
     myDatumAspect = new Prs3d_DatumAspect();
-    if (!aLink.IsNull()
-      && aLink->HasOwnDatumAspect())
+    if (const Prs3d_DatumAspect* aLinked = !aLink.IsNull() ? aLink->DatumAspect().get() : NULL)
     {
-      myDatumAspect->CopyAspectsFrom (aLink->DatumAspect());
+      myDatumAspect->CopyAspectsFrom (aLinked);
     }
-    myHasOwnDatumAspect = true;
   }
   return isUpdateNeeded;
 }
@@ -1265,11 +877,9 @@ Standard_Boolean Prs3d_Drawer::SetOwnDatumAspects (const Handle(Prs3d_Drawer)& t
 //! Assign the shader program.
 template <typename T>
 inline void setAspectProgram (const Handle(Graphic3d_ShaderProgram)& theProgram,
-                              bool theHasAspect,
                               T thePrsAspect)
 {
-  if (!thePrsAspect.IsNull()
-    && theHasAspect)
+  if (!thePrsAspect.IsNull())
   {
     thePrsAspect->Aspect()->SetShaderProgram (theProgram);
   }
@@ -1294,47 +904,46 @@ bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         isUpdateNeeded = SetOwnDatumAspects() || isUpdateNeeded;
       }
 
-      setAspectProgram (theProgram, myHasOwnUIsoAspect, myUIsoAspect);
-      setAspectProgram (theProgram, myHasOwnVIsoAspect, myVIsoAspect);
-      setAspectProgram (theProgram, myHasOwnWireAspect, myWireAspect);
-      setAspectProgram (theProgram, myHasOwnLineAspect, myLineAspect);
-      setAspectProgram (theProgram, myHasOwnSeenLineAspect,       mySeenLineAspect);
-      setAspectProgram (theProgram, myHasOwnHiddenLineAspect,     myHiddenLineAspect);
-      setAspectProgram (theProgram, myHasOwnVectorAspect,         myVectorAspect);
-      setAspectProgram (theProgram, myHasOwnSectionAspect,        mySectionAspect);
-      setAspectProgram (theProgram, myHasOwnFreeBoundaryAspect,   myFreeBoundaryAspect);
-      setAspectProgram (theProgram, myHasOwnUnFreeBoundaryAspect, myUnFreeBoundaryAspect);
-      setAspectProgram (theProgram, myHasOwnFaceBoundaryAspect,   myFaceBoundaryAspect);
-      if (myHasOwnPlaneAspect)
+      setAspectProgram (theProgram, myUIsoAspect);
+      setAspectProgram (theProgram, myVIsoAspect);
+      setAspectProgram (theProgram, myWireAspect);
+      setAspectProgram (theProgram, myLineAspect);
+      setAspectProgram (theProgram, mySeenLineAspect);
+      setAspectProgram (theProgram, myHiddenLineAspect);
+      setAspectProgram (theProgram, myVectorAspect);
+      setAspectProgram (theProgram, mySectionAspect);
+      setAspectProgram (theProgram, myFreeBoundaryAspect);
+      setAspectProgram (theProgram, myUnFreeBoundaryAspect);
+      setAspectProgram (theProgram, myFaceBoundaryAspect);
+      if (!myPlaneAspect.IsNull())
       {
-        setAspectProgram (theProgram, true, myPlaneAspect->EdgesAspect());
-        setAspectProgram (theProgram, true, myPlaneAspect->IsoAspect());
-        setAspectProgram (theProgram, true, myPlaneAspect->ArrowAspect());
+        setAspectProgram (theProgram, myPlaneAspect->EdgesAspect());
+        setAspectProgram (theProgram, myPlaneAspect->IsoAspect());
+        setAspectProgram (theProgram, myPlaneAspect->ArrowAspect());
       }
-      if (myHasOwnDatumAspect)
+      if (!myDatumAspect.IsNull())
       {
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_XAxis));
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_YAxis));
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_ZAxis));
+        setAspectProgram (theProgram, myDatumAspect->LineAspect (Prs3d_DatumParts_XAxis));
+        setAspectProgram (theProgram, myDatumAspect->LineAspect (Prs3d_DatumParts_YAxis));
+        setAspectProgram (theProgram, myDatumAspect->LineAspect (Prs3d_DatumParts_ZAxis));
       }
-      setAspectProgram (theProgram, myHasOwnArrowAspect, myArrowAspect);
+      setAspectProgram (theProgram, myArrowAspect);
       return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_TEXT:
     {
       if (theToOverrideDefaults
-      && !myHasOwnTextAspect)
+       && myTextAspect.IsNull())
       {
         isUpdateNeeded = true;
         myTextAspect = new Prs3d_TextAspect();
-        myHasOwnTextAspect = true;
-        if (!myLink.IsNull())
+        if (const Prs3d_TextAspect* aLinked = !myLink.IsNull() ? myLink->TextAspect().get() : NULL)
         {
-          *myTextAspect->Aspect() = *myLink->TextAspect()->Aspect();
+          *myTextAspect->Aspect() = *aLinked->Aspect();
         }
       }
 
-      setAspectProgram (theProgram, myHasOwnTextAspect, myTextAspect);
+      setAspectProgram (theProgram, myTextAspect);
       return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_MARKER:
@@ -1345,7 +954,7 @@ bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
         isUpdateNeeded = true;
       }
 
-      setAspectProgram (theProgram, myHasOwnPointAspect, myPointAspect);
+      setAspectProgram (theProgram, myPointAspect);
       return isUpdateNeeded;
     }
     case Graphic3d_ASPECT_FILL_AREA:
@@ -1355,7 +964,7 @@ bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       {
         isUpdateNeeded = true;
       }
-      setAspectProgram (theProgram, myHasOwnShadingAspect, myShadingAspect);
+      setAspectProgram (theProgram, myShadingAspect);
       return isUpdateNeeded;
     }
   }
@@ -1377,8 +986,7 @@ bool Prs3d_Drawer::SetShadingModel (Graphic3d_TypeOfShadingModel theModel,
     isUpdateNeeded  = true;
   }
 
-  if (!myShadingAspect.IsNull()
-    && myHasOwnShadingAspect)
+  if (!myShadingAspect.IsNull())
   {
     myShadingAspect->Aspect()->SetShadingModel (theModel);
   }
@@ -1396,19 +1004,14 @@ void Prs3d_Drawer::DumpJson (Standard_OStream& theOStream, Standard_Integer theD
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLink.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnNbPoints)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMaximalParameterValue)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnMaximalParameterValue)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myChordialDeviation)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnChordialDeviation)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTypeOfDeflection)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnTypeOfDeflection)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTypeOfHLR)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeviationCoefficient)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousDeviationCoefficient)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDeviationCoefficient)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeviationAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoOnPlane)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnIsoOnPlane)
@@ -1417,56 +1020,30 @@ void Prs3d_Drawer::DumpJson (Standard_OStream& theOStream, Standard_Integer theD
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsAutoTriangulated)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnIsAutoTriangulated)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnUIsoAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnVIsoAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnWireAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myWireDraw)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnWireDraw)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnPointAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnLineAspect)
-
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShadingAspect.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get())
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShadingAspect.get())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnShadingAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnPlaneAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnSeenLineAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnArrowAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLineArrowDraw)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnLineArrowDraw)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnHiddenLineAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawHiddenLine)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDrawHiddenLine)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnVectorAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVertexDrawMode)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDatumAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnSectionAspect)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnFreeBoundaryAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFreeBoundaryDraw)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnFreeBoundaryDraw)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnUnFreeBoundaryAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUnFreeBoundaryDraw)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnUnFreeBoundaryDraw)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceBoundaryUpperContinuity)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnFaceBoundaryAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceBoundaryDraw)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnFaceBoundaryDraw)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDimensionAspect)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDimLengthModelUnits)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDimAngleModelUnits)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDimLengthDisplayUnits)
