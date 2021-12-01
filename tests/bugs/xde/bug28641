@@ -24,10 +24,12 @@ vdump $::imagedir/${::casename}_first.png
 if { [vreadpixel 300 200 rgb name] != "GRAY63" } { puts "Error: wrong color in 3D Viewer" }
 
 # Write file
-SaveAs D_First ${imagedir}/bug28521.xbf
+set aTmpFile ${imagedir}/${casename}.xbf
+SaveAs D_First $aTmpFile
 Close D_First
 # Read document
-XOpen ${imagedir}/bug28521.xbf D_Second
+XOpen $aTmpFile D_Second
+file delete -force $aTmpFile
 
 # Results validation
 set isOK 1

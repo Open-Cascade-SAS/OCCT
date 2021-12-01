@@ -7,10 +7,8 @@ puts "==========="
 
 Open [locate_data_file BUC60756_Doc.cbf] D
 
-######################################################################
-catch {file delete ${imagedir}/Doc2.cbf}
-
-SaveAs D ${imagedir}/Doc2.cbf
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
 Close D
-Open ${imagedir}/Doc2.cbf D 
-
+Open $aTmpFile D
+file delete -force $aTmpFile

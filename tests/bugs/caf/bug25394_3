@@ -50,11 +50,13 @@ set info5 [GetReferenceList D $Lab5]
 # output => "List is empty"
 
 # 6. save the Document in external file
-SaveAs D ${imagedir}/bug26014_test3.xml
+set aTmpFile ${imagedir}/${casename}.xml
+SaveAs D $aTmpFile
 Close D
 
 # 7. reopen the Document
-Open ${imagedir}/bug26014_test3.xml D
+Open $aTmpFile D
+file delete -force $aTmpFile
 
 # 8. Check the restored attributes at the specified labels
 set info8 [GetBooleanList D $Lab1]

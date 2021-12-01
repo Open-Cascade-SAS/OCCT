@@ -1,10 +1,8 @@
 puts "============"
-puts "OCC25537"
+puts "OCC25537: XmlMPrsStd_PositionDriver::Paste runtime check c r a s h."
 puts "============"
 puts ""
-#######################################################################
-# XmlMPrsStd_PositionDriver::Paste runtime check crash.
-#######################################################################
+
 pload XDEDRAW
 
 NewDocument Doc XmlXCAF
@@ -22,8 +20,9 @@ for {set i 1} {$i < 100} {incr i} {
   XSetCentroid Doc $aLab2 $aBigNum $aBigNum $aBigNum
 }
 
-set aFile ${imagedir}/bug25537_test.xml
-SaveAs Doc ${aFile}
+set aTmpFile ${imagedir}/${casename}.xml
+SaveAs Doc ${aTmpFile}
 
 ## ==> No exception
 Close Doc
+file delete -force $aTmpFile

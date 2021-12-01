@@ -16,9 +16,12 @@ XNewDoc D
 XAddShape D co
 
 puts "Writing STEP model"
-WriteStep D .
+set aTmpFile ${imagedir}/${casename}_tmp.stp
+WriteStep D $aTmpFile
 Close D
 
 puts "Destructing model"
 #crash
 newmodel
+
+file delete -force $aTmpFile

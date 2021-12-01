@@ -7,11 +7,10 @@ puts "==========="
 
 Open [locate_data_file BUC60756_Doc.std] D
 
-######################################################################
-catch {file delete ${imagedir}/Doc2.cbf}
-
 Format D BinOcaf
-SaveAs D ${imagedir}/Doc2.cbf
-Close D
-Open ${imagedir}/Doc2.cbf D 
 
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
+Close D
+Open $aTmpFile D
+file delete -force $aTmpFile

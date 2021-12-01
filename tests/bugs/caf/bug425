@@ -23,18 +23,17 @@ SetName D ${aLabel} ${aSetAttr1}
 NewCommand D
 
 # Save the document
-set aFile ${imagedir}/OCC425.cbf
-catch {file delete ${aFile}}
+set aFile ${imagedir}/${casename}.cbf
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {
     puts "There is not ${aFile} file; SaveAs command: Error"
     set IsGood 0
 }
-catch {exec chmod 777 ${aFile}}
 
 # Restore the document
 Close D
 Open ${aFile} DD
+file delete -force ${aFile}
 
 # Get a value of the attribute
 set aGetAttr3 ""

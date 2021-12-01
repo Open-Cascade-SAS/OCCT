@@ -19,7 +19,7 @@ box b 1 1 1
 SetShape Doc 0:1 b
 
 # SaveAs
-set output [SaveAs Doc ${imagedir}/testA1.cbf]
+set output [SaveAs Doc ${imagedir}/${casename}_tmp.cbf]
 
 # Close the document
 Close Doc

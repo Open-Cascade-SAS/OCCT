@@ -14,7 +14,7 @@ AISSet D1 0:1 NS
 AISDisplay D1 0:1
 AISMode D1 0:1 1
 
-set aFile ${imagedir}/testmode.xml
+set aFile ${imagedir}/${casename}.xml
 file delete ${aFile}
 SaveAs D1 ${aFile}
 if { ![file exists ${aFile}] } {

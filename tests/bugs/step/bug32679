@@ -17,11 +17,11 @@ proc CheckName {doc1 doc2 lab} {
 }
 
 proc RunTestWithFile {file} {
-  global imagedir
   puts "Testing file $file"
   XOpen [locate_data_file $file] d1
-  WriteStep d1 ${imagedir}/${file}.step
-  ReadStep d2 ${imagedir}/${file}.step
+  set aTmpFile ${::imagedir}/${::casename}_${file}.step
+  WriteStep d1 $aTmpFile
+  ReadStep  d2 $aTmpFile
 
   CheckName d1 d2 0:1:1:1:1
   CheckName d1 d2 0:1:1:2:1
@@ -29,7 +29,7 @@ proc RunTestWithFile {file} {
 
   Close d1
   Close d2
-  file delete ${imagedir}/${file}.step
+  file delete -force $aTmpFile
 }
 
 RunTestWithFile as1-no-ass-name.xbf

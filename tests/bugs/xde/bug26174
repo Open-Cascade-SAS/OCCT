@@ -17,9 +17,6 @@ set anImageD $imagedir/${casename}_D.png
 set anImageD1 $imagedir/${casename}_D1.png
 set anImageD2 $imagedir/${casename}_D2.png
 
-catch {exec rm ${aFileD1}}
-catch {exec rm ${aFileD2}}
-
 box b 0 0 0 10 10 10
 compound b c
 NewDocument D
@@ -36,6 +33,8 @@ WriteIges D ${aFileD2}
 
 ReadIges D1 ${aFileD1}
 ReadIges D2 ${aFileD2}
+file delete -force ${aFileD1}
+file delete -force ${aFileD2}
 
 XShow D1
 vfit

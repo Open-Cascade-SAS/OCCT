@@ -8,11 +8,8 @@ pload QAcommands
 NewDocument D BinOcaf
 
 ######################################################
-catch { SaveAs D ${imagedir}/OCC381_1.cbf }
-
+catch { SaveAs D ${imagedir}/${casename}.cbf }
 if { [catch { OCC381_Save D } ] } {
     puts "OCC381: Error" 
-} else {
-    catch { exec chmod 777 ${imagedir}/OCC381_1.cbf }
-    file delete -force ${imagedir}/OCC381_1.cbf
 }
+file delete -force ${imagedir}/${casename}.cbf

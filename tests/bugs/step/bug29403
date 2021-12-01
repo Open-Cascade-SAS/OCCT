@@ -1,10 +1,7 @@
 puts "=========="
-puts "OCC29403"
+puts "OCC29403: Subshapes names are not imported from step"
 puts "=========="
 puts ""
-#########################################################
-# Subshapes names are not imported from step
-#########################################################
 
 param read.stepcaf.subshapes.name 1
 param write.stepcaf.subshapes.name 1
@@ -18,9 +15,10 @@ regexp {level N 1 +: +([-0-9.+eE]+)} $info1 full l1
 regexp {Total number of labels for shapes in the document += +([-0-9.+eE]+)} $info1 full nb
 regexp {Number of labels with name += +([-0-9.+eE]+)} $info1 full nbname
 
-WriteStep doc $imagedir/doc_subshapes.stp
-
-ReadStep after_doc $imagedir/doc_subshapes.stp
+set aTmpFile ${imagedir}/${casename}_subshapes.stp
+WriteStep      doc $aTmpFile
+ReadStep after_doc $aTmpFile
+file delete -force $aTmpFile
 
 set info2 [XStat after_doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info2 full l0_1
@@ -41,7 +39,6 @@ if { ${l0} != ${l0_1} ||
 
 Close doc
 Close after_doc
-file delete -force $imagedir/doc_subshapes.stp
 
 param read.stepcaf.subshapes.name 0
 param write.stepcaf.subshapes.name 0

@@ -6,6 +6,5 @@ NewDocument D BinOcaf
 
 ######################################################################
 
-file delete ${imagedir}/OCC267.cbf
-SaveAs D ${imagedir}/OCC267.cbf
-
+SaveAs D ${imagedir}/${casename}.cbf
+file delete -force ${imagedir}/${casename}.cbf

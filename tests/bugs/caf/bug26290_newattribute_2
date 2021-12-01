@@ -27,11 +27,14 @@ Undo D 1
 Redo D 1
 AISColor D $Lab1 AQUAMARINE4
 NewCommand D
-SaveAs D $imagedir/bug26290_new_1.cbf
+
+set aTmpFile1 ${imagedir}/${casename}_1.cbf
+SaveAs D $aTmpFile1
 Close D
 
 # test
-Open $imagedir/bug26290_new_1.cbf D
+Open $aTmpFile1 D
+file delete -force $aTmpFile1
 UndoLimit D 100
 NewCommand D
 
@@ -53,14 +56,16 @@ NewCommand D
 Undo D 1
 Redo D 1
 
-SaveAs D $imagedir/bug26290_new_2.cbf
+set aTmpFile2 ${imagedir}/${casename}_2.cbf
+SaveAs D $aTmpFile2
 AISErase D $Lab2
 set Lab1 [Label D 0:1:1]
 AISErase D $Lab1
 NewCommand D
 Close D
 
-Open $imagedir/bug26290_new_2.cbf D
+Open $aTmpFile2 D
+file delete -force $aTmpFile1
 
 ## DFBrowse D
 AISInitViewer D

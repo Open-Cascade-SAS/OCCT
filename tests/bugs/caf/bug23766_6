@@ -53,12 +53,15 @@ if { [regexp "REVERSED" $info2] != 1 } {
 }
 
 #4 -  test persistence: check orientation after retrieving (to be the same as before)
-file delete -force ${imagedir}/bug23766_ttt1.xml
 NewCommand D
-SaveAs D ${imagedir}/bug23766_ttt1.xml
+
+set aTmpFile ${imagedir}/${casename}.xml
+SaveAs D $aTmpFile
 Close D
 ##unset D
-Open ${imagedir}/bug23766_ttt1.xml D
+Open $aTmpFile D
+file delete -force $aTmpFile
+
 GetShape D 0:1:2:1:2 E1
 set info3 [whatis E1]
 ## to be: E1 is a shape EDGE FORWARD Modified Orientable

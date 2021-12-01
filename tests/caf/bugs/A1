@@ -30,7 +30,7 @@ SetInteger Doc ${aLabel} ${aSetAttr1}
 NewCommand Doc
 
 # Save the document
-set aFile ${imagedir}/OCC1228-[file tail [info script]].cbf
+set aFile ${imagedir}/OCC1228-${casename}.cbf
 file delete ${aFile}
 catch {SaveAs Doc ${aFile}}
 if { ![file exists ${aFile}] } {

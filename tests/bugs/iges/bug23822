@@ -1,14 +1,10 @@
 puts "========"
-puts "CR23822"
+puts "CR23822: S I G S E G V 'segmentation v i o l a t i o n' during writing IGES"
 puts "========"
 puts ""
-#########################################################
-## SIGSEGV 'segmentation violation' during writing IGES
-#########################################################
 
 ReadIges D [locate_data_file ball_bearing.igs]
 
-set aFile ${imagedir}/bug23822_new_file.igs
-file delete -force ${aFile}
-
-WriteIges D ${aFile}
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges D $aTmpFile
+file delete -force $aTmpFile

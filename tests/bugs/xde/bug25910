@@ -1,18 +1,16 @@
 puts "========"
-puts "OCC25910"
+puts "OCC25910: The material with 0-density causes e r r o r s during writing STEP files"
 puts "========"
 puts ""
-#######################################################################
-# The material with 0-density causes errors during writing STEP files
-#######################################################################
 
 pload DCAF
 
 NewDocument D
 box b 10 10 10
 XSetMaterial D [XAddShape D b] Vacuum 0.
-set bug_info [catch {WriteStep D $imagedir/OCC25910.stp}]
 
-if {$bug_info != 0} {
-  puts "ERROR: OCC25910 is reproduced."
-}
+set aTmpFile ${imagedir}/${casename}_tmp.stp
+set bug_info [catch {WriteStep D $aTmpFile}]
+file delete -force $aTmpFile
+
+if {$bug_info != 0} { puts "ERROR: OCC25910 is reproduced." }

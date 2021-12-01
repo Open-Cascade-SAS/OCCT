@@ -10,12 +10,12 @@ NewDocument Doc BinOcaf
 SetInteger Doc 0:2 100
 
 # Save the document
-set aFile ${imagedir}/OCC27433-[file tail [info script]].cbf
-file delete ${aFile}
-puts ${aFile}
-catch {SaveAs Doc ${aFile}}
-if { ![file exists ${aFile}] } {
-	puts "Error: Can not save the file with path to plugins ended with slash"
+set aTmpFile ${imagedir}/${casename}.cbf
+puts ${aTmpFile}
+catch {SaveAs Doc ${aTmpFile}}
+if { ![file exists ${aTmpFile}] } {
+  puts "Error: Can not save the file with path to plugins ended with slash"
 }
 
 Close Doc
+file delete -force $aTmpFile

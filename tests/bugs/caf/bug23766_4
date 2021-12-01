@@ -51,12 +51,14 @@ if { [regexp "REVERSED" $info2] != 1 } {
 }
 
 #4 -  test persistence: check orientation after retrieving (to be the same as before)
-file delete -force ${imagedir}/bug23766_ttt1.cbf
 NewCommand D
-SaveAs D ${imagedir}/bug23766_ttt1.cbf
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
 Close D
 ##unset D
-Open ${imagedir}/bug23766_ttt1.cbf D
+Open $aTmpFile D
+file delete -force $aTmpFile
+
 GetShape D 0:1:2:1:2 E1
 set info3 [whatis E1]
 ## to be: E1 is a shape EDGE FORWARD Modified Orientable
@@ -74,4 +76,3 @@ if { [regexp "REVERSED" $info4] != 1 } {
 } else {
     puts "OK: orientation of E2 is correct"
 }
-

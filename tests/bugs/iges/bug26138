@@ -1,12 +1,13 @@
 puts "========"
-puts "OCC26138"
+puts "OCC26138: Problems with writing periodic BSplines into IGES"
 puts "========"
 puts ""
-#####################################################
-# Problems with writing periodic BSplines into IGES
-#####################################################
 
 igesbrep [locate_data_file OCC26138_Torus.igs] a *
-brepiges a ${imagedir}/bug26138.igs
-igesbrep ${imagedir}/bug26138.igs b *
+
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges a $aTmpFile
+igesbrep $aTmpFile b *
+file delete -force ${aTmpFile}
+
 checkprops a -s -equal b

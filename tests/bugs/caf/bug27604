@@ -11,18 +11,18 @@ pload OCAF MODELING
 # just a big shape to fit in memory
 restore [locate_data_file $aBigShape] s
 
-file delete ${imagedir}/test.cbf
+set aTmpFile ${imagedir}/${casename}.cbf
 
 # store it in the document
 NewDocument D BinOcaf
 SetShape D "0:2" s
-SaveAs D ${imagedir}/test.cbf
+SaveAs D $aTmpFile
 Close D
 
 # store the memory used before opening a document
 set aBefore [meminfo h]
 
-Open ${imagedir}/test.cbf DD
+Open $aTmpFile DD
 set aDocLoaded [meminfo h]
 set aBigDelta [expr $aDocLoaded - $aBefore]
 Close DD
@@ -39,3 +39,5 @@ puts "After close: $anAfter"
 if {[expr $aBigDelta / 20. - $aDelta] < 0} {
   puts "Error: the memory is not freed after Open/Close"
 }
+
+file delete -force $aTmpFile

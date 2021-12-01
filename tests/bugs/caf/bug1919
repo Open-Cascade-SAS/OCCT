@@ -73,13 +73,13 @@ if { ${USA_IsDone} != 0 || ${new_USA_Real}!=${Italian_Real} } {
 }
 
 # Store the document
-file delete ${imagedir}/OCC1919-M6.xml
-SaveAs D ${imagedir}/OCC1919-M6.xml
-if { ![file exists ${imagedir}/OCC1919-M6.xml] } {
+set aTmpFile ${imagedir}/${casename}.xml
+file delete $aTmpFile
+SaveAs D $aTmpFile
+if { ![file exists $aTmpFile] } {
    puts "OCC1919 Error : There is not file"
    set IsGood 0
 }
-catch {exec chmod 777 ${imagedir}/OCC1919-M6.xml}
 Close D
 
 # Set en_US locale 
@@ -91,7 +91,8 @@ if { ${en_US_local} != "en_US" } {
 }
 
 # Restore the document
-Open ${imagedir}/OCC1919-M6.xml DD
+Open $aTmpFile DD
+file delete -force $aTmpFile
 
 # Get a value of the attribute
 set USA_IsDone [catch {set new_USA_Real [GetReal DD ${USA_Label}]} message]

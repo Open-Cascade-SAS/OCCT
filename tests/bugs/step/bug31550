@@ -12,7 +12,7 @@ if { [catch { ReadStep D ${filename} } result] } {
 
 # Static data
 set Transparency 0.5
-set TempFilename ${imagedir}/bug31550_temp.stp
+set TempFilename ${imagedir}/${casename}_temp.stp
 
 # Get colors
 set Colors [XGetAllColors D]
@@ -29,6 +29,7 @@ if { [catch { WriteStep D ${TempFilename} } result] } {
 if { [catch { ReadStep D1 ${TempFilename} } result] } {
   puts "ERROR: Couldn't read ${TempFilename} file"
 }
+file delete -force $TempFilename
 
 # Get colors
 set Colors [XGetAllColors D1]

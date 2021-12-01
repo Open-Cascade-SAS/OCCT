@@ -1,10 +1,7 @@
 puts "========"
-puts "OCC27447"
+puts "OCC27447: Add support for long IGES entity names"
 puts "========"
 puts ""
-##########################################
-# Add support for long IGES entity names
-##########################################
 
 pload OCAF
 
@@ -27,12 +24,12 @@ SetName D [XFindShape D link]:2 "Nut instance 1"
 SetName D [XFindShape D link]:3 "Nut instance 2"
 
 # Write IGES file
-catch {exec rm ${imagedir}/bug27447_link.igs}
-WriteIges D ${imagedir}/bug27447_link.igs
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges D $aTmpFile
 
 # Processing of IGES file
 set is_bug27447_fixed "FALSE"
-set file_27447 [open ${imagedir}/bug27447_link.igs RDONLY]
+set file_27447 [open $aTmpFile RDONLY]
 while {[eof $file_27447] == 0} {
   set file_27447_line [string trim [gets $file_27447]]
   if {[string first "Very long link name" $file_27447_line] != -1} {
@@ -40,6 +37,7 @@ while {[eof $file_27447] == 0} {
   }
 }
 close $file_27447
+file delete -force $aTmpFile
 
 # Results validation
 if {[string compare $is_bug27447_fixed "FALSE"] == 0} {

@@ -3,8 +3,8 @@ puts "OCC170"
 puts "(case 3)"
 puts "========================"
 
-set docName OCC170
-set newDocName OCC170_2
+set docName    ${casename}
+set newDocName ${casename}_2
 set str1 "~!@#$%^&*():;'{}\|?/.>,<~!@#$%^&*():;'{}\|?/.>,<#$%#$%$%^&*():;'{}\|$%^&*(@#$%^&*():;'{}\|¦/"
 
 NewDocument $docName XmlOcaf
@@ -31,4 +31,3 @@ if {$str1 == $str2} {puts "OCC170 OK"} else {
   puts "str2=${str2}"
   puts "OCC170 Error"
 }
-

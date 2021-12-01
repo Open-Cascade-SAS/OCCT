@@ -23,7 +23,8 @@ GetShape D $F2:2 Box2
 NewCommand D
 
 #3 save shape in the document
-SaveAs D ${imagedir}/testDoc1.cbf
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
 
 #4 close document
 set catch_status 0
@@ -37,7 +38,8 @@ if { ${catch_status} != 0 } {
 }
 
 #5 reopen just saved document with the same name
-Open ${imagedir}/testDoc1.cbf D
+Open $aTmpFile D
+file delete -force $aTmpFile
 set catch_status 0
 
 #6 close the document

@@ -25,7 +25,9 @@ Undo D 1
 Redo D 1
 AISColor D $Lab1 AQUAMARINE4
 NewCommand D
-SaveAs D $imagedir/bug26290_new_1.cbf
+
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
 
 AISErase D $Lab1
 ## DFBrowse D # - for debug purpose only
@@ -36,7 +38,8 @@ Redo D 1
 Close D
 
 ## reopen just kept file
-Open $imagedir/bug26290_new_1.cbf D
+Open $aTmpFile D
+file delete -force $aTmpFile
 
 ## DFBrowse D
 AISInitViewer D

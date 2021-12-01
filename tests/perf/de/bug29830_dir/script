@@ -19,6 +19,8 @@ set nz 10
 if [info exists D] {Close D}
 if [info exists D1] {Close D1}
 
+set aTmpFile ${imagedir}/${casename}_tmp.stp
+
 for {set npass 1} {$npass <= 2} {incr npass} {
 
   set nx [expr $nx0 * $npass]
@@ -64,13 +66,13 @@ for {set npass 1} {$npass <= 2} {incr npass} {
 
   puts "Writing STEP model"
   chrono cr1 restart
-  WriteStep D .
+  WriteStep D $aTmpFile
   chrono cr1 stop
   Close D
 
   puts "Reading STEP model"
   chrono cr2 restart
-  ReadStep D1 .
+  ReadStep D1 $aTmpFile
   chrono cr2 stop
 
   # check one solid with different locations
@@ -93,6 +95,7 @@ for {set npass 1} {$npass <= 2} {incr npass} {
 
   set time_write_$npass [lindex [dchrono cr1 counter "WriteStep_$npass"] end]
   set time_read_$npass [lindex [dchrono cr2 counter "ReadStep_$npass"] end]
+  file delete -force $aTmpFile
 }
 
 puts "time_write_1=$time_write_1"

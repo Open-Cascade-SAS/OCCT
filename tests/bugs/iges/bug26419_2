@@ -1,11 +1,10 @@
 puts "========"
-puts "OCC26419"
+puts "OCC26419: Export of a reversed face leads to c r a s h in 6.9.0 although proceeded in 6.8.0"
 puts "========"
 puts ""
-#####################################################
-# [Regression?] Export of a reversed face leads to crash in 6.9.0 although proceeded in 6.8.0
-#####################################################
 
 restore [locate_data_file bug26419_a-rev.brep] ar
 
-brepiges ar ${imagedir}/bug26419_2.igs
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges ar $aTmpFile
+file delete -force ${aTmpFile}

@@ -40,7 +40,8 @@ GetRefArray D $Lab5
 GetRefArray D $Lab6
 
 #6 save the document
-SaveAs D ${imagedir}/testDoc2.cbf
+set aTmpFile ${imagedir}/${casename}.cbf
+SaveAs D $aTmpFile
 
 #7 close the document
 set catch_status 0
@@ -54,7 +55,8 @@ if { ${catch_status} != 0 } {
 }
 
 #8 reopen just saved document with the same name
-Open ${imagedir}/testDoc2.cbf D
+Open $aTmpFile D
+file delete -force $aTmpFile
 
 #9 close the document
 if { [catch {Close D} catch_result] } {
@@ -66,4 +68,3 @@ if { ${catch_status} != 0 } {
 } else {
    puts "OK ${BugNumber}"
 }
-

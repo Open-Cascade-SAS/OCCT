@@ -57,19 +57,18 @@ SelectShape D $CylNamLab:11 C_2 C
 SelectShape D $CylNamLab:12 C_3 C
 
 # Save the document
-set aFile ${imagedir}/OCC9746-Z3.cbf
-file delete ${aFile}
+set aFile ${imagedir}/${casename}.cbf
 SaveAs D ${aFile}
 if { ![file exists ${aFile}] } {
    puts "There is not ${aFile} file; SaveAs command: Error"
    puts "${BugNumber}: ERROR (case 1)"
 }
-catch {exec chmod 777 ${aFile}}
 
 Close D
 
 # Restore the document
 catch {Open ${aFile} DDoc}
+file delete -force ${aFile}
 
 #
 set BoxNamLab [Label DDoc 0:4]

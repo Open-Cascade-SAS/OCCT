@@ -1,11 +1,13 @@
 #######################################################################
-# OCC26931: [Regression in 6.9.0] Exporting a face throws an exception
+puts "OCC26931: Exporting a face throws an e x c e p t i o n"
 #######################################################################
 
 # restore initial face
 restore [locate_data_file bug26931.brep] face
 set square 6416.6
 # export face to IGES 
-brepiges face ${imagedir}/${casename}.igs
+set aTmpFile ${imagedir}/${casename}.igs
+brepiges face $aTmpFile
 # import back to check similarity
-igesbrep ${imagedir}/${casename}.igs result *
+igesbrep $aTmpFile result *
+file delete -force ${aTmpFile}

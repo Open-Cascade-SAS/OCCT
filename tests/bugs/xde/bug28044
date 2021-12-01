@@ -1,10 +1,7 @@
 puts "========"
-puts "OCC28044"
+puts "OCC28044: Implement data structures in OCAF for Saved Views."
 puts "========"
 puts ""
-####################################################
-# Implement data structures in OCAF for Saved Views.
-####################################################
 
 pload OCAF
 
@@ -35,10 +32,12 @@ XSetViewFrontPlaneDistance D_First 0:1:7:1 10
 XSetViewVolumeSidesClipping D_First 0:1:7:1 1
 set first_view [XDumpView D_First 0:1:7:1]
 # Write file
-SaveAs D_First ${imagedir}/bug28044.xbf
+set aTmpFile ${imagedir}/${casename}.xbf
+SaveAs D_First $aTmpFile
 Close D_First
 # Read document
-XOpen ${imagedir}/bug28044.xbf D_Second
+XOpen $aTmpFile D_Second
+file delete -force $aTmpFile
 set second_view [XDumpView D_Second 0:1:7:1]
 
 Close D_Second

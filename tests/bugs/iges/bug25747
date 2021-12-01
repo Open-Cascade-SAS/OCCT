@@ -1,12 +1,7 @@
 puts "========"
-puts "OCC25747"
+puts "OCC25747: Bad IGES file after import and export with different units"
 puts "========"
 puts ""
-######################################
-# Bad IGES file after import and export with different units
-######################################
-
-catch {exec rm ${imagedir}/OCC25747.igs}
 
 # default OCCT unit for reading
 param xstep.cascade.unit MM
@@ -23,10 +18,12 @@ vfit
 vsetdispmode 1
 vdump ${imagedir}/${casename}_1.png
 
-WriteIges D ${imagedir}/OCC25747.igs
+set aTmpFile ${imagedir}/${casename}.igs
+WriteIges D $aTmpFile
 
 # bad IGES file after export
-ReadIges T ${imagedir}/OCC25747.igs
+ReadIges T $aTmpFile
+file delete -force ${aTmpFile}
 
 XShow T
 vtop

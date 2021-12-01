@@ -54,7 +54,7 @@ CopyWithLink Doc1 ${aLabel2} Doc1 ${aLabel1}
 NewCommand Doc1
 
 # Save the document
-set aFile ${imagedir}/OCC1228-[file tail [info script]].cbf
+set aFile ${imagedir}/OCC1228-${casename}.cbf
 file delete ${aFile}
 catch {SaveAs Doc1 ${aFile}}
 if { ![file exists ${aFile}] } {
