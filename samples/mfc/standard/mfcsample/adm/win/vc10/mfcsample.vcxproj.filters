@@ -9,10 +9,6 @@
       <UniqueIdentifier>{c0619ee9-00d5-4587-ac1c-7f8e97f7d314}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
-    <Filter Include="Source Files\Primitive-src">
-      <UniqueIdentifier>{6c21e485-b17c-4b50-a64e-8032b8867916}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
-    </Filter>
     <Filter Include="Source Files\ISession2D-src">
       <UniqueIdentifier>{5cef5b98-dbfe-4dc1-9030-6333f582b9e6}</UniqueIdentifier>
     </Filter>
@@ -23,9 +19,6 @@
     <Filter Include="Header Files\Resource2D-headers">
       <UniqueIdentifier>{da6f5036-6fe5-479c-9407-d4c6bb3bc83f}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Primitive-headers">
-      <UniqueIdentifier>{f0d2a1cd-637f-4375-8949-9c5bc227c1a6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ISession2D-headers">
       <UniqueIdentifier>{cad0c56e-8d9f-4728-9d66-f7188c6080d7}</UniqueIdentifier>
@@ -90,9 +83,6 @@
     <ClCompile Include="..\..\..\src\StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\User_Cylinder.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Resource2D\CircularGrid.cpp">
       <Filter>Source Files\Resource2D-src</Filter>
     </ClCompile>
@@ -101,15 +91,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Resource2D\RectangularGrid.cpp">
       <Filter>Source Files\Resource2D-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Face.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Image.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Markers.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.cpp">
       <Filter>Source Files\ISession2D-src</Filter>
@@ -199,9 +180,6 @@
     <ClInclude Include="..\..\..\..\Common\StdAfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\User_Cylinder.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Resource2D\CircularGrid.h">
       <Filter>Header Files\Resource2D-headers</Filter>
     </ClInclude>
@@ -210,15 +188,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Resource2D\RectangularGrid.h">
       <Filter>Header Files\Resource2D-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Face.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Image.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Markers.h">
-      <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.h">
       <Filter>Header Files\ISession2D-headers</Filter>

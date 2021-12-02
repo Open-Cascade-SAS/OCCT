@@ -5,14 +5,8 @@ Visual C++ programming samples for Windows platform containing illustrating how 
 
   * Geometry
   * Modeling
-  * Viewer2d
-  * Viewer3d
   * ImportExport
-  * Ocaf
-  * Triangulation
   * HLR
-  * Animation
-  * Convert
 
 @figure{samples_mvc.png}
 
@@ -39,10 +33,10 @@ To run the Open CASCADE Technology samples, use command:
 execute run.bat [vc10|vc11|vc12|vc14] [win32|win64] [Release|Debug] [SampleName]
 ~~~~
 
-To run the **Animation** sample, use command:
+To run the **Geometry** sample, use command:
 
 ~~~~
-execute run.bat vc10 win64 Debug Animation
+execute run.bat vc10 win64 Debug Geometry
 ~~~~
 
 

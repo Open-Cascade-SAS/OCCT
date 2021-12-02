@@ -31,7 +31,6 @@ set (COMMON_SOURCE_FILES ${MFC_STANDARD_COMMON_SAMPLES_DIR}/AISDialogs.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_StereoConfigDlg.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ParamsFacesPage.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ResultDialog.cpp
-                         ${MFC_STANDARD_COMMON_SAMPLES_DIR}/User_Cylinder.cxx
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ColoredMeshDlg.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/DimensionDlg.cpp
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/LengthParamsEdgePage.cpp
@@ -52,15 +51,6 @@ set (COMMON_IE_SOURCE_FILES ${COMMON_IE_DIR}/ImportExport.cpp
 set (COMMON_ISESSION2D_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ISession2D)
 set (COMMON_ISESSION2D_HEADER_FILES ${COMMON_ISESSION2D_DIR}/ISession2D_Shape.h )
 set (COMMON_ISESSION2D_SOURCE_FILES ${COMMON_ISESSION2D_DIR}/ISession2D_Shape.cpp )
-
-# Common Primitive
-set (COMMON_PRIMITIVE_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/Primitive)
-set (COMMON_PRIMITIVE_HEADER_FILES ${COMMON_PRIMITIVE_DIR}/Sample2D_Face.h
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Image.h
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.h )
-set (COMMON_PRIMITIVE_SOURCE_FILES ${COMMON_PRIMITIVE_DIR}/Sample2D_Face.cpp
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Image.cpp
-                                   ${COMMON_PRIMITIVE_DIR}/Sample2D_Markers.cpp )
 
 # Common Resource2D
 set (COMMON_RESOURCE2D_DIR          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/Resource2D)
@@ -112,14 +102,12 @@ set (COMMON_RESOURCE_FILES ${COMMON_RESOURCE_DIR}/2dChildFrameTB.bmp
 # groups in the VS solution
 source_group ( "Header Files" FILES   ${COMMON_HEADER_FILES}
                                       ${COMMON_IE_HEADER_FILES}
-                                      ${COMMON_PRIMITIVE_HEADER_FILES}
                                       ${COMMON_RESOURCE2D_HEADER_FILES}
                                       ${COMMON_ISESSION2D_HEADER_FILES})
 
 source_group ("Source Files" FILES    ${mfcsample_SOURCE_FILES}
                                       ${COMMON_SOURCE_FILES}
                                       ${COMMON_IE_SOURCE_FILES}
-                                      ${COMMON_PRIMITIVE_SOURCE_FILES}
                                       ${COMMON_RESOURCE2D_SOURCE_FILES}
                                       ${COMMON_ISESSION2D_SOURCE_FILES})
 
@@ -131,8 +119,6 @@ add_library ( mfcsample        ${mfcsample_SOURCE_FILES}
                                ${COMMON_SOURCE_FILES}
                                ${COMMON_IE_HEADER_FILES}
                                ${COMMON_IE_SOURCE_FILES}
-                               ${COMMON_PRIMITIVE_HEADER_FILES}
-                               ${COMMON_PRIMITIVE_SOURCE_FILES}
                                ${COMMON_RESOURCE2D_HEADER_FILES}
                                ${COMMON_RESOURCE2D_SOURCE_FILES}
                                ${COMMON_ISESSION2D_HEADER_FILES}
@@ -163,7 +149,6 @@ include_directories( ${CMAKE_BINARY_DIR}/inc
                      ${MFC_STANDARD_COMMON_SAMPLES_DIR}
                      ${COMMON_IE_DIR}
                      ${COMMON_ISESSION2D_DIR}
-                     ${COMMON_PRIMITIVE_DIR}
                      ${COMMON_RESOURCE2D_DIR})
 
 # OCCT libraries for using
