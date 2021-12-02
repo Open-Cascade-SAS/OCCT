@@ -649,8 +649,11 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
             IntCS.ParameterOnSurface(U2,V2);
             gp_Pnt anOldPnt, aNewPnt;
             OtherSurf->D0(U,V, anOldPnt);
-            OtherSurf->D0(U2,V2, aNewPnt);
-            if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
+            OtherSurf->D0(U2,V2, aNewPnt);          
+            //if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
+            Standard_Real aTolConf = Max(Precision::Confusion(), edgeTol);
+
+            if (anOldPnt.SquareDistance(aNewPnt) < aTolConf * aTolConf)
             {
               U2 = U;
               V2 = V;

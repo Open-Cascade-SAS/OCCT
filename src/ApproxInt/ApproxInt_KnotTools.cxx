@@ -26,6 +26,8 @@
 #include <Precision.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <GeomInt_TheMultiLineOfWLApprox.hxx>
 
 // (Sqrt(5.0) - 1.0) / 4.0
 //static const Standard_Real aSinCoeff = 0.30901699437494742410229341718282;
@@ -89,6 +91,94 @@ static Standard_Real EvalCurv(const Standard_Real dim,
 }
 
 //=======================================================================
+//function : BuildCurvature
+//purpose  : 
+//=======================================================================
+
+void ApproxInt_KnotTools::BuildCurvature(
+  const NCollection_LocalArray<Standard_Real>& theCoords,
+  const Standard_Integer theDim,
+  const math_Vector& thePars,
+  TColStd_Array1OfReal& theCurv,
+  Standard_Real& theMaxCurv)
+{
+  // Arrays are allocated for max theDim = 7: 1 3d curve + 2 2d curves.
+  Standard_Real Val[21], Par[3], Res[21];
+  Standard_Integer i, j, m, ic;
+  Standard_Integer dim = theDim;
+  //
+  theMaxCurv = 0.;
+  if (theCurv.Length() < 3)
+  {
+    theCurv.Init(0.);
+    return;
+  }
+  i = theCurv.Lower();
+  for (j = 0; j < 3; ++j)
+  {
+    Standard_Integer k = i + j;
+    ic = (k - theCurv.Lower()) * dim;
+    Standard_Integer l = dim*j;
+    for (m = 0; m < dim; ++m)
+    {
+      Val[l + m] = theCoords[ic + m];
+    }
+    Par[j] = thePars(k);
+  }
+  PLib::EvalLagrange(Par[0], 2, 2, dim, *Val, *Par, *Res);
+  //
+  theCurv(i) = EvalCurv(dim, &Res[dim], &Res[2 * dim]);
+  //
+  if (theCurv(i) > theMaxCurv)
+  {
+    theMaxCurv = theCurv(i);
+  }
+  //
+  for (i = theCurv.Lower() + 1; i < theCurv.Upper(); ++i)
+  {
+    for (j = 0; j < 3; ++j)
+    {
+      Standard_Integer k = i + j - 1;
+      ic = (k - theCurv.Lower()) * dim;
+      Standard_Integer l = dim*j;
+      for (m = 0; m < dim; ++m)
+      {
+        Val[l + m] = theCoords[ic + m];
+      }
+      Par[j] = thePars(k);
+    }
+    PLib::EvalLagrange(Par[1], 2, 2, dim, *Val, *Par, *Res);
+    //
+    theCurv(i) = EvalCurv(dim, &Res[dim], &Res[2 * dim]);
+    if (theCurv(i) > theMaxCurv)
+    {
+      theMaxCurv = theCurv(i);
+    }
+  }
+  //
+  i = theCurv.Upper();
+  for (j = 0; j < 3; ++j)
+  {
+    Standard_Integer k = i + j - 2;
+    ic = (k - theCurv.Lower()) * dim;
+    Standard_Integer l = dim*j;
+    for (m = 0; m < dim; ++m)
+    {
+      Val[l + m] = theCoords[ic + m];
+    }
+    Par[j] = thePars(k);
+  }
+  PLib::EvalLagrange(Par[2], 2, 2, dim, *Val, *Par, *Res);
+  //
+  theCurv(i) = EvalCurv(dim, &Res[dim], &Res[2 * dim]);
+  if (theCurv(i) > theMaxCurv)
+  {
+    theMaxCurv = theCurv(i);
+  }
+
+}
+
+//=======================================================================
 //function : ComputeKnotInds
 //purpose  : 
 //=======================================================================
@@ -100,75 +190,10 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   //I: Create discrete curvature.
   NCollection_Sequence<Standard_Integer> aFeatureInds;
   TColStd_Array1OfReal aCurv(thePars.Lower(), thePars.Upper());
-  // Arrays are allocated for max theDim = 7: 1 3d curve + 2 2d curves.
-  Standard_Real Val[21], Par[3], Res[21];
-  Standard_Integer i, j, m, ic;
   Standard_Real aMaxCurv = 0.;
-  Standard_Integer dim = theDim;
-  //
-  i = aCurv.Lower();
-  for(j = 0; j < 3; ++j)
-  {
-    Standard_Integer k = i+j;
-    ic = (k - aCurv.Lower()) * dim;
-    Standard_Integer l = dim*j;
-    for(m = 0; m < dim; ++m)
-    {
-      Val[l + m] = theCoords[ic + m];
-    }
-    Par[j] = thePars(k);
-  }
-  PLib::EvalLagrange(Par[0], 2, 2, dim, *Val, *Par, *Res);
-  //
-  aCurv(i) = EvalCurv(dim, &Res[dim], &Res[2*dim]);
-  //
-  if(aCurv(i) > aMaxCurv)
-  {
-    aMaxCurv = aCurv(i);
-  }
-  //
-  for(i = aCurv.Lower()+1; i < aCurv.Upper(); ++i)
-  {
-    for(j = 0; j < 3; ++j)
-    {
-      Standard_Integer k = i+j-1;
-      ic = (k - aCurv.Lower()) * dim;
-      Standard_Integer l = dim*j;
-      for(m = 0; m < dim; ++m)
-      {
-        Val[l + m] = theCoords[ic + m];
-      }
-      Par[j] = thePars(k);
-    }
-    PLib::EvalLagrange(Par[1], 2, 2, dim, *Val, *Par, *Res);
-    //
-    aCurv(i) = EvalCurv(dim, &Res[dim], &Res[2*dim]);
-    if(aCurv(i) > aMaxCurv)
-    {
-      aMaxCurv = aCurv(i);
-    }
-  }
-  //
-  i = aCurv.Upper();
-  for(j = 0; j < 3; ++j)
-  {
-    Standard_Integer k = i+j-2;
-    ic = (k - aCurv.Lower()) * dim;
-    Standard_Integer l = dim*j;
-    for(m = 0; m < dim; ++m)
-    {
-      Val[l + m] = theCoords[ic + m];
-    }
-    Par[j] = thePars(k);
-  }
-  PLib::EvalLagrange(Par[2], 2, 2, dim, *Val, *Par, *Res);
-  //
-  aCurv(i) = EvalCurv(dim, &Res[dim], &Res[2*dim]);
-  if(aCurv(i) > aMaxCurv)
-  {
-    aMaxCurv = aCurv(i);
-  }
-
+  BuildCurvature(theCoords, theDim, thePars, aCurv, aMaxCurv);
+  //  
+  Standard_Integer i, j, dim = theDim;
 #ifdef APPROXINT_KNOTTOOLS_DEBUG
   std::cout << "Discrete curvature array is" << std::endl;
   for(i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
@@ -626,4 +651,173 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt& thePntsXYZ,
     }
 #endif
 
+}
+//=======================================================================
+//function : MaxParamRatio
+//purpose  :
+//=======================================================================
+static Standard_Real MaxParamRatio(const math_Vector& thePars)
+{
+  Standard_Integer i;
+  Standard_Real aMaxRatio = 0.;
+  //
+  for (i = thePars.Lower() + 1; i < thePars.Upper(); ++i)
+  {
+    Standard_Real aRat = (thePars(i + 1) - thePars(i)) / (thePars(i) - thePars(i - 1));
+    if (aRat < 1.)
+      aRat = 1. / aRat;
+
+    aMaxRatio = Max(aMaxRatio, aRat);
+  }
+  return aMaxRatio;
+}
+//=======================================================================
+//function : DefineParType
+//purpose  :
+//=======================================================================
+Approx_ParametrizationType ApproxInt_KnotTools::DefineParType(
+  const Handle(IntPatch_WLine)& theWL,
+  const Standard_Integer theFpar, const Standard_Integer theLpar,
+  const Standard_Boolean theApproxXYZ,
+  const Standard_Boolean theApproxU1V1,
+  const Standard_Boolean theApproxU2V2
+)
+{
+  if (theLpar - theFpar == 1)
+    return Approx_IsoParametric;
+
+  const Standard_Integer  nbp3d = theApproxXYZ ? 1 : 0,
+    nbp2d = (theApproxU1V1 ? 1 : 0) + (theApproxU2V2 ? 1 : 0);
+
+  GeomInt_TheMultiLineOfWLApprox aTestLine(theWL, nbp3d, nbp2d, theApproxU1V1, theApproxU2V2,
+    0., 0., 0., 0., 0., 0., 0., theApproxU1V1, theFpar, theLpar);
+
+  TColgp_Array1OfPnt aTabPnt3d(1, Max(1, nbp3d));
+  TColgp_Array1OfPnt2d aTabPnt2d(1, Max(1, nbp2d));
+  TColgp_Array1OfPnt aPntXYZ(theFpar, theLpar);
+  TColgp_Array1OfPnt2d aPntU1V1(theFpar, theLpar);
+  TColgp_Array1OfPnt2d aPntU2V2(theFpar, theLpar);
+
+  Standard_Integer i, j;
+
+  for (i = theFpar; i <= theLpar; ++i)
+  {
+    if (nbp3d != 0 && nbp2d != 0) aTestLine.Value(i, aTabPnt3d, aTabPnt2d);
+    else if (nbp2d != 0)          aTestLine.Value(i, aTabPnt2d);
+    else if (nbp3d != 0)          aTestLine.Value(i, aTabPnt3d);
+    //
+    if (nbp3d > 0)
+    {
+      aPntXYZ(i) = aTabPnt3d(1);
+    }
+    if (nbp2d > 1)
+    {
+      aPntU1V1(i) = aTabPnt2d(1);
+      aPntU2V2(i) = aTabPnt2d(2);
+    }
+    else if (nbp2d > 0)
+    {
+      if (theApproxU1V1)
+      {
+        aPntU1V1(i) = aTabPnt2d(1);
+      }
+      else
+      {
+        aPntU2V2(i) = aTabPnt2d(1);
+      }
+    }
+  }
+
+  Standard_Integer aDim = 0;
+
+  if (theApproxXYZ)
+    aDim += 3;
+  if (theApproxU1V1)
+    aDim += 2;
+  if (theApproxU2V2)
+    aDim += 2;
+
+  Standard_Integer aLength = theLpar - theFpar + 1;
+  NCollection_LocalArray<Standard_Real> aCoords(aLength * aDim);
+  for (i = theFpar; i <= theLpar; ++i)
+  {
+    j = (i - theFpar) * aDim;
+    if (theApproxXYZ)
+    {
+      aCoords[j] = aPntXYZ.Value(i).X();
+      ++j;
+      aCoords[j] = aPntXYZ.Value(i).Y();
+      ++j;
+      aCoords[j] = aPntXYZ.Value(i).Z();
+      ++j;
+    }
+    if (theApproxU1V1)
+    {
+      aCoords[j] = aPntU1V1.Value(i).X();
+      ++j;
+      aCoords[j] = aPntU1V1.Value(i).Y();
+      ++j;
+    }
+    if (theApproxU2V2)
+    {
+      aCoords[j] = aPntU2V2.Value(i).X();
+      ++j;
+      aCoords[j] = aPntU2V2.Value(i).Y();
+      ++j;
+    }
+  }
+
+  //Analysis of curvature
+  const Standard_Real aCritRat = 500.;
+  const Standard_Real aCritParRat = 100.;
+  math_Vector aPars(theFpar, theLpar);
+  Approx_ParametrizationType aParType = Approx_ChordLength;
+  GeomInt_WLApprox::Parameters(aTestLine, theFpar, theLpar, aParType, aPars);
+  TColStd_Array1OfReal aCurv(aPars.Lower(), aPars.Upper());
+  Standard_Real aMaxCurv = 0.;
+  BuildCurvature(aCoords, aDim, aPars, aCurv, aMaxCurv);
+
+  if (aMaxCurv < Precision::PConfusion() 
+      || Precision::IsPositiveInfinite(aMaxCurv))
+  {
+    //Linear case
+    return aParType;
+  }
+
+  Standard_Real aMidCurv = 0.;
+  Standard_Real eps = Epsilon(1.);
+  j = 0;
+  for (i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
+  {
+    if (aMaxCurv - aCurv(i) < eps)
+    {
+      continue;
+    }
+    ++j;
+    aMidCurv += aCurv(i);
+  }
+
+  if (j > 1)
+  {
+    aMidCurv /= j;
+  }
+
+  if (aMidCurv <= eps)
+    return aParType;
+
+  Standard_Real aRat = aMaxCurv / aMidCurv;
+  
+  if (aRat > aCritRat)
+  {
+    if(aRat > 5.*aCritRat)
+      aParType = Approx_Centripetal;
+    else
+    {
+      Standard_Real aParRat = MaxParamRatio(aPars);
+      if (aParRat > aCritParRat)
+        aParType = Approx_Centripetal;
+    }
+  }
+
+  return aParType;
 }

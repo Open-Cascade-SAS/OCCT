@@ -7,7 +7,7 @@ puts ""
 ###############################
 
 puts "TODO OCC29501 ALL: Error in ii12_22"
-
+puts "TODO OCC29501 All: Error: The curve ii12_22 is possible"
 set MaxToler 1.5e-4
 
 restore [locate_data_file bug24472_Pipe_1.brep] b1

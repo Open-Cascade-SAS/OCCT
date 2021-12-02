@@ -6,7 +6,7 @@ puts ""
 # Incomplete intersection curve from the attached shapes
 #################################################
 
-set ExpTol 1.1e-7
+set ExpTol 1.e-5
 set GoodNbCurv 3
 set GoodLength 0.6288896355727489
 

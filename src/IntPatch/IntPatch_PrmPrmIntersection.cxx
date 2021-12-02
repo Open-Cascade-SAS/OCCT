@@ -2386,6 +2386,9 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)& Surf
                     //Try to extend the intersection line to the boundary,
                     //if it is possibly
                     PW.PutToBoundary(Surf1, Surf2);
+                    //
+                    if (PW.NbPoints() < 3)
+                      continue;
 
                     const Standard_Integer aMinNbPoints = 40;
                     if(PW.NbPoints() < aMinNbPoints)

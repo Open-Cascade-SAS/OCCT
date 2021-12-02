@@ -48,6 +48,7 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <Precision.hxx>
+#include <ApproxInt_KnotTools.hxx>
 
 //=======================================================================
 //function : AdjustUPeriodic
@@ -623,12 +624,31 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
           ifprm = (Standard_Integer)fprm;
           ilprm = (Standard_Integer)lprm;
         }
-        //-- lbr : 
-        //-- Si une des surfaces est un plan , on approxime en 2d
-        //-- sur cette surface et on remonte les points 2d en 3d.
+
+        Standard_Boolean anApprox = myApprox;
+        Standard_Boolean anApprox1 = myApprox1;
+        Standard_Boolean anApprox2 = myApprox2;
         GeomAbs_SurfaceType typs1, typs2;
         typs1 = myHS1->GetType();
         typs2 = myHS2->GetType();
+
+        if (typs1 == GeomAbs_Plane) {
+          anApprox = Standard_False;
+          anApprox1 = Standard_True;
+        }
+        else if (typs2 == GeomAbs_Plane) {
+          anApprox = Standard_False;
+          anApprox2 = Standard_True;
+        }
+
+        Approx_ParametrizationType aParType = ApproxInt_KnotTools::DefineParType(WL, ifprm, ilprm,
+          anApprox, anApprox1, anApprox2);
+
+        theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, myHS1 != myHS2, aParType);
+
+        //-- lbr : 
+        //-- Si une des surfaces est un plan , on approxime en 2d
+        //-- sur cette surface et on remonte les points 2d en 3d.
         //
         if(typs1 == GeomAbs_Plane) { 
           theapp3d.Perform(myHS1, myHS2, WL, Standard_False,
@@ -646,12 +666,7 @@ void GeomInt_IntSS::MakeCurve(const Standard_Integer Index,
             if ((typs1==GeomAbs_BezierSurface || typs1==GeomAbs_BSplineSurface) &&
               (typs2==GeomAbs_BezierSurface || typs2==GeomAbs_BSplineSurface)) {
 
-                theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_True);
-                //Standard_Boolean bUseSurfaces;
-                //bUseSurfaces=NotUseSurfacesForApprox(myFace1, myFace2, WL, ifprm,  ilprm);
-                //if (bUseSurfaces) {
-                //theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, Standard_False);
-                //}
+               theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, Standard_True, aParType);
             }
           }
           //
