@@ -275,14 +275,7 @@ namespace BVH
       if (Size (theArray) == theCount)
       {
 #ifdef _STD_VECTOR_SHRINK
-
-#if(defined(_MSC_VER) && (_MSC_VER < 1600))
-        BVH_ArrayNt aTmpArray(theArray);
-        theArray.swap(aTmpArray);
-#else
         theArray.shrink_to_fit();
-#endif
-
 #endif
       }
       else

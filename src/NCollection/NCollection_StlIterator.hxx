@@ -28,8 +28,8 @@
 template<class Category, class BaseIterator, class ItemType, bool IsConstant>
 class NCollection_StlIterator :
   public std::iterator<Category, ItemType, ptrdiff_t,
-                       typename opencascade::std::conditional<IsConstant, const ItemType*, ItemType*>::type,
-                       typename opencascade::std::conditional<IsConstant, const ItemType&, ItemType&>::type>
+                       typename std::conditional<IsConstant, const ItemType*, ItemType*>::type,
+                       typename std::conditional<IsConstant, const ItemType&, ItemType&>::type>
 {
 public:
 
@@ -71,13 +71,13 @@ protected: //! @name methods related to forward STL iterator
   // an appropriate method based on template arguments (at instantiation time).
 
   template<bool Condition>
-  typename opencascade::std::enable_if<!Condition, ItemType&>::type Reference() const
+  typename std::enable_if<!Condition, ItemType&>::type Reference() const
   {
     return myIterator.ChangeValue();
   }
 
   template<bool Condition>
-  typename opencascade::std::enable_if<Condition, const ItemType&>::type Reference() const
+  typename std::enable_if<Condition, const ItemType&>::type Reference() const
   {
     return myIterator.Value();
   }

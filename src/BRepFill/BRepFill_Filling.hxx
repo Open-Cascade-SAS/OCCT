@@ -183,7 +183,7 @@ private:
 
 private:
 
-  opencascade::std::shared_ptr<GeomPlate_BuildPlateSurface> myBuilder;
+  std::shared_ptr<GeomPlate_BuildPlateSurface> myBuilder;
   BRepFill_SequenceOfEdgeFaceAndOrder myBoundary;
   BRepFill_SequenceOfEdgeFaceAndOrder myConstraints;
   BRepFill_SequenceOfFaceAndOrder myFreeConstraints;

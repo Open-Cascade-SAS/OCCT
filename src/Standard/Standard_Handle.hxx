@@ -70,13 +70,11 @@ namespace opencascade {
       BeginScope();
     }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Move constructor
     handle (handle&& theHandle) : entity(theHandle.entity)
     {
       theHandle.entity = 0;
     }
-#endif
 
     //! Destructor
     ~handle ()
@@ -113,14 +111,12 @@ namespace opencascade {
       return *this;
     }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Move operator
     handle& operator= (handle&& theHandle)
     {
       std::swap (this->entity, theHandle.entity);
       return *this;
     }
-#endif
 
     //! STL-like cast to pointer to referred object (note non-const).
     //! @sa std::shared_ptr::get()
@@ -307,7 +303,6 @@ namespace opencascade {
       BeginScope();
     }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Generalized move constructor
     template <class T2>
     handle (handle<T2>&& theHandle, typename std::enable_if <is_base_but_not_same <T, T2>::value>::type* = nullptr)
@@ -315,7 +310,6 @@ namespace opencascade {
     {
       theHandle.entity = 0;
     }
-#endif
 
     //! Generalized assignment operator.
     template <class T2>
@@ -327,7 +321,6 @@ namespace opencascade {
       return *this;
     }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
     //! Generalized move operator
     template <class T2>
     handle& operator= (handle<T2>&& theHandle)
@@ -337,7 +330,6 @@ namespace opencascade {
       std::swap (this->entity, theHandle.entity);
       return *this;
     }
-#endif
 
 #else
 

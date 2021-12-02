@@ -185,9 +185,9 @@ private:
   //! Standard_Utf16Char on Windows and to Standard_Utf32Char on Linux.
   template <typename TypeChar>
   class CharTypeChooser : 
-    public   opencascade::std::conditional< sizeof(TypeChar) == 1, Standard_Utf8Char,
-    typename opencascade::std::conditional< sizeof(TypeChar) == 2, Standard_Utf16Char,
-    typename opencascade::std::conditional< sizeof(TypeChar) == 4, Standard_Utf32Char, void >::type >::type >
+    public   std::conditional< sizeof(TypeChar) == 1, Standard_Utf8Char,
+    typename std::conditional< sizeof(TypeChar) == 2, Standard_Utf16Char,
+    typename std::conditional< sizeof(TypeChar) == 4, Standard_Utf32Char, void >::type >::type >
   {
   };
 

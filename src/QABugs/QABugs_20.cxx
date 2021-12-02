@@ -2408,7 +2408,7 @@ static Standard_Integer OCC28887 (Draw_Interpretor&, Standard_Integer theNbArgs,
   Handle(NCollection_Buffer) aBuffer;
   {
     const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFilePath, std::ios::binary | std::ios::in);
+    std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFilePath, std::ios::binary | std::ios::in);
     if (aFile.get() == NULL)
     {
       std::cout << "Error: input file '" << aFilePath << "' cannot be read\n";

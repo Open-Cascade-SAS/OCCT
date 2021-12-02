@@ -179,11 +179,7 @@ protected:
     }
 
   private:
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<IteratorInterface> myPtr;
-#else
     std::unique_ptr<IteratorInterface> myPtr;
-#endif
   };
 
   //! Interface class representing functor object.

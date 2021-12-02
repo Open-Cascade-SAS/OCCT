@@ -176,7 +176,6 @@ public:
     Assign (theOther);
   }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
   NCollection_Array1 (NCollection_Array1&& theOther)
   : myLowerBound (theOther.myLowerBound),
@@ -186,7 +185,6 @@ public:
   {
     theOther.myDeletable  = false;
   }
-#endif
 
   //! C array-based constructor.
   //!
@@ -311,13 +309,11 @@ public:
     return Assign (theOther);
   }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move assignment operator; @sa Move()
   NCollection_Array1& operator= (NCollection_Array1&& theOther)
   {
     return Move (theOther);
   }
-#endif
 
   //! @return first element
   const TheItemType& First() const

@@ -2758,7 +2758,7 @@ static Standard_Integer OCC29935(Draw_Interpretor& ,
   // Generate data;
   Standard_Integer aSize = Draw::Atoi (theArgv[1]);
 
-  opencascade::std::mt19937 aGen (42);
+  std::mt19937 aGen (42);
   NCollection_Array2<double> aMat1     (0, aSize - 1, 0, aSize - 1);
   NCollection_Array2<double> aMat2     (0, aSize - 1, 0, aSize - 1);
   NCollection_Array2<double> aMatResRef(0, aSize - 1, 0, aSize - 1);

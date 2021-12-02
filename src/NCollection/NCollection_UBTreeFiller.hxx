@@ -128,10 +128,10 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
  private:
   // ---------- PRIVATE FIELDS ----------
 
-  UBTree&                               myTree;
-  NCollection_Vector<ObjBnd>            mySeqPtr;
-  opencascade::std::mt19937             myRandGen;      //!< random number generator
-  Standard_Boolean                      myIsFullRandom;
+  UBTree&                    myTree;
+  NCollection_Vector<ObjBnd> mySeqPtr;
+  std::mt19937               myRandGen;      //!< random number generator
+  Standard_Boolean           myIsFullRandom;
 };
 
 //=======================================================================

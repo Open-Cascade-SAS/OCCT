@@ -92,7 +92,7 @@ static Standard_Integer save (Draw_Interpretor& theDI,
 
   const char* aName = theArgVec[2];
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (aName, std::ios::out);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (aName, std::ios::out);
   aStream->precision (15);
   if (aStream.get() == NULL || !aStream->good())
   {
@@ -145,7 +145,7 @@ static Standard_Integer restore (Draw_Interpretor& theDI,
   const char* aVarName  = theArgVec[2];
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aFileName, std::ios::in);
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aFileName, std::ios::in);
   if (aStream.get() == NULL)
   {
     theDI << "Error: cannot open file for reading: '" << aFileName << "'";

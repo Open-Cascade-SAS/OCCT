@@ -180,7 +180,7 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
     if (anUseStream)
     {
       const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (path, std::ios::in | std::ios::binary);
+      std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (path, std::ios::in | std::ios::binary);
 
       theStatus = A->Open (*aFileStream, D, aFilter, aProgress->Start());
     }
@@ -298,7 +298,7 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     if (anUseStream)
     {
       const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      opencascade::std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (path, std::ios::out | std::ios::binary);
+      std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (path, std::ios::out | std::ios::binary);
       theStatus = A->SaveAs (D, *aFileStream, aProgress->Start());
     }
     else

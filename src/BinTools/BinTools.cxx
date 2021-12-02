@@ -215,7 +215,7 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape,
                                   const Message_ProgressRange& theRange)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out | std::ios::binary);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out | std::ios::binary);
   aStream->precision (15);
   if (aStream.get() == NULL || !aStream->good())
     return Standard_False;
@@ -234,7 +234,7 @@ Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString 
                                  const Message_ProgressRange& theRange)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
     return Standard_False;

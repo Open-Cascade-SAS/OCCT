@@ -789,13 +789,8 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     radius = Max(dis, radiusspine);
     locfleche = radius*1.e-2; //graphic criterion
 
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
     std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
@@ -886,13 +881,8 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
     radius = Max(radius, radiusspine);
     locfleche = radius*1.e-2; //graphic criterion
 
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
     std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
@@ -1202,11 +1192,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Standard_Real dis;
     chsp->GetDist(dis);
     
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
@@ -1274,11 +1260,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
     Standard_Real dis1, dis2;
     chsp->Dists(dis1, dis2);
     
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
@@ -1493,13 +1475,8 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
 
   if (chsp->IsChamfer() == ChFiDS_Sym) {
     
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
     std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));
@@ -1527,13 +1504,8 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
     Standard_Real d1, d2;
     chsp->Dists(d1,d2);
     
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<BlendFunc_GenChamfer>  pFunc;
-    std::auto_ptr<BlendFunc_GenChamfInv> pFInv;
-#else
     std::unique_ptr<BlendFunc_GenChamfer>  pFunc;
     std::unique_ptr<BlendFunc_GenChamfInv> pFInv;
-#endif  
     if (chsp->Mode() == ChFiDS_ClassicChamfer)
     {
       pFunc.reset(new BRepBlend_Chamfer(S1,S2,HGuide));

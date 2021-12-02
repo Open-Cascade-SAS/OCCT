@@ -154,7 +154,7 @@ bool RWGltf_TriangulationReader::readFileData (const Handle(RWGltf_GltfLatePrimi
                                                const Handle(OSD_FileSystem)& theFileSystem) const
 {
   const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream
+  std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream
     (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
   if (aSharedStream.get() == NULL)
   {
@@ -215,7 +215,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePr
 {
   const TCollection_AsciiString& aName = theSourceGltfMesh->Id();
   const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
+  std::shared_ptr<std::istream> aSharedStream = aFileSystem->OpenIStream (theGltfData.StreamUri, std::ios::in | std::ios::binary, theGltfData.StreamOffset);
   if (aSharedStream.get() == NULL)
   {
     reportError (TCollection_AsciiString("Buffer '") + aName + "' refers to invalid file '" + theGltfData.StreamUri + "'.");

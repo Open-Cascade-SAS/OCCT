@@ -176,7 +176,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
   myFileName = theFileName;
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (myFileName, std::ios::in);
+  std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (myFileName, std::ios::in);
 
   if (aFileStream.get() != NULL && aFileStream->good())
   {

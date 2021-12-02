@@ -99,8 +99,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
   myFileName = theFileName;
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (theFileName, std::ios::out);
-
+  std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (theFileName, std::ios::out);
   if (aFileStream.get() != NULL && aFileStream->good())
   {
     Write (theDocument, *aFileStream, theRange);

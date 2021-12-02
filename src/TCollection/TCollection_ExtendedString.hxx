@@ -97,7 +97,6 @@ public:
   //! Initializes a ExtendedString with another ExtendedString.
   Standard_EXPORT TCollection_ExtendedString(const TCollection_ExtendedString& astring);
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
   TCollection_ExtendedString (TCollection_ExtendedString&& theOther)
   : mystring (theOther.mystring),
@@ -106,7 +105,6 @@ public:
     theOther.mystring = NULL;
     theOther.mylength = 0;
   }
-#endif
 
   //! Creation by converting an Ascii string to an extended
   //! string. The string is treated as having UTF-8 coding.
@@ -154,10 +152,8 @@ void operator = (const TCollection_ExtendedString& fromwhere)
   //! Exchange the data of two strings (without reallocating memory).
   Standard_EXPORT void Swap (TCollection_ExtendedString& theOther);
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move assignment operator
   TCollection_ExtendedString& operator= (TCollection_ExtendedString&& theOther) { Swap (theOther); return *this; }
-#endif
 
   //! Frees memory allocated by ExtendedString.
   Standard_EXPORT ~TCollection_ExtendedString();

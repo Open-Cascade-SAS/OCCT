@@ -638,7 +638,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
   };
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aMatFile, anObjFile, aHtmlFile;
+  std::shared_ptr<std::ostream> aMatFile, anObjFile, aHtmlFile;
   if (aDumpFile.EndsWith (".obj")
    || aDumpFile.EndsWith (".mtl"))
   {
@@ -894,7 +894,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
   }
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aHtmlFile;
+  std::shared_ptr<std::ostream> aHtmlFile;
   TCollection_AsciiString aFileNameBase, aFolder;
   if (aDumpFile.EndsWith (".htm")
    || aDumpFile.EndsWith (".html"))
@@ -1088,7 +1088,7 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
   }
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aFile = aFileSystem->OpenOStream (aFilePath, std::ios::out | std::ios::trunc);
+  std::shared_ptr<std::ostream> aFile = aFileSystem->OpenOStream (aFilePath, std::ios::out | std::ios::trunc);
 
   if (aFile.get() == NULL || !aFile->good())
   {

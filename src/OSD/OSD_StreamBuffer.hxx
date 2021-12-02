@@ -29,7 +29,7 @@ public:
 
   //! Main constructor.
   OSD_StreamBuffer (const std::string& theUrl,
-                    const opencascade::std::shared_ptr<std::streambuf>& theBuffer)
+                    const std::shared_ptr<std::streambuf>& theBuffer)
   : T (theBuffer.get()), myUrl (theUrl), myBuffer (theBuffer) {}
 
   //! Return an opened URL.
@@ -37,8 +37,8 @@ public:
 
 protected:
 
-  std::string                                  myUrl;
-  opencascade::std::shared_ptr<std::streambuf> myBuffer;
+  std::string                     myUrl;
+  std::shared_ptr<std::streambuf> myBuffer;
 };
 
 typedef OSD_StreamBuffer<std::istream>  OSD_IStreamBuffer;

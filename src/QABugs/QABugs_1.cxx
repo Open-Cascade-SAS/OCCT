@@ -460,7 +460,7 @@ static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs
   else
   {
     const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (anImgPath, std::ios::in | std::ios::binary);
+    std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (anImgPath, std::ios::in | std::ios::binary);
     if (aFile.get() == NULL)
     {
       std::cout << "Syntax error: image file '" << anImgPath << "' cannot be found\n";

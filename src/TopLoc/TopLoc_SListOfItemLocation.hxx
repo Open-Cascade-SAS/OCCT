@@ -69,8 +69,6 @@ public:
     return Assign(Other);
   }
   
-#ifndef OCCT_NO_RVALUE_REFERENCE
-
   //! Move constructor
   TopLoc_SListOfItemLocation (TopLoc_SListOfItemLocation&& theOther)
     : myNode(std::move (theOther.myNode))
@@ -83,8 +81,6 @@ public:
     myNode = std::move (theOther.myNode);
     return *this;
   }
-
-#endif
 
   //! Returne true if this list is empty
   Standard_Boolean IsEmpty() const

@@ -157,7 +157,7 @@ Handle(Poly_Triangulation) RWStl::ReadBinary (const OSD_Path& theFile,
   theFile.SystemName (aPath);
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
     return Handle(Poly_Triangulation)();

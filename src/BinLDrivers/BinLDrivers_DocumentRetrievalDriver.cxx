@@ -78,7 +78,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
                           const Message_ProgressRange&      theRange)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (theFileName, std::ios::in | std::ios::binary);
+  std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (theFileName, std::ios::in | std::ios::binary);
 
   if (aFileStream.get() != NULL && aFileStream->good())
   {

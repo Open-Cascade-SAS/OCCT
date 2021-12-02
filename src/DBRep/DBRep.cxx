@@ -1580,7 +1580,7 @@ static Standard_Integer readbrep (Draw_Interpretor& theDI,
   {
     // probe file header to recognize format
     const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFileName, std::ios::in | std::ios::binary);
+    std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (aFileName, std::ios::in | std::ios::binary);
     if (aFile.get() == NULL)
     {
       theDI << "Error: cannot read the file '" << aFileName << "'";

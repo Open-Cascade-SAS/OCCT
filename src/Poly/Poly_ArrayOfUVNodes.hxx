@@ -84,7 +84,6 @@ public:
   //! Assignment operator; @sa Assign()
   Poly_ArrayOfUVNodes& operator= (const Poly_ArrayOfUVNodes& theOther) { return Assign (theOther); }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
   Poly_ArrayOfUVNodes (Poly_ArrayOfUVNodes&& theOther)
   : NCollection_AliasedArray (std::move (theOther))
@@ -97,7 +96,6 @@ public:
   {
     return Move (theOther);
   }
-#endif
 
 public:
 

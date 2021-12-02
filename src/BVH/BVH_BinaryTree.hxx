@@ -215,21 +215,21 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
   {
     const std::pair<int, int> aNode = aQueue.front();
 
-    BVH::Array<T, N>::Append (aQBVH->myMinPointBuffer, BVH::Array<T, N>::Value (this->myMinPointBuffer, opencascade::std::get<0> (aNode)));
-    BVH::Array<T, N>::Append (aQBVH->myMaxPointBuffer, BVH::Array<T, N>::Value (this->myMaxPointBuffer, opencascade::std::get<0> (aNode)));
+    BVH::Array<T, N>::Append (aQBVH->myMinPointBuffer, BVH::Array<T, N>::Value (this->myMinPointBuffer, std::get<0> (aNode)));
+    BVH::Array<T, N>::Append (aQBVH->myMaxPointBuffer, BVH::Array<T, N>::Value (this->myMaxPointBuffer, std::get<0> (aNode)));
 
     BVH_Vec4i aNodeInfo;
-    if (this->IsOuter (opencascade::std::get<0> (aNode))) // is leaf node
+    if (this->IsOuter (std::get<0> (aNode))) // is leaf node
     {
       aNodeInfo = BVH_Vec4i (1 /* leaf flag */,
-        this->BegPrimitive (opencascade::std::get<0> (aNode)), this->EndPrimitive (opencascade::std::get<0> (aNode)), opencascade::std::get<1> (aNode) /* level */);
+        this->BegPrimitive (std::get<0> (aNode)), this->EndPrimitive (std::get<0> (aNode)), std::get<1> (aNode) /* level */);
     }
     else
     {
       NCollection_Vector<int> aGrandChildNodes;
 
-      const int aLftChild = Child<0> (opencascade::std::get<0> (aNode));
-      const int aRghChild = Child<1> (opencascade::std::get<0> (aNode));
+      const int aLftChild = Child<0> (std::get<0> (aNode));
+      const int aRghChild = Child<1> (std::get<0> (aNode));
       if (this->IsOuter (aLftChild)) // is leaf node
       {
         aGrandChildNodes.Append (aLftChild);
@@ -252,13 +252,13 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
 
       for (int aNodeIdx = 0; aNodeIdx < aGrandChildNodes.Size(); ++aNodeIdx)
       {
-        aQueue.push_back (std::make_pair (aGrandChildNodes (aNodeIdx), opencascade::std::get<1> (aNode) + 1));
+        aQueue.push_back (std::make_pair (aGrandChildNodes (aNodeIdx), std::get<1> (aNode) + 1));
       }
 
       aNodeInfo = BVH_Vec4i (0 /* inner flag */,
-        aNbNodes, aGrandChildNodes.Size() - 1, opencascade::std::get<1> (aNode) /* level */);
+        aNbNodes, aGrandChildNodes.Size() - 1, std::get<1> (aNode) /* level */);
 
-      aQBVH->myDepth = Max (aQBVH->myDepth, opencascade::std::get<1> (aNode) + 1);
+      aQBVH->myDepth = Max (aQBVH->myDepth, std::get<1> (aNode) + 1);
 
       aNbNodes += aGrandChildNodes.Size();
     }

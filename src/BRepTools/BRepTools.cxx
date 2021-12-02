@@ -712,7 +712,7 @@ Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
                                     const Message_ProgressRange& theProgress)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out);
   if (aStream.get() == NULL || !aStream->good())
   {
     return Standard_False;
@@ -754,7 +754,7 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
                                  const Message_ProgressRange& theProgress)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (File, std::ios::in);
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (File, std::ios::in);
   if (aStream.get() == NULL)
   {
     return Standard_False;

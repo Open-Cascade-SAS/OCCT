@@ -33,37 +33,6 @@ namespace opencascade
     // import all available standard stuff from std namespace
     using namespace ::std;
 
-// for old MSVC compiler, some standard templates are defined in std::tr1 namespace,
-// and some missing ones are implemented here
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    using namespace ::std::tr1;
-
-    // C++11 template class enable_if
-    template <bool Test, class Type = void>
-    struct enable_if
-    { // type is undefined for assumed !_Test
-    };
-
-    template <class _Type>
-    struct enable_if<true, _Type>
-    { // type is _Type for _Test
-      typedef _Type type;
-    };
-
-    template <bool Condition, typename TypeTrue, typename TypeFalse>
-    struct conditional
-    {
-      typedef TypeTrue type;
-    };
-
-    template <typename TypeTrue, typename TypeFalse>
-    struct conditional<false, TypeTrue, TypeFalse>
-    {
-      typedef TypeFalse type;
-    };
-
-#endif
-
   } // namespace std
 
   //! Trait yielding true if class T1 is base of T2 but not the same

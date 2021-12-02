@@ -400,7 +400,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   myBinDataLen64 = 0;
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aBinFile = aFileSystem->OpenOStream (myBinFileNameFull, std::ios::out | std::ios::binary);
+  std::shared_ptr<std::ostream> aBinFile = aFileSystem->OpenOStream (myBinFileNameFull, std::ios::out | std::ios::binary);
   if (aBinFile.get() == NULL
    || !aBinFile->good())
   {
@@ -707,7 +707,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
 
   const TCollection_AsciiString aFileNameGltf = myFile;
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aGltfContentFile = aFileSystem->OpenOStream (aFileNameGltf, std::ios::out | std::ios::binary);
+  std::shared_ptr<std::ostream> aGltfContentFile = aFileSystem->OpenOStream (aFileNameGltf, std::ios::out | std::ios::binary);
   if (aGltfContentFile.get() == NULL
    || !aGltfContentFile->good())
   {
@@ -827,7 +827,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   if (aFullLen64 < std::numeric_limits<uint32_t>::max())
   {
     {
-      opencascade::std::shared_ptr<std::istream> aBinFile = aFileSystem->OpenIStream (myBinFileNameFull, std::ios::in | std::ios::binary);
+      std::shared_ptr<std::istream> aBinFile = aFileSystem->OpenIStream (myBinFileNameFull, std::ios::in | std::ios::binary);
       if (aBinFile.get() == NULL || !aBinFile->good())
       {
         Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' cannot be opened");

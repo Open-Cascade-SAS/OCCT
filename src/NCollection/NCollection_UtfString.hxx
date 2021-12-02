@@ -80,10 +80,8 @@ public:
   //! @param theCopy string to copy.
   NCollection_UtfString (const NCollection_UtfString& theCopy);
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
   NCollection_UtfString (NCollection_UtfString&& theOther);
-#endif
 
   //! Copy constructor from UTF-8 string.
   //! @param theCopyUtf8 UTF-8 string to copy
@@ -209,10 +207,8 @@ public: //! @name assign operators
   //! Copy from another string.
   const NCollection_UtfString& operator= (const NCollection_UtfString& theOther) { return Assign (theOther); }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move assignment operator.
   NCollection_UtfString& operator= (NCollection_UtfString&& theOther) { Swap (theOther); return *this; }
-#endif
 
   //! Copy from UTF-8 NULL-terminated string.
   const NCollection_UtfString& operator= (const char* theStringUtf8);

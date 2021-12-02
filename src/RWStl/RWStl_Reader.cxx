@@ -140,7 +140,7 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
                                      const Message_ProgressRange& theProgress)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
   if (aStream.get() == NULL)
   {
     Message::SendFail (TCollection_AsciiString("Error: file '") + theFile + "' is not found");

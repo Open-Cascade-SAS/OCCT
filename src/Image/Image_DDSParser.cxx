@@ -68,7 +68,7 @@ Handle(Image_CompressedPixMap) Image_DDSParser::Load (const Handle(Image_Support
                                                       const int64_t theFileOffset)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
+  std::shared_ptr<std::istream> aFile = aFileSystem->OpenIStream (theFile, std::ios::in | std::ios::binary);
   char aHeader[128] = {};
   if (aFile.get() == NULL || !aFile->good())
   {

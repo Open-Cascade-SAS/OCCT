@@ -208,7 +208,7 @@ static Standard_Integer saveModel (Draw_Interpretor& di, Standard_Integer argc, 
     if (anUseStream)
     {
       const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      opencascade::std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (argv[2], std::ios::out | std::ios::binary);
+      std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (argv[2], std::ios::out | std::ios::binary);
       isSaved = aModel->SaveAs (*aFileStream);
     }
     else
@@ -252,7 +252,7 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
     if (anUseStream)
     {
       const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-      opencascade::std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
+      std::shared_ptr<std::istream> aFileStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
       isLoaded = aModel->Load (*aFileStream);
     }
     else

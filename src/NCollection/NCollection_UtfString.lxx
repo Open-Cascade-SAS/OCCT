@@ -90,7 +90,6 @@ NCollection_UtfString<Type>::NCollection_UtfString (const NCollection_UtfString&
   strCopy ((Standard_Byte* )myString, (const Standard_Byte* )theCopy.myString, mySize);
 }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
 // =======================================================================
 // function : NCollection_UtfString
 // purpose  :
@@ -105,7 +104,6 @@ NCollection_UtfString<Type>::NCollection_UtfString (NCollection_UtfString&& theO
   theOther.mySize   = 0;
   theOther.myLength = 0;
 }
-#endif
 
 // =======================================================================
 // function : NCollection_UtfString

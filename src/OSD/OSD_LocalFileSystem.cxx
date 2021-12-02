@@ -31,9 +31,9 @@ Standard_Boolean OSD_LocalFileSystem::IsSupportedPath (const TCollection_AsciiSt
 // function : IsOpenIStream
 // purpose :
 //=======================================================================
-Standard_Boolean OSD_LocalFileSystem::IsOpenIStream (const opencascade::std::shared_ptr<std::istream>& theStream) const
+Standard_Boolean OSD_LocalFileSystem::IsOpenIStream (const std::shared_ptr<std::istream>& theStream) const
 {
-  opencascade::std::shared_ptr<OSD_IStreamBuffer> aFileStream = opencascade::std::dynamic_pointer_cast<OSD_IStreamBuffer> (theStream);
+  std::shared_ptr<OSD_IStreamBuffer> aFileStream = std::dynamic_pointer_cast<OSD_IStreamBuffer> (theStream);
   if (aFileStream.get() == NULL)
   {
     return false;
@@ -46,9 +46,9 @@ Standard_Boolean OSD_LocalFileSystem::IsOpenIStream (const opencascade::std::sha
 // function : IsOpenOStream
 // purpose :
 //=======================================================================
-Standard_Boolean OSD_LocalFileSystem::IsOpenOStream (const opencascade::std::shared_ptr<std::ostream>& theStream) const
+Standard_Boolean OSD_LocalFileSystem::IsOpenOStream (const std::shared_ptr<std::ostream>& theStream) const
 {
-  opencascade::std::shared_ptr<OSD_OStreamBuffer> aFileStream = opencascade::std::dynamic_pointer_cast<OSD_OStreamBuffer> (theStream);
+  std::shared_ptr<OSD_OStreamBuffer> aFileStream = std::dynamic_pointer_cast<OSD_OStreamBuffer> (theStream);
   if (aFileStream.get() == NULL)
   {
     return false;
@@ -61,16 +61,16 @@ Standard_Boolean OSD_LocalFileSystem::IsOpenOStream (const opencascade::std::sha
 // function : OpenStreamBuffer
 // purpose :
 //=======================================================================
-opencascade::std::shared_ptr<std::streambuf> OSD_LocalFileSystem::OpenStreamBuffer (const TCollection_AsciiString& theUrl,
-                                                                                    const std::ios_base::openmode theMode,
-                                                                                    const int64_t theOffset,
-                                                                                    int64_t* theOutBufSize)
+std::shared_ptr<std::streambuf> OSD_LocalFileSystem::OpenStreamBuffer (const TCollection_AsciiString& theUrl,
+                                                                       const std::ios_base::openmode theMode,
+                                                                       const int64_t theOffset,
+                                                                       int64_t* theOutBufSize)
 {
   Standard_ASSERT_RAISE (theOffset >= 0, "Incorrect negative stream position during stream buffer opening");
-  opencascade::std::shared_ptr<std::filebuf> aNewBuf(new std::filebuf());
+  std::shared_ptr<std::filebuf> aNewBuf(new std::filebuf());
   if (!OSD_OpenStream (*aNewBuf, TCollection_ExtendedString(theUrl), theMode))
   {
-    return opencascade::std::shared_ptr<std::streambuf>();
+    return std::shared_ptr<std::streambuf>();
   }
   // if buffer is opened for read, find the file size
   if (theOutBufSize && ((theMode & std::ios::in) != 0))
@@ -79,13 +79,13 @@ opencascade::std::shared_ptr<std::streambuf> OSD_LocalFileSystem::OpenStreamBuff
     if (aNewBuf->pubseekoff ((std::streamoff )theOffset, std::ios_base::beg, std::ios_base::in) < 0)
     {
       *theOutBufSize = 0;
-      return opencascade::std::shared_ptr<std::streambuf>();
+      return std::shared_ptr<std::streambuf>();
     }
   }
   else if (theOffset > 0 && aNewBuf->pubseekoff ((std::streamoff )theOffset, std::ios_base::beg,
            (theMode & std::ios::in) != 0 ? std::ios_base::in : std::ios_base::out) < 0)
   {
-    return opencascade::std::shared_ptr<std::streambuf>();
+    return std::shared_ptr<std::streambuf>();
   }
   return aNewBuf;
 }

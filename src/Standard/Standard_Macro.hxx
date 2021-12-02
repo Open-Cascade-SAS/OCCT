@@ -20,13 +20,17 @@
 #ifndef _Standard_Macro_HeaderFile
 # define _Standard_Macro_HeaderFile
 
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+  #error C++11 compatible compiler is required (Visual Studio 2010 or newer)
+#endif
+
 //! @def Standard_OVERRIDE
 //! Should be used in declarations of virtual methods overridden in the
 //! derived classes, to cause compilation error in the case if that virtual 
 //! function disappears or changes its signature in the base class.
 //!
 //! Expands to C++11 keyword "override" on compilers that are known to
-//! suppot it; empty in other cases.
+//! support it; empty in other cases.
 #if defined(__cplusplus) && (__cplusplus >= 201100L)
   // part of C++11 standard
   #define Standard_OVERRIDE override
@@ -181,13 +185,6 @@
 #else
   #define Standard_DISABLE_DEPRECATION_WARNINGS
   #define Standard_ENABLE_DEPRECATION_WARNINGS
-#endif
-
-//! @def OCCT_NO_RVALUE_REFERENCE
-//! Disables methods and constructors that use rvalue references
-//! (C++11 move semantics) not supported by obsolete compilers.
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-  #define OCCT_NO_RVALUE_REFERENCE
 #endif
 
 # ifdef _WIN32

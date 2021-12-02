@@ -359,11 +359,7 @@ void BoundedArc (const TheArc& A,
     Standard_Boolean IsIntCSdone = Standard_False;
     TColStd_SequenceOfReal Params;
     
-#if (defined(_MSC_VER) && (_MSC_VER < 1600))
-    std::auto_ptr<math_FunctionAllRoots>  pSol;
-#else
     std::unique_ptr<math_FunctionAllRoots> pSol;
-#endif  
     
     math_FunctionSample Echant(Pdeb,Pfin,NbEchant);
 

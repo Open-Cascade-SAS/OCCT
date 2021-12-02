@@ -126,7 +126,6 @@ public:
     *this = theOther;
   }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move constructor
   NCollection_Array2 (NCollection_Array2&& theOther)
   : myLowerRow (theOther.myLowerRow),
@@ -141,7 +140,6 @@ public:
     theOther.myData  = NULL;
     theOther.myDeletable = false;
   }
-#endif
 
   //! C array-based constructor
   NCollection_Array2(const TheItemType&     theBegin,
@@ -256,13 +254,11 @@ public:
     return Assign (theOther);
   }
 
-#ifndef OCCT_NO_RVALUE_REFERENCE
   //! Move assignment operator; @sa Move()
   NCollection_Array2& operator= (NCollection_Array2&& theOther)
   {
     return Move (theOther);
   }
-#endif
 
   //! Constant value access
   const TheItemType& Value (const Standard_Integer theRow,

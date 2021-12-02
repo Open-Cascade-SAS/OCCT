@@ -75,7 +75,7 @@ void BinLDrivers_DocumentStorageDriver::Write
   myFileName = theFileName;
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  opencascade::std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (theFileName, std::ios::out | std::ios::binary);
+  std::shared_ptr<std::ostream> aFileStream = aFileSystem->OpenOStream (theFileName, std::ios::out | std::ios::binary);
 
   if (aFileStream.get() != NULL && aFileStream->good())
   {

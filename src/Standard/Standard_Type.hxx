@@ -63,11 +63,6 @@ namespace opencascade
   static_assert(opencascade::has_type<Base, direct_base_classes>::type::value, "OCCT RTTI definition is incorrect: " #Base " is not direct base class of " #Class); \
   static_assert(&get_type_name == &Class::get_type_name, "OCCT RTTI definition is misplaced: current class is not " #Class);
 
-#elif (defined(_MSC_VER) && (_MSC_VER < 1600))
-
-// VC9 does not support static_assert and decltype at all
-#define OCCT_CHECK_BASE_CLASS(Class,Base)
-
 #elif (defined(_MSC_VER) && (_MSC_VER >= 1900))
 
 // VC14+ allow using address of member functions in static checks,

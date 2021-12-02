@@ -360,8 +360,7 @@ protected:
   RWMesh_CoordinateSystemConverter              myCSTrsf;            //!< transformation from OCCT to glTF coordinate system
   XCAFPrs_Style                                 myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
 
-  opencascade::std::shared_ptr<RWGltf_GltfOStreamWriter>
-                                                myWriter;            //!< JSON writer
+  std::shared_ptr<RWGltf_GltfOStreamWriter>     myWriter;            //!< JSON writer
   Handle(RWGltf_GltfMaterialMap)                myMaterialMap;       //!< map of defined materials
   RWGltf_GltfBufferView                         myBuffViewPos;       //!< current buffer view with nodes positions
   RWGltf_GltfBufferView                         myBuffViewNorm;      //!< current buffer view with nodes normals
