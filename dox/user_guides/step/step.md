@@ -182,7 +182,9 @@ By default this value is 0.0001.
 The value given to this parameter is a basic value for ShapeHealing algorithms and the processor. It does its best to reach it. Under certain circumstances, the value you give may not be attached to all of the entities concerned at the end of processing. STEP-to-OpenCASCADE translation does not improve the quality of the geometry in the original STEP file. This means that the value you enter may be impossible to attach to all shapes with the given quality of the geometry in the STEP file. 
 
 <h4>read.maxprecision.val</h4>
-Defines the maximum allowed tolerance (in mm) of the shape. It should be not less than the basic value of tolerance set in the processor (either the uncertainty from the file or *read.precision.val*). Actually, the maximum between *read.maxprecision.val* and the basis tolerance is used to define the maximum allowed tolerance. 
+Defines the maximum allowed tolerance (in internal units, which are specified in xstep.cascade.unit) of the shape.
+It should be not less than the basic value of tolerance set in the processor (either the uncertainty from the file or *read.precision.val*).
+Actually, the maximum between *read.maxprecision.val* and the basis tolerance is used to define the maximum allowed tolerance. 
 
 Read this parameter with: 
 ~~~~{.cpp}
