@@ -106,7 +106,6 @@ public:
 
   Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine, const Standard_Integer ideb, const Standard_Integer ifin, const Standard_Boolean onFirst);
 
-
 protected:
 
   

@@ -32,8 +32,8 @@ while { $AllowRepeat != 0 } {
       puts "Error: Wrong curve's range!"
     }
     
-    xdistcs res_$ic s1 U1 U2 100 2.0e-7
-    xdistcs res_$ic s2 U1 U2 100 2.0e-7
+    xdistcs res_$ic s1 U1 U2 100 6.0e-7
+    xdistcs res_$ic s2 U1 U2 100 6.0e-7
     
     mkedge ee res_$ic
     baddobjects ee

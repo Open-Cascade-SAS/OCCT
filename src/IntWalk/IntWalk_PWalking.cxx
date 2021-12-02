@@ -2316,10 +2316,65 @@ Standard_Boolean IntWalk_PWalking::HandleSingleSingularPoint(const Handle(Adapto
       if (anInt.IsEmpty())
         continue;
 
-      anInt.Point().Parameters(thePnt(1), thePnt(2), thePnt(3), thePnt(4));
-
+      Standard_Real aPars[4];
+      anInt.Point().Parameters(aPars[0], aPars[1], aPars[2], aPars[3]);
+      Handle(Adaptor3d_Surface) aSurfs[2] = { theASurf1, theASurf2 };
+      //Local resolutions
+      Standard_Real aTol2 = the3DTol * the3DTol;
+      gp_Pnt aP;
+      gp_Vec aDU, aDV;
+      gp_Pnt aPInt;
+      Standard_Integer k;
+      for (k = 0; k < 2; ++k)
+      {
+        Standard_Integer iu, iv;
+        iu = 2*k;
+        iv = iu + 1;
+        aSurfs[k]->D1(aPars[iu], aPars[iv], aPInt, aDU, aDV);
+        Standard_Real aMod = aDU.Magnitude();
+        if (aMod > Precision::Confusion())
+        {
+          Standard_Real aTolU = the3DTol / aMod;
+          if (Abs(aLowBorder[iu] - aPars[iu]) < aTolU)
+          {
+            aP = aSurfs[k]->Value(aLowBorder[iu], aPars[iv]);
+            if (aPInt.SquareDistance(aP) < aTol2)
+              aPars[iu] = aLowBorder[iu];
+          }
+          else if (Abs(aUppBorder[iu] - aPars[iu]) < aTolU)
+          {
+            aP = aSurfs[k]->Value(aUppBorder[iu], aPars[iv]);
+            if (aPInt.SquareDistance(aP) < aTol2)
+              aPars[iu] = aUppBorder[iu];
+          }
+        }
+        aMod = aDV.Magnitude();
+        if (aMod > Precision::Confusion())
+        {
+          Standard_Real aTolV = the3DTol / aMod;
+          if (Abs(aLowBorder[iv] - aPars[iv]) < aTolV)
+          {
+            aP = aSurfs[k]->Value(aPars[iu], aLowBorder[iv]);
+            if (aPInt.SquareDistance(aP) < aTol2)
+              aPars[iv] = aLowBorder[iv];
+          }
+          else if (Abs(aUppBorder[iv] - aPars[iv]) < aTolV)
+          {
+            aP = aSurfs[k]->Value(aPars[iu], aUppBorder[iv]);
+            if (aPInt.SquareDistance(aP) < aTol2)
+              aPars[iv] = aUppBorder[iv];
+          }
+        }
+      }
+      //
+      //
+      Standard_Integer j;
+      for (j = 1; j <= 4; ++j)
+      {
+        thePnt(j) = aPars[j - 1];
+      }
       Standard_Boolean isInDomain = Standard_True;
-      for (Standard_Integer j = 1; isInDomain && (j <= 4); ++j)
+      for (j = 1; isInDomain && (j <= 4); ++j)
       {
         if ((thePnt(j) - aLowBorder[j - 1] + Precision::PConfusion())*
             (thePnt(j) - aUppBorder[j - 1] - Precision::PConfusion()) > 0.0)
@@ -2461,13 +2516,13 @@ Standard_Boolean IntWalk_PWalking::
         {
           break;
         }
-        else if (aPInd == 1)
-        {
-          // After insertion, we will obtain
-          // two coincident points in the line.
-          // Therefore, insertion is forbidden.
-          return isOK;
-        }
+        //else if (aPInd == 1)
+        //{
+        //  // After insertion, we will obtain
+        //  // two coincident points in the line.
+        //  // Therefore, insertion is forbidden.
+        //  return isOK;
+        //}
       }
 
       for (++aPInd; aPInd <= aNbPnts; aPInd++)
@@ -2493,6 +2548,12 @@ Standard_Boolean IntWalk_PWalking::
       RemoveAPoint(1);
     }
 
+    aP1.SetXYZ(line->Value(1).Value().XYZ());
+    if (aP1.SquareDistance(aPInt) <= Precision::SquareConfusion())
+    {
+      RemoveAPoint(1);
+    }
+
     line->InsertBefore(1, anIP);
     isOK = Standard_True;
   }
@@ -2511,13 +2572,13 @@ Standard_Boolean IntWalk_PWalking::
         {
           break;
         }
-        else if (aPInd == aNbPnts)
-        {
-          // After insertion, we will obtain
-          // two coincident points in the line.
-          // Therefore, insertion is forbidden.
-          return isOK;
-        }
+        //else if (aPInd == aNbPnts)
+        //{
+        //  // After insertion, we will obtain
+        //  // two coincident points in the line.
+        //  // Therefore, insertion is forbidden.
+        //  return isOK;
+        //}
       }
 
       for (--aPInd; aPInd > 0; aPInd--)
@@ -2543,7 +2604,14 @@ Standard_Boolean IntWalk_PWalking::
       RemoveAPoint(aNbPnts);
     }
 
+    Standard_Integer aNbPnts = line->NbPoints();
+    aP1.SetXYZ(line->Value(aNbPnts).Value().XYZ());
+    if (aP1.SquareDistance(aPInt) <= Precision::SquareConfusion())
+    {
+      RemoveAPoint(aNbPnts);
+    }
     line->Add(anIP);
+    
     isOK = Standard_True;
   }
 

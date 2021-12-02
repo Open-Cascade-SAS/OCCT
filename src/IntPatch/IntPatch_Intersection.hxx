@@ -133,7 +133,21 @@ public:
   //! Mode for more accurate dumps.
   Standard_EXPORT void Dump (const Standard_Integer Mode, const Handle(Adaptor3d_Surface)& S1, const Handle(Adaptor3d_TopolTool)& D1, const Handle(Adaptor3d_Surface)& S2, const Handle(Adaptor3d_TopolTool)& D2) const;
 
+  //! Checks if surface theS1 has degenerated boundary (dS/du or dS/dv = 0) and
+  //! calculates minimal distance between corresponding singular points and surface theS2
+  //! If singular point exists the method returns "true" and stores minimal distance in theDist.
+  Standard_EXPORT static Standard_Boolean CheckSingularPoints(
+    const Handle(Adaptor3d_Surface)&  theS1,
+    const Handle(Adaptor3d_TopolTool)& theD1,
+    const Handle(Adaptor3d_Surface)&  theS2,
+    Standard_Real& theDist);
 
+  //! Calculates recommended value for myUVMaxStep depending on surfaces and their domains
+  Standard_EXPORT static Standard_Real DefineUVMaxStep(
+    const Handle(Adaptor3d_Surface)&  theS1,
+    const Handle(Adaptor3d_TopolTool)& theD1,
+    const Handle(Adaptor3d_Surface)&  theS2,
+    const Handle(Adaptor3d_TopolTool)& theD2);
 
 
 protected:

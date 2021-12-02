@@ -18,6 +18,7 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <Extrema_ExtPS.hxx>
 
 //=======================================================================
 //function : Perform
@@ -82,7 +83,7 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
 
   Standard_Real TolArc = Tol;
   Standard_Real TolTang = Tol;
-  Standard_Real UVMaxStep = 0.001;
+  Standard_Real UVMaxStep = IntPatch_Intersection::DefineUVMaxStep(myHS1, dom1, myHS2, dom2);
   Standard_Real Deflection = 0.1;
 
   myIntersector.SetTolerances(TolArc,TolTang,UVMaxStep,Deflection);
@@ -184,3 +185,4 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
   StdFail_NotDone_Raise_if(!myIntersector.IsDone(),"GeomInt_IntSS::LineOnS2");
   return slineS2(Index);
 }
+

@@ -96,7 +96,11 @@ public:
   
   Standard_EXPORT const AppParCurves_MultiBSpCurve& Value (const Standard_Integer Index) const;
 
-
+  Standard_EXPORT static void Parameters(const GeomInt_TheMultiLineOfWLApprox& Line,
+    const Standard_Integer firstP,
+    const Standard_Integer lastP,
+    const Approx_ParametrizationType Par,
+    math_Vector& TheParameters);
 
 
 protected:

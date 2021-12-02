@@ -166,8 +166,17 @@ static Standard_Real ComputeTolReached(const Handle(Adaptor3d_Curve)& c3d,
   {
     Standard_Real t = IntToReal(i) / IntToReal(nbp);
     Standard_Real u = first * (1.0 - t) + last * t;
-    gp_Pnt Pc3d = c3d->Value(u);
-    gp_Pnt Pcons = cons.Value(u);
+    gp_Pnt Pc3d, Pcons;
+    try
+    {
+      Pc3d = c3d->Value(u);
+      Pcons = cons.Value(u);
+    }
+    catch (Standard_Failure const&)
+    {
+      d2 = Precision::Infinite();
+      break;
+    }
     if (Precision::IsInfinite(Pcons.X()) ||
         Precision::IsInfinite(Pcons.Y()) ||
         Precision::IsInfinite(Pcons.Z()))

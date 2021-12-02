@@ -105,6 +105,11 @@ public:
   
   Standard_EXPORT const AppParCurves_MultiBSpCurve& Value (const Standard_Integer Index) const;
 
+  Standard_EXPORT static void Parameters(const BRepApprox_TheMultiLineOfApprox& Line,
+    const Standard_Integer firstP,
+    const Standard_Integer lastP,
+    const Approx_ParametrizationType Par,
+    math_Vector& TheParameters);
 
 
 

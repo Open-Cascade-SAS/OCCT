@@ -1,0 +1,56 @@
+puts "========"
+puts "0032701: Modeling Algorithms - 2d curve has bending near the degenerated edge of the face"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32701s.brep] s
+restore [locate_data_file bug32701t.brep] t
+
+explode t f
+
+set log [bopcurves s t_3 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log full Toler NbCurv
+
+if {$NbCurv != 1} {
+  puts "Error: Number of curves is wrong"
+}
+
+if { $Toler > 3.0e-5} {
+  puts "Error: Big tolerance value"  
+}
+
+set log [bopcurves s t_4 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log full Toler NbCurv
+
+if {$NbCurv != 1} {
+  puts "Error: Number of curves is wrong"
+}
+
+if { $Toler > 8.0e-5} {
+  puts "Error: Big tolerance value"  
+}
+
+bcommon cc s t
+
+checkshape cc
+checkprops cc -s 19899.6
+
+##checkview -display cc -2d -path ${imagedir}/${test_image}.png
+
+bcut cct s t
+
+checkshape cct
+checkprops cct -s 32252.5
+
+compound cc cct qq
+
+checkview -display qq -2d -path ${imagedir}/${test_image}.png
+
+
+
+
+ 
+
+
