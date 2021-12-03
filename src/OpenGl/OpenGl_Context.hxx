@@ -42,9 +42,10 @@
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <OpenGl_Clipping.hxx>
-#include <OpenGl_GlCore11.hxx>
 
 #include <NCollection_Shared.hxx>
+
+#include <memory>
 
 //! Forward declarations
 #if defined(__APPLE__)
@@ -74,6 +75,8 @@ struct OpenGl_ArbSamplerObject;
 struct OpenGl_ArbTexBindless;
 struct OpenGl_ExtGS;
 
+struct OpenGl_GlCore11Fwd;
+struct OpenGl_GlCore11;
 struct OpenGl_GlCore12;
 struct OpenGl_GlCore13;
 struct OpenGl_GlCore14;
@@ -348,7 +351,7 @@ public:
   Standard_Integer VersionMinor() const { return myGlVerMinor; }
 
   //! Access entire map of loaded OpenGL functions.
-  const OpenGl_GlFunctions* Functions() const { return myFuncs.operator->(); }
+  const OpenGl_GlFunctions* Functions() const { return myFuncs.get(); }
 
   //! Clean up errors stack for this GL context (glGetError() in loop).
   //! @return true if some error has been cleared
@@ -745,7 +748,7 @@ public: //! @name methods to alter or retrieve current state
     return theIndex >= myDrawBuffers.Lower()
         && theIndex <= myDrawBuffers.Upper()
          ? myDrawBuffers.Value (theIndex)
-         : GL_NONE;
+         : 0; // GL_NONE
   }
 
   //! Switch draw buffer, wrapper for ::glDrawBuffer().
@@ -964,12 +967,12 @@ public: //! @name methods to alter or retrieve current state
   //! - OpenGL 1.5+ (desktop) via glGetBufferSubData();
   //! - OpenGL ES 3.0+ via glMapBufferRange();
   //! - WebGL 2.0+ via gl.getBufferSubData().
-  //! @param theTarget [in] target buffer to map
-  //! @param theOffset [in] offset to the beginning of sub-data
-  //! @param theSize   [in] number of bytes to read
-  //! @param theData  [out] destination pointer to fill
+  //! @param[in]  theTarget target buffer to map {GLenum}
+  //! @param[in]  theOffset offset to the beginning of sub-data {GLintptr}
+  //! @param[in]  theSize   number of bytes to read {GLsizeiptr}
+  //! @param[out] theData   destination pointer to fill
   //! @return FALSE if functionality is unavailable
-  Standard_EXPORT bool GetBufferSubData (GLenum theTarget, GLintptr theOffset, GLsizeiptr theSize, void* theData);
+  Standard_EXPORT bool GetBufferSubData (unsigned int theTarget, intptr_t theOffset, intptr_t theSize, void* theData);
 
   //! Return Graphics Driver's vendor.
   const TCollection_AsciiString& Vendor() const { return myVendor; }
@@ -1090,7 +1093,7 @@ private: // context info
   OpenGl_Clipping myClippingState; //!< state of clip planes
 
   void*            myGlLibHandle;          //!< optional handle to GL library
-  NCollection_Handle<OpenGl_GlFunctions>
+  std::unique_ptr<OpenGl_GlFunctions>
                    myFuncs;                //!< mega structure for all GL functions
   Aspect_GraphicsLibrary myGapi;           //!< GAPI name
   Handle(Image_SupportedFormats)

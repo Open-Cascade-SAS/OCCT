@@ -286,7 +286,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 #endif
 #endif
 
-  memset (myFuncs.operator->(), 0, sizeof(OpenGl_GlFunctions));
+  memset (myFuncs.get(), 0, sizeof(OpenGl_GlFunctions));
   myShaderManager = new OpenGl_ShaderManager (this);
 }
 
@@ -3142,7 +3142,7 @@ bool OpenGl_Context::SetSampleAlphaToCoverage (bool theToEnable)
 // function : GetBufferSubData
 // purpose  :
 // =======================================================================
-bool OpenGl_Context::GetBufferSubData (GLenum theTarget, GLintptr theOffset, GLsizeiptr theSize, void* theData)
+bool OpenGl_Context::GetBufferSubData (unsigned int theTarget, intptr_t theOffset, intptr_t theSize, void* theData)
 {
   if (!hasGetBufferData)
   {
