@@ -804,17 +804,15 @@ void OpenGl_Window::Init()
   //
 #endif
 
-  glDisable (GL_DITHER);
-  glDisable (GL_SCISSOR_TEST);
+  myGlContext->core11fwd->glDisable (GL_DITHER);
+  myGlContext->core11fwd->glDisable (GL_SCISSOR_TEST);
   const Standard_Integer aViewport[4] = { 0, 0, myWidth, myHeight };
   myGlContext->ResizeViewport (aViewport);
-#if !defined(GL_ES_VERSION_2_0)
   myGlContext->SetDrawBuffer (GL_BACK);
   if (myGlContext->core11ffp != NULL)
   {
-    glMatrixMode (GL_MODELVIEW);
+    myGlContext->core11ffp->glMatrixMode (GL_MODELVIEW);
   }
-#endif
 }
 
 // =======================================================================

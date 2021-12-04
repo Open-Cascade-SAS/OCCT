@@ -378,7 +378,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
   if (theWorkspace->UseDepthWrite())
   {
     theWorkspace->UseDepthWrite() = Standard_False;
-    glDepthMask (GL_FALSE);
+    aCtx->core11fwd->glDepthMask (GL_FALSE);
   }
 
   const OpenGl_Aspects* aTextAspectBack = theWorkspace->SetAspects (&myTextAspect);
@@ -417,8 +417,8 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
                                             Graphic3d_AlphaMode_Blend, true, false,
                                             Handle(OpenGl_ShaderProgram)());
     aCtx->SetColor4fv (OpenGl_Vec4 (1.0f, 1.0f, 1.0f, 1.0f));
-    glEnable (GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    aCtx->core15fwd->glEnable (GL_BLEND);
+    aCtx->core15fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     myChartVertices->Bind (aCtx);
     myChartVertices->bindAttribute (aCtx, Graphic3d_TOA_POS,   3, GL_FLOAT,         myChartVertices->GetComponentsNb(), NULL);
     myChartVertices->bindAttribute (aCtx, Graphic3d_TOA_COLOR, 4, GL_UNSIGNED_BYTE, myChartVertices->GetComponentsNb(), (void* )sizeof(Graphic3d_Vec3));
@@ -429,7 +429,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     myChartVertices->Unbind (aCtx);
     myChartVertices->unbindAttribute (aCtx, Graphic3d_TOA_COLOR);
     myChartVertices->unbindAttribute (aCtx, Graphic3d_TOA_POS);
-    glDisable (GL_BLEND);
+    aCtx->core15fwd->glDisable (GL_BLEND);
 
     myChartLines->Bind (aCtx);
     myChartLines->bindAttribute (aCtx, Graphic3d_TOA_POS,   3, GL_FLOAT,         myChartLines->GetComponentsNb(), NULL);
@@ -453,7 +453,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
   if (theWorkspace->UseDepthWrite() != wasEnabledDepth)
   {
     theWorkspace->UseDepthWrite() = wasEnabledDepth;
-    glDepthMask (wasEnabledDepth ? GL_TRUE : GL_FALSE);
+    aCtx->core11fwd->glDepthMask (wasEnabledDepth ? GL_TRUE : GL_FALSE);
   }
 }
 

@@ -600,11 +600,7 @@ Handle(OpenGl_TriangleSet) OpenGl_View::addRaytracePrimitiveArray (const OpenGl_
   const Handle(Graphic3d_Buffer)&      anAttribs = theArray->Attributes();
 
   if (theArray->DrawMode() < GL_TRIANGLES
-  #ifndef GL_ES_VERSION_2_0
    || theArray->DrawMode() > GL_POLYGON
-  #else
-   || theArray->DrawMode() > GL_TRIANGLE_FAN
-  #endif
    || anAttribs.IsNull())
   {
     return Handle(OpenGl_TriangleSet)();
@@ -755,11 +751,9 @@ Standard_Boolean OpenGl_View::addRaytraceVertexIndices (OpenGl_TriangleSet&     
     case GL_TRIANGLES:      return addRaytraceTriangleArray        (theSet, theMatID, theCount, theOffset, theArray.Indices());
     case GL_TRIANGLE_FAN:   return addRaytraceTriangleFanArray     (theSet, theMatID, theCount, theOffset, theArray.Indices());
     case GL_TRIANGLE_STRIP: return addRaytraceTriangleStripArray   (theSet, theMatID, theCount, theOffset, theArray.Indices());
-  #if !defined(GL_ES_VERSION_2_0)
     case GL_QUAD_STRIP:     return addRaytraceQuadrangleStripArray (theSet, theMatID, theCount, theOffset, theArray.Indices());
     case GL_QUADS:          return addRaytraceQuadrangleArray      (theSet, theMatID, theCount, theOffset, theArray.Indices());
     case GL_POLYGON:        return addRaytracePolygonArray         (theSet, theMatID, theCount, theOffset, theArray.Indices());
-  #endif
   }
 
   return Standard_False;
@@ -1031,16 +1025,14 @@ const TCollection_AsciiString OpenGl_View::ShaderSource::EMPTY_PREFIX;
 TCollection_AsciiString OpenGl_View::ShaderSource::Source (const Handle(OpenGl_Context)& theCtx,
                                                            const GLenum theType) const
 {
-  TCollection_AsciiString aVersion =
-  #if defined(GL_ES_VERSION_2_0)
-    "#version 320 es\n";
-  #else
-    "#version 140\n";
-  #endif
+  TCollection_AsciiString aVersion = theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+                                   ? "#version 320 es\n"
+                                   : "#version 140\n";
+
   TCollection_AsciiString aPrecisionHeader;
-  if (theType == GL_FRAGMENT_SHADER)
+  if (theType == GL_FRAGMENT_SHADER
+   && theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-  #if defined(GL_ES_VERSION_2_0)
     aPrecisionHeader = theCtx->hasHighp
                      ? "precision highp float;\n"
                        "precision highp int;\n"
@@ -1050,9 +1042,6 @@ TCollection_AsciiString OpenGl_View::ShaderSource::Source (const Handle(OpenGl_C
                        "precision mediump int;\n"
                        "precision mediump samplerBuffer;\n"
                        "precision mediump isamplerBuffer;\n";
-  #else
-    (void )theCtx;
-  #endif
   }
   if (myPrefix.IsEmpty())
   {
@@ -1480,25 +1469,28 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
   {
     myAccumFrames = 0; // accumulation should be restarted
 
-  #if defined(GL_ES_VERSION_2_0)
-    if (!theGlContext->IsGlGreaterEqual (3, 2))
+    if (theGlContext->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
     {
-      return safeFailBack ("Ray-tracing requires OpenGL ES 3.2 and higher", theGlContext);
+      if (!theGlContext->IsGlGreaterEqual (3, 2))
+      {
+        return safeFailBack ("Ray-tracing requires OpenGL ES 3.2 and higher", theGlContext);
+      }
     }
-  #else
-    if (!theGlContext->IsGlGreaterEqual (3, 1))
+    else
     {
-      return safeFailBack ("Ray-tracing requires OpenGL 3.1 and higher", theGlContext);
+      if (!theGlContext->IsGlGreaterEqual (3, 1))
+      {
+        return safeFailBack ("Ray-tracing requires OpenGL 3.1 and higher", theGlContext);
+      }
+      else if (!theGlContext->arbTboRGB32)
+      {
+        return safeFailBack ("Ray-tracing requires OpenGL 4.0+ or GL_ARB_texture_buffer_object_rgb32 extension", theGlContext);
+      }
+      else if (!theGlContext->arbFBOBlit)
+      {
+        return safeFailBack ("Ray-tracing requires EXT_framebuffer_blit extension", theGlContext);
+      }
     }
-    else if (!theGlContext->arbTboRGB32)
-    {
-      return safeFailBack ("Ray-tracing requires OpenGL 4.0+ or GL_ARB_texture_buffer_object_rgb32 extension", theGlContext);
-    }
-    else if (!theGlContext->arbFBOBlit)
-    {
-      return safeFailBack ("Ray-tracing requires EXT_framebuffer_blit extension", theGlContext);
-    }
-  #endif
 
     myRaytraceParameters.NbBounces = myRenderParams.RaytracingDepth;
 
@@ -2119,19 +2111,22 @@ void OpenGl_View::updatePerspCameraPT (const OpenGl_Mat4&           theOrientati
 // =======================================================================
 Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& theGlContext)
 {
-#if defined(GL_ES_VERSION_2_0)
-  if (!theGlContext->IsGlGreaterEqual (3, 2))
+  if (theGlContext->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    Message::SendFail() << "Error: OpenGL ES version is less than 3.2";
-    return Standard_False;
+    if (!theGlContext->IsGlGreaterEqual (3, 2))
+    {
+      Message::SendFail() << "Error: OpenGL ES version is less than 3.2";
+      return Standard_False;
+    }
   }
-#else
-  if (!theGlContext->IsGlGreaterEqual (3, 1))
+  else
   {
-    Message::SendFail() << "Error: OpenGL version is less than 3.1";
-    return Standard_False;
+    if (!theGlContext->IsGlGreaterEqual (3, 1))
+    {
+      Message::SendFail() << "Error: OpenGL version is less than 3.1";
+      return Standard_False;
+    }
   }
-#endif
 
   myAccumFrames = 0; // accumulation should be restarted
 
@@ -2748,7 +2743,6 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
   if (myRaytraceParameters.AdaptiveScreenSampling
    && myRaytraceParameters.GlobalIllumination)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     theGlContext->core42->glBindImageTexture (OpenGl_RT_OutputImage,
                                               myRaytraceOutputTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32F);
     theGlContext->core42->glBindImageTexture (OpenGl_RT_VisualErrorImage,
@@ -2763,9 +2757,6 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
       theGlContext->core42->glBindImageTexture (OpenGl_RT_TileSamplesImage,
                                                 myRaytraceTileSamplesTexture[theStereoView]->TextureId(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_R32I);
     }
-  #else
-    (void )theStereoView;
-  #endif
   }
 
   const Handle(OpenGl_TextureSet)& anEnvTextureSet = myRaytraceParameters.CubemapForBack
@@ -2996,15 +2987,11 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
         myTileSampler.UploadSamples (theGlContext, myRaytraceTileSamplesTexture[aFBOIdx], false);
       }
 
-    #if !defined(GL_ES_VERSION_2_0)
       theGlContext->core44->glClearTexImage (myRaytraceOutputTexture[aFBOIdx]->TextureId(), 0, GL_RED, GL_FLOAT, NULL);
-    #endif
     }
 
     // Clear adaptive screen sampling images
-  #if !defined(GL_ES_VERSION_2_0)
     theGlContext->core44->glClearTexImage (myRaytraceVisualErrorTexture[aFBOIdx]->TextureId(), 0, GL_RED_INTEGER, GL_INT, NULL);
-  #endif
   }
 
   bindRaytraceTextures (theGlContext, aFBOIdx);
@@ -3065,9 +3052,7 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
     theGlContext->core20fwd->glDrawArrays (GL_TRIANGLES, 0, 6);
     if (myRaytraceParameters.AdaptiveScreenSampling)
     {
-    #if !defined(GL_ES_VERSION_2_0)
       theGlContext->core44->glMemoryBarrier (GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-    #endif
     }
   }
   aRenderImageFramebuffer->UnbindBuffer (theGlContext);

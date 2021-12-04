@@ -244,13 +244,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  const GLenum aTarget = theType == Graphic3d_TOT_1D
+  const GLenum aTarget = (theType == Graphic3d_TOT_1D
+                       && theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
                        ? GL_TEXTURE_1D
                        : GL_TEXTURE_2D;
-#else
-  const GLenum aTarget = GL_TEXTURE_2D;
-#endif
   const bool toPatchExisting = IsValid()
                             && myTextFormat == theFormat.PixelFormat()
                             && myTarget == aTarget
@@ -280,12 +277,12 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   myTextFormat  = theFormat.PixelFormat();
   mySizedFormat = theFormat.InternalFormat();
   myNbSamples   = 1;
-#if !defined(GL_ES_VERSION_2_0)
-  const GLint anIntFormat  = theFormat.InternalFormat();
-#else
+
   // ES 2.0 does not support sized formats and format conversions - them detected from data type
-  const GLint anIntFormat  = theCtx->IsGlGreaterEqual (3, 0) ? theFormat.InternalFormat() : theFormat.PixelFormat();
-#endif
+  const GLint anIntFormat  = (theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+                           || theCtx->IsGlGreaterEqual (3, 0))
+                           ? theFormat.InternalFormat()
+                           : theFormat.PixelFormat();
 
   if (theFormat.DataType() == GL_FLOAT
   && !theCtx->arbTexFloat)
@@ -307,8 +304,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     Release (theCtx.get());
     return false;
   }
-#if !defined(GL_ES_VERSION_2_0)
-  else if (!theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW)
+  else if (theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGL
+       && !theCtx->IsGlGreaterEqual (3, 0)
+       && !theCtx->arbNPTW)
   {
     // Notice that formally general NPOT textures are required by OpenGL 2.0 specifications
     // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
@@ -326,8 +324,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       return false;
     }
   }
-#else
-  else if (!theCtx->IsGlGreaterEqual (3, 0) && theType == Graphic3d_TOT_2D_MIPMAP)
+  else if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+       && !theCtx->IsGlGreaterEqual (3, 0)
+       &&  theType == Graphic3d_TOT_2D_MIPMAP)
   {
     // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
     const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeXY.x(), aMaxSize);
@@ -341,11 +340,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       myMaxMipLevel = 0;
     }
   }
-#endif
 
-#if !defined(GL_ES_VERSION_2_0)
   GLint aTestWidth = 0, aTestHeight = 0;
-#endif
   GLvoid* aDataPtr = (theImage != NULL) ? (GLvoid* )theImage->Data() : NULL;
 
   // setup the alignment
@@ -376,7 +372,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   {
     case Graphic3d_TOT_1D:
     {
-    #if !defined(GL_ES_VERSION_2_0)
+      if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString ( "Error: 1D textures are not supported by hardware [") + myResourceId +"]");
+        Release (theCtx.get());
+        return false;
+      }
+
       Bind (theCtx);
       applyDefaultSamplerParams (theCtx);
       if (toPatchExisting)
@@ -391,8 +394,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       theCtx->core11fwd->glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
                                        theSizeXY.x(), 0,
                                        theFormat.PixelFormat(), theFormat.DataType(), NULL);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
+      theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
+      theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
       if (aTestWidth == 0)
       {
         // no memory or broken input parameters
@@ -416,12 +419,6 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
       Unbind (theCtx);
       return true;
-    #else
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ( "Error: 1D textures are not supported by hardware [") + myResourceId +"]");
-      Release (theCtx.get());
-      return false;
-    #endif
     }
     case Graphic3d_TOT_2D:
     case Graphic3d_TOT_2D_MIPMAP:
@@ -449,22 +446,23 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return true;
       }
 
-    #if !defined(GL_ES_VERSION_2_0)
-      // use proxy to check texture could be created or not
-      theCtx->core11fwd->glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                                       theSizeXY.x(), theSizeXY.y(), 0,
-                                       theFormat.PixelFormat(), theFormat.DataType(), NULL);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
-      glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
-      if (aTestWidth == 0 || aTestHeight == 0)
+      if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL)
       {
-        // no memory or broken input parameters
-        Unbind (theCtx);
-        Release (theCtx.get());
-        return false;
+        // use proxy to check texture could be created or not
+        theCtx->core11fwd->glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
+                                         theSizeXY.x(), theSizeXY.y(), 0,
+                                         theFormat.PixelFormat(), theFormat.DataType(), NULL);
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
+        if (aTestWidth == 0 || aTestHeight == 0)
+        {
+          // no memory or broken input parameters
+          Unbind (theCtx);
+          Release (theCtx.get());
+          return false;
+        }
       }
-    #endif
 
       theCtx->core11fwd->glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
                                        theSizeXY.x(), theSizeXY.y(), 0,
@@ -496,16 +494,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         if (anErr != GL_NO_ERROR)
         {
           myMaxMipLevel = 0;
-        #if defined(GL_ES_VERSION_2_0)
-          if (theFormat.InternalFormat() == GL_RGB8
-           || theFormat.InternalFormat() == GL_SRGB8)
+          if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+           && (theFormat.InternalFormat() == GL_RGB8
+            || theFormat.InternalFormat() == GL_SRGB8))
           {
             theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                                  TCollection_AsciiString ("Warning: generating mipmaps requires color-renderable format, while giving ")
                                  + OpenGl_TextureFormat::FormatFormat (anIntFormat) + " [" + myResourceId +"]");
           }
           else
-        #endif
           {
             theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                                  TCollection_AsciiString ("Warning: generating mipmaps has failed [") + myResourceId +"]");
@@ -737,17 +734,15 @@ bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
   //myTextFormat = theTextFormat;
   mySizedFormat = theTextFormat;
   if (theCtx->HasTextureMultisampling()
-   && theCtx->Functions()->glTexStorage2DMultisample != NULL)
+   && theCtx->Functions()->glTexStorage2DMultisample != NULL)   // OpenGL 4.3
   {
     theCtx->Functions()->glTexStorage2DMultisample (myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
   }
-#if !defined(GL_ES_VERSION_2_0)
   else if (theCtx->HasTextureMultisampling()
-        && theCtx->Functions()->glTexImage2DMultisample != NULL)
+        && theCtx->Functions()->glTexImage2DMultisample != NULL) // OpenGL 3.2
   {
     theCtx->Functions()->glTexImage2DMultisample   (myTarget, myNbSamples, theTextFormat, theSizeX, theSizeY, GL_FALSE);
   }
-#endif
   else
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
@@ -783,12 +778,13 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
                                     const Standard_Integer        theSizeY,
                                     const OpenGl_TextureFormat&   theFormat)
 {
-  if (!Create (theCtx) || !theCtx->IsGlGreaterEqual (3, 0))
+  if (!theCtx->IsGlGreaterEqual (3, 0)
+   || !Create (theCtx)
+   ||  theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
     return false;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   myTarget = GL_TEXTURE_RECTANGLE;
   myNbSamples = 1;
   myMaxMipLevel = 0;
@@ -810,9 +806,9 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
                                    myTextFormat, GL_FLOAT, NULL);
 
   GLint aTestSizeX = 0, aTestSizeY = 0;
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_WIDTH,  &aTestSizeX);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
+  theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_WIDTH,  &aTestSizeX);
+  theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
+  theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
   if (aTestSizeX == 0 || aTestSizeY == 0)
   {
     Unbind (theCtx);
@@ -832,12 +828,6 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
   mySizeY = aSizeY;
   Unbind (theCtx);
   return true;
-#else
-  (void )theSizeX;
-  (void )theSizeY;
-  (void )theFormat;
-  return false;
-#endif
 }
 
 // =======================================================================
@@ -891,23 +881,24 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
   // setup the alignment
   OpenGl_UnpackAlignmentSentry::Reset (*theCtx);
 
-#if !defined (GL_ES_VERSION_2_0)
-  theCtx->core15fwd->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, mySizedFormat,
-                                   aSizeXYZ.x(), aSizeXYZ.y(), aSizeXYZ.z(), 0,
-                                   theFormat.PixelFormat(), theFormat.DataType(), NULL);
-
-  NCollection_Vec3<GLint> aTestSizeXYZ;
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH,  &aTestSizeXYZ.x());
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeXYZ.y());
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH,  &aTestSizeXYZ.z());
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
-  if (aTestSizeXYZ.x() == 0 || aTestSizeXYZ.y() == 0 || aTestSizeXYZ.z() == 0)
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL)
   {
-    Unbind (theCtx);
-    Release (theCtx.get());
-    return false;
+    theCtx->Functions()->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, mySizedFormat,
+                                       aSizeXYZ.x(), aSizeXYZ.y(), aSizeXYZ.z(), 0,
+                                       theFormat.PixelFormat(), theFormat.DataType(), NULL);
+
+    NCollection_Vec3<GLint> aTestSizeXYZ;
+    theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH,  &aTestSizeXYZ.x());
+    theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeXYZ.y());
+    theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH,  &aTestSizeXYZ.z());
+    theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
+    if (aTestSizeXYZ.x() == 0 || aTestSizeXYZ.y() == 0 || aTestSizeXYZ.z() == 0)
+    {
+      Unbind (theCtx);
+      Release (theCtx.get());
+      return false;
+    }
   }
-#endif
 
   applyDefaultSamplerParams (theCtx);
   theCtx->Functions()->glTexImage3D (myTarget, 0, mySizedFormat,
@@ -1030,8 +1021,8 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     return false;
   }
 
-#if defined(GL_ES_VERSION_2_0)
   if (theToGenMipmap
+  &&  theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
   && !theCtx->IsGlGreaterEqual (3, 0)
   &&  (aFormat.PixelFormat() == GL_SRGB_EXT
     || aFormat.PixelFormat() == GL_SRGB_ALPHA_EXT))
@@ -1042,7 +1033,6 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     aFormat.SetPixelFormat   (aFormat.PixelFormat() == GL_SRGB_EXT ? GL_RGB  : GL_RGBA);
     aFormat.SetInternalFormat(aFormat.PixelFormat() == GL_SRGB_EXT ? GL_RGB8 : GL_RGBA8);
   }
-#endif
 
   myTarget = GL_TEXTURE_CUBE_MAP;
   myNbSamples = 1;
@@ -1050,12 +1040,12 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
   mySizeY = (GLsizei )theSize;
   myTextFormat  = aFormat.Format();
   mySizedFormat = aFormat.Internal();
-#if !defined(GL_ES_VERSION_2_0)
-  const GLint anIntFormat = aFormat.InternalFormat();
-#else
+
   // ES 2.0 does not support sized formats and format conversions - them detected from data type
-  const GLint anIntFormat = theCtx->IsGlGreaterEqual (3, 0) ? aFormat.InternalFormat() : aFormat.PixelFormat();
-#endif
+  const GLint anIntFormat = (theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+                          || theCtx->IsGlGreaterEqual (3, 0))
+                          ? aFormat.InternalFormat()
+                          : aFormat.PixelFormat();
 
   Bind (theCtx);
   applyDefaultSamplerParams (theCtx);
@@ -1290,10 +1280,10 @@ bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
                                 Standard_Integer theLevel,
                                 Standard_Integer theCubeSide) const
 {
-#if !defined(GL_ES_VERSION_2_0)
   const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, mySizedFormat);
   if (theCtx.IsNull()
   || !IsValid()
+  ||  theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES // glGetTexImage() is unavailable in OpenGL ES
   ||  theLevel < 0
   || !aFormat.IsValid()
   ||  aFormat.ImageFormat() == Image_Format_UNKNOWN
@@ -1341,13 +1331,4 @@ bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
   const bool hasErrors = theCtx->ResetErrors (true);
   theCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, 1);
   return !hasErrors;
-#else
-  // glGetTexImage() is unavailable in OpenGL ES
-  (void )theImage;
-  (void )theCtx;
-  (void )theTexUnit;
-  (void )theLevel;
-  (void )theCubeSide;
-  return false;
-#endif
 }

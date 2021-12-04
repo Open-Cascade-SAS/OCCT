@@ -124,7 +124,6 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
     myGlContext->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
     // General initialization of the context
-  #if !defined(GL_ES_VERSION_2_0)
     if (myGlContext->core11ffp != NULL)
     {
       // enable two-side lighting by default
@@ -136,15 +135,17 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
       }
     }
 
-    myGlContext->core11fwd->glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
-    myGlContext->core11fwd->glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    if (myGlContext->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+    {
+      myGlContext->core11fwd->glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
+      myGlContext->core11fwd->glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    }
     if (myGlContext->Vendor() == "microsoft corporation"
     && !myGlContext->IsGlGreaterEqual (1, 2))
     {
       // this software implementation causes too slow rendering into GL_FRONT on modern Windows
       theView->SetImmediateModeDrawToFront (false);
     }
-  #endif
   }
 
   myNoneCulling .Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided);
@@ -171,11 +172,9 @@ Standard_Boolean OpenGl_Workspace::Activate()
   {
     if (myGlContext->caps->ffpEnable)
     {
-    #if defined(GL_ES_VERSION_2_0)
-      Message::SendWarning ("Warning: FFP is unsupported by OpenGL ES");
-    #else
-      Message::SendWarning ("Warning: FFP is unsupported by OpenGL Core Profile");
-    #endif
+      Message::SendWarning (myGlContext->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+                          ? "Warning: FFP is unsupported by OpenGL ES"
+                          : "Warning: FFP is unsupported by OpenGL Core Profile");
       myGlContext->caps->ffpEnable = false;
     }
   }
@@ -187,12 +186,10 @@ Standard_Boolean OpenGl_Workspace::Activate()
     myGlContext->caps->useZeroToOneDepth = false;
   }
   myView->Camera()->SetZeroToOneDepth (myGlContext->caps->useZeroToOneDepth);
-#if !defined(GL_ES_VERSION_2_0)
   if (myGlContext->arbClipControl)
   {
     myGlContext->Functions()->glClipControl (GL_LOWER_LEFT, myGlContext->caps->useZeroToOneDepth ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE);
   }
-#endif
 
   ResetAppliedAspect();
 
@@ -305,18 +302,14 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
   if (myAspectsApplied.IsNull()
    || myAspectsApplied->InteriorStyle() != anIntstyle)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     myGlContext->SetPolygonMode (anIntstyle == Aspect_IS_POINT ? GL_POINT : GL_FILL);
     myGlContext->SetPolygonHatchEnabled (anIntstyle == Aspect_IS_HATCH);
-  #endif
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   if (anIntstyle == Aspect_IS_HATCH)
   {
     myGlContext->SetPolygonHatchStyle (myAspectsSet->Aspect()->HatchStyle());
   }
-#endif
 
   // Case of hidden line
   if (anIntstyle == Aspect_IS_HIDDENLINE)

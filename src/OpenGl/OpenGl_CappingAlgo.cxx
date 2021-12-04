@@ -29,17 +29,18 @@ namespace
   //! Auxiliary sentry object managing stencil test.
   struct StencilTestSentry
   {
-    StencilTestSentry() : myDepthFuncPrev (0) {}
+    StencilTestSentry (const Handle(OpenGl_Context)& theCtx)
+    : myCtx (theCtx.get()), myDepthFuncPrev (0) {}
 
     //! Restore previous application state.
     ~StencilTestSentry()
     {
       if (myDepthFuncPrev != 0)
       {
-        glClear (GL_STENCIL_BUFFER_BIT);
-        glDepthFunc (myDepthFuncPrev);
-        glStencilFunc (GL_ALWAYS, 0, 0xFF);
-        glDisable (GL_STENCIL_TEST);
+        myCtx->core11fwd->glClear (GL_STENCIL_BUFFER_BIT);
+        myCtx->core11fwd->glDepthFunc (myDepthFuncPrev);
+        myCtx->core11fwd->glStencilFunc (GL_ALWAYS, 0, 0xFF);
+        myCtx->core11fwd->glDisable (GL_STENCIL_TEST);
       }
     }
 
@@ -48,13 +49,14 @@ namespace
     {
       if (myDepthFuncPrev == 0)
       {
-        glEnable (GL_STENCIL_TEST);
-        glGetIntegerv (GL_DEPTH_FUNC, &myDepthFuncPrev);
-        glDepthFunc (GL_LESS);
+        myCtx->core11fwd->glEnable (GL_STENCIL_TEST);
+        myCtx->core11fwd->glGetIntegerv (GL_DEPTH_FUNC, &myDepthFuncPrev);
+        myCtx->core11fwd->glDepthFunc (GL_LESS);
       }
     }
 
   private:
+    OpenGl_Context* myCtx;
     GLint myDepthFuncPrev;
   };
 
@@ -120,7 +122,7 @@ namespace
       aContext->ChangeClipping().DisableAllExcept (theClipChain, theSubPlaneIndex);
       aContext->ShaderManager()->UpdateClippingState();
 
-      glClear (GL_STENCIL_BUFFER_BIT);
+      aContext->core11fwd->glClear (GL_STENCIL_BUFFER_BIT);
       const bool aColorMaskBack = aContext->SetColorMask (false);
 
       // override aspects, disable culling
@@ -130,14 +132,14 @@ namespace
       // evaluate number of pair faces
       if (theWorkspace->UseZBuffer())
       {
-        glDisable (GL_DEPTH_TEST);
+        aContext->core11fwd->glDisable (GL_DEPTH_TEST);
       }
       if (theWorkspace->UseDepthWrite())
       {
-        glDepthMask (GL_FALSE);
+        aContext->core11fwd->glDepthMask (GL_FALSE);
       }
-      glStencilFunc (GL_ALWAYS, 1, 0x01);
-      glStencilOp (GL_KEEP, GL_INVERT, GL_INVERT);
+      aContext->core11fwd->glStencilFunc (GL_ALWAYS, 1, 0x01);
+      aContext->core11fwd->glStencilOp (GL_KEEP, GL_INVERT, GL_INVERT);
 
       // render closed primitives
       if (aRenderPlane->ToUseObjectProperties())
@@ -167,13 +169,13 @@ namespace
       aContext->SetColorMask (aColorMaskBack);
       if (theWorkspace->UseDepthWrite())
       {
-        glDepthMask (GL_TRUE);
+        aContext->core11fwd->glDepthMask (GL_TRUE);
       }
-      glStencilFunc (GL_EQUAL, 1, 0x01);
-      glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
+      aContext->core11fwd->glStencilFunc (GL_EQUAL, 1, 0x01);
+      aContext->core11fwd->glStencilOp (GL_KEEP, GL_KEEP, GL_KEEP);
       if (theWorkspace->UseZBuffer())
       {
-        glEnable (GL_DEPTH_TEST);
+        aContext->core11fwd->glEnable (GL_DEPTH_TEST);
       }
 
       theWorkspace->SetAspects (thePlane->AspectFace());
@@ -212,7 +214,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
   // only filled primitives should be rendered
   const Standard_Integer aPrevFilter = theWorkspace->RenderFilter();
   theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_FillModeOnly);
-  StencilTestSentry aStencilSentry;
+  StencilTestSentry aStencilSentry (aContext);
 
   // generate capping for every clip plane
   for (OpenGl_ClippingIterator aCappingIt (aContext->Clipping()); aCappingIt.More(); aCappingIt.Next())

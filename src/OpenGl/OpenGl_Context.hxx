@@ -981,7 +981,7 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
     
   //! Dumps the content of openGL state into the stream
-  Standard_EXPORT static void DumpJsonOpenGlState (Standard_OStream& theOStream, Standard_Integer theDepth = -1);
+  Standard_EXPORT void DumpJsonOpenGlState (Standard_OStream& theOStream, Standard_Integer theDepth = -1);
 
   //! Set GL_SHADE_MODEL value.
   Standard_EXPORT void SetShadeModel (Graphic3d_TypeOfShadingModel theModel);

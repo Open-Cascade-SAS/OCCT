@@ -217,102 +217,105 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
 
   // detect the minimum GLSL version required for defined Shader Objects
-#if defined(GL_ES_VERSION_2_0)
-  if (myHasTessShader)
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    if (!theCtx->IsGlGreaterEqual (3, 2))
+    if (myHasTessShader)
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Tessellation shader requires OpenGL ES 3.2+");
-      return false;
-    }
-    else if (aHeaderVer.IsEmpty())
-    {
-      aHeaderVer = "#version 320 es";
-    }
-  }
-  else if ((aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
-  {
-    switch (theCtx->hasGeometryStage)
-    {
-      case OpenGl_FeatureNotAvailable:
+      if (!theCtx->IsGlGreaterEqual (3, 2))
       {
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                             "Error! Geometry shader requires OpenGL ES 3.2+ or GL_EXT_geometry_shader");
+                             "Error! Tessellation shader requires OpenGL ES 3.2+");
         return false;
       }
-      case OpenGl_FeatureInExtensions:
+      else if (aHeaderVer.IsEmpty())
       {
-        if (aHeaderVer.IsEmpty())
-        {
-          aHeaderVer = "#version 310 es";
-        }
-        break;
-      }
-      case OpenGl_FeatureInCore:
-      {
-        if (aHeaderVer.IsEmpty())
-        {
-          aHeaderVer = "#version 320 es";
-        }
-        break;
+        aHeaderVer = "#version 320 es";
       }
     }
+    else if ((aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
+    {
+      switch (theCtx->hasGeometryStage)
+      {
+        case OpenGl_FeatureNotAvailable:
+        {
+          theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                               "Error! Geometry shader requires OpenGL ES 3.2+ or GL_EXT_geometry_shader");
+          return false;
+        }
+        case OpenGl_FeatureInExtensions:
+        {
+          if (aHeaderVer.IsEmpty())
+          {
+            aHeaderVer = "#version 310 es";
+          }
+          break;
+        }
+        case OpenGl_FeatureInCore:
+        {
+          if (aHeaderVer.IsEmpty())
+          {
+            aHeaderVer = "#version 320 es";
+          }
+          break;
+        }
+      }
+    }
+    else if ((aShaderMask & Graphic3d_TOS_COMPUTE) != 0)
+    {
+      if (!theCtx->IsGlGreaterEqual (3, 1))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Compute shaders require OpenGL ES 3.1+");
+        return false;
+      }
+      else if (aHeaderVer.IsEmpty())
+      {
+        aHeaderVer = "#version 310 es";
+      }
+    }
   }
-  else if ((aShaderMask & Graphic3d_TOS_COMPUTE) != 0)
+  else
   {
-    if (!theCtx->IsGlGreaterEqual (3, 1))
+    if ((aShaderMask & Graphic3d_TOS_COMPUTE) != 0)
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Compute shaders require OpenGL ES 3.1+");
-      return false;
+      if (!theCtx->IsGlGreaterEqual (4, 3))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Compute shaders require OpenGL 4.3+");
+        return 0;
+      }
+      else if (aHeaderVer.IsEmpty())
+      {
+        aHeaderVer = "#version 430";
+      }
     }
-    else if (aHeaderVer.IsEmpty())
+    else if (myHasTessShader)
     {
-      aHeaderVer = "#version 310 es";
+      if (!theCtx->IsGlGreaterEqual (4, 0))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Tessellation shaders require OpenGL 4.0+");
+        return 0;
+      }
+      else if (aHeaderVer.IsEmpty())
+      {
+        aHeaderVer = "#version 400";
+      }
     }
-  }
-#else
-  if ((aShaderMask & Graphic3d_TOS_COMPUTE) != 0)
-  {
-    if (!theCtx->IsGlGreaterEqual (4, 3))
+    else if ((aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
     {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Compute shaders require OpenGL 4.3+");
-      return 0;
-    }
-    else if (aHeaderVer.IsEmpty())
-    {
-      aHeaderVer = "#version 430";
-    }
-  }
-  else if (myHasTessShader)
-  {
-    if (!theCtx->IsGlGreaterEqual (4, 0))
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Tessellation shaders require OpenGL 4.0+");
-      return 0;
-    }
-    else if (aHeaderVer.IsEmpty())
-    {
-      aHeaderVer = "#version 400";
-    }
-  }
-  else if ((aShaderMask & Graphic3d_TOS_GEOMETRY) != 0)
-  {
-    if (!theCtx->IsGlGreaterEqual (3, 2))
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           "Error! Geometry shaders require OpenGL 3.2+");
-      return 0;
-    }
-    else if (aHeaderVer.IsEmpty())
-    {
-      aHeaderVer = "#version 150";
+      if (!theCtx->IsGlGreaterEqual (3, 2))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error! Geometry shaders require OpenGL 3.2+");
+        return 0;
+      }
+      else if (aHeaderVer.IsEmpty())
+      {
+        aHeaderVer = "#version 150";
+      }
     }
   }
-#endif
 
   for (Graphic3d_ShaderObjectList::Iterator anIter (theShaders); anIter.More(); anIter.Next())
   {
@@ -380,36 +383,34 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (theCtx->hasSampleVariables == OpenGl_FeatureInExtensions)
     {
-#if defined(GL_ES_VERSION_2_0)
-      if (theCtx->oesSampleVariables)
+      if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+       && theCtx->oesSampleVariables)
       {
         anExtensions += "#extension GL_OES_sample_variables : enable\n";
       }
-#else
-      if (theCtx->arbSampleShading)
+      else if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL
+            && theCtx->arbSampleShading)
       {
         anExtensions += "#extension GL_ARB_sample_shading : enable\n";
       }
-#endif
     }
-#if defined(GL_ES_VERSION_2_0)
-    if (theCtx->hasGeometryStage == OpenGl_FeatureInExtensions)
+
+    if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+     && theCtx->hasGeometryStage == OpenGl_FeatureInExtensions)
     {
       anExtensions += "#extension GL_EXT_geometry_shader : enable\n"
                       "#extension GL_EXT_shader_io_blocks : enable\n";
     }
-#endif
 
     TCollection_AsciiString aPrecisionHeader;
-    if (anIter.Value()->Type() == Graphic3d_TOS_FRAGMENT)
+    if (anIter.Value()->Type() == Graphic3d_TOS_FRAGMENT
+     && theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
     {
-    #if defined(GL_ES_VERSION_2_0)
       aPrecisionHeader = theCtx->hasHighp
                        ? "precision highp float;\n"
                          "precision highp int;\n"
                        : "precision mediump float;\n"
                          "precision mediump int;\n";
-    #endif
     }
 
     TCollection_AsciiString aHeaderType;
@@ -999,19 +1000,23 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return false;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core32 != NULL)
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
-    return true;
+    if (theCtx->core30 != NULL)
+    {
+      theCtx->core30->glUniform2uiv (theLocation, 1, theValue.GetData());
+      return true;
+    }
   }
-#else
-  if (theCtx->core30 != NULL)
+  else
   {
-    theCtx->core30->glUniform2uiv (theLocation, 1, theValue.GetData());
-    return true;
+    if (theCtx->core32 != NULL)
+    {
+      theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
+      return true;
+    }
   }
-#endif
+
   return false;
 }
 
@@ -1041,19 +1046,22 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
     return false;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
-  if (theCtx->core32 != NULL)
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
   {
-    theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
-    return true;
+    if (theCtx->core30 != NULL)
+    {
+      theCtx->core30->glUniform2uiv (theLocation, theCount, theValue->GetData());
+      return true;
+    }
   }
-#else
-  if (theCtx->core30 != NULL)
+  else
   {
-    theCtx->core30->glUniform2uiv (theLocation, theCount, theValue->GetData());
-    return true;
+    if (theCtx->core32 != NULL)
+    {
+      theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
+      return true;
+    }
   }
-#endif
   return false;
 }
 

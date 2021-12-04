@@ -217,12 +217,11 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
   // setup texture wrapping
   const GLenum aWrapMode = theParams->IsRepeat() ? GL_REPEAT : theCtx->TextureWrapClamp();
   setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_S, aWrapMode);
-#if !defined(GL_ES_VERSION_2_0)
   if (theTarget == GL_TEXTURE_1D)
   {
     return;
   }
-#endif
+
   setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_T, aWrapMode);
   if (theTarget == GL_TEXTURE_3D
    || theTarget == GL_TEXTURE_CUBE_MAP)
@@ -284,11 +283,6 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
                                                const OpenGl_Texture& theTexture,
                                                const Handle(Graphic3d_TextureParams)& theParams)
 {
-#if defined(GL_ES_VERSION_2_0)
-  (void )theCtx;
-  (void )theTexture;
-  (void )theParams;
-#else
   if (theCtx->core11ffp == NULL
    || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
@@ -386,7 +380,6 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
     }
     default: break;
   }
-#endif
 }
 
 // =======================================================================
@@ -397,11 +390,6 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
                                                const OpenGl_Texture& theTexture,
                                                const Handle(Graphic3d_TextureParams)& theParams)
 {
-#if defined(GL_ES_VERSION_2_0)
-  (void )theCtx;
-  (void )theTexture;
-  (void )theParams;
-#else
   if (theCtx->core11ffp == NULL)
   {
     return;
@@ -442,5 +430,4 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
     }
     default: break;
   }
-#endif
 }

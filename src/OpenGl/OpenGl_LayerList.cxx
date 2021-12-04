@@ -573,11 +573,11 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
   if (aLayerSettings.ToEnableDepthTest())
   {
     // assuming depth test is enabled by default
-    glDepthFunc (theDefaultSettings.DepthFunc);
+    aCtx->core11fwd->glDepthFunc (theDefaultSettings.DepthFunc);
   }
   else
   {
-    glDepthFunc (GL_ALWAYS);
+    aCtx->core11fwd->glDepthFunc (GL_ALWAYS);
   }
 
   // save environment texture
@@ -592,7 +592,7 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
 
   // handle depth write
   theWorkspace->UseDepthWrite() = aLayerSettings.ToEnableDepthWrite() && theDefaultSettings.DepthMask == GL_TRUE;
-  glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
+  aCtx->core11fwd->glDepthMask (theWorkspace->UseDepthWrite() ? GL_TRUE : GL_FALSE);
 
   const Standard_Boolean hasLocalCS = !aLayerSettings.OriginTransformation().IsNull();
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
@@ -863,8 +863,8 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
     if (aClearDepthLayer > aClearDepthLayerPrev)
     {
       aClearDepthLayerPrev = aClearDepthLayer;
-      glDepthMask (GL_TRUE);
-      glClear (GL_DEPTH_BUFFER_BIT);
+      aCtx->core11fwd->glDepthMask (GL_TRUE);
+      aCtx->core11fwd->glClear (GL_DEPTH_BUFFER_BIT);
     }
   }
 

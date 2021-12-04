@@ -50,15 +50,14 @@ namespace
     // while WebGL 1.0 + GL_WEBGL_depth_texture needs GL_DEPTH_STENCIL_ATTACHMENT
     // and NOT separate GL_DEPTH_ATTACHMENT+GL_STENCIL_ATTACHMENT calls which is different to OpenGL ES 2.0 + extension
     return theCtx->IsGlGreaterEqual (3, 0) || theCtx->extPDS;
-  #elif defined(GL_ES_VERSION_2_0)
+  #else
     // supported since OpenGL ES 3.0,
     // while OpenGL ES 2.0 + GL_EXT_packed_depth_stencil needs separate GL_DEPTH_ATTACHMENT+GL_STENCIL_ATTACHMENT calls
-    return theCtx->IsGlGreaterEqual (3, 0);
-  #else
+    //
     // available on desktop since OpenGL 3.0
     // or OpenGL 2.0 + GL_ARB_framebuffer_object (GL_EXT_framebuffer_object is unsupported by OCCT)
-    (void )theCtx;
-    return true;
+    return theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+        || theCtx->IsGlGreaterEqual (3, 0);
   #endif
   }
 }
@@ -968,60 +967,104 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
   bool toConvRgba2Rgb = false;
   switch (theImage.Format())
   {
-  #if !defined(GL_ES_VERSION_2_0)
     case Image_Format_Gray:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
       aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_UNSIGNED_BYTE;
       break;
+    }
     case Image_Format_GrayF:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
       aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_FLOAT;
       break;
+    }
     case Image_Format_RGF:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
       aFormat = GL_RG;
       aType   = GL_FLOAT;
       break;
+    }
     case Image_Format_RGB:
-      aFormat = GL_RGB;
-      aType   = GL_UNSIGNED_BYTE;
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        aFormat = GL_RGBA;
+        toConvRgba2Rgb = true;
+      }
+      else
+      {
+        aFormat = GL_RGB;
+      }
+      aType = GL_UNSIGNED_BYTE;
       break;
+    }
     case Image_Format_BGR:
-      aFormat = GL_BGR;
-      aType   = GL_UNSIGNED_BYTE;
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        aFormat = GL_RGBA;
+        toConvRgba2Rgb = true;
+      }
+      else
+      {
+        aFormat = GL_BGR;
+      }
+      aType = GL_UNSIGNED_BYTE;
       break;
+    }
     case Image_Format_BGRA:
     case Image_Format_BGR32:
-      aFormat = GL_BGRA;
-      aType   = GL_UNSIGNED_BYTE;
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        aFormat = GL_RGBA;
+        toSwapRgbaBgra = true;
+      }
+      else
+      {
+        aFormat = GL_BGRA;
+      }
+      aType = GL_UNSIGNED_BYTE;
       break;
+    }
     case Image_Format_BGRF:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
       aFormat = GL_BGR;
       aType   = GL_FLOAT;
       break;
+    }
     case Image_Format_BGRAF:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
       aFormat = GL_BGRA;
       aType   = GL_FLOAT;
       break;
-  #else
-    case Image_Format_Gray:
-    case Image_Format_GrayF:
-    case Image_Format_BGRF:
-    case Image_Format_BGRAF:
-    case Image_Format_RGF:
-      return Standard_False;
-    case Image_Format_BGRA:
-    case Image_Format_BGR32:
-      aFormat = GL_RGBA;
-      aType   = GL_UNSIGNED_BYTE;
-      toSwapRgbaBgra = true;
-      break;
-    case Image_Format_BGR:
-    case Image_Format_RGB:
-      aFormat = GL_RGBA;
-      aType   = GL_UNSIGNED_BYTE;
-      toConvRgba2Rgb = true;
-      break;
-  #endif
+    }
     case Image_Format_RGBA:
     case Image_Format_RGB32:
       aFormat = GL_RGBA;
@@ -1052,30 +1095,25 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     return Standard_False;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   GLint aReadBufferPrev = GL_BACK;
-  if (theBufferType == Graphic3d_BT_Depth
+  if (theGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+   && theBufferType == Graphic3d_BT_Depth
    && aFormat != GL_DEPTH_COMPONENT)
   {
     return Standard_False;
   }
-#else
-  (void )theBufferType;
-#endif
 
   // bind FBO if used
   if (!theFbo.IsNull() && theFbo->IsValid())
   {
     theFbo->BindBuffer (theGlCtx);
   }
-  else
+  else if (theGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     theGlCtx->core11fwd->glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
     GLint aDrawBufferPrev = GL_BACK;
     theGlCtx->core11fwd->glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
-    glReadBuffer (aDrawBufferPrev);
-  #endif
+    theGlCtx->core11fwd->glReadBuffer (aDrawBufferPrev);
   }
 
   // setup alignment
@@ -1155,11 +1193,9 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
   {
     theFbo->UnbindBuffer (theGlCtx);
   }
-  else
+  else if (theGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    glReadBuffer (aReadBufferPrev);
-  #endif
+    theGlCtx->core11fwd->glReadBuffer (aReadBufferPrev);
   }
 
   if (toSwapRgbaBgra)

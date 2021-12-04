@@ -468,12 +468,11 @@ bool OpenGl_PBREnvironment::processSpecIBLMap (const Handle(OpenGl_Context)& the
 
   const bool canRenderMipmaps = theCtx->hasFboRenderMipmap;
   const OpenGl_TextureFormat aTexFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizedFormat());
-#if !defined(GL_ES_VERSION_2_0)
-  const GLint anIntFormat = aTexFormat.InternalFormat();
-#else
   // ES 2.0 does not support sized formats and format conversions - them detected from data type
-  const GLint anIntFormat = theCtx->IsGlGreaterEqual (3, 0) ? aTexFormat.InternalFormat() : aTexFormat.PixelFormat();
-#endif
+  const GLint anIntFormat = (theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+                          || theCtx->IsGlGreaterEqual (3, 0))
+                          ? aTexFormat.InternalFormat()
+                          : aTexFormat.PixelFormat();
 
   for (int aLevelIter = mySpecMapLevelsNumber - 1;; --aLevelIter)
   {

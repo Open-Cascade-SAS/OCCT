@@ -24,7 +24,6 @@ private:
 
 public: //! @name OpenGL 4.5 additives to 4.4
 
-#if !defined(GL_ES_VERSION_2_0)
   using theBaseClass_t::glClipControl;
   using theBaseClass_t::glCreateTransformFeedbacks;
   using theBaseClass_t::glTransformFeedbackBufferBase;
@@ -135,7 +134,6 @@ public: //! @name OpenGL 4.5 additives to 4.4
   using theBaseClass_t::glGetnUniformuiv;
   using theBaseClass_t::glReadnPixels;
   using theBaseClass_t::glTextureBarrier;
-#endif
 
 };
 

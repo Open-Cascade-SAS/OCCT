@@ -199,7 +199,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
   // Finally draw something to make sure UserDraw really works
   aVertBuffer->BindAttribute  (aCtx, Graphic3d_TOA_POS);
-  glDrawArrays(GL_LINE_LOOP, 0, aVertBuffer->GetElemsNb());
+  aCtx->core11fwd->glDrawArrays (GL_LINE_LOOP, 0, aVertBuffer->GetElemsNb());
   aVertBuffer->UnbindAttribute(aCtx, Graphic3d_TOA_POS);
   aVertBuffer->Release (aCtx.get());
 }
@@ -350,10 +350,15 @@ static int VGlDebug (Draw_Interpretor& theDI,
                      const char**      theArgVec)
 {
   Handle(OpenGl_GraphicDriver) aDriver;
+  Handle(OpenGl_Context) aGlCtx;
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (!aView.IsNull())
   {
     aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aView->Viewer()->Driver());
+    if (!aDriver.IsNull())
+    {
+      aGlCtx = aDriver->GetSharedContext();
+    }
   }
   OpenGl_Caps* aDefCaps = getDefaultCaps().get();
   OpenGl_Caps* aCaps    = !aDriver.IsNull() ? &aDriver->ChangeOptions() : NULL;
@@ -365,15 +370,15 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       aCaps = aDefCaps;
     }
-    else
+    else if (!aGlCtx.IsNull())
     {
-      Standard_Boolean isActive = OpenGl_Context::CheckExtension ((const char* )::glGetString (GL_EXTENSIONS),
+      Standard_Boolean isActive = OpenGl_Context::CheckExtension ((const char* )aGlCtx->core11fwd->glGetString (GL_EXTENSIONS),
                                                                   "GL_ARB_debug_output");
       aDebActive = isActive ? " (active)" : " (inactive)";
       if (isActive)
       {
         // GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB
-        aSyncActive = ::glIsEnabled (0x8242) == GL_TRUE ? " (active)" : " (inactive)";
+        aSyncActive = aGlCtx->core11fwd->glIsEnabled (0x8242) == GL_TRUE ? " (active)" : " (inactive)";
       }
     }
 

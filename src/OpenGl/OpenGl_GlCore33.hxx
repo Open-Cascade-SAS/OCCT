@@ -24,8 +24,6 @@ struct OpenGl_GlCore33 : public OpenGl_GlCore32
 private:
   typedef OpenGl_GlCore32 theBaseClass_t;
 
-#if !defined(GL_ES_VERSION_2_0)
-
 public: //! @name GL_ARB_blend_func_extended (added to OpenGL 3.3 core)
 
   using theBaseClass_t::glBindFragDataLocationIndexed;
@@ -68,8 +66,6 @@ public: //! @name GL_ARB_vertex_type_2_10_10_10_rev (added to OpenGL 3.3 core)
 public: //! @name OpenGL 3.3 additives to 3.2
 
   using theBaseClass_t::glVertexAttribDivisor;
-
-#endif
 
 };
 

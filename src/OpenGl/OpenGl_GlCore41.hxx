@@ -24,8 +24,6 @@ struct OpenGl_GlCore41 : public OpenGl_GlCore40
 private:
   typedef OpenGl_GlCore40 theBaseClass_t;
 
-#if !defined(GL_ES_VERSION_2_0)
-
 public: //! @name GL_ARB_ES2_compatibility (added to OpenGL 4.1 core)
 
   using theBaseClass_t::glReleaseShaderCompiler;
@@ -128,8 +126,6 @@ public: //! @name GL_ARB_viewport_array (added to OpenGL 4.1 core)
   using theBaseClass_t::glDepthRangeIndexed;
   using theBaseClass_t::glGetFloati_v;
   using theBaseClass_t::glGetDoublei_v;
-
-#endif
 
 };
 

@@ -30,8 +30,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Graphic3d_ShaderManager)
 
 namespace
 {
-#if !defined(GL_ES_VERSION_2_0)
-
   static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
   static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = { 0.0f, 0.0f, -1.0f };
   static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
@@ -112,9 +110,8 @@ namespace
       theCtx->core11ffp->glLoadMatrixf (theModelView.GetData());
     }
 
-    glEnable (theLightGlId);
+    theCtx->core11fwd->glEnable (theLightGlId);
   }
-#endif
 }
 
 // =======================================================================
@@ -122,11 +119,7 @@ namespace
 // purpose  : Creates new empty shader manager
 // =======================================================================
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
-#if defined(GL_ES_VERSION_2_0)
-: Graphic3d_ShaderManager (Aspect_GraphicsLibrary_OpenGLES),
-#else
-: Graphic3d_ShaderManager (Aspect_GraphicsLibrary_OpenGL),
-#endif
+: Graphic3d_ShaderManager (theContext->GraphicsLibrary()),
   myFfpProgram (new OpenGl_ShaderProgramFFP()),
   myShadingModel (Graphic3d_TypeOfShadingModel_Gouraud),
   myUnlitPrograms (new OpenGl_SetOfPrograms()),
@@ -366,7 +359,6 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
   theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp == NULL)
     {
       return;
@@ -409,7 +401,6 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     {
       myContext->core11fwd->glDisable (aLightGlId);
     }
-  #endif
     return;
   }
 
@@ -596,13 +587,11 @@ void OpenGl_ShaderManager::pushProjectionState (const Handle(OpenGl_ShaderProgra
   theProgram->UpdateState (OpenGl_PROJECTION_STATE, myProjectionState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp != NULL)
     {
       myContext->core11ffp->glMatrixMode (GL_PROJECTION);
       myContext->core11ffp->glLoadMatrixf (myProjectionState.ProjectionMatrix().GetData());
     }
-  #endif
     return;
   }
 
@@ -636,7 +625,6 @@ void OpenGl_ShaderManager::pushModelWorldState (const Handle(OpenGl_ShaderProgra
   theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp != NULL)
     {
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
@@ -644,7 +632,6 @@ void OpenGl_ShaderManager::pushModelWorldState (const Handle(OpenGl_ShaderProgra
       myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
       theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
     }
-  #endif
     return;
   }
 
@@ -683,7 +670,6 @@ void OpenGl_ShaderManager::pushWorldViewState (const Handle(OpenGl_ShaderProgram
   theProgram->UpdateState (OpenGl_WORLD_VIEW_STATE, myWorldViewState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp != NULL)
     {
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
@@ -691,7 +677,6 @@ void OpenGl_ShaderManager::pushWorldViewState (const Handle(OpenGl_ShaderProgram
       myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
       theProgram->UpdateState (OpenGl_MODEL_WORLD_STATE, myModelWorldState.Index());
     }
-  #endif
     return;
   }
 
@@ -743,7 +728,6 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
   theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp == NULL)
     {
       return;
@@ -814,7 +798,6 @@ void OpenGl_ShaderManager::pushClippingState (const Handle(OpenGl_ShaderProgram)
       const OpenGl_Mat4 aModelView = myWorldViewState.WorldViewMatrix() * myModelWorldState.ModelWorldMatrix();
       myContext->core11ffp->glLoadMatrixf (aModelView.GetData());
     }
-  #endif
     return;
   }
 
@@ -917,7 +900,6 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
   theProgram->UpdateState (OpenGl_MATERIAL_STATE, myMaterialState.Index());
   if (theProgram == myFfpProgram)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     if (myContext->core11ffp == NULL)
     {
       return;
@@ -951,7 +933,6 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
       myContext->core11ffp->glMaterialfv(GL_BACK, GL_EMISSION,  aBackMat.Emission.GetData());
       myContext->core11ffp->glMaterialf (GL_BACK, GL_SHININESS, aBackMat.Shine());
     }
-  #endif
     return;
   }
 
@@ -1050,7 +1031,6 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
                                                                     (float )myContext->Viewport()[2], (float )myContext->Viewport()[3]));
     }
   }
-#if !defined(GL_ES_VERSION_2_0)
   else if (myContext->core11ffp != NULL)
   {
     // manage FFP lighting
@@ -1064,9 +1044,6 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
       myContext->core11fwd->glEnable (GL_LIGHTING);
     }
   }
-#else
-  (void )theShadingModel;
-#endif
 }
 
 // =======================================================================

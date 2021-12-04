@@ -84,6 +84,8 @@ OpenGl_ExtGS.hxx
 OpenGl_GLESExtensions.hxx
 OpenGl_GlFunctions.cxx
 OpenGl_GlFunctions.hxx
+OpenGl_GlNative.hxx
+OpenGl_GlTypes.hxx
 OpenGl_Flipper.cxx
 OpenGl_Flipper.hxx
 OpenGl_GlCore11.hxx

@@ -464,6 +464,7 @@ void OpenGl_View::GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, c
 // =======================================================================
 Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType)
 {
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   if (theBufferType != Graphic3d_BT_RGB_RayTraceHdrLeft)
   {
     return myWorkspace->BufferDump(myFBO, theImage, theBufferType);
@@ -474,9 +475,10 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
     return myWorkspace->BufferDump(myAccumFrames % 2 ? myRaytraceFBO2[0] : myRaytraceFBO1[0], theImage, theBufferType);
   }
 
-#if defined(GL_ES_VERSION_2_0)
-  return false;
-#else
+  if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+  {
+    return false;
+  }
   if (theImage.Format() != Image_Format_RGBF)
   {
     return false;
@@ -499,9 +501,9 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
     return false;
   }
 
-  glBindTexture (GL_TEXTURE_RECTANGLE, myRaytraceOutputTexture[0]->TextureId());
-  glGetTexImage (GL_TEXTURE_RECTANGLE, 0, OpenGl_TextureFormat::Create<GLfloat, 1>().Format(), GL_FLOAT, &aValues[0]);
-  glBindTexture (GL_TEXTURE_RECTANGLE, 0);
+  aCtx->core11fwd->glBindTexture (GL_TEXTURE_RECTANGLE, myRaytraceOutputTexture[0]->TextureId());
+  aCtx->core11fwd->glGetTexImage (GL_TEXTURE_RECTANGLE, 0, OpenGl_TextureFormat::Create<GLfloat, 1>().Format(), GL_FLOAT, &aValues[0]);
+  aCtx->core11fwd->glBindTexture (GL_TEXTURE_RECTANGLE, 0);
   for (unsigned int aRow = 0; aRow < aH; aRow += 2)
   {
     for (unsigned int aCol = 0; aCol < aW; aCol += 3)
@@ -515,7 +517,6 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
   }
 
   return true;
-#endif
 }
 
 // =======================================================================
@@ -989,7 +990,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
   }
 
 #ifdef GL_DEPTH_CLAMP
-  const bool wasDepthClamped = aCtx->arbDepthClamp && glIsEnabled (GL_DEPTH_CLAMP);
+  const bool wasDepthClamped = aCtx->arbDepthClamp && aCtx->core11fwd->glIsEnabled (GL_DEPTH_CLAMP);
   if (aCtx->arbDepthClamp && !wasDepthClamped)
   {
     // make sure background is always drawn (workaround skybox rendering on some hardware)
@@ -1280,14 +1281,18 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
         if (!aCtx->GetResource (THE_SHARED_ENV_LUT_KEY, anEnvLUT))
         {
           bool toConvertHalfFloat = false;
-        #if defined(GL_ES_VERSION_2_0)
+
           // GL_RG32F is not texture-filterable format in OpenGL ES without OES_texture_float_linear extension.
           // GL_RG16F is texture-filterable since OpenGL ES 3.0 or OpenGL ES 2.0 + OES_texture_half_float_linear.
           // OpenGL ES 3.0 allows initialization of GL_RG16F from 32-bit float data, but OpenGL ES 2.0 + OES_texture_half_float does not.
           // Note that it is expected that GL_RG16F has enough precision for this table, so that it can be used also on desktop OpenGL.
-          const bool hasHalfFloat = aCtx->IsGlGreaterEqual (3, 0) || aCtx->CheckExtension ("GL_OES_texture_half_float_linear");
-          toConvertHalfFloat = !aCtx->IsGlGreaterEqual (3, 0) && hasHalfFloat;
-        #endif
+          const bool hasHalfFloat = aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+                                && (aCtx->IsGlGreaterEqual (3, 0) || aCtx->CheckExtension ("GL_OES_texture_half_float_linear"));
+          if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+          {
+            toConvertHalfFloat = !aCtx->IsGlGreaterEqual (3, 0) && hasHalfFloat;
+          }
+
           Image_Format anImgFormat = Image_Format_UNKNOWN;
           if (aCtx->arbTexRG)
           {
@@ -1330,13 +1335,12 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
           }
 
           OpenGl_TextureFormat aTexFormat = OpenGl_TextureFormat::FindFormat (aCtx, aPixMap->Format(), false);
-        #if defined(GL_ES_VERSION_2_0)
-          if (aTexFormat.IsValid()
+          if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+           && aTexFormat.IsValid()
            && hasHalfFloat)
           {
             aTexFormat.SetInternalFormat (aCtx->arbTexRG ? GL_RG16F : GL_RGBA16F);
           }
-        #endif
 
           Handle(Graphic3d_TextureParams) aParams = new Graphic3d_TextureParams();
           aParams->SetFilter (Graphic3d_TOTF_BILINEAR);
@@ -1677,18 +1681,14 @@ void OpenGl_View::Redraw()
       anImmFbosOit[1] = NULL;
     }
 
-  #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
-  #endif
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          aMainFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
 
     redraw (Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], aMainFbosOit[0]);
     myBackBufferRestored = Standard_True;
     myIsImmediateDrawn   = Standard_False;
-  #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
-  #endif
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     if (!redrawImmediate (Graphic3d_Camera::Projection_MonoLeftEye, aMainFbos[0], anImmFbos[0], anImmFbosOit[0]))
@@ -1708,18 +1708,15 @@ void OpenGl_View::Redraw()
       {
         blitBuffers (aMainFbos[0], anXRFbo); // resize or resolve MSAA samples
       }
-    #if !defined(GL_ES_VERSION_2_0)
-      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGL;
-    #else
-      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGLES;
-    #endif
+      const Aspect_GraphicsLibrary aGraphicsLib = aCtx->GraphicsLibrary();
       myXRSession->SubmitEye ((void* )(size_t )anXRFbo->ColorTexture()->TextureId(),
                               aGraphicsLib, Aspect_ColorSpace_sRGB, Aspect_Eye_Left);
     }
 
-  #if !defined(GL_ES_VERSION_2_0)
-    aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
-  #endif
+    if (aCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+    {
+      aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
+    }
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          aMainFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
 
@@ -1741,11 +1738,8 @@ void OpenGl_View::Redraw()
       {
         blitBuffers (aMainFbos[1], anXRFbo); // resize or resolve MSAA samples
       }
-    #if !defined(GL_ES_VERSION_2_0)
-      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGL;
-    #else
-      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGLES;
-    #endif
+
+      const Aspect_GraphicsLibrary aGraphicsLib = aCtx->GraphicsLibrary();
       myXRSession->SubmitEye ((void* )(size_t )anXRFbo->ColorTexture()->TextureId(),
                               aGraphicsLib, Aspect_ColorSpace_sRGB, Aspect_Eye_Right);
       aCtx->core11fwd->glFinish();
@@ -1778,12 +1772,10 @@ void OpenGl_View::Redraw()
       anImmFboOit = myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL;
     }
 
-  #if !defined(GL_ES_VERSION_2_0)
     if (aMainFbo == NULL)
     {
       aCtx->SetReadDrawBuffer (GL_BACK);
     }
-  #endif
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          aMainFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
 
@@ -1920,12 +1912,10 @@ void OpenGl_View::RedrawImmediate()
     {
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
-  #if !defined(GL_ES_VERSION_2_0)
     if (anImmFbos[0] == NULL)
     {
       aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_LEFT : GL_BACK);
     }
-  #endif
 
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          anImmFbos[0] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
@@ -1946,12 +1936,10 @@ void OpenGl_View::RedrawImmediate()
     {
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
-  #if !defined(GL_ES_VERSION_2_0)
     if (anImmFbos[1] == NULL)
     {
       aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
     }
-  #endif
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          anImmFbos[1] != NULL ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate (Graphic3d_Camera::Projection_MonoRightEye,
@@ -1974,12 +1962,10 @@ void OpenGl_View::RedrawImmediate()
       anImmFbo    = myImmediateSceneFbos[0].operator->();
       anImmFboOit = myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL;
     }
-  #if !defined(GL_ES_VERSION_2_0)
     if (aMainFbo == NULL)
     {
       aCtx->SetReadDrawBuffer (GL_BACK);
     }
-  #endif
     aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(),
                          anImmFbo != aFrameBuffer ? myRenderParams.RenderResolutionScale : 1.0f);
     toSwap = redrawImmediate (aProjectType,
@@ -2090,9 +2076,10 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
   }
   else if (theDrawFbo == NULL)
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    aCtx->core11fwd->glGetBooleanv (GL_DOUBLEBUFFER, &toCopyBackToFront);
-  #endif
+    if (aCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+    {
+      aCtx->core11fwd->glGetBooleanv (GL_DOUBLEBUFFER, &toCopyBackToFront);
+    }
     if (toCopyBackToFront
      && myTransientDrawToFront)
     {
@@ -2204,7 +2191,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
                                         && theOutputFBO != NULL
                                         && theOutputFBO->NbSamples() != 0);
 
-#if !defined(GL_ES_VERSION_2_0)
   // Disable current clipping planes
   if (aContext->core11ffp != NULL)
   {
@@ -2214,7 +2200,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
       aContext->core11fwd->glDisable (aClipPlaneId);
     }
   }
-#endif
 
   // update states of OpenGl_BVHTreeSelector (frustum culling algorithm);
   // note that we pass here window dimensions ignoring Graphic3d_RenderingParams::RenderResolutionScale
@@ -2262,20 +2247,17 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
     drawBackground (myWorkspace, theProjection);
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   // Switch off lighting by default
   if (aContext->core11ffp != NULL
    && aContext->caps->ffpEnable)
   {
     aContext->core11fwd->glDisable (GL_LIGHTING);
   }
-#endif
 
   // =================================
   //      Step 3: Redraw main plane
   // =================================
 
-#if !defined(GL_ES_VERSION_2_0)
   // if the view is scaled normal vectors are scaled to unit
   // length for correct displaying of shaded objects
   const gp_Pnt anAxialScale = aContext->Camera()->AxialScale();
@@ -2289,7 +2271,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   {
     aContext->SetGlNormalizeEnabled (Standard_False);
   }
-#endif
 
   aManager->SetShadingModel (OpenGl_ShaderManager::PBRShadingModelFallback (myRenderParams.ShadingModel, checkPBRAvailability()));
 
@@ -2558,14 +2539,15 @@ void OpenGl_View::bindDefaultFbo (OpenGl_FrameBuffer* theCustomFbo)
   }
   else
   {
-  #if !defined(GL_ES_VERSION_2_0)
-    aCtx->SetReadDrawBuffer (GL_BACK);
-  #else
-    if (aCtx->arbFBO != NULL)
+    if (aCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+    {
+      aCtx->SetReadDrawBuffer (GL_BACK);
+    }
+    else if (aCtx->arbFBO != NULL)
     {
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
-  #endif
+
     const Standard_Integer aViewport[4] = { 0, 0, myWindow->Width(), myWindow->Height() };
     aCtx->ResizeViewport (aViewport);
   }
@@ -2744,13 +2726,12 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     aCtx->core20fwd->glDepthFunc (GL_ALWAYS);
     aCtx->core20fwd->glDepthMask (GL_TRUE);
     aCtx->core20fwd->glEnable (GL_DEPTH_TEST);
-  #if defined(GL_ES_VERSION_2_0)
-    if (!aCtx->IsGlGreaterEqual (3, 0)
-     && !aCtx->extFragDepth)
+    if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+    && !aCtx->IsGlGreaterEqual (3, 0)
+    && !aCtx->extFragDepth)
     {
       aCtx->core20fwd->glDisable (GL_DEPTH_TEST);
     }
-  #endif
 
     aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
 
@@ -2995,7 +2976,6 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
 bool OpenGl_View::copyBackToFront()
 {
   myIsImmediateDrawn = Standard_False;
-#if !defined(GL_ES_VERSION_2_0)
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   if (aCtx->core11ffp == NULL)
   {
@@ -3056,9 +3036,6 @@ bool OpenGl_View::copyBackToFront()
   // read/write from front buffer now
   aCtx->SetReadBuffer (aCtx->DrawBuffer());
   return true;
-#else
-  return false;
-#endif
 }
 
 // =======================================================================

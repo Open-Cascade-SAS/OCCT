@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #if defined(_WIN32)
-  #include <windows.h>
+  #include <windows.h> // for UWP
 #endif
 
 #include <OpenGl_GraphicDriver.hxx>
@@ -59,6 +59,10 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
   #endif
 #endif
 
+#if defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || (defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
+  #define OpenGl_USE_GLES2
+#endif
+
 namespace
 {
   static const Handle(OpenGl_Context) TheNullGlCtx;
@@ -75,7 +79,7 @@ namespace
       EGL_ALPHA_SIZE,   0,
       EGL_DEPTH_SIZE,   24,
       EGL_STENCIL_SIZE, 8,
-    #if defined(GL_ES_VERSION_2_0)
+    #if defined(OpenGl_USE_GLES2)
       EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
     #else
       EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
@@ -87,7 +91,7 @@ namespace
     EGLint aNbConfigs = 0;
     for (Standard_Integer aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
     {
-    #if defined(GL_ES_VERSION_2_0)
+    #if defined(OpenGl_USE_GLES2)
       aConfigAttribs[6 * 2 + 1] = aGlesVer == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT;
     #else
       if (aGlesVer == 2)
@@ -317,7 +321,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
     return Standard_False;
   }
 
-#if defined(GL_ES_VERSION_2_0)
+#if defined(OpenGl_USE_GLES2)
   EGLint anEglCtxAttribs3[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE, EGL_NONE };
   EGLint anEglCtxAttribs2[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
   if (eglBindAPI (EGL_OPENGL_ES_API) != EGL_TRUE)

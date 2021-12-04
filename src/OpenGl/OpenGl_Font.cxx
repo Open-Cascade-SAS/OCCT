@@ -203,9 +203,10 @@ bool OpenGl_Font::renderGlyph (const Handle(OpenGl_Context)& theCtx,
   }
 
   aTexture->Bind (theCtx);
-#if !defined(GL_ES_VERSION_2_0)
-  theCtx->core11fwd->glPixelStorei (GL_UNPACK_LSB_FIRST,  GL_FALSE);
-#endif
+  if (theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+  {
+    theCtx->core11fwd->glPixelStorei (GL_UNPACK_LSB_FIRST,  GL_FALSE);
+  }
   if (theCtx->hasUnpackRowLength)
   {
     theCtx->core11fwd->glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);

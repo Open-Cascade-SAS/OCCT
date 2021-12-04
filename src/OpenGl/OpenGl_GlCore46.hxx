@@ -24,12 +24,10 @@ private:
 
 public: //! @name OpenGL 4.6 additives to 4.5
 
-#if !defined(GL_ES_VERSION_2_0)
   using theBaseClass_t::glSpecializeShader;
   using theBaseClass_t::glMultiDrawArraysIndirectCount;
   using theBaseClass_t::glMultiDrawElementsIndirectCount;
   using theBaseClass_t::glPolygonOffsetClamp;
-#endif
 
 };
 

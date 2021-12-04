@@ -24,8 +24,6 @@ struct OpenGl_GlCore40 : public OpenGl_GlCore33
 private:
   typedef OpenGl_GlCore33 theBaseClass_t;
 
-#if !defined(GL_ES_VERSION_2_0)
-
 public: //! @name GL_ARB_draw_indirect (added to OpenGL 4.0 core)
 
   using theBaseClass_t::glDrawArraysIndirect;
@@ -92,8 +90,6 @@ public: //! @name OpenGL 4.0 additives to 3.3
   using theBaseClass_t::glBlendEquationSeparatei;
   using theBaseClass_t::glBlendFunci;
   using theBaseClass_t::glBlendFuncSeparatei;
-
-#endif
 
 };
 

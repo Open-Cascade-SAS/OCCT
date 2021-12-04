@@ -15,6 +15,8 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_StencilTest.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Workspace.hxx>
 #include <Standard_Dump.hxx>
 
 OpenGl_StencilTest::OpenGl_StencilTest()
@@ -26,16 +28,17 @@ OpenGl_StencilTest::OpenGl_StencilTest()
 // function : Render
 // purpose  :
 // =======================================================================
-void OpenGl_StencilTest::Render (const Handle(OpenGl_Workspace)&) const
+void OpenGl_StencilTest::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   if (myIsEnabled)
   {
-    glEnable (GL_STENCIL_TEST);
-    glStencilFunc (GL_NOTEQUAL, 1, 0xFF);
+    aCtx->core11fwd->glEnable (GL_STENCIL_TEST);
+    aCtx->core11fwd->glStencilFunc (GL_NOTEQUAL, 1, 0xFF);
   }
   else
   {
-    glDisable (GL_STENCIL_TEST);
+    aCtx->core11fwd->glDisable (GL_STENCIL_TEST);
   }
 }
 

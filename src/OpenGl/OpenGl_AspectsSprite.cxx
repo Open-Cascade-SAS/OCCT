@@ -83,15 +83,14 @@ bool OpenGl_AspectsSprite::HasPointSprite (const Handle(OpenGl_Context)& theCtx,
 bool OpenGl_AspectsSprite::IsDisplayListSprite (const Handle(OpenGl_Context)& theCtx,
                                                 const Handle(Graphic3d_Aspects)& theAspects)
 {
-#if !defined(GL_ES_VERSION_2_0)
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+  {
+    return false;
+  }
+
   const Handle(OpenGl_PointSprite)& aSprite = Sprite (theCtx, theAspects, false);
   return !aSprite.IsNull()
        && aSprite->IsDisplayList();
-#else
-  (void )theCtx;
-  (void )theAspects;
-  return false;
-#endif
 }
 
 // =======================================================================
@@ -274,7 +273,6 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   }
   else if (theCtx->core11ffp != NULL)
   {
-  #if !defined(GL_ES_VERSION_2_0)
     // Creating list with bitmap for using it in compatibility mode
     GLuint aBitmapList = theCtx->core11ffp->glGenLists (1);
     aSprite->SetDisplayList (theCtx, aBitmapList);
@@ -315,7 +313,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
     {
       if (aFormat.IsValid())
       {
-        aBitmapList = glGenLists (1);
+        aBitmapList = theCtx->core11ffp->glGenLists (1);
         aSpriteA->SetDisplayList (theCtx, aBitmapList);
       }
 
@@ -329,7 +327,6 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
         theCtx->core11ffp->glEndList();
       }
     }
-  #endif
   }
 }
 // =======================================================================
