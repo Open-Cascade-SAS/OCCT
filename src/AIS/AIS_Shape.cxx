@@ -359,7 +359,7 @@ void AIS_Shape::Color (Quantity_Color& theColor) const
 {
   if (const Handle(Prs3d_ShadingAspect)& aShading = myDrawer->ShadingAspect())
   {
-    theColor = myDrawer->ShadingAspect()->Color(myCurrentFacingModel);
+    theColor = aShading->Color(myCurrentFacingModel);
   }
 }
 
