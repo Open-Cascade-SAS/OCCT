@@ -2296,6 +2296,9 @@ void Perform(const Handle(Adaptor3d_CurveOnSurface)& theCurveOnSurface,
   
 @section upgrade_occt770 Upgrade to OCCT 7.7.0
 
+Building OCCT now requires C++11-compliant compiler, so that some legacy compilers (Visual Studio 2010 and 2012) are no more supported.
+It is recommended using Visual Studio 2015 or newer for building OCCT on Windows platform.
+
 @subsection upgrade_occt770_parallel_flag_removed Removed parameter theIsParallel from Put/Compute/Perform
 
 theIsParallel parameter has been removed from Put/Compute/Perform from the next classes:

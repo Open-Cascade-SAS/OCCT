@@ -1837,7 +1837,7 @@ bool areEqualAngles (double theAngle1, double theAngle2)
 {
   return Abs(theAngle1  - theAngle2) < Precision::Angular();
 }
-~~~
+~~~~
 
 It is also possible to check parallelism of two vectors as follows:
 ~~~~{.cpp}
@@ -1845,7 +1845,7 @@ bool areParallelVectors (const gp_Vec& theVec1, const gp_Vec& theVec2)
 {
   return theVec1.IsParallel (theVec2, Precision::Angular());
 }
-~~~
+~~~~
 
 Note that *Precision::Angular()* can be used on both dot and cross products because for small angles the *Sine* and the *Angle* are equivalent.
 So to test if two directions of type *gp_Dir* are perpendicular, it is legal to use the following code:
@@ -1854,7 +1854,7 @@ bool arePerpendicular (const gp_Dir& theDir1, const gp_Dir& theDir2)
 {
   return Abs(theDir1 * theDir2) < Precision::Angular();
 }
-~~~
+~~~~
 
 #### Precision::Confusion
 
@@ -1875,7 +1875,7 @@ bool isNullVector (const gp_Vec& theVec)
 {
   return theVec.Magnitude() < Precision::Confusion();
 }
-~~~
+~~~~
 
 #### Precision::Intersection
 

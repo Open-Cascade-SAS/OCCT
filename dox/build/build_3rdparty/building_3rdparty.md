@@ -241,7 +241,7 @@ VTK is an open-source, freely available software system for 3D computer graphics
 2. Use CMake to generate VS projects for building the library:
    - Start CMake-GUI and select VTK folder as source path, and the folder of your choice for VS project and intermediate build data.
    - Click **Configure**.
-   - Select the VS version to be used from the ones you have installed (we recommend using VS 2010) and the architecture (32 or 64-bit).
+   - Select the VS version to be used from the ones you have installed (we recommend using VS 2015) and the architecture (32 or 64-bit).
    - Generate VS projects with default CMake options. The open solution *VTK.sln* will be generated in the build folder.
 
 3. Build project VTK in Release mode.

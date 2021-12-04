@@ -234,7 +234,7 @@ This module handles various problems of interoperability between CAD systems, ca
   * @ref occt_user_guides__step "STEP" (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
   * @ref occt_iges_1 "IGES" (up to 5.3).
   * **glTF** 2.0 reader and writer.
-  * **OBJ** mesh file reader.
+  * **OBJ** mesh file reader and writer.
   * **VRML** converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language).
   * **STL** converter translates Open CASCADE shapes to STL files.
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
@@ -341,7 +341,7 @@ The tables below describe the recommended software configurations for which OCCT
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2010 SP1, 2012 Update 4, 2013 Update 5, 2015 Update 3, 2017 <sup>1</sup>, 2019 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
+| Windows   | Microsoft Visual Studio: 2013 Update 5, 2015 Update 3, 2017 <sup>1</sup>, 2019, 2022 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X / macOS | XCode 6 or newer |
 | Android   | NDK r12, GNU gcc 4.9 or newer |
@@ -352,29 +352,28 @@ The tables below describe the recommended software configurations for which OCCT
 @subsection intro_req_libs Third-party libraries and tools
 
 The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
-They are not needed if relevant component is not needed.
+They are not needed if relevant component is not needed - it is possible building core OCCT modules without additional dependencies.
 
 Note that pre-built packages of many of the listed libraries are available at
-https://www.opencascade.com/content/3rd-party-components
+https://dev.opencascade.org/resources/download/3rd-party-components
 
-| Component | Where to find | Used for | Required or optional |
+| Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
-| CMake 2.8+ | https://cmake.org/ | Build from sources | Optional |
-| Intel TBB 4.x or later | https://www.threadingbuildingblocks.org/ | All | Optional (advanced parallelization of algorithms) |
-| OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required |
-| OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | Optional (VR support) |
-| Direct3D 9 | Windows | Visualization | Optional (integration with GUI using Direct3D) |
-| FreeType 2.4+ | https://www.freetype.org/download.html | Visualization | Optional (text rendering) |
-| FreeImage 3.17+ | https://sourceforge.net/projects/freeimage/files | Visualization | Optional (support of common 2D graphic formats) |
-| FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Optional (video recording) |
-| VTK 6.1+ | https://www.vtk.org/download/ | Visualization | Optional (VTK integration) |
-| Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Optional (update of STEP and ExprIntrp parsers) |
-| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Optional (reading glTF files) |
-| Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Optional (reading compressed glTF files) |
-| Tcl/Tk 8.6.3+ <br> or ActiveTcl 8.6 | https://www.tcl.tk/software/tcltk/download.html <br> https://www.activestate.com/activetcl/downloads | DRAW Test Harness | Required |
-| Qt Desktop: Qt 4.8.6+ <br> Android: Qt 5.3.2+ | https://www.qt.io/download/ | Samples and demos | Optional (Qt samples) |
-| Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | Required |
-| Graphviz 2.38+ | https://graphviz.org/ | Documentation | Optional (dependency graphs) |
+| CMake 2.8+ | https://cmake.org/ | Configuration | Build from sources |
+| Intel TBB 4.x or later | https://oneapi-src.github.io/oneTBB/ | All | Parallelization of algorithms (alternative to built-in thread pool) |
+| OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
+| OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
+| FreeType 2.4+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
+| FreeImage 3.17+ | https://sourceforge.net/projects/freeimage/files | Visualization | Reading/writing image files |
+| FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Video recording |
+| VTK 6.1+ | https://www.vtk.org/download/ | IVtk | VTK integration module |
+| Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Updating STEP and ExprIntrp parsers |
+| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading glTF files |
+| Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Reading compressed glTF files |
+| Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpretor in Draw module |
+| Qt 5.3.2+ | https://www.qt.io/download/ | Inspector and Samples | Inspector Qt samples and  |
+| Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
+| Graphviz 2.38+ | https://graphviz.org/ | Documentation | Generating dependency graphs |
 
 @subsection intro_req_hw Hardware
 
@@ -398,7 +397,7 @@ Don't forget to report these bugs to vendors.
 
 @section intro_install Download and Installation
 
-OCCT can be downloaded from https://www.opencascade.com/content/latest-release
+OCCT can be downloaded from https://dev.opencascade.org/release
 
 In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
 using it in your project, to ensure binary compatibility and appropriate configuration of the library.
@@ -432,7 +431,7 @@ The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROO
 
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;
-  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++ 2010, 2012, 2013, 2015, 2017 and 2019 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
+  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++ 2013, 2015, 2017, 2019 and 2022 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
   * **adm/scripts** This folder contains auxiliary scripts for semi-automated building and packaging of OCCT for different platforms;
   * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
   * **doc**  This folder contains OCCT documentation in HTML and PDF format;
@@ -442,7 +441,7 @@ The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROO
   * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
   * **tests**  This folder contains scripts for OCCT testing.
   * **tools**  This folder contains sources of Inspector tool.
-  * **win64/vc10**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2010;
+  * **win64/vc14**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++ 2015;
 
 @subsection intro_install_linux Linux
 
@@ -463,7 +462,7 @@ To run any Open CASCADE Technology application you need to set the environment v
 
 You can define the environment variables with env.bat script located in the 
 $CASROOT folder. This script accepts two arguments to be used: 
-the version of Visual Studio (vc10 -- vc142) and the architecture (win32 or win64).
+the version of Visual Studio (vc12 -- vc142) and the architecture (win32 or win64).
 
 The additional environment settings necessary for compiling OCCT libraries and samples 
 by Microsoft Visual Studio can be set using script custom.bat located in the same folder. 
@@ -507,7 +506,7 @@ The scripts are located in the OCCT root folder.
   * **CSF_ShadersDirectory** (optional) defines the directory for GLSL programs for Ray Tracing renderer (embedded resources are used when variable is undefined);
   * **CSF_SHMessage** (optional) defines the path to the messages file for *ShapeHealing*;
   * **CSF_XSMessage** (optional) defines the path to the messages file for **STEP** and **IGES** translators;
-  * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults*, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
+  * **CSF_StandardDefaults**, **CSF_StandardLiteDefaults**, **CSF_XCAFDefaults**, and **CSF_PluginDefaults** define paths to directory where configuration files for OCAF persistence are located (required for open/save operations with OCAF documents);
   * **CSF_IGESDefaults** and **CSF_STEPDefaults** (optional) define paths to directory where resource files of **IGES** and **STEP** translators are located;
   * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.
   * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
@@ -532,7 +531,7 @@ At minimum the following should be considered:
    the application should be provided separately in a modifiable form, with all materials needed for the user to be able to run the application with a modified version of OCCT.
 
 If you want to use Open CASCADE Technology without being bound by LGPL requirements, 
-please <a href="https://www.opencascade.com/contact">contact Open CASCADE company</a> for a commercial license.
+please <a href="https://dev.opencascade.org/webform/contact_us">contact Open CASCADE company</a> for a commercial license.
 
 Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
 WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
@@ -593,10 +592,10 @@ If you need further information on VTK, refer to VTK Homepage https://www.vtk.or
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
 for automatic creation of Technical Documentation from C++ header files. 
-If you need further information on Doxygen, refer to https://www.stack.nl/~dimitri/doxygen/index.html.
+If you need further information on Doxygen, refer to https://www.doxygen.nl/index.html.
 
 **Graphviz** is open source graph visualization software developed by John Ellson, Emden Gansner, Yifan Hu and Arif Bilgin. 
-Graph visualization is representiation of structured information as diagrams of abstract graphs and networks. 
+Graph visualization is representation of structured information as diagrams of abstract graphs and networks.
 This product is used together with Doxygen in Open CASCADE Technology for automatic creation of Technical Documentation 
 (generation of dependency graphs). Current versions of Graphviz are licensed on an open source 
 basis under The Eclipse Public License (EPL) (https://www.graphviz.org/license/).
