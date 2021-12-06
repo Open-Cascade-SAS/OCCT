@@ -14114,7 +14114,7 @@ Animation playback:
 
 Animation definition:
   vanim Name/sub/name [-clear] [-delete]
-        [start TimeSec] [duration TimeSec]
+        [-start TimeSec] [-duration TimeSec] [-end TimeSec]
 
 Animation name defined in path-style (anim/name or anim.name)
 specifies nested animations.
