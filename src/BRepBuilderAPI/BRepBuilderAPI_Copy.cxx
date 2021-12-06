@@ -59,8 +59,11 @@ public:
   //! copies it if required
   Standard_Boolean NewTriangulation(const TopoDS_Face& F, Handle(Poly_Triangulation)& T) Standard_OVERRIDE
   {
-    if (!myCopyMesh)
+    if (!myCopyMesh
+      && BRep_Tool::IsGeometric (F))
+    {
       return Standard_False;
+    }
 
     TopLoc_Location L;
     T = BRep_Tool::Triangulation(F, L);
@@ -93,8 +96,11 @@ public:
   //! copies it if required
   Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P) Standard_OVERRIDE
   {
-    if (!myCopyMesh)
+    if (!myCopyMesh
+      && BRep_Tool::IsGeometric (E))
+    {
       return Standard_False;
+    }
 
     TopLoc_Location aLoc;
     P = BRep_Tool::Polygon3D(E, aLoc);
@@ -113,8 +119,11 @@ public:
   Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge& E, const TopoDS_Face& F,
                                              Handle(Poly_PolygonOnTriangulation)& P) Standard_OVERRIDE
   {
-    if (!myCopyMesh)
+    if (!myCopyMesh
+      && BRep_Tool::IsGeometric (E))
+    {
       return Standard_False;
+    }
 
     TopLoc_Location aLoc;
     Handle(Poly_Triangulation) aTria = BRep_Tool::Triangulation(F, aLoc);

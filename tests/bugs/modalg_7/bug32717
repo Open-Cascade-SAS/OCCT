@@ -1,0 +1,17 @@
+puts "================================================="
+puts "0032717: Modeling Algorithms - BRepBuilderAPI_Copy should not remove triangulation from surface-less faces"
+puts "================================================="
+puts ""
+
+pload XDE MODELING
+box b 1 2 3
+incmesh b 1
+checktrinfo b -tri 12 -nod 24
+tclean -geom b
+trinfo b
+checktrinfo b -tri 12 -nod 24
+
+# check that copied triangulation-only shape is copied with triangulation
+tcopy b bb
+trinfo bb
+checktrinfo bb -tri 12 -nod 24
