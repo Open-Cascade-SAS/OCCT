@@ -58,7 +58,7 @@ struct Aspect_XDisplay;
   #undef GL_COPY_WRITE_BUFFER_BINDING
 #endif
 // include glext.h provided by Khronos group
-#include <glext.h>
+#include <OpenGl_glext.h>
 
 class OpenGl_Context;
 
