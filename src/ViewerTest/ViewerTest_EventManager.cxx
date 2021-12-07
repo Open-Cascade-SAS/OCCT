@@ -38,17 +38,25 @@
   #include <emscripten.h>
   #include <emscripten/html5.h>
 
-  //! Callback flushing events and redrawing the WebGL canvas.
-  static void onWasmRedrawView (void* )
+//=======================================================================
+//function : onWasmRedrawView
+//purpose  :
+//=======================================================================
+void ViewerTest_EventManager::onWasmRedrawView (void* )
+{
+  Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+  if (!aViewCtrl.IsNull())
   {
-    Handle(ViewerTest_EventManager) aViewCtrl = ViewerTest::CurrentEventManager();
+    aViewCtrl->myNbUpdateRequests = 0;
+
     const Handle(V3d_View)& aView = ViewerTest::CurrentView();
     const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
-    if (!aViewCtrl.IsNull() && !aView.IsNull() && !aCtx.IsNull())
+    if (!aView.IsNull() && !aCtx.IsNull())
     {
       aViewCtrl->ProcessExpose();
     }
   }
+}
 #endif
 
 Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
@@ -76,7 +84,7 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
   myView (theView),
   myToPickPnt (Standard_False),
   myIsTmpContRedraw (Standard_False),
-  myUpdateRequests (0)
+  myNbUpdateRequests (0)
 {
   myViewAnimation = GlobalViewAnimation();
 
@@ -183,7 +191,6 @@ void ViewerTest_EventManager::ProcessExpose()
 void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                                 const Handle(V3d_View)& theView)
 {
-  myUpdateRequests = 0;
   AIS_ViewController::handleViewRedraw (theCtx, theView);
 
   // On non-Windows platforms Aspect_Window::InvalidateContent() from rendering thread does not work as expected
@@ -202,10 +209,12 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
     }
 
     // ask more frames
-    ++myUpdateRequests;
-  #if defined(__EMSCRIPTEN__)
-    emscripten_async_call (onWasmRedrawView, this, 0);
-  #endif
+    if (++myNbUpdateRequests == 1)
+    {
+    #if defined(__EMSCRIPTEN__)
+      emscripten_async_call (onWasmRedrawView, this, -1);
+    #endif
+    }
   }
   else if (myIsTmpContRedraw)
   {
@@ -256,11 +265,11 @@ void ViewerTest_EventManager::ProcessInput()
   // Queue onWasmRedrawView() callback to redraw canvas after all user input is flushed by browser.
   // Redrawing viewer on every single message would be a pointless waste of resources,
   // as user will see only the last drawn frame due to WebGL implementation details.
-  if (++myUpdateRequests == 1)
+  // -1 in emscripten_async_call() redirects to requestAnimationFrame();
+  // requestPostAnimationFrame() is a better under development alternative.
+  if (++myNbUpdateRequests == 1)
   {
-  #if defined(__EMSCRIPTEN__)
-    emscripten_async_call (onWasmRedrawView, this, 0);
-  #endif
+    emscripten_async_call (onWasmRedrawView, this, -1);
   }
 #else
   // handle synchronously

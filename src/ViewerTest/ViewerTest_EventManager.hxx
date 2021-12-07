@@ -140,6 +140,13 @@ protected:
 
 private:
 
+#if defined(__EMSCRIPTEN__)
+  //! Callback flushing events and redrawing the WebGL canvas.
+  static void onWasmRedrawView (void* );
+#endif
+
+private:
+
   Handle(AIS_InteractiveContext) myCtx;
   Handle(V3d_View) myView;
   NCollection_DataMap<unsigned int, Aspect_VKey> myNavKeyMap; //!< map of Hot-Key (key+modifiers) to Action
@@ -148,7 +155,7 @@ private:
   Standard_Boolean myToPickPnt;
   Standard_Boolean myIsTmpContRedraw;
 
-  unsigned int     myUpdateRequests; //!< counter for unhandled update requests
+  unsigned int     myNbUpdateRequests; //!< counter for unhandled update requests
 
 };
 

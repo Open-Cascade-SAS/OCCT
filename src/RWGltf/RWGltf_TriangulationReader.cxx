@@ -224,7 +224,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePr
 
 #ifdef HAVE_DRACO
   std::vector<char> aReadData;
-  aReadData.resize (theGltfData.StreamLength);
+  aReadData.resize ((size_t )theGltfData.StreamLength);
   aSharedStream->read (aReadData.data(), (std::streamsize )theGltfData.StreamLength);
   if (!aSharedStream->good())
   {

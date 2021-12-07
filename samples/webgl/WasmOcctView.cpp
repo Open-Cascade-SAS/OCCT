@@ -114,7 +114,7 @@ WasmOcctView& WasmOcctView::Instance()
 // ================================================================
 WasmOcctView::WasmOcctView()
 : myDevicePixelRatio (1.0f),
-  myUpdateRequests (0)
+  myNbUpdateRequests (0)
 {
   addActionHotKeys (Aspect_VKey_NavForward,        Aspect_VKey_W, Aspect_VKey_W | Aspect_VKeyFlags_SHIFT);
   addActionHotKeys (Aspect_VKey_NavBackward ,      Aspect_VKey_S, Aspect_VKey_S | Aspect_VKeyFlags_SHIFT);
@@ -395,9 +395,11 @@ void WasmOcctView::ProcessInput()
     // Queue onRedrawView()/redrawView callback to redraw canvas after all user input is flushed by browser.
     // Redrawing viewer on every single message would be a pointless waste of resources,
     // as user will see only the last drawn frame due to WebGL implementation details.
-    if (++myUpdateRequests == 1)
+    // -1 in emscripten_async_call() redirects to requestAnimationFrame();
+    // requestPostAnimationFrame() is a better under development alternative.
+    if (++myNbUpdateRequests == 1)
     {
-      emscripten_async_call (onRedrawView, this, 0);
+      emscripten_async_call (onRedrawView, this, -1);
     }
   }
 }
@@ -424,6 +426,7 @@ void WasmOcctView::redrawView()
 {
   if (!myView.IsNull())
   {
+    myNbUpdateRequests = 0;
     FlushViewEvents (myContext, myView, true);
   }
 }
@@ -435,13 +438,14 @@ void WasmOcctView::redrawView()
 void WasmOcctView::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                      const Handle(V3d_View)& theView)
 {
-  myUpdateRequests = 0;
   AIS_ViewController::handleViewRedraw (theCtx, theView);
   if (myToAskNextFrame)
   {
     // ask more frames
-    ++myUpdateRequests;
-    emscripten_async_call (onRedrawView, this, 0);
+    if (++myNbUpdateRequests == 1)
+    {
+      emscripten_async_call (onRedrawView, this, -1);
+    }
   }
 }
 

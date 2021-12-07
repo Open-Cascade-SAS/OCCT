@@ -249,7 +249,7 @@ private:
   TCollection_AsciiString        myCanvasId;         //!< canvas element id on HTML page
   Graphic3d_Vec2i                myWinSizeOld;
   float                          myDevicePixelRatio; //!< device pixel ratio for handling high DPI displays
-  unsigned int                   myUpdateRequests;   //!< counter for unhandled update requests
+  unsigned int                   myNbUpdateRequests; //!< counter for unhandled update requests
 
 };
 
