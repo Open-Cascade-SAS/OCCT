@@ -240,7 +240,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePr
   if (XCAFPrs::GetViewNameMode())
   {
     // Displaying Name attributes
-    thePrs->SetDisplayPriority (10);
+    thePrs->SetDisplayPriority (Graphic3d_DisplayPriority_Topmost);
     DisplayText (myLabel, thePrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
   }
 }

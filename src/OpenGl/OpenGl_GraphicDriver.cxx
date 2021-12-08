@@ -743,7 +743,7 @@ void OpenGl_GraphicDriver::SetZLayerSettings (const Graphic3d_ZLayerId theLayerI
 Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::CreateStructure (const Handle(Graphic3d_StructureManager)& theManager)
 {
   Handle(OpenGl_Structure) aStructure = new OpenGl_Structure (theManager);
-  myMapOfStructure.Bind (aStructure->Id, aStructure.operator->());
+  myMapOfStructure.Bind (aStructure->Identification(), aStructure.operator->());
   return aStructure;
 }
 
@@ -754,12 +754,12 @@ Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::CreateStructure (const Handle
 void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure)
 {
   OpenGl_Structure* aStructure = NULL;
-  if (!myMapOfStructure.Find (theCStructure->Id, aStructure))
+  if (!myMapOfStructure.Find (theCStructure->Identification(), aStructure))
   {
     return;
   }
 
-  myMapOfStructure.UnBind (theCStructure->Id);
+  myMapOfStructure.UnBind (theCStructure->Identification());
   aStructure->Release (GetSharedContext());
   theCStructure.Nullify();
 }

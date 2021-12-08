@@ -27,8 +27,6 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Quantity_Color.hxx>
 
-#include "Graphic3d_Structure.pxx"
-
 #include <Standard_Dump.hxx>
 
 #include <stdio.h>
@@ -133,7 +131,7 @@ void Graphic3d_Structure::Remove()
   }
 
   // Destruction of me in the graphic library
-  const Standard_Integer aStructId = myCStructure->Id;
+  const Standard_Integer aStructId = myCStructure->Identification();
   myCStructure->GraphicDriver()->RemoveIdentification(aStructId);
   myCStructure->GraphicDriver()->RemoveStructure (myCStructure);
   myCStructure.Nullify();
@@ -164,25 +162,25 @@ void Graphic3d_Structure::Display()
 //function : SetDisplayPriority
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::SetDisplayPriority (const Standard_Integer thePriority)
+void Graphic3d_Structure::SetDisplayPriority (const Graphic3d_DisplayPriority thePriority)
 {
   if (IsDeleted()
-   || thePriority == myCStructure->Priority)
+   || thePriority == myCStructure->Priority())
   {
     return;
   }
 
-  myCStructure->PreviousPriority = myCStructure->Priority;
-  myCStructure->Priority         = thePriority;
+  Graphic3d_PriorityDefinitionError_Raise_if ((thePriority > Graphic3d_DisplayPriority_Topmost)
+                                           || (thePriority < Graphic3d_DisplayPriority_Bottom),
+                                              "Bad value for StructurePriority");
 
-  if (myCStructure->Priority != myCStructure->PreviousPriority)
+  myCStructure->SetPreviousPriority (myCStructure->Priority());
+  myCStructure->SetPriority (thePriority);
+  if (myCStructure->Priority() != myCStructure->PreviousPriority())
   {
-    Graphic3d_PriorityDefinitionError_Raise_if ((myCStructure->Priority > Structure_MAX_PRIORITY)
-                                             || (myCStructure->Priority < Structure_MIN_PRIORITY),
-                                                "Bad value for StructurePriority");
     if (myCStructure->stick)
     {
-      myStructureManager->ChangeDisplayPriority (this, myCStructure->PreviousPriority, myCStructure->Priority);
+      myStructureManager->ChangeDisplayPriority (this, myCStructure->PreviousPriority(), myCStructure->Priority());
     }
   }
 }
@@ -194,16 +192,16 @@ void Graphic3d_Structure::SetDisplayPriority (const Standard_Integer thePriority
 void Graphic3d_Structure::ResetDisplayPriority()
 {
   if (IsDeleted()
-   || myCStructure->Priority == myCStructure->PreviousPriority)
+   || myCStructure->Priority() == myCStructure->PreviousPriority())
   {
     return;
   }
 
-  const Standard_Integer aPriority = myCStructure->Priority;
-  myCStructure->Priority = myCStructure->PreviousPriority;
+  const Graphic3d_DisplayPriority aPriority = myCStructure->Priority();
+  myCStructure->SetPriority (myCStructure->PreviousPriority());
   if (myCStructure->stick)
   {
-    myStructureManager->ChangeDisplayPriority (this, aPriority, myCStructure->Priority);
+    myStructureManager->ChangeDisplayPriority (this, aPriority, myCStructure->Priority());
   }
 }
 
@@ -237,10 +235,8 @@ void Graphic3d_Structure::Highlight (const Handle(Graphic3d_PresentationAttribut
     return;
   }
 
-  SetDisplayPriority (Structure_MAX_PRIORITY - 1);
-
+  SetDisplayPriority (Graphic3d_DisplayPriority_Highlight);
   myCStructure->GraphicHighlight (theStyle);
-
   if (!theToUpdateMgr)
   {
     return;

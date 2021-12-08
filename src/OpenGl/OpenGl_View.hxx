@@ -403,7 +403,7 @@ private:
 
   //! Adds the structure to display lists of the view.
   Standard_EXPORT virtual void displayStructure (const Handle(Graphic3d_CStructure)& theStructure,
-                                                 const Standard_Integer thePriority) Standard_OVERRIDE;
+                                                 const Graphic3d_DisplayPriority thePriority) Standard_OVERRIDE;
 
   //! Erases the structure from display lists of the view.
   Standard_EXPORT virtual void eraseStructure (const Handle(Graphic3d_CStructure)& theStructure) Standard_OVERRIDE;
@@ -414,7 +414,7 @@ private:
 
   //! Changes the priority of a structure within its Z layer in the specified view.
   Standard_EXPORT virtual void changePriority (const Handle(Graphic3d_CStructure)& theCStructure,
-                                               const Standard_Integer theNewPriority) Standard_OVERRIDE;
+                                               const Graphic3d_DisplayPriority theNewPriority) Standard_OVERRIDE;
 
 private:
 

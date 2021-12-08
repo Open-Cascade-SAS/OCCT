@@ -76,7 +76,23 @@ public:
   Standard_EXPORT virtual void Display();
 
   //! Returns the current display priority for this structure.
-  Standard_Integer DisplayPriority() const { return myCStructure->Priority; }
+  Graphic3d_DisplayPriority DisplayPriority() const { return myCStructure->Priority(); }
+
+  //! Modifies the order of displaying the structure.
+  //! Values are between 0 and 10.
+  //! Structures are drawn according to their display priorities in ascending order.
+  //! A structure of priority 10 is displayed the last and appears over the others.
+  //! The default value is 5.
+  //! Warning: If structure is displayed then the SetDisplayPriority method erases it and displays with the new priority.
+  //! Raises Graphic3d_PriorityDefinitionError if Priority is greater than 10 or a negative value.
+  Standard_EXPORT void SetDisplayPriority (const Graphic3d_DisplayPriority thePriority);
+
+  Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed instead of integer number to SetDisplayPriority()")
+  void SetDisplayPriority (const Standard_Integer thePriority) { SetDisplayPriority ((Graphic3d_DisplayPriority )thePriority); }
+
+  //! Reset the current priority of the structure to the previous priority.
+  //! Warning: If structure is displayed then the SetDisplayPriority() method erases it and displays with the previous priority.
+  Standard_EXPORT void ResetDisplayPriority();
   
   //! Erases this structure in all the views of the visualiser.
   virtual void Erase() { erase(); }
@@ -106,28 +122,6 @@ public:
     if (!myCStructure.IsNull()) { myCStructure->IsInfinite = theToSet ? 1 : 0; }
   }
 
-  //! Modifies the order of displaying the structure.
-  //! Values are between 0 and 10.
-  //! Structures are drawn according to their display priorities
-  //! in ascending order.
-  //! A structure of priority 10 is displayed the last and appears over the others.
-  //! The default value is 5.
-  //! Category: Methods to modify the class definition
-  //! Warning: If <me> is displayed then the SetDisplayPriority
-  //! method erase <me> and display <me> with the
-  //! new priority.
-  //! Raises PriorityDefinitionError if <Priority> is
-  //! greater than 10 or a negative value.
-  Standard_EXPORT void SetDisplayPriority (const Standard_Integer Priority);
-  
-  //! Reset the current priority of the structure to the
-  //! previous priority.
-  //! Category: Methods to modify the class definition
-  //! Warning: If <me> is displayed then the SetDisplayPriority
-  //! method erase <me> and display <me> with the
-  //! previous priority.
-  Standard_EXPORT void ResetDisplayPriority();
-  
   //! Set Z layer ID for the structure. The Z layer mechanism
   //! allows to display structures presented in higher layers in overlay
   //! of structures in lower layers by switching off z buffer depth
@@ -411,7 +405,7 @@ public:
   }
 
   //! Returns the identification number of this structure.
-  Standard_Integer Identification() const { return myCStructure->Id; }
+  Standard_Integer Identification() const { return myCStructure->Identification(); }
   
   //! Prints information about the network associated
   //! with the structure <AStructure>.

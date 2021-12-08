@@ -66,12 +66,13 @@ public:
 
   //! Sets the display priority theNewPrior of the
   //! presentable object thePrsObject in this framework with the display mode theMode.
-  Standard_EXPORT void SetDisplayPriority (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode, const Standard_Integer theNewPrior) const;
-
+  Standard_EXPORT void SetDisplayPriority (const Handle(PrsMgr_PresentableObject)& thePrsObject,
+                                           const Standard_Integer theMode,
+                                           const Graphic3d_DisplayPriority theNewPrior) const;
 
   //! Returns the display priority of the presentable object
   //! thePrsObject in this framework with the display mode theMode.
-  Standard_EXPORT Standard_Integer DisplayPriority (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode) const;
+  Standard_EXPORT Graphic3d_DisplayPriority DisplayPriority (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Standard_Integer theMode) const;
   
   //! Set Z layer ID for all presentations of the object.
   Standard_EXPORT void SetZLayer (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Graphic3d_ZLayerId theLayerId);

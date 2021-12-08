@@ -276,10 +276,15 @@ public: //! @name highlighting management
 public: //! @name object presence management (View affinity, Layer, Priority)
 
   //! Returns the display priority of the Object.
-  Standard_EXPORT Standard_Integer DisplayPriority (const Handle(AIS_InteractiveObject)& theIObj) const;
+  Standard_EXPORT Graphic3d_DisplayPriority DisplayPriority (const Handle(AIS_InteractiveObject)& theIObj) const;
 
   //! Sets the display priority of the seen parts presentation of the Object.
-  Standard_EXPORT void SetDisplayPriority (const Handle(AIS_InteractiveObject)& theIObj, const Standard_Integer thePriority);
+  Standard_EXPORT void SetDisplayPriority (const Handle(AIS_InteractiveObject)& theIObj,
+                                           const Graphic3d_DisplayPriority thePriority);
+
+  Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed instead of integer number to SetDisplayPriority()")
+  void SetDisplayPriority (const Handle(AIS_InteractiveObject)& theIObj,
+                           const Standard_Integer thePriority) { SetDisplayPriority (theIObj, (Graphic3d_DisplayPriority )thePriority); }
 
   //! Get Z layer id set for displayed interactive object.
   Standard_EXPORT Graphic3d_ZLayerId GetZLayer (const Handle(AIS_InteractiveObject)& theIObj) const;

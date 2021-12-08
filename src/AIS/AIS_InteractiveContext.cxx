@@ -882,11 +882,11 @@ Standard_Boolean AIS_InteractiveContext::IsDisplayed (const Handle(AIS_Interacti
 //function : DisplayPriority
 //purpose  :
 //=======================================================================
-Standard_Integer AIS_InteractiveContext::DisplayPriority (const Handle(AIS_InteractiveObject)& theIObj) const
+Graphic3d_DisplayPriority AIS_InteractiveContext::DisplayPriority (const Handle(AIS_InteractiveObject)& theIObj) const
 {
   if (theIObj.IsNull())
   {
-    return -1;
+    return Graphic3d_DisplayPriority_INVALID;
   }
 
   const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theIObj);
@@ -901,7 +901,7 @@ Standard_Integer AIS_InteractiveContext::DisplayPriority (const Handle(AIS_Inter
                                 : 0);
     return myMainPM->DisplayPriority (theIObj, aDispMode);
   }
-  return 0;
+  return Graphic3d_DisplayPriority_INVALID;
 }
 
 //=======================================================================
@@ -909,7 +909,7 @@ Standard_Integer AIS_InteractiveContext::DisplayPriority (const Handle(AIS_Inter
 //purpose  :
 //=======================================================================
 void AIS_InteractiveContext::SetDisplayPriority (const Handle(AIS_InteractiveObject)& theIObj,
-                                                 const Standard_Integer               thePriority)
+                                                 const Graphic3d_DisplayPriority      thePriority)
 {
   if (theIObj.IsNull())
   {

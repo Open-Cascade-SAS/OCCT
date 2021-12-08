@@ -103,7 +103,7 @@ void V3d_CircularGrid::SetColors (const Quantity_Color& aColor, const Quantity_C
 
 void V3d_CircularGrid::Display ()
 {
-  myStructure->SetDisplayPriority (1);
+  myStructure->SetDisplayPriority (Graphic3d_DisplayPriority_AlmostBottom);
   myStructure->Display();
   UpdateDisplay();
 }

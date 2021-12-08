@@ -1301,7 +1301,7 @@ void SelectMgr_ViewerSelector::DisplaySensitive (const Handle(V3d_View)& theView
   for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructs); aStructIter.More(); aStructIter.Next())
   {
     Handle(Graphic3d_Structure)& aStruct = aStructIter.ChangeValue();
-    aStruct->SetDisplayPriority (10);
+    aStruct->SetDisplayPriority (Graphic3d_DisplayPriority_Topmost);
     aStruct->Display();
   }
 
@@ -1348,7 +1348,7 @@ void SelectMgr_ViewerSelector::DisplaySensitive (const Handle(SelectMgr_Selectio
   SelectMgr::ComputeSensitivePrs (aStruct, theSel, theTrsf, Handle(Graphic3d_TransformPers)());
 
   myStructs.Append (aStruct);
-  myStructs.Last()->SetDisplayPriority (10);
+  myStructs.Last()->SetDisplayPriority (Graphic3d_DisplayPriority_Topmost);
   myStructs.Last()->Display();
 
   theView->Update();

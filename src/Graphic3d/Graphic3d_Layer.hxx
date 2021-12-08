@@ -16,6 +16,7 @@
 
 #include <Graphic3d_BvhCStructureSet.hxx>
 #include <Graphic3d_BvhCStructureSetTrsfPers.hxx>
+#include <Graphic3d_DisplayPriority.hxx>
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
@@ -24,11 +25,13 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Sequence.hxx>
 
+#include <array>
+
 //! Defines index map of structures.
 typedef NCollection_IndexedMap<const Graphic3d_CStructure*> Graphic3d_IndexedMapOfStructure;
 
 //! Defines array of indexed maps of structures.
-typedef NCollection_Array1<Graphic3d_IndexedMapOfStructure> Graphic3d_ArrayOfIndexedMapOfStructure;
+typedef std::array<Graphic3d_IndexedMapOfStructure, Graphic3d_DisplayPriority_NB> Graphic3d_ArrayOfIndexedMapOfStructure;
 
 class Graphic3d_CullingTool;
 
@@ -40,7 +43,6 @@ public:
 
   //! Initializes associated priority list and layer properties
   Standard_EXPORT Graphic3d_Layer (Graphic3d_ZLayerId theId,
-                                   Standard_Integer theNbPriorities,
                                    const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Destructor.
@@ -49,10 +51,10 @@ public:
   //! Return layer id.
   Graphic3d_ZLayerId LayerId() const { return myLayerId; }
 
-  //! Returns BVH tree builder for frustom culling.
+  //! Returns BVH tree builder for frustum culling.
   const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
 
-  //! Assigns BVH tree builder for frustom culling.
+  //! Assigns BVH tree builder for frustum culling.
   void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myBVHPrimitivesTrsfPers.SetBuilder (theBuilder); }
 
   //! Return true if layer was marked with immediate flag.
@@ -65,12 +67,12 @@ public:
   Standard_EXPORT void SetLayerSettings (const Graphic3d_ZLayerSettings& theSettings);
 
   Standard_EXPORT void Add (const Graphic3d_CStructure* theStruct,
-                            Standard_Integer thePriority,
+                            Graphic3d_DisplayPriority thePriority,
                             Standard_Boolean isForChangePriority = Standard_False);
 
   //! Remove structure and returns its priority, if the structure is not found, method returns negative value
   Standard_EXPORT bool Remove (const Graphic3d_CStructure* theStruct,
-                               Standard_Integer& thePriority,
+                               Graphic3d_DisplayPriority& thePriority,
                                Standard_Boolean isForChangePriority = Standard_False);
 
   //! @return the number of structures
@@ -80,7 +82,7 @@ public:
   Standard_Integer NbStructuresNotCulled() const { return myNbStructuresNotCulled; }
 
   //! Returns the number of available priority levels
-  Standard_Integer NbPriorities() const { return myArray.Length(); }
+  Standard_Integer NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
 
   //! Append layer of acceptable type (with similar number of priorities or less).
   //! Returns Standard_False if the list can not be accepted.
@@ -88,6 +90,9 @@ public:
 
   //! Returns array of structures.
   const Graphic3d_ArrayOfIndexedMapOfStructure& ArrayOfStructures() const { return myArray; }
+
+  //! Returns structures for specified priority.
+  const Graphic3d_IndexedMapOfStructure& Structures (Graphic3d_DisplayPriority thePriority) const { return myArray[thePriority]; }
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.

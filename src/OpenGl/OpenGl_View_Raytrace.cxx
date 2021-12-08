@@ -121,10 +121,10 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
       continue;
     }
 
-    const Graphic3d_ArrayOfIndexedMapOfStructure& aStructArray = aLayer->ArrayOfStructures();
-    for (Standard_Integer anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
+    for (Standard_Integer aPriorityIter = Graphic3d_DisplayPriority_Bottom; aPriorityIter <= Graphic3d_DisplayPriority_Topmost; ++aPriorityIter)
     {
-      for (OpenGl_Structure::StructIterator aStructIt (aStructArray.Value (anIndex)); aStructIt.More(); aStructIt.Next())
+      const Graphic3d_IndexedMapOfStructure& aStructures = aLayer->Structures ((Graphic3d_DisplayPriority )aPriorityIter);
+      for (OpenGl_Structure::StructIterator aStructIt (aStructures); aStructIt.More(); aStructIt.Next())
       {
         const OpenGl_Structure* aStructure = aStructIt.Value();
 
@@ -136,7 +136,7 @@ Standard_Boolean OpenGl_View::updateRaytraceGeometry (const RaytraceUpdateMode  
           }
           else if (aStructure->IsVisible() && myRaytraceParameters.GlobalIllumination)
           {
-            aNonRaytraceIDs.insert (aStructure->highlight ? aStructure->Id : -aStructure->Id);
+            aNonRaytraceIDs.insert (aStructure->highlight ? aStructure->Identification() : -aStructure->Identification());
           }
         }
         else if (theMode == OpenGl_GUM_PREPARE)

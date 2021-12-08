@@ -1051,7 +1051,7 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager)& th
 
   if ( IsNeedToRedisplay )
   {
-    aSelectionPrs->SetDisplayPriority(9);
+    aSelectionPrs->SetDisplayPriority (Graphic3d_DisplayPriority_Highlight);
     aSelectionPrs->Display();
   }
 

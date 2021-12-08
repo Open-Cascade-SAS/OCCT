@@ -6548,16 +6548,16 @@ static int VPriority (Draw_Interpretor& theDI,
   }
 
   TCollection_AsciiString aLastArg (theArgs[theArgNum - 1]);
-  Standard_Integer aPriority = -1;
+  Standard_Integer aPriority = Graphic3d_DisplayPriority_INVALID;
   Standard_Integer aNbArgs   = theArgNum;
   if (aLastArg.IsIntegerValue())
   {
     aPriority = aLastArg.IntegerValue();
     --aNbArgs;
-    if (aPriority < 0 || aPriority > 10)
+    if (aPriority < Graphic3d_DisplayPriority_Bottom || aPriority > Graphic3d_DisplayPriority_Topmost)
     {
       Message::SendFail() << "Syntax error: the specified display priority value '" << aLastArg
-                          << "' is outside the valid range [0..10]";
+                          << "' is outside the valid range [" << Graphic3d_DisplayPriority_Bottom << ".." << Graphic3d_DisplayPriority_Topmost << "]";
       return 1;
     }
   }
@@ -6589,13 +6589,13 @@ static int VPriority (Draw_Interpretor& theDI,
       return 1;
     }
 
-    if (aPriority < 1)
+    if (aPriority == Graphic3d_DisplayPriority_INVALID)
     {
       theDI << aContext->DisplayPriority (anIObj) << " ";
     }
     else
     {
-      aContext->SetDisplayPriority (anIObj, aPriority);
+      aContext->SetDisplayPriority (anIObj, (Graphic3d_DisplayPriority )aPriority);
     }
   }
   return 0;

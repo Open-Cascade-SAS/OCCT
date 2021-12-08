@@ -38,7 +38,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
     aSettings.SetEnableDepthWrite   (Standard_False);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_BotOSD, 1, Handle(Select3D_BVHBuilder3d)());
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_BotOSD, Handle(Select3D_BVHBuilder3d)());
     aLayer->SetLayerSettings (aSettings);
     myLayers.Append (aLayer);
     myLayerIds.Bind (aLayer->LayerId(), aLayer);
@@ -54,7 +54,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Default, 1, Handle(Select3D_BVHBuilder3d)());
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Default, Handle(Select3D_BVHBuilder3d)());
     aLayer->SetLayerSettings (aSettings);
     myLayers.Append (aLayer);
     myLayerIds.Bind (aLayer->LayerId(), aLayer);
@@ -70,7 +70,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Top, 1, Handle(Select3D_BVHBuilder3d)());
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Top, Handle(Select3D_BVHBuilder3d)());
     aLayer->SetLayerSettings (aSettings);
     myLayers.Append (aLayer);
     myLayerIds.Bind (aLayer->LayerId(), aLayer);
@@ -86,7 +86,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
     aSettings.SetEnableDepthWrite   (Standard_True);
     aSettings.SetClearDepth         (Standard_True);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Topmost, 1, Handle(Select3D_BVHBuilder3d)());
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_Topmost, Handle(Select3D_BVHBuilder3d)());
     aLayer->SetLayerSettings (aSettings);
     myLayers.Append (aLayer);
     myLayerIds.Bind (aLayer->LayerId(), aLayer);
@@ -102,7 +102,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Handle(Aspect_DisplayCon
     aSettings.SetEnableDepthWrite   (Standard_False);
     aSettings.SetClearDepth         (Standard_False);
     aSettings.SetPolygonOffset (Graphic3d_PolygonOffset());
-    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_TopOSD, 1, Handle(Select3D_BVHBuilder3d)());
+    Handle(Graphic3d_Layer) aLayer = new Graphic3d_Layer (Graphic3d_ZLayerId_TopOSD, Handle(Select3D_BVHBuilder3d)());
     aLayer->SetLayerSettings (aSettings);
     myLayers.Append (aLayer);
     myLayerIds.Bind (aLayer->LayerId(), aLayer);
@@ -192,7 +192,7 @@ void Graphic3d_GraphicDriver::InsertLayerBefore (const Graphic3d_ZLayerId theNew
   Standard_ASSERT_RAISE (!myLayerIds.IsBound (theNewLayerId),
                          "Graphic3d_GraphicDriver::InsertLayerBefore, Layer with theLayerId already exists");
 
-  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, 1, Handle(Select3D_BVHBuilder3d)());
+  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, Handle(Select3D_BVHBuilder3d)());
   aNewLayer->SetLayerSettings (theSettings);
 
   Handle(Graphic3d_Layer) anOtherLayer;
@@ -228,7 +228,7 @@ void Graphic3d_GraphicDriver::InsertLayerAfter (const Graphic3d_ZLayerId theNewL
   Standard_ASSERT_RAISE (!myLayerIds.IsBound (theNewLayerId),
                          "Graphic3d_GraphicDriver::InsertLayerAfter, Layer with theLayerId already exists");
 
-  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, 1, Handle(Select3D_BVHBuilder3d)());
+  Handle(Graphic3d_Layer) aNewLayer = new Graphic3d_Layer (theNewLayerId, Handle(Select3D_BVHBuilder3d)());
   aNewLayer->SetLayerSettings (theSettings);
 
   Handle(Graphic3d_Layer) anOtherLayer;

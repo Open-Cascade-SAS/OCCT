@@ -36,13 +36,13 @@ class OpenGl_LayerList
 public:
 
   //! Constructor
-  Standard_EXPORT OpenGl_LayerList (const Standard_Integer theNbPriorities);
+  Standard_EXPORT OpenGl_LayerList();
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_LayerList();
 
   //! Method returns the number of available priorities
-  Standard_Integer NbPriorities() const { return myNbPriorities; }
+  Standard_Integer NbPriorities() const { return Graphic3d_DisplayPriority_NB; }
 
   //! Number of displayed structures
   Standard_Integer NbStructures() const { return myNbStructures; }
@@ -68,7 +68,7 @@ public:
   //! to default bottom-level layer.
   Standard_EXPORT void AddStructure (const OpenGl_Structure*  theStruct,
                                      const Graphic3d_ZLayerId theLayerId,
-                                     const Standard_Integer   thePriority,
+                                     const Graphic3d_DisplayPriority thePriority,
                                      Standard_Boolean        isForChangePriority = Standard_False);
 
   //! Remove structure from structure list and return its previous priority
@@ -84,7 +84,7 @@ public:
   //! Changes structure priority within its ZLayer
   Standard_EXPORT void ChangePriority (const OpenGl_Structure*  theStructure,
                                        const Graphic3d_ZLayerId theLayerId,
-                                       const Standard_Integer   theNewPriority);
+                                       const Graphic3d_DisplayPriority theNewPriority);
 
   //! Returns reference to the layer with given ID.
   OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) { return *myLayerIds.Find (theLayerId); }
@@ -120,10 +120,10 @@ public:
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
 
-  //! Returns BVH tree builder for frustom culling.
+  //! Returns BVH tree builder for frustum culling.
   const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
 
-  //! Assigns BVH tree builder for frustom culling.
+  //! Assigns BVH tree builder for frustum culling.
   Standard_EXPORT void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
   //! Dumps the content of me into the stream
@@ -203,9 +203,8 @@ protected:
 
   NCollection_List<Handle(Graphic3d_Layer)> myLayers;
   NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
-  Handle(Select3D_BVHBuilder3d) myBVHBuilder;      //!< BVH tree builder for frustom culling
+  Handle(Select3D_BVHBuilder3d) myBVHBuilder;      //!< BVH tree builder for frustum culling
 
-  Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;
   Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
 

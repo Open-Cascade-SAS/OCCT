@@ -27,7 +27,6 @@
 #include <Graphic3d_GroupDefinitionError.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_Structure.hxx>
-#include "Graphic3d_Structure.pxx"
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Text.hxx>
 #include <Graphic3d_TextureMap.hxx>

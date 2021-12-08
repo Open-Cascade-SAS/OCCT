@@ -69,8 +69,6 @@ void AIS_Line::Compute (const Handle(PrsMgr_PresentationManager)&,
 		        const Handle(Prs3d_Presentation)& thePrs,
 		        const Standard_Integer )
 {
-  thePrs->SetDisplayPriority (5);
-
   if (!myLineIsSegment) { ComputeInfiniteLine (thePrs); }
   else { ComputeSegmentLine (thePrs); }
 }

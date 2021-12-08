@@ -104,7 +104,7 @@ void V3d_RectangularGrid::SetColors (const Quantity_Color& aColor, const Quantit
 
 void V3d_RectangularGrid::Display ()
 {
-  myStructure->SetDisplayPriority (1);
+  myStructure->SetDisplayPriority (Graphic3d_DisplayPriority_AlmostBottom);
   myStructure->Display();
   UpdateDisplay();
 }

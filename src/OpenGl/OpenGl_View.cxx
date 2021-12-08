@@ -39,7 +39,6 @@
 #include <OSD_Parallel.hxx>
 #include <Standard_CLocaleSentry.hxx>
 
-#include "../Graphic3d/Graphic3d_Structure.pxx"
 #include "../Textures/Textures_EnvLUT.pxx"
 
 namespace
@@ -109,7 +108,6 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCaps           (theCaps),
   myWasRedrawnGL   (Standard_False),
   myToShowGradTrihedron  (false),
-  myZLayers        (Structure_MAX_PRIORITY - Structure_MIN_PRIORITY + 1),
   myStateCounter         (theCounter),
   myCurrLightSourceState (theCounter->Increment()),
   myLightsRevision       (0),
@@ -880,7 +878,7 @@ void OpenGl_View::FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
 //purpose  :
 //=======================================================================
 void OpenGl_View::displayStructure (const Handle(Graphic3d_CStructure)& theStructure,
-                                    const Standard_Integer              thePriority)
+                                    const Graphic3d_DisplayPriority thePriority)
 {
   const OpenGl_Structure*  aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());
   const Graphic3d_ZLayerId aZLayer = aStruct->ZLayer();
@@ -916,7 +914,7 @@ void OpenGl_View::changeZLayer (const Handle(Graphic3d_CStructure)& theStructure
 //purpose  :
 //=======================================================================
 void OpenGl_View::changePriority (const Handle(Graphic3d_CStructure)& theStructure,
-                                  const Standard_Integer theNewPriority)
+                                  const Graphic3d_DisplayPriority theNewPriority)
 {
   const Graphic3d_ZLayerId aLayerId = theStructure->ZLayer();
   const OpenGl_Structure* aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());

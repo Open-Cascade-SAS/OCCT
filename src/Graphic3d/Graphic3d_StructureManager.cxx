@@ -420,8 +420,8 @@ void Graphic3d_StructureManager::SetTransform (const Handle(Graphic3d_Structure)
 // purpose  :
 // ========================================================================
 void Graphic3d_StructureManager::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& theStructure,
-                                                        const Standard_Integer theOldPriority,
-                                                        const Standard_Integer theNewPriority)
+                                                        const Graphic3d_DisplayPriority theOldPriority,
+                                                        const Graphic3d_DisplayPriority theNewPriority)
 {
   for (Graphic3d_IndexedMapOfView::Iterator aViewIt (myDefinedViews); aViewIt.More(); aViewIt.Next())
   {

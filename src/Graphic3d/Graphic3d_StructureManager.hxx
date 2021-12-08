@@ -112,7 +112,9 @@ public:
   Standard_EXPORT virtual void SetTransform (const Handle(Graphic3d_Structure)& theStructure, const Handle(TopLoc_Datum3D)& theTrsf);
 
   //! Changes the display priority of the structure <AStructure>.
-  Standard_EXPORT virtual void ChangeDisplayPriority (const Handle(Graphic3d_Structure)& theStructure, const Standard_Integer theOldPriority, const Standard_Integer theNewPriority);
+  Standard_EXPORT virtual void ChangeDisplayPriority (const Handle(Graphic3d_Structure)& theStructure,
+                                                      const Graphic3d_DisplayPriority theOldPriority,
+                                                      const Graphic3d_DisplayPriority theNewPriority);
 
   //! Change Z layer for structure. The Z layer mechanism allows to display structures in higher
   //! layers in overlay of structures in lower layers.

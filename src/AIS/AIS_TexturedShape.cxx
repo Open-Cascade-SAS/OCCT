@@ -349,24 +349,20 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                  const Handle(Prs3d_Presentation)& thePrs,
                                  const Standard_Integer theMode)
 {
-  if (myshape.IsNull())
+  if (myshape.IsNull()
+   || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
     return;
   }
 
-  if (myshape.ShapeType() > TopAbs_FACE && myshape.ShapeType() < TopAbs_SHAPE)
+  if (myshape.ShapeType() >= TopAbs_WIRE
+   && myshape.ShapeType() <= TopAbs_VERTEX)
   {
+    // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
+    const Standard_Integer aPrior = (Standard_Integer )Graphic3d_DisplayPriority_Above1
+                                  + (Standard_Integer )myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual (Graphic3d_TOS_ALL);
-    thePrs->SetDisplayPriority (myshape.ShapeType() + 2);
-  }
-
-  if (myshape.ShapeType() == TopAbs_COMPOUND)
-  {
-    TopExp_Explorer anExplor (myshape, TopAbs_VERTEX);
-    if (!anExplor.More())
-    {
-      return;
-    }
+    thePrs->SetDisplayPriority ((Graphic3d_DisplayPriority )aPrior);
   }
 
   if (IsInfinite())

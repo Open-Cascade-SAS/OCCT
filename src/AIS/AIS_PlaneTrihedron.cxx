@@ -153,7 +153,6 @@ void AIS_PlaneTrihedron::Compute (const Handle(PrsMgr_PresentationManager)& ,
                                   const Handle(Prs3d_Presentation)& thePrs,
                                   const Standard_Integer )
 {
-  thePrs->SetDisplayPriority (5);
   // drawing axis in X direction
   gp_Pnt first, last;
   Standard_Real value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);

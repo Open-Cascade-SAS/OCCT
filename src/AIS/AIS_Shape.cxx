@@ -121,22 +121,21 @@ void AIS_Shape::Compute (const Handle(PrsMgr_PresentationManager)& ,
                          const Handle(Prs3d_Presentation)& thePrs,
                          const Standard_Integer theMode)
 {
-  if (myshape.IsNull())
+  if (myshape.IsNull()
+   || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
     return;
   }
 
   // wire,edge,vertex -> pas de HLR + priorite display superieure
-  const Standard_Integer aShapeType = (Standard_Integer )myshape.ShapeType();
-  if (aShapeType > 4 && aShapeType < 8)
+  if (myshape.ShapeType() >= TopAbs_WIRE
+   && myshape.ShapeType() <= TopAbs_VERTEX)
   {
+    // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
+    const Standard_Integer aPrior = (Standard_Integer )Graphic3d_DisplayPriority_Above1
+                                  + (Standard_Integer )myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual (Graphic3d_TOS_ALL);
-    thePrs->SetDisplayPriority (aShapeType + 2);
-  }
-  // Shape vide -> Assemblage vide.
-  if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
-  {
-    return;
+    thePrs->SetDisplayPriority ((Graphic3d_DisplayPriority )aPrior);
   }
 
   if (IsInfinite())
@@ -238,7 +237,7 @@ void AIS_Shape::computeHlrPresentation (const Handle(Graphic3d_Camera)& theProje
     case TopAbs_EDGE:
     case TopAbs_WIRE:
     {
-      thePrs->SetDisplayPriority (4);
+      thePrs->SetDisplayPriority (Graphic3d_DisplayPriority_Below);
       StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
       return;
     }

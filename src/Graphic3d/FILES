@@ -64,6 +64,7 @@ Graphic3d_CView.hxx
 Graphic3d_DataStructureManager.cxx
 Graphic3d_DataStructureManager.hxx
 Graphic3d_DiagnosticInfo.hxx
+Graphic3d_DisplayPriority.hxx
 Graphic3d_FrameStats.cxx
 Graphic3d_FrameStats.hxx
 Graphic3d_FrameStatsCounter.hxx
@@ -139,7 +140,6 @@ Graphic3d_ShaderVariable.lxx
 Graphic3d_StereoMode.hxx
 Graphic3d_Structure.cxx
 Graphic3d_Structure.hxx
-Graphic3d_Structure.pxx
 Graphic3d_StructureDefinitionError.hxx
 Graphic3d_StructureManager.cxx
 Graphic3d_StructureManager.hxx

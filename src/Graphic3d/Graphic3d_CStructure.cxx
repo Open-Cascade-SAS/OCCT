@@ -14,7 +14,6 @@
 
 #include <Graphic3d_CStructure.hxx>
 
-#include "Graphic3d_Structure.pxx"
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
@@ -27,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
 //purpose  :
 //=============================================================================
 Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureManager)& theManager)
-: Priority         (Structure_MAX_PRIORITY / 2),
-  PreviousPriority (Structure_MAX_PRIORITY / 2),
-  //
-  myGraphicDriver  (theManager->GraphicDriver()),
+: myGraphicDriver  (theManager->GraphicDriver()),
+  myId             (-1),
   myZLayer         (Graphic3d_ZLayerId_Default),
+  myPriority        (Graphic3d_DisplayPriority_Normal),
+  myPreviousPriority(Graphic3d_DisplayPriority_Normal),
   myIsCulled       (Standard_True),
   myBndBoxClipCheck(Standard_True),
   myHasGroupTrsf   (Standard_False),
@@ -45,7 +44,7 @@ Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureMana
   IsMutable        (Standard_False),
   Is2dText         (Standard_False)
 {
-  Id = myGraphicDriver->NewIdentification();
+  myId = myGraphicDriver->NewIdentification();
 }
 
 //=======================================================================
@@ -62,10 +61,10 @@ void Graphic3d_CStructure::DumpJson (Standard_OStream& theOStream, Standard_Inte
     OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aGroup.get())
   }
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Id)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myId)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayer)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Priority)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, PreviousPriority)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPriority)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousPriority)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsInfinite)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, stick)

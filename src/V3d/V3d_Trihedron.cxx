@@ -255,7 +255,7 @@ void V3d_Trihedron::Display (const V3d_View& theView)
     myStructure = new TrihedronStructure (theView.Viewer()->StructureManager(), this);
     myStructure->SetTransformPersistence (myTransformPers);
     myStructure->SetZLayer (Graphic3d_ZLayerId_Topmost);
-    myStructure->SetDisplayPriority (9);
+    myStructure->SetDisplayPriority (Graphic3d_DisplayPriority_Highlight);
     myStructure->SetInfiniteState (Standard_True);
     myStructure->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
     myStructure->CStructure()->ViewAffinity->SetVisible (Standard_False);

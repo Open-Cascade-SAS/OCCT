@@ -959,8 +959,8 @@ Standard_Boolean Graphic3d_CView::IsDisplayed (const Handle(Graphic3d_Structure)
 // purpose  :
 // =======================================================================
 void Graphic3d_CView::ChangePriority (const Handle(Graphic3d_Structure)& theStructure,
-                                      const Standard_Integer /*theOldPriority*/,
-                                      const Standard_Integer theNewPriority)
+                                      const Graphic3d_DisplayPriority /*theOldPriority*/,
+                                      const Graphic3d_DisplayPriority theNewPriority)
 {
   if (!IsActive()
   ||  !IsDisplayed (theStructure))
