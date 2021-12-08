@@ -150,7 +150,7 @@ void MessageView_ActionsTest::OnTestMetric()
     return;
 
   OCCT_ADD_MESSAGE_LEVEL_SENTRY ("MessageModel_Actions::OnTestMetric()");
-  unsigned int start_time =  clock();
+  clock_t start_time =  clock();
 
   Standard_Integer aCounter = 1500;
   Standard_Real aValue = 0., aValue2 = 0.1;
@@ -172,7 +172,7 @@ void MessageView_ActionsTest::OnTestMetric()
 
   myTreeModel->UpdateTreeModel();
 
-  unsigned int end_time = clock();
+  clock_t end_time = clock();
   std::cout << "clock() = " << end_time - start_time << std::endl;
 }
 
