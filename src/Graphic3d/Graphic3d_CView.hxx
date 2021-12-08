@@ -134,12 +134,6 @@ public:
   //! Computes the new presentation of the structures displayed in this view with the type Graphic3d_TOS_COMPUTED.
   Standard_EXPORT void Compute();
 
-  //! Returns Standard_True if one of the structures displayed in the view contains Polygons, Triangles or Quadrangles.
-  Standard_EXPORT Standard_Boolean ContainsFacet() const;
-
-  //! Returns Standard_True if one of the structures in the set contains Polygons, Triangles or Quadrangles.
-  Standard_EXPORT Standard_Boolean ContainsFacet (const Graphic3d_MapOfStructure& theSet) const;
-
   //! Returns the set of structures displayed in this view.
   Standard_EXPORT void DisplayedStructures (Graphic3d_MapOfStructure& theStructures) const;
 

@@ -31,7 +31,6 @@ OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_Structure
   Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast (theStructure);
   myParent = aShadow.IsNull() ? theStructure : aShadow->myParent;
 
-  ContainsFacet = myParent->ContainsFacet;
   IsInfinite    = myParent->IsInfinite;
   myBndBox      = myParent->BoundingBox();
 

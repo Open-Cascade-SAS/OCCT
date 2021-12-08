@@ -85,7 +85,6 @@ void Graphic3d_Structure::clear (const Standard_Boolean theWithDestruction)
   // clean groups in graphics driver at first
   GraphicClear (theWithDestruction);
 
-  myCStructure->ContainsFacet = 0;
   myCStructure->SetGroupTransformPersistence (false);
   myStructureManager->Clear (this, theWithDestruction);
 
@@ -295,33 +294,6 @@ void Graphic3d_Structure::UnHighlight()
 }
 
 //=============================================================================
-//function : ContainsFacet
-//purpose  :
-//=============================================================================
-Standard_Boolean Graphic3d_Structure::ContainsFacet() const
-{
-  if (IsDeleted())
-  {
-    return Standard_False;
-  }
-  else if (myCStructure->ContainsFacet > 0)
-  {
-    // if one of groups contains at least one facet, the structure contains it too
-    return Standard_True;
-  }
-
-  // stop at the first descendant containing at least one facet
-  for (NCollection_IndexedMap<Graphic3d_Structure*>::Iterator anIter (myDescendants); anIter.More(); anIter.Next())
-  {
-    if (anIter.Value()->ContainsFacet())
-    {
-      return Standard_True;
-    }
-  }
-  return Standard_False;
-}
-
-//=============================================================================
 //function : IsEmpty
 //purpose  :
 //=============================================================================
@@ -353,19 +325,6 @@ Standard_Boolean Graphic3d_Structure::IsEmpty() const
     }
   }
   return Standard_True;
-}
-
-//=============================================================================
-//function : GroupsWithFacet
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::GroupsWithFacet (const Standard_Integer theDelta)
-{
-  myCStructure->ContainsFacet = myCStructure->ContainsFacet + theDelta;
-  if (myCStructure->ContainsFacet < 0)
-  {
-    myCStructure->ContainsFacet = 0;
-  }
 }
 
 //=============================================================================

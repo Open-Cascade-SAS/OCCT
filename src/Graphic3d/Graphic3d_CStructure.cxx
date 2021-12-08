@@ -29,7 +29,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure,Standard_Transient)
 Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureManager)& theManager)
 : Priority         (Structure_MAX_PRIORITY / 2),
   PreviousPriority (Structure_MAX_PRIORITY / 2),
-  ContainsFacet    (0),
   //
   myGraphicDriver  (theManager->GraphicDriver()),
   myZLayer         (Graphic3d_ZLayerId_Default),
@@ -67,7 +66,6 @@ void Graphic3d_CStructure::DumpJson (Standard_OStream& theOStream, Standard_Inte
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayer)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Priority)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, PreviousPriority)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, ContainsFacet)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsInfinite)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, stick)

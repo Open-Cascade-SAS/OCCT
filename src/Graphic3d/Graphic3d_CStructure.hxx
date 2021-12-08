@@ -211,8 +211,6 @@ public:
   Standard_Integer Priority;
   Standard_Integer PreviousPriority;
 
-  Standard_Integer ContainsFacet;
-
 protected:
 
   //! Create empty structure.

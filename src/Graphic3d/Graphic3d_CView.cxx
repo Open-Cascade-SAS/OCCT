@@ -385,38 +385,6 @@ void Graphic3d_CView::InvalidateZLayerBoundingBox (const Graphic3d_ZLayerId theL
 }
 
 // =======================================================================
-// function : ContainsFacet
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_CView::ContainsFacet() const
-{
-  for (Graphic3d_MapOfStructure::Iterator aStructIter (myStructsDisplayed); aStructIter.More(); aStructIter.Next())
-  {
-    if (aStructIter.Key()->ContainsFacet())
-    {
-      return Standard_True;
-    }
-  }
-  return Standard_False;
-}
-
-// =======================================================================
-// function : ContainsFacet
-// purpose  :
-// =======================================================================
-Standard_Boolean Graphic3d_CView::ContainsFacet (const Graphic3d_MapOfStructure& theSet) const
-{
-  for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (theSet); aStructIter.More(); aStructIter.Next())
-  {
-    if (aStructIter.Key()->ContainsFacet())
-    {
-      return Standard_True;
-    }
-  }
-  return Standard_False;
-}
-
-// =======================================================================
 // function : DisplayedStructures
 // purpose  :
 // =======================================================================

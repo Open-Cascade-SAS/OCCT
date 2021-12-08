@@ -198,10 +198,6 @@ public:
   //! if <me> is displayed in <aProjetor> and TOS_COMPUTED.
   Standard_EXPORT void ReCompute (const Handle(Graphic3d_DataStructureManager)& aProjector);
   
-  //! Returns Standard_True if the structure <me> contains
-  //! Polygons, Triangles or Quadrangles.
-  Standard_EXPORT Standard_Boolean ContainsFacet() const;
-
   //! Returns the groups sequence included in this structure.
   const Graphic3d_SequenceOfGroup& Groups() const { return myCStructure->Groups(); }
 
@@ -476,12 +472,6 @@ private:
   //! Suppress in the structure <me>, the group theGroup.
   //! It will be erased at the next screen update.
   Standard_EXPORT void Remove (const Handle(Graphic3d_Group)& theGroup);
-  
-  //! Manages the number of groups in the structure <me>
-  //! which contains facet.
-  //! Polygons, Triangles or Quadrangles.
-  //! <ADelta> = +1 or -1
-  Standard_EXPORT void GroupsWithFacet (const Standard_Integer ADelta);
   
   //! Returns the extreme coordinates found in the structure <me> without transformation applied.
   Standard_EXPORT Graphic3d_BndBox4f minMaxCoord() const;
