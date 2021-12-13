@@ -52,7 +52,17 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
   #include <GL/glx.h>
 #endif
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if !defined(HAVE_EGL)
+#if defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP)
+  #if !defined(__APPLE__)
+    #define HAVE_EGL // EAGL is used instead of EGL
+  #endif
+#elif !defined(_WIN32) && !defined(__APPLE__) && !defined(HAVE_XLIB)
+  #define HAVE_EGL
+#endif
+#endif
+
+#if defined(HAVE_EGL)
   #include <EGL/egl.h>
   #ifndef EGL_OPENGL_ES3_BIT
     #define EGL_OPENGL_ES3_BIT 0x00000040
@@ -63,7 +73,7 @@ namespace
 {
   static const Handle(OpenGl_Context) TheNullGlCtx;
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if defined(HAVE_EGL)
   //! Wrapper over eglChooseConfig() called with preferred defaults.
   static EGLConfig chooseEglSurfConfig (EGLDisplay theDisplay)
   {
@@ -155,7 +165,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator())
 {
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if defined(HAVE_EGL)
   myEglDisplay = (Aspect_Display )EGL_NO_DISPLAY;
   myEglContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
 #endif
@@ -250,7 +260,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
     aWindow->GetGlContext()->forcedRelease();
   }
 
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if defined(HAVE_EGL)
   if (myIsOwnContext)
   {
     if (myEglContext != (Aspect_RenderingContext )EGL_NO_CONTEXT)
@@ -285,7 +295,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
 Standard_Boolean OpenGl_GraphicDriver::InitContext()
 {
   ReleaseContext();
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if defined(HAVE_EGL)
 
 #if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())
@@ -369,7 +379,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
                                                        void*                   theEglConfig)
 {
   ReleaseContext();
-#if defined(HAVE_EGL) || defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
+#if defined(HAVE_EGL)
 #if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())
   {
@@ -420,7 +430,7 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
 
   XVisualInfo* aVisInfo = NULL;
   Aspect_FBConfig anFBConfig = NULL;
-#if defined(HAVE_EGL) || defined(HAVE_GLES2)
+#if defined(HAVE_EGL)
   XVisualInfo aVisInfoTmp;
   memset (&aVisInfoTmp, 0, sizeof(aVisInfoTmp));
   aVisInfoTmp.screen = DefaultScreen (aDisp);
