@@ -25,7 +25,9 @@
 
 #if !defined(HAVE_EGL)
 #if defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP)
-  #define HAVE_EGL
+  #if !defined(__APPLE__)
+    #define HAVE_EGL // EAGL is used instead of EGL
+  #endif
 #elif !defined(_WIN32) && !defined(__APPLE__) && !defined(HAVE_XLIB)
   #define HAVE_EGL
 #endif
