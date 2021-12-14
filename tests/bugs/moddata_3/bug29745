@@ -1,0 +1,37 @@
+puts "================================================================="
+puts "OCC29745: Modeling Data - GeomAdaptor_Surface::VIntervals fails on periodic surfaces"
+puts "================================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug29745_1] bc
+restore [locate_data_file bug29745_2] bc1
+
+
+set ref1 {NbIntervals: 2; 0 0.5 1 }
+set data1 [OCC29745 bc1 1 0 1]
+   
+if  {[string compare $ref1 $data1] == 0} {
+  puts "OCC29745 OK"
+} else {      
+    puts "OCC29745 Faulty"        
+}
+
+set ref2 {NbIntervals: 3; 0.10000000000000001 0.5 1 1.1000000000000001 }
+set data2 [OCC29745 bc1 1 0.1 1.1]
+   
+if  {[string compare $ref2 $data2] == 0} {
+  puts "OCC29745 OK"
+} else {      
+    puts "OCC29745 Faulty"        
+}
+
+set ref3 {NbIntervals: 3; 0 4.1887902047863896 6.2831853071795898 7 }
+set data3 [OCC29745 bc 1 0 7]
+   
+if  {[string compare $ref3 $data3] == 0} {
+  puts "OCC29745 OK"
+} else {      
+    puts "OCC29745 Faulty"        
+}

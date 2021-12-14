@@ -11,7 +11,7 @@ circle c 1 0 0 150
 set res1 [OCC27884 c 400 0]
 regexp {Improving time: +([-0-9.+eE]+) %} $res1 full time1
 
-if { $time1 <= 5 } {
+if { $time1 <= 4 } {
   puts "Error: algorithm slowed down"
 }
 
@@ -19,7 +19,7 @@ if { $time1 <= 5 } {
 set res2 [OCC27884 c 250 1]
 regexp {Improving time: +([-0-9.+eE]+) %} $res2 full time2
 
-if { $time2 <= 5 } {
+if { $time2 <= 3 } {
   puts "Error: algorithm slowed down"
 }
 

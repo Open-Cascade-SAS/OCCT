@@ -3093,6 +3093,80 @@ static Standard_Integer OCC30391(Draw_Interpretor& theDI,
   return 0;
 }
 
+//=======================================================================
+//function : OCC29745
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC29745(Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc != 5)
+  {
+    theDI << "Usage : OCC29745 curve2d/3d continuity t1 t2";
+    return 1;
+  }
+
+  Handle(Geom_Curve) aC3d;
+  Handle(Geom2d_Curve) aC2d;
+
+  aC3d = DrawTrSurf::GetCurve(theArgv[1]);
+  if (aC3d.IsNull())
+  {
+    aC2d = DrawTrSurf::GetCurve2d(theArgv[1]);
+    if (aC2d.IsNull())
+    {
+      theDI << "Null curve" << "\n";
+      return 1;
+    }
+  }
+
+  Standard_Integer i = Draw::Atoi(theArgv[2]);
+  GeomAbs_Shape aCont = GeomAbs_C0;
+  if (i <= 0)
+    aCont = GeomAbs_C0;
+  else if (i == 1)
+    aCont = GeomAbs_C1;
+  else if (i == 2)
+    aCont = GeomAbs_C2;
+  else if (i == 3)
+    aCont = GeomAbs_C3;
+  else if (i >= 4)
+    aCont = GeomAbs_CN;
+
+  Standard_Real t1 = Draw::Atof(theArgv[3]);
+  Standard_Real t2 = Draw::Atof(theArgv[4]);
+
+  GeomAdaptor_Curve aGAC3d;
+  Geom2dAdaptor_Curve aGAC2d;
+  Standard_Integer aNbInts;
+  if (aC2d.IsNull())
+  {
+    aGAC3d.Load(aC3d, t1, t2);
+    aNbInts = aGAC3d.NbIntervals(aCont);
+  }
+  else
+  {
+    aGAC2d.Load(aC2d, t1, t2);
+    aNbInts = aGAC2d.NbIntervals(aCont);
+  }
+
+  TColStd_HArray1OfReal anInters(1, aNbInts + 1);
+  if (aC2d.IsNull())
+  {
+    aGAC3d.Intervals(anInters, aCont);
+  }
+  else
+  {
+    aGAC2d.Intervals(anInters, aCont);
+  }
+
+  theDI << "NbIntervals: " << aNbInts << "; ";
+  for (i = anInters.Lower(); i <= anInters.Upper(); ++i)
+  {
+    theDI << anInters(i) << " ";
+  }
+  return 0;
+}
+
 #include <Standard_Mutex.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BinLDrivers.hxx>
@@ -4298,6 +4372,8 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
+  theCommands.Add("OCC29745", "OCC29745 spreading of intervals of continuity on periodic curves",
+    __FILE__, OCC29745, group);
   theCommands.Add("OCC29195", "OCC29195 [nbRep] doc1 [doc2 [doc3 [doc4]]]", __FILE__, OCC29195, group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
   theCommands.Add("OCC30747", "OCC30747: create a closed curve", __FILE__, OCC30747, group);
