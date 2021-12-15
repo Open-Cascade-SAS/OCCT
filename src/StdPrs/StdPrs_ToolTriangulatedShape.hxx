@@ -59,9 +59,9 @@ public:
                                               Poly_Connect& thePolyConnect);
 
   //! Evaluate normals for a triangle of a face.
-  //! @param theFace [in] the face.
-  //! @param thePolyConnect [in] the definition of a face triangulation.
-  //! @param theNormal [out] the array of normals for each triangle.
+  //! @param[in]  theFace the face.
+  //! @param[in]  thePolyConnect the definition of a face triangulation.
+  //! @param[out] theNormals the array of normals for each triangle.
   Standard_EXPORT static void Normal (const TopoDS_Face& theFace,
                                       Poly_Connect& thePolyConnect,
                                       TColgp_Array1OfDir& theNormals);

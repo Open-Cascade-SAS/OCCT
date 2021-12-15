@@ -150,7 +150,7 @@ public:
      * Forces *this node being gemmated such a way that it becomes
      * a branch holding the previous content of *this node at the 
      * first child and theObj at the second child.
-     * @param TheNewBnd
+     * @param theNewBnd
      *   new bounding box comprizing both child nodes.
      * @param theObj
      *   added object.

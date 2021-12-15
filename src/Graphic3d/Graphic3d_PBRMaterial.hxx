@@ -110,7 +110,7 @@ public:
   //! Generates 2D look up table of scale and bias for fresnell zero coefficient.
   //! It is needed for calculation reflectance part of environment lighting.
   //! @param [out] theLUT table storage (must be Image_Format_RGF).
-  //! @param [in] theIntegralSamplesCount number of importance samples in hemisphere integral calculation for every table item.
+  //! @param [in] theNbIntegralSamples number of importance samples in hemisphere integral calculation for every table item.
   Standard_EXPORT static void GenerateEnvLUT (const Handle(Image_PixMap)& theLUT,
                                               unsigned int                theNbIntegralSamples = 1024);
 

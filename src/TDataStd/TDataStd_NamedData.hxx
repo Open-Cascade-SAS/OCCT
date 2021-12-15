@@ -177,8 +177,8 @@ public:
   Standard_EXPORT const Handle(TColStd_HArray1OfReal)& GetArrayOfReals (const TCollection_ExtendedString& theName);
 
   //! Defines a named array of real values.
-  //! @param theName [in] key
-  //! @param theArrayOfIntegers [in] new value, overrides existing (passed array will be copied by value!)
+  //! @param[in] theName key
+  //! @param[in] theArrayOfReals new value, overrides existing (passed array will be copied by value!)
   void SetArrayOfReals (const TCollection_ExtendedString& theName,
                         const Handle(TColStd_HArray1OfReal)& theArrayOfReals)
   {

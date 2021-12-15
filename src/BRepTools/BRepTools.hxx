@@ -276,7 +276,7 @@ public:
   //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
   //! @param theVersion [in]       the TopTools format version
-  //! @param theRange              the range of progress indicator to fill in
+  //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static void Write (const TopoDS_Shape& theShape,
                                      Standard_OStream& theStream,
                                      const Standard_Boolean theWithTriangles,
@@ -293,7 +293,7 @@ public:
   //! This alias writes shape with triangulation data.
   //! @param theShape [in] the shape to write
   //! @param theFile [in]  the path to file to output shape into
-  //! @param theRange      the range of progress indicator to fill in
+  //! @param theProgress the range of progress indicator to fill in
   static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                  const Standard_CString theFile,
                                  const Message_ProgressRange& theProgress = Message_ProgressRange())
@@ -310,7 +310,7 @@ public:
   //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
   //! @param theVersion [in]       the TopTools format version
-  //! @param theRange              the range of progress indicator to fill in
+  //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                                  const Standard_CString theFile,
                                                  const Standard_Boolean theWithTriangles,

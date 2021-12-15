@@ -383,33 +383,33 @@ public:
   Standard_EXPORT static void DumpRealValues (Standard_OStream& theOStream, int theCount, ...);
 
   //! Check whether the parameter name is equal to the name in the stream at position
-  //! @param theSStream   [in]  stream with values
-  //! @param theName      [in]  stream key value
-  //! @param theStreamPos [out] current position in the stream
+  //! @param[in]  theStreamStr stream with values
+  //! @param[in]  theName      stream key value
+  //! @param[out] theStreamPos current position in the stream
   Standard_EXPORT static Standard_Boolean ProcessStreamName (const TCollection_AsciiString& theStreamStr,
                                                              const TCollection_AsciiString& theName,
                                                              Standard_Integer& theStreamPos);
 
   //! Check whether the field name is equal to the name in the stream at position
-  //! @param theSStream   [in]  stream with values
-  //! @param theName      [in]  stream key field value
-  //! @param theStreamPos [out] current position in the stream
+  //! @param[in]  theStreamStr stream with values
+  //! @param[in]  theName      stream key field value
+  //! @param[out] theStreamPos current position in the stream
   Standard_EXPORT static Standard_Boolean ProcessFieldName (const TCollection_AsciiString& theStreamStr,
                                                             const TCollection_AsciiString& theName,
                                                             Standard_Integer& theStreamPos);
 
   //! Unite values in one value using template: value_1, value_2, ..., value_n
-  //! @param theSStream   [in]  stream with values
-  //! @param theStreamPos [out] current position in the stream
-  //! @param theCount     [in]  number of values
+  //! @param[in]  theStreamStr stream with values
+  //! @param[out] theStreamPos current position in the stream
+  //! @param[in]  theCount     number of values
   Standard_EXPORT static Standard_Boolean InitRealValues (const TCollection_AsciiString& theStreamStr,
                                                           Standard_Integer& theStreamPos,
                                                           int theCount, ...);
 
   //! Returns real value
-  //! @param theSStream   [in]  stream with values
-  //! @param theStreamPos [out] current position in the stream
-  //! @param theValue     [out] stream value
+  //! @param[in]  theStreamStr stream with values
+  //! @param[out] theStreamPos current position in the stream
+  //! @param[out] theValue     stream value
   Standard_EXPORT static Standard_Boolean InitValue (const TCollection_AsciiString& theStreamStr,
                                                      Standard_Integer& theStreamPos,
                                                      TCollection_AsciiString& theValue);

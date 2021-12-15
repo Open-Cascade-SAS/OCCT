@@ -333,7 +333,7 @@ friend Standard_EXPORT Standard_OStream& operator << (Standard_OStream& astream,
   //! Returns a hashed value for the extended string within the range 1 .. theUpper.
   //! Note: if string is ASCII, the computed value is the same as the value computed with the HashCode function on a
   //! TCollection_AsciiString string composed with equivalent ASCII characters.
-  //! @param theExtendedString the extended string which hash code is to be computed
+  //! @param theString the extended string which hash code is to be computed
   //! @param theUpperBound the upper bound of the range a computing hash code must be within
   //! @return a computed hash code, in the range [1, theUpperBound]
   static Standard_Integer HashCode (const TCollection_ExtendedString& theString,

@@ -42,7 +42,7 @@ public:
   //! It can be customized according to the application needs.
   //!
   //! The following syntax can be used to print messages:
-  //! @begincode
+  //! @code
   //!   Message::DefaultMessenger()->Send ("My Warning", Message_Warning);
   //!   Message::SendWarning ("My Warning"); // short-cut for Message_Warning
   //!   Message::SendWarning() << "My Warning with " << theCounter << " arguments";

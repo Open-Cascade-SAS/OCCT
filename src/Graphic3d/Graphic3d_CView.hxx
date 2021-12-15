@@ -399,7 +399,6 @@ public:
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
-  //! @param[in] theToUpdate redraw the view
   virtual void SetImageBasedLighting (Standard_Boolean theToEnableIBL) = 0;
 
   //! Returns environment texture set for the view.

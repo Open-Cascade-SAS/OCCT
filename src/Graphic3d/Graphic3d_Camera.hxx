@@ -309,7 +309,7 @@ public:
   //! When switching to perspective projection from orthographic one,
   //! the ZNear and ZFar are reset to default values (0.001, 3000.0)
   //! if less than 0.0.
-  //! @param theProjectionType [in] the camera projection type.
+  //! @param[in] theProjection the camera projection type.
   Standard_EXPORT void SetProjectionType (const Projection theProjection);
 
   //! @return camera projection type.
@@ -369,12 +369,12 @@ public:
   //! for orthogonal projection the view volume contains the displayed objects
   //! completely. For zoomed perspective view, the view volume is adjusted such
   //! that it contains the objects or their parts, located in front of the camera.
-  //! @param theScaleFactor [in] the scale factor for Z-range.
+  //! @param[in] theScaleFactor the scale factor for Z-range.
   //!   The range between Z-min, Z-max projection volume planes
   //!   evaluated by z fitting method will be scaled using this coefficient.
   //!   Program error exception is thrown if negative or zero value is passed.
-  //! @param theMinMax [in] applicative min max boundaries.
-  //! @param theScaleFactor [in] real graphical boundaries (not accounting infinite flag).
+  //! @param[in] theMinMax applicative min max boundaries.
+  //! @param[in] theGraphicBB real graphical boundaries (not accounting infinite flag).
   Standard_EXPORT bool ZFitAll (const Standard_Real theScaleFactor,
                                 const Bnd_Box&      theMinMax,
                                 const Bnd_Box&      theGraphicBB,

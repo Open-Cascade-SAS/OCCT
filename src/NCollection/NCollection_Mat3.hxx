@@ -430,8 +430,8 @@ public:
   }
 
   //! Compute inverted matrix.
-  //! @param theOutMx [out] the inverted matrix
-  //! @param theDet   [out] determinant of matrix
+  //! @param[out] theInv the inverted matrix
+  //! @param[out] theDet determinant of matrix
   //! @return true if reversion success
   bool Inverted (NCollection_Mat3& theInv, Element_t& theDet) const
   {
@@ -447,7 +447,7 @@ public:
   }
 
   //! Compute inverted matrix.
-  //! @param theOutMx [out] the inverted matrix
+  //! @param[out] theInv the inverted matrix
   //! @return true if reversion success
   bool Inverted (NCollection_Mat3& theInv) const
   {

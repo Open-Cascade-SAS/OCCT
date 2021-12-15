@@ -139,6 +139,7 @@ public:
   //! <me>.X() = <me>.X() + theOther.X()
   //! <me>.Y() = <me>.Y() + theOther.Y()
   //! <me>.Z() = <me>.Z() + theOther.Z()
+  //! @endcode
   void Add (const gp_XYZ& theOther)
   {
     x += theOther.x;
@@ -164,6 +165,7 @@ public:
   //! <me>.X() = <me>.Y() * theOther.Z() - <me>.Z() * theOther.Y()
   //! <me>.Y() = <me>.Z() * theOther.X() - <me>.X() * theOther.Z()
   //! <me>.Z() = <me>.X() * theOther.Y() - <me>.Y() * theOther.X()
+  //! @endcode
   void Cross (const gp_XYZ& theOther);
 
   void operator^= (const gp_XYZ& theOther) { Cross (theOther); }
@@ -230,6 +232,7 @@ public:
   //! <me>.X() = <me>.X() * theScalar;
   //! <me>.Y() = <me>.Y() * theScalar;
   //! <me>.Z() = <me>.Z() * theScalar;
+  //! @endcode
   void Multiply (const Standard_Real theScalar)
   {
     x *= theScalar;
@@ -243,6 +246,7 @@ public:
   //! <me>.X() = <me>.X() * theOther.X();
   //! <me>.Y() = <me>.Y() * theOther.Y();
   //! <me>.Z() = <me>.Z() * theOther.Z();
+  //! @endcode
   void Multiply (const gp_XYZ& theOther)
   {
     x *= theOther.x;
@@ -261,6 +265,7 @@ public:
   //! New.X() = <me>.X() * theScalar;
   //! New.Y() = <me>.Y() * theScalar;
   //! New.Z() = <me>.Z() * theScalar;
+  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const Standard_Real theScalar) const { return gp_XYZ (x * theScalar, y * theScalar, z * theScalar); }
 
   Standard_NODISCARD gp_XYZ operator* (const Standard_Real theScalar) const { return Multiplied (theScalar); }
@@ -269,10 +274,10 @@ public:
   //! new.X() = <me>.X() * theOther.X();
   //! new.Y() = <me>.Y() * theOther.Y();
   //! new.Z() = <me>.Z() * theOther.Z();
+  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const gp_XYZ& theOther) const { return gp_XYZ (x * theOther.x, y * theOther.y, z * theOther.z); }
 
   //! New = theMatrix * <me>
-  //! @endcode
   Standard_NODISCARD gp_XYZ Multiplied (const gp_Mat& theMatrix) const
   {
     return gp_XYZ (theMatrix.Value (1, 1) * x + theMatrix.Value (1, 2) * y + theMatrix.Value (1, 3) * z,
@@ -307,6 +312,7 @@ public:
   //! <me>.X() = -<me>.X()
   //! <me>.Y() = -<me>.Y()
   //! <me>.Z() = -<me>.Z()
+  //! @endcode
   void Reverse()
   {
     x = -x;
@@ -318,12 +324,14 @@ public:
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
   //! New.Z() = -<me>.Z()
+  //! @endcode
   Standard_NODISCARD gp_XYZ Reversed() const { return gp_XYZ (-x, -y, -z); }
 
   //! @code
   //! <me>.X() = <me>.X() - theOther.X()
   //! <me>.Y() = <me>.Y() - theOther.Y()
   //! <me>.Z() = <me>.Z() - theOther.Z()
+  //! @endcode
   void Subtract (const gp_XYZ& theOther)
   {
     x -= theOther.x;
@@ -337,6 +345,7 @@ public:
   //! new.X() = <me>.X() - theOther.X()
   //! new.Y() = <me>.Y() - theOther.Y()
   //! new.Z() = <me>.Z() - theOther.Z()
+  //! @endcode
   Standard_NODISCARD gp_XYZ Subtracted (const gp_XYZ& theOther) const { return gp_XYZ (x - theOther.x, y - theOther.y, z - theOther.z); }
 
   Standard_NODISCARD gp_XYZ operator-  (const gp_XYZ& theOther) const { return Subtracted (theOther); }
@@ -344,6 +353,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3 + theXYZ4
+  //! @endcode
   void SetLinearForm (const Standard_Real theA1, const gp_XYZ& theXYZ1,
                       const Standard_Real theA2, const gp_XYZ& theXYZ2,
                       const Standard_Real theA3, const gp_XYZ& theXYZ3,
@@ -357,6 +367,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3
+  //! @endcode
   void SetLinearForm (const Standard_Real theA1, const gp_XYZ& theXYZ1,
                       const Standard_Real theA2, const gp_XYZ& theXYZ2,
                       const Standard_Real theA3, const gp_XYZ& theXYZ3)
@@ -369,6 +380,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theXYZ3
+  //! @endcode
   void SetLinearForm (const Standard_Real theA1, const gp_XYZ& theXYZ1,
                       const Standard_Real theA2, const gp_XYZ& theXYZ2,
                       const gp_XYZ& theXYZ3)
@@ -381,6 +393,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2
+  //! @endcode
   void SetLinearForm (const Standard_Real theA1, const gp_XYZ& theXYZ1,
                       const Standard_Real theA2, const gp_XYZ& theXYZ2)
   {
@@ -392,6 +405,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theA1 * theXYZ1 + theXYZ2
+  //! @endcode
   void SetLinearForm (const Standard_Real theA1, const gp_XYZ& theXYZ1,
                       const gp_XYZ& theXYZ2)
   {
@@ -403,6 +417,7 @@ public:
   //! <me> is set to the following linear form :
   //! @code
   //! theXYZ1 + theXYZ2
+  //! @endcode
   void SetLinearForm (const gp_XYZ& theXYZ1, const gp_XYZ& theXYZ2)
   {
     x = theXYZ1.x + theXYZ2.x;

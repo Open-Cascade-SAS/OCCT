@@ -80,10 +80,10 @@ public:
   const Handle(SelectMgr_EntityOwner)& Value() const { return myIterator.Value(); }
 
   //! Select or deselect owners depending on the selection scheme.
-  //! @param theOwners [in] elements to change selection state
-  //! @param theSelScheme [in] selection scheme, defines how owner is selected
-  //! @param theToAllowSelOverlap [in] selection flag, if true - overlapped entities are allowed
-  //! @param theFilter [in] context filter to skip not acceptable owners
+  //! @param[in] thePickedOwners elements to change selection state
+  //! @param[in] theSelScheme selection scheme, defines how owner is selected
+  //! @param[in] theToAllowSelOverlap selection flag, if true - overlapped entities are allowed
+  //! @param[in] theFilter context filter to skip not acceptable owners
   Standard_EXPORT virtual void SelectOwners (const AIS_NArray1OfEntityOwner& thePickedOwners,
                                              const AIS_SelectionScheme theSelScheme,
                                              const Standard_Boolean theToAllowSelOverlap,

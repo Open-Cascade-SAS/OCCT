@@ -115,6 +115,7 @@ public:
   //! @code
   //! <me>.X() = <me>.X() + theOther.X()
   //! <me>.Y() = <me>.Y() + theOther.Y()
+  //! @endcode
   inline void Add (const gp_XY& theOther)
   {
     x += theOther.x;
@@ -183,6 +184,7 @@ public:
   //! @code
   //! <me>.X() = <me>.X() * theScalar;
   //! <me>.Y() = <me>.Y() * theScalar;
+  //! @endcode
   void Multiply (const Standard_Real theScalar)
   {
     x *= theScalar;
@@ -194,6 +196,7 @@ public:
   //! @code
   //! <me>.X() = <me>.X() * theOther.X();
   //! <me>.Y() = <me>.Y() * theOther.Y();
+  //! @endcode
   void Multiply (const gp_XY& theOther)
   {
     x *= theOther.x;
@@ -210,16 +213,17 @@ public:
   //! @code
   //! New.X() = <me>.X() * theScalar;
   //! New.Y() = <me>.Y() * theScalar;
+  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const Standard_Real theScalar) const { return gp_XY (x * theScalar, y * theScalar); }
 
   Standard_NODISCARD gp_XY operator*  (const Standard_Real theScalar) const { return Multiplied (theScalar); }
   //! @code
   //! new.X() = <me>.X() * theOther.X();
   //! new.Y() = <me>.Y() * theOther.Y();
+  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const gp_XY& theOther) const { return gp_XY (x * theOther.X(), y * theOther.Y()); }
 
   //! New = theMatrix * <me>
-  //! @endcode
   Standard_NODISCARD gp_XY Multiplied (const gp_Mat2d& theMatrix) const
   {
     return gp_XY (theMatrix.Value (1, 1) * x + theMatrix.Value (1, 2) * y,
@@ -258,6 +262,7 @@ public:
   //! @code
   //! New.X() = -<me>.X()
   //! New.Y() = -<me>.Y()
+  //! @endcode
   Standard_NODISCARD gp_XY Reversed() const
   {
     gp_XY aCoord2D = *this;
@@ -271,6 +276,7 @@ public:
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theA2 * theXY2
+  //! @endcode
   inline void SetLinearForm (const Standard_Real theA1, const gp_XY& theXY1,
                              const Standard_Real theA2, const gp_XY& theXY2)
   {
@@ -282,6 +288,7 @@ public:
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theA2 * theXY2 + theXY3
+  //! @endcode
   inline void SetLinearForm (const Standard_Real theA1, const gp_XY& theXY1,
                              const Standard_Real theA2, const gp_XY& theXY2,
                              const gp_XY& theXY3)
@@ -294,6 +301,7 @@ public:
   //! assigns the result to this number pair:
   //! @code
   //! theA1 * theXY1 + theXY2
+  //! @endcode
   inline void SetLinearForm (const Standard_Real theA1, const gp_XY& theXY1,
                              const gp_XY& theXY2)
   {
@@ -305,6 +313,7 @@ public:
   //! assigns the result to this number pair:
   //! @code
   //! theXY1 + theXY2
+  //! @endcode
   inline void SetLinearForm (const gp_XY& theXY1,
                              const gp_XY& theXY2)
   {
@@ -315,6 +324,7 @@ public:
   //! @code
   //! <me>.X() = <me>.X() - theOther.X()
   //! <me>.Y() = <me>.Y() - theOther.Y()
+  //! @endcode
   inline void Subtract (const gp_XY& theOther)
   {
     x -= theOther.x;

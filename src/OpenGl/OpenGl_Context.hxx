@@ -647,7 +647,7 @@ public:
 
   //! Sets polygon hatch pattern.
   //! Zero-index value is a default alias for solid filling.
-  //! @param the type of hatch supported by base implementation of
+  //! @param theStyle type of hatch supported by base implementation of
   //! OpenGl_LineAttributes (Aspect_HatchStyle) or the type supported by custom
   //! implementation derived from OpenGl_LineAttributes class.
   //! @return old type of hatch.
@@ -774,9 +774,9 @@ public: //! @name methods to alter or retrieve current state
   //! - TRUE when writing into offscreen FBO (always expected to be in sRGB or RGBF formats).
   //! - TRUE when writing into sRGB-ready window buffer (might require choosing proper pixel format on window creation).
   //! - FALSE if sRGB rendering is not supported or sRGB-not-ready window buffer is used for drawing.
-  //! @param theIsFbo [in] flag indicating writing into offscreen FBO (always expected sRGB-ready when sRGB FBO is supported)
-  //!                      or into window buffer (FALSE, sRGB-readiness might vary).
-  //! @param theIsSRgb [in] flag indicating off-screen FBO is sRGB-ready
+  //! @param[in] theIsFbo flag indicating writing into offscreen FBO (always expected sRGB-ready when sRGB FBO is supported)
+  //!                     or into window buffer (FALSE, sRGB-readiness might vary).
+  //! @param[in] theIsFboSRgb flag indicating off-screen FBO is sRGB-ready
   Standard_EXPORT void SetFrameBufferSRGB (bool theIsFbo, bool theIsFboSRgb = true);
 
   //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
