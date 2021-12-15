@@ -326,12 +326,12 @@ void OpenGl_Window::Init()
     EAGLContext* aGLCtx      = myGlContext->myGContext;
     CAEAGLLayer* anEaglLayer = (CAEAGLLayer* )myUIView.layer;
     GLuint aWinRBColor = 0;
-    ::glGenRenderbuffers (1, &aWinRBColor);
-    ::glBindRenderbuffer (GL_RENDERBUFFER, aWinRBColor);
+    myGlContext->Functions()->glGenRenderbuffers (1, &aWinRBColor);
+    myGlContext->Functions()->glBindRenderbuffer (GL_RENDERBUFFER, aWinRBColor);
     [aGLCtx renderbufferStorage: GL_RENDERBUFFER fromDrawable: anEaglLayer];
-    ::glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &myWidth);
-    ::glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myHeight);
-    ::glBindRenderbuffer (GL_RENDERBUFFER, 0);
+    myGlContext->Functions()->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &myWidth);
+    myGlContext->Functions()->glGetRenderbufferParameteriv (GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &myHeight);
+    myGlContext->Functions()->glBindRenderbuffer (GL_RENDERBUFFER, 0);
 
     if (!aDefFbo->InitWithRB (myGlContext, Graphic3d_Vec2i (myWidth, myHeight), GL_RGBA8, GL_DEPTH24_STENCIL8, aWinRBColor))
     {
@@ -380,16 +380,17 @@ Standard_ENABLE_DEPRECATION_WARNINGS
   myHeightPt = Standard_Integer(aBounds.size.height);
 #endif
 
-  ::glDisable (GL_DITHER);
-  ::glDisable (GL_SCISSOR_TEST);
-  ::glViewport (0, 0, myWidth, myHeight);
-#if !defined(GL_ES_VERSION_2_0)
-  ::glDrawBuffer (GL_BACK);
-  if (myGlContext->core11ffp != NULL)
+  myGlContext->core11fwd->glDisable (GL_DITHER);
+  myGlContext->core11fwd->glDisable (GL_SCISSOR_TEST);
+  myGlContext->core11fwd->glViewport (0, 0, myWidth, myHeight);
+  if (myGlContext->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
   {
-    ::glMatrixMode (GL_MODELVIEW);
+    myGlContext->core11fwd->glDrawBuffer (GL_BACK);
+    if (myGlContext->core11ffp != NULL)
+    {
+      myGlContext->core11ffp->glMatrixMode (GL_MODELVIEW);
+    }
   }
-#endif
 }
 
 // =======================================================================

@@ -14,6 +14,38 @@
 #ifndef OpenGl_GlTypes_HeaderFile
 #define OpenGl_GlTypes_HeaderFile
 
+// required for correct APIENTRY definition
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+#endif
+
+#if defined(__APPLE__)
+  #import <TargetConditionals.h>
+#endif
+
+#ifndef APIENTRY
+  #define APIENTRY
+#endif
+#ifndef APIENTRYP
+  #define APIENTRYP APIENTRY *
+#endif
+#ifndef GLAPI
+  #define GLAPI extern
+#endif
+
+#ifndef GL_APICALL
+  #define GL_APICALL GLAPI
+#endif
+
+// exclude modern definitions and system-provided glext.h, should be defined before gl.h inclusion
+#ifndef GL_GLEXT_LEGACY
+  #define GL_GLEXT_LEGACY
+#endif
+#ifndef GLX_GLXEXT_LEGACY
+  #define GLX_GLXEXT_LEGACY
+#endif
+
 #include <OpenGl_khrplatform.h>
 
 typedef khronos_int8_t   GLbyte;

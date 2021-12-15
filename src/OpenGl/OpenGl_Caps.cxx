@@ -15,8 +15,6 @@
 
 #include <OpenGl_Caps.hxx>
 
-#include <OpenGl_GlCore20.hxx>
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps,Standard_Transient)
 
 // =======================================================================
@@ -40,11 +38,7 @@ OpenGl_Caps::OpenGl_Caps()
   contextDebug      (Standard_False),
   contextSyncDebug  (Standard_False),
   contextNoAccel    (Standard_False),
-#if !defined(GL_ES_VERSION_2_0)
   contextCompatible (Standard_True),
-#else
-  contextCompatible (Standard_False),
-#endif
   contextNoExtensions (Standard_False),
   contextMajorVersionUpper (-1),
   contextMinorVersionUpper (-1),

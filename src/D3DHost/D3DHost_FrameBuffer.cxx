@@ -56,7 +56,6 @@ D3DHost_FrameBuffer::~D3DHost_FrameBuffer()
 // =======================================================================
 void D3DHost_FrameBuffer::Release (OpenGl_Context* theCtx)
 {
-#if !defined(GL_ES_VERSION_2_0)
   if (myGlD3dDevice != NULL)
   {
     const OpenGl_GlFunctions* aFuncs = (theCtx != NULL && theCtx->IsValid())
@@ -77,7 +76,6 @@ void D3DHost_FrameBuffer::Release (OpenGl_Context* theCtx)
     }
     myGlD3dDevice = NULL;
   }
-#endif
 
   if (myD3dSurf != NULL)
   {
@@ -146,7 +144,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
                                                       const Standard_Integer        theDepthFormat)
 {
   Release (theCtx.operator->());
-#if !defined(GL_ES_VERSION_2_0)
+
   myDepthFormat = theDepthFormat;
   myVPSizeX = theSizeX;
   myVPSizeY = theSizeY;
@@ -207,14 +205,6 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
 
   myD3dFallback = Standard_False;
   return Standard_True;
-#else
-  (void )theD3DDevice;
-  (void )theIsD3dEx;
-  (void )theSizeX;
-  (void )theSizeY;
-  (void )theDepthFormat;
-  return Standard_False;
-#endif
 }
 
 // =======================================================================
@@ -223,10 +213,6 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
 // =======================================================================
 Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Context)& theCtx)
 {
-#if defined(GL_ES_VERSION_2_0)
-  (void )theCtx;
-  return Standard_False;
-#else
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (myGlD3dSurf != NULL)
   {
@@ -264,7 +250,6 @@ Standard_Boolean D3DHost_FrameBuffer::registerD3dBuffer (const Handle(OpenGl_Con
   }
 
   return Standard_True;
-#endif
 }
 
 // =======================================================================
@@ -292,35 +277,15 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
   const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myDepthFormat);
   if (myDepthStencilTexture->IsValid())
   {
-  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
     theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
                                             myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  #else
-    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                            myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-    if (aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL)
-    {
-      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                              myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-    }
-  #endif
   }
   if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
     if (myDepthStencilTexture->IsValid())
     {
-    #ifdef GL_DEPTH_STENCIL_ATTACHMENT
       theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
                                               myDepthStencilTexture->GetTarget(), 0, 0);
-    #else
-      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                              myDepthStencilTexture->GetTarget(), 0, 0);
-      if (aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL)
-      {
-        theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                                myDepthStencilTexture->GetTarget(), 0, 0);
-      }
-    #endif
     }
     if (theCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -353,16 +318,12 @@ void D3DHost_FrameBuffer::LockSurface (const Handle(OpenGl_Context)& theCtx)
     return;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   if (!aFuncs->wglDXLockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf))
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "D3DHost_FrameBuffer::LockSurface(), lock failed!");
   }
-#else
-  (void )theCtx;
-#endif
 }
 
 // =======================================================================
@@ -416,8 +377,6 @@ void D3DHost_FrameBuffer::UnlockSurface (const Handle(OpenGl_Context)& theCtx)
     return;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
   aFuncs->wglDXUnlockObjectsNV (myGlD3dDevice, 1, &myGlD3dSurf);
-#endif
 }

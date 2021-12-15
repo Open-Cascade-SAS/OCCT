@@ -173,6 +173,9 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   myEglDisplay = (Aspect_Display )EGL_NO_DISPLAY;
   myEglContext = (Aspect_RenderingContext )EGL_NO_CONTEXT;
 #endif
+#if defined(OpenGl_USE_GLES2)
+  myCaps->contextCompatible = false;
+#endif
 
 #if defined(HAVE_XLIB)
   if (myDisplayConnection.IsNull())

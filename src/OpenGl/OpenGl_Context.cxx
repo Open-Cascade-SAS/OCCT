@@ -2533,9 +2533,7 @@ void OpenGl_Context::SetPointSpriteOrigin()
   if (myPointSpriteOrig != aNewState)
   {
     myPointSpriteOrig = aNewState;
-  #if !defined(GL_ES_VERSION_2_0)
     core15fwd->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, aNewState);
-  #endif
   }
 }
 

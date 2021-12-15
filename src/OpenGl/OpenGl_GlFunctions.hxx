@@ -16,8 +16,6 @@
 #ifndef OpenGl_GlFunctions_HeaderFile
 #define OpenGl_GlFunctions_HeaderFile
 
-#include <OpenGl_GlNative.hxx>
-
 #include <Standard_Macro.hxx>
 #include <Standard_TypeDef.hxx>
 

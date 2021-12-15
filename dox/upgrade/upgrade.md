@@ -7,6 +7,8 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
+@ref upgrade_occt770 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.7.0)"
+
 @subsection upgrade_intro_precautions Precautions
 
 Back-up your code before the upgrade.
@@ -23,7 +25,6 @@ Take this document with discretion; apply your expertise and knowledge of your a
 The automatic upgrade tool is provided as is, without warranty of any kind, and we explicitly disclaim any liability for possible errors that may appear due to use of this tool. 
 It is your responsibility to ensure that the changes you made in your code are correct. 
 When you upgrade the code by an automatic script, make sure to carefully review the introduced changes at each step before committing them.
-
 
 @section upgrade_65 Upgrade to OCCT 6.5.0
 
@@ -2321,3 +2322,10 @@ aValidateEdge.Process();
 `Prs3d_Drawer` getters no more implicitly create "default" aspects.
 If specific property has not been set before to this drawer instance nor to linked drawer instance, then NULL property will be returned.
 Make sure to set property beforehand or to call `SetOwn*` / `SetupOwn*` methods to derive from defaults.
+
+@subsection upgrade_occt770_opengl OpenGL functions
+
+Applications extending OCCT 3D Viewer and calling OpenGL functions directly (like @c @::glEnable(), e.g. using global namespace) might be affected by changes in `OpenGl_GlFunctions.hxx`.
+This header, as well as `OpenGl_GlCore20.hxx` and similar, no more include system OpenGL / OpenGL ES headers to define function table.
+Application code calling OpenGL functions directly should be changed to either use `OpenGl_Context::core11fwd` (as designed)
+or to include system OpenGL headers in advance (with help of `OpenGl_GlNative.hxx`).

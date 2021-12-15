@@ -90,11 +90,11 @@ void OpenGl_Context::SwapBuffers()
     return;
   }
 
-  ::glBindRenderbuffer (GL_RENDERBUFFER, myDefaultFbo->ColorRenderBuffer());
+  myFuncs->glBindRenderbuffer (GL_RENDERBUFFER, myDefaultFbo->ColorRenderBuffer());
   [myGContext presentRenderbuffer: GL_RENDERBUFFER];
   //::glBindRenderbuffer (GL_RENDERBUFFER, 0);
 #else
-  glFinish();
+  core11fwd->glFinish();
   [myGContext flushBuffer];
 #endif
 }

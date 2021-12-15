@@ -388,7 +388,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_C
     return Standard_True;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   Standard_Integer aTexIter = 0;
   for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter (myTextures); aTexSrcIter.More(); aTexSrcIter.Next(), ++aTexIter)
   {
@@ -425,7 +424,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_C
       return Standard_False;
     }
   }
-#endif
 
   return Standard_True;
 }
@@ -441,7 +439,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures (const Handle(OpenGl_C
     return Standard_True;
   }
 
-#if !defined(GL_ES_VERSION_2_0)
   for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
   {
     theContext->arbTexBindless->glMakeTextureHandleNonResidentARB (myTextureHandles[aTexIter]);
@@ -453,7 +450,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::ReleaseTextures (const Handle(OpenGl_C
       return Standard_False;
     }
   }
-#endif
 
   return Standard_True;
 }
@@ -499,7 +495,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
   myTextureHandles.clear();
   myTextureHandles.resize (myTextures.Size());
 
-#if !defined(GL_ES_VERSION_2_0)
   Standard_Integer aTexIter = 0;
   for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter (myTextures); aTexSrcIter.More(); aTexSrcIter.Next(), ++aTexIter)
   {
@@ -524,7 +519,6 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
       return Standard_False;
     }
   }
-#endif
 
   return Standard_True;
 }
