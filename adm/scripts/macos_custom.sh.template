@@ -12,6 +12,7 @@ export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-macos"
 #export toMake=1
 #export toInstall=1
 #export toPack=1
+#export toPackFat=1
 
 #export BUILD_ModelingData=ON
 #export BUILD_ModelingAlgorithms=ON
@@ -25,5 +26,6 @@ export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-macos"
 #export USE_FREEIMAGE=ON
 
 #export MACOSX_DEPLOYMENT_TARGET=10.10
-#export anAbi=arm64
-#export anAbi=x86_64
+#export anAbiList=arm64
+#export anAbiList=x86_64
+#export anAbiList="arm64 x86_64"
