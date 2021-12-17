@@ -20,13 +20,13 @@ export aRapidJson=
 export aDraco=
 
 # build stages to perform
-export toSimulator=0
 export isStatic=1
 export toCMake=1
 export toClean=1
 export toMake=1
 export toInstall=1
 export toPack=0
+export toPackFat=0
 export toDebug=0
 
 export BUILD_ModelingData=ON
@@ -41,12 +41,24 @@ export USE_RAPIDJSON=OFF
 export USE_DRACO=OFF
 
 export IPHONEOS_DEPLOYMENT_TARGET=8.0
-export anAbi=arm64
-#export anAbi=x86_64
+#export anAbiList="iPhoneOS|arm64 iPhoneSimulator|arm64 iPhoneSimulator|x86_64"
+export anAbiList="iPhoneOS|arm64"
 
 if [[ -f "${aScriptDir}/ios_custom.sh" ]]; then
   source "${aScriptDir}/ios_custom.sh"
 fi
+
+anOcctVerSuffix=`grep -e "#define OCC_VERSION_DEVELOPMENT" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
+anOcctVersion=`grep -e "#define OCC_VERSION_COMPLETE" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
+aGitBranch=`git symbolic-ref --short HEAD`
+
+YEAR=$(date +"%Y")
+MONTH=$(date +"%m")
+DAY=$(date +"%d")
+aRevision=-${YEAR}-${MONTH}-${DAY}
+#aRevision=-${aGitBranch}
+
+set -o pipefail
 
 aBuildType="Release"
 aBuildTypePrefix=
@@ -58,59 +70,52 @@ aLibType="Shared"
 if [[ $isStatic == 1 ]]; then
   aLibType="Static"
 fi
-aPlatformAndCompiler=ios-${anAbi}${aBuildTypePrefix}-clang
-aPlatformSdk="iphoneos"
-aSysRoot="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
-if [[ $toSimulator == 1 ]]; then
-  #anAbi=x86_64
-  aPlatformAndCompiler=ios-simulator64-${anAbi}${aBuildTypePrefix}-clang
-  aPlatformSdk="iphonesimulator"
-  aSysRoot="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
-fi
 
-aWorkDir="${aCasSrc}/${aBuildRoot}/${aPlatformAndCompiler}-make"
-aDestDir="${aCasSrc}/${aBuildRoot}/${aPlatformAndCompiler}"
-aLogFile="${aCasSrc}/${aBuildRoot}/build-${aPlatformAndCompiler}.log"
+function buildArch {
+  anAbi=$1
+  aPlatformSdk=$2
 
-if [[ $toCMake == 1 ]] && [[ $toClean == 1 ]]; then
-  rm -r -f "$aWorkDir"
-  rm -r -f "$aDestDir"
-fi
-mkdir -p "$aWorkDir"
-mkdir -p "$aDestDir"
-rm -f "$aLogFile"
+  aPlatformAndCompiler=${aPlatformSdk}-${anAbi}${aBuildTypePrefix}-clang
 
-anOcctVerSuffix=`grep -e "#define OCC_VERSION_DEVELOPMENT" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
-anOcctVersion=`grep -e "#define OCC_VERSION_COMPLETE" "$aCasSrc/src/Standard/Standard_Version.hxx" | awk '{print $3}' | xargs`
-aGitBranch=`git symbolic-ref --short HEAD`
+  aWorkDir="${aCasSrc}/${aBuildRoot}/${aPlatformAndCompiler}-make"
+  aDestDir="${aCasSrc}/${aBuildRoot}/${aPlatformAndCompiler}"
+  aLogFile="${aCasSrc}/${aBuildRoot}/build-${aPlatformAndCompiler}.log"
 
-# include some information about OCCT into archive
-echo \<pre\>> "${aWorkDir}/VERSION.html"
-git status >> "${aWorkDir}/VERSION.html"
-git log -n 100 >> "${aWorkDir}/VERSION.html"
-echo \</pre\>>> "${aWorkDir}/VERSION.html"
-
-pushd "$aWorkDir"
-
-aTimeZERO=$SECONDS
-set -o pipefail
-
-function logDuration {
-  if [[ $1 == 1 ]]; then
-    aDur=$(($4 - $3))
-    echo $2 time: $aDur sec>> "$aLogFile"
+  if [[ $toCMake == 1 ]] && [[ $toClean == 1 ]]; then
+    rm -r -f "$aWorkDir"
+    rm -r -f "$aDestDir"
   fi
-}
+  mkdir -p "$aWorkDir"
+  mkdir -p "$aDestDir"
+  rm -f "$aLogFile"
 
-# (re)generate Make files
-if [[ $toCMake == 1 ]]; then
-  echo Configuring OCCT for iOS...
-  cmake -G "Unix Makefiles" \
+  # include some information about OCCT into archive
+  echo \<pre\>> "${aWorkDir}/VERSION.html"
+  git status >> "${aWorkDir}/VERSION.html"
+  git log -n 100 >> "${aWorkDir}/VERSION.html"
+  echo \</pre\>>> "${aWorkDir}/VERSION.html"
+
+  pushd "$aWorkDir"
+
+  aTimeZERO=$SECONDS
+
+  function logDuration {
+    if [[ $1 == 1 ]]; then
+      aDur=$(($4 - $3))
+      echo $2 time: $aDur sec>> "$aLogFile"
+    fi
+  }
+
+  aSysRoot="/Applications/Xcode.app/Contents/Developer/Platforms/${aPlatformSdk}.platform/Developer/SDKs/${aPlatformSdk}.sdk"
+
+  # (re)generate Make files
+  if [[ $toCMake == 1 ]]; then
+    echo Configuring OCCT for iOS...
+    cmake -G "Unix Makefiles" \
   -D CMAKE_SYSTEM_NAME="iOS" \
   -D CMAKE_OSX_ARCHITECTURES:STRING="$anAbi" \
   -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING="$IPHONEOS_DEPLOYMENT_TARGET" \
   -D CMAKE_OSX_SYSROOT:PATH="$aSysRoot" \
-  -D ENABLE_VISIBILITY:BOOL="TRUE" \
   -D CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS:BOOL="OFF" \
   -D CMAKE_CXX_USE_RESPONSE_FILE_FOR_OBJECTS:BOOL="OFF" \
   -D CMAKE_BUILD_TYPE:STRING="$aBuildType" \
@@ -145,57 +150,118 @@ if [[ $toCMake == 1 ]]; then
   -D BUILD_MODULE_DataExchange:BOOL="${BUILD_DataExchange}" \
   -D BUILD_MODULE_Draw:BOOL="OFF" \
   -D BUILD_DOC_Overview:BOOL="OFF" \
-  "$aCasSrc" 2>&1 | tee -a "$aLogFile"
-  aResult=$?; if [[ $aResult != 0 ]]; then exit $aResult; fi
-fi
-aTimeGEN=$SECONDS
-logDuration $toCMake "Generation" $aTimeZERO $aTimeGEN
+    "$aCasSrc" 2>&1 | tee -a "$aLogFile"
+    aResult=$?; if [[ $aResult != 0 ]]; then exit $aResult; fi
+  fi
+  aTimeGEN=$SECONDS
+  logDuration $toCMake "Generation" $aTimeZERO $aTimeGEN
 
-# clean up from previous build
-if [[ $toClean == 1 ]]; then
-  make clean
-fi
+  # clean up from previous build
+  if [[ $toClean == 1 ]]; then
+    make clean
+  fi
 
-# build the project
-if [[ $toMake == 1 ]]; then
-  echo Building...
-  make -j $aNbJobs 2>&1 | tee -a "$aLogFile"
-  aResult=$?; if [[ $aResult != 0 ]]; then exit $aResult; fi
-fi
-aTimeBUILD=$SECONDS
-logDuration $toMake "Building"       $aTimeGEN  $aTimeBUILD
-logDuration $toMake "Total building" $aTimeZERO $aTimeBUILD
+  # build the project
+  if [[ $toMake == 1 ]]; then
+    echo Building...
+    make -j $aNbJobs 2>&1 | tee -a "$aLogFile"
+    aResult=$?; if [[ $aResult != 0 ]]; then exit $aResult; fi
+  fi
+  aTimeBUILD=$SECONDS
+  logDuration $toMake "Building"       $aTimeGEN  $aTimeBUILD
+  logDuration $toMake "Total building" $aTimeZERO $aTimeBUILD
 
-# install the project
-if [[ $toInstall == 1 ]]; then
-  echo Installing OCCT into $aDestDir...
-  make install 2>&1 | tee -a "$aLogFile"
-  cp -f "$aWorkDir/VERSION.html" "$aDestDir/VERSION.html"
-fi
-aTimeINSTALL=$SECONDS
-logDuration $toInstall "Install" $aTimeBUILD $aTimeINSTALL
+  # install the project
+  if [[ $toInstall == 1 ]]; then
+    echo Installing OCCT into $aDestDir...
+    make install 2>&1 | tee -a "$aLogFile"
+    cp -f "$aWorkDir/VERSION.html" "$aDestDir/VERSION.html"
+    echo Platform: ${aPlatformSdk} ABI: ${anAbi} Build: ${aBuildType} IPHONEOS_DEPLOYMENT_TARGET: ${IPHONEOS_DEPLOYMENT_TARGET} > "$aDestDir/build_target.txt"
+  fi
+  aTimeINSTALL=$SECONDS
+  logDuration $toInstall "Install" $aTimeBUILD $aTimeINSTALL
 
-# create an archive
-if [[ $toPack == 1 ]]; then
-  YEAR=$(date +"%Y")
-  MONTH=$(date +"%m")
-  DAY=$(date +"%d")
-  aRevision=-${YEAR}-${MONTH}-${DAY}
-  #aRevision=-${aGitBranch}
+  # create an archive
+  if [[ $toPack == 1 ]]; then
+    anArchName=occt-${anOcctVersion}${anOcctVerSuffix}${aRevision}-${aPlatformAndCompiler}.tar.bz2
+    echo Creating an archive ${aCasSrc}/${aBuildRoot}/${anArchName}...
+    rm ${aDestDir}/../${anArchName} &>/dev/null
+    pushd "$aDestDir"
+    tar -jcf ${aDestDir}/../${anArchName} *
+    popd
+  fi
+  aTimePACK=$SECONDS
+  logDuration $toPack "Packing archive" $aTimeINSTALL $aTimePACK
 
-  anArchName=occt-${anOcctVersion}${anOcctVerSuffix}${aRevision}-${aPlatformAndCompiler}.tar.bz2
-  echo Creating an archive ${aCasSrc}/${aBuildRoot}/${anArchName}...
-  rm ${aDestDir}/../${anArchName} &>/dev/null
-  pushd "$aDestDir"
-  tar -jcf ${aDestDir}/../${anArchName} *
+  # finished
+  DURATION=$(($aTimePACK - $aTimeZERO))
+  echo Total time: $DURATION sec
+  logDuration 1 "Total" $aTimeZERO $aTimePACK
+
   popd
+}
+
+for anArchIter in $anAbiList
+do
+  IFS="|" read -r aPlatform anArch <<< "$anArchIter"
+  echo Platform: ${aPlatform} ABI: ${anArch} Build: ${aBuildType}
+  buildArch $anArch $aPlatform
+done
+
+# create a FAT archive
+if [[ $toPackFat == 1 ]]; then
+  for aPlatIter in iPhoneOS iPhoneSimulator
+  do
+    aSuffixFat=${aPlatIter}${aBuildTypePrefix}-clang
+    aFatDir="${aCasSrc}/${aBuildRoot}/${aSuffixFat}"
+
+    # merge per-arch builds into fat builds
+    hasPlatform=0
+    for anArchIter in $anAbiList
+    do
+      IFS="|" read -r aPlatform anArch <<< "$anArchIter"
+      if [[ $aPlatIter != ${aPlatform} ]]; then
+        continue
+      fi
+
+      aSuffixThin=${aPlatform}-${anArch}${aBuildTypePrefix}-clang
+      anArchDir="${aCasSrc}/${aBuildRoot}/${aSuffixThin}"
+      if [[ $hasPlatform == 0 ]]; then
+        hasPlatform=1
+        echo Packing FAT archive for platform: ${aPlatform}
+        rm -r -f "$aFatDir"
+        mkdir -p "$aFatDir"
+        rsync -r --exclude '*.a' "$anArchDir/" "$aFatDir"
+        rm -f "$aFatDir/build_target.txt"
+        for aLibIter in $anArchDir/lib/*.a; do
+          aLibName=`basename $aLibIter`
+          lipo "$anArchDir/lib/$aLibName" -output "$aFatDir/lib/$aLibName" -create
+        done
+      else
+        for aLibIter in $aFatDir/lib/*.a; do
+          aLibName=`basename $aLibIter`
+          lipo "$aFatDir/lib/$aLibName" "$anArchDir/lib/$aLibName" -output "$aFatDir/lib/$aLibName" -create
+          #lipo -info "$aFatDir/lib/$aLibName"
+        done
+      fi
+      cat "$anArchDir/build_target.txt" >> "$aFatDir/build_target.txt"
+    done
+
+    # create an archive
+    for anArchIter in $anAbiList
+    do
+      IFS="|" read -r aPlatform anArch <<< "$anArchIter"
+      if [[ $aPlatIter != ${aPlatform} ]]; then
+        continue
+      fi
+
+      anArchName=occt-${anOcctVersion}${anOcctVerSuffix}${aRevision}-${aSuffixFat}.tar.bz2
+      echo Creating an archive ${aCasSrc}/${aBuildRoot}/${anArchName}...
+      rm ${aFatDir}/../${anArchName} &>/dev/null
+      pushd "$aFatDir"
+      tar -jcf ${aFatDir}/../${anArchName} *
+      popd
+      break
+    done
+  done
 fi
-aTimePACK=$SECONDS
-logDuration $toPack "Packing archive" $aTimeINSTALL $aTimePACK
-
-# finished
-DURATION=$(($aTimePACK - $aTimeZERO))
-echo Total time: $DURATION sec
-logDuration 1 "Total" $aTimeZERO $aTimePACK
-
-popd

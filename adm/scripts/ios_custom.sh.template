@@ -1,4 +1,4 @@
-# environment configuration template for macos_build.sh (to be renamed as macos_custom_env.sh)
+# environment configuration template for ios_build.sh (to be renamed as ios_custom_env.sh)
 export PATH=/Applications/CMake.app/Contents/bin:$PATH
 export aFreeType="$aSrcRoot/../3rdparty/freetype-2.10.4-ios"
 export aFreeImage="$aSrcRoot/../3rdparty/freeimage-3.18-ios"
@@ -6,13 +6,13 @@ export aRapidJson="$aSrcRoot/../3rdparty/rapidjson-1.1.0"
 export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-ios"
 
 # Uncomment to customize building steps
-#export toSimulator=0
 #export isStatic=0
 #export toCMake=1
 #export toClean=1
 #export toMake=1
 #export toInstall=1
 #export toPack=0
+#export toPackFat=1
 #export toDebug=0
 
 #export BUILD_ModelingData=ON
@@ -26,5 +26,5 @@ export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-ios"
 #export USE_FREEIMAGE=ON
 
 #export IPHONEOS_DEPLOYMENT_TARGET=8.0
-#export anAbi=arm64
-#export anAbi=x86_64
+#export anAbiList="iPhoneOS|arm64 iPhoneSimulator|arm64 iPhoneSimulator|x86_64"
+#export anAbiList="iPhoneOS|arm64"
