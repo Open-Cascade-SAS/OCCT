@@ -19,17 +19,13 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <AIS_TrihedronSelectionMode.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_DatumMode.hxx>
 #include <Prs3d_DatumParts.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <Quantity_Color.hxx>
 
 class Geom_Axis2Placement;

@@ -21,7 +21,6 @@
 #include <AdvApp2Var_Network.hxx>
 #include <AdvApp2Var_Patch.hxx>
 #include <AdvApp2Var_SequenceOfPatch.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
 //==========================================================================================

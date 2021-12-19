@@ -20,7 +20,6 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ExclusionFilter,SelectMgr_Filter)

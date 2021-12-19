@@ -17,7 +17,6 @@
 #ifndef _Adaptor3d_Curve_HeaderFile
 #define _Adaptor3d_Curve_HeaderFile
 
-#include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>

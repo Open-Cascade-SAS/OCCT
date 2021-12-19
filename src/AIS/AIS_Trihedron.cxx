@@ -18,10 +18,9 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_TrihedronOwner.hxx>
+#include <AIS_TrihedronSelectionMode.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>

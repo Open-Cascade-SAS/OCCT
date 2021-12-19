@@ -17,7 +17,6 @@
 #ifndef _AdvApp2Var_Node_HeaderFile
 #define _AdvApp2Var_Node_HeaderFile
 
-#include <gp_XY.hxx>
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Type.hxx>

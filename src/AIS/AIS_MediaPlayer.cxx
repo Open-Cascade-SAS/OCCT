@@ -16,10 +16,8 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <Media_PlayerContext.hxx>
-#include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_MediaTexture.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <V3d_Viewer.hxx>

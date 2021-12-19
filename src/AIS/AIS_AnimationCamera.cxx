@@ -14,8 +14,6 @@
 
 #include <AIS_AnimationCamera.hxx>
 
-#include <Graphic3d_Camera.hxx>
-#include <Precision.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationCamera, AIS_Animation)

@@ -20,7 +20,6 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_ArrowAspect.hxx>

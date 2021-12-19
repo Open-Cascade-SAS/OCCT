@@ -22,13 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_Real.hxx>
 
 
 //! Bspline approximation of a surface.

@@ -21,9 +21,7 @@
 #include <AIS_GlobalStatus.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_MultipleConnectedInteractive.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Precision.hxx>
-#include <Prs3d_BasicAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -31,7 +29,6 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_MapIteratorOfMapOfTransient.hxx>
 #include <TopLoc_Location.hxx>
 #include <V3d_View.hxx>

@@ -22,7 +22,6 @@
 
 #include <Quantity_NameOfColor.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectMgr_Filter.hxx>
 class SelectMgr_EntityOwner;
 

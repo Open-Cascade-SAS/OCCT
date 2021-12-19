@@ -21,10 +21,7 @@
 #include <Aspect_XRSession.hxx>
 #include <Aspect_Grid.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Message.hxx>
-#include <Message_Messenger.hxx>
 #include <gp_Quaternion.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>

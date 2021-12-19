@@ -18,11 +18,9 @@
 #define _AIS_C0RegularityFilter_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopTools_MapOfShape.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
 class SelectMgr_EntityOwner;

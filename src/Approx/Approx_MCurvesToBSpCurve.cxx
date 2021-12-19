@@ -13,15 +13,11 @@
 // commercial license or contractual agreement.
 
 
-#include <AppParCurves_Array1OfMultiPoint.hxx>
-#include <AppParCurves_MultiBSpCurve.hxx>
-#include <AppParCurves_MultiCurve.hxx>
 #include <AppParCurves_MultiPoint.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
 #include <BSplCLib.hxx>
 #include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
-#include <PLib.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>

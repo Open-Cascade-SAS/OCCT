@@ -17,7 +17,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>

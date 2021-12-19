@@ -16,7 +16,6 @@
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Image_Texture.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>

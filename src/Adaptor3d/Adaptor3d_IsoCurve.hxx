@@ -17,7 +17,6 @@
 #ifndef _Adaptor3d_IsoCurve_HeaderFile
 #define _Adaptor3d_IsoCurve_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_IsoType.hxx>
 

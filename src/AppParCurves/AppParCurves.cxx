@@ -18,8 +18,6 @@
 
 #include <AppParCurves.hxx>
 #include <BSplCLib.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

@@ -19,14 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <AppParCurves_SequenceOfMultiCurve.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <AppParCurves_MultiCurve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <AppCont_Function.hxx>
 class AppParCurves_MultiCurve;

@@ -20,22 +20,16 @@
 #include <AIS_Shape.hxx>
 #include <BRepTools.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Precision.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_HLRPolyShape.hxx>
-#include <StdPrs_WFShape.hxx>
 #include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_OrientedShapeMapHasher.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ConnectedInteractive,AIS_InteractiveObject)

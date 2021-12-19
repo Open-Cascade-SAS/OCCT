@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 class HeaderSection_FileName;
 class HeaderSection_FileSchema;

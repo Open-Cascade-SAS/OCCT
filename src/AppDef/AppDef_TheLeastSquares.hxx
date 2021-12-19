@@ -30,7 +30,6 @@
 #include <math_IntegerVector.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 class StdFail_NotDone;

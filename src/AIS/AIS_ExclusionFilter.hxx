@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <AIS_KindOfInteractive.hxx>

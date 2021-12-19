@@ -18,13 +18,10 @@
 #define _AIS_GlobalStatus_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <AIS_DisplayStatus.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 
 DEFINE_STANDARD_HANDLE(AIS_GlobalStatus, Standard_Transient)

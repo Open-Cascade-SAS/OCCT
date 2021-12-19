@@ -25,12 +25,10 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 class PLib_JacobiPolynomial;
 

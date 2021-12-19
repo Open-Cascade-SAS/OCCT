@@ -18,7 +18,6 @@
 #define _Approx_CurvlinFunc_HeaderFile
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>

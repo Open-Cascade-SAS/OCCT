@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <AIS_KindOfInteractive.hxx>
-#include <Standard_Boolean.hxx>
 class SelectMgr_EntityOwner;
 
 

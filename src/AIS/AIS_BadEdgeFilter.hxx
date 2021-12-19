@@ -18,12 +18,10 @@
 #define _AIS_BadEdgeFilter_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopTools_DataMapOfIntegerListOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 class TopoDS_Edge;

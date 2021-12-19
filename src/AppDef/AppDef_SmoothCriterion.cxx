@@ -18,8 +18,6 @@
 #include <AppDef_SmoothCriterion.hxx>
 #include <FEmTool_Curve.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AppDef_SmoothCriterion,Standard_Transient)

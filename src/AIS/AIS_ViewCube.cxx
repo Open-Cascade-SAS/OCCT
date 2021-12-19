@@ -18,14 +18,12 @@
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <gp_Ax2.hxx>
-#include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_Text.hxx>
 #include <NCollection_Lerp.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Text.hxx>
-#include <Prs3d_ToolDisk.hxx>
 #include <Prs3d_ToolSphere.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 #include <V3d.hxx>

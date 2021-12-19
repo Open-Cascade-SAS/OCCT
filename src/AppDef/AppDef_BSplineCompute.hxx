@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Approx_ParametrizationType.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>

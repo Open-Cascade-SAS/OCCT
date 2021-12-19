@@ -23,12 +23,8 @@
 
 #include <AppDef_MultiLine.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <Standard_OStream.hxx>
 #include <TColStd_Array1OfReal.hxx>

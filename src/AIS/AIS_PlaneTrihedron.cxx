@@ -18,13 +18,10 @@
 // + (-1) selection mode token into account 
 // (SAMTECH specific)
 
-#include <AIS_InteractiveObject.hxx>
 #include <AIS_Line.hxx>
 #include <AIS_PlaneTrihedron.hxx>
 #include <AIS_Point.hxx>
-#include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_XYZAxisPresentation.hxx>
-#include <Geom_Axis1Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Line.hxx>
@@ -33,9 +30,6 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>

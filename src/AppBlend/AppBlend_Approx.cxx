@@ -16,9 +16,6 @@
 
 
 #include <AppBlend_Approx.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : AppBlend_Approx

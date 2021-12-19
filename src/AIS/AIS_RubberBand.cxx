@@ -23,10 +23,7 @@
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
 

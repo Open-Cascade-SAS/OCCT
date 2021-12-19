@@ -14,9 +14,7 @@
 // AdvApp2Var_SysBase.cxx
 #include <assert.h>
 #include <cmath>
-#include <stdlib.h>
 #include <string.h>
-#include <AdvApp2Var_Data_f2c.hxx>
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_Data.hxx>
 #include <Standard.hxx>

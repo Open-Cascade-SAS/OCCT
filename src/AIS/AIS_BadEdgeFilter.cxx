@@ -17,12 +17,9 @@
 //		<g_design>
 
 #include <AIS_BadEdgeFilter.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_BadEdgeFilter,SelectMgr_Filter)

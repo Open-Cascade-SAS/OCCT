@@ -22,7 +22,6 @@
 
 #include <AIS_KindOfInteractive.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <Standard_Boolean.hxx>
 class SelectMgr_EntityOwner;
 
 

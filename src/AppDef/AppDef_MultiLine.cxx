@@ -18,7 +18,6 @@
 #include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
 AppDef_MultiLine::AppDef_MultiLine(){}

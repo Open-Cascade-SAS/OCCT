@@ -35,7 +35,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 class Adaptor3d_HSurfaceTool 

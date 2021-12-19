@@ -18,36 +18,25 @@
 
 #include <AIS_GraphicTool.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_ShapeSet.hxx>
-#include <gp_Pnt.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-#include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <HLRBRep.hxx>
 #include <OSD_Timer.hxx>
-#include <Precision.hxx>
-#include <Prs3d.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_BndBox.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
-#include <Select3D_SensitiveEntity.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
@@ -56,10 +45,7 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdSelect.hxx>
-#include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TopExp.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Shape,AIS_InteractiveObject)
 

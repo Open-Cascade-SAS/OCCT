@@ -17,15 +17,11 @@
 #include <AIS_Point.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <Aspect_TypeOfLine.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <Geom_Point.hxx>
-#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitivePoint.hxx>

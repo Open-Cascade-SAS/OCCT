@@ -19,10 +19,7 @@
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_MultipleConnectedInteractive,AIS_InteractiveObject)
 

@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Quantity_NameOfColor.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <AIS_TypeOfAttribute.hxx>
 #include <Standard_Real.hxx>

@@ -18,10 +18,8 @@
 #define _APIHeaderSection_EditHeader_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_Editor.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_AsciiString;
 class IFSelect_EditForm;

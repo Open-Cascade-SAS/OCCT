@@ -22,9 +22,7 @@
 #include <Adaptor3d_Surface.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomLib.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_SequenceOfReal.hxx>

@@ -26,7 +26,6 @@
 #include <AppDef_Array1OfMultiPointConstraint.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 class AppDef_MultiPointConstraint;
 

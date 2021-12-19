@@ -28,10 +28,7 @@
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
 

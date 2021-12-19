@@ -23,10 +23,7 @@
 
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 #include <Standard_Real.hxx>
-#include <GeomAbs_IsoType.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <AdvApp2Var_Context.hxx>
 #include <AdvApp2Var_Network.hxx>
 #include <AdvApp2Var_Framework.hxx>

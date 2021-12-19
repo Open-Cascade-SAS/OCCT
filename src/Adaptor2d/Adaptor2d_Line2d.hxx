@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
-#include <gp_Ax2d.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>

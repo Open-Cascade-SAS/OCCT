@@ -25,7 +25,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_MSG.hxx>
-#include <Interface_Protocol.hxx>
 #include <Interface_Version.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_StepModel.hxx>

@@ -15,8 +15,6 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dEvaluator.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <gp.hxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -26,7 +24,6 @@
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_VectorWithNullMagnitude.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>

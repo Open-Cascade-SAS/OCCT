@@ -16,9 +16,7 @@
 
 
 #include <AIS_GraphicTool.hxx>
-#include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>

@@ -17,7 +17,6 @@
 #define _AIS_LightSource_HeaderFile
 
 #include <AIS_InteractiveObject.hxx>
-#include <Graphic3d_CLight.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
 class Select3D_SensitiveSphere;

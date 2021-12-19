@@ -16,7 +16,6 @@
 
 
 #include <AdvApprox_ApproxAFunction.hxx>
-#include <AdvApprox_Cutting.hxx>
 #include <AdvApprox_DichoCutting.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 #include <Approx_SweepApproximation.hxx>
@@ -24,12 +23,8 @@
 #include <BSplCLib.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================

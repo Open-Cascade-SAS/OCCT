@@ -15,9 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <AdvApp2Var_Context.hxx>
 #include <AdvApp2Var_Criterion.hxx>
-#include <AdvApp2Var_Patch.hxx>
 
 AdvApp2Var_Criterion::~AdvApp2Var_Criterion()
 {}

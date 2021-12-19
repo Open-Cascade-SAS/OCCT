@@ -18,19 +18,10 @@
 // avec criteres variationnels
 
 #include <AppDef_MultiLine.hxx>
-#include <AppDef_SmoothCriterion.hxx>
 #include <AppDef_Variational.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <FEmTool_Assembly.hxx>
-#include <FEmTool_Curve.hxx>
-#include <gp_VectorWithNullMagnitude.hxx>
-#include <math_Matrix.hxx>
-#include <PLib_Base.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -44,7 +35,6 @@
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <AppParCurves_Array1OfMultiPoint.hxx>
 #include <AppParCurves_MultiPoint.hxx>
-#include <AppParCurves_MultiBSpCurve.hxx>
 #include <AppDef_LinearCriteria.hxx>
 #include <Convert_CompPolynomialToPoles.hxx>
 #include <gp_Pnt.hxx>
@@ -55,27 +45,19 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <StdFail_NotDone.hxx>
-#include <Standard_SStream.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Precision.hxx>
 #include <AppDef_MyLineTool.hxx>
 
 #include <TColStd_HArray2OfInteger.hxx>
-#include <TColStd_Array2OfInteger.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <FEmTool_Assembly.hxx>
-#include <FEmTool_AssemblyTable.hxx>
 #include <FEmTool_Curve.hxx>
-#include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <PLib_Base.hxx>
-#include <PLib_JacobiPolynomial.hxx>
 #include <PLib_HermitJacobi.hxx>
 #include <FEmTool_HAssemblyTable.hxx>
 
@@ -84,7 +66,6 @@
 
 #if defined(_MSC_VER)
 # include <stdio.h>
-# include <stdarg.h>
 #endif  /* _MSC_VER */
 
 //

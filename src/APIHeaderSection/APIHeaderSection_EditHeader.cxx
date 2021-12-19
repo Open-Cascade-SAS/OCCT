@@ -15,7 +15,6 @@
 #include <APIHeaderSection_EditHeader.hxx>
 #include <APIHeaderSection_MakeHeader.hxx>
 #include <IFSelect_EditForm.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_TypedValue.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

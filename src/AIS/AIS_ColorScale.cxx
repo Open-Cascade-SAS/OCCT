@@ -17,26 +17,18 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_TypeOfColorScaleData.hxx>
 #include <Aspect_TypeOfColorScalePosition.hxx>
-#include <Aspect_Window.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Text.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <Select3D_SensitiveBox.hxx>
-#include <Select3D_SensitiveSegment.hxx>
 #include <StdPrs_Curve.hxx>
-#include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ColorScale, AIS_InteractiveObject)

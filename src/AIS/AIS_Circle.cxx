@@ -18,7 +18,6 @@
 
 #include <AIS_GraphicTool.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Circle.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
@@ -32,8 +31,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TopoDS.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Circle,AIS_InteractiveObject)
 

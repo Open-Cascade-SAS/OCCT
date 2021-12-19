@@ -17,7 +17,6 @@
 #include <AIS_Plane.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <Aspect_TypeOfLine.hxx>
 #include <DsgPrs_ShadedPlanePresentation.hxx>
 #include <DsgPrs_XYZPlanePresentation.hxx>
 #include <ElSLib.hxx>
@@ -45,11 +44,7 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Plane.hxx>
-#include <StdPrs_ShadedShape.hxx>
-#include <StdPrs_ShadedSurface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Plane,AIS_InteractiveObject)
 

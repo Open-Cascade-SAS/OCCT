@@ -17,7 +17,6 @@
 #ifndef AppParCurves_HArray1OfConstraintCouple_HeaderFile
 #define AppParCurves_HArray1OfConstraintCouple_HeaderFile
 
-#include <AppParCurves_ConstraintCouple.hxx>
 #include <AppParCurves_Array1OfConstraintCouple.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

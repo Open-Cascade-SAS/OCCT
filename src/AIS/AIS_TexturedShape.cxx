@@ -25,10 +25,8 @@
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -36,7 +34,6 @@
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
-#include <TopExp_Explorer.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_TexturedShape,AIS_Shape)

@@ -24,8 +24,6 @@
 #include <AdvApp2Var_SequenceOfPatch.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class AdvApp2Var_Patch;
 
 

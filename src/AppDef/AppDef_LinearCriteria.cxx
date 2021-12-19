@@ -19,7 +19,6 @@
 #include <AppDef_MultiLine.hxx>
 #include <AppDef_MyLineTool.hxx>
 #include <FEmTool_Curve.hxx>
-#include <FEmTool_ElementaryCriterion.hxx>
 #include <FEmTool_LinearFlexion.hxx>
 #include <FEmTool_LinearJerk.hxx>
 #include <FEmTool_LinearTension.hxx>
@@ -28,11 +27,8 @@
 #include <gp_Pnt2d.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
-#include <PLib_Base.hxx>
 #include <PLib_HermitJacobi.hxx>
-#include <PLib_JacobiPolynomial.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

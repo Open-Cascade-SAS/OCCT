@@ -19,7 +19,6 @@
 #include <AIS_DataMapOfShapeDrawer.hxx>
 #include <AIS_Shape.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <StdPrs_Volume.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TColStd_MapTransientHasher.hxx>

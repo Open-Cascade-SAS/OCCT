@@ -15,7 +15,6 @@
 #ifndef AppCont_ContMatrices_HeaderFile
 #define AppCont_ContMatrices_HeaderFile
 #include <math_Vector.hxx>
-#include <Standard_Real.hxx>
 
 // Stockage des matrices de resolution d approxiamtion continue.
 // La classe est limitee a 26 pour MMatrix et InvMMatrix, (pas de contraintes)

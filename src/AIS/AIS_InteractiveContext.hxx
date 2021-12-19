@@ -42,7 +42,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <Quantity_Color.hxx>
 
 class V3d_Viewer;

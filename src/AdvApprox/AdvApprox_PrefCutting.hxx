@@ -24,8 +24,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <AdvApprox_Cutting.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-
 
 
 //! inherits class Cutting; contains a list of preferential points (di)i

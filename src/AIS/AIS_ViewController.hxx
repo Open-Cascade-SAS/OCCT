@@ -14,8 +14,6 @@
 #ifndef _AIS_ViewController_HeaderFile
 #define _AIS_ViewController_HeaderFile
 
-#include <Aspect_VKeySet.hxx>
-#include <Aspect_TouchMap.hxx>
 #include <Aspect_WindowInputListener.hxx>
 #include <Aspect_XRHapticActionData.hxx>
 #include <Aspect_XRTrackedDeviceRole.hxx>

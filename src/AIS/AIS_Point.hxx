@@ -17,7 +17,6 @@
 #ifndef _AIS_Point_HeaderFile
 #define _AIS_Point_HeaderFile
 
-#include <Aspect_TypeOfMarker.hxx>
 #include <AIS_InteractiveObject.hxx>
 
 class Geom_Point;

@@ -17,6 +17,7 @@
 #ifndef _AIS_Shape_HeaderFile
 #define _AIS_Shape_HeaderFile
 
+#include <AIS_DisplayMode.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Bnd_Box.hxx>
 #include <TopoDS_Shape.hxx>

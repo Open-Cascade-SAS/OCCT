@@ -18,12 +18,9 @@
 #define _AppDef_LinearCriteria_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <AppDef_MultiLine.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <AppDef_SmoothCriterion.hxx>
 #include <FEmTool_HAssemblyTable.hxx>

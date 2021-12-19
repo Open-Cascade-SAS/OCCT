@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
@@ -34,7 +33,6 @@
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TColgp_HArray1OfVec2d.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
 #include <TColgp_Array2OfPnt.hxx>

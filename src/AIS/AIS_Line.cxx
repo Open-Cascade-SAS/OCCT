@@ -18,13 +18,11 @@
 
 #include <AIS_GraphicTool.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <GC_MakeSegment.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Point.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -34,7 +32,6 @@
 #include <SelectMgr_Selection.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Curve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <UnitsAPI.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Line,AIS_InteractiveObject)

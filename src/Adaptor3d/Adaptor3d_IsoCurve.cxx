@@ -15,8 +15,6 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <BSplCLib.hxx>
-#include <BSplSLib.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -33,12 +31,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_IsoCurve, Adaptor3d_Curve)
 

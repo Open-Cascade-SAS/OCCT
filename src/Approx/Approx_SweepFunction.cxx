@@ -18,7 +18,6 @@
 #include <Approx_SweepFunction.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Approx_SweepFunction,Standard_Transient)

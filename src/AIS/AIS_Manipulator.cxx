@@ -15,6 +15,7 @@
 
 #include <AIS_Manipulator.hxx>
 
+#include <AIS_DisplayMode.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_ManipulatorOwner.hxx>
 #include <Extrema_ExtElC.hxx>

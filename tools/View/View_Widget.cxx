@@ -19,6 +19,7 @@
 
 #include <inspector/View_Widget.hxx>
 
+#include <AIS_DisplayMode.hxx>
 #include <AIS_ViewController.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Graphic3d_GraphicDriver.hxx>

@@ -29,13 +29,10 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
 #include <gp_XY.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 
 #include <Convert_GridPolynomialToPoles.hxx>

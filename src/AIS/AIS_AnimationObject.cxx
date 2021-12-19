@@ -15,8 +15,6 @@
 #include <AIS_AnimationObject.hxx>
 
 #include <AIS_InteractiveContext.hxx>
-#include <TopLoc_Location.hxx>
-#include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationObject, AIS_Animation)

@@ -33,9 +33,7 @@
 #include <Convert_GridPolynomialToPoles.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>

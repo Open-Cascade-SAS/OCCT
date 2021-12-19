@@ -18,7 +18,6 @@
 #include <AIS_C0RegularityFilter.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopExp.hxx>

@@ -18,17 +18,14 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ManipulatorMode.hxx>
-#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Group.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Poly_Triangulation.hxx>
 #include <V3d_View.hxx>
-#include <Standard_Version.hxx>
 #include <Standard_DefineHandle.hxx>
 
 NCOLLECTION_HSEQUENCE(AIS_ManipulatorObjectSequence, Handle(AIS_InteractiveObject))

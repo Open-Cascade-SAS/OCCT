@@ -24,7 +24,6 @@
 #include <AppParCurves_MultiPoint.hxx>
 #include <AppCont_ContMatrices.hxx>
 #include <PLib.hxx>
-#include <Precision.hxx>
 
 
 //=======================================================================

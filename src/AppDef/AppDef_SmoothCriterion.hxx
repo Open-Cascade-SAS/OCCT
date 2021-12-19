@@ -18,7 +18,6 @@
 #define _AppDef_SmoothCriterion_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
 #include <TColStd_HArray1OfReal.hxx>

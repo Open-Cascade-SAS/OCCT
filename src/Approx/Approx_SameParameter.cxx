@@ -20,22 +20,15 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
-#include <BSplCLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_MakeCurvefromApprox.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Geom2dAdaptor.hxx>
 
