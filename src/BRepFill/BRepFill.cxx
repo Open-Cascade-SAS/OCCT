@@ -34,12 +34,13 @@
 // Modified:	Mon Oct 12 09:42:33 1998
 //              number of edges in EdgesFromVertex (CTS21570) 
 
+#include <BRepFill.hxx>
+
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_ExtPC.hxx>
-#include <BRepFill.hxx>
 #include <BRepGProp.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_FindSurface.hxx>

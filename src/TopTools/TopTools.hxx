@@ -84,31 +84,6 @@ public:
   //! position.
   Standard_EXPORT static void Dummy (const Standard_Integer I);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopTools_ShapeMapHasher;
-friend class TopTools_OrientedShapeMapHasher;
-friend class TopTools_LocationSet;
-friend class TopTools_ShapeSet;
-
 };
-
-
-
-
-
-
 
 #endif // _TopTools_HeaderFile

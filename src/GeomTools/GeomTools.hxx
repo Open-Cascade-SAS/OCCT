@@ -79,31 +79,6 @@ public:
   //! in case of error
   Standard_EXPORT static void GetReal (Standard_IStream& IS, Standard_Real& theValue);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class GeomTools_UndefinedTypeHandler;
-friend class GeomTools_SurfaceSet;
-friend class GeomTools_CurveSet;
-friend class GeomTools_Curve2dSet;
-
 };
-
-
-
-
-
-
 
 #endif // _GeomTools_HeaderFile

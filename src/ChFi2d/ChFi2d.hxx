@@ -53,33 +53,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-  
   Standard_EXPORT static Standard_Boolean CommonVertex (const TopoDS_Edge& E1, const TopoDS_Edge& E2, TopoDS_Vertex& V);
   
   Standard_EXPORT static ChFi2d_ConstructionError FindConnectedEdges (const TopoDS_Face& F, const TopoDS_Vertex& V, TopoDS_Edge& E1, TopoDS_Edge& E2);
 
-
-
-friend class ChFi2d_Builder;
-
 };
-
-
-
-
-
-
 
 #endif // _ChFi2d_HeaderFile

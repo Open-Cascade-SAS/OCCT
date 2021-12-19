@@ -55,36 +55,6 @@ public:
                                         const Handle(Adaptor3d_Surface)& theSecondSurf,
                                         Standard_Real theArrOfPeriod[4]);
 
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IntSurf_PntOn2S;
-friend class IntSurf_Couple;
-friend class IntSurf_LineOn2S;
-friend class IntSurf_Quadric;
-friend class IntSurf_QuadricTool;
-friend class IntSurf_PathPoint;
-friend class IntSurf_PathPointTool;
-friend class IntSurf_InteriorPoint;
-friend class IntSurf_InteriorPointTool;
-friend class IntSurf_Transition;
-
 };
-
-
-
-
-
-
 
 #endif // _IntSurf_HeaderFile

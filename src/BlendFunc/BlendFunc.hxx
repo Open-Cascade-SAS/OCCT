@@ -53,41 +53,6 @@ public:
   
   Standard_EXPORT static Standard_Boolean ComputeDNormal (const Handle(Adaptor3d_Surface)& Surf, const gp_Pnt2d& p2d, gp_Vec& Normal, gp_Vec& DNu, gp_Vec& DNv);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BlendFunc_ConstRad;
-friend class BlendFunc_ConstRadInv;
-friend class BlendFunc_Ruled;
-friend class BlendFunc_RuledInv;
-friend class BlendFunc_EvolRad;
-friend class BlendFunc_EvolRadInv;
-friend class BlendFunc_CSConstRad;
-friend class BlendFunc_CSCircular;
-friend class BlendFunc_Corde;
-friend class BlendFunc_Chamfer;
-friend class BlendFunc_ChamfInv;
-friend class BlendFunc_ChAsym;
-friend class BlendFunc_ChAsymInv;
-friend class BlendFunc_Tensor;
-
 };
-
-
-
-
-
-
 
 #endif // _BlendFunc_HeaderFile

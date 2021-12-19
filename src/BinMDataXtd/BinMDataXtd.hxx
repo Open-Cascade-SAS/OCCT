@@ -39,31 +39,6 @@ public:
   
   Standard_EXPORT static Standard_Integer DocumentVersion();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BinMDataXtd_GeometryDriver;
-friend class BinMDataXtd_ConstraintDriver;
-friend class BinMDataXtd_PatternStdDriver;
-friend class BinMDataXtd_TriangulationDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _BinMDataXtd_HeaderFile

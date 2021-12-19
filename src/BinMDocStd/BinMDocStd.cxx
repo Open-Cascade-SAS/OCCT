@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BinMDocStd.hxx>
 
 #include <BinMDF_ADriverTable.hxx>
-#include <BinMDocStd.hxx>
 #include <BinMDocStd_XLinkDriver.hxx>
 #include <Message_Messenger.hxx>
 

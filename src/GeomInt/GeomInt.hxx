@@ -37,55 +37,6 @@ public:
   //! Adjusts the parameter <thePar> to the range [theParMin,  theParMax]
   Standard_EXPORT static Standard_Boolean AdjustPeriodic (const Standard_Real thePar, const Standard_Real theParMin, const Standard_Real theParMax, const Standard_Real thePeriod, Standard_Real& theNewPar, Standard_Real& theOffset, const Standard_Real theEps = 0.0);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class GeomInt_IntSS;
-friend class GeomInt_LineConstructor;
-friend class GeomInt_LineTool;
-friend class GeomInt_WLApprox;
-friend class GeomInt_ParameterAndOrientation;
-friend class GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox;
-friend class GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox;
-friend class GeomInt_ThePrmPrmSvSurfacesOfWLApprox;
-friend class GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox;
-friend class GeomInt_TheImpPrmSvSurfacesOfWLApprox;
-friend class GeomInt_TheMultiLineOfWLApprox;
-friend class GeomInt_TheMultiLineToolOfWLApprox;
-friend class GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox;
-friend class GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox;
-friend class GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox;
-friend class GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox;
-friend class GeomInt_ParLeastSquareOfMyGradientbisOfTheComputeLineOfWLApprox;
-friend class GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox;
-friend class GeomInt_ParFunctionOfMyGradientbisOfTheComputeLineOfWLApprox;
-friend class GeomInt_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfWLApprox;
-friend class GeomInt_MyGradientbisOfTheComputeLineOfWLApprox;
-friend class GeomInt_TheComputeLineOfWLApprox;
-friend class GeomInt_ParLeastSquareOfMyGradientOfTheComputeLineBezierOfWLApprox;
-friend class GeomInt_ResConstraintOfMyGradientOfTheComputeLineBezierOfWLApprox;
-friend class GeomInt_ParFunctionOfMyGradientOfTheComputeLineBezierOfWLApprox;
-friend class GeomInt_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfWLApprox;
-friend class GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox;
-friend class GeomInt_TheComputeLineBezierOfWLApprox;
-
 };
-
-
-
-
-
-
 
 #endif // _GeomInt_HeaderFile

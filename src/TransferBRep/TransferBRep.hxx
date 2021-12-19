@@ -153,35 +153,6 @@ public:
   //! considered
   Standard_EXPORT static Interface_CheckIterator CheckObject (const Interface_CheckIterator& chl, const Handle(Standard_Transient)& obj);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TransferBRep_Reader;
-friend class TransferBRep_ShapeInfo;
-friend class TransferBRep_BinderOfShape;
-friend class TransferBRep_ShapeBinder;
-friend class TransferBRep_ShapeListBinder;
-friend class TransferBRep_ShapeMapper;
-friend class TransferBRep_OrientedShapeMapper;
-friend class TransferBRep_TransferResultInfo;
-
 };
-
-
-
-
-
-
 
 #endif // _TransferBRep_HeaderFile

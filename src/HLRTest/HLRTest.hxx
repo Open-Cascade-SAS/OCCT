@@ -57,32 +57,6 @@ public:
   //! Defines commands to test the Hidden Line Removal
   Standard_EXPORT static void Commands (Draw_Interpretor& I);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class HLRTest_ShapeData;
-friend class HLRTest_DrawableEdgeTool;
-friend class HLRTest_DrawablePolyEdgeTool;
-friend class HLRTest_Projector;
-friend class HLRTest_OutLiner;
-
 };
-
-
-
-
-
-
 
 #endif // _HLRTest_HeaderFile

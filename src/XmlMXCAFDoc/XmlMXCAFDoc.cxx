@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XmlMXCAFDoc.hxx>
 
 #include <Message_Messenger.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
-#include <XmlMXCAFDoc.hxx>
 #include <XmlMXCAFDoc_AssemblyItemRefDriver.hxx>
 #include <XmlMXCAFDoc_CentroidDriver.hxx>
 #include <XmlMXCAFDoc_ColorDriver.hxx>

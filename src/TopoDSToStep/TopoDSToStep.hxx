@@ -73,42 +73,6 @@ public:
   //! (binders) stored in FinderProcess
   Standard_EXPORT static void AddResult (const Handle(Transfer_FinderProcess)& FP, const TopoDSToStep_Tool& Tool);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopoDSToStep_Root;
-friend class TopoDSToStep_MakeManifoldSolidBrep;
-friend class TopoDSToStep_MakeBrepWithVoids;
-friend class TopoDSToStep_MakeFacetedBrep;
-friend class TopoDSToStep_MakeFacetedBrepAndBrepWithVoids;
-friend class TopoDSToStep_MakeShellBasedSurfaceModel;
-friend class TopoDSToStep_MakeGeometricCurveSet;
-friend class TopoDSToStep_Builder;
-friend class TopoDSToStep_WireframeBuilder;
-friend class TopoDSToStep_Tool;
-friend class TopoDSToStep_FacetedTool;
-friend class TopoDSToStep_MakeStepFace;
-friend class TopoDSToStep_MakeStepWire;
-friend class TopoDSToStep_MakeStepEdge;
-friend class TopoDSToStep_MakeStepVertex;
-
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_HeaderFile

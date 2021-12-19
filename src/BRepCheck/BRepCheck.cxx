@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepCheck.hxx>
 
 #include <BRep_Tool.hxx>
-#include <BRepCheck.hxx>
 #include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 #include <BRepCheck_Wire.hxx>
 #include <TopoDS.hxx>

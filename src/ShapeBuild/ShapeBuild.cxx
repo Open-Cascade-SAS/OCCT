@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ShapeBuild.hxx>
 
 #include <Geom_Plane.hxx>
-#include <ShapeBuild.hxx>
 
 //=======================================================================
 //function : PlaneXOY
@@ -28,4 +28,3 @@ Handle(Geom_Plane) ShapeBuild::PlaneXOY()
   if (xoy.IsNull()) xoy = new Geom_Plane (0,0,1,0);
   return xoy;
 }
-

@@ -85,26 +85,6 @@ public:
   //! ShapeSchema_Read
   Standard_EXPORT static void ShapeSchemaCommands(Draw_Interpretor& theCommands);
 
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DDocStd_DrawDocument;
-
 };
-
-
-
-
-
-
 
 #endif // _DDocStd_HeaderFile

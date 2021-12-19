@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopoDSToStep.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepTools_Modifier.hxx>
@@ -28,7 +29,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDSToStep.hxx>
 #include <TopoDSToStep_Tool.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_FinderProcess.hxx>

@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <HLRTest.hxx>
 
 #include <DBRep.hxx>
 #include <Draw.hxx>
@@ -23,7 +24,6 @@
 #include <HLRAppli_ReflectLines.hxx>
 #include <HLRBRep_Algo.hxx>
 #include <HLRBRep_HLRToShape.hxx>
-#include <HLRTest.hxx>
 #include <HLRTest_OutLiner.hxx>
 #include <HLRTest_Projector.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>

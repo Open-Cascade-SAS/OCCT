@@ -12,8 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_AsciiString.hxx>
 #include <Storage.hxx>
+
+#include <TCollection_AsciiString.hxx>
 
 TCollection_AsciiString Storage::Version() 
 {
@@ -21,4 +22,3 @@ TCollection_AsciiString Storage::Version()
 
   return v;
 }
-

@@ -39,30 +39,6 @@ public:
   //! with this support surface
   Standard_EXPORT static Handle(Geom_Plane) PlaneXOY();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ShapeBuild_Vertex;
-friend class ShapeBuild_Edge;
-friend class ShapeBuild_ReShape;
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeBuild_HeaderFile

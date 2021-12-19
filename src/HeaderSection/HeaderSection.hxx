@@ -35,32 +35,6 @@ public:
   //! creates a Protocol
   Standard_EXPORT static Handle(HeaderSection_Protocol) Protocol();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class HeaderSection_Protocol;
-friend class HeaderSection_FileName;
-friend class HeaderSection_FileDescription;
-friend class HeaderSection_FileSchema;
-friend class HeaderSection_HeaderRecognizer;
-
 };
-
-
-
-
-
-
 
 #endif // _HeaderSection_HeaderFile

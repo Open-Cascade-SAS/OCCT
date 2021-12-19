@@ -118,38 +118,6 @@ public:
   //! commands for  testing Naming
   Standard_EXPORT static void ModelingCommands (Draw_Interpretor& DI);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DNaming_BoxDriver;
-friend class DNaming_CylinderDriver;
-friend class DNaming_SphereDriver;
-friend class DNaming_SelectionDriver;
-friend class DNaming_BooleanOperationDriver;
-friend class DNaming_FilletDriver;
-friend class DNaming_TransformationDriver;
-friend class DNaming_PrismDriver;
-friend class DNaming_RevolutionDriver;
-friend class DNaming_PointDriver;
-friend class DNaming_Line3DDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _DNaming_HeaderFile

@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <VrmlAPI.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <VrmlAPI.hxx>
 #include <VrmlAPI_Writer.hxx>
 
 Standard_Boolean VrmlAPI::Write(const TopoDS_Shape& aShape, const Standard_CString aFileName, const Standard_Integer aVersion)  {

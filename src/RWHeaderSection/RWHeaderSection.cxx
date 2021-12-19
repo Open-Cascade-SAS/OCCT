@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <RWHeaderSection.hxx>
 
 #include <HeaderSection.hxx>
 #include <HeaderSection_Protocol.hxx>
-#include <RWHeaderSection.hxx>
 #include <RWHeaderSection_GeneralModule.hxx>
 #include <RWHeaderSection_ReadWriteModule.hxx>
 #include <StepData.hxx>

@@ -92,48 +92,6 @@ public:
   //! Prints <OCT> as string on stream <S>; returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const TopOpeBRepTool_OutCurveType OCT, Standard_OStream& S);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopOpeBRepTool_GeomTool;
-friend class TopOpeBRepTool_AncestorsTool;
-friend class TopOpeBRepTool_C2DF;
-friend class TopOpeBRepTool_SolidClassifier;
-friend class TopOpeBRepTool_CurveTool;
-friend class TopOpeBRepTool_HBoxTool;
-friend class TopOpeBRepTool_BoxSort;
-friend class TopOpeBRepTool_ShapeExplorer;
-friend class TopOpeBRepTool_ShapeTool;
-friend class TopOpeBRepTool_ShapeClassifier;
-friend class TopOpeBRepTool_connexity;
-friend class TopOpeBRepTool_face;
-friend class TopOpeBRepTool_CLASSI;
-friend class TopOpeBRepTool_TOOL;
-friend class TopOpeBRepTool_CORRISO;
-friend class TopOpeBRepTool_REGUW;
-friend class TopOpeBRepTool_REGUS;
-friend class TopOpeBRepTool_makeTransition;
-friend class TopOpeBRepTool_mkTondgE;
-friend class TopOpeBRepTool_PurgeInternalEdges;
-friend class TopOpeBRepTool_FuseEdges;
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRepTool_HeaderFile

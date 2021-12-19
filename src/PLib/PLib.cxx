@@ -14,16 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified: 28/02/1996 by PMN :  HermiteCoefficients added
-// Modified: 18/06/1996 by PMN :  NULL reference.
-// Modified: 19/02/1997 by JCT :  EvalPoly2Var added
+#include <PLib.hxx>
 
 #include <GeomAbs_Shape.hxx>
 #include <math.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
 
 // To convert points array into Real ..

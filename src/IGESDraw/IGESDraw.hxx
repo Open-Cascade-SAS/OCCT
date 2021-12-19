@@ -40,59 +40,6 @@ public:
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESDraw_Protocol) Protocol();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IGESDraw_ConnectPoint;
-friend class IGESDraw_NetworkSubfigureDef;
-friend class IGESDraw_ViewsVisible;
-friend class IGESDraw_ViewsVisibleWithAttr;
-friend class IGESDraw_LabelDisplay;
-friend class IGESDraw_Planar;
-friend class IGESDraw_SegmentedViewsVisible;
-friend class IGESDraw_Drawing;
-friend class IGESDraw_DrawingWithRotation;
-friend class IGESDraw_View;
-friend class IGESDraw_RectArraySubfigure;
-friend class IGESDraw_CircArraySubfigure;
-friend class IGESDraw_NetworkSubfigure;
-friend class IGESDraw_PerspectiveView;
-friend class IGESDraw_ToolConnectPoint;
-friend class IGESDraw_ToolNetworkSubfigureDef;
-friend class IGESDraw_ToolViewsVisible;
-friend class IGESDraw_ToolViewsVisibleWithAttr;
-friend class IGESDraw_ToolLabelDisplay;
-friend class IGESDraw_ToolPlanar;
-friend class IGESDraw_ToolSegmentedViewsVisible;
-friend class IGESDraw_ToolDrawing;
-friend class IGESDraw_ToolDrawingWithRotation;
-friend class IGESDraw_ToolView;
-friend class IGESDraw_ToolRectArraySubfigure;
-friend class IGESDraw_ToolCircArraySubfigure;
-friend class IGESDraw_ToolNetworkSubfigure;
-friend class IGESDraw_ToolPerspectiveView;
-friend class IGESDraw_Protocol;
-friend class IGESDraw_ReadWriteModule;
-friend class IGESDraw_GeneralModule;
-friend class IGESDraw_SpecificModule;
-
 };
-
-
-
-
-
-
 
 #endif // _IGESDraw_HeaderFile

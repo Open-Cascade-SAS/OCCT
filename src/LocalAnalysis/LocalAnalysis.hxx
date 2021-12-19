@@ -43,11 +43,6 @@ public:
   //! This function gives information about a variable SurfaceContinuity
   Standard_EXPORT static void Dump (const LocalAnalysis_CurveContinuity& curvconti, Standard_OStream& o);
 
-private:
-
-friend class LocalAnalysis_SurfaceContinuity;
-friend class LocalAnalysis_CurveContinuity;
-
 };
 
 #endif // _LocalAnalysis_HeaderFile

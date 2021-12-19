@@ -41,29 +41,6 @@ public:
   //! Returns default AlgoContainer
   Standard_EXPORT static Handle(ShapeAlgo_AlgoContainer) AlgoContainer();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ShapeAlgo_ToolContainer;
-friend class ShapeAlgo_AlgoContainer;
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeAlgo_HeaderFile

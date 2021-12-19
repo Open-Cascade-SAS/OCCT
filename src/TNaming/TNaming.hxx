@@ -180,50 +180,6 @@ public:
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const TDF_Label& ACCESS, Standard_OStream& S);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TNaming_CopyShape;
-friend class TNaming_TranslateTool;
-friend class TNaming_Translator;
-friend class TNaming_NamedShape;
-friend class TNaming_UsedShapes;
-friend class TNaming_Builder;
-friend class TNaming_Tool;
-friend class TNaming_Iterator;
-friend class TNaming_NewShapeIterator;
-friend class TNaming_OldShapeIterator;
-friend class TNaming_SameShapeIterator;
-friend class TNaming_Name;
-friend class TNaming_Naming;
-friend class TNaming_Selector;
-friend class TNaming_DeltaOnRemoval;
-friend class TNaming_DeltaOnModification;
-friend class TNaming_RefShape;
-friend class TNaming_Scope;
-friend class TNaming_Identifier;
-friend class TNaming_Localizer;
-friend class TNaming_ShapesSet;
-friend class TNaming_IteratorOnShapesSet;
-friend class TNaming_NamingTool;
-
 };
-
-
-
-
-
-
 
 #endif // _TNaming_HeaderFile

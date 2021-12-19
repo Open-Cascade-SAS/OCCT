@@ -96,37 +96,6 @@ public:
   
   Standard_EXPORT static Handle(Law_BSpline) ScaleCub (const Standard_Real First, const Standard_Real Last, const Standard_Boolean HasF, const Standard_Boolean HasL, const Standard_Real VFirst, const Standard_Real VLast);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Law_BSpline;
-friend class Law_Interpolate;
-friend class Law_Function;
-friend class Law_Constant;
-friend class Law_Linear;
-friend class Law_BSpFunc;
-friend class Law_S;
-friend class Law_Interpol;
-friend class Law_Composite;
-friend class Law_BSplineKnotSplitting;
-
 };
-
-
-
-
-
-
 
 #endif // _Law_HeaderFile

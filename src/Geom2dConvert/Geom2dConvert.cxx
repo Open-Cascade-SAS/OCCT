@@ -12,8 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//Jean-Claude Vauthier Novembre 1991
-//Passage sur C1 Aout 1992 et ajout transformation Bezier->BSpline
+#include <Geom2dConvert.hxx>
 
 #include <BSplCLib.hxx>
 #include <Convert_CircleToBSplineCurve.hxx>
@@ -33,7 +32,6 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dConvert.hxx>
 #include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomAbs_Shape.hxx>

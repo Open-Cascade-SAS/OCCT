@@ -12,9 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Jean-Claude Vauthier Novembre 1991
-// Passage sur C1 Aout 1992 et ajout transformation Bezier->BSpline + Debug
-// Modif JCV correction bug le 2/08/1993
+#include <GeomConvert.hxx>
 
 #include <BSplCLib.hxx>
 #include <Convert_CircleToBSplineCurve.hxx>
@@ -38,7 +36,6 @@
 #include <Geom_Parabola.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomConvert.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLProp.hxx>

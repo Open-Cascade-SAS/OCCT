@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepFeat.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
@@ -21,7 +22,6 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI.hxx>
-#include <BRepFeat.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>

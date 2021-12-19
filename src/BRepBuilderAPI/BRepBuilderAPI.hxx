@@ -103,45 +103,6 @@ public:
   //! Returns the default precision.
   Standard_EXPORT static Standard_Real Precision();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepBuilderAPI_Command;
-friend class BRepBuilderAPI_MakeShape;
-friend class BRepBuilderAPI_MakeVertex;
-friend class BRepBuilderAPI_MakeEdge;
-friend class BRepBuilderAPI_MakeEdge2d;
-friend class BRepBuilderAPI_MakePolygon;
-friend class BRepBuilderAPI_MakeFace;
-friend class BRepBuilderAPI_FindPlane;
-friend class BRepBuilderAPI_Sewing;
-friend class BRepBuilderAPI_MakeWire;
-friend class BRepBuilderAPI_MakeShell;
-friend class BRepBuilderAPI_MakeSolid;
-friend class BRepBuilderAPI_ModifyShape;
-friend class BRepBuilderAPI_Transform;
-friend class BRepBuilderAPI_NurbsConvert;
-friend class BRepBuilderAPI_GTransform;
-friend class BRepBuilderAPI_Copy;
-friend class BRepBuilderAPI_Collect;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepBuilderAPI_HeaderFile

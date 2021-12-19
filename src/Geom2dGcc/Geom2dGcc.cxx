@@ -12,13 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=========================================================================
-//   Methodes de package permettant de qualifier les objets.              +
-//                                                                        +
-//=========================================================================
+#include <Geom2dGcc.hxx>
 
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dGcc.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 
 Geom2dGcc_QualifiedCurve

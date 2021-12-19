@@ -71,36 +71,6 @@ public:
   //! false if <f> is not a planar face
   Standard_EXPORT static Standard_Boolean Pln (const TopoDS_Face& f, gp_Pln& p);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DrawDim_Dimension;
-friend class DrawDim_Angle;
-friend class DrawDim_Distance;
-friend class DrawDim_Radius;
-friend class DrawDim_PlanarDimension;
-friend class DrawDim_PlanarAngle;
-friend class DrawDim_PlanarDistance;
-friend class DrawDim_PlanarRadius;
-friend class DrawDim_PlanarDiameter;
-
 };
-
-
-
-
-
-
 
 #endif // _DrawDim_HeaderFile

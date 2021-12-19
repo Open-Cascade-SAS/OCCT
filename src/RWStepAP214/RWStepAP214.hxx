@@ -34,55 +34,6 @@ public:
   //! enforced the initialisation of the  libraries
   Standard_EXPORT static void Init();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class RWStepAP214_ReadWriteModule;
-friend class RWStepAP214_GeneralModule;
-friend class RWStepAP214_RWAutoDesignActualDateAndTimeAssignment;
-friend class RWStepAP214_RWAutoDesignActualDateAssignment;
-friend class RWStepAP214_RWAutoDesignApprovalAssignment;
-friend class RWStepAP214_RWAutoDesignDateAndPersonAssignment;
-friend class RWStepAP214_RWAutoDesignGroupAssignment;
-friend class RWStepAP214_RWAutoDesignNominalDateAndTimeAssignment;
-friend class RWStepAP214_RWAutoDesignNominalDateAssignment;
-friend class RWStepAP214_RWAutoDesignOrganizationAssignment;
-friend class RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment;
-friend class RWStepAP214_RWAutoDesignPresentedItem;
-friend class RWStepAP214_RWAutoDesignSecurityClassificationAssignment;
-friend class RWStepAP214_RWAutoDesignDocumentReference;
-friend class RWStepAP214_RWAppliedDateAndTimeAssignment;
-friend class RWStepAP214_RWAppliedDateAssignment;
-friend class RWStepAP214_RWAppliedApprovalAssignment;
-friend class RWStepAP214_RWAppliedGroupAssignment;
-friend class RWStepAP214_RWAppliedOrganizationAssignment;
-friend class RWStepAP214_RWAppliedPersonAndOrganizationAssignment;
-friend class RWStepAP214_RWAppliedPresentedItem;
-friend class RWStepAP214_RWAppliedSecurityClassificationAssignment;
-friend class RWStepAP214_RWAppliedDocumentReference;
-friend class RWStepAP214_RWAppliedExternalIdentificationAssignment;
-friend class RWStepAP214_RWClass;
-friend class RWStepAP214_RWExternallyDefinedClass;
-friend class RWStepAP214_RWExternallyDefinedGeneralProperty;
-friend class RWStepAP214_RWRepItemGroup;
-
 };
-
-
-
-
-
-
 
 #endif // _RWStepAP214_HeaderFile

@@ -249,30 +249,6 @@ public:
                                                                const Standard_Real              theParam,
                                                                const Standard_Boolean           theIsForward);
 
-protected:
-
-
-private:
-
-
-
-
-friend class GeomLib_MakeCurvefromApprox;
-friend class GeomLib_Interpolate;
-friend class GeomLib_DenominatorMultiplier;
-friend class GeomLib_CheckBSplineCurve;
-friend class GeomLib_Check2dBSplineCurve;
-friend class GeomLib_IsPlanarSurface;
-friend class GeomLib_Tool;
-friend class GeomLib_PolyFunc;
-friend class GeomLib_LogSample;
-
 };
-
-
-
-
-
-
 
 #endif // _GeomLib_HeaderFile

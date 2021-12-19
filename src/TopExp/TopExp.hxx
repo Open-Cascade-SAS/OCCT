@@ -119,28 +119,6 @@ public:
   //! Warning: <V> has sense only if the value <True> is returned
   Standard_EXPORT static Standard_Boolean CommonVertex (const TopoDS_Edge& E1, const TopoDS_Edge& E2, TopoDS_Vertex& V);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopExp_Explorer;
-
 };
-
-
-
-
-
-
 
 #endif // _TopExp_HeaderFile

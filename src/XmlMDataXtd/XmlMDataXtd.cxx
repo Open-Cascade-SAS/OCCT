@@ -13,10 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modified     20.04.2009 Sergey Zaritchny
+#include <XmlMDataXtd.hxx>
 
 #include <Message_Messenger.hxx>
-#include <XmlMDataXtd.hxx>
 #include <XmlMDataXtd_ConstraintDriver.hxx>
 #include <XmlMDataXtd_GeometryDriver.hxx>
 #include <XmlMDataXtd_PatternStdDriver.hxx>

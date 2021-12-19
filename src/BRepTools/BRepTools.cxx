@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepTools.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Bnd_Box2d.hxx>
@@ -24,7 +25,6 @@
 #include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepTools.hxx>
 #include <BRepTools_MapOfVertexPnt2d.hxx>
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepAdaptor_Surface.hxx>

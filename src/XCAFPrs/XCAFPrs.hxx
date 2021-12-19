@@ -47,29 +47,6 @@ public:
   
   Standard_EXPORT static Standard_Boolean GetViewNameMode();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XCAFPrs_Driver;
-friend class XCAFPrs_Style;
-
 };
-
-
-
-
-
-
 
 #endif // _XCAFPrs_HeaderFile

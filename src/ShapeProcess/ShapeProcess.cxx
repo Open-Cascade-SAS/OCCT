@@ -13,11 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <ShapeProcess.hxx>
+
 #include <NCollection_DataMap.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Message_ProgressScope.hxx>
-#include <ShapeProcess.hxx>
 #include <ShapeProcess_Context.hxx>
 #include <ShapeProcess_Operator.hxx>
 #include <Standard_ErrorHandler.hxx>

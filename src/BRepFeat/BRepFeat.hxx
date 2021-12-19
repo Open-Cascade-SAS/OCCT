@@ -107,39 +107,6 @@ public:
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const BRepFeat_StatusError SE, Standard_OStream& S);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepFeat_Builder;
-friend class BRepFeat_MakeCylindricalHole;
-friend class BRepFeat_SplitShape;
-friend class BRepFeat_Form;
-friend class BRepFeat_RibSlot;
-friend class BRepFeat_MakePrism;
-friend class BRepFeat_MakeRevol;
-friend class BRepFeat_MakePipe;
-friend class BRepFeat_Gluer;
-friend class BRepFeat_MakeDPrism;
-friend class BRepFeat_MakeLinearForm;
-friend class BRepFeat_MakeRevolutionForm;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepFeat_HeaderFile

@@ -60,66 +60,6 @@ public:
   //! the Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const TDataStd_RealEnum DIM, Standard_OStream& S);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TDataStd_Current;
-friend class TDataStd_Name;
-friend class TDataStd_Comment;
-friend class TDataStd_Integer;
-friend class TDataStd_IntegerArray;
-friend class TDataStd_Real;
-friend class TDataStd_RealArray;
-friend class TDataStd_ExtStringArray;
-friend class TDataStd_UAttribute;
-friend class TDataStd_TreeNode;
-friend class TDataStd_ChildNodeIterator;
-friend class TDataStd_Directory;
-friend class TDataStd_NoteBook;
-friend class TDataStd_Expression;
-friend class TDataStd_Relation;
-friend class TDataStd_Variable;
-friend class TDataStd_DeltaOnModificationOfIntArray;
-friend class TDataStd_DeltaOnModificationOfRealArray;
-friend class TDataStd_DeltaOnModificationOfExtStringArray;
-friend class TDataStd_DeltaOnModificationOfIntPackedMap;
-friend class TDataStd_DeltaOnModificationOfByteArray;
-friend class TDataStd_Tick;
-friend class TDataStd_AsciiString;
-friend class TDataStd_IntPackedMap;
-friend class TDataStd_IntegerList;
-friend class TDataStd_RealList;
-friend class TDataStd_ExtStringList;
-friend class TDataStd_BooleanList;
-friend class TDataStd_ReferenceList;
-friend class TDataStd_BooleanArray;
-friend class TDataStd_ReferenceArray;
-friend class TDataStd_ByteArray;
-friend class TDataStd_NamedData;
-friend class TDataStd_HDataMapOfStringInteger;
-friend class TDataStd_HDataMapOfStringReal;
-friend class TDataStd_HDataMapOfStringString;
-friend class TDataStd_HDataMapOfStringByte;
-friend class TDataStd_HDataMapOfStringHArray1OfInteger;
-friend class TDataStd_HDataMapOfStringHArray1OfReal;
-
 };
-
-
-
-
-
-
 
 #endif // _TDataStd_HeaderFile

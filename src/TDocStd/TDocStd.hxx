@@ -68,40 +68,6 @@ public:
   //! cleared before use.
   Standard_EXPORT static void IDList (TDF_IDList& anIDList);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TDocStd_Application;
-friend class TDocStd_Document;
-friend class TDocStd_Context;
-friend class TDocStd_XLink;
-friend class TDocStd_XLinkIterator;
-friend class TDocStd_XLinkTool;
-friend class TDocStd_Owner;
-friend class TDocStd_Modified;
-friend class TDocStd_XLinkRoot;
-friend class TDocStd_PathParser;
-friend class TDocStd_CompoundDelta;
-friend class TDocStd_ApplicationDelta;
-friend class TDocStd_MultiTransactionManager;
-
 };
-
-
-
-
-
-
 
 #endif // _TDocStd_HeaderFile

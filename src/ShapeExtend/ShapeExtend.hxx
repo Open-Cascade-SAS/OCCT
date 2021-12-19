@@ -58,33 +58,6 @@ public:
   //! Tells if a bit flag contains bit corresponding to enumerated status
   Standard_EXPORT static Standard_Boolean DecodeStatus (const Standard_Integer flag, const ShapeExtend_Status status);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ShapeExtend_ComplexCurve;
-friend class ShapeExtend_CompositeSurface;
-friend class ShapeExtend_WireData;
-friend class ShapeExtend_BasicMsgRegistrator;
-friend class ShapeExtend_MsgRegistrator;
-friend class ShapeExtend_Explorer;
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeExtend_HeaderFile

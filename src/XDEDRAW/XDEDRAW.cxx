@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XSDRAW.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -94,7 +95,6 @@
 #include <XDEDRAW_GDTs.hxx>
 #include <XDEDRAW_Views.hxx>
 #include <XDEDRAW_Notes.hxx>
-#include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
 #include <UnitsMethods.hxx>

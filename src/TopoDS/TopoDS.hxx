@@ -114,49 +114,8 @@ inline static TopoDS_CompSolid& CompSolid(TopoDS_Shape&);
     static const TopoDS_Compound& Compound (const TopoDS_Shape& S);
 inline static TopoDS_Compound& Compound(TopoDS_Shape&);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopoDS_Shape;
-friend class TopoDS_HShape;
-friend class TopoDS_TShape;
-friend class TopoDS_TVertex;
-friend class TopoDS_Vertex;
-friend class TopoDS_TEdge;
-friend class TopoDS_Edge;
-friend class TopoDS_TWire;
-friend class TopoDS_Wire;
-friend class TopoDS_TFace;
-friend class TopoDS_Face;
-friend class TopoDS_TShell;
-friend class TopoDS_Shell;
-friend class TopoDS_TSolid;
-friend class TopoDS_Solid;
-friend class TopoDS_TCompSolid;
-friend class TopoDS_CompSolid;
-friend class TopoDS_TCompound;
-friend class TopoDS_Compound;
-friend class TopoDS_Builder;
-friend class TopoDS_Iterator;
-
 };
 
-
 #include <TopoDS.lxx>
-
-
-
-
 
 #endif // _TopoDS_HeaderFile

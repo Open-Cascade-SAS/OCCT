@@ -190,15 +190,6 @@ public:
     return Standard_True;
   }
 
-private:
-
-friend class Poly_Triangle;
-friend class Poly_Triangulation;
-friend class Poly_Polygon3D;
-friend class Poly_Polygon2D;
-friend class Poly_PolygonOnTriangulation;
-friend class Poly_Connect;
-
 };
 
 #endif // _Poly_HeaderFile

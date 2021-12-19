@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <STEPEdit.hxx>
 
 #include <APIHeaderSection_MakeHeader.hxx>
 #include <IFSelect_SelectModelEntities.hxx>
@@ -21,7 +22,6 @@
 #include <StepAP214.hxx>
 #include <StepAP214_Protocol.hxx>
 #include <StepData_StepModel.hxx>
-#include <STEPEdit.hxx>
 #include <StepSelect_StepType.hxx>
 
 Handle(Interface_Protocol)  STEPEdit::Protocol ()

@@ -124,29 +124,6 @@ public:
     (TopoDS_Shape& theShape, const Standard_CString theFile,
      const Message_ProgressRange& theRange = Message_ProgressRange());
 
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BinTools_ShapeSet;
-friend class BinTools_Curve2dSet;
-friend class BinTools_CurveSet;
-friend class BinTools_SurfaceSet;
-friend class BinTools_LocationSet;
-
 };
-
-
-
-
-
-
 
 #endif // _BinTools_HeaderFile

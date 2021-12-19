@@ -114,52 +114,6 @@ public:
   //! myQCurve = Geom2dGcc::Outside(Obj);
   Standard_EXPORT static Geom2dGcc_QualifiedCurve Outside (const Geom2dAdaptor_Curve& Obj);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Geom2dGcc_CurveTool;
-friend class Geom2dGcc_QualifiedCurve;
-friend class Geom2dGcc_Circ2d3Tan;
-friend class Geom2dGcc_Circ2d2TanRad;
-friend class Geom2dGcc_Circ2d2TanOn;
-friend class Geom2dGcc_Circ2dTanOnRad;
-friend class Geom2dGcc_Circ2dTanCen;
-friend class Geom2dGcc_Lin2d2Tan;
-friend class Geom2dGcc_Lin2dTanObl;
-friend class Geom2dGcc_QCurve;
-friend class Geom2dGcc_CurveToolGeo;
-friend class Geom2dGcc_Circ2d2TanOnGeo;
-friend class Geom2dGcc_Circ2d2TanRadGeo;
-friend class Geom2dGcc_Circ2dTanCenGeo;
-friend class Geom2dGcc_Circ2dTanOnRadGeo;
-friend class Geom2dGcc_Circ2d3TanIter;
-friend class Geom2dGcc_FunctionTanCuCuCu;
-friend class Geom2dGcc_Circ2d2TanOnIter;
-friend class Geom2dGcc_FunctionTanCuCuOnCu;
-friend class Geom2dGcc_Lin2dTanOblIter;
-friend class Geom2dGcc_FunctionTanObl;
-friend class Geom2dGcc_Lin2d2TanIter;
-friend class Geom2dGcc_FunctionTanCuCu;
-friend class Geom2dGcc_FunctionTanCuPnt;
-friend class Geom2dGcc_FunctionTanCirCu;
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dGcc_HeaderFile

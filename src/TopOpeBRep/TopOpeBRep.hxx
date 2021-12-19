@@ -38,52 +38,6 @@ public:
   //! Stream <S> and returns <S>.
   Standard_EXPORT static Standard_OStream& Print (const TopOpeBRep_TypeLineCurve TLC, Standard_OStream& OS);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class TopOpeBRep_VPointInter;
-friend class TopOpeBRep_VPointInterIterator;
-friend class TopOpeBRep_WPointInter;
-friend class TopOpeBRep_WPointInterIterator;
-friend class TopOpeBRep_LineInter;
-friend class TopOpeBRep_Hctxff2d;
-friend class TopOpeBRep_Hctxee2d;
-friend class TopOpeBRep_Point2d;
-friend class TopOpeBRep_PointClassifier;
-friend class TopOpeBRep_VPointInterClassifier;
-friend class TopOpeBRep_GeomTool;
-friend class TopOpeBRep_FacesIntersector;
-friend class TopOpeBRep_EdgesIntersector;
-friend class TopOpeBRep_FaceEdgeIntersector;
-friend class TopOpeBRep_ShapeScanner;
-friend class TopOpeBRep_ShapeIntersector;
-friend class TopOpeBRep_ShapeIntersector2d;
-friend class TopOpeBRep_PointGeomTool;
-friend class TopOpeBRep_FFTransitionTool;
-friend class TopOpeBRep_Bipoint;
-friend class TopOpeBRep_FacesFiller;
-friend class TopOpeBRep_FFDumper;
-friend class TopOpeBRep_EdgesFiller;
-friend class TopOpeBRep_FaceEdgeFiller;
-friend class TopOpeBRep_DSFiller;
-
 };
-
-
-
-
-
-
 
 #endif // _TopOpeBRep_HeaderFile

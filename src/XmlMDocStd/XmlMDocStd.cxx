@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XmlMDocStd.hxx>
 
 #include <Message_Messenger.hxx>
 #include <XmlMDF_ADriverTable.hxx>
-#include <XmlMDocStd.hxx>
 #include <XmlMDocStd_XLinkDriver.hxx>
 
 //=======================================================================

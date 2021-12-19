@@ -54,32 +54,6 @@ public:
                     const Standard_CString seq,
                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ShapeProcess_Context;
-friend class ShapeProcess_ShapeContext;
-friend class ShapeProcess_Operator;
-friend class ShapeProcess_UOperator;
-friend class ShapeProcess_OperLibrary;
-
 };
-
-
-
-
-
-
 
 #endif // _ShapeProcess_HeaderFile

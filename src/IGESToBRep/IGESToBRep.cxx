@@ -14,10 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 21.12.98 rln, gka S4054
-// 06.01.99 pdn  transmission from ShapeTool_MakeWire back to BRepAPI_MakeWire
-// 19.03.99 abv  //:q5: code improvement, unnecessary includes removed
-//S4181 pdn 15.04.99 Recognition of elementary surfaces as basic.
+#include <IGESToBRep.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -60,7 +57,6 @@
 #include <IGESSolid_SphericalSurface.hxx>
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <IGESSolid_VertexList.hxx>
-#include <IGESToBRep.hxx>
 #include <IGESToBRep_AlgoContainer.hxx>
 #include <Interface_Macros.hxx>
 #include <Precision.hxx>

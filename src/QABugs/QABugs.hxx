@@ -73,27 +73,6 @@ public:
 
   Standard_EXPORT static void Commands_BVH (Draw_Interpretor& DI);
 
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class QABugs_MyText;
-friend class QABugs_PresentableObject;
-
 };
-
-
-
-
-
-
 
 #endif // _QABugs_HeaderFile

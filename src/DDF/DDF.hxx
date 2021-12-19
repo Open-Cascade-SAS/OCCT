@@ -84,30 +84,6 @@ public:
   //! Browser commands .
   Standard_EXPORT static void BrowserCommands (Draw_Interpretor& theCommands);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DDF_Data;
-friend class DDF_Browser;
-friend class DDF_Transaction;
-
 };
-
-
-
-
-
-
 
 #endif // _DDF_HeaderFile

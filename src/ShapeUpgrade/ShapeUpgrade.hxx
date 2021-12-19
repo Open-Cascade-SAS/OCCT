@@ -54,41 +54,6 @@ public:
   Standard_EXPORT static Standard_Boolean C0BSplineToSequenceOfC1BSplineCurve (const Handle(Geom2d_BSplineCurve)& BS,
                                                                                Handle(TColGeom2d_HSequenceOfBoundedCurve)& seqBS);
 
-private:
-
-friend class ShapeUpgrade_Tool;
-friend class ShapeUpgrade_EdgeDivide;
-friend class ShapeUpgrade_ClosedEdgeDivide;
-friend class ShapeUpgrade_WireDivide;
-friend class ShapeUpgrade_FaceDivide;
-friend class ShapeUpgrade_ClosedFaceDivide;
-friend class ShapeUpgrade_FaceDivideArea;
-friend class ShapeUpgrade_ShapeDivide;
-friend class ShapeUpgrade_ShapeDivideArea;
-friend class ShapeUpgrade_ShapeDivideContinuity;
-friend class ShapeUpgrade_ShapeDivideAngle;
-friend class ShapeUpgrade_ShapeConvertToBezier;
-friend class ShapeUpgrade_ShapeDivideClosed;
-friend class ShapeUpgrade_ShapeDivideClosedEdges;
-friend class ShapeUpgrade_SplitCurve;
-friend class ShapeUpgrade_SplitCurve2d;
-friend class ShapeUpgrade_SplitCurve2dContinuity;
-friend class ShapeUpgrade_ConvertCurve2dToBezier;
-friend class ShapeUpgrade_SplitCurve3d;
-friend class ShapeUpgrade_SplitCurve3dContinuity;
-friend class ShapeUpgrade_ConvertCurve3dToBezier;
-friend class ShapeUpgrade_SplitSurface;
-friend class ShapeUpgrade_SplitSurfaceContinuity;
-friend class ShapeUpgrade_SplitSurfaceAngle;
-friend class ShapeUpgrade_ConvertSurfaceToBezierBasis;
-friend class ShapeUpgrade_SplitSurfaceArea;
-friend class ShapeUpgrade_ShellSewing;
-friend class ShapeUpgrade_FixSmallCurves;
-friend class ShapeUpgrade_FixSmallBezierCurves;
-friend class ShapeUpgrade_RemoveLocations;
-friend class ShapeUpgrade_RemoveInternalWires;
-friend class ShapeUpgrade_UnifySameDomain;
-
 };
 
 #endif // _ShapeUpgrade_HeaderFile

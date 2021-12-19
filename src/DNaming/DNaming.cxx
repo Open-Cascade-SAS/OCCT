@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DNaming.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
@@ -22,7 +23,6 @@
 #include <BRepTools.hxx>
 #include <DDF.hxx>
 #include <DDF_Data.hxx>
-#include <DNaming.hxx>
 #include <Draw.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>

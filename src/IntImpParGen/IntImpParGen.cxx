@@ -14,11 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntImpParGen.hxx>
 
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <IntImpParGen.hxx>
 #include <IntImpParGen_Tool.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Position.hxx>
@@ -213,12 +213,3 @@ Standard_Boolean  IntImpParGen::DetermineTransition(const IntRes2d_Position    P
   }
   return(Standard_True);
 }
-
-
-
-
-
-
-
-
-

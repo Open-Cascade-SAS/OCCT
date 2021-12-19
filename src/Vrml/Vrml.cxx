@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Vrml.hxx>
 
 #include <Standard_Integer.hxx>
 #include <Standard_Version.hxx>
-#include <Vrml.hxx>
 
 Standard_OStream& Vrml::VrmlHeaderWriter(Standard_OStream& anOStream)
 {

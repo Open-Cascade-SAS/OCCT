@@ -59,45 +59,6 @@ public:
   
   Standard_EXPORT static Standard_CString DecodeGeometricToolError (const StepToTopoDS_GeometricToolError Error);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class StepToTopoDS_Root;
-friend class StepToTopoDS_TranslateShell;
-friend class StepToTopoDS_TranslateFace;
-friend class StepToTopoDS_TranslateEdgeLoop;
-friend class StepToTopoDS_TranslateEdge;
-friend class StepToTopoDS_TranslateVertex;
-friend class StepToTopoDS_TranslatePolyLoop;
-friend class StepToTopoDS_TranslateVertexLoop;
-friend class StepToTopoDS_TranslateCompositeCurve;
-friend class StepToTopoDS_TranslateCurveBoundedSurface;
-friend class StepToTopoDS_Builder;
-friend class StepToTopoDS_MakeTransformed;
-friend class StepToTopoDS_GeometricTool;
-friend class StepToTopoDS_Tool;
-friend class StepToTopoDS_CartesianPointHasher;
-friend class StepToTopoDS_PointPair;
-friend class StepToTopoDS_PointPairHasher;
-friend class StepToTopoDS_NMTool;
-
 };
-
-
-
-
-
-
 
 #endif // _StepToTopoDS_HeaderFile

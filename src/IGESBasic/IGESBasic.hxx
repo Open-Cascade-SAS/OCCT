@@ -38,68 +38,6 @@ public:
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESBasic_Protocol) Protocol();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IGESBasic_SubfigureDef;
-friend class IGESBasic_Group;
-friend class IGESBasic_GroupWithoutBackP;
-friend class IGESBasic_SingleParent;
-friend class IGESBasic_ExternalRefFileIndex;
-friend class IGESBasic_OrderedGroup;
-friend class IGESBasic_OrderedGroupWithoutBackP;
-friend class IGESBasic_Hierarchy;
-friend class IGESBasic_ExternalReferenceFile;
-friend class IGESBasic_Name;
-friend class IGESBasic_AssocGroupType;
-friend class IGESBasic_SingularSubfigure;
-friend class IGESBasic_ExternalRefFileName;
-friend class IGESBasic_ExternalRefFile;
-friend class IGESBasic_ExternalRefName;
-friend class IGESBasic_ExternalRefLibName;
-friend class IGESBasic_ToolSubfigureDef;
-friend class IGESBasic_ToolGroup;
-friend class IGESBasic_ToolGroupWithoutBackP;
-friend class IGESBasic_ToolSingleParent;
-friend class IGESBasic_ToolExternalRefFileIndex;
-friend class IGESBasic_ToolOrderedGroup;
-friend class IGESBasic_ToolOrderedGroupWithoutBackP;
-friend class IGESBasic_ToolHierarchy;
-friend class IGESBasic_ToolExternalReferenceFile;
-friend class IGESBasic_ToolName;
-friend class IGESBasic_ToolAssocGroupType;
-friend class IGESBasic_ToolSingularSubfigure;
-friend class IGESBasic_ToolExternalRefFileName;
-friend class IGESBasic_ToolExternalRefFile;
-friend class IGESBasic_ToolExternalRefName;
-friend class IGESBasic_ToolExternalRefLibName;
-friend class IGESBasic_Protocol;
-friend class IGESBasic_ReadWriteModule;
-friend class IGESBasic_GeneralModule;
-friend class IGESBasic_SpecificModule;
-friend class IGESBasic_HArray1OfHArray1OfInteger;
-friend class IGESBasic_HArray1OfHArray1OfReal;
-friend class IGESBasic_HArray1OfHArray1OfXY;
-friend class IGESBasic_HArray1OfHArray1OfXYZ;
-friend class IGESBasic_HArray1OfHArray1OfIGESEntity;
-
 };
-
-
-
-
-
-
 
 #endif // _IGESBasic_HeaderFile

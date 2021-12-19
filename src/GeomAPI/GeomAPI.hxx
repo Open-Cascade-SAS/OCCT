@@ -89,37 +89,6 @@ public:
   //! The resulting 3D curve is of the same nature as that of the curve C.
   Standard_EXPORT static Handle(Geom_Curve) To3d (const Handle(Geom2d_Curve)& C, const gp_Pln& P);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class GeomAPI_ProjectPointOnCurve;
-friend class GeomAPI_ProjectPointOnSurf;
-friend class GeomAPI_ExtremaCurveCurve;
-friend class GeomAPI_ExtremaCurveSurface;
-friend class GeomAPI_ExtremaSurfaceSurface;
-friend class GeomAPI_PointsToBSpline;
-friend class GeomAPI_PointsToBSplineSurface;
-friend class GeomAPI_Interpolate;
-friend class GeomAPI_IntSS;
-friend class GeomAPI_IntCS;
-
 };
-
-
-
-
-
-
 
 #endif // _GeomAPI_HeaderFile

@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BinMXCAFDoc.hxx>
 
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
-#include <BinMXCAFDoc.hxx>
 #include <BinMXCAFDoc_AssemblyItemRefDriver.hxx>
 #include <BinMXCAFDoc_CentroidDriver.hxx>
 #include <BinMXCAFDoc_ColorDriver.hxx>

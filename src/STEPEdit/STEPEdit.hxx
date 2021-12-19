@@ -63,29 +63,6 @@ public:
   //! By default in the whole StepModel
   Standard_EXPORT static Handle(IFSelect_SelectSignature) NewSelectShapeRepr();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class STEPEdit_EditContext;
-friend class STEPEdit_EditSDR;
-
 };
-
-
-
-
-
-
 
 #endif // _STEPEdit_HeaderFile

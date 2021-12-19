@@ -63,58 +63,15 @@ public:
   //! Insert ACR on a  wire
   Standard_EXPORT static TopoDS_Wire InsertACR (const TopoDS_Wire& wire, const TColStd_Array1OfReal& ACRcuts, const Standard_Real prec);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
   
   //! Computes origins and orientation on a closed wire
   Standard_EXPORT static void SearchOrigin (TopoDS_Wire& W, const gp_Pnt& P, const gp_Vec& V, const Standard_Real Tol);
 
+private:
 
-
-friend class BRepFill_Generator;
-friend class BRepFill_SectionLaw;
-friend class BRepFill_ShapeLaw;
-friend class BRepFill_NSections;
-friend class BRepFill_Draft;
-friend class BRepFill_LocationLaw;
-friend class BRepFill_DraftLaw;
-friend class BRepFill_Edge3DLaw;
-friend class BRepFill_EdgeOnSurfLaw;
-friend class BRepFill_ACRLaw;
-friend class BRepFill_Pipe;
-friend class BRepFill_PipeShell;
-friend class BRepFill_Evolved;
-friend class BRepFill_Sweep;
-friend class BRepFill_CompatibleWires;
-friend class BRepFill_OffsetWire;
-friend class BRepFill_OffsetAncestors;
-friend class BRepFill_ApproxSeewing;
-friend class BRepFill_ComputeCLine;
-friend class BRepFill_TrimSurfaceTool;
-friend class BRepFill_TrimEdgeTool;
-friend class BRepFill_SectionPlacement;
-friend class BRepFill_Section;
-friend class BRepFill_TrimShellCorner;
-friend class BRepFill_CurveConstraint;
-friend class BRepFill_Filling;
-friend class BRepFill_FaceAndOrder;
-friend class BRepFill_EdgeFaceAndOrder;
+  friend class BRepFill_PipeShell;
 
 };
-
-
-
-
-
-
 
 #endif // _BRepFill_HeaderFile

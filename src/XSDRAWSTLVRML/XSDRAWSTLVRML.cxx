@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XSDRAWSTLVRML.hxx>
 
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_TypeOfMarker.hxx>
@@ -79,7 +80,6 @@
 #include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
-#include <XSDRAWSTLVRML.hxx>
 #include <XSDRAWSTLVRML_DataSource.hxx>
 #include <XSDRAWSTLVRML_DataSource3D.hxx>
 #include <XSDRAWSTLVRML_DrawableMesh.hxx>

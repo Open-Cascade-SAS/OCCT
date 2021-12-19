@@ -282,38 +282,6 @@ public:
                                          const Standard_Boolean theExtVMax,
                                          TopoDS_Face& theFExtended);
 
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepLib_Command;
-friend class BRepLib_MakeShape;
-friend class BRepLib_MakeVertex;
-friend class BRepLib_MakeEdge;
-friend class BRepLib_MakeEdge2d;
-friend class BRepLib_MakePolygon;
-friend class BRepLib_MakeFace;
-friend class BRepLib_MakeWire;
-friend class BRepLib_MakeShell;
-friend class BRepLib_MakeSolid;
-friend class BRepLib_FindSurface;
-friend class BRepLib_FuseEdges;
-friend class BRepLib_CheckCurveOnSurface;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepLib_HeaderFile

@@ -13,12 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// pdn 15.11.98 new methods
-//:n3 abv 08.02.99: PRO17820: ShapeAnalysis::OuterWire instead of BRepTools::OuterWire()
-// szv #1 05.03.99: PRO15686: compute UV points for Plane surfaces in case of same vertices
-//#4 szv            S4163: optimizations
-//:s5 abv 22.04.99  Adding debug printouts in catch {} blocks
-//%21 pdn 15.04.99 CTS22655
+#include <ShapeAnalysis.hxx>
 
 #include <Bnd_Box2d.hxx>
 #include <BRep_Builder.hxx>
@@ -34,7 +29,6 @@
 #include <gp_XY.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
-#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>

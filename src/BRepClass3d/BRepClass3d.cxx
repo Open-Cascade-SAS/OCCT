@@ -14,13 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// File:	BRepClass3d.cxx
-// Created:	Thu Sep 20 10:05:46 2012
-// Author:	
-//		<pkv@PETREX>
+#include <BRepClass3d.hxx>
 
 #include <BRep_Builder.hxx>
-#include <BRepClass3d.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>

@@ -41,29 +41,6 @@ public:
   //! If no corresponding color defined in IGES, returns 0
   Standard_EXPORT static Standard_Integer EncodeColor (const Quantity_Color& col);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IGESCAFControl_Reader;
-friend class IGESCAFControl_Writer;
-
 };
-
-
-
-
-
-
 
 #endif // _IGESCAFControl_HeaderFile

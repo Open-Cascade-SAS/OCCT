@@ -13,10 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modified     20.04.2009 Sergey Zaritchny
+#include <XmlMDataStd.hxx>
 
 #include <Message_Messenger.hxx>
-#include <XmlMDataStd.hxx>
 #include <XmlMDataStd_AsciiStringDriver.hxx>
 #include <XmlMDataStd_BooleanArrayDriver.hxx>
 #include <XmlMDataStd_BooleanListDriver.hxx>

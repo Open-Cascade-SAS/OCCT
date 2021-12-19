@@ -346,25 +346,6 @@ public:
   
   Standard_EXPORT static void EvalLength (const Standard_Integer Degree, const Standard_Integer Dimension, Standard_Real& PolynomialCoeff, const Standard_Real U1, const Standard_Real U2, const Standard_Real Tol, Standard_Real& Length, Standard_Real& Error);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class PLib_Base;
-friend class PLib_JacobiPolynomial;
-friend class PLib_HermitJacobi;
-friend class PLib_DoubleJacobiPolynomial;
-
 };
 
 #endif // _PLib_HeaderFile

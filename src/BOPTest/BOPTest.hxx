@@ -71,13 +71,6 @@ public:
   //! For numeric values, the number correspond to the order in enum.
   Standard_EXPORT static BOPAlgo_Operation GetOperationType(const Standard_CString theOp);
 
-protected:
-
-private:
-
-friend class BOPTest_Objects;
-friend class BOPTest_DrawableShape;
-
 };
 
 #endif // _BOPTest_HeaderFile

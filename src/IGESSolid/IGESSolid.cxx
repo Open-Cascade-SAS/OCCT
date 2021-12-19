@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IGESSolid.hxx>
 
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_WriterLib.hxx>
 #include <IGESGeom.hxx>
-#include <IGESSolid.hxx>
 #include <IGESSolid_GeneralModule.hxx>
 #include <IGESSolid_Protocol.hxx>
 #include <IGESSolid_ReadWriteModule.hxx>

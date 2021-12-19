@@ -35,35 +35,16 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-
-
-
-
-protected:
-
-
-
-
-
 private:
-
   
   Standard_EXPORT static Standard_Boolean Parse (const Handle(ExprIntrp_Generator)& gen, const TCollection_AsciiString& str);
 
+private:
 
-
-friend class ExprIntrp_Generator;
-friend class ExprIntrp_GenExp;
-friend class ExprIntrp_GenFct;
-friend class ExprIntrp_GenRel;
-friend class ExprIntrp_Analysis;
+  friend class ExprIntrp_GenExp;
+  friend class ExprIntrp_GenFct;
+  friend class ExprIntrp_GenRel;
 
 };
-
-
-
-
-
-
 
 #endif // _ExprIntrp_HeaderFile

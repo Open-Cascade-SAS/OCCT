@@ -77,31 +77,6 @@ public:
   //! identic or opposed  concave  edges.
   Standard_EXPORT static Standard_Boolean SameSide (const TopAbs_Orientation Or, const TopAbs_Orientation OrSave1, const TopAbs_Orientation OrSave2, const TopAbs_Orientation OrFace1, const TopAbs_Orientation OrFace2);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class ChFi3d_Builder;
-friend class ChFi3d_ChBuilder;
-friend class ChFi3d_FilBuilder;
-friend class ChFi3d_SearchSing;
-
 };
-
-
-
-
-
-
 
 #endif // _ChFi3d_HeaderFile

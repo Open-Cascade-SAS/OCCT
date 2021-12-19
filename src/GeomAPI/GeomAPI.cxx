@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomAPI.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2d_Curve.hxx>
@@ -34,7 +35,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAPI.hxx>
 #include <gp_Pln.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>

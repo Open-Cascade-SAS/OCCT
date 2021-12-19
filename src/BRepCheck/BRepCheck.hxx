@@ -49,34 +49,6 @@ public:
   //! Returns the resolution on the surface
   Standard_EXPORT static Standard_Real PrecSurface(const Handle(Adaptor3d_Surface)& aAHSurf);
 
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepCheck_Result;
-friend class BRepCheck_Vertex;
-friend class BRepCheck_Edge;
-friend class BRepCheck_Wire;
-friend class BRepCheck_Face;
-friend class BRepCheck_Shell;
-friend class BRepCheck_Solid;
-friend class BRepCheck_Analyzer;
-
 };
-
-
-
-
-
-
 
 #endif // _BRepCheck_HeaderFile

@@ -64,34 +64,6 @@ public:
   //! the function MatrixOfInertia on any GProp_GProps object.
   Standard_EXPORT static void HOperator (const gp_Pnt& G, const gp_Pnt& Q, const Standard_Real Mass, gp_Mat& Operator);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class GProp_GProps;
-friend class GProp_PGProps;
-friend class GProp_CelGProps;
-friend class GProp_SelGProps;
-friend class GProp_VelGProps;
-friend class GProp_PrincipalProps;
-friend class GProp_PEquation;
-
 };
-
-
-
-
-
-
 
 #endif // _GProp_HeaderFile

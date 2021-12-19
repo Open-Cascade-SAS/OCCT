@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TNaming.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -24,7 +25,6 @@
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_DataMapOfShapePtrRefShape.hxx>
 #include <TNaming_Iterator.hxx>

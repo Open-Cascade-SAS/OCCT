@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Draft.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <Draft.hxx>
 #include <ElSLib.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>

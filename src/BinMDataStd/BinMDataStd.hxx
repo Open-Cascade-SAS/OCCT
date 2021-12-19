@@ -57,47 +57,6 @@ static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T
     anAtt->SetID(T::GetID());
 }
 
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BinMDataStd_GenericExtStringDriver;
-friend class BinMDataStd_IntegerDriver;
-friend class BinMDataStd_RealDriver;
-friend class BinMDataStd_IntegerArrayDriver;
-friend class BinMDataStd_RealArrayDriver;
-friend class BinMDataStd_UAttributeDriver;
-friend class BinMDataStd_VariableDriver;
-friend class BinMDataStd_ExpressionDriver;
-friend class BinMDataStd_TreeNodeDriver;
-friend class BinMDataStd_ExtStringArrayDriver;
-friend class BinMDataStd_GenericEmptyDriver;
-friend class BinMDataStd_AsciiStringDriver;
-friend class BinMDataStd_IntPackedMapDriver;
-friend class BinMDataStd_IntegerListDriver;
-friend class BinMDataStd_RealListDriver;
-friend class BinMDataStd_ExtStringListDriver;
-friend class BinMDataStd_BooleanListDriver;
-friend class BinMDataStd_ReferenceListDriver;
-friend class BinMDataStd_BooleanArrayDriver;
-friend class BinMDataStd_ReferenceArrayDriver;
-friend class BinMDataStd_ByteArrayDriver;
-friend class BinMDataStd_NamedDataDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _BinMDataStd_HeaderFile

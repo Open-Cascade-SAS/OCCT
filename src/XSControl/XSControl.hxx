@@ -43,40 +43,6 @@ public:
   //! it provides access to external variables
   Standard_EXPORT static Handle(XSControl_Vars) Vars (const Handle(IFSelect_SessionPilot)& pilot);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XSControl_Controller;
-friend class XSControl_TransferReader;
-friend class XSControl_TransferWriter;
-friend class XSControl_WorkSession;
-friend class XSControl_SelectForTransfer;
-friend class XSControl_SignTransferStatus;
-friend class XSControl_ConnectedShapes;
-friend class XSControl_Reader;
-friend class XSControl_Writer;
-friend class XSControl_Functions;
-friend class XSControl_FuncShape;
-friend class XSControl_Utils;
-friend class XSControl_Vars;
-
 };
-
-
-
-
-
-
 
 #endif // _XSControl_HeaderFile

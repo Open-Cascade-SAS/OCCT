@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <RWStepAP214.hxx>
 
 #include <Interface_GeneralLib.hxx>
 #include <Interface_ReaderLib.hxx>
 #include <RWHeaderSection.hxx>
-#include <RWStepAP214.hxx>
 #include <RWStepAP214_GeneralModule.hxx>
 #include <RWStepAP214_ReadWriteModule.hxx>
 #include <StepAP214.hxx>

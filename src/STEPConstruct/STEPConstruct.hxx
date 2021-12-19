@@ -62,37 +62,6 @@ public:
   //! Find CDSR correcponding to the component in the specified assembly
   Standard_EXPORT static Standard_Boolean FindCDSR (const Handle(Transfer_Binder)& ComponentBinder, const Handle(StepShape_ShapeDefinitionRepresentation)& AssemblySDR, Handle(StepShape_ContextDependentShapeRepresentation)& ComponentCDSR);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class STEPConstruct_Tool;
-friend class STEPConstruct_UnitContext;
-friend class STEPConstruct_Part;
-friend class STEPConstruct_Assembly;
-friend class STEPConstruct_Styles;
-friend class STEPConstruct_ValidationProps;
-friend class STEPConstruct_ExternRefs;
-friend class STEPConstruct_AP203Context;
-friend class STEPConstruct_ContextTool;
-friend class STEPConstruct_PointHasher;
-
 };
-
-
-
-
-
-
 
 #endif // _STEPConstruct_HeaderFile

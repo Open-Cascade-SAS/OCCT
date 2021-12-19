@@ -38,31 +38,6 @@ public:
   
   Standard_EXPORT static Standard_Integer DocumentVersion();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlMDataXtd_GeometryDriver;
-friend class XmlMDataXtd_ConstraintDriver;
-friend class XmlMDataXtd_PatternStdDriver;
-friend class XmlMDataXtd_TriangulationDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _XmlMDataXtd_HeaderFile

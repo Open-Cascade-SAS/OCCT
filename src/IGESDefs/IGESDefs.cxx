@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IGESDefs.hxx>
 
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_WriterLib.hxx>
-#include <IGESDefs.hxx>
 #include <IGESDefs_GeneralModule.hxx>
 #include <IGESDefs_Protocol.hxx>
 #include <IGESDefs_ReadWriteModule.hxx>

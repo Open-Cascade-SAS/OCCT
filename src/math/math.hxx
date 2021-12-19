@@ -70,67 +70,6 @@ public:
   //! Otherwise this method returns Standard_False.
   Standard_EXPORT static Standard_Boolean KronrodPointsAndWeights (const Standard_Integer Index, math_Vector& Points, math_Vector& Weights);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class math_Matrix;
-friend class math_Function;
-friend class math_FunctionWithDerivative;
-friend class math_MultipleVarFunction;
-friend class math_MultipleVarFunctionWithGradient;
-friend class math_MultipleVarFunctionWithHessian;
-friend class math_FunctionSet;
-friend class math_FunctionSetWithDerivatives;
-friend class math_Gauss;
-friend class math_GaussLeastSquare;
-friend class math_SVD;
-friend class math_DirectPolynomialRoots;
-friend class math_FunctionRoots;
-friend class math_BissecNewton;
-friend class math_FunctionRoot;
-friend class math_NewtonFunctionRoot;
-friend class math_BracketedRoot;
-friend class math_FunctionSetRoot;
-friend class math_NewtonFunctionSetRoot;
-friend class math_BracketMinimum;
-friend class math_BrentMinimum;
-friend class math_Powell;
-friend class math_FRPR;
-friend class math_BFGS;
-friend class math_NewtonMinimum;
-friend class math_Jacobi;
-friend class math_GaussSingleIntegration;
-friend class math_GaussMultipleIntegration;
-friend class math_GaussSetIntegration;
-friend class math_FunctionSample;
-friend class math_FunctionAllRoots;
-friend class math_Householder;
-friend class math_Crout;
-friend class math_Uzawa;
-friend class math_TrigonometricFunctionRoots;
-friend class math_KronrodSingleIntegration;
-friend class math_EigenValuesSearcher;
-friend class math_ComputeGaussPointsAndWeights;
-friend class math_ComputeKronrodPointsAndWeights;
-friend class math_DoubleTab;
-
 };
-
-
-
-
-
-
 
 #endif // _math_HeaderFile

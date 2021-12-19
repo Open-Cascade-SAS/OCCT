@@ -54,31 +54,6 @@ public:
   
   Standard_EXPORT static Standard_Real NormalizeOnDomain (Standard_Real& Par1, const IntRes2d_Domain& Dom1);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IntImpParGen_ImpTool;
-friend class IntImpParGen_ImpParTool;
-friend class IntImpParGen_Intersector;
-friend class IntImpParGen_MyImpParTool;
-
 };
-
-
-
-
-
-
 
 #endif // _IntImpParGen_HeaderFile

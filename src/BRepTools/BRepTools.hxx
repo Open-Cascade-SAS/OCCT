@@ -358,28 +358,6 @@ public:
   Standard_EXPORT static void CheckLocations(const TopoDS_Shape& theS,
                                              TopTools_ListOfShape& theProblemShapes);
 
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class BRepTools_WireExplorer;
-friend class BRepTools_Modification;
-friend class BRepTools_Modifier;
-friend class BRepTools_TrsfModification;
-friend class BRepTools_NurbsConvertModification;
-friend class BRepTools_GTrsfModification;
-friend class BRepTools_Substitution;
-friend class BRepTools_Quilt;
-friend class BRepTools_ShapeSet;
-friend class BRepTools_ReShape;
-
 };
 
 #endif // _BRepTools_HeaderFile

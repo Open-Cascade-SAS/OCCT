@@ -40,59 +40,6 @@ public:
   //! Returns the Protocol for this Package
   Standard_EXPORT static Handle(IGESGraph_Protocol) Protocol();
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class IGESGraph_LineFontDefTemplate;
-friend class IGESGraph_LineFontDefPattern;
-friend class IGESGraph_TextFontDef;
-friend class IGESGraph_TextDisplayTemplate;
-friend class IGESGraph_Color;
-friend class IGESGraph_DefinitionLevel;
-friend class IGESGraph_NominalSize;
-friend class IGESGraph_DrawingSize;
-friend class IGESGraph_DrawingUnits;
-friend class IGESGraph_IntercharacterSpacing;
-friend class IGESGraph_LineFontPredefined;
-friend class IGESGraph_HighLight;
-friend class IGESGraph_Pick;
-friend class IGESGraph_UniformRectGrid;
-friend class IGESGraph_ToolLineFontDefTemplate;
-friend class IGESGraph_ToolLineFontDefPattern;
-friend class IGESGraph_ToolTextFontDef;
-friend class IGESGraph_ToolTextDisplayTemplate;
-friend class IGESGraph_ToolColor;
-friend class IGESGraph_ToolDefinitionLevel;
-friend class IGESGraph_ToolNominalSize;
-friend class IGESGraph_ToolDrawingSize;
-friend class IGESGraph_ToolDrawingUnits;
-friend class IGESGraph_ToolIntercharacterSpacing;
-friend class IGESGraph_ToolLineFontPredefined;
-friend class IGESGraph_ToolHighLight;
-friend class IGESGraph_ToolPick;
-friend class IGESGraph_ToolUniformRectGrid;
-friend class IGESGraph_Protocol;
-friend class IGESGraph_ReadWriteModule;
-friend class IGESGraph_GeneralModule;
-friend class IGESGraph_SpecificModule;
-
 };
-
-
-
-
-
-
 
 #endif // _IGESGraph_HeaderFile

@@ -13,12 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 150202: Add parameter isClearText to SetStringValue()
+#include <XmlObjMgt.hxx>
 
 #include <LDOM_Text.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
 
 #include <errno.h>

@@ -27,7 +27,6 @@
 #include <math_IntegerVector.hxx>
 class math_Matrix;
 
-
 //! Parallel Approximation in n curves.
 //! This package gives all the algorithms used to approximate a MultiLine
 //! described by the tool MLineTool.
@@ -47,44 +46,6 @@ public:
   
   Standard_EXPORT static void SplineFunction (const Standard_Integer NbPoles, const Standard_Integer Degree, const math_Vector& Parameters, const math_Vector& FlatKnots, math_Matrix& A, math_Matrix& DA, math_IntegerVector& Index);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class AppParCurves_MultiPoint;
-friend class AppParCurves_MultiCurve;
-friend class AppParCurves_MultiBSpCurve;
-friend class AppParCurves_ConstraintCouple;
-friend class AppParCurves_LeastSquare;
-friend class AppParCurves_ResolConstraint;
-friend class AppParCurves_Function;
-friend class AppParCurves_BSpFunction;
-friend class AppParCurves_Gradient;
-friend class AppParCurves_Gradient_BFGS;
-friend class AppParCurves_ParLeastSquare;
-friend class AppParCurves_ResConstraint;
-friend class AppParCurves_ParFunction;
-friend class AppParCurves_BSpGradient;
-friend class AppParCurves_BSpGradient_BFGS;
-friend class AppParCurves_BSpParLeastSquare;
-friend class AppParCurves_BSpParFunction;
-
 };
-
-
-
-
-
-
 
 #endif // _AppParCurves_HeaderFile

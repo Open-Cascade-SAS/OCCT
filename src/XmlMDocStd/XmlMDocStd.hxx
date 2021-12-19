@@ -35,28 +35,6 @@ public:
   //! Adds the attribute drivers to <aDriverTable>.
   Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlMDocStd_XLinkDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _XmlMDocStd_HeaderFile

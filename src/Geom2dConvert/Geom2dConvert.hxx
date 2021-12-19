@@ -254,31 +254,6 @@ public:
                                                                 const Standard_Real AngularTolerance,
                                                                 const Standard_Real Tolerance);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Geom2dConvert_BSplineCurveKnotSplitting;
-friend class Geom2dConvert_BSplineCurveToBezierCurve;
-friend class Geom2dConvert_CompCurveToBSplineCurve;
-friend class Geom2dConvert_ApproxCurve;
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2dConvert_HeaderFile

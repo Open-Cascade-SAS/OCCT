@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IGESDimen.hxx>
 
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_WriterLib.hxx>
-#include <IGESDimen.hxx>
 #include <IGESDimen_GeneralModule.hxx>
 #include <IGESDimen_Protocol.hxx>
 #include <IGESDimen_ReadWriteModule.hxx>

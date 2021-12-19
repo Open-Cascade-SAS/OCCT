@@ -32,39 +32,9 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Adds the attribute drivers to <aDriverTable>.
   Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& anMsgDrv);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class XmlMXCAFDoc_CentroidDriver;
-friend class XmlMXCAFDoc_ColorDriver;
-friend class XmlMXCAFDoc_GraphNodeDriver;
-friend class XmlMXCAFDoc_LengthUnitDriver;
-friend class XmlMXCAFDoc_LocationDriver;
-friend class XmlMXCAFDoc_DatumDriver;
-friend class XmlMXCAFDoc_DimTolDriver;
-friend class XmlMXCAFDoc_MaterialDriver;
-
 };
-
-
-
-
-
-
 
 #endif // _XmlMXCAFDoc_HeaderFile

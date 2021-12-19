@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IGESSelect.hxx>
 
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
@@ -18,7 +19,6 @@
 #include <IFSelect_WorkSession.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <IGESSelect.hxx>
 #include <IGESSelect_Activator.hxx>
 #include <IGESSelect_WorkLibrary.hxx>
 #include <Interface_Graph.hxx>

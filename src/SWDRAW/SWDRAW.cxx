@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <SWDRAW.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -20,7 +21,6 @@
 #include <Draw_Window.hxx>
 #include <gp_Trsf.hxx>
 #include <ShapeProcess_OperLibrary.hxx>
-#include <SWDRAW.hxx>
 #include <SWDRAW_ShapeAnalysis.hxx>
 #include <SWDRAW_ShapeCustom.hxx>
 #include <SWDRAW_ShapeExtend.hxx>
@@ -118,11 +118,6 @@ void  SWDRAW::Init (Draw_Interpretor& theCommands)
 {
   if (!dejadraw) {
     dejadraw = 1;
-//    DBRep::BasicCommands(theCommands);
-// CKY 4-AOUT-1998 : pb avec GeomFill
-//    GeometryTest::AllCommands(theCommands);
-//    BRepTest::AllCommands(theCommands);
-//    MeshTest::Commands(theCommands);
   }
 
   SWDRAW_ShapeTool::InitCommands (theCommands);

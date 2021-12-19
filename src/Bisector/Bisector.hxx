@@ -37,37 +37,6 @@ public:
   
   Standard_EXPORT static Standard_Boolean IsConvex (const Handle(Geom2d_Curve)& Cu, const Standard_Real Sign);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class Bisector_Curve;
-friend class Bisector_BisecAna;
-friend class Bisector_BisecPC;
-friend class Bisector_BisecCC;
-friend class Bisector_Bisec;
-friend class Bisector_Inter;
-friend class Bisector_PointOnBis;
-friend class Bisector_PolyBis;
-friend class Bisector_FunctionH;
-friend class Bisector_FunctionInter;
-
 };
-
-
-
-
-
-
 
 #endif // _Bisector_HeaderFile

@@ -44,44 +44,14 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Loads commands defined in SWDRAW
   Standard_EXPORT static void Init (Draw_Interpretor& theCommands);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-  
   //! Returns the name of the DRAW group accumulating the
   //! commands from the classes prefixed with Shape*.
   //! Returns "Shape Healing".
   Standard_EXPORT static Standard_CString GroupName();
 
-
-
-friend class SWDRAW_ShapeTool;
-friend class SWDRAW_ShapeAnalysis;
-friend class SWDRAW_ShapeCustom;
-friend class SWDRAW_ShapeExtend;
-friend class SWDRAW_ShapeFix;
-friend class SWDRAW_ShapeUpgrade;
-friend class SWDRAW_ShapeProcess;
-friend class SWDRAW_ShapeProcessAPI;
-
 };
-
-
-
-
-
-
 
 #endif // _SWDRAW_HeaderFile
