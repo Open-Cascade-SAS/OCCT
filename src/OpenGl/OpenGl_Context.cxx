@@ -15,6 +15,9 @@
 
 #if defined(_WIN32)
   #include <windows.h>
+#elif defined(__APPLE__)
+  // macOS 10.4 deprecated OpenGL framework - suppress useless warnings
+  #define GL_SILENCE_DEPRECATION
 #endif
 
 #include <OpenGl_Context.hxx>
