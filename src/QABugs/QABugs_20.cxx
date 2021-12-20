@@ -4148,6 +4148,41 @@ static Standard_Integer OCC29406 (Draw_Interpretor&, Standard_Integer, const cha
   return 0;
 }
 
+#include <BRepCheck_Analyzer.hxx>
+#include <GCPnts_UniformDeflection.hxx>
+static Standard_Integer OCC32744(Draw_Interpretor& theDi, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs != 2)
+  {
+    theDi << "Syntax error: wrong number of arguments!\n";
+    return 1;
+  }
+
+  const TopoDS_Shape& aShape = DBRep::Get(theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDi << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  else if (aShape.ShapeType() != TopAbs_EDGE)
+  {
+    theDi << " Shape type must be EDGE\n";
+    return 1;
+  }
+
+  const TopoDS_Edge& anEdge = TopoDS::Edge(aShape);
+  BRepCheck_Analyzer analyzer(anEdge);
+  if (analyzer.IsValid())
+  {
+    Standard_Real firstParam = 0., lastParam = 0.;
+    Handle(Geom_Curve) pCurve = BRep_Tool::Curve(anEdge, firstParam, lastParam);
+    GeomAdaptor_Curve curveAdaptor(pCurve, firstParam, lastParam);
+    GCPnts_UniformDeflection uniformAbs(curveAdaptor, 0.001, firstParam, lastParam); 
+  }
+
+  return 0;
+}
+
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -4234,5 +4269,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC29406", 
                    "Tests the case when newly set axis for gp_Ax3 is parallel to one of current axis", 
                    __FILE__, OCC29406, group);
+
+  theCommands.Add("OCC32744",
+                  "Tests avoid Endless loop in GCPnts_UniformDeflection",
+                  __FILE__,
+                  OCC32744, group);
+
   return;
 }
