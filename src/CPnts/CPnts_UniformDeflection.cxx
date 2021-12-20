@@ -89,139 +89,173 @@ static  void D22d(const Standard_Address C, const Standard_Real U,
 void CPnts_UniformDeflection::Perform()
 {
   gp_Pnt P, P1, P2;
-//  gp_Vec V1, V2, VV1, VV2, VV;
   gp_Vec V1, V2, VV;
   Standard_Real Un1; 
   Standard_Real NormD1, NormD2;
 
   myIPoint   = -1;
   myNbPoints = -1;
-  
-  while ( (myNbPoints<2) && (!myFinish) ) {
-    
-    myNbPoints = myNbPoints + 1; 
+
+  const Standard_Real anEspilon = Epsilon(myFirstParam);
+
+  while ( (myNbPoints<2) && (!myFinish) )
+  {
+    ++myNbPoints;
     myParams[myNbPoints] = myFirstParam;
 
     if (my3d)
+    {
       D23d(myCurve, myFirstParam, myPoints[myNbPoints], V1, V2);
+    }
     else
+    {
       D22d(myCurve, myFirstParam, myPoints[myNbPoints], V1, V2);
-    P = myPoints[myNbPoints] ;
+    }
+    P = myPoints[myNbPoints];
     NormD1 = V1.Magnitude();
-    if (NormD1 < myTolCur || V2.Magnitude() < myTolCur) {   
+    if (NormD1 < myTolCur || V2.Magnitude() < myTolCur)
+    {
       // singularity on the tangent or null curvature
       myDu = Min(myDwmax, 1.5 * myDu);
     }
-    else { 
+    else 
+    {
       NormD2 = V2.CrossMagnitude(V1);
-      if (NormD2 / NormD1 < myDeflection) {  // collinearity of derivatives
-	myDu = Min(myDwmax, 1.5 * myDu);            
+      if (NormD2 / NormD1 < myDeflection)
+      {
+        // collinearity of derivatives
+        myDu = Min(myDwmax, 1.5 * myDu);
       }
-      else {
-	myDu = Sqrt(8.* myDeflection * NormD1 / NormD2 );
-	myDu = Min(Max(myDu, myTolCur), myDwmax);             
+      else 
+      {
+        myDu = Sqrt(8.* myDeflection * NormD1 / NormD2);
+        myDu = Min(Max(myDu, myTolCur), myDwmax);
       }
     }
     
     // check if the arrow is observed if WithControl
-    
-    if (myControl) {
+    if (myControl)
+    {
       myDu = Min(myDu, myLastParam-myFirstParam);
-      if (my3d) {
-	
-	D03d(myCurve, myFirstParam + myDu,P);
-	D03d(myCurve, myFirstParam + (myDu / 2.0),P1);
+      if (my3d)
+      {
+        D03d(myCurve, myFirstParam + myDu,P);
+        D03d(myCurve, myFirstParam + (myDu / 2.0), P1);
       }
-      else {
-	
-	D02d(myCurve, myFirstParam + myDu,P);
-	D02d(myCurve, myFirstParam + (myDu / 2.0),P1);
+      else
+      {
+        D02d(myCurve, myFirstParam + myDu,P);
+        D02d(myCurve, myFirstParam + (myDu / 2.0), P1);
       }
       V1= gp_Vec(myPoints[myNbPoints], P);
       NormD1 = V1.Magnitude(); 
-      if (NormD1 >= myDeflection) {
-	V2 = gp_Vec(myPoints[myNbPoints], P1);
-	NormD2 = V2.CrossMagnitude(V1) / NormD1;
-	
-	// passing of arrow starting from which the redivision is done is arbitrary
-	// probably it will be necessary to readjust it (differentiate the first point
-	// from the others) this test does not work on the points of inflexion
-	
-	if (NormD2 > myDeflection / 5.0) {
-	  NormD2 = Max(NormD2, 1.1 * myDeflection);
-	  myDu = myDu * Sqrt(myDeflection / NormD2);
-	  myDu = Min(Max(myDu, myTolCur), myDwmax);             
-	}
+      if (NormD1 >= myDeflection)
+      {
+        V2 = gp_Vec(myPoints[myNbPoints], P1);
+        NormD2 = V2.CrossMagnitude(V1) / NormD1;
+        
+        // passing of arrow starting from which the redivision is done is arbitrary
+        // probably it will be necessary to readjust it (differentiate the first point
+        // from the others) this test does not work on the points of inflexion        
+        if (NormD2 > myDeflection / 5.0)
+        {
+          NormD2 = Max(NormD2, 1.1 * myDeflection);
+          myDu = myDu * Sqrt(myDeflection / NormD2);
+          myDu = Min(Max(myDu, myTolCur), myDwmax);
+        }
       }
     }
-    myFirstParam = myFirstParam + myDu;
-    myFinish = (myLastParam - myFirstParam < myTolCur) || (myDu == 0.);
+    myFirstParam += myDu;
+    myFinish = myLastParam - myFirstParam < myTolCur ||
+               Abs(myDu) < myTolCur ||
+               // to avoid less than double precision endless increment
+               myDu < anEspilon;
   }
-  if (myFinish) {
+  if (myFinish)
+  {
     // the last point is corrected if control
-    if (myControl && (myNbPoints == 1) ) {
+    if (myControl && (myNbPoints == 1) )
+    {
       Un1 = myParams[0];
-      if (myLastParam - Un1 < 0.33*(myLastParam-myFirstParam)) {
-	myFirstParam = (myLastParam + Un1) / 2.0;
-	myParams[0]= myFirstParam;
-	myParams[1]= myLastParam;
-	if (my3d) {
-	  D03d(myCurve, myParams[0], myPoints[0]);
-	  D03d(myCurve, myParams[1], myPoints[1]);
-	}
-	else {
-	  D02d(myCurve, myParams[0], myPoints[0]);
+      if (myLastParam - Un1 < 0.33*(myLastParam-myFirstParam))
+      {
+        myFirstParam = (myLastParam + Un1) / 2.0;
+        myParams[0] = myFirstParam;
+        myParams[1] = myLastParam;
+        if (my3d)
+        {
+          D03d(myCurve, myParams[0], myPoints[0]);
+          D03d(myCurve, myParams[1], myPoints[1]);
+        }
+        else
+        {
+          D02d(myCurve, myParams[0], myPoints[0]);
           D02d(myCurve, myParams[1], myPoints[1]);
-	}
+        }
       } 
-      else {
-	if (my3d) {
-	  D23d(myCurve, myLastParam, P1, V1, V2);
-	}
-	else {
-	  D22d(myCurve, myLastParam, P1, V1, V2);
-	}
-        P = myPoints[0] ;
-	VV = gp_Vec(P1, P);
-	NormD1 = VV.Magnitude();
-	if ( NormD1 < myDeflection) {
-	  myParams[1]= myLastParam;
-          myPoints[1]= P1 ;
-	}
-	else {
-	  myFirstParam = (myLastParam * (myParams[1] - Un1) + Un1 * myDu)
-	      /(myFirstParam -Un1);
-	  if (my3d)
-	    D03d(myCurve, myFirstParam, P2);
-	  else
-	    D02d(myCurve, myFirstParam, P2);
-
-	  if ((VV.CrossMagnitude(gp_Vec(P2, P)) / NormD1 < myDeflection) && 
-	      (Un1 >= myLastParam - myDwmax) ) {
-	    // point n is removed
-	    myParams[1]= myLastParam;
-            myPoints[1] = P1 ;
-	  }
-	  else {
-	    myParams[1]=myFirstParam;
-            myPoints[1] = P2 ;
-	    myParams[2]=myLastParam;
-            myPoints[2] = P1 ;
-	    myNbPoints = myNbPoints +1;  
-	  }
-	}
+      else
+      {
+        if (my3d)
+        {
+          D23d(myCurve, myLastParam, P1, V1, V2);
+        }
+        else
+        {
+          D22d(myCurve, myLastParam, P1, V1, V2);
+        }
+        P = myPoints[0];
+        VV = gp_Vec(P1, P);
+        NormD1 = VV.Magnitude();
+        if (NormD1 < myDeflection)
+        {
+          myParams[1] = myLastParam;
+          myPoints[1] = P1;
+        }
+        else 
+        {
+          myFirstParam = (myLastParam * (myParams[1] - Un1) + Un1 * myDu) / (myFirstParam - Un1);
+          if (my3d)
+          {
+            D03d(myCurve, myFirstParam, P2);
+          }
+          else
+          {
+            D02d(myCurve, myFirstParam, P2);
+          }
+          if ((VV.CrossMagnitude(gp_Vec(P2, P)) / NormD1 < myDeflection) &&
+              (Un1 >= myLastParam - myDwmax) )
+          {
+            // point n is removed
+            myParams[1] = myLastParam;
+            myPoints[1] = P1;
+          }
+          else
+          {
+            myParams[1] = myFirstParam;
+            myPoints[1] = P2;
+            myParams[2] = myLastParam;
+            myPoints[2] = P1;
+            ++myNbPoints;
+          }
+        }
       }
     }
-    else {
-      myNbPoints = myNbPoints +1 ;
-      if (myNbPoints >= 3) myNbPoints = 2;
-      myParams[myNbPoints]= myLastParam;
-      if (my3d) {
-	  D03d(myCurve, myLastParam, myPoints[myNbPoints]);
-	}
-	else {
-	  D02d(myCurve, myLastParam, myPoints[myNbPoints]);
-	}
+    else
+    {
+      ++myNbPoints;
+      if (myNbPoints >= 3)
+      {
+        myNbPoints = 2;
+      }
+      myParams[myNbPoints] = myLastParam;
+      if (my3d)
+      {
+        D03d(myCurve, myLastParam, myPoints[myNbPoints]);
+      }
+      else
+      {
+        D02d(myCurve, myLastParam, myPoints[myNbPoints]);
+      }
     }
   }
 }
