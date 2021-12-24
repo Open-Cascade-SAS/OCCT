@@ -1,6 +1,3 @@
-puts "TODO OCC30286 Windows: Error : The length of result shape is 2416.66, expected 2418.08"
-puts "TODO OCC30286 Linux: Error : The length of result shape is 2414.48, expected 2418.08"
-
 set viewname "vright"
 set length 2418.08
 

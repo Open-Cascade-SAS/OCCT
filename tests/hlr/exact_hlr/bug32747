@@ -1,0 +1,10 @@
+puts "================================================"
+puts "OCC32747: Exact HLR algorithm gives wrong result"
+puts "================================================"
+puts ""
+
+set viewname "vfront"
+set length 34.3597
+
+restore [locate_data_file bug32747.brep] a
+COMPUTE_HLR $viewname $algotype
