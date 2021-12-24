@@ -22,6 +22,14 @@
 #define No_Standard_OutOfRange
 #endif
 
+static void CutVectorByTolerances (gp_Vec2d&          theVector,
+                                   const math_Vector& theTolerance)
+{
+  if (Abs(theVector.X()) < theTolerance(1))
+    theVector.SetX (0.);
+  if (Abs(theVector.Y()) < theTolerance(2))
+    theVector.SetY (0.);
+}
 
 // _______________________________________________
 //
@@ -771,8 +779,13 @@ void IntWalk_IWalking::TestArretCadre
 	  Line->Value(j).ParametersOnS1(Uc,Vc);
 	}
 
-	Scal = (Up-wd1[i].ustart) * (Uc-wd1[i].ustart) +
-	       (Vp-wd1[i].vstart) * (Vc-wd1[i].vstart);
+        gp_Vec2d aVec1 (Up-wd1[i].ustart, Vp-wd1[i].vstart),
+          aVec2 (Uc-wd1[i].ustart, Vc-wd1[i].vstart);
+        CutVectorByTolerances (aVec1, tolerance);
+        CutVectorByTolerances (aVec2, tolerance);
+
+        Scal = aVec1 * aVec2;
+        
         // if a stop point is found: stop the line on this point.
 	if (Scal < 0) { 
           Line->Cut(j);  nbp= Line->NbPoints();
@@ -791,8 +804,14 @@ void IntWalk_IWalking::TestArretCadre
 	}
 	else if (nbMultiplicities[i] > 0) {
           for (Standard_Integer k = N+1; k <= N + nbMultiplicities[i]; k++) {
-	    Scal = (Up-Umult(k)) * (Uc-Umult(k)) +
-	           (Vp-Vmult(k)) * (Vc-Vmult(k));
+
+            aVec1.SetCoord (Up-Umult(k), Vp-Vmult(k)),
+            aVec2.SetCoord (Uc-Umult(k), Vc-Vmult(k));
+            CutVectorByTolerances (aVec1, tolerance);
+            CutVectorByTolerances (aVec2, tolerance);
+
+            Scal = aVec1 * aVec2;
+            
 	    if (Scal < 0) { 
 	      Line->Cut(j);  nbp= Line->NbPoints();
 	      Irang=i;
@@ -847,11 +866,13 @@ void IntWalk_IWalking::TestArretCadre
       // now the last point of the line and the last calculated point are compated.
       // there will be no need to "Cut"
 
-      Scal = (Up-wd1[i].ustart) * (UV(1)-wd1[i].ustart) +
-	// 	(Vp-wd1[i].vstart) * (UV(2)-wd1[i].vstart);
-      // modified by NIZHNY-MKK  Fri Oct 27 12:29:41 2000
-	(Vp-wd1[i].vstart) * (UV(2)-wd1[i].vstart);
-
+      gp_Vec2d aVec1 (Up-wd1[i].ustart, Vp-wd1[i].vstart),
+        aVec2 (UV(1)-wd1[i].ustart, UV(2)-wd1[i].vstart);
+      CutVectorByTolerances (aVec1, tolerance);
+      CutVectorByTolerances (aVec2, tolerance);
+      
+      Scal = aVec1 * aVec2;
+      
       if (Scal < 0) { 
         Irang = i;
 	UV(1) = wd1[Irang].ustart;
@@ -867,8 +888,14 @@ void IntWalk_IWalking::TestArretCadre
       }
       else if (nbMultiplicities[i] > 0) {
         for (Standard_Integer j = N+1; j <= N+nbMultiplicities[i]; j++) {
-	  Scal = (Up-Umult(j)) * (UV(1)-Umult(j)) +
-                 (Vp-Vmult(j)) * (UV(2)-Vmult(j));
+
+          aVec1.SetCoord (Up-Umult(j), Vp-Vmult(j));
+          aVec2.SetCoord (UV(1)-Umult(j), UV(2)-Vmult(j));
+          CutVectorByTolerances (aVec1, tolerance);
+          CutVectorByTolerances (aVec2, tolerance);
+          
+          Scal = aVec1 * aVec2;
+          
 	  if (Scal < 0) { 
 	    Irang=i;
 	    UV(1) = wd1[Irang].ustart;
