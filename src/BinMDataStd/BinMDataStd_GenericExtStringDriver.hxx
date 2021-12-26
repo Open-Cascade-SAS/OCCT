@@ -15,10 +15,8 @@
 #define _BinMDataStd_GenericExtStringDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BinMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
 class Message_Messenger;

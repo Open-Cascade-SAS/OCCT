@@ -22,7 +22,6 @@
 #include <Standard_NullValue.hxx>
 #include <TColStd_Array1OfListOfInteger.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 
 //=======================================================================
 //function : Bnd_BoundSortBox2d

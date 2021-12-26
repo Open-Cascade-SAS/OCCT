@@ -24,10 +24,8 @@
 // for the class
 
 #include <Aspect_Background.hxx>
-#include <Aspect_GradientBackground.hxx>
 #include <Aspect_Window.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
-#include <Aspect_WindowError.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 

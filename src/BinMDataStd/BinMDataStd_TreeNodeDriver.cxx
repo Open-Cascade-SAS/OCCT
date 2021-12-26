@@ -18,7 +18,6 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>
 

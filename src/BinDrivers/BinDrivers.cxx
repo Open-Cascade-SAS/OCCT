@@ -25,12 +25,10 @@
 #include <BinMDocStd.hxx>
 #include <BinMFunction.hxx>
 #include <BinMNaming.hxx>
-#include <Message_Messenger.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDocStd_Application.hxx>
 
 static Standard_GUID BinStorageDriver  ("03a56835-8269-11d5-aab2-0050044b1af1");

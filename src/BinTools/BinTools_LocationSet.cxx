@@ -16,11 +16,8 @@
 
 #include <BinTools.hxx>
 #include <BinTools_LocationSet.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Vec.hxx>
-#include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopLoc_Location.hxx>
 
 //=======================================================================

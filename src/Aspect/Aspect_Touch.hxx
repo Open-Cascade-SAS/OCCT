@@ -15,8 +15,6 @@
 #define _Aspect_Touch_HeaderFile
 
 #include <NCollection_Vec2.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 //! Structure holding touch position - original and current location.
 class Aspect_Touch

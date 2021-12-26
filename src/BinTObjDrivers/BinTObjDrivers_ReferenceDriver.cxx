@@ -17,14 +17,11 @@
 
 
 #include <BinTObjDrivers_ReferenceDriver.hxx>
-#include <Message_Messenger.hxx>
 #include <TDF_Attribute.hxx>
 #include <TObj_TReference.hxx>
 #include <BinObjMgt_Persistent.hxx>
-#include <TObj_Object.hxx>
 #include <TObj_Model.hxx>
 #include <TObj_Assistant.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx>
 
 

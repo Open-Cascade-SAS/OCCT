@@ -15,12 +15,10 @@
 
 
 #include <BinMDataStd_RealDriver.hxx>
-#include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_RealDriver,BinMDF_ADriver)

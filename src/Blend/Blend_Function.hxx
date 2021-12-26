@@ -22,12 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Blend_AppFunction.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <math_Vector.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

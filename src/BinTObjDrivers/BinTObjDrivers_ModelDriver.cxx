@@ -18,7 +18,6 @@
 #include <BinTObjDrivers_ModelDriver.hxx>
 
 #include <BinObjMgt_Persistent.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
 

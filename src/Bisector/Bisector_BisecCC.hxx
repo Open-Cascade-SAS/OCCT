@@ -18,13 +18,10 @@
 #define _Bisector_BisecCC_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <Bisector_PolyBis.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Bisector_Curve.hxx>
 #include <GeomAbs_Shape.hxx>

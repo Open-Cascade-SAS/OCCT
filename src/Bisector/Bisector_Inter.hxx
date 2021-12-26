@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Bisector_Bisec;
 class IntRes2d_Domain;
 class Geom2d_Curve;

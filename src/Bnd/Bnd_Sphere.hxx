@@ -23,7 +23,6 @@
 #include <gp_XYZ.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! This class represents a bounding sphere of a geometric entity

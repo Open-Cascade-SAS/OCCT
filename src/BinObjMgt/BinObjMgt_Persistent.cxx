@@ -16,12 +16,7 @@
 
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_Position.hxx>
-#include <FSD_FileHeader.hxx>
 #include <Standard_GUID.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>

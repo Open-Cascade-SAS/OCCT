@@ -17,12 +17,10 @@
 #define _BinMNaming_NamedShapeDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BinTools_ShapeSet.hxx>
 #include <Standard_Integer.hxx>
 #include <BinMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
 #include <Standard_IStream.hxx>

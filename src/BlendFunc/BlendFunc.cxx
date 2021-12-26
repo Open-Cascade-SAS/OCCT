@@ -23,7 +23,6 @@
 #include <Adaptor3d_Surface.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
@@ -34,7 +33,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <TColgp_Array2OfVec.hxx>
 
 //=======================================================================

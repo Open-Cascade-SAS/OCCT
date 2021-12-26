@@ -21,7 +21,6 @@
 
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <BinMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
 class Message_Messenger;

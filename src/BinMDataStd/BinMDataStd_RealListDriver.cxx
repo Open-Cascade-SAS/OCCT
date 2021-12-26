@@ -20,7 +20,6 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TDataStd_RealList.hxx>
 #include <TDF_Attribute.hxx>
 

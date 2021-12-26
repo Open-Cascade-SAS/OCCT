@@ -17,8 +17,6 @@
 #include <Aspect_VKeySet.hxx>
 #include <Aspect_TouchMap.hxx>
 #include <Graphic3d_Vec.hxx>
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 
 struct Aspect_ScrollDelta;
 class WNT_HIDSpaceMouse;

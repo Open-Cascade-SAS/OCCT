@@ -13,26 +13,17 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Parab.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <math_MultipleVarFunction.hxx>
 #include <math_Function.hxx>
 #include <math_PSO.hxx>
 #include <math_BrentMinimum.hxx>

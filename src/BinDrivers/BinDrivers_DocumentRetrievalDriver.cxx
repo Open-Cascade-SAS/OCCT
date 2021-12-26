@@ -19,7 +19,6 @@
 #include <BinLDrivers_DocumentSection.hxx>
 #include <BinMDataStd.hxx>
 #include <BinMDF_ADriverTable.hxx>
-#include <BinMNaming.hxx>
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>

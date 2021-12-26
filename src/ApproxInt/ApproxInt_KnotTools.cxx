@@ -14,14 +14,10 @@
 #include <ApproxInt_KnotTools.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <math_Vector.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <GeomInt_TheMultiLineOfWLApprox.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_List.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <NCollection_Vector.hxx>

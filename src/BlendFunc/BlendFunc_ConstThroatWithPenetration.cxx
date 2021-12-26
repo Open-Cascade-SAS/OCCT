@@ -12,19 +12,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Blend_Point.hxx>
-#include <BlendFunc.hxx>
 #include <BlendFunc_ConstThroatWithPenetration.hxx>
 #include <ElCLib.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
-#include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 
 #define Eps 1.e-15

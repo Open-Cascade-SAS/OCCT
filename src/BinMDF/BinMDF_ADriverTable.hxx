@@ -22,7 +22,6 @@
 #include <BinMDF_TypeADriverMap.hxx>
 #include <BinMDF_TypeIdMap.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>

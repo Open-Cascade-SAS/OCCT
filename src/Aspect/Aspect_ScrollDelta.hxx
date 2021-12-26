@@ -16,7 +16,6 @@
 
 #include <Aspect_VKeyFlags.hxx>
 #include <NCollection_Vec2.hxx>
-#include <Standard_Real.hxx>
 
 //! Parameters for mouse scroll action.
 struct Aspect_ScrollDelta

@@ -16,7 +16,6 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <BinMXCAFDoc_NoteDriver.hxx>
 #include <XCAFDoc_Note.hxx>
 

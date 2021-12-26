@@ -19,18 +19,14 @@
 #include <BinLDrivers_DocumentSection.hxx>
 #include <BinLDrivers_Marker.hxx>
 #include <BinMDataStd.hxx>
-#include <BinMDF_ADriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
 #include <OSD_FileSystem.hxx>
-#include <PCDM_Document.hxx>
 #include <PCDM_ReadWriter.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 #include <Storage_HeaderData.hxx>
@@ -40,7 +36,6 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TDocStd_Owner.hxx>

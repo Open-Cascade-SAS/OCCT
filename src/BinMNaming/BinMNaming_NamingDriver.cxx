@@ -29,9 +29,6 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_NameType.hxx>
 #include <TNaming_Naming.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 

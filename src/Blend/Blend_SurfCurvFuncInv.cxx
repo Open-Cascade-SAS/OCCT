@@ -17,7 +17,6 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Blend_SurfCurvFuncInv.hxx>
-#include <math_Matrix.hxx>
 
 //=======================================================================
 //function : NbVariables

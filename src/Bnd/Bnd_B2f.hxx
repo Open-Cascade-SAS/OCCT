@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_ShortReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_XY.hxx>
-#include <Standard_Real.hxx>
 class gp_XY;
 class gp_Pnt2d;
 class gp_Trsf2d;

@@ -19,8 +19,6 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_DimTol.hxx>
 

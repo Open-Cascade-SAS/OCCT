@@ -25,7 +25,6 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
-#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
 #include <TFunction_Scope.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMFunction_ScopeDriver,BinMDF_ADriver)

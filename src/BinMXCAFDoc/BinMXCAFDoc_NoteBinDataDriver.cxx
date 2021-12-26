@@ -16,8 +16,6 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
-#include <TColStd_HArray1OfByte.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <BinMXCAFDoc_NoteBinDataDriver.hxx>

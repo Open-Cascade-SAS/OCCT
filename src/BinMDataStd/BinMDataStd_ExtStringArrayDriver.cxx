@@ -19,8 +19,6 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfExtendedString.hxx>
-#include <TColStd_HArray1OfExtendedString.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>

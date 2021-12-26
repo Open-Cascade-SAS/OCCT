@@ -33,7 +33,6 @@
 #include <gp_Parab2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Stream.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>

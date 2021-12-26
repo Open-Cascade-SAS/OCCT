@@ -16,8 +16,6 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc_RuledInv.hxx>
 #include <math_Matrix.hxx>
 #include <Precision.hxx>

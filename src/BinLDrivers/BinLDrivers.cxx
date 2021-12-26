@@ -22,12 +22,10 @@
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMDocStd.hxx>
 #include <BinMFunction.hxx>
-#include <Message_Messenger.hxx>
 #include <Plugin_Macro.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDocStd_Application.hxx>
 
 //#include <BinMNaming.hxx>

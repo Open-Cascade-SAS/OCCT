@@ -17,7 +17,6 @@
 
 #include <BinMDataXtd_PositionDriver.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Position.hxx>
 #include <TDF_Attribute.hxx>

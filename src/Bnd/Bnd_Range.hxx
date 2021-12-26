@@ -16,7 +16,6 @@
 #ifndef _Bnd_Range_HeaderFile
 #define _Bnd_Range_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <Standard_ConstructionError.hxx>
 
 #include <NCollection_List.hxx>

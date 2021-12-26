@@ -17,7 +17,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_DomainError.hxx>
 
 Blend_Point::Blend_Point ():istgt(Standard_True) {}
 

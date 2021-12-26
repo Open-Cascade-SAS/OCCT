@@ -17,11 +17,7 @@
 #ifndef _Aspect_CircularGrid_HeaderFile
 #define _Aspect_CircularGrid_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Aspect_Grid.hxx>
 
 

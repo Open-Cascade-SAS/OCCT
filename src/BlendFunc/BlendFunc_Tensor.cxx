@@ -18,13 +18,10 @@
 #include <BlendFunc_Tensor.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <Standard_DimensionError.hxx>
-#include <Standard_RangeError.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 BlendFunc_Tensor::BlendFunc_Tensor(const Standard_Integer NbRow, 
-				   const Standard_Integer NbCol, 
-				   const Standard_Integer NbMat) :
+                                   const Standard_Integer NbCol, 
+                                   const Standard_Integer NbMat) :
                                    Tab(1,NbRow*NbMat*NbCol),
 				   nbrow( NbRow ),
 				   nbcol( NbCol ),

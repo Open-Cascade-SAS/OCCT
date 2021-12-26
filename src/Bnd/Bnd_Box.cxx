@@ -16,7 +16,6 @@
 
 #include <Bnd_Box.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -27,7 +26,6 @@
 #define ClearVoidFlag() ( Flags &= ~VoidMask )
 
 #include <Standard_Stream.hxx>
-#include <gp.hxx>
 // #include <Precision.hxx>
 #define Bnd_Precision_Infinite 1e+100
 

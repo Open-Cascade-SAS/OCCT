@@ -21,7 +21,6 @@
 #include <Bnd_Box.hxx>
 #include <BndLib.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <BSplCLib.hxx>
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -29,17 +28,12 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Cylinder.hxx>
 #include <gp_Cone.hxx>
-#include <gp_Lin.hxx>
 #include <Precision.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <BndLib_Add3dCurve.hxx>
-#include <math_MultipleVarFunction.hxx>
 #include <math_PSO.hxx>
-#include <math_Matrix.hxx>
 #include <math_Powell.hxx>
 //
 static Standard_Integer NbUSamples(const Adaptor3d_Surface& S, 

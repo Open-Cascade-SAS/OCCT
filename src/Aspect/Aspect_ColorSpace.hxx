@@ -14,8 +14,6 @@
 #ifndef _Aspect_ColorSpace_HeaderFile
 #define _Aspect_ColorSpace_HeaderFile
 
-#include <Aspect_GraphicsLibrary.hxx>
-
 //! Texture color spaces accepted by XR composer.
 enum Aspect_ColorSpace
 {

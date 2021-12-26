@@ -16,7 +16,6 @@
 
 
 #include <Bnd_Box2d.hxx>
-#include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Standard_ConstructionError.hxx>

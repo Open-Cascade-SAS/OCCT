@@ -16,8 +16,6 @@
 
 
 #include <Blend_SurfPointFuncInv.hxx>
-#include <gp_Pnt.hxx>
-#include <math_Matrix.hxx>
 
 //=======================================================================
 //function : NbVariables

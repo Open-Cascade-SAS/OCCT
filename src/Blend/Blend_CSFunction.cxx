@@ -16,11 +16,6 @@
 #include <Blend_CSFunction.hxx>
 #include <Blend_Point.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
-#include <math_Matrix.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 
 Standard_Integer Blend_CSFunction::NbVariables () const

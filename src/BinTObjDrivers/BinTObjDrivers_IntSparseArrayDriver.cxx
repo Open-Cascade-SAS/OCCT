@@ -20,8 +20,6 @@
 #include <TDF_Attribute.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <TObj_TIntSparseArray.hxx>
-#include <TObj_Assistant.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 
 

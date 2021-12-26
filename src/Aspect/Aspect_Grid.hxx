@@ -18,10 +18,8 @@
 #define _Aspect_Grid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Quantity_Color.hxx>
-#include <Standard_Boolean.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <Standard_Transient.hxx>
 

@@ -18,7 +18,6 @@
 #define _BlendFunc_ChAsymInv_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <Blend_FuncInv.hxx>
 

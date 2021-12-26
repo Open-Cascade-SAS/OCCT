@@ -16,15 +16,12 @@
 
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_EvolRad.hxx>
 #include <CSLib.hxx>
-#include <CSLib_NormalStatus.hxx>
 #include <ElCLib.hxx>
 #include <GeomFill.hxx>
-#include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -34,10 +31,8 @@
 #include <math_Matrix.hxx>
 #include <math_SVD.hxx>
 #include <Precision.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array2OfVec.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
 #define Eps 1.e-15

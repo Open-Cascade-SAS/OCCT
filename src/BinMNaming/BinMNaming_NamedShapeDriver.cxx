@@ -28,7 +28,6 @@
 #include <TDF_Label.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_Evolution.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopAbs_Orientation.hxx>

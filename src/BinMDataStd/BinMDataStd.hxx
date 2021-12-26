@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <TDocStd_FormatVersion.hxx>
 

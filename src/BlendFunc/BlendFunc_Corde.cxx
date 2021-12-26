@@ -15,12 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_Corde.hxx>
 #include <ElCLib.hxx>
-#include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>

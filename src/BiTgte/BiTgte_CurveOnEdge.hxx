@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Edge.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <gp_Circ.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>

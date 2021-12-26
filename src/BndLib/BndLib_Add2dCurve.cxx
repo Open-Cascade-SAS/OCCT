@@ -32,7 +32,6 @@
 #include <gp.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <math_MultipleVarFunction.hxx>
 #include <math_Function.hxx>
 #include <math_BrentMinimum.hxx>
 #include <math_PSO.hxx>

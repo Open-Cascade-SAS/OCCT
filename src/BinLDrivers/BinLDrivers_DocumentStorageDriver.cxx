@@ -15,28 +15,21 @@
 
 
 #include <BinLDrivers.hxx>
-#include <BinLDrivers_DocumentSection.hxx>
 #include <BinLDrivers_DocumentStorageDriver.hxx>
 #include <BinLDrivers_Marker.hxx>
-#include <BinMDF_ADriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_Position.hxx>
 #include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <FSD_FileHeader.hxx>
 #include <OSD_FileSystem.hxx>
 #include <PCDM_ReadWriter.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>

@@ -21,7 +21,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 #include <BlendFunc_Tensor.hxx>
 #include <BlendFunc_SectionShape.hxx>

@@ -16,7 +16,6 @@
 // The original implementation Copyright: (C) RINA S.p.A
 
 #include <BinLDrivers.hxx>
-#include <BinMDF_ADriverTable.hxx>
 #include <BinTObjDrivers.hxx>
 #include <BinTObjDrivers_DocumentStorageDriver.hxx>
 #include <BinTObjDrivers_DocumentRetrievalDriver.hxx>

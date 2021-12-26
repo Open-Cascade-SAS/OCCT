@@ -16,7 +16,6 @@
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
-#include <BRep_Polygon3D.hxx>
 #include <BRep_Builder.hxx>
 #include <BinTools_CurveSet.hxx>
 #include <BinTools_Curve2dSet.hxx>

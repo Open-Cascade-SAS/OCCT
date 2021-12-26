@@ -17,7 +17,6 @@
 #define _Aspect_AspectFillAreaDefinitionError_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_OutOfRange.hxx>
 

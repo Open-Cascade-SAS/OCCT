@@ -15,7 +15,6 @@
 
 #include <BinLDrivers_DocumentSection.hxx>
 #include <TDocStd_FormatVersion.hxx>
-#include <FSD_FileHeader.hxx>
 #include <BinMDataStd.hxx>
 
 //=======================================================================

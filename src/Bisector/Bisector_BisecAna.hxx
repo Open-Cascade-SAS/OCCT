@@ -23,7 +23,6 @@
 #include <Bisector_Curve.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom2d_TrimmedCurve;

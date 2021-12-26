@@ -19,7 +19,6 @@
 // Modified 20/02/1998 PMN Singular surfaces management
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ConstRad.hxx>

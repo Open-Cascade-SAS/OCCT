@@ -16,7 +16,6 @@
 #define _BlendFunc_GenChamfInv_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <BlendFunc_Corde.hxx>
 #include <Blend_FuncInv.hxx>
 #include <math_Vector.hxx>
 

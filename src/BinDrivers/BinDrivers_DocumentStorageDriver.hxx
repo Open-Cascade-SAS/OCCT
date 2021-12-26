@@ -17,7 +17,6 @@
 #define _BinDrivers_DocumentStorageDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_OStream.hxx>
 #include <BinLDrivers_DocumentStorageDriver.hxx>
 

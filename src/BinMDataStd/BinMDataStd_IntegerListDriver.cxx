@@ -20,7 +20,6 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TDataStd_IntegerList.hxx>
 #include <TDF_Attribute.hxx>
 

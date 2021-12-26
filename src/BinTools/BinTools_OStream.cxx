@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <BinTools_OStream.hxx>
-#include <Storage_StreamTypeMismatchError.hxx>
 
 #if DO_INVERSE
 #include <FSD_BinaryFile.hxx>

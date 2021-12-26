@@ -17,11 +17,8 @@
 #define _AppStdL_Application_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDocStd_Application.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
-#include <Standard_CString.hxx>
 
 class AppStdL_Application;
 DEFINE_STANDARD_HANDLE(AppStdL_Application, TDocStd_Application)

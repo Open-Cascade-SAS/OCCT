@@ -17,11 +17,9 @@
 #define _BinDrivers_DocumentRetrievalDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BinLDrivers_DocumentRetrievalDriver.hxx>
 #include <Standard_IStream.hxx>
-#include <Standard_Boolean.hxx>
 #include <Storage_Position.hxx>
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;

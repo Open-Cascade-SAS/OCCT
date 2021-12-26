@@ -19,8 +19,6 @@
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfByte.hxx>
 #include <TDataStd_BooleanArray.hxx>
 #include <TDF_Attribute.hxx>
 

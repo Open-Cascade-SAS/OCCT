@@ -16,14 +16,12 @@
 
 #include <BinMDataStd_AsciiStringDriver.hxx>
 #include <BinMDF_ADriver.hxx>
-#include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <BinObjMgt_SRelocationTable.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_AsciiStringDriver,BinMDF_ADriver)

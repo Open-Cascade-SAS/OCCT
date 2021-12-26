@@ -13,12 +13,10 @@
 
 
 #include <BinMDataStd_GenericExtStringDriver.hxx>
-#include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver,BinMDF_ADriver)

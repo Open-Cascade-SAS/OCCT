@@ -19,8 +19,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_OStream.hxx>
 
 #include <Bnd_Box.hxx>
 #include <gp_Ax3.hxx>

@@ -16,7 +16,6 @@
 #define _BlendFunc_GenChamfer_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <BlendFunc_Corde.hxx>
 #include <Blend_Function.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>

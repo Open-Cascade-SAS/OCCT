@@ -17,7 +17,6 @@
 #define _BinLDrivers_DocumentRetrievalDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
@@ -27,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
 #include <Storage_Position.hxx>
-#include <Standard_Boolean.hxx>
 #include <Storage_Data.hxx>
 
 class BinMDF_ADriverTable;

@@ -35,7 +35,6 @@
 #include <IntRes2d_Transition.hxx>
 #include <math_BissecNewton.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 
 #ifdef OCCT_DEBUG
 //#define DRAW

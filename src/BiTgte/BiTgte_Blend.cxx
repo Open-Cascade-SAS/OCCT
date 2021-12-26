@@ -16,7 +16,6 @@
 
 
 #include <AppCont_Function.hxx>
-#include <AppParCurves_MultiCurve.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <BiTgte_Blend.hxx>
 #include <BiTgte_CurveOnEdge.hxx>
@@ -29,7 +28,6 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRepOffset_DataMapIteratorOfDataMapOfShapeOffset.hxx>
 #include <BRepOffset_DataMapOfShapeOffset.hxx>
 #include <BRepOffset_Inter2d.hxx>
 #include <BRepOffset_Inter3d.hxx>
@@ -40,12 +38,10 @@
 #include <BRepOffset_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_Quilt.hxx>
-#include <BSplCLib.hxx>
 #include <ChFi3d.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
 #include <ElSLib.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -53,7 +49,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -70,7 +65,6 @@
 #include <gp_Sphere.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -85,10 +79,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>
@@ -2295,7 +2286,6 @@ void BiTgte_Blend::ComputeSurfaces()
 //purpose  : 
 //=======================================================================
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <Geom_Curve.hxx>
 
 void BiTgte_Blend::ComputeShape() 
 {

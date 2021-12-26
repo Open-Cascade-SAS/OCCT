@@ -14,9 +14,6 @@
 #ifndef _ApproxInt_KnotTools_HeaderFile
 #define _ApproxInt_KnotTools_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
 #ifndef _Standard_DefineAlloc_HeaderFile
 #include <Standard_DefineAlloc.hxx>
 #endif

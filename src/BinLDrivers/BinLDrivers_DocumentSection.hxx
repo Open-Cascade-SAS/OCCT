@@ -20,8 +20,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Size.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Message_ProgressIndicator.hxx>

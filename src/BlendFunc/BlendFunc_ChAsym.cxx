@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BlendFunc_ChAsym.hxx>

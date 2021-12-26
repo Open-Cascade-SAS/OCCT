@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <BinMDF.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMDF_ReferenceDriver.hxx>

@@ -22,13 +22,7 @@
 
 #include <TColStd_SequenceOfAddress.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Character.hxx>
-#include <Standard_Byte.hxx>
-#include <Standard_ExtCharacter.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_ShortReal.hxx>
-#include <Standard_CString.hxx>
 #include <BinObjMgt_PChar.hxx>
 #include <BinObjMgt_PByte.hxx>
 #include <BinObjMgt_PExtChar.hxx>

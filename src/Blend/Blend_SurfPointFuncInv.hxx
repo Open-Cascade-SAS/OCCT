@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Real.hxx>
 class math_Matrix;
 class gp_Pnt;
 
