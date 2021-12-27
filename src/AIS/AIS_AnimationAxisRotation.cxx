@@ -1,5 +1,4 @@
-// Created by: Anastasia BORISOVA
-// Copyright (c) 2016 OPEN CASCADE SAS
+// Copyright (c) 2023 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,21 +11,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_AnimationObject.hxx>
+#include <AIS_AnimationAxisRotation.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationObject, AIS_BaseAnimationObject)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_AnimationAxisRotation, AIS_BaseAnimationObject)
 
 //=============================================================================
 //function : Constructor
 //purpose  :
 //=============================================================================
-AIS_AnimationObject::AIS_AnimationObject (const TCollection_AsciiString& theAnimationName,
-                                          const Handle(AIS_InteractiveContext)& theContext,
-                                          const Handle(AIS_InteractiveObject)&  theObject,
-                                          const gp_Trsf& theTrsfStart,
-                                          const gp_Trsf& theTrsfEnd)
+AIS_AnimationAxisRotation::AIS_AnimationAxisRotation (const TCollection_AsciiString& theAnimationName,
+                                                      const Handle(AIS_InteractiveContext)& theContext,
+                                                      const Handle(AIS_InteractiveObject)& theObject,
+                                                      const gp_Ax1& theAxis,
+                                                      const Standard_Real theAngleStart,
+                                                      const Standard_Real theAngleEnd)
 : AIS_BaseAnimationObject (theAnimationName, theContext, theObject),
-  myTrsfLerp (theTrsfStart, theTrsfEnd)
+  myRotAxis    (theAxis),
+  myAngleStart (theAngleStart),
+  myAngleEnd   (theAngleEnd)
 {
   //
 }
@@ -35,7 +37,7 @@ AIS_AnimationObject::AIS_AnimationObject (const TCollection_AsciiString& theAnim
 //function : update
 //purpose  :
 //=============================================================================
-void AIS_AnimationObject::update (const AIS_AnimationProgress& theProgress)
+void AIS_AnimationAxisRotation::update (const AIS_AnimationProgress& theProgress)
 {
   if (myObject.IsNull())
   {
@@ -43,6 +45,7 @@ void AIS_AnimationObject::update (const AIS_AnimationProgress& theProgress)
   }
 
   gp_Trsf aTrsf;
-  myTrsfLerp.Interpolate (theProgress.LocalNormalized, aTrsf);
+  Standard_Real aCurrentAngle = (1.0 - theProgress.LocalNormalized) * myAngleStart + theProgress.LocalNormalized * myAngleEnd;
+  aTrsf.SetRotation (myRotAxis, aCurrentAngle);
   updateTrsf (aTrsf);
 }
