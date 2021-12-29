@@ -325,7 +325,7 @@ static int doTranslate  (const XmlMNaming_Shape1&       thePShape,
     return 1;
   theResult.TShape      (theShapeSet.Shape(aShapeId).TShape());
   theResult.Orientation (thePShape.Orientation());
-  theResult.Location    (theShapeSet.Locations().Location (thePShape.LocId()));
+  theResult.Location    (theShapeSet.Locations().Location (thePShape.LocId()), false);
 
   return 0;
 }
