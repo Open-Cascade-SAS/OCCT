@@ -52,7 +52,11 @@ public:
   }
 
   //! Return TRUE if group contains primitives with transform persistence.
-  bool HasPersistence() const { return myStructure != NULL && !myStructure->TransformPersistence().IsNull(); }
+  bool HasPersistence() const
+  {
+    return !myTrsfPers.IsNull()
+        || (myStructure != NULL && !myStructure->TransformPersistence().IsNull());
+  }
 
   //! Update aspect.
   Standard_EXPORT virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_Aspects)& theAspect) Standard_OVERRIDE;

@@ -26,6 +26,8 @@ enum OpenGl_RenderFilter
 
   OpenGl_RenderFilter_NonRaytraceableOnly = 0x004, //!< render only non-raytraceable elements
   OpenGl_RenderFilter_FillModeOnly        = 0x008, //!< render only filled elements
+
+  OpenGl_RenderFilter_SkipTrsfPersistence = 0x010, //!< render only normal 3D objects without transformation persistence
 };
 
 #endif

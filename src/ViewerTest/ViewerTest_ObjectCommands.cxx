@@ -2378,15 +2378,10 @@ static int VDrawText (Draw_Interpretor& theDI,
     {
       continue;
     }
-    else if (aParam == "-pos"
-          || aParam == "-position")
+    else if ((aParam == "-pos"
+           || aParam == "-position")
+           && anArgIt + 3 < theArgsNb)
     {
-      if (anArgIt + 3 >= theArgsNb)
-      {
-        Message::SendFail() << "Error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
       aPos.SetX (Draw::Atof (theArgVec[++anArgIt]));
       aPos.SetY (Draw::Atof (theArgVec[++anArgIt]));
       aPos.SetZ (Draw::Atof (theArgVec[++anArgIt]));
@@ -2406,59 +2401,70 @@ static int VDrawText (Draw_Interpretor& theDI,
       anArgIt += aNbParsed;
       aTextPrs->SetColor (aColor);
     }
-    else if (aParam == "-halign")
+    else if ((aParam == "-halign"
+           || aParam == "-valign"
+           || aParam == "-align")
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'";
-        return 1;
-      }
-
-      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      TCollection_AsciiString aType (theArgVec[++anArgIt]);
       aType.LowerCase();
       if (aType == "left")
       {
         aTextPrs->SetHJustification (Graphic3d_HTA_LEFT);
+        if (aParam == "-valign")
+        {
+          Message::SendFail() << "Syntax error at '" << aParam << "'";
+          return 1;
+        }
       }
       else if (aType == "center")
       {
-        aTextPrs->SetHJustification (Graphic3d_HTA_CENTER);
+        if (aParam == "-halign"
+         || aParam == "-align")
+        {
+          aTextPrs->SetHJustification (Graphic3d_HTA_CENTER);
+        }
+        if (aParam == "-valign"
+         || aParam == "-align")
+        {
+          aTextPrs->SetVJustification (Graphic3d_VTA_CENTER);
+        }
       }
       else if (aType == "right")
       {
         aTextPrs->SetHJustification (Graphic3d_HTA_RIGHT);
+        if (aParam == "-valign")
+        {
+          Message::SendFail() << "Syntax error at '" << aParam << "'";
+          return 1;
+        }
       }
-      else
-      {
-        Message::SendFail() << "Syntax error at '" << aParam << "'";
-        return 1;
-      }
-    }
-    else if (aParam == "-valign")
-    {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      TCollection_AsciiString aType (theArgVec[anArgIt]);
-      aType.LowerCase();
-      if (aType == "top")
+      else if (aType == "top")
       {
         aTextPrs->SetVJustification (Graphic3d_VTA_TOP);
-      }
-      else if (aType == "center")
-      {
-        aTextPrs->SetVJustification (Graphic3d_VTA_CENTER);
+        if (aParam == "-halign")
+        {
+          Message::SendFail() << "Syntax error at '" << aParam << "'";
+          return 1;
+        }
       }
       else if (aType == "bottom")
       {
         aTextPrs->SetVJustification (Graphic3d_VTA_BOTTOM);
+        if (aParam == "-halign")
+        {
+          Message::SendFail() << "Syntax error at '" << aParam << "'";
+          return 1;
+        }
       }
       else if (aType == "topfirstline")
       {
         aTextPrs->SetVJustification (Graphic3d_VTA_TOPFIRSTLINE);
+        if (aParam == "-halign")
+        {
+          Message::SendFail() << "Syntax error at '" << aParam << "'";
+          return 1;
+        }
       }
       else
       {
@@ -2466,59 +2472,37 @@ static int VDrawText (Draw_Interpretor& theDI,
         return 1;
       }
     }
-    else if (aParam == "-angle")
+    else if (aParam == "-angle"
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      aTextPrs->SetAngle (Draw::Atof (theArgVec[anArgIt]) * (M_PI / 180.0));
+      aTextPrs->SetAngle (Draw::Atof (theArgVec[++anArgIt]) * (M_PI / 180.0));
     }
-    else if (aParam == "-zoom")
+    else if (aParam == "-zoom"
+          || aParam == "-nozoom"
+          || aParam == "-zoomable"
+          || aParam == "-nonzoomable")
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      aTextPrs->SetZoomable (Draw::Atoi (theArgVec[anArgIt]) == 1);
+      const bool isZoomable = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIt);
+      aTextPrs->SetZoomable (isZoomable);
     }
-    else if (aParam == "-height")
+    else if (aParam == "-height"
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      aTextPrs->SetHeight (Draw::Atof(theArgVec[anArgIt]));
+      aTextPrs->SetHeight (Draw::Atof(theArgVec[++anArgIt]));
     }
-    else if (aParam == "-wrapping")
+    else if (aParam == "-wrapping"
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
       if (aTextFormatter.IsNull())
       {
         aTextFormatter = new Font_TextFormatter();
       }
-      aTextFormatter->SetWrapping ((Standard_ShortReal)Draw::Atof(theArgVec[anArgIt]));
+      aTextFormatter->SetWrapping ((Standard_ShortReal)Draw::Atof(theArgVec[++anArgIt]));
     }
-    else if (aParam == "-aspect")
+    else if (aParam == "-aspect"
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      TCollection_AsciiString anOption (theArgVec[anArgIt]);
+      TCollection_AsciiString anOption (theArgVec[++anArgIt]);
       anOption.LowerCase();
       Font_FontAspect aFontAspect = Font_FA_Undefined;
       if (!parseFontStyle (anOption, aFontAspect))
@@ -2528,71 +2512,49 @@ static int VDrawText (Draw_Interpretor& theDI,
       }
       aTextPrs->SetFontAspect (aFontAspect);
     }
-    else if (aParam == "-font")
+    else if (aParam == "-font"
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      aTextPrs->SetFont (theArgVec[anArgIt]);
+      aTextPrs->SetFont (theArgVec[++anArgIt]);
     }
-    else if (aParam == "-plane")
+    else if (aParam == "-plane"
+          && anArgIt + 6 < theArgsNb)
     {
-      if (anArgIt + 6 >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-
-      Standard_Real aX = Draw::Atof (theArgVec[++anArgIt]);
-      Standard_Real aY = Draw::Atof (theArgVec[++anArgIt]);
-      Standard_Real aZ = Draw::Atof (theArgVec[++anArgIt]);
-      aNormal.SetCoord (aX, aY, aZ);
-
-      aX = Draw::Atof (theArgVec[++anArgIt]);
-      aY = Draw::Atof (theArgVec[++anArgIt]);
-      aZ = Draw::Atof (theArgVec[++anArgIt]);
-      aDirection.SetCoord (aX, aY, aZ);
-
+      aNormal.SetCoord (Draw::Atof (theArgVec[anArgIt + 1]),
+                        Draw::Atof (theArgVec[anArgIt + 2]),
+                        Draw::Atof (theArgVec[anArgIt + 3]));
+      aDirection.SetCoord (Draw::Atof (theArgVec[anArgIt + 4]),
+                           Draw::Atof (theArgVec[anArgIt + 5]),
+                           Draw::Atof (theArgVec[anArgIt + 6]));
       aHasPlane = Standard_True;
+      anArgIt += 6;
     }
-    else if (aParam == "-flipping")
+    else if (aParam == "-flipping"
+          || aParam == "-noflipping"
+          || aParam == "-flip"
+          || aParam == "-noflip")
     {
-      aTextPrs->SetFlipping (Standard_True);
+      const bool toFlip = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIt);
+      aTextPrs->SetFlipping (toFlip);
     }
-    else if (aParam == "-ownanchor")
+    else if (aParam == "-ownanchor"
+          || aParam == "-noownanchor")
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-      aTextPrs->SetOwnAnchorPoint (Draw::Atoi (theArgVec[anArgIt]) == 1);
+      const bool isOwnAnchor = Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIt);
+      aTextPrs->SetOwnAnchorPoint (isOwnAnchor);
     }
-    else if (aParam == "-disptype"
-          || aParam == "-displaytype")
+    else if ((aParam == "-disptype"
+           || aParam == "-displaytype")
+          && anArgIt + 1 < theArgsNb)
     {
-      if (++anArgIt >= theArgsNb)
-      {
-        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
-        return 1;
-      }
-      TCollection_AsciiString aType (theArgVec[anArgIt]);
+      TCollection_AsciiString aType (theArgVec[++anArgIt]);
       aType.LowerCase();
-      if (aType == "subtitle")
-        aDisplayType = Aspect_TODT_SUBTITLE;
-      else if (aType == "decal")
-        aDisplayType = Aspect_TODT_DEKALE;
-      else if (aType == "blend")
-        aDisplayType = Aspect_TODT_BLEND;
-      else if (aType == "dimension")
-        aDisplayType = Aspect_TODT_DIMENSION;
-      else if (aType == "normal")
-        aDisplayType = Aspect_TODT_NORMAL;
-      else if (aType == "shadow")
-        aDisplayType = Aspect_TODT_SHADOW;
+      if      (aType == "subtitle")  { aDisplayType = Aspect_TODT_SUBTITLE; }
+      else if (aType == "decal")     { aDisplayType = Aspect_TODT_DEKALE; }
+      else if (aType == "blend")     { aDisplayType = Aspect_TODT_BLEND; }
+      else if (aType == "dimension") { aDisplayType = Aspect_TODT_DIMENSION; }
+      else if (aType == "normal")    { aDisplayType = Aspect_TODT_NORMAL; }
+      else if (aType == "shadow")    { aDisplayType = Aspect_TODT_SHADOW; }
       else
       {
         Message::SendFail() << "Syntax error: wrong display type '" << aType << "'";

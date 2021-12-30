@@ -89,7 +89,7 @@ bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView,
                                      const gp_XYZ* theOrigin)
 {
   const Bnd_Box aMinMaxBox  = theOrigin == NULL ? theView.MinMaxValues (false) : Bnd_Box(); // applicative min max boundaries
-  const Bnd_Box aGraphicBox = theOrigin == NULL ? theView.MinMaxValues (true)  : Bnd_Box(); // real graphical boundaries (not accounting infinite flag)
+  const Bnd_Box aGraphicBox = aMinMaxBox;
 
   switch (myShadowLight->Type())
   {

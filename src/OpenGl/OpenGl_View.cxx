@@ -2162,7 +2162,9 @@ void OpenGl_View::renderShadowMap (const Handle(OpenGl_ShadowMap)& theShadowMap)
   aCtx->core11fwd->glClearDepth (1.0);
   aCtx->core11fwd->glClear (GL_DEPTH_BUFFER_BIT);
 
+  myWorkspace->SetRenderFilter (myWorkspace->RenderFilter() | OpenGl_RenderFilter_SkipTrsfPersistence);
   renderScene (Graphic3d_Camera::Projection_Orthographic, aShadowBuffer.get(), NULL, false);
+  myWorkspace->SetRenderFilter (myWorkspace->RenderFilter() & ~(Standard_Integer )OpenGl_RenderFilter_SkipTrsfPersistence);
 
   aCtx->SetColorMask (true);
   myWorkspace->ResetAppliedAspect();

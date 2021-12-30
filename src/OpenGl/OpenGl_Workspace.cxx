@@ -423,6 +423,14 @@ Standard_Boolean OpenGl_Workspace::BufferDump (const Handle(OpenGl_FrameBuffer)&
 bool OpenGl_Workspace::ShouldRender (const OpenGl_Element* theElement,
                                      const OpenGl_Group*   theGroup)
 {
+  if ((myRenderFilter & OpenGl_RenderFilter_SkipTrsfPersistence) != 0)
+  {
+    if (theGroup->HasPersistence())
+    {
+      return false;
+    }
+  }
+
   // render only non-raytracable elements when RayTracing is enabled
   if ((myRenderFilter & OpenGl_RenderFilter_NonRaytraceableOnly) != 0)
   {
