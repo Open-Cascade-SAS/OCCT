@@ -380,6 +380,11 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     theWorkspace->UseDepthWrite() = Standard_False;
     aCtx->core11fwd->glDepthMask (GL_FALSE);
   }
+  const bool wasDepthClamped = aCtx->arbDepthClamp && aCtx->core11fwd->glIsEnabled (GL_DEPTH_CLAMP);
+  if (aCtx->arbDepthClamp && !wasDepthClamped)
+  {
+    aCtx->core11fwd->glEnable (GL_DEPTH_CLAMP);
+  }
 
   const OpenGl_Aspects* aTextAspectBack = theWorkspace->SetAspects (&myTextAspect);
 
@@ -454,6 +459,10 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
   {
     theWorkspace->UseDepthWrite() = wasEnabledDepth;
     aCtx->core11fwd->glDepthMask (wasEnabledDepth ? GL_TRUE : GL_FALSE);
+  }
+  if (aCtx->arbDepthClamp && !wasDepthClamped)
+  {
+    aCtx->core11fwd->glDisable (GL_DEPTH_CLAMP);
   }
 }
 
