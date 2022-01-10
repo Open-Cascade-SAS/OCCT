@@ -13,8 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifndef _BRepExtrema_MapOfIntegerPackedMapOfInteger_HeaderFile
+#define _BRepExtrema_MapOfIntegerPackedMapOfInteger_HeaderFile
+
 #include <NCollection_DataMap.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 
 //! Set of overlapped sub-shapes.
 typedef NCollection_DataMap<Standard_Integer, TColStd_PackedMapOfInteger> BRepExtrema_MapOfIntegerPackedMapOfInteger;
+
+#endif // _BRepExtrema_MapOfIntegerPackedMapOfInteger_HeaderFile
