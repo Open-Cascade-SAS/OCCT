@@ -1,0 +1,37 @@
+puts "TODO CR27414 ALL: Error: operation with offset value 7 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 8 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 9 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 10 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 11 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 12 has failed"
+puts "TODO CR27414 ALL: Operations with following offset values have failed: 7 8 9 10 11 12"
+
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug32333_178_trim1.brep] s
+
+set ref_values { { 237838 3.74252e+06 61 61 } \
+                 { 241858 3.98236e+06 61 61 } \
+                 { 245948 4.22626e+06 59 59 } \
+                 { 250116 4.47428e+06 59 59 } \
+                 { 245191 4.72003e+06 60 60 } \
+                 { 236043 4.96659e+06 29 29 } \
+                 { 241534 5.20537e+06 25 25 } \
+                 { 245656 5.44968e+06 17 17 } \
+                 { 251925 5.69846e+06 17 17 } \
+                 { 258263 5.95355e+06 17 17 } \
+                 { 264668 6.21501e+06 17 17 } \
+                 { 271141 6.48291e+06 17 17 } \
+                 { 243904 6.74052e+06 9  9 } \
+                 { 249735 6.98734e+06 9  9 } \
+                 { 255633 7.24002e+06 9  9 } } 
+
+perform_offset_increasing s 1 15 1 $ref_values
+
+copy r5 result
+copy r5_unif result_unif
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

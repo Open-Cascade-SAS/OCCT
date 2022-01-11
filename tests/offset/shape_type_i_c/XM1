@@ -4,9 +4,9 @@ offsetparameter 1e-7 c i r
 offsetload s 8
 offsetperform result
 
-checkprops result -v 4.40128e+007 -s 1.81672e+006
+checkprops result -s 1.81645e+06 -v 4.40127e+07
 
 unifysamedom result_unif result
-checknbshapes result_unif -edge 186 -face 64 -shell 1
+checknbshapes result_unif -wire 62 -face 62 -shell 1
 
 checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

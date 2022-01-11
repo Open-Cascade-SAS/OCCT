@@ -1,5 +1,3 @@
-puts "TODO CR27414 ALL: Error :  is WRONG because number of FACE entities in shape"
-
 restore [locate_data_file bug26917_dom-8092_trim4.brep] s
 
 offsetparameter 1e-7 $calcul $type

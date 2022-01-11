@@ -7,7 +7,7 @@ restore [locate_data_file bug25926_offset_shape_trim3.brep]  s
 
 OFFSETSHAPE 12 {} $calcul $type
 
-checkprops result -v 948181 -s 66208.6 
+checkprops result -v 948181 -s 66208.6 -deps 1.e-3
 
 unifysamedom result_unif result
 checknbshapes result_unif -shell 1 -face 14
