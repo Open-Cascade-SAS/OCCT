@@ -1,6 +1,6 @@
-puts "TODO OCC27414 ALL: Error: The command cannot be built"
-puts "TODO OCC27414 ALL: Tcl Exception"
-puts "TODO OCC27414 ALL: TEST INCOMPLETE"
+puts "TODO OCC27414 ALL: Error :  is WRONG because number of"
+puts "TODO OCC27414 ALL: Error : The area of result shape is"
+puts "TODO OCC27414 ALL: Error : The volume of result shape is"
 
 restore [locate_data_file bug26917_dom-8092.t6c1_trim5_with_faces.brep] c
 

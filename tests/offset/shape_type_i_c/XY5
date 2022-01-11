@@ -1,7 +1,3 @@
-puts "TODO OCC32333 ALL: Error: The command cannot be built"
-puts "TODO OCC32333 ALL: gives an empty result"
-puts "TODO OCC32333 ALL: TEST INCOMPLETE"
-
 puts "============================================================================================="
 puts "0032088: Modeling Algorithms - Empty result of offset operation in mode \"Complete\" join type \"Intersection\""
 puts "============================================================================================="

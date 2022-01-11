@@ -21,7 +21,7 @@ restore [locate_data_file bug31148_plate_split.brep] s
 
 perform_offset_multi_with_ref r0_01 s 0 {6 10 14} {1 5 1} {464 244 26 26} 1; # BAD (null shape)
 perform_offset_multi_with_ref r0_02 s 0 {9 11} {5 5} {448 244 24 23} 1; # BAD (filled part)
-perform_offset_multi_with_ref r0_03 s 0 {6 9 11 14} {1 5 5 1} {464 268 36 35} 1; # BAD (mostly removed)
+perform_offset_multi_with_ref r0_03 s 0 {6 9 11 14} {1 5 5 1} {464 268 36 35} 1; # BAD (internal part is filled)
 perform_offset_multi_with_ref r0_04 s 0 {8 10 12} {5 5 5} {464 276 22 20} 1; # BAD (out of borders)
 perform_offset_multi_with_ref r0_05 s 0 {6 8 10 12 14 } {1 5 5 5 1} {464 292 30 28} 1
 perform_offset_multi_with_ref r0_06 s 0 {7 9 11 13} {1 3 3 1} {424 236 28 27} 1

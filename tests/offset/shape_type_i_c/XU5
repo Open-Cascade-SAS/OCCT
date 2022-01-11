@@ -1,0 +1,31 @@
+puts "TODO CR27414 ALL: Error: operation with offset value 7 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 8 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 9 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 10 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 11 has failed"
+puts "TODO CR27414 ALL: Error: operation with offset value 12 has failed"
+puts "TODO CR27414 ALL: Operations with following offset values have failed: 7 8 9 10 11 12"
+puts "TODO CR27414 ALL: Error : The offset cannot be built"
+
+puts "============================================================================================="
+puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
+puts "============================================================================================="
+puts ""
+
+# This is a simplified version of XZ7 case
+
+restore [locate_data_file bug32333_178_trim4.brep] s
+
+set ref_values { { 94323.2 1.42329e+06 14 14 } \
+                 { 98288.3 1.51959e+06 14 14 } \
+                 { 102311  1.61989e+06 14 14 } \
+                 { 106392  1.72423e+06 14 14 } \
+                 { 110531  1.83269e+06 14 14 } \
+                 { 114728  1.94532e+06 14 14 } }
+
+perform_offset_increasing s 7 12 1 $ref_values
+
+#copy r10 result
+#copy r10_unif result_unif
+
+#checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
