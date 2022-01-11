@@ -16,15 +16,11 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_HVertex.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
-#include <Blend_Point.hxx>
 #include <Blend_RstRstFunction.hxx>
 #include <Blend_SurfCurvFuncInv.hxx>
 #include <BRepBlend_BlendTool.hxx>
-#include <BRepBlend_Extremity.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepBlend_RstRstLineBuilder.hxx>
 #include <gp_Pnt.hxx>

@@ -21,9 +21,7 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_Tools.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_CoupleOfPaveBlocks.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
@@ -35,7 +33,6 @@
 #include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>

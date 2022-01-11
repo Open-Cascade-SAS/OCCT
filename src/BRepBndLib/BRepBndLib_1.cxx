@@ -11,12 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
-#include <GProp_GProps.hxx>
-#include <TopoDS_Shape.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 #include <Bnd_OBB.hxx>
@@ -26,19 +21,14 @@
 #include <gp_Ax3.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <Bnd_Box.hxx>
-#include <NCollection_List.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 
 //=======================================================================

@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <BOPDS_ListOfPave.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfPave.hxx>

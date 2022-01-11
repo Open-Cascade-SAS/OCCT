@@ -129,8 +129,6 @@ private:
 #define Blend_CSWalking BRepBlend_CSWalking
 #define Blend_CSWalking_hxx <BRepBlend_CSWalking.hxx>
 
-#include <Blend_CSWalking.lxx>
-
 #undef TheVertex
 #undef TheVertex_hxx
 #undef TheArc

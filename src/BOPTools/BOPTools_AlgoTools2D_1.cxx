@@ -13,23 +13,14 @@
 // commercial license or contractual agreement.
 
 #include <BOPTools_AlgoTools2D.hxx>
-#include <Precision.hxx>
 
 #include <gp_Vec2d.hxx>
 #include <gp_Dir2d.hxx>
 
-#include <TopLoc_Location.hxx>
-
-#include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomLib.hxx>
 
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>

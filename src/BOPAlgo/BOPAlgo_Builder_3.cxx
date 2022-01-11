@@ -17,28 +17,18 @@
 //
 #include <BOPAlgo_Builder.hxx>
 //
-#include <Precision.hxx>
 //
-#include <Bnd_Box.hxx>
 #include <TopAbs_State.hxx>
 //
 #include <TopoDS.hxx>
 #include <TopoDS_AlertWithShape.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Compound.hxx>
 //
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 //
 #include <BRep_Builder.hxx>
 //
-#include <BOPAlgo_Tools.hxx>
 #include <BOPAlgo_BuilderSolid.hxx>
 //
 #include <IntTools_Context.hxx>
@@ -52,7 +42,6 @@
 #include <BOPTools_Parallel.hxx>
 //
 #include <BOPAlgo_Tools.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Vector.hxx>
 

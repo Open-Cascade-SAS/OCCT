@@ -16,14 +16,11 @@
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <BRep_Polygon3D.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>

@@ -32,7 +32,6 @@
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_Vector.hxx>
-#include <Precision.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>

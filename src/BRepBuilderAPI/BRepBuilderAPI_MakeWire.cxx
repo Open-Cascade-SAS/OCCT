@@ -16,7 +16,6 @@
 
 
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>

@@ -17,15 +17,11 @@
 #ifndef _BRepBlend_Line_HeaderFile
 #define _BRepBlend_Line_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Blend_SequenceOfPoint.hxx>
-#include <IntSurf_TypeTrans.hxx>
 #include <BRepBlend_Extremity.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+
 class Blend_Point;
 
 

@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 class BOPAlgo_PaveFiller;

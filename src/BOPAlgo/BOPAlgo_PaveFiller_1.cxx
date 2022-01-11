@@ -22,7 +22,6 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BOPTools_AlgoTools.hxx>
@@ -35,7 +34,6 @@
 #include <Precision.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopTools_ListOfShape.hxx>

@@ -25,13 +25,10 @@
 #include <BOPAlgo_Algo.hxx>
 #include <BRepTools_History.hxx>
 
-#include <Standard_Boolean.hxx>
-
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class TopoDS_Shape;
 
 //! Root class for algorithms that has shape as result.

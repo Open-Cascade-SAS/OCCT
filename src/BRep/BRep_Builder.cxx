@@ -20,7 +20,6 @@
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
@@ -42,9 +41,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_NullObject.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>

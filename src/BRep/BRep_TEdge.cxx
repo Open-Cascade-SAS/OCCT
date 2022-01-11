@@ -18,11 +18,8 @@
 #include <BRep_CurveOn2Surfaces.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRep_TEdge,TopoDS_TEdge)

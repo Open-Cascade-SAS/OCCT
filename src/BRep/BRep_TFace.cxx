@@ -19,7 +19,6 @@
 #include <Geom_Surface.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
 

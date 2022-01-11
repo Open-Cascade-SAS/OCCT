@@ -19,8 +19,6 @@
 #include <BOPTools_AlgoTools2D.hxx>
 #include <DBRep.hxx>
 #include <IntTools_Context.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>

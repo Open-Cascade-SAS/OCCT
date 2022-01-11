@@ -17,7 +17,6 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <Standard_NullObject.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 

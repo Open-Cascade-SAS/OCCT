@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <Standard_Boolean.hxx>
 class BOPAlgo_PaveFiller;
 class TopoDS_Shape;
 

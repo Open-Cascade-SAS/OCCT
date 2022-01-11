@@ -34,7 +34,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_WireToFace.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : BRepAlgo_FaceRestrictor

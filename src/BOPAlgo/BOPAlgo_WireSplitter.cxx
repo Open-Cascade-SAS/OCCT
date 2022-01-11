@@ -19,18 +19,11 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <NCollection_Vector.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : 

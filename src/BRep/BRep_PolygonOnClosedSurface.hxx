@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <BRep_PolygonOnSurface.hxx>
-#include <Standard_Boolean.hxx>
 class Poly_Polygon2D;
 class Geom_Surface;
 class TopLoc_Location;

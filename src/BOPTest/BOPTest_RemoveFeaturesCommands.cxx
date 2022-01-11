@@ -24,11 +24,7 @@
 #include <BRepTest_Objects.hxx>
 
 #include <DBRep.hxx>
-#include <Draw.hxx>
 #include <Draw_ProgressIndicator.hxx>
-
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 
 static Standard_Integer RemoveFeatures (Draw_Interpretor&, Standard_Integer, const char**);
 

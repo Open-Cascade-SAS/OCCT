@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <TopoDS_Shape.hxx>
 

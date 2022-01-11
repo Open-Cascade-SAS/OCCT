@@ -19,18 +19,12 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
-#include <BOPDS_PaveBlock.hxx>
-#include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 namespace
 {

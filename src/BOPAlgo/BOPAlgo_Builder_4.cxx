@@ -22,7 +22,6 @@
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : LocGenerated

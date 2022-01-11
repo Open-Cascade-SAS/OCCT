@@ -16,8 +16,6 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <BRepAlgoAPI_BuilderAlgo.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
@@ -25,14 +23,12 @@
 #include <BRepAlgoAPI_Splitter.hxx>
 #include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
-#include <Draw.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 #include <Draw_ProgressIndicator.hxx>
 
 #include <stdio.h>
-#include <string.h>
 
 static Standard_Integer bapibuild(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bapibop  (Draw_Interpretor&, Standard_Integer, const char**);

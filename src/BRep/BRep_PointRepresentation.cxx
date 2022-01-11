@@ -17,7 +17,6 @@
 
 #include <BRep_PointRepresentation.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>

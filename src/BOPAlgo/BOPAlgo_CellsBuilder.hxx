@@ -16,14 +16,10 @@
 #ifndef _BOPAlgo_CellsBuilder_HeaderFile
 #define _BOPAlgo_CellsBuilder_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_OStream.hxx>
 
 #include <TopoDS_Shape.hxx>
 
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_MapOfShape.hxx>
 #include <BOPAlgo_Builder.hxx>
 
 #include <TopTools_ListOfShape.hxx>

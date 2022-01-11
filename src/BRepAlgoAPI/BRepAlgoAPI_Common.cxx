@@ -16,7 +16,6 @@
 
 
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <TopoDS_Shape.hxx>
 

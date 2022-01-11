@@ -15,11 +15,9 @@
 #ifndef BOPTools_BoxTree_HeaderFile
 #define BOPTools_BoxTree_HeaderFile
 
-#include <BVH_BoxSet.hxx>
 #include <BOPTools_BoxSelector.hxx>
 #include <BOPTools_PairSelector.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <BVH_LinearBuilder.hxx>
 
 //! Redefines BoxSet to use the Linear builder by default

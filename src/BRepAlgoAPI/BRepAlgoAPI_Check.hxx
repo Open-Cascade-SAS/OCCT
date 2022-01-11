@@ -23,8 +23,6 @@
 #include <BOPAlgo_ListOfCheckResult.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_Options.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Message_ProgressRange.hxx>
 

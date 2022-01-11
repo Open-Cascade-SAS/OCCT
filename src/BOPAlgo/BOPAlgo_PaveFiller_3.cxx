@@ -20,7 +20,6 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Tools.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_CoupleOfPaveBlocks.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
@@ -30,12 +29,9 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_VectorOfInterfEE.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>
@@ -43,7 +39,6 @@
 #include <IntTools_EdgeEdge.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
-#include <IntTools_SequenceOfRanges.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>

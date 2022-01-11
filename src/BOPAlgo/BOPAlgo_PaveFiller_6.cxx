@@ -20,7 +20,6 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_CoupleOfPaveBlocks.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
@@ -44,10 +43,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Curve.hxx>
@@ -65,13 +61,11 @@
 #include <IntTools_PntOn2Faces.hxx>
 #include <IntTools_SequenceOfCurves.hxx>
 #include <IntTools_SequenceOfPntOn2Faces.hxx>
-#include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>

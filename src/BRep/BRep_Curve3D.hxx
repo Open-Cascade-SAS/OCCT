@@ -18,11 +18,9 @@
 #define _BRep_Curve3D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BRep_GCurve.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Curve;
 class TopLoc_Location;
 class gp_Pnt;

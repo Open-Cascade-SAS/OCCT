@@ -23,7 +23,6 @@
 
 #include <BRepLib_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Pnt;
 class TopoDS_Vertex;
 class TopoDS_Edge;

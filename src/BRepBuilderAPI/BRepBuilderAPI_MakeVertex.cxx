@@ -15,11 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Builder.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <gp_Pnt.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 
 //=======================================================================

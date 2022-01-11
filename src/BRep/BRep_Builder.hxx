@@ -17,18 +17,12 @@
 #ifndef _BRep_Builder_HeaderFile
 #define _BRep_Builder_HeaderFile
 
+#include <GeomAbs_Shape.hxx>
+#include <Poly_ListOfTriangulation.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <TopoDS_Builder.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Poly_Polygon3D.hxx>
-#include <Poly_PolygonOnTriangulation.hxx>
-#include <Poly_ListOfTriangulation.hxx>
 
 class TopoDS_Face;
 class Geom_Surface;

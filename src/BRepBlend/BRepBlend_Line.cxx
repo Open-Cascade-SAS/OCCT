@@ -13,10 +13,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Blend_Point.hxx>
-#include <BRepBlend_Extremity.hxx>
 #include <BRepBlend_Line.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_Line,Standard_Transient)

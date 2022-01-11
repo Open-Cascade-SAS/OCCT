@@ -17,13 +17,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BOPDS_PDS.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BOPAlgo_PBuilder.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <BOPAlgo_CellsBuilder.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 //

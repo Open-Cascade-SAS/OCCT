@@ -18,12 +18,10 @@
 #define _BRep_PointRepresentation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;

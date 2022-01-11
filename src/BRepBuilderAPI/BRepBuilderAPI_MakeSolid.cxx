@@ -16,7 +16,6 @@
 
 
 #include <BRepBuilderAPI_MakeSolid.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Shape.hxx>

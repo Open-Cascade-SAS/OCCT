@@ -20,11 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <BRep_ListOfCurveRepresentation.hxx>
 #include <TopoDS_TEdge.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_TShape;
 
 

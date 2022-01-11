@@ -23,7 +23,6 @@
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_IndexedDataMapOfSetShape.hxx>
 #include <BOPTools_Set.hxx>
-#include <BOPTools_SetMapHasher.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <NCollection_DataMap.hxx>

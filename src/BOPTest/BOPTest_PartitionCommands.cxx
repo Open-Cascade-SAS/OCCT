@@ -25,12 +25,8 @@
 #include <BOPTest_Objects.hxx>
 #include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
-#include <Draw.hxx>
-#include <Draw_Color.hxx>
-#include <DrawTrSurf.hxx>
 #include <OSD_Timer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
 #include <stdio.h>

@@ -15,8 +15,6 @@
 
 #include <BRepAlgoAPI_Defeaturing.hxx>
 
-#include <BRepTools_History.hxx>
-
 //=======================================================================
 //function : Build
 //purpose  : 

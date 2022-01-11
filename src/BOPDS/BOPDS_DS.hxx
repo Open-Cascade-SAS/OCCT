@@ -20,8 +20,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BOPDS_DataMapOfPaveBlockCommonBlock.hxx>
-#include <BOPDS_IndexedMapOfPaveBlock.hxx>
-#include <BOPDS_ListOfPave.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
@@ -41,7 +39,6 @@
 #include <BOPDS_VectorOfShapeInfo.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Precision.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>

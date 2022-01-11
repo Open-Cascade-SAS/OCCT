@@ -18,12 +18,10 @@
 #define _BRep_TFace_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Poly_ListOfTriangulation.hxx>
 #include <TopLoc_Location.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_TFace.hxx>
 class Geom_Surface;
 class TopoDS_TShape;

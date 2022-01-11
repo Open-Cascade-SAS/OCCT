@@ -17,8 +17,6 @@
 
 #include <BOPAlgo_Alerts.hxx>
 
-#include <Bnd_Box.hxx>
-
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 

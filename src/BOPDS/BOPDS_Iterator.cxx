@@ -16,7 +16,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <Bnd_OBB.hxx>
 #include <Bnd_Tools.hxx>
 #include <BOPDS_DS.hxx>
@@ -29,7 +28,6 @@
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_Vector.hxx>
-#include <TopoDS_Shape.hxx>
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////

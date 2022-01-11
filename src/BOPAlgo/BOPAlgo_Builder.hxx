@@ -34,7 +34,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
 class TopoDS_Shape;

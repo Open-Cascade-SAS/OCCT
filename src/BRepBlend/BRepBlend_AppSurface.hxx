@@ -23,10 +23,8 @@
 
 #include <Approx_SweepApproximation.hxx>
 #include <AppBlend_Approx.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>

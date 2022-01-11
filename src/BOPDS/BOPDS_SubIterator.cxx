@@ -15,7 +15,6 @@
 
 #include <BOPDS_SubIterator.hxx>
 
-#include <Bnd_Box.hxx>
 #include <Bnd_Tools.hxx>
 
 #include <BOPDS_DS.hxx>
@@ -23,8 +22,6 @@
 #include <BOPDS_MapOfPair.hxx>
 
 #include <BOPTools_BoxTree.hxx>
-
-#include <TopoDS_Shape.hxx>
 
 #include <algorithm>
 

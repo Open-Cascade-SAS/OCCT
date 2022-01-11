@@ -24,7 +24,6 @@
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <math_Vector.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <TColStd_Array1OfReal.hxx>

@@ -18,12 +18,8 @@
 #define _BRep_CurveOnClosedSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <GeomAbs_Shape.hxx>
-#include <gp_Pnt2d.hxx>
 #include <BRep_CurveOnSurface.hxx>
-#include <Standard_Boolean.hxx>
 class Geom2d_Curve;
 class Geom_Surface;
 class TopLoc_Location;

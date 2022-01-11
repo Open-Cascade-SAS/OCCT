@@ -20,7 +20,6 @@
 
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_ListOfInteger.hxx>

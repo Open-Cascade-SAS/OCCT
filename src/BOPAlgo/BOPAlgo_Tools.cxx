@@ -17,14 +17,10 @@
 
 #include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPDS_IndexedMapOfPaveBlock.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>

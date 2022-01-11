@@ -42,9 +42,7 @@
 #define TEST 1
 
 
-#include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
-#include <Bnd_HArray1OfBox.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Builder.hxx>
@@ -61,45 +59,33 @@
 #include <BRepTools.hxx>
 #include <BRepTools_Quilt.hxx>
 #include <BRepTools_ReShape.hxx>
-#include <BSplCLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
-#include <GCPnts_UniformDeflection.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dConvert.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <Precision.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
@@ -116,9 +102,7 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_Array1OfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>

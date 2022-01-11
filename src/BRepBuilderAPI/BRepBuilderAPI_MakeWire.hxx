@@ -24,7 +24,6 @@
 #include <BRepLib_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepBuilderAPI_WireError.hxx>
 class TopoDS_Edge;
 class TopoDS_Wire;

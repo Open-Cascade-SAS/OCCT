@@ -23,7 +23,6 @@
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <IntTools_Curve.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_ListOfInteger.hxx>
 class IntTools_Curve;
 class Bnd_Box;

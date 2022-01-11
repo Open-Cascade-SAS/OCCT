@@ -19,12 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Face.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepAlgo_Image.hxx>
 class TopoDS_Edge;

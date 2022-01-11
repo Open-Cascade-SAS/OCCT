@@ -25,7 +25,6 @@
 #include <BRepAlgoAPI_Algo.hxx>
 #include <BRepTools_History.hxx>
 #include <Precision.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <TopTools_ListOfShape.hxx>
 

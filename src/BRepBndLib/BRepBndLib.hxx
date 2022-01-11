@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class Bnd_Box;
 class Bnd_OBB;

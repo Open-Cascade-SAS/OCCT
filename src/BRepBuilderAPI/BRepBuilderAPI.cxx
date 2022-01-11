@@ -21,13 +21,6 @@
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Plane.hxx>
-#include <gp.hxx>
-#include <Precision.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
@@ -44,7 +37,6 @@ void  BRepBuilderAPI::Plane(const Handle(Geom_Plane)& P)
 //function : Plane
 //purpose  : 
 //=======================================================================
-
 const Handle(Geom_Plane)&  BRepBuilderAPI::Plane()
 {
   return BRepLib::Plane();
@@ -55,7 +47,6 @@ const Handle(Geom_Plane)&  BRepBuilderAPI::Plane()
 //function : Precision
 //purpose  : 
 //=======================================================================
-
 void  BRepBuilderAPI::Precision(const Standard_Real P)
 {
   BRepLib::Precision(P);
@@ -66,7 +57,6 @@ void  BRepBuilderAPI::Precision(const Standard_Real P)
 //function : Precision
 //purpose  : 
 //=======================================================================
-
 Standard_Real  BRepBuilderAPI::Precision()
 {
   return BRepLib::Precision();

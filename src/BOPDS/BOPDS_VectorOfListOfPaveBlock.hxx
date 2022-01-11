@@ -16,7 +16,6 @@
 #define BOPDS_VectorOfListOfPaveBlock_HeaderFile
 
 #include <NCollection_Vector.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
 typedef NCollection_Vector<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;

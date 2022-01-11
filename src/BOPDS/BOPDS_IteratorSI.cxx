@@ -12,28 +12,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_Box.hxx>
 #include <Bnd_OBB.hxx>
 #include <Bnd_Tools.hxx>
 #include <BOPDS_DS.hxx>
-#include <BOPDS_IndexRange.hxx>
 #include <BOPDS_IteratorSI.hxx>
-#include <BOPDS_MapOfPair.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPDS_Tools.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <BRep_Tool.hxx>
-#include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
 
 //
 //=======================================================================

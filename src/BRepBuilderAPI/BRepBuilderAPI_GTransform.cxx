@@ -20,12 +20,8 @@
 #include <BRepBuilderAPI_NurbsConvert.hxx>
 #include <BRepTools_GTrsfModification.hxx>
 #include <BRepTools_NurbsConvertModification.hxx>
-#include <gp.hxx>
 #include <gp_GTrsf.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 //=======================================================================

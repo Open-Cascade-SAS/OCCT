@@ -19,12 +19,7 @@
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_PointRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
-#include <BRep_PolygonOnClosedSurface.hxx>
-#include <BRep_PolygonOnClosedTriangulation.hxx>
 #include <BRep_PolygonOnSurface.hxx>
 #include <BRep_PolygonOnTriangulation.hxx>
 #include <BRep_TEdge.hxx>
@@ -47,7 +42,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Map.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
@@ -65,7 +59,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <BRep_GCurve.hxx>

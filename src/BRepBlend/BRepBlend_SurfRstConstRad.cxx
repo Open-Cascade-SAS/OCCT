@@ -16,14 +16,11 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Blend_Point.hxx>
 #include <BlendFunc.hxx>
 #include <BRepBlend_SurfRstConstRad.hxx>
 #include <ElCLib.hxx>
 #include <GeomFill.hxx>
-#include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

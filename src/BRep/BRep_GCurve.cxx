@@ -16,7 +16,6 @@
 
 
 #include <BRep_GCurve.hxx>
-#include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 

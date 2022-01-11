@@ -31,17 +31,13 @@
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPDS_VectorOfInterfVV.hxx>
 #include <BRep_Tool.hxx>
-#include <gp_Torus.hxx>
-#include <TopExp.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <IntTools_Context.hxx>
-#include <IntTools_Tools.hxx>
 #include <IntTools_FaceFace.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================

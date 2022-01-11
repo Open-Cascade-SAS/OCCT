@@ -28,7 +28,6 @@
 #include <Standard_Boolean.hxx>
 #include <BRepApprox_TheInt2SOfThePrmPrmSvSurfacesOfApprox.hxx>
 #include <ApproxInt_SvSurfaces.hxx>
-#include <Standard_Real.hxx>
 class BRepAdaptor_Surface;
 class BRepApprox_SurfaceTool;
 class BRepApprox_ApproxLine;

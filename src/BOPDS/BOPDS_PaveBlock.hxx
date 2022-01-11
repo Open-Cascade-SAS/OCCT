@@ -16,16 +16,13 @@
 #define _BOPDS_PaveBlock_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BOPDS_ListOfPave.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_MapOfInteger.hxx>
 

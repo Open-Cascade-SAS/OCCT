@@ -15,16 +15,12 @@
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
-#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -34,7 +30,6 @@
 #include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -44,7 +39,6 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>

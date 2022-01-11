@@ -16,14 +16,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_Box.hxx>
-#include <Bnd_Box2d.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_WireEdgeSet.hxx>
 #include <BOPAlgo_WireSplitter.hxx>
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <Bnd_Tools.hxx>
 #include <BRep_Builder.hxx>
@@ -31,16 +28,10 @@
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Surface.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>
-#include <NCollection_DataMap.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>

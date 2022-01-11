@@ -18,11 +18,9 @@
 #define _BRep_PointOnSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
 #include <BRep_PointsOnSurface.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Surface;
 class TopLoc_Location;
 

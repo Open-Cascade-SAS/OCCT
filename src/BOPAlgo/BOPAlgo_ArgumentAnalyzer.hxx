@@ -21,11 +21,9 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <BOPAlgo_Algo.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_ListOfCheckResult.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
 

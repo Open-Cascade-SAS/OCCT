@@ -17,7 +17,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 //! The class is to provide the pair of indices of interfering shapes.
 

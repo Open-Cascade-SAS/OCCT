@@ -35,9 +35,6 @@
 #include <gp_Torus.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopoDS_Face.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Surface, Adaptor3d_Surface)

@@ -24,7 +24,6 @@
 #include <BRepLib_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepBuilderAPI_FaceError.hxx>
 class TopoDS_Face;
 class gp_Pln;

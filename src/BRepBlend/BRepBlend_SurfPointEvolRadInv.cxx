@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <BRepBlend_SurfPointEvolRadInv.hxx>
 #include <gp_Pnt.hxx>
 #include <Law_Function.hxx>

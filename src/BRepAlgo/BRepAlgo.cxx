@@ -32,7 +32,6 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <TColGeom_Array1OfBSplineCurve.hxx>
 #include <TColGeom_HArray1OfBSplineCurve.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
@@ -47,11 +46,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-
-//Temporary
-#//include <DrawTrSurf.hxx>
-
 
 //=======================================================================
 //function : ConcatenateWire

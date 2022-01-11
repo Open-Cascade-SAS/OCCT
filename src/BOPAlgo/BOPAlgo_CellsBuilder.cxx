@@ -19,7 +19,6 @@
 #include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools3D.hxx>
 #include <BRep_Builder.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <TColStd_MapOfInteger.hxx>

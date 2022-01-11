@@ -22,11 +22,6 @@
 #include <BOPDS_DS.hxx>
 #include <BOPTest.hxx>
 #include <BOPTest_Objects.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepTest_Objects.hxx>
 #include <DBRep.hxx>
@@ -39,7 +34,6 @@
 #include <IntTools_PntOn2Faces.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>

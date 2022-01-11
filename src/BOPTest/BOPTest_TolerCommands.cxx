@@ -15,9 +15,6 @@
 
 #include <BOPTest.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
@@ -29,7 +26,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
@@ -42,7 +38,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 

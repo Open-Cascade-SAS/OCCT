@@ -21,7 +21,6 @@
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopTools_ListOfShape.hxx>

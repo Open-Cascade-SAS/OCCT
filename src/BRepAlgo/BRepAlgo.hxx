@@ -18,8 +18,6 @@
 #define _BRepAlgo_HeaderFile
 
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;

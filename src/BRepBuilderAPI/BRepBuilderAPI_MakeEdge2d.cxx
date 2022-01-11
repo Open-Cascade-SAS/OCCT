@@ -23,7 +23,6 @@
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 

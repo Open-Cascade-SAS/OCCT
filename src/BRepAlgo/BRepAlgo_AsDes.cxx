@@ -19,7 +19,6 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes,Standard_Transient)

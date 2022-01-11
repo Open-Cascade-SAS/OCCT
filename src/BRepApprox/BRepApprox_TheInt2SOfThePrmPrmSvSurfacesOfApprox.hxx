@@ -19,14 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <BRepApprox_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfApprox.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 class StdFail_NotDone;

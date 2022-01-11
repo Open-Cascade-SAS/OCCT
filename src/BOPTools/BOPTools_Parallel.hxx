@@ -15,8 +15,6 @@
 #ifndef _BOPTools_Parallel_HeaderFile
 #define _BOPTools_Parallel_HeaderFile
 
-#include <Standard_Macro.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <OSD_Parallel.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <NCollection_DataMap.hxx>

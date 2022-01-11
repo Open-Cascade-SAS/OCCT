@@ -31,7 +31,6 @@
 
 #include <gp_Pln.hxx>
 
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
 //

@@ -18,7 +18,6 @@
 #define _BRep_TVertex_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>

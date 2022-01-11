@@ -28,7 +28,6 @@
 #include <Draw.hxx>
 
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 
 static Standard_Integer MakePeriodic(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer GetTwins(Draw_Interpretor&, Standard_Integer, const char**);

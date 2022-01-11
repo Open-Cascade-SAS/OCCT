@@ -22,7 +22,6 @@
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>

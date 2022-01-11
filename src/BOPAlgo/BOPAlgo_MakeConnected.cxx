@@ -25,8 +25,6 @@
 
 #include <TopExp_Explorer.hxx>
 
-#include <TopoDS_Iterator.hxx>
-
 //=======================================================================
 //function : Perform
 //purpose  : Makes the shapes connected

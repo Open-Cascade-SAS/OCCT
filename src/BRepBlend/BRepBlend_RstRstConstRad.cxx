@@ -23,7 +23,6 @@
 #include <BlendFunc.hxx>
 #include <ElCLib.hxx>
 #include <GeomFill.hxx>
-#include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

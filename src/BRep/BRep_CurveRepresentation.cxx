@@ -17,7 +17,6 @@
 
 #include <BRep_CurveRepresentation.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -25,7 +24,6 @@
 #include <Poly_Triangulation.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation,Standard_Transient)

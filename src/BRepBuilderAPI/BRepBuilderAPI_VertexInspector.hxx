@@ -18,7 +18,6 @@
 
 #include <TColStd_ListOfInteger.hxx>
 #include <NCollection_Vector.hxx>
-#include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 #include <NCollection_CellFilter.hxx>
 

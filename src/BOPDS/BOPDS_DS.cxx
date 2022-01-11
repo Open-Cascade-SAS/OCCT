@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_IndexRange.hxx>
@@ -27,10 +25,7 @@
 #include <BOPTools_AlgoTools.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_TEdge.hxx>
-#include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
-#include <BRep_TVertex.hxx>
 #include <BRepBndLib.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -45,10 +40,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <algorithm>
 //

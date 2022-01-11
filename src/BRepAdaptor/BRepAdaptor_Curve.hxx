@@ -22,7 +22,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>

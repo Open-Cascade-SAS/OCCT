@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 class TopoDS_Wire;
 

@@ -17,13 +17,10 @@
 #define _BOPTest_DrawableShape_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Draw_Color.hxx>
 #include <DBRep_DrawableShape.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class Draw_Text3D;
 class TopoDS_Shape;
 class gp_Pnt;

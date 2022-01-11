@@ -22,7 +22,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_OffsetCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -34,14 +33,11 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepAdaptor_Curve, Adaptor3d_Curve)
 

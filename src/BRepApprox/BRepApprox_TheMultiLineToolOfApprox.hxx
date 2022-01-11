@@ -21,14 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Boolean.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <BRepApprox_TheMultiLineOfApprox.hxx>
-#include <Approx_Status.hxx>
 class BRepApprox_TheMultiLineOfApprox;
 class ApproxInt_SvSurfaces;
 

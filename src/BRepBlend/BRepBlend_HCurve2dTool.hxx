@@ -18,8 +18,6 @@
 #define _BRepBlend_HCurve2dTool_HeaderFile
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Lin2d.hxx>

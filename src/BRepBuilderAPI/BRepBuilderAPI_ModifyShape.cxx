@@ -17,7 +17,6 @@
 
 #include <BRepBuilderAPI_ModifyShape.hxx>
 #include <BRepTools_Modification.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <TopoDS_Shape.hxx>
 

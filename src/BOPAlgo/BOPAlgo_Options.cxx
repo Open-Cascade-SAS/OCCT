@@ -20,7 +20,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_ProgramError.hxx>
 #include <BOPAlgo_Alerts.hxx>
 
 namespace

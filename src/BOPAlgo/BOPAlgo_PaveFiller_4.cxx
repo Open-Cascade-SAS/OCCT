@@ -18,21 +18,14 @@
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Alerts.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
-#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_SubIterator.hxx>
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPTools_Parallel.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepBndLib.hxx>
-#include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColStd_MapOfInteger.hxx>

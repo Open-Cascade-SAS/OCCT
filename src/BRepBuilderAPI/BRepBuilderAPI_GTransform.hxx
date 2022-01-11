@@ -19,12 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_GTrsf.hxx>
 #include <BRepBuilderAPI_Collect.hxx>
 #include <BRepBuilderAPI_ModifyShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 

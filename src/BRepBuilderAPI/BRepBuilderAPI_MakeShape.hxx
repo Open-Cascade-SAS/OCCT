@@ -24,7 +24,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepBuilderAPI_Command.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 

@@ -13,23 +13,18 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
-#include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <BOPTools_Parallel.hxx>
-#include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <NCollection_Vector.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
 //

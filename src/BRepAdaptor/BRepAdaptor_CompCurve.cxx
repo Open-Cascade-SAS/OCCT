@@ -18,7 +18,6 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <ElCLib.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -29,10 +28,6 @@
 #include <gp_Parab.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>

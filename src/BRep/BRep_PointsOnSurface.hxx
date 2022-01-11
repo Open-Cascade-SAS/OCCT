@@ -18,7 +18,6 @@
 #define _BRep_PointsOnSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BRep_PointRepresentation.hxx>
 #include <Standard_Real.hxx>

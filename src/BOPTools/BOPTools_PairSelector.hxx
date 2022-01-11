@@ -19,7 +19,6 @@
 #include <BVH_BoxSet.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <algorithm>
 
 //! Template Selector for selection of the elements from two BVH trees.

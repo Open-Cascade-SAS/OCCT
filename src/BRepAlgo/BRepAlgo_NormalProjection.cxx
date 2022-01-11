@@ -25,7 +25,6 @@
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -34,22 +33,17 @@
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAdaptor.hxx>
 #include <Precision.hxx>
-#include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG_CHRONO
 #include <OSD_Timer.hxx>

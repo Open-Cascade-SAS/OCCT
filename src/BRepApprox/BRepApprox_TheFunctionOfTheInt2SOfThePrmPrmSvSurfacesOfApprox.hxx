@@ -19,16 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Vec.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <gp_Dir.hxx>

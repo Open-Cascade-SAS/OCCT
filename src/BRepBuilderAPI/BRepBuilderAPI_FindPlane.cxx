@@ -31,7 +31,6 @@
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>

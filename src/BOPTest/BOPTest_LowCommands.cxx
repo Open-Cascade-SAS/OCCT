@@ -16,9 +16,7 @@
 
 #include <BOPTest.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
-#include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
@@ -29,7 +27,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

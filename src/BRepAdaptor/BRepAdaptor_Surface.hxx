@@ -17,7 +17,6 @@
 #ifndef _BRepAdaptor_Surface_HeaderFile
 #define _BRepAdaptor_Surface_HeaderFile
 
-#include <Adaptor3d_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAbs_SurfaceType.hxx>

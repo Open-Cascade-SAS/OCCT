@@ -16,12 +16,7 @@
 
 
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : BRepBuilderAPI_MakeShape

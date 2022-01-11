@@ -16,8 +16,6 @@
 #ifndef _BOPAlgo_SectionAttribute_HeaderFile
 #define _BOPAlgo_SectionAttribute_HeaderFile
 
-#include <Standard_Boolean.hxx>
-
 //! Class is a container of the flags used
 //! by intersection algorithm
 class BOPAlgo_SectionAttribute

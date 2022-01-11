@@ -20,8 +20,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <IntSurf_Transition.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 BRepBlend_Extremity::BRepBlend_Extremity (): 
        pt(gp_Pnt(0,0,0)),

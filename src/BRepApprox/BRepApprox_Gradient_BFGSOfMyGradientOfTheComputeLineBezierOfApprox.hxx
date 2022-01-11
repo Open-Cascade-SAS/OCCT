@@ -21,11 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <math_BFGS.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class BRepApprox_TheMultiLineOfApprox;
 class BRepApprox_TheMultiLineToolOfApprox;
 class BRepApprox_MyGradientOfTheComputeLineBezierOfApprox;

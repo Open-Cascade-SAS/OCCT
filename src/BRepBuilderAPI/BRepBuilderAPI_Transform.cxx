@@ -17,9 +17,7 @@
 
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepTools_TrsfModification.hxx>
-#include <gp.hxx>
 #include <gp_Trsf.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================

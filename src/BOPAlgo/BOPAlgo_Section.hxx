@@ -21,7 +21,6 @@
 
 #include <BOPAlgo_Builder.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <TopTools_ListOfShape.hxx>
 class BOPAlgo_PaveFiller;
 
 

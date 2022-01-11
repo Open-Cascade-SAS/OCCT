@@ -17,7 +17,6 @@
 
 #include <BRepBuilderAPI_MakeShell.hxx>
 #include <Geom_Surface.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS_Shell.hxx>
 
 //=======================================================================

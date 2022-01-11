@@ -19,11 +19,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 

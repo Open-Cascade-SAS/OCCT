@@ -26,12 +26,9 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 
-#include <BOPDS_ShapeInfo.hxx>
-#include <BOPDS_VectorOfListOfPaveBlock.hxx>
 #include <BOPDS_MapOfCommonBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_CommonBlock.hxx>

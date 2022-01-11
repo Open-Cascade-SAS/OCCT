@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <BRep_CurveRepresentation.hxx>
-#include <Standard_Boolean.hxx>
 class Poly_Polygon3D;
 class TopLoc_Location;
 

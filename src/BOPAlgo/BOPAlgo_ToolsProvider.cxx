@@ -15,7 +15,6 @@
 
 #include <BOPAlgo_ToolsProvider.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
-#include <BOPAlgo_Alerts.hxx>
 
 //=======================================================================
 //function : Constructor

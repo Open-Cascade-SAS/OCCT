@@ -21,13 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <BRepApprox_TheMultiLineOfApprox.hxx>
-#include <AppParCurves_MultiBSpCurve.hxx>
 #include <Standard_Integer.hxx>
-#include <math_Vector.hxx>
 #include <Standard_Real.hxx>
-#include <math_Matrix.hxx>
 #include <BRepApprox_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfApprox.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>

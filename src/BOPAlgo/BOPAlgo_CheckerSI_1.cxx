@@ -33,7 +33,6 @@
 #include <NCollection_Vector.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
 
 /////////////////////////////////////////////////////////////////////////

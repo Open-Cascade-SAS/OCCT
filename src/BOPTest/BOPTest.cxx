@@ -25,13 +25,8 @@
 #include <HLRTest.hxx>
 #include <NCollection_Map.hxx>
 #include <MeshTest.hxx>
-#include <Message.hxx>
-#include <Message_Alert.hxx>
 #include <Message_Msg.hxx>
-#include <Message_Messenger.hxx>
-#include <Message_Report.hxx>
 #include <SWDRAW.hxx>
-#include <TopoDS_AlertWithShape.hxx>
 
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPTest_Objects.hxx>

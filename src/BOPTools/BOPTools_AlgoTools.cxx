@@ -25,7 +25,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib.hxx>
 #include <Geom2d_Curve.hxx>
@@ -44,7 +43,6 @@
 #include <gp_Torus.hxx>
 #include <gp_XYZ.hxx>
 #include <IntTools_Context.hxx>
-#include <IntTools_Curve.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <IntTools_Tools.hxx>
@@ -66,7 +64,6 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
 #include <Message_Report.hxx>
-#include <NCollection_Array1.hxx>
 #include <algorithm>
 
 //

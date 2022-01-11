@@ -17,9 +17,6 @@
 
 #include <Approx_SweepFunction.hxx>
 #include <BRepBlend_AppSurface.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec.hxx>

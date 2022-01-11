@@ -22,7 +22,6 @@
 #include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 

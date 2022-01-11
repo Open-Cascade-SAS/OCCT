@@ -22,13 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Approx_ParametrizationType.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_Array1OfReal.hxx>

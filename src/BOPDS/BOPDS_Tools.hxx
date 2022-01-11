@@ -17,12 +17,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Boolean.hxx>
-
 
 
 //! The class BOPDS_Tools contains

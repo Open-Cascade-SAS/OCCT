@@ -18,11 +18,9 @@
 #define _BRep_CurveRepresentation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom_Surface;
 class Poly_Triangulation;

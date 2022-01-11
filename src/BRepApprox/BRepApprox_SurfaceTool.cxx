@@ -16,14 +16,8 @@
 
 #include <BRepApprox_SurfaceTool.hxx>
 
-#include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Standard_Integer  BRepApprox_SurfaceTool::NbSamplesU (const BRepAdaptor_Surface&) 
 {

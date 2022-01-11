@@ -15,12 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Blend_AppFunction.hxx>
-#include <Blend_Point.hxx>
 #include <Blend_SurfRstFunction.hxx>
 #include <BRepBlend_AppFuncRst.hxx>
 #include <BRepBlend_Line.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_AppFuncRst,BRepBlend_AppFuncRoot)

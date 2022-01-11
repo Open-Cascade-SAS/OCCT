@@ -19,7 +19,6 @@
 #include <Draw.hxx>
 #include <BOPAlgo_GlueEnum.hxx>
 
-#include <stdio.h>
 #include <string.h>
 static Standard_Integer boptions (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer brunparallel (Draw_Interpretor&, Standard_Integer, const char**); 

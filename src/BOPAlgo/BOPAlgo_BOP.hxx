@@ -19,14 +19,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPAlgo_Operation.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BOPAlgo_ToolsProvider.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class BOPAlgo_PaveFiller;
 
 //!

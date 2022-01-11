@@ -39,7 +39,6 @@
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>

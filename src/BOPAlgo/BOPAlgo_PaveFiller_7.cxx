@@ -19,7 +19,6 @@
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPAlgo_Tools.hxx>
-#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_FaceInfo.hxx>
@@ -28,7 +27,6 @@
 #include <BOPDS_ListOfPaveBlock.hxx>
 #include <BOPDS_MapOfCommonBlock.hxx>
 #include <BOPDS_MapOfPair.hxx>
-#include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
@@ -52,11 +50,9 @@
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <IntTools_Context.hxx>
-#include <IntTools_Tools.hxx>
 #include <NCollection_Vector.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>

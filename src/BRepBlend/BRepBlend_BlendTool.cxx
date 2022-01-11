@@ -18,10 +18,8 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_HVertex.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBlend_HCurve2dTool.hxx>
-#include <BRepClass_FaceClassifier.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 #include <Geom2d_Line.hxx>
@@ -31,8 +29,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : Project 

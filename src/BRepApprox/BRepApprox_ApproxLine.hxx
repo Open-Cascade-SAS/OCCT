@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;

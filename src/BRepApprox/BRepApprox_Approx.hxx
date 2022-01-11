@@ -25,7 +25,6 @@
 #include <BRepApprox_TheComputeLineOfApprox.hxx>
 #include <BRepApprox_TheComputeLineBezierOfApprox.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Approx_ParametrizationType.hxx>
