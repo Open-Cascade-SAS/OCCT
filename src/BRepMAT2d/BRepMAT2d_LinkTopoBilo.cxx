@@ -16,22 +16,17 @@
 
 
 #include <BRepMAT2d_BisectingLocus.hxx>
-#include <BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx>
 #include <BRepMAT2d_Explorer.hxx>
 #include <BRepMAT2d_LinkTopoBilo.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom2d_Geometry.hxx>
-#include <gp_Pnt2d.hxx>
 #include <MAT_BasicElt.hxx>
 #include <MAT_Graph.hxx>
 #include <MAT_SequenceOfBasicElt.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>

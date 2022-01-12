@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <CDM_ListIteratorOfListOfReferences.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class CDM_Document;
 

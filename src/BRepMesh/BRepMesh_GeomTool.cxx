@@ -25,7 +25,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <Geom2d_Curve.hxx>
 #include <BRep_Tool.hxx>
 
 namespace

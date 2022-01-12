@@ -20,7 +20,6 @@
 #include <BRepClass3d_Intersector3d.hxx>
 #include <BRepClass3d_SClassifier.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
-#include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Lin.hxx>
@@ -28,10 +27,7 @@
 #include <gp_Vec.hxx>
 #include <IntCurvesFace_Intersector.hxx>
 #include <math_BullardGenerator.hxx>
-#include <Standard_DomainError.hxx>
 #include <TopoDS.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 #include <TopExp.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Extrema_ExtPS.hxx>

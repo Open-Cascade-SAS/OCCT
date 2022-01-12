@@ -18,7 +18,6 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
-#include <gp_Pnt.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <TColStd_ListOfReal.hxx>

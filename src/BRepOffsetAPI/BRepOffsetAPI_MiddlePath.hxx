@@ -18,11 +18,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepOffsetAPI_SequenceOfSequenceOfShape.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>

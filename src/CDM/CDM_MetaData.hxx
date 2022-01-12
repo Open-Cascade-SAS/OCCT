@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <CDM_DocumentPointer.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>

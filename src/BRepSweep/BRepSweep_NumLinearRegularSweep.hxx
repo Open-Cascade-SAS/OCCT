@@ -19,17 +19,14 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepSweep_Builder.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Sweep_NumShape.hxx>
 #include <BRepSweep_Tool.hxx>
 #include <Sweep_NumShapeTool.hxx>
 #include <TopTools_Array2OfShape.hxx>
 #include <TColStd_Array2OfBoolean.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! This  a generic  class  is  used   to build Sweept

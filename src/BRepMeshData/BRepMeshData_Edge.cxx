@@ -16,8 +16,6 @@
 #include <BRepMeshData_Edge.hxx>
 #include <BRepMeshData_PCurve.hxx>
 #include <BRepMeshData_Curve.hxx>
-#include <BRepMesh_OrientedEdge.hxx>
-#include <BRepMesh_Vertex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Edge, IMeshData_Edge)
 

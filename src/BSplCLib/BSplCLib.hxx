@@ -17,24 +17,22 @@
 #ifndef _BSplCLib_HeaderFile
 #define _BSplCLib_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <TColStd_Array1OfReal.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <Standard_Boolean.hxx>
+#include <BSplCLib_EvaluatorFunction.hxx>
 #include <BSplCLib_KnotDistribution.hxx>
 #include <BSplCLib_MultDistribution.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <BSplCLib_EvaluatorFunction.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
 class gp_Pnt;
 class gp_Pnt2d;
 class gp_Vec;

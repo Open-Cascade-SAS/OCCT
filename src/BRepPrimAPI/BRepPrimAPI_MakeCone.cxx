@@ -15,13 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepBuilderAPI.hxx>
-#include <BRepPrim_Cone.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrimAPI_MakeCone

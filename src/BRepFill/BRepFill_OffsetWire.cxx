@@ -18,9 +18,7 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor2d_OffsetCurve.hxx>
-#include <Bisector_Bisec.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
@@ -28,14 +26,12 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepFill_DataMapOfNodeShape.hxx>
-#include <BRepFill_DataMapOfOrientedShapeListOfShape.hxx>
 #include <BRepFill_DataMapOfShapeSequenceOfPnt.hxx>
 #include <BRepFill_DataMapOfShapeSequenceOfReal.hxx>
 #include <BRepFill_OffsetWire.hxx>
 #include <BRepFill_TrimEdgeTool.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <BRepMAT2d_BisectingLocus.hxx>
@@ -44,14 +40,12 @@
 #include <BRepTools.hxx>
 #include <BRepTools_Substitution.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
@@ -59,9 +53,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAPI.hxx>
 #include <gp.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
@@ -72,14 +64,9 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -88,15 +75,11 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 

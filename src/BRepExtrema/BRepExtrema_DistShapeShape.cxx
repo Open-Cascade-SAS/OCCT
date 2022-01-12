@@ -25,7 +25,6 @@
 #include <TopExp.hxx>
 #include <BRepExtrema_DistanceSS.hxx>
 #include <TopoDS.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

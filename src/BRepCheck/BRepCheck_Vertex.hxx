@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <BRepCheck_Result.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Vertex;
 class TopoDS_Shape;
 

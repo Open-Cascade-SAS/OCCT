@@ -23,7 +23,6 @@
 
 #include <BRepPrim_Wedge.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Real.hxx>
 class gp_Ax2;
 class TopoDS_Shell;
 class TopoDS_Solid;

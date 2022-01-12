@@ -26,7 +26,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TColStd_SequenceOfBoolean.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
 class TopoDS_Face;
 class TopoDS_Wire;

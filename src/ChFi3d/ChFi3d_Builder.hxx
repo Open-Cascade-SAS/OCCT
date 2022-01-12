@@ -21,7 +21,6 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
 #include <ChFiDS_Map.hxx>
 #include <ChFiDS_Regularities.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>

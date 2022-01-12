@@ -15,7 +15,6 @@
 
 #include <BRepMesh_Deflection.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepMesh_ShapeTool.hxx>
 #include <IMeshData_Edge.hxx>

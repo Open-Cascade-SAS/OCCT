@@ -27,7 +27,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
 #include <math.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>

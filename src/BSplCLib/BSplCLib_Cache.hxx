@@ -14,23 +14,8 @@
 #ifndef _BSplCLib_Cache_Headerfile
 #define _BSplCLib_Cache_Headerfile
 
-#include <Standard.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
-
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Vec.hxx>
-
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
 #include <BSplCLib_CacheParams.hxx>
+#include <TColStd_HArray2OfReal.hxx>
 
 //! \brief A cache class for Bezier and B-spline curves.
 //!

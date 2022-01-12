@@ -17,7 +17,6 @@
 #ifndef ChFiDS_SecHArray1_HeaderFile
 #define ChFiDS_SecHArray1_HeaderFile
 
-#include <ChFiDS_CircSection.hxx>
 #include <ChFiDS_SecArray1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

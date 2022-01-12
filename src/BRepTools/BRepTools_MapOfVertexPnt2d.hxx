@@ -17,7 +17,6 @@
 #ifndef BRepTools_MapOfVertexPnt2d_HeaderFile
 #define BRepTools_MapOfVertexPnt2d_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

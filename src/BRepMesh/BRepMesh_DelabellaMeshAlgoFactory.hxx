@@ -17,8 +17,6 @@
 #define _BRepMesh_DelabellaMeshAlgoFactory_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <IMeshTools_MeshAlgoFactory.hxx>
 
 //! Implementation of IMeshTools_MeshAlgoFactory providing Delabella-based

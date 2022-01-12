@@ -17,7 +17,6 @@
 #ifndef _ChFi3d_FilBuilder_HeaderFile
 #define _ChFi3d_FilBuilder_HeaderFile
 
-#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BlendFunc_SectionShape.hxx>
 #include <ChFi3d_Builder.hxx>

@@ -26,8 +26,6 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <Standard_Boolean.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>

@@ -25,7 +25,6 @@
 
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 class BRepAlgo_AsDes;
 class BRepAlgo_Image;
 class BRepOffset_Analyse;

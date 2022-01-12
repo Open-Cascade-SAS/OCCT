@@ -20,7 +20,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
-#include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGES_BRShell.hxx>
 #include <BRepToIGES_BRWire.hxx>
 #include <BRepTools.hxx>
@@ -29,19 +28,12 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_ToroidalSurface.hxx>
 #include <GeomToIGES_GeomSurface.hxx>
-#include <gp.hxx>
 #include <gp_Trsf.hxx>
 #include <IGESBasic_Group.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
-#include <IGESGeom_HArray1OfCurveOnSurface.hxx>
-#include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_ProgressScope.hxx>
@@ -51,7 +43,6 @@
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -59,7 +50,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <Transfer_FinderProcess.hxx>

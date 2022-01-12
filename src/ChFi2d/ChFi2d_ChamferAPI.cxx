@@ -13,10 +13,8 @@
 
 #include <ChFi2d_ChamferAPI.hxx>
 
-#include <Precision.hxx>
 #include <gp_Pnt.hxx>
 #include <GC_MakeLine.hxx>
-#include <Geom_Line.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <TopoDS_Iterator.hxx>

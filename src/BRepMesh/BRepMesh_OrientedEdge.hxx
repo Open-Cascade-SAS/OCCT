@@ -16,8 +16,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
-#include <BRepMesh_DegreeOfFreedom.hxx>
 
 //! Light weighted structure representing simple link.
 class BRepMesh_OrientedEdge

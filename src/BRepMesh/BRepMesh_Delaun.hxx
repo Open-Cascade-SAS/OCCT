@@ -18,17 +18,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <BRepMesh_CircleTool.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_Edge.hxx>
 #include <IMeshData_Types.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_GeomTool.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Bnd_B2d;

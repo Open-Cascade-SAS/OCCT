@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_FilSpine.hxx>
@@ -35,53 +34,16 @@
 #include <ChFiKPart_ComputeData_FilPlnPln.hxx>
 #include <ChFiKPart_ComputeData_Rotule.hxx>
 #include <ChFiKPart_ComputeData_Sphere.hxx>
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_ToroidalSurface.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <gp.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cylinder.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_Position.hxx>
-#include <IntRes2d_Transition.hxx>
-#include <IntRes2d_TypeTrans.hxx>
-#include <IntSurf_Transition.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TopExp.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
 
 //#include <BRepAdaptor_Curve2d.hxx>
 //#include <BRepAdaptor_Curve2d.hxx>

@@ -21,7 +21,6 @@
 #include <Standard_Real.hxx>
 #include <BRepMesh_CircleInspector.hxx>
 #include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <IMeshData_Types.hxx>

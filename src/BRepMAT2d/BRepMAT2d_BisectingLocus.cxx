@@ -27,16 +27,12 @@
 #include <MAT2d_Mat2d.hxx>
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
 #include <MAT2d_Tool2d.hxx>
-#include <MAT_Arc.hxx>
 #include <MAT_BasicElt.hxx>
-#include <MAT_Bisector.hxx>
-#include <MAT_DataMapIteratorOfDataMapOfIntegerBasicElt.hxx>
 #include <MAT_DataMapOfIntegerBasicElt.hxx>
 #include <MAT_Graph.hxx>
 #include <MAT_ListOfBisector.hxx>
 #include <MAT_Node.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColGeom2d_SequenceOfGeometry.hxx>
 #include <Geom2d_Curve.hxx>
 

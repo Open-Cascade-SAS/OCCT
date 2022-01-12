@@ -25,46 +25,25 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <Standard_ErrorHandler.hxx>
 #include <Precision.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Ax1.hxx>
 
 #include <ElCLib.hxx>
 
 #include <TColgp_SequenceOfPnt.hxx>
 
-#include <GeomAbs_JoinType.hxx>
-#include <Geom_Line.hxx>
-
 #include <IntCurvesFace_Intersector.hxx>
 
-#include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_CompSolid.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Iterator.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-
-#include <TopExp_Explorer.hxx>
-
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_SequenceOfLin.hxx>

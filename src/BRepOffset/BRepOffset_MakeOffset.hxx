@@ -21,13 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 #include <BRepOffset_Mode.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <TopTools_DataMapOfShapeReal.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <BRepOffset_Analyse.hxx>
 #include <BRepAlgo_Image.hxx>

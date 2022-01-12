@@ -20,12 +20,10 @@
 #include <AppDef_MultiPointConstraint.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <BRepFill_ApproxSeewing.hxx>
-#include <BSplCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
-#include <PLib.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

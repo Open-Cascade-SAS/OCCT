@@ -18,12 +18,9 @@
 #define _ChFiDS_ChamfSpine_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ChFiDS_ChamfMethod.hxx>
-#include <ChFiDS_ChamfMode.hxx>
 #include <ChFiDS_Spine.hxx>
 
 

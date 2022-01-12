@@ -19,7 +19,6 @@
 #include <BRepOffsetAPI_FindContigousEdges.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================

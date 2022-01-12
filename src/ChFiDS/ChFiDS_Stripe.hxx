@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <ChFiDS_HData.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class ChFiDS_Spine;
 class Geom2d_Curve;
 

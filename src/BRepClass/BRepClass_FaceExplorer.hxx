@@ -19,15 +19,12 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Pnt2d;
 class gp_Lin2d;
 class BRepClass_Edge;

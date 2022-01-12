@@ -16,7 +16,6 @@
 
 
 #include <Adaptor3d_Surface.hxx>
-#include <ChFiDS_Spine.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <ChFiKPart_ComputeData.hxx>
 #include <ChFiKPart_ComputeData_Fcts.hxx>
@@ -25,7 +24,6 @@
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <gp.hxx>
@@ -35,7 +33,6 @@
 #include <gp_Cone.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>

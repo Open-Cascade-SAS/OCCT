@@ -23,11 +23,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <Standard_CString.hxx>
 #include <Message_ProgressRange.hxx>
 #include <TopTools_ListOfShape.hxx>
 

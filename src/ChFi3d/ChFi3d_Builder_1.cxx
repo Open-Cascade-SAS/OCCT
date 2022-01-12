@@ -16,34 +16,20 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
-#include <Blend_Function.hxx>
 #include <Blend_RstRstFunction.hxx>
-#include <Blend_SurfCurvFuncInv.hxx>
-#include <Blend_SurfPointFuncInv.hxx>
-#include <Blend_SurfRstFunction.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepLProp_SLProps.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
-#include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_ListIteratorOfRegularities.hxx>
-#include <ChFiDS_Regul.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_State.hxx>
 #include <ChFiDS_Stripe.hxx>
@@ -59,12 +45,10 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -76,8 +60,6 @@
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRepLib_MakeEdge.hxx>
 
 #ifdef OCCT_DEBUG

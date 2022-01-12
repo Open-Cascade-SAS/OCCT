@@ -28,11 +28,9 @@
 #include <Geom2d_Line.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_Ax1.hxx>
 
 #ifdef DRAW
 #include <DBRep.hxx>

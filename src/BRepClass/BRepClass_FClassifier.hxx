@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepClass_FClass2dOfFClassifier.hxx>
 #include <BRepClass_Edge.hxx>
-#include <Standard_Real.hxx>
 #include <IntRes2d_Position.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 class Standard_DomainError;
 class BRepClass_FaceExplorer;

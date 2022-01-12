@@ -16,21 +16,14 @@
 
 
 #include <Bnd_Box.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepFeat.hxx>
 #include <BRepFeat_MakeRevol.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepSweep_Revol.hxx>
 #include <BRepTools_Modifier.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <ElCLib.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -38,32 +31,19 @@
 #include <gp_Ax1.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
-#include <LocOpe.hxx>
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_FindEdges.hxx>
-#include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <LocOpe_Revol.hxx>
-#include <LocOpe_SequenceOfCirc.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();

@@ -24,7 +24,6 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColGeom2d_Array1OfCurve.hxx>

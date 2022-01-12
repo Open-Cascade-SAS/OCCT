@@ -17,31 +17,16 @@
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
-#include <DrawTrSurf.hxx>
-#include <Geom_Plane.hxx>
 #include <Draw_Appli.hxx>
-#include <BRep_Builder.hxx>
 
-#include <BRepFilletAPI_MakeFillet.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
 #include <BRepAlgo_FaceRestrictor.hxx>
-#include <BRepExtrema_ExtPF.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <gp.hxx>
-#include <gp_Pln.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopExp.hxx>
 
 static Standard_Integer halfspace(Draw_Interpretor& di,
-				  Standard_Integer n, const char** a)
+                                  Standard_Integer n, const char** a)
 {
   if (n < 6) return 1;
 

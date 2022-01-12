@@ -16,7 +16,6 @@
 
 
 #include <BRepSweep_Tool.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepClass_FClassifier.hxx>
-#include <Standard_Real.hxx>
 class BRepClass_FaceExplorer;
 class gp_Pnt2d;
 class TopoDS_Face;

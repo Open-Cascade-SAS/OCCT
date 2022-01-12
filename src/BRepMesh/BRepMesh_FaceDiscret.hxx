@@ -18,9 +18,7 @@
 
 #include <IMeshTools_ModelAlgo.hxx>
 #include <IMeshTools_Parameters.hxx>
-#include <IMeshData_Types.hxx>
 #include <IMeshTools_MeshAlgoFactory.hxx>
-#include <NCollection_Array1.hxx>
 
 //! Class implements functionality starting triangulation of model's faces.
 //! Each face is processed separately and can be executed in parallel mode.

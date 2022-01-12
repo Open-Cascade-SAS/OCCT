@@ -16,7 +16,6 @@
 
 #include <BRepMesh_Delaun.hxx>
 
-#include <gp.hxx>
 #include <gp_XY.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>

@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Face.hxx>
 class gp_Lin;

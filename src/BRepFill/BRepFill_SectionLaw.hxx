@@ -22,12 +22,10 @@
 
 #include <GeomFill_HArray1OfSectionLaw.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
 class GeomFill_SectionLaw;
 class TopoDS_Vertex;
 class TopoDS_Shape;

@@ -29,7 +29,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <ChFiDS_SecHArray1.hxx>
 #include <ChFiDS_ErrorStatus.hxx>

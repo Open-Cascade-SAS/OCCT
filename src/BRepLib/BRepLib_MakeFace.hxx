@@ -23,8 +23,6 @@
 
 #include <BRepLib_FaceError.hxx>
 #include <BRepLib_MakeShape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Face;
 class gp_Pln;
 class gp_Cylinder;

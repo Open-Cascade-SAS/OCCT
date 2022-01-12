@@ -17,13 +17,8 @@
 #include <BRepTest.hxx>
 #include <GeometryTest.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeEdge2d.hxx>
@@ -56,7 +51,6 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
-#include <DrawTrSurf_BSplineCurve2d.hxx>
 #include <DrawTrSurf_Point.hxx>
 
 #include <gp.hxx>

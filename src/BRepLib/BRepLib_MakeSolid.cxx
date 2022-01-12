@@ -17,7 +17,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepLib_MakeSolid.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_CompSolid.hxx>
@@ -25,7 +24,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================

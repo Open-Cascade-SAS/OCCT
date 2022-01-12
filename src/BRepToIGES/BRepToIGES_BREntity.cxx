@@ -22,14 +22,11 @@
 #include <BRepToIGES_BRShell.hxx>
 #include <BRepToIGES_BRSolid.hxx>
 #include <BRepToIGES_BRWire.hxx>
-#include <Geom_Geometry.hxx>
-#include <gp_Trsf.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Standard_Transient.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
@@ -43,7 +40,6 @@
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
-#include <TransferBRep_OrientedShapeMapper.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 
 //#include <ShapeCustom.hxx>

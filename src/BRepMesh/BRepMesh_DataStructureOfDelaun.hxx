@@ -15,10 +15,6 @@
 #define _BRepMesh_DataStructureOfDelaun_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <BRepMesh_Triangle.hxx>
-#include <BRepMesh_PairOfIndex.hxx>
-#include <Standard_OStream.hxx>
-#include <IMeshData_Types.hxx>
 #include <BRepMesh_VertexTool.hxx>
 
 class BRepMesh_Edge;

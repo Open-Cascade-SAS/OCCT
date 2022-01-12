@@ -18,9 +18,7 @@
 
 #include <IMeshData_Types.hxx>
 #include <BRepMesh_Circle.hxx>
-#include <Precision.hxx>
 #include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <NCollection_CellFilter.hxx>
 
 //! Auxiliary class to find circles shot by the given point.

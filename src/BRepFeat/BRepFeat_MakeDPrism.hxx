@@ -21,15 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Face.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_Real.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Curve;
 class TopoDS_Shape;
 class TopoDS_Edge;

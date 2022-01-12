@@ -16,10 +16,6 @@
 #ifndef _BRepMesh_DefaultRangeSplitter_HeaderFile
 #define _BRepMesh_DefaultRangeSplitter_HeaderFile
 
-#include <Standard_Type.hxx>
-#include <gp_Pnt2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <IMeshData_Types.hxx>
 #include <IMeshData_Face.hxx>
 
 struct IMeshTools_Parameters;

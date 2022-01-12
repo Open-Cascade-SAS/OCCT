@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepFill_MultiLine.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
 

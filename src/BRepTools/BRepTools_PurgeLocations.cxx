@@ -15,7 +15,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <NCollection_Vector.hxx>
 #include <BRepTools.hxx>
-#include <StdFail_NotDone.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <BRepTools_Modifier.hxx>
 #include <TopLoc_Datum3D.hxx>

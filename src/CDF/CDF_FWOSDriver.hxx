@@ -18,12 +18,10 @@
 #define _CDF_FWOSDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <CDF_MetaDataDriver.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
 
-#include <Standard_Boolean.hxx>
 class TCollection_ExtendedString;
 class CDM_MetaData;
 class CDM_Document;

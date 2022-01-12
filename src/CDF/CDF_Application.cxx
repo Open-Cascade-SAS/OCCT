@@ -22,7 +22,6 @@
 #include <CDM_CanCloseStatus.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
-#include <PCDM_Reader.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>

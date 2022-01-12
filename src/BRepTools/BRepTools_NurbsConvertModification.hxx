@@ -18,13 +18,11 @@
 #define _BRepTools_NurbsConvertModification_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopTools_ListOfShape.hxx>
 #include <TColStd_ListOfTransient.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <BRepTools_Modification.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 class TopoDS_Face;

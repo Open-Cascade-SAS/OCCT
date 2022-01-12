@@ -20,8 +20,6 @@
 #include <CDF_StoreSetNameStatus.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
-#include <PCDM.hxx>
-#include <PCDM_StorageDriver.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <Standard_ProgramError.hxx>
 

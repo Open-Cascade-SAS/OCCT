@@ -56,7 +56,6 @@
 #include <BSplCLib.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
@@ -76,7 +75,6 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -91,7 +89,6 @@
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeReal.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
 //=======================================================================

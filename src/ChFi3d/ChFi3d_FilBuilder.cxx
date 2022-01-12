@@ -17,9 +17,6 @@
 // Modified:    MPS :  (10-04-97) portage WNT pour GetFilletShape
 
 #include <Adaptor3d_TopolTool.hxx>
-#include <Blend_Point.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
 #include <BRepBlend_CurvPointRadInv.hxx>
@@ -42,7 +39,6 @@
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
 #include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_ListIteratorOfRegularities.hxx>
 #include <ChFiDS_ListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
@@ -52,7 +48,6 @@
 #include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
 #include <Geom_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <gp_XY.hxx>
 #include <Law_Composite.hxx>
 #include <Law_Function.hxx>
@@ -68,7 +63,6 @@
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <OSD_Chronometer.hxx>

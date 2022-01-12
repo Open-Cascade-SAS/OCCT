@@ -18,7 +18,6 @@
 
 #include <IMeshTools_ModelAlgo.hxx>
 #include <IMeshTools_Parameters.hxx>
-#include <IMeshData_Types.hxx>
 #include <IMeshData_Model.hxx>
 #include <TopoDS_Vertex.hxx>
 

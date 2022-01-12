@@ -22,7 +22,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopExp_Explorer.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
 

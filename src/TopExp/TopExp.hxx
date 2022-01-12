@@ -25,9 +25,10 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <Standard_Boolean.hxx>
+
 class TopoDS_Shape;
-class TopoDS_Vertex;
 class TopoDS_Edge;
 class TopoDS_Wire;
 

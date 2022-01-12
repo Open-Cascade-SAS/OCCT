@@ -24,12 +24,10 @@
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
 //===========================================================================

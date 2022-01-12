@@ -16,8 +16,6 @@
 
 
 #include <BRepSweep_Iterator.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
 
 //=======================================================================

@@ -23,10 +23,8 @@
 
 #include <BRepAdaptor_Surface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <TColStd_HArray1OfReal.hxx>

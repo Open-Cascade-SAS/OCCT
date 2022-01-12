@@ -24,8 +24,6 @@
 #include <BRepFill_Pipe.hxx>
 #include <BRepPrimAPI_MakeSweep.hxx>
 #include <GeomFill_Trihedron.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
 

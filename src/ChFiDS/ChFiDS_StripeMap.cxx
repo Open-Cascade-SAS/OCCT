@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_StripeMap.hxx>
 #include <TopoDS_Vertex.hxx>
 

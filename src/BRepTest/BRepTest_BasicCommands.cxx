@@ -33,9 +33,9 @@
 #include <gp_Ax2.hxx>
 #include <gp_Mat.hxx>
 #include <gp_GTrsf.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <BRepOffsetAPI_NormalProjection.hxx>
 #include <BRepLib.hxx>
-#include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
@@ -45,13 +45,11 @@
 #include <BRepTools_WireExplorer.hxx>
 
 #include <GCPnts_QuasiUniformAbscissa.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <DrawTrSurf.hxx>
 #include <Geom_Plane.hxx>
 
-#include <OSD_Timer.hxx>
 #include <Draw_Segment3D.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_MarkerShape.hxx>
@@ -59,8 +57,6 @@
 #include <BRepTools_PurgeLocations.hxx>
 #include <BRepTools.hxx>
 #include <Standard_Dump.hxx>
-
-#include <stdio.h>
 
 Standard_IMPORT Draw_Viewer dout;
 
@@ -850,7 +846,6 @@ static Standard_Integer IsBoxesInterfered(Draw_Interpretor& theDI,
 //function : gbounding
 //purpose  : 
 //=======================================================================
-#include <GeomAdaptor_Surface.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_Add2dCurve.hxx>
@@ -989,7 +984,6 @@ static Standard_Integer precision(Draw_Interpretor& di,Standard_Integer n,const 
 //purpose  : 
 //=======================================================================
 #include <IntCurvesFace_ShapeIntersector.hxx>
-#include <gp_Lin.hxx>
 
 static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer narg , const char** a) 
 {

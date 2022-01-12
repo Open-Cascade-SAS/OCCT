@@ -16,7 +16,6 @@
 
 #include <BRepLProp.hxx>
 
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepLProp_CLProps.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>

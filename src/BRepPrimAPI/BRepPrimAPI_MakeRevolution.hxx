@@ -23,7 +23,6 @@
 
 #include <BRepPrim_Revolution.hxx>
 #include <BRepPrimAPI_MakeOneAxis.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Address.hxx>
 class Geom_Curve;
 class gp_Ax2;

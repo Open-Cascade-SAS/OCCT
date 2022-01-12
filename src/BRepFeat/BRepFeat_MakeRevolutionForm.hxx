@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Ax1.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepFeat_RibSlot.hxx>

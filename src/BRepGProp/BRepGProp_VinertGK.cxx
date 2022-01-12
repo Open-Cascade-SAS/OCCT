@@ -15,7 +15,6 @@
 
 
 #include <BRepGProp_Domain.hxx>
-#include <BRepGProp_Face.hxx>
 #include <BRepGProp_TFunction.hxx>
 #include <BRepGProp_VinertGK.hxx>
 #include <gp_Pln.hxx>

@@ -15,7 +15,6 @@
 #define _BRepTools_PurgeLocations_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <TopTools_LocationSet.hxx>

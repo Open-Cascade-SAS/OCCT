@@ -25,7 +25,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 

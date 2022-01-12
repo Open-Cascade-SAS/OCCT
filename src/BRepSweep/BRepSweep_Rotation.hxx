@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_Ax1.hxx>
 #include <BRepSweep_Trsf.hxx>
 #include <Standard_Boolean.hxx>

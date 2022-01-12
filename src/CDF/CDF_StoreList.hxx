@@ -20,13 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <CDM_MapOfDocument.hxx>
 #include <CDM_ListOfDocument.hxx>
 #include <CDM_MapIteratorOfMapOfDocument.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <PCDM_StoreStatus.hxx>
-#include <Message_ProgressIndicator.hxx>
 
 class CDM_Document;
 class CDM_MetaData;

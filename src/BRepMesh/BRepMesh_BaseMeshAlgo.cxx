@@ -14,8 +14,6 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_BaseMeshAlgo.hxx>
-#include <BRepMesh_DataStructureOfDelaun.hxx>
-#include <IMeshData_Face.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_PCurve.hxx>

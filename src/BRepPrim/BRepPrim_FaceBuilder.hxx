@@ -24,7 +24,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class BRep_Builder;
 class Geom_Surface;

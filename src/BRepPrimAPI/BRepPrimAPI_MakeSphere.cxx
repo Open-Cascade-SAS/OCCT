@@ -16,13 +16,11 @@
 
 
 #include <BRepBuilderAPI.hxx>
-#include <BRepPrim_Sphere.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrimAPI_MakeSphere

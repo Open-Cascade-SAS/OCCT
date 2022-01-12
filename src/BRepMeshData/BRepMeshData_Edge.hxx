@@ -17,7 +17,6 @@
 #define _BRepMeshData_Edge_HeaderFile
 
 #include <IMeshData_Edge.hxx>
-#include <IMeshData_Curve.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <IMeshData_Types.hxx>
 

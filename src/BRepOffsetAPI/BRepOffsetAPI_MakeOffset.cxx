@@ -20,8 +20,6 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_FaceRestrictor.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepFill_ListIteratorOfListOfOffsetWire.hxx>
-#include <BRepFill_OffsetWire.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -37,7 +35,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 #include <BRepTools.hxx>

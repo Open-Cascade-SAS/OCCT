@@ -25,7 +25,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_DomainError.hxx>
 #include <TopoDS_Face.hxx>
 
 //=======================================================================

@@ -23,12 +23,9 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Extrema_LocateExtPC.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 
 class gp_Pnt;
 class TopoDS_Edge;

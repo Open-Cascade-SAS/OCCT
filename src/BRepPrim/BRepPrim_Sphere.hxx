@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <BRepPrim_Revolution.hxx>
 class gp_Pnt;
 class gp_Ax2;

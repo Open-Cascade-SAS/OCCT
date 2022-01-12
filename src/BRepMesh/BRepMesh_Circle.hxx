@@ -16,7 +16,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
 #include <gp_XY.hxx>
 
 //! Describes a 2d circle with a size of only 3 Standard_Real 

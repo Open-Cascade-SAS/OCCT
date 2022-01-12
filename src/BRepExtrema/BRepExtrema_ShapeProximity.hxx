@@ -16,10 +16,6 @@
 #ifndef _BRepExtrema_ShapeProximity_HeaderFile
 #define _BRepExtrema_ShapeProximity_HeaderFile
 
-#include <NCollection_DataMap.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
-
-#include <BRepExtrema_TriangleSet.hxx>
 #include <BRepExtrema_OverlapTool.hxx>
 
 //! Tool class for shape proximity detection.

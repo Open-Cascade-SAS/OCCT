@@ -23,7 +23,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <Geom_Curve.hxx>
 
 //=======================================================================
 //function : BRepLib_CheckCurveOnSurface

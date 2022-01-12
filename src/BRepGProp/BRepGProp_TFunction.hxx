@@ -22,12 +22,9 @@
 
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_UFunction.hxx>
-#include <Standard_Real.hxx>
 #include <GProp_ValueType.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Function.hxx>
-#include <Standard_Address.hxx>
 class gp_Pnt;
 
 

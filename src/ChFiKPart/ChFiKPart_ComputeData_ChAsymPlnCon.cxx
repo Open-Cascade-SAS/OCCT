@@ -16,7 +16,6 @@
 
 
 #include <Adaptor3d_Surface.hxx>
-#include <ChFiDS_Spine.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <ChFiKPart_ComputeData.hxx>
 #include <ChFiKPart_ComputeData_Fcts.hxx>

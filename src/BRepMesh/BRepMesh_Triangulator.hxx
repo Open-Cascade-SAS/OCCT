@@ -16,10 +16,7 @@
 #ifndef _BRepMesh_Triangulator_HeaderFile
 #define _BRepMesh_Triangulator_HeaderFile
 
-#include <gp_XYZ.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
-#include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IMeshData_Types.hxx>
 #include <NCollection_Vector.hxx>

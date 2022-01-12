@@ -30,15 +30,11 @@
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepFeat_Builder.hxx>
-#include <Geom_Curve.hxx>
-#include <IntTools_Tools.hxx>
-#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 
 //=======================================================================

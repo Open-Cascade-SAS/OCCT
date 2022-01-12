@@ -23,7 +23,6 @@
 #include <Geom_Plane.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Ax2.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : Project

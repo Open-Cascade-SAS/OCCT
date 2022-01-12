@@ -22,8 +22,6 @@
 
 #include <BRepGProp_Face.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <GProp_ValueType.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Function.hxx>

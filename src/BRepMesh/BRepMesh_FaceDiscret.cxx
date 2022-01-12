@@ -15,7 +15,6 @@
 
 #include <BRepMesh_FaceDiscret.hxx>
 #include <IMeshData_Model.hxx>
-#include <IMeshData_Face.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshTools_MeshAlgo.hxx>

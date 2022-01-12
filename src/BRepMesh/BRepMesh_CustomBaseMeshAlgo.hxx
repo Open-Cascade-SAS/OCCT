@@ -18,7 +18,6 @@
 
 #include <BRepMesh_ConstrainedBaseMeshAlgo.hxx>
 #include <NCollection_Shared.hxx>
-#include <IMeshTools_Parameters.hxx>
 
 #include <BRepMesh_Delaun.hxx>
 #include <BRepMesh_MeshTool.hxx>

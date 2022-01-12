@@ -24,15 +24,12 @@
 #include <BRepAlgo_Image.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepOffset_Analyse.hxx>
-#include <BRepOffset_DataMapOfShapeOffset.hxx>
 #include <BRepOffset_Inter3d.hxx>
 #include <BRepOffset_Interval.hxx>
 #include <BRepOffset_ListOfInterval.hxx>
 #include <BRepOffset_Offset.hxx>
 #include <BRepOffset_Tool.hxx>
-#include <Extrema_ExtPC.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -42,8 +39,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 //
 #include <BRepBndLib.hxx>

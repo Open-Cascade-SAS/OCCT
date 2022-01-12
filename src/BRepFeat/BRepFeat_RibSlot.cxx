@@ -15,14 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepFeat.hxx>
@@ -63,10 +58,7 @@
 #include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -74,11 +66,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG

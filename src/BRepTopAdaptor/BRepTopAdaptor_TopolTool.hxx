@@ -22,7 +22,6 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Face.hxx>
-#include <TColStd_ListOfTransient.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <TopAbs_State.hxx>

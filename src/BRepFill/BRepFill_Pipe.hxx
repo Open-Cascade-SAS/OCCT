@@ -24,15 +24,12 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
-#include <TopTools_HArray2OfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomFill_Trihedron.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class BRepFill_LocationLaw;
 class TopoDS_Face;
 class TopoDS_Edge;

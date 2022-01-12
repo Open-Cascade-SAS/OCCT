@@ -17,8 +17,6 @@
 #define _BRepMesh_ConstrainedBaseMeshAlgo_HeaderFile
 
 #include <BRepMesh_BaseMeshAlgo.hxx>
-#include <NCollection_Shared.hxx>
-#include <IMeshTools_Parameters.hxx>
 
 class BRepMesh_Delaun;
 

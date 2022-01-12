@@ -20,7 +20,6 @@
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_ShapeProximity.hxx>
 #include <BRepExtrema_SelfIntersection.hxx>
-#include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Draw_ProgressIndicator.hxx>
@@ -30,7 +29,6 @@
 #include <Message.hxx>
 #include <OSD_Timer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <Precision.hxx>
 
 #include <stdio.h>

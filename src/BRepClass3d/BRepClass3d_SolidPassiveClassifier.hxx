@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Face.hxx>
 #include <gp_Lin.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_State.hxx>
 #include <BRepClass3d_Intersector3d.hxx>
 #include <TopAbs_Orientation.hxx>

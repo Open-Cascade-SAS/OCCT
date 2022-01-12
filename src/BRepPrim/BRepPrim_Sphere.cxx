@@ -24,7 +24,6 @@
 #include <gp_Ax2d.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_DomainError.hxx>
 #include <TopoDS_Face.hxx>
 
 // parameters on the meridian

@@ -25,10 +25,8 @@
 #include <BRepLib_MakeWire.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepTools_ReShape.hxx>
-#include <gce_MakeLin.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <GeomLib.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
@@ -39,10 +37,7 @@
 #include <IntTools_Tools.hxx>
 #include <TColgp_Array1OfDir.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -55,10 +50,8 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_Array1OfListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>

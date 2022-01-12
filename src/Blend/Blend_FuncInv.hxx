@@ -17,6 +17,7 @@
 #ifndef _Blend_FuncInv_HeaderFile
 #define _Blend_FuncInv_HeaderFile
 
+#include <Adaptor2d_Curve2d.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>

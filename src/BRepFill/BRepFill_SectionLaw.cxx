@@ -20,22 +20,10 @@
 #include <BRepFill_SectionLaw.hxx>
 #include <BRepLProp.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomFill_SectionLaw.hxx>
-#include <GeomFill_UniformSection.hxx>
-#include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TopExp.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_SectionLaw,Standard_Transient)

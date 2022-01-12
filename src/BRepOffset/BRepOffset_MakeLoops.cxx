@@ -19,7 +19,6 @@
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRepAlgo_AsDes.hxx>
-#include <BRepAlgo_Image.hxx>
 #include <BRepAlgo_Loop.hxx>
 #include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_MakeLoops.hxx>
@@ -30,7 +29,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #include <stdio.h>

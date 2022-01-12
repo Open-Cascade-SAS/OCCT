@@ -17,7 +17,6 @@
 #ifndef ChFiDS_HData_HeaderFile
 #define ChFiDS_HData_HeaderFile
 
-#include <ChFiDS_SurfData.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

@@ -17,12 +17,9 @@
 
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
-#include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <PCDM_ReferenceIterator.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_NullObject.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Thread.hxx>
 

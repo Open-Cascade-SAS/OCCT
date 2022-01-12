@@ -22,7 +22,6 @@
 #include <BRepOffset_MakeOffset.hxx>
 
 #include <Precision.hxx>
-#include <TopoDS.hxx>
 
 #include <BRepAlgo_AsDes.hxx>
 #include <BRepAlgo_Image.hxx>
@@ -35,18 +34,12 @@
 
 #include <BRepAdaptor_Curve.hxx>
 
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-
-#include <TopTools_DataMapOfShapeInteger.hxx>
-
 #include <BRepOffset_Tool.hxx>
 
 #include <BRepClass3d_SolidClassifier.hxx>
 
 #include <BOPDS_DS.hxx>
 
-#include <BOPAlgo_Builder.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_MakerVolume.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
@@ -61,7 +54,6 @@
 
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_AlgoTools.hxx>
-#include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_Set.hxx>
 
 #include <IntTools_Context.hxx>

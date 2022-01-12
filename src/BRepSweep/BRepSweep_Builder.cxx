@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Builder.hxx>
 #include <BRepSweep_Builder.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

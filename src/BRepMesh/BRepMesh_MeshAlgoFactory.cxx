@@ -14,14 +14,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_MeshAlgoFactory.hxx>
-#include <BRepMesh_DefaultRangeSplitter.hxx>
-#include <BRepMesh_NURBSRangeSplitter.hxx>
 #include <BRepMesh_SphereRangeSplitter.hxx>
 #include <BRepMesh_CylinderRangeSplitter.hxx>
 #include <BRepMesh_ConeRangeSplitter.hxx>
 #include <BRepMesh_TorusRangeSplitter.hxx>
 #include <BRepMesh_DelaunayBaseMeshAlgo.hxx>
-#include <BRepMesh_DelaunayNodeInsertionMeshAlgo.hxx>
 #include <BRepMesh_DelaunayDeflectionControlMeshAlgo.hxx>
 #include <BRepMesh_BoundaryParamsRangeSplitter.hxx>
 

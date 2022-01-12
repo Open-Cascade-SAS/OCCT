@@ -17,7 +17,6 @@
 #define _BRepTest_DrawableHistory_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BRepTools_History.hxx>
 

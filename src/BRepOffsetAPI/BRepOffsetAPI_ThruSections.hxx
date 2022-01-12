@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_SequenceOfShape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeListOfInteger.hxx>

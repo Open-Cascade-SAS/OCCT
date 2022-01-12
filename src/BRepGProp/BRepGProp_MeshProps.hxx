@@ -16,7 +16,6 @@
 
 #include <GProp_GProps.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Poly_Array1OfTriangle.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
 class Poly_Triangulation;

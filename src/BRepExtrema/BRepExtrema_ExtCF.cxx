@@ -18,7 +18,6 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <Geom_Curve.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <BRepAdaptor_Surface.hxx>

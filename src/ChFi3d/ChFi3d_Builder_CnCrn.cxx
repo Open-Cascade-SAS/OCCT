@@ -36,34 +36,20 @@
 // Traitement des coins  		 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_TopolTool.hxx>
 #include <AppBlend_Approx.hxx>
-#include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
-#include <Blend_Function.hxx>
-#include <Blend_RstRstFunction.hxx>
-#include <Blend_SurfCurvFuncInv.hxx>
-#include <Blend_SurfPointFuncInv.hxx>
-#include <Blend_SurfRstFunction.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepTools.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Regul.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
@@ -84,15 +70,12 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <GeomLib.hxx>
 #include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
-#include <GeomPlate_HArray1OfHCurve.hxx>
 #include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
 #include <GeomPlate_Surface.hxx>
@@ -103,7 +86,6 @@
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColGeom2d_Array1OfCurve.hxx>
 #include <TColGeom2d_HArray1OfCurve.hxx>
@@ -111,7 +93,6 @@
 #include <TColGeom_Array1OfCurve.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
@@ -120,7 +101,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfInteger.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>

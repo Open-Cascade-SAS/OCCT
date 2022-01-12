@@ -14,10 +14,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_ModelPostProcessor.hxx>
+
 #include <BRepMesh_ShapeTool.hxx>
 #include <IMeshData_Model.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_PCurve.hxx>
+#include <IMeshTools_Parameters.hxx>
 #include <OSD_Parallel.hxx>
 #include <BRepLib.hxx>
 #include <Poly_TriangulationParameters.hxx>

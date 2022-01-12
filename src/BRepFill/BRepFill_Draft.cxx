@@ -16,9 +16,6 @@
 
 #include <BRepFill_Draft.hxx>
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <BOPAlgo_Builder.hxx>
@@ -26,14 +23,11 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
-#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
 #include <BRepFill_DraftLaw.hxx>
-#include <BRepFill_SectionLaw.hxx>
 #include <BRepFill_ShapeLaw.hxx>
 #include <BRepFill_Sweep.hxx>
 #include <BRepLib_FindSurface.hxx>
@@ -52,16 +46,12 @@
 #include <GeomLProp_SLProps.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -71,7 +61,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 #ifdef DRAW

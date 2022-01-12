@@ -19,15 +19,12 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
-#include <TopoDS_Solid.hxx>
-#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI.hxx>
 #include <BRepPreviewAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_Plane.hxx>

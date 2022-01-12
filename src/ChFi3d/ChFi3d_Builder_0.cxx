@@ -18,147 +18,66 @@
 //  Modified by skv - Fri Oct 24 14:24:47 2003 OCC4077
 //  Modified by skv - Mon Jun 16 15:50:44 2003 OCC615
 
+#include <ChFi3d_Builder_0.hxx>
+
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <Approx_SameParameter.hxx>
+#include <BRepLib.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_HVertex.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
+#include <BRep_Builder.hxx>
 #include <ChFi3d.hxx>
-#include <Precision.hxx>
-
-#include <Standard_NotImplemented.hxx>
-#include <Standard_ConstructionError.hxx>
-
-#include <gp.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Lin2d.hxx>
+#include <ChFiDS_FilSpine.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <BSplCLib.hxx>
-#include <GeomLib.hxx>
-
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
+#include <Extrema_LocateExtCC.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2dInt_GInter.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Adaptor3d_TopolTool.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <GeomAdaptor_Surface.hxx>
-
-#include <FairCurve_Batten.hxx>
-#include <FairCurve_AnalysisCode.hxx>
-#include <Convert_ParameterisationType.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomConvert.hxx>
-#include <GeomLib_Interpolate.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GC_MakeCircle.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepTopAdaptor_HVertex.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
-#include <LocalAnalysis_SurfaceContinuity.hxx>
-
-#include <BRep_Tool.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
-#include <BRepTools_WireExplorer.hxx>
-#include <BRepLib.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeWire.hxx>
-#include <BRepLib_MakeFace.hxx>
-
-#include <TopAbs.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_Array1OfShape.hxx>
-
-
 #include <GeomAbs_Shape.hxx>
-#include <Bnd_Box2d.hxx>
-
-//#include <math_FunctionSample.hxx>
-//#include <math_FunctionAllRoots.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
-
-#include <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomConvert.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <GeomFill_SimpleBound.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <GeomLib.hxx>
+#include <GeomLProp_CLProps.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <IntAna_QuadQuadGeo.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-#include <IntSurf_Quadric.hxx>
-#include <IntSurf_PntOn2S.hxx>
-#include <IntSurf_LineOn2S.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntWalk_PWalking.hxx>
 #include <IntPatch_WLine.hxx>
-#include <Geom2dInt_GInter.hxx>
-#include <GeomInt_WLApprox.hxx>
-#include <GeomInt_IntSS.hxx>
-#include <AppParCurves_MultiBSpCurve.hxx>
-#include <Approx_SameParameter.hxx>
-
-#include <TopAbs.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopExp.hxx>
-
-#include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <TopOpeBRepDS_InterferenceIterator.hxx>
-#include <TopOpeBRepTool_TOOL.hxx>
-#include <ProjLib_ProjectedCurve.hxx>
-
-#include <BRepBlend_PointOnRst.hxx>
-
-#include <ChFiDS_HData.hxx>
-#include <ChFiDS_SurfData.hxx>
-#include <ChFiDS_FaceInterference.hxx>
-#include <ChFiDS_Spine.hxx>
-#include <ChFiDS_FilSpine.hxx>
-#include <ChFiDS_SequenceOfSurfData.hxx>
-#include <ChFiDS_Regul.hxx>
-#include <Law_Function.hxx>
+#include <IntSurf_LineOn2S.hxx>
+#include <IntWalk_PWalking.hxx>
 #include <Law_Composite.hxx>
-#include <GeomAPI_PointsToBSpline.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <ProjLib_ProjectedCurve.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfXYZ.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TopAbs.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopOpeBRepDS_InterferenceIterator.hxx>
+#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
 
-#include <ChFi3d_Builder_0.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean ChFi3d_GetcontextFORCEBLEND(); 
@@ -169,12 +88,6 @@ extern Standard_Real  t_sameparam, t_batten;
 extern void ChFi3d_SettraceDRAWINT(const Standard_Boolean b);
 extern void ChFi3d_SettraceDRAWSPINE(const Standard_Boolean b);
 #endif
-
-#include <stdio.h>
-
-#include <GeomAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 
 //=======================================================================
 //function : ChFi3d_InPeriod

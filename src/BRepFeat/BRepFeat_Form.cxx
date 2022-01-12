@@ -15,14 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAlgo.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepBndLib.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFeat.hxx>
 #include <BRepFeat_Builder.hxx>
@@ -36,25 +31,16 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-#include <LocOpe.hxx>
-#include <LocOpe_BuildShape.hxx>
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_FindEdges.hxx>
 #include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
-#include <LocOpe_SequenceOfCirc.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG

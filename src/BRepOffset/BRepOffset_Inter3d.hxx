@@ -25,11 +25,9 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopAbs_State.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepOffset_DataMapOfShapeOffset.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <Standard_Boolean.hxx>
 class BRepAlgo_AsDes;
 class BRepAlgo_Image;
 class TopoDS_Face;

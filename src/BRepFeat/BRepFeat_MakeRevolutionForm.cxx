@@ -36,11 +36,9 @@
 #include <BRepTools_TrsfModification.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <CSLib.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2dAPI_ExtremaCurveCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -55,29 +53,19 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GeomLProp_CLProps.hxx>
-#include <GeomProjLib.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <LocOpe.hxx>
 #include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_FindEdges.hxx>
 #include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <LocOpe_RevolutionForm.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <TColGeom_Array1OfCurve.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -85,13 +73,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 extern Standard_Boolean BRepFeat_GettraceFEAT();

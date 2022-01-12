@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Geom2dInt_IntConicCurveOfGInter.hxx>
-#include <Standard_Real.hxx>
 class gp_Lin2d;
 class BRepClass_Edge;
 class gp_Dir2d;

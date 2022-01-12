@@ -16,8 +16,6 @@
 
 
 #include <BRepLib_MakeShape.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 

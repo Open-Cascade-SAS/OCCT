@@ -23,7 +23,6 @@
 #include <CDF_MetaDataDriver.hxx>
 #include <CDM_Application.hxx>
 #include <CDM_CanCloseStatus.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
 #include <Standard_IStream.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 

@@ -18,7 +18,6 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepFill_Edge3DLaw.hxx>
@@ -44,11 +43,7 @@
 #include <Precision.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
@@ -61,9 +56,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
 #ifdef DRAW

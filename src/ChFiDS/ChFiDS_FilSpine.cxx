@@ -24,7 +24,6 @@
 #include <Law_Constant.hxx>
 #include <Law_Function.hxx>
 #include <Law_Interpol.hxx>
-#include <Law_ListIteratorOfLaws.hxx>
 #include <Law_S.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>

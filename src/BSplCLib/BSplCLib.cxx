@@ -30,9 +30,6 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <PLib.hxx>

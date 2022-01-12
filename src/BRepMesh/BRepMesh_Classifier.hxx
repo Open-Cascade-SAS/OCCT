@@ -16,9 +16,6 @@
 #ifndef _BRepMesh_Classifier_HeaderFile
 #define _BRepMesh_Classifier_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Macro.hxx>
-#include <TopAbs_State.hxx>
 #include <IMeshData_Types.hxx>
 #include <NCollection_Handle.hxx>
 

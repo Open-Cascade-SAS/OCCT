@@ -20,10 +20,8 @@
 #include <BRepExtrema_SupportType.hxx>
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
-#include <gp_Pnt.hxx>
 #include <Message_ProgressRange.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

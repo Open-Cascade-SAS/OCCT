@@ -13,7 +13,6 @@
 
 
 #include <CDF_FWOSDriver.hxx>
-#include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_File.hxx>

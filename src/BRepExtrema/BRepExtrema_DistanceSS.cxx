@@ -18,7 +18,6 @@
 
 #include <BRepExtrema_DistanceSS.hxx>
 
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -34,12 +33,10 @@
 #include <Bnd_Box.hxx>
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtPF.hxx>
-#include <Extrema_ExtFlag.hxx>
 #include <BRepExtrema_ExtCC.hxx>
 #include <BRepExtrema_ExtCF.hxx>
 #include <BRepExtrema_ExtFF.hxx>
 #include <BRepClass_FaceClassifier.hxx>
-#include <TopAbs.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -54,7 +51,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 
 
 /*********************************************************************************/

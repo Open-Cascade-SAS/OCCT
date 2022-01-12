@@ -16,8 +16,6 @@
 
 
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakePolygon.hxx>
 #include <BRepTools.hxx>

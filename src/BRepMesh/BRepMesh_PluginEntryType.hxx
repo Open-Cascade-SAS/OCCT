@@ -14,8 +14,6 @@
 #ifndef _BRepMesh_PluginEntryType_HeaderFile
 #define _BRepMesh_PluginEntryType_HeaderFile
 
-#include <Standard_Real.hxx>
-
 class TopoDS_Shape;
 class BRepMesh_DiscretRoot;
 

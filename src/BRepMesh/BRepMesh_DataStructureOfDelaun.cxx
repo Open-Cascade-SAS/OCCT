@@ -19,7 +19,6 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepMesh_Edge.hxx>
 
-#include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <Standard_ErrorHandler.hxx>

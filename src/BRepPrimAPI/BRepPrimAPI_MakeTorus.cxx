@@ -15,11 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepBuilderAPI.hxx>
-#include <BRepPrim_Torus.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <gp_Ax2.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrimAPI_MakeTorus

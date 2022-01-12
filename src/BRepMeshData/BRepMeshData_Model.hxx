@@ -19,7 +19,6 @@
 #include <IMeshData_Model.hxx>
 #include <IMeshData_Types.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <IMeshData_Face.hxx>
 #include <IMeshData_Edge.hxx>
 
 //! Default implementation of model entity.

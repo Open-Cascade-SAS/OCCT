@@ -14,7 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_CylinderRangeSplitter.hxx>
+
 #include <GCPnts_TangentialDeflection.hxx>
+#include <IMeshTools_Parameters.hxx>
 
 //=======================================================================
 // Function: Reset

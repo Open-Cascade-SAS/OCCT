@@ -23,10 +23,7 @@
 
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 class TopoDS_Edge;

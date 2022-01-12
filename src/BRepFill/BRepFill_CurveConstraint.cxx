@@ -15,24 +15,15 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepFill_CurveConstraint.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom_Plane.hxx>
-#include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAPI.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
-#include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_CurveConstraint,GeomPlate_CurveConstraint)

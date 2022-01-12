@@ -26,7 +26,6 @@
 #include <BRepFilletAPI_LocalOperation.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <ChFiDS_SecHArray1.hxx>
 class TopoDS_Shape;

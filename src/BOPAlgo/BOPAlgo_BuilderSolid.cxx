@@ -25,6 +25,7 @@
 #include <Bnd_Tools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_DataMap.hxx>

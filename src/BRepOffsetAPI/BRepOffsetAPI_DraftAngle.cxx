@@ -17,12 +17,10 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal.hxx>
 #include <BRepFill_DataMapOfShapeSequenceOfReal.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
@@ -37,10 +35,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TopExp.hxx>
@@ -50,9 +45,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeSequenceOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
 #include <Geom2dInt_GInter.hxx>

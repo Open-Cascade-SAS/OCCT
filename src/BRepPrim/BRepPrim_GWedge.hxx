@@ -23,7 +23,6 @@
 
 #include <BRepPrim_Builder.hxx>
 #include <gp_Ax2.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Shell.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Vertex.hxx>

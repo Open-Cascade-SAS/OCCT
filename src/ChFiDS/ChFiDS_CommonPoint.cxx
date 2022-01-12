@@ -16,10 +16,7 @@
 
 
 #include <ChFiDS_CommonPoint.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 

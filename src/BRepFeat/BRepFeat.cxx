@@ -16,12 +16,10 @@
 
 #include <BRepFeat.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepLib_MakeFace.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
@@ -36,7 +34,6 @@
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Pnt.hxx>
@@ -54,7 +51,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #define NECHANTBARYC 11

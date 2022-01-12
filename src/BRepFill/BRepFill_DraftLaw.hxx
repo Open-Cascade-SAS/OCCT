@@ -18,7 +18,6 @@
 #define _BRepFill_DraftLaw_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <BRepFill_Edge3DLaw.hxx>
 #include <Standard_Real.hxx>

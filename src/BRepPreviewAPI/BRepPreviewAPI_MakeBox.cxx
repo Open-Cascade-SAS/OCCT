@@ -15,13 +15,10 @@
 
 #include <BRepPreviewAPI_MakeBox.hxx>
 
-#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-
-#include <TopoDS_Compound.hxx>
 
 //=======================================================================
 //function : Build

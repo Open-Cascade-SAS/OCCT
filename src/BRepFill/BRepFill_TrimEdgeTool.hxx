@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
 #include <Bisector_Bisec.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAbs_JoinType.hxx>

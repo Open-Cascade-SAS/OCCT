@@ -18,7 +18,6 @@
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
-#include <CDM_Reference.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>

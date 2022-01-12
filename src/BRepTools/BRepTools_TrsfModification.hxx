@@ -22,8 +22,6 @@
 
 #include <gp_Trsf.hxx>
 #include <BRepTools_Modification.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 class TopoDS_Face;
 class Geom_Surface;

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepPrim_GWedge.hxx>
-#include <Standard_Real.hxx>
 class gp_Ax2;
 
 

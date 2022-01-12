@@ -20,9 +20,7 @@
 #include <GeomFill_LocationDraft.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <gp_Mat.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Wire.hxx>
 

@@ -17,9 +17,6 @@
 
 #include <BRepOffsetAPI_MakeFilling.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>

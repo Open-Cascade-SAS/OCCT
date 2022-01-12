@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepGProp_Face.hxx>
 #include <BRepGProp_TFunction.hxx>
 #include <gp_Pnt.hxx>
 #include <math_KronrodSingleIntegration.hxx>

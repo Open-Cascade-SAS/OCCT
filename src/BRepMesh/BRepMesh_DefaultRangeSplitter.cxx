@@ -15,9 +15,7 @@
 
 #include <BRepMesh_DefaultRangeSplitter.hxx>
 
-#include <GCPnts_AbscissaPoint.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAbs_IsoType.hxx>
 #include <BRep_Tool.hxx>
 
 //=======================================================================

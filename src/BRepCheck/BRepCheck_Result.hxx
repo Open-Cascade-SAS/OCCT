@@ -18,10 +18,7 @@
 #define _BRepCheck_Result_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepCheck_DataMapOfShapeListOfStatus.hxx>

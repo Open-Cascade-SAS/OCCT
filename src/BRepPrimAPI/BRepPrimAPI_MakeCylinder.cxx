@@ -15,13 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepBuilderAPI.hxx>
-#include <BRepPrim_Cylinder.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrimAPI_MakeCylinder

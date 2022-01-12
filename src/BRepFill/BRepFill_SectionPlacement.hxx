@@ -23,9 +23,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class BRepFill_LocationLaw;
 
 

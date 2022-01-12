@@ -25,7 +25,6 @@
 #include <GeomFill_LocationLaw.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>

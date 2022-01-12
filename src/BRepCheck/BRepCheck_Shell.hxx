@@ -18,11 +18,8 @@
 #define _BRepCheck_Shell_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <BRepCheck_Status.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepCheck_Result.hxx>
 #include <TopTools_ListOfShape.hxx>

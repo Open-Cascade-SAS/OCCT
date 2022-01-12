@@ -18,7 +18,6 @@
 #define ChFiKPart_ComputeData_CS_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Circ.hxx>
 

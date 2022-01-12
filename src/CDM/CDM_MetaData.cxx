@@ -19,7 +19,6 @@
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
-#include <CDM_Reference.hxx>
 #include <Standard_Dump.hxx>
 #include <CDF_Application.hxx>
 #include <Standard_NullObject.hxx>

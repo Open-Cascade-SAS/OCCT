@@ -15,7 +15,6 @@
 #include <gp_Pnt.hxx>
 #include <math.hxx>
 #include <TopoDS_Edge.hxx>
-#include <Poly_Polygon3D.hxx>
 #include <BRep_Tool.hxx>
 
 //=======================================================================

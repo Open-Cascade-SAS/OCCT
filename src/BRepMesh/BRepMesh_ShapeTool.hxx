@@ -17,8 +17,6 @@
 #define _BRepMesh_ShapeTool_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Handle.hxx>
-#include <Standard_Type.hxx>
 #include <IMeshData_Types.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>

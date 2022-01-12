@@ -31,68 +31,38 @@
 #include <Draw_Appli.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <DrawTrSurf.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Curve.hxx>  
 #include <BRepTest.hxx>
 #include <DBRep.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <BRep_Tool.hxx>
 
 #include <BRepLib.hxx>
 #include <BRep_Builder.hxx>
-#include <GeomPlate_BuildPlateSurface.hxx>
-#include <GeomPlate_BuildAveragePlane.hxx>
 #include <GeomPlate_Surface.hxx>
-#include <GeomPlate_BuildAveragePlane.hxx>
-#include <GeomPlate_HArray1OfHCurve.hxx>
 
 #include <GeomPlate_MakeApprox.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
 #include <GeomPlate_PlateG1Criterion.hxx>
 #include <BRepFill_CurveConstraint.hxx>
-#include <GeomPlate_PointConstraint.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <Geom_Surface.hxx>
 
 #include <TopoDS_Wire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_WireError.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-#include <TColGeom2d_HArray1OfCurve.hxx>
 
 #include <AdvApp2Var_ApproxAFunc2Var.hxx>
-#include <AdvApp2Var_Context.hxx>
-#include <AdvApprox_PrefCutting.hxx>
-#include <AdvApprox_Cutting.hxx>
-#include <AdvApprox_DichoCutting.hxx>
 
 #include <Geom_BSplineSurface.hxx>
-
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
-#include <Adaptor3d_IsoCurve.hxx>
 
-#include <Extrema_ExtPS.hxx>
-#include <Extrema_POnSurf.hxx>
-#include <Geom_Plane.hxx>
 #include <BRepOffsetAPI_MakeFilling.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <GeomConvert_ApproxSurface.hxx>
 
 #include <BRepTest_Objects.hxx>
 

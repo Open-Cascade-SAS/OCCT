@@ -19,26 +19,17 @@
 
 #include <BRepLib.hxx>
 
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
-#include <AppParCurves_MultiCurve.hxx>
 #include <Approx_CurvilinearParameter.hxx>
 #include <Approx_SameParameter.hxx>
-#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRepCheck.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_TFace.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib_MakeFace.hxx>
@@ -46,13 +37,10 @@
 #include <ElSLib.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -72,11 +60,9 @@
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Real.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_MapOfTransient.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -84,10 +70,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TShort_HArray1OfShortReal.hxx>
 #include <TColgp_Array1OfXY.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>

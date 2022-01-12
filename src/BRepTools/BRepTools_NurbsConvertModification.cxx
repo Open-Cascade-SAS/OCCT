@@ -16,30 +16,20 @@
 
 #include <BRepTools_NurbsConvertModification.hxx>
 
-#include <Approx_SameParameter.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <BSplCLib.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -49,20 +39,13 @@
 #include <GeomConvert.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_TrsfForm.hxx>
 #include <ProjLib_ComputeApprox.hxx>
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <TopAbs.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRep_Builder.hxx>
 IMPLEMENT_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_Modification)
 

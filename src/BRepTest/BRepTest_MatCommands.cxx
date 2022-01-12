@@ -17,7 +17,6 @@
 #include <BRepTest.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
-#include <DrawTrSurf.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
 
 #include <Geom2d_Line.hxx>
@@ -30,14 +29,10 @@
 #include <MAT_Bisector.hxx>
 #include <MAT_Zone.hxx>
 #include <MAT_Graph.hxx>
-#include <MAT_Arc.hxx>
 #include <MAT_BasicElt.hxx>
-#include <MAT_Node.hxx>
 #include <MAT_Side.hxx>
 
-#include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
-#include <Bisector_Curve.hxx>
 #include <Precision.hxx>
 
 #include <BRepMAT2d_Explorer.hxx>

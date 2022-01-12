@@ -24,7 +24,6 @@
 #include <DBRep.hxx>
 
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 
 static Standard_Integer SetFillHistory(Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer SaveHistory   (Draw_Interpretor&, Standard_Integer, const char**);

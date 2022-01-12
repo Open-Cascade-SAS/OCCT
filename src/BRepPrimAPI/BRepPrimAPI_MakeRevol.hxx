@@ -25,8 +25,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepPrimAPI_MakeSweep.hxx>
 #include <BRepTools_History.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class gp_Ax1;
 

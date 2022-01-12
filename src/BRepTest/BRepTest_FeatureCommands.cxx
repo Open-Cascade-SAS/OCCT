@@ -19,27 +19,13 @@
 #include <DrawTrSurf.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS.hxx>
 
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_CylindricalSurface.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Cylinder.hxx>
 
 //#include <BRepFeat_LocalOperation.hxx>
-#include <BRepFeat_Builder.hxx>
 #include <BRepFeat_MakeCylindricalHole.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepFeat_Gluer.hxx>
@@ -57,7 +43,6 @@
 
 #include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffset_MakeSimpleOffset.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>

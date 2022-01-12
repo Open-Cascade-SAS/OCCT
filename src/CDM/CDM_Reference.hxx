@@ -22,7 +22,6 @@
 
 #include <CDM_DocumentPointer.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class CDM_Document;
 class CDM_Application;

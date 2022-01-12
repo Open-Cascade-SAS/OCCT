@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGES_BRShell.hxx>
 #include <BRepToIGES_BRSolid.hxx>
 #include <BRepToIGES_BRWire.hxx>

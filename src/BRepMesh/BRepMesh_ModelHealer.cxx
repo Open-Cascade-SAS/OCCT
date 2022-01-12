@@ -15,7 +15,6 @@
 
 #include <BRepMesh_ModelHealer.hxx>
 #include <BRepMesh_Deflection.hxx>
-#include <BRepMesh_ShapeTool.hxx>
 #include <BRepMesh_FaceChecker.hxx>
 #include <BRepMesh_EdgeDiscret.hxx>
 #include <IMeshData_Face.hxx>

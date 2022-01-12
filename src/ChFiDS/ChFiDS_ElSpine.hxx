@@ -25,8 +25,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <TColgp_SequenceOfAx1.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>

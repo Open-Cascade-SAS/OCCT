@@ -41,7 +41,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 
 //=============================================================================

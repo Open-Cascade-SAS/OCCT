@@ -20,7 +20,6 @@
 #include <Extrema_ExtPS.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <TopAbs_State.hxx>
 #include <TopoDS_Face.hxx>
 
 //=======================================================================

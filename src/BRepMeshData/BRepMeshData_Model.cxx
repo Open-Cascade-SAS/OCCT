@@ -17,8 +17,6 @@
 
 #include <BRepMeshData_Face.hxx>
 #include <BRepMeshData_Edge.hxx>
-#include <BRepMesh_OrientedEdge.hxx>
-#include <BRepMesh_Vertex.hxx>
 #include <NCollection_IncAllocator.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)

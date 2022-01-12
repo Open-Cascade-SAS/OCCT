@@ -25,8 +25,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepLib_Command.hxx>
 #include <BRepLib_ShapeModification.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
 

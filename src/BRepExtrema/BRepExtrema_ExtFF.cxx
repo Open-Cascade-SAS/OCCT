@@ -19,7 +19,6 @@
 
 #include <BRepExtrema_ExtFF.hxx>
 
-#include <BRepExtrema_ExtCF.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepClass_FaceClassifier.hxx>

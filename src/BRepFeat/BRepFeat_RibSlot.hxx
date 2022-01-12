@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepFeat_PerfSelection.hxx>
@@ -32,7 +31,6 @@
 #include <TopTools_ListOfShape.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Edge;
 class Geom_Plane;

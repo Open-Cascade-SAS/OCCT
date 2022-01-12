@@ -15,11 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepPrim_Wedge.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <gp_Ax2.hxx>
-#include <Standard_DomainError.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>

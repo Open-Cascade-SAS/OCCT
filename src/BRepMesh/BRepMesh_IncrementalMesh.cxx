@@ -17,7 +17,6 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepMesh_Context.hxx>
 #include <BRepMesh_PluginMacro.hxx>
-#include <IMeshData_Status.hxx>
 #include <IMeshData_Face.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshTools_MeshBuilder.hxx>

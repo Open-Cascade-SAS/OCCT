@@ -23,7 +23,6 @@
 #include <Draw_Appli.hxx>
 
 #include <BRepFill.hxx>
-#include <BRepBuilderAPI_PipeError.hxx>
 #include <BRepFill_Generator.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
@@ -35,13 +34,11 @@
 
 #include <BRepLib_MakeWire.hxx>
 #include <TopoDS.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <Precision.hxx>
 #include <Law_Interpol.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Pnt2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 

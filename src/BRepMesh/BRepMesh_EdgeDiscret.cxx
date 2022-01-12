@@ -16,7 +16,6 @@
 #include <BRepMesh_EdgeDiscret.hxx>
 #include <BRepMesh_Deflection.hxx>
 #include <IMeshData_Model.hxx>
-#include <IMeshData_Edge.hxx>
 #include <IMeshData_Face.hxx>
 #include <IMeshData_PCurve.hxx>
 #include <TopExp.hxx>

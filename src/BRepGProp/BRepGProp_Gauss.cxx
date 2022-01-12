@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <math.hxx>
-#include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <Standard_Assert.hxx>
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_Domain.hxx>

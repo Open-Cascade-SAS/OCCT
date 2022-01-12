@@ -22,11 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepPrimAPI_MakeSweep.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepFill_PipeShell.hxx>
 #include <BRepFill_TypeOfContact.hxx>
 #include <BRepBuilderAPI_PipeError.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <BRepBuilderAPI_TransitionMode.hxx>
 #include <TopTools_ListOfShape.hxx>

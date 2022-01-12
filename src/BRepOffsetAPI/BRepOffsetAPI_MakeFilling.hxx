@@ -23,7 +23,6 @@
 
 #include <BRepFill_Filling.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>

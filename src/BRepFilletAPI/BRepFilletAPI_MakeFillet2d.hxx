@@ -23,10 +23,7 @@
 
 #include <ChFi2d_Builder.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <ChFi2d_ConstructionError.hxx>
 class TopoDS_Face;

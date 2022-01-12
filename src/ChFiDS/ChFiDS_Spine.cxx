@@ -17,10 +17,6 @@
 // Modified by isg, Thu Mar 17 09:21:31 1994
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <ChFiDS_ErrorStatus.hxx>
-#include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_ListIteratorOfListOfHElSpine.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ElCLib.hxx>
 #include <GCPnts_AbscissaPoint.hxx>

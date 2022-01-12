@@ -15,7 +15,6 @@
 
 #include <BRepMesh_CurveTessellator.hxx>
 #include <gp_Pnt.hxx>
-#include <BRep_Tool.hxx>
 #include <TopoDS_Edge.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_PCurve.hxx>

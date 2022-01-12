@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <BRepToIGES_BREntity.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
 class IGESData_IGESEntity;

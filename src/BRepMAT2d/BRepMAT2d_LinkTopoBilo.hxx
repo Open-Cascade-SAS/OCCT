@@ -25,7 +25,6 @@
 #include <BRepMAT2d_DataMapOfBasicEltShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class BRepMAT2d_Explorer;
 class BRepMAT2d_BisectingLocus;
 class MAT_BasicElt;

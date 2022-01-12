@@ -17,7 +17,6 @@
 #define _BRepMesh_MeshTool_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_DefineHandle.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_CircleTool.hxx>
 #include <gp_Lin2d.hxx>

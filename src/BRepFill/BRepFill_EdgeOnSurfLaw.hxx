@@ -18,9 +18,7 @@
 #define _BRepFill_EdgeOnSurfLaw_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <BRepFill_LocationLaw.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;

@@ -15,7 +15,6 @@
 #define _BRepMesh_IncrementalMesh_HeaderFile
 
 #include <BRepMesh_DiscretRoot.hxx>
-#include <IMeshTools_Parameters.hxx>
 #include <IMeshTools_Context.hxx>
 #include <Standard_NumericError.hxx>
 

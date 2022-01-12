@@ -14,17 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GeometryTest.hxx>
-#include <DrawTrSurf.hxx>
 #include <Draw_Appli.hxx>
-#include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
 #include <BRepProj_Projection.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRepTest.hxx>
-#include <TopoDS.hxx>
-#include <stdio.h>
 
 //=======================================================================
 //function : prj

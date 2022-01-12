@@ -19,11 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepSweep_Prism.hxx>
 #include <BRepPrimAPI_MakeSweep.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 class gp_Vec;

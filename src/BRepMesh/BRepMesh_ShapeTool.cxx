@@ -16,7 +16,6 @@
 #include <BRepMesh_ShapeTool.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_PCurve.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Tool.hxx>

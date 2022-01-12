@@ -20,13 +20,11 @@
 #include <BRepClass_FaceClassifier.hxx>
 #include <Geom_Line.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Face.hxx>
 
 //============================================================================

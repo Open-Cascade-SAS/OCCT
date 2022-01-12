@@ -23,11 +23,8 @@
 #include <BRepFill_TransitionStyle.hxx>
 #include <gp_Ax2.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopTools_HArray2OfShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BOPDS_PDS.hxx>

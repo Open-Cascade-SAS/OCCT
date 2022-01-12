@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <MAT2d_Tool2d.hxx>
-#include <Standard_Boolean.hxx>
 #include <MAT2d_DataMapOfBiIntInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT_Side.hxx>

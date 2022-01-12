@@ -17,7 +17,6 @@
 
 #include <BRepPrim_Wedge.hxx>
 #include <gp_Ax2.hxx>
-#include <Standard_DomainError.hxx>
 
 //=======================================================================
 //function : BRepPrim_Wedge

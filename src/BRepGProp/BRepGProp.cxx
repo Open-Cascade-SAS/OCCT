@@ -19,18 +19,14 @@
 #include <BRepGProp_MeshProps.hxx>
 #include <BRepGProp_MeshCinert.hxx>
 #include <BRepGProp_VinertGK.hxx>
-#include <GProp_PGProps.hxx>
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_Domain.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
-#include <TopTools.hxx>
 #include <BRep_Tool.hxx>  
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <BRepCheck_Shell.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 static Standard_Integer AffichEps = 0;

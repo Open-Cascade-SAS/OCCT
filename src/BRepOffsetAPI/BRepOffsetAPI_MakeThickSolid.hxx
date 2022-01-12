@@ -23,7 +23,6 @@
 
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <BRepOffset_Mode.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_JoinType.hxx>

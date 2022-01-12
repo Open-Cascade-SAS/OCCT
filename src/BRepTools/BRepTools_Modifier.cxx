@@ -18,9 +18,6 @@
 
 #include <BRepTools_Modification.hxx>
 #include <BRepTools_Modifier.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_NullObject.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TColStd_ListOfTransient.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
@@ -30,7 +27,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 #if 0
@@ -51,7 +47,6 @@
 #include <gp.hxx>
 
 #include <Standard_NullObject.hxx>
-#include <gp_Trsf.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Geom_Surface.hxx>

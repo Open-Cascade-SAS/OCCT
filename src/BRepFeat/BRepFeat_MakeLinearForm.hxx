@@ -22,12 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Vec.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepFeat_RibSlot.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Geom_Curve;
 class Geom_Plane;
 class TopoDS_Shape;

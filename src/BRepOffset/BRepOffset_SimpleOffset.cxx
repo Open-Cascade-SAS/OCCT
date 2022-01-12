@@ -28,7 +28,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <NCollection_Vector.hxx>
-#include <ShapeAnalysis_Edge.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>

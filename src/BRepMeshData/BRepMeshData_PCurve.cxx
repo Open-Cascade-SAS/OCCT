@@ -15,7 +15,6 @@
 
 #include <BRepMeshData_PCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <BRepMesh_OrientedEdge.hxx>
 #include <BRepMesh_Vertex.hxx>
 #include <Standard_OutOfRange.hxx>
 

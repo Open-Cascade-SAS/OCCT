@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #endif
 #ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
 #endif
 
 // History - C function pointer converted to a virtual class

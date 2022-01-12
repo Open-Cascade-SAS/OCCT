@@ -21,7 +21,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Standard_Real  BRepGProp_EdgeTool::FirstParameter(const BRepAdaptor_Curve& C)
 {

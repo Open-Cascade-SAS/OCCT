@@ -17,9 +17,7 @@
 #define _BRepMesh_EdgeTessellationExtractor_HeaderFile
 
 #include <IMeshTools_CurveTessellator.hxx>
-#include <IMeshData_Types.hxx>
 #include <BRepMesh_EdgeParameterProvider.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopLoc_Location.hxx>
 

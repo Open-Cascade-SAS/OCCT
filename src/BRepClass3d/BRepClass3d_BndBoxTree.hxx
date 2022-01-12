@@ -20,12 +20,10 @@
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_UBTree.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <BRepBndLib.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Geom_Line.hxx>
 #include <Bnd_Box.hxx>
-#include <gp_Lin.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Precision.hxx>
 

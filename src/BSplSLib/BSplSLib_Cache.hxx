@@ -14,19 +14,7 @@
 #ifndef _BSplSLib_Cache_Headerfile
 #define _BSplSLib_Cache_Headerfile
 
-#include <Standard.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
 #include <BSplCLib_CacheParams.hxx>

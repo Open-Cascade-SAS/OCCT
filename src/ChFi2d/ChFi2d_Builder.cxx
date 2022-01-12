@@ -24,7 +24,6 @@
 #include <ChFi2d.hxx>
 #include <ChFi2d_Builder.hxx>
 #include <ElCLib.hxx>
-#include <GccEnt_Position.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -38,11 +37,9 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Circ2d.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
 #include <Precision.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
@@ -55,7 +52,6 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static Standard_Boolean IsIssuedFrom(const TopoDS_Edge& E,
 				     const TopTools_IndexedMapOfShape& Map,

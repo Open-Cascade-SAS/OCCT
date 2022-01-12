@@ -16,15 +16,12 @@
 
 
 #include <BRepFill.hxx>
-#include <BRepFill_Evolved.hxx>
 #include <BRepOffsetAPI_MakeEvolved.hxx>
 #include <gp_Ax3.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
-#include <Standard_NotImplemented.hxx>
 
 static const TopTools_ListOfShape anEmptyList;
 

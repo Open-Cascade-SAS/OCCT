@@ -16,12 +16,9 @@
 
 
 #include <Bnd_Box.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepFeat_MakeCylindricalHole.hxx>
 #include <BRepPrim_Cylinder.hxx>
-#include <BRepTools.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Ax1.hxx>
@@ -29,13 +26,11 @@
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <CSLib.hxx>

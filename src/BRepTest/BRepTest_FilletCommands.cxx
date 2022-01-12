@@ -16,26 +16,21 @@
 
 #include <BRepTest.hxx>
 #include <BRepTest_Objects.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BiTgte_Blend.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 
 #include <BOPAlgo_PaveFiller.hxx>
 
-#include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Section.hxx>
@@ -43,13 +38,9 @@
 #include <FilletSurf_Builder.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <FilletSurf_StatusType.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
-#include <TopAbs.hxx>
 #include <DrawTrSurf.hxx>
 #include <Message.hxx>
 #include <Draw_ProgressIndicator.hxx>

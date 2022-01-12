@@ -24,9 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <BRepFill_SequenceOfSection.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_HArray2OfShape.hxx>
 #include <GeomFill_Trihedron.hxx>
 #include <BRepFill_TransitionStyle.hxx>

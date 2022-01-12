@@ -22,8 +22,6 @@
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepSweep_Revol.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Lin.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>

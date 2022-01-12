@@ -27,7 +27,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 
-#include <gp_Circ.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom2d_Line.hxx>
 

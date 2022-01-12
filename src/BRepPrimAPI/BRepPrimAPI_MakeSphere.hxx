@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepPrim_Sphere.hxx>
 #include <BRepPrimAPI_MakeOneAxis.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
 class gp_Pnt;
 class gp_Ax2;
 

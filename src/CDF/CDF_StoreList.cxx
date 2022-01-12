@@ -21,8 +21,6 @@
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <CDM_ReferenceIterator.hxx>
-#include <PCDM.hxx>
-#include <PCDM_Document.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
 

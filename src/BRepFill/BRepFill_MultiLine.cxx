@@ -18,7 +18,6 @@
 
 #include <BRepIntCurveSurface_Inter.hxx>
 #include <gp.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Circ2d.hxx>

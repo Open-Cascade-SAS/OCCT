@@ -13,7 +13,6 @@
 
 #include <BRepLib_ValidateEdge.hxx>
 
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepCheck.hxx>
 #include <Extrema_LocateExtPC.hxx>

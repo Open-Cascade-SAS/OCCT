@@ -17,7 +17,6 @@
 #define _BRepMesh_CylinderRangeSplitter_HeaderFile
 
 #include <BRepMesh_DefaultRangeSplitter.hxx>
-#include <IMeshTools_Parameters.hxx>
 
 //! Auxiliary class extending default range splitter in
 //! order to generate internal nodes for cylindrical surface.

@@ -14,13 +14,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepMesh_ModelPreProcessor.hxx>
+
 #include <BRepMesh_Deflection.hxx>
 #include <BRepMesh_ShapeTool.hxx>
-#include <BRep_Tool.hxx>
 #include <IMeshData_Model.hxx>
 #include <IMeshData_Edge.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshData_PCurve.hxx>
+#include <IMeshTools_Parameters.hxx>
 #include <OSD_Parallel.hxx>
 #include <BRepMesh_ConeRangeSplitter.hxx>
 #include <Poly_TriangulationParameters.hxx>

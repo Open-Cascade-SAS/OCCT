@@ -14,9 +14,6 @@
 #include <ChFi2d_AnaFilletAlgo.hxx>
 
 #include <gp_Ax3.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ2d.hxx>
 
 #include <Standard_TypeMismatch.hxx>
 

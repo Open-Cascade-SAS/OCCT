@@ -17,7 +17,6 @@
 #ifndef CDM_MapOfDocument_HeaderFile
 #define CDM_MapOfDocument_HeaderFile
 
-#include <CDM_Document.hxx>
 #include <CDM_DocumentHasher.hxx>
 #include <NCollection_Map.hxx>
 

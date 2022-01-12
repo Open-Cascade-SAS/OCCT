@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
 #include <ChFiDS_TypeOfConcavity.hxx>

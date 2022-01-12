@@ -25,7 +25,6 @@
 #include <Geom_Plane.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>

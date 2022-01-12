@@ -20,22 +20,11 @@
 //  ComputeData(), case where BRepBlend_Walking::Continu() can't get up to Target
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_TopolTool.hxx>
-#include <AppBlend_Approx.hxx>
-#include <Approx_SweepFunction.hxx>
 #include <Blend_CurvPointFuncInv.hxx>
-#include <Blend_FuncInv.hxx>
-#include <Blend_Function.hxx>
-#include <Blend_Point.hxx>
 #include <Blend_RstRstFunction.hxx>
 #include <Blend_SurfCurvFuncInv.hxx>
 #include <Blend_SurfPointFuncInv.hxx>
 #include <Blend_SurfRstFunction.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_AppFunc.hxx>
 #include <BRepBlend_AppFuncRst.hxx>
 #include <BRepBlend_AppFuncRstRst.hxx>
@@ -44,9 +33,7 @@
 #include <BRepBlend_ConstRad.hxx>
 #include <BRepBlend_ConstRadInv.hxx>
 #include <BRepBlend_CSWalking.hxx>
-#include <BRepBlend_Extremity.hxx>
 #include <BRepBlend_Line.hxx>
-#include <BRepBlend_PointOnRst.hxx>
 #include <BRepBlend_RstRstLineBuilder.hxx>
 #include <BRepBlend_SurfRstLineBuilder.hxx>
 #include <BRepBlend_Walking.hxx>
@@ -59,7 +46,6 @@
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_Spine.hxx>
-#include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -71,7 +57,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
@@ -81,9 +66,6 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <math_Vector.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -94,7 +76,6 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 #include <stdio.h>

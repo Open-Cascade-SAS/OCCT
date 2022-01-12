@@ -22,7 +22,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Type.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <NCollection_DataMap.hxx>
 

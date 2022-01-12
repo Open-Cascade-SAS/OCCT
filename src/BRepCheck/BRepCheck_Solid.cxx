@@ -21,7 +21,6 @@
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Transient.hxx>
-#include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
@@ -33,7 +32,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Solid,BRepCheck_Result)
 

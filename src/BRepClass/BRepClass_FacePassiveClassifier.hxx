@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <gp_Lin2d.hxx>
-#include <Standard_Real.hxx>
 #include <TopTrans_CurveTransition.hxx>
 #include <BRepClass_Intersector.hxx>
 #include <Standard_Integer.hxx>

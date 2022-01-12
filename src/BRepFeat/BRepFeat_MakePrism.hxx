@@ -24,12 +24,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <gp_Dir.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Geom_Curve;
 class TopoDS_Face;
 class TopoDS_Edge;

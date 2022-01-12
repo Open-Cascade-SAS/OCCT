@@ -14,9 +14,6 @@
 #ifndef _BSplCLib_CacheParams_Headerfile
 #define _BSplCLib_CacheParams_Headerfile
 
-#include <Standard_Real.hxx>
-#include <TColStd_Array1OfReal.hxx>
-
 #include <BSplCLib.hxx>
 
 //! Simple structure containing parameters describing parameterization

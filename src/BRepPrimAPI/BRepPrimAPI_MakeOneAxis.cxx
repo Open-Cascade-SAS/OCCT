@@ -15,10 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepBuilderAPI.hxx>
 #include <BRepPrim_OneAxis.hxx>
 #include <BRepPrimAPI_MakeOneAxis.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>

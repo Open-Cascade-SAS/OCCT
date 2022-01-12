@@ -24,7 +24,6 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_CString.hxx>
 
 class BOPAlgo_MakerVolume;
 class TopoDS_Face;

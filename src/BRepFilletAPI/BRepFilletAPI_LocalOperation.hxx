@@ -23,8 +23,6 @@
 
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ChFiDS_SecHArray1.hxx>
 class TopoDS_Edge;
 class TopoDS_Vertex;

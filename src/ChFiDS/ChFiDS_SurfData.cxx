@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <ChFiDS_CommonPoint.hxx>
-#include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Transient.hxx>

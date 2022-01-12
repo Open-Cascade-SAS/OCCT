@@ -23,8 +23,6 @@
 
 #include <BRepPrim_Torus.hxx>
 #include <BRepPrimAPI_MakeOneAxis.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
 class gp_Ax2;
 
 

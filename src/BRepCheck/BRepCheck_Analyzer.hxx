@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <BRepCheck_IndexedDataMapOfShapeResult.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class BRepCheck_Result;
 

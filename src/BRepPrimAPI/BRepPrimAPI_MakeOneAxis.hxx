@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepBuilderAPI_MakeShape.hxx>
-#include <Standard_Address.hxx>
 class TopoDS_Face;
 class TopoDS_Shell;
 class TopoDS_Solid;

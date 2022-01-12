@@ -17,7 +17,6 @@
 
 #include <BRepGProp_Domain.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 
 //=======================================================================
 //function : Next

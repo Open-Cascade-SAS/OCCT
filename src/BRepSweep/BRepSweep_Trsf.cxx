@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepLProp.hxx>

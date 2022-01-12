@@ -18,7 +18,6 @@
 
 #include <Precision.hxx>
 #include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <IMeshData_Types.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <BRepMesh_Vertex.hxx>

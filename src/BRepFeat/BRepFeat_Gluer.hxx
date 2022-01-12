@@ -24,7 +24,6 @@
 #include <LocOpe_Gluer.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <LocOpe_Operation.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;
 class TopoDS_Face;

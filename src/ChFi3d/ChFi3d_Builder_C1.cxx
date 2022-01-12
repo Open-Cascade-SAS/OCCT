@@ -18,22 +18,7 @@
 //  Modified by skv - Thu Aug 21 11:55:58 2008 OCC20222
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_TopolTool.hxx>
-#include <AppBlend_Approx.hxx>
-#include <Blend_CurvPointFuncInv.hxx>
 #include <Blend_FuncInv.hxx>
-#include <Blend_Function.hxx>
-#include <Blend_RstRstFunction.hxx>
-#include <Blend_SurfCurvFuncInv.hxx>
-#include <Blend_SurfPointFuncInv.hxx>
-#include <Blend_SurfRstFunction.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepExtrema_ExtCC.hxx>
@@ -46,7 +31,6 @@
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_HData.hxx>
-#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_ListIteratorOfListOfStripe.hxx>
 #include <ChFiDS_Map.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
@@ -54,10 +38,8 @@
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <ElCLib.hxx>
-#include <ElSLib.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_ExtPC.hxx>
-#include <Extrema_ExtPC2d.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_LocateExtCC.hxx>
 #include <Extrema_POnCurv.hxx>
@@ -71,51 +53,33 @@
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <GeomLib.hxx>
 #include <GeomProjLib.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_Transition.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -127,7 +91,6 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
@@ -135,7 +98,6 @@
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 # ifdef DRAW
@@ -154,7 +116,6 @@ extern void ChFi3d_ResultChron(OSD_Chronometer & ch,Standard_Real& time);
 #endif
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <math_FunctionSample.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BoundedSurface.hxx>

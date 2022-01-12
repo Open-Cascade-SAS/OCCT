@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepOffset_DataMapOfShapeListOfInterval.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <BRepOffset_ListOfInterval.hxx>
 #include <ChFiDS_TypeOfConcavity.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>

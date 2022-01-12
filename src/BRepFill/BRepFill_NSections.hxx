@@ -20,13 +20,11 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <GeomFill_SequenceOfTrsf.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TopTools_HArray2OfShape.hxx>
 #include <BRepFill_SectionLaw.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 class Geom_BSplineSurface;

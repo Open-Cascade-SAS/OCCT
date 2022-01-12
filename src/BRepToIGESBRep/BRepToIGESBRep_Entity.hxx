@@ -25,7 +25,6 @@
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Message_ProgressRange.hxx>
 
 class IGESSolid_EdgeList;

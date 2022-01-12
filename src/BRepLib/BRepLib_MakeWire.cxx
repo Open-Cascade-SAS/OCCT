@@ -17,11 +17,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepLib.hxx>
-#include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <Geom_Curve.hxx>
-#include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
@@ -31,7 +27,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================

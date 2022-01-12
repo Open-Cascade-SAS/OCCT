@@ -17,7 +17,6 @@
 #define _BRepMesh_ModelPreProcessor_HeaderFile
 
 #include <IMeshTools_ModelAlgo.hxx>
-#include <IMeshTools_Parameters.hxx>
 #include <IMeshData_Types.hxx>
 
 //! Class implements functionality of model pre-processing tool.

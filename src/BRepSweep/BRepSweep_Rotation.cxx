@@ -45,7 +45,6 @@
 #include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin.hxx>

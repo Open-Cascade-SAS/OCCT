@@ -15,12 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 
 //=======================================================================

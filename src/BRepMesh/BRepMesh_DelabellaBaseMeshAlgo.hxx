@@ -17,8 +17,6 @@
 #define _BRepMesh_DelabellaBaseMeshAlgo_HeaderFile
 
 #include <BRepMesh_CustomBaseMeshAlgo.hxx>
-#include <NCollection_Shared.hxx>
-#include <IMeshTools_Parameters.hxx>
 
 
 //! Class provides base functionality to build face triangulation using Delabella project.
