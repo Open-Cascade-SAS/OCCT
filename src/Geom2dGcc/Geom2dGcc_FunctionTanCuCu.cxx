@@ -16,14 +16,12 @@
 
 
 #include <ElCLib.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanCuCu.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_ConstructionError.hxx>
 
 void Geom2dGcc_FunctionTanCuCu::
 InitDerivative(const math_Vector& X,

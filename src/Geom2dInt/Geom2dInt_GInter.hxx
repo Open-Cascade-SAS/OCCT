@@ -19,14 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #include <Geom2dInt_TheIntPCurvePCurveOfGInter.hxx>
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_ConstructionError;

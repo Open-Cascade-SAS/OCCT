@@ -22,9 +22,7 @@
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Surface,Geom_Geometry)

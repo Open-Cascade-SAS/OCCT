@@ -14,7 +14,6 @@
 
 // Modified:     Portage NT 7-5-97 DPF (return)
 
-#include <ChFi3d_FilletShape.hxx>
 #include <FilletSurf_Builder.hxx>
 #include <FilletSurf_ErrorTypeStatus.hxx>
 #include <FilletSurf_InternalBuilder.hxx>

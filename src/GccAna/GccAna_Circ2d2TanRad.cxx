@@ -17,10 +17,8 @@
 #include <GccAna_Circ2d2TanRad.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <GccEnt_QualifiedLin.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>

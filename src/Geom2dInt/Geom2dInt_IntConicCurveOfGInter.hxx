@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_ConstructionError;
 class IntCurve_IConicTool;
 class Adaptor2d_Curve2d;

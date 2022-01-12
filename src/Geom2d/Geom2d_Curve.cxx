@@ -22,7 +22,6 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Curve,Geom2d_Geometry)

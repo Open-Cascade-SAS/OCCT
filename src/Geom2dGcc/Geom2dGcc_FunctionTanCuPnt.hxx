@@ -24,8 +24,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 
 //! This abstract class describes a Function of 1 Variable

@@ -18,12 +18,10 @@
 #define _FEmTool_ProfileMatrix_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_Array2OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <FEmTool_SparseMatrix.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Real.hxx>

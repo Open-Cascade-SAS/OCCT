@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class Geom2d_Curve;
 class gp_Pnt2d;

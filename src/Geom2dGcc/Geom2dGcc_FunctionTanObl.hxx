@@ -24,8 +24,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 
 //! This class describe a function of a single variable.

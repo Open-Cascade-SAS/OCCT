@@ -15,7 +15,6 @@
 #ifndef _Geom2dEvaluator_OffsetCurve_HeaderFile
 #define _Geom2dEvaluator_OffsetCurve_HeaderFile
 
-#include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dEvaluator_Curve.hxx>
 

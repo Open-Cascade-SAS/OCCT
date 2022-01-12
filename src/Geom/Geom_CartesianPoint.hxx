@@ -18,7 +18,6 @@
 #define _Geom_CartesianPoint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Geom_Point.hxx>

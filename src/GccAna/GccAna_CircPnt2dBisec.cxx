@@ -24,13 +24,10 @@
 #include <GccInt_BHyper.hxx>
 #include <GccInt_Bisec.hxx>
 #include <GccInt_BLine.hxx>
-#include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_XY.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 

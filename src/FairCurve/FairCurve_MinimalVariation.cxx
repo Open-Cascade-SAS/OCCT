@@ -21,7 +21,6 @@
 
 
 #include <BSplCLib.hxx>
-#include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_EnergyOfMVC.hxx>
 #include <FairCurve_MinimalVariation.hxx>
 #include <FairCurve_Newton.hxx>
@@ -30,9 +29,6 @@
 #include <gp_Vec2d.hxx>
 #include <math_Matrix.hxx>
 #include <PLib.hxx>
-#include <Precision.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NegativeValue.hxx>
 #include <Standard_NullValue.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColStd_HArray1OfInteger.hxx>

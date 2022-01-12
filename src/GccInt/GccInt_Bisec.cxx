@@ -22,7 +22,6 @@
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 

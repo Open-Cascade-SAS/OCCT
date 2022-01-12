@@ -22,7 +22,6 @@
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Point.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2d2TanOn.hxx>
 #include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
 #include <Geom2dGcc_Circ2d2TanOnIter.hxx>

@@ -16,7 +16,6 @@
 
 
 #include <ElCLib.hxx>
-#include <Geom2d_Geometry.hxx>
 #include <Geom2d_Line.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>

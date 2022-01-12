@@ -18,7 +18,6 @@
 #define _Geom_Axis1Placement_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Geom_AxisPlacement.hxx>
 class gp_Ax1;

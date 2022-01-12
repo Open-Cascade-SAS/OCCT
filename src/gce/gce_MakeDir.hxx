@@ -23,7 +23,6 @@
 
 #include <gp_Dir.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Real.hxx>
 class gp_Vec;
 class gp_XYZ;
 class gp_Pnt;

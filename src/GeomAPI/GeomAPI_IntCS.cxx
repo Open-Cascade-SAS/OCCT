@@ -16,7 +16,6 @@
 
 
 #include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -24,8 +23,6 @@
 #include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GeomAPI_IntCS

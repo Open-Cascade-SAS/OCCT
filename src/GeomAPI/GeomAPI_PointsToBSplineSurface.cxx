@@ -16,8 +16,6 @@
 
 
 #include <AppDef_BSplineCompute.hxx>
-#include <AppDef_MultiLine.hxx>
-#include <AppDef_MultiPointConstraint.hxx>
 #include <AppDef_Variational.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
@@ -31,7 +29,6 @@
 #include <GeomFill_SectionGenerator.hxx>
 #include <gp_Pnt.hxx>
 #include <math_Vector.hxx>
-#include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <AppDef_BSpParLeastSquareOfMyBSplGradientOfBSplineCompute.hxx>

@@ -16,7 +16,6 @@
 #include <ElCLib.hxx>
 #include <GccAna_Circ2dTanOnRad.hxx>
 #include <GccEnt_BadQualifier.hxx>
-#include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -25,8 +24,6 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
 //=========================================================================

@@ -17,7 +17,6 @@
 
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Point.hxx>
-#include <Geom2dToIGES_Geom2dEntity.hxx>
 #include <Geom2dToIGES_Geom2dPoint.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESGeom_Point.hxx>

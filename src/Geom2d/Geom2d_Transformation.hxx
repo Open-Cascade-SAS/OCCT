@@ -18,12 +18,10 @@
 #define _Geom2d_Transformation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Trsf2d.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_TrsfForm.hxx>
 #include <Standard_Integer.hxx>
 class gp_Pnt2d;

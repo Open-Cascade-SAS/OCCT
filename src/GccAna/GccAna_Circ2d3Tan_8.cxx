@@ -15,11 +15,9 @@
 
 #include <ElCLib.hxx>
 #include <GccAna_Circ2d3Tan.hxx>
-#include <GccAna_Lin2dBisec.hxx>
 #include <GccAna_LinPnt2dBisec.hxx>
 #include <GccAna_Pnt2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
-#include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_Bisec.hxx>
 #include <GccInt_IType.hxx>
@@ -31,8 +29,6 @@
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to a straight line and two points.      +

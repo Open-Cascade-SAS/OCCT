@@ -19,7 +19,6 @@
 //=========================================================================
 
 #include <GccAna_CircLin2dBisec.hxx>
-#include <GccInt_Bisec.hxx>
 #include <GccInt_BLine.hxx>
 #include <GccInt_BParab.hxx>
 #include <gp.hxx>

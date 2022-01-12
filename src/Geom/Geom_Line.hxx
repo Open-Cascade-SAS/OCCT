@@ -22,8 +22,6 @@
 
 #include <gp_Ax1.hxx>
 #include <Geom_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 class gp_Lin;

@@ -14,7 +14,6 @@
 
 #include <Geom2dConvert.hxx>
 
-#include <BSplCLib.hxx>
 #include <Convert_CircleToBSplineCurve.hxx>
 #include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_EllipseToBSplineCurve.hxx>
@@ -40,7 +39,6 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>

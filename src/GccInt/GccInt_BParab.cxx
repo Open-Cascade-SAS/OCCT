@@ -17,7 +17,6 @@
 
 #include <GccInt_BParab.hxx>
 #include <gp_Parab2d.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GccInt_BParab,GccInt_Bisec)

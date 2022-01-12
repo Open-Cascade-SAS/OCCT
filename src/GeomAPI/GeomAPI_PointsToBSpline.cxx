@@ -16,7 +16,6 @@
 
 
 #include <AppDef_BSplineCompute.hxx>
-#include <AppDef_MultiLine.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
 #include <AppDef_Variational.hxx>
 #include <AppParCurves_Constraint.hxx>

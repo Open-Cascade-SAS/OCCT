@@ -18,11 +18,9 @@
 #include <GccAna_Circ2dTanCen.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <GccEnt_QualifiedLin.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Point.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2dTanCen.hxx>
 #include <Geom2dGcc_Circ2dTanCenGeo.hxx>
 #include <Geom2dGcc_QCurve.hxx>

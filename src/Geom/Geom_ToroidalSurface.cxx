@@ -23,7 +23,6 @@
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Trsf.hxx>

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Precision.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -29,7 +28,6 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>

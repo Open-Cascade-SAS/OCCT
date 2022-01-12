@@ -16,17 +16,10 @@
 
 //  Modified by skv - Fri Jul 14 17:03:47 2006 OCC12627
 
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dHatch_Element.hxx>
 #include <Geom2dHatch_Elements.hxx>
-#include <gp.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Precision.hxx>
 

@@ -20,7 +20,6 @@
 
 
 #include <BSplCLib.hxx>
-#include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_DistributionOfSagging.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_XY.hxx>

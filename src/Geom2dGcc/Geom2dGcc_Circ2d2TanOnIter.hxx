@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <gp_Circ2d.hxx>
 #include <GccEnt_Position.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
 class GccEnt_QualifiedCirc;
 class Geom2dGcc_QCurve;
 class gp_Lin2d;

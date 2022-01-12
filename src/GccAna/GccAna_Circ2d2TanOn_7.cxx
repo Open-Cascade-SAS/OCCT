@@ -31,8 +31,6 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 GccAna_Circ2d2TanOn::

@@ -17,7 +17,6 @@
 
 #include <GccInt_BCirc.hxx>
 #include <gp_Circ2d.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GccInt_BCirc,GccInt_Bisec)

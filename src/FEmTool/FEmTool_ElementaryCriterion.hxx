@@ -18,7 +18,6 @@
 #define _FEmTool_ElementaryCriterion_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray2OfReal.hxx>
 #include <Standard_Real.hxx>

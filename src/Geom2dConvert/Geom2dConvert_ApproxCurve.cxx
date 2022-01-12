@@ -25,7 +25,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 

@@ -18,9 +18,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2dLProp_Curve2dTool.hxx>
 #include <Geom2dLProp_FuncCurNul.hxx>
-#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Precision.hxx>
 
 //=============================================================================
 //function :

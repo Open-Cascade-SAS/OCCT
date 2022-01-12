@@ -23,7 +23,6 @@
 #include <Storage_Error.hxx>
 #include <Storage_OpenMode.hxx>
 #include <Storage_Data.hxx>
-#include <Standard_Boolean.hxx>
 #include <Storage_Position.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>

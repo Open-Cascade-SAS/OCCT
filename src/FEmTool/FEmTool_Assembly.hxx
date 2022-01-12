@@ -23,7 +23,6 @@
 
 #include <TColStd_Array2OfInteger.hxx>
 #include <FEmTool_HAssemblyTable.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 #include <FEmTool_SeqOfLinConstr.hxx>
 #include <TColStd_SequenceOfReal.hxx>

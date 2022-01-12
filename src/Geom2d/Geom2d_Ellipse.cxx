@@ -18,7 +18,6 @@
 #include <ElCLib.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Geometry.hxx>
-#include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Dir2d.hxx>

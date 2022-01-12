@@ -17,7 +17,6 @@
 #ifndef Geom_HSequenceOfBSplineSurface_HeaderFile
 #define Geom_HSequenceOfBSplineSurface_HeaderFile
 
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_SequenceOfBSplineSurface.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

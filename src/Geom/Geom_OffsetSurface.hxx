@@ -20,11 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
-#include <Geom_OsculatingSurface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomEvaluator_OffsetSurface.hxx>
 class Geom_Curve;

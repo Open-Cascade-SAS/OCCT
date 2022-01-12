@@ -17,7 +17,6 @@
 #ifndef _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile
 #define _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile
 
-#include <gp_Dir.hxx>
 #include <GeomAdaptor_Surface.hxx>
 
 class gp_Pln;

@@ -19,13 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <FairCurve_Batten.hxx>
-#include <Standard_Boolean.hxx>
 #include <FairCurve_AnalysisCode.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class gp_Pnt2d;
 class gp_Vec2d;

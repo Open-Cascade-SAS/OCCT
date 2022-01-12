@@ -18,8 +18,6 @@
 
 #include <Standard.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <Font_FontAspect.hxx>
 #include <Font_NListOfSystemFont.hxx>
 #include <Font_StrictLevel.hxx>
 #include <Font_UnicodeSubset.hxx>

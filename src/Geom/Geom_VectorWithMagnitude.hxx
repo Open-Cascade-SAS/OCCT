@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_Vector.hxx>
-#include <Standard_Real.hxx>
 class gp_Vec;
 class gp_Pnt;
 class gp_Trsf;

@@ -19,16 +19,13 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_Array1OfLin2d.hxx>
 #include <GccEnt_Array1OfPosition.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GccEnt_Position.hxx>
-#include <Standard_Real.hxx>
 class gp_Pnt2d;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;

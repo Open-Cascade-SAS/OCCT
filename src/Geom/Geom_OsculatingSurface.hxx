@@ -25,7 +25,6 @@
 #include <Geom_HSequenceOfBSplineSurface.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Geom_SequenceOfBSplineSurface.hxx>

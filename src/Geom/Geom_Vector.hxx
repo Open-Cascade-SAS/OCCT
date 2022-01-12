@@ -18,7 +18,6 @@
 #define _Geom_Vector_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Vec.hxx>
 #include <Geom_Geometry.hxx>

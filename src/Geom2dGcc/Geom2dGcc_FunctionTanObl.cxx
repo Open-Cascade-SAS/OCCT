@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanObl.hxx>
 #include <gp_Dir2d.hxx>

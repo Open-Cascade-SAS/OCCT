@@ -17,7 +17,6 @@
 
 #include <ElCLib.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Intersector.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <gp_Dir2d.hxx>

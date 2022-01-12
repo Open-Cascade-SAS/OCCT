@@ -22,7 +22,6 @@
 
 #include <BSplCLib.hxx>
 #include <FairCurve_Batten.hxx>
-#include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_EnergyOfBatten.hxx>
 #include <FairCurve_Newton.hxx>
 #include <Geom2d_BSplineCurve.hxx>

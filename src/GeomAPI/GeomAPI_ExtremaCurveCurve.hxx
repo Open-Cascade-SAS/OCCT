@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 class Geom_Curve;
 

@@ -23,9 +23,7 @@
 
 #include <Geom2dHatch_MapOfElements.hxx>
 #include <Geom2dHatch_DataMapIteratorOfMapOfElements.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 class Geom2dHatch_Element;
 class gp_Pnt2d;

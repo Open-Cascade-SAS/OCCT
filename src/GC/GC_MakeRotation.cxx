@@ -17,7 +17,6 @@
 
 #include <GC_MakeRotation.hxx>
 #include <Geom_Transformation.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>

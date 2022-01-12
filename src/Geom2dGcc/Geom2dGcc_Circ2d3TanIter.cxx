@@ -39,7 +39,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <math_NewtonFunctionSetRoot.hxx>
 #include <StdFail_NotDone.hxx>
 
 Geom2dGcc_Circ2d3TanIter::

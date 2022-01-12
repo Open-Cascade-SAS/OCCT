@@ -15,12 +15,9 @@
 #include <BSplSLib.hxx>
 #include <Convert_GridPolynomialToPoles.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_OsculatingSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <PLib.hxx>
-#include <Precision.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_Array2OfVec.hxx>
 #include <TColgp_HArray2OfPnt.hxx>

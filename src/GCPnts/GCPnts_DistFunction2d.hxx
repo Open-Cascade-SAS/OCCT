@@ -14,7 +14,6 @@
 #ifndef _GCPnts_DistFunction2d_HeaderFile
 #define _GCPnts_DistFunction2d_HeaderFile
 
-#include <gp_Lin2d.hxx>
 #include <math_Function.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <Adaptor2d_Curve2d.hxx>

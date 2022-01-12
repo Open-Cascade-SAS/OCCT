@@ -22,24 +22,14 @@
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pln.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================
 //function : To2d

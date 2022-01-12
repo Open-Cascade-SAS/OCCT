@@ -16,7 +16,6 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBlend_ConstRad.hxx>
@@ -31,16 +30,12 @@
 #include <ChFiDS_FilSpine.hxx>
 #include <ChFiDS_HData.hxx>
 #include <ChFiDS_ElSpine.hxx>
-#include <ChFiDS_ListIteratorOfListOfStripe.hxx>
-#include <ChFiDS_ListOfStripe.hxx>
 #include <ChFiDS_SecHArray1.hxx>
 #include <ChFiDS_SequenceOfSurfData.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_Stripe.hxx>
 #include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
-#include <FilletSurf_ErrorTypeStatus.hxx>
-#include <FilletSurf_StatusDone.hxx>
 #include <FilletSurf_StatusType.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Circle.hxx>
@@ -49,22 +44,19 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static Standard_Boolean isinlist(const TopoDS_Shape&         E,
-				 const TopTools_ListOfShape& L){
+                                 const TopTools_ListOfShape& L){
   TopTools_ListIteratorOfListOfShape It;
   for (It.Initialize(L); It.More(); It.Next()){
     if(E.IsSame(It.Value())) return 1;

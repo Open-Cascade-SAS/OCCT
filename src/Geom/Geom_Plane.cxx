@@ -16,15 +16,12 @@
 
 
 #include <ElSLib.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_GTrsf2d.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -32,7 +29,6 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 

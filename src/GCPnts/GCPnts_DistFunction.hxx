@@ -14,7 +14,6 @@
 #ifndef _GCPnts_DistFunction_HeaderFile
 #define _GCPnts_DistFunction_HeaderFile
 
-#include <gp_Lin.hxx>
 #include <math_Function.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <Adaptor3d_Curve.hxx>

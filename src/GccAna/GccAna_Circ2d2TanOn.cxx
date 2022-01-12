@@ -18,8 +18,6 @@
 #include <GccAna_Circ2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <GccEnt_QualifiedLin.hxx>
-#include <GccInt_BCirc.hxx>
 #include <GccInt_BLine.hxx>
 #include <GccInt_IType.hxx>
 #include <gp_Ax2d.hxx>

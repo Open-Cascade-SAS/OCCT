@@ -19,11 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Circ.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Real.hxx>
 class gp_Ax2;
 class gp_Pnt;
 class gp_Dir;

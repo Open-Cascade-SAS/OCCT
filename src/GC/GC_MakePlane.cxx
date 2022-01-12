@@ -20,8 +20,6 @@
 #include <Geom_Plane.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>

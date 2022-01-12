@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <Geom_ElementarySurface.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class gp_Ax3;
 class gp_Cone;

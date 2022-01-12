@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <Geom2d_Conic.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class gp_Parab2d;
 class gp_Ax2d;

@@ -18,24 +18,17 @@
 #include <ElCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Geometry.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
-#include <Geom2d_UndefinedValue.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 

@@ -24,7 +24,6 @@
 #include <Geom2dGcc_IsParallel.hxx>
 #include <Geom2dGcc_Lin2dTanOblIter.hxx>
 #include <Geom2dGcc_QCurve.hxx>
-#include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>

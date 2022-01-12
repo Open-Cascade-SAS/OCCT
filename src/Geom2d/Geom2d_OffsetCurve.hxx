@@ -20,10 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom2dEvaluator_OffsetCurve.hxx>
 

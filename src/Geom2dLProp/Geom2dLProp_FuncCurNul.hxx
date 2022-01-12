@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Geom2d_Curve;
 
 

@@ -19,7 +19,6 @@
 #include <ElCLib.hxx>
 #include <GccAna_Lin2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
-#include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>

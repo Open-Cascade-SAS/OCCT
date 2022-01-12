@@ -17,7 +17,6 @@
 
 #include <GccInt_BPoint.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GccInt_BPoint,GccInt_Bisec)

@@ -17,11 +17,8 @@
 
 #include <Extrema_ExtCC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_ExtremaCurveCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 

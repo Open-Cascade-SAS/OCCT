@@ -21,7 +21,6 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Cylinder.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>

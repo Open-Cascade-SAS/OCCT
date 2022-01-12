@@ -27,11 +27,7 @@
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Parab2d.hxx>
 
 //=======================================================================
 //function : MakeCurve

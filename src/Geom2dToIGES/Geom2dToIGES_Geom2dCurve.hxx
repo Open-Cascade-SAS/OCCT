@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Geom2dToIGES_Geom2dEntity.hxx>
-#include <Standard_Real.hxx>
 class IGESData_IGESEntity;
 class Geom2d_Curve;
 

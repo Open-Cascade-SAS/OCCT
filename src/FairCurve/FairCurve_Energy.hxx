@@ -23,9 +23,7 @@
 
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfXY.hxx>
-#include <math_Vector.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <Standard_Real.hxx>
 class math_Matrix;

@@ -17,8 +17,6 @@
 
 #include <Geom2d_Vector.hxx>
 #include <gp_Vec2d.hxx>
-#include <gp_VectorWithNullMagnitude.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Vector,Geom2d_Geometry)

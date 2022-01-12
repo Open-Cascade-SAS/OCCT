@@ -27,8 +27,6 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 // circular tangent to a circle, a line and a given radius

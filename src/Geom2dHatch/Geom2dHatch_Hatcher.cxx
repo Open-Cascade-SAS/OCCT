@@ -22,15 +22,12 @@
 #include <Geom2dHatch_Hatching.hxx>
 #include <Geom2dHatch_Intersector.hxx>
 #include <HatchGen_Domain.hxx>
-#include <HatchGen_Domains.hxx>
 #include <HatchGen_PointOnElement.hxx>
 #include <HatchGen_PointOnHatching.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopAbs.hxx>
 #include <TopTrans_CurveTransition.hxx>

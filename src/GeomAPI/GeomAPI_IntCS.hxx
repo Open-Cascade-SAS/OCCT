@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <IntCurveSurface_HInter.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
 class Geom_Surface;

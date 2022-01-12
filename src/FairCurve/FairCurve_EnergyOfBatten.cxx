@@ -20,7 +20,6 @@
 #endif
 
 
-#include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_EnergyOfBatten.hxx>
 #include <math_GaussSetIntegration.hxx>
 #include <math_IntegerVector.hxx>

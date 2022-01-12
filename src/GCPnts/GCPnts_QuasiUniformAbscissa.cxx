@@ -16,11 +16,9 @@
 
 #include <GCPnts_TCurveTypes.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 
 //=======================================================================
 //function : GCPnts_QuasiUniformAbscissa

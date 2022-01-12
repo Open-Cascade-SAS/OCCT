@@ -21,13 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_DistributionOfEnergy.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 
 

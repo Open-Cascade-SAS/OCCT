@@ -19,7 +19,6 @@
 #include <gce_MakeCone.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <gp.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Lin.hxx>

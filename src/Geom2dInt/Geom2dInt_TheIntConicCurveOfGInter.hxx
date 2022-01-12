@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Real.hxx>
 class IntCurve_IConicTool;
 class Adaptor2d_Curve2d;
 class Geom2dInt_Geom2dCurveTool;

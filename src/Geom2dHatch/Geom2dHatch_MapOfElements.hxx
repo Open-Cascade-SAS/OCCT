@@ -17,7 +17,6 @@
 #ifndef Geom2dHatch_MapOfElements_HeaderFile
 #define Geom2dHatch_MapOfElements_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <Geom2dHatch_Element.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

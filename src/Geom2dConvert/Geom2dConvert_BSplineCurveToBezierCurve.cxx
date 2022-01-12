@@ -18,7 +18,6 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

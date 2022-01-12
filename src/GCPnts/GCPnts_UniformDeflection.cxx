@@ -19,10 +19,7 @@
 #include <GCPnts_TCurveTypes.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 // mask the return of a Adaptor2d_Curve2d as a gp_Pnt 

@@ -16,7 +16,6 @@
 
 
 #include <gce_MakeParab.hxx>
-#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Parab.hxx>

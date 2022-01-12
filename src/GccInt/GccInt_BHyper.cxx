@@ -17,7 +17,6 @@
 
 #include <GccInt_BHyper.hxx>
 #include <gp_Hypr2d.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GccInt_BHyper,GccInt_Bisec)

@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_ConstructionError;
 class IntCurve_IConicTool;

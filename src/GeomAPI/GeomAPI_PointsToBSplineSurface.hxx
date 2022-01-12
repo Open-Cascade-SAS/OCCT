@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
 #include <Approx_ParametrizationType.hxx>
 #include <TColStd_Array2OfReal.hxx>
 class Geom_BSplineSurface;

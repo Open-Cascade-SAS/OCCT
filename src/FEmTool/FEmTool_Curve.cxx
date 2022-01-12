@@ -20,10 +20,8 @@
 
 #include <FEmTool_Curve.hxx>
 #include <PLib.hxx>
-#include <PLib_Base.hxx>
 #include <PLib_HermitJacobi.hxx>
 #include <PLib_JacobiPolynomial.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_Curve,Standard_Transient)

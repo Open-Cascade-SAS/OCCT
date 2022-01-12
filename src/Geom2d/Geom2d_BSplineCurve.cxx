@@ -30,23 +30,18 @@
 
 
 #include <BSplCLib.hxx>
-#include <BSplCLib_KnotDistribution.hxx>
-#include <BSplCLib_MultDistribution.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BSplineCurve,Geom2d_BoundedCurve)

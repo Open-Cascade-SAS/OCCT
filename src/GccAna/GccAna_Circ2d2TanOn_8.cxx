@@ -27,23 +27,16 @@
 #include <GccAna_CircPnt2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <GccEnt_QualifiedLin.hxx>
-#include <GccInt_BCirc.hxx>
 #include <GccInt_Bisec.hxx>
-#include <GccInt_BLine.hxx>
 #include <GccInt_IType.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 GccAna_Circ2d2TanOn::

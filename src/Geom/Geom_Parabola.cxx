@@ -16,7 +16,6 @@
 
 
 #include <ElCLib.hxx>
-#include <Geom_Geometry.hxx>
 #include <Geom_Parabola.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>

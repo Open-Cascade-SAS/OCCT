@@ -19,11 +19,7 @@
 #include <GccAna_Pnt2dBisec.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <GccEnt_QualifiedLin.hxx>
-#include <GccInt_BCirc.hxx>
 #include <GccInt_BElips.hxx>
-#include <GccInt_BHyper.hxx>
-#include <GccInt_BLine.hxx>
 #include <GccInt_IType.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -33,8 +29,6 @@
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 //=======================================================================

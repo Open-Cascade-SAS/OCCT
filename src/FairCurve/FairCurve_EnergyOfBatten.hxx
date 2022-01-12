@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
-#include <FairCurve_BattenLaw.hxx>
 #include <FairCurve_DistributionOfTension.hxx>
 #include <FairCurve_DistributionOfSagging.hxx>
 #include <FairCurve_AnalysisCode.hxx>

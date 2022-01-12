@@ -26,8 +26,6 @@
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2dTanOnRadGeo.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_QCurve.hxx>
@@ -38,7 +36,6 @@
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <math_DirectPolynomialRoots.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>

@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Geom2dInt_GInter.hxx>
 class Geom2dAdaptor_Curve;
 class gp_Lin2d;

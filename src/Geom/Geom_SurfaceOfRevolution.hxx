@@ -23,8 +23,6 @@
 #include <gp_Pnt.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
 class gp_Ax1;

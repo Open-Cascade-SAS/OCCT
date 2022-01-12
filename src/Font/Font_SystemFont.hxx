@@ -18,7 +18,6 @@
 
 #include <Font_FontAspect.hxx>
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 

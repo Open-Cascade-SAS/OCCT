@@ -18,8 +18,6 @@
 #define _FilletSurf_InternalBuilder_HeaderFile
 
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <ChFiDS_ElSpine.hxx>
 #include <ChFi3d_FilBuilder.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <TopTools_ListOfShape.hxx>

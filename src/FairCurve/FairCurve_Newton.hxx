@@ -21,10 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <math_NewtonMinimum.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class math_MultipleVarFunctionWithHessian;
 
 

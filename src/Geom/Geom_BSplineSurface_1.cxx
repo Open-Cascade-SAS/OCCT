@@ -28,9 +28,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>

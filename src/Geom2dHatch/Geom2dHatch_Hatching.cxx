@@ -15,13 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dHatch_Hatching.hxx>
 #include <gp_Pnt2d.hxx>
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_PointOnElement.hxx>
 #include <HatchGen_PointOnHatching.hxx>
-#include <Standard_OutOfRange.hxx>
 
 #define RAISE_IF_NOSUCHOBJECT 0
 

@@ -24,7 +24,6 @@
 #include <math_Vector.hxx>
 #include <PLib.hxx>
 #include <PLib_HermitJacobi.hxx>
-#include <PLib_JacobiPolynomial.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>

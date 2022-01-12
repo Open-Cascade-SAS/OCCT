@@ -17,7 +17,6 @@
 // 08-Aug-95 : xab : interpolation uses BSplCLib::Interpolate
 
 #include <BSplCLib.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <gp_Vec.hxx>
 #include <PLib.hxx>

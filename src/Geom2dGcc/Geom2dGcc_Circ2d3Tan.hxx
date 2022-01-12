@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TColgp_Array1OfCirc2d.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <GccEnt_Array1OfPosition.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

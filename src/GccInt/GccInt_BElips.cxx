@@ -17,7 +17,6 @@
 
 #include <GccInt_BElips.hxx>
 #include <gp_Elips2d.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GccInt_BElips,GccInt_Bisec)

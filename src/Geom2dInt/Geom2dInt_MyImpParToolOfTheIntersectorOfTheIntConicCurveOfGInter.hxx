@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <IntCurve_IConicTool.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class IntCurve_IConicTool;
 class Adaptor2d_Curve2d;
 class Geom2dInt_Geom2dCurveTool;

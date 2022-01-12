@@ -18,7 +18,6 @@
 #define _GccInt_BParab_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Parab2d.hxx>
 #include <GccInt_Bisec.hxx>

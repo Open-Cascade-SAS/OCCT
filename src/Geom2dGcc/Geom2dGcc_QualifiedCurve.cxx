@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 
 Geom2dGcc_QualifiedCurve::

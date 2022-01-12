@@ -26,8 +26,6 @@
 #include <HatchGen_PointsOnHatching.hxx>
 #include <HatchGen_ErrorStatus.hxx>
 #include <HatchGen_Domains.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 
 class gp_Pnt2d;
 

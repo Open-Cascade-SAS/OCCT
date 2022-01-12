@@ -37,7 +37,6 @@
 #include <GccEnt_QualifiedLin.hxx>
 #include <GccInt_BHyper.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
 #include <Geom2dInt_TheIntConicCurveOfGInter.hxx>
 #include <gp_Circ2d.hxx>

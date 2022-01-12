@@ -28,7 +28,6 @@
 #include <BSplCLib.hxx>
 #include <BSplSLib_Cache.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -46,26 +45,20 @@
 #include <GeomEvaluator_SurfaceOfExtrusion.hxx>
 #include <GeomEvaluator_SurfaceOfRevolution.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 
 static const Standard_Real PosTol = Precision::PConfusion()*0.5;
 

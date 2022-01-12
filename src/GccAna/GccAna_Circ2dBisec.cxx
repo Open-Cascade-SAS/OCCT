@@ -25,16 +25,11 @@
 #include <GccInt_BHyper.hxx>
 #include <GccInt_Bisec.hxx>
 #include <GccInt_BLine.hxx>
-#include <GccInt_BParab.hxx>
-#include <gp.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_XY.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 

@@ -36,7 +36,6 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>

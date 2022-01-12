@@ -20,13 +20,8 @@
 // Modified     18/11/96 : JPI : inversion de l'offsetValue dans UReverse et Vreverse
 
 #include <AdvApprox_ApproxAFunction.hxx>
-#include <BSplCLib.hxx>
-#include <BSplSLib.hxx>
-#include <Convert_GridPolynomialToPoles.hxx>
-#include <CSLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -45,34 +40,26 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <Geom_UndefinedValue.hxx>
 #include <GeomLProp_SLProps.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomEvaluator_OffsetSurface.hxx>
-#include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfVec.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_OffsetSurface,Geom_Surface)
 

@@ -20,10 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <TColgp_Array2OfPnt.hxx>

@@ -19,15 +19,12 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Circ2d.hxx>
 #include <Geom2dGcc_Type3.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Pnt2d;
 class gp_Vec2d;
 class math_Matrix;

@@ -16,11 +16,9 @@
 
 
 #include <FEmTool_Assembly.hxx>
-#include <FEmTool_ListIteratorOfListOfVectors.hxx>
 #include <FEmTool_ListOfVectors.hxx>
 #include <FEmTool_ProfileMatrix.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_HArray1OfReal.hxx>

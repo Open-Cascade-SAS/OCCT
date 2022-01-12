@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Trsf.hxx>
-#include <Standard_Real.hxx>
 class gp_Lin;
 class gp_Ax1;
 class gp_Pnt;

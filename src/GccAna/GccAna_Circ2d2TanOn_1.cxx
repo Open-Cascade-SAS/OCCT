@@ -31,8 +31,6 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 //=========================================================================
 //   Creation of a circle tangent to Circle C1 and a straight line L2.    +

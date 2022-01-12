@@ -18,8 +18,6 @@
 #include <Extrema_ExtCS.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ExtremaCurveSurface.hxx>

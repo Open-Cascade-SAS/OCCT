@@ -18,7 +18,6 @@
 #include <GccEnt_BadQualifier.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_Circ2d2TanRadGeo.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_QCurve.hxx>

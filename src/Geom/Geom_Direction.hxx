@@ -18,7 +18,6 @@
 #define _Geom_Direction_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Geom_Vector.hxx>
 #include <Standard_Real.hxx>

@@ -17,8 +17,6 @@
 
 #include <FEmTool_ElementaryCriterion.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,Standard_Transient)

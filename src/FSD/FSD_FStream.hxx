@@ -15,7 +15,6 @@
 #ifndef _FSD_FStream_HeaderFile
 #define _FSD_FStream_HeaderFile
 
-#include <stdio.h>
 #include <Standard_Stream.hxx>
 
 typedef std::fstream FSD_FStream;

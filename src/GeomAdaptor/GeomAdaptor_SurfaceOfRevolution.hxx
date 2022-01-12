@@ -17,8 +17,6 @@
 #ifndef _GeomAdaptor_SurfaceOfRevolution_HeaderFile
 #define _GeomAdaptor_SurfaceOfRevolution_HeaderFile
 
-#include <gp_Ax1.hxx>
-#include <gp_Ax3.hxx>
 #include <GeomAdaptor_Surface.hxx>
 
 class gp_Pln;

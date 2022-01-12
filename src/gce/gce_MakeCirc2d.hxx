@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Circ2d.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;

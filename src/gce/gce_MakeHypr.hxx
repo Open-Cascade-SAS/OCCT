@@ -23,7 +23,6 @@
 
 #include <gp_Hypr.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Real.hxx>
 class gp_Ax2;
 class gp_Pnt;
 

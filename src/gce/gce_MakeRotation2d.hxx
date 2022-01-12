@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Trsf2d.hxx>
-#include <Standard_Real.hxx>
 class gp_Pnt2d;
 
 

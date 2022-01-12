@@ -21,7 +21,6 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <NCollection_Buffer.hxx>
-#include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Environment.hxx>
 #include <Standard_Stream.hxx>

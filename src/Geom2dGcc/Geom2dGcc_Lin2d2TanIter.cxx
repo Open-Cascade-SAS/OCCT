@@ -34,7 +34,6 @@
 #include <gp_XY.hxx>
 #include <math_FunctionRoot.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 

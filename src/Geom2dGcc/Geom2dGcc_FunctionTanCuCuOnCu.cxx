@@ -16,7 +16,6 @@
 
 
 #include <ElCLib.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_CurveTool.hxx>
 #include <Geom2dGcc_FunctionTanCuCuOnCu.hxx>
 #include <gp_Circ2d.hxx>

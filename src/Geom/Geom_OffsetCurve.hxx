@@ -21,10 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Dir.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomEvaluator_OffsetCurve.hxx>
 

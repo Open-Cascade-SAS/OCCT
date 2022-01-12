@@ -23,7 +23,6 @@
 
 #include <gp_Lin2d.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Real.hxx>
 class gp_Ax2d;
 class gp_Pnt2d;
 class gp_Dir2d;

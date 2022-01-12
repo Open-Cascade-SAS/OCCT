@@ -16,8 +16,6 @@
 
 
 #include <Extrema_ExtPC.hxx>
-#include <Geom_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_OutOfRange.hxx>

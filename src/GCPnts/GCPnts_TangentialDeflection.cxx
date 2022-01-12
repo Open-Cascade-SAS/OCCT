@@ -23,13 +23,10 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XYZ.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Circ2d.hxx>
 #include <math_BrentMinimum.hxx>
 #include <math_PSO.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 namespace

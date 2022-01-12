@@ -18,7 +18,6 @@
 #include <Geom2d_Direction.hxx>
 #include <Geom2d_Vector.hxx>
 #include <Geom2d_VectorWithMagnitude.hxx>
-#include <Geom2dToIGES_Geom2dEntity.hxx>
 #include <Geom2dToIGES_Geom2dVector.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESGeom_Direction.hxx>

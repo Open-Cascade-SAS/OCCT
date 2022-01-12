@@ -20,7 +20,6 @@
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
 #include <math_Function.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <Adaptor3d_Curve.hxx>

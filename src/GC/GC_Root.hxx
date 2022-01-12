@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gce_ErrorType.hxx>
-#include <Standard_Boolean.hxx>
 
 // resolve name collisions with X11 headers
 #ifdef Status
