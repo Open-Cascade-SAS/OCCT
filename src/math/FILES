@@ -52,7 +52,6 @@ math_FunctionSet.cxx
 math_FunctionSet.hxx
 math_FunctionSetRoot.cxx
 math_FunctionSetRoot.hxx
-math_FunctionSetRoot.lxx
 math_FunctionSetWithDerivatives.hxx
 math_FunctionWithDerivative.cxx
 math_FunctionWithDerivative.hxx

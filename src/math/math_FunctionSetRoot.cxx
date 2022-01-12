@@ -736,12 +736,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   myIsDivergent = Standard_False;
   for (i = 1; i <= Ninc; i++)
   {
-    myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+    myIsDivergent = myIsDivergent
+                 || Sol(i) < theInfBound(i)
+                 || Sol(i) > theSupBound(i);
   }
-  if (theStopOnDivergent & myIsDivergent)
+  if (theStopOnDivergent && myIsDivergent)
   {
     return;
   }
+
   // Verification de la validite des inconnues par rapport aux bornes.
   // Recentrage sur les bornes si pas valide.
   for ( i = 1; i <= Ninc; i++) {
@@ -811,9 +814,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     //
     for (i = 1; i <= Ninc; i++)
     {
-      myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+      myIsDivergent = myIsDivergent
+                   || Sol(i) < theInfBound(i)
+                   || Sol(i) > theSupBound(i);
     }
-    if (theStopOnDivergent & myIsDivergent)
+    if (theStopOnDivergent && myIsDivergent)
     {
       return;
     }
@@ -877,9 +882,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             //
             for (i = 1; i <= Ninc; i++)
             {
-              myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+              myIsDivergent = myIsDivergent
+                           || Sol(i) < theInfBound(i)
+                           || Sol(i) > theSupBound(i);
             }
-            if (theStopOnDivergent & myIsDivergent)
+            if (theStopOnDivergent && myIsDivergent)
             {
               return;
             }
@@ -915,9 +922,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                 //
                 for (i = 1; i <= Ninc; i++)
                 {
-                  myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+                  myIsDivergent = myIsDivergent
+                               || Sol(i) < theInfBound(i)
+                               || Sol(i) > theSupBound(i);
                 }
-                if (theStopOnDivergent & myIsDivergent)
+                if (theStopOnDivergent && myIsDivergent)
                 {
                   return;
                 }
@@ -997,9 +1006,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //
               for (i = 1; i <= Ninc; i++)
               {
-                myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+                myIsDivergent = myIsDivergent
+                             || Sol(i) < theInfBound(i)
+                             || Sol(i) > theSupBound(i);
               }
-              if (theStopOnDivergent & myIsDivergent)
+              if (theStopOnDivergent && myIsDivergent)
               {
                 return;
               }
@@ -1040,9 +1051,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                 //
                 for (i = 1; i <= Ninc; i++)
                 {
-                  myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+                  myIsDivergent = myIsDivergent
+                               || Sol(i) < theInfBound(i)
+                               || Sol(i) > theSupBound(i);
                 }
-                if (theStopOnDivergent & myIsDivergent)
+                if (theStopOnDivergent && myIsDivergent)
                 {
                   return;
                 }
@@ -1083,9 +1096,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //
               for (i = 1; i <= Ninc; i++)
               {
-                myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
+                myIsDivergent = myIsDivergent
+                             || Sol(i) < theInfBound(i)
+                             || Sol(i) > theSupBound(i);
               }
-              if (theStopOnDivergent & myIsDivergent)
+              if (theStopOnDivergent && myIsDivergent)
               {
                 return;
               }

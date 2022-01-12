@@ -17,18 +17,14 @@
 #ifndef _math_FunctionSetRoot_HeaderFile
 #define _math_FunctionSetRoot_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <math_Vector.hxx>
-#include <math_Matrix.hxx>
-#include <Standard_Integer.hxx>
 #include <math_IntegerVector.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
-class math_FunctionSetWithDerivatives;
+#include <Standard_DimensionError.hxx>
+#include <StdFail_NotDone.hxx>
 
+class math_FunctionSetWithDerivatives;
 
 //! The math_FunctionSetRoot class calculates the root
 //! of a set of N functions of M variables (N<M, N=M or N>M). Knowing
@@ -43,7 +39,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! is used in a sub-class to initialize correctly all the fields
   //! of this class.
   //! The range (1, F.NbVariables()) must be especially
@@ -69,39 +64,58 @@ public:
   //! in a sub-class to implement a specific test to stop the iterations.
   //! In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
   //! for all unknowns.
-    virtual Standard_Boolean IsSolutionReached (math_FunctionSetWithDerivatives& F);
-  
+  virtual Standard_Boolean IsSolutionReached (math_FunctionSetWithDerivatives& )
+  {
+    for (Standard_Integer i = 1; i <= Sol.Length(); ++i)
+    {
+      if (Abs (Delta(i)) > Tol(i))
+      {
+        return Standard_False;
+      }
+    }
+    return Standard_True;
+  }
 
   //! Improves the root of function from the initial guess point.
   //! The infinum and supremum may be given to constrain the solution.
   //! In this case, the solution is found when: abs(Xi - Xi-1)(j) <= Tolerance(j)
   //! for all unknowns.
   Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint, const Standard_Boolean theStopOnDivergent = Standard_False);
-  
 
   //! Improves the root of function from the initial guess point.
   //! The infinum and supremum may be given to constrain the solution.
   //! In this case, the solution is found when: abs(Xi - Xi-1) <= Tolerance
   //! for all unknowns.
   Standard_EXPORT void Perform (math_FunctionSetWithDerivatives& theFunction, const math_Vector& theStartingPoint, const math_Vector& theInfBound, const math_Vector& theSupBound, const Standard_Boolean theStopOnDivergent = Standard_False);
-  
 
   //! Returns true if the computations are successful, otherwise returns false.
-    Standard_Boolean IsDone() const;
-  
+  Standard_Boolean IsDone() const { return Done; }
+
   //! Returns the number of iterations really done
   //! during the computation of the root.
   //! Exception NotDone is raised if the root was not found.
-    Standard_Integer NbIterations() const;
+  Standard_Integer NbIterations() const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    return Kount;
+  }
   
   //! returns the stateNumber (as returned by
   //! F.GetStateNumber()) associated to the root found.
-    Standard_Integer StateNumber() const;
+  Standard_Integer StateNumber() const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    return State;
+  }
   
   //! Returns the value of the root of function F.
   //! Exception NotDone is raised if the root was not found.
-    const math_Vector& Root() const;
-  
+  const math_Vector& Root() const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    return Sol;
+  }
+
   //! Outputs the root vector in Root.
   //! Exception NotDone is raised if the root was not found.
   //! Exception DimensionError is raised if the range of Root
@@ -110,19 +124,32 @@ public:
   
   //! Returns the matrix value of the derivative at the root.
   //! Exception NotDone is raised if the root was not found.
-    const math_Matrix& Derivative() const;
+  const math_Matrix& Derivative() const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    return DF;
+  }
   
   //! outputs the matrix value of the derivative
   //! at the root in Der.
   //! Exception NotDone is raised if the root was not found.
   //! Exception DimensionError is raised if the column range
   //! of <Der> is not equal to the range of the startingPoint.
-    void Derivative (math_Matrix& Der) const;
-  
+  void Derivative (math_Matrix& Der) const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    Standard_DimensionError_Raise_if(Der.ColNumber() != Sol.Length(), " ");
+    Der = DF;
+  }
+
   //! returns the vector value of the error done
   //! on the functions at the root.
   //! Exception NotDone is raised if the root was not found.
-    const math_Vector& FunctionSetErrors() const;
+  const math_Vector& FunctionSetErrors() const
+  {
+    StdFail_NotDone_Raise_if(!Done, " ");
+    return Delta;
+  }
   
   //! outputs the vector value of the error done
   //! on the functions at the root in Err.
@@ -135,25 +162,17 @@ public:
   //! of the object.
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
-  
-  Standard_Boolean IsDivergent() const;
 
-
-
+  Standard_Boolean IsDivergent() const { return myIsDivergent; }
 
 protected:
-
-
 
   math_Vector Delta;
   math_Vector Sol;
   math_Matrix DF;
   math_Vector Tol;
 
-
 private:
-
-
 
   Standard_Boolean Done;
   Standard_Integer Kount;
@@ -175,14 +194,13 @@ private:
   math_Vector Temp4;
   Standard_Boolean myIsDivergent;
 
-
 };
 
-
-#include <math_FunctionSetRoot.lxx>
-
-
-
-
+inline Standard_OStream& operator<< (Standard_OStream& theStream,
+                                     const math_FunctionSetRoot& theF)
+{
+  theF.Dump (theStream);
+  return theStream;
+}
 
 #endif // _math_FunctionSetRoot_HeaderFile
