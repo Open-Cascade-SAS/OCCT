@@ -24,9 +24,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>

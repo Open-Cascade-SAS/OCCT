@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TFunction_Driver.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TFunction_Logbook;
 

@@ -23,7 +23,6 @@
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
 
 //! This class represents distance objective function for surface / surface.

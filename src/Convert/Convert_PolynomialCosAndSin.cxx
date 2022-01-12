@@ -16,23 +16,18 @@
 
 #include <Convert_PolynomialCosAndSin.hxx>
 
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 
 #include <gp.hxx>
 #include <Precision.hxx>
-#include <PLib.hxx>
 #include <BSplCLib.hxx>
 
-#include <Standard_ConstructionError.hxx>
-
 static Standard_Real Locate(const Standard_Real Angfin,
-			    const TColgp_Array1OfPnt2d& TPoles,
-			    const Standard_Real Umin,
-			    const Standard_Real Umax)
+                            const TColgp_Array1OfPnt2d& TPoles,
+                            const Standard_Real Umin,
+                            const Standard_Real Umax)
 {
   Standard_Real umin = Umin;
   Standard_Real umax = Umax;

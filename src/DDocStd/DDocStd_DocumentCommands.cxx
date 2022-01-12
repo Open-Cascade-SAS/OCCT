@@ -17,36 +17,20 @@
 
 #include <BinDrivers_DocumentStorageDriver.hxx>
 #include <DDF.hxx>
-#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TDocStd_XLinkTool.hxx>
 #include <TDF_Reference.hxx>
-#include <TDocStd_Document.hxx>
-#include <CDM_Document.hxx>
 #include <TDocStd_Modified.hxx>
 #include <TDF_Label.hxx>
-#include <DDocStd_DrawDocument.hxx>
-#include <TDocStd_Document.hxx>
 #include <TDocStd_XLink.hxx>
-#include <TDocStd_XLinkRoot.hxx>
 #include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_Application.hxx>
 #include <Draw.hxx>
-#include <Draw_Interpretor.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <Plugin.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <AIS_InteractiveContext.hxx>
 // pour propagate
 #include <TDocStd_XLinkTool.hxx>
-
-#include <OSD_Function.hxx>
-#include <OSD_SharedLibrary.hxx>
-#include <OSD_LoadMode.hxx>
 
 //typedef Standard_Integer (* DFBROWSER_CALL)(const Handle(TDocStd_Document)&);
 //static DFBROWSER_CALL gDFunc = 0;

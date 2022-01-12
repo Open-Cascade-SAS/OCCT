@@ -19,7 +19,6 @@
 
 #include <DBRep_Params.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! Used to display BRep objects  using the DrawTrSurf

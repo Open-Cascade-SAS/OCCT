@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Convert_ElementarySurfaceToBSplineSurface.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Sphere;
 

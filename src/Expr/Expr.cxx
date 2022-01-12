@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Expr.hxx>
-#include <Expr_NamedUnknown.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_GeneralRelation.hxx>
 #include <Expr_UnknownIterator.hxx>

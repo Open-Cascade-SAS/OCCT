@@ -19,17 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Extrema_POnCurv.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Extrema_LocEPCOfLocateExtPC.hxx>
 #include <Extrema_ELPCOfLocateExtPC.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <Standard_Integer.hxx>
-#include <Extrema_SequenceOfPOnCurv.hxx>
 class Standard_DomainError;
 class StdFail_NotDone;
 class Adaptor3d_Curve;

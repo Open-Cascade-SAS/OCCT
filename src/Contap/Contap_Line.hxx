@@ -17,26 +17,21 @@
 #ifndef _Contap_Line_HeaderFile
 #define _Contap_Line_HeaderFile
 
+#include <Contap_IType.hxx>
+#include <Contap_TheHSequenceOfPoint.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <IntSurf_TypeTrans.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <IntSurf_TypeTrans.hxx>
-#include <Contap_TheHSequenceOfPoint.hxx>
-#include <Contap_IType.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
+
 class IntSurf_LineOn2S;
 class IntSurf_PntOn2S;
 class gp_Lin;
 class gp_Circ;
 class Contap_Point;
-
-
 
 class Contap_Line 
 {

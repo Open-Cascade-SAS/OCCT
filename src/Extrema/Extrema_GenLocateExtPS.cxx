@@ -17,14 +17,12 @@
 
 #include <Extrema_GenLocateExtPS.hxx>
 
-#include <Adaptor3d_Surface.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <Extrema_FuncPSDist.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
-#include <math_BFGS.hxx>
 #include <math_BFGS.hxx>
 #include <math_FRPR.hxx>
 #include <StdFail_NotDone.hxx>

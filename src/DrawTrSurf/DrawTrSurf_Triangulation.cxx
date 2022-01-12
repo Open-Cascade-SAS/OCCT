@@ -18,9 +18,7 @@
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <gp_Pnt.hxx>
 #include <Poly.hxx>
-#include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>

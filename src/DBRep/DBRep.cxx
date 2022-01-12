@@ -24,17 +24,13 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <BinTools.hxx>
 #include <DBRep_DrawableShape.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Message_ProgressRange.hxx>
 #include <Draw_Segment3D.hxx>
-#include <gp_Ax2.hxx>
-#include <GProp.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_FileSystem.hxx>
-#include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopAbs.hxx>
@@ -44,7 +40,6 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 #include <stdio.h>

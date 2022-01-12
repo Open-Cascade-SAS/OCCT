@@ -19,15 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Extrema_SequenceOfPOnCurv.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <math_FunctionWithDerivative.hxx>
 class Standard_OutOfRange;

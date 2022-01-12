@@ -21,10 +21,8 @@
 #include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_CosAndSinEvalFunction.hxx>
 #include <Convert_PolynomialCosAndSin.hxx>
-#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <PLib.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>

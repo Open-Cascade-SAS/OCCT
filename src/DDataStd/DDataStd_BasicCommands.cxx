@@ -16,44 +16,25 @@
 
 #include <DDataStd.hxx>
 
-#include <Standard_PCharacter.hxx>
-
-#include <DDF.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
-#include <DrawTrSurf.hxx>
 
 #include <DDF.hxx>
 #include <Message.hxx>
 
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Tool.hxx>
 #include <TDF_AttributeSequence.hxx>
-#include <TDF_AttributeList.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
 
 #include <BRep_Tool.hxx>
 #include <DBRep.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
-
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pln.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 // LES ATTRIBUTES
-#include <TDataStd.hxx>
 #include <TDataXtd_Triangulation.hxx>
 #include <TDataStd_Comment.hxx>
 #include <TDataStd_Name.hxx>
@@ -74,19 +55,12 @@
 
 #include <TDataStd_NamedData.hxx>
 #include <TColStd_DataMapOfStringInteger.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
 #include <TDataStd_DataMapOfStringReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringReal.hxx>
 #include <TDataStd_DataMapOfStringByte.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx>
 #include <TDataStd_DataMapOfStringString.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringString.hxx>
 #include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
-#include <TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -94,12 +68,10 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ReferenceList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
 
 #include <algorithm>

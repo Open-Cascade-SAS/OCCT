@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <ExprIntrp_Generator.hxx>
 class Expr_GeneralExpression;
 class TCollection_AsciiString;

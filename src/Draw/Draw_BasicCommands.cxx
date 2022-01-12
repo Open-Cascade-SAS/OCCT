@@ -19,8 +19,6 @@
 #include <Draw_Appli.hxx>
 #include <Draw_Chronometer.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Draw_Printer.hxx>
-#include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_PrinterOStream.hxx>

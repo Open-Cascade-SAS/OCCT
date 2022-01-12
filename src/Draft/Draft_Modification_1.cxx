@@ -21,22 +21,15 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepExtrema_ExtCF.hxx>
-#include <BRepExtrema_ExtPC.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepTools.hxx>
-#include <Draft_EdgeInfo.hxx>
-#include <Draft_FaceInfo.hxx>
 #include <Draft_Modification.hxx>
 #include <Draft_VertexInfo.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <Extrema_ExtPC.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
@@ -56,9 +49,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -69,9 +59,7 @@
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
-#include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Parab.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -80,14 +68,10 @@
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Precision.hxx>
-#include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -97,8 +81,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean Choose(const Draft_IndexedDataMapOfFaceFaceInfo&,

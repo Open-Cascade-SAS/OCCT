@@ -22,7 +22,6 @@
 
 #include <Expr_SequenceOfGeneralRelation.hxx>
 #include <Expr_GeneralRelation.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;

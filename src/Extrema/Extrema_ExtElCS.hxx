@@ -21,12 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Extrema_HArray1OfPOnCurv.hxx>
 #include <Extrema_HArray1OfPOnSurf.hxx>
-#include <Standard_Real.hxx>
 
 class gp_Lin;
 class gp_Pln;

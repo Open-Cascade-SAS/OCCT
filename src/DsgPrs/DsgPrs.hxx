@@ -18,8 +18,6 @@
 #define _DsgPrs_HeaderFile
 
 #include <DsgPrs_ArrowSide.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <Prs3d_Presentation.hxx>

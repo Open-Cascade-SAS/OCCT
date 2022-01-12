@@ -14,14 +14,12 @@
 
 #include <DsgPrs.hxx>
 
-#include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeLin.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -38,22 +36,19 @@
 #include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Quantity_Color.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
-			    const Handle(Prs3d_DimensionAspect)& LA,
-			    const gp_Pnt& pt1,
-			    const gp_Pnt& pt2,
-			    const gp_Dir& dir1,
-			    const gp_Dir& dir2,
-			    const DsgPrs_ArrowSide ArrowSide,
-			    const Standard_Boolean drawFromCenter) 
+                            const Handle(Prs3d_DimensionAspect)& LA,
+                            const gp_Pnt& pt1,
+                            const gp_Pnt& pt2,
+                            const gp_Dir& dir1,
+                            const gp_Dir& dir2,
+                            const DsgPrs_ArrowSide ArrowSide,
+                            const Standard_Boolean drawFromCenter) 
 {
   Handle(Graphic3d_Group) aGroup = aPresentation->NewGroup();
 

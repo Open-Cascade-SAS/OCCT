@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedExpression.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -14,27 +14,17 @@
 
 //-----------------------------------------------------------------
 
-#include <GeomAdaptor_SurfaceOfLinearExtrusion.hxx>
-#include <GeomAdaptor_SurfaceOfRevolution.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPExtS.hxx>
 #include <Extrema_ExtPRevS.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_GenExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_IsoType.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Torus.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================

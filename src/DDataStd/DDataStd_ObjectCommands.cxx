@@ -21,11 +21,8 @@
 #include <Draw_Appli.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Tool.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <Standard_GUID.hxx>
 #include <TDataStd_Directory.hxx>
-#include <TDataXtd_Shape.hxx>
 
 
 // LES ATTRIBUTES
@@ -34,7 +31,6 @@
 #include <TDataXtd_Shape.hxx>
 
 
-#include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 
 

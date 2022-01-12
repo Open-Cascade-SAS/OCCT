@@ -18,7 +18,6 @@
 #define _DBRep_Edge_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_Edge.hxx>
 #include <Draw_Color.hxx>

@@ -16,15 +16,12 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <DBRep_DrawableShape.hxx>
 #include <Draw.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_MarkerShape.hxx>
 #include <DrawDim.hxx>
 #include <DrawDim_PlanarAngle.hxx>
 #include <ElCLib.hxx>
-#include <ElSLib.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
@@ -36,20 +33,14 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAPI.hxx>
-#include <gp.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
-#include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 

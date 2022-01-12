@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Integer.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>

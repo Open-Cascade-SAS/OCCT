@@ -24,17 +24,12 @@
 #include <Expr_Array1OfGeneralExpression.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_BinaryFunction.hxx>
-#include <Expr_FunctionDerivative.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Expr_InvalidFunction.hxx>
 #include <Expr_NamedUnknown.hxx>
-#include <Expr_NotEvaluable.hxx>
-#include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
-#include <Expr_Product.hxx>
 #include <Expr_Sum.hxx>
-#include <Standard_NumericError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

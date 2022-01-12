@@ -17,8 +17,6 @@
 #include <Draw_MapOfAsciiString.hxx>
 #include <Draw.hxx>
 #include <Message.hxx>
-#include <OSD_Path.hxx>
-#include <OSD_Directory.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_SharedLibrary.hxx>

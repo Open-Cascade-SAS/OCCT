@@ -19,11 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Extrema_ExtElSS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Integer.hxx>

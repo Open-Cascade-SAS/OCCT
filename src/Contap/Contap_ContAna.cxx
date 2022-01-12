@@ -16,7 +16,6 @@
 
 
 #include <Contap_ContAna.hxx>
-#include <gp.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>

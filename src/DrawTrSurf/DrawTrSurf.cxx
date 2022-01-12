@@ -46,14 +46,11 @@
 #include <Geom_Surface.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 #include <GeomTools_CurveSet.hxx>
-#include <GeomTools_SurfaceSet.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <Poly.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Triangulation.hxx>

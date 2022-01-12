@@ -21,9 +21,6 @@
 #include <Extrema_GenExtSS.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 

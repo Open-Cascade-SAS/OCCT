@@ -18,7 +18,6 @@
 #define _Draw_Axis3D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Ax3.hxx>
 #include <Draw_Color.hxx>

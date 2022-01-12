@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TColStd_ListOfReal.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 

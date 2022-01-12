@@ -16,7 +16,6 @@
 
 
 #include <Adaptor3d_Curve.hxx>
-#include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_ExtPRevS.hxx>

@@ -18,8 +18,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <Draft_EdgeInfo.hxx>
-#include <Draft_FaceInfo.hxx>
 #include <Draft_Modification.hxx>
 #include <Draft_VertexInfo.hxx>
 #include <Geom2d_Curve.hxx>
@@ -27,7 +25,6 @@
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
-#include <Geom_Ellipse.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -46,14 +43,12 @@
 #include <Standard_Type.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Draft_Modification,BRepTools_Modification)
 

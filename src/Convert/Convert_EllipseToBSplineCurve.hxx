@@ -23,7 +23,6 @@
 
 #include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_ParameterisationType.hxx>
-#include <Standard_Real.hxx>
 class gp_Elips2d;
 
 

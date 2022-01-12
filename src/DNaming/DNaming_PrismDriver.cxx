@@ -25,14 +25,10 @@
 #include <DNaming.hxx>
 #include <DNaming_PrismDriver.hxx>
 #include <Geom_Line.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GProp_GProps.hxx>
 #include <ModelDefinitions.hxx>
 #include <Precision.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
@@ -47,10 +43,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_PrismDriver,TFunction_Driver)

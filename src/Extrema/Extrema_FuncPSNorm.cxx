@@ -18,7 +18,6 @@
 #include <Extrema_FuncPSNorm.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_POnSurf.hxx>
-#include <GeomAbs_IsoType.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>

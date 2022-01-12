@@ -25,8 +25,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Convert_ParameterisationType.hxx>
 class gp_Pnt2d;
 

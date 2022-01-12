@@ -23,19 +23,13 @@
 #include <Bnd_Range.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_CurveTool.hxx>
-#include <Extrema_ECC.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_ExtElC.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_SequenceOfPOnCurv.hxx>
 #include <Geom_Circle.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
@@ -44,9 +38,7 @@
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 
 //=======================================================================
 //function : Extrema_ExtCC

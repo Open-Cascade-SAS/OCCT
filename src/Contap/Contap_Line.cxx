@@ -21,9 +21,7 @@
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <IntSurf_LineOn2S.hxx>
-#include <IntSurf_PntOn2S.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Contap_Line::Contap_Line () {
   svtx = new Contap_TheHSequenceOfPoint ();

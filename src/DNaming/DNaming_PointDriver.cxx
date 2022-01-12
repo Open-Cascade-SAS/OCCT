@@ -20,7 +20,6 @@
 #include <DNaming_PointDriver.hxx>
 #include <gp_Pnt.hxx>
 #include <ModelDefinitions.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDF_Label.hxx>

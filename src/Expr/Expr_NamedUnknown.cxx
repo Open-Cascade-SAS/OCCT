@@ -23,7 +23,6 @@
 #include <Expr_NotAssigned.hxx>
 #include <Expr_NotEvaluable.hxx>
 #include <Expr_NumericValue.hxx>
-#include <Standard_NumericError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

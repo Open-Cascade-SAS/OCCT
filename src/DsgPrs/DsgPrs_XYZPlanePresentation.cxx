@@ -19,7 +19,6 @@
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 

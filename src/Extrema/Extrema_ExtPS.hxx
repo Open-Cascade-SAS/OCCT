@@ -24,7 +24,6 @@
 #include <Extrema_ExtPElS.hxx>
 #include <Extrema_GenExtPS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomAbs_SurfaceType.hxx>

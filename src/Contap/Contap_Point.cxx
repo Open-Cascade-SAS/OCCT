@@ -15,12 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Contap_Point.hxx>
 #include <gp_Pnt.hxx>
-#include <IntSurf_Transition.hxx>
-#include <Standard_DomainError.hxx>
 
 Contap_Point::Contap_Point ():
 uparam(0.0), vparam(0.0), paraline(0.0),

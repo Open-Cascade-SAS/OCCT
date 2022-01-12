@@ -23,8 +23,6 @@
 
 #include <Aspect_Drawable.hxx>
 #include <NCollection_Vec2.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <memory>

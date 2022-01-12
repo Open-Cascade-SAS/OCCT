@@ -19,15 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <math_Vector.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <Standard_Address.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <Standard_Integer.hxx>
 
 class Adaptor2d_Curve2d;
 class Extrema_Curve2dTool;

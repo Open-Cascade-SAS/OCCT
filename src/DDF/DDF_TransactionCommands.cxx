@@ -22,17 +22,13 @@
 
 #include <DDF.hxx>
 #include <DDF_Data.hxx>
-#include <DDF_Transaction.hxx>
 #include <DDF_TransactionStack.hxx>
 
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 
 #include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
-#include <TDF_Transaction.hxx>
 
 static DDF_TransactionStack DDF_TStack;
 static Handle(TDF_Delta)    DDF_LastDelta;

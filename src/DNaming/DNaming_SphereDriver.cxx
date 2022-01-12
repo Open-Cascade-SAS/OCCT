@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Tool.hxx>
 #include <BRepAlgo.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <DNaming.hxx>
@@ -22,7 +21,6 @@
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <ModelDefinitions.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListOfInteger.hxx>
@@ -41,7 +39,6 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_SphereDriver,TFunction_Driver)

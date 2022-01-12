@@ -27,7 +27,6 @@
 #include <Draw_Text3D.hxx>
 #include <Message.hxx>
 #include <Standard_Stream.hxx>
-#include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
 #ifdef _WIN32

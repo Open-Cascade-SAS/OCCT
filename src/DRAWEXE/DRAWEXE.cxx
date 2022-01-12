@@ -18,7 +18,6 @@
 #include <DrawTrSurf.hxx>
 #include <Message.hxx>
 #include <Message_PrinterOStream.hxx>
-#include <Message_PrinterSystemLog.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <OSD.hxx>
 #include <OSD_Thread.hxx>

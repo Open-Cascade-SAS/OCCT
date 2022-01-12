@@ -29,7 +29,6 @@
 #include <Convert_CompPolynomialToPoles.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>

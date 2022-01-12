@@ -18,14 +18,12 @@
 #define _Draw_Text2D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <Draw_Color.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <Draw_Drawable2D.hxx>
-#include <Standard_CString.hxx>
 class Draw_Display;
 
 

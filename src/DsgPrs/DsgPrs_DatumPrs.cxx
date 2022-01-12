@@ -17,10 +17,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Ax2.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Prs3d_Arrow.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>

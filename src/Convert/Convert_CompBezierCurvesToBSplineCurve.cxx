@@ -20,9 +20,7 @@
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <PLib.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
 //=======================================================================

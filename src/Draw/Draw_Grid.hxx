@@ -20,8 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Draw_Drawable3D.hxx>
 class Draw_Display;
 

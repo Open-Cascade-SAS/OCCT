@@ -21,14 +21,8 @@
 #include <DDocStd.hxx>
 #include <DNaming.hxx>
 #include <DPrsStd.hxx>
-#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_Environment.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
-#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : AllComands

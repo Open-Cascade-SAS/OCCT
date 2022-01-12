@@ -20,8 +20,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <math_MultipleVarFunction.hxx>
-#include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 
 //! This class implements function which calculate Eucluidean distance

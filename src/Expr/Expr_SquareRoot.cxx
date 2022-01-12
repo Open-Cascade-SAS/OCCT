@@ -19,13 +19,10 @@
 #include <Expr_Division.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedUnknown.hxx>
-#include <Expr_NotEvaluable.hxx>
-#include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr_Product.hxx>
 #include <Expr_Square.hxx>
 #include <Expr_SquareRoot.hxx>
-#include <Standard_NumericError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

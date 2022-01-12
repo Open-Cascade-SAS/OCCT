@@ -22,13 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt2d.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <math_FunctionWithDerivative.hxx>
 class Standard_OutOfRange;
 class Standard_TypeMismatch;

@@ -15,30 +15,19 @@
 // commercial license or contractual agreement.
 
 #include <DPrsStd.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Draw_ColorKind.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Data.hxx> 
 #include <DDF.hxx>
 #include <DDocStd.hxx>
-#include <ViewerTest.hxx>
-
-
-#include <V3d_View.hxx>
 
 
 // for AIS
 
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
-#include <ViewerTest.hxx>
 #include <AIS_InteractiveContext.hxx> 
-#include <AIS_InteractiveObject.hxx>
-#include <ViewerTest.hxx>
 #include <V3d_View.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Quantity_NameOfColor.hxx>

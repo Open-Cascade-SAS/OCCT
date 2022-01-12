@@ -23,7 +23,6 @@
 #include <Expr_SequenceOfGeneralExpression.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Expr_NamedUnknown;
 
 

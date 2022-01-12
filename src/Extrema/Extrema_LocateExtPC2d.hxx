@@ -22,14 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Extrema_POnCurv2d.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Extrema_LocEPCOfLocateExtPC2d.hxx>
 #include <Extrema_ELPCOfLocateExtPC2d.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <Standard_Integer.hxx>
-#include <Extrema_SequenceOfPOnCurv2d.hxx>
 class Standard_DomainError;
 class StdFail_NotDone;
 class Adaptor2d_Curve2d;

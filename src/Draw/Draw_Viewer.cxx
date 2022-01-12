@@ -21,7 +21,6 @@
 #include <gp_Pnt2d.hxx>
 #include <Draw_Window.hxx>
 #include <Draw_Display.hxx>
-#include <TCollection_AsciiString.hxx>
 
 #define precpers 0.95
 #define ButtonPress 4

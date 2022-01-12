@@ -20,20 +20,13 @@
 
 #include <Draw_Main.hxx>
 #include <stdlib.h>
-#include <string.h>
 #include <Draw_Appli.hxx>
-#include <OSD.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <tcl.h>
 
 #ifdef _WIN32
 #include <sys/stat.h>
-#include <Draw_Window.hxx>
-
-#include <stdio.h>
-#include <io.h>
-#include <fcntl.h>
 
 extern Draw_Viewer dout;
 

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Expr_GeneralRelation.hxx>
 #include <Expr_RelationIterator.hxx>
 #include <Expr_SingleRelation.hxx>
 #include <Expr_SystemRelation.hxx>

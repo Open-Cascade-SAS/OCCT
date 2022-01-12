@@ -20,31 +20,22 @@
 
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
-#include <BRep_Tool.hxx>
-#include <DBRep.hxx> 
 #include <Draw.hxx>
 #include <DBRep.hxx> 
 #include <DrawDim_PlanarDistance.hxx>
 #include <DrawDim_PlanarRadius.hxx>
 #include <DrawDim_PlanarAngle.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Circ.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <DrawTrSurf.hxx>
-
-#ifdef _MSC_VER
-#include <stdio.h>
-#endif
 
 //=======================================================================
 //function : DrawDim_DISTANCE

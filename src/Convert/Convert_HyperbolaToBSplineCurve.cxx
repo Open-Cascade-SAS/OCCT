@@ -16,11 +16,9 @@
 
 #include <Convert_HyperbolaToBSplineCurve.hxx>
 #include <gp.hxx>
-#include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>

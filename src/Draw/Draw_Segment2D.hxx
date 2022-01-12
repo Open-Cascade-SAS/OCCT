@@ -18,7 +18,6 @@
 #define _Draw_Segment2D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <Draw_Color.hxx>

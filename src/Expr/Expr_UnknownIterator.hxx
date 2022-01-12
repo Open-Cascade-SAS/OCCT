@@ -23,7 +23,6 @@
 
 #include <Expr_MapOfNamedUnknown.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 

@@ -17,8 +17,6 @@
 
 #include <Draw.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <Draw_ProgressIndicator.hxx>
-#include <TCollection_AsciiString.hxx>
 
 void Draw::Commands (Draw_Interpretor& theCommands)
 {

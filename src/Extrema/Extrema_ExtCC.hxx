@@ -19,15 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Extrema_ECC.hxx>
-#include <Standard_Boolean.hxx>
 #include <Extrema_SequenceOfPOnCurv.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 
 class Adaptor3d_Curve;

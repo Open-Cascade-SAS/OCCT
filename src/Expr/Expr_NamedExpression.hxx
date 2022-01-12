@@ -18,11 +18,9 @@
 #define _Expr_NamedExpression_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <Expr_GeneralExpression.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class Expr_NamedExpression;

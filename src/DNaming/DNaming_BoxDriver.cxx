@@ -19,7 +19,6 @@
 #include <DNaming.hxx>
 #include <DNaming_BoxDriver.hxx>
 #include <ModelDefinitions.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>

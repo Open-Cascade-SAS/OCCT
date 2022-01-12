@@ -25,23 +25,13 @@
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 
 #include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Ax3.hxx>
 
 #include <TDataXtd_Geometry.hxx>
 #include <TDataXtd_Point.hxx>

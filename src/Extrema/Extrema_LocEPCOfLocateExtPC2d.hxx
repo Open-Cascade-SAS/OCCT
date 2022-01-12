@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Extrema_PCLocFOfLocEPCOfLocateExtPC2d.hxx>
 class Standard_DomainError;
 class Standard_TypeMismatch;

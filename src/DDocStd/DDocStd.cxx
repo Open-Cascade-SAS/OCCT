@@ -15,16 +15,12 @@
 
 #include <DDocStd.hxx>
 
-#include <DBRep.hxx>
 #include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>

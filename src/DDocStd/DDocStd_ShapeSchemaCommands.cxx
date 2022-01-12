@@ -15,7 +15,6 @@
 
 #include <DDocStd.hxx>
 #include <DBRep.hxx>
-#include <FSD_File.hxx>
 #include <FSD_CmpFile.hxx>
 #include <FSD_BinaryFile.hxx>
 #include <BRep_Builder.hxx>

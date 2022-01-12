@@ -21,28 +21,17 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <DNaming.hxx>
 #include <DNaming_Line3DDriver.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <GeomAPI_Interpolate.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <ModelDefinitions.hxx>
 #include <Precision.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
 #include <TDataStd_Integer.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDF_AttributeMap.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -51,7 +40,6 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_Line3DDriver,TFunction_Driver)
 

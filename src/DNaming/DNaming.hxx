@@ -23,9 +23,7 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <Standard_CString.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Draw_Interpretor.hxx>
 class TDataStd_Real;

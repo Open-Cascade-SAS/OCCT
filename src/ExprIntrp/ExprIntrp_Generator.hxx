@@ -18,7 +18,6 @@
 #define _ExprIntrp_Generator_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <ExprIntrp_SequenceOfNamedFunction.hxx>
 #include <ExprIntrp_SequenceOfNamedExpression.hxx>

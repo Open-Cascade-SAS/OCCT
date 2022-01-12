@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <DrawDim_PlanarDiameter.hxx>
 #include <ElCLib.hxx>
@@ -25,7 +24,6 @@
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>

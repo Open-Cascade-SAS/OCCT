@@ -26,14 +26,9 @@
 #include <DNaming.hxx>
 #include <DNaming_RevolutionDriver.hxx>
 #include <Geom_Line.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <GProp_GProps.hxx>
 #include <ModelDefinitions.hxx>
 #include <Precision.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
@@ -49,13 +44,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_RevolutionDriver,TFunction_Driver)

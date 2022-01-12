@@ -25,7 +25,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 
 

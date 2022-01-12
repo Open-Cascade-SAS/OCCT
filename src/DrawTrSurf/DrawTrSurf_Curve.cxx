@@ -16,7 +16,6 @@
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <GeomTools_CurveSet.hxx>

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Extrema_POnCurv2d.hxx>
 class Adaptor2d_Curve2d;
 

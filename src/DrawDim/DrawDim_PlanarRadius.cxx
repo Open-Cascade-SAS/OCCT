@@ -16,17 +16,14 @@
 
 
 #include <BRep_Tool.hxx>
-#include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <DrawDim.hxx>
 #include <DrawDim_PlanarRadius.hxx>
-#include <ElCLib.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>

@@ -18,7 +18,6 @@
 #define _Draw_Segment3D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Draw_Color.hxx>

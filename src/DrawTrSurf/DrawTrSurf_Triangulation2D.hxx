@@ -18,7 +18,6 @@
 #define _DrawTrSurf_Triangulation2D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Draw_Drawable2D.hxx>

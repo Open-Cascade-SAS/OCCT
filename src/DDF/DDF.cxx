@@ -23,11 +23,6 @@
 #include <Draw.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>

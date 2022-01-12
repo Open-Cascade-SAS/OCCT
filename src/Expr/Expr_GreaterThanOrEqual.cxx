@@ -17,10 +17,8 @@
 
 #include <Expr.hxx>
 #include <Expr_GeneralExpression.hxx>
-#include <Expr_GeneralRelation.hxx>
 #include <Expr_GreaterThanOrEqual.hxx>
 #include <Expr_NumericValue.hxx>
-#include <Standard_NumericError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

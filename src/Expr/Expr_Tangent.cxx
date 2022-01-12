@@ -18,15 +18,11 @@
 #include <Expr.hxx>
 #include <Expr_ArcTangent.hxx>
 #include <Expr_Cosine.hxx>
-#include <Expr_Division.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedUnknown.hxx>
-#include <Expr_NotEvaluable.hxx>
-#include <Expr_NumericValue.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr_Square.hxx>
 #include <Expr_Tangent.hxx>
-#include <Standard_NumericError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

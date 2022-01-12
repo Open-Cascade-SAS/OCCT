@@ -21,8 +21,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <PLib.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 
 //=======================================================================

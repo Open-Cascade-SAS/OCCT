@@ -19,14 +19,11 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Selector.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_SelectionDriver,TFunction_Driver)
@@ -78,11 +75,7 @@ static void Write(const TopoDS_Shape& shape,
 //=======================================================================
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TDF_AttributeMap.hxx>
-#include <TDF_IDFilter.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_ChildIterator.hxx>
 
 Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& theLog) const
 {

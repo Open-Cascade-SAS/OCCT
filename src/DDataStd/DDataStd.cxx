@@ -16,7 +16,6 @@
 
 
 #include <DDataStd.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDataStd.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealEnum.hxx>

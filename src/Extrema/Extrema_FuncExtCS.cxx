@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Extrema_FuncExtCS.hxx>
 #include <Extrema_POnCurv.hxx>
@@ -23,7 +22,6 @@
 #include <gp_Vec.hxx>
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_TypeMismatch.hxx>
 
 /*-----------------------------------------------------------------------------

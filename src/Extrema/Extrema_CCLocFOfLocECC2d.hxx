@@ -21,13 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
-#include <Standard_Integer.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>

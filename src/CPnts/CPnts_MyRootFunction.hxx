@@ -23,11 +23,8 @@
 
 #include <CPnts_MyGaussFunction.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <CPnts_RealFunction.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! Implements a function for the Newton algorithm to find the

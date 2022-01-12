@@ -20,11 +20,8 @@
 #include <Message.hxx>
 #include <Message_PrinterOStream.hxx>
 #include <OSD.hxx>
-#include <OSD_File.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_Process.hxx>
 #include <Standard_SStream.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Macro.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -18,7 +18,6 @@
 #define _Draw_Circle3D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Circ.hxx>
 #include <Standard_Real.hxx>

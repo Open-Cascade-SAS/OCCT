@@ -18,7 +18,6 @@
 
 #include <CSLib_Class2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_ConstructionError.hxx>
 
 static inline 
   Standard_Real Transform2d(const Standard_Real u,

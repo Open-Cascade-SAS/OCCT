@@ -16,7 +16,6 @@
 #ifndef _Extrema_HUBTreeOfSphere_HeaderFile
 #define _Extrema_HUBTreeOfSphere_HeaderFile
 
-#include <NCollection_UBTree.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Handle.hxx>
 #include <Bnd_Sphere.hxx>

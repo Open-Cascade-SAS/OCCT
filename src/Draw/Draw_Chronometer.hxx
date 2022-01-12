@@ -18,7 +18,6 @@
 #define _Draw_Chronometer_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <OSD_Timer.hxx>
 #include <Draw_Drawable3D.hxx>

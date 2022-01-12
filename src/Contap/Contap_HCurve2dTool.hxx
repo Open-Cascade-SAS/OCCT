@@ -17,29 +17,20 @@
 #ifndef _Contap_HCurve2dTool_HeaderFile
 #define _Contap_HCurve2dTool_HeaderFile
 
+#include <Adaptor2d_Curve2d.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Standard.hxx>
+#include <Standard_Boolean.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Elips2d.hxx>
-#include <gp_Hypr2d.hxx>
-#include <gp_Parab2d.hxx>
+
 class gp_Pnt2d;
 class gp_Vec2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
-
-
 
 class Contap_HCurve2dTool 
 {

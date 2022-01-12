@@ -17,26 +17,17 @@
 
 #include <DDF.hxx>
 #include <DDF_Browser.hxx>
-#include <DDF_Data.hxx>
 
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Message.hxx>
 
 #include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TDF_AttributeIterator.hxx>
 #include <TDF_Tool.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <OSD_File.hxx>
-
-#ifdef _MSC_VER
-#include <stdio.h>
-#endif
 
 //=======================================================================
 //function : DFBrowse

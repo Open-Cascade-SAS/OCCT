@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <DBRep.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -23,7 +22,6 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <NCollection_Vector.hxx>
-#include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 
 // This file defines global functions not declared in any public header,

@@ -18,7 +18,6 @@
 #include <DsgPrs_XYZAxisPresentation.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Text.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>

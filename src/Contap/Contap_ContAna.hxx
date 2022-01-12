@@ -17,22 +17,19 @@
 #ifndef _Contap_ContAna_HeaderFile
 #define _Contap_ContAna_HeaderFile
 
+#include <GeomAbs_CurveType.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard.hxx>
+#include <Standard_Boolean.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
-#include <Standard_Real.hxx>
-#include <gp_Circ.hxx>
 class gp_Sphere;
 class gp_Cylinder;
 class gp_Cone;
 class gp_Lin;
-
 
 //! This class provides the computation of the contours
 //! for quadric surfaces.

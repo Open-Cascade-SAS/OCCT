@@ -23,36 +23,20 @@
 #include <DDF.hxx>
 
 #include <TDF_ComparisonTool.hxx>
-#include <TDF_CopyTool.hxx>
-#include <TDF_ClosureMode.hxx>
-#include <TDF_ClosureTool.hxx>
 
 #include <DDF_Data.hxx>
 
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_NotImplemented.hxx>
 
-#include <TColStd_HSequenceOfAsciiString.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
-
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
-#include <TDF_Attribute.hxx>
-#include <TDF_TagSource.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
-#include <TDF_DataSet.hxx>
-#include <TDF_Delta.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_DerivedAttribute.hxx>
 

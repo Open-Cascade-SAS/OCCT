@@ -20,7 +20,6 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 
 //=======================================================================

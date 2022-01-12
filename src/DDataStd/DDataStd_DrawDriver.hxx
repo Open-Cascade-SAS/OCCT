@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Draw_ColorKind.hxx>
-#include <Standard_Boolean.hxx>
 class Draw_Drawable3D;
 class TDF_Label;
 class TDataXtd_Constraint;

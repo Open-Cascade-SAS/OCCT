@@ -15,14 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Contap_ArcFunction.hxx>
 #include <Contap_HContTool.hxx>
 #include <Contap_HCurve2dTool.hxx>
 #include <Contap_SurfProps.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <IntSurf_Quadric.hxx>
 
 Contap_ArcFunction::Contap_ArcFunction ():

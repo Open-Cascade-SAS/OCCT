@@ -18,7 +18,6 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Adaptor3d_TopolTool.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <Contap_ContAna.hxx>
 #include <Contap_Contour.hxx>
@@ -39,7 +38,6 @@
 #include <IntSurf_SequenceOfPathPoint.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TopTrans_CurveTransition.hxx>

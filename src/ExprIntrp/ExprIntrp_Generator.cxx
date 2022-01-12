@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Expr_NamedExpression.hxx>
-#include <Expr_NamedFunction.hxx>
-#include <ExprIntrp_Analysis.hxx>
 #include <ExprIntrp_Generator.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

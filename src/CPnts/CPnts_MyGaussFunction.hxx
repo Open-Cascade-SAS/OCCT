@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <CPnts_RealFunction.hxx>
-#include <Standard_Address.hxx>
 #include <math_Function.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
 

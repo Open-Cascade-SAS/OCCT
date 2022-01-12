@@ -16,11 +16,9 @@
 #include <ElCLib.hxx>
 #include <Extrema_ExtElC.hxx>
 #include <Extrema_ExtElC2d.hxx>
-#include <Extrema_ExtPElC.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir.hxx>
@@ -31,7 +29,6 @@
 #include <gp_Parab.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
@@ -39,7 +36,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-#include <stdio.h>
 static
   void RefineDir(gp_Dir& aDir);
 

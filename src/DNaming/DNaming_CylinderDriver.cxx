@@ -19,11 +19,8 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <DNaming.hxx>
 #include <DNaming_CylinderDriver.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <gp_Lin.hxx>
 #include <ModelDefinitions.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>

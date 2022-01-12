@@ -24,8 +24,6 @@
 #include <gp_Hypr2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
-#include <math_DirectPolynomialRoots.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>

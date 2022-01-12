@@ -17,15 +17,8 @@
 #ifndef Draw_Viewer_HeaderFile
 #define Draw_Viewer_HeaderFile
 
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Dir2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Ax1.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Draw_Color.hxx>
 

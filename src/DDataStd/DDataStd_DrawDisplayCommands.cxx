@@ -16,41 +16,16 @@
 
 #include <DDataStd.hxx>
 #include <DDF.hxx>
-#include <Draw.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Viewer.hxx>
-#include <Draw_ColorKind.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <gp_Trsf.hxx>   
 #include <gp_Pnt.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
-#include <Precision.hxx> 
-#include <TopAbs.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Vertex.hxx> 
-#include <TopAbs.hxx>
-#include <TDF_AttributeList.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TNaming_Tool.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_Tool.hxx> 
-#include <TNaming_NamedShape.hxx>
 #include <TDataXtd_Point.hxx>
-#include <TDataXtd_Axis.hxx>
-#include <TDataXtd_Geometry.hxx>
-#include <TDataXtd_Constraint.hxx> 
-#include <ElSLib.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Compound.hxx>
 
 #include <DDataStd_DrawPresentation.hxx>
-#include <DDataStd_DrawDriver.hxx>
 #include <Message.hxx>
 
 #ifndef _WIN32

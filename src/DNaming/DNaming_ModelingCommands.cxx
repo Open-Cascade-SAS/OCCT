@@ -15,36 +15,26 @@
 
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <DNaming.hxx>
 #include <DBRep.hxx>
 
 #include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
-#include <gp_Trsf.hxx>
 #include <Message.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapOfShape.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfOrientedShape.hxx>
-#include <TopTools_DataMapOfOrientedShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_GUID.hxx>
 
 #include <DDF.hxx>
 #include <DDocStd.hxx>
-#include <TDF_TagSource.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Reference.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_ChildIDIterator.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -52,9 +42,7 @@
 #include <TDataStd_UAttribute.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
-#include <TFunction_Driver.hxx>
 #include <TFunction_DriverTable.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Selector.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Naming.hxx>

@@ -25,7 +25,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>

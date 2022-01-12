@@ -29,7 +29,6 @@
 #include <ExprIntrp_SequenceOfNamedFunction.hxx>
 #include <ExprIntrp_SequenceOfNamedExpression.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class ExprIntrp_Generator;
 class Expr_GeneralExpression;
 class Expr_GeneralRelation;

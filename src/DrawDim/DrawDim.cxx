@@ -17,7 +17,6 @@
 #include <DrawDim.hxx>
 
 #include <BRep_Tool.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Text3D.hxx>
 #include <ElCLib.hxx>
@@ -30,7 +29,6 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>

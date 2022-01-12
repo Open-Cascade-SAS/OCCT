@@ -18,35 +18,24 @@
 #include <DsgPrs_PerpenPresentation.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeDir.hxx>
-#include <gce_MakeLin.hxx>
-#include <Geom_CartesianPoint.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <StdPrs_Point.hxx>
-#include <TCollection_AsciiString.hxx>
 
 void DsgPrs_PerpenPresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
-				     const Handle(Prs3d_Drawer)& aDrawer,
-				     const gp_Pnt& pAx1,
-				     const gp_Pnt& pAx2,
-				     const gp_Pnt& pnt1,
-				     const gp_Pnt& pnt2,
-				     const gp_Pnt& OffsetPoint,
-				     const Standard_Boolean intOut1,
-				     const Standard_Boolean intOut2)
+                                     const Handle(Prs3d_Drawer)& aDrawer,
+                                     const gp_Pnt& pAx1,
+                                     const gp_Pnt& pAx2,
+                                     const gp_Pnt& pnt1,
+                                     const gp_Pnt& pnt2,
+                                     const gp_Pnt& OffsetPoint,
+                                     const Standard_Boolean intOut1,
+                                     const Standard_Boolean intOut2)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID); // ou DOT ou DOTDASH

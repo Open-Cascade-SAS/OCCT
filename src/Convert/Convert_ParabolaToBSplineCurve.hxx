@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Convert_ConicToBSplineCurve.hxx>
-#include <Standard_Real.hxx>
 class gp_Parab2d;
 
 

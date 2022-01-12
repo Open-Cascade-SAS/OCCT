@@ -18,7 +18,6 @@
 #define _Draw_Axis2D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Ax22d.hxx>
 #include <Draw_Color.hxx>

@@ -16,17 +16,12 @@
 
 #include <DsgPrs_MidPointPresentation.hxx>
 #include <ElCLib.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
 #include <Prs3d_DimensionAspect.hxx>

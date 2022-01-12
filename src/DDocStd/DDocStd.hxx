@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Draw_Interpretor.hxx>
 class TDocStd_Application;
 class TDocStd_Document;

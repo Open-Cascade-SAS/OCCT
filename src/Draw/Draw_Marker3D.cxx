@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <Draw_Marker3D.hxx>
 #include <gp_Pnt.hxx>

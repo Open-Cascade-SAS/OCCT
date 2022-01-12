@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <CSLib_DerivativeStatus.hxx>
 #include <Standard_Boolean.hxx>
 #include <CSLib_NormalStatus.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array2OfVec.hxx>
 class gp_Vec;
 class gp_Dir;

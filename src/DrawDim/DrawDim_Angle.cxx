@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <Draw_Display.hxx>
 #include <DrawDim.hxx>
 #include <DrawDim_Angle.hxx>

@@ -18,7 +18,6 @@
 #include <DDataStd_DrawDriver.hxx>
 #include <DDataStd_DrawPresentation.hxx>
 #include <Draw.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw_Viewer.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>

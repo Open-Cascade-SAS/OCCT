@@ -36,7 +36,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
 
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopTools_OrientedShapeMapHasher.hxx>

@@ -19,14 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <gp_Pnt.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_SequenceOfPOnCurv.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Extrema_EPCOfELPCOfLocateExtPC.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_CurveType.hxx>

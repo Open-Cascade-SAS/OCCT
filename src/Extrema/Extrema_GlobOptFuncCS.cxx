@@ -18,8 +18,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //!F(cu, su, sv)=(C^{(x)}(cu)-S^{(x)}(su,sv))^{2}+
 //               (C^{(y)}(cu)-S^{(y)}(su,sv))^{2}+

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TDF_Attribute.hxx>
 class Draw_Drawable3D;
 class TDF_Label;

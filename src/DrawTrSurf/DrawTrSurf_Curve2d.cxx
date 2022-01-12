@@ -22,8 +22,6 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_Parabola.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <Geom_Plane.hxx>

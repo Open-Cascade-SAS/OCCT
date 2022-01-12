@@ -19,12 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Real.hxx>
 #include <DsgPrs_ArrowSide.hxx>
-#include <Standard_Boolean.hxx>
 #include <Prs3d_Presentation.hxx>
 
 class TCollection_ExtendedString;

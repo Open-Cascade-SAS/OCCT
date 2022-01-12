@@ -15,26 +15,18 @@
 // commercial license or contractual agreement.
 
 #include <DDataStd.hxx>
-#include <DDF.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
-#include <DrawTrSurf.hxx>
 
 #include <DDF.hxx>
 
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_AttributeSequence.hxx>
-#include <TDF_AttributeList.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
 
 // ATTRIBUTES
 
-#include <TDataStd.hxx>
 #include <TDataStd_Name.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <TDataStd_ListOfExtendedString.hxx>
 
 

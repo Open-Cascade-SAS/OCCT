@@ -16,9 +16,7 @@
 
 
 #include <Draft_VertexInfo.hxx>
-#include <gp_Pnt.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_NoMoreObject.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

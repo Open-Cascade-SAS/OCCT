@@ -18,10 +18,8 @@
 #define _Expr_Different_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Expr_SingleRelation.hxx>
-#include <Standard_Boolean.hxx>
 class Expr_GeneralExpression;
 class Expr_GeneralRelation;
 class TCollection_AsciiString;

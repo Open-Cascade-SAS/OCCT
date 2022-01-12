@@ -19,25 +19,16 @@
 #include <DsgPrs.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Circle.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Text.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 #include <stdio.h>

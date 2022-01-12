@@ -17,7 +17,6 @@
 
 #include <Draw_Interpretor.hxx>
 #include <DrawDim_PlanarDimension.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Face.hxx>
 

@@ -20,17 +20,9 @@
 #include <Extrema_Curve2dTool.hxx>
 #include <Extrema_ECC2d.hxx>
 #include <Extrema_ExtCC2d.hxx>
-#include <Extrema_ExtElC.hxx>
 #include <Extrema_ExtElC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 #include <Extrema_SequenceOfPOnCurv2d.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>

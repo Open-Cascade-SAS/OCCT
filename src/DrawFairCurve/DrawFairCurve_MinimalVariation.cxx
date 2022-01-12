@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Draw_ColorKind.hxx>
 #include <DrawFairCurve_MinimalVariation.hxx>
 #include <FairCurve_MinimalVariation.hxx>
 #include <Standard_Type.hxx>

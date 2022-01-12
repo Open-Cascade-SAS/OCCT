@@ -16,13 +16,12 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Draw_Display.hxx>
 #include <DrawTrSurf_Drawable.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

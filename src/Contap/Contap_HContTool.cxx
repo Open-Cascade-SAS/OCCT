@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Contap_HContTool.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>

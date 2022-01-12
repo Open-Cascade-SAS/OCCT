@@ -18,7 +18,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>

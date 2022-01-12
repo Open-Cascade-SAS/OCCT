@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <DrawDim_PlanarDimension.hxx>
 class TopoDS_Face;
 class Draw_Display;

@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_ExtPExtS.hxx>

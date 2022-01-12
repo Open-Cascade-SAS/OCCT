@@ -17,6 +17,7 @@
 #ifndef _Contap_ArcFunction_HeaderFile
 #define _Contap_ArcFunction_HeaderFile
 
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Contap_TFunction.hxx>
 #include <gp_Dir.hxx>

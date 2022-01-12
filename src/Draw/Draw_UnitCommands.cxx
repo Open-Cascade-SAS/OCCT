@@ -20,8 +20,6 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Units.hxx>
-#include <Units_Token.hxx>
-#include <Units_TokensSequence.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <Units_UnitSentence.hxx>
 #include <UnitsAPI.hxx>

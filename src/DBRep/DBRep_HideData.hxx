@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <gp_Trsf.hxx>
-#include <Standard_Real.hxx>
 #include <HLRBRep_ListOfBPoint.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>

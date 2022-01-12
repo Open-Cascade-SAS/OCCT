@@ -21,18 +21,13 @@
 #include <DrawDim.hxx>
 #include <DrawDim_Distance.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec.hxx>
-#include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Distance,DrawDim_Dimension)
 

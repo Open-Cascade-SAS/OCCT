@@ -23,8 +23,6 @@
 #include <Standard_Boolean.hxx>
 #include <Draw_PInterp.hxx>
 #include <Standard_SStream.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 
 class TCollection_AsciiString;

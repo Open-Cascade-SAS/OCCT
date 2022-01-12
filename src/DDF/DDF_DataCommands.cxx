@@ -28,25 +28,20 @@
 #include <DDF.hxx>
 #include <DDF_Data.hxx>
 
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
 
 #include <Standard_NotImplemented.hxx>
 
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_DataSet.hxx>
-#include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_CopyLabel.hxx>
-#include <TDF_CopyLabel.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_AttributeMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
 
 
 //=======================================================================

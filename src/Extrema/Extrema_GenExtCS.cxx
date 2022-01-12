@@ -16,8 +16,6 @@
 
 
 #include <Extrema_GenExtCS.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Extrema_GlobOptFuncCS.hxx>
 #include <Extrema_GlobOptFuncConicS.hxx>
@@ -31,7 +29,6 @@
 #include <math_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <Geom_TrimmedCurve.hxx>

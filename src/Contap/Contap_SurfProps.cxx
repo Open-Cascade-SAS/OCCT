@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <Contap_SurfProps.hxx>
 #include <ElSLib.hxx>

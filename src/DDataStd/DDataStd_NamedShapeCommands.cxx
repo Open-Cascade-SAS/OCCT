@@ -24,15 +24,12 @@
 #include <TDF_Label.hxx>
 
 #include <DBRep.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 
 
 // LES ATTRIBUTES
 
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_Tool.hxx>
 
 
 //=======================================================================

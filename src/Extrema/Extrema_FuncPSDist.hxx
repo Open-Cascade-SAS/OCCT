@@ -21,12 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <gp_Pnt.hxx>
 #include <Adaptor3d_Surface.hxx>
 
-#include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 
 class math_Vector;
 

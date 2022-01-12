@@ -20,7 +20,6 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_DomainError.hxx>
 #include <TopoDS_Face.hxx>
 
 //=======================================================================

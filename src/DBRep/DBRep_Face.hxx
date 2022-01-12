@@ -18,7 +18,6 @@
 #define _DBRep_Face_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_Face.hxx>
 #include <Draw_Color.hxx>

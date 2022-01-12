@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_CString.hxx>
 #include <Prs3d_Presentation.hxx>
 
 class Prs3d_LineAspect;

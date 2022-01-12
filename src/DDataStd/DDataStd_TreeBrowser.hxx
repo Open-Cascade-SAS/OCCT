@@ -17,7 +17,6 @@
 #define _DDataStd_TreeBrowser_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
 #include <Draw_Drawable3D.hxx>

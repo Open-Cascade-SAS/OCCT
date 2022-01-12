@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Extrema_ExtElCS.hxx>
 #include <Extrema_SequenceOfPOnSurf.hxx>

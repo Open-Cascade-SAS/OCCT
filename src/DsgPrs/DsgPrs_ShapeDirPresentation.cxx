@@ -18,7 +18,6 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepClass_Edge.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <DsgPrs_ShapeDirPresentation.hxx>
@@ -29,7 +28,6 @@
 #include <GeomLProp_SLProps.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>

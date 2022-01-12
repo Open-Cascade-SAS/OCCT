@@ -22,7 +22,6 @@
 #include <BRepLib_FindSurface.hxx>
 #include <BRepTools.hxx>
 #include <DDF.hxx>
-#include <DDF_Data.hxx>
 #include <Draw.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
@@ -31,12 +30,8 @@
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Pln.hxx>
-#include <gp_Vec.hxx>
 #include <ModelDefinitions.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
@@ -45,31 +40,23 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_LabelMap.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_TagSource.hxx>
 #include <TDF_Tool.hxx>
 #include <TFunction_Function.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================

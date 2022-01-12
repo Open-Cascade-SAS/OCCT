@@ -17,45 +17,23 @@
 #include <DNaming.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Data.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_LabelMap.hxx>
 #include <TDF_Tool.hxx>
 #include <DDF.hxx>
-#include <DDF_Data.hxx>
 #include <TNaming.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_MapOfNamedShape.hxx>
-#include <TNaming_MapIteratorOfMapOfNamedShape.hxx>
-#include <Draw_Drawable3D.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 
 #include <TNaming_Builder.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_TagSource.hxx>
-#include <TopExp_Explorer.hxx>
 
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Trsf.hxx>
-
-#include <TColStd_HArray1OfInteger.hxx>
-//#ifdef _MSC_VER
 #include <stdio.h>
-//#endif
 
 // POP : first Wrong Declaration : now it is correct
 //       second not used

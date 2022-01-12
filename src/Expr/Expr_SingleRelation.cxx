@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Expr_GeneralExpression.hxx>
-#include <Expr_GeneralRelation.hxx>
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_SingleRelation.hxx>
 #include <Standard_OutOfRange.hxx>

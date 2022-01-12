@@ -19,8 +19,6 @@
 //		0.0	Nov  4 1997	Creation
 
 #include <DDF_Transaction.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>

@@ -24,9 +24,7 @@
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
 

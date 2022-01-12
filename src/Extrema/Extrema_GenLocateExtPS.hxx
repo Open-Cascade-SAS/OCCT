@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Extrema_POnSurf.hxx>
 class gp_Pnt;
 class Adaptor3d_Surface;

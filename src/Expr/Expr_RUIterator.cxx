@@ -16,14 +16,11 @@
 
 
 #include <Expr.hxx>
-#include <Expr_GeneralRelation.hxx>
-#include <Expr_NamedUnknown.hxx>
 #include <Expr_RelationIterator.hxx>
 #include <Expr_RUIterator.hxx>
 #include <Expr_SingleRelation.hxx>
 #include <Expr_UnknownIterator.hxx>
 #include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
 
 Expr_RUIterator::Expr_RUIterator (const Handle(Expr_GeneralRelation)& rel)
 {

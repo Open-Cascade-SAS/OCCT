@@ -16,7 +16,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepBuilderAPI_MakeShape.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <DNaming.hxx>
 #include <DNaming_TransformationDriver.hxx>
@@ -28,29 +27,20 @@
 #include <gp_Vec.hxx>
 #include <ModelDefinitions.hxx>
 #include <NCollection_Handle.hxx>
-#include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDF_Label.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopAbs.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_TransformationDriver,TFunction_Driver)

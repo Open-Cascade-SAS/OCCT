@@ -23,14 +23,12 @@
 #include <Draft_IndexedDataMapOfFaceFaceInfo.hxx>
 #include <Draft_IndexedDataMapOfEdgeEdgeInfo.hxx>
 #include <Draft_IndexedDataMapOfVertexVertexInfo.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Draft_ErrorStatus.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BRepTools_Modification.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 class gp_Dir;

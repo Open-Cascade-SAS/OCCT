@@ -16,10 +16,7 @@
 #define _Extrema_GlobOptFuncConicS_HeaderFile
 
 
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <math_Matrix.hxx>
-#include <math_Vector.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>

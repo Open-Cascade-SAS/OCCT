@@ -14,14 +14,11 @@
 #include <Draw.hxx>
 #include <Draw_Printer.hxx>
 
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_PrinterOStream.hxx>
 #include <Message_PrinterSystemLog.hxx>
 #include <Message_PrinterToReport.hxx>
 #include <Message_Report.hxx>
 #include <NCollection_Shared.hxx>
-#include <Standard_Dump.hxx>
 
 //==============================================================================
 //function : printerType

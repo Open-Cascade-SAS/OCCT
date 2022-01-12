@@ -16,7 +16,6 @@
 #include <Draw_Display.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>

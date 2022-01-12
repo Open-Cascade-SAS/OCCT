@@ -18,7 +18,6 @@
 #include <GeomTools.hxx>
 #include <GeomTools_SurfaceSet.hxx>
 #include <GeomTools_CurveSet.hxx>
-#include <GeomTools_Curve2dSet.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Geom_Geometry.hxx>

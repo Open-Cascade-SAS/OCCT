@@ -17,34 +17,24 @@
 
 #include <DsgPrs_SymmetricPresentation.hxx>
 #include <ElCLib.hxx>
-#include <gce_MakeDir.hxx>
 #include <gce_MakeLin.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Plane.hxx>
-#include <GeomAPI.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <IntAna2d_AnaIntersection.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <TCollection_AsciiString.hxx>
 
 //===================================================================
 //Function:Add

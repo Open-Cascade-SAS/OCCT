@@ -18,15 +18,12 @@
 #define _Draw_Marker2D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_MarkerShape.hxx>
 #include <Standard_Integer.hxx>
 #include <Draw_Drawable2D.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Draw_Display;
 
 

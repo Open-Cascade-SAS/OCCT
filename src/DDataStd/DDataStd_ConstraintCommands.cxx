@@ -27,7 +27,6 @@
 
 #include <TNaming_NamedShape.hxx>
 
-#include <TDataXtd.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataXtd_Constraint.hxx>

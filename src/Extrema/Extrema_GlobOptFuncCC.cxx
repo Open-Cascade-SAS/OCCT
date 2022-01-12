@@ -20,8 +20,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_OutOfRange.hxx>
 
 static Standard_Integer _NbVariables()
 {

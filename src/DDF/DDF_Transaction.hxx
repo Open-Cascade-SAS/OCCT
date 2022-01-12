@@ -17,12 +17,10 @@
 #define _DDF_Transaction_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_Transaction.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class TDF_Data;
 class TDF_Delta;
 

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Draw_Drawable3D.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class Draw_Drawable2D;

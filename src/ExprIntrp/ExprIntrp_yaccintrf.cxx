@@ -16,10 +16,8 @@
 #include <ExprIntrp_yaccanal.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_NamedExpression.hxx>
-#include <Expr_NamedUnknown.hxx>
 #include <Expr_NamedConstant.hxx>
 #include <Expr_NamedFunction.hxx>
-#include <Expr_NumericValue.hxx>
 #include <Expr_UnaryFunction.hxx>
 #include <Expr_BinaryFunction.hxx>
 #include <Expr_PolyFunction.hxx>

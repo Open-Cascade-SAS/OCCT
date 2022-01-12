@@ -25,7 +25,6 @@
 #include <Extrema_SequenceOfPOnSurf.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <math_Vector.hxx>
 
 class Adaptor3d_Surface;
