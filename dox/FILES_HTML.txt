@@ -22,6 +22,7 @@ samples/samples.md
 samples/ocaf.md
 samples/ocaf_func.md
 samples/draw_scripts.md
+samples/ais_object.md
 
 samples/novice_guide.md
 tutorial/tutorial.md

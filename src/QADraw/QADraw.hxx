@@ -22,44 +22,22 @@
 
 #include <Draw_Interpretor.hxx>
 
-
-
+//! Draw Harness plugin defining non-general commands specific to test cases.
 class QADraw 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Define specicial commands for AIS.
-  Standard_EXPORT static void CommonCommands (Draw_Interpretor& DI);
-  
-  Standard_EXPORT static void AdditionalCommands (Draw_Interpretor& DI);
-  
+  Standard_EXPORT static void CommonCommands (Draw_Interpretor& theCommands);
+
+  Standard_EXPORT static void AdditionalCommands (Draw_Interpretor& theCommands);
+
+  Standard_EXPORT static void TutorialCommands (Draw_Interpretor& theCommands);
+
   //! Loads all QA Draw commands. Used for plugin.
-  Standard_EXPORT static void Factory (Draw_Interpretor& DI);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
+  Standard_EXPORT static void Factory (Draw_Interpretor& theCommands);
 
 };
-
-
-
-
-
-
 
 #endif // _QADraw_HeaderFile

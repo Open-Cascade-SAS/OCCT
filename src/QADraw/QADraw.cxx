@@ -14,23 +14,27 @@
 // commercial license or contractual agreement.
 
 #include <QADraw.hxx>
-#include <Draw.hxx>
-#include <Draw_Interpretor.hxx>
-#include <ViewerTest.hxx>
-#include <ViewerTest_EventManager.hxx>
-#include <TopoDS_Shape.hxx>
+
+#include <QABugs.hxx>
+#include <QADraw.hxx>
+#include <QADNaming.hxx>
+#include <QANCollection.hxx>
+
 #include <AIS_InteractiveContext.hxx>
-#include <DBRep.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <DBRep.hxx>
+#include <Draw.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_PluginMacro.hxx>
+#include <OSD_Timer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
-#include <OSD_Timer.hxx>
-#include <stdio.h>
 
-#include <Draw_PluginMacro.hxx>
+#include <stdio.h>
 
 //=======================================================================
 //function : QATestExtremaSS
@@ -172,7 +176,11 @@ void QADraw::Factory(Draw_Interpretor& theCommands)
 {
   // definition of QA Command
   QADraw::CommonCommands(theCommands);
-  QADraw::AdditionalCommands(theCommands);
+  QADraw::TutorialCommands(theCommands);
+
+  QABugs::Commands(theCommands);
+  QADNaming::AllCommands(theCommands);
+  QANCollection::Commands(theCommands);
 }
 
 // Declare entry point PLUGINFACTORY
