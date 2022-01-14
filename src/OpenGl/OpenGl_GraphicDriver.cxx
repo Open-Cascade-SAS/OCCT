@@ -79,28 +79,30 @@ namespace
 
 #if defined(HAVE_EGL)
   //! Wrapper over eglChooseConfig() called with preferred defaults.
-  static EGLConfig chooseEglSurfConfig (EGLDisplay theDisplay)
+  static EGLConfig chooseEglSurfConfig (EGLDisplay theDisplay,
+                                        const Handle(OpenGl_Caps)& theCaps)
   {
-    EGLint aConfigAttribs[] =
-    {
-      EGL_RED_SIZE,     8,
-      EGL_GREEN_SIZE,   8,
-      EGL_BLUE_SIZE,    8,
-      EGL_ALPHA_SIZE,   0,
-      EGL_DEPTH_SIZE,   24,
-      EGL_STENCIL_SIZE, 8,
-    #if defined(OpenGl_USE_GLES2)
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-    #else
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-    #endif
-      EGL_NONE
-    };
-
     EGLConfig aCfg = NULL;
     EGLint aNbConfigs = 0;
     for (Standard_Integer aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
     {
+      bool isDeepColor = theCaps->buffersDeepColor;
+      EGLint aConfigAttribs[] =
+      {
+        EGL_RED_SIZE,     isDeepColor ? 10 : 8,
+        EGL_GREEN_SIZE,   isDeepColor ? 10 : 8,
+        EGL_BLUE_SIZE,    isDeepColor ? 10 : 8,
+        EGL_ALPHA_SIZE,   0,
+        EGL_DEPTH_SIZE,   24,
+        EGL_STENCIL_SIZE, 8,
+      #if defined(OpenGl_USE_GLES2)
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      #else
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+      #endif
+        EGL_NONE
+      };
+
     #if defined(OpenGl_USE_GLES2)
       aConfigAttribs[6 * 2 + 1] = aGlesVer == 3 ? EGL_OPENGL_ES3_BIT : EGL_OPENGL_ES2_BIT;
     #else
@@ -117,13 +119,30 @@ namespace
       }
       eglGetError();
 
-      aConfigAttribs[4 * 2 + 1] = 16; // try config with smaller depth buffer
-      if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
-       && aCfg != NULL)
+      if (isDeepColor)
       {
-        return aCfg;
+        // try config with smaller color buffer
+        aConfigAttribs[0 * 2 + 1] = 8;
+        aConfigAttribs[1 * 2 + 1] = 8;
+        aConfigAttribs[2 * 2 + 1] = 8;
+        if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
+         && aCfg != NULL)
+        {
+          return aCfg;
+        }
+        eglGetError();
       }
-      eglGetError();
+
+      {
+        // try config with smaller depth buffer
+        aConfigAttribs[4 * 2 + 1] = 16;
+        if (eglChooseConfig (theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
+         && aCfg != NULL)
+        {
+          return aCfg;
+        }
+        eglGetError();
+      }
     }
     return aCfg;
   }
@@ -327,7 +346,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
     return Standard_False;
   }
 
-  myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay);
+  myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay, myCaps);
   if (myEglConfig == NULL)
   {
     ::Message::SendFail ("Error: EGL does not provide compatible configurations");
@@ -404,7 +423,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
   myEglConfig  = theEglConfig;
   if (theEglConfig == NULL)
   {
-    myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay);
+    myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay, myCaps);
     if (myEglConfig == NULL)
     {
       ::Message::SendFail ("Error: EGL does not provide compatible configurations");

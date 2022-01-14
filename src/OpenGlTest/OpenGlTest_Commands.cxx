@@ -597,6 +597,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "Stereo:  " << (aCaps->contextStereo ? "1" : "0") << "\n";
     theDI << "WinBuffer: " << (aCaps->useSystemBuffer ? "1" : "0") << "\n";
     theDI << "OpaqueAlpha: " << (aCaps->buffersOpaqueAlpha ? "1" : "0") << "\n";
+    theDI << "DeepColor: " << (aCaps->buffersDeepColor ? "1" : "0") << "\n";
     theDI << "NoExt:"    << (aCaps->contextNoExtensions ? "1" : "0") << "\n";
     theDI << "MaxVersion:" << aCaps->contextMajorVersionUpper << "." << aCaps->contextMinorVersionUpper << "\n";
     theDI << "CompressTextures: " << (aCaps->compressedTexturesDisable ? "0" : "1") << "\n";
@@ -614,148 +615,90 @@ static int VCaps (Draw_Interpretor& theDI,
       continue;
     }
     else if (anArgCase == "-vsync"
+          || anArgCase == "-novsync"
           || anArgCase == "-swapinterval")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->swapInterval = toEnable;
+      aCaps->swapInterval = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-ffp")
+    else if (anArgCase == "-ffp"
+          || anArgCase == "-noffp")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->ffpEnable = toEnable;
+      aCaps->ffpEnable = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-polygonmode")
+    else if (anArgCase == "-polygonmode"
+          || anArgCase == "-nopolygonmode")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->usePolygonMode = toEnable;
+      aCaps->usePolygonMode = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-srgb")
+    else if (anArgCase == "-srgb"
+          || anArgCase == "-nosrgb")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->sRGBDisable = !toEnable;
+      aCaps->sRGBDisable = !Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-compressedtextures")
+    else if (anArgCase == "-compressedtextures"
+          || anArgCase == "-nocompressedtextures")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->compressedTexturesDisable = !toEnable;
+      aCaps->compressedTexturesDisable = !Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-vbo")
+    else if (anArgCase == "-vbo"
+          || anArgCase == "-novbo")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->vboDisable = !toEnable;
+      aCaps->vboDisable = !Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-sprite"
           || anArgCase == "-sprites")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->pntSpritesDisable = !toEnable;
+      aCaps->pntSpritesDisable = !Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-depthzerotoone"
           || anArgCase == "-zerotoonedepth"
           || anArgCase == "-usezerotoonedepth"
           || anArgCase == "-iszerotoonedepth")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->useZeroToOneDepth = toEnable;
+      aCaps->useZeroToOneDepth = Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
     }
-    else if (anArgCase == "-softmode")
+    else if (anArgCase == "-softmode"
+          || anArgCase == "-contextnoaccel")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextNoAccel = toEnable;
+      aCaps->contextNoAccel = Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-opaquealpha"
-          || anArgCase == "-buffersOpaqueAlpha")
+          || anArgCase == "-noopaquealpha"
+          || anArgCase == "-buffersopaquealpha"
+          || anArgCase == "-nobuffersopaquealpha")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->buffersOpaqueAlpha = toEnable;
+      aCaps->buffersOpaqueAlpha = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
+    }
+    else if (anArgCase == "-deepcolor"
+          || anArgCase == "-nodeepcolor"
+          || anArgCase == "-buffersdeepcolor"
+          || anArgCase == "-nobuffersdeepcolor")
+    {
+      aCaps->buffersDeepColor = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-winbuffer"
           || anArgCase == "-windowbuffer"
+          || anArgCase == "-nowinbuffer"
+          || anArgCase == "-nowindowbuffer"
           || anArgCase == "-usewinbuffer"
           || anArgCase == "-usewindowbuffer"
           || anArgCase == "-usesystembuffer")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->useSystemBuffer = toEnable;
+      aCaps->useSystemBuffer = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-accel"
-          || anArgCase == "-acceleration")
+          || anArgCase == "-acceleration"
+          || anArgCase == "-noaccel"
+          || anArgCase == "-noacceleration")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextNoAccel = !toEnable;
+      aCaps->contextNoAccel = !Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-compat"
           || anArgCase == "-compatprofile"
           || anArgCase == "-compatible"
           || anArgCase == "-compatibleprofile")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextCompatible = toEnable;
+      aCaps->contextCompatible = Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
       if (!aCaps->contextCompatible)
       {
         aCaps->ffpEnable = Standard_False;
@@ -764,40 +707,24 @@ static int VCaps (Draw_Interpretor& theDI,
     else if (anArgCase == "-core"
           || anArgCase == "-coreprofile")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextCompatible = !toEnable;
+      aCaps->contextCompatible = !Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
       if (!aCaps->contextCompatible)
       {
         aCaps->ffpEnable = Standard_False;
       }
     }
     else if (anArgCase == "-stereo"
-          || anArgCase == "-quadbuffer")
+          || anArgCase == "-quadbuffer"
+          || anArgCase == "-nostereo"
+          || anArgCase == "-noquadbuffer")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextStereo = toEnable;
+      aCaps->contextStereo = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-noext"
           || anArgCase == "-noextensions"
           || anArgCase == "-noextension")
     {
-      Standard_Boolean toDisable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toDisable))
-      {
-        --anArgIter;
-      }
-      aCaps->contextNoExtensions = toDisable;
+      aCaps->contextNoExtensions = Draw::ParseOnOffIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgCase == "-maxversion"
           || anArgCase == "-upperversion"
@@ -859,7 +786,7 @@ void OpenGlTest::Commands (Draw_Interpretor& theCommands)
             "vcaps [-sRGB {0|1}] [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
     "\n\t\t:       [-compatibleProfile {0|1}] [-compressedTextures {0|1}]"
     "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}] [-opaqueAlpha {0|1}]"
-    "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
+    "\n\t\t:       [-deepColor {0|1}] [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
     "\n\t\t:       [-zeroToOneDepth {0|1}]"
     "\n\t\t:       [-noExtensions {0|1}] [-maxVersion Major Minor]"
@@ -877,10 +804,12 @@ void OpenGlTest::Commands (Draw_Interpretor& theCommands)
     "\n\t\t:  opaqueAlpha - disable writes in alpha component of color buffer"
     "\n\t\t:  winBuffer - allow using window buffer for rendering"
     "\n\t\t:  zeroToOneDepth - use [0,1] depth range instead of [-1,1] range"
+    "\n\t\t: Window buffer creation options:"
+    "\n\t\t:  quadbuffer  - QuadBuffer for stereoscopic displays"
+    "\n\t\t:  deepColor   - window buffer with higher color precision (30bit instead of 24bit RGB)"
     "\n\t\t: Context creation options:"
     "\n\t\t:  softMode          - software OpenGL implementation"
     "\n\t\t:  compatibleProfile - backward-compatible profile"
-    "\n\t\t:  quadbuffer        - QuadBuffer"
     "\n\t\t:  noExtensions      - disallow usage of extensions"
     "\n\t\t:  maxVersion        - force upper OpenGL version to be used"
     "\n\t\t: These parameters control alternative"

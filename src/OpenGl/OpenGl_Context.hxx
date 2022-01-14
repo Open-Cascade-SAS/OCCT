@@ -398,6 +398,10 @@ public:
   Standard_EXPORT void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                               Graphic3d_DiagnosticInfo theFlags) const;
 
+  //! Fetches information about window buffer pixel format.
+  Standard_EXPORT void WindowBufferBits (Graphic3d_Vec4i& theColorBits,
+                                         Graphic3d_Vec2i& theDepthStencilBits) const;
+
   //! Access shared resource by its name.
   //! @param  theKey - unique identifier;
   //! @return handle to shared resource or NULL.
@@ -564,6 +568,9 @@ public:
 
   //! Overrides if window/surface buffer is sRGB-ready or not (initialized with the context).
   void SetWindowSRGB (bool theIsSRgb) { myIsSRgbWindow = theIsSRgb; }
+
+  //! Returns TRUE if window/surface buffer has deep color (10bit per component / 30bit RGB) or better precision.
+  bool IsWindowDeepColor() const { return myIsWindowDeepColor; }
 
   //! Convert Quantity_ColorRGBA into vec4
   //! with conversion or no conversion into non-linear sRGB
@@ -1165,6 +1172,7 @@ private: //! @name fields tracking current state
   Standard_Boolean              myAllowAlphaToCov; //!< flag allowing   GL_SAMPLE_ALPHA_TO_COVERAGE usage
   Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
+  Standard_Boolean              myIsWindowDeepColor; //!< indicates that window buffer is has deep color pixel format
   Standard_Boolean              myIsSRgbWindow;    //!< indicates that window buffer is sRGB-ready
   Standard_Boolean              myIsSRgbActive;    //!< flag indicating GL_FRAMEBUFFER_SRGB state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor

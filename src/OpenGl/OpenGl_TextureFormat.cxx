@@ -110,6 +110,7 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatDataType (GLint theDataType)
     case GL_HALF_FLOAT:        return "GL_HALF_FLOAT";
     case 0x8D61:               return "GL_HALF_FLOAT_OES";
     case GL_UNSIGNED_INT_24_8: return "GL_UNSIGNED_INT_24_8";
+    case GL_UNSIGNED_INT_2_10_10_10_REV:    return "GL_UNSIGNED_INT_2_10_10_10_REV";
     case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return "GL_FLOAT_32_UNSIGNED_INT_24_8_REV";
   }
   return OpenGl_Context::FormatGlEnumHex (theDataType);
@@ -584,6 +585,15 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
           aFormat.SetInternalFormat (GL_RGB8); // fallback format
         }
       }
+      return aFormat;
+    }
+    case GL_RGB10_A2:
+    {
+      aFormat.SetNbComponents (4);
+      aFormat.SetInternalFormat (theSizedFormat);
+      aFormat.SetPixelFormat (GL_RGBA);
+      aFormat.SetDataType (GL_UNSIGNED_INT_2_10_10_10_REV);
+      aFormat.SetImageFormat (Image_Format_RGBA);
       return aFormat;
     }
     // integer types

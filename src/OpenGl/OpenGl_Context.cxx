@@ -243,7 +243,9 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myColorMask (true),
   myAlphaToCoverage (false),
   myIsGlDebugCtx (false),
+  myIsWindowDeepColor (false),
   myIsSRgbWindow (false),
+  myIsSRgbActive (false),
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
   myResolutionRatio (1.0f),
   myLineWidthScale (1.0f),
@@ -1529,6 +1531,11 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
   }
 
+  Graphic3d_Vec4i aWinBitsRGBA;
+  Graphic3d_Vec2i aWinBitsDepthStencil;
+  WindowBufferBits (aWinBitsRGBA, aWinBitsDepthStencil);
+  myIsWindowDeepColor = aWinBitsRGBA.r() >= 10;
+
   // standard formats
   mySupportedFormats->Add (Image_Format_Gray);
   mySupportedFormats->Add (Image_Format_Alpha);
@@ -1814,6 +1821,58 @@ void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) 
 }
 
 // =======================================================================
+// function : WindowBufferBits
+// purpose  :
+// =======================================================================
+void OpenGl_Context::WindowBufferBits (Graphic3d_Vec4i& theColorBits,
+                                       Graphic3d_Vec2i& theDepthStencilBits) const
+{
+  if (core11ffp != NULL
+   || myGapi == Aspect_GraphicsLibrary_OpenGLES)
+  {
+    // removed from core with no working alternative
+    core11fwd->glGetIntegerv (GL_RED_BITS,     &theColorBits.r());
+    core11fwd->glGetIntegerv (GL_GREEN_BITS,   &theColorBits.g());
+    core11fwd->glGetIntegerv (GL_BLUE_BITS,    &theColorBits.b());
+    core11fwd->glGetIntegerv (GL_ALPHA_BITS,   &theColorBits.a());
+    core11fwd->glGetIntegerv (GL_DEPTH_BITS,   &theDepthStencilBits[0]);
+    core11fwd->glGetIntegerv (GL_STENCIL_BITS, &theDepthStencilBits[1]);
+  }
+  else
+  {
+  #if defined(HAVE_EGL)
+    //
+  #elif defined(_WIN32)
+    const int aPixFrmtIndex = GetPixelFormat ((HDC )myDisplay);
+    PIXELFORMATDESCRIPTOR aFormat;
+    memset (&aFormat, 0, sizeof(aFormat));
+    aFormat.nSize      = sizeof(aFormat);
+    DescribePixelFormat ((HDC )myDisplay, aPixFrmtIndex, sizeof(PIXELFORMATDESCRIPTOR), &aFormat);
+    theColorBits.SetValues (aFormat.cRedBits, aFormat.cGreenBits, aFormat.cBlueBits, aFormat.cAlphaBits);
+    theDepthStencilBits.SetValues (aFormat.cDepthBits, aFormat.cStencilBits);
+  #elif defined(HAVE_XLIB)
+    Display* aDisplay = (Display* )myDisplay;
+    XWindowAttributes aWinAttribs;
+    XGetWindowAttributes (aDisplay, (::Window )myWindow, &aWinAttribs);
+    XVisualInfo aVisInfo;
+    aVisInfo.visualid = aWinAttribs.visual->visualid;
+    aVisInfo.screen   = DefaultScreen(aDisplay);
+    int aNbItems = 0;
+    std::unique_ptr<XVisualInfo, int(*)(void*)> aVis (XGetVisualInfo (aDisplay, VisualIDMask | VisualScreenMask, &aVisInfo, &aNbItems), &XFree);
+    if (aVis.get() != NULL)
+    {
+      glXGetConfig (aDisplay, aVis.get(), GLX_RED_SIZE,     &theColorBits.r());
+      glXGetConfig (aDisplay, aVis.get(), GLX_GREEN_SIZE,   &theColorBits.g());
+      glXGetConfig (aDisplay, aVis.get(), GLX_BLUE_SIZE,    &theColorBits.b());
+      glXGetConfig (aDisplay, aVis.get(), GLX_ALPHA_SIZE,   &theColorBits.a());
+      glXGetConfig (aDisplay, aVis.get(), GLX_DEPTH_SIZE,   &theDepthStencilBits[0]);
+      glXGetConfig (aDisplay, aVis.get(), GLX_STENCIL_SIZE, &theDepthStencilBits[1]);
+    }
+  #endif
+  }
+}
+
+// =======================================================================
 // function : DiagnosticInfo
 // purpose  :
 // =======================================================================
@@ -1909,6 +1968,13 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     GLint aViewport[4] = {};
     core11fwd->glGetIntegerv (GL_VIEWPORT, aViewport);
     addInfo (theDict, "Viewport", TCollection_AsciiString() + aViewport[2] + "x" + aViewport[3]);
+
+    Graphic3d_Vec4i aWinBitsRGBA;
+    Graphic3d_Vec2i aWinBitsDepthStencil;
+    WindowBufferBits (aWinBitsRGBA, aWinBitsDepthStencil);
+    addInfo (theDict, "Window buffer",
+             TCollection_AsciiString() + "RGB" + aWinBitsRGBA.r() + " ALPHA" + aWinBitsRGBA.a()
+             + " DEPTH" + aWinBitsDepthStencil[0] + " STENCIL" + aWinBitsDepthStencil[1]);
   }
 
   if ((theFlags & Graphic3d_DiagnosticInfo_Memory) != 0)

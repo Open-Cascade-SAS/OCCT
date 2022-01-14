@@ -340,7 +340,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
     HWND  aWinTmp     = NULL;
     HDC   aDevCtxTmp  = NULL;
     HGLRC aRendCtxTmp = NULL;
-    if ((!theCaps->contextDebug && !theCaps->contextNoAccel && theCaps->contextCompatible)
+    if ((!theCaps->contextDebug && !theCaps->contextNoAccel && theCaps->contextCompatible && !theCaps->buffersDeepColor)
      || RegisterClassW (&aClass) == 0)
     {
       aClass.lpszClassName = NULL;
@@ -404,7 +404,11 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
         //WGL_SAMPLE_BUFFERS_ARB, 1,
         //WGL_SAMPLES_ARB,        8,
-        WGL_COLOR_BITS_ARB,     24,
+        //WGL_COLOR_BITS_ARB,     24,
+        WGL_RED_BITS_ARB,   theCaps->buffersDeepColor ? 10 : 8,
+        WGL_GREEN_BITS_ARB, theCaps->buffersDeepColor ? 10 : 8,
+        WGL_BLUE_BITS_ARB,  theCaps->buffersDeepColor ? 10 : 8,
+        WGL_ALPHA_BITS_ARB, theCaps->buffersDeepColor ? 2  : 8,
         WGL_DEPTH_BITS_ARB,     24,
         WGL_STENCIL_BITS_ARB,   8,
         // WGL_EXT_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
@@ -415,7 +419,12 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         0, 0,
       };
       unsigned int aFrmtsNb = 0;
-      aChoosePixProc (aWindowDC, aPixAttribs, NULL, 1, &aPixelFrmtId, &aFrmtsNb);
+      if (!aChoosePixProc (aWindowDC, aPixAttribs, NULL, 1, &aPixelFrmtId, &aFrmtsNb)
+        && theCaps->buffersDeepColor)
+      {
+        /// TODO
+        Message::SendFail() << "Error: unable to find RGB10_A2 window buffer format!";
+      }
     }
 
     // setup pixel format - may be set only once per window

@@ -34,6 +34,7 @@ OpenGl_Caps::OpenGl_Caps()
   useZeroToOneDepth (Standard_False),
   buffersNoSwap     (Standard_False),
   buffersOpaqueAlpha(Standard_True),
+  buffersDeepColor  (Standard_False),
   contextStereo     (Standard_False),
   contextDebug      (Standard_False),
   contextSyncDebug  (Standard_False),
@@ -73,6 +74,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   useZeroToOneDepth = theCopy.useZeroToOneDepth;
   buffersNoSwap     = theCopy.buffersNoSwap;
   buffersOpaqueAlpha= theCopy.buffersOpaqueAlpha;
+  buffersDeepColor  = theCopy.buffersDeepColor;
   contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
   contextSyncDebug  = theCopy.contextSyncDebug;

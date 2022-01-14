@@ -61,6 +61,25 @@ public: //! @name context creation parameters
   Standard_Boolean buffersOpaqueAlpha;
 
   /**
+   * Specify whether deep color format (10-bit per component / 30-bit RGB) should be used
+   * instead of  standard color format  (8-bit per component / 24-bit RGB) when available.
+   * Deep color provides higher accuracy within the same color range (sRGB)
+   * and doesn't enable wide color gamut / HDR support.
+   * Higher precision helps eliminating banding effect on smooth gradients.
+   *
+   * Effect of the flag will vary depending on platform:
+   * - used as a hint on systems with 24-bit RGB color defined as preferred pixels format
+   *   but with 30-bit RGB color being activated systemwide (e.g. Windows);
+   * - ignored on systems with deep color defined as preferred pixel format (e.g. Linux / X11),
+   *   deep 30-bit RGB color will be used regardless of the flag value;
+   * - ignored on configurations not supporting deep color (incompatible display / system / GPU / driver),
+   *   standard 24-bit RGB color will be used instead.
+   *
+   * OFF by default.
+   */
+  Standard_Boolean buffersDeepColor;
+
+  /**
    * Request stereoscopic context (with Quad Buffer). This flag requires support in OpenGL driver.
    *
    * OFF by default.

@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShadowMap, OpenGl_NamedResource)
 // =======================================================================
 OpenGl_ShadowMap::OpenGl_ShadowMap()
 : OpenGl_NamedResource ("shadow_map"),
-  myShadowMapFbo (new OpenGl_FrameBuffer()),
+  myShadowMapFbo (new OpenGl_FrameBuffer (myResourceId + ":fbo")),
   myShadowCamera (new Graphic3d_Camera()),
   myShadowMapBias (0.0f)
 {

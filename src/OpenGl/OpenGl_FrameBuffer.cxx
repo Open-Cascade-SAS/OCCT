@@ -22,7 +22,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer,OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 
 namespace
 {
@@ -66,8 +66,9 @@ namespace
 // function : OpenGl_FrameBuffer
 // purpose  :
 // =======================================================================
-OpenGl_FrameBuffer::OpenGl_FrameBuffer()
-: myInitVPSizeX (0),
+OpenGl_FrameBuffer::OpenGl_FrameBuffer (const TCollection_AsciiString& theResourceId)
+: OpenGl_NamedResource (theResourceId),
+  myInitVPSizeX (0),
   myInitVPSizeY (0),
   myVPSizeX (0),
   myVPSizeY (0),
@@ -79,10 +80,10 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer()
   myIsOwnBuffer (false),
   myIsOwnColor  (false),
   myIsOwnDepth  (false),
-  myDepthStencilTexture (new OpenGl_Texture())
+  myDepthStencilTexture (new OpenGl_Texture (theResourceId + ":depth_stencil"))
 {
   myColorFormats.Append (GL_RGBA8);
-  myColorTextures.Append (new OpenGl_Texture());
+  myColorTextures.Append (new OpenGl_Texture (theResourceId + ":color"));
 }
 
 // =======================================================================
@@ -221,7 +222,9 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   for (Standard_Integer aLength = 0; aLength < myColorFormats.Length(); ++aLength)
   {
-    myColorTextures.Append (aLength < aTextures.Length() ? aTextures.Value (aLength) : new OpenGl_Texture());
+    myColorTextures.Append (aLength < aTextures.Length()
+                          ? aTextures.Value (aLength)
+                          : new OpenGl_Texture (myResourceId + ":color" + aLength));
   }
 
   myDepthFormat = theDepthStencilTexture->GetFormat();
@@ -343,7 +346,9 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   for (Standard_Integer aLength = 0; aLength < myColorFormats.Length(); ++aLength)
   {
-    myColorTextures.Append (aLength < aTextures.Length() ? aTextures.Value (aLength) : new OpenGl_Texture());
+    myColorTextures.Append (aLength < aTextures.Length()
+                          ? aTextures.Value (aLength)
+                          : new OpenGl_Texture (myResourceId + ":color" + aLength));
   }
 
   myDepthFormat = theDepthFormat;

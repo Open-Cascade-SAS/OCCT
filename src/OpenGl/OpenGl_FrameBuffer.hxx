@@ -15,7 +15,7 @@
 #ifndef OpenGl_FrameBuffer_HeaderFile
 #define OpenGl_FrameBuffer_HeaderFile
 
-#include <OpenGl_Resource.hxx>
+#include <OpenGl_NamedResource.hxx>
 
 #include <Graphic3d_BufferType.hxx>
 #include <Graphic3d_Vec2.hxx>
@@ -25,16 +25,16 @@
 class Image_PixMap;
 class OpenGl_Texture;
 
-DEFINE_STANDARD_HANDLE(OpenGl_FrameBuffer, OpenGl_Resource)
+DEFINE_STANDARD_HANDLE(OpenGl_FrameBuffer, OpenGl_NamedResource)
 
 //! Short declaration of useful collection types.
 typedef NCollection_Vector<Standard_Integer> OpenGl_ColorFormats;
 
 //! Class implements FrameBuffer Object (FBO) resource
 //! intended for off-screen rendering.
-class OpenGl_FrameBuffer : public OpenGl_Resource
+class OpenGl_FrameBuffer : public OpenGl_NamedResource
 {
-
+  DEFINE_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 public:
 
   //! Helpful constants
@@ -57,7 +57,7 @@ public:
 public:
 
   //! Empty constructor
-  Standard_EXPORT OpenGl_FrameBuffer();
+  Standard_EXPORT OpenGl_FrameBuffer (const TCollection_AsciiString& theResourceId = TCollection_AsciiString());
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_FrameBuffer();
@@ -370,10 +370,6 @@ protected:
   bool                   myIsOwnDepth;          //!< flag indicating that depth texture  should be deallocated by this class
   OpenGl_TextureArray    myColorTextures;       //!< color texture objects
   Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
-
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_FrameBuffer,OpenGl_Resource) // Type definition
 
 };
 

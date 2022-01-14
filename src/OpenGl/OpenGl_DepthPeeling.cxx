@@ -27,11 +27,11 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_DepthPeeling, OpenGl_NamedResource)
 OpenGl_DepthPeeling::OpenGl_DepthPeeling()
 : OpenGl_NamedResource ("depth_peeling")
 {
-  myDepthPeelFbosOit[0]      = new OpenGl_FrameBuffer();
-  myDepthPeelFbosOit[1]      = new OpenGl_FrameBuffer();
-  myFrontBackColorFbosOit[0] = new OpenGl_FrameBuffer();
-  myFrontBackColorFbosOit[1] = new OpenGl_FrameBuffer();
-  myBlendBackFboOit          = new OpenGl_FrameBuffer();
+  myDepthPeelFbosOit[0]      = new OpenGl_FrameBuffer (myResourceId + ":fbo0");
+  myDepthPeelFbosOit[1]      = new OpenGl_FrameBuffer (myResourceId + ":fbo1");
+  myFrontBackColorFbosOit[0] = new OpenGl_FrameBuffer (myResourceId + ":fbo0_color");
+  myFrontBackColorFbosOit[1] = new OpenGl_FrameBuffer (myResourceId + ":fbo1_color");
+  myBlendBackFboOit          = new OpenGl_FrameBuffer (myResourceId + ":fbo_blend");
 }
 
 // =======================================================================

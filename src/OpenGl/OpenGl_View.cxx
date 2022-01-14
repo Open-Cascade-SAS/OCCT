@@ -158,21 +158,21 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myNoShadingLight = new Graphic3d_LightSet();
   myNoShadingLight->Add (aLight);
 
-  myMainSceneFbos[0]         = new OpenGl_FrameBuffer();
-  myMainSceneFbos[1]         = new OpenGl_FrameBuffer();
-  myMainSceneFbosOit[0]      = new OpenGl_FrameBuffer();
-  myMainSceneFbosOit[1]      = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[0]    = new OpenGl_FrameBuffer();
-  myImmediateSceneFbos[1]    = new OpenGl_FrameBuffer();
-  myImmediateSceneFbosOit[0] = new OpenGl_FrameBuffer();
-  myImmediateSceneFbosOit[1] = new OpenGl_FrameBuffer();
-  myXrSceneFbo               = new OpenGl_FrameBuffer();
-  myOpenGlFBO                = new OpenGl_FrameBuffer();
-  myOpenGlFBO2               = new OpenGl_FrameBuffer();
-  myRaytraceFBO1[0]          = new OpenGl_FrameBuffer();
-  myRaytraceFBO1[1]          = new OpenGl_FrameBuffer();
-  myRaytraceFBO2[0]          = new OpenGl_FrameBuffer();
-  myRaytraceFBO2[1]          = new OpenGl_FrameBuffer();
+  myMainSceneFbos[0]         = new OpenGl_FrameBuffer ("fbo0_main");
+  myMainSceneFbos[1]         = new OpenGl_FrameBuffer ("fbo1_main");
+  myMainSceneFbosOit[0]      = new OpenGl_FrameBuffer ("fbo0_main_oit");
+  myMainSceneFbosOit[1]      = new OpenGl_FrameBuffer ("fbo1_main_oit");
+  myImmediateSceneFbos[0]    = new OpenGl_FrameBuffer ("fbo0_imm");
+  myImmediateSceneFbos[1]    = new OpenGl_FrameBuffer ("fbo1_imm");
+  myImmediateSceneFbosOit[0] = new OpenGl_FrameBuffer ("fbo0_imm_oit");
+  myImmediateSceneFbosOit[1] = new OpenGl_FrameBuffer ("fbo1_imm_oit");
+  myXrSceneFbo               = new OpenGl_FrameBuffer ("fbo_xr");
+  myOpenGlFBO                = new OpenGl_FrameBuffer ("fbo_gl");
+  myOpenGlFBO2               = new OpenGl_FrameBuffer ("fbo_gl2");
+  myRaytraceFBO1[0]          = new OpenGl_FrameBuffer ("fbo0_raytrace1");
+  myRaytraceFBO1[1]          = new OpenGl_FrameBuffer ("fbo1_raytrace1");
+  myRaytraceFBO2[0]          = new OpenGl_FrameBuffer ("fbo0_raytrace2");
+  myRaytraceFBO2[1]          = new OpenGl_FrameBuffer ("fbo1_raytrace2");
   myDepthPeelingFbos = new OpenGl_DepthPeeling();
   myShadowMaps = new OpenGl_ShadowMapArray();
 }
@@ -387,8 +387,25 @@ void OpenGl_View::SetWindow (const Handle(Aspect_Window)& theWindow,
   myHasFboBlit = Standard_True;
   Invalidate();
 
+  // choose preferred FBO format
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (aCtx->IsWindowDeepColor()
+   && aCtx->IsGlGreaterEqual (3, 0))
+  {
+    myFboColorFormat = GL_RGB10_A2;
+  }
+  else if (aCtx->HasSRGB())
+  {
+    // note that GL_SRGB8 is not required to be renderable, unlike GL_RGB8, GL_RGBA8, GL_SRGB8_ALPHA8
+    myFboColorFormat = GL_SRGB8_ALPHA8;
+  }
+  else
+  {
+    myFboColorFormat = GL_RGBA8;
+  }
+
   // Environment texture resource does not support lazy initialization.
-  initTextureEnv (myWorkspace->GetGlContext());
+  initTextureEnv (aCtx);
 }
 
 // =======================================================================
@@ -950,6 +967,19 @@ void OpenGl_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& t
   {
     TCollection_AsciiString aResRatio (myRenderParams.ResolutionRatio());
     theDict.ChangeFromIndex (theDict.Add ("ResolutionRatio", aResRatio)) = aResRatio;
+    if (myMainSceneFbos[0]->IsValid())
+    {
+      TCollection_AsciiString anFboInfo;
+      if (const Handle(OpenGl_Texture)& aColorTex = myMainSceneFbos[0]->ColorTexture())
+      {
+        anFboInfo += OpenGl_TextureFormat::FormatFormat (aColorTex->SizedFormat());
+      }
+      if (const Handle(OpenGl_Texture)& aDepthTex = myMainSceneFbos[0]->DepthStencilTexture())
+      {
+        anFboInfo = anFboInfo + " " + OpenGl_TextureFormat::FormatFormat (aDepthTex->SizedFormat());
+      }
+      theDict.ChangeFromIndex (theDict.Add ("FBO buffer", anFboInfo)) = anFboInfo;
+    }
   }
 }
 
