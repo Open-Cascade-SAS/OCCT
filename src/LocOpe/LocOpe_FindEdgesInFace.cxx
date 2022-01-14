@@ -30,9 +30,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

@@ -19,7 +19,6 @@
 #include <MeshVS_EntityType.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <Quantity_NameOfColor.hxx>
 class PrsMgr_PresentationManager;
 
 

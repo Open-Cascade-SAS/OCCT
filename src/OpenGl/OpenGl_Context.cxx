@@ -32,12 +32,12 @@
 #include <OpenGl_GlCore46.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStats.hxx>
-#include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_TextureSetPairIterator.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Aspects.hxx>
 
+#include <Aspect_Handle.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Image_SupportedFormats.hxx>

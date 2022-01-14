@@ -18,7 +18,6 @@
 #include <Quantity_Date.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Stream.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
 #include <stdio.h>

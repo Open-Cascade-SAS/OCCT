@@ -20,13 +20,9 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <MAT2d_BiInt.hxx>
 #include <MAT2d_Circuit.hxx>
 #include <MAT2d_Connexion.hxx>
-#include <MAT2d_DataMapIteratorOfDataMapOfBiIntSequenceOfInteger.hxx>
 #include <MAT2d_DataMapOfBiIntSequenceOfInteger.hxx>
-#include <MAT2d_DataMapOfIntegerConnexion.hxx>
 #include <MAT2d_MiniPath.hxx>
 #include <MAT2d_SequenceOfConnexion.hxx>
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>

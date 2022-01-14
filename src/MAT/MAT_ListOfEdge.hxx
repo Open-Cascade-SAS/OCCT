@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class MAT_TListNodeOfListOfEdge;
 class MAT_Edge;
 

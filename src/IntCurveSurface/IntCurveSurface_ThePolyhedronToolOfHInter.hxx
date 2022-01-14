@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_HArray1OfBox.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_OutOfRange;
 class IntCurveSurface_ThePolyhedronOfHInter;
 class Bnd_Box;

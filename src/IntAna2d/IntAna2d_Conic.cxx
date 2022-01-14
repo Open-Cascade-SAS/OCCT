@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>

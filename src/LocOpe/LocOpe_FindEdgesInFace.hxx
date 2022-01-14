@@ -23,9 +23,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
 

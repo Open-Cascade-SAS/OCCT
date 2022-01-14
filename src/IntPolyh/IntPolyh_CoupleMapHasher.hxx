@@ -16,7 +16,6 @@
 #define _IntPolyh_CoupleMapHasher_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntPolyh_Couple.hxx>
 
 class IntPolyh_Couple;

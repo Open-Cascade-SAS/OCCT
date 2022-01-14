@@ -20,15 +20,12 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <MeshVS_EntityType.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <Standard_Address.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 class Bnd_Box;

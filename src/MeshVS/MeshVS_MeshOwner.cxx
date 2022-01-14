@@ -18,7 +18,6 @@
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -27,7 +26,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner,SelectMgr_EntityOwner)
 
 #ifndef MeshVS_PRSBUILDERHXX
-#include <MeshVS_PrsBuilder.hxx>
 #endif
 
 

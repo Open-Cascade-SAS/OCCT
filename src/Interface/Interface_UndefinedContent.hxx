@@ -25,7 +25,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_EntityList.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Interface_ParamType.hxx>
 class TCollection_HAsciiString;
 class Interface_CopyTool;

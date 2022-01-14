@@ -25,8 +25,6 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <GeomAbs_Shape.hxx>

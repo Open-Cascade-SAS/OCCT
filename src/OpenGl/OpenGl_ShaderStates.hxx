@@ -17,7 +17,6 @@
 #define OpenGl_ShaderStates_HeaderFile
 
 #include <Graphic3d_RenderTransparentMethod.hxx>
-#include <NCollection_List.hxx>
 #include <Graphic3d_LightSet.hxx>
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Vec.hxx>

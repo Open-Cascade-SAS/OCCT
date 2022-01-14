@@ -19,11 +19,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Edge.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <IntTools_Range.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_SequenceOfRanges.hxx>

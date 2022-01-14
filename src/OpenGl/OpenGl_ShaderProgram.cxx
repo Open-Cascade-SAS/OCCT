@@ -15,12 +15,6 @@
 
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
-#include <OSD_Protection.hxx>
-
-#include <Graphic3d_Buffer.hxx>
-#include <Standard_Assert.hxx>
-#include <Standard_Atomic.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderProgram.hxx>

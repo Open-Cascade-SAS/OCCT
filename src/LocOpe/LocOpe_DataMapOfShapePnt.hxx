@@ -17,7 +17,6 @@
 #ifndef LocOpe_DataMapOfShapePnt_HeaderFile
 #define LocOpe_DataMapOfShapePnt_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

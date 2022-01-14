@@ -25,8 +25,6 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <math_Matrix.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <Standard_DimensionError.hxx>
-#include <StdFail_NotDone.hxx>
 #include <Precision.hxx>
 
 #define R 0.61803399

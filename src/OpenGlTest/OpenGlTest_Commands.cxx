@@ -15,18 +15,9 @@
 
 #include <OpenGlTest.hxx>
 
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_ShaderObject.hxx>
-#include <Graphic3d_ShaderProgram.hxx>
-#include <Message.hxx>
 
-#include <OpenGl_Aspects.hxx>
-#include <OpenGl_Context.hxx>
-#include <OpenGl_Element.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_GraphicDriverFactory.hxx>
@@ -34,18 +25,9 @@
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <Select3D_SensitiveCurve.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Selection.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
 
 #include <ViewerTest.hxx>
 #include <ViewerTest_AutoUpdater.hxx>

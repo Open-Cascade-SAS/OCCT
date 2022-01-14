@@ -13,7 +13,6 @@
 
 #include <IntTools_BeanFaceIntersector.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <BRep_Tool.hxx>
@@ -38,27 +37,18 @@
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
-#include <IntTools.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
-#include <IntTools_CArray1OfReal.hxx>
-#include <IntTools_ListIteratorOfListOfBox.hxx>
-#include <IntTools_ListIteratorOfListOfCurveRangeSample.hxx>
-#include <IntTools_ListIteratorOfListOfSurfaceRangeSample.hxx>
 #include <IntTools_ListOfBox.hxx>
 #include <IntTools_ListOfCurveRangeSample.hxx>
 #include <IntTools_ListOfSurfaceRangeSample.hxx>
-#include <IntTools_MapIteratorOfMapOfCurveSample.hxx>
-#include <IntTools_Root.hxx>
 #include <IntTools_SurfaceRangeLocalizeData.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

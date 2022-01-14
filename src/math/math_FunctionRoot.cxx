@@ -23,8 +23,6 @@
 #include <math_FunctionSetRoot.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Failure.hxx>
-#include <StdFail_NotDone.hxx>
 
 class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives {
 

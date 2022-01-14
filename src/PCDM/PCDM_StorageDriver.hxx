@@ -21,11 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Boolean.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <PCDM_Writer.hxx>
 #include <PCDM_SequenceOfDocument.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
 class PCDM_Document;
 class CDM_Document;
 

@@ -16,12 +16,9 @@
 #ifndef NCollection_CellFilter_HeaderFile
 #define NCollection_CellFilter_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_DataMap.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_TypeDef.hxx>
 

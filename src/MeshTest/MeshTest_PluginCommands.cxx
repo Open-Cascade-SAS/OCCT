@@ -14,12 +14,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh_Edge.hxx>
 #include <BRepMesh_FactoryError.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
@@ -39,12 +37,10 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_MapIteratorOfMapOfAsciiString.hxx>
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>

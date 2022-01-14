@@ -25,7 +25,6 @@
 #include <PLib_Base.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
 class PLib_JacobiPolynomial;
 
 

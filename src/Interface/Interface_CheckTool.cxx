@@ -18,7 +18,6 @@
 #include <Interface_CheckTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralModule.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_GTool.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>

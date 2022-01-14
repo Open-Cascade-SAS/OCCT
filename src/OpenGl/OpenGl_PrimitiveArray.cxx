@@ -15,19 +15,13 @@
 
 #include <OpenGl_PrimitiveArray.hxx>
 
-#include <OpenGl_Aspects.hxx>
-#include <OpenGl_Context.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <OpenGl_IndexBuffer.hxx>
 #include <OpenGl_PointSprite.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
-#include <OpenGl_Structure.hxx>
 #include <OpenGl_VertexBufferCompat.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
-#include <Graphic3d_TextureParams.hxx>
 
 namespace
 {

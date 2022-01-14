@@ -21,13 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_CString.hxx>
 #include <Standard_PCharacter.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! This class gives a set of functions to manage and use a list

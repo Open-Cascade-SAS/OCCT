@@ -24,7 +24,6 @@
 #include <MAT_ListOfEdge.hxx>
 #include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
 
 //========================================================================
 //  function : MAT2d_Mat2d

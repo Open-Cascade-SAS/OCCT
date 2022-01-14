@@ -14,6 +14,7 @@
 #ifndef _OpenGl_FrameStatsPrs_HeaderFile
 #define _OpenGl_FrameStatsPrs_HeaderFile
 
+#include <OpenGl_Aspects.hxx>
 #include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Text.hxx>
 

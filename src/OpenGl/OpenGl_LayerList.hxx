@@ -22,7 +22,6 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
 class OpenGl_FrameBuffer;

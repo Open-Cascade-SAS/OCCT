@@ -23,10 +23,7 @@
 #include <math_BrentMinimum.hxx>
 #include <math_FRPR.hxx>
 #include <math_Function.hxx>
-#include <math_MultipleVarFunction.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <Standard_DimensionError.hxx>
-#include <StdFail_NotDone.hxx>
 
 // l'utilisation de math_BrentMinumim pur trouver un minimum dans une direction
 // donnee n'est pas du tout optimale. voir peut etre interpolation cubique

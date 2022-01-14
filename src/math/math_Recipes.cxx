@@ -22,10 +22,6 @@
 
 #include <math_Recipes.hxx>
 
-#include <Standard_Failure.hxx>
-#include <Standard_NotImplemented.hxx>
-
-#include <math_Vector.hxx>
 #include <math_IntegerVector.hxx>
 #include <math_Matrix.hxx>
 #include <Message_ProgressScope.hxx>

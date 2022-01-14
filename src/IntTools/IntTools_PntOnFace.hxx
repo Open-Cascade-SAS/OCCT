@@ -22,7 +22,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Face.hxx>
 
 

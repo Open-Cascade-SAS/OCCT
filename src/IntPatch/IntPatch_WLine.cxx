@@ -15,15 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <IntPatch_Point.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine,IntPatch_PointLine)
@@ -31,7 +25,6 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_WLine,IntPatch_PointLine)
 #define DEBUG 0
 #define DEBUGV 0
 
-#include <IntSurf_PntOn2S.hxx>
 #include <Precision.hxx>
 #include <stdio.h>
 

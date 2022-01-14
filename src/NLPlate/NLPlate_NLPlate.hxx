@@ -23,9 +23,7 @@
 
 #include <NLPlate_SequenceOfHGPPConstraint.hxx>
 #include <NLPlate_StackOfPlate.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class Geom_Surface;
 class NLPlate_HGPPConstraint;
 class gp_XYZ;

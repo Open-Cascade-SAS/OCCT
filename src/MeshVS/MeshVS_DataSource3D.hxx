@@ -17,7 +17,6 @@
 #define _MeshVS_DataSource3D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <MeshVS_DataMapOfHArray1OfSequenceOfInteger.hxx>
 #include <MeshVS_DataSource.hxx>

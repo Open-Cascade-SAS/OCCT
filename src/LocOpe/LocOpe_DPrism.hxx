@@ -26,10 +26,8 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
-#include <Standard_Real.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 class Geom_Curve;
 

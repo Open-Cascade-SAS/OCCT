@@ -16,7 +16,6 @@
 
 #include <Message_Printer.hxx>
 #include <Standard_Address.hxx>
-#include <Standard_OStream.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class Message_Report;

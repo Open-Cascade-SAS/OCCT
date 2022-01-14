@@ -26,7 +26,6 @@
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <Precision.hxx>
-#include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================

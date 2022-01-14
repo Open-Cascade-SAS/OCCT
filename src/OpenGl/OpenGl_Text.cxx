@@ -13,15 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_Aspects.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraphicDriver.hxx>
-#include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
-#include <OpenGl_ShaderStates.hxx>
 #include <OpenGl_Text.hxx>
-#include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_VertexBufferCompat.hxx>
 

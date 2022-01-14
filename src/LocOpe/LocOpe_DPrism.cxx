@@ -20,11 +20,9 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
 #include <BRepTools.hxx>
-#include <BSplCLib.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
@@ -39,10 +37,7 @@
 #include <LocOpe.hxx>
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_DPrism.hxx>
-#include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp.hxx>
@@ -51,10 +46,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 

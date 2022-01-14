@@ -19,9 +19,7 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
 
-#include <stdlib.h>
 #include <stdio.h> /* EOF */
 
 //! Class LDOM_SBuffer inherits std::streambuf and

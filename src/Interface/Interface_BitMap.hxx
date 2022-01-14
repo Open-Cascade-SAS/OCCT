@@ -24,8 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 
 
 //! A bit map simply allows to associate a boolean flag to each

@@ -13,13 +13,11 @@
 
 #include <OpenGl_FrameStats.hxx>
 
-#include <OpenGl_GlCore20.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_TextureBuffer.hxx>
 #include <OpenGl_Window.hxx>
-#include <OpenGl_Workspace.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameStats, Graphic3d_FrameStats)
 

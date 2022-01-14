@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 

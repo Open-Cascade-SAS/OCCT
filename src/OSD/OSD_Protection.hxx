@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <OSD_SingleProtection.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! This  class provides data to manage file protection

@@ -19,14 +19,12 @@
 #include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_LayerList.hxx>
+#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShadowMap.hxx>
-#include <OpenGl_Structure.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
-
-#include <Graphic3d_GraphicDriver.hxx>
 
 namespace
 {

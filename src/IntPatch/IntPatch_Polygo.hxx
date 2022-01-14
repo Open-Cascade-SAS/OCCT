@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Intf_Polygon2d.hxx>
-#include <Standard_Integer.hxx>
 class gp_Pnt2d;
 
 

@@ -14,9 +14,7 @@
 
 #include <OpenGl_VertexBuffer.hxx>
 
-#include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
-#include <Standard_Assert.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_VertexBuffer, OpenGl_Buffer)
 

@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class math_Function;
 

@@ -16,7 +16,6 @@
 
 #include <Graphic3d_Aspects.hxx>
 #include <Graphic3d_TextureMap.hxx>
-#include <Graphic3d_TextureSet.hxx>
 
 class OpenGl_Context;
 class OpenGl_TextureSet;

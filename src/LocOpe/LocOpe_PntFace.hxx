@@ -19,12 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Real.hxx>
 class gp_Pnt;
 class TopoDS_Face;
 

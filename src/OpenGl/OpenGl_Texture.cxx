@@ -19,7 +19,6 @@
 #include <OpenGl_GlCore45.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <Standard_Assert.hxx>
 #include <Image_CompressedPixMap.hxx>
 #include <Image_PixMap.hxx>

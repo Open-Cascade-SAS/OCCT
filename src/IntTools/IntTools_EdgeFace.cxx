@@ -15,18 +15,12 @@
 
 #include <IntTools_EdgeFace.hxx>
 
-#include <Bnd_Box.hxx>
-#include <BndLib_AddSurface.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <Extrema_ExtCS.hxx>
-#include <Extrema_POnCurv.hxx>
-#include <Extrema_POnSurf.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
@@ -43,11 +37,8 @@
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <IntTools_Range.hxx>
-#include <IntTools_Root.hxx>
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 
 #include <algorithm>
 static

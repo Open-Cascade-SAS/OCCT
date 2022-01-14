@@ -16,7 +16,6 @@
 
 
 #include <MAT_Arc.hxx>
-#include <MAT_BasicElt.hxx>
 #include <MAT_Node.hxx>
 #include <MAT_SequenceOfArc.hxx>
 #include <MAT_Zone.hxx>

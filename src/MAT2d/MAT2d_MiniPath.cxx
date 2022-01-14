@@ -19,7 +19,6 @@
 #include <Extrema_ExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 #include <Geom2d_CartesianPoint.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom2d_Point.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <MAT2d_Array2OfConnexion.hxx>

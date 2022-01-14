@@ -20,10 +20,8 @@
 //#endif
 
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <math_Matrix.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
 #include <math_Recipes.hxx>
-#include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================

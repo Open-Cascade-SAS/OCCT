@@ -18,13 +18,10 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom_BoundedCurve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -32,8 +29,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
@@ -41,21 +36,17 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntTools_CommonPrt.hxx>
-#include <IntTools_Curve.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <IntTools_Range.hxx>
-#include <IntTools_SequenceOfCurves.hxx>
 #include <IntTools_Tools.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
 
 static
   void ParabolaTolerance(const Handle(Geom_Curve)& ,

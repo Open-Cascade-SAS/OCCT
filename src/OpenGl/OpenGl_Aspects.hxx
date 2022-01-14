@@ -19,7 +19,6 @@
 #include <OpenGl_AspectsTextureSet.hxx>
 #include <OpenGl_AspectsSprite.hxx>
 #include <Graphic3d_Aspects.hxx>
-#include <Graphic3d_BSDF.hxx>
 
 //! The element holding Graphic3d_Aspects.
 class OpenGl_Aspects : public OpenGl_Element

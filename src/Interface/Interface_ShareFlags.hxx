@@ -23,7 +23,6 @@
 
 #include <Interface_BitMap.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Interface_InterfaceModel;
 class Interface_GeneralLib;

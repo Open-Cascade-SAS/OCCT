@@ -23,11 +23,9 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
 #include <Plate_SequenceOfLinearXYZConstraint.hxx>
 #include <Plate_SequenceOfLinearScalarConstraint.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <TColgp_SequenceOfXY.hxx>
 #include <Message_ProgressScope.hxx>

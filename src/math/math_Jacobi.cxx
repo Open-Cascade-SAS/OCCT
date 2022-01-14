@@ -23,13 +23,12 @@
 #include <math_Matrix.hxx>
 #include <math_NotSquare.hxx>
 #include <math_Recipes.hxx>
-#include <StdFail_NotDone.hxx>
 
 math_Jacobi::math_Jacobi(const math_Matrix& A) : AA(1, A.RowNumber(), 
-						      1, A.RowNumber()),
-                                                EigenValues(1, A.RowNumber()),
-                                                EigenVectors(1, A.RowNumber(),
-						   1, A.RowNumber()) {
+                                                    1, A.RowNumber()),
+                                                 EigenValues(1, A.RowNumber()),
+                                                 EigenVectors(1, A.RowNumber(),
+                                                              1, A.RowNumber()) {
 
     math_NotSquare_Raise_if(A.RowNumber() != A.ColNumber(), " ");  
 

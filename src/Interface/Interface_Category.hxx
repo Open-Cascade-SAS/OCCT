@@ -23,7 +23,6 @@
 
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 
 #include <Interface_GTool.hxx>
 class Interface_Protocol;

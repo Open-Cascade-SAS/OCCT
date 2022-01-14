@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <IntSurf_PntOn2S.hxx>
 
 IntSurf_PntOn2S::IntSurf_PntOn2S ()

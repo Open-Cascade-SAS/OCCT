@@ -21,17 +21,10 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Intf.hxx>
-#include <Intf_SectionLine.hxx>
-#include <Intf_SectionPoint.hxx>
-#include <Intf_SeqOfSectionLine.hxx>
-#include <Intf_SeqOfSectionPoint.hxx>
-#include <Intf_SeqOfTangentZone.hxx>
-#include <Intf_TangentZone.hxx>
 #include <IntPatch_InterferencePolyhedron.hxx>
 #include <IntPatch_Polyhedron.hxx>
 #include <IntPatch_PolyhedronTool.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
 static const int Pourcent3[9] = {0, 1, 2, 0, 1, 2, 0, 1, 2};

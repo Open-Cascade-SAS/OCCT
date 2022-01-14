@@ -18,7 +18,6 @@
 #define _LocOpe_GeneratedShape_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Transient.hxx>

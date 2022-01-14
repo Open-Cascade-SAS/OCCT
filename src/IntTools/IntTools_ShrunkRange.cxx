@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BRepLib.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>

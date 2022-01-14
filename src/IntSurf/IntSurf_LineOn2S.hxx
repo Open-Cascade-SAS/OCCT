@@ -18,7 +18,6 @@
 #define _IntSurf_LineOn2S_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
@@ -26,7 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <IntSurf_Allocator.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class IntSurf_PntOn2S;
 

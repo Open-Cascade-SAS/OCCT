@@ -16,7 +16,6 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_TileSampler.hxx>
 #include <Graphic3d_RenderingParams.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 // define to debug algorithm values
 //#define RAY_TRACE_PRINT_DEBUG_INFO

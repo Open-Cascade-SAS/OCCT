@@ -16,7 +16,6 @@
 #ifndef OpenGl_TextBuilder_Header
 #define OpenGl_TextBuilder_Header
 
-#include <OpenGl_Context.hxx>
 #include <OpenGl_Font.hxx>
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_VertexBufferEditor.hxx>

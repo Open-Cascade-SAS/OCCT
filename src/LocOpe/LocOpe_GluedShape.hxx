@@ -18,9 +18,7 @@
 #define _LocOpe_GluedShape_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <LocOpe_GeneratedShape.hxx>

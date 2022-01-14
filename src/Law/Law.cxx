@@ -23,7 +23,6 @@
 #include <Law_BSpline.hxx>
 #include <Law_Interpolate.hxx>
 #include <Law_Linear.hxx>
-#include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>

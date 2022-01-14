@@ -13,18 +13,13 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_GeneralLib.hxx>
-#include <Interface_GeneralModule.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_GTool.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceError.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_IntList.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>

@@ -18,7 +18,6 @@
 #define _Interface_FileReaderData_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
@@ -26,8 +25,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Interface_ParamSet;
 class TCollection_AsciiString;
 class Interface_FileParameter;

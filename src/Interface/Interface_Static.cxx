@@ -13,7 +13,6 @@
 
 #include <Interface_Static.hxx>
 
-#include <Interface_InterfaceError.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

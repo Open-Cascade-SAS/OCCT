@@ -17,7 +17,6 @@
 
 #include <gp_Lin.hxx>
 #include <gp_XY.hxx>
-#include <Plate_LinearScalarConstraint.hxx>
 #include <Plate_LineConstraint.hxx>
 
 Plate_LineConstraint::Plate_LineConstraint(const gp_XY& point2d,

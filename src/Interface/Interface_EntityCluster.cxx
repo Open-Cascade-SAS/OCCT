@@ -14,7 +14,6 @@
 
 #include <Interface_EntityCluster.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_EntityList.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>

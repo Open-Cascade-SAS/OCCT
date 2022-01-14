@@ -18,7 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepGProp.hxx>
-#include <gce_ErrorType.hxx>
 #include <gce_MakeCirc.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom_Curve.hxx>
@@ -27,7 +26,6 @@
 #include <GProp_GProps.hxx>
 #include <IntTools_Array1OfRoots.hxx>
 #include <IntTools_Root.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_ListOfReal.hxx>
 #include <TopoDS_Edge.hxx>
 
@@ -296,10 +294,8 @@ namespace {
 }
 
 #include <GeomAdaptor_Curve.hxx>
-#include <gp_Pnt.hxx>
 #include <ElCLib.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Parab.hxx>

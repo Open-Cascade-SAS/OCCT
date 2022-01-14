@@ -15,7 +15,6 @@
 
 #include <OpenGl_Flipper.hxx>
 
-#include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>

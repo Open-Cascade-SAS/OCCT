@@ -19,7 +19,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
 #include <Interface_GTool.hxx>
 #include <Interface_InterfaceMismatch.hxx>
@@ -27,12 +26,9 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReportEntity.hxx>
 #include <Interface_SignType.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfTransient.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerTransient.hxx>
 

@@ -17,11 +17,9 @@
 #include <Message_AlertExtended.hxx>
 #include <Message_CompositeAlerts.hxx>
 #include <Message_AttributeMeter.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Report.hxx>
 
 #include <OSD_Chronometer.hxx>
-#include <OSD_MemInfo.hxx>
 
 //=======================================================================
 //function : Constructor

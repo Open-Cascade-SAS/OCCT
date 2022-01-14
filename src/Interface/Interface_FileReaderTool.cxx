@@ -19,7 +19,6 @@
 #include <Interface_FileReaderTool.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
-#include <Interface_InterfaceMismatch.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_ReaderLib.hxx>
@@ -27,14 +26,9 @@
 #include <Interface_ReportEntity.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_Msg.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_TypeMismatch.hxx>
 
 #ifdef _WIN32
 #include <OSD_Exception.hxx>

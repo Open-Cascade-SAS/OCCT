@@ -16,7 +16,6 @@
 #ifndef Interface_VectorOfFileParameter_HeaderFile
 #define Interface_VectorOfFileParameter_HeaderFile
 
-#include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <Interface_FileParameter.hxx>
 

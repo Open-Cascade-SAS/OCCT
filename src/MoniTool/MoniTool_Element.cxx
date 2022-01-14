@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <MoniTool_AttrList.hxx>
 #include <MoniTool_Element.hxx>
 #include <Standard_Type.hxx>
 

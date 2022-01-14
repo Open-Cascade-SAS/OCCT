@@ -23,13 +23,11 @@
 #include <IntPatch_ImpImpIntersection.hxx>
 #include <IntPatch_ImpPrmIntersection.hxx>
 #include <IntPatch_PrmPrmIntersection.hxx>
-#include <IntPatch_WLine.hxx>
 #include <IntPatch_WLineTool.hxx>
 
 #include <ProjLib_ProjectOnPlane.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -210,26 +208,18 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_Surface)&  S1,
 //                                                                         //
 /////////////////////////////////////////////////////////////////////////////
 #include <TColgp_Array1OfXYZ.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
-#include <GeomAdaptor.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <Geom_Plane.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
 #include <GeomProjLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 
 //===============================================================

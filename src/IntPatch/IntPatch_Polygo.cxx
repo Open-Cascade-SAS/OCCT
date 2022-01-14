@@ -15,9 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt2d.hxx>
 #include <IntPatch_Polygo.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Initialize

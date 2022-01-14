@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_Transition.hxx>
 

@@ -31,10 +31,6 @@
   #include <malloc.h>
 #endif
 
-#include <string>
-#include <sstream>
-#include <fstream>
-
 #include <OSD_MemInfo.hxx>
 
 #if defined(__EMSCRIPTEN__)

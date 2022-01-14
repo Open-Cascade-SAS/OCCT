@@ -21,13 +21,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Standard_Boolean.hxx>
-#include <IntTools_SequenceOfRanges.hxx>
 #include <IntTools_SequenceOfCommonPrts.hxx>
 #include <IntTools_Range.hxx>
 class IntTools_Context;

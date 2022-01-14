@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <LocOpe_Operation.hxx>

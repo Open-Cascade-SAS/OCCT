@@ -14,8 +14,6 @@
 #ifndef _IntPatch_WLineTool_HeaderFile
 #define _IntPatch_WLineTool_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
-
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntPatch_WLine.hxx>
 #include <NCollection_List.hxx>

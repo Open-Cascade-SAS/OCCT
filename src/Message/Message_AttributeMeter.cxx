@@ -13,10 +13,7 @@
 
 #include <Message_AttributeMeter.hxx>
 
-#include <Message_AlertExtended.hxx>
-#include <Message.hxx>
 #include <Message_Report.hxx>
-#include <OSD_Chronometer.hxx>
 #include <OSD_Timer.hxx>
 
 #include <Precision.hxx>

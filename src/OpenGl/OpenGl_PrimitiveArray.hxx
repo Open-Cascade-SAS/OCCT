@@ -16,8 +16,6 @@
 #ifndef OpenGl_PrimitiveArray_HeaderFile
 #define OpenGl_PrimitiveArray_HeaderFile
 
-#include <Aspect_InteriorStyle.hxx>
-#include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_TypeOfPrimitiveArray.hxx>
 #include <Graphic3d_IndexBuffer.hxx>
 #include <Graphic3d_BoundBuffer.hxx>

@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 
 class Standard_DomainError;

@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>

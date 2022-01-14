@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <IntSurf_PntOn2S.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntSurf_Transition.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 

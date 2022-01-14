@@ -18,7 +18,6 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_ShaderManager.hxx>
-#include <Precision.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource,OpenGl_Resource)
 

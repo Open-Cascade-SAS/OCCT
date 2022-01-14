@@ -21,12 +21,7 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <Intf_PIType.hxx>
-#include <Intf_SectionLine.hxx>
-#include <Intf_SectionPoint.hxx>
-#include <Intf_TangentZone.hxx>
 #include <IntPatch_InterferencePolyhedron.hxx>
-#include <IntPatch_Line.hxx>
 #include <IntPatch_Polyhedron.hxx>
 #include <IntPatch_PrmPrmIntersection.hxx>
 #include <IntPatch_PrmPrmIntersection_T3Bits.hxx>
@@ -40,7 +35,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 static void SectionPointToParameters(const Intf_SectionPoint& Sp,

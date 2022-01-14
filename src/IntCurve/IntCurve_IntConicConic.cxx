@@ -17,7 +17,6 @@
 // Modified:    OFV Thu Nov  6 17:03:52 2003
 
 #include <ElCLib.hxx>
-#include <gp.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
@@ -31,7 +30,6 @@
 #include <IntCurve_PConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 
 //=======================================================================
 // Perform() for

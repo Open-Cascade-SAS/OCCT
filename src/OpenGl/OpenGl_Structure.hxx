@@ -17,13 +17,9 @@
 #define OpenGl_Structure_HeaderFile
 
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-
-#include <OpenGl_Aspects.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Group.hxx>
-#include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>
 
 #include <NCollection_List.hxx>

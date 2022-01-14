@@ -26,8 +26,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(LocOpe_GluedShape,LocOpe_GeneratedShape)

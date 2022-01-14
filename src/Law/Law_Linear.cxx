@@ -18,7 +18,6 @@
 
 #include <Law_Function.hxx>
 #include <Law_Linear.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Law_Linear,Law_Function)

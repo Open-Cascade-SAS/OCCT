@@ -18,7 +18,6 @@
 #include <math_NotSquare.hxx>
 #include <math_Recipes.hxx>
 #include <Standard_DimensionError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
 
 math_Gauss::math_Gauss(const math_Matrix& A, 

@@ -22,7 +22,6 @@
 #include <Law_BSplineKnotSplitting.hxx>
 #include <Law_Function.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 

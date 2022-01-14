@@ -19,14 +19,10 @@
 
 
 #include <IntCurve_IntImpConicParConic.hxx>
-#include <IntCurve_IConicTool.hxx>
-#include <IntCurve_PConic.hxx>
 // #include <IntCurve_IConicPConicTool.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <IntRes2d_Position.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp.hxx>
 
 
 static Standard_Real PIpPI = M_PI + M_PI;

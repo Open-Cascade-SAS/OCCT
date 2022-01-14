@@ -18,9 +18,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
-
-#include <Standard_Real.hxx>
 
 //! Simple container storing two reals: value and weight
 class math_ValueAndWeight 

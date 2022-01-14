@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_D1.hxx>

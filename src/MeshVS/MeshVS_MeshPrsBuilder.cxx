@@ -14,17 +14,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_Group.hxx>
 #include <MeshVS_Buffer.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_Drawer.hxx>
@@ -46,10 +40,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_MapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 

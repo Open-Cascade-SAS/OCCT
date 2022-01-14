@@ -16,34 +16,22 @@
 
 
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeVertex.hxx>
 #include <BRepSweep_Prism.hxx>
 #include <BRepTools_Modifier.hxx>
 #include <BRepTools_TrsfModification.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <LocOpe.hxx>
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_LinearForm.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : Perform

@@ -19,8 +19,6 @@
 #ifndef LDOM_Node_HeaderFile
 #define LDOM_Node_HeaderFile
 
-#include <Standard_Macro.hxx>
-#include <Standard_TypeDef.hxx>
 #include <LDOMString.hxx>
 #include <LDOM_MemManager.hxx>
 

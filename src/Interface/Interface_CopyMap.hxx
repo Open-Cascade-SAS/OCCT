@@ -22,7 +22,6 @@
 
 #include <TColStd_Array1OfTransient.hxx>
 #include <Interface_CopyControl.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Standard_Transient;
 

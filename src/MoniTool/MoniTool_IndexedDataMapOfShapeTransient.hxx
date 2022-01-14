@@ -17,7 +17,6 @@
 #ifndef MoniTool_IndexedDataMapOfShapeTransient_HeaderFile
 #define MoniTool_IndexedDataMapOfShapeTransient_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>

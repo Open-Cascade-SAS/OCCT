@@ -15,7 +15,6 @@
 
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IntSurf_LineOn2S,Standard_Transient)

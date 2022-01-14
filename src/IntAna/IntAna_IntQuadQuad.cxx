@@ -34,7 +34,6 @@
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pnt.hxx>
-#include <IntAna_Curve.hxx>
 #include <IntAna_IntQuadQuad.hxx>
 #include <IntAna_Quadric.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>

@@ -15,7 +15,6 @@
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <gp.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>

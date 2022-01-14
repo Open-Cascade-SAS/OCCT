@@ -14,16 +14,13 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_ShaderObject.hxx>
-#include <Message_Messenger.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderObject.hxx>
 #include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <OSD_Process.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_Assert.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 #ifdef _WIN32
   #include <malloc.h> // for alloca()

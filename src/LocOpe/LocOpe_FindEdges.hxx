@@ -19,12 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
 

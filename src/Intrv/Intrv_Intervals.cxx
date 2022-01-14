@@ -19,9 +19,7 @@
 #endif
 
 
-#include <Intrv_Interval.hxx>
 #include <Intrv_Intervals.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //                   **---------****             Other
 //     ***-----*                                 IsBefore

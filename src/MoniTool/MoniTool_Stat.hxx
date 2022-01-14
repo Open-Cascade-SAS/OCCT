@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 

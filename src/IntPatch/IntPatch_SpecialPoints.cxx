@@ -19,8 +19,6 @@
 #include <ElCLib.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_SphericalSurface.hxx>
 #include <IntPatch_Point.hxx>
 #include <IntSurf.hxx>
 #include <IntSurf_PntOn2S.hxx>

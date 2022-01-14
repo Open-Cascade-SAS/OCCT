@@ -17,7 +17,6 @@
 #define _IMeshTools_MeshAlgoFactory_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <IMeshTools_MeshAlgo.hxx>
 

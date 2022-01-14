@@ -16,7 +16,6 @@
 #ifndef _IMeshTools_MeshBuilder_HeaderFile
 #define _IMeshTools_MeshBuilder_HeaderFile
 
-#include <Message_Algorithm.hxx>
 #include <IMeshTools_Context.hxx>
 #include <Standard_Type.hxx>
 #include <Message_ProgressRange.hxx>

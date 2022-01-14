@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
 #include <IntPolyh_Point.hxx>
 
 #include <stdio.h>

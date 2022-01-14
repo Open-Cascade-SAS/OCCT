@@ -16,12 +16,9 @@
 #ifndef NCollection_DoubleMap_HeaderFile
 #define NCollection_DoubleMap_HeaderFile
 
-#include <NCollection_TypeDef.hxx>
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_TListNode.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <Standard_MultiplyDefined.hxx>
-#include <Standard_ImmutableObject.hxx>
 #include <Standard_NoSuchObject.hxx>
 
 #include <NCollection_DefaultHasher.hxx>

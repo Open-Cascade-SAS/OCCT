@@ -18,9 +18,7 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 
-#include <Aspect_Display.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_RenderingContext.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <NCollection_DataMap.hxx>

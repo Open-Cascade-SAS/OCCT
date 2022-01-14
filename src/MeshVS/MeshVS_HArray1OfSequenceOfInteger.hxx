@@ -16,7 +16,6 @@
 #ifndef MeshVS_HArray1OfSequenceOfInteger_HeaderFile
 #define MeshVS_HArray1OfSequenceOfInteger_HeaderFile
 
-#include <TColStd_SequenceOfInteger.hxx>
 #include <MeshVS_Array1OfSequenceOfInteger.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

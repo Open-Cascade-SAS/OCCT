@@ -15,7 +15,6 @@
 
 #include <Geom_Curve.hxx>
 #include <GeomLProp_CLProps.hxx>
-#include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>

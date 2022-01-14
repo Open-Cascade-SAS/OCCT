@@ -24,8 +24,6 @@
 #include <OpenGl_ArbTexBindless.hxx>
 #include <OpenGl_GlCore46.hxx>
 
-#include <Standard_NotImplemented.hxx>
-
 #if !defined(HAVE_EGL) && defined(HAVE_XLIB)
   #include <GL/glx.h>
 #endif

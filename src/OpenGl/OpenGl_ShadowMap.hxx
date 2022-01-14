@@ -16,7 +16,6 @@
 
 #include <Graphic3d_Mat4.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Shared.hxx>
 #include <OpenGl_NamedResource.hxx>
 
 class gp_XYZ;

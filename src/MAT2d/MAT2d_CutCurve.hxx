@@ -23,7 +23,6 @@
 
 #include <TColGeom2d_SequenceOfCurve.hxx>
 #include <MAT_Side.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom2d_Curve;
 class Geom2d_TrimmedCurve;

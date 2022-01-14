@@ -17,7 +17,6 @@
 // Programme cree 
 
 #include <BSplCLib.hxx>
-#include <gp_Pnt.hxx>
 #include <Law_BSpline.hxx>
 #include <Law_Interpolate.hxx>
 #include <PLib.hxx>

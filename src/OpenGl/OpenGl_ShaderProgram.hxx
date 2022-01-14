@@ -20,7 +20,6 @@
 #include <NCollection_Sequence.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureSetBits.hxx>
 

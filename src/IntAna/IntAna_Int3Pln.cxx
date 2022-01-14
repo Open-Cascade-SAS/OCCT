@@ -18,14 +18,12 @@
 #endif
 
 
-#include <gp.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <IntAna_Int3Pln.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 
 IntAna_Int3Pln::IntAna_Int3Pln()

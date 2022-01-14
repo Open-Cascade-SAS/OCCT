@@ -25,9 +25,6 @@
 #include <gp_Trsf.hxx>
 #include <IntAna_IntLinTorus.hxx>
 #include <math_DirectPolynomialRoots.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 IntAna_IntLinTorus::IntAna_IntLinTorus ()
 : done(Standard_False),

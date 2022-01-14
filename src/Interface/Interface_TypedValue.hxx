@@ -18,13 +18,8 @@
 #define _Interface_TypedValue_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
-#include <Standard_Type.hxx>
-#include <TColStd_HArray1OfAsciiString.hxx>
 #include <MoniTool_TypedValue.hxx>
-#include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 #include <MoniTool_ValueType.hxx>
 class TCollection_HAsciiString;

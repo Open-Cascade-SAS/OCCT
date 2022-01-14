@@ -18,7 +18,6 @@
 #include <BSplCLib.hxx>
 #include <Law_BSpline.hxx>
 #include <Law_BSplineKnotSplitting.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_RangeError.hxx>
 
 typedef TColStd_Array1OfInteger         Array1OfInteger;

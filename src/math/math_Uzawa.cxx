@@ -33,7 +33,6 @@
 #include <math_Crout.hxx>
 #include <math_Matrix.hxx>
 #include <math_Uzawa.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 

@@ -15,7 +15,6 @@
 
 #include <OpenGl_Group.hxx>
 
-#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Flipper.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_SceneGeometry.hxx>

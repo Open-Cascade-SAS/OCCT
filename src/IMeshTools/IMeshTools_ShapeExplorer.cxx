@@ -16,14 +16,11 @@
 #include <IMeshTools_ShapeExplorer.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <Geom_Surface.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IMeshTools_ShapeExplorer, IMeshData_Shape)
 

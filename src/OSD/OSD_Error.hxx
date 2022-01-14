@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Integer.hxx>
 #include <OSD_WhoAmI.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! Accurate management of OSD specific errors.

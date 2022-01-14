@@ -17,8 +17,6 @@
 #define _IMeshData_StatusOwner_HeaderFile
 
 #include <IMeshData_Status.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 
 //! Extension interface class providing status functionality.
 class IMeshData_StatusOwner

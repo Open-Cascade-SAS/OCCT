@@ -26,7 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <MAT_SequenceOfArc.hxx>
 #include <MAT_SequenceOfBasicElt.hxx>
-#include <Standard_Boolean.hxx>
 class MAT_Arc;
 
 

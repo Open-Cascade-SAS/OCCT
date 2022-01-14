@@ -258,9 +258,7 @@ Standard_Integer OSD_FileIterator::Error()const{
 #include <windows.h>
 
 
-#include <OSD_File.hxx>
 #include <OSD_FileIterator.hxx>
-#include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>

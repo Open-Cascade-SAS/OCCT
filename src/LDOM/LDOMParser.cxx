@@ -26,7 +26,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_FileSystem.hxx>
 
-#include <fcntl.h>
 #ifdef _MSC_VER
 #include <io.h>
 #else

@@ -24,9 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <OSD_Error.hxx>
 #include <OSD_SysType.hxx>
-#include <Standard_Integer.hxx>
 #include <OSD_OEMType.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! Carries information about a Host

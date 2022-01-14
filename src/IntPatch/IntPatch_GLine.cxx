@@ -16,14 +16,8 @@
 
 
 #include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Parab.hxx>
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_Point.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_GLine,IntPatch_Line)

@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir2d.hxx>
 class IntSurf_InteriorPoint;

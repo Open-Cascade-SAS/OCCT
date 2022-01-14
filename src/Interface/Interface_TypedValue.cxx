@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_InterfaceError.hxx>
 #include <Interface_TypedValue.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(Interface_TypedValue,MoniTool_TypedValue)

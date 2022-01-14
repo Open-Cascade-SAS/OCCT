@@ -19,7 +19,6 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <IntCurvesFace_Intersector.hxx>
 #include <LocOpe_CSIntersector.hxx>
-#include <LocOpe_PntFace.hxx>
 #include <LocOpe_SequenceOfPntFace.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>

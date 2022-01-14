@@ -25,8 +25,6 @@
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_Protocol;
 class Interface_SignType;
 class Interface_InterfaceModel;

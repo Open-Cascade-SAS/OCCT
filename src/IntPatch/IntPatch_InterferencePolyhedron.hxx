@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <Intf_Interference.hxx>
-#include <Standard_Boolean.hxx>
 class IntPatch_Polyhedron;
 class Intf_TangentZone;
 

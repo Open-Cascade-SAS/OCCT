@@ -15,7 +15,6 @@
 
 #include <Interface_FloatWriter.hxx>
 
-#include <stdio.h>
 Interface_FloatWriter::Interface_FloatWriter (const Standard_Integer chars)
 {
   SetDefaults(chars);

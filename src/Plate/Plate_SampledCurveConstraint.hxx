@@ -23,7 +23,6 @@
 
 #include <Plate_LinearXYZConstraint.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! define m PinPointConstraint driven by m unknown

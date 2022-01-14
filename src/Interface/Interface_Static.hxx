@@ -18,19 +18,11 @@
 #define _Interface_Static_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
-#include <Interface_ParamType.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <TColStd_HArray1OfAsciiString.hxx>
 #include <Interface_StaticSatisfies.hxx>
-#include <Standard_Boolean.hxx>
 #include <Interface_TypedValue.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Character.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class TCollection_HAsciiString;
 

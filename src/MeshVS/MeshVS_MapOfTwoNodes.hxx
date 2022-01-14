@@ -16,7 +16,6 @@
 #ifndef MeshVS_MapOfTwoNodes_HeaderFile
 #define MeshVS_MapOfTwoNodes_HeaderFile
 
-#include <MeshVS_TwoNodes.hxx>
 #include <MeshVS_TwoNodesHasher.hxx>
 #include <NCollection_Map.hxx>
 

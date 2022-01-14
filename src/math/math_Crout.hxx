@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <math_Matrix.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
 

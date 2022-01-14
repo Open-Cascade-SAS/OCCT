@@ -18,7 +18,6 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomLProp_SLProps.hxx>
-#include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

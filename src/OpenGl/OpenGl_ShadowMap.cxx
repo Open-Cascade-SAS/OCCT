@@ -13,12 +13,9 @@
 
 #include <OpenGl_ShadowMap.hxx>
 
-#include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_ShaderManager.hxx>
-#include <Graphic3d_Camera.hxx>
 #include <Graphic3d_CView.hxx>
-#include <Message.hxx>
 #include <Message_Messenger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShadowMap, OpenGl_NamedResource)

@@ -24,8 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <IntRes2d_SequenceOfIntersectionSegment.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class IntRes2d_IntersectionPoint;
 class IntRes2d_IntersectionSegment;
 

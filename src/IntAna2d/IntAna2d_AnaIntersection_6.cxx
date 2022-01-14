@@ -17,14 +17,10 @@
 
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
-#include <gp_Hypr2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Parab2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <IntAna2d_Outils.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips,

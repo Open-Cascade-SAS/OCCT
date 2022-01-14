@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Address.hxx>
 #include <Standard_PCharacter.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <OSD_LoadMode.hxx>
 #include <OSD_Function.hxx>
 

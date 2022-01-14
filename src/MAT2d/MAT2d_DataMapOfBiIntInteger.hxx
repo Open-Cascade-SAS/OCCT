@@ -17,7 +17,6 @@
 #ifndef MAT2d_DataMapOfBiIntInteger_HeaderFile
 #define MAT2d_DataMapOfBiIntInteger_HeaderFile
 
-#include <MAT2d_BiInt.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT2d_MapBiIntHasher.hxx>
 #include <NCollection_DataMap.hxx>

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
@@ -29,7 +28,6 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Standard_Real.hxx>
 
 
 class Law_BSpline;

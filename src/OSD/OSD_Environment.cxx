@@ -236,8 +236,6 @@ Standard_Integer OSD_Environment::Error() const
 
 #include <OSD_Environment.hxx>
 
-#include <OSD_WNT.hxx>
-
 #include <NCollection_DataMap.hxx>
 #include <NCollection_UtfString.hxx>
 #include <Standard_Mutex.hxx>

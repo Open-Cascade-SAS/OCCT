@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <MoniTool_Element.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 
 

@@ -31,13 +31,11 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <LocOpe.hxx>
 #include <LocOpe_WiresOnShape.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -53,7 +51,6 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
@@ -65,7 +62,6 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_SeqOfBox.hxx>
-#include <NCollection_Handle.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <Extrema_ExtPS.hxx>
 

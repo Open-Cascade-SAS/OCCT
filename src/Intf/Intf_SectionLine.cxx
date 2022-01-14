@@ -17,7 +17,6 @@
 
 #include <Intf_SectionLine.hxx>
 #include <Intf_SectionPoint.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Intf_SectionLine

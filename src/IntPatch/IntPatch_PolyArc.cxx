@@ -16,7 +16,6 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Bnd_Box2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_PolyArc.hxx>
 #include <Standard_ConstructionError.hxx>

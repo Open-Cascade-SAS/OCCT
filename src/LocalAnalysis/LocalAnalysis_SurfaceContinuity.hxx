@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <LocalAnalysis_StatusErrorType.hxx>
 class Geom_Surface;
 class Geom2d_Curve;

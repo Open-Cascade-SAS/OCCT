@@ -16,7 +16,6 @@
 #ifndef _math_PSO_HeaderFile
 #define _math_PSO_HeaderFile
 
-#include <math_BullardGenerator.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <math_Vector.hxx>
 

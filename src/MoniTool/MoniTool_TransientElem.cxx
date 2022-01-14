@@ -13,7 +13,6 @@
 
 
 #include <MoniTool_DataInfo.hxx>
-#include <MoniTool_Element.hxx>
 #include <MoniTool_TransientElem.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>

@@ -17,7 +17,6 @@
 
 #include <gp_Pln.hxx>
 #include <gp_XY.hxx>
-#include <Plate_LinearScalarConstraint.hxx>
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_PlaneConstraint.hxx>
 

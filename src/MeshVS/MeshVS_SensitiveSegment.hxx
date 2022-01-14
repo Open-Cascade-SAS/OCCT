@@ -16,7 +16,6 @@
 #ifndef _MeshVS_SensitiveSegment_HeaderFile
 #define _MeshVS_SensitiveSegment_HeaderFile
 
-#include <gp_Pnt.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 
 //! This class provides custom sensitive face, which will be selected if it center is in rectangle.

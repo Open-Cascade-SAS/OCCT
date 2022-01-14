@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
 #include <gp.hxx>
 #include <gp_Vec.hxx>
@@ -23,7 +22,6 @@
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_Tool.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 

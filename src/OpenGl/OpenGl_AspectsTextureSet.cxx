@@ -14,13 +14,10 @@
 #include <OpenGl_AspectsTextureSet.hxx>
 
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Sampler.hxx>
 #include <OpenGl_PointSprite.hxx>
 #include <OpenGl_TextureSet.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
-
-#include <Image_PixMap.hxx>
 
 namespace
 {

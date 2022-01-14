@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <OSD_Directory.hxx>
-#include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Address.hxx>
 #include <OSD_Error.hxx>
 #include <Standard_Boolean.hxx>
 class OSD_Path;

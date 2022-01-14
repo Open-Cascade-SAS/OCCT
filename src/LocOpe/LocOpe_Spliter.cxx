@@ -22,7 +22,6 @@
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
 #include <LocOpe_BuildWires.hxx>
 #include <LocOpe_Spliter.hxx>
 #include <LocOpe_SplitShape.hxx>
@@ -40,13 +39,9 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 

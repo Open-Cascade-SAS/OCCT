@@ -24,7 +24,6 @@
 #include <Standard_Real.hxx>
 #include <OSD_Chronometer.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! Working on heterogeneous platforms

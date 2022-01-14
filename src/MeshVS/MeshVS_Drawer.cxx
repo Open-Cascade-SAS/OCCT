@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Graphic3d_MaterialAspect.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>

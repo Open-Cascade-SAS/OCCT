@@ -19,9 +19,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Position.hxx>
-#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <IntRes2d_SequenceOfIntersectionSegment.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 #define PARAMEQUAL(a,b) (Abs((a)-(b))< (1e-8))

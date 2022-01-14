@@ -15,7 +15,6 @@
 #include <MoniTool_SignShape.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
 

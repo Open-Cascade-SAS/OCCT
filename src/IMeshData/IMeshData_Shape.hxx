@@ -16,7 +16,6 @@
 #ifndef _IMeshData_Shape_HeaderFile
 #define _IMeshData_Shape_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! Interface class representing model with associated TopoDS_Shape.

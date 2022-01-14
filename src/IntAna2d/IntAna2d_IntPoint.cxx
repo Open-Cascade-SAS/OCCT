@@ -15,12 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt2d.hxx>
 #include <IntAna2d_IntPoint.hxx>
-#include <Standard_DomainError.hxx>
 
 IntAna2d_IntPoint::IntAna2d_IntPoint (const Standard_Real X, const Standard_Real Y, 
-				      const Standard_Real U1,const Standard_Real U2):
+                                      const Standard_Real U1,const Standard_Real U2):
        myu1(U1),myu2(U2),myp(X,Y),myimplicit(Standard_False)
  {
  }

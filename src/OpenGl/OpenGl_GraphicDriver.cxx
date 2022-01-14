@@ -19,19 +19,12 @@
 
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Flipper.hxx>
-#include <OpenGl_GraduatedTrihedron.hxx>
-#include <OpenGl_Group.hxx>
 #include <OpenGl_View.hxx>
-#include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_Window.hxx>
-#include <OpenGl_Workspace.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
-#include <Aspect_IdentDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Message_Messenger.hxx>
 #include <OSD_Environment.hxx>
 #include <Standard_NotImplemented.hxx>
 

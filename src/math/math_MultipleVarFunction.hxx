@@ -21,11 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Real.hxx>
-
 
 
 //! Describes the virtual functions associated with a multiple variable function.

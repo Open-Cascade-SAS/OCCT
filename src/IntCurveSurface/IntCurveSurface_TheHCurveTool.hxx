@@ -22,12 +22,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Hypr.hxx>
-#include <gp_Parab.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 class Standard_OutOfRange;
 class Standard_NoSuchObject;

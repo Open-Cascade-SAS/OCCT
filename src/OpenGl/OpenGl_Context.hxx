@@ -16,20 +16,11 @@
 #ifndef OpenGl_Context_HeaderFile
 #define OpenGl_Context_HeaderFile
 
-#include <Aspect_Handle.hxx>
-#include <Aspect_HatchStyle.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_Display.hxx>
 #include <Aspect_GraphicsLibrary.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
-#include <Graphic3d_TextureUnit.hxx>
-#include <NCollection_Map.hxx>
-#include <NCollection_Handle.hxx>
-#include <NCollection_List.hxx>
-#include <NCollection_SparseArray.hxx>
 #include <Message.hxx>
 #include <OpenGl_Caps.hxx>
 #include <OpenGl_LineAttributes.hxx>

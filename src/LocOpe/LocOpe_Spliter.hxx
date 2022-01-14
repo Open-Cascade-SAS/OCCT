@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class LocOpe_WiresOnShape;

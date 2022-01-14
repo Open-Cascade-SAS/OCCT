@@ -21,9 +21,7 @@
 
 #include <math_Householder.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 // Cette classe decrit la methode de Householder qui transforme A en un

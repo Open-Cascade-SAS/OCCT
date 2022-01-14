@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <Law_Function.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>

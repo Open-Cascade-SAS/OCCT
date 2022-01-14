@@ -15,10 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_XYZ.hxx>
 #include <Plate_D3.hxx>
-#include <Plate_FreeGtoCConstraint.hxx>
-#include <Plate_GtoCConstraint.hxx>
 
 Plate_D3::Plate_D3(const gp_XYZ& duuu, const gp_XYZ& duuv, const gp_XYZ& duvv, const gp_XYZ& dvvv)
 :Duuu(duuu),Duuv(duuv),Duvv(duvv),Dvvv(dvvv)

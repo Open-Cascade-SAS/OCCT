@@ -24,7 +24,6 @@
 #include <LocOpe_CurveShapeIntersector.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopoDS_Shape.hxx>
 

@@ -21,8 +21,6 @@
 
 #include <Message_Gravity.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_SStream.hxx>
 
 class TCollection_ExtendedString;

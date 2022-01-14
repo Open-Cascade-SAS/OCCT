@@ -17,8 +17,13 @@
 #ifndef _IntAna_Quadric_HeaderFile
 #define _IntAna_Quadric_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+class gp_Cone;
+class gp_Cylinder;
+class gp_Pln;
+class gp_Sphere;
 
 //! This class provides a description of Quadrics by their
 //! Coefficients in natural coordinate system.

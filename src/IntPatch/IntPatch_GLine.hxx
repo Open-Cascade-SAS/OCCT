@@ -21,18 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Ax2.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>
 #include <IntPatch_Line.hxx>
 #include <IntSurf_TypeTrans.hxx>
 #include <IntSurf_Situation.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Parab.hxx>
-#include <gp_Hypr.hxx>
 class gp_Lin;
 class gp_Circ;
 class gp_Elips;

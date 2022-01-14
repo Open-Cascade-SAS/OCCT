@@ -23,8 +23,6 @@
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <NLPlate_HGPPConstraint.hxx>
-#include <NLPlate_ListIteratorOfStackOfPlate.hxx>
 #include <NLPlate_NLPlate.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>

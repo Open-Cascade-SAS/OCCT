@@ -22,8 +22,6 @@
 
 #include <Law_BSpFunc.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 
 class Law_Interpol;

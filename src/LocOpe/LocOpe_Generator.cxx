@@ -24,7 +24,6 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_CylindricalSurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -36,7 +35,6 @@
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_GeneratedShape.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
@@ -49,12 +47,9 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 static Standard_Boolean ToFuse(const TopoDS_Face& ,

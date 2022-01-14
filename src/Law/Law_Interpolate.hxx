@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Law_BSpline;

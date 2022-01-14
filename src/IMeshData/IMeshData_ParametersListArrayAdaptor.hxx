@@ -17,8 +17,6 @@
 #define _IMeshData_ParametersListArrayAdaptor_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <IMeshData_ParametersList.hxx>
 
 //! Auxiliary tool representing adaptor interface for child classes of 
 //! IMeshData_ParametersList to be used in tools working on NCollection_Array structure.

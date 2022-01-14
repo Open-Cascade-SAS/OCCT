@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IntPatch_IType.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntSurf_TypeTrans.hxx>
 #include <IntSurf_Situation.hxx>
 #include <Standard_Transient.hxx>

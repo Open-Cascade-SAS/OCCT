@@ -18,7 +18,6 @@
 #define _NLPlate_HPG3Constraint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Plate_D3.hxx>
 #include <NLPlate_HPG2Constraint.hxx>

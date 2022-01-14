@@ -18,11 +18,9 @@
 #include <gp_Lin.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
 #include <MeshVS_Tool.hxx>
-#include <NCollection_Vec4.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 

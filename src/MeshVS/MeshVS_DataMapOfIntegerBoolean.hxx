@@ -17,7 +17,6 @@
 #define MeshVS_DataMapOfIntegerBoolean_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

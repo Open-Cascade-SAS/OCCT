@@ -22,8 +22,6 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <IntTools_Range.hxx>
-#include <Standard_Real.hxx>
 #include <IntTools_SequenceOfRanges.hxx>
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>

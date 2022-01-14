@@ -19,9 +19,7 @@
 #include <PLib.hxx>
 #include <PLib_HermitJacobi.hxx>
 #include <PLib_JacobiPolynomial.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PLib_HermitJacobi,PLib_Base)
 

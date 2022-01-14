@@ -14,8 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <LDOM_BasicNode.hxx>
-#include <LDOM_BasicElement.hxx>
+
 #include <LDOM_BasicAttribute.hxx>
+#include <LDOM_BasicElement.hxx>
 #include <LDOM_BasicText.hxx>
 
 //=======================================================================

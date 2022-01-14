@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_GeneralLib.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_GTool.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_HGraph,Standard_Transient)

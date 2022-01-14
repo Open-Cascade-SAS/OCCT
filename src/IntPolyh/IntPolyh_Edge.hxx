@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
-
 //! The class represents the edge built between the two IntPolyh points.<br>
 //! It is linked to two IntPolyh triangles.
 class IntPolyh_Edge

@@ -16,7 +16,6 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_GLine.hxx>

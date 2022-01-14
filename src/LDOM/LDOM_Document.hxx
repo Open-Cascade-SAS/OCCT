@@ -17,7 +17,6 @@
 #define LDOM_Document_HeaderFile
 
 #include <LDOM_Element.hxx>
-#include <LDOM_Text.hxx>
 #include <LDOM_CDATASection.hxx>
 #include <LDOM_Comment.hxx>
 

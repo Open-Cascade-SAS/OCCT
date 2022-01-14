@@ -21,11 +21,8 @@
 
 #include <TColStd_IndexedMapOfTransient.hxx>
 #include <TColStd_DataMapOfIntegerTransient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 #include <Interface_DataState.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class Interface_Check;

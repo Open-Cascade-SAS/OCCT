@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <IntPolyh_SeqOfStartPoints.hxx>
-#include <Standard_Integer.hxx>
 class IntPolyh_StartPoint;
 
 

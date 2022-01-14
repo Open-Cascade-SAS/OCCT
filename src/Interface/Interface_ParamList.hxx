@@ -17,7 +17,6 @@
 #define _Interface_ParamList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Interface_VectorOfFileParameter.hxx>
 #include <Standard_Transient.hxx>

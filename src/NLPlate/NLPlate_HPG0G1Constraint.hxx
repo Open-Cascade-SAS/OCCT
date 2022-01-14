@@ -18,7 +18,6 @@
 #define _NLPlate_HPG0G1Constraint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Plate_D1.hxx>
 #include <Standard_Integer.hxx>

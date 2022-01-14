@@ -17,7 +17,6 @@
 #include <OSD_ThreadPool.hxx>
 #include <Standard_Type.hxx>
 #include <memory>
-#include <type_traits>
 
 //! @brief Simple tool for code parallelization.
 //!

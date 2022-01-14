@@ -20,7 +20,6 @@
 //#endif
 
 #include <math_DirectPolynomialRoots.hxx>
-#include <Standard_RangeError.hxx>
 #include <StdFail_InfiniteSolutions.hxx>
 
 // Reference pour solution equation 3ieme degre et 2ieme degre :

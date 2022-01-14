@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <GeomAbs_JoinType.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT2d_DataMapOfIntegerBisec.hxx>
@@ -29,7 +28,6 @@
 #include <MAT2d_DataMapOfIntegerVec2d.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <MAT_Side.hxx>
-#include <Standard_Boolean.hxx>
 class MAT2d_Circuit;
 class MAT_Bisector;
 class Bisector_Bisec;

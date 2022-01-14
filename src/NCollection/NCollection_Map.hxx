@@ -16,7 +16,6 @@
 #ifndef NCollection_Map_HeaderFile
 #define NCollection_Map_HeaderFile
 
-#include <NCollection_BaseMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_TListNode.hxx>
 #include <NCollection_StlIterator.hxx>

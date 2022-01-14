@@ -16,7 +16,6 @@
 #ifndef _NCollection_Buffer_HeaderFile
 #define _NCollection_Buffer_HeaderFile
 
-#include <NCollection_BaseAllocator.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_Transient.hxx>
 

@@ -24,7 +24,6 @@
 
 
 #include <ElCLib.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips.hxx>
@@ -43,9 +42,6 @@
 #include <IntAna_ResultType.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 static Standard_Real PIpPI = M_PI + M_PI;
 //=============================================================================

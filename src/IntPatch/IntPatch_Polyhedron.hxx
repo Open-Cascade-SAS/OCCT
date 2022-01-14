@@ -18,7 +18,6 @@
 #define _IntPatch_Polyhedron_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 
 //! This class provides a linear approximation of the PSurface.

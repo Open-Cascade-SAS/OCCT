@@ -23,8 +23,6 @@
 
 #include <Interface_ParamType.hxx>
 #include <Standard_PCharacter.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class TCollection_AsciiString;
 
 

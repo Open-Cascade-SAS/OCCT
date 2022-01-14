@@ -14,9 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Vec.hxx>
 #include <MeshVS_Buffer.hxx>
-#include <MeshVS_DataSource.hxx>
 #include <MeshVS_DeformedDataSource.hxx>
 #include <Standard_Type.hxx>
 

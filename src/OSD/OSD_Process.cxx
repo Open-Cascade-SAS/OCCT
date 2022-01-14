@@ -28,7 +28,6 @@
 #include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
-#include <Standard_PExtCharacter.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Quantity_Date.hxx>
 

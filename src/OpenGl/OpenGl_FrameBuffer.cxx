@@ -20,7 +20,6 @@
 
 #include <Standard_Assert.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 

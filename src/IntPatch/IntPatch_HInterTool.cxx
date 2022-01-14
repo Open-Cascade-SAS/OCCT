@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
@@ -24,7 +22,6 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_HInterTool.hxx>

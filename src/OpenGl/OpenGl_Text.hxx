@@ -18,16 +18,10 @@
 
 #include <OpenGl_Element.hxx>
 
-#include <OpenGl_Aspects.hxx>
 #include <OpenGl_TextBuilder.hxx>
 
-#include <TCollection_ExtendedString.hxx>
-#include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_Text.hxx>
-#include <Graphic3d_VerticalTextAlignment.hxx>
-
-#include <gp_Ax2.hxx>
 
 //! Text rendering
 class OpenGl_Text : public OpenGl_Element

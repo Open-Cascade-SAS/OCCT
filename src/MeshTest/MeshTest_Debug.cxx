@@ -17,11 +17,7 @@
 #include <DrawTrSurf_Polygon3D.hxx>
 #include <Draw.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <Poly_Polygon3D.hxx>
-#include <BRepMesh_Edge.hxx>
-#include <BRepMesh_Vertex.hxx>
-#include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 
 // This file defines global functions not declared in any public header,

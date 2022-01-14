@@ -21,7 +21,6 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_TextureEnv.hxx>
-#include <Graphic3d_Mat4d.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_BackgroundArray.hxx>
@@ -31,6 +30,7 @@
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_Texture.hxx>

@@ -21,12 +21,7 @@
 
 
 #include <gp_Ax3.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Sphere.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <IntAna_Quadric.hxx>
 #include <ElSLib.hxx>
 

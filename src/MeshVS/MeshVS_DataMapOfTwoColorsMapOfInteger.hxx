@@ -16,7 +16,6 @@
 #ifndef MeshVS_DataMapOfTwoColorsMapOfInteger_HeaderFile
 #define MeshVS_DataMapOfTwoColorsMapOfInteger_HeaderFile
 
-#include <MeshVS_TwoColors.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <MeshVS_TwoColorsHasher.hxx>
 #include <NCollection_DataMap.hxx>

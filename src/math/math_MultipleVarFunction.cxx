@@ -14,7 +14,6 @@
 
 
 #include <math_MultipleVarFunction.hxx>
-#include <Standard_Integer.hxx>
 
 //=======================================================================
 //function : ~math_MultipleVarFunction

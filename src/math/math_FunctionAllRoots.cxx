@@ -24,8 +24,6 @@
 #include <math_FunctionSample.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_NumericError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 math_FunctionAllRoots::math_FunctionAllRoots (
                            math_FunctionWithDerivative& F,

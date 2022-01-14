@@ -19,13 +19,13 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax3.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
 #include <TColStd_ListOfReal.hxx>
+
+class gp_Cone;
+class gp_Cylinder;
 
 //! Definition of a parametric Curve which is the result
 //! of the intersection between two quadrics.

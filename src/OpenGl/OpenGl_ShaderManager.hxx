@@ -17,7 +17,6 @@
 #define _OpenGl_ShaderManager_HeaderFile
 
 #include <Graphic3d_ShaderManager.hxx>
-#include <NCollection_Sequence.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_MaterialState.hxx>

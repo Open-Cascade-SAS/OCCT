@@ -15,8 +15,6 @@
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 #include <Message_Msg.hxx>
@@ -27,7 +25,6 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>

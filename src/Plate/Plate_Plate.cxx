@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
@@ -29,7 +28,6 @@
 #include <Plate_PlaneConstraint.hxx>
 #include <Plate_Plate.hxx>
 #include <Plate_SampledCurveConstraint.hxx>
-#include <Standard_ErrorHandler.hxx>
 
 //=======================================================================
 //function : Plate_Plate

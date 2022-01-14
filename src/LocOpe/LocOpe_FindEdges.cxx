@@ -26,9 +26,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <LocOpe_FindEdges.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>

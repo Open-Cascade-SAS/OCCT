@@ -18,7 +18,6 @@
 #include <math_Function.hxx>
 #include <math_KronrodSingleIntegration.hxx>
 #include <math_Vector.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
 //==========================================================================

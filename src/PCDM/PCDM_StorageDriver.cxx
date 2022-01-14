@@ -17,15 +17,11 @@
 
 #include <CDM_Document.hxx>
 #include <FSD_CmpFile.hxx>
-#include <PCDM.hxx>
-#include <PCDM_Document.hxx>
 #include <PCDM_DriverError.hxx>
 #include <PCDM_ReadWriter.hxx>
-#include <PCDM_SequenceOfDocument.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
@@ -35,7 +31,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
-#include <locale.h>
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
 
 #define STORAGE_VERSION "STORAGE_VERSION:"

@@ -14,10 +14,6 @@
 #include <Interface_Static.hxx>
 
 #include <Message_MsgFile.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <Precision.hxx>
-
-#include <stdio.h>
 
 #include "../XSMessage/XSMessage_XSTEP_us.pxx"
 

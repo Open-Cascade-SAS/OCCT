@@ -51,9 +51,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <gp_Circ2d.hxx>
-#include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -62,8 +60,6 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <MAT2d_Circuit.hxx>
 #include <MAT2d_Connexion.hxx>
-#include <MAT2d_MiniPath.hxx>
-#include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
 #include <MAT2d_Tool2d.hxx>
 #include <MAT_Bisector.hxx>
 #include <MAT_Edge.hxx>

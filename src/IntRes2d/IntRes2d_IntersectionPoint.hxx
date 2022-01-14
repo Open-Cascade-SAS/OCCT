@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt2d.hxx>
-#include <Standard_Real.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <Standard_Boolean.hxx>
 

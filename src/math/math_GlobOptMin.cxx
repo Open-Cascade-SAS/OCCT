@@ -16,8 +16,6 @@
 #include <math_GlobOptMin.hxx>
 
 #include <math_BFGS.hxx>
-#include <math_Matrix.hxx>
-#include <math_MultipleVarFunctionWithGradient.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_Powell.hxx>

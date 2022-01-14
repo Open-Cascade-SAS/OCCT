@@ -14,6 +14,5 @@
 
 
 #include <math_Function.hxx>
-#include <Standard_Integer.hxx>
 
 Standard_Integer math_Function::GetStateNumber() { return 0; }

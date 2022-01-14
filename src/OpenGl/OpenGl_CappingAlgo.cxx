@@ -16,11 +16,9 @@
 #include <OpenGl_CappingAlgo.hxx>
 
 #include <OpenGl_ClippingIterator.hxx>
-#include <OpenGl_Workspace.hxx>
+#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_CappingPlaneResource.hxx>
-#include <OpenGl_Vec.hxx>
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_ShaderManager.hxx>
 

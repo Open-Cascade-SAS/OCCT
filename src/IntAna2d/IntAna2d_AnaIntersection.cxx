@@ -20,8 +20,6 @@
 #include <gp_Parab2d.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_Conic.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 IntAna2d_AnaIntersection::IntAna2d_AnaIntersection ()

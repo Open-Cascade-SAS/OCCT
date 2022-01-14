@@ -19,7 +19,6 @@
 #include <OSD_WhoAmI.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_String.hxx>
 
 #ifdef _WIN32
   #include <OSD_WNT.hxx>

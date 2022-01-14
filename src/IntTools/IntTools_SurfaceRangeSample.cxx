@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IntTools_CurveRangeSample.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_SurfaceRangeSample.hxx>
 

@@ -16,20 +16,12 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <OpenGl_Aspects.hxx>
-#include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
-#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GlCore15.hxx>
-#include <OpenGl_SceneGeometry.hxx>
-#include <OpenGl_Structure.hxx>
-#include <OpenGl_Sampler.hxx>
+#include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_ShaderManager.hxx>
-#include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Window.hxx>
-
-#include <Graphic3d_TextureParams.hxx>
-#include <Graphic3d_TransformUtils.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,Standard_Transient)
 

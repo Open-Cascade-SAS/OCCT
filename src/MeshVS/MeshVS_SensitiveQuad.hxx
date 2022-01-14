@@ -16,7 +16,6 @@
 #ifndef _MeshVS_SensitiveQuad_HeaderFile
 #define _MeshVS_SensitiveQuad_HeaderFile
 
-#include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
 #include <TColgp_Array1OfPnt.hxx>

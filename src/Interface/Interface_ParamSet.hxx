@@ -23,7 +23,6 @@
 #include <Standard_PCharacter.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
 class Interface_ParamList;
 class Interface_FileParameter;

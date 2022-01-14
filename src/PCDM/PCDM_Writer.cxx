@@ -16,7 +16,6 @@
 
 
 #include <CDM_Document.hxx>
-#include <PCDM_DriverError.hxx>
 #include <PCDM_Writer.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>

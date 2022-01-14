@@ -29,7 +29,6 @@
 #include <LocOpe_BuildShape.hxx>
 #include <LocOpe_Revol.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp.hxx>

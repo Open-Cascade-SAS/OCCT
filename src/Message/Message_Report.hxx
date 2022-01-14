@@ -16,7 +16,6 @@
 #ifndef _Message_Report_HeaderFile
 #define _Message_Report_HeaderFile
 
-#include <Message_Gravity.hxx>
 #include <Message_Level.hxx>
 #include <Message_ListOfAlert.hxx>
 #include <Message_MetricType.hxx>

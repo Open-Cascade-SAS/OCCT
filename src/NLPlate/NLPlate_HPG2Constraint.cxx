@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_XY.hxx>
 #include <NLPlate_HPG2Constraint.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_D2.hxx>

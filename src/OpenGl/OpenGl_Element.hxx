@@ -16,7 +16,6 @@
 #ifndef OpenGl_Element_HeaderFile
 #define OpenGl_Element_HeaderFile
 
-#include <OpenGl_RenderFilter.hxx>
 #include <Standard_Type.hxx>
 
 class Graphic3d_FrameStatsDataTmp;

@@ -20,7 +20,6 @@
 #include <CDM_ReferenceIterator.hxx>
 #include <OSD_Path.hxx>
 #include <PCDM.hxx>
-#include <PCDM_BaseDriverPointer.hxx>
 #include <PCDM_ReadWriter_1.hxx>
 #include <PCDM_Reference.hxx>
 #include <PCDM_TypeOfFileDriver.hxx>

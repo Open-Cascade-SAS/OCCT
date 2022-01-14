@@ -20,13 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
-#include <TColGeom2d_SequenceOfGeometry.hxx>
 #include <MAT2d_DataMapOfIntegerConnexion.hxx>
 #include <MAT2d_DataMapOfBiIntSequenceOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
 #include <TColStd_SequenceOfBoolean.hxx>

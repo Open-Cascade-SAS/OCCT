@@ -14,8 +14,6 @@
 #include <Message_PrinterToReport.hxx>
 
 #include <Message.hxx>
-#include <Message_AlertExtended.hxx>
-#include <Message_Attribute.hxx>
 #include <Message_AttributeMeter.hxx>
 #include <Message_AttributeObject.hxx>
 #include <Message_AttributeStream.hxx>

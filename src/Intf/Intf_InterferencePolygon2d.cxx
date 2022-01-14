@@ -16,16 +16,12 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Intf_InterferencePolygon2d.hxx>
 #include <Intf_Polygon2d.hxx>
 #include <Intf_SectionPoint.hxx>
 #include <Intf_SeqOfSectionPoint.hxx>
-#include <Intf_SeqOfTangentZone.hxx>
 #include <Intf_TangentZone.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
 // Angular precision (sinus) below that value two right segments

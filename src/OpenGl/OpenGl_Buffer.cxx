@@ -15,7 +15,6 @@
 #include <OpenGl_Buffer.hxx>
 
 #include <OpenGl_GlCore30.hxx>
-#include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <Standard_Assert.hxx>
 

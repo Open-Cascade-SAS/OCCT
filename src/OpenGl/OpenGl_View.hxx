@@ -16,16 +16,10 @@
 #ifndef OpenGl_View_HeaderFile
 #define OpenGl_View_HeaderFile
 
-#include <Graphic3d_CView.hxx>
 #include <Graphic3d_CullingTool.hxx>
-#include <Graphic3d_GraduatedTrihedron.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_ToneMappingMethod.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
-#include <Graphic3d_ZLayerSettings.hxx>
 #include <math_BullardGenerator.hxx>
 
-#include <OpenGl_Aspects.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_FrameStatsPrs.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>

@@ -17,8 +17,6 @@
 #include <Interface_FileParameter.hxx>
 #include <Interface_ParamList.hxx>
 #include <Standard_OutOfMemory.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_ParamList,Standard_Transient)

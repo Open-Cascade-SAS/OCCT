@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <GeomAbs_CurveType.hxx>
-#include <Standard_Real.hxx>
 class LProp_CurAndInf;
 
 

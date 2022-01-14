@@ -17,7 +17,6 @@
 #ifndef MAT2d_DataMapOfIntegerPnt2d_HeaderFile
 #define MAT2d_DataMapOfIntegerPnt2d_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

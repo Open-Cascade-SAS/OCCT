@@ -16,7 +16,6 @@
 #ifndef _Message_ProgressIndicator_HeaderFile
 #define _Message_ProgressIndicator_HeaderFile
 
-#include <Standard_TypeDef.hxx>
 #include <Standard_Mutex.hxx>
 #include <Standard_Handle.hxx>
 

@@ -18,7 +18,6 @@
 
 #include <Standard_OStream.hxx>
 #include <Standard_TypeDef.hxx>
-#include <stdio.h>
 
 class LDOM_Document;
 class LDOM_Node;

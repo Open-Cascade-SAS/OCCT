@@ -21,7 +21,6 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <stdio.h>
-#include <string.h>
 
 namespace
 {

@@ -18,7 +18,6 @@
 
 #include <stdio.h>
 
-#include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
@@ -40,14 +39,11 @@
 #include <Message.hxx>
 #include <Message_ProgressRange.hxx>
 #include <OSD_OpenFile.hxx>
-#include <Poly_Connect.hxx>
 #include <Poly_MergeNodesTool.hxx>
 #include <Poly_TriangulationParameters.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <BRep_CurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <TopExp.hxx> 
 

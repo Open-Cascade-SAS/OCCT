@@ -24,13 +24,7 @@
 #include <PCDM_StorageDriver.hxx>
 #include <Plugin.hxx>
 #include <Resource_Manager.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_SStream.hxx>
-#include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <UTL.hxx>
 
 //=======================================================================
 //function : FileDriverType

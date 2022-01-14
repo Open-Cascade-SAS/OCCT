@@ -27,7 +27,6 @@
 #include <math_TrigonometricFunctionRoots.hxx>
 #include <math_TrigonometricEquationFunction.hxx>
 #include <math_DirectPolynomialRoots.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <math_NewtonFunctionRoot.hxx>
 #include <Precision.hxx>

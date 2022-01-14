@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 class MAT_Bisector;
 

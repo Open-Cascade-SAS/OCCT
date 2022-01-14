@@ -26,7 +26,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <Standard_Real.hxx>
 
 
 class PLib_JacobiPolynomial;

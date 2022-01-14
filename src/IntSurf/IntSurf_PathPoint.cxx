@@ -15,9 +15,7 @@
 
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <IntSurf_PathPoint.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
 
 IntSurf_PathPoint::IntSurf_PathPoint ():

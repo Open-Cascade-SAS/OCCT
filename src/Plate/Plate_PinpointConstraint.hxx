@@ -23,7 +23,6 @@
 
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! define a constraint on the Plate

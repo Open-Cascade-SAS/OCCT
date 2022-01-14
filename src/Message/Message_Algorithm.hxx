@@ -25,7 +25,6 @@
 #include <Message_Status.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_Gravity.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>

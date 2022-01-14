@@ -15,12 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <Plate_D1.hxx>
 #include <Plate_D2.hxx>
 #include <Plate_D3.hxx>
 #include <Plate_GtoCConstraint.hxx>

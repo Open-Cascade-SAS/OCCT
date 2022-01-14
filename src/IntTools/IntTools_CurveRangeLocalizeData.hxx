@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Real.hxx>
 #include <IntTools_MapOfCurveSample.hxx>
 #include <IntTools_DataMapOfCurveSampleBox.hxx>
 #include <IntTools_ListOfCurveRangeSample.hxx>

@@ -13,7 +13,6 @@
 
 
 #include <Interface_BitMap.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <TCollection_AsciiString.hxx>
 
 Interface_BitMap::Interface_BitMap()

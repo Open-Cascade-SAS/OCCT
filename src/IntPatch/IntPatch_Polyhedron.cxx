@@ -16,17 +16,11 @@
 
 
 #include <Adaptor3d_Surface.hxx>
-#include <Bnd_Array1OfBox.hxx>
-#include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <IntPatch_HInterTool.hxx>
 #include <IntPatch_Polyhedron.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
 #include <stdio.h>

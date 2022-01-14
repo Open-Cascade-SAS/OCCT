@@ -18,7 +18,6 @@
 #define _IntCurveSurface_ThePolyhedronOfHInter_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

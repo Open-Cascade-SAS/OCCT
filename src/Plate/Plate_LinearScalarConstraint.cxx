@@ -19,7 +19,6 @@
 #include <Plate_LinearScalarConstraint.hxx>
 #include <Plate_PinpointConstraint.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Plate_LinearScalarConstraint::Plate_LinearScalarConstraint() {}
 

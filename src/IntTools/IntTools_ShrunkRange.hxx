@@ -21,7 +21,6 @@
 
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <Standard_Real.hxx>
 #include <Bnd_Box.hxx>
 #include <Standard_Integer.hxx>
 class IntTools_Context;

@@ -73,7 +73,6 @@ void OSD::SetSignalStackTraceLength (Standard_Integer theLength)
 #include <OSD_Exception_ARRAY_BOUNDS_EXCEEDED.hxx>
 #include <OSD_Exception_ILLEGAL_INSTRUCTION.hxx>
 #include <OSD_Exception_IN_PAGE_ERROR.hxx>
-#include <OSD_Exception_INT_DIVIDE_BY_ZERO.hxx>
 #include <OSD_Exception_INT_OVERFLOW.hxx>
 #include <OSD_Exception_INVALID_DISPOSITION.hxx>
 #include <OSD_Exception_NONCONTINUABLE_EXCEPTION.hxx>
@@ -85,8 +84,6 @@ void OSD::SetSignalStackTraceLength (Standard_Integer theLength)
 #include <Standard_Underflow.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_Mutex.hxx>
-
-#include <OSD_WNT.hxx>
 
 #ifdef _MSC_VER
 #include <eh.h>

@@ -18,9 +18,7 @@
 #include <Message_AlertExtended.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_MetricType.hxx>
 
-#include <NCollection_DataMap.hxx>
 #include <Standard.hxx>
 
 //! This class is an instance of Sentry to create a level in a message report

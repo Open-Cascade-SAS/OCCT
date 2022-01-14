@@ -24,10 +24,8 @@
 #include <MAT2d_DataMapOfIntegerSequenceOfConnexion.hxx>
 #include <MAT2d_DataMapOfIntegerConnexion.hxx>
 #include <MAT2d_SequenceOfConnexion.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <MAT2d_SequenceOfSequenceOfGeometry.hxx>
-#include <Standard_Boolean.hxx>
 class MAT2d_Connexion;
 
 

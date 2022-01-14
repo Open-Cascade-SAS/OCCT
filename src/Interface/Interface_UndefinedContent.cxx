@@ -13,11 +13,8 @@
 
 
 #include <Interface_CopyTool.hxx>
-#include <Interface_EntityList.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_InterfaceMismatch.hxx>
 #include <Interface_UndefinedContent.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

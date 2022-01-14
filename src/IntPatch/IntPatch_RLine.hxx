@@ -18,9 +18,7 @@
 #define _IntPatch_RLine_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <IntPatch_SequenceOfPoint.hxx>

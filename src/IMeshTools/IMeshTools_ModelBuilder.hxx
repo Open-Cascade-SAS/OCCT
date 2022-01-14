@@ -20,7 +20,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <TopoDS_Shape.hxx>
 #include <IMeshData_Model.hxx>
 
 struct IMeshTools_Parameters;

@@ -13,12 +13,8 @@
 // commercial license or contractual agreement.
 
 
-#include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_NumericError.hxx>
-#include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
 
 static OSD_SysType whereAmI()

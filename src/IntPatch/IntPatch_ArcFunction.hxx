@@ -17,6 +17,7 @@
 #ifndef _IntPatch_ArcFunction_HeaderFile
 #define _IntPatch_ArcFunction_HeaderFile
 
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <TColgp_SequenceOfPnt.hxx>

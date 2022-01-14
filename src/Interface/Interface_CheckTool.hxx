@@ -23,7 +23,6 @@
 
 #include <Interface_ShareTool.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_GTool;
 class Interface_InterfaceModel;
 class Interface_Protocol;

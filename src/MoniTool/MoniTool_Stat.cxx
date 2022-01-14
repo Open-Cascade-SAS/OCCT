@@ -13,7 +13,6 @@
 
 
 #include <MoniTool_Stat.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 //static MoniTool_Stat Statvoid("");

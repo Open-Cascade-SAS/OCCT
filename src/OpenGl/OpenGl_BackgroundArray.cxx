@@ -18,7 +18,6 @@
 #include <Aspect_FillMethod.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
-#include <Graphic3d_TextureParams.hxx>
 
 // =======================================================================
 // method  : Constructor

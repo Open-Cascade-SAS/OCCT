@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 
 //================================================================================

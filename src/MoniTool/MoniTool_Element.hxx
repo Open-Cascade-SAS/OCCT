@@ -18,14 +18,11 @@
 #define _MoniTool_Element_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <MoniTool_AttrList.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 
 
 class MoniTool_Element;

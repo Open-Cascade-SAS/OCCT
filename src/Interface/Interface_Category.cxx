@@ -15,12 +15,10 @@
 #include <Interface_Category.hxx>
 #include <Interface_GeneralModule.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Protocol.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Mutex.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
 #include <NCollection_Vector.hxx>
 
 static int THE_Interface_Category_init = 0;

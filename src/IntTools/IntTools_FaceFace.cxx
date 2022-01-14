@@ -15,7 +15,6 @@
 
 #include <IntTools_FaceFace.hxx>
 
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
@@ -43,7 +42,6 @@
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_RLine.hxx>
-#include <IntPatch_WLine.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <IntTools_Context.hxx>

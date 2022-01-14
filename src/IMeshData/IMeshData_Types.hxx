@@ -16,8 +16,6 @@
 #ifndef _IMeshData_Types_HeaderFile
 #define _IMeshData_Types_HeaderFile
 
-#include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Shared.hxx>
@@ -26,16 +24,13 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_StdAllocator.hxx>
 #include <IMeshData_ParametersListArrayAdaptor.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <Precision.hxx>
 #include <NCollection_EBTree.hxx>
 #include <Bnd_Box2d.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <BRepMesh_OrientedEdge.hxx>
 #include <BRepMesh_Vertex.hxx>
 #include <Bnd_B2d.hxx>
 #include <BRepMesh_Circle.hxx>
@@ -45,7 +40,6 @@
 
 #include <memory>
 #include <queue>
-#include <list>
 
 class IMeshData_Shape;
 class IMeshData_Face;

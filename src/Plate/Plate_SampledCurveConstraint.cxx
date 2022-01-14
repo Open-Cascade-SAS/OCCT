@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Plate_LinearXYZConstraint.hxx>
-#include <Plate_PinpointConstraint.hxx>
 #include <Plate_SampledCurveConstraint.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
 #include <Standard_DimensionMismatch.hxx>

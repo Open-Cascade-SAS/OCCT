@@ -25,7 +25,6 @@
 #include <MAT_DataMapOfIntegerNode.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class MAT_ListOfBisector;
 class MAT_Arc;
 class MAT_BasicElt;

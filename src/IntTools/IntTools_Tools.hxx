@@ -21,9 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
-#include <Standard_Real.hxx>
 #include <IntTools_SequenceOfCurves.hxx>
 #include <Precision.hxx>
 class TopoDS_Vertex;

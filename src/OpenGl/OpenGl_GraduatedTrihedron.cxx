@@ -13,18 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_GlCore11.hxx>
-
 #include <OpenGl_GraduatedTrihedron.hxx>
 
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Text.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransformUtils.hxx>
-#include <gp_Ax3.hxx>
-#include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <Precision.hxx>
 

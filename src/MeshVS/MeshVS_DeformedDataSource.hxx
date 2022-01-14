@@ -19,11 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <MeshVS_DataMapOfIntegerVector.hxx>
-#include <Standard_Real.hxx>
 #include <MeshVS_DataSource.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <MeshVS_EntityType.hxx>

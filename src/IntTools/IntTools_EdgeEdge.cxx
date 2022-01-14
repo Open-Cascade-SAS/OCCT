@@ -16,12 +16,9 @@
 #include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
@@ -29,7 +26,6 @@
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
-#include <IntTools_CommonPrt.hxx>
 #include <IntTools_EdgeEdge.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_Tools.hxx>

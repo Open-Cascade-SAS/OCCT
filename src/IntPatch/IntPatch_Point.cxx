@@ -15,13 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <IntPatch_Point.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_Transition.hxx>
-#include <Standard_DomainError.hxx>
 
 #include <stdio.h>
 void IntPatch_Point::SetValue (const gp_Pnt& Pt,
@@ -122,7 +120,6 @@ void IntPatch_Point::ReverseTransition()
 
 
 #include <IntSurf_Situation.hxx>
-#include <IntSurf_Transition.hxx>
 #include <IntSurf_TypeTrans.hxx>
 
 static void DumpTransition(const IntSurf_Transition& T)

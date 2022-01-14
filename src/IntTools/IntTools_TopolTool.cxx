@@ -22,7 +22,6 @@
 #include <gp_Pnt2d.hxx>
 #include <IntTools_TopolTool.hxx>
 #include <Precision.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array2OfPnt.hxx>

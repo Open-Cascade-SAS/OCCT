@@ -16,7 +16,6 @@
 #include <NCollection_BaseVector.hxx>
 
 #include <Standard_RangeError.hxx>
-#include <cstdlib>
 
 //=======================================================================
 //function : initV

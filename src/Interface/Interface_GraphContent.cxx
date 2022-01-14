@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_IntList.hxx>
 #include <Standard_Transient.hxx>
 
 Interface_GraphContent::Interface_GraphContent ()    {  }

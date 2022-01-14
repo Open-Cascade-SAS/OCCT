@@ -15,7 +15,6 @@
 
 #include <NCollection_AccAllocator.hxx>
 #include <Standard_OutOfMemory.hxx>
-#include <Standard_Assert.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_AccAllocator,NCollection_BaseAllocator)

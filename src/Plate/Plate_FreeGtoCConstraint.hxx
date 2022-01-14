@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_XY.hxx>
 #include <Standard_Integer.hxx>
-#include <Plate_PinpointConstraint.hxx>
 #include <Plate_LinearScalarConstraint.hxx>
-#include <Standard_Real.hxx>
 class Plate_D1;
 class Plate_D2;
 class Plate_D3;

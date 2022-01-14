@@ -21,7 +21,6 @@
 #ifndef _OpenGl_HaltonSampler_H
 #define _OpenGl_HaltonSampler_H
 
-#include <algorithm>
 #include <vector>
 
 //! Compute points of the Halton sequence with digit-permutations for different bases.

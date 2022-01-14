@@ -21,12 +21,10 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <IntTools_MapOfSurfaceSample.hxx>
 #include <IntTools_DataMapOfSurfaceSampleBox.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntTools_ListOfSurfaceRangeSample.hxx>
 class IntTools_SurfaceRangeSample;
 class Bnd_Box;

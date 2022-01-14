@@ -14,10 +14,8 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_CappingAlgo.hxx>
-#include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_ClippingIterator.hxx>
-#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_StructureShadow.hxx>

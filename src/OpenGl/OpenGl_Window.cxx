@@ -19,16 +19,14 @@
 
 #include <OpenGl_GlCore12.hxx>
 
-#include <OpenGl_Context.hxx>
+#include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Window.hxx>
-#include <OpenGl_FrameBuffer.hxx>
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
-#include <Graphic3d_TransformUtils.hxx>
+#include <Aspect_Handle.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
 
 #include <memory>
 

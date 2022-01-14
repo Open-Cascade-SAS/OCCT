@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 class IntCurve_PConic;
 class gp_Pnt2d;
 

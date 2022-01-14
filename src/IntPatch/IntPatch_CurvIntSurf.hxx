@@ -17,7 +17,6 @@
 #ifndef _IntPatch_CurvIntSurf_HeaderFile
 #define _IntPatch_CurvIntSurf_HeaderFile
 
-#include <Adaptor3d_Surface.hxx>
 #include <IntPatch_CSFunction.hxx>
 
 class Adaptor3d_HSurfaceTool;

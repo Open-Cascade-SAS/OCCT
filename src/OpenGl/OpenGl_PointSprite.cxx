@@ -18,7 +18,6 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <Standard_Assert.hxx>
-#include <Image_PixMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PointSprite,OpenGl_Texture)
 

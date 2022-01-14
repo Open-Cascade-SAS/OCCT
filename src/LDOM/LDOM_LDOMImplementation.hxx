@@ -16,7 +16,6 @@
 #ifndef LDOM_LDOMImplementation_HeaderFile
 #define LDOM_LDOMImplementation_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <LDOM_Document.hxx>
 
 class LDOM_DocumentType;

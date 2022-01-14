@@ -15,14 +15,10 @@
 
 #include <MeshVS_SensitiveMesh.hxx>
 
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <TopLoc_Location.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_MeshOwner.hxx>
-#include <NCollection_Vec4.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh,Select3D_SensitiveEntity)

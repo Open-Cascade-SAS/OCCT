@@ -17,14 +17,9 @@
 #define _MeshVS_SensitivePolyhedron_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
 #include <MeshVS_HArray1OfSequenceOfInteger.hxx>
-#include <gp_XY.hxx>
 #include <NCollection_List.hxx>
-#include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_BndBox3d.hxx>
 

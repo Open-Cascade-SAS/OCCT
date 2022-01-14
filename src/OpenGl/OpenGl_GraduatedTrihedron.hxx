@@ -17,9 +17,6 @@
 #define OpenGl_GraduatedTrihedron_HeaderFile
 
 #include <Graphic3d_GraduatedTrihedron.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Dir.hxx>
 #include <NCollection_Array1.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Element.hxx>

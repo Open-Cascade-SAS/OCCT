@@ -18,7 +18,6 @@
 #define _NLPlate_HPG2Constraint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Plate_D2.hxx>
 #include <NLPlate_HPG1Constraint.hxx>

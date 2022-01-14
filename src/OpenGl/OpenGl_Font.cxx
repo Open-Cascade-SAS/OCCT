@@ -19,7 +19,6 @@
 #include <Font_FTFont.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Assert.hxx>
-#include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font,OpenGl_Resource)
 

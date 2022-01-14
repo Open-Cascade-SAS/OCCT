@@ -21,11 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Character.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 
 
 //! This class converts a floating number (Real) to a string

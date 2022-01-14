@@ -13,10 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Cylinder.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Vec.hxx>
-#include <IntSurf_Quadric.hxx>
 #include <IntSurf_QuadricTool.hxx>
 
 Standard_Real IntSurf_QuadricTool::Tolerance (const IntSurf_Quadric& Q) {

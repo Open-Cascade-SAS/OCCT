@@ -24,9 +24,7 @@
 #include <BRepClass_FaceExplorer.hxx>
 #include <BRepTopAdaptor_SeqOfPtr.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <memory>
 

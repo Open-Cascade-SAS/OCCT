@@ -21,8 +21,6 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
-#include <stddef.h>
-
 // this value defines the number of blocks that are reserved
 // when the capacity of vector is increased
 inline Standard_Integer GetCapacity (const Standard_Integer theIncrement)

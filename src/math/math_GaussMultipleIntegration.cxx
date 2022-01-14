@@ -46,7 +46,6 @@ de Gauss.
 #include <math_Matrix.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <math_Vector.hxx>
-#include <StdFail_NotDone.hxx>
 
 class IntegrationFunction {
 

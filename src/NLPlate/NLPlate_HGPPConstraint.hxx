@@ -18,12 +18,10 @@
 #define _NLPlate_HGPPConstraint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_XY.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class gp_XYZ;
 class Plate_D1;

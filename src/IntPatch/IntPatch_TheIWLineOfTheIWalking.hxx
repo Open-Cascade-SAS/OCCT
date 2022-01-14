@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IntSurf_SequenceOfCouple.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IntSurf_PathPoint.hxx>
 #include <gp_Vec.hxx>

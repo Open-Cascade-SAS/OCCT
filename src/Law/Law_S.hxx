@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Law_BSpFunc.hxx>
-#include <Standard_Real.hxx>
 
 
 class Law_S;

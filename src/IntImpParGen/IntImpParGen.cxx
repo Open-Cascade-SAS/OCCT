@@ -16,9 +16,6 @@
 
 #include <IntImpParGen.hxx>
 
-#include <gp.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <IntImpParGen_Tool.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Position.hxx>

@@ -13,7 +13,6 @@
 
 #include <Message_Attribute.hxx>
 
-#include <Standard_Assert.hxx>
 #include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Attribute, Standard_Transient)

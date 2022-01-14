@@ -26,15 +26,10 @@
 //--      Chercher(Nbvtx++). 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_TopolTool.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Intf_SectionPoint.hxx>
-#include <Intf_TangentZone.hxx>
-#include <IntPatch_CSFunction.hxx>
 #include <IntPatch_CurvIntSurf.hxx>
 #include <IntPatch_HInterTool.hxx>
-#include <IntPatch_Line.hxx>
 #include <IntPatch_PolyArc.hxx>
 #include <IntPatch_PolyLine.hxx>
 #include <IntPatch_RLine.hxx>

@@ -16,7 +16,6 @@
 
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore15.hxx>
-#include <Standard_Assert.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_IndexBuffer, OpenGl_Buffer)
 

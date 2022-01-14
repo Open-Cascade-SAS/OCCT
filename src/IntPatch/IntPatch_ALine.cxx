@@ -16,12 +16,8 @@
 
 
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <IntAna_Curve.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_Point.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IntPatch_ALine,IntPatch_Line)

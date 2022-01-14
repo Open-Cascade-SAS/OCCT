@@ -14,6 +14,8 @@
 // commercial license or contractual agreement.
 
 #include <math_PSO.hxx>
+
+#include <math_BullardGenerator.hxx>
 #include <math_PSOParticlesPool.hxx>
 
 const Standard_Real aBorderDivisor = 1.0e+4;

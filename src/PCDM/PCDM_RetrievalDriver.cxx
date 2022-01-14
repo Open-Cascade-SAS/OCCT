@@ -15,25 +15,13 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
-#include <PCDM.hxx>
-#include <PCDM_BaseDriverPointer.hxx>
-#include <PCDM_Document.hxx>
-#include <PCDM_DriverError.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <PCDM_RetrievalDriver.hxx>
-#include <PCDM_TypeOfFileDriver.hxx>
 #include <Resource_Manager.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_RetrievalDriver,PCDM_Reader)
 

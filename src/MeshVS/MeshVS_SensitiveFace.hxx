@@ -17,9 +17,7 @@
 #define _MeshVS_SensitiveFace_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <Select3D_SensitiveFace.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 

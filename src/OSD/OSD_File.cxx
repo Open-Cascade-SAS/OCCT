@@ -20,7 +20,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <OSD.hxx>
-#include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_WhoAmI.hxx>
@@ -31,10 +30,7 @@
 
   #include <OSD_WNT.hxx>
 
-  #include <stdio.h>
-  #include <io.h>
-
-  #include <strsafe.h>
+#include <strsafe.h>
 
   #define ACE_HEADER_SIZE (sizeof(ACCESS_ALLOWED_ACE) - sizeof (DWORD))
 

@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

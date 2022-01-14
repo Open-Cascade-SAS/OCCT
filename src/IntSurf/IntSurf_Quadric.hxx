@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Ax3.hxx>
 #include <gp_Lin.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Cylinder.hxx>

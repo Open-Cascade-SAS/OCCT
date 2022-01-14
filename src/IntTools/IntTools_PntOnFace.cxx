@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <IntTools_PntOnFace.hxx>
 #include <TopoDS_Face.hxx>
 

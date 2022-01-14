@@ -30,7 +30,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
-#include <IntTools_Tools.hxx>
 #include <Precision.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
@@ -43,7 +42,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
-#include <GeomLib.hxx>
 #include <Poly.hxx>
 
 #include <stdio.h>

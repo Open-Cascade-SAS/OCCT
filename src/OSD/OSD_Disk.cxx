@@ -14,12 +14,9 @@
 
 #include <OSD_Disk.hxx>
 
-#include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_WhoAmI.hxx>
-#include <Standard_ProgramError.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_String.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 #ifdef _WIN32

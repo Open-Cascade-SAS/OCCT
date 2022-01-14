@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <ElCLib.hxx>
 #include <LProp_CurAndInf.hxx>
 #include <Standard_OutOfRange.hxx>
 

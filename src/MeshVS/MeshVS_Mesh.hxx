@@ -21,8 +21,6 @@
 #include <MeshVS_MeshSelectionMethod.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_CString.hxx>
 
 class MeshVS_PrsBuilder;
 class TColStd_HPackedMapOfInteger;

@@ -19,7 +19,6 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
 
-#include <NCollection_List.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Element.hxx>
 

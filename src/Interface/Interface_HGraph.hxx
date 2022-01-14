@@ -22,7 +22,6 @@
 
 #include <Interface_Graph.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Interface_GeneralLib;
 class Interface_Protocol;

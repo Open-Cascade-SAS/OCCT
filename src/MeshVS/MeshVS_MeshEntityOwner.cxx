@@ -14,14 +14,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Graphic3d_Group.hxx>
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshEntityOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <PrsMgr_PresentationManager.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner,SelectMgr_EntityOwner)
 

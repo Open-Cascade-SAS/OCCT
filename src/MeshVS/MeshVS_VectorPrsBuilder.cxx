@@ -14,24 +14,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Aspect_TypeOfLine.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
-#include <Graphic3d_ArrayOfPolygons.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfTriangleFans.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
 #include <MeshVS_Buffer.hxx>
-#include <MeshVS_DataMapIteratorOfDataMapOfIntegerVector.hxx>
 #include <MeshVS_DataSource.hxx>
-#include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_EntityType.hxx>

@@ -18,7 +18,6 @@
 #ifndef Message_ExecStatus_HeaderFile
 #define Message_ExecStatus_HeaderFile
 
-#include <Message_StatusType.hxx>
 #include <Message_Status.hxx>
 
 /**

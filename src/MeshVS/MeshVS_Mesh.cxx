@@ -18,8 +18,6 @@
 #include <Aspect_InteriorStyle.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <MeshVS_Buffer.hxx>
 #include <MeshVS_CommonSensitiveEntity.hxx>
@@ -42,7 +40,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveGroup.hxx>
@@ -58,10 +55,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_Mesh,AIS_InteractiveObject)
 

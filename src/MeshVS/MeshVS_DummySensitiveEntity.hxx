@@ -17,9 +17,7 @@
 #define _MeshVS_DummySensitiveEntity_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Select3D_BndBox3d.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_SelectingVolumeManager.hxx>
 

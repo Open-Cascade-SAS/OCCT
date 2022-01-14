@@ -13,7 +13,6 @@
 
 #include <OpenGl_AspectsProgram.hxx>
 
-#include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 

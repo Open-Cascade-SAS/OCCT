@@ -15,7 +15,6 @@
 // pmn -> modified 17/01/1996 : utilisation de Curve() et SetCurve()
 
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <Law_Interpol.hxx>
 #include <Law_Interpolate.hxx>
 #include <Precision.hxx>

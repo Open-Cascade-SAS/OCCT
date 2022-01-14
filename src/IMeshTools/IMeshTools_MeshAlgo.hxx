@@ -17,7 +17,6 @@
 #define _IMeshTools_MeshAlgo_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <IMeshData_Types.hxx>
 #include <Message_ProgressRange.hxx>
 

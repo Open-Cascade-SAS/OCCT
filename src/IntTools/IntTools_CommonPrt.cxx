@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <IntTools_CommonPrt.hxx>
 #include <IntTools_Range.hxx>
 #include <IntTools_SequenceOfRanges.hxx>

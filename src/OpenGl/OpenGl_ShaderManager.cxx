@@ -23,7 +23,6 @@
 #include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_VertexBufferCompat.hxx>
-#include <OpenGl_PointSprite.hxx>
 #include <OpenGl_Workspace.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Graphic3d_ShaderManager)

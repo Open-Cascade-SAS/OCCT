@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_FileReaderData;
 class Interface_Check;
 

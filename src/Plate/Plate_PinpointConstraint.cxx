@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <Plate_PinpointConstraint.hxx>
 
 Plate_PinpointConstraint::Plate_PinpointConstraint()

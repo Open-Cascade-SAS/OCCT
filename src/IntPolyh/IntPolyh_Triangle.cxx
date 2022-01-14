@@ -15,10 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
-#include <Bnd_Box.hxx>
-#include <IntPolyh_Edge.hxx>
-#include <IntPolyh_Point.hxx>
 #include <IntPolyh_Triangle.hxx>
 
 #include <stdio.h>

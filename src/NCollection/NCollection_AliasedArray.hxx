@@ -14,8 +14,6 @@
 #ifndef _NCollection_AliasedArray_HeaderFile
 #define _NCollection_AliasedArray_HeaderFile
 
-#include <NCollection_DefineAlloc.hxx>
-#include <NCollection_StlIterator.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>

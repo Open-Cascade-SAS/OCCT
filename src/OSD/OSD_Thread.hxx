@@ -23,9 +23,7 @@
 #include <OSD_ThreadFunction.hxx>
 #include <OSD_PThread.hxx>
 #include <Standard_ThreadId.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Address.hxx>
 
 
 //! A simple platform-intependent interface to execute

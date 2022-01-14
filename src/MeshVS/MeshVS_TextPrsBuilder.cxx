@@ -14,15 +14,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Font_NameOfFont.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Text.hxx>
-#include <Graphic3d_Group.hxx>
 #include <MeshVS_Buffer.hxx>
 #include <MeshVS_DataSource.hxx>
-#include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_Mesh.hxx>
@@ -34,7 +30,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_TextPrsBuilder,MeshVS_PrsBuilder)

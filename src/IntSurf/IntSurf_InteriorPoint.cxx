@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <IntSurf_InteriorPoint.hxx>

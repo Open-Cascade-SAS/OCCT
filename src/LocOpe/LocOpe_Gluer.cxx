@@ -32,7 +32,6 @@
 #include <LocOpe_WiresOnShape.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -41,14 +40,11 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 static TopAbs_Orientation GetOrientation(const TopoDS_Face&,
-					 const TopoDS_Face&);
+                                         const TopoDS_Face&);
 
 
 static Standard_Boolean Contains(const TopTools_ListOfShape&,

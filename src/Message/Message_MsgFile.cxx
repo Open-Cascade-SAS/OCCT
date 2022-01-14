@@ -19,7 +19,6 @@
 #include <NCollection_DataMap.hxx>
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <Standard_Mutex.hxx>
 #include <OSD_OpenFile.hxx>
 

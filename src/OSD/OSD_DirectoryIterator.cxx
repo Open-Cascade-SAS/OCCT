@@ -184,9 +184,7 @@ Standard_Integer OSD_DirectoryIterator::Error()const{
 #include <windows.h>
 
 
-#include <OSD_Directory.hxx>
 #include <OSD_DirectoryIterator.hxx>
-#include <OSD_OSDError.hxx>
 #include <OSD_Path.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>

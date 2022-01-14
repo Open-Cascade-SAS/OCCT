@@ -18,7 +18,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BSplCLib.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -41,10 +40,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 static TopAbs_Orientation Orientation(const TopoDS_Shape&,

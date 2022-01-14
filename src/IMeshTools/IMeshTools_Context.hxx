@@ -16,7 +16,6 @@
 #ifndef _IMeshTools_Context_HeaderFile
 #define _IMeshTools_Context_HeaderFile
 
-#include <IMeshData_Shape.hxx>
 #include <Standard_Type.hxx>
 #include <IMeshTools_ModelBuilder.hxx>
 #include <IMeshData_Model.hxx>

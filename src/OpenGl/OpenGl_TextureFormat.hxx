@@ -17,7 +17,6 @@
 #include <Image_CompressedFormat.hxx>
 #include <Image_Format.hxx>
 #include <OpenGl_GlCore13.hxx>
-#include <Standard_Handle.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class OpenGl_Context;

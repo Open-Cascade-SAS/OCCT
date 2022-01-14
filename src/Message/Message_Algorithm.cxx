@@ -27,9 +27,7 @@
 #include <TCollection_HExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_HSequenceOfHExtendedString.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm,Standard_Transient)
 

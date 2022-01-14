@@ -17,7 +17,6 @@
 #ifndef MAT2d_DataMapOfIntegerBisec_HeaderFile
 #define MAT2d_DataMapOfIntegerBisec_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <Bisector_Bisec.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

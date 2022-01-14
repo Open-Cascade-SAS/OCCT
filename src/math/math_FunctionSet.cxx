@@ -14,7 +14,6 @@
 
 
 #include <math_FunctionSet.hxx>
-#include <Standard_Integer.hxx>
 
 //=======================================================================
 //function : ~math_FunctionSet

@@ -17,7 +17,6 @@
 #define _MeshVS_Drawer_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <MeshVS_DataMapOfIntegerBoolean.hxx>
@@ -27,8 +26,6 @@
 #include <MeshVS_DataMapOfIntegerAsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Quantity_Color;
 class Graphic3d_MaterialAspect;
 class TCollection_AsciiString;

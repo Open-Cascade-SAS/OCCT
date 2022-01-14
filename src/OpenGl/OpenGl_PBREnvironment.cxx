@@ -14,7 +14,6 @@
 
 #include <OpenGl_PBREnvironment.hxx>
 
-#include <Graphic3d_PBRMaterial.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_ShaderManager.hxx>

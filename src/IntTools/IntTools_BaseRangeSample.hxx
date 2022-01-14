@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Integer.hxx>
 
 //! base class for range index management
 class IntTools_BaseRangeSample 

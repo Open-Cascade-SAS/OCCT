@@ -15,16 +15,12 @@
 // commercial license or contractual agreement.
 
 
-#include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
 #include <OSD_Path.hxx>
-#include <PCDM_Reference.hxx>
 #include <PCDM_ReferenceIterator.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <Standard_Type.hxx>
-#include <Storage_Data.hxx>
 #include <UTL.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReferenceIterator,Standard_Transient)

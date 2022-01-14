@@ -20,22 +20,17 @@
 #include <gp.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
-#include <gp_Hypr2d.hxx>
 #include <gp_Lin2d.hxx>
-#include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <IntCurve_IConicTool.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <IntCurve_IntConicConic_Tool.hxx>
-#include <IntCurve_PConic.hxx>
 #include <IntImpParGen.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_TypeTrans.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Extrema_ExtElC2d.hxx>
 
 Standard_Boolean Affichage=Standard_False;

@@ -17,11 +17,9 @@
 #define _math_GlobOptMin_HeaderFile
 
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_CellFilter.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Standard_Type.hxx>
 
 //! This class represents Evtushenko's algorithm of global optimization based on non-uniform mesh.
 //! Article: Yu. Evtushenko. Numerical methods for finding global extreme (case of a non-uniform mesh).

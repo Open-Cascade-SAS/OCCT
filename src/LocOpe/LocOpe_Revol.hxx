@@ -23,8 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax1.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>

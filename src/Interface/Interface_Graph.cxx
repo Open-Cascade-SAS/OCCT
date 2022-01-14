@@ -14,7 +14,6 @@
 
 #include <Interface_BitMap.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GTool.hxx>
@@ -25,7 +24,6 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 

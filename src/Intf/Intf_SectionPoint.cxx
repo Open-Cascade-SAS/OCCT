@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Intf_SectionPoint.hxx>
 

@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Graphic3d_AspectFillArea3d;
 class MeshVS_Drawer;

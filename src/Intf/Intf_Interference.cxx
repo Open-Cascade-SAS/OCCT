@@ -15,13 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Intf_Interference.hxx>
 #include <Intf_SectionLine.hxx>
 #include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : Intf_Interference

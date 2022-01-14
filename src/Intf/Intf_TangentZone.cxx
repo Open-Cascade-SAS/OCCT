@@ -15,9 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
-#include <Standard_OutOfRange.hxx>
 
 #define  DEBUG_TANGENTZONE 0 
 //=======================================================================
