@@ -24,8 +24,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TCollection_HAsciiString;
 class IGESDefs_HArray1OfHArray1OfTextDisplayTemplate;
 class IGESGraph_TextDisplayTemplate;

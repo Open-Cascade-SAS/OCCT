@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>

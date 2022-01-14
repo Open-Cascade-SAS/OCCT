@@ -20,7 +20,6 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_DimensionTolerance.hxx>
 #include <IGESDimen_ToolDimensionTolerance.hxx>
@@ -28,8 +27,6 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 
 IGESDimen_ToolDimensionTolerance::IGESDimen_ToolDimensionTolerance ()    {  }
 

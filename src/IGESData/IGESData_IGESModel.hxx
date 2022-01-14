@@ -17,7 +17,6 @@
 #ifndef _IGESData_IGESModel_HeaderFile
 #define _IGESData_IGESModel_HeaderFile
 
-#include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <IGESData_GlobalSection.hxx>
 #include <Interface_InterfaceModel.hxx>
 

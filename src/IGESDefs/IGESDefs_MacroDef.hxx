@@ -18,7 +18,6 @@
 #define _IGESDefs_MacroDef_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>

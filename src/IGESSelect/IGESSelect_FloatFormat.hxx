@@ -20,12 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Real.hxx>
 #include <IGESSelect_FileModifier.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class IFSelect_ContextWrite;
 class IGESData_IGESWriter;
 

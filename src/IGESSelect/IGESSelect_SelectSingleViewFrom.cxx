@@ -18,7 +18,6 @@
 #include <IGESSelect_ViewSorter.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

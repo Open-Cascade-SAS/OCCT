@@ -16,14 +16,10 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <gp_GTrsf.hxx>
-#include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDimen_CurveDimension.hxx>
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDimen_WitnessLine.hxx>
-#include <IGESGeom_Line.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CurveDimension,IGESData_IGESEntity)

@@ -19,11 +19,9 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <gp_XY.hxx>
 #include <IGESGeom_CopiousData.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CopiousData,IGESData_IGESEntity)

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class IGESGeom_Point;
 class IGESGeom_Direction;
 

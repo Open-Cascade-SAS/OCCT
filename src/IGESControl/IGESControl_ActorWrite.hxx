@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Transfer_ActorOfFinderProcess.hxx>
-#include <Standard_Boolean.hxx>
 class Transfer_Finder;
 class Transfer_Binder;
 class Transfer_FinderProcess;

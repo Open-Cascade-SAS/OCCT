@@ -17,15 +17,11 @@
 //--------------------------------------------------------------------
 
 #include <gp_Pnt.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESDimen_LeaderArrow.hxx>
 #include <IGESDraw_LabelDisplay.hxx>
 #include <IGESDraw_PerspectiveView.hxx>
 #include <IGESDraw_View.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_LabelDisplay,IGESData_LabelDisplayEntity)

@@ -23,7 +23,6 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_SingularSubfigure.hxx>
 #include <IGESBasic_SubfigureDef.hxx>
@@ -43,11 +42,8 @@
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeBinder.hxx>

@@ -18,11 +18,9 @@
 
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESDimen_NewDimensionedGeometry.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewDimensionedGeometry,IGESData_IGESEntity)

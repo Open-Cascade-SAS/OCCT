@@ -16,7 +16,6 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_Line.hxx>
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <Standard_Type.hxx>

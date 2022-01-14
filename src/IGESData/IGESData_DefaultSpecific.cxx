@@ -15,8 +15,6 @@
 #include <IGESData.hxx>
 #include <IGESData_DefaultSpecific.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_Protocol.hxx>
 #include <IGESData_SpecificLib.hxx>
 #include <IGESData_UndefinedEntity.hxx>
 #include <Interface_Macros.hxx>

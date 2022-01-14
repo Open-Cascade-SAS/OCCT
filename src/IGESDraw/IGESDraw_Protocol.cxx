@@ -15,7 +15,6 @@
 #include <IGESDimen.hxx>
 #include <IGESDimen_Protocol.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
 #include <IGESDraw_LabelDisplay.hxx>

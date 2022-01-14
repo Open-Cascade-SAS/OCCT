@@ -13,7 +13,6 @@
 
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_BSplineCurve.hxx>
@@ -22,7 +21,6 @@
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_ConicArc.hxx>
 #include <IGESGeom_CopiousData.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Direction.hxx>
 #include <IGESGeom_Flash.hxx>
 #include <IGESGeom_GeneralModule.hxx>

@@ -13,7 +13,6 @@
 
 
 #include <IGESData_ColorEntity.hxx>
-#include <IGESData_DirPart.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_LabelDisplayEntity.hxx>
@@ -28,7 +27,6 @@
 #include <Interface_UndefinedContent.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_UndefinedEntity,IGESData_IGESEntity)

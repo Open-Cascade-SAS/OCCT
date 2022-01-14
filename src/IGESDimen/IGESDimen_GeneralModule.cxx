@@ -13,7 +13,6 @@
 
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDimen_AngularDimension.hxx>
 #include <IGESDimen_BasicDimension.hxx>
 #include <IGESDimen_CenterLine.hxx>

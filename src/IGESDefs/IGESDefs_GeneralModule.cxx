@@ -13,7 +13,6 @@
 
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AssociativityDef.hxx>
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_AttributeTable.hxx>

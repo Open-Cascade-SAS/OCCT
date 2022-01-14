@@ -17,7 +17,6 @@
 #ifndef IGESGeom_HArray1OfBoundary_HeaderFile
 #define IGESGeom_HArray1OfBoundary_HeaderFile
 
-#include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_Array1OfBoundary.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

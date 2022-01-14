@@ -13,8 +13,6 @@
 
 
 #include <BRepLib.hxx>
-#include <IGESData_GlobalSection.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESToBRep.hxx>
 #include <IGESToBRep_Actor.hxx>
@@ -32,7 +30,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_TransientProcess.hxx>
-#include <TransferBRep.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>

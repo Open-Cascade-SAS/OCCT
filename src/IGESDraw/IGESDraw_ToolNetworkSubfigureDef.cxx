@@ -18,15 +18,10 @@
 
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
-#include <IGESDraw_HArray1OfConnectPoint.hxx>
 #include <IGESDraw_NetworkSubfigureDef.hxx>
 #include <IGESDraw_ToolNetworkSubfigureDef.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
@@ -36,7 +31,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IGESDraw_ToolNetworkSubfigureDef::IGESDraw_ToolNetworkSubfigureDef ()    {  }

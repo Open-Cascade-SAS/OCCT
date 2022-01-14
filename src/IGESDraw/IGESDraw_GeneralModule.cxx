@@ -13,9 +13,7 @@
 
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
 #include <IGESDraw_GeneralModule.hxx>

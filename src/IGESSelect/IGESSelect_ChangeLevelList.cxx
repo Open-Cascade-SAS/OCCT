@@ -17,7 +17,6 @@
 
 #include <IFSelect_ContextModif.hxx>
 #include <IFSelect_IntParam.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_LevelListEntity.hxx>
 #include <IGESSelect_ChangeLevelList.hxx>

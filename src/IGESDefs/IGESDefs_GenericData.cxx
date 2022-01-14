@@ -17,14 +17,10 @@
 //--------------------------------------------------------------------
 // rln 11.05.2000 BUC60660
 
-#include <IGESData_HArray1OfIGESEntity.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_GenericData.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>

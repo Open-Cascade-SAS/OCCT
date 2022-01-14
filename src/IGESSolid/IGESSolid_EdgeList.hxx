@@ -18,7 +18,6 @@
 #define _IGESSolid_EdgeList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESSolid_HArray1OfVertexList.hxx>

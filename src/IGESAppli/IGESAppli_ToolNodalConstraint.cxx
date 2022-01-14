@@ -24,7 +24,6 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDefs_HArray1OfTabularData.hxx>
 #include <IGESDefs_TabularData.hxx>

@@ -18,7 +18,6 @@
 #define _IGESGeom_BoundedSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESGeom_HArray1OfBoundary.hxx>

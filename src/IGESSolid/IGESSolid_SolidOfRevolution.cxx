@@ -16,11 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_SolidOfRevolution.hxx>
 #include <Standard_Type.hxx>
 

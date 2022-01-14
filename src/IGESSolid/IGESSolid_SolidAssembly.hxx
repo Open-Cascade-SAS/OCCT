@@ -18,12 +18,10 @@
 #define _IGESSolid_SolidAssembly_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESGeom_HArray1OfTransformationMatrix.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class IGESGeom_TransformationMatrix;
 

@@ -13,7 +13,6 @@
 
 
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGraph_Color.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESGraph_DrawingSize.hxx>

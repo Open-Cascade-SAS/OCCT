@@ -13,7 +13,6 @@
 
 
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_Block.hxx>
 #include <IGESSolid_BooleanTree.hxx>
 #include <IGESSolid_ConeFrustum.hxx>
@@ -22,9 +21,7 @@
 #include <IGESSolid_CylindricalSurface.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_Ellipsoid.hxx>
-#include <IGESSolid_Face.hxx>
 #include <IGESSolid_GeneralModule.hxx>
-#include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_PlaneSurface.hxx>
 #include <IGESSolid_RightAngularWedge.hxx>

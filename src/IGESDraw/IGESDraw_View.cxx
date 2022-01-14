@@ -19,10 +19,8 @@
 #include <gp_GTrsf.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_TransfEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
 #include <IGESDraw_View.hxx>
 #include <IGESGeom_Plane.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_View,IGESData_ViewKindEntity)

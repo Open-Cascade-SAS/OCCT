@@ -20,15 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <IGESGraph_HArray1OfTextFontDef.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class IGESGraph_TextFontDef;
 class gp_Pnt;
 class TCollection_HAsciiString;

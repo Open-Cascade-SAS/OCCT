@@ -16,7 +16,6 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_GeneralSymbol.hxx>
 #include <IGESDimen_LeaderArrow.hxx>

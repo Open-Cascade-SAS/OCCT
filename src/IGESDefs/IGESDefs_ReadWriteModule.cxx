@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -32,7 +31,6 @@
 #include <IGESDefs_ToolUnitsData.hxx>
 #include <IGESDefs_UnitsData.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_ReadWriteModule,IGESData_ReadWriteModule)

@@ -14,7 +14,6 @@
 
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SplineToBSpline.hxx>
-#include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <Interface_CopyControl.hxx>
 #include <Interface_Graph.hxx>

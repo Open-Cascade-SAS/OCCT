@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 class IGESBasic_HArray1OfHArray1OfReal;
 

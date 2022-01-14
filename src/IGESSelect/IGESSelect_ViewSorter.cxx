@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_PacketList.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_ViewKindEntity.hxx>
 #include <IGESSelect_ViewSorter.hxx>

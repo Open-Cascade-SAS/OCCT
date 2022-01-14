@@ -38,8 +38,6 @@
 #include <gp_Pln.hxx>
 #include <gp_Trsf.hxx>
 #include <IGESConvGeom.hxx>
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_IGESModel.hxx>
 #include <IGESData_ToolLocation.hxx>
 #include <IGESGeom_BSplineSurface.hxx>
 #include <IGESGeom_Direction.hxx>
@@ -50,7 +48,6 @@
 #include <IGESSolid_PlaneSurface.hxx>
 #include <IGESSolid_SphericalSurface.hxx>
 #include <IGESSolid_ToroidalSurface.hxx>
-#include <IGESToBRep.hxx>
 #include <IGESToBRep_BasicSurface.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <Interface_Macros.hxx>
@@ -62,11 +59,9 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 //:36

@@ -18,11 +18,9 @@
 #define _IGESGraph_Color_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
 #include <IGESData_ColorEntity.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 
 

@@ -21,7 +21,6 @@
 #include <IGESData_LineFontEntity.hxx>
 #include <IGESDimen_CenterLine.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CenterLine,IGESData_IGESEntity)

@@ -21,10 +21,8 @@
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
 #include <IGESGeom_TabulatedCylinder.hxx>

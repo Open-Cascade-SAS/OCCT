@@ -17,7 +17,6 @@
 #ifndef IGESGraph_HArray1OfTextFontDef_HeaderFile
 #define IGESGraph_HArray1OfTextFontDef_HeaderFile
 
-#include <IGESGraph_TextFontDef.hxx>
 #include <IGESGraph_Array1OfTextFontDef.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

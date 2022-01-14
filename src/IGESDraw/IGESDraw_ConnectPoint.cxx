@@ -19,7 +19,6 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Standard_Type.hxx>

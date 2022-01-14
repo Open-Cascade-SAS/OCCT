@@ -21,11 +21,9 @@
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_LineFontEntity.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESGeom_Flash.hxx>
 #include <IGESGeom_ToolFlash.hxx>

@@ -24,7 +24,6 @@
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_VertexList.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Loop,IGESData_IGESEntity)

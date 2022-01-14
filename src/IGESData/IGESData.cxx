@@ -14,13 +14,11 @@
 #include <IGESData.hxx>
 #include <IGESData_DefaultGeneral.hxx>
 #include <IGESData_DefaultSpecific.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Static.hxx>
 #include <Interface_Version.hxx>
-#include <Message_MsgFile.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 #include <Standard_Integer.hxx>

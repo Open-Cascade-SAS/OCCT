@@ -18,7 +18,6 @@
 #define _IGESGeom_SplineCurve_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>

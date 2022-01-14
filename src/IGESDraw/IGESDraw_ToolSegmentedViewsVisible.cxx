@@ -22,10 +22,7 @@
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_LineFontEntity.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
-#include <IGESData_ViewKindEntity.hxx>
-#include <IGESDraw_HArray1OfViewKindEntity.hxx>
 #include <IGESDraw_SegmentedViewsVisible.hxx>
 #include <IGESDraw_ToolSegmentedViewsVisible.hxx>
 #include <IGESGraph_Color.hxx>
@@ -35,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 

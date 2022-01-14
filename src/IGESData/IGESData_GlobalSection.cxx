@@ -17,11 +17,9 @@
 #include <IGESData_BasicEditor.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_FileParameter.hxx>
-#include <Interface_FileReaderData.hxx>
 #include <Interface_FloatWriter.hxx>
 #include <Interface_ParamSet.hxx>
 #include <Interface_ParamType.hxx>
-#include <Interface_Static.hxx>
 #include <Message_Msg.hxx>
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>

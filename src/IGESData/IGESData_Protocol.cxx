@@ -13,7 +13,6 @@
 
 
 #include <IGESData_FreeFormatEntity.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESData_UndefinedEntity.hxx>

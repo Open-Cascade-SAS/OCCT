@@ -18,7 +18,6 @@
 //#59 rln 29.12.98 PRO17015
 
 #include <gp_Dir.hxx>
-#include <gp_Dir2d.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

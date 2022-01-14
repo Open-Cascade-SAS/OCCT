@@ -51,20 +51,16 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESConvGeom.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_ToolLocation.hxx>
 #include <IGESGeom_BSplineCurve.hxx>
 #include <IGESGeom_CircularArc.hxx>
 #include <IGESGeom_ConicArc.hxx>
 #include <IGESGeom_CopiousData.hxx>
 #include <IGESGeom_Line.hxx>
-#include <IGESGeom_Point.hxx>
 #include <IGESGeom_SplineCurve.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-#include <IGESToBRep.hxx>
 #include <IGESToBRep_BasicCurve.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
 #include <Interface_Macros.hxx>
@@ -75,13 +71,8 @@
 #include <Standard_Failure.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 //:36

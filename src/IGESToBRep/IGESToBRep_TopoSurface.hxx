@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <IGESToBRep_CurveAndSurface.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class IGESData_IGESEntity;
 class IGESGeom_RuledSurface;

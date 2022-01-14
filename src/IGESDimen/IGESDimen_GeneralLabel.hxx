@@ -18,7 +18,6 @@
 #define _IGESDimen_GeneralLabel_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESDimen_HArray1OfLeaderArrow.hxx>
 #include <IGESData_IGESEntity.hxx>

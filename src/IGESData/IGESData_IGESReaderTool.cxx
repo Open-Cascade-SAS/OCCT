@@ -13,7 +13,6 @@
 
 
 #include <IGESData_ColorEntity.hxx>
-#include <IGESData_DirPart.hxx>
 #include <IGESData_FileRecognizer.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
@@ -30,7 +29,6 @@
 #include <IGESData_UndefinedEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_Check.hxx>
-#include <Interface_FileParameter.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ParamList.hxx>

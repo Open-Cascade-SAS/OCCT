@@ -14,7 +14,6 @@
 
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_XY.hxx>
@@ -22,7 +21,6 @@
 #include <IGESConvGeom_GeomBuilder.hxx>
 #include <IGESGeom_CopiousData.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-#include <Interface_Translates.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>

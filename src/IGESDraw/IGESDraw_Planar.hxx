@@ -18,12 +18,10 @@
 #define _IGESDraw_Planar_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class IGESGeom_TransformationMatrix;
 
 

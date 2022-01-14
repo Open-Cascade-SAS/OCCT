@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_WitnessLine;

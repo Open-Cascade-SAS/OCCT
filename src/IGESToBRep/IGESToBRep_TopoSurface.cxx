@@ -45,9 +45,6 @@
 #include <ElSLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -63,7 +60,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomConvert.hxx>
-#include <GeomLib.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Cone.hxx>
@@ -78,7 +74,6 @@
 #include <gp_Trsf.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec.hxx>
-#include <GProp.hxx>
 #include <GProp_GProps.hxx>
 #include <IGESBasic_SingleParent.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -86,21 +81,17 @@
 #include <IGESData_ToolLocation.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_BSplineSurface.hxx>
 #include <IGESGeom_CircularArc.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Direction.hxx>
 #include <IGESGeom_Line.hxx>
 #include <IGESGeom_OffsetSurface.hxx>
 #include <IGESGeom_Plane.hxx>
-#include <IGESGeom_Point.hxx>
 #include <IGESGeom_RuledSurface.hxx>
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <IGESGeom_TabulatedCylinder.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESSolid_ConicalSurface.hxx>
 #include <IGESSolid_CylindricalSurface.hxx>
-#include <IGESSolid_PlaneSurface.hxx>
 #include <IGESSolid_SphericalSurface.hxx>
 #include <IGESSolid_ToroidalSurface.hxx>
 #include <IGESToBRep.hxx>
@@ -115,14 +106,9 @@
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <ShapeAnalysis.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TopAbs.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
@@ -130,7 +116,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 

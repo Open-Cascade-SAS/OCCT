@@ -15,7 +15,6 @@
 #include <gp_GTrsf.hxx>
 #include <IGESData_ColorEntity.hxx>
 #include <IGESData_DirChecker.hxx>
-#include <IGESData_GeneralModule.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderTool.hxx>
 #include <IGESData_IGESType.hxx>
@@ -23,7 +22,6 @@
 #include <IGESData_LevelListEntity.hxx>
 #include <IGESData_LineFontEntity.hxx>
 #include <IGESData_NameEntity.hxx>
-#include <IGESData_ReadWriteModule.hxx>
 #include <IGESData_SingleParentEntity.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
@@ -31,7 +29,6 @@
 #include <Interface_EntityList.hxx>
 #include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>

@@ -18,10 +18,8 @@
 #define _IGESGeom_SplineSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <IGESBasic_HArray2OfHArray1OfReal.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Real.hxx>

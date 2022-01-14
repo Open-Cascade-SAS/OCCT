@@ -16,10 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_CompositeCurve.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CompositeCurve,IGESData_IGESEntity)

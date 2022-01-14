@@ -18,13 +18,11 @@
 #define _IGESSolid_BooleanTree_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class IGESSolid_BooleanTree;

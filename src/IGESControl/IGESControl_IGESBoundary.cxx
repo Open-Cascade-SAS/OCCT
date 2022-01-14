@@ -16,8 +16,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <IGESControl_IGESBoundary.hxx>
@@ -31,11 +29,8 @@
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
-#include <ShapeAlgo_ToolContainer.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
-#include <ShapeAnalysis_Wire.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Edge.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <ShapeFix_Wire.hxx>

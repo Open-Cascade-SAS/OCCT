@@ -24,8 +24,6 @@
 #include <TColgp_HSequenceOfXYZ.hxx>
 #include <gp_Trsf.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class gp_XY;
 class gp_XYZ;
 class IGESGeom_CopiousData;

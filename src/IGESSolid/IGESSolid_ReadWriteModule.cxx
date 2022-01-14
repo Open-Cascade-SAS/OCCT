@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -24,8 +23,6 @@
 #include <IGESSolid_CylindricalSurface.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_Ellipsoid.hxx>
-#include <IGESSolid_Face.hxx>
-#include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_PlaneSurface.hxx>
 #include <IGESSolid_ReadWriteModule.hxx>
@@ -66,7 +63,6 @@
 #include <IGESSolid_Torus.hxx>
 #include <IGESSolid_VertexList.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ReadWriteModule,IGESData_ReadWriteModule)

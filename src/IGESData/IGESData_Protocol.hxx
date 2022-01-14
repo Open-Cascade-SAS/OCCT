@@ -22,8 +22,6 @@
 
 #include <Interface_Protocol.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Standard_Transient;
 

@@ -25,7 +25,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_HArray1OfConnectPoint.hxx>

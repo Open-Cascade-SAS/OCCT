@@ -14,7 +14,6 @@
 
 #include <IFSelect_EditForm.hxx>
 #include <IGESData_BasicEditor.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESSelect_EditHeader.hxx>

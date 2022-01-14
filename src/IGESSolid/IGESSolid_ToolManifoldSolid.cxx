@@ -21,10 +21,8 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
-#include <IGESSolid_HArray1OfShell.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
 #include <IGESSolid_ToolManifoldSolid.hxx>
@@ -34,7 +32,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
-#include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
 // MGE 31/07/98

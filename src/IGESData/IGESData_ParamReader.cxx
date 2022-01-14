@@ -15,7 +15,6 @@
 
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESType.hxx>
 #include <IGESData_ParamCursor.hxx>
@@ -23,9 +22,7 @@
 #include <IGESData_Status.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_EntityList.hxx>
-#include <Interface_FileParameter.hxx>
 #include <Interface_FileReaderData.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ParamList.hxx>
 #include <Interface_Static.hxx>

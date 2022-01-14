@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Real.hxx>
 #include <Message_ProgressRange.hxx>
 
 class IGESData_IGESModel;

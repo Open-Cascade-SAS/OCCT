@@ -17,9 +17,7 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESSelect_RemoveCurves.hxx>
 #include <Interface_CopyTool.hxx>

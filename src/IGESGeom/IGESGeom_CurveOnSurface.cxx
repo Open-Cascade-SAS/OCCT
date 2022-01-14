@@ -16,7 +16,6 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
 #include <Standard_Type.hxx>
 

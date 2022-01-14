@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <IGESToBRep_IGESBoundary.hxx>
-#include <Standard_Boolean.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESToBRep_CurveAndSurface;

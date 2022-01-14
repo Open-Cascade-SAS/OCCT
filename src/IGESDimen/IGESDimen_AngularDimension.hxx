@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <gp_XY.hxx>
-#include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_WitnessLine;
 class IGESDimen_LeaderArrow;

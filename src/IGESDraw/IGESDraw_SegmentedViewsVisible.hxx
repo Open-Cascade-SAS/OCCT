@@ -18,7 +18,6 @@
 #define _IGESDraw_SegmentedViewsVisible_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESDraw_HArray1OfViewKindEntity.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -26,7 +25,6 @@
 #include <IGESGraph_HArray1OfColor.hxx>
 #include <IGESBasic_HArray1OfLineFontEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 class IGESGraph_Color;

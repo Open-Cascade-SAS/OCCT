@@ -19,7 +19,6 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_OffsetSurface.hxx>
 #include <Standard_Type.hxx>
 

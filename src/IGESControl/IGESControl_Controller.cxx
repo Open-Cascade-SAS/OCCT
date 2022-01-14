@@ -18,7 +18,6 @@
 #include <IFSelect_SelectModelEntities.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectType.hxx>
-#include <IFSelect_SignCounter.hxx>
 #include <IFSelect_SignMultiple.hxx>
 #include <IFSelect_SignType.hxx>
 #include <IGESAppli.hxx>
@@ -61,7 +60,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_WorkSession.hxx>

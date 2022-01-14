@@ -18,7 +18,6 @@
 #define _IGESGraph_DefinitionLevel_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_LevelListEntity.hxx>

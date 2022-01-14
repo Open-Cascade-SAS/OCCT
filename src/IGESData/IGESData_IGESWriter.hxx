@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Standard_Character.hxx>
 #include <IGESData_Array1OfDirPart.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Integer.hxx>
@@ -30,8 +29,6 @@
 #include <Interface_LineBuffer.hxx>
 #include <Interface_FloatWriter.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
 class IGESData_IGESModel;

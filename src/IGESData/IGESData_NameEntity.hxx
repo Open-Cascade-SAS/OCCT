@@ -18,7 +18,6 @@
 #define _IGESData_NameEntity_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;

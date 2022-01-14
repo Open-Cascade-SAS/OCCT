@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_CircArraySubfigure.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
 #include <IGESDraw_Drawing.hxx>
 #include <IGESDraw_DrawingWithRotation.hxx>
 #include <IGESDraw_LabelDisplay.hxx>
@@ -46,7 +44,6 @@
 #include <IGESDraw_ViewsVisible.hxx>
 #include <IGESDraw_ViewsVisibleWithAttr.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ReadWriteModule,IGESData_ReadWriteModule)

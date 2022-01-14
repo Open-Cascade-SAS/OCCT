@@ -20,12 +20,9 @@
 #include <gp_XYZ.hxx>
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_Dump.hxx>
-#include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_SectionedArea.hxx>
 #include <IGESDimen_ToolSectionedArea.hxx>

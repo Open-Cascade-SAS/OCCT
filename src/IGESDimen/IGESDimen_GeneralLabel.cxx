@@ -20,7 +20,6 @@
 #include <IGESDimen_GeneralNote.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralLabel,IGESData_IGESEntity)

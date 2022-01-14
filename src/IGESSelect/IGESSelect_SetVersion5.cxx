@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_ContextModif.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_SetVersion5.hxx>
 #include <Interface_Check.hxx>

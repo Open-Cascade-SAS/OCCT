@@ -21,7 +21,6 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Trsf.hxx>
 #include <IGESData_ToolLocation.hxx>
@@ -29,7 +28,6 @@
 #include <IGESGeom_SplineSurface.hxx>
 #include <PLib.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>

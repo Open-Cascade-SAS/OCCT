@@ -22,18 +22,14 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESGeom_CopiousData.hxx>
 #include <IGESGeom_ToolCopiousData.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
-#include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 // MGE 28/07/98

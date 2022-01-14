@@ -28,7 +28,6 @@
 #include <Interface_UndefinedContent.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_DefaultGeneral,IGESData_GeneralModule)
 

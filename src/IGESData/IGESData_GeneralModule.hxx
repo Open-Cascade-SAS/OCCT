@@ -22,7 +22,6 @@
 
 #include <Interface_GeneralModule.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_EntityIterator;
 class IGESData_IGESEntity;

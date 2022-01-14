@@ -22,14 +22,10 @@
 #include <Geom_Plane.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Trsf2d.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESToBRep.hxx>
-#include <IGESToBRep_CurveAndSurface.hxx>
 #include <IGESToBRep_IGESBoundary.hxx>
 #include <IGESToBRep_TopoCurve.hxx>
-#include <Precision.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>

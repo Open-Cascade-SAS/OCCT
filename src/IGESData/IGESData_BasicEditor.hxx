@@ -26,7 +26,6 @@
 #include <IGESData_SpecificLib.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_CString.hxx>
 class IGESData_Protocol;
 class IGESData_IGESModel;
 class IGESData_IGESEntity;

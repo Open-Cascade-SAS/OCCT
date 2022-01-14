@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <IGESDraw_HArray1OfConnectPoint.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class IGESDraw_NetworkSubfigureDef;
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;

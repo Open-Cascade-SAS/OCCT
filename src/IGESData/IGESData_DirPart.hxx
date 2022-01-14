@@ -21,9 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
-#include <Standard_Character.hxx>
-#include <Standard_CString.hxx>
 class IGESData_IGESType;
 
 //! literal/numeric description of an entity's directory section, taken from file

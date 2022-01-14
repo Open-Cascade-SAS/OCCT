@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IFSelect_Signature.hxx>
 #include <Standard_CString.hxx>
 class Standard_Transient;

@@ -16,24 +16,15 @@
 #include <gp_XYZ.hxx>
 #include <IGESData_ColorEntity.hxx>
 #include <IGESData_DefType.hxx>
-#include <IGESData_DirPart.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_LabelDisplayEntity.hxx>
-#include <IGESData_LevelListEntity.hxx>
-#include <IGESData_LineFontEntity.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESData_ReadWriteModule.hxx>
-#include <IGESData_TransfEntity.hxx>
 #include <IGESData_UndefinedEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
 #include <IGESData_WriterLib.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_FileParameter.hxx>
 #include <Interface_FloatWriter.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_InterfaceMismatch.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ParamList.hxx>
@@ -42,7 +33,6 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_PCharacter.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>

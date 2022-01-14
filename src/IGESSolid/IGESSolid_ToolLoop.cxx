@@ -26,7 +26,6 @@
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
 #include <IGESSolid_EdgeList.hxx>

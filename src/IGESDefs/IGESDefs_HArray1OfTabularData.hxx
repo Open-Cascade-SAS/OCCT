@@ -17,7 +17,6 @@
 #ifndef IGESDefs_HArray1OfTabularData_HeaderFile
 #define IGESDefs_HArray1OfTabularData_HeaderFile
 
-#include <IGESDefs_TabularData.hxx>
 #include <IGESDefs_Array1OfTabularData.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

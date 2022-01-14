@@ -14,7 +14,6 @@
 //#65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000 and YYYYMMDD.HHMMSS after Y2000)
 
 #include <IFSelect_ContextModif.hxx>
-#include <IGESData_GlobalSection.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_UpdateLastChange.hxx>
 #include <Interface_Check.hxx>
@@ -23,7 +22,6 @@
 #include <Quantity_Date.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_UpdateLastChange,IGESSelect_ModelModifier)
 

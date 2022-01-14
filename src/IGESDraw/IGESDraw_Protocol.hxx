@@ -22,7 +22,6 @@
 
 #include <IGESData_Protocol.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
 class Interface_Protocol;
 
 

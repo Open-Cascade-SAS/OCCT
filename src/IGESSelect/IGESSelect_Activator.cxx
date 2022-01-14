@@ -16,11 +16,9 @@
 #include <IFSelect_PacketList.hxx>
 #include <IFSelect_SelectSignature.hxx>
 #include <IFSelect_SessionPilot.hxx>
-#include <IFSelect_WorkLibrary.hxx>
 #include <IFSelect_WorkSession.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <IGESData_Protocol.hxx>
 #include <IGESSelect_Activator.hxx>
 #include <IGESSelect_AddGroup.hxx>
 #include <IGESSelect_AutoCorrect.hxx>
@@ -46,11 +44,9 @@
 #include <IGESSelect_UpdateFileName.hxx>
 #include <IGESSelect_UpdateLastChange.hxx>
 #include <IGESSelect_ViewSorter.hxx>
-#include <IGESSelect_WorkLibrary.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>

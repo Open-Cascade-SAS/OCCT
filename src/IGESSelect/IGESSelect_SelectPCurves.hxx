@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IFSelect_SelectExplore.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;

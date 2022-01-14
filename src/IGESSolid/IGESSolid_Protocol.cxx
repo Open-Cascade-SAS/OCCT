@@ -22,7 +22,6 @@
 #include <IGESSolid_CylindricalSurface.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_Ellipsoid.hxx>
-#include <IGESSolid_Face.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_PlaneSurface.hxx>

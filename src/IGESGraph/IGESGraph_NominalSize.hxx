@@ -18,12 +18,10 @@
 #define _IGESGraph_NominalSize_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 
 

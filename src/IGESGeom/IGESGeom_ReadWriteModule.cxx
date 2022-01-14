@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
-#include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_BSplineCurve.hxx>
 #include <IGESGeom_BSplineSurface.hxx>
@@ -24,7 +22,6 @@
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESGeom_ConicArc.hxx>
 #include <IGESGeom_CopiousData.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_Direction.hxx>
 #include <IGESGeom_Flash.hxx>
 #include <IGESGeom_Line.hxx>
@@ -64,7 +61,6 @@
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_ReadWriteModule,IGESData_ReadWriteModule)

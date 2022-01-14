@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Interface_InterfaceModel;

@@ -23,7 +23,6 @@
 
 #include <IGESData_BasicEditor.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_OStream.hxx>
 #include <Message_ProgressRange.hxx>

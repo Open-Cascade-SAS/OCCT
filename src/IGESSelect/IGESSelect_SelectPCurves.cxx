@@ -14,14 +14,10 @@
 
 #include <IGESBasic_Group.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <IGESGeom_Boundary.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESSelect_SelectBasicGeom.hxx>
 #include <IGESSelect_SelectPCurves.hxx>
-#include <IGESSolid_Face.hxx>
-#include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
 #include <Interface_EntityIterator.hxx>

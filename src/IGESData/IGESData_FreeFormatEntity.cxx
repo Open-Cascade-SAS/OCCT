@@ -15,10 +15,8 @@
 #include <IGESData_FreeFormatEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_UndefinedContent.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 

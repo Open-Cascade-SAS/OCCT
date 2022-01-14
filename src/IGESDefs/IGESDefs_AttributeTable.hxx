@@ -23,8 +23,6 @@
 #include <TColStd_HArray2OfTransient.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class IGESDefs_AttributeDef;
 class Standard_Transient;
 class TCollection_HAsciiString;

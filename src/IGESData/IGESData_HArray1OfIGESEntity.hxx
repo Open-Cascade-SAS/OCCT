@@ -17,7 +17,6 @@
 #ifndef IGESData_HArray1OfIGESEntity_HeaderFile
 #define IGESData_HArray1OfIGESEntity_HeaderFile
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_Array1OfIGESEntity.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

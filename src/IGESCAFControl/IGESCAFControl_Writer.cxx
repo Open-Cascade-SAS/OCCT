@@ -15,9 +15,7 @@
 
 #include <IGESCAFControl.hxx>
 #include <IGESCAFControl_Writer.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
-#include <IGESData_NameEntity.hxx>
 #include <IGESGraph_Color.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSolid_Face.hxx>
@@ -28,24 +26,18 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
-#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientListBinder.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_LengthUnit.hxx>

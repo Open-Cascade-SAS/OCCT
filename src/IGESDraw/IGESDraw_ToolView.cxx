@@ -20,7 +20,6 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESDraw_ToolView.hxx>
@@ -31,7 +30,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Standard_DomainError.hxx>
 
 IGESDraw_ToolView::IGESDraw_ToolView ()    {  }
 

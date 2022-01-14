@@ -15,14 +15,11 @@
 
 #include <stdio.h>
 // declarations des programmes C de base :
-#include <Interface_ParamType.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESReaderTool.hxx>
 #include <IGESData_GeneralModule.hxx>
 #include <Interface_Check.hxx>
 
-#include <Interface_FileParameter.hxx>
-#include <Interface_ParamList.hxx>
 //  Pour traiter les exceptions :
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>

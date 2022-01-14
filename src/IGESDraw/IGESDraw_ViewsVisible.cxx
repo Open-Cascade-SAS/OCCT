@@ -16,11 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
-#include <IGESData_ViewKindEntity.hxx>
 #include <IGESDraw_ViewsVisible.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ViewsVisible,IGESData_ViewKindEntity)

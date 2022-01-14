@@ -16,11 +16,9 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_VertexList.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_EdgeList,IGESData_IGESEntity)

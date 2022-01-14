@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_SingleParentEntity.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>

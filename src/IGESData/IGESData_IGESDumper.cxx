@@ -25,7 +25,6 @@
 #include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <TCollection_HAsciiString.hxx>

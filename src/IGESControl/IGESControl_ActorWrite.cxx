@@ -12,9 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepToIGES_BREntity.hxx>
 #include <BRepToIGESBRep_Entity.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
 #include <GeomToIGES_GeomSurface.hxx>

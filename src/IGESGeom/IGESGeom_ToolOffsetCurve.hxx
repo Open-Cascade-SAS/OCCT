@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class IGESGeom_OffsetCurve;
 class IGESData_IGESReaderData;

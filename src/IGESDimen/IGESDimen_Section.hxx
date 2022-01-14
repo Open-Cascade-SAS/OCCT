@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_HArray1OfXY.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;

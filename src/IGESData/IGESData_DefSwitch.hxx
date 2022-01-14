@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <IGESData_DefType.hxx>
 
 //! description of a directory component which can be either

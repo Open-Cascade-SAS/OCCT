@@ -23,7 +23,6 @@
 #include <gp_XY.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
 class gp_Pnt2d;

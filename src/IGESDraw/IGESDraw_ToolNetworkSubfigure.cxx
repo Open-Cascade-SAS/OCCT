@@ -22,10 +22,7 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
-#include <IGESDraw_ConnectPoint.hxx>
-#include <IGESDraw_HArray1OfConnectPoint.hxx>
 #include <IGESDraw_NetworkSubfigure.hxx>
 #include <IGESDraw_NetworkSubfigureDef.hxx>
 #include <IGESDraw_ToolNetworkSubfigure.hxx>

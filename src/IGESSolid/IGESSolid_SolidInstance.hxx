@@ -18,10 +18,8 @@
 #define _IGESSolid_SolidInstance_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class IGESSolid_SolidInstance;

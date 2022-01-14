@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;

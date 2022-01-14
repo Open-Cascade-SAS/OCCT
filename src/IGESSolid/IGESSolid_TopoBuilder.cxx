@@ -18,10 +18,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
-#include <IGESSolid_Face.hxx>
-#include <IGESSolid_HArray1OfFace.hxx>
-#include <IGESSolid_HArray1OfLoop.hxx>
-#include <IGESSolid_HArray1OfShell.hxx>
 #include <IGESSolid_HArray1OfVertexList.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>

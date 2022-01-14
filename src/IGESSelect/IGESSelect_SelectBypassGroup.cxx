@@ -12,15 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
-#include <IGESBasic_OrderedGroup.hxx>
-#include <IGESBasic_OrderedGroupWithoutBackP.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESSelect_SelectBypassGroup.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

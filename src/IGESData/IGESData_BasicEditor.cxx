@@ -26,12 +26,9 @@
 #include <IGESData_SpecificModule.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <IGESData_ViewKindEntity.hxx>
-#include <IGESGeom_Boundary.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 

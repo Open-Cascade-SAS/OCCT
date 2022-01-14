@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_SelectExtract.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class IFSelect_IntParam;
 class Standard_Transient;

@@ -16,11 +16,8 @@
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-#include <IGESData_IGESEntity.hxx>
-#include <IGESGeom_CurveOnSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface,IGESData_IGESEntity)

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <IGESSelect_ModelModifier.hxx>
 class IFSelect_ContextModif;
 class IGESData_IGESModel;

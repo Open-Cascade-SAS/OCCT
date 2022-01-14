@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_UndefinedEntity.hxx>
 #include <IGESSelect_IGESTypeForm.hxx>
 #include <Interface_InterfaceModel.hxx>

@@ -26,9 +26,7 @@
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESType.hxx>
 #include <IGESData_ReadStage.hxx>
-#include <Standard_Real.hxx>
 #include <Interface_FileReaderTool.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_ParamList;
 class IGESData_FileRecognizer;
 class Interface_Check;

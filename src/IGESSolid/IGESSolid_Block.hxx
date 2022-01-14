@@ -22,7 +22,6 @@
 
 #include <gp_XYZ.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Real.hxx>
 class gp_Pnt;
 class gp_Dir;
 

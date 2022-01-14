@@ -18,7 +18,6 @@
 #define _IGESData_DefaultSpecific_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_SpecificModule.hxx>
 #include <Standard_Integer.hxx>

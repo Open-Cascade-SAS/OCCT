@@ -17,7 +17,6 @@
 #ifndef IGESSolid_HArray1OfShell_HeaderFile
 #define IGESSolid_HArray1OfShell_HeaderFile
 
-#include <IGESSolid_Shell.hxx>
 #include <IGESSolid_Array1OfShell.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_Dispatch.hxx>
-#include <Standard_Boolean.hxx>
 class IGESSelect_ViewSorter;
 class TCollection_AsciiString;
 class Interface_Graph;

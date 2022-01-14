@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_ContextModif.hxx>
-#include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_OrderedGroup.hxx>
 #include <IGESBasic_OrderedGroupWithoutBackP.hxx>

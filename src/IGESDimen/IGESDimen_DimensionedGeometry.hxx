@@ -18,7 +18,6 @@
 #define _IGESDimen_DimensionedGeometry_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>

@@ -18,10 +18,8 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESData_GeneralModule.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESData_Protocol.hxx>
 #include <IGESData_SingleParentEntity.hxx>

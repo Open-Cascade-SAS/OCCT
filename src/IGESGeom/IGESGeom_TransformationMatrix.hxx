@@ -23,7 +23,6 @@
 #include <TColStd_HArray2OfReal.hxx>
 #include <IGESData_TransfEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class gp_GTrsf;
 
 

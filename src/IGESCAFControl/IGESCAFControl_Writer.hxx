@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IGESControl_Writer.hxx>
 #include <Standard_CString.hxx>
 #include <TDF_LabelSequence.hxx>

@@ -17,7 +17,6 @@
 #ifndef IGESDraw_HArray1OfViewKindEntity_HeaderFile
 #define IGESDraw_HArray1OfViewKindEntity_HeaderFile
 
-#include <IGESData_ViewKindEntity.hxx>
 #include <IGESDraw_Array1OfViewKindEntity.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

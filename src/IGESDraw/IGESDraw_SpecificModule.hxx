@@ -22,7 +22,6 @@
 
 #include <IGESData_SpecificModule.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
 

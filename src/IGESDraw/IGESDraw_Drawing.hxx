@@ -25,8 +25,6 @@
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class IGESData_ViewKindEntity;
 class gp_Pnt2d;
 class gp_XY;

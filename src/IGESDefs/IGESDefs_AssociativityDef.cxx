@@ -19,7 +19,6 @@
 #include <IGESBasic_HArray1OfHArray1OfInteger.hxx>
 #include <IGESDefs_AssociativityDef.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AssociativityDef,IGESData_IGESEntity)

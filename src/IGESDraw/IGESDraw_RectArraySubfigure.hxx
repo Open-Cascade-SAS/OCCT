@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Pnt;
 
 

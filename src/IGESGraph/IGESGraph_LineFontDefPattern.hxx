@@ -18,13 +18,11 @@
 #define _IGESGraph_LineFontDefPattern_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfReal.hxx>
 #include <IGESData_LineFontEntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 
 

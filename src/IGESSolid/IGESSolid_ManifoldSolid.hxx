@@ -18,9 +18,7 @@
 #define _IGESSolid_ManifoldSolid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IGESSolid_HArray1OfShell.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IGESData_IGESEntity.hxx>

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IGESData_IGESEntity.hxx>
 #include <IGESGraph_DefinitionLevel.hxx>
 #include <IGESSelect_SignLevelNumber.hxx>
 #include <Interface_InterfaceModel.hxx>

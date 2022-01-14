@@ -23,7 +23,6 @@
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class IFSelect_SessionPilot;
 
 

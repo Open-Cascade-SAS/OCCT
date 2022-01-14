@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IGESSelect_ModelModifier.hxx>
 class IFSelect_ContextModif;
 class IGESData_IGESModel;

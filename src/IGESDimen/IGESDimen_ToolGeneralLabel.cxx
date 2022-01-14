@@ -21,7 +21,6 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_GeneralLabel.hxx>
 #include <IGESDimen_GeneralNote.hxx>
@@ -34,7 +33,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 
 IGESDimen_ToolGeneralLabel::IGESDimen_ToolGeneralLabel ()    {  }
 

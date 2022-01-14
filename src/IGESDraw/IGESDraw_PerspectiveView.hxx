@@ -21,11 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_XY.hxx>
 #include <IGESData_ViewKindEntity.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Vec;
 class gp_Pnt;
 class gp_Pnt2d;

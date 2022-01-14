@@ -21,7 +21,6 @@
 #include <IGESBasic_HArray1OfHArray1OfReal.hxx>
 #include <IGESDefs_TabularData.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 

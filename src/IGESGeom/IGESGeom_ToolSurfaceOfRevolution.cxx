@@ -18,10 +18,8 @@
 
 #include <IGESData_DirChecker.hxx>
 #include <IGESData_IGESDumper.hxx>
-#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
-#include <IGESData_ParamCursor.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESData_Status.hxx>
 #include <IGESGeom_Line.hxx>
@@ -33,7 +31,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
-#include <Standard_DomainError.hxx>
 
 // MGE 31/07/98
 IGESGeom_ToolSurfaceOfRevolution::IGESGeom_ToolSurfaceOfRevolution ()    {  }

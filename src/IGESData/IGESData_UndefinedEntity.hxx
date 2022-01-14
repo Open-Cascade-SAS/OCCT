@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 #include <IGESData_DefType.hxx>
 #include <IGESData_DefList.hxx>
 class Interface_UndefinedContent;

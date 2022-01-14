@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <XSControl_Reader.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_PrintFail.hxx>

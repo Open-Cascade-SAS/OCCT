@@ -23,21 +23,20 @@
 
 #include <Standard_Integer.hxx>
 #include <IGESData_ReadStage.hxx>
-#include <Standard_Boolean.hxx>
 #include <Interface_ParamType.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Real.hxx>
 #include <IGESData_Status.hxx>
+#include <IGESData_ParamCursor.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <IGESData_HArray1OfIGESEntity.hxx>
+
 class Interface_ParamList;
 class Interface_Check;
 class IGESData_IGESEntity;
 class IGESData_IGESReaderData;
-class IGESData_ParamCursor;
 class Message_Msg;
 class gp_XY;
 class gp_XYZ;

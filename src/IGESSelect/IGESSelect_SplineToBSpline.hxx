@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IFSelect_Transformer.hxx>
 class Interface_CopyControl;
 class Interface_Graph;
