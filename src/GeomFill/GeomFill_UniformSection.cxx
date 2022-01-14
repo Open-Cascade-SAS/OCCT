@@ -15,19 +15,16 @@
 // commercial license or contractual agreement.
 
 
-#include <Convert_ParameterisationType.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomConvert.hxx>
 #include <GeomFill_UniformSection.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>

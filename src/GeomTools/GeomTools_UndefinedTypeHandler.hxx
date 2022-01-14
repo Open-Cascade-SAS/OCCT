@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;

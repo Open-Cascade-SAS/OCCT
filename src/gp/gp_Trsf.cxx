@@ -22,8 +22,6 @@
 #include <gp_Trsf.hxx>
 
 #include <gp.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Mat.hxx>

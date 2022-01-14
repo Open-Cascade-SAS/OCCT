@@ -19,7 +19,6 @@
 #include <GeomToStep_MakeAxis1Placement.hxx>
 #include <GeomToStep_MakeCurve.hxx>
 #include <GeomToStep_MakeSurfaceOfRevolution.hxx>
-#include <gp_Ax1.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_Curve.hxx>

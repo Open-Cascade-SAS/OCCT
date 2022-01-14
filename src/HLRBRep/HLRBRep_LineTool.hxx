@@ -26,8 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
@@ -40,7 +38,6 @@
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class Standard_DomainError;
-class gp_Lin;
 class gp_Pnt;
 class gp_Vec;
 class Geom_BezierCurve;

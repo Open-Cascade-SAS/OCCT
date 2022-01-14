@@ -14,19 +14,13 @@
 
 #include <GeomLib_CheckCurveOnSurface.hxx>
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <math_Matrix.hxx>
 #include <math_MultipleVarFunctionWithHessian.hxx>
 #include <math_NewtonMinimum.hxx>
 #include <math_PSO.hxx>

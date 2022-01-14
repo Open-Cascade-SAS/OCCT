@@ -19,7 +19,6 @@
 #include <Graphic3d_BSDF.hxx>
 #include <Graphic3d_Vec2.hxx>
 #include <Graphic3d_Vec3.hxx>
-#include <Graphic3d_Vec4.hxx>
 #include <Quantity_Color.hxx>
 
 //! Class implementing Metallic-Roughness physically based material definition

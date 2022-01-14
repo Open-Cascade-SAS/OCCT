@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Lin2d.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <Hatch_Line.hxx>
 #include <Hatch_Parameter.hxx>

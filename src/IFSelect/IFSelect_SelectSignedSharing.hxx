@@ -18,12 +18,9 @@
 #define _IFSelect_SelectSignedSharing_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Boolean.hxx>
 #include <IFSelect_SelectExplore.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class IFSelect_Signature;
 class Standard_Transient;

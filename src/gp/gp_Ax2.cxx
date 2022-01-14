@@ -21,11 +21,9 @@
 
 #include <gp_Ax2.hxx>
 
-#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>

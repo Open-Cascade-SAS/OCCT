@@ -18,10 +18,7 @@
 #define _GeomFill_CorrectedFrenet_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Vec.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <GeomFill_TrihedronLaw.hxx>

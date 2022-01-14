@@ -18,16 +18,11 @@
 #define _IFSelect_SessionPilot_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Standard_Boolean.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
 #include <IFSelect_Activator.hxx>
-#include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <IFSelect_PrintCount.hxx>
 class IFSelect_WorkSession;

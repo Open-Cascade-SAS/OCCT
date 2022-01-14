@@ -17,18 +17,14 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Approx_CurvlinFunc.hxx>
-#include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_Frenet.hxx>
 #include <GeomFill_GuideTrihedronAC.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <GeomLib.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 

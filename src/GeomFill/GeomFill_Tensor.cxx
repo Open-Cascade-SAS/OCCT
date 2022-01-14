@@ -17,12 +17,10 @@
 
 #include <GeomFill_Tensor.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_DimensionError.hxx>
-#include <Standard_RangeError.hxx>
 
 GeomFill_Tensor::GeomFill_Tensor(const Standard_Integer NbRow, 
-				   const Standard_Integer NbCol, 
-				   const Standard_Integer NbMat) :
+                                 const Standard_Integer NbCol, 
+                                 const Standard_Integer NbMat) :
                                    Tab(1,NbRow*NbMat*NbCol),
 				   nbrow( NbRow ),
 				   nbcol( NbCol ),

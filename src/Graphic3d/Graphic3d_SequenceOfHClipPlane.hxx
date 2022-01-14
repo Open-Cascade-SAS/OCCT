@@ -16,7 +16,6 @@
 #ifndef _Graphic3d_SequenceOfHClipPlane_HeaderFile
 #define _Graphic3d_SequenceOfHClipPlane_HeaderFile
 
-#include <NCollection_Sequence.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
 //! Class defines a Clipping Volume as a logical OR (disjunction) operation between Graphic3d_ClipPlane in sequence.

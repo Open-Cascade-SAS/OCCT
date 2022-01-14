@@ -15,21 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepClass_FaceClassifier.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <GProp_PEquation.hxx>
 #include <HLRAlgo_Projector.hxx>
-#include <HLRBRep_BSurfaceTool.hxx>
-#include <HLRBRep_Curve.hxx>
 #include <HLRBRep_Surface.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TopoDS_Face.hxx>

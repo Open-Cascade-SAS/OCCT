@@ -16,15 +16,12 @@
 
 #include <GeomFill_FunctionGuide.hxx>
 
-#include <Adaptor3d_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomFill_SectionLaw.hxx>
-#include <GeomTools.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
@@ -34,9 +31,6 @@
 #include <gp_XYZ.hxx>
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 
 //#include <Standard_NotImplemented.hxx>
 //==============================================

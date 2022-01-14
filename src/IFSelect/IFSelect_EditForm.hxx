@@ -18,15 +18,11 @@
 #define _IFSelect_EditForm_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class IFSelect_Editor;

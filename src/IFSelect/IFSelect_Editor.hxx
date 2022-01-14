@@ -25,9 +25,7 @@
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <IFSelect_EditValue.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>

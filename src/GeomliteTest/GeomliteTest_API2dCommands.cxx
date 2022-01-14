@@ -19,7 +19,6 @@
 
 #include <GeomliteTest.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DrawTrSurf.hxx>
 #include <Draw_Appli.hxx>
@@ -33,7 +32,6 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomLib_Tool.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <gp_Pnt.hxx>
 #include <Draw_Marker2D.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_MarkerShape.hxx>

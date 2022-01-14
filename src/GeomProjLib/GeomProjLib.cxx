@@ -39,7 +39,6 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
@@ -47,11 +46,6 @@
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
-#include <ProjLib_ProjectOnSurface.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <stdio.h>
 #ifdef DRAW

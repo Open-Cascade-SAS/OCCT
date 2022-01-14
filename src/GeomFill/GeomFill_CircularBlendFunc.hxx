@@ -21,10 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Convert_ParameterisationType.hxx>
-#include <Standard_Boolean.hxx>
 #include <Approx_SweepFunction.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>

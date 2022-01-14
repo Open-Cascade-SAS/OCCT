@@ -20,7 +20,6 @@
 
 
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : HLRAlgo_EdgeStatus

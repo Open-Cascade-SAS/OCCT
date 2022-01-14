@@ -19,7 +19,6 @@
 #endif
 
 
-#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
@@ -29,7 +28,6 @@
 #include <gp_Vec2d.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
 
 // formula for derivating a perspective, from Mathematica
 //        X'[t]      X[t] Z'[t]                                     

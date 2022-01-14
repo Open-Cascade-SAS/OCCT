@@ -20,9 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 
 GeomFill_SnglrFunc::GeomFill_SnglrFunc(const Handle(Adaptor3d_Curve)& HC) : 
        myHCurve(HC), ratio(1)

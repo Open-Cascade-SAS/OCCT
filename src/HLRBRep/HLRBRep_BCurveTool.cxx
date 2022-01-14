@@ -15,17 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <HLRBRep_BCurveTool.hxx>
-#include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

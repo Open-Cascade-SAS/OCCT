@@ -26,9 +26,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class IFSelect_ShareOut;
 class TCollection_AsciiString;
 class Interface_InterfaceModel;

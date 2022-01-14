@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_GeneralModifier.hxx>
-#include <Standard_Boolean.hxx>
 class IFSelect_ContextModif;
 class Interface_InterfaceModel;
 class Interface_Protocol;

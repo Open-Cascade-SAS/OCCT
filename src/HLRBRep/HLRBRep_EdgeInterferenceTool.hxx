@@ -23,9 +23,7 @@
 
 #include <HLRAlgo_Intersection.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Real.hxx>
 class HLRBRep_Data;
 class gp_Dir;
 class HLRAlgo_Interference;

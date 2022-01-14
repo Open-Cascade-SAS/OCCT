@@ -24,9 +24,6 @@
 
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_UndefinedDerivative.hxx>
-#include <Geom_UndefinedValue.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
@@ -34,8 +31,6 @@
 #include <gp_Vec.hxx>
 #include <gp_XY.hxx>
 #include <Plate_Plate.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_Surface,Geom_Surface)

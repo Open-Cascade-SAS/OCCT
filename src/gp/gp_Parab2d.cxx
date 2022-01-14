@@ -21,7 +21,6 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_ConstructionError.hxx>
 
 gp_Parab2d::gp_Parab2d (const gp_Ax2d& theDirectrix,
                         const gp_Pnt2d& theFocus,

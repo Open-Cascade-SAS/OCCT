@@ -17,20 +17,14 @@
 
 #include <AppDef_BSplineCompute.hxx>
 #include <AppDef_MultiLine.hxx>
-#include <AppDef_MultiPointConstraint.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepApprox_Approx.hxx>
 #include <BRepApprox_ApproxLine.hxx>
 #include <BRepExtrema_ExtPC.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
-#include <BRepTopAdaptor_Tool.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <Contap_Contour.hxx>
 #include <Contap_Line.hxx>
@@ -60,7 +54,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : Insert

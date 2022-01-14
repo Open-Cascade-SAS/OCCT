@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_SelectShared.hxx>
-#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Standard_Type.hxx>

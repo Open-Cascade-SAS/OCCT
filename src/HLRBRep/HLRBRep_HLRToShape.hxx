@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <HLRBRep_TypeOfResultingEdge.hxx>
 class HLRBRep_Algo;
 class TopoDS_Shape;

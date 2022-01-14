@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pnt.hxx>
@@ -24,7 +23,6 @@
 #include <math_Jacobi.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <Standard_NotImplemented.hxx>
 
 GProp_VelGProps::GProp_VelGProps(){}
 

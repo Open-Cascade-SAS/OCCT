@@ -24,9 +24,6 @@
 #include <gp_Lin2d.hxx>
 #include <Hatch_LineForm.hxx>
 #include <Hatch_SequenceOfParameter.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! Stores a Line in the Hatcher. Represented by :

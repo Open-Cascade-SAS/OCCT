@@ -25,6 +25,7 @@
 #include <AIS_InteractiveObject.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <TopoDS_Face.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 

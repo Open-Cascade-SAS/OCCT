@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IntCurveSurface_Intersection.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class gp_Lin;

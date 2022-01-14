@@ -14,7 +14,6 @@
 #ifndef _GeomConvert_Units_HeaderFile
 #define _GeomConvert_Units_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 class Geom2d_Curve;
 class Geom_Surface;

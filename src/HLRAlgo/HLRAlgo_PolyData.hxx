@@ -26,9 +26,6 @@
 #include <HLRAlgo_HArray1OfTData.hxx>
 #include <HLRAlgo_HArray1OfPHDat.hxx>
 #include <Standard_Transient.hxx>
-#include <TColgp_Array1OfXYZ.hxx>
-#include <HLRAlgo_Array1OfTData.hxx>
-#include <HLRAlgo_Array1OfPHDat.hxx>
 #include <Standard_Boolean.hxx>
 
 class HLRAlgo_EdgeStatus;

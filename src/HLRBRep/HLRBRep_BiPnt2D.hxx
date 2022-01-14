@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 //! Contains the colors of a shape.
 class HLRBRep_BiPnt2D 

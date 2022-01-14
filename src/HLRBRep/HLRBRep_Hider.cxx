@@ -18,14 +18,9 @@
 
 
 #include <HLRAlgo_Coincidence.hxx>
-#include <HLRAlgo_Interference.hxx>
-#include <HLRAlgo_InterferenceList.hxx>
-#include <HLRAlgo_Intersection.hxx>
-#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
 #include <HLRBRep_Data.hxx>
 #include <HLRBRep_EdgeBuilder.hxx>
 #include <HLRBRep_EdgeIList.hxx>
-#include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <HLRBRep_Hider.hxx>
 #include <HLRBRep_VertexList.hxx>
 #include <TColStd_SequenceOfReal.hxx>

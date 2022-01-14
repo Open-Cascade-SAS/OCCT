@@ -19,7 +19,6 @@
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <GeomToStep_MakeDirection.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
 #include <StdFail_NotDone.hxx>

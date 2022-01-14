@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_CheckCounter.hxx>
-#include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <MoniTool_SignText.hxx>

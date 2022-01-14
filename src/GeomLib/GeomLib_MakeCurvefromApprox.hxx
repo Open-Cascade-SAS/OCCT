@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <AdvApprox_ApproxAFunction.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;

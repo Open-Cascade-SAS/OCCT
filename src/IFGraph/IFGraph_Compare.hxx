@@ -23,7 +23,6 @@
 
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_EntityIterator;
 

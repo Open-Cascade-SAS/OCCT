@@ -18,10 +18,8 @@
 #define _IFSelect_GraphCounter_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_SignCounter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class IFSelect_SelectDeduct;
 class Interface_Graph;

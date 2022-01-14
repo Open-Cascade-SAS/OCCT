@@ -20,11 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Vec.hxx>
 #include <Approx_SweepFunction.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>

@@ -12,15 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <IFSelect_Activator.hxx>
-#include <IFSelect_Selection.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_SignCounter.hxx>
 #include <IFSelect_WorkLibrary.hxx>
 #include <IFSelect_WorkSession.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_OpenFile.hxx>

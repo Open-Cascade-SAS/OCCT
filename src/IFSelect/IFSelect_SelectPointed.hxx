@@ -20,8 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
 #include <IFSelect_SelectBase.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Standard_Integer.hxx>

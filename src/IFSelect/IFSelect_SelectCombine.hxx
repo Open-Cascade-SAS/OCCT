@@ -23,7 +23,6 @@
 #include <IFSelect_TSeqOfSelection.hxx>
 #include <IFSelect_Selection.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class IFSelect_SelectionIterator;
 
 

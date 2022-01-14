@@ -22,13 +22,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Character.hxx>
 
 class IFSelect_WorkSession;
 class Standard_Transient;

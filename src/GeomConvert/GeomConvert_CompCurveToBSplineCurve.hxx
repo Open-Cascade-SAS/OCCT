@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Convert_ParameterisationType.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Geom_BSplineCurve;
 class Geom_BoundedCurve;

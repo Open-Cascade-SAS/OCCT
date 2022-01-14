@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <GeomFill_SectionLaw.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfVec.hxx>

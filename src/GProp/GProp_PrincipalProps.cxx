@@ -13,10 +13,7 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <GProp_PrincipalProps.hxx>
-#include <GProp_UndefinedAxis.hxx>
 
 typedef gp_Vec Vec;
 typedef gp_Pnt Pnt;

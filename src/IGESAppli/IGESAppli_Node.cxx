@@ -20,9 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESAppli_Node.hxx>
-#include <IGESData_TransfEntity.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
-#include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_Node,IGESData_IGESEntity)

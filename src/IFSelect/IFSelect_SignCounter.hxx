@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_SignatureList.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_CString.hxx>
 class IFSelect_Signature;
 class IFSelect_Selection;
 class Standard_Transient;

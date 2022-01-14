@@ -21,7 +21,6 @@
 #include <BRepLib_MakeVertex.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
-#include <HLRBRep_Curve.hxx>
 #include <HLRBRep_EdgeFaceTool.hxx>
 #include <HLRBRep_Surface.hxx>
 #include <TopoDS_Vertex.hxx>

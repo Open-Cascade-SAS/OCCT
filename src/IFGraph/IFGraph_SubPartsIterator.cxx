@@ -13,7 +13,6 @@
 
 
 #include <IFGraph_SubPartsIterator.hxx>
-#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
 #include <Interface_InterfaceError.hxx>

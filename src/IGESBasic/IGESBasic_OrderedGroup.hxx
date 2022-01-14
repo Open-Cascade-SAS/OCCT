@@ -18,7 +18,6 @@
 #define _IGESBasic_OrderedGroup_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESBasic_Group.hxx>
 

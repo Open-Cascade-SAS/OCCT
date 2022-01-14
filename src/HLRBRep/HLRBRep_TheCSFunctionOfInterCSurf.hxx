@@ -21,12 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 class HLRBRep_SurfaceTool;

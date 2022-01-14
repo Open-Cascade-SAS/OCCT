@@ -35,7 +35,6 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ModelCopier,Standard_Transient)

@@ -23,7 +23,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <HLRAlgo_Projector.hxx>
-#include <HLRTopoBRep_Data.hxx>
 #include <HLRTopoBRep_DSFiller.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
 #include <Standard_Type.hxx>
@@ -36,7 +35,6 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner,Standard_Transient)
 

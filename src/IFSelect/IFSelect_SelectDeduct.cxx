@@ -18,7 +18,6 @@
 #include <IFSelect_SelectPointed.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectDeduct,IFSelect_Selection)

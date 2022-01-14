@@ -18,7 +18,6 @@
 #define _HLRBRep_Algo_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <HLRBRep_InternalAlgo.hxx>
 #include <Standard_Integer.hxx>

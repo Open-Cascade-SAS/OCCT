@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <GeomFill_TgtField.hxx>
-#include <Standard_Real.hxx>
 class GeomFill_CoonsAlgPatch;
 class gp_Vec;
 

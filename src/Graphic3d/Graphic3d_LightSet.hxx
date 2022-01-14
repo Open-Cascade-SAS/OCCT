@@ -14,7 +14,6 @@
 #ifndef _Graphic3d_LightSet_HeaderFile
 #define _Graphic3d_LightSet_HeaderFile
 
-#include <NCollection_IndexedDataMap.hxx>
 #include <Graphic3d_CLight.hxx>
 
 //! Class defining the set of light sources.

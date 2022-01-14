@@ -19,7 +19,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Plane.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_Frenet.hxx>
 #include <GeomFill_PlanFunc.hxx>
@@ -33,8 +32,6 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGuide)

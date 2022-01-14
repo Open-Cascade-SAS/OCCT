@@ -17,15 +17,12 @@
 
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_PriorityDefinitionError.hxx>
 #include <Graphic3d_StructureDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Quantity_Color.hxx>
 
 #include <Standard_Dump.hxx>
 

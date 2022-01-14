@@ -17,12 +17,10 @@
 
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Point.hxx>
-#include <GeomToIGES_GeomEntity.hxx>
 #include <GeomToIGES_GeomPoint.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
 #include <IGESGeom_Point.hxx>
-#include <Interface_Macros.hxx>
 
 //=============================================================================
 // GeomToIGES_GeomPoint

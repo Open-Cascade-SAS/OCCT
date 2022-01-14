@@ -17,7 +17,6 @@
 #define _Graphic3d_TransformPers_HeaderFile
 
 #include <Aspect_TypeOfTriedronPosition.hxx>
-#include <Bnd_Box.hxx>
 #include <BVH_Box.hxx>
 #include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TransformUtils.hxx>

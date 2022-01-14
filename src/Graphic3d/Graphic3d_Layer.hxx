@@ -17,13 +17,11 @@
 #include <Graphic3d_BvhCStructureSet.hxx>
 #include <Graphic3d_BvhCStructureSetTrsfPers.hxx>
 #include <Graphic3d_DisplayPriority.hxx>
-#include <Graphic3d_Camera.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <NCollection_Sequence.hxx>
 
 #include <array>
 

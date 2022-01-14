@@ -16,8 +16,6 @@
 #define _Graphic3d_MediaTexture_HeaderFile
 
 #include <Graphic3d_Texture2D.hxx>
-#include <NCollection_DefineAlloc.hxx>
-#include <NCollection_Shared.hxx>
 #include <Standard_Mutex.hxx>
 
 class Media_Frame;

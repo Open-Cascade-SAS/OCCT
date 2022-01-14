@@ -18,7 +18,6 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_MSG.hxx>
 #include <Interface_TypedValue.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

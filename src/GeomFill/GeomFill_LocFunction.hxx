@@ -23,8 +23,6 @@
 
 #include <TColgp_Array1OfVec.hxx>
 #include <gp_Mat.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class GeomFill_LocationLaw;
 

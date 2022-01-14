@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_ShortReal.hxx>
 #include <TopAbs_State.hxx>
 

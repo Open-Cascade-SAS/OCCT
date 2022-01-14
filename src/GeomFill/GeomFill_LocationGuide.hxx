@@ -18,15 +18,12 @@
 #define _GeomFill_LocationGuide_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColgp_HArray2OfPnt2d.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Mat.hxx>
 #include <math_Vector.hxx>
-#include <GeomFill_PipeError.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>

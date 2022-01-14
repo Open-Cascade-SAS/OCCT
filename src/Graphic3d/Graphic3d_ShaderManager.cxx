@@ -15,6 +15,7 @@
 
 #include <Graphic3d_LightSet.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <Graphic3d_TextureSetBits.hxx>
 #include <Message.hxx>
 
 #include "../Shaders/Shaders_DirectionalLightShadow_glsl.pxx"

@@ -13,15 +13,11 @@
 
 
 #include <IFSelect_Dispatch.hxx>
-#include <IFSelect_GeneralModifier.hxx>
 #include <IFSelect_Modifier.hxx>
 #include <IFSelect_ShareOut.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>

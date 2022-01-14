@@ -18,11 +18,8 @@
 #define _GeomFill_Frenet_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>

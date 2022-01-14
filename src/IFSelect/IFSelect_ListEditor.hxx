@@ -18,13 +18,11 @@
 #define _IFSelect_ListEditor_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_TypedValue;
 class Interface_InterfaceModel;
 class TCollection_HAsciiString;

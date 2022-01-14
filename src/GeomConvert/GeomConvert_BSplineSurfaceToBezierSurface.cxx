@@ -18,7 +18,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomConvert_BSplineSurfaceToBezierSurface.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <TColgp_Array2OfPnt.hxx>

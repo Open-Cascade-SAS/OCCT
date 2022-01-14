@@ -23,8 +23,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <IFSelect_Editor.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 class Interface_TypedValue;
 class IFSelect_EditForm;

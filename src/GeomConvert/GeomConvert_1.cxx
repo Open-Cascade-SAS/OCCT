@@ -14,7 +14,6 @@
 
 #include <GeomConvert.hxx>
 
-#include <BSplCLib.hxx>
 #include <Convert_ConeToBSplineSurface.hxx>
 #include <Convert_CylinderToBSplineSurface.hxx>
 #include <Convert_ElementarySurfaceToBSplineSurface.hxx>
@@ -22,7 +21,6 @@
 #include <Convert_TorusToBSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -41,22 +39,18 @@
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_GTrsf.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfInteger.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 
 typedef Geom_Surface                          Surface;
 typedef Geom_BSplineSurface                   BSplineSurface;

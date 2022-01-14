@@ -17,7 +17,6 @@
 #ifndef IGESAppli_HArray1OfFiniteElement_HeaderFile
 #define IGESAppli_HArray1OfFiniteElement_HeaderFile
 
-#include <IGESAppli_FiniteElement.hxx>
 #include <IGESAppli_Array1OfFiniteElement.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

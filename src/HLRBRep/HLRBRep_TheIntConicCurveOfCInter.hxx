@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 class IntCurve_IConicTool;
 class HLRBRep_CurveTool;
 class HLRBRep_TheProjPCurOfCInter;

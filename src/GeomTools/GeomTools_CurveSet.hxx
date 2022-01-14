@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Geom_Curve;

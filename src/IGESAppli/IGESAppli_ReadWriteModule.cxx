@@ -56,7 +56,6 @@
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_ReadWriteModule,IGESData_ReadWriteModule)

@@ -21,12 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 
 class gp_Pnt;

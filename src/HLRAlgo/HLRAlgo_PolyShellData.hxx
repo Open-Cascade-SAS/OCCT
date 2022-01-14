@@ -17,7 +17,6 @@
 #ifndef _HLRAlgo_PolyShellData_HeaderFile
 #define _HLRAlgo_PolyShellData_HeaderFile
 
-#include <NCollection_Array1.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <HLRAlgo_ListOfBPoint.hxx>

@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>

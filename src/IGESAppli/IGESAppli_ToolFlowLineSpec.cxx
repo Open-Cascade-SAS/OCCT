@@ -29,10 +29,7 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
-#include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolFlowLineSpec::IGESAppli_ToolFlowLineSpec ()    {  }

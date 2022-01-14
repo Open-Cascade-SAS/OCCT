@@ -17,19 +17,14 @@
 #include <HLRTest.hxx>
 
 #include <DBRep.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
-#include <gp_Ax3.hxx>
-#include <HLRAlgo_Projector.hxx>
 #include <HLRAppli_ReflectLines.hxx>
 #include <HLRBRep_Algo.hxx>
 #include <HLRBRep_HLRToShape.hxx>
 #include <HLRTest_OutLiner.hxx>
 #include <HLRTest_Projector.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 
 static Handle(HLRBRep_Algo) hider;

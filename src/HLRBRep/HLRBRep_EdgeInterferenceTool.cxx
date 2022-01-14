@@ -19,9 +19,6 @@
 #endif
 
 
-#include <gp_Dir.hxx>
-#include <HLRAlgo_Interference.hxx>
-#include <HLRAlgo_Intersection.hxx>
 #include <HLRBRep_Data.hxx>
 #include <HLRBRep_EdgeInterferenceTool.hxx>
 

@@ -20,8 +20,6 @@
 #include <GeomLib_Check2dBSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
 
 //=======================================================================
 //function : GeomLib_Check2dBSplineCurve

@@ -25,12 +25,10 @@
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <HLRTopoBRep_DataMapOfShapeFaceData.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <HLRTopoBRep_MapOfShapeListOfVData.hxx>
 #include <HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData.hxx>
 #include <HLRTopoBRep_ListIteratorOfListOfVData.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Edge;
 class TopoDS_Face;
 class TopoDS_Shape;

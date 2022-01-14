@@ -15,18 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Elips2d.hxx>
-#include <gp_Hypr2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Parab2d.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -38,8 +30,6 @@
 #include <Precision.hxx>
 #include <ProjLib.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TopoDS_Edge.hxx>

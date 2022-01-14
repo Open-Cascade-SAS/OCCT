@@ -26,14 +26,12 @@
 #include <Geom2dHatch_Intersector.hxx>
 #include <gp_Pnt.hxx>
 #include <HatchGen_Domain.hxx>
-#include <HatchGen_ErrorStatus.hxx>
 #include <HatchGen_PointOnElement.hxx>
 #include <HatchGen_PointOnHatching.hxx>
 #include <HLRTopoBRep_Data.hxx>
 #include <HLRTopoBRep_FaceIsoLiner.hxx>
 #include <Precision.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -41,7 +39,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //#include <BRepAdaptor_Curve2d.hxx>
 const Standard_Real IntersectorConfusion = 1.e-10;

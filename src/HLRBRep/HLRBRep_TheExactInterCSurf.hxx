@@ -23,8 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <HLRBRep_TheCSFunctionOfInterCSurf.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Address.hxx>
 class StdFail_NotDone;
 class Standard_DomainError;
 class HLRBRep_SurfaceTool;

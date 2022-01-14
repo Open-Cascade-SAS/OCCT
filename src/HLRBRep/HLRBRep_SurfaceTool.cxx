@@ -15,15 +15,7 @@
 
 #include <HLRBRep_SurfaceTool.hxx>
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Standard_Integer  HLRBRep_SurfaceTool::NbSamplesU(const Standard_Address S) { 
   Standard_Integer nbs;

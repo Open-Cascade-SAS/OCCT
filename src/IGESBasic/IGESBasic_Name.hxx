@@ -18,7 +18,6 @@
 #define _IGESBasic_Name_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESData_NameEntity.hxx>

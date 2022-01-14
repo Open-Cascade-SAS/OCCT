@@ -18,13 +18,9 @@
 #define _IFSelect_Activator_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 class IFSelect_SessionPilot;

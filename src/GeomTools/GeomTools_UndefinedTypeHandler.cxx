@@ -16,7 +16,6 @@
 
 
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomTools_UndefinedTypeHandler.hxx>
 #include <Standard_Type.hxx>

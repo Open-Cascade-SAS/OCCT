@@ -17,9 +17,7 @@
 
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XYZ.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 class gp_Dir;
 class gp_Pnt;
@@ -422,7 +420,6 @@ private:
 };
 
 
-#include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>

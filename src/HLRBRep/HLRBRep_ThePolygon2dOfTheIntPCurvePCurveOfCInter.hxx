@@ -21,14 +21,11 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Standard_Boolean.hxx>
 #include <Intf_Polygon2d.hxx>
-#include <Standard_Address.hxx>
 class Standard_OutOfRange;
 class HLRBRep_CurveTool;
 class IntRes2d_Domain;

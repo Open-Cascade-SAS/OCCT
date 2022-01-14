@@ -22,7 +22,6 @@
 
 #include <gp_Pnt.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class GeomFill_Boundary;
 class Law_Function;

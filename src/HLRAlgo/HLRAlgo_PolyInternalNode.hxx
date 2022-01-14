@@ -18,7 +18,6 @@
 #define _HLRAlgo_PolyInternalNode_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>

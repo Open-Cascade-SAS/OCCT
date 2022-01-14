@@ -17,7 +17,6 @@
 #ifndef HLRAlgo_HArray1OfPHDat_HeaderFile
 #define HLRAlgo_HArray1OfPHDat_HeaderFile
 
-#include <HLRAlgo_PolyHidingData.hxx>
 #include <HLRAlgo_Array1OfPHDat.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Intf_Interference.hxx>
 #include <Intf_Array1OfLin.hxx>
-#include <Standard_Real.hxx>
 class HLRBRep_ThePolygonOfInterCSurf;
 class HLRBRep_ThePolygonToolOfInterCSurf;
 class HLRBRep_ThePolyhedronOfInterCSurf;

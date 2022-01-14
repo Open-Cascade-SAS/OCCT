@@ -19,13 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <GeomPlate_HSequenceOfCurveConstraint.hxx>
 #include <GeomPlate_HArray1OfSequenceOfReal.hxx>
 #include <GeomPlate_HSequenceOfPointConstraint.hxx>
 #include <Plate_Plate.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>

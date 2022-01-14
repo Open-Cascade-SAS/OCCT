@@ -17,7 +17,6 @@
 
 #include <gp_Trsf.hxx>
 #include <Graphic3d_Vec.hxx>
-#include <Standard_math.hxx> // M_PI
 
 //! Helper class that implements transformation matrix functionality.
 namespace Graphic3d_TransformUtils

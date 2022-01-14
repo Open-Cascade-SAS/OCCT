@@ -24,7 +24,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
 
 Standard_Real gp_Lin::Distance (const gp_Lin& Other) const
 {

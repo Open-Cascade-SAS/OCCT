@@ -19,8 +19,6 @@
 #endif
 
 
-#include <HLRAlgo_Interference.hxx>
-#include <HLRAlgo_ListIteratorOfInterferenceList.hxx>
 #include <HLRBRep_EdgeIList.hxx>
 #include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <TopCnx_EdgeFaceTransition.hxx>

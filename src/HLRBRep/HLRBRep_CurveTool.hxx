@@ -27,8 +27,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Standard_Boolean.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Circ2d.hxx>

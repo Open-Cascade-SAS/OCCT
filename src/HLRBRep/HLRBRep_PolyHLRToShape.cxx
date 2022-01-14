@@ -20,8 +20,6 @@
 #include <BRepLib_MakeEdge2d.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRBRep_BiPnt2D.hxx>
-#include <HLRBRep_ListIteratorOfListOfBPnt2D.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <HLRBRep_PolyHLRToShape.hxx>
 #include <TopExp_Explorer.hxx>

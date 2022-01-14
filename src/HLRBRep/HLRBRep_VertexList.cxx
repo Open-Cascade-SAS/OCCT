@@ -19,8 +19,6 @@
 #endif
 
 
-#include <HLRAlgo_Intersection.hxx>
-#include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <HLRBRep_VertexList.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NoMoreObject.hxx>

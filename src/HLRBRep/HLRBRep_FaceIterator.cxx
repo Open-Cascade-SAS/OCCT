@@ -19,8 +19,6 @@
 #endif
 
 
-#include <HLRAlgo_EdgesBlock.hxx>
-#include <HLRAlgo_WiresBlock.hxx>
 #include <HLRBRep_FaceData.hxx>
 #include <HLRBRep_FaceIterator.hxx>
 

@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <GeomConvert_Units.hxx>
-#include <Geom2d_BoundedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>

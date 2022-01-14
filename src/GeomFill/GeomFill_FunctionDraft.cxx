@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_FunctionDraft.hxx>

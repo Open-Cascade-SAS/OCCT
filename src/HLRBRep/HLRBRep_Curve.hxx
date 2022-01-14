@@ -17,21 +17,18 @@
 #ifndef _HLRBRep_Curve_HeaderFile
 #define _HLRBRep_Curve_HeaderFile
 
+#include <BRepAdaptor_Curve.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <BRepAdaptor_Curve.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <Standard_Real.hxx>
-#include <gp_Pnt.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <gp_Pnt2d.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
 class TopoDS_Edge;
 class gp_Pnt;
 class gp_Vec;

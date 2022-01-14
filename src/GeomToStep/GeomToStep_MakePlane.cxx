@@ -18,7 +18,6 @@
 #include <Geom_Plane.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakePlane.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>

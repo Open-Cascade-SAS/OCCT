@@ -18,10 +18,7 @@
 #define _Graphic3d_Group_HeaderFile
 
 #include <Graphic3d_BndBox4f.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_MapOfAspectsToAspects.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <HLRBRep_ListOfBPoint.hxx>
 #include <Draw_Drawable3D.hxx>

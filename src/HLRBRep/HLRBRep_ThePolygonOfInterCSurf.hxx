@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_OutOfRange;

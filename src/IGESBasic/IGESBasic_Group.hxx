@@ -18,12 +18,10 @@
 #define _IGESBasic_Group_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_HArray1OfIGESEntity.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 
 

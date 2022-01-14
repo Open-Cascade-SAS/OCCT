@@ -16,7 +16,6 @@
 
 
 #include <BSplCLib.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>

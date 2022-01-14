@@ -18,7 +18,6 @@
 #define _IGESBasic_HArray1OfHArray1OfXY_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_Array1OfTransient.hxx>
 #include <Standard_Transient.hxx>

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Face;
 class HLRTopoBRep_Data;
 class TopoDS_Vertex;

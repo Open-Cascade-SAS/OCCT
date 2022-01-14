@@ -18,7 +18,6 @@
 
 #include <IGESBasic_ExternalReferenceFile.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 

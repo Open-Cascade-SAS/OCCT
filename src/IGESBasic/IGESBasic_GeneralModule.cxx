@@ -20,7 +20,6 @@
 #include <IGESBasic_ExternalRefLibName.hxx>
 #include <IGESBasic_ExternalRefName.hxx>
 #include <IGESBasic_GeneralModule.hxx>
-#include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_Hierarchy.hxx>
 #include <IGESBasic_Name.hxx>

@@ -25,9 +25,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColGeom_Array2OfBezierSurface.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
 

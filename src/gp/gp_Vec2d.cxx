@@ -21,12 +21,9 @@
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XY.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 Standard_Boolean gp_Vec2d::IsEqual
 (const gp_Vec2d& Other, 

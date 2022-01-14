@@ -21,7 +21,6 @@
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Real.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>

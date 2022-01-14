@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <GeomLib_InterpolationErrors.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_Array1OfPnt.hxx>

@@ -20,15 +20,12 @@
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Hermit.hxx>
-#include <PLib.hxx>
 #include <Precision.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 #include <algorithm>

@@ -18,14 +18,11 @@
 #define _GeomFill_GuideTrihedronPlan_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColgp_HArray2OfPnt2d.hxx>
 #include <math_Vector.hxx>
 #include <Standard_Integer.hxx>
-#include <GeomFill_PipeError.hxx>
 #include <GeomFill_TrihedronWithGuide.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>

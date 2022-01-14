@@ -27,7 +27,6 @@
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 void gp_Trsf2d::SetMirror (const gp_Ax2d& A)
 {

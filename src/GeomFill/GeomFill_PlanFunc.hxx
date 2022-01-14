@@ -24,8 +24,6 @@
 #include <gp_XYZ.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 class gp_Vec;
 

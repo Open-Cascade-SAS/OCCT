@@ -43,20 +43,14 @@
 
 #include <GeomLib.hxx>
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Adaptor3d_Surface.hxx>
-#include <AdvApprox_ApproxAFunction.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
-#include <Approx_CurveOnSurface.hxx>
-#include <BSplCLib.hxx>
-#include <BSplSLib.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Ellipse.hxx>
@@ -71,7 +65,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_BoundedSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
@@ -268,7 +261,6 @@ static void ComputeLambda(const math_Matrix& Constraint,
 }
 
 #include <Extrema_LocateExtPC.hxx>
-#include <Geom2d_Curve.hxx>
 //=======================================================================
 //function : RemovePointsFromArray
 //purpose  : 

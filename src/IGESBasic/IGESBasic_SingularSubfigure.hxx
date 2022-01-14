@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <gp_XYZ.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <IGESData_IGESEntity.hxx>
 class IGESBasic_SubfigureDef;
 

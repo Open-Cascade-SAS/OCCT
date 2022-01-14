@@ -18,7 +18,6 @@
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomConvert_BSplineCurveKnotSplitting.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_RangeError.hxx>
 
 typedef TColStd_Array1OfInteger      Array1OfInteger;

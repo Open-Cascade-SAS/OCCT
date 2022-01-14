@@ -23,7 +23,6 @@
 
 #include <TopAbs_State.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 class HLRBRep_AreaLimit;
 class HLRBRep_VertexList;

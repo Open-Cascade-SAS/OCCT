@@ -22,11 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter.hxx>
 #include <math_Vector.hxx>
-#include <Standard_Address.hxx>
 class HLRBRep_CurveTool;
 class HLRBRep_TheProjPCurOfCInter;
 class HLRBRep_TheIntPCurvePCurveOfCInter;

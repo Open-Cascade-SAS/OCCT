@@ -16,10 +16,7 @@
 
 
 #include <AdvApp2Var_ApproxAFunc2Var.hxx>
-#include <AdvApp2Var_Criterion.hxx>
-#include <AdvApprox_Cutting.hxx>
 #include <AdvApprox_DichoCutting.hxx>
-#include <AdvApprox_PrefCutting.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomPlate_MakeApprox.hxx>
@@ -33,7 +30,6 @@
 #include <PLib.hxx>
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 

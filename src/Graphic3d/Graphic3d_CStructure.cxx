@@ -15,7 +15,6 @@
 #include <Graphic3d_CStructure.hxx>
 
 #include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_TransModeFlags.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Standard_Dump.hxx>
 

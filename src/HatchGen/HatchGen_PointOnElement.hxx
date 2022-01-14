@@ -25,7 +25,6 @@
 #include <HatchGen_IntersectionPoint.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 class IntRes2d_IntersectionPoint;
 
 

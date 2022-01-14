@@ -24,7 +24,6 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DimensionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TColGeom_Array2OfBezierSurface.hxx>
 #include <TColgp_HArray2OfPnt.hxx>

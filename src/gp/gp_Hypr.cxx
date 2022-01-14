@@ -19,10 +19,6 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_DomainError.hxx>
 
 void gp_Hypr::Mirror (const gp_Pnt& P)
 { pos.Mirror(P); }

@@ -22,8 +22,6 @@
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
 
 void gp_Cone::Coefficients
 (Standard_Real& A1, Standard_Real& A2, Standard_Real& A3, 

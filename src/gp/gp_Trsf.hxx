@@ -19,7 +19,6 @@
 #include <gp_Mat.hxx>
 #include <gp_XYZ.hxx>
 #include <NCollection_Mat4.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_SStream.hxx>

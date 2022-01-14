@@ -27,7 +27,6 @@
 #include <GeomFill_SnglrFunc.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <GeomLib.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Law_BSpFunc.hxx>
@@ -37,8 +36,6 @@
 #include <Law_Function.hxx>
 #include <Law_Interpolate.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>

@@ -16,10 +16,8 @@
 
 #include <gp_Dir.hxx>
 
-#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>

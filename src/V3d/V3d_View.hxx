@@ -35,6 +35,7 @@
 #include <Graphic3d_GraduatedTrihedron.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Image_PixMap.hxx>

@@ -19,7 +19,6 @@
 #include <Font_FontAspect.hxx>
 #include <NCollection_Array1.hxx>
 #include <Quantity_Color.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>

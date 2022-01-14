@@ -18,7 +18,6 @@
 #define _Graphic3d_TextureEnv_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Graphic3d_NameOfTextureEnv.hxx>
 #include <Graphic3d_TextureRoot.hxx>

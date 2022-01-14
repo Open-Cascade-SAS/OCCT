@@ -19,7 +19,6 @@
 #include <GeomLib_CheckBSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================

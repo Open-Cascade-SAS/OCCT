@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Plate_Plate.hxx>
-#include <Standard_Real.hxx>
 #include <Geom_Surface.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_SequenceOfXY.hxx>

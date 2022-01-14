@@ -21,13 +21,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepAdaptor_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Vec.hxx>

@@ -16,7 +16,6 @@
 
 
 #include <gp_Dir2d.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Hatch_Hatcher.hxx>

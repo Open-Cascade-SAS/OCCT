@@ -20,10 +20,9 @@
 #include <gp_XY.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 void gp_GTrsf2d::SetAffinity (const gp_Ax2d& A,
-			      const Standard_Real Ratio)
+                              const Standard_Real Ratio)
 {
   shape = gp_Other;
   scale = 0.0;

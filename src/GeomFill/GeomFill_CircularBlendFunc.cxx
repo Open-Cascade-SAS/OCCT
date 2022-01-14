@@ -21,7 +21,6 @@
 #include <GeomFill_CircularBlendFunc.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>

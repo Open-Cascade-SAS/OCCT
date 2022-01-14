@@ -18,17 +18,12 @@
 #define _IFSelect_SignatureList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <IFSelect_PrintCount.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TCollection_HAsciiString;
 class Interface_InterfaceModel;

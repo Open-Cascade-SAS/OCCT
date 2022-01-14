@@ -14,7 +14,6 @@
 
 #include <IFSelect_SelectInList.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 

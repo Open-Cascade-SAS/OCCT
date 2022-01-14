@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <GeomFill_Filling.hxx>
 #include <TColgp_Array1OfPnt.hxx>

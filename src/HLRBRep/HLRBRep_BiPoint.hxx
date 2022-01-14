@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Shape;
 class gp_Pnt;
 

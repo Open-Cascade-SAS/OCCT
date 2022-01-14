@@ -21,7 +21,6 @@
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
 #include <Graphic3d_TextureParams.hxx>
-#include <Graphic3d_TextureSetBits.hxx>
 #include <NCollection_Sequence.hxx>
 
 //! List of shader objects.

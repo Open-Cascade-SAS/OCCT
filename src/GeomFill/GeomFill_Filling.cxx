@@ -17,7 +17,6 @@
 
 #include <GeomFill_Filling.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : GeomFill_Filling

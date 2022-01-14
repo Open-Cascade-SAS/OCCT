@@ -18,10 +18,8 @@
 #define _IFSelect_SignAncestor_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_SignType.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;

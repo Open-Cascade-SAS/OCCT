@@ -23,7 +23,6 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 class Standard_OutOfRange;
 class gp_Pnt;
 class HLRBRep_ThePolygonOfInterCSurf;

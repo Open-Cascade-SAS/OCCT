@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Surface;
 class gp_Pnt;

@@ -16,7 +16,6 @@
 #ifndef _Graphic3d_ClipPlane_HeaderFile
 #define _Graphic3d_ClipPlane_HeaderFile
 
-#include <Aspect_HatchStyle.hxx>
 #include <gp_Pln.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_BndBox3d.hxx>

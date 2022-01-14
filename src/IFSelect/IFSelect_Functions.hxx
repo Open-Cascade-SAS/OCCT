@@ -24,7 +24,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class IFSelect_WorkSession;
 class IFSelect_Dispatch;

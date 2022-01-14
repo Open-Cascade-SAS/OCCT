@@ -21,13 +21,9 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <BRepTopAdaptor_MapOfShapeTool.hxx>
-#include <HLRAlgo_Projector.hxx>
-#include <HLRBRep.hxx>
 #include <HLRBRep_Data.hxx>
 #include <HLRBRep_ShapeToHLR.hxx>
 #include <HLRTopoBRep_OutLiner.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -35,7 +31,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 

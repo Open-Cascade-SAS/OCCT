@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Interface_Protocol;
 class IFSelect_AppliedModifiers;

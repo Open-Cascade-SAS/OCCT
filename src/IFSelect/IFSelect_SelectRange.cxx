@@ -15,7 +15,6 @@
 #include <IFSelect_IntParam.hxx>
 #include <IFSelect_SelectRange.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <IFSelect_Signature.hxx>
 #include <IFSelect_SignMultiple.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Standard_Transient.hxx>

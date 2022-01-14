@@ -18,12 +18,10 @@
 #define _GeomFill_BoundWithSurf_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <GeomFill_Boundary.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Law_Function;
 class gp_Pnt;
 class gp_Vec;

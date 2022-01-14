@@ -15,7 +15,6 @@
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>

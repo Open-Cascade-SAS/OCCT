@@ -16,10 +16,8 @@
 
 
 #include <AdvApp2Var_Context.hxx>
-#include <AdvApp2Var_Criterion.hxx>
 #include <AdvApp2Var_Patch.hxx>
 #include <GeomPlate_PlateG1Criterion.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XY.hxx>
 #include <PLib.hxx>

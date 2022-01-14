@@ -15,11 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Curve.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,Standard_Transient)

@@ -19,12 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <math_Matrix.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
 class gp_Pnt;

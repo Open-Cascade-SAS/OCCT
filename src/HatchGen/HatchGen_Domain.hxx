@@ -23,8 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <HatchGen_PointOnHatching.hxx>
-#include <Standard_Integer.hxx>
-
 
 
 class HatchGen_Domain 

@@ -18,7 +18,6 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_DimensionError.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
 //! Describes a torus.

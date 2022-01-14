@@ -14,25 +14,18 @@
 #ifndef _Graphic3d_CView_HeaderFile
 #define _Graphic3d_CView_HeaderFile
 
-#include <Aspect_Handle.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_SkydomeBackground.hxx>
 #include <Aspect_Window.hxx>
 #include <Graphic3d_BufferType.hxx>
-#include <Graphic3d_Camera.hxx>
 #include <Graphic3d_CubeMap.hxx>
-#include <Graphic3d_CLight.hxx>
-#include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Graphic3d_DiagnosticInfo.hxx>
 #include <Graphic3d_GraduatedTrihedron.hxx>
-#include <Graphic3d_MapOfStructure.hxx>
 #include <Graphic3d_NMapOfTransient.hxx>
 #include <Graphic3d_RenderingParams.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_SequenceOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
@@ -43,7 +36,6 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Image_PixMap.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>

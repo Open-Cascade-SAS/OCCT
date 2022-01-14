@@ -21,8 +21,6 @@
 #include <GeomliteTest.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
-#include <DrawTrSurf_Curve.hxx>
-#include <DrawTrSurf_Curve2d.hxx>
 #include <DrawTrSurf_BezierCurve.hxx>
 #include <DrawTrSurf_BSplineCurve.hxx>
 #include <DrawTrSurf_BezierCurve2d.hxx>
@@ -34,13 +32,7 @@
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 
-#include <BSplCLib.hxx>
-
 #include <gp.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Parab2d.hxx>
-#include <gp_Elips2d.hxx>
-#include <gp_Hypr2d.hxx>
 
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
@@ -48,11 +40,9 @@
 #include <Geom_Parabola.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 
 #include <GeomLib.hxx>
-#include <GeomConvert.hxx>
 #include <Geom2dConvert.hxx>
 
 #include <Geom2d_Line.hxx>
@@ -73,26 +63,13 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_CurveType.hxx>
-
 #include <Precision.hxx>
 
 #include <stdio.h>
 
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-
-#include <TColGeom_HArray1OfBSplineCurve.hxx>
 #include <TColGeom2d_HArray1OfBSplineCurve.hxx>
-#include <Convert_CompPolynomialToPoles.hxx>
-#include <CPnts_AbscissaPoint.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
-#include <PLib.hxx> 
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomConvert.hxx>
@@ -106,7 +83,6 @@
 #include <Approx_CurveOnSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 
-#include <AppCont_Function.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>

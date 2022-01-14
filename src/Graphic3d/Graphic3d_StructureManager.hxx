@@ -18,7 +18,6 @@
 #define _Graphic3d_StructureManager_HeaderFile
 
 #include <Aspect_GenId.hxx>
-#include <Aspect_TypeOfHighlightMethod.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_MapOfObject.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -28,7 +27,6 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_Array2OfReal.hxx>

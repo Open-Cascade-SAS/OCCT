@@ -14,7 +14,6 @@
 
 #include <GeomConvert.hxx>
 
-#include <BSplCLib.hxx>
 #include <Convert_CircleToBSplineCurve.hxx>
 #include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_EllipseToBSplineCurve.hxx>
@@ -24,7 +23,6 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
@@ -34,7 +32,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
@@ -44,7 +41,6 @@
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

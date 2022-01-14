@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#include <Standard_Address.hxx>
 class Standard_DomainError;
 class Standard_TypeMismatch;
 class StdFail_NotDone;

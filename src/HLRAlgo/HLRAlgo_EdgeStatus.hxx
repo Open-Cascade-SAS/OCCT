@@ -21,11 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_ShortReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <Intrv_Intervals.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! This class describes the Hidden  Line status of an

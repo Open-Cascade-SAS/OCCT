@@ -19,15 +19,12 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TColgp_SequenceOfXY.hxx>
 #include <TColgp_SequenceOfXYZ.hxx>
 #include <AdvApp2Var_Criterion.hxx>
-#include <Standard_Real.hxx>
 #include <AdvApp2Var_CriterionType.hxx>
 #include <AdvApp2Var_CriterionRepartition.hxx>
-#include <Standard_Boolean.hxx>
 class AdvApp2Var_Patch;
 class AdvApp2Var_Context;
 

@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>

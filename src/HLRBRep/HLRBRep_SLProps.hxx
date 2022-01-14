@@ -19,16 +19,12 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
-#include <Standard_Boolean.hxx>
 class LProp_BadContinuity;
 class Standard_DomainError;
 class Standard_OutOfRange;

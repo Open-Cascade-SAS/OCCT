@@ -21,7 +21,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
 
 //! Describes a line in 3D space.
 //! A line is positioned in space with an axis (a gp_Ax1

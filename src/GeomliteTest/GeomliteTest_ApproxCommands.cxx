@@ -24,14 +24,11 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Precision.hxx>
 #include <Draw_Marker3D.hxx>
 #include <Draw_Marker2D.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 
 #include <Geom2d_BSplineCurve.hxx>
@@ -43,26 +40,13 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfVec.hxx>
-#include <TColgp_Array1OfVec.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
 
-#include <AppParCurves_MultiBSpCurve.hxx>
-#include <AppParCurves_MultiCurve.hxx>
-#include <AppDef_MultiLine.hxx>
 #include <AppDef_Variational.hxx>
 #include <AppDef_Compute.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
 #include <AppDef_HArray1OfMultiPointConstraint.hxx>
 #include <AppDef_Array1OfMultiPointConstraint.hxx>
-#include <math_Vector.hxx>
-
-#ifdef _MSC_VER
-#include <stdio.h>
-#endif
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;

@@ -23,8 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_InterfaceModel;
 class Interface_Protocol;
 class IFSelect_ContextWrite;

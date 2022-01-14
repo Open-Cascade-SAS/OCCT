@@ -26,7 +26,6 @@
 #include <Interface_CheckIterator.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
 class Interface_Protocol;
 class Interface_CopyControl;
 class Interface_CopyTool;

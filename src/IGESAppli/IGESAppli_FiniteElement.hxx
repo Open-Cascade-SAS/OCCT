@@ -18,7 +18,6 @@
 #define _IGESAppli_FiniteElement_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESAppli_HArray1OfNode.hxx>

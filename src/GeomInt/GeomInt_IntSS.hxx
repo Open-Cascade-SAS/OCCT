@@ -18,7 +18,6 @@
 #define _GeomInt_IntSS_HeaderFile
 
 #include <IntPatch_Intersection.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <Standard_Integer.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>

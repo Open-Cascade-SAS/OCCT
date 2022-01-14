@@ -18,7 +18,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <ElCLib.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -28,7 +27,6 @@
 #include <GeomFill_Profiler.hxx>
 #include <GeomFill_SweepSectionGenerator.hxx>
 #include <gp_Ax2.hxx>
-#include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>

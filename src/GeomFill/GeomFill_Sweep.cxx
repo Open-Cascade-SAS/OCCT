@@ -61,10 +61,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_NotDone.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>

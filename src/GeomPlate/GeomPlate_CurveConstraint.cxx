@@ -18,27 +18,18 @@
 //		ne traite que les GeomAdaptor_Surface;
 //              plus de reference a BRepAdaptor
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Approx_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomLProp_SLProps.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Law_Function.hxx>
-#include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,Standard_Transient)

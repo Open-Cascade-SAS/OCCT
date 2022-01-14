@@ -17,7 +17,6 @@
 #ifndef IGESBasic_HArray2OfHArray1OfReal_HeaderFile
 #define IGESBasic_HArray2OfHArray1OfReal_HeaderFile
 
-#include <TColStd_HArray1OfReal.hxx>
 #include <IGESBasic_Array2OfHArray1OfReal.hxx>
 #include <NCollection_DefineHArray2.hxx>
 

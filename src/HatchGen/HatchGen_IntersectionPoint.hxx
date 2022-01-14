@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>

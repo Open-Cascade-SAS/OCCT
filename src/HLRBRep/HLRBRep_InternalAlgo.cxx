@@ -16,7 +16,6 @@
 
 
 #include <HLRAlgo.hxx>
-#include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Data.hxx>
 #include <HLRBRep_Hider.hxx>
 #include <HLRBRep_InternalAlgo.hxx>

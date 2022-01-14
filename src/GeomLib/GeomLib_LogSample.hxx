@@ -23,8 +23,6 @@
 
 #include <Standard_Real.hxx>
 #include <math_FunctionSample.hxx>
-#include <Standard_Integer.hxx>
-
 
 
 class GeomLib_LogSample  : public math_FunctionSample

@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 class Geom2d_BSplineCurve;
 class Geom_BSplineCurve;
 

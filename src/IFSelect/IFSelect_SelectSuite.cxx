@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <IFSelect_SelectDeduct.hxx>
-#include <IFSelect_Selection.hxx>
 #include <IFSelect_SelectPointed.hxx>
 #include <IFSelect_SelectSuite.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

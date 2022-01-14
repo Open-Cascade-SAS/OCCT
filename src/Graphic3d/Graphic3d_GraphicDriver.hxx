@@ -18,13 +18,10 @@
 #define _Graphic3d_GraphicDriver_HeaderFile
 
 #include <Aspect_GenId.hxx>
-#include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Graphic3d_TypeOfLimit.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Size.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 
 class Aspect_DisplayConnection;

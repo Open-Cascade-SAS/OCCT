@@ -23,7 +23,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <IFSelect_SelectDeduct.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 class IFSelect_Selection;

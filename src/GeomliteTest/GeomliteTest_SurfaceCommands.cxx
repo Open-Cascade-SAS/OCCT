@@ -21,8 +21,6 @@
 #include <Draw_Appli.hxx>
 #include <Draw_Display.hxx>
 
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_Shape.hxx>
 
 #include <Geom_Plane.hxx>
@@ -30,8 +28,6 @@
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -40,17 +36,10 @@
 
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 
-#include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-
-#include <TColGeom_Array2OfBezierSurface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -58,7 +47,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray2OfReal.hxx>
 
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
@@ -77,8 +65,6 @@
 #include <DrawTrSurf_BSplineSurface.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
 #include <GeomLib_Tool.hxx>
-#include <TopoDS_Shape.hxx>
-#include <DBRep.hxx>
 #include <Geom_Curve.hxx>
 #include <Message.hxx>
 

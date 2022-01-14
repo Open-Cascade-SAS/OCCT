@@ -24,8 +24,6 @@
 #include <gp_Lin.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_ConstantBiNormal,GeomFill_TrihedronLaw)

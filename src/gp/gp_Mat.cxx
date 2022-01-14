@@ -20,7 +20,6 @@
 #include <gp_Mat.hxx>
 
 #include <gp_GTrsf.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>

@@ -17,6 +17,7 @@
 #define _Graphic3d_RenderingParams_HeaderFile
 
 #include <Font_Hinting.hxx>
+#include <Font_NameOfFont.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_RenderTransparentMethod.hxx>

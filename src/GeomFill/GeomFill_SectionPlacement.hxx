@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <gp_Ax1.hxx>
-#include <Standard_Real.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <gp_Pnt.hxx>

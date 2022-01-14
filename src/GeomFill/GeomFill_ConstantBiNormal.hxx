@@ -22,8 +22,6 @@
 
 #include <gp_Vec.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColStd_Array1OfReal.hxx>

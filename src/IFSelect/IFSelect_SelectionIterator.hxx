@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <IFSelect_HSeqOfSelection.hxx>
 #include <IFSelect_TSeqOfSelection.hxx>
-#include <Standard_Boolean.hxx>
 class IFSelect_Selection;
 
 //! Defines an Iterator on a list of Selections

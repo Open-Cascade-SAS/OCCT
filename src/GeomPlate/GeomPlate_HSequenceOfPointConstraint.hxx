@@ -17,7 +17,6 @@
 #ifndef GeomPlate_HSequenceOfPointConstraint_HeaderFile
 #define GeomPlate_HSequenceOfPointConstraint_HeaderFile
 
-#include <GeomPlate_PointConstraint.hxx>
 #include <GeomPlate_SequenceOfPointConstraint.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

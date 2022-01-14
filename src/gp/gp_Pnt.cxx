@@ -20,7 +20,6 @@
 
 #include <gp_Pnt.hxx>
 
-#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>

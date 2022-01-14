@@ -17,7 +17,6 @@
 #ifndef _HLRAlgo_PolyAlgo_HeaderFile
 #define _HLRAlgo_PolyAlgo_HeaderFile
 
-#include <NCollection_Array1.hxx>
 #include <HLRAlgo_PolyData.hxx>
 #include <HLRAlgo_ListIteratorOfListOfBPoint.hxx>
 

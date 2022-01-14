@@ -16,7 +16,6 @@
 #define _gp_Parab_HeaderFile
 
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_ConstructionError.hxx>

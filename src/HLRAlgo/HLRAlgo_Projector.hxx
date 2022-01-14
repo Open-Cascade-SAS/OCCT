@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec2d.hxx>
 class gp_Ax2;

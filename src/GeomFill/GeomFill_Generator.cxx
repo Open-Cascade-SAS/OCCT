@@ -19,8 +19,6 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomFill_Generator.hxx>
-#include <Standard_DomainError.hxx>
-#include <StdFail_NotDone.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>

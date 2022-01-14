@@ -22,12 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <TColgp_HArray1OfPnt.hxx>
-#include <Standard_Real.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Integer.hxx>
 #include <TColgp_SequenceOfVec.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomPlate_SequenceOfAij.hxx>
 class Geom_Plane;
 class Geom_Line;

@@ -19,7 +19,6 @@
 #include <IGESBasic_ExternalRefFileName.hxx>
 #include <IGESBasic_ExternalRefLibName.hxx>
 #include <IGESBasic_ExternalRefName.hxx>
-#include <IGESBasic_Group.hxx>
 #include <IGESBasic_GroupWithoutBackP.hxx>
 #include <IGESBasic_Hierarchy.hxx>
 #include <IGESBasic_Name.hxx>
@@ -50,7 +49,6 @@
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <Interface_Macros.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_ReadWriteModule,IGESData_ReadWriteModule)

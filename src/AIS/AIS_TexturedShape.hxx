@@ -18,6 +18,7 @@
 
 #include <AIS_Shape.hxx>
 #include <gp_Pnt2d.hxx>
+#include <Graphic3d_NameOfTexture2D.hxx>
 #include <Image_PixMap.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

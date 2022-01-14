@@ -20,8 +20,6 @@
 #include <Draw_Display.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRBRep_BiPoint.hxx>
-#include <HLRBRep_ListIteratorOfListOfBPoint.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 #include <HLRTest_DrawablePolyEdgeTool.hxx>
 #include <OSD_Chronometer.hxx>

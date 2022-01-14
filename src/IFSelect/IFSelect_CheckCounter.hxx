@@ -18,10 +18,8 @@
 #define _IFSelect_CheckCounter_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_SignatureList.hxx>
-#include <Standard_Boolean.hxx>
 class MoniTool_SignText;
 class Interface_CheckIterator;
 class Interface_InterfaceModel;

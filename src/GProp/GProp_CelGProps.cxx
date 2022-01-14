@@ -14,11 +14,9 @@
 
 
 #include <ElCLib.hxx>
-#include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <GProp.hxx>
 #include <GProp_CelGProps.hxx>
 #include <math_Jacobi.hxx>

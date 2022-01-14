@@ -13,8 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_Atomic.hxx>
-
 #include <Graphic3d_ShaderVariable.hxx>
 
 

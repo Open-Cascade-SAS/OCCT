@@ -21,7 +21,6 @@
 #include <Graphic3d_TypeOfTextureFilter.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
 #include <Standard.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>

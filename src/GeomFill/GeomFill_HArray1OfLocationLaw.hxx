@@ -17,7 +17,6 @@
 #ifndef GeomFill_HArray1OfLocationLaw_HeaderFile
 #define GeomFill_HArray1OfLocationLaw_HeaderFile
 
-#include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_Array1OfLocationLaw.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

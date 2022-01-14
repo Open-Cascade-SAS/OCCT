@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pln.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Geom_Surface;
 
 

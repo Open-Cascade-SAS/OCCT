@@ -22,7 +22,6 @@
 
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Pnt;
 class gp_Vec;
 

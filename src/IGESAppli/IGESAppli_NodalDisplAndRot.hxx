@@ -18,7 +18,6 @@
 #define _IGESAppli_NodalDisplAndRot_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESDimen_HArray1OfGeneralNote.hxx>
 #include <TColStd_HArray1OfInteger.hxx>

@@ -17,12 +17,9 @@
 #define _GeomFill_DiscreteTrihedron_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <GeomFill_HSequenceOfAx2.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>

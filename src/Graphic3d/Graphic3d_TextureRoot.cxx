@@ -25,7 +25,6 @@
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
-#include <OSD_Protection.hxx>
 #include <Standard_Atomic.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_TextureRoot, Standard_Transient)

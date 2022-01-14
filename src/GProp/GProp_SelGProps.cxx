@@ -23,7 +23,6 @@
 #include <math_Jacobi.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
-#include <Standard_NotImplemented.hxx>
 
 GProp_SelGProps::GProp_SelGProps(){}
 

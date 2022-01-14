@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <GeomFill_Boundary.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 
 class Law_Function;
 class gp_Pnt;

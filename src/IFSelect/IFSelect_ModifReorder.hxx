@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <IFSelect_Modifier.hxx>
 class IFSelect_ContextModif;
 class Interface_InterfaceModel;

@@ -18,12 +18,10 @@
 #define _Graphic3d_Texture2Dplane_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Graphic3d_NameOfTexturePlane.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
-#include <Standard_ShortReal.hxx>
 class TCollection_AsciiString;
 
 

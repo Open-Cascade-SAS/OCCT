@@ -15,7 +15,6 @@
 #ifndef _GeomEvaluator_OffsetCurve_HeaderFile
 #define _GeomEvaluator_OffsetCurve_HeaderFile
 
-#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomEvaluator_Curve.hxx>
 #include <gp_Dir.hxx>

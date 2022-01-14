@@ -16,7 +16,6 @@
 
 #include <GeomFill.hxx>
 
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>

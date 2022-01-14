@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <HLRAlgo_Intersection.hxx>
 #include <HLRAlgo_Coincidence.hxx>

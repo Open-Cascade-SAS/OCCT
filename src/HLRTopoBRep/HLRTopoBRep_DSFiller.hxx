@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Shape;
 class Contap_Contour;
 class HLRTopoBRep_Data;

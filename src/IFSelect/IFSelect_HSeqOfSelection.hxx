@@ -17,7 +17,6 @@
 #ifndef IFSelect_HSeqOfSelection_HeaderFile
 #define IFSelect_HSeqOfSelection_HeaderFile
 
-#include <IFSelect_Selection.hxx>
 #include <IFSelect_TSeqOfSelection.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

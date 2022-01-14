@@ -17,6 +17,7 @@
 
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ShaderObject.hxx>
+#include <Graphic3d_TextureSetBits.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>

@@ -15,8 +15,6 @@
 #ifndef _Graphic3d_DisplayPriority_HeaderFile
 #define _Graphic3d_DisplayPriority_HeaderFile
 
-#include <Standard_Integer.hxx>
-
 //! Structure priority - range (do not change this range!).
 //! Values are between 0 and 10, with 5 used by default.
 //! A structure of priority 10 is displayed the last and appears over the others (considering depth test).

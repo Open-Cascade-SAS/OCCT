@@ -20,11 +20,9 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <ElCLib.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomInt.hxx>
 #include <GeomInt_LineConstructor.hxx>
 #include <GeomInt_LineTool.hxx>
-#include <GeomInt_ParameterAndOrientation.hxx>
 #include <GeomInt_SequenceOfParameterAndOrientation.hxx>
 #include <gp_Pnt2d.hxx>
 #include <IntPatch_ALine.hxx>
@@ -37,7 +35,6 @@
 #include <IntSurf_Transition.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TopAbs_Orientation.hxx>

@@ -18,9 +18,7 @@
 #define _Graphic3d_Texture1Dsegment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_ShortReal.hxx>
 #include <Graphic3d_Texture1D.hxx>
 #include <Graphic3d_NameOfTexture1D.hxx>
 class TCollection_AsciiString;

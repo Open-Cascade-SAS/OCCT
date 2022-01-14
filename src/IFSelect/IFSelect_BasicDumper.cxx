@@ -34,7 +34,6 @@
 #include <IFSelect_SelectUnion.hxx>
 #include <IFSelect_SelectUnknownEntities.hxx>
 #include <IFSelect_SessionFile.hxx>
-#include <IFSelect_ShareOut.hxx>
 #include <IFSelect_TransformStandard.hxx>
 #include <IFSelect_WorkSession.hxx>
 #include <Interface_Macros.hxx>

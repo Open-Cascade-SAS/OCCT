@@ -20,7 +20,6 @@
 #include <IGESAppli_Node.hxx>
 #include <IGESDefs_TabularData.hxx>
 #include <Standard_DimensionMismatch.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalConstraint,IGESData_IGESEntity)

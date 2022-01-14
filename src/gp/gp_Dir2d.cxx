@@ -18,9 +18,7 @@
 
 #include <gp_Ax2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>

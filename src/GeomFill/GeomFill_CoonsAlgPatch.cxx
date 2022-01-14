@@ -20,7 +20,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <Law_Function.hxx>
 #include <Law_Linear.hxx>
 #include <Standard_Type.hxx>
 

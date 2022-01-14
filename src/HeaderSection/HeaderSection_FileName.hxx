@@ -18,7 +18,6 @@
 #define _HeaderSection_FileName_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Transient.hxx>

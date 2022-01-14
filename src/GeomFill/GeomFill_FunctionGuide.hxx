@@ -23,7 +23,6 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <gp_XYZ.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <Standard_Integer.hxx>
 #include <math_Vector.hxx>

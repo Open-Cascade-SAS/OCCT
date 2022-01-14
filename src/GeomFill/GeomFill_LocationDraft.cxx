@@ -19,9 +19,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_DraftTrihedron.hxx>
 #include <GeomFill_FunctionDraft.hxx>
 #include <GeomFill_LocationLaw.hxx>
@@ -40,7 +38,6 @@
 #include <math_NewtonFunctionSetRoot.hxx>
 #include <math_Vector.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationDraft,GeomFill_LocationLaw)

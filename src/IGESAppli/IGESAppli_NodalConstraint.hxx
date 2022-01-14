@@ -18,7 +18,6 @@
 #define _IGESAppli_NodalConstraint_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESDefs_HArray1OfTabularData.hxx>

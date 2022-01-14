@@ -18,11 +18,8 @@
 #define _GeomFill_Fixed_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Vec.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>

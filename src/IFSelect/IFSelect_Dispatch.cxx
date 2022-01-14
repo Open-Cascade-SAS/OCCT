@@ -15,11 +15,9 @@
 #include <IFGraph_Compare.hxx>
 #include <IFGraph_SubPartsIterator.hxx>
 #include <IFSelect_Dispatch.hxx>
-#include <IFSelect_Selection.hxx>
 #include <IFSelect_SelectionIterator.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>

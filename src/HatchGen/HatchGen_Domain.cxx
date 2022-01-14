@@ -17,7 +17,6 @@
 
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_PointOnHatching.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Stream.hxx>
 
 //=======================================================================

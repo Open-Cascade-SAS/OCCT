@@ -13,9 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_XYZ.hxx>
 #include <GProp_PGProps.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_DomainError.hxx>

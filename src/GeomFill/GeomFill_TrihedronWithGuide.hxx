@@ -18,9 +18,7 @@
 #define _GeomFill_TrihedronWithGuide_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <gp_Pnt.hxx>
 #include <GeomFill_TrihedronLaw.hxx>
 #include <Standard_Real.hxx>
 

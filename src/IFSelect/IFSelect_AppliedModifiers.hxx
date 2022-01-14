@@ -18,13 +18,11 @@
 #define _IFSelect_AppliedModifiers_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_SequenceOfGeneralModifier.hxx>
 #include <Interface_IntList.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 class IFSelect_GeneralModifier;
 

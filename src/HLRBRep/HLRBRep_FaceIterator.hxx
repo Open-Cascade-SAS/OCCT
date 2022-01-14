@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 class HLRAlgo_WiresBlock;
 class HLRAlgo_EdgesBlock;

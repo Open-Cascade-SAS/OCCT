@@ -18,14 +18,12 @@
 #define _GeomFill_NSections_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <GeomFill_SequenceOfTrsf.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <GeomFill_SectionLaw.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfVec.hxx>

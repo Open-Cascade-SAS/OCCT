@@ -18,14 +18,11 @@
 #define _IFSelect_Signature_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Interface_SignType.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
 

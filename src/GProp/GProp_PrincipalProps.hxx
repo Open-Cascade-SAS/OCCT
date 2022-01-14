@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>

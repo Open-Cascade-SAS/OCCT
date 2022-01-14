@@ -14,7 +14,6 @@
 
 #include <IFSelect_Act.hxx>
 #include <IFSelect_SessionPilot.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

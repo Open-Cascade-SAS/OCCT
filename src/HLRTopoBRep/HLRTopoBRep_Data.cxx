@@ -23,7 +23,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : HLRTopoBRep_Data

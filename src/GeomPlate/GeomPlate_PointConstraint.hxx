@@ -24,9 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class Geom_Surface;
 

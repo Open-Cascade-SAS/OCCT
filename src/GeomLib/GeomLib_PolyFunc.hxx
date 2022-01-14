@@ -23,8 +23,6 @@
 
 #include <math_Vector.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 
 //! Polynomial  Function

@@ -17,7 +17,6 @@
 #ifndef IGESAppli_HArray1OfNode_HeaderFile
 #define IGESAppli_HArray1OfNode_HeaderFile
 
-#include <IGESAppli_Node.hxx>
 #include <IGESAppli_Array1OfNode.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

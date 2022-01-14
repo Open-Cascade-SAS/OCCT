@@ -17,8 +17,6 @@
 
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
-#include <DrawTrSurf_Polygon2D.hxx>
-#include <DrawTrSurf_Polygon3D.hxx>
 #include <DrawTrSurf_Triangulation.hxx>
 #include <GeometryTest.hxx>
 #include <Poly.hxx>

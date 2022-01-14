@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <HLRBRep_ListOfBPnt2D.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_PolyAlgo;

@@ -22,7 +22,6 @@
 
 #include <IFSelect_SelectDeduct.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class IFSelect_IntParam;
 class Interface_EntityIterator;
 class Standard_Transient;

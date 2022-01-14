@@ -17,10 +17,7 @@
 #include <LocalAnalysis.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <LocalAnalysis_CurveContinuity.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Curve.hxx>
 #include <DrawTrSurf.hxx>
 #include <GeometryTest.hxx>
 #include <GeomAbs_Shape.hxx>

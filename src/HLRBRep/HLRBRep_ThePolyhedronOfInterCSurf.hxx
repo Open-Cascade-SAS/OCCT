@@ -24,9 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_HArray1OfBox.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Standard_OutOfRange;
 class HLRBRep_SurfaceTool;

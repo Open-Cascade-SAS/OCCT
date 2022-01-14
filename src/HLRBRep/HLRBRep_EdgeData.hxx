@@ -21,14 +21,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
 #include <HLRBRep_Curve.hxx>
-#include <Standard_ShortReal.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Edge;
 
 // resolve name collisions with X11 headers

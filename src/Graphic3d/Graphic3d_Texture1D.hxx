@@ -18,7 +18,6 @@
 #define _Graphic3d_Texture1D_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Graphic3d_NameOfTexture1D.hxx>
 #include <Graphic3d_TextureMap.hxx>

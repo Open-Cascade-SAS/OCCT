@@ -24,7 +24,6 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
 
 //=======================================================================

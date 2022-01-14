@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 class HLRBRep_CurveTool;
 class HLRBRep_TheCurveLocatorOfTheProjPCurOfCInter;

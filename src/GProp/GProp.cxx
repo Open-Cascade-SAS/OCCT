@@ -14,11 +14,8 @@
 
 #include <GProp.hxx>
 
-#include <gp.hxx>
-#include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-#include <Standard_DimensionError.hxx>
 
 void GProp::HOperator (
 

@@ -15,7 +15,6 @@
 
 #include <IFSelect_Act.hxx>
 #include <IFSelect_CheckCounter.hxx>
-#include <IFSelect_Dispatch.hxx>
 #include <IFSelect_DispGlobal.hxx>
 #include <IFSelect_DispPerCount.hxx>
 #include <IFSelect_DispPerFiles.hxx>
@@ -24,13 +23,10 @@
 #include <IFSelect_EditForm.hxx>
 #include <IFSelect_Editor.hxx>
 #include <IFSelect_Functions.hxx>
-#include <IFSelect_GeneralModifier.hxx>
 #include <IFSelect_GraphCounter.hxx>
 #include <IFSelect_IntParam.hxx>
 #include <IFSelect_ListEditor.hxx>
-#include <IFSelect_Modifier.hxx>
 #include <IFSelect_ModifReorder.hxx>
-#include <IFSelect_SelectDeduct.hxx>
 #include <IFSelect_SelectDiff.hxx>
 #include <IFSelect_SelectEntityNumber.hxx>
 #include <IFSelect_SelectErrorEntities.hxx>
@@ -51,7 +47,6 @@
 #include <IFSelect_SessionFile.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_ShareOut.hxx>
-#include <IFSelect_Signature.hxx>
 #include <IFSelect_SignatureList.hxx>
 #include <IFSelect_SignCounter.hxx>
 #include <IFSelect_SignType.hxx>
@@ -74,7 +69,6 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_MapOfInteger.hxx>
 
 #include <stdio.h>
 //  Decomposition of a file name in its parts : prefix, root, suffix

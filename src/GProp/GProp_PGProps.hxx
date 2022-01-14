@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GProp_GProps.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>

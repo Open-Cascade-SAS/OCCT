@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <GeomFill_ApproxStyle.hxx>

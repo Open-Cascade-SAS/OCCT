@@ -18,15 +18,11 @@
 #define _IFSelect_PacketList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TColStd_Array1OfInteger.hxx>
 #include <Interface_IntList.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class Interface_InterfaceModel;
 class Interface_EntityIterator;

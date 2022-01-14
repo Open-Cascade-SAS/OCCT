@@ -18,11 +18,7 @@
 #define _GeomFill_CurveAndTrihedron_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_Mat.hxx>
 #include <GeomFill_LocationLaw.hxx>
 #include <Standard_Real.hxx>

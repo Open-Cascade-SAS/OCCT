@@ -14,8 +14,6 @@
 
 #include <gp_XY.hxx>
 
-#include <gp_Mat2d.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
 Standard_Boolean gp_XY::IsEqual (const gp_XY& Other,

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomFill_Profiler.hxx>
-#include <Standard_Real.hxx>
 class Geom_Surface;
 
 

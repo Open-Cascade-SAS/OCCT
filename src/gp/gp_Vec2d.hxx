@@ -17,8 +17,6 @@
 
 #include <gp_VectorWithNullMagnitude.hxx>
 #include <gp_XY.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
 
 class gp_Dir2d;
 class gp_Pnt2d;

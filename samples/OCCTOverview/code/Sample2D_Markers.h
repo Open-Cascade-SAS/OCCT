@@ -24,6 +24,7 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
 
 //! AIS AIS interactive object for sample 2D marker
 class Sample2D_Markers : public AIS_InteractiveObject

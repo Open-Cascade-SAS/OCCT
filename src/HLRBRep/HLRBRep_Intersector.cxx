@@ -21,9 +21,7 @@
 
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
-#include <gp.hxx>
 #include <gp_Lin.hxx>
-#include <HLRBRep_Curve.hxx>
 #include <HLRBRep_CurveTool.hxx>
 #include <HLRBRep_EdgeData.hxx>
 #include <HLRBRep_Intersector.hxx>
@@ -39,7 +37,6 @@
 #include <IntRes2d_Transition.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
 
-#include <stdio.h>
 //#define PERF
 
 #ifdef PERF

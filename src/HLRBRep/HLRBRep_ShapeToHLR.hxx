@@ -24,7 +24,6 @@
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Boolean.hxx>
 class HLRBRep_Data;
 class HLRTopoBRep_OutLiner;
 class HLRAlgo_Projector;

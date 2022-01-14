@@ -24,7 +24,6 @@
 #include <IFSelect_SequenceOfGeneralModifier.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 class IFSelect_Dispatch;
 class IFSelect_GeneralModifier;

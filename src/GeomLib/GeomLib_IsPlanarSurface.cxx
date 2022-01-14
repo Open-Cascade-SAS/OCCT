@@ -21,8 +21,6 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>

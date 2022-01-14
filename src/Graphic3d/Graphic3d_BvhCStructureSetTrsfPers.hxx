@@ -16,8 +16,6 @@
 #ifndef _Graphic3d_BvhCStructureSetTrsfPers_HeaderFile
 #define _Graphic3d_BvhCStructureSetTrsfPers_HeaderFile
 
-#include <BVH_Set.hxx>
-#include <BVH_Tree.hxx>
 #include <Graphic3d_BndBox3d.hxx>
 #include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>

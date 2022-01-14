@@ -15,15 +15,12 @@
 #ifndef _Graphic3d_CStructure_HeaderFile
 #define _Graphic3d_CStructure_HeaderFile
 
-#include <Graphic3d_BndBox3d.hxx>
 #include <Graphic3d_DisplayPriority.hxx>
-#include <Graphic3d_Group.hxx>
 #include <Graphic3d_PresentationAttributes.hxx>
 #include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
 #include <Graphic3d_TransformPers.hxx>
-#include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <NCollection_IndexedMap.hxx>

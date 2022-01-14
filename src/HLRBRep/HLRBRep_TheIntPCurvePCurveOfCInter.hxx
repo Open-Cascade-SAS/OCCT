@@ -19,14 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Intersection.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class HLRBRep_CurveTool;
 class HLRBRep_TheProjPCurOfCInter;
 class HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter;

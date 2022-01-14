@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Draw_Drawable3D.hxx>
 class HLRBRep_Algo;

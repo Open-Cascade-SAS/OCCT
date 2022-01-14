@@ -14,10 +14,8 @@
 
 #include <IFSelect_Selection.hxx>
 #include <IFSelect_SelectionIterator.hxx>
-#include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_GraphContent.hxx>
-#include <Interface_InterfaceError.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 

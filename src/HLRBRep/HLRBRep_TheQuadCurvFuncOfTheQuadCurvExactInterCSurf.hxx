@@ -25,7 +25,6 @@
 #include <gp_Lin.hxx>
 #include <math_FunctionWithDerivative.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class IntSurf_Quadric;
 class gp_Lin;
 class HLRBRep_LineTool;

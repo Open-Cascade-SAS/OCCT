@@ -23,7 +23,6 @@
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_SeqOfShapeBounds.hxx>
 #include <BRepTopAdaptor_MapOfShapeTool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 class HLRBRep_Data;

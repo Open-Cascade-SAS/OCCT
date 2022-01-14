@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <stdio.h>
-#include <string.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GraphCounter,IFSelect_SignCounter)
 
 IFSelect_GraphCounter::IFSelect_GraphCounter

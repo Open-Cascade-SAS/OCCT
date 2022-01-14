@@ -22,7 +22,6 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <math_MultipleVarFunction.hxx>
 #include <math_PSO.hxx>
 
 // The functions Parameter(s) are used to compute parameter(s) of point

@@ -18,12 +18,10 @@
 #define _GeomFill_DegeneratedBound_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 #include <GeomFill_Boundary.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Vec;
 
 

@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <IFGraph_SubPartsIterator.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_Graph;
 
 //! determines Connected Components in a Graph.

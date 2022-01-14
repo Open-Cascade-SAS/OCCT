@@ -21,11 +21,9 @@
 //              de la distance au carre)
 
 #include <AdvApp2Var_Context.hxx>
-#include <AdvApp2Var_Criterion.hxx>
 #include <AdvApp2Var_Patch.hxx>
 #include <GeomPlate_PlateG0Criterion.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
 #include <gp_XY.hxx>
 #include <PLib.hxx>
 #include <TColgp_SequenceOfXY.hxx>

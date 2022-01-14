@@ -22,10 +22,7 @@
 
 #include <GeomFill_NSections.hxx>
 
-#include <BSplCLib.hxx>
-#include <Convert_ParameterisationType.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
@@ -42,9 +39,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TColGeom_Array1OfCurve.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 

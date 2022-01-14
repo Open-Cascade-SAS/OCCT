@@ -28,8 +28,6 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_DomainError.hxx>
 
 IGESBasic_ToolHierarchy::IGESBasic_ToolHierarchy ()    {  }
 

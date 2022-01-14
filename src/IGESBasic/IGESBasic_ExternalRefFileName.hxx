@@ -18,10 +18,8 @@
 #define _IGESBasic_ExternalRefFileName_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IGESData_IGESEntity.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 
 

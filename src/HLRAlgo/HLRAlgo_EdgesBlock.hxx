@@ -25,7 +25,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class HLRAlgo_EdgesBlock;

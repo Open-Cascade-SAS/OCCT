@@ -17,7 +17,6 @@
 #include <IFSelect_GeneralModifier.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>

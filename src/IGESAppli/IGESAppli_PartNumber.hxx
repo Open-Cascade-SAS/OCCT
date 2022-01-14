@@ -18,7 +18,6 @@
 #define _IGESAppli_PartNumber_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <IGESData_IGESEntity.hxx>

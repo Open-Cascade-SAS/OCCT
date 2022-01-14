@@ -17,7 +17,6 @@
 #include <GeomTools.hxx>
 
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 #include <GeomTools_CurveSet.hxx>

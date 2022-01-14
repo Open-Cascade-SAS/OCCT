@@ -21,14 +21,13 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Standard_ConstructionError.hxx>
 
 void gp_Elips2d::Coefficients (Standard_Real& A, 
-			       Standard_Real& B, 
-			       Standard_Real& C, 
-			       Standard_Real& D, 
-			       Standard_Real& E, 
-			       Standard_Real& F) const 
+                               Standard_Real& B, 
+                               Standard_Real& C, 
+                               Standard_Real& D, 
+                               Standard_Real& E, 
+                               Standard_Real& F) const 
 {
   Standard_Real DMin = minorRadius * minorRadius;
   Standard_Real DMaj = majorRadius * majorRadius;

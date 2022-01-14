@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_ShortReal.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
 //! This class represents a graphical 3D point.

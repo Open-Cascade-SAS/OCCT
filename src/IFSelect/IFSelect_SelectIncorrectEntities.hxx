@@ -18,7 +18,6 @@
 #define _IFSelect_SelectIncorrectEntities_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_SelectFlag.hxx>
 
