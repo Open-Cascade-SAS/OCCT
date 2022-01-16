@@ -957,7 +957,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
   Standard_Boolean isVirtual = false;
   Handle(V3d_View) aCopyFrom;
   TCollection_AsciiString aName, aValue;
-  int is2dMode = -1;
+  int is2dMode = -1, aDpiAware = -1;
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
     const TCollection_AsciiString anArg = theArgVec[anArgIt];
@@ -1039,6 +1039,10 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     {
       aDisplayName = theArgVec[++anArgIt];
     }
+    else if (anArgCase == "-dpiaware")
+    {
+      aDpiAware = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt) ? 1 : 0;
+    }
     else if (!ViewerTest::CurrentView().IsNull()
           &&  aCopyFrom.IsNull()
           && (anArgCase == "-copy"
@@ -1098,12 +1102,44 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     }
   }
 
+#if defined(_WIN32)
+  if (aDpiAware != -1)
+  {
+    typedef void* (WINAPI *SetThreadDpiAwarenessContext_t)(void*);
+    if (HMODULE aUser32Module = GetModuleHandleW (L"User32"))
+    {
+      SetThreadDpiAwarenessContext_t aSetDpiAware = (SetThreadDpiAwarenessContext_t )GetProcAddress (aUser32Module, "SetThreadDpiAwarenessContext");
+      if (aDpiAware == 1)
+      {
+        // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+        if (aSetDpiAware ((void* )-4) == NULL)
+        {
+          // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE for older systems
+          if (aSetDpiAware ((void* )-3) == NULL)
+          {
+            Message::SendFail() << "Error: unable to enable DPI awareness";
+          }
+        }
+      }
+      else
+      {
+        // DPI_AWARENESS_CONTEXT_UNAWARE
+        if (aSetDpiAware ((void* )-1) == NULL)
+        {
+          Message::SendFail() << "Error: unable to disable DPI awareness";
+        }
+      }
+    }
+  }
+#else
+  (void )aDpiAware;
 #if !defined(HAVE_XLIB)
   if (!aDisplayName.IsEmpty())
   {
     aDisplayName.Clear();
     Message::SendWarning() << "Warning: display parameter will be ignored.\n";
   }
+#endif
 #endif
 
   ViewerTest_Names aViewNames (aViewName);
@@ -9373,15 +9409,60 @@ static int VStereo (Draw_Interpretor& theDI,
       TCollection_AsciiString aMode;
       switch (aView->RenderingParams().StereoMode)
       {
-        case Graphic3d_StereoMode_QuadBuffer       : aMode = "quadBuffer";       break;
-        case Graphic3d_StereoMode_RowInterlaced    : aMode = "rowInterlaced";    break;
-        case Graphic3d_StereoMode_ColumnInterlaced : aMode = "columnInterlaced"; break;
-        case Graphic3d_StereoMode_ChessBoard       : aMode = "chessBoard";       break;
-        case Graphic3d_StereoMode_SideBySide       : aMode = "sideBySide";       break;
-        case Graphic3d_StereoMode_OverUnder        : aMode = "overUnder";        break;
-        case Graphic3d_StereoMode_SoftPageFlip     : aMode = "softpageflip";     break;
-        case Graphic3d_StereoMode_OpenVR           : aMode = "openVR";           break;
-        case Graphic3d_StereoMode_Anaglyph  :
+        case Graphic3d_StereoMode_QuadBuffer:
+        {
+          aMode = "quadBuffer";
+          break;
+        }
+        case Graphic3d_StereoMode_RowInterlaced:
+        {
+          aMode = "rowInterlaced";
+          if (aView->RenderingParams().ToSmoothInterlacing)
+          {
+            aMode.AssignCat (" (smoothed)");
+          }
+          break;
+        }
+        case Graphic3d_StereoMode_ColumnInterlaced:
+        {
+          aMode = "columnInterlaced";
+          if (aView->RenderingParams().ToSmoothInterlacing)
+          {
+            aMode.AssignCat (" (smoothed)");
+          }
+          break;
+        }
+        case Graphic3d_StereoMode_ChessBoard:
+        {
+          aMode = "chessBoard";
+          if (aView->RenderingParams().ToSmoothInterlacing)
+          {
+            aMode.AssignCat (" (smoothed)");
+          }
+          break;
+        }
+        case Graphic3d_StereoMode_SideBySide:
+        {
+          aMode = "sideBySide";
+          break;
+        }
+        case Graphic3d_StereoMode_OverUnder:
+        {
+          aMode = "overUnder";
+          break;
+        }
+        case Graphic3d_StereoMode_SoftPageFlip:
+        {
+          aMode = "softPageFlip";
+          break;
+        }
+        case Graphic3d_StereoMode_OpenVR:
+        {
+          aMode = "openVR";
+          break;
+        }
+        case Graphic3d_StereoMode_Anaglyph:
+        {
           aMode = "anaglyph";
           switch (aView->RenderingParams().AnaglyphFilter)
           {
@@ -9390,9 +9471,9 @@ static int VStereo (Draw_Interpretor& theDI,
             case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Simple   : aMode.AssignCat (" (yellowBlueSimple)");   break;
             case Graphic3d_RenderingParams::Anaglyph_YellowBlue_Optimized: aMode.AssignCat (" (yellowBlue)");         break;
             case Graphic3d_RenderingParams::Anaglyph_GreenMagenta_Simple : aMode.AssignCat (" (greenMagentaSimple)"); break;
-            default: break;
+            case Graphic3d_RenderingParams::Anaglyph_UserDefined         : aMode.AssignCat (" (userDefined)");        break;
           }
-        default: break;
+        }
       }
       theDI << "Mode " << aMode << "\n";
     }
@@ -9441,27 +9522,12 @@ static int VStereo (Draw_Interpretor& theDI,
       }
     }
     else if (aFlag == "-reverse"
+          || aFlag == "-noreverse"
           || aFlag == "-reversed"
-          || aFlag == "-swap")
-    {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aParams->ToReverseStereo = toEnable;
-    }
-    else if (aFlag == "-noreverse"
+          || aFlag == "-swap"
           || aFlag == "-noswap")
     {
-      Standard_Boolean toDisable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toDisable))
-      {
-        --anArgIter;
-      }
-      aParams->ToReverseStereo = !toDisable;
+      aParams->ToReverseStereo = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (aFlag == "-mode"
           || aFlag == "-stereomode")
@@ -9513,13 +9579,14 @@ static int VStereo (Draw_Interpretor& theDI,
     else if (aFlag == "-mirror"
           || aFlag == "-mirrorcomposer")
     {
-      Standard_Boolean toEnable = Standard_True;
-      if (++anArgIter < theArgNb
-      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
-      {
-        --anArgIter;
-      }
-      aParams->ToMirrorComposer = toEnable;
+      aParams->ToMirrorComposer = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);;
+    }
+    else if (aFlag == "-smooth"
+          || aFlag == "-nosmooth"
+          || aFlag == "-smoothinterlacing"
+          || aFlag == "-nosmoothinterlacing")
+    {
+      aParams->ToSmoothInterlacing = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
     }
     else if (anArgIter + 1 < theArgNb
           && (aFlag == "-unitfactor"
@@ -13735,7 +13802,7 @@ Makes specified driver active when ActiveName argument is specified.
   addCmd ("vinit", VInit, /* [vinit] */ R"(
 vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]
       [-exitOnClose] [-closeOnEscape] [-cloneActive] [-virtual {on|off}=off] [-2d_mode {on|off}=off]
-      [-display displayName]
+      [-display displayName] [-dpiAware {on|off}]
 Creates new View window with specified name viewName.
 By default the new view is created in the viewer and in graphic driver shared with active view.
  -name {driverName/viewerName/viewName | viewerName/viewName | viewName}
@@ -13751,6 +13818,7 @@ Display name will be used within creation of graphic driver, when specified.
  -closeOnEscape when specified, view will be closed on pressing Escape.
  -virtual create an offscreen window within interactive session
  -2d_mode when on, view will not react on rotate scene events
+ -dpiAware override dpi aware hint (Windows platform)
 Additional commands for operations with views: vclose, vactivate, vviewlist.
 )" /* [vinit] */);
 
@@ -14061,7 +14129,7 @@ vfps [framesNb=100] [-duration seconds] : estimate average frame rate for active
   addCmd ("vstereo", VStereo, /* [vstereo] */ R"(
 vstereo [0|1] [-mode Mode] [-reverse {0|1}]
         [-mirrorComposer] [-hmdfov2d AngleDegrees] [-unitFactor MetersFactor]
-        [-anaglyph Filter]
+        [-anaglyph Filter] [-smoothInterlacing]
 Control stereo output mode. Available modes for -mode:
   quadBuffer       OpenGL QuadBuffer stereo;
     requires driver support;
@@ -14069,6 +14137,7 @@ Control stereo output mode. Available modes for -mode:
   anaglyph         Anaglyph glasses, filters for -anaglyph:
     redCyan, redCyanSimple, yellowBlue, yellowBlueSimple, greenMagentaSimple.
   rowInterlaced    row-interlaced display
+    smooth         smooth interlaced output for better text readability
   columnInterlaced column-interlaced display
   chessBoard       chess-board output
   sideBySide       horizontal pair

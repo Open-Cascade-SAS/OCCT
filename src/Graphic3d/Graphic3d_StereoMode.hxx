@@ -28,7 +28,7 @@ enum Graphic3d_StereoMode
   Graphic3d_StereoMode_OverUnder,        //!< vertical   pair
   Graphic3d_StereoMode_SoftPageFlip,     //!< software PageFlip for shutter glasses, should NOT be used!
   Graphic3d_StereoMode_OpenVR,           //!< OpenVR (HMD)
-  Graphic3d_StereoMode_NB                //!< the number of modes
 };
+enum { Graphic3d_StereoMode_NB = Graphic3d_StereoMode_OpenVR + 1 };
 
 #endif // _Graphic3d_StereoMode_HeaderFile

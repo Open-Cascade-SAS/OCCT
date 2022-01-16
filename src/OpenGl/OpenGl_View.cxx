@@ -175,6 +175,8 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myRaytraceFBO2[1]          = new OpenGl_FrameBuffer ("fbo1_raytrace2");
   myDepthPeelingFbos = new OpenGl_DepthPeeling();
   myShadowMaps = new OpenGl_ShadowMapArray();
+
+  myXrSceneFbo->ColorTexture()->Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_BILINEAR);
 }
 
 // =======================================================================
@@ -2862,10 +2864,7 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
     if (!myOpenGlFBO ->InitLazy (aCtx, aPair[0]->GetVPSize(), myFboColorFormat, myFboDepthFormat, 0)
      || !myOpenGlFBO2->InitLazy (aCtx, aPair[0]->GetVPSize(), myFboColorFormat, 0, 0))
     {
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "Error! Unable to allocate FBO for blitting stereo pair");
       bindDefaultFbo (theDrawFbo);
       return;
@@ -2924,10 +2923,16 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
   OpenGl_VertexBuffer* aVerts = initBlitQuad (myToFlipOutput);
 
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
-  if (aVerts->IsValid()
-   && aManager->BindStereoProgram (myRenderParams.StereoMode))
+  if (!aVerts->IsValid()
+   || !aManager->BindStereoProgram (myRenderParams.StereoMode))
   {
-    if (myRenderParams.StereoMode == Graphic3d_StereoMode_Anaglyph)
+    aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Error! Anaglyph has failed");
+    return;
+  }
+
+  switch (myRenderParams.StereoMode)
+  {
+    case Graphic3d_StereoMode_Anaglyph:
     {
       OpenGl_Mat4 aFilterL, aFilterR;
       aFilterL.SetDiagonal (Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
@@ -2988,28 +2993,55 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
       }
       aCtx->ActiveProgram()->SetUniform (aCtx, "uMultL", aFilterL);
       aCtx->ActiveProgram()->SetUniform (aCtx, "uMultR", aFilterR);
+      break;
     }
-
-    aPair[0]->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_0);
-    aPair[1]->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_1);
-    aVerts->BindVertexAttrib (aCtx, 0);
-
-    aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
-
-    aVerts->UnbindVertexAttrib (aCtx, 0);
-    aPair[1]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_1);
-    aPair[0]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_0);
+    case Graphic3d_StereoMode_RowInterlaced:
+    {
+      Graphic3d_Vec2 aTexOffset = myRenderParams.ToSmoothInterlacing
+                                ? Graphic3d_Vec2 (0.0f, -0.5f / float(aPair[0]->GetSizeY()))
+                                : Graphic3d_Vec2();
+      aCtx->ActiveProgram()->SetUniform (aCtx, "uTexOffset", aTexOffset);
+      break;
+    }
+    case Graphic3d_StereoMode_ColumnInterlaced:
+    {
+      Graphic3d_Vec2 aTexOffset = myRenderParams.ToSmoothInterlacing
+                                ? Graphic3d_Vec2 (0.5f / float(aPair[0]->GetSizeX()), 0.0f)
+                                : Graphic3d_Vec2();
+      aCtx->ActiveProgram()->SetUniform (aCtx, "uTexOffset", aTexOffset);
+      break;
+    }
+    case Graphic3d_StereoMode_ChessBoard:
+    {
+      Graphic3d_Vec2 aTexOffset = myRenderParams.ToSmoothInterlacing
+                                ? Graphic3d_Vec2 (0.5f / float(aPair[0]->GetSizeX()),
+                                                 -0.5f / float(aPair[0]->GetSizeY()))
+                                : Graphic3d_Vec2();
+      aCtx->ActiveProgram()->SetUniform (aCtx, "uTexOffset", aTexOffset);
+      break;
+    }
+    default: break;
   }
-  else
+
+  for (int anEyeIter = 0; anEyeIter < 2; ++anEyeIter)
   {
-    TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-      + "Error! Anaglyph has failed";
-    aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                       GL_DEBUG_TYPE_ERROR,
-                       0,
-                       GL_DEBUG_SEVERITY_HIGH,
-                       aMsg);
+    OpenGl_FrameBuffer* anEyeFbo = aPair[anEyeIter];
+    anEyeFbo->ColorTexture()->Bind (aCtx, (Graphic3d_TextureUnit )(Graphic3d_TextureUnit_0 + anEyeIter));
+    if (anEyeFbo->ColorTexture()->Sampler()->Parameters()->Filter() != Graphic3d_TOTF_BILINEAR)
+    {
+      // force filtering
+      anEyeFbo->ColorTexture()->Sampler()->Parameters()->SetFilter (Graphic3d_TOTF_BILINEAR);
+      aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      aCtx->core20fwd->glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
   }
+  aVerts->BindVertexAttrib (aCtx, 0);
+
+  aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+  aVerts->UnbindVertexAttrib (aCtx, 0);
+  aPair[1]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_1);
+  aPair[0]->ColorTexture()->Unbind (aCtx, Graphic3d_TextureUnit_0);
 }
 
 // =======================================================================

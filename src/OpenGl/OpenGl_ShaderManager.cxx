@@ -1249,7 +1249,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
 // =======================================================================
 Standard_Boolean OpenGl_ShaderManager::BindStereoProgram (Graphic3d_StereoMode theStereoMode)
 {
-  if (theStereoMode < 0 || theStereoMode >= Graphic3d_StereoMode_NB)
+  if (theStereoMode < 0 || (int )theStereoMode >= Graphic3d_StereoMode_NB)
   {
     return false;
   }
@@ -1271,6 +1271,7 @@ Standard_Boolean OpenGl_ShaderManager::BindStereoProgram (Graphic3d_StereoMode t
   myContext->BindProgram (aProgram);
   aProgram->SetSampler (myContext, "uLeftSampler",  Graphic3d_TextureUnit_0);
   aProgram->SetSampler (myContext, "uRightSampler", Graphic3d_TextureUnit_1);
+  aProgram->SetUniform (myContext, "uTexOffset",    Graphic3d_Vec2(0.0f));
   return true;
 }
 

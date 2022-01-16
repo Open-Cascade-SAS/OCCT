@@ -1800,11 +1800,14 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramStereo (Gr
     case Graphic3d_StereoMode_RowInterlaced:
     {
       aName = "row-interlaced";
+      aUniforms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec2 uTexOffset", Graphic3d_TOS_FRAGMENT));
       aSrcFrag =
           EOL"void main()"
           EOL"{"
-          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
-          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  vec2 aTexCoordL = TexCoord - uTexOffset;"
+          EOL"  vec2 aTexCoordR = TexCoord + uTexOffset;"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  aTexCoordL);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, aTexCoordR);"
           EOL"  if (int (mod (gl_FragCoord.y - 1023.5, 2.0)) != 1)"
           EOL"  {"
           EOL"    occSetFragColor (aColorL);"
@@ -1819,11 +1822,14 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramStereo (Gr
     case Graphic3d_StereoMode_ColumnInterlaced:
     {
       aName = "column-interlaced";
+      aUniforms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec2 uTexOffset", Graphic3d_TOS_FRAGMENT));
       aSrcFrag =
           EOL"void main()"
           EOL"{"
-          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
-          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  vec2 aTexCoordL = TexCoord - uTexOffset;"
+          EOL"  vec2 aTexCoordR = TexCoord + uTexOffset;"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  aTexCoordL);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, aTexCoordR);"
           EOL"  if (int (mod (gl_FragCoord.x - 1023.5, 2.0)) == 1)"
           EOL"  {"
           EOL"    occSetFragColor (aColorL);"
@@ -1838,11 +1844,14 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramStereo (Gr
     case Graphic3d_StereoMode_ChessBoard:
     {
       aName = "chessboard";
+      aUniforms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec2 uTexOffset", Graphic3d_TOS_FRAGMENT));
       aSrcFrag =
           EOL"void main()"
           EOL"{"
-          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
-          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+          EOL"  vec2 aTexCoordL = TexCoord - uTexOffset;"
+          EOL"  vec2 aTexCoordR = TexCoord + uTexOffset;"
+          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  aTexCoordL);"
+          EOL"  vec4 aColorR = occTexture2D (uRightSampler, aTexCoordR);"
           EOL"  bool isEvenX = int(mod(floor(gl_FragCoord.x - 1023.5), 2.0)) != 1;"
           EOL"  bool isEvenY = int(mod(floor(gl_FragCoord.y - 1023.5), 2.0)) == 1;"
           EOL"  if ((isEvenX && isEvenY) || (!isEvenX && !isEvenY))"

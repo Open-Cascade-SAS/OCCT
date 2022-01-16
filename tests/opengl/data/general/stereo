@@ -18,14 +18,23 @@ vstereo -mode anaglyph
 vfit
 vdump $::imagedir/${::casename}_anaglyph.png -stereo blend
 
-vstereo -mode columnInterlaced
+vstereo -mode columnInterlaced -smooth 0
 vdump $::imagedir/${::casename}_col.png -stereo blend
 
-vstereo -mode chessBoard
+vstereo -mode columnInterlaced -smooth 1
+vdump $::imagedir/${::casename}_col_smooth.png -stereo blend
+
+vstereo -mode chessBoard -smooth 0
 vdump $::imagedir/${::casename}_chess.png -stereo blend
 
-vstereo -mode rowInterlaced
+vstereo -mode chessBoard -smooth 1
+vdump $::imagedir/${::casename}_chess_smooth.png -stereo blend
+
+vstereo -mode rowInterlaced -smooth 0
 vdump $::imagedir/${::casename}_row.png -stereo blend
+
+vstereo -mode rowInterlaced -smooth 1
+vdump $::imagedir/${::casename}_row_smooth.png -stereo blend
 
 vstereo -mode sideBySide
 vdump $::imagedir/${::casename}_sbs_anamorph.png -stereo blend
