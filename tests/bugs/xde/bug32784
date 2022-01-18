@@ -1,0 +1,6 @@
+puts "==========="
+puts "0032784: BinXCAF fails to load documents containing the shapes with scaled/mirrored location"
+puts "==========="
+
+if [info exists D] {catch {Close D}}
+XOpen [locate_data_file bug32784_mirrored.xbf] D
