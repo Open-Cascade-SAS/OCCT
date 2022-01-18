@@ -132,7 +132,7 @@ static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
   TopAbs_Orientation anOrient = CharToOrientation (aCharOrient);
 
   theResult.TShape      (theShapeSet->Shape (aShapeID).TShape());//TShape
-  theResult.Location    (theShapeSet->Locations().Location (aLocID)); //Location
+  theResult.Location    (theShapeSet->Locations().Location (aLocID), Standard_False); //Location
   theResult.Orientation (anOrient);//Orientation
   return 0;
 }
