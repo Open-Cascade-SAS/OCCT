@@ -284,6 +284,11 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
 {  
   // [BEGIN] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast ( TP->Model() );
+  if (!aStepModel->IsInitializedUnit())
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aStepModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
   Interface_EntityIterator anEntIt = aStepModel->Header();
   for ( anEntIt.Start(); anEntIt.More(); anEntIt.Next() ) {
     DeclareAndCast( HeaderSection_FileName, aFileNameEntity, anEntIt.Value() );
@@ -1614,7 +1619,6 @@ Handle(Transfer_Binder) STEPControl_ActorRead::TransferShape(
     const Message_ProgressRange& theProgress)
 {
   if (start.IsNull()) return NullResult();
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
 
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
 #ifdef TRANSLOG
