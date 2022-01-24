@@ -33,31 +33,24 @@ class Poly_TriangulationParameters;
 
 DEFINE_STANDARD_HANDLE(Poly_Triangulation, Standard_Transient)
 
-//! Provides a triangulation for a surface, a set of surfaces, or
-//! more generally a shape.
-//! A triangulation consists of an approximate representation
-//! of the actual shape, using a collection of points and
-//! triangles. The points are located on the surface. The
-//! edges of the triangles connect adjacent points with a
-//! straight line that approximates the true curve on the surface.
+//! Provides a triangulation for a surface, a set of surfaces, or more generally a shape.
+//!
+//! A triangulation consists of an approximate representation of the actual shape,
+//! using a collection of points and triangles.
+//! The points are located on the surface.
+//! The edges of the triangles connect adjacent points with a straight line that approximates the true curve on the surface.
+//!
 //! A triangulation comprises:
-//! -   A table of 3D nodes (3D points on the surface).
-//! -   A table of triangles. Each triangle (Poly_Triangle
-//! object) comprises a triplet of indices in the table of 3D
-//! nodes specific to the triangulation.
-//! -   A table of 2D nodes (2D points), parallel to the table of
-//! 3D nodes. This table is optional. If it exists, the
-//! coordinates of a 2D point are the (u, v) parameters
-//! of the corresponding 3D point on the surface
-//! approximated by the triangulation.
-//! -   A deflection (optional), which maximizes the distance
-//! from a point on the surface to the corresponding point
-//! on its approximate triangulation.
-//! In many cases, algorithms do not need to work with the
-//! exact representation of a surface. A triangular
-//! representation induces simpler and more robust adjusting,
-//! faster performances, and the results are as good.
-//! This is a Transient class.
+//! - A table of 3D nodes (3D points on the surface).
+//! - A table of triangles.
+//!   Each triangle (Poly_Triangle object) comprises a triplet of indices in the table of 3D nodes specific to the triangulation.
+//! - An optional table of 2D nodes (2D points), parallel to the table of 3D nodes.
+//!   2D point are the (u, v) parameters of the corresponding 3D point on the surface approximated by the triangulation.
+//! - An optional table of 3D vectors, parallel to the table of 3D nodes, defining normals to the surface at specified 3D point.
+//! - An optional deflection, which maximizes the distance from a point on the surface to the corresponding point on its approximate triangulation.
+//!
+//! In many cases, algorithms do not need to work with the exact representation of a surface.
+//! A triangular representation induces simpler and more robust adjusting, faster performances, and the results are as good.
 class Poly_Triangulation : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
@@ -134,9 +127,13 @@ public:
   Standard_Boolean HasNormals() const { return !myNormals.IsEmpty(); }
 
   //! Returns a node at the given index.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @return 3D point coordinates
   gp_Pnt Node (Standard_Integer theIndex) const { return myNodes.Value (theIndex - 1); }
 
   //! Sets a node coordinates.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @param[in] thePnt   3D point coordinates
   void SetNode (Standard_Integer theIndex,
                 const gp_Pnt& thePnt)
   {
@@ -144,9 +141,13 @@ public:
   }
 
   //! Returns UV-node at the given index.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @return 2D point defining UV coordinates
   gp_Pnt2d UVNode (Standard_Integer theIndex) const { return myUVNodes.Value (theIndex - 1); }
 
   //! Sets an UV-node coordinates.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @param[in] thePnt   UV coordinates
   void SetUVNode (Standard_Integer theIndex,
                   const gp_Pnt2d&  thePnt)
   {
@@ -154,9 +155,13 @@ public:
   }
 
   //! Returns triangle at the given index.
+  //! @param[in] theIndex triangle index within [1, NbTriangles()] range
+  //! @return triangle node indices, with each node defined within [1, NbNodes()] range
   const Poly_Triangle& Triangle (Standard_Integer theIndex) const { return myTriangles.Value (theIndex); }
 
   //! Sets a triangle.
+  //! @param[in] theIndex triangle index within [1, NbTriangles()] range
+  //! @param[in] theTriangle triangle node indices, with each node defined within [1, NbNodes()] range
   void SetTriangle (Standard_Integer theIndex,
                     const Poly_Triangle& theTriangle)
   {
@@ -164,6 +169,8 @@ public:
   }
 
   //! Returns normal at the given index.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @return normalized 3D vector defining a surface normal
   gp_Dir Normal (Standard_Integer theIndex) const
   {
     const gp_Vec3f& aNorm = myNormals.Value (theIndex - 1);
@@ -171,6 +178,8 @@ public:
   }
 
   //! Returns normal at the given index.
+  //! @param[in]  theIndex node index within [1, NbNodes()] range
+  //! @param[out] theVec3  3D vector defining a surface normal
   void Normal (Standard_Integer theIndex,
                gp_Vec3f& theVec3) const
   {
@@ -178,6 +187,8 @@ public:
   }
 
   //! Changes normal at the given index.
+  //! @param[in] theIndex node index within [1, NbNodes()] range
+  //! @param[in] theVec3  normalized 3D vector defining a surface normal
   void SetNormal (const Standard_Integer theIndex,
                   const gp_Vec3f& theNormal)
   {
@@ -185,6 +196,8 @@ public:
   }
 
   //! Changes normal at the given index.
+  //! @param[in] theIndex  node index within [1, NbNodes()] range
+  //! @param[in] theNormal normalized 3D vector defining a surface normal
   void SetNormal (const Standard_Integer theIndex,
                   const gp_Dir& theNormal)
   {
