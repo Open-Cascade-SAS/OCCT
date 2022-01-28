@@ -155,13 +155,22 @@ public:
     DEFINE_STANDARD_ALLOC
 
     //! Registers this callback object in the current error handler (if found).
-    void RegisterCallback();
+    #if defined(OCC_CONVERT_SIGNALS)
+      Standard_EXPORT
+    #endif
+      void RegisterCallback();
 
     //! Unregisters this callback object from the error handler.
-    void UnregisterCallback();
+    #if defined(OCC_CONVERT_SIGNALS)
+      Standard_EXPORT
+    #endif
+      void UnregisterCallback();
 
     //! Destructor
-    virtual ~Callback();
+    #if defined(OCC_CONVERT_SIGNALS)
+      Standard_EXPORT
+    #endif
+      virtual ~Callback();
 
     //! The callback function to perform necessary callback action.
     //! Called by the exception handler when it is being destroyed but
@@ -171,7 +180,10 @@ public:
   protected:
 
     //! Empty constructor
-    Callback();
+    #if defined(OCC_CONVERT_SIGNALS)
+      Standard_EXPORT
+    #endif
+      Callback();
 
   private:
     Standard_Address myHandler;
