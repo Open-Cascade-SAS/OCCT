@@ -26,6 +26,7 @@
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
+#include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_Logbook.hxx>
