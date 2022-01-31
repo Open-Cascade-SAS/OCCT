@@ -258,6 +258,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleByContext.hxx>
 #include <StepVisual_PresentationView.hxx>
+#include <StepVisual_RepositionedTessellatedGeometricSet.hxx>
+#include <StepVisual_RepositionedTessellatedItem.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductCategory.hxx>
 #include <StepBasic_ProductContext.hxx>
@@ -654,6 +656,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepVisual_RWPresentationStyleAssignment.hxx>
 #include <RWStepVisual_RWPresentationStyleByContext.hxx>
 #include <RWStepVisual_RWPresentationView.hxx>
+#include <RWStepVisual_RWRepositionedTessellatedGeometricSet.hxx>
+#include <RWStepVisual_RWRepositionedTessellatedItem.hxx>
 #include <RWStepBasic_RWProduct.hxx>
 #include <RWStepBasic_RWProductCategory.hxx>
 #include <RWStepBasic_RWProductContext.hxx>
@@ -2205,6 +2209,8 @@ static TCollection_AsciiString Reco_AnnotationPlane("ANNOTATION_PLANE");
 static TCollection_AsciiString Reco_TessellatedAnnotationOccurrence("TESSELLATED_ANNOTATION_OCCURRENCE");
 static TCollection_AsciiString Reco_TessellatedGeometricSet("TESSELLATED_GEOMETRIC_SET");
 static TCollection_AsciiString Reco_TessellatedCurveSet("TESSELLATED_CURVE_SET");
+static TCollection_AsciiString Reco_TessellatedItem("TESSELLATED_ITEM");
+static TCollection_AsciiString Reco_RepositionedTessellatedItem("REPOSITIONED_TESSELLATED_ITEM");
 static TCollection_AsciiString Reco_CoordinatesList("COORDINATES_LIST");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentation("CONSTRUCTIVE_GEOMETRY_REPRESENTATION");
 static TCollection_AsciiString Reco_ConstructiveGeometryRepresentationRelationship("CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP");
@@ -3035,6 +3041,7 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind(Reco_LinearFlexibleLinkRepresentation, 798);
   typenums.Bind(Reco_KinematicPair, 799);
   typenums.Bind(Reco_MechanismStateRepresentation, 801);
+  typenums.Bind(Reco_RepositionedTessellatedItem, 803);
 
   
 //    SHORT NAMES
@@ -3827,12 +3834,21 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep
                  types(5).IsEqual(StepType(624))))) {
         return 705;
       }
-      if ((types(1).IsEqual(StepType(4))) &&
+      else if ((types(1).IsEqual(StepType(4))) &&
           (types(2).IsEqual(StepType(7))) &&
           (types(3).IsEqual(StepType(144))) &&
           (types(4).IsEqual(StepType(247))) &&
-          (types(5).IsEqual(StepType(270)))) {
+          (types(5).IsEqual(StepType(270))))
+      {
         return 719;
+      }
+      else if ((types(1).IsEqual(StepType(144))) &&
+        (types(2).IsEqual(StepType(803))) &&
+        (types(3).IsEqual(StepType(247))) &&
+        (types(4).IsEqual(StepType(709))) &&
+        (types(5).IsEqual(StepType(708))))
+      {
+        return 802;
       }
     }
     else if (NbComp == 4) {
@@ -4903,6 +4919,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 704: return Reco_AnnotationPlane;
 
   case 707 : return Reco_TessellatedAnnotationOccurrence;
+  case 708 : return Reco_TessellatedItem;
   case 709 : return Reco_TessellatedGeometricSet;
 
   case 710 : return Reco_TessellatedCurveSet;
@@ -4996,7 +5013,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 798: return Reco_LinearFlexibleLinkRepresentation;
   case 799: return Reco_KinematicPair;
   case 801: return Reco_MechanismStateRepresentation;
-
+  case 803: return Reco_RepositionedTessellatedItem;
   default : return PasReco;
   }
 }
@@ -5326,6 +5343,13 @@ Standard_Boolean RWStepAP214_ReadWriteModule::ComplexType(const Standard_Integer
       types.Append(StepType(757));
       types.Append(StepType(759));
       types.Append(StepType(247));
+      break;
+    case 802:
+      types.Append(StepType(144));
+      types.Append(StepType(803));
+      types.Append(StepType(247));
+      types.Append(StepType(709));
+      types.Append(StepType(708));
       break;
     default: return Standard_False;
     }
@@ -10473,6 +10497,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     tool.ReadStep(data, num, ach, anent);
   }
   break;
+  case 802:
+  {
+    DeclareAndCast(StepVisual_RepositionedTessellatedGeometricSet, anEnt, ent);
+    RWStepVisual_RWRepositionedTessellatedGeometricSet aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+    break;
+  }
+  case 803:
+  {
+    DeclareAndCast(StepVisual_RepositionedTessellatedItem, anEnt, ent);
+    RWStepVisual_RWRepositionedTessellatedItem aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+    break;
+  }
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -15896,7 +15934,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     tool.WriteStep(SW, anent);
   }
   break;
-
+  case 802:
+  {
+    DeclareAndCast(StepVisual_RepositionedTessellatedGeometricSet, anEnt, ent);
+    RWStepVisual_RWRepositionedTessellatedGeometricSet aTool;
+    aTool.WriteStep(SW, anEnt);
+    break;
+  }
+  case 803:
+  {
+    DeclareAndCast(StepVisual_RepositionedTessellatedItem, anEnt, ent);
+    RWStepVisual_RWRepositionedTessellatedItem aTool;
+    aTool.WriteStep(SW, anEnt);
+    break;
+  }
   default: 
     return;
   }

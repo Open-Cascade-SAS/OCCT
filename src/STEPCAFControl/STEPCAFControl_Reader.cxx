@@ -204,6 +204,7 @@
 #include <StepVisual_PlanarBox.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
 #include <StepVisual_PresentationStyleByContext.hxx>
+#include <StepVisual_RepositionedTessellatedGeometricSet.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_StyledItem.hxx>
 #include <StepVisual_ViewVolume.hxx>
@@ -1868,6 +1869,25 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
       Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aTessItem);
       if (aTessSet.IsNull())
         continue;
+      gp_Trsf aTransf;
+      if (aTessSet->IsKind(STANDARD_TYPE(StepVisual_RepositionedTessellatedGeometricSet)))
+      {
+        Handle(StepVisual_RepositionedTessellatedGeometricSet) aRTGS =
+          Handle(StepVisual_RepositionedTessellatedGeometricSet)::DownCast(aTessSet);
+        Handle(Geom_Axis2Placement) aLocation = StepToGeom::MakeAxis2Placement(aRTGS->Location());
+        if (!aLocation.IsNull())
+        {
+          const gp_Ax3 anAx3Orig = gp::XOY();
+          const gp_Ax3 anAx3Targ(aLocation->Ax2());
+          if (anAx3Targ.Location().SquareDistance(anAx3Orig.Location()) >= Precision::SquareConfusion() ||
+            !anAx3Targ.Direction().IsEqual(anAx3Orig.Direction(), Precision::Angular()) ||
+            !anAx3Targ.XDirection().IsEqual(anAx3Orig.XDirection(), Precision::Angular()) ||
+            !anAx3Targ.YDirection().IsEqual(anAx3Orig.YDirection(), Precision::Angular()))
+          {
+            aTransf.SetTransformation(anAx3Targ, anAx3Orig);
+          }
+        }
+      }
       NCollection_Handle<StepVisual_Array1OfTessellatedItem> aListItems = aTessSet->Items();
       Standard_Integer nb = aListItems.IsNull() ? 0 : aListItems->Length();
       Handle(StepVisual_TessellatedCurveSet) aTessCurve;
@@ -1913,7 +1933,7 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
         }
         aB.Add(aComp, aCurW);
       }
-      anAnnotationShape = aComp;
+      anAnnotationShape = aComp.Moved(aTransf);
     }
     if (!anAnnotationShape.IsNull())
     {

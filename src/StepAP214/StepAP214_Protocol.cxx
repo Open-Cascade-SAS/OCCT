@@ -738,6 +738,8 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_TessellatedItem.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
+#include <StepVisual_RepositionedTessellatedGeometricSet.hxx>
+#include <StepVisual_RepositionedTessellatedItem.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
@@ -1626,6 +1628,8 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind(STANDARD_TYPE(StepKinematics_LinearFlexibleLinkRepresentation), 798);
   types.Bind(STANDARD_TYPE(StepKinematics_ActuatedKinPairAndOrderKinPair), 800);
   types.Bind(STANDARD_TYPE(StepKinematics_MechanismStateRepresentation), 801);
+  types.Bind(STANDARD_TYPE(StepVisual_RepositionedTessellatedGeometricSet), 802);
+  types.Bind(STANDARD_TYPE(StepVisual_RepositionedTessellatedItem), 803);
 }
 
 
