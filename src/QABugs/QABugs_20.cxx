@@ -4183,6 +4183,82 @@ static Standard_Integer OCC32744(Draw_Interpretor& theDi, Standard_Integer theNb
   return 0;
 }
 
+//=======================================================================
+//function : QACheckBends
+//purpose :
+//Checks whether the Curve has a loop/bend
+//Use: QACheckBends curve [CosMaxAngle [NbPoints]]
+//NbPoints sets the interval of discretization;
+//CosMaxAngle sets the maximal rotation angle between two adjacent segments.
+//This value must be equal to the cosine of this angle.
+//=======================================================================
+static Standard_Integer QACheckBends(Draw_Interpretor& theDI,
+  Standard_Integer  theNArg,
+  const char ** theArgVal)
+{
+  // Checks whether theCurve has a loop / bend
+
+  if (theNArg < 2)
+  {
+    theDI << "Use: " << theArgVal[0] << " QACheckBends curve [CosMaxAngle [theNbPoints]]" << "\n";
+    return 1;
+  }
+
+
+  Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(theArgVal[1]);
+
+  if(aCurve.IsNull())
+  {
+    theDI << " " << theArgVal[1] << " : NULL curve" << "\n";
+    return 0;
+  }
+  
+  Standard_Real aCosMaxAngle = .8;
+  Standard_Integer aNbPoints = 1000;
+
+  if (theNArg > 2)
+  {
+    aCosMaxAngle = Draw::Atof(theArgVal[2]);
+  }
+
+  if (theNArg > 3)
+  {
+    aNbPoints = Draw::Atoi(theArgVal[3]);
+  }
+
+
+  Standard_Real U1 = aCurve->FirstParameter(), U2 = aCurve->LastParameter();
+  if (Precision::IsInfinite(U1) || Precision::IsInfinite(U2))
+  {
+    theDI << "Infinite interval  : " << U1 << "  " << U2 << "\n";
+    return 0;
+  }
+  
+
+  Standard_Real delta = (U2 - U1) / aNbPoints;
+  gp_Pnt aP;
+  gp_Vec aDC1, aDC2;
+  aCurve->D1(U1, aP, aDC1);
+  gp_Dir aD1(aDC1);
+  Standard_Real p;
+  for (p = U1; p <= U2; p += delta)
+  {
+    aCurve->D1(p, aP, aDC2);
+    gp_Dir aD2(aDC2);
+    Standard_Real aCos = aD1*aD2;
+
+    if (aCos < aCosMaxAngle)
+    {
+      theDI << "Error: The curve " << theArgVal[1] << " is possible to have a bend at parameter " << p << ". Please check carefully \n";
+    }
+
+    aD1 = aD2;
+  }
+
+  return 0;
+}
+
+
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
@@ -4274,6 +4350,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   "Tests avoid Endless loop in GCPnts_UniformDeflection",
                   __FILE__,
                   OCC32744, group);
+
+  theCommands.Add("QACheckBends",
+    "QACheckBends curve [CosMaxAngle [theNbPoints]]",
+    __FILE__,
+    QACheckBends, group);
 
   return;
 }

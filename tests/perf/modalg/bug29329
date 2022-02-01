@@ -3,7 +3,6 @@ puts "0029329: Modeling Algorithms - Low performance of the General Fuse algorit
 puts "========"
 puts ""
 
-puts "TODO CR29596 ALL: Warning: Intersection of pair of shapes has failed"
 
 restore [locate_data_file bug29329_objects.brep] a
 restore [locate_data_file bug29329_tools.brep] b

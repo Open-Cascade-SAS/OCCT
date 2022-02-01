@@ -3,6 +3,8 @@ puts "0028493: Intersection algorithm produces curve with loop"
 puts "========"
 puts ""
 
+pload QAcommands
+
 foreach a [directory c*] {unset $a}
 
 restore [locate_data_file bug28491_H0.brep] h0
@@ -25,7 +27,7 @@ for { set ic 1 } { $ic <= $NbCurv } {incr ic} {
     continue
   }
   
-  CheckLoops c_$ic 0.86602540378443864676372317075294    
+  QACheckBends c_$ic 0.86602540378443864676372317075294    
 }
 
 smallview

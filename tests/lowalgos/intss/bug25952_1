@@ -3,6 +3,7 @@ puts "0025952: Wrong intersection curve"
 puts "========"
 puts ""
 
+pload QAcommands
 puts "TODO OCC25952 ALL: Error: The curve c_1 is possible to have a bend at"
 
 restore [locate_data_file bug25952_shape.brep] q
@@ -17,7 +18,7 @@ if {$NbCurv != 1} {
   puts "Error: Please check NbCurves for intersector"
 } else {
   checklength c_1 -l 0.00068663591416249451
-  CheckLoops c_1
+  QACheckBends c_1
 }
 
 smallview 

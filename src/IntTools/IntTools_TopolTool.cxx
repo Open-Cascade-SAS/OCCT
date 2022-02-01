@@ -448,5 +448,5 @@ void IntTools_TopolTool::SamplePnts(const Standard_Real theDefl,
   myV0 = myVPars->Value(1);
 
   myDU = (myUPars->Value(myNbSmplU) - myU0)/(myNbSmplU-1);  
-  myDV = (myVPars->Value(myNbSmplV) - myU0)/(myNbSmplV-1);
+  myDV = (myVPars->Value(myNbSmplV) - myV0)/(myNbSmplV-1);
 }

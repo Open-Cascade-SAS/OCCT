@@ -3,7 +3,6 @@ puts "0025082: bopcommon returns different result on Windows and Linux system"
 puts "========"
 puts ""
 
-puts "TODO CR29596 ALL: Warning: Intersection of pair of shapes has failed"
 
 restore [locate_data_file bug25054_shape1.brep] b1
 restore [locate_data_file bug25054_shape2.brep] b2

@@ -80,11 +80,16 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
   Handle(Adaptor3d_TopolTool) dom1 = new Adaptor3d_TopolTool(myHS1);
   Handle(Adaptor3d_TopolTool) dom2 = new Adaptor3d_TopolTool(myHS2);
   myLConstruct.Load(dom1,dom2,myHS1,myHS2);
-
+  
   Standard_Real TolArc = Tol;
   Standard_Real TolTang = Tol;
   Standard_Real UVMaxStep = IntPatch_Intersection::DefineUVMaxStep(myHS1, dom1, myHS2, dom2);
   Standard_Real Deflection = 0.1;
+  if (myHS1->GetType() == GeomAbs_BSplineSurface && myHS2->GetType() == GeomAbs_BSplineSurface)
+  {
+    Deflection /= 10.;
+  }
+
 
   myIntersector.SetTolerances(TolArc,TolTang,UVMaxStep,Deflection);
 

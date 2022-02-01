@@ -83,6 +83,12 @@ public: //! @name Getting the results
     return myIsDone;
   }
 
+  //! Returns state of the operation
+  Standard_Boolean IsParallel() const
+  {
+    return myIsParallel;
+  }
+
   //! Returns the number of section lines
   Standard_Integer NbSectionLines() const
   {
@@ -186,6 +192,9 @@ private: //! @name Performing the intersection
                                     IntPolyh_ListOfCouples& theArrayRF,
                                     IntPolyh_ListOfCouples& theArrayRR) const;
 
+  Standard_Boolean AnalyzeIntersection(IntPolyh_PMaillageAffinage& theMaillage);
+  Standard_Boolean IsAdvRequired(IntPolyh_PMaillageAffinage& theMaillage);
+
 
 private: //! @name Fields
 
@@ -200,6 +209,7 @@ private: //! @name Fields
   Standard_Boolean myIsDone;                   //!< State of the operation
   IntPolyh_ArrayOfSectionLines mySectionLines; //!< Section lines
   IntPolyh_ArrayOfTangentZones myTangentZones; //!< Tangent zones
+  Standard_Boolean myIsParallel;
 };
 
 #endif // _IntPolyh_Intersection_HeaderFile

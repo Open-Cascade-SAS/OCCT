@@ -1,4 +1,3 @@
-puts "TODO CR29596 ALL: Warning: Intersection of pair of shapes has failed"
 puts "TODO OCC21134  ALL: Error: checkshape command does not return faulty shapes"
 
 puts "============"

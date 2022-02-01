@@ -2,7 +2,7 @@ puts "========"
 puts "0025952: Wrong intersection curve"
 puts "========"
 puts ""
-
+pload QAcommands
 puts "TODO OCC25952 ALL: Error: The curve res_1 is possible to have a bend at parameter"
 
 set aGoodNbCurves 1
@@ -35,7 +35,7 @@ while { $AllowRepeat != 0 } {
     set AllowRepeat 0
   } else {
     lappend CurvesList res_$ic
-    CheckLoops res_$ic
+    QACheckBends res_$ic
     incr ic
   }
 }

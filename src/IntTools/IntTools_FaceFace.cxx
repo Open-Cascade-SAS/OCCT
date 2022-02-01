@@ -504,7 +504,11 @@ void IntTools_FaceFace::Perform (const TopoDS_Face& aF1,
 
   {
     const Standard_Real UVMaxStep = IntPatch_Intersection::DefineUVMaxStep(myHS1, dom1, myHS2, dom2);
-    const Standard_Real Deflection = 0.1;
+    Standard_Real Deflection = 0.1;
+    if (aType1 == GeomAbs_BSplineSurface && aType2 == GeomAbs_BSplineSurface)
+    {
+      Deflection /= 10.;
+    }
     myIntersector.SetTolerances(TolArc, TolTang, UVMaxStep, Deflection); 
   }
   

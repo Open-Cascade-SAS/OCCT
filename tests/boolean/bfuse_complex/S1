@@ -1,5 +1,3 @@
-puts "TODO CR29596 ALL: Warning: Intersection of pair of shapes has failed"
-
 puts "PRO15946"
 puts "Fuse"
 puts ""
