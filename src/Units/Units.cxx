@@ -240,8 +240,6 @@ Standard_Real Units::ToSI(const Standard_Real aData,
                           Handle(Units_Dimensions) &dim)
 {
   if(lastunit != aUnit ) {
-
-    lastunit = TCollection_AsciiString(aUnit);
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
 #ifdef OCCT_DEBUG
@@ -257,6 +255,7 @@ Standard_Real Units::ToSI(const Standard_Real aData,
         Handle(Units_ShiftedToken)::DownCast(token) ;
       lastmove = stoken->Move();
     }
+    lastunit = TCollection_AsciiString(aUnit);
     lastdimension = token->Dimensions();
   }
   dim = lastdimension;
@@ -286,7 +285,6 @@ Standard_Real Units::FromSI(const Standard_Real aData,
                             Handle(Units_Dimensions) &dim)
 {
   if(lastunit != aUnit) {
-    lastunit = TCollection_AsciiString(aUnit);
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
 #ifdef OCCT_DEBUG
@@ -302,6 +300,7 @@ Standard_Real Units::FromSI(const Standard_Real aData,
         Handle(Units_ShiftedToken)::DownCast(token) ;
       lastmove = stoken->Move();
     }
+    lastunit = TCollection_AsciiString(aUnit);
     lastdimension = token->Dimensions();
   }
   dim = lastdimension;
