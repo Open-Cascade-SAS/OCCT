@@ -1,20 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 ALL: COLORS : Faulty" 
+
 
 set filename USA60231.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 650  ( 1843 )  Summary  = 650  ( 1843 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 665  ( 1843 )  Summary  = 665  ( 1843 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 692  ( 692 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 692  ( 692 )   FreeWire = 5  ( 5 ) 
-TOLERANCE   : MaxTol   = 1.089725986e-005  ( 1.089659658e-005 )  AvgTol   =  1.975349505e-006  (  9.653139925e-006 )
-LABELS      : N0Labels = 693  ( 693 )  N1Labels = 10  ( 1399 )  N2Labels = 0  ( 0 )   TotalLabels = 703  ( 2092 )   NameLabels = 693  ( 1341 )   ColorLabels = 692  ( 2092 )   LayerLabels = 692  ( 2092 )
+TOLERANCE   : MaxTol   = 1.089725986e-005  ( 1.089659658e-005 )  AvgTol   =  1.339226067e-006  (  9.653139925e-006 )
+LABELS      : N0Labels = 693  ( 693 )  N1Labels = 12  ( 1399 )  N2Labels = 0  ( 0 )   TotalLabels = 705  ( 2092 )   NameLabels = 693  ( 1341 )   ColorLabels = 694  ( 2092 )   LayerLabels = 692  ( 2092 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
-NCOLORS     : NColors  = 3  ( 4 )
-COLORS      : Colors   = CYAN WHITE YELLOW  ( CYAN GREEN3 WHITE YELLOW )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = CYAN GREEN3 WHITE YELLOW  ( CYAN GREEN3 WHITE YELLOW )
 NLAYERS     : NLayers  = 2  ( 2 )
 LAYERS      : Layers   = 10 3  ( 10 3 )
 

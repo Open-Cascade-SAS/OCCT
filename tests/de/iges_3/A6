@@ -2,7 +2,6 @@
 puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
 
@@ -15,10 +14,10 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 145  ( 145 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 145  ( 145 )   FreeWire = 64  ( 64 ) 
 TOLERANCE   : MaxTol   =  0.09719916174  (  0.09719915743 )  AvgTol   =  0.001636220412  (  0.001630657269 )
-LABELS      : N0Labels = 2  ( 2 )  N1Labels = 346  ( 756 )  N2Labels = 0  ( 0 )   TotalLabels = 348  ( 758 )   NameLabels = 348  ( 478 )   ColorLabels = 347  ( 757 )   LayerLabels = 336  ( 744 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 412  ( 756 )  N2Labels = 0  ( 0 )   TotalLabels = 414  ( 758 )   NameLabels = 348  ( 478 )   ColorLabels = 413  ( 757 )   LayerLabels = 337  ( 744 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
-NCOLORS     : NColors  = 2  ( 3 )
-COLORS      : Colors   = RED WHITE  ( RED WHITE YELLOW )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = RED WHITE YELLOW  ( RED WHITE YELLOW )
 NLAYERS     : NLayers  = 6  ( 7 )
 LAYERS      : Layers   = 1 2 242 243 244 3  ( 1 11 2 242 243 244 3 )
 

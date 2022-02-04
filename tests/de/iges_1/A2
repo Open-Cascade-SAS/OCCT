@@ -1,7 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename buc40130.igs
 
-# set min as local length unit
+# set min as local lenght unit
 set lengthunit_start "min"
 
 set ref_data {

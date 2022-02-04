@@ -6,12 +6,12 @@ set filename brazo1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 0 )  Summary  = 0  ( 2 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 138  ( 476 )  Summary  = 138  ( 476 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 136  ( 476 )  Summary  = 136  ( 476 )
 CHECKSHAPE  : Wires    = 4  ( 8 )  Faces    = 4  ( 8 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 223  ( 223 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 223  ( 223 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =    0.991254355  (    0.991254355 )  AvgTol   =   0.01156050183  (   0.01226830477 )
-LABELS      : N0Labels = 223  ( 223 )  N1Labels = 0  ( 242 )  N2Labels = 0  ( 0 )   TotalLabels = 223  ( 465 )   NameLabels = 223  ( 388 )   ColorLabels = 223  ( 465 )   LayerLabels = 223  ( 465 )
+TOLERANCE   : MaxTol   =    0.991254355  (    0.991254355 )  AvgTol   =   0.01155914695  (   0.01225799391 )
+LABELS      : N0Labels = 223  ( 223 )  N1Labels = 2  ( 605 )  N2Labels = 0  ( 0 )   TotalLabels = 225  ( 828 )   NameLabels = 223  ( 388 )   ColorLabels = 225  ( 828 )   LayerLabels = 225  ( 828 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = BLUE MAGENTA YELLOW  ( BLUE MAGENTA YELLOW )

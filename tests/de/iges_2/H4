@@ -1,7 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: DATA : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
 
@@ -13,12 +12,12 @@ TPSTAT      : Faulties = 16  ( 149 )  Warnings = 60  ( 1010 )  Summary  = 76  ( 
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   FreeWire = 219  ( 254 ) 
-TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.01722883807  (   0.02186287305 )
-LABELS      : N0Labels = 9  ( 9 )  N1Labels = 896  ( 1691 )  N2Labels = 0  ( 0 )   TotalLabels = 905  ( 1700 )   NameLabels = 905  ( 1233 )   ColorLabels = 896  ( 1692 )   LayerLabels = 864  ( 1659 )
+TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.01722883745  (   0.02186287305 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 910  ( 1755 )  N2Labels = 0  ( 0 )   TotalLabels = 919  ( 1764 )   NameLabels = 722  ( 1050 )   ColorLabels = 910  ( 1756 )   LayerLabels = 683  ( 1723 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
-NCOLORS     : NColors  = 6  ( 7 )
-COLORS      : Colors   = BLUE LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )
-NLAYERS     : NLayers  = 12  ( 16 )
-LAYERS      : Layers   = 11 12 13 20 249 252 50 52 54 55 60 71  ( 10 11 12 13 20 246 249 252 50 52 54 55 60 65 70 71 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = BLUE GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )
+NLAYERS     : NLayers  = 13  ( 16 )
+LAYERS      : Layers   = 11 12 13 20 249 252 50 52 54 55 60 65 71  ( 10 11 12 13 20 246 249 252 50 52 54 55 60 65 70 71 )
 
 }

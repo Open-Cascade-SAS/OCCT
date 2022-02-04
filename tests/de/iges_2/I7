@@ -1,7 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 ALL: COLORS : Faulty" 
 
 
 set filename ims016.igs
@@ -13,10 +12,10 @@ CHECKSHAPE  : Wires    = 2  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 138  ( 138 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 138  ( 138 )   FreeWire = 6  ( 6 ) 
 TOLERANCE   : MaxTol   =   0.2092687841  (   0.2092687804 )  AvgTol   =  0.001094782521  (  0.0009882759182 )
-LABELS      : N0Labels = 503  ( 503 )  N1Labels = 0  ( 200 )  N2Labels = 0  ( 0 )   TotalLabels = 503  ( 703 )   NameLabels = 503  ( 503 )   ColorLabels = 470  ( 703 )   LayerLabels = 313  ( 344 )
+LABELS      : N0Labels = 503  ( 503 )  N1Labels = 36  ( 230 )  N2Labels = 0  ( 0 )   TotalLabels = 539  ( 733 )   NameLabels = 503  ( 503 )   ColorLabels = 506  ( 733 )   LayerLabels = 313  ( 344 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
-NCOLORS     : NColors  = 6  ( 7 )
-COLORS      : Colors   = CYAN GREEN MAGENTA RED WHITE YELLOW  ( BLACK CYAN GREEN MAGENTA RED WHITE YELLOW )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = BLACK CYAN GREEN MAGENTA RED WHITE YELLOW  ( BLACK CYAN GREEN MAGENTA RED WHITE YELLOW )
 NLAYERS     : NLayers  = 8  ( 8 )
 LAYERS      : Layers   = 1 101 102 103 104 106 107 200  ( 1 101 102 103 104 106 107 200 )
 

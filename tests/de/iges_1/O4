@@ -6,12 +6,12 @@ set filename UKI60556.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 448  ( 1005 )  Summary  = 448  ( 1005 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 473  ( 1005 )  Summary  = 473  ( 1005 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 300  ( 300 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 300  ( 300 )   FreeWire = 119  ( 139 ) 
-TOLERANCE   : MaxTol   =         1e-005  (  0.06099237775 )  AvgTol   =  3.184878471e-007  (  1.621424764e-005 )
-LABELS      : N0Labels = 432  ( 432 )  N1Labels = 12  ( 845 )  N2Labels = 0  ( 0 )   TotalLabels = 444  ( 1277 )   NameLabels = 432  ( 687 )   ColorLabels = 320  ( 1277 )   LayerLabels = 320  ( 1277 )
+TOLERANCE   : MaxTol   =          1e-05  (  0.06099237775 )  AvgTol   =  3.144800928e-07  (  1.621424764e-05 )
+LABELS      : N0Labels = 432  ( 432 )  N1Labels = 115  ( 863 )  N2Labels = 0  ( 0 )   TotalLabels = 547  ( 1295 )   NameLabels = 432  ( 687 )   ColorLabels = 423  ( 1295 )   LayerLabels = 320  ( 1295 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
 COLORS      : Colors   = CYAN GREEN MAGENTA RED WHITE YELLOW  ( CYAN GREEN MAGENTA RED WHITE YELLOW )

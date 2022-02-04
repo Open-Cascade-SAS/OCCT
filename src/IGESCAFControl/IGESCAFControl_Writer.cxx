@@ -102,7 +102,7 @@ namespace
       }
     }
 
-    if (!hasReferredShape && !hasComponents)
+    if (!hasReferredShape && !hasComponents && !thePrevName.IsNull())
     {
       TopoDS_Shape aShape;
       if (!XCAFDoc_ShapeTool::GetShape (theLabel, aShape)) return;

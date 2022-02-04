@@ -391,7 +391,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::Transfer2dCompositeCurve
   //  SendWarning(start,Msg1036);
   // AddWarning(start, "The Trsf cannot be applied to the entity.");
   //}
-  return  res;
+  return res;
 }
 
 //=======================================================================
@@ -704,7 +704,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferOffsetCurve
     }
       //AddWarning(start, "Transformation skipped (not a similarity)");
   }
-
+  SetShapeResult(start, res);
   return  res;
 }
 
@@ -798,6 +798,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::Transfer2dOffsetCurve
       res = sfw->Wire();
     }
   }
+  SetShapeResult(start, res);
   return  res;
 }
 
@@ -1041,7 +1042,7 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferTopoBasicCurve
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)) &&
       Handle(IGESGeom_CircularArc)::DownCast (start)->IsClosed())
     TheBadCase = Standard_True;
-
+  SetShapeResult(start, myshape);
   return myedge;
 }
 
@@ -1214,7 +1215,6 @@ TopoDS_Shape  IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve
   if (start->IsKind(STANDARD_TYPE(IGESGeom_CircularArc)) &&
       Handle(IGESGeom_CircularArc)::DownCast (start)->IsClosed())
     TheBadCase = Standard_True;
-
   return myedge;
 }
 

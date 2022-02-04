@@ -4,16 +4,17 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
+
 set filename Henri.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 72  ( 54 )  Summary  = 72  ( 54 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 69  ( 54 )  Summary  = 69  ( 54 )
 CHECKSHAPE  : Wires    = 8  ( 3 )  Faces    = 8  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 2312 ) 
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 3592 )   FreeWire = 4024  ( 4024 ) 
-TOLERANCE   : MaxTol   =   0.9133007093  (   0.9133008813 )  AvgTol   =  0.005631548694  (  0.005952104345 )
-LABELS      : N0Labels = 24  ( 24 )  N1Labels = 5153  ( 6559 )  N2Labels = 0  ( 0 )   TotalLabels = 5177  ( 6583 )   NameLabels = 5177  ( 6583 )   ColorLabels = 5153  ( 6559 )   LayerLabels = 0  ( 0 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 3592 )   FreeWire = 4024  ( 6082 ) 
+TOLERANCE   : MaxTol   =   0.9133007093  (   0.9133008813 )  AvgTol   =  0.005631512248  (  0.006706357817 )
+LABELS      : N0Labels = 24  ( 24 )  N1Labels = 4094  ( 6591 )  N2Labels = 0  ( 0 )   TotalLabels = 4118  ( 6615 )   NameLabels = 4118  ( 5524 )   ColorLabels = 4094  ( 6591 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )
 COLORS      : Colors   = ANTIQUEWHITE4 CHARTREUSE DARKORANGE2 GREENYELLOW STEELBLUE2 WHEAT3  ( ANTIQUEWHITE4 CHARTREUSE DARKORANGE2 GREENYELLOW STEELBLUE2 WHEAT3 )

@@ -1,7 +1,10 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
 set filename t500core.igs
 
-# set min as local length unit
+# set min as local lenght unit
 set lengthunit_start "min"
 
 set ref_data {
@@ -11,7 +14,7 @@ CHECKSHAPE  : Wires    = 5  ( 5 )  Faces    = 5  ( 5 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 674  ( 674 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 674  ( 674 )   FreeWire = 0  ( 0 ) 
 TOLERANCE   : MaxTol   =   0.9933031338  (   0.9932065271 )  AvgTol   =    0.0725721901  (   0.07359500431 )
-LABELS      : N0Labels = 702  ( 702 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 702  ( 702 )   NameLabels = 702  ( 702 )   ColorLabels = 16  ( 16 )   LayerLabels = 702  ( 702 )
+LABELS      : N0Labels = 702  ( 702 )  N1Labels = 0  ( 1977 )  N2Labels = 0  ( 0 )   TotalLabels = 702  ( 2679 )   NameLabels = 702  ( 702 )   ColorLabels = 16  ( 1993 )   LayerLabels = 702  ( 2679 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
 COLORS      : Colors   = WHITE  ( WHITE )

@@ -1,7 +1,7 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename ardi1.igs
 
-# set in as local length unit
+# set in as local lenght unit
 set lengthunit_start "in"
 
 set ref_data {
@@ -10,7 +10,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 6 )  Summary  = 2  ( 6 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4  ( 4 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4  ( 4 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   = 1.000100001e-007  ( 1.000100001e-007 )  AvgTol   =  1.000015385e-007  (  1.000015385e-007 )
+TOLERANCE   : MaxTol   = 1.000100001e-07  ( 1.000100001e-07 )  AvgTol   =  1.000015385e-07  (  1.000015385e-07 )
 LABELS      : N0Labels = 4  ( 4 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 4  ( 4 )   NameLabels = 4  ( 4 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

@@ -11,7 +11,7 @@ CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   So
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 )   FreeWire = 0  ( 0 ) 
 TOLERANCE   : MaxTol   =  0.03645053132  (  0.03645054227 )  AvgTol   =  0.0005450433774  (  0.0005479624657 )
-LABELS      : N0Labels = 124  ( 124 )  N1Labels = 0  ( 87 )  N2Labels = 0  ( 0 )   TotalLabels = 124  ( 211 )   NameLabels = 124  ( 124 )   ColorLabels = 124  ( 211 )   LayerLabels = 124  ( 211 )
+LABELS      : N0Labels = 124  ( 124 )  N1Labels = 66  ( 181 )  N2Labels = 0  ( 0 )   TotalLabels = 190  ( 305 )   NameLabels = 124  ( 124 )   ColorLabels = 190  ( 305 )   LayerLabels = 190  ( 305 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
 COLORS      : Colors   = GREEN  ( GREEN )

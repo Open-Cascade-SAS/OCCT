@@ -11,11 +11,12 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 293  ( 5002 )  Summary  = 293  ( 5
 CHECKSHAPE  : Wires    = 8  ( 11 )  Faces    = 8  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4729  ( 4729 )   FreeWire = 18  ( 18 ) 
-TOLERANCE   : MaxTol   =   0.9804479161  (   0.9805459497 )  AvgTol   =   0.01154139976  (   0.01155171873 )
-LABELS      : N0Labels = 5089  ( 5165 )  N1Labels = 26  ( 3936 )  N2Labels = 0  ( 0 )   TotalLabels = 5115  ( 9101 )   NameLabels = 5089  ( 5165 )   ColorLabels = 5086  ( 9025 )   LayerLabels = 5086  ( 9025 )
+TOLERANCE   : MaxTol   =   0.9804479161  (   0.9805459497 )  AvgTol   =   0.01154139982  (   0.01155171873 )
+LABELS      : N0Labels = 5089  ( 5165 )  N1Labels = 80  ( 15756 )  N2Labels = 0  ( 0 )   TotalLabels = 5169  ( 20921 )   NameLabels = 5089  ( 5165 )   ColorLabels = 5140  ( 20845 )   LayerLabels = 5122  ( 20845 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
 COLORS      : Colors   = BLUE CYAN GREEN  ( BLUE CYAN GREEN )
 NLAYERS     : NLayers  = 3  ( 3 )
 LAYERS      : Layers   = 1 200 51  ( 1 200 51 )
+
 }
