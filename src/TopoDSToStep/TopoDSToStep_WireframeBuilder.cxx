@@ -151,166 +151,192 @@ static Handle(StepGeom_TrimmedCurve) MakeTrimmedCurve (const Handle(StepGeom_Cur
 }
   
 Standard_Boolean TopoDSToStep_WireframeBuilder::
-  GetTrimmedCurveFromEdge(const TopoDS_Edge& theEdge, 
-			  const TopoDS_Face& aFace, 
-			  MoniTool_DataMapOfShapeTransient& aMap, 
-			  Handle(TColStd_HSequenceOfTransient)& curveList) const
+  GetTrimmedCurveFromEdge(const TopoDS_Edge& theEdge,
+                          const TopoDS_Face& theFace,
+                          MoniTool_DataMapOfShapeTransient& theMap,
+                          Handle(TColStd_HSequenceOfTransient)& theCurveList) const
 {
-  if (theEdge.Orientation() == TopAbs_INTERNAL  ||
-      theEdge.Orientation() == TopAbs_EXTERNAL ) {
+  if (theEdge.Orientation() == TopAbs_INTERNAL ||
+      theEdge.Orientation() == TopAbs_EXTERNAL )
+  {
 #ifdef OCCT_DEBUG
     std::cout <<"Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Edge is internal or external; dropped" << std::endl;
 #endif
     return Standard_False;
   }
   //szv#4:S4163:12Mar99 SGI warns
-  TopoDS_Shape sh = theEdge.Oriented(TopAbs_FORWARD);
-  TopoDS_Edge anEdge = TopoDS::Edge ( sh );
+  TopoDS_Shape aSh = theEdge.Oriented(TopAbs_FORWARD);
+  TopoDS_Edge anEdge = TopoDS::Edge ( aSh );
 
   // resulting curve
-  Handle(StepGeom_Curve) Gpms;
-  
-  if ( aMap.IsBound(anEdge)) {
-    Gpms = Handle(StepGeom_Curve)::DownCast ( aMap.Find(anEdge) );
-    if ( Gpms.IsNull() ) return Standard_False;
-//??    curveList->Append(Gpms);
-    return Standard_True;
+  Handle(StepGeom_Curve) aSGC;
+  if (const Handle(Standard_Transient)* aTransient = theMap.Seek(anEdge))
+  {
+    aSGC = Handle(StepGeom_Curve)::DownCast(*aTransient);
   }
 
-  BRepAdaptor_Curve CA;
-  try {
+  BRepAdaptor_Curve aCA;
+  try 
+  {
     OCC_CATCH_SIGNALS
-    CA.Initialize (anEdge);
+    aCA.Initialize (anEdge);
   }
-  catch (Standard_NullObject const&) {
+  catch (Standard_NullObject const&) 
+  {
     return Standard_False;
   }
 
-  // Vertices
-  TopoDS_Vertex Vfirst, Vlast;
-  Handle(StepGeom_CartesianPoint) pmsP1, pmsP2; 
-  for (TopoDS_Iterator It(anEdge);It.More();It.Next()) {
-    // Translates the Edge Vertices
-    TopoDS_Vertex V = TopoDS::Vertex(It.Value());
-    gp_Pnt gpP = BRep_Tool::Pnt(V);
-    if ( V.Orientation() == TopAbs_FORWARD ) {
-      Vfirst = V;
+  TopoDS_Vertex aVFirst, aVLast;
+  Handle(StepGeom_CartesianPoint) aSGCP1, aSGCP2;
+  for (TopExp_Explorer anExp(anEdge, TopAbs_VERTEX); anExp.More(); anExp.Next())
+  {
+    TopoDS_Vertex aVertex = TopoDS::Vertex(anExp.Value());
+    gp_Pnt aGpP = BRep_Tool::Pnt(aVertex);
+    if (aVertex.Orientation() == TopAbs_FORWARD)
+    {
+      aVFirst = aVertex;
       // 1.point for trimming
-      GeomToStep_MakeCartesianPoint gtpP(gpP);
-      pmsP1 = gtpP.Value();
+      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP);
+      aSGCP1 = aGTSMCP.Value();
     }
-    if ( V.Orientation() == TopAbs_REVERSED ) {
-      Vlast = V;
+    if (aVertex.Orientation() == TopAbs_REVERSED)
+    {
+      aVLast = aVertex;
       // 2.point for trimming
-      GeomToStep_MakeCartesianPoint gtpP(gpP);
-      pmsP2 = gtpP.Value();
+      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP);
+      aSGCP2 = aGTSMCP.Value();
     }
   }
-    
-  // ---------------------------------------
-  // Translate 3D representation of the Edge
-  // ---------------------------------------
-    
-    
-  // Handle(Geom_Curve) C = CA.Curve().Curve();
 
-  // UPDATE FMA 26-02-96 
-  // General remark : this full code should be deaply reworked
-  //                  Too many objects are not used !
+  Standard_Real aFirst, aLast;
+  Handle(Geom_Curve) aC = BRep_Tool::Curve(anEdge, aFirst, aLast);
 
-  Standard_Real First, Last;
-  Handle(Geom_Curve) C = BRep_Tool::Curve(anEdge, First, Last); 
-  if ( ! C.IsNull() ) {
-    if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
-      C = Handle(Geom_TrimmedCurve)::DownCast(C)->BasisCurve();
-    GeomToStep_MakeCurve  gtpC(C);
-
-    if(!gtpC.IsDone())
+  if (!aC.IsNull())
+  {
+    if (aC->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
+      aC = Handle(Geom_TrimmedCurve)::DownCast(aC)->BasisCurve();
+    }
+    GeomToStep_MakeCurve aGTSMC(aC);
+    if (!aGTSMC.IsDone())
+    {
       return Standard_False;
-
-    Handle(StepGeom_Curve) pmsC = gtpC.Value();
+    }
+    Handle(StepGeom_Curve) aPMSC = aGTSMC.Value();
 
     // trim the curve
-    Standard_Real trim1 = CA.FirstParameter();
-    Standard_Real trim2 = CA.LastParameter();
-/* //:j1 abv 22 Oct 98: radians are used in the produced STEP file (at least by default)
-   if(C->IsKind(STANDARD_TYPE(Geom_Circle)) ||
-       C->IsKind(STANDARD_TYPE(Geom_Ellipse))) {
-      Standard_Real fact = 180. / M_PI;
-      trim1 = trim1 * fact;
-      trim2 = trim2 * fact;
+    Standard_Real aTrim1 = aCA.FirstParameter();
+    Standard_Real aTrim2 = aCA.LastParameter();
+
+    if (aVFirst.IsNull() && aVLast.IsNull() && Precision::IsInfinite(aFirst) && Precision::IsInfinite(aLast))
+    {
+      GeomToStep_MakeCurve aCurveMaker(aC);
+      if (aCurveMaker.IsDone())
+      {
+        aSGC = aCurveMaker.Value();
+        theCurveList->Append(aSGC);
+        return Standard_True;
+      }
+      return Standard_False;
     }
-*/
-    Gpms = MakeTrimmedCurve (pmsC, pmsP1, pmsP2, trim1, trim2, Standard_True );
-//			     (anEdge.Orientation() == TopAbs_FORWARD));
+    if (aVFirst.IsNull())
+    {
+      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aFirst));
+      aSGCP1 = aGTSMCP.Value();
+    }
+    if (aVLast.IsNull())
+    {
+      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aLast));
+      aSGCP2 = aGTSMCP.Value();
+    }
+
+    /* //:j1 abv 22 Oct 98: radians are used in the produced STEP file (at least by default)
+       if(C->IsKind(STANDARD_TYPE(Geom_Circle)) ||
+           C->IsKind(STANDARD_TYPE(Geom_Ellipse))) {
+          Standard_Real fact = 180. / M_PI;
+          trim1 = trim1 * fact;
+          trim2 = trim2 * fact;
+        }
+    */
+    aSGC = MakeTrimmedCurve(aPMSC, aSGCP1, aSGCP2, aTrim1, aTrim2, Standard_True);
   }
-  else {
+  else
+  {
 
     // -------------------------
     // a 3D Curve is constructed
     // -------------------------
 
-    Standard_Boolean iaplan = Standard_False;
-    if ( ! aFace.IsNull() ) {
-      Standard_Real cf, cl;
-      Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(anEdge, aFace, cf, cl);
-      Handle(Geom_Surface) S = BRep_Tool::Surface(aFace);
-      if (S->IsKind(STANDARD_TYPE(Geom_Plane)) &&
-	  C2d->IsKind(STANDARD_TYPE(Geom2d_Line))) iaplan = Standard_True;
+    Standard_Boolean aIPlan = Standard_False;
+    if (!theFace.IsNull())
+    {
+      Standard_Real aCF, aCL;
+      Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(anEdge, theFace, aCF, aCL);
+      Handle(Geom_Surface) aS = BRep_Tool::Surface(theFace);
+      if (aS->IsKind(STANDARD_TYPE(Geom_Plane)) && aC2d->IsKind(STANDARD_TYPE(Geom2d_Line)))
+      {
+        aIPlan = Standard_True;
+      }
     }
 
     // to be modified : cf and cl are the topological trimming parameter
     // these are computed after ! (U1 and U2) -> cf and cl instead
-    if (iaplan) {
-      gp_Pnt Pnt1 = CA.Value(CA.FirstParameter()), Pnt2 = CA.Value(CA.LastParameter());
-      gp_Vec V ( Pnt1, Pnt2 );
-      Standard_Real length = V.Magnitude();
-      if ( length >= Precision::Confusion() ) {
-	Handle(Geom_Line) L = new Geom_Line(Pnt1, gp_Dir(V));
-	GeomToStep_MakeLine gtpL(L);
-	Gpms = gtpL.Value();
-	Gpms = MakeTrimmedCurve (gtpL.Value(), pmsP1, pmsP2, 0, length, Standard_True );
-//				 (anEdge.Orientation() == TopAbs_FORWARD));
+    if (aIPlan)
+    {
+      gp_Pnt aPnt1 = aCA.Value(aCA.FirstParameter()), aPnt2 = aCA.Value(aCA.LastParameter());
+      gp_Vec aV(aPnt1, aPnt2);
+      Standard_Real aLength = aV.Magnitude();
+      if (aLength >= Precision::Confusion())
+      {
+        Handle(Geom_Line) aL = new Geom_Line(aPnt1, gp_Dir(aV));
+        GeomToStep_MakeLine aGTSML(aL);
+        aSGC = aGTSML.Value();
+        aSGC = MakeTrimmedCurve(aGTSML.Value(), aSGCP1, aSGCP2, 0, aLength, Standard_True);
       }
 #ifdef OCCT_DEBUG
       else std::cout << "Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Null-length curve not mapped" << std::endl;
 #endif
     }
-    else {
-      TColgp_Array1OfPnt Points(1,Nbpt);
-      TColStd_Array1OfReal Knots(1,Nbpt);
-      TColStd_Array1OfInteger Mult(1,Nbpt);
-      Standard_Real U1 = CA.FirstParameter();
-      Standard_Real U2 = CA.LastParameter();
-      for ( Standard_Integer i=1; i<=Nbpt; i++ ) {
-	Standard_Real U = U1 + (i-1)*(U2 - U1)/(Nbpt - 1);
-	gp_Pnt P = CA.Value(U);
-	Points.SetValue(i,P);
-	Knots.SetValue(i,U);
-	Mult.SetValue(i,1);
+    else
+    {         
+      TColgp_Array1OfPnt aPoints(1, Nbpt);
+      TColStd_Array1OfReal aKnots(1, Nbpt);
+      TColStd_Array1OfInteger aMult(1, Nbpt);
+      Standard_Real aU1 = aCA.FirstParameter();
+      Standard_Real aU2 = aCA.LastParameter();
+      for (Standard_Integer i = 1; i <= Nbpt; i++)
+      {
+        Standard_Real aU = aU1 + (i - 1) * (aU2 - aU1) / (Nbpt - 1);
+        gp_Pnt aP = aCA.Value(aU);
+        aPoints.SetValue(i, aP);
+        aKnots.SetValue(i, aU);
+        aMult.SetValue(i, 1);
       }
-      Points.SetValue(1, BRep_Tool::Pnt(Vfirst));
-      Points.SetValue(Nbpt, BRep_Tool::Pnt(Vlast));
-      Mult.SetValue(1,2);
-      Mult.SetValue(Nbpt,2);
-      Handle(Geom_Curve) Bs = 
-	new Geom_BSplineCurve(Points, Knots, Mult, 1);
-      GeomToStep_MakeCurve gtpC(Bs);
-      Gpms = gtpC.Value();
+      aPoints.SetValue(1, BRep_Tool::Pnt(aVFirst));
+      aPoints.SetValue(Nbpt, BRep_Tool::Pnt(aVLast));
+      aMult.SetValue(1, 2);
+      aMult.SetValue(Nbpt, 2);
+      Handle(Geom_Curve) aBSCurve = new Geom_BSplineCurve(aPoints, aKnots, aMult, 1);
+      GeomToStep_MakeCurve aGTSMC(aBSCurve);
+      aSGC = aGTSMC.Value();
     }
   }
-  if( Gpms.IsNull() ) return Standard_False;
 
-  aMap.Bind(anEdge, Gpms);
-  curveList->Append(Gpms);
+  if (aSGC.IsNull())
+  {
+    return Standard_False;
+  }
+
+  theMap.Bind(anEdge, aSGC);
+  theCurveList->Append(aSGC);
   return Standard_True;
 }
 
 
 Standard_Boolean TopoDSToStep_WireframeBuilder::
   GetTrimmedCurveFromFace(const TopoDS_Face& aFace, 
-			  MoniTool_DataMapOfShapeTransient& aMap, 
-			  Handle(TColStd_HSequenceOfTransient)& aCurveList) const
+            MoniTool_DataMapOfShapeTransient& aMap, 
+            Handle(TColStd_HSequenceOfTransient)& aCurveList) const
 {
   TopoDS_Shape curShape;
   TopoDS_Edge  curEdge;
