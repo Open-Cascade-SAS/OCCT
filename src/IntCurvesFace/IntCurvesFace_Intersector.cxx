@@ -43,6 +43,9 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(IntCurvesFace_Intersector, Standard_Transient)
+
 //
 static void ComputeSamplePars(const Handle(Adaptor3d_Surface)& Hsurface, 
                               const Standard_Integer nbsu,
@@ -134,8 +137,6 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
   done(Standard_False),
   myReady(Standard_False),
   nbpnt(0),
-  PtrOnPolyhedron(NULL),
-  PtrOnBndBounding(NULL),
   myUseBoundTol (UseBToler),
   myIsParallel(Standard_False)
 { 
@@ -201,14 +202,12 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     {
       Handle(TColStd_HArray1OfReal) UPars, VPars;
       ComputeSamplePars(Hsurface, nbsu, nbsv, UPars, VPars);
-      PtrOnPolyhedron = (IntCurveSurface_ThePolyhedronOfHInter *)
-        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, UPars->ChangeArray1(), 
-                                                            VPars->ChangeArray1());
+      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, UPars->ChangeArray1(),
+                                                                   VPars->ChangeArray1()));
     }
     else 
     {
-      PtrOnPolyhedron = (IntCurveSurface_ThePolyhedronOfHInter *)
-        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1);
+      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,nbsu,nbsv,U0,V0,U1,V1));
     }
   }
   myReady = Standard_True;
@@ -218,8 +217,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
 //purpose  : 
 //=======================================================================
 void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
-					     const Standard_Real parinf,
-					     const Standard_Real parsup) 
+                                             const Standard_Real parinf,
+                                             const Standard_Real parsup) 
 {
   if(HICS.IsDone() && HICS.NbPoints() > 0) {
     //Calculate tolerance for 2d classifier
@@ -282,7 +281,6 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
           Standard_Real W          = HICSW; 
           IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
           gp_Pnt pnt        = HICSPointindex.Pnt();
-          //	  state      = currentstate;
           //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
           Standard_Integer anIntState = (currentstate == TopAbs_IN) ? 0 : 1;
           //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
@@ -340,8 +338,8 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
 //purpose  : 
 //=======================================================================
 void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
-					const Standard_Real ParMin,
-					const Standard_Real ParMax)
+                                        const Standard_Real ParMin,
+                                        const Standard_Real ParMax)
 { 
   done = Standard_False;
   if (!myReady)
@@ -360,7 +358,7 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
   Standard_Real parinf=ParMin;
   Standard_Real parsup=ParMax;
   //
-  if(PtrOnPolyhedron == NULL) { 
+  if(!myPolyhedron) { 
     HICS.Perform(HLL,Hsurface);
   }
   else { 
@@ -368,7 +366,7 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
     Bnd_Box   boxLine;
     bndTool.LinBox
       (L,
-       ((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron)->Bounding(),
+       myPolyhedron->Bounding(),
        boxLine);
     if(bndTool.NbSegments() == 0) 
       return;
@@ -381,8 +379,8 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
       if((psup - pinf)<1e-10) { pinf-=1e-10; psup+=1e-10; } 
       if(nbseg==1) { parinf=pinf; parsup=psup; }
       else { 
-	if(parinf>pinf) parinf = pinf;
-	if(parsup<psup) parsup = psup;
+        if(parinf>pinf) parinf = pinf;
+        if(parsup<psup) parsup = psup;
       }
     }
     if(parinf>ParMax) { return; } 
@@ -391,28 +389,26 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
     if(parsup>ParMax) parsup=ParMax;
     if(parinf>(parsup-1e-9)) return; 
     IntCurveSurface_ThePolygonOfHInter polygon(HLL,
-					       parinf,
-					       parsup,
-					       2);
+                                              parinf,
+                                              parsup,
+                                              2);
 #if OPTIMISATION
-    if(PtrOnBndBounding==NULL) { 
-      PtrOnBndBounding = (Bnd_BoundSortBox *) new Bnd_BoundSortBox();
-      IntCurveSurface_ThePolyhedronOfHInter *thePolyh=
-	(IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron;
-      ((Bnd_BoundSortBox *)(PtrOnBndBounding))->
-	Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*thePolyh),
-		   IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*thePolyh));
+    if(!myBndBounding)
+    { 
+      myBndBounding.reset(new Bnd_BoundSortBox());
+      myBndBounding->Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
+                                IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
     }
     HICS.Perform(HLL,
-		 polygon,
-		 Hsurface,
-		 *((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron),
-		 *((Bnd_BoundSortBox *)PtrOnBndBounding));
+                polygon,
+                Hsurface,
+                *myPolyhedron,
+                *myBndBounding);
 #else
     HICS.Perform(HLL,
-		 polygon,
-		 Hsurface,
-		 *((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron));
+                polygon,
+                Hsurface,
+                *myPolyhedron);
 #endif
   }
   
@@ -423,8 +419,8 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L,
 //purpose  : 
 //=======================================================================
 void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
-					const Standard_Real ParMin,
-					const Standard_Real ParMax) 
+                                        const Standard_Real ParMin,
+                                        const Standard_Real ParMax) 
 { 
   done = Standard_False;
   if (!myReady)
@@ -443,10 +439,12 @@ void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
   Standard_Real parinf=ParMin;
   Standard_Real parsup=ParMax;
 
-  if(PtrOnPolyhedron == NULL) { 
+  if(!myPolyhedron) 
+  { 
     HICS.Perform(HCu,Hsurface);
   }
-  else { 
+  else 
+  { 
     parinf = IntCurveSurface_TheHCurveTool::FirstParameter(HCu);
     parsup = IntCurveSurface_TheHCurveTool::LastParameter(HCu);
     if(parinf<ParMin) parinf = ParMin;
@@ -456,26 +454,25 @@ void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
     nbs = IntCurveSurface_TheHCurveTool::NbSamples(HCu,parinf,parsup);
     
     IntCurveSurface_ThePolygonOfHInter polygon(HCu,
-					       parinf,
-					       parsup,
-					       nbs);
+                                              parinf,
+                                              parsup,
+                                              nbs);
 #if OPTIMISATION
-    if(PtrOnBndBounding==NULL) { 
-      PtrOnBndBounding = (Bnd_BoundSortBox *) new Bnd_BoundSortBox();
-      IntCurveSurface_ThePolyhedronOfHInter *thePolyh=(IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron;
-      ((Bnd_BoundSortBox *)(PtrOnBndBounding))->Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*thePolyh),
-							   IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*thePolyh));
+    if(!myBndBounding) { 
+      myBndBounding.reset(new Bnd_BoundSortBox());
+      myBndBounding->Initialize(IntCurveSurface_ThePolyhedronToolOfHInter::Bounding(*myPolyhedron),
+                                IntCurveSurface_ThePolyhedronToolOfHInter::ComponentsBounding(*myPolyhedron));
     }
     HICS.Perform(HCu,
-		 polygon,
-		 Hsurface,
-		 *((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron),
-		 *((Bnd_BoundSortBox *)PtrOnBndBounding));
+                polygon,
+                Hsurface,
+                *myPolyhedron,
+                *myBndBounding);
 #else
     HICS.Perform(HCu,
-		 polygon,
-		 Hsurface,
-		 *((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron));
+                polygon,
+                Hsurface,
+                *myPolyhedron);
 #endif
   }
   InternalCall(HICS,parinf,parsup);
@@ -483,37 +480,33 @@ void IntCurvesFace_Intersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
 
 //============================================================================
 Bnd_Box IntCurvesFace_Intersector::Bounding() const {
-  if(PtrOnPolyhedron !=NULL) {
-    return(((IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron)->Bounding());
+  if(myPolyhedron) 
+  {
+    return myPolyhedron->Bounding();
   }
-  else { 
+  else 
+  { 
     Bnd_Box B;
-    return(B);
+    return B;
   }
 }
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv) const { 
+
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv) const 
+{ 
   TopAbs_State state = myTopolTool->Classify(Puv,1e-7);
-  return(state);
-}
-//============================================================================
-void IntCurvesFace_Intersector::Destroy() { 
-  if(PtrOnPolyhedron !=NULL) { 
-    delete (IntCurveSurface_ThePolyhedronOfHInter *)PtrOnPolyhedron;
-    PtrOnPolyhedron = NULL;
-  }
-  if(PtrOnBndBounding !=NULL) { 
-    delete (Bnd_BoundSortBox *)PtrOnBndBounding;
-    PtrOnBndBounding=NULL;
-  }
+  return state;
 }
 
- void IntCurvesFace_Intersector::SetUseBoundToler(Standard_Boolean UseBToler)
- {
-   myUseBoundTol = UseBToler;
- }
+void IntCurvesFace_Intersector::SetUseBoundToler(Standard_Boolean UseBToler)
+{
+  myUseBoundTol = UseBToler;
+}
 
- Standard_Boolean IntCurvesFace_Intersector::GetUseBoundToler() const
- {
-   return myUseBoundTol;
- }
+Standard_Boolean IntCurvesFace_Intersector::GetUseBoundToler() const
+{
+  return myUseBoundTol;
+}
 
+IntCurvesFace_Intersector::~IntCurvesFace_Intersector()
+{
+}

@@ -18,13 +18,17 @@
 #define _IntCurvesFace_Intersector_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Bnd_BoundSortBox.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_SequenceOfPnt.hxx>
+#include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <TopAbs_State.hxx>
+
+#include <memory>
 
 class BRepTopAdaptor_TopolTool;
 class gp_Lin;
@@ -33,8 +37,13 @@ class IntCurveSurface_HInter;
 class gp_Pnt2d;
 class Bnd_Box;
 
-class IntCurvesFace_Intersector 
+DEFINE_STANDARD_HANDLE(IntCurvesFace_Intersector, Standard_Transient)
+
+
+class IntCurvesFace_Intersector : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(IntCurvesFace_Intersector, Standard_Transient)
+
 public:
 
   DEFINE_STANDARD_ALLOC
@@ -123,14 +132,7 @@ public:
   //! Returns the boundary tolerance flag
   Standard_EXPORT Standard_Boolean GetUseBoundToler() const;
   
-  Standard_EXPORT void Destroy();
-~IntCurvesFace_Intersector()
-{
-  Destroy();
-}
-
-
-
+  Standard_EXPORT virtual ~IntCurvesFace_Intersector();
 
 protected:
 
@@ -153,8 +155,8 @@ private:
   Standard_Boolean myReady;
   Standard_Integer nbpnt;
   TopoDS_Face face;
-  Standard_Address PtrOnPolyhedron;
-  Standard_Address PtrOnBndBounding;
+  std::unique_ptr<IntCurveSurface_ThePolyhedronOfHInter> myPolyhedron;
+  std::unique_ptr<Bnd_BoundSortBox> myBndBounding;
   Standard_Boolean myUseBoundTol;
   Standard_Boolean myIsParallel; //Curve is "parallel" face surface
                                  //This case is recognized only for some pairs 

@@ -30,202 +30,186 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-//-- ================================================================================
-IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector() {
-  nbfaces=0;
-  done=Standard_False;
-  PtrJetons=NULL;
-  PtrJetonsIndex=NULL;
+
+IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector() 
+: myIsDone(Standard_False),
+  myNbFaces(0)
+{
 }
-//-- ================================================================================
-void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& shape,
-					  const Standard_Real tol) { 
-  PtrJetons=NULL;
-  PtrJetonsIndex=NULL;
-  if(nbfaces) { 
-    Destroy();
-  }
+
+void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape,
+                                          const Standard_Real theTol) 
+{ 
   TopExp_Explorer Ex;
   Standard_Integer i;
-  for(nbfaces=0,i=0,Ex.Init(shape,TopAbs_FACE); Ex.More(); i++,Ex.Next()) { 
-    nbfaces++;
-    TopoDS_Face currentface = TopoDS::Face(Ex.Current());
-    PtrIntersector.Append((void *)(new IntCurvesFace_Intersector(currentface,tol)));
-  }  
+  for(myNbFaces = 0, i = 0, Ex.Init(theShape, TopAbs_FACE); Ex.More(); ++i, Ex.Next()) 
+  {
+    ++myNbFaces;
+    TopoDS_Face aCurrentFace = TopoDS::Face(Ex.Current());
+    myIntersector.Append(new IntCurvesFace_Intersector(aCurrentFace, theTol));
+  }
 }
-//-- ================================================================================
-void IntCurvesFace_ShapeIntersector::Destroy() { 
-  if(PtrJetons) { 
-    delete ((Standard_Integer *)PtrJetons);
-    PtrJetons=NULL;
-  }
-  if(PtrJetonsIndex) { 
-    delete ((Standard_Integer *)PtrJetonsIndex);
-    PtrJetonsIndex=NULL;
-  }
-  for(Standard_Integer i=1; i<=nbfaces; i++) { 
-    IntCurvesFace_Intersector *Ptr = (IntCurvesFace_Intersector *)PtrIntersector.ChangeValue(i);
-    delete Ptr;
-  }
-  done=Standard_False;
-  nbfaces=0;
-  PtrIntersector.Clear(); 
-  IndexPt.Clear();  IndexFace.Clear();   IndexIntPnt.Clear();IndexPar.Clear();
-}
-//-- ================================================================================
-void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& L,
-					     const Standard_Real ParMin,
-					     const Standard_Real ParMax) { 
-  done = Standard_False;
-  for(Standard_Integer i=1; i<=nbfaces; i++) { 
-    IntCurvesFace_Intersector *Ptr = (IntCurvesFace_Intersector *)PtrIntersector.ChangeValue(i);
-    Ptr->Perform(L,ParMin,ParMax);
+
+void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& theL,
+                         const Standard_Real theParMin,
+                         const Standard_Real theParMax) 
+{
+  myIsDone = Standard_False;
+  for(Standard_Integer i = 1; i <= myNbFaces; ++i) 
+  { 
+    myIntersector.ChangeValue(i)->Perform(theL, theParMin, theParMax);
   }
   SortResult();
 }
-//-- ================================================================================
-void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& L,
-						    const Standard_Real ParMin,
-						    const Standard_Real _ParMax) { 
 
-  Standard_Integer i;
-  Standard_Integer* _PtrJetons=(Standard_Integer *)PtrJetons;
-  Standard_Integer* _PtrJetonsIndex=(Standard_Integer *)PtrJetonsIndex;
-
-
-  if(nbfaces>2) { 
-    if(PtrJetons==NULL) { 
-      PtrJetons      = (void *) new Standard_Integer [nbfaces];
-      PtrJetonsIndex = (void *) new Standard_Integer [nbfaces];
-      Standard_Integer *Ptr =(Standard_Integer *)PtrJetons;
-      Standard_Integer *PtrI=(Standard_Integer *)PtrJetonsIndex;
-      for(i=0;i<nbfaces;i++) { 
-	Ptr[i]=0;
-	PtrI[i]=i+1;
-      }
-      _PtrJetons=(Standard_Integer *)PtrJetons;
-      _PtrJetonsIndex=(Standard_Integer *)PtrJetonsIndex;
-    }
-  }
-
-  
-  Standard_Integer Indexface=-1;  
-  Standard_Real ParMax=_ParMax;
-  
-
-  done = Standard_False;
-  for(Standard_Integer ii=1; ii<=nbfaces; ii++) { 
-    if(_PtrJetons) { 
-      i=_PtrJetonsIndex[ii-1];
-    }
-    else { 
-      i=ii;
-    }
-      
-    IntCurvesFace_Intersector *Ptr = (IntCurvesFace_Intersector *)PtrIntersector.ChangeValue(i);
-    if(ParMin<ParMax) { 
-      Ptr->Perform(L,ParMin,ParMax);
-      if(Ptr->IsDone()) {
-	Standard_Integer n=Ptr->NbPnt();
-	for(Standard_Integer j=1;j<=n;j++) { 
-	  Standard_Real w=Ptr->WParameter(j);
-	  if(w<ParMax) { 
-	    ParMax=w;	    
-	    Indexface=ii-1;
-	  }
-	}
-      }
-      else { 
-	done = Standard_False;
-	return;
+void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
+                            const Standard_Real theParMin,
+                            const Standard_Real theParMax) 
+{ 
+  Standard_Integer i = 0;
+  if(myNbFaces > 2) 
+  {
+    if (myPtrNums.IsEmpty())
+    { 
+      myPtrNums = TColStd_HArray1OfInteger(0, myNbFaces - 1);
+      myPtrIndexNums = TColStd_HArray1OfInteger(0, myNbFaces - 1);
+      for(; i < myNbFaces; ++i) 
+      { 
+        myPtrNums.ChangeValue(i) = 0;
+        myPtrIndexNums.ChangeValue(i) = i + 1;
       }
     }
   }
-  if(PtrJetons && Indexface>=0) { 
-    _PtrJetons[Indexface]++;
-
+  
+  Standard_Integer anIndexFace = -1;  
+  Standard_Real aParMax=theParMax;
+  myIsDone = Standard_False;
+  for(Standard_Integer ii = 1; ii <= myNbFaces; ++ii) 
+  { 
+    if (!myPtrNums.IsEmpty())
+    { 
+      i = myPtrIndexNums.Value(ii - 1);
+    }
+    else 
+    { 
+      i = ii;
+    }
+    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(i);
+    if(theParMin < aParMax) 
+    {
+      anIntersector->Perform(theL, theParMin,aParMax);
+      if(anIntersector->IsDone()) 
+      {
+        Standard_Integer n = anIntersector->NbPnt();
+        for(Standard_Integer j = 1; j <= n; ++j) 
+        { 
+          Standard_Real w = anIntersector->WParameter(j);
+          if(w < aParMax) 
+          { 
+            aParMax = w;
+            anIndexFace = ii - 1;
+          }
+        }
+      }
+      else 
+      { 
+        myIsDone = Standard_False;
+        return;
+      }
+    }
+  }
+  if (!myPtrNums.IsEmpty() && anIndexFace >= 0)
+  { 
+    myPtrNums.ChangeValue(anIndexFace) += 1;
     Standard_Integer im1;
-    for(im1=Indexface-1,i=Indexface; i>=1 && _PtrJetons[i]>_PtrJetons[i-1]; i--,im1--) { 
-      Standard_Integer t=_PtrJetonsIndex[i];
-      _PtrJetonsIndex[i]=_PtrJetonsIndex[im1];
-      _PtrJetonsIndex[im1]=t;
-      t=_PtrJetons[i];
-      _PtrJetons[i]=_PtrJetons[im1];
-      _PtrJetons[im1]=t;
+    for (im1 = anIndexFace - 1, i = anIndexFace; i >= 1 && myPtrNums.Value(i) > myPtrNums.Value(im1); --i, --im1)
+    { 
+      std::swap(myPtrIndexNums.ChangeValue(i), myPtrIndexNums.ChangeValue(im1));
+      std::swap(myPtrNums.ChangeValue(i), myPtrNums.ChangeValue(im1));
     }
-    //--for(Standard_Integer dd=0; dd<nbfaces;dd++) { if(_PtrJetons[dd]) { printf("\n<%3d %3d %3d>",dd,_PtrJetons[dd],_PtrJetonsIndex[dd]); }  } 
-    //--printf("\n");
+  }
+  SortResult();
+}
+
+void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_Curve)& theHCurve,
+                         const Standard_Real theParMin,
+                         const Standard_Real theParMax) 
+{ 
+  myIsDone = Standard_False;
+  for(Standard_Integer i = 1; i <= myNbFaces; ++i) 
+  {
+    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(i);
+    anIntersector->Perform(theHCurve, theParMin, theParMax);
   }
   SortResult();
 }
 //-- ================================================================================
-void IntCurvesFace_ShapeIntersector::Perform(const Handle(Adaptor3d_Curve)& HCu,
-					     const Standard_Real ParMin,
-					     const Standard_Real ParMax) { 
-  done = Standard_False;
-  for(Standard_Integer i=1; i<=nbfaces; i++) { 
-    IntCurvesFace_Intersector *Ptr = (IntCurvesFace_Intersector *)PtrIntersector.ChangeValue(i);
-    Ptr->Perform(HCu,ParMin,ParMax);
-  }
-  SortResult();
-}
-//-- ================================================================================
-//-- PtrIntersector   : Sequence d addresses 
-//-- IndexPt          : 1 2 3 .... n   points avant le tri 
-//-- IndexFace        : Numero de la face (de l intersector) du point IndexPt(i)
-//-- IndexIntPnt      : Numero du point  IndexPt(i) dans l'intersector IndexFace(IndexPt(i))
-//-- IndexPar         : W parameter du point IndexPt(i)
+//-- myIntersector   : Sequence of the addresses 
+//-- myIndexPt          : 1 2 3 .... n  Points before the sorting
+//-- myNumberFace       : Number of the face (of the intersector) of the point myIndexPt(i)
+//-- myNumberIntPnt     : Number of the point  myIndexPt(i) of the intersection myNumberFace(myIndexPt(i))
+//-- myIndexPar         : Parameter W of point myIndexPt(i)
 //--
-//-- En resume, pour chaque point indice par K = IndexPt(i) on a 
-//--      * la face a laquelle il appartient                  : IndexFace(K)
-//--      * le numero du point dans l'intersecteur FaceCurve  : IndexIntPnt(K)
-//--      * le parametre W du point sur la courbe             : IndexPar(K)
+//-- To sum up, for each point index of K = myIndexPt(i) on a 
+//--      * the face to which it belongs                               : myNumberFace(K)
+//--      * the number of the point in the intersection for FaceCurve  : myNumberIntPnt(K)
+//--      * the parameter W of the point on the curve                  : myIndexPar(K)
 //--
-//-- SortResult Trie les points par ordre croissant de W 
-//-- (remet a jour le tableau d index TabPt(.))
+//-- SortResult Sorts the points in ascending order of W
+//-- (updating the index table TabPt(.))
 //-- 
 //-- ================================================================================
-void IntCurvesFace_ShapeIntersector::SortResult() { 
-  done = Standard_True;
-  Standard_Integer nbpnt=0;
-  IndexPt.Clear();  IndexFace.Clear();  IndexIntPnt.Clear();IndexPar.Clear();
-  //-- -----------------------------------------------------
-  //-- r e c u p e r a t i o n   d e s   r e s u l t a t s  
-  //--
-  for(Standard_Integer f=1; f<=nbfaces; f++) { 
-    IntCurvesFace_Intersector *Ptr = (IntCurvesFace_Intersector *)PtrIntersector.ChangeValue(f);
-    if(Ptr->IsDone()) { 
-      Standard_Integer n=Ptr->NbPnt();
-      for(Standard_Integer j=1;j<=n;j++) { 
-	IndexPt.Append(++nbpnt);
-	IndexFace.Append(f);
-	IndexIntPnt.Append(j);
-	IndexPar.Append(Ptr->WParameter(j));
+void IntCurvesFace_ShapeIntersector::SortResult() 
+{ 
+  myIsDone = Standard_True;
+  Standard_Integer aNbPnt=0;
+  myIndexPt.Clear();  
+  myIndexFace.Clear();
+  myIndexIntPnt.Clear();
+  myIndexPar.Clear();
+  
+  //Retrieval of the results 
+  for(Standard_Integer f = 1; f <= myNbFaces; ++f) 
+  { 
+    Handle(IntCurvesFace_Intersector) anIntersector = myIntersector.ChangeValue(f);
+    if(anIntersector->IsDone()) 
+    {
+      Standard_Integer n = anIntersector->NbPnt();
+      for(Standard_Integer j = 1; j <= n; ++j) 
+      { 
+          myIndexPt.Append(++aNbPnt);
+          myIndexFace.Append(f);
+          myIndexIntPnt.Append(j);
+          myIndexPar.Append(anIntersector->WParameter(j));
       }
     }
-    else { 
-      done = Standard_False;
+    else
+    { 
+      myIsDone = Standard_False;
       return;
     }
   }
-  //-- -----------------------------------------------------
-  //-- t r i   s e l o n   l  e   p a r a m e t r e   w 
-  //--
-  Standard_Boolean triok;
-  do { 
-    triok=Standard_True;
-    for(Standard_Integer ind0=1;ind0<nbpnt;ind0++) { 
-      Standard_Integer ind  =IndexPt(ind0);
-      Standard_Integer indp1=IndexPt(ind0+1);
-      if(IndexPar(ind) > IndexPar(indp1)) { 
-	IndexPt(ind0)  =indp1;
-	IndexPt(ind0+1)=ind;
-	triok=Standard_False;
+
+  //Sort according to parameter  w
+  Standard_Boolean isOK;
+  do 
+  { 
+    isOK = Standard_True;
+    for(Standard_Integer ind0 = 1; ind0 < aNbPnt; ind0++) 
+    {
+      Standard_Integer ind   = myIndexPt(ind0);
+      Standard_Integer indp1 = myIndexPt(ind0 + 1);
+      if(myIndexPar(ind) > myIndexPar(indp1)) 
+      { 
+        myIndexPt(ind0)   = indp1;
+        myIndexPt(ind0 + 1) = ind;
+        isOK = Standard_False;
       }
     }
   }
-  while(triok==Standard_False);
+  while(!isOK);
 }
-//-- ================================================================================
-//-- Creation le 28 jan 98
-//-- 
+
+IntCurvesFace_ShapeIntersector::~IntCurvesFace_ShapeIntersector()
+{
+}
