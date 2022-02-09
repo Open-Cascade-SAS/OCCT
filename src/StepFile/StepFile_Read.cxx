@@ -14,22 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//   StepFile_Read
-
-//   routine assurant l enchainement des operations de lecture d un fichier
-//   STEP dans un StepModel, en fonction d une cle de reconnaissance
-//   Retour de la fonction :
-//     0 si OK  (le StepModel a ete charge)
-//    -1 si abandon car fichier pas pu etre ouvert
-//     1 si erreur en cours de lecture
-
-//   Compilation conditionnelle : concerne les mesures de performances
-
-#include <stdio.h>
-#include <iostream> 
-
-#include <step.tab.hxx>
 #include <StepFile_Read.hxx>
+
 #include <StepFile_ReadData.hxx>
 
 #include <Interface_Check.hxx>
@@ -49,8 +35,12 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
-#include <OSD_OpenFile.hxx>
+#include <OSD_FileSystem.hxx>
 #include <OSD_Timer.hxx>
+
+#include "step.tab.hxx"
+
+#include <stdio.h>
 
 #ifdef OCCT_DEBUG
 #define CHRONOMESURE
@@ -73,14 +63,15 @@ static Standard_Integer StepFile_Read (const char* theName,
                                        const Handle(StepData_FileRecognizer)& theRecogData)
 {
   // if stream is not provided, open file stream here
-  std::istream *aStreamPtr = theIStream;
-  std::ifstream aFileStream;
-  if (!aStreamPtr) {
-    OSD_OpenStream(aFileStream, theName, std::ios_base::in | std::ios_base::binary);
-    aStreamPtr = &aFileStream;
+  std::istream* aStreamPtr = theIStream;
+  std::shared_ptr<std::istream> aFileStream;
+  if (aStreamPtr == nullptr)
+  {
+    const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+    aFileStream = aFileSystem->OpenIStream (theName, std::ios::in | std::ios::binary);
+    aStreamPtr = aFileStream.get();
   }
-
-  if (aStreamPtr->fail())
+  if (aStreamPtr == nullptr || aStreamPtr->fail())
   {
     return -1;
   }

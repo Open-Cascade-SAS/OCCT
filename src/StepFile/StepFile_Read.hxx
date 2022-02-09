@@ -17,6 +17,9 @@
 #ifndef StepFile_Read_HeaderFile
 #define StepFile_Read_HeaderFile
 
+#include <Standard_CString.hxx>
+#include <Standard_Type.hxx>
+
 #include <iostream>
 
 class StepData_StepModel;

@@ -147,12 +147,6 @@ Handle(Poly_Triangulation) RWStl::ReadFile (const OSD_Path& theFile,
 Handle(Poly_Triangulation) RWStl::ReadBinary (const OSD_Path& theFile,
                                               const Message_ProgressRange& theProgress)
 {
-  OSD_File aFile(theFile);
-  if (!aFile.Exists())
-  {
-    return Handle(Poly_Triangulation)();
-  }
-
   TCollection_AsciiString aPath;
   theFile.SystemName (aPath);
 
@@ -179,31 +173,24 @@ Handle(Poly_Triangulation) RWStl::ReadBinary (const OSD_Path& theFile,
 Handle(Poly_Triangulation) RWStl::ReadAscii (const OSD_Path& theFile,
                                              const Message_ProgressRange& theProgress)
 {
-  OSD_File aFile (theFile);
-  if (!aFile.Exists())
-  {
-    return Handle(Poly_Triangulation)();
-  }
-
   TCollection_AsciiString aPath;
   theFile.SystemName (aPath);
 
-  std::filebuf aBuf;
-  OSD_OpenStream (aBuf, aPath, std::ios::in | std::ios::binary);
-  if (!aBuf.is_open())
+  const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  std::shared_ptr<std::istream> aStream = aFileSystem->OpenIStream (aPath, std::ios::in | std::ios::binary);
+  if (aStream.get() == NULL)
   {
     return Handle(Poly_Triangulation)();
   }
-  Standard_IStream aStream (&aBuf);
 
   // get length of file to feed progress indicator
-  aStream.seekg (0, aStream.end);
-  std::streampos theEnd = aStream.tellg();
-  aStream.seekg (0, aStream.beg);
+  aStream->seekg (0, aStream->end);
+  std::streampos theEnd = aStream->tellg();
+  aStream->seekg (0, aStream->beg);
 
   Reader aReader;
   Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
-  if (!aReader.ReadAscii (aStream, aBuffer, theEnd, theProgress))
+  if (!aReader.ReadAscii (*aStream, aBuffer, theEnd, theProgress))
   {
     return Handle(Poly_Triangulation)();
   }
@@ -351,7 +338,7 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
                                      FILE* theFile,
                                      const Message_ProgressRange& theProgress)
 {
-  char aHeader[80] = "STL Exported by OpenCASCADE [www.opencascade.com]";
+  char aHeader[80] = "STL Exported by Open CASCADE Technology [dev.opencascade.org]";
   if (fwrite (aHeader, 1, 80, theFile) != 80)
   {
     return Standard_False;
