@@ -56,6 +56,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <BRepExtrema_ExtCC.hxx>
+#include <ShapeFix_Edge.hxx>
 
 static TopoDS_Edge FindEdgeCloseToBisectorPlane(const TopoDS_Vertex& theVertex,
                                                 TopoDS_Compound&     theComp,
@@ -534,6 +535,26 @@ BRepFill_TrimShellCorner::MakeFacesNonSec(const Standard_Integer                
 
     if(bHasNewEdge) {
       aNewEdge.Orientation(TopAbs_FORWARD);
+
+      // Refer to BrepFill_Sweep.cxx BuildEdge Construct an edge via an iso
+      gp_Pnt P1, P2;
+      Standard_Real p11, p12, p21, p22;
+      P1 = BRep_Tool::Pnt(TopExp::FirstVertex(TopoDS::Edge(aNewEdge)));
+      P2 = BRep_Tool::Pnt(TopExp::LastVertex(TopoDS::Edge(aNewEdge)));
+
+      TopoDS_Edge aERef = TopoDS::Edge(fit == 1 ? aE1 : aE2);
+      p11 = P1.Distance(BRep_Tool::Pnt(TopExp::FirstVertex(aERef)));
+      p22 = P2.Distance(BRep_Tool::Pnt(TopExp::LastVertex(aERef)));
+      p12 = P1.Distance(BRep_Tool::Pnt(TopExp::LastVertex(aERef)));
+      p21 = P2.Distance(BRep_Tool::Pnt(TopExp::FirstVertex(aERef)));
+
+      if (p11 > p12 && p22 > p21) {
+        aNewEdge.Reverse();
+      }
+
+      // for nonPlane surface, we should add pCurve
+      Handle(ShapeFix_Edge) sfe = new ShapeFix_Edge();
+      sfe->FixAddPCurve(aNewEdge, TopoDS::Face(aFace), Standard_False);
     }
 
     TopTools_ListOfShape aOrderedList;
