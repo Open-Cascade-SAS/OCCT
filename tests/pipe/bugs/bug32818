@@ -1,0 +1,18 @@
+puts "========"
+puts "0032818: Modeling Algorithms - Result of sweep operation is invalid"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32818.brep] 
+explode bug32818
+renamevar bug32818_1 p
+renamevar bug32818_2 pr
+
+mksweep p
+setsweep -CF
+addsweep pr
+
+buildsweep result -R -S
+
+checkshape result
+checknbshapes result -vertex 80 -edge 160 -wire 80 -face 80 -shell 1 -solid 1
