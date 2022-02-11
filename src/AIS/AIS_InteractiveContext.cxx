@@ -961,9 +961,19 @@ void AIS_InteractiveContext::RecomputeSelectionOnly(const Handle(AIS_Interactive
     mgrSelector->Deactivate(theIO, aModesIter.Value());
   }
 
-  mgrSelector->RecomputeSelection(theIO);
-
   const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek(theIO);
+  if (aStatus != NULL)
+  {
+    if (!myLastPicked.IsNull() && myLastPicked->IsSameSelectable(theIO))
+    {
+      clearDynamicHighlight();
+      myLastPicked.Nullify();
+    }
+
+    unselectOwners(theIO);
+  }
+
+  mgrSelector->RecomputeSelection(theIO);
   if (aStatus == NULL || theIO->DisplayStatus() != PrsMgr_DisplayStatus_Displayed)
   {
     return;
