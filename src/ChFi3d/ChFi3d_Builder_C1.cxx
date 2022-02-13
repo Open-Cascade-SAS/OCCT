@@ -1997,6 +1997,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       if ((possible1 && possible2) || (!possible1 && !possible2) || (nbarete > 4)) {
 	while (!trouve) {
 	  nb++;
+	  if (nb>=nn) throw Standard_Failure("IntersectionAtEnd : the max number of faces reached");
 	  if (nb!=1) F3=Face[nb-2];
 	  Face[nb-1]=F3;
 	  if (CV1.Arc().IsSame(edgelibre1))
