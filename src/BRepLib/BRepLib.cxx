@@ -1960,6 +1960,12 @@ public:
     return aDeriv.Transformed(mySurfaceTrsf);
   }
 
+  gp_Dir Normal()
+  {
+    gp_Dir aNormal = mySurfaceProps.Normal();
+    return aNormal.Transformed(mySurfaceTrsf);
+  }
+
   // Calculate principal curvatures, which consist of minimal and maximal normal curvatures and
   // the directions on the tangent plane (principal direction) where the extremums are reached
   void Curvature(gp_Dir& thePrincipalDir1, Standard_Real& theCurvature1,
@@ -1998,32 +2004,63 @@ private:
 //purpose  : check the angle at the border between two squares.
 //           Two shares should have a shared front edge.
 //=======================================================================
-static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
-                              const TopoDS_Face& F1,
-                              const TopoDS_Face& F2,
-                              const Standard_Real theAngleTol)
+GeomAbs_Shape BRepLib::ContinuityOfFaces(const TopoDS_Edge&  theEdge,
+                                         const TopoDS_Face&  theFace1,
+                                         const TopoDS_Face&  theFace2,
+                                         const Standard_Real theAngleTol)
 {
-  Standard_Boolean isSeam = F1.IsEqual(F2);
+  Standard_Boolean isSeam = theFace1.IsEqual(theFace2);
 
-  TopoDS_Edge E = Ed;
+  TopoDS_Edge anEdgeInFace1, anEdgeInFace2;
+  Handle(Geom2d_Curve) aCurve1, aCurve2;
+  
+  Standard_Real aFirst, aLast;
+  
+  if (!theFace1.IsSame (theFace2) &&
+      BRep_Tool::IsClosed (theEdge, theFace1) &&
+      BRep_Tool::IsClosed (theEdge, theFace2))
+  {
+    //Find the edge in the face 1: this edge will have correct orientation
+    TopoDS_Face aFace1 = theFace1;
+    aFace1.Orientation (TopAbs_FORWARD);
+    TopExp_Explorer anExplo (aFace1, TopAbs_EDGE);
+    for (; anExplo.More(); anExplo.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (anExplo.Current());
+      if (anEdge.IsSame (theEdge))
+      {
+        anEdgeInFace1 = anEdge;
+        break;
+      }
+    }
+    if (anEdgeInFace1.IsNull())
+      return GeomAbs_C0;
+    
+    aCurve1 = BRep_Tool::CurveOnSurface (anEdgeInFace1, aFace1, aFirst, aLast);
+    TopoDS_Face aFace2 = theFace2;
+    aFace2.Orientation (TopAbs_FORWARD);
+    anEdgeInFace2 = anEdgeInFace1;
+    anEdgeInFace2.Reverse();
+    aCurve2 = BRep_Tool::CurveOnSurface (anEdgeInFace2, aFace2, aFirst, aLast);
+  }
+  else
+  {
+    // Obtaining of pcurves of edge on two faces.
+    anEdgeInFace1 = anEdgeInFace2 = theEdge;
+    aCurve1 = BRep_Tool::CurveOnSurface (anEdgeInFace1, theFace1, aFirst, aLast);
+    //For the case of seam edge
+    if (theFace1.IsSame(theFace2))
+      anEdgeInFace2.Reverse();
+    aCurve2 = BRep_Tool::CurveOnSurface (anEdgeInFace2, theFace2, aFirst, aLast);
+  }
 
-  // Check if pcurves exist on both faces of edge
-  Standard_Real aFirst,aLast;
-  E.Orientation(TopAbs_FORWARD);
-  Handle(Geom2d_Curve) aCurve1 = BRep_Tool::CurveOnSurface(E, F1, aFirst, aLast);
-  if(aCurve1.IsNull())
-    return GeomAbs_C0;
-
-  if (isSeam)
-    E.Orientation(TopAbs_REVERSED);
-  Handle(Geom2d_Curve) aCurve2 = BRep_Tool::CurveOnSurface(E, F2, aFirst, aLast);
-  if(aCurve2.IsNull())
+  if (aCurve1.IsNull() || aCurve2.IsNull())
     return GeomAbs_C0;
 
   TopLoc_Location aLoc1, aLoc2;
-  Handle(Geom_Surface) aSurface1 = BRep_Tool::Surface(F1, aLoc1);
+  Handle(Geom_Surface) aSurface1 = BRep_Tool::Surface (theFace1, aLoc1);
   const gp_Trsf& aSurf1Trsf = aLoc1.Transformation();
-  Handle(Geom_Surface) aSurface2 = BRep_Tool::Surface(F2, aLoc2);
+  Handle(Geom_Surface) aSurface2 = BRep_Tool::Surface (theFace2, aLoc2);
   const gp_Trsf& aSurf2Trsf = aLoc2.Transformation();
 
   if (aSurface1->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
@@ -2040,11 +2077,11 @@ static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
     return GeomAbs_CN;
   }
 
-  SurfaceProperties aSP1(aSurface1, aSurf1Trsf, aCurve1, F1.Orientation() == TopAbs_REVERSED);
-  SurfaceProperties aSP2(aSurface2, aSurf2Trsf, aCurve2, F2.Orientation() == TopAbs_REVERSED);
+  SurfaceProperties aSP1(aSurface1, aSurf1Trsf, aCurve1, theFace1.Orientation() == TopAbs_REVERSED);
+  SurfaceProperties aSP2(aSurface2, aSurf2Trsf, aCurve2, theFace2.Orientation() == TopAbs_REVERSED);
 
   Standard_Real f, l, eps;
-  BRep_Tool::Range(E,f,l);
+  BRep_Tool::Range (theEdge,f,l);
   Extrema_LocateExtPC ext;
   Handle(BRepAdaptor_Curve) aHC2;
 
@@ -2055,7 +2092,6 @@ static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
   const Standard_Real anAngleTol2 = theAngleTol * theAngleTol;
 
   gp_Vec aDer1, aDer2;
-  gp_Vec aNorm1;
   Standard_Real aSqLen1, aSqLen2;
   gp_Dir aCrvDir1[2], aCrvDir2[2];
   Standard_Real aCrvLen1[2], aCrvLen2[2];
@@ -2083,13 +2119,26 @@ static GeomAbs_Shape tgtfaces(const TopoDS_Edge& Ed,
     aDer2 = aSP2.Derivative();
     aSqLen2 = aDer2.SquareMagnitude();
     Standard_Boolean isSmoothSuspect = (aDer1.CrossSquareMagnitude(aDer2) <= anAngleTol2 * aSqLen1 * aSqLen2);
+    if (isSmoothSuspect)
+    {
+      gp_Dir aNormal1 = aSP1.Normal();
+      if (theFace1.Orientation() == TopAbs_REVERSED)
+        aNormal1.Reverse();
+      gp_Dir aNormal2 = aSP2.Normal();
+      if (theFace2.Orientation() == TopAbs_REVERSED)
+        aNormal2.Reverse();
+      
+      if (aNormal1 * aNormal2 < 0.)
+        return GeomAbs_C0;
+    }
+    
     if (!isSmoothSuspect)
     {
       // Refine by projection
       if (aHC2.IsNull())
       {
         // adaptor for pcurve on the second surface
-        aHC2 = new BRepAdaptor_Curve (E, F2);
+        aHC2 = new BRepAdaptor_Curve (anEdgeInFace2, theFace2);
         ext.Initialize(*aHC2, f, l, Precision::PConfusion());
       }
       ext.Perform(aSP1.Value(), u);
@@ -2285,9 +2334,8 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
   BRep_Builder B;
   if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
     try {
-      GeomAbs_Shape aCont = tgtfaces(E, F1, F2, TolAng);
+      GeomAbs_Shape aCont = ContinuityOfFaces(E, F1, F2, TolAng);
       B.Continuity(E,F1,F2,aCont);
-      
     }
     catch(Standard_Failure const&)
     {
