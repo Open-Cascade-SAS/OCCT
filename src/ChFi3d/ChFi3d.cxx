@@ -139,12 +139,12 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
 //function : IsTangentFaces
 //purpose  : 
 //=======================================================================
-Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge& theEdge,
-                                        const TopoDS_Face& theFace1,
-                                        const TopoDS_Face& theFace2,
-                                        const GeomAbs_Shape Order)
+Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
+                                        const TopoDS_Face&  theFace1,
+                                        const TopoDS_Face&  theFace2,
+                                        const GeomAbs_Shape theOrder)
 {
-  if (Order == GeomAbs_G1 && BRep_Tool::Continuity(theEdge, theFace1, theFace2) != GeomAbs_C0)
+  if (theOrder == GeomAbs_G1 && BRep_Tool::Continuity(theEdge, theFace1, theFace2) != GeomAbs_C0)
     return Standard_True;
 
   Standard_Real TolC0 = Max(0.001, 1.5*BRep_Tool::Tolerance(theEdge));
@@ -152,15 +152,46 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge& theEdge,
   Standard_Real aFirst;
   Standard_Real aLast;
 
-  // Obtaining of pcurves of edge on two faces.
-  const Handle(Geom2d_Curve) aC2d1 = BRep_Tool::CurveOnSurface
-    (theEdge, theFace1, aFirst, aLast);
-  //For the case of seam edge
-  TopoDS_Edge EE = theEdge;
-  if (theFace1.IsSame(theFace2))
-    EE.Reverse();
-  const Handle(Geom2d_Curve) aC2d2 = BRep_Tool::CurveOnSurface
-    (EE, theFace2, aFirst, aLast);
+  Handle(Geom2d_Curve) aC2d1, aC2d2;
+  
+  if (!theFace1.IsSame (theFace2) &&
+      BRep_Tool::IsClosed (theEdge, theFace1) &&
+      BRep_Tool::IsClosed (theEdge, theFace2))
+  {
+    //Find the edge in the face 1: this edge will have correct orientation
+    TopoDS_Edge anEdgeInFace1;
+    TopoDS_Face aFace1 = theFace1;
+    aFace1.Orientation (TopAbs_FORWARD);
+    TopExp_Explorer anExplo (aFace1, TopAbs_EDGE);
+    for (; anExplo.More(); anExplo.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (anExplo.Current());
+      if (anEdge.IsSame (theEdge))
+      {
+        anEdgeInFace1 = anEdge;
+        break;
+      }
+    }
+    if (anEdgeInFace1.IsNull())
+      return Standard_False;
+    
+    aC2d1 = BRep_Tool::CurveOnSurface (anEdgeInFace1, aFace1, aFirst, aLast);
+    TopoDS_Face aFace2 = theFace2;
+    aFace2.Orientation (TopAbs_FORWARD);
+    anEdgeInFace1.Reverse();
+    aC2d2 = BRep_Tool::CurveOnSurface (anEdgeInFace1, aFace2, aFirst, aLast);
+  }
+  else
+  {
+    // Obtaining of pcurves of edge on two faces.
+    aC2d1 = BRep_Tool::CurveOnSurface (theEdge, theFace1, aFirst, aLast);
+    //For the case of seam edge
+    TopoDS_Edge EE = theEdge;
+    if (theFace1.IsSame(theFace2))
+      EE.Reverse();
+    aC2d2 = BRep_Tool::CurveOnSurface (EE, theFace2, aFirst, aLast);
+  }
+  
   if (aC2d1.IsNull() || aC2d2.IsNull())
     return Standard_False;
 
@@ -191,15 +222,19 @@ Standard_Boolean ChFi3d::IsTangentFaces(const TopoDS_Edge& theEdge,
     if (i == aNbSamples) aPar = aLast;
 
     LocalAnalysis_SurfaceContinuity aCont(aC2d1, aC2d2, aPar,
-      aSurf1, aSurf2, Order,
+      aSurf1, aSurf2, theOrder,
       0.001, TolC0, 0.1, 0.1, 0.1);
     if (!aCont.IsDone())
     {
+      if (theOrder == GeomAbs_C2 &&
+          aCont.StatusError() == LocalAnalysis_NullSecondDerivative)
+        continue;
+      
       nbNotDone++;
       continue;
     }
 
-    if (Order == GeomAbs_G1)
+    if (theOrder == GeomAbs_G1)
     {
       if (!aCont.IsG1())
         return Standard_False;

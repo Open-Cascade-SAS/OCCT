@@ -46,6 +46,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomConvert.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLib_IsPlanarSurface.hxx>
 #include <gp_Cylinder.hxx>
@@ -1212,7 +1213,31 @@ static Standard_Boolean GetNormalToSurface(const TopoDS_Face& theFace,
 {
   Standard_Real f, l;
   // get 2d curve to get point in 2d
-  const Handle(Geom2d_Curve)& aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, f, l);
+  Handle(Geom2d_Curve) aC2d;
+  if (BRep_Tool::IsClosed(theEdge, theFace))
+  {
+    //Find the edge in the face: it will have correct orientation
+    TopoDS_Edge anEdgeInFace;
+    TopoDS_Face aFace = theFace;
+    aFace.Orientation (TopAbs_FORWARD);
+    TopExp_Explorer anExplo (aFace, TopAbs_EDGE);
+    for (; anExplo.More(); anExplo.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (anExplo.Current());
+      if (anEdge.IsSame (theEdge))
+      {
+        anEdgeInFace = anEdge;
+        break;
+      }
+    }
+    if (anEdgeInFace.IsNull())
+      return Standard_False;
+
+    aC2d = BRep_Tool::CurveOnSurface (anEdgeInFace, aFace, f, l);
+  }
+  else
+    aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, f, l);
+  
   if (aC2d.IsNull()) {
     return Standard_False;
   }
@@ -2965,29 +2990,107 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
       TopTools_IndexedDataMapOfShapeListOfShape VEmap;
       for (Standard_Integer ind = 1; ind <= edges.Length(); ind++)
         TopExp::MapShapesAndUniqueAncestors(edges(ind), TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+
+      //Try to find seam edge and an edge that is not seam but has 2 pcurves on the surface
+      Standard_Boolean SeamFound = Standard_False;
+      TopoDS_Edge EdgeWith2pcurves;
+      for (Standard_Integer ii = 1; ii <= faces.Length(); ii++)
+      {
+        const TopoDS_Face& face_ii = TopoDS::Face(faces(ii));
+        TopoDS_Wire anOuterWire = BRepTools::OuterWire(face_ii);
+        TopoDS_Iterator itw(anOuterWire);
+        for (; itw.More(); itw.Next())
+        {
+          const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
+          if (BRep_Tool::IsClosed (anEdge, face_ii))
+          {
+            if (BRepTools::IsReallyClosed(anEdge, face_ii))
+              SeamFound = Standard_True;
+            else
+              EdgeWith2pcurves = anEdge;
+          }
+        }
+      }
+
+      Standard_Boolean aIsEdgeWith2pcurvesSmooth = Standard_False;
+      if (myConcatBSplines && !EdgeWith2pcurves.IsNull() && !SeamFound)
+      {
+        const TopTools_ListOfShape& aFaceList = theGMapEdgeFaces.FindFromKey (EdgeWith2pcurves);
+        const TopoDS_Face& aFace1 = TopoDS::Face (aFaceList.First());
+        const TopoDS_Face& aFace2 = TopoDS::Face (aFaceList.Last());
+        GeomAbs_Shape anOrderOfCont = BRepLib::ContinuityOfFaces (EdgeWith2pcurves,
+                                                                  aFace1, aFace2,
+                                                                  myAngTol);
+        aIsEdgeWith2pcurvesSmooth = (anOrderOfCont >= GeomAbs_G1);
+      }
+
+      if (aIsEdgeWith2pcurvesSmooth)
+      {
+        Handle(Geom2d_Curve) aPC1, aPC2;
+        Standard_Real aFirst, aLast;
+        aPC1 = BRep_Tool::CurveOnSurface (EdgeWith2pcurves, F_RefFace, aFirst, aLast);
+        EdgeWith2pcurves.Reverse();
+        aPC2 = BRep_Tool::CurveOnSurface (EdgeWith2pcurves, F_RefFace, aFirst, aLast);
+        gp_Pnt2d aPnt1 = aPC1->Value (aFirst);
+        gp_Pnt2d aPnt2 = aPC2->Value (aFirst);
+        Standard_Boolean anIsUclosed = (Abs(aPnt1.X() - aPnt2.X()) > Abs(aPnt1.Y() - aPnt2.Y()));
+        Standard_Boolean aToMakeUPeriodic = Standard_False, aToMakeVPeriodic = Standard_False;
+        if (anIsUclosed && Uperiod == 0.)
+          aToMakeUPeriodic = Standard_True;
+        if (!anIsUclosed && Vperiod == 0.)
+          aToMakeVPeriodic = Standard_True;
+
+        if (aToMakeUPeriodic || aToMakeVPeriodic)
+        {
+          Handle(Geom_BSplineSurface) aBSplineSurface = Handle(Geom_BSplineSurface)::DownCast(aBaseSurface);
+          if (aBSplineSurface.IsNull())
+          {
+            Standard_Real aTol = 1.e-4;
+            GeomAbs_Shape aUCont = GeomAbs_C1, aVCont = GeomAbs_C1;
+            Standard_Integer degU = 14, degV = 14;
+            Standard_Integer nmax = 16;
+            Standard_Integer aPrec = 1;  
+            GeomConvert_ApproxSurface Approximator(aBaseSurface,aTol,aUCont,aVCont,degU,degV,nmax,aPrec);
+            aBSplineSurface = Approximator.Surface();
+          }
+          
+          if (aToMakeUPeriodic)
+          {
+            aBSplineSurface->SetUPeriodic();
+            Uperiod = aBSplineSurface->UPeriod();
+          }
+          if (aToMakeVPeriodic)
+          {
+            aBSplineSurface->SetVPeriodic();
+            Vperiod = aBSplineSurface->VPeriod();
+          }
+
+          //Update ref face and pcurves if the surface changed
+          if (aBSplineSurface != aBaseSurface)
+          {
+            TopoDS_Face OldRefFace = RefFace;
+            Handle(Geom2d_Curve) NullPCurve;
+            RefFace.Nullify();
+            BB.MakeFace(RefFace, aBSplineSurface, aBaseLocation, 0.);
+            for (Standard_Integer ii = 1; ii <= edges.Length(); ii++)
+            {
+              TopoDS_Edge anEdge = TopoDS::Edge(edges(ii));
+              Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface (anEdge, OldRefFace, aFirst, aLast);
+              if (MapEdgesWithTemporaryPCurves.Contains(anEdge))
+                BB.UpdateEdge(anEdge, NullPCurve, OldRefFace, 0.);
+              BB.UpdateEdge(anEdge, aPCurve, RefFace, 0.);
+            }
+            F_RefFace = RefFace;
+            F_RefFace.Orientation(TopAbs_FORWARD);
+          }
+        }
+      } //if (myConcatBSplines && !EdgeWith2pcurves.IsNull() && !SeamFound)
       
       //Perform relocating to new U-origin
       //Define boundaries in 2d space of RefFace
       if (Uperiod != 0.)
       {
-        //try to find a real seam edge - if it exists, do nothing
-        Standard_Boolean SeamFound = Standard_False;
-        for (Standard_Integer ii = 1; ii <= faces.Length(); ii++)
-        {
-          const TopoDS_Face& face_ii = TopoDS::Face(faces(ii));
-          TopoDS_Wire anOuterWire = BRepTools::OuterWire(face_ii);
-          TopoDS_Iterator itw(anOuterWire);
-          for (; itw.More(); itw.Next())
-          {
-            const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
-            if (BRepTools::IsReallyClosed(anEdge, face_ii))
-            {
-              SeamFound = Standard_True;
-              break;
-            }
-          }
-        }
-        
+        //if seam edge exists, do nothing
         if (!SeamFound)
         {
           //try to find the origin of U in 2d space
