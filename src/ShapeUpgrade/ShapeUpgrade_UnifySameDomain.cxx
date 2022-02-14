@@ -103,6 +103,19 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
+static Standard_Boolean IsOnSingularity(const TopTools_ListOfShape& theEdgeList)
+{
+  TopTools_ListIteratorOfListOfShape anItl (theEdgeList);
+  for (; anItl.More(); anItl.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge (anItl.Value());
+    if (BRep_Tool::Degenerated (anEdge))
+      return Standard_True;
+  }
+
+  return Standard_False;
+}
+
 static void SplitWire (const TopoDS_Wire&                theWire,
                        const TopoDS_Face&                theFace,
                        const TopTools_IndexedMapOfShape& theVmap,
@@ -3292,6 +3305,10 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
           if (NextEdge.IsNull())
           {
             Standard_Boolean EndOfWire = Standard_False;
+
+            Standard_Boolean anIsOnSingularity = IsOnSingularity (Elist);
+            if (!anIsOnSingularity && Elist.Extent() > 1)
+              SplittingVertices.Add (CurVertex);
             
             TopTools_ListOfShape TmpElist, TrueElist;
             //<TrueElist> will be the list of candidates to become <NextEdge>
@@ -3311,7 +3328,6 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
             else
             {
               //we must choose the closest direction - the biggest angle
-              SplittingVertices.Add (CurVertex);
               Standard_Real MaxAngle = RealFirst();
               TopoDS_Edge TrueEdge;
               Handle(Geom2d_Curve) CurPCurve = BRep_Tool::CurveOnSurface(CurEdge, F_RefFace, fpar, lpar);
