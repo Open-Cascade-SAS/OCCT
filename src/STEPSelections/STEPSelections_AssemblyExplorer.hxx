@@ -26,7 +26,6 @@
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Integer.hxx>
-class Interface_Graph;
 class StepShape_ShapeDefinitionRepresentation;
 class StepBasic_ProductDefinition;
 class STEPSelections_AssemblyComponent;

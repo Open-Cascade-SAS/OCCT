@@ -24,8 +24,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-class Standard_DimensionError;
-class Standard_RangeError;
 class Law_BSpline;
 
 

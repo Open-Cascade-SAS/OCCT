@@ -21,8 +21,6 @@
 #include <Standard_ConstructionError.hxx>
 
 class gp_XYZ;
-class gp_Trsf;
-class gp_GTrsf;
 
 //! Describes a three column, three row matrix.
 //! This sort of object is used in various vectorial or matrix computations.

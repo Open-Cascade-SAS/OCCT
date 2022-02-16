@@ -31,16 +31,6 @@ class Law_BSpFunc;
 class Law_Linear;
 class Law_BSpline;
 class Adaptor3d_Curve;
-class Law_BSpline;
-class Law_Interpolate;
-class Law_Function;
-class Law_Constant;
-class Law_Linear;
-class Law_BSpFunc;
-class Law_S;
-class Law_Interpol;
-class Law_Composite;
-class Law_BSplineKnotSplitting;
 
 
 //! Multiple services concerning 1d functions.

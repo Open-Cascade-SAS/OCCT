@@ -23,14 +23,6 @@
 
 #include <Draw_Interpretor.hxx>
 #include <Standard_CString.hxx>
-class SWDRAW_ShapeTool;
-class SWDRAW_ShapeAnalysis;
-class SWDRAW_ShapeCustom;
-class SWDRAW_ShapeExtend;
-class SWDRAW_ShapeFix;
-class SWDRAW_ShapeUpgrade;
-class SWDRAW_ShapeProcess;
-class SWDRAW_ShapeProcessAPI;
 
 
 //! Provides DRAW interface to the functionalities of Shape Healing

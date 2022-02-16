@@ -25,8 +25,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
-class Standard_OutOfRange;
-class Law_Function;
 
 
 class Law_Constant;

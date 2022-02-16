@@ -22,7 +22,6 @@
 
 #include <Standard_Transient.hxx>
 class StepRepr_NextAssemblyUsageOccurrence;
-class Standard_Transient;
 class STEPSelections_AssemblyComponent;
 
 

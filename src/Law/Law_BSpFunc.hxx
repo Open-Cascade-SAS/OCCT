@@ -26,8 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Law_BSpline;
-class Standard_OutOfRange;
-class Law_Function;
 
 
 class Law_BSpFunc;

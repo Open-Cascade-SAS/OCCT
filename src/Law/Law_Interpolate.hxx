@@ -27,8 +27,6 @@
 #include <TColStd_HArray1OfBoolean.hxx>
 #include <TColStd_Array1OfReal.hxx>
 class Law_BSpline;
-class StdFail_NotDone;
-class Standard_ConstructionError;
 
 
 //! This  class   is used  to   interpolate a BsplineCurve
