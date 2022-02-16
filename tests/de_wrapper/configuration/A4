@@ -1,0 +1,100 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+# Checking the dumping resource for the two format only
+set conf_ref "
+global.priority.STEP :   OCC
+global.priority.VRML :   OCC
+global.priority.STL :    OCC
+global.priority.OBJ :    OCC
+global.priority.GLTF :   OCC
+global.priority.BREP :   OCC
+global.priority.XCAF :   OCC
+global.priority.IGES :   OCC
+global.priority.PLY :    OCC
+global.general.length.unit :     1
+provider.STEP.OCC.read.iges.bspline.continuity :         1
+provider.STEP.OCC.read.precision.mode :  0
+provider.STEP.OCC.read.precision.val :   0.0001
+provider.STEP.OCC.read.maxprecision.mode :       0
+provider.STEP.OCC.read.maxprecision.val :        1
+provider.STEP.OCC.read.stdsameparameter.mode :   0
+provider.STEP.OCC.read.surfacecurve.mode :       0
+provider.STEP.OCC.read.encoderegularity.angle :  0.572958
+provider.STEP.OCC.angleunit.mode :  0
+provider.STEP.OCC.read.resource.name :   STEP
+provider.STEP.OCC.read.sequence :        FromSTEP
+provider.STEP.OCC.read.product.mode :    1
+provider.STEP.OCC.read.product.context :         1
+provider.STEP.OCC.read.shape.repr :      1
+provider.STEP.OCC.read.tessellated :    1
+provider.STEP.OCC.read.assembly.level :  1
+provider.STEP.OCC.read.shape.relationship :      1
+provider.STEP.OCC.read.shape.aspect :    1
+provider.STEP.OCC.read.constructivegeom.relationship :   0
+provider.STEP.OCC.read.stepcaf.subshapes.name :  0
+provider.STEP.OCC.read.codepage :        4
+provider.STEP.OCC.read.nonmanifold :     0
+provider.STEP.OCC.read.ideas :   0
+provider.STEP.OCC.read.all.shapes :      0
+provider.STEP.OCC.read.root.transformation :     1
+provider.STEP.OCC.read.color :   1
+provider.STEP.OCC.read.name :    1
+provider.STEP.OCC.read.layer :   1
+provider.STEP.OCC.read.props :   1
+provider.STEP.OCC.write.precision.mode :         0
+provider.STEP.OCC.write.precision.val :  0.0001
+provider.STEP.OCC.write.assembly :       0
+provider.STEP.OCC.write.schema :         1
+provider.STEP.OCC.write.tessellated :    2
+provider.STEP.OCC.write.product.name :
+provider.STEP.OCC.write.surfacecurve.mode :      1
+provider.STEP.OCC.write.unit :      2
+provider.STEP.OCC.write.resource.name :  STEP
+provider.STEP.OCC.write.sequence :       ToSTEP
+provider.STEP.OCC.write.vertex.mode :    0
+provider.STEP.OCC.write.stepcaf.subshapes.name :         0
+provider.STEP.OCC.write.color :  1
+provider.STEP.OCC.write.name :   1
+provider.STEP.OCC.write.layer :  1
+provider.STEP.OCC.write.props :  1
+provider.STEP.OCC.write.model.type :     0
+provider.IGES.OCC.read.iges.bspline.continuity :         1
+provider.IGES.OCC.read.precision.mode :  0
+provider.IGES.OCC.read.precision.val :   0.0001
+provider.IGES.OCC.read.maxprecision.mode :       0
+provider.IGES.OCC.read.maxprecision.val :        1
+provider.IGES.OCC.read.stdsameparameter.mode :   0
+provider.IGES.OCC.read.surfacecurve.mode :       0
+provider.IGES.OCC.read.encoderegularity.angle :  0.572958
+provider.IGES.OCC.read.bspline.approxd1.mode :   0
+provider.IGES.OCC.read.resource.name :   IGES
+provider.IGES.OCC.read.sequence :        FromIGES
+provider.IGES.OCC.read.fau_lty.entities :        0
+provider.IGES.OCC.read.onlyvisible :     0
+provider.IGES.OCC.read.color :   1
+provider.IGES.OCC.read.name :    1
+provider.IGES.OCC.read.layer :   1
+provider.IGES.OCC.write.brep.mode :      0
+provider.IGES.OCC.write.convertsurface.mode :    0
+provider.IGES.OCC.write.unit :   2
+provider.IGES.OCC.write.header.author :
+provider.IGES.OCC.write.header.company :
+provider.IGES.OCC.write.header.product :
+provider.IGES.OCC.write.header.receiver :
+provider.IGES.OCC.write.resource.name :  IGES
+provider.IGES.OCC.write.sequence :       ToIGES
+provider.IGES.OCC.write.precision.mode :         0
+provider.IGES.OCC.write.precision.val :  0.0001
+provider.IGES.OCC.write.plane.mode :     0
+provider.IGES.OCC.write.offset :         0
+provider.IGES.OCC.write.color :  1
+provider.IGES.OCC.write.name :   1
+provider.IGES.OCC.write.layer :  1
+"
+
+set conf [DumpConfiguration -vendor OCC -format STEP IGES]
+
+CompareConfiguration ${conf_ref} ${conf}

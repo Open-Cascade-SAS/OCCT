@@ -147,7 +147,7 @@ static void AddCompositeShape (const Handle(XCAFDoc_ShapeTool)& theSTool,
 //function : Transfer
 //purpose  : basic working method
 //=======================================================================
-Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
+Standard_Boolean IGESCAFControl_Reader::Transfer (const Handle(TDocStd_Document) &doc,
                                                   const Message_ProgressRange& theProgress)
 {
   // read all shapes
@@ -349,7 +349,7 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
 //=======================================================================
 
 Standard_Boolean IGESCAFControl_Reader::Perform (const Standard_CString filename,
-                                                 Handle(TDocStd_Document) &doc,
+                                                 const Handle(TDocStd_Document) &doc,
                                                  const Message_ProgressRange& theProgress)
 {
   if ( ReadFile ( filename ) != IFSelect_RetDone ) return Standard_False;

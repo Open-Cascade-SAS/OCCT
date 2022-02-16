@@ -1,0 +1,18 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+catch { Close D_Second }
+
+ReadIges D_First ${filename}
+XGetOneShape S_First D_First
+
+ReadFile D_Second ${filename}
+XGetOneShape S_Second D_Second
+
+checknbshapes S_Second -ref [nbshapes S_First]
+
+Close D_First
+Close D_Second

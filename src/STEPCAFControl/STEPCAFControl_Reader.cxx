@@ -362,7 +362,7 @@ Standard_Integer STEPCAFControl_Reader::NbRootsForTransfer()
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::TransferOneRoot (const Standard_Integer num,
-                                                         Handle(TDocStd_Document) &doc,
+                                                         const Handle(TDocStd_Document) &doc,
                                                          const Message_ProgressRange& theProgress)
 {
   TDF_LabelSequence Lseq;
@@ -375,7 +375,7 @@ Standard_Boolean STEPCAFControl_Reader::TransferOneRoot (const Standard_Integer 
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean STEPCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
+Standard_Boolean STEPCAFControl_Reader::Transfer (const Handle(TDocStd_Document) &doc,
                                                   const Message_ProgressRange& theProgress)
 {
   TDF_LabelSequence Lseq;
@@ -389,7 +389,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::Perform (const Standard_CString filename,
-                                                 Handle(TDocStd_Document) &doc,
+                                                 const Handle(TDocStd_Document) &doc,
                                                  const Message_ProgressRange& theProgress)
 {
   if (ReadFile (filename) != IFSelect_RetDone)
@@ -406,7 +406,7 @@ Standard_Boolean STEPCAFControl_Reader::Perform (const Standard_CString filename
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::Perform (const TCollection_AsciiString &filename,
-                                                 Handle(TDocStd_Document) &doc,
+                                                 const Handle(TDocStd_Document) &doc,
                                                  const Message_ProgressRange& theProgress)
 {
   if ( ReadFile (filename.ToCString()) != IFSelect_RetDone)
@@ -507,7 +507,7 @@ void STEPCAFControl_Reader::prepareUnits(const Handle(StepData_StepModel)& theMo
 
 Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
                                                   const Standard_Integer nroot,
-                                                  Handle(TDocStd_Document) &doc,
+                                                  const Handle(TDocStd_Document) &doc,
                                                   TDF_LabelSequence &Lseq,
                                                   const Standard_Boolean asOne,
                                                   const Message_ProgressRange& theProgress)
@@ -828,7 +828,7 @@ TDF_Label STEPCAFControl_Reader::AddShape(const TopoDS_Shape &S,
 
 Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile (const Standard_CString file, 
                                                                          const Standard_CString fullname,
-                                                                         Handle(TDocStd_Document)& doc,
+                                                                         const Handle(TDocStd_Document)& doc,
                                                                          const Message_ProgressRange& theProgress)
 {
   // if the file is already read, associate it with SDR
@@ -935,7 +935,7 @@ static void propagateColorToParts(const Handle(XCAFDoc_ShapeTool)& theSTool,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadColors(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc) const
+  const Handle(TDocStd_Document)& Doc) const
 {
   STEPConstruct_Styles Styles(WS);
   if (!Styles.LoadStyles()) {
@@ -1183,8 +1183,8 @@ TDF_Label STEPCAFControl_Reader::FindInstance(const Handle(StepRepr_NextAssembly
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadNames(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc,
-  const STEPCAFControl_DataMapOfPDExternFile &PDFileMap) const
+                                                  const Handle(TDocStd_Document)& Doc,
+                                                  const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const
 {
   // get starting data
   const Handle(Interface_InterfaceModel) &Model = WS->Model();
@@ -1293,8 +1293,8 @@ static TDF_Label GetLabelFromPD(const Handle(StepBasic_ProductDefinition) &PD,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadValProps(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc,
-  const STEPCAFControl_DataMapOfPDExternFile &PDFileMap) const
+                                                     const Handle(TDocStd_Document)& Doc,
+                                                     const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const
 {
   // get starting data
   const Handle(XSControl_TransferReader) &TR = WS->TransferReader();
@@ -1425,7 +1425,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadValProps(const Handle(XSControl_Work
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadLayers(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc) const
+                                                   const Handle(TDocStd_Document)& Doc) const
 {
   const Handle(Interface_InterfaceModel) &Model = WS->Model();
   const Handle(XSControl_TransferReader) &TR = WS->TransferReader();
@@ -1596,8 +1596,8 @@ static TDF_Label setSHUOintoDoc(const Handle(XSControl_WorkSession) &WS,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc,
-  const STEPCAFControl_DataMapOfPDExternFile &PDFileMap) const
+                                                  const Handle(TDocStd_Document)& Doc,
+                                                  const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const
 {
   // the big part code duplication from ReadColors.
   // It is possible to share this code functionality, just to decide how ???
@@ -3890,7 +3890,7 @@ static void setGeomTolObjectToXCAF(const Handle(Standard_Transient)& theEnt,
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSession)& theWS,
-  Handle(TDocStd_Document)& theDoc)
+                                                 const Handle(TDocStd_Document)& theDoc)
 {
   const Handle(Interface_InterfaceModel) &aModel = theWS->Model();
   const Interface_Graph& aGraph = theWS->Graph();
@@ -4100,8 +4100,8 @@ static Handle(StepShape_SolidModel) FindSolidForPDS(const Handle(StepRepr_Produc
 //=======================================================================
 
 Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_WorkSession) &WS,
-  Handle(TDocStd_Document)& Doc,
-  const Handle(TColStd_HSequenceOfTransient) &SeqPDS) const
+                                                      const Handle(TDocStd_Document)& Doc,
+                                                      const Handle(TColStd_HSequenceOfTransient)& SeqPDS) const
 {
   const Handle(XSControl_TransferReader) &TR = WS->TransferReader();
   const Handle(Transfer_TransientProcess) &TP = TR->TransientProcess();
@@ -4323,7 +4323,7 @@ Handle(TCollection_HAsciiString) buildClippingPlanes(const Handle(StepGeom_Geome
 //function : ReadViews
 //purpose  :
 //=======================================================================
-Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSession)& theWS, Handle(TDocStd_Document)& theDoc) const
+Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSession)& theWS, const Handle(TDocStd_Document)& theDoc) const
 {
   const Handle(Interface_InterfaceModel) &aModel = theWS->Model();
   Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());

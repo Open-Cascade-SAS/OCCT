@@ -1,0 +1,21 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+
+loadvrml S_First ${filename}
+XNewDoc D_First
+XAddShape D_First S_First
+
+set file_path ${imagedir}/${casename}.vrml
+
+WriteVrml D_First $file_path
+
+readfile S_Second $file_path
+
+checktrinfo S_Second -ref [trinfo S_First]
+
+file delete $file_path
+Close D_First

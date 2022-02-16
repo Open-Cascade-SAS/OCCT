@@ -1,0 +1,16 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+readfile S_First ${filename}
+
+set file_path ${imagedir}/${casename}.wrl
+
+writefile S_First $file_path -conf "provider.VRML.OCC.RepresentationType : 2 "
+
+readfile S_Second $file_path
+
+checktrinfo S_Second -ref [trinfo S_First]
+
+file delete $file_path

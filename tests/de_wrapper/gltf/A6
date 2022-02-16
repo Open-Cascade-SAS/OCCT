@@ -1,0 +1,110 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D0 }
+catch { Close D1 }
+catch { Close D6 }
+catch { Close D7 }
+
+pload MODELING
+
+set write_path ${imagedir}/${casename}.gltf
+
+param xstep.cascade.unit MM
+if [catch {ReadGltf D0 $filename} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+XGetOneShape S0 D0
+
+param xstep.cascade.unit M
+if [catch {ReadGltf D1 $filename} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+XGetOneShape S1 D1
+
+if [catch {WriteFile D0 $write_path -conf "provider.GLTF.OCC.file.length.unit : 0.001 "} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {readfile S2 $write_path} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+if [catch {writefile S0 $write_path} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {readfile S3 $write_path} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+if [catch {WriteFile D1 $write_path -conf "provider.GLTF.OCC.file.length.unit : 1 "} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {readfile S4 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+if [catch {writefile S1 $write_path} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {readfile S5 $write_path} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+if [catch {WriteFile D0 $write_path -conf "provider.GLTF.OCC.file.length.unit : 0.001 "} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {ReadFile D6 $write_path -conf "global.general.length.unit : 1 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+XGetOneShape S6 D6
+
+if [catch {writefile S1 $write_path -conf "provider.GLTF.OCC.file.length.unit : 1 "} catch_result] {
+    puts "Error : Problem with writing file"
+} else {
+    puts "OK : Writing is correct"
+}
+if [catch {ReadFile D7 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+XGetOneShape S7 D7
+
+array set areas {0 3.18785e+06 1 3.18785 2 3.18785e+06 3 3.18785e+06 4 3.18785 5 3.18785 6 3.18785e+06 7 3.18785e-06}
+array set results {0 S0 1 S1 2 S2 3 S3 4 S4 5 S5 6 S6 7 S7}
+for { set anind 0} { $anind < 8 } { incr anind } {
+  checkprops $results($anind) -s $areas($anind) -eps 1e-2
+}
+
+file delete $write_path
+
+Close D0
+Close D1
+Close D6
+Close D7

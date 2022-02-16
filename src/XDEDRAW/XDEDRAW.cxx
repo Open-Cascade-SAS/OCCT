@@ -24,14 +24,23 @@
 #include <DDF_Browser.hxx>
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
+#include <DE_Wrapper.hxx>
+#include <DEBRepCascade_ConfigurationNode.hxx>
+#include <DEXCAFCascade_ConfigurationNode.hxx>
 #include <Draw.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Geom_Axis2Placement.hxx>
+#include <IGESCAFControl_ConfigurationNode.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Quantity_Color.hxx>
+#include <RWStl_ConfigurationNode.hxx>
+#include <RWGltf_ConfigurationNode.hxx>
+#include <RWObj_ConfigurationNode.hxx>
+#include <RWPly_ConfigurationNode.hxx>
 #include <STEPCAFControl_Controller.hxx>
+#include <STEPCAFControl_ConfigurationNode.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -70,6 +79,7 @@
 #include <V3d_Viewer.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
+#include <Vrml_ConfigurationNode.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_AssemblyIterator.hxx>
 #include <XCAFDoc_AssemblyGraph.hxx>
@@ -1839,6 +1849,15 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   XDEDRAW_Notes::InitCommands(di);
   XDEDRAW_Common::InitCommands ( di );//moved from EXE
 
+  DE_Wrapper::GlobalWrapper()->Bind(new RWObj_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new RWPly_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new RWGltf_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new IGESCAFControl_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new STEPCAFControl_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new Vrml_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new DEXCAFCascade_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new RWStl_ConfigurationNode());
+  DE_Wrapper::GlobalWrapper()->Bind(new DEBRepCascade_ConfigurationNode());
 }
 
 

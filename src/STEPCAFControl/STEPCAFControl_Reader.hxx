@@ -86,23 +86,23 @@ public:
   //! Returns True if succeeded, and False in case of fail
   //! Provided for use like single-file reader
   Standard_EXPORT Standard_Boolean TransferOneRoot (const Standard_Integer num,
-                                                    Handle(TDocStd_Document)& doc,
+                                                    const Handle(TDocStd_Document)& doc,
                                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates currently loaded STEP file into the document
   //! Returns True if succeeded, and False in case of fail
   //! Provided for use like single-file reader
-  Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& doc,
+  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc,
                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename,
-                                            Handle(TDocStd_Document)& doc,
+                                            const Handle(TDocStd_Document)& doc,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translate STEP file given by filename into the document
   //! Return True if succeeded, and False in case of fail
   Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename,
-                                            Handle(TDocStd_Document)& doc,
+                                            const Handle(TDocStd_Document)& doc,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns data on external files
@@ -181,7 +181,7 @@ protected:
   //! them into assembly. Fills sequence of produced labels
   Standard_EXPORT Standard_Boolean Transfer (STEPControl_Reader& rd,
                                              const Standard_Integer num,
-                                             Handle(TDocStd_Document)& doc,
+                                             const Handle(TDocStd_Document)& doc,
                                              TDF_LabelSequence& Lseq,
                                              const Standard_Boolean asOne = Standard_False,
                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -196,42 +196,42 @@ protected:
   //! given name
   Standard_EXPORT Handle(STEPCAFControl_ExternFile) ReadExternFile (const Standard_CString file,
                                                                     const Standard_CString fullpath,
-                                                                    Handle(TDocStd_Document)& doc,
+                                                                    const Handle(TDocStd_Document)& doc,
                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads style assignments from STEP model and sets
   //! corresponding color assignments in the DECAF document
   Standard_EXPORT Standard_Boolean ReadColors
                 (const Handle(XSControl_WorkSession)& WS,
-                 Handle(TDocStd_Document)& doc) const;
+                 const Handle(TDocStd_Document)& doc) const;
   
   //! Reads names of parts defined in the STEP model and
   //! assigns them to corresponding labels in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadNames (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
+  Standard_EXPORT Standard_Boolean ReadNames (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads validation properties assigned to shapes in the STEP
   //! model and assigns them to corresponding labels in the DECAF
   //! document
-  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
+  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadLayers (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc) const;
+  Standard_EXPORT Standard_Boolean ReadLayers (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc) const;
   
   //! Reads SHUO for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadSHUOs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
+  Standard_EXPORT Standard_Boolean ReadSHUOs (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads D&GT for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc);
   
   //! Reads materials for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const Handle(TColStd_HSequenceOfTransient)& SeqPDS) const;
+  Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const Handle(TColStd_HSequenceOfTransient)& SeqPDS) const;
   
   //! Reads Views for instances defined in the STEP model
-  Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS, Handle(TDocStd_Document)& theDoc) const;
+  Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS, const Handle(TDocStd_Document)& theDoc) const;
 
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,

@@ -1,0 +1,20 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D_First }
+
+readstl S_First ${filename}
+
+set file_path ${imagedir}/${casename}.stl
+
+writefile S_First $file_path -conf "provider.STL.OCC.AsciiFlag : 2 "
+
+ReadFile D_First $file_path
+XGetOneShape S_Second D_First
+
+checktrinfo S_Second -ref [trinfo S_First]
+
+file delete $file_path
+Close D_First

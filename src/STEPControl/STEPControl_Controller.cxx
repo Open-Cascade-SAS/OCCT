@@ -216,31 +216,31 @@ STEPControl_Controller::STEPControl_Controller ()
     // Note: the numbers should be consistent with Resource_FormatType enumeration
     Interface_Static::Init("step", "read.step.codepage", 'e', "");
     Interface_Static::Init("step", "read.step.codepage", '&', "enum 0");
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval SJIS");         // Resource_FormatType_SJIS
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval EUC");          // Resource_FormatType_EUC
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval NoConversion"); // Resource_FormatType_NoConversion
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval GB");           // Resource_FormatType_GB
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval UTF8");         // Resource_FormatType_UTF8
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval SystemLocale"); // Resource_FormatType_SystemLocale
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1250");       // Resource_FormatType_CP1250
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1251");       // Resource_FormatType_CP1251
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1252");       // Resource_FormatType_CP1252
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1253");       // Resource_FormatType_CP1253
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1254");       // Resource_FormatType_CP1254
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1255");       // Resource_FormatType_CP1255
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1256");       // Resource_FormatType_CP1256
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1257");       // Resource_FormatType_CP1257
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1258");       // Resource_FormatType_CP1258
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-1");    // Resource_FormatType_iso8859_1
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-2");    // Resource_FormatType_iso8859_2
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-3");    // Resource_FormatType_iso8859_3
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-4");    // Resource_FormatType_iso8859_4
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-5");    // Resource_FormatType_iso8859_5
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-6");    // Resource_FormatType_iso8859_6
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-7");    // Resource_FormatType_iso8859_7
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-8");    // Resource_FormatType_iso8859_8
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-9");    // Resource_FormatType_iso8859_9
-    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP850");        // Resource_FormatType_CP850
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval SJIS");         // Resource_FormatType_SJIS 0
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval EUC");          // Resource_FormatType_EUC 1
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval NoConversion"); // Resource_FormatType_NoConversion 2
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval GB");           // Resource_FormatType_GB 3
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval UTF8");         // Resource_FormatType_UTF8 4
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval SystemLocale"); // Resource_FormatType_SystemLocale 5 
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1250");       // Resource_FormatType_CP1250 6
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1251");       // Resource_FormatType_CP1251 7
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1252");       // Resource_FormatType_CP1252 8
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1253");       // Resource_FormatType_CP1253 9
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1254");       // Resource_FormatType_CP1254 10
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1255");       // Resource_FormatType_CP1255 11
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1256");       // Resource_FormatType_CP1256 12
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1257");       // Resource_FormatType_CP1257 13
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP1258");       // Resource_FormatType_CP1258 14 
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-1");    // Resource_FormatType_iso8859_1 15
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-2");    // Resource_FormatType_iso8859_2 16 
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-3");    // Resource_FormatType_iso8859_3 17
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-4");    // Resource_FormatType_iso8859_4 18
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-5");    // Resource_FormatType_iso8859_5 19
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-6");    // Resource_FormatType_iso8859_6 20
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-7");    // Resource_FormatType_iso8859_7 21
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-8");    // Resource_FormatType_iso8859_8 22
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-9");    // Resource_FormatType_iso8859_9 23
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP850");        // Resource_FormatType_CP850 24
     Interface_Static::SetCVal("read.step.codepage", "UTF8");
 
     // Tessellated geometry reading: Off by default

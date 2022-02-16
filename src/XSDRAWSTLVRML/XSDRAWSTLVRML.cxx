@@ -1047,6 +1047,7 @@ static Standard_Integer loadvrml
       }
 
       VrmlData_Scene aScene;
+      XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
       Standard_Real anOCCUnitMM = UnitsMethods::GetCasCadeLengthUnit();
       aScene.SetLinearScale(1000. / anOCCUnitMM);
 

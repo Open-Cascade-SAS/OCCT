@@ -384,6 +384,8 @@ t TKSTEPBase
 t TKSTL
 t TKVRML
 t TKXCAF
+t TKXDE
+t TKXDECascade
 t TKXDEIGES
 t TKXDESTEP
 t TKXSBase
@@ -394,6 +396,9 @@ n DBRep
 n DDF
 n DDataStd
 n DDocStd
+n DE
+n DEXCAFCascade
+n DEBRepCascade
 n DNaming
 n DPrsStd
 n Draw

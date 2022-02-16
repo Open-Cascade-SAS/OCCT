@@ -1,0 +1,63 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+catch { Close D2 }
+catch { Close D3 }
+
+param xstep.cascade.unit MM
+if [catch {igesread $filename res0 *} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+param xstep.cascade.unit M
+if [catch {igesread $filename res1 *} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+# param xstep.cascade.unit MM
+
+if [catch {ReadFile D2 $filename} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+XGetOneShape S2 D2
+if { [XGetLengthUnit D2] != "mm" } {
+  puts "Error: incrorrect document's length unit"
+}
+
+XNewDoc D3
+if [catch {ReadFile D3 $filename -conf "global.general.length.unit : 1000 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+if { [XGetLengthUnit D3] != "m" } {
+  puts "Error: incrorrect document's length unit"
+}
+XGetOneShape S3 D3
+
+if [catch {readfile S4 $filename -conf "global.general.length.unit : 1 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+if [catch {readfile S5 $filename -conf "global.general.length.unit : 1000 "} catch_result] {
+    puts "Error : Problem with reading file"
+} else {
+    puts "OK : Reading is correct"
+}
+
+array set volumes {0 11995.4 1 0.0119954 2 11995.4 3 0.0119954 4 11995.4 5 0.0119954}
+array set results {0 res0 1 res1 2 S2 3 S3 4 S4 5 S5}
+for { set anind 0} { $anind < 6 } { incr anind } {
+  checkprops $results($anind) -s $volumes($anind) -eps 1e-2
+}
+
+Close D2 
+Close D3

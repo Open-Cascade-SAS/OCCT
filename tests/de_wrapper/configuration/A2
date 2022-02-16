@@ -1,0 +1,15 @@
+puts "============"
+puts "0032821: DEWrapper - Implementation of a common toolkit for importing and exporting CAD files"
+puts "============"
+puts ""
+
+# Checking the stability of ability to change the configuration's values
+set old_conf [DumpConfiguration]
+
+set res_conf [changeconf "0" "$old_conf"]
+
+LoadConfiguration ${res_conf}
+set new_conf [DumpConfiguration]
+
+CompareConfiguration ${res_conf} ${new_conf}
+
