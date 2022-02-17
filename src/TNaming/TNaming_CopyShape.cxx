@@ -128,7 +128,7 @@ void TNaming_CopyShape::Translate( const TopoDS_Shape& aShape,
   }
   
   aResult.Orientation(aShape.Orientation());
-  aResult.Location(TNaming_CopyShape::Translate(aShape.Location(), aMap));
+  aResult.Location(TNaming_CopyShape::Translate(aShape.Location(), aMap), false);
   TrTool->UpdateShape(aShape,aResult);
 // #ifdef OCCT_DEBUG
 //     if(fShar) {
