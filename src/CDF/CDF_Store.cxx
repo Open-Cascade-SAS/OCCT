@@ -78,19 +78,11 @@ Standard_Boolean  CDF_Store::SetFolder(const Standard_ExtString aFolder) {
 Standard_Boolean  CDF_Store::SetFolder(const TCollection_ExtendedString& aFolder) {
 
   TCollection_ExtendedString theFolder(aFolder);
-  Standard_Integer l = theFolder.Length();
+  Standard_Integer aLen = theFolder.Length();
 
-  // if the last character is the folder separator (which is always the first character)
-  // it is removed.
-	// This is correct for Unix systems but not for Windows! VMS and MAC? Thomas Haller, 23.11.01
-  if(l > 1) {
-#ifndef _WIN32
-    if(theFolder.Value(l) == theFolder.Value(1)) theFolder.Trunc(l-1);
-#else
-	if (theFolder.Value(l) == '/' || theFolder.Value(l) == '\\')
-		theFolder.Trunc(l-1);
-#endif
-  }
+  // if the last character is the folder separator, remove it.
+  if (aLen > 1 && (theFolder.Value(aLen) == '/' || theFolder.Value(aLen) == '\\'))
+    theFolder.Trunc(aLen-1);
 
   if(theMetaDataDriver->FindFolder(theFolder))  {
     myCurrentDocument->SetRequestedFolder(theFolder);
