@@ -99,7 +99,7 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   if (stepmodel.IsNull() || stepro.IsNull()) return Standard_False;
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out | std::ios::trunc);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
 
   if (aStream.get() == NULL) {
     ctx.CCheck(0)->AddFail("Step File could not be created");

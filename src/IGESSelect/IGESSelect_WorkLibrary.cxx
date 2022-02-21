@@ -102,7 +102,7 @@ static  Handle(IGESData_FileProtocol) IGESProto;
 
   if (igesmod.IsNull() || prot.IsNull()) return Standard_False;
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (ctx.FileName(), std::ios::out | std::ios::binary);
   if (aStream.get() == NULL)
   {
     ctx.CCheck(0)->AddFail("IGES File could not be created");

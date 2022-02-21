@@ -695,7 +695,7 @@ Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
                                     const Message_ProgressRange& theProgress)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (theFile, std::ios::out | std::ios::binary);
   if (aStream.get() == NULL || !aStream->good())
   {
     return Standard_False;

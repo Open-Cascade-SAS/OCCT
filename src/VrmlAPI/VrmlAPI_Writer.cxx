@@ -226,7 +226,7 @@ Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Stand
   OSD_Path thePath(aFile);
   TCollection_AsciiString theFile;thePath.SystemName(theFile);
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutFile = aFileSystem->OpenOStream (theFile, std::ios::out);
+  std::shared_ptr<std::ostream> anOutFile = aFileSystem->OpenOStream (theFile, std::ios::out | std::ios::binary);
   if (anOutFile.get() == NULL)
   {
     return Standard_False;
@@ -370,7 +370,7 @@ Standard_Boolean VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Stand
   aConv.Convert(anExtFace, anExtEdge);
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutStream = aFileSystem->OpenOStream (aFile, std::ios::out);
+  std::shared_ptr<std::ostream> anOutStream = aFileSystem->OpenOStream (aFile, std::ios::out | std::ios::binary);
   if (anOutStream.get() != NULL)
   {
     *anOutStream << aScene;
@@ -395,7 +395,7 @@ Standard_Boolean VrmlAPI_Writer::WriteDoc(
   aConv.ConvertDocument(theDoc);
 
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> anOutStream = aFileSystem->OpenOStream (theFile, std::ios::out);
+  std::shared_ptr<std::ostream> anOutStream = aFileSystem->OpenOStream (theFile, std::ios::out | std::ios::binary);
   if (anOutStream.get() != NULL)
   {
     *anOutStream << aScene;

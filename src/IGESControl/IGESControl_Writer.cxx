@@ -254,7 +254,7 @@ Standard_Boolean IGESControl_Writer::Write
   (const Standard_CString file, const Standard_Boolean fnes)
 {
   const Handle(OSD_FileSystem)& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (file, std::ios::out);
+  std::shared_ptr<std::ostream> aStream = aFileSystem->OpenOStream (file, std::ios::out | std::ios::binary);
   if (aStream.get() == NULL)
   {
     return Standard_False;
