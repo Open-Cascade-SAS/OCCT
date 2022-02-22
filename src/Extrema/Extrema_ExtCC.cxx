@@ -663,7 +663,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
       //    myIsParallel = TRUE and only the least distance will be returned.
       //4. Arcs are not parallel. Then several (or single) extremas will be returned.
 
-      if (aRng.Delta() > Precision::Angular())
+      if (aRng.Delta() > Precision::Confusion())
       {
         Standard_Real aPar = 0.0;
         aRng.GetIntermediatePoint(0.5, aPar);
@@ -703,7 +703,6 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
             break;
           }
         }
-
         //Nearer solution can be found
       }
       else if (!aRng.IsVoid())

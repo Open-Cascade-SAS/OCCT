@@ -1,0 +1,15 @@
+puts "============"
+puts "OCC32796: Modeling Data - Calculation of distance between two circles crashes"
+puts "============"
+puts ""
+
+restore [locate_data_file bug32796e1.brep] e1
+restore [locate_data_file bug32796e2.brep] e2
+mkcurve c1 e1
+mkcurve c2 e2
+
+if [catch { extrema c1 c2 }] {
+  puts "Calculation of distance between two circles crashes"
+} else {
+  puts "Calculation of distance between two circles is OK"
+}
