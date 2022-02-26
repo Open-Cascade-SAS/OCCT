@@ -132,21 +132,31 @@ for (aPackage, aPackages) {
   }
 }
 
-# extend clean with versioned .so files
 !win32 {
   aVerList = $$split(VERSION, ".")
   aVerMaj = $$member(aVerList, 0)
   aVerMin = $$member(aVerList, 1)
   aVerMic = $$member(aVerList, 2)
+
   equals(TEMPLATE, app) {
     QMAKE_CLEAN += $$DESTDIR/$${TARGET}
   } else {
     mac {
+      # override qmake soname versionong logic
+      QMAKE_LFLAGS_SONAME =
+      QMAKE_LFLAGS += -Wl,-soname=lib$${TARGET}.dylib.$${aVerMaj}.$${aVerMin}
+
+      # extend clean with versioned .dylib files
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.dylib
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.$${aVerMaj}.dylib
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.$${aVerMaj}.$${aVerMin}.dylib
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.$${aVerMaj}.$${aVerMin}.$${aVerMic}.dylib
     } else {
+      # override qmake soname versionong logic
+      QMAKE_LFLAGS_SONAME =
+      QMAKE_LFLAGS += -Wl,-soname=lib$${TARGET}.so.$${aVerMaj}.$${aVerMin}
+
+      # extend clean with versioned .so files
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.so
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.so.$${aVerMaj}
       QMAKE_CLEAN += $$DESTDIR/lib$${TARGET}.so.$${aVerMaj}.$${aVerMin}

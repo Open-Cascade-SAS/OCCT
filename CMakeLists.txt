@@ -56,6 +56,20 @@ set_property (GLOBAL PROPERTY OCC_VERSION_MAJOR ${OCC_VERSION_MAJOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MINOR ${OCC_VERSION_MINOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MAINTENANCE ${OCC_VERSION_MAINTENANCE})
 
+# set soversion variable determining compatibility version on platforms with symlinks
+# 0 - for empty, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance
+if (NOT BUILD_SOVERSION_NUMBERS)
+  set (BUILD_SOVERSION_NUMBERS "0" CACHE STRING "${BUILD_SOVERSION_NUMBERS_DESCR}" FORCE)
+  SET_PROPERTY(CACHE BUILD_SOVERSION_NUMBERS PROPERTY STRINGS 0 1 2 3)
+
+  # update default state of soversion on different platforms
+  if (WIN32 OR ANDROID OR EMSCRIPTEN)
+    set (BUILD_SOVERSION_NUMBERS 0)
+  else()
+    set (BUILD_SOVERSION_NUMBERS 2)
+  endif()
+endif()
+
 set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
 
 # Regeneration of OCCT resource files
