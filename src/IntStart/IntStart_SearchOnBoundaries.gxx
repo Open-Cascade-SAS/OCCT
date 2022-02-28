@@ -354,6 +354,7 @@ void BoundedArc (const TheArc& A,
   {
     const IntSurf_Quadric& aQuadric = Func.Quadric();
     GeomAbs_SurfaceType TypeQuad = aQuadric.TypeQuadric();
+    GeomAbs_CurveType TypeConS = GeomAbs_OtherCurve;
     
     IntCurveSurface_HInter IntCS;
     Standard_Boolean IsIntCSdone = Standard_False;
@@ -387,7 +388,7 @@ void BoundedArc (const TheArc& A,
       //Exact solution
       Handle(Adaptor3d_Surface) aSurf = Func.Surface();
       Adaptor3d_CurveOnSurface ConS(A, aSurf);
-      GeomAbs_CurveType TypeConS = ConS.GetType();
+      TypeConS = ConS.GetType();
 #ifdef OCCT_DEBUG
       Handle(Geom_Curve) CurveConS;
       switch(TypeConS)
@@ -608,13 +609,27 @@ void BoundedArc (const TheArc& A,
           para = aSI(i).Value();
 
           Standard_Real param=(para+parap1)*0.5;
-          Standard_Real ym;
-          if(Func.Value(param,ym)) {
-            if(Abs(ym)<maxdist) { 
+          Standard_Real yf = 0.0;
+          Standard_Real ym = 0.0;
+          Standard_Real yl = 0.0;
+          if(Func.Value(param,ym) && Abs(ym) < maxdist) {
+            Standard_Real sm = Sign(1., ym);
+            Standard_Boolean aTang = Func.Value(para,yf) && Func.Value(parap1,yl);
+            if (aTang) {
+              //Line can be tangent surface if all distances less then maxdist
+              aTang = aTang && Abs(yf) < maxdist && Abs(yl) < maxdist;
+            }
+            if (aTang && IsIntCSdone && TypeConS == GeomAbs_Line) {
+              //Interval is got by exact intersection
+              //Line can be tangent if all points are on the same side of surface
+              //it means that signs of all distances are the same
+              Standard_Real sf = Sign(1., yf), sl = Sign(1., yl);
+              aTang = aTang && (sm == sf) && (sm == sl);
+            }
+            if(aTang) { 
               //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 Begin
               // Consider this interval as tangent one. Treat it to find
               // parameter with the lowest function value.
-
               // Compute the number of nodes.
               Standard_Real    aTol = TolBoundary*1000.0;
               if(aTol > 0.001)
@@ -627,6 +642,7 @@ void BoundedArc (const TheArc& A,
               Standard_Integer aNbNodes = RealToInt(Ceiling((parap1 - para)/aTol));
 
               Standard_Real    aVal     = RealLast();
+              Standard_Real aValMax = 0.;
               //Standard_Integer aNbNodes = 23;
               Standard_Real    aDelta   = (parap1 - para)/(aNbNodes + 1.);
               Standard_Integer ii;
@@ -637,17 +653,29 @@ void BoundedArc (const TheArc& A,
                 aCurPar = (ii < aNbNodes + 1) ? para + ii*aDelta : parap1;
 
                 if (Func.Value(aCurPar, aCurVal)) {
-                  //if (aCurVal < aVal) {
-                  if (Abs(aCurVal) < aVal) {
-                    //aVal  = aCurVal;
-                    aVal  = Abs(aCurVal);
+                  Standard_Real anAbsVal = Abs(aCurVal);
+                  if (anAbsVal < aVal) {
+                    aVal  = anAbsVal;
                     param = aCurPar;
+                  }
+                  if (anAbsVal > aValMax)
+                  {
+                    aValMax = anAbsVal;
                   }
                 }
               }
-              //  Modified by skv - Tue Aug 31 12:13:51 2004 OCC569 End
-              aSI(i).ChangeValue() = Pdeb - 1;
-              aSI(i + 1).ChangeValue() = param;
+              // At last, interval got by exact intersection can be considered as tangent if
+              // minimal distance is inside interval and
+              // minimal and maximal values are almost the same
+              if (IsIntCSdone && aNbNodes > 1) {
+                aTang = Abs(param - para) > EpsX && Abs(parap1 - param) > EpsX &&
+                  0.01*aValMax <= aVal;
+              }
+              if (aTang)
+              {
+                aSI(i).ChangeValue() = Pdeb - 1;
+                aSI(i + 1).ChangeValue() = param;
+              }
             }
           }
         }

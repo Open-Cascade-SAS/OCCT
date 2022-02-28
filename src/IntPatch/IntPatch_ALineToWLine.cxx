@@ -714,7 +714,8 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       }
 
       IntPatch_Point aVtx = theALine->Vertex(aVertexNumber);
-      const Standard_Real aNewVertexParam = aLinOn2S->NbPoints() + 1;
+      Standard_Real aNewVertexParam = aLinOn2S->NbPoints() + 1;
+      Standard_Integer aNbPointsPrev = aLinOn2S->NbPoints();
 
       //ATTENTION!!!
       // IsPoleOrSeam inserts new point in aLinOn2S if aVtx respects
@@ -748,6 +749,7 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       aPrePointExist = IsPoleOrSeam(myS1, myS2, aPrefIso, aLinOn2S, aVtx,
                                 anArrPeriods, aTol, aSingularSurfaceID);
+
       if (aPrePointExist == IntPatch_SPntPole ||
           aPrePointExist == IntPatch_SPntPoleSeamU)
       {
@@ -761,6 +763,11 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
       const Standard_Real aCurVertParam = aVtx.ParameterOnLine();
       if(aPrePointExist != IntPatch_SPntNone)
       {
+        if (aNbPointsPrev == aLinOn2S->NbPoints())
+        {
+          //Vertex coinsides any point of line and was not added into line
+          aNewVertexParam = aNbPointsPrev;
+        }
         aPrevParam = aParameter = aCurVertParam;
       }
       else

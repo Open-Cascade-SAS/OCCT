@@ -1,0 +1,19 @@
+puts "========"
+puts "0032850: Modeling Algorithms - Surface Surface Intersect Lost one line"
+puts "========"
+puts ""
+
+cylinder s1 25.8071575178163 0 -373.974517822281 0 1 0 -1.73024882663956e-06 0 0.999999999998503 408.974517822893
+trim  s1 s1 0 0.0225015452057227 -146.010003766057 2146.01000376606
+cylinder s2 0 1974.19284248218 -373.974517822281 1 0 0 -0 1.73024882663956e-06 0.999999999998503 408.974517822893
+trim s2 s2 0 0.0225015452057227 -146.010003766057 946.010003766057
+mkface f1 s1;
+mkface f2 s2;
+set log [bopcurves f1 f2]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} $log full Toler NbCurv
+if {$NbCurv != 4} {
+  puts "Error: Number of curves is wrong"
+}
+if { $Toler > 1.0e-12} {
+  puts "Error: Big tolerance value"  
+}

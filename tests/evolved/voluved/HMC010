@@ -2,7 +2,7 @@ puts "=========="
 puts "OCC29523"
 puts "=========="
 
-cpulimit 60
+cpulimit 120
 
 restore [locate_data_file bug29523_cut_extrudewire09.brep] sw 
 restore [locate_data_file bug29523_cut_toolwire09.brep] tw
