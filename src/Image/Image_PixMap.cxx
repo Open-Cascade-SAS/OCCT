@@ -62,8 +62,10 @@ namespace
     ImageFormatInfo(BGRF,    3, sizeof(float) * 3),
     ImageFormatInfo(RGBAF,   4, sizeof(float) * 4),
     ImageFormatInfo(BGRAF,   4, sizeof(float) * 4),
+    ImageFormatInfo(GrayF_half, 1, sizeof(uint16_t) * 1),
     ImageFormatInfo(RGF_half,   2, sizeof(uint16_t) * 2),
     ImageFormatInfo(RGBAF_half, 4, sizeof(uint16_t) * 4),
+    ImageFormatInfo(Gray16,  1, 2),
     CompressedImageFormatInfo(RGB_S3TC_DXT1,  3, 1), // DXT1 uses circa half a byte per pixel (64 bits per 4x4 block)
     CompressedImageFormatInfo(RGBA_S3TC_DXT1, 4, 1),
     CompressedImageFormatInfo(RGBA_S3TC_DXT3, 4, 1), // DXT3/5 uses circa 1 byte per pixel (128 bits per 4x4 block)
@@ -296,6 +298,11 @@ Quantity_ColorRGBA Image_PixMap::PixelColor (const Standard_Integer theX,
       const Image_ColorBGRF& aPixel = Value<Image_ColorBGRF> (theY, theX);
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
     }
+    case Image_Format_GrayF_half:
+    {
+      const uint16_t& aPixel = Value<uint16_t> (theY, theX);
+      return Quantity_ColorRGBA (NCollection_Vec4<float> (ConvertFromHalfFloat (aPixel), 0.0f, 0.0f, 1.0f));
+    }
     case Image_Format_RGF_half:
     {
       const NCollection_Vec2<uint16_t>& aPixel = Value<NCollection_Vec2<uint16_t>> (theY, theX);
@@ -366,12 +373,19 @@ Quantity_ColorRGBA Image_PixMap::PixelColor (const Standard_Integer theX,
     case Image_Format_Gray:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
-      return Quantity_ColorRGBA (float(aPixel) / 255.0f, float(aPixel) / 255.0f, float(aPixel) / 255.0f, 1.0f); // opaque
+      const float anIntensity = float(aPixel) / 255.0f;
+      return Quantity_ColorRGBA (anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_Alpha:
     {
       const Standard_Byte& aPixel = Value<Standard_Byte> (theY, theX);
       return Quantity_ColorRGBA (1.0f, 1.0f, 1.0f, float(aPixel) / 255.0f);
+    }
+    case Image_Format_Gray16:
+    {
+      const uint16_t& aPixel = Value<uint16_t> (theY, theX);
+      const float anIntensity = float(aPixel) / 65535.0f;
+      return Quantity_ColorRGBA (anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_UNKNOWN:
     {
@@ -451,6 +465,12 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       aPixel.r() = aColor.r();
       aPixel.g() = aColor.g();
       aPixel.b() = aColor.b();
+      return;
+    }
+    case Image_Format_GrayF_half:
+    {
+      uint16_t& aPixel = ChangeValue<uint16_t> (theY, theX);
+      aPixel = ConvertToHalfFloat (aColor.r());
       return;
     }
     case Image_Format_RGF_half:
@@ -585,6 +605,11 @@ void Image_PixMap::SetPixelColor (const Standard_Integer theX,
       ChangeValue<Standard_Byte> (theY, theX) = Standard_Byte(aColor.a() * 255.0f);
       return;
     }
+    case Image_Format_Gray16:
+    {
+      ChangeValue<uint16_t> (theY, theX) = uint16_t(aColor.r() * 65535.0f);
+      return;
+    }
     case Image_Format_UNKNOWN:
     {
       return;
@@ -681,6 +706,21 @@ void Image_PixMap::ToBlackWhite (Image_PixMap& theImage)
           if (aPixel != 0)
           {
             aPixel = 255;
+          }
+        }
+      }
+      break;
+    }
+    case Image_Format_Gray16:
+    {
+      for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
+      {
+        for (Standard_Size aCol = 0; aCol < theImage.SizeX(); ++aCol)
+        {
+          uint16_t& aPixel = theImage.ChangeValue<uint16_t> (aRow, aCol);
+          if (aPixel != 0)
+          {
+            aPixel = 65535;
           }
         }
       }

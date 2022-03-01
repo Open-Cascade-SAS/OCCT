@@ -176,6 +176,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   extDrawBuffers (Standard_False),
   extGS  (NULL),
   extBgra(Standard_False),
+  extTexR16(Standard_False),
   extAnis(Standard_False),
   extPDS (Standard_False),
   atiMem (Standard_False),
@@ -1552,6 +1553,10 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     mySupportedFormats->Add (Image_Format_BGR32);
     mySupportedFormats->Add (Image_Format_BGRA);
   }
+  if (extTexR16)
+  {
+    mySupportedFormats->Add (Image_Format_Gray16);
+  }
   if (arbTexFloat)
   {
     mySupportedFormats->Add (Image_Format_GrayF);
@@ -1567,6 +1572,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       mySupportedFormats->Add (Image_Format_RGF);
       if (hasHalfFloatBuffer != OpenGl_FeatureNotAvailable)
       {
+        mySupportedFormats->Add (Image_Format_GrayF_half);
         mySupportedFormats->Add (Image_Format_RGF_half);
       }
     }

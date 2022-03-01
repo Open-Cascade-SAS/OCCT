@@ -983,6 +983,17 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
       aType   = GL_UNSIGNED_BYTE;
       break;
     }
+    case Image_Format_Gray16:
+    {
+      if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        return false;
+      }
+
+      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
+      aType   = GL_UNSIGNED_SHORT;
+      break;
+    }
     case Image_Format_GrayF:
     {
       if (theGlCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
@@ -1090,6 +1101,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
     case Image_Format_Alpha:
     case Image_Format_AlphaF:
       return Standard_False; // GL_ALPHA is no more supported in core context
+    case Image_Format_GrayF_half:
     case Image_Format_RGF_half:
     case Image_Format_UNKNOWN:
       return Standard_False;

@@ -1069,6 +1069,7 @@ public: //! @name extensions
   Standard_Boolean       extDrawBuffers;     //!< GL_EXT_draw_buffers
   OpenGl_ExtGS*          extGS;              //!< GL_EXT_geometry_shader4
   Standard_Boolean       extBgra;            //!< GL_EXT_bgra or GL_EXT_texture_format_BGRA8888 on OpenGL ES
+  Standard_Boolean       extTexR16;          //!< GL_EXT_texture_norm16 on OpenGL ES; always available on desktop
   Standard_Boolean       extAnis;            //!< GL_EXT_texture_filter_anisotropic
   Standard_Boolean       extPDS;             //!< GL_EXT_packed_depth_stencil
   Standard_Boolean       atiMem;             //!< GL_ATI_meminfo

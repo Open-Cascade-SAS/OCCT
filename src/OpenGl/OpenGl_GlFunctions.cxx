@@ -1733,6 +1733,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
   theCtx.arbTexRG    = isGlGreaterEqualShort (3, 0)
                     || checkExtensionShort ("GL_EXT_texture_rg");
   theCtx.extBgra     = checkExtensionShort ("GL_EXT_texture_format_BGRA8888");
+  theCtx.extTexR16   = checkExtensionShort ("GL_EXT_texture_norm16");
   theCtx.extAnis = checkExtensionShort ("GL_EXT_texture_filter_anisotropic");
   theCtx.extPDS  = isGlGreaterEqualShort (3, 0)
                 || checkExtensionShort ("GL_OES_packed_depth_stencil");
@@ -2160,6 +2161,7 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
                   || checkExtensionShort ("NV_depth_clamp");
   theCtx.extBgra          = isGlGreaterEqualShort (1, 2)
                   || checkExtensionShort ("GL_EXT_bgra");
+  theCtx.extTexR16 = true;
   theCtx.extAnis = checkExtensionShort ("GL_EXT_texture_filter_anisotropic");
   theCtx.extPDS  = checkExtensionShort ("GL_EXT_packed_depth_stencil");
   theCtx.atiMem  = checkExtensionShort ("GL_ATI_meminfo");

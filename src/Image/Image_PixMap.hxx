@@ -62,6 +62,7 @@ public:
 
 public: // high-level API
 
+  //! Return pixel format.
   Image_Format Format() const { return myImgFormat; }
 
   //! Override pixel format specified by InitXXX() methods.
@@ -70,41 +71,26 @@ public: // high-level API
   //! (e.g. ImgGray and ImgAlpha).
   Standard_EXPORT void SetFormat (const Image_Format thePixelFormat);
 
-  //! @return image width in pixels
-  inline Standard_Size Width() const
-  {
-    return myData.SizeX;
-  }
+  //! Return image width in pixels
+  Standard_Size Width() const { return myData.SizeX; }
 
-  //! @return image height in pixels
-  inline Standard_Size Height() const
-  {
-    return myData.SizeY;
-  }
+  //! Return image height in pixels
+  Standard_Size Height() const { return myData.SizeY; }
 
-  //! @return image width in pixels
-  inline Standard_Size SizeX() const
-  {
-    return myData.SizeX;
-  }
+  //! Return image width in pixels
+  Standard_Size SizeX() const { return myData.SizeX; }
 
-  //! @return image height in pixels
-  inline Standard_Size SizeY() const
-  {
-    return myData.SizeY;
-  }
+  //! Return image height in pixels
+  Standard_Size SizeY() const { return myData.SizeY; }
 
-  //! @return width / height.
-  inline Standard_Real Ratio() const
+  //! Return width / height.
+  Standard_Real Ratio() const
   {
     return (SizeY() > 0) ? (Standard_Real(SizeX()) / Standard_Real(SizeY())) : 1.0;
   }
 
-  //! @return true if data is NULL.
-  bool IsEmpty() const
-  {
-    return myData.IsEmpty();
-  }
+  //! Return true if data is NULL.
+  bool IsEmpty() const { return myData.IsEmpty(); }
 
   //! Empty constructor. Initialize the NULL image plane.
   Standard_EXPORT Image_PixMap();

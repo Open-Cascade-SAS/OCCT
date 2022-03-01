@@ -56,6 +56,8 @@ Image_Format Media_Frame::FormatFFmpeg2Occt (int theFormat)
       return Image_Format_BGR;
     case AV_PIX_FMT_GRAY8:
       return Image_Format_Gray;
+    case AV_PIX_FMT_GRAY16:
+      return Image_Format_Gray16;
     default:
       return Image_Format_UNKNOWN;
   }
@@ -90,6 +92,8 @@ int Media_Frame::FormatOcct2FFmpeg (Image_Format theFormat)
       return AV_PIX_FMT_GRAY8;
     case Image_Format_Alpha:
       return AV_PIX_FMT_GRAY8;
+    case Image_Format_Gray16:
+      return AV_PIX_FMT_GRAY16;
     case Image_Format_GrayF:
     case Image_Format_AlphaF:
     case Image_Format_RGF:
@@ -97,6 +101,7 @@ int Media_Frame::FormatOcct2FFmpeg (Image_Format theFormat)
     case Image_Format_RGBF:
     case Image_Format_BGRAF:
     case Image_Format_BGRF:
+    case Image_Format_GrayF_half:
     case Image_Format_RGF_half:
     case Image_Format_RGBAF_half:
     case Image_Format_UNKNOWN:

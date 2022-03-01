@@ -72,6 +72,7 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatFormat (GLint theInternalFor
     case 0x803C:       return "GL_ALPHA8";
     case 0x803E:       return "GL_ALPHA16";
     case GL_LUMINANCE: return "GL_LUMINANCE";
+    case GL_LUMINANCE16: return "GL_LUMINANCE16";
     case GL_LUMINANCE_ALPHA: return "GL_LUMINANCE_ALPHA";
     //
     case GL_DEPTH_COMPONENT:    return "GL_DEPTH_COMPONENT";
@@ -217,6 +218,19 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       aFormat.SetInternalFormat (theCtx->arbTexFloat ? GL_RGB32F : GL_RGB8);
       aFormat.SetPixelFormat (GL_BGR);     // equals to GL_BGR_EXT
       aFormat.SetDataType (GL_FLOAT);
+      return aFormat;
+    }
+    case Image_Format_GrayF_half:
+    {
+      aFormat.SetNbComponents (1);
+      aFormat.SetInternalFormat (GL_R16F);
+      aFormat.SetPixelFormat (GL_RED);
+      aFormat.SetDataType (GL_HALF_FLOAT);
+      if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions
+       && theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        aFormat.SetDataType (GL_HALF_FLOAT_OES);
+      }
       return aFormat;
     }
     case Image_Format_RGF_half:
@@ -443,6 +457,28 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
       aFormat.SetDataType (GL_UNSIGNED_BYTE);
       return aFormat;
     }
+    case Image_Format_Gray16:
+    {
+      if (!theCtx->extTexR16)
+      {
+        return OpenGl_TextureFormat();
+      }
+
+      aFormat.SetNbComponents (1);
+      if (useRedRedAlpha
+       || theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
+      {
+        aFormat.SetInternalFormat (GL_R16);
+        aFormat.SetPixelFormat (GL_RED);
+      }
+      else
+      {
+        aFormat.SetInternalFormat (GL_LUMINANCE16);
+        aFormat.SetPixelFormat (GL_LUMINANCE);
+      }
+      aFormat.SetDataType (GL_UNSIGNED_SHORT);
+      return aFormat;
+    }
     case Image_Format_UNKNOWN:
     {
       return OpenGl_TextureFormat();
@@ -509,7 +545,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_RED);
       aFormat.SetDataType (GL_HALF_FLOAT);
-      aFormat.SetImageFormat (Image_Format_GrayF);
+      aFormat.SetImageFormat (Image_Format_GrayF_half);
       if (theCtx->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
       {
         aFormat.SetDataType (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
