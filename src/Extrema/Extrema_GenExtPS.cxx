@@ -224,7 +224,19 @@ Extrema_GenExtPS::Extrema_GenExtPS()
   myAlgo = Extrema_ExtAlgo_Grad;
 }
 
+// =======================================================================
+// function : ~Extrema_GenExtPS
+// purpose  :
+// =======================================================================
+Extrema_GenExtPS::~Extrema_GenExtPS()
+{
+  //
+}
 
+// =======================================================================
+// function : Extrema_GenExtPS
+// purpose  :
+// =======================================================================
 Extrema_GenExtPS::Extrema_GenExtPS (const gp_Pnt&          P,
                                     const Adaptor3d_Surface& S,
                                     const Standard_Integer NbU, 

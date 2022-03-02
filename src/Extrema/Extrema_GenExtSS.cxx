@@ -118,6 +118,15 @@ Extrema_GenExtSS::Extrema_GenExtSS()
   myInit = Standard_False;
 }
 
+// =======================================================================
+// function : ~Extrema_GenExtSS
+// purpose  :
+// =======================================================================
+Extrema_GenExtSS::~Extrema_GenExtSS()
+{
+  //
+}
+
 //=======================================================================
 //function : Extrema_GenExtSS
 //purpose  : 

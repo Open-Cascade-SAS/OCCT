@@ -37,8 +37,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Empty constructor.
   Standard_EXPORT Extrema_GenExtPS();
-  
+
+  //! Destructor.
+  Standard_EXPORT ~Extrema_GenExtPS();
+
   //! It calculates all the distances.
   //! The function F(u,v)=distance(P,S(u,v)) has an
   //! extremum when gradient(F)=0. The algorithm searches
