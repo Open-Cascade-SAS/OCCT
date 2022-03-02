@@ -183,8 +183,19 @@ public:
   //! Cancel,on the boundaries,the denominator  first derivative
   //! in  the directions wished by the user and set its value to 1.
   Standard_EXPORT static void CancelDenominatorDerivative (Handle(Geom_BSplineSurface)& BSurf, const Standard_Boolean UDirection, const Standard_Boolean VDirection);
-  
-  Standard_EXPORT static Standard_Integer NormEstim (const Handle(Geom_Surface)& S, const gp_Pnt2d& UV, const Standard_Real Tol, gp_Dir& N);
+
+  //! Estimate surface normal at the given (U, V) point.
+  //! @param[in]  theSurf input surface
+  //! @param[in]  theUV   (U, V) point coordinates on the surface
+  //! @param[in]  theTol  estimation tolerance
+  //! @param[out] theNorm computed normal
+  //! @return 0 if normal estimated from D1,
+  //!         1 if estimated from D2 (quasysingular),
+  //!       >=2 in case of failure (undefined or infinite solutions)
+  Standard_EXPORT static Standard_Integer NormEstim (const Handle(Geom_Surface)& theSurf,
+                                                     const gp_Pnt2d& theUV,
+                                                     const Standard_Real theTol,
+                                                     gp_Dir& theNorm);
 
   //! This method defines if opposite boundaries of surface
   //! coincide with given tolerance

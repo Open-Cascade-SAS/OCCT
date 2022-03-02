@@ -114,19 +114,20 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsVPeriodic() const;
   
   Standard_EXPORT virtual Standard_Real VPeriod() const;
-  
+
   //! Computes the point of parameters U,V on the surface.
+  //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
   Standard_EXPORT virtual gp_Pnt Value (const Standard_Real U, const Standard_Real V) const;
-  
+
   //! Computes the point of parameters U,V on the surface.
   Standard_EXPORT virtual void D0 (const Standard_Real U, const Standard_Real V, gp_Pnt& P) const;
   
-  //! Computes the point  and the first derivatives on
-  //! the surface.
-  //! Raised   if  the continuity  of   the  current
-  //! intervals is not C1.
+  //! Computes the point  and the first derivatives on the surface.
+  //! Raised if the continuity of the current intervals is not C1.
+  //!
+  //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
   Standard_EXPORT virtual void D1 (const Standard_Real U, const Standard_Real V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const;
-  
+
   //! Computes   the point,  the  first  and  second
   //! derivatives on the surface.
   //! Raised  if   the   continuity   of the current

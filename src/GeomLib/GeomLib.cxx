@@ -2371,119 +2371,143 @@ void GeomLib::CancelDenominatorDerivative(Handle(Geom_BSplineSurface)         & 
 
 //=======================================================================
 //function : NormEstim
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S, 
-				    const gp_Pnt2d& UV, 
-				    const Standard_Real Tol, gp_Dir& N) 
+Standard_Integer GeomLib::NormEstim (const Handle(Geom_Surface)& theSurf,
+                                     const gp_Pnt2d& theUV,
+                                     const Standard_Real theTol,
+                                     gp_Dir& theNorm)
 {
+  const Standard_Real aTol2 = Square (theTol);
+
   gp_Vec DU, DV;
-  gp_Pnt DummyPnt;
-  Standard_Real aTol2 = Square(Tol);
+  gp_Pnt aDummyPnt;
+  theSurf->D1 (theUV.X(), theUV.Y(), aDummyPnt, DU, DV);
 
-  S->D1(UV.X(), UV.Y(), DummyPnt, DU, DV);
-
-  Standard_Real MDU = DU.SquareMagnitude(), MDV = DV.SquareMagnitude();
-
-  if(MDU >= aTol2 && MDV >= aTol2) {
-    gp_Vec Norm = DU^DV;
-    Standard_Real Magn = Norm.SquareMagnitude();
-    if(Magn < aTol2) return 3;
-
-    //Magn = sqrt(Magn);
-    N.SetXYZ(Norm.XYZ());
-
-    return 0;
-  }
-  else {
-    gp_Vec D2U, D2V, D2UV;
-    Standard_Boolean isDone;
-    CSLib_NormalStatus aStatus;
-    gp_Dir aNormal;
-
-    S->D2(UV.X(), UV.Y(), DummyPnt, DU, DV, D2U, D2V, D2UV);
-    CSLib::Normal(DU, DV, D2U, D2V, D2UV, Tol, isDone, aStatus, aNormal);
-
-    if (isDone) {
-     Standard_Real Umin, Umax, Vmin, Vmax;
-     Standard_Real step = 1.0e-5;
-     Standard_Real eps = 1.0e-16;
-     Standard_Real sign = -1.0;
-     
-     S->Bounds(Umin, Umax, Vmin, Vmax);
-
-     // check for cone apex singularity point
-     if ((UV.Y() > Vmin + step) && (UV.Y() < Vmax - step))
-     {
-       gp_Dir aNormal1, aNormal2;
-       Standard_Real aConeSingularityAngleEps = 1.0e-4;
-       S->D1(UV.X(), UV.Y() - sign * step, DummyPnt, DU, DV);
-       if ((DU.XYZ().SquareModulus() > eps) && (DV.XYZ().SquareModulus() > eps)) {
-         aNormal1 = DU^DV;
-         S->D1(UV.X(), UV.Y() + sign * step, DummyPnt, DU, DV);
-         if ((DU.XYZ().SquareModulus() > eps) && (DV.XYZ().SquareModulus() > eps)) {
-           aNormal2 = DU^DV;
-           if (aNormal1.IsOpposite(aNormal2, aConeSingularityAngleEps))
-             return 2;
-         }
-       }
-     }
-
-     // Along V
-     if(MDU < aTol2 && MDV >= aTol2) {
-       if ((Vmax - UV.Y()) > (UV.Y() - Vmin))
-         sign = 1.0;
-       S->D1(UV.X(), UV.Y() + sign * step, DummyPnt, DU, DV);
-       gp_Vec Norm = DU^DV;
-       if (Norm.SquareMagnitude() < eps) {
-         Standard_Real sign1 = -1.0;
-         if ((Umax - UV.X()) > (UV.X() - Umin))
-           sign1 = 1.0;
-         S->D1(UV.X() + sign1 * step, UV.Y() + sign * step, DummyPnt, DU, DV);
-         Norm = DU^DV;
-       }
-       if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
-         aNormal.Reverse();
-     }
-
-     // Along U
-     if(MDV < aTol2 && MDU >= aTol2) {
-       if ((Umax - UV.X()) > (UV.X() - Umin))
-         sign = 1.0;
-       S->D1(UV.X() + sign * step, UV.Y(), DummyPnt, DU, DV);
-       gp_Vec Norm = DU^DV;
-       if (Norm.SquareMagnitude() < eps) {
-         Standard_Real sign1 = -1.0;
-         if ((Vmax - UV.Y()) > (UV.Y() - Vmin))
-           sign1 = 1.0;
-         S->D1(UV.X() + sign * step, UV.Y() + sign1 * step, DummyPnt, DU, DV);
-         Norm = DU^DV;
-       }
-       if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
-         aNormal.Reverse();
-     }
-
-      // quasysingular
-      if ((aStatus == CSLib_D1NuIsNull) || (aStatus == CSLib_D1NvIsNull) || 
-          (aStatus == CSLib_D1NuIsParallelD1Nv)) {
-            N.SetXYZ(aNormal.XYZ());
-            return 1;
-      }
-      // conical
-      if (aStatus == CSLib_InfinityOfSolutions)
-          return 2;
-    }
-    // computation is impossible
-    else {
-      // conical
-      if (aStatus == CSLib_D1NIsNull) {
-        return 2;
-      }
+  const Standard_Real MDU = DU.SquareMagnitude(), MDV = DV.SquareMagnitude();
+  if (MDU >= aTol2
+   && MDV >= aTol2)
+  {
+    gp_Vec aNorm = DU ^ DV;
+    Standard_Real aMagn = aNorm.SquareMagnitude();
+    if (aMagn < aTol2)
+    {
       return 3;
     }
+
+    theNorm.SetXYZ (aNorm.XYZ());
+    return 0;
   }
-  return 3;
+
+  gp_Vec D2U, D2V, D2UV;
+  Standard_Boolean isDone = false;
+  CSLib_NormalStatus aStatus;
+  gp_Dir aNormal;
+
+  theSurf->D2 (theUV.X(), theUV.Y(), aDummyPnt, DU, DV, D2U, D2V, D2UV);
+  CSLib::Normal (DU, DV, D2U, D2V, D2UV, theTol, isDone, aStatus, aNormal);
+  if (!isDone)
+  {
+    // computation is impossible
+    return aStatus == CSLib_D1NIsNull ? 2 : 3;
+  }
+
+  Standard_Real Umin, Umax, Vmin, Vmax;
+  Standard_Real step = 1.0e-5;
+  Standard_Real eps  = 1.0e-16;
+  Standard_Real sign = -1.0;
+  theSurf->Bounds (Umin, Umax, Vmin, Vmax);
+
+  // check for cone apex singularity point
+  if ((theUV.Y() > Vmin + step)
+   && (theUV.Y() < Vmax - step))
+  {
+    gp_Dir aNormal1, aNormal2;
+    Standard_Real aConeSingularityAngleEps = 1.0e-4;
+    theSurf->D1(theUV.X(), theUV.Y() - sign * step, aDummyPnt, DU, DV);
+    if ((DU.XYZ().SquareModulus() > eps) && (DV.XYZ().SquareModulus() > eps))
+    {
+      aNormal1 = DU ^ DV;
+      theSurf->D1 (theUV.X(), theUV.Y() + sign * step, aDummyPnt, DU, DV);
+      if ((DU.XYZ().SquareModulus() > eps)
+       && (DV.XYZ().SquareModulus() > eps))
+      {
+        aNormal2 = DU^DV;
+        if (aNormal1.IsOpposite (aNormal2, aConeSingularityAngleEps))
+        {
+          return 2;
+        }
+      }
+    }
+  }
+
+  // Along V
+  if (MDU <  aTol2
+   && MDV >= aTol2)
+  {
+    if ((Vmax - theUV.Y()) > (theUV.Y() - Vmin))
+    {
+      sign = 1.0;
+    }
+
+    theSurf->D1 (theUV.X(), theUV.Y() + sign * step, aDummyPnt, DU, DV);
+    gp_Vec Norm = DU ^ DV;
+    if (Norm.SquareMagnitude() < eps)
+    {
+      Standard_Real sign1 = -1.0;
+      if ((Umax - theUV.X()) > (theUV.X() - Umin))
+      {
+        sign1 = 1.0;
+      }
+      theSurf->D1 (theUV.X() + sign1 * step, theUV.Y() + sign * step, aDummyPnt, DU, DV);
+      Norm = DU ^ DV;
+    }
+    if (Norm.SquareMagnitude() >= eps
+     && Norm.Dot (aNormal) < 0.0)
+    {
+      aNormal.Reverse();
+    }
+  }
+
+  // Along U
+  if (MDV <  aTol2
+   && MDU >= aTol2)
+  {
+    if ((Umax - theUV.X()) > (theUV.X() - Umin))
+    {
+      sign = 1.0;
+    }
+
+    theSurf->D1 (theUV.X() + sign * step, theUV.Y(), aDummyPnt, DU, DV);
+    gp_Vec Norm = DU ^ DV;
+    if (Norm.SquareMagnitude() < eps)
+    {
+      Standard_Real sign1 = -1.0;
+      if ((Vmax - theUV.Y()) > (theUV.Y() - Vmin))
+      {
+        sign1 = 1.0;
+      }
+
+      theSurf->D1 (theUV.X() + sign * step, theUV.Y() + sign1 * step, aDummyPnt, DU, DV);
+      Norm = DU ^ DV;
+    }
+    if (Norm.SquareMagnitude() >= eps
+     && Norm.Dot (aNormal) < 0.0)
+    {
+      aNormal.Reverse();
+    }
+  }
+
+  // quasysingular
+  if (aStatus == CSLib_D1NuIsNull
+   || aStatus == CSLib_D1NvIsNull
+   || aStatus == CSLib_D1NuIsParallelD1Nv)
+  {
+    theNorm.SetXYZ (aNormal.XYZ());
+    return 1;
+  }
+
+  return aStatus == CSLib_InfinityOfSolutions ? 2 : 3;
 }
 
 //=======================================================================
