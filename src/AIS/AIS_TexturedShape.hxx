@@ -26,7 +26,7 @@
 #include <PrsMgr_PresentationManager.hxx>
 
 class Graphic3d_AspectFillArea3d;
-class Graphic3d_Texture2Dmanual;
+class Graphic3d_Texture2D;
 
 //! This class allows to map textures on shapes.
 //! Presentations modes AIS_WireFrame (0) and AIS_Shaded (1) behave in the same manner as in AIS_Shape,
@@ -184,7 +184,7 @@ protected: //! @name overridden methods
 
 protected: //! @name presentation fields
 
-  Handle(Graphic3d_Texture2Dmanual)  myTexture;
+  Handle(Graphic3d_Texture2D)        myTexture;
   Handle(Graphic3d_AspectFillArea3d) myAspect;
 
 protected: //! @name texture source fields

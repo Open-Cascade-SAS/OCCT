@@ -28,11 +28,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2Dplane,Graphic3d_Texture2D)
 // purpose  :
 // =======================================================================
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane (const TCollection_AsciiString& theFileName)
-: Graphic3d_Texture2D (theFileName, Graphic3d_TOT_2D_MIPMAP)
+: Graphic3d_Texture2D (theFileName)
 {
-  myParams->SetModulate (Standard_True);
-  myParams->SetRepeat   (Standard_True);
-  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode  (Graphic3d_TOTM_OBJECT,
                          Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
                          Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
@@ -43,11 +40,8 @@ Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane (const TCollection_AsciiStrin
 // purpose  :
 // =======================================================================
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane (const Graphic3d_NameOfTexture2D theNOT)
-: Graphic3d_Texture2D (theNOT, Graphic3d_TOT_2D_MIPMAP)
+: Graphic3d_Texture2D (theNOT)
 {
-  myParams->SetModulate (Standard_True);
-  myParams->SetRepeat   (Standard_True);
-  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode  (Graphic3d_TOTM_OBJECT,
                          Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
                          Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));
@@ -58,11 +52,8 @@ Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane (const Graphic3d_NameOfTextur
 // purpose  :
 // =======================================================================
 Graphic3d_Texture2Dplane::Graphic3d_Texture2Dplane (const Handle(Image_PixMap)& thePixMap)
-: Graphic3d_Texture2D (thePixMap, Graphic3d_TOT_2D_MIPMAP)
+: Graphic3d_Texture2D (thePixMap)
 {
-  myParams->SetModulate (Standard_True);
-  myParams->SetRepeat   (Standard_True);
-  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode  (Graphic3d_TOTM_OBJECT,
                          Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
                          Graphic3d_Vec4 (0.0f, 1.0f, 0.0f, 0.0f));

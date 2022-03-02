@@ -17,55 +17,27 @@
 #ifndef _Graphic3d_Texture1Dmanual_HeaderFile
 #define _Graphic3d_Texture1Dmanual_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_Texture1D.hxx>
 #include <Graphic3d_NameOfTexture1D.hxx>
-class TCollection_AsciiString;
 
-
-class Graphic3d_Texture1Dmanual;
 DEFINE_STANDARD_HANDLE(Graphic3d_Texture1Dmanual, Graphic3d_Texture1D)
 
 //! This class provides the implementation of a manual 1D texture.
-//! you MUST provides texture coordinates on your facets if you want to see your texture.
+//! you MUST provide texture coordinates on your facets if you want to see your texture.
 class Graphic3d_Texture1Dmanual : public Graphic3d_Texture1D
 {
-
+  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual, Graphic3d_Texture1D)
 public:
-
   
   //! Creates a texture from the file FileName.
   Standard_EXPORT Graphic3d_Texture1Dmanual(const TCollection_AsciiString& theFileName);
-  
+
   //! Create a texture from a predefined texture name set.
   Standard_EXPORT Graphic3d_Texture1Dmanual(const Graphic3d_NameOfTexture1D theNOT);
-  
+
   //! Creates a texture from the pixmap.
   Standard_EXPORT Graphic3d_Texture1Dmanual(const Handle(Image_PixMap)& thePixMap);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual,Graphic3d_Texture1D)
-
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Graphic3d_Texture1Dmanual_HeaderFile

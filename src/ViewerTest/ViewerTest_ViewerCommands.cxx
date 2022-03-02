@@ -55,7 +55,7 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_GraphicDriverFactory.hxx>
 #include <Graphic3d_NameOfTextureEnv.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfTextureFilter.hxx>
@@ -3069,7 +3069,7 @@ static int VBackground (Draw_Interpretor& theDI,
 
   if (!anImagePath.IsEmpty())
   {
-    Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2Dmanual (anImagePath);
+    Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2D (anImagePath);
     aTextureMap->DisableModulate();
     aTextureMap->SetColorMap (isSRgb);
     if (!aTextureMap->IsDone())
@@ -5897,7 +5897,7 @@ public:
       aMat.SetSpecularColor (Quantity_NOC_BLACK);
       aMat.SetEmissiveColor (Quantity_NOC_BLACK);
       aFillAspect->SetFrontMaterial (aMat);
-      aFillAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (theImage));
+      aFillAspect->SetTextureMap (new Graphic3d_Texture2D (theImage));
       aFillAspect->SetTextureMapOn();
     }
     {
@@ -8609,7 +8609,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       }
 
       TCollection_AsciiString aTextureName (aChangeArgs[1]);
-      Handle(Graphic3d_Texture2Dmanual) aTexture = new Graphic3d_Texture2Dmanual(aTextureName);
+      Handle(Graphic3d_Texture2D) aTexture = new Graphic3d_Texture2D (aTextureName);
       if (!aTexture->IsDone())
       {
         aClipPlane->SetCappingTexture (NULL);

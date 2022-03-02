@@ -20,28 +20,7 @@
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_NameOfTexture2D.hxx>
 
-//! This class defined a manual texture 2D
-//! facets MUST define texture coordinate
-//! if you want to see somethings on.
-class Graphic3d_Texture2Dmanual : public Graphic3d_Texture2D
-{
-  DEFINE_STANDARD_RTTIEXT(Graphic3d_Texture2Dmanual,Graphic3d_Texture2D)
-public:
-
-  //! Creates a texture from a file.
-  //! MipMaps levels will be automatically generated if needed.
-  Standard_EXPORT Graphic3d_Texture2Dmanual(const TCollection_AsciiString& theFileName);
-  
-  //! Creates a texture from a predefined texture name set.
-  //! MipMaps levels will be automatically generated if needed.
-  Standard_EXPORT Graphic3d_Texture2Dmanual(const Graphic3d_NameOfTexture2D theNOT);
-
-  //! Creates a texture from the pixmap.
-  //! MipMaps levels will be automatically generated if needed.
-  Standard_EXPORT Graphic3d_Texture2Dmanual(const Handle(Image_PixMap)& thePixMap);
-
-};
-
-DEFINE_STANDARD_HANDLE(Graphic3d_Texture2Dmanual, Graphic3d_Texture2D)
+Standard_DEPRECATED ("Deprecated alias to Graphic3d_Texture2D")
+typedef Graphic3d_Texture2D Graphic3d_Texture2Dmanual;
 
 #endif // _Graphic3d_Texture2Dmanual_HeaderFile

@@ -2136,13 +2136,13 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
     myTextureRgbaWhite = new OpenGl_Texture();
     Image_PixMap anImage;
     anImage.InitZero (Image_Format_RGBA, 2, 2, 0, (Standard_Byte )0);
-    if (!myTextureRgbaBlack->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TOT_2D, &anImage))
+    if (!myTextureRgbaBlack->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TypeOfTexture_2D, &anImage))
     {
       PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                     "Error: unable to create unit mock PBR texture map.");
     }
     anImage.InitZero (Image_Format_RGBA, 2, 2, 0, (Standard_Byte )255);
-    if (!myTextureRgbaWhite->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TOT_2D, &anImage))
+    if (!myTextureRgbaWhite->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TypeOfTexture_2D, &anImage))
     {
       PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
                     "Error: unable to create normal mock PBR texture map.");

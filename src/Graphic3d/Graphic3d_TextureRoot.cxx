@@ -92,9 +92,10 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& the
 : myParams   (new Graphic3d_TextureParams()),
   myPath     (theFileName),
   myRevision (0),
-  myType     (theType),
+  myType     (theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
   myIsColorMap (true),
-  myIsTopDown  (true)
+  myIsTopDown  (true),
+  myHasMipmaps (theType == Graphic3d_TOT_2D_MIPMAP)
 {
   generateId();
 }
@@ -108,9 +109,10 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Image_PixMap)&   theP
 : myParams   (new Graphic3d_TextureParams()),
   myPixMap   (thePixMap),
   myRevision (0),
-  myType     (theType),
+  myType     (theType == Graphic3d_TOT_2D_MIPMAP ? Graphic3d_TypeOfTexture_2D : theType),
   myIsColorMap (true),
-  myIsTopDown  (true)
+  myIsTopDown  (true),
+  myHasMipmaps (theType == Graphic3d_TOT_2D_MIPMAP)
 {
   generateId();
 }

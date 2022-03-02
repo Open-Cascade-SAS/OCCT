@@ -154,10 +154,11 @@ Graphic3d_Texture1Dsegment.cxx
 Graphic3d_Texture1Dsegment.hxx
 Graphic3d_Texture2D.cxx
 Graphic3d_Texture2D.hxx
-Graphic3d_Texture2Dmanual.cxx
 Graphic3d_Texture2Dmanual.hxx
 Graphic3d_Texture2Dplane.cxx
 Graphic3d_Texture2Dplane.hxx
+Graphic3d_Texture3D.cxx
+Graphic3d_Texture3D.hxx
 Graphic3d_TextureEnv.cxx
 Graphic3d_TextureEnv.hxx
 Graphic3d_TextureMap.cxx

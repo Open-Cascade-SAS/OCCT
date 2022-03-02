@@ -261,13 +261,13 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
 
     if (!hadAlreadyRGBA)
     {
-      aSprite->Init (theCtx, *anImage, Graphic3d_TOT_2D, true);
+      aSprite->Init (theCtx, *anImage, Graphic3d_TypeOfTexture_2D, true);
     }
     if (!hadAlreadyAlpha)
     {
       if (Handle(Image_PixMap) anImageA = aSprite->GetFormat() != GL_ALPHA ? aNewMarkerImage->GetImageAlpha() : Handle(Image_PixMap)())
       {
-        aSpriteA->Init (theCtx, *anImageA, Graphic3d_TOT_2D, true);
+        aSpriteA->Init (theCtx, *anImageA, Graphic3d_TypeOfTexture_2D, true);
       }
     }
   }

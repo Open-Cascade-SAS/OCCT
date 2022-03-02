@@ -15,7 +15,7 @@
 
 #include <Graphic3d_TextureParams.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2Dmanual)
+IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2D)
 
 //=======================================================================
 //function : XCAFPrs_Texture
@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2Dmanual)
 //=======================================================================
 XCAFPrs_Texture::XCAFPrs_Texture (const Image_Texture& theImageSource,
                                   const Graphic3d_TextureUnit theUnit)
-: Graphic3d_Texture2Dmanual (""),
+: Graphic3d_Texture2D (""),
   myImageSource (theImageSource)
 {
   if (!myImageSource.TextureId().IsEmpty())

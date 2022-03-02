@@ -479,7 +479,7 @@ void V3d_View::SetBackgroundImage (const Standard_CString theFileName,
                                    const Aspect_FillMethod theFillStyle,
                                    const Standard_Boolean theToUpdate)
 {
-  Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2Dmanual (theFileName);
+  Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2D (theFileName);
   aTextureMap->DisableModulate();
   SetBackgroundImage (aTextureMap, theFillStyle, theToUpdate);
 }

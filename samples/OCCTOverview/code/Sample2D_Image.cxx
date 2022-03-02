@@ -26,9 +26,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Texture1D.hxx>
-#include <Graphic3d_Texture1Dsegment.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <TopoDS_Edge.hxx>
@@ -81,7 +79,7 @@ void Sample2D_Image::SetContext (const Handle(AIS_InteractiveContext)& theContex
   this->Set(TopoDS_Shape(myFace));
 
   myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
-  Handle(Graphic3d_Texture2Dmanual) aTexture = new Graphic3d_Texture2Dmanual(myFilename);
+  Handle(Graphic3d_Texture2D) aTexture = new Graphic3d_Texture2D (myFilename);
   aTexture->DisableModulate();
   myDrawer->ShadingAspect()->Aspect()->SetTextureMap (aTexture);
   myDrawer->ShadingAspect()->Aspect()->SetTextureMapOn();

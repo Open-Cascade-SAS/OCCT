@@ -21,9 +21,9 @@
 #include <Image_Texture.hxx>
 
 //! Texture holder.
-class XCAFPrs_Texture : public Graphic3d_Texture2Dmanual
+class XCAFPrs_Texture : public Graphic3d_Texture2D
 {
-  DEFINE_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2Dmanual)
+  DEFINE_STANDARD_RTTIEXT(XCAFPrs_Texture, Graphic3d_Texture2D)
 public:
 
   //! Constructor.

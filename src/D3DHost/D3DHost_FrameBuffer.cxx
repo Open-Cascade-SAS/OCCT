@@ -195,7 +195,7 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
 
   const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myDepthFormat);
   if (aDepthFormat.IsValid()
-  && !myDepthStencilTexture->Init (theCtx, aDepthFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TOT_2D))
+  && !myDepthStencilTexture->Init (theCtx, aDepthFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TypeOfTexture_2D))
   {
     Release (theCtx.get());
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,

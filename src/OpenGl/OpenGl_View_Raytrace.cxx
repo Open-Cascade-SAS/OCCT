@@ -1949,13 +1949,13 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
       myRaytraceVisualErrorTexture[aViewIter]->Init (theGlContext,
                                                      OpenGl_TextureFormat::FindSizedFormat (theGlContext, GL_R32I),
                                                      Graphic3d_Vec2i (myTileSampler.NbTilesX(), myTileSampler.NbTilesY()),
-                                                     Graphic3d_TOT_2D);
+                                                     Graphic3d_TypeOfTexture_2D);
       if (!myRaytraceParameters.AdaptiveScreenSamplingAtomic)
       {
         myRaytraceTileSamplesTexture[aViewIter]->Init (theGlContext,
                                                        OpenGl_TextureFormat::FindSizedFormat (theGlContext, GL_R32I),
                                                        Graphic3d_Vec2i (myTileSampler.NbTilesX(), myTileSampler.NbTilesY()),
-                                                       Graphic3d_TOT_2D);
+                                                       Graphic3d_TypeOfTexture_2D);
       }
     }
     else // non-adaptive mode

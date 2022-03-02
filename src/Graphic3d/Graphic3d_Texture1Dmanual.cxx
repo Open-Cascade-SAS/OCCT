@@ -14,10 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Graphic3d_Texture1Dmanual.hxx>
-#include <Graphic3d_TypeOfTextureMode.hxx>
-#include <Standard_Type.hxx>
+
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual,Graphic3d_Texture1D)
@@ -27,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture1Dmanual,Graphic3d_Texture1D)
 // purpose  :
 // =======================================================================
 Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const TCollection_AsciiString& theFileName)
-: Graphic3d_Texture1D (theFileName, Graphic3d_TOT_1D)
+: Graphic3d_Texture1D (theFileName, Graphic3d_TypeOfTexture_1D)
 {
   //
 }
@@ -37,7 +35,7 @@ Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const TCollection_AsciiStr
 // purpose  :
 // =======================================================================
 Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const Graphic3d_NameOfTexture1D theNOT)
-: Graphic3d_Texture1D (theNOT, Graphic3d_TOT_1D)
+: Graphic3d_Texture1D (theNOT, Graphic3d_TypeOfTexture_1D)
 {
   //
 }
@@ -47,7 +45,7 @@ Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const Graphic3d_NameOfText
 // purpose  :
 // =======================================================================
 Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const Handle(Image_PixMap)& thePixMap)
-: Graphic3d_Texture1D (thePixMap, Graphic3d_TOT_1D)
+: Graphic3d_Texture1D (thePixMap, Graphic3d_TypeOfTexture_1D)
 {
   //
 }

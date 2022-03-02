@@ -69,12 +69,6 @@ static Standard_Integer computeUpperMipMapLevel (Standard_Integer theSize)
   }
 }
 
-//! Compute the upper mipmap level for complete mipmap set (e.g. till the 1x1 level).
-static Standard_Integer computeUpperMipMapLevel (Standard_Integer theSizeX, Standard_Integer theSizeY)
-{
-  return computeUpperMipMapLevel (Max (theSizeX, theSizeY));
-}
-
 //! Compute size of the smallest defined mipmap level (for verbose messages).
 static Graphic3d_Vec2i computeSmallestMipMapSize (const Graphic3d_Vec2i& theBaseSize, Standard_Integer theMaxLevel)
 {
@@ -105,9 +99,6 @@ OpenGl_Texture::OpenGl_Texture (const TCollection_AsciiString& theResourceId,
   myRevision (0),
   myTextureId (NO_TEXTURE),
   myTarget (GL_TEXTURE_2D),
-  mySizeX (0),
-  mySizeY (0),
-  mySizeZ (0),
   myTextFormat (GL_RGBA),
   mySizedFormat(GL_RGBA8),
   myNbSamples  (1),
@@ -169,7 +160,7 @@ void OpenGl_Texture::Release (OpenGl_Context* theGlCtx)
     theGlCtx->core11fwd->glDeleteTextures (1, &myTextureId);
   }
   myTextureId = NO_TEXTURE;
-  mySizeX = mySizeY = mySizeZ = 0;
+  mySize.SetValues (0, 0, 0);
 }
 
 // =======================================================================
@@ -231,12 +222,13 @@ bool OpenGl_Texture::InitSamplerObject (const Handle(OpenGl_Context)& theCtx)
 // =======================================================================
 bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                            const OpenGl_TextureFormat&   theFormat,
-                           const Graphic3d_Vec2i&        theSizeXY,
+                           const Graphic3d_Vec3i&        theSizeXYZ,
                            const Graphic3d_TypeOfTexture theType,
                            const Image_PixMap*           theImage)
 {
-  if (theSizeXY.x() < 1
-   || theSizeXY.y() < 1)
+  if (theSizeXYZ.x() < 1
+   || theSizeXYZ.y() < 1
+   || theSizeXYZ.z() < 1)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          TCollection_AsciiString ("Error: texture of 0 size cannot be created [") + myResourceId +"]");
@@ -244,16 +236,39 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  const GLenum aTarget = (theType == Graphic3d_TOT_1D
-                       && theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
-                       ? GL_TEXTURE_1D
-                       : GL_TEXTURE_2D;
+  GLenum aTarget = GL_TEXTURE_2D;
+  switch (theType)
+  {
+    case Graphic3d_TypeOfTexture_1D:
+    {
+      aTarget = theCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
+              ? GL_TEXTURE_1D
+              : GL_TEXTURE_2D;
+      break;
+    }
+    case Graphic3d_TypeOfTexture_2D:
+    case Graphic3d_TOT_2D_MIPMAP:
+    {
+      aTarget = GL_TEXTURE_2D;
+      break;
+    }
+    case Graphic3d_TypeOfTexture_3D:
+    {
+      aTarget = GL_TEXTURE_3D;
+      break;
+    }
+    case Graphic3d_TypeOfTexture_CUBEMAP:
+    {
+      aTarget = GL_TEXTURE_CUBE_MAP;
+      break;
+    }
+  }
   const bool toPatchExisting = IsValid()
                             && myTextFormat == theFormat.PixelFormat()
                             && myTarget == aTarget
-                            && HasMipmaps() == (theType == Graphic3d_TOT_2D_MIPMAP)
-                            && mySizeX  == theSizeXY.x()
-                            && (mySizeY == theSizeXY.y() || theType == Graphic3d_TOT_1D);
+                            && mySize.x()  == theSizeXYZ.x()
+                            && (mySize.y() == theSizeXYZ.y() || theType == Graphic3d_TypeOfTexture_1D)
+                            && mySize.z()  == theSizeXYZ.z();
   if (!Create (theCtx))
   {
     Release (theCtx.get());
@@ -271,9 +286,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     myIsAlpha = theFormat.PixelFormat() == GL_ALPHA;
   }
 
-  myMaxMipLevel = theType == Graphic3d_TOT_2D_MIPMAP && theCtx->arbFBO != NULL
-                ? computeUpperMipMapLevel (theSizeXY.x(), theSizeXY.y())
-                : 0;
+  myMaxMipLevel = 0;
   myTextFormat  = theFormat.PixelFormat();
   mySizedFormat = theFormat.InternalFormat();
   myNbSamples   = 1;
@@ -293,12 +306,12 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  const GLsizei aMaxSize = theCtx->MaxTextureSize();
-  if (theSizeXY.x() > aMaxSize
-   || theSizeXY.y() > aMaxSize)
+  const Standard_Integer aMaxSize = theCtx->MaxTextureSize();
+  if (theSizeXYZ.maxComp() > aMaxSize)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         TCollection_AsciiString ("Error: Texture dimension - ") + theSizeXY.x() + "x" + theSizeXY.y()
+                         TCollection_AsciiString ("Error: Texture dimension - ") + theSizeXYZ.x() + "x" + theSizeXYZ.y()
+                       + (theSizeXYZ.z() > 1 ? TCollection_AsciiString ("x") + theSizeXYZ.z() : TCollection_AsciiString())
                        + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")"
                        + " [" + myResourceId +"]");
     Release (theCtx.get());
@@ -312,32 +325,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
     // Trying to create NPOT textures on such hardware will not fail
     // but driver will fall back into software rendering,
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeXY.x(), aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeXY.y(), aMaxSize);
-    if (theSizeXY.x() != aWidthP2
-     || (theType != Graphic3d_TOT_1D && theSizeXY.y() != aHeightP2))
+    const Graphic3d_Vec2i aSizeP2 (OpenGl_Context::GetPowerOfTwo (theSizeXYZ.x(), aMaxSize),
+                                   OpenGl_Context::GetPowerOfTwo (theSizeXYZ.y(), aMaxSize));
+    if (theSizeXYZ.x() != aSizeP2.x()
+     || (theType != Graphic3d_TypeOfTexture_1D && theSizeXYZ.y() != aSizeP2.y()))
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Error: NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
+                           TCollection_AsciiString ("Error: NPOT Textures (") + theSizeXYZ.x() + "x" + theSizeXYZ.y() + ")"
                            " are not supported by hardware [" + myResourceId +"]");
       Release (theCtx.get());
       return false;
-    }
-  }
-  else if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
-       && !theCtx->IsGlGreaterEqual (3, 0)
-       &&  theType == Graphic3d_TOT_2D_MIPMAP)
-  {
-    // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeXY.x(), aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeXY.y(), aMaxSize);
-    if (theSizeXY.x() != aWidthP2
-     || theSizeXY.y() != aHeightP2)
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Warning: Mipmap NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
-                           " are not supported by OpenGL ES 2.0 [" + myResourceId +"]");
-      myMaxMipLevel = 0;
     }
   }
 
@@ -370,7 +367,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   myTarget = aTarget;
   switch (theType)
   {
-    case Graphic3d_TOT_1D:
+    case Graphic3d_TypeOfTexture_1D:
     {
       if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
       {
@@ -385,14 +382,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       if (toPatchExisting)
       {
         theCtx->core11fwd->glTexSubImage1D (GL_TEXTURE_1D, 0, 0,
-                                            theSizeXY.x(), theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
-        Unbind (theCtx);
-        return true;
+                                            theSizeXYZ.x(), theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
+        break;
       }
 
       // use proxy to check texture could be created or not
       theCtx->core11fwd->glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
-                                       theSizeXY.x(), 0,
+                                       theSizeXYZ.x(), 0,
                                        theFormat.PixelFormat(), theFormat.DataType(), NULL);
       theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
       theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
@@ -405,7 +401,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       theCtx->core11fwd->glTexImage1D (GL_TEXTURE_1D, 0, anIntFormat,
-                                       theSizeXY.x(), 0,
+                                       theSizeXYZ.x(), 0,
                                        theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
       if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
       {
@@ -414,13 +410,10 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = theSizeXY.x();
-      mySizeY = 1;
-
-      Unbind (theCtx);
-      return true;
+      mySize.SetValues (theSizeXYZ.x(), 1, 1);
+      break;
     }
-    case Graphic3d_TOT_2D:
+    case Graphic3d_TypeOfTexture_2D:
     case Graphic3d_TOT_2D_MIPMAP:
     {
       Bind (theCtx);
@@ -429,28 +422,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         theCtx->core11fwd->glTexSubImage2D (GL_TEXTURE_2D, 0,
                                             0, 0,
-                                            theSizeXY.x(), theSizeXY.y(),
+                                            theSizeXYZ.x(), theSizeXYZ.y(),
                                             theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
-
-        if (myMaxMipLevel > 0)
-        {
-          // generate mipmaps
-          theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
-          if (theCtx->core11fwd->glGetError() != GL_NO_ERROR)
-          {
-            myMaxMipLevel = 0;
-          }
-        }
-
-        Unbind (theCtx);
-        return true;
+        break;
       }
 
       if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL)
       {
         // use proxy to check texture could be created or not
         theCtx->core11fwd->glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                                         theSizeXY.x(), theSizeXY.y(), 0,
+                                         theSizeXYZ.x(), theSizeXYZ.y(), 0,
                                          theFormat.PixelFormat(), theFormat.DataType(), NULL);
         theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
         theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
@@ -465,13 +446,13 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       theCtx->core11fwd->glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                                       theSizeXY.x(), theSizeXY.y(), 0,
+                                       theSizeXYZ.x(), theSizeXYZ.y(), 0,
                                        theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
       GLenum anErr = theCtx->core11fwd->glGetError();
       if (anErr != GL_NO_ERROR)
       {
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                             TCollection_AsciiString ("Error: 2D texture ") + theSizeXY.x() + "x" + theSizeXY.y()
+                             TCollection_AsciiString ("Error: 2D texture ") + theSizeXYZ.x() + "x" + theSizeXYZ.y()
                                                    + " IF: " + OpenGl_TextureFormat::FormatFormat (anIntFormat)
                                                    + " PF: " + OpenGl_TextureFormat::FormatFormat (theFormat.PixelFormat())
                                                    + " DT: " + OpenGl_TextureFormat::FormatDataType (theFormat.DataType())
@@ -482,38 +463,63 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      mySizeX = theSizeXY.x();
-      mySizeY = theSizeXY.y();
-
-      if (myMaxMipLevel > 0)
+      mySize.SetValues (theSizeXYZ.xy(), 1);
+      break;
+    }
+    case Graphic3d_TypeOfTexture_3D:
+    {
+      if (theCtx->Functions()->glTexImage3D == nullptr)
       {
-        // generate mipmaps
-        //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-        theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
-        anErr = theCtx->core11fwd->glGetError();
-        if (anErr != GL_NO_ERROR)
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Error: three-dimensional textures are not supported by hardware.");
+        Unbind (theCtx);
+        Release (theCtx.get());
+        return false;
+      }
+
+      Bind (theCtx);
+      applyDefaultSamplerParams (theCtx);
+      if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGL)
+      {
+        theCtx->Functions()->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, anIntFormat,
+                                           theSizeXYZ.x(), theSizeXYZ.y(), theSizeXYZ.z(), 0,
+                                           theFormat.PixelFormat(), theFormat.DataType(),  nullptr);
+
+        NCollection_Vec3<GLint> aTestSizeXYZ;
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH,  &aTestSizeXYZ.x());
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeXYZ.y());
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH,  &aTestSizeXYZ.z());
+        theCtx->core11fwd->glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
+        if (aTestSizeXYZ.x() == 0 || aTestSizeXYZ.y() == 0 || aTestSizeXYZ.z() == 0)
         {
-          myMaxMipLevel = 0;
-          if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
-           && (theFormat.InternalFormat() == GL_RGB8
-            || theFormat.InternalFormat() == GL_SRGB8))
-          {
-            theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                                 TCollection_AsciiString ("Warning: generating mipmaps requires color-renderable format, while giving ")
-                                 + OpenGl_TextureFormat::FormatFormat (anIntFormat) + " [" + myResourceId +"]");
-          }
-          else
-          {
-            theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
-                                 TCollection_AsciiString ("Warning: generating mipmaps has failed [") + myResourceId +"]");
-          }
+          Unbind (theCtx);
+          Release (theCtx.get());
+          return false;
         }
       }
 
-      Unbind (theCtx);
-      return true;
+      theCtx->Functions()->glTexImage3D (GL_TEXTURE_3D, 0, anIntFormat,
+                                         theSizeXYZ.x(), theSizeXYZ.y(), theSizeXYZ.z(), 0,
+                                         theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
+      GLenum anErr = theCtx->core11fwd->glGetError();
+      if (anErr != GL_NO_ERROR)
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString ("Error: 3D texture ") + theSizeXYZ.x() + "x" + theSizeXYZ.y() + "x" + theSizeXYZ.z()
+                                                   + " IF: " + OpenGl_TextureFormat::FormatFormat (anIntFormat)
+                                                   + " PF: " + OpenGl_TextureFormat::FormatFormat (theFormat.PixelFormat())
+                                                   + " DT: " + OpenGl_TextureFormat::FormatDataType (theFormat.DataType())
+                                                   + " can not be created with error " + OpenGl_Context::FormatGlError (anErr)
+                                                   + " [" + myResourceId +"]");
+        Unbind (theCtx);
+        Release (theCtx.get());
+        return false;
+      }
+
+      mySize = theSizeXYZ;
+      break;
     }
-    case Graphic3d_TOT_CUBEMAP:
+    case Graphic3d_TypeOfTexture_CUBEMAP:
     {
       Unbind (theCtx);
       Release (theCtx.get());
@@ -521,8 +527,82 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     }
   }
 
-  Release (theCtx.get());
-  return false;
+  Unbind (theCtx);
+  return true;
+}
+
+// =======================================================================
+// function : GenerateMipmaps
+// purpose  :
+// =======================================================================
+bool OpenGl_Texture::GenerateMipmaps (const Handle(OpenGl_Context)& theCtx)
+{
+  if (theCtx->arbFBO == nullptr
+  || !IsValid())
+  {
+    return false;
+  }
+
+  myMaxMipLevel = computeUpperMipMapLevel (mySize.maxComp());
+
+  const Standard_Integer aMaxSize = theCtx->MaxTextureSize();
+  if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+  && !theCtx->IsGlGreaterEqual (3, 0))
+  {
+    // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
+    const Graphic3d_Vec2i aSizeP2 (OpenGl_Context::GetPowerOfTwo (mySize.x(), aMaxSize),
+                                   OpenGl_Context::GetPowerOfTwo (mySize.y(), aMaxSize));
+    if (mySize.xy() != aSizeP2)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Warning: Mipmap NPOT Textures (") + mySize.x() + "x" + mySize.y() + ")"
+                           " are not supported by OpenGL ES 2.0 [" + myResourceId +"]");
+      myMaxMipLevel = 0;
+    }
+  }
+
+  if (myMaxMipLevel <= 0)
+  {
+    return false;
+  }
+
+  //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+  Bind (theCtx);
+  if (theCtx->HasTextureBaseLevel()
+  && !mySampler->isValidSampler())
+  {
+    const Standard_Integer aMaxLevel = Min (myMaxMipLevel, mySampler->Parameters()->MaxLevel());
+    mySampler->SetParameter (theCtx, myTarget, GL_TEXTURE_MAX_LEVEL, aMaxLevel);
+  }
+  theCtx->arbFBO->glGenerateMipmap (myTarget);
+  GLenum anErr = theCtx->core11fwd->glGetError();
+  if (anErr != GL_NO_ERROR)
+  {
+    myMaxMipLevel = 0;
+    if (theCtx->HasTextureBaseLevel()
+    && !mySampler->isValidSampler())
+    {
+      mySampler->SetParameter (theCtx, myTarget, GL_TEXTURE_MAX_LEVEL, 0);
+    }
+
+    if (theCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES
+      && (mySizedFormat == GL_RGB8
+       || mySizedFormat == GL_SRGB8))
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                            TCollection_AsciiString ("Warning: generating mipmaps requires color-renderable format, while giving ")
+                            + OpenGl_TextureFormat::FormatFormat (mySizedFormat) + " [" + myResourceId +"]");
+    }
+    else
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                            TCollection_AsciiString ("Warning: generating mipmaps has failed [") + myResourceId +"]");
+    }
+  }
+
+  applyDefaultSamplerParams (theCtx);
+  Unbind (theCtx);
+  return true;
 }
 
 // =======================================================================
@@ -550,16 +630,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  return Init (theCtx, aFormat, Graphic3d_Vec2i ((Standard_Integer)theImage.SizeX(), (Standard_Integer)theImage.SizeY()),
-               theType, &theImage);
+  return Init (theCtx, aFormat, Graphic3d_Vec3i (theImage.SizeXYZ()), theType, &theImage);
 }
 
 // =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================
-bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
-                           const Handle(Graphic3d_TextureMap)& theTextureMap)
+bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
+                           const Handle(Graphic3d_TextureRoot)& theTextureMap)
 {
   if (theTextureMap.IsNull())
   {
@@ -568,7 +647,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
 
   switch (theTextureMap->Type())
   {
-    case Graphic3d_TOT_CUBEMAP:
+    case Graphic3d_TypeOfTexture_CUBEMAP:
     {
       return InitCubeMap (theCtx, Handle(Graphic3d_CubeMap)::DownCast(theTextureMap),
                           0, Image_Format_RGB, false, theTextureMap->IsColorMap());
@@ -589,7 +668,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
       {
         return false;
       }
-      return Init (theCtx, *anImage, theTextureMap->Type(), theTextureMap->IsColorMap());
+      if (!Init (theCtx, *anImage, theTextureMap->Type(), theTextureMap->IsColorMap()))
+      {
+        return false;
+      }
+      if (theTextureMap->HasMipmaps())
+      {
+        GenerateMipmaps (theCtx);
+      }
+      return true;
     }
   }
 }
@@ -641,23 +728,22 @@ bool OpenGl_Texture::InitCompressed (const Handle(OpenGl_Context)& theCtx,
   myTextFormat  = aFormat.Format();
   mySizedFormat = aFormat.Internal();
   myIsTopDown = theImage.IsTopDown();
-  mySizeX = theImage.SizeX();
-  mySizeY = theImage.SizeY();
+  mySize.SetValues (theImage.SizeX(), theImage.SizeY(), 1);
   myMaxMipLevel = Max (theImage.MipMaps().Size() - 1, 0);
   if (myMaxMipLevel > 0
   && !theImage.IsCompleteMipMapSet())
   {
-    const Graphic3d_Vec2i aMipSize = computeSmallestMipMapSize (Graphic3d_Vec2i (mySizeX, mySizeY), myMaxMipLevel);
+    const Graphic3d_Vec2i aMipSize = computeSmallestMipMapSize (mySize.xy(), myMaxMipLevel);
     if (!theCtx->HasTextureBaseLevel())
     {
       myMaxMipLevel = 0;
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PERFORMANCE, 0, GL_DEBUG_SEVERITY_MEDIUM,
-                           TCollection_AsciiString ("Warning: compressed 2D texture ") + myResourceId + " " + mySizeX + "x" + mySizeY
+                           TCollection_AsciiString ("Warning: compressed 2D texture ") + myResourceId + " " + mySize.x() + "x" + mySize.y()
                            + " has smallest mipmap " + aMipSize.x() + "x" + aMipSize.y() + "; mipmaps will be ignored");
     }
     else
     {
-      Message::SendTrace (TCollection_AsciiString ("Warning: compressed 2D texture ") + myResourceId + " " + mySizeX + "x" + mySizeY
+      Message::SendTrace (TCollection_AsciiString ("Warning: compressed 2D texture ") + myResourceId + " " + mySize.x() + "x" + mySize.y()
                           + " has smallest mipmap " + aMipSize.x() + "x" + aMipSize.y());
     }
   }
@@ -762,8 +848,7 @@ bool OpenGl_Texture::Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  mySizeX = theSizeX;
-  mySizeY = theSizeY;
+  mySize.SetValues (theSizeX, theSizeY, 1);
 
   Unbind (theCtx);
   return true;
@@ -824,8 +909,7 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  mySizeX = aSizeX;
-  mySizeY = aSizeY;
+  mySize.SetValues (aSizeX, aSizeY, 1);
   Unbind (theCtx);
   return true;
 }
@@ -912,9 +996,7 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  mySizeX = aSizeXYZ.x();
-  mySizeY = aSizeXYZ.y();
-  mySizeZ = aSizeXYZ.z();
+  mySize = aSizeXYZ;
 
   Unbind (theCtx);
   return true;
@@ -940,6 +1022,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
   Handle(Image_PixMap) anImage;
   Handle(Image_CompressedPixMap) aCompImage;
   OpenGl_TextureFormat aFormat;
+  myMaxMipLevel = 0;
   if (!theCubeMap.IsNull())
   {
     theCubeMap->Reset();
@@ -997,14 +1080,9 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
       theSize   = anImage->SizeX();
       theFormat = anImage->Format();
       theToGenMipmap = theCubeMap->HasMipmaps();
-      myMaxMipLevel = theToGenMipmap ? computeUpperMipMapLevel ((Standard_Integer )theSize) : 0;
     }
 
     myIsTopDown = theCubeMap->IsTopDown();
-  }
-  else
-  {
-    myMaxMipLevel = theToGenMipmap ? computeUpperMipMapLevel ((Standard_Integer )theSize) : 0;
   }
 
   if (!aFormat.IsValid())
@@ -1036,8 +1114,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
   myTarget = GL_TEXTURE_CUBE_MAP;
   myNbSamples = 1;
-  mySizeX = (GLsizei )theSize;
-  mySizeY = (GLsizei )theSize;
+  mySize.SetValues ((GLsizei )theSize, (GLsizei )theSize, 1);
   myTextFormat  = aFormat.Format();
   mySizedFormat = aFormat.Internal();
 
@@ -1069,7 +1146,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
       }
       if (!aCompImage.IsNull())
       {
-        Graphic3d_Vec2i aMipSizeXY (mySizeX, mySizeY);
+        Graphic3d_Vec2i aMipSizeXY = mySize.xy();
         aData = aCompImage->FaceData()->Data();
         for (Standard_Integer aMipIter = 0; aMipIter <= myMaxMipLevel; ++aMipIter)
         {
@@ -1167,16 +1244,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
   if (theToGenMipmap && theCtx->arbFBO != NULL)
   {
-    theCtx->arbFBO->glGenerateMipmap (myTarget);
-    const GLenum anErr = theCtx->core11fwd->glGetError();
-    if (anErr != GL_NO_ERROR)
-    {
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                           TCollection_AsciiString ("Unable to generate mipmap of cubemap with format ")
-                           + OpenGl_TextureFormat::FormatFormat (anIntFormat)
-                           + ", error " + OpenGl_Context::FormatGlError (anErr));
-      myMaxMipLevel = 0;
-    }
+    GenerateMipmaps (theCtx);
   }
 
   Unbind (theCtx.get());
@@ -1250,14 +1318,14 @@ Standard_Size OpenGl_Texture::EstimatedDataSize() const
     return 0;
   }
 
-  Standard_Size aSize = PixelSizeOfPixelFormat (mySizedFormat) * mySizeX * myNbSamples;
-  if (mySizeY != 0)
+  Standard_Size aSize = PixelSizeOfPixelFormat (mySizedFormat) * mySize.x() * myNbSamples;
+  if (mySize.y() != 0)
   {
-    aSize *= Standard_Size(mySizeY);
+    aSize *= Standard_Size(mySize.y());
   }
-  if (mySizeZ != 0)
+  if (mySize.z() != 0)
   {
-    aSize *= Standard_Size(mySizeZ);
+    aSize *= Standard_Size(mySize.z());
   }
   if (myTarget == GL_TEXTURE_CUBE_MAP)
   {
@@ -1294,7 +1362,7 @@ bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
   }
 
   GLenum aTarget = myTarget;
-  Graphic3d_Vec2i aSize (mySizeX, mySizeY);
+  Graphic3d_Vec2i aSize = mySize.xy();
   if (myTarget == GL_TEXTURE_CUBE_MAP)
   {
     aTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X + theCubeSide;

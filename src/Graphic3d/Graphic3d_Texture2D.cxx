@@ -16,6 +16,7 @@
 
 #include <Graphic3d_Texture2D.hxx>
 
+#include <Graphic3d_TextureParams.hxx>
 #include <Standard_OutOfRange.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Texture2D,Graphic3d_TextureMap)
@@ -50,11 +51,44 @@ static const char *NameOfTexture2d_to_FileName[] =
 // function : Graphic3d_Texture2D
 // purpose  :
 // =======================================================================
+Graphic3d_Texture2D::Graphic3d_Texture2D (const TCollection_AsciiString& theFileName)
+: Graphic3d_TextureMap (theFileName, Graphic3d_TypeOfTexture_2D),
+  myName (Graphic3d_NOT_2D_UNKNOWN)
+{
+  myHasMipmaps = true;
+  myParams->SetModulate (true);
+  myParams->SetRepeat   (true);
+  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
+}
+
+// =======================================================================
+// function : Graphic3d_Texture2D
+// purpose  :
+// =======================================================================
 Graphic3d_Texture2D::Graphic3d_Texture2D (const TCollection_AsciiString& theFileName,
                                           const Graphic3d_TypeOfTexture  theType)
 : Graphic3d_TextureMap (theFileName, theType),
   myName (Graphic3d_NOT_2D_UNKNOWN)
 {
+  //
+}
+
+// =======================================================================
+// function : Graphic3d_Texture2D
+// purpose  :
+// =======================================================================
+Graphic3d_Texture2D::Graphic3d_Texture2D (const Graphic3d_NameOfTexture2D theNOT)
+: Graphic3d_TextureMap (NameOfTexture2d_to_FileName[theNOT], Graphic3d_TypeOfTexture_2D),
+  myName (theNOT)
+{
+  myPath.SetTrek (Graphic3d_TextureRoot::TexturesFolder());
+  myTexId = TCollection_AsciiString ("Graphic3d_Texture2D_")
+          + NameOfTexture2d_to_FileName[theNOT];
+
+  myHasMipmaps = true;
+  myParams->SetModulate (true);
+  myParams->SetRepeat   (true);
+  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
 }
 
 // =======================================================================
@@ -75,11 +109,26 @@ Graphic3d_Texture2D::Graphic3d_Texture2D (const Graphic3d_NameOfTexture2D theNOT
 // function : Graphic3d_Texture2D
 // purpose  :
 // =======================================================================
+Graphic3d_Texture2D::Graphic3d_Texture2D (const Handle(Image_PixMap)& thePixMap)
+: Graphic3d_TextureMap (thePixMap, Graphic3d_TypeOfTexture_2D),
+  myName (Graphic3d_NOT_2D_UNKNOWN)
+{
+  myHasMipmaps = true;
+  myParams->SetModulate (true);
+  myParams->SetRepeat   (true);
+  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
+}
+
+// =======================================================================
+// function : Graphic3d_Texture2D
+// purpose  :
+// =======================================================================
 Graphic3d_Texture2D::Graphic3d_Texture2D (const Handle(Image_PixMap)&    thePixMap,
                                           const Graphic3d_TypeOfTexture  theType)
 : Graphic3d_TextureMap (thePixMap, theType),
   myName (Graphic3d_NOT_2D_UNKNOWN)
 {
+  //
 }
 
 // =======================================================================

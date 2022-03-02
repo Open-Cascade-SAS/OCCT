@@ -343,10 +343,8 @@ void OpenGl_View::initTextureEnv (const Handle(OpenGl_Context)& theContext)
   }
 
   Handle(OpenGl_Texture) aTextureEnv = new OpenGl_Texture (myTextureEnvData->GetId(), myTextureEnvData->GetParams());
-  if (Handle(Image_PixMap) anImage = myTextureEnvData->GetImage (theContext->SupportedTextureFormats()))
-  {
-    aTextureEnv->Init (theContext, *anImage, myTextureEnvData->Type(), true);
-  }
+  aTextureEnv->Init (theContext, myTextureEnvData);
+
   myTextureEnv = new OpenGl_TextureSet (aTextureEnv);
   myTextureEnv->ChangeTextureSetBits() = Graphic3d_TextureSetBits_BaseColor;
 }
@@ -1391,7 +1389,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
           aParams->SetTextureUnit (aCtx->PBREnvLUTTexUnit());
           anEnvLUT = new OpenGl_Texture(THE_SHARED_ENV_LUT_KEY, aParams);
           if (!aTexFormat.IsValid()
-           || !anEnvLUT->Init (aCtx, aTexFormat, Graphic3d_Vec2i((Standard_Integer)Textures_EnvLUTSize), Graphic3d_TOT_2D, aPixMap.get()))
+           || !anEnvLUT->Init (aCtx, aTexFormat, Graphic3d_Vec2i((Standard_Integer)Textures_EnvLUTSize), Graphic3d_TypeOfTexture_2D, aPixMap.get()))
           {
             aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, "Failed allocation of LUT for PBR");
             anEnvLUT.Nullify();

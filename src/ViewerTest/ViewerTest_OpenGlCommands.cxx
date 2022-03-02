@@ -411,6 +411,15 @@ static Standard_Integer VShaderProg (Draw_Interpretor& ,
       }
       aProgram->SetHeader (aHeader);
     }
+    else if (!aProgram.IsNull()
+          && (anArg == "-defaultsampler"
+           || anArg == "-defampler"
+           || anArg == "-nodefaultsampler"
+           || anArg == "-nodefsampler"))
+    {
+      bool toUseDefSampler = Draw::ParseOnOffNoIterator (theArgNb, theArgVec, anArgIter);
+      aProgram->SetDefaultSampler (toUseDefSampler);
+    }
     else if (!anArg.StartsWith ("-")
           && GetMapOfAIS().IsBound2 (theArgVec[anArgIter]))
     {
@@ -1187,6 +1196,7 @@ vshader name -vert VertexShader -frag FragmentShader [-geom GeometryShader]
         [-header VersionHeader]
         [-tessControl TessControlShader -tessEval TessEvaluationShader]
         [-uniform Name FloatValue]
+        [-defaultSampler {0|1}]=1
 Assign custom GLSL program to presentation aspects.
 )" /* [vshader] */);
 

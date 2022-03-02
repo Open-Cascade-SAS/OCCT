@@ -290,7 +290,7 @@ bool OpenGl_PBREnvironment::initTextures (const Handle(OpenGl_Context)& theCtx)
   // NVIDIA's driver didn't work properly with 3 channel texture for diffuse SH coefficients so that alpha channel has been added
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init (theCtx,
                                                       OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBAF, false),
-                                                      Graphic3d_Vec2i (9, 1), Graphic3d_TOT_2D))
+                                                      Graphic3d_Vec2i (9, 1), Graphic3d_TypeOfTexture_2D))
   {
     Message::SendFail() << "OpenGl_PBREnvironment, DiffuseSH texture creation failed";
     return false;
@@ -305,7 +305,7 @@ bool OpenGl_PBREnvironment::initTextures (const Handle(OpenGl_Context)& theCtx)
 
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseFallback].Init (theCtx,
                                                             OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBA, false),
-                                                            Graphic3d_Vec2i (10, 4), Graphic3d_TOT_2D))
+                                                            Graphic3d_Vec2i (10, 4), Graphic3d_TypeOfTexture_2D))
   {
     Message::SendFail() << "OpenGl_PBREnvironment, DiffuseFallback texture creation failed";
     return false;
@@ -432,7 +432,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap (const Handle(OpenGl_Context)& the
   {
     if (!myIBLMaps[OpenGl_TypeOfIBLMap_DiffuseSH].Init (theCtx,
                                                         OpenGl_TextureFormat::FindFormat (theCtx, Image_Format_RGBAF, false),
-                                                        Graphic3d_Vec2i (9, 1), Graphic3d_TOT_2D, &anImageF))
+                                                        Graphic3d_Vec2i (9, 1), Graphic3d_TypeOfTexture_2D, &anImageF))
     {
       Message::SendFail() << "OpenGl_PBREnvironment, DiffuseSH texture update failed";
       return false;

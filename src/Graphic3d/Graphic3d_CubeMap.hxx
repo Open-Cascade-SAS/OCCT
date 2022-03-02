@@ -26,24 +26,12 @@ class Graphic3d_CubeMap : public Graphic3d_TextureMap
 public:
 
   //! Constructor defining loading cubemap from file.
-  Graphic3d_CubeMap (const TCollection_AsciiString& theFileName,
-                     Standard_Boolean               theToGenerateMipmaps = Standard_False) :
-    Graphic3d_TextureMap (theFileName, Graphic3d_TOT_CUBEMAP),
-    myCurrentSide  (Graphic3d_CMS_POS_X),
-    myEndIsReached (false),
-    myZIsInverted  (false),
-    myHasMipmaps   (theToGenerateMipmaps)
-  {}
+  Standard_EXPORT Graphic3d_CubeMap (const TCollection_AsciiString& theFileName,
+                                     Standard_Boolean               theToGenerateMipmaps = Standard_False);
 
   //! Constructor defining direct cubemap initialization from PixMap.
-  Graphic3d_CubeMap (const Handle(Image_PixMap)& thePixmap = Handle(Image_PixMap)(),
-                     Standard_Boolean            theToGenerateMipmaps = Standard_False) :
-    Graphic3d_TextureMap (thePixmap, Graphic3d_TOT_CUBEMAP),
-    myCurrentSide  (Graphic3d_CMS_POS_X),
-    myEndIsReached (false),
-    myZIsInverted  (false),
-    myHasMipmaps   (theToGenerateMipmaps)
-  {}
+  Standard_EXPORT Graphic3d_CubeMap (const Handle(Image_PixMap)& thePixmap = Handle(Image_PixMap)(),
+                                     Standard_Boolean            theToGenerateMipmaps = Standard_False);
 
   //! Returns whether the iterator has reached the end (true if it hasn't). 
   Standard_Boolean More() const { return !myEndIsReached; }
@@ -100,14 +88,13 @@ public:
   }
 
   //! Empty destructor.
-  ~Graphic3d_CubeMap() {}
+  Standard_EXPORT virtual ~Graphic3d_CubeMap();
 
 protected:
 
   Graphic3d_CubeMapSide myCurrentSide;  //!< Iterator state
   Standard_Boolean      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
   Standard_Boolean      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
-  Standard_Boolean      myHasMipmaps;   //!< Indicates whether mipmaps of cubemap will be generated or not
 
 };
 

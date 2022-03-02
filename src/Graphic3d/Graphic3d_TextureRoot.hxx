@@ -113,6 +113,12 @@ public:
   //! Set flag indicating color nature of values within the texture.
   void SetColorMap (Standard_Boolean theIsColor) { myIsColorMap = theIsColor; }
 
+  //! Returns whether mipmaps should be generated or not.
+  Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
+
+  //! Sets whether to generate mipmaps or not.
+  void SetMipmapsGeneration (Standard_Boolean theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
+
   //! Returns whether row's memory layout is top-down.
   Standard_Boolean IsTopDown() const { return myIsTopDown; }
 
@@ -148,7 +154,7 @@ protected:
   Graphic3d_TypeOfTexture         myType;       //!< texture type
   Standard_Boolean                myIsColorMap; //!< flag indicating color nature of values within the texture
   Standard_Boolean                myIsTopDown;  //!< Stores rows's memory layout
-
+  Standard_Boolean                myHasMipmaps; //!< Indicates whether mipmaps should be generated or not
 
 };
 

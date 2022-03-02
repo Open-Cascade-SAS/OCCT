@@ -53,11 +53,17 @@ public:
   //! @return target to which the texture is bound (GL_TEXTURE_1D, GL_TEXTURE_2D)
   unsigned int GetTarget() const { return myTarget; }
 
-  //! @return texture width (0 LOD)
-  GLsizei SizeX() const { return mySizeX; }
+  //! Return texture dimensions (0 LOD)
+  const Graphic3d_Vec3i& Size() const { return mySize; }
 
-  //! @return texture height (0 LOD)
-  GLsizei SizeY() const { return mySizeY; }
+  //! Return texture width (0 LOD)
+  Standard_Integer SizeX() const { return mySize.x(); }
+
+  //! Return texture height (0 LOD)
+  Standard_Integer SizeY() const { return mySize.y(); }
+
+  //! Return texture depth (0 LOD)
+  Standard_Integer SizeZ() const { return mySize.z(); }
 
   //! @return texture ID
   unsigned int TextureId() const { return myTextureId; }
@@ -140,15 +146,30 @@ public:
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
                              const OpenGl_TextureFormat&   theFormat,
-                             const Graphic3d_Vec2i&        theSizeXY,
+                             const Graphic3d_Vec3i&        theSizeXYZ,
                              const Graphic3d_TypeOfTexture theType,
                              const Image_PixMap*           theImage = NULL);
+
+  //! Initialize the 2D texture with specified format, size and texture type.
+  //! If theImage is empty the texture data will contain trash.
+  //! Notice that texture will be unbound after this call.
+  bool Init (const Handle(OpenGl_Context)& theCtx,
+             const OpenGl_TextureFormat&   theFormat,
+             const Graphic3d_Vec2i&        theSizeXY,
+             const Graphic3d_TypeOfTexture theType,
+             const Image_PixMap*           theImage = NULL)
+  {
+    return Init (theCtx, theFormat, Graphic3d_Vec3i (theSizeXY, 1), theType, theImage);
+  }
 
   //! Initialize the texture with Graphic3d_TextureMap.
   //! It is an universal way to initialize.
   //! Suitable initialization method will be chosen.
-  Standard_EXPORT bool Init (const Handle(OpenGl_Context)&       theCtx,
-                             const Handle(Graphic3d_TextureMap)& theTextureMap);
+  Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
+                             const Handle(Graphic3d_TextureRoot)& theTextureMap);
+
+  //! Generate mipmaps.
+  Standard_EXPORT bool GenerateMipmaps (const Handle(OpenGl_Context)& theCtx);
 
   //! Initialize the texture with Image_CompressedPixMap.
   Standard_EXPORT bool InitCompressed (const Handle(OpenGl_Context)& theCtx,
@@ -302,9 +323,7 @@ protected:
   Standard_Size    myRevision;   //!< revision of associated data source
   unsigned int     myTextureId;  //!< GL resource ID
   unsigned int     myTarget;     //!< GL_TEXTURE_1D/GL_TEXTURE_2D/GL_TEXTURE_3D
-  Standard_Integer mySizeX;      //!< texture width
-  Standard_Integer mySizeY;      //!< texture height
-  Standard_Integer mySizeZ;      //!< texture depth
+  Graphic3d_Vec3i  mySize;       //!< texture width x height x depth
   unsigned int     myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
   Standard_Integer mySizedFormat;//!< internal (sized) texture format
   Standard_Integer myNbSamples;  //!< number of MSAA samples

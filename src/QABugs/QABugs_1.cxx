@@ -508,7 +508,7 @@ static Standard_Integer OCC30182 (Draw_Interpretor& , Standard_Integer theNbArgs
   const Handle(Graphic3d_AspectFillArea3d)& anAspect = aPrs->Attributes()->ShadingAspect()->Aspect();
   anAspect->SetShadingModel (Graphic3d_TypeOfShadingModel_Unlit);
   anAspect->SetTextureMapOn (true);
-  anAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (anImage));
+  anAspect->SetTextureMap (new Graphic3d_Texture2D (anImage));
   if (anImage->IsTopDown())
   {
     anAspect->TextureMap()->GetParams()->SetTranslation(Graphic3d_Vec2 (0.0f, -1.0f));

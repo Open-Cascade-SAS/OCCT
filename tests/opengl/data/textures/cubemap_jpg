@@ -17,8 +17,6 @@ vinit v -w 512 -h 512
 vcamera -fovy 100
 if { [checkplatform -windows] && [vdriver -default] == "TKOpenGles" } {
   # Mipmaps cannot be generated for GL_SRGB8 texture format
-  puts "TODO OCC30807 ALL: TKOpenGl | Type: Error"
-  puts "TODO OCC30807 ALL: Unable to generate mipmap of cubemap"
 }
 
 vbackground -cubemap $aCubeMap_posx $aCubeMap_negx $aCubeMap_posy $aCubeMap_negy $aCubeMap_posz $aCubeMap_negz

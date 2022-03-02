@@ -70,9 +70,10 @@ class MeshVS_ImageTexture2D : public Graphic3d_Texture2D
 {
 public:
 
-  MeshVS_ImageTexture2D (const Handle(Image_PixMap)& theImg) : Graphic3d_Texture2D (theImg, Graphic3d_TOT_2D)
+  MeshVS_ImageTexture2D (const Handle(Image_PixMap)& theImg)
+  : Graphic3d_Texture2D (theImg, Graphic3d_TypeOfTexture_2D)
   {
-    myParams->SetModulate (Standard_True);
+    myParams->SetModulate (true);
     myParams->SetFilter   (Graphic3d_TOTF_BILINEAR);
   }
 
@@ -80,9 +81,6 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(MeshVS_ImageTexture2D,Graphic3d_Texture2D)
 };
-
-DEFINE_STANDARD_HANDLE    (MeshVS_ImageTexture2D, Graphic3d_Texture2D)
-
 
 //================================================================
 // Function : getNearestPow2

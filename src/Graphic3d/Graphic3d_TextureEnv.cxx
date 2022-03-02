@@ -42,9 +42,10 @@ static const char *NameOfTextureEnv_to_FileName[] =
 // purpose  :
 // =======================================================================
 Graphic3d_TextureEnv::Graphic3d_TextureEnv (const TCollection_AsciiString& theFileName)
-: Graphic3d_TextureRoot (theFileName, Graphic3d_TOT_2D_MIPMAP),
+: Graphic3d_TextureRoot (theFileName, Graphic3d_TypeOfTexture_2D),
   myName (Graphic3d_NOT_ENV_UNKNOWN)
 {
+  myHasMipmaps = true;
   myParams->SetFilter  (Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode (Graphic3d_TOTM_SPHERE,
                         Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),
@@ -56,9 +57,10 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv (const TCollection_AsciiString& theFi
 // purpose  :
 // =======================================================================
 Graphic3d_TextureEnv::Graphic3d_TextureEnv (const Graphic3d_NameOfTextureEnv theNOT)
-: Graphic3d_TextureRoot (NameOfTextureEnv_to_FileName[theNOT], Graphic3d_TOT_2D_MIPMAP),
+: Graphic3d_TextureRoot (NameOfTextureEnv_to_FileName[theNOT], Graphic3d_TypeOfTexture_2D),
   myName (theNOT)
 {
+  myHasMipmaps = true;
   myPath.SetTrek (Graphic3d_TextureRoot::TexturesFolder());
   myTexId = TCollection_AsciiString ("Graphic3d_TextureEnv_")
           + NameOfTextureEnv_to_FileName[theNOT];
@@ -74,9 +76,10 @@ Graphic3d_TextureEnv::Graphic3d_TextureEnv (const Graphic3d_NameOfTextureEnv the
 // purpose  :
 // =======================================================================
 Graphic3d_TextureEnv::Graphic3d_TextureEnv (const Handle(Image_PixMap)& thePixMap)
-: Graphic3d_TextureRoot (thePixMap, Graphic3d_TOT_2D_MIPMAP),
+: Graphic3d_TextureRoot (thePixMap, Graphic3d_TypeOfTexture_2D),
   myName (Graphic3d_NOT_ENV_UNKNOWN)
 {
+  myHasMipmaps = true;
   myParams->SetFilter  (Graphic3d_TOTF_TRILINEAR);
   myParams->SetGenMode (Graphic3d_TOTM_SPHERE,
                         Graphic3d_Vec4 (1.0f, 0.0f, 0.0f, 0.0f),

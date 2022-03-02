@@ -378,7 +378,11 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
       theCtx->core11fwd->glEnable (GL_TEXTURE_2D);
       break;
     }
-    default: break;
+    case GL_TEXTURE_3D:
+    default:
+    {
+      break;
+    }
   }
 }
 
@@ -428,6 +432,10 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
       theCtx->core11fwd->glDisable (GL_TEXTURE_2D);
       break;
     }
-    default: break;
+    case GL_TEXTURE_3D:
+    default:
+    {
+      break;
+    }
   }
 }

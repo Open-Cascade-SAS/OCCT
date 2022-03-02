@@ -48,7 +48,8 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
+#include <Graphic3d_Texture3D.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_MediaTextureSet.hxx>
 #include <Image_AlienPixMap.hxx>
@@ -4145,13 +4146,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     return 1;
   }
 
-  int  toModulate     = -1;
-  int  toSetSRgb      = -1;
-  bool toSetFilter    = false;
-  bool toSetAniso     = false;
-  bool toSetTrsfAngle = false;
-  bool toSetTrsfTrans = false;
-  bool toSetTrsfScale = false;
+  int toModulate = -1, toSetSRgb = -1;
+  bool toSetFilter = false, toSetAniso = false, toSetTrsfAngle = false, toSetTrsfTrans = false, toSetTrsfScale = false;
   Standard_ShortReal aTrsfRotAngle = 0.0f;
   Graphic3d_Vec2 aTrsfTrans (0.0f, 0.0f);
   Graphic3d_Vec2 aTrsfScale (1.0f, 1.0f);
@@ -4161,12 +4157,8 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   Handle(AIS_InteractiveObject) aTexturedIO;
   Handle(AIS_Shape) aTexturedShape;
   Handle(Graphic3d_TextureSet) aTextureSetOld;
-  NCollection_Vector<Handle(Graphic3d_Texture2Dmanual)> aTextureVecNew;
-  bool toSetGenRepeat = false;
-  bool toSetGenScale  = false;
-  bool toSetGenOrigin = false;
-  bool toSetImage     = false;
-  bool toComputeUV    = false;
+  NCollection_Vector<Handle(Graphic3d_TextureMap)> aTextureVecNew;
+  bool toSetGenRepeat = false, toSetGenScale = false, toSetGenOrigin = false, toSetImage = false, toComputeUV = false;
 
   const TCollection_AsciiString aCommandName (theArgVec[0]);
   bool toSetDefaults = aCommandName == "vtexdefault";
@@ -4442,6 +4434,38 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       aTextureSetOld.Nullify();
     }
     else if (aCommandName == "vtexture"
+          && aTextureVecNew.IsEmpty()
+          && aNameCase == "-3d")
+    {
+      TColStd_SequenceOfAsciiString aSlicesSeq;
+      for (; anArgIter + 1 < theArgsNb; ++anArgIter)
+      {
+        TCollection_AsciiString aSlicePath (theArgVec[anArgIter + 1]);
+        if (aSlicePath.StartsWith ("-"))
+        {
+          break;
+        }
+
+        aSlicesSeq.Append (aSlicePath);
+      }
+
+      if (aSlicesSeq.Size() < 2)
+      {
+        Message::SendFail() << "Syntax error at '" << aNameCase << "'";
+        return 1;
+      }
+      NCollection_Array1<TCollection_AsciiString> aSlices;
+      aSlices.Resize (0, aSlicesSeq.Size() - 1, false);
+      Standard_Integer aSliceIndex = 0;
+      for (const TCollection_AsciiString& aSliceIter : aSlicesSeq)
+      {
+        aSlices[aSliceIndex++] = aSliceIter;
+      }
+
+      toSetImage = true;
+      aTextureVecNew.SetValue (0, new Graphic3d_Texture3D (aSlices));
+    }
+    else if (aCommandName == "vtexture"
           && (aTextureVecNew.IsEmpty()
            || aNameCase.StartsWith ("-tex")))
     {
@@ -4483,7 +4507,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           Message::SendFail() << "Syntax error: texture with ID " << aValue << " is undefined!";
           return 1;
         }
-        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2Dmanual (Graphic3d_NameOfTexture2D (aValue)));
+        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2D (Graphic3d_NameOfTexture2D (aValue)));
       }
       else if (aTexName == "?")
       {
@@ -4507,11 +4531,11 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
           Message::SendFail() << "Syntax error: non-existing image file has been specified '" << aTexName << "'.";
           return 1;
         }
-        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2Dmanual (aTexName));
+        aTextureVecNew.SetValue (aTexIndex, new Graphic3d_Texture2D (aTexName));
       }
       else
       {
-        aTextureVecNew.SetValue (aTexIndex, Handle(Graphic3d_Texture2Dmanual)());
+        aTextureVecNew.SetValue (aTexIndex, Handle(Graphic3d_TextureMap)());
       }
 
       if (aTextureVecNew.Value (aTexIndex))
@@ -4537,7 +4561,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       aTextureSetNew = new Graphic3d_TextureSet (aTextureVecNew.Size());
       for (Standard_Integer aTexIter = 0; aTexIter < aTextureSetNew->Size(); ++aTexIter)
       {
-        Handle(Graphic3d_Texture2Dmanual)& aTextureNew = aTextureVecNew.ChangeValue (aTexIter);
+        Handle(Graphic3d_TextureMap)& aTextureNew = aTextureVecNew.ChangeValue (aTexIter);
         Handle(Graphic3d_TextureRoot) aTextureOld;
         if (!aTextureSetOld.IsNull()
           && aTexIter < aTextureSetOld->Size())
@@ -4549,17 +4573,21 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
          && !aTextureNew.IsNull())
         {
           *aTextureNew->GetParams() = *aTextureOld->GetParams();
-          if (Handle(Graphic3d_Texture2Dmanual) anOldManualTex = Handle(Graphic3d_Texture2Dmanual)::DownCast (aTextureOld))
+
+          Handle(Graphic3d_Texture2D) aTex2dNew = Handle(Graphic3d_Texture2D)::DownCast (aTextureNew);
+          Handle(Graphic3d_Texture2D) aTex2dOld = Handle(Graphic3d_Texture2D)::DownCast (aTextureOld);
+          if (!aTex2dOld.IsNull()
+           && !aTex2dNew.IsNull())
           {
             TCollection_AsciiString aFilePathOld, aFilePathNew;
             aTextureOld->Path().SystemName (aFilePathOld);
             aTextureNew->Path().SystemName (aFilePathNew);
-            if (aTextureNew->Name() == anOldManualTex->Name()
+            if (aTex2dNew->Name() == aTex2dOld->Name()
              && aFilePathOld == aFilePathNew
-             && (!aFilePathNew.IsEmpty() || aTextureNew->Name() != Graphic3d_NOT_2D_UNKNOWN))
+             && (!aFilePathNew.IsEmpty() || aTex2dNew->Name() != Graphic3d_NOT_2D_UNKNOWN))
             {
               --aNbChanged;
-              aTextureNew = anOldManualTex;
+              aTextureNew = aTex2dOld;
             }
           }
         }
@@ -6816,6 +6844,7 @@ Sets default deflection coefficient (0.0008) that defines the quality of the sha
   addCmd ("vtexture", VTexture, /* [vtexture] */ R"(
 vtexture [-noupdate|-update] name [ImageFile|IdOfTexture|off]
          [-tex0 Image0] [-tex1 Image1] [...]
+         [-3d Image0 Image1 ... ImageN]
          [-origin {u v|off}] [-scale {u v|off}] [-repeat {u v|off}]
          [-trsfTrans du dv] [-trsfScale su sv] [-trsfAngle Angle]
          [-modulate {on|off}] [-srgb {on|off}]=on
@@ -6836,6 +6865,7 @@ The options are:
  -setFilter Setup texture filter
  -setAnisoFilter Setup anisotropic filter for texture with mip-levels
  -default   Sets texture mapping default parameters
+ -3d        Load 3D texture from the list of 2D image files
 )" /* [vtexture] */);
 
   addCmd ("vtexscale", VTexture, /* [vtexscale] */ R"(

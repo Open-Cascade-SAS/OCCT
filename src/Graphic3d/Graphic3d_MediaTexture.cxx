@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MediaTexture, Graphic3d_Texture2D)
 // ================================================================
 Graphic3d_MediaTexture::Graphic3d_MediaTexture (const Handle(Standard_HMutex)& theMutex,
                                                 Standard_Integer thePlane)
-: Graphic3d_Texture2D ("", Graphic3d_TOT_2D),
+: Graphic3d_Texture2D ("", Graphic3d_TypeOfTexture_2D),
   myMutex (theMutex),
   myPlane (thePlane)
 {

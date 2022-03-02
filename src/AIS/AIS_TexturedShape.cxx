@@ -22,7 +22,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_StructureManager.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Graphic3d_Texture2D.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -278,17 +278,17 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
     TCollection_AsciiString aTextureDesc;
     if (!myTexturePixMap.IsNull())
     {
-      myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
+      myTexture = new Graphic3d_Texture2D (myTexturePixMap);
       aTextureDesc = " (custom image)";
     }
     else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
     {
-      myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
+      myTexture = new Graphic3d_Texture2D (myPredefTexture);
       aTextureDesc = TCollection_AsciiString(" (predefined texture ") + myTexture->GetId() + ")";
     }
     else
     {
-      myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
+      myTexture = new Graphic3d_Texture2D (myTextureFile.ToCString());
       aTextureDesc = TCollection_AsciiString(" (") + myTextureFile + ")";
     }
 
