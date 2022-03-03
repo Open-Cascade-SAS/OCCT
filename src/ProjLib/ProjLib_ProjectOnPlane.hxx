@@ -199,9 +199,12 @@ public:
 
 protected:
 
+  void GetTrimmedResult(const Handle(Geom_Curve)& theProjCurve);
 
+  Standard_Boolean BuildParabolaByApex(Handle(Geom_Curve)& theGeomParabolaPtr);
+  Standard_Boolean BuildHyperbolaByApex(Handle(Geom_Curve)& theGeomParabolaPtr);
 
-
+  void BuildByApprox(const Standard_Real theLimitParameter);
 
 private:
 
