@@ -805,7 +805,9 @@ Bnd_Box OpenGl_View::MinMaxValues (const Standard_Boolean theToIncludeAuxiliary)
   Bnd_Box aBox = base_type::MinMaxValues (theToIncludeAuxiliary);
 
   // make sure that stats overlay isn't clamped on hardware with unavailable depth clamping
-  if (myRenderParams.ToShowStats && !myWorkspace->GetGlContext()->arbDepthClamp)
+  if (theToIncludeAuxiliary
+  &&  myRenderParams.ToShowStats
+  && !myWorkspace->GetGlContext()->arbDepthClamp)
   {
     Bnd_Box aStatsBox (gp_Pnt (float(myWindow->Width() / 2.0), float(myWindow->Height() / 2.0), 0.0),
                        gp_Pnt (float(myWindow->Width() / 2.0), float(myWindow->Height() / 2.0), 0.0));
