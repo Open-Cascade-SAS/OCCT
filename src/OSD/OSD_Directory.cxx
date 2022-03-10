@@ -114,6 +114,7 @@ void OSD_Directory::Build (const OSD_Protection& theProtect)
     _osd_wnt_set_error (myError, OSD_WDirectory);
   }
 #else
+  errno = 0;
   TCollection_AsciiString aBuffer;
   mode_t anInternalProt = (mode_t )theProtect.Internal();
   myPath.SystemName (aBuffer);

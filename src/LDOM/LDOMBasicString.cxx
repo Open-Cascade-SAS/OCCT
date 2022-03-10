@@ -184,6 +184,7 @@ Standard_Boolean LDOMBasicString::equals (const LDOMBasicString& anOther) const
     case LDOM_AsciiDocClear:
     case LDOM_AsciiHashed:
       {
+        errno = 0;
         long aLongOther = strtol ((const char *) anOther.myVal.ptr, NULL, 10);
         return (errno == 0 && aLongOther == long(myVal.i));
       }
@@ -197,6 +198,7 @@ Standard_Boolean LDOMBasicString::equals (const LDOMBasicString& anOther) const
     {
     case LDOM_Integer:
       {
+        errno = 0;
         long aLong = strtol ((const char *) myVal.ptr, NULL, 10);
         return (errno == 0 && aLong == long(anOther.myVal.i));
       }
@@ -273,6 +275,7 @@ LDOMBasicString::operator TCollection_ExtendedString () const
       buf[1] = ptr[1];
       buf[2] = ptr[2];
       buf[3] = ptr[3];
+      errno = 0;
       aResult[j++] = Standard_ExtCharacter (strtol (&buf[0], NULL, 16));
       if (errno) {
         delete [] aResult;
@@ -306,6 +309,7 @@ Standard_Boolean LDOMBasicString::GetInteger (Standard_Integer& aResult) const
   case LDOM_AsciiHashed:
     {
       char * ptr;
+      errno = 0;
       long aValue = strtol ((const char *)myVal.ptr, &ptr, 10);
       if (ptr == myVal.ptr || errno == ERANGE || errno == EINVAL)
         return Standard_False;
