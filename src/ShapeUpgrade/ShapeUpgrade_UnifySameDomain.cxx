@@ -23,6 +23,7 @@
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_Circle.hxx>
 #include <GCE2d_MakeLine.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
@@ -1601,9 +1602,6 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
     if (isFound)
       continue;
     
-    Standard_Real aFirst, aLast;
-    Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface (aFirstEdge, aFace, aFirst, aLast);
-
     aFaceSeq.Append (aFace);
   }
   
@@ -1648,6 +1646,9 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
 
       if (aPCurveSeq.IsEmpty()) {
         Handle(Geom2d_Curve) aCopyPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
+        if (aCopyPCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+          aCopyPCurve = (Handle(Geom2d_TrimmedCurve)::DownCast(aCopyPCurve))->BasisCurve();
+        
         aPCurveSeq.Append(aCopyPCurve);
         aFirstsSeq.Append(aFirst);
         aLastsSeq.Append(aLast);
@@ -1722,6 +1723,9 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
       else
       {
         Handle(Geom2d_Curve) aCopyPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
+        if (aCopyPCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+          aCopyPCurve = (Handle(Geom2d_TrimmedCurve)::DownCast(aCopyPCurve))->BasisCurve();
+        
         aPCurveSeq.Append(aCopyPCurve);
         aFirstsSeq.Append(aFirst);
         aLastsSeq.Append(aLast);
@@ -1842,57 +1846,53 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const TopTools_SequenceOfShape& 
     }
   }
 
-  //Reparametrize 3d curve if needed
+  //Reparametrize pcurves if needed
   if (!ResPCurves.IsEmpty())
   {
-    if (Abs (aFirst3d - ResFirsts(1)) > aMaxTol ||
-        Abs (aLast3d  - ResLasts(1))  > aMaxTol)
+    for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
     {
-      GeomAdaptor_Curve aGAcurve (aCurve);
-      GeomAbs_CurveType aType = aGAcurve.GetType();
-      if (aType == GeomAbs_Line)
+      if (Abs (aFirst3d - ResFirsts(ii)) > aMaxTol ||
+          Abs (aLast3d  - ResLasts(ii))  > aMaxTol)
       {
-        gp_Lin aLin = aGAcurve.Line();
-        gp_Dir aDir = aLin.Direction();
-        gp_Pnt aPnt = aGAcurve.Value (aFirst3d);
-        gp_Vec anOffset = -aDir;
-        anOffset *= ResFirsts(1);
-        aPnt.Translate (anOffset);
-        Handle(Geom_Line) aLine = new Geom_Line (aPnt, aDir);
-        aBuilder.UpdateEdge (theEdge, aLine, aTolEdge);
-        aBuilder.Range(theEdge, ResFirsts(1), ResLasts(1));
-      }
-      else if (aType == GeomAbs_Circle)
-      {
-        gp_Circ aCirc = aGAcurve.Circle();
-        Standard_Real aRadius = aCirc.Radius();
-        gp_Ax2 aPosition = aCirc.Position();
-        gp_Ax1 anAxis = aPosition.Axis();
-        Standard_Real anOffset = aFirst3d - ResFirsts(1);
-        aPosition.Rotate (anAxis, anOffset);
-        Handle(Geom_Circle) aCircle = new Geom_Circle (aPosition, aRadius);
-        aBuilder.UpdateEdge (theEdge, aCircle, aTolEdge);
-        aBuilder.Range(theEdge, ResFirsts(1), ResLasts(1));
-      }
-      else //general case
-      {
-        for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
+        Geom2dAdaptor_Curve aGAcurve (ResPCurves(ii));
+        GeomAbs_CurveType aType = aGAcurve.GetType();
+        if (aType == GeomAbs_Line)
         {
-          if (Abs (aFirst3d - ResFirsts(ii)) > Precision::Confusion() ||
-              Abs (aLast3d  - ResLasts(ii))  > Precision::Confusion())
-          {
-            Handle(Geom2d_TrimmedCurve) aTrPCurve =
-              new Geom2d_TrimmedCurve (ResPCurves(ii), ResFirsts(ii),  ResLasts(ii));
-            Handle(Geom2d_BSplineCurve) aBSplinePCurve = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
-            TColStd_Array1OfReal aKnots (1, aBSplinePCurve->NbKnots());
-            aBSplinePCurve->Knots (aKnots);
-            BSplCLib::Reparametrize (aFirst3d, aLast3d, aKnots);
-            aBSplinePCurve->SetKnots (aKnots);
-            ResPCurves(ii) = aBSplinePCurve;
-          }
+          gp_Lin2d aLin2d = aGAcurve.Line();
+          gp_Dir2d aDir2d = aLin2d.Direction();
+          gp_Pnt2d aPnt2d = aGAcurve.Value(ResFirsts(ii));
+          gp_Vec2d anOffset = -aDir2d;
+          anOffset *= aFirst3d;
+          aPnt2d.Translate (anOffset);
+          Handle(Geom2d_Line) aNewLine2d = new Geom2d_Line (aPnt2d, aDir2d);
+          ResPCurves(ii) = aNewLine2d;
         }
-      }
-    }
+        else if (aType == GeomAbs_Circle)
+        {
+          gp_Circ2d aCirc2d = aGAcurve.Circle();
+          Standard_Real aRadius = aCirc2d.Radius();
+          gp_Ax22d aPosition = aCirc2d.Position();
+          gp_Pnt2d aLocation = aCirc2d.Location();
+          Standard_Real anOffset = ResFirsts(ii) - aFirst3d;
+          aPosition.Rotate (aLocation, anOffset);
+          Handle(Geom2d_Circle) aNewCircle2d = new Geom2d_Circle (aPosition, aRadius);
+          ResPCurves(ii) = aNewCircle2d;
+        }
+        else //general case
+        {
+          Handle(Geom2d_TrimmedCurve) aTrPCurve =
+            new Geom2d_TrimmedCurve (ResPCurves(ii), ResFirsts(ii),  ResLasts(ii));
+          Handle(Geom2d_BSplineCurve) aBSplinePCurve = Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
+          TColStd_Array1OfReal aKnots (1, aBSplinePCurve->NbKnots());
+          aBSplinePCurve->Knots (aKnots);
+          BSplCLib::Reparametrize (aFirst3d, aLast3d, aKnots);
+          aBSplinePCurve->SetKnots (aKnots);
+          ResPCurves(ii) = aBSplinePCurve;
+        }
+        ResFirsts(ii)  = aFirst3d;
+        ResLasts(ii)   = aLast3d;
+      } //if ranges > aMaxTol
+    } //for (Standard_Integer ii = 1; ii <= ResPCurves.Length(); ii++)
   }
 
   for (Standard_Integer j = 1; j <= ResPCurves.Length(); j++)
