@@ -27,27 +27,37 @@ CommitCommand D0
 SaveAs D0 ${docname}
 Close D0
 
-set whole_time [lindex [time {
-  Open ${docname} D1
-  Close D1
-} 20] 0]
+# Computes the elapsed time of open and close document with a given arguments (as text).
+# It launches 10 iteration, 10 actions in each. Returns time of average time of the minimum-time iteration.
+proc action_time args {
+  global docname
+  set min_time 1000000
+  for {set iter 0} {$iter < 10} {incr iter} {
+    set iter_time [lindex [time {
+      Open ${docname} D {*}$args
+      Close D
+    } 10] 0]
+    puts "Iteration time $iter_time mcs"
+    if {$iter_time < $min_time} {
+      set min_time $iter_time
+    }
+  }
+
+  return $min_time
+}
+
+set whole_time [action_time]
 puts "Whole document open time $whole_time mcs"
 
-set quater_time [lindex [time {
-  Open ${docname} D2 -read0:2
-  Close D2
-} 20] 0]
+set quater_time [action_time -read0:2]
 puts "Quater of document open time $quater_time mcs"
 
-# Check that open of quater of the document is at least twice faster than open of whole.
-if { [expr $quater_time * 2] > $whole_time } {
+# Check that open of quater of the document is significantly faster than open of whole.
+if { [expr $quater_time * 1.75] > $whole_time } {
   puts "Error : loading of quater of the document content too slow relatively to the whole document load"
 }
 
-set four_quaters_time [lindex [time {
-  Open ${docname} D3 -read0:1 -read0:2 -read0:3 -read0:4
-  Close D3
-} 20] 0]
+set four_quaters_time [action_time -read0:1 -read0:2 -read0:3 -read0:4]
 puts "Four quaters of document open time $four_quaters_time mcs"
 
 # Check that open of four quaters of the document is not too much slower than opening of the whole document.
@@ -69,6 +79,7 @@ if {![catch {Attributes D4 0:1:1:13}] || ![catch {Attributes D4 0:1:3:14}] || ![
   puts "Error : loading of document skipping arrays and sub-trees contains invalid attributes list"
 }
 
+# check for appending arrays to the document from the file
 set append_arrays_time [lindex [time {
   Open ${docname} D4 -append -readTDataStd_IntegerArray -read0:2 -read0:3
 }] 0]
