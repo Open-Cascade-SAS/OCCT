@@ -1923,3 +1923,72 @@ Standard_Real IntPatch_Intersection::DefineUVMaxStep(
   return anUVMaxStep;
 }
 
+//=======================================================================
+//function : splitCone
+//purpose  : Splits cone by the apex
+//=======================================================================
+static void splitCone(
+  const Handle(Adaptor3d_Surface)& theS,
+  const Handle(Adaptor3d_TopolTool)& theD,
+  const Standard_Real theTol,
+  NCollection_Vector< Handle(Adaptor3d_Surface)>& theVecHS)
+{
+  if (theS->GetType() != GeomAbs_Cone)
+  {
+    throw Standard_NoSuchObject("IntPatch_Intersection : Surface is not Cone");
+  }
+
+  gp_Cone aCone = theS->Cone();
+
+  Standard_Real aU0, aV0;
+  Adaptor3d_TopolTool::GetConeApexParam (aCone, aU0, aV0);
+
+  TopAbs_State aState = theD->Classify (gp_Pnt2d (aU0, aV0), theTol);
+
+  if (aState == TopAbs_IN || aState == TopAbs_ON)
+  {
+    const Handle(Adaptor3d_Surface) aHSDn = theS->VTrim (theS->FirstVParameter(), aV0, Precision::PConfusion());
+    const Handle(Adaptor3d_Surface) aHSUp = theS->VTrim (aV0, theS->LastVParameter(), Precision::PConfusion());
+
+    theVecHS.Append (aHSDn);
+    theVecHS.Append (aHSUp);
+  }
+  else
+  {
+    theVecHS.Append (theS);
+  }
+}
+
+//=======================================================================
+//function : PrepareSurfaces
+//purpose  : Prepares surfaces for intersection
+//=======================================================================
+void IntPatch_Intersection::PrepareSurfaces(
+  const Handle(Adaptor3d_Surface)& theS1,
+  const Handle(Adaptor3d_TopolTool)& theD1,
+  const Handle(Adaptor3d_Surface)& theS2,
+  const Handle(Adaptor3d_TopolTool)& theD2,
+  const Standard_Real theTol,
+  NCollection_Vector< Handle(Adaptor3d_Surface)>& theVecHS1,
+  NCollection_Vector< Handle(Adaptor3d_Surface)>& theVecHS2)
+{
+  if ((theS1->GetType() == GeomAbs_Cone) && (Abs (M_PI / 2. - Abs (theS1->Cone().SemiAngle())) < theTol))
+  {
+    splitCone (theS1, theD1, theTol, theVecHS1);
+  }
+  else
+  {
+    theVecHS1.Append (theS1);
+  }
+
+  if ((theS2->GetType() == GeomAbs_Cone) && (Abs (M_PI / 2. - Abs (theS2->Cone().SemiAngle())) < theTol))
+  {
+    splitCone (theS2, theD2, theTol, theVecHS2);
+  }
+  else
+  {
+    theVecHS2.Append (theS2);
+  }
+}
+
+

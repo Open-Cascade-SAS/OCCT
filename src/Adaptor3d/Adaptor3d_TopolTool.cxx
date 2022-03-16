@@ -30,34 +30,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_TopolTool,Standard_Transient)
 
 #define myInfinite Precision::Infinite()
 
-static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& V)
-{
-  const gp_Ax3& Pos = C.Position();
-  Standard_Real Radius = C.RefRadius();
-  Standard_Real SAngle = C.SemiAngle();
-  const gp_Pnt& P = C.Apex();
- 
-  gp_Trsf T;
-  T.SetTransformation (Pos);
-  gp_Pnt Ploc = P.Transformed (T);
-
-  if(Ploc.X() ==0.0  &&  Ploc.Y()==0.0 ) {
-    U = 0.0;
-  }
-  else if ( -Radius > Ploc.Z()* Tan(SAngle) ) {
-    // the point is at the `wrong` side of the apex
-    U = atan2(-Ploc.Y(), -Ploc.X());
-  }
-  else {
-    U = atan2(Ploc.Y(),Ploc.X());
-  }
-  if      (U < -1.e-16)  U += (M_PI+M_PI);
-  else if (U < 0)        U = 0;
-
-  V =  sin(SAngle) * ( Ploc.X() * cos(U) + Ploc.Y() * sin(U) - Radius)
-    + cos(SAngle) * Ploc.Z();
-}
-
 
 Adaptor3d_TopolTool::Adaptor3d_TopolTool ()
 : myNbSamplesU(-1),
@@ -1375,4 +1347,40 @@ Standard_Boolean Adaptor3d_TopolTool::IsUniformSampling() const
   if(typS == GeomAbs_BSplineSurface)
     return Standard_False;
   return Standard_True;
+}
+
+//=======================================================================
+//function : GetConeApexParam
+//purpose  : Computes the cone's apex parameters
+//=======================================================================
+void Adaptor3d_TopolTool::GetConeApexParam (const gp_Cone& theC, Standard_Real& theU, Standard_Real& theV)
+{
+  const gp_Ax3& Pos = theC.Position();
+  Standard_Real Radius = theC.RefRadius();
+  Standard_Real SAngle = theC.SemiAngle();
+  const gp_Pnt& P = theC.Apex();
+
+  gp_Trsf T;
+  T.SetTransformation(Pos);
+  gp_Pnt Ploc = P.Transformed(T);
+
+  if (Ploc.X() == 0.0 && Ploc.Y() == 0.0)
+  {
+    theU = 0.0;
+  }
+  else if (-Radius > Ploc.Z() * Tan(SAngle))
+  {
+    // the point is at the `wrong` side of the apex
+    theU = atan2(-Ploc.Y(), -Ploc.X());
+  }
+  else
+  {
+    theU = atan2(Ploc.Y(), Ploc.X());
+  }
+
+  if (theU < -1.e-16)  theU += (M_PI + M_PI);
+  else if (theU < 0)   theU = 0;
+
+  theV = sin(SAngle) * (Ploc.X() * cos(theU) + Ploc.Y() * sin(theU) - Radius)
+         + cos(SAngle) * Ploc.Z();
 }

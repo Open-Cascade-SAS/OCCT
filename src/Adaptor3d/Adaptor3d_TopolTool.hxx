@@ -146,6 +146,12 @@ public:
   //! Returns true if provide uniform sampling of points.
   Standard_EXPORT virtual Standard_Boolean IsUniformSampling() const;
 
+  //! Computes the cone's apex parameters.
+  //! @param[in] theC conical surface
+  //! @param[in] theU U parameter of cone's apex
+  //! @param[in] theV V parameter of cone's apex
+  Standard_EXPORT static void GetConeApexParam (const gp_Cone& theC, Standard_Real& theU, Standard_Real& theV);
+
   DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool,Standard_Transient)
 
 protected:

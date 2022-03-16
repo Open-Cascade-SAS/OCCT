@@ -22,6 +22,7 @@
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <NCollection_Vector.hxx>
 
 class Adaptor3d_TopolTool;
 
@@ -149,6 +150,15 @@ public:
     const Handle(Adaptor3d_Surface)&  theS2,
     const Handle(Adaptor3d_TopolTool)& theD2);
 
+  //! Prepares surfaces for intersection
+  Standard_EXPORT static void PrepareSurfaces(
+      const Handle(Adaptor3d_Surface)& theS1,
+      const Handle(Adaptor3d_TopolTool)& theD1,
+      const Handle(Adaptor3d_Surface)& theS2,
+      const Handle(Adaptor3d_TopolTool)& theD2,
+      const Standard_Real Tol,
+      NCollection_Vector< Handle(Adaptor3d_Surface)>& theSeqHS1,
+      NCollection_Vector< Handle(Adaptor3d_Surface)>& theSeqHS2);
 
 protected:
 
