@@ -1,0 +1,24 @@
+
+#############################################################
+## OCC23820: Test of the wire projection on the complicated 
+## shell of several faces without parameter
+#############################################################
+
+pload MODELING
+
+vertex v1 297.706909179688 19.969066619873 9.07486343383789
+vertex v2 282.750762939453 24.8436107635498 6.85506725311279
+vertex v3 284.397491455078 7.2792820930481 -0.00160308415070176
+vertex v4 301.926666259766 5.67953395843506 0.0583421923220158
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+wire w e1 e2 e3 e4
+
+restore [locate_data_file bug23820_non_planar.brep] shell
+
+nproject result w shell
+
+checknbshapes result -vertex 24 -edge 14 -wire 0 -face 0 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 39
+checkprops result -l 83.0174
