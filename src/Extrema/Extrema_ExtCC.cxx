@@ -686,7 +686,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
           aMinSqD = Min(aMinSqD, ExtPCir.SquareDistance(anExtID));
         }
 
-        if (aMinSqD <= aMinSquareDist + 10.* Epsilon(1. + aMinSqD))
+        if (aMinSqD <= aMinSquareDist + (1. + aMinSqD) * Epsilon(1. + aMinSqD))
         {
           ClearSolutions();
           mySqDist.Append(aMinSqD);
@@ -787,7 +787,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
             imin = k;
           }
         }
-        if (aDmin <= aMinSquareDist + 10.* Epsilon(1. + aDmin))
+        if (aDmin <= aMinSquareDist + (1. + aDmin) * Epsilon(1. + aDmin))
         {
           if (imin == 0)
           {
