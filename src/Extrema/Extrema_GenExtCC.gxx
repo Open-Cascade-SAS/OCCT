@@ -163,7 +163,6 @@ static Standard_Real ProjPOnC(const Pnt& theP,
       if (aD < aDist)
         aDist = aD;
     }
-    aDist = sqrt(aDist);
   }
   return aDist;
 }
@@ -340,10 +339,20 @@ void Extrema_GenExtCC::Perform()
       aNbInter[1] = anIntervals2->Length() - 1;
     }
   }
+  if (C1.IsClosed() && aNbInter[0] == 1)
+  {
+    ChangeIntervals(anIntervals1, 3);
+    aNbInter[0] = anIntervals1->Length() - 1;
+  }
+  if (C2.IsClosed() && aNbInter[1] == 1)
+  {
+    ChangeIntervals(anIntervals2, 3);
+    aNbInter[1] = anIntervals2->Length() - 1;
+  }
 
   // Lipchitz constant computation.
   const Standard_Real aMaxLC = 10000.;
-  Standard_Real aLC = 9.0; // Default value.
+  Standard_Real aLC = 100.0; // Default value.
   const Standard_Real aMaxDer1 = 1.0 / C1.Resolution(1.0);
   const Standard_Real aMaxDer2 = 1.0 / C2.Resolution(1.0);
   Standard_Real aMaxDer = Max(aMaxDer1, aMaxDer2) * Sqrt(2.0);
@@ -383,6 +392,43 @@ void Extrema_GenExtCC::Perform()
   }
 
   Extrema_GlobOptFuncCCC2 aFunc (C1, C2);
+  if (aLC < aMaxLC || aMaxDer > aMaxLC)
+  {
+    //Estimation of Lipschitz constant by gradient of optimization function 
+    //using sampling in parameter space.
+    math_Vector aT(1, 2), aG(1, 2);
+    Standard_Real aF, aMaxG = 0.;
+    Standard_Real t1, t2, dt1, dt2;
+    Standard_Integer n1 = 21, n2 = 21, i1, i2;
+    dt1 = (C1.LastParameter() - C1.FirstParameter()) / (n1 - 1);
+    dt2 = (C2.LastParameter() - C2.FirstParameter()) / (n2 - 1);
+    for (i1 = 1, t1 = C1.FirstParameter(); i1 <= n1; ++i1, t1 += dt1)
+    {
+      aT(1) = t1;
+      for (i2 = 1, t2 = C2.FirstParameter(); i2 <= n2; ++i2, t2 += dt2)
+      {
+        aT(2) = t2;
+        aFunc.Values(aT, aF, aG);
+        Standard_Real aMod = aG(1)*aG(1) + aG(2)*aG(2);
+        aMaxG = Max(aMaxG, aMod);
+      }
+    }
+    aMaxG = Sqrt(aMaxG);
+    if (aMaxG > aMaxDer)
+    {
+      aLC = Min(aMaxG, aMaxLC);
+      isConstLockedFlag = Standard_True;
+    }
+    if (aMaxG > 100. * aMaxLC)
+    {
+      aLC = 100. * aMaxLC;
+      isConstLockedFlag = Standard_True;
+    }
+    else if (aMaxG < 0.1 * aMaxDer)
+    {
+      isConstLockedFlag = Standard_True;
+    }
+  }
   math_GlobOptMin aFinder(&aFunc, myLowBorder, myUppBorder, aLC);
   aFinder.SetLipConstState(isConstLockedFlag);
   aFinder.SetContinuity(aContinuity == GeomAbs_C2 ? 2 : 1);
@@ -518,7 +564,6 @@ void Extrema_GenExtCC::Perform()
     aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
 
     aFunc.Value(aVec, aVal);
-
     if (Abs(aVal - aF) < Precision::Confusion())
     {
       // It seems the parallel segment is found.

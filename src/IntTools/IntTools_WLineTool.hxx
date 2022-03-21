@@ -46,7 +46,7 @@ public:
                                         const Standard_Boolean                         theAvoidLConstructor,
                                         const Standard_Real                            theTol,
                                         IntPatch_SequenceOfLine&                       theNewLines,
-                                        Standard_Real&                                 theReachedTol3d,
+                                        Standard_Real&                                 /*theReachedTol3d*/, // obsolete parameter
                                         const Handle(IntTools_Context)& );
 };
 
