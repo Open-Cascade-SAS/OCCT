@@ -229,203 +229,6 @@ Standard_Boolean IntTools_WLineTool::NotUseSurfacesForApprox(const TopoDS_Face& 
 /////////////////////// DecompositionOfWLine ////////////////////////////
 
 //=======================================================================
-//function : CheckTangentZonesExist
-//purpose  : static subfunction in ComputeTangentZones
-//=======================================================================
-static
-Standard_Boolean CheckTangentZonesExist(const Handle(GeomAdaptor_Surface)& theSurface1,
-                                        const Handle(GeomAdaptor_Surface)& theSurface2)
-{
-  if ( ( theSurface1->GetType() != GeomAbs_Torus ) ||
-       ( theSurface2->GetType() != GeomAbs_Torus ) )
-    return Standard_False;
-
-  gp_Torus aTor1 = theSurface1->Torus();
-  gp_Torus aTor2 = theSurface2->Torus();
-
-  if ( aTor1.Location().Distance( aTor2.Location() ) > Precision::Confusion() )
-    return Standard_False;
-
-  if ( ( fabs( aTor1.MajorRadius() - aTor2.MajorRadius() ) > Precision::Confusion() ) ||
-       ( fabs( aTor1.MinorRadius() - aTor2.MinorRadius() ) > Precision::Confusion() ) )
-    return Standard_False;
-
-  if ( ( aTor1.MajorRadius() < aTor1.MinorRadius() ) ||
-       ( aTor2.MajorRadius() < aTor2.MinorRadius() ) )
-    return Standard_False;
-
-  return Standard_True;
-}
-
-
-//=======================================================================
-//function : ComputeTangentZones
-//purpose  : static subfunction in DecompositionOfWLine
-//=======================================================================
-static
-Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_Surface)& theSurface1,
-                                     const Handle(GeomAdaptor_Surface)&  theSurface2,
-                                     const TopoDS_Face&                   theFace1,
-                                     const TopoDS_Face&                   theFace2,
-                                     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
-                                     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS2,
-                                     Handle(TColStd_HArray1OfReal)&       theResultRadius,
-                                     const Handle(IntTools_Context)& aContext)
-{
-  Standard_Integer aResult = 0;
-  if ( !CheckTangentZonesExist( theSurface1, theSurface2 ) )
-    return aResult;
-
-
-  TColgp_SequenceOfPnt2d aSeqResultS1, aSeqResultS2;
-  TColStd_SequenceOfReal aSeqResultRad;
-
-  gp_Torus aTor1 = theSurface1->Torus();
-  gp_Torus aTor2 = theSurface2->Torus();
-
-  gp_Ax2 anax1( aTor1.Location(), aTor1.Axis().Direction() );
-  gp_Ax2 anax2( aTor2.Location(), aTor2.Axis().Direction() );
-  Standard_Integer j = 0;
-
-  for ( j = 0; j < 2; j++ ) {
-    Standard_Real aCoef = ( j == 0 ) ? -1 : 1;
-    Standard_Real aRadius1 = fabs(aTor1.MajorRadius() + aCoef * aTor1.MinorRadius());
-    Standard_Real aRadius2 = fabs(aTor2.MajorRadius() + aCoef * aTor2.MinorRadius());
-
-    gp_Circ aCircle1( anax1, aRadius1 );
-    gp_Circ aCircle2( anax2, aRadius2 );
-
-    // roughly compute radius of tangent zone for perpendicular case
-    Standard_Real aCriteria = Precision::Confusion() * 0.5;
-
-    Standard_Real aT1 = aCriteria;
-    Standard_Real aT2 = aCriteria;
-    if ( j == 0 ) {
-      // internal tangency
-      Standard_Real aR = ( aRadius1 > aTor2.MinorRadius() ) ? aRadius1 : aTor2.MinorRadius();
-      //aT1 = aCriteria * aCriteria + aR * aR - ( aR - aCriteria ) * ( aR - aCriteria );
-      aT1 = 2. * aR * aCriteria;
-      aT2 = aT1;
-    }
-    else {
-      // external tangency
-      Standard_Real aRb = ( aRadius1 > aTor2.MinorRadius() ) ? aRadius1 : aTor2.MinorRadius();
-      Standard_Real aRm = ( aRadius1 < aTor2.MinorRadius() ) ? aRadius1 : aTor2.MinorRadius();
-      Standard_Real aDelta = aRb - aCriteria;
-      aDelta *= aDelta;
-      aDelta -= aRm * aRm;
-      aDelta /= 2. * (aRb - aRm);
-      aDelta -= 0.5 * (aRb - aRm);
-      
-      aT1 = 2. * aRm * (aRm - aDelta);
-      aT2 = aT1;
-    }
-    aCriteria = ( aT1 > aT2) ? aT1 : aT2;
-    if ( aCriteria > 0 )
-      aCriteria = sqrt( aCriteria );
-
-    if ( aCriteria > 0.5 * aTor1.MinorRadius() ) {
-      // too big zone -> drop to minimum
-      aCriteria = Precision::Confusion();
-    }
-
-    GeomAdaptor_Curve aC1( new Geom_Circle(aCircle1) );
-    GeomAdaptor_Curve aC2( new Geom_Circle(aCircle2) );
-    Extrema_ExtCC anExtrema(aC1, aC2, 0, 2. * M_PI, 0, 2. * M_PI, 
-                            Precision::PConfusion(), Precision::PConfusion());
-            
-    if ( anExtrema.IsDone() ) {
-
-      Standard_Integer i = 0;
-      for ( i = 1; i <= anExtrema.NbExt(); i++ ) {
-        if ( anExtrema.SquareDistance(i) > aCriteria * aCriteria )
-          continue;
-
-        Extrema_POnCurv P1, P2;
-        anExtrema.Points( i, P1, P2 );
-
-        Standard_Boolean bFoundResult = Standard_True;
-        gp_Pnt2d pr1, pr2;
-
-        Standard_Integer surfit = 0;
-        for ( surfit = 0; surfit < 2; surfit++ ) {
-          GeomAPI_ProjectPointOnSurf& aProjector = 
-            (surfit == 0) ? aContext->ProjPS(theFace1) : aContext->ProjPS(theFace2);
-
-          gp_Pnt aP3d = (surfit == 0) ? P1.Value() : P2.Value();
-          aProjector.Perform(aP3d);
-
-          if(!aProjector.IsDone())
-            bFoundResult = Standard_False;
-          else {
-            if(aProjector.LowerDistance() > aCriteria) {
-              bFoundResult = Standard_False;
-            }
-            else {
-              Standard_Real foundU = 0, foundV = 0;
-              aProjector.LowerDistanceParameters(foundU, foundV);
-              if ( surfit == 0 )
-                pr1 = gp_Pnt2d( foundU, foundV );
-              else
-                pr2 = gp_Pnt2d( foundU, foundV );
-            }
-          }
-        }
-        if ( bFoundResult ) {
-          aSeqResultS1.Append( pr1 );
-          aSeqResultS2.Append( pr2 );
-          aSeqResultRad.Append( aCriteria );
-
-          // torus is u and v periodic
-          const Standard_Real twoPI = M_PI + M_PI;
-          Standard_Real arr1tmp[2] = {pr1.X(), pr1.Y()};
-          Standard_Real arr2tmp[2] = {pr2.X(), pr2.Y()};
-
-          // iteration on period bounds
-          for ( Standard_Integer k1 = 0; k1 < 2; k1++ ) {
-            Standard_Real aBound = ( k1 == 0 ) ? 0 : twoPI;
-            Standard_Real aShift = ( k1 == 0 ) ? twoPI : -twoPI;
-
-            // iteration on surfaces
-            for ( Standard_Integer k2 = 0; k2 < 2; k2++ ) {
-              Standard_Real* arr1 = ( k2 == 0 ) ? arr1tmp : arr2tmp;
-              Standard_Real* arr2 = ( k2 != 0 ) ? arr1tmp : arr2tmp;
-              TColgp_SequenceOfPnt2d& aSeqS1 = ( k2 == 0 ) ? aSeqResultS1 : aSeqResultS2; 
-              TColgp_SequenceOfPnt2d& aSeqS2 = ( k2 != 0 ) ? aSeqResultS1 : aSeqResultS2; 
-
-              if (fabs(arr1[0] - aBound) < Precision::PConfusion()) {
-                aSeqS1.Append( gp_Pnt2d( arr1[0] + aShift, arr1[1] ) );
-                aSeqS2.Append( gp_Pnt2d( arr2[0], arr2[1] ) );
-                aSeqResultRad.Append( aCriteria );
-              }
-              if (fabs(arr1[1] - aBound) < Precision::PConfusion()) {
-                aSeqS1.Append( gp_Pnt2d( arr1[0], arr1[1] + aShift) );
-                aSeqS2.Append( gp_Pnt2d( arr2[0], arr2[1] ) );
-                aSeqResultRad.Append( aCriteria );
-              }
-            }
-          } //
-        }
-      }
-    }
-  }
-  aResult = aSeqResultRad.Length();
-
-  if ( aResult > 0 ) {
-    theResultOnS1 = new TColgp_HArray1OfPnt2d( 1, aResult );
-    theResultOnS2 = new TColgp_HArray1OfPnt2d( 1, aResult );
-    theResultRadius = new TColStd_HArray1OfReal( 1, aResult );
-
-    for ( Standard_Integer i = 1 ; i <= aResult; i++ ) {
-      theResultOnS1->SetValue( i, aSeqResultS1.Value(i) );
-      theResultOnS2->SetValue( i, aSeqResultS2.Value(i) );
-      theResultRadius->SetValue( i, aSeqResultRad.Value(i) );
-    }
-  }
-  return aResult;
-}
-
-//=======================================================================
 //function : IsPointOnBoundary
 //purpose  : static subfunction in DecompositionOfWLine
 //=======================================================================
@@ -454,27 +257,6 @@ Standard_Boolean IsPointOnBoundary(const Standard_Real theParameter,
     }
   }
   return bRet;
-}
-
-//=======================================================================
-//function : IsInsideTanZone
-//purpose  : Check if point is inside a radial tangent zone.
-//           static subfunction in DecompositionOfWLine and FindPoint
-//=======================================================================
-static
-Standard_Boolean IsInsideTanZone(const gp_Pnt2d&     thePoint,
-                                 const gp_Pnt2d&     theTanZoneCenter,
-                                 const Standard_Real theZoneRadius,
-                                 Handle(GeomAdaptor_Surface) theGASurface)
-{
-  Standard_Real aUResolution = theGASurface->UResolution( theZoneRadius );
-  Standard_Real aVResolution = theGASurface->VResolution( theZoneRadius );
-  Standard_Real aRadiusSQR = ( aUResolution < aVResolution ) ? aUResolution : aVResolution;
-  aRadiusSQR *= aRadiusSQR;
-  if ( thePoint.SquareDistance( theTanZoneCenter ) <= aRadiusSQR )
-    return Standard_True;
-
-  return Standard_False;
 }
 
 //=======================================================================
@@ -652,72 +434,6 @@ Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
 }
 
 //=======================================================================
-//function : FindPoint
-//purpose  : Find point on the boundary of radial tangent zone
-//           static subfunction in DecompositionOfWLine
-//=======================================================================
-static
-Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
-                           const gp_Pnt2d&     theLastPoint,
-                           const Standard_Real theUmin, 
-                           const Standard_Real theUmax,
-                           const Standard_Real theVmin,
-                           const Standard_Real theVmax,
-                           const gp_Pnt2d&     theTanZoneCenter,
-                           const Standard_Real theZoneRadius,
-                           Handle(GeomAdaptor_Surface) theGASurface,
-                           gp_Pnt2d&           theNewPoint) {
-  theNewPoint = theLastPoint;
-
-  if ( !IsInsideTanZone( theLastPoint, theTanZoneCenter, theZoneRadius, theGASurface) )
-    return Standard_False;
-
-  Standard_Real aUResolution = theGASurface->UResolution( theZoneRadius );
-  Standard_Real aVResolution = theGASurface->VResolution( theZoneRadius );
-
-  Standard_Real aRadius = ( aUResolution < aVResolution ) ? aUResolution : aVResolution;
-  gp_Ax22d anAxis( theTanZoneCenter, gp_Dir2d(1, 0), gp_Dir2d(0, 1) );
-  gp_Circ2d aCircle( anAxis, aRadius );
-  
-  //
-  gp_Vec2d aDir( theLastPoint.XY() - theFirstPoint.XY() );
-  Standard_Real aLength = aDir.Magnitude();
-  if ( aLength <= gp::Resolution() )
-    return Standard_False;
-  gp_Lin2d aLine( theFirstPoint, aDir );
-
-  //
-  Handle(Geom2d_Line) aCLine = new Geom2d_Line( aLine );
-  Handle(Geom2d_TrimmedCurve) aC1 = new Geom2d_TrimmedCurve( aCLine, 0, aLength );
-  Handle(Geom2d_Circle) aC2 = new Geom2d_Circle( aCircle );
-
-  Standard_Real aTol = aRadius * 0.001;
-  aTol = ( aTol < Precision::PConfusion() ) ? Precision::PConfusion() : aTol;
-
-  Geom2dAPI_InterCurveCurve anIntersector;
-  anIntersector.Init( aC1, aC2, aTol );
-
-  if ( anIntersector.NbPoints() == 0 )
-    return Standard_False;
-
-  Standard_Boolean aFound = Standard_False;
-  Standard_Real aMinDist = aLength * aLength;
-  Standard_Integer i = 0;
-  for ( i = 1; i <= anIntersector.NbPoints(); i++ ) {
-    gp_Pnt2d aPInt = anIntersector.Point( i );
-    if ( aPInt.SquareDistance( theFirstPoint ) < aMinDist ) {
-      if ( ( aPInt.X() >= theUmin ) && ( aPInt.X() <= theUmax ) &&
-           ( aPInt.Y() >= theVmin ) && ( aPInt.Y() <= theVmax ) ) {
-        theNewPoint = aPInt;
-        aFound = Standard_True;
-      }
-    }
-  }
-
-  return aFound;
-}
-
-//=======================================================================
 //function : DecompositionOfWLine
 //purpose  : 
 //=======================================================================
@@ -731,7 +447,6 @@ Standard_Boolean IntTools_WLineTool::
                        const Standard_Boolean                         theAvoidLConstructor,
                        const Standard_Real                            theTol,
                        IntPatch_SequenceOfLine&                       theNewLines,
-                       Standard_Real&                                 theReachedTol3d,
                        const Handle(IntTools_Context)& aContext) 
 {
   Standard_Boolean bRet, bAvoidLineConstructor;
@@ -757,13 +472,7 @@ Standard_Boolean IntTools_WLineTool::
   TColStd_Array1OfListOfInteger anArrayOfLines(1, aNbPnts); 
   TColStd_Array1OfInteger       anArrayOfLineType(1, aNbPnts);
   TColStd_ListOfInteger aListOfPointIndex;
-  
-  Handle(TColgp_HArray1OfPnt2d) aTanZoneS1;
-  Handle(TColgp_HArray1OfPnt2d) aTanZoneS2;
-  Handle(TColStd_HArray1OfReal) aTanZoneRadius;
-  Standard_Integer aNbZone = ComputeTangentZones( theSurface1, theSurface2, theFace1, theFace2,
-                                                 aTanZoneS1, aTanZoneS2, aTanZoneRadius, aContext);
-  
+    
   //
   nblines=0;
   aTol=Precision::Confusion();
@@ -833,24 +542,6 @@ Standard_Boolean IntTools_WLineTool::
         if(bIsPointOnBoundary) {
           bIsCurrentPointOnBoundary = Standard_True;
           break;
-        }
-        else {
-          // check if a point belong to a tangent zone. Begin
-          Standard_Integer zIt = 0;
-          for ( zIt = 1; zIt <= aNbZone; zIt++ ) {
-            gp_Pnt2d aPZone = (i == 0) ? aTanZoneS1->Value(zIt) : aTanZoneS2->Value(zIt);
-            Standard_Real aZoneRadius = aTanZoneRadius->Value(zIt);
-
-            if ( IsInsideTanZone(gp_Pnt2d( U, V ), aPZone, aZoneRadius, aGASurface ) ) {
-              // set boundary flag to split the curve by a tangent zone
-              bIsPointOnBoundary = Standard_True;
-              bIsCurrentPointOnBoundary = Standard_True;
-              if ( theReachedTol3d < aZoneRadius ) {
-                theReachedTol3d = aZoneRadius;
-              }
-              break;
-            }
-          }
         }
       }//for(j = 0; j < 2; j++) {
 
@@ -930,7 +621,7 @@ Standard_Boolean IntTools_WLineTool::
         Standard_Integer nbboundaries = 0;
 
         Standard_Boolean bIsNearBoundary = Standard_False;
-        Standard_Integer aZoneIndex = 0;
+        //Standard_Integer aZoneIndex = 0;
         Standard_Integer bIsUBoundary = Standard_False; // use if nbboundaries == 1
         Standard_Integer bIsFirstBoundary = Standard_False; // use if nbboundaries == 1
         
@@ -980,32 +671,6 @@ Standard_Boolean IntTools_WLineTool::
           }
         }
 
-        // check if a point belong to a tangent zone. Begin
-        for ( Standard_Integer zIt = 1; zIt <= aNbZone; zIt++ ) {
-          gp_Pnt2d aPZone = (surfit == 0) ? aTanZoneS1->Value(zIt) : aTanZoneS2->Value(zIt);
-          Standard_Real aZoneRadius = aTanZoneRadius->Value(zIt);
-
-          Standard_Integer aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
-          const IntSurf_PntOn2S& aNeighbourPoint = theWLine->Point(aneighbourpointindex1);
-          Standard_Real nU1, nV1;
-            
-          if(surfit == 0)
-            aNeighbourPoint.ParametersOnS1(nU1, nV1);
-          else
-            aNeighbourPoint.ParametersOnS2(nU1, nV1);
-          gp_Pnt2d ap1(nU1, nV1);
-          gp_Pnt2d ap2 = AdjustByNeighbour( ap1, gp_Pnt2d( U, V ), aGASurface );
-
-
-          if ( IsInsideTanZone( ap2, aPZone, aZoneRadius, aGASurface ) ) {
-            aZoneIndex = zIt;
-            bIsNearBoundary = Standard_True;
-            if ( theReachedTol3d < aZoneRadius ) {
-              theReachedTol3d = aZoneRadius;
-            }
-          }
-        }
-        // check if a point belong to a tangent zone. End
         Standard_Boolean bComputeLineEnd = Standard_False;
 
         if(nbboundaries == 2) {
@@ -1144,20 +809,7 @@ Standard_Boolean IntTools_WLineTool::
             gp_Pnt2d ap1(nU1, nV1);
             gp_Pnt2d ap2;
 
-
-            if ( aZoneIndex ) {
-              // exclude point from a tangent zone
-              anewpoint = AdjustByNeighbour( ap1, anewpoint, aGASurface );
-              gp_Pnt2d aPZone = (surfit == 0) ? aTanZoneS1->Value(aZoneIndex) : aTanZoneS2->Value(aZoneIndex);
-              Standard_Real aZoneRadius = aTanZoneRadius->Value(aZoneIndex);
-
-              if ( FindPoint(ap1, anewpoint, umin, umax, vmin, vmax, 
-                             aPZone, aZoneRadius, aGASurface, ap2) ) {
-                anewpoint = ap2;
-                found = Standard_True;
-              }
-            }
-            else if ( aGASurface->IsUPeriodic() || aGASurface->IsVPeriodic() ) {
+            if ( aGASurface->IsUPeriodic() || aGASurface->IsVPeriodic() ) {
               // re-compute point near boundary if shifted on a period
               ap2 = AdjustByNeighbour( ap1, anewpoint, aGASurface );
 

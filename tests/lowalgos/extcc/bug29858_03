@@ -18,11 +18,12 @@ mkcurve c2 e2
 set info [extrema c1 c2]
 
 # Check result
-regexp {Extrema 1 is point : +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $info full x y z
-# Point check
-set good_x 0.0
-set good_y 0.070710562195021642
-set good_z -0.65305318986891325
-checkreal "Intersection point x:" ${x} ${good_x} 0.01 0.01
-checkreal "Intersection point y:" ${y} ${good_y} 0.01 0.01
-checkreal "Intersection point z:" ${z} ${good_z} 0.01 0.01
+if {[regexp "ext_1" $info]} {
+  set dist [lindex [length ext_1] end]
+  if { $dist > 1.0e-10 } {
+    puts "Error: Extrema distance is too big"
+  }
+} else {
+  puts "Error: Extrema is not found"
+}
+

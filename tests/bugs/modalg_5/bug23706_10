@@ -13,7 +13,7 @@ set info [extrema r3 r4]
 
 if {[regexp "ext_1" $info]} {
   set dist [lindex [length ext_1] end]
-  if { $dist > 4.0e-13 } {
+  if { $dist > 5.0e-11 } {
     puts "Error: Extrema distance is too big"
   }
 } else {

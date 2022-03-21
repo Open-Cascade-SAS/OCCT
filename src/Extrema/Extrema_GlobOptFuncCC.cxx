@@ -43,7 +43,7 @@ static Standard_Boolean _Value(const Adaptor3d_Curve& C1,
     return Standard_False;
   }
 
-  F = C2.Value(v).Distance(C1.Value(u));
+  F = C2.Value(v).SquareDistance(C1.Value(u));
   return Standard_True;
 }
 
@@ -64,7 +64,7 @@ static Standard_Boolean _Value(const Adaptor2d_Curve2d& C1,
     return Standard_False;
   }
 
-  F = C2.Value(v).Distance(C1.Value(u));
+  F = C2.Value(v).SquareDistance(C1.Value(u));
   return Standard_True;
 }
 
@@ -89,13 +89,14 @@ static Standard_Boolean _Gradient(const Adaptor3d_Curve& C1,
 
   C1.D1(X(1), C1D0, C1D1);
   C2.D1(X(2), C2D0, C2D1);
-
+  
   G(1) = - (C2D0.X() - C1D0.X()) * C1D1.X() 
          - (C2D0.Y() - C1D0.Y()) * C1D1.Y() 
          - (C2D0.Z() - C1D0.Z()) * C1D1.Z();
   G(2) =   (C2D0.X() - C1D0.X()) * C2D1.X() 
          + (C2D0.Y() - C1D0.Y()) * C2D1.Y() 
          + (C2D0.Z() - C1D0.Z()) * C2D1.Z();
+  G *= 2.;
   return Standard_True;
 }
 
@@ -121,8 +122,11 @@ static Standard_Boolean _Gradient(const Adaptor2d_Curve2d& C1,
 
   G(1) = - (C2D0.X() - C1D0.X()) * C1D1.X() 
          - (C2D0.Y() - C1D0.Y()) * C1D1.Y();
+
   G(2) =   (C2D0.X() - C1D0.X()) * C2D1.X() 
          + (C2D0.Y() - C1D0.Y()) * C2D1.Y();
+  G *= 2.;
+
   return Standard_True;
 }
 
@@ -166,6 +170,7 @@ static Standard_Boolean _Hessian (const Adaptor3d_Curve& C1,
            + (C2D0.X() - C1D0.X()) * C2D2.X() 
            + (C2D0.Y() - C1D0.Y()) * C2D2.Y() 
            + (C2D0.Z() - C1D0.Z()) * C2D2.Z();
+  H *= 2.;
   return Standard_True;
 }
 
@@ -204,10 +209,11 @@ static Standard_Boolean _Hessian (const Adaptor2d_Curve2d& C1,
            + C2D1.Y() * C2D1.Y() 
            + (C2D0.X() - C1D0.X()) * C2D2.X() 
            + (C2D0.Y() - C1D0.Y()) * C2D2.Y();
+  H *= 2.;
   return Standard_True;
 }
 
-// C0
+//C0
 
 //=======================================================================
 //function : Extrema_GlobOptFuncCCC0
@@ -414,7 +420,6 @@ Standard_Boolean Extrema_GlobOptFuncCCC2::Values(const math_Vector& X,Standard_R
     isHessianComputed = _Hessian(*myC1_3d, *myC2_3d, X, H);
   else
     isHessianComputed = _Hessian(*myC1_2d, *myC2_2d, X, H);
-
 
   return (Value(X, F) && Gradient(X, G) && isHessianComputed);
 }

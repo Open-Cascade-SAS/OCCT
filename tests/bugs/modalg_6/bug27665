@@ -5,7 +5,7 @@ puts ""
 #################################################
 # BrepExrtrema_DistShapeShape bad performance on OCCT 6.7.0
 #################################################
-cpulimit 100
+cpulimit 500
 restore [locate_data_file bug27665_wircmpd.brep] w
 explode w
 
