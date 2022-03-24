@@ -176,6 +176,8 @@ gp_Vec ElSLib::ConeDN (const Standard_Real    U,
    }
    else if(Nv == 1) { 
      Xdir.Multiply(sin(SAngle));
+     if (Nu == 0)
+       Xdir.Add(Pos.Direction().XYZ() * cos(SAngle));
      return gp_Vec(Xdir);     
    }
    return gp_Vec(0.0,0.0,0.0);

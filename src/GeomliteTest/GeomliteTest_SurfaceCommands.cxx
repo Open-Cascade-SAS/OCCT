@@ -942,6 +942,36 @@ static Standard_Integer value (Draw_Interpretor& ,
 }
 
 //=======================================================================
+//function : derivative
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer derivative(Draw_Interpretor&,
+                                   Standard_Integer theArgc,
+                                   const char** theArgv)
+{
+  if (theArgc != 9)
+    return 1;
+
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(theArgv[1]);
+  if (aSurf.IsNull())
+    return 1;
+
+  Standard_Real aU = Draw::Atof(theArgv[2]);
+  Standard_Real aV = Draw::Atof(theArgv[3]);
+  Standard_Integer aNu = Draw::Atoi(theArgv[4]);
+  Standard_Integer aNv = Draw::Atoi(theArgv[5]);
+
+  gp_Vec aDeriv = aSurf->DN(aU, aV, aNu, aNv);
+
+  Draw::Set(theArgv[6], aDeriv.X());
+  Draw::Set(theArgv[7], aDeriv.Y());
+  Draw::Set(theArgv[8], aDeriv.Z());
+
+  return 0;
+}
+
+//=======================================================================
 //function : movepole
 //purpose  : 
 //=======================================================================
@@ -1850,6 +1880,15 @@ void  GeomliteTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  "svalue surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]",
 		  __FILE__,
 		  value,g);
+
+  theCommands.Add("sderivative",
+    "sderivative surfname U V NU NV X Y Z\n"
+    "    surfname : name of surface\n"
+    "    U V      : coordinates on probe point on surface\n"
+    "    NU NV    : order of derivative along U and V\n"
+    "    X Y Z    : output coordinates of the derivative",
+    __FILE__,
+    derivative, g);
 
   theCommands.Add("parameters",
 		  "parameters surf/curve X Y [Z] Tol U [V] : {X Y Z} point, {U V} output parameter(s)",
