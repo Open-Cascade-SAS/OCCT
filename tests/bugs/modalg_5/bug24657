@@ -1,0 +1,45 @@
+puts "============"
+puts "0024657: 2dintersect returns different number of intersect points"
+puts "==========="
+puts ""
+
+restore [locate_data_file bug24657.brep] a
+
+explode a e
+
+# Initialize two 2d pcurves
+pcurve p4 a_4 a
+pcurve p5 a_5 a
+
+# Recieve an output strings of the intersection operation
+set inter1 [2dintersect p4 p5 -tol 1.e-7]
+set inter2 [2dintersect p5 p4 -tol 1.e-7]
+
+# Check if the number of intersections is equal to 1
+set int1 [regexp -all {Intersection point} ${inter1}]
+set int2 [regexp -all {Intersection point} ${inter2}]
+
+if { ${int1} != ${int2} ||  ${int1} != 1} {
+    puts "Error : The intersection points number is different!"
+} 
+
+# Verify the coordinates of the intersection points
+regexp -all {Intersection point 1 : ([-0-9.+eE]+) ([-0-9.+eE]+)} $inter1 full x1 y1
+regexp -all {Intersection point 1 : ([-0-9.+eE]+) ([-0-9.+eE]+)} $inter2 full x2 y2
+if { [expr abs($x1 - $x2)] > 1.e-7 || [expr abs($y1 - $y2) ] > 1.e-7} {
+    puts "Error : The intersection points do not match!"
+}
+
+regexp -all {parameter on the fist: ([-0-9.+eE]+) parameter on the second: ([-0-9.+eE]+)} $inter1 full par11 par12
+regexp -all {parameter on the fist: ([-0-9.+eE]+) parameter on the second: ([-0-9.+eE]+)} $inter2 full par21 par22
+
+if { [expr abs($par11 - $par22)] > 1.e-7 || [expr abs($par21 - $par12) ] > 1.e-7} {
+    puts "Error : The intersection points parameters do not match!"
+}
+
+#v2d2
+view 1 -2D-  728 20 400 400
+
+2dfit
+
+xwd ${imagedir}/${test_image}.png
