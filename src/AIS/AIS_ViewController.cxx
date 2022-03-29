@@ -1010,7 +1010,8 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       const double aRotTol = theIsEmulated
                            ? double(myTouchToleranceScale) * myTouchRotationThresholdPx
                            : 0.0;
-      if (double (Abs (aDelta.x()) + Abs (aDelta.y())) > aRotTol)
+      const Graphic3d_Vec2d aDeltaF (aDelta);
+      if (Abs (aDeltaF.x()) + Abs (aDeltaF.y()) > aRotTol)
       {
         const double aRotAccel = myNavigationMode == AIS_NavigationMode_FirstPersonWalk ? myMouseAccel : myOrbitAccel;
         const Graphic3d_Vec2i aRotDelta = thePoint - myMousePressPoint;
@@ -1063,7 +1064,8 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       const double aPanTol = theIsEmulated
                            ? double(myTouchToleranceScale) * myTouchPanThresholdPx
                            : 0.0;
-      if (double (Abs (aDelta.x()) + Abs (aDelta.y())) > aPanTol)
+      const Graphic3d_Vec2d aDeltaF (aDelta);
+      if (Abs (aDeltaF.x()) + Abs (aDeltaF.y()) > aPanTol)
       {
         if (myUpdateStartPointPan)
         {
@@ -1629,10 +1631,11 @@ void AIS_ViewController::handleZoom (const Handle(V3d_View)& theView,
 
     Graphic3d_Vec2i aWinSize;
     theView->Window()->Size (aWinSize.x(), aWinSize.y());
-    const Graphic3d_Vec2d aPanFromCenterPx (double(theParams.Point.x()) - 0.5 * double(aWinSize.x()),
-                                            double(aWinSize.y() - theParams.Point.y() - 1) - 0.5 * double(aWinSize.y()));
-    aDxy.x() += -aViewDims1.X() * aPanFromCenterPx.x() / double(aWinSize.x());
-    aDxy.y() += -aViewDims1.Y() * aPanFromCenterPx.y() / double(aWinSize.y());
+    const Graphic3d_Vec2d aWinSizeF (aWinSize);
+    const Graphic3d_Vec2d aPanFromCenterPx (double(theParams.Point.x()) - 0.5 * aWinSizeF.x(),
+                                            aWinSizeF.y() - double(theParams.Point.y()) - 1.0 - 0.5 * aWinSizeF.y());
+    aDxy.x() += -aViewDims1.X() * aPanFromCenterPx.x() / aWinSizeF.x();
+    aDxy.y() += -aViewDims1.Y() * aPanFromCenterPx.y() / aWinSizeF.y();
   }
 
   //theView->Translate (aCam, aDxy.x(), aDxy.y());

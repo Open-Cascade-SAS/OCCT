@@ -253,14 +253,16 @@ inline  Standard_Real    RealPart (const Standard_Real Value)
 //             If input value is out of valid range for integers,
 //             minimal or maximal possible integer is returned.
 //-------------------------------------------------------------------
-inline  Standard_Integer RealToInt (const Standard_Real Value) 
+inline Standard_Integer RealToInt (const Standard_Real theValue)
 { 
   // Note that on WNT under MS VC++ 8.0 conversion of double value less 
   // than INT_MIN or greater than INT_MAX to integer will cause signal 
   // "Floating point multiple trap" (OCC17861)
-  return Value < INT_MIN ? INT_MIN
-    : Value > INT_MAX ? INT_MAX
-    : (Standard_Integer)Value;
+  return theValue < static_cast<Standard_Real>(INT_MIN)
+       ? static_cast<Standard_Integer>(INT_MIN)
+       : (theValue > static_cast<Standard_Real>(INT_MAX)
+        ? static_cast<Standard_Integer>(INT_MAX)
+        : static_cast<Standard_Integer>(theValue));
 }
 
 // =======================================================================

@@ -315,7 +315,7 @@ public:
   void SetVertice (const Standard_Integer theIndex, const Standard_ShortReal theX, const Standard_ShortReal theY, const Standard_ShortReal theZ)
   {
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
-    Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3*> (myAttribs->ChangeData() + myPosStride * (theIndex - 1));
+    Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3*> (myAttribs->ChangeData() + myPosStride * ((Standard_Size)theIndex - 1));
     aVec.x() = theX;
     aVec.y() = theY;
     aVec.z() = theZ;
@@ -343,7 +343,7 @@ public:
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
     if (myColData != NULL)
     {
-      Graphic3d_Vec4ub* aColorPtr = reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
+      Graphic3d_Vec4ub* aColorPtr = reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * ((Standard_Size)theIndex - 1));
       aColorPtr->SetValues (Standard_Byte(theR * 255.0),
                             Standard_Byte(theG * 255.0),
                             Standard_Byte(theB * 255.0), 255);
@@ -360,7 +360,7 @@ public:
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
     if (myColData != NULL)
     {
-      Graphic3d_Vec4ub* aColorPtr =  reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
+      Graphic3d_Vec4ub* aColorPtr =  reinterpret_cast<Graphic3d_Vec4ub* >(myColData + myColStride * ((Standard_Size)theIndex - 1));
       (*aColorPtr) = theColor;
     }
     myAttribs->NbElements = Max (theIndex, myAttribs->NbElements);
@@ -377,7 +377,7 @@ public:
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
     if (myColData != NULL)
     {
-      *reinterpret_cast<Standard_Integer* >(myColData + myColStride * (theIndex - 1)) = theColor32;
+      *reinterpret_cast<Standard_Integer* >(myColData + myColStride * ((Standard_Size)theIndex - 1)) = theColor32;
     }
   }
 
@@ -399,7 +399,7 @@ public:
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
     if (myNormData != NULL)
     {
-      Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3* >(myNormData + myNormStride * (theIndex - 1));
+      Graphic3d_Vec3& aVec = *reinterpret_cast<Graphic3d_Vec3* >(myNormData + myNormStride * ((Standard_Size)theIndex - 1));
       aVec.x() = Standard_ShortReal (theNX);
       aVec.y() = Standard_ShortReal (theNY);
       aVec.z() = Standard_ShortReal (theNZ);
@@ -424,7 +424,7 @@ public:
     Standard_OutOfRange_Raise_if (theIndex < 1 || theIndex > myAttribs->NbMaxElements(), "BAD VERTEX index");
     if (myTexData != NULL)
     {
-      Graphic3d_Vec2& aVec = *reinterpret_cast<Graphic3d_Vec2* >(myTexData + myTexStride * (theIndex - 1));
+      Graphic3d_Vec2& aVec = *reinterpret_cast<Graphic3d_Vec2* >(myTexData + myTexStride * ((Standard_Size)theIndex - 1));
       aVec.x() = Standard_ShortReal (theTX);
       aVec.y() = Standard_ShortReal (theTY);
     }
@@ -450,7 +450,7 @@ public:
   {
     theX = theY = theZ = 0.0;
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
-    const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3*> (myAttribs->Data() + myPosStride * (theRank - 1));
+    const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3*> (myAttribs->Data() + myPosStride * ((Standard_Size)theRank - 1));
     theX = Standard_Real(aVec.x());
     theY = Standard_Real(aVec.y());
     theZ = Standard_Real(aVec.z());
@@ -473,7 +473,7 @@ public:
                     Graphic3d_Vec4ub&      theColor) const
   {
     Standard_OutOfRange_Raise_if (myColData == NULL || theIndex < 1 || theIndex > myAttribs->NbElements, "BAD VERTEX index");
-    theColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * (theIndex - 1));
+    theColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * ((Standard_Size)theIndex - 1));
   }
 
   //! Returns the vertex color values from the vertex table if defined.
@@ -489,7 +489,7 @@ public:
     {
       return;
     }
-    const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * (theRank - 1));
+    const Graphic3d_Vec4ub& aColor = *reinterpret_cast<const Graphic3d_Vec4ub* >(myColData + myColStride * ((Standard_Size)theRank - 1));
     theR = Standard_Real(aColor.r()) / 255.0;
     theG = Standard_Real(aColor.g()) / 255.0;
     theB = Standard_Real(aColor.b()) / 255.0;
@@ -503,7 +503,7 @@ public:
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
     if (myColData != NULL)
     {
-      theColor = *reinterpret_cast<const Standard_Integer* >(myColData + myColStride * (theRank - 1));
+      theColor = *reinterpret_cast<const Standard_Integer* >(myColData + myColStride * ((Standard_Size)theRank - 1));
     }
   }
 
@@ -528,7 +528,7 @@ public:
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
     if (myNormData != NULL)
     {
-      const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3* >(myNormData + myNormStride * (theRank - 1));
+      const Graphic3d_Vec3& aVec = *reinterpret_cast<const Graphic3d_Vec3* >(myNormData + myNormStride * ((Standard_Size)theRank - 1));
       theNX = Standard_Real(aVec.x());
       theNY = Standard_Real(aVec.y());
       theNZ = Standard_Real(aVec.z());
@@ -555,7 +555,7 @@ public:
     Standard_OutOfRange_Raise_if (theRank < 1 || theRank > myAttribs->NbElements, "BAD VERTEX index");
     if (myTexData != NULL)
     {
-      const Graphic3d_Vec2& aVec = *reinterpret_cast<const Graphic3d_Vec2* >(myTexData + myTexStride * (theRank - 1));
+      const Graphic3d_Vec2& aVec = *reinterpret_cast<const Graphic3d_Vec2* >(myTexData + myTexStride * ((Standard_Size)theRank - 1));
       theTX = Standard_Real(aVec.x());
       theTY = Standard_Real(aVec.y());
     }

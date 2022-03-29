@@ -271,7 +271,7 @@ public: //! @name Preparation methods
     if (!theName.IsEmpty())
     {
       myIsOwnName = true;
-      myName = (char* )Standard::Allocate (theName.Length() + 1);
+      myName = (char* )Standard::Allocate (Standard_Size(theName.Length()) + Standard_Size(1));
       char* aName = (char* )myName;
       memcpy (aName, theName.ToCString(), theName.Length());
       aName[theName.Length()] = '\0';
