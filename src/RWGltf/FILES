@@ -4,6 +4,7 @@ RWGltf_CafWriter.cxx
 RWGltf_CafWriter.hxx
 RWGltf_ConfigurationNode.cxx
 RWGltf_ConfigurationNode.hxx
+RWGltf_DracoParameters.hxx
 RWGltf_GltfAccessor.hxx
 RWGltf_GltfAccessorCompType.hxx
 RWGltf_GltfAccessorLayout.hxx

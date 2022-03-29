@@ -1,0 +1,16 @@
+puts "========"
+puts "0032867: Data Exchange - Implement Draco compression for writing glTF"
+puts "Test case exporting model into glb (binary glTF) file."
+puts "========"
+
+restore [locate_data_file bearing.brep] b
+incmesh b 0.1
+
+set aGltfFile1 "${imagedir}/${casename}_tmp1.glb"
+set aGltfFile2 "${imagedir}/${casename}_tmp2.glb"
+
+WriteGltf b "$aGltfFile1" -draco on
+WriteGltf b "$aGltfFile2" -draco on -mergefaces
+
+ReadGltf D0 "$aGltfFile1"
+ReadGltf D "$aGltfFile2"

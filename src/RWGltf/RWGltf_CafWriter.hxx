@@ -18,12 +18,14 @@
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <RWGltf_DracoParameters.hxx>
 #include <RWGltf_GltfBufferView.hxx>
 #include <RWGltf_GltfFace.hxx>
 #include <RWGltf_WriterTrsfFormat.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWMesh_NameFormat.hxx>
 #include <XCAFPrs_Style.hxx>
+#include <Poly_Triangle.hxx>
 
 #include <memory>
 
@@ -39,6 +41,15 @@ class RWGltf_CafWriter : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(RWGltf_CafWriter, Standard_Transient)
 public:
+
+  //! Mesh
+  struct Mesh
+  {
+    std::vector<Graphic3d_Vec3> NodesVec;     //!< vector for mesh nodes
+    std::vector<Graphic3d_Vec3> NormalsVec;   //!< vector for mesh normals
+    std::vector<Graphic3d_Vec2> TexCoordsVec; //!< vector for mesh texture UV coordinates
+    std::vector<Poly_Triangle>  IndicesVec;   //!< vector for mesh indices
+  };
 
   //! Main constructor.
   //! @param theFile     [in] path to output glTF file
@@ -114,6 +125,12 @@ public:
   //! May reduce binary data size thanks to smaller triangle indexes.
   void SetSplitIndices16 (bool theToSplit) { myToSplitIndices16 = theToSplit; }
 
+  //! Return Draco parameters
+  const RWGltf_DracoParameters& CompressionParameters() const { return myDracoParameters; }
+
+  //! Set Draco parameters
+  void SetCompressionParameters(const RWGltf_DracoParameters& theDracoParameters) { myDracoParameters = theDracoParameters; }
+
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
   //! @param theDocument    [in] input document
@@ -186,40 +203,48 @@ protected:
   //! @param theBinFile  [out] output file to write into
   //! @param theFaceIter [in]  current face to write
   //! @param theAccessorNb [in] [out] last accessor index
+  //! @param theMesh [in] [out] mesh
   Standard_EXPORT virtual void saveNodes (RWGltf_GltfFace& theGltfFace,
                                           std::ostream& theBinFile,
                                           const RWMesh_FaceIterator& theFaceIter,
-                                          Standard_Integer& theAccessorNb) const;
+                                          Standard_Integer& theAccessorNb,
+                                          const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh normals into binary file.
   //! @param theGltfFace [out] glTF face definition
   //! @param theBinFile  [out] output file to write into
   //! @param theFaceIter [in]  current face to write
   //! @param theAccessorNb [in] [out] last accessor index
+  //! @param theMesh [in] [out] mesh
   Standard_EXPORT virtual void saveNormals (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
                                             RWMesh_FaceIterator& theFaceIter,
-                                            Standard_Integer& theAccessorNb) const;
+                                            Standard_Integer& theAccessorNb,
+                                            const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh texture UV coordinates into binary file.
   //! @param theGltfFace [out] glTF face definition
   //! @param theBinFile  [out] output file to write into
   //! @param theFaceIter [in]  current face to write
   //! @param theAccessorNb [in] [out] last accessor index
+  //! @param theMesh [in] [out] mesh
   Standard_EXPORT virtual void saveTextCoords (RWGltf_GltfFace& theGltfFace,
                                                std::ostream& theBinFile,
                                                const RWMesh_FaceIterator& theFaceIter,
-                                               Standard_Integer& theAccessorNb) const;
+                                               Standard_Integer& theAccessorNb,
+                                               const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh indexes into binary file.
   //! @param theGltfFace [out] glTF face definition
   //! @param theBinFile  [out] output file to write into
   //! @param theFaceIter [in]  current face to write
   //! @param theAccessorNb [in] [out] last accessor index
+  //! @param theMesh [in] [out] mesh
   Standard_EXPORT virtual void saveIndices (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
                                             const RWMesh_FaceIterator& theFaceIter,
-                                            Standard_Integer& theAccessorNb);
+                                            Standard_Integer& theAccessorNb,
+                                            const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
 
 protected:
 
@@ -280,9 +305,11 @@ protected:
   //! Write a primitive array to RWGltf_GltfRootElement_Meshes section.
   //! @param[in]     theGltfFace     face to write
   //! @param[in]     theName         primitive array name
+  //! @param[in]     theDracoBufInd  draco buffer index 
   //! @param[in,out] theToStartPrims flag indicating that primitive array has been started
   Standard_EXPORT virtual void writePrimArray (const RWGltf_GltfFace& theGltfFace,
                                                const TCollection_AsciiString& theName,
+                                               const int theDracoBufInd,
                                                bool& theToStartPrims);
 
   //! Write RWGltf_GltfRootElement_Nodes section.
@@ -369,6 +396,8 @@ protected:
   ShapeToGltfFaceMap                            myBinDataMap;        //!< map for TopoDS_Face to glTF face (merging duplicates)
   int64_t                                       myBinDataLen64;      //!< length of binary file
 
+  std::vector<RWGltf_GltfBufferView>            myBuffViewsDraco;    //!< vector of buffers view with compression data
+  RWGltf_DracoParameters                        myDracoParameters;   //!< Draco parameters
 };
 
 #endif // _RWGltf_CafWriter_HeaderFiler

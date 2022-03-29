@@ -1,0 +1,18 @@
+puts "========"
+puts "0032867: Data Exchange - Implement Draco compression for writing glTF"
+puts "Test case exporting model into glb (binary glTF) file."
+puts "========"
+
+Close D0 -silent
+ReadStep D0 [locate_data_file as1-oc-214-mat.stp]
+XGetOneShape ss D0
+incmesh ss 1.0
+
+set aGltfFile1 "${imagedir}/${casename}_tmp1.glb"
+set aGltfFile2 "${imagedir}/${casename}_tmp2.glb"
+
+WriteGltf D0 "$aGltfFile1" -draco on
+WriteGltf D0 "$aGltfFile2" -draco on -mergefaces
+
+ReadGltf D1 "$aGltfFile1"
+ReadGltf D "$aGltfFile2"

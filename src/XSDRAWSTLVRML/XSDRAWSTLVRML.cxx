@@ -44,6 +44,7 @@
 #include <Quantity_Color.hxx>
 #include <Quantity_HArray1OfColor.hxx>
 #include <Quantity_NameOfColor.hxx>
+#include <RWGltf_DracoParameters.hxx>
 #include <RWGltf_CafReader.hxx>
 #include <RWGltf_CafWriter.hxx>
 #include <RWMesh_FaceIterator.hxx>
@@ -384,6 +385,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   bool toMergeFaces = false, toSplitIndices16 = false;
   RWMesh_NameFormat aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
   RWMesh_NameFormat aMeshNameFormat = RWMesh_NameFormat_Product;
+  RWGltf_DracoParameters aDracoParameters;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
@@ -516,6 +518,44 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
     {
       toEmbedTexturesInGlb = false;
     }
+    else if (anArgCase == "-draco")
+    {
+      aDracoParameters.DracoCompression = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArgCase == "-compressionlevel" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.CompressionLevel))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-quantizepositionbits" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizePositionBits))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-quantizenormalbits" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeNormalBits))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-quantizetexcoordbits" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeTexcoordBits))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-quantizecolorbits" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeColorBits))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-quantizegenericbits" && (anArgIter + 1) < theNbArgs
+             && Draw::ParseInteger(theArgVec[anArgIter + 1], aDracoParameters.QuantizeGenericBits))
+    {
+      ++anArgIter;
+    }
+    else if (anArgCase == "-unifiedquantization")
+    {
+      aDracoParameters.UnifiedQuantization = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
@@ -547,6 +587,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
   aWriter.SetMergeFaces (toMergeFaces);
   aWriter.SetSplitIndices16 (toSplitIndices16);
+  aWriter.SetCompressionParameters(aDracoParameters);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aScaleFactorM);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (aSystemCoordSys);
   aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
@@ -2361,20 +2402,32 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    __FILE__, ReadGltf, g);
   theCommands.Add ("WriteGltf",
                    "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}]=compact"
-           "\n\t\t:                    [-systemCoordSys {Zup|Yup}]=Zup"
-           "\n\t\t:                    [-comments Text] [-author Name]"
-           "\n\t\t:                    [-forceUVExport]=0 [-texturesSeparate]=0 [-mergeFaces]=0 [-splitIndices16]=0"
-           "\n\t\t:                    [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=instOrProd"
-           "\n\t\t:                    [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
-           "\n\t\t: Write XDE document into glTF file."
-           "\n\t\t:   -trsfFormat preferred transformation format"
-           "\n\t\t:   -systemCoordSys system coordinate system; Zup when not specified"
-           "\n\t\t:   -mergeFaces     merge Faces within the same Mesh"
-           "\n\t\t:   -splitIndices16 split Faces to keep 16-bit indices when -mergeFaces is enabled"
-           "\n\t\t:   -forceUVExport  always export UV coordinates"
-           "\n\t\t:   -texturesSeparate write textures to separate files"
-           "\n\t\t:   -nodeNameFormat name format for Nodes"
-           "\n\t\t:   -meshNameFormat name format for Meshes",
+                   "\n\t\t:            [-systemCoordSys {Zup|Yup}]=Zup"
+                   "\n\t\t:            [-comments Text] [-author Name]"
+                   "\n\t\t:            [-forceUVExport]=0 [-texturesSeparate]=0 [-mergeFaces]=0 [-splitIndices16]=0"
+                   "\n\t\t:            [-nodeNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=instOrProd"
+                   "\n\t\t:            [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
+                   "\n\t\t:            [-draco]=0 [-compressionLevel {0-10}]=7 [-quantizePositionBits Value]=14 [-quantizeNormalBits Value]=10"
+                   "\n\t\t:            [-quantizeTexcoordBits Value]=12 [-quantizeColorBits Value]=8 [-quantizeGenericBits Value]=12"
+                   "\n\t\t:            [-unifiedQuantization]=0"
+                   "\n\t\t: Write XDE document into glTF file."
+                   "\n\t\t:   -trsfFormat       preferred transformation format"
+                   "\n\t\t:   -systemCoordSys   system coordinate system; Zup when not specified"
+                   "\n\t\t:   -mergeFaces       merge Faces within the same Mesh"
+                   "\n\t\t:   -splitIndices16   split Faces to keep 16-bit indices when -mergeFaces is enabled"
+                   "\n\t\t:   -forceUVExport    always export UV coordinates"
+                   "\n\t\t:   -texturesSeparate write textures to separate files"
+                   "\n\t\t:   -nodeNameFormat   name format for Nodes"
+                   "\n\t\t:   -meshNameFormat   name format for Meshes"
+                   "\n\t\t:   -draco use Draco  compression 3D geometric meshes"
+                   "\n\t\t:   -compressionLevel draco compression level [0-10] (by default 7), a value of 0 will apply sequential encoding and preserve face order"
+                   "\n\t\t:   -quantizePositionBits quantization bits for position attribute when using Draco compression (by default 14)"
+                   "\n\t\t:   -quantizeNormalBits   quantization bits for normal attribute when using Draco compression (by default 10)"
+                   "\n\t\t:   -quantizeTexcoordBits quantization bits for texture coordinate attribute when using Draco compression (by default 12)"
+                   "\n\t\t:   -quantizeColorBits    quantization bits for color attribute when using Draco compression (by default 8)"
+                   "\n\t\t:   -quantizeGenericBits  quantization bits for skinning attribute (joint indices and joint weights)"
+                   "\n                        and custom attributes when using Draco compression (by default 12)"
+                   "\n\t\t:   -unifiedQuantization  quantization is applied on each primitive separately if this option is false",
                    __FILE__, WriteGltf, g);
   theCommands.Add ("writegltf",
                    "writegltf shape file",
